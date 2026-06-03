@@ -1,0 +1,37 @@
+{
+  "carbon_fiber": {
+    "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_carbon_fiber_base.png",
+    "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_carbon_fiber_roughness.png",
+    "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_carbon_fiber_bump.png"
+  },
+  "dark_metal": {
+    "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_dark_anodized_metal_base.png",
+    "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_dark_anodized_metal_roughness.png",
+    "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_dark_anodized_metal_bump.png"
+  },
+  "gold_aluminum": {
+    "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_gold_anodized_aluminum_base.png",
+    "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_gold_anodized_aluminum_roughness.png",
+    "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_gold_anodized_aluminum_bump.png"
+  },
+  "mid360_silver": {
+    "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/mid360_silver_grey_aluminum_base.png",
+    "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/mid360_silver_grey_aluminum_roughness.png",
+    "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/mid360_silver_grey_aluminum_bump.png"
+  },
+  "black_rubber": {
+    "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_black_rubber_base.png",
+    "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_black_rubber_roughness.png",
+    "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_black_rubber_bump.png"
+  },
+  "smoked_guard": {
+    "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_translucent_guard_base.png",
+    "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_translucent_guard_roughness.png",
+    "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_translucent_guard_bump.png"
+  },
+  "pcb_black": {
+    "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_base.png",
+    "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_roughness.png",
+    "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_bump.png"
+  }
+}

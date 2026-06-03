@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: px4_mavlink_batch_ready_for_commit
-decision: admit_px4_mavlink_reference_slice_excluding_credential_helper
-summary: "After committing the small source/test/image batch as d5a56b1a54, continued the corrected Git-layer-only split execution. Current narrow probes showed unignored files 0, cached diff 0, upstream relation 20 0, and no index.lock. Audited the remaining large reference trees by bounded top-level counts and selected References/PX4/mavlink because it has 61 files. Gates found no files over 100 MB, no nested .git, no LFS pointer markers, and no merge-conflict/high-confidence secret hits. One script, References/PX4/mavlink/scripts/update_generated_repos.sh, writes GH_TOKEN into $HOME/.git-credentials, so that exact file remains ignored. The opened slice exposes 60 files for commit."
-evidence: "small_batch_commit=d5a56b1a54; upstream_ahead_behind_before_slice=20 0; unignored_before_slice=0; cached_diff_before_slice=0; index_lock=absent; candidate=References/PX4/mavlink; files_on_disk=61; admitted_untracked_files=60; excluded_file=References/PX4/mavlink/scripts/update_generated_repos.sh; exclusion_reason=credential_helper_writes_GH_TOKEN_to_git_credentials; over_100MB=none; nested_git=none; lfs_pointer_markers=none; conflict_markers=none; high_confidence_secret_hits=none; ide_hiding_settings_added=false"
-risks: "The excluded MAVLink helper is not an actual secret but contains credential-writing behavior and needs human/security review before tracking. Push is not attempted in this phase."
-next_action: "Commit this 60-file MAVLink reference batch plus .gitignore, ledger, and result packet. Then continue with another <1000-file reference slice such as References/PX4/mavros-ros2, References/Blender/armorpaint-main, or References/Blender/xatlas."
+status: sourceassets_texture_backfill_ready_for_commit
+decision: admit_sourceassets_texture_backfill_before_next_reference_slice
+summary: "After committing PX4 MAVLink as 9b895503f0, the narrow untracked probe showed 22 visible files, all under UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures. These are expected PBR texture PNGs and a manifest for the already admitted SourceAssets set. Gates found no files over 100 MB, no nested .git, no LFS pointer markers, and no high-confidence secret hits."
+evidence: "px4_mavlink_commit=9b895503f0; upstream_ahead_behind_after_mavlink=21 0; unignored_after_mavlink=22; candidate=UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures; admitted_untracked_files=22; over_100MB=none; nested_git=none; lfs_pointer_markers=none; high_confidence_secret_hits=none; ide_hiding_settings_added=false"
+risks: "This is a backfill of small texture assets that should have accompanied the SourceAssets batch. Push is not attempted in this phase."
+next_action: "Commit this 22-file SourceAssets texture backfill batch, then continue with another <1000-file reference slice such as References/PX4/mavros-ros2, References/Blender/armorpaint-main, or References/Blender/xatlas."
 needs_human: false
 blocked_reason: "not_blocked"
