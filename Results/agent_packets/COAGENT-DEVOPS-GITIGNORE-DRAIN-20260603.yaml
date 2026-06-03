@@ -847,6 +847,19 @@ proposed_batches:
   - "batch_107_removed_rule=Docs/Skills/Unreal/"
   - "batch_107_removed_rule=!Docs/Skills/Unreal/"
   - "batch_107_removed_rule=Docs/Skills/Unreal/*"
+  - "batch_108_candidate=References/Agent/Skills/AutoSkill/data/train"
+  - "batch_108_head_vs_upstream_before=107 0"
+  - "batch_108_index_lock=absent"
+  - "batch_108_candidate_tracked_files=501"
+  - "batch_108_candidate_untracked_files=0"
+  - "batch_108_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/Common"
+  - "batch_108_compare_candidate_tracked_files=904"
+  - "batch_108_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/DocSkill"
+  - "batch_108_compare_candidate_tracked_files=2666"
+  - "batch_108_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/ConvSkill"
+  - "batch_108_compare_candidate_tracked_files=4313"
+  - "batch_108_removed_rule=!References/Agent/Skills/AutoSkill/data/train/"
+  - "batch_108_removed_rule=!References/Agent/Skills/AutoSkill/data/train/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -855,7 +868,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this one-hundred-seventh `.gitignore` drain batch together with the
+  Commit this one-hundred-eighth `.gitignore` drain batch together with the
   ledger and result packet, then continue with remaining `AutoSkill` residual
   split-routing chains before the final full `.gitignore` audit.
 needs_human: false

@@ -136,8 +136,6 @@ References/Agent/Skills/*
 !References/Agent/Skills/AutoSkill/
 !References/Agent/Skills/AutoSkill/**
 References/Agent/Skills/AutoSkill/data/*
-!References/Agent/Skills/AutoSkill/data/train/
-!References/Agent/Skills/AutoSkill/data/train/**
 References/Agent/Skills/AutoSkill/data/eval/
 References/Agent/Skills/AutoSkill/SkillBank/*
 !References/Agent/Skills/AutoSkill/SkillBank/Common/
