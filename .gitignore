@@ -333,10 +333,8 @@ References/Blender/blender/scripts/startup/bl_app_templates_system/Storyboarding
 References/PX4/
 !References/PX4/
 References/PX4/*
-!References/PX4/mavlink/
 !References/PX4/mavlink/**
 References/PX4/mavlink/scripts/update_generated_repos.sh
-!References/PX4/mavros-ros2/
 !References/PX4/mavros-ros2/**
 References/Blender/**/.git/
 References/Blender/**/node_modules/
