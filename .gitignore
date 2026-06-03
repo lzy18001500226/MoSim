@@ -178,8 +178,6 @@ References/Agent/**/*.pyc
 Docs/Skills/Unreal/
 !Docs/Skills/Unreal/
 Docs/Skills/Unreal/*
-!Docs/Skills/Unreal/mosim-epic/
-!Docs/Skills/Unreal/mosim-epic/**
 !Docs/Skills/Unreal/mosim-unreal/
 !Docs/Skills/Unreal/mosim-unreal/**
 Docs/Skills/Unreal/**/__pycache__/

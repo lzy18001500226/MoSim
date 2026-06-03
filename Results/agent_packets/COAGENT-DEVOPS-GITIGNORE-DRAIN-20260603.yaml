@@ -806,6 +806,17 @@ proposed_batches:
   - "batch_103_candidate_untracked_files=0"
   - "batch_103_removed_rule=!References/Agent/Skills/ECC/"
   - "batch_103_removed_rule=!References/Agent/Skills/ECC/**"
+  - "batch_104_candidate=Docs/Skills/Unreal/mosim-epic"
+  - "batch_104_head_vs_upstream_before=103 0"
+  - "batch_104_index_lock=absent"
+  - "batch_104_candidate_tracked_files=7"
+  - "batch_104_candidate_untracked_files=0"
+  - "batch_104_compare_candidate=Docs/Skills/Unreal/mosim-unreal"
+  - "batch_104_compare_candidate_tracked_files=8"
+  - "batch_104_compare_candidate=References/Agent/Skills/openai-skills"
+  - "batch_104_compare_candidate_tracked_files=781"
+  - "batch_104_removed_rule=!Docs/Skills/Unreal/mosim-epic/"
+  - "batch_104_removed_rule=!Docs/Skills/Unreal/mosim-epic/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -814,9 +825,9 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this one-hundred-third `.gitignore` drain batch together with the ledger
-  and result packet, then continue draining `openai-skills`, `AutoSkill`, and
-  `Docs/Skills/Unreal` residual split-routing chains before the final full
-  `.gitignore` audit.
+  Commit this one-hundred-fourth `.gitignore` drain batch together with the ledger
+  and result packet, then continue draining `Docs/Skills/Unreal/mosim-unreal`,
+  `openai-skills`, and `AutoSkill` residual split-routing chains before the
+  final full `.gitignore` audit.
 needs_human: false
 blocked_reason: ""
