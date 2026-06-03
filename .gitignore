@@ -469,8 +469,6 @@ References/PX4/PX4/src/*
 !References/PX4/PX4/src/include/**
 !References/PX4/PX4/src/lib/
 !References/PX4/PX4/src/lib/**
-References/PX4/PX4/src/lib/parameters/px4params/injectxmlparams.py
-References/PX4/PX4/src/lib/parameters/px4params/xmlout.py
 !References/PX4/PX4/src/modules/
 References/PX4/PX4/src/modules/*
 !References/PX4/PX4/src/modules/airship_att_control/
@@ -596,8 +594,6 @@ References/PX4/PX4/src/modules/gyro_fft/
 !References/PX4/PX4/test/**
 !References/PX4/PX4/test_data/
 !References/PX4/PX4/test_data/**
-References/PX4/PX4/test_data/crsf_rc_channels.txt
-References/PX4/PX4/test_data/ghst_rc_channels.txt
 !References/PX4/PX4/Tools/
 !References/PX4/PX4/Tools/**
 References/PX4/PX4/Tools/fetch_file.py
