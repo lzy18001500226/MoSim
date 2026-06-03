@@ -4,9 +4,9 @@ decision: continue_with_tiny_rule_family_batches
 summary: >-
   This task converts the temporary large-tree `.gitignore` split-routing block
   into a steady-state policy in very small batches. The latest completed batch
-  removes only the temporary `!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/人本-存在主义/`
-  and `!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/人本-存在主义/**`
-  lines after confirming that subtree has 133 tracked files and no untracked
+  removes only the temporary `!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/后现代主义/`
+  and `!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/后现代主义/**`
+  lines after confirming that subtree has 231 tracked files and no untracked
   spill. Earlier this session completed the current `oh-my-openagent-dev`
   drain chain. Earlier batches removed only
   similarly tiny, path-limited temporary split-routing pairs. The first batch removed only
@@ -667,6 +667,20 @@ proposed_batches:
   - "batch_91_compare_candidate_file_count=343"
   - "batch_91_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/人本-存在主义/"
   - "batch_91_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/人本-存在主义/**"
+  - "batch_92_candidate=References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/后现代主义"
+  - "batch_92_head_vs_upstream_before=91 0"
+  - "batch_92_index_lock=absent"
+  - "batch_92_candidate_file_count=231"
+  - "batch_92_candidate_tracked_files=231"
+  - "batch_92_candidate_untracked_files=0"
+  - "batch_92_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/认知行为疗法/一级技能"
+  - "batch_92_compare_candidate_file_count=246"
+  - "batch_92_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/心理动力学"
+  - "batch_92_compare_candidate_file_count=283"
+  - "batch_92_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/行为主义"
+  - "batch_92_compare_candidate_file_count=343"
+  - "batch_92_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/后现代主义/"
+  - "batch_92_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/后现代主义/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -675,7 +689,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this ninety-first `.gitignore` drain batch together with the ledger
+  Commit this ninety-second `.gitignore` drain batch together with the ledger
   and result packet, then re-scan `.gitignore` for the next smallest remaining
   temporary split-routing pair and continue the drain without widening scope.
 needs_human: false
