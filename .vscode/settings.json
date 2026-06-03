@@ -1,5 +1,6 @@
 {
   "git.showIgnoredFiles": false,
+  "git.showUntrackedChanges": false,
   "git.autoRepositoryDetection": false,
   "git.countBadge": "tracked",
   "git.ignoredRepositories": [
@@ -16,6 +17,13 @@
     "**/Results/tmp/**": true
   },
   "search.exclude": {
+    "**/References/Agent/**": true,
+    "**/References/Blender/**": true,
+    "**/References/PX4/**": true,
+    "**/Docs/Skills/Unreal/**": true,
+    "**/Results/tmp/**": true
+  },
+  "files.exclude": {
     "**/References/Agent/**": true,
     "**/References/Blender/**": true,
     "**/References/PX4/**": true,
