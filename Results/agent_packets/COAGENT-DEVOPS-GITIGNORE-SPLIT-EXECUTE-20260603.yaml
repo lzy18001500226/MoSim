@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_main_dotfile_backfill_ready_for_commit
-decision: force_add_explicit_blender_dotfiles
-summary: "Committed Blender main first batch as 8365030eda. Current narrow probes showed visible untracked 0, cached diff 0, upstream relation 32 0, and .git/index.lock absent. Follow-up check showed Blender's own nested .gitignore rule .* ignored .clang-format, .clang-tidy, .editorconfig, .git-blame-ignore-revs, .gitattributes, .gitignore, .gitmodules, .gitea, and .github, so they were not included in the previous commit despite root .gitignore negative rules. This batch force-adds only those explicit upstream dotfiles/dotdirs with path-limited git add -f."
-evidence: "blender_main_first_batch_commit=8365030eda; pre_backfill_visible_untracked=0; pre_backfill_cached_diff=0; upstream_ahead_behind_before_backfill=32 0; index_lock=absent; nested_ignore_source=References/Blender/blender/.gitignore line 2 pattern .*; tracked_dotfile_count_before=0; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
-risks: "This is a path-limited force-add because the upstream nested .gitignore ignores dotfiles. It is not a broad add. Pointer-only LFS files remain ignored."
-next_action: "Stage only explicit Blender dotfiles/dotdirs plus ledger and result packet with git add -f; commit the backfill; then continue with References/Blender/blender/scripts as the next <1000-file slice."
+status: blender_main_scripts_ready_for_commit
+decision: admit_blender_main_scripts_slice
+summary: "Committed Blender dotfile backfill as 32f9181138. Selected References/Blender/blender/scripts as the next bounded Blender main slice. It has 831 files, under the 1000-file ceiling. Gates found no files over 100 MB and no nested .git. LFS scan found 5 pointer-only startup.blend files; those exact files remain ignored and are not staged."
+evidence: "blender_dotfile_backfill_commit=32f9181138; candidate=References/Blender/blender/scripts; files_on_disk=831; over_100MB=none; nested_git=none; lfs_pointer_files=5 exact ignored paths; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
+risks: "This is a Blender upstream scripts slice with pointer-only LFS startup templates excluded. Push remains deferred."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, References/Blender/blender/scripts, and this result packet; commit this scripts batch; then recheck visible untracked count."
 needs_human: false
 blocked_reason: "not_blocked"

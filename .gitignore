@@ -273,6 +273,8 @@ References/Blender/blender/*
 !References/Blender/blender/locale/**
 !References/Blender/blender/tools/
 !References/Blender/blender/tools/**
+!References/Blender/blender/scripts/
+!References/Blender/blender/scripts/**
 !References/Blender/blender/.clang-format
 !References/Blender/blender/.clang-tidy
 !References/Blender/blender/.editorconfig
@@ -303,6 +305,11 @@ References/Blender/blender/assets/brushes/essentials_brushes-gp_vertex.blend
 References/Blender/blender/assets/brushes/essentials_brushes-gp_sculpt.blend
 References/Blender/blender/assets/brushes/essentials_brushes-gp_draw.blend
 References/Blender/blender/assets/brushes/essentials_brushes-curve_sculpt.blend
+References/Blender/blender/scripts/startup/bl_app_templates_system/Video_Editing/startup.blend
+References/Blender/blender/scripts/startup/bl_app_templates_system/VFX/startup.blend
+References/Blender/blender/scripts/startup/bl_app_templates_system/Sculpting/startup.blend
+References/Blender/blender/scripts/startup/bl_app_templates_system/2D_Animation/startup.blend
+References/Blender/blender/scripts/startup/bl_app_templates_system/Storyboarding/startup.blend
 References/PX4/
 !References/PX4/
 References/PX4/*
