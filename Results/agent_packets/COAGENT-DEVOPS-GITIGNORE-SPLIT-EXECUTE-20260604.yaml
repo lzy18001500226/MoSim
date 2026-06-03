@@ -1,0 +1,9 @@
+task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260604
+status: git_split_completion_policy_ready_for_commit
+decision: codify_temporary_ignore_drain_and_tracked_change_rules
+summary: "After user correction, codified the Git split completion rule in AGENTS.md, Docs/Workflows/agent_orchestration.md, and CoAgent/devops/README.md. Temporary large-tree ignore rules are only a throttle, not completion. A split task is not done when visible untracked files are 0; closeout requires temporary ignores to be drained, narrowed to justified long-term ignores, or documented as manifest-only skips. Tracked 10k+ changes from renames/moves cannot be solved with .gitignore and must be path-limited and committed in batches. Also included a small Sunray150 material review JSON backfill."
+evidence: "docs_updated=AGENTS.md,Docs/Workflows/agent_orchestration.md,CoAgent/devops/README.md,Docs/Workflows/agent_task_ledger.md; backfill_file=Results/unreal_scene_mapping/sunray150_material_review_targets_20260603.json; backfill_size_bytes=22637; over_100MB=none; credential_hits=none; cached_diff_before_stage=0; index_lock=absent; broad_status_used=false; broad_add_used=false; git_add_A_used=false; ide_hiding_settings_added=false"
+risks: "Current IDE may still show many tracked modifications; next step must path-limit inventory by major directory because .gitignore cannot hide tracked changes. Remaining temporary ignores must still be audited."
+next_action: "Stage only the documentation files, ledger, this result packet, and the small JSON backfill; run staged gates; commit with message docs: codify git split completion criteria."
+needs_human: false
+blocked_reason: "not_blocked"

@@ -142,6 +142,43 @@ record it in the appropriate project document before reporting completion. Do
 not end with "record later" or leave the knowledge only in chat. If the write is
 blocked, report the exact target document and blocker.
 
+Source-first troubleshooting rule: when a UE/UAV simulation behavior problem
+matches an existing ecosystem pattern, inspect local reference implementations
+first, especially RflySim, Sunray/YunZong, PX4/Gazebo, AirSim, FAST-LIO, and
+EGO-Planner materials under `References/`. If local references do not resolve
+the issue, then search official docs or high-quality online sources. Record the
+confirmed reusable pattern in the relevant workflow before continuing.
+
+### 3.2.1 WeChat Progress and Intervention Rule
+
+For long-running architecture validation, simulation, MCP, UE/ROS2, Git split,
+or human-review work, WeChat is the default out-of-band progress and
+intervention channel when the gateway is available.
+
+Rules:
+
+1. Send a WeChat milestone packet at task start, at completed architecture
+   gates, when manual review is needed, and when a blocker changes the plan.
+2. Use the narrow CoAgent adapter
+   `CoAgent/gateway/cc_connect_weixin.py`; do not call `cc-connect send`
+   directly for project notifications unless diagnosing the gateway.
+3. Use sparse messages only. Do not mirror high-volume Codex transcripts, tool
+   outputs, logs, or long command results through WeChat.
+4. If WeChat sending fails, do not assume the user was notified. Record the
+   failed send in `Results/coagent_gateway/`, diagnose the failure immediately,
+   and update `PROGRESS.md` or the relevant workflow/status document.
+5. If the failure is `no active session found`, inspect the runtime session
+   file under `/home/linux/.cache/mosim/coagent/cc-connect-weixin/data/sessions/`
+   and verify `active_session` before retrying once through the adapter.
+6. If the failure is `weixin: sendMessage: ret=-2`, ask the user to send one
+   normal message to the WeChat gateway conversation, then retry once. If it
+   still fails, rerun the documented 10 minute QR setup and require one normal
+   user message to refresh `context_token`.
+7. If WeChat cannot be restored quickly, report the exact failure in the main
+   conversation and continue with file-based progress records unless the task
+   specifically requires user approval.
+8. Do not retry WeChat sends in a tight loop.
+
 ### 3.3 Git Automation Rule
 
 For normal project changes, use this workflow automatically:
@@ -167,7 +204,16 @@ Rules:
 7. For very large imports or restructures, first ignore or keep the whole new
    batch outside tracked scope, then unignore/stage/push small reviewed slices.
    Do not `git add -A` a broad external tree or 1000+ file batch directly.
-8. When Git is slow, has LFS/hook/index-lock residue, or another Git owner is
+8. Temporary large-tree ignore rules are not the end state. They are only a
+   throttle to keep Git usable while the tree is drained. A Git split task is
+   not complete merely because visible untracked files are 0; finish by removing
+   or narrowing temporary ignores until `.gitignore` retains only real long-term
+   exclusions such as >100 MB files, credentials, generated/cache/runtime assets,
+   missing LFS assets, or explicitly manifest-only external materials. If a
+   large tree is already tracked or shows as modified, `.gitignore` cannot hide
+   or solve it; classify and commit those tracked changes in path-limited
+   batches instead.
+9. When Git is slow, has LFS/hook/index-lock residue, or another Git owner is
    active, delegate commit/push work to `GitIntegrator` instead of blocking the
    main engineering thread. The main agent remains responsible for scope,
    review, and final reporting; details live in `Docs/Workflows/agent_orchestration.md#5-long-git-work`.
@@ -288,7 +334,14 @@ Rules:
    comparison evidence.
 5. Global UE collision/occupancy truth is a validation oracle only. It must not
    be fed to the planner as a known global map.
-6. Current scene-rendering workflow details live in
+6. Keyboard/mouse mappings may be kept for UE/RViz view and camera control
+   only. They must not directly drive UAV pose, overwrite MWORKS truth, or
+   substitute for controller/setpoint input.
+7. After the user gives a manual review result, accept that result as the
+   authoritative visual gate outcome. Do not spend more time proving whether
+   the review window is open unless the user asks; either implement the
+   reported corrections or stop at the next explicit manual-review gate.
+8. Current scene-rendering workflow details live in
    `Docs/Workflows/unreal_renderer.md`; keep that file updated whenever this
    window split, topic contract, or evidence boundary changes.
 

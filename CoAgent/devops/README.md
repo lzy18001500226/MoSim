@@ -32,6 +32,18 @@ When `--batch-list-dir` is set, it also writes per-batch path lists plus an
 Use those lists for later small-batch inspection and integration instead of
 reconstructing long pathspecs from chat history.
 
+DevOps split tasks must distinguish temporary isolation from completion.
+Putting a huge tree behind `.gitignore` is only a throttle that keeps Git usable
+while batches are reviewed and committed. Do not report a split task as done
+only because `git ls-files --others --exclude-standard` returns 0 or the IDE
+source-control view is quiet. Before closeout, audit `.gitignore` and remove or
+narrow every temporary broad tree rule unless it is justified as a long-term
+ignore for a concrete class: files over GitHub's 100 MiB hard limit,
+credentials/secrets, generated/cache/runtime outputs, missing LFS assets, or
+manifest-only external materials. If the large surface is already tracked or
+appears as 10k+ modifications from a rename/move, `.gitignore` is not a
+solution; classify and commit those tracked changes in path-limited batches.
+
 Use the handoff packet when the current Git surface is already broad and needs
 DevOps/reviewer ownership before any commit:
 

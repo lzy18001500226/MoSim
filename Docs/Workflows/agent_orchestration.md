@@ -1229,6 +1229,10 @@ Large batch default strategy:
 5. Stage only the reviewed slice with path-limited `git add`.
 6. Commit and push that slice before opening the next slice.
 7. Record skipped paths and the next batch in the ledger.
+8. Drain the temporary ignore rules themselves. The final state must not keep
+   broad "hide the incoming tree" rules just because the source-control view is
+   quiet. Convert each temporary rule into committed tracked content, a narrow
+   long-term ignore for a justified class, or a documented manifest-only skip.
 ```
 
 Do not treat IDE visibility settings as a substitute for this strategy.
@@ -1254,6 +1258,12 @@ Do not solve a large import by repeatedly retrying one aggregate branch. The
 correct recovery is to ignore the aggregate, reopen one reviewed slice, and
 push slice-by-slice. If the batch is important but too large for Git, keep it
 ignored under `References/` and commit only a manifest plus usage notes.
+Do not declare completion from `git ls-files --others --exclude-standard`
+returning 0 or from an IDE source-control pane becoming quiet. That only proves
+untracked visibility is controlled. A release Git task is complete only after
+temporary large-tree ignore rules have been drained or justified as long-term
+ignore rules, and tracked modifications have been committed, intentionally
+left for a documented later task, or escalated as a blocker.
 
 For ten-thousand to hundred-thousand file surfaces, treat chat output, shell
 argument length, hook scans, and GitHub limits as first-class constraints:
@@ -1273,6 +1283,9 @@ argument length, hook scans, and GitHub limits as first-class constraints:
    from Git. First stop new generated/untracked mass with ignore rules, then
    decide whether the tracked tree should remain, be split by future commits,
    move to manifest-only/LFS, or be removed through an explicit reviewed task.
+   File renames or directory moves can create 10k+ tracked changes; handle them
+   as tracked-change batches with path-limited `git diff --name-only -- <path>`
+   or `git ls-files -m -- <path>`, not with broader ignore rules.
 6. For local performance, consider Git's large-repo features only as bounded
    helpers: sparse checkout or partial clone for fresh analysis clones, and
    split-index/untracked-cache/fsmonitor only after recording the local config
