@@ -244,6 +244,11 @@ Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
 # `git add -f <reviewed-slice>` after size/secret/diff checks.
 References/Blender/
 References/PX4/
+!References/PX4/
+References/PX4/*
+!References/PX4/mavlink/
+!References/PX4/mavlink/**
+References/PX4/mavlink/scripts/update_generated_repos.sh
 References/Blender/**/.git/
 References/Blender/**/node_modules/
 References/Blender/**/build/
