@@ -1,0 +1,125 @@
+# Long Goal Plan - Session Memory Migration
+
+Date: 2026-06-04 CST
+
+Scope: long-running recovery plan for migrating the `MoSim|四旋翼无人机仿真系统`
+conversation into project-local memory.
+
+This file is cache-only. It is a task plan and recovery surface, not formal
+technical truth. It must not be used to promote parameters, scene acceptance,
+FAST-LIO status, MWORKS evidence, CoAgent capability, or infrastructure state
+without the round gates below.
+
+## Goal
+
+```text
+objective:
+  Preserve the important history, final useful decisions, rejected routes,
+  current evidence boundaries, and recovery rules from the long MoSim
+  conversation so future Codex conversations can start fresh without becoming
+  blind or repeating old mistakes.
+
+hard_rule:
+  Every historical item must pass at least three rounds before entering formal
+  project documents:
+    round 1: cache candidate or rejected/superseded history
+    round 2: verify against current project files, result artifacts, and
+             contradictions
+    round 3: re-read current evidence and the target document, then patch
+             narrowly or reject/supersede
+
+current_state:
+  The currently identified topic set has round-1 capture and topic-specific
+  round-2 evidence review. Round-3 application remains open.
+```
+
+## Recovery Entry Points
+
+Read in this order:
+
+```text
+1. PROGRESS.md
+2. Docs/Workflows/agent_task_ledger.md
+   row: SESSION-MEMORY-MIGRATION-20260604
+3. Docs/Workflows/session_memory_migration.md
+4. Docs/Cache/session_memory_migration/coverage_matrix_20260604.md
+5. Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md
+6. The topic-specific round-2 cache file for the item being worked
+```
+
+Do not read external Codex session files, home directories, tokens, browser
+profiles, or personal data for this migration unless the user makes a fresh
+infrastructure request.
+
+## Topic Lanes
+
+| Lane | Current Cache State | Round-3 Direction |
+|---|---|---|
+| Codex App / VSCode / CLI / MCP infrastructure | round-2 infrastructure cache | Keep machine-specific repair history as infrastructure memory; do not touch external `.codex` files unless explicitly requested. |
+| MWORKS evidence and smoke boundaries | round-2 controller-evidence cache | Patch only if a workflow lacks `smoke_only`, source label, or check/simulate boundary wording. |
+| MWORKS codegen and generated runtime | round-2 codegen cache | Keep `GenerateModelCode` route and PID-demo-only SIL evidence; do not claim per-controller runtime authority. |
+| UE / ROS2 / FAST-LIO runtime | round-2 UE/ROS and ROS2 caches | Apply route/date/source priority; latest matching `*_CURRENT` gate first; manual review and final product acceptance remain separate. |
+| UE scene source and renderer | round-2 scene cache | Disambiguate `registry_primary`, `active_content_links`, `latest_review_target`, manual review, and final acceptance. |
+| Sunray150 assets and materials | round-2 Sunray cache | Preserve accepted source-chain facts and rejected material/proxy routes; no UE export until accepted review evidence exists. |
+| Sunray150 parameter identification | round-2 parameter cache | Keep all current numeric values as `source=SDF_migration` seeds unless a complete identification bundle appears. |
+| CoAgent operating history | round-2 CoAgent cache | Guardrail only; no implementation, transport, automation, department, notification, or tool expansion from this migration. |
+| External references / skills / agent systems | round-2 external-reference cache | Use indexes and audit workflow; external projects are contracts/patterns unless separately approved and proven locally. |
+| Git split / large worktree hygiene | infrastructure cache plus ledger | Keep as a separate GitIntegrator lane; no broad Git cleanup inside migration. |
+
+## Round-3 Work Queue
+
+Pick one item per round:
+
+```text
+1. ROS2/FAST-LIO status-source-priority note:
+   re-read latest `*_CURRENT` files, runtime bundles, and any manual review
+   record before patching `ros2_runtime_setup.md` or `unreal_renderer.md`.
+
+2. Scene-source state disambiguation:
+   re-read scene registry, active links, review bundles, and manual-review
+   packets before patching renderer workflow wording.
+
+3. Parameter provenance check:
+   rerun project-local evidence search, re-read current model fields, then
+   either keep cache-only or correct a formal doc that mislabels SDF seeds as
+   identified values.
+
+4. Codegen/SIL boundary:
+   re-read codegen workflow and latest `Results/codegen_probe/**/sil_*` files;
+   patch only PID-demo-only wording if needed.
+
+5. CoAgent scope gate:
+   re-read `CoAgent/STATUS.md` and `CoAgent/README.md`; record guardrails only
+   unless the user opens a separate approved CoAgent implementation task.
+
+6. External-reference boundary:
+   re-read reference indexes and audit workflow; patch only recovery pointers
+   or rejected-adoption wording if missing.
+```
+
+## Completion Criteria
+
+The migration can be marked complete only when:
+
+```text
+all_identified_topics:
+  - have round-1 cache entries or are explicitly out of scope
+
+all_high_risk_items:
+  - are promoted through round 3, rejected, superseded, or blocked on explicit
+    user review/current evidence
+
+formal_docs:
+  - contain only narrow current-evidence-backed statements
+  - do not contain old numeric parameters, visual acceptance, simulation claims,
+    FAST-LIO status, Codex repair facts, or CoAgent capabilities from chat
+    memory alone
+
+recovery:
+  - PROGRESS.md, agent_task_ledger.md, workflow_index.md, coverage matrix, and
+    round-3 map all point to the final migration state
+  - a new conversation can continue without reading the old transcript
+```
+
+Do not mark the goal complete just because the cache exists. Completion requires
+round-3 disposition of high-risk items.

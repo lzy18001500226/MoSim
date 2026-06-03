@@ -1,0 +1,527 @@
+# Round 3 Promotion / Rejection Map - Session Memory Migration
+
+Date: 2026-06-04 CST
+
+Scope: build the round-3 gate for the long `MoSim|Quadrotor simulation system`
+conversation memory. This file is still cache-only. It decides what may be
+promoted later, what is already covered by formal docs, and what must stay
+rejected, superseded, or pending user review.
+
+## Status
+
+```text
+round: 3
+status: cache_only_promotion_rejection_map_ready
+formal_docs_patched_this_round: none
+cache_only: true
+source_rounds:
+  - Docs/Cache/session_memory_migration/round1_candidate_cache_20260604.md
+  - Docs/Cache/session_memory_migration/round2_process_review_20260604.md
+  - Docs/Cache/session_memory_migration/round2_sunray150_asset_memory_20260604.md
+  - Docs/Cache/session_memory_migration/round2_ue_ros_fastlio_memory_20260604.md
+  - Docs/Cache/session_memory_migration/round2_mworks_controller_evidence_memory_20260604.md
+  - Docs/Cache/session_memory_migration/round2_infrastructure_memory_20260604.md
+  - Docs/Cache/session_memory_migration/round2_mworks_codegen_runtime_memory_20260604.md
+  - Docs/Cache/session_memory_migration/round2_ros2_runtime_setup_memory_20260604.md
+  - Docs/Cache/session_memory_migration/round2_scene_source_renderer_memory_20260604.md
+  - Docs/Cache/session_memory_migration/round2_parameter_identification_memory_20260604.md
+  - Docs/Cache/session_memory_migration/round2_coagent_operating_memory_20260604.md
+  - Docs/Cache/session_memory_migration/round2_external_reference_memory_20260604.md
+```
+
+This map does not make old chat facts formal truth. A later formal patch must
+still re-read the current target document and current evidence immediately
+before editing.
+
+## Promotion Buckets
+
+### Already Represented In Formal Project Docs
+
+These items should usually not create more formal documentation. Round 3 only
+needs to confirm the existing formal entry is still present.
+
+```text
+INFRA-MEM-001:
+  durable state is project docs, ledgers, and cache, not live session sync
+  formal entries:
+    - AGENTS.md
+    - Docs/Index/codex_app_session_research.md
+    - Docs/Workflows/session_memory_migration.md
+
+INFRA-MEM-002:
+  Codex App / Windows shared-state repair is infrastructure history
+  formal entry:
+    - Docs/Workflows/debug_mcp.md
+  guard:
+    - external .codex database or runtime edits require a fresh explicit
+      infrastructure request
+
+INFRA-MEM-003:
+  Codex App hangs are multi-cause, not simply WSL versus Windows
+  formal entry:
+    - Docs/Workflows/debug_mcp.md
+  guard:
+    - do not turn the historic diagnosis into a guaranteed current root cause
+
+INFRA-MEM-004:
+  WeChat is progress/intervention only, not proof
+  formal entries:
+    - AGENTS.md
+    - Docs/Workflows/agent_orchestration.md
+
+INFRA-MEM-005:
+  Git work must stay path-scoped and split-aware
+  formal entries:
+    - AGENTS.md
+    - Docs/Workflows/agent_task_ledger.md
+    - Docs/Workflows/agent_orchestration.md
+
+MWORKS-MEM-001:
+  preserve source labels such as source=MWORKS_MCP and source=offline_script
+  formal entries:
+    - AGENTS.md
+    - Docs/Workflows/produce_simulation_evidence.md
+
+MWORKS-MEM-004:
+  formal controller claims require a behavior-equivalent graphical Sysblock
+  counterpart or an explicit equation-bridge caveat
+  formal entries:
+    - AGENTS.md
+    - Docs/Workflows/build_sysblock_graphical_controller.md
+
+MWORKS-MEM-005:
+  interactive MWORKS/Sysplorer/Syslab work should use healthy targeted MCP
+  formal entries:
+    - AGENTS.md
+    - Docs/Workflows/debug_mcp.md
+    - Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md
+
+UE-ROS-MEM-001:
+  keyboard/grid-cell/static point-cloud/HTML routes are rejected as product
+  evidence and are smoke-only
+  formal entries:
+    - AGENTS.md
+    - Docs/Workflows/unreal_renderer.md
+    - Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+
+UE-ROS-MEM-002:
+  MWORKS is control/truth authority, UE is rendering/sensor oracle, and ROS2
+  with RViz2 owns localization/map/planner review
+  formal entries:
+    - AGENTS.md
+    - Docs/Workflows/unreal_renderer.md
+    - Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+
+ROS2-MEM-001:
+  ROS2 Humble plus RViz2 is the documented Ubuntu 22.04 mapping/review route
+  formal entries:
+    - Docs/Workflows/ros2_runtime_setup.md
+  guard:
+    - apt/key and rosbridge status are prior infrastructure evidence unless
+      live-checked in a fresh infrastructure task
+
+ROS2-MEM-003:
+  ROS-MCP uses rosbridge through the documented wrapper route
+  formal entries:
+    - Docs/Workflows/debug_mcp.md
+    - Docs/Workflows/ros2_runtime_setup.md
+  guard:
+    - do not claim port 9090 is currently listening without a live probe
+
+ROS2-MEM-006:
+  HTML is not active point-cloud/map review; use RViz2 or equivalent native
+  robotics tooling
+  formal entries:
+    - AGENTS.md
+    - Docs/Workflows/unreal_renderer.md
+
+ROS2-MEM-007:
+  `/mosim/replay_odometry` is reference/replay pose, not FAST-LIO odometry
+  formal entries:
+    - Docs/Workflows/ros2_runtime_setup.md
+
+SCENE-MEM-001:
+  Fab/Epic inventory visibility is not scene acceptance
+  formal entries:
+    - Docs/Workflows/unreal_renderer.md
+
+SCENE-MEM-005:
+  exported UE scene truth is a validation oracle, not planner-known global map
+  formal entries:
+    - AGENTS.md
+    - Docs/Workflows/unreal_renderer.md
+
+SCENE-MEM-008:
+  old S0/S1/blockout/generated map routes are superseded for main real-scene
+  work
+  formal entries:
+    - Docs/Workflows/unreal_renderer.md
+    - Docs/Workflows/agent_task_ledger.md
+
+PARAM-MEM-001:
+  current Sunray150 dynamics parameters remain `source=SDF_migration`, not
+  identified physical truth
+  formal entries:
+    - Docs/Workflows/identify_quadrotor_parameters.md
+    - Docs/Design/02_模型接口与运行流程.md
+    - Docs/Design/03_控制系统架构.md
+
+PARAM-MEM-002:
+  `identified` requires raw logs, parameters, fit output, held-out validation,
+  and MWORKS verification
+  formal entries:
+    - Docs/Workflows/identify_quadrotor_parameters.md
+    - Docs/Design/02_模型接口与运行流程.md
+
+CODEGEN-MEM-001:
+  generated controller code export uses `GenerateModelCode`, not
+  `TranslateModel`
+  formal entries:
+    - Docs/Workflows/mworks_codegen_controller_runtime.md
+    - Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+
+CODEGEN-MEM-008:
+  generated runtime results are not MWORKS/Sysplorer simulation evidence before
+  per-controller equivalence
+  formal entries:
+    - AGENTS.md
+    - Docs/Workflows/mworks_codegen_controller_runtime.md
+
+COAGENT-MEM-001:
+  recover CoAgent direction from `CoAgent/STATUS.md`, `CoAgent/README.md`,
+  decisions, and ledgers
+  formal entries:
+    - AGENTS.md
+    - CoAgent/README.md
+    - CoAgent/STATUS.md
+
+COAGENT-MEM-006:
+  WeChat is sparse progress/intervention, not evidence proof
+  formal entries:
+    - AGENTS.md
+    - CoAgent/STATUS.md
+
+EXTREF-MEM-001:
+  external learning starts from project reference indexes and audit workflow
+  formal entries:
+    - CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md
+    - Docs/Index/external_learning_index.md
+    - Docs/Workflows/audit_external_repo.md
+
+EXTREF-MEM-002:
+  external projects are contracts/patterns by default; direct runtime adoption
+  requires explicit approval and local evidence
+  formal entries:
+    - Docs/Index/external_learning_index.md
+    - Docs/Workflows/audit_external_repo.md
+```
+
+### Narrow Formal Patch Candidates
+
+These items may be promoted only by a later narrow patch after current evidence
+is re-read in that same round. The wording must stay constrained.
+
+```text
+SUNRAY-MEM-001:
+  candidate:
+    - The current source-faithful Sunray150 audit chain uses 150.dae plus the
+      standalone Livox MID-360 test2.dae referenced by the Sunray SDF.
+  possible target:
+    - Docs/Workflows/unreal_renderer.md
+    - Docs/Index/sunray_migration_index.md
+    - a Sunray asset source/evidence manifest under Results/ or SourceAssets/
+  required immediate evidence before patch:
+    - re-read the Sunray SDF include path, 150.dae, test2.dae, and the latest
+      asset audit manifest
+  allowed wording:
+    - source-chain rule only
+  forbidden wording:
+    - final runtime placement, final material acceptance, or final UE export
+
+MWORKS-MEM-002:
+  candidate:
+    - Smoke metrics and successful execution are not controller performance
+      acceptance.
+  possible target:
+    - Docs/Workflows/run_simulation.md
+    - Docs/Workflows/produce_simulation_evidence.md
+  required immediate evidence before patch:
+    - re-read current workflow wording and current result manifests
+  allowed wording:
+    - clarify quality_status=smoke_only boundaries if the target doc lacks it
+
+MWORKS-MEM-003:
+  candidate:
+    - check_model ok and simulate_model ok prove load/execution only, not model
+      quality or control performance.
+  possible target:
+    - Docs/Workflows/run_simulation.md
+    - Docs/Skills/Mworks/mworks-simulation-evidence/SKILL.md
+  required immediate evidence before patch:
+    - re-read current simulation workflow and latest evidence bundle format
+
+UE-ROS-MEM-005:
+  candidate:
+    - UE/MWORKS smoke evidence must remain separate from full controller,
+      localization, planner, or product acceptance.
+  possible target:
+    - Docs/Workflows/unreal_renderer.md
+    - Docs/Workflows/produce_simulation_evidence.md
+  required immediate evidence before patch:
+    - re-read current REALSTACK/Factory status files and current workflow text
+
+ROS2-MEM-008:
+  candidate:
+    - FAST-LIO status must be read by route/date/source priority: latest
+      matching `*_CURRENT` gate and runtime review bundle first; older
+      preflight, blocker, candidate, and diagnosis files are historical context
+      unless they match the current route.
+  possible target:
+    - Docs/Workflows/ros2_runtime_setup.md
+    - Docs/Workflows/unreal_renderer.md
+  required immediate evidence before patch:
+    - re-read latest `Results/unreal_scene_mapping/**/**/*CURRENT*` files,
+      route-specific runtime bundles, and any newer manual review record
+  allowed wording:
+    - source-priority rule and claim boundary only
+  forbidden wording:
+    - final FAST-LIO, final planner, final controller, or product acceptance
+
+ROS2-MEM-010:
+  candidate:
+    - Some ROS2 helper-script references may be stale or renamed, especially
+      `open_mapping_rviz_ros2.sh` and `run_fastlio_rviz_replay_ros2.sh`.
+  possible target:
+    - Docs/Workflows/ros2_runtime_setup.md
+    - Docs/Workflows/unreal_renderer.md
+  required immediate evidence before patch:
+    - re-run a project-local file check for the referenced helper scripts
+  allowed wording:
+    - corrected command names or an explicit stale-command warning
+  forbidden wording:
+    - inventing replacement commands without verifying current scripts
+
+SCENE-MEM-002:
+  candidate:
+    - Separate scene-source states before answering "current scene":
+      `registry_primary`, `active_content_links`, `latest_review_target`,
+      `latest_manual_review_status`, and final acceptance.
+  possible target:
+    - Docs/Workflows/unreal_renderer.md
+  required immediate evidence before patch:
+    - re-read `scene_source_registry.json`, `active_scene_links.json`, latest
+      review/runtime bundles, and recorded manual-review packets
+  allowed wording:
+    - state-field disambiguation and recovery route only
+  forbidden wording:
+    - declaring a final current-primary or visually accepted scene from cache
+
+SCENE-MEM-003:
+  candidate:
+    - Truth artifacts and registry status do not imply rendered-scene/manual
+      visual acceptance.
+  possible target:
+    - Docs/Workflows/unreal_renderer.md
+  required immediate evidence before patch:
+    - re-read current scene registry and workflow acceptance table
+
+PARAM-MEM-004:
+  candidate:
+    - The 2026-06-04 migration pass found no project-local Sunray150
+      identification bundle under expected `Results/identification/...`
+      patterns.
+  possible target:
+    - keep in cache unless a current report/status doc incorrectly implies an
+      identification bundle exists
+  required immediate evidence before patch:
+    - rerun project-local evidence search in the same round
+  allowed wording:
+    - current-round repository state only
+  forbidden wording:
+    - permanent claim that no logs exist anywhere
+
+CODEGEN-MEM-005:
+  candidate:
+    - PID demo compile/runtime, zero-input SIL smoke, and nonzero constant-input
+      SIL smoke passed; this remains PID-demo-only architecture evidence.
+  possible target:
+    - Docs/Workflows/mworks_codegen_controller_runtime.md
+    - Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+  required immediate evidence before patch:
+    - re-read latest `Results/codegen_probe/**/sil_*` files and current
+      codegen workflow
+  allowed wording:
+    - PID-demo-only evidence with tolerance/source-label/timestamp limitation
+  forbidden wording:
+    - target-controller runtime authority or time-varying SIL completion
+
+EXTREF-MEM-005:
+  candidate:
+    - External-reference-derived FAST-LIO status needs the same route/date/source
+      priority as ROS2 runtime evidence.
+  possible target:
+    - Docs/Workflows/unreal_renderer.md
+    - Docs/Workflows/ros2_runtime_setup.md
+  required immediate evidence before patch:
+    - coordinate with `ROS2-MEM-008`; do not duplicate if one source-priority
+      note already covers it
+```
+
+### Keep Cache-Only / Needs Current Evidence
+
+These items are high-risk and must not be written as final docs until the
+latest source files, result files, and manual-review state are checked again.
+
+```text
+SUNRAY-MEM-002:
+  reason:
+    - MID-360 placement, scale, and yaw-like numeric values are cache-only
+      audit constraints, not final formal parameters.
+  next:
+    - re-read current source manifests and accepted asset review result before
+      promoting any number
+
+SUNRAY-MEM-003:
+  reason:
+    - propeller placement is an assembly-constraint audit, not a runtime
+      parameter commit.
+  next:
+    - use current visual audit and source-chain evidence; do not fix with
+      manual yaw/Z/XY tweaking from old chat
+
+UE-ROS-MEM-003:
+  reason:
+    - the Factory current gate opens manual UE/RViz review but does not prove
+      final product acceptance.
+  next:
+    - use the latest `*_CURRENT` gate and result manifest first
+
+UE-ROS-MEM-004:
+  reason:
+    - FAST-LIO status was route-specific and historically contradictory.
+  next:
+    - read current runtime candidate files and latest FAST-LIO result manifests
+      before any formal claim
+
+PARAM-MEM-003:
+  reason:
+    - numeric values such as mass, inertia, rotor positions, motor constants,
+      and lift-coefficient conversions are seed/audit values only.
+  next:
+    - require a complete identification bundle before any numeric promotion
+
+PARAM-MEM-006:
+  reason:
+    - real Sunray150 parameter identification is a separate long-running task,
+      not completed by this migration.
+  next:
+    - start from `Docs/Workflows/identify_quadrotor_parameters.md` if the user
+      asks for actual identification
+
+CODEGEN-MEM-007:
+  reason:
+    - time-varying and per-controller SIL remain open.
+  next:
+    - require the target controller's own generated code hash, options
+      snapshot, MWORKS reference trace, and SIL comparison
+
+COAGENT-MEM-004:
+  reason:
+    - visible department communication was historically fragile and was not
+      live-checked in this migration round.
+  next:
+    - run current visibility checks only under a separate infrastructure or
+      CoAgent task
+```
+
+### Rejected Or Superseded History To Preserve
+
+These are useful because they prevent future conversations from repeating bad
+routes. They should be documented as rejected history only, not as current work.
+
+```text
+SUNRAY-MEM-004:
+  rejected_or_pending:
+    - simple PBR recolor/material candidate is not accepted as final
+    - no UE export until manual material audit passes
+  preserve_as:
+    - rejected route / pending visual-review state
+
+OLD MID-360 PROXY ROUTE:
+  rejected:
+    - proxy base/dome geometry is diagnostic only
+  preserve_as:
+    - superseded geometry route
+
+OLD TOY MAPPING ROUTE:
+  rejected:
+    - keyboard motion, grid cells, static point clouds, HTML map review, and
+      hand-fabricated mapping are smoke-only or rejected product routes
+  preserve_as:
+    - explicit anti-regression memory
+
+OLD CODEX SYNC ASSUMPTION:
+  superseded:
+    - App/VSCode/CLI live session sync cannot be relied on as durable project
+      memory
+  preserve_as:
+    - reason for this cache workflow
+
+OLD SINGLE-CAUSE CODEX APP THEORY:
+  superseded:
+    - WSL versus Windows alone is not the established App hang root cause
+  preserve_as:
+    - debug history under Docs/Workflows/debug_mcp.md
+
+OLD PARAMETER IDENTIFICATION ASSUMPTION:
+  rejected:
+    - treating SDF seeds, public specs, geometry, controller smoke, or old chat
+      numeric values as identified Sunray150 physical truth
+  preserve_as:
+    - provenance guard for future parameter/report work
+
+OLD CODEGEN OVERGENERALIZATION:
+  rejected:
+    - treating `translate_model`, zero-input SIL, or PID-demo constant-input SIL
+      as proof that all generated controllers are runtime-authoritative
+  preserve_as:
+    - codegen/SIL anti-regression memory
+
+OLD SCENE ACCEPTANCE COLLAPSE:
+  rejected:
+    - collapsing Fab inventory, truth artifact, active content link, rendered
+      load, manual visual acceptance, and final product acceptance into one
+      "accepted scene" claim
+  preserve_as:
+    - scene-source state-disambiguation guard
+
+OLD ROS2/FAST-LIO GLOBAL STATUS:
+  rejected:
+    - treating one old candidate, blocker, or runtime-status file as the latest
+      global FAST-LIO answer
+  preserve_as:
+    - source-priority and route/date-specific evidence guard
+
+OLD COAGENT EXPANSION ASSUMPTION:
+  rejected:
+    - treating design-only CoAgent docs, shadow packets, skills/MCP catalogs,
+      or this migration task as approval for runtime, transport, automation,
+      department, notification, or tool expansion
+  preserve_as:
+    - CoAgent scope-gate guard
+```
+
+## Next Round Instructions
+
+For the next new conversation:
+
+1. Read `PROGRESS.md` and ledger row `SESSION-MEMORY-MIGRATION-20260604`.
+2. Read this map before opening any formal target document.
+3. Pick one bucket item only, re-read its current evidence and target doc, then
+   either patch that one target narrowly or mark the item rejected/superseded.
+4. Run path-limited checks for the changed files.
+5. Update this map with the final promoted target or rejection reason.
+
+The full migration is not complete until all high-risk items have either a
+promoted target, a rejected/superseded status, or an explicit user-review
+blocker.

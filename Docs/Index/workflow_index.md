@@ -13,6 +13,10 @@
 | Inspect Epic/Fab/Launcher scene library | `Docs/Skills/Unreal/mosim-epic/SKILL.md`, `Docs/Workflows/debug_mcp.md#73-epicfab-library-index-mcp`, `Docs/Workflows/unreal_renderer.md#scene-source-selection`, `Scripts/UE5/epic_library_view.py`, `Scripts/UE5/epic_library_index.py`, `Scripts/UE5/check_epic_library_inventory.py`, `Scripts/UE5/audit_scene_source.py`, `Scripts/UE5/build_scene_source_registry.py`, `Scripts/UE5/plan_scene_truth_export.py`, `Scripts/UE5/run_scene_truth_export.py`, `Scripts/UE5/export_unreal_scene_truth.py` |
 | Operate MoSim Unreal Editor MCP | `Docs/Skills/Unreal/mosim-unreal/SKILL.md`, `Docs/Workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `Scripts/UE5/probe_unreal_mcp_listener.py`, `Scripts/UE5/probe_unreal_editor_mcp_tools.py` |
 | Build Unreal/RflySim renderer and scene workflow | `Docs/Workflows/unreal_renderer.md` |
+| UE/RViz mapping-window research and evidence boundary | `Docs/Workflows/unreal_mapping_window_research.md` |
+| Install/check ROS2 Humble runtime for UE/RViz2 mapping | `Docs/Workflows/ros2_runtime_setup.md`, `Scripts/UE5/check_ros_mapping_runtime_env.py` |
+| Check ROS/RViz/FAST-LIO runtime environment | `Scripts/UE5/check_ros_mapping_runtime_env.py`, `Docs/Workflows/unreal_renderer.md#native-map-and-point-cloud-windows` |
+| Validate MoSim MWORKS/UE/ROS2 UAV architecture gates | `Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md#17-2026-06-02-architecture-validation-closure`, `Results/unreal_scene_mapping/factoryenvironmentcollect/REALSTACK_MINILOOP_GATE.md`, `Results/unreal_scene_mapping/factoryenvironmentcollect/FASTLIO_FACTORY_FAILURE_DIAGNOSIS.md`, `Docs/Workflows/mworks_codegen_controller_runtime.md` |
 | Project structure refactor toward RflySim-like simulator product | `Docs/Workflows/project_structure_refactor.md` |
 | Translate MathWorks/Simulink patterns to MWORKS | `Docs/Workflows/translate_mathworks_to_mworks.md` |
 | Resolve MWORKS model context | `Docs/Skills/Mworks/mworks-model-context/SKILL.md` |
@@ -23,6 +27,7 @@
 | Test and review quality gates | `Docs/Skills/Mworks/mworks-test-quality/SKILL.md` |
 | Prepare report and replay assets | `Docs/Skills/Mworks/mworks-report-visualization/SKILL.md` |
 | Build graphical Sysblock controller | `Docs/Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`, `Docs/Workflows/build_sysblock_graphical_controller.md` |
+| Generate MWORKS/Sysblock C/C++ controller runtime | `Docs/Workflows/mworks_codegen_controller_runtime.md`, `Scripts/mworks/check_codegen_runtime.py`, `Scripts/tests/test_mworks_codegen_runtime.py` |
 | Consult official Sysplorer modeling rules | `Docs/Skills/Sysplorer/ty-sysplorer-modeling-rules`, `Docs/Skills/Sysplorer/ty-sysblock-diagram-modeling`, `Docs/Skills/Sysplorer/ty-sysblock-signal-modeling`, `Docs/Skills/Sysplorer/modelica-library-workflow` |
 | Main-agent orchestration | `AGENTS.md#331-parallel-agent-rule`, `Docs/Workflows/agent_orchestration.md` |
 | Agent organization operating model | `Docs/Workflows/org_operating_model.md` |
@@ -32,6 +37,7 @@
 | Current project progress and recovery memory | `PROGRESS.md` |
 | Sub-agent WAL / run ledger | `Docs/Workflows/agent_task_ledger.md` |
 | Interrupted task resume / WAL recovery | `Docs/Workflows/agent_orchestration.md`, `Docs/Workflows/agent_task_ledger.md` |
+| Long-session memory migration | `Docs/Workflows/session_memory_migration.md`, `Docs/Cache/session_memory_migration/long_goal_plan_20260604.md`, `Docs/Cache/session_memory_migration/coverage_matrix_20260604.md`, `Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md`, `Docs/Cache/session_memory_migration/` |
 | Codex App / WSL session research and handoff | `Docs/Index/codex_app_session_research.md`, `Docs/Workflows/debug_mcp.md#6-codex-app--wsl-session-policy` |
 | External repository audit | `Docs/Workflows/audit_external_repo.md`, `Scripts/reference/audit_external_repo.py` |
 | Validate external project master index | `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`, `Scripts/reference/check_reference_index.py`, `Docs/Workflows/audit_external_repo.md` |

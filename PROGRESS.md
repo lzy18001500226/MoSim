@@ -5,6 +5,944 @@
 
 ## Current Focus
 
+- 2026-06-04 CST long-session memory migration for
+  `MoSim|四旋翼无人机仿真系统` is recoverable but still cache-only. Durable
+  workflow: `Docs/Workflows/session_memory_migration.md`; ledger row:
+  `SESSION-MEMORY-MIGRATION-20260604`; coverage matrix:
+  `Docs/Cache/session_memory_migration/coverage_matrix_20260604.md`; round-3
+  gate: `Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md`.
+  The currently identified topic set now has round-1 capture and topic-specific
+  round-2 evidence review, including infrastructure/session policy, Sunray150
+  asset history, UE/ROS/FAST-LIO, MWORKS controller evidence, MWORKS codegen/SIL,
+  ROS2 runtime setup, scene-source/renderer state, parameter identification,
+  CoAgent operating boundaries, and external-reference lessons. No high-risk
+  historical item is promoted as formal truth yet. Round 3 must proceed one
+  narrow item at a time: re-read current evidence and the formal target doc in
+  the same round, then patch narrowly, reject/supersede, or record a user-review
+  blocker. Do not compress this `PROGRESS.md` or mark the goal complete until
+  high-risk items have round-3 promotion, rejection, supersession, or explicit
+  user-review/current-evidence gates.
+
+- 2026-06-03 CST Codex shared Windows state repair: user prefers not to isolate
+  Windows CLI into `C:\Users\HP\.codex-cli`. Restored the shared-home route by
+  changing `C:\Users\HP\.codex\bin\codex.cmd` to set
+  `CODEX_HOME=C:\Users\HP\.codex`, replacing the stale `0.135.0-alpha.1`
+  Windows CLI runtime in `C:\Users\HP\.codex\bin` with the `0.136.0-alpha.2`
+  runtime from the VSCode extension, and backing up old files under
+  `C:\Users\HP\.codex\backups\shared_cli_runtime_before_0136_20260603_221540`.
+  `app-server` still failed because `state_5.sqlite` SQLx checksums used LF
+  migration text while the current Windows runtime expected CRLF checksums.
+  After closing Codex App, backed up `state_5.sqlite*` under
+  `C:\Users\HP\.codex\backups\shared_state_sqlx_checksum_fix_20260603_221742`
+  and updated only `_sqlx_migrations.checksum` from a clean current-runtime
+  probe DB, preserving 308 `threads` rows and all session JSONL files.
+  Verification: `codex --version` now reports `codex-cli 0.136.0-alpha.2`,
+  `codex doctor --summary` reports `15 ok`, `0 fail`, and a direct
+  `codex app-server --analytics-default-enabled` smoke no longer prints the
+  SQLite migration error. Remaining warnings are thread index/path drift, not a
+  startup blocker. Workflow updated in `Docs/Workflows/debug_mcp.md`.
+
+- 2026-06-03 CST Codex App hang diagnosis: Windows event log shows repeated
+  `Application Hang` events for `OpenAI.Codex` / `Codex.exe`, including App
+  version `26.601.2237.0` and Chromium `149.0.7827.54`. Latest desktop log
+  after the SQLite repair shows app-server connects successfully, then startup
+  work can stall on plugin/skills/MCP/Computer Use probes:
+  `IpcClient Initialize failed timeout`, `computer-use native pipe startup
+  failed`, `bundled_plugins_reconcile_failed ... 拒绝访问`, and
+  `mcpServerStatus/list` taking about 16-17 seconds. Local Windows proxy is
+  enabled at `127.0.0.1:7897` with no Codex AppContainer loopback exemption;
+  adding the exemption requires elevated Windows terminal:
+  `CheckNetIsolation.exe LoopbackExempt -a -n=openai.codex_2p2nqsd0c76g0`.
+  `Get-AppxPackage` reports `OpenAI.Codex_2p2nqsd0c76g0`, but
+  `CheckNetIsolation -n=` must use the AppContainer moniker registered under
+  HKCU mappings on this machine.
+  Major independent risk: the active MoSim Windows App session JSONL is about
+  `1.96 GB` and the state row records nearly `1e9` tokens, so Windows App
+  resume/thread rendering may hang even when `codex doctor` is healthy. Updated
+  `Docs/Workflows/debug_mcp.md#42-windows-codex-app-not-responding`.
+
+- 2026-06-03 CST Sunray150 realistic material review candidate generated:
+  WeChat notification is working again after the user refreshed the context
+  with a normal message. `sunray150_dae_mid360_realistic_material_audit.blend`
+  was generated from the accepted DAE + standalone MID-360 assembly without
+  changing `MID-360 uniform_scale=0.833527` or propeller
+  `translation_z=-0.014052 m`. The candidate replaces the rejected dark/stylized
+  palette with role-based PBR materials: graphite carbon plates, black composite
+  propellers, metal screws/motors, and per-submesh MID-360 materials
+  (`015` blue optical window, `013/014` dark housing, `016` black base,
+  connector details black). Status: pending user Blender visual audit; do not
+  export to UE until accepted.
+
+- 2026-06-03 CST Sunray150 realistic material review candidate rejected by
+  user. Root issue: it was simple PBR coloring, not a real texture/material
+  workflow, and it did not first identify all physical components. Do not reuse
+  that candidate as final appearance evidence. Correct route is: study local
+  Blender/ArmorPaint/Material Maker/xatlas workflows, classify DAE/SDF
+  components, research actual component appearances, then build a review asset
+  with component-specific PBR materials/procedural textures/UV-ready texture
+  slots. Initial DAE probe shows the source contains front/bottom cameras, USB
+  9P/24P connectors, HDMI connector, FCU cable, ESC board, TF Mini PLUS,
+  screws, standoffs, motors/windings, carbon frame, landing gear, and MID-360
+  protection arcs; these must be handled explicitly or marked as unresolved.
+  Follow-up: local Blender/ArmorPaint/Material Maker/xatlas projects were
+  reviewed. Current route now generates deterministic PBR texture maps under
+  `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/` and attaches them
+  to Blender node materials. The whole-aircraft preview is still not accepted:
+  distant rendering remains dominated by light DAE/MID-360 geometry and does
+  not yet prove real material quality. Next valid review must use close-up
+  material views for carbon fiber, MID-360 housing/window, USB camera/PCB,
+  motors/windings, propellers, and smoked guards before any UE export.
+  Safety correction: do not open `.blend` via Windows file association,
+  Windows MCP `App`, or `blender-launcher.exe`; those routes triggered
+  unrelated Visual Studio Blend/Ansys installer or uninstall dialogs. Ansys is
+  not part of MoSim; if any non-Blender installer/uninstaller appears during
+  asset work, stop immediately and report it instead of clicking through. Use
+  only verified Blender command-line/background paths until GUI launch is
+  repaired.
+  Material update: fixed residual WSL/Windows path bugs in Blender asset
+  scripts, regenerated darker carbon-fiber and MID-360 silver-grey PBR maps,
+  corrected `PROTECTIVE_RING` / `MID360_PROTECT_ARC*` material assignment to
+  dark protection structure, and rendered close-up audit images for MID-360,
+  front USB camera/battery, PCB/connectors/cables, carbon/gold standoffs, and
+  motor/prop/guard. Geometry invariants are preserved: MID-360 scale
+  `0.833527`, propeller source `sunray_cw.stl`, orientation
+  `flipped_around_screw_axis`, and propeller Z rule ending at `-0.014052 m`.
+  Status remains pending manual Blender material audit; no UE export/import is
+  allowed yet.
+  Follow-up material audit package:
+  `Results/unreal_scene_mapping/SUNRAY150_MID360_MATERIAL_AUDIT_PACKAGE_20260603.md`.
+  The latest preview has stable exposure and clearer MID-360/connector
+  materials, but remains an audit candidate. Known visual risks before
+  acceptance: the front camera/module shell may still read too light grey, and
+  propeller blades/guards can show white reflection patches. Resolve by
+  component-specific material correction or UV/ArmorPaint paint pass after
+  manual review, not by broad geometry or placement changes.
+  2026-06-04 audit update: rejected the current material candidate. Whole
+  preview remains dominated by light-grey CAD surfaces; MID-360 housing is too
+  white and has a connector black artifact; front electronics/camera and
+  motor/prop close-ups are underexposed; carbon frame weave is not visible on
+  the main frame; gold standoffs look too plastic. Geometry remains accepted
+  and must stay locked. Next pass is material-only: reclassify grey fallback
+  objects, fix MID-360 connector material/occlusion, improve lighting, and
+  produce readable component close-ups before any UE export.
+  Added evidence matrix
+  `Results/unreal_scene_mapping/SUNRAY150_COMPONENT_MATERIAL_EVIDENCE_20260604.md`
+  so component identity, target material, source names, and known visual risks
+  are not chat-only. The Taobao reference URL is useful for user-side visual
+  checking, but browser/tool access is unreliable here, so it is not treated as
+  confirmed evidence without local screenshots or saved media.
+
+- 2026-06-03 CST Sunray150 propeller assembly correction: user rejected manual
+  propeller tuning and clarified that this is an assembly constraint problem:
+  propeller holes must align with motor screw positions / mating faces. Added
+  `Scripts/UE5/assets/build_sunray_propeller_assembly_audit_scene.py` and
+  generated
+  `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_Propeller_Assembly_Audit.blend`
+  plus manifest. The DAE source preserves 8 `SCREW_BUTTON_HEAD_M2_8MM`
+  propeller screw candidates and 4 `PROPELLER_*` semantic parts; the audit scene
+  marks DAE screws in gold, DAE semantic propellers in blue, DAE `CircPattern*`
+  possible full propeller patterns in red, MWORKS runtime propeller hole centers
+  in magenta, and candidate hole-to-screw constraints in green. Current status:
+  audit-only, not runtime parameter commit. Do not fix remaining propeller error
+  by manual yaw/Z/XY offsets; choose the final asset source chain after visual
+  audit, then regenerate UE runtime geometry from that source.
+
+- 2026-06-02 CST Sunray150 DAE source audit: user rejected the previous
+  textured/proxy MID-360 result because the radar base was not source-faithful.
+  Source files for audit are
+  `References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/meshes/150.dae`
+  and
+  `References/Sunray/simulation/sunray_simulator/models/sensor_models/livox_mid360/meshes/test2.dae`.
+  Critical correction: `sunray150_with_mid360.sdf` includes
+  `model://livox_mid360` at pose `0.036 -0.0155 0.075 0 0 0`; therefore
+  `150.dae` alone is not the complete vehicle + MID-360 source. Created and
+  opened
+  `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_DAE_Source_Audit.blend`
+  with left = raw `150.dae`, right = raw standalone `livox_mid360/test2.dae`,
+  and no supplemental proxy geometry. Do not use the earlier proxy base/dome
+  asset as final geometry.
+
+- 2026-06-02 23:20 CST Blender/Sunray asset route: Blender MCP is confirmed
+  working. Blender 5.0 has no Collada/DAE import operator in this environment,
+  so `bpy.ops.wm.collada_import` is not a valid route. Added
+  `Scripts/UE5/assets/build_sunray150_blender_asset.py` to parse local Sunray
+  `150.dae` directly, group 701 named geometries by physical role, assign
+  Blender materials through `node.type == "BSDF_PRINCIPLED"`, and export
+  `Sunray150_Mid360_Textured.blend/.fbx/.glb` plus manifest and preview under
+  `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/`. This generated review asset
+  is now historical diagnostic output only, because it adds supplemental grey
+  base + blue dome geometry instead of composing the actual standalone
+  `livox_mid360/test2.dae` scanner from the Sunray SDF.
+
+- 2026-06-02 CST Factory/Sunray visual gate user review update: user confirms
+  propellers remain wrong and the UAV nose is yawed 90 deg. Specific visual:
+  camera looks forward while UAV nose points right. Correction: the UE
+  procedural visual must reproduce the MWORKS animation frame, not only the
+  Sunray SDF rotor link order. MWORKS body uses
+  `lengthDirection={0,-1,0}`, so the UE visual subtree needs a shared
+  `-90 deg` yaw offset. Apply that same visual yaw to body mesh, rotor
+  positions, and per-frame propeller spin; otherwise the upside-down motor /
+  propeller layout separates from the already verified MWORKS visual result.
+
+- 2026-06-02 CST Factory/Sunray visual gate follow-up: rotating rotor
+  translations with the body visual yaw is still wrong. Updated correction:
+  `lengthDirection={0,-1,0}` is a body STL visual orientation rule, while
+  `Dronefixed1..4` are physical rotor translations already correct in MWORKS.
+  Keep the body mesh yaw offset, but keep propeller component relative
+  locations at the raw MWORKS fixed translations. Only propeller mesh
+  orientation/spin carries the visual yaw offset.
+
+- 2026-06-02 CST Factory/Sunray visual gate follow-up: user identifies the
+  remaining propeller error as the vertical coordinate. The motors are
+  inverted and should appear on the aircraft underside in the UE review. For
+  the current procedural visual, preserve MWORKS rotor XY translations but use
+  UE visual Z `+2.5 cm` for all four propeller components instead of `-2.5 cm`.
+
+- 2026-06-02 CST Factory/Sunray visual gate follow-up: user reviewed the
+  `+2.5 cm` propeller Z attempt and reported it is worse. Current manual test
+  value is UE visual Z `-7.5 cm` for all four propeller components, preserving
+  the same XY coordinates.
+
+- 2026-06-02 CST Factory/Sunray visual gate source-derived correction: local
+  MWORKS and Sunray SDF agree on body visual offset `r_shape/body visual
+  z=+0.0525 m` and rotor center `z=-0.025 m`. Because the UE actor root is at
+  the UAV state origin while the body mesh visual is offset relative to that
+  origin, the propeller visual Z relative to the body visual center should be
+  `(-0.025 - 0.0525) m = -0.0775 m = -7.75 cm`. Current UE review value is
+  therefore `Z=-7.75 cm`, not the earlier trial values `-2.5`, `+2.5`, or
+  `-7.5`.
+
+- 2026-06-02 CST Factory/Sunray visual gate manual override: user reviewed the
+  `-7.5 cm` / `-7.75 cm` range and reported the propeller underside fit should
+  be closer to `-7.0 cm`. The UE procedural STL component origin does not
+  visually match the simple source-derived rotor-center calculation tightly
+  enough for final placement. Current review value is therefore `Z=-7.0 cm`
+  for all four propellers, while preserving MWORKS rotor XY translations and
+  visual yaw offset.
+
+- 2026-06-02 CST Factory/Sunray visual gate root-cause correction: user pointed
+  out that approximate manual ranges are not a substitute for the parameters
+  already working in MWORKS. Investigation found the UE bridge had mixed the
+  MWORKS body STL with the compact Gazebo/Sunray `sunray_cw.stl` propeller and
+  SDF roll/yaw visual offsets. That invalidated the MWORKS coordinate chain.
+  Corrected rule: use MWORKS `sunray150_mid360_body.stl` at scale `3.0`,
+  MWORKS body `r_shape={0,0,0.0525}` -> UE body component `Z=+5.25 cm`, MWORKS
+  `sunray150_mid360_propeller.stl` at scale `0.125`, and MWORKS
+  `Dronefixed*.r.z=-0.025` -> UE propeller component `Z=-2.5 cm`. Do not mix
+  Gazebo compact propeller meshes or SDF propeller roll offsets into the
+  MWORKS-parity UE visual gate.
+
+- 2026-06-02 CST Factory/Sunray movement follow gate: after user accepted the
+  static UAV visual as basically correct, added a separate `FOLLOW_UAV_CAMERA=1`
+  review mode. It keeps the static first-frame gate unchanged, but can replay
+  the short Factory path once and enables `-MoSimFollowPlaybackCamera`. The
+  review camera follows the spawned playback actor at a closer offset
+  `(-180,0,85) cm` by default, rotating the offset with UAV yaw so translation
+  and heading changes remain inspectable.
+
+- 2026-06-02 CST Factory/Sunray movement follow camera tuning: user requested
+  the moving review camera be much closer for inspection. Accepted default
+  follow offset is now `(-50,0,30) cm`: 50 cm behind and 30 cm above the UAV,
+  still rotated with UAV yaw during movement review.
+
+- 2026-06-02 CST Factory/Sunray movement follow camera tuning: user refined the
+  close follow offset to `(-60,0,30) cm`: 60 cm behind and 30 cm above the UAV.
+
+- 2026-06-02 CST Factory/Sunray movement smoothness correction: user requested
+  `60/40` follow camera and rejected stepwise UAV motion. Updated the movement
+  gate to `(-60,0,40) cm`, resample sparse Factory review CSV poses to the
+  20 Hz controller-frame contract, and interpolate UE actor transforms at the
+  60 fps display contract. This fixes render-side teleporting; the current
+  Factory review replay remains display-only and is not a Sysplorer solver
+  evidence source.
+
+- 2026-06-02 CST Factory/Sunray movement smoothness correction follow-up:
+  user still observed stepwise motion and requested `60/60`. Root cause is the
+  Factory visual gate CSV itself: 34 rows over 8.25 s, i.e. 0.25 s / 4 Hz path
+  points, not a 20 Hz MWORKS controller/state output. RflySim's pattern is
+  continuous CopterSim/PX4 state over UDP into RflySim3D/UE, not direct path
+  point playback. Updated this visual gate to stream 60 Hz resampled render
+  pose frames and lock the follow camera to the render pose without an extra
+  chase interpolation layer. Formal controller smoothness still requires a real
+  MWORKS/Sysplorer 20 Hz or higher state source, not this display CSV.
+
+- 2026-06-02 CST Factory/Sunray movement follow camera tuning: user reviewed
+  `60/60` and requested returning to `60/40`. Kept the 60 Hz render-frame replay
+  route, but restored the close follow camera to `(-60,0,40) cm`.
+
+- 2026-06-02 CST Factory/Sunray movement follow camera tuning: user requested
+  `80/40` as the better close-inspection distance. Kept the 60 Hz render-frame
+  replay route and changed the default follow camera to `(-80,0,40) cm`.
+
+- 2026-06-02 CST Factory/Sunray movement follow camera tuning: user requested
+  a left-rear inspection view. Kept the 80 cm rear distance and 40 cm height,
+  and changed the default follow camera to `(-80,-40,40) cm`.
+
+- 2026-06-02 CST Factory/Sunray movement follow camera tuning: user refined the
+  left-rear offset from `y=-40 cm` to `y=-20 cm`. Kept the default follow
+  camera at `(-80,-20,40) cm`.
+
+- 2026-06-02 CST Factory/Sunray movement gate correction: user rejected the
+  previous movement review because it was pure path-point translation with no
+  visible attitude dynamics. Root cause: `FOLLOW_UAV_CAMERA=1` still used sparse
+  `render_replay.csv` by default. Corrected the movement gate to default to the
+  MWORKS/Sysplorer smoke state CSV
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/raw/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.csv`,
+  which has 628 rows over 31.3 s and includes `roll/pitch/yaw` and `u1..u4`.
+
+- 2026-06-02 CST Factory/Sunray visual gate user review update: user reports
+  propeller placement is still wrong and the UAV initial heading is wrong.
+  Current correction route is constrained to the already accepted body render:
+  keep the full Sunray/MWORKS body STL source, scale, and body relative
+  transform unchanged; use `sunray150_with_mid360.sdf` visual order for
+  propeller components (`rotor_0` front-right, `rotor_1` back-left,
+  `rotor_2` front-left, `rotor_3` back-right); and force the Factory visual
+  gate first-frame yaw to neutral `0 rad` before any path replay/planner
+  review. Do not proceed to point cloud, grid map, FAST-LIO, or planning until
+  this visual gate is accepted.
+
+- 2026-06-02 CST Factory/Sunray visual gate user review update: UAV task start
+  is accepted, but the review camera was also spawned at the same UE point and
+  became trapped by the collision-constrained review setup. Correct rule: keep
+  the UAV first frame at accepted task start `(-55.33,-24.23,1.90) m`, but keep
+  the review camera offset from the UAV center. Updated defaults use camera UE
+  `(-5733,2423,280) cm` with pitch `-12 deg` while UAV remains at
+  `(-5533,2423,190) cm`.
+
+- 2026-06-02 CST Factory/Sunray visual gate user review update: body rendering
+  is accepted, but the review behavior and propeller layout are not. User
+  observed the UAV starts near the camera, then replays the old path several
+  times and finally stops far away; propeller positions are wrong. Fix route:
+  keep the accepted body transform/source unchanged, stop default path replay
+  for the vehicle visual gate, and use local Sunray/MWORKS rotor layout before
+  asking for the next review. Reusable rule reinforced: when the user gives a
+  manual visual result, accept it as authoritative and fix that result; do not
+  spend more time checking whether the window is still open. For UAV/UE
+  behavior problems, inspect local RflySim/Sunray/YunZong/MWORKS references
+  first, then go online only if local sources are insufficient.
+
+- 2026-06-02 CST Factory/Sunray visual gate propeller recheck opened. Fixes:
+  `review_factory_uav_platform.sh` now defaults to first-frame-only
+  (`STREAM_MAX_FRAMES=1`) and requires explicit `STREAM_PATH_REPLAY=1` before
+  replaying the old path; `QuadrotorMworksPlaybackActor` keeps the
+  user-accepted body transform unchanged and applies the MWORKS/Sunray rotor
+  layout `(6.5,-6.5,-2.5)`, `(6.5,6.5,-2.5)`, `(-6.5,6.5,-2.5)`,
+  `(-6.5,-6.5,-2.5)` cm to the four propeller components. Checks passed:
+  `python3 Scripts/tests/test_factory_uav_platform_review.py`,
+  `python3 -m py_compile ...`, `bash -n ...`, targeted `git diff --check`,
+  and `timeout 60s bash Scripts/UE5/build_unreal_renderer.sh`. The Factory
+  review command streamed exactly 1 frame; UE log confirms first frame
+  `mworks_position_m=(-55.330,-24.230,1.900)` maps to
+  `actor_location_cm=(-5533,2423,190)`, primitive fallback is hidden, and
+  propeller component diagnostics match the source rotor layout. WeChat manual
+  review notification sent successfully using
+  `Results/coagent_gateway/progress/factory_sunray_propeller_gate_review_20260602.json`.
+  Current state: stop and wait for user visual audit of propeller placement and
+  no old-path movement before continuing.
+
+- 2026-06-02 14:56 CST Factory/Sunray visual gate reopened after user
+  rejection. Fixes applied: `QuadrotorMworksPlaybackActor` now loads the full
+  Sunray body STL (`source_triangles=530874`, `loaded_triangles=530874`) and
+  refuses destructive triangle-limit downsampling; propellers now use compact
+  binary Sunray `sunray150/meshes/sunray_cw.stl` instead of the huge-extent
+  ASCII propeller STL; primitive cube/cylinder fallback and render-only helper
+  cylinders/markers are hidden for the vehicle-visual gate; the Factory review
+  first frame is aligned to the review camera start
+  `position_m=(-55.330,-24.230,1.900)` -> UE `(-5533,2423,190)` cm. UE log
+  confirms fallback hidden, full body load, compact propeller bounds, review
+  camera at `(-5533,2423,190)`, UDP first frame, and actor first-applied frame
+  at the same location. `Scripts/UE5/review_factory_uav_platform.sh` reopened
+  the Factory window and streamed 34 frames. WeChat manual review packet sent:
+  `Results/coagent_gateway/progress/factory_sunray_visual_gate_review_20260602.json`.
+  Current state is waiting for user visual acceptance of the opened UE window.
+
+- 2026-06-02 14:56 CST reusable UE build recovery: if
+  `build_unreal_renderer.sh` fails with `LNK1104` or UBA says
+  `UnrealEditor-QuadrotorMworksBridge.dll` is locked by `UnrealEditor.exe`,
+  inspect and stop only the `UnrealEditor.exe` processes whose command line
+  contains `MoSimSceneLibrary.uproject`, then rebuild. Use escaped PowerShell
+  `$_` from bash; an unescaped `$_` is expanded by bash and the process will
+  not be stopped.
+
+- 2026-06-02 14:23 CST long-run goal checkpoint: current active goal is the
+  Factory-first MoSim UAV platform minimum loop. Execution order is fixed:
+  first keep WeChat notification recoverable; then use the YunZong/Sunray150
+  body in UE; then prove Factory scene + visible Sunray UAV + MWORKS/Bridge
+  pose drive; only after manual acceptance may the task return to
+  LiDAR/FAST-LIO/RViz evidence. Primitive cube/cylinder UAV visuals are not
+  accepted review evidence. They may appear only as an explicit diagnostic
+  fallback when Sunray STL/UE asset loading fails, and that condition must be
+  reported as a blocker instead of being treated as success.
+
+- 2026-06-02 14:23 CST WeChat gateway hardening checkpoint:
+  `CoAgent/gateway/cc_connect_weixin.py` now resolves empty session, `s1`,
+  project name, session JSON path, and platform session keys to the active
+  `weixin:dm:...` key. It classifies `ret=-2`, missing context token, missing
+  active session, internal API/socket failure, and timeout; for these failures
+  it performs one bounded cc-connect restart/retry and writes a recovery packet
+  under `Results/coagent_gateway/recovery/` if still blocked. This can recover
+  stale process/socket state, but cannot synthesize a Weixin ilink context
+  token when the platform requires a fresh inbound message or QR relogin.
+
+- 2026-06-02 14:27 CST Factory/Sunray manual gate opened. Checks passed:
+  `python3 CoAgent/tests/test_gateway_weixin.py`,
+  `python3 -m py_compile CoAgent/gateway/cc_connect_weixin.py
+  CoAgent/tests/test_gateway_weixin.py`,
+  `python3 Scripts/UE5/check_unreal_bridge.py`,
+  targeted `git diff --check`, `bash -n` for UE review/build scripts, and
+  `timeout 60s bash Scripts/UE5/build_unreal_renderer.sh`. UE build completed
+  in about 12s and rebuilt `UnrealEditor-QuadrotorMworksBridge.dll`. Runtime
+  Factory review evidence: `Scripts/UE5/review_factory_uav_platform.sh`
+  activated `local_factoryenvironmentcollect`, opened
+  `/Game/Maps/Demonstration`, found UDP 5005, and streamed the Factory replay.
+  UE log confirms `MoSim Sunray STL loaded` for
+  `sunray150_mid360_body.stl` with `88479` triangles and four
+  `sunray150_mid360_propeller.stl` meshes with `848` triangles each; it also
+  confirms `MWORKS renderer spawned playback actor and linked map actor` and
+  `Quadrotor MWORKS UDP first frame`. WeChat review packet
+  `Results/coagent_gateway/progress/mosim_factory_sunray_manual_review_20260602.json`
+  sent successfully. Manual decision needed before continuing to RViz,
+  FAST-LIO, or point-cloud work.
+
+- 2026-06-02 CST Factory/Sunray manual review failed. User confirmed the UAV is
+  connected, but the visible model is not acceptable: there is a huge cylinder,
+  the STL body renders broken/fragmented, and the UAV initial position is not
+  aligned with the camera initial position. Treat this as a failed UE vehicle
+  body gate, not as an accepted platform loop. Next work must inspect the
+  Sunray/SDF/STL asset dimensions and UE runtime mesh logs, switch to a
+  complete/valid STL or proper UE asset import path, fix scale/rotor
+  placement, and set the review initial UAV position to the camera initial
+  position before asking for review again. Reusable rule: for UE manual gates,
+  write more diagnostic logs and inspect those logs before requesting user
+  review; visual evidence without model-load/scale/position logs is too weak.
+
+- 2026-06-02 14:27 CST script note: `OPEN_UE=0
+  Scripts/UE5/review_factory_uav_platform.sh` intentionally routes to dry-run
+  and does not send live UDP frames, preserving the regression-test route.
+  Reusable command for an already-open UE review window is now
+  `STREAM_ONLY=1 STREAM_LOOP_COUNT=10 STREAM_FPS=6
+  Scripts/UE5/review_factory_uav_platform.sh`; it does not restart UE and does
+  send live UDP frames with the Factory `mworks_world_m_z_up` coordinate
+  policy. Regression `python3 Scripts/tests/test_factory_uav_platform_review.py`
+  now covers both dry-run review and live `STREAM_ONLY=1` replay. Live smoke
+  `STREAM_ONLY=1 STREAM_LOOP_COUNT=2 STREAM_FPS=12
+  bash Scripts/UE5/review_factory_uav_platform.sh` streamed 34 frames to the
+  open UE UDP receiver.
+
+- 2026-06-02 CST Factory-first UAV platform gate: added
+  `Scripts/UE5/review_factory_uav_platform.sh` as the narrow UE-only manual
+  review entry. It activates `local_factoryenvironmentcollect`, opens
+  `/Game/Maps/Demonstration` in `simulation-review`, waits for UDP 5005, and
+  streams `render_replay.csv` to the visible UAV body only. It deliberately
+  does not open RViz or continue the rejected point-cloud/grid-map route. The
+  stream uses `--coordinate-policy mworks_world_m_z_up`; Factory collision
+  truth states `mworks_y=-unreal_y`, so replaying Factory MWORKS/truth
+  coordinates as `ue_world_m_z_up` places the UAV on the wrong Y side of the
+  scene. WeChat start packet
+  `Results/coagent_gateway/progress/mosim_factory_first_uav_platform_start_20260602.json`
+  was attempted once and failed with
+  `weixin: sendMessage: ret=-2 errcode=0`; keep progress in project records
+  until the gateway runtime is refreshed. UE Factory UAV body review was
+  launched; manual gate is visible blue UAV body moving in Factory, with
+  keyboard/mouse controlling only the view.
+
+- 2026-06-02 CST WeChat gateway failure diagnosis: latest failure is not a
+  CoAgent packet-format error and not a missing cc-connect session file. The
+  cc-connect process is still running and
+  `/home/linux/.cache/mosim/coagent/cc-connect-weixin/data/sessions/MoSim｜微信通知网关_b075d247.json`
+  still has an active `weixin:dm:...` session. The send failed because the
+  Weixin platform API declined outbound `sendMessage` with `ret=-2 errcode=0
+  errmsg=` after cc-connect retried three times with a fresh `context_token`.
+  Treat this as Weixin/ilink send-context degradation or login/send-window
+  staleness, not as a project-message construction failure. Recovery path:
+  first have the user send a short message in the WeChat gateway conversation
+  to refresh the active context, then retry one tiny send; if `ret=-2` remains,
+  restart/relogin cc-connect Weixin via QR and do not loop notifications.
+
+- 2026-06-02 CST WeChat gateway recovered after user context refresh. User sent
+  a short WeChat message, then bounded retry packet
+  `Results/coagent_gateway/progress/weixin_context_refresh_retry_20260602.json`
+  sent successfully with `Message sent successfully.` Reusable rule: after
+  Weixin outbound `ret=-2`, request one user inbound ping to refresh context,
+  then retry exactly one tiny packet before escalating to QR/relogin.
+
+- 2026-06-02 13:27 CST process correction: the previous UE/ROS route-hardening
+  task did not send the required WeChat milestone report. For future UE/ROS,
+  FAST-LIO, MWORKS, MCP, Git split, or manual-review tasks, send WeChat at
+  task start, phase completion, blocker, and manual-review request. If WeChat
+  is unavailable, report the failure immediately in the main conversation and
+  continue with file-based progress records only after making that explicit.
+
+- 2026-06-02 13:30 CST platform-order correction: do not ask for point-cloud
+  or FAST-LIO window manual audit as "basic platform" evidence before the UAV
+  actor/body is connected in UE and its pose is driven by the MWORKS/bridge
+  state path. FAST-LIO headless/RViz evidence is sensor/localization evidence
+  only. The next platform gate must first prove Factory UE scene + visible UAV
+  body + MWORKS/bridge-driven pose update, then review LiDAR/FAST-LIO in RViz.
+
+- 2026-06-02 13:21 CST current route hardening: keyboard mappings are retained
+  only for UE/RViz view/camera control, not UAV motion. `AGENTS.md` and
+  `Docs/Workflows/unreal_renderer.md` now state that keyboard/mouse input must
+  not drive UAV pose, overwrite MWORKS truth, or substitute for controller
+  setpoints. Current executable ROS2 path is narrowed to Factory
+  MWORKS/Livox/FAST-LIO: `publish_mworks_uav_state_ros2.py`,
+  `run_factory_fastlio_mid360_headless_ros2.sh`,
+  `mosim_scene_replay.launch.py`, `check_fastlio_ros2_topics.sh`, and
+  `Config/rviz2/mosim_uav_fastlio_pointcloud.rviz`. Removed live dependencies
+  on deleted mapping/grid wrappers from runtime checks/tests. Targeted tests
+  passed: `test_mworks_uav_state_ros2.py`, `test_ros_mapping_runtime_env.py`,
+  `test_fastlio_rviz_runtime_scripts.py`,
+  `test_unreal_scene_runtime_readiness.py`, and
+  `test_scene_runtime_bundle.py`. With ROS2 sourced, runtime preflight reports
+  ROS2/RViz2 packages ready; local ROS1 FAST_LIO references remain degraded
+  compatibility references. Current Gate B output remains
+  `ready_for_manual_rviz_ue_review` with `/Odometry=80`, `/path=8`,
+  `/cloud_registered=80`, RMSE `0.39454m`.
+
+- 2026-06-02 CST route correction from user manual audit: stop continuing the
+  hand-built RViz point-cloud / local grid-map display route. The current
+  review chain (`publish_mosim_mapping_replay_ros2.py`,
+  project-authored RViz configs, local voxel/grid replay, and display-side
+  fixes for `/Odometry`, `/mosim/local_occupancy_voxels`, wall-time replay, or
+  RViz fixed-frame tuning) is no longer a product direction and must not be
+  treated as accepted evidence. The user reports that the point cloud/grid map
+  are fundamentally wrong compared with real FAST-LIO/RflySim behavior, and
+  suspects the missing real UAV integration is the root cause. Next work must
+  pivot to studying local RflySim/source patterns and connecting the UAV stack
+  first: MWORKS dynamics/control -> UAV body/vehicle interface -> UE render and
+  sensor source -> native FAST-LIO/RViz outputs from reused upstream code. Do
+  not spend more time polishing hand-written point-cloud/grid visualization.
+
+- 2026-06-02 CST Factory Gate B correction checkpoint: the main FAST-LIO
+  failure has been narrowed from "runtime cannot publish" to a data-consistency
+  and quality gate. Fixed ROS2 MWORKS IMU replay so `linear_acceleration`
+  uses second finite differences of position and adds the explicit gravity
+  convention on `z`, instead of publishing velocity as acceleration; regression
+  `python3 Scripts/tests/test_dense_lidar_cpp_contract.py` covers this. Fixed
+  the headless ROS2 setup route in
+  `Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh` to source
+  package-level local setup files for `livox_ros_driver2`, `fast_lio`, and
+  `mosim_dense_lidar_cpp`, avoiding the old overlay package masking the rebuilt
+  dense publisher. Added first-message waits for `/mosim/livox/lidar` and
+  `/mosim/forward/imu`, because the dense replay node can spend about 20s
+  parsing large JSONL before publishing. Extended
+  `Scripts/UE5/generate_livox_like_lidar_replay.py` with `--pose-stride`,
+  `--points-frame world|body`, and `--truth-dataset-name`; regression
+  `python3 Scripts/tests/test_livox_like_lidar_replay.py` covers body-frame
+  LiDAR and matching truth output. Critical contract: Gate B LiDAR, IMU/state,
+  and truth evaluation must come from the same MWORKS raw trajectory, and
+  FAST-LIO input points must be body/lidar-frame points when published as
+  `base/mid360_link`. The old mixed-source/world-frame route produced large
+  errors and must not be used for acceptance. Latest same-source body-frame
+  smoke run
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_factory_mworks_body_smoke_20260602_120335`
+  produced nonzero FAST-LIO output counts `/Odometry=41`, `/path=4`,
+  `/cloud_registered=40`, but still failed the formal threshold with
+  RMSE `1.019363m` and max error `1.437659m`. Gate B remains
+  `blocked_before_manual_review`; next step is a formal same-source
+  body-frame dataset at >=15k points/frame and enough duration, then rerun the
+  headless gate before opening UE/RViz2 windows.
+
+- 2026-06-02 CST Factory Gate B formal headless pass. Generated formal
+  same-source body-frame Factory Mid360 dataset from MWORKS raw:
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body.jsonl`
+  and
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_mworks_truth_dataset.jsonl`.
+  Manifest reports 40 frames, pose stride 2, body-frame points, min/avg/max
+  points per frame `15607/16094.55/16515`, 10Hz LiDAR, 200k pts/s target.
+  Removed the previous 29-line partial formal file from the official path by
+  renaming it to
+  `livox_like_lidar_frames_mworks_body.invalid_partial_20260602.jsonl`; the
+  replay generator now uses atomic output files and supports
+  `--pose-start-index` so timeouts do not leave half-written evidence. Fixed
+  `mworks_state_imu_replay_node` finite-row behavior so it holds the final
+  MWORKS row instead of looping and creating IMU/trajectory discontinuities.
+  Rebuilt `mosim_dense_lidar_cpp` with direct CMake build/install. Formal run:
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_factory_mworks_body_formal_20260602_122033`.
+  Input probe passed with Livox count `80`, IMU count `1600`, Livox `9.887Hz`,
+  IMU `198.857Hz`, monotonic LiDAR/IMU stamps, min/max points
+  `15607/16515`, lines `0..3`, tag `16`. FAST-LIO runtime recorded
+  `/Odometry=80`, `/path=8`, `/cloud_registered=80`. Truth evaluation passed:
+  RMSE `0.39454m`, max error `0.611542m`, yaw RMSE `0.017802rad`. Current
+  `REALSTACK_MINILOOP_GATE.md/json` status is
+  `ready_for_manual_rviz_ue_review`. This is a headless Gate B pass only; it
+  does not yet prove final controller integration, planner performance, or
+  manual visual acceptance. Next step is UE + RViz2 FAST-LIO + RViz2 3D map
+  window review.
+
+- 2026-06-02 CST Factory manual-review launch prep. Updated Gate B review
+  defaults so `run_factory_fastlio_mid360_headless_ros2.sh`,
+  `run_fastlio_rviz_replay_ros2.sh`, and
+  `check_realstack_miniloop_gate.py` prefer the formal body-frame artifacts
+  `livox_like_lidar_frames_mworks_body.jsonl` and
+  `fastlio_mworks_truth_dataset.jsonl`, falling back to legacy files only when
+  the formal files are absent. Updated
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/run_native_runtime_review.sh`
+  so the manual review wrapper starts the ROS2 `fast_lio mapping.launch.py`
+  runtime by default and opens split RViz2 review windows. Direct calls to
+  `run_fastlio_rviz_replay_ros2.sh` still require an explicit
+  `FASTLIO_ROS2_LAUNCH_CMD`; otherwise they only publish replay inputs and are
+  degraded for FAST-LIO visual review. Checks passed:
+  `test_factory_fastlio_mid360_headless.py`,
+  `test_fastlio_input_contract.py`, and `test_realstack_miniloop_gate.py`.
+  First manual-review launch exposed a ROS2 overlay bug: without sourcing the
+  Livox underlay, `fastlio_mapping` could not load
+  `liblivox_ros_driver2__rosidl_typesupport_cpp.so`, and Python replay could
+  not import `livox_ros_driver2.msg.CustomMsg`. Fixed
+  `run_fastlio_rviz_replay_ros2.sh` to source Livox, FAST-LIO, and MoSim dense
+  bridge overlays in the same order as the passing headless gate; regression
+  `test_fastlio_rviz_runtime_scripts.py` now checks these markers. Also fixed
+  `run_native_runtime_review.sh` so `START_FASTLIO=1` owns RViz split and
+  mapping publisher startup, avoiding duplicate mapping publishers and
+  repeated `TF_OLD_DATA` warnings from two TF sources.
+  Follow-up manual-review probe showed the selected ROS2 FAST-LIO runtime
+  publishes odometry on `/Odometry`, while RViz had subscribed to `/odometry`;
+  updated `Config/rviz2/mosim_uav_fastlio_pointcloud.rviz` to match the actual
+  runtime topic. The planning RViz config also subscribed to
+  `/mosim/local_occupancy_voxels` before the replay publisher emitted that
+  topic; `publish_mosim_mapping_replay_ros2.py` now publishes occupied local
+  cells as the 3D voxel review topic. These are review-surface fixes only and
+  do not claim final planner/map integration.
+
+- 2026-06-02 CST architecture validation/design closure checkpoint:
+  `Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md` now has a compact
+  closure section for Gates A/B/C. Gate A is
+  `passed_for_pid_demo_runtime_path`: generated MWORKS/Sysblock C runtime
+  compiles and the PID demo nonzero constant-input SIL check passes under
+  `1e-5` tolerance. Gate B is still `blocked_before_manual_review`: current
+  Factory headless FAST-LIO evidence either has zero odometry/path/cloud output
+  on the selected run, or older nonzero-output runs fail truth evaluation with
+  about 9-10m RMSE and about 18m max error. Gate C is
+  `design_closed_for_next_implementation`: MWORKS owns solver/controller/truth
+  and generated C runtime; UE owns rendering and scene/sensor oracle; ROS2/RViz2
+  owns LiDAR/IMU/TF, FAST-LIO, 3D local map, planner state, and native review;
+  V6X/PX4/companion adapter remains the deployment/control-stream boundary.
+  Before any UE/RViz2 manual review, the next implementation must pass a
+  headless Factory FAST-LIO gate with nonzero `/cloud_registered`, odometry,
+  path, monotonic timestamps, explicit extrinsics, and truth-error metrics.
+  WeChat progress/manual-review reporting is now a hard rule in `AGENTS.md` and
+  repeated in the architecture closure: use sparse milestone/blocker packets by
+  default; if sending fails, diagnose cc-connect session/context immediately
+  and report in the main conversation if it cannot be restored quickly. Closure
+  packet
+  `Results/coagent_gateway/progress/mosim_arch_validation_closure_20260602.json`
+  was sent successfully through `MoSim｜微信通知网关`.
+
+- 2026-06-02 CST Factory-first implementation started. WeChat start packet
+  `Results/coagent_gateway/progress/mosim_factory_first_miniloop_start_20260602.json`
+  sent successfully. Rechecked current FAST-LIO state: Factory dense
+  Mid360/Livox input contract remains `claimable_input_ready`; local
+  `spark-fast-lio` static Livox patch-readiness is now `ready=true`, but the
+  current headless script runs the imported ROS2 `fast_lio` package route. The
+  first short headless run used 10Hz LiDAR baseline and failed in the
+  Livox/IMU probe because IMU stamps were nonmonotonic. Inspection found
+  explicit leftover `dense_lidar_replay_node` and `mworks_state_imu_replay_node`
+  processes from the failed script still publishing on the same topics, which
+  can corrupt monotonicity checks. Reusable constraint: after a failed ROS2
+  headless run, check and clean only matching MoSim publisher/FAST-LIO
+  processes before retrying:
+  `ps -eo pid,ppid,cmd | rg 'dense_lidar_replay_node|mworks_state_imu_replay_node|livox_imu_probe_node|fastlio|fast_lio|spark_lio|record_fastlio'`.
+
+- 2026-06-02 CST MoSim architecture validation goal recreated. Scope is
+  architecture validation and design closure, not display tuning. Gate A:
+  MWORKS generated C/C++ controller nonzero-input SIL equivalence. Gate B: UE
+  truth + ROS2 Mid360/FAST-LIO localization quality diagnosis. Gate C:
+  closed-loop system contract for MWORKS, UE, ROS2/RViz2, V6X/PX4/companion
+  computer, frequencies, time sync, coordinates, reuse/adapt/replace matrix,
+  and manual-review points. Added WeChat Progress and Intervention Rule to
+  `AGENTS.md`; updated `Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md`
+  with Gates A/B/C; recorded task in `Docs/Workflows/agent_task_ledger.md`.
+  WeChat start packet
+  `Results/coagent_gateway/progress/mosim_arch_validation_start_20260602.json`
+  sent successfully through `MoSim｜微信通知网关`.
+  Gate A progress: added MWORKS/Sysblock reference model
+  `Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo_SIL_Constant.mo`,
+  checked and simulated it through Sysplorer MCP, and read `cmd_sum.y` values
+  for constant `z_error=0.1`. Added reference evidence
+  `Results/codegen_probe/AWFF_PID_Sysblock_Demo_api/mworks_constant_0p1_reference.json`.
+  Generated C runtime with input sequence `0.1,0.1,0.1,0.1` matches the MWORKS
+  reference by output order with `max_abs_error=8.934736470678217e-07` under
+  `1e-5` tolerance; evidence:
+  `Results/codegen_probe/AWFF_PID_Sysblock_Demo_api/sil_constant_0p1_check.json`.
+  This validates the codegen/SIL architecture path for the PID demo. Stronger
+  time-varying input SIL remains open before claiming all generated
+  controllers are runtime-authoritative.
+
+- 2026-06-02 CST WeChat gateway diagnosis completed. There were two distinct
+  failure modes. `no active session found (key="MoSim｜微信通知网关")` was a
+  CoAgent adapter bug: the project name was passed as `--session`, but
+  cc-connect expects the `active_session` platform key (`weixin:dm:...`).
+  Fixed `CoAgent/gateway/cc_connect_weixin.py` so empty session, `s1`, project
+  name, session JSON path, and already-resolved platform key all resolve
+  correctly; `result_router.py` and `review_queue.py` now default to
+  `MoSim｜微信通知网关`. Test passed:
+  `python3 CoAgent/tests/test_gateway_weixin.py`. Live send smoke passed using
+  `Results/coagent_gateway/progress/weixin_gateway_diagnosis_20260602.json`
+  with `Message sent successfully.` The other failure mode,
+  `weixin: sendMessage: ret=-2`, is a Weixin/iLink send-context problem; first
+  recovery is user sends one normal message to the gateway conversation, then
+  retry once. If that fails, redo 10 minute QR setup and send one normal
+  message to bind/refresh `context_token`. Keep WeChat sparse; do not mirror
+  high-volume Codex/tool output through the gateway.
+
+- 2026-06-02 CST MWORKS code-generation checkpoint: MWORKS/Sysplorer/Sysblock
+  direct controller C generation is verified. The correct official Python API
+  route is `GetModelCodeGenerationOptions` ->
+  `SetModelCodeGenerationOptions` -> `GenerateModelCode`, not the current MCP
+  `translate_model` wrapper. Probe model
+  `Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo` generated C/H
+  sources under
+  `Results/codegen_probe/AWFF_PID_Sysblock_Demo_api/AWFF_PID_Sysblock_Demo/`.
+  Generated interface currently exposes `Init()`, `Step()`,
+  `awff_pid_sysblock_demoGbIn`, `awff_pid_sysblock_demoGbOut`, and 0.01s step
+  time. The generated C files compiled with `gcc -std=c99 -Wall -Wextra
+  -pedantic -c`; temporary `.o` files were removed. Workflow is recorded in
+  `Docs/Workflows/mworks_codegen_controller_runtime.md`. Next architecture
+  step: make generated C/C++ controller runtime pass SIL equivalence against
+  MWORKS/Sysblock, then adapt it to ROS2/PX4/V6X; do not resume hand-built
+  point-cloud/grid demos as product work.
+  2026-06-02 follow-up: external source check supports copying the RflySim
+  layering pattern but replacing its solver/control authority with MWORKS.
+  RflySim-style role split maps to MWORKS/Sysblock/Syslab for solver,
+  controller, truth, metrics, and code generation; UE for rendering and
+  scene/sensor oracle; ROS2/RViz2 for FAST-LIO, 3D map, planner state, and
+  native review. The current Sysplorer MCP remains missing a dedicated
+  `GenerateModelCode` wrapper; `translate_model` is not code-export evidence.
+  Re-ran the generated C compile probe successfully on 2026-06-02 and removed
+  temporary object files.
+  Added reusable pre-SIL gate `Scripts/mworks/check_codegen_runtime.py` and
+  regression test `Scripts/tests/test_mworks_codegen_runtime.py`. The gate
+  summarizes generated files, confirms `Init`/`Step`, input/output globals,
+  `sample_time_s=0.01`, and compiles generated C in a temporary directory so
+  generated evidence folders are not polluted. Latest runtime-check evidence:
+  `Results/codegen_probe/AWFF_PID_Sysblock_Demo_api/runtime_check.json`.
+  Follow-up gate now includes a temporary C harness smoke run: write
+  `awff_pid_sysblock_demoGbIn.z_error` values `0.1, 0.2, -0.1`, call
+  `Init()`/`Step()`, and verify generated runtime time advances to
+  `0.01, 0.02, 0.03` with `thrust_cmd` outputs recorded in
+  `runtime_check.json`. This proves the generated code can be driven as a
+  minimal runtime candidate before SIL equivalence. WeChat progress packet
+  `Results/coagent_gateway/progress/mworks_codegen_runtime_gate_20260602.json`
+  was attempted once through `MoSim｜微信通知网关`; cc-connect failed with
+  `Error: no active session found (key="MoSim｜微信通知网关")`. Do not retry in a
+  loop; refresh the gateway session before relying on progress notifications.
+  Added first SIL smoke gate
+  `Scripts/mworks/check_codegen_sil_equivalence.py` plus
+  `Scripts/tests/test_mworks_codegen_sil_equivalence.py`. MCP simulation of
+  `AWFF_PID_Sysblock_Demo` succeeds, but `AWFF_PID_Sysblock_Demo.thrust_cmd`
+  is not a readable result variable; `result_manager` model-scoped discovery
+  exposes internal variables including `cmd_sum.y`. The current evidence
+  `Results/codegen_probe/AWFF_PID_Sysblock_Demo_api/sil_zero_input_check.json`
+  passes only `zero_input_sil_smoke` with max error `0.0`. This is not complete
+  SIL: the next gate must inject the same nonzero input sequence into
+  MWORKS/Sysblock and generated C runtime and compare outputs sample-by-sample.
+  WeChat SIL smoke progress packet
+  `Results/coagent_gateway/progress/mworks_codegen_sil_smoke_20260602.json`
+  was attempted once through `MoSim｜微信通知网关`; cc-connect again failed with
+  `Error: no active session found (key="MoSim｜微信通知网关")`.
+
+- 2026-06-02 CST real FAST-LIO headless gate update: the route has moved past
+  zero-output/runtime-startup blocking for Factory, but it is still not
+  acceptable for manual RViz/UE review. Added C++ ROS2
+  `livox_imu_probe_node` under `Scripts/ros/mosim_dense_lidar_cpp` because the
+  Python double-subscriber probe could not reliably measure 200Hz IMU while
+  deserializing 25k-point Livox frames. Latest successful headless run:
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_cpp_livox_headless_20260602_090500`.
+  Input gate passed: `/mosim/livox/lidar` about `18.68Hz`, `/mosim/forward/imu`
+  about `187.89Hz`, 24.5k-25.9k points/frame, Livox lines `0..3`, per-point
+  offsets `0..49998us`, and latest LiDAR/IMU stamp delta about `-0.020s`.
+  FAST-LIO runtime produced nonzero `/Odometry`, `/path`, and
+  `/cloud_registered` counts `172/17/172`, but truth evaluation failed:
+  position RMSE `9.576m`, max error `17.900m`. Updated
+  `Scripts/UE5/check_realstack_miniloop_gate.py` so nonzero FAST-LIO topics are
+  not enough; the gate now also requires a passing truth-evaluation file before
+  opening review windows. Current gate report:
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/REALSTACK_MINILOOP_GATE.md`
+  remains `blocked_before_manual_review`. Next work is extrinsic/timestamp/
+  scan-pattern/initialization diagnosis, not RViz visual tuning. WeChat packet
+  `Results/coagent_gateway/progress/ue_uav_fastlio_headless_gate_20260602_0905.json`
+  was attempted once through project `MoSim｜微信通知网关`; the adapter accepted
+  the blocker packet but cc-connect still failed with
+  `weixin: sendMessage: ret=-2 errcode=0`. Treat WeChat as degraded and do not
+  loop retries until the gateway session/runtime is refreshed. Recovery
+  checkpoint: after the user sent `你好` in the Weixin gateway conversation,
+  the exact same packet resent successfully with `Message sent successfully`.
+  Record `ret=-2` as a stale Weixin/iLink send-context symptom first; ask the
+  user to send one normal message and retry once before forcing QR relogin.
+
+- 2026-06-02 CST handoff checkpoint: current ROS graph check through
+  `ros_mcp` shows only rosbridge/static TF topics and no active
+  `/mosim/*`, `/odometry`, `/path`, or `/cloud_registered` runtime. The latest
+  Factory headless `spark-fast-lio` Livox CustomMsg attempt reached the real
+  subscriber path but `spark_lio_mapping` crashed with exit code `-11`
+  immediately after `Livox avia_handler entry` on a 21k-point frame. Evidence:
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_livox_custommsg_headless_20260602_062834/fastlio_launch.log`.
+  Keep UE/RViz manual review closed until the headless gate has nonzero
+  FAST-LIO odometry/path/registered-cloud output. The next technical decision
+  is either finish a bounded `spark-fast-lio` Livox preprocess/runtime patch
+  and rebuild, or switch to a native ROS2 Mid360/`livox_ros_driver2`
+  FAST-LIO implementation. Sunray remains the local behavior reference:
+  `external_fusion_node` runs at 200Hz, Mid360 uses `/livox/lidar` and
+  `/livox/imu`, EGO consumes world-frame point cloud plus odometry, then
+  `traj_server`/`positionCmd2sunray` converts planner output to UAV control.
+  Do not optimize grid-cell movement, static point-cloud display, or 2D
+  occupancy as product work.
+  WeChat handoff task-list send was attempted once through
+  `Results/coagent_gateway/progress/ue_uav_realstack_handoff_tasklist_20260602.json`
+  using project `MoSim｜微信通知网关` and adapter session resolution. It still
+  failed at the cc-connect/Weixin send layer with
+  `weixin: sendMessage: ret=-2 errcode=0`. Treat WeChat as degraded for this
+  run and keep progress in project files until the gateway is manually
+  refreshed.
+  Implementation checkpoint: removed repeated startup-log/filter-check blocks
+  that had polluted the temporary `spark-fast-lio` candidate source under
+  `Results/tmp/fastlio_ros2_candidates/.../spark_fast_lio.cpp`. Python gates
+  now pass: `test_fastlio_input_contract.py`,
+  `test_realstack_miniloop_gate.py`, and `test_fastlio_runtime_candidates.py`.
+  `check_realstack_miniloop_gate.py` still correctly blocks manual review
+  because runtime counts are zero. C++ rebuild on `/mnt/c` still exceeds the
+  60s command rule while compiling/linking `spark_lio_component` and reports
+  clock-skew warnings; treat this candidate as slow/fragile. A fresh
+  `git clone --depth 1 https://github.com/Ericsii/FAST_LIO_ROS2.git` into
+  `Results/tmp/fastlio_ros2_candidates_import/` also timed out at 60s and the
+  partial directory was removed. Next preferred route is to import a native
+  ROS2 Mid360/`livox_ros_driver2` FAST-LIO candidate via a faster download
+  path or manual download, then run the same Factory headless gate.
+  Build hygiene correction: direct `cmake --build` / `colcon` attempts must
+  first source ROS2 in the same shell with `set +u; source
+  /opt/ros/humble/setup.bash; source
+  Results/tmp/spark_fast_lio_ros2_ws/install/setup.bash; set -u`. A later
+  direct build without sourcing ROS2 failed at CMake with
+  `ModuleNotFoundError: No module named 'ament_package'`; that is an
+  environment error, not a FAST-LIO source diagnosis.
+
+- 2026-06-02 CST real-stack correction update: do not tune the current
+  point-cloud marker size, grid-cell step, or 2D map as product work. The
+  correct next task is still a real UAV stack study/reuse pass before more
+  implementation. Online and local checks confirm the hard contracts:
+  PX4-style external control is streamed and faulted on stale proof-of-life,
+  not a one-shot pose write; PX4 ROS2 uses uXRCE-DDS and matching `px4_msgs`
+  definitions; Mid360 hardware-faithful baseline is 10Hz and about
+  200k points/s with 200Hz IMU; FAST-LIO Livox evidence requires synchronized
+  LiDAR/IMU plus per-point timing and explicit extrinsics/time offset. The
+  FAST-LIO candidate gate is updated: current local `spark-fast-lio` remains
+  patchable but not accepted for Mid360 because its standard PointCloud2 path
+  rejects Livox `lidar_type=1`; before spending more time patching it, evaluate
+  the external `Ericsii/FAST_LIO_ROS2` `ros2` branch, which declares
+  `ament_cmake`, `livox_ros_driver2`, `mapping.launch.py`, default
+  `mid360.yaml`, `/livox/lidar`, `/livox/imu`, `lidar_type=1`,
+  `scan_line=4`, and `scan_rate=10`. Network clone/zip import timed out within
+  the 60s gate, so it is not local runtime evidence yet. WeChat startup
+  notification for `UE-UAV-REALSTACK-RESEARCH-20260602-LONGRUN` was attempted
+  once and failed with `weixin: sendMessage: ret=-2 errcode=0`; continue
+  file-based progress until the gateway runtime is repaired.
+
+- 2026-06-02 CST user correction checkpoint: the current visible mapping
+  prototype still has the wrong abstraction. Moving the UAV by grid-cell-sized
+  steps, showing a 2D-only occupancy grid, or lowering point-cloud density to
+  make a static/toy display reach frame rate cannot support controller
+  optimization. The accepted direction is a real UAV stack: MWORKS produces
+  continuous dynamics, controller state, truth, and 200Hz IMU; ROS2 carries
+  synchronized IMU/LiDAR/TF/odometry, FAST-LIO, 3D local map, and planner
+  topics; UE renders the accepted scene and provides sensor/collision oracle;
+  RViz2 windows show live FAST-LIO point cloud and live 3D local map. Use PX4
+  offboard-style continuous command semantics as the control-contract model:
+  commands and heartbeat/setpoints are streamed, not one-shot pose overwrites.
+  Use Mid360 hardware-faithful baseline first: 10Hz LiDAR, about 200k pts/s,
+  per-point timing, 200Hz IMU, explicit extrinsic/time sync. The user's 20Hz
+  LiDAR target is an enhanced simulation target after the baseline gates pass.
+  Local Sunray is the primary source-code pattern to reuse:
+  `external_fusion`, `sunray_control_node`, Mid360/FAST-LIO launch,
+  EGO-planner 3D local map, `traj_server`, and `positionCmd2sunray`. RflySim
+  confirms the same role split: CopterSim/PX4 computes motion/control,
+  RflySim3D/UE renders and generates perception data, ROS/RViz consumes
+  sensors and algorithm outputs. WeChat remains default for milestones, but
+  latest sends still fail with `weixin: sendMessage: ret=-2 errcode=0`;
+  2026-06-02 04:xx checkpoint packet
+  `Results/coagent_gateway/progress/ue_uav_realstack_replan_checkpoint_20260602.json`
+  was attempted once with the correct `MoSim｜微信通知网关` project and project
+  session key, then failed with the same ret=-2. Do one bounded send per
+  checkpoint and record the failure.
+
+- 2026-06-02 CST long-run architecture correction is active under
+  `UE-UAV-ARCH-REPLAN-20260602-LONGRUN`. The current keyboard/grid-step,
+  fake/static point-cloud, and 2D occupancy-grid route is stopped as product
+  work. It remains smoke-only for checking ROS/RViz plumbing. The new
+  execution rule is to study and reuse real UAV-stack patterns before coding:
+  PX4/Gazebo/RFlySim/AirSim/Sunray/Mid360/FAST-LIO first, then MoSim
+  integration. Immediate hard contracts: MWORKS owns continuous dynamics,
+  controller, truth, IMU, wind/fault/motor-efficiency effects; UE owns
+  rendering plus scene/sensor/collision oracle; ROS2 owns LiDAR/IMU/TF,
+  FAST-LIO, local 3D map, planner, and RViz2 native review windows. Control
+  and setpoints are continuous streams, not grid-cell steps. Baseline sensor
+  contract is IMU 200Hz, controller/setpoint 20Hz, Mid360 hardware-faithful
+  LiDAR 10Hz at about 200k pts/s, with 20Hz as an explicit enhanced-sim target
+  that must pass throughput and localization quality gates. WeChat startup
+  notification was attempted with both default and corrected project names;
+  the corrected command still failed with
+  `weixin: sendMessage: ret=-2 errcode=0`. Do not tight-loop retry; treat
+  WeChat as degraded until the gateway runtime is refreshed.
+
+- 2026-06-02 architecture reset: user rejected the current grid-cell keyboard
+  movement, static/synthetic point cloud, 2D-only grid, and hand-polished
+  mapping route as unsuitable for controller optimization. Product work on
+  that route is stopped. The active task is now
+  `UE-UAV-ARCH-REPLAN-20260602`: spend the next long run studying upstream UAV
+  simulation practice and local source before implementation. Required study
+  surfaces are PX4/Gazebo/RFlySim/AirSim/Sunray/Mid360/FAST-LIO. Required
+  contracts to settle are continuous MWORKS dynamics/controller authority,
+  200Hz IMU, 10Hz hardware-faithful Mid360 LiDAR with 20Hz enhanced-sim target,
+  20Hz controller/setpoint path, timestamp/extrinsic synchronization,
+  truth-vs-estimate boundaries, RViz2 native point-cloud and 3D map windows,
+  and UE as rendering/sensor/collision oracle only. WeChat remains the default
+  milestone/blocker notification path; failed sends must be recorded and not
+  retried in a tight loop.
+  Start-packet WeChat send failed once with
+  `weixin: sendMessage: ret=-2 errcode=0`; no tight-loop retry was attempted.
+  The design-gate completion packet failed with the same `ret=-2`; record this
+  as a WeChat gateway runtime issue, not a reason to retry repeatedly.
+- 2026-06-02 FAST-LIO/Mid360 blocker update: dense Factory and Derelict
+  Livox-like replay inputs are available, but the selected ROS2
+  `spark-fast-lio` runtime cannot consume MoSim's current Mid360 `PointCloud2`
+  route with `lidar_type=1`. Source inspection shows its
+  `sensor_msgs::msg::PointCloud2` preprocessing path accepts only `OUST64`,
+  `KMOUST64`, and `VELO16`; Livox handling is guarded by
+  `LIVOX_ROS_DRIVER_FOUND` and expects `livox_ros_driver::CustomMsg`. Factory
+  dense runtime smoke recorded zero `/odometry`, `/path`, and
+  `/cloud_registered`, with `[FATAL] [Preprocess]: Error LiDAR Type`,
+  `No point, skip this scan`, and `TF_OLD_DATA`. Evidence:
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/FASTLIO_MID360_RUNTIME_BLOCKER.md`.
+  Do not tune RViz/grid visuals on this path; choose a Livox CustomMsg-capable
+  runtime, a different Mid360-capable FAST-LIO variant, or an explicitly
+  degraded non-Mid360 smoke path.
+  WeChat notification for this blocker failed once with the same
+  `weixin: sendMessage: ret=-2 errcode=0`; no tight-loop retry was attempted.
+
+- 2026-06-02 CST user review correction: current grid-cell movement,
+  static/toy point-cloud, and 2D-grid display route is stopped. The next work
+  is not RViz point-size tuning or fake frame-rate optimization; it is a
+  real UAV stack pass using MWORKS dynamics/controller as authority, UE as
+  scene/sensor oracle, ROS2 as LiDAR/IMU/TF/FAST-LIO/local-map middleware, and
+  RViz2 native windows for point cloud and 3D map review. Rechecked upstream
+  architecture constraints: PX4/ROS2 is a streamed companion-computer contract,
+  Livox Mid360 is a Livox serial sensor requiring per-point timing semantics,
+  FAST-LIO localization requires synchronized LiDAR/IMU rather than display
+  points, and Sunray provides the closest local implementation pattern
+  (`external_fusion`, `sunray_control_node`, Mid360/FAST-LIO, EGO 3D local map,
+  `positionCmd2sunray`). Added
+  `Scripts/UE5/check_spark_fastlio_livox_patch_readiness.py`,
+  `Scripts/tests/test_spark_fastlio_livox_patch_readiness.py`, and reports
+  `Results/unreal_scene_mapping/SPARK_FASTLIO_LIVOX_PATCH_READINESS.md/json`.
+  Current result is `ready=false`: `spark-fast-lio` must patch ROS2
+  `livox_ros_driver2` package/header/signature use, Livox macro/callback
+  consistency, `imu_buffer_`, and `nanoseconds()` before any Mid360 runtime
+  claim. Checks passed:
+  `test_spark_fastlio_livox_patch_readiness.py`,
+  `test_fastlio_runtime_candidates.py`, and `test_fastlio_input_contract.py`.
+  WeChat checkpoint notification was attempted once through
+  `CoAgent/gateway/cc_connect_weixin.py` and failed with
+  `weixin: sendMessage: ret=-2 errcode=0`; no tight-loop retry was attempted.
+
 - 2026-06-02 UE/ROS2/MWORKS UAV mainline correction: the manual keyboard/grid
   mapping path is smoke-only and must not be polished as the product path. User
   rejected grid-cell movement, synthetic/static point clouds, oversized RViz
@@ -1264,3 +2202,194 @@
   Do not retry in a tight loop; treat it as a transient Weixin/session send
   failure and continue local work unless a later manual-review notification
   also fails.
+- 2026-06-02 CST: Continued the UE/ROS2/MWORKS architecture correction instead
+  of polishing the rejected keyboard/grid route. `publish_mosim_keyboard_mapping_ros2.py`
+  and `open_keyboard_mapping_rviz_ros2.sh` now explicitly report
+  `quality_status=smoke_only` and block controller/FAST-LIO/3D-map/autonomous
+  planning claims. `publish_mworks_uav_state_ros2.py --dry-run` now emits
+  source-rate, resampling, timestamp, odometry-continuity, LiDAR-density, and
+  TF-contract diagnostics; current IMU remains marked as resampled from 20Hz
+  MWORKS replay data. ROS2 LiDAR publishers were corrected to Livox-compatible
+  `PointCloud2` fields (`offset_time`, `x`, `y`, `z`, `intensity`, `tag`,
+  `line`) in the MWORKS bridge, FAST-LIO replay publisher, and C++ dense
+  publisher. RViz2 planning configs now default to a 3D Orbit view with
+  `/mosim/local_occupancy_voxels` as the active map surface and the 2D
+  `OccupancyGrid` disabled as reference. Targeted checks passed:
+  `test_mworks_uav_state_ros2.py`, `test_livox_like_lidar_replay.py`,
+  `test_keyboard_mapping_ros2.py`, `test_fastlio_replay_adapter.py`, and
+  `colcon build --packages-select mosim_dense_lidar_cpp` with only WSL clock
+  skew warnings.
+- 2026-06-02 CST: Added subscriber-side dense LiDAR transport gate in
+  `Scripts/ros/mosim_dense_lidar_cpp`: `dense_lidar_subscriber_probe_node`
+  subscribes to `PointCloud2`, verifies Livox-compatible fields, stamp
+  monotonicity, point counts, `point_step=22`, and measured receive rate before
+  exiting with pass/fail status. A short Factory Livox-like replay probe passed:
+  8 received frames, about `9.69Hz`, about `19.9k-21.0k` points/frame,
+  `livox_fields_ok=true`, `stamps_monotonic=true`. This is stronger than
+  publisher-only evidence but remains a transport gate, not FAST-LIO
+  localization evidence. New check `Scripts/tests/test_dense_lidar_cpp_contract.py`
+  and `colcon build --packages-select mosim_dense_lidar_cpp` passed.
+- 2026-06-02 CST: Rechecked existing Factory FAST-LIO runtime evidence instead
+  of rerunning blindly. Runtime topic recording exists and is nonzero:
+  `fastlio_runtime` recorded odometry/path/cloud counts `339/32/328`, while
+  `fastlio_runtime_scan099` recorded `2998/29/297`. Both Factory evaluations
+  fail quality thresholds: RMSE about `10.20m` and `9.76m`, max error about
+  `17.71m` and `18.55m`, with nonmonotonic odometry timestamp pairs. Therefore
+  the immediate blocker is not just starting FAST-LIO; it is Factory FAST-LIO
+  quality diagnosis across timestamp policy, scan pattern, extrinsics, motion
+  excitation, initialization, and scene geometry.
+- 2026-06-02 CST: Added reusable Factory FAST-LIO failure diagnosis:
+  `Scripts/UE5/diagnose_fastlio_factory_failure.py`, regression
+  `Scripts/tests/test_fastlio_factory_failure_diagnosis.py`, and reports
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/FASTLIO_FACTORY_FAILURE_DIAGNOSIS.md`
+  plus `fastlio_failure_diagnosis.json`. Diagnosis result is
+  `status=not_claimable`: Factory runtime topics exist but both quality gates
+  fail; current config is Velodyne-like (`lidar_type=2`, `scan_line=16`) while
+  target is Mid360/Livox-like; evaluated input is only about 509 points/frame;
+  IMU is synthetic finite-difference; evaluated frames lack per-point
+  attributes; yaw is fixed; odometry timestamps are nonmonotonic. Next action is
+  to promote dense Livox-like input plus synchronized high-rate IMU and a
+  Mid360 config before any planner/controller claim.
+- 2026-06-02 CST: Added the first executable Mid360 input gate instead of
+  continuing the rejected toy mapping route. New files:
+  `Config/ros2/mosim_spark_fast_lio_mid360.yaml`,
+  `Scripts/UE5/check_fastlio_input_contract.py`, and
+  `Scripts/tests/test_fastlio_input_contract.py`. ROS2 FAST-LIO launch/wrapper
+  defaults now use `/mosim/lidar_points`, `/mosim/forward/imu`,
+  `base/mid360_link`, and the Mid360 config. Factory contract output:
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/FASTLIO_INPUT_CONTRACT.md`
+  and `fastlio_input_contract.json`; status is
+  `dense_lidar_ready_but_fastlio_input_blocked`. Dense Livox-like replay is
+  ready at about 20.5k points/frame with line ids 0-3 and Livox attributes, but
+  the legacy FAST-LIO dataset is blocked because it has only 512 points/frame,
+  lacks point attributes, and still uses synthetic finite-difference IMU.
+  Targeted checks passed: `test_fastlio_input_contract.py`,
+  `test_fastlio_factory_failure_diagnosis.py`, and
+  `test_fastlio_rviz_runtime_scripts.py`.
+- 2026-06-02 CST: Updated the ROS2 Factory FAST-LIO replay entry so it no
+  longer defaults to the old 512-point `fastlio_replay_dataset.jsonl` when
+  dense artifacts are present. `Scripts/UE5/run_fastlio_rviz_replay_ros2.sh`
+  and `Scripts/ros/mosim_scene_replay/launch/mosim_scene_replay.launch.py`
+  now prefer `publish_mworks_uav_state_ros2.py` with Factory
+  `mworks_smoke/raw/...linear_mpc_smoke.csv` plus
+  `livox_like_lidar_frames.jsonl`, publishing `/mosim/lidar_points` and
+  `/mosim/forward/imu`. Dry-run status for Factory is
+  `USE_DENSE_MWORKS_FASTLIO_INPUT=1`, about 21k dense points/frame, and
+  `mid360_density_claimable=true`. Derelict was brought to the same dense
+  route after its Mid360 replay was generated. This remains replay plumbing,
+  not FAST-LIO localization evidence until runtime output metrics pass.
+- 2026-06-02 CST: Generated Derelict dense Mid360/Livox-like replay using the
+  same Sunray `mid360-real-centr.csv` pattern and UE collision truth:
+  `Results/unreal_scene_mapping/derelictcorridormegascans/livox_like_lidar_frames.jsonl`.
+  The manifest reports 5 frames, about 24.3k points/frame, 10Hz LiDAR, and
+  200k points/s. Derelict `FASTLIO_INPUT_CONTRACT.md` now exists and reports
+  `dense_lidar_ready_but_fastlio_input_blocked`, matching Factory: dense sensor
+  input is ready, but localization remains blocked until the runtime uses
+  synchronized high-rate IMU and passes truth-error metrics. Re-ran and passed:
+  `test_fastlio_input_contract.py`, `test_fastlio_rviz_runtime_scripts.py`, and
+  `test_mworks_uav_state_ros2.py`.
+- 2026-06-02 CST: Split ROS2 LiDAR topic semantics to avoid another
+  FAST-LIO/mapping-smoke confusion. Dense Mid360/FAST-LIO input stays on
+  `/mosim/lidar_points`; sparse RViz mapping smoke now defaults to
+  `/mosim/mapping_smoke/lidar_points` in
+  `publish_mosim_mapping_replay_ros2.py`, `open_mapping_rviz_ros2.sh`,
+  `run_fastlio_rviz_replay_ros2.sh`, and `mosim_scene_replay.launch.py`.
+  Checks passed: `test_ros_mapping_replay_publisher.py`,
+  `test_fastlio_rviz_runtime_scripts.py`, `test_fastlio_input_contract.py`,
+  and `test_mworks_uav_state_ros2.py`.
+- 2026-06-02 CST: Added executable FAST-LIO runtime candidate selection gate:
+  `Scripts/UE5/check_fastlio_runtime_candidates.py` and regression
+  `Scripts/tests/test_fastlio_runtime_candidates.py`. The report
+  `Results/unreal_scene_mapping/FASTLIO_RUNTIME_CANDIDATES.md/json` says
+  `decision=patch_ros2_livox_custommsg_candidate_first`. `spark-fast-lio` is
+  the only local native ROS2 FAST-LIO-family candidate, but it is not claimable
+  for Mid360 yet: its standard `PointCloud2` path rejects Livox `lidar_type=1`,
+  the CustomMsg path is guarded, ROS1/ROS2 Livox driver naming is mixed, and a
+  Livox callback macro is inconsistent. ROS1 `FAST_LIO` and the Sunray Livox
+  Gazebo plugin are strong semantic/bridge references only. Check passed:
+  `python3 Scripts/tests/test_fastlio_runtime_candidates.py`.
+- 2026-06-02 CST: User rejected the current mapping demo as structurally
+  wrong for real UAV simulation: grid-cell motion is too coarse for controller
+  optimization, point cloud and grid map must move continuously with UAV state,
+  grid review must be 3D, and FAST-LIO-like point cloud quality cannot be
+  replaced by RViz display tuning. Active work stays on the real stack:
+  MWORKS continuous dynamics/controller/truth/IMU, UE rendering/sensor oracle,
+  ROS2 Mid360/Livox + synchronized IMU + TF, FAST-LIO, RViz2 point-cloud and
+  3D local-map windows. A task-list notification packet was written to
+  `Results/coagent_gateway/progress/ue_uav_realstack_tasklist_20260602.json`,
+  but the bounded WeChat send again failed with
+  `weixin: sendMessage: ret=-2 errcode=0`; do not retry in a loop. Treat
+  WeChat as degraded until cc-connect/Weixin session is repaired.
+- 2026-06-02 CST: Current active goal is the long-run real UAV stack catch-up
+  and minimum closed-loop redesign, not more RViz/point-cloud display tuning.
+  Added the explicit task checklist to
+  `Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md`: PX4-style streamed
+  control, Sunray/YunZong source audit, Mid360/FAST-LIO runtime route, RflySim
+  / AirSim / Gazebo role-boundary comparison, Factory/Derelict headless gates,
+  and WeChat notification fallback. Next implementation must prove continuous
+  MWORKS state, 200Hz IMU, 10Hz Mid360-like dense LiDAR, coherent TF/timestamps,
+  real FAST-LIO output, truth error, and 3D local map before opening UE/RViz2
+  for manual review.
+- 2026-06-02 CST: Added the concrete reuse/adapt/replace matrix at
+  `Results/unreal_scene_mapping/REAL_UAV_STACK_REUSE_MATRIX_20260602.md`.
+  Main decisions: PX4 Offboard/ROS2 is an architecture contract, not the first
+  runtime dependency; Sunray control/Mid360/EGO are behavior and data-contract
+  sources to adapt; RflySim/AirSim/Gazebo are role-boundary references; local
+  `spark-fast-lio` is patch-only until Livox CustomMsg runtime passes; external
+  `Ericsii/FAST_LIO_ROS2` branch `ros2` remains the preferred candidate to
+  import/build/evaluate first. Current keyboard/grid mapping is smoke-only.
+- 2026-06-02 CST: Probed the FAST-LIO ROS2 route. External
+  `Ericsii/FAST_LIO_ROS2` branch `ros2` import still timed out at the 60s
+  network gate, so it remains a preferred but unverified candidate. Local
+  `spark-fast-lio` build probe showed ROS2 Humble and `livox_ros_driver2` are
+  available; `livox_ros_driver2` built successfully in the temp workspace, and
+  `spark_fast_lio` started configuration without an immediate error before the
+  60s timeout. Evidence:
+  `Results/unreal_scene_mapping/FASTLIO_ROS2_IMPORT_BUILD_PROBE_20260602.md`.
+  Shell correction recorded: source ROS2 setup under `set +u`, then restore
+  `set -u`.
+- 2026-06-02 CST: Re-ran the Factory real-stack headless gate with the correct
+  command syntax, because `check_realstack_miniloop_gate.py` has no `--scene`
+  option and defaults to Factory paths. Result remains
+  `blocked_before_manual_review`: MWORKS state is continuous at 20Hz with max
+  step about 0.0033m; dense Mid360-like LiDAR has about 19.9k-21.0k
+  points/frame, Livox fields, four lines, and monotonic frame times; RViz2
+  point-cloud and 3D voxel-map configs are aligned. The only hard blockers are
+  FAST-LIO input contract `dense_lidar_ready_but_fastlio_input_blocked` and
+  zero `/odometry`, `/path`, `/cloud_registered` runtime samples.
+- 2026-06-02 CST: User accepted the Factory UAV placement/movement review
+  enough to proceed with visual coloring. Current Sunray150 runtime STL route
+  has no original material/texture data, so UE now uses a documented procedural
+  reference palette from `References/CUAV/Sunray150-正.png`,
+  `References/CUAV/Sunray150-侧.png`, MWORKS `package.mo`, and local Sunray DAE
+  material cues: black graphite body/frame, light grey duct/propeller cue,
+  grey MID-360 base, and blue MID-360 dome. This is explicitly a review
+  approximation until an approved textured UE/DAE asset is imported.
+- 2026-06-02 CST: Updated the Factory follow-camera review control contract:
+  default offset stays `FVector(-80.0f, -20.0f, 40.0f)`, while arrow keys now
+  orbit the camera around the UAV on a fixed spherical radius instead of
+  free-rotating the view. Left/right adjust azimuth, up/down adjust elevation,
+  and the camera continuously looks back at the UAV.
+- 2026-06-02 CST: User rejected the first Sunray recolor because it did not
+  respect physical component identity: the blue MID-360 dome cue was acceptable,
+  but the MID-360 protective bracket was incorrectly colored by a broad STL
+  position heuristic. Local Sunray `150.dae` confirms named material groups:
+  `MID360_PROTECT_ARC*` is dark grey, `MID360_PROTECT_ARC_CONNECTOR*` is dark
+  graphite, `PROTECTIVE_RING` is dark grey, and only the MID-360 optical/dome
+  cue should be blue. The UE review route now defaults to follow/orbit camera
+  and uses DAE-informed material sections; exact manufacturer appearance still
+  requires importing a proper textured DAE/UE asset.
+- 2026-06-02 CST: Reworked the short-term MID-360 color route after inspecting
+  local DAE geometry/materials and CUAV reference images. The MWORKS body STL
+  is a single-material binary mesh, so the accepted blue MID-360 optical cue is
+  isolated as a small independent UE dome component while the STL
+  `MID360_PROTECT_ARC*` region remains dark grey/black. This avoids coloring
+  the physical protective bracket as blue glass; the durable fix remains DAE or
+  UE asset import with named material sections.
+- 2026-06-02 CST: Corrected the Factory follow/orbit camera left/right arrow
+  mapping after manual review. Only the UAV follow/orbit azimuth input was
+  inverted; the separate free-look camera mapping was left unchanged.
+- 2026-06-02 CST: Refined the left/right correction after the user clarified
+  that the actual `←/→` orbit movement direction, not only the fallback key
+  mapping, was reversed. The UE input axis remains right-positive, while the
+  follow/orbit azimuth delta is now applied with the opposite sign.
