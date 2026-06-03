@@ -291,6 +291,10 @@ Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo_SIL_Constant.mo
 UE5/MoSimSceneLibrary/SourceAssets/
 Scripts/UE5/assets/
 image/AGENTS/
+
+# Misgenerated Windows absolute-path directory inside the repository. Keep it
+# isolated at Git layer; do not hide it through IDE settings.
+/C:*/
 Results/diagnostics/
 Results/agent_runs/
 Results/unreal_scene_review/

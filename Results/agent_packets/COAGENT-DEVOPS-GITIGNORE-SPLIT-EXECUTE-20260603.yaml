@@ -1,0 +1,9 @@
+task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
+status: git_layer_isolation_committed_plan_ready
+decision: use_gitignore_not_ide_hiding
+summary: "Started the corrected DevOps Git split execution goal. No broad git status was run. Branch is main, upstream relation was 15 0 at phase start, and .git/index.lock was absent. Narrow untracked probe found 22 unignored files, all under a misgenerated repository-root directory named C:\\Users\\HP\\Desktop\\MoSim/... containing UE5 Sunray150 texture PNGs and a manifest. This is not solved by IDE hiding. Added the Git-layer ignore rule /C:*/ to isolate that abnormal directory. Recheck showed git ls-files --others --exclude-standard count is 0 and git check-ignore matches the abnormal path through .gitignore."
+evidence: "branch=main; upstream_ahead_behind_start=15 0; index_lock=absent; cached_diff_count_start=0; unignored_before=22; unignored_group=C:\\Users\\HP\\Desktop\\MoSim; abnormal_tree_size=8.6M; abnormal_tree_file_count=22; ignore_rule_added=/C:*/; unignored_after=0; ide_hiding_settings_added=false; vscode_settings_hidden_keys_present=false"
+risks: "The abnormal Windows absolute-path directory remains on disk and is ignored, not deleted. It appears to be a duplicate/misgenerated output path rather than a normal project path. Push is not attempted in this phase."
+next_action: "Commit the small .gitignore, ledger, and result packet batch. Continue future drain work by unignoring only real reviewed project slices under <1000 files and <100MB per file."
+needs_human: false
+blocked_reason: "not_blocked"
