@@ -1,0 +1,49 @@
+task_id: COAGENT-DEVOPS-SLOW-UNIGNORE-COMMIT-20260603
+status: running
+decision: keep_large_trees_ignored_and_force_add_small_reviewed_slices
+summary: >-
+  Started the corrected long-running Git divide workflow. `References/Agent/`
+  and `Docs/Skills/Unreal/` stay ignored by default so Git UI/status is not
+  flooded by huge untracked trees. New content is admitted only by path-limited
+  `git add -f` after file count, >100MB, conflict-marker, and secret scans. This
+  phase confirmed `Docs/Skills/Unreal` has no safe residual source/doc spill
+  except long-term ignored broken LFS fixtures and Unreal Intermediate output.
+  It found `References/Agent/Domain/terminal-velocity` has two Markdown files
+  that look content-relevant but contain conflict markers, so that pair was not
+  committed. It then began `References/Agent/Frameworks/MetaGPT` in small
+  reviewed batches and pushed four commits.
+evidence:
+  - "head_synced_before_start=0 0"
+  - "index_lock_before_start=absent"
+  - "large_tree_ignore=References/Agent/"
+  - "large_tree_ignore=Docs/Skills/Unreal/"
+  - "docs_skills_unreal_residual_ignored=7"
+  - "docs_skills_unreal_long_term_ignore=2 broken ue-mcp LFS pointer uasset files"
+  - "docs_skills_unreal_long_term_ignore=5 Unreal Intermediate/UHT generated files"
+  - "control_agor_residual=References/Agent/Control/agor/.env.postgres"
+  - "control_agor_decision=keep_ignored_local_env"
+  - "domain_terminal_velocity_candidate_files=2"
+  - "domain_terminal_velocity_blocked_by_conflict_markers=true"
+  - "domain_terminal_velocity_not_committed=true"
+  - "metagpt_batch1_files=10"
+  - "metagpt_batch1_commit=a6716b04aaf8373823e083ce6d27b0ff149d9308"
+  - "metagpt_batch1_push=success"
+  - "metagpt_batch2_files=13"
+  - "metagpt_batch2_commit=a60699157202241256a4413497fb9c007d36c225"
+  - "metagpt_batch2_push=success"
+  - "metagpt_batch3_files=23"
+  - "metagpt_batch3_commit=37627c42f77de08054773bdc0aa3843cfe481696"
+  - "metagpt_batch3_push=success"
+  - "metagpt_batch4_files=15"
+  - "metagpt_batch4_commit=3c2ac3c5f9d577d75820b6bc2a553e9499670132"
+  - "metagpt_batch4_push=success"
+risks:
+  - "Broad `git status` and broad top-level References/Agent scans remain unsafe."
+  - "Porcelain `git commit` can exceed 60 seconds; plumbing commit-tree is used after staged diff checks."
+  - "Some ignored files are legitimate blockers, not missed commits, such as local env files, generated Intermediate output, broken LFS fixtures, and files with conflict markers."
+next_action: >-
+  Continue within `References/Agent/Frameworks/MetaGPT` by splitting the remaining
+  source/tests/docs into sub-1000-file slices. Keep `References/Agent/` and
+  `Docs/Skills/Unreal/` ignored; use only `git add -f` for reviewed slices.
+needs_human: false
+blocked_reason: ""
