@@ -924,6 +924,17 @@ proposed_batches:
   - "batch_114_compare_candidate_tracked_files=349"
   - "batch_114_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/chinese_gpt4_8_GLM4.7/"
   - "batch_114_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/chinese_gpt4_8_GLM4.7/**"
+  - "batch_115_candidate=References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/chinese_gpt4_8"
+  - "batch_115_head_vs_upstream_before=114 0"
+  - "batch_115_index_lock=absent"
+  - "batch_115_candidate_tracked_files=214"
+  - "batch_115_candidate_untracked_files=0"
+  - "batch_115_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/chinese_gpt3.5_8"
+  - "batch_115_compare_candidate_tracked_files=349"
+  - "batch_115_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/english_gpt3.5_8"
+  - "batch_115_compare_candidate_tracked_files=681"
+  - "batch_115_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/chinese_gpt4_8/"
+  - "batch_115_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/chinese_gpt4_8/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -932,7 +943,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this one-hundred-fourteenth `.gitignore` drain batch together with the
+  Commit this one-hundred-fifteenth `.gitignore` drain batch together with the
   ledger and result packet, then continue with remaining `AutoSkill` residual
   split-routing chains before the final full `.gitignore` audit.
 needs_human: false
