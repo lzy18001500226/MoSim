@@ -480,6 +480,8 @@ References/PX4/PX4/src/drivers/*
 !References/PX4/PX4/src/drivers/adc/**
 !References/PX4/PX4/src/drivers/auterion_autostarter/
 !References/PX4/PX4/src/drivers/auterion_autostarter/**
+!References/PX4/PX4/src/drivers/barometer/
+!References/PX4/PX4/src/drivers/barometer/**
 !References/PX4/PX4/src/drivers/batt_smbus/
 !References/PX4/PX4/src/drivers/batt_smbus/**
 !References/PX4/PX4/src/drivers/bootloaders/
@@ -492,6 +494,8 @@ References/PX4/PX4/src/drivers/*
 !References/PX4/PX4/src/drivers/cdcacm_autostart/**
 !References/PX4/PX4/src/drivers/cyphal/
 !References/PX4/PX4/src/drivers/cyphal/**
+!References/PX4/PX4/src/drivers/distance_sensor/
+!References/PX4/PX4/src/drivers/distance_sensor/**
 !References/PX4/PX4/src/drivers/differential_pressure/
 !References/PX4/PX4/src/drivers/differential_pressure/**
 !References/PX4/PX4/src/drivers/dshot/
@@ -508,6 +512,8 @@ References/PX4/PX4/src/drivers/*
 !References/PX4/PX4/src/drivers/hiwonder_emm/**
 !References/PX4/PX4/src/drivers/hygrometer/
 !References/PX4/PX4/src/drivers/hygrometer/**
+!References/PX4/PX4/src/drivers/imu/
+!References/PX4/PX4/src/drivers/imu/**
 !References/PX4/PX4/src/drivers/ins/
 !References/PX4/PX4/src/drivers/ins/**
 References/PX4/PX4/src/drivers/ins/ilabs/libilabs/src/sensor.cpp
@@ -522,6 +528,8 @@ References/PX4/PX4/src/drivers/ins/vectornav/libvnc/src/vn/protocol/upackf.c
 !References/PX4/PX4/src/drivers/lights/**
 !References/PX4/PX4/src/drivers/linux_pwm_out/
 !References/PX4/PX4/src/drivers/linux_pwm_out/**
+!References/PX4/PX4/src/drivers/magnetometer/
+!References/PX4/PX4/src/drivers/magnetometer/**
 !References/PX4/PX4/src/drivers/optical_flow/
 !References/PX4/PX4/src/drivers/optical_flow/**
 !References/PX4/PX4/src/drivers/osd/
@@ -567,6 +575,10 @@ References/PX4/PX4/src/drivers/pca9685_pwm_out/main.cpp
 !References/PX4/PX4/src/drivers/tattu_can/**
 !References/PX4/PX4/src/drivers/telemetry/
 !References/PX4/PX4/src/drivers/telemetry/**
+!References/PX4/PX4/src/drivers/uavcan/
+!References/PX4/PX4/src/drivers/uavcan/**
+References/PX4/PX4/src/drivers/uavcan/libdronecan/libuavcan/dsdl_compiler/libuavcan_dsdl_compiler/data_type_template.tmpl
+References/PX4/PX4/src/drivers/uavcan/libdronecan/libuavcan/test/dsdl_test/root_ns_a/32768.EmptyMessage.uavcan
 !References/PX4/PX4/src/drivers/temperature_sensor/
 !References/PX4/PX4/src/drivers/temperature_sensor/**
 !References/PX4/PX4/src/drivers/test_ppm/
