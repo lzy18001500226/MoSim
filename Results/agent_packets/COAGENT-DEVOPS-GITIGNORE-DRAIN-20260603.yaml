@@ -1,6 +1,6 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-DRAIN-20260603
-status: running
-decision: continue_with_tiny_rule_family_batches
+status: completed
+decision: pushed_final_gitignore_drain
 summary: >-
   This task converts the temporary large-tree `.gitignore` split-routing block
   into a steady-state policy in very small batches. The latest completed batch
@@ -1037,6 +1037,14 @@ proposed_batches:
   - "final_audit_docs_skills_unreal_untracked_files_are_broken_lfs_test_uassets=true"
   - "final_audit_added_ignore=Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset"
   - "final_audit_added_ignore=Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset"
+  - "final_audit_commit=00fdafafc66821f1cfb893f882739d0847716f40"
+  - "final_audit_head_vs_upstream_before_push=125 0"
+  - "final_audit_index_lock_after_commit=absent"
+  - "final_audit_temporary_split_patterns_remaining=0"
+  - "pre_push_blob_over_100mb_count=0"
+  - "push_result=success"
+  - "push_ref=main -> main"
+  - "push_range=2a06233750..00fdafafc6"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -1045,7 +1053,10 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this final `.gitignore` audit cleanup batch, then report the drain
-  status and decide whether a separate push phase should start.
+  Gitignore drain is complete and pushed. Future large imports should reuse the
+  same policy: ignore/isolate the full incoming tree first, then unignore,
+  inspect, commit, and push small reviewed slices; keep only true long-term
+  artifact, cache, local dependency, secret, broken LFS fixture, or >100MB
+  single-file ignores at the end.
 needs_human: false
 blocked_reason: ""
