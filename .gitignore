@@ -124,8 +124,8 @@ References/UnrealScenes/
 # AirSim-family external references: keep source/Docs/configs, exclude local
 # clones, build outputs, generated caches, and large compiled artifacts.
 #
-# Large reference families are staged deliberately. Keep them ignored by
-# default, then temporarily unignore one reviewed batch when committing it.
+# Keep generated/runtime artifacts out of tracked third-party reference trees
+# after the large import split has been fully drained.
 References/Agent/Skills/awesome-opencode/dist/
 References/Agent/**/.git/
 References/Agent/**/__pycache__/
@@ -234,3 +234,5 @@ Docs/Skills/UE5/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset
 Docs/Skills/UE5/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
 Docs/Skills/Unreal/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset
 Docs/Skills/Unreal/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
+Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset
+Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset

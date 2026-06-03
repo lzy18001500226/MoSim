@@ -1029,6 +1029,14 @@ proposed_batches:
   - "batch_124_removed_rule=References/Agent/Skills/*"
   - "batch_124_removed_rule=!References/Agent/Skills/awesome-codex-skills/"
   - "batch_124_removed_rule=!References/Agent/Skills/awesome-codex-skills/**"
+  - "final_audit_gitignore_full_read=lines_1_236"
+  - "final_audit_removed_stale_temporary_split_comment=true"
+  - "final_audit_references_agent_broad_untracked_timeout=60s"
+  - "final_audit_references_agent_find_over_100mb_timeout=60s"
+  - "final_audit_docs_skills_unreal_untracked_files=2"
+  - "final_audit_docs_skills_unreal_untracked_files_are_broken_lfs_test_uassets=true"
+  - "final_audit_added_ignore=Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset"
+  - "final_audit_added_ignore=Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -1037,8 +1045,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this one-hundred-twenty-fourth `.gitignore` drain batch together with the
-  ledger and result packet, then perform a full `.gitignore` audit from top to
-  bottom and confirm only long-term ignores remain.
+  Commit this final `.gitignore` audit cleanup batch, then report the drain
+  status and decide whether a separate push phase should start.
 needs_human: false
 blocked_reason: ""
