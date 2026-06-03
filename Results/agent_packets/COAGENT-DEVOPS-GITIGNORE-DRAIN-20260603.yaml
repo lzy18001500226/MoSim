@@ -1003,6 +1003,17 @@ proposed_batches:
   - "batch_122_compare_candidate=References/Agent/Skills/AutoSkill"
   - "batch_122_compare_candidate_tracked_files=10048"
   - "batch_122_removed_rule=References/Agent/Skills/AutoSkill/SkillBank/*"
+  - "batch_123_candidate=References/Agent/Skills/AutoSkill"
+  - "batch_123_head_vs_upstream_before=122 0"
+  - "batch_123_index_lock=absent"
+  - "batch_123_candidate_tracked_files=10048"
+  - "batch_123_candidate_untracked_files=0"
+  - "batch_123_data_eval_files=1001"
+  - "batch_123_data_eval_files_over_100mb=0"
+  - "batch_123_removed_rule=!References/Agent/Skills/AutoSkill/"
+  - "batch_123_removed_rule=!References/Agent/Skills/AutoSkill/**"
+  - "batch_123_removed_rule=References/Agent/Skills/AutoSkill/data/*"
+  - "batch_123_removed_rule=References/Agent/Skills/AutoSkill/data/eval/"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -1011,8 +1022,8 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this one-hundred-twenty-second `.gitignore` drain batch together with the
-  ledger and result packet, then continue with remaining `AutoSkill` residual
-  split-routing chains before the final full `.gitignore` audit.
+  Commit this one-hundred-twenty-third `.gitignore` drain batch together with the
+  ledger and result packet, then audit and remove remaining `References/Agent`
+  top-level split-routing framework if it has no untracked spill.
 needs_human: false
 blocked_reason: ""

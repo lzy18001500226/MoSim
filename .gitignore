@@ -133,10 +133,6 @@ References/Agent/*
 References/Agent/Skills/*
 !References/Agent/Skills/awesome-codex-skills/
 !References/Agent/Skills/awesome-codex-skills/**
-!References/Agent/Skills/AutoSkill/
-!References/Agent/Skills/AutoSkill/**
-References/Agent/Skills/AutoSkill/data/*
-References/Agent/Skills/AutoSkill/data/eval/
 References/Agent/Skills/awesome-opencode/dist/
 References/Agent/**/.git/
 References/Agent/**/__pycache__/
