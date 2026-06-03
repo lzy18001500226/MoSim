@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_xatlas_batch_ready_for_commit
-decision: admit_blender_xatlas_reference_slice
-summary: "Committed the Sunray150 closeup backfill as 3ddd8fb02b. Current narrow probes showed visible untracked 0, cached diff 0, upstream relation 25 0, and .git/index.lock absent before opening the next slice. Selected References/Blender/xatlas as the next bounded reference slice. It has 972 files, under the 1000-file ceiling. Gates found no files over 100 MB and no nested .git. Token/secret scan hits are source/API token enum names only, not credentials. .gitignore now opens References/Blender/xatlas/** while keeping long-term Blender generated/build/binary/archive rules active."
-evidence: "sunray_closeup_commit=3ddd8fb02b; pre_slice_visible_untracked=0; pre_slice_cached_diff=0; upstream_ahead_behind_before_slice=25 0; index_lock=absent; candidate=References/Blender/xatlas; files_on_disk=972; over_100MB=none; nested_git=none; high_confidence_secret_hits=none; token_hits=source_api_enum_names_only; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
-risks: "This is a 972-file external reference slice, close to but still below the 1000-file batch ceiling. Push is deferred until local split batches are stable or user requests push."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, References/Blender/xatlas, and this result packet; run minimal cached gates; commit this xatlas reference batch; then recheck visible untracked count."
+status: unreal_small_skills_batch_ready_for_commit
+decision: admit_small_unreal_skill_dirs
+summary: "Committed the Blender xatlas slice as a75d3a5361. Current narrow probes showed visible untracked 0, cached diff 0, upstream relation 26 0, and .git/index.lock absent. Selected Docs/Skills/Unreal/mosim-epic and Docs/Skills/Unreal/mosim-unreal as a small project-local skill batch. These two directories total 15 files. Gates found no files over 100 MB, no nested .git, no LFS pointer markers, and no high-confidence secret hits. .gitignore now opens only these two directories under Docs/Skills/Unreal while the larger Docs/Skills/Unreal/mcp tree remains isolated."
+evidence: "xatlas_commit=a75d3a5361; pre_slice_visible_untracked=0; pre_slice_cached_diff=0; upstream_ahead_behind_before_slice=26 0; index_lock=absent; candidates=Docs/Skills/Unreal/mosim-epic plus Docs/Skills/Unreal/mosim-unreal; files_on_disk=15; over_100MB=none; nested_git=none; lfs_pointer_markers=none; high_confidence_secret_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
+risks: "No blocker for this 15-file batch. The larger Docs/Skills/Unreal/mcp tree still needs later sub-splitting because it has about 3394 files."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, the two small Unreal skill directories, and this result packet; commit this batch; then recheck visible untracked count."
 needs_human: false
 blocked_reason: "not_blocked"
