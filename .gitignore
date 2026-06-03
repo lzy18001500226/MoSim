@@ -259,6 +259,10 @@ References/Blender/*
 References/Blender/material/*
 !References/Blender/material/addons/
 !References/Blender/material/addons/**
+!References/Blender/material/material_maker/
+References/Blender/material/material_maker/*
+!References/Blender/material/material_maker/doc/
+!References/Blender/material/material_maker/doc/**
 References/PX4/
 !References/PX4/
 References/PX4/*
