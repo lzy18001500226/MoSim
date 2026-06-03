@@ -995,6 +995,14 @@ proposed_batches:
   - "batch_121_compare_candidate_tracked_files=10048"
   - "batch_121_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/"
   - "batch_121_removed_rule=References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/*"
+  - "batch_122_candidate=References/Agent/Skills/AutoSkill/SkillBank"
+  - "batch_122_head_vs_upstream_before=121 0"
+  - "batch_122_index_lock=absent"
+  - "batch_122_candidate_tracked_files=8306"
+  - "batch_122_candidate_untracked_files=0"
+  - "batch_122_compare_candidate=References/Agent/Skills/AutoSkill"
+  - "batch_122_compare_candidate_tracked_files=10048"
+  - "batch_122_removed_rule=References/Agent/Skills/AutoSkill/SkillBank/*"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -1003,7 +1011,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this one-hundred-twenty-first `.gitignore` drain batch together with the
+  Commit this one-hundred-twenty-second `.gitignore` drain batch together with the
   ledger and result packet, then continue with remaining `AutoSkill` residual
   split-routing chains before the final full `.gitignore` audit.
 needs_human: false
