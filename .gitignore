@@ -255,6 +255,10 @@ References/Blender/*
 !References/Blender/armorpaint-main/**
 !References/Blender/xatlas/
 !References/Blender/xatlas/**
+!References/Blender/material/
+References/Blender/material/*
+!References/Blender/material/addons/
+!References/Blender/material/addons/**
 References/PX4/
 !References/PX4/
 References/PX4/*

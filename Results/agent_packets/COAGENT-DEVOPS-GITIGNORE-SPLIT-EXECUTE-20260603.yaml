@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: unreal_small_skills_batch_ready_for_commit
-decision: admit_small_unreal_skill_dirs
-summary: "Committed the Blender xatlas slice as a75d3a5361. Current narrow probes showed visible untracked 0, cached diff 0, upstream relation 26 0, and .git/index.lock absent. Selected Docs/Skills/Unreal/mosim-epic and Docs/Skills/Unreal/mosim-unreal as a small project-local skill batch. These two directories total 15 files. Gates found no files over 100 MB, no nested .git, no LFS pointer markers, and no high-confidence secret hits. .gitignore now opens only these two directories under Docs/Skills/Unreal while the larger Docs/Skills/Unreal/mcp tree remains isolated."
-evidence: "xatlas_commit=a75d3a5361; pre_slice_visible_untracked=0; pre_slice_cached_diff=0; upstream_ahead_behind_before_slice=26 0; index_lock=absent; candidates=Docs/Skills/Unreal/mosim-epic plus Docs/Skills/Unreal/mosim-unreal; files_on_disk=15; over_100MB=none; nested_git=none; lfs_pointer_markers=none; high_confidence_secret_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
-risks: "No blocker for this 15-file batch. The larger Docs/Skills/Unreal/mcp tree still needs later sub-splitting because it has about 3394 files."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, the two small Unreal skill directories, and this result packet; commit this batch; then recheck visible untracked count."
+status: blender_material_addons_batch_ready_for_commit
+decision: admit_blender_material_addons_slice
+summary: "Committed the small Unreal skill cleanup as 090ee0fd17. Current narrow probes showed visible untracked 0, cached diff 0, upstream relation 27 0, and .git/index.lock absent. Selected References/Blender/material/addons as the next bounded Material Maker reference slice. It has 924 files, under the 1000-file ceiling. Gates found no files over 100 MB, no nested .git, no LFS pointer markers, and no high-confidence secret hits. .gitignore now opens References/Blender/material/addons/** while keeping the rest of References/Blender/material isolated."
+evidence: "unreal_small_skills_commit=090ee0fd17; pre_slice_visible_untracked=0; pre_slice_cached_diff=0; upstream_ahead_behind_before_slice=27 0; index_lock=absent; candidate=References/Blender/material/addons; files_on_disk=924; over_100MB=none; nested_git=none; lfs_pointer_markers=none; high_confidence_secret_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
+risks: "This is a 924-file external reference slice, below the 1000-file batch ceiling. Push remains deferred; branch is increasingly ahead of upstream."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, References/Blender/material/addons, and this result packet; commit this Material Maker addons batch; then recheck visible untracked count."
 needs_human: false
 blocked_reason: "not_blocked"
