@@ -243,6 +243,7 @@ Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
 # Current local untracked intake: isolate first, then admit reviewed slices with
 # `git add -f <reviewed-slice>` after size/secret/diff checks.
 References/Blender/
+References/PX4/
 Docs/Skills/ROS-MCP/docs/images/
 Docs/Skills/ROS-MCP/examples/2_gemini/image/
 MoSim.code-workspace
