@@ -403,6 +403,10 @@ References/Blender/blender/intern/*
 !References/Blender/blender/intern/libmv/**
 !References/Blender/blender/intern/cycles/
 !References/Blender/blender/intern/cycles/**
+!References/Blender/blender/source/
+References/Blender/blender/source/*
+!References/Blender/blender/source/creator/
+!References/Blender/blender/source/creator/**
 !References/Blender/blender/.clang-format
 !References/Blender/blender/.clang-tidy
 !References/Blender/blender/.editorconfig
