@@ -474,6 +474,11 @@ References/PX4/PX4/platforms/nuttx/Debug/NuttX
 !References/PX4/PX4/test_data/**
 References/PX4/PX4/test_data/crsf_rc_channels.txt
 References/PX4/PX4/test_data/ghst_rc_channels.txt
+!References/PX4/PX4/Tools/
+!References/PX4/PX4/Tools/**
+References/PX4/PX4/Tools/fetch_file.py
+References/PX4/PX4/Tools/geotag_images_ulog.py
+References/PX4/PX4/Tools/px4moduledoc/markdownout.py
 References/PX4/PX4/Tools/test_keys/
 !References/PX4/PX4/validation/
 !References/PX4/PX4/validation/**
