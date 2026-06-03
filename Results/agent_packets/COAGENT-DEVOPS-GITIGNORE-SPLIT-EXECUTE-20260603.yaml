@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_material_doc_batch_ready_for_commit
-decision: admit_blender_material_doc_slice
-summary: "Committed the Material Maker addons slice as 96f15619ff. Current narrow probes showed visible untracked 0, cached diff 0, upstream relation 28 0, and .git/index.lock absent. Selected References/Blender/material/material_maker/doc as the next bounded Material Maker reference slice. It has 961 files, under the 1000-file ceiling. Gates found no files over 100 MB, no nested .git, no LFS pointer markers, and no high-confidence secret hits. .gitignore now opens only References/Blender/material/material_maker/doc/** while keeping other material_maker content isolated."
-evidence: "material_addons_commit=96f15619ff; pre_slice_visible_untracked=0; pre_slice_cached_diff=0; upstream_ahead_behind_before_slice=28 0; index_lock=absent; candidate=References/Blender/material/material_maker/doc; files_on_disk=961; over_100MB=none; nested_git=none; lfs_pointer_markers=none; high_confidence_secret_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
-risks: "This is a 961-file external reference doc slice, below the 1000-file batch ceiling. Push remains deferred; branch is increasingly ahead of upstream."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, References/Blender/material/material_maker/doc, and this result packet; commit this Material Maker doc batch; then recheck visible untracked count."
+status: blender_material_remaining_subdirs_ready_for_commit
+decision: admit_blender_material_remaining_subdirs
+summary: "Committed the Material Maker doc slice as 4e9a833504. Current narrow probes showed visible untracked 0, cached diff 0, upstream relation 29 0, and .git/index.lock absent. Selected the remaining References/Blender/material/material_maker subdirectories excluding the already committed doc subtree as one bounded slice. This batch totals 796 files, under the 1000-file ceiling. Gates found no files over 100 MB, no nested .git, and no high-confidence secret/LFS hits. .gitignore now opens library, meshes, environments, misc, fonts, locale, theme, examples, icons, nodes, tools, widgets, windows, and panels under material_maker."
+evidence: "material_doc_commit=4e9a833504; pre_slice_visible_untracked=0; pre_slice_cached_diff=0; upstream_ahead_behind_before_slice=29 0; index_lock=absent; candidates=remaining References/Blender/material/material_maker subdirs excluding doc; files_on_disk=796; over_100MB=none; nested_git=none; high_confidence_secret_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
+risks: "This is a 796-file external reference slice, below the 1000-file batch ceiling. Push remains deferred; branch is increasingly ahead of upstream."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, the remaining material_maker subdirectories, and this result packet; commit this batch; then recheck visible untracked count."
 needs_human: false
 blocked_reason: "not_blocked"
