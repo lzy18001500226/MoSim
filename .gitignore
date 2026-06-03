@@ -171,9 +171,6 @@ References/Agent/**/node_modules/
 References/Agent/**/.venv/
 References/Agent/**/venv/
 References/Agent/**/*.pyc
-Docs/Skills/Unreal/
-!Docs/Skills/Unreal/
-Docs/Skills/Unreal/*
 Docs/Skills/Unreal/**/__pycache__/
 References/Log/
 References/Sunray/

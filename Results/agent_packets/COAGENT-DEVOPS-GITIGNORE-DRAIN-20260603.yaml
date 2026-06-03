@@ -837,6 +837,16 @@ proposed_batches:
   - "batch_106_removed_rule=References/Agent/Skills/openai-skills/*"
   - "batch_106_removed_rule=!References/Agent/Skills/openai-skills/skills/"
   - "batch_106_removed_rule=References/Agent/Skills/openai-skills/skills/*"
+  - "batch_107_candidate=Docs/Skills/Unreal"
+  - "batch_107_head_vs_upstream_before=106 0"
+  - "batch_107_index_lock=absent"
+  - "batch_107_candidate_tracked_files=3406"
+  - "batch_107_candidate_untracked_files=0"
+  - "batch_107_compare_candidate=References/Agent/Skills/AutoSkill"
+  - "batch_107_compare_candidate_tracked_files=10048"
+  - "batch_107_removed_rule=Docs/Skills/Unreal/"
+  - "batch_107_removed_rule=!Docs/Skills/Unreal/"
+  - "batch_107_removed_rule=Docs/Skills/Unreal/*"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -845,9 +855,8 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this one-hundred-sixth `.gitignore` drain batch together with the ledger
-  and result packet, then continue with remaining `Docs/Skills/Unreal` and
-  `AutoSkill` residual split-routing chains before the final full `.gitignore`
-  audit.
+  Commit this one-hundred-seventh `.gitignore` drain batch together with the
+  ledger and result packet, then continue with remaining `AutoSkill` residual
+  split-routing chains before the final full `.gitignore` audit.
 needs_human: false
 blocked_reason: ""
