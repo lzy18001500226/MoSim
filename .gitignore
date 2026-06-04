@@ -133,6 +133,14 @@ References/Agent/*
 !References/Agent/Control/
 !References/Agent/Control/**
 References/Agent/Control/agor/.env.postgres
+!References/Agent/Domain/
+References/Agent/Domain/*
+!References/Agent/Domain/ai-data-science-team/
+!References/Agent/Domain/ai-data-science-team/**
+!References/Agent/Domain/fara/
+!References/Agent/Domain/fara/**
+!References/Agent/Domain/OpenCodeInterpreter/
+!References/Agent/Domain/OpenCodeInterpreter/**
 !References/Agent/Skills/
 !References/Agent/Skills/**
 References/Agent/Skills/awesome-opencode/dist/
