@@ -198,6 +198,8 @@ References/Agent/Gateway/toolhive/*
 !References/Agent/Gateway/toolhive/hack/**
 !References/Agent/Gateway/toolhive/skills/
 !References/Agent/Gateway/toolhive/skills/**
+!References/Agent/Gateway/toolhive/test/
+!References/Agent/Gateway/toolhive/test/**
 !References/Agent/Gateway/toolhive/.chainsaw.yaml
 !References/Agent/Gateway/toolhive/.codespellrc
 !References/Agent/Gateway/toolhive/.gitattributes
