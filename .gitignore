@@ -172,6 +172,10 @@ References/Agent/Skills/*
 !References/Agent/Skills/Agent-Skills-for-Context-Engineering/**
 !References/Agent/Skills/claude-plugins-official/
 !References/Agent/Skills/claude-plugins-official/**
+!References/Agent/Skills/anthropics-skills/
+!References/Agent/Skills/anthropics-skills/**
+!References/Agent/Skills/SuperClaude_Framework/
+!References/Agent/Skills/SuperClaude_Framework/**
 References/Agent/Skills/awesome-opencode/dist/
 References/Agent/**/.git/
 References/Agent/**/__pycache__/
