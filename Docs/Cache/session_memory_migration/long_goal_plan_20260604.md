@@ -49,7 +49,15 @@ current_state:
   reference-index-first routing and explicit approval plus local evidence before
   direct runtime adoption. A completion audit now closes the currently
   identified topic set for migration purposes; newly surfaced historical claims
-  must start again at round 1.
+  must start again at round 1. After that closeout, a new round-1 detail cache
+  was opened for fine-grained Codex CLI/App token, resume, proxy, and MCP UX
+  memories from the visible conversation. A project-local round-2 review has
+  now classified those items as already represented, cache-only, rejected as
+  project state, or live-infrastructure-gated. A round-3 disposition then
+  completed the lane with no formal patch. This does not reopen or invalidate
+  the completed pre-closeout round-3 dispositions; it records a new cache-only
+  lane whose action items require same-round current evidence before any future
+  formal promotion.
 ```
 
 ## Recovery Entry Points
@@ -79,6 +87,7 @@ infrastructure request.
 | Lane | Current Cache State | Round-3 Direction |
 |---|---|---|
 | Codex App / VSCode / CLI / MCP infrastructure | round-2 infrastructure cache | Keep machine-specific repair history as infrastructure memory; do not touch external `.codex` files unless explicitly requested. |
+| Codex CLI/App token, resume, proxy, and MCP detail UX | post-closeout round-1, round-2, and round-3 detail caches | Completed with no formal patch. Existing docs already cover `CheckNetIsolation`, Windows-MCP, ROS-MCP, and rosbridge auto-start; token totals, `/tokens`, resume defaults, WSL NAT proxy, and filesystem-MCP health remain cache-only/live-infrastructure-gated; lowercase path display is rejected as project state. |
 | MWORKS evidence and smoke boundaries | round-2 controller-evidence cache | Patch only if a workflow lacks `smoke_only`, source label, or check/simulate boundary wording. |
 | MWORKS codegen and generated runtime | round-3 rechecked, no formal patch | Existing docs already keep the `GenerateModelCode` route and PID-demo-only SIL evidence; do not claim per-controller runtime authority. |
 | UE / ROS2 / FAST-LIO runtime | round-3 source-priority patch applied | Use latest matching `*_CURRENT` gate and linked runtime directory first; manual review and final product acceptance remain separate. |
@@ -145,6 +154,25 @@ Pick one item per round:
    new conversation can recover from project-local docs/cache without the old
    chat transcript. This does not certify unknown external session lines; any
    newly surfaced claim must enter round 1.
+
+8. CLI/App infrastructure detail cache:
+   opened after the closeout on 2026-06-04 for token/status UX, token-total
+   source boundaries, explicit `codex resume -C` fallback, resume directory
+   prompt behavior, lowercase path display, WSL localhost-proxy warning,
+   `CheckNetIsolation` PowerShell/cmd syntax, Windows-MCP/ROS-MCP boundaries,
+   rosbridge auto-start intent, and a historical filesystem-MCP startup
+   failure. Current disposition: round 1, project-local round 2, and round 3
+   disposition caches at
+   `Docs/Cache/session_memory_migration/round1_cli_app_infrastructure_detail_memory_20260604.md`
+   ,
+   `Docs/Cache/session_memory_migration/round2_cli_app_infrastructure_detail_memory_20260604.md`
+   , and
+   `Docs/Cache/session_memory_migration/round3_cli_app_infrastructure_detail_disposition_20260604.md`.
+   Round 3 completed with no formal patch: `CheckNetIsolation`, Windows-MCP,
+   ROS-MCP, and rosbridge auto-start are already represented; lowercase path
+   display is rejected as project state; token totals, `/tokens`, resume
+   prompt/defaults, WSL NAT proxy repair, and filesystem-MCP health stay
+   cache-only or explicit live-infrastructure-task gated.
 ```
 
 After this checkpoint, the currently identified round-2 topic set has round-3

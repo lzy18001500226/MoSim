@@ -29,6 +29,12 @@ round3_rechecked_no_formal_patch:
   - MWORKS code generation / SIL route
   - CoAgent operating boundary
   - External reference learning boundary
+new_round1_after_closeout:
+  - Docs/Cache/session_memory_migration/round1_cli_app_infrastructure_detail_memory_20260604.md
+new_round2_after_closeout:
+  - Docs/Cache/session_memory_migration/round2_cli_app_infrastructure_detail_memory_20260604.md
+new_round3_after_closeout:
+  - Docs/Cache/session_memory_migration/round3_cli_app_infrastructure_detail_disposition_20260604.md
 this_file_cache_only: true
 primary_recovery_files:
   - AGENTS.md
@@ -56,6 +62,7 @@ instead of being promoted directly.
 |---|---|---|---|
 | Migration process and anti-pollution rule | Workflow, round 1 cache, round 2 process review, round 3 map | `round3_map_ready` | Use the round 3 map before any formal patch. |
 | Codex App / VSCode / CLI session policy | Round 2 infrastructure cache and debug workflow pointers | `covered_cache_round3_mapped` | Do not edit external `.codex` state unless the user asks for infrastructure repair. |
+| Codex CLI/App token, resume, proxy, and MCP detail UX | Post-closeout round-1, round-2, and round-3 detail caches | `round3_after_closeout_complete_no_formal_patch` | All 10 detail items have dispositions. Existing docs already cover `CheckNetIsolation`, Windows-MCP, ROS-MCP, and rosbridge auto-start; token totals, `/tokens`, resume defaults, WSL NAT proxy, and filesystem-MCP health remain cache-only/live-infrastructure-gated; lowercase path display is rejected as project state. |
 | MCP / Windows-MCP / ROS-MCP / config repair | Infrastructure cache plus `debug_mcp.md` pointers | `partially_covered` | Extract only reusable repair patterns; keep machine-specific paths as evidence pointers. |
 | WeChat gateway progress/intervention | Infrastructure cache plus PROGRESS/AGENTS pointers | `covered_cache_round3_mapped` | Preserve as progress channel only, never proof channel. |
 | Git split / large worktree hygiene | Infrastructure cache plus active ledger rows | `covered_cache_round3_mapped` | Keep path-limited; do not run broad Git status as migration proof. |
@@ -80,9 +87,12 @@ instead of being promoted directly.
 ## Required Topic Caches Still Missing
 
 No currently identified coverage-matrix topic cache is still completely
-missing. No currently identified topic remains round-1-only after this
-checkpoint. No currently identified round-2 topic lacks a round-3 disposition.
-Future discoveries from old chat must start a new round-1 cache entry.
+missing for the pre-closeout topic set. A post-closeout round-1/round-2/round-3
+cache lane was added for fine-grained Codex CLI/App token, resume, proxy, and
+MCP UX details that surfaced from the visible conversation after the main
+closeout. It is not part of the original completed round-3 topic set, but it
+now has its own round-3 disposition with no formal patch. Other future
+discoveries from old chat must also start a new round-1 cache entry.
 
 ```text
 round1_only_caches_need_round2:
@@ -91,6 +101,8 @@ round2_verified_topics_need_round3_application:
   - none
 supplemental_round2_routing_caches:
   - round2_core_competition_report_docs_memory_20260604.md
+post_closeout_round3_dispositions:
+  - round3_cli_app_infrastructure_detail_disposition_20260604.md
 ```
 
 ## Completion Audit Against Workflow Criteria

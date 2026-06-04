@@ -22,6 +22,13 @@ claim_boundary:
   - this audit closes the current migration topic set
   - it does not certify every possible line of an unread external session file
   - newly surfaced historical claims must enter round 1 of the same workflow
+post_closeout_update:
+  - a fine-grained Codex CLI/App token, resume, proxy, and MCP detail lane was
+    added after the original closeout
+  - that lane now has round-1, round-2, and round-3 cache disposition files
+  - it completed with no formal patch because covered items were already
+    represented and unresolved items require same-round live infrastructure
+    evidence before formal promotion
 ```
 
 The migration is sufficient for a new conversation to recover the important
@@ -43,7 +50,7 @@ Read in this order:
 8. Docs/Cache/session_memory_migration/coverage_matrix_20260604.md
 9. Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md
 10. Docs/Cache/session_memory_migration/completion_audit_20260604.md
-11. The topic-specific round-2 cache file named by the coverage matrix
+11. The topic-specific round-2 or round-3 cache file named by the coverage matrix
 ```
 
 ## Topic Coverage
@@ -73,6 +80,7 @@ round3_rechecked_no_formal_patch:
   - MWORKS code generation / SIL boundary
   - CoAgent operating boundary
   - External reference learning boundary
+  - post-closeout Codex CLI/App token, resume, proxy, and MCP detail lane
 
 cache_only_or_user_review_gated:
   - Sunray150 numeric assembly and material acceptance
@@ -80,6 +88,8 @@ cache_only_or_user_review_gated:
   - final FAST-LIO localization, planner, controller, and product acceptance
   - Codex/App/CLI infrastructure facts unless a fresh infrastructure task
     rechecks the current machine
+  - token totals, `/tokens`, resume defaults, WSL NAT proxy repair, and
+    filesystem-MCP health from the post-closeout CLI/App detail lane
 ```
 
 ## High-Risk Closeout
@@ -129,6 +139,21 @@ core_competition_report_docs:
       `Docs/MworksDocs/` tree in the affected indexes/workflows
     - no new controller, scene, FAST-LIO, parameter, or codegen claim was
       promoted by this supplemental routing patch
+
+codex_cli_app_detail_lane:
+  result:
+    - post-closeout CLI/App details are recoverable through
+      `round1_cli_app_infrastructure_detail_memory_20260604.md`,
+      `round2_cli_app_infrastructure_detail_memory_20260604.md`, and
+      `round3_cli_app_infrastructure_detail_disposition_20260604.md`
+    - `CheckNetIsolation`, Windows-MCP, ROS-MCP, and rosbridge auto-start were
+      found already represented in formal docs, so no duplicate patch was made
+    - lowercase WSL path display was rejected as project move/rename evidence
+    - token totals, `/tokens`, resume prompt/defaults, WSL NAT proxy repair,
+      and filesystem-MCP health remain cache-only or explicit
+      live-infrastructure-task gated
+    - no external `.codex`, registry, process, shell-profile, ROS port, or live
+      Codex CLI state was inspected by this memory migration lane
 ```
 
 ## PROGRESS Compaction Review
