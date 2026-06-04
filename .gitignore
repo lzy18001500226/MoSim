@@ -570,3 +570,10 @@ Results/unreal_scene_review/
 Results/unreal_scene_mapping/*probe*.json
 Results/unreal_scene_mapping/*object_bounds*.json
 UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/
+
+# Temporary Git split throttle added after user correction on 2026-06-04:
+# References/Blender is a huge external reference tree. This rule intentionally
+# overrides earlier fine-grained unignore lines so new/untracked Blender files
+# cannot flood Git while the tree is drained in reviewed <1000-file batches.
+# Final state must remove or narrow this rule to only real long-term ignores.
+References/Blender/**
