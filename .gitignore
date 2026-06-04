@@ -128,6 +128,12 @@ References/UnrealScenes/
 # files remain tracked; new files in these trees must be admitted with
 # path-limited `git add -f <reviewed-slice>` after size/secret checks.
 References/Agent/
+!References/Agent/
+References/Agent/*
+!References/Agent/Skills/
+References/Agent/Skills/*
+!References/Agent/Skills/Awesome-Agent-Skills/
+!References/Agent/Skills/Awesome-Agent-Skills/**
 References/Agent/Skills/awesome-opencode/dist/
 References/Agent/**/.git/
 References/Agent/**/__pycache__/
