@@ -40,7 +40,10 @@ current_state:
   `Docs/Workflows/ros2_runtime_setup.md`: the 2026-06-01 apt/key and rosbridge
   notes are prior infrastructure evidence, current FAST-LIO answers use the
   latest route-specific `*_CURRENT` gate first, and stale helper-script
-  references were replaced with scripts present in this checkout.
+  references were replaced with scripts present in this checkout. CoAgent
+  operating history has been rechecked in round 3 with no formal patch because
+  the existing CoAgent docs and orchestration workflow already carry the gate;
+  this migration did not authorize implementation or live visibility claims.
 ```
 
 ## Recovery Entry Points
@@ -72,7 +75,7 @@ infrastructure request.
 | UE scene source and renderer | round-3 state-disambiguation patch applied | Keep registry policy primary, active content links, manual-review target, Gate-B/runtime readiness, smoke evidence, and final acceptance separate. |
 | Sunray150 assets and materials | round-2 Sunray cache | Preserve accepted source-chain facts and rejected material/proxy routes; no UE export until accepted review evidence exists. |
 | Sunray150 parameter identification | round-3 no-numeric-promotion disposition | Keep all current numeric values as `source=SDF_migration` seeds unless a complete identification bundle appears. |
-| CoAgent operating history | round-2 CoAgent cache | Guardrail only; no implementation, transport, automation, department, notification, or tool expansion from this migration. |
+| CoAgent operating history | round-3 rechecked, no formal patch | Guardrail only; no implementation, live visibility claim, transport, automation, department, notification, schema, or tool expansion from this migration. |
 | External references / skills / agent systems | round-2 external-reference cache | Use indexes and audit workflow; external projects are contracts/patterns unless separately approved and proven locally. |
 | Git split / large worktree hygiene | infrastructure cache plus ledger | Keep as a separate GitIntegrator lane; no broad Git cleanup inside migration. |
 
@@ -109,8 +112,13 @@ Pick one item per round:
    `Results/codegen_probe`; no formal patch was made.
 
 5. CoAgent scope gate:
-   re-read `CoAgent/STATUS.md` and `CoAgent/README.md`; record guardrails only
-   unless the user opens a separate approved CoAgent implementation task.
+   completed for migration round 3 on 2026-06-04. Current disposition:
+   CoAgent docs already carry the gate, so no formal patch was needed. Recover
+   direction from `CoAgent/STATUS.md`, `CoAgent/README.md`, decisions, SOPs,
+   orchestration workflow, and ledgers. This migration does not authorize
+   implementation, live visibility-health claims, app-server transport,
+   unattended automation, department expansion, schema changes, real routine
+   notifications, or tool/MCP expansion.
 
 6. External-reference boundary:
    re-read reference indexes and audit workflow; patch only recovery pointers

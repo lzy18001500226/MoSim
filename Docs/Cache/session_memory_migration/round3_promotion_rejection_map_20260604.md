@@ -18,6 +18,7 @@ formal_docs_patched_this_round:
   - Docs/Workflows/ros2_runtime_setup.md
 round3_rechecked_no_formal_patch:
   - MWORKS codegen/SIL boundary
+  - CoAgent operating boundary
 this_file_cache_only: true
 source_rounds:
   - Docs/Cache/session_memory_migration/round1_candidate_cache_20260604.md
@@ -161,6 +162,41 @@ ROS2-MEM-001/ROS2-MEM-002/ROS2-MEM-003/ROS2-MEM-004/ROS2-MEM-005/ROS2-MEM-007/RO
       produced zero outputs with `Error LiDAR Type`.
     - no final FAST-LIO localization, planner performance, controller
       integration, or product acceptance claim was promoted.
+
+COAGENT-MEM-001/COAGENT-MEM-002/COAGENT-MEM-003/COAGENT-MEM-004/COAGENT-MEM-005/COAGENT-MEM-006/COAGENT-MEM-007/COAGENT-MEM-008:
+  evidence_re_read:
+    - Docs/Cache/session_memory_migration/round2_coagent_operating_memory_20260604.md
+    - CoAgent/STATUS.md
+    - CoAgent/README.md
+    - CoAgent/docs/decisions/coagent_design_decision_record.md
+    - CoAgent/docs/status/codex_visible_thread_sop.md
+    - Docs/Workflows/agent_orchestration.md
+    - Docs/Workflows/agent_task_ledger.md
+  disposition:
+    - no formal patch was needed: CoAgent README, STATUS, decision record,
+      visible-thread SOP, orchestration workflow, AGENTS, and ledger already
+      carry the required gate.
+    - current CoAgent direction must be recovered from CoAgent docs and ledgers,
+      not old chat memory.
+    - current allowed scope remains project-local transport/Git/task-result/
+      review/status/evidence/recovery work under the current approved gate;
+      app-server transport, unattended automation, new permanent departments,
+      broad hook rewrites, tool/MCP expansion, external credentials/config,
+      destructive cleanup/Git, routine real notifications, and durable internal
+      agent swarms remain gated unless separately approved.
+    - `COAGENT-IMPL-NEXT-*` and architecture/design entries are implementation
+      or design history, not blanket authorization for this migration to change
+      runtime, schema, transport, automation, department registry, notification,
+      or tool surfaces.
+    - visible department communication remains distinct from local shadow-home
+      packet transport. This round did not run
+      `CoAgent/doctor/check_department_visibility.py`, so it does not claim
+      current live visibility health.
+    - Weixin/WeChat remains sparse human-review or blocker notification through
+      the narrow adapter, not evidence proof and not routine real progress
+      sending.
+    - this session-memory migration made no CoAgent code/runtime/schema/tool
+      changes and does not authorize future CoAgent implementation work.
 ```
 
 ## Promotion Buckets
@@ -331,12 +367,42 @@ COAGENT-MEM-001:
     - AGENTS.md
     - CoAgent/README.md
     - CoAgent/STATUS.md
+  round3_disposition:
+    - already_represented_and_rechecked
+    - no formal patch
+
+COAGENT-MEM-002:
+  current approved scope is narrow and gated; future transport, automation,
+  permanent departments, hooks, tools/MCP, credentials/config, destructive Git,
+  routine real notifications, and durable swarms need separate approval
+  formal entries:
+    - AGENTS.md
+    - CoAgent/README.md
+    - CoAgent/STATUS.md
+    - CoAgent/docs/decisions/coagent_design_decision_record.md
+  round3_disposition:
+    - already_represented_and_rechecked
+    - no formal patch
+
+COAGENT-MEM-004:
+  visible department communication must be proven by real visible-thread state
+  or user confirmation, not local shadow-home packet transport
+  formal entries:
+    - CoAgent/docs/status/codex_visible_thread_sop.md
+    - Docs/Workflows/agent_orchestration.md
+    - CoAgent/STATUS.md
+  round3_disposition:
+    - already_represented_and_rechecked
+    - live visibility not checked in this migration round
 
 COAGENT-MEM-006:
   WeChat is sparse progress/intervention, not evidence proof
   formal entries:
     - AGENTS.md
     - CoAgent/STATUS.md
+  round3_disposition:
+    - already_represented_and_rechecked
+    - no formal patch
 
 EXTREF-MEM-001:
   external learning starts from project reference indexes and audit workflow

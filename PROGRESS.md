@@ -46,6 +46,12 @@
   historical and should not override the current command list in the workflow.
   Factory Gate B currently opens manual UE/RViz review only and does not prove
   final controller integration, planner performance, or product acceptance.
+  CoAgent operating history has a round-3 no-formal-patch disposition: existing
+  CoAgent docs and orchestration workflow already carry the gate. This
+  migration records guardrails only and does not authorize CoAgent
+  implementation, live visibility-health claims, app-server transport,
+  unattended automation, department expansion, schema changes, routine real
+  notifications, or tool/MCP expansion.
   Continue round 3 one narrow item at a time: re-read current evidence and the
   formal target doc in the same round, then patch narrowly, reject/supersede,
   or record a user-review blocker. Do not compress this `PROGRESS.md` or mark

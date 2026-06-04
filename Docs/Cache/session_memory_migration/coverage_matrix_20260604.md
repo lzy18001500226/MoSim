@@ -21,6 +21,7 @@ formal_docs_patched_this_round:
   - Docs/Workflows/ros2_runtime_setup.md
 round3_rechecked_no_formal_patch:
   - MWORKS code generation / SIL route
+  - CoAgent operating boundary
 this_file_cache_only: true
 primary_recovery_files:
   - PROGRESS.md
@@ -57,7 +58,7 @@ formal target documents must be re-read in the same round before any patch.
 | UE scene source selection / Factory / Derelict / rejected maps | Round 1 scene-source/renderer cache plus round 2 audit at `round2_scene_source_renderer_memory_20260604.md`; round 3 re-read registry, active links, manual packets, smoke status, and Factory Gate-B bundle | `round3_applied_state_disambiguation` | `Docs/Workflows/unreal_renderer.md` now separates registry policy primary, active renderer links, manual-review target, Gate-B/runtime readiness, smoke evidence, and final acceptance. Current files show registry policy primary Derelict while active links point to Factory; no scene was promoted to final product acceptance. |
 | Unreal renderer / review-camera / listener / editor MCP history | Round 1 scene-source/renderer cache plus round 2 audit at `round2_scene_source_renderer_memory_20260604.md`; round 3 map updated | `round2_verified_needs_live_recheck_before_use` | Treat old S0/S1/blockout routes as superseded; re-run current review/log checks before any current visual-review claim. |
 | ROS2 Humble runtime setup and apt/key state | Round 1 cache plus round 2 audit at `round2_ros2_runtime_setup_memory_20260604.md`; round 3 re-read current evidence and patched `Docs/Workflows/ros2_runtime_setup.md` | `round3_applied_source_priority` | ROS2 Humble route is formalized; apt/key and rosbridge notes are prior infrastructure evidence unless live-checked; current FAST-LIO answers must prefer latest route-specific `*_CURRENT` gates and existing helper scripts. |
-| CoAgent organization / department / task-runtime history | Round 1 CoAgent operating cache plus round 2 audit at `round2_coagent_operating_memory_20260604.md`; round 3 map updated | `round2_verified_round3_mapped` | Keep as guardrails only: read `CoAgent/STATUS.md` before CoAgent changes; no implementation, visibility-health, or transport expansion is authorized by this migration. |
+| CoAgent organization / department / task-runtime history | Round 1 CoAgent operating cache plus round 2 audit at `round2_coagent_operating_memory_20260604.md`; round 3 re-read CoAgent STATUS/README, decision record, visible-thread SOP, orchestration workflow, and ledger | `round3_rechecked_no_formal_patch` | Existing docs already carry the gate; keep as guardrails only. No implementation, visibility-health claim, live notification, automation, department, transport, schema, or tool expansion is authorized by this migration. |
 | Parameter identification / Sunray150 physical parameters | Round 1 parameter cache plus round 2 audit at `round2_parameter_identification_memory_20260604.md`; round 3 application clarified the formal workflow wording without numeric promotion | `round3_applied_no_numeric_promotion` | Current values remain `source=SDF_migration`; no project-local identification bundle was found in this pass; no numeric parameter is ready for formal promotion. |
 | External repos / AirSim / RflySim / reference-learning policy | Round 1 external-reference cache plus round 2 audit at `round2_external_reference_memory_20260604.md`; round 3 map updated | `round2_verified_round3_mapped` | Keep external references as contracts/patterns unless an approved integration has local build/runtime evidence; preserve FAST-LIO status-source priority and rejected toy-route memory. |
 | Active queues / mistakes to avoid / recovery pointers | Present in PROGRESS | `needs_compaction_review` | Decide whether to split into formal workflow pointers or cache-only historical backlog. |
@@ -74,7 +75,6 @@ patch.
 round1_only_caches_need_round2:
   - none
 round2_verified_topics_need_round3_application:
-  - coagent_operating
   - external_reference_learning
 ```
 
@@ -115,8 +115,10 @@ all_high_risk_items_resolved:
       workflow patch. Factory current Gate B opens manual UE/RViz review only;
       final localization, planner performance, controller integration, and
       product acceptance remain unpromoted.
-    - CoAgent round 2 confirms guardrails only; live visibility, implementation,
-      automation, transport, and tool expansion are not authorized.
+    - CoAgent has a round-3 no-formal-patch disposition: existing CoAgent docs
+      already carry the gate; live visibility, implementation, automation,
+      transport, schema, notification, department, and tool expansion are not
+      authorized by this migration.
     - Parameter identification now has round-3 disposition for the current
       repository state: no project-local identification bundle was found, one
       accepted-mass wording risk was clarified, and no numeric parameter was
