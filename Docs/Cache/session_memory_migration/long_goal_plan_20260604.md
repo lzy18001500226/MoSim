@@ -44,6 +44,10 @@ current_state:
   operating history has been rechecked in round 3 with no formal patch because
   the existing CoAgent docs and orchestration workflow already carry the gate;
   this migration did not authorize implementation or live visibility claims.
+  External reference learning has also been rechecked in round 3 with no
+  formal patch because existing indexes/workflows already require
+  reference-index-first routing and explicit approval plus local evidence before
+  direct runtime adoption.
 ```
 
 ## Recovery Entry Points
@@ -76,7 +80,7 @@ infrastructure request.
 | Sunray150 assets and materials | round-2 Sunray cache | Preserve accepted source-chain facts and rejected material/proxy routes; no UE export until accepted review evidence exists. |
 | Sunray150 parameter identification | round-3 no-numeric-promotion disposition | Keep all current numeric values as `source=SDF_migration` seeds unless a complete identification bundle appears. |
 | CoAgent operating history | round-3 rechecked, no formal patch | Guardrail only; no implementation, live visibility claim, transport, automation, department, notification, schema, or tool expansion from this migration. |
-| External references / skills / agent systems | round-2 external-reference cache | Use indexes and audit workflow; external projects are contracts/patterns unless separately approved and proven locally. |
+| External references / skills / agent systems | round-3 rechecked, no formal patch | Use indexes and audit workflow; external projects are contracts/patterns unless separately approved and proven locally. |
 | Git split / large worktree hygiene | infrastructure cache plus ledger | Keep as a separate GitIntegrator lane; no broad Git cleanup inside migration. |
 
 ## Round-3 Work Queue
@@ -121,9 +125,19 @@ Pick one item per round:
    notifications, or tool/MCP expansion.
 
 6. External-reference boundary:
-   re-read reference indexes and audit workflow; patch only recovery pointers
-   or rejected-adoption wording if missing.
+   completed for migration round 3 on 2026-06-04. Current disposition:
+   external learning index, audit workflow, reference index, agent
+   classification, real-UAV reuse matrix/source audit, UE renderer workflow,
+   and architecture doc already carry the boundary. No formal patch was needed.
+   External projects remain contracts, patterns, source material, or candidates
+   unless an approved integration has local build/runtime/test evidence.
 ```
+
+After this checkpoint, the currently identified round-2 topic set has round-3
+dispositions. The next safe work is a completion audit: check recovery indexes,
+decide whether any lower-priority `PROGRESS.md` history still needs a cache
+entry, and only then decide whether the long migration goal can be marked
+complete.
 
 ## Completion Criteria
 

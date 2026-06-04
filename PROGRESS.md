@@ -52,11 +52,18 @@
   implementation, live visibility-health claims, app-server transport,
   unattended automation, department expansion, schema changes, routine real
   notifications, or tool/MCP expansion.
-  Continue round 3 one narrow item at a time: re-read current evidence and the
-  formal target doc in the same round, then patch narrowly, reject/supersede,
-  or record a user-review blocker. Do not compress this `PROGRESS.md` or mark
-  the goal complete until high-risk items have round-3 promotion, rejection,
-  supersession, or explicit user-review/current-evidence gates.
+  External-reference learning has a round-3 no-formal-patch disposition:
+  existing indexes/workflows already require reference-index-first routing,
+  patch-or-no-patch audit outcomes, and explicit approval plus local evidence
+  before direct runtime adoption. RflySim/AirSim/Gazebo/PX4/Sunray/FAST-LIO and
+  agent/skill/MCP references remain contracts, patterns, source material, or
+  candidates unless a separate approved integration proves them locally.
+  The currently identified round-2 topic set now has round-3 dispositions. Next
+  migration work is a completion audit and recovery-index check: confirm no
+  lower-priority `PROGRESS.md` history still needs a cache entry, keep any new
+  formal patch narrow and current-evidence-backed, and do not promote old chat
+  memory broadly. Do not compress this `PROGRESS.md` or mark the goal complete
+  until the completion audit says the new-conversation recovery path is enough.
 
 - 2026-06-03 CST Codex shared Windows state repair: user prefers not to isolate
   Windows CLI into `C:\Users\HP\.codex-cli`. Restored the shared-home route by

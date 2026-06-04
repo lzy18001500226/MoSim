@@ -22,6 +22,7 @@ formal_docs_patched_this_round:
 round3_rechecked_no_formal_patch:
   - MWORKS code generation / SIL route
   - CoAgent operating boundary
+  - External reference learning boundary
 this_file_cache_only: true
 primary_recovery_files:
   - PROGRESS.md
@@ -60,7 +61,7 @@ formal target documents must be re-read in the same round before any patch.
 | ROS2 Humble runtime setup and apt/key state | Round 1 cache plus round 2 audit at `round2_ros2_runtime_setup_memory_20260604.md`; round 3 re-read current evidence and patched `Docs/Workflows/ros2_runtime_setup.md` | `round3_applied_source_priority` | ROS2 Humble route is formalized; apt/key and rosbridge notes are prior infrastructure evidence unless live-checked; current FAST-LIO answers must prefer latest route-specific `*_CURRENT` gates and existing helper scripts. |
 | CoAgent organization / department / task-runtime history | Round 1 CoAgent operating cache plus round 2 audit at `round2_coagent_operating_memory_20260604.md`; round 3 re-read CoAgent STATUS/README, decision record, visible-thread SOP, orchestration workflow, and ledger | `round3_rechecked_no_formal_patch` | Existing docs already carry the gate; keep as guardrails only. No implementation, visibility-health claim, live notification, automation, department, transport, schema, or tool expansion is authorized by this migration. |
 | Parameter identification / Sunray150 physical parameters | Round 1 parameter cache plus round 2 audit at `round2_parameter_identification_memory_20260604.md`; round 3 application clarified the formal workflow wording without numeric promotion | `round3_applied_no_numeric_promotion` | Current values remain `source=SDF_migration`; no project-local identification bundle was found in this pass; no numeric parameter is ready for formal promotion. |
-| External repos / AirSim / RflySim / reference-learning policy | Round 1 external-reference cache plus round 2 audit at `round2_external_reference_memory_20260604.md`; round 3 map updated | `round2_verified_round3_mapped` | Keep external references as contracts/patterns unless an approved integration has local build/runtime evidence; preserve FAST-LIO status-source priority and rejected toy-route memory. |
+| External repos / AirSim / RflySim / reference-learning policy | Round 1 external-reference cache plus round 2 audit at `round2_external_reference_memory_20260604.md`; round 3 re-read external learning index, audit workflow, reference index, agent classification, real-UAV reuse matrix/source audit, UE renderer workflow, and architecture doc | `round3_rechecked_no_formal_patch` | Existing docs already carry the boundary. Keep external references as contracts/patterns unless an approved integration has local build/runtime evidence; FAST-LIO source-priority is covered by the ROS2 round-3 patch; rejected toy routes remain smoke-only. |
 | Active queues / mistakes to avoid / recovery pointers | Present in PROGRESS | `needs_compaction_review` | Decide whether to split into formal workflow pointers or cache-only historical backlog. |
 
 ## Required Topic Caches Still Missing
@@ -75,7 +76,7 @@ patch.
 round1_only_caches_need_round2:
   - none
 round2_verified_topics_need_round3_application:
-  - external_reference_learning
+  - none
 ```
 
 ## Completion Audit Against Workflow Criteria
@@ -123,8 +124,10 @@ all_high_risk_items_resolved:
       repository state: no project-local identification bundle was found, one
       accepted-mass wording risk was clarified, and no numeric parameter was
       promoted.
-    - External reference learning remains reference/adaptation only unless a
-      later task proves an approved runtime integration.
+    - External reference learning has a round-3 no-formal-patch disposition:
+      existing indexes/workflows already require reference-index-first routing,
+      patch-or-no-patch audit outcomes, and explicit approval plus local
+      evidence before runtime adoption.
 
 promoted_target_map_exists:
   partial_but_current_topic_set_mapped
@@ -132,8 +135,11 @@ promoted_target_map_exists:
     - round3_promotion_rejection_map_20260604.md now includes the current
       round-2 topic set.
   gap:
-    - only parameter-identification wording has been patched from the new
-      round-2 topic set.
+    - parameter-identification, scene-source, and ROS2/FAST-LIO received narrow
+      formal patches from the new round-2 topic set.
+    - codegen/SIL, CoAgent, and external-reference boundaries were rechecked in
+      round 3 with no formal patch because existing docs already carry the
+      boundaries.
     - each future formal patch must re-read current evidence and the target doc
       in that same round.
 

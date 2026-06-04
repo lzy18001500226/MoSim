@@ -19,6 +19,7 @@ formal_docs_patched_this_round:
 round3_rechecked_no_formal_patch:
   - MWORKS codegen/SIL boundary
   - CoAgent operating boundary
+  - External reference learning boundary
 this_file_cache_only: true
 source_rounds:
   - Docs/Cache/session_memory_migration/round1_candidate_cache_20260604.md
@@ -197,6 +198,42 @@ COAGENT-MEM-001/COAGENT-MEM-002/COAGENT-MEM-003/COAGENT-MEM-004/COAGENT-MEM-005/
       sending.
     - this session-memory migration made no CoAgent code/runtime/schema/tool
       changes and does not authorize future CoAgent implementation work.
+
+EXTREF-MEM-001/EXTREF-MEM-002/EXTREF-MEM-003/EXTREF-MEM-004/EXTREF-MEM-005/EXTREF-MEM-006/EXTREF-MEM-007/EXTREF-MEM-008:
+  evidence_re_read:
+    - Docs/Cache/session_memory_migration/round2_external_reference_memory_20260604.md
+    - Docs/Index/external_learning_index.md
+    - Docs/Workflows/audit_external_repo.md
+    - CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md
+    - Docs/Index/agent_project_classification.md
+    - Results/unreal_scene_mapping/REAL_UAV_STACK_REUSE_MATRIX_20260602.md
+    - Results/unreal_scene_mapping/REAL_UAV_STACK_SOURCE_AUDIT_20260602.md
+    - Docs/Workflows/unreal_renderer.md
+    - Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+  disposition:
+    - no formal patch was needed: external learning and audit workflows already
+      state reference-index-first routing, patch-or-no-patch outcomes, and the
+      rule that third-party runtimes/configs/provider schemas are not adopted
+      wholesale.
+    - RflySim, AirSim, Gazebo, PX4, Sunray/YunZong, EGO-Planner, FAST-LIO, and
+      agent/skill/MCP references remain contracts, patterns, source material, or
+      candidates only unless a separate approved integration produces local
+      build/runtime/test evidence.
+    - the real-UAV-stack source audit and reuse matrix remain useful active
+      guidance, but they do not convert PX4, MAVROS, ROS1, AirSim, Gazebo,
+      RflySim, Sunray, EGO-Planner, or an external FAST-LIO fork into adopted
+      MoSim runtime dependencies by implication.
+    - the FAST-LIO source-priority risk from external references is already
+      covered by the ROS2/FAST-LIO round-3 patch in
+      `Docs/Workflows/ros2_runtime_setup.md`; do not duplicate it into another
+      formal document unless a future target doc becomes misleading.
+    - keyboard/grid/static-cloud/HTML routes remain rejected or smoke-only
+      product paths even if old external or local plumbing artifacts still
+      exist.
+    - agent/skill/MCP catalogs may improve project workflows, skills, review
+      checklists, and indexes, but this migration does not approve provider
+      configs, credentials, app-server transport, broad CoAgent tool expansion,
+      new permanent departments, or unattended automation.
 ```
 
 ## Promotion Buckets
@@ -410,6 +447,9 @@ EXTREF-MEM-001:
     - CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md
     - Docs/Index/external_learning_index.md
     - Docs/Workflows/audit_external_repo.md
+  round3_disposition:
+    - already_represented_and_rechecked
+    - no formal patch
 
 EXTREF-MEM-002:
   external projects are contracts/patterns by default; direct runtime adoption
@@ -417,6 +457,9 @@ EXTREF-MEM-002:
   formal entries:
     - Docs/Index/external_learning_index.md
     - Docs/Workflows/audit_external_repo.md
+  round3_disposition:
+    - already_represented_and_rechecked
+    - no formal patch
 ```
 
 ### Narrow Formal Patch Candidates
@@ -571,6 +614,9 @@ EXTREF-MEM-005:
   required immediate evidence before patch:
     - coordinate with `ROS2-MEM-008`; do not duplicate if one source-priority
       note already covers it
+  round3_disposition:
+    - covered_by_ros2_runtime_setup_round3_patch
+    - no separate formal patch
 ```
 
 ### Keep Cache-Only / Needs Current Evidence
