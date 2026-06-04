@@ -552,3 +552,5 @@ Results/diagnostics/
 Results/agent_runs/
 Results/unreal_scene_review/
 Results/unreal_scene_mapping/*probe*.json
+Results/unreal_scene_mapping/*object_bounds*.json
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/
