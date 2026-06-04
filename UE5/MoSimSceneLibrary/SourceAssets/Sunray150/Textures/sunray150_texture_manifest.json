@@ -29,6 +29,26 @@
     "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_translucent_guard_roughness.png",
     "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_translucent_guard_bump.png"
   },
+  "smoked_propeller": {
+    "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_propeller_base.png",
+    "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_propeller_roughness.png",
+    "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_propeller_bump.png"
+  },
+  "camera_polymer": {
+    "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_camera_black_polymer_base.png",
+    "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_camera_black_polymer_roughness.png",
+    "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_camera_black_polymer_bump.png"
+  },
+  "mid360_window": {
+    "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/mid360_blue_optical_window_base.png",
+    "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/mid360_blue_optical_window_roughness.png",
+    "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/mid360_blue_optical_window_bump.png"
+  },
+  "battery_heatshrink": {
+    "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_battery_heatshrink_base.png",
+    "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_battery_heatshrink_roughness.png",
+    "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_battery_heatshrink_bump.png"
+  },
   "pcb_black": {
     "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_base.png",
     "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_roughness.png",

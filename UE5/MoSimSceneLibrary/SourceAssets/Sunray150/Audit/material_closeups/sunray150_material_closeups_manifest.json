@@ -1,9 +1,11 @@
 {
   "source_blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_dae_mid360_realistic_material_audit.blend",
+  "source_blend_project_relative": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_dae_mid360_realistic_material_audit.blend",
   "outputs": [
     {
       "name": "mid360_housing_window_connector",
       "path": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\material_closeups\\mid360_housing_window_connector.png",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/mid360_housing_window_connector.png",
       "center_m": [
         0.0,
         0.032,
@@ -20,22 +22,24 @@
     {
       "name": "front_usb_camera_battery",
       "path": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\material_closeups\\front_usb_camera_battery.png",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/front_usb_camera_battery.png",
       "center_m": [
         0.0,
-        0.072,
-        0.019
+        0.095,
+        0.006
       ],
       "camera_offset_m": [
-        0.018,
-        -0.12,
-        0.02
+        0.0,
+        -0.105,
+        0.014
       ],
-      "ortho_scale": 0.115,
-      "purpose": "Front USB camera, battery pack area, connector holes, and black camera/glass material."
+      "ortho_scale": 0.078,
+      "purpose": "Front USB camera lens/body, black camera polymer material, and nearby lower electronics."
     },
     {
       "name": "pcb_connectors_cables",
       "path": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\material_closeups\\pcb_connectors_cables.png",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/pcb_connectors_cables.png",
       "center_m": [
         0.03,
         0.052,
@@ -52,6 +56,7 @@
     {
       "name": "carbon_frame_gold_standoffs",
       "path": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\material_closeups\\carbon_frame_gold_standoffs.png",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/carbon_frame_gold_standoffs.png",
       "center_m": [
         0.0,
         0.006,
@@ -68,18 +73,19 @@
     {
       "name": "motor_prop_guard",
       "path": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\material_closeups\\motor_prop_guard.png",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/motor_prop_guard.png",
       "center_m": [
         0.055,
         0.055,
         -0.012
       ],
       "camera_offset_m": [
-        0.055,
-        -0.07,
-        0.04
+        0.045,
+        -0.055,
+        0.055
       ],
-      "ortho_scale": 0.08,
-      "purpose": "Motor bell, copper windings, propeller material, screws, and smoked guard."
+      "ortho_scale": 0.07,
+      "purpose": "LAVA/YUN DRONE motor bell cues, copper windings, propeller material, screws, and smoked guard."
     }
   ]
 }
