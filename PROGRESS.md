@@ -22,6 +22,13 @@
   promotion of inertia, rotor geometry, motor coefficients, drag, controller
   evidence, or the full parameter set to `identified`. No numeric parameter was
   promoted, and no project-local identification bundle was found in that round.
+  MWORKS codegen/SIL has also completed round-3 migration review with no
+  formal patch: `Docs/Workflows/mworks_codegen_controller_runtime.md` and
+  `Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md` already record the
+  `GenerateModelCode` route, PID-demo-only compile/runtime/SIL smoke evidence,
+  timestamp-shift limitation, and the still-open per-controller/time-varying
+  SIL gate. No newer target-controller SIL artifact was found under
+  `Results/codegen_probe` in that pass.
   Continue round 3 one narrow item at a time: re-read current evidence and the
   formal target doc in the same round, then patch narrowly, reject/supersede,
   or record a user-review blocker. Do not compress this `PROGRESS.md` or mark

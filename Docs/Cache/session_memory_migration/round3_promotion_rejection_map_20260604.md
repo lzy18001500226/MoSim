@@ -14,6 +14,8 @@ round: 3
 status: round3_application_started
 formal_docs_patched_this_round:
   - Docs/Workflows/identify_quadrotor_parameters.md
+round3_rechecked_no_formal_patch:
+  - MWORKS codegen/SIL boundary
 this_file_cache_only: true
 source_rounds:
   - Docs/Cache/session_memory_migration/round1_candidate_cache_20260604.md
@@ -55,6 +57,31 @@ PARAM-MEM-001/PARAM-MEM-002/PARAM-MEM-003/PARAM-MEM-004/PARAM-MEM-006:
       controller evidence, or the full parameter set to identified truth.
     - no numeric parameter was promoted.
     - no project-local identification evidence bundle was found in this round.
+
+CODEGEN-MEM-001/CODEGEN-MEM-005/CODEGEN-MEM-007/CODEGEN-MEM-008:
+  evidence_re_read:
+    - Docs/Cache/session_memory_migration/round2_mworks_codegen_runtime_memory_20260604.md
+    - Docs/Workflows/mworks_codegen_controller_runtime.md
+    - Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+    - Results/codegen_probe/AWFF_PID_Sysblock_Demo_api/runtime_check.json
+    - Results/codegen_probe/AWFF_PID_Sysblock_Demo_api/mworks_constant_0p1_reference.json
+    - Results/codegen_probe/AWFF_PID_Sysblock_Demo_api/sil_constant_0p1_check.json
+    - project-local search under Results/codegen_probe for newer SIL/runtime
+      artifacts
+  disposition:
+    - formal docs already represent the safe codegen boundary:
+      `GenerateModelCode`, not `TranslateModel`, is the controller code-export
+      route.
+    - current evidence remains PID-demo-only architecture evidence:
+      compile/runtime harness, zero-input SIL smoke, and nonzero constant-input
+      SIL smoke passed for `AWFF_PID_Sysblock_Demo` only.
+    - no newer time-varying SIL or target-controller SIL artifact was found
+      under `Results/codegen_probe` in this round.
+    - generated C/C++ runtime output remains generated-runtime/SIL evidence and
+      cannot replace MWORKS/Sysplorer simulation evidence before each target
+      controller has its own equivalence gate.
+    - no formal patch was needed because the workflow and architecture docs
+      already carry these restrictions.
 ```
 
 ## Promotion Buckets

@@ -17,6 +17,8 @@ round: coverage_audit
 status: migration_incomplete_but_recoverable
 formal_docs_patched_this_round:
   - Docs/Workflows/identify_quadrotor_parameters.md
+round3_rechecked_no_formal_patch:
+  - MWORKS code generation / SIL route
 this_file_cache_only: true
 primary_recovery_files:
   - PROGRESS.md
@@ -48,7 +50,7 @@ formal target documents must be re-read in the same round before any patch.
 | Keyboard/grid/static point-cloud/HTML route | Round 2 UE/ROS cache and round 3 rejected history | `rejected_or_smoke_only` | Keep as anti-regression memory only. |
 | Factory Gate B / FAST-LIO runtime status | Round 2 UE/ROS cache and round 3 cache-only warning | `cache_only_high_risk` | Extract a latest-evidence snapshot from current result files before formal docs. |
 | MWORKS evidence labels / smoke boundaries | Round 2 MWORKS cache and round 3 map | `covered_cache_round3_mapped` | Possible narrow patch only if workflow docs lack `smoke_only` boundaries. |
-| MWORKS code generation / SIL route | Round 1 cache plus round 2 audit at `round2_mworks_codegen_runtime_memory_20260604.md`; round 3 map updated | `round2_verified_round3_mapped` | Keep only narrow facts: `GenerateModelCode` route, PID-demo-only compile/runtime/SIL smoke, time-varying/per-controller SIL still open, and rejected overgeneralization. |
+| MWORKS code generation / SIL route | Round 1 cache plus round 2 audit at `round2_mworks_codegen_runtime_memory_20260604.md`; round 3 re-read current workflow, architecture doc, and `Results/codegen_probe` evidence | `round3_rechecked_no_formal_patch` | Already represented formally: `GenerateModelCode` route, PID-demo-only compile/runtime/SIL smoke, time-varying/per-controller SIL still open, and rejected overgeneralization. No newer time-varying or target-controller SIL artifact was found in this round. |
 | Sysblock graphical counterpart requirement | Round 2 MWORKS cache and AGENTS pointer | `covered_cache_round3_mapped` | Already represented; future patches should be narrow. |
 | UE scene source selection / Factory / Derelict / rejected maps | Round 1 scene-source/renderer cache plus round 2 audit at `round2_scene_source_renderer_memory_20260604.md`; round 3 map updated | `round2_verified_needs_round3_disambiguation` | Re-read registry, active links, latest review/runtime bundles, and manual-review state before defining `registry_primary`, `active_content_links`, `latest_review_target`, or visual acceptance. |
 | Unreal renderer / review-camera / listener / editor MCP history | Round 1 scene-source/renderer cache plus round 2 audit at `round2_scene_source_renderer_memory_20260604.md`; round 3 map updated | `round2_verified_needs_live_recheck_before_use` | Treat old S0/S1/blockout routes as superseded; re-run current review/log checks before any current visual-review claim. |
@@ -70,7 +72,6 @@ patch.
 round1_only_caches_need_round2:
   - none
 round2_verified_topics_need_round3_application:
-  - mworks_codegen_runtime
   - scene_source_renderer
   - ros2_runtime_setup
   - coagent_operating
@@ -101,10 +102,12 @@ all_important_items_cached_or_out_of_scope:
 all_high_risk_items_resolved:
   incomplete
   reason:
-    - Sunray numeric assembly, Factory FAST-LIO state, UE scene acceptance, and
-      MWORKS codegen/SIL remain high-risk.
-    - Codegen/SIL remains PID-demo-only architecture evidence; per-controller
-      time-varying SIL is still open.
+    - Sunray numeric assembly, Factory FAST-LIO state, and UE scene acceptance
+      remain high-risk.
+    - Codegen/SIL has a round-3 disposition with no formal patch: it remains
+      PID-demo-only architecture evidence, per-controller time-varying SIL is
+      still open, and no newer target-controller SIL artifact was found under
+      `Results/codegen_probe` in this round.
     - Scene-source/renderer round 2 found ambiguity between registry primary,
       active content links, latest review target, and visual/manual acceptance.
     - ROS2/FAST-LIO round 2 found route/date-specific evidence and stale helper

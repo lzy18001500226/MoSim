@@ -32,7 +32,9 @@ current_state:
   The currently identified topic set has round-1 capture and topic-specific
   round-2 evidence review. Round-3 application remains open, with
   parameter-identification provenance clarified once and no numeric parameter
-  promoted.
+  promoted. MWORKS codegen/SIL has also been rechecked in round 3 with no
+  formal patch because existing workflow and architecture docs already carry
+  the safe boundary.
 ```
 
 ## Recovery Entry Points
@@ -59,7 +61,7 @@ infrastructure request.
 |---|---|---|
 | Codex App / VSCode / CLI / MCP infrastructure | round-2 infrastructure cache | Keep machine-specific repair history as infrastructure memory; do not touch external `.codex` files unless explicitly requested. |
 | MWORKS evidence and smoke boundaries | round-2 controller-evidence cache | Patch only if a workflow lacks `smoke_only`, source label, or check/simulate boundary wording. |
-| MWORKS codegen and generated runtime | round-2 codegen cache | Keep `GenerateModelCode` route and PID-demo-only SIL evidence; do not claim per-controller runtime authority. |
+| MWORKS codegen and generated runtime | round-3 rechecked, no formal patch | Existing docs already keep the `GenerateModelCode` route and PID-demo-only SIL evidence; do not claim per-controller runtime authority. |
 | UE / ROS2 / FAST-LIO runtime | round-2 UE/ROS and ROS2 caches | Apply route/date/source priority; latest matching `*_CURRENT` gate first; manual review and final product acceptance remain separate. |
 | UE scene source and renderer | round-2 scene cache | Disambiguate `registry_primary`, `active_content_links`, `latest_review_target`, manual review, and final acceptance. |
 | Sunray150 assets and materials | round-2 Sunray cache | Preserve accepted source-chain facts and rejected material/proxy routes; no UE export until accepted review evidence exists. |
@@ -87,8 +89,10 @@ Pick one item per round:
    identified values.
 
 4. Codegen/SIL boundary:
-   re-read codegen workflow and latest `Results/codegen_probe/**/sil_*` files;
-   patch only PID-demo-only wording if needed.
+   completed for migration round 3 on 2026-06-04. Current disposition:
+   workflow and architecture docs already cover the boundary; no newer
+   time-varying or target-controller SIL artifact was found under
+   `Results/codegen_probe`; no formal patch was made.
 
 5. CoAgent scope gate:
    re-read `CoAgent/STATUS.md` and `CoAgent/README.md`; record guardrails only
