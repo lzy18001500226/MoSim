@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "target": "es2022",
+    "module": "esnext",
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "#platform": ["./src/platform/node.ts", "./src/platform/workerd.ts"],
+      "#files": ["./src/models/Files.node.ts", "./src/models/Files.workerd.ts"],
+      "#file_tool_modifier": [
+        "./src/utils/modifiers/FileToolModifier.node.ts",
+        "./src/utils/modifiers/FileToolModifier.workerd.ts"
+      ],
+      "#config_defaults": [
+        "./src/utils/config-defaults/ConfigDefaults.node.ts",
+        "./src/utils/config-defaults/ConfigDefaults.workerd.ts"
+      ]
+    }
+  },
+  "include": ["src/**/*.ts"]
+}
