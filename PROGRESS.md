@@ -37,6 +37,15 @@
   `local_derelictcorridormegascans` while active content links point to
   `local_factoryenvironmentcollect`; no scene was promoted to final product
   acceptance.
+  ROS2/FAST-LIO runtime setup has a round-3 source-priority patch in
+  `Docs/Workflows/ros2_runtime_setup.md`: 2026-06-01 apt/key and rosbridge
+  notes are prior infrastructure evidence unless live-checked; current
+  FAST-LIO answers must read the latest route-specific `*_CURRENT` gate and
+  linked runtime directory first; old `PROGRESS.md` mentions of
+  `open_mapping_rviz_ros2.sh` or `run_fastlio_rviz_replay_ros2.sh` are
+  historical and should not override the current command list in the workflow.
+  Factory Gate B currently opens manual UE/RViz review only and does not prove
+  final controller integration, planner performance, or product acceptance.
   Continue round 3 one narrow item at a time: re-read current evidence and the
   formal target doc in the same round, then patch narrowly, reject/supersede,
   or record a user-review blocker. Do not compress this `PROGRESS.md` or mark

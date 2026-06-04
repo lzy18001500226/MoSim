@@ -1,6 +1,6 @@
 # ROS2 Runtime Setup
 
-> Last updated: 2026-06-01. Scope: WSL2 Ubuntu 22.04 runtime for UE scene
+> Last updated: 2026-06-04. Scope: WSL2 Ubuntu 22.04 runtime for UE scene
 > mapping, RViz2 review, and FAST-LIO-family integration.
 
 ## Decision
@@ -99,7 +99,7 @@ colcon is available
 ROS2 mapping dry-runs pass
 ```
 
-Current validated host state on 2026-06-01:
+Prior validated host state on 2026-06-01:
 
 ```text
 ROS_DISTRO=humble
@@ -114,9 +114,11 @@ rosbridge_server=installed
 rosbridge port 9090=listening after manual launch
 ```
 
-Status summary: native ROS2 Humble/RViz2/colcon is working. The ROS apt key
-problem is resolved by the keyring/source pair above. Do not reinstall ROS2
-unless these checks fail again.
+Status summary from that 2026-06-01 infrastructure check: native ROS2
+Humble/RViz2/colcon was working, and the ROS apt key problem was resolved by
+the keyring/source pair above. Treat this as prior infrastructure evidence,
+not a current live-host guarantee. Re-run the preflight or a targeted live
+probe before claiming the current apt, rosbridge, or port state.
 
 Set ROS runtime logs to a project-local path before launching ROS2 nodes:
 
@@ -135,13 +137,12 @@ plus `ros-humble-rosbridge-suite`. The WSL wrapper
 background when Codex starts ROS-MCP and port `9090` is absent, then reuses it
 for later MCP calls.
 
-Current validated project commands:
+Current project commands that exist in this checkout:
 
 ```bash
-DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect
-DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans
-DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect
 DRY_RUN=1 MAX_FRAMES=2 START_RVIZ=0 Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect
+DRY_RUN=1 Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh
+REVIEW_DRY_RUN=1 OPEN_UE=0 OPEN_RVIZ=0 Scripts/UE5/review_scene_mapping_loop.sh factoryenvironmentcollect
 DRY_RUN=1 Scripts/UE5/check_fastlio_ros2_topics.sh
 ```
 
@@ -156,10 +157,10 @@ Headless smoke evidence already passed for Factory:
   scene-specific `Results/tmp/mosim_scene_replay_ros2_ws_<scene>` package and
   launched both replay publishers with `START_RVIZ=0`, `START_FASTLIO=0`,
   `MAX_FRAMES=3`, `LOOP=0`;
-- `START_RVIZ=0 START_FASTLIO=0 LOOP=1 MAX_FRAMES=20 FPS=2
-  Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect`
-  plus `REQUIRE_FASTLIO_OUTPUTS=0 Scripts/UE5/check_fastlio_ros2_topics.sh`
-  passed for replay input topics.
+- `START_RVIZ=0 START_FASTLIO=0 LOOP=1 MAX_FRAMES=20 FPS=2`
+  with `Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh` plus
+  `REQUIRE_FASTLIO_OUTPUTS=0 Scripts/UE5/check_fastlio_ros2_topics.sh` passed
+  for replay input topics.
 
 Use RViz2 for manual visual review when a GUI window is appropriate.
 
@@ -303,6 +304,23 @@ Runtime evidence lives under:
 Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_scan099/
 Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime_scan099/
 ```
+
+Before answering the current FAST-LIO state, prefer the latest route-specific
+`*_CURRENT` gate and its linked runtime directory over older summary,
+candidate, preflight, or blocker files. For example, the Factory current Gate B
+state is recorded in:
+
+```text
+Results/unreal_scene_mapping/factoryenvironmentcollect/REALSTACK_MINILOOP_GATE_CURRENT.md
+Results/unreal_scene_mapping/factoryenvironmentcollect/realstack_miniloop_gate_current.json
+```
+
+That gate may prove headless runtime credibility for a manual UE/RViz review,
+but it still does not claim final controller integration, planner performance,
+or final product acceptance. Keep older files such as source compatibility
+scans, build-phase candidate notes, ROS1 bundle JSON, or Mid360 blocker reports
+as route/date-specific history unless they match the active route being
+reviewed.
 
 ## References
 

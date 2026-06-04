@@ -15,6 +15,7 @@ status: round3_application_started
 formal_docs_patched_this_round:
   - Docs/Workflows/identify_quadrotor_parameters.md
   - Docs/Workflows/unreal_renderer.md
+  - Docs/Workflows/ros2_runtime_setup.md
 round3_rechecked_no_formal_patch:
   - MWORKS codegen/SIL boundary
 this_file_cache_only: true
@@ -110,6 +111,56 @@ SCENE-MEM-001/SCENE-MEM-002/SCENE-MEM-003/SCENE-MEM-005/SCENE-MEM-006:
       with MWORKS `smoke_only`, not final controller-performance evidence.
     - Fab/Epic inventory remains `inventory_visible_not_scene_accepted`.
     - no scene was promoted to final product acceptance in this round.
+
+ROS2-MEM-001/ROS2-MEM-002/ROS2-MEM-003/ROS2-MEM-004/ROS2-MEM-005/ROS2-MEM-007/ROS2-MEM-008/ROS2-MEM-010:
+  evidence_re_read:
+    - Docs/Cache/session_memory_migration/round2_ros2_runtime_setup_memory_20260604.md
+    - Docs/Workflows/ros2_runtime_setup.md
+    - Results/unreal_scene_mapping/factoryenvironmentcollect/REALSTACK_MINILOOP_GATE_CURRENT.md
+    - Results/unreal_scene_mapping/factoryenvironmentcollect/realstack_miniloop_gate_current.json
+    - Results/unreal_scene_mapping/factoryenvironmentcollect/runtime_review_bundle.md
+    - Results/unreal_scene_mapping/factoryenvironmentcollect/runtime_review_bundle.json
+    - Results/unreal_scene_mapping/factoryenvironmentcollect/FASTLIO_INPUT_CONTRACT.md
+    - Results/unreal_scene_mapping/factoryenvironmentcollect/FASTLIO_MID360_RUNTIME_BLOCKER.md
+    - Results/unreal_scene_mapping/FASTLIO_RUNTIME_STATUS.md
+    - Results/unreal_scene_mapping/FASTLIO_FAMILY_COMPATIBILITY.md
+    - Results/unreal_scene_mapping/SPARK_FASTLIO_ROS2_CANDIDATE.md
+    - Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh
+    - Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh
+    - Scripts/UE5/review_scene_mapping_loop.sh
+    - Scripts/UE5/check_fastlio_ros2_topics.sh
+    - project-local file check for `open_mapping_rviz_ros2.sh` and
+      `run_fastlio_rviz_replay_ros2.sh`
+  disposition:
+    - formal workflow patched narrowly to mark the 2026-06-01 apt/key,
+      rosbridge, and port notes as prior infrastructure evidence, not a live
+      current-host guarantee.
+    - formal workflow now says current FAST-LIO answers must prefer the latest
+      route-specific `*_CURRENT` gate and linked runtime directory over older
+      summary, candidate, preflight, compatibility, ROS1-bundle, or blocker
+      files.
+    - stale command references to missing helper scripts were removed from the
+      current command list and replaced with scripts present in this checkout:
+      `run_mosim_scene_replay_launch_ros2.sh`,
+      `run_factory_fastlio_mid360_headless_ros2.sh`,
+      `review_scene_mapping_loop.sh`, and `check_fastlio_ros2_topics.sh`.
+    - current Factory `REALSTACK_MINILOOP_GATE_CURRENT` is
+      `ready_for_manual_rviz_ue_review` with FAST-LIO output counts
+      `odometry=80`, `path=8`, `registered_cloud=80` and evaluation pass, but
+      it only opens manual UE/RViz review and does not prove final controller,
+      planner, or product acceptance.
+    - `runtime_review_bundle.md` reflects the newer Gate-B/manual-review route,
+      while `runtime_review_bundle.json` still contains older ROS1 blocked
+      fields. For current answers, use the latest `*_CURRENT` files and
+      route-matching Markdown/runtime evidence first; keep the JSON mismatch as
+      historical/stale evidence until regenerated.
+    - older files remain route/date-specific: the local-source compatibility
+      scan was metadata-only, the SPARK candidate file was a build-phase
+      snapshot, the 2026-06-01 scan099 status had Factory failure/Derelict
+      warning-pass, and the Mid360 blocker describes a PointCloud2 route that
+      produced zero outputs with `Error LiDAR Type`.
+    - no final FAST-LIO localization, planner performance, controller
+      integration, or product acceptance claim was promoted.
 ```
 
 ## Promotion Buckets

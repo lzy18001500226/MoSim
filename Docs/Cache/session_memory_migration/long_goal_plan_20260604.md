@@ -35,7 +35,12 @@ current_state:
   promoted. MWORKS codegen/SIL has also been rechecked in round 3 with no
   formal patch because existing workflow and architecture docs already carry
   the safe boundary. UE scene-source/renderer state has a round-3
-  disambiguation patch in `Docs/Workflows/unreal_renderer.md`.
+  disambiguation patch in `Docs/Workflows/unreal_renderer.md`. ROS2/FAST-LIO
+  runtime setup has a round-3 source-priority patch in
+  `Docs/Workflows/ros2_runtime_setup.md`: the 2026-06-01 apt/key and rosbridge
+  notes are prior infrastructure evidence, current FAST-LIO answers use the
+  latest route-specific `*_CURRENT` gate first, and stale helper-script
+  references were replaced with scripts present in this checkout.
 ```
 
 ## Recovery Entry Points
@@ -63,7 +68,7 @@ infrastructure request.
 | Codex App / VSCode / CLI / MCP infrastructure | round-2 infrastructure cache | Keep machine-specific repair history as infrastructure memory; do not touch external `.codex` files unless explicitly requested. |
 | MWORKS evidence and smoke boundaries | round-2 controller-evidence cache | Patch only if a workflow lacks `smoke_only`, source label, or check/simulate boundary wording. |
 | MWORKS codegen and generated runtime | round-3 rechecked, no formal patch | Existing docs already keep the `GenerateModelCode` route and PID-demo-only SIL evidence; do not claim per-controller runtime authority. |
-| UE / ROS2 / FAST-LIO runtime | round-2 UE/ROS and ROS2 caches | Apply route/date/source priority; latest matching `*_CURRENT` gate first; manual review and final product acceptance remain separate. |
+| UE / ROS2 / FAST-LIO runtime | round-3 source-priority patch applied | Use latest matching `*_CURRENT` gate and linked runtime directory first; manual review and final product acceptance remain separate. |
 | UE scene source and renderer | round-3 state-disambiguation patch applied | Keep registry policy primary, active content links, manual-review target, Gate-B/runtime readiness, smoke evidence, and final acceptance separate. |
 | Sunray150 assets and materials | round-2 Sunray cache | Preserve accepted source-chain facts and rejected material/proxy routes; no UE export until accepted review evidence exists. |
 | Sunray150 parameter identification | round-3 no-numeric-promotion disposition | Keep all current numeric values as `source=SDF_migration` seeds unless a complete identification bundle appears. |
@@ -77,8 +82,13 @@ Pick one item per round:
 
 ```text
 1. ROS2/FAST-LIO status-source-priority note:
-   re-read latest `*_CURRENT` files, runtime bundles, and any manual review
-   record before patching `ros2_runtime_setup.md` or `unreal_renderer.md`.
+   completed for migration round 3 on 2026-06-04. Current disposition:
+   `Docs/Workflows/ros2_runtime_setup.md` now marks the 2026-06-01 apt/key and
+   rosbridge notes as prior infrastructure evidence, routes current FAST-LIO
+   answers through the latest matching `*_CURRENT` gate and linked runtime
+   directory, and removes current-command references to missing helper scripts.
+   Factory Gate B is `ready_for_manual_rviz_ue_review`; it does not prove final
+   controller integration, planner performance, or product acceptance.
 
 2. Scene-source state disambiguation:
    completed for migration round 3 on 2026-06-04. Current disposition:
