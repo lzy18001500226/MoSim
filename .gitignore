@@ -202,7 +202,8 @@ References/Agent/Gateway/toolhive/*
 !References/Agent/Gateway/toolhive/test/**
 !References/Agent/Gateway/toolhive/pkg/
 !References/Agent/Gateway/toolhive/pkg/**
-References/Agent/Gateway/toolhive/pkg/vmcp/
+!References/Agent/Gateway/toolhive/pkg/vmcp/
+!References/Agent/Gateway/toolhive/pkg/vmcp/**
 References/Agent/Gateway/toolhive/pkg/certs/validation_test.go
 References/Agent/Gateway/toolhive/pkg/auth/awssts/signer_test.go
 References/Agent/Gateway/toolhive/pkg/authserver/upstream/identity_from_token_test.go
