@@ -141,6 +141,8 @@ References/Agent/Domain/*
 !References/Agent/Domain/fara/**
 !References/Agent/Domain/OpenCodeInterpreter/
 !References/Agent/Domain/OpenCodeInterpreter/**
+!References/Agent/Domain/UFO/
+!References/Agent/Domain/UFO/**
 !References/Agent/Skills/
 !References/Agent/Skills/**
 References/Agent/Skills/awesome-opencode/dist/
