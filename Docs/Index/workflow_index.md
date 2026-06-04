@@ -37,7 +37,7 @@
 | Current project progress and recovery memory | `PROGRESS.md` |
 | Sub-agent WAL / run ledger | `Docs/Workflows/agent_task_ledger.md` |
 | Interrupted task resume / WAL recovery | `Docs/Workflows/agent_orchestration.md`, `Docs/Workflows/agent_task_ledger.md` |
-| Long-session memory migration | `Docs/Workflows/session_memory_migration.md`, `Docs/Cache/session_memory_migration/long_goal_plan_20260604.md`, `Docs/Cache/session_memory_migration/coverage_matrix_20260604.md`, `Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md`, `Docs/Cache/session_memory_migration/` |
+| Long-session memory migration | `Docs/Workflows/session_memory_migration.md`, `Docs/Cache/session_memory_migration/long_goal_plan_20260604.md`, `Docs/Cache/session_memory_migration/coverage_matrix_20260604.md`, `Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md`, `Docs/Cache/session_memory_migration/completion_audit_20260604.md`, `Docs/Cache/session_memory_migration/` |
 | Codex App / WSL session research and handoff | `Docs/Index/codex_app_session_research.md`, `Docs/Workflows/debug_mcp.md#6-codex-app--wsl-session-policy` |
 | External repository audit | `Docs/Workflows/audit_external_repo.md`, `Scripts/reference/audit_external_repo.py` |
 | Validate external project master index | `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`, `Scripts/reference/check_reference_index.py`, `Docs/Workflows/audit_external_repo.md` |

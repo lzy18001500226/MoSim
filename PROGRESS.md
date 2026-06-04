@@ -58,12 +58,15 @@
   before direct runtime adoption. RflySim/AirSim/Gazebo/PX4/Sunray/FAST-LIO and
   agent/skill/MCP references remain contracts, patterns, source material, or
   candidates unless a separate approved integration proves them locally.
-  The currently identified round-2 topic set now has round-3 dispositions. Next
-  migration work is a completion audit and recovery-index check: confirm no
-  lower-priority `PROGRESS.md` history still needs a cache entry, keep any new
-  formal patch narrow and current-evidence-backed, and do not promote old chat
-  memory broadly. Do not compress this `PROGRESS.md` or mark the goal complete
-  until the completion audit says the new-conversation recovery path is enough.
+  The currently identified round-2 topic set now has round-3 dispositions and
+  a cache-only completion audit:
+  `Docs/Cache/session_memory_migration/completion_audit_20260604.md`. A new
+  conversation can recover this migration from project-local docs/cache without
+  reading the old chat transcript. This does not certify unknown external
+  session lines; any newly surfaced historical claim must enter round 1 before
+  formal promotion. Do not compress this `PROGRESS.md` in the migration itself;
+  compaction should be a separate cleanup after confirming equivalent cache,
+  workflow, result-manifest, or ledger coverage.
 
 - 2026-06-03 CST Codex shared Windows state repair: user prefers not to isolate
   Windows CLI into `C:\Users\HP\.codex-cli`. Restored the shared-home route by

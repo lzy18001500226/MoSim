@@ -11,7 +11,7 @@ rejected, superseded, or pending user review.
 
 ```text
 round: 3
-status: round3_application_started
+status: round3_current_topic_set_complete
 formal_docs_patched_this_round:
   - Docs/Workflows/identify_quadrotor_parameters.md
   - Docs/Workflows/unreal_renderer.md
@@ -34,11 +34,17 @@ source_rounds:
   - Docs/Cache/session_memory_migration/round2_parameter_identification_memory_20260604.md
   - Docs/Cache/session_memory_migration/round2_coagent_operating_memory_20260604.md
   - Docs/Cache/session_memory_migration/round2_external_reference_memory_20260604.md
+completion_audit:
+  - Docs/Cache/session_memory_migration/completion_audit_20260604.md
 ```
 
 This map does not make old chat facts formal truth. A later formal patch must
 still re-read the current target document and current evidence immediately
 before editing.
+
+The currently identified topic set has round-3 dispositions. Newly surfaced
+historical claims must start at round 1 and must not be inserted into formal
+docs from chat memory alone.
 
 Round-3 application checkpoint on 2026-06-04:
 

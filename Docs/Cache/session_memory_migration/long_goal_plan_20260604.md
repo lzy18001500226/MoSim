@@ -47,7 +47,9 @@ current_state:
   External reference learning has also been rechecked in round 3 with no
   formal patch because existing indexes/workflows already require
   reference-index-first routing and explicit approval plus local evidence before
-  direct runtime adoption.
+  direct runtime adoption. A completion audit now closes the currently
+  identified topic set for migration purposes; newly surfaced historical claims
+  must start again at round 1.
 ```
 
 ## Recovery Entry Points
@@ -61,7 +63,8 @@ Read in this order:
 3. Docs/Workflows/session_memory_migration.md
 4. Docs/Cache/session_memory_migration/coverage_matrix_20260604.md
 5. Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md
-6. The topic-specific round-2 cache file for the item being worked
+6. Docs/Cache/session_memory_migration/completion_audit_20260604.md
+7. The topic-specific round-2 cache file for the item being worked
 ```
 
 Do not read external Codex session files, home directories, tokens, browser
@@ -131,13 +134,20 @@ Pick one item per round:
    and architecture doc already carry the boundary. No formal patch was needed.
    External projects remain contracts, patterns, source material, or candidates
    unless an approved integration has local build/runtime/test evidence.
+
+7. Completion audit:
+   completed for migration closeout on 2026-06-04. Current disposition:
+   `Docs/Cache/session_memory_migration/completion_audit_20260604.md` records
+   that the current identified topic set has round-3 dispositions and that a
+   new conversation can recover from project-local docs/cache without the old
+   chat transcript. This does not certify unknown external session lines; any
+   newly surfaced claim must enter round 1.
 ```
 
 After this checkpoint, the currently identified round-2 topic set has round-3
-dispositions. The next safe work is a completion audit: check recovery indexes,
-decide whether any lower-priority `PROGRESS.md` history still needs a cache
-entry, and only then decide whether the long migration goal can be marked
-complete.
+dispositions and a completion audit. The next safe work is ordinary project
+execution; if a future historical claim appears uncovered, route it through the
+same three-round cache workflow instead of promoting it directly.
 
 ## Completion Criteria
 
