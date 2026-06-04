@@ -1,0 +1,64 @@
+# dependencies (bun install)
+node_modules
+
+# output
+out
+dist
+*.tgz
+
+# code coverage
+coverage
+*.lcov
+
+# logs
+logs
+_.log
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# caches
+.eslintcache
+.cache
+*.tsbuildinfo
+
+# IntelliJ based IDEs
+.idea
+
+# Finder (MacOS) folder config
+.DS_Store
+
+# turbo
+.turbo
+ts/packages/cli/.generated
+
+# lerna
+lerna-debug.log*
+
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+
+# wrangler
+.wrangler
+.dev.vars
+
+# VS Code
+.vscode
+temp/
+
+# E2E test node_modules
+test/e2e/*/node_modules
+.vercel
+
+
+# Agent memory
+.agent_cache

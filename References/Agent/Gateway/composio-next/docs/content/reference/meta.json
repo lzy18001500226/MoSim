@@ -1,0 +1,13 @@
+{
+  "title": "Reference",
+  "pages": [
+    "index",
+    "authentication",
+    "rate-limits",
+    "errors",
+    "api-reference",
+    "v3",
+    "meta-tools",
+    "sdk-reference"
+  ]
+}
