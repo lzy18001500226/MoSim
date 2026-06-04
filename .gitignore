@@ -164,6 +164,11 @@ References/Agent/Gateway/mcp-use/libraries/*
 !References/Agent/Gateway/mcp-use/libraries/python/
 !References/Agent/Gateway/mcp-use/libraries/python/**
 References/Agent/Gateway/mcp-use/libraries/python/mcp_use/telemetry/telemetry.py
+!References/Agent/Gateway/mcp-use/libraries/typescript/
+!References/Agent/Gateway/mcp-use/libraries/typescript/**
+References/Agent/Gateway/mcp-use/libraries/typescript/packages/inspector/src/server/shared-routes.ts
+References/Agent/Gateway/mcp-use/libraries/typescript/packages/mcp-use/src/telemetry/telemetry-node.ts
+References/Agent/Gateway/mcp-use/libraries/typescript/packages/mcp-use/src/telemetry/telemetry-browser.ts
 !References/Agent/Skills/
 !References/Agent/Skills/**
 References/Agent/Skills/awesome-opencode/dist/
