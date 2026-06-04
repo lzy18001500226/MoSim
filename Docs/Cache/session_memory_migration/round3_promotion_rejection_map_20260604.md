@@ -14,6 +14,7 @@ round: 3
 status: round3_application_started
 formal_docs_patched_this_round:
   - Docs/Workflows/identify_quadrotor_parameters.md
+  - Docs/Workflows/unreal_renderer.md
 round3_rechecked_no_formal_patch:
   - MWORKS codegen/SIL boundary
 this_file_cache_only: true
@@ -82,6 +83,33 @@ CODEGEN-MEM-001/CODEGEN-MEM-005/CODEGEN-MEM-007/CODEGEN-MEM-008:
       controller has its own equivalence gate.
     - no formal patch was needed because the workflow and architecture docs
       already carry these restrictions.
+
+SCENE-MEM-001/SCENE-MEM-002/SCENE-MEM-003/SCENE-MEM-005/SCENE-MEM-006:
+  evidence_re_read:
+    - Docs/Cache/session_memory_migration/round2_scene_source_renderer_memory_20260604.md
+    - Docs/Workflows/unreal_renderer.md
+    - UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json
+    - UE5/MoSimSceneLibrary/Content/MworksData/active_scene_links.json
+    - Results/unreal_scene_mapping/factoryenvironmentcollect/manual_review_packet.md
+    - Results/unreal_scene_mapping/derelictcorridormegascans/manual_review_packet.md
+    - Results/unreal_scene_mapping/UE_SCENE_CLOSED_LOOP_STATUS.md
+    - Results/unreal_scene_mapping/factoryenvironmentcollect/runtime_review_bundle.md
+    - Results/unreal_scene_mapping/factoryenvironmentcollect/REALSTACK_MINILOOP_GATE_CURRENT.md
+  disposition:
+    - formal workflow patched narrowly to prevent collapsing registry policy
+      primary, active renderer content links, manual-review packet target,
+      Gate-B/runtime readiness, smoke evidence, and final scene acceptance.
+    - current files show
+      `scene_source_registry.policy.primary_scene_source_id=
+      local_derelictcorridormegascans` while
+      `active_scene_links.scene_source_id=local_factoryenvironmentcollect`.
+    - Factory Gate-B/runtime bundle is `ready_for_manual_rviz_ue_review`, which
+      opens human UE/RViz review but does not prove final controller/planner
+      integration.
+    - Factory and Derelict closed-loop status remains `ready_smoke_validated`
+      with MWORKS `smoke_only`, not final controller-performance evidence.
+    - Fab/Epic inventory remains `inventory_visible_not_scene_accepted`.
+    - no scene was promoted to final product acceptance in this round.
 ```
 
 ## Promotion Buckets

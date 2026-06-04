@@ -1268,8 +1268,11 @@ does not mean semantic labels or high-fidelity voxel occupancy are complete.
 Validated Factory example: UE 5.5 commandlet loaded `/Game/Maps/Demonstration`
 and wrote `factoryenvironmentcollect_collision_truth.json` with 8658 assets and
 8658 collision proxies. The project-owned renderer commandlet then loaded the
-same map as `/Game/Maps/Demonstration` with 11872 actors. Factory is the active
-primary scene for the current integration round.
+same map as `/Game/Maps/Demonstration` with 11872 actors. Factory has been the
+active content-linked scene for integration/review rounds when
+`active_scene_links.json` points to `local_factoryenvironmentcollect`; do not
+describe it as the registry policy primary unless the registry is re-read in
+that same round.
 
 Validated ElectricDreams example: UE 5.5 commandlet wrote
 `electricdreamsenv_collision_truth.json` with 247 assets and 247 collision
@@ -1278,19 +1281,37 @@ building Nanite/static-mesh data on first use. Treat this as a slow path, not a
 failed scene, until a longer approved load window or manual editor review says
 otherwise.
 
-Current scene-source registry state:
+Scene-source state fields must be interpreted separately. Do not answer
+"current scene" from one field alone.
 
 ```text
 fab_route.status: inventory_visible_not_scene_accepted
 local_editable_fallback.status: active
-primary_scene_source_id: local_factoryenvironmentcollect
+scene_source_registry.policy.primary_scene_source_id: see scene_source_registry.json
+active_scene_links.scene_source_id: see active_scene_links.json
 ```
 
 Interpretation: Fab/Epic library entries are visible and useful for selecting
 assets, but none is accepted yet as a MoSim scene source until it is imported or
-reused in the MoSim UE sim project, editable through UE tooling, and paired with
-planning truth. `FactoryEnvironmentCollect` is the current validated local
-fallback and active renderer scene.
+reused in the MoSim UE sim project, editable through UE tooling, and paired
+with planning truth. The registry policy primary, active renderer content
+links, latest manual-review target, latest runtime/Gate-B bundle, and final
+product acceptance are separate states.
+
+Round-3 memory audit on 2026-06-04 found this split in the current files:
+
+```text
+scene_source_registry.policy.primary_scene_source_id: local_derelictcorridormegascans
+active_scene_links.scene_source_id: local_factoryenvironmentcollect
+factory runtime bundle: ready_for_manual_rviz_ue_review
+Factory/Derelict closed-loop status: ready_smoke_validated with MWORKS smoke_only
+```
+
+Therefore, a future answer should say exactly which state it is referring to:
+registry policy primary, currently linked renderer content, manual review
+packet target, headless Gate-B/manual-review readiness, or final accepted
+scene. Truth-backed, active-linked, loaded, visually reviewed, runtime reviewed,
+and final product accepted are not synonyms.
 
 `AQuadrotorMworksMapActor` consumes this registry through:
 

@@ -29,6 +29,14 @@
   timestamp-shift limitation, and the still-open per-controller/time-varying
   SIL gate. No newer target-controller SIL artifact was found under
   `Results/codegen_probe` in that pass.
+  UE scene-source/renderer state has a round-3 disambiguation patch in
+  `Docs/Workflows/unreal_renderer.md`: current answers must separate registry
+  policy primary, active renderer content links, manual-review packet target,
+  Gate-B/runtime readiness, smoke evidence, and final scene acceptance. The
+  2026-06-04 pass found registry policy primary
+  `local_derelictcorridormegascans` while active content links point to
+  `local_factoryenvironmentcollect`; no scene was promoted to final product
+  acceptance.
   Continue round 3 one narrow item at a time: re-read current evidence and the
   formal target doc in the same round, then patch narrowly, reject/supersede,
   or record a user-review blocker. Do not compress this `PROGRESS.md` or mark

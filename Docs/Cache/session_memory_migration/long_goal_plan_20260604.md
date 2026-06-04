@@ -34,7 +34,8 @@ current_state:
   parameter-identification provenance clarified once and no numeric parameter
   promoted. MWORKS codegen/SIL has also been rechecked in round 3 with no
   formal patch because existing workflow and architecture docs already carry
-  the safe boundary.
+  the safe boundary. UE scene-source/renderer state has a round-3
+  disambiguation patch in `Docs/Workflows/unreal_renderer.md`.
 ```
 
 ## Recovery Entry Points
@@ -63,7 +64,7 @@ infrastructure request.
 | MWORKS evidence and smoke boundaries | round-2 controller-evidence cache | Patch only if a workflow lacks `smoke_only`, source label, or check/simulate boundary wording. |
 | MWORKS codegen and generated runtime | round-3 rechecked, no formal patch | Existing docs already keep the `GenerateModelCode` route and PID-demo-only SIL evidence; do not claim per-controller runtime authority. |
 | UE / ROS2 / FAST-LIO runtime | round-2 UE/ROS and ROS2 caches | Apply route/date/source priority; latest matching `*_CURRENT` gate first; manual review and final product acceptance remain separate. |
-| UE scene source and renderer | round-2 scene cache | Disambiguate `registry_primary`, `active_content_links`, `latest_review_target`, manual review, and final acceptance. |
+| UE scene source and renderer | round-3 state-disambiguation patch applied | Keep registry policy primary, active content links, manual-review target, Gate-B/runtime readiness, smoke evidence, and final acceptance separate. |
 | Sunray150 assets and materials | round-2 Sunray cache | Preserve accepted source-chain facts and rejected material/proxy routes; no UE export until accepted review evidence exists. |
 | Sunray150 parameter identification | round-3 no-numeric-promotion disposition | Keep all current numeric values as `source=SDF_migration` seeds unless a complete identification bundle appears. |
 | CoAgent operating history | round-2 CoAgent cache | Guardrail only; no implementation, transport, automation, department, notification, or tool expansion from this migration. |
@@ -80,8 +81,11 @@ Pick one item per round:
    record before patching `ros2_runtime_setup.md` or `unreal_renderer.md`.
 
 2. Scene-source state disambiguation:
-   re-read scene registry, active links, review bundles, and manual-review
-   packets before patching renderer workflow wording.
+   completed for migration round 3 on 2026-06-04. Current disposition:
+   `Docs/Workflows/unreal_renderer.md` now separates registry policy primary,
+   active renderer links, manual-review target, Gate-B/runtime readiness,
+   smoke evidence, and final acceptance. No scene was promoted to final product
+   acceptance.
 
 3. Parameter provenance check:
    rerun project-local evidence search, re-read current model fields, then

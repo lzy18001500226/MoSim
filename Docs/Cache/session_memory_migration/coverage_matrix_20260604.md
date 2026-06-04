@@ -17,6 +17,7 @@ round: coverage_audit
 status: migration_incomplete_but_recoverable
 formal_docs_patched_this_round:
   - Docs/Workflows/identify_quadrotor_parameters.md
+  - Docs/Workflows/unreal_renderer.md
 round3_rechecked_no_formal_patch:
   - MWORKS code generation / SIL route
 this_file_cache_only: true
@@ -52,7 +53,7 @@ formal target documents must be re-read in the same round before any patch.
 | MWORKS evidence labels / smoke boundaries | Round 2 MWORKS cache and round 3 map | `covered_cache_round3_mapped` | Possible narrow patch only if workflow docs lack `smoke_only` boundaries. |
 | MWORKS code generation / SIL route | Round 1 cache plus round 2 audit at `round2_mworks_codegen_runtime_memory_20260604.md`; round 3 re-read current workflow, architecture doc, and `Results/codegen_probe` evidence | `round3_rechecked_no_formal_patch` | Already represented formally: `GenerateModelCode` route, PID-demo-only compile/runtime/SIL smoke, time-varying/per-controller SIL still open, and rejected overgeneralization. No newer time-varying or target-controller SIL artifact was found in this round. |
 | Sysblock graphical counterpart requirement | Round 2 MWORKS cache and AGENTS pointer | `covered_cache_round3_mapped` | Already represented; future patches should be narrow. |
-| UE scene source selection / Factory / Derelict / rejected maps | Round 1 scene-source/renderer cache plus round 2 audit at `round2_scene_source_renderer_memory_20260604.md`; round 3 map updated | `round2_verified_needs_round3_disambiguation` | Re-read registry, active links, latest review/runtime bundles, and manual-review state before defining `registry_primary`, `active_content_links`, `latest_review_target`, or visual acceptance. |
+| UE scene source selection / Factory / Derelict / rejected maps | Round 1 scene-source/renderer cache plus round 2 audit at `round2_scene_source_renderer_memory_20260604.md`; round 3 re-read registry, active links, manual packets, smoke status, and Factory Gate-B bundle | `round3_applied_state_disambiguation` | `Docs/Workflows/unreal_renderer.md` now separates registry policy primary, active renderer links, manual-review target, Gate-B/runtime readiness, smoke evidence, and final acceptance. Current files show registry policy primary Derelict while active links point to Factory; no scene was promoted to final product acceptance. |
 | Unreal renderer / review-camera / listener / editor MCP history | Round 1 scene-source/renderer cache plus round 2 audit at `round2_scene_source_renderer_memory_20260604.md`; round 3 map updated | `round2_verified_needs_live_recheck_before_use` | Treat old S0/S1/blockout routes as superseded; re-run current review/log checks before any current visual-review claim. |
 | ROS2 Humble runtime setup and apt/key state | Round 1 cache plus round 2 audit at `round2_ros2_runtime_setup_memory_20260604.md`; round 3 map updated | `round2_verified_round3_mapped` | ROS2 Humble route is already formalized; apt/key and rosbridge are prior infrastructure evidence unless live-checked; FAST-LIO status needs route/date/source priority; helper-script references need current-file verification. |
 | CoAgent organization / department / task-runtime history | Round 1 CoAgent operating cache plus round 2 audit at `round2_coagent_operating_memory_20260604.md`; round 3 map updated | `round2_verified_round3_mapped` | Keep as guardrails only: read `CoAgent/STATUS.md` before CoAgent changes; no implementation, visibility-health, or transport expansion is authorized by this migration. |
@@ -72,7 +73,6 @@ patch.
 round1_only_caches_need_round2:
   - none
 round2_verified_topics_need_round3_application:
-  - scene_source_renderer
   - ros2_runtime_setup
   - coagent_operating
   - external_reference_learning
@@ -102,14 +102,15 @@ all_important_items_cached_or_out_of_scope:
 all_high_risk_items_resolved:
   incomplete
   reason:
-    - Sunray numeric assembly, Factory FAST-LIO state, and UE scene acceptance
-      remain high-risk.
+    - Sunray numeric assembly, Factory FAST-LIO state, and final UE scene
+      acceptance remain high-risk.
     - Codegen/SIL has a round-3 disposition with no formal patch: it remains
       PID-demo-only architecture evidence, per-controller time-varying SIL is
       still open, and no newer target-controller SIL artifact was found under
       `Results/codegen_probe` in this round.
-    - Scene-source/renderer round 2 found ambiguity between registry primary,
-      active content links, latest review target, and visual/manual acceptance.
+    - Scene-source/renderer has a round-3 state-disambiguation patch, but final
+      scene acceptance is still not promoted; future claims must identify the
+      exact state field and re-read current files.
     - ROS2/FAST-LIO round 2 found route/date-specific evidence and stale helper
       command risk; latest `*_CURRENT` gates must be re-read before claims.
     - CoAgent round 2 confirms guardrails only; live visibility, implementation,
