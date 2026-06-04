@@ -160,6 +160,10 @@ References/Agent/Gateway/*
 !References/Agent/Gateway/mcp-use/
 !References/Agent/Gateway/mcp-use/**
 References/Agent/Gateway/mcp-use/libraries/
+!References/Agent/Gateway/mcp-use/libraries/
+!References/Agent/Gateway/mcp-use/libraries/python/
+!References/Agent/Gateway/mcp-use/libraries/python/**
+References/Agent/Gateway/mcp-use/libraries/python/mcp_use/telemetry/telemetry.py
 !References/Agent/Skills/
 !References/Agent/Skills/**
 References/Agent/Skills/awesome-opencode/dist/
