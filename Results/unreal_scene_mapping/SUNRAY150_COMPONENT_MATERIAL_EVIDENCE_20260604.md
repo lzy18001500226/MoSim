@@ -81,3 +81,60 @@ UE runtime evidence.
    carbon/standoffs, and motor/propeller.
 5. Do not export/import into UE until the user manually accepts Blender
    material appearance.
+
+## 2026-06-04 Component-First Pass Notes
+
+Workflow correction has been applied: material work is now component-family
+first. Whole-aircraft renders are no longer the primary optimization target.
+Unknown part identity must be clarified through WeChat before applying a final
+material.
+
+### MID-360 Sensor
+
+Current review image:
+
+```text
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/mid360_sensor.png
+```
+
+Internal status: ready for manual visual audit.
+
+Observed improvements:
+
+- Optical dome/window is now dark blue/teal with glossy reflection instead of
+  pale cyan/white.
+- Housing is rendered from an angled view so the side heat-sink grooves,
+  front connector, screws, and `LIVOX` marking are visible.
+- The image is a Blender component material audit, not UE runtime evidence and
+  not a final exported asset.
+
+Remaining risks:
+
+- The `LIVOX` marking is currently a review decal, not a manufacturer-authored
+  UV texture baked into a final asset.
+- Final UE import/export remains gated until the full component material pass
+  is manually accepted.
+
+### MID-360 Protection Frame
+
+Current review image:
+
+```text
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/mid360_protection_frame.png
+```
+
+Internal status: stage evidence only, not final texture approval.
+
+Observed improvements:
+
+- The target object set is verified as `MID360_PROTECT_ARC*`,
+  `MID360_PROTECT_ARC_CONNECTOR*`, and `MID-360_4_ASM*`.
+- The close-up no longer shows the protection frame as white CAD in the
+  controlled audit view.
+
+Remaining risks:
+
+- This render uses a stable dark-grey component-review material to avoid
+  Blender 5 color-management/light washout. It proves component identity and
+  dark protective-frame intent, but it still needs a more physical satin
+  plastic/composite material pass before final approval.

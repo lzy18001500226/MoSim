@@ -27,13 +27,13 @@ COMPONENTS = [
     {
         "name": "mid360_sensor",
         "center": (0.0, 0.028, 0.084),
-        "camera_offset": (0.010, -0.120, 0.018),
+        "camera_offset": (0.058, -0.118, 0.040),
         "ortho_scale": 0.074,
         "view_transform": "Standard",
         "look": "Medium High Contrast",
-        "exposure": -3.20,
+        "exposure": -2.90,
         "world_color": (0.035, 0.037, 0.040),
-        "light_scale": 0.20,
+        "absolute_light_energy": 9.0,
         "target_object_keys": ("AUDIT_STANDALONE_MID360",),
         "material_gate": "silver-grey MID-360 housing, dark blue/teal glossy optical dome, black connector/base, readable screws.",
     },
@@ -44,9 +44,9 @@ COMPONENTS = [
         "ortho_scale": 0.108,
         "view_transform": "Standard",
         "look": "Medium High Contrast",
-        "exposure": -1.65,
-        "world_color": (0.58, 0.59, 0.60),
-        "light_scale": 0.34,
+        "exposure": 0.0,
+        "world_color": (0.62, 0.63, 0.64),
+        "absolute_light_energy": 0.0,
         "review_material": "satin_dark_grey",
         "target_object_keys": ("MID360_PROTECT_ARC", "MID-360_4_ASM"),
         "material_gate": "black/dark grey MID-360 protection frame and mount hardware, not white CAD.",
@@ -254,7 +254,7 @@ def apply_component_isolation(component: dict, context_mat: bpy.types.Material) 
     elif review_material == "satin_dark_grey" and override_mat is None:
         override_mat = make_debug_emission_material(
             "Sunray150_ComponentReview_Satin_Dark_Grey_Protection_Audit",
-            (0.055, 0.058, 0.056, 1.0),
+            (0.105, 0.110, 0.108, 1.0),
         )
     target_count = 0
     context_count = 0
@@ -329,8 +329,12 @@ def apply_component_render_settings(component: dict) -> dict:
         bpy.context.scene.view_settings.exposure = component["exposure"]
     if "world_color" in component:
         bpy.context.scene.world.color = component["world_color"]
+    if "absolute_light_energy" in component:
+        for obj in bpy.context.scene.objects:
+            if obj.type == "LIGHT":
+                obj.data.energy = float(component["absolute_light_energy"])
     light_scale = float(component.get("light_scale", 1.0))
-    if abs(light_scale - 1.0) > 1e-9:
+    if "absolute_light_energy" not in component and abs(light_scale - 1.0) > 1e-9:
         for obj in bpy.context.scene.objects:
             if obj.type == "LIGHT":
                 obj.data.energy *= light_scale
@@ -398,6 +402,7 @@ def render_component(component: dict) -> dict:
         "exposure": component.get("exposure"),
         "world_color": component.get("world_color"),
         "light_scale": component.get("light_scale"),
+        "absolute_light_energy": component.get("absolute_light_energy"),
         "target_object_keys": list(component["target_object_keys"]),
         "material_gate": component["material_gate"],
         "isolation": isolation,

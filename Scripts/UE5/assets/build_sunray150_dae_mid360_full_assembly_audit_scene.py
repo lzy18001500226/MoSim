@@ -472,7 +472,7 @@ def add_visual_detail_overlays() -> dict:
     lens = rmats["camera_lens"]
     added = []
 
-    added.append(add_label_plate("decal_mid360_livox_front", "LIVOX  MID-360", Vector((0.0, -0.020, 0.0805)), 0.0042, livox, rotation=(math.radians(75), 0.0, 0.0)).name)
+    added.append(add_label_plate("decal_mid360_livox_front", "LIVOX  MID-360", Vector((0.0, -0.0215, 0.0715)), 0.0036, livox, rotation=(math.radians(75), 0.0, 0.0)).name)
     for x, y in [(0.0537, 0.0537), (-0.0537, 0.0537), (0.0537, -0.0537), (-0.0537, -0.0537)]:
         added.append(add_label_plate(f"decal_motor_yundrone_{x:.3f}_{y:.3f}", "YUN DRONE", Vector((x, y, -0.0005)), 0.0030, white, rotation=(0.0, 0.0, math.radians(45))).name)
         added.append(add_label_plate(f"decal_motor_lava_{x:.3f}_{y:.3f}", "LAVA", Vector((x, y, 0.0010)), 0.0026, motor_gold, rotation=(0.0, 0.0, math.radians(45))).name)
