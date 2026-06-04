@@ -198,6 +198,9 @@ References/Agent/Gateway/firecrawl/apps/
 !References/Agent/Gateway/firecrawl/apps/
 References/Agent/Gateway/firecrawl/apps/*
 References/Agent/Gateway/firecrawl/apps/api/
+!References/Agent/Gateway/firecrawl/apps/api/
+!References/Agent/Gateway/firecrawl/apps/api/**
+References/Agent/Gateway/firecrawl/apps/api/.env.local
 !References/Agent/Gateway/firecrawl/apps/dot-net-sdk/
 !References/Agent/Gateway/firecrawl/apps/dot-net-sdk/**
 References/Agent/Gateway/firecrawl/apps/dot-net-sdk/**/obj/
