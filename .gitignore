@@ -155,6 +155,8 @@ References/Agent/Gateway/*
 !References/Agent/Gateway/browser-use/**
 !References/Agent/Gateway/cc-connect/
 !References/Agent/Gateway/cc-connect/**
+!References/Agent/Gateway/E2B/
+!References/Agent/Gateway/E2B/**
 !References/Agent/Skills/
 !References/Agent/Skills/**
 References/Agent/Skills/awesome-opencode/dist/
