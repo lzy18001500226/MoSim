@@ -21,7 +21,7 @@ import bpy
 from mathutils import Euler, Matrix, Vector
 
 
-PROJECT_ROOT = Path(r"C:\Users\HP\Desktop\MoSim")
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 PROP_AUDIT = PROJECT_ROOT / "Scripts" / "UE5" / "assets" / "build_sunray150_with_mid360_propeller_assembly_audit_scene.py"
 LIVOX_AUDIT = PROJECT_ROOT / "Scripts" / "UE5" / "assets" / "build_livox_mid360_audit_scene.py"
 OUT_DIR = PROJECT_ROOT / "UE5" / "MoSimSceneLibrary" / "SourceAssets" / "Sunray150" / "Audit"
@@ -118,6 +118,7 @@ def make_material(
     roughness: float = 0.55,
     metallic: float = 0.0,
     alpha: float | None = None,
+    specular: float | None = None,
 ) -> bpy.types.Material:
     mat = bpy.data.materials.new(name)
     if alpha is None:
@@ -130,6 +131,9 @@ def make_material(
         set_principled_input(bsdf, ("Roughness",), roughness)
         set_principled_input(bsdf, ("Metallic",), metallic)
         set_principled_input(bsdf, ("Alpha",), alpha)
+        if specular is not None:
+            set_principled_input(bsdf, ("Specular IOR Level", "Specular"), specular)
+            set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 0.0)
     if alpha < 1.0:
         mat.blend_method = "BLEND"
         mat.use_screen_refraction = True
@@ -196,7 +200,7 @@ def link_noise_to_bump(mat: bpy.types.Material, *, scale: float, detail: float, 
 
 
 def make_carbon_material() -> bpy.types.Material:
-    mat = make_material("Sunray150_Texture_CarbonFiber_Woven_Graphite", (0.020, 0.023, 0.023, 1.0), roughness=0.34)
+    mat = make_material("Sunray150_Texture_CarbonFiber_Woven_Graphite", (0.006, 0.007, 0.007, 1.0), roughness=0.62, specular=0.12)
     add_image_texture(mat, "sunray150_carbon_fiber_base.png", target="Base Color")
     add_image_texture(mat, "sunray150_carbon_fiber_roughness.png", target="Roughness", non_color=True)
     add_image_texture(mat, "sunray150_carbon_fiber_bump.png", target="Bump", non_color=True, strength=0.070)
@@ -204,9 +208,11 @@ def make_carbon_material() -> bpy.types.Material:
     links = mat.node_tree.links
     bsdf = next((node for node in nodes if node.type == "BSDF_PRINCIPLED"), None)
     if bsdf:
-        set_principled_input(bsdf, ("Base Color",), (0.018, 0.020, 0.020, 1.0))
-        set_principled_input(bsdf, ("Roughness",), 0.29)
+        set_principled_input(bsdf, ("Base Color",), (0.006, 0.007, 0.007, 1.0))
+        set_principled_input(bsdf, ("Roughness",), 0.62)
         set_principled_input(bsdf, ("Metallic",), 0.0)
+        set_principled_input(bsdf, ("Specular IOR Level", "Specular"), 0.12)
+        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 0.0)
         wave = nodes.new(type="ShaderNodeTexWave")
         wave.inputs["Scale"].default_value = 34.0
         wave.inputs["Distortion"].default_value = 4.0
@@ -242,8 +248,8 @@ def make_scratched_metal_material(name: str, rgba: tuple[float, float, float, fl
     return mat
 
 
-def make_plastic_material(name: str, rgba: tuple[float, float, float, float], *, roughness: float) -> bpy.types.Material:
-    mat = make_material(name, rgba, roughness=roughness, metallic=0.0)
+def make_plastic_material(name: str, rgba: tuple[float, float, float, float], *, roughness: float, specular: float = 0.22) -> bpy.types.Material:
+    mat = make_material(name, rgba, roughness=roughness, metallic=0.0, specular=specular)
     if "Rubber" in name or "Cable" in name or "Battery" in name:
         add_image_texture(mat, "sunray150_black_rubber_base.png", target="Base Color")
         add_image_texture(mat, "sunray150_black_rubber_roughness.png", target="Roughness", non_color=True)
@@ -257,25 +263,74 @@ def make_plastic_material(name: str, rgba: tuple[float, float, float, float], *,
 
 
 def make_translucent_guard_material() -> bpy.types.Material:
-    mat = make_material("Sunray150_Texture_Smoked_Translucent_Prop_Guard", (0.22, 0.24, 0.25, 0.50), roughness=0.22, alpha=0.50)
+    mat = make_material("Sunray150_Texture_Smoked_Translucent_Prop_Guard", (0.035, 0.039, 0.041, 0.82), roughness=0.55, alpha=0.82, specular=0.16)
+    add_image_texture(mat, "sunray150_smoked_translucent_guard_base.png", target="Base Color")
+    add_image_texture(mat, "sunray150_smoked_translucent_guard_roughness.png", target="Roughness", non_color=True)
+    add_image_texture(mat, "sunray150_smoked_translucent_guard_bump.png", target="Bump", non_color=True, strength=0.018)
     nodes = mat.node_tree.nodes
     bsdf = next((node for node in nodes if node.type == "BSDF_PRINCIPLED"), None)
     if bsdf:
-        set_principled_input(bsdf, ("Alpha",), 0.46)
-        set_principled_input(bsdf, ("Roughness",), 0.20)
+        set_principled_input(bsdf, ("Alpha",), 0.82)
+        set_principled_input(bsdf, ("Base Color",), (0.035, 0.039, 0.041, 0.82))
+        set_principled_input(bsdf, ("Roughness",), 0.55)
         set_principled_input(bsdf, ("Metallic",), 0.0)
+        set_principled_input(bsdf, ("Specular IOR Level", "Specular"), 0.16)
     mat.blend_method = "BLEND"
-    mat.use_screen_refraction = True
+    mat.use_screen_refraction = False
     link_noise_to_bump(mat, scale=95.0, detail=7.0, strength=0.010, distance=0.00022)
     return mat
 
 
 def make_battery_material() -> bpy.types.Material:
     mat = make_material("Sunray150_Texture_Black_Heatshrink_Battery", (0.010, 0.010, 0.009, 1.0), roughness=0.70)
+    add_image_texture(mat, "sunray150_battery_heatshrink_base.png", target="Base Color")
+    add_image_texture(mat, "sunray150_battery_heatshrink_roughness.png", target="Roughness", non_color=True)
+    add_image_texture(mat, "sunray150_battery_heatshrink_bump.png", target="Bump", non_color=True, strength=0.040)
+    link_noise_to_bump(mat, scale=55.0, detail=9.0, strength=0.018, distance=0.0005)
+    return mat
+
+
+def make_propeller_material() -> bpy.types.Material:
+    mat = make_plastic_material("Sunray150_Texture_Dark_Smoked_Composite_Propeller", (0.008, 0.009, 0.008, 1.0), roughness=0.90, specular=0.025)
+    add_image_texture(mat, "sunray150_smoked_propeller_base.png", target="Base Color")
+    add_image_texture(mat, "sunray150_smoked_propeller_roughness.png", target="Roughness", non_color=True)
+    add_image_texture(mat, "sunray150_smoked_propeller_bump.png", target="Bump", non_color=True, strength=0.014)
+    bsdf = next((node for node in mat.node_tree.nodes if node.type == "BSDF_PRINCIPLED"), None)
+    if bsdf:
+        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 0.0)
+    return mat
+
+
+def make_camera_body_material() -> bpy.types.Material:
+    mat = make_plastic_material("Sunray150_Texture_USB_Camera_Matte_Black_Housing", (0.018, 0.018, 0.017, 1.0), roughness=0.86, specular=0.08)
+    add_image_texture(mat, "sunray150_camera_black_polymer_base.png", target="Base Color")
+    add_image_texture(mat, "sunray150_camera_black_polymer_roughness.png", target="Roughness", non_color=True)
+    add_image_texture(mat, "sunray150_camera_black_polymer_bump.png", target="Bump", non_color=True, strength=0.026)
+    return mat
+
+
+def make_mid360_window_material() -> bpy.types.Material:
+    mat = make_material("MID360_Texture_Deep_Blue_Teal_Glossy_Optical_Window", (0.001, 0.018, 0.070, 1.0), roughness=0.115, metallic=0.0, alpha=1.0, specular=0.46)
+    add_image_texture(mat, "mid360_blue_optical_window_base.png", target="Base Color")
+    add_image_texture(mat, "mid360_blue_optical_window_roughness.png", target="Roughness", non_color=True)
+    add_image_texture(mat, "mid360_blue_optical_window_bump.png", target="Bump", non_color=True, strength=0.006)
+    bsdf = next((node for node in mat.node_tree.nodes if node.type == "BSDF_PRINCIPLED"), None)
+    if bsdf:
+        set_principled_input(bsdf, ("Alpha",), 1.0)
+        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 0.42)
+        set_principled_input(bsdf, ("Coat Roughness", "Clearcoat Roughness"), 0.09)
+        set_principled_input(bsdf, ("Transmission Weight", "Transmission"), 0.0)
+    mat.blend_method = "OPAQUE"
+    mat.use_screen_refraction = False
+    return mat
+
+
+def make_mid360_protection_frame_material() -> bpy.types.Material:
+    mat = make_material("MID360_Texture_Satin_Black_Protection_Frame", (0.018, 0.019, 0.018, 1.0), roughness=0.64, metallic=0.08, specular=0.18)
     add_image_texture(mat, "sunray150_black_rubber_base.png", target="Base Color")
     add_image_texture(mat, "sunray150_black_rubber_roughness.png", target="Roughness", non_color=True)
-    add_image_texture(mat, "sunray150_black_rubber_bump.png", target="Bump", non_color=True, strength=0.045)
-    link_noise_to_bump(mat, scale=55.0, detail=9.0, strength=0.018, distance=0.0005)
+    add_image_texture(mat, "sunray150_black_rubber_bump.png", target="Bump", non_color=True, strength=0.020)
+    link_noise_to_bump(mat, scale=80.0, detail=9.0, strength=0.018, distance=0.00035)
     return mat
 
 
@@ -285,33 +340,34 @@ def realistic_materials() -> dict[str, bpy.types.Material]:
         return MATERIAL_CACHE
     MATERIAL_CACHE = {
         "carbon": make_carbon_material(),
-        "matte_black_plastic": make_plastic_material("Sunray150_Texture_Matte_Black_Plastic", (0.020, 0.021, 0.020, 1.0), roughness=0.72),
-        "satin_black_plastic": make_plastic_material("Sunray150_Texture_Satin_Black_Plastic", (0.048, 0.050, 0.049, 1.0), roughness=0.58),
+        "matte_black_plastic": make_plastic_material("Sunray150_Texture_Matte_Black_Plastic", (0.014, 0.014, 0.013, 1.0), roughness=0.88, specular=0.06),
+        "satin_black_plastic": make_plastic_material("Sunray150_Texture_Satin_Black_Plastic", (0.028, 0.029, 0.028, 1.0), roughness=0.74, specular=0.10),
+        "mid360_protection_frame": make_mid360_protection_frame_material(),
         "translucent_guard": make_translucent_guard_material(),
         "dark_anodized": make_scratched_metal_material("Sunray150_Texture_Dark_Anodized_Aluminum", (0.060, 0.062, 0.060, 1.0), roughness=0.32, metallic=0.72),
         "steel": make_scratched_metal_material("Sunray150_Texture_Dark_Chromoly_Steel_Screws", (0.17, 0.165, 0.150, 1.0), roughness=0.24, metallic=0.90),
         "aluminum": make_warm_anodized_material("Sunray150_Texture_Gold_7075_Aluminum_Standoffs", (0.70, 0.43, 0.11, 1.0), roughness=0.31),
         "copper": make_scratched_metal_material("Sunray150_Texture_Copper_Motor_Windings", (0.78, 0.35, 0.12, 1.0), roughness=0.34, metallic=0.95),
-        "motor": make_scratched_metal_material("Sunray150_Texture_Black_Motor_Bell", (0.025, 0.026, 0.025, 1.0), roughness=0.25, metallic=0.82),
-        "prop": make_plastic_material("Sunray150_Texture_Smoked_Grey_Composite_Propeller", (0.23, 0.23, 0.22, 1.0), roughness=0.44),
-        "rubber": make_plastic_material("Sunray150_Texture_Rubber_Cable_Black", (0.010, 0.010, 0.009, 1.0), roughness=0.88),
+        "motor": make_scratched_metal_material("Sunray150_Texture_Black_Motor_Bell", (0.040, 0.040, 0.038, 1.0), roughness=0.28, metallic=0.82),
+        "prop": make_propeller_material(),
+        "rubber": make_plastic_material("Sunray150_Texture_Rubber_Cable_Black", (0.018, 0.018, 0.017, 1.0), roughness=0.84),
         "wire_red": make_plastic_material("Sunray150_Texture_Red_Silicone_Wire", (0.75, 0.045, 0.025, 1.0), roughness=0.62),
         "wire_blue": make_plastic_material("Sunray150_Texture_Blue_Silicone_Wire", (0.030, 0.12, 0.75, 1.0), roughness=0.62),
         "wire_yellow": make_plastic_material("Sunray150_Texture_Yellow_Silicone_Wire", (0.90, 0.64, 0.04, 1.0), roughness=0.62),
         "pcb_green": make_material("Sunray150_Texture_PCB_Green_Soldermask", (0.020, 0.185, 0.080, 1.0), roughness=0.46),
         "pcb_black": make_material("Sunray150_Texture_PCB_Black_Soldermask", (0.012, 0.014, 0.012, 1.0), roughness=0.48),
         "battery": make_battery_material(),
-        "camera_body": make_plastic_material("Sunray150_Texture_USB_Camera_Dark_Housing", (0.018, 0.019, 0.018, 1.0), roughness=0.58),
-        "camera_lens": make_material("Sunray150_Texture_Camera_Lens_Glass", (0.005, 0.009, 0.014, 0.72), roughness=0.04, metallic=0.0, alpha=0.72),
-        "connector_shell": make_scratched_metal_material("Sunray150_Texture_USB_HDMI_Nickel_Shell", (0.44, 0.43, 0.39, 1.0), roughness=0.25, metallic=0.92),
-        "connector_core": make_plastic_material("Sunray150_Texture_Connector_Black_Core", (0.008, 0.008, 0.008, 1.0), roughness=0.64),
+        "camera_body": make_camera_body_material(),
+        "camera_lens": make_material("Sunray150_Texture_Camera_Lens_Glass", (0.005, 0.009, 0.014, 0.72), roughness=0.08, metallic=0.0, alpha=0.72, specular=0.45),
+        "connector_shell": make_scratched_metal_material("Sunray150_Texture_USB_HDMI_Nickel_Shell", (0.32, 0.32, 0.30, 1.0), roughness=0.44, metallic=0.72),
+        "connector_core": make_plastic_material("Sunray150_Texture_Connector_Black_Core", (0.018, 0.018, 0.017, 1.0), roughness=0.60),
         "tfmini_body": make_plastic_material("Sunray150_Texture_TF_Mini_Black_Sensor", (0.018, 0.018, 0.017, 1.0), roughness=0.52),
-        "mid360_body": make_scratched_metal_material("MID360_Texture_Silver_Grey_Aluminum_Housing", (0.46, 0.455, 0.425, 1.0), roughness=0.26, metallic=0.62),
-        "mid360_base": make_plastic_material("MID360_Texture_Black_Base", (0.020, 0.021, 0.021, 1.0), roughness=0.58),
-        "mid360_window": make_material("MID360_Texture_Blue_Glossy_Optical_Window", (0.020, 0.130, 0.460, 0.70), roughness=0.035, alpha=0.70),
-        "mid360_connector": make_plastic_material("MID360_Texture_Black_M12_Connector", (0.008, 0.008, 0.008, 1.0), roughness=0.66),
-        "mid360_mount": make_plastic_material("MID360_Texture_Black_Mount_Inserts", (0.006, 0.006, 0.006, 1.0), roughness=0.74),
-        "neutral": make_material("Sunray150_Texture_Neutral_Dark_Grey_Unclassified", (0.060, 0.060, 0.055, 1.0), roughness=0.66),
+        "mid360_body": make_scratched_metal_material("MID360_Texture_Satin_Silver_Grey_Aluminum_Housing", (0.30, 0.305, 0.292, 1.0), roughness=0.66, metallic=0.04),
+        "mid360_base": make_plastic_material("MID360_Texture_Black_Base", (0.020, 0.021, 0.021, 1.0), roughness=0.72, specular=0.12),
+        "mid360_window": make_mid360_window_material(),
+        "mid360_connector": make_plastic_material("MID360_Texture_Black_M12_Connector", (0.020, 0.020, 0.019, 1.0), roughness=0.70, specular=0.10),
+        "mid360_mount": make_plastic_material("MID360_Texture_Black_Mount_Inserts", (0.018, 0.018, 0.017, 1.0), roughness=0.78, specular=0.08),
+        "neutral": make_material("Sunray150_Texture_Neutral_Dark_CAD_Unclassified", (0.050, 0.052, 0.050, 1.0), roughness=0.78, specular=0.06),
     }
     add_image_texture(MATERIAL_CACHE["pcb_black"], "sunray150_pcb_black_base.png", target="Base Color")
     add_image_texture(MATERIAL_CACHE["pcb_black"], "sunray150_pcb_black_roughness.png", target="Roughness", non_color=True)
@@ -411,6 +467,7 @@ def add_visual_detail_overlays() -> dict:
     rmats = realistic_materials()
     white = make_material("Sunray150_Decal_White_Ink", (0.92, 0.92, 0.88, 1.0), roughness=0.42)
     black = make_material("Sunray150_Decal_Black_Ink", (0.004, 0.004, 0.004, 1.0), roughness=0.50)
+    motor_gold = make_material("Sunray150_Decal_Motor_Gold_Ink", (0.95, 0.58, 0.12, 1.0), roughness=0.30)
     livox = make_material("Sunray150_Decal_Livox_Black", (0.002, 0.002, 0.002, 1.0), roughness=0.45)
     lens = rmats["camera_lens"]
     added = []
@@ -418,6 +475,13 @@ def add_visual_detail_overlays() -> dict:
     added.append(add_label_plate("decal_mid360_livox_front", "LIVOX  MID-360", Vector((0.0, -0.020, 0.0805)), 0.0042, livox, rotation=(math.radians(75), 0.0, 0.0)).name)
     for x, y in [(0.0537, 0.0537), (-0.0537, 0.0537), (0.0537, -0.0537), (-0.0537, -0.0537)]:
         added.append(add_label_plate(f"decal_motor_yundrone_{x:.3f}_{y:.3f}", "YUN DRONE", Vector((x, y, -0.0005)), 0.0030, white, rotation=(0.0, 0.0, math.radians(45))).name)
+        added.append(add_label_plate(f"decal_motor_lava_{x:.3f}_{y:.3f}", "LAVA", Vector((x, y, 0.0010)), 0.0026, motor_gold, rotation=(0.0, 0.0, math.radians(45))).name)
+    for x, y in [(0.0537, 0.0537), (-0.0537, 0.0537), (0.0537, -0.0537), (-0.0537, -0.0537)]:
+        bpy.ops.mesh.primitive_torus_add(major_radius=0.0108, minor_radius=0.00035, major_segments=80, minor_segments=8, location=(x, y, -0.0001))
+        obj = bpy.context.object
+        obj.name = prop.clean_name(f"decal_motor_gold_ring_{x:.3f}_{y:.3f}", 96)
+        assign_single_material(obj, motor_gold)
+        added.append(obj.name)
 
     # Camera glass discs make front/down USB cameras visually readable even
     # when the DAE splits their detailed submeshes into many small BREP parts.
@@ -446,26 +510,32 @@ def add_visual_detail_overlays() -> dict:
     return {
         "added_overlay_count": len(added),
         "added_overlays": added,
-        "overlay_rule": "Review decals and cable hints are non-physical texture intent markers: LIVOX/MID-360 logo, YUN DRONE motor marks, USB camera lens glass, and colored cable sleeves. They do not alter accepted MID-360/propeller placement.",
+        "overlay_rule": "Review decals and cable hints are non-physical texture intent markers: LIVOX/MID-360 logo, YUN DRONE/LAVA motor marks, motor gold rim cues, USB camera lens glass, and colored cable sleeves. They do not alter accepted MID-360/propeller placement.",
     }
 
 
 def aircraft_material_key(name: str) -> str:
     upper = name.upper()
+    if "AL_COLUMNS" in upper or "AL_COLUMS" in upper or "SPACER" in upper or "STAND" in upper or "COLUMN" in upper:
+        return "aluminum"
+    if "FRONT_CAMERA_CONNECTOR" in upper:
+        return "matte_black_plastic"
+    if "SHOCK_ABSORBING" in upper or "RUBBER" in upper or "DAMP" in upper:
+        return "rubber"
+    if "SCREW" in upper or "NUT" in upper or "WASHER" in upper or "BOLT" in upper:
+        return "steel"
     if "PROPELLER" in upper:
         return "prop"
     if "CIRCPATTERN" in upper:
         return "prop"
-    if "PROTECTIVE_RING" in upper:
-        return "translucent_guard"
-    if "LAND_GEAR" in upper:
-        return "translucent_guard"
     if "MID360_PROTECT_ARC" in upper:
+        return "mid360_protection_frame"
+    if "PROTECTIVE_RING" in upper:
         return "matte_black_plastic"
-    if "SHOCK_ABSORBING" in upper or "RUBBER" in upper or "DAMP" in upper:
-        return "rubber"
-    if "AL_COLUMNS" in upper or "AL_COLUMS" in upper or "SPACER" in upper or "STAND" in upper or "COLUMN" in upper:
-        return "aluminum"
+    if "LAND_GEAR" in upper:
+        return "matte_black_plastic"
+    if "SHIM" in upper and ("M2" in upper or "M3" in upper):
+        return "steel"
     if "YUNDRONE_4S1P" in upper or "BATTERY" in upper:
         return "battery"
     if "FILL." in upper:
@@ -484,8 +554,10 @@ def aircraft_material_key(name: str) -> str:
         if "USB" in upper or "HDMI" in upper or "CONNECTOR" in upper or "MANIFOLD_SOLID_BREP" in upper:
             return "connector_shell"
         return "rubber"
-    if "USB" in upper or "HDMI" in upper or "CONNECTOR" in upper:
-        if "PIN" in upper or "SHELL" in upper or "KÖRPER" in name or "KÃ" in upper or "MANIFOLD_SOLID_BREP" in upper:
+    if "PJ311" in upper or "NGFF" in upper or "C-3-1734795" in upper:
+        return "connector_shell"
+    if "USB" in upper or "HDMI" in upper or "RJ45" in upper or "CONNECTOR" in upper:
+        if "PIN" in upper or "SHELL" in upper or "KÖRPER" in name or "KÃ" in upper or "MANIFOLD_SOLID_BREP" in upper or "STP" in upper:
             return "connector_shell"
         return "connector_core"
     if "FRONT_CAMERA" in upper or "BOTTOM_CAMERA" in upper:
@@ -498,10 +570,10 @@ def aircraft_material_key(name: str) -> str:
         return "tfmini_body"
     if "ESC_SPEEDYBEE" in upper or "MAIN_BOARD" in upper or "PCBMODEL" in upper or "N150_ALLCATPART.1\\PART1" in upper:
         return "pcb_black"
+    if "N150_ALLCATPART" in upper and ("NAUO" in upper or "NONE_NCL" in upper or "PARTBODY" in upper):
+        return "pcb_black"
     if "PIN" in upper:
         return "connector_shell"
-    if "SCREW" in upper or "NUT" in upper or "WASHER" in upper or "BOLT" in upper:
-        return "steel"
     if (
         "TOP_PANNEL" in upper
         or "BOT_PANNEL" in upper
@@ -512,7 +584,9 @@ def aircraft_material_key(name: str) -> str:
         or "BATTERY_LIMITER" in upper
     ):
         return "carbon"
-    if "MID360" in upper:
+    if "MID360" in upper or "MID-360" in upper:
+        if "MANIFOLD_SOLID_BREP" in upper:
+            return "mid360_protection_frame"
         return "satin_black_plastic"
     if "BATTERY_CLIP" in upper:
         return "satin_black_plastic"

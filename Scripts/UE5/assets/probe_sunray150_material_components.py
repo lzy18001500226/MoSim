@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 
-PROJECT_ROOT = Path(r"C:\Users\HP\Desktop\MoSim")
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 PROP_AUDIT = PROJECT_ROOT / "Scripts" / "UE5" / "assets" / "build_sunray150_with_mid360_propeller_assembly_audit_scene.py"
 OUT = PROJECT_ROOT / "Results" / "unreal_scene_mapping" / "sunray150_material_component_probe_20260603.json"
 

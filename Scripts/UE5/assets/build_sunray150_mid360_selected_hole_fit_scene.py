@@ -23,7 +23,7 @@ import bpy
 from mathutils import Matrix, Vector
 
 
-PROJECT_ROOT = Path(r"C:\Users\HP\Desktop\MoSim")
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 TOP_PICK_SCRIPT = PROJECT_ROOT / "Scripts" / "UE5" / "assets" / "build_sunray150_top_panel_hole_pick_scene.py"
 LIVOX_AUDIT = PROJECT_ROOT / "Scripts" / "UE5" / "assets" / "build_livox_mid360_audit_scene.py"
 TOP_PICK_MANIFEST = PROJECT_ROOT / "UE5" / "MoSimSceneLibrary" / "SourceAssets" / "Sunray150" / "Audit" / "sunray150_top_panel_hole_pick_manifest.json"

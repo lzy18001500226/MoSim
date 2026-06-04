@@ -14,7 +14,7 @@ import bpy
 from mathutils import Euler, Matrix, Vector
 
 
-PROJECT_ROOT = Path(r"C:\Users\HP\Desktop\MoSim")
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 MID360_ROOT = PROJECT_ROOT / "References" / "Sunray" / "simulation" / "sunray_simulator" / "models" / "sensor_models" / "livox_mid360"
 MID360_SDF = MID360_ROOT / "livox_mid360.sdf"
 MID360_DAE = MID360_ROOT / "meshes" / "test2.dae"

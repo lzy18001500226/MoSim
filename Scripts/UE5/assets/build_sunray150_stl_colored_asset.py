@@ -25,7 +25,7 @@ import bpy
 from mathutils import Euler, Matrix, Vector
 
 
-PROJECT_ROOT = Path(r"C:\Users\HP\Desktop\MoSim")
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 SUNRAY_ROOT = PROJECT_ROOT / "References" / "Sunray" / "simulation" / "sunray_simulator" / "models" / "drone_models" / "sunray150_with_mid360"
 BODY_STL = SUNRAY_ROOT / "meshes" / "sunray.stl"
 ROTOR_STL = SUNRAY_ROOT / "meshes" / "sunray_cw.stl"

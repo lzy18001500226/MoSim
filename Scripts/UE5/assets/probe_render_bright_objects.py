@@ -9,7 +9,7 @@ from pathlib import Path
 import bpy
 
 
-PROJECT_ROOT = Path(r"C:\Users\HP\Desktop\MoSim")
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 BLEND = PROJECT_ROOT / "UE5" / "MoSimSceneLibrary" / "SourceAssets" / "Sunray150" / "Audit" / "sunray150_dae_mid360_realistic_material_audit.blend"
 OUT = PROJECT_ROOT / "Results" / "unreal_scene_mapping" / "sunray150_bright_object_probe_20260603.json"
 

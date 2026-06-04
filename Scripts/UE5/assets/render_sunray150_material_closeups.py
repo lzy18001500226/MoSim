@@ -27,10 +27,10 @@ VIEWS = [
     },
     {
         "name": "front_usb_camera_battery",
-        "center": (0.0, 0.072, 0.019),
-        "camera_offset": (0.018, -0.120, 0.020),
-        "ortho_scale": 0.115,
-        "purpose": "Front USB camera, battery pack area, connector holes, and black camera/glass material.",
+        "center": (0.0, 0.095, 0.006),
+        "camera_offset": (0.0, -0.105, 0.014),
+        "ortho_scale": 0.078,
+        "purpose": "Front USB camera lens/body, black camera polymer material, and nearby lower electronics.",
     },
     {
         "name": "pcb_connectors_cables",
@@ -49,25 +49,39 @@ VIEWS = [
     {
         "name": "motor_prop_guard",
         "center": (0.055, 0.055, -0.012),
-        "camera_offset": (0.055, -0.070, 0.040),
-        "ortho_scale": 0.080,
-        "purpose": "Motor bell, copper windings, propeller material, screws, and smoked guard.",
+        "camera_offset": (0.045, -0.055, 0.055),
+        "ortho_scale": 0.070,
+        "purpose": "LAVA/YUN DRONE motor bell cues, copper windings, propeller material, screws, and smoked guard.",
     },
 ]
 
 
 def setup_render() -> None:
     bpy.context.scene.render.engine = "CYCLES"
-    bpy.context.scene.cycles.samples = 32
+    bpy.context.scene.cycles.samples = 48
     bpy.context.scene.render.resolution_x = 1400
     bpy.context.scene.render.resolution_y = 1000
     bpy.context.scene.view_settings.view_transform = "Filmic"
-    bpy.context.scene.view_settings.look = "Medium High Contrast"
-    bpy.context.scene.view_settings.exposure = -2.25
+    bpy.context.scene.view_settings.look = "Low Contrast"
+    bpy.context.scene.view_settings.exposure = -1.25
     bpy.context.scene.view_settings.gamma = 1.0
-    bpy.context.scene.world.color = (0.16, 0.16, 0.16)
+    bpy.context.scene.world.color = (0.18, 0.18, 0.18)
     for light in [o for o in bpy.context.scene.objects if o.type == "LIGHT"]:
-        light.data.energy *= 0.65
+        light.data.energy *= 0.42
+        if hasattr(light.data, "size"):
+            light.data.size *= 2.20
+    fill_data = bpy.data.lights.new("MaterialCloseup_Front_Fill", type="AREA")
+    fill_data.energy = 260
+    fill_data.size = 0.42
+    fill = bpy.data.objects.new("MaterialCloseup_Front_Fill", fill_data)
+    fill.location = (0.0, -0.16, 0.09)
+    bpy.context.collection.objects.link(fill)
+    rim_data = bpy.data.lights.new("MaterialCloseup_Rim_Fill", type="AREA")
+    rim_data.energy = 145
+    rim_data.size = 0.38
+    rim = bpy.data.objects.new("MaterialCloseup_Rim_Fill", rim_data)
+    rim.location = (-0.13, 0.08, 0.12)
+    bpy.context.collection.objects.link(rim)
 
 
 def ensure_camera() -> bpy.types.Object:
@@ -94,6 +108,7 @@ def render_view(view: dict) -> dict:
     return {
         "name": view["name"],
         "path": str(out),
+        "project_relative_path": str(out.relative_to(PROJECT_ROOT)).replace("\\", "/"),
         "center_m": list(view["center"]),
         "camera_offset_m": list(view["camera_offset"]),
         "ortho_scale": view["ortho_scale"],
@@ -110,7 +125,28 @@ def main() -> None:
     if only:
         selected = [view for view in VIEWS if view["name"] in only]
     outputs = [render_view(view) for view in selected]
-    MANIFEST.write_text(json.dumps({"source_blend": str(BLEND), "outputs": outputs}, ensure_ascii=False, indent=2), encoding="utf-8")
+    previous_outputs = []
+    if MANIFEST.exists():
+        try:
+            previous_outputs = json.loads(MANIFEST.read_text(encoding="utf-8")).get("outputs", [])
+        except json.JSONDecodeError:
+            previous_outputs = []
+    by_name = {item.get("name"): item for item in previous_outputs if item.get("name")}
+    for item in outputs:
+        by_name[item["name"]] = item
+    merged_outputs = [by_name[view["name"]] for view in VIEWS if view["name"] in by_name]
+    MANIFEST.write_text(
+        json.dumps(
+            {
+                "source_blend": str(BLEND),
+                "source_blend_project_relative": str(BLEND.relative_to(PROJECT_ROOT)).replace("\\", "/"),
+                "outputs": merged_outputs,
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
     print(str(MANIFEST))
 
 

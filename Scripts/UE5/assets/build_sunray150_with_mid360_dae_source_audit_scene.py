@@ -19,7 +19,7 @@ import bpy
 from mathutils import Euler, Matrix, Vector
 
 
-PROJECT_ROOT = Path(r"C:\Users\HP\Desktop\MoSim")
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 UAV_DAE = PROJECT_ROOT / "References" / "Sunray" / "simulation" / "sunray_simulator" / "models" / "drone_models" / "sunray150_with_mid360" / "meshes" / "150.dae"
 OUT_DIR = PROJECT_ROOT / "UE5" / "MoSimSceneLibrary" / "SourceAssets" / "Sunray150" / "Audit"
 OUT_BLEND = OUT_DIR / "sunray150_with_mid360_dae_source_audit.blend"

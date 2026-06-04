@@ -9,7 +9,7 @@ import bpy
 from mathutils import Vector
 
 
-PROJECT_ROOT = Path(r"C:\Users\HP\Desktop\MoSim")
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 BLEND = PROJECT_ROOT / "UE5" / "MoSimSceneLibrary" / "SourceAssets" / "Sunray150" / "Audit" / "sunray150_dae_mid360_realistic_material_audit.blend"
 OUT = PROJECT_ROOT / "UE5" / "MoSimSceneLibrary" / "SourceAssets" / "Sunray150" / "Audit" / "sunray150_dae_mid360_realistic_material_preview.png"
 
@@ -39,10 +39,10 @@ def main() -> None:
     bpy.context.scene.render.resolution_x = 1800
     bpy.context.scene.render.resolution_y = 1200
     bpy.context.scene.view_settings.view_transform = "Filmic"
-    bpy.context.scene.view_settings.look = "Medium High Contrast"
-    bpy.context.scene.view_settings.exposure = -2.55
+    bpy.context.scene.view_settings.look = "Low Contrast"
+    bpy.context.scene.view_settings.exposure = -2.10
     bpy.context.scene.view_settings.gamma = 1.0
-    bpy.context.scene.world.color = (0.24, 0.24, 0.24)
+    bpy.context.scene.world.color = (0.18, 0.18, 0.18)
     bpy.context.scene.render.filepath = str(OUT)
     bpy.ops.render.render(write_still=True)
     print(str(OUT))
