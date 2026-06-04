@@ -1,6 +1,46 @@
 # Sunray150 + MID-360 Material Audit Package
 
-Status: manual Blender material audit pending. Do not export or import this material candidate into UE until manual acceptance.
+Status: rejected in material audit on 2026-06-04. Do not export or import this
+material candidate into UE.
+
+## 2026-06-04 Audit Result
+
+Verdict: fail. Geometry invariants are preserved, but the material/texture
+candidate still reads as a CAD grey model with partial coloring rather than a
+realistic Sunray150/MID-360 asset.
+
+Rejected items:
+
+- Whole preview: too many large body/frame/electronics surfaces remain light
+  grey or white; the aircraft does not read as a carbon-fiber UAV.
+- MID-360 close-up: the blue optical dome is readable, but the housing is too
+  white and the connector area has a large black occlusion/assignment artifact.
+- Front USB camera/electronics close-up: exposure and material assignment make
+  important components collapse into black blocks; camera, PCB, connector, and
+  battery/electronics roles cannot be reliably audited.
+- PCB/connectors/cables close-up: cables and motor windings are readable, but
+  connector shells, PCB, and surrounding structural parts still look like
+  untextured grey CAD.
+- Carbon frame/standoff close-up: the expected carbon fiber frame is mostly
+  light grey, with little visible woven texture; gold standoffs look closer to
+  yellow plastic than anodized metal.
+- Motor/prop/guard close-up: motor detail is crushed to black, propeller/guard
+  surfaces are large grey-white patches, and the image does not prove real
+  motor, screw, winding, or propeller material quality.
+
+Required next pass:
+
+- Keep accepted geometry locked: MID-360 scale `0.833527`, tri-blade propeller
+  source/orientation, and propeller final translation-z `-0.014052 m`.
+- Reclassify the currently light grey visible DAE objects and assign them to
+  physical component families instead of neutral fallback material.
+- Fix the MID-360 connector black artifact before another MID-360 material
+  audit.
+- Re-light close-up renders so dark components remain readable without turning
+  carbon/plastic into flat grey.
+- Produce close-ups that separately prove carbon fiber weave, anodized
+  standoffs, matte/black plastic, PCB, metal connector shells, motor windings,
+  screws, propellers, and MID-360 optical/housing materials.
 
 ## Geometry Invariants
 

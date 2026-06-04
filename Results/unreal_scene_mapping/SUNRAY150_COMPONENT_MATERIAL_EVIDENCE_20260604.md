@@ -7,10 +7,18 @@ UE runtime evidence.
 
 - YunDrone wiki, `单目相机`: confirms the Sunray-150 stack uses a monocular
   camera module and documents the camera as a separate hardware component.
-- YunDrone wiki, hardware overview pages: current interpretation is that the
-  Sunray-150 class uses carbon-fiber structural plates, aviation-grade 7-series
-  aluminum supports, and alloy-steel fasteners/connectors. Treat this as the
-  governing material direction until replaced by a more specific part datasheet.
+- YunDrone wiki, `Sunray150 硬件整体介绍`: confirms the basic version uses
+  the model `Sunray-150`, carbon-fiber material, overall dimensions
+  `150 mm x 150 mm`, wheelbase `150 mm`, takeoff weight below `250 g`, and
+  `N150` as the onboard computer.
+- YunDrone wiki, `Sunray150 硬件整体介绍`: confirms the 3D-LiDAR version adds
+  Livox MID-360 and an N150 onboard computer, uses carbon-fiber material, has
+  overall dimensions `180 mm x 180 mm`, and has takeoff weight below `500 g`.
+- YunDrone wiki, `动力系统`: confirms the frame material direction as
+  carbon fiber for the main structure, 7-series aviation aluminum alloy for
+  support parts, and chromium-molybdenum steel for connections/fasteners. It
+  also confirms the propulsion-system component set as battery, ESC, motor,
+  and propeller.
 - Local reference images:
   `References/CUAV/Sunray150-正.png`,
   `References/CUAV/Sunray150-侧.png`,
