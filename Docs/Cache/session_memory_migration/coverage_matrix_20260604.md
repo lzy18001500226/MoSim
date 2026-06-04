@@ -15,9 +15,8 @@ superseded, or user-review-gated.
 ```text
 round: coverage_audit
 status: migration_incomplete_but_recoverable
-formal_docs_patched_this_round:
-  - Docs/Workflows/identify_quadrotor_parameters.md
-this_file_cache_only: true
+formal_docs_patched_this_round: none
+cache_only: true
 primary_recovery_files:
   - PROGRESS.md
   - Docs/Workflows/agent_task_ledger.md
@@ -54,7 +53,7 @@ formal target documents must be re-read in the same round before any patch.
 | Unreal renderer / review-camera / listener / editor MCP history | Round 1 scene-source/renderer cache plus round 2 audit at `round2_scene_source_renderer_memory_20260604.md`; round 3 map updated | `round2_verified_needs_live_recheck_before_use` | Treat old S0/S1/blockout routes as superseded; re-run current review/log checks before any current visual-review claim. |
 | ROS2 Humble runtime setup and apt/key state | Round 1 cache plus round 2 audit at `round2_ros2_runtime_setup_memory_20260604.md`; round 3 map updated | `round2_verified_round3_mapped` | ROS2 Humble route is already formalized; apt/key and rosbridge are prior infrastructure evidence unless live-checked; FAST-LIO status needs route/date/source priority; helper-script references need current-file verification. |
 | CoAgent organization / department / task-runtime history | Round 1 CoAgent operating cache plus round 2 audit at `round2_coagent_operating_memory_20260604.md`; round 3 map updated | `round2_verified_round3_mapped` | Keep as guardrails only: read `CoAgent/STATUS.md` before CoAgent changes; no implementation, visibility-health, or transport expansion is authorized by this migration. |
-| Parameter identification / Sunray150 physical parameters | Round 1 parameter cache plus round 2 audit at `round2_parameter_identification_memory_20260604.md`; round 3 application clarified the formal workflow wording without numeric promotion | `round3_applied_no_numeric_promotion` | Current values remain `source=SDF_migration`; no project-local identification bundle was found in this pass; no numeric parameter is ready for formal promotion. |
+| Parameter identification / Sunray150 physical parameters | Round 1 parameter cache plus round 2 audit at `round2_parameter_identification_memory_20260604.md`; round 3 map updated | `round2_verified_round3_mapped_no_numeric_promotion` | Current values remain `source=SDF_migration`; no project-local identification bundle was found in this pass; no numeric parameter is ready for formal promotion. |
 | External repos / AirSim / RflySim / reference-learning policy | Round 1 external-reference cache plus round 2 audit at `round2_external_reference_memory_20260604.md`; round 3 map updated | `round2_verified_round3_mapped` | Keep external references as contracts/patterns unless an approved integration has local build/runtime evidence; preserve FAST-LIO status-source priority and rejected toy-route memory. |
 | Active queues / mistakes to avoid / recovery pointers | Present in PROGRESS | `needs_compaction_review` | Decide whether to split into formal workflow pointers or cache-only historical backlog. |
 
@@ -70,6 +69,7 @@ patch.
 round1_only_caches_need_round2:
   - none
 round2_verified_topics_need_round3_application:
+  - parameter_identification
   - mworks_codegen_runtime
   - scene_source_renderer
   - ros2_runtime_setup
@@ -95,14 +95,14 @@ all_important_items_cached_or_out_of_scope:
       and topic-specific round-2 evidence review.
     - PROGRESS.md is still long and may expose lower-priority historical
       recovery notes during later compaction review.
-    - The migration still needs more round-3 application: one narrow item at a
-      time, with current evidence and target docs re-read in the same round.
+    - The migration still needs round-3 application: one narrow item at a time,
+      with current evidence and target docs re-read in the same round.
 
 all_high_risk_items_resolved:
   incomplete
   reason:
-    - Sunray numeric assembly, Factory FAST-LIO state, UE scene acceptance, and
-      MWORKS codegen/SIL remain high-risk.
+    - Sunray numeric assembly, Factory FAST-LIO state, UE scene acceptance,
+      MWORKS codegen/SIL, and parameter identification remain high-risk.
     - Codegen/SIL remains PID-demo-only architecture evidence; per-controller
       time-varying SIL is still open.
     - Scene-source/renderer round 2 found ambiguity between registry primary,
@@ -111,10 +111,8 @@ all_high_risk_items_resolved:
       command risk; latest `*_CURRENT` gates must be re-read before claims.
     - CoAgent round 2 confirms guardrails only; live visibility, implementation,
       automation, transport, and tool expansion are not authorized.
-    - Parameter identification now has round-3 disposition for the current
-      repository state: no project-local identification bundle was found, one
-      accepted-mass wording risk was clarified, and no numeric parameter was
-      promoted.
+    - Parameter round 2 found no project-local identification bundle and no
+      numeric parameter ready for promotion.
     - External reference learning remains reference/adaptation only unless a
       later task proves an approved runtime integration.
 
@@ -124,8 +122,7 @@ promoted_target_map_exists:
     - round3_promotion_rejection_map_20260604.md now includes the current
       round-2 topic set.
   gap:
-    - only parameter-identification wording has been patched from the new
-      round-2 topic set.
+    - no formal target docs have been patched from the new round-2 topic set.
     - each future formal patch must re-read current evidence and the target doc
       in that same round.
 

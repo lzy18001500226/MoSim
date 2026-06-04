@@ -481,16 +481,13 @@ or mixer geometry.
 User audit update:
 
 ```text
-For the current Sunray150 work, treat a user-provided or directly measured
-takeoff mass as the accepted mass input for that exact flight configuration
-unless a later weighing/log consistency check contradicts it. This does not
-upgrade inertia, rotor geometry, motor coefficients, drag, controller evidence,
-or the full parameter set to `identified`; those still require the ULog,
-held-out validation, and MWORKS verification bundle above. Treat
-wheelbase/rotor geometry as a geometry-measurement issue: use STL and real
-motor-axis measurement as the primary source, and use the 3.5-inch frame class /
-about-150-mm frame class as the plausibility check. Do not copy YunZong/Gazebo
-inertia values across vehicles just because the simulator runs.
+For the current Sunray150 work, treat the provided takeoff mass as the accepted
+flight-configuration mass unless a later weighing/log consistency check
+contradicts it. Treat wheelbase/rotor geometry as a geometry-measurement issue:
+use STL and real motor-axis measurement as the primary source, and use the
+3.5-inch frame class / about-150-mm frame class as the plausibility check. Do not
+copy YunZong/Gazebo inertia values across vehicles just because the simulator
+runs.
 ```
 
 #### Tier C: Low-cost identification routes
@@ -615,8 +612,7 @@ Current priority order for Sunray150:
 
 ```text
 1. Lock geometry: STL/actual motor-axis measurement, motor order, rotor direction.
-2. Lock mass and component placement: measured or user-provided takeoff mass
-   with provenance, plus battery/Mid360/FC/motor positions.
+2. Lock mass and component placement: accepted takeoff mass plus battery/Mid360/FC/motor positions.
 3. Run ULog topic audit: can we see actuator, gyro/rate, attitude, acceleration, battery, RPM?
 4. If RPM exists: fit physical thrust curve and motor lag.
 5. If RPM does not exist: use ARPL/sysid.tools latent delay + command-thrust fit.

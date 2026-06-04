@@ -153,6 +153,8 @@ References/Agent/Gateway/*
 !References/Agent/Gateway/inspector/**
 !References/Agent/Gateway/browser-use/
 !References/Agent/Gateway/browser-use/**
+!References/Agent/Gateway/cc-connect/
+!References/Agent/Gateway/cc-connect/**
 !References/Agent/Skills/
 !References/Agent/Skills/**
 References/Agent/Skills/awesome-opencode/dist/
