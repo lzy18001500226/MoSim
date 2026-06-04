@@ -128,13 +128,6 @@ References/UnrealScenes/
 # files remain tracked; new files in these trees must be admitted with
 # path-limited `git add -f <reviewed-slice>` after size/secret checks.
 References/Agent/
-Docs/Skills/Unreal/
-!Docs/Skills/Unreal/
-Docs/Skills/Unreal/*
-!Docs/Skills/Unreal/mosim-epic/
-!Docs/Skills/Unreal/mosim-epic/**
-!Docs/Skills/Unreal/mosim-unreal/
-!Docs/Skills/Unreal/mosim-unreal/**
 References/Agent/Skills/awesome-opencode/dist/
 References/Agent/**/.git/
 References/Agent/**/__pycache__/
