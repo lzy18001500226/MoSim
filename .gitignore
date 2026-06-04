@@ -144,6 +144,8 @@ References/Agent/Control/*
 !References/Agent/Control/ClawTeam-OpenClaw/**
 !References/Agent/Control/ClawTeam/
 !References/Agent/Control/ClawTeam/**
+!References/Agent/Control/agency-swarm/
+!References/Agent/Control/agency-swarm/**
 !References/Agent/Skills/
 !References/Agent/Skills/**
 References/Agent/Skills/awesome-opencode/dist/
