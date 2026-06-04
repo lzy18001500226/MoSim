@@ -157,6 +157,9 @@ References/Agent/Gateway/*
 !References/Agent/Gateway/cc-connect/**
 !References/Agent/Gateway/E2B/
 !References/Agent/Gateway/E2B/**
+!References/Agent/Gateway/mcp-use/
+!References/Agent/Gateway/mcp-use/**
+References/Agent/Gateway/mcp-use/libraries/
 !References/Agent/Skills/
 !References/Agent/Skills/**
 References/Agent/Skills/awesome-opencode/dist/
