@@ -1286,6 +1286,9 @@ argument length, hook scans, and GitHub limits as first-class constraints:
    File renames or directory moves can create 10k+ tracked changes; handle them
    as tracked-change batches with path-limited `git diff --name-only -- <path>`
    or `git ls-files -m -- <path>`, not with broader ignore rules.
+   Do not close a Git split task just because visible untracked files are 0:
+   drain temporary ignore rules and separately commit or explicitly block every
+   tracked-change family.
 6. For local performance, consider Git's large-repo features only as bounded
    helpers: sparse checkout or partial clone for fresh analysis clones, and
    split-index/untracked-cache/fsmonitor only after recording the local config

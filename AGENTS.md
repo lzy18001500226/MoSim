@@ -212,7 +212,9 @@ Rules:
    missing LFS assets, or explicitly manifest-only external materials. If a
    large tree is already tracked or shows as modified, `.gitignore` cannot hide
    or solve it; classify and commit those tracked changes in path-limited
-   batches instead.
+   batches instead. Directory renames or moves that create 10k+ tracked
+   changes are tracked-change work: first throttle any new untracked spill with
+   ignore rules, then commit the tracked changes in reviewed small batches.
 9. When Git is slow, has LFS/hook/index-lock residue, or another Git owner is
    active, delegate commit/push work to `GitIntegrator` instead of blocking the
    main engineering thread. The main agent remains responsible for scope,
