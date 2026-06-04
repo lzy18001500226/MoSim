@@ -6,7 +6,7 @@
 ## Current Focus
 
 - 2026-06-04 CST long-session memory migration for
-  `MoSim|四旋翼无人机仿真系统` is recoverable but still cache-only. Durable
+  `MoSim|四旋翼无人机仿真系统` is recoverable and remains cache-first. Durable
   workflow: `Docs/Workflows/session_memory_migration.md`; ledger row:
   `SESSION-MEMORY-MIGRATION-20260604`; coverage matrix:
   `Docs/Cache/session_memory_migration/coverage_matrix_20260604.md`; round-3
@@ -15,13 +15,18 @@
   round-2 evidence review, including infrastructure/session policy, Sunray150
   asset history, UE/ROS/FAST-LIO, MWORKS controller evidence, MWORKS codegen/SIL,
   ROS2 runtime setup, scene-source/renderer state, parameter identification,
-  CoAgent operating boundaries, and external-reference lessons. No high-risk
-  historical item is promoted as formal truth yet. Round 3 must proceed one
-  narrow item at a time: re-read current evidence and the formal target doc in
-  the same round, then patch narrowly, reject/supersede, or record a user-review
-  blocker. Do not compress this `PROGRESS.md` or mark the goal complete until
-  high-risk items have round-3 promotion, rejection, supersession, or explicit
-  user-review/current-evidence gates.
+  CoAgent operating boundaries, and external-reference lessons. Round 3 has
+  started with one narrow parameter-provenance clarification in
+  `Docs/Workflows/identify_quadrotor_parameters.md`: accepted takeoff mass is
+  only a provenance-labeled input for the exact flight configuration, not a
+  promotion of inertia, rotor geometry, motor coefficients, drag, controller
+  evidence, or the full parameter set to `identified`. No numeric parameter was
+  promoted, and no project-local identification bundle was found in that round.
+  Continue round 3 one narrow item at a time: re-read current evidence and the
+  formal target doc in the same round, then patch narrowly, reject/supersede,
+  or record a user-review blocker. Do not compress this `PROGRESS.md` or mark
+  the goal complete until high-risk items have round-3 promotion, rejection,
+  supersession, or explicit user-review/current-evidence gates.
 
 - 2026-06-03 CST Codex shared Windows state repair: user prefers not to isolate
   Windows CLI into `C:\Users\HP\.codex-cli`. Restored the shared-home route by
