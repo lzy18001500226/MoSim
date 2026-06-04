@@ -233,6 +233,10 @@ References/Agent/Gateway/cua/libs/*
 !References/Agent/Gateway/cua/libs/cua-driver/**
 !References/Agent/Gateway/cua/libs/cua-bench/
 !References/Agent/Gateway/cua/libs/cua-bench/**
+!References/Agent/Gateway/cua/libs/python/
+!References/Agent/Gateway/cua/libs/python/**
+References/Agent/Gateway/cua/libs/python/cua-sandbox-apps/**/logs/
+References/Agent/Gateway/cua/libs/python/cua-sandbox-apps/**/logs/**
 !References/Agent/Gateway/cua/.dockerignore
 !References/Agent/Gateway/cua/.gitignore
 !References/Agent/Gateway/cua/.pre-commit-config.yaml
