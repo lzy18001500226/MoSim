@@ -205,6 +205,17 @@ References/Agent/Gateway/composio-next/*
 !References/Agent/Gateway/composio-next/python/**
 !References/Agent/Gateway/composio-next/test/
 !References/Agent/Gateway/composio-next/test/**
+!References/Agent/Gateway/composio-next/ts/
+References/Agent/Gateway/composio-next/ts/*
+!References/Agent/Gateway/composio-next/ts/docs/
+!References/Agent/Gateway/composio-next/ts/docs/**
+!References/Agent/Gateway/composio-next/ts/e2e-tests/
+!References/Agent/Gateway/composio-next/ts/e2e-tests/**
+!References/Agent/Gateway/composio-next/ts/examples/
+!References/Agent/Gateway/composio-next/ts/examples/**
+!References/Agent/Gateway/composio-next/ts/scripts/
+!References/Agent/Gateway/composio-next/ts/scripts/**
+!References/Agent/Gateway/composio-next/ts/.gitignore
 !References/Agent/Gateway/composio-next/.env.example
 !References/Agent/Gateway/composio-next/.gitignore
 !References/Agent/Gateway/composio-next/.prettierrc
