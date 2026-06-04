@@ -43,40 +43,40 @@
 
 | Topic | File | Notes |
 |---|---|---|
-| MWORKS docs entry | `Docs/Mworks/README.md` | How to use scanned and converted local resource docs |
-| Scan summary | `Docs/Mworks/scan/scan_summary.md` | Relevant file counts and next steps |
-| Ranked relevant index | `Docs/Mworks/scan/relevant_index.md` | Top project-related source files |
-| Machine-readable index | `Docs/Mworks/scan/relevant_files.csv` | CSV for scripts and filtering |
-| PDF preview review | `Docs/Mworks/scan/pdf_review.md` | PDF first-page content relevance evidence |
-| Sysplorer category | `Docs/Mworks/scan/categories/sysplorer_modeling.md` | Sysplorer, Modelica, modeling examples |
-| Syslab category | `Docs/Mworks/scan/categories/syslab_analysis.md` | Syslab, Julia, control analysis |
-| Challenge category | `Docs/Mworks/scan/categories/quadrotor_uav.md` | Intelligent unmanned systems challenge materials |
-| Converted PDF index | `Docs/Mworks/converted/转换索引.md` | Current curated converted PDF list |
-| MinerU precise API | `Docs/Mworks/mcp/mineru_precise_api.md` | Token-based precise parsing, batch upload, polling, errors |
-| MATLAB compatibility plan | `Docs/Mworks/matlab_compat_plan.md` | Plan for converting official MWORKS/MATLAB comparison materials |
+| MWORKS docs entry | `Docs/MworksDocs/README.md` | How to use scanned and converted local resource docs |
+| Scan summary | `Docs/MworksDocs/scan/scan_summary.md` | Relevant file counts and next steps |
+| Ranked relevant index | `Docs/MworksDocs/scan/relevant_index.md` | Top project-related source files |
+| Machine-readable index | `Docs/MworksDocs/scan/relevant_files.csv` | CSV for scripts and filtering |
+| PDF preview review | `Docs/MworksDocs/scan/pdf_review.md` | PDF first-page content relevance evidence |
+| Sysplorer category | `Docs/MworksDocs/scan/categories/sysplorer_modeling.md` | Sysplorer, Modelica, modeling examples |
+| Syslab category | `Docs/MworksDocs/scan/categories/syslab_analysis.md` | Syslab, Julia, control analysis |
+| Challenge category | `Docs/MworksDocs/scan/categories/quadrotor_uav.md` | Intelligent unmanned systems challenge materials |
+| Converted PDF index | `Docs/MworksDocs/converted/转换索引.md` | Current curated converted PDF list |
+| MinerU precise API | `Docs/MinerU/mineru_precise_api.md` | Token-based precise parsing, batch upload, polling, errors |
+| MATLAB compatibility plan | `Docs/MworksDocs/matlab_compat_plan.md` | Plan for converting official MWORKS/MATLAB comparison materials |
 
 ## Converted PDF Topics
 
 | Topic | File |
 |---|---|
-| Syslab/Sysplorer integration 2024a | `Docs/Mworks/converted/sysplorer/Syslab与Sysplorer双向集成_2024a.md` |
-| Syslab/Sysplorer integration 2025b | `Docs/Mworks/converted/sysplorer/Syslab与Sysplorer双向集成_2025b.md` |
-| Modelica behavior syntax | `Docs/Mworks/converted/sysplorer/Modelica语法详解_模型行为描述.md` |
-| Modelica reuse syntax | `Docs/Mworks/converted/sysplorer/Modelica语法详解_模型重用.md` |
-| Syslab control toolbox | `Docs/Mworks/converted/syslab/MWORKS.Syslab控制系统工具箱.md` |
-| Syslab control APP | `Docs/Mworks/converted/syslab/MWORKS.Syslab控制系统工具箱APP.md` |
-| Parameter estimation | `Docs/Mworks/converted/optimization/MWORKS.Sysplorer参数估计工具箱应用.md` |
-| System identification | `Docs/Mworks/converted/control/Syslab系统辨识工具箱.md` |
-| Robust control | `Docs/Mworks/converted/control/Syslab鲁棒控制工具箱.md` |
-| Sysplorer external functions | `Docs/Mworks/converted/api/MWORKS.Sysplorer外部接口_外部函数.md` |
-| Sysplorer Python scripts | `Docs/Mworks/converted/api/MWORKS.Sysplorer工具箱运行脚本_Python.md` |
-| Syslab external functions | `Docs/Mworks/converted/api/MWORKS.Syslab外部函数调用.md` |
-| MWORKS and other scientific software | `Docs/Mworks/converted/matlab_compat/MWORKS与其他科学计算软件对比.md` |
-| MWORKS intro and MATLAB comparison | `Docs/Mworks/converted/matlab_compat/MWORKS简介及与MATLAB的对比.md` |
-| MATLAB compatibility online links | `Docs/Mworks/converted/matlab_compat/MWORKS与MATLAB在线链接.md` |
-| Challenge rules | `Docs/Mworks/converted/challenge/智能无人系统应用挑战赛_无人车避障竞赛规则.md` |
-| Challenge training 1 | `Docs/Mworks/converted/challenge/智能无人系统应用挑战赛_专项培训一.md` |
-| Challenge training 2 | `Docs/Mworks/converted/challenge/智能无人系统应用挑战赛_专项培训二.md` |
+| Syslab/Sysplorer integration 2024a | `Docs/MworksDocs/converted/sysplorer/Syslab与Sysplorer双向集成_2024a.md` |
+| Syslab/Sysplorer integration 2025b | `Docs/MworksDocs/converted/sysplorer/Syslab与Sysplorer双向集成_2025b.md` |
+| Modelica behavior syntax | `Docs/MworksDocs/converted/sysplorer/Modelica语法详解_模型行为描述.md` |
+| Modelica reuse syntax | `Docs/MworksDocs/converted/sysplorer/Modelica语法详解_模型重用.md` |
+| Syslab control toolbox | `Docs/MworksDocs/converted/syslab/MWORKS.Syslab控制系统工具箱.md` |
+| Syslab control APP | `Docs/MworksDocs/converted/syslab/MWORKS.Syslab控制系统工具箱APP.md` |
+| Parameter estimation | `Docs/MworksDocs/converted/optimization/MWORKS.Sysplorer参数估计工具箱应用.md` |
+| System identification | `Docs/MworksDocs/converted/control/Syslab系统辨识工具箱.md` |
+| Robust control | `Docs/MworksDocs/converted/control/Syslab鲁棒控制工具箱.md` |
+| Sysplorer external functions | `Docs/MworksDocs/converted/api/MWORKS.Sysplorer外部接口_外部函数.md` |
+| Sysplorer Python scripts | `Docs/MworksDocs/converted/api/MWORKS.Sysplorer工具箱运行脚本_Python.md` |
+| Syslab external functions | `Docs/MworksDocs/converted/api/MWORKS.Syslab外部函数调用.md` |
+| MWORKS and other scientific software | `Docs/MworksDocs/converted/matlab_compat/MWORKS与其他科学计算软件对比.md` |
+| MWORKS intro and MATLAB comparison | `Docs/MworksDocs/converted/matlab_compat/MWORKS简介及与MATLAB的对比.md` |
+| MATLAB compatibility online links | `Docs/MworksDocs/converted/matlab_compat/MWORKS与MATLAB在线链接.md` |
+| Challenge rules | `Docs/MworksDocs/converted/challenge/智能无人系统应用挑战赛_无人车避障竞赛规则.md` |
+| Challenge training 1 | `Docs/MworksDocs/converted/challenge/智能无人系统应用挑战赛_专项培训一.md` |
+| Challenge training 2 | `Docs/MworksDocs/converted/challenge/智能无人系统应用挑战赛_专项培训二.md` |
 
 ## External Migration References
 
@@ -105,7 +105,7 @@
 ## Maintenance Rules
 
 1. List only files that exist in the repository.
-2. Store high-value converted references under `Docs/Mworks/converted/`.
+2. Store high-value converted references under `Docs/MworksDocs/converted/`.
 3. Keep noisy one-off extraction output out of the default docs tree.
 4. Put repeatable procedures in `Docs/Workflows/`.
 5. Do not duplicate long official documents into `AGENTS.md`.

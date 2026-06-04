@@ -1,9 +1,58 @@
 # Project Progress
 
+## 2026-06-04 CST - Long Conversation Memory Migration Supplemental Routing
+
+- Added `Docs/Cache/session_memory_migration/round2_core_competition_report_docs_memory_20260604.md` as a cache-only recovery entry for historical core competition work that was already represented in formal docs/results but needed clearer fresh-conversation routing.
+- Updated `Docs/Index/project_work_memory_index.md` with explicit entries for simulation report/evidence audit, official MWORKS docs conversion, and test/quality gates.
+- Corrected stale documentation-entry paths from `Docs/Mworks/` to the current `Docs/MworksDocs/` tree in `Docs/Index/doc_index.md`, `Docs/Index/api_index.md`, `Docs/Index/mathworks_to_mworks_migration.md`, `Docs/Workflows/translate_mathworks_to_mworks.md`, and `Docs/Workflows/pre_submit_check.md`. `Docs/MinerU/mineru_precise_api.md` remains the current MinerU API path.
+- This is a routing/memory patch only. It does not promote new controller, scene, FAST-LIO, parameter, codegen, or CoAgent runtime claims.
+
 > Current project memory for agent recovery. Keep this file short. Durable
 > rules stay in `AGENTS.md`; detailed procedures stay in `Docs/Workflows/`.
 
 ## Current Focus
+
+- 2026-06-04 CST new conversation recovery context: created
+  `Docs/Workflows/new_conversation_context.md` as the short startup document
+  for new Codex conversations. Use it before reading the long `PROGRESS.md` or
+  any raw session transcript. It records only current effective decisions,
+  current Sunray150 geometry/dynamics boundaries, RflySim local source entry,
+  UE/ROS/FAST-LIO authority split, and rejected historical routes. The old
+  large chat transcript remains non-authoritative; newly surfaced historical
+  claims must still go through `Docs/Workflows/session_memory_migration.md`
+  before formal promotion.
+
+- 2026-06-04 CST full project work-memory index: added
+  `Docs/Index/project_work_memory_index.md` so a new conversation can recover
+  the broader history without reading the 2 GB session file. The index routes
+  CoAgent, Codex/App infrastructure, WeChat, Git/DevOps, external-reference
+  learning, Unreal MCP/Fab scene tooling, S0/S1 renderer history, Factory and
+  Derelict scene gates, UE/ROS/FAST-LIO, MWORKS evidence/codegen/SIL,
+  Sunray150 geometry/materials, RflySim dynamics reference, and PX4/Sunray
+  behavior contracts to their current source docs and evidence. It also
+  records rejected/superseded routes so old failed iterations are not revived
+  as current truth.
+
+- 2026-06-04 CST Sunray150 geometry parameter migration: user-reviewed
+  DAE/Blender assembly geometry has been extracted to
+  `Results/unreal_scene_mapping/sunray150_dae_assembly_parameters_20260604.json`
+  and applied only to high-confidence geometry fields. MWORKS
+  `Dronefixed1..4`, Sunray `sunray150_with_mid360.sdf/.sdf.jinja` rotor poses,
+  front/down camera candidates, conservative collision box, and the UE Blender
+  asset rotor-center script now use the DAE-derived rotor centers:
+  rotor 0 `(0.053745,-0.05374,-0.014052)`, rotor 1
+  `(-0.053761,0.05376,-0.014052)`, rotor 2
+  `(0.053746,0.053759,-0.014052)`, rotor 3
+  `(-0.053761,-0.053739,-0.014052)` m. Mass, inertia, thrust/motor constants,
+  controller gains, and timing were not changed. MID-360 remains held for
+  review as separate concepts: mechanical mount pose, point-cloud origin,
+  built-in IMU position, FAST-LIO extrinsic, and Sunray/Gazebo ray-sensor pose.
+  Official Livox Mid-360 manual evidence gives the IMU position as
+  `(11.0,23.29,-44.12) mm` in the point-cloud coordinate system, which matches
+  the local FAST-LIO convention `extrinsic_T=[-0.011,-0.02329,0.04412]` for
+  LiDAR pose in IMU body frame when axes are aligned. Do not replace SDF
+  MID-360 pose or FAST-LIO extrinsics from DAE mount geometry without a
+  separate coordinate-frame review.
 
 - 2026-06-04 CST long-session memory migration for
   `MoSim|四旋翼无人机仿真系统` is recoverable and remains cache-first. Durable
@@ -927,6 +976,30 @@
   the corrected command still failed with
   `weixin: sendMessage: ret=-2 errcode=0`. Do not tight-loop retry; treat
   WeChat as degraded until the gateway runtime is refreshed.
+
+- 2026-06-04 CST Sunray150 PBR minimum loop checkpoint:
+  `SUNRAY-PBR-MINILOOP-20260604` now has component-first evidence for the
+  carbon frame and accepted tri-blade propeller only. Geometry gates remain
+  unchanged: MID-360 scale `0.833527`, propeller source `sunray_cw.stl`,
+  orientation `flipped_around_screw_axis`, final translation Z `-0.014052 m`,
+  and no UE export. `generate_sunray150_pbr_texture_set.py` generated
+  base-color, roughness, and bump maps for both `carbon_fiber` and
+  `smoked_propeller`. `render_sunray150_component_material_reviews.py` now
+  records the override material's connected texture maps into
+  `sunray150_component_material_reviews_manifest.json`; verified targets for
+  both `carbon_frame` and `tri_blade_propeller` include `Base Color`,
+  `Roughness`, and `Bump`. Latest review images are
+  `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/carbon_frame.png`
+  and
+  `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/tri_blade_propeller.png`.
+  User correction is recorded: propellers are smoked/transparent plastic, not
+  opaque black composite. The WeChat review packet
+  `Results/coagent_gateway/packets/sunray_pbr_propeller_review_20260604.json`
+  was attempted once through `MoSim｜微信通知网关`, but cc-connect still failed
+  with Unix socket `connection refused`; recovery packet:
+  `Results/coagent_gateway/recovery/weixin_recovery_required_20260604_150646.json`.
+  Await manual review in the main conversation or after WeChat recovery; do
+  not mark the PBR loop complete until the human review gate is accepted.
 
 - 2026-06-02 architecture reset: user rejected the current grid-cell keyboard
   movement, static/synthetic point cloud, 2D-only grid, and hand-polished

@@ -19,12 +19,21 @@ formal_docs_patched_this_round:
   - Docs/Workflows/identify_quadrotor_parameters.md
   - Docs/Workflows/unreal_renderer.md
   - Docs/Workflows/ros2_runtime_setup.md
+  - Docs/Index/project_work_memory_index.md
+  - Docs/Index/doc_index.md
+  - Docs/Index/api_index.md
+  - Docs/Index/mathworks_to_mworks_migration.md
+  - Docs/Workflows/translate_mathworks_to_mworks.md
+  - Docs/Workflows/pre_submit_check.md
 round3_rechecked_no_formal_patch:
   - MWORKS code generation / SIL route
   - CoAgent operating boundary
   - External reference learning boundary
 this_file_cache_only: true
 primary_recovery_files:
+  - AGENTS.md
+  - Docs/Workflows/new_conversation_context.md
+  - Docs/Index/project_work_memory_index.md
   - PROGRESS.md
   - Docs/Workflows/agent_task_ledger.md
   - Docs/Workflows/session_memory_migration.md
@@ -32,6 +41,7 @@ primary_recovery_files:
   - Docs/Cache/session_memory_migration/coverage_matrix_20260604.md
   - Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md
   - Docs/Cache/session_memory_migration/completion_audit_20260604.md
+  - Docs/Cache/session_memory_migration/round2_core_competition_report_docs_memory_20260604.md
 ```
 
 The current migration has a reliable process and the currently identified topic
@@ -65,6 +75,7 @@ instead of being promoted directly.
 | Parameter identification / Sunray150 physical parameters | Round 1 parameter cache plus round 2 audit at `round2_parameter_identification_memory_20260604.md`; round 3 application clarified the formal workflow wording without numeric promotion | `round3_applied_no_numeric_promotion` | Current values remain `source=SDF_migration`; no project-local identification bundle was found in this pass; no numeric parameter is ready for formal promotion. |
 | External repos / AirSim / RflySim / reference-learning policy | Round 1 external-reference cache plus round 2 audit at `round2_external_reference_memory_20260604.md`; round 3 re-read external learning index, audit workflow, reference index, agent classification, real-UAV reuse matrix/source audit, UE renderer workflow, and architecture doc | `round3_rechecked_no_formal_patch` | Existing docs already carry the boundary. Keep external references as contracts/patterns unless an approved integration has local build/runtime evidence; FAST-LIO source-priority is covered by the ROS2 round-3 patch; rejected toy routes remain smoke-only. |
 | Active queues / mistakes to avoid / recovery pointers | Present in PROGRESS, workflow index, active ledger rows, and topic caches | `completion_audited` | Keep `PROGRESS.md` as recoverable context; compact only in a separate cleanup after confirming equivalent cache/formal coverage. |
+| Core competition report/docs/test recovery | Supplemental round-2 cache added for controller/scenario evidence, report/native-result/replay boundary, official docs conversion, tests/quality gates, and planning evidence routing | `round2_verified_formal_routing_patched` | Use the cache and updated indexes as routing only; re-read result metrics, quality gates, and current docs before any new claim. |
 
 ## Required Topic Caches Still Missing
 
@@ -78,6 +89,8 @@ round1_only_caches_need_round2:
   - none
 round2_verified_topics_need_round3_application:
   - none
+supplemental_round2_routing_caches:
+  - round2_core_competition_report_docs_memory_20260604.md
 ```
 
 ## Completion Audit Against Workflow Criteria

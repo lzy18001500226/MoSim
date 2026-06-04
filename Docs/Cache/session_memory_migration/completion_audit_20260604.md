@@ -33,14 +33,17 @@ conversation starts from the recovery entry points below.
 Read in this order:
 
 ```text
-1. PROGRESS.md
-2. Docs/Workflows/agent_task_ledger.md
-3. Docs/Workflows/session_memory_migration.md
-4. Docs/Cache/session_memory_migration/long_goal_plan_20260604.md
-5. Docs/Cache/session_memory_migration/coverage_matrix_20260604.md
-6. Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md
-7. Docs/Cache/session_memory_migration/completion_audit_20260604.md
-8. The topic-specific round-2 cache file named by the coverage matrix
+1. AGENTS.md
+2. Docs/Workflows/new_conversation_context.md
+3. Docs/Index/project_work_memory_index.md
+4. PROGRESS.md only for the newest active entries, not as a full transcript
+5. Docs/Workflows/agent_task_ledger.md
+6. Docs/Workflows/session_memory_migration.md
+7. Docs/Cache/session_memory_migration/long_goal_plan_20260604.md
+8. Docs/Cache/session_memory_migration/coverage_matrix_20260604.md
+9. Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md
+10. Docs/Cache/session_memory_migration/completion_audit_20260604.md
+11. The topic-specific round-2 cache file named by the coverage matrix
 ```
 
 ## Topic Coverage
@@ -56,6 +59,15 @@ formal_patches_from_round3:
   - Docs/Workflows/identify_quadrotor_parameters.md
   - Docs/Workflows/unreal_renderer.md
   - Docs/Workflows/ros2_runtime_setup.md
+  - Docs/Index/project_work_memory_index.md
+  - Docs/Index/doc_index.md
+  - Docs/Index/api_index.md
+  - Docs/Index/mathworks_to_mworks_migration.md
+  - Docs/Workflows/translate_mathworks_to_mworks.md
+  - Docs/Workflows/pre_submit_check.md
+
+supplemental_routing_cache:
+  - Docs/Cache/session_memory_migration/round2_core_competition_report_docs_memory_20260604.md
 
 round3_rechecked_no_formal_patch:
   - MWORKS code generation / SIL boundary
@@ -107,6 +119,16 @@ external_references:
   result:
     - external projects remain reference contracts or candidates
     - direct runtime adoption requires separate approval and local evidence
+
+core_competition_report_docs:
+  result:
+    - controller/scenario evidence, report/replay/native-result boundaries,
+      official docs conversion, tests/quality gates, and planning evidence
+      routing now have a supplemental recovery cache
+    - current MWORKS documentation entry paths were corrected to the actual
+      `Docs/MworksDocs/` tree in the affected indexes/workflows
+    - no new controller, scene, FAST-LIO, parameter, or codegen claim was
+      promoted by this supplemental routing patch
 ```
 
 ## PROGRESS Compaction Review

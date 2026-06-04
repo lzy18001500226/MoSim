@@ -19,7 +19,7 @@
 The folder `References/MWORKS高校星火计划资料包/MWORKS与MATLAB功能对照` has been converted into project-local references:
 
 ```text
-Docs/Mworks/converted/matlab_compat/
+Docs/MworksDocs/converted/matlab_compat/
   MWORKS与其他科学计算软件对比.md
   MWORKS简介及与MATLAB的对比.md
   MWORKS与MATLAB在线链接.md

@@ -53,55 +53,119 @@ deprecated unless explicitly revalidated under this UAV-stack-first route.
 The current minimum review gate is Factory scene rendering plus a visible
 YunZong/Sunray150 UAV body driven by the MWORKS/Bridge state path.
 
+## Sunray150 Material Review Rule
+
+For Sunray150 appearance work, use the project skill
+`Docs/Skills/Unreal/sunray-pbr-material-workflow/SKILL.md` before editing
+Blender, DAE/FBX/glTF, UE materials, or material-generation scripts. That skill
+is the current source of truth for component-first PBR texturing, material
+library use, UV/atlas decisions, and audit gates.
+
+Do material work by component family, not by whole-aircraft renders first.
+Whole-aircraft images are only final consistency checks after the individual
+parts pass.
+
+Required loop for each component family:
+
+```text
+identify physical part
+  -> confirm source object names and reference images/docs
+  -> research the single part's real product appearance before rendering
+  -> assign material/texture only for that part family
+  -> render isolated close-up audit image
+  -> inspect for material realism and wrong fallback colors
+  -> ask the user by WeChat if the part identity or physical role is unclear
+```
+
+Do not guess unknown parts from object names alone. If a part cannot be mapped
+to a known Sunray150/MID-360/camera/PCB/motor/propeller/battery/connector
+component with reasonable confidence, leave it neutral in the manifest and ask
+for clarification through the project WeChat gateway before applying a final
+material.
+
+Material-library rule: prefer an existing PBR material/map set before manual
+color tuning. A valid texture pass normally has albedo/base color, roughness,
+normal/bump, and metallic when relevant. Color maps are sRGB; roughness,
+metallic, AO, normal, height, and packed ARM maps are Non-Color data. If an STL
+or DAE object lacks usable UVs for the needed detail, unwrap/atlas first
+instead of painting broad procedural colors over the whole object.
+
+For every reviewed part, first collect the real visual cues for that exact
+component: material family, color, gloss/roughness, metal/plastic/glass
+behavior, labels/markings, fasteners, connector faces, vents, seams, and
+edge-wear. Only then tune Blender materials. Do not tune by whole-aircraft
+appearance first.
+
+Current component order is:
+
+```text
+MID-360 sensor and protection frame
+carbon frame and plates
+aluminum standoffs and steel fasteners
+front/bottom cameras
+electronics, connectors, and cables
+motors and accepted tri-blade propellers
+battery and payload blocks
+landing gear and guards
+whole-aircraft consistency render
+```
+
 Accepted UAV visual sources:
 
 | Priority | Source | Notes |
 |---|---|---|
-| 1 | Approved UE asset for the YunZong/Sunray150 body | Use when a proper imported asset exists in `MoSimSceneLibrary`. |
-| 2 | Runtime procedural mesh loaded from `References/MWORKS/QuadrotorModel/Resources/Visualization/sunray150_mid360_body.stl` plus `References/MWORKS/QuadrotorModel/Resources/Visualization/sunray150_mid360_propeller.stl` | Current implementation path in `QuadrotorMworksPlaybackActor`; use the same visual assets and scale factors as the accepted MWORKS animation. |
-| 3 | Source-model assets under `References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` | Reference for geometry, rotor layout, and future import/LOD work. |
+| 1 | Imported UE StaticMesh generated from `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured.fbx` or `.glb` | Required runtime vehicle visual. It must preserve the user-reviewed DAE-derived assembly, MID-360 placement, three-blade propellers, and material work. |
+| Reference only | Source-model assets under `References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` plus the accepted Blender manifests | Allowed only for rebuilding or checking the DAE-derived UE asset. |
+| Forbidden | MWORKS STL, MWORKS animation, runtime procedural vehicle mesh, primitive cube/cylinder UAV | Not accepted as UE runtime vehicle visuals or manual-review evidence. |
 
-Primitive cube/cylinder UAV geometry is not accepted review evidence. It is
-only allowed as an explicit diagnostic fallback when the Sunray mesh fails to
-load and `bAllowPrimitiveUavFallback=true`. The default must keep this fallback
-disabled. If the user sees a block/primitive UAV, treat the stage as failed and
-fix the Sunray asset path/import/compile problem before continuing.
+Primitive cube/cylinder UAV geometry is not accepted review evidence. The
+default must keep fallback disabled. If the user sees a block/primitive UAV, or
+if UE logs report that the DAE-derived StaticMesh asset is missing, treat the
+stage as failed and import/fix the reviewed Sunray FBX/GLB asset path before
+continuing. Do not fall back to MWORKS STL or MWORKS animation.
 
 If the user reports a huge cylinder, broken/fragmented mesh, wrong scale, or
 wrong initial position, the gate has failed. Do not ask for point-cloud,
 FAST-LIO, or planner review. Diagnose with logs first:
 
 ```text
-Sunray mesh source path and file size
-binary/ASCII STL detection and triangle count
-raw and scaled mesh bounding box
-body/propeller component visibility
-fallback primitive visibility
+imported DAE-derived StaticMesh asset path
+FBX/GLB source asset path and file size
+imported mesh bounds and material slot count
+BodyMesh visibility and hidden-in-game state
+absence of primitive/STL vehicle fallback components
 spawn transform and first UDP-driven transform
 review camera initial transform
 ```
 
-Before inventing a new UE/UAV behavior fix, check the local reference route:
-Sunray/YunZong SDF/mesh files for vehicle geometry and rotor pose, then local
-RflySim/reference code for renderer/simulation role split and review behavior.
-Only after those are insufficient should the task go online for official docs
-or higher-quality external references. Record the adopted pattern here or in
-`PROGRESS.md` immediately.
+Before inventing a new UE/UAV behavior fix, check the local DAE-derived asset
+route and its manifests first, then Sunray/YunZong SDF/mesh files for
+dynamics/sensor references, then local RflySim/reference code for
+renderer/simulation role split and review behavior. Only after those are
+insufficient should the task go online for official docs or higher-quality
+external references. Record the adopted pattern here or in `PROGRESS.md`
+immediately.
 
 Do not request manual review until the latest UE log confirms:
 
 ```text
-body loaded from the full STL, not a triangle-stepped/downsampled subset
-propeller bounds are compact and not the old large ASCII STL extent
+vehicle loaded from the imported DAE-derived StaticMesh path
+MWORKS STL/runtime animation fallback is not used
 primitive cube/cylinder fallback is hidden
 render-only helper geometry is disabled for the vehicle-visual gate
 first UDP position maps to the accepted UAV task start
 ```
 
-The bridge must fail loudly instead of destructively reducing the body mesh
-triangle count. If full runtime STL loading is too heavy or still renders
-broken because of material/winding/import behavior, switch to a proper imported
-UE static mesh or LOD asset path; do not accept a visually fragmented STL.
+The bridge must fail loudly when the imported DAE-derived UE StaticMesh is
+missing. Do not restore runtime STL loading, primitive geometry, or MWORKS animation as a
+convenience fallback.
+
+Build check note: when invoking Windows UnrealBuildTool from WSL, pass the
+`.uproject` as a Windows path, for example from
+`wslpath -w UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject`. Passing a raw
+`/mnt/c/...` path to Windows UBT can be misread as `D:\mnt\c\...` and fail
+before compilation. Prefer `Scripts/UE5/build_unreal_renderer.sh` or the same
+Windows-path conversion when doing manual compile probes.
 
 The review UAV initial position should match the accepted task start for this
 gate. The review camera should start near that position but must not be placed
@@ -122,46 +186,79 @@ manual review. If the user reports that the UAV runs to an old position or
 loops a previous mission, treat that as a gate failure and return to the first
 frame hold.
 
-Propeller placement and heading must be traced to the local MWORKS visual model
-before tuning by eye. The MWORKS animation has already been manually validated
-for the upside-down motor/propeller layout, so UE must reproduce that visual
-frame instead of mixing independent SDF link order and UE actor axes.
+Propeller placement, MID-360 placement, heading, and materials for the current
+UE vehicle visual must be traced to the user-reviewed DAE-derived assembly
+manifests before tuning by eye. The MWORKS animation/STL route is forbidden as
+a runtime or review vehicle visual source.
 
 The current source split is:
 
 ```text
+Results/unreal_scene_mapping/sunray150_dae_assembly_parameters_20260604.json
+  -> accepted DAE-derived geometry manifest
+  -> MWORKS/SDF rotor centers:
+     rotor_0 front-right `{0.053745,-0.05374,-0.014052}`
+     rotor_1 back-left `{-0.053761,0.05376,-0.014052}`
+     rotor_2 front-left `{0.053746,0.053759,-0.014052}`
+     rotor_3 back-right `{-0.053761,-0.053739,-0.014052}`
+  -> camera candidates:
+     front `{0,0.1032,0.0185,0,0,0}`
+     down `{0,0.0145,-0.0263,0,1.5707963,3.14}`
+  -> conservative base collision box:
+     pose `{0,0.001574,0.044965,0,0,0}`
+     size `{0.211502,0.214651,0.16193}`
 References/MWORKS/QuadrotorModel/package.mo
   -> body `r_shape={0,0,0.0525}`
-  -> rotor translations `{0.065,-0.065,-0.025}`,
-     `{0.065,0.065,-0.025}`, `{-0.065,0.065,-0.025}`,
-     `{-0.065,-0.065,-0.025}`
+  -> rotor translations now follow the DAE-derived geometry manifest above
 References/Sunray/.../sunray150_with_mid360.sdf
   -> body visual pose and rotor visual mesh/pose references
   -> UE visual component order: `rotor_0` front-right
-     `{0.065,-0.065,-0.025}`, `rotor_1` back-left
-     `{-0.065,0.065,-0.025}`, `rotor_2` front-left
-     `{0.065,0.065,-0.025}`, `rotor_3` back-right
-     `{-0.065,-0.065,-0.025}`
+     `{0.053745,-0.05374,-0.014052}`, `rotor_1` back-left
+     `{-0.053761,0.05376,-0.014052}`, `rotor_2` front-left
+     `{0.053746,0.053759,-0.014052}`, `rotor_3` back-right
+     `{-0.053761,-0.053739,-0.014052}`
 ```
 
-The governing rule is now the MWORKS visual frame:
+DAE-reviewed geometry can update rotor centers, camera candidate poses, and
+collision envelopes. It must not update mass, inertia, thrust/motor constants,
+controller gains, or sensor timing without separate identification evidence.
+
+MID-360 has a stricter split. Do not write a DAE mechanical mount center into
+FAST-LIO or call it "LiDAR extrinsic". Track these quantities separately:
+
+```text
+mechanical mount pose: physical fit of the MID-360 body to the frame
+point-cloud coordinate origin: Livox O-XYZ frame used for point data
+built-in IMU position: official Livox offset in point-cloud coordinates
+FAST-LIO extrinsic_T: LiDAR pose in IMU body frame
+Gazebo/Sunray sensor pose: local ray/IMU plugin pose inside livox_mid360.sdf
+```
+
+Official Livox Mid-360 manual evidence records the built-in IMU at
+`(11.0, 23.29, -44.12) mm` in the point-cloud coordinate system, so the
+corresponding FAST-LIO LiDAR pose in IMU body frame is
+`[-0.011, -0.02329, 0.04412] m` when axes are aligned. The local Sunray
+`livox_mid360.sdf` additionally places its ray sensor at `base_link` local
+`z=0.1`. These are not interchangeable with the mechanical mount pose.
+
+Retired MWORKS visual-frame notes, retained only to prevent parameter
+cross-contamination:
 
 ```text
 body lengthDirection={0,-1,0}, widthDirection={1,0,0}
 UE visual yaw offset = -90 deg
-apply the same visual yaw to:
-  body relative rotation
-  per-frame propeller spin rotation
-do not apply the body STL visual yaw to:
-  rotor FixedTranslation positions
+do not apply body STL visual yaw to rotor FixedTranslation positions
 ```
 
-STL material limitation: the current MWORKS `sunray150_mid360_body.stl` and
-`sunray150_mid360_propeller.stl` runtime route carries geometry only, not the
-factory texture/material assignments. Do not color the single STL by broad
-position guesses alone. UE therefore uses a DAE-informed procedural material
-palette until a proper textured UE asset is imported. The palette is based on
-local physical component/material evidence:
+Runtime rule: do not load MWORKS STL or replay MWORKS animation as the UE
+vehicle visual. The current accepted runtime route is the imported
+DAE-derived StaticMesh generated from
+`UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured.fbx`
+or `.glb`. If that asset is not imported into UE Content, fail the vehicle
+visual gate and import/fix the asset.
+
+The current DAE-derived asset material work is based on local physical
+component/material evidence:
 
 ```text
 References/CUAV/Sunray150-正.png
@@ -178,22 +275,14 @@ PROTECTIVE_RING / LAND_GEAR: dark grey
 MID360_PROTECT_ARC*: dark grey / black protective bracket
 MID360_PROTECT_ARC_CONNECTOR*: dark graphite connector blocks
 MID-360 dome / optical surface cue: blue glass
-propellers: grey-white visual cue from MWORKS propeller STL
+propellers: translucent plastic/grey visual cue from the accepted tri-blade source mesh and physical references
 ```
 
-This is review coloring, not an original manufacturer texture. The bridge logs
-`dae_material_palette=true` and named per-section triangle counts when the body
-STL is procedurally split into material sections. If exact appearance is
-required, replace this path with an imported textured mesh from the
-Sunray/Gazebo DAE or an approved UE asset instead of adding more heuristic STL
-coloring. In particular, the MID-360 protection bracket must not be colored as
-blue glass just because it is physically near the dome.
-
-2026-06-02 correction: the current MWORKS `sunray150_mid360_body.stl` has only
-geometry and a single STL attribute value, so it cannot carry the DAE material
-groups directly. Do not continue tuning broad STL position heuristics for the
-MID-360. The durable route is to compose the vehicle from the Sunray SDF source
-models, with named material sections and the standalone Livox scanner mesh.
+This is review coloring, not an original manufacturer texture. Preserve the
+imported asset's material slots in UE; the bridge must not overwrite the
+vehicle StaticMesh with `BasicShapeMaterial`. If exact appearance is required,
+revise the Blender/FBX/GLB source asset and re-import it into UE instead of
+adding runtime heuristic coloring.
 
 2026-06-02 Blender/DAE asset route: Blender MCP is available, but Blender 5.0
 in this environment does not expose the Collada/DAE import operator. Do not
@@ -201,7 +290,7 @@ retry `bpy.ops.wm.collada_import`; it fails because the operator is missing.
 The earlier local route was:
 
 ```text
-Scripts/UE5/assets/build_sunray150_blender_asset.py
+Scripts/UE5/assets/build_sunray150_with_mid360_blender_asset.py
   reads References/Sunray/.../meshes/150.dae
   parses 701 named geometries and visual-scene instances
   groups them by physical role/material cue
@@ -213,14 +302,338 @@ vehicle source. It parsed only the UAV `150.dae` file and added supplemental
 MID-360 base/dome proxy geometry, which the user rejected because the radar
 base was not source-faithful.
 
+2026-06-03 MID-360 DAE assembly audit rule: for
+`sunray150_dae_mid360_full_assembly_audit.blend`, keep the aircraft frame,
+brackets, MID-360 protection arcs, and non-propeller parts visible. Remove only
+the user-confirmed DAE propeller blade and propeller-hub/fixing-node objects
+before adding the standalone Livox MID-360 body:
+
+```text
+CircPattern.1 | CircPattern.1Mesh
+CircPattern.1_ncl1_1 | CircPattern.1_ncl1_1Mesh
+CircPattern.1_ncl1_2 | CircPattern.1_ncl1_2Mesh
+CircPattern.1_ncl1_3 | CircPattern.1_ncl1_3Mesh
+CircPattern.2 | CircPattern.2Mesh
+CircPattern.2_ncl1_1 | CircPattern.2_ncl1_1Mesh
+PROPELLER_CCW.1\Scale1 | PROPELLER_CCW.1\Scale1Mesh
+PROPELLER_CCW.2\Scale1 | PROPELLER_CCW.2\Scale1Mesh
+PROPELLER_CW.1\NONE | PROPELLER_CW.1\NONEMesh
+PROPELLER_CW.2\NONE | PROPELLER_CW.2\NONEMesh
+```
+
+Do not broaden this deletion rule to other DAE names without another manual
+visual confirmation. The current assembly script is:
+
+```text
+Scripts/UE5/assets/build_sunray150_dae_mid360_full_assembly_audit_scene.py
+```
+
+2026-06-03 accepted assembly state: the radar mount and all four propellers
+passed manual Blender audit. Future edits must preserve the accepted
+mechanical references instead of re-solving from rough visual guesses:
+
+2026-06-04 Sunray150 material workflow correction: material work must be
+component-first, not whole-aircraft-first. The whole-aircraft render is only a
+final consistency check after individual component families are readable.
+Process each component family as an independent review unit:
+
+```text
+identify physical component
+  -> record source names and material evidence
+  -> assign material / texture maps without changing accepted geometry
+  -> render component close-up
+  -> inspect render and material probe
+  -> pass / iterate / ask user by WeChat if identity is unknown
+```
+
+Do not treat a good or bad whole-aircraft view as sufficient evidence for
+material quality. At minimum, review these component families separately:
+
+```text
+MID-360 housing/window/connector/protection frame
+carbon-fiber plates and frame arms
+gold aluminum standoffs/columns
+front and bottom USB cameras
+PCB / N150 / ESC / connectors / cables
+motors / copper windings / screws
+tri-blade propellers
+smoked protective rings / landing gear
+battery / heat-shrink / clip
+```
+
+If a DAE/SDF object cannot be confidently mapped to a physical component, do
+not guess a final material. Send a sparse WeChat question with the object name,
+close-up image path, and the decision needed. Continue with other independent
+component families while waiting if no geometry or material conflict exists.
+
+2026-06-03 Blender launch safety correction: do not open `.blend` files through
+Windows file association, Windows MCP `App`, or `blender-launcher.exe` for
+manual review. On this machine those routes can be intercepted by unrelated
+Windows applications/installers, including Visual Studio Blend or Ansys APDL,
+which is outside the MoSim project boundary. The currently verified Blender
+route is command-line/background only:
+
+```bash
+"/mnt/d/Program Files/Blender Foundation/Blender 5.0/blender-launcher.exe" \
+  --background --python Scripts/UE5/assets/build_sunray150_dae_mid360_full_assembly_audit_scene.py
+```
+
+For GUI review, first verify a direct Blender launch path in a separate
+infrastructure task. Do not click or confirm any unrelated installer, repair,
+or uninstall dialog that appears while opening Blender assets. If Ansys,
+Visual Studio Blend, or any non-Blender installer/uninstaller appears, stop the
+operation immediately, close only the unrelated prompt if it is safe to do so,
+and report the exact window title before continuing with project-local
+command-line Blender work.
+
+2026-06-04 WSL/Windows Blender interop correction: if direct WSL execution of
+`/mnt/d/Program Files/Blender Foundation/Blender 5.0/blender.exe` fails with
+`UtilAcceptVsock: accept4 failed 110`, do not retry in a loop and do not start
+parallel Blender renders. First test whether WSL can launch any Windows
+executable (`cmd.exe /c ver` is enough). If WSL interop is broken, launch the
+same Blender executable through Windows MCP `PowerShell` from
+`C:\Users\HP\Desktop\MoSim`, with project scripts and outputs kept inside the
+project. Do not use WSL `powershell.exe` for this recovery path when it returns
+the same vsock error.
+
+2026-06-04 Blender execution verification correction: WSL-launched
+`powershell.exe` can return exit code 0 while Blender stdout is empty and target
+review images are not updated. Treat that as an unverified attempt. Use Windows
+MCP `PowerShell` for background Blender commands, redirect stdout/stderr to a
+project log under `Results/unreal_scene_mapping/`, and verify saved image
+timestamps before claiming a render pass succeeded.
+
+2026-06-03 material route correction: the rejected material candidates were
+mostly color assignment, not a real texture workflow. The current minimum
+material workflow is:
+
+```text
+identify DAE/SDF component names
+  -> map each component to physical material evidence
+  -> generate or import PBR texture maps
+  -> attach texture maps to Blender node materials
+  -> inspect local close-up material views before whole-aircraft review
+  -> only after manual acceptance export/import into UE
+```
+
+The local reference projects are used as follows:
+
+```text
+ArmorPaint: target editor for hand retouching/painting PBR maps and Unreal export presets
+Material Maker: procedural material graph reference for texture map generation
+xatlas: future UV atlas/unwrapping route when per-object UVs need baking/painting
+Blender: assembly, node material hookup, preview rendering, and export staging
+```
+
+```text
+MID-360 fit:
+  use AUDIT_STANDALONE_MID360_000..003 object centers as radar mount holes
+  fit them to user-selected frame holes:
+    H20/H21/H22, H19/H23/H24, H44/H47/H48, H43/H45/H46
+  accepted uniform scale after direct four-hole fit: 0.833527
+
+Propellers:
+  source mesh: sunray150_with_mid360/meshes/sunray_cw.stl
+  orientation: flipped_around_screw_axis
+  final translation_z: -0.014052 m
+  preserve XY screw-hole fit to DAE M2 screw pairs
+```
+
+Texturing route: do not rely on broad STL position heuristics for final
+appearance. Keep assembly geometry locked first, then assign named material
+slots from DAE object names and physical component roles. If texture painting
+is needed, use Blender/ArmorPaint-style UV texture painting after UV unwrap; if
+procedural PBR materials are needed, use a Material Maker-style node material
+source and export UE-compatible maps. AI/procedural texture tools may suggest
+materials, but final component colors require manual audit against Sunray
+photos and manufacturer references.
+
+2026-06-03 material review candidate: generated
+`sunray150_dae_mid360_realistic_material_audit.blend` from the same assembly
+script without changing the accepted mechanical values above. This is pending
+manual approval, not final UE runtime material evidence. The review candidate
+uses named PBR-style material roles instead of a dark/stylized single-color
+palette:
+
+```text
+aircraft carbon plates: graphite/carbon-fiber procedural roughness
+motors/screws/standoffs: black anodized metal and brushed steel
+propellers: black composite plastic; no red/blue audit colors
+MID-360:
+  015 = blue optical window
+  013/014 = dark grey housing
+  016 = black base
+  017 and rear details = black connector/port housing
+  000..003 = black mount-hole/inserts
+  004..007 = dark metal bosses/standoffs
+```
+
+2026-06-03 material review update: WSL path handling must use
+`Path(__file__).resolve().parents[3]` in Blender asset scripts; do not hardcode
+`C:\Users\HP\Desktop\MoSim` inside scripts executed from WSL/Blender. Current
+material scripts generate deterministic PBR-style maps under
+`UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/`, rebuild
+`sunray150_dae_mid360_realistic_material_audit.blend`, and render close-up
+audit views under `Audit/material_closeups/`. Geometry invariants remain:
+MID-360 four-hole fit scale `0.833527`, propeller source `sunray_cw.stl`,
+propeller orientation `flipped_around_screw_axis`, and propeller
+translation-z rule ending at `-0.014052 m`.
+
+Known material audit status: close-up previews are generated for MID-360,
+front USB camera/battery, PCB/connectors/cables, carbon/gold standoffs, and
+motor/prop/guard. These images are audit candidates only. Do not export to UE
+until manual review accepts the Blender material appearance. If the
+manufacturer appearance still looks too synthetic, move from procedural maps
+to a UV unwrap + ArmorPaint/Material-Maker style paint pass rather than adding
+more broad color heuristics.
+
+Current audit package:
+`Results/unreal_scene_mapping/SUNRAY150_MID360_MATERIAL_AUDIT_PACKAGE_20260603.md`.
+Treat that package and the referenced close-up PNGs as the review entry point.
+If the front camera/module shell, propeller blades, or guards read too light,
+fix only the corresponding component material assignment or texture map. Do not
+change the accepted MID-360 mount fit or propeller placement while doing
+material-only correction.
+
+2026-06-04 audit result: the current material candidate is rejected. The
+overall image still reads as a light-grey CAD model with partial coloring, not
+as a realistic Sunray150. Specific failures: MID-360 housing is too white and
+the connector area has a black artifact; front electronics/camera views are
+underexposed and collapse into black blocks; carbon frame surfaces are mostly
+light grey instead of visible woven carbon fiber; gold standoffs look like
+yellow plastic; motor/propeller close-up is too dark to prove motor, winding,
+screw, or propeller materials. Next material pass must reclassify the visible
+neutral/grey DAE objects, fix connector material artifacts, and render readable
+component close-ups before any UE export/import.
+
+2026-06-04 component-material evidence matrix:
+`Results/unreal_scene_mapping/SUNRAY150_COMPONENT_MATERIAL_EVIDENCE_20260604.md`.
+Use this matrix as the next material-pass source of truth. It records the
+current component families, DAE/source-name cues, target physical materials,
+known visual risks, and the role of Blender/ArmorPaint/Material Maker/xatlas.
+When adding a new material or changing a classifier, update that matrix in the
+same task. Do not rely on unreachable shopping pages as confirmed evidence
+unless the user provides local screenshots/media.
+
+The generated review file hides gold/green audit markers by default via
+`MATERIAL_REVIEW=1` and `SHOW_AUDIT_MARKERS=0`; set `SHOW_AUDIT_MARKERS=1`
+only when rechecking the mount geometry. Do not export this candidate to UE
+until the user explicitly accepts the material appearance.
+
+2026-06-03 correction: the first realistic-material candidate was rejected by
+the user as insufficient because it was still simple material coloring rather
+than a real texture/material pipeline. Treat it as a failed candidate. Future
+appearance work must start with a physical component inventory and material
+evidence, then use the local texturing toolchain appropriately:
+
+```text
+ArmorPaint: 3D PBR texture painting workflow when hand-painted texture maps are needed
+Material Maker: procedural texture/brush graph source for carbon fiber, plastic, metal, rubber, PCB, cable, and lens materials
+xatlas: UV atlas generation when a mesh needs unique UVs for texture painting or baking
+Blender: component grouping, material-slot assignment, shader-node construction, preview rendering, and export staging
+```
+
+Simple `Base Color` changes are not accepted as "贴图". For every visible
+component family, either create a physically motivated material/texture slot or
+record why the current source mesh does not expose that component separately.
+The current DAE component probe file is:
+
+```text
+Results/unreal_scene_mapping/sunray150_material_component_probe_20260603.json
+```
+
+It confirms visible component families beyond the main frame and MID-360:
+front camera, bottom camera, USB 9P/24P connectors, HDMI connector, FCU cable,
+ESC board, TF Mini PLUS/ranging sensor, screws/nuts, aluminum standoffs, motor
+stator/windings, landing gear, protective rings, and MID-360 protection arcs.
+These must be explicitly classified in the next texture audit asset.
+
+Current tri-blade propeller audit rule for the same scene:
+
+```text
+propeller source:
+  References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/meshes/sunray_cw.stl
+deleted/rejected source:
+  DAE CircPattern* and PROPELLER_* objects listed above
+rotor centers:
+  rotor_0_front_right  0.065 -0.065 -0.025
+  rotor_1_back_left   -0.065  0.065 -0.025
+  rotor_2_front_left   0.065  0.065 -0.025
+  rotor_3_back_right  -0.065 -0.065 -0.025
+visual transform:
+  scale 0.001 0.001 0.001
+  rpy 0 0 0
+```
+
+This is still a manual assembly review gate. If the user reports the three-blade
+propeller shaft/hole alignment is wrong, adjust by mechanical evidence against
+the motor screw/shaft interface, not by arbitrary visual offsets.
+
+STL hole-location note: `sunray_cw.stl` is an ASCII STL with no object names and
+no boundary-hole loops after vertex welding; it is a closed mesh. Therefore
+propeller screw holes cannot be found by Blender object names or open-boundary
+loops. The current accepted measurement method is geometric feature detection:
+inspect hub-local vertical cylindrical features. For this STL the two fixing
+holes are identified at local coordinates:
+
+```text
+(0, -2.5, 2.5) mm
+(0,  2.5, 2.5) mm
+hole distance = 5.0 mm
+```
+
+The DAE aircraft contains eight `SCREW_BUTTON_HEAD_M2_8MM` objects. Nearest-two
+selection per SDF rotor center gives target screw-pair distances of roughly
+`4.998 mm` to `5.011 mm`, so the STL base scale `0.001` is dimensionally
+consistent; only tiny per-rotor scale corrections from the measured screw-pair
+distance ratio are recorded in the manifest. Current placement fits the two STL
+hole centers to the two DAE screw centers for each rotor.
+
+Hole fitting does not determine propeller front/back side. When side orientation
+is under review, generate the audit scene with
+`PROP_ORIENTATION_MODE=candidates`. This creates two variants per rotor:
+
+```text
+normal
+flipped_around_screw_axis
+```
+
+The flipped candidate is rotated 180 deg around the propeller screw-hole axis,
+so the two screw holes remain aligned. In candidates mode it is lifted +10 mm
+only so both candidates can be inspected simultaneously. Do not treat that
+review lift as a final assembly offset.
+
+Manual review accepted `flipped_around_screw_axis` as the correct propeller
+front/back side. The current default generation keeps only the four flipped
+three-blade propellers and removes the original four `normal` candidates.
+
+Propeller Z placement is not allowed to use screw-hole center height. Manual
+review requires that, when viewed from above, the propeller physical lower
+surface contacts the screw-head/nut plane with only a small clearance. The
+current accepted DAE-derived visual assembly uses the manifest rule:
+
+```text
+base translation_z = -0.0161 m
+target screw plane = -0.0193 m
+measured propeller contact plane = -0.021098 m
+nominal clearance = 0.0001 m
+final user fine tune = +0.00015 m
+final propeller translation_z = -0.014052 m
+```
+
+Keep the screw-hole XY fit and accepted `flipped_around_screw_axis`
+front/back orientation unchanged. Do not revert to older Z heuristics or to the
+runtime MWORKS transparent-STL propeller position when editing the
+DAE-derived UE visual asset.
+
 Generated review/import assets:
 
 ```text
-UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Sunray150_Mid360_Textured.blend
-UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Sunray150_Mid360_Textured.fbx
-UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Sunray150_Mid360_Textured.glb
-UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Sunray150_Mid360_Textured_manifest.json
-UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Sunray150_Mid360_Textured_preview.png
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured.blend
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured.fbx
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured.glb
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured_manifest.json
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured_preview.png
 ```
 
 The generated asset keeps these review groups:
@@ -243,34 +656,47 @@ English node name `Principled BSDF`. In the Chinese UI it is named
 `node.type == "BSDF_PRINCIPLED"` before setting Base Color, Roughness,
 Metallic, and Alpha.
 
-Raw DAE audit correction: do not treat
-`sunray150_with_mid360/meshes/150.dae` as the complete vehicle + MID-360 visual
-asset. The source SDF mounts the scanner through:
+Current source boundary correction: for the Sunray150 UE runtime visual,
+`sunray150_with_mid360.sdf` is the authority. The SDF explicitly references
+assets outside its own folder, so those explicit SDF references are allowed:
 
 ```text
-References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/sunray150_with_mid360.sdf
-  include model://livox_mid360
-  pose 0.036 -0.0155 0.075 0 0 0
-
-References/Sunray/simulation/sunray_simulator/models/sensor_models/livox_mid360/livox_mid360.sdf
-  mesh model://livox_mid360/meshes/test2.dae
-  scale 1.2 1.2 1.2
-  visual pose 0 0 0 1.57 0 3.14159
+base model:
+  References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/sunray150_with_mid360.sdf
+body:
+  model://sunray150_with_mid360/meshes/sunray.stl
+propeller:
+  model://sunray150/meshes/sunray_cw.stl
+MID-360:
+  model://livox_mid360
 ```
+
+Important visual-audit correction: `sunray150_with_mid360/meshes/sunray.stl`
+already contains the visible MID-360 geometry on the aircraft body. Therefore
+full-aircraft Blender/UE visual audits must not add a second visible
+`model://livox_mid360` radar unless the task is explicitly testing the separate
+sensor model. Keep the separate `model://livox_mid360` handling for standalone
+sensor-origin/orientation audits and for later sensor-frame/runtime contracts,
+not for duplicating visible geometry on the already-equipped aircraft STL.
+
+Do not mix in `sunray150_D435i` or MWORKS runtime STL during this pass. The
+`150.dae` files under `sunray150_with_mid360` and `sunray150_D435i` are byte
+identical and should be treated as CAD/reference material. The accepted
+runtime visual authority is now the reviewed DAE-derived UE asset. SDF remains
+the dynamics/sensor-layout reference, not the runtime rendered-aircraft mesh.
 
 The raw source audit scene is:
 
 ```text
-Scripts/UE5/assets/build_sunray_dae_source_audit_scene.py
-UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_DAE_Source_Audit.blend
-UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_DAE_Source_Audit_manifest.json
+Scripts/UE5/assets/build_sunray150_with_mid360_dae_source_audit_scene.py
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_with_mid360_dae_source_audit.blend
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_with_mid360_dae_source_audit_manifest.json
 ```
 
-In that audit scene, the left model is raw `150.dae`; the right model is raw
-`livox_mid360/meshes/test2.dae`; no supplemental MID-360 proxy geometry is
-added. The next valid asset route must compose the UAV body/brackets from the
-Sunray body source with the standalone `livox_mid360/test2.dae` scanner using
-the SDF pose/scale above.
+That audit scene imports only
+`drone_models/sunray150_with_mid360/meshes/150.dae`; it is a CAD/source
+reference audit only and must not be used as the runtime vehicle visual when it
+contradicts the SDF chain.
 
 The body STL visual orientation and the rotor physical translations are
 separate. If the user reports that the camera looks forward while the UAV nose
@@ -306,11 +732,26 @@ rotor links:
   rotor_2 pose  0.065  0.065 -0.025 0 0 0
   rotor_3 pose -0.065 -0.065 -0.025 0 0 0
 rotor visual:
-  SDF URI model://sunray150/meshes/sunray_cw.stl
-  user-selected current review file:
-    References/Sunray/.../sunray150_with_mid360/meshes/sunray_cw.stl
-  visual pose 0 0 0 1.57 0 0
-  scale 0.03 0.03 0.03
+  use the tri-blade propeller file:
+    References/Sunray/.../drone_models/sunray150_with_mid360/meshes/sunray_cw.stl
+  do not use DAE PROPELLER_* objects and do not use the five-blade
+  sunray150/meshes/sunray_cw.stl for the current visual asset
+  current Blender asset creates four independent objects:
+    sunray150_with_mid360_tri_blade_prop_front_right
+    sunray150_with_mid360_tri_blade_prop_back_left
+    sunray150_with_mid360_tri_blade_prop_front_left
+    sunray150_with_mid360_tri_blade_prop_back_right
+  unit rule:
+    the Sunray upstream simulation repository was checked at HEAD
+    26ed04aa35b47db638f34c60b15c68cc42e1b76d on 2026-06-03; the
+    sunray150_with_mid360 SDF, SDF.jinja, 150.dae, and sunray_cw.stl match the
+    local files, so upstream has no propeller assembly fix to pull
+    150.dae declares unit meter=0.0254 and Y_UP
+    SDF rotor centers are meters and must be converted to DAE units with
+    center_dae = center_m / 0.0254
+    the selected tri-blade STL is millimeter-scale and must be converted to DAE
+    units with scale = 0.001 / 0.0254
+    do not mix DAE-unit body geometry with meter-scale propeller geometry
 front camera:
   pose 0.12 0 0.025 0 0 0
 down camera:
@@ -318,6 +759,23 @@ down camera:
 MID-360:
   include pose 0.036 -0.0155 0.075 0 0 0
   visual pose in livox_mid360.sdf 0 0 0 1.57 0 3.14159
+  Blender/UE accepted visual orientation:
+    body frame is +X nose, -X tail, +Y left, +Z up
+    user visual audit requires the MID-360 connector/port to face tail (-X)
+    accepted candidate is F_yaw180_only: 0 0 0 0 0 3.14159
+    do not apply SDF roll=1.57 for the Blender/UE visual orientation unless a
+    later Gazebo parity check proves the renderer axis conversion changed
+  Blender/UE accepted visual origin:
+    origin must be the circular radar base mounting center
+    do not use the raw DAE/SDF origin if it is off-axis
+    do not use the full visual bounding-box center; the top body/dome and cable
+    connector can bias that center away from the base symmetry axis
+    assembly order is: recenter the MID-360 visual mesh to this local base
+    mounting-center origin first, then translate/rotate it to the SDF include
+    pose; do not recenter the already-mounted radar back to world origin
+    this assembly order applies only when separately auditing/importing
+    `model://livox_mid360`; full-aircraft audits using `sunray.stl` must keep
+    the built-in radar and skip the separate visible import
 ```
 
 The SDF source above contains no 45 degree camera or vehicle pose. The visible
@@ -330,10 +788,155 @@ parameters.
 Current SDF runtime audit files:
 
 ```text
-Scripts/UE5/assets/build_sunray_sdf_runtime_audit_scene.py
-UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_SDF_Runtime_Audit.blend
-UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_SDF_Runtime_Audit_manifest.json
+Scripts/UE5/assets/build_sunray150_with_mid360_sdf_runtime_audit_scene.py
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_with_mid360_sdf_runtime_audit.blend
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_with_mid360_sdf_runtime_audit_manifest.json
 ```
+
+Manual review lock on 2026-06-03:
+
+- The accepted full-aircraft visual body is
+  `References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/meshes/sunray.stl`.
+- This body already includes the visible MID-360 radar; do not add a second
+  visible radar in full-aircraft audit or runtime visual assets.
+- The accepted propeller source for this aircraft visual is
+  `References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/meshes/sunray_cw.stl`.
+- The current three-blade propeller orientation is manually accepted as
+  visually correct. Future propeller work should only refine the two mounting
+  holes against the two motor-top screws/mating faces. Do not change the
+  aircraft body source, radar source, or propeller source while doing that
+  refinement.
+- 2026-06-04 user decision update: the manually assembled and reviewed
+  DAE-derived aircraft may replace the STL route for the **UE rendered visual
+  model**. This replacement applies only to the visible mesh/material asset in
+  Unreal. It does not change MWORKS dynamics parameters, controller gains,
+  sensor timing, collision/safety envelope, planner occupancy inflation, or
+  any path-planning abstraction. Path planning should continue to use an
+  abstract UAV body/envelope, not the detailed visual aircraft mesh.
+- Do not transfer DAE mesh dimensions back into the simulation model as mass,
+  inertia, collision, or control parameters. The DAE asset is accepted because
+  it was manually assembled and visually reviewed for rendering, not because it
+  is parameter-identical to the SDF/STL chain.
+- STL has no native material, object hierarchy, UV, or part-name metadata, so
+  detailed coloring requires a derived Blender/FBX/GLB asset with materials
+  assigned by connected components, geometric regions, or manual masks. Keep
+  that derived asset traceable to the accepted STL sources.
+- `150.dae` is now allowed as the UE visual-flight asset through the manually
+  audited assembly route, not as a raw direct import. The accepted DAE-derived
+  asset must preserve the reviewed body orientation, radar placement,
+  three-blade propeller replacement, propeller orientation/Z placement, material
+  assignments, and camera/view behavior when imported into UE.
+- Manual assembly parameters are **visual-asset parameters**, not MWORKS
+  dynamics parameters. Current accepted values to preserve in the DAE-derived
+  UE visual asset are:
+
+  ```text
+  MID-360:
+    selected frame hole groups:
+      H20/H21/H22, H19/H23/H24, H44/H47/H48, H43/H45/H46
+    standalone MID-360 mount-hole source:
+      AUDIT_STANDALONE_MID360_000..003 object centers
+    accepted visual orientation:
+      connector/port faces tail (-X), yaw180 candidate
+    accepted uniform visual scale:
+      0.833527
+    accepted XY translation from four-hole fit:
+      [0.012914, 0.032295, 0.0] m
+
+  propellers:
+    source:
+      sunray150_with_mid360/meshes/sunray_cw.stl
+    rejected/deleted:
+      DAE CircPattern* and PROPELLER_* objects
+    accepted orientation:
+      flipped_around_screw_axis
+    accepted final translation_z:
+      -0.014052 m
+    XY rule:
+      fit STL screw holes (0,+/-2.5,2.5 mm) to each DAE M2 screw pair
+  ```
+
+  These values must be used when exporting/importing the accepted colored DAE
+  aircraft into UE. They must not be pushed into `QuadChassis` mass/inertia,
+  lift coefficient, controller parameters, planner collision envelope, or
+  MWORKS rotor-center dynamics.
+- 2026-06-04 propeller spin boundary: the current accepted UE vehicle visual is
+  a whole-aircraft imported StaticMesh, so no separate UE propeller animation is
+  active in this gate. `rotorVelocitySlowdownSim=10` and
+  `lift_cofficient=0.000854858` remain dynamics/source-reference facts only.
+  Do not retune `lift_cofficient`, `hover_motor_speed_cmd`, controller outputs,
+  or MWORKS rotor centers to change render appearance. If visible spinning
+  propellers become necessary later, create a new reviewed animated UE asset or
+  approved componentized visual route; do not restore MWORKS animation/STL
+  fallback.
+- Official Sunray usage evidence: `sunray150_with_mid360.sdf` does not reference
+  `meshes/150.dae` for runtime visuals. It references
+  `model://sunray150_with_mid360/meshes/sunray.stl` for the base visual and
+  includes `model://livox_mid360` for the sensor model. Therefore `150.dae` is
+  treated as packaged CAD/Collada source material, not the official runtime
+  flight visual for this vehicle.
+- 2026-06-04 STL/DAE parameter check: before importing the high-quality visual
+  asset into UE, run:
+
+  ```bash
+  python3 Scripts/UE5/assets/compare_sunray_stl_dae_parameters.py
+  ```
+
+  The generated evidence file is
+  `Results/unreal_scene_mapping/sunray_stl_dae_parameter_compare_20260604.json`.
+  Current result: `150.dae` is not parameter-identical to the SDF/STL runtime
+  chain. It declares `unit meter=0.0254` and `Y_UP`, contains 701 geometry
+  nodes, and its transformed total bbox is about
+  `0.2115 x 0.1619 x 0.2147 m`. The accepted `sunray.stl` body with the SDF
+  visual transform `pose 0 0 0.0525 0 0 -1.57`, `scale 0.03 0.03 0.03` has a
+  bbox about `0.2537 x 0.2500 x 0.1912 m`. The two are same-class aircraft
+  scale but not directly interchangeable in dimensions, origin, up axis, or
+  component composition.
+- Import rule from that check and later user decision: the bbox/unit mismatch
+  is not a blocker for replacing the **rendered UE mesh**, because navigation
+  and collision are not derived from the detailed aircraft mesh. Keep the
+  mismatch recorded so future agents do not use the DAE visual model as a
+  dynamics or planning-geometry source. UE import must still preserve the
+  manually accepted visual assembly and keep the simulation/planning boundary
+  separate.
+- 2026-06-04 user decision for high-quality runtime rendering: use the
+  manually reviewed DAE-derived aircraft as the UE runtime visual asset. Do not
+  keep the STL route as runtime geometry fallback. While repairing the DAE
+  route, preserve the DAE body/frame hierarchy, remove or replace only parts
+  that are explicitly rejected in manual audit, and ask the user for targeted
+  visual judgments rather than silently switching back to STL.
+- The accepted higher-quality colored-aircraft route is the manually audited
+  DAE-derived asset: keep the useful DAE body/frame geometry and material
+  grouping, delete/hide the rejected DAE propellers/radar parts, and use the
+  user-reviewed MID-360 and three-blade propeller assembly. Do not re-solve
+  propeller or radar placement unless a later UE import review shows the
+  exported asset changed transforms.
+  In that scene, `Hxx` labels are TOP_PANNEL boundary-hole candidates and
+  `Bxx` labels are standalone MID-360 bottom mount candidates. The user must
+  choose ordered four-point sets before any transform/scale solve. Current
+  user-selected carbon-plate hole groups are
+  `H20/H21/H22`, `H19/H23/H24`, `H44/H47/H48`, and `H43/H45/H46`; each group is
+  one physical hole represented by multiple boundary loops. Use
+  `Scripts/UE5/assets/build_sunray150_mid360_selected_hole_fit_scene.py` for
+  the diagnostic fit scene and check scale/yaw/RMS before accepting any MID-360
+  replacement placement. User correction on 2026-06-03: the MID-360 connector
+  must face the aircraft tail, so the selected-hole fit must present explicit
+  90 deg and 270 deg radar-body rotation candidates instead of accepting a
+  free-yaw automatic fit or merely changing point correspondence. The MID-360
+  bottom face must sit on the TOP_PANNEL upper surface; compute XY from the
+  selected holes, then snap the radar mesh minimum Z to the panel top Z. If
+  neither 90/270 candidate aligns the radar bottom holes with the selected
+  carbon-plate holes, stop and produce a radar-bottom hole pick scene; do not
+  invent a scale or offset from uncertain B points. The older
+  screw-object manual pick script is
+  `Scripts/UE5/assets/build_sunray150_mid360_manual_pick_scene.py`; it creates
+  `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_mid360_manual_pick.blend`.
+  Keep it only for comparison if the carbon-plate holes are ambiguous. The
+  earlier candidate-center audit script is
+  `Scripts/UE5/assets/build_sunray150_dae_mid360_mount_audit_scene.py`; it
+  creates the rejected/diagnostic candidate scene
+  `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_dae_mid360_mount_audit.blend`.
+  Keep it only for diagnostic comparison, not as accepted placement.
 
 The audit scene's active camera is a top orthographic camera named
 `SDF_Audit_Top_Camera_No_Model_Rotation` so review-camera obliqueness cannot be
@@ -342,9 +945,9 @@ mistaken for model yaw.
 Current propeller assembly audit files:
 
 ```text
-Scripts/UE5/assets/build_sunray_propeller_assembly_audit_scene.py
-UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_Propeller_Assembly_Audit.blend
-UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_Propeller_Assembly_Audit_manifest.json
+Scripts/UE5/assets/build_sunray150_with_mid360_propeller_assembly_audit_scene.py
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_with_mid360_propeller_assembly_audit.blend
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_with_mid360_propeller_assembly_audit_manifest.json
 ```
 
 The propeller assembly audit scene uses the DAE source to preserve part
@@ -354,15 +957,28 @@ semantics:
 gold = DAE `SCREW_BUTTON_HEAD_M2_8MM` candidate propeller screws
 blue = DAE `PROPELLER_*` semantic propeller parts
 red = DAE `CircPattern*` possible full propeller / blade pattern parts
-magenta = historical MWORKS runtime STL propeller hole centers
-green = candidate hole-to-screw assembly constraints
+green = rotor-center to screw-candidate lines for assembly review
 ```
 
-If the magenta MWORKS hole markers do not align with the gold DAE screw
-centers, do not compensate by eye in UE. First decide which SDF/Sunray asset
-chain is the runtime source of truth and regenerate the UE asset from that
-source. Keep historical MWORKS STL comparisons out of the runtime transform
-unless the user explicitly asks for MWORKS parity.
+Do not import MWORKS runtime STL into this propeller assembly audit. If MWORKS
+parity is needed, open a separate historical-comparison task and do not use it
+as the placement authority for the current `sunray150_with_mid360` visual.
+
+Propeller offset must be treated as an assembly problem, not as an isolated STL
+centering problem. Do not solve small propeller placement errors by calculating
+the propeller STL bounding-box center or arbitrary mesh centroid. Use the
+Sunray assembly source (`150.dae`) to preserve the part hierarchy and match the
+propeller mounting holes/faces to the motor screw or shaft assembly references,
+then export that assembled result to UE. If the assembly source and SDF visual
+source disagree, stop at a manual review gate and record which source is being
+used as the runtime visual authority.
+
+Do not use a propeller placement pass to modify unrelated visual components.
+The body, MID-360 scanner, scanner bracket, coloring, camera, and UE runtime
+actor transforms must remain unchanged unless the task explicitly targets
+those components. The June 3 manual DAE source review showed the standalone
+MID-360/Livox direction is also wrong; track that as a separate radar-orientation
+issue instead of mixing it with propeller assembly correction.
 
 For the Factory visual placement gate, neutralize only the first-frame yaw to
 `0 rad`. This is a manual body/propeller/heading review pose, not a controller

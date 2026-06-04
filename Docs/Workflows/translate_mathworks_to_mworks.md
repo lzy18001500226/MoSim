@@ -46,8 +46,8 @@ Before writing a workflow, check these sources in order:
 
 ```text
 Docs/Index/mathworks_to_mworks_migration.md
-Docs/Mworks/converted/
-Docs/Mworks/scan/relevant_index.md
+Docs/MworksDocs/converted/
+Docs/MworksDocs/scan/relevant_index.md
 References/MWORKS高校星火计划资料包/MWORKS与MATLAB功能对照/
 ```
 

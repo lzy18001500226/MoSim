@@ -57,14 +57,17 @@ current_state:
 Read in this order:
 
 ```text
-1. PROGRESS.md
-2. Docs/Workflows/agent_task_ledger.md
+1. AGENTS.md
+2. Docs/Workflows/new_conversation_context.md
+3. Docs/Index/project_work_memory_index.md
+4. PROGRESS.md only for the newest active entries, not as a full transcript
+5. Docs/Workflows/agent_task_ledger.md
    row: SESSION-MEMORY-MIGRATION-20260604
-3. Docs/Workflows/session_memory_migration.md
-4. Docs/Cache/session_memory_migration/coverage_matrix_20260604.md
-5. Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md
-6. Docs/Cache/session_memory_migration/completion_audit_20260604.md
-7. The topic-specific round-2 cache file for the item being worked
+6. Docs/Workflows/session_memory_migration.md
+7. Docs/Cache/session_memory_migration/coverage_matrix_20260604.md
+8. Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md
+9. Docs/Cache/session_memory_migration/completion_audit_20260604.md
+10. The topic-specific round-2 cache file for the item being worked
 ```
 
 Do not read external Codex session files, home directories, tokens, browser

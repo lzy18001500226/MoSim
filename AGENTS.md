@@ -79,6 +79,17 @@ When working on this project, always follow these principles:
 
 All Codex / AI-agent work in this project must follow the boundary below.
 
+### 3.0 New Conversation Recovery Rule
+
+When starting or resuming a Codex conversation for this project, read
+`Docs/Workflows/new_conversation_context.md` immediately after this file. Use
+`Docs/Index/project_work_memory_index.md` for the broader work-history index.
+Use `PROGRESS.md` only for newest active entries, not as a full transcript. Do
+not load raw Codex session JSONL files or old chat dumps as routine context;
+any historical claim that is not already represented in current source
+documents must go through `Docs/Workflows/session_memory_migration.md` before
+it becomes project truth.
+
 ### 3.1 Filesystem Boundary
 
 Before each operation, explicitly treat the following sentence as active:

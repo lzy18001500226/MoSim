@@ -200,10 +200,10 @@ parameters:
     Ixz: 0.0
     Iyz: 0.0
   rotor_positions_m:
-    - [0.065, -0.065, -0.025]
-    - [-0.065, 0.065, -0.025]
-    - [0.065, 0.065, -0.025]
-    - [-0.065, -0.065, -0.025]
+    - [0.053745, -0.05374, -0.014052]
+    - [-0.053761, 0.05376, -0.014052]
+    - [0.053746, 0.053759, -0.014052]
+    - [-0.053761, -0.053739, -0.014052]
   rotor_directions:
     - cw
     - cw
@@ -251,10 +251,50 @@ Current known Sunray/MWORKS seed values:
 |---|---:|---|
 | mass | `1.0 kg` | SDF migration seed, not ULog-identified |
 | inertia | `Ixx=0.0085`, `Iyy=0.0085`, `Izz=0.012` | SDF migration seed, payload/battery sensitive |
-| rotor arm location | approximately `(±0.065, ±0.065, -0.025) m` | SDF migration seed, verify motor order |
+| rotor arm location | DAE-reviewed centers around `(±0.05375, ±0.05375, -0.014052) m` | User-reviewed DAE screw-pair fit migrated to MWORKS/SDF geometry; verify motor order |
 | SDF motor constant | `8.54858e-06 N/(rad/s)^2` | Physical rotor-speed coefficient from Sunray SDF |
 | MWORKS lift coefficient seed | `0.000854858` | Converted by `rotorVelocitySlowdownSim=10`; high risk if shaft-speed convention changes |
 | experiment rotor-loss overrides | `0.0007266293` in selected loss cases | Scenario-specific degraded coefficient, not nominal truth |
+
+2026-06-04 local audit result:
+
+- Current `QuadrotorModel.Mechanics.QuadChassis` nominal body parameters are
+  still `m=1.0`, `I_11=0.0085`, `I_22=0.0085`, `I_33=0.012`.
+- Current rotor placement has been updated from the old Sunray SDF seed to the
+  user-reviewed DAE screw-pair assembly centers: rotor 0
+  `(0.053745,-0.05374,-0.014052)`, rotor 1
+  `(-0.053761,0.05376,-0.014052)`, rotor 2
+  `(0.053746,0.053759,-0.014052)`, rotor 3
+  `(-0.053761,-0.053739,-0.014052)` m. Propeller inertia and thrust/motor
+  constants remain unchanged from the SDF seed.
+- The MWORKS lift seed `0.000854858` is exactly the Sunray SDF
+  `motorConstant=8.54858e-06` multiplied by `rotorVelocitySlowdownSim^2=100`.
+- The same Sunray motor constant, rotor drag coefficient, time constants, and
+  often the same `1.0 kg / 0.0085 / 0.0085 / 0.012` inertia block appear across
+  multiple Sunray150, Sunray300, and fake UAV SDF variants. Treat this as a
+  reused Gazebo/PX4-style baseline, not measured Sunray150 truth.
+- Local evidence supports the risk that these are reference/simulation seed
+  values. It does not yet prove every field is byte-for-byte identical to a
+  specific PX4 `iris.sdf`; exact Iris comparison needs the local or upstream
+  Iris SDF pinned by commit before making that narrower claim.
+- Follow-up online/source audit against current
+  `PX4/PX4-SITL_gazebo-classic/models/iris/iris.sdf.jinja` shows Sunray is not
+  a full copy of current PX4 Iris: Iris uses `m=1.5`,
+  `Ixx/Iyy/Izz=0.029125/0.029125/0.055225`, rotor positions about
+  `(0.13,-0.22,0.023)`, `maxRotVelocity=1100`,
+  `motorConstant=5.84e-06`, and `rotorDragCoefficient=0.000175`. Sunray150
+  uses the smaller `1.0 kg / 0.0085 / 0.0085 / 0.012` block, compact
+  old `(±0.065,±0.065,-0.025)` rotor seed, `maxRotVelocity=1500`,
+  `motorConstant=8.54858e-06`, and `rotorDragCoefficient=0.000806428`.
+  Therefore the correct statement is: Sunray reuses a Gazebo/PX4-style
+  multirotor parameter structure and repeated seed values, but it is not
+  byte-for-byte the current PX4 Iris parameter set.
+- Do not fix slow-looking propellers by changing `lift_cofficient`,
+  `hover_motor_speed_cmd`, or SDF-migrated thrust constants. The current
+  MWORKS command domain already documents that `hover_motor_speed_cmd` is a
+  visual shaft-speed value and physical Sunray rotor speed is 10x by
+  `rotorVelocitySlowdownSim`. If only the rendered UE propellers look too slow,
+  apply the speed-up in the UE visual playback layer.
 
 Before editing a model, inspect:
 
@@ -435,7 +475,7 @@ to claim identified dynamics:
 | YunZong Sunray-150 hardware page | 210 mm x 210 mm x 160 mm outer size, 150 mm wheelbase, about 1080 g for the listed hardware configuration | Use as mass/dimension prior; still weigh the exact battery/Mid360/payload configuration before final model update. |
 | YunZong power-system page | Sunray BD-45 battery: 4S1P, 5000 mAh, 340 g, 92.5 mm x 46 mm x 52.3 mm; propeller diameter 90 mm, 5 blades, 2.4 inch pitch, 3.52 g | Use for component mass distribution, propeller sanity check, and hover thrust bounds. |
 | User-provided GTS V3 2104-M2-3000KV motor table | motor mass `16 g`, size about `25.35 mm x 13.8 mm`, 3-4S support, D90 prop thrust samples at 16 V: `299 g` at 50% throttle and `806 g` at 100% throttle | Use as thrust-envelope and hover-throttle prior before ULog fitting. Do not treat table throttle percentage as PX4 actuator command without calibration. |
-| User-provided D90 propeller spec | prop disc diameter `90 mm`, `5` blades, pitch `2.4 inch`, mass `3.52 g`; this is the propeller, while `3.5-inch` describes the frame class | Use for rotor/prop sanity check and thrust-table interpretation; do not call the propeller 3.5-inch in reports. |
+| User-provided D90 propeller spec | prop disc diameter `90 mm`, `5` blades, pitch `2.4 inch`, mass `3.52 g`; this is a hardware/catalog clue, while `3.5-inch` describes the frame class | Use for thrust-table sanity checks only. The current UE visual assembly uses the user-accepted three-blade `sunray_cw.stl`; do not silently switch visual or dynamics prop assumptions without a separate review. |
 | Livox Mid-360 spec | 265 g, 65 mm x 65 mm x 60 mm, 360 deg horizontal FOV, vertical -7 deg to 52 deg, 200k points/s, 10 Hz typical frame rate, 9-27 V, 6.5 W | Use for payload mass, lidar pose, lidar update rate, and perception scenario limits. |
 | CUAV V6X / V6X V2 page | PX4-compatible controller, triple redundant IMU, barometer, RM3100 compass, Ethernet, PWM voltage-level switching, power module support | Use for log/topic expectations and hardware interface assumptions; page text is not enough for mass/inertia. |
 
@@ -461,18 +501,22 @@ Current project geometry audit:
 |---|---|---|
 | Body visual STL | `References/MWORKS/QuadrotorModel/Resources/Visualization/sunray150_mid360_body.stl` and original `sunray.stl` | Raw STL bbox `8.3268 x 8.4508 x 6.3742`; SDF visual scale `0.03`, giving about `0.2498 x 0.2535 x 0.1912 m`. |
 | Propeller visual STL | `References/MWORKS/QuadrotorModel/Resources/Visualization/sunray150_mid360_propeller.stl` and original `sunray_cw.stl` | Raw STL bbox `71.1655 x 80.5003 x 7.3182`; SDF visual scale `0.001`, giving about `0.0712 x 0.0805 x 0.0073 m`. |
-| Rotor positions | `References/Sunray/.../sunray150_with_mid360.sdf` | rotor 0 `(0.065,-0.065,-0.025)`, rotor 1 `(-0.065,0.065,-0.025)`, rotor 2 `(0.065,0.065,-0.025)`, rotor 3 `(-0.065,-0.065,-0.025)`. |
+| Rotor positions | `Results/unreal_scene_mapping/sunray150_dae_assembly_parameters_20260604.json` and migrated MWORKS/SDF files | rotor 0 `(0.053745,-0.05374,-0.014052)`, rotor 1 `(-0.053761,0.05376,-0.014052)`, rotor 2 `(0.053746,0.053759,-0.014052)`, rotor 3 `(-0.053761,-0.053739,-0.014052)`. |
 | Rotor directions | same SDF motor plugins | rotor 0/1 `ccw`, rotor 2/3 `cw`; confirm against PX4 motor order before changing allocation. |
-| Mid360 pose | same SDF | `(0.036,-0.0155,0.075)` relative to `base_link`. |
+| Front/down camera poses | same DAE parameter manifest and migrated SDF | front camera candidate `(0,0.1032,0.0185,0,0,0)`; down camera candidate `(0,0.0145,-0.0263,0,1.5707963,3.14)`. |
+| Collision envelope | same DAE parameter manifest and migrated SDF | base collision box pose `(0,0.001574,0.044965,0,0,0)`, size `(0.211502,0.214651,0.16193)`. |
+| Mid360 mechanical pose | same DAE parameter manifest, hold for review | DAE mechanical mount candidate `(-0.000005,0.032295,0.050167,0,0,4.712389)`, but not yet migrated into SDF/FAST-LIO because mechanical mount center, point-cloud origin, and IMU/LiDAR extrinsic are different quantities. |
 
 Important consistency check:
 
 ```text
-The SDF rotor coordinates are a migrated simulator seed, not final hardware
-truth. They imply x/y motor-axis spacing of 0.13 m and a diagonal motor-axis
-distance of about 0.184 m, while the public/user-provided Sunray150 / 3.5-inch
-frame-class evidence points to an about-150-mm frame class. The propeller is a
-D90/90-mm 5-blade prop, not a 3.5-inch prop. Do not overwrite either
+The old SDF rotor coordinates were a migrated simulator seed, not final
+hardware truth. The current project uses the user-reviewed DAE screw-pair
+geometry for rotor center placement, while keeping propeller inertia and
+thrust/motor constants unchanged until ULog/bench evidence exists. The
+current reviewed visual propeller is the three-blade `sunray_cw.stl`; D90
+hardware/catalog data is a thrust sanity clue, not automatic geometry truth.
+Do not overwrite either
 value blindly; define which wheelbase convention is used, then cross-check with
 STL, real motor-axis measurement, and PX4 motor order before changing dynamics
 or mixer geometry.
@@ -673,3 +717,131 @@ No mass for the exact Sunray150 configuration
 In that case, keep the current parameters labeled as `source=SDF_migration` or
 `source=reference_repo`, and mark MWORKS results as sensitivity tests rather
 than identified-parameter evidence.
+
+---
+
+## 10. RflySim Dynamics Reference Audit
+
+Use RflySim as a dynamics-architecture reference, not as a direct parameter
+truth source for Sunray150.
+
+Local RflySim sources are present under:
+
+```text
+References/RflySim/RflySimAdv3Full/
+References/RflySim/RflySimAdvFree/
+```
+
+The scene `CopterSim` folders mainly contain runtime scene files such as
+external map txt/png assets. The most useful local dynamics references are
+inside the API zip packages:
+
+```text
+References/RflySim/RflySimAdv3Full/4.HILApps/RflySimAPIs/RflySimAPIsPers.zip
+References/RflySim/RflySimAdv3Full/4.HILApps/RflySimAPIs/RflySimAPIsFull.zip
+References/RflySim/RflySimAdv3Full/4.HILApps/RflySimAPIs/RflySimAPIsFree.zip
+```
+
+Primary files to inspect before changing MWORKS dynamics:
+
+```text
+RflySimAPIs/4.RflySimModel/3.CustExps/e0_AdvApiExps/1.inCtrlExt/1.Matlab/
+  MulticopterNoCtrl.slx
+  MulticopterNoCtrl_init.m
+  MulticopterModel.zip
+
+RflySimAPIs/4.RflySimModel/3.CustExps/e0_AdvApiExps/5.ParamAPI/
+  1.initParams/
+  2.FaultInParams/
+  3.DynModiParams/
+```
+
+`MulticopterModel.zip` contains generated C++ such as
+`MulticopterNoCtrl_ert_rtw/MulticopterNoCtrl.cpp`. This generated code confirms
+the RflySim model structure:
+
+| Layer | RflySim evidence | MWORKS migration meaning |
+|---|---|---|
+| Motor command to speed | `motor_rate_d = (Wb + Cr * PWM)`, gated by `motorMinThr` | Add explicit motor command normalization/saturation and speed target mapping instead of treating flange speed as ideal truth. |
+| Motor first-order lag | `d(omega)/dt = (omega_cmd - omega) / motorT` | Add actuator lag before thrust/torque generation. |
+| Rotor thrust | `PropT = Ct * omega^2` | Keep as force law, but do not mix RflySim `Ct` with Sunray SDF `motorConstant` without calibration. |
+| Rotor yaw moment | `PropM = Cm * omega^2`, sign from rotor direction | Add reaction torque/yaw moment. Current MWORKS force-only rotor model is incomplete for yaw dynamics. |
+| Rotor arm moment | Moment from rotor arm and thrust | Prefer explicit rotor-center vector cross thrust over a scalar arm length when using DAE/SDF rotor centers. |
+| Gyroscopic moment | Terms using body rates, motor inertia `Jm`, rotor speed, and rotor direction | Add only after the simpler thrust/reaction-torque model is validated. |
+| Body aerodynamic drag | `Fd = -Cd * Vb .* abs(Vb)` | Add translational drag as a tunable module. |
+| Angular damping | `Md = -CCm .* wb .* abs(wb)` | Add rotational drag/damping as a tunable module. |
+| Ground/contact model | Generated code includes a ground support model | Keep separate from free-flight plant; enable only for takeoff/landing/contact tests. |
+| Dynamic/fault params | `InitInParams`, `FaultInParams`, `DynModiParams` examples | Map to project scenario wrappers and fault-injection modules, not hard-coded base plant constants. |
+
+Do not directly translate a whole RflySim/CopterSim runtime into `.mo`.
+RflySim's useful lesson is the separation:
+
+```text
+CopterSim / generated Simulink plant
+  -> vehicle state, actuator dynamics, 6DOF, fault/dynamic parameters
+RflySim3D / UE
+  -> visual scene, sensor/rendering, review window
+ROS/RViz/PX4 interfaces
+  -> external control, mapping, estimator/planner evidence
+```
+
+Current MWORKS state after Sunray150 SDF/DAE geometry migration:
+
+| Item | Current MWORKS status |
+|---|---|
+| Base mass/inertia | `QuadChassis.body`: `m=1.0`, `Ixx=0.0085`, `Iyy=0.0085`, `Izz=0.012`, from Sunray SDF style values. |
+| Rotor inertias | `m=0.005`, `Ixx=9.75e-7`, `Iyy=0.000173104`, `Izz=0.000174004`, from Sunray SDF style values. |
+| Rotor centers | DAE/SDF-aligned centers around `(+/-0.05375, +/-0.05375, -0.014052)` m. |
+| Thrust force | `WorldForce` per rotor using `lift_cofficient=0.000854858`, currently Sunray `motorConstant=8.54858e-06` scaled by `rotorVelocitySlowdownSim^2=100`. |
+| Yaw reaction torque | Not yet confirmed as implemented in `QuadChassis`; treat as missing until model text and simulation prove otherwise. |
+| Motor lag | Not yet implemented in the plant layer unless an upstream controller/input module adds it. |
+| Drag and angular damping | Not yet implemented in the base plant layer. |
+| Sensor noise/delay/extrinsics | Should stay in sensor/interface modules; do not bury in `QuadChassis`. |
+| MID-360 pose | Do not promote DAE mechanical mount to FAST-LIO extrinsic until sensor-frame convention is validated. |
+
+RflySim sample parameters are not Sunray150 truth. For example, one RflySim
+`MulticopterNoCtrl_init.m` uses:
+
+```text
+ModelParam_uavMass = 1.515 kg
+ModelParam_uavJ = diag(0.0211, 0.0219, 0.0366)
+ModelParam_motorT = 0.0214 s
+ModelParam_motorCr = 842.1
+ModelParam_motorWb = 22.83
+ModelParam_motorJm = 0.0001287
+ModelParam_rotorCm = 2.783e-07
+ModelParam_rotorCt = 1.681e-05
+ModelParam_uavR = 0.225
+ModelParam_uavCd = 0.055
+ModelParam_uavCCm = [0.0035, 0.0039, 0.0034]
+ModelParam_uavDearo = 0.12
+```
+
+Sunray150 SDF uses a different parameter family:
+
+```text
+mass = 1.0 kg
+inertia = diag(0.0085, 0.0085, 0.012)
+rotor centers ~= (+/-0.05375, +/-0.05375, -0.014052) m
+motorConstant = 8.54858e-06
+momentConstant = 0.06
+timeConstantUp = 0.0125 s
+timeConstantDown = 0.025 s
+maxRotVelocity = 1500 rad/s
+rotorDragCoefficient = 0.000806428
+rollingMomentCoefficient = 1e-06
+rotorVelocitySlowdownSim = 10
+```
+
+Therefore the correct migration path is:
+
+```text
+1. Keep Sunray/SDF/DAE geometry and mass/inertia as the current baseline.
+2. Add missing actuator dynamics and yaw torque using Sunray SDF coefficients.
+3. Add RflySim-style drag/angular damping as tunable optional modules.
+4. Keep fault/dynamic parameter changes in scenario wrappers.
+5. Validate hover, yaw, step response, and small trajectory cases before using
+   the richer plant in planning/control claims.
+6. Replace reference parameters only after PX4 ULog or bench identification
+   produces a project-owned YAML with evidence.
+```

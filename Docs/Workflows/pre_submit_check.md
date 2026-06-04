@@ -82,7 +82,7 @@ Required project entry points:
 Scripts/
 Docs/
 Docs/Index/
-Docs/Mworks/converted/
+Docs/MworksDocs/converted/
 References/MWORKS/QuadrotorModel/
 Docs/Workflows/
 ```

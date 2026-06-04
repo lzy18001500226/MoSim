@@ -216,6 +216,11 @@ References/Agent/Gateway/daytona/*
 !References/Agent/Gateway/daytona/images/**
 !References/Agent/Gateway/daytona/scripts/
 !References/Agent/Gateway/daytona/scripts/**
+!References/Agent/Gateway/daytona/apps/
+References/Agent/Gateway/daytona/apps/*
+!References/Agent/Gateway/daytona/apps/api/
+!References/Agent/Gateway/daytona/apps/api/**
+References/Agent/Gateway/daytona/apps/api/.env
 !References/Agent/Gateway/daytona/.dockerignore
 !References/Agent/Gateway/daytona/.editorconfig
 References/Agent/Gateway/daytona/.env

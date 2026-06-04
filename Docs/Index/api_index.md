@@ -232,8 +232,8 @@ map_matlab_functions_to_julia
 | Script | Purpose | Expected Input | Expected Output |
 |---|---|---|---|
 | `Scripts/quality/qa_check.py` | Project quality check | project root | pass/fail report |
-| `Scripts/Docs/scan_mworks_docs.py` | Scan a local MWORKS resource package with PDF preview review | optional `--source` directory | `Docs/Mworks/scan/` indexes |
-| `Scripts/Docs/convert_mworks_pdfs.py` | Convert selected PDFs via MinerU or PyMuPDF fallback | selected local PDFs | `Docs/Mworks/converted/` Markdown and `_images/` directories |
+| `Scripts/docs/scan_mworks_docs.py` | Scan a local MWORKS resource package with PDF preview review | optional `--source` directory | `Docs/MworksDocs/scan/` indexes |
+| `Scripts/docs/convert_mworks_pdfs.py` | Convert selected PDFs via MinerU or PyMuPDF fallback | selected local PDFs | `Docs/MworksDocs/converted/` Markdown and `_images/` directories |
 | `Scripts/results/calc_metrics.jl` | Compute standard tracking/control metrics | `Results/{group}/{scene}/{experiment}/raw/*.csv` | `Results/{group}/{scene}/{experiment}/metrics/*.json` and `.csv` |
 | `Scripts/results/evaluate_result_quality.py` | Decide whether a completed scenario passes, is smoke-only, or needs iteration | scenario YAML and existing metrics/raw files | `quality_status` fields written into metrics JSON |
 | `Scripts/results/plot_results.jl` | Write figure manifest for report assets | raw CSV and figure dir | `figure_manifest.md` |
@@ -242,7 +242,7 @@ map_matlab_functions_to_julia
 
 | Item | Value |
 |---|---|
-| Reference | `Docs/Mworks/mcp/mineru_precise_api.md` |
+| Reference | `Docs/MinerU/mineru_precise_api.md` |
 | Token variable | `MINERU_API_TOKEN` |
 | Single URL task | `POST https://mineru.net/api/v4/extract/task` |
 | Single result query | `GET https://mineru.net/api/v4/extract/task/{task_id}` |
@@ -257,7 +257,7 @@ Rules:
 2. Use `MINERU_API_TOKEN` from the environment.
 3. Use `vlm` for high-fidelity PDF/PPT/DOC parsing.
 4. Use `MinerU-HTML` only for HTML input.
-5. Store converted outputs under `Docs/Mworks/converted/` and update `Docs/Mworks/converted/转换索引.md`.
+5. Store converted outputs under `Docs/MworksDocs/converted/` and update `Docs/MworksDocs/converted/转换索引.md`.
 
 ---
 
@@ -403,3 +403,38 @@ Current project rule:
 4. Save useful mappings in this file.
 5. If a tool call works, document the exact successful pattern in `Docs/Workflows/`.
 6. If a tool call fails repeatedly, save the error and fallback method.
+
+---
+
+## 9. Blender MCP
+
+Local MCP source:
+
+```text
+Docs/Skills/Blender-MCP
+```
+
+Wrapper:
+
+```bash
+Docs/Skills/Blender-MCP/wrappers/blender-mcp.sh
+```
+
+Codex server name:
+
+```text
+blender
+```
+
+Primary use:
+
+```text
+Blender asset inspection, material assignment, DAE/FBX/glTF conversion, and
+Sunray150 visual asset preparation before UE import.
+```
+
+Details and repair steps live in:
+
+```text
+Docs/Workflows/debug_mcp.md#11-blender-mcp
+```
