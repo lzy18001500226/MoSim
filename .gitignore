@@ -143,6 +143,16 @@ References/Agent/Domain/*
 !References/Agent/Domain/OpenCodeInterpreter/**
 !References/Agent/Domain/UFO/
 !References/Agent/Domain/UFO/**
+!References/Agent/Gateway/
+References/Agent/Gateway/*
+!References/Agent/Gateway/awesome-mcp-servers/
+!References/Agent/Gateway/awesome-mcp-servers/**
+!References/Agent/Gateway/servers/
+!References/Agent/Gateway/servers/**
+!References/Agent/Gateway/inspector/
+!References/Agent/Gateway/inspector/**
+!References/Agent/Gateway/browser-use/
+!References/Agent/Gateway/browser-use/**
 !References/Agent/Skills/
 !References/Agent/Skills/**
 References/Agent/Skills/awesome-opencode/dist/
