@@ -30,7 +30,9 @@ hard_rule:
 
 current_state:
   The currently identified topic set has round-1 capture and topic-specific
-  round-2 evidence review. Round-3 application remains open.
+  round-2 evidence review. Round-3 application remains open, with
+  parameter-identification provenance clarified once and no numeric parameter
+  promoted.
 ```
 
 ## Recovery Entry Points
@@ -61,7 +63,7 @@ infrastructure request.
 | UE / ROS2 / FAST-LIO runtime | round-2 UE/ROS and ROS2 caches | Apply route/date/source priority; latest matching `*_CURRENT` gate first; manual review and final product acceptance remain separate. |
 | UE scene source and renderer | round-2 scene cache | Disambiguate `registry_primary`, `active_content_links`, `latest_review_target`, manual review, and final acceptance. |
 | Sunray150 assets and materials | round-2 Sunray cache | Preserve accepted source-chain facts and rejected material/proxy routes; no UE export until accepted review evidence exists. |
-| Sunray150 parameter identification | round-2 parameter cache | Keep all current numeric values as `source=SDF_migration` seeds unless a complete identification bundle appears. |
+| Sunray150 parameter identification | round-3 no-numeric-promotion disposition | Keep all current numeric values as `source=SDF_migration` seeds unless a complete identification bundle appears. |
 | CoAgent operating history | round-2 CoAgent cache | Guardrail only; no implementation, transport, automation, department, notification, or tool expansion from this migration. |
 | External references / skills / agent systems | round-2 external-reference cache | Use indexes and audit workflow; external projects are contracts/patterns unless separately approved and proven locally. |
 | Git split / large worktree hygiene | infrastructure cache plus ledger | Keep as a separate GitIntegrator lane; no broad Git cleanup inside migration. |

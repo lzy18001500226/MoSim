@@ -11,9 +11,10 @@ rejected, superseded, or pending user review.
 
 ```text
 round: 3
-status: cache_only_promotion_rejection_map_ready
-formal_docs_patched_this_round: none
-cache_only: true
+status: round3_application_started
+formal_docs_patched_this_round:
+  - Docs/Workflows/identify_quadrotor_parameters.md
+this_file_cache_only: true
 source_rounds:
   - Docs/Cache/session_memory_migration/round1_candidate_cache_20260604.md
   - Docs/Cache/session_memory_migration/round2_process_review_20260604.md
@@ -32,6 +33,29 @@ source_rounds:
 This map does not make old chat facts formal truth. A later formal patch must
 still re-read the current target document and current evidence immediately
 before editing.
+
+Round-3 application checkpoint on 2026-06-04:
+
+```text
+PARAM-MEM-001/PARAM-MEM-002/PARAM-MEM-003/PARAM-MEM-004/PARAM-MEM-006:
+  evidence_re_read:
+    - Docs/Cache/session_memory_migration/round2_parameter_identification_memory_20260604.md
+    - Docs/Workflows/identify_quadrotor_parameters.md
+    - Docs/Design/02_模型接口与运行流程.md
+    - Docs/Design/03_控制系统架构.md
+    - project-local search for Results/identification, .ulg, .params,
+      sunray150_identified, fit_report, residual_summary, and mworks_check
+  disposition:
+    - formal docs already represented the main rule that current Sunray150
+      dynamics values remain source=SDF_migration.
+    - one wording risk was corrected in
+      Docs/Workflows/identify_quadrotor_parameters.md: accepted takeoff mass is
+      only a provenance-labeled input for the exact flight configuration, not a
+      promotion of inertia, rotor geometry, motor coefficients, drag,
+      controller evidence, or the full parameter set to identified truth.
+    - no numeric parameter was promoted.
+    - no project-local identification evidence bundle was found in this round.
+```
 
 ## Promotion Buckets
 
@@ -165,6 +189,10 @@ PARAM-MEM-001:
     - Docs/Workflows/identify_quadrotor_parameters.md
     - Docs/Design/02_模型接口与运行流程.md
     - Docs/Design/03_控制系统架构.md
+  round3_disposition:
+    - applied_no_numeric_promotion
+    - formal wording clarified that accepted takeoff mass is not a full
+      identified-parameter upgrade
 
 PARAM-MEM-002:
   `identified` requires raw logs, parameters, fit output, held-out validation,
@@ -172,6 +200,9 @@ PARAM-MEM-002:
   formal entries:
     - Docs/Workflows/identify_quadrotor_parameters.md
     - Docs/Design/02_模型接口与运行流程.md
+  round3_disposition:
+    - already_represented_and_rechecked
+    - no complete identification bundle found in this round
 
 CODEGEN-MEM-001:
   generated controller code export uses `GenerateModelCode`, not
@@ -339,6 +370,9 @@ PARAM-MEM-004:
     - current-round repository state only
   forbidden wording:
     - permanent claim that no logs exist anywhere
+  round3_disposition:
+    - cache_only_current_repository_state
+    - project-local evidence search returned no bundle in this round
 
 CODEGEN-MEM-005:
   candidate:
@@ -409,6 +443,8 @@ PARAM-MEM-003:
       and lift-coefficient conversions are seed/audit values only.
   next:
     - require a complete identification bundle before any numeric promotion
+  round3_disposition:
+    - rejected_for_numeric_promotion
 
 PARAM-MEM-006:
   reason:
@@ -417,6 +453,8 @@ PARAM-MEM-006:
   next:
     - start from `Docs/Workflows/identify_quadrotor_parameters.md` if the user
       asks for actual identification
+  round3_disposition:
+    - routed_to_existing_workflow
 
 CODEGEN-MEM-007:
   reason:
