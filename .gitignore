@@ -159,7 +159,7 @@ References/Agent/Gateway/*
 !References/Agent/Gateway/E2B/**
 !References/Agent/Gateway/mcp-use/
 !References/Agent/Gateway/mcp-use/**
-References/Agent/Gateway/mcp-use/libraries/
+References/Agent/Gateway/mcp-use/libraries/*
 !References/Agent/Gateway/mcp-use/libraries/
 !References/Agent/Gateway/mcp-use/libraries/python/
 !References/Agent/Gateway/mcp-use/libraries/python/**
