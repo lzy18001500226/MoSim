@@ -134,6 +134,15 @@ Completed batches:
     - Reason: continue `References/Data -> References/Log` migration with a source-only pyulog batch while excluding `.ulg` log samples.
     - Evidence: 50 non-`.ulg` Data deletes matched 50 Log files; max staged file was 62,892 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; `.ulg` files were excluded by path list and `.gitignore`; `git show --summary --name-status --find-renames` reports `R100` renames for the source/doc/config files; follow-up `git diff --check HEAD~1..HEAD` exited with `$LASTEXITCODE=0`; remaining `References/Data` tracked deletes dropped from 319 to 269, with 6 pyulog `.ulg` deletes intentionally left open for manifest-only or explicit data policy.
 
+13. `bf32f1a1073196cb4e019b91d373f1a1700e7032`
+    - Message: `refs: migrate px4tools source logs`
+    - Scope:
+      - `.gitignore`
+      - `References/Data/px4tools`
+      - `References/Log/px4tools`
+    - Reason: continue `References/Data -> References/Log` migration with a source-only px4tools batch while excluding CSV, ULG, and PX4LOG data files.
+    - Evidence: 42 non-data Data deletes matched 42 Log files; max staged file was 734,707 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; `.csv`, `.ulg`, and `.px4log` files were excluded by path list and `.gitignore`; `git show --summary --name-status --find-renames` reports `R100` renames for the source/doc/config/notebook files; follow-up `git diff --check HEAD~1..HEAD` exited with `$LASTEXITCODE=0`; remaining `References/Data` tracked deletes dropped from 269 to 227, with 5 px4tools data-file deletes intentionally left open for manifest-only or explicit data policy.
+
 Current known residuals:
 
 - Real index had unrelated staged files before DevOps write work:
