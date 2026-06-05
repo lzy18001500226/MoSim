@@ -143,6 +143,15 @@ Completed batches:
     - Reason: continue `References/Data -> References/Log` migration with a source-only px4tools batch while excluding CSV, ULG, and PX4LOG data files.
     - Evidence: 42 non-data Data deletes matched 42 Log files; max staged file was 734,707 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; `.csv`, `.ulg`, and `.px4log` files were excluded by path list and `.gitignore`; `git show --summary --name-status --find-renames` reports `R100` renames for the source/doc/config/notebook files; follow-up `git diff --check HEAD~1..HEAD` exited with `$LASTEXITCODE=0`; remaining `References/Data` tracked deletes dropped from 269 to 227, with 5 px4tools data-file deletes intentionally left open for manifest-only or explicit data policy.
 
+14. `18d856b3356356e4d0bb870483ceb7b559871508`
+    - Message: `refs: migrate airo control source logs`
+    - Scope:
+      - `.gitignore`
+      - `References/Data/airo_control_interface`
+      - `References/Log/airo_control_interface`
+    - Reason: continue `References/Data -> References/Log` migration with a source/config/media-only airo control batch while excluding object/shared-library build products.
+    - Evidence: 62 non-binary Data deletes matched 62 Log files; max staged file was 310,386 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; `.o` and `.so` files were excluded by path list and `.gitignore`; `git show --summary --name-status --find-renames` reports `R100` renames for the source/config/media files; follow-up `git diff --check HEAD~1..HEAD` exited with `$LASTEXITCODE=0`; remaining `References/Data` tracked deletes dropped from 227 to 165, with 13 airo `.o/.so` binary deletes intentionally left open for manifest-only or explicit binary policy.
+
 Current known residuals:
 
 - Real index had unrelated staged files before DevOps write work:
