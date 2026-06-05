@@ -113,6 +113,28 @@ def main() -> int:
         assert review_plan.ok, review_plan
         assert "审核请求" in review_plan.message
 
+        completion = tmp_root / "completion.json"
+        completion.write_text(
+            json.dumps(
+                {
+                    "template_type": "completion_notification",
+                    "task_id": "COAGENT-GATEWAY-SMOKE",
+                    "canonical_status": "completed",
+                    "summary": "completion message smoke",
+                    "owner": "ProjectOwner",
+                    "evidence_paths": ["CoAgent/tests/test_gateway_weixin.py"],
+                    "next_recommended_action": "无需人工处理。",
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        completion_plan = cc_connect_weixin.build_plan(completion)
+        assert completion_plan.ok, completion_plan
+        assert completion_plan.packet_type == "completion_notification"
+        assert "任务完成" in completion_plan.message
+        assert "completion message smoke" in completion_plan.message
+
         data_dir = tmp_root / "data"
         sessions_dir = data_dir / "sessions"
         sessions_dir.mkdir(parents=True)

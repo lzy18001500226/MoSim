@@ -35,6 +35,8 @@
 | CoAgent design approval gate | `CoAgent/docs/decisions/coagent_design_review_brief.zh.md`, `CoAgent/docs/decisions/coagent_design_decision_record.md`, `CoAgent/docs/decisions/coagent_goal_readiness_audit.md`, `CoAgent/docs/decisions/coagent_post_approval_backlog.md` |
 | External project master index | `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`, `Docs/Index/external_learning_index.md` |
 | Current project progress and recovery memory | `PROGRESS.md` |
+| New conversation recovery context | `Docs/Workflows/new_conversation_context.md` |
+| Full project work memory index | `Docs/Index/project_work_memory_index.md` |
 | Sub-agent WAL / run ledger | `Docs/Workflows/agent_task_ledger.md` |
 | Interrupted task resume / WAL recovery | `Docs/Workflows/agent_orchestration.md`, `Docs/Workflows/agent_task_ledger.md` |
 | Long-session memory migration | `Docs/Workflows/session_memory_migration.md`, `Docs/Cache/session_memory_migration/long_goal_plan_20260604.md`, `Docs/Cache/session_memory_migration/coverage_matrix_20260604.md`, `Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md`, `Docs/Cache/session_memory_migration/completion_audit_20260604.md`, `Docs/Cache/session_memory_migration/` |

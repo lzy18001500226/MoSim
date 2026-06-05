@@ -35,6 +35,16 @@ Do not describe a parameter set as Sunray150 identified truth until the matching
 ULog files, identification config, output YAML, and MWORKS verification result
 are all saved in the project evidence bundle.
 
+Architecture boundary: `Docs/Design/10_架构边界与当前状态ADR.md` is the
+current compact entry for deciding whether a value is geometry, Gazebo plugin
+seed, MWORKS dynamics, sensor extrinsic, or visual-only data. Parameters may
+enter a formal model/report only when their source label and acceptance gate are
+clear. `source=SDF_migration` values are allowed as baseline simulation seeds;
+they are not identified physical truth. DAE/Blender assembly values may update
+rotor/camera/collision geometry, but they do not upgrade mass, inertia,
+thrust/motor constants, drag, motor lag, yaw moment, controller gains, or
+FAST-LIO extrinsics.
+
 ---
 
 ## 2. Main Line: ARPL / sysid.tools

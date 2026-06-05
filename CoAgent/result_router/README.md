@@ -21,16 +21,24 @@ and summarizes the packet.
 python CoAgent/result_router/result_router.py validate --packet Results/agent_packets/<task_id>.yaml
 python CoAgent/result_router/result_router.py import --packet Results/agent_packets/<task_id>.yaml
 python CoAgent/result_router/result_router.py import --packet Results/agent_packets/<task_id>.yaml --notify-weixin
+python CoAgent/result_router/result_router.py import --packet Results/agent_packets/<task_id>.yaml --notify-weixin --send-weixin
 ```
 
 Archives are written under ignored `Results/agent_packets/archive/`.
 
 Review gate files are written under ignored `Results/agent_packets/reviews/`.
-When `--notify-weixin` is used and the review gate requires human action, a
-notification packet is written under ignored
+When `--notify-weixin` is used, a notification packet is written under ignored
 `Results/agent_packets/notifications/` and passed to the cc-connect Weixin
 adapter in dry-run mode by default. Real sending requires explicit
-`--send-weixin --weixin-session '<session>'`.
+`--send-weixin`.
+
+Notification types:
+
+- `completion_notification`: generated for accepted `canonical_status=completed`
+  packets. This is required because task completion must notify the user even
+  when no human review is needed.
+- `blocker_notification`: generated for review-required, blocked, failed,
+  auth-required, and other human-action states.
 
 The end-to-end non-sending check is:
 

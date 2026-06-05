@@ -170,6 +170,9 @@ Rules:
 
 1. Send a WeChat milestone packet at task start, at completed architecture
    gates, when manual review is needed, and when a blocker changes the plan.
+   When a task reaches `completed`, send a sparse WeChat completion packet
+   automatically if the gateway is available. Completion notification is
+   required even when no human review is needed.
 2. Use the narrow CoAgent adapter
    `CoAgent/gateway/cc_connect_weixin.py`; do not call `cc-connect send`
    directly for project notifications unless diagnosing the gateway.
@@ -189,6 +192,13 @@ Rules:
    conversation and continue with file-based progress records unless the task
    specifically requires user approval.
 8. Do not retry WeChat sends in a tight loop.
+
+Current multi-dialog boundary: visible Codex conversations are manually
+created, opened, switched, and tasked by the user unless a later approved task
+proves reliable visible-thread dispatch again. The main agent may prepare task
+packets, import result packets, update ledgers, and send automatic WeChat
+completion/review/blocker notifications, but must not claim autonomous
+multi-dialog scheduling is working without visible evidence.
 
 ### 3.3 Git Automation Rule
 
@@ -292,10 +302,12 @@ Coordinator rules:
 11. For long or volatile sessions, keep a `TaskSecretary` intake record so new
     user instructions, corrections, sub-agent returns, and manual-review
     decisions become recoverable tasks instead of chat-only memory.
-12. Treat the current WSL-backed VSCode Codex conversation as the primary
-    project conversation unless the user explicitly switches. Codex App is a
-    review/front-end surface for this project and for extra conversations; do
-    not rely on App/VSCode live session sync as the durable task ledger.
+12. Treat the current Windows-native VSCode/Codex conversation under
+    `C:\Users\HP\.codex` as the primary project conversation unless the user
+    explicitly switches. WSL remains the required runtime lane for ROS2,
+    RViz2, FAST-LIO-family, and Linux-native robotics tooling. Do not rely on
+    App/VSCode/WSL live session sync as the durable task ledger; durable state
+    lives in project docs, ledgers, result packets, and source-controlled files.
 
 ### 3.4 MCP Minimal-Impact Rule
 

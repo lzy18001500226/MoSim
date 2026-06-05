@@ -262,6 +262,83 @@ full-tree scan. Communication is proven only when the visible thread returns a
 department result. The first accepted DevOps communication probe returned:
 `DEVOPS_COMM_OK｜received_from_main｜task_id=comm-probe-20260526-01`.
 
+### Cross-Thread Request / Return Protocol
+
+Codex App cross-thread send is a one-way task delivery surface. It is not a
+request/response RPC channel, and it does not guarantee that the target
+thread's reply is propagated back to the origin thread. Do not treat a visible
+App forward banner such as "sent from another conversation" as task completion.
+
+Every cross-thread request must carry an explicit return contract. This applies
+to every department, not only PMO. The department that sends the request must
+identify itself with both a human-readable title and the concrete visible
+thread id so the target department can return the result to the right origin.
+
+```yaml
+request_id: <stable unique request id>
+origin_thread: <origin visible thread title>
+origin_thread_id: <origin visible thread id>
+target_thread: <target visible thread title>
+target_thread_id: <target visible thread id>
+responsible_department: <department accountable for completion or blocker>
+task_id: <ledger/runtime task id>
+expected_return_path: Results/agent_packets/returns/<request_id>.json
+blocker_return_path: Results/agent_packets/blockers/<request_id>.json
+definition_of_done: <observable completion condition and evidence required>
+checkpoint_deadline: <time or condition for first packet>
+```
+
+The target thread must write a result packet or blocker packet under the project
+tree. A chat reply alone is not a durable return surface.
+
+Result packets go here:
+
+```text
+Results/agent_packets/returns/<request_id>.json
+```
+
+Blocker packets go here:
+
+```text
+Results/agent_packets/blockers/<request_id>.json
+```
+
+Minimum packet schema:
+
+```json
+{
+  "request_id": "DEVOPS-GIT-SPLIT-20260606-001",
+  "task_id": "DEVOPS-GIT-SPLIT-20260606",
+  "origin_thread": "MoSim｜主线 PMO",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "target_thread": "MoSim｜DevOps 发布",
+  "target_thread_id": "019e74de-a452-7a50-99e7-ca9a247b32f1",
+  "responsible_department": "DevOps 发布",
+  "status": "completed",
+  "summary": "Finished inventory-only Git split plan; no files staged.",
+  "changed_files": [],
+  "evidence_paths": [
+    "Results/agent_packets/returns/DEVOPS-GIT-SPLIT-20260606-001.json"
+  ],
+  "next_action": "PMO review split plan and approve first path-limited commit batch.",
+  "needs_user_action": false,
+  "created_at": "2026-06-06T00:00:00+08:00"
+}
+```
+
+Allowed `status` values are `completed`, `blocked`, `failed`, and
+`review_required`. The target department must first try to resolve issues
+inside its own scope: inspect its own logs, docs, tools, task state, and
+previous packets before escalating. If it cannot solve the issue without
+external action, it writes a blocker packet back to the `origin_thread_id` and
+records the responsible surface clearly. If the packet is missing by the
+checkpoint deadline, the origin department opens a blocker against the target
+department/thread. PMO may audit or integrate the result, but PMO is not the
+only owner of return handling. The responsibility belongs to the target
+department until it writes a valid return or blocker packet. WeChat is only a
+sparse alert channel for completion, blocker, or manual review; it is not the
+source of truth and not the return channel.
+
 Codex App / VSCode visibility and CLI communication use different metadata
 contracts. Keep WSL-side thread metadata CLI-compatible for communication:
 `source=cli`, `thread_source=user`, and lowercase WSL `cwd`. Keep Windows App

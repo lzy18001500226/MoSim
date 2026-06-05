@@ -290,3 +290,28 @@ Operational warning: do not use the Weixin gateway conversation as a high-volume
 Codex transcript mirror. Logs showed cc-connect trying to send tool output and
 long assistant responses back through Weixin before repeated `ret=-2` errors.
 For MoSim, Weixin should be a sparse human-intervention/progress channel.
+
+## 2026-06-03 Packet Format Reminder
+
+The adapter does not accept arbitrary `packet_type` values in packets. A
+manual-review notification written as `packet_type: manual_review_required`
+was rejected with `unsupported packet type`.
+
+Use one of the supported packet templates:
+
+```json
+{
+  "template_type": "blocker_notification",
+  "class": "manual_review_required",
+  "task_id": "...",
+  "blocked_surface": "...",
+  "human_action_required": "...",
+  "why_now": "...",
+  "evidence_paths": ["..."],
+  "dedupe_key": "..."
+}
+```
+
+or a real `review_packet` with a supported review decision. The Sunray150
+material review notification succeeded after rewriting the packet to
+`template_type=blocker_notification`.

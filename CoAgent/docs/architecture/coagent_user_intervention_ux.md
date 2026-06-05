@@ -68,12 +68,15 @@ Current result-router integration:
 
 - `CoAgent/result_router/result_router.py import --notify-weixin` is the
   approved bridge from result packet review to gateway notification.
-- Accepted result packets do not notify.
+- Accepted `canonical_status=completed` result packets produce a sparse
+  `completion_notification` packet. This is required because task completion
+  must notify the user automatically while multi-dialog scheduling remains
+  manually handled by the user.
 - Review-required, blocked, failed, or auth-required packets produce a
-  notification packet under ignored `Results/agent_packets/notifications/`.
+  `blocker_notification` packet under ignored
+  `Results/agent_packets/notifications/`.
 - The bridge is dry-run by default. Real sending requires both
-  `--send-weixin` and `--weixin-session`, and should normally pass
-  `--omit-weixin-message-in-audit`.
+  `--send-weixin`; it should normally pass `--omit-weixin-message-in-audit`.
 - The task/runtime/result packet remains the source of truth. Weixin is only
   the user-intervention surface.
 

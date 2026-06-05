@@ -28,6 +28,27 @@ Do not read raw Codex session JSONL files or old chat dumps as the first
 recovery route. The current long MoSim conversation file is too large and can
 destabilize Codex App / VSCode plugin rendering.
 
+## 1.1 Historical Context Coverage
+
+The long MoSim conversation has been migrated into a cache-first recovery set
+for the currently identified important topic set. A new conversation should be
+able to recover project direction, accepted/rejected routes, current evidence
+boundaries, and active workflow routing from:
+
+```text
+Docs/Cache/session_memory_migration/coverage_matrix_20260604.md
+Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md
+Docs/Cache/session_memory_migration/completion_audit_20260604.md
+Docs/Cache/session_memory_migration/round2_core_competition_report_docs_memory_20260604.md
+```
+
+This does not certify every line of an old Codex JSONL transcript. It means the
+identified important topics have cache files, current-evidence review, and
+round-3 promote/reject/cache-only dispositions. If a new conversation discovers
+a useful historical claim that is not covered by the files above or by the
+topic-specific docs, route it through `Docs/Workflows/session_memory_migration.md`
+before treating it as project truth.
+
 ## 2. Current Product Direction
 
 MoSim is being developed as an RflySim-like UAV simulation system with strict
@@ -40,9 +61,21 @@ authority boundaries:
 | ROS2 / RViz2 / FAST-LIO | LiDAR/IMU transport, TF, localization/map/planner review windows | Use native robotics windows, not HTML/browser point-cloud demos. |
 | CoAgent / WeChat | sparse progress and human-intervention channel | Useful but not the current MoSim technical mainline. |
 
+Current agent/runtime entry point:
+
+```text
+primary Codex conversation/config/history: Windows-native VSCode/Codex under C:\Users\HP\.codex
+project workspace: C:\Users\HP\Desktop\MoSim
+WSL runtime lane: ROS2, RViz2, FAST-LIO-family, rosbridge, Linux-native robotics tools
+```
+
+Do not move ROS2/FAST-LIO execution into Windows-native PowerShell unless a
+later workflow explicitly approves a Windows ROS route.
+
 Primary architecture references:
 
 ```text
+Docs/Design/10_架构边界与当前状态ADR.md
 Docs/Index/project_work_memory_index.md
 Docs/Design/00_系统总体设计.md
 Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md

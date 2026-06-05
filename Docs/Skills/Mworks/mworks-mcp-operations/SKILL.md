@@ -22,12 +22,16 @@ Use `/mnt/c/Users/HP/Desktop/MoSim` in WSL. Do not read or write outside the pro
 Prefer auto-detection in scripts:
 
 ```text
+C:\Users\HP\Desktop\MoSim\Docs\Skills\*\wrappers\*.cmd
 /home/linux/mcp-wrappers/*.sh
 ~/mcp-wrappers/*.sh
 environment variable override when available
 ```
 
-Do not hard-code only one user home.
+For the Windows-native Codex App route, prefer Windows `.cmd` wrappers and do
+not put `wsl.exe`, `\\wsl.localhost`, `/mnt/c`, or `/home/linux` launcher paths
+in `C:\Users\HP\.codex\config.toml`. WSL wrappers are only for explicitly
+WSL-backed runtime lanes.
 
 ## Minimal-Impact Rules
 

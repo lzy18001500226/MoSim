@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Safe cc-connect Weixin notification adapter for CoAgent.
 
-This module is intentionally narrow. It converts approved CoAgent blocker or
-review packets into short human-action messages and sends them through an
-already configured cc-connect runtime only when --send is explicit.
+This module is intentionally narrow. It converts approved CoAgent blocker,
+review, or completion packets into short human-action messages and sends them
+through an already configured cc-connect runtime only when --send is explicit.
 """
 
 from __future__ import annotations
@@ -25,11 +25,18 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = ROOT / "Results" / "tmp" / "cc-connect-weixin-smoke" / "config-wsl-runtime.toml"
 DEFAULT_BIN = ROOT / "Results" / "tmp" / "cc-connect-node" / "node_modules" / "cc-connect" / "bin" / "cc-connect"
-DEFAULT_DATA_DIR = Path("/home/linux/.cache/mosim/coagent/cc-connect-weixin/data")
+WSL_DATA_DIR = "/home/linux/.cache/mosim/coagent/cc-connect-weixin/data"
 DEFAULT_AUDIT = ROOT / "Results" / "coagent_gateway" / "weixin_notifications.jsonl"
 DEFAULT_DEDUPE = ROOT / "Results" / "coagent_gateway" / "weixin_dedupe.json"
 DEFAULT_RECOVERY_DIR = ROOT / "Results" / "coagent_gateway" / "recovery"
 DEFAULT_PROJECT = "MoSim｜微信通知网关"
+DEFAULT_WSL_DISTRO = os.environ.get("MOSIM_WSL_DISTRO", "Ubuntu-22.04")
+
+
+def default_data_dir() -> Path:
+    if sys.platform.startswith("win"):
+        return Path(rf"\\wsl.localhost\{DEFAULT_WSL_DISTRO}\home\linux\.cache\mosim\coagent\cc-connect-weixin\data")
+    return Path(WSL_DATA_DIR)
 
 ALLOWED_CLASSES = {"auth_required", "approval_required", "manual_review_required", "incident_required"}
 ALLOWED_REVIEW_DECISIONS = {"needs_review", "accepted_with_concerns", "needs_rework", "rejected"}
@@ -119,6 +126,68 @@ def truncate(text: str, limit: int) -> str:
     return text[: max(0, limit - 20)].rstrip() + "\n...[truncated]"
 
 
+def to_wsl_path(path: Path) -> str:
+    text = str(path)
+    if not sys.platform.startswith("win"):
+        return text
+    if text.startswith("\\\\wsl.localhost\\"):
+        parts = text.split("\\")
+        if len(parts) >= 5:
+            return "/" + "/".join(parts[4:])
+    if text.startswith("\\\\wsl$\\"):
+        parts = text.split("\\")
+        if len(parts) >= 5:
+            return "/" + "/".join(parts[4:])
+    drive = path.drive.rstrip(":").lower()
+    if drive:
+        rest = str(path)[len(path.drive) :].replace("\\", "/").lstrip("/")
+        return f"/mnt/{drive}/{rest}"
+    if text.startswith("\\"):
+        return text.replace("\\", "/")
+    return text.replace("\\", "/")
+
+
+def cc_connect_command(cc_bin: Path, args: list[str]) -> list[str]:
+    if not sys.platform.startswith("win"):
+        return [str(cc_bin), *args]
+    return [
+        "wsl.exe",
+        "-d",
+        DEFAULT_WSL_DISTRO,
+        "--",
+        to_wsl_path(cc_bin),
+        *args,
+    ]
+
+
+def cc_arg_path(path: Path) -> str:
+    return to_wsl_path(path) if sys.platform.startswith("win") else str(path)
+
+
+def probe_cc_connect_api(*, cc_bin: Path, data_dir: Path, timeout: int = 5) -> dict[str, Any]:
+    command = cc_connect_command(cc_bin, ["sessions", "list", "--data-dir", cc_arg_path(data_dir)])
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=ROOT,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+    return {
+        "ok": completed.returncode == 0,
+        "returncode": completed.returncode,
+        "stdout": redact(completed.stdout or ""),
+        "stderr": redact(completed.stderr or ""),
+    }
+
+
 def as_list(value: Any) -> list[str]:
     if value in (None, ""):
         return []
@@ -129,7 +198,7 @@ def as_list(value: Any) -> list[str]:
 
 def packet_type_for(payload: dict[str, Any]) -> str:
     template = str(payload.get("template_type", ""))
-    if template in {"blocker_notification", "review_packet"}:
+    if template in {"blocker_notification", "review_packet", "completion_notification"}:
         return template
     if "human_action_required" in payload or "blocked_surface" in payload:
         return "blocker_notification"
@@ -137,6 +206,8 @@ def packet_type_for(payload: dict[str, Any]) -> str:
         return "review_packet"
     if str(payload.get("canonical_status", "")) in {"auth_required", "review_required", "blocked", "failed"}:
         return "result_packet"
+    if str(payload.get("canonical_status", "")) == "completed":
+        return "completion_notification"
     return "unknown"
 
 
@@ -205,8 +276,34 @@ def format_review(payload: dict[str, Any]) -> tuple[bool, str, str]:
     return True, "\n".join(lines), ""
 
 
+def format_completion(payload: dict[str, Any]) -> tuple[bool, str, str]:
+    canonical = str(payload.get("canonical_status") or payload.get("status") or "")
+    if canonical not in {"completed", "done"}:
+        return False, "", f"completion canonical_status {canonical!r} is not completed"
+    task_id = str(payload.get("task_id") or "unknown")
+    summary = str(payload.get("summary") or "")
+    owner = str(payload.get("owner") or payload.get("role") or "")
+    evidence = as_list(payload.get("evidence_paths") or payload.get("evidence"))[:5]
+    next_action = str(payload.get("next_recommended_action") or payload.get("next_action") or "无需人工处理。")
+    lines = [
+        "【MoSim CoAgent 任务完成】",
+        f"任务: {task_id}",
+        "状态: completed",
+    ]
+    if owner:
+        lines.append(f"负责人: {owner}")
+    if summary:
+        lines.append(f"结果: {summary}")
+    if evidence:
+        lines.append("证据: " + ", ".join(evidence))
+    lines.append(f"下一步: {next_action}")
+    return True, "\n".join(lines), ""
+
+
 def format_result(payload: dict[str, Any]) -> tuple[bool, str, str]:
     canonical = str(payload.get("canonical_status") or payload.get("status") or "")
+    if canonical in {"completed", "done"}:
+        return format_completion(payload)
     if canonical not in {"auth_required", "review_required", "blocked", "failed"}:
         return False, "", f"result canonical_status {canonical!r} does not require Weixin escalation"
     mapped = {
@@ -234,6 +331,8 @@ def build_plan(packet_path: Path, *, max_chars: int = 1500) -> NotificationPlan:
         allowed, message, reason = format_blocker(payload)
     elif packet_type == "review_packet":
         allowed, message, reason = format_review(payload)
+    elif packet_type == "completion_notification":
+        allowed, message, reason = format_completion(payload)
     elif packet_type == "result_packet":
         allowed, message, reason = format_result(payload)
     else:
@@ -285,14 +384,13 @@ def send_message(
     session: str,
     timeout: int,
 ) -> dict[str, Any]:
-    command = [
-        str(cc_bin),
+    command = cc_connect_command(cc_bin, [
         "send",
         "--data-dir",
-        str(data_dir),
+        cc_arg_path(data_dir),
         "--project",
         project,
-    ]
+    ])
     if session:
         command.extend(["--session", session])
     command.append("--stdin")
@@ -302,6 +400,8 @@ def send_message(
             cwd=ROOT,
             input=message,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             timeout=timeout,
@@ -314,6 +414,15 @@ def send_message(
             "returncode": None,
             "stdout": redact(exc.stdout or "") if isinstance(exc.stdout, str) else "",
             "stderr": redact(exc.stderr or "") if isinstance(exc.stderr, str) else "",
+            "command": command[:1] + ["send", "--data-dir", "<runtime>", "--project", project, "--session", "<redacted>", "--stdin"],
+        }
+    except OSError as exc:
+        return {
+            "ok": False,
+            "timeout": False,
+            "returncode": None,
+            "stdout": "",
+            "stderr": redact(f"{type(exc).__name__}: {exc}"),
             "command": command[:1] + ["send", "--data-dir", "<runtime>", "--project", project, "--session", "<redacted>", "--stdin"],
         }
     return {
@@ -386,7 +495,7 @@ def restart_cc_connect(
     recovery_root.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     log_path = recovery_root / f"recover-{stamp}.log"
-    command = [str(cc_bin), "--config", str(config), "--force"]
+    command = cc_connect_command(cc_bin, ["--config", cc_arg_path(config), "--force"])
     with log_path.open("w", encoding="utf-8") as log_handle:
         process = subprocess.Popen(
             command,
@@ -398,14 +507,18 @@ def restart_cc_connect(
 
     socket_path = data_dir / "run" / "api.sock"
     deadline = time.monotonic() + max(1, timeout)
+    last_probe: dict[str, Any] = {}
     while time.monotonic() < deadline:
         if socket_path.exists():
-            return {
-                "ok": True,
-                "pid": process.pid,
-                "log_path": rel(log_path),
-                "api_socket_exists": True,
-            }
+            last_probe = probe_cc_connect_api(cc_bin=cc_bin, data_dir=data_dir, timeout=3)
+            if last_probe.get("ok"):
+                return {
+                    "ok": True,
+                    "pid": process.pid,
+                    "log_path": rel(log_path),
+                    "api_socket_exists": True,
+                    "api_socket_connectable": True,
+                }
         if process.poll() is not None:
             break
         time.sleep(0.5)
@@ -421,6 +534,8 @@ def restart_cc_connect(
         "returncode": process.poll(),
         "log_path": rel(log_path),
         "api_socket_exists": socket_path.exists(),
+        "api_socket_connectable": False,
+        "api_probe": {k: v for k, v in last_probe.items() if k in {"ok", "returncode", "stderr"}},
         "stderr_tail": redact(tail),
     }
 
@@ -623,7 +738,7 @@ def build_parser() -> argparse.ArgumentParser:
     notify_parser.add_argument("--packet", required=True, type=Path)
     notify_parser.add_argument("--project", default=DEFAULT_PROJECT)
     notify_parser.add_argument("--session", default="")
-    notify_parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR)
+    notify_parser.add_argument("--data-dir", type=Path, default=default_data_dir())
     notify_parser.add_argument("--cc-bin", type=Path, default=DEFAULT_BIN)
     notify_parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     notify_parser.add_argument("--audit", type=Path, default=DEFAULT_AUDIT)

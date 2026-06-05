@@ -166,6 +166,12 @@ external_runtime_status
 Before equivalence passes, generated or external C/C++ results cannot replace
 MWORKS/Sysplorer simulation evidence.
 
+Each controller owns its own codegen/SIL gate. Passing this workflow for the
+PID demo proves the route and harness shape only. It does not certify INDI,
+MPC/NMPC, L1/adaptive, safety-filter, allocation, planner, or fault logic. For
+every new controller, record a separate model source, generated code hash,
+input/output schema, sample time, compile result, and SIL equivalence result.
+
 Pre-SIL gate:
 
 ```text

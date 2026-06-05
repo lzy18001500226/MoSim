@@ -4,6 +4,9 @@ Unreal is the high-quality visual layer of the MoSim simulator product.
 MWORKS/Sysplorer/Syslab remain the truth source for dynamics, control,
 planning, collision checks, event logs, and metrics.
 
+Current compact architecture boundary and Gate matrix entry:
+`Docs/Design/10_架构边界与当前状态ADR.md`.
+
 ## Current Policy
 
 The previous generated visual routes are retired:
@@ -52,6 +55,77 @@ deprecated unless explicitly revalidated under this UAV-stack-first route.
 
 The current minimum review gate is Factory scene rendering plus a visible
 YunZong/Sunray150 UAV body driven by the MWORKS/Bridge state path.
+
+## RflySim-like Experiment Console
+
+MoSim should provide a UE in-scene operator console similar in purpose to
+RflySim's simulator front end: the user can start experiments, switch
+controllers/planners, inject motor faults or wind disturbances, choose sensor
+modes, and launch review/recording actions from the rendered simulator window.
+
+Authority boundary:
+
+- UE console owns operator intent, visible status, review ergonomics, and video
+  capture.
+- MWORKS owns controller selection, plant/fault/wind application, state truth,
+  pass/fail metrics, and event logs.
+- ROS2 owns planner selection, FAST-LIO/local-map runtime state, and RViz2
+  review topics.
+- UE must not directly teleport the UAV, overwrite MWORKS truth, feed full UE
+  collision truth to planners, or label controller/planner success without
+  MWORKS/ROS2 evidence.
+
+Recommended first UI groups:
+
+| Group | Controls | Confirmed state shown from |
+|---|---|---|
+| Scenario | scene, run id, start/goal, reset, pause/resume, record | MWORKS run state and UE renderer status |
+| Controller | PID/AWFF/INDI/MPC/NMPC/L1/safety-filter selection, parameter profile | MWORKS/Sysblock or generated controller echo |
+| Disturbance/Fault | wind profile, mass/payload profile, rotor efficiency/failure injection | MWORKS plant/fault wrapper echo |
+| Planner | planner id, local-map source, goal queue, replan enable | ROS2 planner adapter and 20Hz setpoint stream health |
+| Perception | LiDAR baseline/enhanced mode, IMU state, FAST-LIO candidate | ROS2 measured rates and FAST-LIO quality gate |
+| Evidence | open RViz split layout, mark manual review, export run packet | evidence bundle and quality-status files |
+
+Recommended command/status route:
+
+```text
+UE operator action
+  -> project command packet: requested_change, run_id, timestamp, source=UE_console
+  -> MWORKS/ROS2 command adapter validates authority and current gate
+  -> runtime applies or rejects the request
+  -> next MWORKS/ROS2 status frame echoes active mode, reason, and evidence level
+  -> UE console displays only echoed/confirmed state
+```
+
+Initial implementation should add a command schema and adapter smoke before a
+full widget. The existing bridge already receives downlink fields such as
+mission, motor command, controller mode, planner state, safety state, and
+evidence level in `FQuadrotorMworksFrame`; the missing piece is a narrow uplink
+command channel from UE to the MWORKS/ROS2 adapters.
+
+Minimum command packet fields:
+
+```text
+schema: mosim.ue_command.v1
+type: command
+run_id
+seq
+time_s
+requested_by: ue_experiment_console
+command:
+  kind: controller_select | planner_select | wind_profile | motor_fault |
+        sensor_mode | scenario_reset | start_goal_update | recording
+  payload: command-specific JSON object
+guard:
+  require_mworks_ack: true
+  require_ros2_ack: true when planner/perception is touched
+  reject_if_gate_open: named gate ids
+```
+
+Do not expose a UI button until its adapter can reject invalid requests and the
+status frame can show the accepted state. For example, a "20Hz LiDAR" toggle
+must show measured LiDAR/IMU rates and FAST-LIO gate status; it must not simply
+change RViz or UE display rate.
 
 ## Sunray150 Material Review Rule
 

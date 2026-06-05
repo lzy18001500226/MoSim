@@ -252,20 +252,33 @@ def write_notification_packet(payload: dict[str, Any], review: dict[str, Any], r
         evidence.append(review_path)
     if summary_path:
         evidence.append(summary_path)
-    packet = {
-        "template_type": "blocker_notification",
-        "task_id": task_id,
-        "severity": "high" if canonical_status in {"auth_required", "failed"} else "medium",
-        "class": notification_class_for(payload, review),
-        "dedupe_key": f"result-router:{task_id}:{canonical_status}:{review.get('status', '')}",
-        "blocked_surface": payload.get("checkpoint") or payload.get("summary") or "CoAgent result packet",
-        "human_action_required": payload.get("next_recommended_action") or "请审核结果包并确认下一步。",
-        "why_now": payload.get("summary") or "",
-        "evidence_paths": evidence[:8],
-        "resume_packet_path": summary_path,
-        "review_status": review.get("status", ""),
-        "canonical_status": canonical_status,
-    }
+    if canonical_status == "completed" and not review.get("requires_human_review"):
+        packet = {
+            "template_type": "completion_notification",
+            "task_id": task_id,
+            "dedupe_key": f"result-router:{task_id}:{canonical_status}:{review.get('status', '')}",
+            "summary": payload.get("summary") or "",
+            "owner": payload.get("owner") or payload.get("role") or "",
+            "evidence_paths": evidence[:8],
+            "next_recommended_action": payload.get("next_recommended_action") or payload.get("next_action") or "无需人工处理。",
+            "review_status": review.get("status", ""),
+            "canonical_status": canonical_status,
+        }
+    else:
+        packet = {
+            "template_type": "blocker_notification",
+            "task_id": task_id,
+            "severity": "high" if canonical_status in {"auth_required", "failed"} else "medium",
+            "class": notification_class_for(payload, review),
+            "dedupe_key": f"result-router:{task_id}:{canonical_status}:{review.get('status', '')}",
+            "blocked_surface": payload.get("checkpoint") or payload.get("summary") or "CoAgent result packet",
+            "human_action_required": payload.get("next_recommended_action") or "请审核结果包并确认下一步。",
+            "why_now": payload.get("summary") or "",
+            "evidence_paths": evidence[:8],
+            "resume_packet_path": summary_path,
+            "review_status": review.get("status", ""),
+            "canonical_status": canonical_status,
+        }
     packet_path.write_text(json.dumps(packet, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return rel(packet_path)
 
@@ -273,7 +286,8 @@ def write_notification_packet(payload: dict[str, Any], review: dict[str, Any], r
 def maybe_notify_weixin(args: argparse.Namespace, payload: dict[str, Any], review: dict[str, Any], review_path: str, summary_path: str) -> dict[str, Any]:
     if not getattr(args, "notify_weixin", False):
         return {"enabled": False}
-    if not review.get("requires_human_review"):
+    canonical_status = str(review.get("canonical_status") or canonical_status_for(str(payload.get("status", "")), payload))
+    if not review.get("requires_human_review") and canonical_status != "completed":
         return {"enabled": True, "skipped": True, "reason": "human_review_not_required"}
     packet_path = write_notification_packet(payload, review, review_path, summary_path)
     namespace = argparse.Namespace(
@@ -287,8 +301,11 @@ def maybe_notify_weixin(args: argparse.Namespace, payload: dict[str, Any], revie
         dedupe=getattr(args, "weixin_dedupe", cc_connect_weixin.DEFAULT_DEDUPE),
         max_chars=getattr(args, "weixin_max_chars", 1500),
         timeout=getattr(args, "weixin_timeout", 60),
+        recovery_timeout=getattr(args, "weixin_recovery_timeout", 20),
         send=getattr(args, "send_weixin", False),
         force=getattr(args, "force_weixin", False),
+        recover_on_failure=getattr(args, "recover_weixin_on_failure", True),
+        recovery_dir=getattr(args, "weixin_recovery_dir", cc_connect_weixin.DEFAULT_RECOVERY_DIR),
         omit_message_in_audit=getattr(args, "omit_weixin_message_in_audit", False),
     )
     result = cc_connect_weixin.notify(namespace)
@@ -484,7 +501,7 @@ def build_parser() -> argparse.ArgumentParser:
     import_parser.add_argument("--archive", action="store_true", default=True)
     import_parser.add_argument("--no-archive", dest="archive", action="store_false")
     import_parser.add_argument("--archive-invalid", action="store_true")
-    import_parser.add_argument("--notify-weixin", action="store_true", help="dry-run or send a Weixin review notification when human review is required")
+    import_parser.add_argument("--notify-weixin", action="store_true", help="dry-run or send a Weixin completion/review notification")
     import_parser.add_argument("--send-weixin", action="store_true", help="actually send the Weixin notification; otherwise notification is a dry run")
     import_parser.add_argument("--weixin-session", default="", help="cc-connect session id or alias; omitted uses the first active session")
     import_parser.add_argument("--weixin-project", default=cc_connect_weixin.DEFAULT_PROJECT)
@@ -495,6 +512,9 @@ def build_parser() -> argparse.ArgumentParser:
     import_parser.add_argument("--weixin-dedupe", type=Path, default=cc_connect_weixin.DEFAULT_DEDUPE)
     import_parser.add_argument("--weixin-max-chars", type=int, default=1500)
     import_parser.add_argument("--weixin-timeout", type=int, default=60)
+    import_parser.add_argument("--weixin-recovery-timeout", type=int, default=20)
+    import_parser.add_argument("--weixin-recovery-dir", type=Path, default=cc_connect_weixin.DEFAULT_RECOVERY_DIR)
+    import_parser.add_argument("--recover-weixin-on-failure", action=argparse.BooleanOptionalAction, default=True)
     import_parser.add_argument("--force-weixin", action="store_true")
     import_parser.add_argument("--omit-weixin-message-in-audit", action="store_true")
     import_parser.set_defaults(func=import_packet)

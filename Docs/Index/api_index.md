@@ -135,10 +135,29 @@ mosim-epic
 to the project-specific MCP wrapper:
 
 ```text
+Windows Codex App:
+Docs/Skills/Unreal/mosim-unreal/wrappers/mosim-unreal.cmd
+Docs/Skills/Unreal/mosim-epic/wrappers/mosim-epic.cmd
+
+WSL-only Codex route:
 Docs/Skills/Unreal/mosim-unreal/wrappers/mosim-unreal.sh
   -> Docs/Skills/Unreal/mosim-unreal/wrappers/wsl.sh
   -> Docs/Skills/Unreal/mosim-unreal/mcp/server.py
 ```
+
+Windows Codex App config must not use `wsl.exe`, `\\wsl.localhost`, `/mnt/c`,
+or `/home/linux` for MoSim MCP launchers. Current Windows-native project MCP
+wrappers also include:
+
+```text
+Docs/Skills/Windows-MCP/wrappers/windows-mcp.cmd
+Docs/Skills/ROS-MCP/wrappers/ros-mcp.cmd
+Docs/Skills/Blender-MCP/wrappers/blender-mcp.cmd
+```
+
+`ros-mcp.cmd` starts the MCP process in Windows and connects to ROS through the
+configured rosbridge address. The ROS runtime itself still needs to be running
+and reachable.
 
 The old open-source Flopperam wrapper is retained only for rollback:
 

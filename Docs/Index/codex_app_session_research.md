@@ -78,10 +78,14 @@ task state, decisions, blockers, or manual review results exist.
 
 ## MoSim Decision
 
-Current policy:
+Current policy after the 2026-06-05 Windows-native migration:
 
-- Primary conversation: current WSL-backed VSCode Codex conversation.
+- Primary conversation/config/history: Windows-native VSCode/Codex under
+  `C:\Users\HP\.codex`.
 - Codex App role: Windows desktop review/front-end UI and extra conversation UI.
+- WSL role: required runtime lane for ROS2, RViz2, FAST-LIO-family,
+  rosbridge, and Linux-native robotics tooling; not the default Codex config
+  home.
 - Durable project state: repository docs and ledgers.
 - Session transfer: controlled one-way recovery only, not department creation.
 - Disallowed: live bidirectional writes to the same session from App and WSL.
@@ -89,6 +93,15 @@ Current policy:
 The App currently appears able to display the active project conversation after
 the Windows session/index copy was repaired. Treat that as a convenience layer,
 not as the source of truth.
+
+Codex App cross-thread send is transport only. It is not request/response RPC
+and does not guarantee that a target thread's reply returns to the source
+thread. Every cross-thread department request must include `origin_thread`,
+`origin_thread_id`, `target_thread`, `target_thread_id`, `request_id`, and the
+expected packet paths. The target department writes its result to
+`Results/agent_packets/returns/<request_id>.json` or its blocker to
+`Results/agent_packets/blockers/<request_id>.json`; WeChat remains only a
+sparse alert channel.
 
 Codex App can display conversations created from the WSL/VSCode side. That is
 the required route for department and dedicated-task conversations. Manual
@@ -183,17 +196,29 @@ Operational result on 2026-05-26:
    and report partial state instead of waiting.
 ```
 
-Current coordination and department thread IDs:
+Current visible thread registry, refreshed from the Windows Codex state DB on
+2026-06-05 CST:
 
-| Thread | ID |
-| --- | --- |
-| `MoSim｜总经办 PMO` | `019e6335-a2e2-7b92-b9f8-396400f4429e` |
-| `MoSim｜调度中台` | `019e6318-4516-72c1-a50a-a36dc2aed215` |
-| `MoSim｜研发工程部` | `019e6319-fecd-7bd1-a4d5-7a5207e0ddba` |
-| `MoSim｜文档秘书部` | `019e631b-c6b2-73e3-9ad9-551b12687fe0` |
-| `MoSim｜验证测试部` | `019e631d-8164-72e3-aac5-4ee3d91e462e` |
-| `MoSim｜安全合规部` | `019e631f-406e-7401-af17-8f17e09a50e3` |
-| `MoSim｜DevOps 发布部` | `019e6321-1940-7bc0-8a97-f2720aa8af1b` |
+| Thread | ID | Use |
+| --- | --- | --- |
+| `MoSim｜主线 PMO` | `019e9868-83ea-70f0-92c5-a3a408bd78c6` | Current mainline PMO task conversation for Sunray150/MoSim dynamics work |
+| `MoSim｜DevOps 发布` | `019e74de-a452-7a50-99e7-ca9a247b32f1` | Git split, path-limited staging, commits, push hygiene |
+| `MoSim｜微信网关运维` | `019e9855-aa43-7fe2-807e-be7d4095877b` | cc-connect, QR login, context token, active session, scheduled health checks |
+| `MoSim｜WechatCodex` | `019e8358-86b4-7070-8fd6-a2b4f4d2af97` | Codex conversation used by the WeChat-side message path; not a gateway operations owner |
+
+Other active legacy CoAgent bootstrap conversations were still present in the
+Windows Codex state DB at this refresh, including `MoSim｜调度中台`,
+`MoSim｜产品发现战略`, `MoSim｜Agent Runtime 平台`,
+`MoSim｜上下文记忆索引`, `MoSim｜工具链 MCP`, `MoSim｜知识秘书`,
+`MoSim｜验证评测`, `MoSim｜安全合规`, and `MoSim｜外部情报进化`.
+Treat them as inactive/legacy unless the user explicitly reactivates CoAgent
+runtime work.
+
+Latest scan artifact:
+
+```text
+Results/codex_history_audit/current_codex_threads_title_scan_20260605.csv
+```
 
 Naming convention:
 

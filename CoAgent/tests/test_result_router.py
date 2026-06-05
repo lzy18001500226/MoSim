@@ -141,6 +141,9 @@ def main() -> int:
                 weixin_dedupe=tmp_root / "weixin_dedupe.json",
                 weixin_max_chars=1500,
                 weixin_timeout=1,
+                weixin_recovery_timeout=1,
+                weixin_recovery_dir=tmp_root / "weixin_recovery",
+                recover_weixin_on_failure=True,
                 force_weixin=False,
                 omit_weixin_message_in_audit=False,
             )
@@ -241,6 +244,9 @@ def main() -> int:
                 weixin_dedupe=tmp_root / "weixin_dedupe.json",
                 weixin_max_chars=1500,
                 weixin_timeout=1,
+                weixin_recovery_timeout=1,
+                weixin_recovery_dir=tmp_root / "weixin_recovery",
+                recover_weixin_on_failure=True,
                 force_weixin=False,
                 omit_weixin_message_in_audit=False,
             )
@@ -249,8 +255,12 @@ def main() -> int:
         assert canonical_imported["runtime_state"]["state"] == "done"
         assert canonical_imported["review"]["canonical_status"] == "completed"
         assert canonical_imported["review"]["status"] == "accepted"
-        assert canonical_imported["notification"]["skipped"]
-        assert canonical_imported["notification"]["reason"] == "human_review_not_required"
+        assert canonical_imported["notification"]["enabled"], canonical_imported
+        assert canonical_imported["notification"]["packet_path"].startswith("Results/agent_packets/notifications/")
+        completion_notification = json.loads((ROOT / canonical_imported["notification"]["packet_path"]).read_text(encoding="utf-8"))
+        assert completion_notification["template_type"] == "completion_notification"
+        assert canonical_imported["notification"]["result"]["packet_type"] == "completion_notification"
+        assert canonical_imported["notification"]["result"]["send_result"]["reason"] == "dry_run"
 
     print("result_router_smoke ok")
     return 0

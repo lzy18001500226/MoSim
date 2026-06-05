@@ -109,8 +109,9 @@ Current implementation checkpoint:
   adapter. It defaults to dry-run; real send requires `--send`; output is
   redacted, deduped, and audited under ignored `Results/coagent_gateway/`.
 - `CoAgent/result_router/result_router.py` can generate a Weixin notification
-  packet and dry-run or explicitly send it when an imported result packet
-  requires human review.
+  packet and dry-run or explicitly send it. Accepted `canonical_status=completed`
+  result packets generate `completion_notification`; review-required, blocked,
+  failed, or auth-required packets generate human-action notifications.
 - `CoAgent/tests/test_review_notification_loop.py` proves the minimal
   task/result/review/notification/status-board loop without real external
   sending.
