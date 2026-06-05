@@ -168,3 +168,58 @@ Next safe batches:
 1. Daytona examples/guides or any remaining root/library slices, each kept under 1000 paths.
 2. Continue `References/Data -> References/Log` migration by paired rename/source-only batches for pyulog/px4tools/data-driven projects; do not commit remaining tracked deletes naked.
 3. `References/Blender/**` remains a temporary throttle and must not be removed wholesale; if needed, open only README/LICENSE/source slices after size and generated-artifact scans.
+
+## 2026-06-06 DevOps visible closeout continuation
+
+15. `dc95f30eb12fb28c6df285dd7271c4dc951629c8`
+    - Message: `docs: record airo control source migration`
+    - Scope:
+      - `Results/codex_history_audit/devops_git_closeout_20260605_refs_phase1.md`
+    - Reason: persist the airo source/config/media migration evidence before continuing the next Git split slices.
+    - Evidence: committed with a temporary index so the real staged area preserved unrelated staged files (`Docs/Workflows/debug_mcp.md`, `PROGRESS.md`, and `Results/codex_history_audit/app_history_title_project_fix_20260605-2217_manifest.json`); `git diff --cached --check` exited with `$LASTEXITCODE=0`; pushed to `origin/main`.
+
+16. `4920e84db0551baa1fb5d73f48364dff94839cde`
+    - Message: `refs: migrate esc test logs`
+    - Scope:
+      - `References/Data/esc_test`
+      - `References/Log/esc_test`
+    - Reason: complete another paired `References/Data -> References/Log` migration batch instead of leaving old-location tracked deletes.
+    - Evidence: 27 paths; no file >=100 MB; no high-confidence credential pattern hits; no nested runtime directory hits; `git diff --cached --check` exited with `$LASTEXITCODE=0`; path-limited status for the old/new esc_test locations was clean after commit.
+
+17. `b73a5fdf491e8ffd0e6d0ef10bd1ec496653a088`
+    - Message: `refs: migrate data-driven system identification logs`
+    - Scope:
+      - `References/Data/data-driven-system-identification`
+      - `References/Log/data-driven-system-identification`
+    - Reason: move the data-driven system identification reference project as a paired path-limited batch. User policy is single-file GitHub limit first: file categories such as `.ulg`, notebook, or small data files are not excluded merely because the folder is large.
+    - Evidence: 29 paths; no file >=100 MB; no high-confidence credential pattern hits; no nested runtime directory hits; `git diff --cached --check` exited with `$LASTEXITCODE=0`; path-limited status for the old/new locations was clean after commit.
+
+18. `f8b18917d0dff6811a351400711747bf6f9e512f`
+    - Message: `refs: migrate data-driven dynamics logs`
+    - Scope:
+      - `References/Data/data-driven-dynamics`
+      - `References/Log/data-driven-dynamics`
+    - Reason: move the data-driven dynamics reference project as a paired path-limited batch. Small `.csv`, `.ulg`, and `.stl` reference assets were admitted because no single file exceeded 100 MB and no secret pattern was found.
+    - Evidence: 85 paths; no file >=100 MB; no high-confidence credential pattern hits; no nested runtime directory hits; `git diff --cached --check` exited with `$LASTEXITCODE=0`; path-limited status for the old/new locations was clean after commit.
+
+19. `07177560750c46ded2715df4967f8c0354f2a90f`
+    - Message: `refs: remove old data artifact locations`
+    - Scope:
+      - `References/Data/airo_control_interface`
+      - `References/Data/px4tools`
+      - `References/Data/pyulog`
+    - Reason: remove the remaining old `References/Data` tracked artifact/sample paths after their source batches were migrated. Log-side generated objects and log samples remain ignored rather than force-added.
+    - Evidence: 24 paths; all remaining `References/Data` tracked deletes dropped to 0; `git diff --cached --check` exited with `$LASTEXITCODE=0`; pushed to `origin/main`.
+
+Current continuation state:
+
+- `References/Data` path-limited tracked deletes are now 0.
+- `References/Log` has no visible path-limited status after the migration batches.
+- Real index still preserves unrelated staged files:
+  - `Docs/Workflows/debug_mcp.md`
+  - `PROGRESS.md`
+  - `Results/codex_history_audit/app_history_title_project_fix_20260605-2217_manifest.json`
+- `Docs/Skills/Unreal` has four tracked `.venv` path changes plus untracked wrapper/skill files. Treat the `.venv` entries as environment cleanup and the wrapper/skill files as a separate source/docs batch.
+- `Docs/Skills/Windows-MCP` has untracked wrapper files; its ignored `.venv`, `__pycache__`, and `*.egg-info` content should stay ignored.
+- `References/Agent` still contains hundreds of thousands of ignored files. Do not remove its broad throttle; continue by sub-project unignore/stage batches under 1000 files.
+- `References/Blender/**` remains a temporary throttle at the end of `.gitignore`. Do not remove it wholesale; narrow only after per-subtree inventory because `tests/` and `release/` would expose 1000+ files.
