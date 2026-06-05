@@ -886,10 +886,16 @@ Parameter labels remain conservative:
 | mass, lift coefficient, yaw moment ratio, motor lag constants | `source=SDF_migration` |
 | identified flight/bench parameters | not available; do not label as `source=PX4_ULog_sysid` |
 
+Engineering continuation rule: the Sunray/YunZong open-source seed parameters
+are acceptable for current model-structure checks and short hover/yaw smoke
+tests. They are not final Sunray150 truth, and reports must keep the
+`SDF_migration` label until PX4 ULog or bench evidence replaces it.
+
 Verification:
 
 ```text
 source=MWORKS_MCP
+check_model QuadrotorModel.Mechanics.QuadChassis: ok
 check_model QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke: ok
 check_model QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke: ok
 simulate hover 0.25 s: dynamics.hover_thrust_error = 1.7763568394002505e-15 N

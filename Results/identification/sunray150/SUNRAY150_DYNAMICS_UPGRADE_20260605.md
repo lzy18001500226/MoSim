@@ -60,6 +60,12 @@ QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke
 
 No field in this checkpoint is promoted to `source=PX4_ULog_sysid`.
 
+Engineering continuation rule: these Sunray/YunZong open-source seed values
+are acceptable for structure checks, hover/yaw smoke tests, and controller
+interface debugging. They are not accepted as measured Sunray150 flight truth
+until a PX4 ULog or bench-identification bundle replaces the `SDF_migration`
+labels.
+
 ## Open Issues
 
 1. Confirm MWORKS positive yaw torque convention with a Sysplorer smoke
@@ -93,6 +99,7 @@ Models/QuadrotorExperiments/package.mo
 Model checks:
 
 ```text
+QuadrotorModel.Mechanics.QuadChassis: check_model ok=true
 QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke: check_model ok=true
 QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke: check_model ok=true
 ```
