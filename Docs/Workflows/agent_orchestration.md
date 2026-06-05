@@ -1328,8 +1328,13 @@ Large batch default strategy:
    scan, generated-artifact scan, and path-count sanity check.
 5. Stage only the reviewed slice with path-limited `git add`.
 6. Commit and push that slice before opening the next slice.
-7. Record skipped paths and the next batch in the ledger.
-8. Drain the temporary ignore rules themselves. The final state must not keep
+7. Cache the completed review in the task evidence or ledger, including the
+   exact committed paths, gate results, commit hash, and push state. Future Git
+   passes must not repeat full gates for that exact committed slice unless its
+   path status changes, a temporary throttle is being narrowed for that path,
+   or the remote/branch state contradicts the recorded commit.
+8. Record skipped paths and the next batch in the ledger.
+9. Drain the temporary ignore rules themselves. The final state must not keep
    broad "hide the incoming tree" rules just because the source-control view is
    quiet. Convert each temporary rule into committed tracked content, a narrow
    long-term ignore for a justified class, or a documented manifest-only skip.
@@ -1396,7 +1401,12 @@ argument length, hook scans, and GitHub limits as first-class constraints:
    Do not close a Git split task just because visible untracked files are 0:
    drain temporary ignore rules and separately commit or explicitly block every
    tracked-change family.
-6. For local performance, consider Git's large-repo features only as bounded
+6. Treat reviewed committed slices as cached evidence. Reuse the recorded
+   result packet, pathspec file, ledger row, and commit hash instead of
+   rescanning the same slice from scratch. This cache applies only to the exact
+   committed paths; it does not certify a broad parent directory and does not
+   close ignored backlog.
+7. For local performance, consider Git's large-repo features only as bounded
    helpers: sparse checkout or partial clone for fresh analysis clones, and
    split-index/untracked-cache/fsmonitor only after recording the local config
    change and confirming it does not hide files from the release audit.
