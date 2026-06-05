@@ -74,6 +74,19 @@ Completed batches:
    - Reason: fix the Daytona libs batch diff-check anomaly before push and document the reusable PowerShell gate rule.
    - Evidence: follow-up `git diff --check HEAD~1..HEAD` exited with `$LASTEXITCODE=0`; the workflow now requires checking `$LASTEXITCODE` after native Git gate commands before `git write-tree`, `git commit-tree`, or `git update-ref`.
 
+7. `4a998ff3eb572d57fc2c9ef0da694e79847a2a9e`
+   - Message: `refs: add daytona toolbox client slices`
+   - Scope:
+     - `.gitignore`
+     - `References/Agent/Gateway/daytona/libs/toolbox-api-client`
+     - `References/Agent/Gateway/daytona/libs/toolbox-api-client-go`
+     - `References/Agent/Gateway/daytona/libs/toolbox-api-client-java`
+     - `References/Agent/Gateway/daytona/libs/toolbox-api-client-python`
+     - `References/Agent/Gateway/daytona/libs/toolbox-api-client-python-async`
+     - `References/Agent/Gateway/daytona/libs/toolbox-api-client-ruby`
+   - Reason: drain another reviewed Daytona library/API client slice while keeping dependency folders, generated build outputs, object folders, caches, and `.env` files ignored.
+   - Evidence: 839 staged paths; largest staged file was 354,506 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; forbidden path filters passed; `git diff --cached --check` and follow-up `git diff --check HEAD~1..HEAD` both exited with `$LASTEXITCODE=0`.
+
 Current known residuals:
 
 - Real index had unrelated staged files before DevOps write work:
@@ -87,6 +100,6 @@ Current known residuals:
 
 Next safe batches:
 
-1. Daytona examples/guides or libs split by package family, each kept under 1000 paths.
+1. Daytona remaining API client language packages or examples/guides, each kept under 1000 paths.
 2. `References/Data -> References/Log` migration pilot: start with `px4_pid_tuner`, then proceed by source-only batches for pyulog/px4tools/data-driven projects.
 3. `References/Blender/**` remains a temporary throttle and must not be removed wholesale; if needed, open only README/LICENSE/source slices after size and generated-artifact scans.
