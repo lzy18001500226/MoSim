@@ -65,6 +65,15 @@ Completed batches:
    - Evidence: 685 staged paths; largest staged file was 52,697 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; forbidden path filters passed.
    - Correction needed: PowerShell did not stop after `git diff --cached --check` reported CRLF/trailing-whitespace warnings for `libs/sdk-java/gradlew.bat`; this commit was local-only at discovery time and must be followed by a narrow fix commit before push.
 
+6. `7933953ef382650e5d6e927fdfcef7583cca47e9`
+   - Message: `chore: fix daytona libs git gate evidence`
+   - Scope:
+     - `References/Agent/Gateway/daytona/libs/sdk-java/gradlew.bat`
+     - `Docs/Workflows/agent_orchestration.md`
+     - this progress record
+   - Reason: fix the Daytona libs batch diff-check anomaly before push and document the reusable PowerShell gate rule.
+   - Evidence: follow-up `git diff --check HEAD~1..HEAD` exited with `$LASTEXITCODE=0`; the workflow now requires checking `$LASTEXITCODE` after native Git gate commands before `git write-tree`, `git commit-tree`, or `git update-ref`.
+
 Current known residuals:
 
 - Real index had unrelated staged files before DevOps write work:
@@ -74,7 +83,7 @@ Current known residuals:
 - `References/Data` has 323 tracked deletes while matching directories exist under ignored `References/Log`. Do not commit bare deletes.
 - `References/PX4/mavros-ros2/mavros/test/mavros_py/testdata/missionplanner.parm` appears to be line-ending noise and is deferred.
 - `References/Agent/Gateway/daytona` remains partially drained; next suggested batch is grouped small apps under 1000 files.
-- `git diff --cached --check` must be treated as failed when `$LASTEXITCODE` is nonzero under PowerShell; this rule was added to `Docs/Workflows/agent_orchestration.md` after the Daytona libs gate anomaly.
+- `git diff --cached --check` must be treated as failed when `$LASTEXITCODE` is nonzero under PowerShell; this rule was added to `Docs/Workflows/agent_orchestration.md` after the Daytona libs gate anomaly and verified in commit `7933953ef382650e5d6e927fdfcef7583cca47e9`.
 
 Next safe batches:
 
