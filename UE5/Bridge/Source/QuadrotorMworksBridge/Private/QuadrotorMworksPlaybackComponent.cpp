@@ -6,7 +6,6 @@
 UQuadrotorMworksPlaybackComponent::UQuadrotorMworksPlaybackComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
-    PropellerAnglesDegrees.Init(0.0f, 4);
 }
 
 void UQuadrotorMworksPlaybackComponent::BeginPlay()
@@ -201,20 +200,6 @@ void UQuadrotorMworksPlaybackComponent::ApplyFrame(const FQuadrotorMworksFrame& 
         {
             TrajectoryTrailUnreal.RemoveAt(0, 1, EAllowShrinking::No);
         }
-    }
-
-    if (PropellerAnglesDegrees.Num() != 4)
-    {
-        PropellerAnglesDegrees.Init(0.0f, 4);
-    }
-
-    for (int32 Index = 0; Index < PropellerAnglesDegrees.Num() && Index < Frame.MotorCommand.Num(); ++Index)
-    {
-        const float Direction = (Index % 2 == 0) ? 1.0f : -1.0f;
-        const float Command = static_cast<float>(Frame.MotorCommand[Index]);
-        PropellerAnglesDegrees[Index] = FMath::Fmod(
-            PropellerAnglesDegrees[Index] + Direction * Command * PropellerVisualScale * DeltaSeconds,
-            360.0f);
     }
 
     if (bApplyActorTransform)

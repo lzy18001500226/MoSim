@@ -60,15 +60,16 @@ def random_field(seed: int, size: int = SIZE) -> np.ndarray:
 
 def carbon_fiber() -> dict[str, str]:
     x, y = normalized_grid()
-    weave_a = 0.5 + 0.5 * np.sin((x + y) * math.tau * 44.0)
-    weave_b = 0.5 + 0.5 * np.sin((x - y) * math.tau * 44.0)
-    checker = ((np.floor((x + y) * 26) + np.floor((x - y) * 26)) % 2)
+    weave_a = 0.5 + 0.5 * np.sin((x + y) * math.tau * 52.0)
+    weave_b = 0.5 + 0.5 * np.sin((x - y) * math.tau * 52.0)
+    checker = ((np.floor((x + y) * 30) + np.floor((x - y) * 30)) % 2)
     noise = random_field(11)
     pattern = 0.46 * weave_a + 0.40 * weave_b + 0.14 * noise
     pattern = np.where(checker > 0, pattern * 0.58, pattern * 1.32)
-    base = np.dstack([3 + pattern * 22, 4 + pattern * 23, 4 + pattern * 22])
-    rough = 118 + (1 - pattern) * 105
-    bump = 112 + (pattern - 0.5) * 110
+    sheen = np.clip(pattern ** 1.35, 0.0, 1.0)
+    base = np.dstack([4 + sheen * 44, 5 + sheen * 45, 5 + sheen * 43])
+    rough = 86 + (1 - sheen) * 122
+    bump = 112 + (pattern - 0.5) * 150
     return {
         "base_color": save_rgb("sunray150_carbon_fiber_base.png", base),
         "roughness": save_gray("sunray150_carbon_fiber_roughness.png", rough),
@@ -96,16 +97,17 @@ def mid360_housing() -> dict[str, str]:
     x, y = normalized_grid()
     noise = random_field(24)
     side_shadow = np.clip((x - 0.58) * 3.0, 0.0, 1.0)
+    edge_sheen = np.clip((0.22 - np.abs(y - 0.30)) * 3.0, 0.0, 1.0)
     soft = 0.55 + 0.45 * noise
     base = np.dstack(
         [
-            58 + soft * 24 - side_shadow * 20,
-            60 + soft * 24 - side_shadow * 20,
-            59 + soft * 22 - side_shadow * 18,
+            70 + soft * 24 - side_shadow * 18 + edge_sheen * 18,
+            72 + soft * 24 - side_shadow * 18 + edge_sheen * 18,
+            70 + soft * 22 - side_shadow * 16 + edge_sheen * 16,
         ]
     )
-    rough = 135 + (1.0 - soft) * 62
-    bump = 126 + (noise - 0.5) * 26
+    rough = 92 + (1.0 - soft) * 54 - edge_sheen * 20
+    bump = 126 + (noise - 0.5) * 22
     return {
         "base_color": save_rgb("mid360_silver_grey_aluminum_base.png", base),
         "roughness": save_gray("mid360_silver_grey_aluminum_roughness.png", rough),
@@ -167,17 +169,19 @@ def mid360_window() -> dict[str, str]:
     radial = np.sqrt((x - 0.5) ** 2 + (y - 0.42) ** 2)
     sweep = 0.5 + 0.5 * np.sin((x * 1.6 + y * 0.9) * math.tau)
     blue = np.clip(1.0 - radial * 1.8, 0.0, 1.0)
-    reflection = np.exp(-(((x - 0.25) / 0.12) ** 2 + ((y - 0.18) / 0.07) ** 2))
+    reflection = np.exp(-(((x - 0.24) / 0.052) ** 2 + ((y - 0.17) / 0.034) ** 2))
+    teal_core = np.exp(-(((x - 0.44) / 0.20) ** 2 + ((y - 0.40) / 0.28) ** 2))
+    edge_dark = np.clip(radial * 2.4, 0.0, 1.0)
     # Real MID-360 window is a dark blue/teal glossy optical dome, not a pale
     # cyan cap. Keep highlights strong but avoid washing the whole dome white.
     base = np.dstack(
         [
-            1 + blue * 4 + reflection * 10,
-            10 + blue * 34 + sweep * 5 + reflection * 18,
-            34 + blue * 72 + sweep * 7 + reflection * 28,
+            1 + blue * 2 + reflection * 5,
+            18 + blue * 40 + teal_core * 54 + sweep * 4 + reflection * 12 - edge_dark * 8,
+            38 + blue * 74 + teal_core * 36 + sweep * 5 + reflection * 18 - edge_dark * 16,
         ]
     )
-    rough = 24 + (1.0 - blue) * 34
+    rough = 28 + (1.0 - blue) * 36
     bump = 128 + (sweep - 0.5) * 10
     return {
         "base_color": save_rgb("mid360_blue_optical_window_base.png", base),

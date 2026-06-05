@@ -45,9 +45,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback")
     bool bConvertMworksYToUnrealNegativeY = true;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback")
-    float PropellerVisualScale = 32.0f;
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback", meta = (ClampMin = "0"))
     int32 MaxTrailPoints = 800;
 
@@ -62,9 +59,6 @@ public:
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
     FRotator LatestUnrealRotation = FRotator::ZeroRotator;
-
-    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
-    TArray<float> PropellerAnglesDegrees;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
     TArray<FVector> LocalPlanPointsUnreal;

@@ -27,36 +27,6 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS")
     UStaticMeshComponent* BodyMesh = nullptr;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS")
-    UStaticMeshComponent* PropellerMesh1 = nullptr;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS")
-    UStaticMeshComponent* PropellerMesh2 = nullptr;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS")
-    UStaticMeshComponent* PropellerMesh3 = nullptr;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS")
-    UStaticMeshComponent* PropellerMesh4 = nullptr;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Sunray")
-    UProceduralMeshComponent* SunrayBodyMesh = nullptr;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Sunray")
-    UProceduralMeshComponent* SunrayPropellerMesh1 = nullptr;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Sunray")
-    UProceduralMeshComponent* SunrayPropellerMesh2 = nullptr;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Sunray")
-    UProceduralMeshComponent* SunrayPropellerMesh3 = nullptr;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Sunray")
-    UProceduralMeshComponent* SunrayPropellerMesh4 = nullptr;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Sunray")
-    UStaticMeshComponent* SunrayMid360DomeMesh = nullptr;
-
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Visualization")
     USplineComponent* LocalPlanSpline = nullptr;
 
@@ -91,24 +61,6 @@ public:
     UMaterialInterface* BaseMaterial = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
-    FLinearColor BodyColor = FLinearColor(0.015f, 0.016f, 0.018f, 1.0f);
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
-    FLinearColor PropellerColor = FLinearColor(0.78f, 0.80f, 0.78f, 1.0f);
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
-    FLinearColor SunrayDuctGuardColor = FLinearColor(0.52f, 0.53f, 0.51f, 1.0f);
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
-    FLinearColor SunrayMid360BaseColor = FLinearColor(0.60f, 0.60f, 0.58f, 1.0f);
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
-    FLinearColor SunrayMid360ProtectArcColor = FLinearColor(0.13f, 0.13f, 0.13f, 1.0f);
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
-    FLinearColor SunrayMid360DomeColor = FLinearColor(0.02f, 0.42f, 0.72f, 1.0f);
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
     FLinearColor ReferenceColor = FLinearColor(1.0f, 0.88f, 0.1f, 1.0f);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
@@ -127,28 +79,25 @@ public:
     FLinearColor LidarPointColor = FLinearColor(0.0f, 0.95f, 1.0f, 0.95f);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Sunray")
-    FString SunrayBodyStlPath = TEXT("../../References/MWORKS/QuadrotorModel/Resources/Visualization/sunray150_mid360_body.stl");
+    bool bUseDaeDerivedVehicleVisual = true;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Sunray")
-    FString SunrayPropellerStlPath = TEXT("../../References/MWORKS/QuadrotorModel/Resources/Visualization/sunray150_mid360_propeller.stl");
+    FString SunrayDaeDerivedStaticMeshPath = TEXT("/Game/Sunray150/sunray150_with_mid360_textured.sunray150_with_mid360_textured");
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Sunray")
-    float SunrayVisualScale = 3.0f;
+    FString SunrayDaeDerivedSourceAssetPath = TEXT("../../UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured.fbx");
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Sunray")
-    float SunrayPropellerVisualScale = 0.125f;
+    FVector SunrayDaeDerivedVisualScale = FVector(1.0f, 1.0f, 1.0f);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Sunray")
-    int32 SunrayMaxBodyTriangles = 0;
+    FRotator SunrayDaeDerivedVisualRotation = FRotator::ZeroRotator;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Sunray")
-    bool bAllowPrimitiveUavFallback = false;
+    FVector SunrayDaeDerivedVisualLocation = FVector::ZeroVector;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Sunray")
     bool bLogSunrayVisualDiagnostics = true;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Sunray")
-    bool bUseSunrayDaeMaterialPalette = true;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Review")
     bool bLogFirstAppliedFrameDiagnostics = true;
@@ -198,19 +147,9 @@ protected:
     virtual void Tick(float DeltaSeconds) override;
 
 private:
-    bool LoadSunrayVisualMeshes();
-    bool LoadStlIntoMesh(
-        UProceduralMeshComponent* Mesh,
-        const FString& RelativePath,
-        float Scale,
-        int32 MaxTriangles,
-        const FLinearColor& Color,
-        bool bUseReferencePalette) const;
+    bool LoadSunrayDaeDerivedVisualAsset();
     void ApplyMaterialColor(UMeshComponent* Component, const FLinearColor& Color, int32 MaterialIndex = 0) const;
-    void SetPrimitiveUavFallbackVisible(bool bVisible) const;
-    void ApplyPropellerVisuals() const;
-    void ApplySunrayReferenceVisualLayout() const;
-    void ApplySunrayDomeVisualLayout() const;
+    void ApplySunrayDaeDerivedVisualLayout() const;
     void LogVisualComponentDiagnostics(const TCHAR* Label, const UMeshComponent* Component) const;
     void LogFirstAppliedFrameDiagnosticsIfNeeded();
     void UpdateVisualHelpers() const;

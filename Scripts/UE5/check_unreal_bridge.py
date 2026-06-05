@@ -120,7 +120,6 @@ def main() -> int:
         "MworksPositionToUnreal",
         "MworksRotationToUnreal",
         "SetActorLocationAndRotation",
-        "PropellerAnglesDegrees",
         "LocalPlanPointsUnreal",
         "TrajectoryTrailUnreal",
         "RadarNearRadiusCentimeters",
@@ -130,13 +129,62 @@ def main() -> int:
     if missing_playback_tokens:
         print(f"[FAIL] playback source missing tokens: {', '.join(missing_playback_tokens)}")
         return 1
+    playback_header = (PLUGIN / "Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackComponent.h").read_text(
+        encoding="utf-8"
+    )
+    for token in [
+        "PropellerAnglesDegrees",
+        "PropellerVisualScale",
+        "PropellerVisualRotorSpeedMultiplier",
+    ]:
+        if token in playback or token in playback_header:
+            print(f"[FAIL] playback component still keeps retired UE propeller visual animation token: {token}")
+            return 1
 
     playback_actor = (PLUGIN / "Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackActor.cpp").read_text(
         encoding="utf-8"
     )
-    for token in ["MworksUdpReceiver", "MworksPlayback", "ApplyPropellerVisuals"]:
+    for token in ["MworksUdpReceiver", "MworksPlayback"]:
         if token not in playback_actor:
             print(f"[FAIL] playback actor missing token: {token}")
+            return 1
+    playback_actor_header = (
+        PLUGIN / "Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackActor.h"
+    ).read_text(encoding="utf-8")
+    for token in [
+        "bUseDaeDerivedVehicleVisual = true",
+        "/Game/Sunray150/sunray150_with_mid360_textured.sunray150_with_mid360_textured",
+        "sunray150_with_mid360_textured.fbx",
+    ]:
+        if token not in playback_actor_header:
+            print(f"[FAIL] playback actor header missing DAE-derived Sunray visual token: {token}")
+            return 1
+    for token in [
+        "LoadSunrayDaeDerivedVisualAsset",
+        "MWORKS STL and MWORKS animation fallback are disabled",
+        "BodyMesh->SetStaticMesh(DaeDerivedMesh)",
+    ]:
+        if token not in playback_actor:
+            print(f"[FAIL] playback actor missing DAE-derived runtime visual token: {token}")
+            return 1
+    forbidden_sunray_tokens = [
+        "SunrayBodyStlPath",
+        "SunrayPropellerStlPath",
+        "LoadStlIntoMesh",
+        "MWORKSVisualFrame",
+        "sunray150_mid360_body.stl",
+        "sunray150_mid360_propeller.stl",
+        "PropellerMesh1",
+        "SunrayBodyMesh",
+        "SunrayPropellerMesh",
+        "SunrayMid360DomeMesh",
+        "bAllowPrimitiveUavFallback",
+        "SetPrimitiveUavFallbackVisible",
+        "ApplyPropellerVisuals",
+    ]
+    for token in forbidden_sunray_tokens:
+        if token in playback_actor_header or token in playback_actor:
+            print(f"[FAIL] playback actor still references retired MWORKS/STL vehicle visual token: {token}")
             return 1
     for token in [
         "LocalPlanSpline",
@@ -154,10 +202,13 @@ def main() -> int:
         if token not in playback_actor:
             print(f"[FAIL] playback actor visualization helper missing token: {token}")
             return 1
-    for token in ["ApplyDefaultMaterials", "BodyColor", "PropellerColor", "BasicShapeMaterial"]:
+    for token in ["ApplyDefaultMaterials", "BasicShapeMaterial"]:
         if token not in playback_actor:
             print(f"[FAIL] playback actor material setup missing token: {token}")
             return 1
+    if "ApplyMaterialColor(BodyMesh" in playback_actor:
+        print("[FAIL] playback actor must preserve imported DAE-derived vehicle materials instead of applying BasicShapeMaterial to BodyMesh")
+        return 1
 
     map_actor = (PLUGIN / "Source/QuadrotorMworksBridge/Private/QuadrotorMworksMapActor.cpp").read_text(
         encoding="utf-8"
@@ -205,9 +256,6 @@ def main() -> int:
         if token not in map_actor:
             print(f"[FAIL] map actor missing token: {token}")
             return 1
-    playback_actor_header = (
-        PLUGIN / "Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackActor.h"
-    ).read_text(encoding="utf-8")
     for token in ["AQuadrotorMworksMapActor", "MapActor"]:
         if token not in playback_actor_header:
             print(f"[FAIL] playback actor header missing map-selection token: {token}")

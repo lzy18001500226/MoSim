@@ -4,15 +4,13 @@
 #include "Components/SplineComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/MeshComponent.h"
-#include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
-#include "HAL/PlatformFileManager.h"
-#include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "ProceduralMeshComponent.h"
 #include "QuadrotorMworksMapActor.h"
 #include "QuadrotorMworksPlaybackComponent.h"
 #include "QuadrotorMworksUdpReceiverComponent.h"
+#include "UObject/UObjectGlobals.h"
 #include "UObject/ConstructorHelpers.h"
 
 AQuadrotorMworksPlaybackActor::AQuadrotorMworksPlaybackActor()
@@ -24,34 +22,6 @@ AQuadrotorMworksPlaybackActor::AQuadrotorMworksPlaybackActor()
 
     BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BodyMesh"));
     BodyMesh->SetupAttachment(SceneRoot);
-
-    PropellerMesh1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Propeller1"));
-    PropellerMesh2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Propeller2"));
-    PropellerMesh3 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Propeller3"));
-    PropellerMesh4 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Propeller4"));
-    PropellerMesh1->SetupAttachment(SceneRoot);
-    PropellerMesh2->SetupAttachment(SceneRoot);
-    PropellerMesh3->SetupAttachment(SceneRoot);
-    PropellerMesh4->SetupAttachment(SceneRoot);
-
-    SunrayBodyMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("SunrayBodyMesh"));
-    SunrayPropellerMesh1 = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("SunrayPropeller1"));
-    SunrayPropellerMesh2 = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("SunrayPropeller2"));
-    SunrayPropellerMesh3 = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("SunrayPropeller3"));
-    SunrayPropellerMesh4 = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("SunrayPropeller4"));
-    SunrayMid360DomeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SunrayMid360DomeMesh"));
-    SunrayBodyMesh->SetupAttachment(SceneRoot);
-    SunrayPropellerMesh1->SetupAttachment(SceneRoot);
-    SunrayPropellerMesh2->SetupAttachment(SceneRoot);
-    SunrayPropellerMesh3->SetupAttachment(SceneRoot);
-    SunrayPropellerMesh4->SetupAttachment(SceneRoot);
-    SunrayMid360DomeMesh->SetupAttachment(SceneRoot);
-    SunrayBodyMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    SunrayPropellerMesh1->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    SunrayPropellerMesh2->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    SunrayPropellerMesh3->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    SunrayPropellerMesh4->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    SunrayMid360DomeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
     LocalPlanSpline = CreateDefaultSubobject<USplineComponent>(TEXT("LocalPlanSpline"));
     TrajectoryTrailSpline = CreateDefaultSubobject<USplineComponent>(TEXT("TrajectoryTrailSpline"));
@@ -105,37 +75,18 @@ AQuadrotorMworksPlaybackActor::AQuadrotorMworksPlaybackActor()
     LidarPointMesh->SetUsingAbsoluteRotation(true);
     LidarPointMesh->SetUsingAbsoluteScale(true);
 
-    PropellerMesh1->SetRelativeLocation(FVector(32.0, 32.0, 0.0));
-    PropellerMesh2->SetRelativeLocation(FVector(32.0, -32.0, 0.0));
-    PropellerMesh3->SetRelativeLocation(FVector(-32.0, -32.0, 0.0));
-    PropellerMesh4->SetRelativeLocation(FVector(-32.0, 32.0, 0.0));
-    ApplySunrayReferenceVisualLayout();
-
     static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMesh(TEXT("/Engine/BasicShapes/Cube.Cube"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
     static ConstructorHelpers::FObjectFinder<UMaterialInterface> BasicMaterial(TEXT("/Engine/BasicShapes/BasicShapeMaterial"));
     if (CubeMesh.Succeeded())
     {
-        BodyMesh->SetStaticMesh(CubeMesh.Object);
-        BodyMesh->SetRelativeScale3D(FVector(0.75f, 0.42f, 0.12f));
         RadarDirectionMarker->SetStaticMesh(CubeMesh.Object);
         RadarDirectionMarker->SetRelativeScale3D(FVector(1.0f, 0.035f, 0.025f));
     }
     if (CylinderMesh.Succeeded())
     {
-        UStaticMeshComponent* Props[4] = {PropellerMesh1, PropellerMesh2, PropellerMesh3, PropellerMesh4};
-        for (UStaticMeshComponent* Prop : Props)
-        {
-            Prop->SetStaticMesh(CylinderMesh.Object);
-            Prop->SetRelativeScale3D(FVector(0.24f, 0.24f, 0.015f));
-        }
         ReferenceMarker->SetStaticMesh(CylinderMesh.Object);
         ReferenceMarker->SetRelativeScale3D(FVector(0.14f, 0.14f, 0.14f));
-    }
-    if (SunrayMid360DomeMesh && SphereMesh.Succeeded())
-    {
-        SunrayMid360DomeMesh->SetStaticMesh(SphereMesh.Object);
     }
     ReferenceMarker->SetVisibility(false);
     ReferenceMarker->SetHiddenInGame(true);
@@ -154,8 +105,9 @@ AQuadrotorMworksPlaybackActor::AQuadrotorMworksPlaybackActor()
         BaseMaterial = BasicMaterial.Object;
     }
     ApplyDefaultMaterials();
-    SetPrimitiveUavFallbackVisible(bAllowPrimitiveUavFallback);
-    ApplySunrayDomeVisualLayout();
+    BodyMesh->SetVisibility(false);
+    BodyMesh->SetHiddenInGame(true);
+    ApplySunrayDaeDerivedVisualLayout();
 
     Receiver = CreateDefaultSubobject<UQuadrotorMworksUdpReceiverComponent>(TEXT("MworksUdpReceiver"));
     Playback = CreateDefaultSubobject<UQuadrotorMworksPlaybackComponent>(TEXT("MworksPlayback"));
@@ -165,34 +117,18 @@ void AQuadrotorMworksPlaybackActor::BeginPlay()
 {
     Super::BeginPlay();
 
-    const bool bSunrayLoaded = LoadSunrayVisualMeshes();
-    SetPrimitiveUavFallbackVisible(!bSunrayLoaded && bAllowPrimitiveUavFallback);
+    LoadSunrayDaeDerivedVisualAsset();
 }
 
 void AQuadrotorMworksPlaybackActor::OnConstruction(const FTransform& Transform)
 {
     Super::OnConstruction(Transform);
     ApplyDefaultMaterials();
-    ApplySunrayReferenceVisualLayout();
+    ApplySunrayDaeDerivedVisualLayout();
 }
 
 void AQuadrotorMworksPlaybackActor::ApplyDefaultMaterials()
 {
-    ApplyMaterialColor(BodyMesh, BodyColor);
-    ApplyMaterialColor(PropellerMesh1, PropellerColor);
-    ApplyMaterialColor(PropellerMesh2, PropellerColor);
-    ApplyMaterialColor(PropellerMesh3, PropellerColor);
-    ApplyMaterialColor(PropellerMesh4, PropellerColor);
-    ApplyMaterialColor(SunrayBodyMesh, BodyColor);
-    ApplyMaterialColor(SunrayBodyMesh, SunrayDuctGuardColor, 1);
-    ApplyMaterialColor(SunrayBodyMesh, SunrayMid360BaseColor, 2);
-    ApplyMaterialColor(SunrayBodyMesh, SunrayMid360DomeColor, 3);
-    ApplyMaterialColor(SunrayBodyMesh, SunrayMid360ProtectArcColor, 4);
-    ApplyMaterialColor(SunrayPropellerMesh1, PropellerColor);
-    ApplyMaterialColor(SunrayPropellerMesh2, PropellerColor);
-    ApplyMaterialColor(SunrayPropellerMesh3, PropellerColor);
-    ApplyMaterialColor(SunrayPropellerMesh4, PropellerColor);
-    ApplyMaterialColor(SunrayMid360DomeMesh, SunrayMid360DomeColor);
     ApplyMaterialColor(ReferenceMarker, ReferenceColor);
     ApplyMaterialColor(RadarDirectionMarker, RadarColor);
     ApplyMaterialColor(RadarNearSectorMesh, RadarColor);
@@ -204,32 +140,6 @@ void AQuadrotorMworksPlaybackActor::ApplyDefaultMaterials()
 
 namespace
 {
-constexpr float MworksSunrayVisualYawOffsetDegrees = -90.0f;
-
-bool ReadUInt32LE(const TArray<uint8>& Bytes, int32 Offset, uint32& Value)
-{
-    if (Offset < 0 || Offset + 4 > Bytes.Num())
-    {
-        return false;
-    }
-    Value = static_cast<uint32>(Bytes[Offset])
-        | (static_cast<uint32>(Bytes[Offset + 1]) << 8)
-        | (static_cast<uint32>(Bytes[Offset + 2]) << 16)
-        | (static_cast<uint32>(Bytes[Offset + 3]) << 24);
-    return true;
-}
-
-bool ReadFloatLE(const TArray<uint8>& Bytes, int32 Offset, float& Value)
-{
-    uint32 Raw = 0;
-    if (!ReadUInt32LE(Bytes, Offset, Raw))
-    {
-        return false;
-    }
-    FMemory::Memcpy(&Value, &Raw, sizeof(float));
-    return true;
-}
-
 FString ResolveProjectRelativePath(const FString& RelativePath)
 {
     if (FPaths::IsRelative(RelativePath))
@@ -239,80 +149,11 @@ FString ResolveProjectRelativePath(const FString& RelativePath)
     return FPaths::ConvertRelativePathToFull(RelativePath);
 }
 
-void AppendTriangle(
-    TArray<FVector>& Vertices,
-    TArray<int32>& Triangles,
-    TArray<FVector>& Normals,
-    TArray<FVector2D>& UVs,
-    TArray<FLinearColor>& VertexColors,
-    TArray<FProcMeshTangent>& Tangents,
-    const FVector& A,
-    const FVector& B,
-    const FVector& C,
-    const FVector& Normal,
-    const FLinearColor& Color)
-{
-    const int32 Base = Vertices.Num();
-    Vertices.Append({A, B, C});
-    Triangles.Append({Base, Base + 1, Base + 2});
-    const FVector N = Normal.IsNearlyZero() ? FVector::UpVector : Normal.GetSafeNormal();
-    Normals.Append({N, N, N});
-    UVs.Append({FVector2D(0.0f, 0.0f), FVector2D(1.0f, 0.0f), FVector2D(0.0f, 1.0f)});
-    VertexColors.Append({Color, Color, Color});
-    Tangents.Append({
-        FProcMeshTangent(1.0f, 0.0f, 0.0f),
-        FProcMeshTangent(1.0f, 0.0f, 0.0f),
-        FProcMeshTangent(1.0f, 0.0f, 0.0f),
-    });
-}
-
 FString VectorToDiagnosticString(const FVector& Value)
 {
     return FString::Printf(TEXT("(%.3f, %.3f, %.3f)"), Value.X, Value.Y, Value.Z);
 }
 
-void ExpandBounds(FVector& MinBounds, FVector& MaxBounds, const FVector& Point)
-{
-    MinBounds.X = FMath::Min(MinBounds.X, Point.X);
-    MinBounds.Y = FMath::Min(MinBounds.Y, Point.Y);
-    MinBounds.Z = FMath::Min(MinBounds.Z, Point.Z);
-    MaxBounds.X = FMath::Max(MaxBounds.X, Point.X);
-    MaxBounds.Y = FMath::Max(MaxBounds.Y, Point.Y);
-    MaxBounds.Z = FMath::Max(MaxBounds.Z, Point.Z);
-}
-
-enum class ESunrayPaletteSection : int32
-{
-    CarbonFrame = 0,
-    DuctGuard = 1,
-    Mid360Base = 2,
-    Mid360Dome = 3,
-    Mid360ProtectArc = 4,
-};
-
-ESunrayPaletteSection ClassifySunrayBodyTriangle(const FVector& A, const FVector& B, const FVector& C)
-{
-    const FVector Center = (A + B + C) / 3.0f;
-    const float RadialXY = FVector2D(Center.X, Center.Y).Size();
-
-    if (Center.Z > 6.0f && Center.Z < 10.0f && Center.X > -5.4f && Center.X < 5.4f && Center.Y > -1.6f && Center.Y < 9.8f)
-    {
-        if (FMath::Abs(Center.X) < 1.55f && Center.Y > 2.55f && Center.Y < 5.55f && Center.Z > 8.35f)
-        {
-            return ESunrayPaletteSection::Mid360Dome;
-        }
-        return ESunrayPaletteSection::Mid360ProtectArc;
-    }
-    if (Center.Z > 0.8f && Center.Z <= 6.2f && Center.X > -3.8f && Center.X < 3.8f && Center.Y > 1.2f && Center.Y < 9.8f)
-    {
-        return ESunrayPaletteSection::Mid360Base;
-    }
-    if (RadialXY > 7.5f && Center.Z < -1.0f)
-    {
-        return ESunrayPaletteSection::DuctGuard;
-    }
-    return ESunrayPaletteSection::CarbonFrame;
-}
 }
 
 void AQuadrotorMworksPlaybackActor::ApplyMaterialColor(UMeshComponent* Component, const FLinearColor& Color, int32 MaterialIndex) const
@@ -321,378 +162,58 @@ void AQuadrotorMworksPlaybackActor::ApplyMaterialColor(UMeshComponent* Component
     {
         return;
     }
-    UMaterialInstanceDynamic* DynamicMaterial = Component->CreateDynamicMaterialInstance(MaterialIndex, BaseMaterial);
-    if (DynamicMaterial)
-    {
-        DynamicMaterial->SetVectorParameterValue(TEXT("Color"), Color);
-        DynamicMaterial->SetVectorParameterValue(TEXT("BaseColor"), Color);
-        Component->SetMaterial(MaterialIndex, DynamicMaterial);
-    }
+    Component->SetMaterial(MaterialIndex, BaseMaterial);
 }
 
-bool AQuadrotorMworksPlaybackActor::LoadStlIntoMesh(
-    UProceduralMeshComponent* Mesh,
-    const FString& RelativePath,
-    float Scale,
-    int32 MaxTriangles,
-    const FLinearColor& Color,
-    bool bUseReferencePalette) const
+bool AQuadrotorMworksPlaybackActor::LoadSunrayDaeDerivedVisualAsset()
 {
-    if (!Mesh)
+    ApplySunrayDaeDerivedVisualLayout();
+    if (!bUseDaeDerivedVehicleVisual)
     {
+        UE_LOG(LogTemp, Error, TEXT("MoSim Sunray visual rejected: bUseDaeDerivedVehicleVisual=false. MWORKS STL/runtime animation fallback is disabled."));
         return false;
     }
 
-    const FString FullPath = ResolveProjectRelativePath(RelativePath);
-    TArray<uint8> Bytes;
-    if (!FFileHelper::LoadFileToArray(Bytes, *FullPath) || Bytes.Num() < 84)
+    UStaticMesh* DaeDerivedMesh = LoadObject<UStaticMesh>(nullptr, *SunrayDaeDerivedStaticMeshPath);
+    if (!DaeDerivedMesh)
     {
-        UE_LOG(LogTemp, Warning, TEXT("MoSim Sunray STL load failed: %s"), *FullPath);
-        Mesh->ClearAllMeshSections();
+        const FString SourceAssetFullPath = ResolveProjectRelativePath(SunrayDaeDerivedSourceAssetPath);
+        UE_LOG(
+            LogTemp,
+            Error,
+            TEXT("MoSim Sunray DAE-derived visual asset missing: static_mesh=%s source_fbx=%s. Import this reviewed FBX/GLB into UE Content; MWORKS STL and MWORKS animation fallback are disabled."),
+            *SunrayDaeDerivedStaticMeshPath,
+            *SourceAssetFullPath);
+        if (BodyMesh)
+        {
+            BodyMesh->SetVisibility(false);
+            BodyMesh->SetHiddenInGame(true);
+        }
         return false;
     }
 
-    struct FMeshSectionBuild
+    if (BodyMesh)
     {
-        TArray<FVector> Vertices;
-        TArray<int32> Triangles;
-        TArray<FVector> Normals;
-        TArray<FVector2D> UVs;
-        TArray<FLinearColor> VertexColors;
-        TArray<FProcMeshTangent> Tangents;
-    };
-    constexpr int32 SunraySectionCount = 5;
-    FMeshSectionBuild Sections[SunraySectionCount];
-    auto ColorForSection = [this, &Color](int32 SectionIndex)
-    {
-        if (!bUseSunrayDaeMaterialPalette)
-        {
-            return Color;
-        }
-        switch (static_cast<ESunrayPaletteSection>(SectionIndex))
-        {
-        case ESunrayPaletteSection::DuctGuard:
-            return SunrayDuctGuardColor;
-        case ESunrayPaletteSection::Mid360Base:
-            return SunrayMid360BaseColor;
-        case ESunrayPaletteSection::Mid360Dome:
-            return SunrayMid360DomeColor;
-        case ESunrayPaletteSection::Mid360ProtectArc:
-            return SunrayMid360ProtectArcColor;
-        case ESunrayPaletteSection::CarbonFrame:
-        default:
-            return BodyColor;
-        }
-    };
-    auto AppendColoredTriangle = [&](const FVector& A, const FVector& B, const FVector& C, const FVector& Normal)
-    {
-        const int32 SectionIndex = bUseReferencePalette
-            ? static_cast<int32>(ClassifySunrayBodyTriangle(A, B, C))
-            : 0;
-        AppendTriangle(
-            Sections[SectionIndex].Vertices,
-            Sections[SectionIndex].Triangles,
-            Sections[SectionIndex].Normals,
-            Sections[SectionIndex].UVs,
-            Sections[SectionIndex].VertexColors,
-            Sections[SectionIndex].Tangents,
-            A,
-            B,
-            C,
-            Normal,
-            ColorForSection(SectionIndex));
-    };
-
-    const int32 TriangleLimit = MaxTriangles > 0 ? MaxTriangles : TNumericLimits<int32>::Max();
-    bool bLoaded = false;
-    bool bBinaryStl = false;
-    int32 SourceTriangleCount = 0;
-    int32 LoadedTriangleCount = 0;
-    FVector RawMinBounds(TNumericLimits<float>::Max(), TNumericLimits<float>::Max(), TNumericLimits<float>::Max());
-    FVector RawMaxBounds(TNumericLimits<float>::Lowest(), TNumericLimits<float>::Lowest(), TNumericLimits<float>::Lowest());
-    FVector ScaledMinBounds(TNumericLimits<float>::Max(), TNumericLimits<float>::Max(), TNumericLimits<float>::Max());
-    FVector ScaledMaxBounds(TNumericLimits<float>::Lowest(), TNumericLimits<float>::Lowest(), TNumericLimits<float>::Lowest());
-    uint32 BinaryTriangleCount = 0;
-    if (ReadUInt32LE(Bytes, 80, BinaryTriangleCount)
-        && Bytes.Num() == 84 + static_cast<int64>(BinaryTriangleCount) * 50)
-    {
-        bBinaryStl = true;
-        SourceTriangleCount = BinaryTriangleCount > static_cast<uint32>(TNumericLimits<int32>::Max())
-            ? TNumericLimits<int32>::Max()
-            : static_cast<int32>(BinaryTriangleCount);
-        if (MaxTriangles > 0 && BinaryTriangleCount > static_cast<uint32>(TriangleLimit))
-        {
-            UE_LOG(
-                LogTemp,
-                Error,
-                TEXT("MoSim Sunray STL triangle limit would destructively downsample mesh; refusing load path=%s source_triangles=%u limit=%d"),
-                *FullPath,
-                BinaryTriangleCount,
-                TriangleLimit);
-            Mesh->ClearAllMeshSections();
-            return false;
-        }
-        const int32 ReserveCount = SourceTriangleCount;
-        Sections[0].Vertices.Reserve(ReserveCount * 3);
-        Sections[0].Triangles.Reserve(ReserveCount * 3);
-        for (uint32 TriangleIndex = 0; TriangleIndex < BinaryTriangleCount; ++TriangleIndex)
-        {
-            const int32 Offset = 84 + static_cast<int32>(TriangleIndex) * 50;
-            float Values[12] = {};
-            bool bOk = true;
-            for (int32 Index = 0; Index < 12; ++Index)
-            {
-                bOk &= ReadFloatLE(Bytes, Offset + Index * 4, Values[Index]);
-            }
-            if (!bOk)
-            {
-                continue;
-            }
-            const FVector RawA(Values[3], Values[4], Values[5]);
-            const FVector RawB(Values[6], Values[7], Values[8]);
-            const FVector RawC(Values[9], Values[10], Values[11]);
-            const FVector ScaledA = RawA * Scale;
-            const FVector ScaledB = RawB * Scale;
-            const FVector ScaledC = RawC * Scale;
-            ExpandBounds(RawMinBounds, RawMaxBounds, RawA);
-            ExpandBounds(RawMinBounds, RawMaxBounds, RawB);
-            ExpandBounds(RawMinBounds, RawMaxBounds, RawC);
-            ExpandBounds(ScaledMinBounds, ScaledMaxBounds, ScaledA);
-            ExpandBounds(ScaledMinBounds, ScaledMaxBounds, ScaledB);
-            ExpandBounds(ScaledMinBounds, ScaledMaxBounds, ScaledC);
-            AppendColoredTriangle(
-                ScaledA,
-                ScaledB,
-                ScaledC,
-                FVector(Values[0], Values[1], Values[2]));
-        }
-    }
-    else
-    {
-        FString Text;
-        FFileHelper::BufferToString(Text, Bytes.GetData(), Bytes.Num());
-        TArray<FString> Lines;
-        Text.ParseIntoArrayLines(Lines, false);
-        TArray<FVector> Pending;
-        Pending.Reserve(3);
-        FVector CurrentNormal = FVector::UpVector;
-        for (const FString& Line : Lines)
-        {
-            if (SourceTriangleCount >= TriangleLimit)
-            {
-                break;
-            }
-            FString Trimmed = Line;
-            Trimmed.TrimStartAndEndInline();
-            TArray<FString> Parts;
-            Trimmed.ParseIntoArrayWS(Parts);
-            if (Parts.Num() == 5 && Parts[0].Equals(TEXT("facet"), ESearchCase::IgnoreCase))
-            {
-                CurrentNormal = FVector(FCString::Atof(*Parts[2]), FCString::Atof(*Parts[3]), FCString::Atof(*Parts[4]));
-            }
-            else if (Parts.Num() == 4 && Parts[0].Equals(TEXT("vertex"), ESearchCase::IgnoreCase))
-            {
-                const FVector RawVertex(FCString::Atof(*Parts[1]), FCString::Atof(*Parts[2]), FCString::Atof(*Parts[3]));
-                const FVector ScaledVertex = RawVertex * Scale;
-                ExpandBounds(RawMinBounds, RawMaxBounds, RawVertex);
-                ExpandBounds(ScaledMinBounds, ScaledMaxBounds, ScaledVertex);
-                Pending.Add(ScaledVertex);
-                if (Pending.Num() == 3)
-                {
-                    AppendColoredTriangle(
-                        Pending[0],
-                        Pending[1],
-                        Pending[2],
-                        CurrentNormal);
-                    Pending.Reset();
-                    ++SourceTriangleCount;
-                }
-            }
-        }
-    }
-
-    int32 TotalLoadedVertices = 0;
-    for (const FMeshSectionBuild& Section : Sections)
-    {
-        TotalLoadedVertices += Section.Vertices.Num();
-    }
-    bLoaded = TotalLoadedVertices > 0;
-
-    if (!bLoaded)
-    {
-        Mesh->ClearAllMeshSections();
-        return false;
-    }
-
-    Mesh->ClearAllMeshSections();
-    for (int32 SectionIndex = 0; SectionIndex < SunraySectionCount; ++SectionIndex)
-    {
-        FMeshSectionBuild& Section = Sections[SectionIndex];
-        if (Section.Vertices.Num() == 0)
-        {
-            continue;
-        }
-        Mesh->CreateMeshSection_LinearColor(
-            SectionIndex,
-            Section.Vertices,
-            Section.Triangles,
-            Section.Normals,
-            Section.UVs,
-            Section.VertexColors,
-            Section.Tangents,
-            false);
-    }
-    Mesh->SetVisibility(true);
-    LoadedTriangleCount = TotalLoadedVertices / 3;
-    const int64 FileSizeBytes = FPlatformFileManager::Get().GetPlatformFile().FileSize(*FullPath);
-    UE_LOG(
-        LogTemp,
-        Display,
-        TEXT("MoSim Sunray STL loaded: path=%s file_size=%lld kind=%s source_triangles=%d loaded_triangles=%d scale=%.4f dae_material_palette=%s section_triangles=[carbon=%d,guard=%d,mid360_base=%d,mid360_dome=%d,mid360_protect_arc=%d] raw_min=%s raw_max=%s raw_extent=%s scaled_min=%s scaled_max=%s scaled_extent=%s"),
-        *FullPath,
-        FileSizeBytes,
-        bBinaryStl ? TEXT("binary") : TEXT("ascii"),
-        SourceTriangleCount,
-        LoadedTriangleCount,
-        Scale,
-        bUseReferencePalette ? TEXT("true") : TEXT("false"),
-        Sections[0].Vertices.Num() / 3,
-        Sections[1].Vertices.Num() / 3,
-        Sections[2].Vertices.Num() / 3,
-        Sections[3].Vertices.Num() / 3,
-        Sections[4].Vertices.Num() / 3,
-        *VectorToDiagnosticString(RawMinBounds),
-        *VectorToDiagnosticString(RawMaxBounds),
-        *VectorToDiagnosticString(RawMaxBounds - RawMinBounds),
-        *VectorToDiagnosticString(ScaledMinBounds),
-        *VectorToDiagnosticString(ScaledMaxBounds),
-        *VectorToDiagnosticString(ScaledMaxBounds - ScaledMinBounds));
-    return true;
-}
-
-bool AQuadrotorMworksPlaybackActor::LoadSunrayVisualMeshes()
-{
-    ApplySunrayReferenceVisualLayout();
-    const bool bBodyLoaded = LoadStlIntoMesh(
-        SunrayBodyMesh,
-        SunrayBodyStlPath,
-        SunrayVisualScale,
-        SunrayMaxBodyTriangles,
-        BodyColor,
-        bUseSunrayDaeMaterialPalette);
-
-    UProceduralMeshComponent* Props[4] = {
-        SunrayPropellerMesh1,
-        SunrayPropellerMesh2,
-        SunrayPropellerMesh3,
-        SunrayPropellerMesh4,
-    };
-    bool bPropsLoaded = true;
-    for (UProceduralMeshComponent* Prop : Props)
-    {
-        bPropsLoaded &= LoadStlIntoMesh(Prop, SunrayPropellerStlPath, SunrayPropellerVisualScale, 0, PropellerColor, false);
+        BodyMesh->SetStaticMesh(DaeDerivedMesh);
+        BodyMesh->SetVisibility(true);
+        BodyMesh->SetHiddenInGame(false);
     }
     if (bLogSunrayVisualDiagnostics)
     {
-        LogVisualComponentDiagnostics(TEXT("SunrayBodyMesh"), SunrayBodyMesh);
-        LogVisualComponentDiagnostics(TEXT("SunrayPropeller1"), SunrayPropellerMesh1);
-        LogVisualComponentDiagnostics(TEXT("SunrayPropeller2"), SunrayPropellerMesh2);
-        LogVisualComponentDiagnostics(TEXT("SunrayPropeller3"), SunrayPropellerMesh3);
-        LogVisualComponentDiagnostics(TEXT("SunrayPropeller4"), SunrayPropellerMesh4);
-        LogVisualComponentDiagnostics(TEXT("PrimitiveBodyMesh"), BodyMesh);
-        LogVisualComponentDiagnostics(TEXT("PrimitivePropeller1"), PropellerMesh1);
+        LogVisualComponentDiagnostics(TEXT("SunrayDaeDerivedVehicleMesh"), BodyMesh);
     }
-    return bBodyLoaded && bPropsLoaded;
+    return true;
 }
 
-void AQuadrotorMworksPlaybackActor::ApplySunrayReferenceVisualLayout() const
+void AQuadrotorMworksPlaybackActor::ApplySunrayDaeDerivedVisualLayout() const
 {
-    if (SunrayBodyMesh)
-    {
-        SunrayBodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 5.25f));
-        SunrayBodyMesh->SetRelativeRotation(FRotator(0.0f, MworksSunrayVisualYawOffsetDegrees, 0.0f));
-    }
-
-    UProceduralMeshComponent* SunrayProps[4] = {
-        SunrayPropellerMesh1,
-        SunrayPropellerMesh2,
-        SunrayPropellerMesh3,
-        SunrayPropellerMesh4,
-    };
-    const FVector RotorPositionsCm[4] = {
-        FVector(6.5f, -6.5f, -2.5f),
-        FVector(6.5f, 6.5f, -2.5f),
-        FVector(-6.5f, 6.5f, -2.5f),
-        FVector(-6.5f, -6.5f, -2.5f),
-    };
-    const TCHAR* RotorLabels[4] = {
-        TEXT("mworks_fixed1"),
-        TEXT("mworks_fixed2"),
-        TEXT("mworks_fixed3"),
-        TEXT("mworks_fixed4"),
-    };
-    for (int32 Index = 0; Index < 4; ++Index)
-    {
-        if (SunrayProps[Index])
-        {
-            SunrayProps[Index]->SetRelativeLocation(RotorPositionsCm[Index]);
-            SunrayProps[Index]->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
-        }
-    }
-    ApplySunrayDomeVisualLayout();
-    UE_LOG(
-        LogTemp,
-        Display,
-        TEXT("MoSim Sunray reference visual layout applied: source=MWORKSVisualFrame body_yaw_offset_deg=%.1f rotor0_label=%s rotor0_mworks=%s rotor0_ue=%s rotor1_label=%s rotor1_mworks=%s rotor1_ue=%s rotor2_label=%s rotor2_mworks=%s rotor2_ue=%s rotor3_label=%s rotor3_mworks=%s rotor3_ue=%s propeller_scale=%.4f"),
-        MworksSunrayVisualYawOffsetDegrees,
-        RotorLabels[0],
-        *VectorToDiagnosticString(RotorPositionsCm[0]),
-        *VectorToDiagnosticString(RotorPositionsCm[0]),
-        RotorLabels[1],
-        *VectorToDiagnosticString(RotorPositionsCm[1]),
-        *VectorToDiagnosticString(RotorPositionsCm[1]),
-        RotorLabels[2],
-        *VectorToDiagnosticString(RotorPositionsCm[2]),
-        *VectorToDiagnosticString(RotorPositionsCm[2]),
-        RotorLabels[3],
-        *VectorToDiagnosticString(RotorPositionsCm[3]),
-        *VectorToDiagnosticString(RotorPositionsCm[3]),
-        SunrayPropellerVisualScale);
-}
-
-void AQuadrotorMworksPlaybackActor::ApplySunrayDomeVisualLayout() const
-{
-    if (!SunrayMid360DomeMesh)
+    if (!BodyMesh)
     {
         return;
     }
-
-    // The runtime STL has no material groups. Keep the accepted blue optical cue
-    // as a small separate cap so the MID-360 protective arcs stay dark.
-    SunrayMid360DomeMesh->SetRelativeLocation(FVector(0.0f, 3.7f, 9.0f));
-    SunrayMid360DomeMesh->SetRelativeRotation(FRotator(0.0f, MworksSunrayVisualYawOffsetDegrees, 0.0f));
-    SunrayMid360DomeMesh->SetRelativeScale3D(FVector(0.036f, 0.036f, 0.018f));
-    SunrayMid360DomeMesh->SetVisibility(true);
-    SunrayMid360DomeMesh->SetHiddenInGame(false);
-}
-
-void AQuadrotorMworksPlaybackActor::SetPrimitiveUavFallbackVisible(bool bVisible) const
-{
-    UStaticMeshComponent* Components[5] = {BodyMesh, PropellerMesh1, PropellerMesh2, PropellerMesh3, PropellerMesh4};
-    for (UStaticMeshComponent* Component : Components)
-    {
-        if (Component)
-        {
-            Component->SetVisibility(bVisible);
-            Component->SetHiddenInGame(!bVisible);
-        }
-    }
-    UE_LOG(
-        LogTemp,
-        Display,
-        TEXT("MoSim Sunray primitive fallback visibility=%s allow_fallback=%s"),
-        bVisible ? TEXT("true") : TEXT("false"),
-        bAllowPrimitiveUavFallback ? TEXT("true") : TEXT("false"));
+    BodyMesh->SetRelativeLocation(SunrayDaeDerivedVisualLocation);
+    BodyMesh->SetRelativeRotation(SunrayDaeDerivedVisualRotation);
+    BodyMesh->SetRelativeScale3D(SunrayDaeDerivedVisualScale);
 }
 
 void AQuadrotorMworksPlaybackActor::LogVisualComponentDiagnostics(const TCHAR* Label, const UMeshComponent* Component) const
@@ -742,9 +263,7 @@ void AQuadrotorMworksPlaybackActor::LogFirstAppliedFrameDiagnosticsIfNeeded()
         *Frame.CoordinatePolicy);
     if (bLogSunrayVisualDiagnostics)
     {
-        LogVisualComponentDiagnostics(TEXT("SunrayBodyMeshAfterFirstFrame"), SunrayBodyMesh);
-        LogVisualComponentDiagnostics(TEXT("SunrayPropeller1AfterFirstFrame"), SunrayPropellerMesh1);
-        LogVisualComponentDiagnostics(TEXT("PrimitiveBodyAfterFirstFrame"), BodyMesh);
+        LogVisualComponentDiagnostics(TEXT("SunrayDaeDerivedVehicleAfterFirstFrame"), BodyMesh);
         LogVisualComponentDiagnostics(TEXT("ReferenceMarkerAfterFirstFrame"), ReferenceMarker);
         LogVisualComponentDiagnostics(TEXT("RadarDirectionMarkerAfterFirstFrame"), RadarDirectionMarker);
     }
@@ -757,41 +276,9 @@ void AQuadrotorMworksPlaybackActor::Tick(float DeltaSeconds)
     {
         Playback->ApplyFrame(Receiver->GetLatestFrame(), DeltaSeconds);
     }
-    ApplyPropellerVisuals();
     UpdateMapSelection();
     UpdateVisualHelpers();
     LogFirstAppliedFrameDiagnosticsIfNeeded();
-}
-
-void AQuadrotorMworksPlaybackActor::ApplyPropellerVisuals() const
-{
-    if (!Playback || Playback->PropellerAnglesDegrees.Num() < 4)
-    {
-        return;
-    }
-
-    UStaticMeshComponent* Props[4] = {PropellerMesh1, PropellerMesh2, PropellerMesh3, PropellerMesh4};
-    for (int32 Index = 0; Index < 4; ++Index)
-    {
-        if (Props[Index])
-        {
-            Props[Index]->SetRelativeRotation(FRotator(0.0f, Playback->PropellerAnglesDegrees[Index], 0.0f));
-        }
-    }
-
-    UProceduralMeshComponent* SunrayProps[4] = {
-        SunrayPropellerMesh1,
-        SunrayPropellerMesh2,
-        SunrayPropellerMesh3,
-        SunrayPropellerMesh4,
-    };
-    for (int32 Index = 0; Index < 4; ++Index)
-    {
-        if (SunrayProps[Index])
-        {
-            SunrayProps[Index]->SetRelativeRotation(FRotator(0.0f, Playback->PropellerAnglesDegrees[Index], 0.0f));
-        }
-    }
 }
 
 void AQuadrotorMworksPlaybackActor::UpdateMapSelection() const

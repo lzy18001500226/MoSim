@@ -140,3 +140,56 @@ OSError: [WinError 193] %1 is not a valid Win32 application
 Local gateway health still reported `ok=true` for session/socket/context state,
 so the blocker is the Windows-side adapter launch path for the cc-connect
 script, not the current dynamics model work.
+
+## 2026-06-06 PMO Recheck
+
+Scope: answer the current PMO question and prepare the next implementation
+slice without changing the official baseline.
+
+Confirmed current parameter policy:
+
+- DAE/Blender-reviewed rotor centers are already present in
+  `QuadrotorModel.Mechanics.QuadChassis` as `Dronefixed1..4.r`.
+- Mass, inertia, lift coefficient, yaw moment ratio, motor lag constants, drag,
+  damping, and controller gains remain Sunray/Gazebo/SDF migration seeds or
+  open modeling work; they are not identified Sunray150 truth.
+- The user-approved working assumption is to keep those YunZong/Sunray/Gazebo
+  seed values for now while model structure and wrapper integration are checked.
+
+Current `QuadChassis` implementation detail:
+
+```text
+speedSensor.w -> product w*w -> gain lift_cofficient -> WorldForce.force[3]
+WorldForce.frame_b -> Dronefixed1..4.frame_b
+Dronefixed1..4.frame_a -> body.frame_b
+```
+
+This means rotor-center arm moments are represented by the multibody force
+application at the accepted rotor centers. The base plant still does not expose
+a complete Gazebo/RflySim-style actuator chain:
+
+- no command-to-speed mapping block was found at the chassis input boundary;
+- no first-order motor lag was found in the base plant;
+- no explicit yaw reaction torque was found;
+- no explicit rotor gyroscopic moment was found;
+- no body drag or angular damping module was found.
+
+Rechecked evidence:
+
+```text
+source=MWORKS_MCP
+session_manager(action=probe): ok=true, dedicated_sysplorer_port=49152
+model_manager(load_file Models/QuadrotorExperiments/package.mo): ok=true, cached=true
+check_model QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke: ok=true
+check_model QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke: ok=true
+```
+
+Next implementation slice:
+
+```text
+Create a project-owned wrapper/chassis that connects the checked
+Sunray150RflyStyleRotorDynamics motor-lag/yaw-torque core to the existing
+QuadChassis or a derived chassis interface. Do not overwrite the official
+QuadrotorModel.Mechanics.QuadChassis baseline. First acceptance remains
+hover/yaw/step response with source labels, then controller interface checks.
+```

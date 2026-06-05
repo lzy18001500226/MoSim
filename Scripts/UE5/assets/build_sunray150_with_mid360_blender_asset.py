@@ -349,10 +349,10 @@ def build_asset() -> dict:
 
     prop_verts, prop_faces = read_stl(TRI_BLADE_PROP_STL)
     rotor_centers_m = [
-        ("front_right", (0.065, -0.065, -0.025)),
-        ("back_left", (-0.065, 0.065, -0.025)),
-        ("front_left", (0.065, 0.065, -0.025)),
-        ("back_right", (-0.065, -0.065, -0.025)),
+        ("front_right", (0.053745, -0.05374, -0.014052)),
+        ("back_left", (-0.053761, 0.05376, -0.014052)),
+        ("front_left", (0.053746, 0.053759, -0.014052)),
+        ("back_right", (-0.053761, -0.053739, -0.014052)),
     ]
     rotor_centers = [
         (name, tuple(coord * SDF_METER_TO_DAE_UNIT for coord in center))

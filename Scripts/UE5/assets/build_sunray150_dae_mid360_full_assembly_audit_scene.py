@@ -291,13 +291,14 @@ def make_battery_material() -> bpy.types.Material:
 
 
 def make_propeller_material() -> bpy.types.Material:
-    mat = make_plastic_material("Sunray150_Texture_Dark_Smoked_Composite_Propeller", (0.008, 0.009, 0.008, 1.0), roughness=0.90, specular=0.025)
+    mat = make_plastic_material("Sunray150_Texture_Smoked_Translucent_Plastic_Propeller", (0.012, 0.014, 0.013, 1.0), roughness=0.62, specular=0.16)
     add_image_texture(mat, "sunray150_smoked_propeller_base.png", target="Base Color")
     add_image_texture(mat, "sunray150_smoked_propeller_roughness.png", target="Roughness", non_color=True)
     add_image_texture(mat, "sunray150_smoked_propeller_bump.png", target="Bump", non_color=True, strength=0.014)
     bsdf = next((node for node in mat.node_tree.nodes if node.type == "BSDF_PRINCIPLED"), None)
     if bsdf:
-        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 0.0)
+        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 0.10)
+        set_principled_input(bsdf, ("Coat Roughness", "Clearcoat Roughness"), 0.30)
     return mat
 
 
@@ -310,18 +311,33 @@ def make_camera_body_material() -> bpy.types.Material:
 
 
 def make_mid360_window_material() -> bpy.types.Material:
-    mat = make_material("MID360_Texture_Deep_Blue_Teal_Glossy_Optical_Window", (0.001, 0.018, 0.070, 1.0), roughness=0.115, metallic=0.0, alpha=1.0, specular=0.46)
+    mat = make_material("MID360_Texture_Deep_Blue_Teal_Glossy_Optical_Window", (0.001, 0.020, 0.080, 1.0), roughness=0.155, metallic=0.0, alpha=1.0, specular=0.34)
     add_image_texture(mat, "mid360_blue_optical_window_base.png", target="Base Color")
     add_image_texture(mat, "mid360_blue_optical_window_roughness.png", target="Roughness", non_color=True)
     add_image_texture(mat, "mid360_blue_optical_window_bump.png", target="Bump", non_color=True, strength=0.006)
     bsdf = next((node for node in mat.node_tree.nodes if node.type == "BSDF_PRINCIPLED"), None)
     if bsdf:
         set_principled_input(bsdf, ("Alpha",), 1.0)
-        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 0.42)
-        set_principled_input(bsdf, ("Coat Roughness", "Clearcoat Roughness"), 0.09)
+        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 0.28)
+        set_principled_input(bsdf, ("Coat Roughness", "Clearcoat Roughness"), 0.16)
         set_principled_input(bsdf, ("Transmission Weight", "Transmission"), 0.0)
     mat.blend_method = "OPAQUE"
     mat.use_screen_refraction = False
+    return mat
+
+
+def make_mid360_housing_material() -> bpy.types.Material:
+    mat = make_scratched_metal_material(
+        "MID360_Texture_Satin_Silver_Grey_Coated_Metal_Housing",
+        (0.42, 0.425, 0.405, 1.0),
+        roughness=0.36,
+        metallic=0.24,
+    )
+    bsdf = next((node for node in mat.node_tree.nodes if node.type == "BSDF_PRINCIPLED"), None)
+    if bsdf:
+        set_principled_input(bsdf, ("Specular IOR Level", "Specular"), 0.42)
+        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 0.22)
+        set_principled_input(bsdf, ("Coat Roughness", "Clearcoat Roughness"), 0.28)
     return mat
 
 
@@ -361,8 +377,10 @@ def realistic_materials() -> dict[str, bpy.types.Material]:
         "camera_lens": make_material("Sunray150_Texture_Camera_Lens_Glass", (0.005, 0.009, 0.014, 0.72), roughness=0.08, metallic=0.0, alpha=0.72, specular=0.45),
         "connector_shell": make_scratched_metal_material("Sunray150_Texture_USB_HDMI_Nickel_Shell", (0.32, 0.32, 0.30, 1.0), roughness=0.44, metallic=0.72),
         "connector_core": make_plastic_material("Sunray150_Texture_Connector_Black_Core", (0.018, 0.018, 0.017, 1.0), roughness=0.60),
+        "cooling_fan": make_plastic_material("Sunray150_Texture_N150_Black_Cooling_Fan", (0.012, 0.012, 0.011, 1.0), roughness=0.66, specular=0.14),
+        "m2_storage": make_material("Sunray150_Texture_N150_M2_Storage_Module", (0.075, 0.082, 0.078, 1.0), roughness=0.42, metallic=0.08, specular=0.18),
         "tfmini_body": make_plastic_material("Sunray150_Texture_TF_Mini_Black_Sensor", (0.018, 0.018, 0.017, 1.0), roughness=0.52),
-        "mid360_body": make_scratched_metal_material("MID360_Texture_Satin_Silver_Grey_Aluminum_Housing", (0.30, 0.305, 0.292, 1.0), roughness=0.66, metallic=0.04),
+        "mid360_body": make_mid360_housing_material(),
         "mid360_base": make_plastic_material("MID360_Texture_Black_Base", (0.020, 0.021, 0.021, 1.0), roughness=0.72, specular=0.12),
         "mid360_window": make_mid360_window_material(),
         "mid360_connector": make_plastic_material("MID360_Texture_Black_M12_Connector", (0.020, 0.020, 0.019, 1.0), roughness=0.70, specular=0.10),
@@ -462,14 +480,29 @@ def add_label_plate(name: str, text: str, loc: Vector, size: float, mat: bpy.typ
     return obj
 
 
+def add_flat_box(name: str, loc: Vector, scale: tuple[float, float, float], mat: bpy.types.Material) -> bpy.types.Object:
+    bpy.ops.mesh.primitive_cube_add(size=1.0, location=loc)
+    obj = bpy.context.object
+    obj.name = prop.clean_name(name, 96)
+    obj.dimensions = scale
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    assign_single_material(obj, mat)
+    return obj
+
+
 def add_visual_detail_overlays() -> dict:
     """Add non-physical review decals that document intended texture details."""
     rmats = realistic_materials()
     white = make_material("Sunray150_Decal_White_Ink", (0.92, 0.92, 0.88, 1.0), roughness=0.42)
     black = make_material("Sunray150_Decal_Black_Ink", (0.004, 0.004, 0.004, 1.0), roughness=0.50)
+    mid360_top_black = make_material("MID360_Decal_Top_Black_Cap", (0.002, 0.002, 0.002, 1.0), roughness=0.34, metallic=0.0, specular=0.28)
     motor_gold = make_material("Sunray150_Decal_Motor_Gold_Ink", (0.95, 0.58, 0.12, 1.0), roughness=0.30)
     livox = make_material("Sunray150_Decal_Livox_Black", (0.002, 0.002, 0.002, 1.0), roughness=0.45)
     lens = rmats["camera_lens"]
+    pcb_mark = make_material("Sunray150_Decal_PCB_Copper_Gold_Pads", (0.95, 0.66, 0.18, 1.0), roughness=0.34, metallic=0.70)
+    ic_black = make_material("Sunray150_Decal_IC_Matte_Black_Packages", (0.004, 0.004, 0.003, 1.0), roughness=0.78, specular=0.08)
+    storage_label = make_material("Sunray150_Decal_M2_SSD_Label_Satin_White", (0.80, 0.82, 0.78, 1.0), roughness=0.48, metallic=0.0, specular=0.10)
+    port_core = rmats["connector_core"]
     added = []
 
     added.append(add_label_plate("decal_mid360_livox_front", "LIVOX  MID-360", Vector((0.0, -0.0215, 0.0715)), 0.0036, livox, rotation=(math.radians(75), 0.0, 0.0)).name)
@@ -507,6 +540,27 @@ def add_visual_detail_overlays() -> dict:
         add_cylinder_between(name, a, b, 0.00055, mat)
         added.append(name)
 
+    # Shell-removed N150 review detail: official Sunray N150 use removes the
+    # external case, so the visual gate needs exposed board, storage, fan,
+    # and connector cues instead of a closed mini-PC shell.
+    n150_detail_boxes = [
+        ("decal_n150_ic_package_1", Vector((-0.020, 0.036, 0.01658)), (0.0070, 0.0050, 0.00028), ic_black),
+        ("decal_n150_ic_package_2", Vector((0.006, 0.062, 0.01658)), (0.0080, 0.0055, 0.00028), ic_black),
+        ("decal_n150_ic_package_3", Vector((0.018, 0.040, 0.01658)), (0.0065, 0.0045, 0.00028), ic_black),
+        ("decal_n150_gold_pad_bank_a", Vector((-0.009, 0.030, 0.01664)), (0.0140, 0.0014, 0.00018), rmats["aluminum"]),
+        ("decal_n150_gold_pad_bank_b", Vector((0.016, 0.056, 0.01664)), (0.0120, 0.0014, 0.00018), rmats["aluminum"]),
+        ("decal_n150_m2_label", Vector((0.0033, 0.0472, 0.01005)), (0.0170, 0.0300, 0.00016), storage_label),
+        ("decal_n150_usb9_black_core_a", Vector((0.0264, 0.0687, 0.0122)), (0.0100, 0.0010, 0.0040), port_core),
+        ("decal_n150_usb9_black_core_b", Vector((-0.0264, 0.0506, 0.0192)), (0.0100, 0.0010, 0.0040), port_core),
+        ("decal_n150_usb9_black_core_c", Vector((-0.0264, 0.0295, 0.0192)), (0.0100, 0.0010, 0.0040), port_core),
+        ("decal_n150_hdmi_black_core", Vector((0.0290, 0.0676, 0.0234)), (0.0072, 0.0012, 0.0038), port_core),
+        ("decal_n150_rj45_black_core", Vector((0.0261, 0.0454, 0.0134)), (0.0105, 0.0013, 0.0068), port_core),
+    ]
+    for name, loc, scale, mat in n150_detail_boxes:
+        obj = add_flat_box(name, loc, scale, mat)
+        added.append(obj.name)
+    added.append(add_label_plate("decal_n150_m2_label_text", "M.2 2242", Vector((0.0033, 0.0472, 0.01025)), 0.0022, black, rotation=(0.0, 0.0, 0.0)).name)
+
     return {
         "added_overlay_count": len(added),
         "added_overlays": added,
@@ -516,6 +570,10 @@ def add_visual_detail_overlays() -> dict:
 
 def aircraft_material_key(name: str) -> str:
     upper = name.upper()
+    if "N150_ALLCATPART" in upper and "TURBO_FAN" in upper:
+        return "cooling_fan"
+    if "N150_ALLCATPART" in upper and "TN_MTS400" in upper:
+        return "m2_storage"
     if "AL_COLUMNS" in upper or "AL_COLUMS" in upper or "SPACER" in upper or "STAND" in upper or "COLUMN" in upper:
         return "aluminum"
     if "FRONT_CAMERA_CONNECTOR" in upper:
@@ -551,7 +609,7 @@ def aircraft_material_key(name: str) -> str:
             return "wire_blue"
         if "YELLOW" in upper:
             return "wire_yellow"
-        if "USB" in upper or "HDMI" in upper or "CONNECTOR" in upper or "MANIFOLD_SOLID_BREP" in upper:
+        if "MALE FOR SOLDERING" in upper or "CONNECTOR" in upper:
             return "connector_shell"
         return "rubber"
     if "PJ311" in upper or "NGFF" in upper or "C-3-1734795" in upper:

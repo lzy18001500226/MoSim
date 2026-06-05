@@ -44,9 +44,9 @@ COMPONENT_PLAN = [
     {
         "component": "propellers",
         "source_names": ["sunray_cw.stl fitted to DAE M2 screw pairs"],
-        "material": "dark smoked composite propeller",
-        "texture_maps": ["sunray150_smoked_translucent_guard_base.png", "sunray150_smoked_translucent_guard_roughness.png"],
-        "evidence": "User accepted three-blade geometry from local Sunray source; material remains dark composite until physical photo audit refines it.",
+        "material": "smoked translucent plastic propeller",
+        "texture_maps": ["sunray150_smoked_propeller_base.png", "sunray150_smoked_propeller_roughness.png", "sunray150_smoked_propeller_bump.png"],
+        "evidence": "User accepted three-blade geometry from local Sunray source and corrected the material target to smoked/transparent plastic rather than opaque black composite.",
     },
     {
         "component": "motors and screws",
