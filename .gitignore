@@ -301,6 +301,12 @@ References/Agent/Gateway/daytona/libs/*
 !References/Agent/Gateway/daytona/libs/toolbox-api-client-python-async/**
 !References/Agent/Gateway/daytona/libs/toolbox-api-client-ruby/
 !References/Agent/Gateway/daytona/libs/toolbox-api-client-ruby/**
+!References/Agent/Gateway/daytona/libs/api-client/
+!References/Agent/Gateway/daytona/libs/api-client/**
+!References/Agent/Gateway/daytona/libs/api-client-go/
+!References/Agent/Gateway/daytona/libs/api-client-go/**
+!References/Agent/Gateway/daytona/libs/api-client-ruby/
+!References/Agent/Gateway/daytona/libs/api-client-ruby/**
 References/Agent/Gateway/daytona/libs/**/.env
 References/Agent/Gateway/daytona/libs/**/.env.*
 References/Agent/Gateway/daytona/libs/**/node_modules/
