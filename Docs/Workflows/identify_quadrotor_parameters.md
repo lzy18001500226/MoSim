@@ -845,3 +845,59 @@ Therefore the correct migration path is:
 6. Replace reference parameters only after PX4 ULog or bench identification
    produces a project-owned YAML with evidence.
 ```
+
+### 10.1 2026-06-05 Experimental Dynamics Upgrade Checkpoint
+
+This checkpoint implemented the first minimal structure upgrade without
+replacing the official baseline plant.
+
+Current audit:
+
+- `QuadrotorModel.Mechanics.QuadChassis` applies per-rotor `WorldForce` at
+  the DAE-reviewed rotor centers, so rotor-arm `r x F` is already represented
+  by the multibody force application.
+- Explicit yaw reaction torque was still not present in the base plant audit.
+- A clean RflySim-style command-to-speed first-order lag was not isolated at
+  the plant input boundary.
+- Gyroscopic moment, body drag, and angular damping remain follow-up modules.
+
+New project-owned experimental models:
+
+```text
+QuadrotorExperiments.Sunray150RflyStyleRotorDynamics
+QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke
+QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke
+```
+
+Implemented structure:
+
+```text
+motor command -> first-order lagged omega
+omega -> Ct * omega^2 thrust
+thrust -> Cm * thrust yaw reaction moment
+rotor center -> r x F arm moment
+```
+
+Parameter labels remain conservative:
+
+| Parameter family | Current label |
+|---|---|
+| rotor centers | `source=user-reviewed DAE screw-pair fit` |
+| mass, lift coefficient, yaw moment ratio, motor lag constants | `source=SDF_migration` |
+| identified flight/bench parameters | not available; do not label as `source=PX4_ULog_sysid` |
+
+Verification:
+
+```text
+source=MWORKS_MCP
+check_model QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke: ok
+check_model QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke: ok
+simulate hover 0.25 s: dynamics.hover_thrust_error = 1.7763568394002505e-15 N
+simulate yaw step 0.25 s: dynamics.total_moment_body[3] = 0.06153801695664962 N.m
+```
+
+Evidence file:
+
+```text
+Results/identification/sunray150/SUNRAY150_DYNAMICS_UPGRADE_20260605.md
+```
