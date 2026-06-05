@@ -87,6 +87,16 @@ Completed batches:
    - Reason: drain another reviewed Daytona library/API client slice while keeping dependency folders, generated build outputs, object folders, caches, and `.env` files ignored.
    - Evidence: 839 staged paths; largest staged file was 354,506 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; forbidden path filters passed; `git diff --cached --check` and follow-up `git diff --check HEAD~1..HEAD` both exited with `$LASTEXITCODE=0`.
 
+8. `a4000426964a61923db4ffad89a5c6d5ca46ed56`
+   - Message: `refs: add daytona api client slices`
+   - Scope:
+     - `.gitignore`
+     - `References/Agent/Gateway/daytona/libs/api-client`
+     - `References/Agent/Gateway/daytona/libs/api-client-go`
+     - `References/Agent/Gateway/daytona/libs/api-client-ruby`
+   - Reason: drain another reviewed Daytona API client slice while keeping dependency folders, generated build outputs, object folders, caches, and `.env` files ignored.
+   - Evidence: 649 staged paths; largest staged file was 401,277 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; forbidden path filters passed; `git diff --cached --check` and follow-up `git diff --check HEAD~1..HEAD` both exited with `$LASTEXITCODE=0`.
+
 Current known residuals:
 
 - Real index had unrelated staged files before DevOps write work:
