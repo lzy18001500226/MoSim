@@ -1,0 +1,8332 @@
+{
+  "dae_150": {
+    "unit_meter": 0.0254,
+    "unit_name": "centimeter",
+    "up_axis": "Y_UP",
+    "geometry_count": 701,
+    "node_geometry_count": 701,
+    "total_bbox_meters_after_node_unit": {
+      "min": [
+        -0.1057511728,
+        -0.036000004200000005,
+        -0.1089000108
+      ],
+      "max": [
+        0.1057511728,
+        0.1259299996,
+        0.1057511728
+      ],
+      "size": [
+        0.2115023456,
+        0.1619300038,
+        0.21465118360000002
+      ],
+      "center": [
+        0.0,
+        0.0449649977,
+        -0.0015744190000000005
+      ]
+    },
+    "geometry_names_first80": [
+      {
+        "id": "MAIN_STRUCTURE.1FBXASC092MAIN_STRUCTURE-lib",
+        "name": "MAIN_STRUCTURE.1FBXASC092MAIN_STRUCTUREMesh",
+        "bbox_dae_units": {
+          "min": [
+            -2.470472,
+            -3.425197,
+            0.0
+          ],
+          "max": [
+            2.470472,
+            3.740157,
+            0.11811
+          ],
+          "size": [
+            4.940944,
+            7.165354,
+            0.11811
+          ],
+          "center": [
+            0.0,
+            0.15748000000000006,
+            0.059055
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092ESC_SPEEDYBEE_4IN1_BL_35_BOARD.1FBXASC092MAIN_BOARD-lib",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092ESC_SPEEDYBEE_4IN1_BL_35_BOARD.1FBXASC092MAIN_BOARDMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.629921,
+            -0.669291,
+            -0.177165
+          ],
+          "max": [
+            0.629921,
+            0.720472,
+            -0.114173
+          ],
+          "size": [
+            1.259842,
+            1.3897629999999999,
+            0.06299199999999999
+          ],
+          "center": [
+            0.0,
+            0.025590500000000016,
+            -0.145669
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN1-lib",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN1Mesh",
+        "bbox_dae_units": {
+          "min": [
+            0.094488,
+            -0.494094,
+            -0.141732
+          ],
+          "max": [
+            0.102362,
+            -0.374016,
+            -0.019685
+          ],
+          "size": [
+            0.007873999999999992,
+            0.12007799999999996,
+            0.12204699999999999
+          ],
+          "center": [
+            0.098425,
+            -0.43405499999999997,
+            -0.0807085
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN2-lib",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN2Mesh",
+        "bbox_dae_units": {
+          "min": [
+            0.055118,
+            -0.494094,
+            -0.141732
+          ],
+          "max": [
+            0.062992,
+            -0.374016,
+            -0.019685
+          ],
+          "size": [
+            0.007874000000000006,
+            0.12007799999999996,
+            0.12204699999999999
+          ],
+          "center": [
+            0.059055,
+            -0.43405499999999997,
+            -0.0807085
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN3-lib",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN3Mesh",
+        "bbox_dae_units": {
+          "min": [
+            0.015748,
+            -0.494094,
+            -0.141732
+          ],
+          "max": [
+            0.023622,
+            -0.374016,
+            -0.019685
+          ],
+          "size": [
+            0.007873999999999999,
+            0.12007799999999996,
+            0.12204699999999999
+          ],
+          "center": [
+            0.019685,
+            -0.43405499999999997,
+            -0.0807085
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN4-lib",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN4Mesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.023622,
+            -0.494094,
+            -0.141732
+          ],
+          "max": [
+            -0.015748,
+            -0.374016,
+            -0.019685
+          ],
+          "size": [
+            0.007873999999999999,
+            0.12007799999999996,
+            0.12204699999999999
+          ],
+          "center": [
+            -0.019685,
+            -0.43405499999999997,
+            -0.0807085
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN5-lib",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN5Mesh",
+        "bbox_dae_units": {
+          "min": [
+            0.133858,
+            -0.494094,
+            -0.141732
+          ],
+          "max": [
+            0.141732,
+            -0.374016,
+            -0.019685
+          ],
+          "size": [
+            0.007873999999999992,
+            0.12007799999999996,
+            0.12204699999999999
+          ],
+          "center": [
+            0.137795,
+            -0.43405499999999997,
+            -0.0807085
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN6-lib",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN6Mesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.062992,
+            -0.494094,
+            -0.141732
+          ],
+          "max": [
+            -0.055118,
+            -0.374016,
+            -0.019685
+          ],
+          "size": [
+            0.007874000000000006,
+            0.12007799999999996,
+            0.12204699999999999
+          ],
+          "center": [
+            -0.059055,
+            -0.43405499999999997,
+            -0.0807085
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN7-lib",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN7Mesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.102362,
+            -0.494094,
+            -0.141732
+          ],
+          "max": [
+            -0.094488,
+            -0.374016,
+            -0.019685
+          ],
+          "size": [
+            0.007873999999999992,
+            0.12007799999999996,
+            0.12204699999999999
+          ],
+          "center": [
+            -0.098425,
+            -0.43405499999999997,
+            -0.0807085
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN8-lib",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN8Mesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.141732,
+            -0.494094,
+            -0.141732
+          ],
+          "max": [
+            -0.133858,
+            -0.374016,
+            -0.019685
+          ],
+          "size": [
+            0.007873999999999992,
+            0.12007799999999996,
+            0.12204699999999999
+          ],
+          "center": [
+            -0.137795,
+            -0.43405499999999997,
+            -0.0807085
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN9-lib",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN9Mesh",
+        "bbox_dae_units": {
+          "min": [
+            0.177165,
+            -0.423228,
+            -0.059055
+          ],
+          "max": [
+            0.185039,
+            -0.374016,
+            0.0
+          ],
+          "size": [
+            0.00787400000000002,
+            0.04921199999999998,
+            0.059055
+          ],
+          "center": [
+            0.18110199999999999,
+            -0.39862200000000003,
+            -0.0295275
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN10-lib",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN10Mesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.185039,
+            -0.423228,
+            -0.059055
+          ],
+          "max": [
+            -0.177165,
+            -0.374016,
+            0.0
+          ],
+          "size": [
+            0.00787400000000002,
+            0.04921199999999998,
+            0.059055
+          ],
+          "center": [
+            -0.18110199999999999,
+            -0.39862200000000003,
+            -0.0295275
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092BODY-lib",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092BODYMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.19685,
+            -0.543307,
+            -0.114173
+          ],
+          "max": [
+            0.19685,
+            -0.375984,
+            -0.0
+          ],
+          "size": [
+            0.3937,
+            0.167323,
+            0.114173
+          ],
+          "center": [
+            0.0,
+            -0.4596455,
+            -0.0570865
+          ]
+        }
+      },
+      {
+        "id": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.5FBXASC092MAIN_STRUCTURE-lib",
+        "name": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.5FBXASC092MAIN_STRUCTUREMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.482283,
+            -0.482283,
+            -0.255906
+          ],
+          "max": [
+            -0.305118,
+            -0.305118,
+            0.047244
+          ],
+          "size": [
+            0.17716500000000002,
+            0.17716500000000002,
+            0.30315000000000003
+          ],
+          "center": [
+            -0.3937005,
+            -0.3937005,
+            -0.10433100000000001
+          ]
+        }
+      },
+      {
+        "id": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.6FBXASC092MAIN_STRUCTURE-lib",
+        "name": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.6FBXASC092MAIN_STRUCTUREMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.482283,
+            0.305118,
+            -0.255906
+          ],
+          "max": [
+            -0.305118,
+            0.482283,
+            0.047244
+          ],
+          "size": [
+            0.17716500000000002,
+            0.17716500000000002,
+            0.30315000000000003
+          ],
+          "center": [
+            -0.3937005,
+            0.3937005,
+            -0.10433100000000001
+          ]
+        }
+      },
+      {
+        "id": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.7FBXASC092MAIN_STRUCTURE-lib",
+        "name": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.7FBXASC092MAIN_STRUCTUREMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.305118,
+            0.305118,
+            -0.255906
+          ],
+          "max": [
+            0.482283,
+            0.482283,
+            0.047244
+          ],
+          "size": [
+            0.17716500000000002,
+            0.17716500000000002,
+            0.30315000000000003
+          ],
+          "center": [
+            0.3937005,
+            0.3937005,
+            -0.10433100000000001
+          ]
+        }
+      },
+      {
+        "id": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.8FBXASC092MAIN_STRUCTURE-lib",
+        "name": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.8FBXASC092MAIN_STRUCTUREMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.305118,
+            -0.482283,
+            -0.255906
+          ],
+          "max": [
+            0.482283,
+            -0.305118,
+            0.047244
+          ],
+          "size": [
+            0.17716500000000002,
+            0.17716500000000002,
+            0.30315000000000003
+          ],
+          "center": [
+            0.3937005,
+            -0.3937005,
+            -0.10433100000000001
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2_10MM.1FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2_10MM.1FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.468504,
+            0.318898,
+            -0.275591
+          ],
+          "max": [
+            -0.318898,
+            0.468504,
+            0.11811
+          ],
+          "size": [
+            0.14960599999999996,
+            0.14960599999999996,
+            0.39370099999999997
+          ],
+          "center": [
+            -0.39370099999999997,
+            0.39370099999999997,
+            -0.07874049999999999
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2_10MM.2FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2_10MM.2FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.318898,
+            0.318898,
+            -0.275591
+          ],
+          "max": [
+            0.468504,
+            0.468504,
+            0.11811
+          ],
+          "size": [
+            0.14960599999999996,
+            0.14960599999999996,
+            0.39370099999999997
+          ],
+          "center": [
+            0.39370099999999997,
+            0.39370099999999997,
+            -0.07874049999999999
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2_10MM.3FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2_10MM.3FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.468504,
+            -0.468504,
+            -0.275591
+          ],
+          "max": [
+            -0.318898,
+            -0.318898,
+            0.11811
+          ],
+          "size": [
+            0.14960599999999996,
+            0.14960599999999996,
+            0.39370099999999997
+          ],
+          "center": [
+            -0.39370099999999997,
+            -0.39370099999999997,
+            -0.07874049999999999
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2_10MM.4FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2_10MM.4FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.318898,
+            -0.468504,
+            -0.275591
+          ],
+          "max": [
+            0.468504,
+            -0.318898,
+            0.11811
+          ],
+          "size": [
+            0.14960599999999996,
+            0.14960599999999996,
+            0.39370099999999997
+          ],
+          "center": [
+            0.39370099999999997,
+            -0.39370099999999997,
+            -0.07874049999999999
+          ]
+        }
+      },
+      {
+        "id": "HEX_NUT_M2_1.6MM.9FBXASC092HEX_NUT-lib",
+        "name": "HEX_NUT_M2_1.6MM.9FBXASC092HEX_NUTMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.472441,
+            0.302779,
+            -0.275591
+          ],
+          "max": [
+            -0.314961,
+            0.484622,
+            -0.212598
+          ],
+          "size": [
+            0.15748,
+            0.18184299999999998,
+            0.06299299999999997
+          ],
+          "center": [
+            -0.39370099999999997,
+            0.3937005,
+            -0.2440945
+          ]
+        }
+      },
+      {
+        "id": "HEX_NUT_M2_1.6MM.10FBXASC092HEX_NUT-lib",
+        "name": "HEX_NUT_M2_1.6MM.10FBXASC092HEX_NUTMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.472441,
+            -0.484622,
+            -0.275591
+          ],
+          "max": [
+            -0.314961,
+            -0.302779,
+            -0.212598
+          ],
+          "size": [
+            0.15748,
+            0.18184299999999998,
+            0.06299299999999997
+          ],
+          "center": [
+            -0.39370099999999997,
+            -0.3937005,
+            -0.2440945
+          ]
+        }
+      },
+      {
+        "id": "HEX_NUT_M2_1.6MM.11FBXASC092HEX_NUT-lib",
+        "name": "HEX_NUT_M2_1.6MM.11FBXASC092HEX_NUTMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.314961,
+            0.302779,
+            -0.275591
+          ],
+          "max": [
+            0.472441,
+            0.484622,
+            -0.212598
+          ],
+          "size": [
+            0.15748,
+            0.18184299999999998,
+            0.06299299999999997
+          ],
+          "center": [
+            0.39370099999999997,
+            0.3937005,
+            -0.2440945
+          ]
+        }
+      },
+      {
+        "id": "HEX_NUT_M2_1.6MM.12FBXASC092HEX_NUT-lib",
+        "name": "HEX_NUT_M2_1.6MM.12FBXASC092HEX_NUTMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.314961,
+            -0.484622,
+            -0.275591
+          ],
+          "max": [
+            0.472441,
+            -0.302779,
+            -0.212598
+          ],
+          "size": [
+            0.15748,
+            0.18184299999999998,
+            0.06299299999999997
+          ],
+          "center": [
+            0.39370099999999997,
+            -0.3937005,
+            -0.2440945
+          ]
+        }
+      },
+      {
+        "id": "SensorFBXASC032TFFBXASC032MiniFBXASC032PLUS.1FBXASC092Ressalto-extrusFBXASC063o5-lib",
+        "name": "SensorFBXASC032TFFBXASC032MiniFBXASC032PLUS.1FBXASC092Ressalto-extrusFBXASC063o5Mesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.688976,
+            -0.915354,
+            -1.322835
+          ],
+          "max": [
+            0.688976,
+            0.068898,
+            -0.496063
+          ],
+          "size": [
+            1.377952,
+            0.984252,
+            0.8267720000000001
+          ],
+          "center": [
+            0.0,
+            -0.423228,
+            -0.909449
+          ]
+        }
+      },
+      {
+        "id": "RANGING_LIDAR_CAMERA_BASE.1FBXASC092RANGING_LIDAR_CAMERA_BASE-lib",
+        "name": "RANGING_LIDAR_CAMERA_BASE.1FBXASC092RANGING_LIDAR_CAMERA_BASEMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.925197,
+            -0.912894,
+            -0.496063
+          ],
+          "max": [
+            0.925197,
+            1.32874,
+            -0.377953
+          ],
+          "size": [
+            1.850394,
+            2.241634,
+            0.11810999999999999
+          ],
+          "center": [
+            0.0,
+            0.20792300000000002,
+            -0.43700799999999995
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2_4MM.1FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2_4MM.1FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.625984,
+            -0.143701,
+            -0.586614
+          ],
+          "max": [
+            -0.476378,
+            0.005906,
+            -0.429134
+          ],
+          "size": [
+            0.14960599999999996,
+            0.149607,
+            0.15747999999999995
+          ],
+          "center": [
+            -0.551181,
+            -0.0688975,
+            -0.5078739999999999
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2_6MM.1FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2_6MM.1FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.476378,
+            -0.596457,
+            -0.614173
+          ],
+          "max": [
+            0.625984,
+            -0.44685,
+            -0.377953
+          ],
+          "size": [
+            0.14960599999999996,
+            0.149607,
+            0.23621999999999999
+          ],
+          "center": [
+            0.551181,
+            -0.5216535,
+            -0.496063
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.1FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.1FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.573819,
+            0.977362,
+            -0.11811
+          ],
+          "max": [
+            0.764764,
+            1.168307,
+            0.11811
+          ],
+          "size": [
+            0.19094500000000003,
+            0.19094500000000003,
+            0.23622
+          ],
+          "center": [
+            0.6692914999999999,
+            1.0728345,
+            0.0
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.2FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.2FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.764764,
+            0.977362,
+            -0.11811
+          ],
+          "max": [
+            -0.573819,
+            1.168307,
+            0.11811
+          ],
+          "size": [
+            0.19094500000000003,
+            0.19094500000000003,
+            0.23622
+          ],
+          "center": [
+            -0.6692914999999999,
+            1.0728345,
+            0.0
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.3FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.3FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.298228,
+            -0.882874,
+            -0.11811
+          ],
+          "max": [
+            0.489173,
+            -0.691929,
+            0.11811
+          ],
+          "size": [
+            0.19094500000000003,
+            0.19094500000000003,
+            0.23622
+          ],
+          "center": [
+            0.3937005,
+            -0.7874015000000001,
+            0.0
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.4FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.4FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.489173,
+            -0.882874,
+            -0.11811
+          ],
+          "max": [
+            -0.298228,
+            -0.691929,
+            0.11811
+          ],
+          "size": [
+            0.19094500000000003,
+            0.19094500000000003,
+            0.23622
+          ],
+          "center": [
+            -0.3937005,
+            -0.7874015000000001,
+            0.0
+          ]
+        }
+      },
+      {
+        "id": "HKM_AL_COLUMS_M2.5_D4_8MM.2FBXASC092PartBody-lib",
+        "name": "HKM_AL_COLUMS_M2.5_D4_8MM.2FBXASC092PartBodyMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.748031,
+            0.994094,
+            -0.314961
+          ],
+          "max": [
+            -0.590551,
+            1.151575,
+            0.0
+          ],
+          "size": [
+            0.15747999999999995,
+            0.15748099999999998,
+            0.314961
+          ],
+          "center": [
+            -0.6692910000000001,
+            1.0728345,
+            -0.1574805
+          ]
+        }
+      },
+      {
+        "id": "HKM_AL_COLUMS_M2.5_D4_8MM.1FBXASC092PartBody-lib",
+        "name": "HKM_AL_COLUMS_M2.5_D4_8MM.1FBXASC092PartBodyMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.590551,
+            0.994094,
+            -0.314961
+          ],
+          "max": [
+            0.748031,
+            1.151575,
+            0.0
+          ],
+          "size": [
+            0.15747999999999995,
+            0.15748099999999998,
+            0.314961
+          ],
+          "center": [
+            0.6692910000000001,
+            1.0728345,
+            -0.1574805
+          ]
+        }
+      },
+      {
+        "id": "HKM_AL_COLUMS_M2.5_D4_10MM.1FBXASC092PartBody-lib",
+        "name": "HKM_AL_COLUMS_M2.5_D4_10MM.1FBXASC092PartBodyMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.472441,
+            -0.866142,
+            -0.377953
+          ],
+          "max": [
+            -0.314961,
+            -0.708661,
+            0.015748
+          ],
+          "size": [
+            0.15748,
+            0.15748099999999998,
+            0.39370099999999997
+          ],
+          "center": [
+            -0.39370099999999997,
+            -0.7874015,
+            -0.1811025
+          ]
+        }
+      },
+      {
+        "id": "HKM_AL_COLUMS_M2.5_D4_10MM.2FBXASC092PartBody-lib",
+        "name": "HKM_AL_COLUMS_M2.5_D4_10MM.2FBXASC092PartBodyMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.314961,
+            -0.866142,
+            -0.377953
+          ],
+          "max": [
+            0.472441,
+            -0.708661,
+            0.015748
+          ],
+          "size": [
+            0.15748,
+            0.15748099999999998,
+            0.39370099999999997
+          ],
+          "center": [
+            0.39370099999999997,
+            -0.7874015,
+            -0.1811025
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.1FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.1FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.764764,
+            0.977362,
+            -0.496063
+          ],
+          "max": [
+            -0.573819,
+            1.168307,
+            -0.181102
+          ],
+          "size": [
+            0.19094500000000003,
+            0.19094500000000003,
+            0.31496099999999994
+          ],
+          "center": [
+            -0.6692914999999999,
+            1.0728345,
+            -0.3385825
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.2FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.2FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.489173,
+            -0.882874,
+            -0.496063
+          ],
+          "max": [
+            -0.298228,
+            -0.691929,
+            -0.181102
+          ],
+          "size": [
+            0.19094500000000003,
+            0.19094500000000003,
+            0.31496099999999994
+          ],
+          "center": [
+            -0.3937005,
+            -0.7874015000000001,
+            -0.3385825
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.3FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.3FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.298228,
+            -0.882874,
+            -0.496063
+          ],
+          "max": [
+            0.489173,
+            -0.691929,
+            -0.181102
+          ],
+          "size": [
+            0.19094500000000003,
+            0.19094500000000003,
+            0.31496099999999994
+          ],
+          "center": [
+            0.3937005,
+            -0.7874015000000001,
+            -0.3385825
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.4FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.4FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.573819,
+            0.977362,
+            -0.496063
+          ],
+          "max": [
+            0.764764,
+            1.168307,
+            -0.181102
+          ],
+          "size": [
+            0.19094500000000003,
+            0.19094500000000003,
+            0.31496099999999994
+          ],
+          "center": [
+            0.6692914999999999,
+            1.0728345,
+            -0.3385825
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.1FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.1FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            -2.190945,
+            -2.427165,
+            -0.11811
+          ],
+          "max": [
+            -2.041339,
+            -2.277559,
+            0.161417
+          ],
+          "size": [
+            0.14960600000000035,
+            0.1496059999999999,
+            0.279527
+          ],
+          "center": [
+            -2.116142,
+            -2.3523620000000003,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.2FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.2FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            -2.190945,
+            -1.954724,
+            -0.11811
+          ],
+          "max": [
+            -2.041339,
+            -1.805118,
+            0.161417
+          ],
+          "size": [
+            0.14960600000000035,
+            0.1496059999999999,
+            0.279527
+          ],
+          "center": [
+            -2.116142,
+            -1.879921,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.3FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.3FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            2.041339,
+            1.805118,
+            -0.11811
+          ],
+          "max": [
+            2.190945,
+            1.954724,
+            0.161417
+          ],
+          "size": [
+            0.14960600000000035,
+            0.1496059999999999,
+            0.279527
+          ],
+          "center": [
+            2.116142,
+            1.879921,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.4FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.4FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            2.041339,
+            2.277559,
+            -0.11811
+          ],
+          "max": [
+            2.190945,
+            2.427165,
+            0.161417
+          ],
+          "size": [
+            0.14960600000000035,
+            0.1496059999999999,
+            0.279527
+          ],
+          "center": [
+            2.116142,
+            2.3523620000000003,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.5FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.5FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            2.277559,
+            2.041339,
+            -0.11811
+          ],
+          "max": [
+            2.427165,
+            2.190945,
+            0.161417
+          ],
+          "size": [
+            0.1496059999999999,
+            0.14960600000000035,
+            0.279527
+          ],
+          "center": [
+            2.3523620000000003,
+            2.116142,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.6FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.6FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            1.805118,
+            2.041339,
+            -0.11811
+          ],
+          "max": [
+            1.954724,
+            2.190945,
+            0.161417
+          ],
+          "size": [
+            0.1496059999999999,
+            0.14960600000000035,
+            0.279527
+          ],
+          "center": [
+            1.879921,
+            2.116142,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.7FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.7FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            2.041339,
+            -2.427165,
+            -0.11811
+          ],
+          "max": [
+            2.190945,
+            -2.277559,
+            0.161417
+          ],
+          "size": [
+            0.14960600000000035,
+            0.1496059999999999,
+            0.279527
+          ],
+          "center": [
+            2.116142,
+            -2.3523620000000003,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.8FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.8FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            1.805118,
+            -2.190945,
+            -0.11811
+          ],
+          "max": [
+            1.954724,
+            -2.041339,
+            0.161417
+          ],
+          "size": [
+            0.1496059999999999,
+            0.14960600000000035,
+            0.279527
+          ],
+          "center": [
+            1.879921,
+            -2.116142,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.9FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.9FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            2.277559,
+            -2.190945,
+            -0.11811
+          ],
+          "max": [
+            2.427165,
+            -2.041339,
+            0.161417
+          ],
+          "size": [
+            0.1496059999999999,
+            0.14960600000000035,
+            0.279527
+          ],
+          "center": [
+            2.3523620000000003,
+            -2.116142,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.10FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.10FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            2.041339,
+            -1.954724,
+            -0.11811
+          ],
+          "max": [
+            2.190945,
+            -1.805118,
+            0.161417
+          ],
+          "size": [
+            0.14960600000000035,
+            0.1496059999999999,
+            0.279527
+          ],
+          "center": [
+            2.116142,
+            -1.879921,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.11FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.11FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            -2.427165,
+            -2.190945,
+            -0.11811
+          ],
+          "max": [
+            -2.277559,
+            -2.041339,
+            0.161417
+          ],
+          "size": [
+            0.1496059999999999,
+            0.14960600000000035,
+            0.279527
+          ],
+          "center": [
+            -2.3523620000000003,
+            -2.116142,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.12FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.12FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            -1.954724,
+            -2.190945,
+            -0.11811
+          ],
+          "max": [
+            -1.805118,
+            -2.041339,
+            0.161417
+          ],
+          "size": [
+            0.1496059999999999,
+            0.14960600000000035,
+            0.279527
+          ],
+          "center": [
+            -1.879921,
+            -2.116142,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.13FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.13FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            -2.427165,
+            2.041339,
+            -0.11811
+          ],
+          "max": [
+            -2.277559,
+            2.190945,
+            0.161417
+          ],
+          "size": [
+            0.1496059999999999,
+            0.14960600000000035,
+            0.279527
+          ],
+          "center": [
+            -2.3523620000000003,
+            2.116142,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.14FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.14FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            -2.190945,
+            2.277559,
+            -0.11811
+          ],
+          "max": [
+            -2.041339,
+            2.427165,
+            0.161417
+          ],
+          "size": [
+            0.14960600000000035,
+            0.1496059999999999,
+            0.279527
+          ],
+          "center": [
+            -2.116142,
+            2.3523620000000003,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.15FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.15FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            -1.954724,
+            2.041339,
+            -0.11811
+          ],
+          "max": [
+            -1.805118,
+            2.190945,
+            0.161417
+          ],
+          "size": [
+            0.1496059999999999,
+            0.14960600000000035,
+            0.279527
+          ],
+          "center": [
+            -1.879921,
+            2.116142,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.16FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.16FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            -2.190945,
+            1.805118,
+            -0.11811
+          ],
+          "max": [
+            -2.041339,
+            1.954724,
+            0.161417
+          ],
+          "size": [
+            0.14960600000000035,
+            0.1496059999999999,
+            0.279527
+          ],
+          "center": [
+            -2.116142,
+            1.879921,
+            0.0216535
+          ]
+        }
+      },
+      {
+        "id": "PROTECTIVE_RING.1FBXASC092MAIN_STRUCTURE-lib",
+        "name": "PROTECTIVE_RING.1FBXASC092MAIN_STRUCTUREMesh",
+        "bbox_dae_units": {
+          "min": [
+            -4.163432,
+            -4.163432,
+            -0.944882
+          ],
+          "max": [
+            4.163432,
+            4.163386,
+            -0.511811
+          ],
+          "size": [
+            8.326864,
+            8.326818,
+            0.433071
+          ],
+          "center": [
+            0.0,
+            -2.300000000010627e-05,
+            -0.7283465
+          ]
+        }
+      },
+      {
+        "id": "LAND_GEAR.1FBXASC092PartBody-lib",
+        "name": "LAND_GEAR.1FBXASC092PartBodyMesh",
+        "bbox_dae_units": {
+          "min": [
+            -2.047244,
+            -3.564248,
+            -1.417323
+          ],
+          "max": [
+            2.047244,
+            3.845909,
+            -0.866142
+          ],
+          "size": [
+            4.094488,
+            7.410157,
+            0.5511810000000001
+          ],
+          "center": [
+            0.0,
+            0.14083049999999986,
+            -1.1417325
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M3_20MM.1FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M3_20MM.1FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.115157,
+            -3.382874,
+            -1.088583
+          ],
+          "max": [
+            0.115157,
+            -3.152559,
+            -0.23622
+          ],
+          "size": [
+            0.230314,
+            0.23031500000000005,
+            0.8523630000000001
+          ],
+          "center": [
+            0.0,
+            -3.2677165,
+            -0.6624015000000001
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M3_20MM.2FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M3_20MM.2FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.485236,
+            3.50689,
+            -1.088583
+          ],
+          "max": [
+            0.715551,
+            3.737205,
+            -0.23622
+          ],
+          "size": [
+            0.23031500000000005,
+            0.23031500000000005,
+            0.8523630000000001
+          ],
+          "center": [
+            0.6003935,
+            3.6220475,
+            -0.6624015000000001
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M3_20MM.3FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M3_20MM.3FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            -1.886811,
+            -0.115157,
+            -1.088583
+          ],
+          "max": [
+            -1.656496,
+            0.115157,
+            -0.23622
+          ],
+          "size": [
+            0.23031500000000005,
+            0.230314,
+            0.8523630000000001
+          ],
+          "center": [
+            -1.7716535,
+            0.0,
+            -0.6624015000000001
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M3_20MM.4FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M3_20MM.4FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            1.656496,
+            -0.115157,
+            -1.088583
+          ],
+          "max": [
+            1.886811,
+            0.115157,
+            -0.23622
+          ],
+          "size": [
+            0.23031500000000005,
+            0.230314,
+            0.8523630000000001
+          ],
+          "center": [
+            1.7716535,
+            0.0,
+            -0.6624015000000001
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M3_20MM.5FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M3_20MM.5FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.715551,
+            3.50689,
+            -1.088583
+          ],
+          "max": [
+            -0.485236,
+            3.737205,
+            -0.23622
+          ],
+          "size": [
+            0.23031500000000005,
+            0.23031500000000005,
+            0.8523630000000001
+          ],
+          "center": [
+            -0.6003935,
+            3.6220475,
+            -0.6624015000000001
+          ]
+        }
+      },
+      {
+        "id": "AL_COLUMNS_M3_D5_15MM.14FBXASC092MAIN_STRUCTURE-lib",
+        "name": "AL_COLUMNS_M3_D5_15MM.14FBXASC092MAIN_STRUCTUREMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.501969,
+            3.523622,
+            -0.590551
+          ],
+          "max": [
+            0.698819,
+            3.720472,
+            0.0
+          ],
+          "size": [
+            0.19684999999999997,
+            0.19684999999999997,
+            0.590551
+          ],
+          "center": [
+            0.600394,
+            3.6220470000000002,
+            -0.2952755
+          ]
+        }
+      },
+      {
+        "id": "AL_COLUMNS_M3_D5_15MM.1FBXASC092MAIN_STRUCTURE-lib",
+        "name": "AL_COLUMNS_M3_D5_15MM.1FBXASC092MAIN_STRUCTUREMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.098425,
+            -1.476378,
+            -0.590551
+          ],
+          "max": [
+            0.098425,
+            -1.279528,
+            0.0
+          ],
+          "size": [
+            0.19685,
+            0.19684999999999997,
+            0.590551
+          ],
+          "center": [
+            0.0,
+            -1.377953,
+            -0.2952755
+          ]
+        }
+      },
+      {
+        "id": "AL_COLUMNS_M3_D5_15MM.2FBXASC092MAIN_STRUCTURE-lib",
+        "name": "AL_COLUMNS_M3_D5_15MM.2FBXASC092MAIN_STRUCTUREMesh",
+        "bbox_dae_units": {
+          "min": [
+            1.673228,
+            -0.098425,
+            -0.590551
+          ],
+          "max": [
+            1.870079,
+            0.098425,
+            0.0
+          ],
+          "size": [
+            0.1968510000000001,
+            0.19685,
+            0.590551
+          ],
+          "center": [
+            1.7716535,
+            0.0,
+            -0.2952755
+          ]
+        }
+      },
+      {
+        "id": "AL_COLUMNS_M3_D5_15MM.3FBXASC092MAIN_STRUCTURE-lib",
+        "name": "AL_COLUMNS_M3_D5_15MM.3FBXASC092MAIN_STRUCTUREMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.698819,
+            3.523622,
+            -0.590551
+          ],
+          "max": [
+            -0.501969,
+            3.720472,
+            0.0
+          ],
+          "size": [
+            0.19684999999999997,
+            0.19684999999999997,
+            0.590551
+          ],
+          "center": [
+            -0.600394,
+            3.6220470000000002,
+            -0.2952755
+          ]
+        }
+      },
+      {
+        "id": "AL_COLUMNS_M3_D5_15MM.4FBXASC092MAIN_STRUCTURE-lib",
+        "name": "AL_COLUMNS_M3_D5_15MM.4FBXASC092MAIN_STRUCTUREMesh",
+        "bbox_dae_units": {
+          "min": [
+            -1.870079,
+            -0.098425,
+            -0.590551
+          ],
+          "max": [
+            -1.673228,
+            0.098425,
+            0.0
+          ],
+          "size": [
+            0.1968510000000001,
+            0.19685,
+            0.590551
+          ],
+          "center": [
+            -1.7716535,
+            0.0,
+            -0.2952755
+          ]
+        }
+      },
+      {
+        "id": "AL_COLUMNS_M3_D5_15MM.5FBXASC092MAIN_STRUCTURE-lib",
+        "name": "AL_COLUMNS_M3_D5_15MM.5FBXASC092MAIN_STRUCTUREMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.098425,
+            -3.366142,
+            -0.590551
+          ],
+          "max": [
+            0.098425,
+            -3.169291,
+            0.0
+          ],
+          "size": [
+            0.19685,
+            0.1968510000000001,
+            0.590551
+          ],
+          "center": [
+            0.0,
+            -3.2677164999999997,
+            -0.2952755
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M3_14MM.1FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "name": "SCREW_BUTTON_HEAD_M3_14MM.1FBXASC092HEX_SOCKET_BUTTON_HEADMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.115157,
+            1.262795,
+            -1.088583
+          ],
+          "max": [
+            0.115157,
+            1.49311,
+            -0.472441
+          ],
+          "size": [
+            0.230314,
+            0.23031500000000005,
+            0.6161420000000001
+          ],
+          "center": [
+            0.0,
+            1.3779525,
+            -0.7805120000000001
+          ]
+        }
+      },
+      {
+        "id": "HEX_NUT_M3_2.4MM.3FBXASC092HEX_NUT-lib",
+        "name": "HEX_NUT_M3_2.4MM.3FBXASC092HEX_NUTMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.108268,
+            1.252936,
+            -0.590551
+          ],
+          "max": [
+            0.108268,
+            1.50297,
+            -0.496063
+          ],
+          "size": [
+            0.216536,
+            0.25003399999999987,
+            0.09448800000000007
+          ],
+          "center": [
+            0.0,
+            1.377953,
+            -0.543307
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M3_8MM.3FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M3_8MM.3FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.115157,
+            -1.49311,
+            -0.19685
+          ],
+          "max": [
+            0.115157,
+            -1.262795,
+            0.11811
+          ],
+          "size": [
+            0.230314,
+            0.23031500000000005,
+            0.31496
+          ],
+          "center": [
+            0.0,
+            -1.3779525,
+            -0.039369999999999995
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M3_8MM.1FBXASC092SCREW_COUNTERSUNK-lib",
+        "name": "HEX_SOCKET_COUNTERSUNK_M3_8MM.1FBXASC092SCREW_COUNTERSUNKMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.115157,
+            -3.382874,
+            -0.19685
+          ],
+          "max": [
+            0.115157,
+            -3.152559,
+            0.11811
+          ],
+          "size": [
+            0.230314,
+            0.23031500000000005,
+            0.31496
+          ],
+          "center": [
+            0.0,
+            -3.2677165,
+            -0.039369999999999995
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_LEAD_SCREW_M3_16MM.1FBXASC092MAIN_BODY-lib",
+        "name": "HEX_SOCKET_LEAD_SCREW_M3_16MM.1FBXASC092MAIN_BODYMesh",
+        "bbox_dae_units": {
+          "min": [
+            0.541339,
+            3.562992,
+            -0.23622
+          ],
+          "max": [
+            0.659449,
+            3.681102,
+            0.393701
+          ],
+          "size": [
+            0.11810999999999994,
+            0.11811000000000016,
+            0.6299210000000001
+          ],
+          "center": [
+            0.600394,
+            3.6220470000000002,
+            0.0787405
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_LEAD_SCREW_M3_16MM.2FBXASC092MAIN_BODY-lib",
+        "name": "HEX_SOCKET_LEAD_SCREW_M3_16MM.2FBXASC092MAIN_BODYMesh",
+        "bbox_dae_units": {
+          "min": [
+            1.712598,
+            -0.059055,
+            -0.23622
+          ],
+          "max": [
+            1.830709,
+            0.059055,
+            0.393701
+          ],
+          "size": [
+            0.11811099999999985,
+            0.11811,
+            0.6299210000000001
+          ],
+          "center": [
+            1.7716535,
+            0.0,
+            0.0787405
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_LEAD_SCREW_M3_16MM.3FBXASC092MAIN_BODY-lib",
+        "name": "HEX_SOCKET_LEAD_SCREW_M3_16MM.3FBXASC092MAIN_BODYMesh",
+        "bbox_dae_units": {
+          "min": [
+            -1.830709,
+            -0.059055,
+            -0.23622
+          ],
+          "max": [
+            -1.712598,
+            0.059055,
+            0.393701
+          ],
+          "size": [
+            0.11811099999999985,
+            0.11811,
+            0.6299210000000001
+          ],
+          "center": [
+            -1.7716535,
+            0.0,
+            0.0787405
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_LEAD_SCREW_M3_16MM.4FBXASC092MAIN_BODY-lib",
+        "name": "HEX_SOCKET_LEAD_SCREW_M3_16MM.4FBXASC092MAIN_BODYMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.659449,
+            3.562992,
+            -0.23622
+          ],
+          "max": [
+            -0.541339,
+            3.681102,
+            0.393701
+          ],
+          "size": [
+            0.11810999999999994,
+            0.11811000000000016,
+            0.6299210000000001
+          ],
+          "center": [
+            -0.600394,
+            3.6220470000000002,
+            0.0787405
+          ]
+        }
+      },
+      {
+        "id": "TOP_PANNEL.1FBXASC092TOP-lib",
+        "name": "TOP_PANNEL.1FBXASC092TOPMesh",
+        "bbox_dae_units": {
+          "min": [
+            -1.88917,
+            -2.917323,
+            1.929134
+          ],
+          "max": [
+            1.88917,
+            3.740157,
+            2.007874
+          ],
+          "size": [
+            3.77834,
+            6.65748,
+            0.07874000000000025
+          ],
+          "center": [
+            0.0,
+            0.4114169999999999,
+            1.968504
+          ]
+        }
+      },
+      {
+        "id": "FRONT_CAMERA_CONNECTOR.1FBXASC092MAIN_STRUCTURE-lib",
+        "name": "FRONT_CAMERA_CONNECTOR.1FBXASC092MAIN_STRUCTUREMesh",
+        "bbox_dae_units": {
+          "min": [
+            -0.777559,
+            3.405512,
+            0.11811
+          ],
+          "max": [
+            0.777559,
+            3.730315,
+            1.929134
+          ],
+          "size": [
+            1.555118,
+            0.3248030000000002,
+            1.811024
+          ],
+          "center": [
+            0.0,
+            3.5679135,
+            1.023622
+          ]
+        }
+      }
+    ],
+    "node_results_first80": [
+      {
+        "id": "MAIN_STRUCTURE.1FBXASC092MAIN_STRUCTURE",
+        "name": "MAIN_STRUCTURE.1FBXASC092MAIN_STRUCTURE",
+        "geometry": "MAIN_STRUCTURE.1FBXASC092MAIN_STRUCTURE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -2.470472,
+            0.0,
+            -3.740157
+          ],
+          "max": [
+            2.470472,
+            0.11811,
+            3.425197
+          ],
+          "size": [
+            4.940944,
+            0.11811,
+            7.165354
+          ],
+          "center": [
+            0.0,
+            0.059055,
+            -0.15748000000000006
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0627499888,
+            0.0,
+            -0.09499998779999999
+          ],
+          "max": [
+            0.0627499888,
+            0.002999994,
+            0.08700000379999999
+          ],
+          "size": [
+            0.1254999776,
+            0.002999994,
+            0.1819999916
+          ],
+          "center": [
+            0.0,
+            0.001499997,
+            -0.003999992000000002
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092ESC_SPEEDYBEE_4IN1_BL_35_BOARD.1FBXASC092MAIN_BOARD",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092ESC_SPEEDYBEE_4IN1_BL_35_BOARD.1FBXASC092MAIN_BOARD",
+        "geometry": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092ESC_SPEEDYBEE_4IN1_BL_35_BOARD.1FBXASC092MAIN_BOARD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.629921,
+            -0.177165,
+            -0.720472
+          ],
+          "max": [
+            0.629921,
+            -0.114173,
+            0.669291
+          ],
+          "size": [
+            1.259842,
+            0.06299199999999999,
+            1.3897629999999999
+          ],
+          "center": [
+            0.0,
+            -0.145669,
+            -0.025590500000000016
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0159999934,
+            -0.004499990999999999,
+            -0.0182999888
+          ],
+          "max": [
+            0.0159999934,
+            -0.0028999942,
+            0.016999991399999997
+          ],
+          "size": [
+            0.0319999868,
+            0.0015999967999999996,
+            0.0352999802
+          ],
+          "center": [
+            0.0,
+            -0.0036999926,
+            -0.0006499987000000004
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN1",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN1",
+        "geometry": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN1-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.094488,
+            -0.141732,
+            0.374016
+          ],
+          "max": [
+            0.102362,
+            -0.019685,
+            0.494094
+          ],
+          "size": [
+            0.007873999999999992,
+            0.12204699999999999,
+            0.12007799999999996
+          ],
+          "center": [
+            0.098425,
+            -0.0807085,
+            0.43405499999999997
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0023999952,
+            -0.0035999927999999996,
+            0.0095000064
+          ],
+          "max": [
+            0.0025999948,
+            -0.000499999,
+            0.0125499876
+          ],
+          "size": [
+            0.0001999995999999998,
+            0.0030999937999999995,
+            0.003049981199999999
+          ],
+          "center": [
+            0.0024999949999999996,
+            -0.0020499959,
+            0.011024996999999998
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN2",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN2",
+        "geometry": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN2-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.055118,
+            -0.141732,
+            0.374016
+          ],
+          "max": [
+            0.062992,
+            -0.019685,
+            0.494094
+          ],
+          "size": [
+            0.007874000000000006,
+            0.12204699999999999,
+            0.12007799999999996
+          ],
+          "center": [
+            0.059055,
+            -0.0807085,
+            0.43405499999999997
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0013999972,
+            -0.0035999927999999996,
+            0.0095000064
+          ],
+          "max": [
+            0.0015999968,
+            -0.000499999,
+            0.0125499876
+          ],
+          "size": [
+            0.00019999960000000014,
+            0.0030999937999999995,
+            0.003049981199999999
+          ],
+          "center": [
+            0.001499997,
+            -0.0020499959,
+            0.011024996999999998
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN3",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN3",
+        "geometry": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN3-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.015748,
+            -0.141732,
+            0.374016
+          ],
+          "max": [
+            0.023622,
+            -0.019685,
+            0.494094
+          ],
+          "size": [
+            0.007873999999999999,
+            0.12204699999999999,
+            0.12007799999999996
+          ],
+          "center": [
+            0.019685,
+            -0.0807085,
+            0.43405499999999997
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0003999992,
+            -0.0035999927999999996,
+            0.0095000064
+          ],
+          "max": [
+            0.0005999988,
+            -0.000499999,
+            0.0125499876
+          ],
+          "size": [
+            0.00019999959999999995,
+            0.0030999937999999995,
+            0.003049981199999999
+          ],
+          "center": [
+            0.000499999,
+            -0.0020499959,
+            0.011024996999999998
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN4",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN4",
+        "geometry": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN4-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.023622,
+            -0.141732,
+            0.374016
+          ],
+          "max": [
+            -0.015748,
+            -0.019685,
+            0.494094
+          ],
+          "size": [
+            0.007873999999999999,
+            0.12204699999999999,
+            0.12007799999999996
+          ],
+          "center": [
+            -0.019685,
+            -0.0807085,
+            0.43405499999999997
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0005999988,
+            -0.0035999927999999996,
+            0.0095000064
+          ],
+          "max": [
+            -0.0003999992,
+            -0.000499999,
+            0.0125499876
+          ],
+          "size": [
+            0.00019999959999999995,
+            0.0030999937999999995,
+            0.003049981199999999
+          ],
+          "center": [
+            -0.000499999,
+            -0.0020499959,
+            0.011024996999999998
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN5",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN5",
+        "geometry": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN5-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.133858,
+            -0.141732,
+            0.374016
+          ],
+          "max": [
+            0.141732,
+            -0.019685,
+            0.494094
+          ],
+          "size": [
+            0.007873999999999992,
+            0.12204699999999999,
+            0.12007799999999996
+          ],
+          "center": [
+            0.137795,
+            -0.0807085,
+            0.43405499999999997
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0033999932,
+            -0.0035999927999999996,
+            0.0095000064
+          ],
+          "max": [
+            0.0035999927999999996,
+            -0.000499999,
+            0.0125499876
+          ],
+          "size": [
+            0.0001999995999999998,
+            0.0030999937999999995,
+            0.003049981199999999
+          ],
+          "center": [
+            0.003499993,
+            -0.0020499959,
+            0.011024996999999998
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN6",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN6",
+        "geometry": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN6-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.062992,
+            -0.141732,
+            0.374016
+          ],
+          "max": [
+            -0.055118,
+            -0.019685,
+            0.494094
+          ],
+          "size": [
+            0.007874000000000006,
+            0.12204699999999999,
+            0.12007799999999996
+          ],
+          "center": [
+            -0.059055,
+            -0.0807085,
+            0.43405499999999997
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0015999968,
+            -0.0035999927999999996,
+            0.0095000064
+          ],
+          "max": [
+            -0.0013999972,
+            -0.000499999,
+            0.0125499876
+          ],
+          "size": [
+            0.00019999960000000014,
+            0.0030999937999999995,
+            0.003049981199999999
+          ],
+          "center": [
+            -0.001499997,
+            -0.0020499959,
+            0.011024996999999998
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN7",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN7",
+        "geometry": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN7-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.102362,
+            -0.141732,
+            0.374016
+          ],
+          "max": [
+            -0.094488,
+            -0.019685,
+            0.494094
+          ],
+          "size": [
+            0.007873999999999992,
+            0.12204699999999999,
+            0.12007799999999996
+          ],
+          "center": [
+            -0.098425,
+            -0.0807085,
+            0.43405499999999997
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0025999948,
+            -0.0035999927999999996,
+            0.0095000064
+          ],
+          "max": [
+            -0.0023999952,
+            -0.000499999,
+            0.0125499876
+          ],
+          "size": [
+            0.0001999995999999998,
+            0.0030999937999999995,
+            0.003049981199999999
+          ],
+          "center": [
+            -0.0024999949999999996,
+            -0.0020499959,
+            0.011024996999999998
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN8",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN8",
+        "geometry": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN8-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.141732,
+            -0.141732,
+            0.374016
+          ],
+          "max": [
+            -0.133858,
+            -0.019685,
+            0.494094
+          ],
+          "size": [
+            0.007873999999999992,
+            0.12204699999999999,
+            0.12007799999999996
+          ],
+          "center": [
+            -0.137795,
+            -0.0807085,
+            0.43405499999999997
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0035999927999999996,
+            -0.0035999927999999996,
+            0.0095000064
+          ],
+          "max": [
+            -0.0033999932,
+            -0.000499999,
+            0.0125499876
+          ],
+          "size": [
+            0.0001999995999999998,
+            0.0030999937999999995,
+            0.003049981199999999
+          ],
+          "center": [
+            -0.003499993,
+            -0.0020499959,
+            0.011024996999999998
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN9",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN9",
+        "geometry": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN9-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.177165,
+            -0.059055,
+            0.374016
+          ],
+          "max": [
+            0.185039,
+            0.0,
+            0.423228
+          ],
+          "size": [
+            0.00787400000000002,
+            0.059055,
+            0.04921199999999998
+          ],
+          "center": [
+            0.18110199999999999,
+            -0.0295275,
+            0.39862200000000003
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.004499990999999999,
+            -0.001499997,
+            0.0095000064
+          ],
+          "max": [
+            0.0046999906000000004,
+            0.0,
+            0.0107499912
+          ],
+          "size": [
+            0.0001999996000000005,
+            0.001499997,
+            0.0012499847999999994
+          ],
+          "center": [
+            0.004599990799999999,
+            -0.0007499985,
+            0.0101249988
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN10",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN10",
+        "geometry": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092PIN10-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.185039,
+            -0.059055,
+            0.374016
+          ],
+          "max": [
+            -0.177165,
+            0.0,
+            0.423228
+          ],
+          "size": [
+            0.00787400000000002,
+            0.059055,
+            0.04921199999999998
+          ],
+          "center": [
+            -0.18110199999999999,
+            -0.0295275,
+            0.39862200000000003
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0046999906000000004,
+            -0.001499997,
+            0.0095000064
+          ],
+          "max": [
+            -0.004499990999999999,
+            0.0,
+            0.0107499912
+          ],
+          "size": [
+            0.0001999996000000005,
+            0.001499997,
+            0.0012499847999999994
+          ],
+          "center": [
+            -0.004599990799999999,
+            -0.0007499985,
+            0.0101249988
+          ]
+        }
+      },
+      {
+        "id": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092BODY",
+        "name": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092BODY",
+        "geometry": "ESC_SPEEDYBEE_4IN1_BL_35.1FBXASC092BM8B-SRSS-TB.1FBXASC092BODY-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.19685,
+            -0.114173,
+            0.375984
+          ],
+          "max": [
+            0.19685,
+            0.0,
+            0.543307
+          ],
+          "size": [
+            0.3937,
+            0.114173,
+            0.167323
+          ],
+          "center": [
+            0.0,
+            -0.0570865,
+            0.4596455
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.004999989999999999,
+            -0.0028999942,
+            0.009549993599999999
+          ],
+          "max": [
+            0.004999989999999999,
+            0.0,
+            0.0137999978
+          ],
+          "size": [
+            0.009999979999999999,
+            0.0028999942,
+            0.0042500042
+          ],
+          "center": [
+            0.0,
+            -0.0014499971,
+            0.0116749957
+          ]
+        }
+      },
+      {
+        "id": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.5FBXASC092MAIN_STRUCTURE",
+        "name": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.5FBXASC092MAIN_STRUCTURE",
+        "geometry": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.5FBXASC092MAIN_STRUCTURE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.482283,
+            -0.255906,
+            0.305118
+          ],
+          "max": [
+            -0.305118,
+            0.047244,
+            0.482283
+          ],
+          "size": [
+            0.17716500000000002,
+            0.30315000000000003,
+            0.17716500000000002
+          ],
+          "center": [
+            -0.3937005,
+            -0.10433100000000001,
+            0.3937005
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0122499882,
+            -0.0065000124000000005,
+            0.0077499972
+          ],
+          "max": [
+            -0.0077499972,
+            0.0011999976,
+            0.0122499882
+          ],
+          "size": [
+            0.004499991,
+            0.00770001,
+            0.004499991
+          ],
+          "center": [
+            -0.0099999927,
+            -0.0026500074,
+            0.0099999927
+          ]
+        }
+      },
+      {
+        "id": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.6FBXASC092MAIN_STRUCTURE",
+        "name": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.6FBXASC092MAIN_STRUCTURE",
+        "geometry": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.6FBXASC092MAIN_STRUCTURE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.482283,
+            -0.255906,
+            -0.482283
+          ],
+          "max": [
+            -0.305118,
+            0.047244,
+            -0.305118
+          ],
+          "size": [
+            0.17716500000000002,
+            0.30315000000000003,
+            0.17716500000000002
+          ],
+          "center": [
+            -0.3937005,
+            -0.10433100000000001,
+            -0.3937005
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0122499882,
+            -0.0065000124000000005,
+            -0.0122499882
+          ],
+          "max": [
+            -0.0077499972,
+            0.0011999976,
+            -0.0077499972
+          ],
+          "size": [
+            0.004499991,
+            0.00770001,
+            0.004499991
+          ],
+          "center": [
+            -0.0099999927,
+            -0.0026500074,
+            -0.0099999927
+          ]
+        }
+      },
+      {
+        "id": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.7FBXASC092MAIN_STRUCTURE",
+        "name": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.7FBXASC092MAIN_STRUCTURE",
+        "geometry": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.7FBXASC092MAIN_STRUCTURE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.305118,
+            -0.255906,
+            -0.482283
+          ],
+          "max": [
+            0.482283,
+            0.047244,
+            -0.305118
+          ],
+          "size": [
+            0.17716500000000002,
+            0.30315000000000003,
+            0.17716500000000002
+          ],
+          "center": [
+            0.3937005,
+            -0.10433100000000001,
+            -0.3937005
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0077499972,
+            -0.0065000124000000005,
+            -0.0122499882
+          ],
+          "max": [
+            0.0122499882,
+            0.0011999976,
+            -0.0077499972
+          ],
+          "size": [
+            0.004499991,
+            0.00770001,
+            0.004499991
+          ],
+          "center": [
+            0.0099999927,
+            -0.0026500074,
+            -0.0099999927
+          ]
+        }
+      },
+      {
+        "id": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.8FBXASC092MAIN_STRUCTURE",
+        "name": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.8FBXASC092MAIN_STRUCTURE",
+        "geometry": "SHOCK_ABSORBING_CUSHION_M2_D4.5_7.7MM.8FBXASC092MAIN_STRUCTURE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.305118,
+            -0.255906,
+            0.305118
+          ],
+          "max": [
+            0.482283,
+            0.047244,
+            0.482283
+          ],
+          "size": [
+            0.17716500000000002,
+            0.30315000000000003,
+            0.17716500000000002
+          ],
+          "center": [
+            0.3937005,
+            -0.10433100000000001,
+            0.3937005
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0077499972,
+            -0.0065000124000000005,
+            0.0077499972
+          ],
+          "max": [
+            0.0122499882,
+            0.0011999976,
+            0.0122499882
+          ],
+          "size": [
+            0.004499991,
+            0.00770001,
+            0.004499991
+          ],
+          "center": [
+            0.0099999927,
+            -0.0026500074,
+            0.0099999927
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2_10MM.1FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2_10MM.1FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2_10MM.1FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.468504,
+            -0.275591,
+            -0.468504
+          ],
+          "max": [
+            -0.318898,
+            0.11811,
+            -0.318898
+          ],
+          "size": [
+            0.14960599999999996,
+            0.39370099999999997,
+            0.14960599999999996
+          ],
+          "center": [
+            -0.39370099999999997,
+            -0.07874049999999999,
+            -0.39370099999999997
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0119000016,
+            -0.007000011399999999,
+            -0.0119000016
+          ],
+          "max": [
+            -0.0081000092,
+            0.002999994,
+            -0.0081000092
+          ],
+          "size": [
+            0.0037999923999999987,
+            0.0100000054,
+            0.0037999923999999987
+          ],
+          "center": [
+            -0.0100000054,
+            -0.0020000086999999995,
+            -0.0100000054
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2_10MM.2FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2_10MM.2FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2_10MM.2FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.318898,
+            -0.275591,
+            -0.468504
+          ],
+          "max": [
+            0.468504,
+            0.11811,
+            -0.318898
+          ],
+          "size": [
+            0.14960599999999996,
+            0.39370099999999997,
+            0.14960599999999996
+          ],
+          "center": [
+            0.39370099999999997,
+            -0.07874049999999999,
+            -0.39370099999999997
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0081000092,
+            -0.007000011399999999,
+            -0.0119000016
+          ],
+          "max": [
+            0.0119000016,
+            0.002999994,
+            -0.0081000092
+          ],
+          "size": [
+            0.0037999923999999987,
+            0.0100000054,
+            0.0037999923999999987
+          ],
+          "center": [
+            0.0100000054,
+            -0.0020000086999999995,
+            -0.0100000054
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2_10MM.3FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2_10MM.3FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2_10MM.3FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.468504,
+            -0.275591,
+            0.318898
+          ],
+          "max": [
+            -0.318898,
+            0.11811,
+            0.468504
+          ],
+          "size": [
+            0.14960599999999996,
+            0.39370099999999997,
+            0.14960599999999996
+          ],
+          "center": [
+            -0.39370099999999997,
+            -0.07874049999999999,
+            0.39370099999999997
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0119000016,
+            -0.007000011399999999,
+            0.0081000092
+          ],
+          "max": [
+            -0.0081000092,
+            0.002999994,
+            0.0119000016
+          ],
+          "size": [
+            0.0037999923999999987,
+            0.0100000054,
+            0.0037999923999999987
+          ],
+          "center": [
+            -0.0100000054,
+            -0.0020000086999999995,
+            0.0100000054
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2_10MM.4FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2_10MM.4FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2_10MM.4FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.318898,
+            -0.275591,
+            0.318898
+          ],
+          "max": [
+            0.468504,
+            0.11811,
+            0.468504
+          ],
+          "size": [
+            0.14960599999999996,
+            0.39370099999999997,
+            0.14960599999999996
+          ],
+          "center": [
+            0.39370099999999997,
+            -0.07874049999999999,
+            0.39370099999999997
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0081000092,
+            -0.007000011399999999,
+            0.0081000092
+          ],
+          "max": [
+            0.0119000016,
+            0.002999994,
+            0.0119000016
+          ],
+          "size": [
+            0.0037999923999999987,
+            0.0100000054,
+            0.0037999923999999987
+          ],
+          "center": [
+            0.0100000054,
+            -0.0020000086999999995,
+            0.0100000054
+          ]
+        }
+      },
+      {
+        "id": "HEX_NUT_M2_1.6MM.9FBXASC092HEX_NUT",
+        "name": "HEX_NUT_M2_1.6MM.9FBXASC092HEX_NUT",
+        "geometry": "HEX_NUT_M2_1.6MM.9FBXASC092HEX_NUT-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.472441,
+            -0.275591,
+            -0.484622
+          ],
+          "max": [
+            -0.314961,
+            -0.212598,
+            -0.302779
+          ],
+          "size": [
+            0.15748,
+            0.06299299999999997,
+            0.18184299999999998
+          ],
+          "center": [
+            -0.39370099999999997,
+            -0.2440945,
+            -0.3937005
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0120000014,
+            -0.007000011399999999,
+            -0.0123093988
+          ],
+          "max": [
+            -0.008000009399999999,
+            -0.0053999892,
+            -0.0076905866
+          ],
+          "size": [
+            0.003999992,
+            0.001600022199999999,
+            0.004618812199999999
+          ],
+          "center": [
+            -0.0100000054,
+            -0.0062000002999999995,
+            -0.0099999927
+          ]
+        }
+      },
+      {
+        "id": "HEX_NUT_M2_1.6MM.10FBXASC092HEX_NUT",
+        "name": "HEX_NUT_M2_1.6MM.10FBXASC092HEX_NUT",
+        "geometry": "HEX_NUT_M2_1.6MM.10FBXASC092HEX_NUT-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.472441,
+            -0.275591,
+            0.302779
+          ],
+          "max": [
+            -0.314961,
+            -0.212598,
+            0.484622
+          ],
+          "size": [
+            0.15748,
+            0.06299299999999997,
+            0.18184299999999998
+          ],
+          "center": [
+            -0.39370099999999997,
+            -0.2440945,
+            0.3937005
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0120000014,
+            -0.007000011399999999,
+            0.0076905866
+          ],
+          "max": [
+            -0.008000009399999999,
+            -0.0053999892,
+            0.0123093988
+          ],
+          "size": [
+            0.003999992,
+            0.001600022199999999,
+            0.004618812199999999
+          ],
+          "center": [
+            -0.0100000054,
+            -0.0062000002999999995,
+            0.0099999927
+          ]
+        }
+      },
+      {
+        "id": "HEX_NUT_M2_1.6MM.11FBXASC092HEX_NUT",
+        "name": "HEX_NUT_M2_1.6MM.11FBXASC092HEX_NUT",
+        "geometry": "HEX_NUT_M2_1.6MM.11FBXASC092HEX_NUT-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.314961,
+            -0.275591,
+            -0.484622
+          ],
+          "max": [
+            0.472441,
+            -0.212598,
+            -0.302779
+          ],
+          "size": [
+            0.15748,
+            0.06299299999999997,
+            0.18184299999999998
+          ],
+          "center": [
+            0.39370099999999997,
+            -0.2440945,
+            -0.3937005
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.008000009399999999,
+            -0.007000011399999999,
+            -0.0123093988
+          ],
+          "max": [
+            0.0120000014,
+            -0.0053999892,
+            -0.0076905866
+          ],
+          "size": [
+            0.003999992,
+            0.001600022199999999,
+            0.004618812199999999
+          ],
+          "center": [
+            0.0100000054,
+            -0.0062000002999999995,
+            -0.0099999927
+          ]
+        }
+      },
+      {
+        "id": "HEX_NUT_M2_1.6MM.12FBXASC092HEX_NUT",
+        "name": "HEX_NUT_M2_1.6MM.12FBXASC092HEX_NUT",
+        "geometry": "HEX_NUT_M2_1.6MM.12FBXASC092HEX_NUT-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.314961,
+            -0.275591,
+            0.302779
+          ],
+          "max": [
+            0.472441,
+            -0.212598,
+            0.484622
+          ],
+          "size": [
+            0.15748,
+            0.06299299999999997,
+            0.18184299999999998
+          ],
+          "center": [
+            0.39370099999999997,
+            -0.2440945,
+            0.3937005
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.008000009399999999,
+            -0.007000011399999999,
+            0.0076905866
+          ],
+          "max": [
+            0.0120000014,
+            -0.0053999892,
+            0.0123093988
+          ],
+          "size": [
+            0.003999992,
+            0.001600022199999999,
+            0.004618812199999999
+          ],
+          "center": [
+            0.0100000054,
+            -0.0062000002999999995,
+            0.0099999927
+          ]
+        }
+      },
+      {
+        "id": "SensorFBXASC032TFFBXASC032MiniFBXASC032PLUS.1FBXASC092Ressalto-extrusFBXASC063o5",
+        "name": "SensorFBXASC032TFFBXASC032MiniFBXASC032PLUS.1FBXASC092Ressalto-extrusFBXASC063o5",
+        "geometry": "SensorFBXASC032TFFBXASC032MiniFBXASC032PLUS.1FBXASC092Ressalto-extrusFBXASC063o5-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.688976,
+            -1.322835,
+            -0.068898
+          ],
+          "max": [
+            0.688976,
+            -0.496063,
+            0.915354
+          ],
+          "size": [
+            1.377952,
+            0.8267720000000001,
+            0.984252
+          ],
+          "center": [
+            0.0,
+            -0.909449,
+            0.423228
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0174999904,
+            -0.033600009,
+            -0.0017500092
+          ],
+          "max": [
+            0.0174999904,
+            -0.0126000002,
+            0.0232499916
+          ],
+          "size": [
+            0.0349999808,
+            0.0210000088,
+            0.025000000799999998
+          ],
+          "center": [
+            0.0,
+            -0.023100004599999998,
+            0.0107499912
+          ]
+        }
+      },
+      {
+        "id": "RANGING_LIDAR_CAMERA_BASE.1FBXASC092RANGING_LIDAR_CAMERA_BASE",
+        "name": "RANGING_LIDAR_CAMERA_BASE.1FBXASC092RANGING_LIDAR_CAMERA_BASE",
+        "geometry": "RANGING_LIDAR_CAMERA_BASE.1FBXASC092RANGING_LIDAR_CAMERA_BASE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.925197,
+            -0.496063,
+            -1.32874
+          ],
+          "max": [
+            0.925197,
+            -0.377953,
+            0.912894
+          ],
+          "size": [
+            1.850394,
+            0.11810999999999999,
+            2.241634
+          ],
+          "center": [
+            0.0,
+            -0.43700799999999995,
+            -0.20792300000000002
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0235000038,
+            -0.0126000002,
+            -0.033749996
+          ],
+          "max": [
+            0.0235000038,
+            -0.009600006199999999,
+            0.023187507599999997
+          ],
+          "size": [
+            0.0470000076,
+            0.0029999939999999998,
+            0.056937503599999995
+          ],
+          "center": [
+            0.0,
+            -0.011100003199999998,
+            -0.0052812442
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2_4MM.1FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2_4MM.1FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2_4MM.1FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.625984,
+            -0.586614,
+            -0.005906
+          ],
+          "max": [
+            -0.476378,
+            -0.429134,
+            0.143701
+          ],
+          "size": [
+            0.14960599999999996,
+            0.15747999999999995,
+            0.149607
+          ],
+          "center": [
+            -0.551181,
+            -0.5078739999999999,
+            0.0688975
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0158999936,
+            -0.014899995599999999,
+            -0.0001500124
+          ],
+          "max": [
+            -0.0121000012,
+            -0.0109000036,
+            0.0036500053999999997
+          ],
+          "size": [
+            0.0037999923999999987,
+            0.003999991999999998,
+            0.0038000177999999996
+          ],
+          "center": [
+            -0.0139999974,
+            -0.012899999599999998,
+            0.0017499965
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2_6MM.1FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2_6MM.1FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2_6MM.1FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.476378,
+            -0.614173,
+            0.44685
+          ],
+          "max": [
+            0.625984,
+            -0.377953,
+            0.596457
+          ],
+          "size": [
+            0.14960599999999996,
+            0.23621999999999999,
+            0.149607
+          ],
+          "center": [
+            0.551181,
+            -0.496063,
+            0.5216535
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0121000012,
+            -0.015599994199999998,
+            0.01134999
+          ],
+          "max": [
+            0.0158999936,
+            -0.009600006199999999,
+            0.0151500078
+          ],
+          "size": [
+            0.0037999923999999987,
+            0.0059999879999999995,
+            0.0038000177999999996
+          ],
+          "center": [
+            0.0139999974,
+            -0.0126000002,
+            0.013249998899999999
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.1FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.1FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.1FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.573819,
+            -0.11811,
+            -1.168307
+          ],
+          "max": [
+            0.764764,
+            0.11811,
+            -0.977362
+          ],
+          "size": [
+            0.19094500000000003,
+            0.23622,
+            0.19094500000000003
+          ],
+          "center": [
+            0.6692914999999999,
+            0.0,
+            -1.0728345
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0145750026,
+            -0.002999994,
+            -0.0296749978
+          ],
+          "max": [
+            0.0194250056,
+            0.002999994,
+            -0.024824994799999996
+          ],
+          "size": [
+            0.004850003,
+            0.005999988,
+            0.004850003
+          ],
+          "center": [
+            0.017000004099999997,
+            0.0,
+            -0.027249996299999996
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.2FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.2FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.2FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.764764,
+            -0.11811,
+            -1.168307
+          ],
+          "max": [
+            -0.573819,
+            0.11811,
+            -0.977362
+          ],
+          "size": [
+            0.19094500000000003,
+            0.23622,
+            0.19094500000000003
+          ],
+          "center": [
+            -0.6692914999999999,
+            0.0,
+            -1.0728345
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0194250056,
+            -0.002999994,
+            -0.0296749978
+          ],
+          "max": [
+            -0.0145750026,
+            0.002999994,
+            -0.024824994799999996
+          ],
+          "size": [
+            0.004850003,
+            0.005999988,
+            0.004850003
+          ],
+          "center": [
+            -0.017000004099999997,
+            0.0,
+            -0.027249996299999996
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.3FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.3FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.3FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.298228,
+            -0.11811,
+            0.691929
+          ],
+          "max": [
+            0.489173,
+            0.11811,
+            0.882874
+          ],
+          "size": [
+            0.19094500000000003,
+            0.23622,
+            0.19094500000000003
+          ],
+          "center": [
+            0.3937005,
+            0.0,
+            0.7874015000000001
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0075749912,
+            -0.002999994,
+            0.0175749966
+          ],
+          "max": [
+            0.012424994200000001,
+            0.002999994,
+            0.0224249996
+          ],
+          "size": [
+            0.004850003,
+            0.005999988,
+            0.004850003
+          ],
+          "center": [
+            0.0099999927,
+            0.0,
+            0.019999998100000003
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.4FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.4FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.4FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.489173,
+            -0.11811,
+            0.691929
+          ],
+          "max": [
+            -0.298228,
+            0.11811,
+            0.882874
+          ],
+          "size": [
+            0.19094500000000003,
+            0.23622,
+            0.19094500000000003
+          ],
+          "center": [
+            -0.3937005,
+            0.0,
+            0.7874015000000001
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.012424994200000001,
+            -0.002999994,
+            0.0175749966
+          ],
+          "max": [
+            -0.0075749912,
+            0.002999994,
+            0.0224249996
+          ],
+          "size": [
+            0.004850003,
+            0.005999988,
+            0.004850003
+          ],
+          "center": [
+            -0.0099999927,
+            0.0,
+            0.019999998100000003
+          ]
+        }
+      },
+      {
+        "id": "HKM_AL_COLUMS_M2.5_D4_8MM.2FBXASC092PartBody",
+        "name": "HKM_AL_COLUMS_M2.5_D4_8MM.2FBXASC092PartBody",
+        "geometry": "HKM_AL_COLUMS_M2.5_D4_8MM.2FBXASC092PartBody-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.748031,
+            -0.314961,
+            -1.151575
+          ],
+          "max": [
+            -0.590551,
+            0.0,
+            -0.994094
+          ],
+          "size": [
+            0.15747999999999995,
+            0.314961,
+            0.15748099999999998
+          ],
+          "center": [
+            -0.6692910000000001,
+            -0.1574805,
+            -1.0728345
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.018999987399999998,
+            -0.008000009399999999,
+            -0.029250005
+          ],
+          "max": [
+            -0.0149999954,
+            0.0,
+            -0.0252499876
+          ],
+          "size": [
+            0.003999991999999998,
+            0.008000009399999999,
+            0.004000017399999999
+          ],
+          "center": [
+            -0.0169999914,
+            -0.0040000046999999995,
+            -0.027249996299999996
+          ]
+        }
+      },
+      {
+        "id": "HKM_AL_COLUMS_M2.5_D4_8MM.1FBXASC092PartBody",
+        "name": "HKM_AL_COLUMS_M2.5_D4_8MM.1FBXASC092PartBody",
+        "geometry": "HKM_AL_COLUMS_M2.5_D4_8MM.1FBXASC092PartBody-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.590551,
+            -0.314961,
+            -1.151575
+          ],
+          "max": [
+            0.748031,
+            0.0,
+            -0.994094
+          ],
+          "size": [
+            0.15747999999999995,
+            0.314961,
+            0.15748099999999998
+          ],
+          "center": [
+            0.6692910000000001,
+            -0.1574805,
+            -1.0728345
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0149999954,
+            -0.008000009399999999,
+            -0.029250005
+          ],
+          "max": [
+            0.018999987399999998,
+            0.0,
+            -0.0252499876
+          ],
+          "size": [
+            0.003999991999999998,
+            0.008000009399999999,
+            0.004000017399999999
+          ],
+          "center": [
+            0.0169999914,
+            -0.0040000046999999995,
+            -0.027249996299999996
+          ]
+        }
+      },
+      {
+        "id": "HKM_AL_COLUMS_M2.5_D4_10MM.1FBXASC092PartBody",
+        "name": "HKM_AL_COLUMS_M2.5_D4_10MM.1FBXASC092PartBody",
+        "geometry": "HKM_AL_COLUMS_M2.5_D4_10MM.1FBXASC092PartBody-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.472441,
+            -0.377953,
+            0.708661
+          ],
+          "max": [
+            -0.314961,
+            0.015748,
+            0.866142
+          ],
+          "size": [
+            0.15748,
+            0.39370099999999997,
+            0.15748099999999998
+          ],
+          "center": [
+            -0.39370099999999997,
+            -0.1811025,
+            0.7874015
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0120000014,
+            -0.009600006199999999,
+            0.0179999894
+          ],
+          "max": [
+            -0.008000009399999999,
+            0.0003999992,
+            0.0220000068
+          ],
+          "size": [
+            0.003999992,
+            0.0100000054,
+            0.004000017399999999
+          ],
+          "center": [
+            -0.0100000054,
+            -0.0046000035,
+            0.0199999981
+          ]
+        }
+      },
+      {
+        "id": "HKM_AL_COLUMS_M2.5_D4_10MM.2FBXASC092PartBody",
+        "name": "HKM_AL_COLUMS_M2.5_D4_10MM.2FBXASC092PartBody",
+        "geometry": "HKM_AL_COLUMS_M2.5_D4_10MM.2FBXASC092PartBody-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.314961,
+            -0.377953,
+            0.708661
+          ],
+          "max": [
+            0.472441,
+            0.015748,
+            0.866142
+          ],
+          "size": [
+            0.15748,
+            0.39370099999999997,
+            0.15748099999999998
+          ],
+          "center": [
+            0.39370099999999997,
+            -0.1811025,
+            0.7874015
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.008000009399999999,
+            -0.009600006199999999,
+            0.0179999894
+          ],
+          "max": [
+            0.0120000014,
+            0.0003999992,
+            0.0220000068
+          ],
+          "size": [
+            0.003999992,
+            0.0100000054,
+            0.004000017399999999
+          ],
+          "center": [
+            0.0100000054,
+            -0.0046000035,
+            0.0199999981
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.1FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.1FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.1FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.764764,
+            -0.496063,
+            -1.168307
+          ],
+          "max": [
+            -0.573819,
+            -0.181102,
+            -0.977362
+          ],
+          "size": [
+            0.19094500000000003,
+            0.31496099999999994,
+            0.19094500000000003
+          ],
+          "center": [
+            -0.6692914999999999,
+            -0.3385825,
+            -1.0728345
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0194250056,
+            -0.0126000002,
+            -0.0296749978
+          ],
+          "max": [
+            -0.0145750026,
+            -0.0045999908,
+            -0.024824994799999996
+          ],
+          "size": [
+            0.004850003,
+            0.008000009399999997,
+            0.004850003
+          ],
+          "center": [
+            -0.017000004099999997,
+            -0.0085999955,
+            -0.027249996299999996
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.2FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.2FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.2FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.489173,
+            -0.496063,
+            0.691929
+          ],
+          "max": [
+            -0.298228,
+            -0.181102,
+            0.882874
+          ],
+          "size": [
+            0.19094500000000003,
+            0.31496099999999994,
+            0.19094500000000003
+          ],
+          "center": [
+            -0.3937005,
+            -0.3385825,
+            0.7874015000000001
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.012424994200000001,
+            -0.0126000002,
+            0.0175749966
+          ],
+          "max": [
+            -0.0075749912,
+            -0.0045999908,
+            0.0224249996
+          ],
+          "size": [
+            0.004850003,
+            0.008000009399999997,
+            0.004850003
+          ],
+          "center": [
+            -0.0099999927,
+            -0.0085999955,
+            0.019999998100000003
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.3FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.3FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.3FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.298228,
+            -0.496063,
+            0.691929
+          ],
+          "max": [
+            0.489173,
+            -0.181102,
+            0.882874
+          ],
+          "size": [
+            0.19094500000000003,
+            0.31496099999999994,
+            0.19094500000000003
+          ],
+          "center": [
+            0.3937005,
+            -0.3385825,
+            0.7874015000000001
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0075749912,
+            -0.0126000002,
+            0.0175749966
+          ],
+          "max": [
+            0.012424994200000001,
+            -0.0045999908,
+            0.0224249996
+          ],
+          "size": [
+            0.004850003,
+            0.008000009399999997,
+            0.004850003
+          ],
+          "center": [
+            0.0099999927,
+            -0.0085999955,
+            0.019999998100000003
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.4FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.4FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.4FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.573819,
+            -0.496063,
+            -1.168307
+          ],
+          "max": [
+            0.764764,
+            -0.181102,
+            -0.977362
+          ],
+          "size": [
+            0.19094500000000003,
+            0.31496099999999994,
+            0.19094500000000003
+          ],
+          "center": [
+            0.6692914999999999,
+            -0.3385825,
+            -1.0728345
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0145750026,
+            -0.0126000002,
+            -0.0296749978
+          ],
+          "max": [
+            0.0194250056,
+            -0.0045999908,
+            -0.024824994799999996
+          ],
+          "size": [
+            0.004850003,
+            0.008000009399999997,
+            0.004850003
+          ],
+          "center": [
+            0.017000004099999997,
+            -0.0085999955,
+            -0.027249996299999996
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.1FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.1FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.1FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -2.190945,
+            -0.11811,
+            2.277559
+          ],
+          "max": [
+            -2.041339,
+            0.161417,
+            2.427165
+          ],
+          "size": [
+            0.14960600000000035,
+            0.279527,
+            0.1496059999999999
+          ],
+          "center": [
+            -2.116142,
+            0.0216535,
+            2.3523620000000003
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.055650003,
+            -0.002999994,
+            0.0578499986
+          ],
+          "max": [
+            -0.051850010599999996,
+            0.0040999918,
+            0.061649991
+          ],
+          "size": [
+            0.0037999924000000087,
+            0.007099985800000001,
+            0.0037999923999999974
+          ],
+          "center": [
+            -0.0537500068,
+            0.0005499989,
+            0.059749994800000004
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.2FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.2FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.2FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -2.190945,
+            -0.11811,
+            1.805118
+          ],
+          "max": [
+            -2.041339,
+            0.161417,
+            1.954724
+          ],
+          "size": [
+            0.14960600000000035,
+            0.279527,
+            0.1496059999999999
+          ],
+          "center": [
+            -2.116142,
+            0.0216535,
+            1.879921
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.055650003,
+            -0.002999994,
+            0.0458499972
+          ],
+          "max": [
+            -0.051850010599999996,
+            0.0040999918,
+            0.04964998959999999
+          ],
+          "size": [
+            0.0037999924000000087,
+            0.007099985800000001,
+            0.0037999923999999974
+          ],
+          "center": [
+            -0.0537500068,
+            0.0005499989,
+            0.047749993399999996
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.3FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.3FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.3FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            2.041339,
+            -0.11811,
+            -1.954724
+          ],
+          "max": [
+            2.190945,
+            0.161417,
+            -1.805118
+          ],
+          "size": [
+            0.14960600000000035,
+            0.279527,
+            0.1496059999999999
+          ],
+          "center": [
+            2.116142,
+            0.0216535,
+            -1.879921
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.051850010599999996,
+            -0.002999994,
+            -0.04964998959999999
+          ],
+          "max": [
+            0.055650003,
+            0.0040999918,
+            -0.0458499972
+          ],
+          "size": [
+            0.0037999924000000087,
+            0.007099985800000001,
+            0.0037999923999999974
+          ],
+          "center": [
+            0.0537500068,
+            0.0005499989,
+            -0.047749993399999996
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.4FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.4FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.4FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            2.041339,
+            -0.11811,
+            -2.427165
+          ],
+          "max": [
+            2.190945,
+            0.161417,
+            -2.277559
+          ],
+          "size": [
+            0.14960600000000035,
+            0.279527,
+            0.1496059999999999
+          ],
+          "center": [
+            2.116142,
+            0.0216535,
+            -2.3523620000000003
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.051850010599999996,
+            -0.002999994,
+            -0.061649991
+          ],
+          "max": [
+            0.055650003,
+            0.0040999918,
+            -0.0578499986
+          ],
+          "size": [
+            0.0037999924000000087,
+            0.007099985800000001,
+            0.0037999923999999974
+          ],
+          "center": [
+            0.0537500068,
+            0.0005499989,
+            -0.059749994800000004
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.5FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.5FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.5FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            2.277559,
+            -0.11811,
+            -2.190945
+          ],
+          "max": [
+            2.427165,
+            0.161417,
+            -2.041339
+          ],
+          "size": [
+            0.1496059999999999,
+            0.279527,
+            0.14960600000000035
+          ],
+          "center": [
+            2.3523620000000003,
+            0.0216535,
+            -2.116142
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0578499986,
+            -0.002999994,
+            -0.055650003
+          ],
+          "max": [
+            0.061649991,
+            0.0040999918,
+            -0.051850010599999996
+          ],
+          "size": [
+            0.0037999923999999974,
+            0.007099985800000001,
+            0.0037999924000000087
+          ],
+          "center": [
+            0.059749994800000004,
+            0.0005499989,
+            -0.0537500068
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.6FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.6FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.6FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            1.805118,
+            -0.11811,
+            -2.190945
+          ],
+          "max": [
+            1.954724,
+            0.161417,
+            -2.041339
+          ],
+          "size": [
+            0.1496059999999999,
+            0.279527,
+            0.14960600000000035
+          ],
+          "center": [
+            1.879921,
+            0.0216535,
+            -2.116142
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0458499972,
+            -0.002999994,
+            -0.055650003
+          ],
+          "max": [
+            0.04964998959999999,
+            0.0040999918,
+            -0.051850010599999996
+          ],
+          "size": [
+            0.0037999923999999974,
+            0.007099985800000001,
+            0.0037999924000000087
+          ],
+          "center": [
+            0.047749993399999996,
+            0.0005499989,
+            -0.0537500068
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.7FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.7FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.7FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            2.041339,
+            -0.11811,
+            2.277559
+          ],
+          "max": [
+            2.190945,
+            0.161417,
+            2.427165
+          ],
+          "size": [
+            0.14960600000000035,
+            0.279527,
+            0.1496059999999999
+          ],
+          "center": [
+            2.116142,
+            0.0216535,
+            2.3523620000000003
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.051850010599999996,
+            -0.002999994,
+            0.0578499986
+          ],
+          "max": [
+            0.055650003,
+            0.0040999918,
+            0.061649991
+          ],
+          "size": [
+            0.0037999924000000087,
+            0.007099985800000001,
+            0.0037999923999999974
+          ],
+          "center": [
+            0.0537500068,
+            0.0005499989,
+            0.059749994800000004
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.8FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.8FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.8FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            1.805118,
+            -0.11811,
+            2.041339
+          ],
+          "max": [
+            1.954724,
+            0.161417,
+            2.190945
+          ],
+          "size": [
+            0.1496059999999999,
+            0.279527,
+            0.14960600000000035
+          ],
+          "center": [
+            1.879921,
+            0.0216535,
+            2.116142
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0458499972,
+            -0.002999994,
+            0.051850010599999996
+          ],
+          "max": [
+            0.04964998959999999,
+            0.0040999918,
+            0.055650003
+          ],
+          "size": [
+            0.0037999923999999974,
+            0.007099985800000001,
+            0.0037999924000000087
+          ],
+          "center": [
+            0.047749993399999996,
+            0.0005499989,
+            0.0537500068
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.9FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.9FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.9FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            2.277559,
+            -0.11811,
+            2.041339
+          ],
+          "max": [
+            2.427165,
+            0.161417,
+            2.190945
+          ],
+          "size": [
+            0.1496059999999999,
+            0.279527,
+            0.14960600000000035
+          ],
+          "center": [
+            2.3523620000000003,
+            0.0216535,
+            2.116142
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0578499986,
+            -0.002999994,
+            0.051850010599999996
+          ],
+          "max": [
+            0.061649991,
+            0.0040999918,
+            0.055650003
+          ],
+          "size": [
+            0.0037999923999999974,
+            0.007099985800000001,
+            0.0037999924000000087
+          ],
+          "center": [
+            0.059749994800000004,
+            0.0005499989,
+            0.0537500068
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.10FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.10FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.10FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            2.041339,
+            -0.11811,
+            1.805118
+          ],
+          "max": [
+            2.190945,
+            0.161417,
+            1.954724
+          ],
+          "size": [
+            0.14960600000000035,
+            0.279527,
+            0.1496059999999999
+          ],
+          "center": [
+            2.116142,
+            0.0216535,
+            1.879921
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.051850010599999996,
+            -0.002999994,
+            0.0458499972
+          ],
+          "max": [
+            0.055650003,
+            0.0040999918,
+            0.04964998959999999
+          ],
+          "size": [
+            0.0037999924000000087,
+            0.007099985800000001,
+            0.0037999923999999974
+          ],
+          "center": [
+            0.0537500068,
+            0.0005499989,
+            0.047749993399999996
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.11FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.11FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.11FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -2.427165,
+            -0.11811,
+            2.041339
+          ],
+          "max": [
+            -2.277559,
+            0.161417,
+            2.190945
+          ],
+          "size": [
+            0.1496059999999999,
+            0.279527,
+            0.14960600000000035
+          ],
+          "center": [
+            -2.3523620000000003,
+            0.0216535,
+            2.116142
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.061649991,
+            -0.002999994,
+            0.051850010599999996
+          ],
+          "max": [
+            -0.0578499986,
+            0.0040999918,
+            0.055650003
+          ],
+          "size": [
+            0.0037999923999999974,
+            0.007099985800000001,
+            0.0037999924000000087
+          ],
+          "center": [
+            -0.059749994800000004,
+            0.0005499989,
+            0.0537500068
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.12FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.12FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.12FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -1.954724,
+            -0.11811,
+            2.041339
+          ],
+          "max": [
+            -1.805118,
+            0.161417,
+            2.190945
+          ],
+          "size": [
+            0.1496059999999999,
+            0.279527,
+            0.14960600000000035
+          ],
+          "center": [
+            -1.879921,
+            0.0216535,
+            2.116142
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.04964998959999999,
+            -0.002999994,
+            0.051850010599999996
+          ],
+          "max": [
+            -0.0458499972,
+            0.0040999918,
+            0.055650003
+          ],
+          "size": [
+            0.0037999923999999974,
+            0.007099985800000001,
+            0.0037999924000000087
+          ],
+          "center": [
+            -0.047749993399999996,
+            0.0005499989,
+            0.0537500068
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.13FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.13FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.13FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -2.427165,
+            -0.11811,
+            -2.190945
+          ],
+          "max": [
+            -2.277559,
+            0.161417,
+            -2.041339
+          ],
+          "size": [
+            0.1496059999999999,
+            0.279527,
+            0.14960600000000035
+          ],
+          "center": [
+            -2.3523620000000003,
+            0.0216535,
+            -2.116142
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.061649991,
+            -0.002999994,
+            -0.055650003
+          ],
+          "max": [
+            -0.0578499986,
+            0.0040999918,
+            -0.051850010599999996
+          ],
+          "size": [
+            0.0037999923999999974,
+            0.007099985800000001,
+            0.0037999924000000087
+          ],
+          "center": [
+            -0.059749994800000004,
+            0.0005499989,
+            -0.0537500068
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.14FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.14FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.14FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -2.190945,
+            -0.11811,
+            -2.427165
+          ],
+          "max": [
+            -2.041339,
+            0.161417,
+            -2.277559
+          ],
+          "size": [
+            0.14960600000000035,
+            0.279527,
+            0.1496059999999999
+          ],
+          "center": [
+            -2.116142,
+            0.0216535,
+            -2.3523620000000003
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.055650003,
+            -0.002999994,
+            -0.061649991
+          ],
+          "max": [
+            -0.051850010599999996,
+            0.0040999918,
+            -0.0578499986
+          ],
+          "size": [
+            0.0037999924000000087,
+            0.007099985800000001,
+            0.0037999923999999974
+          ],
+          "center": [
+            -0.0537500068,
+            0.0005499989,
+            -0.059749994800000004
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.15FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.15FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.15FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -1.954724,
+            -0.11811,
+            -2.190945
+          ],
+          "max": [
+            -1.805118,
+            0.161417,
+            -2.041339
+          ],
+          "size": [
+            0.1496059999999999,
+            0.279527,
+            0.14960600000000035
+          ],
+          "center": [
+            -1.879921,
+            0.0216535,
+            -2.116142
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.04964998959999999,
+            -0.002999994,
+            -0.055650003
+          ],
+          "max": [
+            -0.0458499972,
+            0.0040999918,
+            -0.051850010599999996
+          ],
+          "size": [
+            0.0037999923999999974,
+            0.007099985800000001,
+            0.0037999924000000087
+          ],
+          "center": [
+            -0.047749993399999996,
+            0.0005499989,
+            -0.0537500068
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M2_6MM.16FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M2_6MM.16FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M2_6MM.16FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -2.190945,
+            -0.11811,
+            -1.954724
+          ],
+          "max": [
+            -2.041339,
+            0.161417,
+            -1.805118
+          ],
+          "size": [
+            0.14960600000000035,
+            0.279527,
+            0.1496059999999999
+          ],
+          "center": [
+            -2.116142,
+            0.0216535,
+            -1.879921
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.055650003,
+            -0.002999994,
+            -0.04964998959999999
+          ],
+          "max": [
+            -0.051850010599999996,
+            0.0040999918,
+            -0.0458499972
+          ],
+          "size": [
+            0.0037999924000000087,
+            0.007099985800000001,
+            0.0037999923999999974
+          ],
+          "center": [
+            -0.0537500068,
+            0.0005499989,
+            -0.047749993399999996
+          ]
+        }
+      },
+      {
+        "id": "PROTECTIVE_RING.1FBXASC092MAIN_STRUCTURE",
+        "name": "PROTECTIVE_RING.1FBXASC092MAIN_STRUCTURE",
+        "geometry": "PROTECTIVE_RING.1FBXASC092MAIN_STRUCTURE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -4.163432,
+            -0.944882,
+            -4.163386
+          ],
+          "max": [
+            4.163432,
+            -0.511811,
+            4.163432
+          ],
+          "size": [
+            8.326864,
+            0.433071,
+            8.326818
+          ],
+          "center": [
+            0.0,
+            -0.7283465,
+            2.300000000010627e-05
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.1057511728,
+            -0.0240000028,
+            -0.1057500044
+          ],
+          "max": [
+            0.1057511728,
+            -0.0129999994,
+            0.1057511728
+          ],
+          "size": [
+            0.2115023456,
+            0.0110000034,
+            0.21150117719999997
+          ],
+          "center": [
+            0.0,
+            -0.0185000011,
+            5.842000000026992e-07
+          ]
+        }
+      },
+      {
+        "id": "LAND_GEAR.1FBXASC092PartBody",
+        "name": "LAND_GEAR.1FBXASC092PartBody",
+        "geometry": "LAND_GEAR.1FBXASC092PartBody-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -2.047244,
+            -1.417323,
+            -3.845909
+          ],
+          "max": [
+            2.047244,
+            -0.866142,
+            3.564248
+          ],
+          "size": [
+            4.094488,
+            0.5511810000000001,
+            7.410157
+          ],
+          "center": [
+            0.0,
+            -1.1417325,
+            -0.14083049999999986
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0519999976,
+            -0.036000004200000005,
+            -0.09768608859999998
+          ],
+          "max": [
+            0.0519999976,
+            -0.0220000068,
+            0.0905318992
+          ],
+          "size": [
+            0.1039999952,
+            0.013999997400000004,
+            0.1882179878
+          ],
+          "center": [
+            0.0,
+            -0.0290000055,
+            -0.003577094699999996
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M3_20MM.1FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M3_20MM.1FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M3_20MM.1FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.115157,
+            -1.088583,
+            3.152559
+          ],
+          "max": [
+            0.115157,
+            -0.23622,
+            3.382874
+          ],
+          "size": [
+            0.230314,
+            0.8523630000000001,
+            0.23031500000000005
+          ],
+          "center": [
+            0.0,
+            -0.6624015000000001,
+            3.2677165
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0029249878,
+            -0.0276500082,
+            0.0800749986
+          ],
+          "max": [
+            0.0029249878,
+            -0.005999988,
+            0.0859249996
+          ],
+          "size": [
+            0.0058499756,
+            0.0216500202,
+            0.005850001000000001
+          ],
+          "center": [
+            0.0,
+            -0.016824998100000002,
+            0.0829999991
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M3_20MM.2FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M3_20MM.2FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M3_20MM.2FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.485236,
+            -1.088583,
+            -3.737205
+          ],
+          "max": [
+            0.715551,
+            -0.23622,
+            -3.50689
+          ],
+          "size": [
+            0.23031500000000005,
+            0.8523630000000001,
+            0.23031500000000005
+          ],
+          "center": [
+            0.6003935,
+            -0.6624015000000001,
+            -3.6220475
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.012324994399999999,
+            -0.0276500082,
+            -0.09492500699999999
+          ],
+          "max": [
+            0.0181749954,
+            -0.005999988,
+            -0.089075006
+          ],
+          "size": [
+            0.005850001000000001,
+            0.0216500202,
+            0.005850001000000001
+          ],
+          "center": [
+            0.0152499949,
+            -0.016824998100000002,
+            -0.0920000065
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M3_20MM.3FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M3_20MM.3FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M3_20MM.3FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -1.886811,
+            -1.088583,
+            -0.115157
+          ],
+          "max": [
+            -1.656496,
+            -0.23622,
+            0.115157
+          ],
+          "size": [
+            0.23031500000000005,
+            0.8523630000000001,
+            0.230314
+          ],
+          "center": [
+            -1.7716535,
+            -0.6624015000000001,
+            0.0
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0479249994,
+            -0.0276500082,
+            -0.0029249878
+          ],
+          "max": [
+            -0.0420749984,
+            -0.005999988,
+            0.0029249878
+          ],
+          "size": [
+            0.005850001000000001,
+            0.0216500202,
+            0.0058499756
+          ],
+          "center": [
+            -0.0449999989,
+            -0.016824998100000002,
+            0.0
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M3_20MM.4FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M3_20MM.4FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M3_20MM.4FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            1.656496,
+            -1.088583,
+            -0.115157
+          ],
+          "max": [
+            1.886811,
+            -0.23622,
+            0.115157
+          ],
+          "size": [
+            0.23031500000000005,
+            0.8523630000000001,
+            0.230314
+          ],
+          "center": [
+            1.7716535,
+            -0.6624015000000001,
+            0.0
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0420749984,
+            -0.0276500082,
+            -0.0029249878
+          ],
+          "max": [
+            0.0479249994,
+            -0.005999988,
+            0.0029249878
+          ],
+          "size": [
+            0.005850001000000001,
+            0.0216500202,
+            0.0058499756
+          ],
+          "center": [
+            0.0449999989,
+            -0.016824998100000002,
+            0.0
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M3_20MM.5FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M3_20MM.5FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M3_20MM.5FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.715551,
+            -1.088583,
+            -3.737205
+          ],
+          "max": [
+            -0.485236,
+            -0.23622,
+            -3.50689
+          ],
+          "size": [
+            0.23031500000000005,
+            0.8523630000000001,
+            0.23031500000000005
+          ],
+          "center": [
+            -0.6003935,
+            -0.6624015000000001,
+            -3.6220475
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0181749954,
+            -0.0276500082,
+            -0.09492500699999999
+          ],
+          "max": [
+            -0.012324994399999999,
+            -0.005999988,
+            -0.089075006
+          ],
+          "size": [
+            0.005850001000000001,
+            0.0216500202,
+            0.005850001000000001
+          ],
+          "center": [
+            -0.0152499949,
+            -0.016824998100000002,
+            -0.0920000065
+          ]
+        }
+      },
+      {
+        "id": "AL_COLUMNS_M3_D5_15MM.14FBXASC092MAIN_STRUCTURE",
+        "name": "AL_COLUMNS_M3_D5_15MM.14FBXASC092MAIN_STRUCTURE",
+        "geometry": "AL_COLUMNS_M3_D5_15MM.14FBXASC092MAIN_STRUCTURE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.501969,
+            -0.590551,
+            -3.720472
+          ],
+          "max": [
+            0.698819,
+            0.0,
+            -3.523622
+          ],
+          "size": [
+            0.19684999999999997,
+            0.590551,
+            0.19684999999999997
+          ],
+          "center": [
+            0.600394,
+            -0.2952755,
+            -3.6220470000000002
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0127500126,
+            -0.0149999954,
+            -0.09449998879999999
+          ],
+          "max": [
+            0.0177500026,
+            0.0,
+            -0.0894999988
+          ],
+          "size": [
+            0.004999989999999999,
+            0.0149999954,
+            0.004999989999999999
+          ],
+          "center": [
+            0.015250007599999999,
+            -0.0074999977,
+            -0.0919999938
+          ]
+        }
+      },
+      {
+        "id": "AL_COLUMNS_M3_D5_15MM.1FBXASC092MAIN_STRUCTURE",
+        "name": "AL_COLUMNS_M3_D5_15MM.1FBXASC092MAIN_STRUCTURE",
+        "geometry": "AL_COLUMNS_M3_D5_15MM.1FBXASC092MAIN_STRUCTURE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.098425,
+            -0.590551,
+            1.279528
+          ],
+          "max": [
+            0.098425,
+            0.0,
+            1.476378
+          ],
+          "size": [
+            0.19685,
+            0.590551,
+            0.19684999999999997
+          ],
+          "center": [
+            0.0,
+            -0.2952755,
+            1.377953
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0024999949999999996,
+            -0.0149999954,
+            0.0325000112
+          ],
+          "max": [
+            0.0024999949999999996,
+            0.0,
+            0.0375000012
+          ],
+          "size": [
+            0.004999989999999999,
+            0.0149999954,
+            0.004999989999999999
+          ],
+          "center": [
+            0.0,
+            -0.0074999977,
+            0.035000006199999996
+          ]
+        }
+      },
+      {
+        "id": "AL_COLUMNS_M3_D5_15MM.2FBXASC092MAIN_STRUCTURE",
+        "name": "AL_COLUMNS_M3_D5_15MM.2FBXASC092MAIN_STRUCTURE",
+        "geometry": "AL_COLUMNS_M3_D5_15MM.2FBXASC092MAIN_STRUCTURE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            1.673228,
+            -0.590551,
+            -0.098425
+          ],
+          "max": [
+            1.870079,
+            0.0,
+            0.098425
+          ],
+          "size": [
+            0.1968510000000001,
+            0.590551,
+            0.19685
+          ],
+          "center": [
+            1.7716535,
+            -0.2952755,
+            0.0
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0424999912,
+            -0.0149999954,
+            -0.0024999949999999996
+          ],
+          "max": [
+            0.0475000066,
+            0.0,
+            0.0024999949999999996
+          ],
+          "size": [
+            0.005000015400000003,
+            0.0149999954,
+            0.004999989999999999
+          ],
+          "center": [
+            0.0449999989,
+            -0.0074999977,
+            0.0
+          ]
+        }
+      },
+      {
+        "id": "AL_COLUMNS_M3_D5_15MM.3FBXASC092MAIN_STRUCTURE",
+        "name": "AL_COLUMNS_M3_D5_15MM.3FBXASC092MAIN_STRUCTURE",
+        "geometry": "AL_COLUMNS_M3_D5_15MM.3FBXASC092MAIN_STRUCTURE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.698819,
+            -0.590551,
+            -3.720472
+          ],
+          "max": [
+            -0.501969,
+            0.0,
+            -3.523622
+          ],
+          "size": [
+            0.19684999999999997,
+            0.590551,
+            0.19684999999999997
+          ],
+          "center": [
+            -0.600394,
+            -0.2952755,
+            -3.6220470000000002
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0177500026,
+            -0.0149999954,
+            -0.09449998879999999
+          ],
+          "max": [
+            -0.0127500126,
+            0.0,
+            -0.0894999988
+          ],
+          "size": [
+            0.004999989999999999,
+            0.0149999954,
+            0.004999989999999999
+          ],
+          "center": [
+            -0.015250007599999999,
+            -0.0074999977,
+            -0.0919999938
+          ]
+        }
+      },
+      {
+        "id": "AL_COLUMNS_M3_D5_15MM.4FBXASC092MAIN_STRUCTURE",
+        "name": "AL_COLUMNS_M3_D5_15MM.4FBXASC092MAIN_STRUCTURE",
+        "geometry": "AL_COLUMNS_M3_D5_15MM.4FBXASC092MAIN_STRUCTURE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -1.870079,
+            -0.590551,
+            -0.098425
+          ],
+          "max": [
+            -1.673228,
+            0.0,
+            0.098425
+          ],
+          "size": [
+            0.1968510000000001,
+            0.590551,
+            0.19685
+          ],
+          "center": [
+            -1.7716535,
+            -0.2952755,
+            0.0
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0475000066,
+            -0.0149999954,
+            -0.0024999949999999996
+          ],
+          "max": [
+            -0.0424999912,
+            0.0,
+            0.0024999949999999996
+          ],
+          "size": [
+            0.005000015400000003,
+            0.0149999954,
+            0.004999989999999999
+          ],
+          "center": [
+            -0.0449999989,
+            -0.0074999977,
+            0.0
+          ]
+        }
+      },
+      {
+        "id": "AL_COLUMNS_M3_D5_15MM.5FBXASC092MAIN_STRUCTURE",
+        "name": "AL_COLUMNS_M3_D5_15MM.5FBXASC092MAIN_STRUCTURE",
+        "geometry": "AL_COLUMNS_M3_D5_15MM.5FBXASC092MAIN_STRUCTURE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.098425,
+            -0.590551,
+            3.169291
+          ],
+          "max": [
+            0.098425,
+            0.0,
+            3.366142
+          ],
+          "size": [
+            0.19685,
+            0.590551,
+            0.1968510000000001
+          ],
+          "center": [
+            0.0,
+            -0.2952755,
+            3.2677164999999997
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0024999949999999996,
+            -0.0149999954,
+            0.0804999914
+          ],
+          "max": [
+            0.0024999949999999996,
+            0.0,
+            0.0855000068
+          ],
+          "size": [
+            0.004999989999999999,
+            0.0149999954,
+            0.005000015400000003
+          ],
+          "center": [
+            0.0,
+            -0.0074999977,
+            0.08299999909999999
+          ]
+        }
+      },
+      {
+        "id": "SCREW_BUTTON_HEAD_M3_14MM.1FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "name": "SCREW_BUTTON_HEAD_M3_14MM.1FBXASC092HEX_SOCKET_BUTTON_HEAD",
+        "geometry": "SCREW_BUTTON_HEAD_M3_14MM.1FBXASC092HEX_SOCKET_BUTTON_HEAD-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.115157,
+            -1.088583,
+            -1.49311
+          ],
+          "max": [
+            0.115157,
+            -0.472441,
+            -1.262795
+          ],
+          "size": [
+            0.230314,
+            0.6161420000000001,
+            0.23031500000000005
+          ],
+          "center": [
+            0.0,
+            -0.7805120000000001,
+            -1.3779525
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0029249878,
+            -0.0276500082,
+            -0.037924994
+          ],
+          "max": [
+            0.0029249878,
+            -0.0120000014,
+            -0.032074992999999996
+          ],
+          "size": [
+            0.0058499756,
+            0.0156500068,
+            0.005850001000000001
+          ],
+          "center": [
+            0.0,
+            -0.0198250048,
+            -0.0349999935
+          ]
+        }
+      },
+      {
+        "id": "HEX_NUT_M3_2.4MM.3FBXASC092HEX_NUT",
+        "name": "HEX_NUT_M3_2.4MM.3FBXASC092HEX_NUT",
+        "geometry": "HEX_NUT_M3_2.4MM.3FBXASC092HEX_NUT-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.108268,
+            -0.590551,
+            -1.50297
+          ],
+          "max": [
+            0.108268,
+            -0.496063,
+            -1.252936
+          ],
+          "size": [
+            0.216536,
+            0.09448800000000007,
+            0.25003399999999987
+          ],
+          "center": [
+            0.0,
+            -0.543307,
+            -1.377953
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0027500072,
+            -0.0149999954,
+            -0.038175438
+          ],
+          "max": [
+            0.0027500072,
+            -0.0126000002,
+            -0.0318245744
+          ],
+          "size": [
+            0.0055000144,
+            0.0023999952000000016,
+            0.006350863599999997
+          ],
+          "center": [
+            0.0,
+            -0.0137999978,
+            -0.035000006199999996
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M3_8MM.3FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M3_8MM.3FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M3_8MM.3FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.115157,
+            -0.19685,
+            1.262795
+          ],
+          "max": [
+            0.115157,
+            0.11811,
+            1.49311
+          ],
+          "size": [
+            0.230314,
+            0.31496,
+            0.23031500000000005
+          ],
+          "center": [
+            0.0,
+            -0.039369999999999995,
+            1.3779525
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0029249878,
+            -0.004999989999999999,
+            0.032074992999999996
+          ],
+          "max": [
+            0.0029249878,
+            0.002999994,
+            0.037924994
+          ],
+          "size": [
+            0.0058499756,
+            0.007999984,
+            0.005850001000000001
+          ],
+          "center": [
+            0.0,
+            -0.0009999979999999998,
+            0.0349999935
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_COUNTERSUNK_M3_8MM.1FBXASC092SCREW_COUNTERSUNK",
+        "name": "HEX_SOCKET_COUNTERSUNK_M3_8MM.1FBXASC092SCREW_COUNTERSUNK",
+        "geometry": "HEX_SOCKET_COUNTERSUNK_M3_8MM.1FBXASC092SCREW_COUNTERSUNK-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.115157,
+            -0.19685,
+            3.152559
+          ],
+          "max": [
+            0.115157,
+            0.11811,
+            3.382874
+          ],
+          "size": [
+            0.230314,
+            0.31496,
+            0.23031500000000005
+          ],
+          "center": [
+            0.0,
+            -0.039369999999999995,
+            3.2677165
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0029249878,
+            -0.004999989999999999,
+            0.0800749986
+          ],
+          "max": [
+            0.0029249878,
+            0.002999994,
+            0.0859249996
+          ],
+          "size": [
+            0.0058499756,
+            0.007999984,
+            0.005850001000000001
+          ],
+          "center": [
+            0.0,
+            -0.0009999979999999998,
+            0.0829999991
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_LEAD_SCREW_M3_16MM.1FBXASC092MAIN_BODY",
+        "name": "HEX_SOCKET_LEAD_SCREW_M3_16MM.1FBXASC092MAIN_BODY",
+        "geometry": "HEX_SOCKET_LEAD_SCREW_M3_16MM.1FBXASC092MAIN_BODY-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            0.541339,
+            -0.23622,
+            -3.681102
+          ],
+          "max": [
+            0.659449,
+            0.393701,
+            -3.562992
+          ],
+          "size": [
+            0.11810999999999994,
+            0.6299210000000001,
+            0.11811000000000016
+          ],
+          "center": [
+            0.600394,
+            0.0787405,
+            -3.6220470000000002
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0137500106,
+            -0.005999988,
+            -0.0934999908
+          ],
+          "max": [
+            0.016750004599999996,
+            0.0100000054,
+            -0.0904999968
+          ],
+          "size": [
+            0.0029999939999999985,
+            0.015999993400000002,
+            0.002999994000000004
+          ],
+          "center": [
+            0.015250007599999999,
+            0.0020000087,
+            -0.0919999938
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_LEAD_SCREW_M3_16MM.2FBXASC092MAIN_BODY",
+        "name": "HEX_SOCKET_LEAD_SCREW_M3_16MM.2FBXASC092MAIN_BODY",
+        "geometry": "HEX_SOCKET_LEAD_SCREW_M3_16MM.2FBXASC092MAIN_BODY-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            1.712598,
+            -0.23622,
+            -0.059055
+          ],
+          "max": [
+            1.830709,
+            0.393701,
+            0.059055
+          ],
+          "size": [
+            0.11811099999999985,
+            0.6299210000000001,
+            0.11811
+          ],
+          "center": [
+            1.7716535,
+            0.0787405,
+            0.0
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            0.0434999892,
+            -0.005999988,
+            -0.001499997
+          ],
+          "max": [
+            0.046500008599999997,
+            0.0100000054,
+            0.001499997
+          ],
+          "size": [
+            0.0030000193999999963,
+            0.015999993400000002,
+            0.002999994
+          ],
+          "center": [
+            0.0449999989,
+            0.0020000087,
+            0.0
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_LEAD_SCREW_M3_16MM.3FBXASC092MAIN_BODY",
+        "name": "HEX_SOCKET_LEAD_SCREW_M3_16MM.3FBXASC092MAIN_BODY",
+        "geometry": "HEX_SOCKET_LEAD_SCREW_M3_16MM.3FBXASC092MAIN_BODY-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -1.830709,
+            -0.23622,
+            -0.059055
+          ],
+          "max": [
+            -1.712598,
+            0.393701,
+            0.059055
+          ],
+          "size": [
+            0.11811099999999985,
+            0.6299210000000001,
+            0.11811
+          ],
+          "center": [
+            -1.7716535,
+            0.0787405,
+            0.0
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.046500008599999997,
+            -0.005999988,
+            -0.001499997
+          ],
+          "max": [
+            -0.0434999892,
+            0.0100000054,
+            0.001499997
+          ],
+          "size": [
+            0.0030000193999999963,
+            0.015999993400000002,
+            0.002999994
+          ],
+          "center": [
+            -0.0449999989,
+            0.0020000087,
+            0.0
+          ]
+        }
+      },
+      {
+        "id": "HEX_SOCKET_LEAD_SCREW_M3_16MM.4FBXASC092MAIN_BODY",
+        "name": "HEX_SOCKET_LEAD_SCREW_M3_16MM.4FBXASC092MAIN_BODY",
+        "geometry": "HEX_SOCKET_LEAD_SCREW_M3_16MM.4FBXASC092MAIN_BODY-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.659449,
+            -0.23622,
+            -3.681102
+          ],
+          "max": [
+            -0.541339,
+            0.393701,
+            -3.562992
+          ],
+          "size": [
+            0.11810999999999994,
+            0.6299210000000001,
+            0.11811000000000016
+          ],
+          "center": [
+            -0.600394,
+            0.0787405,
+            -3.6220470000000002
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.016750004599999996,
+            -0.005999988,
+            -0.0934999908
+          ],
+          "max": [
+            -0.0137500106,
+            0.0100000054,
+            -0.0904999968
+          ],
+          "size": [
+            0.0029999939999999985,
+            0.015999993400000002,
+            0.002999994000000004
+          ],
+          "center": [
+            -0.015250007599999999,
+            0.0020000087,
+            -0.0919999938
+          ]
+        }
+      },
+      {
+        "id": "TOP_PANNEL.1FBXASC092TOP",
+        "name": "TOP_PANNEL.1FBXASC092TOP",
+        "geometry": "TOP_PANNEL.1FBXASC092TOP-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -1.88917,
+            1.929134,
+            -3.740157
+          ],
+          "max": [
+            1.88917,
+            2.007874,
+            2.917323
+          ],
+          "size": [
+            3.77834,
+            0.07874000000000025,
+            6.65748
+          ],
+          "center": [
+            0.0,
+            1.968504,
+            -0.4114169999999999
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.047984918,
+            0.049000003599999994,
+            -0.09499998779999999
+          ],
+          "max": [
+            0.047984918,
+            0.050999999600000005,
+            0.0741000042
+          ],
+          "size": [
+            0.095969836,
+            0.0019999960000000065,
+            0.16909999199999998
+          ],
+          "center": [
+            0.0,
+            0.050000001599999996,
+            -0.010449991799999997
+          ]
+        }
+      },
+      {
+        "id": "FRONT_CAMERA_CONNECTOR.1FBXASC092MAIN_STRUCTURE",
+        "name": "FRONT_CAMERA_CONNECTOR.1FBXASC092MAIN_STRUCTURE",
+        "geometry": "FRONT_CAMERA_CONNECTOR.1FBXASC092MAIN_STRUCTURE-lib",
+        "matrix_row_major": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "bbox_dae_units_after_node": {
+          "min": [
+            -0.777559,
+            0.11811,
+            -3.730315
+          ],
+          "max": [
+            0.777559,
+            1.929134,
+            -3.405512
+          ],
+          "size": [
+            1.555118,
+            1.811024,
+            0.3248030000000002
+          ],
+          "center": [
+            0.0,
+            1.023622,
+            -3.5679135
+          ]
+        },
+        "bbox_meters_after_unit": {
+          "min": [
+            -0.0197499986,
+            0.002999994,
+            -0.094750001
+          ],
+          "max": [
+            0.0197499986,
+            0.049000003599999994,
+            -0.08650000479999999
+          ],
+          "size": [
+            0.0394999972,
+            0.046000009599999996,
+            0.008249996200000003
+          ],
+          "center": [
+            0.0,
+            0.0259999988,
+            -0.0906250029
+          ]
+        }
+      }
+    ]
+  },
+  "stl_sunray": {
+    "format": "binary",
+    "triangle_count": 530874,
+    "bbox_raw": {
+      "min": [
+        -4.16338586807251,
+        -4.225394248962402,
+        -3.187598466873169
+      ],
+      "max": [
+        4.16338586807251,
+        4.225393772125244,
+        3.1866350173950195
+      ],
+      "size": [
+        8.32677173614502,
+        8.450788021087646,
+        6.3742334842681885
+      ],
+      "center": [
+        0.0,
+        -2.384185791015625e-07,
+        -0.00048172473907470703
+      ]
+    },
+    "bbox_sdf_visual_meters": {
+      "min": [
+        -0.12686124973794705,
+        -0.12500248026897653,
+        -0.04312795400619506
+      ],
+      "max": [
+        0.12686123543283684,
+        0.125002480257585,
+        0.14809905052185057
+      ],
+      "size": [
+        0.2537224851707839,
+        0.2500049605265615,
+        0.19122700452804564
+      ],
+      "center": [
+        -7.152555103751013e-09,
+        -5.695763305446633e-12,
+        0.05248554825782775
+      ]
+    }
+  },
+  "stl_sunray_alt": {
+    "format": "binary",
+    "triangle_count": 606801,
+    "bbox_raw": {
+      "min": [
+        -4.16338586807251,
+        -4.225394248962402,
+        -3.187598466873169
+      ],
+      "max": [
+        4.16338586807251,
+        4.225393772125244,
+        3.1866350173950195
+      ],
+      "size": [
+        8.32677173614502,
+        8.450788021087646,
+        6.3742334842681885
+      ],
+      "center": [
+        0.0,
+        -2.384185791015625e-07,
+        -0.00048172473907470703
+      ]
+    },
+    "bbox_sdf_visual_meters": {
+      "min": [
+        -0.12686124973794705,
+        -0.12500248026897653,
+        -0.04312795400619506
+      ],
+      "max": [
+        0.12686123543283684,
+        0.125002480257585,
+        0.14809905052185057
+      ],
+      "size": [
+        0.2537224851707839,
+        0.2500049605265615,
+        0.19122700452804564
+      ],
+      "center": [
+        -7.152555103751013e-09,
+        -5.695763305446633e-12,
+        0.05248554825782775
+      ]
+    }
+  },
+  "stl_sunray_cw": {
+    "format": "ascii",
+    "triangle_count": 848,
+    "bbox_raw": {
+      "min": [
+        -26.39094,
+        -39.7407,
+        -1.1745
+      ],
+      "max": [
+        44.77456,
+        40.75959,
+        6.143745
+      ],
+      "size": [
+        71.16550000000001,
+        80.50029,
+        7.318245
+      ],
+      "center": [
+        9.19181,
+        0.509445000000003,
+        2.4846225
+      ]
+    },
+    "bbox_sdf_visual_if_scale_0p03_meters": {
+      "min": [
+        -0.7917282,
+        -1.1922209999999998,
+        -0.035235
+      ],
+      "max": [
+        1.3432368,
+        1.2227877,
+        0.18431234999999999
+      ],
+      "size": [
+        2.134965,
+        2.4150086999999996,
+        0.21954734999999997
+      ],
+      "center": [
+        0.27575429999999995,
+        0.01528335000000014,
+        0.074538675
+      ]
+    },
+    "bbox_if_mm_to_dae_units": {
+      "min": [
+        -1.0390133858267716,
+        -1.5645944881889762,
+        -0.046240157480314965
+      ],
+      "max": [
+        1.7627779527559055,
+        1.6047082677165356,
+        0.24187972440944883
+      ],
+      "size": [
+        2.801791338582677,
+        3.1693027559055116,
+        0.2881198818897638
+      ],
+      "center": [
+        0.36188228346456697,
+        0.02005688976377973,
+        0.09781978346456693
+      ]
+    }
+  },
+  "sdf_reference": {
+    "body_uri": "model://sunray150_with_mid360/meshes/sunray.stl",
+    "body_pose": [
+      0,
+      0,
+      0.0525,
+      0,
+      0,
+      -1.57
+    ],
+    "body_scale": [
+      0.03,
+      0.03,
+      0.03
+    ],
+    "rotor_centers_meters": [
+      [
+        0.065,
+        -0.065,
+        -0.025
+      ],
+      [
+        -0.065,
+        0.065,
+        -0.025
+      ],
+      [
+        0.065,
+        0.065,
+        -0.025
+      ],
+      [
+        -0.065,
+        -0.065,
+        -0.025
+      ]
+    ],
+    "rotor_visual_pose": [
+      0,
+      0,
+      0,
+      1.57,
+      0,
+      0
+    ],
+    "rotor_visual_scale": [
+      0.03,
+      0.03,
+      0.03
+    ]
+  }
+}

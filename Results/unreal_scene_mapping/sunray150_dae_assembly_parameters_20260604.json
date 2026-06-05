@@ -1,0 +1,333 @@
+{
+  "created_at": "2026-06-04T09:43:09.068421+00:00",
+  "purpose": "DAE-derived geometry replacement parameters for Sunray150 with MID360.",
+  "scope": {
+    "replace": [
+      "rotor center XYZ",
+      "camera extrinsics",
+      "collision envelope"
+    ],
+    "hold_for_review": [
+      "MID360 mechanical mount pose",
+      "MID360 point-cloud origin",
+      "MID360 IMU/LiDAR extrinsic"
+    ],
+    "do_not_replace": [
+      "mass",
+      "inertia",
+      "motorConstant",
+      "momentConstant",
+      "lift_cofficient",
+      "controller gains",
+      "sensor timing"
+    ]
+  },
+  "sources": {
+    "full_assembly_manifest": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_dae_mid360_full_assembly_audit_manifest.json",
+    "front_module_objects": "Results/unreal_scene_mapping/sunray150_front_module_objects_20260603.json"
+  },
+  "coordinate_frame": {
+    "unit": "m",
+    "frame": "Sunray/SDF base_link frame used by the accepted DAE assembly audit",
+    "axis_note": "Existing project convention treats +X as nose and -X as tail for MID360 connector review."
+  },
+  "rotors": {
+    "rotor_0_front_right": {
+      "center_m": [
+        0.053745,
+        -0.05374,
+        -0.014052
+      ],
+      "previous_sdf_center_m": [
+        0.065,
+        -0.065,
+        -0.025
+      ],
+      "delta_from_previous_sdf_m": [
+        -0.011255,
+        0.01126,
+        0.010948
+      ],
+      "confidence": "high",
+      "source": "user-reviewed DAE screw-pair fit; propeller contact-plane Z accepted manually"
+    },
+    "rotor_1_back_left": {
+      "center_m": [
+        -0.053761,
+        0.05376,
+        -0.014052
+      ],
+      "previous_sdf_center_m": [
+        -0.065,
+        0.065,
+        -0.025
+      ],
+      "delta_from_previous_sdf_m": [
+        0.011239,
+        -0.01124,
+        0.010948
+      ],
+      "confidence": "high",
+      "source": "user-reviewed DAE screw-pair fit; propeller contact-plane Z accepted manually"
+    },
+    "rotor_2_front_left": {
+      "center_m": [
+        0.053746,
+        0.053759,
+        -0.014052
+      ],
+      "previous_sdf_center_m": [
+        0.065,
+        0.065,
+        -0.025
+      ],
+      "delta_from_previous_sdf_m": [
+        -0.011254,
+        -0.011241,
+        0.010948
+      ],
+      "confidence": "high",
+      "source": "user-reviewed DAE screw-pair fit; propeller contact-plane Z accepted manually"
+    },
+    "rotor_3_back_right": {
+      "center_m": [
+        -0.053761,
+        -0.053739,
+        -0.014052
+      ],
+      "previous_sdf_center_m": [
+        -0.065,
+        -0.065,
+        -0.025
+      ],
+      "delta_from_previous_sdf_m": [
+        0.011239,
+        0.011261,
+        0.010948
+      ],
+      "confidence": "high",
+      "source": "user-reviewed DAE screw-pair fit; propeller contact-plane Z accepted manually"
+    }
+  },
+  "mworks_dronefixed_mapping": {
+    "Dronefixed1": [
+      0.053745,
+      -0.05374,
+      -0.014052
+    ],
+    "Dronefixed2": [
+      0.053746,
+      0.053759,
+      -0.014052
+    ],
+    "Dronefixed3": [
+      -0.053761,
+      0.05376,
+      -0.014052
+    ],
+    "Dronefixed4": [
+      -0.053761,
+      -0.053739,
+      -0.014052
+    ]
+  },
+  "sdf_rotor_mapping": {
+    "rotor_0": [
+      0.053745,
+      -0.05374,
+      -0.014052
+    ],
+    "rotor_1": [
+      -0.053761,
+      0.05376,
+      -0.014052
+    ],
+    "rotor_2": [
+      0.053746,
+      0.053759,
+      -0.014052
+    ],
+    "rotor_3": [
+      -0.053761,
+      -0.053739,
+      -0.014052
+    ]
+  },
+  "mid360": {
+    "mechanical_mount_pose_xyz_rpy_candidate": [
+      -5e-06,
+      0.032295,
+      0.050167,
+      0.0,
+      0.0,
+      4.712389
+    ],
+    "laser_sensor_origin_candidate_m": [
+      -5e-06,
+      0.032295,
+      0.150167
+    ],
+    "official_point_cloud_to_imu_translation_m": [
+      0.011,
+      0.02329,
+      -0.04412
+    ],
+    "fast_lio_lidar_pose_in_imu_body_frame_m": [
+      -0.011,
+      -0.02329,
+      0.04412
+    ],
+    "mount_center_m": [
+      -5e-06,
+      0.032295,
+      0.050167
+    ],
+    "visual_bbox_center_m": [
+      -5e-06,
+      0.028363,
+      0.080223
+    ],
+    "visual_bbox_size_m": [
+      0.064889,
+      0.072754,
+      0.060111
+    ],
+    "visual_bbox_min_m": [
+      -0.032449,
+      -0.008014,
+      0.050167
+    ],
+    "visual_bbox_max_m": [
+      0.03244,
+      0.06474,
+      0.110278
+    ],
+    "yaw_rad": 4.712389,
+    "yaw_deg": 270.0,
+    "confidence": "high for mount/yaw, medium for laser origin because the Sunray livox_mid360 model keeps its ray sensor at local z=0.1",
+    "source": "user-reviewed four-hole MID360 fit, accepted tail-connector yaw, and local livox_mid360.sdf base_link/ray-sensor offsets",
+    "official_reference": "Livox Mid-360 User Manual: point-cloud coordinate origin O-XYZ and built-in IMU position (11.0, 23.29, -44.12) mm in point-cloud coordinates.",
+    "previous_sdf_pose_xyz_rpy": [
+      0.036,
+      -0.0155,
+      0.075,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "delta_xyz_from_previous_sdf_m": [
+      -0.036005,
+      0.047795,
+      -0.024833
+    ],
+    "replacement_status": "hold_for_review",
+    "review_reason": "Livox official documents define a point-cloud coordinate origin O-XYZ and a built-in IMU, while FAST-LIO expects LiDAR pose in IMU body frame. The local Gazebo model also places its ray sensor at base_link local z=0.1. These are not the same as the mechanical mount center."
+  },
+  "cameras": {
+    "front": {
+      "pose_xyz_rpy": [
+        0.0,
+        0.1032,
+        0.0185,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "body_center_m": [
+        0.0,
+        0.09365,
+        0.02275
+      ],
+      "optical_center_candidate_m": [
+        0.0,
+        0.1032,
+        0.0185
+      ],
+      "confidence": "medium",
+      "source": "DAE front camera body plus accepted lens overlay marker",
+      "previous_sdf_pose_xyz_rpy": [
+        0.12,
+        0.0,
+        0.025,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "delta_xyz_from_previous_sdf_m": [
+        -0.12,
+        0.1032,
+        -0.0065
+      ]
+    },
+    "down": {
+      "pose_xyz_rpy": [
+        0.0,
+        0.0145,
+        -0.0263,
+        0.0,
+        1.5707963,
+        3.14
+      ],
+      "optical_center_candidate_m": [
+        0.0,
+        0.0145,
+        -0.0263
+      ],
+      "confidence": "medium",
+      "source": "accepted bottom camera lens overlay marker; retains existing down-camera RPY",
+      "previous_sdf_pose_xyz_rpy": [
+        -0.01,
+        0.0,
+        -0.02,
+        0.0,
+        1.5707963,
+        3.14
+      ],
+      "delta_xyz_from_previous_sdf_m": [
+        0.01,
+        0.0145,
+        -0.0063
+      ]
+    }
+  },
+  "collision_envelope": {
+    "base_link_box_pose_xyz_rpy": [
+      0.0,
+      0.001574,
+      0.044965,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "base_link_box_size_xyz": [
+      0.211502,
+      0.214651,
+      0.16193
+    ],
+    "assembly_bounds_min_m": [
+      -0.105751,
+      -0.105751,
+      -0.036
+    ],
+    "assembly_bounds_max_m": [
+      0.105751,
+      0.1089,
+      0.12593
+    ],
+    "confidence": "medium",
+    "source": "conservative AABB of accepted full DAE assembly bounds, including propellers and top MID360",
+    "previous_sdf_pose_xyz_rpy": [
+      0.0,
+      0.0,
+      -0.012,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "previous_sdf_size_xyz": [
+      0.2,
+      0.15,
+      0.06
+    ]
+  }
+}
