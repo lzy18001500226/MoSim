@@ -736,22 +736,22 @@
     model Arm "机臂"
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed1(
         animation = false, 
-        r = {0.065, -0.065, -0.025})
+        r = {0.053745, -0.05374, -0.014052})
         annotation (Placement(transformation(origin = {2.4999999999999716, 75.50000000000004}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed2(
         animation = false, 
-        r = {0.065, 0.065, -0.025})
+        r = {0.053746, 0.053759, -0.014052})
         annotation (Placement(transformation(origin = {4.499999999999972, 24.83333333333337}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed3(
         animation = false, 
-        r = {-0.065, 0.065, -0.025})
+        r = {-0.053761, 0.05376, -0.014052})
         annotation (Placement(transformation(origin = {2.4999999999999716, -25.8333333333333}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed4(
         animation = false, 
-        r = {-0.065, -0.065, -0.025})
+        r = {-0.053761, -0.053739, -0.014052})
         annotation (Placement(transformation(origin = {2.4999999999999716, -76.49999999999997}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Interfaces.Frame_b frame_b 
@@ -976,7 +976,7 @@
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed1(
         animation = false, 
-        r = {0.065, -0.065, -0.025})
+        r = {0.053745, -0.05374, -0.014052})
         annotation (Placement(transformation(origin = {73.77694849419791, 99.5026214436419}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Joints.Revolute revolute2(
@@ -987,7 +987,7 @@
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed2(
         animation = false, 
-        r = {0.065, 0.065, -0.025})
+        r = {0.053746, 0.053759, -0.014052})
         annotation (Placement(transformation(origin = {73.77694849419791, 39.502621443641885}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Joints.Revolute revolute3(
@@ -998,7 +998,7 @@
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed3(
         animation = false, 
-        r = {-0.065, 0.065, -0.025})
+        r = {-0.053761, 0.05376, -0.014052})
         annotation (Placement(transformation(origin = {73.77694849419791, -40.497378556358086}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Joints.Revolute revolute4(
@@ -1009,7 +1009,7 @@
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed4(
         animation = false, 
-        r = {-0.065, -0.065, -0.025})
+        r = {-0.053761, -0.053739, -0.014052})
         annotation (Placement(transformation(origin = {73.7769484941979, -100.49737855635811}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Forces.WorldForce force1(resolveInFrame=Modelica.Mechanics.MultiBody.Types.ResolveInFrameB.frame_b, animation=false) annotation (Placement(transformation(origin = {-43.68550815051444, 80.71820959281155}, 
