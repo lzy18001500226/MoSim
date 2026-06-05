@@ -408,6 +408,10 @@ References/Log/pyulog/**/*.ulg
 References/Log/px4tools/**/*.ulg
 References/Log/px4tools/**/*.px4log
 References/Log/px4tools/**/*.csv
+!References/Log/airo_control_interface/
+!References/Log/airo_control_interface/**
+References/Log/airo_control_interface/**/*.o
+References/Log/airo_control_interface/**/*.so
 References/Sunray/
 References/Lab/Fast-Racing/src/thirdparty/MavLinkCom/MavLinkComGenerator/obj/
 References/AirSim/carla-ue5-dev/
