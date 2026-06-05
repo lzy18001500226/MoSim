@@ -30,6 +30,22 @@ Completed batches:
    - Reason: sync reviewed Sunray150 rotor, camera, and collision geometry into MWORKS and Sunray SDF references.
    - Evidence: text-only files; no secret-pattern hits in reviewed diff; cached diff check passed in a temporary index.
 
+3. `f67db02745d029a9b5098ff79fd743a529a185c3`
+   - Message: `refs: add daytona app runtime slices`
+   - Scope:
+     - `.gitignore`
+     - `References/Agent/Gateway/daytona/apps/cli`
+     - `References/Agent/Gateway/daytona/apps/daemon`
+     - `References/Agent/Gateway/daytona/apps/runner`
+     - `References/Agent/Gateway/daytona/apps/daytona-e2e`
+     - `References/Agent/Gateway/daytona/apps/otel-collector`
+     - `References/Agent/Gateway/daytona/apps/proxy`
+     - `References/Agent/Gateway/daytona/apps/snapshot-manager`
+     - `References/Agent/Gateway/daytona/apps/ssh-gateway`
+   - Reason: drain the next reviewed Daytona application slice while keeping `.env` files and generated/runtime directories ignored.
+   - Evidence: 519 staged paths; largest staged file was 162,922 bytes; no nested `.git` hits; no LFS pointer hits; `.env`, `node_modules`, `bin`, `build`, and `dist` were excluded; cached diff check passed in a temporary index.
+   - Notes: real index was cleaned back to the pre-existing unrelated staged files after the temporary-index commit.
+
 Current known residuals:
 
 - Real index had unrelated staged files before DevOps write work:
@@ -42,5 +58,6 @@ Current known residuals:
 
 Next safe batches:
 
-1. Daytona grouped apps: `apps/cli`, `apps/daemon`, `apps/runner`, `apps/daytona-e2e`, `apps/otel-collector`, `apps/proxy`, `apps/snapshot-manager`, `apps/ssh-gateway`, excluding `.env` files.
-2. `References/Data -> References/Log` migration pilot: start with `px4_pid_tuner`, then proceed by source-only batches for pyulog/px4tools/data-driven projects.
+1. Daytona remaining apps: `apps/dashboard` plus `apps/docs`, excluding `.env`, dependency folders, build outputs, and generated caches.
+2. Daytona examples/guides or libs split by package family, each kept under 1000 paths.
+3. `References/Data -> References/Log` migration pilot: start with `px4_pid_tuner`, then proceed by source-only batches for pyulog/px4tools/data-driven projects.
