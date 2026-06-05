@@ -56,6 +56,15 @@ Completed batches:
    - Evidence: 965 staged paths; largest staged file was 8,326,623 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; forbidden path filters for `.env`, `node_modules`, `bin`, `build`, `dist`, `.next`, `.cache`, and `.turbo` passed; cached diff check passed in a temporary index.
    - Notes: commit parent was `1ab64fa63d6653a587e39fd523d4d275d1681aae`, which was already `origin/main`; this DevOps commit did not overwrite the concurrently pushed upstream commit.
 
+5. `b820a7d50db818c905f44bf2f719c7fac12f0dc4`
+   - Message: `refs: add daytona sdk and small lib slices`
+   - Scope:
+     - `.gitignore`
+     - selected `References/Agent/Gateway/daytona/libs/*` SDK/API client and support packages
+   - Reason: drain a reviewed Daytona library slice while keeping dependency folders, build outputs, object folders, caches, and `.env` files ignored.
+   - Evidence: 685 staged paths; largest staged file was 52,697 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; forbidden path filters passed.
+   - Correction needed: PowerShell did not stop after `git diff --cached --check` reported CRLF/trailing-whitespace warnings for `libs/sdk-java/gradlew.bat`; this commit was local-only at discovery time and must be followed by a narrow fix commit before push.
+
 Current known residuals:
 
 - Real index had unrelated staged files before DevOps write work:
@@ -65,6 +74,7 @@ Current known residuals:
 - `References/Data` has 323 tracked deletes while matching directories exist under ignored `References/Log`. Do not commit bare deletes.
 - `References/PX4/mavros-ros2/mavros/test/mavros_py/testdata/missionplanner.parm` appears to be line-ending noise and is deferred.
 - `References/Agent/Gateway/daytona` remains partially drained; next suggested batch is grouped small apps under 1000 files.
+- `git diff --cached --check` must be treated as failed when `$LASTEXITCODE` is nonzero under PowerShell; this rule was added to `Docs/Workflows/agent_orchestration.md` after the Daytona libs gate anomaly.
 
 Next safe batches:
 

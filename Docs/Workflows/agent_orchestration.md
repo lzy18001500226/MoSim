@@ -324,6 +324,29 @@ task packet for each conversation, or dispatches it with
 records the task in the MoSim runtime/ledger. Do not build a separate web
 dashboard unless the VSCode/Codex task UI becomes insufficient.
 
+Current operational boundary: multi-conversation scheduling and task handoff are
+manual by default. The user creates, opens, switches, and pastes or sends task
+packets to visible Codex conversations. The main agent owns packet preparation,
+result import, ledger updates, integration, and automatic WeChat notifications
+after completion, review-required, blocker, or incident states. Do not claim
+autonomous dispatch is working unless the target conversation is visible to the
+user and a result packet has been returned through the approved transport.
+
+Completion notification rule:
+
+```bash
+python CoAgent/result_router/result_router.py import \
+  --packet Results/agent_packets/<task_id>.yaml \
+  --notify-weixin \
+  --send-weixin
+```
+
+For `canonical_status=completed`, `--notify-weixin` generates a
+`completion_notification` packet and routes it through
+`CoAgent/gateway/cc_connect_weixin.py`. This is required even when
+`requires_human_review=false`, because task completion is the user's unified
+out-of-band progress signal while multi-dialog scheduling remains manual.
+
 Conversation classes:
 
 | Class | Owner | Purpose | Examples |
@@ -1234,6 +1257,13 @@ Large batch default strategy:
    quiet. Convert each temporary rule into committed tracked content, a narrow
    long-term ignore for a justified class, or a documented manifest-only skip.
 ```
+
+When using PowerShell with temporary indexes and `git commit-tree`, native Git
+gate commands must be checked through `$LASTEXITCODE` before `git write-tree`
+or `git update-ref`. In particular, after `git diff --cached --check`, stop the
+batch if `$LASTEXITCODE` is nonzero even when the PowerShell script itself
+continues running. Do not let a commit-tree/update-ref step run after a failed
+diff-check gate.
 
 Do not treat IDE visibility settings as a substitute for this strategy.
 Specifically, do not solve a huge untracked surface by setting
