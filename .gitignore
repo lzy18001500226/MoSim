@@ -397,6 +397,9 @@ References/Agent/**/venv/
 References/Agent/**/*.pyc
 Docs/Skills/Unreal/**/__pycache__/
 References/Log/
+!References/Log/
+!References/Log/px4_pid_tuner/
+!References/Log/px4_pid_tuner/**
 References/Sunray/
 References/Lab/Fast-Racing/src/thirdparty/MavLinkCom/MavLinkComGenerator/obj/
 References/AirSim/carla-ue5-dev/
