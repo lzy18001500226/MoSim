@@ -116,6 +116,15 @@ Completed batches:
     - Reason: drain Daytona examples and guide content while keeping dependency folders, build outputs, caches, and `.env` files ignored.
     - Evidence: 301 staged paths; largest staged file was 252,461 bytes; Gradle wrapper `.jar` files were 43,583 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; forbidden path filters passed; two Java example `gradlew.bat` files were normalized to LF after diff-check caught CRLF/trailing-whitespace warnings; follow-up `git diff --check HEAD~1..HEAD` exited with `$LASTEXITCODE=0`.
 
+11. `a3cba6c3be0d2a0c47ebac090ec82a510cd6ca70`
+    - Message: `refs: migrate px4 pid tuner logs`
+    - Scope:
+      - `.gitignore`
+      - `References/Data/px4_pid_tuner`
+      - `References/Log/px4_pid_tuner`
+    - Reason: start the `References/Data -> References/Log` migration as a paired rename batch instead of committing bare tracked deletes.
+    - Evidence: 4 `References/Data/px4_pid_tuner` tracked deletes matched 4 `References/Log/px4_pid_tuner` files; max file size was 34,465 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; `git show --summary --name-status --find-renames` reports four `R100` renames; follow-up `git diff --check HEAD~1..HEAD` exited with `$LASTEXITCODE=0`; remaining `References/Data` tracked deletes dropped from 323 to 319.
+
 Current known residuals:
 
 - Real index had unrelated staged files before DevOps write work:
@@ -130,5 +139,5 @@ Current known residuals:
 Next safe batches:
 
 1. Daytona examples/guides or any remaining root/library slices, each kept under 1000 paths.
-2. `References/Data -> References/Log` migration pilot: start with `px4_pid_tuner`, then proceed by source-only batches for pyulog/px4tools/data-driven projects.
+2. Continue `References/Data -> References/Log` migration by paired rename/source-only batches for pyulog/px4tools/data-driven projects; do not commit remaining tracked deletes naked.
 3. `References/Blender/**` remains a temporary throttle and must not be removed wholesale; if needed, open only README/LICENSE/source slices after size and generated-artifact scans.
