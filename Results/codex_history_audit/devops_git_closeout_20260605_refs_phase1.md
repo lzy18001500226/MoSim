@@ -97,6 +97,16 @@ Completed batches:
    - Reason: drain another reviewed Daytona API client slice while keeping dependency folders, generated build outputs, object folders, caches, and `.env` files ignored.
    - Evidence: 649 staged paths; largest staged file was 401,277 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; forbidden path filters passed; `git diff --cached --check` and follow-up `git diff --check HEAD~1..HEAD` both exited with `$LASTEXITCODE=0`.
 
+9. `9eb96d0414ee2c49e28bb4d1f15350233027ce4b`
+   - Message: `refs: add daytona generated api client slices`
+   - Scope:
+     - `.gitignore`
+     - `References/Agent/Gateway/daytona/libs/api-client-java`
+     - `References/Agent/Gateway/daytona/libs/api-client-python`
+     - `References/Agent/Gateway/daytona/libs/api-client-python-async`
+   - Reason: drain the remaining reviewed Daytona generated API client language packages while keeping dependency folders, generated build outputs, object folders, caches, and `.env` files ignored.
+   - Evidence: 876 staged paths; largest staged file was 850,148 bytes; one Gradle wrapper `.jar` was 43,453 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; forbidden path filters passed; `git diff --cached --check` and follow-up `git diff --check HEAD~1..HEAD` both exited with `$LASTEXITCODE=0`.
+
 Current known residuals:
 
 - Real index had unrelated staged files before DevOps write work:
@@ -110,6 +120,6 @@ Current known residuals:
 
 Next safe batches:
 
-1. Daytona remaining API client language packages or examples/guides, each kept under 1000 paths.
+1. Daytona examples/guides or any remaining root/library slices, each kept under 1000 paths.
 2. `References/Data -> References/Log` migration pilot: start with `px4_pid_tuner`, then proceed by source-only batches for pyulog/px4tools/data-driven projects.
 3. `References/Blender/**` remains a temporary throttle and must not be removed wholesale; if needed, open only README/LICENSE/source slices after size and generated-artifact scans.
