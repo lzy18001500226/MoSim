@@ -1,0 +1,11 @@
+.gitignore
+References/Agent/Gateway/mcp-use/libraries/python/mcp_use/telemetry/telemetry.py
+References/Agent/Gateway/mcp-use/libraries/typescript/packages/inspector/src/server/shared-routes.ts
+References/Agent/Gateway/mcp-use/libraries/typescript/packages/mcp-use/src/telemetry/telemetry-browser.ts
+References/Agent/Gateway/mcp-use/libraries/typescript/packages/mcp-use/src/telemetry/telemetry-node.ts
+References/Agent/Memory/anysearch-mcp-server/README.md
+References/Agent/Workflow/okwinds/skills-runtime-sdk/examples/apps/.env.example
+References/Agent/Workflow/okwinds/skills-runtime-sdk/examples/studio/mvp/backend/.env.example
+References/Agent/Workflow/okwinds/skills-runtime-sdk/packages/skills-runtime-sdk-python/.env.example
+Results/coagent_status/git_batches/COAGENT-DEVOPS-GIT-CLOSEOUT-20260605/agent_small_tail_20260606.paths
+Results/codex_history_audit/devops_git_closeout_20260606_checkpoint_3.md
