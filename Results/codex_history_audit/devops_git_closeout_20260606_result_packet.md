@@ -13,3 +13,4 @@ ignore_policy: Keep long-term ignores for credentials, env files, virtualenvs, n
 next_action: Continue from the current goal with sub-1000 path slices: first inspect References/Agent subprojects with existing allowlist/throttle rules, then narrow or admit References/Blender tests/release only by smaller source/doc/config slices. Do not remove the broad Agent or Blender throttle in one edit.
 needs_human: false
 blocked_reason: none
+review_cache_policy: Reviewed and committed slices in Results/codex_history_audit/devops_git_closeout_20260605_refs_phase1.md should not be rechecked from scratch unless their path status changes, a throttle is being narrowed for that path, or remote sync contradicts the recorded commit. Ignored backlog is not covered by this cache.

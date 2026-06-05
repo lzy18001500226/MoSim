@@ -223,3 +223,27 @@ Current continuation state:
 - `Docs/Skills/Windows-MCP` has untracked wrapper files; its ignored `.venv`, `__pycache__`, and `*.egg-info` content should stay ignored.
 - `References/Agent` still contains hundreds of thousands of ignored files. Do not remove its broad throttle; continue by sub-project unignore/stage batches under 1000 files.
 - `References/Blender/**` remains a temporary throttle at the end of `.gitignore`. Do not remove it wholesale; narrow only after per-subtree inventory because `tests/` and `release/` would expose 1000+ files.
+
+## Review cache rule for this Git closeout
+
+Do not repeat full gates for batches already reviewed and committed in this
+record unless their path status changes again. Treat the following as reviewed
+checkpoint evidence:
+
+- Each listed commit was created with a temporary index, path-limited staging,
+  a sub-1000 path count, `$LASTEXITCODE`-checked `git diff --cached --check`,
+  and a normal push when the branch was ahead of `origin/main`.
+- The reviewed scope is exactly the paths recorded under each commit. Do not
+  generalize a clean gate for one slice to a broad parent tree such as
+  `References/Agent`, `References/Blender`, `Results/unreal_scene_mapping`, or
+  `UE5`.
+- For already-reviewed commits, future DevOps passes should only re-check if
+  `git status --short -- <recorded-path>` shows a new change, if an ignored
+  throttle is being narrowed for that path, or if a push/remote sync check
+  contradicts the recorded commit.
+- If a path is still only hidden by a temporary throttle, it is not complete.
+  Review caching applies to committed slices, not to ignored backlog.
+
+This rule was added after the user correction: reviewed work must be written
+into project evidence so future DevOps passes do not burn time repeating the
+same checks.
