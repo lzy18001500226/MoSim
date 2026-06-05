@@ -175,6 +175,7 @@ References/Agent/Gateway/playwright-mcp/tests/testserver/key.pem
 !References/Agent/Gateway/firecrawl/
 !References/Agent/Gateway/firecrawl/**
 References/Agent/Gateway/firecrawl/apps/api/.env.local
+References/Agent/Gateway/firecrawl/apps/dot-net-sdk/**/bin/
 References/Agent/Gateway/firecrawl/apps/dot-net-sdk/**/obj/
 !References/Agent/Gateway/toolhive/
 !References/Agent/Gateway/toolhive/**
