@@ -125,6 +125,15 @@ Completed batches:
     - Reason: start the `References/Data -> References/Log` migration as a paired rename batch instead of committing bare tracked deletes.
     - Evidence: 4 `References/Data/px4_pid_tuner` tracked deletes matched 4 `References/Log/px4_pid_tuner` files; max file size was 34,465 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; `git show --summary --name-status --find-renames` reports four `R100` renames; follow-up `git diff --check HEAD~1..HEAD` exited with `$LASTEXITCODE=0`; remaining `References/Data` tracked deletes dropped from 323 to 319.
 
+12. `7483009f1fcd08c78e71ec7dbeaee77181f87be7`
+    - Message: `refs: migrate pyulog source logs`
+    - Scope:
+      - `.gitignore`
+      - `References/Data/pyulog`
+      - `References/Log/pyulog`
+    - Reason: continue `References/Data -> References/Log` migration with a source-only pyulog batch while excluding `.ulg` log samples.
+    - Evidence: 50 non-`.ulg` Data deletes matched 50 Log files; max staged file was 62,892 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; `.ulg` files were excluded by path list and `.gitignore`; `git show --summary --name-status --find-renames` reports `R100` renames for the source/doc/config files; follow-up `git diff --check HEAD~1..HEAD` exited with `$LASTEXITCODE=0`; remaining `References/Data` tracked deletes dropped from 319 to 269, with 6 pyulog `.ulg` deletes intentionally left open for manifest-only or explicit data policy.
+
 Current known residuals:
 
 - Real index had unrelated staged files before DevOps write work:
