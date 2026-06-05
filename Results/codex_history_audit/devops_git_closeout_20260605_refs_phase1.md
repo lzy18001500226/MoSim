@@ -46,6 +46,16 @@ Completed batches:
    - Evidence: 519 staged paths; largest staged file was 162,922 bytes; no nested `.git` hits; no LFS pointer hits; `.env`, `node_modules`, `bin`, `build`, and `dist` were excluded; cached diff check passed in a temporary index.
    - Notes: real index was cleaned back to the pre-existing unrelated staged files after the temporary-index commit.
 
+4. `12828b8681a39cb5dc5e2b71604716cc3acde8b2`
+   - Message: `refs: add daytona dashboard and docs slices`
+   - Scope:
+     - `.gitignore`
+     - `References/Agent/Gateway/daytona/apps/dashboard`
+     - `References/Agent/Gateway/daytona/apps/docs`
+   - Reason: drain the next Daytona UI/docs slice while keeping app `.env`, generated static output, dependency folders, and cache/runtime outputs ignored.
+   - Evidence: 965 staged paths; largest staged file was 8,326,623 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; forbidden path filters for `.env`, `node_modules`, `bin`, `build`, `dist`, `.next`, `.cache`, and `.turbo` passed; cached diff check passed in a temporary index.
+   - Notes: commit parent was `1ab64fa63d6653a587e39fd523d4d275d1681aae`, which was already `origin/main`; this DevOps commit did not overwrite the concurrently pushed upstream commit.
+
 Current known residuals:
 
 - Real index had unrelated staged files before DevOps write work:
@@ -58,6 +68,6 @@ Current known residuals:
 
 Next safe batches:
 
-1. Daytona remaining apps: `apps/dashboard` plus `apps/docs`, excluding `.env`, dependency folders, build outputs, and generated caches.
-2. Daytona examples/guides or libs split by package family, each kept under 1000 paths.
-3. `References/Data -> References/Log` migration pilot: start with `px4_pid_tuner`, then proceed by source-only batches for pyulog/px4tools/data-driven projects.
+1. Daytona examples/guides or libs split by package family, each kept under 1000 paths.
+2. `References/Data -> References/Log` migration pilot: start with `px4_pid_tuner`, then proceed by source-only batches for pyulog/px4tools/data-driven projects.
+3. `References/Blender/**` remains a temporary throttle and must not be removed wholesale; if needed, open only README/LICENSE/source slices after size and generated-artifact scans.
