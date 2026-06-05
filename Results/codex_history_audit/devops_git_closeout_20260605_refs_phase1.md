@@ -107,6 +107,15 @@ Completed batches:
    - Reason: drain the remaining reviewed Daytona generated API client language packages while keeping dependency folders, generated build outputs, object folders, caches, and `.env` files ignored.
    - Evidence: 876 staged paths; largest staged file was 850,148 bytes; one Gradle wrapper `.jar` was 43,453 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; forbidden path filters passed; `git diff --cached --check` and follow-up `git diff --check HEAD~1..HEAD` both exited with `$LASTEXITCODE=0`.
 
+10. `e4af598759b498acf2a01e25deb815071b9a3c18`
+    - Message: `refs: add daytona examples and guides`
+    - Scope:
+      - `.gitignore`
+      - `References/Agent/Gateway/daytona/examples`
+      - `References/Agent/Gateway/daytona/guides`
+    - Reason: drain Daytona examples and guide content while keeping dependency folders, build outputs, caches, and `.env` files ignored.
+    - Evidence: 301 staged paths; largest staged file was 252,461 bytes; Gradle wrapper `.jar` files were 43,583 bytes; no high-confidence credential pattern hits; no nested `.git` hits; no LFS pointer hits; forbidden path filters passed; two Java example `gradlew.bat` files were normalized to LF after diff-check caught CRLF/trailing-whitespace warnings; follow-up `git diff --check HEAD~1..HEAD` exited with `$LASTEXITCODE=0`.
+
 Current known residuals:
 
 - Real index had unrelated staged files before DevOps write work:
