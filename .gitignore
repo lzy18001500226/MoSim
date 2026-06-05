@@ -403,6 +403,11 @@ References/Log/
 !References/Log/pyulog/
 !References/Log/pyulog/**
 References/Log/pyulog/**/*.ulg
+!References/Log/px4tools/
+!References/Log/px4tools/**
+References/Log/px4tools/**/*.ulg
+References/Log/px4tools/**/*.px4log
+References/Log/px4tools/**/*.csv
 References/Sunray/
 References/Lab/Fast-Racing/src/thirdparty/MavLinkCom/MavLinkComGenerator/obj/
 References/AirSim/carla-ue5-dev/
