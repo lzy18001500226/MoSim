@@ -1,5 +1,1058 @@
 # Project Progress
 
+## 2026-06-06 CST - UAV Architecture Sync Dispatched
+
+- User requested a focused design pass to align Gazebo/Sunray and RflySim UAV
+  simulation flows with MoSim's MWORKS-first architecture.
+- Main PMO thread id is `019e9868-83ea-70f0-92c5-a3a408bd78c6`; the request was
+  sent to architecture design thread `019e0198-a041-77f1-84d0-c5524bfd4b81`
+  with an explicit return contract.
+- Dispatch packet:
+  `Results/agent_packets/UAV-ARCH-SYNC-20260606-001.json`.
+- Expected return:
+  `Results/agent_packets/returns/UAV-ARCH-SYNC-20260606-001.json`; blocker:
+  `Results/agent_packets/blockers/UAV-ARCH-SYNC-20260606-001.json`.
+- Required design focus: MWORKS as dynamics/control/truth/metrics, UE as
+  renderer/sensor oracle, ROS2/RViz2/FAST-LIO/planner/formation as reusable
+  algorithm and review windows; 20Hz controller/setpoint, 20Hz enhanced LiDAR
+  target, high-rate IMU, one clock domain, and synchronized FAST-LIO odometry
+  evaluation against truth.
+- Forbidden routes remain: fake point cloud, fake grid map, keyboard pose
+  overwrite, browser HTML active map/point-cloud review, and hand-rolled
+  FAST-LIO/planning/formation algorithms.
+- Follow-up integration: the architecture design thread returned
+  `status=completed` with `needs_user_action=false` in
+  `Results/agent_packets/returns/UAV-ARCH-SYNC-20260606-001.json`.
+  The result is now integrated into `Docs/Design/10_架构边界与当前状态ADR.md`
+  and `Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md`.
+- Active open blockers from the return: exact local PX4 Iris model source still
+  needs a later parameter audit; no PX4 ULog/bench bundle exists, so
+  non-geometry Sunray150 parameters remain `source=SDF_migration` seeds; and
+  FAST-LIO current gates do not yet close final production localization,
+  planner performance, or controller integration.
+- The user-requested 20Hz loop is now documented as: controller/setpoint 20Hz
+  streamed contract, enhanced LiDAR 20Hz target only with throughput,
+  monotonic timestamp, per-point offset, explicit extrinsic, FAST-LIO output,
+  and truth-error gates; `/mosim/truth/odometry` is evaluation truth, not a
+  substitute for FAST-LIO odometry.
+- User added that the simulator should also design a recommended RflySim-like
+  UE front-end/operator console. Updated `Docs/Design/10_架构边界与当前状态ADR.md`
+  and `Docs/Workflows/unreal_renderer.md`: UE can expose scenario,
+  controller, planner, motor fault, wind disturbance, sensor mode, evidence,
+  and recording controls, but only as operator intent. MWORKS/ROS2 adapters
+  must validate and echo accepted state before the UI shows it as active. UE
+  must not directly teleport pose, inject hidden global map truth, or judge
+  controller/planner success.
+- Follow-up frontend architecture expansion: updated `Docs/Design/00_系统总体设计.md`,
+  the ADR, and `Docs/Workflows/unreal_renderer.md` so MoSim has a multi-window
+  product interface plan, not only a UE panel. MoSim Studio owns batch
+  experiments/results; UE Experiment Console owns live rendered operation and
+  requests; QGC/GCS-style windows are future PX4/V6X/offboard supervision only;
+  RViz2 owns point-cloud/FAST-LIO/local-map/planner review; Sysplorer/Syslab
+  remain model/result authority. Map switching must synchronize
+  `scene_source_id`, `scene_id`, `map_id`, MWORKS scenario binding, ROS2 topic
+  contract, truth artifacts, and evidence paths before the UI enables
+  review/run controls.
+
+## 2026-06-06 CST - MoSim Architecture Boundary ADR Added
+
+- Added `Docs/Design/10_架构边界与当前状态ADR.md` as the compact current
+  architecture entry for new conversations and parallel task streams.
+- The ADR fixes the active boundary: MWORKS/Sysplorer/Sysblock/Syslab own
+  dynamics, controller, truth, metrics, and generated controller runtime; UE5
+  owns high-quality rendering, accepted UAV visual, camera, collision and
+  sensor oracle; ROS2/RViz2/FAST-LIO own native robotics transport,
+  localization/map/planner review; CoAgent/WeChat remains sparse progress and
+  human intervention only.
+- Recorded the Gazebo/Sunray plugin translation rule: Gazebo plugins are not
+  copied as runtime plugins. Motor, base, MAVLink, groundtruth, IMU, Livox ray,
+  camera/GPS/barometer/magnetometer semantics must become explicit MoSim
+  modules with separate evidence gates.
+- Current Sunray/Gazebo parameters remain baseline seeds:
+  `mass=1.0 kg`, `Ixx/Iyy/Izz=0.0085/0.0085/0.012`,
+  `motorConstant=8.54858e-06`, `momentConstant=0.06`,
+  `timeConstantUp=0.0125`, `timeConstantDown=0.025`, and
+  `rotorVelocitySlowdownSim=10`. MWORKS `lift_cofficient=0.000854858` is the
+  SDF motor constant scaled by `rotorVelocitySlowdownSim^2`; it remains
+  `source=SDF_migration`, not Sunray150 identified truth.
+- RflySim is now explicitly recorded as a role-split and actuator-structure
+  reference, not a parameter truth or direct `.mo` translation source. Useful
+  ideas are streamed state/command transport, actuator lag/thrust/moment
+  structure, parameter injection, and multi-rate execution.
+- Updated `Docs/Index/project_work_memory_index.md`,
+  `Docs/Workflows/new_conversation_context.md`,
+  `Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md`,
+  `Docs/Workflows/unreal_renderer.md`,
+  `Docs/Workflows/mworks_codegen_controller_runtime.md`, and
+  `Docs/Workflows/identify_quadrotor_parameters.md` to point to or align with
+  the ADR.
+- Read-only sub-agent results supported the split: one agent confirmed current
+  docs mainly lacked a compact ADR/Gate matrix; another confirmed RflySim's
+  CopterSim/RflySim3D/ROS role split and warned not to reuse RflySim numeric
+  parameters as Sunray150 truth. The Sunray/Gazebo plugin conclusion was
+  verified directly from local SDF files in this thread.
+
+## 2026-06-06 CST - Cross-Thread Department Return Protocol Documented
+
+- Documented that Codex App cross-thread send is one-way task delivery, not
+  request/response RPC. A forwarded message is not task completion.
+- Updated `Docs/Workflows/agent_orchestration.md` so every department-to-
+  department request must expose `origin_thread`, `origin_thread_id`,
+  `target_thread`, `target_thread_id`, `request_id`, expected return path, and
+  blocker path.
+- Target departments must first resolve issues inside their own scope. If they
+  cannot solve the issue, they return a blocker packet to the origin thread id.
+  PMO may audit or integrate, but PMO is not the only return owner.
+- Durable returns now use
+  `Results/agent_packets/returns/<request_id>.json`; durable blockers use
+  `Results/agent_packets/blockers/<request_id>.json`. WeChat remains a sparse
+  alert channel only.
+- Updated `Docs/Index/codex_app_session_research.md` with the same Codex App
+  transport boundary.
+
+## 2026-06-06 CST - WeChat Gateway Background Health Monitoring Hardened
+
+- Upgraded WeChat gateway maintenance from conversation memory to background
+  Task Scheduler + project script evidence. This does not rely on any Codex
+  conversation staying open.
+- Verified Windows Task Scheduler:
+  `MoSim Weixin Gateway Local Health` is enabled, runs
+  `python Scripts\agent\check_weixin_gateway_health.py` every 15 minutes, and
+  latest scheduler state showed `LastRunTime=2026/6/6 0:06:01`,
+  `LastTaskResult=0`, `NextRunTime=2026/6/6 0:21:00`.
+  `MoSim Weixin Gateway Canary` is enabled and remains every 4 hours; frequency
+  was not increased. It had not yet reached its first scheduled run
+  (`NextRunTime=2026/6/6 3:21:00`).
+- `Scripts/agent/check_weixin_gateway_health.py` now writes durable latest
+  status files on every run:
+  `Results/coagent_gateway/health/gateway_healthy_latest.json` when local
+  health is OK, and
+  `Results/coagent_gateway/health/gateway_unhealthy_latest.json` when local
+  health fails. Failure reporting is file/local-notification based and does not
+  depend on WeChat.
+- The script now classifies local failures as `data_dir`, `api_socket`,
+  `session`, `active_session`, `context_token`, or `unknown`, and records a
+  minimal user action in the latest failure file. Optional Windows toast is
+  attempted only on local health failure; if unavailable, the file remains the
+  authoritative alert surface.
+- Fixed `CoAgent/gateway/cc_connect_weixin.py` so its default data-dir is
+  platform-aware. Windows defaults to the WSL UNC path, so other Codex
+  conversations can call the narrow adapter without explicitly passing
+  `--data-dir` and still resolve the platform `active_session`.
+- Validation passed:
+  `python Scripts\agent\check_weixin_gateway_health.py` wrote
+  `Results/coagent_gateway/health/weixin_gateway_health_20260606_000614.json`
+  and refreshed `gateway_healthy_latest.json`; `python -m py_compile
+  Scripts\agent\check_weixin_gateway_health.py CoAgent\gateway\cc_connect_weixin.py`
+  passed. No real WeChat canary was sent in this round.
+
+## 2026-06-05 CST - WeChat Cross-Thread Notification Policy Clarified
+
+- User reports WeChat communication is now normal. Durable rule: all other
+  Codex conversations send sparse completion/blocker/review packets through
+  `CoAgent/gateway/cc_connect_weixin.py`; none of them owns cc-connect runtime
+  maintenance.
+- `MoSim｜微信网关运维`
+  (`019e9855-aa43-7fe2-807e-be7d4095877b`) owns scheduled health checks,
+  low-frequency outbound canary, QR/context-token/active-session recovery, and
+  failure classification.
+- Updated `Docs/Workflows/debug_mcp.md` with the cross-thread notification
+  guarantee and no-tight-loop retry boundary.
+
+## 2026-06-05 CST - Codex Thread Registry Refreshed
+
+- Read-only scan of Windows Codex state DB produced
+  `Results/codex_history_audit/current_codex_threads_title_scan_20260605.csv`.
+- Current active MoSim operating threads:
+  `019e9868-83ea-70f0-92c5-a3a408bd78c6` = `MoSim｜主线 PMO`;
+  `019e74de-a452-7a50-99e7-ca9a247b32f1` = `MoSim｜DevOps 发布`;
+  `019e9855-aa43-7fe2-807e-be7d4095877b` = `MoSim｜微信网关运维`;
+  `019e8358-86b4-7070-8fd6-a2b4f4d2af97` = `MoSim｜WechatCodex`.
+- Older CoAgent bootstrap conversations are still active in the DB but should
+  be treated as inactive/legacy unless the user explicitly resumes CoAgent
+  runtime work.
+
+## 2026-06-05 CST - WeChat Gateway Canary Failed At Weixin Send Context
+
+- User explicitly authorized a real outbound canary after the earlier local-only
+  check. The first send attempt exposed a Windows launcher bug:
+  `CoAgent/gateway/cc_connect_weixin.py` tried to execute the Linux ELF
+  `Results/tmp/cc-connect-node/node_modules/cc-connect/bin/cc-connect`
+  directly from Windows and failed with `WinError 193`.
+- Fixed the narrow adapter path so Windows runs cc-connect through
+  `wsl.exe -d Ubuntu-22.04 -- /mnt/c/.../cc-connect`, and fixed
+  `Scripts/agent/check_weixin_gateway_health.py` so canary sends pass the
+  WSL-backed data dir explicitly.
+- A real canary then reached the cc-connect/Weixin send layer. The runtime log
+  `Results/tmp/cc-connect-weixin-smoke/recover-20260605_233952.log` shows
+  Weixin declined outbound `sendMessage` with `ret=-2 errcode=0` after three
+  fresh-context retries.
+- Current local-only health is good after the script correction:
+  `Results/coagent_gateway/health/weixin_gateway_health_20260605_234230.json`
+  has `ok_local=true`, `api_socket_connectable=true`,
+  `active_session_present=true`, `active_session_key_type=platform`, and
+  `context_token_files=1`.
+- Conclusion: local cc-connect runtime/session state is reachable, but
+  end-to-end Weixin outbound communication is not currently normal. Minimal
+  user action: send one ordinary plain-text message in the
+  `MoSim｜微信通知网关` WeChat chat, then retry one canary. If it still returns
+  `ret=-2`, rerun QR login for cc-connect Weixin.
+- Follow-up after user sent an ordinary WeChat message: fixed the adapter
+  recovery wait so it verifies `api_socket_connectable` instead of only socket
+  file existence. Final canary
+  `Results/coagent_gateway/health/weixin_gateway_health_20260605_235034.json`
+  succeeded with `send_result.ok=true` and `stdout="Message sent successfully."`
+  End-to-end Weixin outbound communication is recovered.
+- User then reported the delivered WeChat message was garbled. Fixed
+  `CoAgent/gateway/cc_connect_weixin.py` to pass UTF-8 text explicitly to the
+  Windows `wsl.exe ... cc-connect send --stdin` subprocess. Verification
+  canary `Results/coagent_gateway/health/weixin_gateway_health_20260605_235128.json`
+  also succeeded with `send_result.ok=true`; visual confirmation of readable
+  Chinese is pending user review.
+
+## 2026-06-05 CST - WeChat Gateway Scheduled Health Check Verified
+
+- Scope: this was handled in the dedicated WeChat gateway operations thread
+  `MoSim｜微信网关运维`. No MoSim technical implementation, Git work, simulation
+  code, or outbound WeChat canary was run.
+- Windows Task Scheduler entries exist and are enabled:
+  `MoSim Weixin Gateway Local Health` runs
+  `python Scripts\agent\check_weixin_gateway_health.py` every 15 minutes; next
+  run was `2026/6/5 23:36:00`.
+  `MoSim Weixin Gateway Canary` runs
+  `python Scripts\agent\check_weixin_gateway_health.py --send-canary` every 4
+  hours; next run was `2026/6/6 3:21:00`.
+- Both tasks still showed the Task Scheduler sentinel `LastRunTime =
+  1999/11/30 0:00:00` and `LastTaskResult = 267011`, so the scheduled entries
+  were present but had not yet produced a scheduler-run result at the time of
+  inspection.
+- Manual local-only health check passed:
+  `python Scripts\agent\check_weixin_gateway_health.py` wrote
+  `Results/coagent_gateway/health/weixin_gateway_health_20260605_232655.json`
+  with `ok_local=true`, `api_socket_exists=true`,
+  `active_session_present=true`, `active_session_key_type=platform`, and
+  `context_token_files=1`.
+- No manual action is required from the user now. If a future local health JSON
+  reports failure, classify the failing field first as `api_socket`,
+  `session/active_session`, or `context_token`, then request only the minimal
+  matching user action.
+
+## 2026-06-05 CST - WeChat Intervention Thread Reclassified
+
+- User correction: thread `019e8358-86b4-7070-8fd6-a2b4f4d2af97` is a
+  conversation created after WeChat human intervention, not the dedicated
+  WeChat gateway operations thread. Do not route gateway maintenance,
+  cc-connect QR recovery, or notification-runtime ownership to that thread.
+- Dedicated Codex thread for WeChat gateway operations was manually created by
+  the user:
+  `019e9855-aa43-7fe2-807e-be7d4095877b` = `MoSim｜微信网关运维`.
+- Clarification: `019e8358-86b4-7070-8fd6-a2b4f4d2af97` is the Codex
+  conversation used by the WeChat-side message path. It is not a task-intake
+  owner and should not be asked to maintain gateway runtime. Send cc-connect,
+  QR, context-token, active-session, scheduled health-check, and recovery
+  instructions to `019e9855-aa43-7fe2-807e-be7d4095877b`.
+- Current manual multi-thread plan should keep only a small always-on set:
+  main PMO/task thread, DevOps/Git thread, and a separate WeChat gateway
+  operations thread. Other CoAgent departments remain out of scope unless the
+  user explicitly resumes CoAgent runtime work.
+
+## 2026-06-05 CST - Codex App History Titles And Project Roots Fixed
+
+- After the Codex App history became visible again, the user reported that the
+  App showed only MoSim and that most titles were wrong. Verified the backend
+  with `codex app-server --stdio`: global active history already contained 28
+  records, but many `thread/list` items returned `name=null`, so the App UI
+  fell back to the first user message / long preview.
+- Stopped Codex App/app-server/plugin helper processes, then backed up the
+  Windows Codex state to
+  `C:\Users\HP\.codex\backups\app-history-title-project-fix-20260605-221723`.
+  The backup includes `state_5.sqlite*`, `session_index.jsonl`,
+  `.codex-global-state.json`, and all 28 active rollout files.
+- Synchronized the 28 active records across SQLite `threads.title`,
+  `session_index.jsonl.thread_name`, and each rollout first-line
+  `session_meta.payload.title/name/thread_name`. Also updated the App global
+  project roots to include `C:\Users\HP\Desktop\MoSim`,
+  `C:\Users\HP\Desktop\DH`, and `C:\Users\HP\Desktop\JIT-Fine`.
+  Manifest:
+  `Results/codex_history_audit/app_history_title_project_fix_20260605-2217_manifest.json`.
+- Verification passed through the Windows app-server protocol: global active
+  list returns 28 records with `missing_name=0`; project queries return
+  `MoSim=14`, `DH=12`, and `JIT-Fine=2`, all with non-empty titles.
+  If the App window still shows only MoSim after relaunch, that is now a
+  frontend/project-view cache or workspace selection issue, not missing backend
+  history data.
+
+## 2026-06-05 CST - Windows Native Codex TUI Input Bug Recorded
+
+- Windows native Codex CLI remains unsuitable for interactive TUI use on this
+  machine. The symptom is not a normal keyboard or PowerShell input failure:
+  a project key probe using `[Console]::ReadKey($true)` correctly reads
+  `A`, `Backspace`, `Delete`, `Enter`, pasted characters, and `Escape` in
+  Windows Terminal / PowerShell.
+- The failure is specific to Codex TUI raw input/rendering: in interactive
+  `codex`, `Backspace` behaves as if it moves in the wrong direction, and
+  `Enter`, paste, and deletion remain unusable. The issue reproduces after
+  bypassing the user profile (`powershell.exe -NoProfile`) and running
+  `C:\nvm4w\nodejs\codex.cmd` directly, so the root cause is not the user
+  PowerShell profile, input method, Windows key events, or the patched
+  `codex.ps1` launcher.
+- Routes tried without fixing the TUI: Windows Terminal + classic PowerShell
+  5.1, PowerShell 7.6.2 install/test, `--no-alt-screen`, disabling
+  `features.terminal_resize_reflow`, setting
+  `CODEX_TUI_DISABLE_KEYBOARD_ENHANCEMENT=1`, bypassing npm's PowerShell shim,
+  running the native `codex.exe` directly, and a temporary downgrade to
+  `@openai/codex@0.130.0`.
+- Current state after stopping CLI troubleshooting: npm global Codex is back
+  at `@openai/codex@0.137.0`; `C:\Users\HP\.codex\config.toml` has
+  `features.terminal_resize_reflow = false`; PowerShell 7.6.2 is installed;
+  `Scripts/tools/windows_key_probe.ps1` is available for future key-event
+  checks. Prefer Codex App / VSCode Codex or WSL Codex TUI until upstream
+  Windows native TUI behavior is fixed.
+
+## 2026-06-05 CST - Codex App History Visible After Reinstall
+
+- After reinstalling Codex App, the App initially showed no chat history even
+  though `C:\Users\HP\.codex` still contained 28 active rollout files and a
+  healthy `state_5.sqlite`. The durable root cause was not only SQLite:
+  `thread/list` also reads each rollout file's first-line
+  `session_meta.payload`. Those metadata rows still used WSL paths such as
+  `/mnt/c/Users/HP/Desktop/MoSim`, so the App/backend exposed them as
+  `C:\mnt\c\Users\HP\Desktop\MoSim`; a project query for
+  `C:\Users\HP\Desktop\MoSim` returned an empty list.
+- Stopped Codex App/app-server/plugin helper processes, backed up state/index
+  files to
+  `C:\Users\HP\.codex\backups\app-empty-history-fix-20260605-215735`, then
+  normalized the Windows history DB to 28 active rows:
+  `source=cli`, `thread_source=user`, `archived=0`, and cwd groups
+  `MoSim=14`, `DH=12`, `JIT-Fine=2`. Rebuilt `session_index.jsonl` with 28
+  entries and verified all rollout paths exist.
+- Rewrote only the first `session_meta` JSONL line of the 28 rollout files so
+  `payload.cwd`, `payload.source`, and `payload.thread_source` match Windows
+  App-compatible values. Full per-file before/after manifest:
+  `Results/codex_history_audit/app_empty_history_rollout_meta_fix_20260605-220250.jsonl`.
+- Protocol check using `codex app-server --stdio` passed after the metadata
+  fix: `thread/list` returned `MoSim=14`, `DH=12`, and global active `28`.
+  Cleared Codex App frontend cache after backing it up to
+  `C:\Users\HP\.codex\backups\app-frontend-cache-before-history-visible-20260605-220442`,
+  then relaunched Codex App. Windows screenshot showed the App left sidebar
+  populated with the 14 MoSim histories again.
+
+## 2026-06-05 CST - Windows Codex Home Quarantined For Clean Rebuild
+
+- Per user request, cleaned the Windows Codex home as an external
+  infrastructure operation outside the project tree. The old
+  `C:\Users\HP\.codex` was not permanently deleted; it was quarantined under
+  `C:\Users\HP\.codex.quarantine-2026060`.
+- The first `Move-Item` attempt partially moved the directory and was blocked
+  by a live Chrome extension host under
+  `C:\Users\HP\.codex\plugins\cache\openai-bundled\chrome\latest\extension-host\windows\x64`.
+  Stopped only the locked `cmd.exe` / `extension-host.exe` pair, then moved the
+  remaining old `.codex` contents into
+  `C:\Users\HP\.codex.quarantine-2026060\remaining_from_failed_move_20260605-145907`.
+- Recreated `C:\Users\HP\.codex` as an empty clean directory. Do not restore
+  files from `C:\Users\HP\.codex.quarantine-2026060`, nested `backups*`
+  directories, or `remaining_from_failed_move_*` unless they are explicitly
+  reviewed and selected. Next intended route is to clean WSL history/config
+  first, then migrate only the reviewed clean source into this fresh Windows
+  Codex home with Windows paths.
+- After the user uninstalled Codex App, removed the remaining Windows Codex CLI
+  npm artifacts without deleting Node/nvm: deleted
+  `C:\nvm4w\nodejs\codex`, `codex.cmd`, `codex.ps1`, and
+  `C:\nvm4w\nodejs\node_modules\@openai\codex`; removed the empty
+  `C:\nvm4w\nodejs\node_modules\@openai` directory. Verification:
+  `where.exe codex` returns no command, those Codex files no longer exist, and
+  `C:\Users\HP\.codex` remains empty.
+- Started WSL history cleanup from `/home/linux/.codex` after Windows Codex
+  was reset. Generated read-only review reports under
+  `Results/codex_history_audit/`. Per user decision, deleted three archived
+  `HP/Desktop` scratch records from WSL history:
+  `019ddf78-e5f7-7b02-bcd9-35ddd016512e`,
+  `019e39b0-979b-7940-8b1d-570f60202cd6`, and
+  `019e39f9-7c27-7051-9958-131aa116b547`; unarchived dog image record
+  `019e1aa8-5855-7c83-9db9-a97f1e1050e5` by moving its rollout back to
+  `/home/linux/.codex/sessions/2026/05/12/`. Backups and manifest:
+  `/home/linux/.codex/backups/wsl-clean-other-project-20260605-1530/` and
+  `Results/codex_history_audit/wsl_clean_other_project_20260605-1530_manifest.json`.
+  Post-check: SQLite `integrity_check=ok`, `quick_check=ok`, 305 DB rows,
+  113 active, 192 archived, 0 missing rollout rows, 1 file-only rollout id.
+- Per user review, deleted another 13 WSL history records: the scoped
+  `COAGENT-MINILOOP-02-WORKER` record, five old archived CoAgent department
+  bootstrap records, and seven MoSim greeting/visibility/empty test records.
+  Backups and manifest:
+  `/home/linux/.codex/backups/wsl-delete-coagent-old-and-scratch-20260605-1545/`
+  and
+  `Results/codex_history_audit/wsl_delete_coagent_old_and_scratch_20260605-1545_manifest.json`.
+  Post-check: SQLite `integrity_check=ok`, `quick_check=ok`, 292 DB rows,
+  107 active, 185 archived, all 13 requested IDs absent from DB, 13 rollout
+  files deleted, 0 remaining rollout files for those IDs. Latest WSL cleanup
+  buckets now show 261 subagent/delegated candidates, 10 CoAgent records still
+  under review, 8 DH records, 6 other-project records, 4 MoSim user-work
+  records, 2 MoSim scratch records, and 1 MoSim main long-context record.
+- Reclassified the two remaining MoSim scratch records as active visible
+  CoAgent-style maintenance windows by changing only WSL DB display metadata:
+  `019e8358-86b4-7070-8fd6-a2b4f4d2af97` is now titled
+  `MoSim｜微信网关接口`, and
+  `019e3dac-de0e-7180-98ad-d7137e8a6275` is now titled
+  `MoSim｜Codex 环境维护`. Rollout contents were not modified, so `codex
+  resume <id>` still resumes the original histories. Backup and manifest:
+  `/home/linux/.codex/backups/wsl-retitle-two-visible-departments-20260605-1555/`
+  and
+  `Results/codex_history_audit/wsl_retitle_two_visible_departments_20260605-1555_manifest.json`.
+  Latest buckets now show 12 CoAgent visible records and 0 MoSim scratch
+  records. Superseded by the 2026-06-05 user correction above: the
+  `019e8358-86b4-7070-8fd6-a2b4f4d2af97` record is a WeChat
+  intervention/event conversation, not the dedicated gateway operations owner.
+- Per user review, deleted archived DH scratch record
+  `019e0589-1fef-7d92-9b56-09e238ad8840` (`你好`, interrupted, no project
+  content). Backup and manifest:
+  `/home/linux/.codex/backups/wsl-delete-dh-scratch-20260605-1605/` and
+  `Results/codex_history_audit/wsl_delete_dh_scratch_20260605-1605_manifest.json`.
+  Post-check: SQLite `integrity_check=ok`, `quick_check=ok`, 291 DB rows,
+  107 active, 184 archived, target ID absent, and no rollout file remains for
+  that ID. DH review bucket now has 7 records.
+- Per user review, reclassified archived GPU_Test/CUDA record
+  `019e1156-f22f-7823-9e83-96f1506152e0` into DH by unarchiving it, moving its
+  rollout to active `sessions/2026/05/10/`, setting cwd to
+  `/mnt/c/Users/HP/Desktop/DH`, and retitling it
+  `DH｜GPU_Test CUDA/cuFFT 初始化错误码 5 排查`. Deleted low-value MoSim records
+  `019e631d-8164-72e3-aac5-4ee3d91e462e` and
+  `019e7373-37f4-75e1-9780-e1519a489715`. Backup and manifest:
+  `/home/linux/.codex/backups/wsl-reclass-dh-delete-two-mosim-20260605-1615/`
+  and
+  `Results/codex_history_audit/wsl_reclass_dh_delete_two_mosim_20260605-1615_manifest.json`.
+  Post-check: SQLite `integrity_check=ok`, `quick_check=ok`, 289 DB rows,
+  107 active, 182 archived, deleted IDs absent, and no rollout files remain for
+  deleted IDs. Latest keep buckets now show 1 MoSim user-work record, 1 MoSim
+  main long-context record, and 8 DH records.
+- Normalized final WSL cleanup grouping by cwd metadata only: moved the two
+  non-GPU other-project records (`dog` image and `JIT-Fine` conda setup) into
+  `JIT-Fine`, moved the four `gpu_test` records into `DH`, and normalized all
+  MoSim/CoAgent visible records to `/mnt/c/Users/HP/Desktop/MoSim`. Rollout
+  contents were not modified. Backup and manifest:
+  `/home/linux/.codex/backups/wsl-final-group-cwd-normalize-20260605-1625/`
+  and
+  `Results/codex_history_audit/wsl_final_group_cwd_normalize_20260605-1625_manifest.json`.
+  Latest final buckets: 261 subagent/delegated delete candidates, 14 MoSim
+  records, 12 DH records, and 2 JIT-Fine records.
+- Per user request, deleted all WSL Codex subagent/delegated history records
+  from `/home/linux/.codex`: 261 thread rows removed, 256 spawn-edge rows
+  removed, 184 matching `session_index.jsonl` lines removed, and 261 rollout
+  files removed from active/archived session folders. Full backup and manifest:
+  `/home/linux/.codex/backups/wsl-delete-all-subagents-20260605-175855/` and
+  `Results/codex_history_audit/wsl_delete_all_subagents_20260605-175855_manifest.json`.
+  Post-check: SQLite `integrity_check=ok`, `quick_check=ok`, 28 DB rows, 28
+  active, 0 archived, 0 subagent rows, 0 spawn edges, 0 DB rows missing rollout,
+  and 0 remaining rollout files for the deleted target IDs. Corrected four
+  remaining `dh-deploy`/`dh-master` DH histories to the DH bucket with backup
+  `/home/linux/.codex/backups/wsl-normalize-dh-four-after-subagent-delete-20260605-180114/`.
+  Latest WSL buckets are now 14 MoSim, 12 DH, and 2 JIT-Fine records. One
+  known file-only rollout orphan remains:
+  `019e01a6-3930-73e3-a692-066cf92071d2`.
+- Per user review, deleted the remaining WSL file-only rollout orphan
+  `019e01a6-3930-73e3-a692-066cf92071d2`, which was a
+  `codex-auto-review` guardian/subagent approval log rather than a normal
+  user-visible conversation. Backup and manifest:
+  `/home/linux/.codex/backups/wsl-delete-file-only-guardian-orphan-20260605-181434/`
+  and
+  `Results/codex_history_audit/wsl_delete_file_only_guardian_orphan_20260605-181434_manifest.json`.
+  Final WSL post-check: SQLite `integrity_check=ok`, `quick_check=ok`, 28 DB
+  rows, 28 active, 0 archived, 0 subagent rows, 0 spawn edges, 0 DB rows
+  missing rollout, 0 file-only rollout IDs, and buckets remain 14 MoSim, 12
+  DH, and 2 JIT-Fine.
+- Deleted the old Windows Codex quarantine directory
+  `C:\Users\HP\.codex.quarantine-2026060` after confirming the active
+  `C:\Users\HP\.codex` directory was empty and the quarantine lived outside
+  the active Codex home. Reinstalled Windows Codex CLI through nvm/npm:
+  `C:\nvm4w\nodejs\npm.cmd install -g @openai/codex@0.137.0`. Verification:
+  `where codex` resolves to `C:\nvm4w\nodejs\codex` and
+  `C:\nvm4w\nodejs\codex.cmd`, `codex --version` reports
+  `codex-cli 0.137.0`, and npm global list shows `@openai/codex@0.137.0`.
+- Migrated the cleaned WSL Codex source into the fresh Windows Codex home.
+  Backed up the pre-migration Windows home to
+  `C:\Users\HP\.codex.pre-wsl-migration-20260605-183845`, then copied
+  `auth.json`, `config.toml`, `state_5.sqlite`, `session_index.jsonl`,
+  `history.jsonl`, `skills/`, and the cleaned `sessions/` tree from
+  `/home/linux/.codex` into `C:\Users\HP\.codex`. Converted project cwd and
+  rollout paths from WSL paths to Windows paths and converted WSL MCP wrapper
+  commands to `wsl.exe -d Ubuntu -- ...` form. Migration manifest:
+  `Results/codex_history_audit/windows_codex_migration_from_wsl_20260605-183937_manifest.json`.
+  Verification: Windows `codex doctor --summary --ascii --no-color` now has
+  0 failures, auth is configured, config loads, 9 MCP servers are configured,
+  thread DB and rollout inventory agree, and the Windows history DB contains
+  28 active rows, 0 archived rows, and 0 subagent rows. Buckets are 14
+  `C:\Users\HP\Desktop\MoSim`, 12 `C:\Users\HP\Desktop\DH`, and 2
+  `C:\Users\HP\Desktop\JIT-Fine`. Latest audit summary:
+  `Results/codex_history_audit/windows_codex_migration_latest.md`.
+- Corrected the Windows history migration after an interactive `codex` launch
+  reported local database damage: `migration 1 was previously applied but has
+  been modified`. Root cause was copying the WSL `state_5.sqlite` file
+  wholesale into Windows, which preserved WSL `_sqlx_migrations` checksums that
+  do not match the Windows CLI migration bundle. Do not repair this by letting
+  Codex wipe/rebuild history automatically. Fixed by restoring the
+  Windows-native empty `state_5.sqlite` from
+  `C:\Users\HP\.codex.pre-wsl-migration-20260605-183845` and importing only
+  the 28 cleaned `threads` rows with Windows cwd/rollout paths. The bad DB
+  family was backed up to
+  `C:\Users\HP\.codex.bad-wsl-db-before-native-rebuild-20260605-191614`; fix
+  manifest:
+  `Results/codex_history_audit/windows_codex_native_db_rebuild_20260605-191614_manifest.json`.
+  Recheck: `codex doctor --summary --ascii --no-color` has 0 failures,
+  `codex --help` runs normally, DB/rollout parity is 28 files, 0 file-only,
+  0 missing, and buckets remain 14 MoSim, 12 DH, 2 JIT-Fine.
+- User clarified the operating boundary: from this point forward the active
+  Codex environment is Windows-native `C:\Users\HP\.codex`. WSL is not a
+  second Codex home or sync peer; it is only a runtime subsystem invoked from
+  Windows, for example via `wsl.exe -d Ubuntu-22.04 -- ...`, when Linux-native
+  tools are required. Do not continue treating `/home/linux/.codex` as an
+  active environment after migration; use it only as a reviewed source archive
+  if the user explicitly asks.
+- Repaired Windows-native MCP/skills/plugins after the first Windows Codex
+  launch reported MCP startup failures. Root cause for the WSL-backed MCPs was
+  the wrong WSL distribution name; this machine's active distro is
+  `Ubuntu-22.04`, not `Ubuntu`. Rewrote Windows `config.toml` MCP commands to
+  use `wsl.exe -d Ubuntu-22.04 -- ...`. Verified initialize handshakes for the
+  8 startup MCP servers: `filesystem`, `git`, `mosim-epic`, `mosim-unreal`,
+  `ros-mcp`, `syslab`, `sysplorer`, and `windows-mcp`. Removed startup
+  `blender` MCP because it requires a running Blender addon/socket and did not
+  complete initialize in the startup probe; keep Blender MCP on-demand rather
+  than default startup. Cleaned stale plugin config by removing
+  `[marketplaces.local]` and `[plugins."codex-session-tools@local"]`, because
+  no supported Windows marketplace manifest existed. Verification:
+  `codex doctor --summary --ascii --no-color` has 0 failures, `codex mcp list`
+  shows 8 enabled MCP servers, `codex plugin list` returns "No marketplace
+  plugins found" without error, and Windows `.codex/skills` has 51 skill files
+  including 5 `.system` skills and 46 non-system skills. Audit summary:
+  `Results/codex_history_audit/windows_codex_mcp_skills_plugins_latest.md`.
+- Added Windows terminal usability fixes for Codex TUI after the user reported
+  Backspace rendering as spaces / cursor drift in the classic Windows
+  PowerShell 5.1 console. Current host was PowerShell 5.1 with `gb2312`
+  console encoding and no `WT_SESSION`, so raw-mode TUI behavior is unreliable
+  in that existing console window. Set Windows default terminal registry values
+  under `HKCU\Console\%%Startup` to Windows Terminal, added a UTF-8 profile
+  block to
+  `C:\Users\HP\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`,
+  and created two user PATH launchers:
+  `C:\Users\HP\.local\bin\codex-wt.cmd` opens Codex inside Windows Terminal
+  with UTF-8 setup, while `C:\Users\HP\.local\bin\codex-inline.cmd` runs
+  `codex --no-alt-screen` as a fallback for old consoles. Existing already-open
+  PowerShell windows keep their old console host; open a new terminal or run
+  the launcher to use the fix.
+- Per user request, re-added the `blender` MCP server to the Windows-native
+  `C:\Users\HP\.codex\config.toml` even though Blender may fail unless the
+  Blender addon/socket is running. The server uses `wsl.exe -d Ubuntu -- bash
+  -lc "cd /mnt/c/Users/HP/Desktop/MoSim && exec
+  /mnt/c/Users/HP/Desktop/MoSim/Docs/Skills/Blender-MCP/wrappers/blender-mcp.sh"`
+  with `BLENDER_HOST=172.17.48.1` and `BLENDER_PORT=9876`. Backed up the
+  previous config as
+  `C:\Users\HP\.codex\config.toml.bak-before-blender-mcp-20260605-192526`,
+  then corrected the WSL distribution name to this machine's
+  `Ubuntu-22.04` with backup
+  `C:\Users\HP\.codex\config.toml.bak-blender-distro-fix-20260605-192848`.
+  Verification: `codex doctor --summary --ascii --no-color` still loads config
+  successfully, reports auth configured, 10 MCP servers configured, 28 active
+  rollout files / thread DB inventory aligned, and 0 failures. The remaining
+  warnings are expected local notes: 2.80 GB rollouts, unrestricted
+  filesystem/network, and update configuration warning.
+- Re-audited the Windows-native Codex configuration for WSL bridge residue
+  after the user confirmed future use should be through the Windows-native
+  Codex App. Current `C:\Users\HP\.codex\config.toml` has no `wsl.exe`,
+  `/mnt/c`, `/home/linux`, `\\wsl`, or `wsl.localhost` launcher/path entries.
+  `codex mcp list` shows Windows-native commands for the active MCP set:
+  MWORKS Sysplorer/Syslab native Windows executables, project `.cmd` wrappers
+  for Windows/ROS/Unreal/Epic/Blender MCPs, `uvx.exe` for git, and the bundled
+  Codex `node_repl.exe`. The project wrapper `.cmd` files also have no WSL
+  bridge calls. `codex doctor --summary --ascii --no-color` reports 0 failures,
+  auth configured, DB/rollout inventory aligned, and 9 enabled MCP servers at
+  startup. The only WSL mentions found under copied skills are documentation
+  text describing WSL as a runtime lane, not active Codex launcher config.
+  `codex-wt` from the old window.
+- Refined the PowerShell-only Codex launcher after the user clarified they
+  only want to type `codex` in PowerShell. PowerShell resolves `codex` to
+  `C:\nvm4w\nodejs\codex.ps1` before `codex.cmd`, and that npm-generated
+  PowerShell shim is the problematic path for Codex TUI in classic conhost.
+  Backed up the shim to
+  `C:\nvm4w\nodejs\codex.ps1.bak-before-wt-autolaunch-20260605` and patched
+  `codex.ps1` so plain `codex` from a non-Windows-Terminal PowerShell opens a
+  Windows Terminal tab running Codex with UTF-8/TERM setup; argument commands
+  such as `codex --version`, `codex doctor`, and `codex mcp list` still pass
+  through normally. Also updated the user PowerShell profile function with the
+  same behavior, so new PowerShell sessions resolve `codex` to the compatible
+  launcher first. If an already-open PowerShell session still has the old
+  function cached, run `. $PROFILE` once or open a new PowerShell window.
+
+## 2026-06-05 CST - Codex History Cleanup Baseline
+
+- Current cleanup baseline is Windows `C:\Users\HP\.codex`, not WSL. Latest
+  read-only audit: Windows state DB has 264 rows, all active, 231 active
+  subagent rows, 32 active user rows, 1 null `thread_source` row, SQLite
+  `integrity_check=ok`, `quick_check=ok`, and one DB row pointing to a missing
+  rollout file (`019e3dac-de0e-7180-98ad-d7137e8a6275`). Windows
+  `archived_session_files=0`.
+- WSL `/home/linux/.codex` is now a legacy/reference store for this cleanup
+  round: 308 DB rows, 112 active, 196 archived, 6 legacy
+  `thread_source=vscode` rows, 14 null-source rows, and 309 rollout file IDs.
+  Do not automatically resync WSL into Windows while the user is cleaning
+  Codex App/VSCode history, or deleted/hidden records will reappear.
+- The previous Codex++ script location under AppData/Roaming is no longer
+  present in the current Windows AppData scan. Treat App/VSCode visible
+  history as the Windows Codex state plus their own frontend caches; if the UI
+  disagrees with the DB, diagnose that frontend separately instead of editing
+  WSL history.
+
+## 2026-06-05 CST - Windows Codex CLI Runtime Consolidated
+
+- Consolidated the Windows command-line Codex environment to one canonical
+  CLI: npm global `@openai/codex@0.137.0` under nvm-managed Node
+  `C:\nvm4w\nodejs`. `where codex` now resolves first to
+  `C:\nvm4w\nodejs\codex` and `C:\nvm4w\nodejs\codex.cmd`; `codex --version`
+  reports `codex-cli 0.137.0`.
+- Removed `C:\Users\HP\.codex\bin` from the Windows user `Path` and moved its
+  legacy CLI files to
+  `C:\Users\HP\.codex\bin\disabled-legacy-cli-20260605`. This prevents the
+  older/manual `.codex\bin` launcher from becoming a second active CLI
+  environment.
+- Codex App and VSCode Codex may still ship and launch their own private
+  `codex.exe` binaries internally. Treat those as App/plugin runtimes only,
+  not as the user's shell CLI. The shared state/config home remains
+  `C:\Users\HP\.codex`.
+
+## 2026-06-05 CST - Windows Codex CLI Node Toolchain Installed
+
+- Installed `nvm-windows` 1.2.2 with `winget` and installed/activated Node LTS
+  through nvm. Current verified toolchain:
+  `C:\Users\HP\AppData\Local\nvm\nvm.exe`, `C:\nvm4w\nodejs\node.exe`
+  `v24.16.0`, `npm`/`npx` `11.13.0`.
+- Reordered the Windows user `Path` so `%NVM_HOME%` and `%NVM_SYMLINK%` take
+  precedence over `C:\Users\HP\AppData\Local\Microsoft\WindowsApps`; this
+  prevents `node` from resolving to the Codex App packaged WindowsApps
+  `node.exe`, which failed with `Access is denied`.
+- Synchronized the local `codex` CLI under `C:\Users\HP\.codex\bin` from the
+  current App cache
+  `C:\Users\HP\AppData\Local\OpenAI\Codex\bin\fb2111b91430cb17`, updating
+  `codex --version` from `0.136.0-alpha.2` to `0.137.0-alpha.4`. Old CLI
+  binaries were backed up to
+  `C:\Users\HP\.codex\backups\codex-cli-bin-before-20260605-1245`.
+- Verification passed: `node --version`, `npm --version`, `npx --version`,
+  `nvm version`, `codex --version`, and `codex doctor --summary --ascii
+  --no-color`. `doctor` reports healthy config/auth/MCP and only the known 3
+  residual thread/rollout issues.
+
+## 2026-06-05 CST - Current Codex App Thread Visibility Rechecked
+
+- Rechecked the active Windows Codex App conversation after the user reported
+  that App replies did not appear under MoSim or chat history. The current
+  thread is present and healthy in `C:\Users\HP\.codex\state_5.sqlite`:
+  `019e8181-6653-73b3-9685-f5bc9a24b947`, `archived=0`,
+  `has_user_event=1`, and rollout file exists under
+  `C:\Users\HP\.codex\sessions\2026\06\01\...`.
+- Current MoSim history index state: 266 total rows, 210 MoSim rows, all 210
+  using the extended Windows cwd `\\?\C:\Users\HP\Desktop\MoSim`, and 0 using
+  the plain `C:\Users\HP\Desktop\MoSim` cwd. Do not normalize back to the
+  plain path for the current App/VSCode runtime.
+- Important UI interpretation: the active App conversation remains one thread
+  whose sidebar title/preview is the first 2026-06-01 prompt
+  `把windows环境下也安装好codex cli...`. New replies append to that rollout
+  and may not create a new history row or update the visible title to the
+  latest message.
+- `codex doctor` still reports 3 residual thread/rollout issues: one missing
+  active row, two stale rows, and one duplicate rollout thread id sample. These
+  do not include the current App thread. Per user instruction, do not restore
+  from `C:\Users\HP\.codex\backups` or reintroduce manually deleted histories.
+- Reusable route documented in
+  `Docs/Workflows/debug_mcp.md#45-vscode-codex-shows-dh-histories-but-mosim-is-missing`.
+
+## 2026-06-05 CST - Windows Primary Runtime Documentation Alignment
+
+- Updated current project operating rules to reflect the completed Windows-side
+  Codex migration: the primary project conversation/config/history is now the
+  Windows-native VSCode/Codex route under `C:\Users\HP\.codex`, not the older
+  WSL-backed VSCode session.
+- Preserved the robotics runtime boundary: ROS2, RViz2, FAST-LIO-family,
+  rosbridge, and Linux-native robotics tools remain WSL2 Ubuntu 22.04 runtime
+  work. Do not move those runtime claims to Windows PowerShell unless a future
+  workflow explicitly approves a Windows ROS route.
+- Files updated: `AGENTS.md`,
+  `Docs/Workflows/debug_mcp.md`, and
+  `Docs/Workflows/new_conversation_context.md`. Historical PROGRESS entries
+  describing the earlier WSL-primary policy remain as history only.
+- Added a `Historical Context Coverage` section to
+  `Docs/Workflows/new_conversation_context.md` so fresh conversations see the
+  session-memory migration status immediately: the currently identified
+  important topic set is recoverable through the cache/round-3/completion audit
+  files, but any newly surfaced old claim must still go through
+  `Docs/Workflows/session_memory_migration.md` before becoming project truth.
+
+## 2026-06-05 CST - VSCode Codex MoSim History Visibility Repair
+
+- Repaired the Windows-native VSCode Codex history index under
+  `C:\Users\HP\.codex` after the plugin showed about 50 DH histories and hid
+  most MoSim histories. Stopped only the VSCode Codex app-server, backed up the
+  current DB family to
+  `C:\Users\HP\.codex\backups\pre-mosim-visibility-repair-20260605-104256`,
+  and merged only MoSim thread rows from
+  `C:\Users\HP\.codex\backups\latest-wsl-sync-20260604-225318`.
+- Post-check: SQLite `integrity_check=ok`, 271 total threads,
+  215 active MoSim rows at `C:\Users\HP\Desktop\MoSim`, 0 archived MoSim rows,
+  and 52 DH-like rows preserved. Copied 186 missing MoSim rollout files, kept
+  22 existing rollouts, and recorded 7 MoSim rows whose rollout files were also
+  missing from the available backup.
+- Reusable recovery route is documented in
+  `Docs/Workflows/debug_mcp.md#45-vscode-codex-shows-dh-histories-but-mosim-is-missing`.
+
+## 2026-06-05 CST - Windows Codex Startup Warning Repair
+
+- Fixed Windows Codex startup warnings in `C:\Users\HP\.codex` after backing up
+  config and affected files to
+  `C:\Users\HP\.codex\backups\startup-warning-fix-20260605-100846`.
+- Root causes and fixes:
+  - `syslab-code-style`, `syslab-digital-filter-design`, and `syslab-testing`
+    skill frontmatter was valid text but had a UTF-8 BOM before `---`; rewrote
+    those `SKILL.md` files as UTF-8 without BOM.
+  - `openai-api-key-local-confirmation` came from the OpenAI Developers plugin
+    `.mcp.json` and used bare `node`; Windows Codex startup did not have
+    `node.exe` on PATH. Replaced it in all observed OpenAI Developers plugin
+    copies with
+    `C:\Users\HP\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe`.
+  - `git` MCP had no explicit timeout. Added `startup_timeout_sec = 120` and
+    `tool_timeout_sec = 300` under `[mcp_servers.git]`.
+  - The `local` marketplace source pointed at `C:\Users\HP\.codex`, which is
+    not a marketplace root. Added
+    `C:\Users\HP\.codex\local-marketplace\.agents\plugins\marketplace.json`
+    for `codex-session-tools@local` and repointed `[marketplaces.local]`.
+  - Windows-mode Blender MCP now uses the project Windows wrapper
+    `Docs\Skills\Blender-MCP\wrappers\blender-mcp.cmd` instead of the WSL
+    wrapper to avoid slow `wsl.exe` startup in Windows-native Codex sessions.
+- Verification: `codex plugin marketplace list`, `codex plugin list`,
+  `codex mcp get blender`, and `codex doctor --summary --ascii --no-color`
+  all load successfully. `doctor` still reports the known Windows Codex
+  thread/rollout mismatch; that is the separate chat-history visibility repair
+  task, not an MCP/skill startup failure.
+- Follow-up MCP inventory audit: Windows config had an unintended duplicate
+  `[mcp_servers.sysplorer_mcp]` entry pointing at the same Sysplorer MCP
+  executable as `[mcp_servers.sysplorer]`. This was not present in the WSL
+  source config. Removed the duplicate after backing up to
+  `C:\Users\HP\.codex\backups\mcp-dedupe-20260605-102326`; `codex doctor`
+  now reports `mcp 9 server (9 stdio)`.
+- `node_repl` is not a project MCP entry in current `config.toml`; it is an
+  internal OpenAI bundled browser/native-host JavaScript channel referenced by
+  Browser/Chrome/Computer Use plugin files. The currently configured project
+  MCP servers do not include `[mcp_servers.node_repl]`.
+- CC Switch keeps a separate MCP registry in
+  `C:\Users\HP\.cc-switch\cc-switch.db`, so it can still show stale entries
+  after `C:\Users\HP\.codex\config.toml` is fixed. Stopped the running
+  `cc-switch.exe`, backed up the database to
+  `C:\Users\HP\.cc-switch\backups\cc-switch-mcp-cleanup-20260605-103427.db`,
+  removed non-project `node_repl`, and synced the CC Switch `blender` row to
+  the Windows `.cmd` wrapper. Follow-up correction: `sysplorer_mcp` is not a
+  separate downloaded Sysplorer MCP; it is another client registration for the
+  same MWORKS-installed Sysplorer MCP under
+  `D:\Program Files\MWORKS\Sysplorer 2026a\Tools\sysplorer_mcp`. Restored that
+  row in CC Switch with `enabled_codex=0` and `enabled_opencode=1`, while
+  keeping Codex on the canonical `sysplorer` row. Codex CLI still shows 10 MCP
+  entries because the OpenAI Developers plugin contributes
+  `openai-api-key-local-confirmation` outside CC Switch's project MCP table.
+- WSL-vs-Windows MCP route audit: WSL `syslab_mcp.sh` and
+  `sysplorer_mcp.sh` are wrappers that still launch Windows MWORKS binaries
+  through `/init ... cmd.exe`; they are not separate Linux MCP server builds.
+  Windows Codex can use the same installed MWORKS MCPs directly. Synced Windows
+  `syslab` args to WSL behavior by adding
+  `--julia-root C:\Users\Public\TongYuan\julia-1.10.10` and
+  `--syslab-display-mode nodesktop` in both `C:\Users\HP\.codex\config.toml`
+  and the CC Switch `syslab` row. No new Syslab/Sysplorer MCP server download
+  is needed.
+- Codex 0.136 uses deferred tool discovery in this environment. The visible
+  conversation may initially show only `tool_search`; project MCP tools are
+  exposed after a targeted `tool_search` query. Verified discovery exposes
+  `mcp__mosim_epic`, `mcp__mosim_unreal`, `mcp__windows_mcp`, `mcp__sysplorer`,
+  and `mcp__syslab`. Any stale `mcp__sysplorer_mcp` namespace visible in the
+  current already-started conversation is a pre-repair tool-surface cache and
+  should disappear after restarting VSCode Codex/app-server.
+
+## 2026-06-05 CST - Windows Codex History Unarchived For Manual Review
+
+- After user approval, cleaned the Windows Codex App history surface under
+  `C:\Users\HP\.codex`. Stopped Codex App/app-server processes first, backed
+  up the DB family and affected rollout files, and then modified only the
+  Codex history store.
+- Deleted the one pre-existing archived user thread
+  `019ddf78-e5f7-7b02-bcd9-35ddd016512e` (`你好`). Archived all 262 DB-marked
+  `thread_source=subagent` threads. A later user correction clarified that
+  CoAgent-related records must remain visible, so the 20 CoAgent department,
+  scoped task packet, candidate worker/test, and visibility-test threads that
+  had been temporarily archived were restored to active history.
+- Backups and manifests:
+  `C:\Users\HP\.codex\backups\archive-subagents-delete-archived-20260605-003122\manifest.json`,
+  `C:\Users\HP\.codex\backups\archive-agentlike-user-threads-20260605-003515\manifest.json`,
+  and
+  `C:\Users\HP\.codex\backups\restore-coagent-visible-threads-20260605-004050\manifest.json`.
+  Post-check: SQLite `integrity_check=ok`, `quick_check=ok`, 304 total rows,
+  42 active rows/files, 262 archived rows/files, 20 active CoAgent-like rows,
+  0 archived CoAgent-like rows, and 0 active subagent rows.
+- Known residual not changed by this request: active non-subagent dog-image
+  thread `019e1aa8-5855-7c83-9db9-a97f1e1050e5` still points to a missing
+  rollout file. Leave it for a separate cleanup decision.
+- Because Codex App does not expose archived conversations for manual review,
+  generated project-local review sheets for the 262 archived subagent records:
+  `Results/codex_history_audit/archived_subagent_fine_group_review_latest.md`
+  groups them into 11 review groups, and
+  `Results/codex_history_audit/archived_subagent_group_review_latest.md`
+  keeps the broader 34-group view. This grouping pass was read-only against
+  Windows `.codex`; it did not delete, restore, or move any Codex history.
+- User then chose to cancel all archive state and review one by one in Codex
+  App. Stopped Codex App/app-server again, backed up to
+  `C:\Users\HP\.codex\backups\unarchive-all-for-manual-review-20260605-005827`,
+  and unarchived all 262 currently archived subagent records. Post-check:
+  SQLite `integrity_check=ok`, `quick_check=ok`, 304 active DB rows, 0 archived
+  DB rows, 262 active subagent rows, 0 archived rollout files. File-level
+  residual: seven active rows point to missing rollout files
+  (`019e0589-1fef-7d92-9b56-09e238ad8840`,
+  `019e1aa8-5855-7c83-9db9-a97f1e1050e5`,
+  `019e1156-f22f-7823-9e83-96f1506152e0`,
+  `019e078b-9fcf-7650-9d05-205ac11d2b41`,
+  `019e02b8-5613-74b1-8edb-1b01b8943b7e`,
+  `019df629-ebd2-78d2-a031-b32e79d0ebbf`,
+  `019de2ae-24e0-7d93-b2f7-bc85d3cafc85`).
+- When the user still could not see restored records in Codex App, verified the
+  Windows DB already had 304 active rows and 262 active subagent rows. The
+  remaining visibility blocker was Codex++ frontend cache/filtering:
+  `market-codex-list-pagebuster.js` still used localStorage archived/hidden
+  snapshots and internal-thread filtering. Backed up the script as
+  `market-codex-list-pagebuster.js.bak-20260605-011944-unarchived-subagents-visible`
+  and
+  `market-codex-list-pagebuster.js.bak-20260605-012023-fix-keep-subagents`,
+  bumped its storage version to
+  `2026-06-05-unarchived-subagents-visible-v2`, and confirmed Node syntax
+  check passes. Reloading/restarting Codex App should clear stale
+  `__codexListPagebusterArchivedIds` / hidden snapshots and let active
+  subagent rows appear.
+- Later environment audit showed the Codex history state is still not clean
+  enough for blind deletion. Current Windows `C:\Users\HP\.codex` DB has 264
+  active rows, 0 archived rows, 231 active subagent rows, 32 user rows, and 1
+  null-source row; WSL `/home/linux/.codex` DB has 308 rows with 112 active and
+  196 archived. The ID sets differ: 45 WSL IDs are missing from Windows and 1
+  Windows ID is missing from WSL. The previously observed 304-row Windows
+  state was later changed by additional repair/cleanup batches such as
+  `remove-stale-thread-indexes-20260605-1300` and
+  `restore-mosim-visible-history-20260605-103856`. Also, the Codex++ user
+  script path `C:\Users\HP\AppData\Roaming\Codex++\user_scripts` is not
+  currently present via `$env:APPDATA`, so the earlier frontend patch may no
+  longer be active. Do not perform bulk history deletion until the authority
+  source is explicitly chosen: Windows App DB, WSL/VSCode DB, or a merged
+  reviewed manifest.
+
+## 2026-06-04 CST - Windows Codex History Cleanup Audit Prepared
+
+- After the user pointed out that restoring all Windows Codex history had also
+  surfaced subagent conversations in the visible App history, generated an
+  audit-only cleanup package under `Results/codex_history_audit/`. No Codex
+  history was deleted or modified in this pass.
+- Current Windows `C:\Users\HP\.codex` audit counts from `state_5.sqlite`:
+  310 total threads, 263 likely subagent/delegated records, 30 MoSim user main
+  records, 15 Codex infrastructure user records, 15 DH/DHPA records, and 5
+  scratch/greeting records. The proposed post-review cleanup set is
+  `Results/codex_history_audit/proposed_delete_after_user_review_ids.txt`
+  with 270 de-duplicated candidates; the proposed keep set is
+  `Results/codex_history_audit/proposed_keep_after_user_review_ids.txt` with
+  40 candidates.
+- Reusable correction: future Windows Codex App history migration must not
+  treat `thread_source=subagent` rollout records as normal foreground chat
+  history. Keep them backed up and auditable, but hide/archive/delete them only
+  after an explicit reviewed ID list.
+
+## 2026-06-04 CST - Windows Codex Latest WSL History Increment Synced
+
+- Rechecked WSL `/home/linux/.codex` against Windows
+  `C:\Users\HP\.codex` after the user asked whether the newest chats had all
+  migrated. They had not: WSL had 309 rollout IDs versus Windows 308, Windows
+  was missing two WSL archived sessions, and the current MoSim infrastructure
+  conversation `019e8181-6653-73b3-9685-f5bc9a24b947` plus the large original
+  MoSim conversation `019e0198-a041-77f1-84d0-c5524bfd4b81` were stale on the
+  Windows side.
+- Stopped Windows Codex App/app-server, backed up Windows state and replaced
+  rollout files under
+  `C:\Users\HP\.codex\backups\latest-wsl-sync-20260604-225318`. Copied the two
+  missing WSL archived rollouts, replaced 288 same-ID Windows rollouts whose
+  contents differed from WSL, preserved the Windows-only thread
+  `019e7c99-e807-7cc1-b1b4-2a88d012a68e`, and normalized copied rollout
+  first-line metadata to Windows `cwd`, `source=cli`, and
+  `thread_source=user/subagent`.
+- Added the two missing archived thread rows to Windows `state_5.sqlite` from
+  WSL metadata. Verification passed: `codex doctor --json` reports
+  `state.rollout_db_parity=ok`, 308 active rollout files/rows, 2 archived
+  rollout files/rows, 310 total rows, 0 missing rows, 0 stale rows, and
+  `rollout DB sources=cli=310`. A final app-server `thread/list` for MoSim
+  shows `019e8181-6653-73b3-9685-f5bc9a24b947` as the latest MoSim thread, and
+  the latest active file body hash matches WSL after Windows metadata
+  normalization.
+
+## 2026-06-04 CST - Windows Codex App DH-Only History View Fixed
+
+- User later reported the App showed about 90 conversations and all were
+  DH-related. Direct app-server protocol checks still showed the backend had
+  global active history: 307 unique active rows, including 212 MoSim rows and
+  81 DH/DH-variant rows; explicit MoSim pagination returned 100 + 100 + 11
+  rows. Evidence:
+  `Results/codex_app_debug/after_exact_cwd_fix_protocol.json`.
+- Fixed remaining frontend-layer risk in
+  `C:\Users\HP\AppData\Roaming\Codex++\user_scripts\market-codex-list-pagebuster.js`
+  after backing it up under
+  `C:\Users\HP\.codex\backups\app-ui-dh-only-fix-20260604-221525`: storage
+  version is now `2026-06-04-global-history-v7-explicit-mosim`, the script
+  explicitly supplements `C:\Users\HP\Desktop\MoSim` even when the native App
+  is scoped to another project such as DH, and subagent project history is kept
+  instead of being classified as internal hidden history.
+- Verification passed: bundled Node `--check` passed for the Codex++ script;
+  `codex doctor --json` reports state DB/log DB integrity `ok`,
+  `state.rollout_db_parity=ok`, 308 active rollout files/rows, 0 archived
+  files/rows, 0 stale rows, and `rollout DB sources=cli=308`. Remaining doctor
+  warnings are Windows PATH missing Git and update probe timeout, not chat
+  migration problems.
+
+## 2026-06-04 CST - Windows Codex App Full MoSim History Restored
+
+- User still saw only 12 conversations after DB/source normalization and the
+  first Codex++ script patch. Direct app-server `thread/list` proved the
+  backend could see more than 12: MoSim active CLI returned 25 rows, while the
+  remaining MoSim history was still under `archived_sessions` and therefore
+  hidden from the normal project list.
+- Fixed the durable cause by moving all 186 MoSim archived rollout files back
+  to active `C:\Users\HP\.codex\sessions\YYYY\MM\DD\...` paths and updating
+  `state_5.sqlite` (`archived=0`, `archived_at=NULL`, Windows-local
+  `rollout_path`). Backup and move manifest:
+  `C:\Users\HP\.codex\backups\unarchive-mosim-history-20260604-2242`.
+- Protocol verification after the move: paged `thread/list` for
+  `cwd=C:\Users\HP\Desktop\MoSim`, `archived=false`, `limit=100`,
+  `sortKey=updated_at` returned 100 + 100 + 11 rows, 211 unique total; the
+  archived MoSim query returned 0.
+- `codex doctor --json` now reports `state DB integrity=ok`,
+  `rollout DB rows=308`, `rollout DB active rows=305`,
+  `rollout DB archived rows=3`, `rollout DB archive mismatches=0`, and
+  `rollout DB stale rows=0`. `state.rollout_db_parity=ok`.
+- Updated Codex++ `market-codex-list-pagebuster.js` again after backing it up
+  as `market-codex-list-pagebuster.js.bak-20260604-2248`: storage version is
+  now `2026-06-04-global-history-v6-unarchived-mosim`, and version migration
+  plus manual reset clear `__codexListPagebusterArchivedIds` so the script does
+  not keep hiding the 186 conversations that were just restored to active.
+  Node syntax check passed.
+
+## 2026-06-04 CST - Windows Codex App Partial 12-Thread List Earlier Fix
+
+- User manually verified that the Windows Codex App showed only 12
+  conversations after the empty-list repair. The Windows state DB was not
+  missing MoSim history: `state_5.sqlite` integrity was `ok`, WSL and Windows
+  both had 308 thread rows, and Windows had all 213 MoSim rows
+  (27 active user, 4 archived user, 182 archived subagent).
+- Fixed the Windows thread index again after backing up to
+  `C:\Users\HP\.codex\backups\app-full-list-fix-20260604-211911`: every
+  `threads.source` is now `cli`, every `thread_source` is `user` or
+  `subagent`, and every MoSim `cwd` variant is normalized to
+  `C:\Users\HP\Desktop\MoSim`.
+- `codex doctor --json` now reports `state DB integrity=ok`,
+  `rollout DB rows=308`, `rollout DB active rows=119`,
+  `rollout DB archived rows=189`, `rollout DB sources=cli=308`, and
+  `rollout DB stale rows=0`. The remaining provider route timeout is network
+  reachability, not chat migration.
+- The remaining 12-item symptom was a UI/list enhancement issue, not DB loss.
+  Patched
+  `C:\Users\HP\AppData\Roaming\Codex++\user_scripts\market-codex-list-pagebuster.js`
+  after backing it up as
+  `market-codex-list-pagebuster.js.bak-20260604-2129`: unresolved native
+  metadata checks now keep snapshot rows instead of pruning them, project
+  supplements can render even while native project lists are collapsed, and the
+  localStorage version was bumped to force a fresh snapshot.
+
+## 2026-06-04 CST - Windows Codex App Empty Chat List Fixed
+
+- User manually verified that the Windows Codex App still showed no MoSim
+  conversations after the WSL chat-history migration. The issue was not a
+  missing rollout copy or only a `cwd` mismatch. Windows `logs_2.sqlite`
+  showed direct App evidence:
+  `state db list_threads failed: unknown thread source: vscode` for
+  `thread/list` requests from `Codex Desktop`.
+- Fixed the Windows-native `C:\Users\HP\.codex\state_5.sqlite` thread index
+  after backing up the DB family to
+  `C:\Users\HP\.codex\backups\app-list-fix-20260604-205142`: normalized all
+  `threads.source` values to `cli`, preserved user/subagent semantics in
+  `thread_source`, and normalized MoSim rows to
+  `C:\Users\HP\Desktop\MoSim`.
+- Verification: SQLite `integrity_check` and `quick_check` are `ok`; thread
+  inventory is 310 rows; `rollout DB sources` is now `cli=310`; MoSim rows are
+  27 active and 186 archived. `codex doctor` still has a provider route timeout
+  and 2 stale non-MoSim archived rows, but no `vscode` thread source remains.
+- Do not diagnose this class by repeatedly changing `cwd`. Check
+  `logs_2.sqlite` for `state db list_threads failed` first, then normalize
+  unsupported `threads.source` values if needed.
+
+## 2026-06-04 CST - Windows Codex Chat History Migration Completed
+
+- Migrated WSL Codex chat history from `/home/linux/.codex` into the
+  Windows-native Codex home `C:\Users\HP\.codex` after checking the existing
+  Windows history. Backup:
+  `C:\Users\HP\.codex\backups\wsl-chat-migration-20260604-200448`.
+- Conflict policy: WSL wins for duplicate rollout IDs, but Windows-only
+  sessions are preserved. Results: 106 new active WSL rollouts copied, 9
+  identical active rollouts skipped, 3 shorter Windows conflicting rollouts
+  backed up and replaced, 191 archived WSL rollouts copied, and the
+  Windows-only thread `019e7c99-e807-7cc1-b1b4-2a88d012a68e` preserved.
+- Merged `session_index.jsonl` now has 215 unique entries. Windows
+  `state_5.sqlite` was repointed to Windows-local rollout paths and then
+  repaired for rollout/DB parity: 310 thread rows, 119 active files, 191
+  archived rows, no Linux-style paths, and SQLite integrity `ok`.
+- Verification passed for config and MCP parsing: Windows `codex doctor`
+  reports `config.load=ok`, `mcp.config=ok`, `state DB integrity=ok`, and
+  `rollout DB sources=cli=310` after the later App-list fix; `codex mcp list`
+  shows the expected Windows/WSL MCP server set. Remaining warnings/failures
+  are the provider route probe timeout and two stale old archived rows outside
+  MoSim, not the MoSim chat-list migration issue.
+
+## 2026-06-04 CST - Windows Codex MCP Mirror Completed
+
+- Windows-native Codex config now mirrors all WSL MCP server and tool-level
+  entries. Added the missing `blender` MCP through
+  `C:\Windows\System32\wsl.exe -d Ubuntu-22.04 --exec
+  /mnt/c/Users/HP/Desktop/MoSim/Docs/Skills/Blender-MCP/wrappers/blender-mcp.sh`
+  with the WSL `BLENDER_HOST`, `BLENDER_PORT`, and `DISABLE_TELEMETRY` values.
+- Added the missing Windows-side `windows-mcp.tools.PowerShell`
+  `approval_mode = "approve"` entry so the Windows MCP approval boundary
+  matches WSL.
+- Verification passed: Windows `codex mcp list` shows `blender`, `filesystem`,
+  `git`, `mosim-epic`, `mosim-unreal`, `ros-mcp`, `syslab`, `sysplorer`,
+  `windows-mcp`, plus Codex App's extra `node_repl`; table comparison reports
+  no WSL MCP table paths missing from Windows.
+
+## 2026-06-04 CST - CoAgent WeChat Completion Notification Boundary
+
+- Current multi-dialog scheduling boundary is now explicit: visible Codex
+  conversations are manually created, opened, switched, and tasked by the user
+  until a later approved task proves reliable visible-thread dispatch again.
+  CoAgent/main-agent responsibility is packet preparation, result import,
+  ledger/status updates, integration, and notification.
+- Added automatic WeChat completion notification support for accepted
+  `canonical_status=completed` result packets. `CoAgent/result_router` now
+  generates `completion_notification` packets under
+  `Results/agent_packets/notifications/` when `--notify-weixin` is used, and
+  routes them through `CoAgent/gateway/cc_connect_weixin.py`.
+- Human-review/blocker notifications remain supported through
+  `blocker_notification`. Completion notification is required even when no
+  human review is needed, because WeChat is the unified out-of-band task
+  completion signal.
+- Verification passed:
+  `python3 CoAgent/tests/test_gateway_weixin.py`,
+  `python3 CoAgent/tests/test_result_router.py`, and
+  `python3 -m py_compile CoAgent/gateway/cc_connect_weixin.py CoAgent/result_router/result_router.py`.
+- A real completion notification packet was generated through the result
+  router:
+  `Results/agent_packets/notifications/COAGENT-WEIXIN-COMPLETION-RULE-20260604.weixin_notification.json`.
+  Actual WeChat sending failed after the bounded restart/retry with
+  `read unix ... api.sock: read: connection reset by peer`; recovery evidence:
+  `Results/coagent_gateway/recovery/weixin_recovery_required_20260604_195248.json`.
+  Treat this as cc-connect runtime/session degradation, not as a completion
+  packet contract failure. Do not retry in a tight loop.
+- Git commit for this patch is still pending because another Git owner/process
+  is holding `.git/index.lock` while running
+  `git -c core.hooksPath=/dev/null commit -m docs: cache cli app session details`.
+  Do not kill or overwrite that process from the main thread.
+
 ## 2026-06-04 CST - Long Conversation Memory Migration Supplemental Routing
 
 - Added `Docs/Cache/session_memory_migration/round2_core_competition_report_docs_memory_20260604.md` as a cache-only recovery entry for historical core competition work that was already represented in formal docs/results but needed clearer fresh-conversation routing.

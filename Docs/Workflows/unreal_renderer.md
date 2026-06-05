@@ -86,6 +86,16 @@ Recommended first UI groups:
 | Perception | LiDAR baseline/enhanced mode, IMU state, FAST-LIO candidate | ROS2 measured rates and FAST-LIO quality gate |
 | Evidence | open RViz split layout, mark manual review, export run packet | evidence bundle and quality-status files |
 
+Relationship to other review/control windows:
+
+| Window | UE console relationship |
+|---|---|
+| MoSim Studio | UE console is the live rendered operation surface; Studio remains the batch experiment/result browser. |
+| QGC/GCS-style window | Use only when a PX4/V6X/offboard adapter is active; display heartbeat/mode/failsafe, not MWORKS metrics. |
+| RViz2 point-cloud/FAST-LIO | Open from UE/Studio as a review action, but the RViz window owns point-cloud/TF/odometry display. |
+| RViz2 3D map/planner | Open from UE/Studio as a review action; planner state still comes from ROS2 topics. |
+| Sysplorer/Syslab | Remain the model/result authority; UE only mirrors accepted runtime status. |
+
 Recommended command/status route:
 
 ```text
@@ -126,6 +136,63 @@ Do not expose a UI button until its adapter can reject invalid requests and the
 status frame can show the accepted state. For example, a "20Hz LiDAR" toggle
 must show measured LiDAR/IMU rates and FAST-LIO gate status; it must not simply
 change RViz or UE display rate.
+
+### Scene And Map Switching UX
+
+The user-facing map switcher should be designed as a stateful selector, not a
+raw Unreal level dropdown. It should show at least:
+
+- `scene_source_id`: editable asset source, Fab/Epic/local/reference provenance;
+- `scene_id`: experiment scene identity used by scenarios and Results;
+- `map_id`: renderer/planner/truth map identity;
+- activation state: inactive, link-ready, UE-loaded, MWORKS-bound,
+  ROS2-bound, headless-gate-passed, manual-review-ready;
+- truth artifacts: collision/oracle JSON, local-map contract, FAST-LIO dataset
+  availability;
+- known blockers: black map, missing asset, primitive fallback, no truth export,
+  no ROS2/FAST-LIO gate.
+
+Expected switch flow:
+
+```text
+operator selects map card
+  -> UE sends scene_switch request with scene_source_id/map_id/run_id
+  -> scene adapter validates active_scene_links and registry entry
+  -> UE loads or activates the render map
+  -> MWORKS scenario binding is checked or generated
+  -> ROS2 topic contract is selected for that scene
+  -> headless gates run when required
+  -> status frame echoes active scene/map/gate status
+  -> UI enables review/run controls only for accepted states
+```
+
+Existing implementation hooks to reuse:
+
+- `UE5/MoSimSceneLibrary/Content/MworksData/active_scene_links.json`;
+- `UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json`;
+- `UE5/MoSimSceneLibrary/Content/MworksData/unreal_scene_profiles.json`;
+- `AQuadrotorMworksMapActor::ResolveMapId`;
+- `AQuadrotorMworksMapActor::ResolveSceneSourceId`;
+- `AQuadrotorMworksMapActor::ApplyFrameMapSelection`;
+- `FQuadrotorMworksFrame.SceneId` and `FQuadrotorMworksFrame.MapId`.
+
+Do not make map switching a visual-only UE operation. A selected UE map becomes
+a valid simulation scene only when its MWORKS scenario, ROS2 topic contract,
+truth artifacts, and evidence path are bound and echoed.
+
+### Phased Implementation
+
+1. Define command/status schemas for console actions, scene switching, and
+   accepted-state echoes.
+2. Add a minimal C++/Blueprint-callable UE command sender component.
+3. Add an adapter smoke that accepts or rejects `controller_select`,
+   `planner_select`, `wind_profile`, `motor_fault`, `sensor_mode`, and
+   `scene_switch`.
+4. Build the first UMG/Slate panel with disabled states until ack is received.
+5. Add scene cards using the existing scene registries and active links.
+6. Add RViz/QGC/Studio launch buttons only as review/helper actions, never as
+   substitute evidence.
+7. Add evidence export and run packet display after MWORKS/ROS2 gates pass.
 
 ## Sunray150 Material Review Rule
 

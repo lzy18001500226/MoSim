@@ -133,6 +133,16 @@ Recommended UE console shape:
 | Perception | LiDAR 10Hz baseline vs 20Hz enhanced target, IMU status, FAST-LIO candidate | ROS2/FAST-LIO bridge | measured rates, timestamp gate, odometry quality |
 | Evidence | mark review, export run packet, open RViz/UE review layout | Evidence scripts + RViz/UE | result paths, quality status, known blockers |
 
+Other frontends must stay role-specific:
+
+| Frontend | Role | Data it may command | Data it must display from echo |
+|---|---|---|---|
+| MoSim Studio | experiment manager and report/evidence browser | scenario/config/run requests | metrics, quality status, result paths, event logs |
+| UE Experiment Console | RflySim-like in-scene operator panel | scene, goal, controller/planner/fault/wind/sensor-mode requests | accepted runtime state, render status, evidence level |
+| QGC/GCS-style window | future PX4/V6X/offboard supervision | arm/mode/mission/offboard requests only when adapter is active | heartbeat, mode, failsafe, odometry-valid state |
+| RViz2 | native robotics review | view/display config only, plus limited goal tools through ROS2 adapter when enabled | TF, LiDAR, FAST-LIO odometry/path, 3D local map, planner state |
+| Sysplorer/Syslab GUI | model and result authority review | MWORKS model/simulation operations | native result curves, animation, variables, model checks |
+
 Initial implementation should use a narrow command channel:
 
 ```text
@@ -145,6 +155,26 @@ UE console command packet
 
 Do not wire UI buttons directly to actor transforms, motor visuals, planner map
 truth, or result pass/fail labels.
+
+Scene and map switching rule:
+
+```text
+select scene_source_id / map_id
+  -> validate registry and active scene links
+  -> bind scenario scene_id/map_id/run_id
+  -> load or activate UE map for rendering
+  -> bind MWORKS scenario and ROS2 topic contract
+  -> run required headless gates
+  -> only then open UE/RViz review windows
+```
+
+The current project already has `scene_id`, `map_id`,
+`active_scene_links.json`, `scene_source_registry.json`,
+`unreal_scene_profiles.json`, and `AQuadrotorMworksMapActor` map resolution
+hooks. The missing product layer is a unified scene-switch UI and command
+adapter that keeps those identities synchronized across UE, MWORKS, ROS2, and
+Results. Do not treat a visible UE map switch as a complete scenario switch
+until the MWORKS/ROS2/evidence echoes match.
 
 Rejected RflySim uses:
 
