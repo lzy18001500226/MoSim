@@ -1,0 +1,61 @@
+{
+  "action": "delete_one_dh_scratch",
+  "timestamp": "2026-06-05T16:05:00+08:00",
+  "backup_dir": "/home/linux/.codex/backups/wsl-delete-dh-scratch-20260605-1605",
+  "delete_id": "019e0589-1fef-7d92-9b56-09e238ad8840",
+  "copied_files": {
+    "/home/linux/.codex/state_5.sqlite": "/home/linux/.codex/backups/wsl-delete-dh-scratch-20260605-1605/state_5.sqlite",
+    "/home/linux/.codex/state_5.sqlite-shm": "/home/linux/.codex/backups/wsl-delete-dh-scratch-20260605-1605/state_5.sqlite-shm",
+    "/home/linux/.codex/state_5.sqlite-wal": "/home/linux/.codex/backups/wsl-delete-dh-scratch-20260605-1605/state_5.sqlite-wal",
+    "/home/linux/.codex/session_index.jsonl": "/home/linux/.codex/backups/wsl-delete-dh-scratch-20260605-1605/session_index.jsonl",
+    "/home/linux/.codex/history.jsonl": "/home/linux/.codex/backups/wsl-delete-dh-scratch-20260605-1605/history.jsonl",
+    "/home/linux/.codex/archived_sessions/rollout-2026-05-08T11-02-13-019e0589-1fef-7d92-9b56-09e238ad8840.jsonl": "/home/linux/.codex/backups/wsl-delete-dh-scratch-20260605-1605/rollout-2026-05-08T11-02-13-019e0589-1fef-7d92-9b56-09e238ad8840.jsonl"
+  },
+  "db_row": {
+    "id": "019e0589-1fef-7d92-9b56-09e238ad8840",
+    "rollout_path": "/home/linux/.codex/archived_sessions/rollout-2026-05-08T11-02-13-019e0589-1fef-7d92-9b56-09e238ad8840.jsonl",
+    "created_at": 1778209333,
+    "updated_at": 1779969512,
+    "source": "vscode",
+    "model_provider": "OpenAI",
+    "cwd": "/mnt/c/users/hp/desktop/dh",
+    "title": "打招呼",
+    "sandbox_policy": "{\"type\":\"workspace-write\",\"network_access\":false,\"exclude_tmpdir_env_var\":false,\"exclude_slash_tmp\":false}",
+    "approval_mode": "on-request",
+    "tokens_used": 0,
+    "has_user_event": 0,
+    "archived": 1,
+    "archived_at": 1780029476,
+    "git_sha": "f60a58e23a00f9eca205a1f4f3340e5b2a778f81",
+    "git_branch": "master",
+    "git_origin_url": "git@github.com:lzy18001500226/DH.git",
+    "cli_version": "0.128.0-alpha.1",
+    "first_user_message": "你好",
+    "agent_nickname": null,
+    "agent_role": null,
+    "memory_mode": "enabled",
+    "model": "gpt-5.5",
+    "reasoning_effort": "high",
+    "agent_path": null,
+    "created_at_ms": 1778209333266,
+    "updated_at_ms": 1779969512640,
+    "thread_source": null,
+    "preview": "你好"
+  },
+  "deleted_rollout_file": "/home/linux/.codex/archived_sessions/rollout-2026-05-08T11-02-13-019e0589-1fef-7d92-9b56-09e238ad8840.jsonl",
+  "session_index_removed_lines": [
+    "{\"id\":\"019e0589-1fef-7d92-9b56-09e238ad8840\",\"thread_name\":\"打招呼\",\"updated_at\":\"2026-05-08T03:02:21.169423519Z\"}"
+  ],
+  "history_removed_lines": [],
+  "checks": {
+    "integrity_check": "ok",
+    "quick_check": "ok",
+    "counts": {
+      "total": 291,
+      "active": 107,
+      "archived": 184,
+      "remaining": 0
+    },
+    "remaining_rollout_files": []
+  }
+}

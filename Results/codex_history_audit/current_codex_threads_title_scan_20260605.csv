@@ -1,0 +1,293 @@
+id,title,cwd,archived,source,thread_source,has_user_event,model,updated_at,created_at,first_user_message,preview
+019e74de-a452-7a50-99e7-ca9a247b32f1,"请创建一个标题为 MoSim｜DevOps 发布 的 CoAgent 常驻部门对话。
+部门职责：负责 Git、分批提交、push、工作树合并、大文件和发布卫生。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜DevOps 发布 已建立，等待任务单。",\\?\C:\Users\HP\Desktop\MoSim,0,cli,user,1,gpt-5.5,1780674365,1780077208,"请创建一个标题为 MoSim｜DevOps 发布 的 CoAgent 常驻部门对话。
+部门职责：负责 Git、分批提交、push、工作树合并、大文件和发布卫生。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜DevOps 发布 已建立，等待任务单。","请创建一个标题为 MoSim｜DevOps 发布 的 CoAgent 常驻部门对话。
+部门职责：负责 Git、分批提交、push、工作树合并、大文件和发布卫生。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜DevOps 发布 已建立，等待任务单。"
+019e9868-83ea-70f0-92c5-a3a408bd78c6,"你是 MoSim｜主线 PMO 对话。
+
+请先读取：
+1. AGENTS.md
+2. Docs/Workflows/new_conversation_context.md
+3. Docs/Index/project_work_memory_index.md
+4. Docs/Workflows/identify_quadrotor_parameters.md
+5. Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+
+当前任务：推进 Sunray150 / MoSim 四旋翼动力学模型优化，不要再做假点云、假栅格地图、键盘瞬移或手搓可视化。
+
+当前已确认：
+- MWORKS/Sysplorer/Syslab 是动力学、控制器、真值、指标的正式仿真源。
+- UE 只负责高质量渲染、场景/传感器 oracle，不负责判定控制器成功。
+- ROS2/RViz2/FAST-LIO 是点云、TF、里程计、定位和地图 review 窗口。
+- RflySim 只能作为架构/动力学结构参考，不能直接复制它的参数当 Sunray150 真值。
+
+参数边界：
+- DAE/Blender 人工审核后的 rotor center 已经可用：
+  rotor_0: (0.053745, -0.053740, -0.014052)
+  rotor_1: (-0.053761, 0.053760, -0.014052)
+  rotor_2: (0.053746, 0.053759, -0.014052)
+  rotor_3: (-0.053761, -0.053739, -0.014052)
+- 这些只修正几何/装配，不代表 mass/inertia/motor/thrust 已经识别完成。
+- 当前质量、惯量、推力系数仍是 source=SDF_migration，不是实机识别真值。
+- 不要用 DAE 的 MID-360 机械安装中心直接写 FAST-LIO extrinsic。
+
+优先工作：
+1. 检查当前 MWORKS QuadChassis 实现，确认是否缺 motor lag、command-to-speed mapping、yaw reaction torque、rotor arm moment、gyro moment、drag/angular damping。
+2. 学习本地 RflySim 动力学结构，只迁移结构思想：
+   - motor command -> speed
+   - motor first-order lag
+   - thrust Ct * omega^2
+   - yaw moment Cm * omega^2
+   - rotor arm cross thrust
+   - optional gyro/drag/damping
+3. 在 MWORKS 里新建实验 wrapper/chassis，不要直接破坏官方 baseline。
+4. 先实现最小可信动力学升级：motor lag + yaw reaction torque + rotor-center moment。
+5. 用最小 hover/yaw/step response 验证，不要直接大改控制器。
+6. 每一步都记录 source、参数来源、验证结果和未解决问题。
+7. 需要人工审核或完成阶段任务时，通过微信通知我。",\\?\C:\Users\HP\Desktop\MoSim,0,vscode,user,0,gpt-5.5,1780674360,1780673451,"你是 MoSim｜主线 PMO 对话。
+
+请先读取：
+1. AGENTS.md
+2. Docs/Workflows/new_conversation_context.md
+3. Docs/Index/project_work_memory_index.md
+4. Docs/Workflows/identify_quadrotor_parameters.md
+5. Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+
+当前任务：推进 Sunray150 / MoSim 四旋翼动力学模型优化，不要再做假点云、假栅格地图、键盘瞬移或手搓可视化。
+
+当前已确认：
+- MWORKS/Sysplorer/Syslab 是动力学、控制器、真值、指标的正式仿真源。
+- UE 只负责高质量渲染、场景/传感器 oracle，不负责判定控制器成功。
+- ROS2/RViz2/FAST-LIO 是点云、TF、里程计、定位和地图 review 窗口。
+- RflySim 只能作为架构/动力学结构参考，不能直接复制它的参数当 Sunray150 真值。
+
+参数边界：
+- DAE/Blender 人工审核后的 rotor center 已经可用：
+  rotor_0: (0.053745, -0.053740, -0.014052)
+  rotor_1: (-0.053761, 0.053760, -0.014052)
+  rotor_2: (0.053746, 0.053759, -0.014052)
+  rotor_3: (-0.053761, -0.053739, -0.014052)
+- 这些只修正几何/装配，不代表 mass/inertia/motor/thrust 已经识别完成。
+- 当前质量、惯量、推力系数仍是 source=SDF_migration，不是实机识别真值。
+- 不要用 DAE 的 MID-360 机械安装中心直接写 FAST-LIO extrinsic。
+
+优先工作：
+1. 检查当前 MWORKS QuadChassis 实现，确认是否缺 motor lag、command-to-speed mapping、yaw reaction torque、rotor arm moment、gyro moment、drag/angular damping。
+2. 学习本地 RflySim 动力学结构，只迁移结构思想：
+   - motor command -> speed
+   - motor first-order lag
+   - thrust Ct * omega^2
+   - yaw moment Cm * omega^2
+   - rotor arm cross thrust
+   - optional gyro/drag/damping
+3. 在 MWORKS 里新建实验 wrapper/chassis，不要直接破坏官方 baseline。
+4. 先实现最小可信动力学升级：motor lag + yaw reaction torque + rotor-center moment。
+5. 用最小 hover/yaw/step response 验证，不要直接大改控制器。
+6. 每一步都记录 source、参数来源、验证结果和未解决问题。
+7. 需要人工审核或完成阶段任务时，通过微信通知我。","你是 MoSim｜主线 PMO 对话。
+
+请先读取：
+1. AGENTS.md
+2. Docs/Workflows/new_conversation_context.md
+3. Docs/Index/project_work_memory_index.md
+4. Docs/Workflows/identify_quadrotor_parameters.md
+5. Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+
+当前任务：推进 Sunray150 / MoSim 四旋翼动力学模型优化，不要再做假点云、假栅格地图、键盘瞬移或手搓可视化。
+
+当前已确认：
+- MWORKS/Sysplorer/Syslab 是动力学、控制器、真值、指标的正式仿真源。
+- UE 只负责高质量渲染、场景/传感器 oracle，不负责判定控制器成功。
+- ROS2/RViz2/FAST-LIO 是点云、TF、里程计、定位和地图 review 窗口。
+- RflySim 只能作为架构/动力学结构参考，不能直接复制它的参数当 Sunray150 真值。
+
+参数边界：
+- DAE/Blender 人工审核后的 rotor center 已经可用：
+  rotor_0: (0.053745, -0.053740, -0.014052)
+  rotor_1: (-0.053761, 0.053760, -0.014052)
+  rotor_2: (0.053746, 0.053759, -0.014052)
+  rotor_3: (-0.053761, -0.053739, -0.014052)
+- 这些只修正几何/装配，不代表 mass/inertia/motor/thrust 已经识别完成。
+- 当前质量、惯量、推力系数仍是 source=SDF_migration，不是实机识别真值。
+- 不要用 DAE 的 MID-360 机械安装中心直接写 FAST-LIO extrinsic。
+
+优先工作：
+1. 检查当前 MWORKS QuadChassis 实现，确认是否缺 motor lag、command-to-speed mapping、yaw reaction torque、rotor arm moment、gyro moment、drag/angular damping。
+2. 学习本地 RflySim 动力学结构，只迁移结构思想：
+   - motor command -> speed
+   - motor first-order lag
+   - thrust Ct * omega^2
+   - yaw moment Cm * omega^2
+   - rotor arm cross thrust
+   - optional gyro/drag/damping
+3. 在 MWORKS 里新建实验 wrapper/chassis，不要直接破坏官方 baseline。
+4. 先实现最小可信动力学升级：motor lag + yaw reaction torque + rotor-center moment。
+5. 用最小 hover/yaw/step response 验证，不要直接大改控制器。
+6. 每一步都记录 source、参数来源、验证结果和未解决问题。
+7. 需要人工审核或完成阶段任务时，通过微信通知我。"
+019e9855-aa43-7fe2-807e-be7d4095877b,"本对话是 MoSim 微信网关运维专用线程。
+
+职责：
+1. 维护 CoAgent/gateway/cc_connect_weixin.py 通知链路。
+2. 处理 cc-connect / WeChat QR / context_token / active_session 问题。
+3. 只发送稀疏通知，不镜像长日志和对话全文。
+4. 微信发送失败时，记录到 Results/coagent_gateway/，诊断一次，不死循环重试。
+5. 不参与 MoSim 技术实现、不做 Git、不改仿真代码。
+
+启动时先读：
+AGENTS.md
+Docs/Workflows/new_conversation_context.md
+Docs/Index/project_work_memory_index.md
+Docs/Workflows/debug_mcp.md",\\?\C:\Users\HP\Desktop\MoSim,0,vscode,user,0,gpt-5.5,1780674220,1780672217,"本对话是 MoSim 微信网关运维专用线程。
+
+职责：
+1. 维护 CoAgent/gateway/cc_connect_weixin.py 通知链路。
+2. 处理 cc-connect / WeChat QR / context_token / active_session 问题。
+3. 只发送稀疏通知，不镜像长日志和对话全文。
+4. 微信发送失败时，记录到 Results/coagent_gateway/，诊断一次，不死循环重试。
+5. 不参与 MoSim 技术实现、不做 Git、不改仿真代码。
+
+启动时先读：
+AGENTS.md
+Docs/Workflows/new_conversation_context.md
+Docs/Index/project_work_memory_index.md
+Docs/Workflows/debug_mcp.md","本对话是 MoSim 微信网关运维专用线程。
+
+职责：
+1. 维护 CoAgent/gateway/cc_connect_weixin.py 通知链路。
+2. 处理 cc-connect / WeChat QR / context_token / active_session 问题。
+3. 只发送稀疏通知，不镜像长日志和对话全文。
+4. 微信发送失败时，记录到 Results/coagent_gateway/，诊断一次，不死循环重试。
+5. 不参与 MoSim 技术实现、不做 Git、不改仿真代码。
+
+启动时先读：
+AGENTS.md
+Docs/Workflows/new_conversation_context.md
+Docs/Index/project_work_memory_index.md
+Docs/Workflows/debug_mcp.md"
+019e8358-86b4-7070-8fd6-a2b4f4d2af97,MoSim｜WechatCodex,/mnt/c/Users/HP/Desktop/MoSim,0,cli,user,0,gpt-5.5,1780669143,1780320077,你好,你好
+019e74de-a83c-7fc2-8987-06c95577a1d3,"请创建一个标题为 MoSim｜外部情报进化 的 CoAgent 常驻部门对话。
+部门职责：持续学习模型厂商、Agent 框架、开源项目和管理经验，提出采纳建议。
+对齐对象：ProductStrategyAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜外部情报进化 已建立，等待任务单。",\\?\C:\Users\HP\Desktop\MoSim,0,cli,user,1,gpt-5.5,1780077222,1780077210,"请创建一个标题为 MoSim｜外部情报进化 的 CoAgent 常驻部门对话。
+部门职责：持续学习模型厂商、Agent 框架、开源项目和管理经验，提出采纳建议。
+对齐对象：ProductStrategyAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜外部情报进化 已建立，等待任务单。","请创建一个标题为 MoSim｜外部情报进化 的 CoAgent 常驻部门对话。
+部门职责：持续学习模型厂商、Agent 框架、开源项目和管理经验，提出采纳建议。
+对齐对象：ProductStrategyAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜外部情报进化 已建立，等待任务单。"
+019e74d8-c6fd-76c2-98fe-832dc1fea97b,"请创建一个标题为 MoSim｜安全合规 的 CoAgent 常驻部门对话。
+部门职责：审查外部路径、密钥、许可证、破坏性命令和高风险自动化。
+对齐对象：MainAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜安全合规 已建立，等待任务单。",\\?\C:\Users\HP\Desktop\MoSim,0,cli,user,1,gpt-5.5,1780076835,1780076824,"请创建一个标题为 MoSim｜安全合规 的 CoAgent 常驻部门对话。
+部门职责：审查外部路径、密钥、许可证、破坏性命令和高风险自动化。
+对齐对象：MainAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜安全合规 已建立，等待任务单。","请创建一个标题为 MoSim｜安全合规 的 CoAgent 常驻部门对话。
+部门职责：审查外部路径、密钥、许可证、破坏性命令和高风险自动化。
+对齐对象：MainAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜安全合规 已建立，等待任务单。"
+019e74d7-4d58-70f1-84f7-873641995f9a,"请创建一个标题为 MoSim｜验证评测 的 CoAgent 常驻部门对话。
+部门职责：独立测试、复现实验、证据审核和验收结论。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜验证评测 已建立，等待任务单。",\\?\C:\Users\HP\Desktop\MoSim,0,cli,user,1,gpt-5.5,1780076738,1780076727,"请创建一个标题为 MoSim｜验证评测 的 CoAgent 常驻部门对话。
+部门职责：独立测试、复现实验、证据审核和验收结论。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜验证评测 已建立，等待任务单。","请创建一个标题为 MoSim｜验证评测 的 CoAgent 常驻部门对话。
+部门职责：独立测试、复现实验、证据审核和验收结论。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜验证评测 已建立，等待任务单。"
+019e74d5-d833-7e41-a65b-2868fd841ea1,"请创建一个标题为 MoSim｜知识秘书 的 CoAgent 常驻部门对话。
+部门职责：沉淀已接受决策、文档更新、索引更新和经验推广。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜知识秘书 已建立，等待任务单。",\\?\C:\Users\HP\Desktop\MoSim,0,cli,user,1,gpt-5.5,1780076643,1780076632,"请创建一个标题为 MoSim｜知识秘书 的 CoAgent 常驻部门对话。
+部门职责：沉淀已接受决策、文档更新、索引更新和经验推广。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜知识秘书 已建立，等待任务单。","请创建一个标题为 MoSim｜知识秘书 的 CoAgent 常驻部门对话。
+部门职责：沉淀已接受决策、文档更新、索引更新和经验推广。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜知识秘书 已建立，等待任务单。"
+019e74d4-619c-7133-b53f-78fbefff780a,"请创建一个标题为 MoSim｜工具链 MCP 的 CoAgent 常驻部门对话。
+部门职责：维护 MCP/工具能力卡、健康探测、最小影响调用和故障降级。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜工具链 MCP 已建立，等待任务单。",\\?\C:\Users\HP\Desktop\MoSim,0,cli,user,1,gpt-5.5,1780076547,1780076536,"请创建一个标题为 MoSim｜工具链 MCP 的 CoAgent 常驻部门对话。
+部门职责：维护 MCP/工具能力卡、健康探测、最小影响调用和故障降级。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜工具链 MCP 已建立，等待任务单。","请创建一个标题为 MoSim｜工具链 MCP 的 CoAgent 常驻部门对话。
+部门职责：维护 MCP/工具能力卡、健康探测、最小影响调用和故障降级。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜工具链 MCP 已建立，等待任务单。"
+019e74d2-ec4b-7603-a41b-596508ab6982,"请创建一个标题为 MoSim｜上下文记忆索引 的 CoAgent 常驻部门对话。
+部门职责：构建上下文包、维护记忆索引、控制上下文预算和新对话前情。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜上下文记忆索引 已建立，等待任务单。",\\?\C:\Users\HP\Desktop\MoSim,0,cli,user,1,gpt-5.5,1780076452,1780076440,"请创建一个标题为 MoSim｜上下文记忆索引 的 CoAgent 常驻部门对话。
+部门职责：构建上下文包、维护记忆索引、控制上下文预算和新对话前情。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜上下文记忆索引 已建立，等待任务单。","请创建一个标题为 MoSim｜上下文记忆索引 的 CoAgent 常驻部门对话。
+部门职责：构建上下文包、维护记忆索引、控制上下文预算和新对话前情。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜上下文记忆索引 已建立，等待任务单。"
+019e74d1-72fa-7d33-8783-90584035ae92,"请创建一个标题为 MoSim｜Agent Runtime 平台 的 CoAgent 常驻部门对话。
+部门职责：维护 CoAgent 会话生命周期、registry、transport、可见性和恢复机制。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜Agent Runtime 平台 已建立，等待任务单。",\\?\C:\Users\HP\Desktop\MoSim,0,cli,user,1,gpt-5.5,1780076357,1780076344,"请创建一个标题为 MoSim｜Agent Runtime 平台 的 CoAgent 常驻部门对话。
+部门职责：维护 CoAgent 会话生命周期、registry、transport、可见性和恢复机制。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜Agent Runtime 平台 已建立，等待任务单。","请创建一个标题为 MoSim｜Agent Runtime 平台 的 CoAgent 常驻部门对话。
+部门职责：维护 CoAgent 会话生命周期、registry、transport、可见性和恢复机制。
+对齐对象：DispatchAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜Agent Runtime 平台 已建立，等待任务单。"
+019e74cf-fb50-7d71-912c-f586b4dd5f06,"请创建一个标题为 MoSim｜产品发现战略 的 CoAgent 常驻部门对话。
+部门职责：判断任务价值、范围、取舍和路线优先级。
+对齐对象：MainAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜产品发现战略 已建立，等待任务单。",\\?\C:\Users\HP\Desktop\MoSim,0,cli,user,1,gpt-5.5,1780076259,1780076247,"请创建一个标题为 MoSim｜产品发现战略 的 CoAgent 常驻部门对话。
+部门职责：判断任务价值、范围、取舍和路线优先级。
+对齐对象：MainAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜产品发现战略 已建立，等待任务单。","请创建一个标题为 MoSim｜产品发现战略 的 CoAgent 常驻部门对话。
+部门职责：判断任务价值、范围、取舍和路线优先级。
+对齐对象：MainAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜产品发现战略 已建立，等待任务单。"
+019e74ce-6e2e-7e71-902d-f6cee64e8a61,"请创建一个标题为 MoSim｜调度中台 的 CoAgent 常驻部门对话。
+部门职责：维护任务单、分派任务、记录状态、导入结果包，不做业务实现。
+对齐对象：MainAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜调度中台 已建立，等待任务单。",\\?\C:\Users\HP\Desktop\MoSim,0,cli,user,1,gpt-5.5,1780076157,1780076146,"请创建一个标题为 MoSim｜调度中台 的 CoAgent 常驻部门对话。
+部门职责：维护任务单、分派任务、记录状态、导入结果包，不做业务实现。
+对齐对象：MainAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜调度中台 已建立，等待任务单。","请创建一个标题为 MoSim｜调度中台 的 CoAgent 常驻部门对话。
+部门职责：维护任务单、分派任务、记录状态、导入结果包，不做业务实现。
+对齐对象：MainAgent
+这是部门入口初始化，不要读写文件，不要运行命令，不要派发业务任务。
+只回复一句：MoSim｜调度中台 已建立，等待任务单。"

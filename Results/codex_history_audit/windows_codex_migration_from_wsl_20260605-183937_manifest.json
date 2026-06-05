@@ -1,0 +1,28 @@
+{
+  "timestamp": "20260605-183937",
+  "operation": "migrate_clean_wsl_codex_to_windows",
+  "source": "/home/linux/.codex",
+  "target": "/mnt/c/Users/HP/.codex",
+  "copied": [
+    "auth.json",
+    "state_5.sqlite",
+    "state_5.sqlite-wal",
+    "state_5.sqlite-shm",
+    "session_index.jsonl",
+    "history.jsonl",
+    ".personality_migration",
+    "skills/",
+    "sessions/",
+    "archived_sessions/",
+    "config.toml converted"
+  ],
+  "notes": [],
+  "windows_db_counts": {
+    "threads": 28,
+    "active": 28,
+    "archived": 0,
+    "subagents": 0,
+    "integrity_check": "ok"
+  },
+  "manifest_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/codex_history_audit/windows_codex_migration_from_wsl_20260605-183937_manifest.json"
+}

@@ -1,0 +1,20 @@
+{
+  "integrity_check": "ok",
+  "quick_check": "ok",
+  "subagent_rows": 0,
+  "spawn_edges_remaining": 0,
+  "thread_counts": {
+    "n": 28,
+    "active": 28,
+    "archived": 0
+  },
+  "db_rows_missing_rollout": 0,
+  "db_missing_rollout_ids": [],
+  "file_only_rollout_ids": [],
+  "file_only_rollout_count": 0,
+  "groups": {
+    "MoSim": 14,
+    "DH": 12,
+    "JIT-Fine": 2
+  }
+}

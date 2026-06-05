@@ -1,0 +1,66 @@
+{
+  "action": "retitle_two_wsl_records_as_visible_departments",
+  "timestamp": "2026-06-05T15:55:00+08:00",
+  "backup_dir": "/home/linux/.codex/backups/wsl-retitle-two-visible-departments-20260605-1555",
+  "updates": {
+    "019e8358-86b4-7070-8fd6-a2b4f4d2af97": {
+      "title": "MoSim｜微信网关接口",
+      "first_user_message": "[MoSim CoAgent Visible Department] MoSim｜微信网关接口。用途：作为 WeChat/cc-connect 网关接口与通知链路维护窗口，记录微信进度通知、会话刷新、context_token、ret=-2/no active session 等问题。",
+      "preview": "MoSim｜微信网关接口：WeChat/cc-connect 网关接口与通知链路维护窗口。"
+    },
+    "019e3dac-de0e-7180-98ad-d7137e8a6275": {
+      "title": "MoSim｜Codex 环境维护",
+      "first_user_message": "[MoSim CoAgent Visible Department] MoSim｜Codex 环境维护。用途：处理 Codex CLI/App/VSCode 历史、resume、tokens、/status、路径大小写、WSL/Windows 同步、MCP/skills 配置等小问题。",
+      "preview": "MoSim｜Codex 环境维护：处理 Codex CLI/App/VSCode 历史、resume、tokens、路径、MCP/skills 等环境问题。"
+    }
+  },
+  "before": {
+    "019e8358-86b4-7070-8fd6-a2b4f4d2af97": {
+      "id": "019e8358-86b4-7070-8fd6-a2b4f4d2af97",
+      "title": "你好",
+      "first_user_message": "你好",
+      "preview": "你好",
+      "thread_source": "user",
+      "source": "cli",
+      "archived": 0
+    },
+    "019e3dac-de0e-7180-98ad-d7137e8a6275": {
+      "id": "019e3dac-de0e-7180-98ad-d7137e8a6275",
+      "title": "你知道/statas是干什么用的吗",
+      "first_user_message": "你知道/statas是干什么用的吗",
+      "preview": "你知道/statas是干什么用的吗",
+      "thread_source": "user",
+      "source": "cli",
+      "archived": 0
+    }
+  },
+  "copied_files": {
+    "/home/linux/.codex/state_5.sqlite": "/home/linux/.codex/backups/wsl-retitle-two-visible-departments-20260605-1555/state_5.sqlite",
+    "/home/linux/.codex/state_5.sqlite-shm": "/home/linux/.codex/backups/wsl-retitle-two-visible-departments-20260605-1555/state_5.sqlite-shm",
+    "/home/linux/.codex/state_5.sqlite-wal": "/home/linux/.codex/backups/wsl-retitle-two-visible-departments-20260605-1555/state_5.sqlite-wal",
+    "/home/linux/.codex/session_index.jsonl": "/home/linux/.codex/backups/wsl-retitle-two-visible-departments-20260605-1555/session_index.jsonl"
+  },
+  "session_index_changes": [],
+  "checks": {
+    "integrity_check": "ok",
+    "quick_check": "ok",
+    "after": {
+      "019e8358-86b4-7070-8fd6-a2b4f4d2af97": {
+        "id": "019e8358-86b4-7070-8fd6-a2b4f4d2af97",
+        "title": "MoSim｜微信网关接口",
+        "first_user_message": "[MoSim CoAgent Visible Department] MoSim｜微信网关接口。用途：作为 WeChat/cc-connect 网关接口与通知链路维护窗口，记录微信进度通知、会话刷新、context_token、ret=-2/no active session 等问题。",
+        "preview": "MoSim｜微信网关接口：WeChat/cc-connect 网关接口与通知链路维护窗口。",
+        "thread_source": "user",
+        "archived": 0
+      },
+      "019e3dac-de0e-7180-98ad-d7137e8a6275": {
+        "id": "019e3dac-de0e-7180-98ad-d7137e8a6275",
+        "title": "MoSim｜Codex 环境维护",
+        "first_user_message": "[MoSim CoAgent Visible Department] MoSim｜Codex 环境维护。用途：处理 Codex CLI/App/VSCode 历史、resume、tokens、/status、路径大小写、WSL/Windows 同步、MCP/skills 配置等小问题。",
+        "preview": "MoSim｜Codex 环境维护：处理 Codex CLI/App/VSCode 历史、resume、tokens、路径、MCP/skills 等环境问题。",
+        "thread_source": "user",
+        "archived": 0
+      }
+    }
+  }
+}
