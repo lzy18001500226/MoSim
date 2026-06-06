@@ -15,5 +15,6 @@ next_action: Commit this updated checkpoint packet, push main, then continue wit
 push_state: main and origin/main synchronized at ahead_behind 0 0 after pushing through 5a9ab07565.
 post_push_checks: path-limited status clean for .gitignore, the committed Agent tail slice, the pathspec evidence file, and this checkpoint file; cached diff empty; .git/index.lock absent.
 remaining_ignored_risks: References/Agent/Control/agor/.env.postgres; References/Agent/Domain/terminal-velocity conflict-marker-risk docs; References/Agent/Gateway/playwright-mcp/tests/testserver/key.pem.
+post_checkpoint_correction: The first exact Memory unignore rule opened `References/Agent/Memory/*` too broadly and exposed 35,349 untracked files. This was corrected immediately by adding `References/Agent/Memory/*` and `References/Agent/Memory/anysearch-mcp-server/*` before the exact README unignore. Path-limited checks then showed `References/Agent`, `References/Blender`, `References/PX4`, `Docs/Skills/Unreal`, and `Docs/Skills/Windows-MCP` visible untracked counts at 0.
 needs_human: false
 blocked_reason: none

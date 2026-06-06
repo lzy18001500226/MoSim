@@ -386,7 +386,9 @@ References/Agent/Gateway/daytona/.env
 !References/Agent/Skills/**
 References/Agent/Skills/awesome-opencode/dist/
 !References/Agent/Memory/
+References/Agent/Memory/*
 !References/Agent/Memory/anysearch-mcp-server/
+References/Agent/Memory/anysearch-mcp-server/*
 !References/Agent/Memory/anysearch-mcp-server/README.md
 !References/Agent/Workflow/
 References/Agent/Workflow/*
