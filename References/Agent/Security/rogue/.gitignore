@@ -1,0 +1,103 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+emails-local
+/emails/.react-email
+/.pnp
+.pnp.js
+.next
+proxy/proxy
+
+# testing
+/coverage
+
+# database
+/prisma/db.sqlite
+/prisma/db.sqlite-journal
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+__pycache__
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local env files
+# do not commit any .env files to git, except for the .env.example file. https://create.t3.gg/en/usage/env-variables#using-environment-variables
+.env
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+
+*.session.sql
+
+# Sentry Config File
+.sentryclirc
+
+drizzle/
+# Sentry Config File
+.sentryclirc
+
+# jetbrains
+.idea/
+
+# Python
+*.pyc
+__pycache__/
+*.egg-info/
+.coverage
+dist/
+
+# e2e test logs
+e2e_log.log
+proxy_e2e_*.log
+proxy_e2e_*.xml
+proxy_e2e_*.html
+
+# Added by Claude Task Master
+# Logs
+dev-debug.log
+# Environment variables
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+# Task files
+tasks.json
+tasks/
+
+dist/
+.adk/
+**/.rogue
+bin/
+
+# Go TUI
+packages/tui/cmd/rogue/__debug*
+
+# Web UI (Vite SPA)
+packages/web/node_modules/
+packages/web/dist/
+packages/web/.vite/
+packages/web/src/api/schema.d.ts
+packages/web/src/routeTree.gen.ts
+rogue/web_dist/

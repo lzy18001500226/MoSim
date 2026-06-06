@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Build web SPA
+        uses: ./.github/actions/web-build
+
+      - name: Run uv build - main package
+        uses: ./.github/actions/uv-build
+        env:
+          ROGUE_SKIP_WEB_BUILD: "1"
+
+      - name: Run uv build - sdk package
+        uses: ./.github/actions/uv-build
+        with:
+          workdir: "sdks/python"
+          dist_dir: "dist/sdk"
+
+      - name: Build tui
+        uses: ./.github/actions/tui-build
+        with:
+          build_all: "false"  # We will build for all platforms on the release
