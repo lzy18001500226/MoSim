@@ -1,0 +1,468 @@
+/**
+ * Zylos Web Console - Frontend Application with WebSocket
+ */
+
+class ZylosConsole {
+  constructor(timezone) {
+    this.messagesContainer = document.getElementById('messages');
+    this.messageForm = document.getElementById('message-form');
+    this.messageInput = document.getElementById('message-input');
+    this.sendButton = document.getElementById('send-button');
+    this.statusDot = document.querySelector('.status-dot');
+    this.statusText = document.querySelector('.status-text');
+
+    this.lastMessageId = 0;
+    this.ws = null;
+    this.reconnectAttempts = 0;
+    this.maxReconnectAttempts = 10;
+    this.pendingMessages = new Map(); // Track messages being sent
+    this.timezone = timezone || null;
+
+    // Detect base path for API/WS calls (handles /console/ proxy)
+    this.basePath = this.detectBasePath();
+
+    this.init();
+  }
+
+  detectBasePath() {
+    const path = window.location.pathname;
+    if (path.startsWith('/console')) {
+      return '/console';
+    }
+    return '';
+  }
+
+  getWebSocketUrl() {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const host = window.location.host;
+    // WebSocket needs trailing slash for proxy path matching
+    const wsPath = this.basePath ? `${this.basePath}/` : '/';
+    return `${protocol}//${host}${wsPath}`;
+  }
+
+  init() {
+    // Event listeners
+    this.messageForm.addEventListener('submit', (e) => this.handleSubmit(e));
+    this.messageInput.addEventListener('keydown', (e) => this.handleKeydown(e));
+    this.messageInput.addEventListener('input', () => this.autoResize());
+
+    // Load initial conversations via HTTP (for history)
+    this.loadConversations();
+
+    // Connect WebSocket for real-time updates
+    this.connectWebSocket();
+  }
+
+  connectWebSocket() {
+    const wsUrl = this.getWebSocketUrl();
+    console.log('Connecting to WebSocket:', wsUrl);
+
+    try {
+      this.ws = new WebSocket(wsUrl);
+
+      this.ws.onopen = () => {
+        console.log('WebSocket connected');
+        this.reconnectAttempts = 0;
+        this.updateConnectionStatus(true);
+      };
+
+      this.ws.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          this.handleWebSocketMessage(msg);
+        } catch (err) {
+          console.error('Failed to parse WebSocket message:', err);
+        }
+      };
+
+      this.ws.onclose = () => {
+        console.log('WebSocket disconnected');
+        this.updateConnectionStatus(false);
+        this.scheduleReconnect();
+      };
+
+      this.ws.onerror = (err) => {
+        console.error('WebSocket error:', err);
+        this.updateConnectionStatus(false);
+      };
+    } catch (err) {
+      console.error('Failed to create WebSocket:', err);
+      this.scheduleReconnect();
+    }
+  }
+
+  scheduleReconnect() {
+    if (this.reconnectAttempts < this.maxReconnectAttempts) {
+      this.reconnectAttempts++;
+      const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts - 1), 30000);
+      console.log(`Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts})`);
+      setTimeout(() => this.connectWebSocket(), delay);
+    } else {
+      console.error('Max reconnect attempts reached, falling back to polling');
+      this.startPolling();
+    }
+  }
+
+  startPolling() {
+    // Fallback to HTTP polling if WebSocket fails
+    this.pollInterval = setInterval(() => this.pollMessages(), 2000);
+    this.statusInterval = setInterval(() => this.updateStatusViaHttp(), 5000);
+  }
+
+  handleWebSocketMessage(msg) {
+    switch (msg.type) {
+      case 'status':
+        this.updateStatusDisplay(msg.data);
+        break;
+
+      case 'messages':
+        if (Array.isArray(msg.data)) {
+          this.clearEmptyState();
+          msg.data.forEach((m) => this.addMessage(m, true));
+          if (msg.data.length > 0) {
+            this.lastMessageId = Math.max(...msg.data.map((m) => m.id));
+          }
+        }
+        break;
+
+      case 'sent':
+        // Message send confirmation
+        if (msg.success) {
+          // Message was sent successfully, it will appear via 'messages' event
+        } else {
+          console.error('Failed to send message:', msg.error);
+          // Mark the specific message as error if tempId is provided
+          if (msg.tempId) {
+            this.markMessageError(msg.tempId);
+          }
+        }
+        break;
+    }
+  }
+
+  updateConnectionStatus(connected) {
+    if (!connected) {
+      this.statusDot.className = 'status-dot offline';
+      this.statusText.textContent = 'Disconnected';
+    }
+  }
+
+  updateStatusDisplay(status) {
+    this.statusDot.className = 'status-dot';
+
+    switch (status.state) {
+      case 'busy':
+        this.statusDot.classList.add('busy');
+        this.statusText.textContent = 'Claude is busy';
+        break;
+      case 'idle':
+        this.statusDot.classList.add('online');
+        this.statusText.textContent = 'Claude is ready';
+        break;
+      case 'offline':
+      case 'stopped':
+        this.statusDot.classList.add('offline');
+        this.statusText.textContent = 'Claude is offline';
+        break;
+      default:
+        this.statusText.textContent = 'Unknown status';
+    }
+  }
+
+  async loadConversations() {
+    try {
+      const response = await fetch(`${this.basePath}/api/conversations/recent?limit=100`);
+      const conversations = await response.json();
+
+      if (conversations.length === 0) {
+        this.showEmptyState();
+        return;
+      }
+
+      this.clearEmptyState();
+      conversations.forEach((msg) => this.addMessage(msg, false));
+
+      if (conversations.length > 0) {
+        this.lastMessageId = Math.max(...conversations.map((m) => m.id));
+      }
+
+      this.scrollToBottom();
+    } catch (err) {
+      console.error('Failed to load conversations:', err);
+    }
+  }
+
+  // HTTP fallback methods
+  async pollMessages() {
+    try {
+      const response = await fetch(`${this.basePath}/api/poll?since_id=${this.lastMessageId}`);
+      const messages = await response.json();
+
+      if (messages.length > 0) {
+        this.clearEmptyState();
+        messages.forEach((msg) => this.addMessage(msg, true));
+        this.lastMessageId = Math.max(...messages.map((m) => m.id));
+      }
+    } catch (err) {
+      console.error('Failed to poll messages:', err);
+    }
+  }
+
+  async updateStatusViaHttp() {
+    try {
+      const response = await fetch(`${this.basePath}/api/status`);
+      const status = await response.json();
+      this.updateStatusDisplay(status);
+    } catch (err) {
+      this.statusDot.className = 'status-dot offline';
+      this.statusText.textContent = 'Connection error';
+    }
+  }
+
+  async handleSubmit(e) {
+    e.preventDefault();
+
+    const message = this.messageInput.value.trim();
+    if (!message) return;
+
+    // Disable input while sending
+    this.sendButton.disabled = true;
+    this.messageInput.value = '';
+    this.autoResize();
+
+    // Add temporary message
+    const tempId = `temp-${Date.now()}`;
+    this.addTempMessage(message, tempId);
+    this.pendingMessages.set(tempId, message);
+
+    try {
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        // Send via WebSocket
+        // Note: Don't mark as sent immediately - wait for server confirmation
+        // or for message to appear via polling
+        this.ws.send(JSON.stringify({ type: 'send', content: message, tempId }));
+      } else {
+        // Fallback to HTTP
+        const response = await fetch(`${this.basePath}/api/send`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          this.markMessageSent(tempId);
+        } else {
+          console.error('Failed to send:', result.error);
+          this.markMessageError(tempId);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to send message:', err);
+      this.markMessageError(tempId);
+    } finally {
+      this.sendButton.disabled = false;
+      this.messageInput.focus();
+    }
+  }
+
+  handleKeydown(e) {
+    // Send on Enter (without Shift)
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      this.messageForm.dispatchEvent(new Event('submit'));
+    }
+  }
+
+  autoResize() {
+    this.messageInput.style.height = 'auto';
+    this.messageInput.style.height =
+      Math.min(this.messageInput.scrollHeight, 150) + 'px';
+  }
+
+  addMessage(msg, scroll = true) {
+    this.clearEmptyState();
+
+    // Check if message already exists (by id)
+    if (this.messagesContainer.querySelector(`[data-id="${msg.id}"]`)) {
+      return; // Skip duplicate
+    }
+
+    // For incoming user messages, remove matching temp message
+    if (msg.direction === 'in') {
+      const tempMessages = this.messagesContainer.querySelectorAll('[data-temp-id]');
+      for (const temp of tempMessages) {
+        const tempContent = temp.querySelector('.content');
+        if (tempContent && tempContent.textContent === msg.content) {
+          temp.remove();
+          break;
+        }
+      }
+    }
+
+    const div = document.createElement('div');
+    div.className = `message ${msg.direction === 'in' ? 'user' : 'claude'}`;
+    div.dataset.id = msg.id;
+
+    const content = document.createElement('div');
+    content.className = 'content';
+    content.textContent = msg.content;
+
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = this.formatTime(msg.timestamp);
+
+    div.appendChild(content);
+    div.appendChild(meta);
+    this.messagesContainer.appendChild(div);
+
+    if (scroll) {
+      this.scrollToBottom();
+    }
+  }
+
+  addTempMessage(content, tempId) {
+    this.clearEmptyState();
+
+    const div = document.createElement('div');
+    div.className = 'message user sending';
+    div.dataset.tempId = tempId;
+
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'content';
+    contentDiv.textContent = content;
+
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = 'Sending...';
+
+    div.appendChild(contentDiv);
+    div.appendChild(meta);
+    this.messagesContainer.appendChild(div);
+
+    this.scrollToBottom();
+  }
+
+  markMessageSent(tempId) {
+    const msg = this.messagesContainer.querySelector(
+      `[data-temp-id="${tempId}"]`
+    );
+    if (msg) {
+      msg.classList.remove('sending');
+      const meta = msg.querySelector('.meta');
+      if (meta) meta.textContent = this.formatTime(new Date().toISOString());
+    }
+    this.pendingMessages.delete(tempId);
+  }
+
+  markMessageError(tempId) {
+    const msg = this.messagesContainer.querySelector(
+      `[data-temp-id="${tempId}"]`
+    );
+    if (msg) {
+      msg.classList.remove('sending');
+      msg.classList.add('error');
+      const meta = msg.querySelector('.meta');
+      if (meta) meta.textContent = 'Failed to send';
+    }
+    this.pendingMessages.delete(tempId);
+  }
+
+  showEmptyState() {
+    if (this.messagesContainer.querySelector('.empty-state')) return;
+
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.innerHTML = `
+      <div class="empty-avatar"><img src="logo.png" alt="Zylos"></div>
+      <h2>Welcome to Zylos</h2>
+      <p>Start a conversation</p>
+    `;
+    this.messagesContainer.appendChild(empty);
+  }
+
+  clearEmptyState() {
+    const empty = this.messagesContainer.querySelector('.empty-state');
+    if (empty) empty.remove();
+  }
+
+  scrollToBottom() {
+    this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+  }
+
+  formatTime(timestamp) {
+    const ts = timestamp.endsWith('Z') ? timestamp : timestamp + 'Z';
+    const date = new Date(ts);
+    const opts = { hour: '2-digit', minute: '2-digit' };
+    if (this.timezone) opts.timeZone = this.timezone;
+    return date.toLocaleTimeString([], opts);
+  }
+}
+
+function showLogoutButton(basePath) {
+  const btn = document.getElementById('logout-btn');
+  if (!btn) return;
+  btn.style.display = '';
+  btn.addEventListener('click', async () => {
+    await fetch(`${basePath}/api/logout`, { method: 'POST' });
+    window.location.reload();
+  });
+}
+
+/**
+ * Auth guard - check if login is required before showing chat
+ */
+async function checkAuth() {
+  const loginScreen = document.getElementById('login-screen');
+  const chatScreen = document.getElementById('chat-screen');
+  const loginForm = document.getElementById('login-form');
+  const loginError = document.getElementById('login-error');
+  const basePath = window.location.pathname.startsWith('/console') ? '/console' : '';
+
+  try {
+    const res = await fetch(`${basePath}/api/auth`);
+    const auth = await res.json();
+
+    if (!auth.required || auth.authenticated) {
+      // No password set, or already authenticated
+      chatScreen.style.display = '';
+      if (auth.required) showLogoutButton(basePath);
+      new ZylosConsole(auth.timezone);
+      return;
+    }
+
+    // Show login screen
+    loginScreen.style.display = '';
+    chatScreen.style.display = 'none';
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      loginError.textContent = '';
+      const password = document.getElementById('login-password').value;
+
+      const loginRes = await fetch(`${basePath}/api/auth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      const result = await loginRes.json();
+
+      if (result.success) {
+        loginScreen.style.display = 'none';
+        chatScreen.style.display = '';
+        showLogoutButton(basePath);
+        new ZylosConsole(result.timezone);
+      } else {
+        loginError.textContent = result.error || 'Login failed';
+      }
+    });
+  } catch (err) {
+    // Can't reach server, just show chat (will show connection error)
+    chatScreen.style.display = '';
+    new ZylosConsole();
+  }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', checkAuth);
