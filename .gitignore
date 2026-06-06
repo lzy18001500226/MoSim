@@ -443,6 +443,8 @@ References/Agent/Workflow/*
 !References/Agent/Workflow/antfarm/**
 References/Agent/Workflow/antfarm/bin/
 References/Agent/Workflow/antfarm/bin/**
+!References/Agent/Workflow/langgraph/
+!References/Agent/Workflow/langgraph/**
 References/Agent/**/.git/
 References/Agent/**/__pycache__/
 References/Agent/**/node_modules/
