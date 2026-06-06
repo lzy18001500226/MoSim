@@ -1,0 +1,9 @@
+task_id: COAGENT-DEVOPS-GIT-CLOSEOUT-20260605
+status: checkpoint_pushed_goal_active
+decision: Continue long-running Git closeout by draining temporary .gitignore throttles in path-limited batches under 1000 files.
+summary: Completed two QGroundControl src batches in the main worktree: small systems and Vehicle. Both batches were opened by precise .gitignore unignore rules, checked for >=100MB files, risky generated/cache/runtime dirs, high-confidence secrets, private keys, and conflict markers, then committed with temporary-index commit-tree and pushed to origin/main. Checkpoint documentation was updated and pushed after each batch.
+evidence: Rules reread from AGENTS.md Git Automation Rule and Docs/Workflows/agent_orchestration.md long Git/GitIntegrator sections; HEAD...upstream is 0 0; .git/index.lock is absent; latest commits are 435ca5f8ac refs: add qgroundcontrol small src systems, 917fdc0284 results: update qgroundcontrol small systems checkpoint, 07a436c72c refs: add qgroundcontrol vehicle src, 88abab286b results: update qgroundcontrol vehicle checkpoint.
+risks: .gitignore still contains temporary throttles under References/Agent, Daytona, References/Agent/Memory, Platforms, UI, Security, Workflow, and References/PX4/qgroundcontrol/src; visible Git quietness is not completion. Long-term ignore rules must still retain .env, keys, node_modules, .venv, build, dist, cache, bin, obj, runtime logs, nested .git, archives, and generated assets.
+next_action: Continue with one <1000-file slice such as References/PX4/qgroundcontrol/src/MissionManager, FlightMap, FirmwarePlugin, FactSystem, or References/Agent/Workflow/okwinds/skills-runtime-sdk/packages after narrow sync and index-lock checks.
+needs_human: false
+blocked_reason: none
