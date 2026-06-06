@@ -1,0 +1,5 @@
+References/Agent/Platforms/open-swe/.gitignore
+References/Agent/Platforms/open-swe/CUSTOMIZATION.md
+References/Agent/Platforms/open-swe/INSTALLATION.md
+References/Agent/Platforms/open-swe/langgraph.json
+References/Agent/Platforms/open-swe/ui/src/routes/review.tsx
