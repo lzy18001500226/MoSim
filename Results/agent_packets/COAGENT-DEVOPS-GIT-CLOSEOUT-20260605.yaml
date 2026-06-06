@@ -1,10 +1,14 @@
 task_id: COAGENT-DEVOPS-GIT-CLOSEOUT-20260605
-status: active_checkpoint_pushed
+status: active_checkpoint_ready
 decision: Continue long-running Git closeout with path-limited batches; do not remove remaining temporary throttles in bulk.
-summary: Long goal is active. Confirmed rules from AGENTS.md and new conversation context, used one read-only explorer subagent, pushed the pending QtLocationPlugin checkpoint, opened and pushed QGroundControl source batches, opened and pushed NeMo examples/core batches, then opened and pushed a 302-path Blender python tests batch. Recorded completed batches and process corrections in the checkpoint document.
-evidence: Pushed 2167a1f497 results: update qgroundcontrol qt location checkpoint; pushed eedc4dcb96 refs: add qgroundcontrol ui nav src; pushed 28fa4dab4e results: update qgroundcontrol ui nav checkpoint; pushed a1ecdb984a results: record devops git closeout checkpoint; pushed 91c3ed32a1 refs: add qgroundcontrol plugin controls utilities src; pushed ed9bfcefa7 results: update qgroundcontrol controls checkpoint; pushed cb8a2989f3 refs: add nemo agent toolkit examples; pushed 5a7f0029b3 results: update nemo examples checkpoint; pushed 4aa1a618d8 refs: add nemo agent toolkit core package; pushed 620e1890a3 results: update nemo core checkpoint; pushed 5c7571068d refs: add blender python tests; HEAD and upstream returned 0 0; .git/index.lock absent.
+summary: Long goal is active. Confirmed rules from AGENTS.md and new conversation context, continued path-limited Git closeout, cleaned the stale langgraph temp index, pushed the 544-file langgraph core batch, and recorded the 27-file deferred langgraph tail instead of rechecking the whole tree.
+evidence: Pushed 0c1e4b1775 refs: add langgraph workflow core; langgraph core pathspec has 544 files; deferred langgraph tail has 27 files; pushed batch had no files >=100MB, no gitlinks, no LFS pointers, no risky generated/cache/runtime dirs, and git diff --cached --check passed; HEAD and upstream returned 0 0; .git/index.lock absent.
 subagents_used: explorer 019e9b70-a711-7260-a5e1-9657dc7416a1 read-only ignore audit; no writes, no commits, no push.
-risks: Remaining temporary throttles still exist under References/Blender, References/PX4/qgroundcontrol/src, and layered References/Agent rules; 63 NeMo examples LFS pointer files remain excluded because their payload objects are missing locally; PowerShell native command exit codes must be checked explicitly in temp-index batches.
-next_action: Continue with another less-than-1000-file slice from remaining Agent/Blender throttles; keep remaining temporary throttles in place until each slice is reviewed and pushed.
+risks: Remaining temporary throttles still exist under References/Blender, References/PX4/qgroundcontrol/src, layered References/Agent rules, and the 27-file langgraph deferred tail; 63 NeMo examples LFS pointer files remain excluded because their payload objects are missing locally; PowerShell native command exit codes must be checked explicitly in temp-index batches.
+next_action: Commit and push this checkpoint packet and langgraph evidence files, then process the 27-file langgraph deferred tail or another less-than-1000-file ignored backlog slice.
 needs_human: false
 blocked_reason: none
+latest_commit: 0c1e4b1775 refs: add langgraph workflow core
+latest_pathspec: Results/coagent_status/git_batches/COAGENT-DEVOPS-GIT-CLOSEOUT-20260605/agent_workflow_langgraph_core_clean_20260606.paths
+latest_deferred: Results/coagent_status/git_batches/COAGENT-DEVOPS-GIT-CLOSEOUT-20260605/agent_workflow_langgraph_deferred_whitespace_20260606.paths
+post_push_state: main and origin/main synchronized at ahead_behind 0 0 after pushing 0c1e4b1775.

@@ -1,0 +1,8 @@
+langgraph diffcheck deferred summary 2026-06-06
+source_batch: References/Agent/Workflow/langgraph
+candidate_without_snapshots: 567 files
+committed_core_clean: 544 files
+deferred_files: 27 files total
+reason: upstream trailing-whitespace or EOF blank-line findings in 23 files plus 4 snapshot .ambr files
+raw_output_policy: raw whitespace samples were not committed because they fail git diff --cached --check
+deferred_manifest: agent_workflow_langgraph_deferred_whitespace_20260606.paths
