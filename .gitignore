@@ -361,8 +361,6 @@ References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/*
 !References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/examples/**
 !References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/packages/
 References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/packages/*
-!References/Agent/Skills/
-!References/Agent/Skills/**
 References/Agent/Skills/awesome-opencode/dist/
 !References/Agent/Memory/
 References/Agent/Memory/*
