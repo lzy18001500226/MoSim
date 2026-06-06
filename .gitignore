@@ -370,8 +370,7 @@ References/Agent/Memory/git-mcp/.react-router/
 References/Agent/Memory/git-mcp/.vscode/
 !References/Agent/Platforms/
 References/Agent/Platforms/*
-!References/Agent/Platforms/open-interpreter/
-!References/Agent/Platforms/open-interpreter/**
+References/Agent/Platforms/open-interpreter/**/.DS-Store
 References/Agent/Platforms/Agent-S/**/.DS_Store
 !References/Agent/UI/
 References/Agent/UI/*
