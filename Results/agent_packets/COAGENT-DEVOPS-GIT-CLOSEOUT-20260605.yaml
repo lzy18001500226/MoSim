@@ -1,11 +1,11 @@
 task_id: COAGENT-DEVOPS-GIT-CLOSEOUT-20260605
 status: active_checkpoint_ready
 decision: Continue long-running Git closeout with path-limited batches; do not remove remaining temporary throttles in bulk.
-summary: Long goal is active. Confirmed rules from AGENTS.md and new conversation context, continued path-limited Git closeout, pushed the 544-file langgraph core batch, pushed the 27-file mechanically cleaned langgraph tail batch, and recorded both pathspecs so langgraph does not need whole-tree re-review.
-evidence: Pushed 0c1e4b1775 refs: add langgraph workflow core; pushed a8cc74d7d8 refs: add langgraph workflow tail; langgraph core pathspec has 544 files; langgraph tail pathspec has 27 files; both pushed batches had no files >=100MB, no LFS pointers, no unexpected staged paths, and git diff --cached --check passed; HEAD and upstream returned 0 0; .git/index.lock absent; langgraph visible untracked count returned 0.
+summary: Long goal is active. Confirmed rules from AGENTS.md and new conversation context, continued path-limited Git closeout, pushed the 544-file langgraph core batch, pushed the 27-file mechanically cleaned langgraph tail batch, recorded both pathspecs, and removed the completed langgraph temporary unignore rules after verification.
+evidence: Pushed 0c1e4b1775 refs: add langgraph workflow core; pushed a8cc74d7d8 refs: add langgraph workflow tail; langgraph core pathspec has 544 files; langgraph tail pathspec has 27 files; both pushed batches had no files >=100MB, no LFS pointers, no unexpected staged paths, and git diff --cached --check passed; after removing the temporary langgraph unignore rules, bounded verification showed 571 tracked files and 0 visible untracked files under References/Agent/Workflow/langgraph; HEAD and upstream returned 0 0; .git/index.lock absent.
 subagents_used: explorer 019e9b70-a711-7260-a5e1-9657dc7416a1 read-only ignore audit; no writes, no commits, no push.
-risks: Remaining temporary throttles still exist under References/Blender, References/PX4/qgroundcontrol/src, and layered References/Agent rules; the langgraph subtree is now tracked but its temporary opening should be compressed only in a later narrow .gitignore drain batch; 63 NeMo examples LFS pointer files remain excluded because their payload objects are missing locally; PowerShell native command exit codes must be checked explicitly in temp-index batches.
-next_action: Commit and push this checkpoint packet plus the langgraph tail pathspec, then continue with another less-than-1000-file ignored backlog slice or a narrow .gitignore compression batch.
+risks: Remaining temporary throttles still exist under References/Blender, References/PX4/qgroundcontrol/src, and layered References/Agent rules; 63 NeMo examples LFS pointer files remain excluded because their payload objects are missing locally; PowerShell native command exit codes must be checked explicitly in temp-index batches.
+next_action: Commit and push this langgraph ignore-drain checkpoint, then continue with another less-than-1000-file ignored backlog slice or a narrow .gitignore compression batch.
 needs_human: false
 blocked_reason: none
 latest_commit: a8cc74d7d8 refs: add langgraph workflow tail
@@ -13,3 +13,4 @@ latest_pathspec: Results/coagent_status/git_batches/COAGENT-DEVOPS-GIT-CLOSEOUT-
 latest_tail_pathspec: Results/coagent_status/git_batches/COAGENT-DEVOPS-GIT-CLOSEOUT-20260605/agent_workflow_langgraph_tail_cleaned_20260606.paths
 latest_deferred: none for langgraph; visible untracked count is 0.
 post_push_state: main and origin/main synchronized at ahead_behind 0 0 after pushing a8cc74d7d8.
+latest_ignore_drain: References/Agent/Workflow/langgraph temporary unignore pair removed after 571 tracked and 0 visible untracked verification.
