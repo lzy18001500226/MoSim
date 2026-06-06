@@ -393,6 +393,8 @@ References/Agent/Memory/*
 !References/Agent/Memory/anysearch-mcp-server/
 References/Agent/Memory/anysearch-mcp-server/*
 !References/Agent/Memory/anysearch-mcp-server/README.md
+!References/Agent/Memory/anysearch-skill/
+!References/Agent/Memory/anysearch-skill/**
 !References/Agent/Workflow/
 References/Agent/Workflow/*
 !References/Agent/Workflow/okwinds/
