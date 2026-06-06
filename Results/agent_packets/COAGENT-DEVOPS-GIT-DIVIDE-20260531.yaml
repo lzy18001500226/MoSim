@@ -1,59 +1,16 @@
 task_id: COAGENT-DEVOPS-GIT-DIVIDE-20260531
 status: running
-decision: continue_with_small_safe_slices
-summary: >-
-  The large-tree Git work is still being handled through ignore-first, path-
-  limited slices. This turn removed the secret-like AndroidFileServer
-  `SecurityToken` section from `UE5/MoSimSceneLibrary/Config/DefaultEngine.ini`,
-  normalized its line endings, and then committed two verified small batches via
-  plumbing because porcelain `git commit` timed out at 60s. The first batch
-  updated the ROS and runtime regression tests under `Scripts/tests/`; the second
-  batch updated UE5 runtime review telemetry in
-  `UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp`
-  and `UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MoSimSceneLibraryGameMode.cpp`.
-  Current `main` is ahead of upstream by 26 commits and no push was attempted.
-evidence:
-  - "branch=main"
-  - "upstream_ahead_behind=26 0"
-  - "index_lock_present=false_after_cleanup"
-  - "core_excludesfile=unset"
-  - "secret_like_field_removed=UE5/MoSimSceneLibrary/Config/DefaultEngine.ini"
-  - "diff_check_passed_for_defaultengine_ini=true"
-  - "cached_batch_1=Scripts/tests/test_fastlio_rviz_runtime_scripts.py"
-  - "cached_batch_1=Scripts/tests/test_livox_like_lidar_replay.py"
-  - "cached_batch_1=Scripts/tests/test_mworks_uav_state_ros2.py"
-  - "cached_batch_1=Scripts/tests/test_ros_mapping_replay_publisher.py"
-  - "cached_batch_1=Scripts/tests/test_ros_mapping_runtime_env.py"
-  - "cached_batch_1=Scripts/tests/test_scene_runtime_bundle.py"
-  - "cached_batch_1=Scripts/tests/test_unreal_scene_runtime_readiness.py"
-  - "commit_batch_1=4804dd7534976b6592bcaeb002afdf624b194411"
-  - "cached_batch_2=UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp"
-  - "cached_batch_2=UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MoSimSceneLibraryGameMode.cpp"
-  - "commit_batch_2=0111551f5de6270ca58828fae909db7f634252b0"
-risks:
-  - "Porcelain `git commit` still times out at 60s, so future commits should continue to use plumbing when necessary."
-  - "A broad tree scan remains unsafe; keep using path-limited inventory for the remaining work."
-  - "No push has been attempted yet, so remote-side verification is still outstanding."
-ignore_first_strategy: >-
-  Keep runtime/generated noise isolated first. The only secret-like UE5 config
-  field found in this round was removed before commit, and future config files
-  should be treated as suspect until diff-reviewed.
-proposed_batches:
-  - "Completed: `Scripts/tests/*` regression-contract batch."
-  - "Completed: `UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp` + `UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MoSimSceneLibraryGameMode.cpp` telemetry batch."
-  - "Next candidate family, if any residual changes reappear, should be discovered with path-limited probes before any further stage."
-forbidden_actions:
-  - "no broad git status"
-  - "no git add -A"
-  - "no git clean"
-  - "no reset --hard"
-  - "no force push"
-  - "no staging batches over 1000 files"
-  - "no commit of files at or above 100MB"
-  - "no commit of secret-like config values"
-next_action: >-
-  If new dirty paths appear, inspect them with file-limited diff and size checks,
-  then stage the smallest safe batch; otherwise await the next user directive or
-  perform a push only if explicitly requested.
+decision: continue_project_by_project_git_drain
+summary: "2026-06-07 DevOps GitIntegrator continued the long References and Docs-Skills drain in the main MoSim worktree. This stage committed and pushed two References-Agent projects, then narrowed .gitignore so those projects are no longer hidden wholesale. Docs-Skills hidden backlog was classified as mostly local virtual environments and cache, not source content for commit."
+evidence: "branch=main; upstream_ahead_behind=0 0; index_lock_present=false; pushed=baf4a772f0 refs add hermes desktop reference; pushed=c90f2438fb gitignore unthrottle hermes desktop reference; pushed=30c6fded9a refs add github mcp server reference; pushed=c7a3cd892d gitignore unthrottle github mcp reference; hermes_committed_files=441; hermes_remaining_ignored=1; github_mcp_committed_files=452; github_mcp_remaining_ignored=27; Docs-Skills_ignored_untracked_about=26210 mostly venv and cache; References_ignored_untracked_about=633871 dominated by large external scene and reference trees"
+risks: "TaskWeaver and github-mcp-server contain upstream whitespace issues that fail cached diff checks; these are deferred rather than silently rewritten. References-Agent still has hundreds of thousands of ignored files, including very large local dependency trees and generated runtime folders. Whole-repository porcelain status remains unsafe. Existing tracked modifications outside this DevOps slice were not touched."
+ignore_first_strategy: "Keep large external generated local trees throttled first, then open one project or subproject at a time. After a successful content commit, narrow .gitignore from whole-project throttle to exact deferred files plus true long-term exclusions such as nested repo metadata, virtual environments, dependency folders, build output, cache, runtime output, logs, fixture-only blocked files, missing binary fixtures, and single files at or above 100 MiB."
+proposed_batches: "Next safe candidates from read-only inventory: References-Agent-Memory-supermemory about 897 files; References-Agent-Frameworks-swarm about 887; References-Agent-Security-LitterBox about 861; References-Agent-UI-plannotator about 854; References-Agent-Frameworks-llama-agents about 797; References-Agent-Platforms-spacebot about 778; References-Agent-Workflow-OpenSpec about 741; References-Agent-Memory-khoj about 701; References-Agent-Platforms-aider about 691; References-Agent-Workflow-sdk-python about 637; References-Agent-Memory-agentmemory about 581; References-Agent-Memory-zep about 536. Deferred exact files: one hermes whitespace script; 27 github-mcp-server whitespace-failing files recorded in Results/agent_runtime/github_mcp_server_diffcheck_failed_20260607.txt. TaskWeaver was attempted and deferred because many upstream files fail cached whitespace checks."
+forbidden_actions: "no whole-repository porcelain status; no all-path staging; no destructive cleanup; no destructive history or worktree rewrite; no forced remote update; no staging batches over 1000 files; no commit of files at or above 100 MiB; no commit of sensitive local material; no IDE hiding as a substitute for Git-layer ignore"
+next_action: "Continue with the next under-1000-file References-Agent project. For each batch: path-limited inventory, large-file check, dependency-cache-sensitive screen, exact project or pathspec staging, cached diff check, commit, push, then narrow .gitignore for that project."
 needs_human: false
 blocked_reason: ""
+subagent_plan: "used; one read-only explorer audited Docs-Skills and References ignored backlog and returned candidate project counts"
+subagents_used: "019e9dd5-575c-7181-ab0f-3701deda6e4f read-only inventory"
+verification_gates: "path-limited staged file counts; no staged file at or above 100 MiB; cached diff check; serial commit and push; upstream ahead-behind after push"
+manual_review_or_blocker_triggers: "remote rejection; at-or-above-100MiB file; sensitive local material; missing binary object; destructive operation need; unclear ownership of important source files"
