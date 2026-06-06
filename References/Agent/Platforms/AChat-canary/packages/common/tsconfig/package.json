@@ -1,0 +1,12 @@
+{
+  "name": "@achat/tsconfig",
+  "private": true,
+  "scripts": {
+    "clean": "rimraf node_modules"
+  },
+  "files": [
+    "base.json",
+    "nextjs.json",
+    "react-library.json"
+  ]
+}

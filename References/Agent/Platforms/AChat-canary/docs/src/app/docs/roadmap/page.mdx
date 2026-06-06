@@ -1,0 +1,136 @@
+---
+description: 抢先了解 VMBoard 即将推出的新功能和新变化。本页面定期更新。
+---
+
+# VMBoard 路线图
+
+VMBoard 是 [开源](/docs/open-source) 的，我们希望完全透明地展示我们正在做什么以及下一步计划。我们会定期根据进度更新这份路线图。
+
+import { Callout } from "nextra/components";
+
+<Callout type="info">
+  **您的反馈对我们非常重要**。如果您觉得缺少某些内容，请在 [GitHub](/ideas) 上提出新想法或投票支持现有想法。这两种方式都是对 VMBoard 做出贡献并帮助我们了解您需求的好方法。
+</Callout>
+
+{/* ## 🚀 发布
+
+import { getPagesUnderRoute } from "nextra/context";
+import Link from "next/link";
+
+export const ChangelogList = () => (
+  <ul className="list-disc list pl-6">
+    {getPagesUnderRoute("/changelog")
+      .sort(
+        (a, b) =>
+          new Date(b.frontMatter.date).getTime() -
+          new Date(a.frontMatter.date).getTime()
+      )
+      .slice(0, 10)
+      .map((page, i) => (
+        <li
+          className="my-2"
+          id={page.route.replace("/changelog/", "")}
+          key={page.route.replace("/changelog/", "")}
+        >
+          <Link
+            key={page.route}
+            href={page.route}
+            className="_text-primary-600 _underline _decoration-from-font [text-underline-position:from-font]"
+          >
+            <span className="">
+              {page.meta?.title || page.frontMatter?.title || page.name}
+            </span>
+          </Link>
+          <span className="text-primary/60 ml-2 hidden sm:inline">
+            {page.frontMatter?.date
+              ? `(${new Date(page.frontMatter.date).toLocaleDateString(
+                "en-US",
+                {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  timeZone: "UTC",
+                }
+              )})`
+              : null}
+          </span>
+        </li>
+      ))}
+  </ul>
+);
+
+10 most recent [changelog](/changelog) items:
+
+<ChangelogList />
+
+import { ProductUpdateSignup } from "@/components/productUpdateSignup";
+
+<Callout type="info">
+
+Subscribe to our mailing list to get occasional email updates about new features.
+
+<ProductUpdateSignup source="self-host guide" className="my-3 max-w-sm" />
+
+</Callout>
+
+## 🚧 In progress
+
+- Various improvements, including:
+  - Typesafe sdk methods for all API routes
+  - Evaluation runs on historical data
+  - Eval execution states across Langfuse Tracing and Datasets
+  - Use JSON path to extract structured data from traces for llm-as-judge evals
+  - Save table filters as views
+  - "Peek view" for tables, preview trace without switching the page
+- **Open Telemetry**: Add support for OpenTelemetry-based instrumentations by adding an OpenTelemetry exporter/collector ([#2509](https://github.com/orgs/langfuse/discussions/2509))
+
+## 🔮 Planned
+
+- **Agent Observability**: Improve native support for agentic applications
+  - Visualizations of agent executions, e.g. Graph ([#2669](https://github.com/orgs/langfuse/discussions/2669))
+  - Filtering for tool calls used within an execution
+  - Opinionated agent evaluations
+- **Tracing Enhancements**
+  - **Environments**: Native support for separating different environments within a project ([#5005](https://github.com/orgs/langfuse/discussions/5005))
+  - **Realtime LLM**: Bespoke traces for datastreams of realtime APIs, especially multi-modal ([#4757](https://github.com/orgs/langfuse/discussions/4757))
+- **Prompt Management**
+  - Custom RBAC for prompt change management ([#4480](https://github.com/orgs/langfuse/discussions/4480))
+  - LLM-assisted prompt engineering
+  - Prompt composability to increase reuse of common prompts ([#1660](https://github.com/orgs/langfuse/discussions/1660))
+  - Folders ([#4874](https://github.com/orgs/langfuse/discussions/4874))
+  - Native support for tool calls ([#2624](https://github.com/orgs/langfuse/discussions/2624))
+  - Placeholders for chat messages ([#2210](https://github.com/orgs/langfuse/discussions/2210))
+- **Evaluation**
+  - Non-LLM evaluators: classifiers, custom code, regex, etc.
+  - Evals on repeated spans/observations within a trace
+  - Comparisons of different evaluation metrics
+  - Session-level scores ([#2728](https://github.com/orgs/langfuse/discussions/2728))
+- **Query 100s of millions of traces**:
+  - **Full-text search**: Search across the inputs/outputs of traces, sessions, and datasets ([#939](https://github.com/orgs/langfuse/discussions/939))
+  - **Self-serve dashboards**: Create and share custom dashboards based on metrics extracted from traces ([#1011](https://github.com/orgs/langfuse/discussions/1011))
+- **Data Platform**
+  - Webhooks to subscribe to changes within your Langfuse project ([#1033](https://github.com/orgs/langfuse/discussions/1033))
+  - Batched exports to own storage buckets for downstream use and archival
+  - Rule-based routing between Langfuse product features
+- Other
+  - **UI/UX**: improvements of all core product features
+  - **Onboarding**: simplify getting started with Langfuse when not reading the docs
+  - **Data retention**: Project-level data retention policies ([#2268](https://github.com/orgs/langfuse/discussions/2268))
+
+## 🙏 Feature requests and bug reports
+
+The best way to support Langfuse is to share your feedback, report bugs, and upvote on ideas suggested by others.
+
+### Feature requests
+
+import { GhDiscussionsPreview } from "@/components/gh-discussions/GhDiscussionsPreview";
+
+<GhDiscussionsPreview filterCategory="Ideas" itemsPerPage={10} />
+
+### Bug reports
+
+import { Bug } from "lucide-react";
+
+<Cards num={2}>
+  <Card href="/issues" title="Bugs (GitHub Issues)" arrow icon={<Bug />} />
+</Cards> */}
