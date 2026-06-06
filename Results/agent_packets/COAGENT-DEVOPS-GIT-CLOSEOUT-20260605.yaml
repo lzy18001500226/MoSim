@@ -1,11 +1,16 @@
 task_id: COAGENT-DEVOPS-GIT-CLOSEOUT-20260605
-status: active_checkpoint_ready
-decision: Continue long-running Git closeout with path-limited batches; do not remove remaining temporary throttles in bulk.
-summary: Long goal is active. Confirmed rules from AGENTS.md and new conversation context, continued path-limited Git closeout, removed completed Agent Domain/Gateway subtree unignore rules, and drained the completed mcp-use matrix while preserving the exact local IDE setting ignore.
+status: active_goal_planned
+decision: Continue the existing long-running DevOpsReleaseAgent/GitIntegrator goal; do not create a new worktree and do not remove broad throttles in bulk.
+summary: Long goal is active. The remaining work is to drain temporary .gitignore throttles into reviewed tracked content or durable local-only exclusions, one path family at a time, with every content batch kept under 1000 files.
+department_local_goal: Finish the current MoSim Git backlog in the main worktree by gradually narrowing temporary ignore rules and committing safe reference slices with path-limited gates.
+critical_path_steps: Narrow sync and lock probe; classify one candidate subtree; open only one reviewed slice; run size, generated-output, missing-LFS, local-only material, and conflict-marker gates; stage exact paths only; run git diff --cached --check; commit and push; record evidence before the next slice.
+parallelizable_slices: Read-only risk audits may be delegated by path family. Commit and push stay serialized in this DevOps thread.
+verification_gates: Under 1000 files per content batch; no single file at or above the hosted Git hard limit; no nested VCS metadata; no dependency/build/cache/runtime outputs unless explicitly reviewed as source assets; no missing-LFS residuals; no local-only fixture material; no line-start conflict markers; git diff --cached --check must pass.
 evidence: Pushed 0c1e4b1775 refs: add langgraph workflow core; pushed a8cc74d7d8 refs: add langgraph workflow tail; pushed a66a8471ef chore: drain langgraph git split rules; pushed 94f34ca7a1 chore: drain okwinds package split rules; pushed 236bf0c6f7 chore: drain completed reference split rules; pushed 27a7e35e37 chore: drain completed agent qgc split rules; pushed 60082f2f40 chore: drain qgroundcontrol src split rules; pushed aa77be1a62 chore: drain completed agent domain gateway rules; after removing the mcp-use unignore matrix, bounded verification showed 1629 tracked files, 0 visible untracked files, and exactly 1 ignored local IDE settings file; HEAD and upstream returned 0 0; .git/index.lock absent.
 subagents_used: explorer 019e9b70-a711-7260-a5e1-9657dc7416a1 read-only ignore audit; no writes, no commits, no push.
-risks: Remaining temporary throttles still exist under References/Blender, References/PX4/qgroundcontrol/src, and layered References/Agent rules; 63 NeMo examples LFS pointer files remain excluded because their payload objects are missing locally; PowerShell native command exit codes must be checked explicitly in temp-index batches.
-next_action: Commit and push this mcp-use ignore-drain checkpoint, then continue with another less-than-1000-file ignored backlog slice or a narrow .gitignore compression batch.
+risks: Remaining temporary throttles still exist under References/Blender, References/PX4/qgroundcontrol/src, and layered References/Agent rules; 63 NeMo examples files remain excluded because their payload objects are missing locally; References/Agent/Memory and References/Agent/Security still have very large ignored backlogs and cannot be opened wholesale; gelab-zero model_config.yaml and xatlas .obj assets need semantic review before final classification.
+ignore_policy: Temporary ignores are throttles only, not completion. Final .gitignore should keep only true long-term local-only exclusions, hosted-size-limit exclusions, missing-LFS assets, dependency folders, generated build/cache/runtime artifacts, nested VCS metadata, and manifest-only external assets.
+next_action: Start with a narrow completed-rule compression batch for toolhive, firecrawl, Agent-S, and antfarm if path-limited verification remains stable; then continue semantic review and sub-1000-file content slices.
 needs_human: false
 blocked_reason: none
 latest_commit: a8cc74d7d8 refs: add langgraph workflow tail

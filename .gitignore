@@ -142,13 +142,9 @@ References/Agent/Gateway/mcp-use/libraries/typescript/packages/inspector/.vscode
 !References/Agent/Gateway/playwright-mcp/
 !References/Agent/Gateway/playwright-mcp/**
 References/Agent/Gateway/playwright-mcp/tests/testserver/key.pem
-!References/Agent/Gateway/firecrawl/
-!References/Agent/Gateway/firecrawl/**
 References/Agent/Gateway/firecrawl/apps/api/.env.local
 References/Agent/Gateway/firecrawl/apps/dot-net-sdk/**/bin/
 References/Agent/Gateway/firecrawl/apps/dot-net-sdk/**/obj/
-!References/Agent/Gateway/toolhive/
-!References/Agent/Gateway/toolhive/**
 References/Agent/Gateway/toolhive/pkg/certs/validation_test.go
 References/Agent/Gateway/toolhive/pkg/auth/awssts/signer_test.go
 References/Agent/Gateway/toolhive/pkg/authserver/upstream/identity_from_token_test.go
@@ -375,8 +371,6 @@ References/Agent/Memory/anysearch-mcp-server/*
 !References/Agent/Memory/anysearch-mcp-server/README.md
 !References/Agent/Platforms/
 References/Agent/Platforms/*
-!References/Agent/Platforms/Agent-S/
-!References/Agent/Platforms/Agent-S/**
 References/Agent/Platforms/Agent-S/**/.DS_Store
 !References/Agent/UI/
 References/Agent/UI/*
@@ -387,8 +381,6 @@ References/Agent/UI/gelab-zero/**/.DS_Store
 References/Agent/Security/*
 !References/Agent/Workflow/
 References/Agent/Workflow/*
-!References/Agent/Workflow/antfarm/
-!References/Agent/Workflow/antfarm/**
 References/Agent/Workflow/antfarm/bin/
 References/Agent/Workflow/antfarm/bin/**
 References/Agent/**/.git/
