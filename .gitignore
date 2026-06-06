@@ -823,6 +823,8 @@ References/PX4/qgroundcontrol/src/*
 !References/PX4/qgroundcontrol/src/MissionManager/**
 !References/PX4/qgroundcontrol/src/PositionManager/
 !References/PX4/qgroundcontrol/src/PositionManager/**
+!References/PX4/qgroundcontrol/src/QtLocationPlugin/
+!References/PX4/qgroundcontrol/src/QtLocationPlugin/**
 !References/PX4/qgroundcontrol/src/Terrain/
 !References/PX4/qgroundcontrol/src/Terrain/**
 !References/PX4/qgroundcontrol/src/Vehicle/
