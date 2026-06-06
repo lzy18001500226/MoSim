@@ -894,6 +894,11 @@ UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/
 # cannot flood Git while the tree is drained in reviewed <1000-file batches.
 # Final state must remove or narrow this rule to only real long-term ignores.
 References/Blender/**
+!References/Blender/
+!References/Blender/blender/
+!References/Blender/blender/tests/
+!References/Blender/blender/tests/python/
+!References/Blender/blender/tests/python/**
 # Temporary manifest-only exclusions: NeMo examples files whose LFS objects are missing locally.
 References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/examples/A2A/math_assistant_a2a/src/nat_math_assistant_a2a/data/sample_queries.json
 References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/examples/advanced_agents/alert_triage_agent/src/nat_alert_triage_agent/data/ata_diagram.png
