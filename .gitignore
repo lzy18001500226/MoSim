@@ -790,6 +790,8 @@ References/PX4/qgroundcontrol/*
 !References/PX4/qgroundcontrol/cmake/**
 !References/PX4/qgroundcontrol/test/
 !References/PX4/qgroundcontrol/test/**
+!References/PX4/qgroundcontrol/tools/
+!References/PX4/qgroundcontrol/tools/**
 MoSim.code-workspace
 # Source assets are project inputs and should be admitted in reviewed small
 # batches. Keep Blender backup files local-only.
