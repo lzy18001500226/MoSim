@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/core" },
+    { "path": "packages/teams" },
+    { "path": "packages/channels" },
+    { "path": "packages/server" },
+    { "path": "packages/main" },
+    { "path": "packages/cli" },
+    { "path": "packages/visualizer" }
+  ]
+}

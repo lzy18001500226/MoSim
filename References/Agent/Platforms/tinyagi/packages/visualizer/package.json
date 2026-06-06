@@ -1,0 +1,21 @@
+{
+  "name": "@tinyagi/visualizer",
+  "version": "0.0.10",
+  "type": "module",
+  "main": "dist/team-visualizer.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "concurrently -k -n tsc,nodemon \"tsc -w\" \"nodemon --watch dist --ext js dist/team-visualizer.js\"",
+    "dev:visualize": "concurrently -k -n tsc,nodemon \"tsc -w\" \"nodemon --watch dist --ext js dist/team-visualizer.js\"",
+    "dev:chatroom": "concurrently -k -n tsc,nodemon \"tsc -w\" \"nodemon --watch dist --ext js dist/chatroom-viewer.js\"",
+    "visualize": "node dist/team-visualizer.js",
+    "chatroom": "node dist/chatroom-viewer.js"
+  },
+  "dependencies": {
+    "@types/react": "^19.2.14",
+    "ink": "^6.7.0",
+    "ink-gradient": "^4.0.0",
+    "ink-spinner": "^5.0.0",
+    "react": "^19.2.4"
+  }
+}

@@ -1,0 +1,158 @@
+name: Create Release Bundle
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Trigger on version tags like v1.0.0
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          # no npm cache — lockfile not tracked
+
+      - name: Verify tag matches package version
+        if: github.ref_type == 'tag'
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          EXPECTED_TAG="v${PACKAGE_VERSION}"
+          ACTUAL_TAG="${GITHUB_REF#refs/tags/}"
+
+          if [ "$ACTUAL_TAG" != "$EXPECTED_TAG" ]; then
+            echo "::warning::Version mismatch detected. Bump package.json version before tagging a release."
+            echo "::error::Tag/package version mismatch. expected=${EXPECTED_TAG}, actual=${ACTUAL_TAG}"
+            exit 1
+          fi
+
+          echo "Tag and package.json version match: ${ACTUAL_TAG}"
+
+      - name: Get version from tag
+        id: get_version
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          else
+            VERSION=$(git describe --tags --always)
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Install dependencies
+        run: |
+          PUPPETEER_SKIP_DOWNLOAD=true npm install --include=dev
+
+      - name: Build TypeScript
+        run: npm run build
+
+      - name: Prune development dependencies
+        run: npm prune --omit=dev
+
+      - name: Create bundle tarball
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          BUNDLE_NAME="tinyagi-bundle.tar.gz"
+          TEMP_DIR=$(mktemp -d)
+          BUNDLE_DIR="$TEMP_DIR/tinyagi"
+
+          mkdir -p "$BUNDLE_DIR"
+
+          # Copy necessary directories
+          cp -r bin/ "$BUNDLE_DIR/"
+          cp -r packages/ "$BUNDLE_DIR/"
+          cp -r node_modules/ "$BUNDLE_DIR/"
+          cp -r scripts/ "$BUNDLE_DIR/"
+          cp -r docs/ "$BUNDLE_DIR/"
+          cp -r .agents/ "$BUNDLE_DIR/"
+          cp -r tinyoffice/ "$BUNDLE_DIR/"
+
+          # Copy root files
+          cp package.json "$BUNDLE_DIR/"
+          cp tsconfig.json "$BUNDLE_DIR/"
+          cp tsconfig.base.json "$BUNDLE_DIR/"
+          cp README.md "$BUNDLE_DIR/"
+          cp AGENTS.md "$BUNDLE_DIR/"
+          cp SOUL.md "$BUNDLE_DIR/"
+          cp heartbeat.md "$BUNDLE_DIR/"
+          cp .gitignore "$BUNDLE_DIR/"
+
+          # Make scripts executable
+          chmod +x "$BUNDLE_DIR/bin/tinyagi"
+          chmod +x "$BUNDLE_DIR/bin/tinyclaw"
+          chmod +x "$BUNDLE_DIR/scripts/install.sh"
+
+          # Create tarball
+          cd "$TEMP_DIR"
+          tar -czf "$GITHUB_WORKSPACE/$BUNDLE_NAME" tinyagi/
+
+          # Get bundle info
+          BUNDLE_SIZE=$(du -h "$GITHUB_WORKSPACE/$BUNDLE_NAME" | cut -f1)
+          echo "Bundle created: $BUNDLE_NAME ($BUNDLE_SIZE)"
+          echo "bundle_name=$BUNDLE_NAME" >> $GITHUB_OUTPUT
+          echo "bundle_size=$BUNDLE_SIZE" >> $GITHUB_OUTPUT
+
+      - name: Extract release notes from tag
+        id: release_notes
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+
+          if [ -f "releases/${VERSION}.md" ]; then
+            cp "releases/${VERSION}.md" release_notes.md
+            echo "Using release notes from releases/${VERSION}.md"
+          fi
+
+          # actions/checkout dereferences annotated tags to commits,
+          # so re-fetch the tag to get the actual tag object
+          git fetch origin "refs/tags/$VERSION:refs/tags/$VERSION" --force 2>/dev/null || true
+
+          TAG_TYPE=$(git cat-file -t "refs/tags/$VERSION" 2>/dev/null)
+          if [ "$TAG_TYPE" = "tag" ] && [ ! -s release_notes.md ]; then
+            # Extract full tag message (everything after the header block)
+            git cat-file -p "refs/tags/$VERSION" | sed '1,/^$/d' > release_notes.md
+          fi
+
+          if [ ! -s release_notes.md ]; then
+            echo "::warning::Could not extract annotated tag message, using fallback"
+            cat > release_notes.md <<EOF
+          ## TinyAGI $VERSION
+
+          See commits since last release for detailed changes.
+          EOF
+          fi
+
+          echo "=== release_notes.md preview ==="
+          head -5 release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        if: github.ref_type == 'tag'
+        with:
+          body_path: release_notes.md
+          files: |
+            tinyagi-bundle.tar.gz
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifact (for non-tag builds)
+        if: github.ref_type != 'tag'
+        uses: actions/upload-artifact@v4
+        with:
+          name: tinyagi-bundle
+          path: tinyagi-bundle.tar.gz
+          retention-days: 7

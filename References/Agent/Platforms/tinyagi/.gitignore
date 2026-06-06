@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+package-lock.json
+.next
+
+# TypeScript build output
+dist/
+*.tsbuildinfo
+
+# TinyAGI runtime files
+.tinyagi
+
+.wwebjs_cache
+*.log
+
+# Environment variables
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
