@@ -137,14 +137,8 @@ References/Agent/Control/agor/.env.postgres
 References/Agent/Domain/*
 !References/Agent/Gateway/
 References/Agent/Gateway/*
-!References/Agent/Gateway/mcp-use/
-!References/Agent/Gateway/mcp-use/**
 References/Agent/Gateway/mcp-use/libraries/*
-!References/Agent/Gateway/mcp-use/libraries/
-!References/Agent/Gateway/mcp-use/libraries/python/
-!References/Agent/Gateway/mcp-use/libraries/python/**
-!References/Agent/Gateway/mcp-use/libraries/typescript/
-!References/Agent/Gateway/mcp-use/libraries/typescript/**
+References/Agent/Gateway/mcp-use/libraries/typescript/packages/inspector/.vscode/settings.json
 !References/Agent/Gateway/playwright-mcp/
 !References/Agent/Gateway/playwright-mcp/**
 References/Agent/Gateway/playwright-mcp/tests/testserver/key.pem
