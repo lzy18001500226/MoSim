@@ -16,5 +16,6 @@ push_state: main and origin/main synchronized at ahead_behind 0 0 after pushing 
 post_push_checks: path-limited status clean for .gitignore, the committed Agent tail slice, the pathspec evidence file, and this checkpoint file; cached diff empty; .git/index.lock absent.
 remaining_ignored_risks: References/Agent/Control/agor/.env.postgres; References/Agent/Domain/terminal-velocity conflict-marker-risk docs; References/Agent/Gateway/playwright-mcp/tests/testserver/key.pem.
 post_checkpoint_correction: The first exact Memory unignore rule opened `References/Agent/Memory/*` too broadly and exposed 35,349 untracked files. This was corrected immediately by adding `References/Agent/Memory/*` and `References/Agent/Memory/anysearch-mcp-server/*` before the exact README unignore. Path-limited checks then showed `References/Agent`, `References/Blender`, `References/PX4`, `Docs/Skills/Unreal`, and `Docs/Skills/Windows-MCP` visible untracked counts at 0.
+daytona_tail_batch: Open and commit Daytona guide `.env.example` templates, two sdk-ruby bin scripts, and daemon terminal static HTML; keep real `.env` files ignored. Pathspec: `Results/coagent_status/git_batches/COAGENT-DEVOPS-GIT-CLOSEOUT-20260605/daytona_tail_env_examples_20260606.paths`.
 needs_human: false
 blocked_reason: none

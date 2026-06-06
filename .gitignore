@@ -218,14 +218,14 @@ References/Agent/Gateway/daytona/*
 !References/Agent/Gateway/daytona/guides/
 !References/Agent/Gateway/daytona/guides/**
 References/Agent/Gateway/daytona/examples/**/.env
-References/Agent/Gateway/daytona/examples/**/.env.*
+References/Agent/Gateway/daytona/examples/**/.env
 References/Agent/Gateway/daytona/examples/**/node_modules/
 References/Agent/Gateway/daytona/examples/**/dist/
 References/Agent/Gateway/daytona/examples/**/build/
 References/Agent/Gateway/daytona/examples/**/.cache/
 References/Agent/Gateway/daytona/examples/**/.turbo/
 References/Agent/Gateway/daytona/guides/**/.env
-References/Agent/Gateway/daytona/guides/**/.env.*
+References/Agent/Gateway/daytona/guides/**/.env
 References/Agent/Gateway/daytona/guides/**/node_modules/
 References/Agent/Gateway/daytona/guides/**/dist/
 References/Agent/Gateway/daytona/guides/**/build/
@@ -333,6 +333,9 @@ References/Agent/Gateway/daytona/libs/**/node_modules/
 References/Agent/Gateway/daytona/libs/**/dist/
 References/Agent/Gateway/daytona/libs/**/build/
 References/Agent/Gateway/daytona/libs/**/bin/
+!References/Agent/Gateway/daytona/libs/sdk-ruby/bin/
+!References/Agent/Gateway/daytona/libs/sdk-ruby/bin/console
+!References/Agent/Gateway/daytona/libs/sdk-ruby/bin/setup
 References/Agent/Gateway/daytona/libs/**/obj/
 References/Agent/Gateway/daytona/libs/**/.cache/
 References/Agent/Gateway/daytona/libs/**/.turbo/
