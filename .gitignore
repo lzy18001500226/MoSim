@@ -214,6 +214,8 @@ References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/packages/*
 References/Agent/Skills/awesome-opencode/dist/
 !References/Agent/Memory/
 References/Agent/Memory/*
+!References/Agent/Memory/zep/
+!References/Agent/Memory/zep/**
 References/Agent/Memory/graphify-8/tests/fixtures/obj/
 References/Agent/Memory/git-mcp/dist/
 References/Agent/Memory/git-mcp/.react-router/
@@ -827,3 +829,43 @@ References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/examples/safety_and_secur
 References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/examples/safety_and_security/retail_agent/src/nat_retail_agent/data/evalset-redteaming.json
 References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/examples/safety_and_security/retail_agent/src/nat_retail_agent/data/evalset.json
 References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/examples/safety_and_security/retail_agent/src/nat_retail_agent/data/products.json
+
+# Deferred upstream whitespace fixtures for References/Agent/Memory/zep.
+References/Agent/Memory/zep/.github/ISSUE_TEMPLATE/bug_report.md
+References/Agent/Memory/zep/.github/workflows/release-integrations.yml
+References/Agent/Memory/zep/.github/workflows/test-integrations.yml
+References/Agent/Memory/zep/benchmarks/longmemeval/Zep Test Harness/zep_eval.py
+References/Agent/Memory/zep/benchmarks/longmemeval/Zep Test Harness/zep_responses.py
+References/Agent/Memory/zep/benchmarks/longmemeval/zep_longmem_eval.py
+References/Agent/Memory/zep/examples/python/advanced.py
+References/Agent/Memory/zep/examples/python/agent-memory-full-example/agents.py
+References/Agent/Memory/zep/examples/python/agent-memory-full-example/pre-populate-memories/populate-memories.py
+References/Agent/Memory/zep/examples/python/chat_history/memory.py
+References/Agent/Memory/zep/examples/python/context-templates-example/agents.py
+References/Agent/Memory/zep/examples/python/graph_example/tickets_example.py
+References/Agent/Memory/zep/examples/python/openai-agents-sdk/openai_agents_sdk_example.py
+References/Agent/Memory/zep/examples/python/simple.py
+References/Agent/Memory/zep/examples/python/user-summary-instructions-example/agents.py
+References/Agent/Memory/zep/examples/python/user-summary-instructions-example/zep_ingest.py
+References/Agent/Memory/zep/examples/python/zep-quickstart-dashboard/agents.py
+References/Agent/Memory/zep/examples/python/zep-quickstart-dashboard/zep_ingest.py
+References/Agent/Memory/zep/examples/typescript/langgraph/agent.ts
+References/Agent/Memory/zep/examples/typescript/langgraph/zep-memory.ts
+References/Agent/Memory/zep/examples/typescript/zep-graph-visualization/src/app/api/graph/[type]/[id]/triplets/route.ts
+References/Agent/Memory/zep/examples/typescript/zep-graph-visualization/src/components/graph/Graph.tsx
+References/Agent/Memory/zep/examples/typescript/zep-graph-visualization/src/lib/utils/graph.ts
+References/Agent/Memory/zep/integrations/python/CLAUDE.md
+References/Agent/Memory/zep/integrations/python/zep_autogen/CLAUDE.md
+References/Agent/Memory/zep/integrations/python/zep_autogen/pyproject.toml
+References/Agent/Memory/zep/integrations/python/zep_autogen/README.md
+References/Agent/Memory/zep/integrations/python/zep_crewai/README.md
+References/Agent/Memory/zep/integrations/python/zep_livekit/CHANGELOG.md
+References/Agent/Memory/zep/integrations/python/zep_livekit/CLAUDE.md
+References/Agent/Memory/zep/integrations/python/zep_livekit/examples/full-example/conversations.json
+References/Agent/Memory/zep/integrations/python/zep_livekit/examples/full-example/populate_memory.py
+References/Agent/Memory/zep/integrations/python/zep_livekit/examples/full-example/zep_graph_voice_agent.py
+References/Agent/Memory/zep/integrations/python/zep_livekit/examples/full-example/zep_voice_agent.py
+References/Agent/Memory/zep/integrations/python/zep_livekit/README.md
+References/Agent/Memory/zep/legacy/src/lib/config/config.go
+References/Agent/Memory/zep/README.md
+References/Agent/Memory/zep/zep-eval-harness/zep_evaluate.py
