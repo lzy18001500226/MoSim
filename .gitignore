@@ -815,6 +815,8 @@ References/PX4/qgroundcontrol/src/*
 !References/PX4/qgroundcontrol/src/PositionManager/**
 !References/PX4/qgroundcontrol/src/Terrain/
 !References/PX4/qgroundcontrol/src/Terrain/**
+!References/PX4/qgroundcontrol/src/Vehicle/
+!References/PX4/qgroundcontrol/src/Vehicle/**
 !References/PX4/qgroundcontrol/test/
 !References/PX4/qgroundcontrol/test/**
 !References/PX4/qgroundcontrol/tools/
