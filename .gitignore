@@ -364,8 +364,6 @@ References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/packages/*
 References/Agent/Skills/awesome-opencode/dist/
 !References/Agent/Memory/
 References/Agent/Memory/*
-!References/Agent/Memory/GraphRAG/
-!References/Agent/Memory/GraphRAG/**
 !References/Agent/Platforms/
 References/Agent/Platforms/*
 References/Agent/Platforms/Agent-S/**/.DS_Store
