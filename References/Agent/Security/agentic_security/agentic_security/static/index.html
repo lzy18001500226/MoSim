@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en" class="dark">
+  [[% block head %]]
+  [[% include "partials/head.html" %]]
+  [[% endblock head %]]
+
+  <body class="bg-dark-bg text-dark-text font-sans">
+    <!-- Vue app root element -->
+    <div id="vue-app" class="min-h-screen p-8">
+      <!-- New Banner -->
+      <div
+        class="bg-dark-accent-green text-dark-bg py-4 px-6 rounded-lg mb-28 text-center">
+        <h4 class="text-lg font-semibold">
+          🚀 NEW: Star Agentic Security on
+          <a href="https://github.com/msoedov/agentic_security" target="_blank"
+            class="underline" data-faitracker-click-bind="true">Github</a> 🚀
+        </h4>
+      </div>
+
+      <!-- Header with Github link -->
+      <header class="flex justify-between items-center mb-8 relative"
+        v-if="false">
+        <div class="w-full absolute left-0 flex justify-center">
+          <h1
+            class="text-2xl font-bold text-gray-400"> <span
+              class="text-2xl font-technopollas  text-gray-300">Agentic
+            </span>
+
+            Vulnerability
+            Scanner</h1>
+        </div>
+
+      </header>
+      [[% include "partials/concent.html" %]]
+
+          <div class="flex space-x-4 overflow-x-auto scrollbar-hide">
+            <div
+              v-for="(config, index) in configs"
+              :key="index"
+              @click="selectConfig(index)"
+              class="flex-none w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 border-2 rounded-lg p-4 flex flex-col items-start transition-all hover:shadow-md cursor-pointer"
+              :class="{
+          'border-dark-accent-green': selectedConfig === index,
+          'border-gray-600': selectedConfig !== index
+        }">
+              <div class="flex items-center font-medium mb-2">
+                <img
+                  v-if="config.logo"
+                  :src="config.logo"
+                  class="w-6 h-6 ml-2 rounded-full"
+                  alt="logo" />
+                <span class="ml-2">{{ config.name }}</span>
+
+              </div>
+
+              <div class="text-sm text-gray-400">
+                {{ config.customInstructions || 'Requires API key' }}
+              </div>
+              <div class="mt-2 text-dark-accent-green font-semibold">
+                {{ config.modality || 'API' }}
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <div class="fixed top-6 right-6 z-50 space-y-3">
+        <transition-group name="toast">
+            <div
+                v-for="toast in toasts"
+                :key="toast.id"
+                class="flex items-center p-3 rounded-xl shadow-xl text-white max-w-md animate-toast-in border border-opacity-30"
+                :class="{
+                    'bg-success-toast border-accent-green': toast.type === 'success',
+                    'bg-error-toast border-accent-red': toast.type === 'error',
+                    'bg-info-toast border-accent-orange': toast.type === 'info'
+                }"
+            >
+                <span class="flex-1 font-medium tracking-wide text-sm">{{ toast.message }}</span>
+                <button
+                    @click="removeToast(toast.id)"
+                    class="ml-3 focus:outline-none hover:opacity-80 transition-opacity"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </transition-group>
+    </div>
+
+
+      <main class="max-w-6xl mx-auto space-y-8">
+        <section class="bg-dark-card rounded-lg p-6 shadow-lg" v-show="false">
+          <h2 class="text-2xl font-bold mb-4">Select a Config</h2>
+
+          <div class="flex space-x-4 overflow-x-auto scrollbar-hide">
+            <div
+              v-for="(config, index) in configs"
+              :key="index"
+              @click="selectConfig(index)"
+              class="flex-none w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 border-2 rounded-lg p-4 flex flex-col items-start transition-all hover:shadow-md cursor-pointer"
+              :class="{
+        'border-dark-accent-green': selectedConfig === index,
+        'border-gray-600': selectedConfig !== index
+      }">
+              <div class="font-medium mb-2">{{ config.name }}</div>
+              <div class="text-sm text-gray-400">
+                {{ config.customInstructions || 'Requires API key' }}
+              </div>
+              <div class="mt-2 text-dark-accent-green font-semibold">
+                {{config.modality || 'API'}}</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Collapsible LLM Spec Input -->
+        <section class="bg-dark-card rounded-lg p-6 shadow-lg">
+          <div @click="toggleLLMSpec"
+            class="flex justify-between items-center cursor-pointer">
+
+            <h2 class="text-2xl font-bold">LLM API Spec</h2>
+            <span :class="statusDotClass"
+                class="w-3 h-3 rounded-full mr-2"></span>
+            <svg :class="{'rotate-180': showLLMSpec}"
+              class="w-6 h-6 transition-transform duration-200"
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+
+          <div class="mt-4">
+            <label v-if="isFocused" for="llm-spec"
+              class="block text-sm font-medium mb-2">
+              LLM API Spec, PROMPT variable will be replaced with the testing
+              prompt
+            </label>
+            <div
+              v-if="!isFocused"
+              class="w-full bg-dark-bg text-dark-accent-orange border border-gray-600 rounded-lg p-3 cursor-text mb-5"
+              @click="focusTextarea"
+              v-html="highlightedText"></div>
+
+            <textarea
+              v-else
+              class="w-full bg-dark-bg text-dark-accent-orange border border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-dark-accent-green"
+              id="llm-spec"
+              @blur="unfocusTextarea"
+              v-model="modelSpec"
+              @input="adjustHeight"
+              rows="5"
+              placeholder="Enter LLM API Spec here..."></textarea>
+
+            <!-- Error and Success Messages -->
+            <div v-if="errorMsg"
+              class="bg-dark-accent-red bg-opacity-20 border border-dark-accent-red text-dark-accent-red px-4 py-3 rounded-lg relative"
+              role="alert">
+              <strong class="font-bold">Oops!</strong>
+              <span class="block sm:inline">{{errorMsg}}</span>
+            </div>
+            <div v-if="okMsg"
+              class="bg-dark-accent-green bg-opacity-20 border border-dark-accent-green text-dark-accent-green px-4 py-3 rounded-lg relative"
+              role="alert">
+              <strong class="font-bold">></strong>
+              <span class="block sm:inline">{{okMsg}}</span>
+            </div>
+            <span v-if="latency" class="text-sm text-gray-400 ml-2">Latency: {{latency}}s</span>
+
+
+            <!-- Action Buttons -->
+            <section class="flex justify-center space-x-4 mt-10">
+              <button
+                @click="verifyIntegration"
+                class="bg-dark-accent-orange text-dark-bg rounded-lg px-6 py-3 font-medium hover:bg-opacity-80 transition-colors">
+                Verify Integration
+              </button>
+            </section>
+          </div>
+        </section>
+        <!-- LLM Spec Input -->
+        <section class="bg-dark-card rounded-lg p-6 shadow-lg" v-if="false">
+          <h2 class="text-2xl font-bold mb-4">LLM API Spec</h2>
+          <label for="llm-spec" class="block text-sm font-medium mb-2">
+            LLM API Spec, PROMPT variable will be replaced with the testing
+            prompt
+          </label>
+          <textarea
+            class="w-full bg-dark-bg text-dark-accent-orange border border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-dark-accent-green"
+            id="llm-spec"
+            v-model="modelSpec"
+            @input="adjustHeight"
+            rows="5"
+            placeholder="Enter LLM API Spec here..."></textarea>
+        </section>
+
+        <section
+          class="bg-dark-card rounded-lg p-6 shadow-lg mt-8 border-dark-accent-green border-2">
+          <div @click="toggleParams"
+            class="flex justify-between items-center cursor-pointer">
+            <div class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              </svg>
+              <h2 class="text-2xl font-bold">Parameters</h2>
+            </div>
+            <svg :class="{'rotate-180': showParams}"
+              class="w-6 h-6 transition-transform duration-200"
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <div v-show="showParams" class="mt-4">
+            <div class="flex items-center justify-end mt-4">
+              <button
+                @click="confirmResetState"
+                class="flex items-center bg-dark-accent-red text-dark-bg rounded-lg px-4 py-2 text-sm font-medium hover:bg-opacity-80 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2"
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Reset State
+              </button>
+            </div>
+            <!-- Confirmation Modal -->
+            <div
+              v-if="showResetConfirmation"
+              class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div class="bg-dark-card rounded-lg p-6 max-w-sm w-full">
+                <h3 class="text-xl font-bold mb-4 text-dark-text">Confirm
+                  Reset</h3>
+                <p class="text-gray-400 mb-6">Are you sure you want to reset all
+                  settings to their default state? This action cannot be
+                  undone.</p>
+                <div class="flex justify-end space-x-4">
+                  <button
+                    @click="showResetConfirmation = false"
+                    class="bg-gray-600 text-dark-text rounded-lg px-4 py-2 hover:bg-opacity-80 transition-colors">
+                    Cancel
+                  </button>
+                  <button
+                    @click="resetState"
+                    class="bg-dark-accent-red text-dark-bg rounded-lg px-4 py-2 hover:bg-opacity-80 transition-colors">
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- Confirmation Modal -->
+
+            <!-- Maximum Budget Slider -->
+            <!-- Budget Slider -->
+            <section class="bg-dark-card rounded-lg p-6 shadow-lg">
+              <h2 class="text-2xl font-bold mb-4">Maximum Budget</h2>
+              <div class="flex justify-between items-center mb-4">
+                <span class="text-lg">1M Tokens</span>
+                <input
+                  v-model="budget"
+                  @change="updateBudgetFromInput"
+                  class="w-20 bg-dark-bg text-dark-text border border-gray-600 rounded-lg p-2 text-center"
+                  type="text" />
+                <span class="text-lg">100M Tokens</span>
+              </div>
+              <input
+                v-model="budget"
+                @input="updateBudgetFromSlider"
+                type="range"
+                min="1"
+                max="100"
+                step="1"
+                class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
+            </section>
+
+            <!-- Optimize Toggle -->
+            <div class="flex flex-col mt-6 mr-10 ml-10">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-lg font-semibold">Optimize Test</h3>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" v-model="optimize"
+                    class="sr-only peer">
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-dark-accent-green rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-dark-accent-green"></div>
+                </label>
+              </div>
+              <p class="text-sm text-gray-400 mt-2 mb-6">
+                When enabled, this option runs a Bayesian optimization loop to
+                find the most effective test parameters. This can potentially
+                reduce the cost and the total running time of your vulnerability
+                scan, but may reduce accuracy.
+              </p>
+
+              <!-- Chart Diagram Toggle -->
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-lg font-semibold">Enable Chart Diagram</h3>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" v-model="enableChartDiagram"
+                    class="sr-only peer">
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-dark-accent-green rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-dark-accent-green"></div>
+                </label>
+              </div>
+              <p class="text-sm text-gray-400 mt-2 mb-6">
+                When enabled, a chart diagram will be generated to visualize the
+                results of your vulnerability scan.
+              </p>
+
+              <!-- Logging Toggle -->
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-lg font-semibold">Enable Detailed Logging</h3>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" v-model="enableLogging"
+                    class="sr-only peer">
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-dark-accent-green rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-dark-accent-green"></div>
+                </label>
+              </div>
+              <p class="text-sm text-gray-400 mt-2 mb-6">
+                When enabled, detailed logs will be generated during the
+                vulnerability scan process. This can be useful for debugging and
+                in-depth analysis.
+              </p>
+
+              <!-- Concurrency Toggle -->
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-lg font-semibold">Enable Concurrency</h3>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" v-model="enableConcurrency"
+                    class="sr-only peer">
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-dark-accent-green rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-dark-accent-green"></div>
+                </label>
+              </div>
+              <p class="text-sm text-gray-400 mt-2">
+                When enabled, the vulnerability scan will run multiple tests
+                concurrently. This can significantly reduce the total scan time
+                but may increase resource usage.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Modules Selection -->
+        <section
+          class="bg-dark-card rounded-lg p-6 shadow-lg border-dark-accent-red border-4">
+          <div @click="toggleModules"
+            class="flex justify-between items-center cursor-pointer">
+            <h2 class="text-2xl font-bold">Modules [{{selectedDS}}
+              selected]</h2>
+            <svg :class="{'rotate-180': showModules}"
+              class="w-6 h-6 transition-transform duration-200"
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+
+          <div v-show="showModules" class="mt-4">
+            <!-- Many-shot jailbreaking Toggle -->
+            <div v-if="enableMultiStepAttack" class="alert-box mt-4">
+              <div
+                class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative"
+                role="alert">
+                <strong class="font-bold">Notice:</strong>
+                <span class="block sm:inline">A many-shot attack might take a
+                  longer time to complete.
+                </span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mb-2 mt-10">
+              <h3 class="text-lg font-semibold">Enable Many-shot
+                jailbreaking</h3>
+
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" v-model="enableMultiStepAttack"
+                  class="sr-only peer">
+                <div
+                  class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-dark-accent-green rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-dark-accent-green"></div>
+              </label>
+            </div>
+            <p class="text-sm text-gray-400 mt-2 mb-2">
+              When enabled, the scan will attempt Many-shot jailbreaking
+              simulations
+            </p>
+
+            <div v-if="hasFileSpec" class="alert-box mt-10">
+              <div
+                class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative"
+                role="alert">
+                <strong class="font-bold">Notice:</strong>
+                <span class="block sm:inline">Converting audio or image prompts
+                  might
+                  take some time to compute.</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between mb-4 mt-4">
+              <button @click="selectAllPackages"
+                class="text-dark-accent-green hover:underline">Select
+                All</button>
+              <button @click="deselectAllPackages"
+                class="text-gray-400 hover:underline">Deselect All</button>
+            </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div
+            v-for="(package, index) in dataConfig"
+            :key="index"
+            @click="package.is_active !== false && addPackage(index)"
+            class="border rounded-lg p-3 cursor-pointer transition-all hover:shadow-md overflow-hidden"
+            :class="{
+              'border-dark-accent-green bg-dark-accent-green bg-opacity-20': package.selected,
+              'border-gray-600': !package.selected,
+              'opacity-30 pointer-events-none cursor-not-allowed': package.is_active === false
+            }">
+            <div class="font-medium mb-1 truncate">{{ package.dataset_name }}</div>
+            <div class="text-sm text-gray-400 truncate">
+              {{ package.source || 'Local dataset' }}
+            </div>
+            <div class="mt-2 text-sm font-semibold">
+              {{ package.dynamic ? 'Dynamic dataset' : `${package.num_prompts.toLocaleString()} prompts` }}
+            </div>
+          </div>
+        </div>
+          </div>
+        </section>
+
+        <!-- Error and Success Messages -->
+        <div v-if="errorMsg"
+          class="bg-dark-accent-red bg-opacity-20 border border-dark-accent-red text-dark-accent-red px-4 py-3 rounded-lg relative"
+          role="alert">
+          <strong class="font-bold">Oops!</strong>
+          <span class="block sm:inline">{{errorMsg}}</span>
+        </div>
+        <div v-if="okMsg"
+          class="bg-dark-accent-green bg-opacity-20 border border-dark-accent-green text-dark-accent-green px-4 py-3 rounded-lg relative"
+          role="alert">
+          <strong class="font-bold">></strong>
+          <span class="block sm:inline">{{okMsg}}</span>
+        </div>
+        <span v-if="latency" class="text-sm text-gray-400 ml-2">Latency: {{latency}}s</span>
+
+
+        <!-- Action Buttons -->
+        <section class="flex justify-center space-x-4">
+          <button
+            @click="verifyIntegration"
+            class="bg-dark-accent-orange text-dark-bg rounded-lg px-6 py-3 font-medium hover:bg-opacity-80 transition-colors">
+            Verify Integration
+          </button>
+          <button
+            @click="startScan"
+            v-if="!scanRunning"
+            class="bg-dark-accent-green text-dark-bg rounded-lg px-6 py-3 font-medium hover:bg-opacity-80 transition-colors flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="mr-2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Run Scan
+          </button>
+          <button
+            @click="stopScan"
+            v-if="scanRunning"
+            class="bg-dark-accent-red text-dark-bg rounded-lg px-6 py-3 font-medium hover:bg-opacity-80 transition-colors flex items-center">
+            <!-- Stop Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="mr-2"><rect x="6" y="6" width="12"
+                height="12"></rect></svg>
+            Stop Scan
+          </button>
+        </section>
+
+        <!-- Progress Bar -->
+        <div id="progress"
+          class="bg-dark-accent-green rounded-full h-2 transition-all duration-500 ease-in-out"
+          v-bind:style="{width: progressWidth}">
+        </div>
+
+        <!-- Scan Results -->
+        <section class="bg-dark-card rounded-lg p-6 shadow-lg"
+          v-if="mainTable.length > 0">
+          <h2 class="text-2xl font-bold mb-4">Scan Results</h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr class="border-b border-gray-600">
+                  <th class="p-3">Vulnerability Module</th>
+                  <th class="p-3">% Strength</th>
+                  <th class="p-3">Number of Tokens</th>
+                  <th class="p-3">Approx Cost (in tokens)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="result in mainTable" class="border-b border-gray-700"
+                  :class="{'text-dark-accent-green': result.last, 'text-gray-300': !result.last}">
+                  <td class="p-3">{{result.module}}</td>
+                  <td class="p-3 text-gray-100"
+                    :class="getFailureRateColor(result.failureRate)">
+                    {{getFailureRateScore(result.failureRate)}}( {{(100 -
+                    result.failureRate).toFixed(2)}} )
+                  </td>
+                  <td class="p-3">{{result.tokens}}k</td>
+                  <td class="p-3">${{result.cost.toFixed(2)}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Download Button -->
+        <button
+          @click="downloadFailures"
+          class="bg-dark-accent-yellow text-dark-bg rounded-lg px-6 py-3 font-medium hover:bg-opacity-80 transition-colors">
+          Download failures
+        </button>
+
+        <!-- Report Image -->
+        <img :src="reportImageUrl" alt="Generated Plot" v-if="reportImageUrl"
+          loading="lazy" class="mx-auto rounded-lg shadow-lg">
+
+        <!-- Logs Section -->
+        <section class="bg-dark-card rounded-lg p-6 shadow-lg mt-8">
+          <div @click="toggleLogs"
+            class="flex justify-between items-center cursor-pointer">
+            <h2 class="text-2xl font-bold">Logs</h2>
+            <svg :class="{'rotate-180': showLogs}"
+              class="w-6 h-6 transition-transform duration-200"
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+
+          <div v-show="showLogs" class="mt-4">
+            <div class="mb-4 flex justify-between items-center">
+              <span class="text-sm text-gray-400">Showing latest {{
+                Math.min(logs.length, maxDisplayedLogs) }} of {{ logs.length }}
+                logs</span>
+              <button @click="downloadLogs"
+                class="bg-dark-accent-green text-dark-bg rounded-lg px-4 py-2 text-sm font-medium hover:bg-opacity-80 transition-colors">
+                Download Logs
+              </button>
+            </div>
+            <div class="bg-dark-bg p-4 rounded-lg max-h-96 overflow-y-auto">
+              <div v-for="(log, index) in displayedLogs" :key="index"
+                class="mb-2 last:mb-0">
+                <span class="text-dark-accent-green">{{ log.timestamp }}</span>
+                <span class="ml-2"
+                  :class="{'text-dark-accent-red': log.level === 'ERROR'}">{{
+                  log.message }}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      [[% block footer %]]
+      [[% include "partials/footer.html" %]]
+      [[% endblock footer %]]
+
+    </div>
+
+    <script src="base.js"></script>
+    <script src="main.js"></script>
+    <script src="telemetry.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

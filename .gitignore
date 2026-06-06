@@ -411,6 +411,10 @@ References/Agent/UI/*
 !References/Agent/UI/gelab-zero/
 !References/Agent/UI/gelab-zero/**
 References/Agent/UI/gelab-zero/**/.DS_Store
+!References/Agent/Security/
+References/Agent/Security/*
+!References/Agent/Security/agentic_security/
+!References/Agent/Security/agentic_security/**
 !References/Agent/Workflow/
 References/Agent/Workflow/*
 !References/Agent/Workflow/okwinds/

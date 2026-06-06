@@ -1,0 +1,83 @@
+:root {
+  --md-primary-fg-color: #2E4053;
+  /* Primary color changed to pinkish */
+  --md-primary-fg-color--light: #E0A3B6;
+  --md-primary-fg-color--dark: #1C3F74;
+  /* Dark variant changed to blue */
+}
+
+/* Updated slate color scheme with new background */
+[data-md-color-scheme="slate"] {
+  --md-hue: 230;
+  --md-default-bg-color: #1A1A1A;
+  /* Background changed to dark gray */
+}
+
+.hide {
+  display: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+img.index-header {
+  width: 70%;
+  max-width: 500px;
+}
+
+/* Updated custom colors */
+.pydantic-pink {
+  color: #E0A3B6;
+  /* Updated to match new theme */
+}
+
+.team-blue {
+  color: #1C3F74;
+  /* Updated to match new theme */
+}
+
+.secure-green {
+  color: #00A86B;
+}
+
+.shapes-orange {
+  color: #FF7F32;
+}
+
+.puzzle-purple {
+  color: #652D90;
+}
+
+.wheel-gray {
+  color: #6E6E6E;
+}
+
+.vertical-middle {
+  vertical-align: middle;
+}
+
+.text-emphasis {
+  font-size: 1rem;
+  font-weight: 300;
+  font-style: italic;
+}
+
+#version-warning {
+  min-height: 120px;
+  margin-bottom: 10px;
+}
+
+.mermaid {
+  text-align: center;
+}
+
+/* Hide the entire footer */
+.md-footer {
+  display: none;
+}
+
+/* OR, hide only the "Made with Material" credit */
+.md-footer__made-with {
+  display: none;
+}
