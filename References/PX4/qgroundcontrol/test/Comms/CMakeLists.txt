@@ -1,0 +1,16 @@
+# ============================================================================
+# Communications Unit Tests
+# Tests for serial port detection and communication links
+# ============================================================================
+
+target_sources(${CMAKE_PROJECT_NAME}
+    PRIVATE
+        LinkConfigurationTest.cc
+        LinkConfigurationTest.h
+        QGCSerialPortInfoTest.cc
+        QGCSerialPortInfoTest.h
+)
+
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_subdirectory(Bluetooth)
