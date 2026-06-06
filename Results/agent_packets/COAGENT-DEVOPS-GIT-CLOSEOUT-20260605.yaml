@@ -13,6 +13,10 @@ ignore_policy: Temporary ignores are throttles only, not completion. Final .giti
 next_action: Start with a narrow completed-rule compression batch for toolhive, firecrawl, Agent-S, and antfarm if path-limited verification remains stable; then continue semantic review and sub-1000-file content slices.
 needs_human: false
 blocked_reason: none
+latest_commit: 85b4a87801 chore: drain completed git split rules
+latest_push_state: main and origin/main synchronized at ahead_behind 0 0 after pushing 85b4a87801.
+latest_ignore_drain_c: Removed completed temporary unignore lines for toolhive, firecrawl, Agent-S, and antfarm after path-limited verification stayed visible=0. Long-term exact excludes in those directories remain.
+current_slice_plan: Add gelab-zero model_config.yaml as an empty-placeholder reference config and xatlas small sample OBJ model assets; keep xatlas executable tools ignored.
 latest_commit: a8cc74d7d8 refs: add langgraph workflow tail
 latest_pathspec: Results/coagent_status/git_batches/COAGENT-DEVOPS-GIT-CLOSEOUT-20260605/agent_workflow_langgraph_core_clean_20260606.paths
 latest_tail_pathspec: Results/coagent_status/git_batches/COAGENT-DEVOPS-GIT-CLOSEOUT-20260605/agent_workflow_langgraph_tail_cleaned_20260606.paths
