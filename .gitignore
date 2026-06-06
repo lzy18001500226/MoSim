@@ -408,6 +408,9 @@ References/Agent/Platforms/Agent-S/**/.DS_Store
 References/Agent/UI/*
 !References/Agent/UI/opencode.nvim/
 !References/Agent/UI/opencode.nvim/**
+!References/Agent/UI/gelab-zero/
+!References/Agent/UI/gelab-zero/**
+References/Agent/UI/gelab-zero/**/.DS_Store
 !References/Agent/Workflow/
 References/Agent/Workflow/*
 !References/Agent/Workflow/okwinds/
