@@ -1,0 +1,28 @@
+name: pr
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  codestyle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout Repository"
+        uses: actions/checkout@v4
+      - name: Creadentials search in source code - TruffleHog OSS
+        uses: trufflesecurity/trufflehog@v3.69.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+      - name: Python codestyle
+        uses: ./.github/actions/codestyle
+
+      - name: Go tui codestyle
+        uses: ./.github/actions/tui-codestyle
+
+      - name: Web codestyle
+        uses: ./.github/actions/web-codestyle

@@ -1,0 +1,74 @@
+name: Rogue
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  rogue_sanity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Only run for PRs from within the same repository, not from forks
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          prune-cache: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Create venv
+        run: uv venv
+
+      - name: Install rogue server with local sdk
+        run: |
+          source .venv/bin/activate
+          uv pip install -e .
+          uv pip uninstall rogue-ai-sdk
+          uv pip install -e sdks/python --force-reinstall
+
+      - name: Run rogue
+        shell: bash
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          echo "🚀 Starting AI agent..."
+
+          # Not using uv because it will reinstall the sdk from pypi
+          source .venv/bin/activate && python -m examples.tshirt_store_agent --host 0.0.0.0 --port 10001 &
+          AGENT_PID=$!
+          echo "Agent started with PID: $AGENT_PID"
+          trap 'echo "🛑 Stopping agent..."; kill $AGENT_PID' EXIT
+
+          echo "⏳ Waiting for agent to be ready..."
+          curl --retry 10 --retry-delay 5 --retry-connrefused -s --fail -o /dev/null \
+            http://localhost:10001/.well-known/agent.json
+
+          echo "🚀 Starting rogue server..."
+          # Not using uv because it will reinstall the sdk from pypi
+          source .venv/bin/activate && python -m rogue server --host 0.0.0.0 --port 8000 &
+          ROGUE_PID=$!
+          echo "Rogue server started with PID: $ROGUE_PID"
+          trap 'echo "🛑 Stopping rogue server..."; kill $ROGUE_PID' EXIT
+
+          echo "⏳ Waiting for rogue server to be ready..."
+          curl --retry 10 --retry-delay 5 --retry-connrefused -s --fail -o /dev/null \
+            http://localhost:8000/api/v1/health
+          echo "🚀 Rogue server ready"
+
+          echo "🚀 Running rogue..."
+          # Not using uv because it will reinstall the sdk from pypi
+          source .venv/bin/activate && python -m rogue cli \
+            --evaluated-agent-url http://localhost:10001 \
+            --judge-llm openai/o4-mini \
+            --workdir './examples/tshirt_store_agent/.rogue'

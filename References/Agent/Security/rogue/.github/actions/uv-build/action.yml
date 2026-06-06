@@ -1,0 +1,19 @@
+name: "uv-build"
+description: "Makes sure the package is buildable using uv"
+inputs:
+  workdir:
+    description: "working directory"
+    required: false
+    default: "."
+  dist_dir:
+    description: "Output directory for the built package"
+    required: false
+    default: "dist"
+runs:
+  using: "composite"
+  steps:
+    - name: Install dependencies and tools
+      shell: bash
+      run: |
+        cd "${{ inputs.workdir }}"
+        uv build --out-dir "${{ inputs.dist_dir }}"

@@ -1,0 +1,78 @@
+pre-commit:
+  parallel: true
+  jobs:
+    - name: gitleaks
+      run: gitleaks protect --verbose --redact --staged
+
+    - name: end-of-file-fixer
+      glob: "*"
+      exclude: "LICENSE"
+      run: |
+        for file in {staged_files}; do
+          if [ -n "$(tail -c 1 "$file")" ]; then
+            echo >> "$file"
+            git add "$file"
+          fi
+        done
+
+    # YAML
+    - name: check-yaml
+      glob: "*.{yaml,yml}"
+      run: |
+        for file in {staged_files}; do
+          python -c "import yaml; yaml.safe_load(open('$file'))" || exit 1
+        done
+
+    # Python — ruff replaces black + flake8 + isort + bandit + add-trailing-comma;
+    # ty replaces mypy. Both are Astral Rust binaries, an order of magnitude
+    # faster than the toolchain they superseded.
+    - name: ruff-format
+      glob: "*.py"
+      exclude: ".venv/"
+      run: uv run ruff format {staged_files}
+
+    - name: ruff-check
+      glob: "*.py"
+      exclude: ".venv/"
+      run: uv run ruff check --fix {staged_files}
+
+    - name: ty
+      glob: "*.py"
+      exclude: ".venv/"
+      # ty does whole-project inference; running on the full source roots is
+      # both faster and more accurate than a per-file invocation.
+      run: uv run ty check rogue sdks/python hatch_build.py
+
+    - name: uv lock check
+      glob: "pyproject.toml"
+      run: uv lock --check
+
+    # Go
+    - name: gofmt
+      glob: "*.go"
+      run: gofmt -s -w {staged_files}
+
+    - name: goimports
+      glob: "*.go"
+      run: goimports -w {staged_files}
+
+    - name: go vet
+      glob: "*.go"
+      run: (cd packages/tui && go vet ./...)
+
+    # Web (TypeScript / React)
+    # `root:` rebases {staged_files} so they're relative to packages/web,
+    # which is what prettier/eslint expect when their config lives there.
+    - name: prettier-web
+      root: "packages/web/"
+      glob: "*.{ts,tsx,js,jsx,json,css,md}"
+      run: pnpm exec prettier --write {staged_files}
+
+    - name: eslint-web
+      root: "packages/web/"
+      glob: "*.{ts,tsx,js,jsx}"
+      run: pnpm exec eslint --fix {staged_files}
+
+    - name: tsc-web
+      glob: "packages/web/**/*.{ts,tsx}"
+      run: (cd packages/web && pnpm exec tsc --noEmit)

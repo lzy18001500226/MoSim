@@ -1,0 +1,170 @@
+from types import TracebackType
+from typing import TYPE_CHECKING, Callable, Optional, Self, Type
+
+from loguru import logger
+
+from rogue_sdk.types import Protocol, Scenarios, Transport
+
+from ..base_evaluator_agent import BaseEvaluatorAgent
+from ..mcp_utils import create_mcp_client
+
+if TYPE_CHECKING:
+    from fastmcp import Client
+    from fastmcp.client import SSETransport, StreamableHttpTransport
+
+
+class MCPEvaluatorAgent(BaseEvaluatorAgent):
+    def __init__(
+        self,
+        transport: Optional[Transport],
+        evaluated_agent_address: str,
+        judge_llm: str,
+        scenarios: Scenarios,
+        business_context: Optional[str],
+        headers: Optional[dict[str, str]] = None,
+        judge_llm_auth: Optional[str] = None,
+        debug: bool = False,
+        chat_update_callback: Optional[Callable[[dict], None]] = None,
+        *args,
+        **kwargs,
+    ):
+        super().__init__(
+            evaluated_agent_address=evaluated_agent_address,
+            protocol=Protocol.MCP,
+            transport=transport,
+            judge_llm=judge_llm,
+            scenarios=scenarios,
+            business_context=business_context,
+            headers=headers,
+            judge_llm_auth=judge_llm_auth,
+            debug=debug,
+            chat_update_callback=chat_update_callback,
+        )
+
+        self._context_id_to_client: dict[
+            str,
+            "Client[SSETransport | StreamableHttpTransport]",
+        ] = {}
+
+    async def __aenter__(self) -> Self:
+        return await super().__aenter__()
+
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ) -> None:
+        await super().__aexit__(exc_type, exc_value, traceback)
+        for client in self._context_id_to_client.values():
+            await client.__aexit__(exc_type, exc_value, traceback)
+
+    async def _create_client(self) -> "Client[SSETransport | StreamableHttpTransport]":
+        client = create_mcp_client(
+            url=self._evaluated_agent_address,
+            transport=self._transport,
+            headers=self._headers,
+        )
+        await client.__aenter__()
+        return client
+
+    async def _get_or_create_client(
+        self,
+        context_id: str,
+    ) -> "Client[SSETransport | StreamableHttpTransport]":
+        if context_id not in self._context_id_to_client:
+            self._context_id_to_client[context_id] = await self._create_client()
+        return self._context_id_to_client[context_id]
+
+    async def _send_message_to_evaluated_agent(
+        self,
+        context_id: str,
+        message: str,
+        kwargs: Optional[dict] = None,
+    ) -> dict[str, str]:
+        """
+        Sends a message to the evaluated agent and returns the agent's response.
+        :param message: the text to send to the other agent.
+        :param context_id: The context ID of the conversation.
+            Each conversation has a unique context_id. All messages in the conversation
+            have the same context_id.
+        :return: A dictionary containing the response from the evaluated agent.
+            - "response": the response string. If there is no response
+                from the other agent, the string is empty.
+        """
+        if kwargs:
+            logger.debug(
+                "kwargs ignored on MCP protocol",
+                extra={"keys": list(kwargs.keys()), "context_id": context_id},
+            )
+        logger.info(
+            "🔗 Making MCP call to evaluated agent",
+            extra={
+                "message": message[:100] + "..." if len(message) > 100 else message,
+                "context_id": context_id,
+                "agent_url": self._evaluated_agent_address,
+                "transport": self._transport.value,
+            },
+        )
+
+        self._add_message_to_chat_history(context_id, "user", message)
+        response = await self._invoke_mcp_agent(context_id, message)
+        # TODO: add support for multi-model responses (audio, images, etc.)
+        if not response or not response.get("response"):
+            logger.debug(
+                "_send_message_to_evaluated_agent - no response",
+                extra={"protocol": "mcp"},
+            )
+            return {"response": ""}
+
+        self._add_message_to_chat_history(
+            context_id,
+            "assistant",
+            response.get(
+                "response",
+                "Not a text response",
+            ),
+        )
+
+        return response
+
+    async def _invoke_mcp_agent(self, context_id: str, message: str) -> dict[str, str]:
+        client = await self._get_or_create_client(context_id)
+        try:
+            tool_result = await client.call_tool(
+                name="send_message",
+                arguments={
+                    "message": message,
+                },
+            )
+
+            from mcp.types import TextContent
+
+            text_response = ""
+            for part in tool_result.content:
+                # `part.type == "text"` narrows at runtime but ty needs an
+                # explicit isinstance to resolve `.text` on the union variant.
+                if not isinstance(part, TextContent):
+                    logger.warning(
+                        "Received non-text part in tool result",
+                        extra={"type": part.type},
+                    )
+                    continue
+
+                text_response += part.text
+
+            return {"response": text_response}
+        except Exception as e:
+            logger.exception(
+                "Error while sending message to evaluated agent using mcp",
+                extra={
+                    "protocol": "mcp",
+                    "agent_url": self._evaluated_agent_address,
+                    "transport": self._transport.value,
+                    "message": message[:100] + "..." if len(message) > 100 else message,
+                },
+            )
+            return {
+                "response": "",
+                "error": str(e),
+            }

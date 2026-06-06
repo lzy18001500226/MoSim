@@ -1,0 +1,15 @@
+{
+  "business_context": "",
+  "deep_test_mode": false,
+  "evaluated_agent_auth_type": "no_auth",
+  "evaluated_agent_credentials": "",
+  "evaluated_agent_url": "http://localhost:10001/",
+  "evaluation_mode": "policy",
+  "interview_mode": true,
+  "judge_llm": "openai/gpt-4.1",
+  "parallel_runs": 2,
+  "protocol": "a2a",
+  "scan_type": "basic",
+  "service_llm": "openai/gpt-4.1",
+  "transport": "http"
+}

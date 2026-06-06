@@ -1,0 +1,29 @@
+name: "codestyle"
+description: "Runs Python code style checks via ruff (format + lint) and ty (type-check)"
+inputs:
+  workdir:
+    description: "working directory"
+    required: false
+    default: "."
+runs:
+  using: "composite"
+  steps:
+    - name: "Check that uv.lock is up to date"
+      shell: bash
+      run: uv lock --check
+    - name: Install dependencies and tools
+      shell: bash
+      run: |
+        cd ${{ inputs.workdir }}
+        uv sync
+    - name: "Ruff format (check)"
+      shell: bash
+      run: uv run ruff format --check ${{ inputs.workdir }}
+    - name: "Ruff lint"
+      shell: bash
+      run: uv run ruff check ${{ inputs.workdir }}
+    - name: "ty (type check)"
+      shell: bash
+      # ty does whole-project inference; the explicit roots match
+      # `[tool.ty.src]` in pyproject.toml.
+      run: uv run ty check rogue sdks/python hatch_build.py
