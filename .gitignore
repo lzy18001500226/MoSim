@@ -791,6 +791,8 @@ References/PX4/qgroundcontrol/*
 !References/PX4/qgroundcontrol/deploy/
 !References/PX4/qgroundcontrol/deploy/**
 References/PX4/qgroundcontrol/deploy/android/android_release.keystore
+!References/PX4/qgroundcontrol/resources/
+!References/PX4/qgroundcontrol/resources/**
 !References/PX4/qgroundcontrol/test/
 !References/PX4/qgroundcontrol/test/**
 !References/PX4/qgroundcontrol/tools/
