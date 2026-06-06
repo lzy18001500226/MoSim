@@ -801,6 +801,8 @@ References/PX4/qgroundcontrol/src/*
 !References/PX4/qgroundcontrol/src/API/**
 !References/PX4/qgroundcontrol/src/FirstRunPromptDialogs/
 !References/PX4/qgroundcontrol/src/FirstRunPromptDialogs/**
+!References/PX4/qgroundcontrol/src/FactSystem/
+!References/PX4/qgroundcontrol/src/FactSystem/**
 !References/PX4/qgroundcontrol/src/FirmwarePlugin/
 !References/PX4/qgroundcontrol/src/FirmwarePlugin/**
 !References/PX4/qgroundcontrol/src/FlightMap/
