@@ -772,11 +772,6 @@ UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/
 # cannot flood Git while the tree is drained in reviewed <1000-file batches.
 # Final state must remove or narrow this rule to only real long-term ignores.
 References/Blender/**
-!References/Blender/
-!References/Blender/blender/
-!References/Blender/blender/release/
-!References/Blender/blender/release/windows/
-!References/Blender/blender/release/windows/**
 # Missing local Git LFS payloads in Blender windows release assets; keep manifest-only until real LFS objects are restored.
 References/Blender/blender/release/windows/installer_wix/WIX_UI_BANNER.bmp
 References/Blender/blender/release/windows/installer_wix/WIX_UI_DIALOG.png
