@@ -811,6 +811,8 @@ References/PX4/qgroundcontrol/src/*
 !References/PX4/qgroundcontrol/src/LogManager/**
 !References/PX4/qgroundcontrol/src/MainWindow/
 !References/PX4/qgroundcontrol/src/MainWindow/**
+!References/PX4/qgroundcontrol/src/MissionManager/
+!References/PX4/qgroundcontrol/src/MissionManager/**
 !References/PX4/qgroundcontrol/src/PositionManager/
 !References/PX4/qgroundcontrol/src/PositionManager/**
 !References/PX4/qgroundcontrol/src/Terrain/
