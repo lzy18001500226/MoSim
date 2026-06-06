@@ -19,6 +19,8 @@ latest_ignore_drain_c: Removed completed temporary unignore lines for toolhive, 
 current_slice_plan: Add gelab-zero model_config.yaml as an empty-placeholder reference config and xatlas small sample OBJ model assets; keep xatlas executable tools ignored.
 latest_content_batch: Pushed 89f5ff7db7 refs: add xatlas sample models; added one gelab-zero empty-placeholder model config and seven small xatlas sample OBJ assets after size and local-only risk checks. Post-push xatlas tracked=970 visible=0 ignored=2.
 current_ignore_compression: Remove the three temporary xatlas model unignore lines after confirming only two xatlas executable tools remain ignored.
+latest_ignore_drain_d: Pushed 70c5160009 chore: drain xatlas split rules; removed the temporary xatlas model unignore lines after verifying xatlas tracked=970 visible=0 ignored=2.
+current_inventory_blender: Blender top-level path-limited inventory shows armorpaint-main tracked=699 visible=0 ignored=5, blender tracked=11954 visible=0 ignored=8663, material tracked=2831 visible=0 ignored=3, xatlas tracked=970 visible=0 ignored=2. The broad Blender throttle still remains and must not be removed wholesale.
 latest_commit: a8cc74d7d8 refs: add langgraph workflow tail
 latest_pathspec: Results/coagent_status/git_batches/COAGENT-DEVOPS-GIT-CLOSEOUT-20260605/agent_workflow_langgraph_core_clean_20260606.paths
 latest_tail_pathspec: Results/coagent_status/git_batches/COAGENT-DEVOPS-GIT-CLOSEOUT-20260605/agent_workflow_langgraph_tail_cleaned_20260606.paths
