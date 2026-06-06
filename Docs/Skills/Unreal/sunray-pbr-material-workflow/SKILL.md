@@ -78,6 +78,43 @@ If more local references are needed, ask the user to crawl repositories or
 asset libraries that provide source maps/material graphs, not screenshot-only
 showcases.
 
+## External Source Adoption Rule
+
+For Sunray150 material realism work, do not crawl broad open-source code
+repositories just because a component looks grey. Use this order instead:
+
+1. Reuse local project assets and tools first:
+   `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/`,
+   `References/Blender/material`, `References/Blender/armorpaint-main`,
+   `References/Blender/xatlas`, and `Docs/Skills/Blender-MCP`.
+2. Use CC0 PBR libraries for generic material families only: carbon weave,
+   rubber, black plastic, brushed/nickel metal, rough metal, glass/lens,
+   heat-shrink, cable insulation, and PCB-like soldermask. Preferred sources
+   are Poly Haven and ambientCG.
+3. Use YunDrone/Sunray/N150/Livox official or vendor images as visual
+   references only. They can justify component identity, port layout, and
+   material targets, but they are not texture files unless an explicit license
+   permits reuse.
+4. Use Material Maker-style procedural generation for repeated materials that
+   need project-specific scale or pattern, especially carbon fiber, cable
+   rubber, black polymer, heat-shrink, PCB soldermask, pads/traces, and subtle
+   molded plastic noise.
+5. Use xatlas plus ArmorPaint/Blender texture paint only when a component needs
+   part-specific detail: labels, port faces, pins, M.2 label cues, IC packages,
+   connector cores, scratches, or board markings.
+
+Reject these sources by default:
+
+- screenshot-only showcase projects without source textures/material graphs or
+  clear license;
+- marketplace or Sketchfab-style models/assets with unclear reuse rights;
+- large Unreal/game sample repositories that do not provide component-level
+  PBR maps useful to this aircraft;
+- another mirror of Blender/Material Maker/ArmorPaint/xatlas when the local
+  copy is already present;
+- tutorials that only tune Base Color without roughness/normal/material-slot
+  evidence.
+
 ## Route Selection
 
 Use this decision rule:
