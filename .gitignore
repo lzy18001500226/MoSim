@@ -364,16 +364,11 @@ References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/packages/*
 References/Agent/Skills/awesome-opencode/dist/
 !References/Agent/Memory/
 References/Agent/Memory/*
-!References/Agent/Memory/anysearch-mcp-server/
-References/Agent/Memory/anysearch-mcp-server/*
-!References/Agent/Memory/anysearch-mcp-server/README.md
 !References/Agent/Platforms/
 References/Agent/Platforms/*
 References/Agent/Platforms/Agent-S/**/.DS_Store
 !References/Agent/UI/
 References/Agent/UI/*
-!References/Agent/UI/gelab-zero/
-!References/Agent/UI/gelab-zero/**
 References/Agent/UI/gelab-zero/**/.DS_Store
 !References/Agent/Security/
 References/Agent/Security/*
