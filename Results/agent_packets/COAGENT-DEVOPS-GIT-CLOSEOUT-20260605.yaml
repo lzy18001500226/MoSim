@@ -1,9 +1,10 @@
 task_id: COAGENT-DEVOPS-GIT-CLOSEOUT-20260605
-status: checkpoint_pushed_goal_active
-decision: Continue long-running Git closeout by draining temporary .gitignore throttles in path-limited batches under 1000 files.
-summary: Completed four QGroundControl src batches in the main worktree: small systems, Vehicle, MissionManager, and FlightMap. Each batch was opened by precise .gitignore unignore rules, checked for >=100MB files, risky generated/cache/runtime dirs, high-confidence secrets, private keys, and conflict markers, then committed with temporary-index commit-tree and pushed to origin/main. Checkpoint documentation was updated after each batch.
-evidence: Rules reread from AGENTS.md Git Automation Rule and Docs/Workflows/agent_orchestration.md long Git/GitIntegrator sections; HEAD...upstream was 0 0 before the latest batches; .git/index.lock was absent; latest batch commits include 435ca5f8ac refs: add qgroundcontrol small src systems, 07a436c72c refs: add qgroundcontrol vehicle src, 10ab8b68f0 refs: add qgroundcontrol mission manager src, and 23640f9532 refs: add qgroundcontrol flight map src.
-risks: .gitignore still contains temporary throttles under References/Agent, Daytona, References/Agent/Memory, Platforms, UI, Security, Workflow, and References/PX4/qgroundcontrol/src; visible Git quietness is not completion. Long-term ignore rules must still retain .env, keys, node_modules, .venv, build, dist, cache, bin, obj, runtime logs, nested .git, archives, and generated assets.
-next_action: Continue with one <1000-file slice such as References/PX4/qgroundcontrol/src/FirmwarePlugin, FactSystem, Comms, or References/Agent/Workflow/okwinds/skills-runtime-sdk/packages after narrow sync and index-lock checks.
+status: active_checkpoint_pushed
+decision: Continue long-running Git closeout with path-limited batches; do not remove remaining temporary throttles in bulk.
+summary: Long goal is active. Confirmed rules from AGENTS.md and new conversation context, used one read-only explorer subagent, pushed the pending QtLocationPlugin checkpoint, then opened and pushed one 567-path QGroundControl src UI/navigation batch. Recorded the batch and process correction in the checkpoint document.
+evidence: Pushed 2167a1f497 results: update qgroundcontrol qt location checkpoint; pushed eedc4dcb96 refs: add qgroundcontrol ui nav src; pushed 28fa4dab4e results: update qgroundcontrol ui nav checkpoint; HEAD and upstream returned 0 0; .git/index.lock absent.
+subagents_used: explorer 019e9b70-a711-7260-a5e1-9657dc7416a1 read-only ignore audit; no writes, no commits, no push.
+risks: Remaining temporary throttles still exist under References/Blender, References/PX4/qgroundcontrol/src, and layered References/Agent rules; PowerShell native command exit codes must be checked explicitly in temp-index batches.
+next_action: Continue with another less-than-1000-file slice, preferably QGroundControl AutoPilotPlugins plus QmlControls plus Utilities, or the next read-only-audited Agent or Blender slice.
 needs_human: false
 blocked_reason: none
