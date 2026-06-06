@@ -196,6 +196,9 @@ References/Agent/Platforms/open-interpreter/**/.DS-Store
 References/Agent/Platforms/Agent-S/**/.DS_Store
 !References/Agent/UI/
 References/Agent/UI/*
+!References/Agent/UI/hermes-desktop/
+!References/Agent/UI/hermes-desktop/**
+References/Agent/UI/hermes-desktop/.agents/skills/typescript-expert/scripts/ts_diagnostic.py
 References/Agent/UI/gelab-zero/**/.DS_Store
 !References/Agent/Security/
 References/Agent/Security/*
