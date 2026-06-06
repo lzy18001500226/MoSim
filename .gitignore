@@ -803,6 +803,8 @@ References/PX4/qgroundcontrol/src/*
 !References/PX4/qgroundcontrol/src/AnalyzeView/**
 !References/PX4/qgroundcontrol/src/AppSettings/
 !References/PX4/qgroundcontrol/src/AppSettings/**
+!References/PX4/qgroundcontrol/src/AutoPilotPlugins/
+!References/PX4/qgroundcontrol/src/AutoPilotPlugins/**
 !References/PX4/qgroundcontrol/src/Camera/
 !References/PX4/qgroundcontrol/src/Camera/**
 !References/PX4/qgroundcontrol/src/Comms/
@@ -837,6 +839,8 @@ References/PX4/qgroundcontrol/src/*
 !References/PX4/qgroundcontrol/src/PlanView/**
 !References/PX4/qgroundcontrol/src/PositionManager/
 !References/PX4/qgroundcontrol/src/PositionManager/**
+!References/PX4/qgroundcontrol/src/QmlControls/
+!References/PX4/qgroundcontrol/src/QmlControls/**
 !References/PX4/qgroundcontrol/src/QtLocationPlugin/
 !References/PX4/qgroundcontrol/src/QtLocationPlugin/**
 !References/PX4/qgroundcontrol/src/Settings/
@@ -845,6 +849,8 @@ References/PX4/qgroundcontrol/src/*
 !References/PX4/qgroundcontrol/src/Terrain/**
 !References/PX4/qgroundcontrol/src/Toolbar/
 !References/PX4/qgroundcontrol/src/Toolbar/**
+!References/PX4/qgroundcontrol/src/Utilities/
+!References/PX4/qgroundcontrol/src/Utilities/**
 !References/PX4/qgroundcontrol/src/Vehicle/
 !References/PX4/qgroundcontrol/src/Vehicle/**
 !References/PX4/qgroundcontrol/src/VideoManager/
