@@ -395,6 +395,8 @@ References/Agent/Memory/anysearch-mcp-server/*
 !References/Agent/Memory/anysearch-mcp-server/README.md
 !References/Agent/Memory/anysearch-skill/
 !References/Agent/Memory/anysearch-skill/**
+!References/Agent/Memory/RepoAgent/
+!References/Agent/Memory/RepoAgent/**
 !References/Agent/Platforms/
 References/Agent/Platforms/*
 !References/Agent/Platforms/babyagi/
