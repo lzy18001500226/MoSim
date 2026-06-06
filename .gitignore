@@ -372,6 +372,8 @@ References/Agent/UI/*
 References/Agent/UI/gelab-zero/**/.DS_Store
 !References/Agent/Security/
 References/Agent/Security/*
+!References/Agent/Security/pentestagent/
+!References/Agent/Security/pentestagent/**
 !References/Agent/Workflow/
 References/Agent/Workflow/*
 References/Agent/Workflow/antfarm/bin/

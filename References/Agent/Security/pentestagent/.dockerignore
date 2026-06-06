@@ -1,0 +1,16 @@
+venv
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+.git
+dist
+build
+*.egg-info
+third_party/MetasploitMCP
+venv/
+venv/*
+.env
+runtime/
+/.pytest_cache

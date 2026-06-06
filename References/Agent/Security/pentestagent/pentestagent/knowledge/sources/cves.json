@@ -1,0 +1,1 @@
+[{"id":"CVE-2025-55182","description":"React4Shell - RCE via unsafe deserialization in React Server Components","cvss":10.0,"affected":"react-server-dom-* 19.0.0-19.2.0","patched":"19.0.1, 19.1.2, 19.2.1"},{"id":"CVE-2025-66478","description":"Next.js RCE via React Server Components vulnerability","cvss":10.0,"affected":"Next.js using vulnerable React RSC"}]

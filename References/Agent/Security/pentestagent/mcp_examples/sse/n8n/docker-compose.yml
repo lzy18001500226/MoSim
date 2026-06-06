@@ -1,0 +1,20 @@
+services:
+  pentestagent:
+    image: ghcr.io/gh05tcrew/pentestagent:latest
+    container_name: pentestagent_with_n8n_mcp
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - PENTESTAGENT_MODEL=${PENTESTAGENT_MODEL}
+      - PENTESTAGENT_DEBUG=${PENTESTAGENT_DEBUG:-false}
+    volumes:
+      - ./mcp_servers.json:/app/mcp_servers.json
+    networks:
+      - pentestagent-net
+    stdin_open: true
+    tty: true
+
+
+networks:
+  pentestagent-net:
+    driver: bridge

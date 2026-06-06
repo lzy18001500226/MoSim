@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "n8n": {
+      "type": "sse",
+      "url": "http://192.168.0.19:5678/mcp/64c33586-ce0b-493c-b0af-106b90f843bf"
+    }
+  }
+}

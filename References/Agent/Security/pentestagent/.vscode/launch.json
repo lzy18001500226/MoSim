@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug pentestagent (module)",
+      "type": "python",
+      "request": "launch",
+      "module": "pentestagent",
+      "cwd": "/app",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "MCP Server + TUI (SSE)",
+      "type": "python",
+      "request": "launch",
+      "module": "pentestagent",
+      "args": [
+        "mcp_server",
+        "--type", "sse",
+        "--tui",
+        "--port", "8080"
+      ],
+      "cwd": "/app",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}
