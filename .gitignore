@@ -436,9 +436,6 @@ References/Agent/Workflow/*
 !References/Agent/Workflow/okwinds/skills-runtime-sdk/examples/studio/mvp/
 !References/Agent/Workflow/okwinds/skills-runtime-sdk/examples/studio/mvp/backend/
 !References/Agent/Workflow/okwinds/skills-runtime-sdk/examples/studio/mvp/backend/.env.example
-!References/Agent/Workflow/okwinds/skills-runtime-sdk/packages/
-!References/Agent/Workflow/okwinds/skills-runtime-sdk/packages/skills-runtime-sdk-python/
-!References/Agent/Workflow/okwinds/skills-runtime-sdk/packages/skills-runtime-sdk-python/.env.example
 !References/Agent/Workflow/antfarm/
 !References/Agent/Workflow/antfarm/**
 References/Agent/Workflow/antfarm/bin/
