@@ -372,8 +372,6 @@ References/Agent/Platforms/*
 References/Agent/Platforms/Agent-S/**/.DS_Store
 !References/Agent/UI/
 References/Agent/UI/*
-!References/Agent/UI/Mysti/
-!References/Agent/UI/Mysti/**
 References/Agent/UI/gelab-zero/**/.DS_Store
 !References/Agent/Security/
 References/Agent/Security/*
