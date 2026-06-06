@@ -364,6 +364,11 @@ References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/packages/*
 References/Agent/Skills/awesome-opencode/dist/
 !References/Agent/Memory/
 References/Agent/Memory/*
+!References/Agent/Memory/git-mcp/
+!References/Agent/Memory/git-mcp/**
+References/Agent/Memory/git-mcp/dist/
+References/Agent/Memory/git-mcp/.react-router/
+References/Agent/Memory/git-mcp/.vscode/
 !References/Agent/Platforms/
 References/Agent/Platforms/*
 References/Agent/Platforms/Agent-S/**/.DS_Store
