@@ -1,0 +1,9 @@
+task_id: COAGENT-DEVOPS-GIT-CLOSEOUT-20260605
+status: local_commit_push_blocked
+decision: Pause further unignore batches until the local commit is pushed.
+summary: FirmwarePlugin was reviewed as a 60-path QGroundControl source batch and committed locally as 19db1333f7 refs: add qgroundcontrol firmware plugin src. Normal push failed twice because the SSH transport aborted.
+evidence: HEAD...upstream is 1 0 after the failed push attempts; .git/index.lock is absent; staged diff for the current batch is empty.
+risks: Continuing to create more local-only commits would increase recovery complexity while network transport is failing.
+next_action: Retry ordinary git push origin main after network or SSH transport recovers, then commit and push the checkpoint files.
+needs_human: true
+blocked_reason: push transport aborted twice
