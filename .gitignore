@@ -393,8 +393,6 @@ References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/*
 !References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/examples/**
 !References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/packages/
 References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/packages/*
-!References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/packages/nvidia_nat_core/
-!References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/packages/nvidia_nat_core/**
 !References/Agent/Skills/
 !References/Agent/Skills/**
 References/Agent/Skills/awesome-opencode/dist/
@@ -427,15 +425,6 @@ References/Agent/Security/*
 !References/Agent/Security/agentic_security/**
 !References/Agent/Workflow/
 References/Agent/Workflow/*
-!References/Agent/Workflow/okwinds/
-!References/Agent/Workflow/okwinds/skills-runtime-sdk/
-!References/Agent/Workflow/okwinds/skills-runtime-sdk/examples/
-!References/Agent/Workflow/okwinds/skills-runtime-sdk/examples/apps/
-!References/Agent/Workflow/okwinds/skills-runtime-sdk/examples/apps/.env.example
-!References/Agent/Workflow/okwinds/skills-runtime-sdk/examples/studio/
-!References/Agent/Workflow/okwinds/skills-runtime-sdk/examples/studio/mvp/
-!References/Agent/Workflow/okwinds/skills-runtime-sdk/examples/studio/mvp/backend/
-!References/Agent/Workflow/okwinds/skills-runtime-sdk/examples/studio/mvp/backend/.env.example
 !References/Agent/Workflow/antfarm/
 !References/Agent/Workflow/antfarm/**
 References/Agent/Workflow/antfarm/bin/
@@ -814,12 +803,8 @@ References/PX4/qgroundcontrol/src/*
 !References/PX4/qgroundcontrol/src/AutoPilotPlugins/**
 !References/PX4/qgroundcontrol/src/Camera/
 !References/PX4/qgroundcontrol/src/Camera/**
-!References/PX4/qgroundcontrol/src/Comms/
-!References/PX4/qgroundcontrol/src/Comms/**
 !References/PX4/qgroundcontrol/src/FirstRunPromptDialogs/
 !References/PX4/qgroundcontrol/src/FirstRunPromptDialogs/**
-!References/PX4/qgroundcontrol/src/FactSystem/
-!References/PX4/qgroundcontrol/src/FactSystem/**
 !References/PX4/qgroundcontrol/src/FirmwarePlugin/
 !References/PX4/qgroundcontrol/src/FirmwarePlugin/**
 !References/PX4/qgroundcontrol/src/FlightMap/
@@ -893,9 +878,6 @@ UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/
 References/Blender/**
 !References/Blender/
 !References/Blender/blender/
-!References/Blender/blender/tests/
-!References/Blender/blender/tests/python/
-!References/Blender/blender/tests/python/**
 # Temporary manifest-only exclusions: NeMo examples files whose LFS objects are missing locally.
 References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/examples/A2A/math_assistant_a2a/src/nat_math_assistant_a2a/data/sample_queries.json
 References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/examples/advanced_agents/alert_triage_agent/src/nat_alert_triage_agent/data/ata_diagram.png

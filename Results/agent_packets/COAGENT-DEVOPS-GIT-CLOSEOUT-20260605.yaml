@@ -1,11 +1,11 @@
 task_id: COAGENT-DEVOPS-GIT-CLOSEOUT-20260605
 status: active_checkpoint_ready
 decision: Continue long-running Git closeout with path-limited batches; do not remove remaining temporary throttles in bulk.
-summary: Long goal is active. Confirmed rules from AGENTS.md and new conversation context, continued path-limited Git closeout, completed and drained the langgraph workflow rules, and removed the completed okwinds packages temporary unignore rules after verification.
-evidence: Pushed 0c1e4b1775 refs: add langgraph workflow core; pushed a8cc74d7d8 refs: add langgraph workflow tail; pushed a66a8471ef chore: drain langgraph git split rules; after removing the okwinds packages temporary unignore rules, bounded verification showed 245 tracked files, 0 visible untracked files, and 0 ignored untracked files under References/Agent/Workflow/okwinds/skills-runtime-sdk/packages; HEAD and upstream returned 0 0; .git/index.lock absent.
+summary: Long goal is active. Confirmed rules from AGENTS.md and new conversation context, continued path-limited Git closeout, completed and drained langgraph, drained okwinds packages, and removed several completed subtree unignore rules after bounded verification.
+evidence: Pushed 0c1e4b1775 refs: add langgraph workflow core; pushed a8cc74d7d8 refs: add langgraph workflow tail; pushed a66a8471ef chore: drain langgraph git split rules; pushed 94f34ca7a1 chore: drain okwinds package split rules; after removing completed subtree unignore rules, bounded verification showed 0 visible untracked and 0 ignored untracked for okwinds examples, NeMo nvidia_nat_core, QGC FactSystem, QGC Comms, and Blender tests/python; HEAD and upstream returned 0 0; .git/index.lock absent.
 subagents_used: explorer 019e9b70-a711-7260-a5e1-9657dc7416a1 read-only ignore audit; no writes, no commits, no push.
 risks: Remaining temporary throttles still exist under References/Blender, References/PX4/qgroundcontrol/src, and layered References/Agent rules; 63 NeMo examples LFS pointer files remain excluded because their payload objects are missing locally; PowerShell native command exit codes must be checked explicitly in temp-index batches.
-next_action: Commit and push this okwinds packages ignore-drain checkpoint, then continue with another less-than-1000-file ignored backlog slice or a narrow .gitignore compression batch.
+next_action: Commit and push this completed-subtree ignore-drain checkpoint, then continue with another less-than-1000-file ignored backlog slice or a narrow .gitignore compression batch.
 needs_human: false
 blocked_reason: none
 latest_commit: a8cc74d7d8 refs: add langgraph workflow tail
@@ -15,3 +15,4 @@ latest_deferred: none for langgraph; visible untracked count is 0.
 post_push_state: main and origin/main synchronized at ahead_behind 0 0 after pushing a8cc74d7d8.
 latest_ignore_drain: References/Agent/Workflow/langgraph temporary unignore pair removed after 571 tracked and 0 visible untracked verification.
 latest_okwinds_packages_drain: References/Agent/Workflow/okwinds/skills-runtime-sdk/packages temporary unignore rules removed after 245 tracked, 0 visible untracked, and 0 ignored untracked verification.
+latest_multi_subtree_drain: Removed completed unignore rules for okwinds examples, NeMo nvidia_nat_core, QGC FactSystem, QGC Comms, and Blender tests/python after each verified 0 visible and 0 ignored untracked.
