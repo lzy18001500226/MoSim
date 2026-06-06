@@ -364,8 +364,6 @@ References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/packages/*
 References/Agent/Skills/awesome-opencode/dist/
 !References/Agent/Memory/
 References/Agent/Memory/*
-!References/Agent/Memory/graphiti/
-!References/Agent/Memory/graphiti/**
 References/Agent/Memory/graphify-8/tests/fixtures/obj/
 References/Agent/Memory/git-mcp/dist/
 References/Agent/Memory/git-mcp/.react-router/
