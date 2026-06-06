@@ -401,6 +401,9 @@ References/Agent/Memory/anysearch-mcp-server/*
 References/Agent/Platforms/*
 !References/Agent/Platforms/babyagi/
 !References/Agent/Platforms/babyagi/**
+!References/Agent/Platforms/Agent-S/
+!References/Agent/Platforms/Agent-S/**
+References/Agent/Platforms/Agent-S/**/.DS_Store
 !References/Agent/Workflow/
 References/Agent/Workflow/*
 !References/Agent/Workflow/okwinds/
