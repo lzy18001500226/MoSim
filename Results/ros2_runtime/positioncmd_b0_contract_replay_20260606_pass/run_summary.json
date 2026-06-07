@@ -1,0 +1,37 @@
+{
+  "schema": "mosim.positioncmd_runtime_summary.v1",
+  "quality_status": "needs_iteration",
+  "source_available": true,
+  "runtime_source_required": true,
+  "claim_boundary": [
+    "Recorder is passive; it does not create planner commands.",
+    "This is planner-adapter runtime evidence only when source_topic is a real planner output.",
+    "Closed-loop claim still requires same-run MWORKS/controller consumption of setpoint_trace.csv."
+  ],
+  "source_topic": "/position_cmd",
+  "converted_topic": "/mosim/planner/position_cmd",
+  "setpoint_topic": "/mosim/planner/setpoint",
+  "status_topic": "/mosim/planner/setpoint_adapter_status",
+  "planner_id": "ego_position_cmd",
+  "accepted_ratio": 1.0,
+  "stale_samples": 0,
+  "rates_ok": false,
+  "timestamp_ok": true,
+  "frame_ok": true,
+  "global_truth_used_as_input": false,
+  "artifacts": {
+    "source_position_cmd": "Results/ros2_runtime/positioncmd_b0_contract_replay_20260606_pass/source_position_cmd.jsonl",
+    "converted_planner_position_cmd": "Results/ros2_runtime/positioncmd_b0_contract_replay_20260606_pass/converted_planner_position_cmd.jsonl",
+    "setpoint_trace_jsonl": "Results/ros2_runtime/positioncmd_b0_contract_replay_20260606_pass/setpoint_trace.jsonl",
+    "setpoint_trace_csv": "Results/ros2_runtime/positioncmd_b0_contract_replay_20260606_pass/setpoint_trace.csv",
+    "setpoint_adapter_status": "Results/ros2_runtime/positioncmd_b0_contract_replay_20260606_pass/setpoint_adapter_status.jsonl",
+    "topic_rates": "Results/ros2_runtime/positioncmd_b0_contract_replay_20260606_pass/topic_rates.json",
+    "tf_time_gate": "Results/ros2_runtime/positioncmd_b0_contract_replay_20260606_pass/tf_time_gate.json",
+    "planner_input_gate": "Results/ros2_runtime/positioncmd_b0_contract_replay_20260606_pass/planner_input_gate.json",
+    "process_logs": "Results/ros2_runtime/positioncmd_b0_contract_replay_20260606_pass/process_logs"
+  },
+  "blockers": [
+    "Real planner runtime source, sustained rates, accepted ratio, timestamp/frame gate, or stale gate did not pass.",
+    "Do not promote planner or closed_loop claim until this run passes and MWORKS consumes the same trace."
+  ]
+}

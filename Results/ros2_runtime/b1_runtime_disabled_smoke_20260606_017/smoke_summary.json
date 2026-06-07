@@ -1,0 +1,49 @@
+{
+  "schema_version": "mosim.ros2_runtime_disabled_smoke_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-RUNTIME-DISABLED-SMOKE-20260606-017",
+  "evidence_dir": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017",
+  "status": "completed",
+  "quality_status": "runtime_disabled_smoke_passed",
+  "executed_at": "2026-06-06T08:52:26+08:00",
+  "wrapper_return_code": 0,
+  "launch_exit_code": 0,
+  "before_topics_exit_code": 0,
+  "after_topics_exit_code": 0,
+  "guard_message_seen": true,
+  "clean_process_finish_seen": true,
+  "before_topics": [
+    "/client_count",
+    "/connected_clients",
+    "/parameter_events",
+    "/rosout"
+  ],
+  "after_topics": [
+    "/client_count",
+    "/connected_clients",
+    "/parameter_events",
+    "/rosout"
+  ],
+  "forbidden_topics_seen": {
+    "/position_cmd": false,
+    "/planning/bspline": false,
+    "/mosim/planner/position_cmd": false
+  },
+  "planner_runtime_started": false,
+  "position_command_published": false,
+  "planning_bspline_published_as_runtime_evidence": false,
+  "runtime_recorder_run": false,
+  "closed_loop_claim": false,
+  "artifacts": {
+    "command": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/command.txt",
+    "script": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/run_smoke.sh",
+    "log": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/smoke_stdout_stderr.log",
+    "wrapper_exit": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/wrapper_exit.json",
+    "ros_logs_dir": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/ros_logs"
+  },
+  "sha256": {
+    "command.txt": "2b8678afc96dd36354b88a9a2e30c280ccfe34f554eec190e5eedb9345078b4b",
+    "smoke_stdout_stderr.log": "a4a3c4ed3dbd910ddd6553d4b27d70ebd0dbfeec58e4201dc70154fd44cff1d4",
+    "run_smoke.sh": "382a2cb1953a79c52321d1aee6b750e4761834f38e0ef8fd25bc490652f6f0f2",
+    "wrapper_exit.json": "fed197e8476237bd0cc66a55b78cb51e1bfa0b4ece6fbfc598f94b847abacaaf"
+  }
+}

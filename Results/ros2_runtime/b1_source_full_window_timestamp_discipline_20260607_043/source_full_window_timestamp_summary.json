@@ -1,0 +1,115 @@
+{
+  "schema": "mosim.ros2_runtime.source_full_window_timestamp_discipline_043_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-SOURCE-FULL-WINDOW-TIMESTAMP-DISCIPLINE-20260607-043",
+  "status": "completed_source_full_window_classification",
+  "classification": "source_full_window_livox_imu_monotonic",
+  "checks": {
+    "pre_cleanup_no_stale_forbidden_or_source_processes": true,
+    "source_window_accepted": true,
+    "source_only_full_window_live_probe_count_one": true,
+    "forbidden_processes_not_started": true,
+    "active_tf_recorder_not_started": true,
+    "livox_full_count": true,
+    "imu_nonzero_min": true,
+    "livox_monotonic": true,
+    "imu_monotonic": true,
+    "clock_and_use_sim_time_recorded": true,
+    "publisher_identity_recorded": true,
+    "forbidden_topics_absent_or_zero": true,
+    "cleanup_clean": true
+  },
+  "source": {
+    "path": "/mnt/c/Users/HP/Desktop/MoSim/Results/ros2_runtime/b1_long_noloop_source_gate_20260606_028/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body_120.jsonl",
+    "frame_count": 120,
+    "first": {
+      "seq": 0,
+      "time": 0.0,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 16526
+    },
+    "last": {
+      "seq": 119,
+      "time": 11.9,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 17156
+    },
+    "all_body_lidar_m_z_up": true,
+    "time_monotonic": true
+  },
+  "livox": {
+    "topic_kind": "livox",
+    "count": 120,
+    "frame_ids": [
+      "base/mid360_link"
+    ],
+    "first_stamp": 1780780413.760554,
+    "last_stamp": 1780780426.8501728,
+    "first_receive_elapsed_s": 14.124292,
+    "last_receive_elapsed_s": 27.210362,
+    "rate_hz": 9.093639,
+    "monotonic": true,
+    "regression_count": 0,
+    "regression_examples": []
+  },
+  "imu": {
+    "topic_kind": "imu",
+    "count": 2413,
+    "frame_ids": [
+      "base/forward_imu_optical_frame"
+    ],
+    "first_stamp": 1780780414.3723242,
+    "last_stamp": 1780780427.638291,
+    "first_receive_elapsed_s": 14.697938,
+    "last_receive_elapsed_s": 27.963579,
+    "rate_hz": 181.823102,
+    "monotonic": true,
+    "regression_count": 0,
+    "regression_examples": []
+  },
+  "clock": {
+    "clock_present": {
+      "before": false,
+      "during": false,
+      "after_active": false
+    },
+    "use_sim_time": {
+      "dense_lidar": "Boolean value is: False",
+      "state_imu": "Boolean value is: False"
+    }
+  },
+  "publisher_identity": {
+    "livox_publisher_count": {
+      "before": 0,
+      "during": 1,
+      "after_active": 1
+    },
+    "imu_publisher_count": {
+      "before": null,
+      "during": 1,
+      "after_active": 1
+    },
+    "evidence_path": "topic_info_publishers_before_during_after.txt"
+  },
+  "forbidden_process_patterns_seen": {
+    "fast_lio": false,
+    "rviz2": false,
+    "planner_or_ego": false,
+    "position_command": false,
+    "static_tf_bridge": false
+  },
+  "forbidden_topics_present": {
+    "/position_cmd": false,
+    "/mosim/planner/position_cmd": false,
+    "/planning/bspline": false
+  },
+  "source_only_full_window_live_probe_count": 1,
+  "fastlio_started": false,
+  "rviz2_started": false,
+  "ue_started": false,
+  "planner_started": false,
+  "position_command_started": false,
+  "adapter_20hz_started": false,
+  "tf_bridge_started": false,
+  "active_tf_recorder_started": false,
+  "claim_boundary": "source/full-window Livox/IMU timestamp discipline only; not FAST-LIO, TF/RViz, planner, localization, map quality, mission, or closed_loop evidence"
+}

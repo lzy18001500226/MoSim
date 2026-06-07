@@ -1,0 +1,9 @@
+{
+  "schema": "mosim.planner_input_gate.v1",
+  "source_position_command_topic": "/mosim/positioncmd_b0_contract_replay_orchestrated_20260606_pass/position_cmd",
+  "global_truth_used_as_input": false,
+  "offline_ue_handoff_csv_used": false,
+  "keyboard_pose_overwrite_used": false,
+  "local_map_runtime_source": "unverified_by_this_recorder",
+  "notes": "B0 contract replay only; no local map or odom input; global_truth_used_as_input=false; smoke_only."
+}

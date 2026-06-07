@@ -1,0 +1,9 @@
+{
+  "schema": "mosim.planner_input_gate.v1",
+  "source_position_command_topic": "/position_cmd",
+  "global_truth_used_as_input": false,
+  "offline_ue_handoff_csv_used": false,
+  "keyboard_pose_overwrite_used": false,
+  "local_map_runtime_source": "unverified_by_this_recorder",
+  "notes": "Recorder cannot prove planner input provenance by itself; pair this with launch/topic evidence showing odometry plus local sensor map inputs and no UE global truth map."
+}

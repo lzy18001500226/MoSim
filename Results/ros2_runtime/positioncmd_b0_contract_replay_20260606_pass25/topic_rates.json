@@ -1,0 +1,17 @@
+{
+  "schema": "mosim.positioncmd_topic_rates.v1",
+  "duration_s": 10.0,
+  "rates_hz": {
+    "/position_cmd": 25.911919607565604,
+    "/mosim/planner/position_cmd": 25.94250271248676,
+    "/mosim/planner/setpoint": 29.497963122213605,
+    "/mosim/planner/setpoint_adapter_status": 29.498050211137716
+  },
+  "sample_counts": {
+    "/position_cmd": 260,
+    "/mosim/planner/position_cmd": 259,
+    "/mosim/planner/setpoint": 294,
+    "/mosim/planner/setpoint_adapter_status": 294
+  },
+  "minimum_required_rate_hz": 19.0
+}

@@ -1,0 +1,1 @@
+receive_time_s,stamp_s,sequence,frame_id,planner_id,x_ref,y_ref,z_ref,vx_ref,vy_ref,vz_ref,ax_ref,ay_ref,az_ref,yaw_ref,yaw_rate_ref,trajectory_status

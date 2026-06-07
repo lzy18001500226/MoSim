@@ -1,0 +1,8 @@
+{
+  "forbidden_topics_present": {
+    "/position_cmd": false,
+    "/mosim/planner/position_cmd": false,
+    "/planning/bspline": false
+  },
+  "absent_or_zero": true
+}

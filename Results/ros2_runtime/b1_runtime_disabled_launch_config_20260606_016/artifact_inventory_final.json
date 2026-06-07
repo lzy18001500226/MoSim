@@ -1,0 +1,52 @@
+{
+  "schema_version": "mosim.artifact_inventory.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-RUNTIME-DISABLED-LAUNCH-CONFIG-20260606-016",
+  "created_at": "2026-06-06T08:28:32.8840401+08:00",
+  "quality_status": "runtime_disabled_static_config_only",
+  "workspace": "Results/tmp/ego_planner_ros2_port_ws",
+  "package_path_note": "Task packet names src/ego_planner, but the isolated workspace package directory is src/plan_manage with CMake project(ego_planner). Artifacts were created under src/plan_manage and installed as ego_planner.",
+  "source_artifacts": [
+    {
+      "path": "Results/tmp/ego_planner_ros2_port_ws/src/plan_manage/launch/runtime_disabled_preflight.launch.py",
+      "length": 1850,
+      "sha256": "65fc2eda1b1ba353033df555eb58dc690bb3c26b2ae45d941223096b761f3fec"
+    },
+    {
+      "path": "Results/tmp/ego_planner_ros2_port_ws/src/plan_manage/config/runtime_disabled_preflight.yaml",
+      "length": 2170,
+      "sha256": "0444ca47b58dd5fc7819180cde68db23fe146e4e4d853afb4b7840919f2a5502"
+    }
+  ],
+  "installed_artifacts": [
+    {
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/ego_planner/share/ego_planner/launch/runtime_disabled_preflight.launch.py",
+      "length": 1850,
+      "sha256": "65fc2eda1b1ba353033df555eb58dc690bb3c26b2ae45d941223096b761f3fec"
+    },
+    {
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/ego_planner/share/ego_planner/config/runtime_disabled_preflight.yaml",
+      "length": 2170,
+      "sha256": "0444ca47b58dd5fc7819180cde68db23fe146e4e4d853afb4b7840919f2a5502"
+    },
+    {
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/ego_planner/lib/ego_planner/ego_planner_node_preflight",
+      "length": 13780976,
+      "sha256": "5d162fafe5f4373ef225da162a3db93272b3e0a3c1a8fde4e7f5b38f93d4410c"
+    }
+  ],
+  "validation_artifacts": [
+    "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/static_py_compile_launch.log",
+    "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/static_py_compile_launch_retry.log",
+    "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/static_yaml_text_validation.log",
+    "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/static_guard_remap_scan.txt",
+    "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/static_final_guard_scan.txt",
+    "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/colcon_build_install_runtime_disabled_config_retry2.log"
+  ],
+  "runtime_actions": {
+    "ros2_launch_executed": false,
+    "ros2_run_executed": false,
+    "runtime_recorder_executed": false,
+    "published_position_cmd": false,
+    "published_planning_bspline": false
+  }
+}

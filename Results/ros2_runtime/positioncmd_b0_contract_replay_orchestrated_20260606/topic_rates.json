@@ -1,0 +1,17 @@
+{
+  "schema": "mosim.positioncmd_topic_rates.v1",
+  "duration_s": 10.0,
+  "rates_hz": {
+    "/mosim/positioncmd_b0_contract_replay_orchestrated_20260606/position_cmd": 25.913071746158725,
+    "/mosim/positioncmd_b0_contract_replay_orchestrated_20260606/planner_position_cmd": 25.942814926991048,
+    "/mosim/positioncmd_b0_contract_replay_orchestrated_20260606/setpoint": 29.467811099517686,
+    "/mosim/positioncmd_b0_contract_replay_orchestrated_20260606/setpoint_adapter_status": 29.467693500618257
+  },
+  "sample_counts": {
+    "/mosim/positioncmd_b0_contract_replay_orchestrated_20260606/position_cmd": 260,
+    "/mosim/positioncmd_b0_contract_replay_orchestrated_20260606/planner_position_cmd": 259,
+    "/mosim/positioncmd_b0_contract_replay_orchestrated_20260606/setpoint": 295,
+    "/mosim/positioncmd_b0_contract_replay_orchestrated_20260606/setpoint_adapter_status": 295
+  },
+  "minimum_required_rate_hz": 19.0
+}

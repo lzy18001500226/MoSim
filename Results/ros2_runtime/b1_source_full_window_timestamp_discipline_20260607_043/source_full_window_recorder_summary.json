@@ -1,0 +1,52 @@
+{
+  "schema": "mosim.ros2_runtime.source_full_window_stamp_recorder_043.v1",
+  "start_label": "043_source_only_full_window",
+  "topics": {
+    "livox": "/mosim/livox/lidar",
+    "imu": "/mosim/forward/imu"
+  },
+  "expected_livox": 120,
+  "min_imu": 400,
+  "timeout_s": 38.0,
+  "elapsed_s": 27.965175,
+  "final": true,
+  "livox_complete": true,
+  "acceptance": {
+    "livox_full_count": true,
+    "imu_min_count": true,
+    "livox_monotonic": true,
+    "imu_monotonic": true
+  },
+  "summary": {
+    "livox": {
+      "topic_kind": "livox",
+      "count": 120,
+      "frame_ids": [
+        "base/mid360_link"
+      ],
+      "first_stamp": 1780780413.760554,
+      "last_stamp": 1780780426.8501728,
+      "first_receive_elapsed_s": 14.124292,
+      "last_receive_elapsed_s": 27.210362,
+      "rate_hz": 9.093639,
+      "monotonic": true,
+      "regression_count": 0,
+      "regression_examples": []
+    },
+    "imu": {
+      "topic_kind": "imu",
+      "count": 2413,
+      "frame_ids": [
+        "base/forward_imu_optical_frame"
+      ],
+      "first_stamp": 1780780414.3723242,
+      "last_stamp": 1780780427.638291,
+      "first_receive_elapsed_s": 14.697938,
+      "last_receive_elapsed_s": 27.963579,
+      "rate_hz": 181.823102,
+      "monotonic": true,
+      "regression_count": 0,
+      "regression_examples": []
+    }
+  }
+}

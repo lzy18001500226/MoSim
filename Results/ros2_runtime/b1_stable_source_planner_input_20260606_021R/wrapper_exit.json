@@ -1,0 +1,8 @@
+{
+  "wrapper_return_code": 124,
+  "wrapper_return_code_interpretation": "outer timeout interrupted the script tail after required pre/during evidence was captured; cleanup was resampled separately",
+  "pre_sources_ready": true,
+  "during_sources_ready": true,
+  "planner_exit_code": null,
+  "planner_exit_code_note": "not captured because the outer timeout interrupted the wrapper tail; planner startup log and during-topic evidence were captured before cleanup"
+}

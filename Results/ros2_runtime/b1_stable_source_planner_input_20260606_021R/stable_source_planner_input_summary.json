@@ -1,0 +1,17 @@
+{
+  "result": "021R recovered the stalled 021 gate at the narrow input-consumption level: real /Odometry and /cloud_registered publishers existed and echoed immediately before and during bounded planner startup, and the planner node had matching subscriptions during the source window.",
+  "pre_planner_publishers_pass": true,
+  "pre_planner_echo_once_pass": true,
+  "during_planner_publishers_pass": true,
+  "during_planner_echo_once_pass": true,
+  "planner_consumed_inputs": true,
+  "planner_input_consumption_scope": "startup-surface subscription/input gate only; no goal, trajectory, bspline, PositionCommand, or closed-loop acceptance",
+  "planner_ready": false,
+  "closed_loop_ready": false,
+  "position_command_recorder_allowed": false,
+  "planning_bspline_accepted": false,
+  "position_cmd_accepted": false,
+  "fast_lio_success_claimed": false,
+  "local_map_quality_claimed": false,
+  "controller_performance_claimed": false
+}

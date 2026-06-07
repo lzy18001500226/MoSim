@@ -1,0 +1,25 @@
+{
+  "schema": "mosim.positioncmd_tf_time_gate.v1",
+  "timestamp_monotonic": {
+    "source_position_command": true,
+    "converted_planner_position_cmd": true,
+    "adapter_setpoint": true
+  },
+  "frame_gate": {
+    "expected_frame": "map",
+    "source_frame_alias": "world",
+    "source_frames": [
+      "world"
+    ],
+    "converted_frames": [
+      "map"
+    ],
+    "setpoint_frames": [
+      "map"
+    ],
+    "source_frame_ok": true,
+    "converted_frame_ok": true,
+    "setpoint_frame_ok": true
+  },
+  "tf_status": "not_checked_no_rviz_no_tf_listener"
+}

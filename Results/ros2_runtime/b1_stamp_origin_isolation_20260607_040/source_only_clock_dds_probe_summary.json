@@ -1,0 +1,2136 @@
+{
+  "schema": "mosim.ros2_runtime.source_only_clock_dds_stamp_origin_040_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-SOURCE-ONLY-CLOCK-DDS-STAMP-ORIGIN-20260607-040",
+  "status": "completed_source_only_classification",
+  "classification": "source_only_livox_imu_monotonic_fastlio_or_subscriber_load_sensitive_candidate",
+  "checks": {
+    "pre_cleanup_no_stale_forbidden_or_source_processes": true,
+    "source_window_accepted": true,
+    "source_only_probe_count_one": true,
+    "forbidden_processes_not_started": true,
+    "active_tf_recorder_not_started": true,
+    "livox_and_imu_nonzero": true,
+    "livox_and_imu_monotonic": true,
+    "clock_and_use_sim_time_recorded": true,
+    "publisher_identity_recorded": true,
+    "forbidden_topics_absent_or_zero": true,
+    "cleanup_clean": true
+  },
+  "source": {
+    "path": "/mnt/c/Users/HP/Desktop/MoSim/Results/ros2_runtime/b1_long_noloop_source_gate_20260606_028/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body_120.jsonl",
+    "frame_count": 120,
+    "first": {
+      "seq": 0,
+      "time": 0.0,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 16526
+    },
+    "last": {
+      "seq": 119,
+      "time": 11.9,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 17156
+    },
+    "all_body_lidar_m_z_up": true,
+    "time_monotonic": true
+  },
+  "active_livox_imu": {
+    "schema": "mosim.ros2_runtime.source_only_stamp_recorder_040.v1",
+    "start_label": "040_source_only_livox_imu_before_fastlio",
+    "topics": {
+      "livox": "/mosim/livox/lidar",
+      "imu": "/mosim/forward/imu"
+    },
+    "max_per_topic": 80,
+    "min_required": 40,
+    "timeout_s": 24.0,
+    "elapsed_s": 18.197208,
+    "counts": {
+      "livox": 40,
+      "imu": 80
+    },
+    "rates_hz": {
+      "livox": 9.158045,
+      "imu": 178.784806
+    },
+    "frame_ids": {
+      "livox": [
+        "base/mid360_link"
+      ],
+      "imu": [
+        "base/forward_imu_optical_frame"
+      ]
+    },
+    "stamp_bounds": {
+      "livox": {
+        "first": 1780773390.9167075,
+        "last": 1780773395.1793957
+      },
+      "imu": {
+        "first": 1780773391.5139575,
+        "last": 1780773391.9443462
+      }
+    },
+    "monotonic": {
+      "livox": true,
+      "imu": true
+    },
+    "regressions": {
+      "livox": [],
+      "imu": []
+    },
+    "latest_livox_minus_imu_s": 3.235049486,
+    "acceptance": {
+      "livox_min_count": true,
+      "imu_min_count": true,
+      "livox_monotonic": true,
+      "imu_monotonic": true
+    },
+    "events": [
+      {
+        "event_seq": 0,
+        "topic_seq": 0,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 13.934513,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773390,
+          "nanosec": 916707428,
+          "seconds": 1780773390.9167075
+        },
+        "point_num": 16526,
+        "actual_points_len": 16526,
+        "timebase": 1780773390916707428,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 381,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 1,
+        "topic_seq": 1,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.048133,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 25515670,
+          "seconds": 1780773391.0255156
+        },
+        "point_num": 16526,
+        "actual_points_len": 16526,
+        "timebase": 1780773391025515670,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 381,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 2,
+        "topic_seq": 2,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.148671,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 134382697,
+          "seconds": 1780773391.1343827
+        },
+        "point_num": 16526,
+        "actual_points_len": 16526,
+        "timebase": 1780773391134382697,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 381,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 3,
+        "topic_seq": 3,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.257224,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 243397181,
+          "seconds": 1780773391.2433972
+        },
+        "point_num": 16522,
+        "actual_points_len": 16522,
+        "timebase": 1780773391243397181,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 381,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 4,
+        "topic_seq": 4,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.365712,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 352320013,
+          "seconds": 1780773391.35232
+        },
+        "point_num": 16513,
+        "actual_points_len": 16513,
+        "timebase": 1780773391352320013,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 381,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 5,
+        "topic_seq": 5,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.475683,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 461268160,
+          "seconds": 1780773391.4612682
+        },
+        "point_num": 16501,
+        "actual_points_len": 16501,
+        "timebase": 1780773391461268160,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 381,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 6,
+        "topic_seq": 0,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.4954,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 513957525,
+          "seconds": 1780773391.5139575
+        },
+        "orientation_w": 1.0,
+        "angular_velocity_z": 1.0539378033484154e-08,
+        "linear_acceleration_z": 9.81
+      },
+      {
+        "event_seq": 7,
+        "topic_seq": 1,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.500625,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 519385683,
+          "seconds": 1780773391.5193856
+        },
+        "orientation_w": 0.9999999999973963,
+        "angular_velocity_z": 1.0539378033484154e-08,
+        "linear_acceleration_z": 9.81
+      },
+      {
+        "event_seq": 8,
+        "topic_seq": 2,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.506062,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 524847682,
+          "seconds": 1780773391.5248477
+        },
+        "orientation_w": 0.9999999999895854,
+        "angular_velocity_z": 1.0539378033484154e-08,
+        "linear_acceleration_z": 9.81
+      },
+      {
+        "event_seq": 9,
+        "topic_seq": 3,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.51151,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 530283389,
+          "seconds": 1780773391.5302835
+        },
+        "orientation_w": 0.9999999999765673,
+        "angular_velocity_z": 1.0539378033484154e-08,
+        "linear_acceleration_z": 9.81
+      },
+      {
+        "event_seq": 10,
+        "topic_seq": 4,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.517079,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 535739646,
+          "seconds": 1780773391.5357397
+        },
+        "orientation_w": 0.9999999999583419,
+        "angular_velocity_z": 1.0539378033484154e-08,
+        "linear_acceleration_z": 9.81
+      },
+      {
+        "event_seq": 11,
+        "topic_seq": 5,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.522429,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 541194199,
+          "seconds": 1780773391.5411942
+        },
+        "orientation_w": 0.9999999999349092,
+        "angular_velocity_z": 1.0539378033484154e-08,
+        "linear_acceleration_z": 9.81
+      },
+      {
+        "event_seq": 12,
+        "topic_seq": 6,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.527953,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 546629873,
+          "seconds": 1780773391.54663
+        },
+        "orientation_w": 0.9999999999062693,
+        "angular_velocity_z": 1.0539378033484154e-08,
+        "linear_acceleration_z": 9.81
+      },
+      {
+        "event_seq": 13,
+        "topic_seq": 7,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.533269,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 552080398,
+          "seconds": 1780773391.5520804
+        },
+        "orientation_w": 0.999999999872422,
+        "angular_velocity_z": 1.0539378033484154e-08,
+        "linear_acceleration_z": 9.81
+      },
+      {
+        "event_seq": 14,
+        "topic_seq": 8,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.538718,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 557533976,
+          "seconds": 1780773391.557534
+        },
+        "orientation_w": 0.9999999998333675,
+        "angular_velocity_z": 1.0539378033484154e-08,
+        "linear_acceleration_z": 9.81
+      },
+      {
+        "event_seq": 15,
+        "topic_seq": 9,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.544177,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 562980385,
+          "seconds": 1780773391.5629804
+        },
+        "orientation_w": 0.9999999997891058,
+        "angular_velocity_z": 1.0539378033484154e-08,
+        "linear_acceleration_z": 9.81
+      },
+      {
+        "event_seq": 16,
+        "topic_seq": 10,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.549612,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 568426933,
+          "seconds": 1780773391.5684268
+        },
+        "orientation_w": 0.9999999997396368,
+        "angular_velocity_z": 2.9233745569852715e-06,
+        "linear_acceleration_z": 9.65141201595973
+      },
+      {
+        "event_seq": 17,
+        "topic_seq": 6,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.583374,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 570210314,
+          "seconds": 1780773391.5702102
+        },
+        "point_num": 16474,
+        "actual_points_len": 16474,
+        "timebase": 1780773391570210314,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 382,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 18,
+        "topic_seq": 11,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.5865,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 573879554,
+          "seconds": 1780773391.5738795
+        },
+        "orientation_w": 0.9999999971442666,
+        "angular_velocity_z": 2.9233745569852715e-06,
+        "linear_acceleration_z": 9.65141201595973
+      },
+      {
+        "event_seq": 19,
+        "topic_seq": 12,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.588818,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 579319730,
+          "seconds": 1780773391.5793197
+        },
+        "orientation_w": 0.9999999917657837,
+        "angular_velocity_z": 2.9233745569852715e-06,
+        "linear_acceleration_z": 9.65141201595973
+      },
+      {
+        "event_seq": 20,
+        "topic_seq": 13,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.591025,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 584764340,
+          "seconds": 1780773391.5847642
+        },
+        "orientation_w": 0.9999999836041883,
+        "angular_velocity_z": 2.9233745569852715e-06,
+        "linear_acceleration_z": 9.65141201595973
+      },
+      {
+        "event_seq": 21,
+        "topic_seq": 14,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.593353,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 590210373,
+          "seconds": 1780773391.5902104
+        },
+        "orientation_w": 0.9999999726594805,
+        "angular_velocity_z": 2.9233745569852715e-06,
+        "linear_acceleration_z": 9.65141201595973
+      },
+      {
+        "event_seq": 22,
+        "topic_seq": 15,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.59542,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 595668137,
+          "seconds": 1780773391.595668
+        },
+        "orientation_w": 0.9999999589316595,
+        "angular_velocity_z": 2.9233745569852715e-06,
+        "linear_acceleration_z": 9.65141201595973
+      },
+      {
+        "event_seq": 23,
+        "topic_seq": 16,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.597445,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 601104973,
+          "seconds": 1780773391.601105
+        },
+        "orientation_w": 0.9999999424207257,
+        "angular_velocity_z": 2.9233745569852715e-06,
+        "linear_acceleration_z": 9.65141201595973
+      },
+      {
+        "event_seq": 24,
+        "topic_seq": 17,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.599461,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 606564276,
+          "seconds": 1780773391.6065643
+        },
+        "orientation_w": 0.9999999231266793,
+        "angular_velocity_z": 2.9233745569852715e-06,
+        "linear_acceleration_z": 9.65141201595973
+      },
+      {
+        "event_seq": 25,
+        "topic_seq": 18,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.601531,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 611929456,
+          "seconds": 1780773391.6119294
+        },
+        "orientation_w": 0.9999999010495201,
+        "angular_velocity_z": 2.9233745569852715e-06,
+        "linear_acceleration_z": 9.65141201595973
+      },
+      {
+        "event_seq": 26,
+        "topic_seq": 19,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.603747,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 617457445,
+          "seconds": 1780773391.6174574
+        },
+        "orientation_w": 0.9999998761892479,
+        "angular_velocity_z": 2.9233745569852715e-06,
+        "linear_acceleration_z": 9.65141201595973
+      },
+      {
+        "event_seq": 27,
+        "topic_seq": 20,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.605789,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 622900771,
+          "seconds": 1780773391.6229007
+        },
+        "orientation_w": 0.999999848545863,
+        "angular_velocity_z": 8.340655147970392e-05,
+        "linear_acceleration_z": 9.680151070418878
+      },
+      {
+        "event_seq": 28,
+        "topic_seq": 21,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.609527,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 628354003,
+          "seconds": 1780773391.628354
+        },
+        "orientation_w": 0.9999996898622788,
+        "angular_velocity_z": 8.340655147970392e-05,
+        "linear_acceleration_z": 9.680151070418878
+      },
+      {
+        "event_seq": 29,
+        "topic_seq": 22,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.615122,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 633814894,
+          "seconds": 1780773391.6338148
+        },
+        "orientation_w": 0.999999474897001,
+        "angular_velocity_z": 8.340655147970392e-05,
+        "linear_acceleration_z": 9.680151070418878
+      },
+      {
+        "event_seq": 30,
+        "topic_seq": 23,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.620566,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 639255891,
+          "seconds": 1780773391.639256
+        },
+        "orientation_w": 0.9999992036499866,
+        "angular_velocity_z": 8.340655147970392e-05,
+        "linear_acceleration_z": 9.680151070418878
+      },
+      {
+        "event_seq": 31,
+        "topic_seq": 24,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.6259,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 644699528,
+          "seconds": 1780773391.6446996
+        },
+        "orientation_w": 0.9999988761211978,
+        "angular_velocity_z": 8.340655147970392e-05,
+        "linear_acceleration_z": 9.680151070418878
+      },
+      {
+        "event_seq": 32,
+        "topic_seq": 25,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.631358,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 650144497,
+          "seconds": 1780773391.6501446
+        },
+        "orientation_w": 0.9999984923106036,
+        "angular_velocity_z": 8.340655147970392e-05,
+        "linear_acceleration_z": 9.680151070418878
+      },
+      {
+        "event_seq": 33,
+        "topic_seq": 26,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.636997,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 655622537,
+          "seconds": 1780773391.6556225
+        },
+        "orientation_w": 0.9999980522181791,
+        "angular_velocity_z": 8.340655147970392e-05,
+        "linear_acceleration_z": 9.680151070418878
+      },
+      {
+        "event_seq": 34,
+        "topic_seq": 27,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.642283,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 661069766,
+          "seconds": 1780773391.6610699
+        },
+        "orientation_w": 0.9999975558439061,
+        "angular_velocity_z": 8.340655147970392e-05,
+        "linear_acceleration_z": 9.680151070418878
+      },
+      {
+        "event_seq": 35,
+        "topic_seq": 28,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.647678,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 666492073,
+          "seconds": 1780773391.666492
+        },
+        "orientation_w": 0.9999970031877725,
+        "angular_velocity_z": 8.340655147970392e-05,
+        "linear_acceleration_z": 9.680151070418878
+      },
+      {
+        "event_seq": 36,
+        "topic_seq": 29,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.653101,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 671928128,
+          "seconds": 1780773391.6719282
+        },
+        "orientation_w": 0.9999963942497724,
+        "angular_velocity_z": 8.340655147970392e-05,
+        "linear_acceleration_z": 9.680151070418878
+      },
+      {
+        "event_seq": 37,
+        "topic_seq": 30,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.658578,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 677383981,
+          "seconds": 1780773391.677384
+        },
+        "orientation_w": 0.9999957290299065,
+        "angular_velocity_z": 0.0007078560064818383,
+        "linear_acceleration_z": 9.722380746542873
+      },
+      {
+        "event_seq": 38,
+        "topic_seq": 7,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.699765,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 679168833,
+          "seconds": 1780773391.679169
+        },
+        "point_num": 16450,
+        "actual_points_len": 16450,
+        "timebase": 1780773391679168833,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 382,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 39,
+        "topic_seq": 31,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.703504,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 682829305,
+          "seconds": 1780773391.6828294
+        },
+        "orientation_w": 0.9999939491979078,
+        "angular_velocity_z": 0.0007078560064818383,
+        "linear_acceleration_z": 9.722380746542873
+      },
+      {
+        "event_seq": 40,
+        "topic_seq": 32,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.706026,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 688284405,
+          "seconds": 1780773391.6882844
+        },
+        "orientation_w": 0.9999918600407685,
+        "angular_velocity_z": 0.0007078560064818383,
+        "linear_acceleration_z": 9.722380746542873
+      },
+      {
+        "event_seq": 41,
+        "topic_seq": 33,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.708288,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 693719468,
+          "seconds": 1780773391.6937194
+        },
+        "orientation_w": 0.9999894615568724,
+        "angular_velocity_z": 0.0007078560064818383,
+        "linear_acceleration_z": 9.722380746542873
+      },
+      {
+        "event_seq": 42,
+        "topic_seq": 34,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.710487,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 699199735,
+          "seconds": 1780773391.6991997
+        },
+        "orientation_w": 0.9999867537447954,
+        "angular_velocity_z": 0.0007078560064818383,
+        "linear_acceleration_z": 9.722380746542873
+      },
+      {
+        "event_seq": 43,
+        "topic_seq": 35,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.712824,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 704629901,
+          "seconds": 1780773391.70463
+        },
+        "orientation_w": 0.9999837366033036,
+        "angular_velocity_z": 0.0007078560064818383,
+        "linear_acceleration_z": 9.722380746542873
+      },
+      {
+        "event_seq": 44,
+        "topic_seq": 36,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.715135,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 710063757,
+          "seconds": 1780773391.7100637
+        },
+        "orientation_w": 0.9999804101313553,
+        "angular_velocity_z": 0.0007078560064818383,
+        "linear_acceleration_z": 9.722380746542873
+      },
+      {
+        "event_seq": 45,
+        "topic_seq": 37,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.717416,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 715514687,
+          "seconds": 1780773391.7155147
+        },
+        "orientation_w": 0.9999767743280987,
+        "angular_velocity_z": 0.0007078560064818383,
+        "linear_acceleration_z": 9.722380746542873
+      },
+      {
+        "event_seq": 46,
+        "topic_seq": 38,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.719861,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 720978671,
+          "seconds": 1780773391.7209787
+        },
+        "orientation_w": 0.9999728291928742,
+        "angular_velocity_z": 0.0007078560064818383,
+        "linear_acceleration_z": 9.722380746542873
+      },
+      {
+        "event_seq": 47,
+        "topic_seq": 39,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.722194,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 726414232,
+          "seconds": 1780773391.7264142
+        },
+        "orientation_w": 0.9999685747252127,
+        "angular_velocity_z": 0.0007078560064818383,
+        "linear_acceleration_z": 9.722380746542873
+      },
+      {
+        "event_seq": 48,
+        "topic_seq": 40,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.724571,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 731864550,
+          "seconds": 1780773391.7318645
+        },
+        "orientation_w": 0.9999640109248364,
+        "angular_velocity_z": 0.0030195577828842583,
+        "linear_acceleration_z": 9.765315948329471
+      },
+      {
+        "event_seq": 49,
+        "topic_seq": 41,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.726911,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 737309449,
+          "seconds": 1780773391.7373095
+        },
+        "orientation_w": 0.9999557217897272,
+        "angular_velocity_z": 0.0030195577828842583,
+        "linear_acceleration_z": 9.765315948329471
+      },
+      {
+        "event_seq": 50,
+        "topic_seq": 42,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.72974,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 742759313,
+          "seconds": 1780773391.7427592
+        },
+        "orientation_w": 0.9999465741422269,
+        "angular_velocity_z": 0.0030195577828842583,
+        "linear_acceleration_z": 9.765315948329471
+      },
+      {
+        "event_seq": 51,
+        "topic_seq": 43,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.732183,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 748208333,
+          "seconds": 1780773391.7482083
+        },
+        "orientation_w": 0.9999365679672765,
+        "angular_velocity_z": 0.0030195577828842583,
+        "linear_acceleration_z": 9.765315948329471
+      },
+      {
+        "event_seq": 52,
+        "topic_seq": 44,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.734846,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 753664748,
+          "seconds": 1780773391.7536647
+        },
+        "orientation_w": 0.9999257032512893,
+        "angular_velocity_z": 0.0030195577828842583,
+        "linear_acceleration_z": 9.765315948329471
+      },
+      {
+        "event_seq": 53,
+        "topic_seq": 45,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.740294,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 759096650,
+          "seconds": 1780773391.7590966
+        },
+        "orientation_w": 0.9999139799821504,
+        "angular_velocity_z": 0.0030195577828842583,
+        "linear_acceleration_z": 9.765315948329471
+      },
+      {
+        "event_seq": 54,
+        "topic_seq": 46,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.745757,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 764540800,
+          "seconds": 1780773391.764541
+        },
+        "orientation_w": 0.9999013981492174,
+        "angular_velocity_z": 0.0030195577828842583,
+        "linear_acceleration_z": 9.765315948329471
+      },
+      {
+        "event_seq": 55,
+        "topic_seq": 47,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.751218,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 770001337,
+          "seconds": 1780773391.7700014
+        },
+        "orientation_w": 0.9998879577433198,
+        "angular_velocity_z": 0.0030195577828842583,
+        "linear_acceleration_z": 9.765315948329471
+      },
+      {
+        "event_seq": 56,
+        "topic_seq": 48,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.756754,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 775462042,
+          "seconds": 1780773391.7754622
+        },
+        "orientation_w": 0.99987365875676,
+        "angular_velocity_z": 0.0030195577828842583,
+        "linear_acceleration_z": 9.765315948329471
+      },
+      {
+        "event_seq": 57,
+        "topic_seq": 49,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.762246,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 780912442,
+          "seconds": 1780773391.7809124
+        },
+        "orientation_w": 0.9998585011833122,
+        "angular_velocity_z": 0.0030195577828842583,
+        "linear_acceleration_z": 9.765315948329471
+      },
+      {
+        "event_seq": 58,
+        "topic_seq": 50,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.767582,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 786345098,
+          "seconds": 1780773391.786345
+        },
+        "orientation_w": 0.9998424850182229,
+        "angular_velocity_z": 0.008186357324832154,
+        "linear_acceleration_z": 9.79804767505476
+      },
+      {
+        "event_seq": 59,
+        "topic_seq": 8,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.801871,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 788163402,
+          "seconds": 1780773391.7881634
+        },
+        "point_num": 16453,
+        "actual_points_len": 16453,
+        "timebase": 1780773391788163402,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 382,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 60,
+        "topic_seq": 51,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.805764,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 791797418,
+          "seconds": 1780773391.7917974
+        },
+        "orientation_w": 0.999819528168482,
+        "angular_velocity_z": 0.008186357324832154,
+        "linear_acceleration_z": 9.79804767505476
+      },
+      {
+        "event_seq": 61,
+        "topic_seq": 52,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.808542,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 797237442,
+          "seconds": 1780773391.7972374
+        },
+        "orientation_w": 0.9997950094957926,
+        "angular_velocity_z": 0.008186357324832154,
+        "linear_acceleration_z": 9.79804767505476
+      },
+      {
+        "event_seq": 62,
+        "topic_seq": 53,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.811447,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 802688586,
+          "seconds": 1780773391.8026886
+        },
+        "orientation_w": 0.999768928941238,
+        "angular_velocity_z": 0.008186357324832154,
+        "linear_acceleration_z": 9.79804767505476
+      },
+      {
+        "event_seq": 63,
+        "topic_seq": 54,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.814078,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 808140787,
+          "seconds": 1780773391.8081408
+        },
+        "orientation_w": 0.9997412864507792,
+        "angular_velocity_z": 0.008186357324832154,
+        "linear_acceleration_z": 9.79804767505476
+      },
+      {
+        "event_seq": 64,
+        "topic_seq": 55,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.81679,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 813578344,
+          "seconds": 1780773391.8135784
+        },
+        "orientation_w": 0.9997120819752554,
+        "angular_velocity_z": 0.008186357324832154,
+        "linear_acceleration_z": 9.79804767505476
+      },
+      {
+        "event_seq": 65,
+        "topic_seq": 56,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.819341,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 819023171,
+          "seconds": 1780773391.8190231
+        },
+        "orientation_w": 0.9996813154703837,
+        "angular_velocity_z": 0.008186357324832154,
+        "linear_acceleration_z": 9.79804767505476
+      },
+      {
+        "event_seq": 66,
+        "topic_seq": 57,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.821896,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 824474657,
+          "seconds": 1780773391.8244746
+        },
+        "orientation_w": 0.9996489868967608,
+        "angular_velocity_z": 0.008186357324832154,
+        "linear_acceleration_z": 9.79804767505476
+      },
+      {
+        "event_seq": 67,
+        "topic_seq": 58,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.824374,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 829932896,
+          "seconds": 1780773391.829933
+        },
+        "orientation_w": 0.9996150962198621,
+        "angular_velocity_z": 0.008186357324832154,
+        "linear_acceleration_z": 9.79804767505476
+      },
+      {
+        "event_seq": 68,
+        "topic_seq": 59,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.826887,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 835381237,
+          "seconds": 1780773391.8353813
+        },
+        "orientation_w": 0.9995796434100425,
+        "angular_velocity_z": 0.008186357324832154,
+        "linear_acceleration_z": 9.79804767505476
+      },
+      {
+        "event_seq": 69,
+        "topic_seq": 60,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.829827,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 840823789,
+          "seconds": 1780773391.840824
+        },
+        "orientation_w": 0.999542628442537,
+        "angular_velocity_z": 0.01610867882261477,
+        "linear_acceleration_z": 9.816141748288347
+      },
+      {
+        "event_seq": 70,
+        "topic_seq": 61,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.832369,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 846271540,
+          "seconds": 1780773391.8462715
+        },
+        "orientation_w": 0.9994974816461828,
+        "angular_velocity_z": 0.01610867882261477,
+        "linear_acceleration_z": 9.816141748288347
+      },
+      {
+        "event_seq": 71,
+        "topic_seq": 62,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.835107,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 851780379,
+          "seconds": 1780773391.8517804
+        },
+        "orientation_w": 0.9994502078463101,
+        "angular_velocity_z": 0.01610867882261477,
+        "linear_acceleration_z": 9.816141748288347
+      },
+      {
+        "event_seq": 72,
+        "topic_seq": 63,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.838438,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 857213819,
+          "seconds": 1780773391.8572137
+        },
+        "orientation_w": 0.9994008069160056,
+        "angular_velocity_z": 0.01610867882261477,
+        "linear_acceleration_z": 9.816141748288347
+      },
+      {
+        "event_seq": 73,
+        "topic_seq": 64,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.843839,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 862627311,
+          "seconds": 1780773391.8626273
+        },
+        "orientation_w": 0.9993492787374176,
+        "angular_velocity_z": 0.01610867882261477,
+        "linear_acceleration_z": 9.816141748288347
+      },
+      {
+        "event_seq": 74,
+        "topic_seq": 65,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.849302,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 868068164,
+          "seconds": 1780773391.8680682
+        },
+        "orientation_w": 0.9992956232017582,
+        "angular_velocity_z": 0.01610867882261477,
+        "linear_acceleration_z": 9.816141748288347
+      },
+      {
+        "event_seq": 75,
+        "topic_seq": 66,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.854787,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 873525338,
+          "seconds": 1780773391.8735254
+        },
+        "orientation_w": 0.9992398402093046,
+        "angular_velocity_z": 0.01610867882261477,
+        "linear_acceleration_z": 9.816141748288347
+      },
+      {
+        "event_seq": 76,
+        "topic_seq": 67,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.860581,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 878967271,
+          "seconds": 1780773391.8789673
+        },
+        "orientation_w": 0.9991819296694002,
+        "angular_velocity_z": 0.01610867882261477,
+        "linear_acceleration_z": 9.816141748288347
+      },
+      {
+        "event_seq": 77,
+        "topic_seq": 68,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.865653,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 884412755,
+          "seconds": 1780773391.8844128
+        },
+        "orientation_w": 0.9991218915004562,
+        "angular_velocity_z": 0.01610867882261477,
+        "linear_acceleration_z": 9.816141748288347
+      },
+      {
+        "event_seq": 78,
+        "topic_seq": 69,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.871075,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 889855404,
+          "seconds": 1780773391.8898554
+        },
+        "orientation_w": 0.9990597256299527,
+        "angular_velocity_z": 0.01610867882261477,
+        "linear_acceleration_z": 9.816141748288347
+      },
+      {
+        "event_seq": 79,
+        "topic_seq": 70,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.876506,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 895299741,
+          "seconds": 1780773391.8952997
+        },
+        "orientation_w": 0.9989954319944397,
+        "angular_velocity_z": 0.02504189963577481,
+        "linear_acceleration_z": 9.819206402943463
+      },
+      {
+        "event_seq": 80,
+        "topic_seq": 9,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.910921,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 897112926,
+          "seconds": 1780773391.8971128
+        },
+        "point_num": 16473,
+        "actual_points_len": 16473,
+        "timebase": 1780773391897112926,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 382,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 81,
+        "topic_seq": 71,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.915008,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 900750097,
+          "seconds": 1780773391.9007502
+        },
+        "orientation_w": 0.9989257222444373,
+        "angular_velocity_z": 0.02504189963577481,
+        "linear_acceleration_z": 9.819206402943463
+      },
+      {
+        "event_seq": 82,
+        "topic_seq": 72,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.917753,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 906200328,
+          "seconds": 1780773391.9062004
+        },
+        "orientation_w": 0.9988536693254134,
+        "angular_velocity_z": 0.02504189963577481,
+        "linear_acceleration_z": 9.819206402943463
+      },
+      {
+        "event_seq": 83,
+        "topic_seq": 73,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.920691,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 911725007,
+          "seconds": 1780773391.911725
+        },
+        "orientation_w": 0.9987792730605155,
+        "angular_velocity_z": 0.02504189963577481,
+        "linear_acceleration_z": 9.819206402943463
+      },
+      {
+        "event_seq": 84,
+        "topic_seq": 74,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.923416,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 917098060,
+          "seconds": 1780773391.917098
+        },
+        "orientation_w": 0.9987025332839098,
+        "angular_velocity_z": 0.02504189963577481,
+        "linear_acceleration_z": 9.819206402943463
+      },
+      {
+        "event_seq": 85,
+        "topic_seq": 75,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.926206,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 922543619,
+          "seconds": 1780773391.9225435
+        },
+        "orientation_w": 0.9986234498407863,
+        "angular_velocity_z": 0.02504189963577481,
+        "linear_acceleration_z": 9.819206402943463
+      },
+      {
+        "event_seq": 86,
+        "topic_seq": 76,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.928808,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 927982944,
+          "seconds": 1780773391.927983
+        },
+        "orientation_w": 0.9985420225873588,
+        "angular_velocity_z": 0.02504189963577481,
+        "linear_acceleration_z": 9.819206402943463
+      },
+      {
+        "event_seq": 87,
+        "topic_seq": 77,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.931481,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 933442099,
+          "seconds": 1780773391.933442
+        },
+        "orientation_w": 0.9984582513908681,
+        "angular_velocity_z": 0.02504189963577481,
+        "linear_acceleration_z": 9.819206402943463
+      },
+      {
+        "event_seq": 88,
+        "topic_seq": 78,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.934179,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 938883783,
+          "seconds": 1780773391.9388838
+        },
+        "orientation_w": 0.9983721361295843,
+        "angular_velocity_z": 0.02504189963577481,
+        "linear_acceleration_z": 9.819206402943463
+      },
+      {
+        "event_seq": 89,
+        "topic_seq": 79,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 14.937272,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780773391,
+          "nanosec": 944346093,
+          "seconds": 1780773391.9443462
+        },
+        "orientation_w": 0.9982836766928084,
+        "angular_velocity_z": 0.02504189963577481,
+        "linear_acceleration_z": 9.819206402943463
+      },
+      {
+        "event_seq": 90,
+        "topic_seq": 10,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.019757,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773392,
+          "nanosec": 6085312,
+          "seconds": 1780773392.0060854
+        },
+        "point_num": 16465,
+        "actual_points_len": 16465,
+        "timebase": 1780773392006085312,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 382,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 91,
+        "topic_seq": 11,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.130216,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773392,
+          "nanosec": 115032190,
+          "seconds": 1780773392.1150322
+        },
+        "point_num": 16492,
+        "actual_points_len": 16492,
+        "timebase": 1780773392115032190,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 382,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 92,
+        "topic_seq": 12,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.243099,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773392,
+          "nanosec": 223942042,
+          "seconds": 1780773392.223942
+        },
+        "point_num": 16500,
+        "actual_points_len": 16500,
+        "timebase": 1780773392223942042,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 381,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 93,
+        "topic_seq": 13,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.345272,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773392,
+          "nanosec": 332911533,
+          "seconds": 1780773392.3329115
+        },
+        "point_num": 16486,
+        "actual_points_len": 16486,
+        "timebase": 1780773392332911533,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 382,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 94,
+        "topic_seq": 14,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.45495,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773392,
+          "nanosec": 441894879,
+          "seconds": 1780773392.4418948
+        },
+        "point_num": 16471,
+        "actual_points_len": 16471,
+        "timebase": 1780773392441894879,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 382,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 95,
+        "topic_seq": 15,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.563738,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773392,
+          "nanosec": 550828949,
+          "seconds": 1780773392.550829
+        },
+        "point_num": 16431,
+        "actual_points_len": 16431,
+        "timebase": 1780773392550828949,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 383,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 96,
+        "topic_seq": 16,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.673289,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773392,
+          "nanosec": 659824458,
+          "seconds": 1780773392.6598244
+        },
+        "point_num": 16366,
+        "actual_points_len": 16366,
+        "timebase": 1780773392659824458,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 384,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 97,
+        "topic_seq": 17,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.78239,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773392,
+          "nanosec": 768773283,
+          "seconds": 1780773392.7687733
+        },
+        "point_num": 16288,
+        "actual_points_len": 16288,
+        "timebase": 1780773392768773283,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 386,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 98,
+        "topic_seq": 18,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.899238,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773392,
+          "nanosec": 877735720,
+          "seconds": 1780773392.8777356
+        },
+        "point_num": 16148,
+        "actual_points_len": 16148,
+        "timebase": 1780773392877735720,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 390,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 99,
+        "topic_seq": 19,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.001828,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773392,
+          "nanosec": 986701703,
+          "seconds": 1780773392.9867017
+        },
+        "point_num": 15898,
+        "actual_points_len": 15898,
+        "timebase": 1780773392986701703,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 396,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 100,
+        "topic_seq": 20,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.10968,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773393,
+          "nanosec": 95672568,
+          "seconds": 1780773393.0956726
+        },
+        "point_num": 15602,
+        "actual_points_len": 15602,
+        "timebase": 1780773393095672568,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 403,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 101,
+        "topic_seq": 21,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.217303,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773393,
+          "nanosec": 204589772,
+          "seconds": 1780773393.2045898
+        },
+        "point_num": 15640,
+        "actual_points_len": 15640,
+        "timebase": 1780773393204589772,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 402,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 102,
+        "topic_seq": 22,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.326284,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773393,
+          "nanosec": 313568563,
+          "seconds": 1780773393.3135686
+        },
+        "point_num": 15643,
+        "actual_points_len": 15643,
+        "timebase": 1780773393313568563,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 402,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 103,
+        "topic_seq": 23,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.435609,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773393,
+          "nanosec": 422533468,
+          "seconds": 1780773393.4225335
+        },
+        "point_num": 15659,
+        "actual_points_len": 15659,
+        "timebase": 1780773393422533468,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 402,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 104,
+        "topic_seq": 24,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.557487,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773393,
+          "nanosec": 531487378,
+          "seconds": 1780773393.5314875
+        },
+        "point_num": 15684,
+        "actual_points_len": 15684,
+        "timebase": 1780773393531487378,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 401,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 105,
+        "topic_seq": 25,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.657914,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773393,
+          "nanosec": 640474828,
+          "seconds": 1780773393.6404748
+        },
+        "point_num": 15673,
+        "actual_points_len": 15673,
+        "timebase": 1780773393640474828,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 401,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 106,
+        "topic_seq": 26,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.764932,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773393,
+          "nanosec": 749451542,
+          "seconds": 1780773393.7494516
+        },
+        "point_num": 15691,
+        "actual_points_len": 15691,
+        "timebase": 1780773393749451542,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 401,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 107,
+        "topic_seq": 27,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.874433,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773393,
+          "nanosec": 859483864,
+          "seconds": 1780773393.859484
+        },
+        "point_num": 15710,
+        "actual_points_len": 15710,
+        "timebase": 1780773393859483864,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 401,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 108,
+        "topic_seq": 28,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.984702,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773393,
+          "nanosec": 969447802,
+          "seconds": 1780773393.9694479
+        },
+        "point_num": 15700,
+        "actual_points_len": 15700,
+        "timebase": 1780773393969447802,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 401,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 109,
+        "topic_seq": 29,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.092543,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773394,
+          "nanosec": 79441607,
+          "seconds": 1780773394.0794415
+        },
+        "point_num": 15732,
+        "actual_points_len": 15732,
+        "timebase": 1780773394079441607,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 400,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 110,
+        "topic_seq": 30,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.216514,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773394,
+          "nanosec": 189443369,
+          "seconds": 1780773394.1894433
+        },
+        "point_num": 15786,
+        "actual_points_len": 15786,
+        "timebase": 1780773394189443369,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 399,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 111,
+        "topic_seq": 31,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.317196,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773394,
+          "nanosec": 299327261,
+          "seconds": 1780773394.2993274
+        },
+        "point_num": 15827,
+        "actual_points_len": 15827,
+        "timebase": 1780773394299327261,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 398,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 112,
+        "topic_seq": 32,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.426668,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773394,
+          "nanosec": 409435728,
+          "seconds": 1780773394.4094357
+        },
+        "point_num": 15871,
+        "actual_points_len": 15871,
+        "timebase": 1780773394409435728,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 396,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 113,
+        "topic_seq": 33,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.546989,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773394,
+          "nanosec": 519404102,
+          "seconds": 1780773394.5194042
+        },
+        "point_num": 15901,
+        "actual_points_len": 15901,
+        "timebase": 1780773394519404102,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 396,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 114,
+        "topic_seq": 34,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.643645,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773394,
+          "nanosec": 629433746,
+          "seconds": 1780773394.6294336
+        },
+        "point_num": 15915,
+        "actual_points_len": 15915,
+        "timebase": 1780773394629433746,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 395,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 115,
+        "topic_seq": 35,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.754739,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773394,
+          "nanosec": 739438478,
+          "seconds": 1780773394.7394385
+        },
+        "point_num": 15952,
+        "actual_points_len": 15952,
+        "timebase": 1780773394739438478,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 394,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 116,
+        "topic_seq": 36,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.875235,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773394,
+          "nanosec": 849450083,
+          "seconds": 1780773394.84945
+        },
+        "point_num": 15997,
+        "actual_points_len": 15997,
+        "timebase": 1780773394849450083,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 393,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 117,
+        "topic_seq": 37,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.973215,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773394,
+          "nanosec": 959415516,
+          "seconds": 1780773394.9594154
+        },
+        "point_num": 16003,
+        "actual_points_len": 16003,
+        "timebase": 1780773394959415516,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 393,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 118,
+        "topic_seq": 38,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 18.08343,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773395,
+          "nanosec": 69442635,
+          "seconds": 1780773395.0694427
+        },
+        "point_num": 16016,
+        "actual_points_len": 16016,
+        "timebase": 1780773395069442635,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 393,
+        "lidar_id": 1
+      },
+      {
+        "event_seq": 119,
+        "topic_seq": 39,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 18.193064,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780773395,
+          "nanosec": 179395625,
+          "seconds": 1780773395.1793957
+        },
+        "point_num": 16037,
+        "actual_points_len": 16037,
+        "timebase": 1780773395179395625,
+        "timebase_minus_header_ns": 0,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 392,
+        "lidar_id": 1
+      }
+    ]
+  },
+  "clock": {
+    "clock_present": {
+      "before": false,
+      "during": false,
+      "after_active": false
+    },
+    "use_sim_time": {
+      "dense_lidar": "Boolean value is: False",
+      "state_imu": "Boolean value is: False"
+    },
+    "topic_info_paths": {
+      "before": "before_topic_info_clock_v.txt",
+      "during": "during_topic_info_clock_v.txt",
+      "after_active": "after_active_topic_info_clock_v.txt"
+    }
+  },
+  "publisher_identity": {
+    "livox_publisher_count": {
+      "before": 0,
+      "during": 1,
+      "after_active": 1
+    },
+    "imu_publisher_count": {
+      "before": null,
+      "during": 1,
+      "after_active": 1
+    },
+    "evidence_path": "topic_info_publishers_before_during_after.txt"
+  },
+  "node_identity": {
+    "before_node_list": [
+      "/mosim_wait_once_summary"
+    ],
+    "during_node_list": [
+      "/mosim_040_source_only_livox_imu_recorder",
+      "/mosim_dense_lidar_replay_node",
+      "/mosim_mworks_state_imu_replay_node",
+      "/mosim_wait_once_summary"
+    ],
+    "after_active_node_list": [
+      "/mosim_dense_lidar_replay_node",
+      "/mosim_mworks_state_imu_replay_node",
+      "/mosim_wait_once_summary"
+    ]
+  },
+  "dense_lidar_replay": {
+    "completed_non_looping": false,
+    "stats_lines": [
+      "[INFO] [1780773392.878974614] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.072 rate_hz=9.172 mean_publish_us=1128.0",
+      "[INFO] [1780773394.960603597] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.082 rate_hz=9.127 mean_publish_us=1059.5",
+      "[INFO] [1780773397.050609901] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.090 rate_hz=9.091 mean_publish_us=1080.2",
+      "[INFO] [1780773399.140824393] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.090 rate_hz=9.090 mean_publish_us=1068.8"
+    ]
+  },
+  "state_imu_replay": {
+    "stats_lines": [
+      "[INFO] [1780773393.513479863] [mosim_mworks_state_imu_replay_node]: mworks_state_stats imu=368 odom=37 elapsed_s=2.005 imu_rate_hz=183.533 odom_rate_hz=18.453",
+      "[INFO] [1780773395.518621954] [mosim_mworks_state_imu_replay_node]: mworks_state_stats imu=365 odom=37 elapsed_s=2.005 imu_rate_hz=182.032 odom_rate_hz=18.453",
+      "[INFO] [1780773397.520608034] [mosim_mworks_state_imu_replay_node]: mworks_state_stats imu=364 odom=36 elapsed_s=2.002 imu_rate_hz=181.819 odom_rate_hz=17.982",
+      "[INFO] [1780773399.522634226] [mosim_mworks_state_imu_replay_node]: mworks_state_stats imu=364 odom=37 elapsed_s=2.002 imu_rate_hz=181.816 odom_rate_hz=18.481"
+    ]
+  },
+  "forbidden_process_patterns_seen": {
+    "fast_lio": false,
+    "rviz2": false,
+    "planner_or_ego": false,
+    "position_command": false,
+    "static_tf_bridge": false
+  },
+  "forbidden_topics_present": {
+    "/position_cmd": false,
+    "/mosim/planner/position_cmd": false,
+    "/planning/bspline": false
+  },
+  "source_only_live_probe_count": 1,
+  "fastlio_started": false,
+  "rviz2_started": false,
+  "ue_started": false,
+  "planner_started": false,
+  "position_command_started": false,
+  "adapter_20hz_started": false,
+  "tf_bridge_started": false,
+  "active_tf_recorder_started": false,
+  "claim_boundary": "source-only stamp-origin classification only; not FAST-LIO, TF/RViz, planner, localization, map quality, mission, or closed_loop evidence"
+}
