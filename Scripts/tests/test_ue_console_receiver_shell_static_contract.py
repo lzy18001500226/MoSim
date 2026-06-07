@@ -25,11 +25,12 @@ def run_checker(tmp_path: Path) -> dict[str, object]:
     return json.loads(output.read_text(encoding="utf-8"))
 
 
-def test_receiver_shell_checker_passes_without_runtime_receiver(tmp_path: Path) -> None:
+def test_receiver_shell_checker_passes_with_source_static_shell_without_runtime_receiver(tmp_path: Path) -> None:
     report = run_checker(tmp_path)
     assert report["ok"] is True
     assert report["checker_only_contract"] is True
-    assert report["receiver_shell_cpp_implemented"] is False
+    assert report["source_static_shell_contract"] is True
+    assert report["receiver_shell_cpp_implemented"] is True
     assert report["runtime_receiver_implemented"] is False
     assert report["safe_to_implement_runtime_receiver_next"] is False
     assert report["ui_accepted_state_controls_enabled"] is False
@@ -49,12 +50,40 @@ def test_future_receiver_boundary_and_sink_are_fixed(tmp_path: Path) -> None:
     assert "UQuadrotorMworksUdpCommandSenderComponent" in contract["must_remain_separate_from"]
 
 
+def test_source_static_receiver_shell_is_present_without_runtime_transport(tmp_path: Path) -> None:
+    report = run_checker(tmp_path)
+    shell = report["receiver_shell"]  # type: ignore[index]
+    assert shell["source_static_shell_present"] is True
+    assert shell["has_component_class"] is True
+    assert shell["has_schema_guard"] is True
+    assert shell["has_apply_to_state_method"] is True
+    assert shell["has_is_echo_json_method"] is True
+    assert shell["calls_echo_sink"] is True
+    assert shell["source_static_shell_routes_to_sink"] is True
+    assert shell["records_pending_command"] is False
+    assert shell["parses_command_schema"] is False
+    assert shell["parses_frame_schema"] is False
+    assert shell["runtime_receiver_patterns_present"] == []
+    assert shell["forbidden_pose_patterns_present"] == []
+    assert shell["sender_success_patterns_present"] == []
+
+
 def test_state_component_is_the_only_command_echo_sink_anchor(tmp_path: Path) -> None:
     report = run_checker(tmp_path)
     anchors = report["source_anchor_summary"]  # type: ignore[index]
+    shell = anchors["command_echo_receiver_shell"]
     state = anchors["state_component"]
     frame_receiver = anchors["frame_status_receiver"]
     sender = anchors["command_sender"]
+    assert shell["has_component_class"] is True
+    assert shell["has_echo_schema_guard"] is True
+    assert shell["has_source_static_methods"] is True
+    assert shell["calls_echo_sink"] is True
+    assert shell["runtime_receiver_patterns_present"] == []
+    assert shell["parses_command_schema"] is False
+    assert shell["parses_frame_schema"] is False
+    assert shell["forbidden_pose_patterns_present"] == []
+    assert shell["sender_success_patterns_present"] == []
     assert state["has_pending_method"] is True
     assert state["has_echo_sink"] is True
     assert state["has_echo_schema_guard"] is True
@@ -99,6 +128,26 @@ def test_sender_frames_fixtures_and_no_pose_failures_are_not_runtime_ack(tmp_pat
         or row["row_name"] in {"quadrotor_unreal_state_frame", "no_pose_overwrite_failure"}
     ]
     assert rows
+    assert {row["receiver_shell_policy"] for row in rows} == {"do_not_sink_as_live_ack"}
+    assert {row["accepted_as_runtime_ack"] for row in rows} == {False}
+    assert {row["actual_runtime_receiver_implemented"] for row in rows} == {False}
+    assert {row["actual_sink_called_by_receiver"] for row in rows} == {False}
+
+
+def test_build_success_rows_are_not_runtime_ack(tmp_path: Path) -> None:
+    report = run_checker(tmp_path)
+    rows = [
+        row
+        for row in report["fixture_matrix"]  # type: ignore[index]
+        if row["source"]
+        in {
+            "015_build_gate_passed",
+            "UnrealBuildTool_success",
+            "build_success",
+            "cli_build_success",
+        }
+    ]
+    assert len(rows) == 4
     assert {row["receiver_shell_policy"] for row in rows} == {"do_not_sink_as_live_ack"}
     assert {row["accepted_as_runtime_ack"] for row in rows} == {False}
     assert {row["actual_runtime_receiver_implemented"] for row in rows} == {False}
@@ -157,3 +206,73 @@ def test_no_forbidden_runtime_claims_or_matrix_leaks(tmp_path: Path) -> None:
     assert summary["actual_receiver_sink_leaks"] == 0
     forbidden_claims = report["forbidden_runtime_claims"]
     assert all(value is False for value in forbidden_claims.values())  # type: ignore[union-attr]
+
+
+def test_live_echo_producer_consumer_gate_defines_authoritative_sources_and_sink(tmp_path: Path) -> None:
+    report = run_checker(tmp_path)
+    gate = report["live_echo_producer_consumer_gate"]  # type: ignore[index]
+    assert gate["gate_status"] == "future_task_defined_no_runtime_receiver"
+    assert gate["claim_boundary"] == "producer_consumer_contract_only_not_live_ack"
+    assert gate["runtime_receiver_implemented"] is False
+    assert gate["accepted_state_ui_controls_enabled"] is False
+    assert {
+        (producer["source"], producer["ack_authority"])
+        for producer in gate["authoritative_producers"]
+    } == {
+        ("MWORKS_live_downlink", "MWORKS"),
+        ("ROS2_runtime_echo", "ROS2"),
+        ("MWORKS_ROS2_live_downlink", "MWORKS_ROS2"),
+    }
+    assert (
+        gate["consumer_sink"]["qualified_method"]
+        == "UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson"
+    )
+    assert gate["pending_precondition"]["method"] == "RecordPendingCommandFromPacketJson"
+    assert gate["pending_precondition"]["input_schema"] == "mosim.ue_command.v1"
+
+
+def test_live_echo_gate_requires_identity_timestamp_status_and_no_pose_evidence(tmp_path: Path) -> None:
+    report = run_checker(tmp_path)
+    gate = report["live_echo_producer_consumer_gate"]  # type: ignore[index]
+    evidence_fields = set(gate["required_runtime_evidence_fields"])
+    assert "schema=mosim.ue_command_echo.v1" in evidence_fields
+    assert "source" in evidence_fields
+    assert "ack_authority" in evidence_fields
+    assert "run_id" in evidence_fields
+    assert "request_id" in evidence_fields
+    assert "seq" in evidence_fields
+    assert "time_s" in evidence_fields
+    assert "status=accepted|rejected" in evidence_fields
+    assert "command.kind or command_kind" in evidence_fields
+    assert "matching pending request recorded from mosim.ue_command.v1" in evidence_fields
+    assert "no_pose_overwrite_status=pass" in evidence_fields
+    requirements = gate["identity_and_status_requirements"]
+    assert requirements["accepted_requires_matching_pending_request"] is True
+    assert requirements["accepted_requires_no_pose_overwrite_pass"] is True
+    assert requirements["rejected_must_not_mark_runtime_accepted"] is True
+
+
+def test_live_echo_gate_lists_false_ack_negative_evidence(tmp_path: Path) -> None:
+    report = run_checker(tmp_path)
+    gate = report["live_echo_producer_consumer_gate"]  # type: ignore[index]
+    negative = gate["negative_false_ack_evidence"]
+    assert {
+        "015_build_gate_passed",
+        "UnrealBuildTool_success",
+        "build_success",
+        "cli_build_success",
+        "udp_send_success",
+        "sender_result_bSent",
+        "quadrotor.unreal_state.v1",
+        "quadrotor.unreal_state.frame",
+    }.issubset(set(negative["forbidden_ack_sources"]))
+    assert {
+        "offline_adapter_smoke",
+        "source_level_smoke",
+        "MWORKS_MCP_result_adapter_smoke",
+        "MWORKS_MCP_runtime_adapter_preflight",
+    } == set(negative["non_live_source_labels"])
+    assert "no_pose_overwrite_failure" in negative["invalid_live_row_names"]
+    assert "authoritative_rejected" in negative["rejected_runtime_accepted_row_names"]
+    assert "forbidden_ack_source_UnrealBuildTool_success" in negative["matrix_negative_row_names"]
+    assert "quadrotor_unreal_state_frame" in negative["matrix_negative_row_names"]

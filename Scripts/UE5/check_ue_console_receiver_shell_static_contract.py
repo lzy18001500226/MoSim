@@ -27,6 +27,14 @@ FRAME_RECEIVER_HEADER = ROOT / "UE5/Bridge/Source/QuadrotorMworksBridge/Public/Q
 FRAME_RECEIVER_SOURCE = ROOT / "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp"
 SENDER_HEADER = ROOT / "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h"
 SENDER_SOURCE = ROOT / "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp"
+RECEIVER_HEADER = (
+    ROOT
+    / "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.h"
+)
+RECEIVER_SOURCE = (
+    ROOT
+    / "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.cpp"
+)
 
 EXPECTED_COMPONENT_NAME = "UQuadrotorMworksExperimentConsoleCommandEchoReceiverComponent"
 ECHO_SCHEMA = "mosim.ue_command_echo.v1"
@@ -34,6 +42,7 @@ COMMAND_SCHEMA = "mosim.ue_command.v1"
 STATE_SINK = "UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson"
 STATE_SINK_METHOD = "ApplyCommandEchoJson"
 PENDING_METHOD = "RecordPendingCommandFromPacketJson"
+LIVE_ECHO_GATE_ID = "RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017"
 FRAME_SCHEMA_PREFIX = "quadrotor.unreal_state."
 NON_LIVE_SOURCES = {
     "offline_adapter_smoke",
@@ -47,6 +56,10 @@ AUTHORITATIVE_LIVE_SOURCES = {
     "MWORKS_ROS2_live_downlink": "MWORKS_ROS2",
 }
 FORBIDDEN_ACK_SOURCES = {
+    "015_build_gate_passed",
+    "UnrealBuildTool_success",
+    "build_success",
+    "cli_build_success",
     "udp_send_success",
     "sender_result_bSent",
     "quadrotor.unreal_state.v1",
@@ -55,6 +68,36 @@ FORBIDDEN_ACK_SOURCES = {
     "fixture_only_008",
     "fixture_only_010",
     "fixture_only_011",
+}
+SOURCE_STATIC_RECEIVER_METHODS = {
+    "ApplyCommandEchoJsonToState",
+    "IsCommandEchoPacketJson",
+}
+FORBIDDEN_RUNTIME_RECEIVER_PATTERNS = {
+    "Common/UdpSocketBuilder.h",
+    "Common/UdpSocketReceiver.h",
+    "FSocket",
+    "FUdpSocketBuilder",
+    "FUdpSocketReceiver",
+    "FIPv4Endpoint",
+    "FRunnable",
+    "FRunnableThread",
+    "FTimerHandle",
+    "OnDataReceived",
+    "StartReceiver",
+    "StopReceiver",
+    "ListenPort",
+    "RemotePort",
+    "BindUObject",
+    "CreateSocket",
+    "SocketSubsystem",
+    "Sockets.h",
+    "AsyncTask",
+}
+FORBIDDEN_SENDER_SUCCESS_PATTERNS = {
+    "Result.bSent",
+    "udp_send_success",
+    "udp_send_failed",
 }
 FORBIDDEN_POSE_PATTERNS = {
     "SetActorLocation",
@@ -96,6 +139,10 @@ def source_literal(source_label: str) -> str:
 def is_future_receiver_implemented(*source_blobs: str) -> bool:
     combined = "\n".join(source_blobs)
     return EXPECTED_COMPONENT_NAME in combined
+
+
+def present_patterns(source: str, patterns: set[str]) -> list[str]:
+    return sorted(pattern for pattern in patterns if pattern in source)
 
 
 def matrix_row(
@@ -246,6 +293,110 @@ def build_fixture_matrix() -> list[dict[str, Any]]:
     return rows
 
 
+def build_live_echo_producer_consumer_gate(matrix: list[dict[str, Any]]) -> dict[str, Any]:
+    eligible_rows = [row for row in matrix if row["eligible_for_future_receiver_sink"]]
+    negative_rows = [
+        row["row_name"]
+        for row in matrix
+        if not row["row_name"].startswith("valid_future_")
+        and row["receiver_shell_policy"] != "future_sink_eligible_after_runtime_receiver_exists"
+    ]
+    return {
+        "gate_id": LIVE_ECHO_GATE_ID,
+        "scope_classification": "source-static/runtime-preflight",
+        "gate_status": "future_task_defined_no_runtime_receiver",
+        "claim_boundary": "producer_consumer_contract_only_not_live_ack",
+        "runtime_receiver_implemented": False,
+        "accepted_state_ui_controls_enabled": False,
+        "authoritative_producers": [
+            {
+                "source": source,
+                "ack_authority": authority,
+                "schema": ECHO_SCHEMA,
+                "status_values": ["accepted", "rejected"],
+                "producer_role": "future live command echo downlink only",
+            }
+            for source, authority in AUTHORITATIVE_LIVE_SOURCES.items()
+        ],
+        "consumer_sink": {
+            "component": "UQuadrotorMworksExperimentConsoleStateComponent",
+            "method": STATE_SINK_METHOD,
+            "qualified_method": STATE_SINK,
+            "receiver_shell_entry": (
+                "UQuadrotorMworksExperimentConsoleCommandEchoReceiverComponent."
+                "ApplyCommandEchoJsonToState"
+            ),
+        },
+        "pending_precondition": {
+            "component": "UQuadrotorMworksExperimentConsoleStateComponent",
+            "method": PENDING_METHOD,
+            "input_schema": COMMAND_SCHEMA,
+            "source": "UE command request",
+        },
+        "required_runtime_evidence_fields": [
+            "schema=mosim.ue_command_echo.v1",
+            "source",
+            "ack_authority",
+            "run_id",
+            "request_id",
+            "seq",
+            "time_s",
+            "status=accepted|rejected",
+            "command.kind or command_kind",
+            "matching pending request recorded from mosim.ue_command.v1",
+            "no_pose_overwrite_status=pass",
+        ],
+        "identity_and_status_requirements": {
+            "schema": ECHO_SCHEMA,
+            "source_must_match_ack_authority": AUTHORITATIVE_LIVE_SOURCES,
+            "required_identity_fields": ["run_id", "request_id", "seq", "command.kind or command_kind"],
+            "required_timestamp_fields": ["time_s"],
+            "allowed_status_values": ["accepted", "rejected"],
+            "accepted_requires_matching_pending_request": True,
+            "accepted_requires_no_pose_overwrite_pass": True,
+            "rejected_must_not_mark_runtime_accepted": True,
+        },
+        "negative_false_ack_evidence": {
+            "forbidden_ack_sources": sorted(FORBIDDEN_ACK_SOURCES),
+            "non_live_source_labels": sorted(NON_LIVE_SOURCES),
+            "invalid_live_row_names": [
+                "missing_command_id",
+                "missing_timestamp",
+                "no_matching_pending",
+                "command_id_mismatch",
+                "no_pose_overwrite_failure",
+                "wrong_authority_for_source",
+            ],
+            "rejected_runtime_accepted_row_names": ["authoritative_rejected"],
+            "matrix_negative_row_names": sorted(negative_rows),
+        },
+        "eligible_future_rows": [row["row_name"] for row in eligible_rows],
+        "minimum_future_live_task_definition": {
+            "producer": "authorized MWORKS/ROS2 live command echo downlink emitting mosim.ue_command_echo.v1",
+            "consumer_sink": STATE_SINK,
+            "receiver_shell_entry": (
+                "UQuadrotorMworksExperimentConsoleCommandEchoReceiverComponent."
+                "ApplyCommandEchoJsonToState"
+            ),
+            "acceptance_gate": [
+                "actual live transport receipt evidence for mosim.ue_command_echo.v1",
+                "authoritative source and ack_authority match",
+                "matching pending mosim.ue_command.v1 request by run_id/request_id/seq",
+                "timestamp present",
+                "status accepted or rejected",
+                "no_pose_overwrite_status=pass",
+                "negative evidence that build/send/frame/fixture/source rows are not treated as ack",
+            ],
+            "blocker_conditions": [
+                "no authorized live producer/downlink surface",
+                "no matching command identity or timestamp evidence",
+                "attempt to use build, pytest, UDP send, sender result, frame/status, fixture, source, or preflight rows as ack",
+                "attempt to enable accepted-state UI before authoritative live echo evidence",
+            ],
+        },
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-json", default="")
@@ -253,7 +404,7 @@ def main() -> int:
 
     issues: list[str] = []
     warnings = [
-        "source/static receiver-shell checker only; runtime receiver source is intentionally not implemented",
+        "source/static receiver-shell source exists; runtime socket/listener receiver is intentionally not implemented",
         "future_sink_eligible_after_runtime_receiver_exists is contract eligibility, not live runtime evidence",
     ]
 
@@ -266,16 +417,22 @@ def main() -> int:
     frame_source = read(FRAME_RECEIVER_SOURCE)
     sender_header = read(SENDER_HEADER)
     sender_source = read(SENDER_SOURCE)
+    receiver_header = read(RECEIVER_HEADER)
+    receiver_source = read(RECEIVER_SOURCE)
     state_combined = state_header + "\n" + state_source
     frame_combined = frame_header + "\n" + frame_source
     sender_combined = sender_header + "\n" + sender_source
+    receiver_combined = receiver_header + "\n" + receiver_source
 
-    receiver_shell_cpp_implemented = is_future_receiver_implemented(
-        state_combined,
-        frame_combined,
-        sender_combined,
+    receiver_shell_cpp_implemented = (
+        RECEIVER_HEADER.exists()
+        and RECEIVER_SOURCE.exists()
+        and is_future_receiver_implemented(receiver_combined)
     )
-    runtime_receiver_implemented = receiver_shell_cpp_implemented
+    runtime_receiver_patterns = present_patterns(receiver_combined, FORBIDDEN_RUNTIME_RECEIVER_PATTERNS)
+    runtime_receiver_implemented = bool(runtime_receiver_patterns)
+    receiver_forbidden_pose_patterns = present_patterns(receiver_combined, FORBIDDEN_POSE_PATTERNS)
+    receiver_sender_success_patterns = present_patterns(receiver_combined, FORBIDDEN_SENDER_SUCCESS_PATTERNS)
 
     if not command_schema:
         issues.append("missing mosim_ue_command_v1 schema")
@@ -322,6 +479,41 @@ def main() -> int:
     for source, authority in AUTHORITATIVE_LIVE_SOURCES.items():
         if source not in json.dumps(future_contract, ensure_ascii=False) or authority not in json.dumps(future_contract, ensure_ascii=False):
             issues.append(f"010 contract missing authoritative live source mapping: {source}->{authority}")
+
+    if not RECEIVER_HEADER.exists():
+        issues.append("missing source-static command echo receiver header")
+    if not RECEIVER_SOURCE.exists():
+        issues.append("missing source-static command echo receiver source")
+    if not receiver_shell_cpp_implemented:
+        issues.append("source-static command echo receiver shell component is not implemented")
+    for method in sorted(SOURCE_STATIC_RECEIVER_METHODS):
+        if method not in receiver_combined:
+            issues.append(f"receiver shell missing source-static method: {method}")
+    if ECHO_SCHEMA not in receiver_combined:
+        issues.append("receiver shell missing mosim.ue_command_echo.v1 schema guard")
+    if COMMAND_SCHEMA in receiver_combined:
+        issues.append("receiver shell must not parse mosim.ue_command.v1 command requests")
+    if FRAME_SCHEMA_PREFIX in receiver_combined:
+        issues.append("receiver shell must not parse quadrotor.unreal_state frame/status packets")
+    if STATE_SINK_METHOD not in receiver_source:
+        issues.append("receiver shell must route validated echo JSON to ApplyCommandEchoJson")
+    if PENDING_METHOD in receiver_source:
+        issues.append("receiver shell must not record pending command requests")
+    if runtime_receiver_patterns:
+        issues.append(
+            "receiver shell contains runtime socket/listener/timer/thread pattern(s): "
+            + ", ".join(runtime_receiver_patterns)
+        )
+    if receiver_forbidden_pose_patterns:
+        issues.append(
+            "receiver shell exposes forbidden Actor/input pose pattern(s): "
+            + ", ".join(receiver_forbidden_pose_patterns)
+        )
+    if receiver_sender_success_patterns:
+        issues.append(
+            "receiver shell references sender-only success pattern(s): "
+            + ", ".join(receiver_sender_success_patterns)
+        )
 
     if STATE_SINK_METHOD not in state_combined:
         issues.append("state component missing ApplyCommandEchoJson sink")
@@ -398,13 +590,12 @@ def main() -> int:
         issues.append("fixture matrix leaks runtime ack outside valid future rows")
     if actual_receiver_sink_leaks:
         issues.append("012 checker must not report actual runtime receiver or sink invocation")
-    if receiver_shell_cpp_implemented:
-        issues.append("future receiver C++ shell appears implemented, but 012 is checker-only and must not validate live receiver implementation")
 
     report = {
         "schema": "mosim.ue_console_receiver_shell_static_contract.v1",
         "ok": not issues,
         "checker_only_contract": True,
+        "source_static_shell_contract": True,
         "receiver_shell_cpp_implemented": receiver_shell_cpp_implemented,
         "runtime_receiver_implemented": runtime_receiver_implemented,
         "safe_to_implement_runtime_receiver_next": False,
@@ -425,7 +616,40 @@ def main() -> int:
             "forbidden_ack_sources": sorted(FORBIDDEN_ACK_SOURCES),
             "non_live_policy": "quality_status=smoke_only and accepted_as_runtime_ack=false",
         },
+        "receiver_shell": {
+            "header": RECEIVER_HEADER.relative_to(ROOT).as_posix(),
+            "source": RECEIVER_SOURCE.relative_to(ROOT).as_posix(),
+            "source_static_shell_present": receiver_shell_cpp_implemented,
+            "has_component_class": EXPECTED_COMPONENT_NAME in receiver_combined,
+            "has_schema_guard": ECHO_SCHEMA in receiver_combined,
+            "has_apply_to_state_method": "ApplyCommandEchoJsonToState" in receiver_combined,
+            "has_is_echo_json_method": "IsCommandEchoPacketJson" in receiver_combined,
+            "calls_echo_sink": STATE_SINK_METHOD in receiver_source,
+            "source_static_shell_routes_to_sink": STATE_SINK_METHOD in receiver_source,
+            "records_pending_command": PENDING_METHOD in receiver_source,
+            "parses_command_schema": COMMAND_SCHEMA in receiver_combined,
+            "parses_frame_schema": FRAME_SCHEMA_PREFIX in receiver_combined,
+            "runtime_receiver_patterns_present": runtime_receiver_patterns,
+            "forbidden_pose_patterns_present": receiver_forbidden_pose_patterns,
+            "sender_success_patterns_present": receiver_sender_success_patterns,
+        },
         "source_anchor_summary": {
+            "command_echo_receiver_shell": {
+                "header": RECEIVER_HEADER.relative_to(ROOT).as_posix(),
+                "source": RECEIVER_SOURCE.relative_to(ROOT).as_posix(),
+                "role": "source-static mosim.ue_command_echo.v1 shell only",
+                "has_component_class": EXPECTED_COMPONENT_NAME in receiver_combined,
+                "has_echo_schema_guard": ECHO_SCHEMA in receiver_combined,
+                "has_source_static_methods": all(
+                    method in receiver_combined for method in SOURCE_STATIC_RECEIVER_METHODS
+                ),
+                "calls_echo_sink": STATE_SINK_METHOD in receiver_source,
+                "runtime_receiver_patterns_present": runtime_receiver_patterns,
+                "parses_command_schema": COMMAND_SCHEMA in receiver_combined,
+                "parses_frame_schema": FRAME_SCHEMA_PREFIX in receiver_combined,
+                "forbidden_pose_patterns_present": receiver_forbidden_pose_patterns,
+                "sender_success_patterns_present": receiver_sender_success_patterns,
+            },
             "state_component": {
                 "header": STATE_HEADER.relative_to(ROOT).as_posix(),
                 "source": STATE_SOURCE.relative_to(ROOT).as_posix(),
@@ -458,6 +682,7 @@ def main() -> int:
                 "calls_echo_sink": STATE_SINK_METHOD in sender_combined,
             },
         },
+        "live_echo_producer_consumer_gate": build_live_echo_producer_consumer_gate(matrix),
         "fixture_matrix": matrix,
         "matrix_summary": {
             "total_rows": len(matrix),

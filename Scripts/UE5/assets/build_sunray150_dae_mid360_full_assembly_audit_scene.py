@@ -543,60 +543,11 @@ def add_mid360_mirror_reflection_overlays() -> list[str]:
 
 
 def add_visual_detail_overlays() -> dict:
-    """Add non-physical review decals that document intended texture details."""
-    rmats = realistic_materials()
-    white = make_material("Sunray150_Decal_White_Ink", (0.92, 0.92, 0.88, 1.0), roughness=0.42)
-    black = make_material("Sunray150_Decal_Black_Ink", (0.004, 0.004, 0.004, 1.0), roughness=0.50)
-    mid360_top_black = make_material("MID360_Decal_Top_Black_Cap", (0.002, 0.002, 0.002, 1.0), roughness=0.34, metallic=0.0, specular=0.28)
-    motor_gold = make_material("Sunray150_Decal_Motor_Gold_Ink", (0.95, 0.58, 0.12, 1.0), roughness=0.30)
-    livox = make_material("Sunray150_Decal_Livox_Black", (0.002, 0.002, 0.002, 1.0), roughness=0.45)
-    pcb_mark = make_material("Sunray150_Decal_PCB_Copper_Gold_Pads", (0.95, 0.66, 0.18, 1.0), roughness=0.34, metallic=0.70)
-    ic_black = make_material("Sunray150_Decal_IC_Matte_Black_Packages", (0.004, 0.004, 0.003, 1.0), roughness=0.78, specular=0.08)
-    storage_label = make_material("Sunray150_Decal_M2_SSD_Label_Satin_White", (0.80, 0.82, 0.78, 1.0), roughness=0.48, metallic=0.0, specular=0.10)
-    port_core = rmats["connector_core"]
-    added = []
-
-    added.append(add_label_plate("decal_mid360_livox_front", "LIVOX  MID-360", Vector((0.0, -0.0215, 0.0715)), 0.0036, livox, rotation=(math.radians(75), 0.0, 0.0)).name)
-    added.extend(add_mid360_mirror_reflection_overlays())
-    for x, y in [(0.0537, 0.0537), (-0.0537, 0.0537), (0.0537, -0.0537), (-0.0537, -0.0537)]:
-        added.append(add_label_plate(f"decal_motor_yundrone_{x:.3f}_{y:.3f}", "YUN DRONE", Vector((x, y, -0.0005)), 0.0030, white, rotation=(0.0, 0.0, math.radians(45))).name)
-        added.append(add_label_plate(f"decal_motor_lava_{x:.3f}_{y:.3f}", "LAVA", Vector((x, y, 0.0010)), 0.0026, motor_gold, rotation=(0.0, 0.0, math.radians(45))).name)
-    # Small colored cable sleeves follow the official photo cue without
-    # changing the accepted aircraft geometry.
-    cable_specs = [
-        ("red_wire_hint", Vector((0.018, 0.044, 0.010)), Vector((0.044, 0.074, 0.012)), rmats["wire_red"]),
-        ("blue_wire_hint", Vector((0.014, 0.039, 0.009)), Vector((0.040, 0.070, 0.011)), rmats["wire_blue"]),
-        ("yellow_wire_hint", Vector((0.010, 0.034, 0.008)), Vector((0.036, 0.066, 0.010)), rmats["wire_yellow"]),
-    ]
-    for name, a, b, mat in cable_specs:
-        add_cylinder_between(name, a, b, 0.00055, mat)
-        added.append(name)
-
-    # Shell-removed N150 review detail: official Sunray N150 use removes the
-    # external case, so the visual gate needs exposed board, storage, fan,
-    # and connector cues instead of a closed mini-PC shell.
-    n150_detail_boxes = [
-        ("decal_n150_ic_package_1", Vector((-0.020, 0.036, 0.01658)), (0.0070, 0.0050, 0.00028), ic_black),
-        ("decal_n150_ic_package_2", Vector((0.006, 0.062, 0.01658)), (0.0080, 0.0055, 0.00028), ic_black),
-        ("decal_n150_ic_package_3", Vector((0.018, 0.040, 0.01658)), (0.0065, 0.0045, 0.00028), ic_black),
-        ("decal_n150_gold_pad_bank_a", Vector((-0.009, 0.030, 0.01664)), (0.0140, 0.0014, 0.00018), rmats["aluminum"]),
-        ("decal_n150_gold_pad_bank_b", Vector((0.016, 0.056, 0.01664)), (0.0120, 0.0014, 0.00018), rmats["aluminum"]),
-        ("decal_n150_m2_label", Vector((0.0033, 0.0472, 0.01005)), (0.0170, 0.0300, 0.00016), storage_label),
-        ("decal_n150_usb9_black_core_a", Vector((0.0264, 0.0687, 0.0122)), (0.0100, 0.0010, 0.0040), port_core),
-        ("decal_n150_usb9_black_core_b", Vector((-0.0264, 0.0506, 0.0192)), (0.0100, 0.0010, 0.0040), port_core),
-        ("decal_n150_usb9_black_core_c", Vector((-0.0264, 0.0295, 0.0192)), (0.0100, 0.0010, 0.0040), port_core),
-        ("decal_n150_hdmi_black_core", Vector((0.0290, 0.0676, 0.0234)), (0.0072, 0.0012, 0.0038), port_core),
-        ("decal_n150_rj45_black_core", Vector((0.0261, 0.0454, 0.0134)), (0.0105, 0.0013, 0.0068), port_core),
-    ]
-    for name, loc, scale, mat in n150_detail_boxes:
-        obj = add_flat_box(name, loc, scale, mat)
-        added.append(obj.name)
-    added.append(add_label_plate("decal_n150_m2_label_text", "M.2 2242", Vector((0.0033, 0.0472, 0.01025)), 0.0022, black, rotation=(0.0, 0.0, 0.0)).name)
-
+    """Keep the audit scene free of generated non-DAE decal/review overlays."""
     return {
-        "added_overlay_count": len(added),
-        "added_overlays": added,
-        "overlay_rule": "Review decals and cable hints are non-physical texture intent markers: LIVOX/MID-360 logo, YUN DRONE/LAVA motor marks, USB camera lens glass, and colored cable sleeves. User-rejected motor gold ring decals are not created. These overlays do not alter accepted MID-360/propeller placement.",
+        "added_overlay_count": 0,
+        "added_overlays": [],
+        "overlay_rule": "User requested removal of generated decal/review overlays; no non-DAE decal boxes, label plates, reflection strips, or colored wire hints are created.",
     }
 
 

@@ -3,6 +3,7 @@ param(
     [string]$Mode = 'Check',
     [int]$MaxStaleMinutes = 90,
     [switch]$RestartIfStale,
+    [switch]$SkipEmail,
     [string]$Source = 'windows_task',
     [string]$IncidentKind = 'codex_outer_watchdog',
     [string]$ManagerPath = 'D:\Program Files\Codex++\codex-plus-plus-manager.exe'
@@ -277,7 +278,16 @@ $record = [ordered]@{
 
 if ($incident -and ($RestartIfStale -or $Mode -eq 'RestartNow')) {
     $cooldownKey = "codex-restart:${IncidentKind}:" + (Get-Date -Format 'yyyyMMdd_HHmmss')
-    $record.email_result = Send-RestartEmail -Kind $IncidentKind -Reason $reason -CooldownKey $cooldownKey
+    if ($SkipEmail) {
+        $record.email_result = [ordered]@{
+            ok = $null
+            skipped = $true
+            reason = 'skip_email_requested'
+            note = 'Caller is responsible for recording the mandatory pre-restart email audit.'
+        }
+    } else {
+        $record.email_result = Send-RestartEmail -Kind $IncidentKind -Reason $reason -CooldownKey $cooldownKey
+    }
     $record.restart_result = Invoke-CodexPlusPlusRestart -Path $ManagerPath
 }
 
