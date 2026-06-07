@@ -1,0 +1,31 @@
+{
+  "schema": "mosim.ros2_typed_input_rate_probe.v1",
+  "duration_s": 8.0,
+  "topics": {
+    "odometry": "/Odometry",
+    "registered_cloud": "/cloud_registered"
+  },
+  "expected_types": {
+    "odometry": "nav_msgs/msg/Odometry",
+    "registered_cloud": "sensor_msgs/msg/PointCloud2"
+  },
+  "counts": {
+    "odometry": 0,
+    "registered_cloud": 0
+  },
+  "first_samples": {},
+  "last_samples": {},
+  "claim_boundary": [
+    "Typed subscription/rate evidence only.",
+    "No planner startup, PositionCommand recorder, or command publication."
+  ],
+  "rates_hz": {
+    "odometry": 0.0,
+    "registered_cloud": 0.0
+  },
+  "present": {
+    "odometry": false,
+    "registered_cloud": false
+  },
+  "ready_for_later_runtime_disabled_false_input_gate": false
+}

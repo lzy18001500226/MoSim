@@ -1,0 +1,24 @@
+{
+  "schema": "mosim.fastlio_ros2_runtime_recording.v1",
+  "scene_id": "factoryenvironmentcollect",
+  "duration_seconds": 4.0,
+  "topics": {
+    "odometry": "/Odometry",
+    "path": "/path",
+    "registered_cloud": "/cloud_registered"
+  },
+  "counts": {
+    "odometry": 32,
+    "path": 4,
+    "registered_cloud": 32
+  },
+  "outputs": {
+    "odometry_jsonl": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore/fastlio_odometry.jsonl",
+    "path_jsonl": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore/fastlio_path.jsonl",
+    "registered_cloud_summary_jsonl": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore/fastlio_registered_cloud_summary.jsonl"
+  },
+  "claim_boundary": [
+    "This records ROS2 runtime output; localization quality still requires comparison against replay truth.",
+    "A nonzero point-cloud count alone does not prove accurate localization."
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "mosim.real_goal_waypoint_publish.v1",
+  "odom_topic": "/Odometry",
+  "waypoint_topic": "/waypoint_generator/waypoints",
+  "offset_m": [
+    1.5,
+    0.0,
+    0.0
+  ],
+  "odom_received": true,
+  "published": true,
+  "source_odom": {
+    "frame_id": "camera_init",
+    "child_frame_id": "body",
+    "position_m": [
+      2456.218076736612,
+      -404.69919426694133,
+      -7241.161285425525
+    ]
+  },
+  "goal": {
+    "frame_id": "camera_init",
+    "position_m": [
+      2457.718076736612,
+      -404.69919426694133,
+      0.2
+    ]
+  }
+}

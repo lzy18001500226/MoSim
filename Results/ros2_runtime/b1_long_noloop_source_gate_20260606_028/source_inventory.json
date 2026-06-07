@@ -1,0 +1,210 @@
+{
+  "schema": "mosim.ros2_runtime.source_inventory_028.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-LONG-NOLOOP-SOURCE-GATE-20260606-028",
+  "existing_manifests": [
+    {
+      "schema": "mosim.livox_like_lidar_replay_manifest.v1",
+      "scene_id": "factoryenvironmentcollect",
+      "truth_source": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json",
+      "pose_csv": "Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/raw/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.csv",
+      "scan_mode_csv": "References/Sunray/simulation/gazebo_plugin/livox_laser_simulation/scan_mode/mid360-real-centr.csv",
+      "output_jsonl": "Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body.jsonl",
+      "truth_dataset_jsonl": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_mworks_truth_dataset.jsonl",
+      "frame_count": 40,
+      "pose_start_index": 0,
+      "pose_stride": 2,
+      "points_frame": "body",
+      "points_per_frame_requested": 20000,
+      "points_per_frame_min": 15607,
+      "points_per_frame_max": 16515,
+      "points_per_frame_avg": 16094.55,
+      "lidar_rate_hz": 10.0,
+      "point_rate_hz": 200000.0,
+      "claim": "dense replay sensor oracle only; not live UE raycast and not FAST-LIO runtime output",
+      "occupancy_summary": {
+        "roi_bounds_m": [
+          -125.33,
+          -94.23,
+          14.67,
+          45.77
+        ],
+        "resolution_m": 0.75,
+        "grid_size": [
+          188,
+          188
+        ],
+        "truth_proxy_count": 8658,
+        "flight_relevant_proxy_count": 999,
+        "occupied_cell_count": 16968,
+        "occupied_cell_ratio": 0.480081
+      }
+    },
+    {
+      "schema": "mosim.livox_like_lidar_replay_manifest.v1",
+      "scene_id": "factoryenvironmentcollect",
+      "truth_source": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json",
+      "pose_csv": "Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/raw/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.csv",
+      "scan_mode_csv": "References/Sunray/simulation/gazebo_plugin/livox_laser_simulation/scan_mode/mid360-real-centr.csv",
+      "output_jsonl": "Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body_smoke.jsonl",
+      "truth_dataset_jsonl": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_mworks_truth_dataset_smoke.jsonl",
+      "frame_count": 20,
+      "pose_stride": 2,
+      "points_frame": "body",
+      "points_per_frame_requested": 8000,
+      "points_per_frame_min": 5965,
+      "points_per_frame_max": 6229,
+      "points_per_frame_avg": 6185.0,
+      "lidar_rate_hz": 10.0,
+      "point_rate_hz": 80000.0,
+      "claim": "dense replay sensor oracle only; not live UE raycast and not FAST-LIO runtime output",
+      "occupancy_summary": {
+        "roi_bounds_m": [
+          -125.33,
+          -94.23,
+          14.67,
+          45.77
+        ],
+        "resolution_m": 0.75,
+        "grid_size": [
+          188,
+          188
+        ],
+        "truth_proxy_count": 8658,
+        "flight_relevant_proxy_count": 999,
+        "occupied_cell_count": 16968,
+        "occupied_cell_ratio": 0.480081
+      }
+    },
+    {
+      "schema": "mosim.livox_like_lidar_replay_manifest.v1",
+      "scene_id": "factoryenvironmentcollect",
+      "truth_source": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json",
+      "pose_csv": "Results/unreal_scene_mapping/factoryenvironmentcollect/render_replay.csv",
+      "scan_mode_csv": "References/Sunray/simulation/gazebo_plugin/livox_laser_simulation/scan_mode/mid360-real-centr.csv",
+      "output_jsonl": "Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames.jsonl",
+      "frame_count": 5,
+      "points_per_frame_requested": 25000,
+      "points_per_frame_min": 19867,
+      "points_per_frame_max": 21004,
+      "points_per_frame_avg": 20507.6,
+      "lidar_rate_hz": 10.0,
+      "point_rate_hz": 200000.0,
+      "claim": "dense replay sensor oracle only; not live UE raycast and not FAST-LIO runtime output",
+      "occupancy_summary": {
+        "roi_bounds_m": [
+          -125.33,
+          -94.23,
+          14.67,
+          45.77
+        ],
+        "resolution_m": 0.75,
+        "grid_size": [
+          188,
+          188
+        ],
+        "truth_proxy_count": 8658,
+        "flight_relevant_proxy_count": 999,
+        "occupied_cell_count": 16968,
+        "occupied_cell_ratio": 0.480081
+      }
+    }
+  ],
+  "existing_jsonl": [
+    {
+      "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body.jsonl",
+      "exists": true,
+      "bytes": 60321929,
+      "line_count": 40,
+      "first": {
+        "schema": "mosim.livox_like_lidar_frame.v1",
+        "scene_id": "factoryenvironmentcollect",
+        "seq": 0,
+        "time": 0.0,
+        "coordinate_frame": "body_lidar_m_z_up",
+        "point_count": 16515
+      },
+      "last": {
+        "schema": "mosim.livox_like_lidar_frame.v1",
+        "scene_id": "factoryenvironmentcollect",
+        "seq": 39,
+        "time": 3.9,
+        "coordinate_frame": "body_lidar_m_z_up",
+        "point_count": 16026
+      }
+    },
+    {
+      "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body_smoke.jsonl",
+      "exists": true,
+      "bytes": 11616682,
+      "line_count": 20,
+      "first": {
+        "schema": "mosim.livox_like_lidar_frame.v1",
+        "scene_id": "factoryenvironmentcollect",
+        "seq": 0,
+        "time": 0.0,
+        "coordinate_frame": "body_lidar_m_z_up",
+        "point_count": 6229
+      },
+      "last": {
+        "schema": "mosim.livox_like_lidar_frame.v1",
+        "scene_id": "factoryenvironmentcollect",
+        "seq": 19,
+        "time": 1.9,
+        "coordinate_frame": "body_lidar_m_z_up",
+        "point_count": 5965
+      }
+    },
+    {
+      "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames.jsonl",
+      "exists": true,
+      "bytes": 537268195,
+      "line_count": 218,
+      "first": {
+        "schema": "mosim.livox_like_lidar_frame.v1",
+        "scene_id": "factoryenvironmentcollect",
+        "seq": 0,
+        "time": 0.0,
+        "coordinate_frame": "ue_world_m_z_up",
+        "point_count": 25880
+      },
+      "last": {
+        "schema": "mosim.livox_like_lidar_frame.v1",
+        "scene_id": "factoryenvironmentcollect",
+        "seq": 217,
+        "time": 10.700825,
+        "coordinate_frame": "ue_world_m_z_up",
+        "point_count": 26126
+      }
+    },
+    {
+      "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/lidar_point_frames.jsonl",
+      "exists": true,
+      "bytes": 117543,
+      "line_count": 34,
+      "first": {
+        "schema": "mosim.lidar_point_frame.v1",
+        "scene_id": "factoryenvironmentcollect",
+        "seq": 0,
+        "time": 0.0,
+        "coordinate_frame": "ue_world_m_z_up",
+        "point_count": 176
+      },
+      "last": {
+        "schema": "mosim.lidar_point_frame.v1",
+        "scene_id": "factoryenvironmentcollect",
+        "seq": 33,
+        "time": 8.25,
+        "coordinate_frame": "ue_world_m_z_up",
+        "point_count": 157
+      }
+    }
+  ],
+  "mworks_pose_source": {
+    "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/raw/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.csv",
+    "rows": 628,
+    "time_min": 0.0,
+    "time_max": 31.3258,
+    "duration_s": 31.3258
+  },
+  "conclusion": "No existing longer accepted body_lidar_m_z_up source exists; generator can create one from the same MWORKS raw pose CSV using points_frame=body without extrinsic/frame-adapter changes."
+}

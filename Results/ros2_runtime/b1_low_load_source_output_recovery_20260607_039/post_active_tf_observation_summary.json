@@ -1,0 +1,6 @@
+{
+  "camera_init_to_body": "absent_or_not_observed_post_active",
+  "ue_world_to_base_link": "observed_post_active_or_gap",
+  "ue_world_camera_init_bridge_any_direction": "absent",
+  "claim_boundary": "post_active_observation_only_not_tf_rviz_readiness"
+}

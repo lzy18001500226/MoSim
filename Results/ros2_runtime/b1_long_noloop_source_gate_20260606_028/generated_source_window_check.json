@@ -1,0 +1,18 @@
+{
+  "path": "/mnt/c/Users/HP/Desktop/MoSim/Results/ros2_runtime/b1_long_noloop_source_gate_20260606_028/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body_120.jsonl",
+  "frame_count": 120,
+  "first": {
+    "seq": 0,
+    "time": 0.0,
+    "coordinate_frame": "body_lidar_m_z_up",
+    "point_count": 16526
+  },
+  "last": {
+    "seq": 119,
+    "time": 11.9,
+    "coordinate_frame": "body_lidar_m_z_up",
+    "point_count": 17156
+  },
+  "all_body_lidar_m_z_up": true,
+  "time_monotonic": true
+}

@@ -1,0 +1,62 @@
+{
+  "schema": "mosim.ros2_runtime.no_loopback_source_window_027_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-NO-LOOPBACK-SOURCE-WINDOW-20260606-027",
+  "status": "blocked_before_goal",
+  "created_at": "2026-06-06T17:45:00+08:00",
+  "source_window": {
+    "livox_frame_count": 40,
+    "lidar_rate_hz": 10.0,
+    "expected_non_wrapping_duration_s": 4.0,
+    "loop": false,
+    "exit_after_last_frame": false,
+    "non_looping_replay_completed": true,
+    "evidence": [
+      "Results/ros2_runtime/b1_no_loopback_source_window_20260606_027/probe_metadata.txt",
+      "Results/ros2_runtime/b1_no_loopback_source_window_20260606_027/dense_lidar_cpp.log"
+    ]
+  },
+  "source_first_messages": {
+    "livox_first_message_received": true,
+    "livox_first_point_num": 16515,
+    "imu_first_message_received": true,
+    "evidence": [
+      "Results/ros2_runtime/b1_no_loopback_source_window_20260606_027/source_first_livox_message.summary.json",
+      "Results/ros2_runtime/b1_no_loopback_source_window_20260606_027/source_first_imu_message.summary.json"
+    ]
+  },
+  "source_probe": {
+    "livox_count": 0,
+    "imu_count": 160,
+    "livox_stamps_monotonic": true,
+    "imu_stamps_monotonic": true,
+    "accepted": false,
+    "blocking_reason": "The non-wrapping 40-frame LiDAR window was exhausted before the Livox+IMU probe and FAST-LIO sampling window could observe live Livox messages.",
+    "evidence": "Results/ros2_runtime/b1_no_loopback_source_window_20260606_027/LIVOX_CUSTOMMSG_PROBE.json"
+  },
+  "fastlio_window": {
+    "started": true,
+    "odometry_publisher_present": true,
+    "cloud_registered_publisher_present": true,
+    "odometry_samples_recorded": 0,
+    "cloud_registered_samples_recorded": 0,
+    "loop_back_clear_buffer_count": 0,
+    "evidence": [
+      "Results/ros2_runtime/b1_no_loopback_source_window_20260606_027/fast_lio.launch.log",
+      "Results/ros2_runtime/b1_no_loopback_source_window_20260606_027/fastlio_first_topic_info_Odometry.txt",
+      "Results/ros2_runtime/b1_no_loopback_source_window_20260606_027/fastlio_first_topic_info_cloud_registered.txt",
+      "Results/ros2_runtime/b1_no_loopback_source_window_20260606_027/runtime_recording/FASTLIO_RUNTIME_RECORDING.json"
+    ]
+  },
+  "goal_and_planner": {
+    "goal_published": false,
+    "planning_bspline_acceptance_rerun": false,
+    "position_command_recorder_ran": false,
+    "position_cmd_published": false,
+    "adapter_20hz_started": false
+  },
+  "cleanup": {
+    "process_check": "no_matching_processes",
+    "evidence": "Results/ros2_runtime/b1_no_loopback_source_window_20260606_027/final_cleanup_process_check.txt"
+  },
+  "conclusion": "The dense LiDAR replay source now supports and demonstrated non-wrapping playback, but the current accepted body-frame source has only 40 frames at 10 Hz. With loop disabled, the source window is too short for the required startup discipline and no-goal FAST-LIO/EGO precondition gate."
+}

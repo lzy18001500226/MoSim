@@ -1,0 +1,51 @@
+{
+  "schema": "mosim.ros2_runtime.no_goal_odom_tf_rviz_preflight_032_plan.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-NO-GOAL-ODOM-TF-RVIZ-PREFLIGHT-20260606-032",
+  "department_local_goal": "Using the 031 zero-loopback long-source startup discipline, run one no-goal odom/TF/RViz-readiness preflight that records FAST-LIO output topics, frame contracts, TF availability, RViz2 CLI readiness, forbidden topic absence, and cleanup without claiming localization quality or planner readiness.",
+  "critical_path_steps": [
+    "Read required_read_first from task packet 032, including AGENTS.md, new_conversation_context, ros2_runtime_setup, agent_task_ledger, 031 return packet, and 031 evidence directory.",
+    "Assess whether 031 evidence already covers 032 acceptance. Identify missing TF/frame/RViz readiness detail.",
+    "Create an evidence-local 032 runner that reuses the 031 startup order and 028 long source without editing production ROS2 packages, References, extrinsics, or frame adapters.",
+    "Clean stale ROS2/FAST-LIO/replay/probe processes and stop with blocker evidence if cleanup is unsafe.",
+    "Run exactly one no-goal runtime probe and collect Livox/IMU monotonicity, FAST-LIO output counts, frame ids, /tf samples, tf2_echo results, topic rates/info, RViz2 CLI availability, forbidden topics, and cleanup.",
+    "Write exactly one return/blocker packet and stop before planner/EGO/PositionCommand/20Hz adapter work."
+  ],
+  "parallelizable_slices": [
+    {
+      "slice": "031_evidence_reuse_audit",
+      "scope": "Read-only review of 031 output topics, frames, loop-back counts, and forbidden-topic evidence.",
+      "status": "completed_locally"
+    },
+    {
+      "slice": "no_goal_runtime_probe",
+      "scope": "Single serialized WSL ROS2 runtime probe due to shared ROS graph/process locks.",
+      "status": "planned_serial"
+    }
+  ],
+  "subagent_plan": {
+    "decision": "available_but_not_useful",
+    "reason": "The only missing evidence is a single live ROS2 TF/RViz-readiness capture, which must be serialized on the shared ROS graph. The 031 read-only evidence audit is small and completed locally."
+  },
+  "subagents_used": [],
+  "verification_gates": [
+    "pre_cleanup_no_stale_ros_fastlio_replay_processes",
+    "uses_031_startup_order_and_028_long_source",
+    "no_goal_probe_only",
+    "zero_fastlio_loopback_events",
+    "odometry_and_cloud_registered_nonzero",
+    "livox_and_imu_nonzero_monotonic",
+    "odom_cloud_frame_contract_recorded",
+    "tf_sample_or_gap_recorded",
+    "rviz2_cli_readiness_recorded",
+    "forbidden_topics_absent_or_zero",
+    "cleanup_clean",
+    "claim_boundaries_recorded"
+  ],
+  "manual_review_or_blocker_triggers": [
+    "If WSL/ROS2 cleanup is unsafe, write blocker before running.",
+    "If loop-back appears, block before planner/EGO.",
+    "If /Odometry or /cloud_registered is zero, block before planner/EGO.",
+    "If TF is missing, record the exact missing transform as blocker or risk; do not claim localization quality.",
+    "No manual RViz/RViz2 visual review is requested; if GUI screenshot/window automation is unavailable, record gui_sentinel=unavailable."
+  ]
+}

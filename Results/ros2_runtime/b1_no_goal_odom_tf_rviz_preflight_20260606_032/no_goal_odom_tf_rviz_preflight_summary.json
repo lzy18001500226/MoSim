@@ -1,0 +1,342 @@
+{
+  "schema": "mosim.ros2_runtime.no_goal_odom_tf_rviz_preflight_032_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-NO-GOAL-ODOM-TF-RVIZ-PREFLIGHT-20260606-032",
+  "status": "blocked_before_goal",
+  "checks": {
+    "pre_cleanup_no_stale_ros_fastlio_replay_processes": true,
+    "uses_031_startup_order_and_028_long_source": true,
+    "no_goal_probe_only": true,
+    "zero_fastlio_loopback_events": false,
+    "odometry_and_cloud_registered_nonzero": false,
+    "livox_and_imu_nonzero_monotonic": false,
+    "odom_cloud_frame_contract_recorded": false,
+    "tf_sample_or_gap_recorded": true,
+    "rviz2_cli_readiness_recorded": true,
+    "forbidden_topics_absent_or_zero": true
+  },
+  "source": {
+    "path": "/mnt/c/Users/HP/Desktop/MoSim/Results/ros2_runtime/b1_long_noloop_source_gate_20260606_028/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body_120.jsonl",
+    "frame_count": 120,
+    "first": {
+      "seq": 0,
+      "time": 0.0,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 16526
+    },
+    "last": {
+      "seq": 119,
+      "time": 11.9,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 17156
+    },
+    "all_body_lidar_m_z_up": true,
+    "time_monotonic": true
+  },
+  "probe": {
+    "schema": "mosim.livox_imu_probe.v1",
+    "duration_seconds": 4,
+    "topics": {
+      "livox": "/mosim/livox/lidar",
+      "imu": "/mosim/forward/imu"
+    },
+    "counts": {
+      "livox": 0,
+      "imu": 750
+    },
+    "rates_hz": {
+      "livox": 0,
+      "imu": 185.908
+    },
+    "time_quality": {
+      "livox_stamps_monotonic": true,
+      "imu_stamps_monotonic": true,
+      "latest_livox_minus_imu_s": -1780750000.0
+    },
+    "livox": {
+      "point_num": {
+        "min": 0,
+        "max": 0
+      },
+      "bad_point_num_frames": 0,
+      "offset_min_us": 4294967295,
+      "offset_max_us": 0,
+      "observed_lines": [],
+      "observed_tags": []
+    },
+    "acceptance": {
+      "livox_nonzero": false,
+      "imu_nonzero": true,
+      "livox_rate_ok": false,
+      "imu_rate_ok": true,
+      "time_delta_ok": false,
+      "point_num_ok": false,
+      "point_num_matches": true
+    },
+    "claim": "subscriber-side Livox CustomMsg plus IMU input gate; not FAST-LIO localization evidence"
+  },
+  "fastlio_runtime_recording": {
+    "schema": "mosim.fastlio_ros2_runtime_recording.v1",
+    "scene_id": "factoryenvironmentcollect",
+    "duration_seconds": 8.0,
+    "topics": {
+      "odometry": "/Odometry",
+      "path": "/path",
+      "registered_cloud": "/cloud_registered"
+    },
+    "counts": {
+      "odometry": 0,
+      "path": 0,
+      "registered_cloud": 0
+    },
+    "outputs": {
+      "odometry_jsonl": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/runtime_recording/fastlio_odometry.jsonl",
+      "path_jsonl": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/runtime_recording/fastlio_path.jsonl",
+      "registered_cloud_summary_jsonl": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/runtime_recording/fastlio_registered_cloud_summary.jsonl"
+    },
+    "claim_boundary": [
+      "This records ROS2 runtime output; localization quality still requires comparison against replay truth.",
+      "A nonzero point-cloud count alone does not prove accurate localization."
+    ]
+  },
+  "stamps": {
+    "counts": {
+      "livox": 40,
+      "imu": 40,
+      "odometry": 40,
+      "path": 4,
+      "cloud_registered": 40,
+      "tf": 40
+    },
+    "frame_ids": {
+      "livox": [
+        "base/mid360_link"
+      ],
+      "imu": [
+        "base/forward_imu_optical_frame"
+      ],
+      "odometry": [
+        "camera_init"
+      ],
+      "path": [
+        "camera_init"
+      ],
+      "cloud_registered": [
+        "camera_init"
+      ],
+      "tf": [
+        "ue_world",
+        "base_link",
+        "camera_init",
+        "body"
+      ]
+    },
+    "monotonic": {
+      "livox": false,
+      "imu": true,
+      "odometry": false,
+      "path": true,
+      "cloud_registered": false
+    },
+    "tf_edges": [
+      {
+        "parent": "ue_world",
+        "child": "base_link",
+        "stamp": {
+          "sec": 1780753264,
+          "nanosec": 591073109,
+          "seconds": 1780753264.591073
+        }
+      },
+      {
+        "parent": "ue_world",
+        "child": "base_link",
+        "stamp": {
+          "sec": 1780753264,
+          "nanosec": 645250736,
+          "seconds": 1780753264.6452508
+        }
+      },
+      {
+        "parent": "ue_world",
+        "child": "base_link",
+        "stamp": {
+          "sec": 1780753264,
+          "nanosec": 699410541,
+          "seconds": 1780753264.6994104
+        }
+      },
+      {
+        "parent": "ue_world",
+        "child": "base_link",
+        "stamp": {
+          "sec": 1780753264,
+          "nanosec": 753565339,
+          "seconds": 1780753264.7535653
+        }
+      },
+      {
+        "parent": "ue_world",
+        "child": "base_link",
+        "stamp": {
+          "sec": 1780753264,
+          "nanosec": 807766598,
+          "seconds": 1780753264.8077667
+        }
+      },
+      {
+        "parent": "ue_world",
+        "child": "base_link",
+        "stamp": {
+          "sec": 1780753264,
+          "nanosec": 861934562,
+          "seconds": 1780753264.8619347
+        }
+      },
+      {
+        "parent": "ue_world",
+        "child": "base_link",
+        "stamp": {
+          "sec": 1780753264,
+          "nanosec": 916114253,
+          "seconds": 1780753264.9161143
+        }
+      },
+      {
+        "parent": "ue_world",
+        "child": "base_link",
+        "stamp": {
+          "sec": 1780753264,
+          "nanosec": 970257047,
+          "seconds": 1780753264.970257
+        }
+      },
+      {
+        "parent": "camera_init",
+        "child": "body",
+        "stamp": {
+          "sec": 1780753264,
+          "nanosec": 961309909,
+          "seconds": 1780753264.96131
+        }
+      },
+      {
+        "parent": "ue_world",
+        "child": "base_link",
+        "stamp": {
+          "sec": 1780753265,
+          "nanosec": 24421195,
+          "seconds": 1780753265.0244212
+        }
+      },
+      {
+        "parent": "ue_world",
+        "child": "base_link",
+        "stamp": {
+          "sec": 1780753265,
+          "nanosec": 78567018,
+          "seconds": 1780753265.078567
+        }
+      },
+      {
+        "parent": "camera_init",
+        "child": "body",
+        "stamp": {
+          "sec": 1780753265,
+          "nanosec": 69609165,
+          "seconds": 1780753265.0696092
+        }
+      },
+      {
+        "parent": "ue_world",
+        "child": "base_link",
+        "stamp": {
+          "sec": 1780753265,
+          "nanosec": 132709573,
+          "seconds": 1780753265.1327095
+        }
+      },
+      {
+        "parent": "ue_world",
+        "child": "base_link",
+        "stamp": {
+          "sec": 1780753265,
+          "nanosec": 186873293,
+          "seconds": 1780753265.1868732
+        }
+      },
+      {
+        "parent": "camera_init",
+        "child": "body",
+        "stamp": {
+          "sec": 1780753265,
+          "nanosec": 177899122,
+          "seconds": 1780753265.1778991
+        }
+      },
+      {
+        "parent": "ue_world",
+        "child": "base_link",
+        "stamp": {
+          "sec": 1780753265,
+          "nanosec": 241052426,
+          "seconds": 1780753265.2410524
+        }
+      }
+    ]
+  },
+  "fastlio_log_counts": {
+    "loopback_total": 3,
+    "loopback_by_callback": {
+      "standard_pcl_cbk": 0,
+      "livox_pcl_cbk": 1,
+      "imu_cbk": 2,
+      "unlabeled_loopback": 0
+    },
+    "no_effective_points": 0
+  },
+  "frame_contract": {
+    "fastlio_odometry_topic": "/Odometry",
+    "fastlio_odometry_frame_id": null,
+    "fastlio_odometry_child_frame_id": null,
+    "fastlio_cloud_registered_topic": "/cloud_registered",
+    "fastlio_cloud_registered_frame_id": null,
+    "rviz_fixed_frame_candidate_for_fastlio_window": null,
+    "fastlio_fixed_frame_ready": false,
+    "truth_tf_edge_observed_ue_world_to_base_link": true,
+    "fastlio_tf_edge_observed_camera_init_to_body": true,
+    "truth_to_fastlio_bridge_observed": false,
+    "truth_error_review_risk": "No ue_world<->camera_init bridge was observed in this no-goal preflight; later truth-error review must provide or account for that transform before localization-quality claims."
+  },
+  "rviz_readiness": {
+    "rviz2_cli_available": true,
+    "rviz_gui_opened": false,
+    "gui_sentinel": "unavailable_not_requested",
+    "recommended_fastlio_fixed_frame": "camera_init",
+    "display_topics_recorded": [
+      "/Odometry",
+      "/path",
+      "/cloud_registered",
+      "/tf"
+    ]
+  },
+  "topic_rate_evidence": {
+    "odometry_hz_file": "topic_hz_Odometry.txt",
+    "cloud_registered_hz_file": "topic_hz_cloud_registered.txt",
+    "tf_hz_file": "topic_hz_tf.txt"
+  },
+  "forbidden_topics_present": {
+    "/position_cmd": false,
+    "/mosim/planner/position_cmd": false,
+    "/planning/bspline": false
+  },
+  "forbidden_actions": {
+    "ego_started": false,
+    "planner_goal_published": false,
+    "planning_bspline_acceptance_rerun": false,
+    "position_command_recorder_ran": false,
+    "position_cmd_published": false,
+    "adapter_20hz_started": false,
+    "extrinsics_or_frame_adapters_changed": false,
+    "rviz_gui_opened": false
+  }
+}

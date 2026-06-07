@@ -1,0 +1,224 @@
+{
+  "schema": "mosim.ros2_runtime.publisher_timestamp_instrumentation_046.design.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-PUBLISHER-TIMESTAMP-INSTRUMENTATION-STATIC-OR-BOUNDED-PROBE-20260607-046",
+  "created_at": "2026-06-07T06:58:00+08:00",
+  "status": "completed_static_design_no_live_probe",
+  "probe_run": false,
+  "probe_stop_reason": "046 permits a static instrumentation design as a valid return. A mechanism-proving probe would need an evidence-local instrumented dense LiDAR publisher or wrapper that records publisher-side node time, emitted header stamp, steady clock, and matched subscription count at each publish. Running without that publisher-side trace would only reproduce 044-style recorder/FAST-LIO observations and would not answer the publisher-side question. Editing production ROS2 packages is forbidden in 046, so the safe stop point is this source-static design and next-run boundary.",
+  "prior_evidence_basis": {
+    "043_source_only_full_window": {
+      "classification": "source_full_window_livox_imu_monotonic",
+      "livox_count": 120,
+      "livox_monotonic": true,
+      "livox_regression_count": 0,
+      "imu_count": 2413,
+      "imu_monotonic": true,
+      "fastlio_present": false,
+      "evidence": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-SOURCE-FULL-WINDOW-TIMESTAMP-DISCIPLINE-20260607-043.json"
+    },
+    "044_fastlio_present_full_window": {
+      "classification": "fastlio_added_source_stamp_regression_reproduced",
+      "livox_count": 120,
+      "livox_monotonic": false,
+      "livox_regression_count": 1,
+      "livox_regression_example": {
+        "from_topic_seq": 1,
+        "to_topic_seq": 2,
+        "from_stamp": 1780781940.0069153,
+        "to_stamp": 1780781937.1670537,
+        "delta_s": -2.839861631
+      },
+      "imu_monotonic": true,
+      "fastlio_loopback": {
+        "loopback_total": 1,
+        "livox_pcl_cbk": 1,
+        "imu_cbk": 0,
+        "standard_pcl_cbk": 0,
+        "unlabeled_loopback": 0
+      },
+      "evidence": "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-ONLY-FULL-WINDOW-RETEST-20260607-044.json"
+    },
+    "045_static_diagnosis": {
+      "classification": "startup_subscriber_load_sensitive_livox_node_now_stamp_regression_with_fastlio_present",
+      "evidence": "Results/ros2_runtime/b1_livox_fastlio_startup_dds_static_diag_20260607_045/static_startup_dds_diagnosis_summary.json"
+    }
+  },
+  "source_code_anchors": {
+    "dense_lidar_replay_node": {
+      "file": "Scripts/ros/mosim_dense_lidar_cpp/src/dense_lidar_replay_node.cpp",
+      "lines": "198-224",
+      "finding": "Livox publisher is reliable KeepLast(20); each timer tick sets PointCloud2 header stamp from node now(), copies that stamp to Livox CustomMsg header, derives Livox timebase from it, then publishes PointCloud2 and Livox."
+    },
+    "mworks_state_imu_replay_node": {
+      "file": "Scripts/ros/mosim_dense_lidar_cpp/src/mworks_state_imu_replay_node.cpp",
+      "lines": "178-206",
+      "finding": "IMU/state publisher is reliable KeepLast(64); each timer tick stamps IMU, TF, and truth odometry from node now()."
+    },
+    "fastlio_livox_callback": {
+      "file": "Results/tmp/fastlio_ros2_candidates_import/FAST_LIO_ROS2-ros2/src/laserMapping.cpp",
+      "lines": "318-360",
+      "finding": "FAST-LIO livox_pcl_cbk computes cur_time from msg->header.stamp and clears the LiDAR buffer when cur_time is less than persistent last_timestamp_lidar."
+    },
+    "fastlio_subscription_depth": {
+      "file": "Results/tmp/fastlio_ros2_candidates_import/FAST_LIO_ROS2-ros2/src/laserMapping.cpp",
+      "lines": "946-952",
+      "finding": "FAST-LIO subscribes to Livox with depth 20 and IMU with depth 10."
+    }
+  },
+  "instrumentation_strategy": {
+    "preferred_next_runtime_boundary": "Build or launch an evidence-local instrumented dense LiDAR publisher under Results/tmp or the 046 evidence directory, without editing production ROS2 packages, source data, FAST-LIO config, extrinsics, frame adapters, MWORKS, UE, controller, planner, or config files.",
+    "probe_type_if_authorized_later": "exactly_one_no_goal_fastlio_only_micro_probe",
+    "allowed_processes_if_probe_runs": [
+      "evidence-local instrumented dense LiDAR replay publisher",
+      "MWORKS IMU/state source",
+      "FAST-LIO",
+      "Livox/IMU and FAST-LIO output recorder"
+    ],
+    "forbidden_processes_if_probe_runs": [
+      "RViz2",
+      "UE",
+      "planner/EGO",
+      "PositionCommand recorder",
+      "20Hz adapter",
+      "TF bridge",
+      "active /tf recorder"
+    ]
+  },
+  "publisher_trace_jsonl_fields": [
+    {
+      "name": "frame_index",
+      "purpose": "Align publisher trace rows to accepted source frames and first topic samples."
+    },
+    {
+      "name": "source_frame_seq",
+      "purpose": "Verify accepted finite source order independent of ROS publish time."
+    },
+    {
+      "name": "source_frame_time",
+      "purpose": "Distinguish source-data time from emitted ROS header stamp."
+    },
+    {
+      "name": "point_count",
+      "purpose": "Match the emitted Livox message to FAST-LIO loop-back log point_num."
+    },
+    {
+      "name": "steady_clock_before_stamp_ns",
+      "purpose": "Monotonic publisher-side reference immediately before node now() is sampled."
+    },
+    {
+      "name": "node_now_at_stamp_assignment",
+      "purpose": "Primary publisher-side wall/ROS time sample used to assign the outgoing header stamp and detect node-now rollback."
+    },
+    {
+      "name": "publisher_emit_seq_pointcloud2",
+      "purpose": "Publisher-side emission sequence for PointCloud2, recorded separately from Livox CustomMsg."
+    },
+    {
+      "name": "publisher_emit_seq_livox",
+      "purpose": "Publisher-side emission sequence for Livox CustomMsg, used to compare emission order with subscriber receive order."
+    },
+    {
+      "name": "emitted_header_stamp",
+      "purpose": "The actual header stamp assigned to PointCloud2 and Livox CustomMsg."
+    },
+    {
+      "name": "livox_timebase_nanoseconds",
+      "purpose": "Confirm Livox timebase is exactly derived from emitted header stamp."
+    },
+    {
+      "name": "steady_clock_before_publish_ns",
+      "purpose": "Publisher-side monotonic time immediately before publish calls."
+    },
+    {
+      "name": "livox_matched_subscriptions_before_stamp",
+      "purpose": "Capture discovery/subscriber-load boundary before stamp assignment."
+    },
+    {
+      "name": "livox_matched_subscriptions_before_publish",
+      "purpose": "Capture startup/subscriber-load boundary before publishing the Livox sample."
+    },
+    {
+      "name": "pointcloud_matched_subscriptions_before_publish",
+      "purpose": "Separate Livox CustomMsg subscriber load from PointCloud2 subscriber load."
+    },
+    {
+      "name": "steady_clock_after_publish_ns",
+      "purpose": "Publisher-side monotonic time after publish calls."
+    },
+    {
+      "name": "node_now_after_publish",
+      "purpose": "Detect node clock discontinuity across publish calls."
+    },
+    {
+      "name": "livox_matched_subscriptions_after_publish",
+      "purpose": "Detect discovery/subscriber-count changes during early samples."
+    },
+    {
+      "name": "publish_duration_ms",
+      "purpose": "Quantify load-sensitive publish latency around early samples."
+    },
+    {
+      "name": "loop",
+      "purpose": "Prove finite non-looping source mode."
+    },
+    {
+      "name": "topic",
+      "purpose": "Record emitted Livox topic."
+    },
+    {
+      "name": "qos_profile",
+      "purpose": "Record reliable KeepLast depth and detect unintended QoS changes."
+    },
+    {
+      "name": "clock_type",
+      "purpose": "Record the publisher node clock type alongside /clock and use_sim_time state."
+    }
+  ],
+  "derived_summaries": [
+    "publisher_timestamp_trace_summary.json",
+    "first_n_livox_topic_header_stamps.json",
+    "first_n_livox_subscriber_receive_order.json",
+    "fastlio_first_n_callback_trace.json",
+    "source_topic_vs_publisher_trace_alignment.json",
+    "fast_lio_loopback_counts.json",
+    "ros_clock_and_use_sim_time.txt",
+    "topic_info_publishers_before_during_after.txt",
+    "node_info_before_during_after.txt",
+    "forbidden_topic_absence.json",
+    "cleanup_summary.json"
+  ],
+  "classification_matrix": [
+    {
+      "condition": "publisher trace emitted_header_stamp regresses at the same frame/order as topic and FAST-LIO regression while steady_clock remains monotonic",
+      "classification": "publisher_node_now_or_ros_time_sampling_regression",
+      "next_step": "Investigate node clock source/startup timing without changing FAST-LIO or planner boundaries."
+    },
+    {
+      "condition": "publisher trace emitted_header_stamp remains monotonic but recorder topic stamps regress",
+      "classification": "post_publish_delivery_or_recorder_observation_reorder",
+      "next_step": "Inspect DDS delivery/order, multiple subscribers, and recorder assumptions; do not blame source data."
+    },
+    {
+      "condition": "publisher trace and recorder topic stamps remain monotonic but FAST-LIO loop-back appears",
+      "classification": "fastlio_callback_state_or_queue_boundary",
+      "next_step": "Instrument FAST-LIO callback-local receive order/timestamps in the existing Results/tmp candidate only if separately authorized."
+    },
+    {
+      "condition": "publisher trace, recorder topic stamps, and FAST-LIO callback logs are all monotonic with nonzero outputs",
+      "classification": "no_repro_clean_under_instrumented_fastlio_only_boundary",
+      "next_step": "Return only a FAST-LIO-only boundary classification; do not promote to TF/RViz readiness or planner readiness."
+    }
+  ],
+  "minimum_acceptance_if_probe_runs_later": {
+    "single_probe_only": true,
+    "no_goal": true,
+    "fastlio_only": true,
+    "publisher_trace_present": true,
+    "livox_and_imu_recorded": true,
+    "fastlio_loopback_counts_recorded": true,
+    "clock_and_use_sim_time_recorded": true,
+    "forbidden_topics_absent": true,
+    "cleanup_clean": true
+  },
+  "claim_boundary": "046 static design only. It does not run a live probe and does not claim FAST-LIO success, TF/RViz readiness, localization quality, local-map quality, planner_ready, controller performance, mission success, or closed_loop."
+}

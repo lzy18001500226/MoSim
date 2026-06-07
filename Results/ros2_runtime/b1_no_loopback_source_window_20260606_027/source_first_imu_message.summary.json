@@ -1,0 +1,12 @@
+{
+  "topic": "/mosim/forward/imu",
+  "msg_type": "sensor_msgs/msg/Imu",
+  "received": true,
+  "header": {
+    "frame_id": "base/forward_imu_optical_frame",
+    "stamp": {
+      "sec": 1780738848,
+      "nanosec": 216571167
+    }
+  }
+}

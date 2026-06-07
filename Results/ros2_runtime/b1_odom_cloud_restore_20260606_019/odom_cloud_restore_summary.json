@@ -1,0 +1,175 @@
+{
+  "schema_version": "mosim.odom_cloud_restore_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-ODOM-CLOUD-RESTORE-20260606-019",
+  "created_at": "2026-06-06T09:37:57.764643+08:00",
+  "quality_status": "odom_cloud_restore_ready_for_later_startup_gate",
+  "evidence_dir": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019",
+  "main_restore_evidence_dir": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live",
+  "restore_command_status": "passed",
+  "restore_runtime_recording": {
+    "schema": "mosim.fastlio_ros2_runtime_recording.v1",
+    "scene_id": "factoryenvironmentcollect",
+    "duration_seconds": 10.0,
+    "topics": {
+      "odometry": "/Odometry",
+      "path": "/path",
+      "registered_cloud": "/cloud_registered"
+    },
+    "counts": {
+      "odometry": 93,
+      "path": 9,
+      "registered_cloud": 92
+    },
+    "outputs": {
+      "odometry_jsonl": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live/fastlio_odometry.jsonl",
+      "path_jsonl": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live/fastlio_path.jsonl",
+      "registered_cloud_summary_jsonl": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live/fastlio_registered_cloud_summary.jsonl"
+    },
+    "claim_boundary": [
+      "This records ROS2 runtime output; localization quality still requires comparison against replay truth.",
+      "A nonzero point-cloud count alone does not prove accurate localization."
+    ]
+  },
+  "input_source_probe": {
+    "schema": "mosim.livox_imu_probe.v1",
+    "duration_seconds": 2,
+    "topics": {
+      "livox": "/mosim/livox/lidar",
+      "imu": "/mosim/forward/imu"
+    },
+    "counts": {
+      "livox": 19,
+      "imu": 370
+    },
+    "rates_hz": {
+      "livox": 9.14666,
+      "imu": 184.332
+    },
+    "time_quality": {
+      "livox_stamps_monotonic": true,
+      "imu_stamps_monotonic": true,
+      "latest_livox_minus_imu_s": -0.016793
+    },
+    "livox": {
+      "point_num": {
+        "min": 15607,
+        "max": 16443
+      },
+      "bad_point_num_frames": 0,
+      "offset_min_us": 0,
+      "offset_max_us": 89994,
+      "observed_lines": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "observed_tags": [
+        16
+      ]
+    },
+    "acceptance": {
+      "livox_nonzero": true,
+      "imu_nonzero": true,
+      "livox_rate_ok": true,
+      "imu_rate_ok": true,
+      "time_delta_ok": true,
+      "point_num_ok": true,
+      "point_num_matches": true
+    },
+    "claim": "subscriber-side Livox CustomMsg plus IMU input gate; not FAST-LIO localization evidence"
+  },
+  "truth_evaluation": {
+    "status": "pass",
+    "metrics": {
+      "truth_frames": 40,
+      "odometry_samples": 93,
+      "odometry_samples_after_time_sort": 93,
+      "aligned_samples": 38,
+      "position_rmse_m": 0.305369,
+      "max_position_error_m": 0.519524,
+      "yaw_rmse_rad": 0.013956
+    },
+    "odometry_time_quality": {
+      "raw_samples": 93,
+      "unique_timestamps": 93,
+      "nonmonotonic_pairs": 0,
+      "first_time_s": 1780709475.991638,
+      "last_time_s": 1780709485.958293,
+      "min_time_s": 1780709475.991638,
+      "max_time_s": 1780709485.958293
+    },
+    "claim_boundary": [
+      "This evaluates recorded FAST-LIO ROS runtime odometry against replay truth.",
+      "Start-position alignment is allowed because FAST-LIO odometry is commonly local-map relative while replay truth is in UE world coordinates.",
+      "Start-yaw alignment is allowed because FAST-LIO local map axes can differ from UE world axes by an initial heading rotation.",
+      "A pass requires separately recorded runtime topics; synthetic replay files alone are insufficient.",
+      "The global occupancy truth remains a validation oracle and is not a planner input."
+    ]
+  },
+  "required_topics": {
+    "/Odometry": {
+      "present_in_runtime_recording": true,
+      "expected_type": "nav_msgs/msg/Odometry",
+      "recorded_count": 93,
+      "recorded_duration_s": 10.0,
+      "estimated_recorded_rate_hz": 9.3,
+      "sample_file": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live/fastlio_odometry.jsonl",
+      "sample_schema": "mosim.fastlio_odometry_sample.v1"
+    },
+    "/cloud_registered": {
+      "present_in_runtime_recording": true,
+      "expected_type": "sensor_msgs/msg/PointCloud2",
+      "recorded_count": 92,
+      "recorded_duration_s": 10.0,
+      "estimated_recorded_rate_hz": 9.2,
+      "sample_file": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live/fastlio_registered_cloud_summary.jsonl",
+      "sample_schema": "mosim.fastlio_registered_cloud_summary.v1"
+    }
+  },
+  "source_provenance": {
+    "source": "Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh current restore run",
+    "local_sensed_livox_topic": "/mosim/livox/lidar",
+    "imu_topic": "/mosim/forward/imu",
+    "livox_type": "livox_ros_driver2/msg/CustomMsg",
+    "imu_type": "sensor_msgs/msg/Imu",
+    "fastlio_config": "Config/ros2/mosim_fast_lio_ros2_mid360.yaml",
+    "truth_role": "validation oracle only, not planner input",
+    "not_fake_data": true,
+    "not_ue_global_truth_planner_input": true,
+    "not_keyboard_pose": true,
+    "not_fastlio_path_to_trajectory": true
+  },
+  "live_graph_sampling": {
+    "node_list_log": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/live_ros2_node_list.txt",
+    "typed_topic_list_log": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/live_ros2_topic_list_typed.txt",
+    "typed_topics_sample": [
+      "/client_count [std_msgs/msg/Int32]",
+      "/connected_clients [rosbridge_msgs/msg/ConnectedClients]",
+      "/mosim/lidar_points [sensor_msgs/msg/PointCloud2]",
+      "/mosim/livox/lidar [livox_ros_driver2/msg/CustomMsg]",
+      "/parameter_events [rcl_interfaces/msg/ParameterEvent]",
+      "/rosout [rcl_interfaces/msg/Log]"
+    ],
+    "late_typed_topic_list_log": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/live_late_ros2_topic_list_typed.txt",
+    "late_typed_topics_sample": [
+      "/client_count [std_msgs/msg/Int32]",
+      "/connected_clients [rosbridge_msgs/msg/ConnectedClients]",
+      "/mosim/forward/imu [sensor_msgs/msg/Imu]",
+      "/mosim/lidar_points [sensor_msgs/msg/PointCloud2]",
+      "/mosim/livox/lidar [livox_ros_driver2/msg/CustomMsg]",
+      "/mosim/truth/odometry [nav_msgs/msg/Odometry]",
+      "/parameter_events [rcl_interfaces/msg/ParameterEvent]",
+      "/rosout [rcl_interfaces/msg/Log]",
+      "/tf [tf2_msgs/msg/TFMessage]"
+    ],
+    "topic_info_limit": "ros2 topic info/list sampling raced with short-lived FAST-LIO output discovery; direct runtime recorder captured /Odometry and /cloud_registered samples, and ros2 topic hz measured /Odometry during one live probe."
+  },
+  "decision": {
+    "ready_for_later_separate_runtime_disabled_false_startup_probe": true,
+    "planner_ready": false,
+    "closed_loop_ready": false,
+    "recorder_allowed_now": false,
+    "notes": "Ready only means odom/cloud source can be restored for a later separate planner startup probe; no planner startup was run in 019."
+  }
+}

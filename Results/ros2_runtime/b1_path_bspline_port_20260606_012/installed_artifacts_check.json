@@ -1,0 +1,26 @@
+[
+  {
+    "path": "Results/tmp/ego_planner_ros2_port_ws/install/path_searching/lib/libpath_searching.a",
+    "exists": true
+  },
+  {
+    "path": "Results/tmp/ego_planner_ros2_port_ws/install/path_searching/include/path_searching/dyn_a_star.h",
+    "exists": true
+  },
+  {
+    "path": "Results/tmp/ego_planner_ros2_port_ws/install/bspline_opt/lib/libbspline_opt.a",
+    "exists": true
+  },
+  {
+    "path": "Results/tmp/ego_planner_ros2_port_ws/install/bspline_opt/include/bspline_opt/bspline_optimizer.h",
+    "exists": true
+  },
+  {
+    "path": "Results/tmp/ego_planner_ros2_port_ws/install/bspline_opt/include/bspline_opt/uniform_bspline.h",
+    "exists": true
+  },
+  {
+    "path": "Results/tmp/ego_planner_ros2_port_ws/install/bspline_opt/include/bspline_opt/gradient_descent_optimizer.h",
+    "exists": true
+  }
+]

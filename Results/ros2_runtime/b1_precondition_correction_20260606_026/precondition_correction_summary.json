@@ -1,0 +1,107 @@
+{
+  "schema": "mosim.ros2_runtime.precondition_correction_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-PRECONDITION-CORRECTION-20260606-026",
+  "status": "blocked_before_goal",
+  "created_at": "2026-06-06T17:12:00+08:00",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "blocked_dependency_path",
+      "evidence": "Results/ros2_runtime/b1_precondition_correction_20260606_026/blocker_missing_required.txt",
+      "detail": "Initial evidence-local script defaulted DENSE_LIDAR_SETUP to a non-existent path; no replay, FAST-LIO, or EGO runtime started."
+    },
+    {
+      "attempt": 2,
+      "status": "blocked_dependency_path",
+      "evidence": "Results/ros2_runtime/b1_precondition_correction_20260606_026/blocker_missing_required.txt",
+      "detail": "Second attempt defaulted MWORKS_RAW to a non-existent CSV path; no replay, FAST-LIO, or EGO runtime started."
+    },
+    {
+      "attempt": 3,
+      "status": "blocked_runtime_precondition",
+      "evidence": [
+        "Results/ros2_runtime/b1_precondition_correction_20260606_026/fast_lio.launch.log",
+        "Results/ros2_runtime/b1_precondition_correction_20260606_026/fastlio_first_echo_once_Odometry.stdout",
+        "Results/ros2_runtime/b1_precondition_correction_20260606_026/fastlio_last_echo_once_Odometry.stdout",
+        "Results/ros2_runtime/b1_precondition_correction_20260606_026/fastlio_first_echo_once_cloud_registered.stdout",
+        "Results/ros2_runtime/b1_precondition_correction_20260606_026/LIVOX_CUSTOMMSG_PROBE.json",
+        "Results/ros2_runtime/b1_precondition_correction_20260606_026/final_cleanup_process_check.txt"
+      ],
+      "detail": "Real source and FAST-LIO runtime started, but the outer 60s timeout hit after FAST-LIO source sampling and before EGO map-readiness gate could complete."
+    }
+  ],
+  "source_probe": {
+    "livox_count": 15,
+    "imu_count": 290,
+    "livox_rate_hz": 9.40048,
+    "imu_rate_hz": 190.749,
+    "livox_nonzero": true,
+    "imu_nonzero": true,
+    "point_num_min": 16416,
+    "point_num_max": 16515,
+    "time_quality_note": "The probe JSON reports livox_stamps_monotonic=false and imu_stamps_monotonic=false in this short run, so source timing was not accepted as clean even though rate/point gates were true."
+  },
+  "fastlio_source_window": {
+    "first_odom": {
+      "frame_id": "camera_init",
+      "child_frame_id": "body",
+      "position_m": [
+        2.7621480418372553,
+        4.412097285942813,
+        -0.2518669692353403
+      ]
+    },
+    "last_odom": {
+      "frame_id": "camera_init",
+      "child_frame_id": "body",
+      "position_m": [
+        12.453704779461008,
+        23.06064133097384,
+        -1.30350113248961
+      ]
+    },
+    "cloud_registered": {
+      "frame_id": "camera_init",
+      "width": 15859
+    },
+    "fastlio_log_counts": {
+      "lidar_loop_back_clear_buffer": 2,
+      "no_effective_points": 0
+    }
+  },
+  "ego_precondition": {
+    "static_map_bounds_m": {
+      "origin": [
+        -20.0,
+        -20.0,
+        -0.01
+      ],
+      "max": [
+        20.0,
+        20.0,
+        2.99
+      ]
+    },
+    "last_odom_inside_bounds": false,
+    "effective_goal_if_allowed_m": [
+      13.453704779461008,
+      23.06064133097384,
+      1.0
+    ],
+    "effective_goal_inside_bounds": false,
+    "map_readiness_sampled": false,
+    "map_readiness_reason": "Skipped/not completed because FAST-LIO log stop condition fired and outer 60s timeout elapsed before EGO readiness gate."
+  },
+  "blocking_gates": [
+    "fastlio_loop_back_clear_buffer",
+    "last_odom_outside_static_ego_map_bounds",
+    "source_timestamp_monotonicity_not_clean",
+    "outer_60s_timeout_before_ego_map_readiness"
+  ],
+  "goal_published": false,
+  "planning_bspline_acceptance_rerun": false,
+  "cleanup": {
+    "process_check": "no_matching_processes",
+    "evidence": "Results/ros2_runtime/b1_precondition_correction_20260606_026/final_cleanup_process_check.txt"
+  }
+}

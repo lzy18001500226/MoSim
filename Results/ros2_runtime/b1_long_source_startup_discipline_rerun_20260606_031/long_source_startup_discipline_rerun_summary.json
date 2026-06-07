@@ -1,0 +1,310 @@
+{
+  "schema": "mosim.ros2_runtime.long_source_startup_discipline_rerun_031_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-LONG-SOURCE-STARTUP-DISCIPLINE-RERUN-20260606-031",
+  "status": "precondition_passed_no_goal",
+  "candidate": "fastlio_lidar_first_then_imu",
+  "checks": {
+    "pre_cleanup_no_stale_ros_fastlio_replay_processes": true,
+    "uses_028_120_frame_nonwrapping_source": true,
+    "uses_030_startup_order": true,
+    "no_goal_probe_only": true,
+    "loop_false_long_source_consumption_recorded": true,
+    "livox_count_nonzero_and_timestamp_monotonic": true,
+    "imu_count_nonzero_and_timestamp_monotonic": true,
+    "fastlio_log_has_zero_callback_labeled_or_unlabeled_loopback_events": true,
+    "odometry_count_nonzero": true,
+    "cloud_registered_count_nonzero": true,
+    "forbidden_topics_absent_or_zero": true
+  },
+  "source": {
+    "path": "/mnt/c/Users/HP/Desktop/MoSim/Results/ros2_runtime/b1_long_noloop_source_gate_20260606_028/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body_120.jsonl",
+    "frame_count": 120,
+    "first": {
+      "seq": 0,
+      "time": 0.0,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 16526
+    },
+    "last": {
+      "seq": 119,
+      "time": 11.9,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 17156
+    },
+    "all_body_lidar_m_z_up": true,
+    "time_monotonic": true
+  },
+  "startup_stamps": {
+    "counts": {
+      "livox": 40,
+      "imu": 40,
+      "odometry": 40,
+      "cloud_registered": 40
+    },
+    "livox_stamps_monotonic": true,
+    "imu_stamps_monotonic": true,
+    "first_events": [
+      {
+        "seq": 0,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.545545,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780745078,
+          "nanosec": 554005752,
+          "seconds": 1780745078.5540059
+        },
+        "timebase": 1780745078554005752,
+        "point_num": 16526,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 1,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.656091,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780745078,
+          "nanosec": 662202349,
+          "seconds": 1780745078.6622024
+        },
+        "timebase": 1780745078662202349,
+        "point_num": 16526,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 2,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.756425,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780745078,
+          "nanosec": 770606700,
+          "seconds": 1780745078.7706068
+        },
+        "timebase": 1780745078770606700,
+        "point_num": 16526,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 3,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.864133,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780745078,
+          "nanosec": 879065385,
+          "seconds": 1780745078.8790653
+        },
+        "timebase": 1780745078879065385,
+        "point_num": 16522,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 4,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.973152,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780745078,
+          "nanosec": 987509510,
+          "seconds": 1780745078.9875095
+        },
+        "timebase": 1780745078987509510,
+        "point_num": 16513,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 5,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.097593,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780745079,
+          "nanosec": 95968254,
+          "seconds": 1780745079.0959682
+        },
+        "timebase": 1780745079095968254,
+        "point_num": 16501,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 6,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.204041,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780745079,
+          "nanosec": 204466964,
+          "seconds": 1780745079.204467
+        },
+        "timebase": 1780745079204466964,
+        "point_num": 16474,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 188
+      },
+      {
+        "seq": 7,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.308935,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780745079,
+          "nanosec": 312884408,
+          "seconds": 1780745079.3128843
+        },
+        "timebase": 1780745079312884408,
+        "point_num": 16450,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 188
+      },
+      {
+        "seq": 8,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.327127,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780745079,
+          "nanosec": 373901101,
+          "seconds": 1780745079.3739011
+        }
+      },
+      {
+        "seq": 9,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.33232,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780745079,
+          "nanosec": 379320513,
+          "seconds": 1780745079.3793206
+        }
+      },
+      {
+        "seq": 10,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.337892,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780745079,
+          "nanosec": 384740115,
+          "seconds": 1780745079.38474
+        }
+      },
+      {
+        "seq": 11,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.343071,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780745079,
+          "nanosec": 390158146,
+          "seconds": 1780745079.3901582
+        }
+      }
+    ]
+  },
+  "probe": {
+    "schema": "mosim.livox_imu_probe.v1",
+    "duration_seconds": 4,
+    "topics": {
+      "livox": "/mosim/livox/lidar",
+      "imu": "/mosim/forward/imu"
+    },
+    "counts": {
+      "livox": 39,
+      "imu": 781
+    },
+    "rates_hz": {
+      "livox": 9.41009,
+      "imu": 192.653
+    },
+    "time_quality": {
+      "livox_stamps_monotonic": true,
+      "imu_stamps_monotonic": true,
+      "latest_livox_minus_imu_s": -0.0913475
+    },
+    "livox": {
+      "point_num": {
+        "min": 15659,
+        "max": 16996
+      },
+      "bad_point_num_frames": 0,
+      "offset_min_us": 0,
+      "offset_max_us": 99994,
+      "observed_lines": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "observed_tags": [
+        16
+      ]
+    },
+    "acceptance": {
+      "livox_nonzero": true,
+      "imu_nonzero": true,
+      "livox_rate_ok": true,
+      "imu_rate_ok": true,
+      "time_delta_ok": true,
+      "point_num_ok": true,
+      "point_num_matches": true
+    },
+    "claim": "subscriber-side Livox CustomMsg plus IMU input gate; not FAST-LIO localization evidence"
+  },
+  "fastlio_runtime_recording": {
+    "schema": "mosim.fastlio_ros2_runtime_recording.v1",
+    "scene_id": "factoryenvironmentcollect",
+    "duration_seconds": 8.0,
+    "topics": {
+      "odometry": "/Odometry",
+      "path": "/path",
+      "registered_cloud": "/cloud_registered"
+    },
+    "counts": {
+      "odometry": 19,
+      "path": 1,
+      "registered_cloud": 19
+    },
+    "outputs": {
+      "odometry_jsonl": "Results/ros2_runtime/b1_long_source_startup_discipline_rerun_20260606_031/runtime_recording/fastlio_odometry.jsonl",
+      "path_jsonl": "Results/ros2_runtime/b1_long_source_startup_discipline_rerun_20260606_031/runtime_recording/fastlio_path.jsonl",
+      "registered_cloud_summary_jsonl": "Results/ros2_runtime/b1_long_source_startup_discipline_rerun_20260606_031/runtime_recording/fastlio_registered_cloud_summary.jsonl"
+    },
+    "claim_boundary": [
+      "This records ROS2 runtime output; localization quality still requires comparison against replay truth.",
+      "A nonzero point-cloud count alone does not prove accurate localization."
+    ]
+  },
+  "fastlio_log_counts": {
+    "loopback_total": 0,
+    "loopback_by_callback": {
+      "standard_pcl_cbk": 0,
+      "livox_pcl_cbk": 0,
+      "imu_cbk": 0,
+      "unlabeled_loopback": 0
+    },
+    "no_effective_points": 0
+  },
+  "forbidden_topics_present": {
+    "/position_cmd": false,
+    "/mosim/planner/position_cmd": false,
+    "/planning/bspline": false
+  },
+  "forbidden_actions": {
+    "ego_started": false,
+    "planner_goal_published": false,
+    "planning_bspline_acceptance_rerun": false,
+    "position_command_recorder_ran": false,
+    "position_cmd_published": false,
+    "adapter_20hz_started": false,
+    "extrinsics_or_frame_adapters_changed": false
+  }
+}

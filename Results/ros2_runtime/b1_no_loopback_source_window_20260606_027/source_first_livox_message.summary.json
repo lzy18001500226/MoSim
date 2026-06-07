@@ -1,0 +1,14 @@
+{
+  "topic": "/mosim/livox/lidar",
+  "msg_type": "livox_ros_driver2/msg/CustomMsg",
+  "received": true,
+  "header": {
+    "frame_id": "base/livox_mid360",
+    "stamp": {
+      "sec": 1780738846,
+      "nanosec": 296726905
+    }
+  },
+  "point_num": 16515,
+  "timebase": 1780738846296726905
+}

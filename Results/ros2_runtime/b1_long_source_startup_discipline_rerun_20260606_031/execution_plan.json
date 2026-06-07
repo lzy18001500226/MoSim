@@ -1,0 +1,53 @@
+{
+  "schema": "mosim.ros2_runtime.long_source_startup_discipline_rerun_031_plan.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-LONG-SOURCE-STARTUP-DISCIPLINE-RERUN-20260606-031",
+  "department_local_goal": "Rerun the 028 120-frame non-wrapping body_lidar_m_z_up FAST-LIO no-goal long-source gate using the 030 startup order, then return only if zero loop-back, nonzero /Odometry and /cloud_registered, monotonic Livox/IMU, forbidden-topic absence, and clean cleanup all pass.",
+  "critical_path_steps": [
+    "Read AGENTS.md, new_conversation_context, ros2_runtime_setup, task packet 031, blocker 028, return 029, and return 030.",
+    "Confirm no prior 031 return/blocker packet exists.",
+    "Write evidence-local 031 runner that combines the 028 long source with the 030 FAST-LIO -> LiDAR first frame -> IMU order.",
+    "Before running, clean stale ROS2/FAST-LIO/replay/probe processes and stop with blocker if cleanup is unsafe.",
+    "Run exactly one no-goal long-source startup-discipline rerun.",
+    "Record Livox/IMU monotonicity, FAST-LIO loop-back counts, FAST-LIO output counts, forbidden topic absence, and cleanup.",
+    "Write exactly one return/blocker packet and do not enter planner/EGO/PositionCommand/20Hz adapter work."
+  ],
+  "parallelizable_slices": [
+    {
+      "slice": "runner_diff_audit",
+      "scope": "Compare 028 and 030 evidence-local runners and document the exact startup-order reuse.",
+      "status": "completed_locally"
+    },
+    {
+      "slice": "no_goal_fastlio_gate",
+      "scope": "Single WSL ROS2 runtime probe serialized due to shared ROS graph and process locks.",
+      "status": "critical_path_only"
+    }
+  ],
+  "subagent_plan": {
+    "decision": "available_but_not_useful",
+    "reason": "The only material execution is one serialized live ROS2/FAST-LIO rerun. Parallel subagents must not run competing ROS graph operations, and the runner-diff audit is small and completed locally from durable packets."
+  },
+  "subagents_used": [],
+  "verification_gates": [
+    "pre_cleanup_no_stale_ros_fastlio_replay_processes",
+    "uses_028_120_frame_nonwrapping_source",
+    "uses_030_startup_order",
+    "no_goal_probe_only",
+    "loop_false_long_source_consumption_recorded",
+    "livox_count_nonzero_and_timestamp_monotonic",
+    "imu_count_nonzero_and_timestamp_monotonic",
+    "fastlio_log_has_zero_callback_labeled_or_unlabeled_loopback_events",
+    "odometry_count_nonzero",
+    "cloud_registered_count_nonzero",
+    "forbidden_topics_absent_or_zero",
+    "cleanup_no_replay_fastlio_ego_processes",
+    "forbidden_actions_all_false"
+  ],
+  "manual_review_or_blocker_triggers": [
+    "If ROS2/WSL cleanup is unsafe, write blocker before running.",
+    "If 030 startup ordering cannot be reproduced with the 028 long source, write blocker.",
+    "If any loop-back event remains, write blocker and do not tune again.",
+    "If /Odometry or /cloud_registered is zero, write blocker and do not enter planner acceptance.",
+    "No manual RViz/RViz2 review is requested in this task."
+  ]
+}

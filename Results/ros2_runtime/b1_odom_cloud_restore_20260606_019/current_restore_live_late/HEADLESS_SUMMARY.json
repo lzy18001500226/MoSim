@@ -1,0 +1,286 @@
+{
+  "schema": "mosim.factory_fastlio_mid360_headless_summary.v1",
+  "output_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live_late",
+  "probe": {
+    "schema": "mosim.livox_imu_probe.v1",
+    "duration_seconds": 2,
+    "topics": {
+      "livox": "/mosim/livox/lidar",
+      "imu": "/mosim/forward/imu"
+    },
+    "counts": {
+      "livox": 18,
+      "imu": 370
+    },
+    "rates_hz": {
+      "livox": 8.84252,
+      "imu": 184.176
+    },
+    "time_quality": {
+      "livox_stamps_monotonic": true,
+      "imu_stamps_monotonic": true,
+      "latest_livox_minus_imu_s": -0.0775824
+    },
+    "livox": {
+      "point_num": {
+        "min": 15607,
+        "max": 16443
+      },
+      "bad_point_num_frames": 0,
+      "offset_min_us": 0,
+      "offset_max_us": 89994,
+      "observed_lines": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "observed_tags": [
+        16
+      ]
+    },
+    "acceptance": {
+      "livox_nonzero": true,
+      "imu_nonzero": true,
+      "livox_rate_ok": true,
+      "imu_rate_ok": true,
+      "time_delta_ok": true,
+      "point_num_ok": true,
+      "point_num_matches": true
+    },
+    "claim": "subscriber-side Livox CustomMsg plus IMU input gate; not FAST-LIO localization evidence"
+  },
+  "recording": {
+    "schema": "mosim.fastlio_ros2_runtime_recording.v1",
+    "scene_id": "factoryenvironmentcollect",
+    "duration_seconds": 15.0,
+    "topics": {
+      "odometry": "/Odometry",
+      "path": "/path",
+      "registered_cloud": "/cloud_registered"
+    },
+    "counts": {
+      "odometry": 135,
+      "path": 13,
+      "registered_cloud": 135
+    },
+    "outputs": {
+      "odometry_jsonl": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live_late/fastlio_odometry.jsonl",
+      "path_jsonl": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live_late/fastlio_path.jsonl",
+      "registered_cloud_summary_jsonl": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live_late/fastlio_registered_cloud_summary.jsonl"
+    },
+    "claim_boundary": [
+      "This records ROS2 runtime output; localization quality still requires comparison against replay truth.",
+      "A nonzero point-cloud count alone does not prove accurate localization."
+    ]
+  },
+  "evaluation": {
+    "schema": "mosim.fastlio_runtime_evaluation.v1",
+    "scene_id": "factoryenvironmentcollect",
+    "status": "failed_error_threshold",
+    "truth_dataset": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_mworks_truth_dataset.jsonl",
+    "odometry_jsonl": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live_late/fastlio_odometry.jsonl",
+    "align_start_time": true,
+    "time_offset_s": 1780709598.571324,
+    "align_start_position": true,
+    "position_offset_m": [
+      55.619771,
+      24.505645,
+      -1.908268
+    ],
+    "align_start_yaw": true,
+    "yaw_offset_rad": -0.002109,
+    "thresholds": {
+      "max_time_delta_s": 0.2,
+      "max_position_rmse_m": 1.0,
+      "max_position_error_m": 3.0
+    },
+    "metrics": {
+      "truth_frames": 40,
+      "odometry_samples": 135,
+      "odometry_samples_after_time_sort": 135,
+      "aligned_samples": 58,
+      "position_rmse_m": 1.230406,
+      "max_position_error_m": 2.277723,
+      "yaw_rmse_rad": 0.011934
+    },
+    "odometry_time_quality": {
+      "raw_samples": 135,
+      "unique_timestamps": 135,
+      "nonmonotonic_pairs": 1,
+      "first_time_s": 1780709598.571324,
+      "last_time_s": 1780709609.411233,
+      "min_time_s": 1780709598.571324,
+      "max_time_s": 1780709609.411233
+    },
+    "sample_errors": [
+      {
+        "odom_seq": 0,
+        "odom_time": 1780709598.571324,
+        "truth_time": 0.0,
+        "time_delta_s": 0.0,
+        "position_error_m": 0.0,
+        "yaw_error_rad": 0.0
+      },
+      {
+        "odom_seq": 1,
+        "odom_time": 1780709598.679686,
+        "truth_time": 0.1,
+        "time_delta_s": 0.008362,
+        "position_error_m": 0.067429,
+        "yaw_error_rad": 0.002655
+      },
+      {
+        "odom_seq": 2,
+        "odom_time": 1780709598.788114,
+        "truth_time": 0.2,
+        "time_delta_s": 0.01679,
+        "position_error_m": 0.131167,
+        "yaw_error_rad": 0.008401
+      },
+      {
+        "odom_seq": 3,
+        "odom_time": 1780709598.896332,
+        "truth_time": 0.3,
+        "time_delta_s": 0.025008,
+        "position_error_m": 0.136833,
+        "yaw_error_rad": 0.007536
+      },
+      {
+        "odom_seq": 4,
+        "odom_time": 1780709599.004704,
+        "truth_time": 0.4,
+        "time_delta_s": 0.03338,
+        "position_error_m": 0.136618,
+        "yaw_error_rad": 0.005075
+      },
+      {
+        "odom_seq": 5,
+        "odom_time": 1780709599.112969,
+        "truth_time": 0.5,
+        "time_delta_s": 0.041645,
+        "position_error_m": 0.123933,
+        "yaw_error_rad": 0.00236
+      },
+      {
+        "odom_seq": 6,
+        "odom_time": 1780709599.221364,
+        "truth_time": 0.7,
+        "time_delta_s": 0.04996,
+        "position_error_m": 0.111909,
+        "yaw_error_rad": 0.001249
+      },
+      {
+        "odom_seq": 7,
+        "odom_time": 1780709599.329631,
+        "truth_time": 0.8,
+        "time_delta_s": 0.041693,
+        "position_error_m": 0.139354,
+        "yaw_error_rad": 0.006951
+      },
+      {
+        "odom_seq": 8,
+        "odom_time": 1780709599.438007,
+        "truth_time": 0.9,
+        "time_delta_s": 0.033317,
+        "position_error_m": 0.187179,
+        "yaw_error_rad": 0.01403
+      },
+      {
+        "odom_seq": 9,
+        "odom_time": 1780709599.546325,
+        "truth_time": 1.0,
+        "time_delta_s": 0.024999,
+        "position_error_m": 0.240773,
+        "yaw_error_rad": 0.019033
+      },
+      {
+        "odom_seq": 10,
+        "odom_time": 1780709599.654702,
+        "truth_time": 1.1,
+        "time_delta_s": 0.016622,
+        "position_error_m": 0.282795,
+        "yaw_error_rad": 0.019762
+      },
+      {
+        "odom_seq": 11,
+        "odom_time": 1780709599.762996,
+        "truth_time": 1.2,
+        "time_delta_s": 0.008328,
+        "position_error_m": 0.314267,
+        "yaw_error_rad": 0.015186
+      },
+      {
+        "odom_seq": 12,
+        "odom_time": 1780709599.871328,
+        "truth_time": 1.3,
+        "time_delta_s": 4e-06,
+        "position_error_m": 0.319259,
+        "yaw_error_rad": 0.008093
+      },
+      {
+        "odom_seq": 13,
+        "odom_time": 1780709599.979596,
+        "truth_time": 1.4,
+        "time_delta_s": 0.008272,
+        "position_error_m": 0.303853,
+        "yaw_error_rad": 0.002804
+      },
+      {
+        "odom_seq": 14,
+        "odom_time": 1780709600.088004,
+        "truth_time": 1.5,
+        "time_delta_s": 0.01668,
+        "position_error_m": 0.278363,
+        "yaw_error_rad": 0.004578
+      },
+      {
+        "odom_seq": 15,
+        "odom_time": 1780709600.196376,
+        "truth_time": 1.6,
+        "time_delta_s": 0.025052,
+        "position_error_m": 0.243358,
+        "yaw_error_rad": 0.014314
+      },
+      {
+        "odom_seq": 16,
+        "odom_time": 1780709600.304705,
+        "truth_time": 1.7,
+        "time_delta_s": 0.033381,
+        "position_error_m": 0.210865,
+        "yaw_error_rad": 0.025013
+      },
+      {
+        "odom_seq": 17,
+        "odom_time": 1780709600.413057,
+        "truth_time": 1.8,
+        "time_delta_s": 0.041733,
+        "position_error_m": 0.201393,
+        "yaw_error_rad": 0.028747
+      },
+      {
+        "odom_seq": 18,
+        "odom_time": 1780709600.521376,
+        "truth_time": 2.0,
+        "time_delta_s": 0.049948,
+        "position_error_m": 0.309963,
+        "yaw_error_rad": 0.016904
+      },
+      {
+        "odom_seq": 52,
+        "odom_time": 1780709600.527864,
+        "truth_time": 2.0,
+        "time_delta_s": 0.04346,
+        "position_error_m": 1.821227,
+        "yaw_error_rad": 0.028576
+      }
+    ],
+    "claim_boundary": [
+      "This evaluates recorded FAST-LIO ROS runtime odometry against replay truth.",
+      "Start-position alignment is allowed because FAST-LIO odometry is commonly local-map relative while replay truth is in UE world coordinates.",
+      "Start-yaw alignment is allowed because FAST-LIO local map axes can differ from UE world axes by an initial heading rotation.",
+      "A pass requires separately recorded runtime topics; synthetic replay files alone are insufficient.",
+      "The global occupancy truth remains a validation oracle and is not a planner input."
+    ]
+  }
+}

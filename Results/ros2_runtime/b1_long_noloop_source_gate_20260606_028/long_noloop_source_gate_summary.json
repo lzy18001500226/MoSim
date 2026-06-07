@@ -1,0 +1,117 @@
+{
+  "schema": "mosim.ros2_runtime.long_noloop_source_gate_028_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-LONG-NOLOOP-SOURCE-GATE-20260606-028",
+  "status": "blocked_before_goal",
+  "checks": {
+    "source_inventory_records_frame_count_rate_span_and_frame": true,
+    "loop_false_source_does_not_wrap": true,
+    "livox_count_nonzero_and_timestamp_monotonic": true,
+    "imu_count_nonzero_and_timestamp_monotonic": true,
+    "fastlio_log_has_no_lidar_loop_back_clear_buffer_in_accepted_window": false,
+    "odometry_count_nonzero": true,
+    "cloud_registered_count_nonzero": true
+  },
+  "source": {
+    "path": "/mnt/c/Users/HP/Desktop/MoSim/Results/ros2_runtime/b1_long_noloop_source_gate_20260606_028/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body_120.jsonl",
+    "frame_count": 120,
+    "first": {
+      "seq": 0,
+      "time": 0.0,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 16526
+    },
+    "last": {
+      "seq": 119,
+      "time": 11.9,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 17156
+    },
+    "all_body_lidar_m_z_up": true,
+    "time_monotonic": true
+  },
+  "probe": {
+    "schema": "mosim.livox_imu_probe.v1",
+    "duration_seconds": 4,
+    "topics": {
+      "livox": "/mosim/livox/lidar",
+      "imu": "/mosim/forward/imu"
+    },
+    "counts": {
+      "livox": 38,
+      "imu": 770
+    },
+    "rates_hz": {
+      "livox": 9.32579,
+      "imu": 191.273
+    },
+    "time_quality": {
+      "livox_stamps_monotonic": true,
+      "imu_stamps_monotonic": true,
+      "latest_livox_minus_imu_s": -0.101027
+    },
+    "livox": {
+      "point_num": {
+        "min": 15602,
+        "max": 16500
+      },
+      "bad_point_num_frames": 0,
+      "offset_min_us": 0,
+      "offset_max_us": 99993,
+      "observed_lines": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "observed_tags": [
+        16
+      ]
+    },
+    "acceptance": {
+      "livox_nonzero": true,
+      "imu_nonzero": true,
+      "livox_rate_ok": true,
+      "imu_rate_ok": true,
+      "time_delta_ok": true,
+      "point_num_ok": true,
+      "point_num_matches": true
+    },
+    "claim": "subscriber-side Livox CustomMsg plus IMU input gate; not FAST-LIO localization evidence"
+  },
+  "fastlio_runtime_recording": {
+    "schema": "mosim.fastlio_ros2_runtime_recording.v1",
+    "scene_id": "factoryenvironmentcollect",
+    "duration_seconds": 5.0,
+    "topics": {
+      "odometry": "/Odometry",
+      "path": "/path",
+      "registered_cloud": "/cloud_registered"
+    },
+    "counts": {
+      "odometry": 47,
+      "path": 5,
+      "registered_cloud": 46
+    },
+    "outputs": {
+      "odometry_jsonl": "Results/ros2_runtime/b1_long_noloop_source_gate_20260606_028/runtime_recording/fastlio_odometry.jsonl",
+      "path_jsonl": "Results/ros2_runtime/b1_long_noloop_source_gate_20260606_028/runtime_recording/fastlio_path.jsonl",
+      "registered_cloud_summary_jsonl": "Results/ros2_runtime/b1_long_noloop_source_gate_20260606_028/runtime_recording/fastlio_registered_cloud_summary.jsonl"
+    },
+    "claim_boundary": [
+      "This records ROS2 runtime output; localization quality still requires comparison against replay truth.",
+      "A nonzero point-cloud count alone does not prove accurate localization."
+    ]
+  },
+  "fastlio_log_counts": {
+    "lidar_loop_back_clear_buffer": 1,
+    "no_effective_points": 0
+  },
+  "forbidden_actions": {
+    "ego_started": false,
+    "planner_goal_published": false,
+    "planning_bspline_acceptance_rerun": false,
+    "position_command_recorder_ran": false,
+    "position_cmd_published": false,
+    "adapter_20hz_started": false
+  }
+}

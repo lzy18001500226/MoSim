@@ -1,0 +1,120 @@
+{
+  "schema_version": "mosim.ros2_real_planner_input_gate_probe.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-PLANNER-INPUT-GATE-20260606-018",
+  "created_at": "2026-06-06T09:08:21.450465+08:00",
+  "evidence_dir": "Results/ros2_runtime/b1_real_planner_input_gate_20260606_018",
+  "ros_environment": [
+    "ROS_DISTRO=humble",
+    "ROS_DOMAIN_ID=",
+    "RMW_IMPLEMENTATION="
+  ],
+  "nodes": [
+    "/rosapi",
+    "/rosapi",
+    "/rosapi_params",
+    "/rosapi_params",
+    "/rosbridge_websocket",
+    "/rosbridge_websocket"
+  ],
+  "topics_typed": [
+    "/client_count [std_msgs/msg/Int32]",
+    "/connected_clients [rosbridge_msgs/msg/ConnectedClients]",
+    "/parameter_events [rcl_interfaces/msg/ParameterEvent]",
+    "/rosout [rcl_interfaces/msg/Log]"
+  ],
+  "required_inputs": {
+    "/Odometry": {
+      "present": false,
+      "expected_type": "nav_msgs/msg/Odometry",
+      "info": "Unknown topic '/Odometry'",
+      "hz": "WARNING: topic [/Odometry] does not appear to be published yet"
+    },
+    "/cloud_registered": {
+      "present": false,
+      "expected_type": "sensor_msgs/msg/PointCloud2",
+      "info": "Unknown topic '/cloud_registered'",
+      "hz": "WARNING: topic [/cloud_registered] does not appear to be published yet"
+    }
+  },
+  "forbidden_topics": {
+    "/planning/bspline": {
+      "present": false,
+      "info": "Unknown topic '/planning/bspline'"
+    },
+    "/position_cmd": {
+      "present": false,
+      "info": "Unknown topic '/position_cmd'"
+    },
+    "/mosim/planner/position_cmd": {
+      "present": false,
+      "info": "Unknown topic '/mosim/planner/position_cmd'"
+    }
+  },
+  "planner_launch_surface": {
+    "ego_planner_pkg_prefix": "/mnt/c/Users/HP/Desktop/MoSim/Results/tmp/ego_planner_ros2_port_ws/install/ego_planner",
+    "ego_planner_executables": [
+      "ego_planner ego_planner_node_preflight",
+      "ego_planner traj_server_ros2_node"
+    ],
+    "static_preconditions": [
+      "launch_exists=true",
+      "config_exists=true",
+      "node_executable_exists=true",
+      "10:    odom_topic = LaunchConfiguration(\"odom_topic\")",
+      "11:    cloud_topic = LaunchConfiguration(\"cloud_topic\")",
+      "21:                        \"runtime_disabled_preflight.yaml\",",
+      "27:                \"odom_topic\",",
+      "32:                \"cloud_topic\",",
+      "43:                    (\"/odom_world\", odom_topic),",
+      "44:                    (\"/grid_map/odom\", odom_topic),",
+      "45:                    (\"/grid_map/cloud\", cloud_topic),",
+      "3:    runtime_disabled: true",
+      "4:    audit_only: true",
+      "5:    evidence_boundary: \"runtime_disabled_static_config_only\"",
+      "7:    fsm.flight_type: -1",
+      "31:    grid_map.resolution: 0.1",
+      "32:    grid_map.map_size_x: 40.0",
+      "33:    grid_map.map_size_y: 40.0",
+      "34:    grid_map.map_size_z: 3.0",
+      "35:    grid_map.local_update_range_x: 5.5",
+      "36:    grid_map.local_update_range_y: 5.5",
+      "37:    grid_map.local_update_range_z: 4.5",
+      "38:    grid_map.obstacles_inflation: 0.099",
+      "39:    grid_map.local_map_margin: 30",
+      "40:    grid_map.ground_height: -0.01",
+      "41:    grid_map.cx: 321.04638671875",
+      "42:    grid_map.cy: 243.44969177246094",
+      "43:    grid_map.fx: 387.229248046875",
+      "44:    grid_map.fy: 387.229248046875",
+      "45:    grid_map.use_depth_filter: true",
+      "46:    grid_map.depth_filter_tolerance: 0.15",
+      "47:    grid_map.depth_filter_maxdist: 5.0",
+      "48:    grid_map.depth_filter_mindist: 0.2",
+      "49:    grid_map.depth_filter_margin: 1",
+      "50:    grid_map.k_depth_scaling_factor: 1000.0",
+      "51:    grid_map.skip_pixel: 2",
+      "52:    grid_map.p_hit: 0.65",
+      "53:    grid_map.p_miss: 0.35",
+      "54:    grid_map.p_min: 0.12",
+      "55:    grid_map.p_max: 0.90",
+      "56:    grid_map.p_occ: 0.80",
+      "57:    grid_map.min_ray_length: 0.1",
+      "58:    grid_map.max_ray_length: 4.5",
+      "59:    grid_map.virtual_ceil_height: 2.5",
+      "60:    grid_map.visualization_truncate_height: 2.4",
+      "61:    grid_map.show_occ_time: false",
+      "62:    grid_map.pose_type: 2",
+      "63:    grid_map.frame_id: \"world\"",
+      "67:    runtime_disabled: true",
+      "68:    audit_only: true",
+      "69:    publish_enabled: false"
+    ],
+    "runtime_false_surface_scan": "Results/ros2_runtime/b1_real_planner_input_gate_20260606_018/runtime_false_static_surface_scan.txt"
+  },
+  "decision": {
+    "real_odometry_present_now": false,
+    "real_cloud_registered_present_now": false,
+    "may_attempt_runtime_disabled_false_later": false,
+    "blocker": "Current live ROS2 graph lacks required real /Odometry and /cloud_registered inputs."
+  }
+}
