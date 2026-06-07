@@ -22,6 +22,7 @@ Pushed batches this stage:
 - `4616b8bdb9` `devops: add dify workflow toolchain subset` - 530 files.
 - `7d7e8e46f1` `devops: add mastra small framework modules` - 659 files.
 - `ec02d80cc3` `devops: add aisoc small security ops subset` - 439 files.
+- `a0107c0198` `devops: add small agent reference tail` - 13 files.
 
 Checks:
 
@@ -46,8 +47,9 @@ Deferred:
 - `References/Agent/Workflow/dify` has 27 deferred third-party files recorded in `Results/agent_runtime/dify_toolchain_subset_diffcheck_failed_paths_20260607.txt`; the clean 530-file toolchain subset was committed and pushed.
 - `References/Agent/Frameworks/mastra` has 5 deferred third-party whitespace-gate files recorded in `Results/agent_runtime/mastra_small_modules_diffcheck_failed_paths_20260607.txt`; only `client-sdks`, `server-adapters`, `templates`, and `workflows` were unthrottled and submitted.
 - `References/Agent/Security/AiSOC` has 4 deferred third-party whitespace-gate files recorded in `Results/agent_runtime/aisoc_small_ops_diffcheck_failed_paths_20260607.txt`; `detections` and `services` remain throttled. One extensionless Mach-O test artifact `plugins/mttr-widget/go/mttr-widget-test` was removed from the unpushed commit index, kept on disk, precisely ignored, and verified absent from `HEAD` before push.
+- `References/Agent/ReviewLater/ChatGPT-Exporter-main` had a clean 9-file subset committed; 12 whitespace-gate files remain deferred. `References/Agent/Domain/terminal-velocity` has two files with leftover conflict markers, recorded in `Results/agent_runtime/agent_small_tail_domain_reviewlater_diffcheck_failed_paths_20260607.txt` and not submitted.
 
 Next:
 
 - Continue with small `References/Agent` project groups under 1000 files after filtering generated/local-only outputs.
-- Good next target: another under-1000 `References/Agent` project group with generated/local outputs filtered. For future security or compiled-language references, include extensionless binary magic/header checks before commit.
+- Good next target: classify `References/Agent/Gateway` residuals into durable build/obj/runtime ignores versus any remaining source files; do not broadly unthrottle the whole Gateway tree.
