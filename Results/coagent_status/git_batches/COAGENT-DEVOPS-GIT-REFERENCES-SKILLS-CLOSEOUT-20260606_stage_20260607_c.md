@@ -55,3 +55,15 @@ Next:
 
 - Continue with small `References/Agent` project groups under 1000 files after filtering generated/local-only outputs.
 - Good next target: continue small-tail inventory, then inspect larger `References/Agent` groups by project slices. Keep env/key/materialized build outputs ignored instead of reopening them.
+
+Additional pushed batch:
+
+- `6516295196` `devops: add docs mcp server memory reference` - 696 files.
+
+Additional deferred/current notes:
+
+- `References/Agent/Memory/docs-mcp-server` had 694 ignored candidates; all passed risk and cached checks after a narrow whitelist and were committed with path evidence in `Results/agent_runtime/docs_mcp_server_paths_20260607.txt`.
+
+Next addendum:
+
+- Continue Memory small residuals such as `git-mcp`, `graphify-8`, `GraphRAG`, `khoj`, and `zep`, then larger Memory/UI/Workflow projects by subdirectory.
