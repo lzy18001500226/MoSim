@@ -44,6 +44,27 @@ manifest-only external materials. If the large surface is already tracked or
 appears as 10k+ modifications from a rename/move, `.gitignore` is not a
 solution; classify and commit those tracked changes in path-limited batches.
 
+For crawled reference repositories, the DevOps route is:
+
+```text
+1. isolate the noisy parent only long enough to keep Git responsive;
+2. inventory by source project or major subdirectory;
+3. reopen one reviewed project slice at a time;
+4. keep generic generated/dependency/archive/binary rules class-based,
+   preferably at `References/**` level;
+5. commit ordinary source/docs/scripts/configs/examples/small assets in
+   pathspec batches below the file-count ceiling;
+6. leave ignored only individual over-limit files, credentials/local settings,
+   dependency/build/cache/runtime outputs, missing LFS payloads, or explicitly
+   manifest-only assets;
+7. record the drain state and remove/narrow temporary rules before closeout.
+```
+
+Do not let `.gitignore` become the backlog. A large project directory being a
+few hundred MB is not itself a reason to keep it ignored; the hard gate is
+single-file size and risk class. A rule-only commit must name the next content
+drain batch or the exact blocker.
+
 Use the handoff packet when the current Git surface is already broad and needs
 DevOps/reviewer ownership before any commit:
 

@@ -608,7 +608,9 @@ If CoAgentOps confirms the same start-turn/agent-loop failure after bounded
 list/read/no-op/metadata/no-op diagnosis, the next default action is to write a
 durable blocker/recovery packet, attempt both sparse user notifications
 (WeChat and email), record both audit results, and restart Codex++ through the
-authorized manager, then wait for a post-restart no-op validation. Do not keep
+authorized manager after only a short manual-restart window, then wait for a
+post-restart no-op validation. The notifications let an online user restart
+faster; they do not create an indefinite approval wait. Do not keep
 retrying the same failed delivery surface, and do not create a replacement conversation by default. A replacement
 requires explicit PMO/user approval, repeated failed restart recovery, or a
 critical path that cannot wait.
@@ -621,7 +623,8 @@ pending work, return `DONT_NOTIFY`, or run lower-priority optimization. The
 heartbeat must execute the next authorized recovery step. For
 notification/restart-pending dead-thread recovery, that means sending sparse
 WeChat plus email alerts, recording both audits, and triggering the authorized
-Codex++ restart route. It writes a blocker/request packet with `NOTIFY` only
+Codex++ restart route after a short manual-restart window if no explicit
+deferral arrives. It writes a blocker/request packet with `NOTIFY` only
 when a required tool/surface is unavailable, the notification/restart action
 fails, or an explicit PMO/user-approved deferral packet pauses this fail-close
 behavior.
@@ -635,7 +638,8 @@ D:\Program Files\Codex++\codex-plus-plus-manager.exe
 Use it only after a dead-thread blocker has been written and both sparse user
 notifications have been attempted, one by WeChat and one by email. If a channel
 is unavailable, record the failure before continuing. If notification is unavailable,
-or if the user is offline and maintenance would otherwise stall, CoAgentOps may trigger the
+or if notification is sent and no explicit manual deferral or visible
+intervention is available after a short window, CoAgentOps may trigger the
 Codex++ restart action through this manager. This will terminate the current
 conversation, so any recovery attempt must leave a durable packet first and rely
 on the 30-minute PMO/CoAgentOps heartbeat automations to resume validation
@@ -2048,6 +2052,10 @@ Large batch default strategy:
    broad "hide the incoming tree" rules just because the source-control view is
    quiet. Convert each temporary rule into committed tracked content, a narrow
    long-term ignore for a justified class, or a documented manifest-only skip.
+10. Record the drain state. Each temporary throttle must have an owner task,
+    intended next batch, and closeout decision in the ledger/result packet. If a
+    rule has no drain owner, treat it as unfinished Git work rather than release
+    hygiene.
 ```
 
 For crawled open-source reference projects, the default unit is the source
@@ -2089,6 +2097,26 @@ project/subdirectory granularity and committed in reviewed batches. If a
 temporary intake block grows past a few hundred lines, treat that as a
 release-hygiene smell and schedule drain batches instead of adding more ordinary
 source exceptions.
+
+Operational closeout checklist for crawled repositories:
+
+```text
+temporary ignore owner recorded:
+path-limited inventory recorded:
+batch path list written under Results/coagent_status/git_batches/<task>/:
+batch file count < 1000:
+single-file >=100 MiB check passed or blockers recorded:
+credentials/local settings/generator/dependency/cache/runtime classes excluded:
+actual content staged with pathspec, not broad git add:
+git diff --cached --check passed or exact third-party exceptions recorded:
+commit hash and push state recorded:
+temporary ignore removed, narrowed, or explicitly blocked:
+```
+
+A `.gitignore`-only batch can be a throttle or cleanup commit, but it is not a
+content-drain batch. After such a commit, the next action must name the source
+project/subdirectory to reopen, the durable class rule to keep, or the blocker
+that prevents draining it.
 
 When using PowerShell with temporary indexes and `git commit-tree`, native Git
 gate commands must be checked through `$LASTEXITCODE` before `git write-tree`

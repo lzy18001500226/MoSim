@@ -6,6 +6,11 @@
 dead-thread incident, the still-healthy mainline must attempt both sparse user
 notifications, one by mail and one by WeChat, and record both results in the
 recovery packet. This overrides older wording that made WeChat optional.
+The notification is an advance handoff window, not an approval wait. If the
+user is online, the user may restart Codex++ manually faster; if no immediate
+manual intervention is visible after the notification attempts are recorded,
+the still-healthy mainline continues the authorized restart route. Do not wait
+indefinitely for a reply unless PMO/user has explicitly written a deferral.
 
 2026-06-07 model-effort default: all MoSim mainline, visible department, and
 disposable sub-agent thread creation/dispatch should request `model=gpt-5.5`
@@ -29,7 +34,8 @@ pending notifications, pending restart, pending post-restart validation, or
 heartbeat that sees such an open recovery must execute the next authorized
 recovery step within its authority. For notification/restart-pending
 dead-thread recovery, that means attempting sparse WeChat plus email,
-recording audits, and triggering the authorized Codex++ restart route. Write a
+recording audits, allowing only a short manual-restart window, and triggering
+the authorized Codex++ restart route if no explicit deferral arrives. Write a
 blocker/request instead only if a required tool/surface is unavailable, the
 notification/restart action fails, or PMO/user has explicitly deferred the
 incident. It must not mark the patrol completed, must not return
@@ -42,7 +48,8 @@ current `active_visible` thread allowlist with list/read, then sends at most
 one minimal no-op only to threads that already show dispatch-surface risk or
 need explicit recovery validation. A confirmed start-turn/agent-loop failure
 is immediately handled as P0 fail-close: write recovery packet, send sparse
-WeChat plus email, record audits, and trigger authorized Codex++ restart.
+WeChat plus email, record audits, give the user a brief chance to perform a
+faster manual restart, and otherwise trigger authorized Codex++ restart.
 Because restart terminates the current conversation, the next heartbeat must
 perform post-restart no-op validation and notify PMO whether routing can
 resume.
@@ -55,6 +62,21 @@ suffix, and the production ROS2 runtime thread is
 automation prompts, dispatch packets, or current-route docs. Historical packet
 IDs or evidence labels that contain R3 are preserved only as history and must
 not imply an active R3 route.
+
+2026-06-07 large-Git ignore-drain hotfix: for crawled open-source repositories
+or moved reference trees, temporary `.gitignore` rules are only a Git throttle
+and must be treated as a drain queue. A Git split task is not done until every
+temporary broad/project ignore is removed after actual content is committed,
+narrowed to a durable class rule, or recorded as a blocker. Durable ignores are
+file/class decisions, not project-size decisions: keep individual files at or
+above GitHub's 100 MiB hard limit, credentials, local settings, dependency
+folders, generated/build/cache/runtime outputs, missing LFS payloads, or
+manifest-only assets ignored; reopen ordinary source, docs, scripts, configs,
+examples, and small assets project by project. Do not grow `.gitignore` into a
+per-file backlog or repeat generic rules such as `zip`, `7z`, `node_modules`,
+`build`, `.venv`, `__pycache__`, `exe`, `dll`, `lib`, `pdb`, or `obj` under
+each project; use concise class guards such as `References/**` and document
+project-specific exceptions.
 
 ---
 
@@ -585,6 +607,14 @@ Rules:
    so a broad project whitelist cannot accidentally reopen those classes. Add
    project-specific exceptions only for verified source/config directories such
    as PX4 board `dist` inputs.
+   Every temporary ignore throttle must have an owner task, intended drain
+   batch, and closeout state in the ledger or result packet. A commit that only
+   hides files in `.gitignore` is not a content-intake batch. Before declaring a
+   large Git task complete, audit `.gitignore` from top to bottom and prove that
+   remaining rules are durable class/exact-risk rules, not forgotten intake
+   throttles. If `.gitignore` starts growing into hundreds of ordinary
+   reference-path lines, stop adding rules and drain one source project or
+   subdirectory batch instead.
 9. When Git is slow, has LFS/hook/index-lock residue, or another Git owner is
    active, delegate commit/push work to `GitIntegrator` instead of blocking the
    main engineering thread. The main agent remains responsible for scope,
@@ -683,7 +713,8 @@ Coordinator rules:
    CoAgentOps itself is the failed surface. If CoAgentOps confirms the same
    start-turn/agent-loop failure persists and a Codex++ restart is planned, the
    still-healthy mainline must attempt both WeChat and email alerts before
-   restart and record both audit results. Restart
+   restart and record both audit results. These alerts are to let an online
+   user restart faster, not to block recovery waiting for approval. Restart
    ends the current conversation, so recovery validation must be resumed by the
    CoAgentOps heartbeat or by PMO only when CoAgentOps is unavailable: read the
    latest blocker, run no-op delivery validation, and classify the thread as
@@ -693,7 +724,9 @@ Coordinator rules:
    Every planned Codex++ restart for a dead-thread incident must attempt both
    sparse notifications before restart: one WeChat alert and one email alert,
    even if one channel appears healthy. Record both audit paths in the
-   blocker/recovery packet.
+   blocker/recovery packet. After both attempts are recorded, continue the
+   authorized restart route unless PMO/user has explicitly deferred the
+   incident; do not wait indefinitely for a reply.
    A heartbeat that finds an existing P0 dead-thread recovery packet still
    waiting for notifications, restart, or post-restart validation must fail
    closed: continue the recovery if authorized, or write a blocker/request and
@@ -704,7 +737,9 @@ Coordinator rules:
    the message cannot enter the failed start-turn surface. PMO and CoAgentOps
    must therefore use dual-mainline cross-checking through their own
    thread-attached 30-minute heartbeats: whichever mainline is still healthy
-   sends both sparse WeChat and email alerts, triggers the authorized restart route, and lets
+    sends both sparse WeChat and email alerts, gives the user only a short
+    manual-restart window, triggers the authorized restart route if no explicit
+    deferral arrives, and lets
    post-restart validation classify the affected mainline. Detached cron
    `mosim-coagentops` and Windows scheduled task
    `MoSim-CoAgentOps-OuterWatchdog` were removed after user review and must not
