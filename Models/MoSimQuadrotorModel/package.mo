@@ -5,5 +5,6 @@ package MoSimQuadrotorModel
   annotation(uses(
     Modelica(version = "4.0.0.TY.1"),
     QuadrotorModel,
-    QuadrotorExperiments));
+    QuadrotorExperiments,
+    QuadrotorControllerBlocks));
 end MoSimQuadrotorModel;
