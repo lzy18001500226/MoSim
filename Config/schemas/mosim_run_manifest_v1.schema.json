@@ -1,0 +1,57 @@
+{
+  "schema": "mosim.run_manifest.v1",
+  "description": "P0 cross-layer MoSim run manifest. This schema is documented for tooling; Scripts/quality/check_run_manifest.py implements the active validation.",
+  "required": [
+    "schema_version",
+    "run_id",
+    "objective",
+    "scene_id",
+    "map_id",
+    "vehicle_id",
+    "controller_id",
+    "planner_id",
+    "quality_status",
+    "evidence_level",
+    "claim_scope",
+    "sources",
+    "mworks",
+    "ros2",
+    "planner",
+    "ue",
+    "gate_results"
+  ],
+  "quality_status_values": [
+    "pass",
+    "smoke_only",
+    "needs_iteration",
+    "invalid"
+  ],
+  "source_labels": [
+    "MWORKS_MCP",
+    "MWORKS_GUI",
+    "offline_script",
+    "ROS2_REALSTACK",
+    "UE_SENSOR_ORACLE",
+    "RVIZ_MANUAL_REVIEW"
+  ],
+  "p0_required_checks": [
+    "mworks.check_model_status == pass",
+    "mworks.simulate_status in {pass, smoke_only}",
+    "mworks.raw_csv present for performance claims",
+    "ros2.timestamp_monotonic == true",
+    "ros2.tf_status == pass",
+    "ros2.imu_rate_hz >= 180",
+    "ros2.lidar_rate_hz >= 9",
+    "ros2.fast_lio_eval.position_rmse_m <= 0.5 when FAST-LIO is in claim_scope",
+    "ros2.fast_lio_eval.max_error_m <= 1.0 when FAST-LIO is in claim_scope",
+    "planner.global_truth_used_as_input == false",
+    "planner.setpoint_trace_source == RUNTIME_20HZ_ADAPTER when planner/controller loop is in claim_scope",
+    "planner.setpoint_adapter_status == pass when planner/controller loop is in claim_scope",
+    "planner.setpoint_rate_hz >= 19 when planner/controller loop is in claim_scope",
+    "planner.stale_command_timeout_s > 0 when planner/controller loop is in claim_scope",
+    "mworks.setpoint_trace_consumption_status == pass when closed_loop is in claim_scope",
+    "mworks.consumed_setpoint_trace exists and matches planner.setpoint_trace when closed_loop is in claim_scope",
+    "mworks.trace_consumption_evidence is present when closed_loop is in claim_scope",
+    "ue.no_pose_overwrite_status == pass"
+  ]
+}

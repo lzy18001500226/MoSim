@@ -14,6 +14,640 @@ package QuadrotorExperiments
     y := if u > limit then limit else if u < -limit then -limit else u;
   end saturate;
 
+  package OfficialScenarios
+    "官方任务与控制器闭环场景（兼容旧平铺类名的分类入口）"
+    model Example1AWFF
+      "阶跃爬升：AWFF Sysblock 闭环"
+      extends QuadrotorExperiments.Example1AWFFSysblockClosedLoop;
+    end Example1AWFF;
+    model Example1INDI
+      "阶跃爬升：INDI / L1 组合控制闭环"
+      extends QuadrotorExperiments.Example1INDISysblockClosedLoop;
+    end Example1INDI;
+    model Example1L1
+      "阶跃爬升：L1 残差补偿闭环"
+      extends QuadrotorExperiments.Example1L1SysblockClosedLoop;
+    end Example1L1;
+    model Example1LinearMPC
+      "阶跃爬升：线性 MPC 闭环"
+      extends QuadrotorExperiments.Example1LinearMPCSysblockClosedLoop;
+    end Example1LinearMPC;
+    model Example1PlanarFigure8Trail
+      "阶跃起飞后平面 8 字轨迹留痕审查"
+      extends QuadrotorExperiments.Example1PlanarFigure8TrailSysblockClosedLoop;
+    end Example1PlanarFigure8Trail;
+    model Example1HelicalFigure8Trail
+      "阶跃起飞后螺旋 8 字轨迹留痕审查"
+      extends QuadrotorExperiments.Example1HelicalFigure8TrailSysblockClosedLoop;
+    end Example1HelicalFigure8Trail;
+    model Example2AWFF
+      "螺旋爬升：AWFF Sysblock 闭环"
+      extends QuadrotorExperiments.Example2AWFFSysblockClosedLoop;
+    end Example2AWFF;
+    model Example2HelixTunedAWFF
+      "螺旋爬升：调参 AWFF Sysblock 闭环"
+      extends QuadrotorExperiments.Example2HelixTunedAWFFSysblockClosedLoop;
+    end Example2HelixTunedAWFF;
+    model Example2INDI
+      "螺旋爬升：INDI / L1 组合控制闭环"
+      extends QuadrotorExperiments.Example2INDISysblockClosedLoop;
+    end Example2INDI;
+    model Example2HelixTunedINDI
+      "螺旋爬升：调参 INDI / L1 组合控制闭环"
+      extends QuadrotorExperiments.Example2HelixTunedINDISysblockClosedLoop;
+    end Example2HelixTunedINDI;
+    model Example2LinearMPC
+      "螺旋爬升：线性 MPC 闭环"
+      extends QuadrotorExperiments.Example2LinearMPCSysblockClosedLoop;
+    end Example2LinearMPC;
+    model Example3AWFF
+      "8 字任务：AWFF Sysblock 闭环"
+      extends QuadrotorExperiments.Example3AWFFSysblockClosedLoop;
+    end Example3AWFF;
+    model Example3INDI
+      "8 字任务：INDI / L1 组合控制闭环"
+      extends QuadrotorExperiments.Example3INDISysblockClosedLoop;
+    end Example3INDI;
+    model Example3L1
+      "8 字任务：L1 残差补偿闭环"
+      extends QuadrotorExperiments.Example3L1SysblockClosedLoop;
+    end Example3L1;
+    model Example3LinearMPC
+      "8 字任务：线性 MPC 闭环"
+      extends QuadrotorExperiments.Example3LinearMPCSysblockClosedLoop;
+    end Example3LinearMPC;
+  end OfficialScenarios;
+
+  package ControllerBaselines
+    "控制器基线与对比模型（兼容旧平铺类名的分类入口）"
+    model AntiWindupFeedforwardCore
+      "AWFF 控制器核心"
+      extends QuadrotorExperiments.AntiWindupFeedforwardController;
+    end AntiWindupFeedforwardCore;
+    model Example1AWFFBaseline
+      "阶跃爬升：AWFF 控制器基线"
+      extends QuadrotorExperiments.Example1AntiWindupFeedforwardPID;
+    end Example1AWFFBaseline;
+    model Example2AWFFBaseline
+      "螺旋爬升：AWFF 控制器基线"
+      extends QuadrotorExperiments.Example2AntiWindupFeedforwardPID;
+    end Example2AWFFBaseline;
+    model Example2HelixTunedAWFFBaseline
+      "螺旋爬升：调参 AWFF 控制器基线"
+      extends QuadrotorExperiments.Example2HelixTunedAntiWindupFeedforwardPID;
+    end Example2HelixTunedAWFFBaseline;
+    model Example3AWFFBaseline
+      "8 字任务：AWFF 控制器基线"
+      extends QuadrotorExperiments.Example3AntiWindupFeedforwardPID;
+    end Example3AWFFBaseline;
+    model Example1ImprovedPIDBaseline
+      "阶跃爬升：改进 PID 对比基线"
+      extends QuadrotorExperiments.Example1ImprovedPID;
+    end Example1ImprovedPIDBaseline;
+    model Example1EnhancedPIDBaseline
+      "阶跃爬升：增强 PID 对比基线"
+      extends QuadrotorExperiments.Example1EnhancedPID;
+    end Example1EnhancedPIDBaseline;
+    model Example2ImprovedPIDBaseline
+      "螺旋爬升：改进 PID 对比基线"
+      extends QuadrotorExperiments.Example2ImprovedPID;
+    end Example2ImprovedPIDBaseline;
+    model Example2EnhancedPIDBaseline
+      "螺旋爬升：增强 PID 对比基线"
+      extends QuadrotorExperiments.Example2EnhancedPID;
+    end Example2EnhancedPIDBaseline;
+    model Example2HelixTunedEnhancedPIDBaseline
+      "螺旋爬升：调参增强 PID 对比基线"
+      extends QuadrotorExperiments.Example2HelixTunedEnhancedPID;
+    end Example2HelixTunedEnhancedPIDBaseline;
+    model Example3ImprovedPIDBaseline
+      "8 字任务：改进 PID 对比基线"
+      extends QuadrotorExperiments.Example3ImprovedPID;
+    end Example3ImprovedPIDBaseline;
+    model Example3EnhancedPIDBaseline
+      "8 字任务：增强 PID 对比基线"
+      extends QuadrotorExperiments.Example3EnhancedPID;
+    end Example3EnhancedPIDBaseline;
+  end ControllerBaselines;
+
+  package RobustFaultScenarios
+    "鲁棒扰动、安全与电机故障场景（兼容旧平铺类名的分类入口）"
+    package PIDBaselines
+      "扰动/故障下的 PID 系列对比基线"
+      model Mass20PID
+        "质量 +20%：官方 PID 对比基线"
+        extends QuadrotorExperiments.Example1Mass20PID;
+      end Mass20PID;
+      model Mass20ImprovedPID
+        "质量 +20%：改进 PID 对比基线"
+        extends QuadrotorExperiments.Example1Mass20ImprovedPID;
+      end Mass20ImprovedPID;
+      model Mass20EnhancedPID
+        "质量 +20%：增强 PID 对比基线"
+        extends QuadrotorExperiments.Example1Mass20EnhancedPID;
+      end Mass20EnhancedPID;
+      model WindGustPID
+        "横向阵风：官方 PID 对比基线"
+        extends QuadrotorExperiments.Example1WindGustPID;
+      end WindGustPID;
+      model WindGustImprovedPID
+        "横向阵风：改进 PID 对比基线"
+        extends QuadrotorExperiments.Example1WindGustImprovedPID;
+      end WindGustImprovedPID;
+      model WindGustEnhancedPID
+        "横向阵风：增强 PID 对比基线"
+        extends QuadrotorExperiments.Example1WindGustEnhancedPID;
+      end WindGustEnhancedPID;
+      model Rotor1LossPID
+        "1 号电机损失：官方 PID 对比基线"
+        extends QuadrotorExperiments.Example1Rotor1Loss15PID;
+      end Rotor1LossPID;
+      model Rotor1LossImprovedPID
+        "1 号电机损失：改进 PID 对比基线"
+        extends QuadrotorExperiments.Example1Rotor1Loss15ImprovedPID;
+      end Rotor1LossImprovedPID;
+      model Rotor1LossEnhancedPID
+        "1 号电机损失：增强 PID 对比基线"
+        extends QuadrotorExperiments.Example1Rotor1Loss15EnhancedPID;
+      end Rotor1LossEnhancedPID;
+      model Rotor2LossPID
+        "2 号电机损失：官方 PID 对比基线"
+        extends QuadrotorExperiments.Example1Rotor2Loss15PID;
+      end Rotor2LossPID;
+      model Rotor3LossPID
+        "3 号电机损失：官方 PID 对比基线"
+        extends QuadrotorExperiments.Example1Rotor3Loss15PID;
+      end Rotor3LossPID;
+      model Rotor4LossPID
+        "4 号电机损失：官方 PID 对比基线"
+        extends QuadrotorExperiments.Example1Rotor4Loss15PID;
+      end Rotor4LossPID;
+    end PIDBaselines;
+    model Mass20AWFFBaseline
+      "质量 +20%：AWFF 控制器基线"
+      extends QuadrotorExperiments.Example1Mass20AntiWindupFeedforwardPID;
+    end Mass20AWFFBaseline;
+    model Mass20AWFF
+      "质量 +20%：AWFF 闭环"
+      extends QuadrotorExperiments.Example1Mass20AWFFSysblockClosedLoop;
+    end Mass20AWFF;
+    model Mass20L1
+      "质量 +20%：L1 残差补偿闭环"
+      extends QuadrotorExperiments.Example1Mass20L1SysblockClosedLoop;
+    end Mass20L1;
+    model Mass20LinearMPC
+      "质量 +20%：线性 MPC 闭环"
+      extends QuadrotorExperiments.Example1Mass20LinearMPCSysblockClosedLoop;
+    end Mass20LinearMPC;
+    model WindGustAWFF
+      "横向阵风：AWFF 闭环"
+      extends QuadrotorExperiments.Example1WindGustAWFFSysblockClosedLoop;
+    end WindGustAWFF;
+    model WindGustAWFFBaseline
+      "横向阵风：AWFF 控制器基线"
+      extends QuadrotorExperiments.Example1WindGustAntiWindupFeedforwardPID;
+    end WindGustAWFFBaseline;
+    model WindGustL1
+      "横向阵风：L1 残差补偿闭环"
+      extends QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop;
+    end WindGustL1;
+    model WindGustLinearMPC
+      "横向阵风：线性 MPC 闭环"
+      extends QuadrotorExperiments.Example1WindGustLinearMPCSysblockClosedLoop;
+    end WindGustLinearMPC;
+    model SafetyQPNMPC
+      "安全滤波：QP/NMPC 闭环"
+      extends QuadrotorExperiments.Example1QPNMPCSafetySysblockClosedLoop;
+    end SafetyQPNMPC;
+    model SafetyReturnLand
+      "安全滤波：返航降落闭环"
+      extends QuadrotorExperiments.Example1QPNMPCSafetyReturnLandSysblockClosedLoop;
+    end SafetyReturnLand;
+    package RotorLoss
+      "单电机损失与故障分配场景"
+      model Rotor1AWFF
+        "1 号电机损失：AWFF 闭环"
+        extends QuadrotorExperiments.Example1Rotor1Loss15AWFFSysblockClosedLoop;
+      end Rotor1AWFF;
+      model Rotor1AWFFBaseline
+        "1 号电机损失：AWFF 控制器基线"
+        extends QuadrotorExperiments.Example1Rotor1Loss15AntiWindupFeedforwardPID;
+      end Rotor1AWFFBaseline;
+      model Rotor1L1
+        "1 号电机损失：L1 闭环"
+        extends QuadrotorExperiments.Example1Rotor1Loss15L1SysblockClosedLoop;
+      end Rotor1L1;
+      model Rotor1L1FaultAllocation
+        "1 号电机损失：L1 故障分配闭环"
+        extends QuadrotorExperiments.Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop;
+      end Rotor1L1FaultAllocation;
+      model Rotor1L1OnlineFaultAllocation
+        "1 号电机损失：L1 在线故障分配闭环"
+        extends QuadrotorExperiments.Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop;
+      end Rotor1L1OnlineFaultAllocation;
+      model Rotor1L1MultiFaultIsolation
+        "1 号电机损失：L1 多故障隔离闭环"
+        extends QuadrotorExperiments.Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop;
+      end Rotor1L1MultiFaultIsolation;
+      model Rotor1LinearMPC
+        "1 号电机损失：线性 MPC 闭环"
+        extends QuadrotorExperiments.Example1Rotor1Loss15LinearMPCSysblockClosedLoop;
+      end Rotor1LinearMPC;
+      model Rotor1LinearMPCOnlineFaultAllocation
+        "1 号电机损失：线性 MPC 在线故障分配闭环"
+        extends QuadrotorExperiments.Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop;
+      end Rotor1LinearMPCOnlineFaultAllocation;
+      model Rotor2AWFF
+        "2 号电机损失：AWFF 闭环"
+        extends QuadrotorExperiments.Example1Rotor2Loss15AWFFSysblockClosedLoop;
+      end Rotor2AWFF;
+      model Rotor3AWFF
+        "3 号电机损失：AWFF 闭环"
+        extends QuadrotorExperiments.Example1Rotor3Loss15AWFFSysblockClosedLoop;
+      end Rotor3AWFF;
+      model Rotor4AWFF
+        "4 号电机损失：AWFF 闭环"
+        extends QuadrotorExperiments.Example1Rotor4Loss15AWFFSysblockClosedLoop;
+      end Rotor4AWFF;
+      model Rotor1WindGustAWFF
+        "1 号电机损失 + 阵风：AWFF 闭环"
+        extends QuadrotorExperiments.Example1Rotor1Loss15WindGustAWFFSysblockClosedLoop;
+      end Rotor1WindGustAWFF;
+      model Rotor1WindGustAWFFFaultCompensation
+        "1 号电机损失 + 阵风：AWFF 故障补偿闭环"
+        extends QuadrotorExperiments.Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop;
+      end Rotor1WindGustAWFFFaultCompensation;
+      model Rotor1WindGustL1MultiFaultIsolation
+        "1 号电机损失 + 阵风：L1 多故障隔离闭环"
+        extends QuadrotorExperiments.Example1Rotor1Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop;
+      end Rotor1WindGustL1MultiFaultIsolation;
+      model Rotor1WindGustLinearMPCOnlineFaultAllocation
+        "1 号电机损失 + 阵风：线性 MPC 在线故障分配闭环"
+        extends QuadrotorExperiments.Example1Rotor1Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop;
+      end Rotor1WindGustLinearMPCOnlineFaultAllocation;
+      model Rotor2WindGustAWFF
+        "2 号电机损失 + 阵风：AWFF 闭环"
+        extends QuadrotorExperiments.Example1Rotor2Loss15WindGustAWFFSysblockClosedLoop;
+      end Rotor2WindGustAWFF;
+      model Rotor2L1MultiFaultIsolation
+        "2 号电机损失：L1 多故障隔离闭环"
+        extends QuadrotorExperiments.Example1Rotor2Loss15L1MultiFaultIsolationSysblockClosedLoop;
+      end Rotor2L1MultiFaultIsolation;
+      model Rotor2WindGustL1MultiFaultIsolation
+        "2 号电机损失 + 阵风：L1 多故障隔离闭环"
+        extends QuadrotorExperiments.Example1Rotor2Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop;
+      end Rotor2WindGustL1MultiFaultIsolation;
+      model Rotor2WindGustLinearMPCOnlineFaultAllocation
+        "2 号电机损失 + 阵风：线性 MPC 在线故障分配闭环"
+        extends QuadrotorExperiments.Example1Rotor2Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop;
+      end Rotor2WindGustLinearMPCOnlineFaultAllocation;
+      model Rotor3WindGustAWFF
+        "3 号电机损失 + 阵风：AWFF 闭环"
+        extends QuadrotorExperiments.Example1Rotor3Loss15WindGustAWFFSysblockClosedLoop;
+      end Rotor3WindGustAWFF;
+      model Rotor3L1MultiFaultIsolation
+        "3 号电机损失：L1 多故障隔离闭环"
+        extends QuadrotorExperiments.Example1Rotor3Loss15L1MultiFaultIsolationSysblockClosedLoop;
+      end Rotor3L1MultiFaultIsolation;
+      model Rotor3WindGustL1MultiFaultIsolation
+        "3 号电机损失 + 阵风：L1 多故障隔离闭环"
+        extends QuadrotorExperiments.Example1Rotor3Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop;
+      end Rotor3WindGustL1MultiFaultIsolation;
+      model Rotor3WindGustLinearMPCOnlineFaultAllocation
+        "3 号电机损失 + 阵风：线性 MPC 在线故障分配闭环"
+        extends QuadrotorExperiments.Example1Rotor3Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop;
+      end Rotor3WindGustLinearMPCOnlineFaultAllocation;
+      model Rotor4WindGustAWFF
+        "4 号电机损失 + 阵风：AWFF 闭环"
+        extends QuadrotorExperiments.Example1Rotor4Loss15WindGustAWFFSysblockClosedLoop;
+      end Rotor4WindGustAWFF;
+      model Rotor4L1MultiFaultIsolation
+        "4 号电机损失：L1 多故障隔离闭环"
+        extends QuadrotorExperiments.Example1Rotor4Loss15L1MultiFaultIsolationSysblockClosedLoop;
+      end Rotor4L1MultiFaultIsolation;
+      model Rotor4WindGustL1MultiFaultIsolation
+        "4 号电机损失 + 阵风：L1 多故障隔离闭环"
+        extends QuadrotorExperiments.Example1Rotor4Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop;
+      end Rotor4WindGustL1MultiFaultIsolation;
+      model Rotor4WindGustLinearMPCOnlineFaultAllocation
+        "4 号电机损失 + 阵风：线性 MPC 在线故障分配闭环"
+        extends QuadrotorExperiments.Example1Rotor4Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop;
+      end Rotor4WindGustLinearMPCOnlineFaultAllocation;
+    end RotorLoss;
+  end RobustFaultScenarios;
+
+  package PlanningScenarios
+    "规划避障与轨迹生成场景（兼容旧平铺类名的分类入口）"
+    model QuinticReference
+      "五次多项式参考轨迹"
+      extends QuadrotorExperiments.PlannedQuinticReference;
+    end QuinticReference;
+    model NavigationDisplay
+      "规划/导航显示与局部地图审查支撑"
+      extends QuadrotorExperiments.PlanningNavigationDisplay;
+    end NavigationDisplay;
+    model OpenBlocksAWFF
+      "开放障碍场：AWFF 规划闭环"
+      extends QuadrotorExperiments.Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop;
+    end OpenBlocksAWFF;
+    model OpenBlocksLinearMPC
+      "开放障碍场：线性 MPC 规划闭环"
+      extends QuadrotorExperiments.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop;
+    end OpenBlocksLinearMPC;
+    model OpenBlocksColorMapReview
+      "开放障碍场：颜色地图审查"
+      extends QuadrotorExperiments.Sunray150PlanningOpenBlocksColorMapReview;
+    end OpenBlocksColorMapReview;
+    model CorridorGateAWFF
+      "走廊门控场：AWFF 规划闭环"
+      extends QuadrotorExperiments.Sunray150PlanningCorridorGateAWFFSysblockClosedLoop;
+    end CorridorGateAWFF;
+    model CorridorGateLinearMPC
+      "走廊门控场：线性 MPC 规划闭环"
+      extends QuadrotorExperiments.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop;
+    end CorridorGateLinearMPC;
+  end PlanningScenarios;
+
+  package SceneTraceScenarios
+    "UE 场景与轨迹表驱动烟测（兼容旧平铺类名的分类入口）"
+    model UEFactoryLinearMPC
+      "Factory 场景：线性 MPC 烟测"
+      extends QuadrotorExperiments.Sunray150UEFactoryLinearMPCSysblockSmoke;
+    end UEFactoryLinearMPC;
+    model UEFactoryTraceTable
+      "Factory 场景：轨迹表驱动烟测"
+      extends QuadrotorExperiments.Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke;
+    end UEFactoryTraceTable;
+    model UEDerelictLinearMPC
+      "Derelict 场景：线性 MPC 烟测"
+      extends QuadrotorExperiments.Sunray150UEDerelictLinearMPCSysblockSmoke;
+    end UEDerelictLinearMPC;
+  end SceneTraceScenarios;
+
+  package TraceIsolation
+    "Factory 轨迹接入隔离烟测（保留历史证据链，不作为最终模型入口）"
+    model FactoryLite
+      "Factory-lite 轨迹接入烟测"
+      extends QuadrotorExperiments.FactoryLiteTraceSmoke;
+    end FactoryLite;
+    model Iso01FullDisplay
+      "隔离 01：完整显示链路烟测"
+      extends QuadrotorExperiments.FactoryTraceIso01FullDisplaySmoke;
+    end Iso01FullDisplay;
+    model Iso02ControllerOnly
+      "隔离 02：控制器独立烟测"
+      extends QuadrotorExperiments.FactoryTraceIso02ControllerOnlySmoke;
+    end Iso02ControllerOnly;
+    model Iso03PlantHoverStack
+      "隔离 03：机体悬停栈烟测"
+      extends QuadrotorExperiments.FactoryTraceIso03PlantHoverStackSmoke;
+    end Iso03PlantHoverStack;
+    model Iso04ControllerPlantWiring
+      "隔离 04：控制器-机体接线烟测"
+      extends QuadrotorExperiments.FactoryTraceIso04ControllerPlantWiringSmoke;
+    end Iso04ControllerPlantWiring;
+    model Iso05CleanHoverSum
+      "隔离 05：干净悬停合力烟测"
+      extends QuadrotorExperiments.FactoryTraceIso05CleanHoverSumSmoke;
+    end Iso05CleanHoverSum;
+    model Iso06CleanControllerPlantWiring
+      "隔离 06：干净控制器-机体接线烟测"
+      extends QuadrotorExperiments.FactoryTraceIso06CleanControllerPlantWiringSmoke;
+    end Iso06CleanControllerPlantWiring;
+    model Iso07ControllerOpenFeedback
+      "隔离 07：控制器开反馈烟测"
+      extends QuadrotorExperiments.FactoryTraceIso07CleanControllerOpenFeedbackSmoke;
+    end Iso07ControllerOpenFeedback;
+    model Iso08PositionFeedback
+      "隔离 08：位置反馈烟测"
+      extends QuadrotorExperiments.FactoryTraceIso08PositionFeedbackSmoke;
+    end Iso08PositionFeedback;
+    model Iso09PositionAttitudeFeedback
+      "隔离 09：位置与姿态反馈烟测"
+      extends QuadrotorExperiments.FactoryTraceIso09PositionAttitudeFeedbackSmoke;
+    end Iso09PositionAttitudeFeedback;
+    model Iso10RollFeedback
+      "隔离 10：滚转反馈烟测"
+      extends QuadrotorExperiments.FactoryTraceIso10RollFeedbackSmoke;
+    end Iso10RollFeedback;
+    model Iso11PitchFeedback
+      "隔离 11：俯仰反馈烟测"
+      extends QuadrotorExperiments.FactoryTraceIso11PitchFeedbackSmoke;
+    end Iso11PitchFeedback;
+    model Iso12RollFeedbackNegated
+      "隔离 12：滚转反馈取反烟测"
+      extends QuadrotorExperiments.FactoryTraceIso12RollFeedbackNegatedSmoke;
+    end Iso12RollFeedbackNegated;
+    model Iso13PitchFeedbackNegated
+      "隔离 13：俯仰反馈取反烟测"
+      extends QuadrotorExperiments.FactoryTraceIso13PitchFeedbackNegatedSmoke;
+    end Iso13PitchFeedbackNegated;
+    model Iso14ConstantAttitudeInput
+      "隔离 14：常量姿态输入烟测"
+      extends QuadrotorExperiments.FactoryTraceIso14ConstantAttitudeInputSmoke;
+    end Iso14ConstantAttitudeInput;
+    model Iso15TableAttitudeInput
+      "隔离 15：表格姿态输入烟测"
+      extends QuadrotorExperiments.FactoryTraceIso15TableAttitudeInputSmoke;
+    end Iso15TableAttitudeInput;
+    model Iso16RealExpressionAngle
+      "隔离 16：RealExpression 角度烟测"
+      extends QuadrotorExperiments.FactoryTraceIso16RealExpressionAngleSmoke;
+    end Iso16RealExpressionAngle;
+    model Iso17SampleHoldAngle
+      "隔离 17：角度采样保持烟测"
+      extends QuadrotorExperiments.FactoryTraceIso17SampleHoldAngleSmoke;
+    end Iso17SampleHoldAngle;
+    model Iso18ProjectAttitudeEstimator
+      "隔离 18：项目姿态估计器烟测"
+      extends QuadrotorExperiments.FactoryTraceIso18ProjectAttitudeEstimatorSmoke;
+    end Iso18ProjectAttitudeEstimator;
+    model Iso19RollPitchEstimator
+      "隔离 19：滚转/俯仰估计器烟测"
+      extends QuadrotorExperiments.FactoryTraceIso19RollPitchEstimatorSmoke;
+    end Iso19RollPitchEstimator;
+    model Iso20RollPitchYawEstimator
+      "隔离 20：滚转/俯仰/偏航估计器烟测"
+      extends QuadrotorExperiments.FactoryTraceIso20RollPitchYawEstimatorSmoke;
+    end Iso20RollPitchYawEstimator;
+    model Iso21RateAlias
+      "隔离 21：控制器速率别名烟测"
+      extends QuadrotorExperiments.FactoryTraceIso21ControllerRateAliasSmoke;
+    end Iso21RateAlias;
+    model Iso22SensorDisplayReconnect
+      "隔离 22：传感器显示重连烟测"
+      extends QuadrotorExperiments.FactoryTraceIso22SensorDisplayReconnectSmoke;
+    end Iso22SensorDisplayReconnect;
+    model Iso23PositionSampleHold
+      "隔离 23：位置采样保持桥接烟测"
+      extends QuadrotorExperiments.FactoryTraceIso23PositionSampleHoldBridgeSmoke;
+    end Iso23PositionSampleHold;
+    model Iso24DirectAttitudeFeedback
+      "隔离 24：直接姿态反馈烟测"
+      extends QuadrotorExperiments.FactoryTraceIso24DirectAttitudeFeedbackSmoke;
+    end Iso24DirectAttitudeFeedback;
+    model Iso25AttitudeSampleHold
+      "隔离 25：姿态采样保持桥接烟测"
+      extends QuadrotorExperiments.FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke;
+    end Iso25AttitudeSampleHold;
+    model Iso26ControllerOutput
+      "隔离 26：控制器输出别名烟测"
+      extends QuadrotorExperiments.FactoryTraceIso26ControllerOutputAliasSmoke;
+    end Iso26ControllerOutput;
+    model Iso27ActuatorInput
+      "隔离 27：执行器输入别名烟测"
+      extends QuadrotorExperiments.FactoryTraceIso27ActuatorInputAliasSmoke;
+    end Iso27ActuatorInput;
+    model Iso28ActuatorToWrenchBridge
+      "隔离 28：执行器输入到物理力矩桥接烟测"
+      extends QuadrotorExperiments.FactoryTraceIso28ActuatorToWrenchBridgeSmoke;
+    end Iso28ActuatorToWrenchBridge;
+    model Iso29ExternalFrameWrenchBoundary
+      "隔离 29：外部 MultiBody frame 力矩边界烟测"
+      extends QuadrotorExperiments.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke;
+    end Iso29ExternalFrameWrenchBoundary;
+    model Iso30ExternalBodyStateBoundary
+      "隔离 30：外部测试体状态响应边界烟测"
+      extends QuadrotorExperiments.FactoryTraceIso30ExternalBodyStateBoundarySmoke;
+    end Iso30ExternalBodyStateBoundary;
+  end TraceIsolation;
+
+  package DynamicsUpgrade
+    "Sunray150 动力学升级与物理力矩包装（RflySim-like 结构验证）"
+    model RotorDynamicsCore
+      "RflySim-like 转子动力学核心"
+      extends QuadrotorExperiments.Sunray150RflyStyleRotorDynamics;
+    end RotorDynamicsCore;
+    model RotorHoverSmoke
+      "转子动力学悬停烟测"
+      extends QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke;
+    end RotorHoverSmoke;
+    model RotorYawStepSmoke
+      "转子动力学偏航阶跃烟测"
+      extends QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke;
+    end RotorYawStepSmoke;
+    model WrapperSurface
+      "动力学包装接口：电机命令到合力/合矩"
+      extends QuadrotorExperiments.Sunray150DynamicsWrapperSurface;
+    end WrapperSurface;
+    model WrapperHoverSmoke
+      "动力学包装接口悬停烟测"
+      extends QuadrotorExperiments.Sunray150DynamicsWrapperHoverSmoke;
+    end WrapperHoverSmoke;
+    model WrapperYawStepSmoke
+      "动力学包装接口偏航阶跃烟测"
+      extends QuadrotorExperiments.Sunray150DynamicsWrapperYawStepSmoke;
+    end WrapperYawStepSmoke;
+    model PhysicalWrenchAdapter
+      "物理力/矩施加适配器"
+      extends QuadrotorExperiments.Sunray150PhysicalWrenchFrameAdapter;
+    end PhysicalWrenchAdapter;
+    model PhysicalWrenchHoverSmoke
+      "物理力/矩悬停施加烟测"
+      extends QuadrotorExperiments.Sunray150PhysicalWrenchHoverSmoke;
+    end PhysicalWrenchHoverSmoke;
+    model PhysicalWrenchYawStepSmoke
+      "物理力/矩偏航施加烟测"
+      extends QuadrotorExperiments.Sunray150PhysicalWrenchYawStepSmoke;
+    end PhysicalWrenchYawStepSmoke;
+  end DynamicsUpgrade;
+
+  package SystemArchitecture
+    "完整系统图形化架构与失效模式烟测（非最终性能证据）"
+    model CompleteSystemGraphical
+      "Sunray150 完整系统图形化架构"
+      extends QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock;
+    end CompleteSystemGraphical;
+    model GPSDropout
+      "完整系统：GPS 丢失烟测"
+      extends QuadrotorExperiments.Sunray150CompleteSystemGPSDropoutSysblock;
+    end GPSDropout;
+    model BatteryLow
+      "完整系统：低电量烟测"
+      extends QuadrotorExperiments.Sunray150CompleteSystemBatteryLowSysblock;
+    end BatteryLow;
+    model OffboardLoss
+      "完整系统：Offboard 心跳丢失烟测"
+      extends QuadrotorExperiments.Sunray150CompleteSystemOffboardLossSysblock;
+    end OffboardLoss;
+    model MissionFailure
+      "完整系统：任务不可行烟测"
+      extends QuadrotorExperiments.Sunray150CompleteSystemMissionFailureSysblock;
+    end MissionFailure;
+    model GeofenceBreach
+      "完整系统：地理围栏越界烟测"
+      extends QuadrotorExperiments.Sunray150CompleteSystemGeofenceBreachSysblock;
+    end GeofenceBreach;
+  end SystemArchitecture;
+
+  package SystemModules
+    "Sunray150 系统组成模块（架构图与接口支撑）"
+    block PerceptionInterface
+      "感知接口模块"
+      extends QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock.PerceptionInterfaceModule;
+    end PerceptionInterface;
+    block FlightController
+      "V6X 飞控模块"
+      extends QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock.V6XFlightControllerModule;
+    end FlightController;
+    block MissionComputer
+      "ORIN NX 任务计算机模块"
+      extends QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock.ORINNXMissionComputerModule;
+    end MissionComputer;
+    block Supervisor
+      "系统监督与模式管理模块"
+      extends QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock.SystemSupervisorModule;
+    end Supervisor;
+    block BatteryPower
+      "电池与供电模块"
+      extends QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock.BatteryPowerModule;
+    end BatteryPower;
+    block ESCDrive
+      "电调驱动模块"
+      extends QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock.ESCDriveModule;
+    end ESCDrive;
+    block AWFFController
+      "AWFF 控制器接口模块"
+      extends QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock.AWFFControllerModule;
+    end AWFFController;
+    model MotorDrive
+      "电机驱动模块"
+      extends QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock.MotorDriveModule;
+    end MotorDrive;
+    model AirframeSensor
+      "机体与传感器模块"
+      extends QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock.Sunray150AirframeSensorModule;
+    end AirframeSensor;
+  end SystemModules;
+
+  package SupportModels
+    "支撑模型、表格引用与 echo 状态烟测"
+    model TraceInline
+      "内联轨迹引用"
+      extends QuadrotorExperiments.TraceInlineReference;
+    end TraceInline;
+    model TraceTable
+      "轨迹表引用"
+      extends QuadrotorExperiments.TraceTableReference;
+    end TraceTable;
+    model TraceLookupStandalone
+      "轨迹查表独立烟测"
+      extends QuadrotorExperiments.TraceLookupStandaloneSmoke;
+    end TraceLookupStandalone;
+    model EchoMcpState
+      "MWORKS MCP echo 状态烟测"
+      extends QuadrotorExperiments.EchoMcpStateSmoke;
+    end EchoMcpState;
+  end SupportModels;
+
+  package FormationScenarios
+    "多机编队场景（后续扩展入口）"
+    model TriangleFigure8LinearMPC
+      "三机三角编队 8 字：线性 MPC 闭环"
+      extends QuadrotorExperiments.FormationTriangleFigure8LinearMPCSysblockClosedLoop;
+    end TriangleFigure8LinearMPC;
+  end FormationScenarios;
+
   model AntiWindupFeedforwardController
     "Project-owned PID controller with conditional integration and reference feedforward"
     parameter Real kp_x = 1.65;
@@ -1400,5 +2034,212 @@ equation
   end for;
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 0.25, Tolerance = 0.0001, Interval = 0.001));
 end Sunray150DynamicsUpgradeYawStepSmoke;
+
+model Sunray150DynamicsWrapperSurface
+  "Project-owned wrapper surface for the Sunray150 Rfly-style rotor dynamics core"
+  parameter Real expected_yaw_direction[4] = {1, -1, 1, -1}
+    "MWORKS wrapper yaw direction convention validated only as a source-labeled smoke gate";
+  parameter Real expected_rotor_center[4, 3] = [
+    0.053745, -0.053740, -0.014052;
+    0.053746,  0.053759, -0.014052;
+   -0.053761,  0.053760, -0.014052;
+   -0.053761, -0.053739, -0.014052]
+    "source=user-reviewed DAE screw-pair fit, in MWORKS Dronefixed1..4 order";
+  Sunray150RflyStyleRotorDynamics dynamics;
+  Real motor_command[4](each unit = "rad/s")
+    "Signed MWORKS visual rotor speed command surface";
+  Real commanded_thrust[4](each unit = "N")
+    "Algebraic command-side Ct*omega_cmd^2 thrust for sign/order checks";
+  Real commanded_yaw_reaction_moment[4](each unit = "N.m")
+    "Command-side yaw reaction moment for sign/order checks";
+  Real commanded_rotor_arm_moment[4, 3](each unit = "N.m")
+    "Command-side rotor-center moment from r_cross_F plus yaw reaction moment";
+  Real total_thrust(unit = "N")
+    "Lagged dynamic wrapper total thrust";
+  Real total_moment_body[3](each unit = "N.m")
+    "Lagged dynamic wrapper body moment";
+  Real commanded_total_thrust(unit = "N")
+    "Command-side total thrust";
+  Real commanded_total_moment_body[3](each unit = "N.m")
+    "Command-side body moment";
+  Real hover_thrust_error(unit = "N");
+  Real commanded_hover_thrust_error(unit = "N");
+  Real yaw_moment_gate(unit = "N.m");
+  Real commanded_yaw_moment_gate(unit = "N.m");
+  Real motor_order_gate_error;
+  Real yaw_direction_gate_error;
+equation
+  dynamics.motor_command = motor_command;
+
+  for i in 1:4 loop
+    commanded_thrust[i] = dynamics.lift_coefficient * motor_command[i] * motor_command[i];
+    commanded_yaw_reaction_moment[i] = dynamics.yaw_direction[i] * dynamics.moment_constant * commanded_thrust[i];
+    commanded_rotor_arm_moment[i, 1] = dynamics.rotor_center[i, 2] * commanded_thrust[i];
+    commanded_rotor_arm_moment[i, 2] = -dynamics.rotor_center[i, 1] * commanded_thrust[i];
+    commanded_rotor_arm_moment[i, 3] = commanded_yaw_reaction_moment[i];
+  end for;
+
+  total_thrust = dynamics.total_thrust;
+  total_moment_body = dynamics.total_moment_body;
+  hover_thrust_error = dynamics.hover_thrust_error;
+  commanded_total_thrust = sum(commanded_thrust);
+  commanded_total_moment_body[1] = sum({commanded_rotor_arm_moment[i, 1] for i in 1:4});
+  commanded_total_moment_body[2] = sum({commanded_rotor_arm_moment[i, 2] for i in 1:4});
+  commanded_total_moment_body[3] = sum({commanded_rotor_arm_moment[i, 3] for i in 1:4});
+  commanded_hover_thrust_error = commanded_total_thrust - dynamics.mass_kg * 9.81;
+  yaw_moment_gate = total_moment_body[3];
+  commanded_yaw_moment_gate = commanded_total_moment_body[3];
+  motor_order_gate_error = sum({abs(dynamics.rotor_center[i, j] - expected_rotor_center[i, j]) for i in 1:4, j in 1:3});
+  yaw_direction_gate_error = sum({abs(dynamics.yaw_direction[i] - expected_yaw_direction[i]) for i in 1:4});
+end Sunray150DynamicsWrapperSurface;
+
+model Sunray150DynamicsWrapperHoverSmoke
+  "Hover smoke for the project-owned Sunray150 dynamics wrapper surface"
+  Sunray150DynamicsWrapperSurface wrapper;
+equation
+  wrapper.motor_command = {
+    wrapper.dynamics.spin_command_sign[1] * wrapper.dynamics.hover_motor_speed_cmd,
+    wrapper.dynamics.spin_command_sign[2] * wrapper.dynamics.hover_motor_speed_cmd,
+    wrapper.dynamics.spin_command_sign[3] * wrapper.dynamics.hover_motor_speed_cmd,
+    wrapper.dynamics.spin_command_sign[4] * wrapper.dynamics.hover_motor_speed_cmd};
+  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 0.25, Tolerance = 0.0001, Interval = 0.001));
+end Sunray150DynamicsWrapperHoverSmoke;
+
+model Sunray150DynamicsWrapperYawStepSmoke
+  "Yaw-step smoke for the project-owned Sunray150 dynamics wrapper surface"
+  parameter Real yaw_delta_omega2 = 300
+    "Small differential omega^2 command preserving approximate total thrust";
+  Real yaw_step;
+  Real rotor_speed_mag[4](each unit = "rad/s");
+  Sunray150DynamicsWrapperSurface wrapper;
+equation
+  yaw_step = if time >= 0.05 then yaw_delta_omega2 else 0;
+  for i in 1:4 loop
+    rotor_speed_mag[i] = sqrt(wrapper.dynamics.hover_motor_speed_cmd * wrapper.dynamics.hover_motor_speed_cmd + wrapper.dynamics.yaw_direction[i] * yaw_step);
+    wrapper.motor_command[i] = wrapper.dynamics.spin_command_sign[i] * rotor_speed_mag[i];
+  end for;
+  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 0.25, Tolerance = 0.0001, Interval = 0.001));
+end Sunray150DynamicsWrapperYawStepSmoke;
+
+model Sunray150PhysicalWrenchFrameAdapter
+  "Apply the project-owned Sunray150 wrapper force and torque to a MultiBody frame"
+  inner Modelica.Mechanics.MultiBody.World world(
+    animateWorld = false,
+    animateGravity = false,
+    n = {0, 0, -1},
+    gravityType = Modelica.Mechanics.MultiBody.Types.GravityTypes.UniformGravity,
+    g = 9.81);
+  Sunray150DynamicsWrapperSurface wrapper;
+  Modelica.Mechanics.MultiBody.Parts.Body body(
+    animation = false,
+    r_CM = {0, 0, 0},
+    m = wrapper.dynamics.mass_kg,
+    I_11 = 0.0085,
+    I_22 = 0.0085,
+    I_33 = 0.012,
+    I_21 = 0,
+    I_31 = 0,
+    I_32 = 0,
+    r_0(start = {0, 0, 0}, fixed = {true, true, true}),
+    v_0(start = {0, 0, 0}, fixed = {true, true, true}),
+    angles_fixed = true,
+    angles_start = {0, 0, 0},
+    w_0_fixed = true,
+    w_0_start = {0, 0, 0},
+    enforceStates = true);
+  Modelica.Mechanics.MultiBody.Forces.WorldForceAndTorque forceAndTorque(
+    resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameB.frame_b,
+    animation = false);
+  Real applied_force_body[3](each unit = "N");
+  Real applied_torque_body[3](each unit = "N.m");
+  Real applied_force_z_body(unit = "N");
+  Real applied_yaw_torque_body(unit = "N.m");
+  Real force_application_error(unit = "N");
+  Real torque_application_error(unit = "N.m");
+  Real hover_weight_balance_error(unit = "N");
+  Real wrapper_total_thrust(unit = "N");
+  Real wrapper_yaw_moment(unit = "N.m");
+  Real motor_order_gate_error;
+  Real yaw_direction_gate_error;
+equation
+  applied_force_body = {0, 0, wrapper.total_thrust};
+  applied_torque_body = wrapper.total_moment_body;
+  forceAndTorque.force = applied_force_body;
+  forceAndTorque.torque = applied_torque_body;
+  connect(forceAndTorque.frame_b, body.frame_a);
+
+  applied_force_z_body = applied_force_body[3];
+  applied_yaw_torque_body = applied_torque_body[3];
+  wrapper_total_thrust = wrapper.total_thrust;
+  wrapper_yaw_moment = wrapper.total_moment_body[3];
+  force_application_error = abs(body.frame_a.f[3] - applied_force_z_body);
+  torque_application_error = abs(body.frame_a.t[3] - applied_yaw_torque_body);
+  hover_weight_balance_error = wrapper.total_thrust - wrapper.dynamics.mass_kg * world.g;
+  motor_order_gate_error = wrapper.motor_order_gate_error;
+  yaw_direction_gate_error = wrapper.yaw_direction_gate_error;
+end Sunray150PhysicalWrenchFrameAdapter;
+
+model Sunray150PhysicalWrenchHoverSmoke
+  "Hover smoke for the project-owned physical wrench frame adapter"
+  Sunray150PhysicalWrenchFrameAdapter adapter;
+equation
+  adapter.wrapper.motor_command = {
+    adapter.wrapper.dynamics.spin_command_sign[1] * adapter.wrapper.dynamics.hover_motor_speed_cmd,
+    adapter.wrapper.dynamics.spin_command_sign[2] * adapter.wrapper.dynamics.hover_motor_speed_cmd,
+    adapter.wrapper.dynamics.spin_command_sign[3] * adapter.wrapper.dynamics.hover_motor_speed_cmd,
+    adapter.wrapper.dynamics.spin_command_sign[4] * adapter.wrapper.dynamics.hover_motor_speed_cmd};
+  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 0.25, Tolerance = 0.0001, Interval = 0.001));
+end Sunray150PhysicalWrenchHoverSmoke;
+
+model Sunray150PhysicalWrenchYawStepSmoke
+  "Yaw-step smoke for the project-owned physical wrench frame adapter"
+  parameter Real yaw_delta_omega2 = 300
+    "Small differential omega^2 command preserving approximate total thrust";
+  Real yaw_step;
+  Real rotor_speed_mag[4](each unit = "rad/s");
+  Sunray150PhysicalWrenchFrameAdapter adapter;
+equation
+  yaw_step = if time >= 0.05 then yaw_delta_omega2 else 0;
+  for i in 1:4 loop
+    rotor_speed_mag[i] = sqrt(adapter.wrapper.dynamics.hover_motor_speed_cmd * adapter.wrapper.dynamics.hover_motor_speed_cmd + adapter.wrapper.dynamics.yaw_direction[i] * yaw_step);
+    adapter.wrapper.motor_command[i] = adapter.wrapper.dynamics.spin_command_sign[i] * rotor_speed_mag[i];
+  end for;
+  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 0.25, Tolerance = 0.0001, Interval = 0.001));
+end Sunray150PhysicalWrenchYawStepSmoke;
+
+model FactoryTraceIso30ExternalBodyStateBoundarySmoke
+  "External-body state response boundary smoke after Iso29"
+  extends FactoryTraceIso29ExternalFrameWrenchBoundarySmoke;
+
+  parameter Real external_body_initial_z(unit = "m") = 0;
+  parameter Real external_body_initial_vz(unit = "m/s") = 0;
+  parameter Real external_body_initial_yaw_rate(unit = "rad/s") = 0;
+  Real external_body_z(unit = "m");
+  Real external_body_vz(unit = "m/s");
+  Real external_body_yaw_rate(unit = "rad/s");
+  Real external_body_z_delta(unit = "m");
+  Real external_body_vz_delta(unit = "m/s");
+  Real external_body_yaw_rate_delta(unit = "rad/s");
+  Real external_body_vertical_response_gate;
+  Real external_body_yaw_response_gate;
+  Real external_body_state_boundary_gate_error;
+
+equation
+  external_body_z = external_test_body.r_0[3];
+  external_body_vz = der(external_test_body.r_0[3]);
+  external_body_yaw_rate = external_test_body.w_a[3];
+  external_body_z_delta = external_body_z - external_body_initial_z;
+  external_body_vz_delta = external_body_vz - external_body_initial_vz;
+  external_body_yaw_rate_delta = external_body_yaw_rate - external_body_initial_yaw_rate;
+  external_body_vertical_response_gate =
+    if time >= 0.2 then abs(external_body_z_delta) + abs(external_body_vz_delta) else 0;
+  external_body_yaw_response_gate =
+    if time >= 0.2 then abs(external_body_yaw_rate_delta) else 0;
+  external_body_state_boundary_gate_error =
+    external_boundary_gate_error +
+    (if time >= 0.2 and external_body_vertical_response_gate <= 1e-9 then 1 else 0);
+
+  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 0.25, Tolerance = 0.0001, Interval = 0.001));
+end FactoryTraceIso30ExternalBodyStateBoundarySmoke;
 
 end QuadrotorExperiments;

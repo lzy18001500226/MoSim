@@ -1,0 +1,62 @@
+{
+  "schema": "mosim.ue_command.v1",
+  "description": "UE Experiment Console operator intent packet. This schema is documented for tooling; Scripts/UE5/smoke_ue_command_adapter.py implements the active smoke validation.",
+  "evidence_boundary": [
+    "UE command packets express operator intent only.",
+    "MWORKS/ROS2 adapters must accept or reject the request before UE displays confirmed state.",
+    "UE commands must never overwrite UAV pose, teleport actors, or feed UE global truth to planners."
+  ],
+  "required": [
+    "schema",
+    "type",
+    "run_id",
+    "request_id",
+    "seq",
+    "time_s",
+    "requested_by",
+    "command",
+    "guard"
+  ],
+  "required_values": {
+    "schema": "mosim.ue_command.v1",
+    "type": "command",
+    "requested_by": "ue_experiment_console"
+  },
+  "command": {
+    "required": [
+      "kind",
+      "payload"
+    ],
+    "allowed_kinds": [
+      "controller_select",
+      "planner_select",
+      "wind_profile",
+      "motor_fault",
+      "sensor_mode",
+      "scenario_reset",
+      "start_goal_update",
+      "recording",
+      "scene_switch"
+    ],
+    "forbidden_kinds": [
+      "pose_override",
+      "teleport",
+      "set_uav_pose",
+      "actor_transform",
+      "keyboard_pose"
+    ]
+  },
+  "guard": {
+    "required": [
+      "require_mworks_ack",
+      "require_ros2_ack",
+      "reject_if_gate_open"
+    ],
+    "rules": [
+      "require_mworks_ack must be true for all commands.",
+      "require_ros2_ack must be true when planner, perception, scene-switch, or shared MWORKS_ROS2 authority is touched.",
+      "reject_if_gate_open is a list of gate ids that make the adapter reject the command."
+    ]
+  },
+  "runtime_ack": "Accepted state must be shown only after a mosim.ue_command_echo.v1 row from MWORKS, ROS2, or MWORKS_ROS2 authority."
+}

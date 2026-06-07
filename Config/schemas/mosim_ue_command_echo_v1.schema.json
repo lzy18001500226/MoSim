@@ -1,0 +1,46 @@
+{
+  "schema": "mosim.ue_command_echo.v1",
+  "description": "Runtime or smoke acknowledgement for a UE Experiment Console command. This file documents the contract; Scripts/UE5/check_ue_command_echo_contract.py implements active validation.",
+  "evidence_boundary": [
+    "accepted or rejected rows are command acknowledgement evidence, not controller performance evidence.",
+    "Rows with source=offline_adapter_smoke must not be claimed as live UE console or runtime MWORKS/ROS2 evidence.",
+    "Forbidden pose commands are valid only when status=rejected and reason marks pose override as forbidden."
+  ],
+  "runtime_required": [
+    "schema",
+    "status",
+    "run_id",
+    "request_id",
+    "ack_authority",
+    "no_pose_overwrite_status"
+  ],
+  "required_values": {
+    "schema": "mosim.ue_command_echo.v1",
+    "no_pose_overwrite_status": "pass"
+  },
+  "status_values": [
+    "accepted",
+    "rejected"
+  ],
+  "ack_authority_values": [
+    "MWORKS",
+    "ROS2",
+    "MWORKS_ROS2"
+  ],
+  "placeholder_schema": {
+    "schema": "mosim.ue_command_echo.placeholder.v1",
+    "allowed_only_as": "smoke_only",
+    "must_not_satisfy": "runtime command acknowledgement"
+  },
+  "forbidden_kinds": [
+    "pose_override",
+    "teleport",
+    "set_uav_pose",
+    "actor_transform",
+    "keyboard_pose"
+  ],
+  "valid_rejection_reasons_for_forbidden_kinds": [
+    "forbidden_pose_command",
+    "pose_override_not_allowed"
+  ]
+}
