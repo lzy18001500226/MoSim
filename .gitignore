@@ -225,6 +225,8 @@ References/Agent/Memory/git-mcp/.vscode/
 References/Agent/Memory/mem0/openclaw/.npmrc
 !References/Agent/Platforms/
 References/Agent/Platforms/*
+!References/Agent/Platforms/CowAgent/
+!References/Agent/Platforms/CowAgent/**
 !References/Agent/Platforms/aider/
 !References/Agent/Platforms/aider/**
 References/Agent/Platforms/open-swe/.vscode/
@@ -272,6 +274,8 @@ References/Agent/Security/AiSOC/plugins/mttr-widget/go/mttr-widget-test
 References/Agent/Security/rogue/.vscode/
 !References/Agent/Workflow/
 References/Agent/Workflow/*
+!References/Agent/Workflow/OpenSpec/
+!References/Agent/Workflow/OpenSpec/**
 !References/Agent/Workflow/sdk-python/
 !References/Agent/Workflow/sdk-python/**
 References/Agent/Workflow/antfarm/bin/
