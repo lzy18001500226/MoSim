@@ -357,7 +357,10 @@ References/PX4/PX4/*
 References/PX4/PX4/Tools/test_keys/
 !References/PX4/PX4/validation/
 !References/PX4/PX4/validation/**
+!References/PX4/mavlink/
 !References/PX4/mavlink/**
+!References/PX4/mavlink/scripts/
+!References/PX4/mavlink/scripts/**
 !References/PX4/mavros-ros2/**
 # PX4 board dist folders contain source/config inputs, not generated outputs.
 !References/PX4/PX4/boards/**/dist/
