@@ -1,0 +1,133 @@
+# QGroundControl Development Commands
+# Install (requires just >=1.30 for home_directory()):
+#   python tools/setup/install_python.py dev   (recommended; pulls rust-just into .venv)
+#   brew install just / cargo install just / pipx install rust-just
+# `apt install just` on Ubuntu ships 1.21 which is too old.
+
+# Configuration from build-config.json
+qt_version := `python3 ./tools/setup/read_config.py --get qt_version 2>/dev/null || echo "6.10.1"`
+qt_dir := env_var_or_default("QT_DIR", home_directory() / "Qt" / qt_version / "gcc_64")
+build_type := env_var_or_default("BUILD_TYPE", "Debug")
+build_dir := "build"
+
+# Pin CMake's Python to the workspace .venv when present so CMake-invoked
+# generators (settings_qml/config_qml use jinja2) see the deps they need.
+# Empty when no .venv → CMake falls back to system python.
+venv_python := `if [ -x .venv/bin/python ]; then echo "$PWD/.venv/bin/python"; elif [ -x .venv/Scripts/python.exe ]; then echo "$PWD/.venv/Scripts/python.exe"; else echo ""; fi`
+
+# Default: show available commands
+default:
+    @just --list --unsorted
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Setup
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Install system dependencies (Debian/Ubuntu)
+deps:
+    @echo "Installing dependencies (requires sudo)..."
+    python3 ./tools/setup/install_dependencies --platform debian
+
+# Initialize git submodules
+submodules:
+    git submodule update --init --recursive
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Build
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Configure CMake build
+configure: submodules
+    {{qt_dir}}/bin/qt-cmake -B {{build_dir}} -G Ninja \
+        -DCMAKE_BUILD_TYPE={{build_type}} \
+        -DQGC_BUILD_TESTING=ON \
+        {{ if venv_python != "" { "-DPython3_EXECUTABLE=" + venv_python } else { "" } }}
+
+# Build the project
+build:
+    cmake --build {{build_dir}} --config {{build_type}} --parallel
+
+# Configure and build Release
+release:
+    {{qt_dir}}/bin/qt-cmake -B {{build_dir}} -G Ninja \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DQGC_BUILD_TESTING=OFF \
+        {{ if venv_python != "" { "-DPython3_EXECUTABLE=" + venv_python } else { "" } }}
+    cmake --build {{build_dir}} --config Release --parallel
+
+# Clean build directory (forwards to tools/clean.py; pass --cache, --all, --dry-run)
+clean *ARGS:
+    ./tools/clean.py {{ARGS}}
+
+# Clean, configure, and build
+rebuild: clean configure build
+
+# Full setup: deps, submodules, configure, build
+setup: deps submodules configure build
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Quality
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Run unit tests (matches CI label filters; override with `LABELS=... EXCLUDE=... just test`)
+test labels=env_var_or_default("LABELS", "Unit|Integration") exclude=env_var_or_default("EXCLUDE", "Flaky|Network"):
+    cd {{build_dir}} && ctest --output-on-failure -L "{{labels}}" -LE "{{exclude}}"
+
+# Run pre-commit checks
+lint:
+    pre-commit run --all-files
+
+# Check code formatting (no changes)
+format:
+    python3 ./tools/analyze.py --tool clang-format
+
+# Format code (apply fixes)
+format-fix:
+    python3 ./tools/analyze.py --tool clang-format --fix
+
+# Run static analysis
+analyze:
+    python3 ./tools/analyze.py
+
+# Generate coverage report
+coverage:
+    python3 ./tools/coverage.py
+
+# Run lint + test
+check: lint test
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Run & Deploy
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Launch QGroundControl
+run:
+    ./{{build_dir}}/{{build_type}}/QGroundControl
+
+# Build documentation
+docs:
+    npm run docs:build
+
+# Build using Docker (Ubuntu)
+docker:
+    ./deploy/docker/run-docker-ubuntu.sh
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Utilities
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Show build configuration
+info:
+    @echo "Qt version:  {{qt_version}}"
+    @echo "Qt dir:      {{qt_dir}}"
+    @echo "Build type:  {{build_type}}"
+    @echo "Build dir:   {{build_dir}}"
+
+# Check dependency versions
+check-deps:
+    python3 ./tools/check_deps.py
+
+# Clean build, caches, and generated files
+distclean:
+    ./tools/clean.py --all
+    rm -rf node_modules

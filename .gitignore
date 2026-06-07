@@ -364,6 +364,7 @@ References/PX4/PX4/Tools/test_keys/
 !References/PX4/PX4/boards/**/dist/**
 !References/PX4/qgroundcontrol/
 References/PX4/qgroundcontrol/*
+!References/PX4/qgroundcontrol/**
 !References/PX4/qgroundcontrol/cmake/
 !References/PX4/qgroundcontrol/cmake/**
 !References/PX4/qgroundcontrol/deploy/
