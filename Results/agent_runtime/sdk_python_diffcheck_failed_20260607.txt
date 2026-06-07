@@ -1,0 +1,92 @@
+References/Agent/Workflow/sdk-python/.github/CODEOWNERS:9: trailing whitespace.
++# and tests/contrib/ directories that are owned by teams
+References/Agent/Workflow/sdk-python/.github/CODEOWNERS:10: trailing whitespace.
++# other than the SDK team. For each one, we add the owning team,
+References/Agent/Workflow/sdk-python/.github/workflows/run-bench.yml:51: trailing whitespace.
++
+References/Agent/Workflow/sdk-python/.github/workflows/run-bench.yml:57: trailing whitespace.
++
+References/Agent/Workflow/sdk-python/README.md:1653: trailing whitespace.
++Plugins can be provided to both `Client` and `Worker`.
+References/Agent/Workflow/sdk-python/README.md:1688: trailing whitespace.
++a relatively straightforward plugin.
+References/Agent/Workflow/sdk-python/README.md:1739: trailing whitespace.
++        self,
+References/Agent/Workflow/sdk-python/README.md:1819: trailing whitespace.
++        self,
+References/Agent/Workflow/sdk-python/README.md:1853: trailing whitespace.
++assuming `history_str` is populated with a JSON string history either exported from the web UI or from the
+References/Agent/Workflow/sdk-python/README.md:2085: trailing whitespace.
++- To run workflow-environment tests against the time-skipping test server, pass `--workflow-environment time-skipping`.
+References/Agent/Workflow/sdk-python/temporalio/api/cloud/auditlog/v1/message_pb2.pyi:114: trailing whitespace.
++    """The type of the principal.
+References/Agent/Workflow/sdk-python/temporalio/api/cloud/region/v1/message_pb2.pyi:56: trailing whitespace.
++    Deprecated: Not supported after v0.3.0 api version. Use cloud_provider instead.
+References/Agent/Workflow/sdk-python/temporalio/api/enums/v1/deployment_pb2.pyi:212: trailing whitespace.
++    """The Worker Deployment Version is the current version of the Worker Deployment. All new workflow executions
+References/Agent/Workflow/sdk-python/temporalio/api/enums/v1/deployment_pb2.pyi:218: trailing whitespace.
++    """The Worker Deployment Version is the ramping version of the Worker Deployment. A subset of new Pinned workflow executions are
+References/Agent/Workflow/sdk-python/temporalio/api/enums/v1/deployment_pb2.pyi:260: trailing whitespace.
++"""The Worker Deployment Version is the current version of the Worker Deployment. All new workflow executions
+References/Agent/Workflow/sdk-python/temporalio/api/enums/v1/deployment_pb2.pyi:264: trailing whitespace.
++"""The Worker Deployment Version is the ramping version of the Worker Deployment. A subset of new Pinned workflow executions are
+References/Agent/Workflow/sdk-python/temporalio/api/enums/v1/task_queue_pb2.pyi:34: trailing whitespace.
++    Task queue kind is used to differentiate whether a workflow task queue is sticky or
+References/Agent/Workflow/sdk-python/temporalio/api/enums/v1/task_queue_pb2.pyi:35: trailing whitespace.
++    normal. If a task is not a workflow task, Task queue kind will sometimes be
+References/Agent/Workflow/sdk-python/temporalio/api/enums/v1/task_queue_pb2.pyi:67: trailing whitespace.
++Task queue kind is used to differentiate whether a workflow task queue is sticky or
+References/Agent/Workflow/sdk-python/temporalio/api/enums/v1/task_queue_pb2.pyi:68: trailing whitespace.
++normal. If a task is not a workflow task, Task queue kind will sometimes be
+References/Agent/Workflow/sdk-python/temporalio/api/workflow/v1/message_pb2.pyi:435: trailing whitespace.
++    Child workflows or CaN executions **inherit** their parent/previous run's effective Versioning
+References/Agent/Workflow/sdk-python/temporalio/api/workflow/v1/message_pb2.pyi:436: trailing whitespace.
++    Behavior and Version (except when the new execution runs on a task queue not belonging to the
+References/Agent/Workflow/sdk-python/temporalio/api/workflow/v1/message_pb2.pyi:438: trailing whitespace.
++    be dispatched according to the inherited behavior (or to the current version of the task-queue's
+References/Agent/Workflow/sdk-python/temporalio/api/workflow/v1/message_pb2.pyi:439: trailing whitespace.
++    deployment in the case of AutoUpgrade.) After completion of their first workflow task the
+References/Agent/Workflow/sdk-python/temporalio/contrib/google_adk_agents/README.md:33: trailing whitespace.
++### MCP (Model Context Protocol) Integration
+References/Agent/Workflow/sdk-python/temporalio/contrib/google_adk_agents/README.md:81: trailing whitespace.
++    model=TemporalModel("gemini-2.5-pro", activity_config=ActivityConfig(summary="Researcher Agent")),
+References/Agent/Workflow/sdk-python/temporalio/contrib/google_adk_agents/README.md:203: trailing whitespace.
++- **Reliability**: Proper retry handling and error propagation
+References/Agent/Workflow/sdk-python/temporalio/contrib/openai_agents/README.md:816: trailing whitespace.
++
+References/Agent/Workflow/sdk-python/temporalio/contrib/openai_agents/README.md:819: trailing whitespace.
++
+References/Agent/Workflow/sdk-python/temporalio/contrib/openai_agents/README.md:914: trailing whitespace.
++
+References/Agent/Workflow/sdk-python/temporalio/contrib/openai_agents/README.md:917: trailing whitespace.
++
+References/Agent/Workflow/sdk-python/temporalio/contrib/openai_agents/README.md:920: trailing whitespace.
++
+References/Agent/Workflow/sdk-python/temporalio/contrib/opentelemetry/README.md:56: trailing whitespace.
++    task_queue="my-task-queue",
+References/Agent/Workflow/sdk-python/temporalio/contrib/opentelemetry/README.md:110: trailing whitespace.
++@workflow.defn
+References/Agent/Workflow/sdk-python/temporalio/contrib/opentelemetry/README.md:126: trailing whitespace.
++- You want to use standard OpenTelemetry APIs within workflows
+References/Agent/Workflow/sdk-python/temporalio/contrib/opentelemetry/README.md:163: trailing whitespace.
++       "localhost:7233",
+References/Agent/Workflow/sdk-python/temporalio/contrib/opentelemetry/README.md:166: trailing whitespace.
++
+References/Agent/Workflow/sdk-python/temporalio/contrib/opentelemetry/README.md:180: trailing whitespace.
++
+References/Agent/Workflow/sdk-python/temporalio/contrib/opentelemetry/README.md:199: trailing whitespace.
++    @workflow.run
+References/Agent/Workflow/sdk-python/temporalio/contrib/opentelemetry/README.md:202: trailing whitespace.
++
+References/Agent/Workflow/sdk-python/temporalio/contrib/opentelemetry/README.md:206: trailing whitespace.
++
+References/Agent/Workflow/sdk-python/temporalio/contrib/opentelemetry/README.md:210: trailing whitespace.
++
+References/Agent/Workflow/sdk-python/temporalio/contrib/opentelemetry/README.md:231: trailing whitespace.
++# New approach
+References/Agent/Workflow/sdk-python/temporalio/contrib/opentelemetry/README.md:234: trailing whitespace.
++        "business.unit": "payments",
+References/Agent/Workflow/sdk-python/temporalio/converter/_data_converter.py:94: trailing whitespace.
++
+References/Agent/Workflow/sdk-python/temporalio/workflow/_exceptions.py:94: trailing whitespace.
++

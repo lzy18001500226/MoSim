@@ -1,0 +1,13 @@
+References/Agent/Workflow/sdk-python/.github/CODEOWNERS
+References/Agent/Workflow/sdk-python/.github/workflows/run-bench.yml
+References/Agent/Workflow/sdk-python/README.md
+References/Agent/Workflow/sdk-python/temporalio/api/cloud/auditlog/v1/message_pb2.pyi
+References/Agent/Workflow/sdk-python/temporalio/api/cloud/region/v1/message_pb2.pyi
+References/Agent/Workflow/sdk-python/temporalio/api/enums/v1/deployment_pb2.pyi
+References/Agent/Workflow/sdk-python/temporalio/api/enums/v1/task_queue_pb2.pyi
+References/Agent/Workflow/sdk-python/temporalio/api/workflow/v1/message_pb2.pyi
+References/Agent/Workflow/sdk-python/temporalio/contrib/google_adk_agents/README.md
+References/Agent/Workflow/sdk-python/temporalio/contrib/openai_agents/README.md
+References/Agent/Workflow/sdk-python/temporalio/contrib/opentelemetry/README.md
+References/Agent/Workflow/sdk-python/temporalio/converter/_data_converter.py
+References/Agent/Workflow/sdk-python/temporalio/workflow/_exceptions.py
