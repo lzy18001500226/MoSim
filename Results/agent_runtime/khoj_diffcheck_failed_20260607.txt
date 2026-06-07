@@ -1,0 +1,302 @@
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:1: trailing whitespace.
++@rem
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:2: trailing whitespace.
++@rem Copyright 2015 the original author or authors.
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:3: trailing whitespace.
++@rem
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:4: trailing whitespace.
++@rem Licensed under the Apache License, Version 2.0 (the "License");
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:5: trailing whitespace.
++@rem you may not use this file except in compliance with the License.
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:6: trailing whitespace.
++@rem You may obtain a copy of the License at
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:7: trailing whitespace.
++@rem
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:8: trailing whitespace.
++@rem      https://www.apache.org/licenses/LICENSE-2.0
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:9: trailing whitespace.
++@rem
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:10: trailing whitespace.
++@rem Unless required by applicable law or agreed to in writing, software
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:11: trailing whitespace.
++@rem distributed under the License is distributed on an "AS IS" BASIS,
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:12: trailing whitespace.
++@rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:13: trailing whitespace.
++@rem See the License for the specific language governing permissions and
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:14: trailing whitespace.
++@rem limitations under the License.
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:15: trailing whitespace.
++@rem
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:16: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:17: trailing whitespace.
++@if "%DEBUG%"=="" @echo off
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:18: trailing whitespace.
++@rem ##########################################################################
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:19: trailing whitespace.
++@rem
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:20: trailing whitespace.
++@rem  Gradle startup script for Windows
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:21: trailing whitespace.
++@rem
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:22: trailing whitespace.
++@rem ##########################################################################
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:23: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:24: trailing whitespace.
++@rem Set local scope for the variables with windows NT shell
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:25: trailing whitespace.
++if "%OS%"=="Windows_NT" setlocal
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:26: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:27: trailing whitespace.
++set DIRNAME=%~dp0
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:28: trailing whitespace.
++if "%DIRNAME%"=="" set DIRNAME=.
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:29: trailing whitespace.
++@rem This is normally unused
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:30: trailing whitespace.
++set APP_BASE_NAME=%~n0
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:31: trailing whitespace.
++set APP_HOME=%DIRNAME%
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:32: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:33: trailing whitespace.
++@rem Resolve any "." and ".." in APP_HOME to make it shorter.
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:34: trailing whitespace.
++for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:35: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:36: trailing whitespace.
++@rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:37: trailing whitespace.
++set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m"
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:38: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:39: trailing whitespace.
++@rem Find java.exe
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:40: trailing whitespace.
++if defined JAVA_HOME goto findJavaFromJavaHome
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:41: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:42: trailing whitespace.
++set JAVA_EXE=java.exe
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:43: trailing whitespace.
++%JAVA_EXE% -version >NUL 2>&1
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:44: trailing whitespace.
++if %ERRORLEVEL% equ 0 goto execute
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:45: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:46: trailing whitespace.
++echo. 1>&2
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:47: trailing whitespace.
++echo ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH. 1>&2
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:48: trailing whitespace.
++echo. 1>&2
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:49: trailing whitespace.
++echo Please set the JAVA_HOME variable in your environment to match the 1>&2
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:50: trailing whitespace.
++echo location of your Java installation. 1>&2
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:51: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:52: trailing whitespace.
++goto fail
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:53: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:54: trailing whitespace.
++:findJavaFromJavaHome
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:55: trailing whitespace.
++set JAVA_HOME=%JAVA_HOME:"=%
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:56: trailing whitespace.
++set JAVA_EXE=%JAVA_HOME%/bin/java.exe
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:57: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:58: trailing whitespace.
++if exist "%JAVA_EXE%" goto execute
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:59: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:60: trailing whitespace.
++echo. 1>&2
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:61: trailing whitespace.
++echo ERROR: JAVA_HOME is set to an invalid directory: %JAVA_HOME% 1>&2
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:62: trailing whitespace.
++echo. 1>&2
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:63: trailing whitespace.
++echo Please set the JAVA_HOME variable in your environment to match the 1>&2
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:64: trailing whitespace.
++echo location of your Java installation. 1>&2
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:65: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:66: trailing whitespace.
++goto fail
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:67: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:68: trailing whitespace.
++:execute
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:69: trailing whitespace.
++@rem Setup the command line
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:70: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:71: trailing whitespace.
++set CLASSPATH=%APP_HOME%\gradle\wrapper\gradle-wrapper.jar
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:72: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:73: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:74: trailing whitespace.
++@rem Execute Gradle
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:75: trailing whitespace.
++"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GRADLE_OPTS% "-Dorg.gradle.appname=%APP_BASE_NAME%" -classpath "%CLASSPATH%" org.gradle.wrapper.GradleWrapperMain %*
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:76: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:77: trailing whitespace.
++:end
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:78: trailing whitespace.
++@rem End local scope for the variables with windows NT shell
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:79: trailing whitespace.
++if %ERRORLEVEL% equ 0 goto mainEnd
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:80: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:81: trailing whitespace.
++:fail
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:82: trailing whitespace.
++rem Set variable GRADLE_EXIT_CONSOLE if you need the _script_ return code instead of
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:83: trailing whitespace.
++rem the _cmd.exe /c_ return code!
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:84: trailing whitespace.
++set EXIT_CODE=%ERRORLEVEL%
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:85: trailing whitespace.
++if %EXIT_CODE% equ 0 set EXIT_CODE=1
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:86: trailing whitespace.
++if not ""=="%GRADLE_EXIT_CONSOLE%" exit %EXIT_CODE%
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:87: trailing whitespace.
++exit /b %EXIT_CODE%
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:88: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:89: trailing whitespace.
++:mainEnd
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:90: trailing whitespace.
++if "%OS%"=="Windows_NT" endlocal
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:91: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat:92: trailing whitespace.
++:omega
+References/Agent/Memory/khoj/src/interface/desktop/assets/icons/copy-button-success.svg:1: trailing whitespace.
++<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+References/Agent/Memory/khoj/src/interface/desktop/assets/icons/copy-button-success.svg:2: trailing whitespace.
++<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+References/Agent/Memory/khoj/src/interface/desktop/assets/icons/copy-button-success.svg:3: trailing whitespace.
++<path opacity="0.4" d="M22 11.1V6.9C22 3.4 20.6 2 17.1 2H12.9C9.4 2 8 3.4 8 6.9V8H11.1C14.6 8 16 9.4 16 12.9V16H17.1C20.6 16 22 14.6 22 11.1Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/desktop/assets/icons/copy-button-success.svg:4: trailing whitespace.
++<path fill="#00ff00" d="M16 17.1V12.9C16 9.4 14.6 8 11.1 8H6.9C3.4 8 2 9.4 2 12.9V17.1C2 20.6 3.4 22 6.9 22H11.1C14.6 22 16 20.6 16 17.1Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/desktop/assets/icons/copy-button-success.svg:5: trailing whitespace.
++<path d="M6.08008 14.9998L8.03008 16.9498L11.9201 13.0498" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/desktop/assets/icons/copy-button.svg:1: trailing whitespace.
++<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+References/Agent/Memory/khoj/src/interface/desktop/assets/icons/copy-button.svg:2: trailing whitespace.
++<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+References/Agent/Memory/khoj/src/interface/desktop/assets/icons/copy-button.svg:3: trailing whitespace.
++<path opacity="0.4" d="M16 12.9V17.1C16 20.6 14.6 22 11.1 22H6.9C3.4 22 2 20.6 2 17.1V12.9C2 9.4 3.4 8 6.9 8H11.1C14.6 8 16 9.4 16 12.9Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/desktop/assets/icons/copy-button.svg:4: trailing whitespace.
++<path d="M22 6.9V11.1C22 14.6 20.6 16 17.1 16H16V12.9C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2H17.1C20.6 2 22 3.4 22 6.9Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/desktop/assets/icons/copy-button.svg:5: trailing whitespace.
++</svg>
+References/Agent/Memory/khoj/src/interface/obsidian/.editorconfig:1: trailing whitespace.
++# top-most EditorConfig file
+References/Agent/Memory/khoj/src/interface/obsidian/.editorconfig:2: trailing whitespace.
++root = true
+References/Agent/Memory/khoj/src/interface/obsidian/.editorconfig:3: trailing whitespace.
++
+References/Agent/Memory/khoj/src/interface/obsidian/.editorconfig:4: trailing whitespace.
++[*]
+References/Agent/Memory/khoj/src/interface/obsidian/.editorconfig:5: trailing whitespace.
++charset = utf-8
+References/Agent/Memory/khoj/src/interface/obsidian/.editorconfig:6: trailing whitespace.
++end_of_line = lf
+References/Agent/Memory/khoj/src/interface/obsidian/.editorconfig:7: trailing whitespace.
++insert_final_newline = true
+References/Agent/Memory/khoj/src/interface/obsidian/.editorconfig:8: trailing whitespace.
++indent_style = tab
+References/Agent/Memory/khoj/src/interface/obsidian/.editorconfig:9: trailing whitespace.
++indent_size = 4
+References/Agent/Memory/khoj/src/interface/obsidian/.editorconfig:10: trailing whitespace.
++tab_width = 4
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:169: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:171: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:174: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:210: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:212: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:214: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:222: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:224: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:226: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:232: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:234: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:236: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:243: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:248: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:257: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:264: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:265: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts:278: leftover conflict marker
+References/Agent/Memory/khoj/src/interface/web/public/close.svg:1: trailing whitespace.
++<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+References/Agent/Memory/khoj/src/interface/web/public/close.svg:2: trailing whitespace.
++<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+References/Agent/Memory/khoj/src/interface/web/public/close.svg:3: trailing whitespace.
++<circle cx="12" cy="12" r="10" stroke="#1C274C" stroke-width="1.5"/>
+References/Agent/Memory/khoj/src/interface/web/public/close.svg:4: trailing whitespace.
++<path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
+References/Agent/Memory/khoj/src/interface/web/public/copy-button-success.svg:1: trailing whitespace.
++<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+References/Agent/Memory/khoj/src/interface/web/public/copy-button-success.svg:2: trailing whitespace.
++<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+References/Agent/Memory/khoj/src/interface/web/public/copy-button-success.svg:3: trailing whitespace.
++<path opacity="0.4" d="M22 11.1V6.9C22 3.4 20.6 2 17.1 2H12.9C9.4 2 8 3.4 8 6.9V8H11.1C14.6 8 16 9.4 16 12.9V16H17.1C20.6 16 22 14.6 22 11.1Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/web/public/copy-button-success.svg:4: trailing whitespace.
++<path fill="#00ff00" d="M16 17.1V12.9C16 9.4 14.6 8 11.1 8H6.9C3.4 8 2 9.4 2 12.9V17.1C2 20.6 3.4 22 6.9 22H11.1C14.6 22 16 20.6 16 17.1Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/web/public/copy-button-success.svg:5: trailing whitespace.
++<path d="M6.08008 14.9998L8.03008 16.9498L11.9201 13.0498" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/web/public/copy-button.svg:1: trailing whitespace.
++<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+References/Agent/Memory/khoj/src/interface/web/public/copy-button.svg:2: trailing whitespace.
++<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+References/Agent/Memory/khoj/src/interface/web/public/copy-button.svg:3: trailing whitespace.
++<path opacity="0.4" d="M16 12.9V17.1C16 20.6 14.6 22 11.1 22H6.9C3.4 22 2 20.6 2 17.1V12.9C2 9.4 3.4 8 6.9 8H11.1C14.6 8 16 9.4 16 12.9Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/web/public/copy-button.svg:4: trailing whitespace.
++<path d="M22 6.9V11.1C22 14.6 20.6 16 17.1 16H16V12.9C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2H17.1C20.6 2 22 3.4 22 6.9Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/web/public/copy-button.svg:5: trailing whitespace.
++</svg>
+References/Agent/Memory/khoj/src/interface/web/public/share.svg:2: trailing whitespace.
++<svg width="800px" height="800px" viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+References/Agent/Memory/khoj/src/interface/web/public/share.svg:3: trailing whitespace.
++<path d="M6.75 15C8.13071 15 9.25 13.8807 9.25 12.5C9.25 11.1193 8.13071 10 6.75 10C5.36929 10 4.25 11.1193 4.25 12.5C4.25 13.8807 5.36929 15 6.75 15Z" stroke="#0F0F0F" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/web/public/share.svg:4: trailing whitespace.
++<path d="M17.25 8C18.6307 8 19.75 6.88071 19.75 5.5C19.75 4.11929 18.6307 3 17.25 3C15.8693 3 14.75 4.11929 14.75 5.5C14.75 6.88071 15.8693 8 17.25 8Z" stroke="#0F0F0F" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/web/public/share.svg:5: trailing whitespace.
++<path d="M17.25 22C18.6307 22 19.75 20.8807 19.75 19.5C19.75 18.1193 18.6307 17 17.25 17C15.8693 17 14.75 18.1193 14.75 19.5C14.75 20.8807 15.8693 22 17.25 22Z" stroke="#0F0F0F" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/web/public/share.svg:6: trailing whitespace.
++<path d="M13.49 17.05L10.45 15.06" stroke="#0F0F0F" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/web/public/share.svg:7: trailing whitespace.
++<path d="M13.48 7.96001L10.46 9.94001" stroke="#0F0F0F" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+References/Agent/Memory/khoj/src/interface/web/public/thumbs-down.svg:1: trailing whitespace.
++<?xml version="1.0" encoding="utf-8"?>
+References/Agent/Memory/khoj/src/interface/web/public/thumbs-down.svg:2: trailing whitespace.
++<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+References/Agent/Memory/khoj/src/interface/web/public/thumbs-down.svg:3: trailing whitespace.
++<svg fill="#000000" width="800px" height="800px" viewBox="-7.5 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+References/Agent/Memory/khoj/src/interface/web/public/thumbs-down.svg:4: trailing whitespace.
++<title>thumbs-down</title>
+References/Agent/Memory/khoj/src/interface/web/public/thumbs-down.svg:5: trailing whitespace.
++<path d="M5.92 25.24c-0.64 0-1.36-0.2-2.2-0.64-0.28-0.16-0.44-0.44-0.44-0.76v-14.96c0-0.36 0.24-0.72 0.6-0.8 0.2-0.040 4.8-1.32 8.16-1.32 1.36 0 2.36 0.2 3 0.6 0.88 0.56 1.44 1.52 1.6 2.92 0.36 2.44-0.52 5.92-1.44 6.96-0.8 0.88-2.36 1.040-3.84 1.2-0.72 0.080-1.72 0.2-2 0.36s-0.44 1.4-0.52 2.12c-0.24 1.84-0.6 4.32-2.92 4.32zM4.92 23.32c0.48 0.2 0.8 0.24 1 0.24 0.72 0 1-0.88 1.24-2.84 0.2-1.36 0.36-2.68 1.24-3.28 0.6-0.4 1.6-0.52 2.76-0.64 0.96-0.12 2.44-0.28 2.8-0.68 0.48-0.52 1.36-3.36 1.040-5.6-0.080-0.6-0.32-1.4-0.84-1.72-0.24-0.12-0.8-0.36-2.12-0.36-2.44 0-5.76 0.76-7.12 1.080 0 0 0 13.8 0 13.8zM0.84 18.64c-0.48 0-0.84-0.36-0.84-0.84v-8.92c0-0.48 0.36-0.84 0.84-0.84s0.84 0.36 0.84 0.84v8.96c0 0.44-0.36 0.8-0.84 0.8z"></path>
+References/Agent/Memory/khoj/src/interface/web/public/thumbs-up.svg:1: trailing whitespace.
++<?xml version="1.0" encoding="utf-8"?>
+References/Agent/Memory/khoj/src/interface/web/public/thumbs-up.svg:2: trailing whitespace.
++<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+References/Agent/Memory/khoj/src/interface/web/public/thumbs-up.svg:3: trailing whitespace.
++<svg fill="#000000" width="800px" height="800px" viewBox="-7.5 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+References/Agent/Memory/khoj/src/interface/web/public/thumbs-up.svg:4: trailing whitespace.
++<title>thumbs-up</title>
+References/Agent/Memory/khoj/src/interface/web/public/thumbs-up.svg:5: trailing whitespace.
++<path d="M12.040 25.24v0c-3.36 0-7.96-1.24-8.16-1.32-0.36-0.080-0.6-0.44-0.6-0.8v-14.96c0-0.32 0.16-0.6 0.44-0.76 0.84-0.44 1.56-0.64 2.2-0.64 2.32 0 2.68 2.48 2.92 4.28 0.080 0.72 0.24 1.92 0.52 2.12s1.28 0.28 2 0.36c1.52 0.16 3.080 0.32 3.84 1.2 0.92 1.040 1.8 4.52 1.44 6.96-0.2 1.4-0.76 2.36-1.6 2.92-0.68 0.44-1.68 0.64-3 0.64zM4.92 22.48c1.36 0.32 4.64 1.080 7.12 1.080 1.32 0 1.92-0.24 2.12-0.36 0.52-0.32 0.76-1.12 0.84-1.72 0.32-2.24-0.56-5.080-1.040-5.6-0.36-0.4-1.84-0.56-2.8-0.68-1.16-0.12-2.12-0.24-2.76-0.64-0.88-0.6-1.080-1.92-1.24-3.28-0.28-1.96-0.52-2.84-1.24-2.84-0.2 0-0.52 0.040-1 0.24 0 0 0 13.8 0 13.8zM0.84 23.96c-0.48 0-0.84-0.36-0.84-0.84v-8.92c0-0.48 0.36-0.84 0.84-0.84s0.84 0.36 0.84 0.84v8.96c0 0.44-0.36 0.8-0.84 0.8z"></path>

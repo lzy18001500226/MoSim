@@ -1,0 +1,11 @@
+References/Agent/Memory/khoj/src/interface/android/gradlew.bat
+References/Agent/Memory/khoj/src/interface/desktop/assets/icons/copy-button-success.svg
+References/Agent/Memory/khoj/src/interface/desktop/assets/icons/copy-button.svg
+References/Agent/Memory/khoj/src/interface/obsidian/.editorconfig
+References/Agent/Memory/khoj/src/interface/obsidian/src/interact_with_files.ts
+References/Agent/Memory/khoj/src/interface/web/public/close.svg
+References/Agent/Memory/khoj/src/interface/web/public/copy-button-success.svg
+References/Agent/Memory/khoj/src/interface/web/public/copy-button.svg
+References/Agent/Memory/khoj/src/interface/web/public/share.svg
+References/Agent/Memory/khoj/src/interface/web/public/thumbs-down.svg
+References/Agent/Memory/khoj/src/interface/web/public/thumbs-up.svg
