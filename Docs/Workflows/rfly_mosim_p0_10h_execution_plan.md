@@ -57,7 +57,7 @@ Main PMO thread owns:
 - integration and final authority decisions;
 - task ledger and PROGRESS updates;
 - MWORKS critical-path edits/checks when needed;
-- WeChat milestone/manual-review/blocker notifications;
+- sparse email milestone/manual-review/blocker notifications;
 - rejecting fake point-cloud/grid/keyboard/UE-truth leaks.
 
 Sidecar agents:
@@ -156,9 +156,9 @@ For each return or blocker packet, PMO decides the next communication action:
 
 ```text
 manual_review_required=true
-  -> PMO writes/sends a sparse WeChat review packet with PMO thread id.
+  -> PMO writes/sends a sparse email review packet with PMO thread id.
 blocker changes architecture or requires user approval
-  -> PMO sends sparse WeChat blocker packet and records it in PROGRESS.md.
+  -> PMO sends sparse email blocker packet and records it in PROGRESS.md.
 ordinary file-level audit or smoke completion
   -> PMO records ledger/PROGRESS and continues without interrupting user.
 ```

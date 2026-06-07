@@ -223,6 +223,13 @@ missing required topics, stale cleanup failure, or an exhausted one-probe
 budget, stop and return a `status=blocked` packet. Do not repeat live probes to
 get a better result unless PMO sends a new task packet.
 
+ROS2 runtime cleanup must stay scoped to the current ROS graph and the exact
+replay/FAST-LIO helper processes launched by that task. Do not include
+MWORKS, Sysplorer, Syslab, MCP wrapper, Codex, browser, or general desktop
+process names in ROS2 cleanup/preflight kill patterns. If a preflight scan
+matches those non-ROS processes, record the risk and stop or narrow the runner
+before live work; do not continue with a broad cleanup pattern.
+
 For Ubuntu 22.04, the preferred operator layout is:
 
 ```text

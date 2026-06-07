@@ -42,7 +42,7 @@ Codex.
 | Visible threads | Durable department-like context for PMO-dispatched work that needs repeated follow-up or manual review. | Disposable sub-agent work, fake request/response RPC assumptions, or resurrecting deleted legacy departments. |
 | Sub-agents | Bounded research/review/execution slices with explicit return evidence. | Long-lived Git/test/supervision queues or tasks that need visible durable context. |
 | App automations / thread wakeups | Recurring reminders, health checks, context-memory drift checks, gateway checks, and scheduled review prompts after behavior is verified. | Treating a reminder as completed work or relying on it instead of project ledgers/result packets. |
-| Native notify | Local completion/blocker notification when available. WeChat remains the user-facing sparse intervention channel for MoSim long tasks. | High-volume transcript mirroring or assuming notification delivery proves task success. |
+| Native notify | Local completion/blocker notification when available. Sparse email is the user-facing intervention channel for MoSim long tasks; WeChat is diagnostic or explicitly requested only. | High-volume transcript mirroring or assuming notification delivery proves task success. |
 
 Current installed Windows Codex feature audit on 2026-06-06 found these surfaces
 available or enabled: hooks, plugins, apps, Browser, Windows MCP, goals,
@@ -55,16 +55,16 @@ Adoption priority:
 | Priority | Capability | Required Action |
 |---|---|---|
 | P0 | Worktrees | Use only for a concrete isolated write task after explicit PMO/user approval and a successful native handoff verification. PMO/R1/R2 do not move to worktrees by default. DevOps owns final Git integration. |
-| P0 | Visible threads | Use for durable specialty context only: PMO, DevOps, WeChat gateway ops, ROS2 runtime, MWORKS dynamics/control, UE experiment console, Sunray150 assets/PBR, open-source probe/learning, and any future reusable specialty approved by PMO. |
+| P0 | Visible threads | Use for durable specialty context only: PMO, DevOps, ROS2 runtime, MWORKS dynamics/control, UE experiment console, Sunray150 assets/PBR, open-source probe/learning, and any future reusable specialty approved by PMO. The old WeChat gateway ops thread is archived and not part of the active set. |
 | P0 | Goals | Use for long-running PMO or department tasks. Do not create a goal for every small step, and do not treat a goal as a replacement for result packets or ledgers. |
 | P0 | Skills/plugins | Prefer installed Codex/plugin skills before writing new local procedures. Load the minimum skill required by the current task. |
 | P0 | MCP/apps | Use native MCP/app surfaces for live tools and external actions before writing ad-hoc scripts, especially Sysplorer/Syslab/Unreal/Blender/ROS2/Windows desktop operations. |
 | P0 | Browser / Windows MCP | Use Browser for browser/local web targets and Windows MCP plus Win32/UI Automation scripts for MoSim desktop GUI screenshot/inspection. Computer Use is deprecated for MoSim desktop GUI monitoring and recovery; do not use it for MWORKS/Sysplorer/Syslab. |
-| P1 | App automations / thread wakeups | Configure only after behavior is verified locally. Good candidates are WeChat gateway heartbeat, context drift check, hook/preflight health, external project inventory, and Git hygiene. |
+| P1 | App automations / thread wakeups | Configure only after behavior is verified locally. Good candidates are PMO/CoAgentOps health checks, context drift check, hook/preflight health, external project inventory, and Git hygiene. Do not schedule WeChat gateway heartbeat unless the user explicitly restores that route. |
 | P1 | Native review / `codex review` | Use as a code-review gate or sub-agent-style bounded review, not as a standing test department. Findings must cite files/lines and be integrated by the owner thread. |
 | P1 | Non-interactive `codex exec` | Use for clear background tasks such as packet generation, narrow audits, docs checks, and one-shot department prompts. Avoid using TUI as the only automation path. |
 | P1 | Workspace dependencies | Use for sheets, slides, docs, packaged runtimes, and report assets instead of guessing local bundled dependency paths. |
-| P1 | Native notify | Use as a local completion/blocker signal where available. For MoSim long tasks, WeChat remains the default user-facing sparse intervention channel. |
+| P1 | Native notify | Use as a local completion/blocker signal where available. For MoSim long tasks, sparse email is the default user-facing intervention channel. |
 | P2 | App server / remote control | Do not make this a project dependency until a concrete task verifies current stability and security boundaries. |
 | P2 | Experimental memory/chronicle/artifact surfaces | Treat as auxiliary only. Project truth remains in `Docs/`, `Results/agent_packets/`, ledgers, source files, and reviewed evidence. |
 

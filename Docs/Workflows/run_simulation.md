@@ -81,7 +81,7 @@ variables:
 Use Sysplorer MCP tools in this order:
 
 ```text
-activation sentinel / background screenshot
+activation sentinel / maximized target-window screenshot
   → stop on demo/login/license/error-report/visible unknown/unavailable state
 session_manager
   → load_library
@@ -128,7 +128,7 @@ use this direct MCP sequence:
 
 ```text
 python Scripts\agent\check_mworks_gui_sentinel.py --output Results\mworks_gui_incidents\<request_id>\sentinel.json
-powershell -NoProfile -ExecutionPolicy Bypass -File Scripts\tools\capture_window_background.ps1 -TitleRegex "Sysplorer|MWORKS|Quadrotor|AWFF" -OutDir Results\mworks_background_capture\<request_id>
+capture a maximized or foreground screenshot of the target reusable Sysplorer/MWORKS main window, and verify the image content actually shows that target window
 session_manager(action="health")
 model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\References\\MWORKS\\QuadrotorModel\\package.mo", force_reload=true, auto_load_deps=true)
 model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\Models\\QuadrotorControllerBlocks\\AWFF_FullControllerFlatGraphical_Sysblock.mo", force_reload=true, auto_load_deps=true)
@@ -136,6 +136,15 @@ model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\Mode
 model_manager(action="open", model_name="QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock")
 check_model(model_name="QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock", stop_on_error=false)
 ```
+
+Background `PrintWindow` capture, including
+`Scripts\tools\capture_window_background.ps1 -RestoreMinimized`, is auxiliary
+window-state evidence only for activation/license checks. Do not accept a
+minimized/background capture, a broad TitleRegex helper/proxy capture, or a
+desktop screenshot that actually shows Codex/another application as proof that
+MWORKS is activated. If the target reusable Sysplorer/MWORKS main window cannot
+be maximized or the screenshot content does not match it, stop before live MCP
+work and return a license/window-evidence blocker.
 
 Do not load this file because it must not exist:
 
@@ -300,8 +309,8 @@ Hidden Qt/browser-proxy/helper windows with no license/error text are risk
 evidence, not standalone blockers. Do not open a new MWORKS window, click
 login/activation/error-report controls, or tune solver/model code.
 For activation/license/login/authorization/GUI-error incidents, PMO must send
-both sparse WeChat and sparse email alert for the same open incident. Do not
-rely on WeChat alone.
+a sparse email alert for the open incident. WeChat is optional and
+diagnostic-only unless the user explicitly asks for it.
 
 The task return or blocker packet must include:
 

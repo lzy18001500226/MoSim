@@ -963,6 +963,7 @@ be done in bounded batches. Each batch needs:
    canonical;
 3. source labels for geometry, mass, inertia, thrust, yaw moment, motor lag,
    drag, and controller parameters;
-4. MWORKS activation/screenshot preflight for the department doing the work;
+4. latest CoAgentOps MWORKS activation/window patrol reference, or one bounded
+   current-turn check only when no recent patrol exists and live work needs it;
 5. `check_model` and, where relevant, hover/yaw/step or scenario simulation
    evidence before the old alias is retired.
