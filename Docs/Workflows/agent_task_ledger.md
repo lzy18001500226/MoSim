@@ -42,6 +42,17 @@
    scheduling-decision requirement, not a requirement to use at least one
    sub-agent. Disposable sub-agents may be used only for bounded task-local
    slices and must not create or manage visible threads.
+10. Large Git reference intake must treat `.gitignore` as a temporary throttle,
+    not as the backlog itself. For crawled `References/` and `Docs/Skills/`
+    projects, reopen one source project or major subdirectory at a time and
+    commit ordinary source, docs, scripts, configs, examples, and small assets
+    in reviewed pathspec batches. Durable ignores should remain concise and
+    class-based: individual files at or above 100 MiB, operator-local files,
+    nested `.git`, dependency folders, generated/build/cache/runtime output,
+    archives, compiled binaries, missing LFS payloads, or explicitly
+    manifest-only asset classes. Do not add per-file/per-project ignore
+    backlogs for normal code, docs, or small assets, and do not call a Git
+    closeout done until temporary throttles have been drained or justified.
 
 Status values:
 

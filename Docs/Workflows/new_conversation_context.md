@@ -57,6 +57,21 @@ generated artifacts, then stage/commit/push under the small-batch limit. The
 final `.gitignore` should keep only durable class/exact-risk rules, not a
 per-file backlog of ordinary source/docs/scripts/configs/small assets.
 
+2026-06-07 DevOps closeout correction: for crawled open-source project intake,
+do not solve backlog by adding more ordinary file or source-extension ignores
+such as Python, Markdown, C/C++, config, example, or small asset files. The
+working rule is one source project or major subdirectory at a time: keep only
+single files at or above 100 MiB, operator-local files, nested `.git`,
+dependency folders, generated/build/cache/runtime output, archives, compiled
+binaries, missing LFS payloads, or explicitly manifest-only asset classes
+ignored; force-add and commit the remaining ordinary project content in
+reviewed pathspec batches under the file-count ceiling. Generic classes such
+as `*.zip`, `*.7z`, `node_modules`, `build`, `dist`, `.venv`, `__pycache__`,
+`*.exe`, `*.dll`, `*.lib`, `*.pdb`, and `*.obj` belong in concise
+`References/**` / `Docs/Skills/**` class guards, not repeated under each
+project. A directory being hundreds of MB total is not a durable-ignore reason
+when no individual file crosses the GitHub hard limit.
+
 This file records only current effective decisions and known rejected routes.
 It does not promote old chat history by itself. If a newly opened conversation
 finds a historical claim that is not represented here or in the linked source
