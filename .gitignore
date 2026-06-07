@@ -282,6 +282,17 @@ References/Agent/Memory/mem0/*
 !References/Agent/Memory/mem0/.pre-commit-config.yaml
 !References/Agent/Memory/mem0/.gitignore
 !References/Agent/Memory/mem0/poetry.lock
+!References/Agent/Memory/mem0/openclaw/
+!References/Agent/Memory/mem0/openclaw/**
+References/Agent/Memory/mem0/openclaw/.npmrc
+!References/Agent/Memory/mem0/.agents/
+!References/Agent/Memory/mem0/.agents/**
+!References/Agent/Memory/mem0/.claude-plugin/
+!References/Agent/Memory/mem0/.claude-plugin/**
+!References/Agent/Memory/mem0/.codex-plugin/
+!References/Agent/Memory/mem0/.codex-plugin/**
+!References/Agent/Memory/mem0/.cursor-plugin/
+!References/Agent/Memory/mem0/.cursor-plugin/**
 !References/Agent/Platforms/
 References/Agent/Platforms/*
 !References/Agent/Platforms/aider/
