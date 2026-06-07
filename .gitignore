@@ -141,6 +141,12 @@ References/UnrealScenes/
 References/Agent/
 !References/Agent/
 References/Agent/*
+!References/Agent/SDK/
+References/Agent/SDK/*
+!References/Agent/SDK/openai-cookbook/
+!References/Agent/SDK/openai-cookbook/**
+!References/Agent/SDK/openai-python/
+!References/Agent/SDK/openai-python/**
 !References/Agent/Control/
 !References/Agent/Control/**
 References/Agent/Control/agor/.env.postgres
