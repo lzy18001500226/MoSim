@@ -63,6 +63,34 @@ isolated worktree.
 Review acceptance, merge ownership, and worktree closeout are further defined
 in `CoAgent/docs/architecture/coagent_review_merge_protocol.md`.
 
+Codex native capability selection happens before CoAgent expansion. Use this
+surface gate in PMO planning:
+
+| Need | Preferred Surface |
+|---|---|
+| Hard mechanical guardrail | Native hook plus `CoAgent/hooks/preflight.py` |
+| Durable project rule | `AGENTS.md` |
+| One task procedure | One task-specific workflow or skill |
+| Live external tool or GUI operation | MCP/app/plugin, Browser, or Windows MCP |
+| Durable specialty context | Visible Codex thread |
+| Bounded parallel research/review/execution | Short-lived sub-agent |
+| Independent write stream | Visible thread or task conversation with isolated worktree when practical |
+| Code-review gate | `codex review` or scoped review sub-agent |
+| Clear background one-shot | `codex exec` |
+| Recurring check/reminder | Codex App automation/thread wakeup after local verification |
+| User-facing long-task intervention | WeChat gateway when available |
+| MoSim-specific return/evidence glue | CoAgent packet, ledger, result import, or doctor helper |
+
+Do not add CoAgent runtime, queue, schema, or department machinery until this
+native surface gate shows a real gap.
+
+For every PMO-dispatched non-trivial task, write the gate decision into the
+task graph or packet before dispatch. The record should name the selected
+surface, the rejected alternatives when relevant, the worktree decision, and
+the expected result/blocker packet path. This prevents visible-thread work,
+sub-agents, `codex exec`, WeChat, and CoAgent packet glue from being mixed
+without an explicit reason.
+
 Multi-conversation task-team architecture is defined in
 `CoAgent/docs/architecture/coagent_task_team_architecture.md`. Use it before splitting
 one long task across several conversations or worktrees.
@@ -70,12 +98,19 @@ one long task across several conversations or worktrees.
 V1 maximum durable nesting:
 
 ```text
-PMO/main -> DispatchCenter -> department or task team -> scoped task conversation -> short-lived subagent
+PMO/main -> visible department or task team -> scoped task conversation -> short-lived subagent
 ```
 
-No department-internal durable agent swarms, peer-to-peer worker state,
-app-server transport, or unattended write automation are allowed in V1 without
-a later approved task.
+The old "DispatchCenter as mandatory middle office" model is deprecated for
+ordinary MoSim work. PMO directly creates or reuses visible Codex department
+threads and sends task packets with explicit return contracts. CoAgent runtime,
+dispatch, result-router, doctor, and queue tools remain available as support
+infrastructure when a task needs durable queue state, packet generation,
+visibility diagnosis, result import, or evidence validation.
+
+No department-internal durable agent swarms, unrecorded peer-to-peer worker
+state, app-server transport, or unattended write automation are allowed in V1
+without a later approved task.
 
 ## 1. Task Graph First
 
@@ -108,9 +143,11 @@ Minimum planning gate:
 ```text
 objective:
 current repo / tool state:
+native Codex surfaces to use:
 critical path:
 parallelizable side work:
 owners and write scopes:
+worktree / thread / sub-agent / exec / review selection:
 verification gates:
 Git strategy:
 stop / ask conditions:
@@ -237,12 +274,217 @@ source of truth for task state.
 
 Visible department conversations are also not the same thing as internal
 Codex subagents. If the user asks to send work to `MoSim｜DevOps 发布部`,
-`MoSim｜验证测试部`, or another visible department thread, do not use an
-internal `spawn_agent` call and claim the department received it. Dispatch to
-the real visible thread with `codex exec resume <thread_id>` and capture the
-last response with `--output-last-message`. Internal subagents may still be used
-for one bounded private analysis slice, but they are not acceptable evidence of
-department communication.
+`MoSim｜ROS2感知定位与规划运行部`, `MoSim｜MWORKS动力学与控制验证部`, or another visible
+department thread, do not use an internal `spawn_agent` call and claim the
+department received it. Dispatch to the real visible thread with
+`codex exec resume <thread_id>` and capture the last response with
+`--output-last-message`. Internal subagents may still be used for one bounded
+private analysis slice, but they are not acceptable evidence of department
+communication.
+
+PMO may also create a new visible department thread when no existing reusable
+thread matches the work and the task needs durable specialty context across
+turns. Current lifecycle authority is restricted to user-approved mainline
+threads. Approved mainline threads are `MoSim｜主线 PMO`
+(`019e9868-83ea-70f0-92c5-a3a408bd78c6`) and `MoSim｜CoAgent运维平台`
+(`019e9bc1-ea9f-7102-b41a-4ef9b2308992`). These mainline threads may call
+native Codex visible-thread tools such as `list_threads`, `read_thread`,
+`send_message_to_thread`, `create_thread`, `fork_thread`, `set_thread_title`,
+and `set_thread_archived` when those tools are exposed in the current session.
+They may also create, update, view, or delete Codex App automations through the
+native `automation_update` tool after checking that the task is recurring and
+has a safe scope. Other visible departments may recommend a new department or
+write a blocker packet, but they must not create, fork, rename, archive, create
+automation tasks, or delegate creation of visible threads.
+
+The earlier `MoSim｜CoAgent运维平台`
+(`019e74d1-72fa-7d33-8783-90584035ae92`) was created through an older
+WSL/non-App-native conversation path, lacked reliable native thread/automation
+tool surfaces, and was deleted by the user on 2026-06-06. Do not route new
+native thread or automation work to it; dispatch those tasks to
+`MoSim｜CoAgent运维平台` and recover history only from project packets/docs.
+
+Recurring work does not justify duplicate departments. If an existing
+App-native visible department needs scheduled checks or wakeups, keep that
+department and configure native Codex App automation against it. As of
+2026-06-06, the gateway, context, open-source probe, and open-source learning
+departments were replaced with App-native visible threads after their reusable
+old conversation content was landed into canonical project documents. Use the
+current active IDs in `CoAgent/dispatch/department_threads.json`; old IDs are
+superseded and must not receive new work. Gateway production routing is R3;
+Gateway R2 is quarantine/diagnostic-only unless PMO explicitly restores it
+through the bounded recovery ladder.
+
+If a mainline thread cannot see the native thread or automation tools in its
+current Codex surface, it must first search the tool surface (`tool_search`
+querying for `create_thread`, `send_message_to_thread`, `read_thread`, and
+`automation_update`). If the native tool is still unavailable, it must write a
+blocker packet with the requested operation, intended target thread or
+automation definition, and why GUI clicking/private App state edits were not
+used.
+
+Visible departments are not passive prompt sinks. When a department receives a
+non-trivial task packet, it owns a department-local goal and must plan the work
+before execution. The prompt must use this standard local-planning block rather
+than an ad hoc reminder:
+
+```text
+Before any non-trivial business work, derive and record a department-local
+task graph. This is a planning requirement, not a requirement to use at least
+one sub-agent.
+
+department_local_goal:
+critical_path_steps:
+parallelizable_slices:
+subagent_plan: used | available_but_not_useful | unavailable | unsafe
+subagent_plan_reason:
+subagents_used:
+verification_gates:
+manual_review_or_blocker_triggers:
+```
+
+`subagents_used` may be empty, but only after the department records the
+explicit `subagent_plan` decision and a concrete reason. If the department uses
+disposable Codex sub-agents, each entry must include objective, read scope,
+write scope or read-only status, stop condition, returned evidence path, and
+whether the department accepted or rejected the result. A department may use
+such sub-agents only for bounded research/review/execution slices supported by
+its current tool surface. It must not use sub-agents as durable queues, as
+hidden department replacements, or as a way to create/rename/archive visible
+threads. PMO remains responsible for cross-department routing, visible thread
+lifecycle, and final integration.
+
+Dispatch-packet rule: PMO must include an explicit local-planning and
+sub-agent-decision clause for every non-trivial visible-department assignment.
+If the work has an independent read-only audit, reference comparison, file-level
+review, or disjoint write slice, the target department should use a disposable
+sub-agent when its runtime exposes one. If it cannot use one, the packet and
+return/blocker should record `available_but_not_useful`, `unavailable`, or
+`unsafe` with the concrete resource or coupling reason. PMO must not phrase
+this as "use at least one sub-agent"; the requirement is to plan the task graph
+and make the sub-agent scheduling decision consistently.
+
+Department execution and acceptance rule: after planning, the visible
+department owns the task execution inside the declared read/write scope. It must
+run the task-specific infrastructure preflight before business work and must
+stop promptly with a blocker when that gate fails. It must not continue by
+generating unrelated JSON, tuning solvers, changing parameters, retrying
+runtime/model steps, or filing a completed packet that only proves control-plane
+activity. Completed packets must contain domain engineering evidence matching
+the task type: MWORKS `.mo`/`package.mo`, `check_model`, `SimulateModel`,
+native result/`.msr`, metrics, diagram/layout screenshots, or wiring
+observations; ROS2 topic/process/source-window/log/runtime evidence; UE
+source/static/build/runtime evidence according to scope; or Blender/UE asset,
+rendered review, material-manifest, or visual-review evidence for asset work.
+JSON packets, ledger rows, and progress notes are not engineering output unless
+the task is explicitly diagnostic/rule-sync/preflight/dispatch-surface/static
+inventory work. PMO must reject completed returns that lack the declared
+engineering outputs, omit the local plan/sub-agent decision, or convert a real
+blocker into completed metadata.
+
+Current MWORKS split: `MoSim｜MWORKS动力学与控制验证部-R1`
+(`019e9be5-334b-76b1-93f9-8b02caebf376`) is the primary MWORKS mainline route
+for dynamics/control/model-integration evidence. `MoSim｜MWORKS动力学与控制验证部-R2`
+(`019e9999-b0d3-7682-bccd-faef08fcf1df`) is an auxiliary route for model
+organization, graphical simulation interface completeness, connection
+correctness, line-layout/readability, and diagram hygiene. R2 had historical
+dispatch-surface instability, so its first business task requires a bounded
+synchronization/no-op validation return packet; until then, use R1 for
+production MWORKS work. Historical packets may preserve older R2 labels for the
+current R1 thread, but current routing follows `CoAgent/dispatch/department_threads.json`.
+
+Mainline ownership rule: `MoSim｜主线 PMO` and `MoSim｜CoAgent运维平台` are
+coordination owners, not the best specialist for every domain problem. Route
+domain incidents to the responsible visible department first whenever its
+thread surface is healthy. If the responsible department is listable/readable
+but cannot start a turn, the mainline owner records the dispatch failure,
+directly takes over only the urgent incident work needed to protect the
+critical path, and also owns a bounded recovery attempt for that department
+thread. Do not leave urgent work waiting solely because the specialist thread
+is stuck, and do not permanently bypass the specialist after recovery.
+
+Human review artifact rule: if a task produces review images, videos, native
+MWORKS result viewers, `.msr` assets, or other user-facing audit artifacts, PMO
+must open/display the artifact directly while the user is online or send a
+concise WeChat review prompt/image when available. Do not treat a pasted path
+as sufficient review delivery. Exact paths stay in result packets and project
+evidence; the user-facing prompt stays short and Chinese.
+
+A new department thread is appropriate for recurring ownership such as
+ROS2 runtime integration, MWORKS dynamics evidence, UE experiment-console
+implementation, PX4/SIL-HIL integration, evidence/report quality, or gateway
+operations. It is not needed for a small one-off read-only audit that can be
+handled by a disposable subagent.
+
+Before creating or dispatching to a department, classify the work:
+
+```text
+one-shot subagent:
+  bounded private slice, one result, no durable context expected
+existing visible department thread:
+  recurring specialty already exists and is not blocked by another active task
+new visible department thread:
+  recurring specialty is missing, the task will need checkpoints/reuse/manual
+  inspection, and a clear department charter can be written now
+```
+
+Decision table:
+
+| Use Surface | Choose It When | Required Evidence | Do Not Claim |
+|---|---|---|---|
+| Current thread | The task is inside the current thread's owner boundary, has a small write set, and can be completed with local checks | Changed files, local verification, result/blocker packet when durable state matters | Do not claim another department reviewed or received the task. |
+| Short-lived subagent | The work is a bounded research/review/execution slice, can return one structured result, and does not need durable visible context | Subagent objective, read/write scope, stop condition, returned evidence, acceptance/rejection by parent | Do not call it a visible department, durable owner, Git/test daemon, or cross-turn supervisor. |
+| Existing visible thread | The task needs durable specialty context, repeated follow-up, manual inspection, or owner accountability and the thread is in the current allowlist registry | Target thread id, request packet, expected return/blocker path, visible delivery evidence, result/blocker packet | Do not use an internal subagent or local packet and claim the visible thread received it. |
+| New visible thread | No current allowlist thread fits and the task has recurring ownership, a clear charter, stop condition, and PMO/user authority | PMO-created thread id, registry update, role prompt, return contract, user-visible confirmation when required | Do not let non-PMO departments create, fork, rename, archive, or delegate creation of visible threads. |
+| `codex review` or review subagent | The need is an independent bounded review gate, especially docs/code risk review | Findings with file/line evidence and owner acceptance/rejection | Do not treat review as implementation or as a standing test department. |
+| CoAgent packet/runtime glue | The need is MoSim-specific task/result/blocker/evidence/recovery bookkeeping | Packet path, schema/gate result, ledger/status update | Do not add runtime/transport/schema machinery when a native Codex surface already covers the need. |
+
+Practice rule: every dispatch packet must explicitly state the selected surface
+and why the alternatives were not used. If the selected surface is not a
+visible thread, do not include `target_thread_id` for a durable department. If
+the selected surface is a visible thread, do not replace it with a hidden
+subagent and call the task dispatched.
+
+Manual-intervention rule: when a required external document, webpage, login,
+license, GUI permission, or browser-only source cannot be accessed after the
+documented local route, write a blocker packet and send a sparse WeChat blocker
+notification through `CoAgent/gateway/cc_connect_weixin.py`. Use
+`MoSim｜微信网关运维部` (`019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c`) for gateway
+implementation or health incidents. Use `MoSim｜WechatCodex`
+(`019e8358-86b4-7070-8fd6-a2b4f4d2af97`) only when the user must send a normal
+inbound message to refresh WeChat context after `ret=-2`.
+
+WeChat body-format rule: send short Chinese status text only. Do not include
+concrete English file names, long paths, JSON/log names, or raw evidence lists
+in the WeChat body; keep those locators in result/blocker packets, ledger
+entries, and evidence files. Routine completion can use `【MoSim 进度】`.
+Manual intervention, incident, auth/license, GUI crash, or dead-thread
+messages should start with an obvious alert header such as
+`!!! MoSim 需要人工介入 !!!`.
+
+If the user is online, PMO should send a sparse WeChat note with its own
+thread id and the proposed department charter so the user can inspect the
+thread creation. If the user is offline or the next action is clear, PMO may
+create or dispatch directly using the available thread-management tooling, then
+record the new thread id in `PROGRESS.md` and
+`Docs/Workflows/agent_task_ledger.md`.
+Do not repurpose a long-running department that already owns an active task;
+currently `019e74de-a452-7a50-99e7-ca9a247b32f1` is reserved for its existing
+long work unless the user explicitly redirects it.
+
+If PMO is unsure which visible-thread command or thread-management route to
+use, it may ask `019e0198-a041-77f1-84d0-c5524bfd4b81`
+(`MoSim｜四旋翼控制系统设计`) for an architecture/coordination opinion or for a
+thread charter. That thread must return advice or a blocker only; PMO performs
+the actual visible-thread operation from the context where thread-management
+tools are exposed.
+
+Any PMO visible-thread creation prompt must include PMO's origin thread id, the
+desired department title, role prompt, project root, communication mechanism,
+expected return path, and forbidden actions. It must address the newly-created
+thread as the department itself: use "你就是该部门线程，请初始化自己", not "请创建
+线程". Never place a visible-thread creation request inside the initial prompt
+of another newly-created thread.
 
 Known visible department dispatch command pattern:
 
@@ -255,11 +497,89 @@ codex exec resume <department_thread_id> \
   - < /tmp/<task_id>_packet.txt
 ```
 
-Use a 60 second outer timeout for probes and short packets. For long Git or
-large-tree tasks, split the task into path-scoped batches and require the
-department owner to return a checkpoint/result packet instead of waiting on a
-full-tree scan. Communication is proven only when the visible thread returns a
-department result. The first accepted DevOps communication probe returned:
+Use `codex_app.send_message_to_thread` only as a convenience path. If it returns
+an app/agent-loop internal error but `read_thread` still works, treat this as
+an App forwarding failure. A short `codex exec resume <thread_id>` probe may be
+used to verify that the visible thread can receive messages.
+
+If a visible department is readable but cannot receive messages, especially
+with `failed to update thread settings: internal error; agent loop died
+unexpectedly`, `failed to start turn: internal error; agent loop died
+unexpectedly`, or user-side `Error submitting message`, treat it first as a
+visible-thread dispatch-surface incident, not as a business-domain failure. PMO
+must record a blocker packet and route a bounded diagnosis/recovery task to
+`MoSim｜CoAgent运维平台` before replacement is considered. The diagnosis should distinguish at least these surfaces:
+readability, cross-thread native delivery, in-thread UI composer/manual submit,
+settings/model override, and automation/thread-wakeup delivery. If the critical
+path must continue before diagnosis finishes, PMO may continue the work locally
+or explicitly authorize a replacement in parallel, but the replacement packet
+must first identify which old-thread reusable content has been landed in
+canonical docs, result/blocker packets, or this ledger. Do not assume the
+thread is permanently dead: a later
+cross-thread no-op healthcheck may succeed after the App/agent-loop state
+recovers. That is only partial recovery if the user still sees `Error
+submitting message` from inside the target thread's own UI composer. A
+partially recovered thread remains quarantined until PMO explicitly approves a
+bounded CoAgentOps validation ladder; production dispatch stays blocked or on
+an explicitly authorized replacement. After the user repairs, archives, deletes, or PMO
+reclassifies the old thread, update `Docs/Workflows/agent_task_ledger.md` and
+`PROGRESS.md` with the exact outcome and never dispatch production work to the
+old thread id unless PMO has explicitly restored it.
+
+If CoAgentOps confirms the same start-turn/agent-loop failure after bounded
+list/read/no-op/metadata/no-op diagnosis, the next default action is to notify
+the user and restart Codex++ through the authorized manager, then wait for a
+post-restart no-op validation. Do not keep retrying the same failed delivery
+surface, and do not create a replacement conversation by default. A replacement
+requires explicit PMO/user approval, repeated failed restart recovery, or a
+critical path that cannot wait.
+
+The user-authorized Codex++ restart surface for this case is:
+
+```text
+D:\Program Files\Codex++\codex-plus-plus-manager.exe
+```
+
+Use it only after a dead-thread blocker has been written and one sparse user
+notification has been attempted. If notification is unavailable, or if the user
+is offline and maintenance would otherwise stall, CoAgentOps may trigger the
+Codex++ restart action through this manager. This will terminate the current
+conversation, so any recovery attempt must leave a durable packet first and rely
+on the 30-minute PMO/CoAgentOps heartbeat automations to resume validation
+after Codex++ comes back. The post-restart gate is still a no-op delivery check
+plus routing-status classification; restart alone is not task completion. In
+normal dead-thread recovery, validated restart recovery keeps using the same
+visible thread id instead of creating another department conversation.
+
+Observed restart behavior: on 2026-06-06, a Codex App crash/restart changed
+several readable-but-unsendable threads back into no-op-sendable threads. This
+supports the working diagnosis that many "dead thread" events are caused by
+transient App or agent-loop lifecycle state across the forwarding/start-turn
+surface. It is not enough evidence to claim the internal root cause, and it is
+not enough to move production work back to an old thread. PMO should classify
+post-restart success as `partial_recovery` until cross-thread no-op,
+settings-override no-op, user UI composer, and any required heartbeat/wakeup
+surfaces are all validated for that specific thread.
+
+Do not launch formal department tasks through unattended background
+`codex exec resume` until the project has a verified visible-delivery and
+controlled-stop workflow. Background CLI dispatch can leave the target
+conversation running or visually stale in Codex App, and PMO cannot rely on it
+as durable department communication without a returned packet and user-visible
+state. If both App forwarding and safe CLI dispatch are unavailable, mark the
+task `dispatch-blocked-tool`, keep the task packet ready, and ask the user to
+open/send the task manually or keep the work PMO-local.
+
+Use a 60 second outer timeout only for probes and short packets. Formal tasks
+must either run in a user-visible department conversation or be executed
+locally by PMO with explicit ledger ownership; do not start hidden long-running
+department agents as a workaround for a broken dispatch surface.
+
+For long Git or large-tree tasks, split the task into path-scoped batches and
+require the department owner to return a checkpoint/result packet instead of
+waiting on a full-tree scan. Communication is proven only when the visible
+thread returns a department result. The first accepted DevOps communication
+probe returned:
 `DEVOPS_COMM_OK｜received_from_main｜task_id=comm-probe-20260526-01`.
 
 ### Cross-Thread Request / Return Protocol
@@ -393,21 +713,24 @@ New documentation should use the canonical state names.
 
 User-facing task UI:
 
-Use the VSCode/Codex App task/conversation list as the front end. The user opens
-separate Codex conversations manually when a stream needs sustained context,
-manual inspection, or long-running ownership. The main agent provides a standard
-task packet for each conversation, or dispatches it with
-`codex exec resume <thread_id>` when the target visible thread id is known, and
-records the task in the MoSim runtime/ledger. Do not build a separate web
-dashboard unless the VSCode/Codex task UI becomes insufficient.
+Use the VSCode/Codex App task/conversation list as the front end. The user may
+manually create/open conversations, but PMO is also allowed to create or dispatch
+visible department threads when the task graph calls for durable specialty
+ownership. The main agent provides a standard task packet for each conversation,
+or dispatches it with `codex exec resume <thread_id>` when the target visible
+thread id is known, and records the task in the MoSim runtime/ledger. Do not
+build a separate web dashboard unless the VSCode/Codex task UI becomes
+insufficient.
 
-Current operational boundary: multi-conversation scheduling and task handoff are
-manual by default. The user creates, opens, switches, and pastes or sends task
-packets to visible Codex conversations. The main agent owns packet preparation,
-result import, ledger updates, integration, and automatic WeChat notifications
-after completion, review-required, blocker, or incident states. Do not claim
-autonomous dispatch is working unless the target conversation is visible to the
-user and a result packet has been returned through the approved transport.
+Current operational boundary: multi-conversation scheduling is PMO-led and
+allowed only through visible threads with explicit return contracts. The main
+agent owns packet preparation, new-thread charter quality, result import,
+ledger updates, integration, and automatic WeChat notifications after
+completion, review-required, blocker, or incident states. CoAgent helpers may
+prepare envelopes, validate packets, diagnose visibility, and import results,
+but they are not a mandatory dispatch center. Do not claim autonomous dispatch
+is working unless the target conversation is visible or successfully created
+and a result/blocker packet has been returned through the approved transport.
 
 Completion notification rule:
 
@@ -423,14 +746,16 @@ For `canonical_status=completed`, `--notify-weixin` generates a
 `CoAgent/gateway/cc_connect_weixin.py`. This is required even when
 `requires_human_review=false`, because task completion is the user's unified
 out-of-band progress signal while multi-dialog scheduling remains manual.
+The generated WeChat body must stay Chinese and compact; evidence paths remain
+inside the packet and are not copied into the human-facing message.
 
 Conversation classes:
 
 | Class | Owner | Purpose | Examples |
 |---|---|---|---|
 | Primary conversation | MainAgent | User dialogue, goal, integration, final decisions | current WSL-backed project thread |
-| Department conversation | Department owner | Recurring work inside one broad responsibility | `MoSim｜DevOps 发布部`, `MoSim｜验证测试部` |
-| Task team | Parent department + DispatchCenter | One long-running task containing multiple scoped visible conversations with shared canonical goal | `Sunray150 参数识别`, `UE Fab 场景导入` |
+| Department conversation | Department owner | Recurring work inside one broad responsibility | `MoSim｜DevOps 发布`, `MoSim｜ROS2感知定位与规划运行部`, `MoSim｜MWORKS动力学与控制验证部` |
+| Task team | PMO + parent department | One long-running task containing multiple scoped visible conversations with shared canonical goal | `Sunray150 参数识别`, `UE Fab 场景导入` |
 | Scoped task conversation | Task team owner | One bounded slice inside a long-running task team | log audit, estimator implementation, verification slice |
 | One-shot subagent | MainAgent or parent owner | Bounded research/review/execution slice returning one result | one repo audit slice, one doc review |
 
@@ -503,18 +828,21 @@ MainAgent responsibilities:
   1. Keep the top-level goal accurate.
   2. Decide whether work stays local, goes to a department conversation, becomes
      a dedicated task conversation, or is a one-shot subagent call.
-  3. Ensure the DispatchCenter creates or updates the durable task record first.
-  4. Produce one copy-paste task packet for the user-opened conversation.
+  3. Create or update the durable task record directly when the task needs one.
+  4. Produce one complete task packet for the target visible conversation, or
+     dispatch it through the known visible thread id.
   5. Continue the main critical path without waiting unless the result blocks it.
   6. Parse returned result packets, update runtime/ledger, and integrate or reject.
 
-DispatchCenter responsibilities:
-  1. Maintain task tickets and department status board.
-  2. Track owner conversation, task conversation, blocker, next action, and evidence.
-  3. Detect stale waiting tasks and request a checkpoint.
-  4. Route result packets to test, security, docs, Git, or main integration.
+CoAgent support-tool responsibilities:
+  1. Generate task packets, context packs, and result/blocker packet templates
+     when PMO needs a durable artifact.
+  2. Maintain optional task tickets, conversation registry, and department
+     status views when a task is large enough to need them.
+  3. Diagnose visible-thread metadata drift and transport failures.
+  4. Validate and import result packets for PMO integration.
 
-DocumentationSecretary responsibilities:
+Responsible-thread documentation responsibilities:
   1. Record directives, decisions, corrections, and manual-review outcomes.
   2. Patch durable docs after stable decisions.
   3. Run or request docs-quality review.
@@ -532,8 +860,19 @@ Task packet template:
 ```text
 [MoSim Task Packet]
 task_id:
+request_id:
+origin_thread:
+origin_thread_id:
+target_thread:
+target_thread_id:
 role:
 objective:
+native_surface_gate:
+  selected_native_surface:
+  surface_selection_reason:
+  rejected_surfaces:
+  worktree_required:
+  worktree_decision:
 read_scope:
 write_scope:
 allowed_actions:
@@ -541,12 +880,38 @@ forbidden_actions:
 acceptance:
 stop_condition:
 required_checks:
+expected_return_path:
+blocker_return_path:
 return_format:
   summary:
   files_changed:
   evidence:
   blockers:
   next_recommended_action:
+```
+
+Prompt and task-packet semantic sanity gate:
+
+```text
+1. Read the instruction once as the target thread would read it.
+2. Check for typos, wrong object relationships, inverted ownership, stale thread
+   names, ambiguous pronouns, and contradictory verbs.
+3. Check that native Codex capability wording is directionally correct:
+   correct: "不要在 CoAgent 中重复实现 Codex 已经原生支持的能力"
+   wrong:   "不要重复手搓 CoAgent 已由 Codex 原生支持的能力"
+4. If a bad prompt is found before dispatch, fix it before sending.
+5. If a bad prompt has already been sent, immediately send a correction packet
+   with the same request_id, mark the old wording as superseded, and update the
+   relevant workflow if the mistake is reusable.
+```
+
+For JSON task packets, `native_surface_gate` may live at the top level or under
+`metadata.native_surface_gate` during the compatibility period. New PMO-created
+non-trivial task packets should pass:
+
+```bash
+python Scripts/quality/check_agent_task_native_surface_gate.py \
+  Results/agent_packets/<request_id>.json --strict
 ```
 
 Current local runtime export command:
@@ -659,7 +1024,7 @@ normal task tickets:
 
 ```text
 Daily workflow/skills improvement:
-  owner: DispatchCenter + KnowledgeDepartment
+  owner: PMO + KnowledgeDepartment
   action: inspect recent incidents, official docs, local skills, and update workflow docs
 
 Daily external repository update:
@@ -667,17 +1032,35 @@ Daily external repository update:
   action: pull/update tracked reference repos within ignored/reference scope,
   summarize changes, and flag useful upstream fixes
 
-Daily documentation drift check:
-  owner: DocumentationSecretary + DocsQualityTest
+Context documentation drift check:
+  owner: MoSim｜Codex 上下文维护, or responsible task thread
   action: compare PROGRESS/ledger/workflows against current task state
 
-Daily safety scan:
-  owner: SecurityDepartment
+Security constraint scan:
+  owner: task owner with preflight/harness checks
   action: large files, secrets, external paths, destructive-operation residues
 ```
 
 Do not assume App automations replace durable MoSim status records. They can
 trigger or remind; they are not the project state source.
+
+Native automation creation method:
+
+1. Search for the native tool before acting:
+   `tool_search` query `automation_update create update view delete heartbeat cron`.
+2. Use `automation_update`, not GUI clicks or private Codex App database edits.
+3. For this-thread followups, prefer heartbeat automations with
+   `kind="heartbeat"`, `destination="thread"`, `targetThreadId=<thread id>`,
+   and an RRULE such as `FREQ=MINUTELY;INTERVAL=30` for short followups.
+4. For detached recurring workspace jobs, use cron automations with
+   `kind="cron"`, `executionEnvironment="local"` or `worktree`, `cwds` set to
+   the project workspace, `model`, `reasoningEffort`, and an RRULE such as
+   `FREQ=HOURLY;INTERVAL=4`.
+5. Preserve existing automation fields during updates unless the user requests
+   a change. Prefer updating an existing matching automation over creating a
+   duplicate.
+6. A created automation is only a trigger. Each run must still write a durable
+   result or blocker packet under `Results/agent_packets/`.
 
 Provider behavior matrix:
 
@@ -723,7 +1106,7 @@ reviewer:
 
 The detailed department model lives in
 `Docs/Workflows/org_operating_model.md`. Use it when a task needs company-style
-division of labor: dispatch center, documentation secretary, project owners,
+division of labor: PMO/director, documentation secretary, project owners,
 testing, security, DevOps, architecture, knowledge management, and incident
 review.
 
@@ -743,6 +1126,42 @@ does visible dispatch, periodic status collection, integration review, and
 human escalation. If a visible department times out on a command, send at most
 one corrective charter that changes operating policy, then let the department
 continue autonomously or return a blocker.
+
+The complete charter must also name the task-specific infrastructure preflight
+and expected engineering outputs. This prevents "packet-only" progress from
+being accepted as work. For example, a MWORKS model task is not complete until
+it has model/check/simulation/layout evidence or a valid blocker; a ROS2 runtime
+task is not complete until it has topic/process/log/runtime evidence or a valid
+blocker; a UE task is not complete until it has source/static/build/runtime
+evidence inside scope or a valid blocker; and an asset/PBR task is not complete
+until it has rendered/asset/material evidence or a valid blocker. If the
+department cannot run the required preflight because its tool surface is
+missing, it returns a blocker; PMO then fixes routing or infrastructure instead
+of asking the department to keep trying the domain task.
+
+Department-owned planning is mandatory for broad tasks. The department should
+not wait for PMO to decompose every internal step. It should create a local
+task graph, decide whether a disposable sub-agent can safely accelerate a
+bounded slice, and report that decomposition in the packet. If the department's
+runtime lacks sub-agent tools, it should record `subagents_used=[]` and continue
+serially rather than inventing invisible workers.
+
+For every non-trivial department assignment, the packet must include an
+explicit sub-agent decision, even when no sub-agent is used:
+
+```text
+subagent_plan: used | available_but_not_useful | unavailable | unsafe
+subagent_plan_reason:
+```
+
+`used` is expected when a material read-only audit, reference comparison,
+visual/file review, or disjoint implementation slice can run while the
+department advances the critical path. `available_but_not_useful` requires a
+specific reason such as tight coupling, single-file triviality, resource lock,
+or urgent critical-path dependency. `unavailable` records the missing runtime
+tool. `unsafe` records the conflicting simulator, ROS topic, GUI/MCP session,
+worktree, credential, or privacy risk. A packet that says only
+`subagents_used=[]` is incomplete for broad work.
 
 Current Codex CLI limitation: a foreground `timeout 60s codex exec resume ...`
 is only a bounded visible message/probe. If the command is killed by the outer
@@ -775,10 +1194,13 @@ checkpoint must be captured in `Results/tmp/task_intake/`, promoted to
 `Docs/Workflows/agent_task_ledger.md` or `PROGRESS.md` when stable, and only then
 treated as recoverable state. Chat memory alone is not state.
 
-Testing is a separate stream. For sustained test coverage, use the MoSim task
-queue/runtime and record results in durable logs. A Codex `TestOwner` subagent is
-acceptable only for one bounded review or test-analysis slice; it must return
-evidence and cannot remain the test department of record.
+Testing is a separate gate, not an always-on department by default. For small
+checks, the task thread runs targeted tests and records evidence. For
+independent review, a Codex `TestOwner` subagent is acceptable only for one
+bounded review or test-analysis slice; it must return evidence and cannot
+remain the test department of record. For ROS2/UE/MWORKS runtime checks, use one
+owning thread with explicit resource locks so parallel test work does not
+compete for topics, ports, GUI/MCP sessions, worktrees, or simulator processes.
 
 Skills are work instructions, not task owners. Agents use skills to execute a
 role; the orchestration ledger decides who owns the task, what evidence is
@@ -870,8 +1292,8 @@ approval_state = none | requested | approved | denied | pending
 tool_state = none | requested | finished | pending | failed
 error_kind = timeout | validation | permission | approval_denied |
              sandbox_denied | mcp_unavailable | gui_blocked |
-             license_or_login | result_binding_failed | git_push_rejected |
-             pack_too_large | unknown
+             gui_crash_report | license_or_login | result_binding_failed |
+             git_push_rejected | pack_too_large | unknown
 ```
 
 Artifact refs should use:
@@ -882,6 +1304,169 @@ Artifact refs should use:
 
 Do not paste secret-bearing payloads or full GUI event streams into WAL.
 Record paths, hashes, sizes, and claim roles instead.
+
+For Sysplorer / Syslab / MWORKS GUI error-report dialogs, the delegated
+department must stop the active MCP/model sequence and return a blocker packet
+instead of continuing hidden retries. The packet or WAL event must include:
+screenshot path under `Results/`, visible dialog text, triggering command or
+task step, MWORKS error-report path or visible path prefix, whether the dialog
+offers restart/send-report actions, `error_kind=gui_crash_report`, and the next
+safe recovery step. Do not click restart, send report, confirm/close, or read
+external `Documents/MWORKS/log` report files unless PMO/user explicitly
+authorizes that cleanup or diagnostic read.
+
+MWORKS session reuse is the default. A delegated MWORKS task should attach to
+the existing logged-in Sysplorer / Syslab / MWORKS window through MCP health or
+session ensure, then use background screenshot/sentinel evidence if the window
+must be inspected without disturbing the user's desktop. Do not start a new
+MWORKS/Sysplorer window simply to make a task cleaner, get a fresh splash-free
+state, or avoid reasoning about current session evidence. A new window or full
+restart is a last resort after a blocker, and requires PMO/user approval unless
+the existing process is frozen or opening duplicate sessions uncontrollably.
+
+PMO dispatch packets for all MWORKS department work must include a
+`mworks_live_gate` object before delivery. Required fields are
+`live_mworks_touched`, `mworks_window_evidence_touched`,
+`mworks_window_policy`, `activation_sentinel_required`,
+`background_screenshot_required`, `preflight_order`, `required_return_fields`,
+and `blocker_on`. The delegated department must execute the activation
+sentinel and background screenshot, when available, against the existing
+reusable Sysplorer/MWORKS window before any business work. This is required
+even for static model-organization tasks; those tasks may keep
+`live_mworks_touched=false`, but they must still set
+`mworks_window_evidence_touched=true` in task and return/blocker packets.
+`live_mworks_touched=true` is reserved for tasks that proceed to MCP, model
+load/check/translate/simulate, plot, animation, Smart Layout, graphical review,
+or GUI interaction after the preflight.
+
+The return or blocker packet must carry `activation_sentinel_before`,
+`background_screenshot_before`, `activation_state_observation`,
+`license_state`, `gui_sentinel_before`,
+`will_not_click_activation_login=true`, `mworks_window_evidence_touched=true`,
+and `live_mworks_touched`. A packet that contains
+`activation_sentinel_before`, `gui_sentinel_before`, or
+`background_screenshot_before` without
+`mworks_window_evidence_touched=true` is incomplete because it collected
+window evidence without declaring the gate.
+The activation screenshot/sentinel is a current-turn department-owned business
+gate. A static ACK, PMO-side screenshot, or earlier department drill is not
+reusable readiness evidence for a later MWORKS assignment. The department must
+write what this turn's sentinel/window title/screenshot showed in
+`activation_state_observation`; a path-only report, empty manifest reference,
+or generic status sentence is not sufficient. The department must read the
+sentinel JSON/capture manifest or otherwise inspect the screenshot/window-title
+evidence enough to classify the current activation state in the same task turn.
+If it cannot inspect or classify that evidence, it returns a blocker and does
+not continue MWORKS business work. Important correction: a visible
+`Sysplorer [教育版]` title is only an edition/window marker, not proof that the
+account is activated. Both activated and unactivated states may show the
+education-edition title. `license_state` must be a concrete classification
+such as `education_window_observed_activation_unverified`,
+`license_api_recorded_education_version_only`,
+`mixed_education_and_demo_blocked`, `demo_blocked`, `login_required`,
+`authorization_failed`, `gui_error_report_blocked`,
+`sentinel_unavailable_blocked`, or `unknown_blocked`. Vague states such as
+`ok`, `normal`, or `looks_fine` must be rejected. For
+`live_mworks_touched=true`, return `license_api_before` when the API surface
+is available, but do not claim permanent account activation unless the API or
+result explicitly exposes activation/account status. A successful
+`check_model` or `SimulateModel` without authorization errors is task-local
+license sufficiency evidence, not a standing activation claim.
+Background screenshot evidence has a known blind spot: it may capture a normal
+main window while the login/license pane is only visible after the existing
+Sysplorer/MWORKS window is maximized or brought to foreground. If any other
+evidence still indicates demo/login/authorization risk, delegated departments
+must block instead of continuing. PMO may run a bounded, user-authorized
+foreground recovery on the existing window, operate only the official
+login/license UI, then prove recovery with fresh sentinel, background capture,
+and `License(ltype="info")` evidence. Successful recovery closes only the
+license/login dialog and keeps the reusable main window open.
+
+Run the machine gate before dispatching or accepting live MWORKS packets:
+
+```powershell
+python Scripts\quality\check_mworks_live_gate.py `
+  Results\agent_packets\<request_id>.json --kind task --expect department
+python Scripts\quality\check_mworks_live_gate.py `
+  Results\agent_packets\returns\<request_id>.json --kind return --expect department
+```
+
+If the return is a blocker, pass the blocker packet path to the same
+`--kind return --expect department` check. A packet that omits the activation
+sentinel, background screenshot, activation-state observation, license state,
+no-click pledge, `mworks_window_evidence_touched`, or `live_mworks_touched` is
+not an acceptable MWORKS department response.
+The general pre-dispatch native surface checker also enforces this for
+MWORKS/Sysplorer/Syslab department task packets: when
+`Scripts/quality/check_agent_task_native_surface_gate.py --strict` sees a
+MWORKS target department/thread, it requires the same `mworks_live_gate` task
+contract before the packet is dispatchable.
+
+If the preflight evidence shows mixed or uncertain MWORKS license state, such
+as one Sysplorer window in education mode and another relevant window in demo
+mode, the safe blocker category is `license_or_login`, but `license_state`
+must still use a concrete observed-state value such as
+`mixed_education_and_demo_blocked`, `demo_blocked`, `login_required`,
+`authorization_failed`, `sentinel_unavailable_blocked`, or `unknown_blocked`
+until PMO/user identifies a valid reusable session or resolves the stale/demo
+window. Departments must return the blocker with `status=blocked` and
+screenshot/sentinel evidence. They may continue only with file-level static
+work that explicitly avoids MWORKS MCP/GUI.
+For MWORKS/Sysplorer/Syslab tasks, this is an all-window gate: any relevant
+window in demo, login/activation, authorization-failed, GUI-error, mixed, or
+visible unknown state blocks the whole task even if another window is clean or
+education-mode. Hidden Qt/browser-proxy/helper windows with no license/error
+text are risk evidence and must be counted in the manifest, but they do not
+alone prove authorization loss. Do not close or ignore a real suspect window
+and continue.
+
+Every MWORKS department task packet must also declare
+`expected_engineering_outputs`. For model/simulation/layout/package work, the
+expected outputs must be concrete engineering artifacts such as `.mo` or
+`package.mo` edits, `check_model`, `SimulateModel`, native result/`.msr`,
+metrics, diagram/layout screenshots, or wiring observations. JSON packets,
+ledger updates, and progress notes are control-plane evidence only; they do
+not count as engineering progress unless the task is explicitly
+`diagnostic_only`, `rule_sync_only`, `preflight_drill_only`,
+`dispatch_surface_diagnostic`, or `static_inventory_only`. Completed MWORKS
+returns that only produce JSON must be rejected or reclassified as diagnostic
+metadata, not accepted as model optimization.
+
+GUI crash detection must not depend only on an agent noticing a foreground
+dialog. Use a sentinel before/after MWORKS GUI-affecting steps:
+
+1. Preferred: Windows MCP plus project-local Win32/UI Automation window-title
+   and child-text inspection, including all MWORKS/Sysplorer/Syslab windows.
+   Computer Use is deprecated for MoSim desktop GUI monitoring/recovery and
+   must not be used as the MoSim desktop GUI route.
+2. Project-local Win32 background evidence scripts: use
+   `Scripts/tools/capture_window_background.ps1` for window-level Sysplorer /
+   MWORKS screenshots before falling back to foreground desktop capture. If a
+   minimized window must be inspected, use `-RestoreMinimized`; the script may
+   briefly restore without activation, capture through `PrintWindow`, then
+   re-minimize. Use `-OutDir` for the output directory; `-OutputDir` is not a
+   valid parameter for the current script. This is GUI incident evidence, not
+   simulation success evidence.
+3. Windows UI Automation / EnumWindows style title/text detector for
+   `MWORKS错误报告`, `Sysplorer 遇到错误，需要关闭`, login/license prompts, and
+   Sysplorer/MWORKS window titles. This can detect incidents even when no image
+   capture is available.
+4. Approved bounded background click: only PMO or `MoSim｜CoAgent运维平台` may use
+   `Scripts/tools/invoke_window_background_click.ps1` for one explicitly
+   approved low-risk UI action, such as opening an AI/helper panel. Delegated
+   departments must not use it for login, activation, save, close, restart,
+   send-report, or crash/error-dialog recovery controls; they should collect
+   evidence and return a blocker.
+5. Evidence screenshot fallback: Windows MCP `Snapshot`/`Screenshot` or another
+   full-desktop capture only when the relevant window/dialog is visible. This
+   is foreground desktop evidence support, not a reliable hidden-window
+   detector.
+6. Avoid virtual-desktop isolation unless PMO/user explicitly approves it; it
+   can disrupt manual review and does not by itself prove background screenshot
+   capture.
+
+If no sentinel is available, write `gui_sentinel=unavailable` in the task packet
+or return and avoid unattended MWORKS GUI evidence claims.
 
 For delegated runs, record child WAL locators as artifacts:
 
@@ -959,6 +1544,32 @@ preserves the task state and makes the next safe action explicit.
 
 Do not use one broad goal to hide unrelated streams. Assign goals at the level
 where completion can be verified.
+
+Codex `/goal` is a completion contract, not a request to "run longer". Use it
+only when the task needs multiple autonomous turns and has a clear, testable,
+auditable stop condition while the exact path is still uncertain. Do not use a
+Codex goal for short explanations, one-line edits, simple suggestions, routine
+code review comments, or vague aims such as "optimize performance" or "make the
+project better" unless they have been rewritten into evidence-backed completion
+criteria.
+
+Before creating or continuing a Codex goal, write this contract in the task
+graph, task packet, or intake record:
+
+```text
+outcome:
+verification_surface:
+constraints:
+boundaries:
+iteration_policy:
+blocked_stop_condition:
+evidence_to_record_each_round:
+```
+
+Good goal wording names what must be true at the end and how PMO or the user
+can verify it. Weak goal wording names only an activity. If the only natural
+completion signal is "I answered the question" or "one file was patched", keep
+it as a normal prompt or ledger task instead of a Codex goal.
 
 Recommended goal split:
 
@@ -1352,6 +1963,16 @@ ask for an explicit normalization/import policy. Durable ignores should stay
 small and class-based: oversized individual files, operator-local settings,
 dependency folders, generated/build/cache/runtime outputs, missing LFS assets,
 or explicitly manifest-only asset classes.
+
+A source project being hundreds of MB as a directory is not a durable-ignore
+reason. The durable decision is file/class based: individual files at or above
+100 MiB, private local config, dependency/build/cache/runtime outputs, missing
+LFS payloads, or manifest-only assets stay ignored; normal source, docs,
+examples, configs, and small binary assets should be reopened at
+project/subdirectory granularity and committed in reviewed batches. If a
+temporary intake block grows past a few hundred lines, treat that as a
+release-hygiene smell and schedule drain batches instead of adding more ordinary
+source exceptions.
 
 When using PowerShell with temporary indexes and `git commit-tree`, native Git
 gate commands must be checked through `$LASTEXITCODE` before `git write-tree`

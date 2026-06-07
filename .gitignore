@@ -90,6 +90,10 @@ Results/unreal_scene_mapping/**/fastlio_gdb_startup/
 Results/unreal_scene_mapping/**/fastlio_mworks_truth_dataset.jsonl
 Results/unreal_scene_mapping/**/fastlio_mworks_truth_dataset_smoke.jsonl
 Results/unreal_scene_mapping/**/livox_like_lidar_frames_mworks_body*.jsonl
+Results/ros2_runtime/**/livox_like_lidar_frames*.jsonl
+Results/ros2_runtime/**/fastlio_runtime/
+Results/ros2_runtime/**/fastlio_runtime_*/
+Results/ros2_runtime/**/colcon_log/
 *_backup/
 
 # ROS2/colcon local build outputs
