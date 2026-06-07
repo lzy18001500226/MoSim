@@ -1340,6 +1340,19 @@ Large batch default strategy:
    long-term ignore for a justified class, or a documented manifest-only skip.
 ```
 
+For crawled open-source reference projects, the default unit is the source
+project directory, not individual source files. A normal project under
+`References/` or `Docs/Skills/` should be opened as a project or major
+subdirectory, scanned for oversized files and durable exclude classes, and then
+committed in as few reviewed batches as the 1000-file limit allows. Do not grow
+`.gitignore` with ordinary source, docs, scripts, configs, or small assets just
+because a batch is inconvenient or a whitespace check fails. Record such files
+as deferred review evidence and either submit them in a later reviewed batch or
+ask for an explicit normalization/import policy. Durable ignores should stay
+small and class-based: oversized individual files, operator-local settings,
+dependency folders, generated/build/cache/runtime outputs, missing LFS assets,
+or explicitly manifest-only asset classes.
+
 When using PowerShell with temporary indexes and `git commit-tree`, native Git
 gate commands must be checked through `$LASTEXITCODE` before `git write-tree`
 or `git update-ref`. In particular, after `git diff --cached --check`, stop the

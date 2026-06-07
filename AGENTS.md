@@ -236,6 +236,15 @@ Rules:
    batches instead. Directory renames or moves that create 10k+ tracked
    changes are tracked-change work: first throttle any new untracked spill with
    ignore rules, then commit the tracked changes in reviewed small batches.
+   For crawled open-source references, work one source project directory at a
+   time. Do not convert normal source, docs, scripts, configs, or small assets
+   into durable file-level ignore rules just because a batch is noisy or a
+   whitespace gate fails. Whitespace-gate failures are review/defer evidence,
+   not ignore policy. In the final state, such project ignores should normally
+   cover only a few durable categories: individual files at or above GitHub's
+   100 MiB hard limit, operator-local settings, dependency folders,
+   generated/build/cache/runtime outputs, missing LFS assets, or an explicitly
+   documented manifest-only asset class.
 9. When Git is slow, has LFS/hook/index-lock residue, or another Git owner is
    active, delegate commit/push work to `GitIntegrator` instead of blocking the
    main engineering thread. The main agent remains responsible for scope,
