@@ -24,3 +24,7 @@ latest_checkpoint: 2026-06-07_sequence_editing_batch_pushed
 latest_summary: sequence_editing real fixture batch pushed as 8f88a546a3; documentation rule locations verified; gitignore current line count is 314; remaining ignored queues are drain queues and not completion
 latest_evidence: reviewed_ignored_paths=526; real_selected=82; missing_lfs_deferred=444; over_100MiB=0; staged_paths=84; cached_diff_check=passed; auth_scan_hits=0; push_target=origin_main; rev_list_head_origin_main=0_0; cached_index=0; index_lock=false; visible_untracked=0; ignored_untracked=444
 latest_next_action: commit and push this ledger and packet checkpoint; continue the next reviewed slice; keep durable ignores class-based and do not grow per-file backlog
+
+latest_checkpoint_blender_compression: 2026-06-07_blender_broad_throttle_removed
+latest_blender_compression_evidence: event_helper_commit=117ce573d8; broad_rule_removed=References/Blender/; gitignore_lines_current=298; blender_visible_untracked=0; blender_ignored_untracked=7123; ignored_queue_class=missing_lfs_payloads_and_generic_reference_guards
+latest_blender_next_action: continue non-Blender queues such as References/Agent, AirSim, and Docs/Skills one reviewed slice at a time; do not use project-level throttle as completion

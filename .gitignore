@@ -239,25 +239,8 @@ Docs/Skills/Unreal/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
 Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset
 Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
 
-# Current local untracked intake: isolate first, then admit reviewed slices with
-# `git add -f <reviewed-slice>` after size/secret/diff checks.
-References/Blender/
-!References/Blender/blender/.clang-format
-!References/Blender/blender/.clang-tidy
-!References/Blender/blender/.editorconfig
-!References/Blender/blender/.git-blame-ignore-revs
-!References/Blender/blender/.gitattributes
-!References/Blender/blender/.gitignore
-!References/Blender/blender/.gitmodules
-!References/Blender/blender/AUTHORS
-!References/Blender/blender/CMakeLists.txt
-!References/Blender/blender/COPYING
-!References/Blender/blender/GNUmakefile
-!References/Blender/blender/make.bat
-!References/Blender/blender/pyproject.toml
-!References/Blender/blender/README.md
-# Missing local Git LFS payload pointers in Blender bundled assets; keep
-# manifest-only until real payloads are restored.
+# Missing local Git LFS payload pointers in Blender bundled assets and tests;
+# keep manifest-only until real payloads are restored.
 References/Blender/blender/assets/nodes/
 References/Blender/blender/assets/brushes/
 References/Blender/blender/doc/python_api/static/favicon.png
@@ -265,6 +248,7 @@ References/Blender/blender/scripts/startup/bl_app_templates_system/
 References/Blender/blender/release/datafiles/
 References/Blender/blender/release/darwin/
 References/Blender/blender/release/windows/
+References/Blender/blender/tests/files/
 
 # PX4 has been drained into Git; keep only durable local/material exclusions.
 References/PX4/PX4/Tools/test_keys/
