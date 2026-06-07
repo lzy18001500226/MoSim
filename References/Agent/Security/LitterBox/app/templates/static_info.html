@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% from 'partials/_macros.html' import scanner_table_header, scanner_yara_row, scanner_status_cell, scanner_count_cell, status_grid_3 %}
+
+{% block breadcrumb %}
+    Files
+    <span class="lb-tb-sep">›</span> <span class="lb-mono">{{ file_info.original_name if file_info else file_info.md5[:12] }}</span>
+    <span class="lb-tb-sep">›</span> Static Summary
+{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="lb-panel">
+    <div class="lb-panel-hdr">
+        <span class="lb-glyph">▸</span>Static Analysis Summary
+        <button onclick="window.location.href='/results/info/{{ file_info.md5 }}'" class="lb-btn lb-btn-ghost" style="margin-left: auto; padding: 2px 10px; font-size: 12px;" aria-label="Navigate back to file information">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/></svg>
+            Back to File Info
+        </button>
+    </div>
+    <div class="lb-panel-body">
+        <p class="lb-muted" style="font-size: 12px; margin-bottom: 8px;">Comprehensive overview of all scan results.</p>
+        <div class="lb-hash-row">
+            <div class="lb-hash-label">Path</div>
+            <div class="lb-hash-value lb-mono">{{ analysis_results.checkplz.findings.scan_results.file_path if analysis_results.checkplz else file_info.original_name }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Status grid -->
+{{ status_grid_3(yara_detections + checkplz_detections, 'Scan Duration', scan_duration) }}
+
+<!-- Scanner Results -->
+<div class="lb-panel">
+    <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>Scanner Results</div>
+    <table class="lb-table">
+        {{ scanner_table_header() }}
+        <tbody id="scannerResultsBody">
+            {{ scanner_yara_row(yara_detections, analysis_results.yara.matches) }}
+            <tr>
+                <td>CheckPlz</td>
+                {{ scanner_status_cell(checkplz_detections) }}
+                {{ scanner_count_cell(checkplz_detections) }}
+                <td class="lb-muted" style="font-size: 12px;">
+                    {{ analysis_results.checkplz.findings.initial_threat if checkplz_detections else 'No signatures triggered' }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- String Analysis -->
+<div class="lb-panel">
+    <div class="lb-panel-hdr">
+        <span class="lb-glyph">▸</span>String Analysis Results
+        <span class="lb-panel-badge">{{ stringnalyzer_results.findings.total_strings if stringnalyzer_results.findings is defined else 0 }} STRINGS</span>
+    </div>
+    <div class="lb-panel-body">
+
+        {% macro render_findings_row(title, items) %}
+            {% if items and items|length > 0 %}
+                <div style="border-top: 1px solid var(--lb-border); padding-top: 10px; margin-top: 10px;">
+                    <div class="lb-eyebrow" style="margin-bottom: 6px;">{{ title }} <span class="lb-muted">({{ items|length }})</span></div>
+                    <div style="display: flex; flex-direction: column; gap: 3px;">
+                        {% for item in items[:5] %}
+                            <div class="lb-mono lb-dim" style="font-size: 12px; padding: 4px 8px; background: var(--lb-bg); border-left: 1px solid var(--lb-border-hi); word-break: break-all;">{{ item }}</div>
+                        {% endfor %}
+                        {% if items|length > 5 %}
+                            <div class="lb-muted" style="font-size: 12px; font-style: italic;">… and {{ items|length - 5 }} more</div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endmacro %}
+
+        {% set findings = stringnalyzer_results.findings if stringnalyzer_results.findings is defined else {} %}
+
+        {% if findings.found_suspicious_strings and findings.found_suspicious_strings|length > 0 %}
+            <div style="border: 1px solid rgba(248, 113, 113, 0.25); padding: 10px; margin-bottom: 10px;">
+                <div class="lb-eyebrow" style="color: var(--lb-accent-soft); margin-bottom: 6px;">
+                    Notable Strings <span class="lb-muted">({{ findings.found_suspicious_strings|length }})</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 3px;">
+                    {% for item in findings.found_suspicious_strings[:5] %}
+                        <div class="lb-mono" style="font-size: 12px; padding: 4px 8px; background: rgba(248, 113, 113, 0.03); border-left: 2px solid rgba(248, 113, 113, 0.4); color: var(--lb-accent-soft); word-break: break-all;">{{ item }}</div>
+                    {% endfor %}
+                    {% if findings.found_suspicious_strings|length > 5 %}
+                        <div class="lb-muted" style="font-size: 12px; font-style: italic;">… and {{ findings.found_suspicious_strings|length - 5 }} more</div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="lb-grid-2">
+            <div>
+                {{ render_findings_row('URLs', findings.found_url) }}
+                {{ render_findings_row('Paths', findings.found_path) }}
+            </div>
+            <div>
+                {{ render_findings_row('IP Addresses', findings.found_ip) }}
+                {{ render_findings_row('Files Referenced', findings.found_file) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

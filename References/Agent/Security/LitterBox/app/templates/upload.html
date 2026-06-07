@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+
+{% block breadcrumb %}
+    Upload
+{% endblock %}
+
+{% set active_nav = 'upload' %}
+
+{% block content %}
+
+<!-- Step indicator -->
+<div class="lb-panel">
+    <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>Workflow</div>
+    <div class="lb-panel-body">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div id="step1Circle" style="width: 28px; height: 28px; border: 1px solid rgba(248, 113, 113, 0.28); color: var(--lb-accent-soft); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; background: rgba(248, 113, 113, 0.04);">
+                    <span id="step1Text">1</span>
+                </div>
+                <div>
+                    <div id="step1Label" class="lb-strong" style="font-size: 13px;">Upload</div>
+                    <div class="lb-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Select Payload</div>
+                </div>
+            </div>
+            <div id="progressLine" style="flex: 1; height: 1px; background: var(--lb-border-hi);"></div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div id="step2Circle" style="width: 28px; height: 28px; border: 1px solid var(--lb-border-hi); color: var(--lb-text-mute); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600;">
+                    <span id="step2Text">2</span>
+                </div>
+                <div>
+                    <div class="lb-dim" style="font-size: 13px;">Analysis</div>
+                    <div class="lb-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Choose Type</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload zone -->
+<div id="uploadArea">
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>Drop Payload</div>
+        <div class="lb-panel-body">
+            <div id="dropZone">
+                <input type="file" id="fileInput" class="hidden" accept=".exe,.dll,.bin,.docx,.xlsx,.lnk,.sys"/>
+                <label for="fileInput" class="lb-upload-zone" style="display: block;">
+                    <svg class="lb-upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                    <div class="lb-upload-title">Drop payload here or click to browse</div>
+                    <div class="lb-upload-hint">
+                        Supported:
+                        {% for ext in config.utils.allowed_extensions %}.{{ ext }}{% if not loop.last %} · {% endif %}{% endfor %}
+                        · Max {{ (config.utils.max_file_size / 1024 / 1024) | round(1) }} MB
+                    </div>
+                </label>
+            </div>
+            <div id="uploadStatus" class="hidden" style="margin-top: 12px;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Analysis selection + file info (revealed after upload) -->
+<div id="fileAnalysisArea" class="hidden lb-fade-in">
+
+    <!-- Analysis type selector — segmented control + per-mode body -->
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>Choose Analysis Type</div>
+
+        <!-- Segmented control. Tabs are filtered by file family (regular vs
+             driver) at runtime by updateAnalysisOptions(). EDR profile tabs
+             are appended server-side, one per registered profile. -->
+        <div class="lb-tabs" id="modeTabs">
+            <button type="button" class="lb-tab" data-mode="all" data-family="regular">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h7"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 16l3 3 5-5"/></svg>
+                All
+            </button>
+            <button type="button" class="lb-tab" data-mode="static" data-family="regular office html">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                Static
+            </button>
+            <button type="button" class="lb-tab" data-mode="dynamic" data-family="regular">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Dynamic
+            </button>
+            {% for profile in edr_profiles %}
+            <button type="button" class="lb-tab" data-mode="edr:{{ profile.name }}" data-family="regular">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>
+                {{ profile.display_name }}
+            </button>
+            {% endfor %}
+            <button type="button" class="lb-tab" data-mode="static-driver" data-family="driver">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                Static
+            </button>
+            <button type="button" class="lb-tab" data-mode="holygrail" data-family="driver">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 9v2a5 5 0 0010 0V9"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 9h12"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 16v3"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19h6"/></svg>
+                HolyGrail BYOVD
+                <span class="lb-tag medium" style="margin-left: 4px;">⚠</span>
+            </button>
+        </div>
+
+        <!-- Per-mode body. updateModeBody(mode) toggles which one is visible. -->
+        <div class="lb-panel-body">
+
+            <div class="lb-mode-body" data-mode="all">
+                <div class="lb-mode-head">
+                    <div class="lb-strong" style="font-size: 14px;">All</div>
+                    <div class="lb-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Static + EDR (parallel) → Dynamic</div>
+                </div>
+                <p class="lb-dim" style="font-size: 12px;">One-click pipeline: kicks off Static analysis on the LitterBox host AND dispatches to every registered EDR profile in parallel, then runs Dynamic analysis once those finish. Any failure in a parallel stage doesn't block the dynamic phase.</p>
+                <ul class="lb-mode-features lb-mode-features-2col">
+                    <li class="lb-ok">Static (YARA / CheckPlz / Stringnalyzer)</li>
+                    <li class="lb-ok">EDR Detonation{% if edr_profiles %} ({{ edr_profiles|map(attribute='display_name')|join(', ') }}){% endif %}</li>
+                    <li class="lb-ok">Dynamic (RedEdr / Moneta / PE-Sieve / HSB / Patriot)</li>
+                    <li class="lb-ok">Per-stage progress + parallel where safe</li>
+                </ul>
+                <div>
+                    <label for="allAnalysisArgs" class="lb-eyebrow" style="display: block; margin-bottom: 6px;">Command-line Arguments</label>
+                    <input type="text" id="allAnalysisArgs" placeholder="Enter arguments separated by spaces" class="lb-input lb-mono"/>
+                    <p class="lb-muted" style="margin-top: 6px; font-size: 12px;">Shared across the dynamic + EDR runs. <span class="lb-strong">For DLL files</span> the first argument is the exported entry point (e.g. <span class="lb-mono">DllMain</span>) — passed to <span class="lb-mono">rundll32.exe</span> on both sides.</p>
+                </div>
+                <button type="button" onclick="selectAnalysisType('all')" class="lb-mode-cta">
+                    Run All
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+
+            <div class="lb-mode-body hidden" data-mode="static">
+                {{ _mode_header('Static Analysis', 'No Execution Required') if false }}
+                <div class="lb-mode-head">
+                    <div class="lb-strong" style="font-size: 14px;">Static Analysis</div>
+                    <div class="lb-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">No Execution Required</div>
+                </div>
+                <p class="lb-dim" style="font-size: 12px;">Analyze payload content and structure without execution. Identifies signature-based patterns and static IOCs.</p>
+                <ul class="lb-mode-features">
+                    <li class="lb-ok">YARA Pattern Matching</li>
+                    <li class="lb-ok">CheckPlz</li>
+                    <li class="lb-ok">Stringnalyzer</li>
+                </ul>
+                <button type="button" onclick="selectAnalysisType('static')" class="lb-mode-cta">
+                    Run Static Scan
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+
+            <div class="lb-mode-body hidden" data-mode="dynamic">
+                <div class="lb-mode-head">
+                    <div class="lb-strong" style="font-size: 14px;">Dynamic Analysis</div>
+                    <div class="lb-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Runtime Behaviour</div>
+                </div>
+                <p class="lb-dim" style="font-size: 12px;">Execute and monitor payload behaviour with memory analysis.</p>
+                <ul class="lb-mode-features lb-mode-features-2col">
+                    <li class="lb-ok">YARA Rules</li>
+                    <li class="lb-ok">RedEdr</li>
+                    <li class="lb-ok">Moneta</li>
+                    <li class="lb-ok">PE-Sieve</li>
+                    <li class="lb-ok">Hunt-Sleeping-Beacons</li>
+                    <li class="lb-ok">Patriot</li>
+                </ul>
+                <div id="argsInputContainer">
+                    <label for="analysisArgs" class="lb-eyebrow" style="display: block; margin-bottom: 6px;">Command-line Arguments</label>
+                    <input type="text" id="analysisArgs" placeholder="Enter arguments separated by spaces" class="lb-input lb-mono"/>
+                    <p class="lb-muted" style="margin-top: 6px; font-size: 12px;">Arguments passed to the payload at execution time. <span class="lb-strong">For DLL files</span> the first argument is the exported entry point (e.g. <span class="lb-mono">DllMain</span>) — passed to <span class="lb-mono">rundll32.exe</span>.</p>
+                </div>
+                <button type="button" onclick="selectAnalysisType('dynamic')" class="lb-mode-cta">
+                    Run Dynamic Scan
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+
+            {% for profile in edr_profiles %}
+            <div class="lb-mode-body hidden" data-mode="edr:{{ profile.name }}">
+                <div class="lb-mode-head">
+                    <div class="lb-strong" style="font-size: 14px;">{{ profile.display_name }}</div>
+                    <div class="lb-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">EDR Detonation</div>
+                </div>
+                <p class="lb-dim" style="font-size: 12px;">Dispatches the payload to <span class="lb-mono">{{ profile.agent_url }}</span> via the Whiskers agent and pulls detection alerts from the configured backend.</p>
+                <ul class="lb-mode-features">
+                    <li class="lb-ok">Whiskers Agent Dispatch</li>
+                    <li class="lb-ok">EDR Alert Correlation</li>
+                    <li class="lb-ok">Execution Log Capture</li>
+                </ul>
+                <div class="edr-args-container">
+                    <label for="edrArgs-{{ profile.name }}" class="lb-eyebrow" style="display: block; margin-bottom: 6px;">Command-line Arguments</label>
+                    <input type="text" id="edrArgs-{{ profile.name }}" data-edr-args="{{ profile.name }}"
+                           placeholder="Enter arguments separated by spaces" class="lb-input lb-mono"/>
+                    <p class="lb-muted" style="margin-top: 6px; font-size: 12px;">Forwarded to the spawned process on the EDR VM. <span class="lb-strong">For DLL files</span> the first argument is the exported entry point (e.g. <span class="lb-mono">DllMain</span>) — passed to <span class="lb-mono">rundll32.exe</span>.</p>
+                </div>
+                <button type="button" onclick="selectAnalysisType('edr:{{ profile.name }}')" class="lb-mode-cta">
+                    Run with {{ profile.display_name }}
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+            {% endfor %}
+
+            <div class="lb-mode-body hidden" data-mode="static-driver">
+                <div class="lb-mode-head">
+                    <div class="lb-strong" style="font-size: 14px;">Static Analysis</div>
+                    <div class="lb-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Driver Structure</div>
+                </div>
+                <p class="lb-dim" style="font-size: 12px;">Analyze driver content and structure without loading. Identifies signature-based patterns and static IOCs.</p>
+                <ul class="lb-mode-features">
+                    <li class="lb-ok">YARA Pattern Matching</li>
+                    <li class="lb-ok">Driver Structure Analysis</li>
+                    <li class="lb-ok">Import Analysis</li>
+                </ul>
+                <button type="button" onclick="selectAnalysisType('static')" class="lb-mode-cta">
+                    Run Static Scan
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+
+            <div class="lb-mode-body hidden" data-mode="holygrail">
+                <div class="lb-mode-head">
+                    <div class="lb-strong" style="font-size: 14px;">HolyGrail BYOVD <span class="lb-tag info" title="Bring Your Own Vulnerable Driver">i</span></div>
+                    <div class="lb-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Driver Vulnerability</div>
+                </div>
+                <p class="lb-dim" style="font-size: 12px;">Specialised analysis for kernel drivers — identifies BYOVD vulnerabilities and abuse vectors.</p>
+                <ul class="lb-mode-features lb-mode-features-2col">
+                    <li class="lb-ok">Microsoft Policy Validation</li>
+                    <li class="lb-ok">Known Abused Imports</li>
+                    <li class="lb-ok">Identify LoLDrivers</li>
+                    <li class="lb-ok">Digital Signature Check</li>
+                </ul>
+                <button type="button" onclick="selectAnalysisType('holygrail')" class="lb-mode-cta lb-mode-cta--warn">
+                    Run BYOVD Scan
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- File metadata panel -->
+    <div class="lb-panel">
+        <div class="lb-panel-hdr">
+            <span class="lb-glyph">▸</span>File Metadata
+            <button onclick="location.reload()" class="lb-btn lb-btn-ghost" style="margin-left: auto; padding: 2px 10px; font-size: 12px;">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v6h6M20 20v-6h-6M4 10a8 8 0 0114-5M20 14a8 8 0 01-14 5"/>
+                </svg>
+                Upload Another
+            </button>
+        </div>
+        <div class="lb-panel-body">
+
+            <!-- Header row: filename + size + type -->
+            <div style="display: flex; align-items: center; gap: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--lb-border); margin-bottom: 12px;">
+                <svg width="16" height="16" fill="none" stroke="var(--lb-text-dim)" viewBox="0 0 24 24" style="flex-shrink: 0;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <div style="flex: 1; min-width: 0;">
+                    <div id="fileName" class="lb-strong" style="font-size: 14px; word-break: break-all;"></div>
+                    <div style="display: flex; gap: 12px; margin-top: 2px;">
+                        <span id="fileSize" class="lb-dim" style="font-size: 12px;"></span>
+                        <span id="fileType" class="lb-muted" style="font-size: 12px;"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hashes -->
+            <div style="margin-bottom: 12px;">
+                <div class="lb-hash-row">
+                    <div class="lb-hash-label">MD5</div>
+                    <div class="lb-hash-value">
+                        <code id="md5Hash" class="lb-mono"></code>
+                        <button onclick="copyHash('md5Hash')" class="lb-copy" title="Copy">⧉</button>
+                        <span id="md5HashFull" class="hidden"></span>
+                    </div>
+                </div>
+                <div class="lb-hash-row">
+                    <div class="lb-hash-label">SHA256</div>
+                    <div class="lb-hash-value">
+                        <code id="sha256Hash" class="lb-mono"></code>
+                        <button onclick="copyHash('sha256Hash')" class="lb-copy" title="Copy">⧉</button>
+                        <span id="sha256HashFull" class="hidden"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entropy -->
+            <div style="border-top: 1px solid var(--lb-border); padding-top: 12px; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <span class="lb-eyebrow">Entropy Analysis</span>
+                    <span id="detectionRisk" class="lb-tag muted"></span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                    <span class="lb-muted" style="font-size: 12px;">Overall</span>
+                    <div id="fileEntropy" class="lb-strong lb-mono" style="font-size: 14px;"></div>
+                </div>
+                <div style="position: relative; height: 4px; background: var(--lb-bg); border: 1px solid var(--lb-border); overflow: hidden;">
+                    <div id="entropyBar" style="position: absolute; top: 0; left: 0; height: 100%; transition: width var(--lb-transition); background: var(--lb-accent);"></div>
+                </div>
+                <div id="entropyNotes" style="margin-top: 6px; font-size: 12px; color: var(--lb-text-dim);"></div>
+            </div>
+
+            <!-- Basic info grid -->
+            <div class="lb-grid-3" style="margin-bottom: 12px;">
+                <div style="border: 1px solid var(--lb-border); padding: 10px;">
+                    <div class="lb-eyebrow" style="margin-bottom: 4px;">Type</div>
+                    <div id="fileCategory" class="lb-strong" style="font-size: 13px;"></div>
+                </div>
+                <div style="border: 1px solid var(--lb-border); padding: 10px;">
+                    <div class="lb-eyebrow" style="margin-bottom: 4px;">Upload Time</div>
+                    <div id="uploadTime" class="lb-strong" style="font-size: 13px;"></div>
+                </div>
+                <div style="border: 1px solid var(--lb-border); padding: 10px;">
+                    <div class="lb-eyebrow" style="margin-bottom: 4px;">Format</div>
+                    <div id="fileFormat" class="lb-strong" style="font-size: 13px;"></div>
+                </div>
+            </div>
+
+            <!-- Checksum -->
+            <div id="checksumInfo" style="border: 1px solid var(--lb-border); padding: 12px; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <span class="lb-eyebrow">PE Checksum Analysis</span>
+                    <span id="checksumStatus" class="lb-tag muted"></span>
+                </div>
+                <div class="lb-grid-2">
+                    <div>
+                        <div class="lb-muted" style="font-size: 12px; margin-bottom: 2px;">Stored</div>
+                        <div id="storedChecksum" class="lb-strong lb-mono" style="font-size: 12px;"></div>
+                    </div>
+                    <div>
+                        <div class="lb-muted" style="font-size: 12px; margin-bottom: 2px;">Calculated</div>
+                        <div id="calculatedChecksum" class="lb-strong lb-mono" style="font-size: 12px;"></div>
+                    </div>
+                </div>
+                <div id="checksumNotes" style="margin-top: 8px; font-size: 12px; color: var(--lb-text-dim);"></div>
+            </div>
+
+            <!-- Sensitive imports -->
+            <div id="suspiciousImports" class="hidden" style="border: 1px solid var(--lb-border); padding: 12px; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <span id="suspiciousImportsTitle" class="lb-eyebrow">Sensitive Imports</span>
+                    <span id="suspiciousImportsCount" class="lb-tag critical"></span>
+                </div>
+                <div id="suspiciousImportsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                <div style="border-top: 1px solid var(--lb-border); padding-top: 8px; margin-top: 8px; font-size: 12px; color: var(--lb-text-dim); display: flex; align-items: center; gap: 6px;">
+                    <span style="color: var(--lb-sev-medium);">⚠</span>
+                    <span id="suspiciousImportsSummary"></span>
+                </div>
+            </div>
+
+            <!-- PE info -->
+            <div id="peInfo" class="hidden" style="border: 1px solid var(--lb-border); padding: 12px; margin-bottom: 12px;">
+                <div class="lb-eyebrow" style="margin-bottom: 8px;">Section Analysis</div>
+                <div id="sectionsList" style="display: flex; flex-direction: column; gap: 6px;"></div>
+                <div style="border-top: 1px solid var(--lb-border); padding-top: 8px; margin-top: 8px;">
+                    <div class="lb-eyebrow" style="margin-bottom: 6px;">Detection Notes</div>
+                    <div id="detectionNotes" style="font-size: 12px; color: var(--lb-text-dim); display: flex; flex-direction: column; gap: 4px;"></div>
+                </div>
+            </div>
+
+            <!-- Office macro info -->
+            <div id="officeInfo" class="hidden" style="border: 1px solid var(--lb-border); padding: 12px; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <span class="lb-eyebrow">Macro Analysis</span>
+                    <span id="macroStatus" class="lb-tag muted"></span>
+                </div>
+                <div id="macroDetectionNotes" style="font-size: 12px; color: var(--lb-text-dim); margin-bottom: 6px;"></div>
+                <div id="macroInfo" style="font-size: 12px; color: var(--lb-text-dim);"></div>
+            </div>
+
+            <!-- HTML smuggling info -->
+            <div id="htmlSmuggleInfo" class="hidden" style="border: 1px solid var(--lb-border); padding: 12px; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <span class="lb-eyebrow">HTML Smuggling Analysis</span>
+                    <span id="smuggleStatus" class="lb-tag muted"></span>
+                </div>
+                <div id="smuggleDetectionNotes" style="font-size: 12px; color: var(--lb-text-dim); margin-bottom: 6px;"></div>
+                <div id="smuggleInfo" style="font-size: 12px; color: var(--lb-text-dim);"></div>
+            </div>
+
+            <!-- File-specific info -->
+            <div id="fileSpecificInfo" style="font-size: 13px; color: var(--lb-text-dim);"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast container (kept for any legacy callers) -->
+<div id="toastContainer" style="position: fixed; bottom: 16px; right: 16px; display: flex; flex-direction: column; gap: 8px;"></div>
+
+<script>
+    window.serverConfig = {
+        maxFileSize: {{ config.utils.max_file_size }},
+        maxFileSizeMB: {{ (config.utils.max_file_size / 1024 / 1024) | round(1) }},
+        allowedExtensions: {{ config.utils.allowed_extensions | tojson }}
+    };
+</script>
+
+<style>
+/* Segmented mode-selector inside the upload page. The .lb-tabs/.lb-tab
+   primitives are defined globally; we just need the per-mode body styling
+   and the CTA button styling for the chosen mode. */
+.lb-mode-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 4px;
+}
+.lb-mode-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.lb-mode-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    color: var(--lb-text-dim);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.lb-mode-features-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 16px;
+}
+.lb-mode-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    margin-top: 4px;
+    padding: 8px 14px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    color: #60a5fa;
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    transition: background var(--lb-transition-fast), border-color var(--lb-transition-fast), color var(--lb-transition-fast);
+}
+.lb-mode-cta--warn {
+    color: var(--lb-sev-medium);
+    background: rgba(250, 204, 21, 0.06);
+    border-color: rgba(250, 204, 21, 0.30);
+}
+.lb-mode-cta:hover, .lb-mode-cta:focus-visible {
+    background: rgba(59, 130, 246, 0.18);
+    border-color: #3b82f6;
+    color: #93c5fd;
+    outline: none;
+}
+.lb-mode-cta--warn:hover, .lb-mode-cta--warn:focus-visible {
+    background: rgba(250, 204, 21, 0.14);
+    border-color: var(--lb-sev-medium);
+    color: var(--lb-sev-medium);
+}
+.lb-mode-cta svg { transition: transform var(--lb-transition-fast); }
+.lb-mode-cta:hover svg, .lb-mode-cta:focus-visible svg { transform: translateX(3px); }
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+{# The inline <script> above sets window.serverConfig before this module runs.
+   Module scripts have defer semantics, so the classic inline script always
+   executes first — core.js can safely read window.serverConfig at top level. #}
+<script type="module" src="{{ url_for('static', filename='js/upload/core.js') }}"></script>
+{% endblock %}

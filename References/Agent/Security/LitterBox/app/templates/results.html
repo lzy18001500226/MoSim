@@ -1,0 +1,374 @@
+{% extends "base.html" %}
+
+{% block breadcrumb %}
+    Results
+    <span class="lb-tb-sep">›</span> <span class="lb-mono">{{ file_hash[:12] if file_hash else '' }}</span>
+    <span class="lb-tb-sep">›</span> {{ analysis_type|title }}{% if edr_profile %} <span class="lb-mono">({{ edr_profile }})</span>{% endif %}
+{% endblock %}
+
+{% block tabs %}
+<div class="lb-tabs">
+    {% if analysis_type == 'static' %}
+    <button class="lb-tab tab-button active" data-tab="summaryTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Summary
+    </button>
+    <button class="lb-tab tab-button" data-tab="yaraResultsTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        YARA
+    </button>
+    <button class="lb-tab tab-button" data-tab="threatCheckResultsTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        CheckPlz
+    </button>
+    <button class="lb-tab tab-button" data-tab="StringnalyzerResultsTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h16M4 14h10M4 18h7"/></svg>
+        Stringnalyzer
+    </button>
+    {% elif analysis_type == 'edr' %}
+    <button class="lb-tab tab-button active" data-tab="summaryTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Summary
+    </button>
+    <button class="lb-tab tab-button" data-tab="edrAlertsTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        Alerts
+    </button>
+    <button class="lb-tab tab-button" data-tab="edrExecutionTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Execution
+    </button>
+    {% else %}
+    <button class="lb-tab tab-button active" data-tab="summaryTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Summary
+    </button>
+    <button class="lb-tab tab-button" data-tab="yaraMemoryTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        YARA Memory
+    </button>
+    <button class="lb-tab tab-button" data-tab="peSieveTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m-9-4h10M5 7h14"/></svg>
+        PE-sieve
+    </button>
+    <button class="lb-tab tab-button" data-tab="monetaTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7h6m-6 5h6m-3-9a9 9 0 110 18 9 9 0 010-18z"/></svg>
+        Moneta
+    </button>
+    <button class="lb-tab tab-button" data-tab="patriotTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/></svg>
+        Patriot
+    </button>
+    <button class="lb-tab tab-button" data-tab="hsbTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        Hunt-SB
+    </button>
+    <button class="lb-tab tab-button" data-tab="redEdrTab">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+        RedEdr
+    </button>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- Status panel -->
+<div class="lb-panel">
+    <div class="lb-panel-hdr">
+        <span class="lb-glyph">▸</span>{{ analysis_type|title }} Analysis
+        <span id="analysisTimer" class="lb-tag muted lb-mono" style="margin-left: 12px; display: none;">00:00</span>
+        <div style="margin-left: auto; display: flex; gap: 8px;">
+            {% if analysis_type == 'static' %}
+                <button id="dynamicAnalysisButton" onclick="showDynamicWarning()" class="lb-btn" style="color: var(--lb-sev-medium); border-color: var(--lb-sev-medium);">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Run Dynamic
+                </button>
+                <button id="holygrailAnalysisButton" onclick="startHolyGrailScan()" style="display: none;" class="lb-btn" style="color: var(--lb-sev-medium); border-color: var(--lb-sev-medium);">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 9v2a5 5 0 0010 0V9"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 9h12"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 16v3"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19h6"/></svg>
+                    HolyGrail BYOVD
+                </button>
+            {% endif %}
+            {% if analysis_type != 'static' %}
+                <button id="staticAnalysisButton" onclick="window.location.href='/analyze/static/{{ file_hash }}'" class="lb-btn" style="color: var(--lb-sev-medium); border-color: var(--lb-sev-medium);">
+                    Run Static
+                </button>
+            {% endif %}
+            <button onclick="window.location.href='/upload'" class="lb-btn lb-btn-primary">New Analysis</button>
+        </div>
+    </div>
+    <div class="lb-panel-body">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div id="statusIcon" style="display: inline-flex; align-items: center;">
+                <svg class="w-5 h-5 text-red-400 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+            <div id="analysisStatus" class="lb-dim" style="font-size: 13px;">Initialising…</div>
+        </div>
+    </div>
+</div>
+
+<!-- Dynamic Analysis Warning Modal -->
+<div id="dynamicWarningModal" class="hidden lb-modal-backdrop">
+    <div class="lb-modal lb-fade-in">
+        <div class="lb-modal-hdr">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--lb-sev-medium);">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            Warning: Dynamic Analysis
+        </div>
+        <div class="lb-modal-body">
+            <p style="margin-bottom: 10px;">About to execute the payload.</p>
+            <div style="margin: 12px 0;">
+                <label for="dynamicAnalysisArgs" class="lb-eyebrow" style="display: block; margin-bottom: 6px;">Command-line Arguments (optional)</label>
+                <input type="text" id="dynamicAnalysisArgs" placeholder="Enter arguments separated by spaces" class="lb-input lb-mono"/>
+                <p class="lb-muted" style="margin-top: 6px; font-size: 12px;">Arguments passed to the payload at execution time.</p>
+            </div>
+            <p style="color: var(--lb-sev-medium);">Are you sure you want to proceed?</p>
+        </div>
+        <div class="lb-modal-foot">
+            <button onclick="hideDynamicWarning()" class="lb-btn lb-btn-ghost">Cancel</button>
+            <button onclick="proceedWithDynamicAnalysis('{{ file_hash }}')" class="lb-btn" style="color: var(--lb-sev-medium); border-color: var(--lb-sev-medium);">Proceed</button>
+        </div>
+    </div>
+</div>
+
+{% if analysis_type == 'static' %}
+
+<!-- Summary tab content -->
+<div id="summaryTab" class="tab-content">
+    <div id="targetDetails" style="margin-bottom: 12px;"></div>
+
+    <!-- Detection chip row -->
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>Overall Status</div>
+        <div class="lb-chip-row">
+            <div class="lb-chip">
+                <div class="lb-chip-name">Status</div>
+                <div id="overallStatus" class="lb-chip-count" style="font-size: 14px;">Analysing…</div>
+            </div>
+            <div class="lb-chip">
+                <div class="lb-chip-name">Detections</div>
+                <div id="totalDetections" class="lb-chip-count">0</div>
+            </div>
+            <div class="lb-chip">
+                <div class="lb-chip-name">Duration</div>
+                <div id="scanDuration" class="lb-chip-count lb-mono" style="font-size: 14px;">00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scanner results table -->
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>Scanner Results</div>
+        <table class="lb-table">
+            <thead>
+                <tr><th>Scanner</th><th>Status</th><th>Detections</th><th>Details</th></tr>
+            </thead>
+            <tbody id="scannerResultsBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="yaraResultsTab" class="tab-content hidden">
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>YARA Scan Results</div>
+        <div class="lb-panel-body">
+            <p class="lb-muted" style="font-size: 12px; margin-bottom: 12px;">Static pattern matching results.</p>
+            <div id="yaraStats" style="display: flex; gap: 8px; margin-bottom: 12px;"></div>
+            <div id="yaraResults"></div>
+        </div>
+    </div>
+</div>
+
+<div id="threatCheckResultsTab" class="tab-content hidden">
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>CheckPlz Scan Results</div>
+        <div class="lb-panel-body">
+            <p class="lb-muted" style="font-size: 12px; margin-bottom: 12px;">Windows Defender signature detection results.</p>
+            <div id="threatCheckStats" style="display: flex; gap: 8px; margin-bottom: 12px;"></div>
+            <div id="threatCheckResults"></div>
+        </div>
+    </div>
+</div>
+
+<div id="StringnalyzerResultsTab" class="tab-content hidden">
+    <div class="lb-panel">
+        <div class="lb-panel-hdr">
+            <span class="lb-glyph">▸</span>Stringnalyzer Scan Results
+            <button id="downloadResultsBtn" class="lb-btn lb-btn-ghost" style="margin-left: auto; padding: 2px 10px; font-size: 12px;">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Download
+            </button>
+        </div>
+        <div class="lb-panel-body">
+            <p class="lb-muted" style="font-size: 12px; margin-bottom: 12px;">Payload string analysis.</p>
+            <div id="StringnalyzerStats" style="display: flex; gap: 8px; margin-bottom: 12px;"></div>
+            <div id="StringnalyzerResults"></div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+
+<div id="summaryTab" class="tab-content">
+    <div id="targetDetails" style="margin-bottom: 12px;"></div>
+
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>Overall Status</div>
+        <div class="lb-chip-row">
+            <div class="lb-chip">
+                <div class="lb-chip-name">Status</div>
+                <div id="overallStatus" class="lb-chip-count" style="font-size: 14px;">Analysing…</div>
+            </div>
+            <div class="lb-chip">
+                <div class="lb-chip-name">Detections</div>
+                <div id="totalDetections" class="lb-chip-count">0</div>
+            </div>
+            <div class="lb-chip">
+                <div class="lb-chip-name">Duration</div>
+                <div id="scanDuration" class="lb-chip-count lb-mono" style="font-size: 14px;">00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>Scanner Results</div>
+        <table class="lb-table">
+            <thead>
+                <tr><th>Scanner</th><th>Status</th><th>Detections</th><th>Details</th></tr>
+            </thead>
+            <tbody id="scannerResultsBody"></tbody>
+        </table>
+    </div>
+
+    <!-- Process output (collapsible) -->
+    <div class="lb-panel">
+        <button id="togglePayloadOutput" style="width: 100%; background: var(--lb-bg-soft); color: var(--lb-text); border: 0; border-bottom: 1px solid var(--lb-border); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; font-family: inherit; font-size: 13px; cursor: pointer;">
+            <span style="display: flex; align-items: center; gap: 8px;">
+                <svg id="payloadChevron" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--lb-text-mute); transition: transform var(--lb-transition-fast);">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+                <span class="lb-glyph" style="color: var(--lb-accent);">▸</span>
+                Process Output
+            </span>
+            <span id="payloadOutputStatus" class="lb-tag muted">Waiting…</span>
+        </button>
+        <div id="payloadOutputContent" class="hidden">
+            <div class="lb-panel-body">
+                <div id="stdoutSection" class="hidden" style="margin-bottom: 12px;">
+                    <div class="lb-eyebrow" style="margin-bottom: 6px;">Standard Output</div>
+                    <pre id="payloadStdout" class="lb-mono" style="background: var(--lb-bg); border: 1px solid var(--lb-border); padding: 10px; font-size: 12px; color: var(--lb-text-dim); white-space: pre-wrap; word-break: break-all; max-height: 400px; overflow: auto;"></pre>
+                </div>
+                <div id="stderrSection" class="hidden">
+                    <div class="lb-eyebrow" style="margin-bottom: 6px;">Standard Error</div>
+                    <pre id="payloadStderr" class="lb-mono" style="background: var(--lb-bg); border: 1px solid var(--lb-accent); padding: 10px; font-size: 12px; color: var(--lb-accent-soft); white-space: pre-wrap; word-break: break-all; max-height: 400px; overflow: auto;"></pre>
+                </div>
+                <div id="payloadOutputInfo" class="lb-muted" style="font-size: 12px; font-style: italic;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="yaraMemoryTab" class="tab-content hidden">
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>YARA Memory Scan Results</div>
+        <div class="lb-panel-body">
+            <p class="lb-muted" style="font-size: 12px; margin-bottom: 12px;">Runtime pattern analysis.</p>
+            <div id="yaraStats" style="display: flex; gap: 8px; margin-bottom: 12px;"></div>
+            <div id="yaraResults"></div>
+        </div>
+    </div>
+</div>
+
+<div id="peSieveTab" class="tab-content hidden">
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>PE-sieve Scan Results</div>
+        <div class="lb-panel-body">
+            <p class="lb-muted" style="font-size: 12px; margin-bottom: 12px;">Process memory analysis.</p>
+            <div id="peSieveResults"></div>
+        </div>
+    </div>
+</div>
+
+<div id="monetaTab" class="tab-content hidden">
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>Moneta Scan Results</div>
+        <div class="lb-panel-body">
+            <p class="lb-muted" style="font-size: 12px; margin-bottom: 12px;">Memory anomaly detection.</p>
+            <div id="monetaResults"></div>
+        </div>
+    </div>
+</div>
+
+<div id="patriotTab" class="tab-content hidden">
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>Patriot Scan Results</div>
+        <div class="lb-panel-body">
+            <p class="lb-muted" style="font-size: 12px; margin-bottom: 12px;">Process memory integrity analysis.</p>
+            <div id="patriotStats" style="display: flex; gap: 8px; margin-bottom: 12px;"></div>
+            <div id="patriotResults"></div>
+        </div>
+    </div>
+</div>
+
+<div id="hsbTab" class="tab-content hidden">
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>Hunt-Sleeping-Beacons</div>
+        <div class="lb-panel-body">
+            <p class="lb-muted" style="font-size: 12px; margin-bottom: 12px;">Thread behaviour and sleeping beacon analysis.</p>
+            <div id="hsbStats" style="display: flex; gap: 8px; margin-bottom: 12px;"></div>
+            <div id="hsbResults"></div>
+        </div>
+    </div>
+</div>
+
+<div id="redEdrTab" class="tab-content hidden">
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>RedEdr Monitoring Results</div>
+        <div class="lb-panel-body">
+            <p class="lb-muted" style="font-size: 12px; margin-bottom: 12px;">Windows ETW telemetry.</p>
+            <div id="redEdrStats" style="display: flex; gap: 8px; margin-bottom: 12px;"></div>
+            <div id="redEdrResults"></div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+{% if analysis_type == 'edr' %}
+
+{# EDR runs reuse the dynamic Summary tab (Scanner Results + Process
+   Output), populated from edr.execution.* by the JS layer. The two
+   EDR-specific tabs below add the Alerts and Execution panes. #}
+
+<div id="edrAlertsTab" class="tab-content hidden">
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>Detection Alerts</div>
+        <div class="lb-panel-body">
+            <p class="lb-muted" style="font-size: 12px; margin-bottom: 12px;">Alerts raised by the EDR backend during the run window, filtered by hostname.</p>
+            <div id="edrAlertsStats" style="display: flex; gap: 8px; margin-bottom: 12px;"></div>
+            <div id="edrAlertsResults"></div>
+        </div>
+    </div>
+</div>
+
+<div id="edrExecutionTab" class="tab-content hidden">
+    <div class="lb-panel">
+        <div class="lb-panel-hdr"><span class="lb-glyph">▸</span>Execution Output</div>
+        <div class="lb-panel-body">
+            <p class="lb-muted" style="font-size: 12px; margin-bottom: 12px;">stdout/stderr captured by the Whiskers agent on the EDR VM.</p>
+            <div id="edrExecutionResults"></div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/results/core.js') }}"></script>
+{% endblock %}
