@@ -5,6 +5,58 @@
 
 Status: current recovery entry, 2026-06-04 CST.
 
+2026-06-07 restart-notice hotfix: before any planned Codex++ restart for a
+dead-thread incident, the still-healthy mainline must attempt both sparse user
+notifications, one by mail and one by WeChat, and record both results in the
+recovery packet. This overrides older text that made WeChat optional.
+The notifications are a handoff window, not an approval wait: if the user is
+online, the user may restart Codex++ manually faster; otherwise, after both
+notification attempts are recorded, the still-healthy mainline continues the
+authorized restart route unless PMO/user has explicitly written a deferral.
+
+2026-06-07 model-effort default: MoSim mainline, visible department, and
+disposable sub-agent creation/dispatch should use `gpt-5.5` with `xhigh`
+thinking whenever the current Codex tool or runtime accepts explicit settings.
+Do not wake healthy existing threads just to rewrite settings; apply the rule
+to future create/dispatch/automation/spawn calls. Dead-thread no-op probes keep
+settings omitted unless the recovery task explicitly tests settings update.
+
+2026-06-07 dispatch-surface incident ownership hotfix: visible department
+start-turn or agent-loop failures belong to `MoSim｜CoAgent运维平台`
+(`019e9bc1-ea9f-7102-b41a-4ef9b2308992`) after PMO writes the initial blocker.
+PMO must not keep using the failed department as an accident-sample worker or
+continue business validation there before CoAgentOps classifies the surface.
+
+2026-06-07 heartbeat fail-close hotfix: an open P0 dead-thread recovery packet
+is not a routine pending item. If a PMO/CoAgentOps heartbeat sees pending
+notifications, pending restart, pending post-restart validation, or
+`still_quarantined`, it must execute the next authorized recovery step. For a
+notification/restart-pending visible-thread death, it must attempt sparse
+WeChat plus email, record both audits, and trigger the authorized Codex++
+restart route. It writes blocker/request and `NOTIFY` only when a required
+tool/surface is unavailable, the action fails, or PMO/user explicitly deferred
+the incident. It must not finish as healthy, return
+`DONT_NOTIFY`, or proceed to P1 meta-optimization until the P0 path is closed
+or explicitly deferred by PMO/user.
+
+2026-06-07 visible-title normalization hotfix: active visible-thread names come
+from `CoAgent/dispatch/department_threads.json`. The current WeChat gateway
+thread is `MoSim｜微信网关运维部` without an R suffix, and the current ROS2
+runtime production thread is `MoSim｜ROS2感知定位与规划运行部-R1`. Historical
+R3 task IDs/evidence labels are history only; do not use R3 wording for new
+active routing, automation prompts, or replacement recommendations unless the
+user explicitly approves a new replacement thread.
+
+2026-06-07 large-Git ignore-drain hotfix: new conversations that resume Git
+work must not infer completion from quiet untracked output or a quiet IDE
+source-control pane. For crawled `References/` and `Docs/Skills/` projects,
+temporary `.gitignore` throttles must be drained: reopen one source project or
+major subdirectory at a time, check each batch for files at or above 100 MiB,
+credentials, dependency/build/cache/runtime outputs, missing LFS payloads, and
+generated artifacts, then stage/commit/push under the small-batch limit. The
+final `.gitignore` should keep only durable class/exact-risk rules, not a
+per-file backlog of ordinary source/docs/scripts/configs/small assets.
+
 This file records only current effective decisions and known rejected routes.
 It does not promote old chat history by itself. If a newly opened conversation
 finds a historical claim that is not represented here or in the linked source
@@ -394,11 +446,14 @@ Prefer Codex-native surfaces before expanding CoAgent:
 
 Current dead-thread recovery policy: after CoAgentOps confirms a persistent
 visible-thread start-turn/agent-loop failure through the bounded ladder, it
-should write a blocker packet, send one sparse email notification, optionally
-try one sparse WeChat notification when outbound is healthy, then use the
-user-authorized Codex++ manager restart surface. Do not create a replacement
-conversation by default; replacement requires explicit PMO/user approval,
-repeated failed restart recovery, or a critical path that cannot wait.
+should write a blocker/recovery packet, attempt one sparse email notification
+and one sparse WeChat notification, record both audit results, then use the
+user-authorized Codex++ manager restart surface when restart remains the
+preferred recovery action and no explicit user/PMO deferral has arrived. The
+notifications are meant to let an online user restart manually faster, not to
+make the automation wait indefinitely. Do not create a replacement conversation by
+default; replacement requires explicit PMO/user approval, repeated failed
+restart recovery, or a critical path that cannot wait.
 
 ```text
 D:\Program Files\Codex++\codex-plus-plus-manager.exe
@@ -409,17 +464,41 @@ automations are therefore the expected post-restart recovery route: read the
 latest blocker, run no-op validation, and classify the affected thread as
 `partial_recovery`, `restored`, or `still_quarantined`.
 
+Heartbeat fail-close rule: before a heartbeat reports normal completion or
+enters any P1 optimization audit, it must scan the current recovery packets for
+open P0 dead-thread states such as notification-pending, restart-pending,
+post-restart-validation-pending, or `still_quarantined`. Such a state blocks
+`DONT_NOTIFY`. The heartbeat either continues the recovery under the documented
+notification-before-restart order, including only a short manual-restart
+window after both notifications are attempted, or writes a blocker/request packet only when
+execution is blocked by missing tools, failed notification/restart action, or
+an explicit PMO/user deferral; that packet must name the owner and next action.
+
+CoAgentOps heartbeat must also actively look for new dead-thread surfaces in
+the current visible allowlist. It should list/read current active departments
+and only send a minimal no-op when there is evidence of dispatch-surface risk
+or an explicit revalidation need. A confirmed start-turn/agent-loop failure is
+itself a P0 fail-close incident: write recovery packet, send sparse WeChat plus
+email, record audits, give the user a brief chance to restart manually, and
+otherwise trigger the authorized Codex++ restart. Because the
+restart ends the current conversation, the next heartbeat owns post-restart
+no-op validation and sends a concise PMO thread update with the restored /
+partial / still-quarantined classification.
+
 Self-dead limitation: if CoAgentOps itself is the dead thread, it cannot send
-the email or trigger the restart from inside that failed turn. PMO or another
-still-healthy mainline recovery surface must read the latest blocker/heartbeat
-packet, send the mandatory sparse email, run the authorized Codex++ restart
-route, and let the post-restart heartbeat revalidate CoAgentOps with one
-no-op. Do not rely on the dead CoAgentOps thread to self-rescue.
+the notifications or trigger the restart from inside that failed turn. PMO or
+another still-healthy mainline recovery surface must read the latest
+blocker/heartbeat packet, attempt both mandatory sparse notifications, run the
+authorized Codex++ restart route, and let the post-restart heartbeat revalidate
+CoAgentOps with one no-op. Do not rely on the dead CoAgentOps thread to
+self-rescue.
 The same-thread CoAgentOps heartbeat is normal maintenance, not self-dead
 protection. Current policy is dual-mainline cross-check only: PMO and
 CoAgentOps each run their own thread-attached heartbeat, and whichever mainline
-is still healthy handles blocker, sparse email, Codex++ restart, and one
-post-restart no-op validation for the other. Detached cron `mosim-coagentops`
+is still healthy handles blocker, sparse WeChat plus email notification,
+short manual-restart window, Codex++ restart if no explicit deferral arrives,
+and one post-restart no-op validation for the other. Detached
+cron `mosim-coagentops`
 and Windows scheduled task `MoSim-CoAgentOps-OuterWatchdog` were removed after
 user review because they create a separate automation context and can pollute
 the project or restart from indirect stale heuristics. If both mainlines or the
