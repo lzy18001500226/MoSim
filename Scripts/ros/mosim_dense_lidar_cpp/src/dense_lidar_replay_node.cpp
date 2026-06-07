@@ -203,6 +203,7 @@ class DenseLidarReplayNode final : public rclcpp::Node {
     }
     const auto period = std::chrono::duration<double>(1.0 / rate_hz_);
     stats_start_ = std::chrono::steady_clock::now();
+    replay_start_stamp_ = now();
     timer_ = create_wall_timer(std::chrono::duration_cast<std::chrono::nanoseconds>(period), [this]() {
       if (!loop_ && index_ >= frames_.size()) {
         finish_non_looping_replay();
@@ -210,7 +211,7 @@ class DenseLidarReplayNode final : public rclcpp::Node {
       }
       const Frame& frame = frames_[loop_ ? index_ % frames_.size() : index_];
       auto msg = frame.message;
-      msg.header.stamp = now();
+      msg.header.stamp = replay_stamp_for_index(index_);
       auto livox_msg = frame.livox_message;
       livox_msg.header.stamp = msg.header.stamp;
       livox_msg.timebase =
@@ -285,6 +286,11 @@ class DenseLidarReplayNode final : public rclcpp::Node {
     stats_start_ = now_time;
   }
 
+  rclcpp::Time replay_stamp_for_index(const size_t publish_index) const {
+    const double replay_elapsed_s = static_cast<double>(publish_index) / rate_hz_;
+    return replay_start_stamp_ + rclcpp::Duration::from_seconds(replay_elapsed_s);
+  }
+
   std::string topic_;
   std::string livox_topic_;
   std::string frame_id_;
@@ -297,6 +303,7 @@ class DenseLidarReplayNode final : public rclcpp::Node {
   size_t index_{0};
   size_t publish_count_{0};
   double publish_time_total_us_{0.0};
+  rclcpp::Time replay_start_stamp_;
   std::chrono::steady_clock::time_point stats_start_;
   std::vector<Frame> frames_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;

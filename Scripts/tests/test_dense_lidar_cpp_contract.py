@@ -34,6 +34,16 @@ def test_dense_lidar_cpp_contract() -> None:
         raise AssertionError("publisher should optionally publish Livox CustomMsg for FAST-LIO")
     if "rclcpp::QoS(rclcpp::KeepLast(20)).reliable()" not in publisher:
         raise AssertionError("Livox CustomMsg publisher must use reliable QoS for FAST-LIO subscription compatibility")
+    if "msg.header.stamp = now();" in publisher:
+        raise AssertionError("dense LiDAR replay must not assign per-message header stamps from node.now()")
+    for marker in (
+        "replay_start_stamp_ = now();",
+        "replay_stamp_for_index(index_)",
+        "rclcpp::Duration::from_seconds(replay_elapsed_s)",
+        "livox_msg.header.stamp = msg.header.stamp",
+    ):
+        if marker not in publisher:
+            raise AssertionError(f"publisher missing monotonic replay-clock marker: {marker}")
     for marker in (
         'declare_parameter<bool>("loop", true)',
         'declare_parameter<bool>("exit_after_last_frame", false)',
