@@ -282,6 +282,9 @@ References/Blender/blender/assets/nodes/
 References/Blender/blender/assets/brushes/
 References/Blender/blender/doc/python_api/static/favicon.png
 References/Blender/blender/scripts/startup/bl_app_templates_system/
+References/Blender/blender/release/datafiles/
+References/Blender/blender/release/darwin/
+References/Blender/blender/release/windows/
 References/PX4/
 !References/PX4/
 References/PX4/*
@@ -381,10 +384,6 @@ Results/unreal_scene_review/
 Results/unreal_scene_mapping/*probe*.json
 Results/unreal_scene_mapping/*object_bounds*.json
 UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/
-
-# Blender Windows release assets currently contain only Git LFS pointer placeholders locally; keep manifest-only until real payloads are restored.
-References/Blender/blender/release/windows/installer_wix/
-References/Blender/blender/release/windows/msix/Assets/
 
 # Final reference-wide class guard. This sits after project unignore rules so
 # ordinary project whitelists cannot accidentally reopen archives, dependency
