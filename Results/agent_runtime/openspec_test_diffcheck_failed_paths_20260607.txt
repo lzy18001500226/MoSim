@@ -1,0 +1,16 @@
+References/Agent/Workflow/OpenSpec/test/commands/change.interactive-show.test.ts
+References/Agent/Workflow/OpenSpec/test/commands/change.interactive-validate.test.ts
+References/Agent/Workflow/OpenSpec/test/commands/show.test.ts
+References/Agent/Workflow/OpenSpec/test/commands/spec.interactive-show.test.ts
+References/Agent/Workflow/OpenSpec/test/commands/spec.interactive-validate.test.ts
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts
+References/Agent/Workflow/OpenSpec/test/commands/validate.enriched-output.test.ts
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts
+References/Agent/Workflow/OpenSpec/test/core/list.test.ts
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts
+References/Agent/Workflow/OpenSpec/test/core/validation.enriched-messages.test.ts
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts
+References/Agent/Workflow/OpenSpec/test/core/view.test.ts
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts

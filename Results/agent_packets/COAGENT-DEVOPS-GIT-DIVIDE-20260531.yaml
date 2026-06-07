@@ -1,16 +1,16 @@
 task_id: COAGENT-DEVOPS-GIT-DIVIDE-20260531
 status: running
 decision: continue_project_by_project_git_drain
-summary: 2026-06-07 DevOps GitIntegrator committed and pushed khoj, plus two OpenSpec safe sub-batches. OpenSpec remains throttled for the large unprocessed remainder because whole-project cached check has many upstream whitespace findings; it is being drained by subdirectory slices instead of adding hundreds of exact deferred rules.
-evidence: khoj 690 committed in 7f0e3aaa3a and narrowed in a59d5ab4c8 with 11 deferred; OpenSpec initial ignored 741, no 100MiB hits, metadata-docs-schemas-scripts slice 51 committed in 1d5567fa50, src clean subset 132 committed in 1d07dc5ed1, OpenSpec remaining ignored 558, OpenSpec visible-untracked 0, upstream_ahead_behind 0 0, cached_index_count 0.
-risks: upstream reference projects can carry whitespace, conflict-marker examples, or fixture files that fail cached checks; those files are deferred exactly or kept behind the existing project throttle until a safe sub-slice is ready; References-Agent still has a large ignored backlog; unrelated tracked modifications outside this DevOps slice were not touched.
-ignore_first_strategy: keep broad family throttles for unprocessed external trees, open one reviewed project or subdirectory slice at a time, commit safe source docs config files under 100 MiB, then narrow ignores only when the remaining deferred list is small enough to keep .gitignore maintainable.
-proposed_batches: continue OpenSpec by smaller slices: test if clean subsets are possible, then openspec subtrees by archive specs or current specs; otherwise move to next under-1000 candidates such as References/Agent/Platforms/spacebot, References/Agent/Frameworks/llama-agents, References/Agent/UI/plannotator, References/Agent/Security/LitterBox, References/Agent/Frameworks/swarm, References/Agent/Memory/supermemory.
-forbidden_actions: follow AGENTS.md 3.3 large-tree Git safety bans; no whole-tree porcelain sweep, no all-path staging, no destructive cleanup, no history rewrite, no forced remote update, no 1000-plus staged batch, no 100MiB-plus file, no private auth material or local runtime dependency output.
-next_action: continue OpenSpec with smaller path slices, or switch to the next under-1000 project if OpenSpec slices remain too whitespace-heavy; for every slice use path-limited review, exact stage, cached check, commit, push, and evidence update.
+summary: 2026-06-07 DevOps GitIntegrator continued OpenSpec drain by smaller clean sub-batches rather than whole-project unthrottle.
+evidence: OpenSpec root subset 11 files committed fd2d4446a4; OpenSpec test clean subset 65 files committed 2dd567cd69; OpenSpec specs/explorations clean subset 22 files committed 9390fb277b; upstream_ahead_behind 0 0; cached_index_count 0; OpenSpec remaining ignored 460; OpenSpec visible-untracked 0.
+risks: OpenSpec still has 460 ignored files, mainly openspec/changes plus known diff-check deferred files in root/src/test/specs. Whole-project cached check remains noisy due to upstream whitespace/new blank line findings; continue draining by subdirectory slices.
+ignore_first_strategy: keep OpenSpec project throttle until remaining deferred set is small enough; commit clean subtrees first, then narrow ignore rules only after the unprocessed remainder is reduced to exact durable deferred paths.
+proposed_batches: continue References/Agent/Workflow/OpenSpec/openspec/changes by change-directory slices under 1000 files; after OpenSpec is reduced, process next candidates spacebot, llama-agents, plannotator, LitterBox, swarm, supermemory.
+forbidden_actions: follow AGENTS.md 3.3 large-tree Git safety bans; no broad status, no all-path stage, no destructive cleanup, no forced remote update, no 1000-plus staged batch, no 100MiB-plus file, no private auth material or local runtime dependency output.
+next_action: process OpenSpec openspec/changes in smaller clean batches, or move to next under-1000 project if changes remains too whitespace-heavy.
 needs_human: false
 blocked_reason: none
-subagent_plan: available_but_not_useful because current step is one serial Git index batch
+subagent_plan: available_but_not_useful because current work is serial Git index integration
 subagents_used: none
 verification_gates: path-limited inventory; staged count below 1000; staged large-file check; cached check; serial commit; push; post-slice visible-untracked and ignored counts
 manual_review_or_blocker_triggers: remote rejection; authentication failure; 100MiB-plus file; private auth material discovery; nested external repo policy question; destructive operation need; unclear ownership of important source files

@@ -1,0 +1,398 @@
+References/Agent/Workflow/OpenSpec/test/commands/change.interactive-show.test.ts:44: new blank line at EOF.
+References/Agent/Workflow/OpenSpec/test/commands/change.interactive-validate.test.ts:47: new blank line at EOF.
+References/Agent/Workflow/OpenSpec/test/commands/show.test.ts:122: new blank line at EOF.
+References/Agent/Workflow/OpenSpec/test/commands/spec.interactive-show.test.ts:43: new blank line at EOF.
+References/Agent/Workflow/OpenSpec/test/commands/spec.interactive-validate.test.ts:43: new blank line at EOF.
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:11: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:12: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:15: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:27: trailing whitespace.
++- **WHEN** they submit the login form
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:40: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:65: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:81: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:100: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:117: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:133: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:149: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:167: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:184: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:204: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:218: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:237: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:258: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:268: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:281: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/spec.test.ts:290: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/commands/validate.enriched-output.test.ts:48: new blank line at EOF.
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:23: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:26: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:32: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:35: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:42: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:45: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:60: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:64: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:67: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:71: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:74: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:83: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:87: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:90: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:102: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:115: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:118: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:135: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:154: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:157: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:162: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:172: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:185: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:199: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:202: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:208: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:212: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:224: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:237: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:240: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:246: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:250: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:267: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:272: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:283: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:286: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:291: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:302: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:305: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:310: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:322: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:326: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:329: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:334: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:338: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:389: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:394: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:410: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:413: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:416: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:422: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:427: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:431: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:464: trailing whitespace.
++### Requirement: Important Rule
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:778: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:789: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:795: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:798: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:801: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:810: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:820: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:824: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:828: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:831: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:834: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:845: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:849: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:853: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:858: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:861: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/archive.test.ts:864: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:9: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:37: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:40: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:53: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:70: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:73: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:91: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:94: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:108: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:119: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:122: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:145: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:147: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:152: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:175: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/converters/json-converter.test.ts:178: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/list.test.ts:36: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/list.test.ts:56: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/list.test.ts:74: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/list.test.ts:96: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/list.test.ts:138: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts:32: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts:36: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts:40: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts:70: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts:185: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts:190: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts:194: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts:197: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts:233: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts:282: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts:305: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts:327: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/parsers/markdown-parser.test.ts:351: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.enriched-messages.test.ts:73: new blank line at EOF.
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:5: trailing whitespace.
++import {
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:6: trailing whitespace.
++  ScenarioSchema,
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:7: trailing whitespace.
++  RequirementSchema,
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:8: trailing whitespace.
++  SpecSchema,
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:10: trailing whitespace.
++  DeltaSchema
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:19: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:28: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:47: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:61: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:74: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:99: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:110: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:133: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:151: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:165: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:172: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:184: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:220: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:223: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:242: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:245: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:370: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:373: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:386: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/validation.test.ts:389: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/core/view.test.ts:129: new blank line at EOF.
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:25: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:33: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:41: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:50: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:57: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:65: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:75: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:82: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:90: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:116: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:118: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:126: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:128: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:136: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:139: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:150: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/file-system.test.ts:157: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:25: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:32: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:43: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:51: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:65: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:68: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:76: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:87: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:90: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:98: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:109: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:112: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:120: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:128: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:131: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:139: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:150: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:165: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:181: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:188: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:190: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:197: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:206: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:213: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:221: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:228: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:240: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/test/utils/marker-updates.test.ts:247: trailing whitespace.
++
