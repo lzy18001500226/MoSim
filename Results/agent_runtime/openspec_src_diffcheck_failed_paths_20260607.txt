@@ -1,0 +1,15 @@
+References/Agent/Workflow/OpenSpec/src/commands/change.ts
+References/Agent/Workflow/OpenSpec/src/commands/spec.ts
+References/Agent/Workflow/OpenSpec/src/core/archive.ts
+References/Agent/Workflow/OpenSpec/src/core/converters/json-converter.ts
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts
+References/Agent/Workflow/OpenSpec/src/core/schemas/change.schema.ts
+References/Agent/Workflow/OpenSpec/src/core/validation/constants.ts
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts
+References/Agent/Workflow/OpenSpec/src/core/view.ts
+References/Agent/Workflow/OpenSpec/src/utils/file-system.ts
+References/Agent/Workflow/OpenSpec/src/utils/interactive.ts
+References/Agent/Workflow/OpenSpec/src/utils/item-discovery.ts
+References/Agent/Workflow/OpenSpec/src/utils/match.ts
+References/Agent/Workflow/OpenSpec/src/utils/task-progress.ts

@@ -1,0 +1,252 @@
+References/Agent/Workflow/OpenSpec/src/commands/change.ts:99: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/change.ts:101: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/change.ts:107: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/change.ts:113: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/change.ts:124: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/change.ts:141: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/change.ts:187: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/change.ts:209: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/change.ts:211: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/change.ts:217: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/change.ts:220: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/change.ts:271: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/change.ts:280: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/spec.ts:158: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/commands/spec.ts:221: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/archive.ts:155: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/archive.ts:169: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/archive.ts:202: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/converters/json-converter.ts:13: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/converters/json-converter.ts:15: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/converters/json-converter.ts:23: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/converters/json-converter.ts:32: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/converters/json-converter.ts:34: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/converters/json-converter.ts:42: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/converters/json-converter.ts:49: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/converters/json-converter.ts:57: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:24: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:28: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:35: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:39: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:57: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:60: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:63: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:66: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:80: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:87: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:103: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:118: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:133: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:147: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:154: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:156: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:160: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:165: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:175: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:185: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:192: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:197: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:214: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:218: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:229: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:233: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:237: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/change-parser.ts:240: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:77: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:79: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:83: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:105: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:109: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:131: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:138: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:143: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:160: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:164: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:170: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:174: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:178: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:181: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:200: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:204: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:210: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:218: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:228: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:230: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:236: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:242: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:251: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:259: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:266: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:269: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:279: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/parsers/markdown-parser.ts:287: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/schemas/change.schema.ts:3: trailing whitespace.
++import {
+References/Agent/Workflow/OpenSpec/src/core/schemas/change.schema.ts:7: trailing whitespace.
++  VALIDATION_MESSAGES
+References/Agent/Workflow/OpenSpec/src/core/validation/constants.ts:32: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/constants.ts:38: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:30: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:32: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:34: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:38: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:40: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:50: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:82: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:84: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:86: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:90: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:92: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:102: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:301: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:309: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:318: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:327: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:333: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:335: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:344: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:345: trailing whitespace.
++      if ((delta.operation === 'ADDED' || delta.operation === 'MODIFIED') &&
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:354: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:375: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:384: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:395: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:396: trailing whitespace.
++    const valid = this.strictMode
+References/Agent/Workflow/OpenSpec/src/core/validation/validator.ts:399: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/view.ts:10: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/view.ts:65: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/view.ts:68: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/view.ts:134: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/view.ts:141: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/view.ts:145: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/view.ts:209: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/view.ts:213: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/core/view.ts:216: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/utils/file-system.ts:221: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/utils/file-system.ts:224: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/utils/file-system.ts:248: trailing whitespace.
++
+References/Agent/Workflow/OpenSpec/src/utils/interactive.ts:29: new blank line at EOF.
+References/Agent/Workflow/OpenSpec/src/utils/item-discovery.ts:66: new blank line at EOF.
+References/Agent/Workflow/OpenSpec/src/utils/match.ts:25: new blank line at EOF.
+References/Agent/Workflow/OpenSpec/src/utils/task-progress.ts:42: new blank line at EOF.
