@@ -1,0 +1,33 @@
+{
+  "schema": "mosim.ue_command_sender_source_contract.v1",
+  "ok": true,
+  "source": "source_level_static_check",
+  "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h",
+  "source_cpp": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp",
+  "types_header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksTypes.h",
+  "allowed_kinds": [
+    "controller_select",
+    "motor_fault",
+    "planner_select",
+    "recording",
+    "scenario_reset",
+    "scene_switch",
+    "sensor_mode",
+    "start_goal_update",
+    "wind_profile"
+  ],
+  "forbidden_kinds": [
+    "actor_transform",
+    "keyboard_pose",
+    "pose_override",
+    "set_uav_pose",
+    "teleport"
+  ],
+  "not_runtime_ue_console": true,
+  "runtime_ack_required_before_acceptance": true,
+  "no_pose_overwrite_status": "pass",
+  "issues": [],
+  "warnings": [
+    "source-level UE command sender only; no live UE runtime ack is claimed"
+  ]
+}

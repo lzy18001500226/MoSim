@@ -1,0 +1,17 @@
+{
+  "schema": "mosim.ue_command_sender_loopback_smoke.v1",
+  "ok": true,
+  "source": "udp_loopback_smoke",
+  "sent_packets": 4,
+  "received_packets": 4,
+  "received_jsonl": "Results/p0_runs/rfly_mosim_p0_slice_20260606/ue_command_sender_loopback_received.jsonl",
+  "no_pose_overwrite_status": "pass",
+  "not_runtime_ue_console": true,
+  "not_mworks_or_ros2_ack": true,
+  "claim_boundary": [
+    "UDP loopback packet smoke only.",
+    "Does not run Unreal, MWORKS, ROS2, or any runtime acknowledgement adapter.",
+    "Accepted state still requires mosim.ue_command_echo.v1 from MWORKS/ROS2 authority."
+  ],
+  "issues": []
+}

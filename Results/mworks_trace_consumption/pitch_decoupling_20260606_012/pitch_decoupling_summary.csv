@@ -1,0 +1,2 @@
+probe_id,model_name,decoupling_strategy,check_model,simulate_model,simulate_data,get_var_times_count,error_6140_present,nonzero_reference_aliases,roll_pitch_alias_available,verdict
+iso19_roll_pitch_estimator,QuadrotorExperiments.FactoryTraceIso19RollPitchEstimatorSmoke,roll AngleMea[1] and pitch AngleMea[2] through project-owned first-order extraction states before controller3_2 roll_mea/pitch_mea,pass,pass,true,1001,false,true,true,pass_iso18_pattern_scales_to_roll_pitch_result_context

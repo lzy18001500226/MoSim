@@ -1,0 +1,91 @@
+{
+  "schema_version": "mosim.mworks_mcp_log.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-FIRST-CONTROL-FEEDBACK-GROUP-20260606-018",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "source": "MWORKS_MCP",
+  "calls": [
+    {
+      "tool": "session_manager",
+      "action": "probe",
+      "ok": true,
+      "cached_driver_present": false,
+      "find_sysplorer_ports": [49153, 49152]
+    },
+    {
+      "tool": "session_manager",
+      "action": "ensure",
+      "ok": true,
+      "driver_ready": true,
+      "dedicated_sysplorer_port": 49154
+    },
+    {
+      "tool": "session_manager",
+      "action": "probe",
+      "ok": true,
+      "cached_driver_probe_ok": true,
+      "dedicated_sysplorer_port": 49154
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "ok": true,
+      "data": true,
+      "purpose": "dependency only; no edit"
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "check_model",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso24DirectAttitudeFeedbackSmoke",
+      "ok": true,
+      "data": true,
+      "elapsed_s": 1.981
+    },
+    {
+      "tool": "simulate_model",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso24DirectAttitudeFeedbackSmoke",
+      "target_time_s": [0.0, 2.0],
+      "ok": true,
+      "data": false,
+      "error": "SimulateModel returned False; GetLastErrors reported no prior command log information.",
+      "verify_result_var": "x_ref",
+      "x_ref_at_end_from_tool_probe": 0.0
+    },
+    {
+      "tool": "result_manager",
+      "action": "get_var_times",
+      "ok": true,
+      "data": [],
+      "count": 0
+    },
+    {
+      "tool": "result_manager",
+      "action": "get_vars_value_at",
+      "time_point": "end",
+      "ok": true,
+      "data": []
+    }
+  ],
+  "forbidden_actions_observed": {
+    "clear_all_called": false,
+    "change_directory_called": false,
+    "full_factory_retry": false,
+    "official_baseline_edited": false,
+    "direct_posmea_vector_reconnect": false,
+    "actuator_motor_speed_sensor_reconnect": false,
+    "offline_script_used_as_mworks_evidence": false
+  }
+}

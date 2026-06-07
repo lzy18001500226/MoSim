@@ -1,0 +1,486 @@
+{
+  "schema": "mosim.p0_closed_loop_gap_matrix.v1",
+  "manifest": "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json",
+  "audit": "Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_BUNDLE_AUDIT.json",
+  "run_id": "rfly_mosim_p0_slice_20260606",
+  "quality_status": "smoke_only",
+  "claim_scope": [
+    "fast_lio_no_goal_output_precondition",
+    "ue_console_source_static_contract",
+    "sunray_visual_review_package_readiness_manual_pending"
+  ],
+  "closed_loop_ready": false,
+  "planner_ready": false,
+  "must_not_claim": [
+    "planner",
+    "closed_loop",
+    "Factory trace consumption",
+    "controller performance",
+    "runtime UE Experiment Console"
+  ],
+  "gates": {
+    "evidence_bundle": {
+      "status": "pass_smoke_only",
+      "source": "P0_BUNDLE_AUDIT",
+      "blocking": false,
+      "details": {
+        "audit_warnings": 39,
+        "audit_issues": 0
+      }
+    },
+    "mworks_same_trace_consumption": {
+      "status": "blocked",
+      "source": "MWORKS_MCP",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json",
+        "exists": true,
+        "status": "blocked"
+      },
+      "next": "Wait for or execute MWORKS attitude decoupling 011, then reconnect the smallest passing group before full Factory retry."
+    },
+    "mworks_attitude_feedback_decoupling": {
+      "status": "rate_feedback_isolation_probe_passed",
+      "source": "MWORKS_MCP",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014.json",
+        "exists": true,
+        "status": "completed"
+      },
+      "next": "Use the passing Iso21 rate-alias baseline to decide explicit-rate controller surface versus the next narrow sensor-bus/component reconnect before any full Factory retry."
+    },
+    "mworks_sensor_bus_reconnect": {
+      "status": "blocked_first_new_boundary_found",
+      "source": "MWORKS_MCP",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-BUS-RECONNECT-20260606-015.json",
+        "exists": true,
+        "status": "blocked"
+      },
+      "details": {
+        "blocker_kind": "simulate_failed_result_context_empty",
+        "first_new_boundary": "direct sensor position reconnect into navigationDisplay.actual_position",
+        "error_6140_present": true
+      },
+      "next": "Create Iso23 with a RealExpression or sampled/held position bridge before retrying any larger Factory trace wrapper."
+    },
+    "mworks_position_bridge": {
+      "status": "display_position_bridge_probe_passed",
+      "source": "MWORKS_MCP",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json",
+        "exists": true,
+        "status": "completed"
+      },
+      "details": {
+        "bridge_passed": true,
+        "error_6140_present": false,
+        "factory_trace_consumption_claimed": false
+      },
+      "next": "Use Iso23 as the passing display-position bridge baseline, then add one remaining sensor/display group at a time before any full Factory retry."
+    },
+    "mworks_next_sensor_display_group": {
+      "status": "blocked_scope_exhausted",
+      "source": "file_topology_inspection",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-NEXT-SENSOR-DISPLAY-GROUP-20260606-017.json",
+        "exists": true,
+        "status": "blocked"
+      },
+      "details": {
+        "blocker_kind": "no_remaining_allowed_sensor_display_group",
+        "exactly_one_group_added": false,
+        "topology_comparison": "Results/mworks_trace_consumption/next_sensor_display_group_20260606_017/topology_comparison_summary.json",
+        "prior_passing_mworks_mcp_evidence": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json",
+        "topology_findings": [
+          {
+            "target": "planningReference.position_command -> navigationDisplay.reference_position",
+            "status": "already inherited in Iso23 from FactoryLiteTraceSmoke"
+          },
+          {
+            "target": "sensors1_1.PosMea -> navigationDisplay.actual_position",
+            "status": "represented in Iso23 by sampled/held bridge into inherited actual_position"
+          },
+          {
+            "target": "x/y/z feedback, attitude measurement feedback, z_ref_rate, motor command scaling/summing, actuator/speedSensor wiring",
+            "status": "not sensor/display-only; forbidden by task 017"
+          }
+        ],
+        "not_mworks_simulation_evidence": true
+      },
+      "next": "Open a new task permitting exactly one controller/control-feedback reconnect group from Iso23; preserve the sampled/held display-position bridge and avoid full Factory retry."
+    },
+    "mworks_first_control_feedback_group": {
+      "status": "blocked_first_control_feedback_boundary_found",
+      "source": "MWORKS_MCP",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-FIRST-CONTROL-FEEDBACK-GROUP-20260606-018.json",
+        "exists": true,
+        "status": "blocked"
+      },
+      "details": {
+        "blocker_kind": "simulate_failed_result_context_empty",
+        "selected_group": "direct sensors1_1.AngleMea[1..3] into controller roll/pitch/yaw measurement path",
+        "exactly_one_group_added": true,
+        "iso23_display_bridge_preserved": true,
+        "check_model_status": "pass",
+        "simulate_model_status": "failed",
+        "simulate_model_data": false,
+        "get_var_times_count": 0,
+        "aliases_available": false,
+        "error_6140_present": false,
+        "first_new_boundary": "direct AngleMea attitude feedback group on top of Iso23 causes SimulateModel data=false and empty result context"
+      },
+      "next": "Open a narrow attitude-feedback bridge task: sampled/held or first-order controller measurement feedback on top of Iso23, still without full Factory retry or actuator/motor reconnect."
+    },
+    "mworks_attitude_feedback_bridge": {
+      "status": "attitude_feedback_bridge_probe_passed",
+      "source": "MWORKS_MCP",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json",
+        "exists": true,
+        "status": "completed"
+      },
+      "details": {
+        "selected_bridge_variant": "sampled/held sensors1_1.AngleMea[1..3] into controller roll/pitch/yaw measurement feedback",
+        "bridge_passed": true,
+        "iso23_display_bridge_preserved": true,
+        "get_var_times_count": 1001,
+        "error_6140_present": false,
+        "factory_trace_consumption_claimed": false
+      },
+      "next": "Use Iso25 only as the next narrow bridge baseline; add one downstream control-output, speedSensor, actuator, or motor wiring group at a time before any full Factory retry."
+    },
+    "mworks_actuator_to_wrench_bridge": {
+      "status": "completed_minimal_bridge_smoke",
+      "quality_status": "minimal_actuator_to_wrench_bridge_smoke_passed",
+      "source": "MWORKS_MCP",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json",
+        "exists": true,
+        "status": "completed_minimal_bridge_smoke"
+      },
+      "details": {
+        "model_name": "QuadrotorExperiments.FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+        "check_model_status": "pass",
+        "simulate_status": "pass",
+        "get_var_times_count": 251,
+        "command_domain_label": "signed MWORKS visual rotor speed command alias after hover trim and motor_command_scale",
+        "bridge_command_error_abs_sum_end": 0.0,
+        "force_application_error_at_samples": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "torque_application_error_at_samples": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "minimal_actuator_to_wrench_bridge_smoke": true,
+        "factory_trace_consumption": false,
+        "full_actuator_or_plant_closure": false
+      },
+      "next": "If continuing MWORKS integration, dispatch exactly one next physical boundary after Iso28 with GUI sentinel, force reload, check_model, shortest smoke, and result reads."
+    },
+    "mworks_external_frame_boundary": {
+      "status": "completed_external_frame_boundary_smoke",
+      "quality_status": "minimal_external_frame_boundary_smoke_passed",
+      "source": "MWORKS_MCP",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json",
+        "exists": true,
+        "status": "completed_external_frame_boundary_smoke"
+      },
+      "details": {
+        "model_name": "QuadrotorExperiments.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke",
+        "check_model_status": "pass",
+        "simulate_status": "pass",
+        "get_var_times_count": 251,
+        "external_body_component": "external_test_body",
+        "external_force_torque_component": "external_force_and_torque",
+        "bridge_command_error_abs_sum_end": 0.0,
+        "external_boundary_gate_error_end": 0.0,
+        "external_force_application_error_at_samples": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "external_torque_application_error_at_samples": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "external_force_matches_adapter_error_at_samples": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "external_torque_matches_adapter_error_at_samples": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "minimal_external_frame_boundary_smoke": true,
+        "factory_trace_consumption": false,
+        "quadchassis_or_full_plant_closure": false
+      },
+      "next": "If continuing MWORKS integration, dispatch a separately scoped one-boundary task after Iso29; do not infer full plant closure or Factory trace consumption from this smoke."
+    },
+    "ros2_real_planner_runtime": {
+      "status": "blocked",
+      "source": "ROS2_REALSTACK",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-PLANNER-20260606-004.json",
+        "exists": true,
+        "status": "blocked"
+      },
+      "next": "Consume ROS2 014 full plan_manage link preflight, then design a runtime-disabled launch smoke before any recorder."
+    },
+    "ros2_real_planner_input_gate": {
+      "status": "real_planner_input_gate_blocked",
+      "source": "ROS2_REALSTACK",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-PLANNER-INPUT-GATE-20260606-018.json",
+        "exists": true,
+        "status": "blocked"
+      },
+      "details": {
+        "real_odometry_present_now": false,
+        "real_cloud_registered_present_now": false,
+        "runtime_disabled_false_may_be_safely_attempted_later": false
+      },
+      "next": "Use 018 as historical blocker context; consume 019 restored odom/cloud evidence before any runtime_disabled=false planner startup probe."
+    },
+    "ros2_odom_cloud_restore": {
+      "status": "odom_cloud_restore_ready_for_later_startup_gate",
+      "source": "ROS2_REALSTACK",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-ODOM-CLOUD-RESTORE-20260606-019.json",
+        "exists": true,
+        "status": "completed_input_gate"
+      },
+      "details": {
+        "ready_for_later_separate_runtime_disabled_false_startup_probe": true,
+        "planner_ready": false,
+        "closed_loop_ready": false,
+        "position_command_recorder_allowed": false,
+        "planner_startup_executed": false,
+        "odometry_count": 93,
+        "odometry_rate_hz": 9.3,
+        "cloud_registered_count": 92,
+        "cloud_registered_rate_hz": 9.2,
+        "truth_status": "pass",
+        "truth_position_rmse_m": 0.305369
+      },
+      "next": "Open a separate bounded runtime_disabled=false planner startup probe against freshly restored /Odometry and /cloud_registered; keep recorder and PositionCommand claims blocked."
+    },
+    "ros2_long_source_startup_discipline": {
+      "status": "completed_long_source_no_goal_precondition_passed",
+      "quality_status": "no_goal_long_source_startup_discipline_precondition_passed",
+      "source": "ROS2_REALSTACK",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-LONG-SOURCE-STARTUP-DISCIPLINE-RERUN-20260606-031.json",
+        "exists": true,
+        "status": "completed_long_source_no_goal_precondition_passed"
+      },
+      "details": {
+        "source_frame_count": 120,
+        "source_coordinate_frame": "body_lidar_m_z_up",
+        "startup_order": "FAST-LIO -> first Livox frame -> IMU",
+        "livox_count": 39,
+        "imu_count": 781,
+        "odometry_count": 19,
+        "cloud_registered_count": 19,
+        "loopback_total": 0,
+        "no_effective_points": 0,
+        "position_cmd_forbidden_topic_present": false,
+        "planning_bspline_forbidden_topic_present": false,
+        "cleanup": "no_matching_processes"
+      },
+      "next": "Formalize this startup order in a no-goal runtime launcher or dispatch a separate RViz/truth-error/localization-quality gate; keep planner/EGO/PositionCommand/20Hz adapter blocked until separately proven."
+    },
+    "ros2_planner_startup_probe": {
+      "status": "planner_startup_surface_not_accepted",
+      "source": "ROS2_REALSTACK",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-PLANNER-STARTUP-PROBE-20260606-020.json",
+        "exists": true,
+        "status": "blocked_after_bounded_startup_probe"
+      },
+      "details": {
+        "fresh_restore_ready": true,
+        "planner_surface_initialized": true,
+        "planner_consumed_inputs": false,
+        "planner_ready": false,
+        "closed_loop_ready": false,
+        "position_command_recorder_allowed": false,
+        "odometry_count": 149,
+        "cloud_registered_count": 148,
+        "odometry_publisher_count_during_planner": 0,
+        "cloud_publisher_count_during_planner": 0,
+        "planning_bspline_accepted_runtime_evidence": false
+      },
+      "next": "Run a separate PMO-approved stable-source input-consumption retry: keep /Odometry and /cloud_registered publishers alive, prove topic echo --once before and during planner startup, and still keep PositionCommand recorder blocked."
+    },
+    "ros2_planner_dependency_surfaces": {
+      "status": "completed",
+      "source": "ROS2_REALSTACK",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-RUNTIME-DISABLED-SMOKE-20260606-017.json",
+        "exists": true,
+        "status": "completed"
+      },
+      "details": {
+        "quality_status": "runtime_disabled_smoke_passed",
+        "launch_config_quality_status": "runtime_disabled_static_config_only",
+        "runtime_disabled_guard_smoke_passed": true,
+        "ready_for_later_runtime_disabled_smoke": true,
+        "ready_for_real_planner_runtime": false,
+        "ready_for_runtime_recorder": false,
+        "guard_message_seen": true,
+        "runtime_disabled_launch_exit_code": 0,
+        "ros2_run_or_launch_executed": true
+      },
+      "next": "Open a separate real planner runtime input gate only after real local sensed /Odometry plus /cloud_registered are present; recorder and PositionCommand evidence remain blocked."
+    },
+    "ros2_no_goal_odom_tf_rviz_preflight_dispatch": {
+      "status": "blocked_before_goal",
+      "quality_status": "no_goal_odom_tf_rviz_preflight_blocked_before_goal",
+      "source": "ROS2_REALSTACK_NO_GOAL_PREFLIGHT",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-NO-GOAL-ODOM-TF-RVIZ-PREFLIGHT-20260606-032.json",
+        "exists": true,
+        "status": "blocked_before_goal"
+      },
+      "details": {
+        "summary": {
+          "path": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/no_goal_odom_tf_rviz_preflight_summary.json",
+          "exists": true,
+          "status": "blocked_before_goal"
+        },
+        "evidence_dir": {
+          "path": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032",
+          "exists": true,
+          "status": ""
+        },
+        "prior_dispatch_surface_blockers": {
+          "coagentops_blocker": {
+            "path": "Results/agent_packets/blockers/COAGENTOPS-ROS2-R3-DISPATCH-SURFACE-DIAG-20260606-032.json",
+            "exists": true,
+            "status": "blocked_persistent_start_turn_failure"
+          },
+          "pmo_dispatch_blocker": {
+            "path": "Results/agent_packets/blockers/PMO-ROS2-R3-DISPATCH-SURFACE-20260606-032.json",
+            "exists": true,
+            "status": "blocked"
+          },
+          "resolved_by_noop_recovery": true,
+          "target_thread_id": "019e9c72-ee74-79d1-b9fe-621d3c6fc99e"
+        },
+        "observed": {
+          "loopback_total": 3,
+          "livox_pcl_cbk_loopback": 1,
+          "imu_cbk_loopback": 2,
+          "odometry_count": 0,
+          "cloud_registered_count": 0,
+          "livox_probe_count": 0,
+          "imu_probe_count": 750,
+          "rviz2_cli_available": true,
+          "tf_truth_edge_observed": true,
+          "tf_fastlio_edge_observed": true,
+          "truth_to_fastlio_bridge_observed": false,
+          "final_cleanup": "no_matching_processes"
+        },
+        "blocking_gates": [
+          "zero_fastlio_loopback_events",
+          "odometry_and_cloud_registered_nonzero",
+          "livox_and_imu_nonzero_monotonic",
+          "odom_cloud_frame_contract_recorded"
+        ],
+        "rviz2_cli_available": true,
+        "rviz_gui_opened": false,
+        "truth_to_fastlio_bridge_observed": false
+      },
+      "next": "Do not enter planner/EGO or claim RViz/localization readiness from 032. A follow-up should either reuse the already clean 031 evidence for manual FAST-LIO window setup without adding extra live probes, or issue a bounded diagnostic task to explain why 032's added TF/RViz-readiness probes changed timing enough to reintroduce Livox/IMU loop-back and zero recorder outputs. Keep planner goals, /planning/bspline, PositionCommand, /position_cmd, 20Hz adapter, extrinsics, and frame adapters blocked unless a later task explicitly authorizes them."
+    },
+    "ue_runtime_command_ack": {
+      "status": "source_level_static_check_pass",
+      "source": "UE_SENSOR_ORACLE",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/p0_runs/rfly_mosim_p0_slice_20260606/ue_command_sender_source_contract.json",
+        "exists": true,
+        "status": ""
+      },
+      "next": "Wire UE command sender to live MWORKS/ROS2 ack before accepting runtime Experiment Console."
+    },
+    "ue_live_echo_acceptance_fixture": {
+      "status": "completed",
+      "quality_status": "source_static_live_echo_acceptance_fixture_contract_passed",
+      "source": "UE_SOURCE_STATIC_CONTRACT",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-ACCEPTANCE-FIXTURE-CONTRACT-20260606-008.json",
+        "exists": true,
+        "status": "completed"
+      },
+      "details": {
+        "input_schema": "mosim.ue_command_echo.v1",
+        "valid_future_live_accepted_rows": 5,
+        "non_live_runtime_leaks": 0,
+        "malformed_runtime_leaks": 0,
+        "rejected_runtime_leaks": 0,
+        "runtime_receiver_implemented": false,
+        "ui_asset_binding_implemented": false
+      },
+      "next": "Implement live receiver/UI accepted-state only after a separately scoped MWORKS/ROS2 live command-echo transport exists."
+    },
+    "sunray150_material_review": {
+      "status": "completed_path_hygiene_ready_manual_review_pending",
+      "quality_status": "path_hygiene_ready_manual_visual_review_pending",
+      "source": "SUNRAY150_ASSET_REVIEW_PACKAGE",
+      "blocking": true,
+      "evidence": {
+        "path": "Results/agent_packets/returns/RFLY-MOSIM-SUNRAY150-REVIEW-MANIFEST-PATH-HYGIENE-20260606-004.json",
+        "exists": true,
+        "status": "completed_path_hygiene_ready_manual_review_pending"
+      },
+      "details": {
+        "manual_review_required": true,
+        "manual_review_status": "pending_pmo_wechat_review",
+        "source_manifest_all_outputs_have_project_relative_path": true,
+        "source_manifest_legacy_absolute_path_field_count": 20,
+        "legacy_absolute_fields_status": "quarantined_existing_manifest_only",
+        "battery_present": true,
+        "battery_non_flat": true,
+        "guard_landing_gear_present": true,
+        "guard_landing_gear_non_flat": true
+      },
+      "next": "Wait for human component material pass/fail review before any final material or UE import/export acceptance."
+    }
+  },
+  "anti_regression_checks": {
+    "claim_scope_excludes_planner": true,
+    "claim_scope_excludes_closed_loop": true,
+    "planner_global_truth_used_as_input": false,
+    "ue_not_runtime_console": true,
+    "active_blocker_count": 18
+  },
+  "next_packets_to_consume": []
+}

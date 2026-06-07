@@ -1,0 +1,90 @@
+{
+  "schema_version": "mosim.mcp_log_summary.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-PREFLIGHT-GROUP-20260606-021",
+  "created_at": "2026-06-06T19:10:00+08:00",
+  "source": "MWORKS_MCP",
+  "tool_sequence": [
+    {
+      "tool": "session_manager",
+      "action": "health",
+      "ok": true,
+      "dedicated_sysplorer_port": 49154,
+      "driver_ready": true,
+      "api_ready": true
+    },
+    {
+      "tool": "result_manager",
+      "action": "get_var_times",
+      "ok": true,
+      "data": [],
+      "note": "Existing result context after resume was empty; one allowed rerun was performed after clean GUI sentinel and MCP health."
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "ok": true,
+      "data": true,
+      "note": "Loaded only as official dependency; file was not edited."
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "check_model",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso27ActuatorInputAliasSmoke",
+      "ok": true,
+      "data": true,
+      "elapsed_s": 2.578,
+      "reload_mo_path_used": false
+    },
+    {
+      "tool": "simulate_model",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso27ActuatorInputAliasSmoke",
+      "target_time_s": [0.0, 2.0],
+      "ok": true,
+      "data": true,
+      "verified_result_var": "actuator_input_abs_error_sum",
+      "actuator_input_abs_error_sum_end": 0.0
+    },
+    {
+      "tool": "result_manager",
+      "action": "get_var_times",
+      "ok": true,
+      "count": 1001,
+      "first": 0.0,
+      "last": 2.0
+    },
+    {
+      "tool": "result_manager",
+      "action": "get_vars_value_at",
+      "times_s": [0.0, 1.0, 2.0],
+      "ok": true,
+      "variables_readable": true
+    }
+  ],
+  "forbidden_actions_observed": {
+    "clear_all_called": false,
+    "change_directory_called": false,
+    "full_factory_wrapper_retried": false,
+    "official_baseline_edited": false,
+    "mass_inertia_motor_thrust_controller_gains_rotor_geometry_or_source_labels_changed": false,
+    "direct_posmea_reconnect_added": false,
+    "direct_anglemea_reconnect_added": false,
+    "actuator_flange_chassis_speedsensor_full_plant_path_added": false,
+    "planner_ros2_ue_positioncommand_20hz_or_live_echo_added": false,
+    "offline_script_used_as_mworks_evidence": false
+  }
+}

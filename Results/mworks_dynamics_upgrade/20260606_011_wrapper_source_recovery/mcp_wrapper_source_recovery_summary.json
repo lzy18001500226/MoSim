@@ -1,0 +1,88 @@
+{
+  "schema_version": "mosim.mworks_wrapper_source_recovery.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-WRAPPER-SOURCE-RECOVERY-20260606-011",
+  "created_at": "2026-06-06T19:33:00+08:00",
+  "source": "PMO_MWORKS_MCP",
+  "status": "completed_source_recovery_check_model_passed",
+  "changed_files": [
+    "Models/QuadrotorExperiments/package.mo"
+  ],
+  "official_baseline_edited": false,
+  "package_order_changed": false,
+  "models_recovered": [
+    "QuadrotorExperiments.Sunray150DynamicsWrapperSurface",
+    "QuadrotorExperiments.Sunray150DynamicsWrapperHoverSmoke",
+    "QuadrotorExperiments.Sunray150DynamicsWrapperYawStepSmoke",
+    "QuadrotorExperiments.Sunray150PhysicalWrenchFrameAdapter",
+    "QuadrotorExperiments.Sunray150PhysicalWrenchHoverSmoke",
+    "QuadrotorExperiments.Sunray150PhysicalWrenchYawStepSmoke"
+  ],
+  "mcp_session": {
+    "session_manager_action": "health",
+    "ok": true,
+    "driver_ready": true,
+    "api_ready": true,
+    "dedicated_sysplorer_port": 49153
+  },
+  "model_load": {
+    "action": "model_manager.load_file",
+    "file_path": "C:/Users/HP/Desktop/MoSim/Models/QuadrotorExperiments/package.mo",
+    "force_reload": true,
+    "auto_load_deps": false,
+    "ok": true
+  },
+  "check_model": {
+    "checked_after_disk_reload": true,
+    "used_reload_mo_path_in_final_check": false,
+    "results": [
+      {
+        "model_name": "QuadrotorExperiments.Sunray150DynamicsWrapperSurface",
+        "ok": true
+      },
+      {
+        "model_name": "QuadrotorExperiments.Sunray150DynamicsWrapperHoverSmoke",
+        "ok": true
+      },
+      {
+        "model_name": "QuadrotorExperiments.Sunray150DynamicsWrapperYawStepSmoke",
+        "ok": true
+      },
+      {
+        "model_name": "QuadrotorExperiments.Sunray150PhysicalWrenchFrameAdapter",
+        "ok": true
+      },
+      {
+        "model_name": "QuadrotorExperiments.Sunray150PhysicalWrenchHoverSmoke",
+        "ok": true
+      },
+      {
+        "model_name": "QuadrotorExperiments.Sunray150PhysicalWrenchYawStepSmoke",
+        "ok": true
+      }
+    ]
+  },
+  "gui_sentinel": {
+    "pre": "Results/mworks_dynamics_upgrade/20260606_011_wrapper_source_recovery/pre_sentinel.json",
+    "post": "Results/mworks_dynamics_upgrade/20260606_011_wrapper_source_recovery/post_check_model_sentinel.json",
+    "pre_status": "clean",
+    "post_status": "clean"
+  },
+  "smart_layout_writeback_note": {
+    "initial_attempt_triggered_broad_writeback": true,
+    "broad_writeback_reverted": true,
+    "final_retained_diff": "six recovered model definitions only"
+  },
+  "claim_boundary": {
+    "source_recovery": true,
+    "check_model_reproducibility": true,
+    "actuator_to_wrench_bridge_implemented": false,
+    "factory_trace_consumption": false,
+    "controller_performance": false,
+    "dynamic_yaw_transient_acceptance": false,
+    "parameter_identification": false,
+    "planner_ready": false,
+    "live_runtime_ack": false,
+    "closed_loop": false
+  },
+  "next_recommended_task": "Re-dispatch a bounded actuator-to-wrench bridge using the recovered physical wrench adapter and the 010 command-domain boundary."
+}

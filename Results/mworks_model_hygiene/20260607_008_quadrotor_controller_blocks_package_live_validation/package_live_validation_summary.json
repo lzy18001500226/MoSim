@@ -1,0 +1,138 @@
+{
+  "schema": "mosim.mworks_model_hygiene.controller_blocks_package_live_validation_summary.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-PACKAGE-LIVE-VALIDATION-20260607-008",
+  "created_at": "2026-06-07T01:40:00+08:00",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "source": "MWORKS_MCP_live_package_validation_blocked",
+  "status": "blocked",
+  "quality_status": "package_load_succeeded_alias_check_blocked_post_sentinel_demo_edition",
+  "mworks_window_policy": "reuse_existing_do_not_open_close_restart",
+  "live_actions_performed": [
+    {
+      "step": "pre_gui_sentinel",
+      "tool": "Scripts/agent/check_mworks_gui_sentinel.py",
+      "status": "clean",
+      "artifact": "Results/mworks_model_hygiene/20260607_008_quadrotor_controller_blocks_package_live_validation/gui_sentinel_before.json"
+    },
+    {
+      "step": "sysplorer_probe",
+      "tool": "mcp__sysplorer.session_manager",
+      "action": "probe",
+      "status": "ok",
+      "details": {
+        "find_sysplorer_ports": [
+          49152
+        ],
+        "startup_attempted": false,
+        "cached_driver_present": false
+      }
+    },
+    {
+      "step": "load_representative_flat_dependency",
+      "tool": "mcp__sysplorer.model_manager",
+      "action": "load_file",
+      "file_path": "C:/Users/HP/Desktop/MoSim/Models/QuadrotorControllerBlocks/AWFF_PositionOuterLoop_Sysblock.mo",
+      "status": "ok",
+      "data": true
+    },
+    {
+      "step": "load_package_shell",
+      "tool": "mcp__sysplorer.model_manager",
+      "action": "load_file",
+      "file_path": "C:/Users/HP/Desktop/MoSim/Models/QuadrotorControllerBlocks/package.mo",
+      "status": "ok",
+      "data": true
+    },
+    {
+      "step": "root_get_classes",
+      "tool": "mcp__sysplorer.model_manager",
+      "action": "get_classes",
+      "model_name": "QuadrotorControllerBlocks",
+      "status": "ok",
+      "category_entries_found": [
+        "AWFFPidBlocks",
+        "InnovationControllers",
+        "FaultAllocationControllers",
+        "LinearMPCControllers",
+        "SafetyControllers",
+        "DemosAndSIL",
+        "CompatibilityAndLegacy"
+      ],
+      "sibling_flat_entries_found": [
+        "AWFF_AttitudeInnerLoop_Sysblock",
+        "AWFF_FaultCompensationControllerEquation_Sysblock",
+        "AWFF_FullControllerEquation_Sysblock",
+        "AWFF_FullControllerFlatGraphical_Sysblock",
+        "AWFF_FullController_Sysblock",
+        "AWFF_INDIControllerEquation_Sysblock",
+        "AWFF_InnovationGraphicalControllers",
+        "AWFF_L1FaultAllocationControllerEquation_Sysblock",
+        "AWFF_L1MultiFaultIsolationControllerEquation_Sysblock",
+        "AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock",
+        "AWFF_L1ResidualControllerEquation_Sysblock",
+        "AWFF_LinearMPCMultiFaultAllocationController_Sysblock",
+        "AWFF_LinearMPCOnlineFaultAllocationController_Sysblock",
+        "AWFF_LinearMPCOuterLoopControllerEquation_Sysblock",
+        "AWFF_MotorMixer_Sysblock",
+        "AWFF_PID_Sysblock_Demo",
+        "AWFF_PID_Sysblock_Demo_SIL_Constant",
+        "AWFF_PositionOuterLoop_Sysblock",
+        "AWFF_QPNMPCSafetyController_Sysblock"
+      ]
+    },
+    {
+      "step": "representative_alias_check_model",
+      "tool": "mcp__sysplorer.check_model",
+      "status": "failed",
+      "error_class": "compiler_error_3001_extends_base_not_found",
+      "artifact": "Results/mworks_model_hygiene/20260607_008_quadrotor_controller_blocks_package_live_validation/representative_alias_check_results.json"
+    },
+    {
+      "step": "narrow_target_resolution_probe",
+      "tool": "mcp__sysplorer.check_model",
+      "status": "failed",
+      "details": {
+        "QuadrotorControllerBlocks.AWFF_PositionOuterLoop_Sysblock": "CheckModel returned False with no additional GetLastErrors text",
+        "AWFF_PositionOuterLoop_Sysblock": "model does not exist"
+      }
+    },
+    {
+      "step": "post_gui_sentinel",
+      "tool": "Scripts/agent/check_mworks_gui_sentinel.py",
+      "status": "incident_detected",
+      "error_kind": "license_or_login",
+      "matched_license_patterns": [
+        "演示版"
+      ],
+      "artifact": "Results/mworks_model_hygiene/20260607_008_quadrotor_controller_blocks_package_live_validation/gui_sentinel_after.json"
+    }
+  ],
+  "package_load_result": {
+    "package_file_loaded": true,
+    "root_package_classes_query_ok": true,
+    "seven_category_entries_visible_or_resolvable": true,
+    "category_entries_match_package_order": true
+  },
+  "blocking_findings": [
+    "Representative package aliases fail CheckModel with compiler error 3001 because leading-dot global flat-class extends bases are not found, for example .AWFF_PositionOuterLoop_Sysblock.",
+    "The post-live-action GUI sentinel detected the existing Sysplorer window title as 'QuadrotorControllerBlocks - Sysplorer [演示版]', which is a license/demo sentinel incident under the task and AGENTS boundaries."
+  ],
+  "forbidden_actions_confirmed": {
+    "opened_new_mworks_sysplorer_syslab_window": false,
+    "closed_or_restarted_mworks_sysplorer_syslab_window": false,
+    "clicked_login_activation_save_close_restart_send_report": false,
+    "called_clearall": false,
+    "called_changedirectory": false,
+    "ran_simulation": false,
+    "ran_smart_layout_or_writeback": false,
+    "edited_package_mo_or_package_order": false,
+    "edited_controller_mo_backup_upgrade_quadrotor_experiments_references_ue_ros2_configs_coagent": false,
+    "claimed_graphical_layout_visual_acceptance": false,
+    "claimed_controller_performance_planner_ready_live_ack_simulation_success_closed_loop": false
+  },
+  "claim_boundary": [
+    "This evidence proves only that the existing Sysplorer MCP session was reachable, the package file could be loaded, and the root package class list was readable before the alias checks failed.",
+    "This is not package-browser/manual GUI acceptance, not graphical/layout review, not simulation success, not controller performance, not planner_ready, not live runtime ack, and not closed_loop.",
+    "No model fix was attempted because the task forbids editing package shell or controller files during 008."
+  ]
+}

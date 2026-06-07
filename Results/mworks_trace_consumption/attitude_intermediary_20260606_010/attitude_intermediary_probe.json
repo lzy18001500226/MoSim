@@ -1,0 +1,139 @@
+{
+  "schema_version": "mosim.attitude_intermediary_probe.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010",
+  "created_at": "2026-06-06T07:21:08+08:00",
+  "source": "MWORKS_MCP",
+  "quality_status": "absolute_angles_dependency_coupling_classified",
+  "mcp_probe": {
+    "session_manager_probe": "pass",
+    "dedicated_sysplorer_port": 49154
+  },
+  "dependency_loads": [
+    {
+      "path": "References/MWORKS/QuadrotorModel/package.mo",
+      "purpose": "read-only official plant dependency load",
+      "result": "cached pass"
+    },
+    {
+      "path": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "purpose": "project-owned equation controller dependency load",
+      "result": "cached pass"
+    },
+    {
+      "path": "Models/QuadrotorExperiments/package.mo",
+      "purpose": "project-owned experiment package reload after adding probes",
+      "result": "pass"
+    }
+  ],
+  "baseline_context": {
+    "attitude_feedback_return": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json",
+    "last_passing_position_feedback_model": "Models/QuadrotorExperiments/FactoryTraceIso08PositionFeedbackSmoke.mo",
+    "first_failing_roll_model": "Models/QuadrotorExperiments/FactoryTraceIso10RollFeedbackSmoke.mo"
+  },
+  "intermediary_probes": [
+    {
+      "probe_id": "iso14_constant_attitude_input",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso14ConstantAttitudeInputSmoke",
+      "model_file": "Models/QuadrotorExperiments/FactoryTraceIso14ConstantAttitudeInputSmoke.mo",
+      "signal_mapping": "position feedback from PosMea[1..3]; roll_mea <- constant_roll.y(k=0.05); pitch_mea <- zero; yaw_mea/yaw_ref <- planningReference.yaw_ref; no AngleMea dependency in attitude input",
+      "check_model": "pass",
+      "simulate_model": "pass",
+      "simulate_data": true,
+      "get_var_times_count": 1001,
+      "time_first": 0.0,
+      "time_last": 2.0,
+      "alias_values_at_1s": {
+        "x_ref": 0.31861753694312633,
+        "y_ref": 0.49481767718910424,
+        "z_ref": 1.242037957383867,
+        "yaw_ref": 1.9974016333898024,
+        "constant_roll.y": 0.05,
+        "controller3_2.roll_mea": 0.05,
+        "controller3_2.pitch_mea": 0.0
+      },
+      "alias_values_at_end": {
+        "x_ref": 0.22528064041293117,
+        "y_ref": 0.6178306433245998,
+        "z_ref": 1.2469737036046606,
+        "yaw_ref": 2.4422701702657834
+      },
+      "nonzero_alias_refs": true,
+      "error_6140_present": false,
+      "verdict": "pass_controller_attitude_inport_accepts_constant_input"
+    },
+    {
+      "probe_id": "iso15_table_attitude_input",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso15TableAttitudeInputSmoke",
+      "model_file": "Models/QuadrotorExperiments/FactoryTraceIso15TableAttitudeInputSmoke.mo",
+      "signal_mapping": "position feedback from PosMea[1..3]; roll_mea <- roll_table.y[1] from inline CombiTimeTable; pitch_mea <- zero; yaw_mea/yaw_ref <- planningReference.yaw_ref; no AngleMea dependency in attitude input",
+      "check_model": "pass",
+      "simulate_model": "pass",
+      "simulate_data": true,
+      "get_var_times_count": 1001,
+      "time_first": 0.0,
+      "time_last": 2.0,
+      "alias_values_at_1s": {
+        "x_ref": 0.31861753694312633,
+        "y_ref": 0.49481767718910424,
+        "z_ref": 1.242037957383867,
+        "yaw_ref": 1.9974016333898024,
+        "roll_table.y[1]": -0.02,
+        "controller3_2.roll_mea": -0.02,
+        "controller3_2.pitch_mea": 0.0
+      },
+      "alias_values_at_end": {
+        "x_ref": 0.22528064041293117,
+        "y_ref": 0.6178306433245998,
+        "z_ref": 1.2469737036046606,
+        "yaw_ref": 2.4422701702657834
+      },
+      "nonzero_alias_refs": true,
+      "error_6140_present": false,
+      "verdict": "pass_controller_attitude_inport_accepts_time_varying_table_input"
+    },
+    {
+      "probe_id": "iso16_realexpression_angle_bridge",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso16RealExpressionAngleSmoke",
+      "model_file": "Models/QuadrotorExperiments/FactoryTraceIso16RealExpressionAngleSmoke.mo",
+      "signal_mapping": "position feedback from PosMea[1..3]; roll_mea <- roll_angle_expr.y where roll_angle_expr.y = sensors1_1.AngleMea[1]; pitch_mea <- zero; yaw_mea/yaw_ref <- planningReference.yaw_ref",
+      "check_model": "pass",
+      "simulate_model": "failed",
+      "simulate_data": false,
+      "simulate_error_excerpt": "SimulateModel returned False; GetLastErrors had no message text.",
+      "get_var_times_count": 0,
+      "alias_values_at_1s": {},
+      "alias_values_at_end": {},
+      "nonzero_alias_refs": false,
+      "error_6140_present": false,
+      "verdict": "fails_when_intermediary_still_depends_on_absolute_angles"
+    }
+  ],
+  "classification": {
+    "controller_inport_sensitivity": "not_supported_by_probe",
+    "constant_attitude_input": "pass",
+    "time_table_attitude_input": "pass",
+    "realexpression_bridge_from_anglemea": "failed_empty_result_context",
+    "direct_connection_topology_only": "not_supported_by_probe",
+    "absolute_angles_dependency_coupling": "supported_by_probe",
+    "reasoning": "The equation controller inport accepts both nonzero constant and time-varying table roll inputs with valid 1001-sample result contexts. The failure returns when the roll input is a RealExpression depending on sensors1_1.AngleMea[1], even though the direct connector is broken. Therefore the current first classifier is the AbsoluteAngles/AngleMea dependency path, not the controller inport alone and not a direct connect syntax issue."
+  },
+  "claim_boundary": [
+    "Attitude intermediary classification only.",
+    "No closed_loop, Factory trace consumption, controller performance, or plant tracking claim.",
+    "No official baseline or parameter edits.",
+    "B0 PositionCommand contract replay remains smoke-only."
+  ],
+  "artifact_refs": [
+    {
+      "path": "Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_summary.csv",
+      "role": "probe_summary_csv",
+      "source": "MWORKS_MCP"
+    },
+    {
+      "path": "Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_mcp_log.json",
+      "role": "mcp_log",
+      "source": "MWORKS_MCP"
+    }
+  ],
+  "recommended_next_step": "Test a sampled/held decoupling of AngleMea[1] before the Sysblock inport, or replace QuadrotorModel.Sensors.AbsoluteAngles with a project-owned attitude extraction/estimator wrapper whose output is discrete or otherwise result-context stable. Do not retry the full Factory wrapper until the sensor-angle dependency path produces SimulateModel data=true and nonempty GetVarTimes."
+}

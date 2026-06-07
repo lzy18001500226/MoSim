@@ -1,0 +1,2 @@
+probe_id,model_name,rate_group,check_model,simulate_model,simulate_data,get_var_times_count,error_6140_present,nonzero_reference_aliases,rate_alias_available,verdict
+iso21_controller_rate_alias,QuadrotorExperiments.FactoryTraceIso21ControllerRateAliasSmoke,project-owned attitude-derived rate aliases plus controller internal roll/pitch/yaw rate and accel probes,pass,pass,true,1001,false,true,true,pass_rate_alias_group_preserves_result_context

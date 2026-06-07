@@ -1,0 +1,65 @@
+{
+  "schema": "mosim.mworks_model_hygiene.visible_cleanup_summary.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-R2-QUADROTOR-EXPERIMENTS-VISIBLE-CLEANUP-20260607-005",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "source": "static_package_visibility_cleanup_no_gui_no_mcp",
+  "status": "static_cleanup_completed",
+  "model_package": "Models/QuadrotorExperiments",
+  "files_changed_intended": [
+    "Models/QuadrotorExperiments/package.mo",
+    "Models/QuadrotorExperiments/package.order"
+  ],
+  "package_order_before_from_004": {
+    "total_entries": 115,
+    "category_entries": 11,
+    "flat_legacy_entries": 104
+  },
+  "package_order_after": {
+    "total_entries": 11,
+    "entries": [
+      "OfficialScenarios",
+      "ControllerBaselines",
+      "RobustFaultScenarios",
+      "PlanningScenarios",
+      "SceneTraceScenarios",
+      "TraceIsolation",
+      "DynamicsUpgrade",
+      "SystemArchitecture",
+      "SystemModules",
+      "SupportModels",
+      "FormationScenarios"
+    ]
+  },
+  "trace_isolation_aliases_added": [
+    {
+      "alias": "TraceIsolation.Iso22SensorDisplayReconnect",
+      "extends_target": "QuadrotorExperiments.FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "alias_model_count": 1,
+      "exact_extends_count": 1,
+      "target_resolves_static": true
+    },
+    {
+      "alias": "TraceIsolation.Iso28ActuatorToWrenchBridge",
+      "extends_target": "QuadrotorExperiments.FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+      "alias_model_count": 1,
+      "exact_extends_count": 1,
+      "target_resolves_static": true
+    },
+    {
+      "alias": "TraceIsolation.Iso29ExternalFrameWrenchBoundary",
+      "extends_target": "QuadrotorExperiments.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke",
+      "alias_model_count": 1,
+      "exact_extends_count": 1,
+      "target_resolves_static": true
+    },
+    {
+      "alias": "TraceIsolation.Iso30ExternalBodyStateBoundary",
+      "extends_target": "QuadrotorExperiments.FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+      "alias_model_count": 1,
+      "exact_extends_count": 1,
+      "target_resolves_static": true
+    }
+  ],
+  "compatibility_boundary": "Removed flat legacy names from package.order display only; no sibling .mo files were intentionally moved, deleted, renamed, or rewritten, and old flat classes remain loadable by static sibling/embedded definitions.",
+  "claim_boundary": "Display/package organization only; not GUI/MCP graphical acceptance, not check_model, not simulation, not Factory trace consumption, not controller performance, not planner_ready, not live runtime ack, not closed_loop."
+}

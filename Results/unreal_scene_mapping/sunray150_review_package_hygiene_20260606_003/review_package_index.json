@@ -1,0 +1,141 @@
+{
+  "schema_version": "mosim.sunray150_review_package_index.v1",
+  "task_id": "RFLY-MOSIM-SUNRAY150-REVIEW-PACKAGE-HYGIENE-20260606-003",
+  "created_at": "2026-06-06T20:12:26+08:00",
+  "source_manifest": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/sunray150_component_material_reviews_manifest.json",
+  "path_policy": {
+    "review_package_uses_project_relative_paths_only": true,
+    "manifest_all_outputs_have_project_relative_path": true,
+    "manifest_legacy_absolute_path_field_count": 20,
+    "legacy_absolute_path_field_action": "Do not use manifest.path for recovery or manual review routing. Use project_relative_path from this index. Cleaning the legacy field belongs to a separate script hygiene task."
+  },
+  "quality_boundary": {
+    "file_level_checks_passed": true,
+    "manual_visual_review_required": true,
+    "final_material_acceptance": false,
+    "ue_import_export_final_acceptance": false,
+    "mworks_or_ros2_runtime_evidence": false,
+    "planner_ready": false,
+    "closed_loop": false
+  },
+  "review_batches": [
+    {
+      "batch_id": "sunray150_review_batch_01_mid360",
+      "title": "MID-360 housing/window/protection",
+      "components": ["mid360_sensor", "mid360_protection_frame"],
+      "images": [
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/mid360_sensor.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/mid360_protection_frame.png"
+      ],
+      "manual_question": "MID-360 光学窗、银灰壳体、黑色连接器/底座和保护架是否可信？",
+      "pass_fail_focus": [
+        "Optical window should read as glossy dark blue/teal.",
+        "Housing should read as satin silver-grey industrial coated metal.",
+        "Protection frame should not read as blue glass, white CAD, or a placeholder."
+      ]
+    },
+    {
+      "batch_id": "sunray150_review_batch_02_frame_fasteners",
+      "title": "Carbon frame, standoffs, fasteners",
+      "components": ["carbon_frame", "aluminum_standoffs", "steel_fasteners"],
+      "images": [
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/carbon_frame.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/aluminum_standoffs.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/steel_fasteners.png"
+      ],
+      "manual_question": "碳纤维板、金色铝支柱和黑色钢紧固件是否分别像真实材料？",
+      "pass_fail_focus": [
+        "Carbon weave should be visible and plausibly scaled.",
+        "Standoffs should read as anodized aluminum, not yellow plastic.",
+        "Fasteners should show dark steel highlights and recess details."
+      ]
+    },
+    {
+      "batch_id": "sunray150_review_batch_03_camera_electronics_cables",
+      "title": "Camera, electronics, connectors, cables",
+      "components": [
+        "front_camera",
+        "electronics_connectors",
+        "pcb_boards",
+        "n150_stack_boards",
+        "n150_internal_pcb_audit",
+        "n150_ports",
+        "n150_cooling_storage",
+        "esc_board",
+        "connector_shells",
+        "cables_wires"
+      ],
+      "images": [
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/front_camera.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/electronics_connectors.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/pcb_boards.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_stack_boards.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_internal_pcb_audit.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_ports.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_cooling_storage.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/esc_board.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/connector_shells.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/cables_wires.png"
+      ],
+      "manual_question": "相机、PCB、接口、线缆是否有足够物理区分，不像黑块/灰块/贴图占位？",
+      "pass_fail_focus": [
+        "Camera body/lens should remain readable.",
+        "PCB, IC packages, connector shells, connector cores, and cable colors should be distinguishable.",
+        "Cable routing should look physical rather than overlay-like."
+      ]
+    },
+    {
+      "batch_id": "sunray150_review_batch_04_motor_prop",
+      "title": "Motors and accepted tri-blade propeller",
+      "components": ["motor_only", "motor_propeller", "tri_blade_propeller"],
+      "images": [
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/motor_only.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/motor_propeller.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/tri_blade_propeller.png"
+      ],
+      "manual_question": "电机、电机铜线/螺丝和三叶桨是否可读；桨叶是否像烟灰半透明塑料？",
+      "pass_fail_focus": [
+        "Motor bell should not collapse into a black block.",
+        "Copper winding and steel screw details should be visible.",
+        "Propeller should not read as opaque black or white audit color."
+      ]
+    },
+    {
+      "batch_id": "sunray150_review_batch_05_battery_guard",
+      "title": "Battery and guard/landing gear dedicated gap-fill outputs",
+      "components": ["battery", "guard_landing_gear"],
+      "images": [
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/battery.png",
+        "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/guard_landing_gear.png"
+      ],
+      "manual_question": "battery 是否像黑色热缩电池/电池夹；guard_landing_gear 是否像深色保护圈/脚架，而不是白色 CAD 或临时占位？",
+      "pass_fail_focus": [
+        "Battery should show heat-shrink/clip material cues and not be a flat block.",
+        "Guard/landing gear should read as dark protective material, not opaque white CAD.",
+        "These two images are newly generated dedicated outputs and still require human review."
+      ]
+    }
+  ],
+  "component_index": [
+    {"name": "mid360_sensor", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/mid360_sensor.png", "bytes": 1417878, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 22, "manual_review_status": "pending"},
+    {"name": "mid360_protection_frame", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/mid360_protection_frame.png", "bytes": 1216332, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 13, "manual_review_status": "pending"},
+    {"name": "carbon_frame", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/carbon_frame.png", "bytes": 1221214, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 4, "manual_review_status": "pending"},
+    {"name": "aluminum_standoffs", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/aluminum_standoffs.png", "bytes": 1236603, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 32, "manual_review_status": "pending"},
+    {"name": "front_camera", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/front_camera.png", "bytes": 1271161, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 3, "manual_review_status": "pending"},
+    {"name": "steel_fasteners", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/steel_fasteners.png", "bytes": 1288571, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 99, "manual_review_status": "pending"},
+    {"name": "electronics_connectors", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/electronics_connectors.png", "bytes": 1385035, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 173, "manual_review_status": "pending"},
+    {"name": "pcb_boards", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/pcb_boards.png", "bytes": 1095772, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 33, "manual_review_status": "pending"},
+    {"name": "n150_stack_boards", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_stack_boards.png", "bytes": 1418240, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 33, "manual_review_status": "pending"},
+    {"name": "n150_internal_pcb_audit", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_internal_pcb_audit.png", "bytes": 793649, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 7, "manual_review_status": "pending"},
+    {"name": "n150_ports", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_ports.png", "bytes": 1211270, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 122, "manual_review_status": "pending"},
+    {"name": "n150_cooling_storage", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_cooling_storage.png", "bytes": 1658892, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 21, "manual_review_status": "pending"},
+    {"name": "esc_board", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/esc_board.png", "bytes": 1129046, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 18, "manual_review_status": "pending"},
+    {"name": "connector_shells", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/connector_shells.png", "bytes": 1245628, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 148, "manual_review_status": "pending"},
+    {"name": "cables_wires", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/cables_wires.png", "bytes": 1053442, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 64, "manual_review_status": "pending"},
+    {"name": "motor_propeller", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/motor_propeller.png", "bytes": 1185690, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 372, "manual_review_status": "pending"},
+    {"name": "motor_only", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/motor_only.png", "bytes": 1183809, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 368, "manual_review_status": "pending"},
+    {"name": "tri_blade_propeller", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/tri_blade_propeller.png", "bytes": 1128846, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 1, "manual_review_status": "pending"},
+    {"name": "guard_landing_gear", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/guard_landing_gear.png", "bytes": 1200097, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 2, "manual_review_status": "pending"},
+    {"name": "battery", "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/battery.png", "bytes": 1018043, "dimensions": [1400, 1050], "non_flat": true, "target_object_count": 8, "manual_review_status": "pending"}
+  ]
+}

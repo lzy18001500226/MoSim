@@ -1,0 +1,75 @@
+{
+  "schema_version": "mosim.mcp_log_summary.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019",
+  "created_at": "2026-06-06T12:52:00+08:00",
+  "source": "MWORKS_MCP",
+  "tool_sequence": [
+    {
+      "tool": "session_manager",
+      "action": "probe",
+      "ok": true,
+      "dedicated_sysplorer_port": 49153,
+      "cached_driver_probe_ok": true
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "ok": true,
+      "cached": true
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "ok": true,
+      "data": true,
+      "note": "Loaded only as official dependency; file was not edited."
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "check_model",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke",
+      "ok": true,
+      "data": true,
+      "elapsed_s": 2.468
+    },
+    {
+      "tool": "simulate_model",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke",
+      "target_time_s": [0.0, 2.0],
+      "ok": true,
+      "data": true,
+      "x_ref_end": 0.22528064041293117
+    },
+    {
+      "tool": "result_manager",
+      "action": "get_var_times",
+      "ok": true,
+      "count": 1001,
+      "first": 0.0,
+      "last": 2.0
+    },
+    {
+      "tool": "result_manager",
+      "action": "get_vars_value_at",
+      "times_s": [0.0, 1.0, 2.0],
+      "ok": true,
+      "variables_readable": true
+    }
+  ],
+  "forbidden_actions_observed": {
+    "clear_all_called": false,
+    "change_directory_called": false,
+    "full_factory_wrapper_retried": false,
+    "official_baseline_edited": false,
+    "offline_script_used_as_mworks_evidence": false
+  }
+}

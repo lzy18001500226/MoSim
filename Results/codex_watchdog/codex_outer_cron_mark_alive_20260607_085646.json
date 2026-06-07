@@ -1,0 +1,9 @@
+﻿{
+    "timestamp":  "2026-06-07T08:56:46+08:00",
+    "mode":  "MarkAlive",
+    "source":  "manual_validation",
+    "status":  "alive_marker_written",
+    "department_name":  "MoSim CoAgentOps",
+    "claim_boundary":  "This marker proves the detached automation job ran, not that the CoAgentOps visible thread accepted a turn.",
+    "thread_id":  "019e9bc1-ea9f-7102-b41a-4ef9b2308992"
+}

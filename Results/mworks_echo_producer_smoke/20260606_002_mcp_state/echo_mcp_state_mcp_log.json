@@ -1,0 +1,95 @@
+{
+  "schema_version": "mosim.mworks_mcp_log.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-ECHO-MCP-STATE-SMOKE-20260606-002",
+  "source": "MWORKS_MCP",
+  "events": [
+    {
+      "step": "session_manager.probe",
+      "ok": true,
+      "summary": {
+        "find_sysplorer_ports": [],
+        "cached_driver_present": false
+      }
+    },
+    {
+      "step": "session_manager.ensure",
+      "ok": true,
+      "summary": {
+        "started": true,
+        "dedicated_port": 49152,
+        "driver_ready": true
+      }
+    },
+    {
+      "step": "model_manager.load_file",
+      "ok": true,
+      "summary": {
+        "file": "C:\\Users\\HP\\Desktop\\MoSim\\Models\\QuadrotorExperiments\\package.mo",
+        "force_reload": true,
+        "data": true
+      }
+    },
+    {
+      "step": "check_model",
+      "ok": true,
+      "summary": {
+        "model": "QuadrotorExperiments.EchoMcpStateSmoke",
+        "data": true,
+        "elapsed_s": 0.103
+      }
+    },
+    {
+      "step": "simulate_model",
+      "ok": true,
+      "summary": {
+        "model": "QuadrotorExperiments.EchoMcpStateSmoke",
+        "target_time": [
+          0.0,
+          1.0
+        ],
+        "data": true,
+        "verify_result_var": "controller_select_status",
+        "controller_select_status_at_end": 1.0
+      }
+    },
+    {
+      "step": "result_manager.get_var_times",
+      "ok": true,
+      "summary": {
+        "count": 101,
+        "first": 0.0,
+        "last": 1.0
+      }
+    },
+    {
+      "step": "result_manager.get_vars_value_at",
+      "ok": true,
+      "summary": {
+        "sample_times": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "variables_read": [
+          "controller_select_status",
+          "wind_profile_status",
+          "motor_fault_status",
+          "scenario_reset_status",
+          "recording_status",
+          "forbidden_pose_status",
+          "no_pose_overwrite_status",
+          "accepted_mworks_owned_count",
+          "rejected_non_mworks_count",
+          "not_live_ue_runtime_ack",
+          "not_closed_loop",
+          "echo_state_keepalive"
+        ]
+      }
+    }
+  ],
+  "notes": [
+    "No Sysplorer ClearAll or ChangeDirectory call was used.",
+    "The smoke model is project-owned and standalone under Models/QuadrotorExperiments.",
+    "The run checked the model before simulation and read state variables from the Sysplorer result context."
+  ]
+}

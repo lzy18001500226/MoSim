@@ -1,0 +1,77 @@
+{
+  "schema_version": "mosim.sunray150_component_review_gap_fill_evidence.v1",
+  "task_id": "RFLY-MOSIM-SUNRAY150-COMPONENT-REVIEW-GAP-FILL-20260606-002",
+  "generated_at": "2026-06-06T17:39:11+08:00",
+  "render_command": "\"D:\\Program Files\\Blender Foundation\\Blender 5.0\\blender.exe\" --background --python \"Scripts/UE5/assets/render_sunray150_component_material_reviews.py\" -- --only battery,guard_landing_gear",
+  "render_log": "Results/unreal_scene_mapping/sunray150_component_review_gap_fill_20260606_002/blender_render_battery_guard.log",
+  "source_blend": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_dae_mid360_realistic_material_audit.blend",
+  "manifest": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/sunray150_component_material_reviews_manifest.json",
+  "components": {
+    "battery": {
+      "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/battery.png",
+      "exists": true,
+      "bytes": 1018043,
+      "mode": "RGBA",
+      "size": [1400, 1050],
+      "extrema": [[20, 255], [20, 255], [21, 255]],
+      "non_flat": true,
+      "manifest_row_exists": true,
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/battery.png",
+      "target_object_count": 8,
+      "context_object_count": 753,
+      "target_object_keys": ["YUNDRONE_4S1P", "BATTERY", "BATTERY_CLIP"],
+      "matched_material_count": 8,
+      "material_gate": "black heat-shrink battery/clip with subtle surface wrinkles/label cue."
+    },
+    "guard_landing_gear": {
+      "image": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/guard_landing_gear.png",
+      "exists": true,
+      "bytes": 1200097,
+      "mode": "RGBA",
+      "size": [1400, 1050],
+      "extrema": [[0, 255], [0, 255], [0, 255]],
+      "non_flat": true,
+      "manifest_row_exists": true,
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/guard_landing_gear.png",
+      "target_object_count": 2,
+      "context_object_count": 759,
+      "target_object_keys": ["PROTECTIVE_RING", "LAND_GEAR"],
+      "matched_material_count": 2,
+      "material_gate": "smoked/dark protective ring and landing gear, not opaque white CAD."
+    }
+  },
+  "verification": [
+    {
+      "gate": "headless_blender_render",
+      "result": "passed",
+      "evidence": "Render log records both guard_landing_gear.png and battery.png saved, then manifest path printed."
+    },
+    {
+      "gate": "dedicated_outputs_exist",
+      "result": "passed",
+      "evidence": "Both PNG files exist and are non-empty."
+    },
+    {
+      "gate": "image_quality_file_level",
+      "result": "passed",
+      "evidence": "Both PNG files open with PIL as RGBA 1400x1050 and have non-flat RGB extrema."
+    },
+    {
+      "gate": "manifest_rows",
+      "result": "passed",
+      "evidence": "Manifest contains name=battery and name=guard_landing_gear with project_relative_path entries and nonzero target_object_count."
+    },
+    {
+      "gate": "existing_pbr_miniloop_regression",
+      "result": "passed",
+      "evidence": "python Scripts/UE5/check_sunray150_pbr_miniloop.py passed after manifest update."
+    }
+  ],
+  "manual_review_required": true,
+  "scope_limits": [
+    "This evidence is file-level render/readiness evidence only.",
+    "It is not final material acceptance.",
+    "It is not UE import/export final acceptance.",
+    "It is not MWORKS, ROS2, FAST-LIO, controller, planner, closed-loop, or runtime evidence."
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "issues": [],
+  "warnings": [],
+  "rows": 6,
+  "runtime_ack_rows": 6,
+  "placeholder_rows": 0,
+  "require_runtime_ack": true,
+  "no_pose_overwrite_status": "pass",
+  "echo_jsonl": "Results\\mworks_echo_producer_smoke\\20260606_004_live_downlink_preflight\\mworks_runtime_adapter_preflight_echo.jsonl"
+}

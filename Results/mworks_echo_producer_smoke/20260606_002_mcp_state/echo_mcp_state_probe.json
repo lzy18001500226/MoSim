@@ -1,0 +1,127 @@
+{
+  "schema_version": "mosim.mworks_echo_mcp_state_probe.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-ECHO-MCP-STATE-SMOKE-20260606-002",
+  "source": "MWORKS_MCP",
+  "quality_status": "mworks_mcp_state_smoke_passed",
+  "model": "QuadrotorExperiments.EchoMcpStateSmoke",
+  "model_file": "Models/QuadrotorExperiments/EchoMcpStateSmoke.mo",
+  "package_file": "Models/QuadrotorExperiments/package.mo",
+  "mcp_probe": {
+    "probe_ok": true,
+    "initial_find_sysplorer_ports": [],
+    "cached_driver_present": false,
+    "ensure_ok": true,
+    "started": true,
+    "dedicated_port": 49152,
+    "driver_ready": true
+  },
+  "load_file": {
+    "file": "C:\\Users\\HP\\Desktop\\MoSim\\Models\\QuadrotorExperiments\\package.mo",
+    "force_reload": true,
+    "ok": true,
+    "data": true,
+    "notes": "Package load succeeded. Dependency autoload warnings for unrelated models did not affect the standalone EchoMcpStateSmoke model."
+  },
+  "check_model": {
+    "ok": true,
+    "data": true,
+    "elapsed_s": 0.103
+  },
+  "simulate_model": {
+    "ok": true,
+    "data": true,
+    "target_time": [
+      0.0,
+      1.0
+    ],
+    "verify_result_var": "controller_select_status",
+    "controller_select_status_at_end": 1.0
+  },
+  "get_var_times": {
+    "ok": true,
+    "count": 101,
+    "first": 0.0,
+    "last": 1.0,
+    "mean": 0.5
+  },
+  "sample_variables": [
+    "controller_select_status",
+    "wind_profile_status",
+    "motor_fault_status",
+    "scenario_reset_status",
+    "recording_status",
+    "forbidden_pose_status",
+    "no_pose_overwrite_status",
+    "accepted_mworks_owned_count",
+    "rejected_non_mworks_count",
+    "not_live_ue_runtime_ack",
+    "not_closed_loop",
+    "echo_state_keepalive"
+  ],
+  "samples": [
+    {
+      "time": 0.0,
+      "values": {
+        "controller_select_status": 1.0,
+        "wind_profile_status": 0.0,
+        "motor_fault_status": 1.0,
+        "scenario_reset_status": 0.0,
+        "recording_status": 0.0,
+        "forbidden_pose_status": -1.0,
+        "no_pose_overwrite_status": 1.0,
+        "accepted_mworks_owned_count": 2.0,
+        "rejected_non_mworks_count": 2.0,
+        "not_live_ue_runtime_ack": 1.0,
+        "not_closed_loop": 1.0,
+        "echo_state_keepalive": 0.004
+      }
+    },
+    {
+      "time": 0.5,
+      "values": {
+        "controller_select_status": 1.0,
+        "wind_profile_status": 1.0,
+        "motor_fault_status": 1.0,
+        "scenario_reset_status": 1.0,
+        "recording_status": 0.0,
+        "forbidden_pose_status": -1.0,
+        "no_pose_overwrite_status": 1.0,
+        "accepted_mworks_owned_count": 4.0,
+        "rejected_non_mworks_count": 2.0,
+        "not_live_ue_runtime_ack": 1.0,
+        "not_closed_loop": 1.0,
+        "echo_state_keepalive": 0.006
+      }
+    },
+    {
+      "time": 1.0,
+      "values": {
+        "controller_select_status": 1.0,
+        "wind_profile_status": 1.0,
+        "motor_fault_status": 1.0,
+        "scenario_reset_status": 1.0,
+        "recording_status": 1.0,
+        "forbidden_pose_status": -1.0,
+        "no_pose_overwrite_status": 1.0,
+        "accepted_mworks_owned_count": 5.0,
+        "rejected_non_mworks_count": 2.0,
+        "not_live_ue_runtime_ack": 1.0,
+        "not_closed_loop": 1.0,
+        "echo_state_keepalive": 0.007
+      }
+    }
+  ],
+  "claim_boundary": [
+    "This is a project-owned MWORKS_MCP state smoke that proves result-context exposure and readback of representative echo-status variables.",
+    "This is not live UE runtime ack.",
+    "This is not closed_loop, controller performance, planner_ready, FAST-LIO success, Factory trace consumption, plant tracking, or parameter identification."
+  ],
+  "forbidden_actions_confirmed": {
+    "official_baseline_modified": false,
+    "clearall_or_changedirectory_called": false,
+    "offline_python_or_csv_used_as_mworks_evidence": false,
+    "full_factory_reconnect_attempted": false,
+    "actuator_motor_speedsensor_reconnect_attempted": false,
+    "controller_redesign_attempted": false
+  }
+}

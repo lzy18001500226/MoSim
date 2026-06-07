@@ -1,0 +1,199 @@
+{
+  "schema": "mosim.mworks_dynamics_yaw_transient_summary.v1",
+  "task_id": "RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017",
+  "created_at": "2026-06-06T23:40:00+08:00",
+  "source": "MWORKS_MCP",
+  "mworks_window_policy": "reuse_existing_do_not_close",
+  "session_reuse_note": {
+    "session_manager_health_ok": true,
+    "driver_ready": true,
+    "api_ready": true,
+    "dedicated_port": 49152,
+    "sysplorer_startup_attempted": true,
+    "sysplorer_startup_started": true,
+    "sysplorer_startup_already_running": false,
+    "policy_caveat": "The MCP health response reported a StartSysplorer/dedicated-port binding before the latest PMO correction was applied in this turn. The department did not close, restart, or intentionally open a new MWORKS/Sysplorer/Syslab window after the correction and will not use window closure as cleanup."
+  },
+  "gui_sentinel": {
+    "pre_existing": {
+      "path": "Results/mworks_dynamics_upgrade/20260606_017_yaw_transient_evidence_gate/pre_sentinel.json",
+      "status": "clean"
+    },
+    "before_mcp": {
+      "path": "Results/mworks_dynamics_upgrade/20260606_017_yaw_transient_evidence_gate/before_mcp_sentinel.json",
+      "status": "clean",
+      "matched_windows": 0,
+      "window_count": 488
+    },
+    "post": {
+      "path": "Results/mworks_dynamics_upgrade/20260606_017_yaw_transient_evidence_gate/post_sentinel.json",
+      "status": "clean",
+      "matched_windows": 0,
+      "window_count": 492
+    }
+  },
+  "loads": [
+    {
+      "file": "References/MWORKS/QuadrotorModel/package.mo",
+      "method": "model_manager(load_file, force_reload=true)",
+      "ok": true,
+      "data": true,
+      "note": "Official baseline was loaded read-only for dependency context; auto-load dependency noise was not treated as failure because OpenModelFile and target checks passed."
+    },
+    {
+      "file": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "method": "model_manager(load_file, force_reload=true)",
+      "ok": true,
+      "data": true
+    },
+    {
+      "file": "Models/QuadrotorExperiments/package.mo",
+      "method": "model_manager(load_file, force_reload=true)",
+      "ok": true,
+      "data": true
+    }
+  ],
+  "check_model": {
+    "ok": true,
+    "count": 3,
+    "models": [
+      {
+        "model": "QuadrotorExperiments.Sunray150DynamicsWrapperYawStepSmoke",
+        "ok": true,
+        "data": true
+      },
+      {
+        "model": "QuadrotorExperiments.Sunray150PhysicalWrenchYawStepSmoke",
+        "ok": true,
+        "data": true
+      },
+      {
+        "model": "QuadrotorExperiments.FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+        "ok": true,
+        "data": true
+      }
+    ]
+  },
+  "simulations": [
+    {
+      "model": "QuadrotorExperiments.Sunray150DynamicsWrapperYawStepSmoke",
+      "target_time": [
+        0,
+        0.25
+      ],
+      "ok": true,
+      "data": true,
+      "get_var_times": {
+        "count": 251,
+        "first": 0.0,
+        "last": 0.25
+      },
+      "samples_end": {
+        "yaw_step": 300.0,
+        "wrapper.commanded_yaw_moment_gate": 0.061549775999999945,
+        "wrapper.yaw_moment_gate": 0.06153801695664962,
+        "wrapper.total_moment_body[3]": 0.06153801695664962,
+        "wrapper.commanded_total_moment_body[3]": 0.061549775999999945,
+        "wrapper.motor_order_gate_error": 0.0,
+        "wrapper.yaw_direction_gate_error": 0.0
+      }
+    },
+    {
+      "model": "QuadrotorExperiments.Sunray150PhysicalWrenchYawStepSmoke",
+      "target_time": [
+        0,
+        0.25
+      ],
+      "ok": true,
+      "data": true,
+      "get_var_times": {
+        "count": 251,
+        "first": 0.0,
+        "last": 0.25
+      },
+      "samples_end": {
+        "yaw_step": 300.0,
+        "adapter.applied_yaw_torque_body": 0.061540561756854906,
+        "adapter.wrapper_yaw_moment": 0.061540561756854906,
+        "adapter.torque_application_error": 0.0,
+        "adapter.motor_order_gate_error": 0.0,
+        "adapter.yaw_direction_gate_error": 0.0
+      },
+      "result_binding_note": "An initial get_vars_value_at call that mixed yaw_step and adapter variables returned only the first value; a narrower adapter-only read returned the expected values."
+    },
+    {
+      "model": "QuadrotorExperiments.FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+      "target_time": [
+        0,
+        0.25
+      ],
+      "ok": true,
+      "data": true,
+      "get_var_times": {
+        "count": 251,
+        "first": 0.0,
+        "last": 0.25
+      },
+      "samples": {
+        "t_0_10": {
+          "external_body_yaw_rate": -0.016401350410137617,
+          "external_body_yaw_response_gate": 0.0,
+          "external_frame_yaw_torque": -0.03410941441319975,
+          "bridge_yaw_moment": -0.03410941441319975
+        },
+        "t_0_25": {
+          "external_body_yaw_rate": -0.4531353758463619,
+          "external_body_yaw_rate_delta": -0.4531353758463619,
+          "external_body_yaw_response_gate": 0.4531353758463619,
+          "external_body_state_boundary_gate_error": 0.0,
+          "external_frame_yaw_torque": -0.06826526566283278,
+          "bridge_yaw_moment": -0.06826526566283278
+        }
+      },
+      "result_binding_note": "The broad get_vars_value_at call for the full Iso30 variable group returned an empty array; single-variable and smaller-group reads were used for the saved samples."
+    }
+  ],
+  "observability_classification": {
+    "command_side_yaw_moment": "observable",
+    "lagged_wrapper_yaw_moment": "observable",
+    "applied_physical_wrench_yaw_torque": "observable",
+    "external_body_yaw_rate_response": "observable"
+  },
+  "subagent_crosscheck": {
+    "agent_id": "019e9d8c-8075-7802-89d3-fcfb7b8671eb",
+    "type": "read_only_topology_evidence_audit",
+    "used_mcp_or_gui": false,
+    "summary": "The read-only audit agreed that the existing three model surfaces expose the target yaw transient variables, warned that Iso30 sidecar signs are a different command domain than wrapper yaw-step smokes, and confirmed no full-plant/controller claim should be made."
+  },
+  "claim_boundary": {
+    "proves": [
+      "Existing project-owned yaw-step wrapper smoke exposes command-side yaw moment and lagged wrapper yaw moment through MWORKS_MCP results.",
+      "Existing project-owned physical-wrench yaw-step smoke exposes applied yaw torque matching wrapper yaw moment with zero torque application error.",
+      "Existing Iso30 external test-body smoke exposes nonzero yaw-rate response under its sidecar bridge command domain."
+    ],
+    "does_not_prove": [
+      "full QuadChassis or full plant closure",
+      "Factory trace consumption",
+      "controller performance",
+      "dynamic yaw transient acceptance for the full plant",
+      "parameter identification",
+      "planner readiness",
+      "live runtime ack",
+      "mission success",
+      "closed_loop"
+    ],
+    "domain_note": "Wrapper yaw-step smokes use a positive yaw_delta_omega2 convention; Iso28/Iso29/Iso30 sidecar bridge samples show negative yaw torque/yaw-rate under their inherited command surface. This is not classified as a sign failure in 017 because the command domains differ."
+  },
+  "artifact_refs": [
+    {
+      "path": "Results/mworks_dynamics_upgrade/20260606_017_yaw_transient_evidence_gate/yaw_transient_samples.csv",
+      "role": "samples",
+      "source": "MWORKS_MCP"
+    },
+    {
+      "path": "Results/mworks_dynamics_upgrade/20260606_017_yaw_transient_evidence_gate/mcp_yaw_transient_summary.json",
+      "role": "summary",
+      "source": "MWORKS_MCP"
+    }
+  ]
+}

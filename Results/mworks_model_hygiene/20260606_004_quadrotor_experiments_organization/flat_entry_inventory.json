@@ -1,0 +1,3234 @@
+{
+  "schema": "mosim.mworks_model_hygiene.quadrotor_experiments_flat_inventory.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-R2-QUADROTOR-EXPERIMENTS-ORGANIZATION-20260606-004",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "source": "static_read_only_no_gui_no_mcp",
+  "created_at": "2026-06-06T23:59:30+08:00",
+  "package_order_entries": 115,
+  "category_package_entries": 11,
+  "flat_legacy_entries": 104,
+  "flat_entries_with_sibling_mo": 94,
+  "flat_entries_embedded_in_package_mo": 10,
+  "flat_entries_unresolved": [],
+  "category_alias_covered_entries": 100,
+  "category_alias_gap_entries": [
+    "FactoryTraceIso22SensorDisplayReconnectSmoke",
+    "FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+    "FactoryTraceIso29ExternalFrameWrenchBoundarySmoke",
+    "FactoryTraceIso30ExternalBodyStateBoundarySmoke"
+  ],
+  "package_order_only_controls_display_order": true,
+  "does_not_hide_or_unload_unlisted_classes": true,
+  "skipped_inaccessible_paths_count": 1,
+  "skipped_inaccessible_path_samples": [
+    "Results/ros2_runtime/b1_fastlio_timestamp_diag_20260606_029/colcon_log/latest_build"
+  ],
+  "category_counts": {
+    "OfficialScenarios": 15,
+    "RobustFaultScenarios": 34,
+    "TraceIsolation": 31,
+    "SupportModels": 4,
+    "PlanningScenarios": 7,
+    "SceneTraceScenarios": 3,
+    "DynamicsUpgrade": 9,
+    "FormationScenarios": 1
+  },
+  "action_counts": {
+    "keep_as_public_compatibility_until_reference_migration": 49,
+    "keep_as_public_compatibility_must_not_delete": 55
+  },
+  "entries": [
+    {
+      "index_after_category_packages": 1,
+      "entry": "Example1AWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1AWFFSysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example1AWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 11,
+        "formal_hit_samples": [
+          "Config/controllers/awff_sysblock/default.yaml",
+          "Config/scenarios/official/example1_awff_sysblock.yaml",
+          "Docs/Design/02_模型接口与运行流程.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1AWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/model_checks/awff_sysblock/logs/sysplorer_awff_equation_sysblock_closed_loop_recheck_20260510_summary.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example1_step/official_example1_awff_sysblock/replay/official_example1_awff_sysblock.json",
+          "Results/official/sysblock_closed_loop/README.md"
+        ],
+        "tmp_history_hit_count": 2,
+        "tmp_history_hit_samples": [
+          "Results/tmp/session_audit_20260520/user_messages_20260520.md",
+          "Results/tmp/session_audit_20260521/user_workflow_directives_raw.md"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 2,
+      "entry": "Example1HelicalFigure8TrailSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1HelicalFigure8TrailSysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example1HelicalFigure8Trail"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Config/scenarios/official/example1_helical_figure8_trail_sysblock.yaml",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1HelicalFigure8TrailSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/replay/official_example1_helical_figure8_trail_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 3,
+      "entry": "Example1INDISysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1INDISysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example1INDI"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 9,
+        "formal_hit_samples": [
+          "Config/controllers/awff_indi_sysblock/default.yaml",
+          "Config/scenarios/official/example1_awff_indi_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1INDISysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example1_step/official_example1_awff_indi_sysblock/replay/official_example1_awff_indi_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 4,
+      "entry": "Example1L1SysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1L1SysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example1L1"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 9,
+        "formal_hit_samples": [
+          "Config/controllers/l1_residual_sysblock/default.yaml",
+          "Config/scenarios/official/example1_l1_residual_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1L1SysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example1_step/official_example1_l1_residual_sysblock/replay/official_example1_l1_residual_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 5,
+      "entry": "Example1LinearMPCSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1LinearMPCSysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example1LinearMPC"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 13,
+        "formal_hit_samples": [
+          "Config/controllers/linear_mpc_sysblock/default.yaml",
+          "Config/scenarios/official/example1_linear_mpc_sysblock.yaml",
+          "Docs/Workflows/agent_task_ledger.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1LinearMPCSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/mworks_trace_consumption/actuator_wiring_isolation_20260606_007/actuator_wiring_isolation_probe.json",
+          "Results/official/example1_step/official_example1_linear_mpc_sysblock/replay/official_example1_linear_mpc_sysblock.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 69,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 6,
+      "entry": "Example1Mass20AWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Mass20AWFFSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.Mass20AWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_mass20_awff_sysblock.yaml",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1Mass20AWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/robustness/mass20_example1/robust_mass20_example1_awff_sysblock/replay/robust_mass20_example1_awff_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 7,
+      "entry": "Example1Mass20L1SysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Mass20L1SysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.Mass20L1"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 9,
+        "formal_hit_samples": [
+          "Config/controllers/l1_residual_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1Mass20L1SysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/replay/robust_mass20_example1_l1_residual_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 8,
+      "entry": "Example1Mass20LinearMPCSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Mass20LinearMPCSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.Mass20LinearMPC"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/controllers/linear_mpc_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Mass20LinearMPCSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/replay/robust_mass20_example1_linear_mpc_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 9,
+      "entry": "Example1PlanarFigure8TrailSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1PlanarFigure8TrailSysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example1PlanarFigure8Trail"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Config/scenarios/official/example1_planar_figure8_trail_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1PlanarFigure8TrailSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/replay/official_example1_planar_figure8_trail_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 10,
+      "entry": "Example1QPNMPCSafetyReturnLandSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1QPNMPCSafetyReturnLandSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.SafetyReturnLand"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 9,
+        "formal_hit_samples": [
+          "Config/scenarios/official/example1_qp_nmpc_safety_return_land_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Docs/Design/04_安全故障与容错.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1QPNMPCSafetyReturnLandSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/replay/official_example1_qp_nmpc_safety_return_land_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 11,
+      "entry": "Example1QPNMPCSafetySysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1QPNMPCSafetySysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.SafetyQPNMPC"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 10,
+        "formal_hit_samples": [
+          "Config/controllers/nmpc_indi_l1/default.yaml",
+          "Config/scenarios/official/example1_qp_nmpc_safety_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Docs/Design/04_安全故障与容错.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1QPNMPCSafetySysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example1_step/official_example1_qp_nmpc_safety_sysblock/replay/official_example1_qp_nmpc_safety_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 12,
+      "entry": "Example1Rotor1Loss15AWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor1Loss15AWFFSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1AWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1Rotor1Loss15AWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-ADAPTER-CONTRACT-20260606-001.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/replay/robust_rotor1_loss15_example1_awff_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 13,
+      "entry": "Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1L1FaultAllocation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 9,
+        "formal_hit_samples": [
+          "Config/controllers/l1_fault_allocation_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock/replay/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 14,
+      "entry": "Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1L1MultiFaultIsolation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/controllers/l1_multi_fault_isolation_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor1_loss15_l1_multi_fault_isolation_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_multi_fault_isolation_sysblock/replay/robust_rotor1_loss15_example1_l1_multi_fault_isolation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 15,
+      "entry": "Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1L1OnlineFaultAllocation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 10,
+        "formal_hit_samples": [
+          "Config/controllers/l1_online_fault_allocation_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor1_loss15_l1_online_fault_allocation_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Docs/Design/04_安全故障与容错.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock/replay/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 16,
+      "entry": "Example1Rotor1Loss15L1SysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor1Loss15L1SysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1L1"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 9,
+        "formal_hit_samples": [
+          "Config/controllers/l1_residual_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1Rotor1Loss15L1SysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_residual_sysblock/replay/robust_rotor1_loss15_example1_l1_residual_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 17,
+      "entry": "Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1LinearMPCOnlineFaultAllocation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Config/controllers/linear_mpc_online_fault_allocation_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Models/QuadrotorExperiments/Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/replay/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 18,
+      "entry": "Example1Rotor1Loss15LinearMPCSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor1Loss15LinearMPCSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1LinearMPC"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Config/controllers/linear_mpc_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Models/QuadrotorExperiments/Example1Rotor1Loss15LinearMPCSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_sysblock/replay/robust_rotor1_loss15_example1_linear_mpc_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 19,
+      "entry": "Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1WindGustAWFFFaultCompensation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/controllers/awff_fault_compensation_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor1_loss15_wind_gust_awff_fault_compensation_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock/replay/robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 1,
+        "tmp_history_hit_samples": [
+          "Results/tmp/session_audit_20260520/user_messages_20260520.md"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 20,
+      "entry": "Example1Rotor1Loss15WindGustAWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor1Loss15WindGustAWFFSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1WindGustAWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_rotor1_loss15_wind_gust_awff_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor1Loss15WindGustAWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-ADAPTER-CONTRACT-20260606-001.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_awff_sysblock/replay/robust_rotor1_loss15_wind_gust_example1_awff_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 21,
+      "entry": "Example1Rotor1Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor1Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1WindGustL1MultiFaultIsolation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_rotor1_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor1Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/native_result/native_result_manifest.json",
+          "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/replay/robust_rotor1_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 22,
+      "entry": "Example1Rotor1Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor1Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1WindGustLinearMPCOnlineFaultAllocation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Config/controllers/linear_mpc_online_fault_allocation_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor1_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor1Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/native_result/native_result_manifest.json",
+          "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/replay/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 23,
+      "entry": "Example1Rotor2Loss15AWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor2Loss15AWFFSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2AWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 5,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_rotor2_loss15_awff_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor2Loss15AWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_awff_sysblock/replay/robust_rotor2_loss15_example1_awff_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 24,
+      "entry": "Example1Rotor2Loss15L1MultiFaultIsolationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor2Loss15L1MultiFaultIsolationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2L1MultiFaultIsolation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/controllers/l1_multi_fault_isolation_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor2_loss15_l1_multi_fault_isolation_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor2Loss15L1MultiFaultIsolationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/replay/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 25,
+      "entry": "Example1Rotor2Loss15WindGustAWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor2Loss15WindGustAWFFSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2WindGustAWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 5,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_rotor2_loss15_wind_gust_awff_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor2Loss15WindGustAWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor2_loss15_wind_gust_example1/robust_rotor2_loss15_wind_gust_example1_awff_sysblock/replay/robust_rotor2_loss15_wind_gust_example1_awff_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 26,
+      "entry": "Example1Rotor2Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor2Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2WindGustL1MultiFaultIsolation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_rotor2_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor2Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor2_loss15_wind_gust_example1/robust_rotor2_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/native_result/native_result_manifest.json",
+          "Results/robustness/rotor2_loss15_wind_gust_example1/robust_rotor2_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/replay/robust_rotor2_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 27,
+      "entry": "Example1Rotor2Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor2Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2WindGustLinearMPCOnlineFaultAllocation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Config/controllers/linear_mpc_online_fault_allocation_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor2_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor2Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor2_loss15_wind_gust_example1/robust_rotor2_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/native_result/native_result_manifest.json",
+          "Results/robustness/rotor2_loss15_wind_gust_example1/robust_rotor2_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/replay/robust_rotor2_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 28,
+      "entry": "Example1Rotor3Loss15AWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor3Loss15AWFFSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3AWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 5,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_rotor3_loss15_awff_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor3Loss15AWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor3_loss15_example1/robust_rotor3_loss15_example1_awff_sysblock/replay/robust_rotor3_loss15_example1_awff_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 29,
+      "entry": "Example1Rotor3Loss15L1MultiFaultIsolationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor3Loss15L1MultiFaultIsolationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3L1MultiFaultIsolation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/controllers/l1_multi_fault_isolation_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor3Loss15L1MultiFaultIsolationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor3_loss15_example1/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock/replay/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 30,
+      "entry": "Example1Rotor3Loss15WindGustAWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor3Loss15WindGustAWFFSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3WindGustAWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 5,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_rotor3_loss15_wind_gust_awff_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor3Loss15WindGustAWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor3_loss15_wind_gust_example1/robust_rotor3_loss15_wind_gust_example1_awff_sysblock/replay/robust_rotor3_loss15_wind_gust_example1_awff_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 31,
+      "entry": "Example1Rotor3Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor3Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3WindGustL1MultiFaultIsolation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_rotor3_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor3Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor3_loss15_wind_gust_example1/robust_rotor3_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/native_result/native_result_manifest.json",
+          "Results/robustness/rotor3_loss15_wind_gust_example1/robust_rotor3_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/replay/robust_rotor3_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 32,
+      "entry": "Example1Rotor3Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor3Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3WindGustLinearMPCOnlineFaultAllocation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Config/controllers/linear_mpc_online_fault_allocation_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor3_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor3Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor3_loss15_wind_gust_example1/robust_rotor3_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/native_result/native_result_manifest.json",
+          "Results/robustness/rotor3_loss15_wind_gust_example1/robust_rotor3_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/replay/robust_rotor3_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 33,
+      "entry": "Example1Rotor4Loss15AWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor4Loss15AWFFSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4AWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 5,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_rotor4_loss15_awff_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor4Loss15AWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_awff_sysblock/replay/robust_rotor4_loss15_example1_awff_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 34,
+      "entry": "Example1Rotor4Loss15L1MultiFaultIsolationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor4Loss15L1MultiFaultIsolationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4L1MultiFaultIsolation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/controllers/l1_multi_fault_isolation_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor4Loss15L1MultiFaultIsolationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock/replay/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 35,
+      "entry": "Example1Rotor4Loss15WindGustAWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor4Loss15WindGustAWFFSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4WindGustAWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 5,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_rotor4_loss15_wind_gust_awff_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor4Loss15WindGustAWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_awff_sysblock/replay/robust_rotor4_loss15_wind_gust_example1_awff_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 36,
+      "entry": "Example1Rotor4Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor4Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4WindGustL1MultiFaultIsolation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_rotor4_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor4Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/native_result/native_result_manifest.json",
+          "Results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/replay/robust_rotor4_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 37,
+      "entry": "Example1Rotor4Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1Rotor4Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4WindGustLinearMPCOnlineFaultAllocation"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Config/controllers/linear_mpc_online_fault_allocation_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_rotor4_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1Rotor4Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/native_result/native_result_manifest.json",
+          "Results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/replay/robust_rotor4_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 38,
+      "entry": "Example1WindGustAWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1WindGustAWFFSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.WindGustAWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Config/scenarios/robustness/example1_wind_gust_awff_sysblock.yaml",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1WindGustAWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-ADAPTER-CONTRACT-20260606-001.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/replay/robust_wind_gust_example1_awff_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 39,
+      "entry": "Example1WindGustL1SysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1WindGustL1SysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.WindGustL1"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 9,
+        "formal_hit_samples": [
+          "Config/controllers/l1_residual_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example1WindGustL1SysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/robustness/wind_gust_example1/robust_wind_gust_example1_l1_residual_sysblock/replay/robust_wind_gust_example1_l1_residual_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 40,
+      "entry": "Example1WindGustLinearMPCSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example1WindGustLinearMPCSysblockClosedLoop.mo",
+      "target_category": "RobustFaultScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.RobustFaultScenarios.WindGustLinearMPC"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/controllers/linear_mpc_sysblock/default.yaml",
+          "Config/scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example1WindGustLinearMPCSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/replay/robust_wind_gust_example1_linear_mpc_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 41,
+      "entry": "Example2AWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example2AWFFSysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example2AWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 10,
+        "formal_hit_samples": [
+          "Config/controllers/awff_sysblock/default.yaml",
+          "Config/scenarios/official/example2_awff_sysblock.yaml",
+          "Docs/Design/02_模型接口与运行流程.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example2AWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/Example2HelixTunedAWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example2_helix/official_example2_awff_sysblock/replay/official_example2_awff_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 42,
+      "entry": "Example2HelixTunedAWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example2HelixTunedAWFFSysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example2HelixTunedAWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 9,
+        "formal_hit_samples": [
+          "Config/controllers/awff_sysblock/default.yaml",
+          "Config/scenarios/official/example2_awff_sysblock_helix_tuned.yaml",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example2HelixTunedAWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/replay/official_example2_awff_sysblock_helix_tuned.json",
+          "Results/official/sysblock_closed_loop/README.md"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 43,
+      "entry": "Example2HelixTunedINDISysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example2HelixTunedINDISysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example2HelixTunedINDI"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Config/controllers/awff_indi_sysblock/default.yaml",
+          "Config/scenarios/official/example2_awff_indi_sysblock_helix_tuned.yaml",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example2HelixTunedINDISysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example2_helix/official_example2_awff_indi_sysblock_helix_tuned/replay/official_example2_awff_indi_sysblock_helix_tuned.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 44,
+      "entry": "Example2INDISysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example2INDISysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example2INDI"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/controllers/awff_indi_sysblock/default.yaml",
+          "Config/scenarios/official/example2_awff_indi_sysblock.yaml",
+          "Models/QuadrotorExperiments/Example2HelixTunedINDISysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/Example2INDISysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 45,
+      "entry": "Example2LinearMPCSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example2LinearMPCSysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example2LinearMPC"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Config/controllers/linear_mpc_sysblock/default.yaml",
+          "Config/scenarios/official/example2_linear_mpc_sysblock.yaml",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example2LinearMPCSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example2_helix/official_example2_linear_mpc_sysblock/replay/official_example2_linear_mpc_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 46,
+      "entry": "Example3AWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example3AWFFSysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example3AWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 10,
+        "formal_hit_samples": [
+          "Config/controllers/awff_sysblock/default.yaml",
+          "Config/scenarios/official/example3_awff_sysblock.yaml",
+          "Docs/Design/02_模型接口与运行流程.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example3AWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example3_figure8/official_example3_awff_sysblock/replay/official_example3_awff_sysblock.json",
+          "Results/official/sysblock_closed_loop/README.md"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 47,
+      "entry": "Example3INDISysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example3INDISysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example3INDI"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 9,
+        "formal_hit_samples": [
+          "Config/controllers/awff_indi_sysblock/default.yaml",
+          "Config/scenarios/official/example3_awff_indi_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example3INDISysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example3_figure8/official_example3_awff_indi_sysblock/replay/official_example3_awff_indi_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 48,
+      "entry": "Example3L1SysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example3L1SysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example3L1"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 9,
+        "formal_hit_samples": [
+          "Config/controllers/l1_residual_sysblock/default.yaml",
+          "Config/scenarios/official/example3_l1_residual_sysblock.yaml",
+          "Docs/Design/03_控制系统架构.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example3L1SysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example3_figure8/official_example3_l1_residual_sysblock/replay/official_example3_l1_residual_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 49,
+      "entry": "Example3LinearMPCSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Example3LinearMPCSysblockClosedLoop.mo",
+      "target_category": "OfficialScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.OfficialScenarios.Example3LinearMPC"
+      ],
+      "recommended_action": "keep_as_public_compatibility_until_reference_migration",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Config/controllers/linear_mpc_sysblock/default.yaml",
+          "Config/scenarios/official/example3_linear_mpc_sysblock.yaml",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Example3LinearMPCSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/replay/official_example3_linear_mpc_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 50,
+      "entry": "FactoryLiteTraceSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryLiteTraceSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.FactoryLite"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 19,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/FactoryLiteTraceSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso01FullDisplaySmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-NEXT-SENSOR-DISPLAY-GROUP-20260606-017.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-LITE-TRACE-20260606-005.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json",
+          "Results/mworks_model_hygiene/20260606_003_static_gui_review_prep/manual_gui_review_checklist.md",
+          "Results/mworks_model_hygiene/20260606_003_static_gui_review_prep/review_scope.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json"
+        ],
+        "tmp_history_hit_count": 79,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 51,
+      "entry": "FactoryTraceIso01FullDisplaySmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso01FullDisplaySmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso01FullDisplay"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 24,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso01FullDisplaySmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso02ControllerOnlySmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso03PlantHoverStackSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso05CleanHoverSumSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso06CleanControllerPlantWiringSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso07CleanControllerOpenFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso08PositionFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso09PositionAttitudeFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso10RollFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso11PitchFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso12RollFeedbackNegatedSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso13PitchFeedbackNegatedSmoke.mo"
+        ],
+        "tmp_history_hit_count": 73,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 52,
+      "entry": "FactoryTraceIso02ControllerOnlySmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso02ControllerOnlySmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso02ControllerOnly"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso02ControllerOnlySmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/incremental_trace_isolation_20260606_006/incremental_trace_isolation_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 73,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 53,
+      "entry": "FactoryTraceIso03PlantHoverStackSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso03PlantHoverStackSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso03PlantHoverStack"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso03PlantHoverStackSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso04ControllerPlantWiringSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/incremental_trace_isolation_20260606_006/incremental_trace_isolation_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 73,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 54,
+      "entry": "FactoryTraceIso04ControllerPlantWiringSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso04ControllerPlantWiringSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso04ControllerPlantWiring"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso04ControllerPlantWiringSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/incremental_trace_isolation_20260606_006/incremental_trace_isolation_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 73,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 55,
+      "entry": "FactoryTraceIso05CleanHoverSumSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso05CleanHoverSumSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso05CleanHoverSum"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso05CleanHoverSumSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/actuator_wiring_isolation_20260606_007/actuator_wiring_isolation_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 69,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 56,
+      "entry": "FactoryTraceIso06CleanControllerPlantWiringSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso06CleanControllerPlantWiringSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso06CleanControllerPlantWiring"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso06CleanControllerPlantWiringSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/actuator_wiring_isolation_20260606_007/actuator_wiring_isolation_probe.json",
+          "Results/mworks_trace_consumption/sensor_feedback_isolation_20260606_008/sensor_feedback_isolation_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 69,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 57,
+      "entry": "FactoryTraceIso07CleanControllerOpenFeedbackSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso07CleanControllerOpenFeedbackSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso07ControllerOpenFeedback"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso07CleanControllerOpenFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/actuator_wiring_isolation_20260606_007/actuator_wiring_isolation_probe.json",
+          "Results/mworks_trace_consumption/sensor_feedback_isolation_20260606_008/sensor_feedback_isolation_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 69,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 58,
+      "entry": "FactoryTraceIso08PositionFeedbackSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso08PositionFeedbackSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso08PositionFeedback"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 10,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso08PositionFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_isolation_probe.json",
+          "Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_probe.json",
+          "Results/mworks_trace_consumption/sensor_feedback_isolation_20260606_008/sensor_feedback_isolation_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 66,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 59,
+      "entry": "FactoryTraceIso09PositionAttitudeFeedbackSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso09PositionAttitudeFeedbackSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso09PositionAttitudeFeedback"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso09PositionAttitudeFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_isolation_probe.json",
+          "Results/mworks_trace_consumption/sensor_feedback_isolation_20260606_008/sensor_feedback_isolation_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 66,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 60,
+      "entry": "FactoryTraceIso10RollFeedbackSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso10RollFeedbackSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso10RollFeedback"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 9,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso10RollFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_isolation_probe.json",
+          "Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_mcp_log.json",
+          "Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 63,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 61,
+      "entry": "FactoryTraceIso11PitchFeedbackSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso11PitchFeedbackSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso11PitchFeedback"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso11PitchFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_isolation_probe.json",
+          "Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_mcp_log.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 63,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 62,
+      "entry": "FactoryTraceIso12RollFeedbackNegatedSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso12RollFeedbackNegatedSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso12RollFeedbackNegated"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso12RollFeedbackNegatedSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_isolation_probe.json",
+          "Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_mcp_log.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 63,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 63,
+      "entry": "FactoryTraceIso13PitchFeedbackNegatedSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso13PitchFeedbackNegatedSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso13PitchFeedbackNegated"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso13PitchFeedbackNegatedSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_isolation_probe.json",
+          "Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_mcp_log.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 63,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 64,
+      "entry": "FactoryTraceIso14ConstantAttitudeInputSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso14ConstantAttitudeInputSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso14ConstantAttitudeInput"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso14ConstantAttitudeInputSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_mcp_log.json",
+          "Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 55,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_5ba9bcf1bb6a49ffaef91abbf8d8420d/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_67584bc9210148cf9ffb368b53cf9ba5/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 65,
+      "entry": "FactoryTraceIso15TableAttitudeInputSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso15TableAttitudeInputSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso15TableAttitudeInput"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso15TableAttitudeInputSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_mcp_log.json",
+          "Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 55,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_5ba9bcf1bb6a49ffaef91abbf8d8420d/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_67584bc9210148cf9ffb368b53cf9ba5/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 66,
+      "entry": "FactoryTraceIso16RealExpressionAngleSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso16RealExpressionAngleSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso16RealExpressionAngle"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso16RealExpressionAngleSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_mcp_log.json",
+          "Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 55,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_5ba9bcf1bb6a49ffaef91abbf8d8420d/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_67584bc9210148cf9ffb368b53cf9ba5/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 67,
+      "entry": "FactoryTraceIso17SampleHoldAngleSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso17SampleHoldAngleSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso17SampleHoldAngle"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso17SampleHoldAngleSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/attitude_decoupling_20260606_011/attitude_decoupling_mcp_log.json",
+          "Results/mworks_trace_consumption/attitude_decoupling_20260606_011/attitude_decoupling_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 43,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_67584bc9210148cf9ffb368b53cf9ba5/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_b3bb0fdeb4d14d6784248ad2dcb6204b/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 68,
+      "entry": "FactoryTraceIso18ProjectAttitudeEstimatorSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso18ProjectAttitudeEstimatorSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso18ProjectAttitudeEstimator"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso18ProjectAttitudeEstimatorSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/attitude_decoupling_20260606_011/attitude_decoupling_mcp_log.json",
+          "Results/mworks_trace_consumption/attitude_decoupling_20260606_011/attitude_decoupling_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 43,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_67584bc9210148cf9ffb368b53cf9ba5/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_b3bb0fdeb4d14d6784248ad2dcb6204b/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 69,
+      "entry": "FactoryTraceIso19RollPitchEstimatorSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso19RollPitchEstimatorSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso19RollPitchEstimator"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 9,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso19RollPitchEstimatorSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-YAW-RATE-DECOUPLING-20260606-013.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-PITCH-DECOUPLING-20260606-012.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/pitch_decoupling_20260606_012/pitch_decoupling_mcp_log.json",
+          "Results/mworks_trace_consumption/pitch_decoupling_20260606_012/pitch_decoupling_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_BUNDLE_AUDIT.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 44,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_67584bc9210148cf9ffb368b53cf9ba5/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_b3bb0fdeb4d14d6784248ad2dcb6204b/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 70,
+      "entry": "FactoryTraceIso20RollPitchYawEstimatorSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso20RollPitchYawEstimatorSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso20RollPitchYawEstimator"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 13,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso20RollPitchYawEstimatorSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso21ControllerRateAliasSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-YAW-RATE-DECOUPLING-20260606-013.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/rate_feedback_isolation_20260606_014/rate_feedback_isolation_probe.json",
+          "Results/mworks_trace_consumption/yaw_rate_decoupling_20260606_013/yaw_rate_decoupling_mcp_log.json",
+          "Results/mworks_trace_consumption/yaw_rate_decoupling_20260606_013/yaw_rate_decoupling_probe.json",
+          "Results/mworks_trace_consumption/yaw_rate_decoupling_20260606_013/yaw_rate_decoupling_unknowns_risks.md",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_BUNDLE_AUDIT.json"
+        ],
+        "tmp_history_hit_count": 37,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_67584bc9210148cf9ffb368b53cf9ba5/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_b3bb0fdeb4d14d6784248ad2dcb6204b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_b79ef27ce8a648849bb0b0b66fcfb269/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_c7ae3f6f80e040b3b1f1c4f10938def1/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 71,
+      "entry": "FactoryTraceIso21ControllerRateAliasSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso21ControllerRateAliasSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso21RateAlias"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 16,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/FactoryTraceIso21ControllerRateAliasSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso22SensorDisplayReconnectSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso23PositionSampleHoldBridgeSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-BUS-RECONNECT-20260606-015.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/position_bridge_20260606_016/position_bridge_probe.json",
+          "Results/mworks_trace_consumption/rate_feedback_isolation_20260606_014/rate_feedback_isolation_mcp_log.json",
+          "Results/mworks_trace_consumption/rate_feedback_isolation_20260606_014/rate_feedback_isolation_probe.json"
+        ],
+        "tmp_history_hit_count": 30,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_b79ef27ce8a648849bb0b0b66fcfb269/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_c7ae3f6f80e040b3b1f1c4f10938def1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_ca33410fcd7a4127a0c7a14b388bf45c/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_d71a23fb54674e7fb4759e69b915961a/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 72,
+      "entry": "FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso22SensorDisplayReconnectSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "add_missing_category_alias_later_then_keep_flat_path_compatibility",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 12,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/FactoryTraceIso22SensorDisplayReconnectSmoke.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-BUS-RECONNECT-20260606-015.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/category_migration_table.md",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/implementation_strategy.md",
+          "Results/mworks_trace_consumption/position_bridge_20260606_016/position_bridge_probe.json",
+          "Results/mworks_trace_consumption/sensor_bus_reconnect_20260606_015/sensor_bus_reconnect_mcp_log.json",
+          "Results/mworks_trace_consumption/sensor_bus_reconnect_20260606_015/sensor_bus_reconnect_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_BUNDLE_AUDIT.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+        ],
+        "tmp_history_hit_count": 19,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_b79ef27ce8a648849bb0b0b66fcfb269/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_c7ae3f6f80e040b3b1f1c4f10938def1/RUN_MANIFEST.json",
+          "Results/tmp/test_p0_run_bundle_audit.json",
+          "Results/tmp/test_p0_slice_071a7a95357a42f7b4529270ca614095/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 73,
+      "entry": "FactoryTraceIso23PositionSampleHoldBridgeSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso23PositionSampleHoldBridgeSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso23PositionSampleHold"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 22,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/FactoryTraceIso23PositionSampleHoldBridgeSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso24DirectAttitudeFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-FIRST-CONTROL-FEEDBACK-GROUP-20260606-018.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-NEXT-SENSOR-DISPLAY-GROUP-20260606-017.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json",
+          "Results/mworks_model_hygiene/20260606_002_graphical_audit_inventory/inventory.json"
+        ],
+        "tmp_history_hit_count": 17,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_b79ef27ce8a648849bb0b0b66fcfb269/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_c7ae3f6f80e040b3b1f1c4f10938def1/RUN_MANIFEST.json",
+          "Results/tmp/test_p0_run_bundle_audit.json",
+          "Results/tmp/test_p0_slice_071a7a95357a42f7b4529270ca614095/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 74,
+      "entry": "FactoryTraceIso24DirectAttitudeFeedbackSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso24DirectAttitudeFeedbackSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso24DirectAttitudeFeedback"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 14,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/FactoryTraceIso24DirectAttitudeFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-FIRST-CONTROL-FEEDBACK-GROUP-20260606-018.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json",
+          "Results/mworks_model_hygiene/20260606_003_static_gui_review_prep/manual_gui_review_checklist.md",
+          "Results/mworks_model_hygiene/20260606_003_static_gui_review_prep/review_scope.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/attitude_feedback_bridge_20260606_019/attitude_feedback_probe.json",
+          "Results/mworks_trace_consumption/first_control_feedback_group_20260606_018/first_control_feedback_mcp_log.json"
+        ],
+        "tmp_history_hit_count": 8,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_b79ef27ce8a648849bb0b0b66fcfb269/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_c7ae3f6f80e040b3b1f1c4f10938def1/RUN_MANIFEST.json",
+          "Results/tmp/test_p0_slice_12fae78777144cab942913eb6c41f905/RUN_MANIFEST.json",
+          "Results/tmp/test_p0_slice_778f29fea936492484fe95a3167dfe0a/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 75,
+      "entry": "FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso25AttitudeSampleHold"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 16,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso26ControllerOutputAliasSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-DOWNSTREAM-OUTPUT-GROUP-20260606-020.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-DOWNSTREAM-OUTPUT-GROUP-20260606-020.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json",
+          "Results/mworks_model_hygiene/20260606_003_static_gui_review_prep/manual_gui_review_checklist.md",
+          "Results/mworks_model_hygiene/20260606_003_static_gui_review_prep/review_scope.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/attitude_feedback_bridge_20260606_019/attitude_feedback_mcp_log.json"
+        ],
+        "tmp_history_hit_count": 6,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_b79ef27ce8a648849bb0b0b66fcfb269/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_c7ae3f6f80e040b3b1f1c4f10938def1/RUN_MANIFEST.json",
+          "Results/tmp/test_p0_run_bundle_audit.json",
+          "Results/tmp/test_p0_slice_8934ecdaba2a44d296eb8d67627a32a8/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 76,
+      "entry": "FactoryTraceIso26ControllerOutputAliasSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso26ControllerOutputAliasSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso26ControllerOutput"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 14,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/FactoryTraceIso26ControllerOutputAliasSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso27ActuatorInputAliasSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-PREFLIGHT-GROUP-20260606-021.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-PREFLIGHT-GROUP-20260606-021.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-DOWNSTREAM-OUTPUT-GROUP-20260606-020.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json",
+          "Results/mworks_model_hygiene/20260606_003_static_gui_review_prep/manual_gui_review_checklist.md",
+          "Results/mworks_model_hygiene/20260606_003_static_gui_review_prep/review_scope.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_trace_consumption/actuator_preflight_group_20260606_021/actuator_preflight_probe.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 77,
+      "entry": "FactoryTraceIso27ActuatorInputAliasSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso27ActuatorInputAliasSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.TraceIsolation.Iso27ActuatorInput"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 18,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/FactoryTraceIso27ActuatorInputAliasSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso28ActuatorToWrenchBridgeSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-PREFLIGHT-GROUP-20260606-021.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json",
+          "Results/mworks_dynamics_upgrade/20260606_010_actuator_to_wrench_bridge/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_014_actuator_to_wrench_bridge_resume/EVIDENCE_SUMMARY.md"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 78,
+      "entry": "FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso28ActuatorToWrenchBridgeSmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "add_missing_category_alias_later_then_keep_flat_path_compatibility",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 19,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/FactoryTraceIso28ActuatorToWrenchBridgeSmoke.mo",
+          "Models/QuadrotorExperiments/FactoryTraceIso29ExternalFrameWrenchBoundarySmoke.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json",
+          "Results/mworks_dynamics_upgrade/20260606_014_actuator_to_wrench_bridge_resume/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_014_actuator_to_wrench_bridge_resume/mcp_bridge_summary.json",
+          "Results/mworks_dynamics_upgrade/20260606_015_wrench_to_external_frame_boundary/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_015_wrench_to_external_frame_boundary/mcp_external_frame_summary.json",
+          "Results/mworks_model_hygiene/20260606_003_static_gui_review_prep/manual_gui_review_checklist.md"
+        ],
+        "tmp_history_hit_count": 1,
+        "tmp_history_hit_samples": [
+          "Results/tmp/test_p0_closed_loop_gap_matrix.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 79,
+      "entry": "FactoryTraceIso29ExternalFrameWrenchBoundarySmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FactoryTraceIso29ExternalFrameWrenchBoundarySmoke.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "add_missing_category_alias_later_then_keep_flat_path_compatibility",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 18,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/FactoryTraceIso29ExternalFrameWrenchBoundarySmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-POST-ISO29-ONE-BOUNDARY-20260606-016.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json",
+          "Results/mworks_dynamics_upgrade/20260606_015_wrench_to_external_frame_boundary/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_015_wrench_to_external_frame_boundary/mcp_external_frame_summary.json",
+          "Results/mworks_dynamics_upgrade/20260606_016_post_iso29_one_boundary/mcp_external_body_state_summary.json",
+          "Results/mworks_model_hygiene/20260606_003_static_gui_review_prep/manual_gui_review_checklist.md",
+          "Results/mworks_model_hygiene/20260606_003_static_gui_review_prep/review_scope.json"
+        ],
+        "tmp_history_hit_count": 1,
+        "tmp_history_hit_samples": [
+          "Results/tmp/test_p0_closed_loop_gap_matrix.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 80,
+      "entry": "FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+      "definition_location": "embedded_in_package_mo",
+      "definition_path": "Models/QuadrotorExperiments/package.mo",
+      "target_category": "TraceIsolation",
+      "existing_category_aliases": [],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "add_missing_category_alias_later_then_keep_flat_path_compatibility",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 18,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-POST-ISO29-ONE-BOUNDARY-20260606-016.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-GRAPHICAL-MODEL-AUDIT-INVENTORY-20260606-002.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json",
+          "Results/mworks_dynamics_upgrade/20260606_016_post_iso29_one_boundary/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_016_post_iso29_one_boundary/mcp_external_body_state_summary.json",
+          "Results/mworks_dynamics_upgrade/20260606_017_yaw_transient_evidence_gate/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_017_yaw_transient_evidence_gate/mcp_yaw_transient_summary.json",
+          "Results/mworks_model_hygiene/20260606_002_graphical_audit_inventory/inventory.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 81,
+      "entry": "EchoMcpStateSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/EchoMcpStateSmoke.mo",
+      "target_category": "SupportModels",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.SupportModels.EchoMcpState"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 14,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/EchoMcpStateSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-ECHO-LIVE-DOWNLINK-PREFLIGHT-20260606-004.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-POST-GUI-SENTINEL-HEALTH-GATE-20260606-009.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-LIVE-DOWNLINK-PREFLIGHT-20260606-004.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-MCP-STATE-SMOKE-20260606-002.json",
+          "Results/mworks_echo_producer_smoke/20260606_002_mcp_state/echo_mcp_state_mcp_log.json",
+          "Results/mworks_echo_producer_smoke/20260606_002_mcp_state/echo_mcp_state_probe.json",
+          "Results/mworks_echo_producer_smoke/20260606_004_live_downlink_preflight/mworks_mcp_runtime_adapter_preflight_input.json",
+          "Results/mworks_echo_producer_smoke/20260606_004_live_downlink_preflight/mworks_runtime_adapter_preflight_summary.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 82,
+      "entry": "PlannedQuinticReference",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/PlannedQuinticReference.mo",
+      "target_category": "PlanningScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.PlanningScenarios.QuinticReference"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 44,
+        "formal_hit_samples": [
+          "Config/scenarios/planning/sunray150_planning_corridor_gate_awff_sysblock.yaml",
+          "Config/scenarios/planning/sunray150_planning_corridor_gate_linear_mpc_sysblock.yaml",
+          "Config/scenarios/planning/sunray150_planning_open_blocks_awff_sysblock.yaml",
+          "Config/scenarios/planning/sunray150_planning_open_blocks_linear_mpc_sysblock.yaml",
+          "Config/scenarios/planning/sunray150_ue_derelictcorridormegascans_linear_mpc_smoke.yaml",
+          "Config/scenarios/planning/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.yaml",
+          "Docs/Design/05_路径规划与轨迹生成.md",
+          "Docs/Design/11_RflySim式MoSim最小闭环架构审核.md",
+          "Docs/Index/variable_mapping.md",
+          "Docs/Workflows/agent_task_ledger.md",
+          "Docs/Workflows/rfly_mosim_p0_10h_execution_plan.md",
+          "Docs/Workflows/unreal_renderer.md"
+        ],
+        "tmp_history_hit_count": 1,
+        "tmp_history_hit_samples": [
+          "Results/tmp/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.before_diag.mo"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 83,
+      "entry": "PlanningNavigationDisplay",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/PlanningNavigationDisplay.mo",
+      "target_category": "PlanningScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.PlanningScenarios.NavigationDisplay"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 40,
+        "formal_hit_samples": [
+          "Config/scenarios/planning/sunray150_planning_corridor_gate_linear_mpc_sysblock.yaml",
+          "Config/scenarios/planning/sunray150_planning_open_blocks_linear_mpc_sysblock.yaml",
+          "Config/scenarios/planning/sunray150_ue_derelictcorridormegascans_linear_mpc_smoke.yaml",
+          "Config/scenarios/planning/sunray150_ue_factory_trace_table_linear_mpc_smoke.yaml",
+          "Config/scenarios/planning/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.yaml",
+          "Docs/Design/05_路径规划与轨迹生成.md",
+          "Docs/Workflows/agent_task_ledger.md",
+          "Docs/Workflows/run_simulation.md",
+          "Models/QuadrotorExperiments/FactoryLiteTraceSmoke.mo",
+          "Models/QuadrotorExperiments/PlanningNavigationDisplay.mo",
+          "Models/QuadrotorExperiments/Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo"
+        ],
+        "tmp_history_hit_count": 83,
+        "tmp_history_hit_samples": [
+          "Results/tmp/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.before_diag.mo",
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 84,
+      "entry": "TraceInlineReference",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/TraceInlineReference.mo",
+      "target_category": "SupportModels",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.SupportModels.TraceInline"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 25,
+        "formal_hit_samples": [
+          "Config/scenarios/planning/sunray150_ue_factory_trace_table_linear_mpc_smoke.yaml",
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/FactoryLiteTraceSmoke.mo",
+          "Models/QuadrotorExperiments/Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke.mo",
+          "Models/QuadrotorExperiments/TraceInlineReference.mo",
+          "Models/QuadrotorExperiments/TraceLookupStandaloneSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-LITE-TRACE-20260606-005.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-LITE-TRACE-20260606-005.json"
+        ],
+        "tmp_history_hit_count": 82,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 85,
+      "entry": "TraceLookupStandaloneSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/TraceLookupStandaloneSmoke.mo",
+      "target_category": "SupportModels",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.SupportModels.TraceLookupStandalone"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 11,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/TraceLookupStandaloneSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md",
+          "Results/mworks_trace_consumption/trace_lookup_diag_20260606_003/trace_lookup_standalone_probe.json",
+          "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json",
+          "Scripts/tests/test_p0_slice_run_manifest.py"
+        ],
+        "tmp_history_hit_count": 84,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 86,
+      "entry": "TraceTableReference",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/TraceTableReference.mo",
+      "target_category": "SupportModels",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.SupportModels.TraceTable"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 8,
+        "formal_hit_samples": [
+          "Models/QuadrotorExperiments/TraceTableReference.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-ADAPTER-CONTRACT-20260606-001.json",
+          "Results/mworks_model_hygiene/20260606_002_graphical_audit_inventory/inventory.json",
+          "Results/mworks_model_hygiene/20260606_002_graphical_audit_inventory/review_priority.md",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 87,
+      "entry": "Sunray150PlanningCorridorGateAWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Sunray150PlanningCorridorGateAWFFSysblockClosedLoop.mo",
+      "target_category": "PlanningScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.PlanningScenarios.CorridorGateAWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 4,
+        "formal_hit_samples": [
+          "Config/scenarios/planning/sunray150_planning_corridor_gate_awff_sysblock.yaml",
+          "Models/QuadrotorExperiments/Sunray150PlanningCorridorGateAWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 88,
+      "entry": "Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop.mo",
+      "target_category": "PlanningScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.PlanningScenarios.CorridorGateLinearMPC"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 7,
+        "formal_hit_samples": [
+          "Config/scenarios/planning/sunray150_planning_corridor_gate_linear_mpc_sysblock.yaml",
+          "Docs/Design/05_路径规划与轨迹生成.md",
+          "Models/QuadrotorExperiments/Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_002_graphical_audit_inventory/review_priority.md",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/planning/corridor_gate_astar_awff/sunray150_planning_corridor_gate_linear_mpc_sysblock/replay/sunray150_planning_corridor_gate_linear_mpc_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 89,
+      "entry": "Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop.mo",
+      "target_category": "PlanningScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.PlanningScenarios.OpenBlocksAWFF"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Config/scenarios/planning/sunray150_planning_open_blocks_awff_sysblock.yaml",
+          "Docs/Design/05_路径规划与轨迹生成.md",
+          "Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_awff_sysblock/replay/sunray150_planning_open_blocks_awff_sysblock.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 90,
+      "entry": "Sunray150PlanningOpenBlocksColorMapReview",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksColorMapReview.mo",
+      "target_category": "PlanningScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.PlanningScenarios.OpenBlocksColorMapReview"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 6,
+        "formal_hit_samples": [
+          "Docs/Design/05_路径规划与轨迹生成.md",
+          "Docs/Workflows/run_simulation.md",
+          "Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksColorMapReview.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/coagent_knowledge/knowledge_index.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 91,
+      "entry": "Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo",
+      "target_category": "PlanningScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.PlanningScenarios.OpenBlocksLinearMPC"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 25,
+        "formal_hit_samples": [
+          "Config/scenarios/planning/sunray150_planning_open_blocks_linear_mpc_sysblock.yaml",
+          "Docs/Cache/session_memory_migration/round2_parameter_identification_memory_20260604.md",
+          "Docs/Design/05_路径规划与轨迹生成.md",
+          "Docs/Workflows/run_simulation.md",
+          "Docs/simulation_report.md",
+          "Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksColorMapReview.mo",
+          "Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/coagent_knowledge/knowledge_index.json",
+          "Results/model_checks/planning_height_profile_0p2_sensor_smoke_20260517_summary.json",
+          "Results/model_checks/planning_occlusion/logs/sysplorer_planning_lidar_occlusion_check_20260518_summary.json",
+          "Results/model_checks/planning_static_map_colored_jitter_no_grid_mcp_open_20260517_summary.json"
+        ],
+        "tmp_history_hit_count": 1,
+        "tmp_history_hit_samples": [
+          "Results/tmp/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.before_diag.mo"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 92,
+      "entry": "Sunray150UEFactoryLinearMPCSysblockSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Sunray150UEFactoryLinearMPCSysblockSmoke.mo",
+      "target_category": "SceneTraceScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.SceneTraceScenarios.UEFactoryLinearMPC"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 11,
+        "formal_hit_samples": [
+          "Config/scenarios/planning/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.yaml",
+          "Docs/Cache/session_memory_migration/round2_parameter_identification_memory_20260604.md",
+          "Docs/Workflows/agent_task_ledger.md",
+          "Docs/Workflows/unreal_renderer.md",
+          "Models/QuadrotorExperiments/Sunray150UEFactoryLinearMPCSysblockSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json",
+          "Results/diagnostics/smoke/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke/replay/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/unreal_scene_mapping/MWORKS_UE_SCENE_SMOKE_STATUS.md",
+          "Scripts/UE5/build_mworks_ue_scene_smoke.py"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 93,
+      "entry": "Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke.mo",
+      "target_category": "SceneTraceScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.SceneTraceScenarios.UEFactoryTraceTable"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 20,
+        "formal_hit_samples": [
+          "Config/scenarios/planning/sunray150_ue_factory_trace_table_linear_mpc_smoke.yaml",
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-LITE-TRACE-20260606-005.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-NEXT-SENSOR-DISPLAY-GROUP-20260606-017.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json"
+        ],
+        "tmp_history_hit_count": 82,
+        "tmp_history_hit_samples": [
+          "Results/tmp/p0_schema_docs_049eea68ee3f45c78783aada2066554b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_056a298d43804a618754c402ce46218b/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_180e421778da4a70bb925eef76006ab1/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_20ffd90219ba436b9e7c38a659e7223f/RUN_MANIFEST.json",
+          "Results/tmp/p0_schema_docs_52a8d8d98ea442779a7d9f57c2d73881/RUN_MANIFEST.json"
+        ]
+      }
+    },
+    {
+      "index_after_category_packages": 94,
+      "entry": "Sunray150UEDerelictLinearMPCSysblockSmoke",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/Sunray150UEDerelictLinearMPCSysblockSmoke.mo",
+      "target_category": "SceneTraceScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.SceneTraceScenarios.UEDerelictLinearMPC"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 9,
+        "formal_hit_samples": [
+          "Config/scenarios/planning/sunray150_ue_derelictcorridormegascans_linear_mpc_smoke.yaml",
+          "Docs/Workflows/agent_task_ledger.md",
+          "Docs/Workflows/unreal_renderer.md",
+          "Models/QuadrotorExperiments/Sunray150UEDerelictLinearMPCSysblockSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/diagnostics/smoke/sunray150_ue_derelictcorridormegascans_linear_mpc_smoke/replay/sunray150_ue_derelictcorridormegascans_linear_mpc_smoke.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json",
+          "Results/unreal_scene_mapping/MWORKS_UE_SCENE_SMOKE_STATUS.md",
+          "Scripts/UE5/build_mworks_ue_scene_smoke.py"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 95,
+      "entry": "Sunray150RflyStyleRotorDynamics",
+      "definition_location": "embedded_in_package_mo",
+      "definition_path": "Models/QuadrotorExperiments/package.mo",
+      "target_category": "DynamicsUpgrade",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 20,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Docs/Workflows/identify_quadrotor_parameters.md",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-MIN-UPGRADE-20260606-005.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-PHYSICAL-WRENCH-WRAPPER-20260606-007.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-QUADROTOR-EXPERIMENTS-CLASSIFICATION-20260606-013.json",
+          "Results/identification/sunray150/SUNRAY150_DYNAMICS_UPGRADE_20260605.md",
+          "Results/mworks_dynamics_upgrade/20260606_005_minimal_upgrade/EVIDENCE_SUMMARY.md"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 96,
+      "entry": "Sunray150DynamicsUpgradeHoverSmoke",
+      "definition_location": "embedded_in_package_mo",
+      "definition_path": "Models/QuadrotorExperiments/package.mo",
+      "target_category": "DynamicsUpgrade",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 13,
+        "formal_hit_samples": [
+          "Docs/Workflows/identify_quadrotor_parameters.md",
+          "Docs/Workflows/rfly_mosim_p0_10h_execution_plan.md",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-MIN-UPGRADE-20260606-005.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-QUADROTOR-EXPERIMENTS-CLASSIFICATION-20260606-013.json",
+          "Results/coagent_gateway/packets/sunray150_dynamics_model_check_complete_20260605.json",
+          "Results/coagent_gateway/packets/uav_arch_sync_and_chassis_recheck_20260606.json",
+          "Results/identification/sunray150/SUNRAY150_DYNAMICS_UPGRADE_20260605.md",
+          "Results/mworks_dynamics_upgrade/20260606_005_minimal_upgrade/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_005_minimal_upgrade/mcp_smoke_summary.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 97,
+      "entry": "Sunray150DynamicsUpgradeYawStepSmoke",
+      "definition_location": "embedded_in_package_mo",
+      "definition_path": "Models/QuadrotorExperiments/package.mo",
+      "target_category": "DynamicsUpgrade",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 14,
+        "formal_hit_samples": [
+          "Docs/Workflows/identify_quadrotor_parameters.md",
+          "Docs/Workflows/rfly_mosim_p0_10h_execution_plan.md",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-MIN-UPGRADE-20260606-005.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-QUADROTOR-EXPERIMENTS-CLASSIFICATION-20260606-013.json",
+          "Results/coagent_gateway/packets/sunray150_dynamics_model_check_complete_20260605.json",
+          "Results/coagent_gateway/packets/uav_arch_sync_and_chassis_recheck_20260606.json",
+          "Results/identification/sunray150/SUNRAY150_DYNAMICS_UPGRADE_20260605.md",
+          "Results/mworks_dynamics_upgrade/20260606_005_minimal_upgrade/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_005_minimal_upgrade/mcp_smoke_summary.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 98,
+      "entry": "Sunray150DynamicsWrapperSurface",
+      "definition_location": "embedded_in_package_mo",
+      "definition_path": "Models/QuadrotorExperiments/package.mo",
+      "target_category": "DynamicsUpgrade",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 19,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-PHYSICAL-WRENCH-WRAPPER-20260606-007.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRAPPER-SOURCE-RECOVERY-20260606-011.json",
+          "Results/mworks_dynamics_upgrade/20260606_006_wrapper_integration/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_006_wrapper_integration/mcp_wrapper_smoke_summary.json",
+          "Results/mworks_dynamics_upgrade/20260606_007_physical_wrench_wrapper/EVIDENCE_SUMMARY.md"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 99,
+      "entry": "Sunray150DynamicsWrapperHoverSmoke",
+      "definition_location": "embedded_in_package_mo",
+      "definition_path": "Models/QuadrotorExperiments/package.mo",
+      "target_category": "DynamicsUpgrade",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.DynamicsUpgrade.WrapperHoverSmoke"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 11,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRAPPER-SOURCE-RECOVERY-20260606-011.json",
+          "Results/mworks_dynamics_upgrade/20260606_006_wrapper_integration/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_006_wrapper_integration/mcp_wrapper_smoke_summary.json",
+          "Results/mworks_dynamics_upgrade/20260606_011_wrapper_source_recovery/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_011_wrapper_source_recovery/mcp_wrapper_source_recovery_summary.json",
+          "Results/mworks_license_recovery/20260606_pmo_sysplorer_login_recovery.json",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 100,
+      "entry": "Sunray150DynamicsWrapperYawStepSmoke",
+      "definition_location": "embedded_in_package_mo",
+      "definition_path": "Models/QuadrotorExperiments/package.mo",
+      "target_category": "DynamicsUpgrade",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.DynamicsUpgrade.WrapperYawStepSmoke"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 14,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRAPPER-SOURCE-RECOVERY-20260606-011.json",
+          "Results/mworks_dynamics_upgrade/20260606_006_wrapper_integration/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_006_wrapper_integration/mcp_wrapper_smoke_summary.json",
+          "Results/mworks_dynamics_upgrade/20260606_011_wrapper_source_recovery/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_011_wrapper_source_recovery/mcp_wrapper_source_recovery_summary.json",
+          "Results/mworks_dynamics_upgrade/20260606_017_yaw_transient_evidence_gate/EVIDENCE_SUMMARY.md"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 101,
+      "entry": "Sunray150PhysicalWrenchFrameAdapter",
+      "definition_location": "embedded_in_package_mo",
+      "definition_path": "Models/QuadrotorExperiments/package.mo",
+      "target_category": "DynamicsUpgrade",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 20,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/FactoryTraceIso28ActuatorToWrenchBridgeSmoke.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012.json",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-PHYSICAL-WRENCH-WRAPPER-20260606-007.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRAPPER-SOURCE-RECOVERY-20260606-011.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json",
+          "Results/mworks_dynamics_upgrade/20260606_007_physical_wrench_wrapper/EVIDENCE_SUMMARY.md"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 102,
+      "entry": "Sunray150PhysicalWrenchHoverSmoke",
+      "definition_location": "embedded_in_package_mo",
+      "definition_path": "Models/QuadrotorExperiments/package.mo",
+      "target_category": "DynamicsUpgrade",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchHoverSmoke"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 16,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-POST-GUI-SENTINEL-HEALTH-GATE-20260606-009.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-PHYSICAL-WRENCH-WRAPPER-20260606-007.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-POST-GUI-SENTINEL-HEALTH-GATE-20260606-009.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRAPPER-SOURCE-RECOVERY-20260606-011.json",
+          "Results/mworks_dynamics_upgrade/20260606_007_physical_wrench_wrapper/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_007_physical_wrench_wrapper/mcp_physical_wrench_smoke_summary.json",
+          "Results/mworks_dynamics_upgrade/20260606_011_wrapper_source_recovery/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_011_wrapper_source_recovery/mcp_wrapper_source_recovery_summary.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 103,
+      "entry": "Sunray150PhysicalWrenchYawStepSmoke",
+      "definition_location": "embedded_in_package_mo",
+      "definition_path": "Models/QuadrotorExperiments/package.mo",
+      "target_category": "DynamicsUpgrade",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchYawStepSmoke"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 18,
+        "formal_hit_samples": [
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json",
+          "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-YAW-SIGN-MOTOR-ORDER-AUDIT-20260606-008-GUI-CRASH-REPORT.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-PHYSICAL-WRENCH-WRAPPER-20260606-007.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRAPPER-SOURCE-RECOVERY-20260606-011.json",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-YAW-SIGN-MOTOR-ORDER-AUDIT-20260606-008.json",
+          "Results/mworks_dynamics_upgrade/20260606_007_physical_wrench_wrapper/EVIDENCE_SUMMARY.md",
+          "Results/mworks_dynamics_upgrade/20260606_007_physical_wrench_wrapper/mcp_physical_wrench_smoke_summary.json",
+          "Results/mworks_dynamics_upgrade/20260606_008_yaw_sign_motor_order_audit/EVIDENCE_SUMMARY.md"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    },
+    {
+      "index_after_category_packages": 104,
+      "entry": "FormationTriangleFigure8LinearMPCSysblockClosedLoop",
+      "definition_location": "sibling_mo_file",
+      "definition_path": "Models/QuadrotorExperiments/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo",
+      "target_category": "FormationScenarios",
+      "existing_category_aliases": [
+        "QuadrotorExperiments.FormationScenarios.TriangleFigure8LinearMPC"
+      ],
+      "recommended_action": "keep_as_public_compatibility_must_not_delete",
+      "canonical_strategy": "category_alias_exists_flat_path_remains_compatibility_target",
+      "must_not_delete": true,
+      "reference_risk": {
+        "formal_hit_count_excluding_results_tmp": 13,
+        "formal_hit_samples": [
+          "Config/scenarios/formation/formation_triangle_figure8_linear_mpc_sysblock.yaml",
+          "Docs/Design/06_多机编队控制.md",
+          "Docs/Index/project_work_memory_index.md",
+          "Docs/Workflows/agent_task_ledger.md",
+          "Models/QuadrotorExperiments/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo",
+          "Models/QuadrotorExperiments/package.mo",
+          "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-GRAPHICAL-MODEL-AUDIT-INVENTORY-20260606-002.json",
+          "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/replay/formation_triangle_figure8_linear_mpc_sysblock.json",
+          "Results/mworks_model_hygiene/20260606_002_graphical_audit_inventory/inventory.json",
+          "Results/mworks_model_hygiene/20260606_002_graphical_audit_inventory/review_priority.md",
+          "Results/mworks_model_hygiene/20260606_003_static_gui_review_prep/manual_gui_review_checklist.md",
+          "Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json"
+        ],
+        "tmp_history_hit_count": 0,
+        "tmp_history_hit_samples": []
+      }
+    }
+  ],
+  "forbidden_actions_confirmed": {
+    "edited_package_mo": false,
+    "edited_package_order": false,
+    "edited_mo_files": false,
+    "opened_mworks_sysplorer_syslab_gui": false,
+    "called_mworks_sysplorer_syslab_mcp": false,
+    "ran_smart_layout": false,
+    "deleted_moved_renamed_models": false
+  }
+}

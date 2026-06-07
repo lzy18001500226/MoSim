@@ -1,0 +1,53 @@
+{
+  "schema_version": "mosim.mworks_trace_consumption_manifest.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002",
+  "created_at": "2026-06-06T05:08:48+08:00",
+  "source": "MWORKS_MCP_blocked",
+  "quality_status": "blocked_model_result_binding",
+  "claim_boundary": [
+    "Consumes B0 PositionCommand contract replay trace only.",
+    "Does not prove real local-map planner closure or closed_loop P0 acceptance."
+  ],
+  "consumed_trace_path": "Results/ros2_runtime/positioncmd_b0_contract_replay_orchestrated_20260606_pass/setpoint_trace.csv",
+  "consumed_trace_sha256": "6e9f7612fe3b7707887a2a1d731a031d1d494f530b9654b17dc3ea557ef0e12e",
+  "modelica_table_path": "Results/mworks_trace_consumption/positioncmd_b0_contract_replay_table_20260606.csv",
+  "modelica_table_sha256": "e9820f2b5f3f568f9eb7dee06a9282040a572408cdfdd663ddf09064e3b2e129",
+  "table_name": "trace_ref",
+  "row_count": 227,
+  "time_base": "receive_time_s_minus_first_receive_time_s",
+  "time_start_s": 0.0,
+  "time_stop_s": 9.943895527001587,
+  "columns": [
+    "time_s",
+    "x_ref",
+    "y_ref",
+    "z_ref",
+    "yaw_ref",
+    "z_ref_rate_from_vz_ref"
+  ],
+  "input_trace_columns": [
+    "receive_time_s",
+    "x_ref",
+    "y_ref",
+    "z_ref",
+    "yaw_ref",
+    "vz_ref"
+  ],
+  "planner_source_status": "B0_contract_replay_not_real_planner",
+  "modelica_inline_reference_path": "Models/QuadrotorExperiments/TraceInlineReference.mo",
+  "modelica_inline_reference_sha256": "b9aa1ed5f4e7c040fecc4697b4cae0ca8a0743d250a579dcc8c0d2c2c50afd3e",
+  "modelica_reference_binding": "pure_modelica_piecewise_linear_lookup",
+  "mcp_status": {
+    "availability_probe": "pass",
+    "model_load_status": "pass",
+    "check_model_status": "pass",
+    "simulate_status": "blocked",
+    "simulate_api_reported_failure": true,
+    "result_series_status": "empty_or_zero_reference_values"
+  },
+  "blocker": {
+    "kind": "result_binding_failed",
+    "summary": "Sysplorer check_model passed for the project-owned trace wrapper, but SimulateModel returned false and result probes returned empty time vectors plus zero reference values for planningReference outputs.",
+    "do_not_claim": "Do not claim MWORKS consumed the ROS2 adapter trace until a rerun exports nonzero x_ref/y_ref/z_ref/yaw_ref series from Sysplorer result APIs."
+  }
+}

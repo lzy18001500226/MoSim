@@ -1,0 +1,5 @@
+probe_id,model_name,component_group_added,check_status,simulate_status,simulate_data,get_var_times_count,nonzero_alias_refs,x_ref_at_1s,y_ref_at_1s,z_ref_at_1s,yaw_ref_at_1s,verdict
+iso01_full_display,QuadrotorExperiments.FactoryTraceIso01FullDisplaySmoke,full Factory display parameters only,pass,pass,true,1001,true,0.31861753694312633,0.49481767718910424,1.242037957383867,1.9974016333898024,pass
+iso02_controller_only,QuadrotorExperiments.FactoryTraceIso02ControllerOnlySmoke,controller math group only,pass,pass,true,1001,true,0.31861753694312633,0.49481767718910424,1.242037957383867,1.9974016333898024,pass
+iso03_plant_hover_stack,QuadrotorExperiments.FactoryTraceIso03PlantHoverStackSmoke,open-loop hover plant actuator sensor stack,pass,pass,true,1001,true,0.31861753694312633,0.49481767718910424,1.242037957383867,1.9974016333898024,pass
+iso04_controller_plant_wiring,QuadrotorExperiments.FactoryTraceIso04ControllerPlantWiringSmoke,controller feedback plus motor-command wiring,pass,failed,false,1001,true,0.31861753694312633,0.49481767718910424,1.242037957383867,1.9974016333898024,first_failure_boundary

@@ -1,0 +1,167 @@
+{
+  "schema_version": "mosim.mworks_trace_probe.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011",
+  "created_at": "2026-06-06T08:47:00+08:00",
+  "source": "MWORKS_MCP",
+  "quality_status": "attitude_decoupling_probe_passed",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "target_thread_id": "019e9999-b0d3-7682-bccd-faef08fcf1df",
+  "prior_boundary": {
+    "source_packet": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json",
+    "classification": "constant/table attitude inputs pass; RealExpression(y=sensors1_1.AngleMea[1]) fails with empty result context",
+    "blocked_path": "AbsoluteAngles/AngleMea dependency path into controller attitude feedback"
+  },
+  "mcp_probe": {
+    "tool": "session_manager",
+    "action": "probe",
+    "ok": true,
+    "cached_driver_probe_ok": true,
+    "dedicated_sysplorer_port": 49154,
+    "find_sysplorer_ports": [49153, 49152, 49154]
+  },
+  "load_sequence": [
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    }
+  ],
+  "probes": [
+    {
+      "probe_id": "iso17_sample_hold_angle",
+      "model_file": "Models/QuadrotorExperiments/FactoryTraceIso17SampleHoldAngleSmoke.mo",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso17SampleHoldAngleSmoke",
+      "decoupling_strategy": "Sample and hold sensors1_1.AngleMea[1] before controller3_2.roll_mea using project-owned wrapper topology.",
+      "signal_mapping": [
+        "sensors1_1.AngleMea[1] -> roll_angle_sampler.u",
+        "roll_angle_sampler.y -> roll_angle_hold.u",
+        "roll_angle_hold.y -> controller3_2.roll_mea",
+        "zero_pitch.y -> controller3_2.pitch_mea",
+        "planningReference.yaw_ref -> controller3_2.yaw_mea and yaw_ref"
+      ],
+      "check_model": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 2.097
+      },
+      "simulate_model": {
+        "ok": true,
+        "data": true,
+        "target_time_s": [0, 2],
+        "elapsed_s_observed": 72.2736
+      },
+      "get_var_times": {
+        "ok": true,
+        "count": 1001,
+        "first": 0.0,
+        "last": 2.0
+      },
+      "alias_probe_vars": [
+        "x_ref",
+        "y_ref",
+        "z_ref",
+        "yaw_ref",
+        "sensors1_1.AngleMea[1]",
+        "roll_angle_sampler.y",
+        "roll_angle_hold.y",
+        "controller3_2.roll_mea"
+      ],
+      "alias_values": {
+        "t_0_5": [0.3433963686587412, 0.417558977229446, 1.2386167305579043, 1.7650531321614733, 0.7082277842744821, 0.03521174564474887, 0.7082277842744821, 0.03521174564474887],
+        "t_1_0": [0.31861753694312633, 0.49481767718910424, 1.242037957383867, 1.9974016333898024, -1.212242525287229, -0.5269189793364981, -1.212242525287229, -0.5269189793364981],
+        "t_2_0": [0.22528064041293117, 0.6178306433245998, 1.2469737036046606, 2.4422701702657834, -0.7049395278260547, 0.3717130461629261, -0.7049395278260547, 0.3717130461629261]
+      },
+      "result_binding_notes": [
+        "Reference aliases are nonzero at probed times.",
+        "Roll-source and roll-controller aliases are available and nonzero.",
+        "Sysplorer result alias binding for sampler/hold variables should not be overinterpreted as a controller-performance claim."
+      ],
+      "error_6140_present": false,
+      "verdict": "pass_sample_hold_decoupling_restores_result_context"
+    },
+    {
+      "probe_id": "iso18_project_attitude_estimator",
+      "model_file": "Models/QuadrotorExperiments/FactoryTraceIso18ProjectAttitudeEstimatorSmoke.mo",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso18ProjectAttitudeEstimatorSmoke",
+      "decoupling_strategy": "Use a project-owned first-order roll extraction state before controller3_2.roll_mea.",
+      "signal_mapping": [
+        "der(roll_est_state) = (sensors1_1.AngleMea[1] - roll_est_state) / attitude_extraction_T",
+        "roll_est_state -> roll_estimated.y",
+        "roll_estimated.y -> controller3_2.roll_mea",
+        "zero_pitch.y -> controller3_2.pitch_mea",
+        "planningReference.yaw_ref -> controller3_2.yaw_mea and yaw_ref"
+      ],
+      "parameters": {
+        "attitude_extraction_T": {
+          "value": 0.03,
+          "role": "probe extraction time constant only; not a controller gain or identified dynamics parameter"
+        }
+      },
+      "check_model": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 1.838
+      },
+      "simulate_model": {
+        "ok": true,
+        "data": true,
+        "target_time_s": [0, 2],
+        "elapsed_s_observed": 133.4081
+      },
+      "get_var_times": {
+        "ok": true,
+        "count": 1001,
+        "first": 0.0,
+        "last": 2.0
+      },
+      "alias_probe_vars": [
+        "x_ref",
+        "y_ref",
+        "z_ref",
+        "yaw_ref",
+        "sensors1_1.AngleMea[1]",
+        "roll_est_state",
+        "roll_estimated.y",
+        "controller3_2.roll_mea"
+      ],
+      "alias_values": {
+        "t_0_5": [0.3433963686587412, 0.417558977229446, 1.2386167305579043, 1.7650531321614733, 1.0857053626010176, 0.13543113081868993, 0.13543113081868993, 0.13543113081868993],
+        "t_1_0": [0.31861753694312633, 0.49481767718910424, 1.242037957383867, 1.9974016333898024, -0.17961727013715495, 0.09048307831101342, 0.09048307831101342, 0.09048307831101342],
+        "t_2_0": [0.22528064041293117, 0.6178306433245998, 1.2469737036046606, 2.4422701702657834, 0.6539720997271453, 0.1055768596476006, 0.1055768596476006, 0.1055768596476006]
+      },
+      "result_binding_notes": [
+        "Reference aliases are nonzero at probed times.",
+        "roll_est_state, roll_estimated.y, and controller3_2.roll_mea are available and nonzero.",
+        "This validates result-context stability for a project-owned extraction state, not plant tracking."
+      ],
+      "error_6140_present": false,
+      "verdict": "pass_project_owned_extraction_restores_result_context"
+    }
+  ],
+  "classification": {
+    "sampled_held_decoupling_passes": true,
+    "project_owned_attitude_extraction_passes": true,
+    "absolute_angles_dependency_can_be_decoupled": true,
+    "direct_anglemea_realexpression_remains_rejected_from_010": true,
+    "error_6140_status": "absent_in_011_probes"
+  },
+  "claim_boundary": [
+    "Attitude decoupling/result-context probe only.",
+    "No closed_loop claim.",
+    "No Factory trace consumption claim.",
+    "No controller performance or plant tracking claim.",
+    "No parameter identification claim."
+  ],
+  "recommended_next_step": "Use Iso18-style project-owned attitude extraction as the next minimal reconnect candidate because its roll_est_state and controller roll input aliases bind cleanly. Reconnect only the next narrow attitude feedback group, then rerun check_model, 0-2s SimulateModel, GetVarTimes, and alias probes before any full Factory wrapper retry."
+}

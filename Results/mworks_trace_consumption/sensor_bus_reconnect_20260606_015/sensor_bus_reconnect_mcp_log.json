@@ -1,0 +1,127 @@
+{
+  "schema_version": "mosim.mcp_log_summary.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-SENSOR-BUS-RECONNECT-20260606-015",
+  "source": "MWORKS_MCP",
+  "entries": [
+    {
+      "step": "mcp_initial_probe",
+      "tool": "session_manager",
+      "action": "probe",
+      "result": {
+        "ok": true,
+        "cached_driver_present": false,
+        "find_sysplorer_ports": [49153, 49152]
+      }
+    },
+    {
+      "step": "mcp_ensure",
+      "tool": "session_manager",
+      "action": "ensure",
+      "result": {
+        "ok": true,
+        "driver_ready": true,
+        "dedicated_sysplorer_port": 49154
+      }
+    },
+    {
+      "step": "load_controller_dependency",
+      "tool": "model_manager",
+      "action": "load_file",
+      "target": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "result": {
+        "ok": true,
+        "data": true
+      }
+    },
+    {
+      "step": "load_experiment_package_initial",
+      "tool": "model_manager",
+      "action": "load_file",
+      "target": "Models/QuadrotorExperiments/package.mo",
+      "result": {
+        "ok": true,
+        "data": true
+      }
+    },
+    {
+      "step": "iso22_check_model_initial",
+      "tool": "check_model",
+      "target": "QuadrotorExperiments.FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "result": {
+        "ok": false,
+        "data": false,
+        "classification": "dependency_not_loaded",
+        "error_excerpt": "QuadrotorModel.Mechanics.QuadChassis not found"
+      }
+    },
+    {
+      "step": "load_quadrotor_model_dependency",
+      "tool": "model_manager",
+      "action": "load_file",
+      "target": "References/MWORKS/QuadrotorModel/package.mo",
+      "result": {
+        "ok": true,
+        "data": true,
+        "role": "dependency_load_only_no_baseline_edit"
+      }
+    },
+    {
+      "step": "reload_experiment_package",
+      "tool": "model_manager",
+      "action": "load_file",
+      "target": "Models/QuadrotorExperiments/package.mo",
+      "result": {
+        "ok": true,
+        "data": true
+      }
+    },
+    {
+      "step": "iso22_check_model_after_dependency_load",
+      "tool": "check_model",
+      "target": "QuadrotorExperiments.FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "result": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 2.735
+      }
+    },
+    {
+      "step": "iso22_simulate_model",
+      "tool": "simulate_model",
+      "target": "QuadrotorExperiments.FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "result": {
+        "ok": false,
+        "data": false,
+        "target_time_s": [0, 2],
+        "error_6140_present": true,
+        "error_excerpt": "compiler error 6140: redundant Real equations"
+      }
+    },
+    {
+      "step": "iso22_get_var_times",
+      "tool": "result_manager",
+      "action": "get_var_times",
+      "result": {
+        "ok": true,
+        "data": [],
+        "count": 0
+      }
+    },
+    {
+      "step": "iso22_alias_probe",
+      "tool": "result_manager",
+      "action": "get_vars_value_at",
+      "vars": ["x_ref", "y_ref", "z_ref", "yaw_ref", "display_actual_x", "display_actual_y", "display_actual_z", "display_reference_x", "display_reference_y", "display_reference_z", "controller_roll_rate_probe", "controller_pitch_rate_probe", "controller_yaw_rate_probe"],
+      "result": {
+        "ok": true,
+        "data": []
+      }
+    }
+  ],
+  "forbidden_actions_confirmed": [
+    "ClearAll not called",
+    "ChangeDirectory not called",
+    "full Factory wrapper not retried",
+    "official baseline dependency loaded but not edited"
+  ]
+}

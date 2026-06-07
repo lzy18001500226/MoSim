@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "issues": [],
+  "warnings": [],
+  "rows": 7,
+  "runtime_ack_rows": 7,
+  "placeholder_rows": 0,
+  "require_runtime_ack": true,
+  "no_pose_overwrite_status": "pass",
+  "echo_jsonl": "Results/mworks_echo_producer_smoke/20260606_001/mworks_echo_rows.jsonl"
+}

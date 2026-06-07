@@ -1,0 +1,245 @@
+{
+  "schema": "mosim.mworks_model_hygiene.static_gui_review_scope.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "target_thread": "MoSim｜MWORKS动力学与控制验证部-R2",
+  "target_thread_id": "019e9999-b0d3-7682-bccd-faef08fcf1df",
+  "status": "completed",
+  "source": "static_text_review_prep_only",
+  "created_at": "2026-06-06T23:59:00+08:00",
+  "mworks_window_policy": "reuse_existing_do_not_close",
+  "window_policy_details": [
+    "This R2 task did not open, close, restart, or touch any Sysplorer/Syslab/MWORKS window or session.",
+    "Current policy is to reuse the user's already open, logged-in, activated MWORKS/Sysplorer window for future approved GUI/MCP tasks.",
+    "R2 static tasks do not use GUI/MCP and must not contend with R1 session/resource locks.",
+    "Close/restart/new-window actions require explicit PMO/user approval or a documented freeze, login/license blocker, crash dialog, uncontrolled duplicate-window incident, or failed MCP recovery with evidence.",
+    "GUI crash/error-report/login/license popups must be captured as evidence and returned as blockers; R2 must not click close, restart, send report, or continue hidden trial-and-error."
+  ],
+  "selected_candidate_family": {
+    "name": "FactoryTrace Iso chain",
+    "priority": "P0",
+    "selection_count": 1,
+    "justification": "The FactoryTrace Iso chain is directly tied to the current R1/R2 evidence chain from trace lookup through actuator, wrench, and external-body boundary probes. It is lower risk than broad FormationTriangle GUI review for the next manual graphical review because static preparation can focus on a known incremental sequence without opening GUI/MCP or contending for the active MWORKS session."
+  },
+  "selected_models": [
+    {
+      "order": 0,
+      "role": "context_baseline_not_primary_review_target",
+      "model": "QuadrotorExperiments.FactoryLiteTraceSmoke",
+      "path": "Models/QuadrotorExperiments/FactoryLiteTraceSmoke.mo",
+      "static_counts": {
+        "connect_equations": 2,
+        "placement_annotations": 0,
+        "line_annotations": 0,
+        "diagram_annotations": 0
+      },
+      "review_focus": "Use only as context for trace reference plus navigation display wiring inherited by later Iso models."
+    },
+    {
+      "order": 1,
+      "role": "primary_review_baseline",
+      "model": "QuadrotorExperiments.FactoryTraceIso23PositionSampleHoldBridgeSmoke",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso23PositionSampleHoldBridgeSmoke.mo",
+      "static_counts": {
+        "connect_equations": 2,
+        "placement_annotations": 0,
+        "line_annotations": 0,
+        "diagram_annotations": 0
+      },
+      "review_focus": "Display-position sampled/held bridge between sensors1_1.PosMea and navigationDisplay.actual_position."
+    },
+    {
+      "order": 2,
+      "role": "known_boundary_context",
+      "model": "QuadrotorExperiments.FactoryTraceIso24DirectAttitudeFeedbackSmoke",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso24DirectAttitudeFeedbackSmoke.mo",
+      "static_counts": {
+        "connect_equations": 0,
+        "placement_annotations": 0,
+        "line_annotations": 0,
+        "diagram_annotations": 0
+      },
+      "review_focus": "Direct AngleMea attitude-feedback boundary; do not treat as passing result-context model."
+    },
+    {
+      "order": 3,
+      "role": "primary_review_chain",
+      "model": "QuadrotorExperiments.FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke.mo",
+      "static_counts": {
+        "connect_equations": 2,
+        "placement_annotations": 0,
+        "line_annotations": 0,
+        "diagram_annotations": 0
+      },
+      "review_focus": "Sampled/held attitude-feedback bridge into controller roll/pitch/yaw measurement inputs."
+    },
+    {
+      "order": 4,
+      "role": "primary_review_chain",
+      "model": "QuadrotorExperiments.FactoryTraceIso26ControllerOutputAliasSmoke",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso26ControllerOutputAliasSmoke.mo",
+      "static_counts": {
+        "connect_equations": 0,
+        "placement_annotations": 0,
+        "line_annotations": 0,
+        "diagram_annotations": 0
+      },
+      "review_focus": "Controller output and pre-actuator aliases; confirm alias labels are visible enough for manual review if opened later."
+    },
+    {
+      "order": 5,
+      "role": "primary_review_chain",
+      "model": "QuadrotorExperiments.FactoryTraceIso27ActuatorInputAliasSmoke",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso27ActuatorInputAliasSmoke.mo",
+      "static_counts": {
+        "connect_equations": 0,
+        "placement_annotations": 0,
+        "line_annotations": 0,
+        "diagram_annotations": 0
+      },
+      "review_focus": "Actuator input alias visibility and consistency checks before any actuator/flange/full-plant claims."
+    },
+    {
+      "order": 6,
+      "role": "primary_review_chain",
+      "model": "QuadrotorExperiments.FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso28ActuatorToWrenchBridgeSmoke.mo",
+      "static_counts": {
+        "connect_equations": 0,
+        "placement_annotations": 0,
+        "line_annotations": 0,
+        "diagram_annotations": 0
+      },
+      "review_focus": "Sidecar actuator-input to Sunray150 physical-wrench adapter command surface."
+    },
+    {
+      "order": 7,
+      "role": "primary_review_chain",
+      "model": "QuadrotorExperiments.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso29ExternalFrameWrenchBoundarySmoke.mo",
+      "static_counts": {
+        "connect_equations": 1,
+        "placement_annotations": 0,
+        "line_annotations": 0,
+        "diagram_annotations": 0
+      },
+      "review_focus": "External MultiBody frame/test-body wrench boundary and any single new connection route."
+    },
+    {
+      "order": 8,
+      "role": "primary_review_chain_embedded_class",
+      "model": "QuadrotorExperiments.FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+      "path": "Models/QuadrotorExperiments/package.mo#FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+      "static_counts": {
+        "sibling_mo_file": false,
+        "embedded_in_package_mo": true
+      },
+      "review_focus": "Embedded external-body state response aliases; do not misclassify missing sibling .mo as a missing model defect."
+    }
+  ],
+  "existing_evidence_mapping": [
+    {
+      "model": "QuadrotorExperiments.FactoryTraceIso23PositionSampleHoldBridgeSmoke",
+      "packet": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json",
+      "evidence": "Results/mworks_trace_consumption/position_bridge_20260606_016/",
+      "boundary": "Display-position bridge/result-context evidence only."
+    },
+    {
+      "model": "QuadrotorExperiments.FactoryTraceIso24DirectAttitudeFeedbackSmoke",
+      "packet": "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-FIRST-CONTROL-FEEDBACK-GROUP-20260606-018.json",
+      "evidence": "Results/mworks_trace_consumption/first_control_feedback_group_20260606_018/",
+      "boundary": "Known direct AngleMea feedback boundary; not passing graphical or simulation evidence."
+    },
+    {
+      "model": "QuadrotorExperiments.FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke",
+      "packet": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json",
+      "evidence": "Results/mworks_trace_consumption/attitude_feedback_bridge_20260606_019/",
+      "boundary": "Sampled/held attitude-feedback result-context evidence only."
+    },
+    {
+      "model": "QuadrotorExperiments.FactoryTraceIso26ControllerOutputAliasSmoke",
+      "packet": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-DOWNSTREAM-OUTPUT-GROUP-20260606-020.json",
+      "evidence": "Results/mworks_trace_consumption/downstream_output_group_20260606_020/",
+      "boundary": "Controller-output alias visibility only."
+    },
+    {
+      "model": "QuadrotorExperiments.FactoryTraceIso27ActuatorInputAliasSmoke",
+      "packet": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-PREFLIGHT-GROUP-20260606-021.json",
+      "evidence": "Results/mworks_trace_consumption/actuator_preflight_group_20260606_021/",
+      "boundary": "Actuator-input/preflight alias evidence only."
+    },
+    {
+      "model": "QuadrotorExperiments.FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+      "packet": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json",
+      "evidence": "Results/mworks_dynamics_upgrade/20260606_014_actuator_to_wrench_bridge_resume/",
+      "boundary": "Minimal sidecar actuator-input to physical-wrench adapter evidence only."
+    },
+    {
+      "model": "QuadrotorExperiments.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke",
+      "packet": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json",
+      "evidence": "Results/mworks_dynamics_upgrade/20260606_015_wrench_to_external_frame_boundary/",
+      "boundary": "Minimal external frame/test-body boundary evidence only."
+    },
+    {
+      "model": "QuadrotorExperiments.FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+      "packet": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-POST-ISO29-ONE-BOUNDARY-20260606-016.json",
+      "evidence": "Results/mworks_dynamics_upgrade/20260606_016_post_iso29_one_boundary/",
+      "boundary": "Minimal external body state response evidence only."
+    }
+  ],
+  "later_gui_manual_review_scope": {
+    "open_order": [
+      "FactoryLiteTraceSmoke as context only",
+      "FactoryTraceIso23PositionSampleHoldBridgeSmoke",
+      "FactoryTraceIso24DirectAttitudeFeedbackSmoke as known failed direct-feedback boundary context",
+      "FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke",
+      "FactoryTraceIso26ControllerOutputAliasSmoke",
+      "FactoryTraceIso27ActuatorInputAliasSmoke",
+      "FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+      "FactoryTraceIso29ExternalFrameWrenchBoundarySmoke",
+      "FactoryTraceIso30ExternalBodyStateBoundarySmoke embedded in package.mo"
+    ],
+    "review_categories": [
+      "component presence and missing-class/red-block indicators",
+      "connector and port readability",
+      "trace reference, navigation display, sampled/held bridge, controller feedback, controller output alias, actuator input alias, wrench adapter, external frame/body boundary separation",
+      "wire crossing, hidden inherited feedback loops, overlong lines, unlabeled aliases, and ambiguous inherited-modification text",
+      "manual screenshot evidence sufficiency and escalation needs"
+    ],
+    "r1_owned_evidence": [
+      "check_model",
+      "simulate_model",
+      "GetVarTimes and variable probes",
+      "Factory trace consumption",
+      "controller performance",
+      "plant tracking",
+      "closed_loop or mission claims"
+    ]
+  },
+  "forbidden_actions_confirmed": {
+    "opened_mworks_sysplorer_syslab_gui": false,
+    "called_sysplorer_syslab_mworks_mcp": false,
+    "closed_mworks_sysplorer_syslab_window": false,
+    "restarted_or_opened_new_mworks_window": false,
+    "ran_smart_layout_writeback": false,
+    "modified_mo_files": false,
+    "modified_package_order": false,
+    "modified_scripts": false,
+    "modified_references": false,
+    "modified_coagent_runtime": false,
+    "claimed_graphical_pass": false,
+    "claimed_check_model_pass": false,
+    "claimed_simulation_success": false,
+    "claimed_factory_trace_consumption": false,
+    "claimed_controller_performance": false,
+    "claimed_planner_ready": false,
+    "claimed_live_runtime_ack": false,
+    "claimed_closed_loop": false
+  },
+  "claim_boundary": [
+    "This artifact is static GUI/manual review preparation only.",
+    "It selects exactly one P0 family: FactoryTrace Iso chain.",
+    "It is not GUI/MCP graphical review evidence, not Smart Layout output, not check_model evidence, not simulation evidence, and not graphical acceptance."
+  ]
+}

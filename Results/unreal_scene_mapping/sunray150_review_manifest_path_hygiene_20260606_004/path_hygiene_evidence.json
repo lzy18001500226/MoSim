@@ -1,0 +1,308 @@
+{
+  "schema_version": "mosim.sunray150_component_review_path_hygiene.v1",
+  "created_at": "2026-06-06T20:40:51+08:00",
+  "source_manifest": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/sunray150_component_material_reviews_manifest.json",
+  "path_policy": {
+    "future_review_routing_field": "project_relative_path",
+    "do_not_use_legacy_path_for_review_routing": true,
+    "source_manifest_all_outputs_have_project_relative_path": true,
+    "source_manifest_legacy_absolute_path_field_count": 20,
+    "source_manifest_top_level_source_blend_absolute": true,
+    "legacy_absolute_fields_status": "quarantined_existing_manifest_only"
+  },
+  "quality_boundary": {
+    "file_level_checks_passed": true,
+    "manual_visual_review_required": true,
+    "final_material_acceptance": false,
+    "ue_import_export_final_acceptance": false,
+    "runtime_evidence": false
+  },
+  "required_components": {
+    "battery_present": true,
+    "guard_landing_gear_present": true
+  },
+  "component_index": [
+    {
+      "name": "mid360_sensor",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/mid360_sensor.png",
+      "bytes": 1417878,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "mid360_protection_frame",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/mid360_protection_frame.png",
+      "bytes": 1216332,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "carbon_frame",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/carbon_frame.png",
+      "bytes": 1221214,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "aluminum_standoffs",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/aluminum_standoffs.png",
+      "bytes": 1236603,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "front_camera",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/front_camera.png",
+      "bytes": 1271161,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "steel_fasteners",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/steel_fasteners.png",
+      "bytes": 1288571,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "electronics_connectors",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/electronics_connectors.png",
+      "bytes": 1385035,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "pcb_boards",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/pcb_boards.png",
+      "bytes": 1095772,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "n150_stack_boards",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_stack_boards.png",
+      "bytes": 1418240,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "n150_internal_pcb_audit",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_internal_pcb_audit.png",
+      "bytes": 793649,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "n150_ports",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_ports.png",
+      "bytes": 1211270,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "n150_cooling_storage",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_cooling_storage.png",
+      "bytes": 1658892,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "esc_board",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/esc_board.png",
+      "bytes": 1129046,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "connector_shells",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/connector_shells.png",
+      "bytes": 1245628,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "cables_wires",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/cables_wires.png",
+      "bytes": 1053442,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "motor_propeller",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/motor_propeller.png",
+      "bytes": 1185690,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "motor_only",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/motor_only.png",
+      "bytes": 1183809,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "tri_blade_propeller",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/tri_blade_propeller.png",
+      "bytes": 1128846,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "guard_landing_gear",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/guard_landing_gear.png",
+      "bytes": 1200097,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    },
+    {
+      "name": "battery",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/battery.png",
+      "bytes": 1018043,
+      "mode": "RGBA",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "non_flat": true,
+      "manual_review_status": "pending",
+      "legacy_absolute_path_quarantined": true
+    }
+  ],
+  "legacy_absolute_rows": [
+    "mid360_sensor",
+    "mid360_protection_frame",
+    "carbon_frame",
+    "aluminum_standoffs",
+    "front_camera",
+    "steel_fasteners",
+    "electronics_connectors",
+    "pcb_boards",
+    "n150_stack_boards",
+    "n150_internal_pcb_audit",
+    "n150_ports",
+    "n150_cooling_storage",
+    "esc_board",
+    "connector_shells",
+    "cables_wires",
+    "motor_propeller",
+    "motor_only",
+    "tri_blade_propeller",
+    "guard_landing_gear",
+    "battery"
+  ]
+}

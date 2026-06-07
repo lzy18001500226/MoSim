@@ -1,0 +1,47 @@
+{
+  "schema_version": "mosim.validation_summary.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-ECHO-RESULT-ADAPTER-SMOKE-20260606-003",
+  "source": "MWORKS_MCP_result_adapter_smoke",
+  "status": "passed",
+  "commands": [
+    {
+      "command": "python Scripts/mworks/smoke_mworks_mcp_echo_result_adapter.py --probe-json Results/mworks_echo_producer_smoke/20260606_002_mcp_state/echo_mcp_state_probe.json --samples-csv Results/mworks_echo_producer_smoke/20260606_002_mcp_state/echo_mcp_state_samples.csv --commands-output Results/mworks_echo_producer_smoke/20260606_003_result_adapter/mworks_mcp_result_adapter_commands.jsonl --echo-output Results/mworks_echo_producer_smoke/20260606_003_result_adapter/mworks_mcp_result_adapter_echo.jsonl --summary-output Results/mworks_echo_producer_smoke/20260606_003_result_adapter/mworks_mcp_result_adapter_summary.json",
+      "exit_code": 0,
+      "summary": "Generated 6 mosim.ue_command_echo.v1 rows from task-002 MWORKS_MCP result-context samples: 5 accepted MWORKS-owned rows and 1 rejected forbidden pose row."
+    },
+    {
+      "command": "python -m py_compile Scripts/mworks/smoke_mworks_mcp_echo_result_adapter.py Scripts/UE5/smoke_ue_command_echo_state_reducer.py",
+      "exit_code": 0,
+      "summary": "Python compile check passed."
+    },
+    {
+      "command": "python Scripts/UE5/check_ue_command_echo_contract.py Results/mworks_echo_producer_smoke/20260606_003_result_adapter/mworks_mcp_result_adapter_echo.jsonl --require-runtime-ack --output-json Results/mworks_echo_producer_smoke/20260606_003_result_adapter/contract_check_report.json",
+      "exit_code": 0,
+      "summary": "Contract checker passed: ok=true, rows=6, runtime_ack_rows=6, no_pose_overwrite_status=pass."
+    },
+    {
+      "command": "python Scripts/UE5/smoke_ue_command_echo_state_reducer.py --commands Results/mworks_echo_producer_smoke/20260606_003_result_adapter/mworks_mcp_result_adapter_commands.jsonl --echoes Results/mworks_echo_producer_smoke/20260606_003_result_adapter/mworks_mcp_result_adapter_echo.jsonl --state-output Results/mworks_echo_producer_smoke/20260606_003_result_adapter/reducer_states.json --summary-output Results/mworks_echo_producer_smoke/20260606_003_result_adapter/reducer_summary.json",
+      "exit_code": 0,
+      "summary": "Reducer smoke passed: 6 tracked commands, pending=0, accepted=5, rejected=1, accepted_as_runtime_ack=false for all states."
+    },
+    {
+      "command": "python -m pytest Scripts/tests/test_mworks_mcp_echo_result_adapter.py Scripts/tests/test_ue_command_echo_state_reducer.py -q",
+      "exit_code": 0,
+      "summary": "Focused pytest passed: 6 tests."
+    }
+  ],
+  "artifact_refs": {
+    "adapter_summary": "Results/mworks_echo_producer_smoke/20260606_003_result_adapter/mworks_mcp_result_adapter_summary.json",
+    "commands_jsonl": "Results/mworks_echo_producer_smoke/20260606_003_result_adapter/mworks_mcp_result_adapter_commands.jsonl",
+    "echo_jsonl": "Results/mworks_echo_producer_smoke/20260606_003_result_adapter/mworks_mcp_result_adapter_echo.jsonl",
+    "contract_check_report": "Results/mworks_echo_producer_smoke/20260606_003_result_adapter/contract_check_report.json",
+    "reducer_summary": "Results/mworks_echo_producer_smoke/20260606_003_result_adapter/reducer_summary.json",
+    "reducer_states": "Results/mworks_echo_producer_smoke/20260606_003_result_adapter/reducer_states.json"
+  },
+  "claim_boundary": [
+    "Result-adapter smoke only.",
+    "Does not open MWORKS/Sysplorer/Syslab GUI and does not rerun MCP.",
+    "Does not prove live UE runtime ack or live MWORKS ack/downlink.",
+    "Does not prove closed_loop, controller performance, planner_ready, FAST-LIO success, Factory trace consumption, plant tracking, or parameter identification."
+  ]
+}

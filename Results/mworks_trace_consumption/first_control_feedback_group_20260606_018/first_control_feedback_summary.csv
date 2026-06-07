@@ -1,0 +1,2 @@
+probe_id,model_name,selected_group,check_model,simulate_model,simulate_data,get_var_times_count,aliases_available,error_6140_present,boundary
+iso24_direct_attitude_feedback,QuadrotorExperiments.FactoryTraceIso24DirectAttitudeFeedbackSmoke,direct sensors1_1.AngleMea[1..3] into controller roll/pitch/yaw measurement via inherited RealExpression modification,pass,failed,false,0,false,false,direct AngleMea attitude feedback clears result context

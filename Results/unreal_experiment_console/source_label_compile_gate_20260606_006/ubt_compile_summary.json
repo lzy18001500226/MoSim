@@ -1,0 +1,9 @@
+{
+  "command": "powershell -NoProfile -ExecutionPolicy Bypass -File Scripts\\UE5\\build_unreal_renderer.ps1 -UnrealEditorRoot \"D:\\Program Files\\Epic Games\\UE_5.5\" -ProjectPath \"C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\MoSimSceneLibrary.uproject\" -Target MoSimSceneLibraryEditor -Platform Win64 -Configuration Development",
+  "exit_code": 0,
+  "started_at": "2026-06-06T16:34:41.1645372+08:00",
+  "ended_at": "2026-06-06T16:34:52.3024127+08:00",
+  "duration_seconds": 11.138,
+  "stdout_log": "Results\\unreal_experiment_console\\source_label_compile_gate_20260606_006\\ubt_compile_stdout.txt",
+  "stderr_log": "Results\\unreal_experiment_console\\source_label_compile_gate_20260606_006\\ubt_compile_stderr.txt"
+}

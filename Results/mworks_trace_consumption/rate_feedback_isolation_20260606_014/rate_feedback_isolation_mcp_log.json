@@ -1,0 +1,90 @@
+{
+  "schema_version": "mosim.mcp_log_summary.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014",
+  "source": "MWORKS_MCP",
+  "entries": [
+    {
+      "step": "mcp_availability_probe",
+      "tool": "session_manager",
+      "action": "probe",
+      "result": {
+        "ok": true,
+        "cached_driver_probe_ok": true,
+        "dedicated_sysplorer_port": 49154,
+        "find_sysplorer_ports": [49153, 49152, 49154]
+      }
+    },
+    {
+      "step": "load_controller_dependency",
+      "tool": "model_manager",
+      "action": "load_file",
+      "target": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "result": {
+        "ok": true,
+        "data": true,
+        "cached": false
+      }
+    },
+    {
+      "step": "load_experiment_package",
+      "tool": "model_manager",
+      "action": "load_file",
+      "target": "Models/QuadrotorExperiments/package.mo",
+      "result": {
+        "ok": true,
+        "data": true,
+        "cached": false
+      }
+    },
+    {
+      "step": "iso21_check_model",
+      "tool": "check_model",
+      "target": "QuadrotorExperiments.FactoryTraceIso21ControllerRateAliasSmoke",
+      "result": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 2.038
+      }
+    },
+    {
+      "step": "iso21_simulate_model",
+      "tool": "simulate_model",
+      "target": "QuadrotorExperiments.FactoryTraceIso21ControllerRateAliasSmoke",
+      "result": {
+        "ok": true,
+        "data": true,
+        "target_time_s": [0, 2]
+      }
+    },
+    {
+      "step": "iso21_get_var_times",
+      "tool": "result_manager",
+      "action": "get_var_times",
+      "result": {
+        "ok": true,
+        "count": 1001,
+        "first": 0.0,
+        "last": 2.0
+      }
+    },
+    {
+      "step": "iso21_alias_probe",
+      "tool": "result_manager",
+      "action": "get_vars_value_at",
+      "vars": ["x_ref", "y_ref", "z_ref", "yaw_ref", "roll_rate_from_extraction", "pitch_rate_from_extraction", "yaw_rate_from_extraction", "controller_roll_rate_probe", "controller_pitch_rate_probe", "controller_yaw_rate_probe", "controller_roll_accel_probe", "controller_pitch_accel_probe", "controller_yaw_accel_probe", "controller3_2.roll_rate", "controller3_2.pitch_rate", "controller3_2.yaw_rate"],
+      "result": {
+        "t_0_5": [0.3433963686587412, 0.417558977229446, 1.2386167305579043, 1.7650531321614733, -12.734418353534453, -18.423147656090773, -27.20463284653022, -0.8440258494877636, -4.857634674110454, 1.5576727124811156, -10.831413289474003, -62.71282182596585, -6.782545947804031, -0.8440258494877636, -4.857634674110454, 1.5576727124811156],
+        "t_1_0": [0.31861753694312633, 0.49481767718910424, 1.242037957383867, 1.9974016333898024, -57.81768275928733, 78.08279759370511, -106.06504749494077, 2.563892005185801, -2.1076639304139158, 0.013278549820152006, 31.38457156957948, -20.96060966286995, 24.693267652807542, 2.563892005185801, -2.1076639304139158, 0.013278549820152006],
+        "t_2_0": [0.22528064041293117, 0.6178306433245998, 1.2469737036046606, 2.4422701702657834, 0.948931765922989, 81.37210958401153, 8.390818636892787, -1.1777645677501363, 9.132831036148715, -4.109394559620297, -14.706425137890031, 116.23541540767272, 10.850099341224606, -1.1777645677501363, 9.132831036148715, -4.109394559620297]
+      }
+    }
+  ],
+  "error_6140_present": false,
+  "forbidden_actions_avoided": [
+    "ClearAll not called",
+    "ChangeDirectory not called",
+    "full Factory wrapper not retried",
+    "full sensor bus not added",
+    "controller interface not changed"
+  ]
+}

@@ -1,0 +1,60 @@
+﻿{
+    "timestamp":  "2026-06-06T21:40:56+08:00",
+    "status":  "dry_run_no_click_posted",
+    "method":  "Win32 ShowWindow optional SW_SHOWNOACTIVATE + PostMessage WM_MOUSEMOVE/WM_LBUTTONDOWN/WM_LBUTTONUP + optional SW_SHOWMINNOACTIVE",
+    "title_regex":  "QuadrotorExperiments - Sysplorer",
+    "target_before":  {
+                          "hwnd":  "0x2CC0EE2",
+                          "pid":  640,
+                          "title":  "QuadrotorExperiments - Sysplorer [教育版]",
+                          "class":  "Qt5QWindowIcon",
+                          "visible":  true,
+                          "minimized":  true
+                      },
+    "target_after":  {
+                         "hwnd":  "0x2CC0EE2",
+                         "pid":  640,
+                         "title":  "QuadrotorExperiments - Sysplorer [教育版]",
+                         "class":  "Qt5QWindowIcon",
+                         "visible":  true,
+                         "minimized":  true
+                     },
+    "restore_minimized":  true,
+    "keep_restored":  false,
+    "was_minimized":  true,
+    "rect":  {
+                 "left":  -7,
+                 "bottom":  1111,
+                 "top":  -7,
+                 "right":  2055,
+                 "height":  1118,
+                 "width":  2062
+             },
+    "click_client":  {
+                         "y":  91,
+                         "x":  1126
+                     },
+    "click_ratio":  {
+                        "y":  0.081,
+                        "x":  0.546
+                    },
+    "click_posted":  false,
+    "foreground_before":  {
+                              "hwnd":  "0x3120B3E",
+                              "pid":  48800,
+                              "title":  "Codex",
+                              "class":  "Chrome_WidgetWin_1",
+                              "visible":  true,
+                              "minimized":  false
+                          },
+    "foreground_after":  {
+                             "hwnd":  "0x3120B3E",
+                             "pid":  48800,
+                             "title":  "Codex",
+                             "class":  "Chrome_WidgetWin_1",
+                             "visible":  true,
+                             "minimized":  false
+                         },
+    "focus_stolen_by_target":  false,
+    "claim_boundary":  "Background PostMessage works for some Qt/window controls but not all. Use only for approved low-risk UI actions; for license, login, crash, or error-report dialogs, capture evidence and return to PMO instead of clicking recovery buttons."
+}

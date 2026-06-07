@@ -1,0 +1,4 @@
+time,controller_select_status,wind_profile_status,motor_fault_status,scenario_reset_status,recording_status,forbidden_pose_status,no_pose_overwrite_status,accepted_mworks_owned_count,rejected_non_mworks_count,not_live_ue_runtime_ack,not_closed_loop,echo_state_keepalive
+0.0,1.0,0.0,1.0,0.0,0.0,-1.0,1.0,2.0,2.0,1.0,1.0,0.004
+0.5,1.0,1.0,1.0,1.0,0.0,-1.0,1.0,4.0,2.0,1.0,1.0,0.006
+1.0,1.0,1.0,1.0,1.0,1.0,-1.0,1.0,5.0,2.0,1.0,1.0,0.007

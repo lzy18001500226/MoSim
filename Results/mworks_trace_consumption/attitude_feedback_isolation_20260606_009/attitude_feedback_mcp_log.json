@@ -1,0 +1,133 @@
+{
+  "schema_version": "mosim.mworks_mcp_log.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009",
+  "source": "MWORKS_MCP",
+  "session_manager_probe": {
+    "ok": true,
+    "find_sysplorer_ports": [
+      49153,
+      49152,
+      49154
+    ],
+    "cached_driver_probe_ok": true,
+    "dedicated_sysplorer_port": 49154
+  },
+  "package_loads": [
+    {
+      "tool": "model_manager.load_file",
+      "file_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "ok": true,
+      "cached": true,
+      "purpose": "read-only official baseline dependency"
+    },
+    {
+      "tool": "model_manager.load_file",
+      "file_path": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "ok": true,
+      "cached": true,
+      "purpose": "project-owned equation controller dependency"
+    },
+    {
+      "tool": "model_manager.load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "ok": true,
+      "cached": false,
+      "purpose": "project-owned experiment package reload"
+    }
+  ],
+  "probes": [
+    {
+      "model_name": "QuadrotorExperiments.FactoryTraceIso10RollFeedbackSmoke",
+      "check_model": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 1.853
+      },
+      "simulate_model": {
+        "ok": true,
+        "api": "SimulateModel",
+        "data": false,
+        "simulate_api_reported_failure": true,
+        "error": "SimulateModel returned False; GetLastErrors: MessageText: [上一条命令没有日志信息]",
+        "verify_result_var": "x_ref",
+        "verify_time_point": 1.0,
+        "verified_value": 0.0
+      },
+      "result_reads": {
+        "GetVarTimes": [],
+        "GetVarsValueAt_1s": [],
+        "GetVarsValueAt_end": []
+      }
+    },
+    {
+      "model_name": "QuadrotorExperiments.FactoryTraceIso11PitchFeedbackSmoke",
+      "check_model": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 2.074
+      },
+      "simulate_model": {
+        "ok": true,
+        "api": "SimulateModel",
+        "data": false,
+        "simulate_api_reported_failure": true,
+        "error": "SimulateModel returned False; GetLastErrors: MessageText: [上一条命令没有日志信息]",
+        "verify_result_var": "x_ref",
+        "verify_time_point": 1.0,
+        "verified_value": 0.0
+      },
+      "result_reads": {
+        "GetVarTimes": [],
+        "GetVarsValueAt_1s": [],
+        "GetVarsValueAt_end": []
+      }
+    },
+    {
+      "model_name": "QuadrotorExperiments.FactoryTraceIso12RollFeedbackNegatedSmoke",
+      "check_model": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 1.971
+      },
+      "simulate_model": {
+        "ok": true,
+        "api": "SimulateModel",
+        "data": false,
+        "simulate_api_reported_failure": true,
+        "error": "SimulateModel returned False; GetLastErrors: MessageText: [上一条命令没有日志信息]",
+        "verify_result_var": "x_ref",
+        "verify_time_point": 1.0,
+        "verified_value": 0.0
+      },
+      "result_reads": {
+        "GetVarTimes": [],
+        "GetVarsValueAt_1s": [],
+        "GetVarsValueAt_end": []
+      }
+    },
+    {
+      "model_name": "QuadrotorExperiments.FactoryTraceIso13PitchFeedbackNegatedSmoke",
+      "check_model": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 1.956
+      },
+      "simulate_model": {
+        "ok": true,
+        "api": "SimulateModel",
+        "data": false,
+        "simulate_api_reported_failure": true,
+        "error": "SimulateModel returned False; GetLastErrors: MessageText: [上一条命令没有日志信息]",
+        "verify_result_var": "x_ref",
+        "verify_time_point": 1.0,
+        "verified_value": 0.0
+      },
+      "result_reads": {
+        "GetVarTimes": [],
+        "GetVarsValueAt_1s": [],
+        "GetVarsValueAt_end": []
+      }
+    }
+  ],
+  "result_binding_interpretation": "All probes passed check_model, but SimulateModel reported data=false and the explicit result reads returned empty time and empty alias values. The tool warning about GetResultVariableInfo seeing x_ref is not sufficient evidence of a usable result context because GetVarTimes was empty."
+}

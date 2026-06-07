@@ -1,0 +1,171 @@
+{
+  "schema_version": "mosim.mworks_trace_probe.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-SENSOR-BUS-RECONNECT-20260606-015",
+  "created_at": "2026-06-06T10:30:00+08:00",
+  "source": "MWORKS_MCP",
+  "quality_status": "blocked_first_new_boundary_found",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "target_thread_id": "019e9999-b0d3-7682-bccd-faef08fcf1df",
+  "prior_context": {
+    "p0_gap_matrix": "Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_CLOSED_LOOP_GAP_MATRIX.json",
+    "rate_feedback_return": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014.json",
+    "trace_consume_blocker": "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json",
+    "latest_passing_baseline": "QuadrotorExperiments.FactoryTraceIso21ControllerRateAliasSmoke"
+  },
+  "reconnect_choice": {
+    "rationale": "Full Factory trace wrapper includes sensors1_1.PosMea -> navigationDisplay.actual_position, while Iso21 had the passing controller/plant/rate-alias baseline without this direct sensor-to-display reconnect. This is a minimal project-owned sensor/display reconnect group that moves toward Factory trace wrapper behavior without retrying the full wrapper.",
+    "new_group": "sensors1_1.PosMea -> navigationDisplay.actual_position plus display actual/reference aliases",
+    "not_added": [
+      "full Factory wrapper",
+      "full sensor bus",
+      "controller interface changes",
+      "mass/inertia/motor/thrust/rotor geometry changes"
+    ]
+  },
+  "mcp_probe": {
+    "initial_probe": {
+      "ok": true,
+      "cached_driver_present": false,
+      "find_sysplorer_ports": [49153, 49152]
+    },
+    "ensure": {
+      "ok": true,
+      "driver_ready": true,
+      "dedicated_sysplorer_port": 49154
+    }
+  },
+  "load_sequence": [
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "check_model",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "ok": false,
+      "data": false,
+      "classification": "dependency_not_loaded",
+      "error_excerpt": "QuadrotorModel.Mechanics.QuadChassis not found"
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "force_reload": false,
+      "ok": true,
+      "data": true,
+      "role": "dependency_load_only_no_baseline_edit"
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    }
+  ],
+  "probes": [
+    {
+      "probe_id": "iso22_sensor_display_reconnect",
+      "model_file": "Models/QuadrotorExperiments/FactoryTraceIso22SensorDisplayReconnectSmoke.mo",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "base_model": "QuadrotorExperiments.FactoryTraceIso21ControllerRateAliasSmoke",
+      "reconnect_group": "sensors1_1.PosMea -> navigationDisplay.actual_position",
+      "signal_mapping": [
+        "connect(sensors1_1.PosMea, navigationDisplay.actual_position)",
+        "display_actual_x/y/z = sensors1_1.PosMea[1..3]",
+        "display_reference_x/y/z = planningReference.position_command[1..3]"
+      ],
+      "check_model": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 2.735
+      },
+      "simulate_model": {
+        "ok": false,
+        "data": false,
+        "target_time_s": [0, 2],
+        "elapsed_s_observed": 6.6959,
+        "error_kind": "simulate_failed",
+        "error_6140_present": true,
+        "error_excerpt": "compiler error 6140: redundant Real equations; examples include quadChassisTest20_1.Dronefixed frame rotation/position equations"
+      },
+      "get_var_times": {
+        "ok": true,
+        "data": [],
+        "count": 0
+      },
+      "alias_probe": {
+        "vars": [
+          "x_ref",
+          "y_ref",
+          "z_ref",
+          "yaw_ref",
+          "display_actual_x",
+          "display_actual_y",
+          "display_actual_z",
+          "display_reference_x",
+          "display_reference_y",
+          "display_reference_z",
+          "controller_roll_rate_probe",
+          "controller_pitch_rate_probe",
+          "controller_yaw_rate_probe"
+        ],
+        "time_point": 1.0,
+        "data": []
+      },
+      "verdict": "blocked_first_new_boundary_sensor_position_to_navigation_display_actual_position"
+    }
+  ],
+  "first_new_boundary": {
+    "model": "QuadrotorExperiments.FactoryTraceIso22SensorDisplayReconnectSmoke",
+    "group": "sensors1_1.PosMea -> navigationDisplay.actual_position",
+    "failure_kind": "simulate_failed_result_context_empty",
+    "check_model": "pass",
+    "simulate_model": "data_false",
+    "get_var_times_count": 0,
+    "error_6140_present": true
+  },
+  "evidence": [
+    "Sysplorer MCP ensure recovered driver_ready=true on dedicated port 49154.",
+    "Official QuadrotorModel package was loaded only as a dependency after initial check reported missing QuadrotorModel classes.",
+    "Iso22 check_model passed after dependency load.",
+    "Iso22 0-2 s SimulateModel returned data=false with error 6140 redundant Real equations.",
+    "GetVarTimes returned an empty array and alias probes returned no values."
+  ],
+  "unknowns": [
+    "Whether the failure is caused by direct PosMea vector connection to navigationDisplay.actual_position, by display internals depending on actual_position derivatives/events, or by reintroducing an overconstrained plant/display coupling remains unresolved.",
+    "Whether a RealExpression or sampled/held position bridge to navigationDisplay.actual_position would preserve result context is untested.",
+    "Full Factory trace consumption remains blocked and was not retried."
+  ],
+  "risks": [
+    "Direct sensor-to-display reconnect can reintroduce 6140 topology failures even when controller/plant/rate-alias baseline passes.",
+    "Result context becomes empty after the failed simulation, so alias values cannot be used for metrics or trace consumption.",
+    "A full Factory retry before decoupling this display actual-position path would likely reproduce blocked trace-consumption behavior."
+  ],
+  "next_validation": [
+    "Create a narrow Iso23 display-position decoupling probe using RealExpression or sampled/held bridge between sensors1_1.PosMea and navigationDisplay.actual_position.",
+    "If the decoupled display path passes, add the next display/sensor component group one at a time.",
+    "Do not retry the full Factory wrapper until the direct actual_position display boundary is resolved with check_model, 0-2 s SimulateModel, GetVarTimes, and alias probes."
+  ],
+  "forbidden_actions_confirmed": [
+    "References/MWORKS/QuadrotorModel/package.mo was not edited.",
+    "mass/inertia/motor/thrust/rotor geometry parameters were not changed.",
+    "ClearAll and ChangeDirectory were not called.",
+    "full Factory wrapper was not retried.",
+    "closed_loop, Factory trace consumption, controller performance, plant tracking, and parameter identification were not claimed."
+  ]
+}

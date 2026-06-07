@@ -1,0 +1,22 @@
+{
+  "schema": "mosim.ue_command_echo_state_reducer_smoke.v1",
+  "source": "offline_reducer_smoke",
+  "ok": true,
+  "total_commands": 4,
+  "tracked_commands": 4,
+  "pending": 1,
+  "accepted": 2,
+  "rejected": 1,
+  "orphan_echoes": [],
+  "invalid_echoes": [],
+  "duplicate_commands": [],
+  "issues": [],
+  "not_live_ue_runtime_ack": true,
+  "planner_ready": false,
+  "closed_loop_ready": false,
+  "claim_boundary": [
+    "Pending state originates only from UE command requests.",
+    "Accepted/rejected UI state originates only from matching mosim.ue_command_echo.v1 rows.",
+    "Offline reducer smoke does not prove live UE, MWORKS, ROS2, planner, or closed-loop runtime acknowledgement."
+  ]
+}

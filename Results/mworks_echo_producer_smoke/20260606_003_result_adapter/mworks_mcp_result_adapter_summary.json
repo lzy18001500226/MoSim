@@ -1,0 +1,27 @@
+{
+  "schema_version": "mosim.mworks_mcp_echo_result_adapter_smoke.v1",
+  "source": "MWORKS_MCP_result_adapter_smoke",
+  "evidence_level": "result_context_adapter_smoke",
+  "ok": true,
+  "input_probe_json": "C:/Users/HP/Desktop/MoSim/Results/mworks_echo_producer_smoke/20260606_002_mcp_state/echo_mcp_state_probe.json",
+  "input_samples_csv": "C:/Users/HP/Desktop/MoSim/Results/mworks_echo_producer_smoke/20260606_002_mcp_state/echo_mcp_state_samples.csv",
+  "command_jsonl": "C:/Users/HP/Desktop/MoSim/Results/mworks_echo_producer_smoke/20260606_003_result_adapter/mworks_mcp_result_adapter_commands.jsonl",
+  "echo_jsonl": "C:/Users/HP/Desktop/MoSim/Results/mworks_echo_producer_smoke/20260606_003_result_adapter/mworks_mcp_result_adapter_echo.jsonl",
+  "total_commands": 6,
+  "total_echo_rows": 6,
+  "accepted": 5,
+  "rejected": 1,
+  "forbidden_pose_rejected": true,
+  "no_pose_overwrite_status": "pass",
+  "not_live_ue_runtime_ack": true,
+  "not_live_mworks_downlink": true,
+  "not_closed_loop": true,
+  "not_controller_performance": true,
+  "not_planner_ready": true,
+  "not_factory_trace_consumption": true,
+  "claim_boundary": [
+    "This adapts existing task-002 MWORKS_MCP result-context evidence into schema-valid echo rows.",
+    "This is not a live UE runtime ack or live MWORKS ack/downlink.",
+    "This is not closed_loop, controller performance, planner_ready, FAST-LIO success, Factory trace consumption, plant tracking, or parameter identification."
+  ]
+}

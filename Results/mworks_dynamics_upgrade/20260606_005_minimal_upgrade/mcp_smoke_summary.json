@@ -1,0 +1,111 @@
+{
+  "schema_version": "mosim.mworks_dynamics_upgrade_evidence.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-DYNAMICS-MIN-UPGRADE-20260606-005",
+  "created_at": "2026-06-06T16:11:57+08:00",
+  "source": "MWORKS_MCP",
+  "status": "passed_minimal_dynamics_smoke",
+  "official_baseline_modified": false,
+  "project_model_modified_in_this_task": false,
+  "mcp": {
+    "session_probe_ok": true,
+    "dedicated_sysplorer_port": 49152,
+    "cached_driver_probe_ok": true,
+    "check_model_before_simulate_model": true
+  },
+  "loaded_files": [
+    {
+      "path": "References/MWORKS/QuadrotorModel/package.mo",
+      "api": "OpenModelFile",
+      "ok": true,
+      "note": "Official baseline loaded for read-only check; not edited."
+    },
+    {
+      "path": "Models/QuadrotorExperiments/package.mo",
+      "api": "OpenModelFile",
+      "ok": true,
+      "note": "Project-owned experiment package."
+    }
+  ],
+  "model_checks": [
+    {
+      "model_name": "QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke",
+      "api": "CheckModel",
+      "ok": true
+    },
+    {
+      "model_name": "QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke",
+      "api": "CheckModel",
+      "ok": true
+    },
+    {
+      "model_name": "QuadrotorModel.Mechanics.QuadChassis",
+      "api": "CheckModel",
+      "ok": true,
+      "note": "Baseline-only gate."
+    }
+  ],
+  "simulations": [
+    {
+      "model_name": "QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke",
+      "api": "SimulateModel",
+      "sim_mode": 1,
+      "ok": true,
+      "verified_variable": "dynamics.hover_thrust_error",
+      "verify_time_point": "end",
+      "end_value": 1.7763568394002505e-15,
+      "unit": "N"
+    },
+    {
+      "model_name": "QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke",
+      "api": "SimulateModel",
+      "sim_mode": 1,
+      "ok": true,
+      "verified_variable": "dynamics.total_moment_body[3]",
+      "verify_time_point": "end",
+      "end_value": 0.06153801695664962,
+      "unit": "N.m"
+    }
+  ],
+  "dynamics_term_matrix": {
+    "command_to_speed_mapping": {
+      "status": "present_project_owned_smoke",
+      "evidence": "Sunray150RflyStyleRotorDynamics.motor_command drives signed visual rotor speed command."
+    },
+    "motor_lag": {
+      "status": "present_project_owned_smoke",
+      "evidence": "der(omega[i]) = (motor_command[i] - omega[i]) / motor_tau[i]."
+    },
+    "thrust_ct_omega_squared": {
+      "status": "present_project_owned_smoke",
+      "evidence": "thrust[i] = lift_coefficient * omega[i] * omega[i]."
+    },
+    "yaw_reaction_torque": {
+      "status": "present_project_owned_smoke",
+      "evidence": "yaw_reaction_moment[i] = yaw_direction[i] * moment_constant * thrust[i]."
+    },
+    "rotor_center_arm_moment": {
+      "status": "present_project_owned_smoke_and_baseline_geometry",
+      "evidence": "Project smoke computes r x F; official QuadChassis applies per-rotor force at Dronefixed1..4 centers."
+    },
+    "rotor_gyroscopic_moment": {
+      "status": "missing_follow_up",
+      "evidence": "Not implemented in this minimum slice."
+    },
+    "body_drag": {
+      "status": "missing_follow_up",
+      "evidence": "Not implemented in this minimum slice."
+    },
+    "angular_damping": {
+      "status": "missing_follow_up",
+      "evidence": "Not implemented in this minimum slice."
+    }
+  },
+  "claim_boundary": {
+    "parameter_identification": false,
+    "controller_performance": false,
+    "closed_loop": false,
+    "planner_ready": false,
+    "mission_success": false,
+    "factory_trace_consumption": false
+  }
+}

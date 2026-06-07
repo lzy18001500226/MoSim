@@ -1,0 +1,705 @@
+{
+  "schema_version": "mosim.sunray150_component_material_realism_check.v1",
+  "created_at": "2026-06-06T23:47:44+08:00",
+  "source_manifest": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/sunray150_component_material_reviews_manifest.json",
+  "target_components": [
+    "front_camera",
+    "pcb_boards",
+    "n150_stack_boards",
+    "n150_internal_pcb_audit",
+    "n150_ports",
+    "n150_cooling_storage",
+    "esc_board",
+    "electronics_connectors",
+    "connector_shells",
+    "cables_wires",
+    "battery",
+    "guard_landing_gear"
+  ],
+  "quality_boundary": {
+    "file_level_checks_passed": true,
+    "manual_visual_review_required": true,
+    "final_material_acceptance": false,
+    "ue_import_export_final_acceptance": false,
+    "runtime_evidence": false
+  },
+  "component_index": [
+    {
+      "name": "front_camera",
+      "image": {
+        "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/front_camera.png",
+        "bytes": 1320569,
+        "mode": "RGBA",
+        "dimensions": [
+          1400,
+          1050
+        ],
+        "non_flat": true,
+        "rgb_extrema": [
+          [
+            0,
+            230
+          ],
+          [
+            0,
+            231
+          ],
+          [
+            0,
+            225
+          ]
+        ],
+        "sample_unique_color_count": 252
+      },
+      "target_object_count": 3,
+      "override_material": "Sunray150_ComponentReview_Camera_Black_Polymer_PBR_Map_Audit.001",
+      "pbr_targets": [
+        "Base Color",
+        "Bump",
+        "Roughness"
+      ],
+      "pbr_maps": [
+        {
+          "target": "Base Color",
+          "image": "sunray150_camera_black_polymer_base.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_camera_black_polymer_base.png",
+          "colorspace": "sRGB"
+        },
+        {
+          "target": "Roughness",
+          "image": "sunray150_camera_black_polymer_roughness.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_camera_black_polymer_roughness.png",
+          "colorspace": "Non-Color"
+        },
+        {
+          "target": "Bump",
+          "image": "sunray150_camera_black_polymer_bump.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_camera_black_polymer_bump.png",
+          "colorspace": "Non-Color"
+        }
+      ],
+      "manual_review_status": "pending"
+    },
+    {
+      "name": "pcb_boards",
+      "image": {
+        "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/pcb_boards.png",
+        "bytes": 1306927,
+        "mode": "RGBA",
+        "dimensions": [
+          1400,
+          1050
+        ],
+        "non_flat": true,
+        "rgb_extrema": [
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ]
+        ],
+        "sample_unique_color_count": 929
+      },
+      "target_object_count": 33,
+      "override_material": "Sunray150_ComponentReview_Black_PCB_Soldermask_PBR_Map_Audit.003",
+      "pbr_targets": [
+        "Base Color",
+        "Bump",
+        "Roughness"
+      ],
+      "pbr_maps": [
+        {
+          "target": "Base Color",
+          "image": "sunray150_pcb_black_base.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_base.png",
+          "colorspace": "sRGB"
+        },
+        {
+          "target": "Roughness",
+          "image": "sunray150_pcb_black_roughness.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_roughness.png",
+          "colorspace": "Non-Color"
+        },
+        {
+          "target": "Bump",
+          "image": "sunray150_pcb_black_bump.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_bump.png",
+          "colorspace": "Non-Color"
+        }
+      ],
+      "manual_review_status": "pending"
+    },
+    {
+      "name": "n150_stack_boards",
+      "image": {
+        "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_stack_boards.png",
+        "bytes": 1947956,
+        "mode": "RGBA",
+        "dimensions": [
+          1400,
+          1050
+        ],
+        "non_flat": true,
+        "rgb_extrema": [
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            242
+          ]
+        ],
+        "sample_unique_color_count": 1120
+      },
+      "target_object_count": 33,
+      "override_material": "Sunray150_ComponentReview_Black_PCB_Soldermask_PBR_Map_Audit.005",
+      "pbr_targets": [
+        "Base Color",
+        "Bump",
+        "Roughness"
+      ],
+      "pbr_maps": [
+        {
+          "target": "Base Color",
+          "image": "sunray150_pcb_black_base.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_base.png",
+          "colorspace": "sRGB"
+        },
+        {
+          "target": "Roughness",
+          "image": "sunray150_pcb_black_roughness.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_roughness.png",
+          "colorspace": "Non-Color"
+        },
+        {
+          "target": "Bump",
+          "image": "sunray150_pcb_black_bump.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_bump.png",
+          "colorspace": "Non-Color"
+        }
+      ],
+      "manual_review_status": "pending"
+    },
+    {
+      "name": "n150_internal_pcb_audit",
+      "image": {
+        "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_internal_pcb_audit.png",
+        "bytes": 1494039,
+        "mode": "RGBA",
+        "dimensions": [
+          1400,
+          1050
+        ],
+        "non_flat": true,
+        "rgb_extrema": [
+          [
+            7,
+            255
+          ],
+          [
+            12,
+            255
+          ],
+          [
+            10,
+            255
+          ]
+        ],
+        "sample_unique_color_count": 869
+      },
+      "target_object_count": 7,
+      "override_material": "Sunray150_ComponentReview_Black_PCB_Soldermask_PBR_Map_Audit.007",
+      "pbr_targets": [
+        "Base Color",
+        "Bump",
+        "Roughness"
+      ],
+      "pbr_maps": [
+        {
+          "target": "Base Color",
+          "image": "sunray150_pcb_black_base.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_base.png",
+          "colorspace": "sRGB"
+        },
+        {
+          "target": "Roughness",
+          "image": "sunray150_pcb_black_roughness.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_roughness.png",
+          "colorspace": "Non-Color"
+        },
+        {
+          "target": "Bump",
+          "image": "sunray150_pcb_black_bump.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_bump.png",
+          "colorspace": "Non-Color"
+        }
+      ],
+      "manual_review_status": "pending"
+    },
+    {
+      "name": "n150_ports",
+      "image": {
+        "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_ports.png",
+        "bytes": 1366570,
+        "mode": "RGBA",
+        "dimensions": [
+          1400,
+          1050
+        ],
+        "non_flat": true,
+        "rgb_extrema": [
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ]
+        ],
+        "sample_unique_color_count": 729
+      },
+      "target_object_count": 122,
+      "override_material": "Sunray150_ComponentReview_Black_PCB_Soldermask_PBR_Map_Audit.009",
+      "pbr_targets": [
+        "Base Color",
+        "Bump",
+        "Roughness"
+      ],
+      "pbr_maps": [
+        {
+          "target": "Base Color",
+          "image": "sunray150_pcb_black_base.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_base.png",
+          "colorspace": "sRGB"
+        },
+        {
+          "target": "Roughness",
+          "image": "sunray150_pcb_black_roughness.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_roughness.png",
+          "colorspace": "Non-Color"
+        },
+        {
+          "target": "Bump",
+          "image": "sunray150_pcb_black_bump.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_bump.png",
+          "colorspace": "Non-Color"
+        }
+      ],
+      "manual_review_status": "pending"
+    },
+    {
+      "name": "n150_cooling_storage",
+      "image": {
+        "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_cooling_storage.png",
+        "bytes": 2115194,
+        "mode": "RGBA",
+        "dimensions": [
+          1400,
+          1050
+        ],
+        "non_flat": true,
+        "rgb_extrema": [
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ]
+        ],
+        "sample_unique_color_count": 1342
+      },
+      "target_object_count": 21,
+      "override_material": "Sunray150_ComponentReview_Black_PCB_Soldermask_PBR_Map_Audit.011",
+      "pbr_targets": [
+        "Base Color",
+        "Bump",
+        "Roughness"
+      ],
+      "pbr_maps": [
+        {
+          "target": "Base Color",
+          "image": "sunray150_pcb_black_base.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_base.png",
+          "colorspace": "sRGB"
+        },
+        {
+          "target": "Roughness",
+          "image": "sunray150_pcb_black_roughness.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_roughness.png",
+          "colorspace": "Non-Color"
+        },
+        {
+          "target": "Bump",
+          "image": "sunray150_pcb_black_bump.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_bump.png",
+          "colorspace": "Non-Color"
+        }
+      ],
+      "manual_review_status": "pending"
+    },
+    {
+      "name": "esc_board",
+      "image": {
+        "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/esc_board.png",
+        "bytes": 1321470,
+        "mode": "RGBA",
+        "dimensions": [
+          1400,
+          1050
+        ],
+        "non_flat": true,
+        "rgb_extrema": [
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ]
+        ],
+        "sample_unique_color_count": 1028
+      },
+      "target_object_count": 18,
+      "override_material": "Sunray150_ComponentReview_Black_PCB_Soldermask_PBR_Map_Audit.013",
+      "pbr_targets": [
+        "Base Color",
+        "Bump",
+        "Roughness"
+      ],
+      "pbr_maps": [
+        {
+          "target": "Base Color",
+          "image": "sunray150_pcb_black_base.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_base.png",
+          "colorspace": "sRGB"
+        },
+        {
+          "target": "Roughness",
+          "image": "sunray150_pcb_black_roughness.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_roughness.png",
+          "colorspace": "Non-Color"
+        },
+        {
+          "target": "Bump",
+          "image": "sunray150_pcb_black_bump.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_bump.png",
+          "colorspace": "Non-Color"
+        }
+      ],
+      "manual_review_status": "pending"
+    },
+    {
+      "name": "electronics_connectors",
+      "image": {
+        "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/electronics_connectors.png",
+        "bytes": 1465151,
+        "mode": "RGBA",
+        "dimensions": [
+          1400,
+          1050
+        ],
+        "non_flat": true,
+        "rgb_extrema": [
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            220
+          ]
+        ],
+        "sample_unique_color_count": 674
+      },
+      "target_object_count": 173,
+      "override_material": "Sunray150_ComponentReview_Black_PCB_Soldermask_PBR_Map_Audit.001",
+      "pbr_targets": [
+        "Base Color",
+        "Bump",
+        "Roughness"
+      ],
+      "pbr_maps": [
+        {
+          "target": "Base Color",
+          "image": "sunray150_pcb_black_base.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_base.png",
+          "colorspace": "sRGB"
+        },
+        {
+          "target": "Roughness",
+          "image": "sunray150_pcb_black_roughness.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_roughness.png",
+          "colorspace": "Non-Color"
+        },
+        {
+          "target": "Bump",
+          "image": "sunray150_pcb_black_bump.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_bump.png",
+          "colorspace": "Non-Color"
+        }
+      ],
+      "manual_review_status": "pending"
+    },
+    {
+      "name": "connector_shells",
+      "image": {
+        "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/connector_shells.png",
+        "bytes": 1306100,
+        "mode": "RGBA",
+        "dimensions": [
+          1400,
+          1050
+        ],
+        "non_flat": true,
+        "rgb_extrema": [
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ]
+        ],
+        "sample_unique_color_count": 576
+      },
+      "target_object_count": 122,
+      "override_material": "Sunray150_ComponentReview_Nickel_Connector_Shell_PBR_Map_Audit.008",
+      "pbr_targets": [
+        "Base Color",
+        "Bump",
+        "Roughness"
+      ],
+      "pbr_maps": [
+        {
+          "target": "Base Color",
+          "image": "sunray150_nickel_connector_base.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_nickel_connector_base.png",
+          "colorspace": "sRGB"
+        },
+        {
+          "target": "Roughness",
+          "image": "sunray150_nickel_connector_roughness.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_nickel_connector_roughness.png",
+          "colorspace": "Non-Color"
+        },
+        {
+          "target": "Bump",
+          "image": "sunray150_nickel_connector_bump.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_nickel_connector_bump.png",
+          "colorspace": "Non-Color"
+        }
+      ],
+      "manual_review_status": "pending"
+    },
+    {
+      "name": "cables_wires",
+      "image": {
+        "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/cables_wires.png",
+        "bytes": 1046959,
+        "mode": "RGBA",
+        "dimensions": [
+          1400,
+          1050
+        ],
+        "non_flat": true,
+        "rgb_extrema": [
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ]
+        ],
+        "sample_unique_color_count": 278
+      },
+      "target_object_count": 64,
+      "override_material": "Sunray150_ComponentReview_Black_Rubber_Cable_PBR_Map_Audit.020",
+      "pbr_targets": [
+        "Base Color",
+        "Bump",
+        "Roughness"
+      ],
+      "pbr_maps": [
+        {
+          "target": "Base Color",
+          "image": "sunray150_black_rubber_base.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_black_rubber_base.png",
+          "colorspace": "sRGB"
+        },
+        {
+          "target": "Roughness",
+          "image": "sunray150_black_rubber_roughness.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_black_rubber_roughness.png",
+          "colorspace": "Non-Color"
+        },
+        {
+          "target": "Bump",
+          "image": "sunray150_black_rubber_bump.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_black_rubber_bump.png",
+          "colorspace": "Non-Color"
+        }
+      ],
+      "manual_review_status": "pending"
+    },
+    {
+      "name": "battery",
+      "image": {
+        "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/battery.png",
+        "bytes": 990722,
+        "mode": "RGBA",
+        "dimensions": [
+          1400,
+          1050
+        ],
+        "non_flat": true,
+        "rgb_extrema": [
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ]
+        ],
+        "sample_unique_color_count": 252
+      },
+      "target_object_count": 8,
+      "override_material": "Sunray150_ComponentReview_Battery_Heatshrink_PBR_Map_Audit.012",
+      "pbr_targets": [
+        "Base Color",
+        "Bump",
+        "Roughness"
+      ],
+      "pbr_maps": [
+        {
+          "target": "Base Color",
+          "image": "sunray150_battery_heatshrink_base.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_battery_heatshrink_base.png",
+          "colorspace": "sRGB"
+        },
+        {
+          "target": "Roughness",
+          "image": "sunray150_battery_heatshrink_roughness.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_battery_heatshrink_roughness.png",
+          "colorspace": "Non-Color"
+        },
+        {
+          "target": "Bump",
+          "image": "sunray150_battery_heatshrink_bump.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_battery_heatshrink_bump.png",
+          "colorspace": "Non-Color"
+        }
+      ],
+      "manual_review_status": "pending"
+    },
+    {
+      "name": "guard_landing_gear",
+      "image": {
+        "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/guard_landing_gear.png",
+        "bytes": 1209668,
+        "mode": "RGBA",
+        "dimensions": [
+          1400,
+          1050
+        ],
+        "non_flat": true,
+        "rgb_extrema": [
+          [
+            9,
+            128
+          ],
+          [
+            9,
+            139
+          ],
+          [
+            10,
+            141
+          ]
+        ],
+        "sample_unique_color_count": 559
+      },
+      "target_object_count": 2,
+      "override_material": "Sunray150_ComponentReview_Smoked_Guard_Plastic_PBR_Map_Audit.011",
+      "pbr_targets": [
+        "Base Color",
+        "Bump",
+        "Roughness"
+      ],
+      "pbr_maps": [
+        {
+          "target": "Base Color",
+          "image": "sunray150_smoked_translucent_guard_base.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_translucent_guard_base.png",
+          "colorspace": "sRGB"
+        },
+        {
+          "target": "Roughness",
+          "image": "sunray150_smoked_translucent_guard_roughness.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_translucent_guard_roughness.png",
+          "colorspace": "Non-Color"
+        },
+        {
+          "target": "Bump",
+          "image": "sunray150_smoked_translucent_guard_bump.png",
+          "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_translucent_guard_bump.png",
+          "colorspace": "Non-Color"
+        }
+      ],
+      "manual_review_status": "pending"
+    }
+  ],
+  "known_limits": [
+    "File-level checks verify image readability, non-flat pixels, and connected PBR map targets only.",
+    "Mixed electronics components still need human review for per-subcomponent material realism."
+  ],
+  "contact_sheet": "Results/unreal_scene_mapping/sunray150_pbr_electronics_camera_realism_20260606_005/sunray150_electronics_camera_realism_contact_sheet.png"
+}

@@ -1,0 +1,75 @@
+{
+  "schema_version": "mosim.mworks_post_gui_health_gate_evidence.v1",
+  "created_at": "2026-06-06T18:19:00+08:00",
+  "request_id": "RFLY-MOSIM-MWORKS-POST-GUI-SENTINEL-HEALTH-GATE-20260606-009",
+  "pre_sentinel": {
+    "path": "Results/mworks_gui_incidents/post_gui_sentinel_health_gate_20260606_009/pre_sentinel.json",
+    "status": "clean",
+    "error_kind": null,
+    "window_count": 374
+  },
+  "mcp_session_health": {
+    "tool": "mcp__sysplorer.session_manager",
+    "action": "health",
+    "ok": true,
+    "driver_ready": true,
+    "api_ready": true,
+    "dedicated_sysplorer_port": 49152,
+    "mcp_server_version": "0.1",
+    "python_version": "3.11.4",
+    "workspace_root": "D:\\Program Files\\MWORKS\\Sysplorer 2026a\\Tools\\sysplorer_mcp"
+  },
+  "narrow_check_model": {
+    "tool": "mcp__sysplorer.check_model",
+    "model_name": "QuadrotorExperiments.Sunray150PhysicalWrenchHoverSmoke",
+    "reload_mo_path": "C:\\Users\\HP\\Desktop\\MoSim\\Models\\QuadrotorExperiments\\package.mo",
+    "ok": true,
+    "api": "CheckModel",
+    "data": true,
+    "elapsed_s": 1.568,
+    "model_type": "MODELICA",
+    "note": "This is a narrow post-GUI session/check_model recovery gate only, not simulation evidence."
+  },
+  "unintended_writeback_audit": {
+    "occurred": true,
+    "cause": "check_model preflight reported smart_layout_writeback with components_updated=2 and connects_updated=69 while reload_mo_path was provided.",
+    "diff_before_restore": {
+      "shortstat": "1 file changed, 1633 insertions(+), 1404 deletions(-)",
+      "ignore_all_space_shortstat": "1 file changed, 342 insertions(+), 113 deletions(-)"
+    },
+    "restored": true,
+    "restore_command": "git restore --worktree -- Models\\QuadrotorExperiments\\package.mo",
+    "post_restore_model_diff": "clean",
+    "future_constraint": "For future read-only health gates, avoid MCP check_model arguments or wrapper paths that trigger Smart Layout writeback; use a no-write check path when exposed."
+  },
+  "post_sentinel": {
+    "path": "Results/mworks_gui_incidents/post_gui_sentinel_health_gate_20260606_009/post_sentinel.json",
+    "status": "clean",
+    "error_kind": null,
+    "window_count": 393
+  },
+  "post_restore_sentinel": {
+    "path": "Results/mworks_gui_incidents/post_gui_sentinel_health_gate_20260606_009/post_restore_sentinel.json",
+    "status": "clean",
+    "error_kind": null,
+    "window_count": 393
+  },
+  "forbidden_actions": {
+    "clicked_or_closed_dialog": false,
+    "sent_error_report": false,
+    "restarted_sysplorer": false,
+    "read_external_mworks_log": false,
+    "ran_simulation": false,
+    "edited_model_persistently": false,
+    "ran_full_quadchassis": false
+  },
+  "claim_boundary": {
+    "restores_minimal_mcp_check_model_gate": true,
+    "not_dynamics_performance": true,
+    "not_controller_performance": true,
+    "not_planner_ready": true,
+    "not_factory_trace_consumption": true,
+    "not_live_runtime_ack": true,
+    "not_closed_loop": true
+  }
+}

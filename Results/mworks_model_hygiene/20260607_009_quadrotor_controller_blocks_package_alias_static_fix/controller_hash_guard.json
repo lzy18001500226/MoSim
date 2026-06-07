@@ -1,0 +1,38 @@
+{
+  "schema": "mosim.mworks_model_hygiene.controller_hash_guard.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-PACKAGE-ALIAS-STATIC-FIX-20260607-009",
+  "source": "static_hash_inventory_no_gui_no_mcp",
+  "main_controller_hashes_match_007_baseline": true,
+  "backup_upgrade_hashes_match_007_baseline": true,
+  "git_status_short_for_main_controller_mo": [],
+  "git_status_short_for_backup_upgrade_dirs": [],
+  "main_controller_hashes": [
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_AttitudeInnerLoop_Sysblock.mo","sha256":"6546BB47BF47138862CC4F3195761DB93A9A4A89BDD1C663837F0285BE560C81"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_FaultCompensationControllerEquation_Sysblock.mo","sha256":"C2B78CEBA5ED195EC6CCFF607975201F2D965911DB6F928025CC6288342AFBAA"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_FullController_Sysblock.mo","sha256":"9DAE090B4D589A8F583A3E9DA007A45B1A83D3F2DAC4778ABA4A41C82E16EC5E"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo","sha256":"4275627ED1144B6665E05EBD9ACC222D3A3269DD1939D4BA1B7987E93D9D86D3"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo","sha256":"D54A8FF1FC17511A26BAEF6D5A277126EB9DB60D422A0AEFB255C7AD77D5371B"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_INDIControllerEquation_Sysblock.mo","sha256":"7C682115816180CAF40727D3097D34C394C632917AABFC299CCAD580FE557F75"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo","sha256":"8FB9E2F978B36EF45AD22E1F7EAF4CA5099161C3064084CD31428D40E4412FD2"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_L1FaultAllocationControllerEquation_Sysblock.mo","sha256":"50ACD379D155245412B6E6DAADB37F9D18CC466B929FD7B147868E0354E2025C"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_L1MultiFaultIsolationControllerEquation_Sysblock.mo","sha256":"D74104136169F1109A369C570CCE3AF10D80D678E66386BEDA2E1D6525B42C78"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock.mo","sha256":"BC523517128705E296FF6F0FF6DF4A36C7E90E0EE66B3DDA135EF98352185689"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo","sha256":"5EFE394493B606F077EDA2BCDB48D94C695E43FF7A4F6A8ADBB6125E2E30C868"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_LinearMPCMultiFaultAllocationController_Sysblock.mo","sha256":"BEA6659632A015F3DA36BC59FC6EA9DDB66216FA0A9BDB8F6675F9B447FF86BC"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_LinearMPCOnlineFaultAllocationController_Sysblock.mo","sha256":"213F7C6D01BA2057A4508B7A4576D8B70095C9F84C4EDD43B958D8E4DE8AB80F"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo","sha256":"5639E61C2E8BCDC4FFB855CCD4B21BA3ADED9B67369B5D8FA42553D2F4A144C2"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_MotorMixer_Sysblock.mo","sha256":"01200C3A5F036F42079B09F5A8FAC2FE584DB48FDF01D326AC6C341E6E4D7B91"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo_SIL_Constant.mo","sha256":"404C149425CB526969272D2D295FD63D7E2A4369E4F28112832A0D6B6EF5D616"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo","sha256":"A14E3EF6BCBEB0AED630C3E5D4FED7779626A6992696698A525A2DDC4891FECD"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_PositionOuterLoop_Sysblock.mo","sha256":"FA5E7EE049E64173D9ED9E036D5E9A0C7CBACC511376C4A2FE86A3FDFCA8CBD7"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_QPNMPCSafetyController_Sysblock.mo","sha256":"3F45462CEF7DF18DCD57E7DD3F7B819A158877C21552AF3AEED6DC6150B3BBFC"}
+  ],
+  "backup_upgrade_hashes": [
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_AttitudeInnerLoop_Sysblock_backup/upgrade/20260511094247/AWFF_AttitudeInnerLoop_Sysblock.mo","sha256":"10A3332649EBBAF3B183C6F05FFC22B70A5E7C1648B85FC55469D9C2B9996744"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers_backup/upgrade/20260511222539/AWFF_InnovationGraphicalControllers.mo","sha256":"E839F1B000714445BD1EE31115815AE292A5DD5DCC6B0605C2E818561510B4BB"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers_backup/upgrade/20260511222558/AWFF_InnovationGraphicalControllers.mo","sha256":"FEE1F9BB156A924C76CC3D2B77D7BF2EF290C2375BECAACC501766FB5DAE9B50"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_MotorMixer_Sysblock_backup/upgrade/20260511094248/AWFF_MotorMixer_Sysblock.mo","sha256":"228F29C1E1CA9EBBFFECB839967FC1E52FB8646ADD0573232AE1C5A699522743"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo_backup/upgrade/20260602101737/AWFF_PID_Sysblock_Demo.mo","sha256":"75A22AA843BFBB4CFD9C838E7EEC7055BDA24A58E39FF440B2DAA242BAEEB214"},
+    {"path":"Models/QuadrotorControllerBlocks/AWFF_PositionOuterLoop_Sysblock_backup/upgrade/20260511094247/AWFF_PositionOuterLoop_Sysblock.mo","sha256":"3CFF6B907F14B5CE253D1214EB858983EBC137F204CB02CEFFF4E450ECBD2F08"}
+  ]
+}

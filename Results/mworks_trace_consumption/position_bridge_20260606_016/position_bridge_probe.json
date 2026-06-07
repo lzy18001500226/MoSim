@@ -1,0 +1,54 @@
+{
+  "schema_version": "mosim.mworks_trace_probe.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "source": "MWORKS_MCP",
+  "model_name": "QuadrotorExperiments.FactoryTraceIso23PositionSampleHoldBridgeSmoke",
+  "model_path": "Models/QuadrotorExperiments/FactoryTraceIso23PositionSampleHoldBridgeSmoke.mo",
+  "baseline_model": "QuadrotorExperiments.FactoryTraceIso21ControllerRateAliasSmoke",
+  "blocked_predecessor": "QuadrotorExperiments.FactoryTraceIso22SensorDisplayReconnectSmoke",
+  "bridge_group": "sampled/held sensors1_1.PosMea[1..3] into inherited actual_position(y=display_position_hold.y), which feeds navigationDisplay.actual_position",
+  "new_controller_or_plant_reconnect_group_added": false,
+  "check_model": {
+    "ok": true,
+    "data": true,
+    "elapsed_s": 2.339
+  },
+  "simulate_model": {
+    "ok": true,
+    "data": true,
+    "target_time_s": [0.0, 2.0],
+    "verify_result_var": "x_ref",
+    "x_ref_at_end": 0.22528064041293117
+  },
+  "get_var_times": {
+    "ok": true,
+    "count": 1001,
+    "first": 0.0,
+    "last": 2.0
+  },
+  "aliases": {
+    "time_points": [0.0, 1.0, 2.0],
+    "available": true,
+    "samples_path": "Results/mworks_trace_consumption/position_bridge_20260606_016/position_bridge_alias_samples.csv",
+    "end_values": {
+      "x_ref": 0.22528064041293117,
+      "y_ref": 0.6178306433245998,
+      "z_ref": 1.2469737036046606,
+      "yaw_ref": 2.4422701702657834,
+      "display_actual_x": -56.00124773828151,
+      "display_actual_y": -25.015852176239466,
+      "display_actual_z": 0.001199602098248108,
+      "display_reference_x": 0.22528064041293117,
+      "display_reference_y": 0.6178306433245998,
+      "display_reference_z": 1.2469737036046606,
+      "display_bridge_x": -56.00124773828151,
+      "display_bridge_y": -25.015852176239466,
+      "display_bridge_z": 0.001199602098248108
+    }
+  },
+  "error_6140_present": false,
+  "result_context_restored": true,
+  "quality_status": "display_position_bridge_probe_passed",
+  "claim_boundary": "Display-position bridge/result-context evidence only; not closed_loop, Factory trace consumption, controller performance, plant tracking, or parameter identification evidence."
+}

@@ -1,0 +1,1390 @@
+{
+  "schema": "mosim.p0_run_bundle_audit.v1",
+  "manifest": "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json",
+  "run_id": "rfly_mosim_p0_slice_20260606",
+  "quality_status": "smoke_only",
+  "claim_scope": [
+    "fast_lio_no_goal_output_precondition",
+    "ue_console_source_static_contract",
+    "sunray_visual_review_package_readiness_manual_pending"
+  ],
+  "ok": true,
+  "issues": [],
+  "warnings": [
+    "MWORKS standalone trace lookup passed, but Factory wrapper trace consumption remains blocked",
+    "MWORKS Factory trace reconnect is blocked: aliases remain zero and result times are empty",
+    "MWORKS Factory-lite trace probe passed, but full Factory wrapper and closed_loop remain blocked",
+    "MWORKS incremental trace isolation found Iso04 controller/actuator wiring as the first SimulateModel failure boundary",
+    "MWORKS actuator wiring isolation fixed duplicate actuator inputs and removed 6140, but sensor-feedback closure remains blocked",
+    "MWORKS sensor-feedback isolation found roll/pitch AngleMea feedback as the first empty-result boundary",
+    "MWORKS attitude-feedback isolation found direct single-channel AngleMea feedback as the empty-result boundary",
+    "MWORKS attitude-intermediary classification found AbsoluteAngles/AngleMea dependency coupling; constant/table inputs pass, AngleMea-dependent RealExpression fails",
+    "MWORKS attitude-decoupling probes restored result context, but full Factory trace consumption and closed_loop remain blocked",
+    "MWORKS pitch-decoupling probe restored roll+pitch result context, but closed_loop and Factory trace consumption remain blocked",
+    "MWORKS yaw-decoupling probe restored yaw result context, but rate feedback and closed_loop remain blocked",
+    "MWORKS rate-feedback isolation restored rate aliases only; external gyro/rate feedback and closed_loop remain blocked",
+    "MWORKS sensor-bus reconnect found direct PosMea display reconnect as the next blocked topology boundary",
+    "MWORKS position bridge restored display-position result context only; full Factory trace remains blocked",
+    "MWORKS attitude-feedback bridge 019 restored result context only for the narrow sampled/held bridge",
+    "MWORKS actuator-to-wrench bridge 014 is a minimal sidecar smoke only; Factory trace and full plant remain blocked",
+    "MWORKS external-frame boundary 015 is a minimal external MultiBody test-body smoke only; full plant and Factory trace remain blocked",
+    "FAST-LIO runtime is restored, but planner PositionCommand source is still absent",
+    "B1 planner wrapper is blocked: selected EGO/Sunray/FUEL candidates are not executable in the current ROS2 overlay",
+    "B1 port preflight completed classification only; real planner runtime is not ready",
+    "B1 message slice built internal ROS2 messages only; planner runtime is still absent",
+    "B1 planner-node preflight built a traj_server ROS2 stub only; runtime recorder remains forbidden",
+    "B1 upstream planner deps are blocked: EGOReplanFSM producer found, but plan_env/GridMap is still ROS1/catkin-only",
+    "B1 plan_env/GridMap port built the isolated ROS2 surface only; planner runtime remains blocked",
+    "B1 path_searching/bspline_opt port built isolated ROS2 surfaces only; planner runtime remains blocked",
+    "B1 traj_utils/quadrotor_msgs port built isolated ROS2 support surfaces only; full plan_manage runtime remains blocked",
+    "B1 plan_manage link preflight built isolated EGO planner surfaces only; planner runtime remains blocked",
+    "B1 runtime-disabled launch audit completed static review only; runtime guard/config artifact remains blocked",
+    "B1 runtime-disabled launch/config artifact exists, but no ros2 launch/run or planner runtime evidence is claimed",
+    "B1 runtime-disabled smoke passed guard/exiting path only; real planner runtime remains blocked",
+    "B1 real planner input gate 018 remains historical missing-input blocker evidence",
+    "B1 odom/cloud restore 019 restored /Odometry and /cloud_registered only; planner startup remains a separate blocked gate",
+    "B1 long-source 031 restored no-goal FAST-LIO outputs only; RViz, local map, planner, and PositionCommand remain blocked",
+    "ROS2 032 started after no-op recovery but blocked before goal; TF/RViz CLI evidence cannot override failed FAST-LIO/source gates",
+    "UE command adapter smoke has accepted/rejected echo rows, but it is offline-only and not runtime UE console evidence",
+    "UE command sender exists only as source-level UDP packet surface; runtime MWORKS/ROS2 ack remains open",
+    "UE command sender loopback proves only UDP packet transport; runtime MWORKS/ROS2 ack remains open",
+    "UE live-echo acceptance 008 is source/static fixture evidence only; live ack remains blocked",
+    "Sunray150 material review 004 is path hygiene/readability only; manual visual acceptance remains pending"
+  ],
+  "path_checks": [
+    {
+      "label": "manifest",
+      "path": "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.raw_csv",
+      "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/raw/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.metrics_json",
+      "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/metrics/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.trace_consumption_blocker",
+      "path": "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.trace_lookup_diagnostic.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.trace_lookup_diagnostic.probe_json",
+      "path": "Results/mworks_trace_consumption/trace_lookup_diag_20260606_003/trace_lookup_standalone_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.trace_lookup_diagnostic.raw_reference_series_csv",
+      "path": "Results/mworks_trace_consumption/trace_lookup_diag_20260606_003/trace_lookup_standalone_raw.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.factory_trace_reconnect.blocker_packet",
+      "path": "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.factory_trace_reconnect.probe_json",
+      "path": "Results/mworks_trace_consumption/factory_trace_reconnect_20260606_004/factory_trace_reconnect_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.factory_lite_trace_probe.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-LITE-TRACE-20260606-005.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.factory_lite_trace_probe.probe_json",
+      "path": "Results/mworks_trace_consumption/factory_lite_trace_20260606_005/factory_lite_trace_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.factory_lite_trace_probe.raw_alias_series_csv",
+      "path": "Results/mworks_trace_consumption/factory_lite_trace_20260606_005/factory_lite_trace_raw.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.incremental_trace_isolation.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.incremental_trace_isolation.probe_json",
+      "path": "Results/mworks_trace_consumption/incremental_trace_isolation_20260606_006/incremental_trace_isolation_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.incremental_trace_isolation.probe_summary_csv",
+      "path": "Results/mworks_trace_consumption/incremental_trace_isolation_20260606_006/incremental_trace_isolation_summary.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.actuator_wiring_isolation.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.actuator_wiring_isolation.probe_json",
+      "path": "Results/mworks_trace_consumption/actuator_wiring_isolation_20260606_007/actuator_wiring_isolation_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.actuator_wiring_isolation.probe_summary_csv",
+      "path": "Results/mworks_trace_consumption/actuator_wiring_isolation_20260606_007/actuator_wiring_isolation_summary.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.sensor_feedback_isolation.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.sensor_feedback_isolation.probe_json",
+      "path": "Results/mworks_trace_consumption/sensor_feedback_isolation_20260606_008/sensor_feedback_isolation_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.sensor_feedback_isolation.probe_summary_csv",
+      "path": "Results/mworks_trace_consumption/sensor_feedback_isolation_20260606_008/sensor_feedback_isolation_summary.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_feedback_isolation.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_feedback_isolation.probe_json",
+      "path": "Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_isolation_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_feedback_isolation.probe_summary_csv",
+      "path": "Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_isolation_summary.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_feedback_isolation.mcp_log",
+      "path": "Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_mcp_log.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_intermediary_classification.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_intermediary_classification.probe_json",
+      "path": "Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_intermediary_classification.probe_summary_csv",
+      "path": "Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_summary.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_intermediary_classification.mcp_log",
+      "path": "Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_mcp_log.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_decoupling_probe.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_decoupling_probe.probe_json",
+      "path": "Results/mworks_trace_consumption/attitude_decoupling_20260606_011/attitude_decoupling_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_decoupling_probe.probe_summary_csv",
+      "path": "Results/mworks_trace_consumption/attitude_decoupling_20260606_011/attitude_decoupling_summary.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_decoupling_probe.mcp_log",
+      "path": "Results/mworks_trace_consumption/attitude_decoupling_20260606_011/attitude_decoupling_mcp_log.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.pitch_decoupling_probe.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-PITCH-DECOUPLING-20260606-012.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.pitch_decoupling_probe.probe_json",
+      "path": "Results/mworks_trace_consumption/pitch_decoupling_20260606_012/pitch_decoupling_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.pitch_decoupling_probe.probe_summary_csv",
+      "path": "Results/mworks_trace_consumption/pitch_decoupling_20260606_012/pitch_decoupling_summary.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.pitch_decoupling_probe.mcp_log",
+      "path": "Results/mworks_trace_consumption/pitch_decoupling_20260606_012/pitch_decoupling_mcp_log.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.pitch_decoupling_probe.model[0]",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso19RollPitchEstimatorSmoke.mo",
+      "exists": true
+    },
+    {
+      "label": "mworks.yaw_rate_decoupling_probe.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-YAW-RATE-DECOUPLING-20260606-013.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.yaw_rate_decoupling_probe.probe_json",
+      "path": "Results/mworks_trace_consumption/yaw_rate_decoupling_20260606_013/yaw_rate_decoupling_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.yaw_rate_decoupling_probe.probe_summary_csv",
+      "path": "Results/mworks_trace_consumption/yaw_rate_decoupling_20260606_013/yaw_rate_decoupling_summary.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.yaw_rate_decoupling_probe.mcp_log",
+      "path": "Results/mworks_trace_consumption/yaw_rate_decoupling_20260606_013/yaw_rate_decoupling_mcp_log.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.yaw_rate_decoupling_probe.unknowns_risks_next_validation",
+      "path": "Results/mworks_trace_consumption/yaw_rate_decoupling_20260606_013/yaw_rate_decoupling_unknowns_risks.md",
+      "exists": true
+    },
+    {
+      "label": "mworks.yaw_rate_decoupling_probe.model[0]",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso20RollPitchYawEstimatorSmoke.mo",
+      "exists": true
+    },
+    {
+      "label": "mworks.rate_feedback_isolation_probe.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.rate_feedback_isolation_probe.probe_json",
+      "path": "Results/mworks_trace_consumption/rate_feedback_isolation_20260606_014/rate_feedback_isolation_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.rate_feedback_isolation_probe.probe_summary_csv",
+      "path": "Results/mworks_trace_consumption/rate_feedback_isolation_20260606_014/rate_feedback_isolation_summary.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.rate_feedback_isolation_probe.mcp_log",
+      "path": "Results/mworks_trace_consumption/rate_feedback_isolation_20260606_014/rate_feedback_isolation_mcp_log.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.rate_feedback_isolation_probe.unknowns_risks_next_validation",
+      "path": "Results/mworks_trace_consumption/rate_feedback_isolation_20260606_014/rate_feedback_isolation_unknowns_risks.md",
+      "exists": true
+    },
+    {
+      "label": "mworks.rate_feedback_isolation_probe.model[0]",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso21ControllerRateAliasSmoke.mo",
+      "exists": true
+    },
+    {
+      "label": "mworks.sensor_bus_reconnect_probe.blocker_packet",
+      "path": "Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-BUS-RECONNECT-20260606-015.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.sensor_bus_reconnect_probe.probe_json",
+      "path": "Results/mworks_trace_consumption/sensor_bus_reconnect_20260606_015/sensor_bus_reconnect_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.sensor_bus_reconnect_probe.probe_summary_csv",
+      "path": "Results/mworks_trace_consumption/sensor_bus_reconnect_20260606_015/sensor_bus_reconnect_summary.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.sensor_bus_reconnect_probe.mcp_log",
+      "path": "Results/mworks_trace_consumption/sensor_bus_reconnect_20260606_015/sensor_bus_reconnect_mcp_log.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.sensor_bus_reconnect_probe.model[0]",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso22SensorDisplayReconnectSmoke.mo",
+      "exists": true
+    },
+    {
+      "label": "mworks.position_bridge_probe.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.position_bridge_probe.probe_json",
+      "path": "Results/mworks_trace_consumption/position_bridge_20260606_016/position_bridge_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.position_bridge_probe.alias_samples_csv",
+      "path": "Results/mworks_trace_consumption/position_bridge_20260606_016/position_bridge_alias_samples.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.position_bridge_probe.mcp_log",
+      "path": "Results/mworks_trace_consumption/position_bridge_20260606_016/position_bridge_mcp_log.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.position_bridge_probe.model[0]",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso23PositionSampleHoldBridgeSmoke.mo",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_feedback_bridge_probe.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_feedback_bridge_probe.probe_json",
+      "path": "Results/mworks_trace_consumption/attitude_feedback_bridge_20260606_019/attitude_feedback_probe.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_feedback_bridge_probe.alias_samples_csv",
+      "path": "Results/mworks_trace_consumption/attitude_feedback_bridge_20260606_019/attitude_feedback_alias_samples.csv",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_feedback_bridge_probe.mcp_log",
+      "path": "Results/mworks_trace_consumption/attitude_feedback_bridge_20260606_019/attitude_feedback_mcp_log.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.attitude_feedback_bridge_probe.model[0]",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke.mo",
+      "exists": true
+    },
+    {
+      "label": "mworks.actuator_to_wrench_bridge_smoke.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.actuator_to_wrench_bridge_smoke.evidence_dir",
+      "path": "Results/mworks_dynamics_upgrade/20260606_014_actuator_to_wrench_bridge_resume/",
+      "exists": true
+    },
+    {
+      "label": "mworks.external_frame_boundary_smoke.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json",
+      "exists": true
+    },
+    {
+      "label": "mworks.external_frame_boundary_smoke.evidence_dir",
+      "path": "Results/mworks_dynamics_upgrade/20260606_015_wrench_to_external_frame_boundary/",
+      "exists": true
+    },
+    {
+      "label": "ros2.bag_or_summary",
+      "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/realstack_miniloop_gate_current.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.fast_lio_eval.runtime_recording",
+      "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_factory_mworks_body_formal_20260602_122033/FASTLIO_RUNTIME_RECORDING.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.fast_lio_eval.runtime_evaluation",
+      "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_factory_mworks_body_formal_20260602_122033/FASTLIO_RUNTIME_EVALUATION.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b0.run_summary",
+      "path": "Results/ros2_runtime/positioncmd_b0_contract_replay_orchestrated_20260606_pass/run_summary.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b0.topic_rates",
+      "path": "Results/ros2_runtime/positioncmd_b0_contract_replay_orchestrated_20260606_pass/topic_rates.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b0.planner_input_gate",
+      "path": "Results/ros2_runtime/positioncmd_b0_contract_replay_orchestrated_20260606_pass/planner_input_gate.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b0.setpoint_trace_csv",
+      "path": "Results/ros2_runtime/positioncmd_b0_contract_replay_orchestrated_20260606_pass/setpoint_trace.csv",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_real_planner.blocker_packet",
+      "path": "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-PLANNER-20260606-004.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_unblock.blocker_packet",
+      "path": "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-UNBLOCK-20260606-005.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_unblock.current_recording",
+      "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_b1_unblock_20260606_005",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planner_wrapper.blocker_packet",
+      "path": "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-PLANNER-WRAPPER-20260606-006.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_port_preflight.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-PORT-PREFLIGHT-20260606-007.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_port_preflight.build_log",
+      "path": "Results/ros2_runtime/b1_port_preflight_20260606_007/colcon_build_preflight.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_msg_port_slice.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-MSG-PORT-SLICE-20260606-008.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_msg_port_slice.artifact[0]",
+      "path": "Results/ros2_runtime/b1_msg_port_slice_20260606_008/colcon_build_ego_planner_msgs.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_msg_port_slice.artifact[1]",
+      "path": "Results/ros2_runtime/b1_msg_port_slice_20260606_008/colcon_build_quadrotor_msgs_remaining.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planner_node.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-PLANNER-NODE-PORT-PREFLIGHT-20260606-009.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planner_node.build_log[0]",
+      "path": "Results/ros2_runtime/b1_planner_node_port_preflight_20260606_009/colcon_build_traj_server_ros2_node.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planner_node.build_log[1]",
+      "path": "Results/ros2_runtime/b1_planner_node_port_preflight_20260606_009/colcon_build_ego_planner_retry.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planner_node.build_log[2]",
+      "path": "Results/ros2_runtime/b1_planner_node_port_preflight_20260606_009/colcon_build_ego_planner_incremental.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planner_node.installed_executable",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/ego_planner/lib/ego_planner/traj_server_ros2_node",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_upstream_planner_deps.blocker_packet",
+      "path": "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-UPSTREAM-PLANNER-DEPS-20260606-010.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_upstream_planner_deps.producer_scan",
+      "path": "Results/ros2_runtime/b1_upstream_planner_deps_20260606_010/upstream_bspline_producer_scan.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_upstream_planner_deps.dependency_surface_scan",
+      "path": "Results/ros2_runtime/b1_upstream_planner_deps_20260606_010/ros1_dependency_surface_scan.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_upstream_planner_deps.colcon_list",
+      "path": "Results/ros2_runtime/b1_upstream_planner_deps_20260606_010/colcon_list_after_009.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_upstream_planner_deps.plan_env_build_probe",
+      "path": "Results/ros2_runtime/b1_upstream_planner_deps_20260606_010/colcon_build_plan_env_probe.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planenv_gridmap_port.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-PLANENV-GRIDMAP-PORT-20260606-011.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planenv_gridmap_port.red_build_log",
+      "path": "Results/ros2_runtime/b1_planenv_gridmap_port_20260606_011/red_colcon_build_plan_env_before_patch.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planenv_gridmap_port.post_patch_log[0]",
+      "path": "Results/ros2_runtime/b1_planenv_gridmap_port_20260606_011/green_colcon_build_plan_env_after_patch.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planenv_gridmap_port.post_patch_log[1]",
+      "path": "Results/ros2_runtime/b1_planenv_gridmap_port_20260606_011/green_colcon_build_plan_env_incremental.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planenv_gridmap_port.post_patch_log[2]",
+      "path": "Results/ros2_runtime/b1_planenv_gridmap_port_20260606_011/green_colcon_build_plan_env_fast_pcl.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planenv_gridmap_port.post_patch_log[3]",
+      "path": "Results/ros2_runtime/b1_planenv_gridmap_port_20260606_011/green_colcon_build_plan_env_no_pcl.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planenv_gridmap_port.post_patch_log[4]",
+      "path": "Results/ros2_runtime/b1_planenv_gridmap_port_20260606_011/green_colcon_build_plan_env_incremental_install.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planenv_gridmap_port.installed_artifact[0]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/plan_env/lib/libplan_env.a",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planenv_gridmap_port.installed_artifact[1]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/plan_env/include/plan_env/grid_map.h",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planenv_gridmap_port.installed_artifact[2]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/plan_env/share/plan_env/package.xml",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planenv_gridmap_port.classification_log[0]",
+      "path": "Results/ros2_runtime/b1_planenv_gridmap_port_20260606_011/remaining_ros1_api_scan.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planenv_gridmap_port.classification_log[1]",
+      "path": "Results/ros2_runtime/b1_planenv_gridmap_port_20260606_011/colcon_list_after_plan_env_port.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-PATH-BSPLINE-PORT-20260606-012.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.build_log[0][0]",
+      "path": "Results/ros2_runtime/b1_path_bspline_port_20260606_012/green_colcon_build_path_searching.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.build_log[0][1]",
+      "path": "Results/ros2_runtime/b1_path_bspline_port_20260606_012/green_colcon_build_path_searching_incremental.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.build_log[1][0]",
+      "path": "Results/ros2_runtime/b1_path_bspline_port_20260606_012/green_colcon_build_bspline_opt.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.build_log[1][1]",
+      "path": "Results/ros2_runtime/b1_path_bspline_port_20260606_012/green_colcon_build_bspline_opt_incremental.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.build_log[1][2]",
+      "path": "Results/ros2_runtime/b1_path_bspline_port_20260606_012/green_colcon_build_bspline_opt_incremental_2.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.installed_artifact[0]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/path_searching/lib/libpath_searching.a",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.installed_artifact[1]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/path_searching/include/path_searching/dyn_a_star.h",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.installed_artifact[2]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/path_searching/share/path_searching/package.xml",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.installed_artifact[3]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/bspline_opt/lib/libbspline_opt.a",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.installed_artifact[4]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/bspline_opt/include/bspline_opt/bspline_optimizer.h",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.installed_artifact[5]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/bspline_opt/include/bspline_opt/uniform_bspline.h",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.installed_artifact[6]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/bspline_opt/include/bspline_opt/gradient_descent_optimizer.h",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.installed_artifact[7]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/bspline_opt/share/bspline_opt/package.xml",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.classification_log[0]",
+      "path": "Results/ros2_runtime/b1_path_bspline_port_20260606_012/remaining_ros1_api_scan.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.classification_log[1]",
+      "path": "Results/ros2_runtime/b1_path_bspline_port_20260606_012/colcon_list_after_path_bspline_port.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.classification_log[2]",
+      "path": "Results/ros2_runtime/b1_path_bspline_port_20260606_012/installed_artifacts_check.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_path_bspline_port.classification_log[3]",
+      "path": "Results/ros2_runtime/b1_path_bspline_port_20260606_012/narrow_git_status.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-TRAJ-QUADMSGS-PORT-20260606-013.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.red_build_log[0]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/red_colcon_build_quadrotor_msgs_before_patch.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.green_log[0][0]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/green_colcon_build_quadrotor_msgs.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.green_log[0][1]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/green_colcon_build_quadrotor_msgs_retry1.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.green_log[0][2]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/green_colcon_build_quadrotor_msgs_retry2.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.green_log[0][3]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/green_colcon_build_quadrotor_msgs_retry3.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.green_log[0][4]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/green_colcon_build_quadrotor_msgs_incremental.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.green_log[0][5]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/green_colcon_build_quadrotor_msgs_after_cleanup.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.red_build_log[1]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/red_colcon_build_traj_utils_before_patch.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.green_log[1][0]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/green_colcon_build_traj_utils.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.green_log[1][1]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/green_colcon_build_traj_utils_incremental.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.installed_artifact[0]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/quadrotor_msgs/share/quadrotor_msgs/msg/PositionCommand.msg",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.installed_artifact[1]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/quadrotor_msgs/include/quadrotor_msgs/quadrotor_msgs/msg/position_command.hpp",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.installed_artifact[2]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/quadrotor_msgs/include/quadrotor_msgs/comm_types.h",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.installed_artifact[3]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/quadrotor_msgs/include/quadrotor_msgs/encode_msgs.h",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.installed_artifact[4]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/traj_utils/lib/libtraj_utils.a",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.installed_artifact[5]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/traj_utils/include/traj_utils/planning_visualization.h",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.installed_artifact[6]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/traj_utils/include/traj_utils/polynomial_traj.h",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.classification_log[0]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/remaining_ros1_api_scan.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.classification_log[1]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/colcon_list_after_traj_quadmsgs_port.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.classification_log[2]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/installed_artifacts_check.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_traj_quadmsgs_port.classification_log[3]",
+      "path": "Results/ros2_runtime/b1_traj_quadmsgs_port_20260606_013/narrow_git_status.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-PLANMANAGE-LINK-PREFLIGHT-20260606-014.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.build_log[0]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/red_colcon_build_ego_planner_before_full_link_patch.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.build_log[1]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/green_colcon_build_ego_planner_manager_preflight_attempt1.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.build_log[2]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/green_colcon_build_ego_planner_manager_preflight_attempt2.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.build_log[3]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/green_colcon_build_ego_planner_fsm_preflight_attempt3.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.build_log[4]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/green_colcon_build_ego_planner_fsm_preflight_attempt4.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.build_log[5][0]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/final_colcon_build_ego_planner_full_link_preflight.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.build_log[5][1]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/final_colcon_build_ego_planner_full_link_preflight_attempt2.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.build_log[6]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/final_cmake_install_ego_planner_full_link_preflight.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.installed_artifact[0]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/ego_planner/lib/libego_planner_manager_preflight.a",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.installed_artifact[1]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/ego_planner/lib/libego_replan_fsm_preflight.a",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.installed_artifact[2]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/ego_planner/lib/ego_planner/ego_planner_node_preflight",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.installed_artifact[3]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/ego_planner/lib/ego_planner/traj_server_ros2_node",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.evidence_artifact[0]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/red_colcon_build_ego_planner_before_full_link_patch.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.evidence_artifact[1]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/green_colcon_build_ego_planner_manager_preflight_attempt1.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.evidence_artifact[2]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/green_colcon_build_ego_planner_manager_preflight_attempt2.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.evidence_artifact[3]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/green_colcon_build_ego_planner_fsm_preflight_attempt3.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.evidence_artifact[4]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/green_colcon_build_ego_planner_fsm_preflight_attempt4.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.evidence_artifact[5]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/final_colcon_build_ego_planner_full_link_preflight.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.evidence_artifact[6]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/final_colcon_build_ego_planner_full_link_preflight_attempt2.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.evidence_artifact[7]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/final_cmake_install_ego_planner_full_link_preflight.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.evidence_artifact[8]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/remaining_ros1_api_scan.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.evidence_artifact[9]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/installed_artifacts.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_planmanage_link_preflight.evidence_artifact[10]",
+      "path": "Results/ros2_runtime/b1_planmanage_link_preflight_20260606_014/colcon_list_selected_packages.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-RUNTIME-DISABLED-LAUNCH-AUDIT-20260606-015.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.inspected_file[0]",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-PLANMANAGE-LINK-PREFLIGHT-20260606-014.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.inspected_file[1]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/src/plan_manage/src/ego_planner_node.cpp",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.inspected_file[2]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/src/plan_manage/src/ego_replan_fsm.cpp",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.inspected_file[3]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/src/plan_manage/src/planner_manager.cpp",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.inspected_file[4]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/src/plan_manage/src/traj_server_ros2_node.cpp",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.inspected_file[5]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/src/plan_env/src/grid_map.cpp",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.inspected_file[6]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/src/bspline_opt/src/bspline_optimizer.cpp",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.inspected_file[7]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/src/plan_manage/launch/advanced_param.xml",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.inspected_file[8]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/src/plan_manage/launch/simple_run.launch",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.inspected_file[9]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/src/plan_manage/launch/run_in_sim.launch",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.inspected_file[10]",
+      "path": "Docs/Workflows/ros2_runtime_setup.md",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.evidence_artifact[0]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_launch_audit_20260606_015/RUNTIME_DISABLED_LAUNCH_AUDIT.md",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.evidence_artifact[1]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_launch_audit_20260606_015/static_parameter_topic_surface_scan.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.evidence_artifact[2]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_launch_audit_20260606_015/inspected_source_files.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.evidence_artifact[3]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_launch_audit_20260606_015/launch_and_config_file_inventory.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_audit.evidence_artifact[4]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_launch_audit_20260606_015/preflight_artifact_inventory.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-RUNTIME-DISABLED-LAUNCH-CONFIG-20260606-016.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.inventory",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/artifact_inventory_final.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.source_artifact[0]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/src/plan_manage/launch/runtime_disabled_preflight.launch.py",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.source_artifact[1]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/src/plan_manage/config/runtime_disabled_preflight.yaml",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.installed_artifact[0]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/ego_planner/share/ego_planner/launch/runtime_disabled_preflight.launch.py",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.installed_artifact[1]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/ego_planner/share/ego_planner/config/runtime_disabled_preflight.yaml",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.installed_artifact[2]",
+      "path": "Results/tmp/ego_planner_ros2_port_ws/install/ego_planner/lib/ego_planner/ego_planner_node_preflight",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.config_diff_summary",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/config_diff_summary.md",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.validation_log[0]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/static_py_compile_launch.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.validation_log[1]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/static_py_compile_launch_retry.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.validation_log[2]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/static_yaml_text_validation.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.validation_log[3][0]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/static_guard_remap_scan.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.validation_log[3][1]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/static_final_guard_scan.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_launch_config.validation_log[4]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/colcon_build_install_runtime_disabled_config_retry2.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_smoke.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-RUNTIME-DISABLED-SMOKE-20260606-017.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_smoke.script",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/run_smoke.sh",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_smoke.command",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/command.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_smoke.log",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/smoke_stdout_stderr.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_smoke.wrapper_exit",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/wrapper_exit.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_smoke.evidence_artifact[0]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/run_smoke.sh",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_smoke.evidence_artifact[1]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/command.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_smoke.evidence_artifact[2]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/smoke_stdout_stderr.log",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_smoke.evidence_artifact[3]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/wrapper_exit.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_runtime_disabled_smoke.evidence_artifact[4]",
+      "path": "Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/smoke_summary.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_real_planner_input_gate.blocker_packet",
+      "path": "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-PLANNER-INPUT-GATE-20260606-018.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_real_planner_input_gate.probe_summary",
+      "path": "Results/ros2_runtime/b1_real_planner_input_gate_20260606_018/input_gate_probe_summary.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_real_planner_input_gate.command_script",
+      "path": "Results/ros2_runtime/b1_real_planner_input_gate_20260606_018/run_input_gate_probe.sh",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_real_planner_input_gate.topic_list_typed",
+      "path": "Results/ros2_runtime/b1_real_planner_input_gate_20260606_018/ros2_topic_list_typed.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_real_planner_input_gate./Odometry.topic_info",
+      "path": "Results/ros2_runtime/b1_real_planner_input_gate_20260606_018/topic_info_Odometry.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_real_planner_input_gate./Odometry.topic_hz",
+      "path": "Results/ros2_runtime/b1_real_planner_input_gate_20260606_018/topic_hz_Odometry.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_real_planner_input_gate./cloud_registered.topic_info",
+      "path": "Results/ros2_runtime/b1_real_planner_input_gate_20260606_018/topic_info_cloud_registered.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_real_planner_input_gate./cloud_registered.topic_hz",
+      "path": "Results/ros2_runtime/b1_real_planner_input_gate_20260606_018/topic_hz_cloud_registered.txt",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_odom_cloud_restore.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-ODOM-CLOUD-RESTORE-20260606-019.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_odom_cloud_restore.evidence_dir",
+      "path": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_odom_cloud_restore.summary_json",
+      "path": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/odom_cloud_restore_summary.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_odom_cloud_restore./Odometry.sample_file",
+      "path": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live/fastlio_odometry.jsonl",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_odom_cloud_restore./cloud_registered.sample_file",
+      "path": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live/fastlio_registered_cloud_summary.jsonl",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_long_source_startup_discipline.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-LONG-SOURCE-STARTUP-DISCIPLINE-RERUN-20260606-031.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_long_source_startup_discipline.evidence_dir",
+      "path": "Results/ros2_runtime/b1_long_source_startup_discipline_rerun_20260606_031/",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_032.blocker_packet",
+      "path": "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-NO-GOAL-ODOM-TF-RVIZ-PREFLIGHT-20260606-032.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_032.evidence_dir",
+      "path": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_032.summary",
+      "path": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/no_goal_odom_tf_rviz_preflight_summary.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_032.prior_dispatch.coagentops_blocker_packet",
+      "path": "Results/agent_packets/blockers/COAGENTOPS-ROS2-R3-DISPATCH-SURFACE-DIAG-20260606-032.json",
+      "exists": true
+    },
+    {
+      "label": "ros2.b1_032.prior_dispatch.pmo_dispatch_blocker_packet",
+      "path": "Results/agent_packets/blockers/PMO-ROS2-R3-DISPATCH-SURFACE-20260606-032.json",
+      "exists": true
+    },
+    {
+      "label": "planner.setpoint_trace",
+      "path": "Results/ros2_runtime/positioncmd_b0_contract_replay_orchestrated_20260606_pass/setpoint_trace.csv",
+      "exists": true
+    },
+    {
+      "label": "ue.sensor_oracle_log",
+      "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body.jsonl",
+      "exists": true
+    },
+    {
+      "label": "ue.command_echo_log",
+      "path": "Results/p0_runs/rfly_mosim_p0_slice_20260606/ue_command_echo_smoke.jsonl",
+      "exists": true
+    },
+    {
+      "label": "ue.command_input_log",
+      "path": "Results/p0_runs/rfly_mosim_p0_slice_20260606/ue_command_input_smoke.jsonl",
+      "exists": true
+    },
+    {
+      "label": "ue.command_adapter_smoke_json",
+      "path": "Results/p0_runs/rfly_mosim_p0_slice_20260606/ue_command_adapter_smoke.json",
+      "exists": true
+    },
+    {
+      "label": "ue.command_sender_source",
+      "path": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp",
+      "exists": true
+    },
+    {
+      "label": "ue.command_sender_header",
+      "path": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h",
+      "exists": true
+    },
+    {
+      "label": "ue.command_sender_contract",
+      "path": "Results/p0_runs/rfly_mosim_p0_slice_20260606/ue_command_sender_source_contract.json",
+      "exists": true
+    },
+    {
+      "label": "ue.command_sender_loopback_smoke_json",
+      "path": "Results/p0_runs/rfly_mosim_p0_slice_20260606/ue_command_sender_loopback_smoke.json",
+      "exists": true
+    },
+    {
+      "label": "ue.command_sender_loopback_received",
+      "path": "Results/p0_runs/rfly_mosim_p0_slice_20260606/ue_command_sender_loopback_received.jsonl",
+      "exists": true
+    },
+    {
+      "label": "ue.live_echo_acceptance_fixture.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-ACCEPTANCE-FIXTURE-CONTRACT-20260606-008.json",
+      "exists": true
+    },
+    {
+      "label": "ue.live_echo_acceptance_fixture.evidence_dir",
+      "path": "Results/unreal_experiment_console/live_echo_acceptance_fixture_contract_20260606_008/",
+      "exists": true
+    },
+    {
+      "label": "ue.command_schema",
+      "path": "Config/schemas/mosim_ue_command_v1.schema.json",
+      "exists": true
+    },
+    {
+      "label": "ue.command_echo_schema",
+      "path": "Config/schemas/mosim_ue_command_echo_v1.schema.json",
+      "exists": true
+    },
+    {
+      "label": "sunray150.material_review.return_packet",
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-SUNRAY150-REVIEW-MANIFEST-PATH-HYGIENE-20260606-004.json",
+      "exists": true
+    },
+    {
+      "label": "sunray150.material_review.evidence_dir",
+      "path": "Results/unreal_scene_mapping/sunray150_review_manifest_path_hygiene_20260606_004/",
+      "exists": true
+    },
+    {
+      "label": "sunray150.material_review.path_hygiene_evidence",
+      "path": "Results/unreal_scene_mapping/sunray150_review_manifest_path_hygiene_20260606_004/path_hygiene_evidence.json",
+      "exists": true
+    }
+  ],
+  "manual_review": {
+    "packet": "Results/coagent_gateway/packets/rfly_mosim_p0_current_blockers_integrated_20260606.json",
+    "packet_exists": true,
+    "latest_packet": "Results/coagent_gateway/packets/rfly_mosim_p0_dispatched_ros2_021_20260606.json",
+    "latest_packet_exists": true,
+    "weixin_recovery_note": "Results/coagent_gateway/recovery/weixin_recovery_required_20260606_050850.json",
+    "weixin_recovery_note_exists": true,
+    "status": "latest_checkpoint_sent"
+  },
+  "ue_command_echo_contract": {
+    "ok": true,
+    "issues": [],
+    "warnings": [],
+    "rows": 3,
+    "runtime_ack_rows": 3,
+    "placeholder_rows": 0,
+    "require_runtime_ack": false,
+    "no_pose_overwrite_status": "pass",
+    "echo_jsonl": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\p0_runs\\rfly_mosim_p0_slice_20260606\\ue_command_echo_smoke.jsonl",
+    "_returncode": 0
+  },
+  "ue_command_adapter_smoke": {
+    "schema": "mosim.ue_command_adapter_smoke.v1",
+    "source": "offline_adapter_smoke",
+    "ok": true,
+    "command_jsonl": "C:/Users/HP/Desktop/MoSim/Results/p0_runs/rfly_mosim_p0_slice_20260606/ue_command_input_smoke.jsonl",
+    "echo_jsonl": "C:/Users/HP/Desktop/MoSim/Results/p0_runs/rfly_mosim_p0_slice_20260606/ue_command_echo_smoke.jsonl",
+    "total_commands": 3,
+    "accepted": 2,
+    "rejected": 1,
+    "accepted_ratio": 0.6666666666666666,
+    "no_pose_overwrite_status": "pass",
+    "not_runtime_ue_console": true,
+    "claim_boundary": [
+      "Offline command adapter smoke only.",
+      "Does not send commands to UE, MWORKS, ROS2, or UAV actor pose.",
+      "Runtime UE command evidence still requires live accepted/rejected echo rows from MWORKS/ROS2 adapters."
+    ]
+  },
+  "ue_command_sender_source_contract": {
+    "schema": "mosim.ue_command_sender_source_contract.v1",
+    "ok": true,
+    "source": "source_level_static_check",
+    "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h",
+    "source_cpp": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp",
+    "types_header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksTypes.h",
+    "allowed_kinds": [
+      "controller_select",
+      "motor_fault",
+      "planner_select",
+      "recording",
+      "scenario_reset",
+      "scene_switch",
+      "sensor_mode",
+      "start_goal_update",
+      "wind_profile"
+    ],
+    "forbidden_kinds": [
+      "actor_transform",
+      "keyboard_pose",
+      "pose_override",
+      "set_uav_pose",
+      "teleport"
+    ],
+    "not_runtime_ue_console": true,
+    "runtime_ack_required_before_acceptance": true,
+    "no_pose_overwrite_status": "pass",
+    "issues": [],
+    "warnings": [
+      "source-level UE command sender only; no live UE runtime ack is claimed"
+    ]
+  },
+  "ue_command_sender_loopback_smoke": {
+    "schema": "mosim.ue_command_sender_loopback_smoke.v1",
+    "ok": true,
+    "source": "udp_loopback_smoke",
+    "sent_packets": 4,
+    "received_packets": 4,
+    "received_jsonl": "Results/p0_runs/rfly_mosim_p0_slice_20260606/ue_command_sender_loopback_received.jsonl",
+    "no_pose_overwrite_status": "pass",
+    "not_runtime_ue_console": true,
+    "not_mworks_or_ros2_ack": true,
+    "claim_boundary": [
+      "UDP loopback packet smoke only.",
+      "Does not run Unreal, MWORKS, ROS2, or any runtime acknowledgement adapter.",
+      "Accepted state still requires mosim.ue_command_echo.v1 from MWORKS/ROS2 authority."
+    ],
+    "issues": []
+  }
+}

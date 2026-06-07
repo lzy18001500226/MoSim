@@ -1,0 +1,199 @@
+{
+  "timestamp": "2026-06-06T21:25:06+08:00",
+  "manager_path": "D:\\Program Files\\Codex++\\codex-plus-plus-manager.exe",
+  "process_started_this_probe": false,
+  "selected_process": {
+    "name": "codex-plus-plus-manager",
+    "id": 26588,
+    "path": null,
+    "main_window_handle": "0x1460CFA",
+    "main_window_title": ""
+  },
+  "codex_processes": [
+    {
+      "Id": 9012,
+      "ProcessName": "codex",
+      "Path": "C:\\Users\\HP\\AppData\\Local\\OpenAI\\Codex\\bin\\fb2111b91430cb17\\codex.exe",
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 0
+      }
+    },
+    {
+      "Id": 9456,
+      "ProcessName": "Codex",
+      "Path": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.602.4764.0_x64__2p2nqsd0c76g0\\app\\Codex.exe",
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 0
+      }
+    },
+    {
+      "Id": 30144,
+      "ProcessName": "Codex",
+      "Path": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.602.4764.0_x64__2p2nqsd0c76g0\\app\\Codex.exe",
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 0
+      }
+    },
+    {
+      "Id": 35424,
+      "ProcessName": "Codex",
+      "Path": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.602.4764.0_x64__2p2nqsd0c76g0\\app\\Codex.exe",
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 0
+      }
+    },
+    {
+      "Id": 45668,
+      "ProcessName": "Codex",
+      "Path": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.602.4764.0_x64__2p2nqsd0c76g0\\app\\Codex.exe",
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 0
+      }
+    },
+    {
+      "Id": 45672,
+      "ProcessName": "Codex",
+      "Path": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.602.4764.0_x64__2p2nqsd0c76g0\\app\\Codex.exe",
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 0
+      }
+    },
+    {
+      "Id": 50092,
+      "ProcessName": "Codex",
+      "Path": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.602.4764.0_x64__2p2nqsd0c76g0\\app\\Codex.exe",
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 1771016
+      }
+    },
+    {
+      "Id": 57700,
+      "ProcessName": "Codex",
+      "Path": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.602.4764.0_x64__2p2nqsd0c76g0\\app\\Codex.exe",
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 0
+      }
+    },
+    {
+      "Id": 60388,
+      "ProcessName": "codex",
+      "Path": "C:\\Users\\HP\\AppData\\Local\\OpenAI\\Codex\\bin\\fb2111b91430cb17\\codex.exe",
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 0
+      }
+    },
+    {
+      "Id": 64220,
+      "ProcessName": "codex",
+      "Path": "C:\\Users\\HP\\AppData\\Local\\OpenAI\\Codex\\bin\\fb2111b91430cb17\\codex.exe",
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 0
+      }
+    },
+    {
+      "Id": 71500,
+      "ProcessName": "Codex",
+      "Path": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.602.4764.0_x64__2p2nqsd0c76g0\\app\\Codex.exe",
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 0
+      }
+    },
+    {
+      "Id": 71648,
+      "ProcessName": "codex",
+      "Path": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.602.4764.0_x64__2p2nqsd0c76g0\\app\\resources\\codex.exe",
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 0
+      }
+    },
+    {
+      "Id": 77820,
+      "ProcessName": "Codex",
+      "Path": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.602.4764.0_x64__2p2nqsd0c76g0\\app\\Codex.exe",
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 0
+      }
+    },
+    {
+      "Id": 50952,
+      "ProcessName": "codex-plus-plus",
+      "Path": null,
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 0
+      }
+    },
+    {
+      "Id": 26588,
+      "ProcessName": "codex-plus-plus-manager",
+      "Path": null,
+      "MainWindowTitle": "",
+      "MainWindowHandle": {
+        "value": 21368058
+      }
+    }
+  ],
+  "matching_windows": [
+    {
+      "hwnd": "0x941034",
+      "pid": 50092,
+      "title": "Codex",
+      "class": "Chrome_WidgetWin_1",
+      "visible": true,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x1C01136",
+      "pid": 50092,
+      "title": "Codex",
+      "class": "Chrome_WidgetWin_1",
+      "visible": true,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x1460CFA",
+      "pid": 26588,
+      "title": "",
+      "class": "Tao Thread Event Target",
+      "visible": true,
+      "minimized": false
+    },
+    {
+      "hwnd": "0xD80A7E",
+      "pid": 26588,
+      "title": "Codex++ 管理工具",
+      "class": "Tauri Window",
+      "visible": true,
+      "minimized": true
+    },
+    {
+      "hwnd": "0x7D0C00",
+      "pid": 26588,
+      "title": "MSCTFIME UI",
+      "class": "MSCTFIME UI",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x1970A92",
+      "pid": 26588,
+      "title": "Default IME",
+      "class": "IME",
+      "visible": false,
+      "minimized": false
+    }
+  ]
+}

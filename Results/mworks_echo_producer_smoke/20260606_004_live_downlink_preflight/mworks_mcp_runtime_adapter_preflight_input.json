@@ -1,0 +1,59 @@
+{
+  "schema_version": "mosim.mworks_echo_live_downlink_preflight_input.v1",
+  "task_id": "RFLY-MOSIM-MWORKS-ECHO-LIVE-DOWNLINK-PREFLIGHT-20260606-004",
+  "source": "MWORKS_MCP",
+  "model": "QuadrotorExperiments.EchoMcpStateSmoke",
+  "run_id": "mworks_mcp_live_downlink_preflight_20260606_004",
+  "mcp_sequence": [
+    "session_manager(action=probe)",
+    "session_manager(action=ensure)",
+    "model_manager(action=load_file, file_path=Models/QuadrotorExperiments/package.mo)",
+    "check_model(model_name=QuadrotorExperiments.EchoMcpStateSmoke)",
+    "simulate_model(model_name=QuadrotorExperiments.EchoMcpStateSmoke, target_time=[0.0,1.0], verify_result_var=accepted_mworks_owned_count)",
+    "result_manager(action=get_var_times)",
+    "result_manager(action=get_vars_value_at, time_point=end)"
+  ],
+  "mcp_probe_ok": true,
+  "mcp_ensure_ok": true,
+  "dedicated_sysplorer_port": 49152,
+  "load_file_ok": true,
+  "check_model_ok": true,
+  "check_model_elapsed_s": 1.547,
+  "simulate_model_ok": true,
+  "simulate_verify_var": "accepted_mworks_owned_count",
+  "simulate_verify_value_end": 5.0,
+  "result_times_count": 101,
+  "result_time_first": 0.0,
+  "result_time_last": 1.0,
+  "sample_time_s": 1.0,
+  "values": {
+    "controller_select_status": 1.0,
+    "wind_profile_status": 1.0,
+    "motor_fault_status": 1.0,
+    "scenario_reset_status": 1.0,
+    "recording_status": 1.0,
+    "forbidden_pose_status": -1.0,
+    "no_pose_overwrite_status": 1.0,
+    "accepted_mworks_owned_count": 5.0,
+    "rejected_non_mworks_count": 2.0,
+    "not_live_ue_runtime_ack": 1.0,
+    "not_closed_loop": 1.0,
+    "echo_state_keepalive": 0.007
+  },
+  "transport_surface_audit": {
+    "mworks_to_ue_or_ros2_echo_downlink_found": false,
+    "current_project_surfaces_found": [
+      "UE command sender source/UDP loopback smoke",
+      "MWORKS offline command echo producer",
+      "MWORKS_MCP state smoke model",
+      "MWORKS_MCP result-context adapter fixture",
+      "UE offline reducer"
+    ],
+    "blocked_reason": "No project-owned MWORKS-to-UE/ROS2 mosim.ue_command_echo.v1 live downlink or receiver transport surface is implemented or proven in the current task scope."
+  },
+  "claim_boundary": [
+    "Fresh MWORKS_MCP result-context preflight input for task 004.",
+    "This is not task-003 fixture replay.",
+    "This is not live UE runtime ack or live MWORKS downlink."
+  ]
+}

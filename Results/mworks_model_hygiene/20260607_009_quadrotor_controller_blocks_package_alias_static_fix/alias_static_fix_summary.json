@@ -1,0 +1,46 @@
+{
+  "schema": "mosim.mworks_model_hygiene.controller_blocks_alias_static_fix_summary.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-PACKAGE-ALIAS-STATIC-FIX-20260607-009",
+  "created_at": "2026-06-07T02:10:00+08:00",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "source": "static_file_validation_no_gui_no_mcp_no_check_model_no_simulation",
+  "status": "completed",
+  "quality_status": "static_alias_repair_only",
+  "files_edited": [
+    "Models/QuadrotorControllerBlocks/package.mo"
+  ],
+  "files_intentionally_unchanged": [
+    "Models/QuadrotorControllerBlocks/package.order",
+    "Models/QuadrotorControllerBlocks/AWFF_*.mo",
+    "Models/QuadrotorControllerBlocks/*_backup/**"
+  ],
+  "static_checks": {
+    "leading_dot_extends_remaining": 0,
+    "explicit_package_local_extends_count": 19,
+    "alias_count": 19,
+    "alias_targets_all_in_006_007_inventory": true,
+    "package_order_entries": [
+      "AWFFPidBlocks",
+      "InnovationControllers",
+      "FaultAllocationControllers",
+      "LinearMPCControllers",
+      "SafetyControllers",
+      "DemosAndSIL",
+      "CompatibilityAndLegacy"
+    ],
+    "package_order_entry_count": 7,
+    "controller_file_count": 19,
+    "backup_upgrade_mo_count": 6,
+    "controller_hashes_match_007_baseline": true,
+    "backup_upgrade_hashes_match_007_baseline": true,
+    "git_status_main_controller_mo_output_empty": true,
+    "git_status_backup_upgrade_output_empty": true,
+    "scoped_diff_check_output_empty": true,
+    "scoped_diff_check_note": "git diff --check over tracked paths emitted no whitespace warnings. Because package.mo/package.order are still untracked from 007 shell creation, static content checks and no-index whitespace probes were used as additional evidence; no whitespace warnings were emitted."
+  },
+  "claim_boundary": [
+    "009 may only claim static package-shell alias repair.",
+    "009 does not claim live Sysplorer package acceptance, package-browser acceptance, check_model success, graphical/layout acceptance, simulation success, controller performance, planner_ready, live runtime ack, or closed_loop.",
+    "Live acceptance remains blocked until Sysplorer demo-edition/license state is resolved and a separate 010 live validation task passes."
+  ]
+}

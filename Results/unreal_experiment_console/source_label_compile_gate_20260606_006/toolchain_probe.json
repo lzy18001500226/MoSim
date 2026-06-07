@@ -1,0 +1,19 @@
+{
+  "unreal_root": {
+    "path": "D:\\Program Files\\Epic Games\\UE_5.5",
+    "exists": true
+  },
+  "build_bat": {
+    "path": "D:\\Program Files\\Epic Games\\UE_5.5\\Engine\\Build\\BatchFiles\\Build.bat",
+    "exists": true
+  },
+  "ubt_dll": {
+    "path": "D:\\Program Files\\Epic Games\\UE_5.5\\Engine\\Binaries\\DotNET\\UnrealBuildTool\\UnrealBuildTool.dll",
+    "exists": true
+  },
+  "dotnet_dir": {
+    "path": "D:\\Program Files\\Epic Games\\UE_5.5\\Engine\\Binaries\\ThirdParty\\DotNet",
+    "exists": true
+  },
+  "dotnet_candidates": "D:\\Program Files\\Epic Games\\UE_5.5\\Engine\\Binaries\\ThirdParty\\DotNet\\8.0.300\\win-x64\\dotnet.exe"
+}

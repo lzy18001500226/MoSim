@@ -1,0 +1,21 @@
+{
+  "schema": "mosim.mworks_command_echo_producer_smoke.v1",
+  "source": "offline_adapter_smoke",
+  "ok": true,
+  "command_jsonl": "C:/Users/HP/Desktop/MoSim/Results/mworks_echo_producer_smoke/20260606_001/mworks_echo_commands.jsonl",
+  "echo_jsonl": "C:/Users/HP/Desktop/MoSim/Results/mworks_echo_producer_smoke/20260606_001/mworks_echo_rows.jsonl",
+  "total_commands": 7,
+  "accepted": 5,
+  "rejected": 2,
+  "ros2_or_shared_commands_rejected": 1,
+  "not_runtime_mworks_ack": true,
+  "not_live_ue_console": true,
+  "not_closed_loop": true,
+  "not_controller_performance": true,
+  "not_planner_ready": true,
+  "claim_boundary": [
+    "Offline MWORKS command echo producer smoke only.",
+    "Accepted rows are schema/static mapping evidence, not runtime MWORKS acknowledgement.",
+    "ROS2-owned or shared commands must not be accepted by this MWORKS-only smoke."
+  ]
+}

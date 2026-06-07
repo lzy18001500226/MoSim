@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "quality_status": "smoke_only",
+  "run_id": "rfly_mosim_p0_slice_20260606",
+  "issues": [],
+  "warnings": [],
+  "manifest": "Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json"
+}

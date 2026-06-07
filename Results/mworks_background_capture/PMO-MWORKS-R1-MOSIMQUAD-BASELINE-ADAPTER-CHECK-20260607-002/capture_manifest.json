@@ -1,0 +1,74 @@
+[
+    {
+        "id":  70340,
+        "process":  "mw_browser_proxy",
+        "title":  "MWORKS",
+        "class_name":  "Qt5QWindowIcon",
+        "handle":  65802974,
+        "handle_hex":  "0x3EC12DE",
+        "visible":  false,
+        "minimized":  false,
+        "capture":  "ok=True; was_minimized=False; minimized_before_reminimize=False; visible=False; rect=817,322,1231,760; size=414x438; title=MWORKS; path=C:\\Users\\HP\\Desktop\\MoSim\\Results\\mworks_background_capture\\PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-002\\70340_0x3EC12DE_MWORKS.png",
+        "path":  "C:\\Users\\HP\\Desktop\\MoSim\\Results\\mworks_background_capture\\PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-002\\70340_0x3EC12DE_MWORKS.png"
+    },
+    {
+        "id":  70340,
+        "process":  "mw_browser_proxy",
+        "title":  "MWORKS",
+        "class_name":  "Qt5QWindowIcon",
+        "handle":  80415996,
+        "handle_hex":  "0x4CB0CFC",
+        "visible":  false,
+        "minimized":  false,
+        "capture":  "ok=True; was_minimized=False; minimized_before_reminimize=False; visible=False; rect=817,322,1231,760; size=414x438; title=MWORKS; path=C:\\Users\\HP\\Desktop\\MoSim\\Results\\mworks_background_capture\\PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-002\\70340_0x4CB0CFC_MWORKS.png",
+        "path":  "C:\\Users\\HP\\Desktop\\MoSim\\Results\\mworks_background_capture\\PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-002\\70340_0x4CB0CFC_MWORKS.png"
+    },
+    {
+        "id":  70340,
+        "process":  "mw_browser_proxy",
+        "title":  "MWORKS",
+        "class_name":  "Qt5QWindowIcon",
+        "handle":  81660734,
+        "handle_hex":  "0x4DE0B3E",
+        "visible":  false,
+        "minimized":  false,
+        "capture":  "ok=True; was_minimized=False; minimized_before_reminimize=False; visible=False; rect=817,322,1231,760; size=414x438; title=MWORKS; path=C:\\Users\\HP\\Desktop\\MoSim\\Results\\mworks_background_capture\\PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-002\\70340_0x4DE0B3E_MWORKS.png",
+        "path":  "C:\\Users\\HP\\Desktop\\MoSim\\Results\\mworks_background_capture\\PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-002\\70340_0x4DE0B3E_MWORKS.png"
+    },
+    {
+        "id":  75948,
+        "process":  "mworks",
+        "title":  "Sysplorer [教育版]",
+        "class_name":  "Qt5QWindowIcon",
+        "handle":  13439000,
+        "handle_hex":  "0xCD1018",
+        "visible":  true,
+        "minimized":  true,
+        "capture":  "ok=True; was_minimized=True; minimized_before_reminimize=False; visible=True; rect=-7,-7,2055,1111; size=2062x1118; title=Sysplorer [教育版]; path=C:\\Users\\HP\\Desktop\\MoSim\\Results\\mworks_background_capture\\PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-002\\75948_0xCD1018_Sysplorer _教育版_.png",
+        "path":  "C:\\Users\\HP\\Desktop\\MoSim\\Results\\mworks_background_capture\\PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-002\\75948_0xCD1018_Sysplorer _教育版_.png"
+    },
+    {
+        "id":  75948,
+        "process":  "mworks",
+        "title":  "MWORKS.Sysplorer 2026a",
+        "class_name":  "Qt5QWindowIcon",
+        "handle":  30150802,
+        "handle_hex":  "0x1CC1092",
+        "visible":  false,
+        "minimized":  false,
+        "capture":  "ok=True; was_minimized=False; minimized_before_reminimize=False; visible=False; rect=953,458,1095,624; size=142x166; title=MWORKS.Sysplorer 2026a; path=C:\\Users\\HP\\Desktop\\MoSim\\Results\\mworks_background_capture\\PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-002\\75948_0x1CC1092_MWORKS.Sysplorer 2026a.png",
+        "path":  "C:\\Users\\HP\\Desktop\\MoSim\\Results\\mworks_background_capture\\PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-002\\75948_0x1CC1092_MWORKS.Sysplorer 2026a.png"
+    },
+    {
+        "id":  75948,
+        "process":  "mworks",
+        "title":  "MWORKS.Sysplorer 2026a",
+        "class_name":  "Qt5QWindowIcon",
+        "handle":  47779036,
+        "handle_hex":  "0x2D90CDC",
+        "visible":  false,
+        "minimized":  false,
+        "capture":  "ok=True; was_minimized=False; minimized_before_reminimize=False; visible=False; rect=-8,-31,326,167; size=334x198; title=MWORKS.Sysplorer 2026a; path=C:\\Users\\HP\\Desktop\\MoSim\\Results\\mworks_background_capture\\PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-002\\75948_0x2D90CDC_MWORKS.Sysplorer 2026a.png",
+        "path":  "C:\\Users\\HP\\Desktop\\MoSim\\Results\\mworks_background_capture\\PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-002\\75948_0x2D90CDC_MWORKS.Sysplorer 2026a.png"
+    }
+]

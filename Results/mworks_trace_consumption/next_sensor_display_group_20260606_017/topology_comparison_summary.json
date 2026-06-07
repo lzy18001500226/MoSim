@@ -1,0 +1,31 @@
+{
+  "schema_version": "mosim.topology_comparison.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-NEXT-SENSOR-DISPLAY-GROUP-20260606-017",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "source": "file_topology_inspection",
+  "passing_baseline": "QuadrotorExperiments.FactoryTraceIso23PositionSampleHoldBridgeSmoke",
+  "target_full_wrapper": "QuadrotorExperiments.Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke",
+  "target_sensor_display_connections": [
+    {
+      "connection": "planningReference.position_command -> navigationDisplay.reference_position",
+      "status_in_iso23": "already inherited from FactoryLiteTraceSmoke",
+      "allowed_new_group": false
+    },
+    {
+      "connection": "sensors1_1.PosMea -> navigationDisplay.actual_position",
+      "status_in_iso23": "represented by sampled/held bridge into inherited actual_position(y=display_position_hold.y)",
+      "allowed_new_group": false
+    }
+  ],
+  "remaining_target_connections_after_iso23": [
+    "planningReference.position_command[1..3] and sensors1_1.PosMea[1..3] into x/y/z error feedback",
+    "planningReference.z_ref_rate into controller3_2.z_ref_rate",
+    "sensors1_1.AngleMea[1..3] into controller3_2 roll/pitch/yaw measurement inputs",
+    "controller outputs through motor scaling/summing into actuator inputs",
+    "actuator flanges into speedSensor[1..4]"
+  ],
+  "remaining_connections_are_sensor_display_only": false,
+  "scope_exhausted": true,
+  "reason": "After Iso23, all target navigationDisplay sensor/display connections are already represented. The remaining differences are controller, actuator, or control-feedback reconnect groups, which task 017 explicitly forbids.",
+  "claim_boundary": "Topology comparison only. No MWORKS simulation evidence is claimed for 017 because no compliant new sensor/display reconnect group exists to model and simulate."
+}

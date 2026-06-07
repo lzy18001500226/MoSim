@@ -1,0 +1,5 @@
+probe_id,model_name,signal_mapping,check_model,simulate_model,get_var_times_count,nonzero_alias_refs,error_6140_present,verdict
+iso10_roll_only_direct,QuadrotorExperiments.FactoryTraceIso10RollFeedbackSmoke,AngleMea[1]->roll_mea direct,pass,failed,0,false,false,first_attitude_feedback_sub_boundary
+iso11_pitch_only_direct,QuadrotorExperiments.FactoryTraceIso11PitchFeedbackSmoke,AngleMea[2]->pitch_mea direct,pass,failed,0,false,false,same_failure_class_as_roll_only
+iso12_roll_only_negated,QuadrotorExperiments.FactoryTraceIso12RollFeedbackNegatedSmoke,-AngleMea[1]->roll_mea,pass,failed,0,false,false,sign_flip_did_not_restore_result_context
+iso13_pitch_only_negated,QuadrotorExperiments.FactoryTraceIso13PitchFeedbackNegatedSmoke,-AngleMea[2]->pitch_mea,pass,failed,0,false,false,sign_flip_did_not_restore_result_context

@@ -1,0 +1,213 @@
+{
+  "schema": "mosim.ue_console_source_static_receiver_shell_contract_design.v1",
+  "request_id": "RFLY-MOSIM-UE-CONSOLE-SOURCE-STATIC-RECEIVER-SHELL-CONTRACT-DESIGN-20260607-010",
+  "created_at": "2026-06-07T06:45:47+08:00",
+  "status": "completed_source_static_contract_design",
+  "scope": "Design-only contract for a future project-owned UE command echo receiver shell. No runtime receiver, UE GUI, Unreal build, source edit, Blueprint/UMG/asset edit, MWORKS/ROS2/UE runtime call, or UI accepted-state enablement occurred.",
+  "current_source_facts": {
+    "state_component": {
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleStateComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleStateComponent.cpp",
+      "pending_sink": "UQuadrotorMworksExperimentConsoleStateComponent.RecordPendingCommandFromPacketJson",
+      "echo_sink": "UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson",
+      "input_echo_schema": "mosim.ue_command_echo.v1",
+      "enforced_fields_or_guards": [
+        "schema",
+        "status",
+        "run_id",
+        "request_id",
+        "seq",
+        "command.kind",
+        "ack_authority",
+        "source",
+        "no_pose_overwrite_status=pass",
+        "matching pending request",
+        "seq match",
+        "command kind match"
+      ],
+      "non_live_source_labels_kept_smoke_only": [
+        "offline_adapter_smoke",
+        "source_level_smoke",
+        "MWORKS_MCP_result_adapter_smoke",
+        "MWORKS_MCP_runtime_adapter_preflight"
+      ]
+    },
+    "frame_status_receiver": {
+      "component": "UQuadrotorMworksUdpReceiverComponent",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpReceiverComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp",
+      "role": "quadrotor.unreal_state frame/status receiver only",
+      "uses_fudp_socket_receiver": true,
+      "must_not_be_reused_as_command_echo_ack_receiver": true,
+      "must_not_parse_schema": "mosim.ue_command_echo.v1"
+    },
+    "command_sender": {
+      "component": "UQuadrotorMworksUdpCommandSenderComponent",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp",
+      "role": "mosim.ue_command.v1 sender only",
+      "send_success_is_not_ack": true,
+      "must_not_call_echo_sink": "ApplyCommandEchoJson"
+    }
+  },
+  "future_receiver_shell_contract": {
+    "recommended_component_name": "UQuadrotorMworksExperimentConsoleCommandEchoReceiverComponent",
+    "component_boundary": [
+      "Project-owned UE Bridge component or narrow adapter.",
+      "Separate from UQuadrotorMworksUdpReceiverComponent.",
+      "Separate from UQuadrotorMworksUdpCommandSenderComponent.",
+      "Not Blueprint/UMG-only logic.",
+      "No direct Actor transform, teleport, keyboard, or mouse pose-control surface."
+    ],
+    "input_contract": {
+      "accepted_schema": "mosim.ue_command_echo.v1",
+      "forbidden_inputs_as_ack": [
+        "quadrotor.unreal_state.* frame/status downlink",
+        "UDP send success",
+        "007 disabled-state fixture rows",
+        "008 future-live fixture rows",
+        "offline/source/preflight smoke rows",
+        "planner/controller success labels",
+        "UE global truth map or sensor oracle rows"
+      ],
+      "required_fields_before_sink": [
+        "schema=mosim.ue_command_echo.v1",
+        "status=accepted|rejected",
+        "source",
+        "run_id",
+        "request_id",
+        "seq",
+        "time_s",
+        "ack_authority",
+        "command.kind",
+        "no_pose_overwrite_status=pass"
+      ],
+      "authoritative_source_allowlist_for_runtime_acceptance": {
+        "MWORKS_live_downlink": "MWORKS",
+        "ROS2_runtime_echo": "ROS2",
+        "MWORKS_ROS2_live_downlink": "MWORKS_ROS2"
+      },
+      "non_live_source_downgrade_list": [
+        "offline_adapter_smoke",
+        "source_level_smoke",
+        "MWORKS_MCP_result_adapter_smoke",
+        "MWORKS_MCP_runtime_adapter_preflight"
+      ]
+    },
+    "sink_contract": {
+      "single_state_sink": "UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson",
+      "pending_precondition": "A matching command request must have been recorded by RecordPendingCommandFromPacketJson.",
+      "match_key": [
+        "run_id",
+        "request_id"
+      ],
+      "match_guards": [
+        "seq equals pending command seq",
+        "command.kind equals pending command kind",
+        "no_pose_overwrite_status equals pass",
+        "ack_authority present and consistent with source",
+        "status is accepted or rejected"
+      ]
+    },
+    "rejection_or_non_runtime_rules": [
+      {
+        "case": "source is offline_adapter_smoke/source_level_smoke/MWORKS_MCP_result_adapter_smoke/MWORKS_MCP_runtime_adapter_preflight",
+        "result": "quality_status=smoke_only and accepted_as_runtime_ack=false"
+      },
+      {
+        "case": "source is quadrotor.unreal_state frame receiver or UDP send result",
+        "result": "not a command echo; do not call ApplyCommandEchoJson as runtime ack"
+      },
+      {
+        "case": "orphan echo without matching pending command request",
+        "result": "reject or record disabled invalid state; no runtime acceptance"
+      },
+      {
+        "case": "stale, duplicate, malformed, seq mismatch, command kind mismatch, authority mismatch, missing timestamp, missing status, or no_pose_overwrite_status!=pass",
+        "result": "reject or keep disabled invalid state; no runtime acceptance"
+      },
+      {
+        "case": "status=rejected from an authoritative source",
+        "result": "disabled_rejected; accepted_as_runtime_ack=false"
+      }
+    ]
+  },
+  "future_static_checker_plan": {
+    "checker_name": "check_ue_command_echo_receiver_shell_contract.py",
+    "allowed_future_scope": [
+      "Scripts/UE5 static checker",
+      "Scripts/tests focused pytest",
+      "future C++ shell source only if separately dispatched"
+    ],
+    "must_check": [
+      "new receiver component exists with command echo role",
+      "new receiver component accepts mosim.ue_command_echo.v1 only",
+      "new receiver component calls ApplyCommandEchoJson as the only state sink",
+      "new receiver component does not parse quadrotor.unreal_state.* as command ack",
+      "new receiver component does not use UDP send success as command ack",
+      "new receiver component does not mix with UQuadrotorMworksUdpReceiverComponent frame/status receiver",
+      "new receiver component does not mix with UQuadrotorMworksUdpCommandSenderComponent sender-only path",
+      "new receiver component has no Actor transform, teleport, input binding, keyboard, or mouse pose-control APIs",
+      "non-live source labels remain smoke_only and accepted_as_runtime_ack=false",
+      "authoritative source/ack_authority/status/timestamp/command-id/no_pose_overwrite_status gates are present before accepted runtime state"
+    ]
+  },
+  "gate_decisions": {
+    "runtime_receiver_implementation_safe_next": false,
+    "runtime_receiver_implementation_reason": "MWORKS/ROS2 live command-echo transport provenance remains unavailable; existing receiver-boundary checker still reports current_live_echo_receiver_present=false and safe_to_implement_runtime_receiver_next=false.",
+    "compile_gate_now": false,
+    "compile_gate_reason": "010 did not edit UE source and PMO explicitly forbids Unreal build in this task.",
+    "ui_binding_next": "static-only UI binding contract preflight may be a later task, but accepted-state UI controls must remain disabled until authoritative live echo transport exists."
+  },
+  "verification_summary": {
+    "live_receiver_boundary_static_regression": {
+      "path": "Results/unreal_experiment_console/source_static_receiver_shell_contract_20260607_010/live_receiver_boundary_static_regression.json",
+      "ok": true
+    },
+    "console_state_contract_static_regression": {
+      "path": "Results/unreal_experiment_console/source_static_receiver_shell_contract_20260607_010/console_state_contract_static_regression.json",
+      "ok": true
+    },
+    "disabled_state_contract_static_regression": {
+      "path": "Results/unreal_experiment_console/source_static_receiver_shell_contract_20260607_010/disabled_state_contract_static_regression.json",
+      "ok": true
+    },
+    "live_echo_acceptance_fixture_static_regression": {
+      "path": "Results/unreal_experiment_console/source_static_receiver_shell_contract_20260607_010/live_echo_acceptance_fixture_static_regression.json",
+      "ok": true
+    }
+  },
+  "forbidden_actions_confirmed": {
+    "opened_ue_gui_or_unreal_editor": false,
+    "edited_cpp_source": false,
+    "edited_blueprint_or_umg_or_assets": false,
+    "edited_materials_or_textures": false,
+    "edited_project_settings": false,
+    "ran_unreal_build": false,
+    "implemented_runtime_socket_or_udp_receiver": false,
+    "called_mworks_or_sysplorer_or_syslab_runtime": false,
+    "called_ros2_or_rviz2_or_fast_lio_or_planner_runtime": false,
+    "called_ue_runtime": false,
+    "enabled_ui_accepted_state_controls": false,
+    "treated_quadrotor_unreal_state_as_command_ack": false,
+    "treated_udp_send_success_as_command_ack": false,
+    "treated_fixture_rows_as_live_ack": false,
+    "claimed_live_ue_runtime_ack": false,
+    "claimed_live_mworks_downlink": false,
+    "claimed_ros2_runtime_ack": false,
+    "claimed_planner_ready": false,
+    "claimed_closed_loop": false,
+    "claimed_controller_performance": false,
+    "claimed_fast_lio_success": false,
+    "claimed_localization_or_local_map_quality": false,
+    "claimed_mission_success": false,
+    "claimed_final_ui_acceptance": false
+  },
+  "claim_boundary": [
+    "010 is source-static receiver shell contract design only.",
+    "010 does not implement or validate a live UE runtime receiver.",
+    "010 does not prove live MWORKS downlink or ROS2 runtime acknowledgement.",
+    "010 does not bind or enable Blueprint/UMG/Slate accepted-state controls.",
+    "010 does not prove planner_ready, closed_loop, controller performance, FAST-LIO success, localization/local-map quality, mission success, or final UI acceptance."
+  ]
+}

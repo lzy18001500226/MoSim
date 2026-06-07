@@ -1,0 +1,148 @@
+{
+  "schema_version": "mosim.mworks_yaw_motor_order_audit.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-YAW-SIGN-MOTOR-ORDER-AUDIT-20260606-008",
+  "created_at": "2026-06-06T18:10:00+08:00",
+  "status": "completed_wrapper_level_convention_audit_with_boundaries",
+  "source_scope": {
+    "px4": "References/PX4/PX4",
+    "sunray": "References/Sunray",
+    "yunzong": "missing_local_reference_directory",
+    "rflysim": "not_used_for_acceptance"
+  },
+  "selected_convention": {
+    "body_frame_note": "Wrapper evidence uses MWORKS body axes from QuadrotorExperiments. PX4/Sunray source positions are used as motor-order/sign references only.",
+    "px4_quad_x_order": [
+      "rotor0 front-right",
+      "rotor1 back-left",
+      "rotor2 front-left",
+      "rotor3 back-right"
+    ],
+    "mworks_wrapper_order": [
+      "index1 front-right",
+      "index2 front-left",
+      "index3 back-left",
+      "index4 back-right"
+    ],
+    "px4_to_mworks_index_map": {
+      "px4_rotor0": 1,
+      "px4_rotor2": 2,
+      "px4_rotor1": 3,
+      "px4_rotor3": 4
+    },
+    "sunray_to_mworks_index_map": {
+      "sunray_motorNumber0": 1,
+      "sunray_motorNumber2": 2,
+      "sunray_motorNumber1": 3,
+      "sunray_motorNumber3": 4
+    }
+  },
+  "motor_matrix": [
+    {
+      "mworks_index": 1,
+      "body_position_role": "front-right",
+      "rotor_center_m": [0.053745, -0.05374, -0.014052],
+      "px4_rotor_index": 0,
+      "px4_position_seed": {"CA_ROTOR0_PX": 1, "CA_ROTOR0_PY": 1, "CA_ROTOR0_KM": "default positive"},
+      "sunray_motor_number": 0,
+      "sunray_joint": "rotor_0_joint",
+      "sunray_turning_direction": "ccw",
+      "mworks_spin_command_sign": 1,
+      "mworks_yaw_direction": 1,
+      "audit_result": "matches_selected_reordered_px4_sunray_convention"
+    },
+    {
+      "mworks_index": 2,
+      "body_position_role": "front-left",
+      "rotor_center_m": [0.053746, 0.053759, -0.014052],
+      "px4_rotor_index": 2,
+      "px4_position_seed": {"CA_ROTOR2_PX": 1, "CA_ROTOR2_PY": -1, "CA_ROTOR2_KM": -0.05},
+      "sunray_motor_number": 2,
+      "sunray_joint": "rotor_2_joint",
+      "sunray_turning_direction": "cw",
+      "mworks_spin_command_sign": -1,
+      "mworks_yaw_direction": -1,
+      "audit_result": "matches_selected_reordered_px4_sunray_convention"
+    },
+    {
+      "mworks_index": 3,
+      "body_position_role": "back-left",
+      "rotor_center_m": [-0.053761, 0.05376, -0.014052],
+      "px4_rotor_index": 1,
+      "px4_position_seed": {"CA_ROTOR1_PX": -1, "CA_ROTOR1_PY": -1, "CA_ROTOR1_KM": "default positive"},
+      "sunray_motor_number": 1,
+      "sunray_joint": "rotor_1_joint",
+      "sunray_turning_direction": "ccw",
+      "mworks_spin_command_sign": 1,
+      "mworks_yaw_direction": 1,
+      "audit_result": "matches_selected_reordered_px4_sunray_convention"
+    },
+    {
+      "mworks_index": 4,
+      "body_position_role": "back-right",
+      "rotor_center_m": [-0.053761, -0.053739, -0.014052],
+      "px4_rotor_index": 3,
+      "px4_position_seed": {"CA_ROTOR3_PX": -1, "CA_ROTOR3_PY": 1, "CA_ROTOR3_KM": -0.05},
+      "sunray_motor_number": 3,
+      "sunray_joint": "rotor_3_joint",
+      "sunray_turning_direction": "cw",
+      "mworks_spin_command_sign": -1,
+      "mworks_yaw_direction": -1,
+      "audit_result": "matches_selected_reordered_px4_sunray_convention"
+    }
+  ],
+  "source_evidence": [
+    {
+      "source": "Sunray SDF",
+      "path": "References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150/sunray150.sdf",
+      "lines": "368-430",
+      "fact": "front_right rotor_0 and back_left rotor_1 use turningDirection=ccw; front_left rotor_2 and back_right rotor_3 use turningDirection=cw; motorNumber is 0,1,2,3 respectively."
+    },
+    {
+      "source": "PX4 quad_x airframe",
+      "path": "References/PX4/PX4/ROMFS/px4fmu_common/init.d/airframes/4001_quad_x",
+      "lines": "13-24",
+      "fact": "Square quadrotor X PX4 numbering uses rotor0=(1,1), rotor1=(-1,-1), rotor2=(1,-1) with KM=-0.05, rotor3=(-1,1) with KM=-0.05; rotor0/1 use default positive KM."
+    },
+    {
+      "source": "PX4 SIH quad_x airframe",
+      "path": "References/PX4/PX4/ROMFS/px4fmu_common/init.d/airframes/1100_rc_quad_x_sih.hil",
+      "lines": "26-37",
+      "fact": "SIH quad_x repeats the same position and KM sign pattern as 4001_quad_x."
+    },
+    {
+      "source": "PX4 control allocator metadata",
+      "path": "References/PX4/PX4/src/modules/control_allocator/module.yaml",
+      "lines": "211-219, 843-846",
+      "fact": "CA_ROTOR${i}_KM is displayed as Direction CCW; positive is true-if-positive."
+    },
+    {
+      "source": "MWORKS project wrapper",
+      "path": "Models/QuadrotorExperiments/package.mo",
+      "lines": "1335-1344",
+      "fact": "Project wrapper uses MWORKS order front-right, front-left, back-left, back-right with spin_command_sign={1,-1,1,-1} and yaw_direction={1,-1,1,-1}."
+    }
+  ],
+  "mworks_mcp_gate": {
+    "source": "MWORKS_MCP",
+    "session_health": "pass",
+    "check_model": {
+      "model": "QuadrotorExperiments.Sunray150PhysicalWrenchYawStepSmoke",
+      "status": "pass"
+    },
+    "simulate_model": {
+      "model": "QuadrotorExperiments.Sunray150PhysicalWrenchYawStepSmoke",
+      "status": "degraded_result_binding",
+      "detail": "SimulateModel returned false with no last-error log, but its internal verify_result_var probe confirmed torque_application_error@end=0.0. Follow-up result_manager variable reads returned no usable values in this turn, so 008 does not create a stronger MWORKS result-variable claim than parent 006/007 evidence."
+    }
+  },
+  "claim_boundary": {
+    "not_parameter_identification": true,
+    "not_fault_isolation_readiness": true,
+    "not_allocation_reconstruction_readiness": true,
+    "not_controller_performance": true,
+    "not_planner_ready": true,
+    "not_live_runtime_ack": true,
+    "not_factory_trace_consumption": true,
+    "not_closed_loop": true
+  }
+}

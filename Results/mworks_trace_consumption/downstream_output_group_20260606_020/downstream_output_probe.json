@@ -1,0 +1,102 @@
+{
+  "schema_version": "mosim.mworks_trace_probe.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-DOWNSTREAM-OUTPUT-GROUP-20260606-020",
+  "created_at": "2026-06-06T19:48:00+08:00",
+  "source": "MWORKS_MCP",
+  "model_name": "QuadrotorExperiments.FactoryTraceIso26ControllerOutputAliasSmoke",
+  "baseline_model": "QuadrotorExperiments.FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke",
+  "selected_downstream_group": "controller output and pre-actuator alias observation group",
+  "selected_downstream_group_details": [
+    "Expose controller3_2.y/y1/y2/y3 as controller_output_1..4.",
+    "Expose existing motor*_delta_scale.y as pre_actuator_delta_1..4.",
+    "Expose existing motor*_hover_sum.y as pre_actuator_command_1..4 and sum.",
+    "No new connect() equations, no actuator/motor/speedSensor reconnect, no direct PosMea/AngleMea reconnect."
+  ],
+  "exactly_one_downstream_group_added": true,
+  "iso23_position_bridge_preserved": true,
+  "iso25_attitude_bridge_preserved": true,
+  "pre_sentinel": {
+    "path": "Results/mworks_trace_consumption/downstream_output_group_20260606_020/pre_sentinel.json",
+    "status": "clean",
+    "error_kind": null,
+    "window_count": 396
+  },
+  "mcp_session_health": {
+    "ok": true,
+    "driver_ready": true,
+    "api_ready": true,
+    "dedicated_sysplorer_port": 49153
+  },
+  "model_load": {
+    "controller_block_open_model_file_ok": true,
+    "official_quadrotor_model_open_model_file_ok": true,
+    "project_package_open_model_file_ok": true,
+    "used_reload_mo_path_for_check_or_simulate": false,
+    "smart_layout_writeback_triggered": false
+  },
+  "check_model": {
+    "status": "pass",
+    "ok": true,
+    "data": true,
+    "elapsed_s": 2.03
+  },
+  "simulate_model": {
+    "status": "pass",
+    "ok": true,
+    "data": true,
+    "target_time_s": [0.0, 2.0],
+    "verified_result_var": "controller_output_1",
+    "controller_output_1_end": 15.151068480741293
+  },
+  "get_var_times": {
+    "count": 1001,
+    "first": 0.0,
+    "last": 2.0
+  },
+  "aliases": {
+    "available": true,
+    "sample_times_s": [0.0, 1.0, 2.0],
+    "sample_path": "Results/mworks_trace_consumption/downstream_output_group_20260606_020/downstream_output_alias_samples.csv",
+    "end_values": {
+      "x_ref": 0.22528064041293117,
+      "y_ref": 0.6178306433245998,
+      "z_ref": 1.2469737036046606,
+      "yaw_ref": 2.4422701702657834,
+      "display_bridge_x": -53.531663364868045,
+      "display_bridge_y": -22.07920073068303,
+      "display_bridge_z": 0.001117971217668775,
+      "attitude_bridge_roll": -1.450815611471879,
+      "attitude_bridge_pitch": 2.2181345014113423,
+      "attitude_bridge_yaw": 0.19376274734096824,
+      "controller_output_1": 15.151068480741293,
+      "controller_output_2": -20.0,
+      "controller_output_3": 15.151068480741293,
+      "controller_output_4": -15.151068480741293,
+      "pre_actuator_delta_1": 58.026380232451444,
+      "pre_actuator_delta_2": -76.59708000951812,
+      "pre_actuator_delta_3": 58.026380232451444,
+      "pre_actuator_delta_4": -58.026380232451444,
+      "pre_actuator_command_1": 111.58847059962386,
+      "pre_actuator_command_2": -130.15917037669055,
+      "pre_actuator_command_3": 111.58847059962386,
+      "pre_actuator_command_4": -111.58847059962386,
+      "pre_actuator_command_sum": -18.570699777066693
+    }
+  },
+  "post_sentinel": {
+    "path": "Results/mworks_trace_consumption/downstream_output_group_20260606_020/post_sentinel.json",
+    "status": "clean",
+    "error_kind": null,
+    "window_count": 424
+  },
+  "file_safety": {
+    "official_baseline_package_mo_diff_clean": true,
+    "quadrotor_experiments_package_mo_diff_clean": true,
+    "models_changed": [
+      "Models/QuadrotorExperiments/FactoryTraceIso26ControllerOutputAliasSmoke.mo",
+      "Models/QuadrotorExperiments/package.order"
+    ]
+  },
+  "result_context_preserved": true,
+  "claim_boundary": "One incremental downstream controller-output/pre-actuator alias result-context probe only; not Factory trace consumption, closed_loop, controller performance, plant tracking, mission success, or parameter identification evidence."
+}

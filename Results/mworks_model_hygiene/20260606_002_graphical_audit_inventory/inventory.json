@@ -1,0 +1,161 @@
+{
+  "schema": "mosim.mworks_model_hygiene.static_inventory.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-R2-GRAPHICAL-MODEL-AUDIT-INVENTORY-20260606-002",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "target_thread": "MoSim｜MWORKS动力学与控制验证部-R2",
+  "source": "static_text_inventory_only",
+  "status": "completed",
+  "created_at": "2026-06-06T22:38:00+08:00",
+  "scope_boundary": [
+    "Read-only static inventory and prioritization only.",
+    "No MWORKS/Sysplorer/Syslab GUI was opened.",
+    "No Sysplorer/Syslab/MWORKS MCP was called.",
+    "No .mo, package.order, script, References, P0 manifest, or CoAgent runtime file was modified.",
+    "No model is classified as graphically accepted from this static pass."
+  ],
+  "reviewed_paths": [
+    "Models/QuadrotorExperiments/",
+    "Models/QuadrotorControllerBlocks/",
+    "References/MWORKS/QuadrotorModel/package.mo",
+    "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-QUADROTOR-EXPERIMENTS-CLASSIFICATION-20260606-013.json",
+    "Docs/Skills/Mworks/mworks-model-context/SKILL.md",
+    "Docs/Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md",
+    "Docs/Workflows/agent_task_ledger.md",
+    "CoAgent/dispatch/department_threads.json"
+  ],
+  "static_counts": {
+    "quadrotor_experiments": {
+      "mo_file_count": 95,
+      "package_order_entries": 115,
+      "package_order_entries_without_sibling_file_count": 21,
+      "package_order_entries_without_sibling_file_interpretation": "The first 11 are categorized compatibility package aliases from task 013. Sunray150 dynamics/wrench classes and FactoryTraceIso30ExternalBodyStateBoundarySmoke are embedded in Models/QuadrotorExperiments/package.mo, so this is not automatically a missing-file defect.",
+      "with_connects": 80,
+      "connects_without_line_annotations": 79,
+      "connects_without_placement_annotations": 79,
+      "with_diagram_annotation": 4,
+      "with_icon_annotation": 3
+    },
+    "quadrotor_controller_blocks": {
+      "mo_file_count": 19,
+      "package_mo_present": false,
+      "package_order_present": false,
+      "backup_directories_present": [
+        "AWFF_AttitudeInnerLoop_Sysblock_backup",
+        "AWFF_InnovationGraphicalControllers_backup",
+        "AWFF_MotorMixer_Sysblock_backup",
+        "AWFF_PID_Sysblock_Demo_backup",
+        "AWFF_PositionOuterLoop_backup"
+      ],
+      "with_connects": 11,
+      "with_ports": 18,
+      "connects_without_line_annotations": 3,
+      "high_graphical_density_files": [
+        "AWFF_InnovationGraphicalControllers.mo",
+        "AWFF_FullController_Sysblock.mo",
+        "AWFF_FullControllerFlatGraphical_Sysblock.mo",
+        "AWFF_AttitudeInnerLoop_Sysblock.mo",
+        "AWFF_MotorMixer_Sysblock.mo",
+        "AWFF_PositionOuterLoop_Sysblock.mo"
+      ]
+    },
+    "official_baseline_reference": {
+      "path": "References/MWORKS/QuadrotorModel/package.mo",
+      "status": "read_only_reference_only",
+      "static_observation": "Official examples include Placement and Line annotations around actuator/chassis/controller/sensor wiring. This is useful as a graphical layout reference, but the official baseline was not edited."
+    }
+  },
+  "high_priority_candidates": [
+    {
+      "model": "QuadrotorExperiments.FormationTriangleFigure8LinearMPCSysblockClosedLoop",
+      "path": "Models/QuadrotorExperiments/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo",
+      "priority": "P0",
+      "static_reason": "Largest standalone experiment wiring surface found: 105 connect equations, 0 Placement annotations, 0 Line annotations, 0 Diagram/Icon annotations.",
+      "recommended_next_gate": "GUI/MCP graphical open plus manual screenshot review before any diagram acceptance; R1 owns any simulation or behavior evidence."
+    },
+    {
+      "model": "QuadrotorExperiments.Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke",
+      "path": "Models/QuadrotorExperiments/Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke.mo",
+      "priority": "P0",
+      "static_reason": "Factory trace wrapper is historically important and blocked earlier trace consumption; static text has 41 connect equations and no visible diagram annotations.",
+      "recommended_next_gate": "R2 GUI/layout inspection after PMO approval; do not claim Factory trace consumption without R1/MCP simulation evidence."
+    },
+    {
+      "model": "QuadrotorExperiments.FactoryTraceIso23PositionSampleHoldBridgeSmoke through FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+      "path": "Models/QuadrotorExperiments/FactoryTraceIso23*.mo ... package.mo embedded Iso30",
+      "priority": "P0",
+      "static_reason": "These are current evidence-chain baselines. Most Iso files inherit large wiring surfaces and have no standalone readable diagram annotations; Iso30 is embedded in package.mo rather than a sibling .mo file.",
+      "recommended_next_gate": "Inventory-preserving GUI review of the current passing/boundary chain, with static cleanup separated from any R1 simulation task."
+    },
+    {
+      "model": "QuadrotorExperiments.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop and CorridorGate variants",
+      "path": "Models/QuadrotorExperiments/Sunray150Planning*LinearMPCSysblockClosedLoop.mo",
+      "priority": "P1",
+      "static_reason": "Planning display/control models have about 41 connect equations each and no visible diagram annotations, so interfaces may be hard to audit manually.",
+      "recommended_next_gate": "GUI/manual screenshot review for navigationDisplay/reference/actual_position wiring; ROS2/planner evidence remains out of R2 scope."
+    },
+    {
+      "model": "QuadrotorControllerBlocks.AWFF_QPNMPCSafetyController_Sysblock and AWFF_LinearMPC*FaultAllocationController_Sysblock",
+      "path": "Models/QuadrotorControllerBlocks/AWFF_QPNMPCSafetyController_Sysblock.mo; AWFF_LinearMPCMultiFaultAllocationController_Sysblock.mo; AWFF_LinearMPCOnlineFaultAllocationController_Sysblock.mo",
+      "priority": "P1",
+      "static_reason": "Sysblock controller files include ports and connects, but the scanned text has 0 Line annotations in these files, unlike the mature graphical controller bundles.",
+      "recommended_next_gate": "Sysblock graphical open/check and line-layout review; behavior equivalence belongs to a separate R1/controller task."
+    },
+    {
+      "model": "Models/QuadrotorControllerBlocks package organization surface",
+      "path": "Models/QuadrotorControllerBlocks/",
+      "priority": "P1",
+      "static_reason": "Directory has 19 .mo files and several backup directories but no package.mo/package.order discovered in this static pass.",
+      "recommended_next_gate": "Static organization design task before any package edits; do not create package files without a separate write-scope task."
+    }
+  ],
+  "lower_priority_or_reference_candidates": [
+    {
+      "model": "PlannedQuinticReference, TraceTableReference, TraceInlineReference, PlanningNavigationDisplay",
+      "priority": "P2",
+      "static_reason": "Support/reference blocks already expose limited Placement or Diagram/Icon annotations and have small or no connect surfaces. Review after the larger wrappers."
+    },
+    {
+      "model": "AWFF_InnovationGraphicalControllers, AWFF_FullController_Sysblock, AWFF_FullControllerFlatGraphical_Sysblock",
+      "priority": "P2-preserve",
+      "static_reason": "These have the strongest graphical annotation density in the controller block folder and should be used as reference patterns before changing weaker diagrams."
+    }
+  ],
+  "next_step_plan": {
+    "static_cleanup_only": [
+      "Document the embedded-class vs sibling-file convention for QuadrotorExperiments package.order entries after task 013.",
+      "Design a package organization plan for Models/QuadrotorControllerBlocks before adding package.mo/package.order."
+    ],
+    "gui_mcp_graphical_review": [
+      "FormationTriangleFigure8LinearMPCSysblockClosedLoop",
+      "Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke",
+      "FactoryTraceIso23/Iso25/Iso27/Iso28/Iso29/Iso30 evidence chain",
+      "AWFF_QPNMPCSafetyController_Sysblock and LinearMPC fault-allocation Sysblock files"
+    ],
+    "manual_screenshot_review": [
+      "Factory trace wrapper and isolation-chain diagrams after opening in Sysplorer GUI",
+      "Formation scenario full model diagram after graphical open",
+      "Controller block diagrams that show red components, missing wires, or unreadable routing"
+    ],
+    "r1_simulation_evidence_required": [
+      "Any check_model/simulate_model claim",
+      "Any controller performance or behavior-equivalence claim",
+      "Any Factory trace consumption or closed_loop claim"
+    ]
+  },
+  "unknowns": [
+    "Static text counts cannot prove whether Sysplorer renders a usable diagram or whether Smart Layout would improve it safely.",
+    "Static text cannot prove model check/simulation health.",
+    "The current absence of package.mo/package.order in QuadrotorControllerBlocks may be intentional or historical; it needs a separate package organization task before edits."
+  ],
+  "forbidden_actions_confirmed": {
+    "opened_mworks_sysplorer_syslab_gui": false,
+    "called_sysplorer_syslab_mworks_mcp": false,
+    "modified_mo_or_package_order": false,
+    "modified_scripts": false,
+    "modified_references": false,
+    "modified_coagent_runtime": false,
+    "ran_smart_layout_writeback": false,
+    "claimed_graphical_audit_passed": false,
+    "claimed_simulation_success": false
+  }
+}

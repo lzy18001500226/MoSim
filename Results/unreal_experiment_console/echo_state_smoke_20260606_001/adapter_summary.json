@@ -1,0 +1,18 @@
+{
+  "schema": "mosim.ue_command_adapter_smoke.v1",
+  "source": "offline_adapter_smoke",
+  "ok": true,
+  "command_jsonl": "C:/Users/HP/Desktop/MoSim/Results/unreal_experiment_console/echo_state_smoke_20260606_001/ue_command_requests.jsonl",
+  "echo_jsonl": "C:/Users/HP/Desktop/MoSim/Results/unreal_experiment_console/echo_state_smoke_20260606_001/ue_command_echoes_all_adapter.jsonl",
+  "total_commands": 4,
+  "accepted": 3,
+  "rejected": 1,
+  "accepted_ratio": 0.75,
+  "no_pose_overwrite_status": "pass",
+  "not_runtime_ue_console": true,
+  "claim_boundary": [
+    "Offline command adapter smoke only.",
+    "Does not send commands to UE, MWORKS, ROS2, or UAV actor pose.",
+    "Runtime UE command evidence still requires live accepted/rejected echo rows from MWORKS/ROS2 adapters."
+  ]
+}

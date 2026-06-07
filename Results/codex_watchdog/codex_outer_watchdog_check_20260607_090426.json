@@ -1,0 +1,221 @@
+{
+    "processes":  [
+                      {
+                          "id":  4528,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  6872,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  15316,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  47992,
+                          "process_name":  "Codex",
+                          "main_window_title":  "Codex",
+                          "main_window_handle":  "86376754"
+                      },
+                      {
+                          "id":  49788,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  54288,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  57612,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  61976,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  69044,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  69616,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  76520,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  77736,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  77944,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  78504,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  79836,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  81980,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  4528,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  6872,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  15316,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  47992,
+                          "process_name":  "Codex",
+                          "main_window_title":  "Codex",
+                          "main_window_handle":  "86376754"
+                      },
+                      {
+                          "id":  49788,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  54288,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  57612,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  61976,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  69044,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  69616,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  76520,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  77736,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  77944,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  78504,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  79836,
+                          "process_name":  "Codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  81980,
+                          "process_name":  "codex",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  43212,
+                          "process_name":  "codex-plus-plus",
+                          "main_window_title":  "",
+                          "main_window_handle":  "0"
+                      },
+                      {
+                          "id":  26588,
+                          "process_name":  "codex-plus-plus-manager",
+                          "main_window_title":  "Codex++ 管理工具",
+                          "main_window_handle":  "14158462"
+                      }
+                  ],
+    "claim_boundary":  "This watchdog does not inspect Codex private databases or session files. It detects stale detached automation evidence or missing visible Codex processes, then follows the email-before-restart route.",
+    "codex_process_count":  33,
+    "source":  "validation_after_bom_fix",
+    "heartbeat_path":  "C:\\Users\\HP\\Desktop\\MoSim\\Results\\codex_watchdog\\codex_outer_cron_heartbeat.json",
+    "reason":  "healthy",
+    "heartbeat_age_minutes":  0.02,
+    "mode":  "Check",
+    "incident_kind":  "codex_outer_watchdog",
+    "restart_requested":  false,
+    "status":  "healthy",
+    "max_stale_minutes":  90,
+    "timestamp":  "2026-06-07T09:04:26+08:00",
+    "heartbeat_status":  "fresh"
+}

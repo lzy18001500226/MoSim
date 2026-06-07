@@ -1,0 +1,83 @@
+{
+  "schema": "mosim.mworks_model_hygiene.static_alias_validation.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-R2-QUADROTOR-EXPERIMENTS-VISIBLE-CLEANUP-20260607-005",
+  "source": "static_file_validation_no_gui_no_mcp_no_check_model_no_simulation",
+  "package_order": {
+    "expected_entries": [
+      "OfficialScenarios",
+      "ControllerBaselines",
+      "RobustFaultScenarios",
+      "PlanningScenarios",
+      "SceneTraceScenarios",
+      "TraceIsolation",
+      "DynamicsUpgrade",
+      "SystemArchitecture",
+      "SystemModules",
+      "SupportModels",
+      "FormationScenarios"
+    ],
+    "actual_entries": [
+      "OfficialScenarios",
+      "ControllerBaselines",
+      "RobustFaultScenarios",
+      "PlanningScenarios",
+      "SceneTraceScenarios",
+      "TraceIsolation",
+      "DynamicsUpgrade",
+      "SystemArchitecture",
+      "SystemModules",
+      "SupportModels",
+      "FormationScenarios"
+    ],
+    "exact_match": true,
+    "entry_count": 11,
+    "duplicate_entries": [],
+    "trailing_newline": true
+  },
+  "required_aliases": [
+    {
+      "alias": "TraceIsolation.Iso22SensorDisplayReconnect",
+      "extends_target": "QuadrotorExperiments.FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "alias_model_count": 1,
+      "exact_extends_count": 1,
+      "target_resolves_static": true
+    },
+    {
+      "alias": "TraceIsolation.Iso28ActuatorToWrenchBridge",
+      "extends_target": "QuadrotorExperiments.FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+      "alias_model_count": 1,
+      "exact_extends_count": 1,
+      "target_resolves_static": true
+    },
+    {
+      "alias": "TraceIsolation.Iso29ExternalFrameWrenchBoundary",
+      "extends_target": "QuadrotorExperiments.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke",
+      "alias_model_count": 1,
+      "exact_extends_count": 1,
+      "target_resolves_static": true
+    },
+    {
+      "alias": "TraceIsolation.Iso30ExternalBodyStateBoundary",
+      "extends_target": "QuadrotorExperiments.FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+      "alias_model_count": 1,
+      "exact_extends_count": 1,
+      "target_resolves_static": true
+    }
+  ],
+  "required_aliases_ok": true,
+  "old_flat_entries_checked": 104,
+  "old_flat_entries_unresolved_after_cleanup": [],
+  "old_flat_entries_resolve_static": true,
+  "alias_extends_targets_checked": 137,
+  "alias_extends_targets_unresolved": [],
+  "all_alias_extends_targets_resolve_static": true,
+  "forbidden_boundaries": {
+    "no_gui": true,
+    "no_mcp": true,
+    "no_smart_layout": true,
+    "no_check_model": true,
+    "no_simulation": true,
+    "no_official_baseline_edit": true,
+    "no_sibling_mo_edit_intended": true
+  }
+}

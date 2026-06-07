@@ -1,0 +1,34 @@
+{
+  "schema_version": "mosim.mworks_license_recovery.v1",
+  "created_at": "2026-06-06T16:52:00+08:00",
+  "operator_thread": "MoSim｜主线 PMO",
+  "operator_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "status": "recovered",
+  "credential_handling": "User-provided credentials were used only in the foreground Sysplorer login dialog and were not persisted in project files.",
+  "symptoms": [
+    "Sysplorer title showed demo edition before recovery.",
+    "License dialog showed unactivated account-license state.",
+    "Output panel showed L5104-B0 / software not activated style failure.",
+    "MWORKS 006 return had a degraded baseline check caused by license variable-equation limit."
+  ],
+  "actions": [
+    "Confirmed Sysplorer MCP server was reachable with session_manager probe.",
+    "Opened the foreground Sysplorer license login dialog through Windows desktop automation.",
+    "Submitted the user-provided Tongyuan account credentials once.",
+    "Confirmed Sysplorer title changed to education edition and license page showed remaining 150 days plus authorized modules.",
+    "Ran session_manager health after login; driver_ready=true and api_ready=true.",
+    "Ran a minimal Sysplorer MCP check_model for QuadrotorExperiments.Sunray150DynamicsWrapperHoverSmoke; ok=true."
+  ],
+  "evidence": {
+    "session_manager_health": {
+      "driver_ready": true,
+      "api_ready": true
+    },
+    "check_model": {
+      "model_name": "QuadrotorExperiments.Sunray150DynamicsWrapperHoverSmoke",
+      "ok": true,
+      "source": "MWORKS_MCP"
+    }
+  },
+  "reusable_rule": "When a previously working MWORKS/Sysplorer workflow reports L5104-B0, unactivated software, a login prompt, authorization failure, or an unexpected license variable-equation limit, treat it first as a login/license incident. Department threads must stop solver/model trial-and-error and return an auth/license blocker or ask PMO for login recovery."
+}

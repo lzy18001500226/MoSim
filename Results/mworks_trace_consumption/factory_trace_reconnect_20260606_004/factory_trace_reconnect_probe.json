@@ -1,0 +1,89 @@
+{
+  "schema_version": "mosim.factory_trace_reconnect_probe.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004",
+  "created_at": "2026-06-06T05:46:16+08:00",
+  "source": "MWORKS_MCP",
+  "quality_status": "blocked_result_binding",
+  "model_name": "QuadrotorExperiments.Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke",
+  "check_model_status": "pass",
+  "simulate_model_status": "blocked",
+  "simulate_model_api_ok": true,
+  "simulate_model_data": false,
+  "simulate_api_reported_failure": true,
+  "target_time_s": [
+    0.0,
+    2.0
+  ],
+  "get_var_times": [],
+  "get_var_times_count": 0,
+  "alias_point_values": {
+    "x_ref": {
+      "0.0": 0.0,
+      "0.5": 0.0,
+      "1.0": 0.0,
+      "1.5": 0.0,
+      "2.0": 0.0,
+      "end": 0.0
+    },
+    "y_ref": {
+      "0.0": 0.0,
+      "0.5": 0.0,
+      "1.0": 0.0,
+      "1.5": 0.0,
+      "2.0": 0.0,
+      "end": 0.0
+    },
+    "z_ref": {
+      "0.0": 0.0,
+      "0.5": 0.0,
+      "1.0": 0.0,
+      "1.5": 0.0,
+      "2.0": 0.0,
+      "end": 0.0
+    },
+    "yaw_ref": {
+      "0.0": 0.0,
+      "0.5": 0.0,
+      "1.0": 0.0,
+      "1.5": 0.0,
+      "2.0": 0.0,
+      "end": 0.0
+    },
+    "z_ref_rate": {
+      "0.0": 0.0,
+      "0.5": 0.0,
+      "1.0": 0.0,
+      "1.5": 0.0,
+      "2.0": 0.0,
+      "end": 0.0
+    },
+    "trace_probe_state": {
+      "0.0": 0.0,
+      "0.5": 0.0,
+      "1.0": 0.0,
+      "1.5": 0.0,
+      "2.0": 0.0,
+      "end": 0.0
+    }
+  },
+  "nested_reference_point_values": {
+    "planningReference.position_command[1]": {
+      "1.0": 0.0
+    },
+    "planningReference.position_command[2]": {
+      "1.0": 0.0
+    },
+    "planningReference.position_command[3]": {
+      "1.0": 0.0
+    },
+    "planningReference.yaw_ref": {
+      "1.0": 0.0
+    }
+  },
+  "var_info_status": "pass_for_alias_and_nested_variables",
+  "claim_boundary": [
+    "No MWORKS Factory trace consumption evidence is claimed.",
+    "B0 trace remains smoke-only and not real planner/closed_loop evidence.",
+    "Official baseline, controller gains, and dynamics parameters were not edited."
+  ]
+}

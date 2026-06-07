@@ -1,0 +1,62 @@
+[
+  {
+    "run_id": "echo_state_smoke_20260606_001",
+    "request_id": "cmd_pending_only",
+    "seq": 1,
+    "command_kind": "controller_select",
+    "ui_state": "pending",
+    "state_source": "ue_command_request",
+    "ack_authority": "",
+    "reason": "awaiting_matching_echo",
+    "quality_status": "pending_no_runtime_echo",
+    "accepted_as_runtime_ack": false,
+    "not_live_ue_runtime_ack": true,
+    "no_pose_overwrite_status": "pass",
+    "echo_source": ""
+  },
+  {
+    "run_id": "echo_state_smoke_20260606_001",
+    "request_id": "cmd_controller_accept",
+    "seq": 2,
+    "command_kind": "controller_select",
+    "ui_state": "accepted",
+    "state_source": "mosim.ue_command_echo.v1",
+    "ack_authority": "MWORKS",
+    "reason": "ok",
+    "quality_status": "smoke_only",
+    "accepted_as_runtime_ack": false,
+    "not_live_ue_runtime_ack": true,
+    "no_pose_overwrite_status": "pass",
+    "echo_source": "offline_adapter_smoke"
+  },
+  {
+    "run_id": "echo_state_smoke_20260606_001",
+    "request_id": "cmd_planner_reject",
+    "seq": 3,
+    "command_kind": "planner_select",
+    "ui_state": "rejected",
+    "state_source": "mosim.ue_command_echo.v1",
+    "ack_authority": "ROS2",
+    "reason": "gate_open:planner_input_consumption_not_proven",
+    "quality_status": "smoke_only",
+    "accepted_as_runtime_ack": false,
+    "not_live_ue_runtime_ack": true,
+    "no_pose_overwrite_status": "pass",
+    "echo_source": "offline_adapter_smoke"
+  },
+  {
+    "run_id": "echo_state_smoke_20260606_001",
+    "request_id": "cmd_scene_accept_fixture",
+    "seq": 4,
+    "command_kind": "scene_switch",
+    "ui_state": "accepted",
+    "state_source": "mosim.ue_command_echo.v1",
+    "ack_authority": "MWORKS_ROS2",
+    "reason": "ok",
+    "quality_status": "smoke_only",
+    "accepted_as_runtime_ack": false,
+    "not_live_ue_runtime_ack": true,
+    "no_pose_overwrite_status": "pass",
+    "echo_source": "offline_adapter_smoke"
+  }
+]

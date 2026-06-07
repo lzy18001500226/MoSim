@@ -1,0 +1,89 @@
+{
+  "schema_version": "mosim.mcp_log_summary.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-PITCH-DECOUPLING-20260606-012",
+  "source": "MWORKS_MCP",
+  "entries": [
+    {
+      "step": "mcp_availability_probe",
+      "tool": "session_manager",
+      "action": "probe",
+      "result": {
+        "ok": true,
+        "cached_driver_probe_ok": true,
+        "dedicated_sysplorer_port": 49154,
+        "find_sysplorer_ports": [49153, 49152, 49154]
+      }
+    },
+    {
+      "step": "load_controller_dependency",
+      "tool": "model_manager",
+      "action": "load_file",
+      "target": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "result": {
+        "ok": true,
+        "data": true,
+        "cached": false
+      }
+    },
+    {
+      "step": "load_experiment_package",
+      "tool": "model_manager",
+      "action": "load_file",
+      "target": "Models/QuadrotorExperiments/package.mo",
+      "result": {
+        "ok": true,
+        "data": true,
+        "cached": false
+      }
+    },
+    {
+      "step": "iso19_check_model",
+      "tool": "check_model",
+      "target": "QuadrotorExperiments.FactoryTraceIso19RollPitchEstimatorSmoke",
+      "result": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 2.025
+      }
+    },
+    {
+      "step": "iso19_simulate_model",
+      "tool": "simulate_model",
+      "target": "QuadrotorExperiments.FactoryTraceIso19RollPitchEstimatorSmoke",
+      "result": {
+        "ok": true,
+        "data": true,
+        "target_time_s": [0, 2]
+      }
+    },
+    {
+      "step": "iso19_get_var_times",
+      "tool": "result_manager",
+      "action": "get_var_times",
+      "result": {
+        "ok": true,
+        "count": 1001,
+        "first": 0.0,
+        "last": 2.0
+      }
+    },
+    {
+      "step": "iso19_alias_probe",
+      "tool": "result_manager",
+      "action": "get_vars_value_at",
+      "vars": ["x_ref", "y_ref", "z_ref", "yaw_ref", "sensors1_1.AngleMea[1]", "sensors1_1.AngleMea[2]", "roll_est_state", "pitch_est_state", "roll_estimated.y", "pitch_estimated.y", "controller3_2.roll_mea", "controller3_2.pitch_mea"],
+      "result": {
+        "t_0_5": [0.3433963686587412, 0.417558977229446, 1.2386167305579043, 1.7650531321614733, -0.8812075747077337, -0.8274949462311932, 0.12312312288348769, -0.018696131345699585, 0.12312312288348769, -0.018696131345699585, 0.12312312288348769, -0.018696131345699585],
+        "t_1_0": [0.31861753694312633, 0.49481767718910424, 1.242037957383867, 1.9974016333898024, 0.5772122835175941, 0.16498102690966315, 0.10309609788749947, -0.06841924078684873, 0.10309609788749947, -0.06841924078684873, 0.10309609788749947, -0.06841924078684873],
+        "t_2_0": [0.22528064041293117, 0.6178306433245998, 1.2469737036046606, 2.4422701702657834, 0.00627798606073235, 2.76612432531366, 0.07326359705130045, 0.3911087415459188, 0.07326359705130045, 0.3911087415459188, 0.07326359705130045, 0.3911087415459188]
+      }
+    }
+  ],
+  "error_6140_present": false,
+  "forbidden_actions_avoided": [
+    "ClearAll not called",
+    "ChangeDirectory not called",
+    "full Factory wrapper not retried",
+    "yaw/rate/full sensor bus not added"
+  ]
+}

@@ -1,0 +1,3 @@
+probe_id,model_name,feedback_group_added,check_status,simulate_status,simulate_data,error_6140_present,get_var_times_count,nonzero_alias_refs,x_ref_at_1s,y_ref_at_1s,z_ref_at_1s,yaw_ref_at_1s,verdict
+iso08_position_feedback,QuadrotorExperiments.FactoryTraceIso08PositionFeedbackSmoke,position feedback only,pass,pass,true,false,1001,true,0.31861753694312633,0.49481767718910424,1.242037957383867,1.9974016333898024,pass
+iso09_position_attitude_feedback,QuadrotorExperiments.FactoryTraceIso09PositionAttitudeFeedbackSmoke,position plus roll/pitch attitude feedback,pass,failed,false,false,0,false,0.0,0.0,0.0,0.0,first_sensor_feedback_failure_boundary

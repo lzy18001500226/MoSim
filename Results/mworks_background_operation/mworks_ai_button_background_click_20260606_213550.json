@@ -1,0 +1,253 @@
+{
+  "timestamp": "2026-06-06T21:35:53+08:00",
+  "status": "posted_background_click_to_mworks_ai_button",
+  "method": "PostMessage WM_MOUSEMOVE/WM_LBUTTONDOWN/WM_LBUTTONUP to Sysplorer hwnd; no screenshot; no foreground coordinate click",
+  "target": {
+    "hwnd": "0x2CC0EE2",
+    "pid": 640,
+    "title": "QuadrotorExperiments - Sysplorer [教育版]",
+    "class": "Qt5QWindowIcon",
+    "visible": true,
+    "minimized": true
+  },
+  "was_minimized": true,
+  "window_rect": {
+    "left": -7,
+    "width": 2062,
+    "top": -7,
+    "height": 1118,
+    "right": 2055,
+    "bottom": 1111
+  },
+  "click_screen": {
+    "y": 84,
+    "x": 1119
+  },
+  "click_client": {
+    "y": 84,
+    "x": 1119
+  },
+  "foreground_before": {
+    "hwnd": "0x3120B3E",
+    "pid": 48800,
+    "title": "Codex",
+    "class": "Chrome_WidgetWin_1",
+    "visible": true,
+    "minimized": false
+  },
+  "foreground_after": {
+    "hwnd": "0x3120B3E",
+    "pid": 48800,
+    "title": "Codex",
+    "class": "Chrome_WidgetWin_1",
+    "visible": true,
+    "minimized": false
+  },
+  "focus_stolen": false,
+  "before_windows": [
+    {
+      "hwnd": "0x45F0F42",
+      "pid": 640,
+      "title": "MWORKS.Sysplorer 2026a",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x3A30F2C",
+      "pid": 640,
+      "title": "MWORKS.Sysplorer 2026a",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x4411DE",
+      "pid": 640,
+      "title": "QuadrotorExperiments - 结果查看器",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x26802BA",
+      "pid": 640,
+      "title": "MWORKS.Sysplorer 2026a",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0xD41078",
+      "pid": 62592,
+      "title": "MWORKS",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x2120ED6",
+      "pid": 62592,
+      "title": "MWORKS",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x1B09D0",
+      "pid": 27440,
+      "title": "Tailscale 1.98.2",
+      "class": "\\o/ Walk_MainWindow_Class \\o/",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x3099E",
+      "pid": 27440,
+      "title": "GDI+ Window (tailscale-ipn.exe)",
+      "class": "GDI+ Hook Window Class",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x103EC",
+      "pid": 14944,
+      "title": "BluetoothNotificationAreaIconWindowClass",
+      "class": "BluetoothNotificationAreaIconWindowClass",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x10066",
+      "pid": 4720,
+      "title": "NvContainerWindowClass00001270",
+      "class": "NvContainerWindowClass00001270",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x4140EB6",
+      "pid": 640,
+      "title": "MWORKS.Sysplorer 2026a",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x507DA",
+      "pid": 27572,
+      "title": "can1357/oh-my-pi: ⌥ AI Coding agent for the terminal — hash-anchored edits, optimized tool harness, LSP, Python, browser, subagents, and more - Google Chrome",
+      "class": "Chrome_WidgetWin_1",
+      "visible": true,
+      "minimized": true
+    },
+    {
+      "hwnd": "0x2CC0EE2",
+      "pid": 640,
+      "title": "QuadrotorExperiments - Sysplorer [教育版]",
+      "class": "Qt5QWindowIcon",
+      "visible": true,
+      "minimized": true
+    }
+  ],
+  "after_windows": [
+    {
+      "hwnd": "0x3A30F2C",
+      "pid": 640,
+      "title": "MWORKS.Sysplorer 2026a",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x4411DE",
+      "pid": 640,
+      "title": "QuadrotorExperiments - 结果查看器",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x26802BA",
+      "pid": 640,
+      "title": "MWORKS.Sysplorer 2026a",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0xD41078",
+      "pid": 62592,
+      "title": "MWORKS",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x2120ED6",
+      "pid": 62592,
+      "title": "MWORKS",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x1B09D0",
+      "pid": 27440,
+      "title": "Tailscale 1.98.2",
+      "class": "\\o/ Walk_MainWindow_Class \\o/",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x3099E",
+      "pid": 27440,
+      "title": "GDI+ Window (tailscale-ipn.exe)",
+      "class": "GDI+ Hook Window Class",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x103EC",
+      "pid": 14944,
+      "title": "BluetoothNotificationAreaIconWindowClass",
+      "class": "BluetoothNotificationAreaIconWindowClass",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x10066",
+      "pid": 4720,
+      "title": "NvContainerWindowClass00001270",
+      "class": "NvContainerWindowClass00001270",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x4140EB6",
+      "pid": 640,
+      "title": "MWORKS.Sysplorer 2026a",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x507DA",
+      "pid": 27572,
+      "title": "can1357/oh-my-pi: ⌥ AI Coding agent for the terminal — hash-anchored edits, optimized tool harness, LSP, Python, browser, subagents, and more - Google Chrome",
+      "class": "Chrome_WidgetWin_1",
+      "visible": true,
+      "minimized": true
+    },
+    {
+      "hwnd": "0x2CC0EE2",
+      "pid": 640,
+      "title": "QuadrotorExperiments - Sysplorer [教育版]",
+      "class": "Qt5QWindowIcon",
+      "visible": true,
+      "minimized": false
+    }
+  ],
+  "manual_review_request": "Please check whether the MWORKS AI assistant panel popped up.",
+  "claim_boundary": "If no panel appeared, Qt ignored background PostMessage and the next route is UIA/control-specific Invoke or a brief foreground/restore click with user approval."
+}

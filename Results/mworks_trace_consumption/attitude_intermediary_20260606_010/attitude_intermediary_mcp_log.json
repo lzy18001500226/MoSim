@@ -1,0 +1,140 @@
+{
+  "schema_version": "mosim.mworks_mcp_log.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010",
+  "source": "MWORKS_MCP",
+  "session_manager_probe": {
+    "ok": true,
+    "find_sysplorer_ports": [
+      49153,
+      49152,
+      49154
+    ],
+    "cached_driver_probe_ok": true,
+    "dedicated_sysplorer_port": 49154
+  },
+  "package_loads": [
+    {
+      "tool": "model_manager.load_file",
+      "file_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "ok": true,
+      "cached": true,
+      "purpose": "read-only official baseline dependency"
+    },
+    {
+      "tool": "model_manager.load_file",
+      "file_path": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "ok": true,
+      "cached": true,
+      "purpose": "project-owned equation controller dependency"
+    },
+    {
+      "tool": "model_manager.load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "ok": true,
+      "cached": false,
+      "purpose": "project-owned experiment package reload"
+    }
+  ],
+  "probes": [
+    {
+      "model_name": "QuadrotorExperiments.FactoryTraceIso14ConstantAttitudeInputSmoke",
+      "check_model": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 1.916
+      },
+      "simulate_model": {
+        "ok": true,
+        "api": "SimulateModel",
+        "data": true,
+        "verify_result_var": "x_ref",
+        "verify_time_point": 1.0,
+        "verified_value": 0.31861753694312633
+      },
+      "result_reads": {
+        "GetVarTimes": {
+          "count": 1001,
+          "first": 0.0,
+          "last": 2.0
+        },
+        "GetVarsValueAt_1s": [
+          0.31861753694312633,
+          0.49481767718910424,
+          1.242037957383867,
+          1.9974016333898024,
+          0.05,
+          0.05,
+          0.0
+        ],
+        "GetVarsValueAt_end": [
+          0.22528064041293117,
+          0.6178306433245998,
+          1.2469737036046606,
+          2.4422701702657834
+        ]
+      }
+    },
+    {
+      "model_name": "QuadrotorExperiments.FactoryTraceIso15TableAttitudeInputSmoke",
+      "check_model": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 2.113
+      },
+      "simulate_model": {
+        "ok": true,
+        "api": "SimulateModel",
+        "data": true,
+        "verify_result_var": "x_ref",
+        "verify_time_point": 1.0,
+        "verified_value": 0.31861753694312633
+      },
+      "result_reads": {
+        "GetVarTimes": {
+          "count": 1001,
+          "first": 0.0,
+          "last": 2.0
+        },
+        "GetVarsValueAt_1s": [
+          0.31861753694312633,
+          0.49481767718910424,
+          1.242037957383867,
+          1.9974016333898024,
+          -0.02,
+          -0.02,
+          0.0
+        ],
+        "GetVarsValueAt_end": [
+          0.22528064041293117,
+          0.6178306433245998,
+          1.2469737036046606,
+          2.4422701702657834
+        ]
+      }
+    },
+    {
+      "model_name": "QuadrotorExperiments.FactoryTraceIso16RealExpressionAngleSmoke",
+      "check_model": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 1.917
+      },
+      "simulate_model": {
+        "ok": true,
+        "api": "SimulateModel",
+        "data": false,
+        "simulate_api_reported_failure": true,
+        "error": "SimulateModel returned False; GetLastErrors: MessageText: [上一条命令没有日志信息]",
+        "verify_result_var": "x_ref",
+        "verify_time_point": 1.0,
+        "verified_value": 0.0
+      },
+      "result_reads": {
+        "GetVarTimes": [],
+        "GetVarsValueAt_1s": [],
+        "GetVarsValueAt_end": []
+      }
+    }
+  ],
+  "result_binding_interpretation": "Constant and table attitude inputs into the controller inport produced valid 1001-sample result contexts. A RealExpression intermediary that still depends on sensors1_1.AngleMea[1] reproduced SimulateModel data=false and empty GetVarTimes. This classifies the issue as the AbsoluteAngles/AngleMea dependency path rather than direct connector syntax alone."
+}

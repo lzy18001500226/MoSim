@@ -1,0 +1,173 @@
+[
+  {
+    "alias_model": "PositionOuterLoop",
+    "extends_target": "AWFF_PositionOuterLoop_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_PositionOuterLoop_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "AWFFPidBlocks"
+  },
+  {
+    "alias_model": "AttitudeInnerLoop",
+    "extends_target": "AWFF_AttitudeInnerLoop_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_AttitudeInnerLoop_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "AWFFPidBlocks"
+  },
+  {
+    "alias_model": "MotorMixer",
+    "extends_target": "AWFF_MotorMixer_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_MotorMixer_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "AWFFPidBlocks"
+  },
+  {
+    "alias_model": "FullControllerGraphical",
+    "extends_target": "AWFF_FullController_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_FullController_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "AWFFPidBlocks"
+  },
+  {
+    "alias_model": "FullControllerEquation",
+    "extends_target": "AWFF_FullControllerEquation_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "AWFFPidBlocks"
+  },
+  {
+    "alias_model": "FullControllerFlatGraphical",
+    "extends_target": "AWFF_FullControllerFlatGraphical_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "AWFFPidBlocks"
+  },
+  {
+    "alias_model": "INDIEquation",
+    "extends_target": "AWFF_INDIControllerEquation_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_INDIControllerEquation_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "InnovationControllers"
+  },
+  {
+    "alias_model": "L1ResidualEquation",
+    "extends_target": "AWFF_L1ResidualControllerEquation_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "InnovationControllers"
+  },
+  {
+    "alias_model": "InnovationGraphicalOverview",
+    "extends_target": "AWFF_InnovationGraphicalControllers",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "InnovationControllers"
+  },
+  {
+    "alias_model": "FaultCompensationEquation",
+    "extends_target": "AWFF_FaultCompensationControllerEquation_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_FaultCompensationControllerEquation_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "FaultAllocationControllers"
+  },
+  {
+    "alias_model": "L1FaultAllocationEquation",
+    "extends_target": "AWFF_L1FaultAllocationControllerEquation_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_L1FaultAllocationControllerEquation_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "FaultAllocationControllers"
+  },
+  {
+    "alias_model": "L1OnlineFaultAllocationEquation",
+    "extends_target": "AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "FaultAllocationControllers"
+  },
+  {
+    "alias_model": "L1MultiFaultIsolationEquation",
+    "extends_target": "AWFF_L1MultiFaultIsolationControllerEquation_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_L1MultiFaultIsolationControllerEquation_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "FaultAllocationControllers"
+  },
+  {
+    "alias_model": "LinearMPCOnlineFaultAllocation",
+    "extends_target": "AWFF_LinearMPCOnlineFaultAllocationController_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOnlineFaultAllocationController_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "FaultAllocationControllers"
+  },
+  {
+    "alias_model": "LinearMPCMultiFaultAllocation",
+    "extends_target": "AWFF_LinearMPCMultiFaultAllocationController_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCMultiFaultAllocationController_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "FaultAllocationControllers"
+  },
+  {
+    "alias_model": "OuterLoopEquation",
+    "extends_target": "AWFF_LinearMPCOuterLoopControllerEquation_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "LinearMPCControllers"
+  },
+  {
+    "alias_model": "QPNMPCSafety",
+    "extends_target": "AWFF_QPNMPCSafetyController_Sysblock",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_QPNMPCSafetyController_Sysblock.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "SafetyControllers"
+  },
+  {
+    "alias_model": "PIDDemo",
+    "extends_target": "AWFF_PID_Sysblock_Demo",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "DemosAndSIL"
+  },
+  {
+    "alias_model": "PIDDemoSILConstant",
+    "extends_target": "AWFF_PID_Sysblock_Demo_SIL_Constant",
+    "extends_style": "leading_dot_global_flat_class",
+    "target_in_006_inventory": true,
+    "target_file": "Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo_SIL_Constant.mo",
+    "target_has_within_clause": false,
+    "target_category_006": "DemosAndSIL"
+  }
+]

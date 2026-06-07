@@ -1,0 +1,153 @@
+{
+  "schema_version": "mosim.mworks_trace_probe.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014",
+  "created_at": "2026-06-06T10:07:00+08:00",
+  "source": "MWORKS_MCP",
+  "quality_status": "rate_feedback_isolation_probe_passed",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "target_thread_id": "019e9999-b0d3-7682-bccd-faef08fcf1df",
+  "prior_boundary": {
+    "source_packet": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-YAW-RATE-DECOUPLING-20260606-013.json",
+    "classification": "Iso20 project-owned roll+pitch+yaw extraction restored SimulateModel data=true and GetVarTimes=1001.",
+    "latest_passing_probe": "QuadrotorExperiments.FactoryTraceIso20RollPitchYawEstimatorSmoke"
+  },
+  "rate_mapping_rationale": {
+    "controller_surface": "AWFF_LinearMPCOuterLoopControllerEquation_Sysblock has no external roll_rate/pitch_rate/yaw_rate inports; it computes roll_rate, pitch_rate, and yaw_rate internally from roll_mea, pitch_mea, and yaw_mea filters.",
+    "narrow_group": "Expose project-owned attitude-derived rate aliases and controller internal rate/accel probes without changing controller interface or reconnecting full sensor bus."
+  },
+  "mcp_probe": {
+    "tool": "session_manager",
+    "action": "probe",
+    "ok": true,
+    "cached_driver_probe_ok": true,
+    "dedicated_sysplorer_port": 49154,
+    "find_sysplorer_ports": [49153, 49152, 49154]
+  },
+  "load_sequence": [
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    }
+  ],
+  "probes": [
+    {
+      "probe_id": "iso21_controller_rate_alias",
+      "model_file": "Models/QuadrotorExperiments/FactoryTraceIso21ControllerRateAliasSmoke.mo",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso21ControllerRateAliasSmoke",
+      "base_model": "QuadrotorExperiments.FactoryTraceIso20RollPitchYawEstimatorSmoke",
+      "rate_group": "project-owned attitude-derived rate aliases plus controller internal roll/pitch/yaw rate and accel probes",
+      "signal_mapping": [
+        "roll_rate_from_extraction = (sensors1_1.AngleMea[1] - roll_est_state) / attitude_extraction_T",
+        "pitch_rate_from_extraction = (sensors1_1.AngleMea[2] - pitch_est_state) / attitude_extraction_T",
+        "yaw_rate_from_extraction = (sensors1_1.AngleMea[3] - yaw_est_state) / attitude_extraction_T",
+        "controller_roll_rate_probe = controller3_2.roll_rate",
+        "controller_pitch_rate_probe = controller3_2.pitch_rate",
+        "controller_yaw_rate_probe = controller3_2.yaw_rate",
+        "controller_roll_accel_probe = controller3_2.roll_accel_hat",
+        "controller_pitch_accel_probe = controller3_2.pitch_accel_hat",
+        "controller_yaw_accel_probe = controller3_2.yaw_accel_hat"
+      ],
+      "check_model": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 2.038
+      },
+      "simulate_model": {
+        "ok": true,
+        "data": true,
+        "target_time_s": [0, 2],
+        "elapsed_s_observed": 138.4082
+      },
+      "get_var_times": {
+        "ok": true,
+        "count": 1001,
+        "first": 0.0,
+        "last": 2.0
+      },
+      "alias_probe_vars": [
+        "x_ref",
+        "y_ref",
+        "z_ref",
+        "yaw_ref",
+        "roll_rate_from_extraction",
+        "pitch_rate_from_extraction",
+        "yaw_rate_from_extraction",
+        "controller_roll_rate_probe",
+        "controller_pitch_rate_probe",
+        "controller_yaw_rate_probe",
+        "controller_roll_accel_probe",
+        "controller_pitch_accel_probe",
+        "controller_yaw_accel_probe",
+        "controller3_2.roll_rate",
+        "controller3_2.pitch_rate",
+        "controller3_2.yaw_rate"
+      ],
+      "alias_values": {
+        "t_0_5": [0.3433963686587412, 0.417558977229446, 1.2386167305579043, 1.7650531321614733, -12.734418353534453, -18.423147656090773, -27.20463284653022, -0.8440258494877636, -4.857634674110454, 1.5576727124811156, -10.831413289474003, -62.71282182596585, -6.782545947804031, -0.8440258494877636, -4.857634674110454, 1.5576727124811156],
+        "t_1_0": [0.31861753694312633, 0.49481767718910424, 1.242037957383867, 1.9974016333898024, -57.81768275928733, 78.08279759370511, -106.06504749494077, 2.563892005185801, -2.1076639304139158, 0.013278549820152006, 31.38457156957948, -20.96060966286995, 24.693267652807542, 2.563892005185801, -2.1076639304139158, 0.013278549820152006],
+        "t_2_0": [0.22528064041293117, 0.6178306433245998, 1.2469737036046606, 2.4422701702657834, 0.948931765922989, 81.37210958401153, 8.390818636892787, -1.1777645677501363, 9.132831036148715, -4.109394559620297, -14.706425137890031, 116.23541540767272, 10.850099341224606, -1.1777645677501363, 9.132831036148715, -4.109394559620297]
+      },
+      "result_binding_notes": [
+        "Reference aliases are nonzero at probed times.",
+        "Project-owned rate aliases and controller internal rate aliases are available and nonzero.",
+        "This validates result-context stability for rate alias probing only, not an external gyro/rate inport or controller performance."
+      ],
+      "error_6140_present": false,
+      "verdict": "pass_rate_alias_group_preserves_result_context"
+    }
+  ],
+  "evidence": [
+    "session_manager probe ok with cached driver on dedicated port 49154",
+    "controller dependency and experiment package load_file returned ok/data=true",
+    "Iso21 check_model returned ok/data=true",
+    "Iso21 SimulateModel 0-2 s returned ok/data=true",
+    "GetVarTimes count was 1001 from 0.0 to 2.0 s",
+    "x_ref/y_ref/z_ref/yaw_ref and rate aliases were nonzero at sampled times"
+  ],
+  "unknowns": [
+    "No external gyro/rate sensor inport exists on the current controller surface, so this probe exposes internal controller rate estimates and project-owned rate aliases rather than wiring a new rate input.",
+    "Full sensor bus, full Factory wrapper, and any true external angular-rate sensor path remain untested.",
+    "Large rate magnitudes from the extraction bridge are not interpreted as controller performance or physical-rate validation."
+  ],
+  "risks": [
+    "The project-owned extraction derivative can produce large transient rate values and needs design review before use as a formal sensor interface.",
+    "Controller internal rate estimates depend on existing attitude filters and may not match a real gyro semantics.",
+    "Adding a future external rate-input controller or full sensor bus may still reveal result-context or semantic failures."
+  ],
+  "next_validation": [
+    "If PMO wants true rate feedback, define or select a controller surface with explicit roll_rate/pitch_rate/yaw_rate inports before wiring external gyro signals.",
+    "Alternatively add the next narrow sensor-bus/component group while preserving Iso21 as the passing rate-alias baseline.",
+    "Keep check_model -> 0-2 s SimulateModel -> GetVarTimes -> alias-probe evidence before any full Factory wrapper retry."
+  ],
+  "classification": {
+    "prior_013_yaw_extraction_was_pass": true,
+    "narrow_rate_alias_group_added": true,
+    "external_rate_inports_present": false,
+    "external_rate_sensor_wired": false,
+    "rate_alias_group_passes": true,
+    "full_sensor_bus_added": false,
+    "full_factory_wrapper_retried": false,
+    "get_var_times_count": 1001,
+    "error_6140_status": "absent_in_014_probe"
+  },
+  "claim_boundary": [
+    "Rate alias/result-context isolation probe only.",
+    "No external rate-feedback controller claim.",
+    "No closed_loop claim.",
+    "No Factory trace consumption claim.",
+    "No controller performance or plant tracking claim.",
+    "No parameter identification claim."
+  ]
+}

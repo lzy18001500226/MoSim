@@ -1,0 +1,2 @@
+probe_id,model_name,decoupling_strategy,check_model,simulate_model,simulate_data,get_var_times_count,error_6140_present,nonzero_reference_aliases,yaw_alias_available,rate_fallback_used,verdict
+iso20_roll_pitch_yaw_estimator,QuadrotorExperiments.FactoryTraceIso20RollPitchYawEstimatorSmoke,roll/pitch/yaw AngleMea[1..3] through project-owned first-order extraction states before controller3_2 roll_mea/pitch_mea/yaw_mea,pass,pass,true,1001,false,true,true,false,pass_yaw_extraction_restores_result_context_so_rate_fallback_not_needed

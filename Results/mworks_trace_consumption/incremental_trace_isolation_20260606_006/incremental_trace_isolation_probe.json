@@ -1,0 +1,114 @@
+{
+  "schema_version": "mosim.incremental_trace_isolation_probe.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006",
+  "created_at": "2026-06-06T06:12:48+08:00",
+  "source": "MWORKS_MCP",
+  "quality_status": "isolation_boundary_found",
+  "mcp_probe": {
+    "tool": "session_manager",
+    "action": "probe",
+    "status": "pass",
+    "dedicated_sysplorer_port": 49154,
+    "cached_driver_probe_ok": true
+  },
+  "package_load_status": "pass",
+  "probes": [
+    {
+      "probe_id": "iso01_full_display",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso01FullDisplaySmoke",
+      "component_group_added": "full Factory PlanningNavigationDisplay parameter set only",
+      "check_model": "pass",
+      "simulate_model": "pass",
+      "simulate_data": true,
+      "get_var_times_count": 1001,
+      "nonzero_alias_refs": true,
+      "alias_values_at_1s": {
+        "x_ref": 0.31861753694312633,
+        "y_ref": 0.49481767718910424,
+        "z_ref": 1.242037957383867,
+        "yaw_ref": 1.9974016333898024
+      },
+      "verdict": "pass"
+    },
+    {
+      "probe_id": "iso02_controller_only",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso02ControllerOnlySmoke",
+      "component_group_added": "AWFF LinearMPC equation controller plus feedback math with trace-derived zero-error inputs only",
+      "check_model": "pass",
+      "simulate_model": "pass",
+      "simulate_data": true,
+      "get_var_times_count": 1001,
+      "nonzero_alias_refs": true,
+      "alias_values_at_1s": {
+        "x_ref": 0.31861753694312633,
+        "y_ref": 0.49481767718910424,
+        "z_ref": 1.242037957383867,
+        "yaw_ref": 1.9974016333898024
+      },
+      "controller_values_at_1s": {
+        "motor_delta_1": -4.593368280239165,
+        "motor_delta_2": -4.597631719760834,
+        "motor_delta_3": -4.593368280239165,
+        "motor_delta_4": -4.597631719760834
+      },
+      "verdict": "pass"
+    },
+    {
+      "probe_id": "iso03_plant_hover_stack",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso03PlantHoverStackSmoke",
+      "component_group_added": "open-loop hover QuadChassis plus Actuator, Sensors, SpeedSensor, and hover constants",
+      "check_model": "pass",
+      "simulate_model": "pass",
+      "simulate_data": true,
+      "get_var_times_count": 1001,
+      "nonzero_alias_refs": true,
+      "alias_values_at_1s": {
+        "x_ref": 0.31861753694312633,
+        "y_ref": 0.49481767718910424,
+        "z_ref": 1.242037957383867,
+        "yaw_ref": 1.9974016333898024
+      },
+      "sensor_values_at_1s": {
+        "sensors1_1.PosMea[1]": -54.75175127971754,
+        "sensors1_1.PosMea[2]": -23.512187748800766,
+        "sensors1_1.PosMea[3]": 0.0009838561168028545
+      },
+      "verdict": "pass"
+    },
+    {
+      "probe_id": "iso04_controller_plant_wiring",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso04ControllerPlantWiringSmoke",
+      "component_group_added": "controller feedback from Sensors plus motor delta scaling, hover summing, and actuator command wiring",
+      "check_model": "pass",
+      "simulate_model": "failed",
+      "simulate_data": false,
+      "simulate_error_excerpt": "Compiler error 6140: redundant Real equations, including QuadChassis frame rotation equations.",
+      "get_var_times_count_after_failed_simulate": 1001,
+      "nonzero_alias_refs_after_failed_simulate": true,
+      "alias_values_at_1s_after_failed_simulate": {
+        "x_ref": 0.31861753694312633,
+        "y_ref": 0.49481767718910424,
+        "z_ref": 1.242037957383867,
+        "yaw_ref": 1.9974016333898024
+      },
+      "missing_vars_after_failed_simulate": [
+        "motor_cmd_1",
+        "motor_cmd_2",
+        "motor_cmd_3",
+        "motor_cmd_4"
+      ],
+      "verdict": "first_failure_boundary"
+    }
+  ],
+  "first_failure_boundary": {
+    "probe_id": "iso04_controller_plant_wiring",
+    "failure_kind": "simulate_failed_after_check_pass",
+    "component_group": "controller feedback plus motor-command wiring into actuator inputs",
+    "relationship_to_004": "Narrower than the 004 full-wrapper blocker. Iso04 identifies the first component group that makes SimulateModel return data=false, but it does not exactly reproduce 004's GetVarTimes=[] and zero aliases because aliases remain readable after failed simulate."
+  },
+  "claim_boundary": [
+    "Incremental isolation only.",
+    "No closed_loop, real planner, controller performance, or plant tracking claim.",
+    "No official baseline or dynamics/controller parameter edits."
+  ]
+}

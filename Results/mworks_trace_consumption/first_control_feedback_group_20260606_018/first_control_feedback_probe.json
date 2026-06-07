@@ -1,0 +1,58 @@
+{
+  "schema_version": "mosim.mworks_trace_probe.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-FIRST-CONTROL-FEEDBACK-GROUP-20260606-018",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "source": "MWORKS_MCP",
+  "model_name": "QuadrotorExperiments.FactoryTraceIso24DirectAttitudeFeedbackSmoke",
+  "model_path": "Models/QuadrotorExperiments/FactoryTraceIso24DirectAttitudeFeedbackSmoke.mo",
+  "baseline_model": "QuadrotorExperiments.FactoryTraceIso23PositionSampleHoldBridgeSmoke",
+  "selected_group": "direct sensors1_1.AngleMea[1..3] into controller roll/pitch/yaw measurement via inherited roll_estimated/pitch_estimated/yaw_estimated RealExpression modification",
+  "iso23_display_bridge_preserved": true,
+  "direct_posmea_vector_reconnect_used": false,
+  "actuator_motor_or_speed_sensor_reconnect_added": false,
+  "check_model": {
+    "ok": true,
+    "data": true,
+    "elapsed_s": 1.981
+  },
+  "simulate_model": {
+    "ok": true,
+    "api_data": false,
+    "target_time_s": [0.0, 2.0],
+    "error": "SimulateModel returned False; GetLastErrors reported no prior command log information.",
+    "tool_warning": "Result variable x_ref was type-readable, but acceptance requires SimulateModel data=true and nonempty GetVarTimes."
+  },
+  "get_var_times": {
+    "ok": true,
+    "count": 0,
+    "data": []
+  },
+  "aliases": {
+    "ok": true,
+    "available": false,
+    "data": [],
+    "requested": [
+      "x_ref",
+      "y_ref",
+      "z_ref",
+      "yaw_ref",
+      "display_bridge_x",
+      "display_bridge_y",
+      "display_bridge_z",
+      "display_reference_x",
+      "display_reference_y",
+      "display_reference_z",
+      "direct_roll_mea",
+      "direct_pitch_mea",
+      "direct_yaw_mea",
+      "roll_rate_from_extraction",
+      "pitch_rate_from_extraction",
+      "yaw_rate_from_extraction"
+    ]
+  },
+  "error_6140_present": false,
+  "result_context_restored": false,
+  "first_new_boundary": "Direct AngleMea attitude feedback group reproduces SimulateModel data=false and empty result context when added on top of Iso23.",
+  "quality_status": "blocked_first_control_feedback_boundary_found",
+  "claim_boundary": "One incremental controller/control-feedback group evidence only; not Factory trace consumption, closed_loop, controller performance, plant tracking, or parameter identification evidence."
+}

@@ -1,0 +1,153 @@
+{
+  "schema_version": "mosim.mworks_trace_probe.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-YAW-RATE-DECOUPLING-20260606-013",
+  "created_at": "2026-06-06T09:39:00+08:00",
+  "source": "MWORKS_MCP",
+  "quality_status": "yaw_attitude_decoupling_probe_passed",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "target_thread_id": "019e9999-b0d3-7682-bccd-faef08fcf1df",
+  "prior_boundary": {
+    "source_packet": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-PITCH-DECOUPLING-20260606-012.json",
+    "classification": "Iso19 project-owned first-order roll+pitch extraction restored SimulateModel data=true and GetVarTimes=1001.",
+    "accepted_pattern": "project-owned first-order extraction state before Sysblock attitude inports"
+  },
+  "mcp_probe": {
+    "tool": "session_manager",
+    "action": "probe",
+    "ok": true,
+    "cached_driver_probe_ok": true,
+    "dedicated_sysplorer_port": 49154,
+    "find_sysplorer_ports": [49153, 49152, 49154]
+  },
+  "load_sequence": [
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    }
+  ],
+  "probes": [
+    {
+      "probe_id": "iso20_roll_pitch_yaw_estimator",
+      "model_file": "Models/QuadrotorExperiments/FactoryTraceIso20RollPitchYawEstimatorSmoke.mo",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso20RollPitchYawEstimatorSmoke",
+      "decoupling_strategy": "Keep Iso19 roll+pitch extraction and add only yaw AngleMea[3] through an equivalent project-owned first-order extraction state before controller3_2.yaw_mea.",
+      "signal_mapping": [
+        "der(roll_est_state) = (sensors1_1.AngleMea[1] - roll_est_state) / attitude_extraction_T",
+        "der(pitch_est_state) = (sensors1_1.AngleMea[2] - pitch_est_state) / attitude_extraction_T",
+        "der(yaw_est_state) = (sensors1_1.AngleMea[3] - yaw_est_state) / attitude_extraction_T",
+        "roll_est_state -> roll_estimated.y -> controller3_2.roll_mea",
+        "pitch_est_state -> pitch_estimated.y -> controller3_2.pitch_mea",
+        "yaw_est_state -> yaw_estimated.y -> controller3_2.yaw_mea",
+        "planningReference.yaw_ref -> controller3_2.yaw_ref"
+      ],
+      "parameters": {
+        "attitude_extraction_T": {
+          "value": 0.03,
+          "role": "probe extraction time constant only; not a controller gain or identified dynamics parameter"
+        }
+      },
+      "check_model": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 1.898
+      },
+      "simulate_model": {
+        "ok": true,
+        "data": true,
+        "target_time_s": [0, 2],
+        "elapsed_s_observed": 138.202
+      },
+      "get_var_times": {
+        "ok": true,
+        "count": 1001,
+        "first": 0.0,
+        "last": 2.0
+      },
+      "alias_probe_vars": [
+        "x_ref",
+        "y_ref",
+        "z_ref",
+        "yaw_ref",
+        "sensors1_1.AngleMea[1]",
+        "sensors1_1.AngleMea[2]",
+        "sensors1_1.AngleMea[3]",
+        "roll_est_state",
+        "pitch_est_state",
+        "yaw_est_state",
+        "roll_estimated.y",
+        "pitch_estimated.y",
+        "yaw_estimated.y",
+        "controller3_2.roll_mea",
+        "controller3_2.pitch_mea",
+        "controller3_2.yaw_mea"
+      ],
+      "alias_values": {
+        "t_0_5": [0.3433963686587412, 0.417558977229446, 1.2386167305579043, 1.7650531321614733, -0.2952311438546846, -0.6182166192459229, 0.5442498895812217, 0.086801406751349, -0.06552218956319966, 1.3603888749771282, 0.086801406751349, -0.06552218956319966, 1.3603888749771282, 0.086801406751349, -0.06552218956319966, 1.3603888749771282],
+        "t_1_0": [0.31861753694312633, 0.49481767718910424, 1.242037957383867, 1.9974016333898024, -1.5241248817321837, 2.3332227893759705, -2.2231798457973273, 0.21040560104643619, -0.009261138435182717, 0.9587715790508956, 0.21040560104643619, -0.009261138435182717, 0.9587715790508956, 0.21040560104643619, -0.009261138435182717, 0.9587715790508956],
+        "t_2_0": [0.22528064041293117, 0.6178306433245998, 1.2469737036046606, 2.4422701702657834, 0.10733395357481687, 2.849687935271505, -1.0936320747576238, 0.0788660005971272, 0.4085246477511594, -1.3453566338644074, 0.0788660005971272, 0.4085246477511594, -1.3453566338644074, 0.0788660005971272, 0.4085246477511594, -1.3453566338644074]
+      },
+      "result_binding_notes": [
+        "Reference aliases are nonzero at probed times.",
+        "yaw_est_state, yaw_estimated.y, and controller3_2.yaw_mea are available and nonzero.",
+        "Yaw attitude extraction passed, so rate-feedback fallback was not run in this task.",
+        "This validates result-context stability only, not closed-loop tracking or controller performance."
+      ],
+      "error_6140_present": false,
+      "verdict": "pass_yaw_extraction_restores_result_context_so_rate_fallback_not_needed"
+    }
+  ],
+  "evidence": [
+    "session_manager probe ok with cached driver on dedicated port 49154",
+    "controller dependency and experiment package load_file returned ok/data=true",
+    "Iso20 check_model returned ok/data=true",
+    "Iso20 SimulateModel 0-2 s returned ok/data=true",
+    "GetVarTimes count was 1001 from 0.0 to 2.0",
+    "x_ref/y_ref/z_ref/yaw_ref and yaw estimator/controller aliases were nonzero at sampled times"
+  ],
+  "unknowns": [
+    "No rate feedback path was tested because yaw attitude extraction passed first as requested.",
+    "No full Factory wrapper, full sensor bus, or rate bus was reconnected.",
+    "This probe does not determine whether the controller tracks the trace or whether the plant remains stable over longer scenarios."
+  ],
+  "risks": [
+    "The first-order extraction time constant is a probe bridge and may need design review before becoming a formal model component.",
+    "Yaw angle wrapping/frame conventions are not validated by this result-context probe.",
+    "Longer simulations or additional rate feedback may expose numerical or semantic issues not visible in this 0-2 s smoke."
+  ],
+  "next_validation": [
+    "Create one narrow rate-feedback isolation probe only after preserving the passing yaw extraction baseline.",
+    "If rate feedback passes, add the next minimal group before any full Factory wrapper retry.",
+    "For every next step, keep check_model -> 0-2 s SimulateModel -> GetVarTimes -> alias-probe evidence and no closed_loop claim."
+  ],
+  "classification": {
+    "prior_012_roll_pitch_extraction_was_pass": true,
+    "yaw_anglemea3_extraction_added": true,
+    "rate_feedback_added": false,
+    "yaw_attitude_extraction_passes": true,
+    "rate_fallback_needed": false,
+    "full_sensor_bus_added": false,
+    "full_factory_wrapper_retried": false,
+    "get_var_times_count": 1001,
+    "error_6140_status": "absent_in_013_probe"
+  },
+  "claim_boundary": [
+    "Yaw attitude decoupling/result-context probe only.",
+    "No rate feedback claim.",
+    "No closed_loop claim.",
+    "No Factory trace consumption claim.",
+    "No controller performance or plant tracking claim.",
+    "No parameter identification claim."
+  ]
+}

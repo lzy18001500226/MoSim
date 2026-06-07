@@ -1,0 +1,68 @@
+{
+  "schema": "mosim.mworks_model_hygiene.representative_alias_check_results.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-PACKAGE-LIVE-VALIDATION-20260607-008",
+  "created_at": "2026-06-07T01:40:00+08:00",
+  "source": "MWORKS_MCP_check_model",
+  "status": "failed",
+  "tool": "mcp__sysplorer.check_model",
+  "model_type": "Modelica",
+  "simulation_ran": false,
+  "representative_aliases_checked": [
+    {
+      "model_name": "QuadrotorControllerBlocks.AWFFPidBlocks.PositionOuterLoop",
+      "ok": false,
+      "data": false,
+      "error_summary": "compiler error 3001: base class .AWFF_PositionOuterLoop_Sysblock not found"
+    },
+    {
+      "model_name": "QuadrotorControllerBlocks.InnovationControllers.INDIEquation",
+      "ok": false,
+      "data": false,
+      "error_summary": "compiler error 3001: base class .AWFF_INDIControllerEquation_Sysblock not found"
+    },
+    {
+      "model_name": "QuadrotorControllerBlocks.FaultAllocationControllers.L1OnlineFaultAllocationEquation",
+      "ok": false,
+      "data": false,
+      "error_summary": "compiler error 3001: base class .AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock not found"
+    },
+    {
+      "model_name": "QuadrotorControllerBlocks.LinearMPCControllers.OuterLoopEquation",
+      "ok": false,
+      "data": false,
+      "error_summary": "compiler error 3001: base class .AWFF_LinearMPCOuterLoopControllerEquation_Sysblock not found"
+    },
+    {
+      "model_name": "QuadrotorControllerBlocks.SafetyControllers.QPNMPCSafety",
+      "ok": false,
+      "data": false,
+      "error_summary": "compiler error 3001: base class .AWFF_QPNMPCSafetyController_Sysblock not found"
+    },
+    {
+      "model_name": "QuadrotorControllerBlocks.DemosAndSIL.PIDDemoSILConstant",
+      "ok": false,
+      "data": false,
+      "error_summary": "compiler error 3001: base class .AWFF_PID_Sysblock_Demo_SIL_Constant not found"
+    }
+  ],
+  "narrow_target_resolution_probe": [
+    {
+      "model_name": "QuadrotorControllerBlocks.AWFF_PositionOuterLoop_Sysblock",
+      "ok": false,
+      "data": false,
+      "error_summary": "CheckModel returned False; GetLastErrors was empty"
+    },
+    {
+      "model_name": "AWFF_PositionOuterLoop_Sysblock",
+      "ok": false,
+      "data": false,
+      "error_summary": "model AWFF_PositionOuterLoop_Sysblock does not exist"
+    }
+  ],
+  "inference": "The package shell loads and lists the flat controller classes under QuadrotorControllerBlocks, but representative alias wrappers that use leading-dot global extends cannot resolve their intended flat bases in the live Sysplorer context.",
+  "recommended_next_validation": [
+    "Do not edit controller .mo files in this task.",
+    "In a separate approved write task, evaluate whether alias extends should target package-local sibling classes without leading dot or whether a true namespace migration is required.",
+    "Repeat live validation only after license/demo sentinel is clean."
+  ]
+}

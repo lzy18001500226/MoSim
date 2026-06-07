@@ -1,0 +1,62 @@
+{
+  "schema": "mosim.ue_live_echo_receiver_boundary_static_audit.v1",
+  "ok": false,
+  "source": "source_level_static_boundary_audit",
+  "task_id": "RFLY-MOSIM-UE-LIVE-ECHO-RECEIVER-BOUNDARY-20260606-004",
+  "receiver_boundary_decision": {
+    "current_live_echo_receiver_present": false,
+    "existing_udp_receiver_role": "quadrotor.unreal_state frame/status receiver only",
+    "future_receiver_host": "new project-owned command echo receiver/adapter component, not UQuadrotorMworksUdpReceiverComponent and not UQuadrotorMworksUdpCommandSenderComponent",
+    "future_receiver_input_schema": "mosim.ue_command_echo.v1",
+    "future_receiver_sink": "UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson",
+    "safe_to_implement_runtime_receiver_next": false
+  },
+  "source_labels": {
+    "non_live_sources_expected": [
+      "MWORKS_MCP_result_adapter_smoke",
+      "MWORKS_MCP_runtime_adapter_preflight",
+      "offline_adapter_smoke",
+      "source_level_smoke"
+    ],
+    "non_live_sources_missing_from_state_component": [
+      "MWORKS_MCP_result_adapter_smoke",
+      "MWORKS_MCP_runtime_adapter_preflight"
+    ],
+    "future_live_source_candidates": [
+      "MWORKS_ROS2_live_downlink",
+      "MWORKS_live_downlink",
+      "ROS2_runtime_echo"
+    ],
+    "mworks_004_source": "MWORKS_MCP_runtime_adapter_preflight",
+    "mworks_004_live_downlink_status": "blocked_no_transport_surface"
+  },
+  "rules": [
+    "pending rows may originate only from mosim.ue_command.v1 command requests",
+    "accepted/rejected rows may originate only from matching mosim.ue_command_echo.v1",
+    "offline/source/preflight rows must keep quality_status=smoke_only and accepted_as_runtime_ack=false",
+    "future live receiver must require schema/status/run_id/request_id/seq/kind/ack_authority/no_pose_overwrite_status matching",
+    "future live receiver must reject or keep disabled stale, duplicate, orphan, mismatched, missing-authority, and no_pose_overwrite_status!=pass rows",
+    "general quadrotor.unreal_state frame/status downlink cannot be used as command ack",
+    "UDP send success cannot be used as command ack"
+  ],
+  "issues": [],
+  "blockers": [
+    {
+      "id": "state_component_non_live_source_gap",
+      "reason": "State component does not currently downgrade all known source/offline/preflight labels to smoke_only.",
+      "missing_sources": "MWORKS_MCP_result_adapter_smoke, MWORKS_MCP_runtime_adapter_preflight"
+    }
+  ],
+  "warnings": [
+    "static receiver-boundary audit only; no live UE/MWORKS/ROS2 ack is claimed",
+    "future live receiver must be a separate component or adapter and must call ApplyCommandEchoJson only after transport provenance is proven"
+  ],
+  "claim_boundary": {
+    "not_live_ue_runtime_ack": true,
+    "not_live_mworks_downlink": true,
+    "not_ros2_runtime_ack": true,
+    "planner_ready": false,
+    "closed_loop_ready": false,
+    "controller_performance": false
+  }
+}

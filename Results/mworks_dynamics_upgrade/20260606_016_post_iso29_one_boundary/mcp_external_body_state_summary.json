@@ -1,0 +1,93 @@
+{
+  "schema": "mosim.mworks_evidence_summary.v1",
+  "task_id": "RFLY-MOSIM-MWORKS-POST-ISO29-ONE-BOUNDARY-20260606-016",
+  "created_at": "2026-06-06T22:42:29+08:00",
+  "source": "MWORKS_MCP",
+  "model": "QuadrotorExperiments.FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+  "mworks_window_policy": "reuse_existing_session_default",
+  "gui_sentinel": {
+    "pre": {
+      "path": "Results/mworks_dynamics_upgrade/20260606_016_post_iso29_one_boundary/pre_sentinel.json",
+      "status": "clean",
+      "error_kind": null,
+      "window_count": 387
+    },
+    "post": {
+      "path": "Results/mworks_dynamics_upgrade/20260606_016_post_iso29_one_boundary/post_sentinel.json",
+      "status": "clean",
+      "error_kind": null,
+      "window_count": 480
+    }
+  },
+  "mcp_health": {
+    "ok": true,
+    "driver_ready": true,
+    "api_ready": true,
+    "dedicated_sysplorer_port": 49153
+  },
+  "load_sequence": {
+    "reload_mo_path_used": false,
+    "clear_all_called": false,
+    "change_directory_called": false,
+    "loaded_files": [
+      "C:/Users/HP/Desktop/MoSim/References/MWORKS/QuadrotorModel/package.mo",
+      "C:/Users/HP/Desktop/MoSim/Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "C:/Users/HP/Desktop/MoSim/Models/QuadrotorExperiments/package.mo"
+    ],
+    "note": "A direct load of the newly created sibling Iso30 .mo was rejected by Sysplorer as a duplicate package load, and GetClasses did not expose the new sibling class after package.order update. Final implementation embeds Iso30 in the project-owned package.mo compatibility surface."
+  },
+  "check_model": {
+    "ok": true,
+    "models": [
+      "QuadrotorExperiments.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke",
+      "QuadrotorExperiments.FactoryTraceIso30ExternalBodyStateBoundarySmoke"
+    ]
+  },
+  "simulate_model": {
+    "ok": true,
+    "data": true,
+    "sim_mode": 1,
+    "target_time_s": [
+      0.0,
+      0.25
+    ],
+    "verify_result_var": "external_body_state_boundary_gate_error",
+    "verify_result_var_end": 0.0
+  },
+  "get_var_times": {
+    "ok": true,
+    "count": 251,
+    "first": 0.0,
+    "last": 0.25
+  },
+  "sample_file": "Results/mworks_dynamics_upgrade/20260606_016_post_iso29_one_boundary/external_body_state_samples.csv",
+  "end_aliases": {
+    "external_boundary_gate_error": 0.0,
+    "external_body_z": -0.24021172119186007,
+    "external_body_vz": -1.5165349951279292,
+    "external_body_yaw_rate": -0.4531353758463619,
+    "external_body_z_delta": -0.24021172119186007,
+    "external_body_vz_delta": -1.5165349951279292,
+    "external_body_yaw_rate_delta": -0.4531353758463619,
+    "external_body_vertical_response_gate": 1.7567467163197894,
+    "external_body_yaw_response_gate": 0.4531353758463619,
+    "external_body_state_boundary_gate_error": 0.0,
+    "external_frame_force_z": 12.771836020169136,
+    "external_frame_yaw_torque": -0.06826526566283278,
+    "bridge_total_thrust": 12.771836020169136,
+    "bridge_yaw_moment": -0.06826526566283278
+  },
+  "claim_boundary": {
+    "minimal_external_body_state_response_boundary": true,
+    "factory_trace_consumption": false,
+    "quadchassis_or_full_plant_closure": false,
+    "actuator_flange_or_speedSensor_chain": false,
+    "closed_loop": false,
+    "controller_performance": false,
+    "plant_tracking": false,
+    "mission_success": false,
+    "parameter_identification": false,
+    "planner_readiness": false,
+    "live_runtime_ack": false
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "schema_version": "mosim.mworks_mcp_log.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "source": "MWORKS_MCP",
+  "calls": [
+    {
+      "tool": "session_manager",
+      "action": "probe",
+      "ok": true,
+      "dedicated_sysplorer_port": 49154,
+      "cached_driver_probe_ok": true
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "ok": true,
+      "cached": true,
+      "purpose": "dependency only; no edit"
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "check_model",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso23PositionSampleHoldBridgeSmoke",
+      "ok": true,
+      "data": true,
+      "elapsed_s": 2.339
+    },
+    {
+      "tool": "simulate_model",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso23PositionSampleHoldBridgeSmoke",
+      "target_time_s": [0.0, 2.0],
+      "ok": true,
+      "data": true,
+      "verify_result_var": "x_ref",
+      "x_ref_at_end": 0.22528064041293117,
+      "error_6140_present": false
+    },
+    {
+      "tool": "result_manager",
+      "action": "get_var_times",
+      "ok": true,
+      "count": 1001,
+      "first": 0.0,
+      "last": 2.0
+    },
+    {
+      "tool": "result_manager",
+      "action": "get_vars_value_at",
+      "time_point": 0.0,
+      "ok": true,
+      "variables": [
+        "x_ref",
+        "y_ref",
+        "z_ref",
+        "yaw_ref",
+        "display_actual_x",
+        "display_actual_y",
+        "display_actual_z",
+        "display_reference_x",
+        "display_reference_y",
+        "display_reference_z",
+        "display_bridge_x",
+        "display_bridge_y",
+        "display_bridge_z"
+      ],
+      "data": [
+        0.349945480361177,
+        0.343822559204245,
+        1.23504194217568,
+        1.55314557945239,
+        -55.58,
+        -24.48,
+        1.9,
+        0.349945480361177,
+        0.343822559204245,
+        1.23504194217568,
+        -55.58,
+        -24.48,
+        1.9
+      ]
+    },
+    {
+      "tool": "result_manager",
+      "action": "get_vars_value_at",
+      "time_point": 1.0,
+      "ok": true,
+      "data": [
+        0.31861753694312633,
+        0.49481767718910424,
+        1.242037957383867,
+        1.9974016333898024,
+        -55.672801463419404,
+        -24.54030475533482,
+        0.0008882558286242737,
+        0.31861753694312633,
+        0.49481767718910424,
+        1.242037957383867,
+        -55.672801463419404,
+        -24.54030475533482,
+        0.0008882558286242737
+      ]
+    },
+    {
+      "tool": "result_manager",
+      "action": "get_vars_value_at",
+      "time_point": 2.0,
+      "ok": true,
+      "data": [
+        0.22528064041293117,
+        0.6178306433245998,
+        1.2469737036046606,
+        2.4422701702657834,
+        -56.00124773828151,
+        -25.015852176239466,
+        0.001199602098248108,
+        0.22528064041293117,
+        0.6178306433245998,
+        1.2469737036046606,
+        -56.00124773828151,
+        -25.015852176239466,
+        0.001199602098248108
+      ]
+    }
+  ],
+  "forbidden_actions_observed": {
+    "clear_all_called": false,
+    "change_directory_called": false,
+    "full_factory_retry": false,
+    "official_baseline_edited": false,
+    "offline_script_used_as_mworks_evidence": false
+  }
+}

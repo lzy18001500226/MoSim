@@ -1,0 +1,3 @@
+probe_id,model_name,decoupling_strategy,check_model,simulate_model,simulate_data,get_var_times_count,error_6140_present,nonzero_reference_aliases,roll_alias_available,verdict
+iso17_sample_hold_angle,QuadrotorExperiments.FactoryTraceIso17SampleHoldAngleSmoke,sensors1_1.AngleMea[1] -> Sampler(0.01s) -> ZeroOrderHold(0.01s) -> controller3_2.roll_mea,pass,pass,true,1001,false,true,true,pass_sample_hold_decoupling_restores_result_context
+iso18_project_attitude_estimator,QuadrotorExperiments.FactoryTraceIso18ProjectAttitudeEstimatorSmoke,der(roll_est_state)=(sensors1_1.AngleMea[1]-roll_est_state)/0.03; roll_est_state -> RealExpression -> controller3_2.roll_mea,pass,pass,true,1001,false,true,true,pass_project_owned_extraction_restores_result_context

@@ -1,0 +1,88 @@
+{
+  "timestamp": "2026-06-06T21:33:48+08:00",
+  "status": "completed_window_state_background_probe",
+  "method": "Win32 ShowWindow SW_SHOWNOACTIVATE then SW_SHOWMINNOACTIVE; no screenshot; no coordinate click; no model operation",
+  "target_hwnd": "0x2CC0EE2",
+  "target_title": "QuadrotorExperiments - Sysplorer [教育版]",
+  "target_before_minimized": true,
+  "target_after_show_minimized": false,
+  "target_after_minimize_minimized": true,
+  "target_after_show_visible": true,
+  "target_after_minimize_visible": true,
+  "foreground_before_hwnd": "0x3120B3E",
+  "foreground_before_title": "Codex",
+  "foreground_after_show_hwnd": "0x3120B3E",
+  "foreground_after_show_title": "Codex",
+  "foreground_after_minimize_hwnd": "0x3120B3E",
+  "foreground_after_minimize_title": "Codex",
+  "focus_stolen_by_target_after_show": false,
+  "focus_stolen_by_target_after_minimize": false,
+  "matching_window_count": 8,
+  "matching_windows": [
+    {
+      "hwnd": "0x45F0F42",
+      "pid": 640,
+      "title": "MWORKS.Sysplorer 2026a",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x3A30F2C",
+      "pid": 640,
+      "title": "MWORKS.Sysplorer 2026a",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x4411DE",
+      "pid": 640,
+      "title": "QuadrotorExperiments - 结果查看器",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x26802BA",
+      "pid": 640,
+      "title": "MWORKS.Sysplorer 2026a",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0xD41078",
+      "pid": 62592,
+      "title": "MWORKS",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x2120ED6",
+      "pid": 62592,
+      "title": "MWORKS",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x4140EB6",
+      "pid": 640,
+      "title": "MWORKS.Sysplorer 2026a",
+      "class": "Qt5QWindowIcon",
+      "visible": false,
+      "minimized": false
+    },
+    {
+      "hwnd": "0x2CC0EE2",
+      "pid": 640,
+      "title": "QuadrotorExperiments - Sysplorer [教育版]",
+      "class": "Qt5QWindowIcon",
+      "visible": true,
+      "minimized": true
+    }
+  ],
+  "claim_boundary": "This proves safe background window-state operation on MWORKS/Sysplorer. It does not prove arbitrary minimized control clicking inside Sysplorer models."
+}

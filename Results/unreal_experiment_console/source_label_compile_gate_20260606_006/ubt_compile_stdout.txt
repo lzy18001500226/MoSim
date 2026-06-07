@@ -1,0 +1,38 @@
+Running: "D:\Program Files\Epic Games\UE_5.5\Engine\Binaries\ThirdParty\DotNet\8.0.300\win-x64\dotnet.exe" "D:\Program Files\Epic Games\UE_5.5\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" MoSimSceneLibraryEditor Win64 Development -Project="C:\Users\HP\Desktop\MoSim\UE5\MoSimSceneLibrary\MoSimSceneLibrary.uproject" -WaitMutex -NoHotReloadFromIDE
+Log file: C:\Users\HP\AppData\Local\UnrealBuildTool\Log.txt
+Invalidating makefile for MoSimSceneLibraryEditor (source file added)
+Available x64 toolchains (1):
+ * D:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207
+    (Family=14.44.35207, FamilyRank=1, Version=14.44.35226, Is64Bit=True, ReleaseChannel=Latest, Architecture=x64)
+Visual Studio 2022 compiler version 14.44.35226 is not a preferred version. Please use the latest preferred version 14.38.33130
+Parsing headers for MoSimSceneLibraryEditor
+  Running Internal UnrealHeaderTool C:\Users\HP\Desktop\MoSim\UE5\MoSimSceneLibrary\MoSimSceneLibrary.uproject C:\Users\HP\Desktop\MoSim\UE5\MoSimSceneLibrary\Intermediate\Build\Win64\MoSimSceneLibraryEditor\Development\MoSimSceneLibraryEditor.uhtmanifest -WarningsAsErrors -installed
+Total of 7 written
+Reflection code generated for MoSimSceneLibraryEditor in 1.1046455 seconds
+Building MoSimSceneLibraryEditor...
+Using Visual Studio 2022 14.44.35226 toolchain (D:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (D:\Windows Kits\10).
+Warning: Visual Studio 2022 compiler is not a preferred version
+[Adaptive Build] Excluded from UnrealMCP unity file: EpicUnrealMCPBridge.cpp, EpicUnrealMCPModule.cpp, MCPServerRunnable.cpp, EpicUnrealMCPBlueprintCommands.cpp, EpicUnrealMCPBlueprintGraphCommands.cpp, EpicUnrealMCPCommonUtils.cpp, EpicUnrealMCPEditorCommands.cpp, BPConnector.cpp, BPVariables.cpp, EventManager.cpp, NodeDeleter.cpp, NodeManager.cpp, NodePropertyManager.cpp, FunctionIO.cpp, FunctionManager.cpp, AnimationNodes.cpp, CastingNodes.cpp, ControlFlowNodes.cpp, DataNodes.cpp, ExecutionSequenceEditor.cpp, MakeArrayEditor.cpp, NodeCreatorUtils.cpp, SpecializedNodes.cpp, SwitchEnumEditor.cpp, UtilityNodes.cpp
+[Adaptive Build] Excluded from QuadrotorMworksBridge unity file: QuadrotorMworksBridge.cpp, QuadrotorMworksExperimentConsoleStateComponent.cpp, QuadrotorMworksMapActor.cpp, QuadrotorMworksPlaybackActor.cpp, QuadrotorMworksPlaybackComponent.cpp, QuadrotorMworksUdpCommandSenderComponent.cpp, QuadrotorMworksUdpReceiverComponent.cpp
+Determining max actions to execute in parallel (16 physical cores, 32 logical cores)
+  Executing up to 16 processes, one per physical core
+Using Unreal Build Accelerator local executor to run 10 action(s)
+  Storage capacity 40Gb
+---- Starting trace: 260606_163446 ----
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+------ Building 10 action(s) started ------
+[1/10] Compile [x64] QuadrotorMworksPlaybackComponent.cpp
+[2/10] Compile [x64] QuadrotorMworksPlaybackActor.cpp
+[3/10] Compile [x64] Module.QuadrotorMworksBridge.cpp
+[4/10] Compile [x64] QuadrotorMworksExperimentConsoleStateComponent.cpp
+[5/10] Compile [x64] QuadrotorMworksUdpCommandSenderComponent.cpp
+[6/10] Compile [x64] QuadrotorMworksUdpReceiverComponent.cpp
+[7/10] Compile [x64] QuadrotorMworksMapActor.cpp
+[8/10] Link [x64] UnrealEditor-QuadrotorMworksBridge.lib
+  正在创建库 C:\Users\HP\Desktop\MoSim\UE5\MoSimSceneLibrary\Intermediate\External\Build\Win64\x64\UnrealEditor\Development\QuadrotorMworksBridge\UnrealEditor-QuadrotorMworksBridge.lib 和对象 C:\Users\HP\Desktop\MoSim\UE5\MoSimSceneLibrary\Intermediate\External\Build\Win64\x64\UnrealEditor\Development\QuadrotorMworksBridge\UnrealEditor-QuadrotorMworksBridge.exp
+[9/10] Link [x64] UnrealEditor-QuadrotorMworksBridge.dll
+   创建对象 C:\Users\HP\Desktop\MoSim\UE5\MoSimSceneLibrary\Binaries\Win64\UnrealEditor-QuadrotorMworksBridge.exp
+[10/10] WriteMetadata MoSimSceneLibraryEditor.target (UBA disabled)
+Trace file written to C:/Users/HP/AppData/Local/UnrealBuildTool/Log.uba with size 4.8kb
+Total time in Unreal Build Accelerator local executor: 5.45 seconds
+Total execution time: 9.42 seconds

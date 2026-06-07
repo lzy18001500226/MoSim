@@ -1,0 +1,207 @@
+{
+  "schema": "mosim.ue_console_static_next_gate_audit.v1",
+  "request_id": "RFLY-MOSIM-UE-CONSOLE-STATIC-NEXT-GATE-AUDIT-20260607-009",
+  "created_at": "2026-06-07T06:18:00+08:00",
+  "audit_scope": "UE experiment console source/static evidence after UE 004-008",
+  "status": "completed_static_audit",
+  "proven_gates": [
+    {
+      "task_id": "RFLY-MOSIM-UE-LIVE-ECHO-RECEIVER-BOUNDARY-20260606-004",
+      "status": "blocked_precisely_then_superseded_by_005",
+      "proven": [
+        "No live UE command echo receiver was present.",
+        "Existing UQuadrotorMworksUdpReceiverComponent is a quadrotor.unreal_state frame/status receiver, not a mosim.ue_command_echo.v1 receiver.",
+        "Future receiver must be a new project-owned command echo receiver/adapter feeding UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson."
+      ],
+      "still_unproven": [
+        "No live receiver implementation.",
+        "No live MWORKS/ROS2 command-echo transport.",
+        "No UI accepted-state binding."
+      ]
+    },
+    {
+      "task_id": "RFLY-MOSIM-UE-ECHO-SOURCE-LABEL-SAFETY-20260606-005",
+      "status": "completed",
+      "proven": [
+        "Known non-live labels are downgraded to smoke_only.",
+        "Known non-live labels keep accepted_as_runtime_ack=false.",
+        "Receiver boundary checker passes with current_live_echo_receiver_present=false and safe_to_implement_runtime_receiver_next=false."
+      ],
+      "non_live_labels": [
+        "offline_adapter_smoke",
+        "source_level_smoke",
+        "MWORKS_MCP_result_adapter_smoke",
+        "MWORKS_MCP_runtime_adapter_preflight"
+      ],
+      "still_unproven": [
+        "No live receiver implementation.",
+        "No runtime acknowledgement."
+      ]
+    },
+    {
+      "task_id": "RFLY-MOSIM-UE-SOURCE-LABEL-COMPILE-GATE-20260606-006",
+      "status": "completed",
+      "proven": [
+        "Compile-only UBT gate passed for MoSimSceneLibraryEditor Win64 Development.",
+        "QuadrotorMworksExperimentConsoleStateComponent.cpp compiled and bridge DLL linked.",
+        "Post-compile static source-label and receiver-boundary regressions passed."
+      ],
+      "still_unproven": [
+        "No Unreal Editor GUI, PIE, packaged runtime, or live receiver run.",
+        "No UI accepted-state binding.",
+        "No live MWORKS/ROS2 runtime acknowledgement."
+      ]
+    },
+    {
+      "task_id": "RFLY-MOSIM-UE-CONSOLE-DISABLED-STATE-CONTRACT-SMOKE-20260606-007",
+      "status": "completed",
+      "proven": [
+        "Source/static disabled-state contract covers controller, planner, wind, fault, and map/scene controls.",
+        "Pending rows stay disabled_pending_echo.",
+        "Smoke/source/preflight rows stay smoke_only with accepted_as_runtime_ack=false.",
+        "Rejected rows stay disabled_rejected.",
+        "Only future-live fixture rows can represent enabled_after_runtime_echo."
+      ],
+      "still_unproven": [
+        "No UMG/Blueprint/Slate UI binding evidence.",
+        "No live accepted-state control enablement."
+      ]
+    },
+    {
+      "task_id": "RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-ACCEPTANCE-FIXTURE-CONTRACT-20260606-008",
+      "status": "completed",
+      "proven": [
+        "Future accepted-state fixture contract requires mosim.ue_command_echo.v1.",
+        "Future enabled accepted state requires authoritative source, command id, timestamp, accepted status, ack authority, command kind, and no_pose_overwrite_status=pass.",
+        "Smoke/source/preflight, rejected, authority-mismatch, and malformed fixture rows cannot be represented as runtime accepted."
+      ],
+      "still_unproven": [
+        "No actual live transport provenance.",
+        "No runtime receiver.",
+        "No UI binding."
+      ]
+    }
+  ],
+  "static_regression_evidence": {
+    "live_receiver_boundary_static_regression": "Results/unreal_experiment_console/static_next_gate_audit_20260607_009/live_receiver_boundary_static_regression.json",
+    "console_state_contract_static_regression": "Results/unreal_experiment_console/static_next_gate_audit_20260607_009/console_state_contract_static_regression.json",
+    "disabled_state_contract_static_regression": "Results/unreal_experiment_console/static_next_gate_audit_20260607_009/disabled_state_contract_static_regression.json",
+    "live_echo_acceptance_fixture_static_regression": "Results/unreal_experiment_console/static_next_gate_audit_20260607_009/live_echo_acceptance_fixture_static_regression.json"
+  },
+  "current_state": {
+    "live_echo_receiver_present": false,
+    "runtime_receiver_implemented": false,
+    "ui_asset_binding_implemented": false,
+    "safe_to_implement_runtime_receiver_next": false,
+    "mworks_live_downlink_status": "blocked_no_transport_surface",
+    "known_non_live_labels_safe": true,
+    "disabled_state_contract_present": true,
+    "future_live_acceptance_fixture_contract_present": true,
+    "compile_only_evidence_present_from_006": true
+  },
+  "blocked_or_unproven_gates": [
+    "Live UE runtime echo receiver.",
+    "Live MWORKS command-echo downlink transport.",
+    "ROS2 runtime command acknowledgement.",
+    "Blueprint/UMG/Slate UI accepted-state binding.",
+    "Unreal Editor/PIE/packaged runtime behavior.",
+    "planner_ready.",
+    "closed_loop.",
+    "controller performance.",
+    "FAST-LIO success.",
+    "localization or local-map quality.",
+    "mission success.",
+    "final UI acceptance."
+  ],
+  "recommended_next_safe_gates": [
+    {
+      "rank": 1,
+      "task_type": "source_static_receiver_shell_contract_design",
+      "summary": "Define a source/static contract for a future new project-owned command echo receiver shell without implementing the receiver.",
+      "allowed_surface": [
+        "Scripts/UE5 static checker/test",
+        "Results evidence",
+        "return packet"
+      ],
+      "must_prove": [
+        "Future receiver must not reuse UQuadrotorMworksUdpReceiverComponent or UQuadrotorMworksUdpCommandSenderComponent.",
+        "Future receiver sink is UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson.",
+        "Future receiver input is mosim.ue_command_echo.v1 only.",
+        "Accepted runtime state requires authoritative source/transport provenance, run_id, request_id, seq, time_s, command.kind, ack_authority, status=accepted, and no_pose_overwrite_status=pass.",
+        "Frame/status downlink and UDP send success cannot become command acknowledgement."
+      ],
+      "forbidden_surface": [
+        "No C++ receiver implementation.",
+        "No UE GUI.",
+        "No build.",
+        "No Blueprint/UMG/assets.",
+        "No MWORKS/ROS2 runtime."
+      ],
+      "why_next": "004-008 have enough source/static state and fixture safety to specify the future receiver boundary precisely, but MWORKS/ROS2 live transport is still blocked, so implementation remains unsafe."
+    },
+    {
+      "rank": 2,
+      "task_type": "ui_binding_contract_preflight_static_only",
+      "summary": "Define a source/static UI binding preflight contract for disabled states only, without editing Blueprint/UMG/assets or enabling controls.",
+      "allowed_surface": [
+        "Scripts/UE5 static checker/test",
+        "Results evidence",
+        "return packet"
+      ],
+      "must_prove": [
+        "UI bindings must render smoke/source/preflight rows as disabled or review-required, never runtime accepted.",
+        "UI bindings must gate enabled accepted controls on future authoritative live echo rows only.",
+        "Planner/controller success labels are not UI command acknowledgement.",
+        "RViz2/FAST-LIO/planner review remains outside UE UI authority."
+      ],
+      "forbidden_surface": [
+        "No Blueprint/UMG/assets.",
+        "No UI accepted-state enablement.",
+        "No UE runtime.",
+        "No MWORKS/ROS2 runtime."
+      ],
+      "why_next": "This can prepare the operator-console UI boundary while preserving the ban on runtime receiver and accepted-state controls."
+    }
+  ],
+  "runtime_receiver_gate_decision": {
+    "recommend_implement_runtime_receiver_next": false,
+    "reason": "MWORKS/ROS2 live command-echo transport provenance remains unavailable; current checkers still report current_live_echo_receiver_present=false and safe_to_implement_runtime_receiver_next=false."
+  },
+  "compile_gate_decision": {
+    "recommend_compile_now": false,
+    "reason": "009 did not edit UE source and PMO explicitly forbids Unreal build unless a future compile gate is dispatched. 006 already supplies compile-only evidence for the current state component and source-label patch."
+  },
+  "overclaim_risks": [
+    {
+      "risk": "007/008 future-live fixture rows may be misread as live evidence.",
+      "mitigation": "Return packets and checkers explicitly state runtime_receiver_implemented=false, ui_asset_binding_implemented=false, and not_runtime_ue_console=true."
+    },
+    {
+      "risk": "Frame/status UDP receiver might be reused as command ack receiver.",
+      "mitigation": "Receiver boundary checker and recommended next gate forbid mixing quadrotor.unreal_state frame downlink with mosim.ue_command_echo.v1 acknowledgement."
+    }
+  ],
+  "forbidden_actions_confirmed": {
+    "opened_ue_gui_or_unreal_editor": false,
+    "edited_cpp_source": false,
+    "edited_blueprint_or_umg_or_assets": false,
+    "edited_materials_or_textures": false,
+    "edited_project_settings": false,
+    "ran_unreal_build": false,
+    "implemented_runtime_socket_or_udp_receiver": false,
+    "called_mworks_or_sysplorer_or_syslab_runtime": false,
+    "called_ros2_or_rviz2_or_fast_lio_or_planner_runtime": false,
+    "called_ue_runtime": false,
+    "enabled_ui_accepted_state_controls": false,
+    "claimed_live_ue_runtime_ack": false,
+    "claimed_live_mworks_downlink": false,
+    "claimed_ros2_runtime_ack": false,
+    "claimed_planner_ready": false,
+    "claimed_closed_loop": false,
+    "claimed_controller_performance": false,
+    "claimed_fast_lio_success": false,
+    "claimed_localization_or_local_map_quality": false,
+    "claimed_mission_success": false,
+    "claimed_final_ui_acceptance": false
+  }
+}

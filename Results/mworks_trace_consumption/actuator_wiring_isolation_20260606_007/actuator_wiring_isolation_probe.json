@@ -1,0 +1,113 @@
+{
+  "schema_version": "mosim.actuator_wiring_isolation_probe.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007",
+  "created_at": "2026-06-06T06:33:10+08:00",
+  "source": "MWORKS_MCP",
+  "quality_status": "topology_boundary_refined",
+  "mcp_probe": {
+    "session_manager_probe": "pass",
+    "session_manager_ensure": "pass",
+    "dedicated_sysplorer_port": 49154
+  },
+  "comparison_against_known_passing_model": {
+    "model": "Models/QuadrotorExperiments/Example1LinearMPCSysblockClosedLoop.mo",
+    "finding": "Known passing topology connects hover constants into motor*_hover_sum.u2 and connects only motor*_hover_sum.y into actuator*.u. It does not also connect hover_u*.y directly to actuator*.u.",
+    "iso04_difference": "Iso04 extended Iso03, so each actuator input inherited hover_u*.y -> actuator*.u and then gained motor*_hover_sum.y -> actuator*.u, creating two sources per actuator input."
+  },
+  "dependency_notes": [
+    "A first Iso05 check failed only because QuadrotorModel was not loaded in the fresh Sysplorer session; it was not counted as topology evidence.",
+    "A first Iso06 check failed only because AWFF_LinearMPCOuterLoopControllerEquation_Sysblock was not loaded in the fresh Sysplorer session; the project-owned controller file was loaded before recording Iso06."
+  ],
+  "derivative_probes": [
+    {
+      "probe_id": "iso05_clean_hover_sum",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso05CleanHoverSumSmoke",
+      "model_file": "Models/QuadrotorExperiments/FactoryTraceIso05CleanHoverSumSmoke.mo",
+      "topology_change": "Recreated the Iso03 plant/actuator/sensor stack with clean actuator input topology: zero_delta + hover_u into motor*_hover_sum, and only motor*_hover_sum.y connects to actuator*.u.",
+      "controller_feedback": "none",
+      "check_model": "pass",
+      "simulate_model": "pass",
+      "simulate_data": true,
+      "error_6140_present": false,
+      "get_var_times_count": 1001,
+      "nonzero_alias_refs": true,
+      "alias_values_at_1s": {
+        "x_ref": 0.31861753694312633,
+        "y_ref": 0.49481767718910424,
+        "z_ref": 1.242037957383867,
+        "yaw_ref": 1.9974016333898024
+      },
+      "motor_cmd_values_at_1s": {
+        "motor_cmd_1": 53.562090367172424,
+        "motor_cmd_2": -53.562090367172424,
+        "motor_cmd_3": 53.562090367172424,
+        "motor_cmd_4": -53.562090367172424
+      },
+      "verdict": "clean hover-sum actuator topology is valid"
+    },
+    {
+      "probe_id": "iso06_clean_sensor_feedback_controller",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso06CleanControllerPlantWiringSmoke",
+      "model_file": "Models/QuadrotorExperiments/FactoryTraceIso06CleanControllerPlantWiringSmoke.mo",
+      "topology_change": "Recreated full controller-to-actuator motor sum topology with only one source per actuator input, matching Example1 actuator input pattern, and used sensor feedback into controller.",
+      "controller_feedback": "sensors1_1.PosMea and sensors1_1.AngleMea close feedback to controller",
+      "check_model": "pass",
+      "simulate_model": "failed",
+      "simulate_data": false,
+      "simulate_error_excerpt": "SimulateModel returned False; GetLastErrors had no message text.",
+      "error_6140_present": false,
+      "get_var_times_count_after_failed_simulate": 0,
+      "nonzero_alias_refs_after_failed_simulate": false,
+      "alias_values_at_1s_after_failed_simulate": {
+        "x_ref": 0.0,
+        "y_ref": 0.0,
+        "z_ref": 0.0,
+        "yaw_ref": 0.0
+      },
+      "motor_cmd_values_at_1s_after_failed_simulate": {
+        "motor_cmd_1": 0.0,
+        "motor_cmd_2": 0.0,
+        "motor_cmd_3": 0.0,
+        "motor_cmd_4": 0.0
+      },
+      "verdict": "clean actuator topology removes 6140 text but still fails into empty result context when sensor feedback closes the controller loop"
+    },
+    {
+      "probe_id": "iso07_clean_open_feedback_controller",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso07CleanControllerOpenFeedbackSmoke",
+      "model_file": "Models/QuadrotorExperiments/FactoryTraceIso07CleanControllerOpenFeedbackSmoke.mo",
+      "topology_change": "Kept the clean one-source-per-actuator motor sum topology but replaced sensor feedback with trace-derived zero-error position feedback and zero/trace attitude references.",
+      "controller_feedback": "trace-derived zero-error feedback, not sensor feedback",
+      "check_model": "pass",
+      "simulate_model": "pass",
+      "simulate_data": true,
+      "error_6140_present": false,
+      "get_var_times_count": 1001,
+      "nonzero_alias_refs": true,
+      "alias_values_at_1s": {
+        "x_ref": 0.31861753694312633,
+        "y_ref": 0.49481767718910424,
+        "z_ref": 1.242037957383867,
+        "yaw_ref": 1.9974016333898024
+      },
+      "motor_cmd_values_at_1s": {
+        "motor_cmd_1": 53.575098645763944,
+        "motor_cmd_2": -53.56541043948876,
+        "motor_cmd_3": 53.575098645763944,
+        "motor_cmd_4": -53.56541043948876
+      },
+      "verdict": "controller-to-actuator motor sum topology is valid when sensor feedback closure is removed"
+    }
+  ],
+  "refined_boundary": {
+    "error_6140_cause": "Iso04's 6140 redundant Real equations are attributable to the duplicate actuator input connection topology introduced by extending Iso03 and then adding motor*_hover_sum.y -> actuator*.u without removing the inherited hover_u*.y -> actuator*.u direct connections.",
+    "remaining_failure_boundary": "After fixing the duplicate actuator input topology, Iso06 still fails with SimulateModel data=false, GetVarTimes=0, and zero aliases when sensor feedback closes the controller-to-plant loop.",
+    "minimal_passing_counterexample": "Iso07 passes with clean actuator sum topology and controller output driving actuators when controller feedback is trace-derived/open rather than sensor-closed.",
+    "next_step": "Isolate sensor feedback closure: add position feedback, angle feedback, and yaw feedback one group at a time on top of Iso07 or compare initial/frame constraints against Example1."
+  },
+  "claim_boundary": [
+    "Actuator wiring isolation only.",
+    "No closed_loop, Factory trace consumption, controller performance, or plant tracking claim.",
+    "No official baseline or parameter edits."
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "schema_version": "mosim.mworks_trace_probe.v1",
+  "request_id": "RFLY-MOSIM-MWORKS-CONTROL-PITCH-DECOUPLING-20260606-012",
+  "created_at": "2026-06-06T09:16:00+08:00",
+  "source": "MWORKS_MCP",
+  "quality_status": "pitch_decoupling_probe_passed",
+  "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
+  "target_thread_id": "019e9999-b0d3-7682-bccd-faef08fcf1df",
+  "prior_boundary": {
+    "source_packet": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json",
+    "classification": "Iso18 project-owned first-order roll extraction restored SimulateModel data=true and GetVarTimes=1001.",
+    "recommended_pattern": "project-owned first-order extraction state before controller attitude input"
+  },
+  "mcp_probe": {
+    "tool": "session_manager",
+    "action": "probe",
+    "ok": true,
+    "cached_driver_probe_ok": true,
+    "dedicated_sysplorer_port": 49154,
+    "find_sysplorer_ports": [49153, 49152, 49154]
+  },
+  "load_sequence": [
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    }
+  ],
+  "probes": [
+    {
+      "probe_id": "iso19_roll_pitch_estimator",
+      "model_file": "Models/QuadrotorExperiments/FactoryTraceIso19RollPitchEstimatorSmoke.mo",
+      "model_name": "QuadrotorExperiments.FactoryTraceIso19RollPitchEstimatorSmoke",
+      "decoupling_strategy": "Keep Iso18 roll extraction and add only pitch AngleMea[2] through an equivalent project-owned first-order extraction state before controller3_2.pitch_mea.",
+      "signal_mapping": [
+        "der(roll_est_state) = (sensors1_1.AngleMea[1] - roll_est_state) / attitude_extraction_T",
+        "der(pitch_est_state) = (sensors1_1.AngleMea[2] - pitch_est_state) / attitude_extraction_T",
+        "roll_est_state -> roll_estimated.y -> controller3_2.roll_mea",
+        "pitch_est_state -> pitch_estimated.y -> controller3_2.pitch_mea",
+        "planningReference.yaw_ref -> controller3_2.yaw_mea and yaw_ref"
+      ],
+      "parameters": {
+        "attitude_extraction_T": {
+          "value": 0.03,
+          "role": "probe extraction time constant only; not a controller gain or identified dynamics parameter"
+        }
+      },
+      "check_model": {
+        "ok": true,
+        "data": true,
+        "elapsed_s": 2.025
+      },
+      "simulate_model": {
+        "ok": true,
+        "data": true,
+        "target_time_s": [0, 2],
+        "elapsed_s_observed": 135.0776
+      },
+      "get_var_times": {
+        "ok": true,
+        "count": 1001,
+        "first": 0.0,
+        "last": 2.0
+      },
+      "alias_probe_vars": [
+        "x_ref",
+        "y_ref",
+        "z_ref",
+        "yaw_ref",
+        "sensors1_1.AngleMea[1]",
+        "sensors1_1.AngleMea[2]",
+        "roll_est_state",
+        "pitch_est_state",
+        "roll_estimated.y",
+        "pitch_estimated.y",
+        "controller3_2.roll_mea",
+        "controller3_2.pitch_mea"
+      ],
+      "alias_values": {
+        "t_0_5": [0.3433963686587412, 0.417558977229446, 1.2386167305579043, 1.7650531321614733, -0.8812075747077337, -0.8274949462311932, 0.12312312288348769, -0.018696131345699585, 0.12312312288348769, -0.018696131345699585, 0.12312312288348769, -0.018696131345699585],
+        "t_1_0": [0.31861753694312633, 0.49481767718910424, 1.242037957383867, 1.9974016333898024, 0.5772122835175941, 0.16498102690966315, 0.10309609788749947, -0.06841924078684873, 0.10309609788749947, -0.06841924078684873, 0.10309609788749947, -0.06841924078684873],
+        "t_2_0": [0.22528064041293117, 0.6178306433245998, 1.2469737036046606, 2.4422701702657834, 0.00627798606073235, 2.76612432531366, 0.07326359705130045, 0.3911087415459188, 0.07326359705130045, 0.3911087415459188, 0.07326359705130045, 0.3911087415459188]
+      },
+      "result_binding_notes": [
+        "Reference aliases are nonzero at probed times.",
+        "roll_est_state, pitch_est_state, roll_estimated.y, pitch_estimated.y, controller3_2.roll_mea, and controller3_2.pitch_mea are available and nonzero.",
+        "This validates result-context stability for roll+pitch extraction only, not closed-loop tracking or controller performance."
+      ],
+      "error_6140_present": false,
+      "verdict": "pass_iso18_pattern_scales_to_roll_pitch_result_context"
+    }
+  ],
+  "classification": {
+    "iso18_roll_extraction_was_prior_pass": true,
+    "pitch_extraction_group_added": true,
+    "yaw_rate_full_sensor_bus_added": false,
+    "roll_pitch_project_owned_extraction_passes": true,
+    "get_var_times_count": 1001,
+    "error_6140_status": "absent_in_012_probe"
+  },
+  "claim_boundary": [
+    "Pitch decoupling/result-context probe only.",
+    "No closed_loop claim.",
+    "No Factory trace consumption claim.",
+    "No controller performance or plant tracking claim.",
+    "No parameter identification claim."
+  ],
+  "recommended_next_step": "Add only the next narrow attitude group after roll+pitch extraction, such as yaw attitude extraction or rate feedback isolation, with the same check_model, 0-2 s SimulateModel, GetVarTimes, and alias-probe gate before any full Factory wrapper retry."
+}
