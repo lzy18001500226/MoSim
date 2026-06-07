@@ -229,6 +229,8 @@ References/Agent/Platforms/*
 !References/Agent/Platforms/CowAgent/**
 !References/Agent/Platforms/SWE-agent/
 !References/Agent/Platforms/SWE-agent/**
+!References/Agent/Platforms/SuperAGI/
+!References/Agent/Platforms/SuperAGI/**
 !References/Agent/Platforms/aider/
 !References/Agent/Platforms/aider/**
 !References/Agent/Platforms/spacebot/
