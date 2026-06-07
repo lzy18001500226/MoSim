@@ -1,0 +1,26 @@
+version: 1
+swarm:
+  name: "Monitoring Demo"
+  main: coordinator
+  instances:
+    coordinator:
+      description: "Main coordinator managing the team"
+      directory: .
+      model: sonnet
+      connections: [analyzer, reporter]
+      prompt: "You coordinate analysis and reporting tasks"
+      allowed_tools: [Read, Edit]
+
+    analyzer:
+      description: "Data analyzer processing information"
+      directory: ./data
+      model: sonnet
+      prompt: "You analyze data and provide insights"
+      allowed_tools: [Read, Bash]
+
+    reporter:
+      description: "Report generator creating summaries"
+      directory: ./reports
+      model: sonnet
+      prompt: "You generate reports from analysis"
+      allowed_tools: [Write, Edit]

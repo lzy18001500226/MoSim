@@ -1,0 +1,30 @@
+version: 1
+swarm:
+  name: "Development Environment"
+  main: lead_developer
+  before:
+    - "echo '🚀 Setting up development environment...'"
+    - "echo '📦 Installing dependencies...'"
+    - "echo '🐳 Starting Docker containers...'"
+  instances:
+    lead_developer:
+      description: "Lead developer who coordinates the team"
+      directory: .
+      model: sonnet
+      prompt: "You are the lead developer coordinating the team"
+      allowed_tools: [Read, Edit, Bash, Write]
+      connections: [frontend_dev, backend_dev]
+
+    frontend_dev:
+      description: "Frontend developer specializing in React"
+      directory: ./frontend
+      model: sonnet
+      prompt: "You specialize in frontend development with React"
+      allowed_tools: [Read, Edit, Write]
+
+    backend_dev:
+      description: "Backend developer focusing on APIs"
+      directory: ./backend
+      model: sonnet
+      prompt: "You specialize in backend development and APIs"
+      allowed_tools: [Read, Edit, Write, Bash]
