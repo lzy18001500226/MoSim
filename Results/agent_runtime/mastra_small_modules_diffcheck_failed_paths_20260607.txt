@@ -1,0 +1,5 @@
+References/Agent/Frameworks/mastra/client-sdks/client-js/.gitignore
+References/Agent/Frameworks/mastra/server-adapters/express/CHANGELOG.md
+References/Agent/Frameworks/mastra/server-adapters/fastify/CHANGELOG.md
+References/Agent/Frameworks/mastra/server-adapters/hono/CHANGELOG.md
+References/Agent/Frameworks/mastra/server-adapters/koa/CHANGELOG.md

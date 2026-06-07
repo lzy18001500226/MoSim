@@ -1,0 +1,17 @@
+References/Agent/Frameworks/mastra/client-sdks/client-js/.gitignore:10: new blank line at EOF.
+References/Agent/Frameworks/mastra/server-adapters/express/CHANGELOG.md:1836: trailing whitespace.
++  Server adapter errors (handler errors, parsing errors, auth errors) now use the configured Mastra logger instead of console.error. This ensures errors are properly
+References/Agent/Frameworks/mastra/server-adapters/express/CHANGELOG.md:1857: trailing whitespace.
++  Server adapter errors (handler errors, parsing errors, auth errors) now use the configured Mastra logger instead of console.error. This ensures errors are properly
+References/Agent/Frameworks/mastra/server-adapters/fastify/CHANGELOG.md:1848: trailing whitespace.
++  Server adapter errors (handler errors, parsing errors, auth errors) now use the configured Mastra logger instead of console.error. This ensures errors are properly
+References/Agent/Frameworks/mastra/server-adapters/fastify/CHANGELOG.md:1869: trailing whitespace.
++  Server adapter errors (handler errors, parsing errors, auth errors) now use the configured Mastra logger instead of console.error. This ensures errors are properly
+References/Agent/Frameworks/mastra/server-adapters/hono/CHANGELOG.md:1920: trailing whitespace.
++  Server adapter errors (handler errors, parsing errors, auth errors) now use the configured Mastra logger instead of console.error. This ensures errors are properly
+References/Agent/Frameworks/mastra/server-adapters/hono/CHANGELOG.md:1943: trailing whitespace.
++  Server adapter errors (handler errors, parsing errors, auth errors) now use the configured Mastra logger instead of console.error. This ensures errors are properly
+References/Agent/Frameworks/mastra/server-adapters/koa/CHANGELOG.md:1920: trailing whitespace.
++  Server adapter errors (handler errors, parsing errors, auth errors) now use the configured Mastra logger instead of console.error. This ensures errors are properly
+References/Agent/Frameworks/mastra/server-adapters/koa/CHANGELOG.md:1941: trailing whitespace.
++  Server adapter errors (handler errors, parsing errors, auth errors) now use the configured Mastra logger instead of console.error. This ensures errors are properly

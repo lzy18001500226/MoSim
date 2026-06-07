@@ -205,6 +205,16 @@ References/Agent/Gateway/daytona/**/.cache/
 References/Agent/Gateway/daytona/**/.turbo/
 !References/Agent/Frameworks/
 References/Agent/Frameworks/*
+!References/Agent/Frameworks/mastra/
+References/Agent/Frameworks/mastra/*
+!References/Agent/Frameworks/mastra/client-sdks/
+!References/Agent/Frameworks/mastra/client-sdks/**
+!References/Agent/Frameworks/mastra/server-adapters/
+!References/Agent/Frameworks/mastra/server-adapters/**
+!References/Agent/Frameworks/mastra/templates/
+!References/Agent/Frameworks/mastra/templates/**
+!References/Agent/Frameworks/mastra/workflows/
+!References/Agent/Frameworks/mastra/workflows/**
 !References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/
 References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/*
 !References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/examples/
