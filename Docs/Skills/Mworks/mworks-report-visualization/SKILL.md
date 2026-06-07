@@ -21,27 +21,25 @@ source label
 
 Do not let replay or offline animation replace real simulation evidence.
 
-If the work is owned by a MWORKS/Sysplorer/Syslab department, run the
-activation sentinel and background screenshot before business work, even if the
-business slice later stays offline or report-only. Return or blocker packets
-must include `activation_sentinel_before`, `gui_sentinel_before`,
-`background_screenshot_before`, `activation_state_observation`,
-`license_state`, `will_not_click_activation_login=true`,
-`mworks_window_evidence_touched=true`, and `live_mworks_touched`. The
-department must read the sentinel JSON/capture manifest or inspect the
-screenshot/window-title metadata enough to classify the current activation
-state; path-only evidence is not enough. If the preflight shows demo, login,
-activation, authorization, mixed, unavailable tooling, sentinel unavailable,
-screenshot unavailable, unknown, or GUI error-report state, stop MWORKS/report
-evidence work and return a `status=blocked` blocker. For unavailable
-tooling/sentinel/screenshot, use `license_state=sentinel_unavailable_blocked`
-and do not enter MCP/model/check/simulate/layout work.
-For live report/result-viewer/plot/animation work, continue background
-screenshots after plot/result-viewer/animation phases and return
-`mworks_phase_screenshots` plus `mworks_phase_observations`. If a phase
-screenshot shows activation/license/login/authorization/GUI-error state, treat
-it as a P0 MWORKS infrastructure incident; stop live evidence work and have PMO
-send both sparse WeChat and sparse email alert.
+If the work is owned by a MWORKS/Sysplorer/Syslab department, reference the
+latest CoAgentOps 30-minute activation/window patrol when available. Return or
+blocker packets should include `mworks_activation_patrol_reference`,
+`mworks_activation_patrol_age_minutes` when known,
+`will_not_click_activation_login=true`, and `live_mworks_touched`. Do not turn
+report/visualization work into repeated activation probing or accept sentinel
+JSON as the report artifact.
+
+If no recent patrol exists and the work needs live MWORKS GUI/result-viewer
+evidence, run at most one bounded current-turn sentinel/API check or return a
+blocker. If the patrol or current task evidence shows demo, login, activation,
+authorization, mixed blocking state, unavailable tooling, unknown blocking
+state, or GUI error-report state, stop MWORKS/report evidence work and return a
+`status=blocked` blocker. For live report/result-viewer/plot/animation work,
+capture the necessary foreground/maximized or phase screenshots after
+plot/result-viewer/animation phases and return `mworks_phase_screenshots` plus
+`mworks_phase_observations`. If a phase screenshot shows activation/license/
+login/authorization/GUI-error state, treat it as a P0 MWORKS infrastructure
+incident and stop live evidence work.
 
 ## Workflows
 

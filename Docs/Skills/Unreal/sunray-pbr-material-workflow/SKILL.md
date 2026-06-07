@@ -21,6 +21,29 @@ connector, cable, motor, battery, or frame materials.
 4. If part identity is unclear, ask the user through the normal project
    channel before applying a final material.
 5. UE export/import is gated until Blender component material audits pass.
+6. Current accepted Sunray150 visual baseline: the user has manually accepted
+   the DAE-derived Blender material route from task 005. Do not run additional
+   whole-aircraft grey-CAD/PBR repaint passes or add new material overlays
+   unless the user explicitly reopens material work. The 006 whole-aircraft
+   pass is a rejected regression/rollback incident; `pbr006_*` objects,
+   materials, overlays, and manifests are not accepted visual baseline
+   evidence.
+
+## Current Acceptance Boundary
+
+- Accepted for now: the 005 DAE-derived Blender asset/material route as the
+  Sunray150 visual asset baseline.
+- Rejected/superseded: 006 whole-aircraft material optimization and any
+  `pbr006_*` visual overlays/materials unless a later user review explicitly
+  accepts them.
+- Required rollback evidence for the 006 incident: verify the restored Blender
+  audit asset contains zero `pbr006_*` objects and zero `pbr006_*` materials,
+  then write a concise return packet that says rollback complete. Do not use
+  the 006 contact sheet, manifest, or rendered images as accepted material
+  evidence.
+- Next allowed Sunray work without another user material request: bounded
+  packaging, review-display, UE import/export preparation, or route hygiene
+  around the accepted asset. Do not keep tuning appearance.
 
 ## Department Planning Gate
 

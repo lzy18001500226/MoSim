@@ -35,7 +35,8 @@ workflows/build_sysblock_graphical_controller.md
 Minimum MCP sequence:
 
 ```text
-activation sentinel / background screenshot
+latest CoAgentOps activation patrol reference
+  -> if no recent patrol and live work is needed: one bounded sentinel/API check or blocker
   -> if license/login/GUI blocker: stop and return blocker
 session_manager
   -> load_library / model_manager
@@ -69,15 +70,13 @@ MCP/tool log path when present
 source label: MWORKS_MCP | MWORKS_GUI | offline_script
 optional sha256 and byte size for files used in report claims
 claim role: raw | metrics | figure | replay | native_result | log
-activation_sentinel_before
-background_screenshot_before
+mworks_activation_patrol_reference
+mworks_activation_patrol_age_minutes when known
 mworks_phase_screenshots
 mworks_phase_observations
-activation_state_observation
-license_state
 will_not_click_activation_login=true
 live_mworks_touched
-mworks_window_evidence_touched
+current-turn activation_state_observation/license_state only if sentinel or capture was collected for an incident
 ```
 
 GUI review is required for visual claims, but GUI state is not the audit source.
@@ -87,10 +86,10 @@ The audit source is the artifact path plus source label and reproducible checks.
 
 Pass only if:
 
-1. MWORKS department work ran `Scripts/agent/check_mworks_gui_sentinel.py` and `Scripts/tools/capture_window_background.ps1` before business work. Static file-only department work records `live_mworks_touched=false`; real MCP/model/GUI simulation work records `live_mworks_touched=true`.
-2. The department read the sentinel JSON/capture manifest or inspected the screenshot/window-title metadata enough to classify the current activation state in `activation_state_observation` and `license_state`; path-only evidence is not enough.
-3. The reusable MWORKS/Sysplorer/Syslab session was not in demo, unactivated, login, authorization-failed, mixed education/demo, unavailable tooling, sentinel unavailable, screenshot unavailable, unknown, or GUI-error-report state. Unavailable tooling/sentinel/screenshot must return `status=blocked` with `license_state=sentinel_unavailable_blocked` and must not enter MCP/model/check/simulate/layout work.
-4. Live simulation/model/GUI work included phase background screenshots and observations after load/check and after simulate/plot/animation phases when those phases ran. `background_screenshot_before` alone is not sufficient for live MWORKS evidence.
+1. MWORKS department work references the latest CoAgentOps activation/window patrol when available. Static file-only department work records `live_mworks_touched=false`; real MCP/model/GUI simulation work records `live_mworks_touched=true`.
+2. If no recent patrol exists and live MCP/GUI work is needed, the department ran at most one bounded current-turn sentinel/API check or returned a blocker. If current-turn evidence was collected, the department inspected it and classified `activation_state_observation` and `license_state`; path-only evidence is not enough.
+3. The reusable MWORKS/Sysplorer/Syslab session was not in demo, unactivated, login, authorization-failed, mixed education/demo, unknown blocking, or GUI-error-report state according to the patrol or current task evidence.
+4. Live simulation/model/GUI work included phase screenshots and observations after load/check and after simulate/plot/animation phases when those visuals were claimed. A patrol reference alone is not sufficient for GUI/result-viewer evidence claims.
 5. `check_model` succeeded before simulation.
 6. Required variables were found or mapped.
 7. Raw result has a valid `time` column and more than 10 rows.
@@ -108,4 +107,4 @@ Pass only if:
 | controller unstable | preserve result as failed evidence; do not hide it |
 | GUI disturbance | stop live work if sentinel or phase screenshots report login/license/error-report state; otherwise continue minimal MCP calls and keep reusable windows open |
 | graphical counterpart missing | do not mark the controller complete; route to `mworks-sysblock-graphical-modeling` |
-| demo edition / activation lost / login prompt / mixed or unknown license state | return a `status=blocked` `license_or_login` blocker with sentinel and background screenshot evidence; PMO sends WeChat plus email alert; do not tune solver/model code |
+| demo edition / activation lost / login prompt / mixed or unknown license state | return a `status=blocked` `license_or_login` blocker with sentinel and background screenshot evidence; PMO sends sparse email alert; do not tune solver/model code |
