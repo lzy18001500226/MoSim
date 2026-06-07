@@ -1,0 +1,62 @@
+{{- if .Values.networkPolicy.enabled }}
+# Egress restrictions for app pods. Lives in the apps namespace (NetworkPolicy
+# can only select pods in its own namespace).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: llama-deployment-pods
+  namespace: {{ include "llama-agents.apps.namespace" . }}
+  labels:
+    app: {{ include "llama-agents.controlplane.name" . }}
+    component: deployment-pods
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/managed-by: llama-deploy-operator
+    {{- with .Values.networkPolicy.extraMatchExpressions }}
+    matchExpressions:
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  policyTypes:
+  - Egress
+  egress:
+  # Control plane build API (in the release namespace).
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ .Release.Namespace }}
+      podSelector:
+        matchLabels:
+          app: {{ include "llama-agents.controlplane.name" . }}
+    ports:
+    - protocol: TCP
+      port: {{ .Values.controlPlane.buildApi.port }}
+  # Allow DNS resolution
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          {{- toYaml .Values.networkPolicy.dns.namespaceSelector | nindent 10 }}
+      podSelector:
+        matchLabels:
+          {{- toYaml .Values.networkPolicy.dns.podSelector | nindent 10 }}
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # Allow Internet access
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        {{- if .Values.networkPolicy.blockPrivateRanges }}
+        except:
+        - 169.254.169.254/32  # AWS IMDS
+        - 10.0.0.0/8          # Private ranges
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+        - 100.64.0.0/10       # Carrier-grade NAT
+        {{- end }}
+  {{- with .Values.networkPolicy.extraEgressRules }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}
