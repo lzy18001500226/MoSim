@@ -21,6 +21,26 @@ source label
 
 Do not let replay or offline animation replace real simulation evidence.
 
+If the work is owned by a MWORKS/Sysplorer/Syslab department, run the
+activation sentinel and background screenshot before business work, even if the
+business slice later stays offline or report-only. Return or blocker packets
+must include `activation_sentinel_before`, `gui_sentinel_before`,
+`background_screenshot_before`, `activation_state_observation`,
+`license_state`, `will_not_click_activation_login=true`,
+`mworks_window_evidence_touched=true`, and `live_mworks_touched`. The
+department must read the sentinel JSON/capture manifest or inspect the
+screenshot/window-title metadata enough to classify the current activation
+state; path-only evidence is not enough. If the preflight shows demo, login,
+activation, authorization, mixed, unavailable, unknown, or GUI error-report
+state, stop live MWORKS/report evidence work and return a `status=blocked`
+blocker.
+For live report/result-viewer/plot/animation work, continue background
+screenshots after plot/result-viewer/animation phases and return
+`mworks_phase_screenshots` plus `mworks_phase_observations`. If a phase
+screenshot shows activation/license/login/authorization/GUI-error state, treat
+it as a P0 MWORKS infrastructure incident; stop live evidence work and have PMO
+send both sparse WeChat and sparse email alert.
+
 ## Workflows
 
 ```text

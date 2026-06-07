@@ -24,6 +24,8 @@ modelica-library-workflow
 5. Prefer Sysplorer MCP over guessing:
 
 ```text
+activation sentinel / background screenshot for live GUI/MCP work
+  -> stop and return blocker on demo/login/license/error-report state
 session_manager
   -> model_manager
   -> get_components / lookup_component / get_component_ports / get_model_text
@@ -74,6 +76,10 @@ model file diff with documented replacement location
 6. If a library component meaning is unclear, call `get_lib_model_document`.
 7. For Sysblock topology, prefer official API/`ConnectPort` workflow in `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`; do not rely on hand-written `.mo` text as the verification source.
 8. Do not call `ClearAll`, `ChangeDirectory`, or broad workspace reset APIs for context resolution.
+9. For every MWORKS/Sysplorer/Syslab department context task, run `Scripts/agent/check_mworks_gui_sentinel.py` and `Scripts/tools/capture_window_background.ps1` before business work. This includes static file/context inspection tasks. Return packets must include `activation_sentinel_before`, `gui_sentinel_before`, `background_screenshot_before`, `activation_state_observation`, `license_state`, `will_not_click_activation_login=true`, `mworks_window_evidence_touched=true`, and `live_mworks_touched`.
+10. Do not only return paths. Read the sentinel JSON/capture manifest or inspect the screenshot/window-title metadata enough to classify the current activation state in the same task turn. If that evidence cannot be inspected or classified, return a blocker and do not continue context probing.
+11. If the preflight sees demo edition, missing activation, login/activation prompt, authorization failure, GUI error-report dialog, mixed license state, visible unknown MWORKS/Sysplorer/Syslab window, unavailable tooling, or unknown sentinel state, stop context probing and return a `status=blocked` `license_or_login` or GUI blocker. Hidden Qt/browser-proxy/helper windows with no license/error text are risk evidence, not standalone blockers. Do not open a new MWORKS window or click login/activation controls.
+12. If context probing becomes live MWORKS work, continue background screenshots after load/check or graphical review phases and return `mworks_phase_screenshots` plus `mworks_phase_observations`. If activation/license/login/authorization/GUI-error evidence appears mid-task, stop and return a P0 MWORKS infrastructure blocker so PMO sends both sparse WeChat and sparse email alert.
 
 ## Failure Handling
 
@@ -83,3 +89,4 @@ model file diff with documented replacement location
 | port mismatch | stop, document expected vs actual ports, do not patch blindly |
 | model check fails | save error log, inspect model text, search docs |
 | GUI opens | continue using minimal MCP calls; do not close reusable MWORKS windows |
+| demo edition / activation lost / login prompt | stop live probing; return blocker with sentinel/background screenshot evidence; PMO sends WeChat plus email alert |
