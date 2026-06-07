@@ -1,0 +1,205 @@
+{
+  "schema": "mosim.ros2_runtime.frame_scale_z_diag_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-FRAME-SCALE-Z-DIAG-20260606-025",
+  "created_at": "2026-06-06T17:38:00+08:00",
+  "status": "diagnosis_completed_from_existing_019_024_evidence",
+  "live_probe_run": false,
+  "live_probe_reason": "Existing 019 and 024 evidence was sufficient to classify the failure without starting ROS2 runtime, publishing planner goals, or rerunning Bspline acceptance.",
+  "comparison": {
+    "bounded_good_restore_019": {
+      "runner": "Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh",
+      "evidence_dir": "Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live",
+      "odom_frame_id": "camera_init",
+      "odom_child_frame_id": "body",
+      "first_odom_position_m": [
+        -0.151506,
+        1.071595,
+        -0.075645
+      ],
+      "last_odom_position_m": [
+        2.167453,
+        6.680111,
+        -0.509817
+      ],
+      "recorded_counts": {
+        "Odometry": 93,
+        "cloud_registered": 92
+      },
+      "input_probe": {
+        "livox_count": 19,
+        "imu_count": 370,
+        "livox_rate_hz": 9.14666,
+        "imu_rate_hz": 184.332,
+        "livox_stamps_monotonic": true,
+        "imu_stamps_monotonic": true,
+        "point_num_min": 15607,
+        "point_num_max": 16443,
+        "acceptance_all_true": true
+      },
+      "truth_evaluation": {
+        "status": "pass",
+        "position_rmse_m": 0.305369,
+        "max_position_error_m": 0.519524,
+        "yaw_rmse_rad": 0.013956
+      }
+    },
+    "blocked_corrected_gate_024": {
+      "runner": "Results/ros2_runtime/b1_corrected_bspline_gate_20260606_024/run_corrected_bspline_gate_probe.sh",
+      "evidence_dir": "Results/ros2_runtime/b1_corrected_bspline_gate_20260606_024",
+      "odom_frame_id": "camera_init",
+      "odom_child_frame_id": "body",
+      "odom_position_m": [
+        -2865.7275756797294,
+        -228.49697089394942,
+        -12849.773414101945
+      ],
+      "cloud_registered_width": 16425,
+      "effective_ego_goal_m": [
+        -2864.7275756797294,
+        -228.49697089394942,
+        1.0
+      ],
+      "start_goal_distance_m": 12850.773453010108,
+      "ego_static_map_bounds_m": {
+        "origin": [
+          -20.0,
+          -20.0,
+          -0.01
+        ],
+        "max": [
+          20.0,
+          20.0,
+          2.99
+        ]
+      },
+      "map_readiness": {
+        "occupancy_width": 0,
+        "occupancy_inflate_width": 0
+      },
+      "runtime_sequence_notes": [
+        "The 024 harness uses MAX_FRAMES=620 while the LiDAR replay log reports 40 dense LiDAR frames.",
+        "The 024 harness starts dense LiDAR first, waits for one Livox message, sleeps 2 seconds, then starts IMU/state and FAST-LIO.",
+        "The 024 FAST-LIO log shows IMU initialization, map kdtree initialization, lidar loop back clear-buffer messages, then persistent No Effective Points messages.",
+        "The 024 cleanup evidence reports no matching planner, FAST-LIO, or replay processes after cleanup."
+      ]
+    },
+    "shared_config": {
+      "fastlio_config": "Config/ros2/mosim_fast_lio_ros2_mid360.yaml",
+      "lid_topic": "/mosim/livox/lidar",
+      "imu_topic": "/mosim/forward/imu",
+      "timestamp_unit": 2,
+      "scan_rate": 10,
+      "extrinsic_est_en": false,
+      "extrinsic_T": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "extrinsic_R": "identity"
+    }
+  },
+  "classification": {
+    "source_replay_config_mismatch": {
+      "status": "supported_primary_runtime_sequence_mismatch",
+      "confidence": "high",
+      "basis": [
+        "019 and 024 use the same FAST-LIO config but different evidence-local runner timing and frame counts.",
+        "024 LiDAR replay has 40 frames but the harness permits MAX_FRAMES=620 and the FAST-LIO log reports lidar loop back clear-buffer behavior.",
+        "024 starts FAST-LIO after LiDAR has already been running and wrapping; 019 records a bounded good restore using the dedicated source/probe/FAST-LIO runner discipline."
+      ]
+    },
+    "stale_runtime_state": {
+      "status": "not_supported_by_available_cleanup_evidence",
+      "confidence": "medium",
+      "basis": [
+        "024 final cleanup process check reports no matching planner, FAST-LIO, or replay processes.",
+        "No residual process evidence was found in the existing 024 packet."
+      ],
+      "unknown": "A fresh precondition-only probe can still re-check process cleanliness before start."
+    },
+    "frame_transform_or_extrinsic_error": {
+      "status": "not_primary_from_current_evidence",
+      "confidence": "medium",
+      "basis": [
+        "019 and 024 both publish odometry in frame camera_init with child body.",
+        "Both routes use the same identity FAST-LIO extrinsic configuration.",
+        "019 produced meter-scale local odometry and passed truth-error evaluation under the same config."
+      ],
+      "unknown": "A separate extrinsic review would be needed before changing MID-360 extrinsic values."
+    },
+    "fast_lio_initialization_drift": {
+      "status": "supported_primary_mechanism",
+      "confidence": "high",
+      "basis": [
+        "024 odometry remains in camera_init but jumps to kilometer-scale coordinates, especially z=-12849.77 m.",
+        "024 FAST-LIO log shows lidar loop-back buffer clearing and persistent No Effective Points after initialization.",
+        "019 under bounded restore sequence did not show kilometer-scale odometry and had monotonic input timestamps."
+      ]
+    },
+    "ego_map_origin_mismatch": {
+      "status": "downstream_blocker_not_root_cause",
+      "confidence": "high",
+      "basis": [
+        "024 EGO static map bounds are x/y=[-20,20], z=[-0.01,2.99].",
+        "024 start odometry and effective goal are far outside those bounds.",
+        "Occupancy and inflated occupancy echo samples have width=0, consistent with a failed local map envelope/readiness gate."
+      ]
+    },
+    "evidence_insufficient": {
+      "status": "false_for_gate_level_classification_true_for_exact_internal_root",
+      "confidence": "medium",
+      "basis": [
+        "Existing evidence is sufficient to block planner goal and classify the likely failure class.",
+        "It is not sufficient to prove the exact internal FAST-LIO state variable or code branch that caused the drift."
+      ]
+    }
+  },
+  "next_minimal_correction_gate": {
+    "gate_name": "B1 precondition-only frame-scale-z and map-readiness correction gate",
+    "allowed_actions": [
+      "Start only real source replay, IMU/state replay, FAST-LIO, and EGO input subscriptions.",
+      "Reuse the 019 runner discipline: wait for Livox, start/probe IMU, probe Livox plus IMU acceptance, then start FAST-LIO.",
+      "Keep replay bounded so LiDAR does not wrap during FAST-LIO initialization and the first odometry/map-readiness checks.",
+      "Capture first and last /Odometry, /cloud_registered, /tf or /tf_static if available, topic info, rates, and process cleanup.",
+      "Capture /grid_map/occupancy and /grid_map/occupancy_inflate width before any goal."
+    ],
+    "hard_stop_conditions": [
+      "Stop before goal if /Odometry absolute coordinates exceed the configured bound or start is outside the static EGO map envelope.",
+      "Stop before goal if the effective EGO goal would be outside map bounds or farther than the configured short-goal limit.",
+      "Stop before goal if occupancy or inflated occupancy samples remain width=0.",
+      "Stop and write blocker if FAST-LIO logs lidar loop back clear-buffer or persistent No Effective Points before a bounded odometry sample."
+    ],
+    "still_forbidden": [
+      "planner goal publication",
+      "Bspline acceptance rerun",
+      "PositionCommand recorder",
+      "/position_cmd",
+      "/mosim/planner/position_cmd",
+      "20Hz adapter",
+      "fake pointcloud or map",
+      "UE global truth as planner input",
+      "browser pointcloud evidence",
+      "keyboard pose",
+      "FAST-LIO /path trajectory conversion"
+    ]
+  },
+  "forbidden_actions_confirmed": {
+    "ran_position_command_recorder": false,
+    "published_position_cmd": false,
+    "published_mosim_planner_position_cmd": false,
+    "ran_20hz_adapter": false,
+    "published_planner_goal": false,
+    "reran_bspline_acceptance": false,
+    "used_fake_pointcloud_or_map": false,
+    "used_ue_global_truth_as_planner_input": false,
+    "used_browser_pointcloud_evidence": false,
+    "used_keyboard_pose": false,
+    "converted_fastlio_path_to_trajectory": false,
+    "claimed_planner_ready": false,
+    "claimed_closed_loop": false,
+    "claimed_fast_lio_success": false,
+    "claimed_local_map_quality": false,
+    "claimed_controller_performance": false,
+    "claimed_mission_success": false
+  }
+}

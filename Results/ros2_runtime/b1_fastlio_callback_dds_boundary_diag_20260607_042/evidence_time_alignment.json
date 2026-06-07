@@ -1,0 +1,69 @@
+{
+  "schema": "mosim.ros2_runtime.fastlio_callback_dds_boundary_diag_042.time_alignment.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-CALLBACK-DDS-BOUNDARY-DIAG-20260607-042",
+  "source_evidence": {
+    "source_only_040": {
+      "classification": "source_only_livox_imu_monotonic_fastlio_or_subscriber_load_sensitive_candidate",
+      "livox_count": 40,
+      "imu_count": 80,
+      "livox_monotonic": true,
+      "imu_monotonic": true,
+      "fastlio_started": false
+    },
+    "fastlio_only_041": {
+      "classification": "source_stamps_monotonic_but_fastlio_callback_loopback_reproduced",
+      "active_livox_count": 40,
+      "active_imu_count": 80,
+      "active_livox_monotonic": true,
+      "active_imu_monotonic": true,
+      "odometry_count": 29,
+      "cloud_registered_count": 29,
+      "odometry_monotonic": true,
+      "cloud_registered_monotonic": true,
+      "loopback_total": 2,
+      "loopback_by_callback": {
+        "standard_pcl_cbk": 0,
+        "livox_pcl_cbk": 1,
+        "imu_cbk": 1,
+        "unlabeled_loopback": 0
+      }
+    }
+  },
+  "active_recorder_window_041": {
+    "livox_first_s": 1780776486.3219528,
+    "livox_last_s": 1780776490.6117213,
+    "imu_first_s": 1780776487.1205766,
+    "imu_last_s": 1780776487.555106,
+    "odometry_first_s": 1780776487.4217513,
+    "odometry_last_s": 1780776490.501809,
+    "cloud_registered_first_s": 1780776487.4217513,
+    "cloud_registered_last_s": 1780776490.501809
+  },
+  "fastlio_loopback_lines_041": [
+    "[fastlio_mapping-1] [mosim_diag][imu_cbk] imu loop back, clear imu buffer timestamp=1.78078e+09 last_timestamp_imu=1.78078e+09 last_timestamp_lidar=1.78078e+09 is_first_lidar=0 lidar_buffer_size=1 imu_buffer_size=22",
+    "[fastlio_mapping-1] [mosim_diag][livox_pcl_cbk] lidar loop back, clear buffer cur_time=1.78078e+09 last_timestamp_lidar=1.78078e+09 last_timestamp_imu=1.78078e+09 is_first_lidar=0 lidar_buffer_size=1 imu_buffer_size=18 point_num=17185 timebase=1780776495140068178"
+  ],
+  "livox_loopback_timebase_alignment": {
+    "livox_loopback_timebase_ns": 1780776495140068178,
+    "livox_loopback_timebase_s": 1780776495.1400683,
+    "seconds_after_active_livox_last": 4.528347,
+    "interpretation": "The Livox loop-back evidence is outside the bounded active recorder prefix that ended at 1780776490.6117213."
+  },
+  "source_log_full_window_indicators_041": {
+    "dense_lidar_stats_lines": [
+      "[INFO] [1780776488.302901099] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.091 rate_hz=9.085 mean_publish_us=1086.4",
+      "[INFO] [1780776490.392992372] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.090 rate_hz=9.091 mean_publish_us=1050.0",
+      "[INFO] [1780776492.482907729] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.090 rate_hz=9.091 mean_publish_us=1062.9",
+      "[INFO] [1780776494.572976128] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.090 rate_hz=9.091 mean_publish_us=1165.2",
+      "[INFO] [1780776496.663046461] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.090 rate_hz=9.091 mean_publish_us=1077.2",
+      "[INFO] [1780776495.801187250] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.090 rate_hz=9.092 mean_publish_us=1132.6"
+    ],
+    "state_imu_stats_lines": [
+      "[INFO] [1780776495.084743221] [mosim_mworks_state_imu_replay_node]: mworks_state_stats imu=364 odom=36 elapsed_s=2.002 imu_rate_hz=181.810 odom_rate_hz=17.981",
+      "[INFO] [1780776497.086649031] [mosim_mworks_state_imu_replay_node]: mworks_state_stats imu=364 odom=36 elapsed_s=2.002 imu_rate_hz=181.827 odom_rate_hz=17.983",
+      "[INFO] [1780776496.136962172] [mosim_mworks_state_imu_replay_node]: mworks_state_stats imu=364 odom=37 elapsed_s=2.002 imu_rate_hz=181.819 odom_rate_hz=18.482"
+    ],
+    "interpretation": "041 source logs include runtime log timestamps that move backward after the active recorder prefix. Because publishers stamp messages with node now(), full-run callback consumers can observe a regression that the bounded active recorder did not sample."
+  },
+  "diagnosis": "041 recorder monotonicity is valid only for its bounded active prefix. FAST-LIO loop-back is callback-local full-window evidence and aligns with post-prefix finite replay/runtime timestamp boundary behavior."
+}

@@ -1,0 +1,32 @@
+{
+  "odometry_count": 29,
+  "cloud_registered_count": 29,
+  "odometry_monotonic": true,
+  "cloud_registered_monotonic": true,
+  "stamp_bounds": {
+    "livox": {
+      "first": 1780776486.3219528,
+      "last": 1780776490.6117213
+    },
+    "imu": {
+      "first": 1780776487.1205766,
+      "last": 1780776487.555106
+    },
+    "odometry": {
+      "first": 1780776487.4217513,
+      "last": 1780776490.501809
+    },
+    "path": {
+      "first": 1780776471.846791,
+      "last": 1780776471.846791
+    },
+    "cloud_registered": {
+      "first": 1780776487.4217513,
+      "last": 1780776490.501809
+    }
+  },
+  "regressions": {
+    "odometry": [],
+    "cloud_registered": []
+  }
+}

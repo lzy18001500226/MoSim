@@ -1,0 +1,123 @@
+{
+  "summary": {
+    "topic_kind": "path",
+    "count": 8,
+    "frame_ids": [
+      "camera_init"
+    ],
+    "first_stamp": 1780781925.2647069,
+    "last_stamp": 1780781925.2647069,
+    "first_receive_elapsed_s": 19.530954,
+    "last_receive_elapsed_s": 27.236849,
+    "rate_hz": 0.908395,
+    "monotonic": true,
+    "regression_count": 0,
+    "regression_examples": []
+  },
+  "events": [
+    {
+      "event_seq": 725,
+      "topic_seq": 0,
+      "topic_kind": "path",
+      "receive_elapsed_s": 19.530954,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780781925,
+        "nanosec": 264706855,
+        "seconds": 1780781925.2647069
+      },
+      "pose_count": 1
+    },
+    {
+      "event_seq": 956,
+      "topic_seq": 1,
+      "topic_kind": "path",
+      "receive_elapsed_s": 20.630527,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780781925,
+        "nanosec": 264706855,
+        "seconds": 1780781925.2647069
+      },
+      "pose_count": 2
+    },
+    {
+      "event_seq": 1187,
+      "topic_seq": 2,
+      "topic_kind": "path",
+      "receive_elapsed_s": 21.73169,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780781925,
+        "nanosec": 264706855,
+        "seconds": 1780781925.2647069
+      },
+      "pose_count": 3
+    },
+    {
+      "event_seq": 1418,
+      "topic_seq": 3,
+      "topic_kind": "path",
+      "receive_elapsed_s": 22.840437,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780781925,
+        "nanosec": 264706855,
+        "seconds": 1780781925.2647069
+      },
+      "pose_count": 4
+    },
+    {
+      "event_seq": 1649,
+      "topic_seq": 4,
+      "topic_kind": "path",
+      "receive_elapsed_s": 23.934915,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780781925,
+        "nanosec": 264706855,
+        "seconds": 1780781925.2647069
+      },
+      "pose_count": 5
+    },
+    {
+      "event_seq": 1880,
+      "topic_seq": 5,
+      "topic_kind": "path",
+      "receive_elapsed_s": 25.032968,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780781925,
+        "nanosec": 264706855,
+        "seconds": 1780781925.2647069
+      },
+      "pose_count": 6
+    },
+    {
+      "event_seq": 2111,
+      "topic_seq": 6,
+      "topic_kind": "path",
+      "receive_elapsed_s": 26.134246,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780781925,
+        "nanosec": 264706855,
+        "seconds": 1780781925.2647069
+      },
+      "pose_count": 7
+    },
+    {
+      "event_seq": 2342,
+      "topic_seq": 7,
+      "topic_kind": "path",
+      "receive_elapsed_s": 27.236849,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780781925,
+        "nanosec": 264706855,
+        "seconds": 1780781925.2647069
+      },
+      "pose_count": 8
+    }
+  ]
+}

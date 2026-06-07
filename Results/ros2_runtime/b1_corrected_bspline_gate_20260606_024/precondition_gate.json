@@ -1,0 +1,66 @@
+{
+  "schema": "mosim.ros2_runtime.corrected_bspline_precondition.v1",
+  "passed": false,
+  "checks": {
+    "odom_finite_and_bounded": false,
+    "effective_goal_finite_and_bounded": false,
+    "start_inside_static_ego_map_bounds": false,
+    "effective_goal_inside_static_ego_map_bounds": false,
+    "start_goal_distance_within_limit": false,
+    "map_readiness_sample_non_empty": false
+  },
+  "odom_sample": {
+    "frame_id": "camera_init",
+    "child_frame_id": "body",
+    "position_m": [
+      -2865.7275756797294,
+      -228.49697089394942,
+      -12849.773414101945
+    ]
+  },
+  "sent_goal_if_allowed": {
+    "position_m": [
+      -2864.7275756797294,
+      -228.49697089394942,
+      1.0
+    ],
+    "note": "EGO waypointCallback ignores sent z and uses effective z=1.0 for planning."
+  },
+  "effective_ego_goal": {
+    "position_m": [
+      -2864.7275756797294,
+      -228.49697089394942,
+      1.0
+    ],
+    "source": "ego_replan_fsm.cpp waypointCallback end_pt_.z=1.0"
+  },
+  "goal_distance_m": 12850.773453010108,
+  "limits": {
+    "max_abs_coord_m": 100.0,
+    "max_goal_distance_m": 2.0
+  },
+  "static_ego_map_bounds": {
+    "origin_m": [
+      -20.0,
+      -20.0,
+      -0.01
+    ],
+    "max_m": [
+      20.0,
+      20.0,
+      2.99
+    ],
+    "size_m": [
+      40.0,
+      40.0,
+      3.0
+    ],
+    "source": "/mnt/c/Users/HP/Desktop/MoSim/Results/ros2_runtime/b1_corrected_bspline_gate_20260606_024/planner_corrected_bspline_gate.yaml"
+  },
+  "map_readiness": {
+    "occupancy_width": 0,
+    "occupancy_inflate_width": 0,
+    "label": "map-readiness only, not local-map quality"
+  },
+  "blocker_if_failed": "Do not publish waypoint goal unless this precondition passes."
+}

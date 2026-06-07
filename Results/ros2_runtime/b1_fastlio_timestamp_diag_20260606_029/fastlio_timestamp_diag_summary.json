@@ -1,0 +1,117 @@
+{
+  "schema": "mosim.ros2_runtime.fastlio_timestamp_diag_029_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-TIMESTAMP-DIAG-20260606-029",
+  "status": "diagnosed",
+  "loopback_callback": "imu_cbk",
+  "classification": "imu_stamp_regression",
+  "diagnostic_lines": [
+    "[fastlio_mapping-1] [mosim_diag][imu_cbk] imu loop back, clear imu buffer timestamp=1.78074e+09 last_timestamp_imu=1.78074e+09 last_timestamp_lidar=0 is_first_lidar=1 lidar_buffer_size=0 imu_buffer_size=2469"
+  ],
+  "startup_counts": {
+    "livox": 17,
+    "imu": 24
+  },
+  "startup_first_events": [
+    {
+      "seq": 0,
+      "topic_kind": "imu",
+      "receive_elapsed_s": 0.099855,
+      "frame_id": "base/forward_imu_optical_frame",
+      "stamp": {
+        "sec": 1780743236,
+        "nanosec": 334577232,
+        "seconds": 1780743236.3345773
+      }
+    },
+    {
+      "seq": 1,
+      "topic_kind": "imu",
+      "receive_elapsed_s": 0.10509,
+      "frame_id": "base/forward_imu_optical_frame",
+      "stamp": {
+        "sec": 1780743236,
+        "nanosec": 339911752,
+        "seconds": 1780743236.3399117
+      }
+    },
+    {
+      "seq": 2,
+      "topic_kind": "imu",
+      "receive_elapsed_s": 0.110395,
+      "frame_id": "base/forward_imu_optical_frame",
+      "stamp": {
+        "sec": 1780743236,
+        "nanosec": 345253118,
+        "seconds": 1780743236.3452532
+      }
+    },
+    {
+      "seq": 3,
+      "topic_kind": "imu",
+      "receive_elapsed_s": 0.115816,
+      "frame_id": "base/forward_imu_optical_frame",
+      "stamp": {
+        "sec": 1780743236,
+        "nanosec": 350596137,
+        "seconds": 1780743236.3505962
+      }
+    },
+    {
+      "seq": 4,
+      "topic_kind": "imu",
+      "receive_elapsed_s": 0.12111,
+      "frame_id": "base/forward_imu_optical_frame",
+      "stamp": {
+        "sec": 1780743236,
+        "nanosec": 355947997,
+        "seconds": 1780743236.355948
+      }
+    },
+    {
+      "seq": 5,
+      "topic_kind": "imu",
+      "receive_elapsed_s": 0.126516,
+      "frame_id": "base/forward_imu_optical_frame",
+      "stamp": {
+        "sec": 1780743236,
+        "nanosec": 361279120,
+        "seconds": 1780743236.361279
+      }
+    },
+    {
+      "seq": 6,
+      "topic_kind": "imu",
+      "receive_elapsed_s": 0.131728,
+      "frame_id": "base/forward_imu_optical_frame",
+      "stamp": {
+        "sec": 1780743236,
+        "nanosec": 366613784,
+        "seconds": 1780743236.3666139
+      }
+    },
+    {
+      "seq": 7,
+      "topic_kind": "imu",
+      "receive_elapsed_s": 0.137179,
+      "frame_id": "base/forward_imu_optical_frame",
+      "stamp": {
+        "sec": 1780743236,
+        "nanosec": 371970850,
+        "seconds": 1780743236.371971
+      }
+    }
+  ],
+  "fastlio_recording_counts": {
+    "odometry": 0,
+    "path": 0,
+    "registered_cloud": 0
+  },
+  "forbidden_actions": {
+    "ego_started": false,
+    "planner_goal_published": false,
+    "planning_bspline_acceptance_rerun": false,
+    "position_command_recorder_ran": false,
+    "position_cmd_published": false,
+    "adapter_20hz_started": false
+  }
+}

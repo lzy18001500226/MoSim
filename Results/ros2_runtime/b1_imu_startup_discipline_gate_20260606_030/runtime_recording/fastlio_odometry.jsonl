@@ -1,0 +1,14 @@
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":0,"time":1780744124.056425,"frame_id":"camera_init","child_frame_id":"body","position_m":[6.630745,1.992145,-0.860059],"yaw_rad":-0.001383}
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":1,"time":1780744124.156536,"frame_id":"camera_init","child_frame_id":"body","position_m":[6.684974,1.990321,-0.883932],"yaw_rad":-0.001463}
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":2,"time":1780744124.256612,"frame_id":"camera_init","child_frame_id":"body","position_m":[6.784747,1.993864,-0.909087],"yaw_rad":-0.00233}
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":3,"time":1780744124.356746,"frame_id":"camera_init","child_frame_id":"body","position_m":[6.851911,1.998484,-0.94934],"yaw_rad":-0.003099}
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":4,"time":1780744124.456873,"frame_id":"camera_init","child_frame_id":"body","position_m":[6.893592,2.002665,-0.979357],"yaw_rad":-0.003393}
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":5,"time":1780744124.557054,"frame_id":"camera_init","child_frame_id":"body","position_m":[6.940866,2.003615,-1.008444],"yaw_rad":-0.003488}
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":6,"time":1780744124.657167,"frame_id":"camera_init","child_frame_id":"body","position_m":[6.998785,2.002136,-1.052003],"yaw_rad":-0.003472}
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":7,"time":1780744124.757236,"frame_id":"camera_init","child_frame_id":"body","position_m":[7.065472,2.000228,-1.09428],"yaw_rad":-0.003384}
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":8,"time":1780744124.85737,"frame_id":"camera_init","child_frame_id":"body","position_m":[7.153645,1.995359,-1.135354],"yaw_rad":-0.002413}
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":9,"time":1780744124.957417,"frame_id":"camera_init","child_frame_id":"body","position_m":[7.28945,1.993048,-1.15167],"yaw_rad":-0.002294}
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":10,"time":1780744125.057575,"frame_id":"camera_init","child_frame_id":"body","position_m":[7.392888,1.991764,-1.148657],"yaw_rad":-0.001991}
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":11,"time":1780744125.157607,"frame_id":"camera_init","child_frame_id":"body","position_m":[7.497126,1.992831,-1.167733],"yaw_rad":-0.002228}
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":12,"time":1780744125.257804,"frame_id":"camera_init","child_frame_id":"body","position_m":[7.563365,1.995135,-1.193714],"yaw_rad":-0.002558}
+{"schema":"mosim.fastlio_odometry_sample.v1","seq":13,"time":1780744125.361064,"frame_id":"camera_init","child_frame_id":"body","position_m":[7.603949,1.998712,-1.21724],"yaw_rad":-0.003171}

@@ -1,0 +1,1012 @@
+{
+  "schema": "mosim.ros2_runtime.instrumented_publisher_runtime_047.summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-INSTRUMENTED-PUBLISHER-RUNTIME-GATE-20260607-047",
+  "status": "blocked_instrumented_fastlio_only_runtime_classification",
+  "classification": "publisher_and_topic_monotonic_but_fastlio_callback_loopback",
+  "checks": {
+    "pre_cleanup_no_stale_processes": true,
+    "evidence_local_binary_identity_recorded": true,
+    "source_window_accepted": true,
+    "single_live_probe": true,
+    "publisher_trace_complete": true,
+    "publisher_emitted_stamp_monotonic": true,
+    "publisher_timebase_matches_header": true,
+    "subscriber_receive_order_recorded": true,
+    "livox_full_count": true,
+    "imu_nonzero_min": true,
+    "livox_topic_monotonic": true,
+    "imu_topic_monotonic": true,
+    "fastlio_outputs_nonzero": true,
+    "fastlio_outputs_monotonic_if_present": true,
+    "zero_fastlio_loopback_events_full_log": false,
+    "clock_and_use_sim_time_recorded": true,
+    "publisher_identity_recorded": true,
+    "forbidden_topics_absent_or_zero": true,
+    "forbidden_processes_not_started": true,
+    "cleanup_clean": true
+  },
+  "source": {
+    "path": "/mnt/c/Users/HP/Desktop/MoSim/Results/ros2_runtime/b1_long_noloop_source_gate_20260606_028/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body_120.jsonl",
+    "frame_count": 120,
+    "first": {
+      "seq": 0,
+      "time": 0.0,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 16526
+    },
+    "last": {
+      "seq": 119,
+      "time": 11.9,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 17156
+    },
+    "all_body_lidar_m_z_up": true,
+    "time_monotonic": true
+  },
+  "publisher_trace": {
+    "trace_count": 120,
+    "first_rows": [
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 0,
+        "source_frame_seq": 0,
+        "source_frame_time": 0,
+        "point_count": 16526,
+        "steady_clock_before_stamp_ns": 71193195986138,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788751,
+          "nanosec": 348735939,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 0,
+        "publisher_emit_seq_livox": 0,
+        "emitted_header_stamp": {
+          "sec": 1780788751,
+          "nanosec": 348735939,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788751348735939,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71193196598909,
+        "livox_matched_subscriptions_before_stamp": 4,
+        "livox_matched_subscriptions_before_publish": 4,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71193198778410,
+        "node_now_after_publish": {
+          "sec": 1780788751,
+          "nanosec": 351497706,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 4,
+        "publish_duration_ms": 2.1795,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 1,
+        "source_frame_seq": 1,
+        "source_frame_time": 0.1,
+        "point_count": 16526,
+        "steady_clock_before_stamp_ns": 71193305812002,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788751,
+          "nanosec": 458536159,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 1,
+        "publisher_emit_seq_livox": 1,
+        "emitted_header_stamp": {
+          "sec": 1780788751,
+          "nanosec": 458536159,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788751458536159,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71193306102997,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71193307572353,
+        "node_now_after_publish": {
+          "sec": 1780788751,
+          "nanosec": 460292233,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.46936,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 2,
+        "source_frame_seq": 2,
+        "source_frame_time": 0.2,
+        "point_count": 16526,
+        "steady_clock_before_stamp_ns": 71193415809891,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788751,
+          "nanosec": 568543382,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 2,
+        "publisher_emit_seq_livox": 2,
+        "emitted_header_stamp": {
+          "sec": 1780788751,
+          "nanosec": 568543382,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788751568543382,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71193416003230,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71193417504525,
+        "node_now_after_publish": {
+          "sec": 1780788751,
+          "nanosec": 570223677,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.5013,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 3,
+        "source_frame_seq": 3,
+        "source_frame_time": 0.3,
+        "point_count": 16522,
+        "steady_clock_before_stamp_ns": 71193525716417,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788751,
+          "nanosec": 678442910,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 3,
+        "publisher_emit_seq_livox": 3,
+        "emitted_header_stamp": {
+          "sec": 1780788751,
+          "nanosec": 678442910,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788751678442910,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71193525870709,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71193527343514,
+        "node_now_after_publish": {
+          "sec": 1780788751,
+          "nanosec": 680064144,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.4728,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 4,
+        "source_frame_seq": 4,
+        "source_frame_time": 0.4,
+        "point_count": 16513,
+        "steady_clock_before_stamp_ns": 71193635581444,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788751,
+          "nanosec": 788307099,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 4,
+        "publisher_emit_seq_livox": 4,
+        "emitted_header_stamp": {
+          "sec": 1780788751,
+          "nanosec": 788307099,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788751788307099,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71193635712493,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71193636988135,
+        "node_now_after_publish": {
+          "sec": 1780788751,
+          "nanosec": 789710253,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.27564,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 5,
+        "source_frame_seq": 5,
+        "source_frame_time": 0.5,
+        "point_count": 16501,
+        "steady_clock_before_stamp_ns": 71193745707907,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788751,
+          "nanosec": 898435943,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 5,
+        "publisher_emit_seq_livox": 5,
+        "emitted_header_stamp": {
+          "sec": 1780788751,
+          "nanosec": 898435943,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788751898435943,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71193745847839,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71193747143121,
+        "node_now_after_publish": {
+          "sec": 1780788751,
+          "nanosec": 899863860,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.29528,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 6,
+        "source_frame_seq": 6,
+        "source_frame_time": 0.6,
+        "point_count": 16474,
+        "steady_clock_before_stamp_ns": 71193855888428,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788752,
+          "nanosec": 8613422,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 6,
+        "publisher_emit_seq_livox": 6,
+        "emitted_header_stamp": {
+          "sec": 1780788752,
+          "nanosec": 8613422,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788752008613422,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71193856093482,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71193857375792,
+        "node_now_after_publish": {
+          "sec": 1780788752,
+          "nanosec": 10095187,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.28231,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 7,
+        "source_frame_seq": 7,
+        "source_frame_time": 0.7,
+        "point_count": 16450,
+        "steady_clock_before_stamp_ns": 71193965659839,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788752,
+          "nanosec": 118385924,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 7,
+        "publisher_emit_seq_livox": 7,
+        "emitted_header_stamp": {
+          "sec": 1780788752,
+          "nanosec": 118385924,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788752118385924,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71193965816787,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71193966978275,
+        "node_now_after_publish": {
+          "sec": 1780788752,
+          "nanosec": 119697902,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.16149,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 8,
+        "source_frame_seq": 8,
+        "source_frame_time": 0.8,
+        "point_count": 16453,
+        "steady_clock_before_stamp_ns": 71194075707547,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788752,
+          "nanosec": 228434183,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 8,
+        "publisher_emit_seq_livox": 8,
+        "emitted_header_stamp": {
+          "sec": 1780788752,
+          "nanosec": 228434183,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788752228434183,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71194075904181,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71194077626818,
+        "node_now_after_publish": {
+          "sec": 1780788752,
+          "nanosec": 230347679,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.72264,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 9,
+        "source_frame_seq": 9,
+        "source_frame_time": 0.9,
+        "point_count": 16473,
+        "steady_clock_before_stamp_ns": 71194185867538,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788752,
+          "nanosec": 338590757,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 9,
+        "publisher_emit_seq_livox": 9,
+        "emitted_header_stamp": {
+          "sec": 1780788752,
+          "nanosec": 338590757,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788752338590757,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71194186003756,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71194187192477,
+        "node_now_after_publish": {
+          "sec": 1780788752,
+          "nanosec": 339911210,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.18872,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 10,
+        "source_frame_seq": 10,
+        "source_frame_time": 1,
+        "point_count": 16465,
+        "steady_clock_before_stamp_ns": 71194295760684,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788752,
+          "nanosec": 448489468,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 10,
+        "publisher_emit_seq_livox": 10,
+        "emitted_header_stamp": {
+          "sec": 1780788752,
+          "nanosec": 448489468,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788752448489468,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71194296003815,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71194297955554,
+        "node_now_after_publish": {
+          "sec": 1780788752,
+          "nanosec": 450675753,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.95174,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 11,
+        "source_frame_seq": 11,
+        "source_frame_time": 1.1,
+        "point_count": 16492,
+        "steady_clock_before_stamp_ns": 71194405703267,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788752,
+          "nanosec": 558426563,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 11,
+        "publisher_emit_seq_livox": 11,
+        "emitted_header_stamp": {
+          "sec": 1780788752,
+          "nanosec": 558426563,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788752558426563,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71194405925811,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71194407174485,
+        "node_now_after_publish": {
+          "sec": 1780788752,
+          "nanosec": 559892525,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.24867,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 12,
+        "source_frame_seq": 12,
+        "source_frame_time": 1.2,
+        "point_count": 16500,
+        "steady_clock_before_stamp_ns": 71194515670102,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788752,
+          "nanosec": 668394842,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 12,
+        "publisher_emit_seq_livox": 12,
+        "emitted_header_stamp": {
+          "sec": 1780788752,
+          "nanosec": 668394842,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788752668394842,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71194515889175,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71194517310601,
+        "node_now_after_publish": {
+          "sec": 1780788752,
+          "nanosec": 670029015,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.42143,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 13,
+        "source_frame_seq": 13,
+        "source_frame_time": 1.3,
+        "point_count": 16486,
+        "steady_clock_before_stamp_ns": 71194625623151,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788752,
+          "nanosec": 778348949,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 13,
+        "publisher_emit_seq_livox": 13,
+        "emitted_header_stamp": {
+          "sec": 1780788752,
+          "nanosec": 778348949,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788752778348949,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71194625881414,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71194627179450,
+        "node_now_after_publish": {
+          "sec": 1780788752,
+          "nanosec": 779899231,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.29804,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 14,
+        "source_frame_seq": 14,
+        "source_frame_time": 1.4,
+        "point_count": 16471,
+        "steady_clock_before_stamp_ns": 71194735554535,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788752,
+          "nanosec": 888280950,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 14,
+        "publisher_emit_seq_livox": 14,
+        "emitted_header_stamp": {
+          "sec": 1780788752,
+          "nanosec": 888280950,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788752888280950,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71194735727463,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71194737443488,
+        "node_now_after_publish": {
+          "sec": 1780788752,
+          "nanosec": 890165539,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.71602,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 15,
+        "source_frame_seq": 15,
+        "source_frame_time": 1.5,
+        "point_count": 16431,
+        "steady_clock_before_stamp_ns": 71194845818842,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788752,
+          "nanosec": 998546039,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 15,
+        "publisher_emit_seq_livox": 15,
+        "emitted_header_stamp": {
+          "sec": 1780788752,
+          "nanosec": 998546039,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788752998546039,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71194846054049,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71194847686723,
+        "node_now_after_publish": {
+          "sec": 1780788753,
+          "nanosec": 405380,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.63267,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 16,
+        "source_frame_seq": 16,
+        "source_frame_time": 1.6,
+        "point_count": 16366,
+        "steady_clock_before_stamp_ns": 71194955735655,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788753,
+          "nanosec": 108462809,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 16,
+        "publisher_emit_seq_livox": 16,
+        "emitted_header_stamp": {
+          "sec": 1780788753,
+          "nanosec": 108462809,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788753108462809,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71194955947101,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71194957654695,
+        "node_now_after_publish": {
+          "sec": 1780788753,
+          "nanosec": 110374564,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.70759,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 17,
+        "source_frame_seq": 17,
+        "source_frame_time": 1.7,
+        "point_count": 16288,
+        "steady_clock_before_stamp_ns": 71195065834969,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788753,
+          "nanosec": 218566498,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 17,
+        "publisher_emit_seq_livox": 17,
+        "emitted_header_stamp": {
+          "sec": 1780788753,
+          "nanosec": 218566498,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788753218566498,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71195066083435,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71195068013248,
+        "node_now_after_publish": {
+          "sec": 1780788753,
+          "nanosec": 220732225,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.92981,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 18,
+        "source_frame_seq": 18,
+        "source_frame_time": 1.8,
+        "point_count": 16148,
+        "steady_clock_before_stamp_ns": 71195175688188,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788753,
+          "nanosec": 328415353,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 18,
+        "publisher_emit_seq_livox": 18,
+        "emitted_header_stamp": {
+          "sec": 1780788753,
+          "nanosec": 328415353,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788753328415353,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71195175876997,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71195177770535,
+        "node_now_after_publish": {
+          "sec": 1780788753,
+          "nanosec": 330491033,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.89354,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      },
+      {
+        "schema": "mosim.ros2_runtime.publisher_timestamp_trace_047.v1",
+        "frame_index": 19,
+        "source_frame_seq": 19,
+        "source_frame_time": 1.9,
+        "point_count": 15898,
+        "steady_clock_before_stamp_ns": 71195285808083,
+        "node_now_at_stamp_assignment": {
+          "sec": 1780788753,
+          "nanosec": 438539315,
+          "seconds": 1780790000.0
+        },
+        "publisher_emit_seq_pointcloud2": 19,
+        "publisher_emit_seq_livox": 19,
+        "emitted_header_stamp": {
+          "sec": 1780788753,
+          "nanosec": 438539315,
+          "seconds": 1780790000.0
+        },
+        "livox_timebase_nanoseconds": 1780788753438539315,
+        "timebase_minus_header_ns": 0,
+        "steady_clock_before_publish_ns": 71195286013181,
+        "livox_matched_subscriptions_before_stamp": 3,
+        "livox_matched_subscriptions_before_publish": 3,
+        "pointcloud_matched_subscriptions_before_publish": 0,
+        "steady_clock_after_publish_ns": 71195287687867,
+        "node_now_after_publish": {
+          "sec": 1780788753,
+          "nanosec": 440407593,
+          "seconds": 1780790000.0
+        },
+        "livox_matched_subscriptions_after_publish": 3,
+        "publish_duration_ms": 1.67469,
+        "loop": false,
+        "topic": "/mosim/livox/lidar",
+        "pointcloud_topic": "/mosim/lidar_points",
+        "qos_profile": "livox reliable KeepLast(20); pointcloud SensorDataQoS",
+        "clock_type": "RCL_SYSTEM_TIME"
+      }
+    ],
+    "emitted_header_stamp_monotonic": true,
+    "emitted_header_stamp_regression_count": 0,
+    "emitted_header_stamp_regression_examples": [],
+    "node_now_after_publish_monotonic": true,
+    "steady_clock_before_stamp_monotonic": true,
+    "steady_clock_after_publish_monotonic": true,
+    "timebase_matches_header": true,
+    "min_livox_matched_subscriptions_before_stamp": 3,
+    "max_livox_matched_subscriptions_before_stamp": 4
+  },
+  "active_source_output": {
+    "schema": "mosim.ros2_runtime.instrumented_fastlio_recorder_047.v1",
+    "start_label": "047_instrumented_publisher_runtime",
+    "topics": {
+      "livox": "/mosim/livox/lidar",
+      "imu": "/mosim/forward/imu",
+      "odometry": "/Odometry",
+      "path": "/path",
+      "cloud_registered": "/cloud_registered"
+    },
+    "expected_livox": 120,
+    "min_imu": 400,
+    "timeout_s": 42.0,
+    "elapsed_s": 29.586425,
+    "final": true,
+    "acceptance": {
+      "livox_full_count": true,
+      "imu_min_count": true,
+      "livox_monotonic": true,
+      "imu_monotonic": true,
+      "odometry_nonzero": true,
+      "cloud_registered_nonzero": true,
+      "odometry_monotonic": true,
+      "cloud_registered_monotonic": true
+    },
+    "summary": {
+      "livox": {
+        "topic_kind": "livox",
+        "count": 120,
+        "frame_ids": [
+          "base/mid360_link"
+        ],
+        "first_stamp": 1780788751.348736,
+        "last_stamp": 1780788764.5483353,
+        "first_receive_elapsed_s": 15.381924,
+        "last_receive_elapsed_s": 28.573896,
+        "rate_hz": 9.020638,
+        "monotonic": true,
+        "regression_count": 0,
+        "regression_examples": []
+      },
+      "imu": {
+        "topic_kind": "imu",
+        "count": 2421,
+        "frame_ids": [
+          "base/forward_imu_optical_frame"
+        ],
+        "first_stamp": 1780788752.2822006,
+        "last_stamp": 1780788765.5922325,
+        "first_receive_elapsed_s": 16.270352,
+        "last_receive_elapsed_s": 29.577945,
+        "rate_hz": 181.851068,
+        "monotonic": true,
+        "regression_count": 0,
+        "regression_examples": []
+      },
+      "odometry": {
+        "topic_kind": "odometry",
+        "count": 109,
+        "frame_ids": [
+          "camera_init"
+        ],
+        "first_stamp": 1780788752.5585265,
+        "last_stamp": 1780788764.548435,
+        "first_receive_elapsed_s": 16.582645,
+        "last_receive_elapsed_s": 28.630217,
+        "rate_hz": 8.964462,
+        "monotonic": true,
+        "regression_count": 0,
+        "regression_examples": []
+      },
+      "path": {
+        "topic_kind": "path",
+        "count": 10,
+        "frame_ids": [
+          "camera_init"
+        ],
+        "first_stamp": 1780788739.4966996,
+        "last_stamp": 1780788739.4966996,
+        "first_receive_elapsed_s": 17.58528,
+        "last_receive_elapsed_s": 27.589546,
+        "rate_hz": 0.899616,
+        "monotonic": true,
+        "regression_count": 0,
+        "regression_examples": []
+      },
+      "cloud_registered": {
+        "topic_kind": "cloud_registered",
+        "count": 109,
+        "frame_ids": [
+          "camera_init"
+        ],
+        "first_stamp": 1780788752.5585265,
+        "last_stamp": 1780788764.548435,
+        "first_receive_elapsed_s": 16.593423,
+        "last_receive_elapsed_s": 28.631231,
+        "rate_hz": 8.971733,
+        "monotonic": true,
+        "regression_count": 0,
+        "regression_examples": []
+      }
+    }
+  },
+  "fast_lio_loopback_counts": {
+    "schema": "mosim.ros2_runtime.fast_lio_loopback_counts_047.v1",
+    "loopback_total": 1,
+    "loopback_by_callback": {
+      "standard_pcl_cbk": 0,
+      "livox_pcl_cbk": 0,
+      "imu_cbk": 1,
+      "unlabeled_loopback": 0
+    },
+    "loopback_lines": [
+      "[fastlio_mapping-1] [mosim_diag][imu_cbk] imu loop back, clear imu buffer timestamp=1.78079e+09 last_timestamp_imu=1.78079e+09 last_timestamp_lidar=1.78079e+09 is_first_lidar=0 lidar_buffer_size=0 imu_buffer_size=2727"
+    ],
+    "no_effective_points": 0
+  },
+  "fastlio_first_n_callback_trace": {
+    "status": "unavailable_without_fastlio_source_instrumentation",
+    "available_evidence": "callback-labeled loop-back lines only",
+    "reason": "047 forbids production FAST-LIO source/config edits; this probe did not build an evidence-local FAST-LIO fork."
+  },
+  "clock": {
+    "clock_present": {
+      "before": false,
+      "during": false,
+      "after_active": false
+    },
+    "use_sim_time": {
+      "instrumented_dense_lidar": "Boolean value is: False",
+      "state_imu": "Boolean value is: False",
+      "laser_mapping": "Boolean value is: False"
+    }
+  },
+  "publisher_identity": {
+    "livox_publisher_count": {
+      "before": 0,
+      "during": 1,
+      "after_active": 1
+    },
+    "imu_publisher_count": {
+      "before": null,
+      "during": 1,
+      "after_active": 1
+    },
+    "odometry_publisher_count": {
+      "before": null,
+      "during": 1,
+      "after_active": 1
+    },
+    "cloud_registered_publisher_count": {
+      "before": null,
+      "during": 1,
+      "after_active": 1
+    },
+    "topic_info_evidence": "topic_info_publishers_before_during_after.txt"
+  },
+  "forbidden_topics_present": {
+    "/position_cmd": false,
+    "/mosim/planner/position_cmd": false,
+    "/planning/bspline": false
+  },
+  "forbidden_process_patterns_seen": {
+    "rviz2": false,
+    "planner_or_ego": false,
+    "position_command": false,
+    "tf_bridge": false
+  },
+  "cleanup": {
+    "final_cleanup_process_check": "no_matching_processes"
+  },
+  "claim_boundary": "FAST-LIO-only publisher timestamp boundary classification only; not FAST-LIO success, TF/RViz readiness, planner readiness, localization quality, local-map quality, mission, controller, or closed_loop evidence"
+}

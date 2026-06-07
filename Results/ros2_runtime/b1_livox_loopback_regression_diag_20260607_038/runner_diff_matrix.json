@@ -1,0 +1,43 @@
+{
+  "schema": "mosim.ros2_runtime.livox_loopback_regression_diag_038.runner_diff_matrix.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-LIVOX-LOOPBACK-REGRESSION-DIAG-20260607-038",
+  "comparisons": {
+    "034_vs_037": {
+      "same": {
+        "startup_order": "FAST-LIO -> first Livox frame -> IMU",
+        "source_file": "Results/ros2_runtime/b1_long_noloop_source_gate_20260606_028/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body_120.jsonl",
+        "source_frame_count": 120,
+        "source_frame": "body_lidar_m_z_up",
+        "max_frames": 120,
+        "lidar_rate_hz": 10.0,
+        "imu_rate_hz": 200.0,
+        "loop": false,
+        "exit_after_last_frame": false,
+        "fastlio_config": "Config/ros2/mosim_fast_lio_ros2_mid360.yaml",
+        "planner_goal": false,
+        "position_cmd": false,
+        "adapter_20hz": false,
+        "extrinsic_change": false,
+        "rviz_gui_opened": false
+      },
+      "different": {
+        "034_active_recorder": "record_active_window.py subscribes Livox, IMU, /Odometry, /path, /cloud_registered only.",
+        "037_active_recorder": "record_minimal_active_tf_window.py subscribes the 034 topics plus /tf.",
+        "034_active_stop_condition": "stop when Livox, IMU, /Odometry, /cloud_registered each reach min_required.",
+        "037_active_stop_condition": "stop when source/output topics reach min_required and /tf reaches min_tf and both ue_world->base_link and camera_init->body are observed.",
+        "034_post_active_tf": "TF/RViz diagnostics are after active source/output acceptance and do not gate it.",
+        "037_active_tf": "TF classification is part of the active recorder and gates recorder completion.",
+        "037_post_active_bridge_echoes": "adds post-active ue_world->camera_init and camera_init->ue_world tf2_echo checks."
+      },
+      "effect": {
+        "034_result": "Livox/IMU/FAST-LIO output monotonic, loopback_total=0.",
+        "037_result": "Active TF classification succeeded, but Livox regressed and loopback_total=2 with livox_pcl_cbk=1 and imu_cbk=1.",
+        "interpretation": "The regression aligns with 037 active diagnostic load/wait changes, not static source or declared startup-order differences."
+      }
+    },
+    "036_static_context": {
+      "035_loopback_classified_by_036": "imu_cbk active-window loop-back after first LiDAR and after FAST-LIO outputs started; not a LiDAR source regression.",
+      "relevance_to_037": "037 preserves the recurring imu_cbk class but adds a new livox_pcl_cbk class tied to a recorded Livox timestamp regression."
+    }
+  }
+}

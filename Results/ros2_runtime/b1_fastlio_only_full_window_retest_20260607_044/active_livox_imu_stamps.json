@@ -1,0 +1,54 @@
+{
+  "livox": {
+    "topic_kind": "livox",
+    "count": 120,
+    "frame_ids": [
+      "base/mid360_link"
+    ],
+    "first_stamp": 1780781939.8971503,
+    "last_stamp": 1780781950.037076,
+    "first_receive_elapsed_s": 15.135393,
+    "last_receive_elapsed_s": 28.223285,
+    "rate_hz": 9.092373,
+    "monotonic": false,
+    "regression_count": 1,
+    "regression_examples": [
+      {
+        "from_event_seq": 1,
+        "to_event_seq": 2,
+        "from_topic_seq": 1,
+        "to_topic_seq": 2,
+        "from_stamp": 1780781940.0069153,
+        "to_stamp": 1780781937.1670537,
+        "delta_s": -2.839861631
+      }
+    ]
+  },
+  "imu": {
+    "topic_kind": "imu",
+    "count": 2433,
+    "frame_ids": [
+      "base/forward_imu_optical_frame"
+    ],
+    "first_stamp": 1780781937.6981933,
+    "last_stamp": 1780781951.0741942,
+    "first_receive_elapsed_s": 15.847784,
+    "last_receive_elapsed_s": 29.223483,
+    "rate_hz": 181.822273,
+    "monotonic": true,
+    "regression_count": 0,
+    "regression_examples": []
+  },
+  "livox_regressions": [
+    {
+      "from_event_seq": 1,
+      "to_event_seq": 2,
+      "from_topic_seq": 1,
+      "to_topic_seq": 2,
+      "from_stamp": 1780781940.0069153,
+      "to_stamp": 1780781937.1670537,
+      "delta_s": -2.839861631
+    }
+  ],
+  "imu_regressions": []
+}

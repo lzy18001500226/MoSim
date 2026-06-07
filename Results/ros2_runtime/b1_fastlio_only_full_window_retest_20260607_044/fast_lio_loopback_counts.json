@@ -1,0 +1,14 @@
+{
+  "schema": "mosim.ros2_runtime.fast_lio_loopback_counts_044.v1",
+  "loopback_total": 1,
+  "loopback_by_callback": {
+    "standard_pcl_cbk": 0,
+    "livox_pcl_cbk": 1,
+    "imu_cbk": 0,
+    "unlabeled_loopback": 0
+  },
+  "loopback_lines": [
+    "[fastlio_mapping-1] [mosim_diag][livox_pcl_cbk] lidar loop back, clear buffer cur_time=1.78078e+09 last_timestamp_lidar=1.78078e+09 last_timestamp_imu=-1 is_first_lidar=0 lidar_buffer_size=2 imu_buffer_size=0 point_num=16526 timebase=1780781937167053796"
+  ],
+  "no_effective_points": 0
+}

@@ -1,0 +1,9 @@
+{
+  "wrapper_return_code": 42,
+  "planner_exit_code": 143,
+  "pre_sources_ready": true,
+  "precondition_passed": false,
+  "goal_published": false,
+  "bspline_accepted": false,
+  "cleanup_note": "No matching ROS2 planner/FAST-LIO/replay processes were found by post-run pgrep; outer timeout interrupted the script before daemon-reset files were written."
+}

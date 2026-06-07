@@ -1,0 +1,146 @@
+{
+  "schema": "mosim.ros2_runtime.loopback_zero_output_diag_audit_033.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-032-LOOPBACK-ZERO-OUTPUT-DIAG-20260606-033",
+  "created_at": "2026-06-06T22:53:00+08:00",
+  "method": "read_only_diff_audit_of_031_and_032_evidence_no_live_micro_probe",
+  "micro_probes_run": 0,
+  "compared_runs": {
+    "031_clean_pass": {
+      "evidence_dir": "Results/ros2_runtime/b1_long_source_startup_discipline_rerun_20260606_031/",
+      "runner": "Results/ros2_runtime/b1_long_source_startup_discipline_rerun_20260606_031/run_long_source_startup_discipline_rerun.sh",
+      "summary": "Results/ros2_runtime/b1_long_source_startup_discipline_rerun_20260606_031/long_source_startup_discipline_rerun_summary.json",
+      "source": {
+        "frame_count": 120,
+        "coordinate_frame": "body_lidar_m_z_up",
+        "time_span_s": [0.0, 11.9],
+        "loop": false
+      },
+      "startup_order": "FAST-LIO -> first Livox frame -> IMU",
+      "observed": {
+        "livox_probe_count": 39,
+        "imu_probe_count": 781,
+        "livox_stamps_monotonic": true,
+        "imu_stamps_monotonic": true,
+        "odometry_count": 19,
+        "cloud_registered_count": 19,
+        "loopback_total": 0
+      },
+      "dense_replay_window": {
+        "start_log_time_s": 1780745078.445092,
+        "completed_log_time_s": 1780745091.189108,
+        "completed_after_frames": "120/120",
+        "exit_after_last_frame": false
+      }
+    },
+    "032_failed_preflight": {
+      "evidence_dir": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/",
+      "runner": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/run_no_goal_odom_tf_rviz_preflight.sh",
+      "summary": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/no_goal_odom_tf_rviz_preflight_summary.json",
+      "source": {
+        "frame_count": 120,
+        "coordinate_frame": "body_lidar_m_z_up",
+        "time_span_s": [0.0, 11.9],
+        "loop": false
+      },
+      "startup_order": "FAST-LIO -> first Livox frame -> IMU",
+      "observed": {
+        "preflight_recorder_counts": {
+          "livox": 40,
+          "imu": 40,
+          "odometry": 40,
+          "path": 4,
+          "cloud_registered": 40,
+          "tf": 40
+        },
+        "preflight_livox_stamps_monotonic": false,
+        "preflight_odometry_stamps_monotonic": false,
+        "preflight_cloud_registered_stamps_monotonic": false,
+        "livox_probe_count": 0,
+        "imu_probe_count": 750,
+        "runtime_odometry_count": 0,
+        "runtime_cloud_registered_count": 0,
+        "loopback_total": 3,
+        "loopback_by_callback": {
+          "livox_pcl_cbk": 1,
+          "imu_cbk": 2,
+          "standard_pcl_cbk": 0,
+          "unlabeled": 0
+        }
+      },
+      "dense_replay_window": {
+        "start_log_time_s": 1780753263.552684,
+        "completed_log_time_s": 1780753274.18846,
+        "completed_after_frames": "120/120",
+        "exit_after_last_frame": false
+      }
+    }
+  },
+  "runner_diff_findings": [
+    {
+      "finding": "031 records Livox/IMU probe and FAST-LIO runtime output before adding any TF/RViz readiness chain.",
+      "evidence": "Results/ros2_runtime/b1_long_source_startup_discipline_rerun_20260606_031/run_long_source_startup_discipline_rerun.sh"
+    },
+    {
+      "finding": "032 keeps the same nominal source and startup order, but inserts TF and RViz-readiness diagnostics into the single finite-source run before the official Livox probe and FAST-LIO runtime recorder complete their acceptance windows.",
+      "inserted_steps": [
+        "rviz2 --help before cleanup/run",
+        "record_preflight_stamps.py subscribed to Livox, IMU, /Odometry, /path, /cloud_registered, and /tf",
+        "ros2 topic echo /tf --once",
+        "tf2_echo ue_world base_link",
+        "tf2_echo camera_init body",
+        "topic info and topic hz probes before the final FAST-LIO runtime recorder"
+      ],
+      "evidence": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/run_no_goal_odom_tf_rviz_preflight.sh"
+    }
+  ],
+  "root_or_strongest_cause": {
+    "classification": "032 combines a real in-run Livox timestamp regression with late acceptance windows after the finite non-looping source is consumed.",
+    "primary_cause": "Livox timestamp regression occurred inside the 032 run and triggered callback-labeled FAST-LIO loop-back. This is not merely a late observer artifact: record_preflight_stamps.py is single-threaded spin_once and captured non-monotonic Livox header stamps, while fast_lio.launch.log reports livox_pcl_cbk loop-back with the same regressed timebase.",
+    "secondary_cause": "After the loop-back and after the extra TF/topic probes, the official Livox probe and FAST-LIO runtime recorder sampled a later window. The 120-frame non-looping replay had completed and stayed alive with exit_after_last_frame=false, so late subscribers saw IMU continuing but no Livox frames and no new FAST-LIO output samples.",
+    "supporting_evidence": [
+      {
+        "evidence": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/preflight_stamps.json",
+        "fact": "Early recorder captured 40 Livox, 40 /Odometry, and 40 /cloud_registered samples, proving output existed early in 032. The same recorder marked Livox, odometry, and cloud_registered stamps non-monotonic. Livox event seq 169 stamp/timebase is 1780753267.641985316, then seq 172 regresses to 1780753265.779138726."
+      },
+      {
+        "evidence": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/fast_lio.launch.log",
+        "fact": "FAST-LIO logged callback-labeled loop-back: imu_cbk=2 and livox_pcl_cbk=1. The livox_pcl_cbk line includes point_num=16016 and timebase=1780753265779138726, matching the regressed Livox event in preflight_stamps.json."
+      },
+      {
+        "evidence": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/dense_lidar_cpp.log",
+        "fact": "The finite source completed non-looping replay after 120/120 frames at log time 1780753274.18846 with exit_after_last_frame=false."
+      },
+      {
+        "evidence": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/LIVOX_CUSTOMMSG_PROBE.json",
+        "fact": "The later Livox/IMU probe observed Livox=0 and IMU=750, consistent with a finite source already consumed while the IMU replay node stayed active."
+      },
+      {
+        "evidence": "Results/ros2_runtime/b1_no_goal_odom_tf_rviz_preflight_20260606_032/runtime_recording/FASTLIO_RUNTIME_RECORDING.json",
+        "fact": "The later runtime recorder observed /Odometry=0 and /cloud_registered=0, despite early recorder evidence that these topics had been publishing before the loop-back/late-window condition."
+      }
+    ]
+  },
+  "ruled_out_or_not_supported": [
+    {
+      "hypothesis": "032 used a different source or startup order than 031.",
+      "assessment": "not_supported",
+      "evidence": "Both summaries record the same 120-frame body_lidar_m_z_up source and the same FAST-LIO -> first Livox frame -> IMU startup order."
+    },
+    {
+      "hypothesis": "032 had no early FAST-LIO output at all.",
+      "assessment": "ruled_out",
+      "evidence": "preflight_stamps.json captured 40 /Odometry and 40 /cloud_registered samples before the later runtime recorder saw zero."
+    },
+    {
+      "hypothesis": "The 032 zero Livox probe alone proves the source failed to publish.",
+      "assessment": "ruled_out",
+      "evidence": "preflight_stamps.json captured 40 Livox samples and dense_lidar_cpp.log records normal non-looping publication through 120/120 frames."
+    },
+    {
+      "hypothesis": "The loop-back was only an unlabeled IMU startup-boundary event like earlier 029/030 context.",
+      "assessment": "not_supported",
+      "evidence": "032 has a callback-labeled livox_pcl_cbk loop-back matching a recorder-captured Livox timestamp regression, plus two imu_cbk loop-backs after first LiDAR had already been accepted."
+    }
+  ],
+  "bounded_next_recommendation": "Do not advance to RViz/manual localization quality or planner gates from 032. The next bounded task should either restore the 031 acceptance window ordering by recording Livox/FAST-LIO output before TF/topic-rate probes, or diagnose why the 032 finite-source run emitted a Livox timestamp regression despite the source file being monotonic. Keep all planner, PositionCommand, /planning/bspline, 20Hz adapter, extrinsic, frame-adapter, fake-data, and UE-global-map paths blocked."
+}

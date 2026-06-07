@@ -1,0 +1,1559 @@
+{
+  "summary": {
+    "topic_kind": "cloud_registered",
+    "count": 110,
+    "frame_ids": [
+      "camera_init"
+    ],
+    "first_stamp": 1780791741.0538094,
+    "last_stamp": 1780791753.0439067,
+    "first_receive_elapsed_s": 17.981214,
+    "last_receive_elapsed_s": 30.052433,
+    "rate_hz": 9.029743,
+    "monotonic": true,
+    "regression_count": 0,
+    "regression_examples": []
+  },
+  "events": [
+    {
+      "event_seq": 74,
+      "topic_seq": 0,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 17.981214,
+      "receive_monotonic_ns": 74481430620676,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791741,
+        "nanosec": 53809404,
+        "seconds": 1780791741.0538094
+      },
+      "point_count": 16464
+    },
+    {
+      "event_seq": 95,
+      "topic_seq": 1,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 18.090166,
+      "receive_monotonic_ns": 74481539570762,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791741,
+        "nanosec": 163841009,
+        "seconds": 1780791741.163841
+      },
+      "point_count": 16491
+    },
+    {
+      "event_seq": 113,
+      "topic_seq": 2,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 18.193957,
+      "receive_monotonic_ns": 74481643361691,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791741,
+        "nanosec": 273821353,
+        "seconds": 1780791741.2738214
+      },
+      "point_count": 16499
+    },
+    {
+      "event_seq": 136,
+      "topic_seq": 3,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 18.311889,
+      "receive_monotonic_ns": 74481761293211,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791741,
+        "nanosec": 383824586,
+        "seconds": 1780791741.3838246
+      },
+      "point_count": 16485
+    },
+    {
+      "event_seq": 160,
+      "topic_seq": 4,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 18.414635,
+      "receive_monotonic_ns": 74481864039660,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791741,
+        "nanosec": 493850469,
+        "seconds": 1780791741.4938505
+      },
+      "point_count": 16470
+    },
+    {
+      "event_seq": 182,
+      "topic_seq": 5,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 18.528423,
+      "receive_monotonic_ns": 74481977828097,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791741,
+        "nanosec": 603874683,
+        "seconds": 1780791741.6038747
+      },
+      "point_count": 16430
+    },
+    {
+      "event_seq": 204,
+      "topic_seq": 6,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 18.636989,
+      "receive_monotonic_ns": 74482086397274,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791741,
+        "nanosec": 713835477,
+        "seconds": 1780791741.7138355
+      },
+      "point_count": 16365
+    },
+    {
+      "event_seq": 233,
+      "topic_seq": 7,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 18.744991,
+      "receive_monotonic_ns": 74482194396155,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791741,
+        "nanosec": 823860168,
+        "seconds": 1780791741.8238602
+      },
+      "point_count": 16287
+    },
+    {
+      "event_seq": 251,
+      "topic_seq": 8,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 18.861092,
+      "receive_monotonic_ns": 74482310498349,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791741,
+        "nanosec": 933858156,
+        "seconds": 1780791741.9338582
+      },
+      "point_count": 16147
+    },
+    {
+      "event_seq": 279,
+      "topic_seq": 9,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 18.964267,
+      "receive_monotonic_ns": 74482413669157,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791742,
+        "nanosec": 43861865,
+        "seconds": 1780791742.0438619
+      },
+      "point_count": 15897
+    },
+    {
+      "event_seq": 303,
+      "topic_seq": 10,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 19.074071,
+      "receive_monotonic_ns": 74482523479961,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791742,
+        "nanosec": 153827667,
+        "seconds": 1780791742.1538277
+      },
+      "point_count": 15601
+    },
+    {
+      "event_seq": 327,
+      "topic_seq": 11,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 19.185795,
+      "receive_monotonic_ns": 74482635201408,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791742,
+        "nanosec": 263851165,
+        "seconds": 1780791742.2638512
+      },
+      "point_count": 15639
+    },
+    {
+      "event_seq": 345,
+      "topic_seq": 12,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 19.294248,
+      "receive_monotonic_ns": 74482743653415,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791742,
+        "nanosec": 373858451,
+        "seconds": 1780791742.3738585
+      },
+      "point_count": 15642
+    },
+    {
+      "event_seq": 373,
+      "topic_seq": 13,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 19.404597,
+      "receive_monotonic_ns": 74482854003010,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791742,
+        "nanosec": 483869314,
+        "seconds": 1780791742.4838693
+      },
+      "point_count": 15658
+    },
+    {
+      "event_seq": 390,
+      "topic_seq": 14,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 19.521235,
+      "receive_monotonic_ns": 74482970642110,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791742,
+        "nanosec": 593829393,
+        "seconds": 1780791742.5938294
+      },
+      "point_count": 15683
+    },
+    {
+      "event_seq": 419,
+      "topic_seq": 15,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 19.627416,
+      "receive_monotonic_ns": 74483076825475,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791742,
+        "nanosec": 703850984,
+        "seconds": 1780791742.703851
+      },
+      "point_count": 15672
+    },
+    {
+      "event_seq": 442,
+      "topic_seq": 16,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 19.734637,
+      "receive_monotonic_ns": 74483184045381,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791742,
+        "nanosec": 813843727,
+        "seconds": 1780791742.8138437
+      },
+      "point_count": 15690
+    },
+    {
+      "event_seq": 465,
+      "topic_seq": 17,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 19.844186,
+      "receive_monotonic_ns": 74483293591558,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791742,
+        "nanosec": 923853874,
+        "seconds": 1780791742.9238539
+      },
+      "point_count": 15709
+    },
+    {
+      "event_seq": 487,
+      "topic_seq": 18,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 19.954149,
+      "receive_monotonic_ns": 74483403556743,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791743,
+        "nanosec": 33853054,
+        "seconds": 1780791743.033853
+      },
+      "point_count": 15699
+    },
+    {
+      "event_seq": 512,
+      "topic_seq": 19,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 20.065194,
+      "receive_monotonic_ns": 74483514600605,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791743,
+        "nanosec": 143859863,
+        "seconds": 1780791743.1438599
+      },
+      "point_count": 15731
+    },
+    {
+      "event_seq": 529,
+      "topic_seq": 20,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 20.182024,
+      "receive_monotonic_ns": 74483631430981,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791743,
+        "nanosec": 253823757,
+        "seconds": 1780791743.2538238
+      },
+      "point_count": 15785
+    },
+    {
+      "event_seq": 558,
+      "topic_seq": 21,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 20.287804,
+      "receive_monotonic_ns": 74483737209891,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791743,
+        "nanosec": 363863706,
+        "seconds": 1780791743.3638637
+      },
+      "point_count": 15826
+    },
+    {
+      "event_seq": 581,
+      "topic_seq": 22,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 20.395189,
+      "receive_monotonic_ns": 74483844595650,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791743,
+        "nanosec": 473820924,
+        "seconds": 1780791743.473821
+      },
+      "point_count": 15870
+    },
+    {
+      "event_seq": 601,
+      "topic_seq": 23,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 20.524802,
+      "receive_monotonic_ns": 74483974209241,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791743,
+        "nanosec": 583853006,
+        "seconds": 1780791743.583853
+      },
+      "point_count": 15900
+    },
+    {
+      "event_seq": 627,
+      "topic_seq": 24,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 20.618039,
+      "receive_monotonic_ns": 74484067445488,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791743,
+        "nanosec": 693851232,
+        "seconds": 1780791743.6938512
+      },
+      "point_count": 15914
+    },
+    {
+      "event_seq": 650,
+      "topic_seq": 25,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 20.727154,
+      "receive_monotonic_ns": 74484176559526,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791743,
+        "nanosec": 803874015,
+        "seconds": 1780791743.803874
+      },
+      "point_count": 15951
+    },
+    {
+      "event_seq": 667,
+      "topic_seq": 26,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 20.842114,
+      "receive_monotonic_ns": 74484291518598,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791743,
+        "nanosec": 913840770,
+        "seconds": 1780791743.9138408
+      },
+      "point_count": 15996
+    },
+    {
+      "event_seq": 693,
+      "topic_seq": 27,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 20.946939,
+      "receive_monotonic_ns": 74484396345731,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791744,
+        "nanosec": 23848533,
+        "seconds": 1780791744.0238485
+      },
+      "point_count": 16002
+    },
+    {
+      "event_seq": 713,
+      "topic_seq": 28,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 21.08232,
+      "receive_monotonic_ns": 74484531735679,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791744,
+        "nanosec": 133933305,
+        "seconds": 1780791744.1339333
+      },
+      "point_count": 16015
+    },
+    {
+      "event_seq": 737,
+      "topic_seq": 29,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 21.177555,
+      "receive_monotonic_ns": 74484626961548,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791744,
+        "nanosec": 243893146,
+        "seconds": 1780791744.2438931
+      },
+      "point_count": 16036
+    },
+    {
+      "event_seq": 767,
+      "topic_seq": 30,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 21.279671,
+      "receive_monotonic_ns": 74484729074451,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791744,
+        "nanosec": 353889703,
+        "seconds": 1780791744.3538897
+      },
+      "point_count": 16030
+    },
+    {
+      "event_seq": 790,
+      "topic_seq": 31,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 21.393452,
+      "receive_monotonic_ns": 74484842858647,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791744,
+        "nanosec": 463846206,
+        "seconds": 1780791744.4638462
+      },
+      "point_count": 16059
+    },
+    {
+      "event_seq": 804,
+      "topic_seq": 32,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 21.511301,
+      "receive_monotonic_ns": 74484960706521,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791744,
+        "nanosec": 573837995,
+        "seconds": 1780791744.573838
+      },
+      "point_count": 16086
+    },
+    {
+      "event_seq": 836,
+      "topic_seq": 33,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 21.609799,
+      "receive_monotonic_ns": 74485059202312,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791744,
+        "nanosec": 683853387,
+        "seconds": 1780791744.6838534
+      },
+      "point_count": 16140
+    },
+    {
+      "event_seq": 859,
+      "topic_seq": 34,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 21.725278,
+      "receive_monotonic_ns": 74485174692853,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791744,
+        "nanosec": 793835163,
+        "seconds": 1780791744.7938352
+      },
+      "point_count": 16163
+    },
+    {
+      "event_seq": 883,
+      "topic_seq": 35,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 21.840895,
+      "receive_monotonic_ns": 74485290313618,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791744,
+        "nanosec": 903925657,
+        "seconds": 1780791744.9039257
+      },
+      "point_count": 16164
+    },
+    {
+      "event_seq": 908,
+      "topic_seq": 36,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 21.958372,
+      "receive_monotonic_ns": 74485407779714,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791745,
+        "nanosec": 13863325,
+        "seconds": 1780791745.0138633
+      },
+      "point_count": 16177
+    },
+    {
+      "event_seq": 928,
+      "topic_seq": 37,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 22.053819,
+      "receive_monotonic_ns": 74485503232295,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791745,
+        "nanosec": 123889684,
+        "seconds": 1780791745.1238897
+      },
+      "point_count": 16170
+    },
+    {
+      "event_seq": 945,
+      "topic_seq": 38,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 22.312101,
+      "receive_monotonic_ns": 74485761507096,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791745,
+        "nanosec": 233870506,
+        "seconds": 1780791745.2338705
+      },
+      "point_count": 16173
+    },
+    {
+      "event_seq": 949,
+      "topic_seq": 39,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 22.314087,
+      "receive_monotonic_ns": 74485763491831,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791745,
+        "nanosec": 343864679,
+        "seconds": 1780791745.3438647
+      },
+      "point_count": 16205
+    },
+    {
+      "event_seq": 993,
+      "topic_seq": 40,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 22.395389,
+      "receive_monotonic_ns": 74485844800349,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791745,
+        "nanosec": 453878402,
+        "seconds": 1780791745.4538784
+      },
+      "point_count": 16236
+    },
+    {
+      "event_seq": 1015,
+      "topic_seq": 41,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 22.500045,
+      "receive_monotonic_ns": 74485949453854,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791745,
+        "nanosec": 563855171,
+        "seconds": 1780791745.5638552
+      },
+      "point_count": 16346
+    },
+    {
+      "event_seq": 1037,
+      "topic_seq": 42,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 22.603237,
+      "receive_monotonic_ns": 74486052644312,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791745,
+        "nanosec": 673855781,
+        "seconds": 1780791745.6738558
+      },
+      "point_count": 16452
+    },
+    {
+      "event_seq": 1060,
+      "topic_seq": 43,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 22.716538,
+      "receive_monotonic_ns": 74486165944657,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791745,
+        "nanosec": 783996820,
+        "seconds": 1780791745.7839968
+      },
+      "point_count": 16560
+    },
+    {
+      "event_seq": 1083,
+      "topic_seq": 44,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 22.830937,
+      "receive_monotonic_ns": 74486280344795,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791745,
+        "nanosec": 893841981,
+        "seconds": 1780791745.893842
+      },
+      "point_count": 16669
+    },
+    {
+      "event_seq": 1113,
+      "topic_seq": 45,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 22.931881,
+      "receive_monotonic_ns": 74486381292383,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791746,
+        "nanosec": 3869533,
+        "seconds": 1780791746.0038695
+      },
+      "point_count": 16772
+    },
+    {
+      "event_seq": 1129,
+      "topic_seq": 46,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 23.039125,
+      "receive_monotonic_ns": 74486488529682,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791746,
+        "nanosec": 113868713,
+        "seconds": 1780791746.1138687
+      },
+      "point_count": 16878
+    },
+    {
+      "event_seq": 1153,
+      "topic_seq": 47,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 23.152157,
+      "receive_monotonic_ns": 74486601569138,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791746,
+        "nanosec": 223868846,
+        "seconds": 1780791746.2238688
+      },
+      "point_count": 16995
+    },
+    {
+      "event_seq": 1175,
+      "topic_seq": 48,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 23.268186,
+      "receive_monotonic_ns": 74486717593451,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791746,
+        "nanosec": 333882093,
+        "seconds": 1780791746.333882
+      },
+      "point_count": 16984
+    },
+    {
+      "event_seq": 1199,
+      "topic_seq": 49,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 23.388507,
+      "receive_monotonic_ns": 74486837911314,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791746,
+        "nanosec": 443929195,
+        "seconds": 1780791746.4439292
+      },
+      "point_count": 16990
+    },
+    {
+      "event_seq": 1222,
+      "topic_seq": 50,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 23.477556,
+      "receive_monotonic_ns": 74486926961820,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791746,
+        "nanosec": 553861618,
+        "seconds": 1780791746.5538616
+      },
+      "point_count": 16969
+    },
+    {
+      "event_seq": 1252,
+      "topic_seq": 51,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 23.595079,
+      "receive_monotonic_ns": 74487044490603,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791746,
+        "nanosec": 663881778,
+        "seconds": 1780791746.6638818
+      },
+      "point_count": 16967
+    },
+    {
+      "event_seq": 1274,
+      "topic_seq": 52,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 23.697214,
+      "receive_monotonic_ns": 74487146620133,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791746,
+        "nanosec": 773839235,
+        "seconds": 1780791746.7738392
+      },
+      "point_count": 16983
+    },
+    {
+      "event_seq": 1298,
+      "topic_seq": 53,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 23.812655,
+      "receive_monotonic_ns": 74487262060650,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791746,
+        "nanosec": 883878707,
+        "seconds": 1780791746.8838787
+      },
+      "point_count": 16956
+    },
+    {
+      "event_seq": 1320,
+      "topic_seq": 54,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 23.916182,
+      "receive_monotonic_ns": 74487365585212,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791746,
+        "nanosec": 993907451,
+        "seconds": 1780791746.9939075
+      },
+      "point_count": 16961
+    },
+    {
+      "event_seq": 1337,
+      "topic_seq": 55,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 24.045051,
+      "receive_monotonic_ns": 74487494459045,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791747,
+        "nanosec": 103855371,
+        "seconds": 1780791747.1038554
+      },
+      "point_count": 16953
+    },
+    {
+      "event_seq": 1360,
+      "topic_seq": 56,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 24.15919,
+      "receive_monotonic_ns": 74487608598948,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791747,
+        "nanosec": 213885784,
+        "seconds": 1780791747.2138858
+      },
+      "point_count": 16954
+    },
+    {
+      "event_seq": 1383,
+      "topic_seq": 57,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 24.269413,
+      "receive_monotonic_ns": 74487718823261,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791747,
+        "nanosec": 323921680,
+        "seconds": 1780791747.3239217
+      },
+      "point_count": 16948
+    },
+    {
+      "event_seq": 1404,
+      "topic_seq": 58,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 24.412735,
+      "receive_monotonic_ns": 74487862142466,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791747,
+        "nanosec": 433923482,
+        "seconds": 1780791747.4339235
+      },
+      "point_count": 16989
+    },
+    {
+      "event_seq": 1469,
+      "topic_seq": 59,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 24.641563,
+      "receive_monotonic_ns": 74488090976003,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791747,
+        "nanosec": 543888807,
+        "seconds": 1780791747.5438888
+      },
+      "point_count": 17016
+    },
+    {
+      "event_seq": 1475,
+      "topic_seq": 60,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 24.706134,
+      "receive_monotonic_ns": 74488155544238,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791747,
+        "nanosec": 653852462,
+        "seconds": 1780791747.6538525
+      },
+      "point_count": 17042
+    },
+    {
+      "event_seq": 1482,
+      "topic_seq": 61,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 24.707531,
+      "receive_monotonic_ns": 74488156933374,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791747,
+        "nanosec": 763890981,
+        "seconds": 1780791747.763891
+      },
+      "point_count": 17057
+    },
+    {
+      "event_seq": 1499,
+      "topic_seq": 62,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 24.80676,
+      "receive_monotonic_ns": 74488256169244,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791747,
+        "nanosec": 873937129,
+        "seconds": 1780791747.8739371
+      },
+      "point_count": 17074
+    },
+    {
+      "event_seq": 1522,
+      "topic_seq": 63,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 24.925754,
+      "receive_monotonic_ns": 74488375167493,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791747,
+        "nanosec": 983940362,
+        "seconds": 1780791747.9839404
+      },
+      "point_count": 17088
+    },
+    {
+      "event_seq": 1545,
+      "topic_seq": 64,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 25.061165,
+      "receive_monotonic_ns": 74488510582611,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791748,
+        "nanosec": 93922853,
+        "seconds": 1780791748.0939229
+      },
+      "point_count": 17097
+    },
+    {
+      "event_seq": 1568,
+      "topic_seq": 65,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 25.161071,
+      "receive_monotonic_ns": 74488610480970,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791748,
+        "nanosec": 203931093,
+        "seconds": 1780791748.203931
+      },
+      "point_count": 17139
+    },
+    {
+      "event_seq": 1591,
+      "topic_seq": 66,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 25.27275,
+      "receive_monotonic_ns": 74488722156938,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791748,
+        "nanosec": 313898086,
+        "seconds": 1780791748.313898
+      },
+      "point_count": 17178
+    },
+    {
+      "event_seq": 1604,
+      "topic_seq": 67,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 25.362245,
+      "receive_monotonic_ns": 74488811651519,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791748,
+        "nanosec": 423912525,
+        "seconds": 1780791748.4239125
+      },
+      "point_count": 17205
+    },
+    {
+      "event_seq": 1637,
+      "topic_seq": 68,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 25.494703,
+      "receive_monotonic_ns": 74488944112426,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791748,
+        "nanosec": 533872842,
+        "seconds": 1780791748.5338728
+      },
+      "point_count": 17203
+    },
+    {
+      "event_seq": 1661,
+      "topic_seq": 69,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 25.596385,
+      "receive_monotonic_ns": 74489045789924,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791748,
+        "nanosec": 643877744,
+        "seconds": 1780791748.6438777
+      },
+      "point_count": 17216
+    },
+    {
+      "event_seq": 1684,
+      "topic_seq": 70,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 25.682406,
+      "receive_monotonic_ns": 74489131813730,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791748,
+        "nanosec": 753873348,
+        "seconds": 1780791748.7538733
+      },
+      "point_count": 17217
+    },
+    {
+      "event_seq": 1707,
+      "topic_seq": 71,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 25.825172,
+      "receive_monotonic_ns": 74489274577554,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791748,
+        "nanosec": 863865852,
+        "seconds": 1780791748.8638659
+      },
+      "point_count": 17225
+    },
+    {
+      "event_seq": 1731,
+      "topic_seq": 72,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 25.9023,
+      "receive_monotonic_ns": 74489351705811,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791748,
+        "nanosec": 973867416,
+        "seconds": 1780791748.9738674
+      },
+      "point_count": 17219
+    },
+    {
+      "event_seq": 1753,
+      "topic_seq": 73,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 26.014203,
+      "receive_monotonic_ns": 74489463611499,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791749,
+        "nanosec": 83868265,
+        "seconds": 1780791749.0838683
+      },
+      "point_count": 17214
+    },
+    {
+      "event_seq": 1776,
+      "topic_seq": 74,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 26.123775,
+      "receive_monotonic_ns": 74489573183752,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791749,
+        "nanosec": 193855524,
+        "seconds": 1780791749.1938555
+      },
+      "point_count": 17223
+    },
+    {
+      "event_seq": 1799,
+      "topic_seq": 75,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 26.235403,
+      "receive_monotonic_ns": 74489684812788,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791749,
+        "nanosec": 303910970,
+        "seconds": 1780791749.303911
+      },
+      "point_count": 17209
+    },
+    {
+      "event_seq": 1822,
+      "topic_seq": 76,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 26.342265,
+      "receive_monotonic_ns": 74489791674758,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791749,
+        "nanosec": 413899660,
+        "seconds": 1780791749.4138997
+      },
+      "point_count": 17200
+    },
+    {
+      "event_seq": 1845,
+      "topic_seq": 77,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 26.463969,
+      "receive_monotonic_ns": 74489913374601,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791749,
+        "nanosec": 523804664,
+        "seconds": 1780791749.5238047
+      },
+      "point_count": 17186
+    },
+    {
+      "event_seq": 1868,
+      "topic_seq": 78,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 26.566905,
+      "receive_monotonic_ns": 74490016312103,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791749,
+        "nanosec": 633856773,
+        "seconds": 1780791749.6338568
+      },
+      "point_count": 17183
+    },
+    {
+      "event_seq": 1894,
+      "topic_seq": 79,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 26.678257,
+      "receive_monotonic_ns": 74490127661353,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791749,
+        "nanosec": 743907928,
+        "seconds": 1780791749.743908
+      },
+      "point_count": 17180
+    },
+    {
+      "event_seq": 1917,
+      "topic_seq": 80,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 26.77953,
+      "receive_monotonic_ns": 74490228936513,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791749,
+        "nanosec": 853868246,
+        "seconds": 1780791749.8538682
+      },
+      "point_count": 17182
+    },
+    {
+      "event_seq": 1938,
+      "topic_seq": 81,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 26.893836,
+      "receive_monotonic_ns": 74490343243863,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791749,
+        "nanosec": 963898420,
+        "seconds": 1780791749.9638984
+      },
+      "point_count": 17174
+    },
+    {
+      "event_seq": 1961,
+      "topic_seq": 82,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 27.015721,
+      "receive_monotonic_ns": 74490465127836,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791750,
+        "nanosec": 73845386,
+        "seconds": 1780791750.0738454
+      },
+      "point_count": 17167
+    },
+    {
+      "event_seq": 1984,
+      "topic_seq": 83,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 27.109378,
+      "receive_monotonic_ns": 74490558781528,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791750,
+        "nanosec": 183872461,
+        "seconds": 1780791750.1838725
+      },
+      "point_count": 17166
+    },
+    {
+      "event_seq": 2004,
+      "topic_seq": 84,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 27.239304,
+      "receive_monotonic_ns": 74490688709308,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791750,
+        "nanosec": 293836832,
+        "seconds": 1780791750.2938368
+      },
+      "point_count": 17156
+    },
+    {
+      "event_seq": 2030,
+      "topic_seq": 85,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 27.328216,
+      "receive_monotonic_ns": 74490777624499,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791750,
+        "nanosec": 403846502,
+        "seconds": 1780791750.4038465
+      },
+      "point_count": 17171
+    },
+    {
+      "event_seq": 2053,
+      "topic_seq": 86,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 27.437308,
+      "receive_monotonic_ns": 74490886712747,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791750,
+        "nanosec": 513828992,
+        "seconds": 1780791750.513829
+      },
+      "point_count": 17175
+    },
+    {
+      "event_seq": 2076,
+      "topic_seq": 87,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 27.546243,
+      "receive_monotonic_ns": 74490995649271,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791750,
+        "nanosec": 623853921,
+        "seconds": 1780791750.623854
+      },
+      "point_count": 17169
+    },
+    {
+      "event_seq": 2099,
+      "topic_seq": 88,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 27.665125,
+      "receive_monotonic_ns": 74491114533643,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791750,
+        "nanosec": 733830213,
+        "seconds": 1780791750.7338302
+      },
+      "point_count": 17177
+    },
+    {
+      "event_seq": 2123,
+      "topic_seq": 89,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 27.768658,
+      "receive_monotonic_ns": 74491218066167,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791750,
+        "nanosec": 843845129,
+        "seconds": 1780791750.8438451
+      },
+      "point_count": 17172
+    },
+    {
+      "event_seq": 2146,
+      "topic_seq": 90,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 27.877039,
+      "receive_monotonic_ns": 74491326444304,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791750,
+        "nanosec": 953830957,
+        "seconds": 1780791750.953831
+      },
+      "point_count": 17172
+    },
+    {
+      "event_seq": 2169,
+      "topic_seq": 91,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 27.991263,
+      "receive_monotonic_ns": 74491440669144,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791751,
+        "nanosec": 63824176,
+        "seconds": 1780791751.0638242
+      },
+      "point_count": 17164
+    },
+    {
+      "event_seq": 2192,
+      "topic_seq": 92,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 28.097508,
+      "receive_monotonic_ns": 74491546913009,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791751,
+        "nanosec": 173826694,
+        "seconds": 1780791751.1738267
+      },
+      "point_count": 17178
+    },
+    {
+      "event_seq": 2215,
+      "topic_seq": 93,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 28.249526,
+      "receive_monotonic_ns": 74491698935138,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791751,
+        "nanosec": 283913612,
+        "seconds": 1780791751.2839136
+      },
+      "point_count": 17182
+    },
+    {
+      "event_seq": 2238,
+      "topic_seq": 94,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 28.333681,
+      "receive_monotonic_ns": 74491783090642,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791751,
+        "nanosec": 393896102,
+        "seconds": 1780791751.393896
+      },
+      "point_count": 17185
+    },
+    {
+      "event_seq": 2261,
+      "topic_seq": 95,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 28.441349,
+      "receive_monotonic_ns": 74491890754898,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791751,
+        "nanosec": 503931045,
+        "seconds": 1780791751.503931
+      },
+      "point_count": 17179
+    },
+    {
+      "event_seq": 2284,
+      "topic_seq": 96,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 28.56069,
+      "receive_monotonic_ns": 74492010100895,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791751,
+        "nanosec": 613871335,
+        "seconds": 1780791751.6138713
+      },
+      "point_count": 17183
+    },
+    {
+      "event_seq": 2307,
+      "topic_seq": 97,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 28.677888,
+      "receive_monotonic_ns": 74492127295377,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791751,
+        "nanosec": 723911285,
+        "seconds": 1780791751.7239113
+      },
+      "point_count": 17184
+    },
+    {
+      "event_seq": 2330,
+      "topic_seq": 98,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 28.774328,
+      "receive_monotonic_ns": 74492223735568,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791751,
+        "nanosec": 833855628,
+        "seconds": 1780791751.8338556
+      },
+      "point_count": 17187
+    },
+    {
+      "event_seq": 2354,
+      "topic_seq": 99,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 28.87821,
+      "receive_monotonic_ns": 74492327613709,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791751,
+        "nanosec": 943829536,
+        "seconds": 1780791751.9438295
+      },
+      "point_count": 17190
+    },
+    {
+      "event_seq": 2377,
+      "topic_seq": 100,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 28.978316,
+      "receive_monotonic_ns": 74492427721349,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791752,
+        "nanosec": 53836345,
+        "seconds": 1780791752.0538363
+      },
+      "point_count": 17182
+    },
+    {
+      "event_seq": 2400,
+      "topic_seq": 101,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 29.136372,
+      "receive_monotonic_ns": 74492585787905,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791752,
+        "nanosec": 163895845,
+        "seconds": 1780791752.1638958
+      },
+      "point_count": 17176
+    },
+    {
+      "event_seq": 2423,
+      "topic_seq": 102,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 29.210312,
+      "receive_monotonic_ns": 74492659723280,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791752,
+        "nanosec": 273819923,
+        "seconds": 1780791752.27382
+      },
+      "point_count": 17183
+    },
+    {
+      "event_seq": 2446,
+      "topic_seq": 103,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 29.31345,
+      "receive_monotonic_ns": 74492762854627,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791752,
+        "nanosec": 383908987,
+        "seconds": 1780791752.383909
+      },
+      "point_count": 17180
+    },
+    {
+      "event_seq": 2469,
+      "topic_seq": 104,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 29.439725,
+      "receive_monotonic_ns": 74492889129085,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791752,
+        "nanosec": 493889093,
+        "seconds": 1780791752.493889
+      },
+      "point_count": 17184
+    },
+    {
+      "event_seq": 2492,
+      "topic_seq": 105,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 29.572986,
+      "receive_monotonic_ns": 74493022396054,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791752,
+        "nanosec": 603914260,
+        "seconds": 1780791752.6039143
+      },
+      "point_count": 17184
+    },
+    {
+      "event_seq": 2515,
+      "topic_seq": 106,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 29.692938,
+      "receive_monotonic_ns": 74493142346066,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791752,
+        "nanosec": 713882446,
+        "seconds": 1780791752.7138824
+      },
+      "point_count": 17175
+    },
+    {
+      "event_seq": 2538,
+      "topic_seq": 107,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 29.796098,
+      "receive_monotonic_ns": 74493245515909,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791752,
+        "nanosec": 823931932,
+        "seconds": 1780791752.823932
+      },
+      "point_count": 17170
+    },
+    {
+      "event_seq": 2561,
+      "topic_seq": 108,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 29.885395,
+      "receive_monotonic_ns": 74493334804639,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791752,
+        "nanosec": 933969259,
+        "seconds": 1780791752.9339693
+      },
+      "point_count": 17160
+    },
+    {
+      "event_seq": 2585,
+      "topic_seq": 109,
+      "topic_kind": "cloud_registered",
+      "receive_elapsed_s": 30.052433,
+      "receive_monotonic_ns": 74493501839813,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791753,
+        "nanosec": 43906688,
+        "seconds": 1780791753.0439067
+      },
+      "point_count": 17155
+    }
+  ]
+}

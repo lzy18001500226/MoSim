@@ -1,0 +1,110 @@
+{
+  "schema": "mosim.ros2_runtime.fastlio_imu_callback_startup_boundary_diag_048.static_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-IMU-CALLBACK-STARTUP-BOUNDARY-DIAG-20260607-048",
+  "created_at": "2026-06-07T07:45:32+08:00",
+  "status": "completed_static_diagnosis_no_live_probe",
+  "classification": "source_topics_monotonic_but_fastlio_callback_local_imu_loopback",
+  "diagnosis": {
+    "summary": "047 already proves the publisher trace, Livox source-topic stream, and IMU source-topic stream were monotonic in the single instrumented FAST-LIO-only run, while FAST-LIO logged exactly one callback-labeled imu_cbk loop-back. Static FAST-LIO source inspection confirms that this label is emitted only inside imu_cbk when the callback-local corrected IMU timestamp is less than last_timestamp_imu, then imu_buffer is cleared. Therefore 048 classifies the 047 blocker as FAST-LIO callback-local IMU timestamp/order state, not as publisher-side Livox regression or source-topic IMU header-stamp regression in that run.",
+    "confidence": "medium_static_from_single_allowed_047_probe_plus_source_inspection",
+    "not_enough_to_distinguish": [
+      "stale DDS delivery into FAST-LIO subscriber callback",
+      "callback queue ordering under finite replay startup/end boundary",
+      "FAST-LIO time_diff_lidar_to_imu or time_sync_en timestamp adjustment edge",
+      "FAST-LIO internal last_timestamp_imu state handling after buffers drain"
+    ]
+  },
+  "supporting_evidence": {
+    "047_publisher_trace": {
+      "trace_count": 120,
+      "emitted_header_stamp_monotonic": true,
+      "emitted_header_stamp_regression_count": 0,
+      "timebase_matches_header": true,
+      "source": "Results/ros2_runtime/b1_instrumented_publisher_runtime_20260607_047/instrumented_publisher_runtime_summary.json"
+    },
+    "047_source_topics": {
+      "livox": {
+        "count": 120,
+        "monotonic": true,
+        "regression_count": 0,
+        "timebase_minus_header_ns": 0,
+        "source": "Results/ros2_runtime/b1_instrumented_publisher_runtime_20260607_047/livox_full_window_stamps.json"
+      },
+      "imu": {
+        "count": 2421,
+        "monotonic": true,
+        "regression_count": 0,
+        "source": "Results/ros2_runtime/b1_instrumented_publisher_runtime_20260607_047/imu_full_window_stamps.json"
+      }
+    },
+    "047_fastlio_outputs": {
+      "odometry_count": 109,
+      "cloud_registered_count": 109,
+      "odometry_monotonic": true,
+      "cloud_registered_monotonic": true,
+      "claim_boundary": "nonzero outputs are context only and are not FAST-LIO success or localization quality"
+    },
+    "047_loopback_counts": {
+      "loopback_total": 1,
+      "standard_pcl_cbk": 0,
+      "livox_pcl_cbk": 0,
+      "imu_cbk": 1,
+      "unlabeled_loopback": 0,
+      "loopback_line": "[fastlio_mapping-1] [mosim_diag][imu_cbk] imu loop back, clear imu buffer timestamp=1.78079e+09 last_timestamp_imu=1.78079e+09 last_timestamp_lidar=1.78079e+09 is_first_lidar=0 lidar_buffer_size=0 imu_buffer_size=2727",
+      "source": "Results/ros2_runtime/b1_instrumented_publisher_runtime_20260607_047/fast_lio_loopback_counts.json"
+    },
+    "clock_and_cleanup": {
+      "clock_present": false,
+      "use_sim_time_false_for_dense_lidar_state_imu_laser_mapping": true,
+      "cleanup_clean": true,
+      "source": [
+        "Results/ros2_runtime/b1_instrumented_publisher_runtime_20260607_047/ros_clock_and_use_sim_time.txt",
+        "Results/ros2_runtime/b1_instrumented_publisher_runtime_20260607_047/cleanup_summary.json"
+      ]
+    }
+  },
+  "source_inspection": {
+    "fastlio_candidate_source": {
+      "path": "Results/tmp/fastlio_ros2_candidates_import/FAST_LIO_ROS2-ros2/src/laserMapping.cpp",
+      "global_state": "last_timestamp_lidar starts at 0 and last_timestamp_imu starts at -1.0.",
+      "livox_callback": "livox_pcl_cbk logs [mosim_diag][livox_pcl_cbk] only when !is_first_lidar and cur_time < last_timestamp_lidar; 047 livox_pcl_cbk count was 0.",
+      "imu_callback": "imu_cbk copies the incoming IMU, adjusts msg->header.stamp by time_diff_lidar_to_imu and optional timediff_lidar_wrt_imu, computes timestamp, and logs [mosim_diag][imu_cbk] only when timestamp < last_timestamp_imu before clearing imu_buffer.",
+      "subscriber_depths": "Livox subscription depth is 20 for CustomMsg; IMU subscription depth is 10 for sensor_msgs/Imu.",
+      "line_ranges_checked": [
+        "318-359 livox_pcl_cbk",
+        "366-402 imu_cbk",
+        "942-952 subscriptions"
+      ]
+    },
+    "imu_publisher_source": {
+      "path": "Scripts/ros/mosim_dense_lidar_cpp/src/mworks_state_imu_replay_node.cpp",
+      "observation": "IMU publisher uses a reliable KeepLast(64) publisher, wall timer, node now() stamp, and publishes make_imu(row, base_index, stamp). The 047 recorded IMU topic stream was monotonic, so upstream IMU topic regression is not supported in this run.",
+      "line_ranges_checked": [
+        "158-185 publisher/timer setup",
+        "tick and make_imu stamp path"
+      ]
+    },
+    "path_resolution_note": "The task packet named References/FastLIO, which is absent in this checkout. The project-local FAST-LIO reference exists at References/Lab/FAST_LIO, and the runtime candidate used by prior labeled diagnostics is Results/tmp/fastlio_ros2_candidates_import/FAST_LIO_ROS2-ros2/src/laserMapping.cpp. No References files were edited."
+  },
+  "subagent_audit": {
+    "used": true,
+    "agent_id": "019e9f52-8595-73f0-8079-529e32f58e0b",
+    "nickname": "Confucius",
+    "scope": "read-only static audit of 047 evidence and FAST-LIO/IMU callback source; no ROS2 live graph and no writes",
+    "result": "Agreed that existing 047 evidence is sufficient for static classification. A new live probe is unnecessary unless PMO asks for mechanism/root-cause instrumentation beyond classification."
+  },
+  "live_probe": {
+    "ran_in_048": false,
+    "reason": "Static evidence was sufficient for the requested classification; running a new probe would add runtime risk and could violate the no-rerun intent."
+  },
+  "claim_boundary": [
+    "048 is FAST-LIO IMU callback/startup-boundary static diagnosis only.",
+    "048 does not claim FAST-LIO success.",
+    "048 does not claim TF/RViz readiness.",
+    "048 does not claim localization quality, local-map quality, planner_ready, controller performance, mission success, or closed_loop.",
+    "048 did not start RViz2, UE, planner/EGO, PositionCommand recorder, 20Hz adapter, TF bridge, active /tf recorder, or a new FAST-LIO live probe.",
+    "048 did not publish /position_cmd, /mosim/planner/position_cmd, /planning/bspline, goals, or trajectory commands.",
+    "048 did not edit production ROS2 packages, References, source data, FAST-LIO config, extrinsics, frame adapters, MWORKS, UE, controller, planner, or Config files."
+  ],
+  "recommended_next_action": "If PMO needs mechanism beyond this boundary classification, dispatch a separate evidence-local FAST-LIO callback first-N instrumentation task to log adjusted IMU timestamp, raw IMU header stamp, last_timestamp_imu, last_timestamp_lidar, time_diff_lidar_to_imu, timediff_lidar_wrt_imu, callback receive monotonic time, and buffer sizes around startup/end boundary. Do not advance to TF/RViz readiness or planner gates until zero callback loop-back is demonstrated by a separately scoped gate."
+}

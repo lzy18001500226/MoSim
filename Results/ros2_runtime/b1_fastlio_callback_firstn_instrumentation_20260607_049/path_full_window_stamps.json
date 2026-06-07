@@ -1,0 +1,173 @@
+{
+  "summary": {
+    "topic_kind": "path",
+    "count": 11,
+    "frame_ids": [
+      "camera_init"
+    ],
+    "first_stamp": 1780791726.5143082,
+    "last_stamp": 1780791726.5143082,
+    "first_receive_elapsed_s": 18.963052,
+    "last_receive_elapsed_s": 30.051771,
+    "rate_hz": 0.901817,
+    "monotonic": true,
+    "regression_count": 0,
+    "regression_examples": []
+  },
+  "events": [
+    {
+      "event_seq": 274,
+      "topic_seq": 0,
+      "topic_kind": "path",
+      "receive_elapsed_s": 18.963052,
+      "receive_monotonic_ns": 74482412458791,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791726,
+        "nanosec": 514308307,
+        "seconds": 1780791726.5143082
+      },
+      "pose_count": 1
+    },
+    {
+      "event_seq": 505,
+      "topic_seq": 1,
+      "topic_kind": "path",
+      "receive_elapsed_s": 20.062054,
+      "receive_monotonic_ns": 74483511456641,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791726,
+        "nanosec": 514308307,
+        "seconds": 1780791726.5143082
+      },
+      "pose_count": 2
+    },
+    {
+      "event_seq": 736,
+      "topic_seq": 2,
+      "topic_kind": "path",
+      "receive_elapsed_s": 21.176687,
+      "receive_monotonic_ns": 74484626091583,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791726,
+        "nanosec": 514308307,
+        "seconds": 1780791726.5143082
+      },
+      "pose_count": 3
+    },
+    {
+      "event_seq": 948,
+      "topic_seq": 3,
+      "topic_kind": "path",
+      "receive_elapsed_s": 22.313254,
+      "receive_monotonic_ns": 74485762659139,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791726,
+        "nanosec": 514308307,
+        "seconds": 1780791726.5143082
+      },
+      "pose_count": 4
+    },
+    {
+      "event_seq": 1198,
+      "topic_seq": 4,
+      "topic_kind": "path",
+      "receive_elapsed_s": 23.387975,
+      "receive_monotonic_ns": 74486837378037,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791726,
+        "nanosec": 514308307,
+        "seconds": 1780791726.5143082
+      },
+      "pose_count": 5
+    },
+    {
+      "event_seq": 1466,
+      "topic_seq": 5,
+      "topic_kind": "path",
+      "receive_elapsed_s": 24.629674,
+      "receive_monotonic_ns": 74488079081106,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791726,
+        "nanosec": 514308307,
+        "seconds": 1780791726.5143082
+      },
+      "pose_count": 6
+    },
+    {
+      "event_seq": 1660,
+      "topic_seq": 6,
+      "topic_kind": "path",
+      "receive_elapsed_s": 25.595616,
+      "receive_monotonic_ns": 74489045020734,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791726,
+        "nanosec": 514308307,
+        "seconds": 1780791726.5143082
+      },
+      "pose_count": 7
+    },
+    {
+      "event_seq": 1891,
+      "topic_seq": 7,
+      "topic_kind": "path",
+      "receive_elapsed_s": 26.6774,
+      "receive_monotonic_ns": 74490126802222,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791726,
+        "nanosec": 514308307,
+        "seconds": 1780791726.5143082
+      },
+      "pose_count": 8
+    },
+    {
+      "event_seq": 2122,
+      "topic_seq": 8,
+      "topic_kind": "path",
+      "receive_elapsed_s": 27.767984,
+      "receive_monotonic_ns": 74491217385970,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791726,
+        "nanosec": 514308307,
+        "seconds": 1780791726.5143082
+      },
+      "pose_count": 9
+    },
+    {
+      "event_seq": 2353,
+      "topic_seq": 9,
+      "topic_kind": "path",
+      "receive_elapsed_s": 28.877599,
+      "receive_monotonic_ns": 74492327003759,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791726,
+        "nanosec": 514308307,
+        "seconds": 1780791726.5143082
+      },
+      "pose_count": 10
+    },
+    {
+      "event_seq": 2584,
+      "topic_seq": 10,
+      "topic_kind": "path",
+      "receive_elapsed_s": 30.051771,
+      "receive_monotonic_ns": 74493501176434,
+      "frame_id": "camera_init",
+      "stamp": {
+        "sec": 1780791726,
+        "nanosec": 514308307,
+        "seconds": 1780791726.5143082
+      },
+      "pose_count": 11
+    }
+  ]
+}

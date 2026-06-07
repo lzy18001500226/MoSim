@@ -1,0 +1,7 @@
+{
+  "schema": "mosim.ros2_runtime.fastlio_callback_dds_boundary_diag_042.optional_probe_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-CALLBACK-DDS-BOUNDARY-DIAG-20260607-042",
+  "live_probe_run": false,
+  "reason": "Static evidence from 039/040/041 plus local source mapping was sufficient to answer the boundary question without consuming the single allowed no-goal FAST-LIO-only diagnostic probe.",
+  "forbidden_runtime_started": false
+}

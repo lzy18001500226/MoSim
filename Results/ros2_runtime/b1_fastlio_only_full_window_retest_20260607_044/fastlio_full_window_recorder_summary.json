@@ -1,0 +1,113 @@
+{
+  "schema": "mosim.ros2_runtime.fastlio_only_full_window_recorder_044.v1",
+  "start_label": "044_fastlio_only_full_window",
+  "topics": {
+    "livox": "/mosim/livox/lidar",
+    "imu": "/mosim/forward/imu",
+    "odometry": "/Odometry",
+    "path": "/path",
+    "cloud_registered": "/cloud_registered"
+  },
+  "expected_livox": 120,
+  "min_imu": 400,
+  "timeout_s": 42.0,
+  "elapsed_s": 29.225818,
+  "final": true,
+  "acceptance": {
+    "livox_full_count": true,
+    "imu_min_count": true,
+    "livox_monotonic": false,
+    "imu_monotonic": true,
+    "odometry_nonzero": true,
+    "cloud_registered_nonzero": true,
+    "odometry_monotonic": true,
+    "cloud_registered_monotonic": true
+  },
+  "summary": {
+    "livox": {
+      "topic_kind": "livox",
+      "count": 120,
+      "frame_ids": [
+        "base/mid360_link"
+      ],
+      "first_stamp": 1780781939.8971503,
+      "last_stamp": 1780781950.037076,
+      "first_receive_elapsed_s": 15.135393,
+      "last_receive_elapsed_s": 28.223285,
+      "rate_hz": 9.092373,
+      "monotonic": false,
+      "regression_count": 1,
+      "regression_examples": [
+        {
+          "from_event_seq": 1,
+          "to_event_seq": 2,
+          "from_topic_seq": 1,
+          "to_topic_seq": 2,
+          "from_stamp": 1780781940.0069153,
+          "to_stamp": 1780781937.1670537,
+          "delta_s": -2.839861631
+        }
+      ]
+    },
+    "imu": {
+      "topic_kind": "imu",
+      "count": 2433,
+      "frame_ids": [
+        "base/forward_imu_optical_frame"
+      ],
+      "first_stamp": 1780781937.6981933,
+      "last_stamp": 1780781951.0741942,
+      "first_receive_elapsed_s": 15.847784,
+      "last_receive_elapsed_s": 29.223483,
+      "rate_hz": 181.822273,
+      "monotonic": true,
+      "regression_count": 0,
+      "regression_examples": []
+    },
+    "odometry": {
+      "topic_kind": "odometry",
+      "count": 89,
+      "frame_ids": [
+        "camera_init"
+      ],
+      "first_stamp": 1780781940.137161,
+      "last_stamp": 1780781949.8171685,
+      "first_receive_elapsed_s": 18.540361,
+      "last_receive_elapsed_s": 28.271041,
+      "rate_hz": 9.043561,
+      "monotonic": true,
+      "regression_count": 0,
+      "regression_examples": []
+    },
+    "path": {
+      "topic_kind": "path",
+      "count": 8,
+      "frame_ids": [
+        "camera_init"
+      ],
+      "first_stamp": 1780781925.2647069,
+      "last_stamp": 1780781925.2647069,
+      "first_receive_elapsed_s": 19.530954,
+      "last_receive_elapsed_s": 27.236849,
+      "rate_hz": 0.908395,
+      "monotonic": true,
+      "regression_count": 0,
+      "regression_examples": []
+    },
+    "cloud_registered": {
+      "topic_kind": "cloud_registered",
+      "count": 89,
+      "frame_ids": [
+        "camera_init"
+      ],
+      "first_stamp": 1780781940.137161,
+      "last_stamp": 1780781949.8171685,
+      "first_receive_elapsed_s": 18.545568,
+      "last_receive_elapsed_s": 28.271513,
+      "rate_hz": 9.047964,
+      "monotonic": true,
+      "regression_count": 0,
+      "regression_examples": []
+    }
+  }
+}

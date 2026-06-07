@@ -1,0 +1,40 @@
+{
+  "schema": "mosim.ros2_runtime.bspline_no_sample_diag.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-BSPLINE-NO-SAMPLE-DIAG-20260606-023",
+  "created_at": "2026-06-06T16:12:00+08:00",
+  "diagnosis": "022 did not capture a Bspline sample because /planning/bspline publisher creation is an init-time surface, while actual Bspline message publication occurs only after local rebound replanning succeeds. The 022 evidence shows a severe odometry/goal geometry mismatch and no log evidence that execution reached final_plan_success or bspline_pub_->publish().",
+  "ranked_causes": [
+    {
+      "rank": 1,
+      "cause": "Odometry z/scale/frame drift made the goal effectively kilometers away in the planner frame.",
+      "classification": "confirmed_fact_plus_high_confidence_inference",
+      "evidence": [
+        "Results/ros2_runtime/b1_real_goal_bspline_acceptance_20260606_022/goal_publish_summary.json",
+        "Results/ros2_runtime/b1_real_goal_bspline_acceptance_20260606_022/during_planner_echo_once_Odometry.stdout"
+      ],
+      "details": "Goal callback uses z=1.0 internally. With source odom z=-7241.161 m, the planner start-to-goal distance was about 7242.16 m, causing planGlobalTraj() to insert roughly 1810 intermediate points at the 4 m threshold."
+    },
+    {
+      "rank": 2,
+      "cause": "Planner map bounds were incompatible with the observed odometry coordinates.",
+      "classification": "confirmed_config_plus_high_confidence_inference",
+      "evidence": [
+        "Results/ros2_runtime/b1_real_goal_bspline_acceptance_20260606_022/planner_real_goal_runtime_enabled.yaml",
+        "Results/tmp/ego_planner_ros2_port_ws/src/plan_env/src/grid_map.cpp",
+        "Results/tmp/ego_planner_ros2_port_ws/src/plan_env/include/plan_env/grid_map.h"
+      ],
+      "details": "The 022 config sets map_size_x/y/z=40/40/3 and ground_height=-0.01, so map boundaries are approximately x/y=[-20,20], z=[-0.01,2.99]. Observed odom x/y/z during planner window were far outside those bounds."
+    },
+    {
+      "rank": 3,
+      "cause": "022 log stops after Triggered! and lacks final_plan_success or Bspline publish evidence.",
+      "classification": "confirmed_fact",
+      "evidence": [
+        "Results/ros2_runtime/b1_real_goal_bspline_acceptance_20260606_022/planner_startup_stdout_stderr.log",
+        "Results/tmp/ego_planner_ros2_port_ws/src/plan_manage/src/ego_replan_fsm.cpp"
+      ],
+      "details": "Triggered! only proves waypointCallback entered. Bspline publication is in callReboundReplan() after planner_manager_->reboundReplan() returns true."
+    }
+  ],
+  "next_gate": "Correct frame/scale/z before the next Bspline acceptance run; publish a real waypoint whose x/y/z are near the current odom and inside the EGO map envelope; stop after non-empty ego_planner_msgs/msg/Bspline echo or precise no-sample blocker."
+}

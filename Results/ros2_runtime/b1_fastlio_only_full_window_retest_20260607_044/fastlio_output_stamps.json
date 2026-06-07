@@ -1,0 +1,49 @@
+{
+  "odometry": {
+    "topic_kind": "odometry",
+    "count": 89,
+    "frame_ids": [
+      "camera_init"
+    ],
+    "first_stamp": 1780781940.137161,
+    "last_stamp": 1780781949.8171685,
+    "first_receive_elapsed_s": 18.540361,
+    "last_receive_elapsed_s": 28.271041,
+    "rate_hz": 9.043561,
+    "monotonic": true,
+    "regression_count": 0,
+    "regression_examples": []
+  },
+  "cloud_registered": {
+    "topic_kind": "cloud_registered",
+    "count": 89,
+    "frame_ids": [
+      "camera_init"
+    ],
+    "first_stamp": 1780781940.137161,
+    "last_stamp": 1780781949.8171685,
+    "first_receive_elapsed_s": 18.545568,
+    "last_receive_elapsed_s": 28.271513,
+    "rate_hz": 9.047964,
+    "monotonic": true,
+    "regression_count": 0,
+    "regression_examples": []
+  },
+  "path": {
+    "topic_kind": "path",
+    "count": 8,
+    "frame_ids": [
+      "camera_init"
+    ],
+    "first_stamp": 1780781925.2647069,
+    "last_stamp": 1780781925.2647069,
+    "first_receive_elapsed_s": 19.530954,
+    "last_receive_elapsed_s": 27.236849,
+    "rate_hz": 0.908395,
+    "monotonic": true,
+    "regression_count": 0,
+    "regression_examples": []
+  },
+  "odometry_regressions": [],
+  "cloud_registered_regressions": []
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "mosim.fastlio_loopback_source_audit.v1",
+  "source_path": "Results/tmp/fastlio_ros2_candidates_import/FAST_LIO_ROS2-ros2/src/laserMapping.cpp",
+  "occurrences": [
+    {
+      "line": 291,
+      "function": "standard_pcl_cbk",
+      "context": "285:     mtx_buffer.lock();\n286:     scan_count ++;\n287:     double cur_time = get_time_sec(msg->header.stamp);\n288:     double preprocess_start_time = omp_get_wtime();\n289:     if (!is_first_lidar && cur_time < last_timestamp_lidar)\n290:     {\n291:         std::cerr << \"lidar loop back, clear buffer\" << std::endl;\n292:         lidar_buffer.clear();\n293:     }\n294:     if (is_first_lidar)\n295:     {\n296:         is_first_lidar = false;\n297:     }"
+    },
+    {
+      "line": 319,
+      "function": "livox_pcl_cbk",
+      "context": "313:     mtx_buffer.lock();\n314:     double cur_time = get_time_sec(msg->header.stamp);\n315:     double preprocess_start_time = omp_get_wtime();\n316:     scan_count ++;\n317:     if (!is_first_lidar && cur_time < last_timestamp_lidar)\n318:     {\n319:         std::cerr << \"lidar loop back, clear buffer\" << std::endl;\n320:         lidar_buffer.clear();\n321:     }\n322:     if(is_first_lidar)\n323:     {\n324:         is_first_lidar = false;\n325:     }"
+    },
+    {
+      "line": 370,
+      "function": "imu_cbk",
+      "context": "364:     double timestamp = get_time_sec(msg->header.stamp);\n365: \n366:     mtx_buffer.lock();\n367: \n368:     if (timestamp < last_timestamp_imu)\n369:     {\n370:         std::cerr << \"lidar loop back, clear buffer\" << std::endl;\n371:         imu_buffer.clear();\n372:     }\n373: \n374:     last_timestamp_imu = timestamp;\n375: \n376:     imu_buffer.push_back(msg);"
+    }
+  ],
+  "diagnostic_fields_needed": [
+    "callback",
+    "current_timestamp",
+    "previous_timestamp",
+    "is_first_lidar",
+    "last_timestamp_lidar",
+    "last_timestamp_imu",
+    "buffer_sizes"
+  ]
+}

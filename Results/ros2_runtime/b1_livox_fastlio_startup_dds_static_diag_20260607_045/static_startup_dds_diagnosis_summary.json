@@ -1,0 +1,132 @@
+{
+  "schema": "mosim.ros2_runtime.livox_fastlio_startup_dds_static_diag_045.summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-LIVOX-FASTLIO-STARTUP-DDS-STATIC-DIAG-20260607-045",
+  "status": "completed_static_diagnosis",
+  "new_ros2_live_probe_run": false,
+  "classification": "startup_subscriber_load_sensitive_livox_node_now_stamp_regression_with_fastlio_present",
+  "evidence_comparison": {
+    "source_jsonl": {
+      "frame_count": 120,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "time_monotonic": true,
+      "evidence": "Results/ros2_runtime/b1_fastlio_only_full_window_retest_20260607_044/source_window_check.json"
+    },
+    "043_source_only": {
+      "livox_count": 120,
+      "livox_monotonic": true,
+      "livox_regression_count": 0,
+      "imu_count": 2413,
+      "imu_monotonic": true,
+      "imu_regression_count": 0,
+      "fastlio_present": false,
+      "evidence": "Results/ros2_runtime/b1_source_full_window_timestamp_discipline_20260607_043/source_full_window_recorder_summary.json"
+    },
+    "044_fastlio_present": {
+      "livox_count": 120,
+      "livox_monotonic": false,
+      "livox_regression_count": 1,
+      "livox_regression": {
+        "from_topic_seq": 1,
+        "to_topic_seq": 2,
+        "from_stamp": 1780781940.0069153,
+        "to_stamp": 1780781937.1670537,
+        "delta_s": -2.839861631
+      },
+      "imu_count": 2433,
+      "imu_monotonic": true,
+      "fastlio_present": true,
+      "odometry_count": 89,
+      "cloud_registered_count": 89,
+      "fastlio_loopback": {
+        "loopback_total": 1,
+        "livox_pcl_cbk": 1,
+        "imu_cbk": 0,
+        "standard_pcl_cbk": 0,
+        "unlabeled_loopback": 0
+      },
+      "evidence": "Results/ros2_runtime/b1_fastlio_only_full_window_retest_20260607_044/fastlio_only_full_window_retest_summary.json"
+    }
+  },
+  "static_code_findings": {
+    "dense_lidar_stamp_origin": {
+      "file": "Scripts/ros/mosim_dense_lidar_cpp/src/dense_lidar_replay_node.cpp",
+      "lines": "198-222",
+      "finding": "The dense LiDAR replay node publishes Livox CustomMsg with reliable KeepLast(20); each timer tick assigns msg.header.stamp = now(), copies that stamp into livox_msg.header.stamp, and derives livox_msg.timebase from the header stamp."
+    },
+    "imu_stamp_origin": {
+      "file": "Scripts/ros/mosim_dense_lidar_cpp/src/mworks_state_imu_replay_node.cpp",
+      "lines": "178-205",
+      "finding": "The IMU/state node publishes reliable KeepLast(64); each timer tick uses now() for IMU, TF, and truth odometry stamps. In 044 IMU remained monotonic."
+    },
+    "fastlio_livox_callback_guard": {
+      "file": "Results/tmp/fastlio_ros2_candidates_import/FAST_LIO_ROS2-ros2/src/laserMapping.cpp",
+      "lines": "318-360",
+      "finding": "FAST-LIO livox_pcl_cbk computes cur_time from msg->header.stamp and clears the LiDAR buffer whenever cur_time < last_timestamp_lidar."
+    },
+    "fastlio_subscription_qos": {
+      "file": "Results/tmp/fastlio_ros2_candidates_import/FAST_LIO_ROS2-ros2/src/laserMapping.cpp",
+      "lines": "946-952",
+      "finding": "FAST-LIO subscribes to Livox with depth 20 and IMU with depth 10. In 044 Livox publisher and FAST-LIO subscriber both used reliable queue depth 20."
+    }
+  },
+  "topic_graph_findings": {
+    "clock_present": false,
+    "use_sim_time": {
+      "dense_lidar": false,
+      "state_imu": false,
+      "laser_mapping": false
+    },
+    "044_during_livox_publishers": 1,
+    "044_during_livox_subscriptions": 3,
+    "044_during_livox_subscribers": [
+      "mosim_044_fastlio_only_full_window_recorder",
+      "laser_mapping",
+      "mosim_wait_once_summary"
+    ],
+    "044_after_active_livox_subscriptions": 2,
+    "043_source_only_livox_subscriber_load": "source recorder plus startup wait subscriber; no FAST-LIO subscriber",
+    "evidence": "Results/ros2_runtime/b1_fastlio_only_full_window_retest_20260607_044/topic_info_publishers_before_during_after.txt"
+  },
+  "reasoning": {
+    "ruled_out": [
+      "source JSONL frame time regression",
+      "multiple Livox publishers",
+      "/clock publication",
+      "use_sim_time switching",
+      "IMU source-topic regression in 044",
+      "planner, RViz2, UE, TF bridge, PositionCommand, or 20Hz adapter involvement"
+    ],
+    "supported": [
+      "FAST-LIO presence changes early Livox subscriber load and queue topology.",
+      "The failing stream uses publisher-side node now() as the emitted header stamp rather than source-frame time.",
+      "The regression appears at the beginning of the 044 Livox stream while FAST-LIO has already accepted earlier LiDAR messages and last_timestamp_imu remains unset.",
+      "FAST-LIO's Livox callback reports the same early regressed message as a buffer-clearing loop-back."
+    ],
+    "not_proven": [
+      "Whether the immediate trigger is node clock/wall-clock discontinuity, executor/timer startup ordering, DDS reliable queue behavior, discovery/startup wait subscriber interaction, or another subscriber-load effect.",
+      "Whether removing the wait-once subscriber, changing startup settle time, or adding publisher-side monotonic stamp instrumentation would eliminate the event."
+    ]
+  },
+  "next_minimal_diagnostic": {
+    "recommended": true,
+    "scope": "separately authorized evidence-local publisher-side timestamp instrumentation",
+    "details": [
+      "Record for each dense LiDAR publish: frame index, source frame time, steady_clock timestamp, node now() before/after publish, emitted header stamp, timebase, publish duration, and current livox publisher matched-subscription count if available.",
+      "Keep one bounded FAST-LIO-only no-goal probe if PMO authorizes runtime; do not start RViz2, UE, planner/EGO, TF bridge, PositionCommand, or 20Hz adapter.",
+      "Do not change production source/config/extrinsics/frame adapters; use Results/tmp or evidence-local copy/instrumentation only."
+    ]
+  },
+  "disposable_subagent_audit": {
+    "agent_id": "019e9eef-61d6-7133-8358-bd5ff8361ec9",
+    "nickname": "Hume",
+    "status": "completed_after_initial_wait",
+    "result_used": true,
+    "agreement": "Subagent independently classified the likely mechanism as publisher timestamp source/load sensitivity at startup with secondary startup/subscriber-load boundary trigger.",
+    "key_notes": [
+      "The observed Livox topic stream itself regressed in 044, so a purely FAST-LIO-local buffer explanation is insufficient.",
+      "FAST-LIO livox_pcl_cbk appears to react to the same non-monotonic Livox header stamp seen by the recorder.",
+      "DDS should normally preserve per-writer ordering, so publisher-side trace is needed before blaming DDS as sole cause."
+    ]
+  },
+  "claim_boundary": "Static startup/DDS/subscriber-load diagnosis only; no new live ROS2 evidence and no FAST-LIO success, TF/RViz readiness, localization quality, local-map quality, planner_ready, controller performance, mission success, or closed_loop claim."
+}

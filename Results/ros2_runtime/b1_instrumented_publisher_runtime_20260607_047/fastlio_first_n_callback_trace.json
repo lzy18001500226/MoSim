@@ -1,0 +1,5 @@
+{
+  "status": "unavailable_without_fastlio_source_instrumentation",
+  "available_evidence": "callback-labeled loop-back lines only",
+  "reason": "047 forbids production FAST-LIO source/config edits; this probe did not build an evidence-local FAST-LIO fork."
+}

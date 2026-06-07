@@ -1,0 +1,40 @@
+{
+  "schema": "mosim.ros2_runtime.fastlio_callback_dds_boundary_diag_042.dds_qos_queue_review.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-CALLBACK-DDS-BOUNDARY-DIAG-20260607-042",
+  "static_review_only": true,
+  "topic_identity_from_041": {
+    "livox_publisher_count_during": 1,
+    "livox_publisher_count_after_active": 1,
+    "imu_publisher_count_during": 1,
+    "imu_publisher_count_after_active": 1,
+    "multiple_publishers_supported_by_evidence": false
+  },
+  "clock": {
+    "clock_present_before": false,
+    "clock_present_during": false,
+    "clock_present_after_active": false,
+    "use_sim_time": {
+      "dense_lidar": false,
+      "state_imu": false,
+      "laser_mapping": false
+    }
+  },
+  "qos_and_queue_static_mapping": {
+    "dense_lidar_pointcloud_publisher": "rclcpp::SensorDataQoS()",
+    "dense_lidar_livox_publisher": "rclcpp::QoS(rclcpp::KeepLast(20)).reliable()",
+    "state_imu_publisher": "rclcpp::QoS(rclcpp::KeepLast(64)).reliable()",
+    "fastlio_livox_subscription": "create_subscription<livox_ros_driver2::msg::CustomMsg>(lid_topic, 20, livox_pcl_cbk)",
+    "fastlio_imu_subscription": "create_subscription<sensor_msgs::msg::Imu>(imu_topic, 10, imu_cbk)"
+  },
+  "recorder_vs_fastlio": {
+    "active_recorder_scope": "bounded prefix; stops after min_required source/output samples",
+    "fastlio_scope": "subscriber remains active across more of finite replay until cleanup",
+    "why_observations_can_differ": "DDS queues and callback scheduling can deliver messages to FAST-LIO outside the recorder's accepted prefix. FAST-LIO compares each delivered callback stamp to its own last_timestamp state."
+  },
+  "classification": {
+    "dds_queue_stale_delivery": "possible_contributor_not_proven_sole_cause",
+    "multiple_publishers": "not_supported",
+    "clock_topic_or_sim_time_switch": "not_supported",
+    "primary_static_explanation": "callback-local full-window consumer sees post-prefix timestamp regression from node-clock stamped finite replay"
+  }
+}

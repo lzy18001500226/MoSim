@@ -1,0 +1,56 @@
+{
+  "schema": "mosim.ros2_runtime.imu_startup_discipline_030_plan.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-IMU-STARTUP-DISCIPLINE-GATE-20260606-030",
+  "department_local_goal": "Using the 028 long non-wrapping body-frame source and 029 callback-labeled FAST-LIO diagnostics, run one bounded no-goal startup discipline candidate that prevents pre-first-LiDAR imu_cbk loop-back while restoring nonzero /Odometry and /cloud_registered.",
+  "critical_path_steps": [
+    "Recover AGENTS.md, new_conversation_context, ros2_runtime_setup, agent_task_ledger, task packet 030, blocker 028, return 029, and 028/029 evidence.",
+    "Confirm no prior 030 return/blocker packet exists.",
+    "Audit 028 and 029 startup order and select the smallest evidence-local candidate.",
+    "Write evidence-local runner and startup recorder under the 030 evidence directory only.",
+    "Check WSL/ROS2 cleanup state before launch; write blocker if stale processes remain unsafe.",
+    "Run one no-goal candidate micro-probe: FAST-LIO first, LiDAR replay until first Livox frame, then IMU publisher, with loop=false source.",
+    "Require zero callback-labeled loop-back events, nonzero /Odometry and /cloud_registered, Livox/IMU monotonicity, no forbidden topics/actions, and final cleanup."
+  ],
+  "parallelizable_slices": [
+    {
+      "slice": "startup_sequence_audit",
+      "scope": "Read-only comparison of 028 and 029 runner launch order and first message timing.",
+      "status": "completed_locally"
+    },
+    {
+      "slice": "source_and_topic_contract_check",
+      "scope": "Confirm 028 long source path, topics, frame ids, and no-goal forbidden surfaces remain unchanged.",
+      "status": "completed_locally"
+    }
+  ],
+  "subagent_plan": {
+    "decision": "available_but_not_useful",
+    "reason": "The remaining work is a bounded single-runtime probe with ROS2 process locks and a small local script audit already completed from durable 028/029 evidence. A disposable subagent would not safely run in parallel against the same ROS graph."
+  },
+  "subagents_used": [],
+  "selected_candidate": {
+    "name": "fastlio_lidar_first_then_imu",
+    "reason": "028 started IMU first, then FAST-LIO, then LiDAR; 029 proved the loop-back was imu_cbk before first accepted LiDAR with a large IMU buffer. The minimal no-algorithm discipline is to start FAST-LIO first, start LiDAR and wait for the first Livox CustomMsg, then start IMU so FAST-LIO does not accumulate a large IMU backlog before first LiDAR.",
+    "writes": "Evidence-local runner and recorder only; no production source, extrinsic, frame adapter, planner, or References edits."
+  },
+  "verification_gates": [
+    "pre_cleanup_no_stale_ros_fastlio_replay_processes",
+    "startup_sequence_candidate_recorded",
+    "no_goal_probe_only",
+    "loop_false_long_source_or_bounded_consumption_recorded",
+    "livox_count_nonzero_and_timestamp_monotonic",
+    "imu_count_nonzero_and_timestamp_monotonic",
+    "fastlio_log_has_zero_callback_labeled_loopback_events",
+    "odometry_count_nonzero",
+    "cloud_registered_count_nonzero",
+    "forbidden_topics_absent_or_zero",
+    "cleanup_no_replay_fastlio_ego_processes",
+    "forbidden_actions_all_false"
+  ],
+  "manual_review_or_blocker_triggers": [
+    "If ROS2/WSL cleanup is unsafe, write blocker before running.",
+    "If callback-labeled loop-back remains after this candidate, write blocker and do not tune repeatedly.",
+    "If FAST-LIO outputs are zero after zero loop-back, write blocker and do not enter planner acceptance.",
+    "No manual RViz/RViz2 review is requested."
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "schema": "mosim.ros2_runtime.livox_loopback_regression_diag_038.summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-LIVOX-LOOPBACK-REGRESSION-DIAG-20260607-038",
+  "created_at": "2026-06-07T02:12:00+08:00",
+  "mode": "static_read_only_034_036_037_runner_log_review",
+  "live_probe_run": false,
+  "diagnosis": {
+    "classification": "diagnostic_tooling_or_load_sensitive_runtime_livox_publication_regression",
+    "summary": "037 did not change the source JSONL, loop=false setting, max_frames, LiDAR rate, IMU rate, or declared FAST-LIO -> first Livox -> IMU startup order relative to 034. The 037-only material change was active-window TF capture and TF edge wait criteria in the same recorder. In that run, the dense LiDAR replay node showed an abnormal publish-cost interval and the active Livox stream regressed from 1780765959.0262113 to 1780765957.0810344, matching the FAST-LIO livox_pcl_cbk loop-back timebase.",
+    "most_likely_cause": "037 active TF/source/output diagnostic load or wait-condition side effect perturbed the runtime publication path enough to expose a stale/out-of-order Livox message. The static 120-frame source window remained monotonic, and the runner's declared startup order stayed 034-style.",
+    "ruled_out": [
+      "static_source_jsonl_ordering_regression",
+      "replay_loop_parameter_regression",
+      "exit_after_last_frame_parameter_regression",
+      "declared_startup_order_change",
+      "pure_recorder_summary_parse_bug"
+    ],
+    "not_fully_proven": [
+      "whether the immediate trigger was the active /tf subscription itself",
+      "whether the TF edge wait condition extended the active window into a sensitive interval",
+      "whether frequent JSON writes in the recorder contributed to WSL/ROS executor load",
+      "whether a stale Livox message remained in DDS/FAST-LIO during the 037 launch boundary despite cleanup evidence"
+    ]
+  },
+  "key_observations": {
+    "source_static": {
+      "frame_count": 120,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "time_monotonic": true,
+      "same_source_path_used_by_034_and_037": true
+    },
+    "runner_parameters": {
+      "034_startup_order": "FAST-LIO -> first Livox frame -> IMU",
+      "037_startup_order": "FAST-LIO -> first Livox frame -> IMU",
+      "034_loop": false,
+      "037_loop": false,
+      "034_exit_after_last_frame": false,
+      "037_exit_after_last_frame": false,
+      "034_lidar_rate_hz": 10.0,
+      "037_lidar_rate_hz": 10.0,
+      "034_imu_rate_hz": 200.0,
+      "037_imu_rate_hz": 200.0
+    },
+    "active_recorder_difference": {
+      "034_topics": [
+        "/mosim/livox/lidar",
+        "/mosim/forward/imu",
+        "/Odometry",
+        "/path",
+        "/cloud_registered"
+      ],
+      "037_topics": [
+        "/mosim/livox/lidar",
+        "/mosim/forward/imu",
+        "/Odometry",
+        "/path",
+        "/cloud_registered",
+        "/tf"
+      ],
+      "037_extra_waits": [
+        "tf_min_count >= 4",
+        "ue_world -> base_link observed",
+        "camera_init -> body observed"
+      ]
+    },
+    "037_livox_regression": {
+      "from_seq": 2,
+      "to_seq": 3,
+      "from_stamp": 1780765959.0262113,
+      "to_stamp": 1780765957.0810344,
+      "matching_fastlio_timebase": 1780765957081034311,
+      "matching_fastlio_callback": "livox_pcl_cbk"
+    },
+    "dense_lidar_stats": {
+      "034_publish_intervals": "near 9.23 Hz with mean_publish_us around 1 ms",
+      "037_abnormal_interval": {
+        "publishes": 13,
+        "elapsed_s": 2.058,
+        "rate_hz": 6.316,
+        "mean_publish_us": 66925.0
+      }
+    },
+    "fastlio_loopbacks": {
+      "034_total": 0,
+      "035_classified_by_036": {
+        "total": 1,
+        "callback": "imu_cbk",
+        "phase": "after first LiDAR and after FAST-LIO outputs started"
+      },
+      "037": {
+        "total": 2,
+        "standard_pcl_cbk": 0,
+        "livox_pcl_cbk": 1,
+        "imu_cbk": 1,
+        "unlabeled_loopback": 0
+      }
+    }
+  },
+  "next_gate_recommendation": {
+    "name": "no_goal_source_output_then_tf_shadow_gate",
+    "scope": "one bounded no-goal diagnostic/correction gate, not planner/readiness acceptance",
+    "minimum_changes": [
+      "keep 034 active source/output recorder unchanged for acceptance",
+      "move TF classification to post-active or a separate lowest-load listener that does not gate source/output acceptance",
+      "add replay-side evidence-local publish sequence and stamp diagnostics for Livox without changing source data or extrinsics",
+      "keep FAST-LIO -> first Livox frame -> IMU startup discipline",
+      "block on any Livox/IMU nonmonotonicity or any FAST-LIO callback-labeled/unlabeled loop-back"
+    ],
+    "do_not_do": [
+      "do not create ue_world <-> camera_init bridge",
+      "do not publish planner goals or setpoints",
+      "do not run EGO/planner/Bspline/PositionCommand/20Hz adapter",
+      "do not edit extrinsics, frame adapters, source data, production ROS2 packages, References, MWORKS, UE, controller, or planner configs"
+    ]
+  },
+  "evidence_paths": {
+    "034_runner": "Results/ros2_runtime/b1_032_acceptance_window_recovery_20260606_034/run_acceptance_window_recovery.sh",
+    "034_active_window": "Results/ros2_runtime/b1_032_acceptance_window_recovery_20260606_034/active_window_stamps.json",
+    "034_dense_lidar_log": "Results/ros2_runtime/b1_032_acceptance_window_recovery_20260606_034/dense_lidar_cpp.log",
+    "034_fastlio_log": "Results/ros2_runtime/b1_032_acceptance_window_recovery_20260606_034/fast_lio.launch.log",
+    "036_static_summary": "Results/ros2_runtime/b1_imu_loopback_startup_diag_20260607_036/static_034_035_loopback_diag_summary.json",
+    "037_runner": "Results/ros2_runtime/b1_clean_tf_readiness_nogoal_20260607_037/run_clean_tf_readiness_nogoal.sh",
+    "037_active_window": "Results/ros2_runtime/b1_clean_tf_readiness_nogoal_20260607_037/active_source_output_tf_stamps.json",
+    "037_dense_lidar_log": "Results/ros2_runtime/b1_clean_tf_readiness_nogoal_20260607_037/dense_lidar_cpp.log",
+    "037_fastlio_log": "Results/ros2_runtime/b1_clean_tf_readiness_nogoal_20260607_037/fast_lio.launch.log",
+    "037_blocker": "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-CLEAN-TF-READINESS-NOGOAL-20260607-037.json"
+  }
+}

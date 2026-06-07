@@ -1,0 +1,5 @@
+{
+  "camera_init_to_body": "observed_active",
+  "ue_world_to_base_link": "observed_active",
+  "ue_world_camera_init_bridge_any_direction": "absent"
+}

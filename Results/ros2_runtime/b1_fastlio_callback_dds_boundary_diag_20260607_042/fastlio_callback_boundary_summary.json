@@ -1,0 +1,28 @@
+{
+  "schema": "mosim.ros2_runtime.fastlio_callback_dds_boundary_diag_042.summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-CALLBACK-DDS-BOUNDARY-DIAG-20260607-042",
+  "status": "completed_static_diagnosis",
+  "classification": "finite_replay_full_window_node_clock_boundary_with_callback_local_loopback",
+  "static_first_completed": true,
+  "live_probe_run": false,
+  "result": {
+    "summary": "041 is not a contradiction: recorder monotonicity covered a bounded active prefix, while FAST-LIO callback-local loop-back came from later full-window callback delivery after the active recorder had stopped.",
+    "primary_cause_supported_by_static_evidence": "source publishers stamp Livox and IMU with node now(); 041 full source logs show post-prefix runtime timestamp backward ordering; FAST-LIO compares delivered header stamps against persistent last_timestamp_lidar/last_timestamp_imu state.",
+    "dds_queue_stale_delivery_role": "possible contributor because FAST-LIO and the recorder are independent subscribers with different queue depths and lifetimes, but static evidence points first to full-window node-clock/replay-boundary behavior.",
+    "not_supported_causes": [
+      "multiple Livox or IMU publishers",
+      "/clock or use_sim_time switch",
+      "source JSONL frame time regression",
+      "extrinsic/frame adapter issue",
+      "planner, RViz, UE, TF bridge, PositionCommand, or 20Hz adapter involvement"
+    ]
+  },
+  "evidence": [
+    "Results/ros2_runtime/b1_fastlio_callback_dds_boundary_diag_20260607_042/fastlio_callback_source_mapping.md",
+    "Results/ros2_runtime/b1_fastlio_callback_dds_boundary_diag_20260607_042/evidence_time_alignment.json",
+    "Results/ros2_runtime/b1_fastlio_callback_dds_boundary_diag_20260607_042/dds_qos_queue_review.json",
+    "Results/ros2_runtime/b1_fastlio_callback_dds_boundary_diag_20260607_042/finite_replay_boundary_review.json",
+    "Results/ros2_runtime/b1_fastlio_callback_dds_boundary_diag_20260607_042/optional_probe_summary.json"
+  ],
+  "claim_boundary": "FAST-LIO callback/DDS/replay-boundary diagnosis only; no FAST-LIO success, TF/RViz readiness, localization quality, local-map quality, planner_ready, controller performance, mission success, or closed_loop claim."
+}

@@ -1,0 +1,1579 @@
+{
+  "schema": "mosim.ros2_runtime.acceptance_window_recovery_034_summary.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-032-ACCEPTANCE-WINDOW-RECOVERY-20260606-034",
+  "status": "preflight_active_window_recovered_no_goal",
+  "checks": {
+    "pre_cleanup_no_stale_ros_fastlio_replay_processes": true,
+    "uses_031_startup_order_and_028_long_source": true,
+    "active_window_captured_before_tf_rviz_diagnostics": true,
+    "active_livox_and_imu_nonzero_monotonic": true,
+    "active_fastlio_outputs_nonzero": true,
+    "active_min_counts_reached": true,
+    "zero_fastlio_loopback_events_full_log": true,
+    "post_active_tf_sample_or_gap_recorded": true,
+    "post_active_rviz2_cli_readiness_recorded": true,
+    "forbidden_topics_absent_or_zero": true
+  },
+  "source": {
+    "path": "/mnt/c/Users/HP/Desktop/MoSim/Results/ros2_runtime/b1_long_noloop_source_gate_20260606_028/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body_120.jsonl",
+    "frame_count": 120,
+    "first": {
+      "seq": 0,
+      "time": 0.0,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 16526
+    },
+    "last": {
+      "seq": 119,
+      "time": 11.9,
+      "coordinate_frame": "body_lidar_m_z_up",
+      "point_count": 17156
+    },
+    "all_body_lidar_m_z_up": true,
+    "time_monotonic": true
+  },
+  "active_window_acceptance": {
+    "schema": "mosim.ros2_runtime.active_window_recorder_034.v1",
+    "start_label": "034_active_window_before_tf_rviz",
+    "topics": {
+      "livox": "/mosim/livox/lidar",
+      "imu": "/mosim/forward/imu",
+      "odometry": "/Odometry",
+      "path": "/path",
+      "cloud_registered": "/cloud_registered"
+    },
+    "max_per_topic": 40,
+    "min_required": 20,
+    "timeout_s": 24.0,
+    "elapsed_s": 17.763759,
+    "counts": {
+      "livox": 30,
+      "imu": 40,
+      "odometry": 20,
+      "path": 2,
+      "cloud_registered": 20
+    },
+    "rates_hz": {
+      "livox": 9.25753,
+      "imu": 181.89026,
+      "odometry": 9.230439,
+      "path": 0.922686,
+      "cloud_registered": 9.242612
+    },
+    "frame_ids": {
+      "livox": [
+        "base/mid360_link"
+      ],
+      "imu": [
+        "base/forward_imu_optical_frame"
+      ],
+      "odometry": [
+        "camera_init"
+      ],
+      "path": [
+        "camera_init"
+      ],
+      "cloud_registered": [
+        "camera_init"
+      ]
+    },
+    "stamp_bounds": {
+      "livox": {
+        "first": 1780757660.3234434,
+        "last": 1780757663.462214
+      },
+      "imu": {
+        "first": 1780757661.0968928,
+        "last": 1780757661.3081372
+      },
+      "odometry": {
+        "first": 1780757661.4039254,
+        "last": 1780757663.4623141
+      },
+      "path": {
+        "first": 1780757647.885896,
+        "last": 1780757647.885896
+      },
+      "cloud_registered": {
+        "first": 1780757661.4039254,
+        "last": 1780757663.4623141
+      }
+    },
+    "monotonic": {
+      "livox": true,
+      "imu": true,
+      "odometry": true,
+      "path": true,
+      "cloud_registered": true
+    },
+    "regressions": {
+      "livox": [],
+      "imu": [],
+      "odometry": [],
+      "path": [],
+      "cloud_registered": []
+    },
+    "acceptance": {
+      "livox_min_count": true,
+      "imu_min_count": true,
+      "odometry_min_count": true,
+      "cloud_registered_min_count": true,
+      "livox_monotonic": true,
+      "imu_monotonic": true,
+      "odometry_nonzero": true,
+      "cloud_registered_nonzero": true
+    },
+    "events": [
+      {
+        "seq": 0,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.616519,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757660,
+          "nanosec": 323443294,
+          "seconds": 1780757660.3234434
+        },
+        "point_num": 16526,
+        "timebase": 1780757660323443294,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 1,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.723597,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757660,
+          "nanosec": 428875612,
+          "seconds": 1780757660.4288757
+        },
+        "point_num": 16526,
+        "timebase": 1780757660428875612,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 2,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.825812,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757660,
+          "nanosec": 537157817,
+          "seconds": 1780757660.5371578
+        },
+        "point_num": 16526,
+        "timebase": 1780757660537157817,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 3,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 14.93277,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757660,
+          "nanosec": 645533670,
+          "seconds": 1780757660.6455336
+        },
+        "point_num": 16522,
+        "timebase": 1780757660645533670,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 4,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.04126,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757660,
+          "nanosec": 753862519,
+          "seconds": 1780757660.7538626
+        },
+        "point_num": 16513,
+        "timebase": 1780757660753862519,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 5,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.150071,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757660,
+          "nanosec": 862190386,
+          "seconds": 1780757660.8621905
+        },
+        "point_num": 16501,
+        "timebase": 1780757660862190386,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 6,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.263929,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757660,
+          "nanosec": 970535423,
+          "seconds": 1780757660.9705355
+        },
+        "point_num": 16474,
+        "timebase": 1780757660970535423,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 188
+      },
+      {
+        "seq": 7,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.375473,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 78815887,
+          "seconds": 1780757661.078816
+        },
+        "point_num": 16450,
+        "timebase": 1780757661078815887,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 188
+      },
+      {
+        "seq": 8,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.37872,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 96892847,
+          "seconds": 1780757661.0968928
+        }
+      },
+      {
+        "seq": 9,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.381054,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 102359033,
+          "seconds": 1780757661.102359
+        }
+      },
+      {
+        "seq": 10,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.383233,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 107713299,
+          "seconds": 1780757661.1077132
+        }
+      },
+      {
+        "seq": 11,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.385381,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 113134603,
+          "seconds": 1780757661.1131346
+        }
+      },
+      {
+        "seq": 12,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.387531,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 118466928,
+          "seconds": 1780757661.1184669
+        }
+      },
+      {
+        "seq": 13,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.38968,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 123968165,
+          "seconds": 1780757661.1239681
+        }
+      },
+      {
+        "seq": 14,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.392211,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 129393410,
+          "seconds": 1780757661.1293933
+        }
+      },
+      {
+        "seq": 15,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.394452,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 134811175,
+          "seconds": 1780757661.1348112
+        }
+      },
+      {
+        "seq": 16,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.396514,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 140228677,
+          "seconds": 1780757661.1402287
+        }
+      },
+      {
+        "seq": 17,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.399824,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 145637867,
+          "seconds": 1780757661.1456378
+        }
+      },
+      {
+        "seq": 18,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.405296,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 151051199,
+          "seconds": 1780757661.1510513
+        }
+      },
+      {
+        "seq": 19,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.411147,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 156484536,
+          "seconds": 1780757661.1564846
+        }
+      },
+      {
+        "seq": 20,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.416121,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 161875639,
+          "seconds": 1780757661.1618757
+        }
+      },
+      {
+        "seq": 21,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.421483,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 167296983,
+          "seconds": 1780757661.167297
+        }
+      },
+      {
+        "seq": 22,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.426919,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 172713131,
+          "seconds": 1780757661.172713
+        }
+      },
+      {
+        "seq": 23,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.432332,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 178135868,
+          "seconds": 1780757661.1781359
+        }
+      },
+      {
+        "seq": 24,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.437746,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 183544745,
+          "seconds": 1780757661.1835446
+        }
+      },
+      {
+        "seq": 25,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.474151,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 187166205,
+          "seconds": 1780757661.1871662
+        },
+        "point_num": 16453,
+        "timebase": 1780757661187166205,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 188
+      },
+      {
+        "seq": 26,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.477736,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 188978590,
+          "seconds": 1780757661.1889787
+        }
+      },
+      {
+        "seq": 27,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.480199,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 194388287,
+          "seconds": 1780757661.1943884
+        }
+      },
+      {
+        "seq": 28,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.482608,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 199801039,
+          "seconds": 1780757661.199801
+        }
+      },
+      {
+        "seq": 29,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.484911,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 205232090,
+          "seconds": 1780757661.2052321
+        }
+      },
+      {
+        "seq": 30,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.487204,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 210635301,
+          "seconds": 1780757661.2106352
+        }
+      },
+      {
+        "seq": 31,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.489494,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 216046060,
+          "seconds": 1780757661.216046
+        }
+      },
+      {
+        "seq": 32,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.492175,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 221471771,
+          "seconds": 1780757661.2214718
+        }
+      },
+      {
+        "seq": 33,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.495185,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 226887606,
+          "seconds": 1780757661.2268877
+        }
+      },
+      {
+        "seq": 34,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.497878,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 232313469,
+          "seconds": 1780757661.2323134
+        }
+      },
+      {
+        "seq": 35,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.500921,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 237742979,
+          "seconds": 1780757661.237743
+        }
+      },
+      {
+        "seq": 36,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.504016,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 243160588,
+          "seconds": 1780757661.2431605
+        }
+      },
+      {
+        "seq": 37,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.507216,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 248591020,
+          "seconds": 1780757661.248591
+        }
+      },
+      {
+        "seq": 38,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.509782,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 253974520,
+          "seconds": 1780757661.2539744
+        }
+      },
+      {
+        "seq": 39,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.513675,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 259403515,
+          "seconds": 1780757661.2594035
+        }
+      },
+      {
+        "seq": 40,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.519118,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 264828972,
+          "seconds": 1780757661.264829
+        }
+      },
+      {
+        "seq": 41,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.524539,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 270231221,
+          "seconds": 1780757661.2702312
+        }
+      },
+      {
+        "seq": 42,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.52999,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 275644320,
+          "seconds": 1780757661.2756443
+        }
+      },
+      {
+        "seq": 43,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.53536,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 281053078,
+          "seconds": 1780757661.281053
+        }
+      },
+      {
+        "seq": 44,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.540834,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 286480688,
+          "seconds": 1780757661.2864807
+        }
+      },
+      {
+        "seq": 45,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.546201,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 291890444,
+          "seconds": 1780757661.2918904
+        }
+      },
+      {
+        "seq": 46,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.582755,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 295506826,
+          "seconds": 1780757661.2955067
+        },
+        "point_num": 16473,
+        "timebase": 1780757661295506826,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 188
+      },
+      {
+        "seq": 47,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.587211,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 297318658,
+          "seconds": 1780757661.2973187
+        }
+      },
+      {
+        "seq": 48,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.590272,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 302728278,
+          "seconds": 1780757661.3027282
+        }
+      },
+      {
+        "seq": 49,
+        "topic_kind": "imu",
+        "receive_elapsed_s": 15.593135,
+        "frame_id": "base/forward_imu_optical_frame",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 308137160,
+          "seconds": 1780757661.3081372
+        }
+      },
+      {
+        "seq": 50,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.691109,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 403825418,
+          "seconds": 1780757661.4038255
+        },
+        "point_num": 16465,
+        "timebase": 1780757661403825418,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 188
+      },
+      {
+        "seq": 51,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 15.696053,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 403925418,
+          "seconds": 1780757661.4039254
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 52,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 15.705444,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 403925418,
+          "seconds": 1780757661.4039254
+        },
+        "point_count": 16464
+      },
+      {
+        "seq": 53,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.803087,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 512206376,
+          "seconds": 1780757661.5122063
+        },
+        "point_num": 16492,
+        "timebase": 1780757661512206376,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 54,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 15.806976,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 512306213,
+          "seconds": 1780757661.5123062
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 55,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 15.809898,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 512306213,
+          "seconds": 1780757661.5123062
+        },
+        "point_count": 16491
+      },
+      {
+        "seq": 56,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 15.907526,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 620498764,
+          "seconds": 1780757661.6204987
+        },
+        "point_num": 16500,
+        "timebase": 1780757661620498764,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 187
+      },
+      {
+        "seq": 57,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 15.91335,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 620598554,
+          "seconds": 1780757661.6205986
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 58,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 15.918095,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 620598554,
+          "seconds": 1780757661.6205986
+        },
+        "point_count": 16499
+      },
+      {
+        "seq": 59,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.042031,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 728881362,
+          "seconds": 1780757661.7288814
+        },
+        "point_num": 16486,
+        "timebase": 1780757661728881362,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 188
+      },
+      {
+        "seq": 60,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 16.046906,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 728981256,
+          "seconds": 1780757661.7289813
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 61,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 16.051103,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 728981256,
+          "seconds": 1780757661.7289813
+        },
+        "point_count": 16485
+      },
+      {
+        "seq": 62,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.124724,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 837090010,
+          "seconds": 1780757661.83709
+        },
+        "point_num": 16471,
+        "timebase": 1780757661837090010,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 188
+      },
+      {
+        "seq": 63,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 16.129653,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 837189912,
+          "seconds": 1780757661.83719
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 64,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 16.133115,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 837189912,
+          "seconds": 1780757661.83719
+        },
+        "point_count": 16470
+      },
+      {
+        "seq": 65,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.234251,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 945489833,
+          "seconds": 1780757661.94549
+        },
+        "point_num": 16431,
+        "timebase": 1780757661945489833,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 188
+      },
+      {
+        "seq": 66,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 16.238943,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 945589780,
+          "seconds": 1780757661.9455898
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 67,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 16.24231,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757661,
+          "nanosec": 945589780,
+          "seconds": 1780757661.9455898
+        },
+        "point_count": 16430
+      },
+      {
+        "seq": 68,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.341227,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 53857936,
+          "seconds": 1780757662.053858
+        },
+        "point_num": 16366,
+        "timebase": 1780757662053857936,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 189
+      },
+      {
+        "seq": 69,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 16.347519,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 53957939,
+          "seconds": 1780757662.053958
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 70,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 16.351509,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 53957939,
+          "seconds": 1780757662.053958
+        },
+        "point_count": 16365
+      },
+      {
+        "seq": 71,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.456698,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 162245299,
+          "seconds": 1780757662.1622453
+        },
+        "point_num": 16288,
+        "timebase": 1780757662162245299,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 190
+      },
+      {
+        "seq": 72,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 16.463592,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 162345170,
+          "seconds": 1780757662.1623452
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 73,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 16.46868,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 162345170,
+          "seconds": 1780757662.1623452
+        },
+        "point_count": 16287
+      },
+      {
+        "seq": 74,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.588591,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 270600377,
+          "seconds": 1780757662.2706003
+        },
+        "point_num": 16148,
+        "timebase": 1780757662270600377,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 191
+      },
+      {
+        "seq": 75,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 16.593575,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 270700454,
+          "seconds": 1780757662.2707005
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 76,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 16.597974,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 270700454,
+          "seconds": 1780757662.2707005
+        },
+        "point_count": 16147
+      },
+      {
+        "seq": 77,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.666372,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 378865981,
+          "seconds": 1780757662.378866
+        },
+        "point_num": 15898,
+        "timebase": 1780757662378865981,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 194
+      },
+      {
+        "seq": 78,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 16.671166,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 378965854,
+          "seconds": 1780757662.3789659
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 79,
+        "topic_kind": "path",
+        "receive_elapsed_s": 16.674193,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757647,
+          "nanosec": 885895982,
+          "seconds": 1780757647.885896
+        },
+        "pose_count": 1
+      },
+      {
+        "seq": 80,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 16.677478,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 378965854,
+          "seconds": 1780757662.3789659
+        },
+        "point_count": 15897
+      },
+      {
+        "seq": 81,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.795018,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 487244725,
+          "seconds": 1780757662.4872446
+        },
+        "point_num": 15602,
+        "timebase": 1780757662487244725,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 198
+      },
+      {
+        "seq": 82,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 16.800553,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 487344741,
+          "seconds": 1780757662.4873447
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 83,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 16.805484,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 487344741,
+          "seconds": 1780757662.4873447
+        },
+        "point_count": 15601
+      },
+      {
+        "seq": 84,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.884653,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 595539039,
+          "seconds": 1780757662.595539
+        },
+        "point_num": 15640,
+        "timebase": 1780757662595539039,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 198
+      },
+      {
+        "seq": 85,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 16.890696,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 595638751,
+          "seconds": 1780757662.5956388
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 86,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 16.895436,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 595638751,
+          "seconds": 1780757662.5956388
+        },
+        "point_count": 15639
+      },
+      {
+        "seq": 87,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 16.991971,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 703809191,
+          "seconds": 1780757662.7038093
+        },
+        "point_num": 15643,
+        "timebase": 1780757662703809191,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 198
+      },
+      {
+        "seq": 88,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 16.996988,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 703909158,
+          "seconds": 1780757662.7039092
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 89,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 17.001107,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 703909158,
+          "seconds": 1780757662.7039092
+        },
+        "point_count": 15642
+      },
+      {
+        "seq": 90,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.0982,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 812189325,
+          "seconds": 1780757662.8121893
+        },
+        "point_num": 15659,
+        "timebase": 1780757662812189325,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 197
+      },
+      {
+        "seq": 91,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 17.103667,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 812289237,
+          "seconds": 1780757662.8122892
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 92,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 17.107554,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 812289237,
+          "seconds": 1780757662.8122892
+        },
+        "point_count": 15658
+      },
+      {
+        "seq": 93,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.2176,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 920522651,
+          "seconds": 1780757662.9205227
+        },
+        "point_num": 15684,
+        "timebase": 1780757662920522651,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 197
+      },
+      {
+        "seq": 94,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 17.222229,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 920622587,
+          "seconds": 1780757662.9206226
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 95,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 17.225794,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757662,
+          "nanosec": 920622587,
+          "seconds": 1780757662.9206226
+        },
+        "point_count": 15683
+      },
+      {
+        "seq": 96,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.315909,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 28841267,
+          "seconds": 1780757663.0288413
+        },
+        "point_num": 15673,
+        "timebase": 1780757663028841267,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 197
+      },
+      {
+        "seq": 97,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 17.320741,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 28941154,
+          "seconds": 1780757663.0289412
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 98,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 17.324442,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 28941154,
+          "seconds": 1780757663.0289412
+        },
+        "point_count": 15672
+      },
+      {
+        "seq": 99,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.423279,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 137178071,
+          "seconds": 1780757663.1371782
+        },
+        "point_num": 15691,
+        "timebase": 1780757663137178071,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 197
+      },
+      {
+        "seq": 100,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 17.428338,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 137278079,
+          "seconds": 1780757663.137278
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 101,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 17.432196,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 137278079,
+          "seconds": 1780757663.137278
+        },
+        "point_count": 15690
+      },
+      {
+        "seq": 102,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.530838,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 245505607,
+          "seconds": 1780757663.2455056
+        },
+        "point_num": 15710,
+        "timebase": 1780757663245505607,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 197
+      },
+      {
+        "seq": 103,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 17.535624,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 245605468,
+          "seconds": 1780757663.2456055
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 104,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 17.539678,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 245605468,
+          "seconds": 1780757663.2456055
+        },
+        "point_count": 15709
+      },
+      {
+        "seq": 105,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.641764,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 353834217,
+          "seconds": 1780757663.3538342
+        },
+        "point_num": 15700,
+        "timebase": 1780757663353834217,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 197
+      },
+      {
+        "seq": 106,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 17.646335,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 353934049,
+          "seconds": 1780757663.353934
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 107,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 17.650223,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 353934049,
+          "seconds": 1780757663.353934
+        },
+        "point_count": 15699
+      },
+      {
+        "seq": 108,
+        "topic_kind": "livox",
+        "receive_elapsed_s": 17.749104,
+        "frame_id": "base/mid360_link",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 462214068,
+          "seconds": 1780757663.462214
+        },
+        "point_num": 15732,
+        "timebase": 1780757663462214068,
+        "sampled_offset_time_min": 0,
+        "sampled_offset_time_max": 197
+      },
+      {
+        "seq": 109,
+        "topic_kind": "odometry",
+        "receive_elapsed_s": 17.75446,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 462314128,
+          "seconds": 1780757663.4623141
+        },
+        "child_frame_id": "body"
+      },
+      {
+        "seq": 110,
+        "topic_kind": "path",
+        "receive_elapsed_s": 17.757985,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757647,
+          "nanosec": 885895982,
+          "seconds": 1780757647.885896
+        },
+        "pose_count": 2
+      },
+      {
+        "seq": 111,
+        "topic_kind": "cloud_registered",
+        "receive_elapsed_s": 17.76114,
+        "frame_id": "camera_init",
+        "stamp": {
+          "sec": 1780757663,
+          "nanosec": 462314128,
+          "seconds": 1780757663.4623141
+        },
+        "point_count": 15731
+      }
+    ]
+  },
+  "fastlio_log_counts": {
+    "loopback_total": 0,
+    "loopback_by_callback": {
+      "standard_pcl_cbk": 0,
+      "livox_pcl_cbk": 0,
+      "imu_cbk": 0,
+      "unlabeled_loopback": 0
+    },
+    "loopback_lines": [],
+    "no_effective_points": 0
+  },
+  "post_active_window_diagnostics": {
+    "tf": {
+      "truth_tf_edge_observed_ue_world_to_base_link": true,
+      "fastlio_tf_edge_observed_camera_init_to_body": false,
+      "truth_to_fastlio_bridge_observed": false
+    },
+    "rviz2_cli_available": true,
+    "rviz_gui_opened": false,
+    "diagnostics_do_not_override_active_window_gate": true,
+    "topic_info_files": [
+      "post_active_topic_info_Odometry.txt",
+      "post_active_topic_info_path.txt",
+      "post_active_topic_info_cloud_registered.txt",
+      "post_active_topic_info_tf.txt"
+    ]
+  },
+  "dense_lidar_replay": {
+    "completed_non_looping": true,
+    "log_excerpt": [
+      "[INFO] [1780757660.218815257] [mosim_dense_lidar_replay_node]: publishing 120 dense LiDAR frames to /mosim/lidar_points at 10.00 Hz; loop=false; first frame has 16526 points",
+      "[INFO] [1780757660.219528700] [mosim_dense_lidar_replay_node]: also publishing Livox CustomMsg to /mosim/livox/lidar",
+      "[INFO] [1780757662.272174232] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.053 rate_hz=9.253 mean_publish_us=1092.5",
+      "[INFO] [1780757664.329835677] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.058 rate_hz=9.234 mean_publish_us=984.0",
+      "[INFO] [1780757666.388288412] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.058 rate_hz=9.230 mean_publish_us=1011.2",
+      "[INFO] [1780757668.446617318] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.058 rate_hz=9.231 mean_publish_us=1017.6",
+      "[INFO] [1780757670.504952454] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.058 rate_hz=9.231 mean_publish_us=1013.8",
+      "[INFO] [1780757672.563343016] [mosim_dense_lidar_replay_node]: dense_lidar_stats publishes=19 elapsed_s=2.058 rate_hz=9.231 mean_publish_us=1009.1",
+      "[INFO] [1780757673.213199420] [mosim_dense_lidar_replay_node]: completed non-looping dense LiDAR replay after 120/120 frames; exit_after_last_frame=false"
+    ]
+  },
+  "forbidden_topics_present": {
+    "/position_cmd": false,
+    "/mosim/planner/position_cmd": false,
+    "/planning/bspline": false
+  },
+  "forbidden_actions": {
+    "ego_started": false,
+    "planner_goal_published": false,
+    "planning_bspline_acceptance_rerun": false,
+    "position_command_recorder_ran": false,
+    "position_cmd_published": false,
+    "adapter_20hz_started": false,
+    "extrinsics_or_frame_adapters_changed": false,
+    "rviz_gui_opened": false
+  }
+}

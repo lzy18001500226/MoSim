@@ -1,0 +1,49 @@
+{
+  "schema": "mosim.livox_imu_probe.v1",
+  "duration_seconds": 4,
+  "topics": {
+    "livox": "/mosim/livox/lidar",
+    "imu": "/mosim/forward/imu"
+  },
+  "counts": {
+    "livox": 38,
+    "imu": 770
+  },
+  "rates_hz": {
+    "livox": 9.39979,
+    "imu": 190.616
+  },
+  "time_quality": {
+    "livox_stamps_monotonic": true,
+    "imu_stamps_monotonic": true,
+    "latest_livox_minus_imu_s": -0.0616264
+  },
+  "livox": {
+    "point_num": {
+      "min": 15640,
+      "max": 16996
+    },
+    "bad_point_num_frames": 0,
+    "offset_min_us": 0,
+    "offset_max_us": 99994,
+    "observed_lines": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "observed_tags": [
+      16
+    ]
+  },
+  "acceptance": {
+    "livox_nonzero": true,
+    "imu_nonzero": true,
+    "livox_rate_ok": true,
+    "imu_rate_ok": true,
+    "time_delta_ok": true,
+    "point_num_ok": true,
+    "point_num_matches": true
+  },
+  "claim": "subscriber-side Livox CustomMsg plus IMU input gate; not FAST-LIO localization evidence"
+}

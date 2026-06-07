@@ -1,0 +1,43 @@
+{
+  "schema": "mosim.ros2_runtime.livox_loopback_regression_diag_038.fastlio_callback_classification.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-LIVOX-LOOPBACK-REGRESSION-DIAG-20260607-038",
+  "runs": {
+    "034": {
+      "loopback_total": 0,
+      "standard_pcl_cbk": 0,
+      "livox_pcl_cbk": 0,
+      "imu_cbk": 0,
+      "unlabeled_loopback": 0,
+      "classification": "clean_reference_for_active_source_output_gate"
+    },
+    "035_as_classified_by_036": {
+      "loopback_total": 1,
+      "standard_pcl_cbk": 0,
+      "livox_pcl_cbk": 0,
+      "imu_cbk": 1,
+      "unlabeled_loopback": 0,
+      "classification": "active_window_imu_cbk_loopback_after_first_lidar_and_after_outputs_started"
+    },
+    "037": {
+      "loopback_total": 2,
+      "standard_pcl_cbk": 0,
+      "livox_pcl_cbk": 1,
+      "imu_cbk": 1,
+      "unlabeled_loopback": 0,
+      "classification": "livox_pcl_cbk_loopback_from_runtime_livox_timestamp_regression_plus_recurring_imu_cbk_loopback",
+      "livox_loopback_line": "[fastlio_mapping-1] [mosim_diag][livox_pcl_cbk] lidar loop back, clear buffer cur_time=1.78077e+09 last_timestamp_lidar=1.78077e+09 last_timestamp_imu=-1 is_first_lidar=0 lidar_buffer_size=3 imu_buffer_size=0 point_num=16522 timebase=1780765957081034311",
+      "imu_loopback_line": "[fastlio_mapping-1] [mosim_diag][imu_cbk] imu loop back, clear imu buffer timestamp=1.78077e+09 last_timestamp_imu=1.78077e+09 last_timestamp_lidar=1.78077e+09 is_first_lidar=0 lidar_buffer_size=0 imu_buffer_size=3675",
+      "phase_notes": [
+        "livox_pcl_cbk loop-back appears before IMU Initial Done and before map initialization, with last_timestamp_imu=-1.",
+        "imu_cbk loop-back appears after IMU Initial Done and map initialization, after the LiDAR loop-back already occurred.",
+        "The livox_pcl_cbk event matches the active recorder regression timebase at 1780765957.081034311."
+      ]
+    }
+  },
+  "classification_result": {
+    "primary_037_blocking_event": "livox_pcl_cbk loop-back caused by active Livox timestamp regression",
+    "secondary_037_event": "imu_cbk loop-back consistent with the recurring active-window IMU stale/ordering class, likely independent or downstream of the disturbed run",
+    "source_file_regression": false,
+    "publisher_runtime_regression_or_stale_delivery": true
+  }
+}

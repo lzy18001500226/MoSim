@@ -1,0 +1,49 @@
+{
+  "schema": "mosim.ros2_runtime.fastlio_timestamp_diag_029_plan.v1",
+  "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-TIMESTAMP-DIAG-20260606-029",
+  "department_local_goal": "Determine whether the remaining `lidar loop back, clear buffer` in 028 comes from LiDAR header timestamp regression, IMU timestamp regression with the same misleading log text, or a startup-boundary/stale-message condition, without entering planner/EGO acceptance.",
+  "critical_path_steps": [
+    "Recover required context and 028 blocker evidence from project files.",
+    "Record pre-run cleanup/process state before any ROS2 micro-probe.",
+    "Audit FAST-LIO candidate loop-back print sites and patch temporary callback-labeled diagnostics only in Results/tmp candidate source.",
+    "Bounded rebuild the imported FAST-LIO candidate, or write blocker if rebuild cannot complete safely.",
+    "Record first-N Livox/IMU startup stamps and run one no-goal long-source FAST-LIO micro-probe.",
+    "Classify loop-back source using labeled diagnostics, startup stamp trace, and cleanup evidence.",
+    "Write exactly one return/blocker packet and do not claim FAST-LIO success/planner_ready."
+  ],
+  "parallelizable_slices": [
+    {
+      "slice": "source_condition_audit",
+      "scope": "Read-only audit of laserMapping.cpp loop-back conditions and line numbers.",
+      "owner": "read-only subagent plus local verification"
+    },
+    {
+      "slice": "startup_message_trace",
+      "scope": "Capture first-N Livox/IMU stamps around startup during no-goal micro-probe.",
+      "owner": "main department"
+    }
+  ],
+  "subagent_plan": "used",
+  "subagents_used": [
+    {
+      "agent_id": "019e9c8c-903d-7d01-b7c8-11c2bf533fd2",
+      "role": "read_only_source_condition_audit",
+      "scope": "Audit loop-back source conditions only; no writes or ROS runtime."
+    }
+  ],
+  "verification_gates": [
+    "diagnostic_source_lines_recorded",
+    "temporary_fastlio_diagnostic_patch_is_limited_to_results_tmp_candidate",
+    "startup_livox_imu_first_n_stamps_recorded",
+    "micro_probe_no_goal_only",
+    "loopback_source_classified_or_precisely_blocked",
+    "cleanup_no_replay_fastlio_ego_processes",
+    "forbidden_actions_all_false"
+  ],
+  "manual_review_or_blocker_triggers": [
+    "If ROS2/WSL process cleanup is unsafe, write blocker before rerunning.",
+    "If candidate cannot be rebuilt with temporary diagnostics in Results/tmp, write blocker with source-condition audit only.",
+    "If loop-back remains but callback cannot be identified, write blocker; do not tune startup delays.",
+    "No manual RViz review is requested."
+  ]
+}
