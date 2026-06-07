@@ -1,0 +1,226 @@
+---
+title: Discord Setup
+description: Connect Spacebot to Discord.
+---
+
+# Discord Setup
+
+Connect Spacebot to your Discord server. Takes about 5 minutes.
+
+You need a **Bot Token** from a Discord application.
+
+## Step 1: Create an Application
+
+Go to [discord.com/developers/applications](https://discord.com/developers/applications) → **New Application**.
+
+Name it whatever you want — this is the internal name, not the bot's display name.
+
+## Step 2: Create a Bot
+
+In your application settings, go to **Bot**:
+
+- Click **Add Bot**
+- Copy the **bot token** — you'll need this in a moment
+- Scroll down to **Privileged Gateway Intents** and enable **Message Content Intent**
+
+<Callout type="warn">
+**Message Content Intent is required.** Without it, the bot cannot connect to Discord and will fail with "Disallowed intent(s)" error. Make sure it's enabled and you've clicked **Save Changes** at the bottom of the Bot page.
+</Callout>
+
+## Step 3: Invite the Bot to Your Server
+
+In your application settings, go to **OAuth2** → **URL Generator**:
+
+- Scopes: `bot`
+- Bot Permissions:
+  - Send Messages
+  - Send Messages in Threads
+  - Create Public Threads
+  - Read Message History
+  - Embed Links
+  - Attach Files
+  - Add Reactions
+
+Copy the generated URL and open it in your browser to invite the bot.
+
+## Step 4: Get Your Guild ID
+
+In Discord, enable Developer Mode (User Settings → Advanced → Developer Mode). Right-click your server name → **Copy Server ID**. This is your guild ID.
+
+## Step 5: Add Token to Spacebot
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+1. Open your Spacebot dashboard
+2. Go to **Settings** → **Messaging Platforms**
+3. Click **Setup** on the Discord card
+4. Paste your **Bot Token**
+5. Click **Save**
+
+Spacebot connects immediately — no restart needed.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[messaging.discord]
+enabled = true
+token = "your-bot-token"
+
+[[bindings]]
+agent_id = "main"
+channel = "discord"
+guild_id = "YOUR_GUILD_ID"
+```
+
+You can also reference environment variables:
+
+```toml
+[messaging.discord]
+enabled = true
+token = "env:DISCORD_BOT_TOKEN"
+```
+
+Token changes in config require a restart.
+
+</Tab>
+</Tabs>
+
+## Verify It's Working
+
+The Discord card on the Settings page shows a green status dot when connected. Send a message in a channel the bot has access to — you should see a typing indicator followed by a reply.
+
+## Filtering
+
+### Restrict to specific channels
+
+By default the bot responds in every channel it has access to. To limit it, add channel IDs to your binding.
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+Go to **Settings** → **Bindings** tab and add channel IDs to your Discord binding.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[[bindings]]
+agent_id = "main"
+channel = "discord"
+guild_id = "123456789"
+channel_ids = ["111111", "222222"]
+```
+
+If `channel_ids` is empty or omitted, the bot responds in all channels.
+
+</Tab>
+</Tabs>
+
+### Require mentions per channel
+
+Set `require_mention = true` on a Discord binding to only process messages that either:
+
+- explicitly @mention the bot, or
+- reply to a bot message
+
+```toml
+[[bindings]]
+agent_id = "main"
+channel = "discord"
+guild_id = "123456789"
+channel_ids = ["111111", "222222"]
+require_mention = true
+```
+
+This works nicely for busy channels where you only want direct interactions.
+
+### Quiet mode
+
+Inside Discord you can also toggle the channel's runtime behavior with chat
+commands:
+
+- `/quiet` switches the current conversation into listen-only mode
+- `/active` returns it to normal reply behavior
+- In quiet mode, Spacebot only replies to slash commands, `@mentions`, or
+  replies to one of its messages
+
+Use this when you want the bot present in a busy room without responding to
+general chatter.
+
+### DM filtering
+
+By default, all DMs are ignored. To allow specific users, add their Discord user IDs.
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+Go to **Settings** → **Messaging Platforms** → Discord card and add user IDs to the **DM Allowed Users** list.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[messaging.discord]
+dm_allowed_users = ["USER_ID_1", "USER_ID_2"]
+```
+
+You can also set per-binding DM allowlists:
+
+```toml
+[[bindings]]
+agent_id = "main"
+channel = "discord"
+guild_id = "123456789"
+dm_allowed_users = ["USER_ID_3"]
+```
+
+Per-binding lists are merged with the instance-wide list. Permission changes hot-reload within a couple seconds — no restart needed.
+
+</Tab>
+</Tabs>
+
+### Multiple servers
+
+Route different Discord servers to different agents.
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+Create multiple bindings in the **Bindings** tab, each with a different guild ID and agent.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[[bindings]]
+agent_id = "main"
+channel = "discord"
+guild_id = "123456789"
+
+[[bindings]]
+agent_id = "dev-bot"
+channel = "discord"
+guild_id = "987654321"
+```
+
+Each agent has its own memory, identity, and conversation history.
+
+</Tab>
+</Tabs>
+
+## Threads
+
+Threads get their own separate conversation with isolated history. Messages in the main channel share one conversation. Threads are the natural fit for isolated conversations in a busy server.
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `Disallowed intent(s)` error in logs | Message Content Intent not enabled | Discord Developer Portal → Bot → enable Message Content Intent → Save Changes |
+| Bot connects but doesn't see messages | Message Content Intent disabled | Discord Developer Portal → Bot → enable Message Content Intent |
+| Bot doesn't respond in channel | No access | Make sure the bot has permissions in that channel |
+| Bot doesn't respond to DMs | DM filtering | Add user ID to `dm_allowed_users` |
+| Bot responds in wrong channels | No channel filter | Add `channel_ids` to your binding |
+| `401 Unauthorized` on startup | Invalid token | Copy a fresh token from the Developer Portal |

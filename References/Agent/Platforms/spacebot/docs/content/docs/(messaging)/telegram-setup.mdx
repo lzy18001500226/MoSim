@@ -1,0 +1,167 @@
+---
+title: Telegram Setup
+description: Connect Spacebot to Telegram.
+---
+
+# Telegram Setup
+
+Connect Spacebot to Telegram. Takes about 2 minutes.
+
+You need a **Bot Token** from Telegram's BotFather.
+
+## Step 1: Create a Bot
+
+Open Telegram and message [@BotFather](https://t.me/BotFather). Send `/newbot` and follow the prompts:
+
+- **Name**: The display name (e.g. "My Spacebot")
+- **Username**: Must end in `bot` (e.g. `my_spacebot_bot`)
+
+BotFather replies with your **bot token**. It looks like `123456789:ABCdefGHIjklMNOpqrsTUVwxyz`.
+
+## Step 2: Configure Privacy (Optional)
+
+By default, bots in groups only see messages that mention them directly, reply to them, or start with a `/command`.
+
+If you want the bot to see **all messages** in a group, send `/setprivacy` to BotFather and select **Disable**.
+
+<Callout type="warn">
+Privacy mode must be disabled **before** adding the bot to a group. If the bot is already in a group, remove it and re-add it after changing the setting.
+</Callout>
+
+## Step 3: Add Token to Spacebot
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+1. Open your Spacebot dashboard
+2. Go to **Settings** → **Messaging Platforms**
+3. Click **Setup** on the Telegram card
+4. Paste your **Bot Token**
+5. Click **Save**
+
+Spacebot connects immediately — no restart needed.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[messaging.telegram]
+enabled = true
+token = "123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
+
+[[bindings]]
+agent_id = "main"
+channel = "telegram"
+```
+
+You can also reference environment variables:
+
+```toml
+[messaging.telegram]
+enabled = true
+token = "env:TELEGRAM_BOT_TOKEN"
+```
+
+Token changes in config require a restart.
+
+</Tab>
+</Tabs>
+
+## Step 4: Add the Bot
+
+Add the bot to a group, or start a DM with it by searching for its username in Telegram.
+
+## Verify It's Working
+
+The Telegram card on the Settings page shows a green status dot when connected. Send a message to the bot — you should see a typing indicator followed by a reply.
+
+## Filtering
+
+### Restrict to specific chats
+
+By default the bot responds in any chat it's added to. To limit it, add chat IDs to your binding.
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+Go to **Settings** → **Bindings** tab and add a chat ID to your Telegram binding.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[[bindings]]
+agent_id = "main"
+channel = "telegram"
+chat_id = "-100123456789"
+```
+
+Without `chat_id`, the bot responds in all chats.
+
+</Tab>
+</Tabs>
+
+### Finding chat IDs
+
+- **DMs**: The chat ID is the user's Telegram user ID. You can find it by messaging [@userinfobot](https://t.me/userinfobot).
+- **Groups**: Add the bot to the group, send a message, and check the Spacebot logs — the `conversation_id` will show as `telegram:<chat_id>`. Group IDs are negative numbers (e.g. `-100123456789`).
+
+### DM filtering
+
+By default, DMs from anyone are accepted. To restrict to specific users:
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+Go to **Settings** → **Messaging Platforms** → Telegram card and add user IDs to the **DM Allowed Users** list.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[messaging.telegram]
+dm_allowed_users = ["123456789", "987654321"]
+```
+
+When the list is empty (default), all DMs are accepted. Permission changes hot-reload within a couple seconds — no restart needed.
+
+</Tab>
+</Tabs>
+
+### Multiple chats, multiple agents
+
+Route different Telegram chats to different agents.
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+Create multiple bindings in the **Bindings** tab, each with a different chat ID and agent.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[[bindings]]
+agent_id = "community"
+channel = "telegram"
+chat_id = "-100111111111"
+
+[[bindings]]
+agent_id = "team"
+channel = "telegram"
+chat_id = "-100222222222"
+```
+
+Each agent has its own memory, identity, and conversation history.
+
+</Tab>
+</Tabs>
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `401 Unauthorized` on startup | Invalid token | Get a fresh token from BotFather |
+| Bot doesn't respond in group | Privacy mode | Send `/setprivacy` → Disable to BotFather, then remove and re-add the bot |
+| Bot doesn't respond to DMs | DM filtering | Add user ID to `dm_allowed_users`, or clear the list to allow all |
+| Reaction fails silently | Unsupported emoji | Telegram limits reactions to each chat's configured emoji set |

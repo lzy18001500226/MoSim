@@ -1,0 +1,272 @@
+---
+title: Quickstart
+description: Get Spacebot running locally in under 5 minutes.
+---
+
+# Quickstart
+
+Get Spacebot running locally in under 5 minutes.
+
+## Docker (fastest)
+
+```bash
+docker run -d \
+  --name spacebot \
+  -v spacebot-data:/data \
+  -p 19898:19898 \
+  ghcr.io/spacedriveapp/spacebot:latest
+```
+
+The web UI is available at `http://localhost:19898`. On first launch with no API keys configured, the UI will prompt you to add a provider key in Settings. You can also pass keys as environment variables:
+
+```bash
+docker run -d \
+  --name spacebot \
+  -e ANTHROPIC_API_KEY="sk-ant-..." \
+  -v spacebot-data:/data \
+  -p 19898:19898 \
+  ghcr.io/spacedriveapp/spacebot:latest
+```
+
+See [Docker deployment](/docs/docker) for image tags, compose files, and configuration options.
+
+To update Docker installs, pull and recreate the container:
+
+```bash
+docker pull ghcr.io/spacedriveapp/spacebot:latest
+docker stop spacebot && docker rm spacebot
+# re-run your docker run command
+```
+
+If you mount `/var/run/docker.sock`, the web UI can apply Docker updates directly from the update banner.
+You can also manage updates from **Settings → Updates** in the web UI.
+
+## Build from source
+
+### Prerequisites
+
+- **Rust 1.85+** — `rustup update stable`
+- **Bun** (optional, for the web UI) — `curl -fsSL https://bun.sh/install | bash`
+- **An LLM API key** — Anthropic, OpenAI, OpenRouter, Kilo Gateway, or OpenCode Go
+
+### Install
+
+```bash
+git clone https://github.com/spacedriveapp/spacebot.git
+cd spacebot
+
+# Optional: build the web UI (React + Vite, embedded into the binary)
+cd interface && bun install && cd ..
+
+# Optional: build the OpenCode embed (live coding UI in the Workers tab)
+# Requires Node 22+ (use fnm: fnm install v24.14.0 && fnm use v24.14.0)
+./scripts/build-opencode-embed.sh
+
+# Install the binary
+cargo install --path .
+```
+
+The `build.rs` script automatically runs `bun run build` during compilation if `interface/node_modules` exists. Without it, the binary still works — you just get an empty UI on the web dashboard.
+
+The OpenCode embed step (`build-opencode-embed.sh`) clones OpenCode at a pinned commit, builds the embeddable SPA, and places it in `interface/public/opencode-embed/`. This is optional — without it, OpenCode workers still function normally, but the Workers tab will show a transcript view instead of the live interactive OpenCode UI.
+
+## Configure
+
+Spacebot needs at least one LLM provider key. You can either set an environment variable or create a config file.
+
+### Option A: Environment variable (fastest)
+
+```bash
+export ANTHROPIC_API_KEY="sk-ant-..."
+```
+
+This is enough. Spacebot will create a default `main` agent with sensible defaults and no messaging adapters. The web UI and HTTP API will be available on `http://localhost:19898`.
+
+### Option B: Interactive onboarding
+
+Just run `spacebot` with no config file and no API key env var set. It will walk you through provider selection, API key entry, agent naming, and optional Discord setup.
+
+### Option C: Config file
+
+Create `~/.spacebot/config.toml`:
+
+```toml
+[llm]
+anthropic_key = "sk-ant-..."
+# or: openrouter_key = "sk-or-..."
+# or: kilo_key = "sk-..."
+# or: opencode_go_key = "..."
+# or: openai_key = "sk-..."
+# Keys also support env references: anthropic_key = "env:ANTHROPIC_API_KEY"
+
+[[agents]]
+id = "main"
+
+# Optional: connect to Discord
+[messaging.discord]
+enabled = true
+token = "env:DISCORD_BOT_TOKEN"
+
+# Route Discord messages to the main agent
+[[bindings]]
+agent_id = "main"
+channel = "discord"
+```
+
+See [Configuration](/docs/config) for the full config reference.
+
+## Run
+
+```bash
+# Background daemon (default)
+spacebot
+
+# Foreground with debug logging (recommended for first run / development)
+spacebot start -f -d
+
+# During development with cargo
+cargo run -- start -f -d
+```
+
+On first launch, Spacebot automatically creates:
+
+- `~/.spacebot/` — instance directory
+- `~/.spacebot/agents/main/data/` — SQLite, LanceDB, and redb databases
+- `~/.spacebot/agents/main/` — identity files (`SOUL.md`, `IDENTITY.md`, `ROLE.md`)
+- `~/.spacebot/agents/main/workspace/` — working files and ingest directory (sandbox boundary for worker file tools)
+
+## Daemon management
+
+```bash
+spacebot status    # show pid and uptime
+spacebot stop      # graceful shutdown
+spacebot restart   # stop + start
+spacebot restart -f -d  # restart in foreground with debug
+```
+
+Logs go to `~/.spacebot/agents/{id}/data/logs/` in daemon mode, or stderr in foreground mode.
+
+## Identity files
+
+Each agent has optional identity files in its root directory (`~/.spacebot/agents/{id}/`):
+
+| File          | Purpose                                  |
+| ------------- | ---------------------------------------- |
+| `SOUL.md`     | Personality, values, communication style |
+| `IDENTITY.md` | Name, nature, purpose                    |
+| `ROLE.md`     | Responsibilities, scope, escalation rules |
+
+Template files are created on first run. Edit them to shape the agent's personality. Changes are hot-reloaded (no restart needed). These files live outside the workspace so they are not accessible to worker file tools.
+
+## Development setup
+
+To run a dev instance from source alongside an installed production instance, use `SPACEBOT_DIR` to give each its own data directory. Each instance gets separate databases, PID file, Unix socket, and logs — fully isolated.
+
+### 1. Create a dev instance directory
+
+```bash
+mkdir -p ~/.spacebot/dev
+```
+
+### 2. Add a dev config with different ports
+
+Create `~/.spacebot/dev/config.toml`:
+
+```toml
+[llm]
+anthropic_key = "env:ANTHROPIC_API_KEY"
+
+[[agents]]
+id = "main"
+
+# Use different ports so dev and prod don't conflict
+[api]
+port = 19899
+
+[messaging.webhook]
+port = 18790
+```
+
+### 3. Run both instances
+
+```bash
+# Production (installed binary, default ~/.spacebot)
+spacebot start
+
+# Dev (from source, separate data directory)
+SPACEBOT_DIR=~/.spacebot/dev cargo run -- start -f -d
+```
+
+The dev instance uses `~/.spacebot/dev/` for all data, and the production instance uses `~/.spacebot/` — they won't interfere with each other.
+
+You can also set `SPACEBOT_DIR` in a direnv `.envrc` so it applies automatically when you're in the project directory:
+
+```bash
+# .envrc in your spacebot source checkout
+export SPACEBOT_DIR="$HOME/.spacebot/dev"
+```
+
+Alternatively, use the `-c` flag to point at a specific config file (the instance directory is inferred as its parent):
+
+```bash
+cargo run -- -c ~/.spacebot/dev/config.toml start -f -d
+```
+
+## Web UI
+
+When the API is enabled (default), the web dashboard is served at:
+
+```
+http://localhost:19898
+```
+
+During development, the Vite dev server runs separately with API proxying:
+
+```bash
+cd interface && bun run dev
+# UI at http://localhost:19840, proxies /api to http://localhost:19898
+```
+
+For desktop app development, see [Desktop app](/docs/desktop). A single `just desktop-dev` command handles sidecar bundling, frontend dev server, and Tauri automatically.
+
+## Messaging platforms
+
+| Platform | Status    | Setup guide                          |
+| -------- | --------- | ------------------------------------ |
+| Discord  | Supported | [Discord setup](/docs/discord-setup) |
+| Slack    | Supported | [Slack setup](/docs/slack-setup)     |
+| Telegram | Supported | [Telegram setup](/docs/telegram-setup) |
+| Webhook  | Supported | [Config reference](/docs/config)        |
+
+No messaging adapters are required. Without them, Spacebot is accessible via the web UI and HTTP API.
+
+## CLI flags reference
+
+```
+spacebot [OPTIONS] [COMMAND]
+
+Commands:
+  start     Start the daemon [default]
+  stop      Stop the running daemon
+  restart   Restart the daemon
+  status    Show daemon status
+
+Global options:
+  -c, --config <PATH>    Path to config file
+  -d, --debug            Enable debug logging
+
+Start/restart options:
+  -f, --foreground       Run in foreground instead of daemonizing
+```
+
+## Next steps
+
+<Cards>
+  <Card title="Desktop app" href="/docs/desktop" />
+  <Card title="Docker deployment" href="/docs/docker" />
+  <Card title="Configuration" href="/docs/config" />
+  <Card title="Model routing" href="/docs/routing" />
+  <Card title="Memory system" href="/docs/memory" />
+  <Card title="Multi-agent setup" href="/docs/agents" />
+  <Card title="Cron jobs" href="/docs/cron" />
+</Cards>

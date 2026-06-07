@@ -1,0 +1,35 @@
+---
+title: Spacebot
+description: An agentic AI system with specialized processes for thinking, working, and remembering.
+---
+
+# Spacebot
+
+Spacebot is an agentic AI system where every LLM process has a dedicated role and delegation is the only way work gets done. It replaces the monolithic session model with specialized processes that only do one thing.
+
+## What Makes Spacebot Different
+
+- **Channels** — User-facing conversational agents with personality and identity
+- **Branches** — Forked thinking processes that explore without blocking
+- **Workers** — Task-specific processes for file operations, code execution, and research
+- **Cortex** — System-level observation and memory consolidation
+- **Memory Graph** — Structured memories with associations, not markdown files
+
+## Architecture
+
+Spacebot runs as a single binary with no server dependencies. All data lives in embedded databases:
+
+- **SQLite** — Relational data (conversations, memory graph, cron jobs)
+- **LanceDB** — Vector embeddings and full-text search
+- **redb** — Key-value settings and [secret store](/docs/secrets)
+
+## Quick Links
+
+<Cards>
+  <Card title="Quickstart" href="/docs/quickstart" />
+  <Card title="Architecture" href="/docs/architecture" />
+  <Card title="Configuration" href="/docs/config" />
+  <Card title="Memory System" href="/docs/memory" />
+  <Card title="Wiki" href="/docs/wiki" />
+  <Card title="Portal" href="/docs/portal" />
+</Cards>

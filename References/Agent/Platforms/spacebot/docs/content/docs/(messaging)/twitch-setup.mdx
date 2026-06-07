@@ -1,0 +1,280 @@
+---
+title: Twitch Setup
+description: Connect Spacebot to Twitch chat.
+---
+
+# Twitch Setup
+
+Connect Spacebot to Twitch chat. Takes about 10 minutes.
+
+You need a **Twitch account** for the bot and a **Twitch application** registered at dev.twitch.tv.
+
+## Step 1: Create a Twitch Account
+
+Create a Twitch account for your bot (or use an existing one). The bot will send messages as this account.
+
+## Step 2: Register a Twitch Application
+
+1. Go to [dev.twitch.tv/console/apps](https://dev.twitch.tv/console/apps) and log in with **any** Twitch account (doesn't need to be the bot account)
+2. Click **Register Your Application**
+3. Fill in the form:
+   - **Name:** anything (e.g. "My Spacebot")
+   - **OAuth Redirect URL:** `http://localhost:3000`
+   - **Category:** Chat Bot
+4. Click **Create**
+5. Click **Manage** on your new app
+6. Copy the **Client ID**
+7. Click **New Secret** and copy the **Client Secret**
+
+<Callout type="warning">
+Keep the client secret safe. If you lose it, you can generate a new one from the app management page, but the old one is immediately invalidated.
+</Callout>
+
+## Step 3: Get an OAuth Token
+
+You need to authorize the bot account with `chat:read` and `chat:edit` scopes. The easiest way is the Twitch CLI, but you can also do it manually.
+
+<Tabs items={["Twitch CLI", "Manual (curl)"]}>
+<Tab value="Twitch CLI">
+
+Install the [Twitch CLI](https://dev.twitch.tv/docs/cli/) and configure it with your app credentials:
+
+```bash
+twitch configure
+# Enter your Client ID and Client Secret when prompted
+```
+
+Then generate a user token. This opens a browser where you log in as the **bot account**:
+
+```bash
+twitch token -u -s 'chat:read chat:edit'
+```
+
+The CLI prints the **access token** and **refresh token**. Copy both.
+
+</Tab>
+<Tab value="Manual (curl)">
+
+**1. Open this URL in a browser where you're logged in as the bot account** (replace `YOUR_CLIENT_ID`):
+
+```
+https://id.twitch.tv/oauth2/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=http://localhost:3000&response_type=code&scope=chat:read+chat:edit
+```
+
+**2. Authorize the app.** You'll be redirected to `http://localhost:3000?code=AUTHORIZATION_CODE`. The page won't load — that's fine. Copy the `code` parameter from the URL.
+
+**3. Exchange the code for tokens:**
+
+```bash
+curl -X POST 'https://id.twitch.tv/oauth2/token' \
+  -d 'client_id=YOUR_CLIENT_ID' \
+  -d 'client_secret=YOUR_CLIENT_SECRET' \
+  -d 'code=AUTHORIZATION_CODE' \
+  -d 'grant_type=authorization_code' \
+  -d 'redirect_uri=http://localhost:3000'
+```
+
+The response contains `access_token` and `refresh_token`. Copy both.
+
+</Tab>
+</Tabs>
+
+## Step 4: Add Credentials to Spacebot
+
+Spacebot needs your **username**, **OAuth token**, **client ID**, **client secret**, and **refresh token**. With all five, Spacebot automatically refreshes expired tokens.
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+1. Open your Spacebot dashboard
+2. Go to **Settings** → **Messaging Platforms**
+3. Click **Setup** on the Twitch card
+4. Enter the bot's **username**, **OAuth token**, **client ID**, **client secret**, and **refresh token**
+5. Click **Save**
+
+Spacebot connects immediately — no restart needed.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[messaging.twitch]
+enabled = true
+username = "my_bot"
+oauth_token = "oauth:abc123def456..."
+client_id = "your_client_id"
+client_secret = "your_client_secret"
+refresh_token = "your_refresh_token"
+channels = ["somechannel", "anotherchannel"]
+```
+
+Prefix the access token with `oauth:`. For example, if the token is `abc123def456`, set `oauth_token` to `oauth:abc123def456`.
+
+You can also reference environment variables:
+
+```toml
+[messaging.twitch]
+enabled = true
+username = "env:TWITCH_BOT_USERNAME"
+oauth_token = "env:TWITCH_OAUTH_TOKEN"
+client_id = "env:TWITCH_CLIENT_ID"
+client_secret = "env:TWITCH_CLIENT_SECRET"
+refresh_token = "env:TWITCH_REFRESH_TOKEN"
+channels = ["somechannel"]
+```
+
+Token changes in config require a restart.
+
+</Tab>
+</Tabs>
+
+## Step 5: Join Channels
+
+Specify which Twitch channels the bot should join. Channel names are case-insensitive and should not include the `#` prefix.
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+Add channel names in the **Channels** tag input on the Twitch binding form.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[messaging.twitch]
+channels = ["streamer_name", "another_channel"]
+```
+
+</Tab>
+</Tabs>
+
+## Verify It's Working
+
+The Twitch card on the Settings page shows a green status dot when connected. Send a message (or a trigger command if you configured one) in a joined channel — you should see the bot reply.
+
+## Trigger Prefix
+
+Twitch channels can be extremely high-volume. By default the bot responds to every message, which is probably not what you want in a busy stream.
+
+Set a trigger prefix so the bot only responds to messages that start with it:
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+The trigger prefix is configured in the TOML config file.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[messaging.twitch]
+trigger_prefix = "!ask"
+```
+
+With this config, the bot ignores all messages except those starting with `!ask`. The prefix is stripped before processing — if someone types `!ask what is rust?`, the bot sees `what is rust?`.
+
+Set to an empty string or omit to respond to all messages.
+
+</Tab>
+</Tabs>
+
+## Filtering
+
+### Restrict to specific channels
+
+By default the bot responds in every channel it joins. To route specific channels to specific agents, add channel names to your bindings.
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+Go to **Settings** → **Bindings** tab and add channel names to your Twitch binding.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[[bindings]]
+agent_id = "main"
+channel = "twitch"
+channel_ids = ["streamer_name"]
+```
+
+If `channel_ids` is empty or omitted, the bot responds in all joined channels.
+
+</Tab>
+</Tabs>
+
+### User filtering
+
+Restrict which Twitch users can interact with the bot by adding login names to the binding's allowed users list.
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+Add Twitch usernames to the **DM Allowed Users** list on the binding form.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[[bindings]]
+agent_id = "main"
+channel = "twitch"
+dm_allowed_users = ["trusted_user", "another_mod"]
+```
+
+When the list is empty (default), all users can interact. Permission changes hot-reload within a couple seconds — no restart needed.
+
+</Tab>
+</Tabs>
+
+### Multiple channels, multiple agents
+
+Route different Twitch channels to different agents.
+
+<Tabs items={["Spacebot UI", "TOML Config"]}>
+<Tab value="Spacebot UI">
+
+Create multiple bindings in the **Bindings** tab, each with different channel names and agents.
+
+</Tab>
+<Tab value="TOML Config">
+
+```toml
+[[bindings]]
+agent_id = "main"
+channel = "twitch"
+channel_ids = ["my_stream"]
+
+[[bindings]]
+agent_id = "support-bot"
+channel = "twitch"
+channel_ids = ["help_channel"]
+```
+
+Each agent has its own memory, identity, and conversation history.
+
+</Tab>
+</Tabs>
+
+## Conversations
+
+Each Twitch channel maps to a single conversation (`twitch:<channel_name>`). Unlike Discord or Slack, Twitch chat has no threads — all messages in a channel share one conversation context.
+
+## Limitations
+
+- **No streaming** — Twitch IRC doesn't support message editing, so responses are sent as complete messages rather than streamed word-by-word.
+- **Text only** — File attachments are sent as `[File: filename]` text notices since Twitch chat doesn't support media.
+- **500 character limit** — Long responses are automatically split into multiple messages.
+- **No history backfill** — Twitch IRC doesn't provide message history, so new conversations start fresh.
+- **Rate limits** — Twitch limits bots to ~20 messages per 30 seconds (100 if the bot account is a verified bot or moderator in the channel).
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `Login authentication failed` | Invalid or expired OAuth token | Re-run the token flow from Step 3. If you have `client_id`, `client_secret`, and `refresh_token` configured, Spacebot refreshes automatically — check that all three are set. |
+| Bot connects but doesn't respond | Trigger prefix set | Messages must start with the configured prefix (e.g. `!ask`) |
+| Bot responds to everything | No trigger prefix | Set `trigger_prefix` in the config to limit when the bot responds |
+| Messages getting dropped | Rate limit | Reduce response frequency or get the bot account verified |
+| Bot doesn't join channel | Wrong channel name | Use the login name (lowercase), not the display name |

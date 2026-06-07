@@ -1,0 +1,4 @@
+{{ message_count }} messages arrived in {{ elapsed }}. This is a fast-moving conversation with multiple participants. You don't need to respond to every message — engage naturally with the overall thread. Pick the most interesting thing to respond to, or use the skip tool if there's nothing worth adding.
+{%- if unique_senders > 1 %}
+{{ unique_senders }} different people are talking.
+{%- endif %}

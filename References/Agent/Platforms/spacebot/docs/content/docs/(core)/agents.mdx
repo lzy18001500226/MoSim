@@ -1,0 +1,299 @@
+---
+title: Agents
+description: Multi-agent setup with isolated workspaces, databases, identities, and a communication graph for coordination.
+---
+
+# Agents
+
+Spacebot supports multiple agents running on a single instance. Each agent is an independent entity with its own soul, memory, conversations, and messaging bindings. One binary, multiple personalities.
+
+Agents communicate through an explicit communication graph — directed links that define who can message whom. The graph also includes org-level humans, giving agents awareness of the people who manage them.
+
+## What An Agent Is
+
+An agent is a self-contained unit. It has:
+
+- **Identity files** — `SOUL.md`, `IDENTITY.md`, and `ROLE.md` in the agent root directory (`~/.spacebot/agents/{id}/`)
+- **A workspace** — sandboxed directory (`~/.spacebot/agents/{id}/workspace/`) for working files, ingest, and prompt overrides; this is the boundary for worker file tools
+- **Its own databases** — SQLite, LanceDB, and redb, completely isolated from other agents
+- **Its own cortex** — monitoring its own processes and memory graph
+- **Its own conversations** — channels, branches, workers scoped to this agent
+- **Messaging bindings** — which Discord guilds, Telegram chats, or webhook endpoints route to this agent
+- **Links** — connections to other agents and humans in the communication graph
+
+An agent does NOT have its own LLM provider credentials, its own binary, or its own process. All agents share the same Spacebot process, the same tokio runtime, and the same API keys. Isolation is at the data level, not the process level.
+
+## Configuration
+
+### Agent Definition
+
+```toml
+[[agents]]
+id = "research"
+display_name = "Research Agent"
+role = "Handles user queries and delegates to specialists"
+
+[[agents]]
+id = "engineering"
+display_name = "Engineering Agent"
+role = "Manages code reviews, architecture decisions, and technical work"
+```
+
+| Field          | Required | Description                                              |
+| -------------- | -------- | -------------------------------------------------------- |
+| `id`           | Yes      | Unique identifier. Lowercase, hyphens, underscores only. |
+| `display_name` | No       | Human-readable name shown in the dashboard.              |
+| `role`         | No       | Short description of what this agent does.               |
+| `default`      | No       | Set `true` for the fallback agent for unmatched messages. |
+
+Agents can also override instance defaults for model routing, compaction thresholds, cortex config, and more. See [Configuration](/docs/config) for the full list.
+
+### Agent IDs
+
+Agent IDs are lowercase alphanumeric with hyphens and underscores. Must be unique within the instance, and cannot collide with human IDs.
+
+Valid: `main`, `dev-bot`, `research_assistant`
+Invalid: `My Bot`, `agent@1`, `MAIN`
+
+## Communication Graph
+
+Agents are isolated by default. They share an LLM provider pool and a messaging pipeline, but have no way to talk to each other. The communication graph changes this with explicit links.
+
+### Links
+
+A link is a directed edge between two nodes (agents or humans). It defines a communication channel and encodes organizational hierarchy.
+
+```toml
+[[links]]
+from = "manager"
+to = "research"
+direction = "two_way"
+kind = "hierarchical"
+
+[[links]]
+from = "research"
+to = "engineering"
+direction = "two_way"
+kind = "peer"
+```
+
+| Field       | Required | Default    | Description                                          |
+| ----------- | -------- | ---------- | ---------------------------------------------------- |
+| `from`      | Yes      |            | Source node ID (agent or human).                     |
+| `to`        | Yes      |            | Target node ID (agent or human).                     |
+| `direction` | No       | `two_way`  | `one_way` or `two_way`. Controls who can initiate.   |
+| `kind`      | No       | `peer`     | `hierarchical` or `peer`.                            |
+
+**Kind** determines the org structure:
+
+- **`hierarchical`** — `from` is above `to`. The `from` node manages the `to` node. In the dashboard topology graph, hierarchical links render vertically.
+- **`peer`** — Both nodes are at the same level. Renders horizontally.
+
+**Direction** controls messaging:
+
+- **`two_way`** — Both sides can send messages through the link.
+- **`one_way`** — Only `from` can initiate. `to` can respond within existing threads but cannot start new conversations.
+
+When a link exists, the connected agent gets a `send_agent_message` tool that lets it send messages to the other node. Messages flow through the existing messaging pipeline as internal messages with `source: "internal"`.
+
+#### Link Channels
+
+Each side of a link gets its own channel: `link:{self}:{peer}`. When Agent A messages Agent B, Agent B's link channel receives the message. When Agent B replies, the reply routes back to Agent A's link channel. Both agents maintain full conversation history on their side.
+
+The originating channel (e.g., the Discord chat where a user asked Agent A to delegate) is tracked automatically. When the link conversation concludes, the summary is injected back into the originating channel so the agent can relay results to the user.
+
+#### Concluding Link Conversations
+
+Link channels have a `conclude_link` tool. When the conversation objective is met, either agent calls it with a summary of outcomes and decisions. This:
+
+1. Routes the summary back to the originating channel as a system message
+2. Retriggers the originating channel so the agent can relay results
+3. Ends the link conversation
+
+If neither agent concludes, a safety cap of **20 turns** stops the conversation automatically. The link context prompt instructs agents to conclude promptly and avoid exchanging pleasantries after the objective is complete.
+
+#### Status Block Awareness
+
+When an agent delegates via `send_agent_message`, the source channel's status block shows the active link conversation:
+
+```markdown
+## Active Link Conversations
+- **Engineering Agent** (4 turns, started 11:29)
+```
+
+This gives the source channel's LLM awareness that a delegation is in progress without requiring a re-trigger.
+
+### Org Context
+
+Each agent's system prompt includes an organization section derived from its links:
+
+```markdown
+## Organization
+
+You are part of a multi-agent system. Here is your position:
+
+**Reports to:**
+- **Jamie Pine** (human) — your human superior. Treat their requests with highest priority.
+- **Manager Agent** — your superior. Messages from this agent carry organizational authority.
+
+**Direct reports:**
+- **Research Agent** — reports to you. You can delegate tasks, request status, and send directives.
+
+**Peers:**
+- **Engineering Agent** — equal peer. Communication is collaborative and informational.
+```
+
+The agent sees its position in the hierarchy before processing any message. Authority framing comes from the link structure — the agent knows who to escalate to, who to delegate to, and who to collaborate with.
+
+## Humans
+
+Org-level humans represent real people in the organization. They appear as nodes in the topology graph and can be linked to agents.
+
+```toml
+[[humans]]
+id = "jamie"
+display_name = "Jamie Pine"
+role = "CEO"
+bio = "Founder of Spacedrive. Works on product direction and architecture."
+```
+
+| Field          | Required | Description                                      |
+| -------------- | -------- | ------------------------------------------------ |
+| `id`           | Yes      | Unique identifier. Cannot collide with agent IDs. |
+| `display_name` | No       | Human-readable name.                              |
+| `role`         | No       | Position or title.                                |
+| `bio`          | No       | Short description.                                |
+
+If no `[[humans]]` section exists, a default `admin` human is created automatically.
+
+Humans can link to agents but not to other humans. A human linked as a superior to an agent means the agent's prompt frames their messages with highest priority.
+
+```toml
+[[links]]
+from = "jamie"
+to = "chief-ai-officer"
+direction = "two_way"
+kind = "hierarchical"
+```
+
+Humans don't have workspaces, databases, or messaging tools. They exist to model the org structure and will later map to dashboard auth and permissions.
+
+## Groups
+
+Groups are visual containers in the topology graph. They don't affect agent behavior — they're for organizing the layout.
+
+```toml
+[[groups]]
+name = "Engineering"
+agent_ids = ["research", "engineering"]
+color = "#6366f1"
+```
+
+| Field       | Required | Description                              |
+| ----------- | -------- | ---------------------------------------- |
+| `name`      | Yes      | Group display name.                      |
+| `agent_ids` | No       | List of agent IDs in the group.          |
+| `color`     | No       | Hex color for the group border.          |
+
+Groups can also be created and managed from the dashboard topology editor.
+
+## Topology Graph
+
+The dashboard Overview page renders the full communication graph as an interactive editor:
+
+- **Agents** and **humans** appear as profile cards with display name, role, bio, and stats
+- **Links** render as edges between nodes — vertical for hierarchical, horizontal for peers
+- **Groups** render as labeled regions containing their member agents
+- Drag between node handles to create new links (top/bottom for hierarchical, left/right for peer)
+- Click an edge to configure its kind and direction
+- Click a human node to edit its profile
+- Node positions persist across page reloads
+
+The topology API provides the graph data:
+
+```
+GET /api/topology
+```
+
+Returns agents, humans, links, and groups for rendering.
+
+## On-Disk Structure
+
+```
+~/.spacebot/
+├── config.toml                           # instance config (agents, links, humans, groups)
+│
+├── agents/
+│   ├── research/
+│   │   ├── SOUL.md                       # personality, values, boundaries
+│   │   ├── IDENTITY.md                   # name, nature, vibe
+│   │   ├── ROLE.md                       # responsibilities, scope, escalation rules
+│   │   ├── workspace/                    # sandbox boundary for worker file tools
+│   │   ├── data/
+│   │   │   ├── spacebot.db              # SQLite (memories, conversations, cron jobs)
+│   │   │   ├── lancedb/                 # LanceDB (embeddings, FTS)
+│   │   │   ├── config.redb             # redb (agent-level settings)
+│   │   │   ├── settings.redb            # redb (runtime settings)
+│   │   │   └── secrets.redb             # redb (secret store)
+│   │   └── archives/                    # compaction transcripts
+│   │
+│   └── engineering/
+│       ├── workspace/
+│       └── ...
+```
+
+Identity files are per-agent. `ROLE.md` defines what the agent does — responsibilities, scope, what to handle vs what to escalate. In single-agent setups it separates identity from operations. In multi-agent setups it's what differentiates agents operationally.
+
+## API
+
+### Agents
+
+```
+GET    /api/agents                    — list all agents
+POST   /api/agents                    — create a new agent
+PUT    /api/agents                    — update agent display_name/role
+DELETE /api/agents?agent_id=          — delete an agent
+```
+
+### Links
+
+```
+GET    /api/links                 — list all links
+POST   /api/links                 — create a link
+PUT    /api/links/{from}/{to}     — update a link
+DELETE /api/links/{from}/{to}     — delete a link
+GET    /api/agents/{id}/links     — links for a specific agent
+```
+
+### Humans
+
+```
+GET    /api/humans           — list all humans
+POST   /api/humans           — create a human
+PUT    /api/humans/{id}      — update a human
+DELETE /api/humans/{id}      — delete a human (also removes their links)
+```
+
+### Channels
+
+```
+GET    /api/channels                              — list all active channels
+DELETE /api/channels?agent_id=&channel_id=        — delete a channel and its history
+```
+
+### Topology
+
+```
+GET    /api/topology         — full graph (agents, humans, links, groups)
+```
+
+### Groups
+
+```
+GET    /api/groups           — list all groups
+POST   /api/groups           — create a group
+PUT    /api/groups/{name}    — update a group
+DELETE /api/groups/{name}    — delete a group
+```
+
+All write operations persist to `config.toml` and update in-memory state immediately. The file watcher triggers hot reload for other subsystems that read from config.

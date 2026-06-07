@@ -1,0 +1,543 @@
+---
+title: Skills
+description: Domain-specific knowledge and capabilities via skills.sh integration.
+---
+
+# Skills
+
+How Spacebot extends agent capabilities with reusable skills from skills.sh.
+
+## Overview
+
+Skills are packaged instructions and workflows that give agents domain-specific knowledge. They're markdown files with frontmatter containing procedural knowledge, tool usage patterns, and bundled resources.
+
+Spacebot's skill system is fully compatible with [skills.sh](https://skills.sh) — the open agent skills ecosystem. Install any skill from the registry or create your own.
+
+**Key characteristics:**
+
+- **OpenClaw compatible** — uses the same SKILL.md format
+- **Two-level loading** — instance-level (shared) and agent-level (workspace) skills
+- **Worker injection** — skills are injected into worker system prompts, not channels
+- **Hot-reloadable** — file watcher picks up skill changes without restart
+
+## Setting Up an Integration
+
+Most external tool integrations follow the same pattern: **add a credential, install a skill**. Here's how to set up GitHub as an example — the same pattern applies to AWS, npm, Docker, and any other CLI tool.
+
+### Example: GitHub Integration
+
+1. **Create a GitHub personal access token** at [github.com/settings/tokens](https://github.com/settings/tokens) with the scopes you need (e.g. `repo`, `read:org`).
+
+2. **Store it as a tool secret** so workers can authenticate:
+
+   ```bash
+   spacebot secrets set GH_TOKEN
+   # Paste your token when prompted
+   ```
+
+   Or use the dashboard **Secrets** panel to add `GH_TOKEN` with your token value.
+
+3. **Install a GitHub skill** that teaches workers how to use the `gh` CLI:
+
+   ```bash
+   spacebot skill add anthropics/skills/github
+   ```
+
+   Or browse the **Skills** tab in the dashboard and search for "github".
+
+4. **Done.** Workers now have `GH_TOKEN` as an environment variable and can read the GitHub skill for instructions on creating PRs, managing issues, and more.
+
+### Why This Works
+
+- **Tool secrets** with names like `GH_TOKEN`, `NPM_TOKEN`, `AWS_ACCESS_KEY_ID` are automatically categorized as "tool" secrets and injected into every worker subprocess as environment variables.
+- **Skills** provide the procedural knowledge — they tell workers *how* to use the CLI tools that those credentials unlock.
+- Workers see the secret names in their system prompt and can call `read_skill` to load full instructions on demand.
+
+This pattern works for any external tool that authenticates via environment variables. See [Secret Store](/docs/configuration/secrets) for details on credential storage and auto-categorization.
+
+## Installation
+
+### Via CLI
+
+Install skills from GitHub repos using the `skills.sh` owner/repo format:
+
+```bash
+# Install all skills from a repo
+spacebot skill add vercel-labs/agent-skills
+
+# Install a specific skill from a repo
+spacebot skill add anthropics/skills/pdf
+
+# Install to instance-level (shared across all agents)
+spacebot skill add vercel-labs/agent-skills --instance
+
+# Install to a specific agent
+spacebot skill add remotion-dev/skills --agent my-agent
+```
+
+Install from a `.skill` file:
+
+```bash
+spacebot skill install path/to/skill.skill
+```
+
+### Via Web Interface
+
+Navigate to the agent's **Skills** tab in the dashboard. The Browse Registry view fetches skills directly from skills.sh with three views (All Time, Trending, Hot), search, and infinite scroll. Click the install button on any skill card to install it to the agent's workspace.
+
+## Management
+
+### List installed skills
+
+```bash
+spacebot skill list
+```
+
+**Output:**
+
+```
+Installed skills (3):
+
+  vercel-react-best-practices (workspace)
+    React and Next.js performance optimization guidelines from Vercel Engineering
+
+  pdf (instance)
+    Create, edit, and extract content from PDF files
+
+  browser-use (instance)
+    Web automation and scraping via headless Chrome
+```
+
+### View skill details
+
+```bash
+spacebot skill info pdf
+```
+
+**Output:**
+
+```
+Skill: pdf
+Description: Create, edit, and extract content from PDF files
+Source: instance
+Path: /path/to/instance/skills/pdf/SKILL.md
+Base directory: /path/to/instance/skills/pdf
+
+Content preview (first 500 chars):
+# PDF Processing
+
+Use this skill when working with PDF documents...
+```
+
+### Remove a skill
+
+```bash
+spacebot skill remove pdf
+```
+
+## How Skills Work
+
+### Channel vs Worker
+
+**Channels** see a summary:
+
+```xml
+<available_skills>
+  <skill>
+    <name>pdf</name>
+    <description>Create, edit, and extract content from PDF files</description>
+  </skill>
+  <skill>
+    <name>vercel-react-best-practices</name>
+    <description>React and Next.js performance optimization guidelines</description>
+  </skill>
+</available_skills>
+
+When a task requires specialized knowledge, spawn a worker with the appropriate skill.
+Use the `skill` parameter in spawn_worker to inject skill instructions.
+```
+
+**Workers** receive the full content:
+
+When a worker is spawned with `skill: "pdf"`, the entire skill content is injected into its system prompt:
+
+```
+## Skill Instructions: pdf
+
+# PDF Processing
+
+Use PyPDF2 for basic operations, reportlab for creation, pdfplumber for text extraction...
+
+[full skill content injected here]
+```
+
+### Workflow Example
+
+```
+User: "Extract text from invoice.pdf"
+  ↓
+Channel branches to think
+  ↓
+Branch: "This requires PDF processing. I'll spawn a worker with the pdf skill."
+  ↓
+Branch calls spawn_worker(task="Extract text from invoice.pdf", skill="pdf")
+  ↓
+Worker receives:
+  - Fresh system prompt
+  - Task description
+  - Full PDF skill instructions
+  - Shell/file/exec tools
+  ↓
+Worker executes with skill guidance
+```
+
+## Skill Structure
+
+Every skill is a directory containing at minimum a `SKILL.md` file:
+
+```
+skill-name/
+├── SKILL.md              # Required: frontmatter + instructions
+├── scripts/              # Optional: executable code
+│   └── rotate_pdf.py
+├── references/           # Optional: documentation loaded on demand
+│   └── api_docs.md
+└── assets/               # Optional: files used in output
+    └── template.html
+```
+
+### SKILL.md Format
+
+```markdown
+---
+name: skill-name
+description: Short description of what this skill does.
+license: MIT
+metadata:
+  author: username
+  version: "1.0.0"
+---
+
+# Skill Name
+
+Detailed instructions for using this skill.
+
+## When to Use
+
+- Task A
+- Task B
+
+## How to Use
+
+Use `scripts/rotate_pdf.py` to rotate PDFs:
+
+```bash
+python {baseDir}/scripts/rotate_pdf.py input.pdf output.pdf 90
+```
+
+The `{baseDir}` template variable resolves to the skill's directory path.
+```
+
+### Bundled Resources
+
+**scripts/** — Executable code for deterministic operations:
+
+```
+scripts/rotate_pdf.py
+scripts/merge_pdfs.sh
+scripts/extract_images.py
+```
+
+Workers can execute these directly via the shell tool.
+
+**references/** — Documentation loaded as needed:
+
+```
+references/api_docs.md
+references/schema.md
+references/examples.md
+```
+
+Workers can read these via the file tool when they need more context.
+
+**assets/** — Files used in output:
+
+```
+assets/template.html
+assets/logo.png
+assets/boilerplate/
+```
+
+Workers copy or modify these files to produce results.
+
+## Built-in Skills
+
+Some skills are compiled directly into the Spacebot binary via `include_str!()`. These are always available without installation and serve as baseline capabilities.
+
+Currently shipped:
+
+| Skill | Description |
+|-------|-------------|
+| `wiki-writing` | Encyclopedic writing standards for the wiki system — page types, tone, structure, wiki-link syntax, editing discipline |
+
+Built-in skills follow the same `SKILL.md` format as installed skills. They're defined in `src/skills/builtin.rs` and sourced from `skills/builtin/` in the repo.
+
+### Precedence
+
+Built-in skills have the lowest priority. If you install a skill with the same name from the registry or create one locally, it overrides the built-in version.
+
+## Skill Precedence
+
+Skills are loaded from three tiers, with later tiers overriding earlier ones on name conflicts:
+
+1. **Built-in:** Compiled into the binary. Lowest priority. Marked `SkillSource::Builtin`.
+2. **Instance-level:** `\{instance_dir\}/skills/` — shared across all agents. Marked `SkillSource::Instance`.
+3. **Workspace-level:** `\{agent_workspace\}/skills/` — agent-specific. Highest priority. Marked `SkillSource::Workspace`.
+
+If all three tiers have a skill named `wiki-writing`, the workspace version wins.
+
+**Use case:**
+
+- Built-in skills provide baseline capabilities out of the box
+- Install common skills (pdf, browser-use) at instance level
+- Override with agent-specific versions in workspace
+- Test new skill versions without affecting other agents
+
+## Creating Skills
+
+### Quick Start
+
+Create a new skill directory:
+
+```bash
+mkdir -p ~/.spacebot/agents/my-agent/workspace/skills/my-skill
+cd ~/.spacebot/agents/my-agent/workspace/skills/my-skill
+```
+
+Create `SKILL.md`:
+
+```markdown
+---
+name: my-skill
+description: Does something useful.
+---
+
+# My Skill
+
+When the user asks for X, do Y.
+
+Use curl to fetch data:
+
+```bash
+curl https://api.example.com/data
+```
+
+Parse the JSON response and format it as a table.
+```
+
+The skill is immediately available — no restart needed.
+
+### Best Practices
+
+**Be concise:** Workers have limited context. Focus on essential patterns.
+
+**Use examples:** Show correct tool usage rather than explaining it.
+
+**Leverage bundled resources:** Put reusable code in `scripts/`, detailed docs in `references/`, templates in `assets/`.
+
+**Test with workers:** Spawn a worker with your skill and verify it follows the instructions correctly.
+
+## Skills.sh Registry
+
+Browse the public skills registry at [skills.sh](https://skills.sh).
+
+**Popular skills:**
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| `vercel-labs/agent-skills` | React best practices, web design guidelines | `spacebot skill add vercel-labs/agent-skills` |
+| `anthropics/skills/pdf` | PDF creation, editing, extraction | `spacebot skill add anthropics/skills/pdf` |
+| `remotion-dev/skills` | Video generation with Remotion | `spacebot skill add remotion-dev/skills` |
+| `supabase/agent-skills` | Postgres best practices for Supabase | `spacebot skill add supabase/agent-skills` |
+
+**Search skills:**
+
+Visit [skills.sh](https://skills.sh) to browse by category, popularity, or search keywords.
+
+## API Reference
+
+### GET /api/agents/skills?agent_id=\{id\}
+
+List all installed skills for an agent.
+
+**Response:**
+
+```json
+{
+  "skills": [
+    {
+      "name": "pdf",
+      "description": "Create, edit, and extract content from PDF files",
+      "file_path": "/path/to/skills/pdf/SKILL.md",
+      "base_dir": "/path/to/skills/pdf",
+      "source": "instance"
+    }
+  ]
+}
+```
+
+### POST /api/agents/skills/install
+
+Install a skill from GitHub.
+
+**Request:**
+
+```json
+{
+  "agent_id": "my-agent",
+  "spec": "vercel-labs/agent-skills",
+  "instance": false
+}
+```
+
+**Response:**
+
+```json
+{
+  "installed": [
+    "vercel-react-best-practices",
+    "web-design-guidelines",
+    "composition-patterns"
+  ]
+}
+```
+
+### DELETE /api/agents/skills/remove
+
+Remove an installed skill.
+
+**Request:**
+
+```json
+{
+  "agent_id": "my-agent",
+  "name": "pdf"
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "path": "/path/to/skills/pdf"
+}
+```
+
+### GET /api/skills/registry/browse?view=\{view\}&page=\{page\}
+
+Proxy to skills.sh leaderboard. Views: `all-time`, `trending`, `hot`. Pages are 0-indexed, 200 skills per page.
+
+**Response:**
+
+```json
+{
+  "skills": [
+    {
+      "source": "vercel-labs/agent-skills",
+      "skillId": "vercel-react-best-practices",
+      "name": "vercel-react-best-practices",
+      "installs": 141497
+    }
+  ],
+  "has_more": true
+}
+```
+
+### GET /api/skills/registry/search?q=\{query\}&limit=\{limit\}
+
+Proxy to skills.sh search. Query must be at least 2 characters.
+
+**Response:**
+
+```json
+{
+  "skills": [...],
+  "query": "react",
+  "count": 5
+}
+```
+
+## Troubleshooting
+
+### Skill not appearing
+
+**Check file structure:**
+
+```bash
+ls -la ~/.spacebot/agents/my-agent/workspace/skills/my-skill/
+# Should show SKILL.md
+```
+
+**Verify frontmatter:**
+
+The `name` field in frontmatter must match the directory name (case-insensitive):
+
+```yaml
+---
+name: my-skill  # Directory: my-skill/
+description: ...
+---
+```
+
+**Check logs:**
+
+```bash
+spacebot status
+# Look for skill loading errors in logs
+```
+
+### Worker not following skill instructions
+
+**Verify skill is injected:**
+
+Check the worker's system prompt in the interface or logs to confirm the skill content appears.
+
+**Simplify instructions:**
+
+Workers have limited context. If instructions are too verbose, the model may miss key details. Focus on the most important patterns.
+
+**Use explicit examples:**
+
+Show the exact tool calls needed rather than describing them.
+
+### Skill conflicts
+
+If two skills with the same name exist at instance and workspace level, the workspace version wins. To use the instance version, delete the workspace copy:
+
+```bash
+rm -rf ~/.spacebot/agents/my-agent/workspace/skills/conflicting-skill
+```
+
+## Implementation Notes
+
+**File structure:**
+
+```rust
+src/skills.rs             // Skill loading, precedence resolution, prompt injection
+src/skills/installer.rs   // GitHub download and .skill file extraction
+src/skills/builtin.rs     // Built-in skill registration (include_str! macros)
+skills/builtin/           // Built-in skill SKILL.md files (compiled into binary)
+```
+
+**Loading:**
+
+Skills are loaded once at startup and reloaded on file change via the notify watcher. Both instance and workspace directories are monitored.
+
+**Injection:**
+
+The channel prompt includes a `<available_skills>` section with names and descriptions. When `spawn_worker` is called with a `skill` parameter, the full skill content is prepended to the worker's system prompt.
+
+**Template variables:**
+
+`{baseDir}` in skill content is replaced with the absolute path to the skill directory. This allows skills to reference bundled scripts and assets with portable paths.

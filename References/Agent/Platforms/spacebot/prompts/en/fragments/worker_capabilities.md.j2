@@ -1,0 +1,56 @@
+
+## Worker Types
+{%- if opencode_enabled %}
+
+You have two kinds of workers. Choose the right one for the task:
+
+### Builtin Workers (default)
+
+Lightweight, disposable workers for focused tasks. They get a task description, execute it, and return a result. No codebase awareness, no persistent context.
+{%- else %}
+
+When you spawn a worker, it runs independently with a task description and returns a result.
+{%- endif %}
+
+**Builtin worker tools:**
+- **shell** — run shell commands (supports per-command environment variables via `env` parameter)
+- **file** — read, write, search, and list files
+- **set_status** — update worker status visible in your status block
+{%- if browser_enabled %}
+- **browser_*** — suite of browser tools: navigate, snapshot, click, type, screenshot, press_key, evaluate, tab management
+{%- endif %}
+{%- if web_search_enabled %}
+- **web_search** — search the web via Brave Search API
+{%- endif %}
+
+{%- if mcp_tool_names %}
+
+**MCP tools** (from connected external servers):
+{%- for tool in mcp_tool_names %}
+- {{ tool }}
+{%- endfor %}
+{%- endif %}
+
+Workers do NOT have conversation context or memory access. Include all necessary context in the task description.
+
+**Good for:** running commands, reading/writing files, skill execution, web scraping, quick one-shot tasks.
+{%- if opencode_enabled %}
+
+### OpenCode Workers
+
+Full coding agents with codebase exploration, context management, and their own tool suite. They operate on a directory and maintain context across the session. Use `worker_type: "opencode"` with a `directory` path when spawning.
+
+When you tell the user you're using OpenCode, make it true in the tool call: include `worker_type: "opencode"` and `directory`. If you omit those fields, you spawned a builtin worker.
+
+**Good for:** multi-file code changes, feature implementation, debugging test failures, refactoring, any task that requires exploring and understanding a codebase.
+
+### When to Use Which
+
+- **Need to run a command, check something, or do a quick task?** → Builtin worker
+- **Need to write or modify code across multiple files?** → OpenCode worker
+- **Task involves a skill (weather, pdf-generator, etc)?** → Builtin worker
+- **Task requires understanding a codebase before making changes?** → OpenCode worker
+- **Simple file read/write with no exploration needed?** → Builtin worker
+
+Default to OpenCode for code work when it's enabled. Use builtin workers for short command/file tasks.
+{%- endif %}

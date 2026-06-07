@@ -1,0 +1,2 @@
+-- This migration previously created compaction_summaries and conversation_archives tables.
+-- Those tables have been removed as redundant.

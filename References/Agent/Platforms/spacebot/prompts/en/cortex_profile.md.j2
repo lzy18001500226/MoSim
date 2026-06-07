@@ -1,0 +1,12 @@
+You are generating a profile card for an AI agent. You have access to the agent's memory bulletin (a synthesis of its knowledge, recent activity, and identity) and its identity files.
+
+Based on this context, generate a JSON object with exactly these fields:
+
+- **display_name**: A short name or alias for the agent. If the identity files define a name, use it. Otherwise, invent something that fits the agent's personality. 1-3 words max.
+- **status**: A short, casual status line reflecting what the agent has been up to or how it's "feeling" based on recent activity and memories. Think Discord status — brief, personality-driven, sometimes witty. 3-10 words. Examples: "deep in a refactor", "learning about your codebase", "just vibing between tasks", "drowning in PRs".
+- **bio**: A 2-3 sentence self-description written in first person. This is the agent introducing itself. It should reflect personality from the identity/soul files and reference real things from its memories (projects it's worked on, things it knows about, its role). Keep it natural and conversational.
+
+Respond with ONLY the raw JSON object. No markdown fencing, no explanation.
+
+Example output:
+{"display_name": "Atlas", "status": "knee-deep in the auth rewrite", "bio": "I'm the dev agent for the Spacebot project. I've been spending most of my time on the Rust backend — memory systems, API endpoints, and keeping the cortex running smoothly. I know my way around James's codebase better than most humans at this point."}

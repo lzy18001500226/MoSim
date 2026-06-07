@@ -1,0 +1,115 @@
+---
+title: Ingestion
+description: Bulk-import text files into structured, graph-connected memories.
+---
+
+# Ingestion
+
+Spacebot can bulk-import text files into structured memories. Drop files into an agent's ingest directory (or drag them into the UI), and a background loop picks them up, chunks them, runs each chunk through an LLM with memory tools, and produces typed, graph-connected memories. The original file is deleted when processing finishes.
+
+## How It Works
+
+The ingestion system is a polling loop per agent. Every 30 seconds (configurable), it scans `~/.spacebot/agents/{id}/workspace/ingest/` for text files, sorted oldest-first.
+
+```
+File lands in ingest/
+    → Poll cycle picks it up
+    → Content hashed (SHA-256) for identity tracking
+    → Split into chunks at line boundaries (~4000 chars each)
+    → Each chunk gets a fresh Rig agent with memory tools
+    → LLM reads chunk, recalls related memories, saves new ones
+    → File deleted after all chunks processed
+```
+
+Each chunk is independent -- no shared history between chunks. The LLM agent for each chunk gets the same tools as a branch (`memory_save`, `memory_recall`, `memory_delete`, `channel_recall`) and up to 10 turns to extract and save memories.
+
+The LLM follows a 4-step process defined in `prompts/en/ingestion.md.j2`:
+
+1. Read the chunk and classify its content (notes, logs, docs, preferences, etc.)
+2. Recall existing memories to find related context and avoid duplicates
+3. Save distilled memories with appropriate types, importance scores, and graph associations
+4. Return a brief summary of what was extracted
+
+The system does not save raw text verbatim. It distills -- "User prefers TypeScript over JavaScript" rather than "User said 'I like TS more than JS'".
+
+## Supported File Types
+
+Text files with these extensions (plus extensionless files):
+
+```
+.txt .md .markdown .json .jsonl .csv .tsv .log
+.xml .yaml .yml .toml .rst .org .html .htm
+```
+
+Non-text files (images, binaries, etc.) are skipped with a warning.
+
+## Progress Tracking
+
+If the server restarts mid-file, the system resumes where it left off rather than reprocessing from scratch. This is tracked in two SQLite tables:
+
+**`ingestion_progress`** -- chunk-level. Records which chunk indices have been completed for a given content hash. On restart, completed chunks are skipped. Cleaned up after the file finishes.
+
+**`ingestion_files`** -- file-level. Records filename, size, chunk count, status, and timestamps. Persists after completion so the UI can show history.
+
+File identity is based on a SHA-256 hash of the content, not the filename. Same content dropped twice won't be reprocessed (the progress records prevent it). Changed content produces a different hash and is treated as a new file.
+
+### Status Lifecycle
+
+```
+queued → processing → completed
+                    → failed
+```
+
+- **queued** -- file uploaded via the UI, sitting on disk waiting for the next poll cycle
+- **processing** -- ingestion loop has picked it up, chunks are being processed
+- **completed** -- all chunks processed successfully
+- **failed** -- at least one chunk errored (the rest still ran)
+
+## Web UI
+
+The Ingest tab on the agent view provides drag-and-drop file upload and a live progress view.
+
+**Upload** -- drag files onto the drop zone or click to browse. Files are written to the agent's ingest directory via `POST /api/agents/ingest/upload`. A `queued` record is inserted immediately so the file appears in the list without waiting for the poll cycle.
+
+**Progress** -- files in `processing` status show a progress bar (chunks completed / total). The list polls every 5 seconds.
+
+**History** -- completed and failed files remain in the list. Records can be removed with the delete button.
+
+## API Endpoints
+
+Three endpoints under `/api/agents/ingest/`:
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/agents/ingest/files?agent_id=` | List files with status and chunk progress |
+| `POST` | `/agents/ingest/upload?agent_id=` | Multipart file upload to ingest directory |
+| `DELETE` | `/agents/ingest/files?agent_id=&content_hash=` | Remove a history record |
+
+The upload endpoint sanitizes filenames against path traversal and deduplicates with a UUID suffix if a file with the same name already exists.
+
+## Configuration
+
+In `config.toml` under `[defaults.ingestion]` or per-agent:
+
+```toml
+[defaults.ingestion]
+enabled = true
+poll_interval_secs = 30
+chunk_size = 4000
+```
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `enabled` | `true` | Whether the polling loop runs |
+| `poll_interval_secs` | `30` | How often to scan the ingest directory |
+| `chunk_size` | `4000` | Target chunk size in characters (splits at line boundaries) |
+
+The ingestion config is hot-reloadable via `ArcSwap`. Changing `enabled` or `poll_interval_secs` takes effect on the next poll cycle without a restart.
+
+## Path Guards
+
+The `ingest/` directory is exclusively owned by the ingestion system. Worker file tools and shell tools reject writes to this path to prevent conflicts.
+
+## Model Routing
+
+Ingestion uses the `Branch` process type for model routing. Whatever model is configured for branches handles the chunk processing. This is typically a capable but cost-effective model since ingestion can process many chunks per file.

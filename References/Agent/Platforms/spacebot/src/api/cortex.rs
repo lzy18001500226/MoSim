@@ -1,0 +1,341 @@
+// NOTE: Cortex chat endpoints are deprecated. Cortex chat is being replaced
+// by Channel Settings which provide fine-grained per-channel control.
+// The cortex *events* endpoint (process logs) is NOT deprecated.
+
+use super::state::ApiState;
+
+use crate::agent::cortex::{CortexEvent, CortexLogger};
+use crate::agent::cortex_chat::{
+    CortexChatEvent, CortexChatMessage, CortexChatSendError, CortexChatStore, CortexChatThread,
+};
+
+use axum::Json;
+use axum::extract::{Query, State};
+use axum::http::StatusCode;
+use axum::response::Sse;
+use futures::stream::Stream;
+use serde::{Deserialize, Serialize};
+use std::convert::Infallible;
+use std::sync::Arc;
+
+#[derive(Serialize, utoipa::ToSchema)]
+pub(super) struct CortexEventsResponse {
+    events: Vec<CortexEvent>,
+    total: i64,
+}
+
+#[derive(Serialize, utoipa::ToSchema)]
+pub(super) struct CortexChatMessagesResponse {
+    messages: Vec<CortexChatMessage>,
+    thread_id: String,
+}
+
+#[derive(Deserialize, utoipa::ToSchema)]
+pub(super) struct CortexChatMessagesQuery {
+    agent_id: String,
+    /// If omitted, loads the latest thread.
+    thread_id: Option<String>,
+    #[serde(default = "default_cortex_chat_limit")]
+    limit: i64,
+}
+
+fn default_cortex_chat_limit() -> i64 {
+    50
+}
+
+#[derive(Deserialize, utoipa::ToSchema)]
+pub(super) struct CortexChatSendRequest {
+    agent_id: String,
+    thread_id: String,
+    message: String,
+    channel_id: Option<String>,
+}
+
+#[derive(Deserialize, utoipa::ToSchema)]
+pub(super) struct CortexEventsQuery {
+    agent_id: String,
+    #[serde(default = "default_cortex_events_limit")]
+    limit: i64,
+    #[serde(default)]
+    offset: i64,
+    #[serde(default)]
+    event_type: Option<String>,
+}
+
+fn default_cortex_events_limit() -> i64 {
+    50
+}
+
+fn map_cortex_chat_send_error(error: &CortexChatSendError) -> StatusCode {
+    match error {
+        CortexChatSendError::Busy => StatusCode::CONFLICT,
+        _ => StatusCode::INTERNAL_SERVER_ERROR,
+    }
+}
+
+/// Load persisted cortex chat history for a thread.
+/// If no thread_id is provided, loads the latest thread.
+/// If no threads exist, returns an empty list with a fresh thread_id.
+#[utoipa::path(
+    get,
+    path = "/cortex-chat/messages",
+    params(
+        ("agent_id" = String, Query, description = "Agent ID"),
+        ("thread_id" = Option<String>, Query, description = "Thread ID (omit for latest)"),
+        ("limit" = i64, Query, description = "Maximum messages to return (default: 50, max: 200)"),
+    ),
+    responses(
+        (status = 200, body = CortexChatMessagesResponse),
+        (status = 404, description = "Agent not found"),
+        (status = 500, description = "Internal server error"),
+    ),
+    tag = "cortex",
+)]
+pub(super) async fn cortex_chat_messages(
+    State(state): State<Arc<ApiState>>,
+    Query(query): Query<CortexChatMessagesQuery>,
+) -> Result<Json<CortexChatMessagesResponse>, StatusCode> {
+    let pools = state.agent_pools.load();
+    let pool = pools.get(&query.agent_id).ok_or(StatusCode::NOT_FOUND)?;
+    let store = CortexChatStore::new(pool.clone());
+
+    let thread_id = if let Some(tid) = query.thread_id {
+        tid
+    } else {
+        store
+            .latest_thread_id()
+            .await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+            .unwrap_or_else(|| uuid::Uuid::new_v4().to_string())
+    };
+
+    let messages = store
+        .load_history(&thread_id, query.limit.min(200))
+        .await
+        .map_err(|error| {
+            tracing::warn!(%error, agent_id = %query.agent_id, "failed to load cortex chat history");
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+
+    Ok(Json(CortexChatMessagesResponse {
+        messages,
+        thread_id,
+    }))
+}
+
+/// Send a message to cortex chat. Returns an SSE stream with activity events.
+///
+/// The stream emits:
+/// - `thinking` — cortex is processing
+/// - `tool_started` — a tool call began
+/// - `tool_completed` — a tool call finished (with result preview)
+/// - `done` — full response text
+/// - `error` — if something went wrong
+#[utoipa::path(
+    post,
+    path = "/cortex-chat/send",
+    request_body = CortexChatSendRequest,
+    responses(
+        (status = 200, description = "SSE stream of chat events"),
+        (status = 404, description = "Agent not found"),
+        (status = 409, description = "Cortex chat session busy"),
+        (status = 500, description = "Internal server error"),
+    ),
+    tag = "cortex",
+)]
+pub(super) async fn cortex_chat_send(
+    State(state): State<Arc<ApiState>>,
+    axum::Json(request): axum::Json<CortexChatSendRequest>,
+) -> Result<Sse<impl Stream<Item = Result<axum::response::sse::Event, Infallible>>>, StatusCode> {
+    let sessions = state.cortex_chat_sessions.load();
+    let session = sessions
+        .get(&request.agent_id)
+        .cloned()
+        .ok_or(StatusCode::NOT_FOUND)?;
+
+    let thread_id = request.thread_id;
+    let message = request.message;
+    let channel_id = request.channel_id;
+
+    let channel_ref = channel_id.as_deref();
+    let mut event_rx = session
+        .send_message_with_events(&thread_id, &message, channel_ref)
+        .await
+        .map_err(|error| {
+            let status = map_cortex_chat_send_error(&error);
+            if status == StatusCode::INTERNAL_SERVER_ERROR {
+                tracing::warn!(%error, "failed to start cortex chat send");
+            }
+            status
+        })?;
+
+    let stream = async_stream::stream! {
+        yield Ok(axum::response::sse::Event::default()
+            .event("thinking")
+            .data("{}"));
+
+        while let Some(event) = event_rx.recv().await {
+            let event_name = match &event {
+                CortexChatEvent::Thinking => "thinking",
+                CortexChatEvent::ToolStarted { .. } => "tool_started",
+                CortexChatEvent::ToolCompleted { .. } => "tool_completed",
+                CortexChatEvent::Done { .. } => "done",
+                CortexChatEvent::Error { .. } => "error",
+            };
+            if let Ok(json) = serde_json::to_string(&event) {
+                yield Ok(axum::response::sse::Event::default()
+                    .event(event_name)
+                    .data(json));
+            }
+        }
+    };
+
+    Ok(Sse::new(stream))
+}
+
+// -- Thread management --
+
+#[derive(Serialize, utoipa::ToSchema)]
+pub(super) struct CortexChatThreadsResponse {
+    threads: Vec<CortexChatThread>,
+}
+
+#[derive(Deserialize, utoipa::ToSchema)]
+pub(super) struct CortexChatThreadsQuery {
+    agent_id: String,
+}
+
+#[derive(Deserialize, utoipa::ToSchema)]
+pub(super) struct CortexChatDeleteThreadRequest {
+    agent_id: String,
+    thread_id: String,
+}
+
+/// List all cortex chat threads for an agent, newest first.
+#[utoipa::path(
+    get,
+    path = "/cortex-chat/threads",
+    params(
+        ("agent_id" = String, Query, description = "Agent ID"),
+    ),
+    responses(
+        (status = 200, body = CortexChatThreadsResponse),
+        (status = 404, description = "Agent not found"),
+        (status = 500, description = "Internal server error"),
+    ),
+    tag = "cortex",
+)]
+pub(super) async fn cortex_chat_threads(
+    State(state): State<Arc<ApiState>>,
+    Query(query): Query<CortexChatThreadsQuery>,
+) -> Result<Json<CortexChatThreadsResponse>, StatusCode> {
+    let pools = state.agent_pools.load();
+    let pool = pools.get(&query.agent_id).ok_or(StatusCode::NOT_FOUND)?;
+    let store = CortexChatStore::new(pool.clone());
+
+    let threads = store.list_threads().await.map_err(|error| {
+        tracing::warn!(%error, agent_id = %query.agent_id, "failed to list cortex chat threads");
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+
+    Ok(Json(CortexChatThreadsResponse { threads }))
+}
+
+/// Delete a cortex chat thread and all its messages.
+#[utoipa::path(
+    delete,
+    path = "/cortex-chat/thread",
+    request_body = CortexChatDeleteThreadRequest,
+    responses(
+        (status = 204, description = "Thread deleted successfully"),
+        (status = 404, description = "Agent or thread not found"),
+        (status = 500, description = "Internal server error"),
+    ),
+    tag = "cortex",
+)]
+pub(super) async fn cortex_chat_delete_thread(
+    State(state): State<Arc<ApiState>>,
+    axum::Json(request): axum::Json<CortexChatDeleteThreadRequest>,
+) -> Result<StatusCode, StatusCode> {
+    let pools = state.agent_pools.load();
+    let pool = pools.get(&request.agent_id).ok_or(StatusCode::NOT_FOUND)?;
+    let store = CortexChatStore::new(pool.clone());
+
+    let deleted = store.delete_thread(&request.thread_id).await.map_err(|error| {
+        tracing::warn!(%error, agent_id = %request.agent_id, thread_id = %request.thread_id, "failed to delete cortex chat thread");
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+
+    if deleted == 0 {
+        return Err(StatusCode::NOT_FOUND);
+    }
+
+    Ok(StatusCode::NO_CONTENT)
+}
+
+/// List cortex events for an agent with optional type filter, newest first.
+#[utoipa::path(
+    get,
+    path = "/cortex/events",
+    params(
+        ("agent_id" = String, Query, description = "Agent ID"),
+        ("limit" = i64, Query, description = "Maximum events to return (default: 50, max: 200)"),
+        ("offset" = i64, Query, description = "Offset for pagination (default: 0)"),
+        ("event_type" = Option<String>, Query, description = "Filter by event type"),
+    ),
+    responses(
+        (status = 200, body = CortexEventsResponse),
+        (status = 404, description = "Agent not found"),
+        (status = 500, description = "Internal server error"),
+    ),
+    tag = "cortex",
+)]
+pub(super) async fn cortex_events(
+    State(state): State<Arc<ApiState>>,
+    Query(query): Query<CortexEventsQuery>,
+) -> Result<Json<CortexEventsResponse>, StatusCode> {
+    let pools = state.agent_pools.load();
+    let pool = pools.get(&query.agent_id).ok_or(StatusCode::NOT_FOUND)?;
+    let logger = CortexLogger::new(pool.clone());
+
+    let limit = query.limit.min(200);
+    let event_type_ref = query.event_type.as_deref();
+
+    let events = logger
+        .load_events(limit, query.offset, event_type_ref)
+        .await
+        .map_err(|error| {
+            tracing::warn!(%error, agent_id = %query.agent_id, "failed to load cortex events");
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+
+    let total = logger.count_events(event_type_ref).await.map_err(|error| {
+        tracing::warn!(%error, agent_id = %query.agent_id, "failed to count cortex events");
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+
+    Ok(Json(CortexEventsResponse { events, total }))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::map_cortex_chat_send_error;
+    use crate::agent::cortex_chat::CortexChatSendError;
+    use axum::http::StatusCode;
+
+    #[test]
+    fn maps_busy_send_error_to_conflict() {
+        assert_eq!(
+            map_cortex_chat_send_error(&CortexChatSendError::Busy),
+            StatusCode::CONFLICT
+        );
+    }
+
+    #[test]
+    fn maps_database_send_error_to_internal_server_error() {
+        assert_eq!(
+            map_cortex_chat_send_error(&CortexChatSendError::Database(sqlx::Error::RowNotFound)),
+            StatusCode::INTERNAL_SERVER_ERROR
+        );
+    }
+}

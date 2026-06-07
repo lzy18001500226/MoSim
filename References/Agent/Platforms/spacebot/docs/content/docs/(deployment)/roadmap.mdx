@@ -1,0 +1,83 @@
+---
+title: Roadmap
+description: What's shipped, what's next, and what we decided against.
+---
+
+# Roadmap
+
+## Where We Are
+
+Spacebot is a working multi-agent system. Five process types (channel, branch, worker, compactor, cortex) run concurrently with delegation as the core pattern. Six messaging platforms are supported (Discord, Slack, Telegram, Twitch, Email, webhooks). The hosted platform is live at spacebot.sh.
+
+The core systems are stable: memory graph with hybrid search, model routing with fallback chains across 14 providers (including Azure OpenAI), OS-level sandboxing, secret store with encryption at rest, per-channel settings with hot-reload, conversation persistence, token-by-token streaming, and a full React dashboard embedded in the binary.
+
+Recent work has focused on expanding what agents can do and how they share knowledge:
+
+- **[Wiki](/docs/wiki)** — instance-wide knowledge base with versioned pages, FTS search, and 6 LLM tools
+- **[Portal](/docs/portal)** — built-in web chat with conversation persistence, file attachments, and per-conversation settings
+- **[Notifications](/docs/notifications)** — real-time actionable events for task approvals and worker failures
+- **[Projects](/docs/projects)** — instance-level project management with repo/worktree tracking and auto logo detection
+- **[Direct mode](/docs/configuring-channels)** — channels can get full worker-level tools for power-user conversations
+- **Token usage tracking** — per-process usage with cost estimation, wired to the dashboard
+- **Built-in skills** — compiled into the binary, starting with wiki-writing guidelines
+- **Cron expressions** — wall-clock scheduling, persistent cursors, claim-before-run semantics
+
+See the individual feature docs for details.
+
+## In Progress
+
+### Cortex Consolidation
+
+The cortex handles bulletin generation, health monitoring, and memory maintenance (decay + prune). The remaining cortex work is deeper cross-system inference:
+
+- `run_consolidation()` — memory merging and graph optimization
+- `merge_similar_memories()` — duplicate detection and atomic merge
+- Cross-channel coherence — shared observations across an agent's conversations
+- Richer signal extraction in `observe()` — pulling real event data instead of hardcoded values
+- CortexHook observation logic — anomaly detection and consolidation triggers
+
+### Budget Enforcement
+
+Token usage tracking is shipped. Remaining: warning thresholds, hard blocks when budgets are exceeded, session/daily/monthly aggregates, and per-model breakdown in the dashboard.
+
+## Upcoming
+
+### Hardening
+
+- **Autonomy levels** — readonly, supervised, full modes. Readonly blocks all write tools. Supervised requires confirmation for destructive operations.
+- **Command allowlisting** — opt-in allowlist for the shell tool
+- **SSRF protection** — block private IP ranges in browser and HTTP tools. Domain allowlists for outbound worker requests.
+- **Error message sanitization** — scrub credentials from provider error messages before they reach logs or UI
+- **Audit logging** — structured JSONL trail of security-relevant events with size-based rotation
+
+### Additional Channel Adapters
+
+- **WhatsApp** — Meta Cloud API
+- **Matrix** — decentralized chat protocol
+- **iMessage** — macOS-only, AppleScript bridge
+- **IRC** — TLS socket connection
+- **Lark / DingTalk** — enterprise webhook integrations
+
+### Onboarding CLI
+
+- `spacebot setup --quick --provider openrouter --key sk-...` — non-interactive fast path for scripted deploys
+- `spacebot setup --channels-only` — add channels to an existing instance
+
+## Post-Launch
+
+- **Hot reload agent topology** — adding/removing agents without restart
+- **Agent templates** — pre-built configurations for common use cases
+- **JsonSchema-derived tool definitions** — replace hand-written JSON schemas with the `JsonSchema` derive already on every Args struct
+- **Spacedrive integration** — connect agents to terabytes of indexed, content-addressed file data across devices
+
+## Decided Against
+
+### Built-in Tunnel Support
+
+All current channel adapters use outbound connections — the bot connects to the platform, nothing needs to POST inbound. There's no port to expose.
+
+For hosted instances, the platform proxy handles access over a private WireGuard mesh. For self-hosted instances, Tailscale works out of the box. If a future adapter requires inbound callbacks (e.g. WhatsApp), hosted instances handle it via the proxy, and self-hosted users point the callback at their existing reverse proxy.
+
+### `doctor` Diagnostic Command
+
+The embedded UI shows adapter status, agent health, and active connections in real-time. The cortex surfaces issues proactively. Channel token validation happens at setup time through the bindings API. A separate diagnostic command would compensate for a fragile runtime — which isn't the problem we have.

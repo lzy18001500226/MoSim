@@ -1,0 +1,234 @@
+---
+title: Routing
+description: Model routing system for optimizing LLM usage across process types.
+---
+
+# Model Routing
+
+How Spacebot decides which LLM to use for each process.
+
+## Why Route
+
+Different processes have different needs. A channel talking to a user needs the best conversational model. A compaction worker summarizing old turns needs something fast and cheap. A coding worker needs strong tool use. Running everything on the same expensive model wastes money. Running everything on a cheap model degrades quality where it matters.
+
+Routing decisions in Spacebot are explicit, not inferred. We know the process type, the task type, and the purpose at spawn time. No keyword scoring, no LLM classifier, no content analysis.
+
+## Three Levels
+
+### Level 1: Process-Type Defaults
+
+Every process type has a default model. This covers most of the optimization.
+
+```toml
+[defaults.routing]
+channel = "anthropic/claude-sonnet-4-20250514"
+branch = "anthropic/claude-sonnet-4-20250514"
+worker = "anthropic/claude-haiku-4.5-20250514"
+compactor = "anthropic/claude-haiku-4.5-20250514"
+cortex = "anthropic/claude-haiku-4.5-20250514"
+
+# Azure example:
+# channel = "azure/gpt-4o"
+# worker = "azure/gpt-4o-mini"
+```
+
+| Process | Why this model tier |
+|---------|-------------------|
+| Channel | User-facing. Needs best conversational quality, personality consistency. Worth the cost. |
+| Branch | Thinks with the channel's full context. Same model maintains reasoning coherence. |
+| Worker | Executes specific tasks. Cheaper model with strong tool use is sufficient. |
+| Compactor | Summarization and memory extraction. Fast and cheap. No personality needed. |
+| Cortex | System-level observation. Small context, simple signal processing. Cheapest tier. |
+
+**Model Format:**
+- Standard providers: `<provider>/<model-name>` (e.g., `anthropic/claude-sonnet-4-20250514`, `openai/gpt-4o`)
+- Azure: `azure/<deployment-name>` (e.g., `azure/gpt-4o`, `azure/gpt-5.2`)
+- Custom providers: `<provider-id>/<model-name>` (e.g., `my_anthropic/claude-3.5-sonnet`)
+
+### Level 2: Task-Type Overrides
+
+Workers and branches are generic. Different tasks benefit from different models. The channel or branch specifies a task type when spawning, and the routing config maps task types to models.
+
+```toml
+[defaults.routing.task_overrides]
+coding = "anthropic/claude-sonnet-4-20250514"
+summarization = "anthropic/claude-haiku-4.5-20250514"
+deep_reasoning = "anthropic/claude-opus-4-20250514"
+```
+
+Task types are explicit strings passed at spawn time. The set is open — operators can define their own and map them to models. Unknown task types fall back to the process-type default.
+
+Task overrides apply to workers and branches. Other process types ignore task_type.
+
+### Level 3: Fallback Chains
+
+When a model fails (rate limit, downtime), try the next model in a configured fallback chain instead of failing the process.
+
+```toml
+[defaults.routing.fallbacks]
+"anthropic/claude-sonnet-4-20250514" = ["anthropic/claude-haiku-4.5-20250514"]
+"anthropic/claude-haiku-4.5-20250514" = ["anthropic/claude-sonnet-4-20250514"]
+```
+
+Fallback is triggered on:
+- HTTP 429 (rate limited)
+- HTTP 502/503/504 (provider down)
+- Connection timeout
+- "overloaded" errors
+
+Fallback is NOT triggered on:
+- Successful responses (even if the content is bad)
+- HTTP 400 (bad request — our fault, not the provider's)
+- Auth/billing errors (won't be fixed by switching models)
+
+Max 3 fallback attempts. Rate-limited models are deprioritized for a configurable cooldown (default 60s).
+
+## Where Routing Lives
+
+Routing config lives on the **agent**, not on the LLM manager. Each agent has its own `RoutingConfig` (via `ResolvedAgentConfig.routing`), resolved against instance defaults.
+
+```
+agent routing override → [defaults.routing] → hardcoded defaults
+```
+
+This means different agents can use different model strategies. A premium agent can use opus for its channel while a budget agent uses haiku.
+
+```toml
+# Instance defaults
+[defaults.routing]
+channel = "anthropic/claude-sonnet-4-20250514"
+
+# Premium agent overrides
+[[agents]]
+id = "premium"
+[agents.routing]
+channel = "anthropic/claude-opus-4-20250514"
+
+# Budget agent inherits defaults
+[[agents]]
+id = "budget"
+```
+
+The LLM manager stays dumb — it holds API keys, an HTTP client, and shared rate limit state. It doesn't know about routing.
+
+## Schema
+
+```rust
+pub struct RoutingConfig {
+    pub channel: String,
+    pub branch: String,
+    pub worker: String,
+    pub compactor: String,
+    pub cortex: String,
+    pub task_overrides: HashMap<String, String>,
+    pub fallbacks: HashMap<String, Vec<String>>,
+    pub rate_limit_cooldown_secs: u64,
+}
+```
+
+## How It Works in Code
+
+### Model Resolution
+
+`RoutingConfig` has a `resolve()` method:
+
+```rust
+impl RoutingConfig {
+    pub fn resolve(&self, process_type: ProcessType, task_type: Option<&str>) -> &str {
+        // Check task-type override first (workers and branches only)
+        if let Some(task) = task_type {
+            if matches!(process_type, ProcessType::Worker | ProcessType::Branch) {
+                if let Some(override_model) = self.task_overrides.get(task) {
+                    return override_model;
+                }
+            }
+        }
+
+        match process_type {
+            ProcessType::Channel => &self.channel,
+            ProcessType::Branch => &self.branch,
+            ProcessType::Worker => &self.worker,
+            ProcessType::Compactor => &self.compactor,
+            ProcessType::Cortex => &self.cortex,
+        }
+    }
+}
+```
+
+### SpacebotModel Construction
+
+When spawning a process, the model is resolved from the agent's routing config:
+
+```rust
+let routing = &agent.config.routing;
+
+// Channel gets its configured model
+let model_name = routing.resolve(ProcessType::Channel, None);
+let model = SpacebotModel::make(&llm_manager, model_name)
+    .with_routing(routing.clone());
+
+// Worker gets task-type-specific model
+let model_name = routing.resolve(ProcessType::Worker, Some("coding"));
+let model = SpacebotModel::make(&llm_manager, model_name)
+    .with_routing(routing.clone());
+```
+
+The `.with_routing()` call attaches the fallback config to the model so it can try alternatives on failure.
+
+### Fallback on Error
+
+Fallback is built into `SpacebotModel::completion()`. When the primary model returns a retriable error:
+
+1. Record the rate limit on `LlmManager` (shared state across agents)
+2. Get the fallback chain from the attached `RoutingConfig`
+3. Try each fallback model in order, up to `MAX_FALLBACK_ATTEMPTS` (3)
+4. If a fallback succeeds, log it and return the response
+5. If all fail, propagate the error
+
+```rust
+// Simplified flow inside completion()
+match self.attempt_completion(request.clone()).await {
+    Ok(response) => Ok(response),
+    Err(error) if is_retriable_error(&error) => {
+        self.llm_manager.record_rate_limit(&self.full_model_name).await;
+
+        for fallback_name in routing.get_fallbacks(&self.full_model_name) {
+            let fallback = SpacebotModel::make(&self.llm_manager, fallback_name);
+            match fallback.attempt_completion(request.clone()).await {
+                Ok(response) => return Ok(response),
+                Err(e) if is_retriable_error(&e) => continue,
+                Err(e) => return Err(e),
+            }
+        }
+
+        Err(CompletionError::ProviderError("all fallbacks failed"))
+    }
+    Err(error) => Err(error),
+}
+```
+
+### Rate Limit Tracking
+
+`LlmManager` tracks rate-limited models with a time-based map:
+
+```rust
+pub struct LlmManager {
+    config: LlmConfig,
+    http_client: reqwest::Client,
+    rate_limited: Arc<RwLock<HashMap<String, Instant>>>,
+}
+```
+
+Rate limit state is shared across all agents (it's provider-level, not agent-level). When a 429 is received, the model is marked with the current timestamp. Future routing decisions can check `is_rate_limited()` to proactively skip models in cooldown.
+
+## What We Don't Do
+
+**No prompt-level content analysis.** We know the process type and task type at spawn time.
+
+**No LLM classifier.** Routing is deterministic from config.
+
+**No per-request cost estimation.** Cost tracking is a reporting concern, not a routing concern.
+
+**No session pinning.** Each process has a fixed model for its lifetime — inherent in the architecture.
+
+**No agentic detection.** Workers are explicitly spawned with a task type. The type is data, not inference.

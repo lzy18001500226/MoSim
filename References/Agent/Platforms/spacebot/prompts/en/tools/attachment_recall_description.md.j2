@@ -1,0 +1,8 @@
+Recall saved file attachments from this channel's history. Files sent by users are automatically saved to disk when attachment persistence is enabled.
+
+Three actions:
+- **list**: Show recent saved attachments (filename, type, size, ID).
+- **get_path**: Get the absolute disk path of a saved file. Use this when delegating work to a worker — include the path in the task description so the worker can access the file directly.
+- **get_content**: Re-load a saved image or text file for analysis. Use this when you need to see a file that was sent earlier in the conversation. Only works for images and text files under 10 MB — for other file types or larger files, use get_path and delegate to a worker.
+
+You can identify attachments by their ID (shown in history annotations like `id:a1b2c3d4`) or by their original filename.

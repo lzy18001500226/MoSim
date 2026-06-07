@@ -1,0 +1,14 @@
+{
+  "title": "Core Concepts",
+  "pages": [
+    "philosophy",
+    "architecture",
+    "agents",
+    "memory",
+    "routing",
+    "channels",
+    "cortex",
+    "compaction",
+    "prompts"
+  ]
+}

@@ -1,0 +1,795 @@
+---
+title: Configuration
+description: Complete reference for config.toml and all available settings.
+---
+
+# Configuration
+
+Complete reference for `config.toml`. Spacebot looks for this file at `~/.spacebot/config.toml` (or `$SPACEBOT_DIR/config.toml`). If no config file exists, it falls back to environment variables.
+
+## File Location
+
+```
+~/.spacebot/config.toml          # default
+$SPACEBOT_DIR/config.toml        # env override
+spacebot --config /path/to.toml  # CLI override
+```
+
+## Environment Variables
+
+These environment variables control instance-level behavior and are not set in `config.toml`.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SPACEBOT_DIR` | `~/.spacebot` | Instance root directory. All data, config, databases, and sockets live under this path. Set this to run multiple isolated instances (e.g. dev and prod) side by side. |
+| `SPACEBOT_DEPLOYMENT` | auto-detected | Deployment mode: `docker`, `hosted`, or native (auto-detected). Affects API bind address, agent limits, and update behavior. |
+| `SPACEBOT_MAX_AGENTS` | unlimited | Maximum number of agents (enforced in hosted mode only). |
+| `SPACEBOT_CRON_TIMEZONE` | server local | Default timezone for cron active-hours evaluation (IANA name). Overridden by `defaults.cron_timezone` or `agents.cron_timezone` in config. |
+| `SPACEBOT_USER_TIMEZONE` | inherits cron | Default timezone for channel/worker temporal context. Overridden by config equivalents. |
+| `SPACEBOT_CHANNEL_MODEL` | `anthropic/claude-sonnet-4-20250514` | Default channel model (env-only mode). |
+| `SPACEBOT_WORKER_MODEL` | `anthropic/claude-haiku-4.5-20250514` | Default worker model (env-only mode). |
+
+## Full Reference
+
+```toml
+# --- LLM Provider Credentials ---
+# Instance-level, shared by all agents. At least one key or provider is required.
+[llm]
+anthropic_key = "env:ANTHROPIC_API_KEY"
+openai_key = "env:OPENAI_API_KEY"
+openrouter_key = "env:OPENROUTER_API_KEY"
+kilo_key = "env:KILO_API_KEY"
+zhipu_key = "env:ZHIPU_API_KEY"
+groq_key = "env:GROQ_API_KEY"
+together_key = "env:TOGETHER_API_KEY"
+fireworks_key = "env:FIREWORKS_API_KEY"
+deepseek_key = "env:DEEPSEEK_API_KEY"
+xai_key = "env:XAI_API_KEY"
+mistral_key = "env:MISTRAL_API_KEY"
+opencode_zen_key = "env:OPENCODE_ZEN_API_KEY"
+opencode_go_key = "env:OPENCODE_GO_API_KEY"
+
+# Custom LLM providers (alternative to legacy keys)
+[llm.provider.my_anthropic]
+api_type = "anthropic"
+base_url = "https://api.anthropic.com"
+api_key = "env:MY_ANTHROPIC_KEY"
+name = "My Custom Anthropic"
+
+[llm.provider.my_openai]
+api_type = "openai_responses"
+base_url = "https://api.openai.com"
+api_key = "env:MY_OPENAI_KEY"
+
+[llm.provider.local_openai]
+api_type = "openai_completions"
+base_url = "http://localhost:8080" # do not include /v1; Spacebot appends endpoint paths
+api_key = "env:LOCAL_OPENAI_KEY"
+name = "Local OpenAI Compatible"
+
+# --- Instance Defaults ---
+# All agents inherit these. Individual agents can override any field.
+[defaults]
+max_concurrent_branches = 5    # max branches per channel
+max_turns = 5                  # max LLM turns per channel message
+context_window = 128000        # context window size in tokens
+history_backfill_count = 50    # messages to fetch from platform on new channel
+worker_log_mode = "errors_only" # "errors_only", "all_separate", or "all_combined"
+cron_timezone = "UTC"          # optional default timezone for cron active hours
+user_timezone = "UTC"          # optional default timezone for channel/worker time context
+
+# Model routing per process type.
+[defaults.routing]
+channel = "anthropic/claude-sonnet-4-20250514"
+branch = "anthropic/claude-sonnet-4-20250514"
+worker = "anthropic/claude-haiku-4.5-20250514"
+compactor = "anthropic/claude-haiku-4.5-20250514"
+cortex = "anthropic/claude-haiku-4.5-20250514"
+rate_limit_cooldown_secs = 60
+
+# Task-type overrides for workers/branches.
+[defaults.routing.task_overrides]
+coding = "anthropic/claude-sonnet-4-20250514"
+
+# Fallback chains when a model is rate-limited or down.
+[defaults.routing.fallbacks]
+"anthropic/claude-sonnet-4-20250514" = ["anthropic/claude-haiku-4.5-20250514"]
+
+# Context compaction thresholds (fraction of context_window).
+[defaults.compaction]
+background_threshold = 0.80    # background summarization
+aggressive_threshold = 0.85    # aggressive summarization
+emergency_threshold = 0.95     # drop oldest 50%, no LLM
+
+# Cortex (system observer) settings.
+[defaults.cortex]
+tick_interval_secs = 30
+worker_timeout_secs = 600
+branch_timeout_secs = 60
+circuit_breaker_threshold = 3  # consecutive failures before auto-disable
+
+# Warmup controls for cold-start behavior and manual rewarm.
+[defaults.warmup]
+enabled = true
+eager_embedding_load = true
+refresh_secs = 900
+startup_delay_secs = 5
+
+# Browser automation for workers.
+[defaults.browser]
+enabled = true
+headless = true
+evaluate_enabled = false
+persist_session = false                  # keep browser alive across worker lifetimes
+close_policy = "close_browser"           # "close_browser", "close_tabs", or "detach"
+executable_path = "/path/to/chrome"      # optional, auto-detected
+screenshot_dir = "/path/to/screenshots"  # optional, defaults to data_dir/screenshots
+
+# --- Agents ---
+# At least one agent is required. First agent or the one with default = true
+# is the default.
+[[agents]]
+id = "main"
+default = true
+workspace = "/custom/workspace/path"   # optional, defaults to ~/.spacebot/agents/{id}/workspace
+cron_timezone = "America/Los_Angeles"  # optional per-agent cron timezone override
+user_timezone = "America/Los_Angeles"  # optional per-agent timezone override for channel/worker time context
+
+# Per-agent routing overrides (merges with defaults).
+[agents.routing]
+channel = "anthropic/claude-opus-4-20250514"
+
+# Per-agent sandbox configuration.
+[agents.sandbox]
+mode = "enabled"                               # "enabled" (default) or "disabled"
+writable_paths = ["/home/user/projects/myapp"] # additional writable directories
+
+# Per-agent cron jobs.
+[[agents.cron]]
+id = "daily-check"
+prompt = "Check in on ongoing projects and report status."
+cron_expr = "0 9 * * *"
+delivery_target = "discord:123456789"
+active_start_hour = 9
+active_end_hour = 17
+enabled = true
+
+# --- Messaging Platforms ---
+[messaging.discord]
+enabled = true
+token = "env:DISCORD_BOT_TOKEN"
+dm_allowed_users = ["user_id_1", "user_id_2"]
+
+[messaging.telegram]
+enabled = true
+token = "env:TELEGRAM_BOT_TOKEN"
+dm_allowed_users = ["user_id_1"]
+
+[messaging.webhook]
+enabled = true
+port = 18789
+bind = "127.0.0.1"
+
+# --- Bindings ---
+# Routes platform conversations to agents. First match wins.
+[[bindings]]
+agent_id = "main"
+channel = "discord"
+guild_id = "123456789"
+channel_ids = ["456", "789"]   # optional, restricts to specific channels
+
+[[bindings]]
+agent_id = "main"
+channel = "webhook"
+```
+
+## Value References
+
+Any string value in the config supports three resolution modes:
+
+| Prefix | Resolution | Example |
+|--------|-----------|---------|
+| `secret:` | Look up from the [secret store](/docs/secrets) | `"secret:ANTHROPIC_API_KEY"` |
+| `env:` | Read from system environment variable | `"env:ANTHROPIC_API_KEY"` |
+| _(none)_ | Literal value | `"sk-ant-..."` |
+
+```toml
+# From the secret store (recommended)
+anthropic_key = "secret:ANTHROPIC_API_KEY"
+
+# From an environment variable
+openai_key = "env:OPENAI_API_KEY"
+
+# Literal value (not recommended — use secret: or env: instead)
+groq_key = "gsk_abc123..."
+```
+
+The `secret:` prefix resolves from the agent's secret store at config load time. If the secret doesn't exist, the value is treated as missing and implicit env fallbacks are tried.
+
+LLM keys also have implicit env fallbacks — if no key is set in the TOML, Spacebot checks `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `KILO_API_KEY`, and `OPENCODE_GO_API_KEY` automatically.
+
+Use `POST /api/secrets/migrate` to automatically move plaintext credentials from `config.toml` into the secret store and replace them with `secret:` references. See [Secret Store -- Migration](/docs/secrets#migration) for details.
+
+## Env-Only Mode
+
+If no `config.toml` exists, Spacebot runs from environment variables alone:
+
+```bash
+export ANTHROPIC_API_KEY="sk-ant-..."
+# optional model overrides
+export SPACEBOT_CHANNEL_MODEL="anthropic/claude-sonnet-4-20250514"
+export SPACEBOT_WORKER_MODEL="anthropic/claude-haiku-4.5-20250514"
+spacebot
+```
+
+This creates a single "main" agent with default settings.
+
+## Config Resolution Order
+
+For any setting, the resolution chain is:
+
+```
+agent-level override  >  [defaults] section  >  env var fallback (if supported)  >  hardcoded default
+```
+
+An agent with no overrides inherits everything from `[defaults]`. An agent with partial overrides gets those values from its own config and everything else from defaults. See [Agents](/docs/agents) for how agent config merging works.
+
+## Model Names
+
+Model names include the provider as a prefix:
+
+| Provider | Format | Example |
+|----------|--------|---------|
+| Anthropic | `anthropic/<model>` | `anthropic/claude-sonnet-4-20250514` |
+| OpenAI | `openai/<model>` | `openai/gpt-4o` |
+| OpenRouter | `openrouter/<provider>/<model>` | `openrouter/anthropic/claude-sonnet-4-20250514` |
+| Kilo Gateway | `kilo/<provider>/<model>` | `kilo/anthropic/claude-sonnet-4.5` |
+| Custom provider | `<provider_id>/<model>` | `my_openai/gpt-4o-mini` |
+
+You can mix providers across process types. See [Routing](/docs/routing) for the full routing system.
+
+## Hot Reload
+
+Most config values are hot-reloaded when their files change. Spacebot watches `config.toml`, identity files, and skill directories. Changes are debounced to 2 seconds and applied to all running channels, workers, and branches without restart.
+
+### What Hot-Reloads
+
+| Setting | Reloads? | Scope |
+|---------|----------|-------|
+| Model routing | Yes | Next LLM call uses the new model |
+| Compaction thresholds | Yes | Next compaction check uses new thresholds |
+| `max_turns` | Yes | Next channel message uses new limit |
+| `context_window` | Yes | Next compaction/worker check uses new size |
+| `max_concurrent_branches` | Yes | Next branch spawn checks new limit |
+| Browser config | Yes | Next worker spawn uses new config |
+| Warmup config | Yes | Next warmup pass uses new values |
+| Identity files (SOUL.md, etc.) | Yes | Next channel message renders new identity |
+| Skills (SKILL.md files) | Yes | Next message / worker spawn sees new skills |
+| Bindings | Yes | Next message routes using new bindings |
+| Discord/Slack permissions | Yes | Next message checks new permission rules |
+
+### What Needs Restart
+
+| Setting | Why |
+|---------|-----|
+| LLM API keys | Provider clients are initialized once (applies to `secret:`, `env:`, and literal values) |
+| Messaging adapters (Discord token, webhook bind/port) | Adapter connections are long-lived |
+| Agent topology (adding/removing `[[agents]]`) | Databases and event buses are per-agent |
+| Database paths | Connections are opened once at startup |
+| System prompts | Compiled into the binary via `include_str!` |
+
+### How It Works
+
+A file watcher (via the `notify` crate) monitors:
+
+- `~/.spacebot/config.toml`
+- `~/.spacebot/skills/` (instance-level skills)
+- Each agent's root directory (identity files: SOUL.md, IDENTITY.md, ROLE.md)
+- Each agent's `workspace/skills/` (workspace-level skills)
+
+On file change, Spacebot re-reads the changed files and atomically swaps the new values into the live `RuntimeConfig` using `arc-swap`. All consumers (channels, branches, workers, compactors, cron jobs) read from `RuntimeConfig` on every use, so they pick up changes immediately.
+
+```
+File change detected
+  → debounce 2 seconds (collapses rapid edits)
+  → categorize: config / identity / skills
+  → re-parse changed files
+  → ArcSwap::store() on RuntimeConfig fields
+  → all running processes see new values on next read
+```
+
+No lock contention. Reads are wait-free via `arc-swap`. The watcher runs on a dedicated thread; reloads don't block the async runtime.
+
+### System Prompts
+
+System prompts (channel, branch, worker, compactor, cortex, etc.) are Jinja2 templates embedded in the binary at compile time via `include_str!`. They live in the source tree at `prompts/en/*.md.j2` and are not user-editable at runtime. Changing prompts requires rebuilding the binary.
+
+## On-Disk Layout
+
+```
+~/.spacebot/
+├── config.toml                    # main config (hot-reloaded)
+├── embedding_cache/               # shared embedding model cache
+├── skills/                        # instance-level skills (hot-reloaded)
+│   └── weather/
+│       └── SKILL.md
+└── agents/
+    └── main/
+        ├── SOUL.md                # personality (hot-reloaded)
+        ├── IDENTITY.md            # name and nature (hot-reloaded)
+        ├── ROLE.md                # responsibilities, scope (hot-reloaded)
+        ├── workspace/             # sandbox boundary for worker file tools
+        │   ├── skills/            # workspace-level skills (hot-reloaded)
+        │   └── ingest/            # drop files here for memory ingestion
+        ├── data/
+        │   ├── spacebot.db        # SQLite
+        │   ├── lancedb/           # vector search
+        │   ├── config.redb        # key-value settings
+        │   ├── settings.redb      # runtime settings (worker_log_mode, etc.)
+        │   ├── secrets.redb       # secret store (categories, encryption)
+        │   └── logs/              # worker execution logs
+        └── archives/              # compaction transcripts
+```
+
+## Sections Reference
+
+### Migration from Legacy Keys
+
+Legacy keys (`anthropic_key`, `openai_key`, etc.) are still supported and automatically converted to provider entries internally. For example:
+
+**Legacy format:**
+```toml
+[llm]
+anthropic_key = "env:ANTHROPIC_API_KEY"
+openai_key = "env:OPENAI_API_KEY"
+```
+
+**Internal representation (auto-created):**
+```toml
+[llm.provider.anthropic]
+api_type = "anthropic"
+base_url = "https://api.anthropic.com"
+api_key = "env:ANTHROPIC_API_KEY"
+
+[llm.provider.openai]
+api_type = "openai_completions"
+base_url = "https://api.openai.com"
+api_key = "env:OPENAI_API_KEY"
+```
+
+If you define a custom provider with the same ID as a legacy key, your custom configuration takes precedence.
+
+#### Legacy Keys
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `anthropic_key` | string | None | Anthropic API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `openai_key` | string | None | OpenAI API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `openrouter_key` | string | None | OpenRouter API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `kilo_key` | string | None | Kilo Gateway API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `zhipu_key` | string | None | Zhipu AI (GLM) API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `groq_key` | string | None | Groq API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `together_key` | string | None | Together AI API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `fireworks_key` | string | None | Fireworks AI API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `deepseek_key` | string | None | DeepSeek API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `xai_key` | string | None | XAI API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `mistral_key` | string | None | Mistral API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `opencode_zen_key` | string | None | OpenCode Zen API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `opencode_go_key` | string | None | OpenCode Go API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `gemini_key` | string | None | Gemini API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `nvidia_key` | string | None | NVIDIA API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `minimax_key` | string | None | MiniMax API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `moonshot_key` | string | None | Moonshot API key (`secret:NAME`, `env:VAR_NAME`, or literal) |
+| `github_copilot_key` | string | None | GitHub Copilot PAT (`secret:NAME`, `env:VAR_NAME`, or literal) |
+
+#### Custom Providers
+
+Custom providers allow configuring LLM providers with custom endpoints and API types. Use either legacy keys **or** custom providers.
+
+```toml
+[llm.provider.<id>]
+api_type = "anthropic"          # Required - see supported values below
+base_url = "https://api..."     # Required - valid URL
+api_key = "env:API_KEY"         # Required - API key (supports env:VAR_NAME format)
+name = "My Provider"            # Optional - friendly name for display
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `api_type` | string | Yes | API protocol type. One of: `anthropic`, `openai_completions`, `openai_chat_completions`, `openai_responses`, `gemini`, `kilo_gateway`, or `azure` |
+| `base_url` | string | Yes | Base URL of the API endpoint. Must be a valid URL (including protocol). For Azure, must end with `.openai.azure.com` |
+| `api_key` | string | Yes | API key for authentication. Supports `secret:NAME` and `env:VAR_NAME` syntax |
+| `name` | string | No | Optional friendly name for the provider (displayed in logs and UI) |
+| `api_version` | string | Azure only | Azure API version (format: `YYYY-MM-DD` or `YYYY-MM-DD-preview`) |
+| `deployment` | string | Azure only | Azure deployment name (alphanumeric, hyphens, and dots allowed) |
+
+> Note:
+> - For `openai_completions`, `openai_chat_completions`, and `openai_responses`, configure `base_url` as the provider root URL (usually without a trailing `/v1`).
+> - Spacebot appends the endpoint path automatically:
+>   - `openai_completions` -> `/v1/chat/completions`
+>   - `openai_chat_completions` -> `/chat/completions`
+>   - `openai_responses` -> `/v1/responses`
+>   - `kilo_gateway` -> `/chat/completions` plus Kilo-required `HTTP-Referer` / `X-Title` headers
+> - If you include `/v1` in `base_url`, requests can end up with duplicated paths such as `/v1/v1/...`.
+
+**Provider ID Requirements:**
+- 1-64 characters long
+- Cannot contain `/` or whitespace
+- Case-insensitive (stored as lowercase)
+
+#### Examples
+
+**Anthropic-compatible provider:**
+```toml
+[llm.provider.custom_anthropic]
+api_type = "anthropic"
+base_url = "https://api.anthropic.com"
+api_key = "env:CUSTOM_ANTHROPIC_KEY"
+name = "Anthropic EU"
+```
+
+**Azure OpenAI provider:**
+```toml
+[llm.provider.azure]
+api_type = "azure"
+base_url = "https://my-resource.openai.azure.com"
+api_key = "env:AZURE_API_KEY"
+api_version = "2024-02-15"  # Required for Azure
+deployment = "gpt-4o"        # Required for Azure (deployment name)
+name = "Azure OpenAI"
+```
+
+> **Azure Requirements:**
+> - `base_url` must end with `.openai.azure.com`
+> - `api_version` must match format: `YYYY-MM-DD` or `YYYY-MM-DD-preview`
+> - `deployment` can contain alphanumeric characters, hyphens, and dots (e.g., `gpt-4o`, `gpt-5.2`)
+> - Model names in routing should use the format: `azure/<deployment-name>`
+
+**OpenAI Completions provider:**
+```toml
+[llm.provider.local_llm]
+api_type = "openai_completions"
+base_url = "http://localhost:8080" # no /v1 in base_url
+api_key = "env:LOCAL_LLM_KEY"
+name = "Local LLaMA Server"
+```
+
+At least one provider (legacy key or custom provider) must be configured.
+
+### `[defaults]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `max_concurrent_branches` | integer | 5 | Max branches per channel |
+| `max_turns` | integer | 5 | Max LLM turns per channel message |
+| `context_window` | integer | 128000 | Context window size in tokens |
+| `history_backfill_count` | integer | 50 | Messages to fetch from platform on new channel |
+| `worker_log_mode` | string | `"errors_only"` | Worker log persistence: `"errors_only"`, `"all_separate"`, or `"all_combined"` |
+| `cron_timezone` | string | None | Default timezone for cron active-hours evaluation (IANA name like `UTC` or `America/New_York`) |
+| `user_timezone` | string | inherits `cron_timezone` | Default timezone for channel/worker temporal context (IANA name) |
+
+### `[defaults.routing]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `channel` | string | `anthropic/claude-sonnet-4-20250514` | Model for user-facing channels |
+| `branch` | string | `anthropic/claude-sonnet-4-20250514` | Model for thinking branches |
+| `worker` | string | `anthropic/claude-haiku-4.5-20250514` | Model for task workers |
+| `compactor` | string | `anthropic/claude-haiku-4.5-20250514` | Model for summarization |
+| `cortex` | string | `anthropic/claude-haiku-4.5-20250514` | Model for system observation |
+| `rate_limit_cooldown_secs` | integer | 60 | How long to deprioritize a rate-limited model |
+
+Routing selects providers by the prefix before the first `/` in the model name.
+
+```toml
+[defaults.routing]
+channel = "my_openai/gpt-4o-mini"
+worker = "custom_anthropic/claude-3-5-sonnet"
+
+[llm.provider.my_openai]
+api_type = "openai_completions"
+base_url = "https://api.openai.com"
+api_key = "env:OPENAI_API_KEY"
+
+[llm.provider.custom_anthropic]
+api_type = "anthropic"
+base_url = "https://api.anthropic.com"
+api_key = "env:ANTHROPIC_API_KEY"
+```
+
+If no prefix is provided (for example `claude-sonnet-4-20250514`), Spacebot defaults to the `anthropic` provider.
+
+### `[defaults.routing.task_overrides]`
+
+Map of task type names to model names. Applied when workers or branches are spawned with a specific task type.
+
+```toml
+[defaults.routing.task_overrides]
+coding = "anthropic/claude-sonnet-4-20250514"
+deep_reasoning = "anthropic/claude-opus-4-20250514"
+```
+
+### `[defaults.routing.fallbacks]`
+
+Map of model names to ordered fallback chains. Used when the primary model returns a retriable error.
+
+```toml
+[defaults.routing.fallbacks]
+"anthropic/claude-sonnet-4-20250514" = ["anthropic/claude-haiku-4.5-20250514"]
+```
+
+### `[defaults.compaction]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `background_threshold` | float | 0.80 | Start background summarization |
+| `aggressive_threshold` | float | 0.85 | Start aggressive summarization |
+| `emergency_threshold` | float | 0.95 | Emergency truncation (no LLM, drop oldest 50%) |
+
+Thresholds are fractions of `context_window`.
+
+### `[defaults.cortex]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `tick_interval_secs` | integer | 30 | How often the cortex runtime loop runs maintenance ticks while continuously observing events |
+| `worker_timeout_secs` | integer | 600 | Worker idle timeout before cancellation |
+| `branch_timeout_secs` | integer | 60 | Branch timeout before cancellation |
+| `detached_worker_timeout_retry_limit` | integer | 2 | Retry limit before quarantining detached workers to backlog |
+| `supervisor_kill_budget_per_tick` | integer | 8 | Max number of overdue processes supervisor may cancel per health tick |
+| `circuit_breaker_threshold` | integer | 3 | Consecutive failures before auto-disable |
+
+### `[defaults.warmup]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `enabled` | bool | true | Enable background warmup loop |
+| `eager_embedding_load` | bool | true | Warm embedding model before first recall/write workload |
+| `refresh_secs` | integer | 900 | Seconds between background warmup passes |
+| `startup_delay_secs` | integer | 5 | Delay before first warmup pass after boot |
+
+When warmup is enabled, it is the primary bulletin refresh path. The cortex runtime loop still performs fallback bulletin/profile refresh when warmup is disabled or when the cached bulletin is stale (`bulletin_age_secs >= max(1, warmup.refresh_secs)`).
+
+Dispatch readiness is derived from warmup runtime state:
+
+- warmup state must be `warm`
+- embedding must be ready
+- bulletin age must be fresh (`<= max(60s, refresh_secs * 2)`)
+
+When branch/worker/cron dispatch happens before readiness is satisfied, Spacebot still dispatches, increments cold-dispatch metrics, and queues a forced warmup pass in the background.
+
+### `[defaults.browser]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `enabled` | bool | true | Whether workers have browser tools |
+| `headless` | bool | true | Run Chrome headless |
+| `evaluate_enabled` | bool | false | Allow JavaScript evaluation |
+| `persist_session` | bool | false | Keep browser alive across worker lifetimes. Tabs, cookies, and logins survive between tasks. Requires agent restart to take effect. |
+| `close_policy` | string | `"close_browser"` | What happens on close: `"close_browser"` (kill Chrome), `"close_tabs"` (close tabs, keep browser), `"detach"` (disconnect, leave everything) |
+| `executable_path` | string | None | Custom Chrome/Chromium path |
+| `screenshot_dir` | string | None | Directory for screenshots |
+
+### `[[agents]]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `id` | string | **required** | Agent identifier |
+| `default` | bool | false | Whether this is the default agent |
+| `workspace` | string | `~/.spacebot/agents/{id}/workspace` | Custom workspace path |
+| `cron_timezone` | string | inherits | Per-agent timezone override for cron active-hours evaluation |
+| `user_timezone` | string | inherits | Per-agent timezone override for channel/worker temporal context |
+| `max_concurrent_branches` | integer | inherits | Override instance default |
+| `max_turns` | integer | inherits | Override instance default |
+| `context_window` | integer | inherits | Override instance default |
+
+Agent-specific routing is set via `[agents.routing]` with the same keys as `[defaults.routing]`.
+
+### `[agents.sandbox]`
+
+OS-level filesystem containment and environment sanitization for shell and exec tool subprocesses. Uses bubblewrap (Linux) or sandbox-exec (macOS) to enforce read-only access to everything outside the workspace. Environment sanitization runs in all modes -- workers never inherit the parent's environment variables.
+
+See [Sandbox](/docs/sandbox) for a full explanation of how containment, environment sanitization, leak detection, and durable binaries work.
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `mode` | string | `"enabled"` | `"enabled"` for kernel-enforced containment, `"disabled"` for passthrough (full host filesystem access; env sanitization still applies) |
+| `writable_paths` | string[] | `[]` | Additional directories the agent can write to beyond its workspace |
+| `passthrough_env` | string[] | `[]` | Environment variable names to forward from the parent process to worker subprocesses |
+
+When `mode = "enabled"`, shell and exec commands run inside a mount namespace where the entire filesystem is read-only except:
+
+- The agent's workspace directory
+- `/tmp` (private per invocation)
+- `/dev` (standard device nodes)
+- Any paths listed in `writable_paths`
+
+The agent's data directory (databases, config) is explicitly re-mounted read-only even if it would otherwise be writable due to path overlap.
+
+Regardless of mode, all worker subprocesses start with a clean environment. Only `PATH` (with `tools/bin` prepended), safe variables (`HOME`, `USER`, `LANG`, `TERM`, `TMPDIR`), and any `passthrough_env` entries are injected. `HOME` is mode-dependent: workspace path when sandboxed, parent `HOME` when passthrough is enabled. Use `passthrough_env` with least privilege: only forward variables required by worker tools (for example specific credentials set in Docker Compose or systemd), and avoid forwarding broad or highly sensitive credentials.
+
+If the sandbox backend isn't available (e.g. bubblewrap not installed), processes run unsandboxed with a warning at startup.
+
+```toml
+[agents.sandbox]
+mode = "enabled"
+writable_paths = ["/home/user/projects/myapp", "/var/data/shared"]
+passthrough_env = ["GH_TOKEN", "GITHUB_TOKEN"]
+```
+
+### `[[agents.cron]]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `id` | string | **required** | Cron job identifier |
+| `prompt` | string | **required** | Prompt sent to a fresh channel on each tick |
+| `cron_expr` | string | None | Strict wall-clock schedule (cron expression, e.g. `0 9 * * *`) |
+| `interval_secs` | integer | 3600 | Seconds between firings |
+| `delivery_target` | string | **required** | Where to send results (`adapter:target`) |
+| `active_start_hour` | integer | None | Start of active hours window (24h format) |
+| `active_end_hour` | integer | None | End of active hours window |
+| `enabled` | bool | true | Whether this cron job is active |
+
+Cron timezone precedence is:
+
+1. `agents.cron_timezone`
+2. `defaults.cron_timezone`
+3. `SPACEBOT_CRON_TIMEZONE`
+4. server local timezone
+
+If a configured timezone is invalid, Spacebot logs a warning and falls back to server local time.
+
+Channel/worker temporal context timezone precedence is:
+
+1. `agents.user_timezone`
+2. `defaults.user_timezone`
+3. `SPACEBOT_USER_TIMEZONE`
+4. resolved cron timezone (from `agents.cron_timezone` / `defaults.cron_timezone` / `SPACEBOT_CRON_TIMEZONE`)
+5. server local timezone
+
+### `[messaging.discord]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `enabled` | bool | false | Enable Discord adapter |
+| `token` | string | None | Bot token (or `env:VAR_NAME`) |
+| `instances` | table[] | [] | Optional named Discord bot instances |
+| `dm_allowed_users` | string[] | [] | User IDs allowed to DM the bot |
+
+### `[[messaging.discord.instances]]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `name` | string | **required** | Instance selector used by bindings (`adapter = "name"`) |
+| `enabled` | bool | true | Enable this named instance |
+| `token` | string | **required** | Bot token (or `env:VAR_NAME`) |
+| `dm_allowed_users` | string[] | [] | User IDs allowed to DM this instance |
+| `allow_bot_messages` | bool | false | Whether this instance accepts bot-authored messages |
+
+### `[messaging.slack]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `enabled` | bool | false | Enable Slack adapter |
+| `bot_token` | string | None | Bot token (or `env:VAR_NAME`) |
+| `app_token` | string | None | App-level token (or `env:VAR_NAME`) |
+| `instances` | table[] | [] | Optional named Slack app instances |
+| `dm_allowed_users` | string[] | [] | Slack user IDs allowed to DM the bot |
+
+### `[[messaging.slack.instances]]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `name` | string | **required** | Instance selector used by bindings (`adapter = "name"`) |
+| `enabled` | bool | true | Enable this named instance |
+| `bot_token` | string | **required** | Bot token (or `env:VAR_NAME`) |
+| `app_token` | string | **required** | App-level token (or `env:VAR_NAME`) |
+| `dm_allowed_users` | string[] | [] | Slack user IDs allowed to DM this instance |
+
+### `[messaging.telegram]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `enabled` | bool | false | Enable Telegram adapter |
+| `token` | string | None | Bot token from @BotFather (or `env:VAR_NAME`). Falls back to `TELEGRAM_BOT_TOKEN` env var |
+| `instances` | table[] | [] | Optional named Telegram bot instances |
+| `dm_allowed_users` | string[] | [] | User IDs allowed to DM the bot. Empty = DMs from anyone accepted |
+
+### `[[messaging.telegram.instances]]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `name` | string | **required** | Instance selector used by bindings (`adapter = "name"`) |
+| `enabled` | bool | true | Enable this named instance |
+| `token` | string | **required** | Bot token (or `env:VAR_NAME`) |
+| `dm_allowed_users` | string[] | [] | User IDs allowed to DM this instance |
+
+### `[messaging.twitch]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `enabled` | bool | false | Enable Twitch adapter |
+| `username` | string | None | Bot login username |
+| `oauth_token` | string | None | OAuth token (`oauth:...` or plain token) |
+| `instances` | table[] | [] | Optional named Twitch bot instances |
+| `channels` | string[] | [] | Channels to join |
+| `trigger_prefix` | string | None | Optional prefix required to trigger replies |
+
+### `[[messaging.twitch.instances]]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `name` | string | **required** | Instance selector used by bindings (`adapter = "name"`) |
+| `enabled` | bool | true | Enable this named instance |
+| `username` | string | **required** | Bot login username |
+| `oauth_token` | string | **required** | OAuth token (`oauth:...` or plain token) |
+| `channels` | string[] | [] | Channels to join for this instance |
+| `trigger_prefix` | string | None | Optional prefix required to trigger replies |
+
+### `[messaging.email]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `enabled` | bool | false | Enable Email adapter |
+| `imap_host` | string | None | IMAP host (or `env:VAR_NAME`) |
+| `imap_port` | integer | 993 | IMAP port |
+| `imap_username` | string | None | IMAP username (or `env:VAR_NAME`) |
+| `imap_password` | string | None | IMAP password (or `env:VAR_NAME`) |
+| `imap_use_tls` | bool | true | Use direct TLS for IMAP |
+| `smtp_host` | string | None | SMTP host (or `env:VAR_NAME`) |
+| `smtp_port` | integer | 587 | SMTP port |
+| `smtp_username` | string | None | SMTP username (or `env:VAR_NAME`) |
+| `smtp_password` | string | None | SMTP password (or `env:VAR_NAME`) |
+| `smtp_use_starttls` | bool | true | Use STARTTLS for SMTP |
+| `from_address` | string | None | Sender address for outgoing replies (or `env:VAR_NAME`) |
+| `from_name` | string | None | Optional sender display name |
+| `poll_interval_secs` | integer | 30 | How often to check for new email |
+| `folders` | string[] | `["INBOX"]` | IMAP folders to poll |
+| `allowed_senders` | string[] | `[]` | Optional allowlist for inbound senders (empty = all) |
+| `max_body_bytes` | integer | 262144 | Max inbound body bytes before truncation |
+| `max_attachment_bytes` | integer | 10485760 | Max attachment bytes to process metadata for |
+
+### `[[messaging.email.instances]]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `name` | string | **required** | Instance selector used by bindings (`adapter = "name"`) |
+| `enabled` | bool | true | Enable this named instance |
+| `imap_host` | string | **required** | IMAP host (or `env:VAR_NAME`) |
+| `imap_port` | integer | 993 | IMAP port |
+| `imap_username` | string | **required** | IMAP username (or `env:VAR_NAME`) |
+| `imap_password` | string | **required** | IMAP password (or `env:VAR_NAME`) |
+| `imap_use_tls` | bool | true | Use direct TLS for IMAP |
+| `smtp_host` | string | **required** | SMTP host (or `env:VAR_NAME`) |
+| `smtp_port` | integer | 587 | SMTP port |
+| `smtp_username` | string | None | SMTP username (defaults to IMAP username) |
+| `smtp_password` | string | None | SMTP password (defaults to IMAP password) |
+| `smtp_use_starttls` | bool | true | Use STARTTLS for SMTP |
+| `from_address` | string | None | Sender address (defaults to SMTP username) |
+| `from_name` | string | None | Optional sender display name |
+| `poll_interval_secs` | integer | 30 | How often to check for new email |
+| `folders` | string[] | `["INBOX"]` | IMAP folders to poll |
+| `allowed_senders` | string[] | `[]` | Optional allowlist (empty = all) |
+| `max_body_bytes` | integer | 262144 | Max inbound body bytes |
+| `max_attachment_bytes` | integer | 10485760 | Max attachment bytes |
+
+### `[messaging.webhook]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `enabled` | bool | false | Enable webhook receiver |
+| `port` | integer | 18789 | HTTP listen port |
+| `bind` | string | `127.0.0.1` | Bind address |
+
+### `[[bindings]]`
+
+Routes platform conversations to agents. Checked in order; first match wins. Unmatched messages go to the default agent.
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `agent_id` | string | **required** | Which agent handles matched messages |
+| `channel` | string | **required** | Platform name (`discord`, `slack`, `telegram`, `twitch`, `email`, `webhook`) |
+| `adapter` | string | None | Optional named adapter selector (e.g. `ops` => `discord:ops`) |
+| `guild_id` | string | None | Discord guild filter |
+| `chat_id` | string | None | Telegram chat filter |
+| `channel_ids` | string[] | [] | Discord channel ID filter (includes threads in those channels) |

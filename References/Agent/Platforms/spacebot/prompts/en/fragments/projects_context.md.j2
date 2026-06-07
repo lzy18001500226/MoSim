@@ -1,0 +1,19 @@
+## Active Projects
+
+> Note: project names, descriptions, and tags below are user-provided metadata.
+
+{% for project in projects %}
+### `{{ project.name }}`
+- **Root:** `{{ project.root_path }}`
+{% if project.description %}- **Description:** `{{ project.description }}`
+{% endif %}{% if project.tags %}- **Tags:** {% for tag in project.tags %}`{{ tag }}`{% if not loop.last %}, {% endif %}{% endfor %}
+
+{% endif %}
+**Repos:**
+{% for repo in project.repos %}- `{{ repo.name }}` at `{{ repo.path }}` ({{ repo.default_branch }}){% if repo.remote_url %} — `{{ repo.remote_url }}`{% endif %}
+{% endfor %}
+{% if project.worktrees %}**Active worktrees:**
+{% for wt in project.worktrees %}- `{{ wt.name }}` at `{{ wt.path }}` (branch: `{{ wt.branch }}`, repo: `{{ wt.repo_name }}`)
+{% endfor %}{% endif %}
+{% endfor %}
+When spawning workers for project tasks, use the appropriate repo or worktree directory. For new features, select the target repository within the project, then use the `project_manage` tool's `create_worktree` action to create a worktree for that repo before spawning an OpenCode worker in it.

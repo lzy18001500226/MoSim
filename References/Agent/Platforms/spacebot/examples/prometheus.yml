@@ -1,0 +1,28 @@
+# Example Prometheus scrape config for Spacebot.
+#
+# Requires: cargo build --release --features metrics
+# Config:   [metrics] enabled = true, port = 9090
+#
+# Copy this into your prometheus.yml scrape_configs section,
+# or use it as a standalone config for testing.
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: spacebot
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["localhost:9090"]
+        labels:
+          instance: spacebot
+
+    # Optional: drop high-cardinality series if model count grows.
+    # Uncomment to keep only aggregate LLM metrics:
+    # metric_relabel_configs:
+    #   - source_labels: [__name__]
+    #     regex: "spacebot_llm_.*"
+    #     action: keep

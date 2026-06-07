@@ -1,0 +1,42 @@
+---
+title: Philosophy
+description: Why Spacebot is built in Rust and what makes it different from other AI systems.
+---
+
+# Philosophy
+
+## Why Rust
+
+The most common reaction when people hear this project is built in Rust: "Why not TypeScript? Why not Python? Rust isn't made for this."
+
+Here's why.
+
+## What we're actually building
+
+Spacebot isn't a chatbot. It's an orchestration layer for autonomous AI processes -- channels, branches, workers, a compactor, a cortex -- all running concurrently, all delegating to each other, all sharing memory. This is closer to an operating system than a web app.
+
+If you believe that AI-enabled computing is where things are headed -- that computers will eventually be autonomous systems we interact with through language -- then the orchestration layer that makes that work is infrastructure. And infrastructure should be machine code.
+
+## The case against "faster to build"
+
+TypeScript and Python are faster to prototype with. Nobody is arguing that. But prototyping speed is the wrong metric for a system designed to run continuously, manage its own resources, and be trusted with autonomy.
+
+TypeScript has a thousand ways to do the same thing. Every team, every file, every contributor brings a different style. The language doesn't push back. Python is interpreted, dynamically typed, and carries a runtime that adds overhead and unpredictability to every operation. Both are fine for applications that sit behind a web server and handle requests. Neither is what you'd choose to build the thing that runs the computer.
+
+Rust is opinionated. There's a right way to structure data, handle errors, manage concurrency. The compiler enforces it. That's not a cost -- it's the entire point. When you're building a system where multiple AI processes share memory, spawn tasks, and make decisions without human oversight, "the compiler won't let you do that" is a feature.
+
+## AI-assisted development actually favors Rust
+
+A counterintuitive benefit: Rust's strict type system and compiler make AI-generated code more reliable, not less. When the language has one correct way to express something, an LLM is more likely to find it. When the compiler rejects bad output immediately, iteration is fast despite longer compile times. TypeScript's flexibility is a liability here -- there are too many valid ways to write the same thing, and "valid" doesn't mean "correct."
+
+## The tools exist
+
+Rig abstracts the agentic loop, tool dispatch, and model integration. SQLite, LanceDB, and redb handle storage without server dependencies. Tokio handles concurrency. The Rust ecosystem for this kind of work is mature enough that we're not fighting the language -- we're leveraging it.
+
+The system we're designing isn't that complicated. Five process types, a memory graph, a message bus. Building it in Rust is slower on day one and better on every day after that.
+
+## Looking forward
+
+LLMs are getting larger, faster, and more resource-hungry. They'll run locally. The orchestration layer sitting between the model and the operating system should be predictable, tested, lightweight, and fast. Not an interpreted layer retrofitted onto a runtime that was designed for web browsers.
+
+If we're building the foundation for how computers operate autonomously, it should be built in the language that compiles to the machine the computer actually is.

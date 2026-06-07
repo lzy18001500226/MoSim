@@ -1,0 +1,868 @@
+use crate::error::Result;
+use anyhow::Context;
+use minijinja::{Environment, Value, context};
+use serde::Serialize;
+use std::collections::HashMap;
+use std::sync::Arc;
+
+/// A completed background process result, passed to the retrigger template.
+#[derive(Clone, Debug, Serialize)]
+pub struct RetriggerResult {
+    /// "branch" or "worker"
+    pub process_type: String,
+    /// The branch or worker ID (short UUID).
+    pub process_id: String,
+    /// Whether the process completed successfully.
+    pub success: bool,
+    /// The result/conclusion text from the process.
+    pub result: String,
+}
+
+/// Template engine for rendering system prompts with dynamic variables.
+///
+/// Prompts are bundled in the binary as `include_str!` embedded templates.
+/// Language selection is done at initialization and templates are not
+/// reloadable at runtime (no file watching, no hot reload).
+#[derive(Clone)]
+pub struct PromptEngine {
+    /// The MiniJinja environment holding all templates for the configured language.
+    /// Wrapped in Arc to make PromptEngine Clone.
+    env: Arc<Environment<'static>>,
+    /// Selected language code (e.g., "en").
+    language: String,
+}
+
+impl PromptEngine {
+    /// Create a new engine with templates for the given language.
+    ///
+    /// Currently only "en" (English) is fully implemented.
+    /// The language parameter exists for future i18n expansion.
+    pub fn new(language: &str) -> anyhow::Result<Self> {
+        if language != "en" {
+            tracing::warn!(
+                language = language,
+                "non-English language requested, falling back to English"
+            );
+        }
+
+        let mut env = Environment::new();
+
+        // Register all templates from the central text registry
+        // Process prompts
+        env.add_template("channel", crate::prompts::text::get("channel"))?;
+        env.add_template("branch", crate::prompts::text::get("branch"))?;
+        env.add_template("worker", crate::prompts::text::get("worker"))?;
+        env.add_template("cortex", crate::prompts::text::get("cortex"))?;
+        env.add_template(
+            "cortex_bulletin",
+            crate::prompts::text::get("cortex_bulletin"),
+        )?;
+        env.add_template(
+            "cortex_knowledge_synthesis",
+            crate::prompts::text::get("cortex_knowledge_synthesis"),
+        )?;
+        env.add_template(
+            "cortex_intraday_synthesis",
+            crate::prompts::text::get("cortex_intraday_synthesis"),
+        )?;
+        env.add_template(
+            "cortex_daily_summary",
+            crate::prompts::text::get("cortex_daily_summary"),
+        )?;
+        env.add_template("compactor", crate::prompts::text::get("compactor"))?;
+        env.add_template(
+            "memory_persistence",
+            crate::prompts::text::get("memory_persistence"),
+        )?;
+        env.add_template("ingestion", crate::prompts::text::get("ingestion"))?;
+        env.add_template("cortex_chat", crate::prompts::text::get("cortex_chat"))?;
+        env.add_template(
+            "cortex_profile",
+            crate::prompts::text::get("cortex_profile"),
+        )?;
+        env.add_template("factory", crate::prompts::text::get("factory"))?;
+
+        // Adapter-specific prompt fragments
+        env.add_template(
+            "adapters/email",
+            crate::prompts::text::get("adapters/email"),
+        )?;
+        env.add_template("adapters/cron", crate::prompts::text::get("adapters/cron"))?;
+        env.add_template(
+            "adapters/signal",
+            crate::prompts::text::get("adapters/signal"),
+        )?;
+
+        // Fragment templates
+        env.add_template(
+            "fragments/worker_capabilities",
+            crate::prompts::text::get("fragments/worker_capabilities"),
+        )?;
+        env.add_template(
+            "fragments/conversation_context",
+            crate::prompts::text::get("fragments/conversation_context"),
+        )?;
+        env.add_template(
+            "fragments/skills_channel",
+            crate::prompts::text::get("fragments/skills_channel"),
+        )?;
+        env.add_template(
+            "fragments/skills_worker",
+            crate::prompts::text::get("fragments/skills_worker"),
+        )?;
+        env.add_template(
+            "fragments/available_channels",
+            crate::prompts::text::get("fragments/available_channels"),
+        )?;
+        env.add_template(
+            "fragments/org_context",
+            crate::prompts::text::get("fragments/org_context"),
+        )?;
+        env.add_template(
+            "fragments/projects_context",
+            crate::prompts::text::get("fragments/projects_context"),
+        )?;
+
+        // System message fragments
+        env.add_template(
+            "fragments/system/retrigger",
+            crate::prompts::text::get("fragments/system/retrigger"),
+        )?;
+        env.add_template(
+            "fragments/system/truncation",
+            crate::prompts::text::get("fragments/system/truncation"),
+        )?;
+        env.add_template(
+            "fragments/system/worker_overflow",
+            crate::prompts::text::get("fragments/system/worker_overflow"),
+        )?;
+        env.add_template(
+            "fragments/system/worker_compact",
+            crate::prompts::text::get("fragments/system/worker_compact"),
+        )?;
+        env.add_template(
+            "fragments/system/memory_persistence",
+            crate::prompts::text::get("fragments/system/memory_persistence"),
+        )?;
+        env.add_template(
+            "fragments/system/cortex_synthesis",
+            crate::prompts::text::get("fragments/system/cortex_synthesis"),
+        )?;
+        env.add_template(
+            "fragments/system/profile_synthesis",
+            crate::prompts::text::get("fragments/system/profile_synthesis"),
+        )?;
+        env.add_template(
+            "fragments/system/ingestion_chunk",
+            crate::prompts::text::get("fragments/system/ingestion_chunk"),
+        )?;
+        env.add_template(
+            "fragments/system/history_backfill",
+            crate::prompts::text::get("fragments/system/history_backfill"),
+        )?;
+        env.add_template(
+            "fragments/system/tool_syntax_correction",
+            crate::prompts::text::get("fragments/system/tool_syntax_correction"),
+        )?;
+        env.add_template(
+            "fragments/tool_use_enforcement",
+            crate::prompts::text::get("fragments/tool_use_enforcement"),
+        )?;
+        env.add_template(
+            "fragments/coalesce_hint",
+            crate::prompts::text::get("fragments/coalesce_hint"),
+        )?;
+
+        Ok(Self {
+            env: Arc::new(env),
+            language: language.to_string(),
+        })
+    }
+
+    /// Render a template by name with the given context variables.
+    ///
+    /// # Arguments
+    /// * `template_name` - Name of the template to render (e.g., "channel", "fragments/worker_capabilities")
+    /// * `context` - MiniJinja Value containing template variables
+    ///
+    /// # Example
+    /// ```rust,no_run
+    /// use minijinja::context;
+    /// # let engine = spacebot::prompts::engine::PromptEngine::new("en")?;
+    /// let ctx = context! {
+    ///     identity_context => "Some identity text",
+    ///     browser_enabled => true,
+    /// };
+    /// let rendered = engine.render("channel", ctx)?;
+    /// # Ok::<(), anyhow::Error>(())
+    /// ```
+    pub fn render(&self, template_name: &str, context: Value) -> Result<String> {
+        let template = self
+            .env
+            .get_template(template_name)
+            .with_context(|| format!("template '{}' not found", template_name))?;
+
+        template
+            .render(context)
+            .with_context(|| format!("failed to render template '{}'", template_name))
+            .map_err(Into::into)
+    }
+
+    /// Render a template with a HashMap of context variables.
+    pub fn render_map(&self, template_name: &str, vars: HashMap<String, Value>) -> Result<String> {
+        let context = Value::from_object(vars);
+        self.render(template_name, context)
+    }
+
+    /// Convenience method for rendering simple templates with no variables.
+    pub fn render_static(&self, template_name: &str) -> Result<String> {
+        self.render(template_name, Value::UNDEFINED)
+    }
+
+    /// Render the tool-use enforcement fragment.
+    pub fn render_tool_use_enforcement(&self) -> Result<String> {
+        self.render_static("fragments/tool_use_enforcement")
+    }
+
+    /// Append tool-use enforcement guidance when configured for the model.
+    pub fn maybe_append_tool_use_enforcement(
+        &self,
+        mut prompt: String,
+        tool_use_enforcement: &crate::config::ToolUseEnforcement,
+        model_name: &str,
+    ) -> Result<String> {
+        if !tool_use_enforcement.should_inject(model_name) {
+            return Ok(prompt);
+        }
+
+        let guidance = self.render_tool_use_enforcement()?;
+        let guidance = guidance.trim();
+        if guidance.is_empty() {
+            return Ok(prompt);
+        }
+
+        if !prompt.trim_end().is_empty() {
+            prompt.push_str("\n\n");
+        }
+        prompt.push_str(guidance);
+        Ok(prompt)
+    }
+
+    /// Convenience method for rendering worker capabilities fragment.
+    pub fn render_worker_capabilities(
+        &self,
+        browser_enabled: bool,
+        web_search_enabled: bool,
+        opencode_enabled: bool,
+        mcp_tool_names: &[String],
+    ) -> Result<String> {
+        self.render(
+            "fragments/worker_capabilities",
+            context! {
+                browser_enabled => browser_enabled,
+                web_search_enabled => web_search_enabled,
+                opencode_enabled => opencode_enabled,
+                mcp_tool_names => mcp_tool_names,
+            },
+        )
+    }
+
+    /// Convenience method for rendering conversation context fragment.
+    pub fn render_conversation_context(
+        &self,
+        platform: &str,
+        server_name: Option<&str>,
+        channel_name: Option<&str>,
+        conversation_id: Option<&str>,
+    ) -> Result<String> {
+        self.render(
+            "fragments/conversation_context",
+            context! {
+                platform => platform,
+                server_name => server_name,
+                channel_name => channel_name,
+                conversation_id => conversation_id,
+            },
+        )
+    }
+
+    /// Convenience method for rendering skills channel fragment.
+    pub fn render_skills_channel(&self, skills: Vec<SkillInfo>) -> Result<String> {
+        self.render(
+            "fragments/skills_channel",
+            context! {
+                skills => skills,
+            },
+        )
+    }
+
+    /// Render the worker system prompt with filesystem context and optional tool
+    /// secret names.
+    #[allow(clippy::too_many_arguments)]
+    pub fn render_worker_prompt(
+        &self,
+        instance_dir: &str,
+        workspace_dir: &str,
+        sandbox_enabled: bool,
+        sandbox_containment_active: bool,
+        sandbox_read_allowlist: Vec<String>,
+        sandbox_write_allowlist: Vec<String>,
+        tool_secret_names: &[String],
+        browser_persist_session: bool,
+        status_text: Option<String>,
+        wiki_enabled: bool,
+        project_context: Option<String>,
+    ) -> Result<String> {
+        self.render(
+            "worker",
+            context! {
+                instance_dir => instance_dir,
+                workspace_dir => workspace_dir,
+                sandbox_enabled => sandbox_enabled,
+                sandbox_containment_active => sandbox_containment_active,
+                sandbox_read_allowlist => sandbox_read_allowlist,
+                sandbox_write_allowlist => sandbox_write_allowlist,
+                tool_secret_names => tool_secret_names,
+                browser_persist_session => browser_persist_session,
+                status_text => status_text,
+                wiki_enabled => wiki_enabled,
+                project_context => project_context,
+            },
+        )
+    }
+
+    /// Render the branch system prompt with filesystem context.
+    pub fn render_branch_prompt(
+        &self,
+        instance_dir: &str,
+        workspace_dir: &str,
+        wiki_enabled: bool,
+    ) -> Result<String> {
+        self.render(
+            "branch",
+            context! {
+                instance_dir => instance_dir,
+                workspace_dir => workspace_dir,
+                wiki_enabled => wiki_enabled,
+            },
+        )
+    }
+
+    /// Render the available channels fragment for cross-channel awareness.
+    pub fn render_available_channels(&self, channels: Vec<ChannelEntry>) -> Result<String> {
+        self.render(
+            "fragments/available_channels",
+            context! {
+                channels => channels,
+            },
+        )
+    }
+
+    /// Render the skills listing for a worker system prompt.
+    ///
+    /// Workers see all available skills with suggestions from the channel flagged.
+    /// They read whichever skills they need via the read_skill tool.
+    pub fn render_skills_worker(&self, skills: Vec<SkillInfo>) -> Result<String> {
+        self.render(
+            "fragments/skills_worker",
+            context! {
+                skills => skills,
+            },
+        )
+    }
+
+    /// Render the retrigger message with specific process results embedded.
+    ///
+    /// Each result includes the process type, ID, and full result text so the
+    /// LLM knows exactly what completed and what to relay to the user.
+    pub fn render_system_retrigger(&self, results: &[RetriggerResult]) -> Result<String> {
+        self.render(
+            "fragments/system/retrigger",
+            context! {
+                results => results,
+            },
+        )
+    }
+
+    /// Correction message when the LLM outputs tool call syntax as plain text.
+    pub fn render_system_tool_syntax_correction(&self) -> Result<String> {
+        self.render_static("fragments/system/tool_syntax_correction")
+    }
+
+    /// Convenience method for rendering truncation marker.
+    pub fn render_system_truncation(&self, remove_count: usize) -> Result<String> {
+        self.render(
+            "fragments/system/truncation",
+            context! {
+                remove_count => remove_count,
+            },
+        )
+    }
+
+    /// Convenience method for rendering worker overflow recovery message.
+    pub fn render_system_worker_overflow(&self) -> Result<String> {
+        self.render_static("fragments/system/worker_overflow")
+    }
+
+    /// Convenience method for rendering worker compaction message.
+    pub fn render_system_worker_compact(&self, remove_count: usize, recap: &str) -> Result<String> {
+        self.render(
+            "fragments/system/worker_compact",
+            context! {
+                remove_count => remove_count,
+                recap => recap,
+            },
+        )
+    }
+
+    /// Convenience method for rendering memory persistence prompt.
+    pub fn render_system_memory_persistence(&self) -> Result<String> {
+        self.render_static("fragments/system/memory_persistence")
+    }
+
+    /// Retry nudge sent to a memory-persistence branch that missed its terminal completion call.
+    pub fn render_system_memory_persistence_contract_retry(&self) -> Result<String> {
+        self.render_static("fragments/system/memory_persistence_contract_retry")
+    }
+
+    /// Render the profile synthesis prompt with identity and bulletin context.
+    pub fn render_system_profile_synthesis(
+        &self,
+        identity_context: Option<&str>,
+        memory_bulletin: Option<&str>,
+    ) -> Result<String> {
+        self.render(
+            "fragments/system/profile_synthesis",
+            context! {
+                identity_context => identity_context,
+                memory_bulletin => memory_bulletin,
+            },
+        )
+    }
+
+    /// Convenience method for rendering cortex synthesis prompt.
+    pub fn render_system_cortex_synthesis(
+        &self,
+        max_words: usize,
+        raw_sections: &str,
+    ) -> Result<String> {
+        self.render(
+            "fragments/system/cortex_synthesis",
+            context! {
+                max_words => max_words,
+                raw_sections => raw_sections,
+            },
+        )
+    }
+
+    /// Render the intra-day synthesis prompt.
+    pub fn render_intraday_synthesis(
+        &self,
+        event_count: usize,
+        time_start: &str,
+        time_end: &str,
+        events: &str,
+    ) -> Result<String> {
+        self.render(
+            "cortex_intraday_synthesis",
+            context! {
+                event_count => event_count,
+                time_start => time_start,
+                time_end => time_end,
+                events => events,
+            },
+        )
+    }
+
+    /// Render the daily summary prompt.
+    pub fn render_daily_summary(
+        &self,
+        date: &str,
+        max_words: usize,
+        intraday_blocks: &str,
+    ) -> Result<String> {
+        self.render(
+            "cortex_daily_summary",
+            context! {
+                date => date,
+                max_words => max_words,
+                intraday_blocks => intraday_blocks,
+            },
+        )
+    }
+
+    /// Convenience method for rendering ingestion chunk prompt.
+    pub fn render_system_ingestion_chunk(
+        &self,
+        filename: &str,
+        chunk_number: usize,
+        total_chunks: usize,
+        chunk: &str,
+    ) -> Result<String> {
+        self.render(
+            "fragments/system/ingestion_chunk",
+            context! {
+                filename => filename,
+                chunk_number => chunk_number,
+                total_chunks => total_chunks,
+                chunk => chunk,
+            },
+        )
+    }
+
+    /// Render the history backfill wrapper with instructions not to act on it.
+    pub fn render_system_history_backfill(&self, transcript: &str) -> Result<String> {
+        self.render(
+            "fragments/system/history_backfill",
+            context! {
+                transcript => transcript,
+            },
+        )
+    }
+
+    /// Render the coalesce hint fragment for batched messages.
+    pub fn render_coalesce_hint(
+        &self,
+        message_count: usize,
+        elapsed: &str,
+        unique_senders: usize,
+    ) -> Result<String> {
+        self.render(
+            "fragments/coalesce_hint",
+            context! {
+                message_count => message_count,
+                elapsed => elapsed,
+                unique_senders => unique_senders,
+            },
+        )
+    }
+
+    /// Render the complete channel system prompt with all dynamic components.
+    #[allow(clippy::too_many_arguments)]
+    pub fn render_channel_prompt(
+        &self,
+        identity_context: Option<String>,
+        memory_bulletin: Option<String>,
+        skills_prompt: Option<String>,
+        worker_capabilities: String,
+        conversation_context: Option<String>,
+        status_text: Option<String>,
+        coalesce_hint: Option<String>,
+        available_channels: Option<String>,
+        sandbox_enabled: bool,
+    ) -> Result<String> {
+        self.render_channel_prompt_with_links(
+            identity_context,
+            memory_bulletin,
+            None,
+            skills_prompt,
+            worker_capabilities,
+            conversation_context,
+            status_text,
+            coalesce_hint,
+            available_channels,
+            sandbox_enabled,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            false,
+        )
+    }
+
+    /// Render optional adapter-specific channel guidance.
+    pub fn render_channel_adapter_prompt(&self, adapter: &str) -> Option<String> {
+        let template_name = match adapter {
+            "email" => "adapters/email",
+            "cron" => "adapters/cron",
+            "signal" => "adapters/signal",
+            _ => return None,
+        };
+
+        match self.render_static(template_name) {
+            Ok(value) => {
+                let value = value.trim().to_string();
+                if value.is_empty() { None } else { Some(value) }
+            }
+            Err(error) => {
+                tracing::error!(template_name, %error, "failed to render adapter prompt template");
+                None
+            }
+        }
+    }
+
+    /// Render the cortex chat system prompt with optional channel context.
+    #[allow(clippy::too_many_arguments)]
+    pub fn render_cortex_chat_prompt(
+        &self,
+        identity_context: Option<String>,
+        memory_bulletin: Option<String>,
+        channel_transcript: Option<String>,
+        agents_manifest: Option<String>,
+        changelog_highlights: Option<String>,
+        runtime_config_snapshot: Option<String>,
+        worker_capabilities: String,
+        factory_enabled: bool,
+    ) -> Result<String> {
+        self.render(
+            "cortex_chat",
+            context! {
+                identity_context => identity_context,
+                memory_bulletin => memory_bulletin,
+                channel_transcript => channel_transcript,
+                agents_manifest => agents_manifest,
+                changelog_highlights => changelog_highlights,
+                runtime_config_snapshot => runtime_config_snapshot,
+                worker_capabilities => worker_capabilities,
+                factory_enabled => factory_enabled,
+            },
+        )
+    }
+
+    /// Render the factory system prompt for agent creation conversations.
+    ///
+    /// The factory prompt instructs the LLM on how to create and configure new agents
+    /// using preset archetypes, organizational memory, and user preferences.
+    pub fn render_factory_prompt(
+        &self,
+        identity_context: Option<String>,
+        memory_bulletin: Option<String>,
+    ) -> Result<String> {
+        self.render(
+            "factory",
+            context! {
+                identity_context => identity_context,
+                memory_bulletin => memory_bulletin,
+            },
+        )
+    }
+
+    /// Render the org context fragment showing the agent's position in the hierarchy.
+    pub fn render_org_context(&self, org_context: OrgContext) -> Result<String> {
+        self.render(
+            "fragments/org_context",
+            context! {
+                org_context => org_context,
+            },
+        )
+    }
+
+    /// Render the projects context fragment listing active projects with repos and worktrees.
+    pub fn render_projects_context(&self, projects: Vec<ProjectContext>) -> Result<String> {
+        self.render(
+            "fragments/projects_context",
+            context! {
+                projects => projects,
+            },
+        )
+    }
+
+    /// Render the channel system prompt with all dynamic components including org context.
+    #[allow(clippy::too_many_arguments)]
+    pub fn render_channel_prompt_with_links(
+        &self,
+        identity_context: Option<String>,
+        memory_bulletin: Option<String>,
+        knowledge_synthesis: Option<String>,
+        skills_prompt: Option<String>,
+        worker_capabilities: String,
+        conversation_context: Option<String>,
+        status_text: Option<String>,
+        coalesce_hint: Option<String>,
+        available_channels: Option<String>,
+        sandbox_enabled: bool,
+        org_context: Option<String>,
+        adapter_prompt: Option<String>,
+        project_context: Option<String>,
+        backfill_transcript: Option<String>,
+        working_memory: Option<String>,
+        channel_activity_map: Option<String>,
+        participant_context: Option<String>,
+        direct_mode: bool,
+    ) -> Result<String> {
+        self.render(
+            "channel",
+            context! {
+                identity_context => identity_context,
+                memory_bulletin => memory_bulletin,
+                skills_prompt => skills_prompt,
+                worker_capabilities => worker_capabilities,
+                conversation_context => conversation_context,
+                status_text => status_text,
+                coalesce_hint => coalesce_hint,
+                available_channels => available_channels,
+                sandbox_enabled => sandbox_enabled,
+                org_context => org_context,
+                adapter_prompt => adapter_prompt,
+                project_context => project_context,
+                backfill_transcript => backfill_transcript,
+                working_memory => working_memory,
+                channel_activity_map => channel_activity_map,
+                participant_context => participant_context,
+                knowledge_synthesis => knowledge_synthesis,
+                direct_mode => direct_mode,
+            },
+        )
+    }
+
+    /// Get the configured language code.
+    pub fn language(&self) -> &str {
+        &self.language
+    }
+}
+
+/// Organizational context for an agent — grouped by relationship.
+#[derive(Debug, Clone, serde::Serialize)]
+pub struct OrgContext {
+    pub superiors: Vec<LinkedAgent>,
+    pub subordinates: Vec<LinkedAgent>,
+    pub peers: Vec<LinkedAgent>,
+}
+
+/// Information about a linked agent or human for prompt rendering.
+#[derive(Debug, Clone, serde::Serialize)]
+pub struct LinkedAgent {
+    pub name: String,
+    pub id: String,
+    /// Whether this is a human (true) or an agent (false).
+    pub is_human: bool,
+    /// The human's role (e.g. "Founder", "Lead Developer"). Only set for humans.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+    /// Rich context about the human — background, preferences, communication
+    /// style, etc. Loaded from `HUMAN.md` on disk. Only set for humans.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+}
+
+/// Information about a skill for template rendering.
+#[derive(Debug, Clone, serde::Serialize)]
+pub struct SkillInfo {
+    pub name: String,
+    pub description: String,
+    pub location: String,
+    /// Whether the spawning channel suggested this skill for the current task.
+    /// Workers should prioritise suggested skills but may read others too.
+    pub suggested: bool,
+}
+
+/// Information about a channel for template rendering.
+#[derive(Debug, Clone, serde::Serialize)]
+pub struct ChannelEntry {
+    pub name: String,
+    pub platform: String,
+    pub id: String,
+}
+
+/// A project's context for prompt injection — repos and active worktrees.
+#[derive(Debug, Clone, serde::Serialize)]
+pub struct ProjectContext {
+    pub name: String,
+    pub root_path: String,
+    pub description: Option<String>,
+    pub tags: Vec<String>,
+    pub repos: Vec<ProjectRepoContext>,
+    pub worktrees: Vec<ProjectWorktreeContext>,
+}
+
+/// A repo within a project for prompt injection.
+#[derive(Debug, Clone, serde::Serialize)]
+pub struct ProjectRepoContext {
+    pub name: String,
+    pub path: String,
+    pub default_branch: String,
+    pub remote_url: Option<String>,
+}
+
+/// A worktree within a project for prompt injection.
+#[derive(Debug, Clone, serde::Serialize)]
+pub struct ProjectWorktreeContext {
+    pub name: String,
+    pub path: String,
+    pub branch: String,
+    pub repo_name: String,
+}
+
+// All templates are now loaded from the centralized text registry (src/prompts/text.rs)
+
+#[cfg(test)]
+mod tests {
+    use super::PromptEngine;
+    use crate::config::ToolUseEnforcement;
+
+    #[test]
+    fn appends_tool_use_enforcement_for_matching_model() {
+        let engine = PromptEngine::new("en").expect("prompt engine should build");
+        let prompt = engine
+            .maybe_append_tool_use_enforcement(
+                "Base prompt".to_string(),
+                &ToolUseEnforcement::Auto,
+                "openai/gpt-4.1",
+            )
+            .expect("tool-use guidance should render");
+
+        assert!(prompt.contains("Base prompt"));
+        assert!(prompt.contains("Tool-Use Enforcement"));
+    }
+
+    #[test]
+    fn skips_tool_use_enforcement_for_non_matching_model() {
+        let engine = PromptEngine::new("en").expect("prompt engine should build");
+        let prompt = engine
+            .maybe_append_tool_use_enforcement(
+                "Base prompt".to_string(),
+                &ToolUseEnforcement::Auto,
+                "anthropic/claude-sonnet-4",
+            )
+            .expect("tool-use guidance should render");
+
+        assert_eq!(prompt, "Base prompt");
+    }
+
+    #[test]
+    fn renders_memory_context_when_knowledge_synthesis_is_absent() {
+        let engine = PromptEngine::new("en").expect("prompt engine should build");
+        let prompt = engine
+            .render_channel_prompt_with_links(
+                None,
+                Some("Bulletin fallback".to_string()),
+                None,
+                None,
+                String::new(),
+                None,
+                None,
+                None,
+                None,
+                false,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                false,
+            )
+            .expect("channel prompt should render");
+
+        assert!(prompt.contains("## Memory Context"));
+        assert!(prompt.contains("Bulletin fallback"));
+        assert!(!prompt.contains("## Knowledge Context"));
+    }
+
+    #[test]
+    fn knowledge_synthesis_prompt_preserves_participant_roles() {
+        let engine = PromptEngine::new("en").expect("prompt engine should build");
+        let prompt = engine
+            .render_static("cortex_knowledge_synthesis")
+            .expect("knowledge synthesis prompt should render");
+
+        assert!(prompt.contains("Stable participant or user role facts"));
+        assert!(prompt.contains("the user is the CEO"));
+        assert!(!prompt.contains("\"The user is the CEO\" or similar role statements"));
+    }
+}
+// to support multiple languages at compile time.

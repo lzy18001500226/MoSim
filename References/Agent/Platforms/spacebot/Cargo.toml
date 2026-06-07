@@ -1,0 +1,189 @@
+[package]
+name = "spacebot"
+version = "0.5.0"
+edition = "2024"
+default-run = "spacebot"
+
+[dependencies]
+# Core async runtime
+tokio = { version = "1.44", features = ["full"] }
+
+# Error handling
+anyhow = "1.0"
+thiserror = "2.0"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# LLM / Rig framework
+rig = { version = "0.33", package = "rig-core", features = ["derive"] }
+
+# HTTP clients for LLM providers
+reqwest = { version = "0.13", features = ["json", "stream", "form", "query", "gzip"] }
+
+# Databases
+sqlx = { version = "0.8", features = ["runtime-tokio", "sqlite", "migrate", "chrono", "uuid"] }
+lancedb = "0.26"
+lance-index = "2.0"
+redb = "2.4"
+
+# Vector / embedding operations
+fastembed = "4"
+
+# Encoding
+base64 = "0.22"
+hex = "0.4"
+
+# Compression
+flate2 = "1"
+
+# Logging and tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-appender = "0.2"
+
+# OpenTelemetry
+opentelemetry = "0.31"
+opentelemetry_sdk = { version = "0.31", features = ["rt-tokio", "experimental_trace_batch_span_processor_with_async_runtime"] }
+opentelemetry-otlp = { version = "0.31", default-features = false, features = ["http-proto", "reqwest-client"] }
+opentelemetry-semantic-conventions = "0.31"
+tracing-opentelemetry = "0.32"
+
+# Configuration
+dirs = "6.0"
+config = "0.15"
+toml = "0.8"
+toml_edit = "0.22"
+arc-swap = "1"
+notify = "7"
+
+# Cryptography (for secrets)
+aes-gcm = "0.10"
+sha2 = "0.10"
+argon2 = "0.5"
+rand = "0.9"
+
+# UUID generation
+uuid = { version = "1.15", features = ["v4", "serde"] }
+
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+chrono-tz = "0.10"
+cron = "0.12"
+
+# Regular expressions (for leak detection)
+regex = "1.11"
+
+# Async utilities
+futures = "0.3"
+pin-project = "1"
+
+# Schema validation
+schemars = "1.2"
+rmcp = { version = "1.1", features = ["client", "reqwest", "transport-child-process", "transport-streamable-http-client", "transport-streamable-http-client-reqwest"] }
+
+# Command line (for main.rs)
+clap = { version = "4.5", features = ["derive"] }
+dialoguer = { version = "0.11", features = ["password"] }
+
+# Daemonization
+daemonize = "0.5"
+libc = "0.2"
+ignore = "0.4"
+
+# Discord
+serenity = { version = "0.12", default-features = false, features = ["client", "gateway", "model", "cache", "chrono", "rustls_backend"] }
+async-trait = "0.1"
+
+# Slack
+slack-morphism = { version = "2.19", features = ["hyper"] }
+emojis = "0.8"
+
+# TLS (shared crypto backend for slack-morphism, reqwest, teloxide)
+rustls = { version = "0.23", default-features = false, features = ["ring"] }
+tokio-tungstenite = { version = "0.28", features = ["rustls-tls-native-roots"] }
+
+# Telegram
+teloxide = { version = "0.17", default-features = false, features = ["rustls"] }
+
+# Twitch
+twitch-irc = { version = "5.0", default-features = false, features = ["transport-tcp-rustls-webpki-roots", "refreshing-token-rustls-webpki-roots"] }
+
+# Email
+imap = "2.4"
+lettre = { version = "0.11", features = ["tokio1", "tokio1-native-tls"] }
+mailparse = "0.16"
+native-tls = "0.2"
+
+# Stream utilities
+tokio-stream = "0.1"
+
+# HTTP server for control UI
+axum = { version = "0.8", features = ["multipart"] }
+tower-http = { version = "0.6", features = ["cors", "fs"] }
+rust-embed = { version = "8", features = ["mime-guess"] }
+mime_guess = "2"
+async-stream = "0.3"
+
+# OpenAPI / utoipa
+utoipa = { version = "5", features = ["axum_extras", "chrono", "uuid"] }
+utoipa-axum = "0.2"
+utoipa-swagger-ui = { version = "9", features = ["axum"] }
+
+# Indoc for test fixtures
+indoc = "2"
+arrow-array = "57.3.0"
+arrow-schema = "57.3.0"
+
+# Browser automation
+chromiumoxide = { version = "0.8", features = ["tokio-runtime", "_fetcher-rustls-tokio"], default-features = false }
+chromiumoxide_cdp = "0.8"
+
+# Templating for prompts
+minijinja = "2.8"
+
+# Docker API client (for self-update via Docker socket)
+bollard = "0.18"
+
+# Semver parsing (for update version comparison)
+semver = "1"
+
+# Skill installation
+zip = "2"
+tempfile = "3"
+
+# Prometheus metrics (optional, behind "metrics" feature)
+prometheus = { version = "0.13", optional = true }
+pdf-extract = "0.10.0"
+open = "5.3.3"
+urlencoding = "2.1.3"
+url = "2"
+moka = "0.12.13"
+
+[features]
+metrics = ["dep:prometheus"]
+
+[patch.crates-io]
+imap-proto = { path = "vendor/imap-proto-0.10.2" }
+
+[lints.clippy]
+dbg_macro = "deny"
+todo = "deny"
+unimplemented = "deny"
+
+[dev-dependencies]
+tokio-test = "0.4"
+parking_lot = "0.12"
+
+# OS keystore (macOS Keychain for master key storage)
+[target.'cfg(target_os = "macos")'.dependencies]
+security-framework = "3"
+
+[[bin]]
+name = "openapi-spec"
+path = "src/bin/openapi_spec.rs"
+
+[profile.release]
+lto = "thin"
+strip = true

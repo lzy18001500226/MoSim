@@ -1,0 +1,1360 @@
+//! Discord messaging adapter using serenity.
+
+use crate::config::DiscordPermissions;
+use crate::messaging::apply_runtime_adapter_to_conversation_id;
+use crate::messaging::traits::{HistoryMessage, InboundStream, Messaging};
+use crate::{InboundMessage, MessageContent, OutboundResponse, StatusUpdate};
+
+use anyhow::Context as _;
+use arc_swap::ArcSwap;
+use async_trait::async_trait;
+use serenity::all::{
+    ButtonStyle, ChannelId, ChannelType, Context, CreateActionRow, CreateAttachment, CreateButton,
+    CreateEmbed, CreateEmbedAuthor, CreateEmbedFooter, CreateInteractionResponse,
+    CreateInteractionResponseMessage, CreateMessage, CreatePoll, CreatePollAnswer,
+    CreateSelectMenu, CreateSelectMenuKind, CreateSelectMenuOption, CreateThread, EditMessage,
+    EventHandler, GatewayIntents, GetMessages, Http, Interaction, Message, MessageId, ReactionType,
+    Ready, ShardManager, Timestamp, User, UserId,
+};
+use std::collections::HashMap;
+use std::sync::Arc;
+use tokio::sync::{RwLock, mpsc};
+
+/// Discord adapter state.
+pub struct DiscordAdapter {
+    runtime_key: String,
+    token: String,
+    permissions: Arc<ArcSwap<DiscordPermissions>>,
+    http: Arc<RwLock<Option<Arc<Http>>>>,
+    bot_user_id: Arc<RwLock<Option<UserId>>>,
+    /// Maps InboundMessage.id to the Discord MessageId being edited during streaming.
+    active_messages: Arc<RwLock<HashMap<String, serenity::all::MessageId>>>,
+    /// Typing handles per message. Typing stops when the handle is dropped.
+    typing_tasks: Arc<RwLock<HashMap<String, serenity::http::Typing>>>,
+    shard_manager: Arc<RwLock<Option<Arc<ShardManager>>>>,
+}
+
+impl DiscordAdapter {
+    pub fn new(
+        runtime_key: impl Into<String>,
+        token: impl Into<String>,
+        permissions: Arc<ArcSwap<DiscordPermissions>>,
+    ) -> Self {
+        Self {
+            runtime_key: runtime_key.into(),
+            token: token.into(),
+            permissions,
+            http: Arc::new(RwLock::new(None)),
+            bot_user_id: Arc::new(RwLock::new(None)),
+            active_messages: Arc::new(RwLock::new(HashMap::new())),
+            typing_tasks: Arc::new(RwLock::new(HashMap::new())),
+            shard_manager: Arc::new(RwLock::new(None)),
+        }
+    }
+
+    async fn get_http(&self) -> anyhow::Result<Arc<Http>> {
+        self.http
+            .read()
+            .await
+            .clone()
+            .context("discord not connected")
+    }
+
+    fn extract_channel_id(&self, message: &InboundMessage) -> anyhow::Result<ChannelId> {
+        let id = message
+            .metadata
+            .get("discord_channel_id")
+            .and_then(|v| v.as_u64())
+            .context("missing discord_channel_id in metadata")?;
+        Ok(ChannelId::new(id))
+    }
+
+    fn channel_key(message: &InboundMessage) -> String {
+        message
+            .metadata
+            .get("discord_channel_id")
+            .and_then(|v| v.as_u64())
+            .map(|id| id.to_string())
+            .unwrap_or_else(|| message.id.clone())
+    }
+
+    async fn stop_typing(&self, message: &InboundMessage) {
+        // Keyed by channel ID so stale message IDs can't leave handles orphaned
+        self.typing_tasks
+            .write()
+            .await
+            .remove(&Self::channel_key(message));
+    }
+
+    fn extract_reply_message_id(message: &InboundMessage) -> Option<MessageId> {
+        message
+            .metadata
+            .get(crate::metadata_keys::REPLY_TO_MESSAGE_ID)
+            .and_then(|value| match value {
+                serde_json::Value::String(s) => s.parse::<u64>().ok(),
+                serde_json::Value::Number(n) => n.as_u64(),
+                _ => None,
+            })
+            .map(MessageId::new)
+    }
+}
+
+impl Messaging for DiscordAdapter {
+    fn name(&self) -> &str {
+        &self.runtime_key
+    }
+
+    async fn start(&self) -> crate::Result<InboundStream> {
+        let (inbound_tx, inbound_rx) = mpsc::channel(256);
+
+        let handler = Handler {
+            inbound_tx,
+            runtime_key: self.runtime_key.clone(),
+            permissions: self.permissions.clone(),
+            http_slot: self.http.clone(),
+            bot_user_id_slot: self.bot_user_id.clone(),
+        };
+
+        let intents = GatewayIntents::GUILD_MESSAGES
+            | GatewayIntents::DIRECT_MESSAGES
+            | GatewayIntents::MESSAGE_CONTENT
+            | GatewayIntents::GUILDS;
+
+        let mut client = serenity::Client::builder(&self.token, intents)
+            .event_handler(handler)
+            .await
+            .context("failed to build discord client")?;
+
+        *self.http.write().await = Some(client.http.clone());
+        *self.shard_manager.write().await = Some(client.shard_manager.clone());
+
+        tokio::spawn(async move {
+            if let Err(error) = client.start().await {
+                tracing::error!(%error, "discord gateway error");
+            }
+        });
+
+        let stream = tokio_stream::wrappers::ReceiverStream::new(inbound_rx);
+        Ok(Box::pin(stream))
+    }
+
+    async fn respond(
+        &self,
+        message: &InboundMessage,
+        response: OutboundResponse,
+    ) -> crate::Result<()> {
+        let http = self.get_http().await?;
+        let channel_id = self.extract_channel_id(message)?;
+
+        match response {
+            OutboundResponse::Text(text) => {
+                self.stop_typing(message).await;
+                let reply_to = Self::extract_reply_message_id(message);
+
+                for (index, chunk) in split_message(&text, 2000).into_iter().enumerate() {
+                    let mut builder = CreateMessage::new().content(chunk);
+                    if index == 0
+                        && let Some(reply_message_id) = reply_to
+                    {
+                        builder = builder.reference_message((channel_id, reply_message_id));
+                    }
+                    channel_id
+                        .send_message(&*http, builder)
+                        .await
+                        .context("failed to send discord message")?;
+                }
+            }
+            OutboundResponse::RichMessage {
+                text,
+                cards,
+                interactive_elements,
+                poll,
+                ..
+            } => {
+                self.stop_typing(message).await;
+                let reply_to = Self::extract_reply_message_id(message);
+                let parts =
+                    prepare_rich_message_parts(text, &cards, &interactive_elements, poll.as_ref());
+                if parts.dropped_invalid_poll {
+                    tracing::warn!(
+                        "dropping invalid discord poll payload while sending rich message"
+                    );
+                }
+
+                let chunks = split_message(&parts.text, 2000);
+                for (i, chunk) in chunks.iter().enumerate() {
+                    let is_last = i == chunks.len() - 1;
+                    let mut msg = CreateMessage::new();
+                    if !chunk.is_empty() {
+                        msg = msg.content(chunk);
+                    }
+
+                    // Attach rich content only to the final chunk
+                    if is_last {
+                        let embeds: Vec<_> = parts.cards.iter().map(build_embed).collect();
+                        if !embeds.is_empty() {
+                            msg = msg.embeds(embeds);
+                        }
+
+                        let components: Vec<_> = parts
+                            .interactive_elements
+                            .iter()
+                            .map(build_action_row)
+                            .collect();
+                        if !components.is_empty() {
+                            msg = msg.components(components);
+                        }
+
+                        if let Some(poll_data) = parts.poll.as_ref().and_then(build_poll) {
+                            msg = msg.poll(poll_data);
+                        }
+                    }
+
+                    if i == 0
+                        && let Some(reply_message_id) = reply_to
+                    {
+                        msg = msg.reference_message((channel_id, reply_message_id));
+                    }
+
+                    channel_id
+                        .send_message(&*http, msg)
+                        .await
+                        .context("failed to send discord rich message")?;
+                }
+            }
+            OutboundResponse::ThreadReply { thread_name, text } => {
+                self.stop_typing(message).await;
+
+                // Try to create a public thread from the source message.
+                // Requires the "Create Public Threads" bot permission.
+                let message_id = message
+                    .metadata
+                    .get("discord_message_id")
+                    .and_then(|v| v.as_u64())
+                    .map(MessageId::new);
+
+                let thread_result = match message_id {
+                    Some(source_message_id) => {
+                        let builder =
+                            CreateThread::new(&thread_name).kind(ChannelType::PublicThread);
+                        channel_id
+                            .create_thread_from_message(&*http, source_message_id, builder)
+                            .await
+                    }
+                    None => {
+                        let builder =
+                            CreateThread::new(&thread_name).kind(ChannelType::PublicThread);
+                        channel_id.create_thread(&*http, builder).await
+                    }
+                };
+
+                match thread_result {
+                    Ok(thread) => {
+                        for chunk in split_message(&text, 2000) {
+                            thread
+                                .id
+                                .say(&*http, &chunk)
+                                .await
+                                .context("failed to send message in new thread")?;
+                        }
+                    }
+                    Err(error) => {
+                        // Fall back to a regular message if thread creation fails
+                        // (e.g. missing permissions, DM context)
+                        tracing::warn!(
+                            %error,
+                            thread_name = %thread_name,
+                            "failed to create thread, falling back to regular message"
+                        );
+                        for chunk in split_message(&text, 2000) {
+                            channel_id
+                                .say(&*http, &chunk)
+                                .await
+                                .context("failed to send discord message")?;
+                        }
+                    }
+                }
+            }
+            OutboundResponse::File {
+                filename,
+                data,
+                mime_type: _,
+                caption,
+            } => {
+                self.stop_typing(message).await;
+                let reply_to = Self::extract_reply_message_id(message);
+
+                let attachment = CreateAttachment::bytes(data, &filename);
+                let mut builder = CreateMessage::new().add_file(attachment);
+                if let Some(caption_text) = caption {
+                    builder = builder.content(caption_text);
+                }
+                if let Some(reply_message_id) = reply_to {
+                    builder = builder.reference_message((channel_id, reply_message_id));
+                }
+
+                channel_id
+                    .send_message(&*http, builder)
+                    .await
+                    .context("failed to send file attachment")?;
+            }
+            OutboundResponse::Reaction(emoji) => {
+                let message_id = message
+                    .metadata
+                    .get("discord_message_id")
+                    .and_then(|v| v.as_u64())
+                    .context("missing discord_message_id for reaction")?;
+
+                channel_id
+                    .create_reaction(
+                        &*http,
+                        MessageId::new(message_id),
+                        ReactionType::Unicode(emoji),
+                    )
+                    .await
+                    .context("failed to add reaction")?;
+            }
+            OutboundResponse::StreamStart => {
+                self.stop_typing(message).await;
+
+                let placeholder = channel_id
+                    .say(&*http, "\u{200B}")
+                    .await
+                    .context("failed to send stream placeholder")?;
+
+                self.active_messages
+                    .write()
+                    .await
+                    .insert(message.id.clone(), placeholder.id);
+            }
+            OutboundResponse::StreamChunk(text) => {
+                let active = self.active_messages.read().await;
+                if let Some(&message_id) = active.get(&message.id) {
+                    let display_text = if text.len() > 2000 {
+                        let end = text.floor_char_boundary(1997);
+                        format!("{}...", &text[..end])
+                    } else {
+                        text
+                    };
+                    let builder = EditMessage::new().content(display_text);
+                    if let Err(error) = channel_id.edit_message(&*http, message_id, builder).await {
+                        tracing::warn!(%error, "failed to edit streaming message");
+                    }
+                }
+            }
+            OutboundResponse::StreamEnd => {
+                self.active_messages.write().await.remove(&message.id);
+            }
+            OutboundResponse::Status(status) => {
+                self.send_status(message, status).await?;
+            }
+            // Slack-specific variants — graceful fallbacks for Discord
+            OutboundResponse::RemoveReaction(_) => {} // no-op
+            OutboundResponse::Ephemeral { text, .. } => {
+                // Discord has no ephemeral equivalent here; send as regular text
+                if let Ok(channel_id) = self.extract_channel_id(message) {
+                    let http = self.get_http().await?;
+                    channel_id
+                        .say(&*http, &text)
+                        .await
+                        .context("failed to send ephemeral fallback on discord")?;
+                }
+            }
+            OutboundResponse::ScheduledMessage { text, .. } => {
+                // Discord has no native scheduled messages — send immediately
+                if let Ok(channel_id) = self.extract_channel_id(message) {
+                    let http = self.get_http().await?;
+                    channel_id
+                        .say(&*http, &text)
+                        .await
+                        .context("failed to send scheduled message fallback on discord")?;
+                }
+            }
+        }
+
+        Ok(())
+    }
+
+    async fn send_status(
+        &self,
+        message: &InboundMessage,
+        status: StatusUpdate,
+    ) -> crate::Result<()> {
+        match status {
+            StatusUpdate::Thinking => {
+                let http = self.get_http().await?;
+                let channel_id = self.extract_channel_id(message)?;
+
+                let typing = channel_id.start_typing(&http);
+                self.typing_tasks
+                    .write()
+                    .await
+                    .insert(Self::channel_key(message), typing);
+            }
+            _ => {
+                self.stop_typing(message).await;
+            }
+        }
+
+        Ok(())
+    }
+
+    async fn broadcast(&self, target: &str, response: OutboundResponse) -> crate::Result<()> {
+        let http = self.get_http().await?;
+
+        // Support "dm:{user_id}" targets for opening DM channels
+        let channel_id = if let Some(user_id_str) = target.strip_prefix("dm:") {
+            let user_id = UserId::new(
+                user_id_str
+                    .parse::<u64>()
+                    .context("invalid discord user id for DM broadcast target")?,
+            );
+            user_id
+                .create_dm_channel(&*http)
+                .await
+                .context("failed to open DM channel")?
+                .id
+        } else {
+            ChannelId::new(
+                target
+                    .parse::<u64>()
+                    .context("invalid discord channel id for broadcast target")?,
+            )
+        };
+
+        if let OutboundResponse::Text(text) = response {
+            for chunk in split_message(&text, 2000) {
+                channel_id
+                    .say(&*http, &chunk)
+                    .await
+                    .context("failed to broadcast discord message")?;
+            }
+        } else if let OutboundResponse::RichMessage {
+            text,
+            cards,
+            interactive_elements,
+            poll,
+            ..
+        } = response
+        {
+            let parts =
+                prepare_rich_message_parts(text, &cards, &interactive_elements, poll.as_ref());
+            if parts.dropped_invalid_poll {
+                tracing::warn!(
+                    "dropping invalid discord poll payload while broadcasting rich message"
+                );
+            }
+
+            let chunks = split_message(&parts.text, 2000);
+            for (i, chunk) in chunks.iter().enumerate() {
+                let is_last = i == chunks.len() - 1;
+                let mut msg = CreateMessage::new();
+                if !chunk.is_empty() {
+                    msg = msg.content(chunk);
+                }
+
+                // Attach rich content only to the final chunk
+                if is_last {
+                    let embeds: Vec<_> = parts.cards.iter().map(build_embed).collect();
+                    if !embeds.is_empty() {
+                        msg = msg.embeds(embeds);
+                    }
+
+                    let components: Vec<_> = parts
+                        .interactive_elements
+                        .iter()
+                        .map(build_action_row)
+                        .collect();
+                    if !components.is_empty() {
+                        msg = msg.components(components);
+                    }
+
+                    if let Some(poll_data) = parts.poll.as_ref().and_then(build_poll) {
+                        msg = msg.poll(poll_data);
+                    }
+                }
+
+                channel_id
+                    .send_message(&*http, msg)
+                    .await
+                    .context("failed to broadcast discord rich message")?;
+            }
+        }
+
+        Ok(())
+    }
+
+    async fn fetch_history(
+        &self,
+        message: &InboundMessage,
+        limit: usize,
+    ) -> crate::Result<Vec<HistoryMessage>> {
+        let http = self.get_http().await?;
+        let channel_id = self.extract_channel_id(message)?;
+
+        let message_id = message
+            .metadata
+            .get("discord_message_id")
+            .and_then(|v| v.as_u64())
+            .context("missing discord_message_id in metadata")?;
+
+        // Fetch messages before the triggering message (capped at 100 per Discord API)
+        let capped_limit = limit.min(100) as u8;
+        let builder = GetMessages::new()
+            .before(MessageId::new(message_id))
+            .limit(capped_limit);
+
+        let messages = channel_id
+            .messages(&*http, builder)
+            .await
+            .context("failed to fetch discord message history")?;
+
+        let bot_user_id = self.bot_user_id.read().await;
+
+        // Messages come back newest-first from Discord, reverse to chronological
+        let history: Vec<HistoryMessage> = messages
+            .iter()
+            .rev()
+            .map(|message| {
+                let is_bot = bot_user_id
+                    .map(|bot_id| message.author.id == bot_id)
+                    .unwrap_or(false);
+
+                let resolved_content = resolve_mentions(&message.content, &message.mentions);
+
+                let display_name = message
+                    .author
+                    .global_name
+                    .as_deref()
+                    .unwrap_or(&message.author.name);
+
+                // Include mention and reply-to attribution
+                let author = if let Some(referenced) = &message.referenced_message {
+                    let reply_author = referenced
+                        .author
+                        .global_name
+                        .as_deref()
+                        .unwrap_or(&referenced.author.name);
+                    format!(
+                        "{display_name} (<@{}>) (replying to {reply_author})",
+                        message.author.id
+                    )
+                } else {
+                    format!("{display_name} (<@{}>)", message.author.id)
+                };
+
+                HistoryMessage {
+                    author,
+                    content: resolved_content,
+                    is_bot,
+                    timestamp: Some(*message.timestamp),
+                }
+            })
+            .collect();
+
+        tracing::info!(
+            count = history.len(),
+            channel_id = %channel_id,
+            "fetched discord message history"
+        );
+
+        Ok(history)
+    }
+
+    async fn health_check(&self) -> crate::Result<()> {
+        let http = self.get_http().await?;
+        http.get_current_user()
+            .await
+            .context("discord health check failed")?;
+        Ok(())
+    }
+
+    async fn shutdown(&self) -> crate::Result<()> {
+        self.typing_tasks.write().await.clear();
+
+        if let Some(shard_manager) = self.shard_manager.read().await.as_ref() {
+            shard_manager.shutdown_all().await;
+        }
+
+        tracing::info!("discord adapter shut down");
+        Ok(())
+    }
+}
+
+// -- Serenity EventHandler --
+
+struct Handler {
+    inbound_tx: mpsc::Sender<InboundMessage>,
+    runtime_key: String,
+    permissions: Arc<ArcSwap<DiscordPermissions>>,
+    http_slot: Arc<RwLock<Option<Arc<Http>>>>,
+    bot_user_id_slot: Arc<RwLock<Option<UserId>>>,
+}
+
+#[async_trait]
+impl EventHandler for Handler {
+    async fn ready(&self, ctx: Context, ready: Ready) {
+        tracing::info!(bot_name = %ready.user.name, "discord connected");
+
+        *self.http_slot.write().await = Some(ctx.http.clone());
+        *self.bot_user_id_slot.write().await = Some(ready.user.id);
+        tracing::info!(guild_count = ready.guilds.len(), "discord guilds available");
+    }
+
+    async fn message(&self, ctx: Context, message: Message) {
+        // Always ignore our own messages to prevent self-response loops
+        let bot_user_id = *self.bot_user_id_slot.read().await;
+        if bot_user_id.is_some_and(|id| message.author.id == id) {
+            return;
+        }
+
+        // Load a snapshot of the current permissions (hot-reloadable)
+        let permissions = self.permissions.load();
+
+        // Filter other bots unless explicitly allowed
+        if message.author.bot && !permissions.allow_bot_messages {
+            return;
+        }
+
+        // DM filter: if no guild_id, it's a DM — only allow listed users
+        if message.guild_id.is_none()
+            && (permissions.dm_allowed_users.is_empty()
+                || !permissions
+                    .dm_allowed_users
+                    .contains(&message.author.id.get()))
+        {
+            return;
+        }
+
+        if let Some(filter) = &permissions.guild_filter
+            && let Some(guild_id) = message.guild_id
+            && !filter.contains(&guild_id.get())
+        {
+            return;
+        }
+
+        let conversation_id = build_conversation_id(&self.runtime_key, &message);
+        let content = extract_content(&message);
+        let (metadata, formatted_author) = build_metadata(&ctx, &message, bot_user_id).await;
+
+        // Channel filter: allow if the channel ID or its parent (for threads) is in the allowlist
+        if let Some(guild_id) = message.guild_id
+            && let Some(allowed_channels) = permissions.channel_filter.get(&guild_id.get())
+            && !allowed_channels.is_empty()
+        {
+            let parent_channel_id = metadata
+                .get("discord_parent_channel_id")
+                .and_then(|v| v.as_u64());
+
+            let direct_match = allowed_channels.contains(&message.channel_id.get());
+            let parent_match = parent_channel_id.is_some_and(|pid| allowed_channels.contains(&pid));
+
+            if !direct_match && !parent_match {
+                return;
+            }
+        }
+
+        let inbound = InboundMessage {
+            id: message.id.to_string(),
+            source: "discord".into(),
+            adapter: Some(self.runtime_key.clone()),
+            conversation_id,
+            sender_id: message.author.id.to_string(),
+            agent_id: None,
+            content,
+            timestamp: *message.timestamp,
+            metadata,
+            formatted_author: Some(formatted_author),
+        };
+
+        if let Err(error) = self.inbound_tx.send(inbound).await {
+            tracing::warn!(
+                %error,
+                "failed to send inbound message from Discord (receiver dropped)"
+            );
+        }
+    }
+
+    async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
+        let component = match interaction {
+            Interaction::Component(c) => c,
+            _ => return, // Only handle component interactions
+        };
+
+        // Acknowledge the interaction immediately to prevent "This interaction failed" in the UI.
+        // We use Defer to indicate we've received it and might edit the message soon.
+        if let Err(error) = component
+            .create_response(
+                &ctx.http,
+                CreateInteractionResponse::Defer(CreateInteractionResponseMessage::new()),
+            )
+            .await
+        {
+            tracing::warn!(%error, "failed to acknowledge interaction");
+        }
+
+        let user = &component.user;
+        let permissions = self.permissions.load();
+
+        if component.guild_id.is_none()
+            && (permissions.dm_allowed_users.is_empty()
+                || !permissions.dm_allowed_users.contains(&user.id.get()))
+        {
+            return;
+        }
+
+        if let Some(filter) = &permissions.guild_filter
+            && let Some(guild_id) = component.guild_id
+            && !filter.contains(&guild_id.get())
+        {
+            return;
+        }
+
+        let base_conversation_id = match component.guild_id {
+            Some(guild_id) => format!("discord:{}:{}", guild_id, component.channel_id),
+            None => format!("discord:dm:{}", user.id),
+        };
+        let conversation_id =
+            apply_runtime_adapter_to_conversation_id(&self.runtime_key, base_conversation_id);
+
+        let values = match &component.data.kind {
+            serenity::all::ComponentInteractionDataKind::StringSelect { values } => values.clone(),
+            _ => Vec::new(),
+        };
+
+        let content = MessageContent::Interaction {
+            action_id: component.data.custom_id.clone(),
+            block_id: None,
+            values,
+            label: None,
+            message_ts: Some(component.message.id.get().to_string()),
+        };
+
+        let mut metadata = HashMap::new();
+        metadata.insert(
+            "discord_channel_id".into(),
+            serde_json::Value::Number(component.channel_id.get().into()),
+        );
+        metadata.insert(
+            "discord_message_id".into(),
+            serde_json::Value::Number(component.message.id.get().into()),
+        );
+        let discord_mentioned_bot = false;
+        let discord_reply_to_bot = true;
+        metadata.insert("discord_mentioned_bot".into(), discord_mentioned_bot.into());
+        metadata.insert("discord_reply_to_bot".into(), discord_reply_to_bot.into());
+        metadata.insert(
+            "discord_mentions_or_replies_to_bot".into(),
+            (discord_mentioned_bot || discord_reply_to_bot).into(),
+        );
+        if let Some(guild_id) = component.guild_id {
+            metadata.insert(
+                "discord_guild_id".into(),
+                serde_json::Value::Number(guild_id.get().into()),
+            );
+        }
+
+        let formatted_author = format!("{} (<@{}>)", user.name, user.id);
+        metadata.insert(
+            "discord_user_id".into(),
+            serde_json::Value::Number(user.id.get().into()),
+        );
+        metadata.insert(
+            "sender_display_name".into(),
+            serde_json::Value::String(formatted_author.clone()),
+        );
+
+        let inbound = InboundMessage {
+            id: component.id.to_string(), // Use interaction ID to ensure uniqueness
+            source: "discord".into(),
+            adapter: Some(self.runtime_key.clone()),
+            conversation_id,
+            sender_id: user.id.to_string(),
+            agent_id: None,
+            content,
+            timestamp: chrono::Utc::now(),
+            metadata,
+            formatted_author: Some(formatted_author),
+        };
+
+        if let Err(error) = self.inbound_tx.send(inbound).await {
+            tracing::warn!(
+                %error,
+                "failed to send inbound interaction from Discord (receiver dropped)"
+            );
+        }
+    }
+}
+
+fn is_mention_or_reply_to_bot(message: &Message, bot_user_id: Option<UserId>) -> bool {
+    is_mention_to_bot(message, bot_user_id) || is_reply_to_bot(message, bot_user_id)
+}
+
+fn is_mention_to_bot(message: &Message, bot_user_id: Option<UserId>) -> bool {
+    let Some(bot_id) = bot_user_id else {
+        return false;
+    };
+
+    message.mentions.iter().any(|user| user.id == bot_id)
+}
+
+fn is_reply_to_bot(message: &Message, bot_user_id: Option<UserId>) -> bool {
+    let Some(bot_id) = bot_user_id else {
+        return false;
+    };
+
+    message
+        .referenced_message
+        .as_ref()
+        .is_some_and(|referenced| referenced.author.id == bot_id)
+}
+
+// -- Helper functions --
+
+fn build_conversation_id(runtime_key: &str, message: &Message) -> String {
+    let base_conversation_id = match message.guild_id {
+        Some(guild_id) => format!("discord:{}:{}", guild_id, message.channel_id),
+        None => format!("discord:dm:{}", message.author.id),
+    };
+
+    apply_runtime_adapter_to_conversation_id(runtime_key, base_conversation_id)
+}
+
+fn extract_content(message: &Message) -> MessageContent {
+    let resolved_content = resolve_mentions(&message.content, &message.mentions);
+
+    if message.attachments.is_empty() {
+        MessageContent::Text(resolved_content)
+    } else {
+        let attachments = message
+            .attachments
+            .iter()
+            .map(|attachment| crate::Attachment {
+                filename: attachment.filename.clone(),
+                mime_type: attachment.content_type.clone().unwrap_or_default(),
+                url: attachment.url.clone(),
+                size_bytes: Some(attachment.size as u64),
+                auth_header: None,
+                pre_saved_id: None,
+            })
+            .collect();
+
+        MessageContent::Media {
+            text: if resolved_content.is_empty() {
+                None
+            } else {
+                Some(resolved_content)
+            },
+            attachments,
+        }
+    }
+}
+
+/// Replace raw Discord mention syntax (`<@ID>` and `<@!ID>`) with readable display names.
+/// Serenity provides resolved `User` objects in `message.mentions` for every mention in the text.
+fn resolve_mentions(content: &str, mentions: &[User]) -> String {
+    let mut resolved = content.to_string();
+    for user in mentions {
+        let display_name = user.global_name.as_deref().unwrap_or(&user.name);
+
+        let mention_pattern = format!("<@{}>", user.id);
+        resolved = resolved.replace(&mention_pattern, &format!("@{display_name}"));
+
+        // Legacy nickname mention format
+        let nick_pattern = format!("<@!{}>", user.id);
+        resolved = resolved.replace(&nick_pattern, &format!("@{display_name}"));
+    }
+    resolved
+}
+
+async fn build_metadata(
+    ctx: &Context,
+    message: &Message,
+    bot_user_id: Option<UserId>,
+) -> (HashMap<String, serde_json::Value>, String) {
+    let mut metadata = HashMap::new();
+    metadata.insert("discord_channel_id".into(), message.channel_id.get().into());
+    metadata.insert("discord_message_id".into(), message.id.get().into());
+    metadata.insert(
+        crate::metadata_keys::MESSAGE_ID.into(),
+        serde_json::Value::String(message.id.get().to_string()),
+    );
+    metadata.insert(
+        "discord_author_name".into(),
+        message.author.name.clone().into(),
+    );
+
+    // Display name: member nickname > global display name > username
+    let display_name = if let Some(member) = &message.member {
+        member.nick.clone().unwrap_or_else(|| {
+            message
+                .author
+                .global_name
+                .clone()
+                .unwrap_or_else(|| message.author.name.clone())
+        })
+    } else {
+        message
+            .author
+            .global_name
+            .clone()
+            .unwrap_or_else(|| message.author.name.clone())
+    };
+    metadata.insert("sender_display_name".into(), display_name.clone().into());
+    metadata.insert("sender_id".into(), message.author.id.get().into());
+    metadata.insert(
+        "discord_user_mention".into(),
+        serde_json::Value::String(format!("<@{}>", message.author.id)),
+    );
+
+    // Platform-formatted author for LLM context
+    let formatted_author = format!("{} (<@{}>)", display_name, message.author.id);
+
+    if message.author.bot {
+        metadata.insert("sender_is_bot".into(), true.into());
+    }
+
+    if let Some(guild_id) = message.guild_id {
+        metadata.insert("discord_guild_id".into(), guild_id.get().into());
+
+        // Try to get guild name
+        if let Ok(guild) = guild_id.to_partial_guild(&ctx.http).await {
+            metadata.insert("discord_guild_name".into(), guild.name.clone().into());
+            metadata.insert(crate::metadata_keys::SERVER_NAME.into(), guild.name.into());
+        }
+    }
+
+    // Try to get channel name and detect threads
+    if let Ok(channel) = message.channel_id.to_channel(&ctx.http).await
+        && let Some(guild_channel) = channel.guild()
+    {
+        metadata.insert(
+            "discord_channel_name".into(),
+            guild_channel.name.clone().into(),
+        );
+        metadata.insert(
+            crate::metadata_keys::CHANNEL_NAME.into(),
+            guild_channel.name.clone().into(),
+        );
+
+        // Threads have a parent_id pointing to the text channel they were created in
+        if guild_channel.thread_metadata.is_some() {
+            metadata.insert("discord_is_thread".into(), true.into());
+            if let Some(parent_id) = guild_channel.parent_id {
+                metadata.insert("discord_parent_channel_id".into(), parent_id.get().into());
+            }
+        }
+    }
+
+    // Reply-to context: resolve the referenced message's author and content
+    if let Some(referenced) = &message.referenced_message {
+        let reply_author = referenced
+            .author
+            .global_name
+            .as_deref()
+            .unwrap_or(&referenced.author.name);
+        metadata.insert("reply_to_author".into(), reply_author.into());
+        metadata.insert("reply_to_is_bot".into(), referenced.author.bot.into());
+
+        let reply_content = resolve_mentions(&referenced.content, &referenced.mentions);
+        // Truncate to avoid bloating context with long quoted messages
+        let truncated = if reply_content.len() > 200 {
+            format!(
+                "{}...",
+                &reply_content[..reply_content.floor_char_boundary(200)]
+            )
+        } else {
+            reply_content
+        };
+        metadata.insert("reply_to_content".into(), truncated.clone().into());
+        metadata.insert(crate::metadata_keys::REPLY_TO_TEXT.into(), truncated.into());
+    }
+
+    metadata.insert(
+        "discord_mentions_or_replies_to_bot".into(),
+        is_mention_or_reply_to_bot(message, bot_user_id).into(),
+    );
+    metadata.insert(
+        "discord_mentioned_bot".into(),
+        is_mention_to_bot(message, bot_user_id).into(),
+    );
+    metadata.insert(
+        "discord_reply_to_bot".into(),
+        is_reply_to_bot(message, bot_user_id).into(),
+    );
+
+    (metadata, formatted_author)
+}
+
+/// Split a message into chunks that fit within Discord's 2000 char limit.
+/// Tries to split at newlines, then spaces, then hard-cuts.
+fn split_message(text: &str, max_len: usize) -> Vec<String> {
+    if text.len() <= max_len {
+        return vec![text.to_string()];
+    }
+
+    let mut chunks = Vec::new();
+    let mut remaining = text;
+
+    while !remaining.is_empty() {
+        if remaining.len() <= max_len {
+            chunks.push(remaining.to_string());
+            break;
+        }
+
+        let safe_max = {
+            let mut i = max_len.min(remaining.len());
+            while !remaining.is_char_boundary(i) {
+                i -= 1;
+            }
+            i
+        };
+
+        let split_at = remaining[..safe_max]
+            .rfind('\n')
+            .or_else(|| remaining[..safe_max].rfind(' '))
+            .unwrap_or(safe_max);
+
+        chunks.push(remaining[..split_at].to_string());
+        remaining = remaining[split_at..].trim_start();
+    }
+
+    chunks
+}
+
+// --- Rich Message Builders ---
+
+fn build_embed(card: &crate::Card) -> CreateEmbed {
+    let mut embed = CreateEmbed::new();
+
+    if let Some(title) = &card.title {
+        embed = embed.title(title);
+    }
+    if let Some(desc) = &card.description {
+        embed = embed.description(desc);
+    }
+    if let Some(color) = card.color {
+        embed = embed.color(color);
+    }
+    if let Some(url) = &card.url {
+        embed = embed.url(url);
+    }
+    if let Some(footer) = &card.footer {
+        let footer_text = footer.text.trim();
+        if !footer_text.is_empty() {
+            let mut footer_builder = CreateEmbedFooter::new(footer_text);
+            if let Some(icon_url) = &footer.icon_url {
+                footer_builder = footer_builder.icon_url(icon_url);
+            }
+            embed = embed.footer(footer_builder);
+        }
+    }
+    if let Some(thumbnail) = &card.thumbnail {
+        embed = embed.thumbnail(&thumbnail.url);
+    }
+    if let Some(image) = &card.image {
+        embed = embed.image(&image.url);
+    }
+    if let Some(author) = &card.author {
+        let author_name = author.name.trim();
+        if !author_name.is_empty() {
+            let mut author_builder = CreateEmbedAuthor::new(author_name);
+            if let Some(url) = &author.url {
+                author_builder = author_builder.url(url);
+            }
+            if let Some(icon_url) = &author.icon_url {
+                author_builder = author_builder.icon_url(icon_url);
+            }
+            embed = embed.author(author_builder);
+        }
+    }
+    if let Some(timestamp) = &card.timestamp {
+        match timestamp.parse::<Timestamp>() {
+            Ok(ts) => embed = embed.timestamp(ts),
+            Err(e) => tracing::warn!(timestamp, %e, "invalid ISO 8601 timestamp in card, skipping"),
+        }
+    }
+
+    for (i, field) in card.fields.iter().enumerate() {
+        if i >= 25 {
+            break; // Discord limit: max 25 fields per embed
+        }
+        embed = embed.field(&field.name, &field.value, field.inline);
+    }
+
+    embed
+}
+
+fn build_action_row(elements: &crate::InteractiveElements) -> CreateActionRow {
+    match elements {
+        crate::InteractiveElements::Buttons { buttons } => {
+            let mut discord_buttons = Vec::new();
+            for (i, btn) in buttons.iter().enumerate() {
+                if i >= 5 {
+                    break; // Discord limit: max 5 buttons per action row
+                }
+
+                let b = match btn.style {
+                    crate::ButtonStyle::Link => {
+                        let Some(url) = btn.url.as_deref() else {
+                            continue;
+                        };
+                        CreateButton::new_link(url).label(&btn.label)
+                    }
+                    style => {
+                        let serenity_style = match style {
+                            crate::ButtonStyle::Primary => ButtonStyle::Primary,
+                            crate::ButtonStyle::Secondary => ButtonStyle::Secondary,
+                            crate::ButtonStyle::Success => ButtonStyle::Success,
+                            crate::ButtonStyle::Danger => ButtonStyle::Danger,
+                            _ => ButtonStyle::Primary, // fallback
+                        };
+                        let custom_id = btn.custom_id.as_deref().unwrap_or("btn");
+                        // Discord limit: custom_id max 100 characters.
+                        let custom_id = &custom_id[..custom_id.floor_char_boundary(100)];
+                        CreateButton::new(custom_id)
+                            .label(&btn.label)
+                            .style(serenity_style)
+                    }
+                };
+
+                discord_buttons.push(b);
+            }
+            CreateActionRow::Buttons(discord_buttons)
+        }
+        crate::InteractiveElements::Select { select } => {
+            let mut options = Vec::new();
+            for opt in &select.options {
+                let mut discord_opt = CreateSelectMenuOption::new(&opt.label, &opt.value);
+                if let Some(desc) = &opt.description {
+                    discord_opt = discord_opt.description(desc);
+                }
+                // (Emoji not mapped for now)
+                options.push(discord_opt);
+            }
+
+            // Discord limit: custom_id max 100 characters.
+            let custom_id = &select.custom_id[..select.custom_id.floor_char_boundary(100)];
+
+            let mut discord_select =
+                CreateSelectMenu::new(custom_id, CreateSelectMenuKind::String { options });
+            if let Some(placeholder) = &select.placeholder {
+                discord_select = discord_select.placeholder(placeholder);
+            }
+
+            CreateActionRow::SelectMenu(discord_select)
+        }
+    }
+}
+
+struct RichMessageParts<'a> {
+    text: String,
+    cards: &'a [crate::Card],
+    interactive_elements: &'a [crate::InteractiveElements],
+    poll: Option<crate::Poll>,
+    dropped_invalid_poll: bool,
+}
+
+fn prepare_rich_message_parts<'a>(
+    mut text: String,
+    cards: &'a [crate::Card],
+    interactive_elements: &'a [crate::InteractiveElements],
+    poll: Option<&crate::Poll>,
+) -> RichMessageParts<'a> {
+    // Derive a plaintext fallback from cards when text is empty so the message
+    // is never blank for notifications, logs, or non-rich adapters.
+    if text.trim().is_empty() {
+        let derived = crate::OutboundResponse::text_from_cards(cards);
+        if !derived.trim().is_empty() {
+            text = derived;
+        }
+    }
+
+    let cards = if cards.len() > 10 {
+        tracing::warn!(
+            count = cards.len(),
+            "truncating cards to Discord embed limit (10)"
+        );
+        &cards[..10]
+    } else {
+        cards
+    };
+
+    let interactive_elements = if interactive_elements.len() > 5 {
+        tracing::warn!(
+            count = interactive_elements.len(),
+            "truncating interactive elements to Discord action row limit (5)"
+        );
+        &interactive_elements[..5]
+    } else {
+        interactive_elements
+    };
+
+    let had_poll = poll.is_some();
+    let poll = poll.filter(|poll| build_poll(poll).is_some()).cloned();
+    let dropped_invalid_poll = had_poll && poll.is_none();
+
+    RichMessageParts {
+        text,
+        cards,
+        interactive_elements,
+        poll,
+        dropped_invalid_poll,
+    }
+}
+
+fn build_poll(
+    poll: &crate::Poll,
+) -> Option<serenity::builder::CreatePoll<serenity::builder::create_poll::Ready>> {
+    let question = poll.question.trim();
+    if question.is_empty() {
+        return None;
+    }
+
+    // Discord limits: max 10 answers
+    let answers: Vec<_> = poll
+        .answers
+        .iter()
+        .map(|answer| answer.trim())
+        .filter(|answer| !answer.is_empty())
+        .take(10)
+        .map(|answer| CreatePollAnswer::new().text(answer))
+        .collect();
+
+    if answers.len() < 2 {
+        return None;
+    }
+
+    // Duration must be at least 1 hour, usually up to 720 hours (30 days).
+    // The builder just takes std::time::Duration but it has specific allowed values.
+    let hours = poll.duration_hours.clamp(1, 720);
+
+    let mut p = CreatePoll::new()
+        .question(question)
+        .answers(answers)
+        .duration(std::time::Duration::from_secs((hours as u64) * 3600));
+
+    if poll.allow_multiselect {
+        p = p.allow_multiselect();
+    }
+
+    Some(p)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{Button, ButtonStyle, Card, CardField, InteractiveElements, Poll};
+
+    #[test]
+    fn test_build_embed_limits() {
+        let mut card = Card::default();
+        for i in 0..30 {
+            card.fields.push(CardField {
+                name: format!("Field {}", i),
+                value: "Value".into(),
+                inline: false,
+            });
+        }
+
+        // build_embed should limit fields to 25
+        let _embed = build_embed(&card);
+        // Serenity 0.12 CreateEmbed fields are stored internally, but we can't inspect them directly easily
+        // We just ensure it doesn't panic.
+        // we'd need to inspect the JSON payload to really test, but it compiles and runs safely.
+    }
+
+    #[test]
+    fn test_build_action_row_button_limits() {
+        let mut buttons = Vec::new();
+        for i in 0..10 {
+            buttons.push(Button {
+                label: format!("Btn {}", i),
+                custom_id: Some(format!("id_{}", i)),
+                style: ButtonStyle::Primary,
+                url: None,
+            });
+        }
+
+        let row = InteractiveElements::Buttons { buttons };
+        let action_row = build_action_row(&row);
+        match action_row {
+            CreateActionRow::Buttons(btns) => {
+                assert_eq!(btns.len(), 5, "Discord limit: max 5 buttons per action row");
+            }
+            _ => panic!("Expected Buttons"),
+        }
+    }
+
+    #[test]
+    fn test_build_poll_limits() {
+        let mut poll = Poll {
+            question: "Question?".into(),
+            answers: Vec::new(),
+            allow_multiselect: false,
+            duration_hours: 1000, // Exceeds 720 limit
+        };
+        for i in 0..15 {
+            poll.answers.push(format!("Answer {}", i));
+        }
+
+        // build_poll should limit answers to 10 and duration to 720
+        let built = build_poll(&poll);
+        assert!(built.is_some());
+        // Again, can't easily inspect CreatePoll fields, but we verify it runs.
+    }
+
+    #[test]
+    fn test_build_poll_rejects_blank_question() {
+        let poll = Poll {
+            question: "   ".into(),
+            answers: vec!["Yes".into(), "No".into()],
+            allow_multiselect: false,
+            duration_hours: 24,
+        };
+
+        assert!(build_poll(&poll).is_none());
+    }
+
+    #[test]
+    fn test_build_poll_rejects_single_non_empty_answer() {
+        let poll = Poll {
+            question: "Question?".into(),
+            answers: vec!["Yes".into(), "   ".into()],
+            allow_multiselect: false,
+            duration_hours: 24,
+        };
+
+        assert!(build_poll(&poll).is_none());
+    }
+
+    #[test]
+    fn test_prepare_rich_message_parts_drops_invalid_poll_but_keeps_text() {
+        let poll = Poll {
+            question: "   ".into(),
+            answers: vec!["Yes".into(), "No".into()],
+            allow_multiselect: false,
+            duration_hours: 24,
+        };
+
+        let parts = prepare_rich_message_parts("plain text reply".into(), &[], &[], Some(&poll));
+
+        assert_eq!(parts.text, "plain text reply");
+        assert!(parts.poll.is_none());
+        assert!(parts.dropped_invalid_poll);
+    }
+
+    #[test]
+    fn test_prepare_rich_message_parts_derives_text_fallback_from_cards() {
+        let cards = vec![Card {
+            title: Some("Status".into()),
+            description: Some("All green".into()),
+            ..Default::default()
+        }];
+
+        let parts = prepare_rich_message_parts(String::new(), &cards, &[], None);
+
+        assert_eq!(parts.text, "Status\n\nAll green");
+        assert!(!parts.dropped_invalid_poll);
+    }
+}

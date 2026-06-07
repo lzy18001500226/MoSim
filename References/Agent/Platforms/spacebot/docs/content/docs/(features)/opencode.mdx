@@ -1,0 +1,214 @@
+---
+title: OpenCode
+description: Spawn full coding agents as worker processes via the OpenCode integration.
+---
+
+# OpenCode
+
+Spacebot can spawn [OpenCode](https://opencode.ai) as a worker backend. Instead of running a Rig agent with shell/file/exec tools, an OpenCode worker delegates to a persistent OpenCode subprocess that has its own tool suite, codebase exploration, and context management.
+
+Use OpenCode workers for multi-file coding tasks. Use builtin workers for one-shot commands, file operations, and non-coding work.
+
+## Enabling
+
+OpenCode is disabled by default. Enable it in your config:
+
+```toml
+[defaults.opencode]
+enabled = true
+path = "opencode"   # path to the opencode binary
+```
+
+The `path` field supports `env:VAR_NAME` resolution:
+
+```toml
+path = "env:OPENCODE_PATH"
+```
+
+Once enabled, the `spawn_worker` tool gains a `worker_type` parameter. The channel LLM decides whether to use `"builtin"` (default) or `"opencode"` based on the task.
+
+## How It Works
+
+```
+Channel: "spawn_worker: refactor the auth module, worker_type: opencode, directory: /code/myapp"
+  → Spacebot gets/creates an OpenCode server for /code/myapp
+  → Creates an HTTP session
+  → Sends the task as a prompt
+  → Monitors SSE events for progress
+  → Tool calls show up as status updates in the channel
+  → Result text is returned as WorkerComplete
+```
+
+The OpenCode worker runs its own agent loop internally. Spacebot monitors it via SSE and translates tool events into status updates visible to the channel.
+
+## Server Pool
+
+OpenCode runs as `opencode serve --port <port>` — a persistent HTTP server per working directory. Spacebot manages a pool of these servers.
+
+**Deterministic ports**: Each directory gets a port derived from its path hash (range 10000-60000). The same directory always maps to the same port.
+
+**Server reattach**: After a Spacebot restart, the pool tries to reconnect to existing OpenCode servers via health check on their deterministic port. If the server is still running, it's reused without spawning a new process.
+
+**Pool limits**: Controlled by `max_servers` (default: 5). When the limit is reached, spawning a worker for a new directory fails.
+
+**Auto-restart**: If a server dies, the pool restarts it automatically (up to `max_restart_retries` times, default: 5).
+
+## Communication Protocol
+
+All communication is localhost HTTP:
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/global/health` | GET | Health check |
+| `/session` | POST | Create session |
+| `/session/{id}/prompt_async` | POST | Send prompt (non-blocking) |
+| `/session/{id}/abort` | POST | Abort session |
+| `/event` | GET | SSE event stream |
+| `/permission/{id}/reply` | POST | Reply to permission request |
+| `/question/{id}/reply` | POST | Reply to question request |
+
+All requests include `?directory=<path>` as a query parameter.
+
+### SSE Events
+
+Spacebot subscribes to the SSE stream and processes:
+
+- **Tool events** — translated to `set_status` updates (e.g. "running: bash", "running: edit")
+- **Session idle** — signals task completion
+- **Session error** — signals failure
+- **Permission asked** — auto-approved (configurable)
+- **Question asked** — auto-selects first option
+- **Retry status** — reports rate limit retries
+
+## OpenCode vs Builtin Workers
+
+| | Builtin Worker | OpenCode Worker |
+|---|---|---|
+| **Agent loop** | Rig agent in-process | OpenCode subprocess |
+| **Tools** | shell, file, exec, set_status, browser | OpenCode's full tool suite (bash, read, edit, glob, grep, write, webfetch, task) |
+| **Context** | Fresh prompt + task | Full OpenCode session with codebase awareness |
+| **Model** | Configured via Spacebot routing | Configured via OpenCode or Spacebot override |
+| **Best for** | One-shot commands, file reads, non-coding tasks | Multi-file refactors, feature implementation, code exploration |
+| **Interactive** | Supported | Supported (same session preserved across follow-ups) |
+
+The channel system prompt includes a decision guide when OpenCode is enabled:
+
+- Need to run a command? Builtin worker.
+- Need to read a file? Builtin worker.
+- Need to write or modify code across multiple files? OpenCode worker.
+
+## Permissions
+
+OpenCode has its own permission system for dangerous operations. Spacebot controls the defaults:
+
+```toml
+[defaults.opencode.permissions]
+edit = "allow"      # file editing
+bash = "allow"      # shell commands
+webfetch = "allow"  # web fetching
+```
+
+With all permissions set to `"allow"`, OpenCode suppresses most permission prompts. When a permission prompt does fire, Spacebot auto-approves it and emits a `WorkerPermission` event.
+
+These settings are passed to OpenCode via the `OPENCODE_CONFIG_CONTENT` environment variable. LSP and formatter are disabled for headless operation.
+
+## Interactive Sessions
+
+OpenCode workers support the same interactive pattern as builtin workers:
+
+```
+spawn_worker: task="set up the project", worker_type: opencode, interactive: true, directory: /code/myapp
+  → OpenCode creates a session, runs initial task
+  → Worker enters WaitingForInput
+route: worker_id=abc, message="now add the database layer"
+  → Follow-up sent to the same OpenCode session
+  → Context from the first task is preserved
+```
+
+The OpenCode session accumulates context across follow-ups, so subsequent messages benefit from everything the agent learned during earlier work.
+
+## Model Override
+
+You can override the model used by OpenCode workers:
+
+```toml
+[routing]
+worker = "anthropic/claude-haiku-4.5-20250514"
+
+[routing.task_overrides]
+coding = "anthropic/claude-sonnet-4-20250514"
+```
+
+When the worker spawns, the routing config determines the model. The model string is split into `provider_id/model_id` and passed to OpenCode's prompt API.
+
+## Full Configuration
+
+```toml
+[defaults.opencode]
+enabled = true
+path = "opencode"                  # binary path or env:VAR_NAME
+max_servers = 5                    # max concurrent OpenCode server processes
+server_startup_timeout_secs = 30   # how long to wait for server health
+max_restart_retries = 5            # auto-restart attempts on server death
+
+[defaults.opencode.permissions]
+edit = "allow"
+bash = "allow"
+webfetch = "allow"
+```
+
+## Architecture
+
+```
+┌─────────────┐     HTTP/SSE      ┌──────────────────┐
+│   Spacebot   │ ←───────────────→ │  OpenCode Server  │
+│  (worker.rs) │                   │  (port 12345)     │
+└─────────────┘                   └──────────────────┘
+      │                                   │
+      │ ProcessEvent::WorkerStatus        │ opencode agent loop
+      │ ProcessEvent::WorkerComplete      │ (bash, edit, read, etc.)
+      ↓                                   ↓
+┌─────────────┐                   ┌──────────────────┐
+│   Channel    │                   │   Working Dir     │
+│  (status     │                   │   /code/myapp     │
+│   block)     │                   └──────────────────┘
+└─────────────┘
+```
+
+The OpenCode server is a child process managed by Spacebot. It persists across worker invocations for the same directory. Multiple workers targeting the same directory share the same server (different sessions).
+
+## Embedded Web UI
+
+When you view an OpenCode worker in the Workers tab, Spacebot can show the full interactive OpenCode interface inline — the same editor, terminal, and conversation view you'd get from OpenCode's standalone app.
+
+The embedded UI uses a Shadow DOM for CSS isolation and a memory router to avoid conflicts with Spacebot's own routing. All API and SSE traffic is proxied through Spacebot's reverse proxy at `/api/opencode/{port}/`, keeping everything same-origin.
+
+### Building the embed
+
+The embed bundle is not included in the repository. Build it with:
+
+```bash
+# Requires Node 22+ and bun
+./scripts/build-opencode-embed.sh
+# or: just build-opencode-embed
+```
+
+This clones OpenCode at a pinned upstream commit, copies the embed entry points from `interface/opencode-embed-src/`, builds with Vite, and outputs to `interface/public/opencode-embed/`. The output is ~46MB (mostly shiki grammar chunks for syntax highlighting) and is gitignored.
+
+If you use [fnm](https://github.com/Schniz/fnm) for Node version management:
+
+```bash
+eval "$(fnm env)" && fnm use v24.14.0 && ./scripts/build-opencode-embed.sh
+```
+
+### Without the embed
+
+Everything works without building the embed. OpenCode workers still run normally — the Workers tab falls back to the transcript view, which shows tool calls, status updates, and results. The only difference is you don't get the live interactive OpenCode UI.
+
+### Updating the pinned commit
+
+The OpenCode commit is pinned in `scripts/build-opencode-embed.sh` as `OPENCODE_COMMIT`. To update:
+
+1. Change the commit hash in the script
+2. Re-run `./scripts/build-opencode-embed.sh`
+3. Test the embedded UI in the Workers tab

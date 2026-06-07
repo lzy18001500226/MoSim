@@ -1,0 +1,188 @@
+---
+title: Workers
+description: Independent processes that execute tasks with shell, file, and browser tools.
+---
+
+# Workers
+
+Workers are independent processes that do a job. They get a specific task, a focused system prompt, and task-appropriate tools. No channel context, no personality, no conversation history.
+
+The channel delegates work to workers so it stays responsive. While a worker runs a shell command or edits files, the channel keeps talking to the user.
+
+## Two Kinds
+
+### Fire-and-forget
+
+Does a job and returns a result. The channel spawns it, gets a `worker_id`, and later receives a `WorkerComplete` event with the result injected into its history.
+
+```
+Channel: "spawn_worker: run the test suite"
+  → Worker starts, runs tests
+  → Worker returns: "12 passed, 0 failed"
+  → Channel sees result, replies to user
+```
+
+### Interactive
+
+Long-running worker that accepts follow-up input. The channel uses the `route` tool to send additional messages to it. The worker maintains its history across follow-ups.
+
+```
+Channel: "spawn_worker: coding session, interactive: true"
+  → Worker starts, does initial task
+  → Worker enters WaitingForInput state
+Channel: "route: now add error handling"
+  → Worker continues with accumulated context
+Channel: "route: looks good, run the tests"
+  → Worker runs tests, returns result
+```
+
+Interactive workers stay alive until the input channel is dropped, a follow-up fails, or the channel cancels them.
+
+## Tools
+
+Every worker gets a ToolServer with:
+
+| Tool | Purpose |
+|------|---------|
+| `shell` | Run shell commands (`sh -c`) with configurable timeout |
+| `file` | Read, write, and list files |
+| `exec` | Run subprocesses with explicit args and environment |
+| `set_status` | Report progress to the channel's status block |
+
+Conditionally added:
+
+| Tool | Condition |
+|------|-----------|
+| `browser` | When `browser.enabled = true` in agent config |
+| `web_search` | When a Brave Search API key is configured |
+| `mcp_*` | One tool per connected MCP server tool, fetched at worker start |
+
+Workers don't get memory tools, channel tools, or branch tools. They can't talk to the user, recall memories, or spawn other processes. They execute their task and report status.
+
+## State Machine
+
+```
+Running ──→ Done              (fire-and-forget completed)
+Running ──→ Failed            (error or cancellation)
+Running ──→ WaitingForInput   (interactive worker finished initial task)
+WaitingForInput ──→ Running   (follow-up message received via route)
+WaitingForInput ──→ Failed    (follow-up processing failed)
+```
+
+`Done` and `Failed` are terminal. Illegal transitions are runtime errors.
+
+## Context and History
+
+Workers start with a **fresh empty history**. They have no access to the channel's conversation. Their only context is:
+
+1. The system prompt (from `prompts/en/worker.md.j2`)
+2. The task description (first user message)
+3. Optional skill instructions (prepended to system prompt)
+
+This isolation is by design. If a process needs conversation context, it's a branch, not a worker.
+
+## Compaction
+
+Workers do inline programmatic compaction (no LLM call):
+
+- **>70% context usage**: Background compaction removes 50% of oldest messages
+- **Context overflow**: Force compaction removes 75% of oldest messages (up to 3 retries)
+
+Compacted messages are summarized into a recap that preserves tool call names, arguments, and results. This recap is injected as a system message at the top of history so the worker doesn't repeat completed work.
+
+## Segment Loop
+
+Workers run in segments of 25 turns each. After each segment:
+
+- If the agent returned a result: done
+- If max turns hit: compact if needed, continue with "Continue where you left off"
+- If cancelled: state = Failed
+- If context overflow: force compact, retry
+
+This prevents runaway workers and handles long tasks that exceed a single agent loop.
+
+## Status Reporting
+
+Workers report progress via the `set_status` tool. The status string (max 256 chars) appears in the channel's status block, which is injected into the channel's system prompt every turn.
+
+```
+## Active Workers
+- [abc123] run test suite (2m, 8 tool calls): running pytest, 7/12 suites done
+```
+
+The channel LLM sees this and can decide whether to wait, ask for more info, or cancel.
+
+## Concurrency
+
+Workers run concurrently. The default limit is `max_concurrent_workers: 5` per channel (configurable per agent). Attempting to spawn beyond the limit returns an error to the LLM so it can wait or cancel an existing worker.
+
+## Model Routing
+
+Workers default to `anthropic/claude-haiku-4.5-20250514`. Task-type overrides apply — for example, a `coding` task type routes to `anthropic/claude-sonnet-4-20250514`. Fallback chains are supported. All hot-reloadable.
+
+See [Routing](/docs/routing) for the full routing config.
+
+## Skills
+
+Workers can be spawned with a skill — a set of instructions loaded from `{instance_dir}/skills/` or `{workspace}/skills/`. The skill content is prepended to the worker's system prompt.
+
+```
+spawn_worker: task="check the weather for SF", skill="weather"
+```
+
+The channel sees a summary of available skills. The worker receives the full skill instructions. See the skills directory for the format.
+
+## Logging
+
+Worker execution logs are controlled by `worker_log_mode`:
+
+| Mode | Behavior |
+|------|----------|
+| `errors_only` (default) | Only write logs on failure |
+| `all_separate` | Write to `logs/successful/` and `logs/failed/` subdirectories |
+| `all_combined` | Write all logs to `logs/` |
+
+Logs include: worker ID, channel ID, timestamp, state, task, error (if any), and the full message history with tool calls and results.
+
+## Sandbox and Environment
+
+Worker shell and exec commands run inside an OS-level sandbox (bubblewrap on Linux, sandbox-exec on macOS). The entire host filesystem is mounted read-only except:
+
+- The agent's workspace directory (writable)
+- `/tmp` (private per invocation)
+- Any paths listed in `[agents.sandbox].writable_paths`
+
+The agent's data directory (databases, config files) is explicitly re-mounted read-only. This is enforced at the kernel level -- no amount of command creativity can bypass it.
+
+Worker subprocesses also start with a **clean environment**. Workers only receive `PATH` (with `tools/bin` prepended), safe variables (`HOME`, `USER`, `LANG`, `TERM`, `TMPDIR`), tool-category secrets from the [secret store](/docs/secrets), and any explicitly configured `passthrough_env` entries. `HOME` is mode-dependent: workspace path when sandboxed, parent `HOME` in passthrough mode. System secrets like LLM API keys are hidden by default unless explicitly forwarded via `passthrough_env`. Environment sanitization applies regardless of whether the sandbox is enabled or disabled.
+
+The `file` tool validates all paths against the workspace boundary. Identity files (`SOUL.md`, `IDENTITY.md`, `ROLE.md`) live in the agent root directory (`~/.spacebot/agents/{id}/`), outside the workspace, so they are naturally inaccessible to worker file tools — no special-case rejection is needed. The `exec` tool blocks dangerous environment variables (`LD_PRELOAD`, `DYLD_INSERT_LIBRARIES`, etc.) that enable library injection.
+
+See [Sandbox](/docs/sandbox) for full details on containment, environment sanitization, leak detection, and durable binaries.
+
+## Configuration
+
+```toml
+[defaults]
+max_concurrent_workers = 5     # per channel
+context_window = 128000        # tokens
+
+[defaults.routing]
+worker = "anthropic/claude-haiku-4.5-20250514"
+
+[defaults.routing.task_overrides]
+coding = "anthropic/claude-sonnet-4-20250514"
+
+# Sandbox is enabled by default. Disable for self-hosted/local setups
+# that need full host filesystem access. Env sanitization always applies.
+[agents.sandbox]
+mode = "enabled"
+writable_paths = []
+passthrough_env = []
+```
+
+## OpenCode Workers
+
+Workers can also be backed by an OpenCode subprocess instead of the built-in Rig agent. OpenCode workers are full coding agents with their own tool suite, codebase exploration, and context management.
+
+See [OpenCode](/docs/opencode) for details.

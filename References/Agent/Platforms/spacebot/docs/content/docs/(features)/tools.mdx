@@ -1,0 +1,279 @@
+---
+title: Tools
+description: Tools that give LLM processes the ability to act.
+---
+
+# Tools
+
+How Spacebot gives LLM processes the ability to act.
+
+## Overview
+
+Every tool implements Rig's `Tool` trait and lives in `src/tools/`. Tools are organized by function, not by consumer. Which process gets which tools is configured via ToolServer factory functions in `src/tools.rs`.
+
+Core tools include:
+
+| Tool | Purpose | Consumers |
+|------|---------|-----------|
+| `reply` | Send a message to the user | Channel |
+| `branch` | Fork context to think independently | Channel |
+| `spawn_worker` | Create a new worker process | Channel, Branch |
+| `route` | Send follow-up to an active interactive worker | Channel |
+| `cancel` | Stop a running worker or branch | Channel |
+| `skip` | Opt out of responding to the current message | Channel |
+| `react` | Add an emoji reaction to the user's message | Channel |
+| `memory_save` | Write a memory to the store | Branch, Cortex, Compactor |
+| `memory_recall` | Search memories via hybrid search | Branch |
+| `channel_recall` | Retrieve transcript from another channel | Branch |
+| `spacebot_docs` | Read embedded Spacebot docs/changelog/AGENTS | Branch, Cortex Chat |
+| `email_search` | Search IMAP mailbox content directly | Branch |
+| `config_inspect` | Inspect live resolved runtime config (redacted) | Cortex Chat |
+| `set_status` | Report worker progress to the channel | Worker |
+| `shell` | Execute shell commands | Worker |
+| `file` | Read, write, and list files | Worker |
+| `exec` | Run subprocesses with specific args/env | Worker |
+| `browser` | Headless Chrome automation (navigate, click, screenshot) | Worker |
+| `cron` | Manage scheduled cron jobs | Channel |
+
+## ToolServer Topology
+
+Rig's `ToolServer` runs as a tokio task. You register tools on it, call `.run()` to get a `ToolServerHandle`, and pass that handle to agents. The handle is `Clone` — all clones point to the same server task.
+
+Spacebot uses five ToolServer configurations:
+
+### Channel ToolServer (per-channel)
+
+One per channel. Starts empty — tools are added and removed each conversation turn.
+
+```
+┌─────────────────────────────────────────┐
+│            Channel ToolServer            │
+├─────────────────────────────────────────┤
+│ Added/removed per conversation turn:    │
+│   reply          (response_tx, conv_id) │
+│   branch         (channel_id, event_tx) │
+│   spawn_worker   (channel_id, event_tx) │
+│   route          (channel_id, event_tx) │
+│   cancel         (channel_id, event_tx) │
+│   skip           (skip_flag)            │
+│   react          (response_tx)          │
+│   cron           (cron_store)           │
+└─────────────────────────────────────────┘
+```
+
+The channel has no memory tools. It delegates memory work to branches. Channel-specific tools hold per-conversation state (the response sender, the channel ID). They're added dynamically via `add_channel_tools()` when a conversation turn starts and removed via `remove_channel_tools()` when it ends. This prevents stale senders from being invoked after a turn is done.
+
+### Branch ToolServer (per-branch)
+
+Each branch gets its own isolated ToolServer, created at spawn time via `create_branch_tool_server()`.
+
+```
+┌──────────────────────────────────────────────┐
+│        Branch ToolServer (per-branch)         │
+├──────────────────────────────────────────────┤
+│   memory_save      (Arc<MemorySearch>)       │
+│   memory_recall    (Arc<MemorySearch>)       │
+│   spacebot_docs    (embedded docs)            │
+│   channel_recall   (ConversationLogger)      │
+│   email_search     (IMAP mailbox search)     │
+└──────────────────────────────────────────────┘
+```
+
+Branch isolation ensures `memory_recall`, `channel_recall`, `spacebot_docs`, and `email_search` are never visible to the channel. All tools are registered at creation and live for the lifetime of the branch.
+
+### Worker ToolServer (per-worker)
+
+Each worker gets its own isolated ToolServer, created at spawn time via `create_worker_tool_server()`.
+
+```
+┌──────────────────────────────────────────┐
+│          Worker ToolServer (per-worker)   │
+├──────────────────────────────────────────┤
+│   shell                                  │
+│   file                                   │
+│   exec                                   │
+│   set_status  (agent_id, worker_id, ...) │
+│   browser     (if browser.enabled)       │
+│   web_search  (if configured)            │
+│   mcp_*       (registered at worker startup for MCP tools connected at that time) │
+└──────────────────────────────────────────┘
+```
+
+`shell` and `exec` hold a shared `Sandbox` reference that wraps commands in OS-level containment (bubblewrap on Linux, sandbox-exec on macOS). `file` validates paths against the workspace boundary. `set_status` is bound to a specific worker's ID so status updates route to the right place in the channel's status block. `browser` is conditionally registered based on the agent's `browser.enabled` config. MCP tools are fetched and registered once at worker startup for servers connected at that time.
+
+Workers don't get memory tools or channel tools. They can't talk to the user, can't recall memories, can't spawn branches. They execute their task and report status.
+
+### Cortex ToolServer
+
+One per agent, minimal.
+
+```
+┌──────────────────────────────┐
+│      Cortex ToolServer       │
+├──────────────────────────────┤
+│   memory_save                │
+└──────────────────────────────┘
+```
+
+The cortex writes consolidated memories. It doesn't need recall (it's the consolidator, not the recaller) or any channel/worker tools.
+
+### Cortex Chat ToolServer
+
+One per cortex-chat session context, full diagnostic/admin toolset.
+
+```
+┌──────────────────────────────────────────────┐
+│         Cortex Chat ToolServer              │
+├──────────────────────────────────────────────┤
+│   memory_save / memory_recall / memory_delete│
+│   channel_recall                            │
+│   task_create / task_list / task_update     │
+│   spacebot_docs / config_inspect            │
+│   shell / file / exec                       │
+│   browser     (if enabled)                  │
+│   web_search  (if configured)               │
+└──────────────────────────────────────────────┘
+```
+
+## Factory Functions
+
+All in `src/tools.rs`:
+
+```rust
+// Agent startup — creates an empty channel ToolServer
+create_channel_tool_server() -> ToolServerHandle
+
+// Per conversation turn — add/remove channel-specific tools
+add_channel_tools(handle, channel_id, response_tx, conversation_id, event_tx)
+remove_channel_tools(handle)
+
+// Per branch spawn — creates an isolated ToolServer with memory + channel recall tools
+create_branch_tool_server(memory_search, conversation_logger) -> ToolServerHandle
+
+// Per worker spawn — creates an isolated ToolServer (browser/web_search/MCP conditionally included)
+create_worker_tool_server(agent_id, worker_id, channel_id, event_tx, browser_config, screenshot_dir) -> ToolServerHandle
+
+// Agent startup — creates the cortex ToolServer
+create_cortex_tool_server(memory_search) -> ToolServerHandle
+
+// Cortex chat startup — creates an interactive admin ToolServer
+create_cortex_chat_tool_server(...) -> ToolServerHandle
+```
+
+## Tool Lifecycle
+
+### Static tools (registered at creation)
+
+`memory_save`, `memory_recall`, `channel_recall`, `spacebot_docs`, `email_search` on branch ToolServers. `shell`, `file`, `exec` on worker ToolServers. `memory_save` on cortex and compactor ToolServers. These are registered before `.run()` via the builder pattern and live for the lifetime of the ToolServer.
+
+### Dynamic tools (added/removed at runtime)
+
+`reply`, `branch`, `spawn_worker`, `route`, `cancel`, `skip`, `react` on the channel ToolServer. Added via `handle.add_tool()` and removed via `handle.remove_tool()`. The add/remove cycle is per conversation turn:
+
+```
+1. Message arrives on channel
+2. Channel creates response_tx for this turn
+3. add_channel_tools(handle, channel_id, response_tx, ...)
+4. Agent processes the message (LLM calls tools)
+5. remove_channel_tools(handle)
+6. Response sender drops, turn is complete
+```
+
+### Per-process tools (created and destroyed with the process)
+
+Branch and worker ToolServers are created when the process spawns and dropped when it finishes. Each branch gets `memory_save` + `memory_recall` + `channel_recall` + `spacebot_docs` + `email_search` (plus task board tools). Each worker gets `shell`, `file`, `exec`, `set_status` (bound to that worker's ID), and optionally `browser`, `web_search`, and connected `mcp_*` tools.
+
+## Tool Design Patterns
+
+### Error as result
+
+Tool errors are returned as structured results, not panics. The LLM sees the error and can decide to retry or take a different approach.
+
+```rust
+async fn call(&self, args: Self::Args) -> Result<Self::Output, Self::Error> {
+    // Errors become tool results the LLM can read
+    let content = tokio::fs::read_to_string(path)
+        .await
+        .map_err(|e| FileError(format!("Failed to read file: {e}")))?;
+    // ...
+}
+```
+
+### Sandbox containment
+
+Shell and exec commands run inside an OS-level sandbox (bubblewrap on Linux, sandbox-exec on macOS). The entire filesystem is mounted read-only except the workspace, `/tmp`, and any configured `writable_paths`. The agent's data directory (databases, config files) is explicitly protected.
+
+Worker subprocesses also start with a clean environment -- they never inherit the parent's environment variables. System secrets (LLM API keys, messaging tokens) are never visible to workers regardless of sandbox mode. See [Sandbox](/docs/sandbox) for full details.
+
+The `file` tool independently validates all paths against the workspace boundary. Identity files (`SOUL.md`, `IDENTITY.md`, `ROLE.md`) live in the agent root directory (`~/.spacebot/agents/{id}/`), outside the workspace, so they are naturally inaccessible to worker file tools. The `exec` tool blocks dangerous environment variables (`LD_PRELOAD`, `DYLD_INSERT_LIBRARIES`, etc.) that enable library injection regardless of sandbox state.
+
+Leak detection (via `SpacebotHook`) scans all tool output for secret patterns (API keys, tokens, PEM keys) and terminates the process if a leak is found. This includes base64-encoded, URL-encoded, and hex-encoded variants.
+
+### Status reporting
+
+Workers report progress via `set_status`, and the channel sees those updates in its status block. `set_status` uses `try_send` (non-blocking), so if the event channel is full the update is dropped instead of blocking the worker.
+
+## What Each Tool Does
+
+### reply
+
+Sends text to the user via the response channel. The channel process creates an `mpsc::Sender<OutboundResponse>` per turn and the tool pushes responses through it.
+
+### branch
+
+Spawns a branch process — a fork of the channel's context that thinks independently. Returns immediately with a `branch_id`. The branch result arrives later via ProcessEvent.
+
+### spawn_worker
+
+Creates a worker process for a specific task. Supports both fire-and-forget (do a job, return result) and interactive (accepts follow-up messages) modes. Returns immediately with a `worker_id`.
+
+### route
+
+Sends a follow-up message to an active interactive worker. The channel uses this to continue a multi-turn task without spawning a new worker.
+
+### cancel
+
+Terminates a running worker or branch. Immediate — the process is aborted.
+
+### memory_save
+
+Writes a structured memory to SQLite + generates an embedding in LanceDB. Supports typed memories (fact, preference, decision, identity, event, observation), importance scores, source attribution, and explicit associations to other memories.
+
+### memory_recall
+
+Hybrid search across the memory store. Combines vector similarity (semantic), full-text search (keyword), and graph traversal (connected memories) via Reciprocal Rank Fusion. Records access on found memories (affects importance decay).
+
+### channel_recall
+
+Retrieves conversation transcript from another channel. Operates in two modes:
+
+- **List mode** (no `channel` arg) — returns all known channels with their Discord names, message counts, and last activity timestamps. Lets the branch discover what channels exist.
+- **Transcript mode** (`channel` arg provided) — resolves the channel by name (fuzzy matching: exact → prefix → contains → raw ID), then returns up to 100 recent messages with sender, role, content, and timestamps.
+
+If the name doesn't match any channel, falls back to list mode so the LLM can self-correct with the available options.
+
+Channel names are resolved from the `discord_channel_name` field stored in message metadata. The tool queries `conversation_messages` in SQLite directly — it reads persisted messages, not in-memory Rig history.
+
+### email_search
+
+Searches the configured email mailbox directly over IMAP with filters like sender (`from`), subject, text query, unread-only, and time window (`since_days`). Returns message metadata plus a body snippet for precise read-back in email workflows.
+
+### set_status
+
+Reports the worker's current progress. The status string appears in the channel's status block so the user-facing process knows what's happening without polling.
+
+### shell
+
+Runs a shell command via `sh -c` (Unix) or `cmd /C` (Windows). Captures stdout, stderr, exit code. Has a configurable timeout (default 60s). Commands are wrapped in the sandbox when enabled — the filesystem is read-only except for the workspace and configured writable paths.
+
+### file
+
+Read, write, or list files. Protects identity/memory paths. Creates parent directories on write by default.
+
+### exec
+
+Runs a specific program with explicit arguments and environment variables. More precise than `shell` for running compilers, test runners, etc. Configurable timeout. Sandboxed like `shell`. Blocks dangerous env vars (`LD_PRELOAD`, `NODE_OPTIONS`, etc.) that enable code injection.
+
+### browser
+
+Headless Chrome automation via chromiumoxide. Single tool with an `action` discriminator: `launch`, `navigate`, `snapshot`, `act`, `screenshot`, `evaluate`, `content`, `close`, plus tab management (`open`, `tabs`, `focus`, `close_tab`). Uses an accessibility-tree ref system for LLM-friendly element addressing. See [Browser](/docs/browser).

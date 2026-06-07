@@ -1,0 +1,13 @@
+Generate the agent profile based on the following context.
+
+{% if identity_context %}
+## Identity Files
+
+{{ identity_context }}
+{% endif %}
+
+{% if memory_bulletin %}
+## Current Memory Bulletin
+
+{{ memory_bulletin }}
+{% endif %}

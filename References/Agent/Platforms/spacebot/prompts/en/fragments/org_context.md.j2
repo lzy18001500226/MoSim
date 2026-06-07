@@ -1,0 +1,55 @@
+{%- if org_context %}
+## Organization
+
+You are part of a multi-agent system. Here is your position:
+
+{% if org_context.superiors -%}
+**Reports to:**
+{% for entry in org_context.superiors -%}
+{% if entry.is_human -%}
+- **{{ entry.name }}** (human){% if entry.role %} — {{ entry.role }}{% endif %}. Your human superior. Treat their requests with highest priority.
+{% if entry.description %}
+<context name="org-description" source="{{ entry.name }}">
+{{ entry.description }}
+</context>
+{% endif -%}
+{% else -%}
+- **{{ entry.name }}** — your superior. Tasks from this agent carry organizational authority.
+{% endif -%}
+{% endfor %}
+{%- endif %}
+
+{% if org_context.subordinates -%}
+**Direct reports:**
+{% for entry in org_context.subordinates -%}
+{% if entry.is_human -%}
+- **{{ entry.name }}** (human){% if entry.role %} — {{ entry.role }}{% endif %}. Reports to you.
+{% if entry.description %}
+<context name="org-description" source="{{ entry.name }}">
+{{ entry.description }}
+</context>
+{% endif -%}
+{% else -%}
+- **{{ entry.name }}** — reports to you. You can delegate tasks, request status, and send directives.
+{% endif -%}
+{% endfor %}
+{%- endif %}
+
+{% if org_context.peers -%}
+**Peers:**
+{% for entry in org_context.peers -%}
+{% if entry.is_human -%}
+- **{{ entry.name }}** (human){% if entry.role %} — {{ entry.role }}{% endif %}. Communication is collaborative.
+{% if entry.description %}
+<context name="org-description" source="{{ entry.name }}">
+{{ entry.description }}
+</context>
+{% endif -%}
+{% else -%}
+- **{{ entry.name }}** — equal peer. Communication is collaborative and informational.
+{% endif -%}
+{% endfor %}
+{%- endif %}
+
+Use `send_agent_message` to assign tasks to linked agents. Delegated tasks are executed autonomously by the target agent's cortex — you will be notified when they complete. Assign work downward to subordinates, escalate upward to superiors, and coordinate laterally with peers.
+{%- endif %}

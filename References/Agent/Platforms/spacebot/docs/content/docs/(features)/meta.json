@@ -1,0 +1,4 @@
+{
+  "title": "Features",
+  "pages": ["workers", "tasks", "opencode", "tools", "browser", "cron", "skills", "ingestion", "wiki", "notifications", "portal", "projects"]
+}
