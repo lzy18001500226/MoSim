@@ -1,0 +1,62 @@
+---
+title: カスタム
+description: カスタムベンダー設定。サードパーティ API プロキシやローカルモデル向け
+---
+
+OpenAI 互換プロトコルで接続するサードパーティのモデルサービスや、ローカルにデプロイしたモデルに適しています。例えば：
+
+- **サードパーティ API プロキシ**：統一された API Base から複数のモデルを呼び出す
+- **ローカルモデル**：Ollama、vLLM、LocalAI などのツールでローカルにデプロイしたモデル
+- **プライベートデプロイ**：企業内部にデプロイしたモデルサービス
+
+<Note>
+  `openai` ベンダーとの違い：カスタムベンダーを選択した場合、`/config model` でモデルを切り替えてもベンダータイプは自動で切り替わらず、常にカスタムの API アドレスを使用します。
+</Note>
+
+## テキスト対話
+
+### サードパーティ API プロキシ
+
+```json
+{
+  "bot_type": "custom",
+  "model": "",
+  "custom_api_key": "YOUR_API_KEY",
+  "custom_api_base": "https://{your-proxy.com}/v1"
+}
+```
+
+| パラメータ | 説明 |
+| --- | --- |
+| `bot_type` | `custom` に設定する必要があります |
+| `model` | モデル名。プロキシサービスがサポートする任意のモデル名を指定 |
+| `custom_api_key` | API キー。プロキシサービスから提供されます |
+| `custom_api_base` | API アドレス。プロキシサービスから提供され、OpenAI プロトコル互換である必要があります |
+
+### ローカルモデル
+
+ローカルモデルは通常 API Key が不要で、API Base のみ設定します：
+
+```json
+{
+  "bot_type": "custom",
+  "model": "qwen3.5:27b",
+  "custom_api_base": "http://localhost:11434/v1"
+}
+```
+
+一般的なローカルデプロイツールとデフォルトアドレス：
+
+| ツール | デフォルト API Base |
+| --- | --- |
+| [Ollama](https://ollama.com) | `http://localhost:11434/v1` |
+| [vLLM](https://docs.vllm.ai) | `http://localhost:8000/v1` |
+| [LocalAI](https://localai.io) | `http://localhost:8080/v1` |
+
+### モデル切り替え
+
+カスタムベンダーでモデルを切り替える際は `model` のみが変更され、`bot_type` と API アドレスは変わりません：
+
+```
+/config model qwen3.5:27b
+```
