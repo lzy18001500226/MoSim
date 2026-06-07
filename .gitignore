@@ -284,6 +284,8 @@ References/Agent/Security/rogue/.vscode/
 References/Agent/Workflow/*
 !References/Agent/Workflow/OpenSpec/
 !References/Agent/Workflow/OpenSpec/**
+!References/Agent/Workflow/TaskWeaver/
+!References/Agent/Workflow/TaskWeaver/**
 !References/Agent/Workflow/sdk-python/
 !References/Agent/Workflow/sdk-python/**
 References/Agent/Workflow/antfarm/bin/
