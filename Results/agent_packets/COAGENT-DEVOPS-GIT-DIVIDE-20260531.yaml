@@ -19,3 +19,8 @@ subagent_plan_reason: remote_sync_restored; disposable_readonly_subagents_can_he
 subagents_used: none
 verification_gates: git_rev_list_head_origin_main; git_diff_cached_name_only_empty; index_lock_absent; per_batch_size_gate; generated_dependency_archive_binary_class_gate; git_diff_cached_check
 manual_review_or_blocker_triggers: login_prompt; github_remote_reject; file_at_or_above_100MiB; private_local_material; destructive_operation_needed; unclear_file_ownership; repeated_push_transport_failure
+
+latest_checkpoint: 2026-06-07_sequence_editing_batch_pushed
+latest_summary: sequence_editing real fixture batch pushed as 8f88a546a3; documentation rule locations verified; gitignore current line count is 314; remaining ignored queues are drain queues and not completion
+latest_evidence: reviewed_ignored_paths=526; real_selected=82; missing_lfs_deferred=444; over_100MiB=0; staged_paths=84; cached_diff_check=passed; auth_scan_hits=0; push_target=origin_main; rev_list_head_origin_main=0_0; cached_index=0; index_lock=false; visible_untracked=0; ignored_untracked=444
+latest_next_action: commit and push this ledger and packet checkpoint; continue the next reviewed slice; keep durable ignores class-based and do not grow per-file backlog
