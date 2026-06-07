@@ -23,6 +23,7 @@ Pushed batches this stage:
 - `7d7e8e46f1` `devops: add mastra small framework modules` - 659 files.
 - `ec02d80cc3` `devops: add aisoc small security ops subset` - 439 files.
 - `a0107c0198` `devops: add small agent reference tail` - 13 files.
+- `95fff98aa8` `devops: add gateway residual clean tail` - 14 files.
 
 Checks:
 
@@ -48,8 +49,9 @@ Deferred:
 - `References/Agent/Frameworks/mastra` has 5 deferred third-party whitespace-gate files recorded in `Results/agent_runtime/mastra_small_modules_diffcheck_failed_paths_20260607.txt`; only `client-sdks`, `server-adapters`, `templates`, and `workflows` were unthrottled and submitted.
 - `References/Agent/Security/AiSOC` has 4 deferred third-party whitespace-gate files recorded in `Results/agent_runtime/aisoc_small_ops_diffcheck_failed_paths_20260607.txt`; `detections` and `services` remain throttled. One extensionless Mach-O test artifact `plugins/mttr-widget/go/mttr-widget-test` was removed from the unpushed commit index, kept on disk, precisely ignored, and verified absent from `HEAD` before push.
 - `References/Agent/ReviewLater/ChatGPT-Exporter-main` had a clean 9-file subset committed; 12 whitespace-gate files remain deferred. `References/Agent/Domain/terminal-velocity` has two files with leftover conflict markers, recorded in `Results/agent_runtime/agent_small_tail_domain_reviewlater_diffcheck_failed_paths_20260607.txt` and not submitted.
+- `References/Agent/Gateway` residual audit found 756 ignored files: 680 generated/binary/runtime outputs, 59 initially clean candidates after env/key/build filtering, and 48 upstream whitespace-gate failures. The remaining 11 clean reference files were committed; failures are recorded in `Results/agent_runtime/gateway_residual_clean_tail_diffcheck_failed_paths_20260607.txt`.
 
 Next:
 
 - Continue with small `References/Agent` project groups under 1000 files after filtering generated/local-only outputs.
-- Good next target: classify `References/Agent/Gateway` residuals into durable build/obj/runtime ignores versus any remaining source files; do not broadly unthrottle the whole Gateway tree.
+- Good next target: continue small-tail inventory, then inspect larger `References/Agent` groups by project slices. Keep env/key/materialized build outputs ignored instead of reopening them.
