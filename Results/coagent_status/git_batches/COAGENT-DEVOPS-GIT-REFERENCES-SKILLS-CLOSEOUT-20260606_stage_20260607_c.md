@@ -80,3 +80,26 @@ Continuation 20260607-l:
 Next addendum 20260607-l:
 
 - Wait for the external Git processes to exit and the index lock to clear, then retry `git add -f --pathspec-from-file=Results/agent_runtime/mem0_docs_examples_cli_paths_20260607.txt` without `--pathspec-file-nul`, run cached gates, commit, and push the clean `mem0` slice.
+
+Completion 20260607-l:
+
+- Pushed `0a837c0110` `devops: add mem0 docs examples cli slice`.
+- Submitted 593 files including the `mem0` docs, examples, cli, skills, cookbooks, scripts, root metadata, narrow ignore whitelist, packet update, and batch status update.
+- Gate evidence: staged count 593, cached whitespace check passed after excluding the CRLF path-list evidence file, safety path scan passed, and the candidate large-file scan found no file at or above 100 MB.
+- Recovery evidence: after alternate-index commit, push completed, upstream ahead/behind returned `0 0`, stale `.git/index.lock` was removed only after `git.exe` processes were absent, and the main index was refreshed with `git read-tree HEAD`; cached index count returned to `0`.
+- Remaining `mem0` ignored count is `1007`, grouped mainly as `openmemory`, `server`, `mem0-ts`, `mem0`, `mem0-plugin`, `tests`, `openclaw`, `vercel-ai-sdk`, `.github`, and `evaluation`.
+
+Next addendum 20260607-m:
+
+- Continue `mem0` second source slice by opening source/project directories below 1000 files after filtering durable excludes and oversized files.
+
+Completion 20260607-m:
+
+- Pushed `04304153d0` `devops: add mem0 core source slice`, 941 files.
+- Pushed `059c8bd7e8` `devops: add mem0 openclaw tail`, 67 files.
+- `mem0` is drained under the current policy: visible untracked count is `0`; ignored residual is only `References/Agent/Memory/mem0/openclaw/.npmrc`, retained as a durable local/package config exclusion.
+- Gate evidence: both batches stayed below 1000 files, passed cached whitespace checks, passed safety path scans, and had no file at or above 100 MB. Upstream ahead/behind returned `0 0` after push and cached index count returned to `0`.
+
+Next addendum 20260607-n:
+
+- Continue remaining `References/Agent/Memory` projects by directory size, with next candidates including `vexa`, `openpencil`, `repomix`, `csghub`, `letta`, `cognee`, `OpenViking`, `SurfSense`, `onyx`, and `llama_index`; keep dependency, cache, runtime, private config, and oversized files excluded.
