@@ -18,6 +18,8 @@ Pushed batches this stage:
 - `14eb33de44` `devops: add openai cookbook sample clothes part 2` - 402 files.
 - `4c3520e54e` `devops: add codex platform reference subset` - 337 files.
 - `6a8c03067a` `devops: add openai agents python core docs tests` - 958 files.
+- `cc65d0be32` `devops: add haystack framework reference subset` - 621 files.
+- `4616b8bdb9` `devops: add dify workflow toolchain subset` - 530 files.
 
 Checks:
 
@@ -39,8 +41,9 @@ Deferred:
 - `openai-cookbook/examples/voice_solutions/one_way_translation_using_realtime_api/src/lib/wavtools/dist/` remains skipped as generated dist output.
 - `References/Agent/Platforms/codex/codex-rs` remains deferred for later Rust sub-slices; 29 non-Rust codex files that failed the whitespace gate are recorded in `Results/agent_runtime/codex_platform_non_rust_diffcheck_failed_paths_20260607.txt`.
 - `References/Agent/Frameworks/openai-agents-python/src/agents/extensions/memory/encrypt_session.py` remains deferred because the upstream file fails the whitespace gate.
+- `References/Agent/Workflow/dify` has 27 deferred third-party files recorded in `Results/agent_runtime/dify_toolchain_subset_diffcheck_failed_paths_20260607.txt`; the clean 530-file toolchain subset was committed and pushed.
 
 Next:
 
 - Continue with small `References/Agent` project groups under 1000 files after filtering generated/local-only outputs.
-- Good next targets: `References/Agent/Frameworks/haystack` source/docs/tests, `References/Agent/Workflow/dify` toolchain subset, `References/Agent/Frameworks/mastra` small modules, and `References/Agent/Security/AiSOC` operations/plugins subset.
+- Good next targets: `References/Agent/Frameworks/mastra` small modules and `References/Agent/Security/AiSOC` operations/plugins subset.

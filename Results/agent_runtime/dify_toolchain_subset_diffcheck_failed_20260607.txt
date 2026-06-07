@@ -1,0 +1,91 @@
+References/Agent/Workflow/dify/docker/README.md:85: trailing whitespace.
++   - `ENDPOINT_URL_TEMPLATE`, `NEXT_PUBLIC_SOCKET_URL`, `TRIGGER_URL`: Additional service URLs.
+References/Agent/Workflow/dify/docker/README.md:86: trailing whitespace.
++
+References/Agent/Workflow/dify/docker/envs/infrastructure/etcd.env.example:4: new blank line at EOF.
+References/Agent/Workflow/dify/docker/envs/infrastructure/milvus-standalone.env.example:4: new blank line at EOF.
+References/Agent/Workflow/dify/docker/envs/infrastructure/minio.env.example:4: new blank line at EOF.
+References/Agent/Workflow/dify/docker/envs/vectorstores/qdrant.env.example:4: new blank line at EOF.
+References/Agent/Workflow/dify/docker/envs/vectorstores/seekdb.env.example:4: new blank line at EOF.
+References/Agent/Workflow/dify/docker/generate_docker_compose:108: trailing whitespace.
++
+References/Agent/Workflow/dify/docker/nginx/conf.d/default.conf.template:67: trailing whitespace.
++
+References/Agent/Workflow/dify/docker/ssrf_proxy/squid.conf.template:106: new blank line at EOF.
+References/Agent/Workflow/dify/docs/ar-SA/README.md:18: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/docs/bn-BD/README.md:22: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/docs/bn-BD/README.md:23: trailing whitespace.
++        <img src="https://img.shields.io/reddit/subreddit-subscribers/difyai?style=plastic&logo=reddit&label=r%2Fdifyai&labelColor=white"
+References/Agent/Workflow/dify/docs/de-DE/README.md:22: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/docs/es-ES/README.md:18: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/docs/es-ES/README.md:63: trailing whitespace.
++#
+References/Agent/Workflow/dify/docs/fr-FR/README.md:18: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/docs/fr-FR/README.md:63: trailing whitespace.
++#
+References/Agent/Workflow/dify/docs/hi-IN/README.md:22: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/docs/it-IT/README.md:22: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/docs/ja-JP/README.md:63: trailing whitespace.
++#
+References/Agent/Workflow/dify/docs/ko-KR/README.md:18: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/docs/pt-BR/README.md:22: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/docs/tlh/README.md:18: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/docs/tlh/README.md:63: trailing whitespace.
++#
+References/Agent/Workflow/dify/docs/tr-TR/README.md:18: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/docs/vi-VN/README.md:18: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/docs/zh-CN/README.md:18: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/docs/zh-CN/README.md:63: trailing whitespace.
++#
+References/Agent/Workflow/dify/docs/zh-TW/README.md:22: trailing whitespace.
++    <a href="https://reddit.com/r/difyai" target="_blank">
+References/Agent/Workflow/dify/scripts/stress-test/run_locust_stress_test.sh:43: trailing whitespace.
++
+References/Agent/Workflow/dify/scripts/stress-test/run_locust_stress_test.sh:120: trailing whitespace.
++
+References/Agent/Workflow/dify/scripts/stress-test/run_locust_stress_test.sh:129: trailing whitespace.
++
+References/Agent/Workflow/dify/scripts/stress-test/run_locust_stress_test.sh:142: trailing whitespace.
++
+References/Agent/Workflow/dify/scripts/stress-test/run_locust_stress_test.sh:158: trailing whitespace.
++
+References/Agent/Workflow/dify/scripts/stress-test/run_locust_stress_test.sh:163: trailing whitespace.
++
+References/Agent/Workflow/dify/scripts/stress-test/run_locust_stress_test.sh:175: trailing whitespace.
++
+References/Agent/Workflow/dify/scripts/stress-test/run_locust_stress_test.sh:186: trailing whitespace.
++
+References/Agent/Workflow/dify/scripts/stress-test/run_locust_stress_test.sh:195: trailing whitespace.
++
+References/Agent/Workflow/dify/scripts/stress-test/run_locust_stress_test.sh:200: trailing whitespace.
++
+References/Agent/Workflow/dify/sdks/nodejs-client/LICENSE:22: new blank line at EOF.
+References/Agent/Workflow/dify/sdks/nodejs-client/scripts/publish.sh:130: trailing whitespace.
++
+References/Agent/Workflow/dify/sdks/nodejs-client/scripts/publish.sh:167: trailing whitespace.
++
+References/Agent/Workflow/dify/sdks/nodejs-client/scripts/publish.sh:170: trailing whitespace.
++
+References/Agent/Workflow/dify/sdks/nodejs-client/scripts/publish.sh:190: trailing whitespace.
++
+References/Agent/Workflow/dify/sdks/nodejs-client/scripts/publish.sh:198: trailing whitespace.
++
+References/Agent/Workflow/dify/sdks/nodejs-client/scripts/publish.sh:210: trailing whitespace.
++
+References/Agent/Workflow/dify/sdks/nodejs-client/scripts/publish.sh:213: trailing whitespace.
++
+References/Agent/Workflow/dify/sdks/nodejs-client/scripts/publish.sh:266: trailing whitespace.
++
