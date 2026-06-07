@@ -89,7 +89,7 @@ Pass only if:
 
 1. MWORKS department work ran `Scripts/agent/check_mworks_gui_sentinel.py` and `Scripts/tools/capture_window_background.ps1` before business work. Static file-only department work records `live_mworks_touched=false`; real MCP/model/GUI simulation work records `live_mworks_touched=true`.
 2. The department read the sentinel JSON/capture manifest or inspected the screenshot/window-title metadata enough to classify the current activation state in `activation_state_observation` and `license_state`; path-only evidence is not enough.
-3. The reusable MWORKS/Sysplorer/Syslab session was not in demo, unactivated, login, authorization-failed, mixed education/demo, unavailable, unknown, or GUI-error-report state.
+3. The reusable MWORKS/Sysplorer/Syslab session was not in demo, unactivated, login, authorization-failed, mixed education/demo, unavailable tooling, sentinel unavailable, screenshot unavailable, unknown, or GUI-error-report state. Unavailable tooling/sentinel/screenshot must return `status=blocked` with `license_state=sentinel_unavailable_blocked` and must not enter MCP/model/check/simulate/layout work.
 4. Live simulation/model/GUI work included phase background screenshots and observations after load/check and after simulate/plot/animation phases when those phases ran. `background_screenshot_before` alone is not sufficient for live MWORKS evidence.
 5. `check_model` succeeded before simulation.
 6. Required variables were found or mapped.

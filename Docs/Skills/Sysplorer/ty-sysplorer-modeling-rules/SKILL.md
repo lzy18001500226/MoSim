@@ -6,6 +6,24 @@ description: >-
 
 # Sysplorer modeling rules (mandatory)
 
+## MoSim project overlay
+
+When this skill is used inside `C:\Users\HP\Desktop\MoSim`, project rules in
+`AGENTS.md` and the MoSim MWORKS live gate take priority over generic modeling
+guidance. Any MWORKS/Sysplorer/Syslab visible-department task, including static
+model organization, must first run the department-owned activation sentinel and
+background screenshot against the existing reusable window. If the sentinel or
+background screenshot tooling is unavailable, return `status=blocked` with
+`license_state=sentinel_unavailable_blocked`, set
+`live_mworks_touched=false`, and do not enter MCP/model/check/simulate/layout
+work. Completed MoSim model/simulation/layout work must produce real
+engineering evidence such as `.mo`/`package.mo`, `check_model`,
+`SimulateModel`, native result/`.msr`, metrics, diagram/layout screenshots, or
+wiring observations. JSON packets, ledgers, and `PROGRESS.md` are only
+control-plane evidence except for tasks explicitly scoped as
+`diagnostic_only`, `rule_sync_only`, `preflight_drill_only`,
+`dispatch_surface_diagnostic`, or `static_inventory_only`.
+
 ## When this skill must be followed
 
 - The user will **author or edit models** and you must **comply** with paradigm choice, **seven gates**, path conventions, and the **MCP tool split** before deep execution. **Work paths** (see **Work paths for all modeling** below) may use **only** the agent CWD or **`GetDirectory`**—**never** the MCP server’s `main.py` / entry tree.

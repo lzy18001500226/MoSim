@@ -31,9 +31,11 @@ must include `activation_sentinel_before`, `gui_sentinel_before`,
 department must read the sentinel JSON/capture manifest or inspect the
 screenshot/window-title metadata enough to classify the current activation
 state; path-only evidence is not enough. If the preflight shows demo, login,
-activation, authorization, mixed, unavailable, unknown, or GUI error-report
-state, stop live MWORKS/report evidence work and return a `status=blocked`
-blocker.
+activation, authorization, mixed, unavailable tooling, sentinel unavailable,
+screenshot unavailable, unknown, or GUI error-report state, stop MWORKS/report
+evidence work and return a `status=blocked` blocker. For unavailable
+tooling/sentinel/screenshot, use `license_state=sentinel_unavailable_blocked`
+and do not enter MCP/model/check/simulate/layout work.
 For live report/result-viewer/plot/animation work, continue background
 screenshots after plot/result-viewer/animation phases and return
 `mworks_phase_screenshots` plus `mworks_phase_observations`. If a phase
