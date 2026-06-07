@@ -176,7 +176,6 @@ References/Sunray/**/*.plan
 References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_D435i/meshes/150.dae
 References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/meshes/150.dae
 References/Lab/Fast-Racing/src/thirdparty/MavLinkCom/MavLinkComGenerator/obj/
-References/AirSim/carla-ue5-dev/
 References/AirSim/IsaacSim/
 References/AirSim/spear/
 References/AirSim/Cosys-AirSim/Docs/annsim23_tutorial/*.mp4
