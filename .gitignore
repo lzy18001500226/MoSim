@@ -142,6 +142,8 @@ References/Agent/*
 References/Agent/Control/agor/.env.postgres
 !References/Agent/Domain/
 References/Agent/Domain/*
+!References/Agent/Domain/terminal-velocity/
+!References/Agent/Domain/terminal-velocity/**
 !References/Agent/Gateway/
 References/Agent/Gateway/*
 !References/Agent/Gateway/github-mcp-server/
@@ -346,6 +348,10 @@ References/Agent/**/node_modules/
 References/Agent/**/.venv/
 References/Agent/**/venv/
 References/Agent/**/*.pyc
+!References/Agent/ReviewLater/
+References/Agent/ReviewLater/*
+!References/Agent/ReviewLater/ChatGPT-Exporter-main/
+!References/Agent/ReviewLater/ChatGPT-Exporter-main/**
 Docs/Skills/Unreal/**/__pycache__/
 References/Log/
 !References/Log/
