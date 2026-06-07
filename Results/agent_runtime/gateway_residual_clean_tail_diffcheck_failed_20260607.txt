@@ -1,0 +1,950 @@
+References/Agent/Gateway/github-mcp-server/.github/prompts/bug-report-review.prompt.yml:32: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/.github/prompts/default-issue-review.prompt.yml:32: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/.github/prompts/default-issue-review.prompt.yml:40: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/.github/pull_request_template.md:15: trailing whitespace.
++-
+References/Agent/Gateway/github-mcp-server/.github/pull_request_template.md:16: trailing whitespace.
++-
+References/Agent/Gateway/github-mcp-server/.github/pull_request_template.md:28: trailing whitespace.
++-
+References/Agent/Gateway/github-mcp-server/.github/pull_request_template.md:38: trailing whitespace.
++   - [ ] I have added the new tool aliases in `deprecated_tool_aliases.go`
+References/Agent/Gateway/github-mcp-server/.github/workflows/docker-publish.yml:135: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/.github/workflows/docker-publish.yml:135: new blank line at EOF.
+References/Agent/Gateway/github-mcp-server/.github/workflows/license-check.yml:81: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/.github/workflows/license-check.yml:82: trailing whitespace.
++            const alreadyCommented = comments.some(comment =>
+References/Agent/Gateway/github-mcp-server/.github/workflows/license-check.yml:86: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/.github/workflows/license-check.yml:99: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/.github/workflows/license-check.yml:101: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/.github/workflows/license-check.yml:109: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/.github/workflows/license-check.yml:116: new blank line at EOF.
+References/Agent/Gateway/github-mcp-server/.github/workflows/registry-releaser.yml:23: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/.github/workflows/registry-releaser.yml:40: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/README.md:914: space before tab in indent.
++    				 (string, required)
+References/Agent/Gateway/github-mcp-server/README.md:1119: trailing whitespace.
++  - `method`: Action to specify what pull request data needs to be retrieved from GitHub.
+References/Agent/Gateway/github-mcp-server/README.md:1120: trailing whitespace.
++    Possible options:
+References/Agent/Gateway/github-mcp-server/SECURITY.md:7: trailing whitespace.
++Even though [open source repositories are outside of the scope of our bug bounty program](https://bounty.github.com/index.html#scope) and therefore not eligible for bounty rewards, we will ensure that your finding gets passed along to the appropriate maintainers for remediation.
+References/Agent/Gateway/github-mcp-server/cmd/mcpcurl/README.md:104: trailing whitespace.
++      --issue_number float
+References/Agent/Gateway/github-mcp-server/cmd/mcpcurl/README.md:105: trailing whitespace.
++      --owner string
+References/Agent/Gateway/github-mcp-server/docs/error-handling.md:105: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/docs/error-handling.md:110: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/docs/error-handling.md:119: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/docs/insiders-features.md:5: trailing whitespace.
++We created this mode to have a way to roll out experimental features and collect feedback. So if you are using Insiders, please don't hesitate to share your feedback with us!
+References/Agent/Gateway/github-mcp-server/docs/installation-guides/README.md:47: trailing whitespace.
++**Note:** Remote MCP support requires host applications to register a GitHub App or OAuth app for OAuth flow support – even if the new OAuth spec is supported by that host app. Currently, only VS Code has full remote GitHub server support.
+References/Agent/Gateway/github-mcp-server/docs/installation-guides/README.md:112: new blank line at EOF.
+References/Agent/Gateway/github-mcp-server/docs/installation-guides/install-other-copilot-ides.md:118: trailing whitespace.
++        "run", "-i", "--rm",
+References/Agent/Gateway/github-mcp-server/docs/installation-guides/install-other-copilot-ides.md:174: trailing whitespace.
++        "run", "-i", "--rm",
+References/Agent/Gateway/github-mcp-server/docs/installation-guides/install-other-copilot-ides.md:231: trailing whitespace.
++        "run", "-i", "--rm",
+References/Agent/Gateway/github-mcp-server/docs/policies-and-governance.md:21: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/docs/policies-and-governance.md:39: trailing whitespace.
++- Enterprises may choose to install these apps in multiple organizations (e.g., per team or department) to scope access narrowly, or at the enterprise level to centralize access control across all child organizations.
+References/Agent/Gateway/github-mcp-server/docs/policies-and-governance.md:87: trailing whitespace.
++* **Policy:** Editor Preview Features
+References/Agent/Gateway/github-mcp-server/docs/server-configuration.md:6: trailing whitespace.
++We currently support the following ways in which the GitHub MCP Server can be configured:
+References/Agent/Gateway/github-mcp-server/docs/server-configuration.md:40: trailing whitespace.
++**Best for:** users who know exactly what they need and want to optimize context usage by loading only the tools they will use.
+References/Agent/Gateway/github-mcp-server/docs/server-configuration.md:234: trailing whitespace.
++**Example:**
+References/Agent/Gateway/github-mcp-server/docs/tool-renaming.md:7: trailing whitespace.
++When tools are renamed, users who have the old tool name in their MCP configuration (for example, in `X-MCP-Tools` headers for the remote MCP server or `--tools` flags for the local MCP server) would normally get errors.
+References/Agent/Gateway/github-mcp-server/pkg/github/pullrequests.go:32: trailing whitespace.
++				Description: `Action to specify what pull request data needs to be retrieved from GitHub.
+References/Agent/Gateway/github-mcp-server/pkg/github/pullrequests.go:33: trailing whitespace.
++Possible options:
+References/Agent/Gateway/github-mcp-server/pkg/github/repositories.go:366: trailing whitespace.
++			Description: t("TOOL_CREATE_OR_UPDATE_FILE_DESCRIPTION", `Create or update a single file in a GitHub repository.
+References/Agent/Gateway/github-mcp-server/script/conformance-test:89: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:108: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:111: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:123: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:126: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:138: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:142: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:147: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:179: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:184: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:193: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:201: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:208: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:218: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:228: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:258: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:265: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:273: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:276: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:306: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/conformance-test:310: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/fetch-icons:48: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/fetch-icons:50: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/fetch-icons:56: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/fetch-icons:61: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/generate-docs:4: trailing whitespace.
++# It needs to be run after tool updates to ensure the latest changes are reflected in the documentation.
+References/Agent/Gateway/github-mcp-server/script/get-discussions:5: new blank line at EOF.
+References/Agent/Gateway/github-mcp-server/script/licenses:71: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:73: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:76: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:80: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:83: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:88: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:99: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:103: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:108: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:123: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:126: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:143: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:147: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:154: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:164: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:167: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/script/licenses:172: new blank line at EOF.
+References/Agent/Gateway/github-mcp-server/script/licenses-check:34: new blank line at EOF.
+References/Agent/Gateway/github-mcp-server/third-party/github.com/aymerick/douceur/LICENSE:22: new blank line at EOF.
+References/Agent/Gateway/github-mcp-server/third-party/github.com/gorilla/css/scanner/LICENSE:28: new blank line at EOF.
+References/Agent/Gateway/github-mcp-server/ui/src/apps/get-me/App.tsx:35: trailing whitespace.
++
+References/Agent/Gateway/github-mcp-server/ui/src/apps/get-me/App.tsx:57: trailing whitespace.
++    <Avatar
+References/Agent/Gateway/github-mcp-server/ui/src/apps/get-me/App.tsx:58: trailing whitespace.
++      src={src}
+References/Agent/Gateway/github-mcp-server/ui/src/apps/get-me/App.tsx:59: trailing whitespace.
++      size={size}
+References/Agent/Gateway/github-mcp-server/ui/src/apps/get-me/App.tsx:60: trailing whitespace.
++      sx={{ mr: 3 }}
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:1: trailing whitespace.
++                                 Apache License
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:2: trailing whitespace.
++                           Version 2.0, January 2004
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:3: trailing whitespace.
++                        http://www.apache.org/licenses/
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:4: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:5: trailing whitespace.
++   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:6: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:7: trailing whitespace.
++   1. Definitions.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:8: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:9: trailing whitespace.
++      "License" shall mean the terms and conditions for use, reproduction,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:10: trailing whitespace.
++      and distribution as defined by Sections 1 through 9 of this document.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:11: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:12: trailing whitespace.
++      "Licensor" shall mean the copyright owner or entity authorized by
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:13: trailing whitespace.
++      the copyright owner that is granting the License.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:14: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:15: trailing whitespace.
++      "Legal Entity" shall mean the union of the acting entity and all
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:16: trailing whitespace.
++      other entities that control, are controlled by, or are under common
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:17: trailing whitespace.
++      control with that entity. For the purposes of this definition,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:18: trailing whitespace.
++      "control" means (i) the power, direct or indirect, to cause the
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:19: trailing whitespace.
++      direction or management of such entity, whether by contract or
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:20: trailing whitespace.
++      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:21: trailing whitespace.
++      outstanding shares, or (iii) beneficial ownership of such entity.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:22: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:23: trailing whitespace.
++      "You" (or "Your") shall mean an individual or Legal Entity
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:24: trailing whitespace.
++      exercising permissions granted by this License.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:25: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:26: trailing whitespace.
++      "Source" form shall mean the preferred form for making modifications,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:27: trailing whitespace.
++      including but not limited to software source code, documentation
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:28: trailing whitespace.
++      source, and configuration files.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:29: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:30: trailing whitespace.
++      "Object" form shall mean any form resulting from mechanical
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:31: trailing whitespace.
++      transformation or translation of a Source form, including but
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:32: trailing whitespace.
++      not limited to compiled object code, generated documentation,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:33: trailing whitespace.
++      and conversions to other media types.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:34: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:35: trailing whitespace.
++      "Work" shall mean the work of authorship, whether in Source or
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:36: trailing whitespace.
++      Object form, made available under the License, as indicated by a
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:37: trailing whitespace.
++      copyright notice that is included in or attached to the work
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:38: trailing whitespace.
++      (an example is provided in the Appendix below).
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:39: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:40: trailing whitespace.
++      "Derivative Works" shall mean any work, whether in Source or Object
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:41: trailing whitespace.
++      form, that is based on (or derived from) the Work and for which the
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:42: trailing whitespace.
++      editorial revisions, annotations, elaborations, or other modifications
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:43: trailing whitespace.
++      represent, as a whole, an original work of authorship. For the purposes
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:44: trailing whitespace.
++      of this License, Derivative Works shall not include works that remain
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:45: trailing whitespace.
++      separable from, or merely link (or bind by name) to the interfaces of,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:46: trailing whitespace.
++      the Work and Derivative Works thereof.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:47: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:48: trailing whitespace.
++      "Contribution" shall mean any work of authorship, including
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:49: trailing whitespace.
++      the original version of the Work and any modifications or additions
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:50: trailing whitespace.
++      to that Work or Derivative Works thereof, that is intentionally
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:51: trailing whitespace.
++      submitted to Licensor for inclusion in the Work by the copyright owner
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:52: trailing whitespace.
++      or by an individual or Legal Entity authorized to submit on behalf of
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:53: trailing whitespace.
++      the copyright owner. For the purposes of this definition, "submitted"
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:54: trailing whitespace.
++      means any form of electronic, verbal, or written communication sent
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:55: trailing whitespace.
++      to the Licensor or its representatives, including but not limited to
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:56: trailing whitespace.
++      communication on electronic mailing lists, source code control systems,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:57: trailing whitespace.
++      and issue tracking systems that are managed by, or on behalf of, the
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:58: trailing whitespace.
++      Licensor for the purpose of discussing and improving the Work, but
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:59: trailing whitespace.
++      excluding communication that is conspicuously marked or otherwise
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:60: trailing whitespace.
++      designated in writing by the copyright owner as "Not a Contribution."
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:61: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:62: trailing whitespace.
++      "Contributor" shall mean Licensor and any individual or Legal Entity
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:63: trailing whitespace.
++      on behalf of whom a Contribution has been received by Licensor and
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:64: trailing whitespace.
++      subsequently incorporated within the Work.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:65: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:66: trailing whitespace.
++   2. Grant of Copyright License. Subject to the terms and conditions of
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:67: trailing whitespace.
++      this License, each Contributor hereby grants to You a perpetual,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:68: trailing whitespace.
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:69: trailing whitespace.
++      copyright license to reproduce, prepare Derivative Works of,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:70: trailing whitespace.
++      publicly display, publicly perform, sublicense, and distribute the
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:71: trailing whitespace.
++      Work and such Derivative Works in Source or Object form.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:72: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:73: trailing whitespace.
++   3. Grant of Patent License. Subject to the terms and conditions of
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:74: trailing whitespace.
++      this License, each Contributor hereby grants to You a perpetual,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:75: trailing whitespace.
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:76: trailing whitespace.
++      (except as stated in this section) patent license to make, have made,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:77: trailing whitespace.
++      use, offer to sell, sell, import, and otherwise transfer the Work,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:78: trailing whitespace.
++      where such license applies only to those patent claims licensable
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:79: trailing whitespace.
++      by such Contributor that are necessarily infringed by their
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:80: trailing whitespace.
++      Contribution(s) alone or by combination of their Contribution(s)
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:81: trailing whitespace.
++      with the Work to which such Contribution(s) was submitted. If You
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:82: trailing whitespace.
++      institute patent litigation against any entity (including a
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:83: trailing whitespace.
++      cross-claim or counterclaim in a lawsuit) alleging that the Work
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:84: trailing whitespace.
++      or a Contribution incorporated within the Work constitutes direct
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:85: trailing whitespace.
++      or contributory patent infringement, then any patent licenses
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:86: trailing whitespace.
++      granted to You under this License for that Work shall terminate
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:87: trailing whitespace.
++      as of the date such litigation is filed.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:88: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:89: trailing whitespace.
++   4. Redistribution. You may reproduce and distribute copies of the
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:90: trailing whitespace.
++      Work or Derivative Works thereof in any medium, with or without
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:91: trailing whitespace.
++      modifications, and in Source or Object form, provided that You
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:92: trailing whitespace.
++      meet the following conditions:
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:93: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:94: trailing whitespace.
++      (a) You must give any other recipients of the Work or
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:95: trailing whitespace.
++          Derivative Works a copy of this License; and
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:96: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:97: trailing whitespace.
++      (b) You must cause any modified files to carry prominent notices
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:98: trailing whitespace.
++          stating that You changed the files; and
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:99: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:100: trailing whitespace.
++      (c) You must retain, in the Source form of any Derivative Works
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:101: trailing whitespace.
++          that You distribute, all copyright, patent, trademark, and
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:102: trailing whitespace.
++          attribution notices from the Source form of the Work,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:103: trailing whitespace.
++          excluding those notices that do not pertain to any part of
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:104: trailing whitespace.
++          the Derivative Works; and
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:105: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:106: trailing whitespace.
++      (d) If the Work includes a "NOTICE" text file as part of its
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:107: trailing whitespace.
++          distribution, then any Derivative Works that You distribute must
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:108: trailing whitespace.
++          include a readable copy of the attribution notices contained
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:109: trailing whitespace.
++          within such NOTICE file, excluding those notices that do not
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:110: trailing whitespace.
++          pertain to any part of the Derivative Works, in at least one
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:111: trailing whitespace.
++          of the following places: within a NOTICE text file distributed
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:112: trailing whitespace.
++          as part of the Derivative Works; within the Source form or
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:113: trailing whitespace.
++          documentation, if provided along with the Derivative Works; or,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:114: trailing whitespace.
++          within a display generated by the Derivative Works, if and
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:115: trailing whitespace.
++          wherever such third-party notices normally appear. The contents
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:116: trailing whitespace.
++          of the NOTICE file are for informational purposes only and
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:117: trailing whitespace.
++          do not modify the License. You may add Your own attribution
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:118: trailing whitespace.
++          notices within Derivative Works that You distribute, alongside
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:119: trailing whitespace.
++          or as an addendum to the NOTICE text from the Work, provided
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:120: trailing whitespace.
++          that such additional attribution notices cannot be construed
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:121: trailing whitespace.
++          as modifying the License.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:122: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:123: trailing whitespace.
++      You may add Your own copyright statement to Your modifications and
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:124: trailing whitespace.
++      may provide additional or different license terms and conditions
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:125: trailing whitespace.
++      for use, reproduction, or distribution of Your modifications, or
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:126: trailing whitespace.
++      for any such Derivative Works as a whole, provided Your use,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:127: trailing whitespace.
++      reproduction, and distribution of the Work otherwise complies with
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:128: trailing whitespace.
++      the conditions stated in this License.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:129: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:130: trailing whitespace.
++   5. Submission of Contributions. Unless You explicitly state otherwise,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:131: trailing whitespace.
++      any Contribution intentionally submitted for inclusion in the Work
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:132: trailing whitespace.
++      by You to the Licensor shall be under the terms and conditions of
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:133: trailing whitespace.
++      this License, without any additional terms or conditions.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:134: trailing whitespace.
++      Notwithstanding the above, nothing herein shall supersede or modify
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:135: trailing whitespace.
++      the terms of any separate license agreement you may have executed
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:136: trailing whitespace.
++      with Licensor regarding such Contributions.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:137: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:138: trailing whitespace.
++   6. Trademarks. This License does not grant permission to use the trade
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:139: trailing whitespace.
++      names, trademarks, service marks, or product names of the Licensor,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:140: trailing whitespace.
++      except as required for reasonable and customary use in describing the
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:141: trailing whitespace.
++      origin of the Work and reproducing the content of the NOTICE file.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:142: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:143: trailing whitespace.
++   7. Disclaimer of Warranty. Unless required by applicable law or
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:144: trailing whitespace.
++      agreed to in writing, Licensor provides the Work (and each
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:145: trailing whitespace.
++      Contributor provides its Contributions) on an "AS IS" BASIS,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:146: trailing whitespace.
++      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:147: trailing whitespace.
++      implied, including, without limitation, any warranties or conditions
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:148: trailing whitespace.
++      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:149: trailing whitespace.
++      PARTICULAR PURPOSE. You are solely responsible for determining the
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:150: trailing whitespace.
++      appropriateness of using or redistributing the Work and assume any
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:151: trailing whitespace.
++      risks associated with Your exercise of permissions under this License.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:152: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:153: trailing whitespace.
++   8. Limitation of Liability. In no event and under no legal theory,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:154: trailing whitespace.
++      whether in tort (including negligence), contract, or otherwise,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:155: trailing whitespace.
++      unless required by applicable law (such as deliberate and grossly
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:156: trailing whitespace.
++      negligent acts) or agreed to in writing, shall any Contributor be
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:157: trailing whitespace.
++      liable to You for damages, including any direct, indirect, special,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:158: trailing whitespace.
++      incidental, or consequential damages of any character arising as a
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:159: trailing whitespace.
++      result of this License or out of the use or inability to use the
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:160: trailing whitespace.
++      Work (including but not limited to damages for loss of goodwill,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:161: trailing whitespace.
++      work stoppage, computer failure or malfunction, or any and all
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:162: trailing whitespace.
++      other commercial damages or losses), even if such Contributor
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:163: trailing whitespace.
++      has been advised of the possibility of such damages.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:164: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:165: trailing whitespace.
++   9. Accepting Warranty or Additional Liability. While redistributing
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:166: trailing whitespace.
++      the Work or Derivative Works thereof, You may choose to offer,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:167: trailing whitespace.
++      and charge a fee for, acceptance of support, warranty, indemnity,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:168: trailing whitespace.
++      or other liability obligations and/or rights consistent with this
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:169: trailing whitespace.
++      License. However, in accepting such obligations, You may act only
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:170: trailing whitespace.
++      on Your own behalf and on Your sole responsibility, not on behalf
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:171: trailing whitespace.
++      of any other Contributor, and only if You agree to indemnify,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:172: trailing whitespace.
++      defend, and hold each Contributor harmless for any liability
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:173: trailing whitespace.
++      incurred by, or claims asserted against, such Contributor by reason
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:174: trailing whitespace.
++      of your accepting any such warranty or additional liability.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:175: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:176: trailing whitespace.
++   END OF TERMS AND CONDITIONS
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:177: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:178: trailing whitespace.
++   APPENDIX: How to apply the Apache License to your work.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:179: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:180: trailing whitespace.
++      To apply the Apache License to your work, attach the following
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:181: trailing whitespace.
++      boilerplate notice, with the fields enclosed by brackets "[]"
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:182: trailing whitespace.
++      replaced with your own identifying information. (Don't include
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:183: trailing whitespace.
++      the brackets!)  The text should be enclosed in the appropriate
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:184: trailing whitespace.
++      comment syntax for the file format. We also recommend that a
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:185: trailing whitespace.
++      file or class name and description of purpose be included on the
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:186: trailing whitespace.
++      same "printed page" as the copyright notice for easier
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:187: trailing whitespace.
++      identification within third-party archives.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:188: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:189: trailing whitespace.
++   Copyright (c) Microsoft Corporation.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:190: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:191: trailing whitespace.
++   Licensed under the Apache License, Version 2.0 (the "License");
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:192: trailing whitespace.
++   you may not use this file except in compliance with the License.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:193: trailing whitespace.
++   You may obtain a copy of the License at
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:194: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:195: trailing whitespace.
++       http://www.apache.org/licenses/LICENSE-2.0
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:196: trailing whitespace.
++
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:197: trailing whitespace.
++   Unless required by applicable law or agreed to in writing, software
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:198: trailing whitespace.
++   distributed under the License is distributed on an "AS IS" BASIS,
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:199: trailing whitespace.
++   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:200: trailing whitespace.
++   See the License for the specific language governing permissions and
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/LICENSE:201: trailing whitespace.
++   limitations under the License.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/README.md:785: trailing whitespace.
++The server will listen on host port **8931** and can be reached by any MCP client.
+References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606/SECURITY.md:17: trailing whitespace.
++You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message. Additional information can be found at [microsoft.com/msrc](https://www.microsoft.com/msrc).
+References/Agent/Gateway/servers-upstream-snapshot-20260606/.github/workflows/release.yml:222: new blank line at EOF.
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/everything/README.md:113: trailing whitespace.
++### Install
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/fetch/Dockerfile:28: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/README.md:25: trailing whitespace.
++MCP clients that support [Roots](https://modelcontextprotocol.io/docs/learn/client-concepts#roots) can dynamically update the Allowed directories.
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/README.md:44: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/README.md:160: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/README.md:294: trailing whitespace.
++Note: all directories must be mounted to `/projects` by default.
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/directory-tree.test.ts:56: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/directory-tree.test.ts:62: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/directory-tree.test.ts:80: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/directory-tree.test.ts:90: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/directory-tree.test.ts:98: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/directory-tree.test.ts:103: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/directory-tree.test.ts:112: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/directory-tree.test.ts:121: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/directory-tree.test.ts:129: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/directory-tree.test.ts:140: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:108: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:119: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:127: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:178: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:182: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:186: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:193: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:199: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:203: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:211: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:215: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:218: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:220: trailing whitespace.
++          const expectedPath = process.platform === 'win32'
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:223: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:246: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:248: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:250: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:272: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:274: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:276: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:286: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:288: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:295: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:297: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:306: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:308: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:328: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:330: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:333: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:340: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:347: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:357: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:359: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:367: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:370: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:377: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:389: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:391: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:394: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:401: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:425: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:427: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:429: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:463: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:465: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:475: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:477: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:479: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:493: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:497: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:499: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:501: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:517: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:524: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:526: trailing whitespace.
++          {
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:527: trailing whitespace.
++            oldText: '  console.log("hello");\n  return true;',
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:528: trailing whitespace.
++            newText: '  console.log("world");\n  console.log("test");\n  return false;'
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:531: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:533: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:535: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:549: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:551: trailing whitespace.
++          {
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:552: trailing whitespace.
++            oldText: 'doSomething();',
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:553: trailing whitespace.
++            newText: 'doSomethingElse();\n        doAnotherThing();'
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:556: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:558: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:560: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:574: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:578: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:580: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:582: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:598: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:600: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:607: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:613: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:616: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:618: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:620: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:627: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:632: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:638: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:640: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:642: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:648: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:653: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:656: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:658: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:660: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:672: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:675: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:677: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:679: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:688: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:694: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:696: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:698: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:707: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:713: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:715: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:717: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:726: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:732: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:734: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/lib.test.ts:736: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/path-utils.test.ts:198: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/path-validation.test.ts:15: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/path-validation.test.ts:18: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/__tests__/roots-utils.test.ts:51: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:47: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:49: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:51: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:86: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:92: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:289: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:291: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:300: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:305: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:308: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:312: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:315: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:322: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:329: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:344: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:351: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:362: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/lib.ts:367: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/path-utils.ts:125: new blank line at EOF.
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/path-validation.ts:5: trailing whitespace.
++ *
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/path-validation.ts:69: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/path-validation.ts:75: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/path-validation.ts:83: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/roots-utils.ts:16: trailing whitespace.
++    const expandedPath = rawPath.startsWith('~/') || rawPath === '~'
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/roots-utils.ts:17: trailing whitespace.
++      ? path.join(os.homedir(), rawPath.slice(1))
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/roots-utils.ts:44: trailing whitespace.
++ *
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/roots-utils.ts:48: trailing whitespace.
++ *
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/roots-utils.ts:56: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/roots-utils.ts:63: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/filesystem/roots-utils.ts:75: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/git/Dockerfile:31: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/README.md:300: trailing whitespace.
++Here is an example prompt for chat personalization. You could use this prompt in the "Custom Instructions" field of a [Claude.ai Project](https://www.anthropic.com/news/projects).
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/README.md:333: trailing whitespace.
++docker build -t mcp/memory -f src/memory/Dockerfile .
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:21: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:25: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:129: trailing whitespace.
++    const newRelations = relations.filter(r => !graph.relations.some(existingRelation =>
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:130: trailing whitespace.
++      existingRelation.from === r.from &&
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:131: trailing whitespace.
++      existingRelation.to === r.to &&
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:174: trailing whitespace.
++    graph.relations = graph.relations.filter(r => !relations.some(delRelation =>
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:175: trailing whitespace.
++      r.from === delRelation.from &&
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:176: trailing whitespace.
++      r.to === delRelation.to &&
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:189: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:191: trailing whitespace.
++    const filteredEntities = graph.entities.filter(e =>
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:196: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:199: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:202: trailing whitespace.
++    const filteredRelations = graph.relations.filter(r =>
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:205: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:210: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:216: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:219: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:222: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:227: trailing whitespace.
++    const filteredRelations = graph.relations.filter(r =>
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:230: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/memory/index.ts:235: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/time/Dockerfile:28: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/time/test/time_server_test.py:498: trailing whitespace.
++
+References/Agent/Gateway/servers-upstream-snapshot-20260606/src/time/test/time_server_test.py:513: trailing whitespace.
++        "Europe/Paris",
