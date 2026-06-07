@@ -575,6 +575,16 @@ Rules:
    concise class/directory manifest-only rule with evidence and a restoration
    note; use per-file ignore only for a small number of known over-limit files
    when no safe class rule exists.
+   Durable generated/dependency/archive/binary ignores should be class-based
+   across `References/**` when the class is generic, such as nested `.git`,
+   dependency directories, build/dist/out/cache folders, virtual environments,
+   bytecode, compiled binaries, and archive formats. Do not duplicate the same
+   `zip`, `7z`, `tar`, `node_modules`, `build`, `.venv`, `__pycache__`, `exe`,
+   `dll`, `lib`, `pdb`, or `obj` pattern separately under every crawled
+   project. Put the generic class guard after project unignore rules when needed
+   so a broad project whitelist cannot accidentally reopen those classes. Add
+   project-specific exceptions only for verified source/config directories such
+   as PX4 board `dist` inputs.
 9. When Git is slow, has LFS/hook/index-lock residue, or another Git owner is
    active, delegate commit/push work to `GitIntegrator` instead of blocking the
    main engineering thread. The main agent remains responsible for scope,

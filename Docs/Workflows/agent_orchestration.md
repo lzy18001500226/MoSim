@@ -2070,6 +2070,16 @@ class or directory manifest-only rules with evidence and a later restoration
 note. Per-file ignores are reserved for a small number of known over-limit files
 when no safe class rule exists.
 
+Generic generated/dependency/archive/binary rules belong at the reference-tree
+class level, not under each crawled project. Prefer one `References/**` final
+guard for nested repositories, dependency directories, build/dist/out/cache
+folders, virtual environments, bytecode, compiled binaries, and archive formats
+over repeated `References/<project>/**` copies. Place the final guard after
+project unignore rules when necessary so a broad whitelist does not reopen
+archives or build outputs. Keep project-specific exceptions only for reviewed
+source/config directories that share a normally generated name, for example PX4
+board `dist` inputs.
+
 A source project being hundreds of MB as a directory is not a durable-ignore
 reason. The durable decision is file/class based: individual files at or above
 100 MiB, private local config, dependency/build/cache/runtime outputs, missing
