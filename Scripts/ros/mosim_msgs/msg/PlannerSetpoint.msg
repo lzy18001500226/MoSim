@@ -1,0 +1,10 @@
+std_msgs/Header header
+uint32 sequence
+string frame_id
+float64[3] position_m
+float64[3] velocity_mps
+float64[3] acceleration_mps2
+float64 yaw_rad
+float64 yaw_rate_radps
+uint8 trajectory_status
+string planner_id

@@ -263,21 +263,24 @@ def make_plastic_material(name: str, rgba: tuple[float, float, float, float], *,
 
 
 def make_translucent_guard_material() -> bpy.types.Material:
-    mat = make_material("Sunray150_Texture_Smoked_Translucent_Prop_Guard", (0.035, 0.039, 0.041, 0.82), roughness=0.55, alpha=0.82, specular=0.16)
-    add_image_texture(mat, "sunray150_smoked_translucent_guard_base.png", target="Base Color")
-    add_image_texture(mat, "sunray150_smoked_translucent_guard_roughness.png", target="Roughness", non_color=True)
-    add_image_texture(mat, "sunray150_smoked_translucent_guard_bump.png", target="Bump", non_color=True, strength=0.018)
+    mat = make_material("Sunray150_Texture_Clear_Liuli_Glass_Prop_Guard", (0.58, 0.82, 0.92, 0.34), roughness=0.055, alpha=0.34, specular=0.82)
+    add_image_texture(mat, "sunray150_smoked_translucent_guard_bump.png", target="Bump", non_color=True, strength=0.004)
     nodes = mat.node_tree.nodes
     bsdf = next((node for node in nodes if node.type == "BSDF_PRINCIPLED"), None)
     if bsdf:
-        set_principled_input(bsdf, ("Alpha",), 0.82)
-        set_principled_input(bsdf, ("Base Color",), (0.035, 0.039, 0.041, 0.82))
-        set_principled_input(bsdf, ("Roughness",), 0.55)
+        set_principled_input(bsdf, ("Alpha",), 0.34)
+        set_principled_input(bsdf, ("Base Color",), (0.58, 0.82, 0.92, 0.34))
+        set_principled_input(bsdf, ("Roughness",), 0.055)
         set_principled_input(bsdf, ("Metallic",), 0.0)
-        set_principled_input(bsdf, ("Specular IOR Level", "Specular"), 0.16)
-    mat.blend_method = "BLEND"
-    mat.use_screen_refraction = False
-    link_noise_to_bump(mat, scale=95.0, detail=7.0, strength=0.010, distance=0.00022)
+        set_principled_input(bsdf, ("Specular IOR Level", "Specular"), 0.82)
+        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 0.72)
+        set_principled_input(bsdf, ("Coat Roughness", "Clearcoat Roughness"), 0.035)
+        set_principled_input(bsdf, ("Transmission Weight", "Transmission"), 0.32)
+        set_principled_input(bsdf, ("IOR",), 1.47)
+    mat.blend_method = "HASHED"
+    mat.use_screen_refraction = True
+    mat.show_transparent_back = True
+    link_noise_to_bump(mat, scale=95.0, detail=7.0, strength=0.003, distance=0.00008)
     return mat
 
 
@@ -291,14 +294,21 @@ def make_battery_material() -> bpy.types.Material:
 
 
 def make_propeller_material() -> bpy.types.Material:
-    mat = make_plastic_material("Sunray150_Texture_Smoked_Translucent_Plastic_Propeller", (0.012, 0.014, 0.013, 1.0), roughness=0.62, specular=0.16)
-    add_image_texture(mat, "sunray150_smoked_propeller_base.png", target="Base Color")
-    add_image_texture(mat, "sunray150_smoked_propeller_roughness.png", target="Roughness", non_color=True)
-    add_image_texture(mat, "sunray150_smoked_propeller_bump.png", target="Bump", non_color=True, strength=0.014)
+    mat = make_material("Sunray150_Texture_Clear_Liuli_Glass_Propeller", (0.52, 0.76, 0.86, 0.38), roughness=0.070, metallic=0.0, alpha=0.38, specular=0.74)
+    add_image_texture(mat, "sunray150_smoked_propeller_bump.png", target="Bump", non_color=True, strength=0.004)
     bsdf = next((node for node in mat.node_tree.nodes if node.type == "BSDF_PRINCIPLED"), None)
     if bsdf:
-        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 0.10)
-        set_principled_input(bsdf, ("Coat Roughness", "Clearcoat Roughness"), 0.30)
+        set_principled_input(bsdf, ("Base Color",), (0.52, 0.76, 0.86, 0.38))
+        set_principled_input(bsdf, ("Alpha",), 0.38)
+        set_principled_input(bsdf, ("Roughness",), 0.070)
+        set_principled_input(bsdf, ("Specular IOR Level", "Specular"), 0.74)
+        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 0.68)
+        set_principled_input(bsdf, ("Coat Roughness", "Clearcoat Roughness"), 0.040)
+        set_principled_input(bsdf, ("Transmission Weight", "Transmission"), 0.24)
+        set_principled_input(bsdf, ("IOR",), 1.46)
+    mat.blend_method = "HASHED"
+    mat.use_screen_refraction = True
+    mat.show_transparent_back = True
     return mat
 
 
@@ -311,18 +321,22 @@ def make_camera_body_material() -> bpy.types.Material:
 
 
 def make_mid360_window_material() -> bpy.types.Material:
-    mat = make_material("MID360_Texture_Deep_Blue_Teal_Glossy_Optical_Window", (0.001, 0.020, 0.080, 1.0), roughness=0.155, metallic=0.0, alpha=1.0, specular=0.34)
-    add_image_texture(mat, "mid360_blue_optical_window_base.png", target="Base Color")
+    mat = make_material("MID360_Texture_Dark_Blue_Mirror_Coated_Optical_Dome", (0.000, 0.030, 0.150, 0.98), roughness=0.012, metallic=0.0, alpha=0.98, specular=1.0)
     add_image_texture(mat, "mid360_blue_optical_window_roughness.png", target="Roughness", non_color=True)
-    add_image_texture(mat, "mid360_blue_optical_window_bump.png", target="Bump", non_color=True, strength=0.006)
+    add_image_texture(mat, "mid360_blue_optical_window_bump.png", target="Bump", non_color=True, strength=0.001)
     bsdf = next((node for node in mat.node_tree.nodes if node.type == "BSDF_PRINCIPLED"), None)
     if bsdf:
-        set_principled_input(bsdf, ("Alpha",), 1.0)
-        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 0.28)
-        set_principled_input(bsdf, ("Coat Roughness", "Clearcoat Roughness"), 0.16)
+        set_principled_input(bsdf, ("Base Color",), (0.000, 0.030, 0.150, 0.98))
+        set_principled_input(bsdf, ("Alpha",), 0.98)
+        set_principled_input(bsdf, ("Roughness",), 0.012)
+        set_principled_input(bsdf, ("Specular IOR Level", "Specular"), 1.0)
+        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 1.0)
+        set_principled_input(bsdf, ("Coat Roughness", "Clearcoat Roughness"), 0.006)
         set_principled_input(bsdf, ("Transmission Weight", "Transmission"), 0.0)
-    mat.blend_method = "OPAQUE"
-    mat.use_screen_refraction = False
+        set_principled_input(bsdf, ("IOR",), 1.52)
+    mat.blend_method = "HASHED"
+    mat.use_screen_refraction = True
+    mat.show_transparent_back = True
     return mat
 
 
@@ -490,6 +504,44 @@ def add_flat_box(name: str, loc: Vector, scale: tuple[float, float, float], mat:
     return obj
 
 
+def make_reflection_strip_material(name: str, rgba: tuple[float, float, float, float], *, emission_strength: float) -> bpy.types.Material:
+    mat = make_material(name, rgba, roughness=0.010, metallic=0.0, alpha=rgba[3], specular=1.0)
+    bsdf = next((node for node in mat.node_tree.nodes if node.type == "BSDF_PRINCIPLED"), None)
+    if bsdf:
+        set_principled_input(bsdf, ("Coat Weight", "Clearcoat"), 1.0)
+        set_principled_input(bsdf, ("Coat Roughness", "Clearcoat Roughness"), 0.004)
+        set_principled_input(bsdf, ("Emission Color",), rgba)
+        set_principled_input(bsdf, ("Emission Strength",), emission_strength)
+    mat.blend_method = "HASHED"
+    mat.show_transparent_back = True
+    return mat
+
+
+def add_mid360_mirror_reflection_overlays() -> list[str]:
+    white_reflection = make_reflection_strip_material(
+        "MID360_Decal_Mirror_White_Light_Reflection",
+        (1.0, 1.0, 0.92, 0.76),
+        emission_strength=0.55,
+    )
+    blue_reflection = make_reflection_strip_material(
+        "MID360_Decal_Blue_Glass_Side_Reflection",
+        (0.05, 0.45, 1.0, 0.44),
+        emission_strength=0.22,
+    )
+    specs = [
+        ("mid360_mirror_reflection_strip_left", Vector((-0.0080, -0.0212, 0.0912)), (0.0014, 0.00008, 0.0140), math.radians(-12), white_reflection),
+        ("mid360_mirror_reflection_strip_mid", Vector((-0.0025, -0.0216, 0.0925)), (0.0010, 0.00008, 0.0115), math.radians(-5), white_reflection),
+        ("mid360_mirror_reflection_strip_right", Vector((0.0040, -0.0218, 0.0910)), (0.0011, 0.00008, 0.0100), math.radians(8), white_reflection),
+        ("mid360_blue_edge_reflection_right", Vector((0.0125, -0.0210, 0.0835)), (0.0016, 0.00008, 0.0120), math.radians(-24), blue_reflection),
+    ]
+    added = []
+    for name, loc, scale, zrot, mat in specs:
+        obj = add_flat_box(name, loc, scale, mat)
+        obj.rotation_euler = (math.radians(75), 0.0, zrot)
+        added.append(obj.name)
+    return added
+
+
 def add_visual_detail_overlays() -> dict:
     """Add non-physical review decals that document intended texture details."""
     rmats = realistic_materials()
@@ -498,7 +550,6 @@ def add_visual_detail_overlays() -> dict:
     mid360_top_black = make_material("MID360_Decal_Top_Black_Cap", (0.002, 0.002, 0.002, 1.0), roughness=0.34, metallic=0.0, specular=0.28)
     motor_gold = make_material("Sunray150_Decal_Motor_Gold_Ink", (0.95, 0.58, 0.12, 1.0), roughness=0.30)
     livox = make_material("Sunray150_Decal_Livox_Black", (0.002, 0.002, 0.002, 1.0), roughness=0.45)
-    lens = rmats["camera_lens"]
     pcb_mark = make_material("Sunray150_Decal_PCB_Copper_Gold_Pads", (0.95, 0.66, 0.18, 1.0), roughness=0.34, metallic=0.70)
     ic_black = make_material("Sunray150_Decal_IC_Matte_Black_Packages", (0.004, 0.004, 0.003, 1.0), roughness=0.78, specular=0.08)
     storage_label = make_material("Sunray150_Decal_M2_SSD_Label_Satin_White", (0.80, 0.82, 0.78, 1.0), roughness=0.48, metallic=0.0, specular=0.10)
@@ -506,29 +557,10 @@ def add_visual_detail_overlays() -> dict:
     added = []
 
     added.append(add_label_plate("decal_mid360_livox_front", "LIVOX  MID-360", Vector((0.0, -0.0215, 0.0715)), 0.0036, livox, rotation=(math.radians(75), 0.0, 0.0)).name)
+    added.extend(add_mid360_mirror_reflection_overlays())
     for x, y in [(0.0537, 0.0537), (-0.0537, 0.0537), (0.0537, -0.0537), (-0.0537, -0.0537)]:
         added.append(add_label_plate(f"decal_motor_yundrone_{x:.3f}_{y:.3f}", "YUN DRONE", Vector((x, y, -0.0005)), 0.0030, white, rotation=(0.0, 0.0, math.radians(45))).name)
         added.append(add_label_plate(f"decal_motor_lava_{x:.3f}_{y:.3f}", "LAVA", Vector((x, y, 0.0010)), 0.0026, motor_gold, rotation=(0.0, 0.0, math.radians(45))).name)
-    for x, y in [(0.0537, 0.0537), (-0.0537, 0.0537), (0.0537, -0.0537), (-0.0537, -0.0537)]:
-        bpy.ops.mesh.primitive_torus_add(major_radius=0.0108, minor_radius=0.00035, major_segments=80, minor_segments=8, location=(x, y, -0.0001))
-        obj = bpy.context.object
-        obj.name = prop.clean_name(f"decal_motor_gold_ring_{x:.3f}_{y:.3f}", 96)
-        assign_single_material(obj, motor_gold)
-        added.append(obj.name)
-
-    # Camera glass discs make front/down USB cameras visually readable even
-    # when the DAE splits their detailed submeshes into many small BREP parts.
-    for name, loc, rot in [
-        ("front_usb_camera_lens_glass_overlay", Vector((0.0, 0.1032, 0.0185)), (math.radians(90), 0.0, 0.0)),
-        ("bottom_usb_camera_lens_glass_overlay", Vector((0.0, 0.0145, -0.0263)), (0.0, 0.0, 0.0)),
-    ]:
-        bpy.ops.mesh.primitive_cylinder_add(vertices=48, radius=0.0062, depth=0.00045, location=loc, rotation=rot)
-        obj = bpy.context.object
-        obj.name = prop.clean_name(name, 96)
-        assign_single_material(obj, lens)
-        shade_smooth_if_reasonable(obj)
-        added.append(obj.name)
-
     # Small colored cable sleeves follow the official photo cue without
     # changing the accepted aircraft geometry.
     cable_specs = [
@@ -564,7 +596,7 @@ def add_visual_detail_overlays() -> dict:
     return {
         "added_overlay_count": len(added),
         "added_overlays": added,
-        "overlay_rule": "Review decals and cable hints are non-physical texture intent markers: LIVOX/MID-360 logo, YUN DRONE/LAVA motor marks, motor gold rim cues, USB camera lens glass, and colored cable sleeves. They do not alter accepted MID-360/propeller placement.",
+        "overlay_rule": "Review decals and cable hints are non-physical texture intent markers: LIVOX/MID-360 logo, YUN DRONE/LAVA motor marks, USB camera lens glass, and colored cable sleeves. User-rejected motor gold ring decals are not created. These overlays do not alter accepted MID-360/propeller placement.",
     }
 
 
@@ -578,6 +610,8 @@ def aircraft_material_key(name: str) -> str:
         return "aluminum"
     if "FRONT_CAMERA_CONNECTOR" in upper:
         return "matte_black_plastic"
+    if "FRONT_CAMERA_PARTBODY" in upper or "BOTTOM_CAMERA_PARTBODY" in upper:
+        return "camera_body"
     if "SHOCK_ABSORBING" in upper or "RUBBER" in upper or "DAMP" in upper:
         return "rubber"
     if "SCREW" in upper or "NUT" in upper or "WASHER" in upper or "BOLT" in upper:
@@ -589,9 +623,9 @@ def aircraft_material_key(name: str) -> str:
     if "MID360_PROTECT_ARC" in upper:
         return "mid360_protection_frame"
     if "PROTECTIVE_RING" in upper:
-        return "matte_black_plastic"
+        return "translucent_guard"
     if "LAND_GEAR" in upper:
-        return "matte_black_plastic"
+        return "translucent_guard"
     if "SHIM" in upper and ("M2" in upper or "M3" in upper):
         return "steel"
     if "YUNDRONE_4S1P" in upper or "BATTERY" in upper:
@@ -622,10 +656,10 @@ def aircraft_material_key(name: str) -> str:
         if "LENS" in upper:
             return "camera_lens"
         return "camera_body"
-    if "RANGING_LIDAR_CAMERA_BASE" in upper or "CAMERA_SHIM" in upper:
-        return "matte_black_plastic"
     if "TF MINI" in upper or "SENSOR TF" in upper:
         return "tfmini_body"
+    if "RANGING_LIDAR_CAMERA_BASE" in upper or "CAMERA_SHIM" in upper:
+        return "matte_black_plastic"
     if "ESC_SPEEDYBEE" in upper or "MAIN_BOARD" in upper or "PCBMODEL" in upper or "N150_ALLCATPART.1\\PART1" in upper:
         return "pcb_black"
     if "N150_ALLCATPART" in upper and ("NAUO" in upper or "NONE_NCL" in upper or "PARTBODY" in upper):

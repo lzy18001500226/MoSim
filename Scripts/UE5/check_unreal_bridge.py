@@ -24,11 +24,13 @@ REQUIRED_FILES = [
     "Source/QuadrotorMworksBridge/Public/QuadrotorMworksBridge.h",
     "Source/QuadrotorMworksBridge/Public/QuadrotorMworksTypes.h",
     "Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpReceiverComponent.h",
+    "Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h",
     "Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackComponent.h",
     "Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackActor.h",
     "Source/QuadrotorMworksBridge/Public/QuadrotorMworksMapActor.h",
     "Source/QuadrotorMworksBridge/Private/QuadrotorMworksBridge.cpp",
     "Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp",
+    "Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp",
     "Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackComponent.cpp",
     "Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackActor.cpp",
     "Source/QuadrotorMworksBridge/Private/QuadrotorMworksMapActor.cpp",
@@ -106,11 +108,55 @@ def main() -> int:
         "FQuadrotorMworksLocalKnownMap",
         "FQuadrotorMworksStatus",
         "FQuadrotorMworksOverlays",
+        "FQuadrotorMworksCommandGuard",
+        "FQuadrotorMworksCommandResult",
         "LocalPlanSource",
         "bLocalPlanEvidenceBacked",
     ]:
         if token not in types_source:
             print(f"[FAIL] frame type missing token: {token}")
+            return 1
+
+    command_sender_header = (
+        PLUGIN / "Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h"
+    ).read_text(encoding="utf-8")
+    command_sender_source = (
+        PLUGIN / "Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp"
+    ).read_text(encoding="utf-8")
+    for token in [
+        "UQuadrotorMworksUdpCommandSenderComponent",
+        "SendCommand",
+        "BuildCommandPacket",
+        "FQuadrotorMworksCommandGuard",
+        "FQuadrotorMworksCommandResult",
+        "mosim.ue_command.v1",
+        "require_mworks_ack",
+        "require_ros2_ack",
+        "reject_if_gate_open",
+        "forbidden_pose_command",
+        "controller_select",
+        "planner_select",
+        "wind_profile",
+        "motor_fault",
+        "sensor_mode",
+        "scenario_reset",
+        "start_goal_update",
+        "recording",
+        "scene_switch",
+        "pose_override",
+        "teleport",
+        "set_uav_pose",
+        "actor_transform",
+        "keyboard_pose",
+        "FUdpSocketBuilder",
+        "SendTo(",
+    ]:
+        if token not in command_sender_header and token not in command_sender_source:
+            print(f"[FAIL] command sender missing token: {token}")
+            return 1
+    for token in ["SetActorLocation", "SetActorTransform", "TeleportTo", "AddActorWorldOffset"]:
+        if token in command_sender_source:
+            print(f"[FAIL] command sender must not directly move actors: {token}")
             return 1
 
     playback = (PLUGIN / "Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackComponent.cpp").read_text(

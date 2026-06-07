@@ -197,3 +197,36 @@ struct FQuadrotorMworksFrame
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
     bool bIsValid = false;
 };
+
+USTRUCT(BlueprintType)
+struct FQuadrotorMworksCommandGuard
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Command")
+    bool bRequireMworksAck = true;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Command")
+    bool bRequireRos2Ack = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Command")
+    TArray<FString> RejectIfGateOpen;
+};
+
+USTRUCT(BlueprintType)
+struct FQuadrotorMworksCommandResult
+{
+    GENERATED_BODY()
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Command")
+    bool bSent = false;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Command")
+    FString RequestId;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Command")
+    FString RejectReason;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Command")
+    FString PacketJson;
+};

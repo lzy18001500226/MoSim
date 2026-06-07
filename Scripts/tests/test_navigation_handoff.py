@@ -98,6 +98,8 @@ def test_navigation_control_handoff_outputs() -> None:
                 raise AssertionError(scenario)
             if "offline_ue_navigation_control_interface_package" not in scenario:
                 raise AssertionError(scenario)
+            if "not yet integrated into a Sysplorer executable model" not in scenario:
+                raise AssertionError(scenario)
     finally:
         if temp_root.exists():
             shutil.rmtree(temp_root)

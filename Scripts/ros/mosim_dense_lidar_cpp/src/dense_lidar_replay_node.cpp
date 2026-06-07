@@ -175,6 +175,8 @@ class DenseLidarReplayNode final : public rclcpp::Node {
     const int lidar_id = declare_parameter<int>("livox_lidar_id", 1);
     stats_interval_s_ = declare_parameter<double>("stats_interval_s", 5.0);
     const int max_frames = declare_parameter<int>("max_frames", 0);
+    loop_ = declare_parameter<bool>("loop", true);
+    exit_after_last_frame_ = declare_parameter<bool>("exit_after_last_frame", false);
     if (lidar_jsonl.empty()) {
       throw std::runtime_error("parameter lidar_jsonl is required");
     }
@@ -202,7 +204,11 @@ class DenseLidarReplayNode final : public rclcpp::Node {
     const auto period = std::chrono::duration<double>(1.0 / rate_hz_);
     stats_start_ = std::chrono::steady_clock::now();
     timer_ = create_wall_timer(std::chrono::duration_cast<std::chrono::nanoseconds>(period), [this]() {
-      const Frame& frame = frames_[index_ % frames_.size()];
+      if (!loop_ && index_ >= frames_.size()) {
+        finish_non_looping_replay();
+        return;
+      }
+      const Frame& frame = frames_[loop_ ? index_ % frames_.size() : index_];
       auto msg = frame.message;
       msg.header.stamp = now();
       auto livox_msg = frame.livox_message;
@@ -220,13 +226,17 @@ class DenseLidarReplayNode final : public rclcpp::Node {
       publish_time_total_us_ += std::chrono::duration<double, std::micro>(after - before).count();
       index_++;
       maybe_log_stats(after);
+      if (!loop_ && index_ >= frames_.size()) {
+        finish_non_looping_replay();
+      }
     });
     RCLCPP_INFO(
       get_logger(),
-      "publishing %zu dense LiDAR frames to %s at %.2f Hz; first frame has %zu points",
+      "publishing %zu dense LiDAR frames to %s at %.2f Hz; loop=%s; first frame has %zu points",
       frames_.size(),
       topic_.c_str(),
       rate_hz_,
+      loop_ ? "true" : "false",
       frames_.front().points.size());
     if (livox_publisher_) {
       RCLCPP_INFO(get_logger(), "also publishing Livox CustomMsg to %s", livox_topic_.c_str());
@@ -234,6 +244,25 @@ class DenseLidarReplayNode final : public rclcpp::Node {
   }
 
  private:
+  void finish_non_looping_replay() {
+    if (non_looping_replay_finished_) {
+      return;
+    }
+    non_looping_replay_finished_ = true;
+    if (timer_) {
+      timer_->cancel();
+    }
+    RCLCPP_INFO(
+      get_logger(),
+      "completed non-looping dense LiDAR replay after %zu/%zu frames; exit_after_last_frame=%s",
+      index_,
+      frames_.size(),
+      exit_after_last_frame_ ? "true" : "false");
+    if (exit_after_last_frame_) {
+      rclcpp::shutdown();
+    }
+  }
+
   void maybe_log_stats(const std::chrono::steady_clock::time_point& now_time) {
     if (stats_interval_s_ <= 0.0) {
       return;
@@ -262,6 +291,9 @@ class DenseLidarReplayNode final : public rclcpp::Node {
   double rate_hz_{10.0};
   double scan_duration_s_{0.1};
   double stats_interval_s_{5.0};
+  bool loop_{true};
+  bool exit_after_last_frame_{false};
+  bool non_looping_replay_finished_{false};
   size_t index_{0};
   size_t publish_count_{0};
   double publish_time_total_us_{0.0};

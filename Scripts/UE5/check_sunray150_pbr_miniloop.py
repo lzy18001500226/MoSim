@@ -73,7 +73,11 @@ def load_json(path: Path) -> Any:
 
 
 def assert_project_path(path_text: str) -> Path:
-    path = Path(path_text)
+    normalized_text = path_text.replace("\\", "/")
+    if normalized_text.startswith("/mnt/") and len(normalized_text) > 7 and normalized_text[5].isalpha() and normalized_text[6] == "/":
+        path = Path(f"{normalized_text[5].upper()}:/{normalized_text[7:]}")
+    else:
+        path = Path(path_text)
     if not path.is_absolute():
         path = PROJECT_ROOT / path
     try:

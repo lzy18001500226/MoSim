@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-06-04 13:08:49",
+  "created_at": "2026-06-07 01:14:41",
   "purpose": "Full Sunray150 150.dae visible plus standalone Livox MID-360 mount audit. This is a manual review scene, not a final runtime asset.",
   "aircraft": {
     "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\150.dae",
@@ -7,10 +7,10 @@
     "imported_object_count": 691,
     "category_counts": {
       "carbon": 4,
-      "matte_black_plastic": 5,
+      "matte_black_plastic": 3,
       "satin_black_plastic": 0,
       "mid360_protection_frame": 13,
-      "translucent_guard": 0,
+      "translucent_guard": 2,
       "dark_anodized": 0,
       "steel": 99,
       "aluminum": 32,
@@ -96,8 +96,8 @@
       "DAE_FULL_SCREW_BUTTON_HEAD_M2_6MM.14_HEX_SOCKET_BUTTON_HEAD _ SCREW_BUTTON_HEAD_M2_6MM.14_HEX_SOCKET_BUTTON_HEADMesh": "steel",
       "DAE_FULL_SCREW_BUTTON_HEAD_M2_6MM.15_HEX_SOCKET_BUTTON_HEAD _ SCREW_BUTTON_HEAD_M2_6MM.15_HEX_SOCKET_BUTTON_HEADMesh": "steel",
       "DAE_FULL_SCREW_BUTTON_HEAD_M2_6MM.16_HEX_SOCKET_BUTTON_HEAD _ SCREW_BUTTON_HEAD_M2_6MM.16_HEX_SOCKET_BUTTON_HEADMesh": "steel",
-      "DAE_FULL_PROTECTIVE_RING.1_MAIN_STRUCTURE _ PROTECTIVE_RING.1_MAIN_STRUCTUREMesh": "matte_black_plastic",
-      "DAE_FULL_LAND_GEAR.1_PartBody _ LAND_GEAR.1_PartBodyMesh": "matte_black_plastic",
+      "DAE_FULL_PROTECTIVE_RING.1_MAIN_STRUCTURE _ PROTECTIVE_RING.1_MAIN_STRUCTUREMesh": "translucent_guard",
+      "DAE_FULL_LAND_GEAR.1_PartBody _ LAND_GEAR.1_PartBodyMesh": "translucent_guard",
       "DAE_FULL_SCREW_BUTTON_HEAD_M3_20MM.1_HEX_SOCKET_BUTTON_HEAD _ SCREW_BUTTON_HEAD_M3_20MM.1_HEX_SOCKET_BUTTON_HEADMesh": "steel",
       "DAE_FULL_SCREW_BUTTON_HEAD_M3_20MM.2_HEX_SOCKET_BUTTON_HEAD _ SCREW_BUTTON_HEAD_M3_20MM.2_HEX_SOCKET_BUTTON_HEADMesh": "steel",
       "DAE_FULL_SCREW_BUTTON_HEAD_M3_20MM.3_HEX_SOCKET_BUTTON_HEAD _ SCREW_BUTTON_HEAD_M3_20MM.3_HEX_SOCKET_BUTTON_HEADMesh": "steel",
@@ -1276,9 +1276,13 @@
     "status": "manual_review_required_for_hole/shaft alignment"
   },
   "material_detail_overlays": {
-    "added_overlay_count": 30,
+    "added_overlay_count": 28,
     "added_overlays": [
       "decal_mid360_livox_front",
+      "mid360_mirror_reflection_strip_left",
+      "mid360_mirror_reflection_strip_mid",
+      "mid360_mirror_reflection_strip_right",
+      "mid360_blue_edge_reflection_right",
       "decal_motor_yundrone_0.054_0.054",
       "decal_motor_lava_0.054_0.054",
       "decal_motor_yundrone_-0.054_0.054",
@@ -1287,12 +1291,6 @@
       "decal_motor_lava_0.054_-0.054",
       "decal_motor_yundrone_-0.054_-0.054",
       "decal_motor_lava_-0.054_-0.054",
-      "decal_motor_gold_ring_0.054_0.054",
-      "decal_motor_gold_ring_-0.054_0.054",
-      "decal_motor_gold_ring_0.054_-0.054",
-      "decal_motor_gold_ring_-0.054_-0.054",
-      "front_usb_camera_lens_glass_overlay",
-      "bottom_usb_camera_lens_glass_overlay",
       "red_wire_hint",
       "blue_wire_hint",
       "yellow_wire_hint",
@@ -1309,7 +1307,7 @@
       "decal_n150_rj45_black_core",
       "decal_n150_m2_label_text"
     ],
-    "overlay_rule": "Review decals and cable hints are non-physical texture intent markers: LIVOX/MID-360 logo, YUN DRONE/LAVA motor marks, motor gold rim cues, USB camera lens glass, and colored cable sleeves. They do not alter accepted MID-360/propeller placement."
+    "overlay_rule": "Review decals and cable hints are non-physical texture intent markers: LIVOX/MID-360 logo, YUN DRONE/LAVA motor marks, USB camera lens glass, and colored cable sleeves. User-rejected motor gold ring decals are not created. These overlays do not alter accepted MID-360/propeller placement."
   },
   "visibility": {
     "audit_view": "full_assembly",
@@ -1334,7 +1332,7 @@
     "extent": 0.22,
     "lighting": "area key light plus soft fill light for visible reflections on glass, metal, and carbon-fiber materials"
   },
-  "elapsed_sec": 7.69,
+  "elapsed_sec": 9.297,
   "outputs": {
     "blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_dae_mid360_realistic_material_audit.blend",
     "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_dae_mid360_realistic_material_audit_manifest.json"

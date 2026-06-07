@@ -79,7 +79,7 @@ def test_agent_runtime_claim_checkpoint_complete_roundtrip() -> None:
         )
         assert created["task_id"] == "task_fixture"
         assert created["state"] == "queued"
-        assert created["read_scope"] == ["Docs/Workflows"]
+        assert [Path(item).as_posix() for item in created["read_scope"]] == ["Docs/Workflows"]
 
         claimed = run_runtime(module, temp_dir, "claim", "--owner", "DocsReviewer")
         assert claimed["task_id"] == "task_fixture"

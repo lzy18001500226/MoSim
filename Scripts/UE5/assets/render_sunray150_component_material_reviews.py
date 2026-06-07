@@ -25,6 +25,10 @@ MANIFEST = OUT_DIR / "sunray150_component_material_reviews_manifest.json"
 TEXTURE_MAP_PROP = "_sunray150_review_texture_maps_json"
 
 
+def project_relative(path: Path) -> str:
+    return str(path.relative_to(PROJECT_ROOT)).replace("\\", "/")
+
+
 COMPONENTS = [
     {
         "name": "mid360_sensor",
@@ -38,7 +42,7 @@ COMPONENTS = [
         "absolute_light_energy": 9.0,
         "target_object_keys": ("AUDIT_STANDALONE_MID360",),
         "keep_font_keys": ("decal_mid360_livox_front",),
-        "material_gate": "silver-grey MID-360 housing, dark blue/teal glossy optical dome, black connector/base, readable screws.",
+        "material_gate": "silver-grey MID-360 housing, cobalt-blue glossy coated optical dome, black connector/base, readable screws.",
     },
     {
         "name": "mid360_protection_frame",
@@ -95,18 +99,51 @@ COMPONENTS = [
         "ortho_scale": 0.058,
         "view_transform": "Standard",
         "look": "Medium High Contrast",
-        "exposure": -0.60,
-        "world_color": (0.16, 0.165, 0.17),
-        "absolute_light_energy": 14.0,
-        "review_material": "camera_matte_black",
+        "exposure": -2.20,
+        "world_color": (0.050, 0.052, 0.054),
+        "absolute_light_energy": 5.0,
+        "review_material": "camera_module_pbr_maps",
         "auto_center_from_targets": True,
         "target_object_keys": (
-            "front_usb_camera_lens_glass_overlay",
             "DAE_FULL_FRONT_CAMERA_PartBody",
             "DAE_FULL_FRONT_CAMERA_CONNECTOR.1",
         ),
         "exclude_object_keys": ("CABLE_FRONT_CAMERA", "CABLE_BOTTOM_CAMERA"),
-        "material_gate": "black USB camera body, dark glass lens, visible bracket/screw detail.",
+        "material_gate": "all-black USB camera PartBody housing; no added lens/barrel overlay and no grey CAD body.",
+    },
+    {
+        "name": "bottom_camera",
+        "center": (0.0, 0.0145, -0.0263),
+        "camera_offset": (0.032, -0.055, 0.032),
+        "ortho_scale": 0.056,
+        "view_transform": "Standard",
+        "look": "Medium High Contrast",
+        "exposure": -2.15,
+        "world_color": (0.050, 0.052, 0.054),
+        "absolute_light_energy": 5.0,
+        "review_material": "camera_module_pbr_maps",
+        "auto_center_from_targets": True,
+        "target_object_keys": (
+            "DAE_FULL_BOTTOM_CAMERA_PartBody",
+        ),
+        "exclude_object_keys": ("CABLE_FRONT_CAMERA", "CABLE_BOTTOM_CAMERA"),
+        "material_gate": "all-black bottom USB camera PartBody housing; no added lens/barrel overlay and no grey CAD body.",
+    },
+    {
+        "name": "tfmini_laser_rangefinder",
+        "center": (0.0, 0.090, 0.010),
+        "camera_offset": (0.045, -0.072, 0.032),
+        "ortho_scale": 0.060,
+        "view_transform": "Standard",
+        "look": "Medium High Contrast",
+        "exposure": -2.05,
+        "world_color": (0.050, 0.052, 0.054),
+        "absolute_light_energy": 5.0,
+        "review_material": "tfmini_sensor_black",
+        "auto_center_from_targets": True,
+        "target_object_keys": ("Sensor TF Mini PLUS", "TF Mini", "Ressalto-extrus"),
+        "exclude_object_keys": ("CABLE_FRONT_CAMERA", "CABLE_BOTTOM_CAMERA"),
+        "material_gate": "TF Mini laser rangefinder black sensor body, not generic grey CAD or PCB material.",
     },
     {
         "name": "steel_fasteners",
@@ -133,6 +170,7 @@ COMPONENTS = [
         "exposure": -2.25,
         "world_color": (0.045, 0.047, 0.049),
         "absolute_light_energy": 4.5,
+        "review_material": "electronics_mixed_pbr_maps",
         "target_object_keys": ("N150_AllCATPart", "ESC_SPEEDYBEE", "A_USB", "HDMI", "NGFF", "PJ311", "CABLE", "WIRE"),
         "material_gate": "dark PCB/soldermask, nickel connector shells, black plastic cores, readable cable colors.",
     },
@@ -146,6 +184,7 @@ COMPONENTS = [
         "exposure": -1.70,
         "world_color": (0.050, 0.052, 0.052),
         "absolute_light_energy": 5.5,
+        "review_material": "pcb_pbr_maps",
         "target_material_names": ("Sunray150_Texture_PCB_Black_Soldermask", "Sunray150_Texture_PCB_Green_Soldermask"),
         "target_object_keys": ("ESC_SPEEDYBEE", "MAIN_BOARD", "PCBModel", "N150_AllCATPart.1_Part1", "N150_AllCATPart.1_Part2"),
         "material_gate": "black/dark-green PCB soldermask with readable pads, traces, IC packages, and board edge.",
@@ -160,6 +199,7 @@ COMPONENTS = [
         "exposure": -1.90,
         "world_color": (0.050, 0.052, 0.052),
         "absolute_light_energy": 4.8,
+        "review_material": "electronics_mixed_pbr_maps",
         "auto_center_from_targets": True,
         "target_object_keys": (
             "N150_AllCATPart.1_Part1",
@@ -182,6 +222,7 @@ COMPONENTS = [
         "exposure": -1.55,
         "world_color": (0.052, 0.054, 0.056),
         "absolute_light_energy": 6.0,
+        "review_material": "pcb_pbr_maps",
         "auto_center_from_targets": True,
         "target_object_keys": (
             "decal_n150_ic_package",
@@ -206,6 +247,7 @@ COMPONENTS = [
         "exposure": -1.50,
         "world_color": (0.055, 0.056, 0.058),
         "absolute_light_energy": 6.3,
+        "review_material": "electronics_mixed_pbr_maps",
         "auto_center_from_targets": True,
         "target_material_names": ("Sunray150_Texture_USB_HDMI_Nickel_Shell", "Sunray150_Texture_Connector_Black_Core"),
         "target_object_keys": (
@@ -230,6 +272,7 @@ COMPONENTS = [
         "exposure": -1.45,
         "world_color": (0.052, 0.054, 0.056),
         "absolute_light_energy": 5.8,
+        "review_material": "electronics_mixed_pbr_maps",
         "auto_center_from_targets": True,
         "target_object_keys": (
             "N150_AllCATPart.1_TN_MTS400",
@@ -251,6 +294,7 @@ COMPONENTS = [
         "exposure": -1.65,
         "world_color": (0.050, 0.052, 0.052),
         "absolute_light_energy": 5.5,
+        "review_material": "pcb_pbr_maps",
         "target_object_keys": ("ESC_SPEEDYBEE", "MAIN_BOARD"),
         "target_material_names": ("Sunray150_Texture_PCB_Black_Soldermask",),
         "material_gate": "ESC board black soldermask with small connector pins/components visible, not a flat grey plate.",
@@ -265,6 +309,7 @@ COMPONENTS = [
         "exposure": -1.45,
         "world_color": (0.055, 0.056, 0.058),
         "absolute_light_energy": 6.5,
+        "review_material": "connector_mixed_pbr_maps",
         "target_material_names": ("Sunray150_Texture_USB_HDMI_Nickel_Shell", "Sunray150_Texture_Connector_Black_Core"),
         "target_object_keys": ("A_USB", "HDMI", "RJ45", "NGFF", "PJ311", "CONNECTOR"),
         "material_gate": "nickel/silver connector shells, black plastic cores, visible port openings and pin detail.",
@@ -279,6 +324,7 @@ COMPONENTS = [
         "exposure": -1.35,
         "world_color": (0.055, 0.056, 0.058),
         "absolute_light_energy": 7.5,
+        "review_material": "cable_rubber_pbr_maps",
         "target_material_names": (
             "Sunray150_Texture_Rubber_Cable_Black",
             "Sunray150_Texture_Red_Silicone_Wire",
@@ -299,7 +345,7 @@ COMPONENTS = [
         "world_color": (0.048, 0.050, 0.052),
         "absolute_light_energy": 6.0,
         "target_object_keys": ("MOTOR_2104", "TriBlade", "SCREW_BUTTON_HEAD_M2_8MM"),
-        "material_gate": "black motor bell, copper windings, steel screws, dark smoked tri-blade propeller without white patches.",
+        "material_gate": "black motor bell, copper windings, steel screws, transparent liuli/glass-like tri-blade propeller without white patches.",
     },
     {
         "name": "motor_only",
@@ -326,23 +372,35 @@ COMPONENTS = [
         "world_color": (0.030, 0.031, 0.032),
         "absolute_light_energy": 2.2,
         "auto_center_from_targets": True,
-        "review_material": "smoked_propeller",
+        "review_material": "liuli_propeller_glass",
         "target_object_keys": ("TriBlade_flipped_around_screw_axis_rotor_0_front_right",),
-        "material_gate": "accepted tri-blade propeller, smoked translucent plastic with visible grey thickness and no white audit-color washout.",
+        "material_gate": "accepted tri-blade propeller, transparent liuli/glass-like material with visible edge thickness and no smoky grey plastic washout.",
     },
     {
         "name": "guard_landing_gear",
         "center": (0.0, 0.000, -0.018),
         "camera_offset": (0.120, -0.115, 0.050),
         "ortho_scale": 0.155,
+        "view_transform": "Standard",
+        "look": "Medium High Contrast",
+        "exposure": -2.10,
+        "world_color": (0.040, 0.042, 0.044),
+        "absolute_light_energy": 4.0,
+        "review_material": "liuli_guard_glass",
         "target_object_keys": ("PROTECTIVE_RING", "LAND_GEAR"),
-        "material_gate": "smoked/dark protective ring and landing gear, not opaque white CAD.",
+        "material_gate": "transparent liuli/glass-like protective ring / landing gear material, not opaque grey CAD or smoky plastic.",
     },
     {
         "name": "battery",
         "center": (0.0, 0.022, 0.032),
         "camera_offset": (-0.075, -0.105, 0.030),
         "ortho_scale": 0.080,
+        "view_transform": "Standard",
+        "look": "Medium High Contrast",
+        "exposure": -2.20,
+        "world_color": (0.040, 0.042, 0.044),
+        "absolute_light_energy": 4.8,
+        "review_material": "battery_heatshrink_pbr_maps",
         "target_object_keys": ("YUNDRONE_4S1P", "BATTERY", "BATTERY_CLIP"),
         "material_gate": "black heat-shrink battery/clip with subtle surface wrinkles/label cue.",
     },
@@ -469,7 +527,7 @@ def add_review_image_texture(
         {
             "target": target,
             "image": image_name,
-            "project_relative_path": str(path.relative_to(PROJECT_ROOT)).replace("\\", "/"),
+            "project_relative_path": project_relative(path),
             "colorspace": tex.image.colorspace_settings.name,
         }
     )
@@ -529,6 +587,199 @@ def make_review_carbon_pbr_map_material() -> bpy.types.Material:
         bump_strength=0.055,
         bump_distance=0.0007,
     )
+
+
+def make_review_camera_polymer_pbr_map_material() -> bpy.types.Material:
+    return make_review_pbr_map_material(
+        "Sunray150_ComponentReview_Camera_Black_Polymer_PBR_Map_Audit",
+        fallback_rgba=(0.010, 0.010, 0.009, 1.0),
+        prefix="sunray150_camera_black_polymer",
+        roughness=0.74,
+        metallic=0.0,
+        specular=0.20,
+        bump_strength=0.026,
+        bump_distance=0.00035,
+    )
+
+
+def make_review_pcb_pbr_map_material() -> bpy.types.Material:
+    return make_review_pbr_map_material(
+        "Sunray150_ComponentReview_Black_PCB_Soldermask_PBR_Map_Audit",
+        fallback_rgba=(0.010, 0.026, 0.014, 1.0),
+        prefix="sunray150_pcb_black",
+        roughness=0.55,
+        metallic=0.0,
+        specular=0.18,
+        bump_strength=0.018,
+        bump_distance=0.00032,
+    )
+
+
+def make_review_nickel_connector_pbr_map_material() -> bpy.types.Material:
+    return make_review_pbr_map_material(
+        "Sunray150_ComponentReview_Nickel_Connector_Shell_PBR_Map_Audit",
+        fallback_rgba=(0.34, 0.33, 0.30, 1.0),
+        prefix="sunray150_nickel_connector",
+        roughness=0.38,
+        metallic=0.82,
+        specular=0.24,
+        bump_strength=0.012,
+        bump_distance=0.00016,
+    )
+
+
+def make_review_dark_metal_pbr_map_material() -> bpy.types.Material:
+    return make_review_pbr_map_material(
+        "Sunray150_ComponentReview_Dark_Anodized_Metal_PBR_Map_Audit",
+        fallback_rgba=(0.030, 0.031, 0.030, 1.0),
+        prefix="sunray150_dark_anodized_metal",
+        roughness=0.48,
+        metallic=0.88,
+        specular=0.18,
+        bump_strength=0.014,
+        bump_distance=0.00020,
+    )
+
+
+def make_review_black_rubber_pbr_map_material() -> bpy.types.Material:
+    return make_review_pbr_map_material(
+        "Sunray150_ComponentReview_Black_Rubber_Cable_PBR_Map_Audit",
+        fallback_rgba=(0.006, 0.006, 0.005, 1.0),
+        prefix="sunray150_black_rubber",
+        roughness=0.82,
+        metallic=0.0,
+        specular=0.12,
+        bump_strength=0.020,
+        bump_distance=0.00030,
+    )
+
+
+def make_review_battery_heatshrink_pbr_map_material() -> bpy.types.Material:
+    return make_review_pbr_map_material(
+        "Sunray150_ComponentReview_Battery_Heatshrink_PBR_Map_Audit",
+        fallback_rgba=(0.008, 0.008, 0.007, 1.0),
+        prefix="sunray150_battery_heatshrink",
+        roughness=0.78,
+        metallic=0.0,
+        specular=0.13,
+        bump_strength=0.030,
+        bump_distance=0.00042,
+    )
+
+
+def tune_review_glass_bsdf(
+    mat: bpy.types.Material,
+    *,
+    coat: float,
+    coat_roughness: float,
+    transmission: float,
+    ior: float,
+) -> bpy.types.Material:
+    bsdf = next((node for node in mat.node_tree.nodes if node.type == "BSDF_PRINCIPLED"), None)
+    if bsdf is None:
+        return mat
+    if "Coat Weight" in bsdf.inputs:
+        bsdf.inputs["Coat Weight"].default_value = coat
+    if "Coat Roughness" in bsdf.inputs:
+        bsdf.inputs["Coat Roughness"].default_value = coat_roughness
+    if "Transmission Weight" in bsdf.inputs:
+        bsdf.inputs["Transmission Weight"].default_value = transmission
+    elif "Transmission" in bsdf.inputs:
+        bsdf.inputs["Transmission"].default_value = transmission
+    if "IOR" in bsdf.inputs:
+        bsdf.inputs["IOR"].default_value = ior
+    mat.blend_method = "HASHED"
+    mat.use_screen_refraction = True
+    mat.show_transparent_back = True
+    return mat
+
+
+def make_review_camera_lens_glass_material() -> bpy.types.Material:
+    mat = make_review_principled_material(
+        "Sunray150_ComponentReview_Camera_Magenta_Green_Coated_Lens_Audit",
+        (0.19, 0.018, 0.30, 0.78),
+        roughness=0.025,
+        metallic=0.0,
+        specular=0.92,
+    )
+    bsdf = next((node for node in mat.node_tree.nodes if node.type == "BSDF_PRINCIPLED"), None)
+    if bsdf:
+        if "Emission Color" in bsdf.inputs:
+            bsdf.inputs["Emission Color"].default_value = (0.035, 0.010, 0.055, 1.0)
+        if "Emission Strength" in bsdf.inputs:
+            bsdf.inputs["Emission Strength"].default_value = 0.10
+    return tune_review_glass_bsdf(mat, coat=0.92, coat_roughness=0.018, transmission=0.05, ior=1.52)
+
+
+def make_review_liuli_glass_material(name: str, rgba: tuple[float, float, float, float]) -> bpy.types.Material:
+    mat = make_review_principled_material(
+        name,
+        rgba,
+        roughness=0.060,
+        metallic=0.0,
+        specular=0.82,
+    )
+    nodes = mat.node_tree.nodes
+    links = mat.node_tree.links
+    bsdf = next((node for node in nodes if node.type == "BSDF_PRINCIPLED"), None)
+    if bsdf is not None:
+        noise = nodes.new(type="ShaderNodeTexNoise")
+        noise.inputs["Scale"].default_value = 85.0
+        noise.inputs["Detail"].default_value = 9.0
+        bump = nodes.new(type="ShaderNodeBump")
+        bump.inputs["Strength"].default_value = 0.004
+        bump.inputs["Distance"].default_value = 0.00008
+        links.new(noise.outputs["Fac"], bump.inputs["Height"])
+        if "Normal" in bsdf.inputs:
+            links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    return tune_review_glass_bsdf(mat, coat=0.72, coat_roughness=0.035, transmission=0.28, ior=1.47)
+
+
+def make_review_smoked_guard_pbr_map_material() -> bpy.types.Material:
+    mat = make_review_pbr_map_material(
+        "Sunray150_ComponentReview_Smoked_Guard_Plastic_PBR_Map_Audit",
+        fallback_rgba=(0.110, 0.130, 0.135, 0.46),
+        prefix="sunray150_smoked_translucent_guard",
+        roughness=0.38,
+        metallic=0.0,
+        specular=0.34,
+        bump_strength=0.010,
+        bump_distance=0.00020,
+    )
+    mat.blend_method = "HASHED"
+    mat.use_screen_refraction = False
+    mat.show_transparent_back = True
+    return mat
+
+
+def make_review_colored_silicone_material(name: str, rgba: tuple[float, float, float, float]) -> bpy.types.Material:
+    mat = make_review_principled_material(name, rgba, roughness=0.72, metallic=0.0, specular=0.16)
+    nodes = mat.node_tree.nodes
+    links = mat.node_tree.links
+    bsdf = next((node for node in nodes if node.type == "BSDF_PRINCIPLED"), None)
+    if bsdf is None:
+        return mat
+    noise = nodes.new(type="ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value = 72.0
+    noise.inputs["Detail"].default_value = 8.0
+    bump = nodes.new(type="ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.012
+    bump.inputs["Distance"].default_value = 0.00022
+    links.new(noise.outputs["Fac"], bump.inputs["Height"])
+    if "Normal" in bsdf.inputs:
+        links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    mat[TEXTURE_MAP_PROP] = json.dumps(
+        [
+            {
+                "target": "Procedural Bump",
+                "image": None,
+                "project_relative_path": None,
+                "colorspace": "procedural",
+            }
+        ],
+        ensure_ascii=False,
+    )
+    return mat
 
 
 def make_review_smoked_propeller_pbr_map_material() -> bpy.types.Material:
@@ -727,6 +978,91 @@ def restore_object_state(snapshot: dict[str, dict]) -> None:
                 obj.material_slots[idx].material = mat
 
 
+def object_material_names(obj: bpy.types.Object) -> str:
+    return " ".join(mat.name for mat in obj.data.materials if mat is not None).upper()
+
+
+def make_review_material_library() -> dict[str, bpy.types.Material]:
+    return {
+        "camera_polymer": make_review_camera_polymer_pbr_map_material(),
+        "camera_lens_glass": make_review_camera_lens_glass_material(),
+        "pcb": make_review_pcb_pbr_map_material(),
+        "nickel_connector": make_review_nickel_connector_pbr_map_material(),
+        "dark_connector_core": make_review_black_rubber_pbr_map_material(),
+        "black_rubber": make_review_black_rubber_pbr_map_material(),
+        "battery_heatshrink": make_review_battery_heatshrink_pbr_map_material(),
+        "smoked_guard": make_review_smoked_guard_pbr_map_material(),
+        "liuli_guard_glass": make_review_liuli_glass_material(
+            "Sunray150_ComponentReview_Clear_Liuli_Glass_Guard_Audit",
+            (0.58, 0.82, 0.92, 0.34),
+        ),
+        "liuli_propeller_glass": make_review_liuli_glass_material(
+            "Sunray150_ComponentReview_Clear_Liuli_Glass_Propeller_Audit",
+            (0.52, 0.76, 0.86, 0.38),
+        ),
+        "tfmini_black_sensor": make_review_camera_polymer_pbr_map_material(),
+        "dark_metal": make_review_dark_metal_pbr_map_material(),
+        "red_wire": make_review_colored_silicone_material(
+            "Sunray150_ComponentReview_Red_Silicone_Wire_Audit",
+            (0.55, 0.028, 0.018, 1.0),
+        ),
+        "blue_wire": make_review_colored_silicone_material(
+            "Sunray150_ComponentReview_Blue_Silicone_Wire_Audit",
+            (0.018, 0.085, 0.50, 1.0),
+        ),
+        "yellow_wire": make_review_colored_silicone_material(
+            "Sunray150_ComponentReview_Yellow_Silicone_Wire_Audit",
+            (0.58, 0.42, 0.035, 1.0),
+        ),
+    }
+
+
+def review_material_for_object(
+    obj: bpy.types.Object,
+    component: dict,
+    library: dict[str, bpy.types.Material],
+    fallback_mat: bpy.types.Material | None,
+) -> bpy.types.Material | None:
+    review_material = component.get("review_material")
+    combined = f"{obj.name.upper()} {object_material_names(obj)}"
+
+    if review_material == "camera_module_pbr_maps":
+        if "LENS" in combined or "GLASS" in combined:
+            return library["camera_lens_glass"]
+        if "CONNECTOR" in combined or "USB" in combined:
+            return library["nickel_connector"]
+        return library["camera_polymer"]
+
+    if review_material == "tfmini_sensor_black":
+        if "LENS" in combined or "GLASS" in combined or "WINDOW" in combined:
+            return library["camera_lens_glass"]
+        return library["tfmini_black_sensor"]
+
+    if review_material in {"electronics_mixed_pbr_maps", "connector_mixed_pbr_maps"}:
+        if "CABLE" in combined or "WIRE" in combined:
+            return library["black_rubber"]
+        port_words = ("USB", "HDMI", "RJ45", "NGFF", "PJ311", "TYPE", "CONNECTOR")
+        if any(word in combined for word in port_words):
+            core_words = ("CORE", "BLACK", "PLASTIC")
+            if any(word in combined for word in core_words):
+                return library["dark_connector_core"]
+            return library["nickel_connector"]
+        if "FAN" in combined or "TURBO" in combined:
+            return library["dark_metal"]
+        return library["pcb"]
+
+    if review_material == "cable_rubber_pbr_maps":
+        if "RED" in combined:
+            return library["red_wire"]
+        if "BLUE" in combined:
+            return library["blue_wire"]
+        if "YELLOW" in combined:
+            return library["yellow_wire"]
+        return library["black_rubber"]
+
+    return fallback_mat
+
+
 def apply_component_isolation(component: dict, context_mat: bpy.types.Material) -> dict:
     debug_override = os.environ.get("COMPONENT_DEBUG_OVERRIDE", "").strip().lower()
     if "--debug-override" in sys.argv:
@@ -734,6 +1070,7 @@ def apply_component_isolation(component: dict, context_mat: bpy.types.Material) 
         if idx + 1 < len(sys.argv):
             debug_override = sys.argv[idx + 1].strip().lower()
     override_mat = None
+    material_library = make_review_material_library()
     if debug_override == "red":
         override_mat = make_debug_override_material("Sunray150_ComponentReview_Debug_Red", (0.85, 0.02, 0.01, 1.0))
     elif debug_override == "black":
@@ -772,6 +1109,28 @@ def apply_component_isolation(component: dict, context_mat: bpy.types.Material) 
         )
     elif review_material == "smoked_propeller" and override_mat is None:
         override_mat = make_review_smoked_propeller_pbr_map_material()
+    elif review_material == "liuli_propeller_glass" and override_mat is None:
+        override_mat = make_review_liuli_glass_material(
+            "Sunray150_ComponentReview_Clear_Liuli_Glass_Propeller_Audit",
+            (0.52, 0.76, 0.86, 0.38),
+        )
+    elif review_material == "camera_module_pbr_maps" and override_mat is None:
+        override_mat = make_review_camera_polymer_pbr_map_material()
+    elif review_material in {"pcb_pbr_maps", "electronics_mixed_pbr_maps"} and override_mat is None:
+        override_mat = make_review_pcb_pbr_map_material()
+    elif review_material == "connector_mixed_pbr_maps" and override_mat is None:
+        override_mat = make_review_nickel_connector_pbr_map_material()
+    elif review_material == "cable_rubber_pbr_maps" and override_mat is None:
+        override_mat = make_review_black_rubber_pbr_map_material()
+    elif review_material == "battery_heatshrink_pbr_maps" and override_mat is None:
+        override_mat = make_review_battery_heatshrink_pbr_map_material()
+    elif review_material == "smoked_guard_pbr_maps" and override_mat is None:
+        override_mat = make_review_smoked_guard_pbr_map_material()
+    elif review_material == "liuli_guard_glass" and override_mat is None:
+        override_mat = make_review_liuli_glass_material(
+            "Sunray150_ComponentReview_Clear_Liuli_Glass_Guard_Audit",
+            (0.58, 0.82, 0.92, 0.34),
+        )
     target_count = 0
     context_count = 0
     for obj in bpy.context.scene.objects:
@@ -789,9 +1148,10 @@ def apply_component_isolation(component: dict, context_mat: bpy.types.Material) 
         if is_target_object(obj, component):
             obj.hide_render = False
             obj.hide_viewport = False
-            if override_mat is not None:
+            object_override_mat = review_material_for_object(obj, component, material_library, override_mat)
+            if object_override_mat is not None:
                 obj.data.materials.clear()
-                obj.data.materials.append(override_mat)
+                obj.data.materials.append(object_override_mat)
                 for poly in obj.data.polygons:
                     poly.material_index = 0
             target_count += 1
@@ -812,6 +1172,12 @@ def apply_component_isolation(component: dict, context_mat: bpy.types.Material) 
         "context_object_count": context_count,
         "override_material": override_mat.name if override_mat is not None else None,
         "override_texture_maps": review_texture_maps(override_mat),
+        "object_classification_mode": "mixed_object_classified" if component.get("review_material") in {
+            "camera_module_pbr_maps",
+            "electronics_mixed_pbr_maps",
+            "connector_mixed_pbr_maps",
+            "cable_rubber_pbr_maps",
+        } else "component_override",
     }
 
 
@@ -1032,8 +1398,7 @@ def render_component(component: dict) -> dict:
     restore_component_render_settings(render_snapshot)
     return {
         "name": component["name"],
-        "path": str(out),
-        "project_relative_path": str(out.relative_to(PROJECT_ROOT)).replace("\\", "/"),
+        "project_relative_path": project_relative(out),
         "center_m": list(component["center"]),
         "camera_offset_m": list(component["camera_offset"]),
         "ortho_scale": component["ortho_scale"],
@@ -1075,12 +1440,18 @@ def main() -> None:
     by_name = {item.get("name"): item for item in previous_outputs if item.get("name")}
     for item in outputs:
         by_name[item["name"]] = item
-    ordered = [by_name[component["name"]] for component in COMPONENTS if component["name"] in by_name]
+    ordered = []
+    for component in COMPONENTS:
+        if component["name"] not in by_name:
+            continue
+        row = dict(by_name[component["name"]])
+        row.pop("path", None)
+        ordered.append(row)
     MANIFEST.write_text(
         json.dumps(
             {
-                "source_blend": str(BLEND),
-                "source_blend_project_relative": str(BLEND.relative_to(PROJECT_ROOT)).replace("\\", "/"),
+                "source_blend": project_relative(BLEND),
+                "source_blend_project_relative": project_relative(BLEND),
                 "workflow": "component-first material review; whole-aircraft render is final consistency only",
                 "outputs": ordered,
             },
