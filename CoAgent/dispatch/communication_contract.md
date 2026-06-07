@@ -101,6 +101,12 @@ verification_gates
 manual_review_or_blocker_triggers
 ```
 
+The `department_local_goal` should be short and bounded to the current task
+packet. Prefer the next concrete engineering gate over broad research,
+large-scale cleanup, or workflow redesign. If a workflow, skill, MCP, or
+documentation issue is discovered, record it as a parallel/follow-up action
+unless the current engineering gate cannot safely proceed without that fix.
+
 `subagent_plan` must be one of `used`, `available_but_not_useful`,
 `unavailable`, or `unsafe`. `subagents_used=[]` is acceptable when the
 department runtime has no sub-agent surface, no independent slice exists, or
@@ -244,107 +250,93 @@ runtime behavior, controller, or planner files unless PMO issues a separate
 task.
 
 For every task dispatched to a MWORKS/Sysplorer/Syslab department, the task
-packet must include a MWORKS live gate and must start with a non-invasive
-existing-window activation/screenshot preflight. This is mandatory even when
-the requested business work is static model-file organization, because the
-department must detect demo/login/authorization/error states before doing
-model work. The target department must run this preflight itself. PMO may
-validate or integrate the evidence, but PMO must not be the only actor that
-knows whether the MWORKS window is activated. If the department cannot run the
-sentinel or background screenshot because its current tool surface is missing
-or failing, it must write a blocker instead of continuing model work:
+packet must include a MWORKS live gate. Routine activation/window-health patrol
+is owned by `MoSim｜CoAgent运维平台` through its 30-minute automation, so MWORKS
+R1/R2 should reference the latest patrol and focus the business turn on
+engineering evidence. The target department must not spend the turn repeatedly
+proving activation or return only sentinel JSON as engineering progress.
 
 ```yaml
 mworks_live_gate:
   live_mworks_touched: true
-  mworks_window_evidence_touched: true
   mworks_window_policy: reuse_existing_session_default
-  activation_sentinel_required: true
-  background_screenshot_required: true
-  preflight_order:
-    - run python Scripts\agent\check_mworks_gui_sentinel.py --output Results\mworks_gui_incidents\<task_id>\gui_sentinel_before.json before first business step
-    - capture existing Sysplorer/MWORKS windows with powershell -NoProfile -ExecutionPolicy Bypass -File Scripts\tools\capture_window_background.ps1 -TitleRegex 'Sysplorer|MWORKS|Quadrotor|AWFF' -OutDir Results\mworks_background_capture\<task_id> -RestoreMinimized
-    - treat the screenshot/sentinel as the first business gate; PMO-side screenshots or a static ACK do not satisfy this department task
-    - classify license_state before MCP/model/GUI work
+  activation_patrol_owner: CoAgentOps
+  recent_patrol_required: true
+  max_patrol_age_minutes: 30
   required_return_fields:
-    - activation_sentinel_before
-    - activation_state_observation
-    - license_api_before when live_mworks_touched=true and the API surface is available
-    - background_screenshot_before
+    - mworks_activation_patrol_reference
+    - mworks_activation_patrol_age_minutes when known
     - mworks_phase_screenshots
     - mworks_phase_observations
-    - license_state
-    - gui_sentinel_before
     - will_not_click_activation_login=true
     - live_mworks_touched
-    - mworks_window_evidence_touched
   blocker_on:
     - demo edition
     - unactivated software
     - login or activation prompt
     - authorization/equation-limit failure
     - GUI error-report dialog
-    - unknown or unavailable sentinel state
-    - sentinel or background screenshot tool unavailable
+    - mixed or visible-unknown blocking MWORKS/Sysplorer/Syslab windows
+    - no recent patrol and required bounded live check unavailable
 ```
 
-If the MWORKS business work is static file-only after preflight, the packet may
-set `mworks_live_gate.live_mworks_touched=false`, but it must still set
-`mworks_window_evidence_touched=true`, run the sentinel/background screenshot,
-and return `live_mworks_touched=false` plus the full window-evidence fields.
-`live_mworks_touched=true` is reserved for work that proceeds to MCP,
-load/check/translate/simulate, plot, animation, Smart Layout, graphical review,
-or GUI interaction after preflight.
+If no recent CoAgentOps patrol exists and the MWORKS task needs live MCP/GUI
+work, the department may run at most one bounded current-turn sentinel/API
+check or return a blocker. If it collects current-turn sentinel/capture
+evidence for a real incident, it must inspect the JSON/capture/window-title
+evidence and include `activation_state_observation`, `license_state`, and
+`mworks_window_evidence_touched=true`. Static file-only MWORKS work may set
+`live_mworks_touched=false` and proceed without touching live MWORKS when it
+does not make live GUI/MCP claims.
 
 Important correction: a visible `Sysplorer [教育版]` title is only an
 edition/window marker. It does not by itself prove the account is activated,
 because both activated and unactivated states can show the education-edition
-title. When a department only observes the education window/title and no
-login/demo/error marker, use
-`license_state=education_window_observed_activation_unverified` or equivalent
-wording. For `live_mworks_touched=true`, include `license_api_before` when the
-API surface is available, but do not claim permanent account activation unless
-that API explicitly reports account activation status. A successful
-`check_model` or `SimulateModel` without authorization errors is task-local
-license sufficiency evidence, not a standing activation claim.
+title. It is also not by itself a stop signal. If no demo/login/authorization/
+error marker exists, continue with the requested model/check/simulation/layout
+work and use task-local API/check/simulation success only as license sufficiency
+for that task. Do not claim permanent account activation unless an API/result
+explicitly reports account activation status.
 
-Live MWORKS work must not rely on a single preflight screenshot. If
-`live_mworks_touched=true`, the owner department must continue taking and
-inspecting background screenshots at the phases it actually runs. R1
-simulation/control tasks capture after load/check and after
-simulate/plot/animation phases when present. R2 graphical/model-audit tasks
-capture during or after graphical layout review and inspect missing wires,
-disconnected blocks, unreadable routing, wrong active windows, and new
-license/login/GUI-error prompts. The return/blocker packet must include
-`mworks_phase_screenshots` and `mworks_phase_observations`; the observations
-must say what the screenshots/window titles showed, not only list artifact
-paths.
+Live MWORKS work must still provide evidence for the engineering claim. If
+`live_mworks_touched=true` and the claim includes result-viewer, plot,
+animation, Smart Layout, wiring, or graphical review, the owner department must
+capture and inspect phase screenshots or request PMO/CoAgentOps foreground
+review of the existing window. R1 simulation/control tasks capture after
+load/check and after simulate/plot/animation phases when those visuals are
+claimed. R2 graphical/model-audit tasks capture during or after layout review
+and inspect missing wires, disconnected blocks, unreadable routing, wrong
+active windows, and new license/login/GUI-error prompts. The return/blocker
+packet must include `mworks_phase_screenshots` and
+`mworks_phase_observations`; the observations must say what the screenshots/
+window titles showed, not only list artifact paths.
 
-A MWORKS department return/blocker packet is incomplete if it omits the
-activation sentinel result, background screenshot locator when available,
-activation-state observation, license state, no-click pledge,
-`mworks_window_evidence_touched`, live-touch flag, or the live phase
-screenshot/observation fields required when `live_mworks_touched=true`.
+A MWORKS department return/blocker packet is incomplete if it omits the latest
+patrol reference or a current-turn sentinel/capture set for a real incident,
+the no-click pledge, live-touch flag, declared engineering outputs, or the live
+phase screenshot/observation fields required for claimed GUI evidence. When
+current-turn sentinel/capture evidence is included,
 `activation_state_observation` must say what the sentinel, window title, or
 screenshot actually showed, such as a single education-mode window, demo
 marker, login/activation prompt, mixed state, visible unknown window, hidden
-helper-window risk count, or unavailable evidence. It is not enough to return
-a path or empty manifest reference; the
-department must read the sentinel JSON/capture manifest or otherwise inspect
-the screenshot/window-title evidence enough to classify activation state in the
-same turn. If the evidence cannot be inspected or classified, return a blocker
-instead of continuing model, solver, MCP, layout, or graphical-review work.
-Do not treat a clean-looking background screenshot as sufficient if the window
-title, sentinel, or API still indicates demo/login/authorization risk.
-Sysplorer can hide the login/license pane until the existing window is
-maximized or brought to foreground. Departments must not perform that recovery
-themselves; they return a blocker. PMO may perform a user-authorized bounded
-foreground recovery on the existing window only, then must prove success with a
-fresh sentinel, background screenshot, and license API probe before live MWORKS
-work resumes.
-PMO should reject packets that contain sentinel or screenshot
-evidence without the `mworks_window_evidence_touched` flag.
-`license_state` must be a concrete classification, for example
+helper-window risk count, or unavailable evidence. It is not enough to return a
+path or empty manifest reference.
+
+Do not treat a clean-looking background screenshot as sufficient if other
+evidence indicates demo/login/authorization risk. Sysplorer can hide the
+login/license pane until the existing window is maximized or brought to
+foreground. Departments must not perform that recovery themselves; they return
+a blocker. PMO or CoAgentOps may perform a user-authorized bounded foreground
+recovery or full layout screenshot on the existing window first, then prove
+success before live MWORKS work resumes. Login/license patrols require
+maximized target-window evidence: the screenshot must visually show the target
+reusable MWORKS/Sysplorer/Syslab main window, not Codex, another application,
+a helper/proxy window, or incomplete background `PrintWindow` output. If the
+official login action does not return or cannot complete on the existing
+window, PMO/CoAgentOps may reopen MWORKS and log in through the official UI as
+a bounded recovery.
+
+`license_state`, when reported, must be a concrete classification, for example
 `education_window_observed_activation_unverified`,
 `license_api_recorded_education_version_only`,
 `mixed_education_and_demo_blocked`, `demo_blocked`, `login_required`,
@@ -353,20 +345,15 @@ evidence without the `mworks_window_evidence_touched` flag.
 `ok`, `normal`, or `looks_fine` are not acceptable because they hide the exact
 activation/session state.
 When multiple Sysplorer/MWORKS windows are visible and any relevant reusable
-window is in demo edition or visible unknown license state, delegated departments must
-stop before MCP/model retries and return an auth/license blocker for PMO
-classification. The packet status must be `blocked`, with a concrete
-`license_state`, not a completed return that merely mentions the problem. They
-must not close windows, open a fresh session, click login
-or activation controls, or tune solver/model code to bypass the symptom.
-This is an all-window gate: one relevant MWORKS/Sysplorer/Syslab window in
-demo, login/activation, authorization-failed, GUI-error, mixed, or visible
-unknown state blocks the entire MWORKS task even if another window is clean or
-education-mode. Hidden Qt/browser-proxy/helper windows with no license/error
-text are risk evidence and must be counted, but they do not alone block a clean
-education preflight. The department must preserve evidence and return the
-blocker for real blocking windows; it must not close the suspect window and
-continue by selecting the clean one.
+window is in demo edition, login/activation, authorization-failed, GUI-error,
+mixed, or visible-unknown blocking state, delegated departments must stop
+before MCP/model retries and return an auth/license blocker for PMO
+classification. The packet status must be `blocked`, with a concrete observed
+state, not a completed return that merely mentions the problem. They must not
+close windows, open a fresh session, click login or activation controls, or
+tune solver/model code to bypass the symptom. Hidden Qt/browser-proxy/helper
+windows with no license/error text are risk evidence and must be counted by
+CoAgentOps patrol, but they do not alone block live work.
 
 MWORKS department packets must declare `expected_engineering_outputs`. For
 model optimization, package/model cleanup, simulation, or graphical/layout
@@ -378,19 +365,13 @@ are control-plane evidence only. They do not count as MWORKS engineering
 progress unless the task is explicitly `diagnostic_only`, `rule_sync_only`,
 `preflight_drill_only`, `dispatch_surface_diagnostic`, or
 `static_inventory_only`.
-When a department returns `license_state=sentinel_unavailable_blocked`, PMO
-should treat it as a real blocker on that department's tool surface and either
-route a bounded recovery task to CoAgentOps/PMO or dispatch only file-level
-work that explicitly does not rely on MWORKS window state.
-
-Activation/license/login/authorization/GUI-error evidence at preflight or
-mid-task is a P0 MWORKS infrastructure incident, not a solver/model issue. The
-department must stop live work and return a blocker. PMO must send both a
-sparse WeChat alert and a sparse email alert for the same open incident, even
-if WeChat appears healthy, and keep the incident open until a later clean
-department preflight proves a valid reusable session. Human-facing alerts stay
-short and Chinese; paths, screenshots, and command details belong in packets
-and evidence files.
+Activation/license/login/authorization/GUI-error evidence from CoAgentOps
+patrol or from current MWORKS work is a P0 MWORKS infrastructure incident, not
+a solver/model issue. The department must stop live work and return a blocker.
+CoAgentOps/PMO sends the sparse email alert for the open incident and keeps it
+open until a later patrol or recovery check proves a reusable session.
+Human-facing alerts stay short and Chinese; paths, screenshots, and command
+details belong in packets and evidence files.
 Use `Scripts/tools/capture_window_background.ps1 -OutDir ...`; `-OutputDir` is
 not a valid parameter for the current project script.
 
@@ -406,9 +387,11 @@ python Scripts\quality\check_mworks_live_gate.py `
 
 Use `--expect static` only for compatibility checks on non-department,
 explicitly file-only packets that do not inspect MWORKS windows. Use
-`--expect department` for MWORKS R1/R2 dispatches, activation/screenshot
-practice packets, graphical review packets, and static model-organization work
-owned by a MWORKS department.
+`--expect department` for MWORKS R1/R2 dispatches, graphical review packets,
+and static model-organization work owned by a MWORKS department. The current
+gate accepts a recent CoAgentOps patrol reference or a current-turn
+sentinel/capture set for a real incident; it still rejects JSON-only completed
+returns and missing engineering outputs.
 
 For compatibility with existing runtime packets, the same object may be stored
 under `metadata.native_surface_gate`. New JSON task packets should be checked

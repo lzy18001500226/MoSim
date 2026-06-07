@@ -95,7 +95,7 @@ one-shot review packets.
 | `MoSim｜MWORKS动力学与控制验证部` | MWORKS Dynamics And Control Verification | Sysplorer/Sysblock/Syslab, dynamics/controller wrappers, trace consumption, formal simulation evidence |
 | `MoSim｜ROS2感知定位与规划运行部` | ROS2 Perception, Localization, And Planning Runtime | ROS2/RViz2/FAST-LIO/local-map/planner runtime, topic/timing/truth-error gates, 20Hz setpoint adapter |
 | `MoSim｜DevOps 发布` | DevOps Department | Git hygiene, branches, commits, pushes, LFS/ignore strategy, release checkpoints |
-| `MoSim｜微信网关运维部` | Gateway Operations | cc-connect, QR login, context token/session health, sparse WeChat notification reliability |
+| `MoSim｜微信网关运维部` | Archived historical gateway route | Archived by the user on 2026-06-07 after email-only notification switch; no periodic self-check or active dispatch unless explicitly restored |
 
 Optional/on-demand roles:
 

@@ -1,7 +1,9 @@
 param(
     [string]$TitleRegex = 'Sysplorer|MWORKS|Quadrotor|AWFF',
+    [string]$ProcessRegex = '^(mworks|mw_browser_proxy|mw_crash_handler|syslab|sysplorer)',
     [string]$OutDir = 'Results/mworks_background_capture/manual',
     [switch]$RestoreMinimized,
+    [switch]$Maximize,
     [switch]$KeepRestored
 )
 
@@ -25,6 +27,7 @@ public static class BackgroundWindowCapture {
   [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
   [DllImport("user32.dll")] public static extern bool PrintWindow(IntPtr hwnd, IntPtr hdcBlt, uint nFlags);
   [DllImport("user32.dll")] public static extern bool IsIconic(IntPtr hWnd);
+  [DllImport("user32.dll")] public static extern bool IsZoomed(IntPtr hWnd);
   [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hWnd);
   [DllImport("user32.dll")] public static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
   [DllImport("user32.dll")] public static extern int GetClassName(IntPtr hWnd, StringBuilder text, int count);
@@ -58,15 +61,23 @@ public static class BackgroundWindowCapture {
   const uint SWP_NOMOVE = 0x0002;
   const uint SWP_NOACTIVATE = 0x0010;
   const int SW_SHOWNOACTIVATE = 4;
+  const int SW_SHOWMAXIMIZED = 3;
   const int SW_MINIMIZE = 6;
+  const int SW_RESTORE = 9;
 
-  public static string Capture(IntPtr hwnd, string path, bool restoreMinimized, bool keepRestored) {
+  public static string Capture(IntPtr hwnd, string path, bool restoreMinimized, bool maximize, bool keepRestored) {
     bool wasMinimized = IsIconic(hwnd);
+    bool wasMaximized = IsZoomed(hwnd);
     if (wasMinimized && restoreMinimized) {
       ShowWindowAsync(hwnd, SW_SHOWNOACTIVATE);
       Thread.Sleep(800);
       SetWindowPos(hwnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
       Thread.Sleep(300);
+    }
+
+    if (maximize) {
+      ShowWindowAsync(hwnd, SW_SHOWMAXIMIZED);
+      Thread.Sleep(900);
     }
 
     RECT rect;
@@ -89,11 +100,13 @@ public static class BackgroundWindowCapture {
 
     if (wasMinimized && restoreMinimized && !keepRestored) {
       ShowWindowAsync(hwnd, SW_MINIMIZE);
+    } else if (maximize && !wasMaximized && !keepRestored) {
+      ShowWindowAsync(hwnd, SW_RESTORE);
     }
 
     return String.Format(
-      "ok={0}; was_minimized={1}; minimized_before_reminimize={2}; visible={3}; rect={4},{5},{6},{7}; size={8}x{9}; title={10}; path={11}",
-      ok, wasMinimized, minimizedBeforeReMinimize, IsWindowVisible(hwnd),
+      "ok={0}; was_minimized={1}; was_maximized={2}; maximize_requested={3}; minimized_before_reminimize={4}; visible={5}; rect={6},{7},{8},{9}; size={10}x{11}; title={12}; path={13}",
+      ok, wasMinimized, wasMaximized, maximize, minimizedBeforeReMinimize, IsWindowVisible(hwnd),
       rect.Left, rect.Top, rect.Right, rect.Bottom, width, height, Title(hwnd), path
     );
   }
@@ -107,14 +120,14 @@ $windowMatches = New-Object System.Collections.Generic.List[object]
 $callback = [BackgroundWindowCapture+EnumWindowsProc]{
     param([IntPtr]$hWnd, [IntPtr]$lParam)
     $title = [BackgroundWindowCapture]::Title($hWnd)
-    if ($title -match $TitleRegex) {
-        $windowPid = [BackgroundWindowCapture]::ProcessId($hWnd)
-        $processName = $null
-        try {
-            $processName = (Get-Process -Id $windowPid -ErrorAction Stop).ProcessName
-        } catch {
-            $processName = ''
-        }
+    $windowPid = [BackgroundWindowCapture]::ProcessId($hWnd)
+    $processName = $null
+    try {
+        $processName = (Get-Process -Id $windowPid -ErrorAction Stop).ProcessName
+    } catch {
+        $processName = ''
+    }
+    if (($title -match $TitleRegex) -and ($processName -match $ProcessRegex)) {
         $windowMatches.Add([PSCustomObject]@{
             pid = [int64]$windowPid
             process = $processName
@@ -140,8 +153,23 @@ $rows = $windowMatches |
             [IntPtr]$_.handle,
             $path,
             [bool]$RestoreMinimized,
+            [bool]$Maximize,
             [bool]$KeepRestored
         )
+        $captureWidth = $null
+        $captureHeight = $null
+        if ($capture -match 'size=(\d+)x(\d+)') {
+            $captureWidth = [int]$Matches[1]
+            $captureHeight = [int]$Matches[2]
+        }
+        $captureReliability = 'window_level_capture'
+        if ($_.minimized -and -not [bool]$RestoreMinimized) {
+            $captureReliability = 'incomplete_minimized_window'
+        } elseif (($null -ne $captureWidth -and $captureWidth -lt 500) -or ($null -ne $captureHeight -and $captureHeight -lt 300)) {
+            $captureReliability = 'small_helper_or_incomplete_window'
+        } elseif ($_.title -match 'Sysplorer.*教育版|Sysplorer.*演示版|QuadrotorModel') {
+            $captureReliability = if ([bool]$Maximize) { 'maximized_main_qt_window_body_printwindow' } else { 'main_qt_window_body_printwindow' }
+        }
 
         [PSCustomObject]@{
             id = $_.pid
@@ -152,6 +180,10 @@ $rows = $windowMatches |
             handle_hex = $_.handle_hex
             visible = $_.visible
             minimized = $_.minimized
+            capture_width = $captureWidth
+            capture_height = $captureHeight
+            capture_reliability = $captureReliability
+            known_blind_spot = 'PrintWindow may miss Qt/browser-proxy child surfaces such as the right MWORKS AI panel or separate login panes; use -Maximize and foreground/Windows MCP visible-desktop evidence for login/license and full GUI/layout acceptance.'
             capture = $capture
             path = $path
         }

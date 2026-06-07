@@ -1,8 +1,11 @@
 {
   "registry_policy": {
-    "updated_at": "2026-06-06T22:20:00+08:00",
+    "updated_at": "2026-06-07T19:30:00+08:00",
     "source": "user_confirmed_visible_thread_list",
     "dispatch_rule": "allowlist_only",
+    "default_model": "gpt-5.5",
+    "default_thinking": "xhigh",
+    "default_model_policy_note": "Apply these defaults to future mainline, visible department, automation, business dispatch, and disposable sub-agent calls when the native tool/runtime accepts explicit settings. Do not send no-op turns only to mutate settings on healthy existing threads. Dead-thread recovery no-op probes should omit settings overrides unless specifically testing settings update.",
     "note": "Only thread IDs listed with status=active_visible are dispatchable. If an old thread ID is absent from this registry and cannot be found in the current visible thread scan, treat it as gone instead of maintaining a separate blacklist."
   },
   "threads": [
@@ -90,12 +93,12 @@
       "thread_name": "MoSim｜微信网关运维部",
       "thread_id": "019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c",
       "surface": "codex_app_native",
-      "status": "active_visible",
-      "agent_type": "permanent",
-      "mission": "cc-connect, QR login, context token, active session, scheduled health checks, and gateway incident diagnosis.",
+      "status": "archived_by_user_not_dispatchable",
+      "agent_type": "archived_department",
+      "mission": "Historical WeChat gateway diagnostics only. User archived this thread after switching MoSim notifications to email-only.",
       "accountable_to": "MainPMO",
       "supersedes_thread_id": "019e9be0-534e-7c22-97ff-98fa7c2af39b",
-      "supersedes_note": "The previous Gateway Ops thread is quarantined for production dispatch after repeated agent-loop start-turn failures, even though it remains listable/readable and later showed partial no-op recovery. CoAgentOps maintenance verified this thread id is visible, readable, and no-op sendable on 2026-06-06. Current production gateway maintenance uses this thread id unless PMO later restores an older thread through a bounded validation ladder. Original pre-R2 gateway thread was 019e9855-aa43-7fe2-807e-be7d4095877b; procedures are landed in AGENTS.md, Docs/Workflows/debug_mcp.md, Docs/Workflows/coagent_meta_maintenance.md, and Results/coagent_gateway/."
+      "supersedes_note": "This gateway route was active until 2026-06-07, when the user switched MoSim notifications to email-only and archived 019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c. Do not dispatch production work here. Historical gateway procedures remain only for explicit future WeChat restoration or diagnosis."
     },
     {
       "department": "CodexEnvironmentMigrationAgent",
@@ -160,10 +163,10 @@
       "thread_name": "MoSim｜WechatCodex",
       "thread_id": "019e8358-86b4-7070-8fd6-a2b4f4d2af97",
       "surface": "codex_app_or_vscode",
-      "status": "active_visible",
-      "agent_type": "message_path",
-      "mission": "WeChat-side Codex message path. Use for inbound refresh after ret=-2 only; do not send gateway operations tasks here.",
-      "accountable_to": "WeChatGatewayOps"
+      "status": "inactive_wechat_message_path_not_dispatchable",
+      "agent_type": "historical_message_path",
+      "mission": "Historical WeChat-side Codex message path. MoSim notifications are now email-only; use this only if the user explicitly reopens WeChat gateway diagnosis.",
+      "accountable_to": "MainPMO"
     }
   ]
 }

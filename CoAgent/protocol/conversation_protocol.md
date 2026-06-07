@@ -41,18 +41,23 @@ allowlist in `CoAgent/dispatch/department_threads.json`:
 4. `MoSim｜Sunray150资产与PBR审核部`
 5. `MoSim｜MWORKS动力学与控制验证部`
 6. `MoSim｜ROS2感知定位与规划运行部`
-7. `MoSim｜微信网关运维部`
-8. `MoSim｜Codex 环境迁移部`
-9. `MoSim｜开源项目探针`
-10. `MoSim｜CoAgent运维平台`
-11. `MoSim｜开源项目学习部`
-12. `MoSim｜Codex 上下文维护部`
-13. `MoSim｜WechatCodex`
+7. `MoSim｜Codex 环境迁移部`
+8. `MoSim｜开源项目探针`
+9. `MoSim｜CoAgent运维平台`
+10. `MoSim｜开源项目学习部`
+11. `MoSim｜Codex 上下文维护部`
+
+Historical inactive routes:
+
+- `MoSim｜微信网关运维部`
+- `MoSim｜WechatCodex`
 
 `MoSim｜WechatCodex` is a message path for WeChat-side inbound refresh, not a
-gateway-operations owner. Testing, security, documentation-secretary, and
-toolchain/MCP upkeep are task-local gates or CoAgent meta-maintenance duties
-unless PMO explicitly creates a scoped visible thread for a high-impact task.
+gateway-operations owner. Both WeChat routes are archived/inactive unless the
+user explicitly restores WeChat diagnosis. Testing, security,
+documentation-secretary, and toolchain/MCP upkeep are task-local gates or
+CoAgent meta-maintenance duties unless PMO explicitly creates a scoped visible
+thread for a high-impact task.
 
 These agents are governed by:
 

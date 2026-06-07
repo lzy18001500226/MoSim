@@ -59,6 +59,14 @@ def test_invalid_subagent_plan_fails() -> None:
     assert any("subagent_plan must be one of" in err for err in errors)
 
 
+def test_non_string_subagent_plan_fails_cleanly() -> None:
+    checker = load_checker()
+    packet = base_packet()
+    packet["subagent_plan"] = {"outcome": "available_but_not_useful"}
+    errors = checker.validate(packet, strict_completed_outputs=True)
+    assert "subagent_plan must be a string enum, not dict" in errors
+
+
 def test_json_only_completed_packet_fails() -> None:
     checker = load_checker()
     packet = base_packet()

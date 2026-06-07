@@ -71,7 +71,50 @@ def test_live_task_requires_explicit_sentinel_and_screenshot_gate(tmp_path: Path
     assert report["ok"] is True
 
 
-def test_live_task_rejects_missing_window_evidence_gate(tmp_path: Path) -> None:
+def test_live_task_accepts_coagentops_patrol_gate(tmp_path: Path) -> None:
+    packet = {
+        "request_id": "MWORKS-LIVE-PATROL-GATE-SMOKE",
+        "mworks_live_gate": {
+            "live_mworks_touched": True,
+            "mworks_window_policy": "reuse_existing_session_default_no_new_window",
+            "activation_patrol_owner": "CoAgentOps",
+            "recent_patrol_required": True,
+            "max_patrol_age_minutes": 30,
+            "required_return_fields": [
+                "mworks_activation_patrol_reference",
+                "mworks_activation_patrol_age_minutes when known",
+                "will_not_click_activation_login=true",
+                "live_mworks_touched",
+                "mworks_phase_screenshots",
+                "mworks_phase_observations",
+            ],
+            "blocker_on": [
+                "demo edition",
+                "unactivated software",
+                "login prompt",
+                "activation prompt",
+                "authorization failure",
+                "GUI error-report dialog",
+                "unknown sentinel state",
+            ],
+            "expected_engineering_outputs": [
+                "References/MWORKS/MoSimQuadrotorModel/package.mo",
+                "check_model passed",
+                "SimulateModel smoke result",
+                "layout screenshot or wiring observations",
+            ],
+        },
+    }
+    packet_path = tmp_path / "task.json"
+    packet_path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    completed = run_checker(packet_path, "--kind", "task", "--expect", "department")
+    assert completed.returncode == 0, completed.stdout + completed.stderr
+    report = json.loads(completed.stdout)
+    assert report["ok"] is True
+
+
+def test_live_task_rejects_legacy_gate_missing_window_evidence_return_field(tmp_path: Path) -> None:
     packet = {
         "request_id": "MWORKS-LIVE-MISSING-WINDOW-EVIDENCE",
         "mworks_live_gate": {
@@ -113,8 +156,8 @@ def test_live_task_rejects_missing_window_evidence_gate(tmp_path: Path) -> None:
     assert completed.returncode == 1
     report = json.loads(completed.stdout)
     assert report["ok"] is False
-    reasons = {finding["reason"] for finding in report["findings"]}
-    assert "department_task_missing_window_evidence_gate" in reasons
+    findings = {(finding["reason"], finding["message"]) for finding in report["findings"]}
+    assert ("missing_required_return_field", "mworks_window_evidence_touched") in findings
 
 
 def test_department_task_rejects_required_return_fields_missing_observation(tmp_path: Path) -> None:
@@ -283,8 +326,8 @@ def test_live_return_rejects_missing_background_screenshot(tmp_path: Path) -> No
     report = json.loads(completed.stdout)
     assert report["ok"] is False
     reasons = {finding["reason"] for finding in report["findings"]}
-    assert "missing_required_mworks_return_field" in reasons
     assert "missing_background_screenshot" in reasons
+    assert "missing_live_activation_api_evidence" in reasons
 
 
 def test_live_return_rejects_missing_phase_screenshots(tmp_path: Path) -> None:
@@ -353,6 +396,43 @@ def test_live_return_accepts_phase_screenshots_and_observations(tmp_path: Path) 
     assert report["ok"] is True
 
 
+def test_live_return_accepts_coagentops_patrol_reference_and_phase_evidence(tmp_path: Path) -> None:
+    packet = {
+        "request_id": "MWORKS-LIVE-RETURN-PATROL-REFERENCE",
+        "status": "completed",
+        "live_mworks_touched": True,
+        "mworks_activation_patrol_reference": {
+            "owner": "CoAgentOps",
+            "cadence": "30min",
+            "evidence": "latest maximized-window patrol packet",
+            "license_state": "license_api_recorded_education_version_only",
+        },
+        "mworks_activation_patrol_age_minutes": 12,
+        "will_not_click_activation_login": True,
+        "mworks_phase_screenshots": [
+            {"phase": "after_model_load_check", "status": "captured"},
+            {"phase": "after_simulate_plot", "status": "captured"},
+        ],
+        "mworks_phase_observations": [
+            "after model load/check screenshot capture, the expected model diagram window remained visible",
+            "after simulate/plot screenshot capture, the result plot window was visible and no login dialog appeared",
+        ],
+        "actual_engineering_outputs": [
+            "References/MWORKS/MoSimQuadrotorModel/package.mo",
+            "check_model passed",
+            "SimulateModel data=true",
+            "native_result/Result.msr",
+        ],
+    }
+    packet_path = tmp_path / "return.json"
+    packet_path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    completed = run_checker(packet_path, "--kind", "return", "--expect", "department")
+    assert completed.returncode == 0, completed.stdout + completed.stderr
+    report = json.loads(completed.stdout)
+    assert report["ok"] is True
+
+
 def test_live_return_rejects_education_window_without_activation_api(tmp_path: Path) -> None:
     packet = {
         "request_id": "MWORKS-LIVE-RETURN-EDU-WINDOW-ONLY",
@@ -378,6 +458,9 @@ def test_live_return_rejects_education_window_without_activation_api(tmp_path: P
     reasons = {finding["reason"] for finding in report["findings"]}
     assert "missing_live_activation_api_evidence" in reasons
     assert "unverified_activation_state_not_returned_as_blocker" in reasons
+    messages = "\n".join(finding["message"] for finding in report["findings"])
+    assert "license_api_before" in messages
+    assert "education-window-only evidence is activation_unverified" in messages
 
 
 def test_live_blocker_marked_live_still_requires_api_probe(tmp_path: Path) -> None:
@@ -447,7 +530,8 @@ def test_mworks_department_static_task_requires_window_evidence_gate(tmp_path: P
     report = json.loads(completed.stdout)
     assert report["ok"] is False
     reasons = {finding["reason"] for finding in report["findings"]}
-    assert "department_task_missing_window_evidence_gate" in reasons
+    assert "missing_patrol_or_sentinel_gate" in reasons
+    assert "missing_required_gate_field" in reasons
 
 
 def test_mworks_department_window_evidence_return_required_even_when_static(tmp_path: Path) -> None:
@@ -463,7 +547,8 @@ def test_mworks_department_window_evidence_return_required_even_when_static(tmp_
     report = json.loads(completed.stdout)
     assert report["ok"] is False
     reasons = {finding["reason"] for finding in report["findings"]}
-    assert "department_return_missing_window_evidence_flag" in reasons
+    assert "department_return_missing_patrol_or_window_evidence" in reasons
+    assert "no_click_pledge_not_true" in reasons
 
 
 def test_static_return_accepts_false_live_flag(tmp_path: Path) -> None:
@@ -497,7 +582,7 @@ def test_window_evidence_task_requires_full_gate_even_without_live_mcp(tmp_path:
     assert report["ok"] is False
     reasons = {finding["reason"] for finding in report["findings"]}
     assert "missing_required_gate_field" in reasons
-    assert "required_boolean_not_true" in reasons
+    assert "missing_required_return_field" in reasons
 
 
 def test_static_return_with_sentinel_requires_window_evidence_flag(tmp_path: Path) -> None:

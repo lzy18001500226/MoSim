@@ -14,23 +14,24 @@ ROOT = Path(__file__).resolve().parents[2]
 
 REQUIRED_TASK_FIELDS = {
     "live_mworks_touched",
-    "mworks_window_evidence_touched",
     "mworks_window_policy",
-    "activation_sentinel_required",
-    "background_screenshot_required",
-    "preflight_order",
     "required_return_fields",
     "blocker_on",
 }
 
+REQUIRED_PATROL_TASK_FIELDS = {
+    "activation_patrol_owner",
+    "recent_patrol_required",
+    "max_patrol_age_minutes",
+}
+
 REQUIRED_RETURN_FIELDS = {
-    "activation_sentinel_before",
-    "activation_state_observation",
-    "background_screenshot_before",
-    "license_state",
     "will_not_click_activation_login",
     "live_mworks_touched",
-    "mworks_window_evidence_touched",
+}
+
+REQUIRED_PATROL_RETURN_FIELDS = {
+    "mworks_activation_patrol_reference",
 }
 
 REQUIRED_LIVE_PHASE_RETURN_FIELDS = {
@@ -42,7 +43,14 @@ REQUIRED_LIVE_ACTIVATION_RETURN_FIELDS = {
     "license_api_before",
 }
 
-REQUIRED_RETURN_FIELD_NAMES = REQUIRED_RETURN_FIELDS | {"gui_sentinel_before"}
+LEGACY_SENTINEL_RETURN_FIELD_NAMES = {
+    "activation_sentinel_before",
+    "activation_state_observation",
+    "background_screenshot_before",
+    "gui_sentinel_before",
+    "license_state",
+    "mworks_window_evidence_touched",
+}
 
 REQUIRED_PREFLIGHT_SNIPPETS = [
     "check_mworks_gui_sentinel.py",
@@ -295,6 +303,17 @@ def _has_content(value: Any) -> bool:
     return True
 
 
+def _has_patrol_reference(packet: dict[str, Any]) -> bool:
+    return _has_content(packet.get("mworks_activation_patrol_reference")) or _has_content(
+        packet.get("activation_patrol_reference")
+    )
+
+
+def _gate_uses_patrol(gate: dict[str, Any]) -> bool:
+    owner = str(gate.get("activation_patrol_owner", "")).casefold()
+    return "coagentops" in owner or "coagent" in owner or gate.get("recent_patrol_required") is not None
+
+
 def _add(findings: list[dict[str, str]], field: str, reason: str, message: str) -> None:
     findings.append({"field": field, "reason": reason, "message": message})
 
@@ -321,15 +340,8 @@ def _check_task(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
         return {"ok": False, "fail_count": len(findings), "findings": findings}
 
     window_evidence_touched = _is_true(gate.get("mworks_window_evidence_touched"))
-    requires_full_gate = expect in {"live", "department"} or window_evidence_touched
-
-    if expect in {"live", "department"} and not window_evidence_touched:
-        _add(
-            findings,
-            "mworks_live_gate.mworks_window_evidence_touched",
-            "department_task_missing_window_evidence_gate",
-            "MWORKS live or department dispatches must set mworks_window_evidence_touched=true because activation screenshot/sentinel preflight is mandatory.",
-        )
+    patrol_mode = _gate_uses_patrol(gate)
+    requires_full_gate = expect in {"live", "department"} or window_evidence_touched or patrol_mode
 
     if expect == "static" and not window_evidence_touched:
         if not _is_false(gate.get("live_mworks_touched")):
@@ -357,25 +369,51 @@ def _check_task(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
     for field in missing:
         _add(findings, f"mworks_live_gate.{field}", "missing_required_gate_field", field)
 
-    for bool_field in ["activation_sentinel_required", "background_screenshot_required"]:
-        if gate.get(bool_field) is not True:
+    legacy_sentinel_mode = "activation_sentinel_required" in gate or "background_screenshot_required" in gate
+    if patrol_mode:
+        for field in sorted(REQUIRED_PATROL_TASK_FIELDS):
+            if field not in gate:
+                _add(findings, f"mworks_live_gate.{field}", "missing_required_patrol_gate_field", field)
+        if not _contains_snippet(gate.get("activation_patrol_owner"), "CoAgentOps"):
             _add(
                 findings,
-                f"mworks_live_gate.{bool_field}",
-                "required_boolean_not_true",
-                f"{bool_field} must be true for live MWORKS work.",
+                "mworks_live_gate.activation_patrol_owner",
+                "activation_patrol_owner_not_coagentops",
+                "MWORKS activation patrol owner must be CoAgentOps for department dispatches.",
             )
+    elif legacy_sentinel_mode:
+        for bool_field in ["activation_sentinel_required", "background_screenshot_required"]:
+            if gate.get(bool_field) is not True:
+                _add(
+                    findings,
+                    f"mworks_live_gate.{bool_field}",
+                    "required_boolean_not_true",
+                    f"{bool_field} must be true when using legacy current-turn sentinel mode.",
+                )
 
-    for snippet in REQUIRED_PREFLIGHT_SNIPPETS:
-        if not _contains_snippet(gate.get("preflight_order"), snippet):
-            _add(
-                findings,
-                "mworks_live_gate.preflight_order",
-                "missing_preflight_step",
-                f"preflight_order must mention {snippet}.",
-            )
+        for snippet in REQUIRED_PREFLIGHT_SNIPPETS:
+            if not _contains_snippet(gate.get("preflight_order"), snippet):
+                _add(
+                    findings,
+                    "mworks_live_gate.preflight_order",
+                    "missing_preflight_step",
+                    f"preflight_order must mention {snippet} when using legacy current-turn sentinel mode.",
+                )
+    elif expect in {"live", "department"}:
+        _add(
+            findings,
+            "mworks_live_gate.activation_patrol_owner",
+            "missing_patrol_or_sentinel_gate",
+            "MWORKS department tasks must either reference CoAgentOps activation patrol or explicitly use current-turn sentinel mode.",
+        )
 
-    for field_name in sorted(REQUIRED_RETURN_FIELD_NAMES):
+    required_return_names = set(REQUIRED_RETURN_FIELDS)
+    if patrol_mode:
+        required_return_names |= REQUIRED_PATROL_RETURN_FIELDS
+    if legacy_sentinel_mode:
+        required_return_names |= LEGACY_SENTINEL_RETURN_FIELD_NAMES
+
+    for field_name in sorted(required_return_names):
         if not _contains_snippet(gate.get("required_return_fields"), field_name):
             _add(
                 findings,
@@ -385,7 +423,10 @@ def _check_task(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
             )
 
     if _is_true(gate.get("live_mworks_touched")):
-        for field_name in sorted(REQUIRED_LIVE_PHASE_RETURN_FIELDS | REQUIRED_LIVE_ACTIVATION_RETURN_FIELDS):
+        live_required = set(REQUIRED_LIVE_PHASE_RETURN_FIELDS)
+        if legacy_sentinel_mode and not patrol_mode:
+            live_required |= REQUIRED_LIVE_ACTIVATION_RETURN_FIELDS
+        for field_name in sorted(live_required):
             if not _contains_snippet(gate.get("required_return_fields"), field_name):
                 _add(
                     findings,
@@ -440,13 +481,15 @@ def _check_return(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
     live_touched = packet.get("live_mworks_touched")
     evidence_touched = _is_true(packet.get("mworks_window_evidence_touched"))
     has_sentinel = "activation_sentinel_before" in packet or "gui_sentinel_before" in packet
+    has_patrol_reference = _has_patrol_reference(packet)
+    legacy_sentinel_mode = evidence_touched or has_sentinel or "background_screenshot_before" in packet
 
-    if expect == "department" and not evidence_touched:
+    if expect == "department" and not evidence_touched and not has_patrol_reference:
         _add(
             findings,
-            "mworks_window_evidence_touched",
-            "department_return_missing_window_evidence_flag",
-            "MWORKS department return/blocker packets must set mworks_window_evidence_touched=true after the required activation screenshot/sentinel preflight.",
+            "mworks_activation_patrol_reference",
+            "department_return_missing_patrol_or_window_evidence",
+            "MWORKS department return/blocker packets must reference the latest CoAgentOps patrol or include current-turn sentinel/window evidence.",
         )
 
     if expect == "static" and not evidence_touched and not has_sentinel:
@@ -462,7 +505,7 @@ def _check_return(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
     if expect == "auto" and _is_false(live_touched) and not evidence_touched and not has_sentinel:
         return {"ok": True, "fail_count": 0, "findings": findings}
 
-    if _is_false(live_touched) and (evidence_touched or has_sentinel):
+    if _is_false(live_touched) and legacy_sentinel_mode:
         if not evidence_touched:
             _add(
                 findings,
@@ -475,6 +518,25 @@ def _check_return(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
         if field not in packet:
             _add(findings, field, "missing_required_mworks_return_field", field)
 
+    if expect == "department" and has_patrol_reference:
+        if "mworks_activation_patrol_age_minutes" in packet:
+            age = packet.get("mworks_activation_patrol_age_minutes")
+            try:
+                if float(age) < 0:
+                    _add(
+                        findings,
+                        "mworks_activation_patrol_age_minutes",
+                        "invalid_patrol_age",
+                        "mworks_activation_patrol_age_minutes must be non-negative when provided.",
+                    )
+            except (TypeError, ValueError):
+                _add(
+                    findings,
+                    "mworks_activation_patrol_age_minutes",
+                    "invalid_patrol_age",
+                    "mworks_activation_patrol_age_minutes must be numeric when provided.",
+                )
+
     if packet.get("will_not_click_activation_login") is not True:
         _add(
             findings,
@@ -483,7 +545,7 @@ def _check_return(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
             "will_not_click_activation_login must be true.",
         )
 
-    if "gui_sentinel_before" not in packet and "activation_sentinel_before" not in packet:
+    if legacy_sentinel_mode and "gui_sentinel_before" not in packet and "activation_sentinel_before" not in packet:
         _add(
             findings,
             "gui_sentinel_before",
@@ -500,7 +562,7 @@ def _check_return(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
             )
 
     screenshot = packet.get("background_screenshot_before")
-    if not _has_content(screenshot):
+    if legacy_sentinel_mode and not _has_content(screenshot):
         _add(
             findings,
             "background_screenshot_before",
@@ -511,14 +573,15 @@ def _check_return(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
     live_touched_bool = _is_true(live_touched)
 
     if live_touched_bool:
-        for field in sorted(REQUIRED_LIVE_ACTIVATION_RETURN_FIELDS):
-            if not _has_content(packet.get(field)):
-                _add(
-                    findings,
-                    field,
-                    "missing_live_activation_api_evidence",
-                    "Live MWORKS work cannot use the Sysplorer education-window title as activation proof; include a current-turn license/API probe and avoid claiming account activation unless that API exposes it, or return an activation_unverified blocker before model/check/simulation work.",
-                )
+        if legacy_sentinel_mode and not has_patrol_reference:
+            for field in sorted(REQUIRED_LIVE_ACTIVATION_RETURN_FIELDS):
+                if not _has_content(packet.get(field)):
+                    _add(
+                        findings,
+                        field,
+                        "missing_live_activation_api_evidence",
+                        "Live MWORKS work using current-turn activation evidence must include stronger license_api_before or task-local license-sufficiency evidence.",
+                    )
         phase_screenshots = packet.get("mworks_phase_screenshots")
         phase_observations = packet.get("mworks_phase_observations")
         if not _has_content(phase_screenshots):
@@ -544,38 +607,41 @@ def _check_return(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
             )
 
     license_state = packet.get("license_state")
-    if not isinstance(license_state, str) or not license_state.strip():
-        _add(findings, "license_state", "missing_license_state", "license_state must be a non-empty string.")
-    elif not any(snippet.casefold() in license_state.casefold() for snippet in LICENSE_STATE_SNIPPETS):
-        _add(
-            findings,
-            "license_state",
-            "unclassified_license_state",
-            "license_state must classify the observed state, for example education_window_observed_activation_unverified, license_api_recorded_education_version_only, mixed_education_and_demo_blocked, demo_blocked, login_required, authorization_failed, gui_error_report_blocked, sentinel_unavailable_blocked, or unknown_blocked.",
-        )
-    elif any(snippet.casefold() in license_state.casefold() for snippet in BLOCKING_LICENSE_STATE_SNIPPETS):
-        status_text = str(packet.get("status", "")).casefold()
-        if "block" not in status_text:
+    if legacy_sentinel_mode or "license_state" in packet:
+        if not isinstance(license_state, str) or not license_state.strip():
+            _add(findings, "license_state", "missing_license_state", "license_state must be a non-empty string when current-turn window evidence is reported.")
+        elif not any(snippet.casefold() in license_state.casefold() for snippet in LICENSE_STATE_SNIPPETS):
             _add(
                 findings,
-                "status",
-                "blocking_license_state_not_returned_as_blocker",
-                "A demo/login/activation/authorization/mixed/visible-unknown/unavailable license_state must be returned as a blocker, not as a completed MWORKS task. Hidden helper-window risk counts alone should not be encoded as unknown_blocked.",
+                "license_state",
+                "unclassified_license_state",
+                "license_state must classify the observed state, for example education_window_observed_activation_unverified, license_api_recorded_education_version_only, mixed_education_and_demo_blocked, demo_blocked, login_required, authorization_failed, gui_error_report_blocked, sentinel_unavailable_blocked, or unknown_blocked.",
             )
-    elif live_touched_bool and any(
-        snippet.casefold() in license_state.casefold() for snippet in UNVERIFIED_LICENSE_STATE_SNIPPETS
-    ):
-        status_text = str(packet.get("status", "")).casefold()
-        if "block" not in status_text:
-            _add(
-                findings,
-                "status",
-                "unverified_activation_state_not_returned_as_blocker",
-                "For live MWORKS work, an education window without activation API proof is activation_unverified and must be returned as a blocker before model/check/simulation work.",
-            )
+        elif any(snippet.casefold() in license_state.casefold() for snippet in BLOCKING_LICENSE_STATE_SNIPPETS):
+            status_text = str(packet.get("status", "")).casefold()
+            if "block" not in status_text:
+                _add(
+                    findings,
+                    "status",
+                    "blocking_license_state_not_returned_as_blocker",
+                    "A demo/login/activation/authorization/mixed/visible-unknown/unavailable license_state must be returned as a blocker, not as a completed MWORKS task. Hidden helper-window risk counts alone should not be encoded as unknown_blocked.",
+                )
+        elif live_touched_bool and any(
+            snippet.casefold() in license_state.casefold() for snippet in UNVERIFIED_LICENSE_STATE_SNIPPETS
+        ):
+            status_text = str(packet.get("status", "")).casefold()
+            if "block" not in status_text:
+                _add(
+                    findings,
+                    "status",
+                    "unverified_activation_state_not_returned_as_blocker",
+                    "For live MWORKS work, education-window-only evidence is activation_unverified and cannot be completed unless stronger task-local license-sufficiency evidence is also recorded.",
+                )
 
     observation = packet.get("activation_state_observation")
-    if isinstance(observation, str):
+    if not legacy_sentinel_mode and "activation_state_observation" not in packet:
+        has_observation = True
+    elif isinstance(observation, str):
         stripped_observation = observation.strip()
         has_observation = bool(stripped_observation)
         if has_observation and len(stripped_observation) < 24:
@@ -591,14 +657,14 @@ def _check_return(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
         has_observation = bool(observation)
     else:
         has_observation = False
-    if not has_observation:
+    if legacy_sentinel_mode and not has_observation:
         _add(
             findings,
             "activation_state_observation",
             "missing_activation_state_observation",
             "Return/blocker must state what the sentinel, window title, or screenshot actually showed about activation state.",
         )
-    elif not _contains_any_snippet(observation, OBSERVATION_SOURCE_SNIPPETS):
+    elif legacy_sentinel_mode and not _contains_any_snippet(observation, OBSERVATION_SOURCE_SNIPPETS):
         _add(
             findings,
             "activation_state_observation",

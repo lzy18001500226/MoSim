@@ -78,11 +78,21 @@ surface gate in PMO planning:
 | Code-review gate | `codex review` or scoped review sub-agent |
 | Clear background one-shot | `codex exec` |
 | Recurring check/reminder | Codex App automation/thread wakeup after local verification |
-| User-facing long-task intervention | WeChat gateway when available |
+| User-facing long-task intervention | Sparse email by default; WeChat only for explicit retry or gateway diagnosis |
 | MoSim-specific return/evidence glue | CoAgent packet, ledger, result import, or doctor helper |
 
 Do not add CoAgent runtime, queue, schema, or department machinery until this
 native surface gate shows a real gap.
+
+Codex App context-compression exception: when a visible thread appears stalled
+but the App UI itself shows an abnormal context-compression state, for example
+`Context Left 100.0%` and manual slash-command compression is needed, classify
+the first incident as `codex_context_compression_surface`. Notify the user and
+use the user-confirmed manual recovery path: switch the affected conversation
+to `gpt-5.4` with `xhigh`, type `/`, select compression, wait for completion,
+then switch back to `gpt-5.5` with `xhigh`. Only after that run the normal
+no-op or expected-packet validation. Do not immediately create a replacement
+thread or trigger Codex++ restart for this specific surface issue.
 
 For every PMO-dispatched non-trivial task, write the gate decision into the
 task graph or packet before dispatch. The record should name the selected
@@ -310,11 +320,12 @@ department and configure native Codex App automation against it. As of
 2026-06-06, the gateway, context, open-source probe, and open-source learning
 departments were replaced with App-native visible threads after their reusable
 old conversation content was landed into canonical project documents. Use the
-current active IDs in `CoAgent/dispatch/department_threads.json`; old IDs are
-superseded and must not receive new work. Gateway production routing is the
-current `MoSim｜微信网关运维部` thread without an R suffix; Gateway R2 is
-quarantine/diagnostic-only unless PMO explicitly restores it
-through the bounded recovery ladder.
+current active IDs and status values in
+`CoAgent/dispatch/department_threads.json`; old IDs are superseded and must not
+receive new work. The former `MoSim｜微信网关运维部` route is archived after the
+email-only notification switch and must not receive periodic checks, no-op
+probes, canaries, or gateway work unless PMO/user explicitly restores WeChat
+diagnosis through a new bounded task.
 
 If a mainline thread cannot see the native thread or automation tools in its
 current Codex surface, it must first search the tool surface (`tool_search`
@@ -472,9 +483,11 @@ specific recovery task is testing settings update behavior.
 Human review artifact rule: if a task produces review images, videos, native
 MWORKS result viewers, `.msr` assets, or other user-facing audit artifacts, PMO
 must open/display the artifact directly while the user is online or send a
-concise WeChat review prompt/image when available. Do not treat a pasted path
-as sufficient review delivery. Exact paths stay in result packets and project
-evidence; the user-facing prompt stays short and Chinese.
+concise sparse email review prompt when direct display is not practical.
+WeChat is reserved for explicit WeChat retry or gateway-diagnosis scope. Do
+not treat a pasted path as sufficient review delivery. Exact paths stay in
+result packets and project evidence; the user-facing prompt stays short and
+Chinese.
 
 A new department thread is appropriate for recurring ownership such as
 ROS2 runtime integration, MWORKS dynamics evidence, UE experiment-console
@@ -513,24 +526,26 @@ subagent and call the task dispatched.
 
 Manual-intervention rule: when a required external document, webpage, login,
 license, GUI permission, or browser-only source cannot be accessed after the
-documented local route, write a blocker packet and send a sparse WeChat blocker
-notification through `CoAgent/gateway/cc_connect_weixin.py`. Use
-`MoSim｜微信网关运维部` (`019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c`) for gateway
-implementation or health incidents. Use `MoSim｜WechatCodex`
-(`019e8358-86b4-7070-8fd6-a2b4f4d2af97`) only when the user must send a normal
-inbound message to refresh WeChat context after `ret=-2`.
+documented local route, write a blocker packet and send one sparse email
+blocker notification through `Scripts/agent/send_gateway_email_alert.py`.
+There is no active WeChat gateway operations route. `MoSim｜微信网关运维部`
+(`019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c`) and `MoSim｜WechatCodex`
+(`019e8358-86b4-7070-8fd6-a2b4f4d2af97`) are historical/inactive unless the
+user explicitly restores WeChat diagnosis. Use sparse email for blockers and
+intervention notices.
 
-WeChat body-format rule: send short Chinese status text only. Do not include
+Email body-format rule: send short Chinese status text only. Do not include
 concrete English file names, long paths, JSON/log names, or raw evidence lists
-in the WeChat body; keep those locators in result/blocker packets, ledger
+in the email body; keep those locators in result/blocker packets, ledger
 entries, and evidence files. Routine completion can use `【MoSim 进度】`.
 Manual intervention, incident, auth/license, GUI crash, or dead-thread
 messages should start with an obvious alert header such as
-`!!! MoSim 需要人工介入 !!!`.
+`!!! MoSim 需要人工介入 !!!`. If WeChat is explicitly requested, apply the same
+body-format rule to the WeChat body.
 
-If the user is online, PMO should send a sparse WeChat note with its own
-thread id and the proposed department charter so the user can inspect the
-thread creation. If the user is offline or the next action is clear, PMO may
+When manual thread creation/coordination is useful, PMO should send a sparse
+email note with its own thread id and the proposed department charter so the
+user can inspect the thread creation. If the next action is clear, PMO may
 create or dispatch directly using the available thread-management tooling, then
 record the new thread id in `PROGRESS.md` and
 `Docs/Workflows/agent_task_ledger.md`.
@@ -606,8 +621,8 @@ overrides this ownership for that incident.
 
 If CoAgentOps confirms the same start-turn/agent-loop failure after bounded
 list/read/no-op/metadata/no-op diagnosis, the next default action is to write a
-durable blocker/recovery packet, attempt both sparse user notifications
-(WeChat and email), record both audit results, and restart Codex++ through the
+durable blocker/recovery packet, attempt one sparse email notification,
+record the audit result, and restart Codex++ through the
 authorized manager after only a short manual-restart window, then wait for a
 post-restart no-op validation. The notifications let an online user restart
 faster; they do not create an indefinite approval wait. Do not keep
@@ -621,9 +636,9 @@ restart, post-restart validation, or reporting `still_quarantined` must treat
 that as an active P0 incident. It must not summarize the item as ordinary
 pending work, return `DONT_NOTIFY`, or run lower-priority optimization. The
 heartbeat must execute the next authorized recovery step. For
-notification/restart-pending dead-thread recovery, that means sending sparse
-WeChat plus email alerts, recording both audits, and triggering the authorized
-Codex++ restart route after a short manual-restart window if no explicit
+notification/restart-pending dead-thread recovery, that means sending a sparse
+email alert, recording the audit, and triggering the authorized Codex++
+restart route after a short manual-restart window if no explicit
 deferral arrives. It writes a blocker/request packet with `NOTIFY` only
 when a required tool/surface is unavailable, the notification/restart action
 fails, or an explicit PMO/user-approved deferral packet pauses this fail-close
@@ -635,9 +650,9 @@ The user-authorized Codex++ restart surface for this case is:
 D:\Program Files\Codex++\codex-plus-plus-manager.exe
 ```
 
-Use it only after a dead-thread blocker has been written and both sparse user
-notifications have been attempted, one by WeChat and one by email. If a channel
-is unavailable, record the failure before continuing. If notification is unavailable,
+Use it only after a dead-thread blocker has been written and one sparse email
+notification has been attempted. If email is unavailable, record the failure
+before continuing. If notification is unavailable,
 or if notification is sent and no explicit manual deferral or visible
 intervention is available after a short window, CoAgentOps may trigger the
 Codex++ restart action through this manager. This will terminate the current
@@ -752,9 +767,10 @@ records the responsible surface clearly. If the packet is missing by the
 checkpoint deadline, the origin department opens a blocker against the target
 department/thread. PMO may audit or integrate the result, but PMO is not the
 only owner of return handling. The responsibility belongs to the target
-department until it writes a valid return or blocker packet. WeChat is only a
-sparse alert channel for completion, blocker, or manual review; it is not the
-source of truth and not the return channel.
+department until it writes a valid return or blocker packet. Sparse email is
+the default alert channel for completion, blocker, or manual review; it is not
+the source of truth and not the return channel. WeChat remains diagnostic or
+explicit-use only.
 
 Codex App / VSCode visibility and CLI communication use different metadata
 contracts. Keep WSL-side thread metadata CLI-compatible for communication:
@@ -822,7 +838,7 @@ insufficient.
 Current operational boundary: multi-conversation scheduling is PMO-led and
 allowed only through visible threads with explicit return contracts. The main
 agent owns packet preparation, new-thread charter quality, result import,
-ledger updates, integration, and automatic WeChat notifications after
+ledger updates, integration, and automatic sparse email notifications after
 completion, review-required, blocker, or incident states. CoAgent helpers may
 prepare envelopes, validate packets, diagnose visibility, and import results,
 but they are not a mandatory dispatch center. Do not claim autonomous dispatch
@@ -834,17 +850,20 @@ Completion notification rule:
 ```bash
 python CoAgent/result_router/result_router.py import \
   --packet Results/agent_packets/<task_id>.yaml \
-  --notify-weixin \
-  --send-weixin
+  --notify-email \
+  --send-email
 ```
 
-For `canonical_status=completed`, `--notify-weixin` generates a
+For `canonical_status=completed`, `--notify-email` generates a
 `completion_notification` packet and routes it through
-`CoAgent/gateway/cc_connect_weixin.py`. This is required even when
+`Scripts/agent/send_gateway_email_alert.py` or the current project email
+adapter. This is required even when
 `requires_human_review=false`, because task completion is the user's unified
 out-of-band progress signal while multi-dialog scheduling remains manual.
-The generated WeChat body must stay Chinese and compact; evidence paths remain
-inside the packet and are not copied into the human-facing message.
+The generated email body must stay Chinese and compact; evidence paths remain
+inside the packet and are not copied into the human-facing message. Use
+WeChat notification flags only for explicit WeChat retry or gateway-diagnosis
+tasks.
 
 Conversation classes:
 
@@ -1141,6 +1160,14 @@ Security constraint scan:
 Do not assume App automations replace durable MoSim status records. They can
 trigger or remind; they are not the project state source.
 
+Automation prompt size rule: keep native Codex App automation prompts short and
+stable. A heartbeat or cron prompt should name the owner, entry documents,
+high-level gate, and required return/blocker behavior. Do not grow the
+automation prompt into a full policy manual after every incident; update
+`AGENTS.md`, workflow docs, skills, packet templates, or checker scripts
+instead. Only edit an existing working automation when cadence, owner,
+destination, routing, or high-level trigger behavior is wrong.
+
 Native automation creation method:
 
 1. Search for the native tool before acting:
@@ -1421,71 +1448,51 @@ state, or avoid reasoning about current session evidence. A new window or full
 restart is a last resort after a blocker, and requires PMO/user approval unless
 the existing process is frozen or opening duplicate sessions uncontrollably.
 
-PMO dispatch packets for all MWORKS department work must include a
-`mworks_live_gate` object before delivery. Required fields are
-`live_mworks_touched`, `mworks_window_evidence_touched`,
-`mworks_window_policy`, `activation_sentinel_required`,
-`background_screenshot_required`, `preflight_order`, `required_return_fields`,
-and `blocker_on`. The delegated department must execute the activation
-sentinel and background screenshot, when available, against the existing
-reusable Sysplorer/MWORKS window before any business work. This is required
-even for static model-organization tasks; those tasks may keep
-`live_mworks_touched=false`, but they must still set
-`mworks_window_evidence_touched=true` in task and return/blocker packets.
-`live_mworks_touched=true` is reserved for tasks that proceed to MCP, model
-load/check/translate/simulate, plot, animation, Smart Layout, graphical review,
-or GUI interaction after the preflight.
+PMO dispatch packets for MWORKS department work must include a
+`mworks_live_gate` object before delivery, but the activation/window-health
+owner is now CoAgentOps' 30-minute automation rather than each engineering
+thread. Required task fields are `live_mworks_touched`,
+`mworks_window_policy`, `activation_patrol_owner`,
+`recent_patrol_required`, `max_patrol_age_minutes`, `required_return_fields`,
+`blocker_on`, and `expected_engineering_outputs`. For live MCP/GUI work,
+`activation_patrol_owner` should be `CoAgentOps`; for static file-only work,
+set `live_mworks_touched=false` and do not turn the task into an activation
+probe.
 
-The return or blocker packet must carry `activation_sentinel_before`,
-`background_screenshot_before`, `activation_state_observation`,
-`license_state`, `gui_sentinel_before`,
-`will_not_click_activation_login=true`, `mworks_window_evidence_touched=true`,
-and `live_mworks_touched`. A packet that contains
-`activation_sentinel_before`, `gui_sentinel_before`, or
-`background_screenshot_before` without
-`mworks_window_evidence_touched=true` is incomplete because it collected
-window evidence without declaring the gate.
-The activation screenshot/sentinel is a current-turn department-owned business
-gate. A static ACK, PMO-side screenshot, or earlier department drill is not
-reusable readiness evidence for a later MWORKS assignment. The department must
-write what this turn's sentinel/window title/screenshot showed in
-`activation_state_observation`; a path-only report, empty manifest reference,
-or generic status sentence is not sufficient. The department must read the
-sentinel JSON/capture manifest or otherwise inspect the screenshot/window-title
-evidence enough to classify the current activation state in the same task turn.
-If it cannot inspect or classify that evidence, it returns a blocker and does
-not continue MWORKS business work. Important correction: a visible
-`Sysplorer [教育版]` title is only an edition/window marker, not proof that the
-account is activated. Both activated and unactivated states may show the
-education-edition title. This does not mean an education-edition title alone
-is a reason to stop. If no demo/login/authorization/error/visible-unknown
-marker exists, the department should continue to current-turn
-license/session/API evidence before deciding whether MCP/check work may
-proceed. `license_state` must be a concrete classification such as
-`education_window_observed_activation_unverified`,
-`license_api_recorded_education_version_only`,
-`mixed_education_and_demo_blocked`, `demo_blocked`, `login_required`,
-`authorization_failed`, `gui_error_report_blocked`,
-`sentinel_unavailable_blocked`, or `unknown_blocked`. Vague states such as
-`ok`, `normal`, or `looks_fine` must be rejected. For
-`live_mworks_touched=true`, return `license_api_before` when the API surface
-is available, preferably `License(ltype="info")` or an equivalent Sysplorer
-license API. `session_manager health` is only API reachability evidence. Do not
-claim permanent account activation unless the API or result explicitly exposes
-activation/account status. A successful
-`check_model` or `SimulateModel` without authorization errors is task-local
-license sufficiency evidence, not a standing activation claim.
+The return or blocker packet should carry `mworks_activation_patrol_reference`
+and, when known, `mworks_activation_patrol_age_minutes`, plus
+`will_not_click_activation_login=true` and `live_mworks_touched`. If no recent
+CoAgentOps patrol is available and the work is live MCP/GUI work, the
+department may run one bounded current-turn sentinel/API check or return a
+blocker; it must not loop on activation checks, open a fresh MWORKS window, or
+produce only JSON/sentinel metadata as a completed engineering result. If the
+department does run current-turn sentinel/capture evidence for a real incident,
+it must inspect that evidence and include the concrete observed state in
+`activation_state_observation` and `license_state`.
+
+Important correction: a visible `Sysplorer [教育版]` title is only an edition
+marker, not proof that the account is activated. It is also not by itself a
+reason to stop engineering work. If no demo/login/authorization/error marker
+exists, continue with the requested model/check/simulation/layout task and
+record task-local API/check/simulation license sufficiency where available. Do
+not claim permanent account activation unless the API/result explicitly exposes
+activation/account status.
+
 Background screenshot evidence has a known blind spot: it may capture a normal
 main window while the login/license pane is only visible after the existing
-Sysplorer/MWORKS window is maximized or brought to foreground. If any other
-evidence still indicates demo/login/authorization risk, delegated departments
-must block instead of continuing. PMO may run a bounded, user-authorized
-foreground recovery on the existing window, operate only the official
-login/license UI, then prove recovery with fresh sentinel, background capture,
-and `License(ltype="info")` evidence. Successful recovery closes only the
-license/login dialog and keeps the reusable main window open.
+Sysplorer/MWORKS window is maximized or brought to foreground. CoAgentOps or
+PMO owns that foreground recovery/review route. Delegated departments block
+and return evidence when demo/login/authorization/error risk appears; they do
+not click login, activation, save, close, restart, send-report, or error-dialog
+controls. Login/license patrols should use maximized-window evidence when a
+hidden login pane is possible; minimized/background captures are not enough for
+that case. PMO/CoAgentOps first uses the existing maximized foreground window.
+If the official login action does not return or cannot complete on the existing
+window, PMO/CoAgentOps may reopen MWORKS and log in through the official UI as
+a bounded recovery. Successful recovery closes only the license/login dialog
+and keeps the reusable main window open when possible.
 
-Run the machine gate before dispatching or accepting live MWORKS packets:
+Run the machine gate before dispatching or accepting MWORKS packets:
 
 ```powershell
 python Scripts\quality\check_mworks_live_gate.py `
@@ -1495,17 +1502,19 @@ python Scripts\quality\check_mworks_live_gate.py `
 ```
 
 If the return is a blocker, pass the blocker packet path to the same
-`--kind return --expect department` check. A packet that omits the activation
-sentinel, background screenshot, activation-state observation, license state,
-no-click pledge, `mworks_window_evidence_touched`, or `live_mworks_touched` is
-not an acceptable MWORKS department response.
+`--kind return --expect department` check. The gate accepts either a recent
+CoAgentOps patrol reference or a current-turn sentinel/capture set for an
+incident. It still rejects missing no-click pledge, missing `live_mworks_touched`,
+missing declared engineering outputs, JSON-only completions, and missing
+phase screenshots/observations for tasks that claim graphical/layout/result
+viewer evidence.
 The general pre-dispatch native surface checker also enforces this for
 MWORKS/Sysplorer/Syslab department task packets: when
 `Scripts/quality/check_agent_task_native_surface_gate.py --strict` sees a
 MWORKS target department/thread, it requires the same `mworks_live_gate` task
 contract before the packet is dispatchable.
 
-If the preflight evidence shows mixed or uncertain MWORKS license state, such
+If a CoAgentOps patrol or current task evidence shows mixed or uncertain MWORKS license state, such
 as one Sysplorer window in education mode and another relevant window in demo
 mode, the safe blocker category is `license_or_login`, but `license_state`
 must still use a concrete observed-state value such as
@@ -1513,8 +1522,8 @@ must still use a concrete observed-state value such as
 `authorization_failed`, `sentinel_unavailable_blocked`, or `unknown_blocked`
 until PMO/user identifies a valid reusable session or resolves the stale/demo
 window. Departments must return the blocker with `status=blocked` and
-screenshot/sentinel evidence. They may continue only with file-level static
-work that explicitly avoids MWORKS MCP/GUI.
+screenshot/sentinel evidence if collected. They may continue only with
+file-level static work that explicitly avoids MWORKS MCP/GUI.
 For MWORKS/Sysplorer/Syslab tasks, this is an all-window gate: any relevant
 window in demo, login/activation, authorization-failed, GUI-error, mixed, or
 visible unknown state blocks the whole task even if another window is clean or
@@ -1545,11 +1554,18 @@ dialog. Use a sentinel before/after MWORKS GUI-affecting steps:
 2. Project-local Win32 background evidence scripts: use
    `Scripts/tools/capture_window_background.ps1` for window-level Sysplorer /
    MWORKS screenshots before falling back to foreground desktop capture. If a
-   minimized window must be inspected, use `-RestoreMinimized`; the script may
-   briefly restore without activation, capture through `PrintWindow`, then
-   re-minimize. Use `-OutDir` for the output directory; `-OutputDir` is not a
-   valid parameter for the current script. This is GUI incident evidence, not
-   simulation success evidence.
+   minimized window must be inspected, use `-RestoreMinimized`; for
+   login/license patrols or suspected hidden panes, use `-Maximize` as well.
+   The script may briefly restore or maximize the existing window, capture
+   through `PrintWindow`, then restore/minimize depending on flags. Use
+   `-OutDir` for the output directory; `-OutputDir` is not a valid parameter
+   for the current script. This is GUI incident evidence, not simulation
+   success evidence. Background `PrintWindow` capture is also not a full-GUI
+   acceptance tool: without `-RestoreMinimized` it can produce only a tiny
+   minimized title fragment, and even with maximize it can miss composite
+   Qt/browser-proxy surfaces such as the right MWORKS AI panel. Return packets
+   must treat the script output as window-state/preflight evidence unless a
+   human/foreground/Windows-MCP visual check confirms the complete GUI.
 3. Windows UI Automation / EnumWindows style title/text detector for
    `MWORKS错误报告`, `Sysplorer 遇到错误，需要关闭`, login/license prompts, and
    Sysplorer/MWORKS window titles. This can detect incidents even when no image

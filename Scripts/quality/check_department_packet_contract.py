@@ -102,7 +102,12 @@ def validate(packet: dict[str, Any], *, strict_completed_outputs: bool) -> list[
             errors.append(f"missing required planning field: {field}")
 
     subagent_plan = packet.get("subagent_plan")
-    if subagent_plan and subagent_plan not in SUBAGENT_PLAN_VALUES:
+    if subagent_plan and not isinstance(subagent_plan, str):
+        errors.append(
+            "subagent_plan must be a string enum, not "
+            + type(subagent_plan).__name__
+        )
+    elif subagent_plan and subagent_plan not in SUBAGENT_PLAN_VALUES:
         errors.append(
             "subagent_plan must be one of "
             + ", ".join(sorted(SUBAGENT_PLAN_VALUES))

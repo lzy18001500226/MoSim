@@ -469,12 +469,14 @@ Current active visible conversations:
 - Sunray150AssetPBRAgent / MoSim｜Sunray150资产与PBR审核部
 - MWorksDynamicsControlAgent / MoSim｜MWORKS动力学与控制验证部
 - ROS2RuntimeAgent / MoSim｜ROS2感知定位与规划运行部
-- WeChatGatewayOps / MoSim｜微信网关运维部
 - CodexEnvironmentMigrationAgent / MoSim｜Codex 环境迁移部
 - OpenSourceProbeAgent / MoSim｜开源项目探针
 - CoAgentOps / MoSim｜CoAgent运维平台
 - OpenSourceLearningAgent / MoSim｜开源项目学习部
 - CodexContextMaintenanceAgent / MoSim｜Codex 上下文维护部
+
+Archived/non-dispatchable:
+- WeChatGatewayOps / MoSim｜微信网关运维部
 - WechatCodexMessagePath / MoSim｜WechatCodex
 
 Dispatch rule: allowlist only. If an old thread ID is absent from the current

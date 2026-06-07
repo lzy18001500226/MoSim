@@ -95,6 +95,19 @@ MWORKS_CONTEXT_PATTERNS = [
     "AWFF",
 ]
 
+MWORKS_PROCESS_STEMS = {
+    "mworks",
+    "mw_browser_proxy",
+    "mw_crash_handler",
+    "mw_memory_monitor",
+    "mwrsvc",
+    "syslab",
+    "syslab-mcp-server-win64",
+    "sysplorer",
+    "sysplorer-acp-server",
+    "sysplorer_docsearch",
+}
+
 RESTART_PATTERNS = ["重启程序", "Restart", "restart"]
 SEND_REPORT_PATTERNS = ["发送错误报告", "Send", "send report", "Send report"]
 CONFIRM_PATTERNS = ["确定", "OK", "Ok"]
@@ -133,9 +146,26 @@ def _combined_text(window: dict[str, Any]) -> str:
     return "\n".join(parts)
 
 
+def _process_stem(window: dict[str, Any]) -> str:
+    process_name = str(window.get("process_name") or "")
+    if not process_name:
+        process_path = str(window.get("process_path") or "")
+        process_name = Path(process_path).name
+    if process_name.casefold().endswith(".exe"):
+        process_name = process_name[:-4]
+    return process_name.casefold()
+
+
+def _is_mworks_process(window: dict[str, Any]) -> bool:
+    return _process_stem(window) in MWORKS_PROCESS_STEMS
+
+
 def _window_ref(window: dict[str, Any]) -> dict[str, Any]:
     return {
         "hwnd": window.get("hwnd"),
+        "process_id": window.get("process_id"),
+        "process_name": window.get("process_name", ""),
+        "process_path": window.get("process_path", ""),
         "title": window.get("title", ""),
         "class_name": window.get("class_name", ""),
         "visible": window.get("visible"),
@@ -160,6 +190,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
 
     for window in windows:
         text = _combined_text(window)
+        process_is_mworks = _is_mworks_process(window)
         crash_matches = _contains_any(text, CRASH_PATTERNS)
         strong_license_matches = _contains_any(text, LICENSE_STRONG_PATTERNS)
         education_matches = _contains_any(text, EDUCATION_PATTERNS)
@@ -168,7 +199,15 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
         authorization_matches = _contains_any(text, AUTHORIZATION_FAILURE_PATTERNS)
         license_dialog_matches = _contains_any(text, LICENSE_DIALOG_PATTERNS)
         context_license_matches = _contains_any(text, LICENSE_CONTEXT_PATTERNS)
-        has_mworks_context = bool(_contains_any(text, MWORKS_CONTEXT_PATTERNS))
+        has_mworks_context = process_is_mworks and bool(
+            _contains_any(
+                text,
+                MWORKS_CONTEXT_PATTERNS
+                + CRASH_PATTERNS
+                + LICENSE_CONTEXT_PATTERNS
+                + LICENSE_STRONG_PATTERNS,
+            )
+        )
         license_dialog_is_relevant = has_mworks_context and bool(license_dialog_matches)
         license_matches = strong_license_matches + (
             demo_matches
@@ -394,14 +433,51 @@ def _get_rect(user32: ctypes.WinDLL, hwnd: int) -> dict[str, int] | None:
     }
 
 
+def _get_process_info(user32: ctypes.WinDLL, kernel32: ctypes.WinDLL, hwnd: int) -> dict[str, Any]:
+    pid = wintypes.DWORD()
+    user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
+    process_id = int(pid.value)
+    result: dict[str, Any] = {"process_id": process_id, "process_name": "", "process_path": ""}
+    if process_id <= 0:
+        return result
+
+    PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
+    handle = kernel32.OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, False, process_id)
+    if not handle:
+        return result
+    try:
+        capacity = wintypes.DWORD(32768)
+        buffer = ctypes.create_unicode_buffer(capacity.value)
+        if kernel32.QueryFullProcessImageNameW(handle, 0, buffer, ctypes.byref(capacity)):
+            process_path = buffer.value
+            result["process_path"] = process_path
+            result["process_name"] = Path(process_path).name
+    finally:
+        kernel32.CloseHandle(handle)
+    return result
+
+
 def enumerate_windows() -> tuple[list[dict[str, Any]], str | None]:
     if sys.platform != "win32":
         return [], f"unsupported_platform:{sys.platform}"
 
     try:
         user32 = ctypes.WinDLL("user32", use_last_error=True)
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
     except Exception as exc:  # pragma: no cover - platform guard
         return [], f"user32_unavailable:{exc}"
+
+    kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+    kernel32.OpenProcess.restype = wintypes.HANDLE
+    kernel32.QueryFullProcessImageNameW.argtypes = [
+        wintypes.HANDLE,
+        wintypes.DWORD,
+        wintypes.LPWSTR,
+        ctypes.POINTER(wintypes.DWORD),
+    ]
+    kernel32.QueryFullProcessImageNameW.restype = wintypes.BOOL
+    kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+    kernel32.CloseHandle.restype = wintypes.BOOL
 
     windows: list[dict[str, Any]] = []
 
@@ -436,10 +512,12 @@ def enumerate_windows() -> tuple[list[dict[str, Any]], str | None]:
         title = _get_window_text(user32, hwnd)
         class_name = _get_class_name(user32, hwnd)
         children = collect_children(hwnd)
+        process_info = _get_process_info(user32, kernel32, hwnd)
         if title or class_name or children:
             windows.append(
                 {
                     "hwnd": int(hwnd),
+                    **process_info,
                     "title": title,
                     "class_name": class_name,
                     "visible": bool(user32.IsWindowVisible(hwnd)),

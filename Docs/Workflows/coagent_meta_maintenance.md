@@ -1,10 +1,84 @@
 # CoAgent Meta-Maintenance Checklist
 
 > Purpose: keep MoSim visible-thread registry, CoAgent/native Codex capability
-> adoption, workflow/skill/index health, gateway ownership, and recurring
+> adoption, workflow/skill/index health, archived gateway-route records, and recurring
 > meta-operation records clean without creating extra standing departments.
 
 Status: current operating workflow, 2026-06-06 CST.
+
+2026-06-07 context-compression surface hotfix: if a CoAgentOps or department
+thread appears stalled and the Codex App UI shows a context-compression surface
+issue, such as `Context Left 100.0%` plus slash-command compression requiring
+manual recovery, do not skip directly to replacement or Codex++ restart. Record
+`codex_context_compression_surface`, send a sparse Chinese notification, and
+let the user perform the confirmed manual workaround: switch to `gpt-5.4` with
+`xhigh`, type `/`, run compression, then switch back to `gpt-5.5` with
+`xhigh`. After the user reports the UI is fixed, perform the normal bounded
+no-op/packet validation before declaring the thread routable.
+
+2026-06-07 email-default notification hotfix: WeChat outbound can lose usable
+send context after several hours, so MoSim user notifications now default to
+sparse Chinese email. Any planned Codex++ restart for a dead-thread incident
+and any MWORKS/Sysplorer/Syslab activation, login, license, authorization,
+hidden-login-pane, or GUI-error incident must first write the recovery/blocker
+packet, attempt one sparse Chinese email notification, and record the audit.
+WeChat is not a routine progress, completion, human-intervention, or
+restart-notice channel; use it only for explicit WeChat gateway diagnosis, a
+user-requested WeChat retry, or a current task that specifically validates the
+WeChat gateway. The notification is a handoff window, not an approval wait: if
+the user is online, the user may restart Codex++ manually faster; otherwise,
+after the email attempt is recorded, the still-healthy mainline continues the
+authorized restart route unless PMO/user explicitly defers the incident.
+
+2026-06-07 WeChat gateway retirement hotfix: the user archived
+`MoSim｜微信网关运维部` (`019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c`) and MoSim
+notifications are email-only by default. CoAgentOps and PMO no longer perform
+periodic WeChat gateway self-checks, no-op probes, canaries, or ret=-2 recovery.
+The archived gateway thread and `MoSim｜WechatCodex` are not active-visible
+routes. Use them only as historical evidence or after an explicit future user
+request to restore WeChat gateway diagnosis.
+
+2026-06-07 MWORKS activation evidence hotfix: CoAgentOps MWORKS activation/
+window patrol must use maximized or foreground visual evidence of the target
+reusable MWORKS/Sysplorer/Syslab main window for activation, login, license,
+authorization, or hidden-login-pane claims. The screenshot content must show
+that target window. Sentinel JSON, MCP health, process/window-title scans, and
+background `PrintWindow` captures are auxiliary only; a capture that shows
+Codex App, another application, a hidden helper/proxy window, or an incomplete
+background surface is not valid activation recovery evidence. If target-window
+content match is not proven, keep the patrol state unknown/blocked and do not
+restore live MWORKS routing.
+
+2026-06-07 model-effort default: future MoSim mainline, visible department,
+automation, and disposable sub-agent dispatch should request `gpt-5.5` with
+`xhigh` thinking whenever the current native tool/runtime accepts explicit
+settings. Do not send health no-ops only to mutate existing thread settings.
+
+2026-06-07 dispatch-surface ownership hotfix: after PMO observes that a visible
+department is listable/readable but cannot accept a new turn, CoAgentOps owns
+bounded diagnosis/recovery. PMO only writes the initial blocker and routes the
+incident here; it must not keep using the broken department as an accident
+sample or run further diagnosis there before CoAgentOps classification.
+
+2026-06-07 heartbeat fail-close hotfix: an open P0 dead-thread recovery packet
+with pending notifications, pending restart, pending post-restart validation,
+or `still_quarantined` status blocks normal heartbeat completion. The heartbeat
+must execute the next authorized recovery step. For notification/restart
+pending visible-thread death, it must attempt sparse email, record the audit,
+allow only a short manual-restart window, and trigger the
+authorized Codex++ restart route if no explicit deferral arrives. It may write a
+blocker/request and return `NOTIFY` only if a required tool/surface is missing,
+the notification/restart action fails, or PMO/user explicitly deferred the
+incident; it must not report `DONT_NOTIFY`, must not classify the patrol as
+healthy, and must not run P1 meta-optimization until the P0 recovery is closed
+or explicitly deferred by PMO/user.
+
+2026-06-07 completed-without-response hotfix: do not classify a visible thread
+as healthy from native list/read/send success alone. Recovery validation needs
+an agent final reply, exact no-op reply text, or the expected return/blocker
+packet. A thread turn that stays `inProgress` past the bounded validation
+window, or is marked `completed` with only the user prompt and no agent
+response, remains quarantined and must not receive production routing.
 
 ## 1. Scope
 
@@ -48,14 +122,17 @@ so it must stay attached to the CoAgentOps conversation for ordinary
 maintenance. It is not self-dead protection. PMO and CoAgentOps each run their
 own mainline maintenance heartbeat and monitor the other mainline. If one
 mainline cannot start turns, the still-healthy mainline writes a blocker,
-attempts one sparse email notification before restart, uses the authorized
-Codex++ restart route when needed, and validates the affected thread with one
-post-restart no-op. If both mainlines or the whole Codex App are dead, the user
+attempts sparse email notification before restart, gives the user a short
+chance to restart manually, uses the
+authorized Codex++ restart route when needed, and validates the affected thread
+with one post-restart no-op. If both mainlines or
+the whole Codex App are dead, the user
 manually restarts Codex++; do not add an external automatic watchdog by default.
 
-Native heartbeat automation `mosim-wechat-gateway-hourly-health` is the
-30-minute CoAgentOps-thread maintenance task; its user-facing name is
-`MoSim｜CoAgentOps状态自检` and it points at thread
+Native heartbeat automation `mosim-wechat-gateway-hourly-health` is retained
+only as a historical automation id for the 30-minute CoAgentOps-thread
+maintenance task; its user-facing name is `MoSim CoAgentOps 30分钟状态自检`
+and it points at thread
 `019e9bc1-ea9f-7102-b41a-4ef9b2308992`. Detached cron automation
 `mosim-coagentops` and Windows scheduled task
 `MoSim-CoAgentOps-OuterWatchdog` were removed after user review because they
@@ -63,6 +140,37 @@ created a separate automation context, risked project conversation pollution,
 and could restart Codex++ from indirect stale-process heuristics. Keep
 `Scripts/agent/codex_outer_watchdog.ps1` only as a manually authorized
 emergency helper; it is not a scheduled or automatic recovery surface.
+
+The CoAgentOps heartbeat must not only consume already-written recovery
+packets. It also performs a light active-visible thread scan from
+`CoAgent/dispatch/department_threads.json`: list/read all current
+`active_visible` departments, then send at most one minimal no-op only to
+threads with current evidence of dispatch-surface risk, such as recent
+start-turn blockers, abnormal read status, mismatched long in-progress state,
+or explicit PMO/user revalidation need. If this bounded probe confirms
+`failed to start turn`, `failed to update thread settings`, or
+`agent loop died unexpectedly`, the heartbeat writes a recovery packet, pauses
+production routing for that target, sends a sparse email alert, records the
+audit, gives the user only a brief manual-restart window, and
+triggers the authorized Codex++ restart route if no explicit deferral arrives. The
+restart terminates the current conversation, so PMO notification and target
+no-op validation occur on the next PMO/CoAgentOps heartbeat: read the recovery
+packet, run one no-op, classify `restored` / `partial_recovery` /
+`still_quarantined`, and notify the PMO thread whether business routing may
+resume.
+
+Heartbeat fail-close rule: this automation is not allowed to record an open
+P0 dead-thread recovery as a normal pending item. Before writing a healthy
+return packet, returning `DONT_NOTIFY`, or starting P1, it must check latest
+dead-thread recovery packets under `Results/agent_packets/returns/` and
+`Results/agent_packets/blockers/`. If any relevant packet still requires
+notification, Codex++ restart, post-restart validation, or remains
+`still_quarantined`, the heartbeat must continue that recovery if authorized:
+send the required sparse email alert, record the audit, trigger
+the authorized Codex++ restart route after a short manual-restart window, and
+leave post-restart validation for the next heartbeat. It may write a blocker/request packet with `NOTIFY` only if the
+required native/tool surface is unavailable, notification/restart fails, or an
+explicit PMO/user-approved deferral packet suppresses the P0 escalation.
 
 PMO worktree handoff rule: current user decision is to not move PMO/R1/R2 to a
 Codex worktree by default. On 2026-06-07, native `handoff_thread` for the PMO
@@ -83,7 +191,8 @@ may fail too. The safe pattern is priority plus fallback:
 
 ```text
 1. CoAgentOps 30-minute heartbeat wakes the CoAgentOps visible conversation.
-2. It first checks the specialist owner, especially Gateway Ops.
+2. It scans only current `active_visible` departments and explicit recovery
+   validation targets; archived WeChat gateway routes are excluded.
 3. If the specialist thread can receive work, dispatch or record normal owner
    health.
 4. If the specialist thread is readable/listable but cannot start turns, write
@@ -131,8 +240,11 @@ superseded thread after reviewing the replacement packet.
 
 User restart notification rule: after the bounded ladder confirms a persistent
 start-turn/agent-loop failure, notify the user directly that a Codex++ restart
-is the next preferred recovery action. Do not spend repeated turns probing the
-same dead thread and do not create a replacement first. Replacement requires
+is the next preferred recovery action and that the user may manually restart
+faster if online. This notification does not create an indefinite approval
+wait; after the notification attempts are recorded, continue authorized
+restart recovery unless PMO/user explicitly defers. Do not spend repeated turns
+probing the same dead thread and do not create a replacement first. Replacement requires
 explicit PMO/user approval, repeated failed restart recovery, or a critical path
 that cannot wait. After Codex++ restarts, run one no-op recovery validation and
 record whether the thread moved to `partial_recovery`, `restored`, or remains
@@ -140,15 +252,15 @@ quarantined.
 
 Mandatory email-before-restart rule: every planned Codex++ restart for a
 dead-thread incident must attempt one sparse email notification before the
-restart action, even if a WeChat notification was attempted or appears
-available. The email body must stay short and Chinese, identify that Codex++ is
+restart action. The body must stay short and Chinese, identify that Codex++ is
 about to restart because a visible thread cannot start turns, and must not
 include long paths, raw logs, tokens, or private state. Record the email audit
-JSON under `Results/coagent_gateway/email/` and reference it from the
-blocker/recovery packet. If email sending itself fails, record that failure in
-the packet and continue with the authorized restart only when waiting would
-block recovery. Do not send repeated emails for the same open incident unless a
-new restart action will actually be triggered.
+and reference it from the blocker/recovery packet. If email sending itself
+fails, record that failure in the packet and continue with the authorized
+restart only when waiting would block recovery. A successful email is not an
+approval gate; it only gives the user a chance to manually restart faster. Do
+not send repeated emails for the same open incident unless a new restart action
+will actually be triggered.
 
 Codex++ controlled restart rule: the user explicitly authorized the Codex++
 manager entry below as the preferred manual/assisted restart surface for
@@ -161,12 +273,11 @@ D:\Program Files\Codex++\codex-plus-plus-manager.exe
 This is a narrow exception to the usual "no GUI clicking" rule and only applies
 to dead-thread recovery after the bounded ladder has produced a blocker packet.
 Before triggering restart, CoAgentOps or the still-healthy mainline recovery
-owner must write the blocker/recovery packet, attempt one sparse email
-notification, and optionally also attempt one sparse WeChat notification when
-WeChat outbound is healthy.
-If the user cannot be notified, or if notification was sent but no intervention
-is available and waiting would block maintenance, CoAgentOps may launch the
-manager and use its restart action. Because this ends the current Codex
+owner must write the blocker/recovery packet and attempt one sparse email
+notification.
+If the user cannot be notified, or if notification was sent and no explicit
+manual deferral or visible intervention is available after a short window,
+CoAgentOps may launch the manager and use its restart action. Because this ends the current Codex
 conversation, the post-restart validation must be picked up by the native
 30-minute PMO/CoAgentOps heartbeat automations: read the latest blocker packet,
 run no-op validation for the affected thread, then record `partial_recovery`,
@@ -232,15 +343,16 @@ responsible workflow doc before replacing the thread.
 
 | Check | Owner | Cadence | Evidence Path | Failure Notify |
 |---|---|---|---|---|
-| Visible thread registry and title drift | `MoSim｜CoAgent运维平台` | Every 30 minutes through the CoAgentOps heartbeat, after user reports a title change, or before cross-thread dispatch | `Results/agent_packets/returns/<request_id>.json`; optional scan under `Results/codex_history_audit/` | `MoSim｜主线 PMO`; if a gateway title is involved, also `MoSim｜微信网关运维部` |
+| Visible thread registry and title drift | `MoSim｜CoAgent运维平台` | Every 30 minutes through the CoAgentOps heartbeat, after user reports a title change, or before cross-thread dispatch | `Results/agent_packets/returns/<request_id>.json`; optional scan under `Results/codex_history_audit/` | `MoSim｜主线 PMO`; archived gateway rows are recorded but not notified through a gateway owner |
 | Deleted/absent thread cleanup | `MoSim｜CoAgent运维平台` | Every 4 hours or after a visibility scan | Result packet noting absent IDs removed from dispatchable registry; no long-lived blacklist required | `MoSim｜主线 PMO` if a requested target is absent |
 | Codex native hooks and preflight health | `MoSim｜CoAgent运维平台` | Every 4 hours, after Codex upgrade, or after hook/preflight edit | `CoAgent/hooks/README.md` plus hook smoke output path in the task result packet | `MoSim｜主线 PMO`; `MoSim｜Codex 环境迁移部` if Windows-native Codex config or bridge residue is implicated |
 | Codex native capability adoption | `MoSim｜CoAgent运维平台` with PMO decision authority | Every 4 hours or before adding CoAgent runtime/transport/schema machinery | Updated `Docs/Workflows/tooling_assets_governance.md`, `Docs/Index/codex_app_session_research.md`, or no-change result packet | `MoSim｜主线 PMO` for adoption decision; blocker packet if a native surface is unavailable |
 | Workflow/skill/index duplicate or stale entry check | `MoSim｜CoAgent运维平台` | Every 6 hours through the CoAgentOps heartbeat due gate, or after a repeated workflow failure | `Docs/Index/workflow_index.md`, relevant workflow/skill docs, and return packet | Responsible task thread for local fixes; `MoSim｜主线 PMO` for cross-cutting routing conflicts |
-| WeChat gateway health owner check | `MoSim｜微信网关运维部` for health; `MoSim｜CoAgent运维平台` for owner/routing audit | Every 30 minutes through the CoAgentOps heartbeat, or before relying on WeChat intervention | `Results/coagent_gateway/` for health evidence; return packet for owner audit; native automation `mosim-wechat-gateway-hourly-health` | Gateway incidents go to `MoSim｜微信网关运维部`; user refresh requests go through `MoSim｜WechatCodex` only for normal inbound message refresh; if WeChat outbound fails and user intervention is required, send one sparse email fallback |
-| WeChat gateway owner unreachable fallback | `MoSim｜CoAgent运维平台` | When the gateway owner thread is visible/readable but cannot start a turn and WeChat outbound also needs user intervention | Failed thread-dispatch blocker, gateway health snapshot, and email audit under `Results/coagent_gateway/email/` | CoAgentOps sends one sparse email fallback directly, then waits for one ordinary inbound WeChat message before exactly one WeChat retry |
-| External source access blocker notification | Task owner; `MoSim｜CoAgent运维平台` audits recurring misses | Whenever a required external doc/page cannot be read after ordinary fetch plus local MCP/browser attempt, or needs auth/manual permission | Blocker packet under `Results/agent_packets/blockers/`; WeChat notification packet under `Results/agent_packets/notifications/`; gateway audit under `Results/coagent_gateway/` | Send sparse WeChat blocker notification to the user through `CoAgent/gateway/cc_connect_weixin.py`; gateway implementation incidents go to `MoSim｜微信网关运维部`; `ret=-2` refresh goes through `MoSim｜WechatCodex` |
-| Background webpage read/screenshot | Task owner; `MoSim｜CoAgent运维平台` audits reusable capability | When a page must be read or visually captured while the user needs the foreground desktop | Prefer `windows_mcp.Scrape` for text; if visual evidence is needed, use Chrome headless with a project-local temporary profile and save screenshots under `Results/browser_captures/<request_id>/` | Notify the user through sparse WeChat only if the page needs login/manual permission, Chrome/Edge is missing, or headless capture fails and foreground desktop interaction is unavoidable |
+| Archived WeChat gateway route | `MoSim｜CoAgent运维平台` records history only | No periodic self-check. Revisit only after an explicit user/PMO request to restore WeChat gateway diagnosis | Registry row in `CoAgent/dispatch/department_threads.json`; historical evidence under `Results/coagent_gateway/` | Sparse email remains the user notification path; do not notify or dispatch to the archived gateway owner |
+| MWORKS activation/window patrol | `MoSim｜CoAgent运维平台` | Every 30 minutes through the CoAgentOps heartbeat, and after PMO/user reports an MWORKS login/license/GUI issue | Patrol result or blocker packet under `Results/agent_packets/returns/` or `Results/agent_packets/blockers/`; screenshot evidence under `Results/mworks_background_capture/` when captured | Sparse Chinese email alert to the user and PMO notification when login/license/authorization/demo/GUI-error or foreground inspection is needed |
+| WeChat restoration blocker | `MoSim｜CoAgent运维平台` | Only if the user explicitly asks to restore WeChat gateway diagnosis and the archived route/tooling cannot be used | Request/blocker packet under `Results/agent_packets/blockers/`; optional evidence under `Results/coagent_gateway/` | Send sparse email blocker notification; do not dispatch to archived WeChat threads without explicit restoration approval |
+| External source access blocker notification | Task owner; `MoSim｜CoAgent运维平台` audits recurring misses | Whenever a required external doc/page cannot be read after ordinary fetch plus local MCP/browser attempt, or needs auth/manual permission | Blocker packet under `Results/agent_packets/blockers/`; email audit under `Results/coagent_gateway/email/` when sent | Send sparse email blocker notification to the user; do not wait on WeChat |
+| Background webpage read/screenshot | Task owner; `MoSim｜CoAgent运维平台` audits reusable capability | When a page must be read or visually captured while the user needs the foreground desktop | Prefer `windows_mcp.Scrape` for text; if visual evidence is needed, use Chrome headless with a project-local temporary profile and save screenshots under `Results/browser_captures/<request_id>/` | Notify the user through sparse email only if the page needs login/manual permission, Chrome/Edge is missing, or headless capture fails and foreground desktop interaction is unavoidable |
 | Open-source probe and learning split | `MoSim｜开源项目探针` checks local reference inventory/upstream freshness; scoped sub-agents crawl requested new sources; `MoSim｜开源项目学习部` evaluates adoption | After each crawl/update batch or every 4 hours if scheduled | Manifests/index updates under `Docs/Index/external_learning_index.md`, `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`, and return packets | `MoSim｜CoAgent运维平台` if split is unclear; `MoSim｜主线 PMO` if adoption changes engineering direction |
 | DevOps/Git large-worktree need | `MoSim｜DevOps 发布` | Every 4 hours, before broad Git work, or when Git status/hooks are slow | `Docs/Workflows/agent_task_ledger.md`, DevOps result packet, and Git evidence paths | `MoSim｜主线 PMO`; blocker packet if auth, lock, hook, LFS, or size risk blocks commit/push |
 | Subagent vs visible-thread surface sanity | Sending department; `MoSim｜CoAgent运维平台` audits recurring mistakes | Every non-trivial task graph and every cross-thread packet | Task graph or packet field naming selected surface, owner, return path, and why alternatives were not used | Origin thread if an internal subagent is described as a department, or if a visible-thread task lacks a real target thread ID |
@@ -263,7 +375,7 @@ Use the least intrusive route for external pages:
    background capture. Before using them, state that foreground content may be
    captured unless the user has already approved that specific interaction.
 6. If login, CAPTCHA, missing browser, or manual permission blocks the task,
-   send one sparse WeChat notification asking the user for that specific action.
+   send one sparse email notification asking the user for that specific action.
 ```
 
 Verified local command shape on 2026-06-06:
@@ -309,6 +421,30 @@ Create or restart a MWORKS/Sysplorer window only after a blocker when PMO/user
 approves, or when the current process is clearly frozen/duplicating windows and
 cannot be recovered through the normal session route.
 
+CoAgentOps owns routine MWORKS activation and window-health patrol through the
+30-minute maintenance automation. Each patrol should inspect the existing
+MWORKS/Sysplorer/Syslab windows with `check_mworks_gui_sentinel.py`,
+`capture_window_background.ps1 -RestoreMinimized`, and any available
+license/session/API evidence, then write a compact result or blocker packet
+with the observed `license_state`. Engineering departments should reference
+the latest patrol and continue their model/check/simulation/layout work unless
+their current task observes demo/login/authorization/error evidence. They
+should not spend each task turn repeatedly proving activation or return only
+sentinel JSON as engineering progress.
+
+If the patrol finds demo edition, login/activation prompt, authorization
+failure, GUI-error/report dialog, mixed education/demo windows, or a state that
+needs foreground inspection, keep the incident open, send one sparse Chinese
+email alert, and notify PMO. CoAgentOps or PMO may bring the existing MWORKS
+window foreground/maximized to expose a hidden login/license pane or to capture
+full layout/review screenshots. Login/license patrol screenshots should be
+maximized-window evidence because minimized/background captures can miss the
+visible login pane. Use the existing maximized foreground window first. If the
+official login action does not return or cannot complete on the existing
+window, PMO/CoAgentOps may reopen MWORKS and log in through the official UI as
+a bounded recovery. Delegated engineering departments still must not click
+login/save/close/restart/send-report controls.
+
 Use these project-local scripts before falling back to foreground desktop
 screenshots when a MWORKS/Sysplorer window must be inspected while the user is
 using another app:
@@ -318,7 +454,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass `
   -File Scripts/tools/capture_window_background.ps1 `
   -TitleRegex 'Sysplorer|MWORKS|Quadrotor|AWFF' `
   -OutDir Results/mworks_background_capture/<request_id> `
-  -RestoreMinimized
+  -RestoreMinimized -Maximize
 ```
 
 For a single approved low-risk UI action, such as opening the MWORKS AI helper
@@ -355,6 +491,12 @@ automation or thread wakeup when the current Codex surface exposes a reviewed
 automation tool. Do not implement a replacement unattended scheduler inside
 CoAgent just to compensate for a missing App automation surface.
 
+Automation prompt size rule: recurring prompts should stay compact. Keep the
+cadence, owner, entry docs, P0 gate, and result/blocker expectation in the
+automation; keep detailed policy in `AGENTS.md`, workflow docs, skills,
+templates, and checkers. If an automation still runs correctly, do not churn it
+just to mirror every new rule in the prompt text.
+
 Recommended initial automation:
 
 ```text
@@ -364,15 +506,15 @@ cadence: every 30 minutes
 objective: Run the meta-maintenance checklist, verify current visible-thread
   registry/title drift, absent-thread cleanup, native hook/preflight health,
   native capability adoption, workflow/skill/index freshness, gateway owner
-  routing, open-source probe/learning split, DevOps/Git large-worktree need,
-  and subagent-vs-visible-thread wording.
+  routing, MWORKS activation/window patrol, open-source probe/learning split,
+  DevOps/Git large-worktree need, and subagent-vs-visible-thread wording.
 allowed_actions: read project docs/configs, run lightweight project-local
   syntax/preflight checks, write one result or blocker packet.
 forbidden_actions: create/archive/rename threads, edit Codex App private DB,
   expand CoAgent runtime/transport/schema, perform broad Git staging, dispatch
   engineering work, or send high-volume notifications.
 evidence: Results/agent_packets/returns/ or Results/agent_packets/blockers/
-notify: WeChat sparse blocker notification only when user action is needed or
+notify: email sparse blocker notification only when user action is needed or
   a blocker changes the plan.
 ```
 
@@ -380,7 +522,8 @@ Current created native automations:
 
 | Automation ID | Owner | Cadence | Purpose |
 |---|---|---|---|
-| `mosim-wechat-gateway-hourly-health` | `MoSim｜CoAgent运维平台` thread `019e9bc1-ea9f-7102-b41a-4ef9b2308992` | 30-minute heartbeat with 6-hour P1 due gate | Single merged CoAgentOps maintenance heartbeat; checks Gateway Ops first, then CoAgentOps self-recovery, dead-thread restart recovery, and visible-thread/automation health. Every 6 hours, after P0 health checks, it may run a bounded P1 workflow/skill/MCP/native-capability optimization audit with strict no-install, no-runtime, no-business-code, no-Git, and max-3-proposals constraints. |
+| `mosim-pmo-p0-long-run-followup` | `MoSim｜主线 PMO` thread `019e9868-83ea-70f0-92c5-a3a408bd78c6` | 10-minute heartbeat | PMO P0 mainline follow-up and department patrol. Its first gate is an explicit CoAgentOps reachability check for `019e9bc1-ea9f-7102-b41a-4ef9b2308992`; if CoAgentOps itself cannot start turns, PMO directly owns the recovery packet, sparse email alert, a short manual-restart window, authorized Codex++ restart if no explicit deferral arrives, and next-heartbeat no-op validation. For ordinary department dispatch-surface failures, PMO writes the initial blocker and routes bounded diagnosis/recovery to CoAgentOps. |
+| `mosim-wechat-gateway-hourly-health` | `MoSim｜CoAgent运维平台` thread `019e9bc1-ea9f-7102-b41a-4ef9b2308992` | 30-minute heartbeat with 6-hour P1 due gate | Historical id for the current CoAgentOps maintenance heartbeat. It excludes archived WeChat gateway routes, then checks CoAgentOps self-recovery, dead-thread restart recovery, MWORKS activation/window patrol, and visible-thread/automation health. For dead-thread or MWORKS license/GUI fail-close it records a sparse email audit, gives the user only a short manual-restart window when restart is planned, then continues authorized recovery if no explicit deferral arrives. Every 6 hours, after P0 health checks, it may run a bounded P1 workflow/skill/MCP/native-capability optimization audit with strict no-install, no-runtime, no-business-code, no-Git, and max-3-proposals constraints. |
 
 Removed recovery automations:
 
@@ -404,7 +547,6 @@ Preferred existing-thread automation targets:
 
 | Existing Thread | ID | Automation Need | Owner For Configuration |
 |---|---|---|---|
-| `MoSim｜微信网关运维部` | `019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c` | Gateway/API socket/session/context-token health and sparse incident escalation | `MoSim｜CoAgent运维平台` configures the native automation; gateway thread owns diagnosis output; old thread `019e9be0-534e-7c22-97ff-98fa7c2af39b` is quarantined until PMO explicitly restores it through the bounded recovery ladder |
 | `MoSim｜Codex 上下文维护部` | `019e9be0-f6ac-7762-b80c-b1dd18b0d013` | New-conversation context, project memory/index drift, compact recovery updates | `MoSim｜CoAgent运维平台` configures the native automation; context thread owns doc updates |
 | `MoSim｜开源项目探针` | `019e9be3-94de-7dc3-b067-92a78b678287` | Local reference-project inventory, upstream freshness checks, and manifest/update-candidate queues. New broad crawling belongs to scoped sub-agents or explicit task packets, not the standing probe thread. | `MoSim｜CoAgent运维平台` configures the native automation; probe thread owns manifests |
 | `MoSim｜开源项目学习部` | `019e9be4-56d0-7981-b71c-a5ded1c7ec76` | Adopt/adapt/reference-only/reject review for probe candidates | `MoSim｜CoAgent运维平台` configures the native automation; learning thread owns evaluation output |
@@ -432,7 +574,7 @@ Creation procedure for CoAgent operations:
 5. If updating, first resolve the existing automation id and preserve fields
    that the user did not ask to change.
 6. If tool access is missing, write a blocker packet and notify PMO/user through
-   the normal sparse WeChat route; do not use GUI clicking as the workaround.
+   the normal sparse email route; do not use GUI clicking as the workaround.
 ```
 
 Manual emergency helper commands:
@@ -493,9 +635,10 @@ Before writing or dispatching a packet, run a semantic sanity check:
 ```text
 no old standing department title used as an active owner
 no absent thread ID used as a target
+no archived WeChat gateway thread used as a target unless user explicitly restores it
 no internal subagent described as a visible department thread
 no visible-thread task dispatched through a hidden subagent only
-if required external material cannot be read after local MCP/browser route, a blocker packet and WeChat notification exist
+if required external material cannot be read after local MCP/browser route, a blocker packet and email notification exist
 no gateway incident sent to MoSim｜WechatCodex
 no WeChat refresh instruction sent to gateway ops as if it were the message path
 no "CoAgent replaces PMO" wording
@@ -512,8 +655,8 @@ all pronouns have a concrete owner/thread
 | Thread registry hygiene | `MoSim｜CoAgent运维平台` | Only current visible allowlist entries are dispatchable. |
 | Context memory and startup recovery | `MoSim｜Codex 上下文维护部` | Not the same as Windows-native environment migration. |
 | Windows-native Codex migration/history | `MoSim｜Codex 环境迁移部` | One-time environment repair and bridge residue audits, not routine context maintenance. |
-| WeChat gateway implementation/health | `MoSim｜微信网关运维部` | `MoSim｜WechatCodex` is only the WeChat-side message path; old gateway threads are quarantine/diagnostic-only unless PMO restores one. |
-| External doc/manual-access blocker | Task owner writes blocker; `CoAgent/gateway/cc_connect_weixin.py` sends sparse user notification | Do not silently wait or only leave the blocker in chat when the user needs to provide permission/content. |
+| WeChat gateway implementation/health | Archived; no active owner | `MoSim｜微信网关运维部` and `MoSim｜WechatCodex` are historical/inactive routes. Restore only after explicit user/PMO approval for a scoped WeChat diagnosis task. |
+| External doc/manual-access blocker | Task owner writes blocker; sparse email sends user notification | Do not silently wait or only leave the blocker in chat when the user needs to provide permission/content. |
 | Validation/testing | Task-local gate, bounded subagent, `codex review`, or PMO-created scoped test thread | No standing validation department by default. |
 | Toolchain/MCP upkeep | Task owner, or `MoSim｜CoAgent运维平台` for recurring meta-maintenance | No standing `MoSim｜工具链 MCP` department. |
 | Security/compliance | `AGENTS.md`, hooks, prompts, preflight, and review gates | No standing security department by default. |

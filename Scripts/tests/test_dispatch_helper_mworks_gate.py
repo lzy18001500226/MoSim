@@ -36,23 +36,27 @@ def test_mworks_department_dispatch_text_includes_self_evidence_gate() -> None:
     lines = module._mworks_live_gate_contract_lines(args.department)
     text = "\n".join(lines)
 
-    assert "python Scripts\\agent\\check_mworks_gui_sentinel.py" in text
-    assert "capture_window_background.ps1" in text
-    assert "-OutDir" in text
-    assert "-OutputDir" in text
-    assert "all-window license gate" in text
-    assert "clean-looking background screenshot is not sufficient" in text
-    assert "foreground maximize/focus recovery" in text
+    assert "Routine activation/window-health patrol is owned by CoAgentOps" in text
+    assert "activation_patrol_owner=CoAgentOps" in text
+    assert "mworks_activation_patrol_reference" in text
+    assert "run at most one bounded current-turn sentinel/API check" in text
+    assert "Do not loop on activation checks" in text
+    assert "education-edition title only proves the visible edition/window marker" in text
+    assert "it also is not by itself a blocker" in text
+    assert "maximized target-window evidence" in text
+    assert "not Codex, another app, helper/proxy windows" in text
+    assert "official login action does not return" in text
+    assert "status=blocked" in text
     assert "expected_engineering_outputs" in text
     assert "JSON result/blocker/task packets" in text
-    assert "target department" in text
+    assert "current-turn sentinel/capture evidence" in text
     assert "sentinel_unavailable_blocked" in text
     assert "mworks_phase_screenshots" in text
     assert "mworks_phase_observations" in text
     assert "R1 simulation/control tasks" in text
     assert "R2 graphical/layout tasks" in text
-    assert "both sparse WeChat and sparse email alert" in text
-    assert "do not click login/activation/error-report controls" in text
+    assert "both sparse WeChat and sparse email alert" not in text
+    assert "must not click login, activation" in text
     assert "PMO owns any user-authorized recovery" in text
 
 
