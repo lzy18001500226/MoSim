@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-06-07 01:14:41",
+  "created_at": "2026-06-08 00:26:53",
   "purpose": "Full Sunray150 150.dae visible plus standalone Livox MID-360 mount audit. This is a manual review scene, not a final runtime asset.",
   "aircraft": {
     "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\150.dae",
@@ -1276,38 +1276,9 @@
     "status": "manual_review_required_for_hole/shaft alignment"
   },
   "material_detail_overlays": {
-    "added_overlay_count": 28,
-    "added_overlays": [
-      "decal_mid360_livox_front",
-      "mid360_mirror_reflection_strip_left",
-      "mid360_mirror_reflection_strip_mid",
-      "mid360_mirror_reflection_strip_right",
-      "mid360_blue_edge_reflection_right",
-      "decal_motor_yundrone_0.054_0.054",
-      "decal_motor_lava_0.054_0.054",
-      "decal_motor_yundrone_-0.054_0.054",
-      "decal_motor_lava_-0.054_0.054",
-      "decal_motor_yundrone_0.054_-0.054",
-      "decal_motor_lava_0.054_-0.054",
-      "decal_motor_yundrone_-0.054_-0.054",
-      "decal_motor_lava_-0.054_-0.054",
-      "red_wire_hint",
-      "blue_wire_hint",
-      "yellow_wire_hint",
-      "decal_n150_ic_package_1",
-      "decal_n150_ic_package_2",
-      "decal_n150_ic_package_3",
-      "decal_n150_gold_pad_bank_a",
-      "decal_n150_gold_pad_bank_b",
-      "decal_n150_m2_label",
-      "decal_n150_usb9_black_core_a",
-      "decal_n150_usb9_black_core_b",
-      "decal_n150_usb9_black_core_c",
-      "decal_n150_hdmi_black_core",
-      "decal_n150_rj45_black_core",
-      "decal_n150_m2_label_text"
-    ],
-    "overlay_rule": "Review decals and cable hints are non-physical texture intent markers: LIVOX/MID-360 logo, YUN DRONE/LAVA motor marks, USB camera lens glass, and colored cable sleeves. User-rejected motor gold ring decals are not created. These overlays do not alter accepted MID-360/propeller placement."
+    "added_overlay_count": 0,
+    "added_overlays": [],
+    "overlay_rule": "User requested removal of generated decal/review overlays; no non-DAE decal boxes, label plates, reflection strips, or colored wire hints are created."
   },
   "visibility": {
     "audit_view": "full_assembly",
@@ -1332,7 +1303,7 @@
     "extent": 0.22,
     "lighting": "area key light plus soft fill light for visible reflections on glass, metal, and carbon-fiber materials"
   },
-  "elapsed_sec": 9.297,
+  "elapsed_sec": 7.811,
   "outputs": {
     "blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_dae_mid360_realistic_material_audit.blend",
     "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_dae_mid360_realistic_material_audit_manifest.json"
