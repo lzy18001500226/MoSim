@@ -276,27 +276,12 @@ References/Blender/
 !References/Blender/blender/make.bat
 !References/Blender/blender/pyproject.toml
 !References/Blender/blender/README.md
-References/Blender/blender/assets/nodes/shading_nodes_essentials.blend
-References/Blender/blender/assets/nodes/procedural_hair_node_assets.blend
-References/Blender/blender/assets/nodes/principal_components.blend
-References/Blender/blender/assets/nodes/geometry_nodes_essentials.blend
-References/Blender/blender/assets/nodes/geometry_nodes_dynamics_assets.blend
-References/Blender/blender/assets/nodes/compositing_nodes_essentials.blend
+# Missing local Git LFS payload pointers in Blender bundled assets; keep
+# manifest-only until real payloads are restored.
+References/Blender/blender/assets/nodes/
+References/Blender/blender/assets/brushes/
 References/Blender/blender/doc/python_api/static/favicon.png
-References/Blender/blender/assets/brushes/essentials_brushes-mesh_weight.blend
-References/Blender/blender/assets/brushes/essentials_brushes-mesh_vertex.blend
-References/Blender/blender/assets/brushes/essentials_brushes-mesh_texture.blend
-References/Blender/blender/assets/brushes/essentials_brushes-mesh_sculpt.blend
-References/Blender/blender/assets/brushes/essentials_brushes-gp_weight.blend
-References/Blender/blender/assets/brushes/essentials_brushes-gp_vertex.blend
-References/Blender/blender/assets/brushes/essentials_brushes-gp_sculpt.blend
-References/Blender/blender/assets/brushes/essentials_brushes-gp_draw.blend
-References/Blender/blender/assets/brushes/essentials_brushes-curve_sculpt.blend
-References/Blender/blender/scripts/startup/bl_app_templates_system/Video_Editing/startup.blend
-References/Blender/blender/scripts/startup/bl_app_templates_system/VFX/startup.blend
-References/Blender/blender/scripts/startup/bl_app_templates_system/Sculpting/startup.blend
-References/Blender/blender/scripts/startup/bl_app_templates_system/2D_Animation/startup.blend
-References/Blender/blender/scripts/startup/bl_app_templates_system/Storyboarding/startup.blend
+References/Blender/blender/scripts/startup/bl_app_templates_system/
 References/PX4/
 !References/PX4/
 References/PX4/*
