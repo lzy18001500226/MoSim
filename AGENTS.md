@@ -2,6 +2,60 @@
 
 > Project agent instructions for Codex / AI assistants working on the A8 quadrotor attitude and position control project.
 
+2026-06-07 restart-notice hotfix: before any planned Codex++ restart for a
+dead-thread incident, the still-healthy mainline must attempt both sparse user
+notifications, one by mail and one by WeChat, and record both results in the
+recovery packet. This overrides older wording that made WeChat optional.
+
+2026-06-07 model-effort default: all MoSim mainline, visible department, and
+disposable sub-agent thread creation/dispatch should request `model=gpt-5.5`
+and `thinking=xhigh` when the native tool or runtime accepts those parameters.
+Do not send a no-op only to change an existing thread setting; apply this to
+new creations, normal business dispatches, automation definitions, and
+sub-agent spawn calls. For dead-thread recovery no-op probes, omit model and
+thinking overrides unless the recovery task explicitly tests settings update.
+
+2026-06-07 dispatch-surface incident ownership hotfix: when PMO sees a visible
+department thread become listable/readable but unable to accept a new turn, PMO
+must stop business routing and hand the incident to `MoSim｜CoAgent运维平台`
+(`019e9bc1-ea9f-7102-b41a-4ef9b2308992`). PMO must not downgrade the broken
+department into an ad hoc accident-sample worker, continue validating business
+work there, or perform the bounded diagnosis itself except to write the initial
+blocker and dispatch the incident to CoAgentOps.
+
+2026-06-07 heartbeat fail-close hotfix: a P0 dead-thread recovery packet with
+pending notifications, pending restart, pending post-restart validation, or
+`still_quarantined` status is not a routine pending item. Any PMO/CoAgentOps
+heartbeat that sees such an open recovery must execute the next authorized
+recovery step within its authority. For notification/restart-pending
+dead-thread recovery, that means attempting sparse WeChat plus email,
+recording audits, and triggering the authorized Codex++ restart route. Write a
+blocker/request instead only if a required tool/surface is unavailable, the
+notification/restart action fails, or PMO/user has explicitly deferred the
+incident. It must not mark the patrol completed, must not return
+`DONT_NOTIFY`, and must not continue into P1 meta-optimization while the P0
+recovery remains open. A deliberate deferral is allowed only when PMO/user
+explicitly approves it and the deferral packet states who owns the next action.
+
+2026-06-07 active dead-thread scan hotfix: CoAgentOps heartbeat also scans the
+current `active_visible` thread allowlist with list/read, then sends at most
+one minimal no-op only to threads that already show dispatch-surface risk or
+need explicit recovery validation. A confirmed start-turn/agent-loop failure
+is immediately handled as P0 fail-close: write recovery packet, send sparse
+WeChat plus email, record audits, and trigger authorized Codex++ restart.
+Because restart terminates the current conversation, the next heartbeat must
+perform post-restart no-op validation and notify PMO whether routing can
+resume.
+
+2026-06-07 visible-title normalization hotfix: use the current
+`CoAgent/dispatch/department_threads.json` titles for active routing. The
+production WeChat gateway thread is `MoSim｜微信网关运维部` without an `R3`
+suffix, and the production ROS2 runtime thread is
+`MoSim｜ROS2感知定位与规划运行部-R1`. Do not call either one R3 in new
+automation prompts, dispatch packets, or current-route docs. Historical packet
+IDs or evidence labels that contain R3 are preserved only as history and must
+not imply an active R3 route.
+
 ---
 
 ## 1. Project Overview
@@ -366,11 +420,15 @@ marker. If no login/demo/error marker is present and only the education title
 is observed, record
 `license_state=education_window_observed_activation_unverified` or equivalent
 wording unless a current-turn API/result explicitly proves stronger activation
-state. Any other MWORKS/Sysplorer/Syslab-related window in `[演示版]`, login/
-activation, authorization-failed, GUI-error, or visible unknown still blocks
-the entire MWORKS task until PMO/user resolves or classifies the session;
-departments must not close the suspect window and continue by choosing the
-clean-looking one. Hidden Qt/browser-proxy/helper windows that have no
+state. This title-only classification is not by itself a reason to stop a live
+MWORKS task: when no demo/login/authorization/error/visible-unknown marker is
+present, the department should continue to current-turn license/session/API
+evidence before deciding whether MCP/check work may proceed. Any other
+MWORKS/Sysplorer/Syslab-related window in `[演示版]`, login/activation,
+authorization-failed, GUI-error, or visible unknown still blocks the entire
+MWORKS task until PMO/user resolves or classifies the session; departments
+must not close the suspect window and continue by choosing the clean-looking
+one. Hidden Qt/browser-proxy/helper windows that have no
 demo/login/authorization/error text are risk evidence and must be counted in
 the sentinel/capture manifest, but they do not by themselves prove
 authorization loss.
@@ -391,10 +449,12 @@ login pane.
 `sentinel_unavailable_blocked`, or `unknown_blocked`; vague labels such as
 `ok`, `normal`, or `looks_fine` are not acceptable. For
 `live_mworks_touched=true`, packets must include `license_api_before` when the
-API surface is available, and must not claim permanent account activation
-unless that API/result explicitly exposes account activation status. A
-successful `check_model` or `SimulateModel` without authorization errors is
-task-local license sufficiency evidence, not a standing activation claim.
+API surface is available, preferably `License(ltype="info")` or an equivalent
+Sysplorer license API. `session_manager health` is only API reachability
+evidence. Packets must not claim permanent account activation unless that
+API/result explicitly exposes account activation status. A successful
+`check_model` or `SimulateModel` without authorization errors is task-local
+license sufficiency evidence, not a standing activation claim.
 
 Use `live_mworks_touched=true` only when the task proceeds to MCP,
 open/check/translate/simulate, plot, animate, Smart Layout, or graphical GUI
@@ -510,6 +570,11 @@ Rules:
    100 MiB hard limit, operator-local settings, dependency folders,
    generated/build/cache/runtime outputs, missing LFS assets, or an explicitly
    documented manifest-only asset class.
+   Do not let `.gitignore` grow into hundreds of per-file exceptions for one
+   crawled project. If an entire set is missing local Git LFS payloads, use a
+   concise class/directory manifest-only rule with evidence and a restoration
+   note; use per-file ignore only for a small number of known over-limit files
+   when no safe class rule exists.
 9. When Git is slow, has LFS/hook/index-lock residue, or another Git owner is
    active, delegate commit/push work to `GitIntegrator` instead of blocking the
    main engineering thread. The main agent remains responsible for scope,
@@ -602,24 +667,34 @@ Coordinator rules:
    If a visible department is readable but cannot start turns, accept messages,
    or submit from its own UI composer, treat it as a dispatch-surface incident
    first. Do not immediately create a replacement thread. Route bounded
-   diagnosis to `MoSim｜CoAgent运维平台`, write a blocker packet, attempt one
-   sparse Chinese user notification, then use the authorized Codex++ restart
-   recovery route if the same start-turn/agent-loop failure persists. Restart
+   diagnosis to `MoSim｜CoAgent运维平台`, write a blocker packet, and optionally
+   send one sparse Chinese incident notification. PMO must not keep probing the
+   failed department with no-op/list/read/send/codex-exec diagnostics unless
+   CoAgentOps itself is the failed surface. If CoAgentOps confirms the same
+   start-turn/agent-loop failure persists and a Codex++ restart is planned, the
+   still-healthy mainline must attempt both WeChat and email alerts before
+   restart and record both audit results. Restart
    ends the current conversation, so recovery validation must be resumed by the
-   PMO/CoAgentOps heartbeat: read the latest blocker, run no-op delivery
-   validation, and classify the thread as `partial_recovery`, `restored`, or
-   `still_quarantined`. Create a replacement only with explicit PMO/user
-   approval, repeated failed restart recovery, or a critical path that cannot
-   wait.
-   Every planned Codex++ restart for a dead-thread incident must attempt one
-   sparse email notification before restart, even if WeChat was attempted or
-   appears healthy. Record the email audit path in the blocker/recovery packet.
+   CoAgentOps heartbeat or by PMO only when CoAgentOps is unavailable: read the
+   latest blocker, run no-op delivery validation, and classify the thread as
+   `partial_recovery`, `restored`, or `still_quarantined`. Create a replacement
+   only with explicit PMO/user approval, repeated failed restart recovery, or a
+   critical path that cannot wait.
+   Every planned Codex++ restart for a dead-thread incident must attempt both
+   sparse notifications before restart: one WeChat alert and one email alert,
+   even if one channel appears healthy. Record both audit paths in the
+   blocker/recovery packet.
+   A heartbeat that finds an existing P0 dead-thread recovery packet still
+   waiting for notifications, restart, or post-restart validation must fail
+   closed: continue the recovery if authorized, or write a blocker/request and
+   notify the user. It must not close as a normal patrol or hide the open P0
+   item behind `DONT_NOTIFY`.
    If `MoSim｜CoAgent运维平台` itself is the dead thread, it cannot self-rescue;
    a heartbeat targeted at that same thread is not a recovery mechanism because
    the message cannot enter the failed start-turn surface. PMO and CoAgentOps
    must therefore use dual-mainline cross-checking through their own
    thread-attached 30-minute heartbeats: whichever mainline is still healthy
-   sends the email, triggers the authorized restart route, and lets
+   sends both sparse WeChat and email alerts, triggers the authorized restart route, and lets
    post-restart validation classify the affected mainline. Detached cron
    `mosim-coagentops` and Windows scheduled task
    `MoSim-CoAgentOps-OuterWatchdog` were removed after user review and must not
@@ -640,7 +715,7 @@ Coordinator rules:
    the return/blocker packet. It must not simply execute ad hoc file reads and
    hand back a conclusion when the task is large enough to split.
 3. Project sub-agent spawn calls should request `model=gpt-5.5` and
-   `reasoning_effort=high` when the current runtime accepts those parameters;
+   `reasoning_effort=xhigh` when the current runtime accepts those parameters;
    otherwise record the runtime limitation and continue with the configured
    default.
 4. Spawn sub-agents only with concrete objective, read scope, write set, stop

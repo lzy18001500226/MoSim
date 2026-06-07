@@ -311,8 +311,9 @@ department and configure native Codex App automation against it. As of
 departments were replaced with App-native visible threads after their reusable
 old conversation content was landed into canonical project documents. Use the
 current active IDs in `CoAgent/dispatch/department_threads.json`; old IDs are
-superseded and must not receive new work. Gateway production routing is R3;
-Gateway R2 is quarantine/diagnostic-only unless PMO explicitly restores it
+superseded and must not receive new work. Gateway production routing is the
+current `MoSim｜微信网关运维部` thread without an R suffix; Gateway R2 is
+quarantine/diagnostic-only unless PMO explicitly restores it
 through the bounded recovery ladder.
 
 If a mainline thread cannot see the native thread or automation tools in its
@@ -342,6 +343,13 @@ subagents_used:
 verification_gates:
 manual_review_or_blocker_triggers:
 ```
+
+The department-local goal should be short and bounded to the task packet. Do
+not let a broad documentation, skill, MCP, workflow, or architecture cleanup
+become the reason the department does not run the next declared engineering
+gate. If a reusable-rule problem is found while dispatching, record the fix as
+parallel/follow-up work unless the current task would be unsafe or invalid
+without it.
 
 `subagents_used` may be empty, but only after the department records the
 explicit `subagent_plan` decision and a concrete reason. If the department uses
@@ -444,10 +452,22 @@ coordination owners, not the best specialist for every domain problem. Route
 domain incidents to the responsible visible department first whenever its
 thread surface is healthy. If the responsible department is listable/readable
 but cannot start a turn, the mainline owner records the dispatch failure,
-directly takes over only the urgent incident work needed to protect the
-critical path, and also owns a bounded recovery attempt for that department
-thread. Do not leave urgent work waiting solely because the specialist thread
-is stuck, and do not permanently bypass the specialist after recovery.
+writes the initial blocker, routes bounded diagnosis/recovery to CoAgentOps,
+and continues unrelated or critical-path business work through healthy
+surfaces. PMO does not own the department's no-op/list/read/send/codex-exec
+diagnosis ladder and must not use the failed department as an accident-sample
+worker. The only exception is when CoAgentOps itself is the failed surface; in
+that case PMO executes the documented dual-mainline recovery. Do not leave
+urgent work waiting solely because the specialist thread is stuck, and do not
+permanently bypass the specialist after CoAgentOps restores it.
+
+Default model/effort rule: normal mainline, visible department, sub-agent,
+thread creation, department dispatch, automation, and spawn calls should request
+`model=gpt-5.5` plus `thinking=xhigh` or the tool-equivalent
+`reasoning_effort=xhigh` whenever the current native surface accepts explicit
+settings. Do not wake healthy existing threads merely to mutate settings.
+Dead-thread recovery no-op probes omit model/thinking overrides unless the
+specific recovery task is testing settings update behavior.
 
 Human review artifact rule: if a task produces review images, videos, native
 MWORKS result viewers, `.msr` assets, or other user-facing audit artifacts, PMO
@@ -537,7 +557,7 @@ Known visible department dispatch command pattern:
 ```bash
 codex exec resume <department_thread_id> \
   -m gpt-5.5 \
-  -c model_reasoning_effort='"high"' \
+  -c model_reasoning_effort='"xhigh"' \
   --dangerously-bypass-approvals-and-sandbox \
   --output-last-message /tmp/<task_id>_result.txt \
   - < /tmp/<task_id>_packet.txt
@@ -545,8 +565,12 @@ codex exec resume <department_thread_id> \
 
 Use `codex_app.send_message_to_thread` only as a convenience path. If it returns
 an app/agent-loop internal error but `read_thread` still works, treat this as
-an App forwarding failure. A short `codex exec resume <thread_id>` probe may be
-used to verify that the visible thread can receive messages.
+an App forwarding failure. PMO must not then run its own `codex exec resume`
+or no-op delivery ladder against the failed department. PMO writes the initial
+blocker, routes the incident to CoAgentOps, and continues unrelated work
+through healthy surfaces. Only CoAgentOps performs bounded delivery/no-op
+diagnosis for a failed department, except when CoAgentOps itself is the failed
+surface and PMO must execute the documented dual-mainline recovery.
 
 If a visible department is readable but cannot receive messages, especially
 with `failed to update thread settings: internal error; agent loop died
@@ -572,13 +596,35 @@ reclassifies the old thread, update `Docs/Workflows/agent_task_ledger.md` and
 `PROGRESS.md` with the exact outcome and never dispatch production work to the
 old thread id unless PMO has explicitly restored it.
 
+PMO must not reuse the failed visible department as an "accident sample" worker
+after the dispatch-surface failure is observed. The only allowed PMO-side work
+before CoAgentOps classification is: write the initial blocker, notify/route the
+incident to CoAgentOps, and continue unrelated business work through healthy
+surfaces. Any additional no-op/list/read/send diagnosis, restart decision, or
+replacement recommendation belongs to CoAgentOps unless the user explicitly
+overrides this ownership for that incident.
+
 If CoAgentOps confirms the same start-turn/agent-loop failure after bounded
-list/read/no-op/metadata/no-op diagnosis, the next default action is to notify
-the user and restart Codex++ through the authorized manager, then wait for a
-post-restart no-op validation. Do not keep retrying the same failed delivery
-surface, and do not create a replacement conversation by default. A replacement
+list/read/no-op/metadata/no-op diagnosis, the next default action is to write a
+durable blocker/recovery packet, attempt both sparse user notifications
+(WeChat and email), record both audit results, and restart Codex++ through the
+authorized manager, then wait for a post-restart no-op validation. Do not keep
+retrying the same failed delivery surface, and do not create a replacement conversation by default. A replacement
 requires explicit PMO/user approval, repeated failed restart recovery, or a
 critical path that cannot wait.
+
+Heartbeat fail-close rule: after such a recovery packet exists, any PMO or
+CoAgentOps heartbeat that sees the packet still waiting for notifications,
+restart, post-restart validation, or reporting `still_quarantined` must treat
+that as an active P0 incident. It must not summarize the item as ordinary
+pending work, return `DONT_NOTIFY`, or run lower-priority optimization. The
+heartbeat must execute the next authorized recovery step. For
+notification/restart-pending dead-thread recovery, that means sending sparse
+WeChat plus email alerts, recording both audits, and triggering the authorized
+Codex++ restart route. It writes a blocker/request packet with `NOTIFY` only
+when a required tool/surface is unavailable, the notification/restart action
+fails, or an explicit PMO/user-approved deferral packet pauses this fail-close
+behavior.
 
 The user-authorized Codex++ restart surface for this case is:
 
@@ -586,9 +632,10 @@ The user-authorized Codex++ restart surface for this case is:
 D:\Program Files\Codex++\codex-plus-plus-manager.exe
 ```
 
-Use it only after a dead-thread blocker has been written and one sparse user
-notification has been attempted. If notification is unavailable, or if the user
-is offline and maintenance would otherwise stall, CoAgentOps may trigger the
+Use it only after a dead-thread blocker has been written and both sparse user
+notifications have been attempted, one by WeChat and one by email. If a channel
+is unavailable, record the failure before continuing. If notification is unavailable,
+or if the user is offline and maintenance would otherwise stall, CoAgentOps may trigger the
 Codex++ restart action through this manager. This will terminate the current
 conversation, so any recovery attempt must leave a durable packet first and rely
 on the 30-minute PMO/CoAgentOps heartbeat automations to resume validation
@@ -1406,16 +1453,22 @@ If it cannot inspect or classify that evidence, it returns a blocker and does
 not continue MWORKS business work. Important correction: a visible
 `Sysplorer [教育版]` title is only an edition/window marker, not proof that the
 account is activated. Both activated and unactivated states may show the
-education-edition title. `license_state` must be a concrete classification
-such as `education_window_observed_activation_unverified`,
+education-edition title. This does not mean an education-edition title alone
+is a reason to stop. If no demo/login/authorization/error/visible-unknown
+marker exists, the department should continue to current-turn
+license/session/API evidence before deciding whether MCP/check work may
+proceed. `license_state` must be a concrete classification such as
+`education_window_observed_activation_unverified`,
 `license_api_recorded_education_version_only`,
 `mixed_education_and_demo_blocked`, `demo_blocked`, `login_required`,
 `authorization_failed`, `gui_error_report_blocked`,
 `sentinel_unavailable_blocked`, or `unknown_blocked`. Vague states such as
 `ok`, `normal`, or `looks_fine` must be rejected. For
 `live_mworks_touched=true`, return `license_api_before` when the API surface
-is available, but do not claim permanent account activation unless the API or
-result explicitly exposes activation/account status. A successful
+is available, preferably `License(ltype="info")` or an equivalent Sysplorer
+license API. `session_manager health` is only API reachability evidence. Do not
+claim permanent account activation unless the API or result explicitly exposes
+activation/account status. A successful
 `check_model` or `SimulateModel` without authorization errors is task-local
 license sufficiency evidence, not a standing activation claim.
 Background screenshot evidence has a known blind spot: it may capture a normal
@@ -1629,7 +1682,7 @@ Recommended goal split:
 
 Every sub-agent prompt for this project should include a concrete goal and
 terminal condition. If runtime support allows it, request `model=gpt-5.5` and
-`reasoning_effort=high` explicitly at spawn time.
+`reasoning_effort=xhigh` explicitly at spawn time.
 
 If a goal record becomes malformed, stale, over-narrow, or impossible to update
 through the available goal tools, do not let it block execution. Reset/delete
@@ -2009,6 +2062,13 @@ ask for an explicit normalization/import policy. Durable ignores should stay
 small and class-based: oversized individual files, operator-local settings,
 dependency folders, generated/build/cache/runtime outputs, missing LFS assets,
 or explicitly manifest-only asset classes.
+
+Do not turn `.gitignore` into a per-file backlog for a crawled project. A
+hundreds-line ignore block for ordinary reference material is a release hygiene
+failure, not a completed split. Missing-LFS sets must be represented by concise
+class or directory manifest-only rules with evidence and a later restoration
+note. Per-file ignores are reserved for a small number of known over-limit files
+when no safe class rule exists.
 
 A source project being hundreds of MB as a directory is not a durable-ignore
 reason. The durable decision is file/class based: individual files at or above
