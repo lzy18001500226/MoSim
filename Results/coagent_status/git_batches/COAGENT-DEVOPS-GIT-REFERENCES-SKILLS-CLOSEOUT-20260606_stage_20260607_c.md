@@ -67,3 +67,16 @@ Additional deferred/current notes:
 Next addendum:
 
 - Continue Memory small residuals such as `git-mcp`, `graphify-8`, `GraphRAG`, `khoj`, and `zep`, then larger Memory/UI/Workflow projects by subdirectory.
+
+Continuation 20260607-l:
+
+- Pushed `37b6dd5b83` `devops: record memory residual review`, recording the `khoj`/`zep` small residual audit and removing 11 stale file-level `khoj` temporary ignore lines.
+- `khoj` small files were deliberately not submitted after `git diff --cached --check` found whitespace failures and `interact_with_files.ts` conflict markers; failed paths are recorded in `Results/agent_runtime/memory_khoj_small_tail_diffcheck_failed_paths_20260607.txt`.
+- Read-only Docs/Skills subagent audit found visible untracked count `0` and ignored count `26210`, dominated by `.venv`, `.venv-win`, egg-info, generated cache, and two Unreal LFS pointer test assets. No normal Docs/Skills source/docs batch is pending under the current evidence.
+- Prepared `mem0` first low-risk slice by narrowing `.gitignore` only for docs, examples, cli, skills, cookbooks, scripts, and root metadata. Candidate count is `590`; path risk scan found no `.env`, `.venv`, `node_modules`, dist/build/cache, key/cert, or npmrc paths; largest observed files are well below 100 MB.
+- A staging attempt for the `mem0` pathspec failed because the pathspec file was newline-delimited but the command incorrectly used `--pathspec-file-nul`; Git for Windows aborted and left `.git/index.lock`.
+- Current pause condition: `.git/index.lock` exists and three external Git processes are still running (`rev-parse HEAD`, `remote -v`, and `status --porcelain`). DevOps did not remove the lock or kill external processes while they were still active.
+
+Next addendum 20260607-l:
+
+- Wait for the external Git processes to exit and the index lock to clear, then retry `git add -f --pathspec-from-file=Results/agent_runtime/mem0_docs_examples_cli_paths_20260607.txt` without `--pathspec-file-nul`, run cached gates, commit, and push the clean `mem0` slice.
