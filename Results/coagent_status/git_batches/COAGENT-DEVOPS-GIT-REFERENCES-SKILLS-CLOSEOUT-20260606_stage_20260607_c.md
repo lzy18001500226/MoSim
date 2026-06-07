@@ -16,6 +16,8 @@ Pushed batches this stage:
 - `c55ab487a8` `devops: add openai cookbook data subset` - 261 files.
 - `5b2a8c7f79` `devops: add openai cookbook sample clothes part 1` - 600 files.
 - `14eb33de44` `devops: add openai cookbook sample clothes part 2` - 402 files.
+- `4c3520e54e` `devops: add codex platform reference subset` - 337 files.
+- `6a8c03067a` `devops: add openai agents python core docs tests` - 958 files.
 
 Checks:
 
@@ -26,6 +28,8 @@ Checks:
 - Closeout probe: cached index `0`, `.git/index.lock` absent, upstream ahead/behind `0 0`.
 - `openai-cookbook/examples/data` has 8 remaining ignored CSV data files, all deferred because the upstream third-party files fail the whitespace gate; they are recorded in `Results/agent_runtime/openai_cookbook_data_nonsample_diffcheck_failed_paths_20260607.txt`.
 - GitHub accepted the pushed batches but warned about two files above the 50 MB recommendation and below the 100 MB hard limit: `recommendations_embeddings_cache.pkl` at 53.54 MB and `sample_styles_with_embeddings.csv` at 65.78 MB.
+- `Docs/Skills` source-tail probe found no remaining source/docs batch under `Blender-MCP/src`, `Windows-MCP/src`, or `ROS-MCP/ros_mcp`; the 107 candidate files were generated `__pycache__` or `*.egg-info` output and were unstaged.
+- A read-only explorer recommended next safe slices: `openai-agents-python`, `haystack`, `dify` toolchain subset, `mastra` small modules, and `AiSOC` operations/plugins subset.
 
 Deferred:
 
@@ -33,8 +37,10 @@ Deferred:
 - Local config fixtures, generated outputs, dependency folders, missing-object assets, pointer-only assets, and very large UE/AirSim content remain excluded from normal Git batches.
 - `Docs/Skills` remaining ignored inventories are mostly local environments, generated UE intermediate files, or missing-object asset pointers.
 - `openai-cookbook/examples/voice_solutions/one_way_translation_using_realtime_api/src/lib/wavtools/dist/` remains skipped as generated dist output.
+- `References/Agent/Platforms/codex/codex-rs` remains deferred for later Rust sub-slices; 29 non-Rust codex files that failed the whitespace gate are recorded in `Results/agent_runtime/codex_platform_non_rust_diffcheck_failed_paths_20260607.txt`.
+- `References/Agent/Frameworks/openai-agents-python/src/agents/extensions/memory/encrypt_session.py` remains deferred because the upstream file fails the whitespace gate.
 
 Next:
 
 - Continue with small `References/Agent` project groups under 1000 files after filtering generated/local-only outputs.
-- Good next targets: remaining narrow `References/Agent/Gateway/cua` slices or narrower `References/Agent/Memory` candidates.
+- Good next targets: `References/Agent/Frameworks/haystack` source/docs/tests, `References/Agent/Workflow/dify` toolchain subset, `References/Agent/Frameworks/mastra` small modules, and `References/Agent/Security/AiSOC` operations/plugins subset.
