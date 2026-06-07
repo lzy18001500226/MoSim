@@ -1,0 +1,20 @@
+.idea/
+node_modules/
+lib/
+*.tsbuildinfo
+build/
+packages/test/protos/json-module.js
+packages/test/protos/root.d.ts
+packages/testing/test-server*
+packages/testing/generated-protos/
+packages/core-bridge/releases
+packages/*/package-lock.json
+contrib/*/package-lock.json
+/sdk-node.iml
+*~
+.claude/settings.local.json
+
+# One test creates persisted SQLite DBs; they should normally be deleted automatically,
+# but may be left behind in some error scenarios.
+packages/test/temporal-db-*.sqlite
+.DS_Store

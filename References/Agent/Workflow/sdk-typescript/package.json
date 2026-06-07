@@ -1,0 +1,81 @@
+{
+  "name": "typescript-sdk",
+  "private": true,
+  "keywords": [
+    "temporal",
+    "workflow",
+    "isolate"
+  ],
+  "homepage": "https://github.com/temporalio/sdk-typescript#readme",
+  "bugs": {
+    "url": "https://github.com/temporalio/sdk-typescript/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/temporalio/sdk-typescript.git"
+  },
+  "license": "MIT",
+  "author": "Temporal Technologies Inc. <sdk@temporal.io>",
+  "directories": {
+    "doc": "docs"
+  },
+  "files": [],
+  "scripts": {
+    "rebuild": "pnpm run clean && pnpm run build",
+    "build": "pnpm --recursive --stream run build",
+    "build:watch": "pnpm run build:protos && tsc --build --watch packages/*/tsconfig.json",
+    "build:protos": "tsx ./packages/proto/scripts/compile-proto.ts",
+    "test": "pnpm --recursive --parallel --workspace-concurrency=1 --stream run test",
+    "test:watch": "pnpm --recursive --stream run test:watch",
+    "ci-stress": "node ./packages/test/lib/load/run-all-stress-ci-scenarios.js",
+    "ci-nightly": "node ./packages/test/lib/load/run-all-nightly-scenarios.js",
+    "lint": "eslint --no-error-on-unmatched-pattern --fix && prettier --write . && pnpm --recursive --stream run lint",
+    "lint:check": "eslint --no-error-on-unmatched-pattern && prettier --end-of-line auto --check .  && pnpm --recursive --stream run lint:check",
+    "lint:prune": "ts-prune --error -p tsconfig.prune.json --ignore \"used in module\" --skip \".d.ts\"",
+    "commitlint": "commitlint --from origin/main",
+    "format": "prettier --write . && pnpm --recursive --stream run format",
+    "clean": "tsx ./scripts/clean.ts",
+    "docs": "cd packages/docs && pnpm run maybe-install-deps-and-build-docs",
+    "ava": "pnpm -C packages/test exec ava"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.0.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@eslint/js": "^9.26.0",
+    "@tsconfig/node20": "^20.1.4",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.19.39",
+    "@typescript-eslint/eslint-plugin": "^8.10.0",
+    "@typescript-eslint/parser": "^8.10.0",
+    "arg": "^5.0.2",
+    "eslint": "^9.26.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.31.0",
+    "fs-extra": "^11.2.0",
+    "json5": "^2.2.3",
+    "prettier": "^3.1.1",
+    "ts-prune": "^0.10.3",
+    "tsx": "^4.20.6",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.10.0",
+    "verdaccio": "^6.5.0"
+  },
+  "engines": {
+    "node": ">= 20.0.0",
+    "pnpm": ">= 10.27.0",
+    "rustc": ">= 1.53.0"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "10.27.0",
+      "onFail": "warn"
+    }
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "protobufjs@7.5.8": "patches/protobufjs@7.5.8.patch"
+    }
+  }
+}

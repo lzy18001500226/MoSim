@@ -1,0 +1,7 @@
+packages:
+  - .
+
+ignoreScripts: true
+
+# Minimum release age, in minutes (2 weeks)
+minimumReleaseAge: 20160

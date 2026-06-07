@@ -1,0 +1,58 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./lib",
+    "rootDir": "./src",
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "noUncheckedIndexedAccess": false
+  },
+  "references": [
+    {
+      "path": "../proto"
+    },
+    {
+      "path": "../activity"
+    },
+    {
+      "path": "../client"
+    },
+    {
+      "path": "../cloud"
+    },
+    {
+      "path": "../common"
+    },
+    {
+      "path": "../envconfig"
+    },
+    {
+      "path": "../../contrib/interceptors-opentelemetry"
+    },
+    {
+      "path": "../lambda-worker"
+    },
+    {
+      "path": "../nexus"
+    },
+    {
+      "path": "../plugin"
+    },
+    {
+      "path": "../test-helpers"
+    },
+    {
+      "path": "../testing"
+    },
+    {
+      "path": "../worker"
+    },
+    {
+      "path": "../workflow"
+    },
+    {
+      "path": "../nyc-test-coverage"
+    }
+  ],
+  "include": ["./src/**/*.ts"]
+}

@@ -1,0 +1,424 @@
+import type * as grpc from '@grpc/grpc-js';
+import type {
+  TypedSearchAttributes,
+  SearchAttributes,
+  SearchAttributeValue,
+  Priority,
+  RetryPolicy,
+  WorkerDeploymentVersion,
+} from '@temporalio/common';
+import { makeProtoEnumConverters } from '@temporalio/common/lib/internal-workflow';
+import * as proto from '@temporalio/proto';
+import type { Replace } from '@temporalio/common/lib/type-helpers';
+import type { ConnectionPlugin } from './connection';
+
+export interface WorkflowExecution {
+  workflowId: string;
+  runId?: string;
+}
+export type StartWorkflowExecutionRequest = proto.temporal.api.workflowservice.v1.IStartWorkflowExecutionRequest;
+export type GetWorkflowExecutionHistoryRequest =
+  proto.temporal.api.workflowservice.v1.IGetWorkflowExecutionHistoryRequest;
+export type DescribeWorkflowExecutionResponse =
+  proto.temporal.api.workflowservice.v1.IDescribeWorkflowExecutionResponse;
+export type RawWorkflowExecutionInfo = proto.temporal.api.workflow.v1.IWorkflowExecutionInfo;
+export type TerminateWorkflowExecutionResponse =
+  proto.temporal.api.workflowservice.v1.ITerminateWorkflowExecutionResponse;
+export type RequestCancelWorkflowExecutionResponse =
+  proto.temporal.api.workflowservice.v1.IRequestCancelWorkflowExecutionResponse;
+
+export type WorkflowExecutionStatusName =
+  | 'UNSPECIFIED'
+  | 'RUNNING'
+  | 'COMPLETED'
+  | 'FAILED'
+  | 'CANCELLED'
+  | 'TERMINATED'
+  | 'CONTINUED_AS_NEW'
+  | 'TIMED_OUT'
+  | 'PAUSED'
+  | 'UNKNOWN'; // UNKNOWN is reserved for future enum values
+
+export interface WorkflowExecutionInfo {
+  type: string;
+  workflowId: string;
+  runId: string;
+  taskQueue: string;
+  status: { code: proto.temporal.api.enums.v1.WorkflowExecutionStatus; name: WorkflowExecutionStatusName };
+  historyLength: number;
+  /**
+￼   * Size of Workflow history in bytes.
+￼   *
+￼   * This value is only available in server versions >= 1.20
+￼   */
+  historySize?: number;
+  startTime: Date;
+  executionTime?: Date;
+  closeTime?: Date;
+  memo?: Record<string, unknown>;
+  /** @deprecated Use {@link typedSearchAttributes} instead. */
+  searchAttributes: SearchAttributes;
+  typedSearchAttributes: TypedSearchAttributes;
+  parentExecution?: Required<proto.temporal.api.common.v1.IWorkflowExecution>;
+  rootExecution?: Required<proto.temporal.api.common.v1.IWorkflowExecution>;
+  raw: RawWorkflowExecutionInfo;
+  priority?: Priority;
+}
+
+export interface CountWorkflowExecution {
+  count: number;
+  groups: {
+    count: number;
+    groupValues: SearchAttributeValue[];
+  }[];
+}
+
+export type WorkflowExecutionDescription = Replace<
+  WorkflowExecutionInfo,
+  {
+    raw: DescribeWorkflowExecutionResponse;
+  }
+> & {
+  /**
+   * General fixed details for this workflow execution that may appear in UI/CLI.
+   * This can be in Temporal markdown format and can span multiple lines.
+   *
+   * @experimental User metadata is a new API and susceptible to change.
+   */
+  staticDetails: () => Promise<string | undefined>;
+
+  /**
+   * A single-line fixed summary for this workflow execution that may appear in the UI/CLI.
+   * This can be in single-line Temporal markdown format.
+   *
+   * @experimental User metadata is a new API and susceptible to change.
+   */
+  staticSummary: () => Promise<string | undefined>;
+};
+
+export type WorkflowService = proto.temporal.api.workflowservice.v1.WorkflowService;
+export const { WorkflowService } = proto.temporal.api.workflowservice.v1;
+export type OperatorService = proto.temporal.api.operatorservice.v1.OperatorService;
+export const { OperatorService } = proto.temporal.api.operatorservice.v1;
+export type TestService = proto.temporal.api.testservice.v1.TestService;
+export const { TestService } = proto.temporal.api.testservice.v1;
+export type HealthService = proto.grpc.health.v1.Health;
+export const { Health: HealthService } = proto.grpc.health.v1;
+
+/**
+ * Mapping of string to valid gRPC metadata value
+ */
+export type Metadata = Record<string, grpc.MetadataValue>;
+
+/**
+ * User defined context for gRPC client calls
+ */
+export interface CallContext {
+  /**
+   * {@link Deadline | https://grpc.io/blog/deadlines/} for gRPC client calls
+   */
+  deadline?: number | Date;
+  /**
+   * Metadata to set on gRPC requests
+   */
+  metadata?: Metadata;
+
+  abortSignal?: AbortSignal;
+}
+
+/**
+ * Connection interface used by high level SDK clients.
+ */
+export interface ConnectionLike {
+  workflowService: WorkflowService;
+  operatorService: OperatorService;
+  plugins: ConnectionPlugin[];
+  close(): Promise<void>;
+  ensureConnected(): Promise<void>;
+
+  /**
+   * Set a deadline for any service requests executed in `fn`'s scope.
+   *
+   * The deadline is a point in time after which any pending gRPC request will be considered as failed;
+   * this will locally result in the request call throwing a {@link grpc.ServiceError|ServiceError}
+   * with code {@link grpc.status.DEADLINE_EXCEEDED|DEADLINE_EXCEEDED}; see {@link isGrpcDeadlineError}.
+   *
+   * It is stronly recommended to explicitly set deadlines. If no deadline is set, then it is
+   * possible for the client to end up waiting forever for a response.
+   *
+   * This method is only a convenience wrapper around {@link Connection.withDeadline}.
+   *
+   * @param deadline a point in time after which the request will be considered as failed; either a
+   *                 Date object, or a number of milliseconds since the Unix epoch (UTC).
+   * @returns the value returned from `fn`
+   *
+   * @see https://grpc.io/docs/guides/deadlines/
+   */
+  withDeadline<R>(deadline: number | Date, fn: () => Promise<R>): Promise<R>;
+
+  /**
+   * Set metadata for any service requests executed in `fn`'s scope.
+   *
+   * @returns returned value of `fn`
+   */
+  withMetadata<R>(metadata: Metadata, fn: () => Promise<R>): Promise<R>;
+
+  /**
+   * Set an {@link AbortSignal} that, when aborted, cancels any ongoing service requests executed in
+   * `fn`'s scope. This will locally result in the request call throwing a {@link grpc.ServiceError|ServiceError}
+   * with code {@link grpc.status.CANCELLED|CANCELLED}; see {@link isGrpcCancelledError}.
+   *
+   * @returns value returned from `fn`
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal
+   */
+  withAbortSignal<R>(abortSignal: AbortSignal, fn: () => Promise<R>): Promise<R>;
+}
+
+export const InternalConnectionLikeSymbol = Symbol('__temporal_internal_connection_like');
+export type InternalConnectionLike = ConnectionLike & {
+  [InternalConnectionLikeSymbol]?: {
+    /**
+     * Capability flag that determines whether the connection supports eager workflow start.
+     * This will only be true if the underlying connection is a {@link NativeConnection}.
+     */
+    readonly supportsEagerStart?: boolean;
+  };
+};
+
+export const QueryRejectCondition = {
+  NONE: 'NONE',
+  NOT_OPEN: 'NOT_OPEN',
+  NOT_COMPLETED_CLEANLY: 'NOT_COMPLETED_CLEANLY',
+
+  /** @deprecated Use {@link NONE} instead. */
+  QUERY_REJECT_CONDITION_NONE: 'NONE',
+
+  /** @deprecated Use {@link NOT_OPEN} instead. */
+  QUERY_REJECT_CONDITION_NOT_OPEN: 'NOT_OPEN',
+
+  /** @deprecated Use {@link NOT_COMPLETED_CLEANLY} instead. */
+  QUERY_REJECT_CONDITION_NOT_COMPLETED_CLEANLY: 'NOT_COMPLETED_CLEANLY',
+
+  /** @deprecated Use `undefined` instead. */
+  QUERY_REJECT_CONDITION_UNSPECIFIED: undefined,
+} as const;
+export type QueryRejectCondition = (typeof QueryRejectCondition)[keyof typeof QueryRejectCondition];
+
+export const [encodeQueryRejectCondition, decodeQueryRejectCondition] = makeProtoEnumConverters<
+  proto.temporal.api.enums.v1.QueryRejectCondition,
+  typeof proto.temporal.api.enums.v1.QueryRejectCondition,
+  keyof typeof proto.temporal.api.enums.v1.QueryRejectCondition,
+  typeof QueryRejectCondition,
+  'QUERY_REJECT_CONDITION_'
+>(
+  {
+    [QueryRejectCondition.NONE]: 1,
+    [QueryRejectCondition.NOT_OPEN]: 2,
+    [QueryRejectCondition.NOT_COMPLETED_CLEANLY]: 3,
+    UNSPECIFIED: 0,
+  } as const,
+  'QUERY_REJECT_CONDITION_'
+);
+
+/**
+ * Return type of {@link ActivityClient.count}
+ *
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export interface CountActivityExecutions {
+  readonly count: number;
+  readonly groups?: {
+    readonly count: number;
+    readonly groupValues?: any[];
+  }[];
+}
+
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export type RawActivityExecutionInfo = proto.temporal.api.activity.v1.IActivityExecutionInfo;
+
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export type RawActivityExecutionListInfo = proto.temporal.api.activity.v1.IActivityExecutionListInfo;
+
+/**
+ * Type of elements returned by {@link ActivityClient.list}
+ *
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export interface ActivityExecutionInfo {
+  rawListInfo?: RawActivityExecutionListInfo;
+  activityId: string;
+  activityRunId: string;
+  activityType: string;
+  scheduleTime?: Date;
+  closeTime?: Date;
+  status: ActivityExecutionStatus;
+  typedSearchAttributes: TypedSearchAttributes;
+  taskQueue: string;
+  executionDurationMs?: number;
+}
+
+/**
+ * Return type of {@link ActivityClient.describe}
+ *
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export interface ActivityExecutionDescription extends ActivityExecutionInfo {
+  rawInfo: RawActivityExecutionInfo;
+  runState?: PendingActivityState;
+  scheduleToCloseTimeoutMs?: number;
+  scheduleToStartTimeoutMs?: number;
+  startToCloseTimeoutMs?: number;
+  heartbeatTimeoutMs?: number;
+  retryPolicy: RetryPolicy;
+  lastHeartbeatTime?: Date;
+  lastStartedTime?: Date;
+  attempt: number;
+  expirationTime?: Date;
+  lastWorkerIdentity?: string;
+  currentRetryIntervalMs?: number;
+  lastAttemptCompleteTime?: Date;
+  nextAttemptScheduleTime?: Date;
+  lastDeploymentVersion?: WorkerDeploymentVersion;
+  priority: Priority;
+  canceledReason?: string;
+
+  getHeartbeatDetails<T = any>(): Promise<T | undefined>;
+  getLastFailure(): Promise<Error | undefined>;
+}
+
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export const ActivityIdReusePolicy = {
+  ALLOW_DUPLICATE: 'ALLOW_DUPLICATE',
+  ALLOW_DUPLICATE_FAILED_ONLY: 'ALLOW_DUPLICATE_FAILED_ONLY',
+  REJECT_DUPLICATE: 'REJECT_DUPLICATE',
+} as const;
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export type ActivityIdReusePolicy = (typeof ActivityIdReusePolicy)[keyof typeof ActivityIdReusePolicy];
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export const [encodeActivityIdReusePolicy, decodeActivityIdReusePolicy] = makeProtoEnumConverters<
+  proto.temporal.api.enums.v1.ActivityIdReusePolicy,
+  typeof proto.temporal.api.enums.v1.ActivityIdReusePolicy,
+  keyof typeof proto.temporal.api.enums.v1.ActivityIdReusePolicy,
+  typeof ActivityIdReusePolicy,
+  'ACTIVITY_ID_REUSE_POLICY_'
+>(
+  {
+    [ActivityIdReusePolicy.ALLOW_DUPLICATE]: 1,
+    [ActivityIdReusePolicy.ALLOW_DUPLICATE_FAILED_ONLY]: 2,
+    [ActivityIdReusePolicy.REJECT_DUPLICATE]: 3,
+    UNSPECIFIED: 0,
+  } as const,
+  'ACTIVITY_ID_REUSE_POLICY_'
+);
+
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export const ActivityIdConflictPolicy = {
+  FAIL: 'FAIL',
+  USE_EXISTING: 'USE_EXISTING',
+} as const;
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export type ActivityIdConflictPolicy = (typeof ActivityIdConflictPolicy)[keyof typeof ActivityIdConflictPolicy];
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export const [encodeActivityIdConflictPolicy, decodeActivityIdConflictPolicy] = makeProtoEnumConverters<
+  proto.temporal.api.enums.v1.ActivityIdConflictPolicy,
+  typeof proto.temporal.api.enums.v1.ActivityIdConflictPolicy,
+  keyof typeof proto.temporal.api.enums.v1.ActivityIdConflictPolicy,
+  typeof ActivityIdConflictPolicy,
+  'ACTIVITY_ID_CONFLICT_POLICY_'
+>(
+  {
+    [ActivityIdConflictPolicy.FAIL]: 1,
+    [ActivityIdConflictPolicy.USE_EXISTING]: 2,
+    UNSPECIFIED: 0,
+  } as const,
+  'ACTIVITY_ID_CONFLICT_POLICY_'
+);
+
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export const ActivityExecutionStatus = {
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELED: 'CANCELED',
+  TERMINATED: 'TERMINATED',
+  TIMED_OUT: 'TIMED_OUT',
+} as const;
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export type ActivityExecutionStatus = (typeof ActivityExecutionStatus)[keyof typeof ActivityExecutionStatus];
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export const [encodeActivityExecutionStatus, decodeActivityExecutionStatus] = makeProtoEnumConverters<
+  proto.temporal.api.enums.v1.ActivityExecutionStatus,
+  typeof proto.temporal.api.enums.v1.ActivityExecutionStatus,
+  keyof typeof proto.temporal.api.enums.v1.ActivityExecutionStatus,
+  typeof ActivityExecutionStatus,
+  'ACTIVITY_EXECUTION_STATUS_'
+>(
+  {
+    [ActivityExecutionStatus.RUNNING]: 1,
+    [ActivityExecutionStatus.COMPLETED]: 2,
+    [ActivityExecutionStatus.FAILED]: 3,
+    [ActivityExecutionStatus.CANCELED]: 4,
+    [ActivityExecutionStatus.TERMINATED]: 5,
+    [ActivityExecutionStatus.TIMED_OUT]: 6,
+    UNSPECIFIED: 0,
+  } as const,
+  'ACTIVITY_EXECUTION_STATUS_'
+);
+
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export const PendingActivityState = {
+  SCHEDULED: 'SCHEDULED',
+  STARTED: 'STARTED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  PAUSED: 'PAUSED',
+  PAUSE_REQUESTED: 'PAUSE_REQUESTED',
+} as const;
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export type PendingActivityState = (typeof PendingActivityState)[keyof typeof PendingActivityState];
+/**
+ * @experimental Standalone Activities are experimental. APIs may be subject to change.
+ */
+export const [encodePendingActivityState, decodePendingActivityState] = makeProtoEnumConverters<
+  proto.temporal.api.enums.v1.PendingActivityState,
+  typeof proto.temporal.api.enums.v1.PendingActivityState,
+  keyof typeof proto.temporal.api.enums.v1.PendingActivityState,
+  typeof PendingActivityState,
+  'PENDING_ACTIVITY_STATE_'
+>(
+  {
+    [PendingActivityState.SCHEDULED]: 1,
+    [PendingActivityState.STARTED]: 2,
+    [PendingActivityState.CANCEL_REQUESTED]: 3,
+    [PendingActivityState.PAUSED]: 4,
+    [PendingActivityState.PAUSE_REQUESTED]: 5,
+    UNSPECIFIED: 0,
+  } as const,
+  'PENDING_ACTIVITY_STATE_'
+);

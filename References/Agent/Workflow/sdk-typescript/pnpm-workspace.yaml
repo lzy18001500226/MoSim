@@ -1,0 +1,46 @@
+packages:
+  - packages/activity
+  - packages/client
+  - packages/cloud
+  - packages/common
+  - packages/core-bridge
+  - packages/create-project
+  - packages/envconfig
+  - packages/lambda-worker
+  - packages/meta
+  - packages/nexus
+  - packages/nyc-test-coverage
+  - packages/plugin
+  - packages/proto
+  - packages/test
+  - packages/test-helpers
+  - packages/testing
+  - packages/worker
+  - packages/workflow
+  - contrib/ai-sdk
+  - contrib/interceptors-opentelemetry
+  - scripts
+
+ignoreScripts: true
+
+# Minimum release age, in minutes (2 weeks)
+minimumReleaseAge: 20160
+
+# Allow depending on just published Temporal packages
+minimumReleaseAgeExclude:
+  - '@temporalio/*'
+  - nexus-rpc
+
+peerDependencyRules:
+  ignoreMissing:
+    # Peer of json-joy@9.9.1, missing in memfs@4.6.0
+    # No apparent issue at runtime if not present
+    - quill-delta
+
+overrides:
+  'minimatch@>=7.0.0 <7.4.8': '>=7.4.8'
+  serialize-javascript: '>=7.0.3'
+  handlebars: '>=4.7.9'
+
+patchedDependencies:
+  protobufjs@7.5.8: patches/protobufjs@7.5.8.patch

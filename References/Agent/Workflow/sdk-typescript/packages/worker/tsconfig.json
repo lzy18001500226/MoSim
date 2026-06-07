@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "outDir": "./lib",
+    "rootDir": "./src"
+  },
+  "references": [
+    { "path": "../client" },
+    { "path": "../core-bridge" },
+    { "path": "../workflow" },
+    { "path": "../activity" },
+    { "path": "../nexus" },
+    { "path": "../common" }
+  ],
+  "include": ["./src/**/*.ts"]
+}

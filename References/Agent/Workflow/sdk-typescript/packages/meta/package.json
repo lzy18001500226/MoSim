@@ -1,0 +1,46 @@
+{
+  "name": "temporalio",
+  "private": true,
+  "description": "Temporal.io SDK meta-package",
+  "dependencies": {
+    "@temporalio/activity": "workspace:*",
+    "@temporalio/ai-sdk": "workspace:*",
+    "@temporalio/client": "workspace:*",
+    "@temporalio/cloud": "workspace:*",
+    "@temporalio/common": "workspace:*",
+    "@temporalio/envconfig": "workspace:*",
+    "@temporalio/interceptors-opentelemetry": "workspace:*",
+    "@temporalio/nexus": "workspace:*",
+    "@temporalio/plugin": "workspace:*",
+    "@temporalio/proto": "workspace:*",
+    "@temporalio/testing": "workspace:*",
+    "@temporalio/worker": "workspace:*",
+    "@temporalio/workflow": "workspace:*"
+  },
+  "author": "Temporal Technologies Inc. <sdk@temporal.io>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/temporalio/sdk-typescript.git"
+  },
+  "keywords": [
+    "temporal",
+    "workflow",
+    "isolate"
+  ],
+  "bugs": {
+    "url": "https://github.com/temporalio/sdk-typescript/issues"
+  },
+  "homepage": "https://github.com/temporalio/sdk-typescript#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "lib"
+  ],
+  "version": "1.17.2"
+}
