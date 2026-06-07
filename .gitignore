@@ -323,7 +323,22 @@ References/Log/px4tools/**/*.csv
 !References/Log/airo_control_interface/**
 References/Log/airo_control_interface/**/*.o
 References/Log/airo_control_interface/**/*.so
-References/Sunray/
+# Sunray source/docs are project reference material; keep only oversized or
+# generated/runtime artifacts ignored after the temporary intake throttle.
+!References/Sunray/
+!References/Sunray/**
+References/Sunray/**/__pycache__/
+References/Sunray/**/*.pyc
+References/Sunray/**/*~
+References/Sunray/**/*.swp
+References/Sunray/**/build/
+References/Sunray/**/devel/
+References/Sunray/**/install/
+References/Sunray/**/log/
+References/Sunray/**/logs/
+References/Sunray/**/*.plan
+References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_D435i/meshes/150.dae
+References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/meshes/150.dae
 References/Lab/Fast-Racing/src/thirdparty/MavLinkCom/MavLinkComGenerator/obj/
 References/AirSim/carla-ue5-dev/
 References/AirSim/IsaacSim/

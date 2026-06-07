@@ -1,3 +1,5 @@
 .gitattributes text eol=lf
 *.pdf binary
+*.dae binary
+*.DAE binary
 results/robustness/** text eol=lf
