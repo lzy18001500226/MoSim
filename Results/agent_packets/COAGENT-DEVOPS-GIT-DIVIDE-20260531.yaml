@@ -28,3 +28,6 @@ latest_next_action: commit and push this ledger and packet checkpoint; continue 
 latest_checkpoint_blender_compression: 2026-06-07_blender_broad_throttle_removed
 latest_blender_compression_evidence: event_helper_commit=117ce573d8; broad_rule_removed=References/Blender/; gitignore_lines_current=298; blender_visible_untracked=0; blender_ignored_untracked=7123; ignored_queue_class=missing_lfs_payloads_and_generic_reference_guards
 latest_blender_next_action: continue non-Blender queues such as References/Agent, AirSim, and Docs/Skills one reviewed slice at a time; do not use project-level throttle as completion
+
+latest_checkpoint_docs_skills_audit: 2026-06-07_docs_skills_durable_ignore_verified
+latest_docs_skills_evidence: visible_untracked=0; ignored_untracked=26210; class_counts=venv_26089_pycache_95_egginfo_18_builddist_5_ue_lfs_2_dsstore_1; gitignore_lines_current=295; redundant_docs_skills_root_rules_removed=true

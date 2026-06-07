@@ -4,8 +4,6 @@ __pycache__/
 *.pyc
 .venv/
 .env
-Docs/Skills/Blender-MCP/.venv/
-Docs/Skills/Blender-MCP/.venv/**
 
 # Julia
 .julia/
@@ -145,7 +143,6 @@ References/Agent/*
 # project slice at a time with pathspec-based force-add; do not grow this
 # file into a per-project index. Generic generated/dependency/archive/binary
 # and local-only file classes are handled by the final References/** guard.
-Docs/Skills/Unreal/**/__pycache__/
 References/Log/
 !References/Log/
 !References/Log/px4_pid_tuner/
