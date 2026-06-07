@@ -14,17 +14,43 @@ patch: a project rule, workflow, skill, or index was improved
 no_patch: sources were checked and no project change was justified
 ```
 
+Current App-native routing:
+
+```text
+MoSim｜开源项目探针-R2
+  thread_id: 019e9be3-94de-7dc3-b067-92a78b678287
+  role: inventory local/reference projects, metadata completeness, and upstream
+    update candidates; broad new crawling is a scoped sub-agent/task-packet job
+
+MoSim｜开源项目学习部-R2
+  thread_id: 019e9be4-56d0-7981-b71c-a5ded1c7ec76
+  role: evaluate probe candidates as adopt/adapt/reference_only/reject
+```
+
+Probe output is a manifest or candidate queue, not an adoption decision.
+Learning output is a proposal with evidence, not a direct route change. PMO
+keeps roadmap authority.
+
+Crawler boundary:
+
+```text
+standing probe thread = freshness/inventory over known local reference assets
+scoped crawler sub-agent = fetch/crawl one requested source slice, then stop
+learning thread = evaluate returned source material and propose project changes
+```
+
 ## Source Families
 
 | Source family | Local path / reference | Useful patterns | Rejected patterns | Last audited | Next trigger |
 |---|---|---|---|---|---|
+| Sunray150 PBR/material sources | `Docs/Skills/Unreal/sunray-pbr-material-workflow/SKILL.md`, `References/Blender/material`, `References/Blender/armorpaint-main`, `References/Blender/xatlas`, Poly Haven, ambientCG, YunDrone/Livox official visual references | CC0 PBR maps, procedural material graphs, UV unwrap/paint workflow, official component identity and port/layout references | broad code crawls, screenshot-only showcases, unclear-license marketplace assets, whole-game Unreal samples, base-color-only tutorials | 2026-06-06 | Sunray150 component looks like grey CAD, PCB/N150/camera/connector visual review fails, or a new texture source is proposed |
 | Project-wide external repo index | `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`, `References/` | stable entry point for all external repos, family classification, first-read routing | ad-hoc raw tree scanning as the default entry point | 2026-05-26 | any new repo import or new learning thread |
 | CoAgent learning strategy | `CoAgent/docs/research/LEARNING_STRATEGY.md` | adopt/adapt/portable/reject taxonomy, context-degradation rule, source-family audit contract | treating Hermes as the only source of architecture ideas | 2026-05-27 | any CoAgent architecture or new long-task conversation design |
 | Anthropic Engineering / Claude engineering articles | `https://www.anthropic.com/engineering` | context engineering, multi-agent research systems, long-running harnesses, review/safety loops | treating article guidance as executable API documentation | 2026-05-27 partial | context-pack, memory, long-running-agent, or multi-agent failure |
 | Anthropic SDK beta resources | `References/Agent/anthropic-sdk-python/src/anthropic/resources/beta` | first-class agents, sessions, threads, memory stores, skills, environments, files, vaults, and webhooks | importing SDK runtime assumptions into CoAgent without local proof | 2026-05-27 partial | CoAgent protocol, memory, session, skill, or vault design |
 | Hermes / Hermes Desktop | `References/Agent/hermes-agent`, `References/Agent/hermes-desktop` | context-engine lifecycle, memory manager, scheduler locks, guardrails, platform adapters, UI/runtime split | importing Hermes wholesale or rebuilding TUI/Desktop inside MoSim | 2026-05-27 partial | scheduler, memory provider, transport adapter, or doctor/recovery work |
 | Codex source | `References/Agent/codex` | app-server thread/turn/item/goal/MCP primitives, thread-state lifecycle, doctor reports, thread-spawn graph | mutating private Codex App storage as durable project state | 2026-05-27 partial | direct app-server integration, thread graph, or transport design |
-| Local agent reference projects | `References/Agent/` | durable runtime, group agents, planner/executor, coding-agent, workflow, graph, retrieval, and safety patterns | importing third-party frameworks wholesale | pending | architecture learning round or new framework import |
+| Local agent reference projects | `References/Agent/`, routed through `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md` and `Docs/Index/agent_project_classification.md` | durable runtime, group agents, planner/executor, coding-agent, workflow, graph, retrieval, MCP/tool gateways, and safety patterns | importing third-party frameworks wholesale or searching/downloading before checking local mirrors | 2026-06-06 | architecture learning round, MCP/tooling request, or new framework import |
 | Local agent references | `References/Agent/`, routed through `Docs/Index/agent_project_classification.md` | runtimes, orchestrators, workflow state, context packs, procedural memory, verification prompts, skill packaging, role/task shaping | copying provider-specific configs or credentials | pending | skill/workflow/context failure |
 | Codex / OpenAI docs | official docs when needed; `Docs/Index/codex_app_session_research.md` | skills, durable goals, config limits, Codex App / VSCode / WSL session boundaries, long-running agent behavior | unverified config keys, provider assumptions, live bidirectional session sync as a dependency | 2026-05-26 | Codex Config/tool behavior changes or agent runtime issue |
 | Claude Code docs | official docs when needed | sub-agent role separation, memory, hooks, reviewer patterns | copying Claude-specific config syntax into Codex without verification | 2026-05-21 | recurring sub-agent lifecycle failure |
@@ -69,8 +95,10 @@ that specific integration. The reusable output is the project-local rule,
 workflow, skill, checklist, or index entry.
 
 Before any new external-repo learning thread starts, classify the target repo
-through `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`. If the repo is not listed there
-yet, update the index first.
+through `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md` and
+`Docs/Index/agent_project_classification.md`. If the repo is already mirrored
+locally, inspect the local mirror first instead of asking for a download link.
+If the repo is not listed there yet, update the index first.
 
 For CoAgent architecture learning, use `CoAgent/docs/research/LEARNING_STRATEGY.md` as the
 primary contract. The audit must explicitly distinguish MoSim-ready ideas from

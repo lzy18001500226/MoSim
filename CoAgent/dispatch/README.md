@@ -4,13 +4,20 @@
 
 This directory contains project-owned dispatch helpers.
 
-Dispatch is the layer between:
+Current operating model: PMO directly dispatches work to existing visible
+Codex department conversations, or creates a new visible department thread when
+no reusable specialty thread exists. This directory is supporting
+infrastructure for packet generation, registry lookup, visibility diagnosis,
+transport experiments, and result import. It is not a mandatory dispatch-center
+conversation that every task must pass through.
+
+The helper layer sits between:
 
 - runtime task state,
 - visible department conversations,
 - task packets,
 - result packets,
-- future Codex App or CLI conversation routing helpers.
+- Codex App or CLI conversation routing helpers.
 
 The normative V1 cross-conversation communication contract is
 `CoAgent/dispatch/communication_contract.md`.
@@ -27,14 +34,17 @@ The normative V1 cross-conversation communication contract is
 
 ## Current Boundary
 
-This layer does not call Codex directly yet.
-
-It prepares stable project-owned payloads so later transport helpers can send
-them through:
+This layer prepares stable project-owned payloads so PMO or a verified helper
+can send them through:
 
 - Codex App visible conversations,
 - WSL Codex CLI,
 - or other project-approved surfaces.
+
+For ordinary MoSim work, PMO may write/send the task packet directly and use
+only the result/blocker paths as the durable return channel. Use these helpers
+when the task needs registry lookup, repeatable packet formatting, transport
+diagnostics, timeout recovery, or result import.
 
 Run `CoAgent/hooks/preflight.py` before wide-scope dispatch or result import
 work when path/scope safety matters.

@@ -36,11 +36,11 @@ preparation out of the automation runner.
 
 Current bundled automations include:
 
-- agent architecture learning routed to `ExternalIntelligenceAgent`
-- docs/workflow improvement routed to `KnowledgeSecretaryAgent`
-- reference repo refresh routed to `ExternalIntelligenceAgent`
-- knowledge index refresh routed to `ContextMemoryAgent`
-- safety scan routed to `SafetyComplianceAgent`
+- agent architecture learning routed to `OpenSourceLearningAgent`
+- docs/workflow improvement routed to `CoAgentOps`
+- reference repo refresh routed to `OpenSourceProbeAgent`
+- knowledge index refresh routed to `CodexContextMaintenanceAgent`
+- safety scan routed to `CoAgentOps`
 - git cadence routed to `DevOpsReleaseAgent`
 
 It does not yet:

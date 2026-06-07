@@ -9,6 +9,8 @@
 | Task | Workflow File |
 |---|---|
 | Debug MCP | `Docs/Workflows/debug_mcp.md` |
+| Govern plugins, MCP servers, skills, workflows, and reference tooling assets | `Docs/Workflows/tooling_assets_governance.md` |
+| Operate Codex native hooks and App capability governance | `CoAgent/hooks/README.md`, `Docs/Workflows/tooling_assets_governance.md#11-codex-native-surface-policy`, `Docs/Index/codex_app_session_research.md` |
 | Operate Unreal MCP | `Docs/Skills/Unreal/mosim-unreal/SKILL.md`, `Docs/Workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `Docs/Index/api_index.md#5-unreal-mcp-tools` |
 | Inspect Epic/Fab/Launcher scene library | `Docs/Skills/Unreal/mosim-epic/SKILL.md`, `Docs/Workflows/debug_mcp.md#73-epicfab-library-index-mcp`, `Docs/Workflows/unreal_renderer.md#scene-source-selection`, `Scripts/UE5/epic_library_view.py`, `Scripts/UE5/epic_library_index.py`, `Scripts/UE5/check_epic_library_inventory.py`, `Scripts/UE5/audit_scene_source.py`, `Scripts/UE5/build_scene_source_registry.py`, `Scripts/UE5/plan_scene_truth_export.py`, `Scripts/UE5/run_scene_truth_export.py`, `Scripts/UE5/export_unreal_scene_truth.py` |
 | Operate MoSim Unreal Editor MCP | `Docs/Skills/Unreal/mosim-unreal/SKILL.md`, `Docs/Workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `Scripts/UE5/probe_unreal_mcp_listener.py`, `Scripts/UE5/probe_unreal_editor_mcp_tools.py` |
@@ -29,8 +31,9 @@
 | Build graphical Sysblock controller | `Docs/Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`, `Docs/Workflows/build_sysblock_graphical_controller.md` |
 | Generate MWORKS/Sysblock C/C++ controller runtime | `Docs/Workflows/mworks_codegen_controller_runtime.md`, `Scripts/mworks/check_codegen_runtime.py`, `Scripts/tests/test_mworks_codegen_runtime.py` |
 | Consult official Sysplorer modeling rules | `Docs/Skills/Sysplorer/ty-sysplorer-modeling-rules`, `Docs/Skills/Sysplorer/ty-sysblock-diagram-modeling`, `Docs/Skills/Sysplorer/ty-sysblock-signal-modeling`, `Docs/Skills/Sysplorer/modelica-library-workflow` |
-| Main-agent orchestration | `AGENTS.md#331-parallel-agent-rule`, `Docs/Workflows/agent_orchestration.md` |
+| Main-agent orchestration / visible-thread PMO dispatch | `AGENTS.md#331-parallel-agent-rule`, `Docs/Workflows/agent_orchestration.md`, `CoAgent/dispatch/communication_contract.md` |
 | Agent organization operating model | `Docs/Workflows/org_operating_model.md` |
+| CoAgent recurring meta-maintenance / thread registry hygiene | `Docs/Workflows/coagent_meta_maintenance.md`, `CoAgent/dispatch/department_threads.json`, `Docs/Index/codex_app_session_research.md#department-thread-layout` |
 | CoAgent reusable architecture root | `CoAgent/README.md`, `CoAgent/docs/architecture/ARCHITECTURE.md`, `CoAgent/docs/status/MIGRATION_STATUS.md` |
 | CoAgent design approval gate | `CoAgent/docs/decisions/coagent_design_review_brief.zh.md`, `CoAgent/docs/decisions/coagent_design_decision_record.md`, `CoAgent/docs/decisions/coagent_goal_readiness_audit.md`, `CoAgent/docs/decisions/coagent_post_approval_backlog.md` |
 | External project master index | `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`, `Docs/Index/external_learning_index.md` |
@@ -44,7 +47,7 @@
 | External repository audit | `Docs/Workflows/audit_external_repo.md`, `Scripts/reference/audit_external_repo.py` |
 | Validate external project master index | `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`, `Scripts/reference/check_reference_index.py`, `Docs/Workflows/audit_external_repo.md` |
 | AirSim external repository batch migration | `Docs/Workflows/agent_orchestration.md#51-airsim-batch-migration-with-nested-agents`, `Docs/Workflows/audit_external_repo.md` |
-| Docs/Skills/workflow external repo audit | `Docs/Workflows/audit_external_repo.md`, `Docs/Workflows/agent_orchestration.md#7-skills--workflow-runtime-audits` |
+| Docs/Skills/workflow external repo audit | `Docs/Workflows/tooling_assets_governance.md`, `Docs/Workflows/audit_external_repo.md`, `Docs/Workflows/agent_orchestration.md#7-skills--workflow-runtime-audits` |
 | Three-round learn-and-update audit | `Docs/Workflows/audit_external_repo.md`, `Docs/Workflows/agent_orchestration.md#7-skills--workflow-runtime-audits` |
 | Recurring external Docs/skills learning | `Docs/Workflows/agent_orchestration.md#71-recurring-learning-owner`, `Docs/Index/external_learning_index.md` |
 | Project doctor / self-check | `Scripts/quality/doctor.py`, `Docs/Workflows/pre_submit_check.md`, `Docs/Workflows/debug_mcp.md` |
@@ -71,9 +74,13 @@ Doctor and self-check workflows are cheap preflight gates. They do not replace
 WAL review, evidence review, or Git/quality review for long-running delegated
 tasks.
 
-CoAgent implementation is currently approved only for `COAGENT-IMPL-01`.
-Before runtime, transport, automation, task-state schema, or tool expansion
-work, check `CoAgent/STATUS.md` and
+CoAgent is a support layer for packet schemas, registry helpers,
+runtime/recovery state, result import, doctor checks, and evidence manifests.
+Current ordinary MoSim work uses PMO-led direct dispatch to visible Codex
+department threads, with project-local result/blocker packets as the durable
+return channel. Before changing CoAgent runtime, transport, automation,
+task-state schema, permanent department design, or tool expansion, check
+`CoAgent/STATUS.md` and
 `CoAgent/docs/decisions/coagent_design_decision_record.md`. Run
 `python3 CoAgent/doctor/check_design_gate.py` for the current gate consistency
 check.

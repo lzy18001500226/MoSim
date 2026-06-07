@@ -127,13 +127,13 @@ def check_paths() -> dict:
 
 
 def check_reference_index() -> dict:
-    return run(["python3", "Scripts/reference/check_reference_index.py", "--strict"], timeout=30)
+    return run([sys.executable, "Scripts/reference/check_reference_index.py", "--strict"], timeout=30)
 
 
 def check_py_compile() -> dict:
     return run(
         [
-            "python3",
+            sys.executable,
             "-m",
             "py_compile",
             "CoAgent/runtime/mosim_agent_runtime.py",
@@ -314,7 +314,14 @@ def check_runtime_output_ignore(paths: tuple[str, ...] = EXPECTED_IGNORED_RUNTIM
         )
     except Exception as exc:
         return {"ok": False, "error": str(exc), "checked_paths": list(paths)}
-    ignored = set(completed.stdout.splitlines())
+    ignored = set()
+    for line in completed.stdout.splitlines():
+        # git check-ignore may include source metadata depending on user/global
+        # config (for example .gitignore:12:pattern:path). Compare the final
+        # path segment so this check is stable on Windows and CLI variants.
+        value = line.rsplit("\t", 1)[-1].rsplit(":", 1)[-1].strip().strip('"').strip()
+        value = value.removesuffix("\\r").removesuffix("\r").strip()
+        ignored.add(value)
     missing = [path for path in paths if path not in ignored]
     return {
         "ok": completed.returncode in {0, 1} and not missing,

@@ -72,10 +72,25 @@ WSL runtime lane: ROS2, RViz2, FAST-LIO-family, rosbridge, Linux-native robotics
 Do not move ROS2/FAST-LIO execution into Windows-native PowerShell unless a
 later workflow explicitly approves a Windows ROS route.
 
+Codex native global hooks are configured for MoSim through:
+
+```text
+C:\Users\HP\.codex\hooks.json
+CoAgent/hooks/codex_native_hook.py
+CoAgent/hooks/preflight.py
+```
+
+The hook adapter acts only when the current `cwd` is inside this repository. It
+can block hard tool-use risks and inject a concise startup reminder, but it does
+not replace this file, `AGENTS.md`, task-specific workflows, result packets, or
+manual review gates. If a new Codex surface asks to trust the hook, use `/hooks`
+after verifying the paths above.
+
 Primary architecture references:
 
 ```text
 Docs/Design/10_架构边界与当前状态ADR.md
+Docs/Design/12_MoSimQuadrotorModel模型归档与迁移计划.md
 Docs/Index/project_work_memory_index.md
 Docs/Design/00_系统总体设计.md
 Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
@@ -146,7 +161,31 @@ Any MID-360 extrinsic change requires a separate coordinate-frame review.
 
 ## 5. Current MWORKS Dynamics State
 
-Main file:
+Formal package ownership:
+
+```text
+References/MWORKS/QuadrotorModel/package.mo
+  -> official/upstream baseline and regression reference; do not destructively
+     rewrite it for MoSim-specific plant experiments.
+
+Models/MoSimQuadrotorModel/package.mo
+  -> project-owned formal Sunray150/MoSim quadrotor package. New formal
+     dynamics, mission, controller, planning, robustness, scene-trace, system,
+     formation, and support entry points should move here.
+
+Models/QuadrotorExperiments/package.mo
+  -> legacy experiment pool and compatibility source. Keep old flat names as
+     aliases during migration so existing scenario YAML, scripts, reports, and
+     evidence bundles do not break in one step.
+```
+
+The first `MoSimQuadrotorModel` package skeleton is intentionally an
+`extends`/alias layer. It classifies existing experiments under stable
+project-owned categories before destructive file moves or class renames. Each
+later migration batch must update references, keep source/provenance labels,
+and pass targeted `check_model` evidence before the old alias can be retired.
+
+Main baseline file:
 
 ```text
 References/MWORKS/QuadrotorModel/package.mo
@@ -241,8 +280,47 @@ CoAgent is not the immediate MoSim technical mainline. Existing CoAgent docs
 are useful for task orchestration, but new runtime/transport/schema/department
 expansion remains gated.
 
+Current multi-conversation operation is PMO-led direct dispatch. The main PMO
+conversation sends complete task packets to existing visible Codex department
+threads, or creates a new visible department thread when no reusable specialty
+thread exists and durable context is needed. Treat visible threads as reusable
+department surfaces, not disposable subagents. CoAgent dispatch/runtime tools
+are supporting infrastructure for packet formatting, registry/visibility
+checks, result import, recovery, and evidence validation; they are not a
+mandatory dispatch-center middle layer for ordinary MoSim work.
+
+Every cross-thread task packet must include at least:
+
+```text
+request_id
+origin_thread and origin_thread_id
+target_thread and target_thread_id when known
+expected_return_path
+blocker_return_path
+read/write scope
+forbidden actions
+definition_of_done
+```
+
+The return surface is the project file packet under
+`Results/agent_packets/returns/` or `Results/agent_packets/blockers/`. Chat
+replies and WeChat messages are useful notifications, but they are not the
+durable return channel.
+
 WeChat is the default sparse out-of-band progress/intervention channel when it
 is working. It is not proof and must not mirror transcripts or logs.
+
+Thread route distinction:
+
+```text
+019e8358-86b4-7070-8fd6-a2b4f4d2af97 = MoSim｜WechatCodex
+  User sends a normal message such as "你好" here to refresh Weixin send context
+  after `ret=-2`.
+
+019e9855-aa43-7fe2-807e-be7d4095877b = MoSim｜微信网关运维
+  PMO sends gateway incidents, health failures, QR/login/context-token
+  diagnostics, and recovery requests here.
+```
 
 Gateway route:
 
@@ -299,3 +377,74 @@ Recommended next work after opening a new conversation:
 
 New conversations should treat this file as the short context pack and the
 linked documents as the source of truth.
+
+## 11. Codex Native Feature Use
+
+Prefer Codex-native surfaces before expanding CoAgent:
+
+| Need | Preferred Surface |
+|---|---|
+| Hard command/file guardrail | Native hook plus `CoAgent/hooks/preflight.py` |
+| Durable project rule | `AGENTS.md` |
+| Task-specific procedure | One workflow or skill loaded on demand |
+| Live GUI/web/private-tool operation | Native plugin/app/MCP/Browser/Windows MCP |
+| Recurring health check or reminder | Codex App automation or verified external scheduler |
+| Durable specialty context | Visible Codex thread with result/blocker packet |
+| Bounded parallel research/review | Sub-agent with explicit scope and stop condition |
+
+Current dead-thread recovery policy: after CoAgentOps confirms a persistent
+visible-thread start-turn/agent-loop failure through the bounded ladder, it
+should write a blocker packet, send one sparse email notification, optionally
+try one sparse WeChat notification when outbound is healthy, then use the
+user-authorized Codex++ manager restart surface. Do not create a replacement
+conversation by default; replacement requires explicit PMO/user approval,
+repeated failed restart recovery, or a critical path that cannot wait.
+
+```text
+D:\Program Files\Codex++\codex-plus-plus-manager.exe
+```
+
+Restart ends the current conversation. The 30-minute PMO/CoAgentOps heartbeat
+automations are therefore the expected post-restart recovery route: read the
+latest blocker, run no-op validation, and classify the affected thread as
+`partial_recovery`, `restored`, or `still_quarantined`.
+
+Self-dead limitation: if CoAgentOps itself is the dead thread, it cannot send
+the email or trigger the restart from inside that failed turn. PMO or another
+still-healthy mainline recovery surface must read the latest blocker/heartbeat
+packet, send the mandatory sparse email, run the authorized Codex++ restart
+route, and let the post-restart heartbeat revalidate CoAgentOps with one
+no-op. Do not rely on the dead CoAgentOps thread to self-rescue.
+The same-thread CoAgentOps heartbeat is normal maintenance, not self-dead
+protection. Current policy is dual-mainline cross-check only: PMO and
+CoAgentOps each run their own thread-attached heartbeat, and whichever mainline
+is still healthy handles blocker, sparse email, Codex++ restart, and one
+post-restart no-op validation for the other. Detached cron `mosim-coagentops`
+and Windows scheduled task `MoSim-CoAgentOps-OuterWatchdog` were removed after
+user review because they create a separate automation context and can pollute
+the project or restart from indirect stale heuristics. If both mainlines or the
+whole Codex App are dead, the user manually restarts Codex++; do not recreate an
+external automatic watchdog by default. `Scripts/agent/codex_outer_watchdog.ps1`
+is retained only as a manually authorized emergency helper for a written
+incident.
+
+Foreground desktop caution: Windows MCP `Snapshot` / `Screenshot` are not
+background capture. They observe the user's active desktop and can catch
+whatever the user is typing or viewing. For Codex++ restart and ordinary GUI
+maintenance, use UI Automation/PowerShell/app APIs first; use visible desktop
+screenshots only after warning the user or when explicitly authorized.
+MoSim desktop GUI caution: Computer Use is deprecated for MoSim desktop GUI
+monitoring, screenshots, recovery, and click workflows. Use Windows MCP,
+Win32/UI Automation, and project-local PowerShell/Python scripts instead;
+Browser remains the route for browser/local web targets.
+
+WeChat notification format: keep the body as short Chinese status text. Do not
+copy concrete English file names, long paths, JSON/log names, or raw evidence
+lists into WeChat; those stay in result/blocker packets and project evidence.
+Routine completion can use `【MoSim 进度】`; manual intervention, incident,
+auth/license, GUI crash, or dead-thread messages should use a clearly different
+header such as `!!! MoSim 需要人工介入 !!!`.
+
+Do not create CoAgent runtime machinery when a native Codex surface already
+covers the need. CoAgent remains project glue for packets, evidence manifests,
+gateway wrappers, recovery checks, and MoSim-specific orchestration conventions.

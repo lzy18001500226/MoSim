@@ -18,6 +18,13 @@ Read these first in a new conversation:
 
 Do not infer the current CoAgent direction from old chat history alone.
 
+Current MoSim operating rule: PMO directly dispatches work to visible Codex
+department threads, or creates a new visible department thread when the work
+needs reusable specialty context. CoAgent is the project-owned support layer
+for packet schemas, registry helpers, runtime/recovery state, result import,
+doctor checks, and evidence manifests. It is not a required scheduling middle
+office for ordinary MoSim work.
+
 ## Current Gate
 
 The current approved implementation task is
@@ -80,7 +87,7 @@ first_allowed_task: COAGENT-IMPL-01
 | `runtime/` | Local task queue, event stream, and conversation graph seed |
 | `protocol/` | Task/result packet schemas and conversation protocol |
 | `context/` | Context-pack generation and contract |
-| `dispatch/` | Conversation registry, task dispatch text, transport-facing helpers |
+| `dispatch/` | Conversation registry, task-packet text, visibility/transport-facing helpers |
 | `transport/` | Visible-conversation transport adapter boundary |
 | `result_router/` | Result packet validation, review gate, import, archive, summary |
 | `bootstrap/` | Long-task handoff and recovery helpers |

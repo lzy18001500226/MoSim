@@ -29,7 +29,30 @@ until the desktop, tool session, or task context degrades.
 | `input_required` | `input_required` | Missing log file, ambiguous acceptance, unknown controller mapping | Ask one compressed question through PMO. |
 | `approval_required` | `review_required` or `input_required` | delete/move broad files, force push, external write, destructive cleanup | Stop before action and request explicit approval. |
 | `manual_review_required` | `review_required` | simulation animation, UE scene truth quality, report/video acceptance | Produce evidence bundle and wait for user/reviewer. |
-| `incident_required` | `blocked` or `failed` | repeated crash, corrupted session, stale path, Git index lock, runaway process | Freeze risky work, capture evidence, propose recovery. |
+| `incident_required` | `blocked` or `failed` | repeated crash, corrupted session, stale path, Git index lock, runaway process, visible thread start-turn failure | Freeze risky work, capture evidence, propose recovery. |
+
+## Dead Visible Thread Recovery
+
+A readable visible thread that cannot start turns, accept cross-thread
+delivery, or submit from its own UI composer is an incident, not a business
+domain failure. PMO should route bounded diagnosis to
+`MoSim｜CoAgent运维平台`, write a blocker packet, and send one concise Chinese
+alert if user action is useful.
+
+Default recovery order:
+
+1. Diagnose list/read/no-op/settings/manual-composer or automation surfaces.
+2. Record the blocker and user-facing recovery request.
+3. Trigger the user-authorized Codex++ restart surface only after the blocker
+   exists and notification has been attempted or is unavailable.
+4. Let PMO/CoAgentOps heartbeat resume after restart, run a no-op validation,
+   and classify the thread as `partial_recovery`, `restored`, or
+   `still_quarantined`.
+
+Do not create a replacement conversation by default. Replacement requires
+explicit PMO/user approval, repeated failed restart recovery, or a critical
+path that cannot wait. If replacement is approved, first preserve reusable
+thread history in canonical docs, packets, or the task ledger.
 
 ## Notification Levels
 
@@ -63,6 +86,19 @@ Current approved gateway:
 - adapter output is redacted, deduped, and audited under ignored
   `Results/coagent_gateway/`;
 - cc-connect runtime socket state must stay on WSL local storage, not `/mnt/c`.
+
+Weixin body format:
+
+- The message body is for the human user, not for evidence indexing.
+- Use short Chinese text by default.
+- Do not include concrete English file names, long paths, JSON/log filenames,
+  or raw evidence lists in the message body. Keep those in the packet and
+  project evidence files.
+- Routine completion uses a quiet progress header such as `【MoSim 进度】`.
+- Manual intervention, incident, auth/license, GUI crash, or dead-thread
+  messages use an obvious header such as `!!! MoSim 需要人工介入 !!!`.
+- The body should say what happened, what action is needed, and that evidence
+  is saved in project records.
 
 Current result-router integration:
 

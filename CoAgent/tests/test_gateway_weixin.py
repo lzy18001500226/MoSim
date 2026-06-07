@@ -29,7 +29,7 @@ def main() -> int:
                     "severity": "high",
                     "class": "manual_review_required",
                     "dedupe_key": "gateway-smoke-review",
-                    "blocked_surface": "CoAgent gateway smoke",
+                    "blocked_surface": "CoAgent gateway smoke at Results/agent_packets/blockers/example.json",
                     "human_action_required": "Confirm the dry-run payload shape.",
                     "why_now": "token=SHOULD_NOT_APPEAR base_url=https://secret.example",
                     "evidence_paths": ["CoAgent/tests/test_gateway_weixin.py"],
@@ -44,6 +44,10 @@ def main() -> int:
         assert plan.ok, plan
         assert plan.packet_type == "blocker_notification"
         assert plan.dedupe_key == "gateway-smoke-review"
+        assert "!!! MoSim 需要人工介入 !!!" in plan.message
+        assert "Results/agent_packets/blockers/example.json" not in plan.message
+        assert "CoAgent/tests/test_gateway_weixin.py" not in plan.message
+        assert "详见项目记录" in plan.message
         assert "SHOULD_NOT_APPEAR" not in plan.message
         assert "secret.example" not in plan.message
         assert "<redacted>" in plan.message
@@ -111,7 +115,8 @@ def main() -> int:
         )
         review_plan = cc_connect_weixin.build_plan(review)
         assert review_plan.ok, review_plan
-        assert "审核请求" in review_plan.message
+        assert "需要人工审核" in review_plan.message
+        assert "CoAgent/tests/test_gateway_weixin.py" not in review_plan.message
 
         completion = tmp_root / "completion.json"
         completion.write_text(
@@ -132,8 +137,9 @@ def main() -> int:
         completion_plan = cc_connect_weixin.build_plan(completion)
         assert completion_plan.ok, completion_plan
         assert completion_plan.packet_type == "completion_notification"
-        assert "任务完成" in completion_plan.message
+        assert "【MoSim 进度】" in completion_plan.message
         assert "completion message smoke" in completion_plan.message
+        assert "CoAgent/tests/test_gateway_weixin.py" not in completion_plan.message
 
         data_dir = tmp_root / "data"
         sessions_dir = data_dir / "sessions"
@@ -235,7 +241,7 @@ def main() -> int:
 
             cc_connect_weixin.send_message = fake_send
             cc_connect_weixin.restart_cc_connect = fake_restart
-            recovered = cc_connect_weixin.notify(
+            ret_minus_2 = cc_connect_weixin.notify(
                 argparse.Namespace(
                     packet=blocker,
                     project="MoSim｜微信通知网关",
@@ -255,8 +261,9 @@ def main() -> int:
                     omit_message_in_audit=True,
                 )
             )
-            assert recovered["ok"], recovered
-            assert calls == {"send": 2, "restart": 1}
+            assert not ret_minus_2["ok"], ret_minus_2
+            assert calls == {"send": 1, "restart": 0}
+            assert ret_minus_2["send_result"]["stderr"].endswith("ret=-2 errcode=0")
 
             def always_fail(message, *, cc_bin, data_dir, project, session, timeout):
                 return {

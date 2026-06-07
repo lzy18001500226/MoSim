@@ -4,7 +4,11 @@
 
 ## Purpose
 
-Use this file before searching raw external trees.
+Use this file before searching raw external trees. For MCP, browser automation,
+tool gateway, docs lookup, or agent-runtime questions, check this index and the
+local `References/Agent/Gateway`, `References/Agent/Memory`,
+`References/Agent/Security`, and `References/Agent/Skills` mirrors before
+opening web search or asking for download links.
 
 The goal is to answer:
 
@@ -22,6 +26,7 @@ The goal is to answer:
 |---|---|---|
 | Agent systems | `References/Agent/` | Multi-agent architecture, runtime, memory, transport, workflow, skill/operator systems, safety/eval, SDK, UI, and orchestration references |
 | UE / AirSim / simulator stacks | `References/AirSim/` | UE-based simulator and planner integration references |
+| Blender / material references | `References/Blender` | Blender source, ArmorPaint, material/PBR, UV, and asset-preparation references |
 | Logs / identification | `References/Log/` | PX4 logs, ULog tooling, ESC test, system identification, data-driven dynamics references |
 | Planning / mapping labs | `References/Lab/` | EGO-Planner, FAST-LIO, GCOPTER, racing, swarm, mapping references |
 | Official MWORKS materials | `References/MWORKS/` | Official competition case, docs, training materials, and reference examples |
@@ -70,6 +75,7 @@ The goal is to answer:
 | goose | `References/Agent/Platforms/goose` | extensible local coding/desktop agent |
 | hermes-agent | `References/Agent/Platforms/hermes-agent` | complete coding-agent or multi-agent products/runtimes reference |
 | moltis | `References/Agent/Platforms/moltis` | complete coding-agent or multi-agent products/runtimes reference |
+| oh-my-pi | `References/Agent/Platforms/oh-my-pi` | full coding-agent/IDE/runtime reference with MCP, workflow, and operator-surface examples |
 | open-interpreter | `References/Agent/Platforms/open-interpreter` | natural language computer interface; AGPL study only |
 | open-swe | `References/Agent/Platforms/open-swe` | asynchronous coding agent |
 | OpenAgents | `References/Agent/Platforms/OpenAgents` | language-agent platform research |
@@ -109,10 +115,13 @@ The goal is to answer:
 | daytona | `References/Agent/Gateway/daytona` | secure dev environment for generated code |
 | E2B | `References/Agent/Gateway/E2B` | secure execution environment for agents |
 | firecrawl | `References/Agent/Gateway/firecrawl` | web crawl/search API reference; AGPL study only |
+| github-mcp-server | `References/Agent/Gateway/github-mcp-server` | official GitHub MCP server reference for GitHub API/toolset design |
 | inspector | `References/Agent/Gateway/inspector` | MCP inspector visual testing tool |
 | mcp-use | `References/Agent/Gateway/mcp-use` | MCP app/server framework |
 | playwright-mcp | `References/Agent/Gateway/playwright-mcp` | browser automation MCP server |
+| playwright-mcp-upstream-snapshot-20260606 | `References/Agent/Gateway/playwright-mcp-upstream-snapshot-20260606` | duplicate upstream snapshot retained for dedupe review; primary route remains `playwright-mcp` |
 | servers | `References/Agent/Gateway/servers` | official/community MCP servers collection |
+| servers-upstream-snapshot-20260606 | `References/Agent/Gateway/servers-upstream-snapshot-20260606` | newer upstream snapshot retained for dedupe review; primary route remains `servers` until reviewed |
 | toolhive | `References/Agent/Gateway/toolhive` | MCP server management/security platform |
 | agentops | `References/Agent/Workflow/agentops` | agent monitoring/cost/benchmarking |
 | antfarm | `References/Agent/Workflow/antfarm` | durable workflow, observability, eval, and automation references reference |
@@ -241,6 +250,7 @@ The goal is to answer:
 | terminal-velocity | `References/Agent/Domain/terminal-velocity` | domain-specific agent examples reference |
 | UFO | `References/Agent/Domain/UFO` | Microsoft OS-level desktop automation agent |
 | YC-Killer | `References/Agent/Domain/YC-Killer` | domain-specific agent examples reference |
+| ChatGPT-Exporter-main | `References/Agent/ReviewLater/ChatGPT-Exporter-main` | chat export utility; low-priority and not first-line CoAgent/MCP infrastructure |
 | coding-interview-university | `References/Agent/ReviewLater/coding-interview-university` | low-priority or unclear references reference |
 | Pearl | `References/Agent/ReviewLater/Pearl` | low-priority or unclear references reference |
 
@@ -312,6 +322,7 @@ The goal is to answer:
 | Project | Path | Primary Use |
 |---|---|---|
 | PX4 | `References/PX4` | flight-stack reference |
+| Blender / material family | `References/Blender` | Blender source, material/PBR, UV, and asset-preparation references |
 | Log family already listed above | `References/Log` | identification/log-tool root |
 | RflySimAdv3Full | `References/RflySim/RflySimAdv3Full` | scene/runtime reference |
 | RflySimAdvFree | `References/RflySim/RflySimAdvFree` | free package reference |

@@ -11,7 +11,43 @@ operations, dispatch, or long-running task execution.
 
 | File | Purpose |
 |---|---|
+| `codex_native_hook.py` | adapter for Codex native lifecycle hooks. It is called by the global Codex hook config and delegates MoSim-specific checks to `preflight.py` only when the current `cwd` is inside this repository. |
 | `preflight.py` | project-local CoAgent preflight for path boundary, write scope, secret-risk paths, destructive commands, broad Git risk, large-file risk, result-packet evidence, task runtime files, and reference-index health |
+
+## Codex Native Global Hook
+
+Current Windows-native Codex setup uses the Codex native global hook file:
+
+```text
+C:\Users\HP\.codex\hooks.json
+```
+
+It registers:
+
+| Event | Current MoSim behavior |
+|---|---|
+| `SessionStart` | Injects a concise reminder to read `AGENTS.md` and `Docs/Workflows/new_conversation_context.md`; it does not load the full project memory. |
+| `PreToolUse` | Runs the project preflight adapter for shell commands, file edits, writes, patches, and MCP calls; blocks hard risks such as destructive Git commands, outside-project writes, secret-risk paths, and large-file offenders. |
+| `Stop` | No-op for now. Do not enable broad auto-continue logic here because it can create loops. |
+
+The global hook is intentionally scoped by `cwd`. It exits without action when
+Codex is not operating inside `C:\Users\HP\Desktop\MoSim`, so the same Windows
+Codex installation can still work on other projects.
+
+Codex requires non-managed hooks to be trusted before they run. In a new Codex
+surface, use `/hooks` to review and trust the hook hash after verifying this
+file and `C:\Users\HP\.codex\hooks.json`. Do not bypass hook trust for routine
+project work.
+
+Recurring health owner:
+
+| Item | Owner | Cadence | Evidence |
+|---|---|---|---|
+| Hook trust and smoke tests | `MoSim｜CoAgent运维平台` | Weekly, after Codex upgrade, or after hook/preflight edits | Result packet under `Results/agent_packets/returns/`; update this file if behavior changes |
+| Windows-native Codex config or hook path repair | `MoSim｜Codex 环境迁移部` | On blocker only | Blocker/result packet plus exact external path reason |
+
+Use `Docs/Workflows/coagent_meta_maintenance.md` for the full recurring
+meta-maintenance checklist.
 
 ## Current Commands
 
@@ -20,7 +56,21 @@ python CoAgent/hooks/preflight.py
 python CoAgent/hooks/preflight.py --path CoAgent/runtime/mosim_agent_runtime.py
 python CoAgent/hooks/preflight.py --write-path Results/tmp --command "git status" --result-packet Results/agent_packets/example.json
 python CoAgent/hooks/preflight.py --full-repo-large-scan
+python CoAgent/hooks/codex_native_hook.py
 ```
+
+Hook smoke tests:
+
+```powershell
+$json = '{"cwd":"C:\\Users\\HP\\Desktop\\MoSim","hook_event_name":"SessionStart","source":"resume"}'
+$json | python CoAgent\hooks\codex_native_hook.py
+
+$json = '{"cwd":"C:\\Users\\HP\\Desktop\\MoSim","hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"git reset --hard"}}'
+$json | python CoAgent\hooks\codex_native_hook.py
+```
+
+The first command should return `additionalContext`. The second command should
+return a `PreToolUse` deny decision.
 
 Default mode keeps the large-file scan scoped to CoAgent-related tracked files
 so it returns quickly in this repository. Use `--full-repo-large-scan` only
@@ -56,6 +106,7 @@ This is not a replacement for:
 - `AGENTS.md`
 - `Scripts/quality/doctor.py`
 - GitHub/CI checks
+- Codex native hook trust and product-level sandbox/approval settings
 
 It is a CoAgent-owned local gate focused on:
 

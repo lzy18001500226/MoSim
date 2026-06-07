@@ -1,5 +1,4483 @@
 # Project Progress
 
+## 2026-06-07 CST - MoSimQuadrotorModel Formal Package Started
+
+- User approved naming the project-owned formal quadrotor package
+  `MoSimQuadrotorModel` and asked to classify the old experiment pool there.
+  PMO created the first package skeleton under `Models/MoSimQuadrotorModel/`.
+  The current structure classifies entry points as `Baseline`, `Dynamics`,
+  `Missions`, `Controllers`, `Robustness`, `Planning`, `SceneTrace`,
+  `System`, `Formation`, `Support`, and `LegacyCompatibility`, each with
+  Chinese descriptions for Sysplorer/model-browser review.
+- Boundary: this is a low-risk alias/extends migration layer, not a destructive
+  rename of all old files. `QuadrotorModel` remains the official/upstream
+  baseline and dependency. `QuadrotorExperiments` remains the legacy
+  experiment pool and compatibility source until each old class is mapped,
+  references are updated, and targeted `check_model`/simulation/layout
+  evidence proves the new entry.
+- Next PMO split: dispatch MWORKS R1 to connect/verify the `QuadrotorModel`
+  baseline adapter into `MoSimQuadrotorModel`, and dispatch MWORKS R2 to audit
+  the package tree, migration classification, naming plan, and graphical/model
+  organization. Both tasks must repeat the department-owned MWORKS activation
+  sentinel/background screenshot preflight and must return engineering outputs,
+  not JSON-only progress.
+- PMO generated and validated two MWORKS department task packets:
+  `PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-001` for live
+  baseline adapter `check_model` evidence, and
+  `PMO-MWORKS-R2-MOSIMQUAD-PACKAGE-CLASSIFICATION-RENAME-PLAN-20260607-001`
+  for static old-to-new class mapping and rename batch planning. Both passed
+  `check_mworks_live_gate.py --kind task --expect department` and were
+  dispatched to the current MWORKS R1/R2 visible threads. Return/blocker
+  packets are pending.
+- Follow-up correction: R1 and R2 returned 001 blockers because the target
+  departments could not observe/capture a reusable MWORKS/Sysplorer window in
+  that turn. PMO then corrected a bad acceptance assumption: `Sysplorer
+  [教育版]` is only an edition/window marker and is not proof of account
+  activation, because activated and unactivated states may both show it. New
+  packets must use `license_state=education_window_observed_activation_unverified`
+  for title-only observations, and live MWORKS work must record
+  `license_api_before` when available. A successful `check_model` or simulation
+  without authorization errors is only task-local license sufficiency evidence,
+  not a standing activation claim.
+- PMO updated the machine gate and tests accordingly, then generated validated
+  retry task packets `PMO-MWORKS-R1-MOSIMQUAD-BASELINE-ADAPTER-CHECK-20260607-002`
+  and `PMO-MWORKS-R2-MOSIMQUAD-PACKAGE-CLASSIFICATION-RENAME-PLAN-20260607-002`.
+  Both pass `check_mworks_live_gate.py --kind task --expect department` and
+  `check_agent_task_native_surface_gate.py --strict`. No MWORKS R3 is needed
+  yet; the current bottleneck is corrected gate semantics plus R1/R2 execution,
+  not staffing.
+
+## 2026-06-07 CST - Department Subagent Planning Template Unified And Model State Rechecked
+
+- PMO corrected the visible-department dispatch wording after the user pointed
+  out that departments should plan sub-agent scheduling, not be told to use at
+  least one sub-agent. The standard dispatch helper now injects a
+  `Department Local Planning And Subagent Decision Contract` into every
+  department task text. Required fields are `department_local_goal`,
+  `critical_path_steps`, `parallelizable_slices`, `subagent_plan`,
+  `subagent_plan_reason`, `subagents_used`, `verification_gates`, and
+  `manual_review_or_blocker_triggers`; `subagent_plan` is a decision among
+  `used`, `available_but_not_useful`, `unavailable`, and `unsafe`.
+- The same wording was synchronized into `AGENTS.md`,
+  `Docs/Workflows/agent_orchestration.md`,
+  `CoAgent/dispatch/communication_contract.md`,
+  `Docs/Workflows/rfly_mosim_p0_10h_execution_plan.md`, and
+  `Docs/Workflows/agent_task_ledger.md`. Focused validation passed:
+  `python -m pytest Scripts/tests/test_dispatch_helper_mworks_gate.py
+  CoAgent/tests/test_lifecycle_smoke.py -q` and
+  `python -m py_compile CoAgent/dispatch/dispatch_helper.py`.
+- Static model-state recheck: `Models/QuadrotorExperiments/package.mo` already
+  contains category packages such as `OfficialScenarios`,
+  `ControllerBaselines`, `RobustFaultScenarios`, `PlanningScenarios`,
+  `SceneTraceScenarios`, `TraceIsolation`, `DynamicsUpgrade`,
+  `SystemArchitecture`, `SystemModules`, `SupportModels`, and
+  `FormationScenarios`, and it contains the project-owned
+  `Sunray150RflyStyleRotorDynamics`, wrapper, and physical-wrench adapter
+  slices. However, the directory still has many legacy flat `.mo` files and
+  the official `References/MWORKS/QuadrotorModel/Mechanics/QuadChassis`
+  remains the baseline plant. The Rfly-style dynamics slice is experimental
+  wrapper evidence, not a full replacement of `QuadChassis` or a closed-loop
+  Sunray150 model acceptance.
+- Current GUI preflight for this static audit saw no MWORKS/Sysplorer window
+  (`license_state_hint=no_mworks_window_observed`), so no live MWORKS
+  readiness, package-browser acceptance, `check_model`, simulation,
+  graphical/layout acceptance, controller performance, planner_ready, runtime
+  ack, or closed_loop claim is made in this entry.
+
+## 2026-06-07 CST - MWORKS 021 Screenshot Classification Drill Closed
+
+- PMO received the CoAgentOps recovery-rule sync and verified the canonical
+  docs already contain the new boundary: every planned Codex++ restart for a
+  dead-thread incident must first attempt one sparse Chinese email, even if
+  WeChat was attempted or appears healthy; if CoAgentOps itself is the dead
+  thread, PMO or another healthy mainline surface must own email, restart, and
+  post-restart no-op validation. No engineering dispatch or runtime change was
+  needed for this sync.
+- PMO closed the MWORKS R1/R2 021 screenshot classification drill. Both target
+  departments ran their own read-only GUI sentinel and existing-window
+  background screenshot, then read the sentinel/capture evidence in the same
+  turn and classified the observed education-edition window state under the
+  then-current rule.
+  `python Scripts/quality/check_mworks_live_gate.py <packet> --kind return
+  --expect department` passed with `fail_count=0` for both return packets.
+- Boundary: 021 proves the department-owned screenshot/sentinel
+  same-turn-classification habit is executable. After the later user
+  correction, its old `education_clean_preflight` wording is not activation
+  proof and must not be reused as a live-work acceptance condition. It is not
+  MWORKS package acceptance, model readiness, `check_model`, simulation,
+  graphical/layout acceptance, controller performance, planner readiness, live
+  runtime ack, or closed-loop evidence. Every later MWORKS business dispatch
+  must repeat this preflight in that task's own packet, classify title-only
+  education observations as activation-unverified unless stronger API/result
+  evidence exists, and any demo/login/authorization/mixed/unknown/unavailable
+  state remains a blocker.
+
+## 2026-06-07 CST - MWORKS Screenshot Gate Hardened To Require Same-Turn Classification
+
+- User corrected the PMO again: MWORKS departments must not merely run a
+  background screenshot or return an evidence path. They must read the sentinel
+  JSON/capture manifest or inspect screenshot/window-title evidence in the same
+  task turn, classify activation state, and return a blocker if they cannot
+  inspect/classify the evidence.
+- PMO hardened the machine gate in `Scripts/quality/check_mworks_live_gate.py`:
+  `activation_state_observation` must explicitly reference observed evidence
+  such as sentinel, window title, screenshot, capture, or manifest; vague
+  status prose is rejected. A blocking `license_state` such as demo, login,
+  activation, authorization, mixed, unknown, unavailable, or blocked must be
+  returned with `status=blocked`, not as a completed MWORKS task.
+- PMO synchronized the same rule into the PMO dispatch helper, communication
+  contract, orchestration workflow, `AGENTS.md`, and MWORKS skills for MCP
+  operations, runtime diagnostics, model context, simulation evidence,
+  Sysblock graphical modeling, report visualization, and test quality.
+- Focused validation passed:
+  `python -m pytest Scripts/tests/test_mworks_live_gate.py
+  Scripts/tests/test_agent_task_native_surface_gate.py
+  Scripts/tests/test_dispatch_helper_mworks_gate.py -q`.
+  The strict 019 R1/R2 task packets still pass
+  `check_mworks_live_gate.py --kind task --expect department`, and the latest
+  clean 016 R1/R2 current-activation return packets still pass
+  `check_mworks_live_gate.py --kind return --expect department`.
+- Boundary: this is PMO-side dispatch/machine-gate hardening. It does not mean
+  the blocked 019 R1/R2 drills have executed; those remain blocked by the
+  Codex App visible-thread dispatch-surface issue until R1/R2 can start turns
+  again. Historical 010 mixed/demo blocker packets predate
+  `activation_state_observation` and should be treated as incident/training
+  evidence, not current-format acceptance packets.
+- Follow-up: native visible-thread delivery to both MWORKS R1 and R2 succeeded
+  for static 020 rule-sync ACK tasks. R1 wrote
+  `PMO-MWORKS-R1-SCREENSHOT-CLASSIFICATION-GATE-HARDENING-ACK-20260607-020`
+  and R2 wrote
+  `PMO-MWORKS-R2-SCREENSHOT-CLASSIFICATION-GATE-HARDENING-ACK-20260607-020`.
+  Both ACK packets are valid JSON, include department planning fields, and
+  explicitly set `live_mworks_touched=false` and
+  `mworks_window_evidence_touched=false`; they are rule acknowledgements only,
+  not current activation/readiness evidence. This shows the R1/R2 thread
+  dispatch surface can start turns again for static work, but the original 019
+  per-task screenshot drill still needs to be retried before resuming MWORKS
+  business work.
+
+## 2026-06-07 CST - ROS2 048 And UE 012 Integrated; CoAgentOps Still Cannot Start Turns
+
+- PMO integrated ROS2 R1 return
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-IMU-CALLBACK-STARTUP-BOUNDARY-DIAG-20260607-048`.
+  048 ran as static diagnosis only: it did not start a new ROS2 live graph or
+  FAST-LIO probe. It classifies the 047 blocker as monotonic publisher/Livox/IMU
+  source-topic stamps with a FAST-LIO callback-local `imu_cbk` loop-back, not
+  publisher-side Livox stamp regression or source-topic IMU header-stamp
+  regression in that run.
+- PMO integrated UE return
+  `RFLY-MOSIM-UE-CONSOLE-SOURCE-STATIC-RECEIVER-SHELL-IMPLEMENTATION-CHECKER-20260607-012`.
+  012 added a source/static receiver-shell contract checker for future
+  `mosim.ue_command_echo.v1`. PMO reran the checker and combined UE static
+  tests: 39 static tests passed. The checker keeps runtime receiver
+  implementation, accepted-state UI enablement, and live ack claims blocked
+  until an authoritative live echo producer exists.
+- Boundary: 048/012 do not prove FAST-LIO success, TF/RViz readiness, live UE
+  runtime ack, live MWORKS downlink, ROS2 runtime ack, planner readiness,
+  controller performance, final UI acceptance, mission success, or closed loop.
+  Next ROS2 work should be a separately scoped evidence-local FAST-LIO callback
+  first-N instrumentation gate before any planner or TF/RViz readiness work.
+- PMO ran one CoAgentOps no-op recovery probe at 08:08 CST after the earlier
+  MWORKS 019 dispatch-surface incident. It still failed with `failed to start
+  turn: internal error; agent loop died unexpectedly`. Treat CoAgentOps/MWORKS
+  visible-thread recovery as still blocked; continue with ROS2/UE threads only
+  when they are independently reachable and their task scopes do not require
+  MWORKS.
+
+## 2026-06-07 CST - MWORKS 019 Screenshot Drill Blocked By Visible-Thread Dispatch Surface
+
+- User corrected the PMO again: every MWORKS assignment must force the target
+  department to run its own background screenshot and activation-state check
+  before model, solver, MCP, layout, or graphical-review work. PMO created two
+  019 drill packets for MWORKS R1/R2 that require department-owned
+  `check_mworks_gui_sentinel.py` plus `capture_window_background.ps1`, concrete
+  `activation_state_observation`, concrete `license_state`, no-click pledge,
+  `mworks_window_evidence_touched=true`, and `live_mworks_touched=false`.
+- Both 019 task packets passed JSON parse,
+  `Scripts/quality/check_mworks_live_gate.py --kind task --expect department`,
+  and `Scripts/quality/check_agent_task_native_surface_gate.py --strict`.
+  PMO also patched two wording risks found by a read-only subagent: AGENTS now
+  says GUI sentinel and background screenshot are both required, and
+  `agent_orchestration.md` distinguishes blocker category `license_or_login`
+  from concrete `license_state` values.
+- Native visible-thread delivery failed for MWORKS R1 and R2. With a settings
+  override, both failed on `failed to update thread settings`; without override,
+  both failed on `failed to start turn`; all failures ended with `agent loop
+  died unexpectedly`. CoAgentOps also failed to start a diagnostic turn through
+  the same native route. PMO wrote blocker packets for R1, R2, and CoAgentOps
+  dispatch-surface failure.
+- Boundary: this is Codex App visible-thread dispatch-surface evidence, not
+  MWORKS activation/license/GUI/MCP/model/solver evidence. The 019 drills are
+  not executed by R1/R2 yet. Do not route production MWORKS business work until
+  the visible-thread surface is restored and the target department completes a
+  current-turn screenshot/activation preflight packet that passes
+  `check_mworks_live_gate.py --kind return --expect department`.
+- PMO attempted a sparse WeChat alert with an obvious manual-intervention
+  header, but the send reached the Weixin layer and returned `ret=-2`. No loop
+  retry was attempted. The main conversation remains the active notification
+  surface until the user sends one ordinary WeChat message to refresh the send
+  context, after which PMO may retry once if the incident still needs WeChat.
+
+## 2026-06-07 CST - UE 011 Static UI Binding Return Integrated
+
+- PMO integrated UE Experiment Console return
+  `RFLY-MOSIM-UE-CONSOLE-STATIC-UI-BINDING-PREFLIGHT-20260607-011`.
+  The department completed a source/static UI-binding preflight checker for
+  controller, planner, wind, fault, scene, reset, and recording controls. The
+  checker keeps all controls pending or disabled until a future authoritative
+  `mosim.ue_command_echo.v1` live echo row exists, and distinguishes future
+  eligibility from actual UI enablement.
+- PMO rechecked the return packet, reran the checker, ran the focused and
+  existing UE console static tests, and diff whitespace checks passed. There is
+  no 011 blocker packet.
+- Boundary: 011 does not prove live UE runtime ack, live MWORKS downlink, ROS2
+  runtime ack, Blueprint/UMG accepted-state implementation, planner readiness,
+  controller performance, FAST-LIO success, final UI acceptance, mission
+  success, or closed loop. Accepted-state controls remain disabled until an
+  authoritative live echo producer exists.
+- PMO also integrated ROS2 R1 blocker
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-INSTRUMENTED-PUBLISHER-RUNTIME-GATE-20260607-047`.
+  The single allowed no-goal FAST-LIO-only live probe used an evidence-local
+  instrumented publisher. Publisher trace was complete and monotonic, Livox and
+  IMU source topics were monotonic, FAST-LIO outputs were nonzero and
+  monotonic, forbidden planner/setpoint topics were absent, and cleanup was
+  clean. The gate blocked because FAST-LIO still logged one callback-labeled
+  `imu_cbk` loop-back.
+- Boundary: 047 shifts suspicion away from publisher-side Livox timestamp
+  assignment and toward FAST-LIO IMU callback/startup-buffer discipline, but it
+  is not FAST-LIO success, TF/RViz readiness, localization/local-map quality,
+  planner readiness, controller performance, mission success, or closed loop.
+  Next ROS2 work must stay on the IMU callback/startup boundary before planner
+  or TF/RViz readiness gates.
+
+## 2026-06-07 CST - MWORKS Per-Task Screenshot Gate Rechecked After User Correction
+
+- User corrected the PMO again: every MWORKS department assignment must require
+  the target department to screenshot/check activation state itself before
+  business work, because activation drift can appear as solver, GUI, or MCP
+  errors and departments were not reliably reporting it.
+- PMO ran a fresh read-only background recheck at 07:24 CST. The GUI sentinel
+  was `clean`, and background capture showed one existing Sysplorer window in
+  `[教育版]` with no visible login, activation, demo, authorization, mixed-state,
+  or error-report dialog. PMO did not click, open, close, restart, call MWORKS
+  MCP, or run model operations. This remains context only, not reusable
+  readiness evidence.
+- PMO revalidated the latest R1/R2 current activation preflight return packets:
+  both pass `Scripts/quality/check_mworks_live_gate.py --kind return --expect
+  department`. Future MWORKS business returns/blockers that omit current-turn
+  sentinel/background screenshot evidence, `activation_state_observation`,
+  concrete `license_state`, `will_not_click_activation_login=true`,
+  `mworks_window_evidence_touched=true`, or `live_mworks_touched` must be
+  rejected or returned for correction before integration.
+- The dispatch contract, helper, MWORKS skills, and orchestration docs already
+  contain this rule. The operational acceptance rule is now stricter than a
+  static ACK: the actual business packet must contain the evidence from that
+  same task turn.
+- PMO also hardened the general pre-dispatch native surface checker:
+  MWORKS/Sysplorer/Syslab target task packets are now required to pass the
+  MWORKS activation/screenshot task gate before dispatch. Focused tests pass,
+  and current MWORKS 016 plus ROS2 047/UE 011 task packets still validate.
+
+## 2026-06-07 CST - ROS2 047 And UE 011 Dispatched While MWORKS Business Remains Gated
+
+- PMO validated and dispatched ROS2 047 to
+  `MoSim｜ROS2感知定位与规划运行部-R1`. 047 is a bounded no-goal
+  FAST-LIO-only instrumented publisher runtime gate after 046, with
+  evidence-local instrumentation only. It forbids RViz2, UE, planner/EGO,
+  PositionCommand, 20 Hz adapter, TF bridge, active `/tf`, production
+  source/config/extrinsic/frame/source-data edits, fake inputs, and repeated
+  live probes.
+- PMO validated and dispatched UE 011 to
+  `MoSim｜UE实验控制台与场景交互部`. 011 is a source/static UI binding
+  preflight task after UE 010, keeping experiment-console accepted-state
+  controls disabled/pending until future authoritative
+  `mosim.ue_command_echo.v1` live echo rows exist. It forbids UE GUI, Unreal
+  build, runtime receiver implementation, Blueprint/UMG/assets edits,
+  MWORKS/ROS2/FAST-LIO/planner/UE runtime calls, and accepted-state enablement.
+- Both packets passed JSON parse and
+  `Scripts/quality/check_agent_task_native_surface_gate.py --strict` before
+  dispatch. Their ledger rows are now `dispatched-running`.
+- Boundary: 047/011 do not prove FAST-LIO success, TF/RViz readiness, live UE
+  runtime ack, live MWORKS downlink, ROS2 runtime ack, planner readiness,
+  controller performance, mission success, final UI acceptance, or closed loop.
+  MWORKS production business remains gated by per-task department-owned
+  activation/screenshot preflight and current visible-thread recovery state.
+
+## 2026-06-07 CST - MWORKS Activation Screenshot Rule Reaffirmed And Current PMO Check
+
+- User again reported that MWORKS activation can drift between assignments and
+  that MWORKS departments must learn to notice activation/login/GUI incidents
+  themselves instead of continuing solver, model, layout, Smart Layout, or MCP
+  retries. PMO treated this as a mandatory dispatch acceptance rule.
+- PMO ran a read-only current check at 07:11 CST using only
+  `Scripts/agent/check_mworks_gui_sentinel.py` and
+  `Scripts/tools/capture_window_background.ps1`. The sentinel was `clean`, and
+  the background screenshot captured one existing Sysplorer window titled with
+  `[教育版]`; no visible demo, login, activation, authorization, mixed-state, or
+  GUI error-report dialog was observed. PMO did not click, open, close,
+  restart, recover login, call MWORKS MCP, or run model operations.
+- This PMO check is context only. It is not reusable readiness evidence and
+  does not prove package acceptance, graphical/layout acceptance,
+  `check_model`, simulation, controller performance, live runtime ack,
+  `planner_ready`, or `closed_loop`.
+- Future MWORKS R1/R2 business dispatches, including static model
+  organization and graphical-review preparation, must still start with the
+  target department's own current-turn GUI sentinel plus background screenshot.
+  Return/blocker packets must include `activation_state_observation`,
+  `license_state`, sentinel and screenshot evidence, the no-click pledge,
+  `mworks_window_evidence_touched=true`, and `live_mworks_touched`, then pass
+  `Scripts/quality/check_mworks_live_gate.py --kind return --expect
+  department`.
+- R1 and R2 have both received the hard-gate reminder in visible threads. New
+  production MWORKS business work remains gated by the current visible-thread
+  start-turn recovery state and by the per-task department-owned screenshot
+  preflight; PMO must reject any MWORKS return/blocker that omits this evidence
+  or uses vague activation/license labels such as `ok`, `normal`, or
+  `looks_fine`.
+
+## 2026-06-07 CST - ROS2 046 And UE 010 Static Returns Integrated
+
+- PMO integrated ROS2 R1 return
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-PUBLISHER-TIMESTAMP-INSTRUMENTATION-STATIC-OR-BOUNDED-PROBE-20260607-046`.
+  046 completed as a static publisher-side timestamp instrumentation design:
+  it did not run a ROS2 live graph, did not start FAST-LIO/RViz2/UE/planner,
+  did not publish planner/setpoint topics, and did not edit production ROS2
+  packages, source data, config, extrinsics, frame adapters, MWORKS, UE,
+  controller, or planner files. The return uses one disposable read-only
+  subagent and recommends the next runtime diagnostic only as a separate
+  evidence-local instrumented publisher build/run gate, because the current
+  production publisher lacks publisher-side per-frame trace.
+- PMO integrated UE Experiment Console return
+  `RFLY-MOSIM-UE-CONSOLE-SOURCE-STATIC-RECEIVER-SHELL-CONTRACT-DESIGN-20260607-010`.
+  010 completed as source-static receiver-shell contract design only. The
+  future receiver must be a separate project-owned command echo receiver or
+  adapter for `mosim.ue_command_echo.v1`, must sink into
+  `UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson`, and
+  must reject smoke/source/preflight rows, UDP send success, and
+  `quadrotor.unreal_state` frame/status downlink as live command ack. Static
+  checkers passed, while live runtime receiver implementation and accepted-state
+  UI binding remain explicitly unsafe.
+- Boundary: neither 046 nor 010 proves FAST-LIO success, TF/RViz readiness,
+  localization/local-map quality, live UE runtime ack, live MWORKS downlink,
+  ROS2 runtime ack, planner readiness, controller performance, mission success,
+  final UI acceptance, or closed loop. Next ROS2 work must be a separately
+  scoped evidence-local instrumented publisher runtime gate; next UE work may
+  be static UI binding contract preflight or later source-static receiver-shell
+  implementation, not runtime receiver acceptance.
+
+## 2026-06-07 CST - ROS2 045 And UE 009 Static Returns Integrated
+
+- PMO integrated ROS2 R1 return
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-LIVOX-FASTLIO-STARTUP-DDS-STATIC-DIAG-20260607-045`.
+  045 is static-only: it ran no new ROS2 live graph/probe, made no production
+  source/config/extrinsic/frame edits, and used one disposable read-only
+  subagent for a static QoS/startup/source timestamp audit. Classification is
+  startup/subscriber-load-sensitive Livox node-`now()` stamp regression with
+  FAST-LIO present; source JSONL ordering, `/clock`, `use_sim_time`, multiple
+  Livox publishers, and IMU source-topic regression are not supported as root
+  causes. Next safe ROS2 gate is a separately scoped evidence-local publisher
+  timestamp instrumentation task, not planner/RViz/TF/UE/PositionCommand work.
+- PMO integrated UE Experiment Console return
+  `RFLY-MOSIM-UE-CONSOLE-STATIC-NEXT-GATE-AUDIT-20260607-009`. 009 is a static
+  next-gate audit only: existing static checkers passed, a disposable read-only
+  subagent confirmed the 004-008 evidence boundary, and no UE GUI/build/source
+  edit/assets/runtime receiver/UI accepted-state/MWORKS/ROS2 runtime action
+  occurred. Recommended next UE gate is source-static receiver-shell contract
+  design before any runtime receiver implementation; UI binding contract
+  preflight remains second and static-only.
+- Boundary: neither 045 nor 009 proves FAST-LIO success, TF/RViz readiness,
+  localization/local-map quality, planner readiness, live UE runtime ack, live
+  MWORKS downlink, ROS2 runtime ack, controller performance, mission success,
+  final UI acceptance, or closed loop.
+
+## 2026-06-07 CST - ROS2 044 FAST-LIO-Only Retest Blocked By Livox Stamp Regression
+
+- PMO integrated ROS2 R1 blocker
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-ONLY-FULL-WINDOW-RETEST-20260607-044`.
+  The target thread completed the task and wrote a blocker, not a return.
+- 044 ran exactly one no-goal FAST-LIO-only full-window probe after 043. The
+  accepted source window still had 120 `body_lidar_m_z_up` frames and source
+  JSONL time monotonicity. Runtime captured Livox `120/120` and IMU `2433`
+  samples; IMU stamps were monotonic.
+- The gate blocked because Livox source-topic header stamps regressed once at
+  runtime by about `-2.84 s` between the first two captured topic samples, and
+  the FAST-LIO full log contained one `livox_pcl_cbk` loop-back. FAST-LIO did
+  publish nonzero monotonic `/Odometry` and `/cloud_registered`, but that does
+  not clear the blocker.
+- Boundary: 044 proves only that adding FAST-LIO reproduced an early Livox
+  stamp regression plus one FAST-LIO Livox callback loop-back in the single
+  allowed full-window probe. It does not prove FAST-LIO success, TF/RViz
+  readiness, localization/local-map quality, planner readiness, controller
+  performance, mission success, or closed loop. Next ROS2 work must stay at
+  evidence-local source publisher / DDS subscriber-load / FAST-LIO callback
+  timing diagnosis; do not dispatch planner, RViz2, UE, PositionCommand, 20 Hz
+   adapter, TF bridge, source/config/extrinsic/frame edits, or fake inputs from
+   this evidence.
+
+## 2026-06-07 CST - MWORKS Department Activation Gate Hardened After Drift Report
+
+- User reported that MWORKS activation had drifted again and that specialist
+  threads still were not reliably returning screenshots or activation blockers.
+  PMO treated this as a dispatch/acceptance loophole, not as a model, solver, or
+  controller problem.
+- Updated the MWORKS dispatch helper, communication contract, orchestration
+  workflow, and AGENTS rule so every MWORKS R1/R2 business task treats the
+  department-owned GUI sentinel plus background screenshot as the first business
+  gate in that same turn. PMO-side screenshots, old 014/015/016 drills, and
+  static ACK packets are context only; they cannot satisfy a later business
+  assignment.
+- Tightened `Scripts/quality/check_mworks_live_gate.py`: return/blocker packets
+  are now rejected when sentinel or screenshot fields are empty placeholders,
+  `activation_state_observation` is a vague short ACK, or `license_state` is not
+  a concrete classification such as education-clean, mixed/demo blocked,
+  login/activation required, authorization failed, GUI error-report blocked,
+  sentinel unavailable, or unknown blocked.
+- Added regression tests for vague observations, empty evidence placeholders,
+  and unclassified license states. Boundary: this is enforcement/training
+  infrastructure only. It does not prove current MWORKS readiness, package
+  acceptance, check_model, simulation, graphical/layout acceptance, controller
+  performance, planner readiness, runtime ack, or closed loop.
+- PMO ran one read-only current context check at 06:19 CST using the project
+  GUI sentinel and background screenshot scripts only. It observed one matching
+  Sysplorer window in `[教育版]` and no sentinel incident. This is PMO context
+  only, not reusable readiness evidence; every future R1/R2 business task still
+  needs fresh department-owned preflight evidence in that task.
+- R2 received the hardened rule sync and wrote
+  `MWORKS-R2-ACTIVATION-SCREENSHOT-GATE-HARDENING-ACK-20260607-018`. The ACK is
+  static rule synchronization only; R2 did not run GUI/MCP/model/screenshot work
+  in that turn. R1 production routing remains paused because CoAgentOps 017
+  classified the R1 visible-thread surface as `partial_recovery`: readable, but
+  a fresh no-op start-turn still fails with an agent-loop error. Do not dispatch
+  new R1 business work until Codex++ restart recovery plus one no-op validation
+  restores the thread, or PMO/user explicitly authorizes a temporary route.
+- PMO also fixed the background screenshot helper so
+  `capture_manifest.json` is written as UTF-8 without BOM. The old PowerShell
+  default could make strict Python JSON parsing fail before a department even
+  classified activation state. A fresh PMO context capture parsed with
+  `python -m json.tool`, and the MWORKS live-gate tests still pass.
+
+## 2026-06-07 CST - ROS2 044 FAST-LIO-Only Full-Window Retest Dispatched
+
+- PMO validated task packet
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-ONLY-FULL-WINDOW-RETEST-20260607-044`
+  after 043 proved the complete source-only Livox/IMU window is monotonic.
+  JSON parse, `check_agent_task_native_surface_gate.py --strict`, and scoped
+  `git diff --check` passed. No 044 return/blocker existed at dispatch time.
+- PMO added 044 to the task ledger and dispatched it to
+  `MoSim｜ROS2感知定位与规划运行部-R1` through the native visible-thread surface.
+  The target thread is active and has started reading the 044 packet plus
+  043/041/042 evidence.
+- 044 is intentionally narrow: at most one no-goal FAST-LIO-only live probe,
+  using 043 as the source-clean precondition. RViz2, UE, planner/EGO,
+  PositionCommand, 20 Hz adapter, TF bridge, active `/tf` recorder, production
+  edits, fake data, and repeated retries remain forbidden. A successful return
+  may only classify the FAST-LIO-only callback/source-output boundary, not
+  TF/RViz readiness, localization/local-map quality, planner readiness,
+  controller performance, mission success, or closed loop.
+
+## 2026-06-07 CST - MWORKS Activation Screenshot Gate Reaffirmed After User Report
+
+- After the user reported that MWORKS activation state had drifted again, PMO
+  reran only the read-only existing-window evidence route at 05:26 CST. The
+  Win32 GUI sentinel was `clean`, and the background capture matched one
+  existing Sysplorer window titled with `[教育版]`. PMO did not click
+  login/activation/close/restart/send-report, did not open or close MWORKS,
+  and did not call MWORKS MCP/model operations.
+- This PMO-side observation does not replace department evidence. Future MWORKS
+  R1/R2 assignments, including static model organization and graphical/layout
+  review prep, must still start with the target department personally running
+  `check_mworks_gui_sentinel.py` plus `capture_window_background.ps1`, writing
+  `activation_state_observation`, and passing
+  `check_mworks_live_gate.py --kind return --expect department`.
+- If a department sees `[演示版]`, login/activation/authorization symptoms,
+  mixed state, unknown sentinel state, or unavailable screenshot/sentinel
+  tooling, it must return a blocker instead of trying solver, model, layout, or
+  MCP retries. Live MWORKS acceptance remains task-local; no later dispatch may
+  reuse this PMO check or 016 as readiness evidence.
+- 05:38 CST follow-up: PMO repeated the same read-only route after the user
+  reported another activation drift. The matched existing Sysplorer window was
+  still `[教育版]`, but PMO treated this only as context. PMO sent explicit
+  hard-gate ACK prompts to both MWORKS R1 and R2; both confirmed that every
+  later MWORKS business task must begin with department-owned GUI sentinel plus
+  background screenshot evidence, and that demo/login/authorization/mixed/
+  unknown or unavailable evidence must become a blocker before solver, model,
+  layout, MCP, or GUI retries. PMO will reject or return-for-fix any future
+  MWORKS department return/blocker that lacks `activation_state_observation`,
+  screenshot/sentinel evidence, the no-click pledge, and
+  `check_mworks_live_gate.py --expect department` validation.
+- 05:58 CST follow-up: PMO repeated the same read-only existing-window route
+  and manually inspected the captured background screenshot. The sentinel was
+  `clean`, and the captured Sysplorer window title was still `[教育版]`, with no
+  visible login, activation, authorization, demo, or error-report dialog in
+  that screenshot. PMO also revalidated the latest R1/R2 016 task and return
+  packets with `check_mworks_live_gate.py --kind task|return --expect
+  department`; all four checks returned `ok=true`. This remains only a
+  point-in-time PMO observation and department-training verification. It is not
+  reusable MWORKS readiness evidence for later assignments; each future MWORKS
+  business dispatch must repeat the department-owned sentinel and background
+  screenshot preflight in that task.
+- 06:05 CST dispatch-surface follow-up: PMO attempted to send a fresh hard-gate
+  synchronization prompt to MWORKS R1. The first native visible-thread send
+  failed while updating thread settings, and a second send without model/
+  thinking overrides failed while starting the turn; both reported an internal
+  agent-loop failure. PMO wrote blocker
+  `PMO-MWORKS-R1-DISPATCH-SURFACE-20260607-017` and routed bounded diagnosis to
+  `MoSim｜CoAgent运维平台`. This is a Codex App visible-thread dispatch-surface
+  incident, not MWORKS license, GUI, MCP, model, or solver evidence. R1's
+  earlier 014/015/016 department-owned screenshot/sentinel preflights remain
+  valid training evidence, but new live MWORKS R1 work should wait for
+  dispatch-surface diagnosis or an explicit temporary route.
+
+## 2026-06-07 CST - ROS2 043 Source Full-Window Timestamp Discipline Passed
+
+- PMO integrated ROS2 R1 return
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-SOURCE-FULL-WINDOW-TIMESTAMP-DISCIPLINE-20260607-043`
+  and inspected its evidence. 043 used exactly one source-only full-window live
+  probe after static review showed 040/041 only covered active prefixes.
+- Evidence: the accepted finite source file has 120 `body_lidar_m_z_up`
+  frames, and the source-only run delivered Livox `120/120` with zero header
+  stamp regressions plus IMU `2413` samples with zero header stamp regressions.
+  `/clock` was absent, both source nodes reported `use_sim_time=false`, and
+  forbidden planner/setpoint topics were absent. Cleanup reported no matching
+  leftover processes.
+- Boundary: 043 proves only source/full-window Livox and IMU timestamp
+  discipline under source-only load. It does not prove FAST-LIO success,
+  TF/RViz readiness, localization/local-map quality, planner readiness,
+  controller performance, mission success, or closed loop. It also does not
+  authorize source/config/extrinsic/frame edits.
+- Next safe ROS2 step is a separately scoped FAST-LIO-only retest or
+  subscriber-boundary diagnostic using 043 as the source-clean precondition.
+  Keep RViz2, UE, planner/EGO, PositionCommand, 20 Hz adapter, TF bridge, active
+  `/tf` recorder, and production edits out of that next task unless separately
+  authorized.
+
+## 2026-06-07 CST - ROS2 042 Static Boundary Diagnosis Integrated And 043 Prepared
+
+- PMO integrated ROS2 R1 return
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-CALLBACK-DDS-BOUNDARY-DIAG-20260607-042`
+  and recorded a disposable read-only subagent audit. 042 completed as a
+  static-first diagnosis; no live probe was run.
+- Classification: 041 is not a contradiction. The active recorder observed a
+  monotonic Livox/IMU prefix, while FAST-LIO remained subscribed across more of
+  the finite replay and compared delivered header stamps against persistent
+  callback-local `last_timestamp_*` state. Source publishers stamp with node
+  `now()`, so the next proof point is full-window source timestamp discipline,
+  not TF/RViz or planner work.
+- Boundary: 042 does not prove FAST-LIO success, TF/RViz readiness,
+  localization quality, local-map quality, planner readiness, controller
+  performance, mission success, or closed loop. It also does not prove DDS as
+  the sole root cause or justify source/config/extrinsic/frame edits.
+- PMO prepared
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-SOURCE-FULL-WINDOW-TIMESTAMP-DISCIPLINE-20260607-043`
+  for ROS2 R1. 043 is source-only/full-window by default: static-first, at most
+  one source-only full-window live probe, no FAST-LIO/RViz2/UE/planner/EGO/
+  PositionCommand/20Hz adapter/TF bridge/active `/tf` recorder, no production
+  edits, and no planner/setpoint topics.
+
+## 2026-06-07 CST - MWORKS Current Activation Preflight 016 Completed
+
+- PMO repeated a read-only current-window activation check at 04:47 CST after
+  the user pointed out that MWORKS departments must learn to screenshot/check
+  activation state on every assignment. The sentinel was `clean`, and the
+  background capture matched one existing Sysplorer window titled with
+  `[教育版]`; PMO did not click login/activation/close/restart/send-report, did
+  not call MWORKS MCP/model operations, and did not open a new MWORKS window.
+- This PMO check is context only. PMO created and validated
+  `PMO-MWORKS-R1-CURRENT-ACTIVATION-PREFLIGHT-20260607-016` and
+  `PMO-MWORKS-R2-CURRENT-ACTIVATION-PREFLIGHT-20260607-016`, then dispatched
+  both through native visible-thread messaging. R1 and R2 both completed the
+  task: each department ran the sentinel/background screenshot itself, wrote
+  `activation_state_observation` from the actual observed `[教育版]` Sysplorer
+  window, did not call MWORKS MCP/model/GUI operations, and passed
+  `Scripts/quality/check_mworks_live_gate.py --kind return --expect department`.
+- PMO inspected both target visible-thread turns and both are completed, not
+  half-running. PMO also repeated a read-only current check at 04:58 CST; it was
+  still `clean` and captured only one existing `[教育版]` Sysplorer window.
+- 2026-06-07 05:12 CST follow-up: after the user again questioned activation
+  drift and department reporting habits, PMO repeated the same read-only route
+  without touching MWORKS/MCP/model/GUI actions. The sentinel was still
+  `clean`, the background screenshot showed the existing Sysplorer window in
+  `[教育版]`, and PMO visually inspected the captured PNG for this check. PMO
+  did not reproduce a visible `[演示版]`, login, activation, authorization, or
+  error-report dialog in this check.
+- Boundary: 016 is department preflight habit enforcement only. It is not
+  MWORKS model evidence, package acceptance, graphical/layout acceptance,
+  simulation, controller performance, planner readiness, live runtime ack, or
+  closed-loop evidence. Every future MWORKS R1/R2 business dispatch must repeat
+  the same department-owned preflight for that specific task; 016 cannot be
+  reused as readiness evidence for later model, solver, layout, or GUI work.
+  PMO must reject or return-for-fix any future MWORKS department return/blocker
+  packet that omits `activation_state_observation`, background screenshot/
+  sentinel evidence, `mworks_window_evidence_touched=true`, the no-click pledge,
+  or the `check_mworks_live_gate.py --expect department` result. If either
+  department reports demo/login/authorization/mixed/unknown/unavailable state,
+  PMO must keep live MWORKS work blocked and must not let the department
+  continue solver, model, or layout retries.
+
+## 2026-06-07 CST - PMO Rechecked MWORKS Window State Without Replacing Department Preflight
+
+- After the user reported that MWORKS activation had dropped again, PMO ran
+  only the read-only existing-window GUI sentinel and background capture route.
+  No login, activation, close, restart, save, report, MCP model operation, or
+  new MWORKS window was touched.
+- The PMO-side sentinel at 04:35 CST was `clean`, and the background capture
+  matched one visible Sysplorer window titled with `[教育版]`. PMO did not see a
+  matching `[演示版]` window in this check.
+- Boundary: this PMO observation is not MWORKS model evidence and does not
+  replace department-owned preflight. Every future MWORKS R1/R2 business
+  dispatch still requires the target department itself to run
+  `check_mworks_gui_sentinel.py` plus `capture_window_background.ps1`, report
+  `activation_state_observation`, and pass
+  `Scripts/quality/check_mworks_live_gate.py --kind return --expect department`.
+  If the department sees demo/login/activation/authorization/mixed/unknown
+  state, it must return a blocker instead of trying solver/model/layout fixes.
+
+## 2026-06-07 CST - ROS2 041 Blocked By FAST-LIO Callback Loopback And 042 Prepared
+
+- PMO integrated the ROS2 041 blocker and the disposable read-only subagent
+  audit. The single allowed FAST-LIO-only no-goal probe kept RViz2, UE,
+  planner/EGO, PositionCommand, 20 Hz adapter, TF bridge, active `/tf`
+  recorder, source/config/extrinsic/frame edits, and repeated retries out of
+  scope.
+- Recorder-observed source-topic stamps stayed nonzero and monotonic
+  (`Livox=40`, `IMU=80`), and FAST-LIO outputs were nonzero/monotonic
+  (`/Odometry=29`, `/cloud_registered=29`). However, the FAST-LIO full log
+  still reported two callback-labeled loop-back events: `imu_cbk=1` and
+  `livox_pcl_cbk=1`.
+- Classification: 041 proves that adding FAST-LIO back as the only material
+  variable can reproduce internal callback loop-back while the recorder sees
+  source-topic stamps as monotonic. It does not prove source-topic stamp
+  rollback, does not prove an algorithm-body root cause, and is only medium
+  confidence from one isolated probe.
+- PMO prepared
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-CALLBACK-DDS-BOUNDARY-DIAG-20260607-042`
+  as the next static-first ROS2 R1 diagnostic. The task is constrained to
+  FAST-LIO callback-local timestamp state, DDS queue/stale delivery, and finite
+  replay startup/end boundary analysis, with at most one no-goal FAST-LIO-only
+  probe only if static evidence cannot answer the boundary question.
+- Boundary: do not advance to planner, RViz, PositionCommand, 20 Hz adapter,
+  UE, TF/RViz readiness, localization/local-map quality, planner readiness,
+  controller performance, mission success, or closed loop from 041.
+
+## 2026-06-07 CST - MWORKS Activation Observation Gate Added And R1/R2 Refresh Dispatched
+
+- User corrected that MWORKS departments must not only run activation
+  screenshot/sentinel checks, but must also report what the screenshot or
+  window title actually showed before doing any MWORKS business work.
+- PMO added the required return/blocker field
+  `activation_state_observation` to the MWORKS live gate. A packet can no
+  longer pass by only filling a summarized `license_state`; it must record the
+  observed activation evidence such as education marker, demo marker, login or
+  activation prompt, mixed state, unknown state, or unavailable evidence.
+- Updated the machine checker, dispatch helper, communication contract,
+  orchestration workflow, and MWORKS skills. Targeted live-gate tests passed.
+- PMO wrote and validated single-target refresh packets for MWORKS R1 and R2,
+  then dispatched them by native visible-thread messaging. They are instructed
+  to run only the GUI sentinel and background screenshot, write
+  `activation_state_observation`, and return a blocker instead of solver,
+  layout, or model retries if activation is unsafe.
+- MWORKS R1 returned a valid packet: it ran the sentinel and background
+  screenshot itself, observed the existing Sysplorer window title with
+  `[教育版]`, wrote `activation_state_observation`, did not touch MWORKS MCP or
+  model work, and passed the department return gate.
+- MWORKS R2 also returned a valid packet with the same bounded behavior: it ran
+  sentinel/background capture itself, observed one existing education-mode
+  Sysplorer window, wrote `activation_state_observation`, did not touch MWORKS
+  MCP/model/GUI operations, and passed the department return gate.
+- PMO also ran a read-only background evidence check and the currently matched
+  Sysplorer window title showed `[教育版]`. This is PMO-side evidence only; it
+  is not a replacement for R1/R2 department-owned return packets.
+- Historical 014 return packets predate `activation_state_observation`, so they
+  intentionally fail the new stricter checker and must not be treated as the
+  new acceptance baseline.
+
+## 2026-06-07 CST - ROS2 040 Source-Only Stamp Origin Passed And 041 Prepared
+
+- ROS2 R1 completed
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-SOURCE-ONLY-CLOCK-DDS-STAMP-ORIGIN-20260607-040`
+  as a source-only stamp-origin classification gate.
+- The single source-only probe did not reproduce the 039 Livox/IMU timestamp
+  rollback. FAST-LIO, RViz2, UE, planner/EGO, PositionCommand recorder, 20 Hz
+  adapter, TF bridge, and active `/tf` recorder were absent.
+- Livox and IMU source samples were nonzero and monotonic
+  (`Livox=40`, `IMU=80`, no regressions). `/clock` was absent, source nodes
+  reported `use_sim_time=false`, each source topic had one publisher with GID
+  evidence, forbidden planner/setpoint topics were absent, and cleanup was
+  clean.
+- PMO also ran a disposable read-only audit of the 040 packet/evidence. The
+  audit agrees that 040 is enough to add FAST-LIO back as the only material
+  variable; it does not justify direct publisher/source edits yet.
+- PMO prepared
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-ONLY-STAMP-LOOPBACK-ISOLATION-20260607-041`
+  for ROS2 R1. 041 is a bounded no-goal probe that adds FAST-LIO only and still
+  forbids RViz2, UE, planner/EGO, PositionCommand, 20 Hz adapter, TF bridge,
+  active `/tf` recorder, source/config/extrinsic edits, and repeated retries.
+- Boundary: 040 is not FAST-LIO success, TF/RViz readiness, localization
+  quality, local-map quality, planner readiness, controller performance,
+  mission success, or closed-loop evidence.
+
+## 2026-06-07 CST - MWORKS Department-Owned Activation Screenshot Drill Superseded
+
+- PMO closed the latest MWORKS coordination gap after the user pointed out that
+  departments must learn to detect activation loss themselves instead of relying
+  on PMO noticing a GUI state change.
+- The MWORKS R1/R2 dispatch template now embeds the exact existing-window
+  sentinel and background screenshot commands and requires the target
+  department to run them before any MWORKS business work. If a department cannot
+  run the tools, it must return a blocker with
+  `license_state=sentinel_unavailable_blocked` and must not continue model/MCP
+  retries.
+- PMO dispatched
+  `PMO-MWORKS-R1R2-BACKGROUND-SCREENSHOT-ACTIVATION-DRILL-20260607-014` to
+  MWORKS R1 and R2. Both departments ran the Win32 GUI sentinel plus background
+  screenshot route themselves, returned required planning/subagent fields,
+  confirmed the no-click pledge, and did not call MWORKS MCP, load/check/
+  translate/simulate, Smart Layout, GUI edit, click, open, close, or restart.
+- Historical correction: the 014 return packets predate the later
+  `activation_state_observation` hard field and fail the current
+  `Scripts/quality/check_mworks_live_gate.py --kind return --expect department`
+  check. They prove the departments attempted the screenshot/sentinel route,
+  but they are not current-format acceptance packets and must not be reused as
+  the template for future MWORKS business dispatches.
+- Current accepted examples are the later 015/016 MWORKS preflight packets,
+  which include `activation_state_observation`, classify what the screenshot or
+  window title actually showed, and pass the department live-gate checker.
+- This is only MWORKS dispatch-safety evidence. It is not model/package
+  acceptance, graphical/layout acceptance, simulation success, controller
+  performance, planner readiness, live runtime ack, or closed loop.
+- PMO attempted the required sparse completion WeChat notification for this
+  gate, but outbound WeChat returned `ret=-2`; the failure was recorded in the
+  gateway audit/recovery records and dispatched to WeChat Gateway Ops R3 through
+  native Codex thread messaging. Do not assume the completion notice reached
+  WeChat. This gateway incident does not block the MWORKS dispatch gate itself.
+
+## 2026-06-07 CST - MWORKS Window Evidence Gate Tightened
+
+- User corrected that every MWORKS dispatch must force the department to check
+  activation state with background screenshot/sentinel evidence; departments
+  must learn this route and return blockers instead of continuing solver/model
+  trial-and-error when activation drops.
+- PMO reran read-only evidence and confirmed the current reusable MWORKS state
+  is still mixed: one Sysplorer window is `[教育版]` and another relevant
+  `QuadrotorControllerBlocks` Sysplorer window is `[演示版]`.
+- The MWORKS live gate now has three explicit cases: pure static file-only
+  (`live_mworks_touched=false` and no window evidence), window-evidence tasks
+  (`live_mworks_touched=false`, `mworks_window_evidence_touched=true`, full
+  sentinel/screenshot/license/no-click fields), and real live MCP/model/GUI
+  work (`live_mworks_touched=true`, full gate).
+- `Scripts/quality/check_mworks_live_gate.py` now rejects packets that include
+  activation/screenshot sentinel evidence but omit
+  `mworks_window_evidence_touched=true`. Targeted tests passed, and the current
+  R1/R2 activation-practice blocker packets pass the tightened gate.
+- PMO synced the refinement to MWORKS R1 and R2 as static ACK tasks. Both wrote
+  ACK packets and both pass the static machine gate. These ACKs prove the
+  department contract was received, but they are not MWORKS activation recovery
+  evidence because no MWORKS/MCP/GUI/screenshot/model command was run.
+- Until a clean activation sentinel identifies a valid reusable MWORKS session,
+  do not dispatch live MWORKS MCP/model/GUI work. Static MWORKS file
+  organization may continue only when it explicitly avoids window/MCP work.
+
+## 2026-06-07 CST - MWORKS 008 Blocked By Alias Check And Demo Edition
+
+- MWORKS R2 completed
+  `RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-PACKAGE-LIVE-VALIDATION-20260607-008`
+  as a blocker, not a package acceptance.
+- The pre-MCP GUI sentinel was clean and the existing Sysplorer session was
+  reused. The new `QuadrotorControllerBlocks` package shell loaded, and
+  `GetClasses(QuadrotorControllerBlocks)` showed seven category entries plus
+  19 flat sibling entries.
+- The representative category aliases did not pass: all six `check_model`
+  probes failed with compiler error 3001 because the leading-dot global
+  flat-class `extends` bases were not found in the observed Sysplorer context.
+- The post-MCP GUI sentinel then detected a license/login incident: the
+  Sysplorer window title matched `演示版`. PMO instructed R2 to stop live
+  MWORKS/Sysplorer automation and write the blocker instead of continuing
+  trial-and-error.
+- PMO attempted one sparse WeChat intervention notice, but the gateway send
+  failed with `ret=-2`. The failed send is recorded, a recovery packet was
+  written, and the incident was forwarded to WeChat Gateway Ops R3. Do not
+  assume the WeChat notification reached the user.
+- WeChat Gateway Ops R3 classified the send failure as stale outbound WeChat
+  context, not `no active session`. The required recovery is one fresh ordinary
+  inbound user message in the WeChat gateway chat, then exactly one adapter
+  retry for the original notification; if that still returns `ret=-2`, stop
+  retries and run the documented QR setup route.
+- Next: resolve or classify the Sysplorer demo-edition/license state before
+  more live MWORKS validation. A separate static-only task may prepare a
+  package-shell alias fix, but it must not claim live package acceptance until
+  a clean sentinel + live rerun passes.
+
+## 2026-06-07 CST - Sunray150 DAE Blender Visual Route Confirmed
+
+- User confirmed the current DAE-derived Blender model is the Sunray150 visual
+  asset route going forward. The active review model is
+  `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_dae_mid360_realistic_material_audit.blend`.
+- Sunray Asset/PBR Department removed the incorrect USB camera lens/barrel
+  overlay after user review; camera bodies remain black PartBody material and
+  the lens/barrel overlay should not be regenerated without a later reviewed
+  geometry placement route.
+- MID-360 is now on the deep-blue mirror-coated dome visual route with white
+  strip reflection overlays for manual visual review. Guard/landing gear and
+  propeller remain on the prior transparent glass/liuli review route.
+- This confirms the visual asset route only. It is not final material
+  acceptance, UE import/export final acceptance, geometry/extrinsic approval,
+  MWORKS/ROS2/UE runtime evidence, controller performance, planner readiness,
+  or closed loop.
+
+## 2026-06-07 CST - ROS2 037 Clean TF Readiness Blocked
+
+- ROS2 R1 completed the single allowed
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-CLEAN-TF-READINESS-NOGOAL-20260607-037`
+  no-goal probe and wrote a blocker.
+- Useful TF classification was captured: `camera_init -> body` and
+  `ue_world -> base_link` were observed, while `ue_world <-> camera_init`
+  remained absent.
+- The run cannot be treated as clean TF/RViz readiness: Livox active stamps
+  were nonmonotonic, and the FAST-LIO full log contained two callback-labeled
+  loop-back events, `livox_pcl_cbk=1` and `imu_cbk=1`.
+- FAST-LIO outputs were still nonzero/monotonic for this blocked run
+  (`/Odometry=20`, `/cloud_registered=20`), forbidden planner/setpoint topics
+  were absent, and cleanup was clean. This is blocker evidence, not a
+  readiness pass.
+- Do not advance to RViz manual quality acceptance, EGO/planner,
+  PositionCommand, 20 Hz adapter, localization/local-map quality,
+  planner_ready, controller performance, mission success, or closed loop from
+  037. The next ROS2 task should diagnose the Livox timestamp regression and
+  `livox_pcl_cbk` loop-back without creating the missing frame bridge.
+
+## 2026-06-07 CST - QuadrotorControllerBlocks 008 Live Package Validation Dispatched
+
+- PMO dispatched
+  `RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-PACKAGE-LIVE-VALIDATION-20260607-008`
+  to MWORKS R2 after integrating the 007 static package-shell return and the
+  037 ROS2 blocker.
+- Scope remains live validation only: reuse the existing MWORKS/Sysplorer
+  session, run GUI sentinel, run minimal MCP/session health, then load/check
+  the new `QuadrotorControllerBlocks` package shell or representative aliases
+  if the tool surface supports it.
+- It still forbids opening/closing/restarting MWORKS, simulation, Smart Layout,
+  model edits, diagram writeback, and graphical/layout/controller performance
+  claims.
+
+## 2026-06-07 CST - QuadrotorControllerBlocks 008 Live Package Validation Prepared
+
+- PMO prepared
+  `RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-PACKAGE-LIVE-VALIDATION-20260607-008`
+  as the next MWORKS R2 follow-up after 007.
+- Scope is live validation only: reuse the existing MWORKS/Sysplorer session,
+  run GUI sentinel, run minimal MCP/session health, then load/check the new
+  `QuadrotorControllerBlocks` package shell or representative aliases if the
+  tool surface supports it.
+- It explicitly forbids opening/closing/restarting MWORKS, simulation, Smart
+  Layout, model edits, diagram writeback, and graphical/layout acceptance
+  claims. It is prepared but not dispatched yet.
+
+## 2026-06-07 CST - QuadrotorControllerBlocks 007 Static Package Shell Completed
+
+- MWORKS R2 completed
+  `RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-PACKAGE-SHELL-20260607-007`.
+- It created only `Models/QuadrotorControllerBlocks/package.mo` and
+  `package.order`: seven category packages with Chinese descriptions, and 19
+  wrapper aliases that extend the current flat controller classes through
+  leading-dot global references. The 19 existing controller `.mo` files and
+  backup/upgrade histories were not edited.
+- Static evidence passed: `package.order` has the seven approved categories,
+  all 19 active controller classes are represented, alias targets come from the
+  006 inventory, backup/upgrade directories are excluded, controller/backup
+  hashes are unchanged, and scoped diff check passed.
+- Evidence is under
+  `Results/mworks_model_hygiene/20260607_007_quadrotor_controller_blocks_package_shell/`;
+  return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-PACKAGE-SHELL-20260607-007.json`.
+- This is static package-shell organization only. It is not true namespace
+  migration, not live Sysplorer package-browser acceptance, not `check_model`,
+  not simulation, not graphical acceptance, not controller performance, and not
+  closed loop. The next MWORKS R2 follow-up should live-validate package
+  browser/load behavior through the existing MWORKS/Sysplorer session, with GUI
+  sentinel and no simulation initially.
+
+## 2026-06-07 CST - ROS2 037 Clean TF Readiness No-Goal Task Prepared
+
+- PMO prepared
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-CLEAN-TF-READINESS-NOGOAL-20260607-037`
+  for ROS2 R1.
+- The task permits at most one no-goal runtime probe. It must preserve the 034
+  active source/output acceptance discipline, minimize additional TF capture
+  load, and require zero FAST-LIO loop-back before any clean TF readiness
+  return.
+- The task may observe `camera_init -> body`, `ue_world -> base_link`, and
+  whether `ue_world <-> camera_init` already exists, but it must not create a
+  frame bridge or enter planner/setpoint paths.
+- Disposable read-only PMO subagent
+  `019e9de4-7340-7413-af42-42b603788106` confirmed the boundary and one-live
+  probe limit. PMO dispatched 037 to ROS2 R1 at 01:07 CST.
+- This remains preflight evidence only. It cannot claim localization quality,
+  local-map quality, planner readiness, mission success, controller
+  performance, or closed loop.
+
+## 2026-06-07 CST - ROS2 036 IMU Loop-Back Static Diagnosis Completed
+
+- ROS2 R1 completed
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-IMU-LOOPBACK-STARTUP-DIAG-20260607-036`
+  as a static 034/035 runner/log diagnosis. It did not run a new live ROS2
+  probe.
+- Key finding: the 035 loop-back was callback-labeled `imu_cbk`, while LiDAR
+  callback loop-back counts were zero. Active Livox/IMU recorder stamps were
+  monotonic, `is_first_lidar=0`, active `/Odometry` and `/cloud_registered`
+  were nonzero, and the event occurred after first LiDAR and after FAST-LIO
+  outputs had started. This narrows the likely issue to an IMU callback
+  stale/ordering race or sensitivity from the 035 active TF recorder/longer
+  active window, not LiDAR source regression and not the earlier pre-first-LiDAR
+  startup boundary.
+- Evidence is under
+  `Results/ros2_runtime/b1_imu_loopback_startup_diag_20260607_036/`;
+  return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-IMU-LOOPBACK-STARTUP-DIAG-20260607-036.json`.
+- This is diagnostic evidence only. It does not claim FAST-LIO success,
+  localization quality, local-map quality, TF/RViz readiness, planner readiness,
+  controller performance, mission success, or closed loop. The next ROS2 gate
+  should rerun a clean no-goal TF readiness probe with 034-style source/output
+  acceptance preserved and minimum added TF recorder load.
+
+## 2026-06-07 CST - QuadrotorControllerBlocks 007 Package Shell Prepared
+
+- PMO prepared
+  `RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-PACKAGE-SHELL-20260607-007`
+  for `MoSim｜MWORKS动力学与控制验证部-R2`.
+- Scope is intentionally narrow: create only
+  `Models/QuadrotorControllerBlocks/package.mo` and `package.order` as a
+  categorized, Chinese-described package shell for the 19 active controller
+  files already inventoried by 006. Existing controller `.mo` files,
+  backup/upgrade directories, `QuadrotorExperiments`, `References`, UE/ROS2,
+  controller configs, and planner configs are out of scope.
+- If alias resolution cannot be made static-compatible because the existing
+  controller files lack package-level `within` clauses, R2 must write a blocker
+  instead of editing the controller files.
+- This task is package organization only. It must not open/close/restart
+  MWORKS, call MCP, run Smart Layout, run `check_model`, run simulation, or
+  claim graphical acceptance/controller performance/planner readiness/live
+  runtime ack/closed loop.
+
+## 2026-06-07 CST - QuadrotorControllerBlocks 006 Read-Only Organization Plan Completed
+
+- MWORKS R2 completed
+  `RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-ORGANIZATION-20260607-006`
+  as a read-only package-shell/category-entry plan for
+  `Models/QuadrotorControllerBlocks`. It inventoried 19 active top-level
+  controller `.mo` files, confirmed there is currently no
+  `package.mo/package.order`, separated five `*_backup/upgrade` history
+  directories from the future public package surface, and proposed categories
+  for AWFF PID blocks, innovation controllers, fault/allocation controllers,
+  LinearMPC, safety controllers, demos/SIL, and future compatibility aliases.
+- Evidence is under
+  `Results/mworks_model_hygiene/20260607_006_quadrotor_controller_blocks_organization/`;
+  return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-ORGANIZATION-20260607-006.json`.
+- This is planning evidence only. It did not create package files, edit `.mo`
+  models, move/delete backups, open GUI/MCP, run Smart Layout, run
+  `check_model`, run simulation, or prove graphical acceptance/controller
+  performance/planner readiness/live runtime ack/closed loop.
+- Next allowed MWORKS R2 follow-up is a separately scoped write gate to create
+  only the package shell and static aliases, followed by a later serialized
+  GUI/MCP load/check review using the existing MWORKS/Sysplorer session.
+
+## 2026-06-07 CST - MWORKS Model Classification Split Updated
+
+- PMO and disposable read-only subagent `019e9db5-4b60-7363-9c69-217384475756`
+  rechecked the current `Models/` organization after the user repeated that
+  the models are still not properly categorized.
+- Current classification boundary:
+  `Models/QuadrotorExperiments` is the only formal package with
+  `package.mo/package.order`; its 11 category entries are a reasonable visible
+  browser surface, but the old flat `.mo` classes remain compatibility load
+  paths and must not be moved or deleted without a later migration gate.
+  `Models/QuadrotorControllerBlocks` is now the clearest remaining
+  organization problem: it is an important AWFF/INDI/L1/LinearMPC/QP-NMPC
+  controller library, but it is still a loose folder without `package.mo`,
+  `package.order`, or formal category entries.
+- PMO prepared the next task packet
+  `RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-ORGANIZATION-20260607-006`
+  as a read-only controller-library package plan for MWORKS R2. This was later
+  completed; see the 006 completion entry above for the current state.
+- The user directly assigned the Sunray/PBR follow-up to
+  `MoSim｜Sunray150资产与PBR审核部`; PMO will not duplicate-dispatch that task.
+
+## 2026-06-07 CST - QuadrotorExperiments 005 Visible Cleanup Completed
+
+- MWORKS R2 completed
+  `RFLY-MOSIM-MWORKS-R2-QUADROTOR-EXPERIMENTS-VISIBLE-CLEANUP-20260607-005`.
+  Static validation passed: `package.order` now has exactly the 11 category
+  entries, the four missing `TraceIsolation` aliases for Iso22/Iso28/Iso29/Iso30
+  exist and extend the expected flat smoke models, 104 old flat entries remain
+  statically resolvable, and all category alias targets resolved statically.
+- Evidence is under
+  `Results/mworks_model_hygiene/20260607_005_quadrotor_experiments_visible_cleanup/`;
+  return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-QUADROTOR-EXPERIMENTS-VISIBLE-CLEANUP-20260607-005.json`.
+- This is visible package/display organization only. It is not live Sysplorer
+  browser acceptance, not `check_model`, not simulation, not graphical
+  acceptance, not Factory trace consumption, not controller performance, not
+  planner readiness, and not closed loop.
+- PMO is now dispatching
+  `RFLY-MOSIM-MWORKS-R2-QUADROTOR-CONTROLLER-BLOCKS-ORGANIZATION-20260607-006`
+  to R2 as the next read-only model classification task for
+  `Models/QuadrotorControllerBlocks`.
+
+## 2026-06-07 CST - QuadrotorExperiments 005 Visible Cleanup Prepared
+
+- MWORKS R2 completed
+  `RFLY-MOSIM-MWORKS-R2-QUADROTOR-EXPERIMENTS-ORGANIZATION-20260606-004`
+  as a read-only organization plan. It confirmed the user-visible problem:
+  the top-level `QuadrotorExperiments` browser still lists 104 flat legacy
+  entries after the 11 category packages. It also confirmed the compatibility
+  boundary: those flat classes still back current aliases, scripts, and
+  evidence chains, so they must not be deleted or physically migrated in the
+  first write slice.
+- PMO prepared
+  `RFLY-MOSIM-MWORKS-R2-QUADROTOR-EXPERIMENTS-VISIBLE-CLEANUP-20260607-005`
+  for `MoSim｜MWORKS动力学与控制验证部-R2`. The narrow write scope is:
+  add four missing `TraceIsolation` aliases for Iso22/Iso28/Iso29/Iso30, then
+  reduce top-level `package.order` display to the 11 category packages while
+  preserving old flat class definitions as compatibility load paths.
+- This planned cleanup is package display/model hygiene only. It must not
+  move/delete `.mo` files, open/close/restart MWORKS, call MCP, run Smart
+  Layout, or claim check_model, simulation, graphical acceptance, controller
+  performance, planner readiness, or closed loop.
+
+## 2026-06-07 CST - Sunray150 PBR 005 Review Sheet Opened
+
+- Sunray150 Asset/PBR Department completed
+  `RFLY-MOSIM-SUNRAY150-PBR-ELECTRONICS-CAMERA-REALISM-20260606-005`
+  as a review-ready component material pass, not final material acceptance.
+  Evidence:
+  `Results/unreal_scene_mapping/sunray150_pbr_electronics_camera_realism_20260606_005/`;
+  return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-SUNRAY150-PBR-ELECTRONICS-CAMERA-REALISM-20260606-005.json`.
+- PMO opened the generated contact sheet for user review in the Codex app.
+  The return packet was later updated after direct user correction: front and
+  bottom camera PartBody objects were routed to black camera-body material, TF
+  Mini was separated as a black laser rangefinder body, MID-360 was moved
+  toward a glass/optical-dome material, motor gold-ring decal generation was
+  removed, and propeller/guard review targets were moved toward transparent
+  glass/liuli material. The correction contact sheet was generated for manual
+  pass/fail review.
+- This does not claim final material acceptance, UE import/export acceptance,
+  runtime success, planner readiness, controller performance, or closed loop.
+
+## 2026-06-07 CST - ROS2 035 Blocked On FAST-LIO IMU Loopback
+
+- ROS2 R1 completed the single allowed no-goal TF/RViz gap diagnostic and wrote
+  blocker
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-TF-RVIZ-READINESS-GAP-DIAG-20260606-035.json`.
+  Active-window TF classification was useful: `camera_init -> body` and
+  `ue_world -> base_link` were observed, while `ue_world <-> camera_init`
+  bridge was absent.
+- The task is still blocked because the same probe logged one FAST-LIO
+  `imu_cbk` loop-back event. Therefore 035 cannot be promoted to TF/RViz
+  readiness, localization quality, local-map quality, planner readiness, or
+  closed-loop evidence. Do not enter RViz manual quality, EGO/planner,
+  PositionCommand, 20 Hz adapter, extrinsic/frame edits, fake data, or
+  planner/closed-loop claims from 035.
+- PMO opened 036 as the next bounded ROS2 task:
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-IMU-LOOPBACK-STARTUP-DIAG-20260607-036`.
+  It may only compare 034/035 startup/logs and, if needed, run one no-goal
+  diagnostic probe. It must not create a frame bridge, enter planner/setpoint
+  paths, edit extrinsics/frame adapters/production ROS2 packages, or claim
+  readiness.
+
+## 2026-06-06 CST - PMO Dispatched QuadrotorExperiments Organization 004
+
+- User confirmed `QuadrotorExperiments` is still not truly categorized in the
+  model browser. PMO static scan and disposable read-only subagent
+  `019e9d97-2540-70c1-a0d3-3ff48363b450` both found the same issue:
+  `Models/QuadrotorExperiments/package.order` has 115 entries, where the first
+  11 are category packages but 104 old flat legacy entries still remain at the
+  top-level display surface.
+- This corrects the boundary of the earlier 013 classification cleanup:
+  013 added categorized compatibility entry points with Chinese descriptions,
+  but it did not complete physical subpackage migration, hide/deprecate the
+  flat compatibility surface, or remove old public class paths. Direct deletion
+  is unsafe because current category aliases still extend many old flat classes
+  and historical scripts/results may reference those paths.
+- PMO created and dispatched
+  `RFLY-MOSIM-MWORKS-R2-QUADROTOR-EXPERIMENTS-ORGANIZATION-20260606-004` to
+  `MoSim｜MWORKS动力学与控制验证部-R2`
+  (`019e9999-b0d3-7682-bccd-faef08fcf1df`). The task is read-only in this
+  first pass: classify all 104 flat entries, propose keep/migrate/deprecate/
+  delete-later actions, define compatibility strategy, and specify later write
+  and verification gates. It must not edit `.mo`, `package.mo`,
+  `package.order`, run GUI/MCP, or claim graphical/model/simulation evidence.
+
+## 2026-06-06 CST - MWORKS R1 017 Completed Yaw Transient Observability Gate
+
+- MWORKS R1 completed
+  `RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017`
+  without model edits. P0 GUI sentinels were clean, Sysplorer MCP health/load
+  worked under `mworks_window_policy=reuse_existing_do_not_close`, and
+  `check_model` passed for the existing wrapper yaw-step, physical-wrench
+  yaw-step, and Iso30 external-body state smokes.
+- 0-0.25 s MWORKS_MCP smokes returned `data=true` and `GetVarTimes=251`.
+  Evidence now classifies command-side yaw moment, lagged wrapper yaw moment,
+  applied physical-wrench yaw torque, and external body yaw-rate response as
+  observable. Representative samples: `wrapper.yaw_moment_gate@end =
+  0.06153801695664962 N.m`, `adapter.applied_yaw_torque_body@end =
+  0.061540561756854906 N.m`, and `external_body_yaw_rate@end =
+  -0.4531353758463619 rad/s`.
+- Evidence:
+  `Results/mworks_dynamics_upgrade/20260606_017_yaw_transient_evidence_gate/`;
+  return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json`.
+  This is yaw transient observability only, not Factory trace consumption,
+  full plant closure, controller performance, parameter identification,
+  planner readiness, live runtime ack, mission success, or closed loop.
+
+## 2026-06-06 CST - PMO Corrected MWORKS Window Reuse Policy
+
+- PMO corrected the active MWORKS R1/R2 tasks after user review: Sysplorer /
+  Syslab / MWORKS windows must not be closed as a default cleanup step.
+  The current operating rule is to reuse the existing logged-in, license-active
+  session and avoid new windows/restarts unless there is a proven freeze,
+  login/license blocker, unrecoverable MCP/session failure, duplicate-window
+  runaway, or explicit PMO/user approval.
+- PMO pushed the correction to `MoSim｜MWORKS动力学与控制验证部-R1`
+  (`019e9be5-334b-76b1-93f9-8b02caebf376`) and
+  `MoSim｜MWORKS动力学与控制验证部-R2`
+  (`019e9999-b0d3-7682-bccd-faef08fcf1df`). Active and future MWORKS
+  return/blocker packets should record
+  `mworks_window_policy=reuse_existing_do_not_close` when relevant.
+- This is a workflow correction only. It is not MWORKS simulation evidence and
+  does not change any dynamics/control/planner readiness claim.
+
+## 2026-06-06 CST - MWORKS R1 016 Completed External Body State Boundary
+
+- MWORKS R1 completed
+  `RFLY-MOSIM-MWORKS-POST-ISO29-ONE-BOUNDARY-20260606-016`.
+  It added `FactoryTraceIso30ExternalBodyStateBoundarySmoke` on the current
+  project-owned `QuadrotorExperiments` package surface, extending Iso29 and
+  adding only read-only external test-body state/motion response aliases/gates.
+- P0 GUI sentinels were clean before and after; Sysplorer MCP health reused
+  the existing session; targeted `model_manager(load_file, force_reload=true)`
+  avoided `reload_mo_path`; Iso29/Iso30 `check_model` passed; 0-0.25 s
+  `SimulateModel data=true`; `GetVarTimes=251`; sampled external body state
+  response aliases were readable with
+  `external_body_state_boundary_gate_error@end=0.0`.
+- Evidence:
+  `Results/mworks_dynamics_upgrade/20260606_016_post_iso29_one_boundary/`;
+  return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-POST-ISO29-ONE-BOUNDARY-20260606-016.json`.
+  This is only minimal external body state response evidence, not Factory
+  trace consumption, QuadChassis/full plant closure, controller performance,
+  parameter identification, planner readiness, live runtime ack, mission
+  success, or closed loop.
+
+## 2026-06-06 CST - PMO Updated R1/R2 Routing And Opened Next P0 Tasks
+
+- User renamed the MWORKS and ROS2 visible department threads. Current routing
+  is now explicit: `MoSim｜MWORKS动力学与控制验证部-R1`
+  (`019e9be5-334b-76b1-93f9-8b02caebf376`) owns MWORKS mainline
+  dynamics/control/model-integration evidence, while
+  `MoSim｜MWORKS动力学与控制验证部-R2`
+  (`019e9999-b0d3-7682-bccd-faef08fcf1df`) is an auxiliary model
+  organization / graphical interface / connection-layout / diagram hygiene
+  reviewer. R2 is not business-ready until it passes a bounded sync-validation
+  packet because it previously had dispatch/UI-submit instability.
+- Current ROS2 mainline route is `MoSim｜ROS2感知定位与规划运行部-R1`
+  (`019e9c72-ee74-79d1-b9fe-621d3c6fc99e`). Historical records may still use
+  old R2/R3 labels; do not rewrite evidence history, but new dispatch follows
+  `CoAgent/dispatch/department_threads.json`.
+- PMO generated and displayed a Sunray150 component material contact sheet for
+  manual review. This only surfaces the pending review images; it is not final
+  material acceptance.
+- User corrected PMO delivery behavior: human-review artifacts must be opened
+  or displayed directly when available, not only reported as paths. PMO opened
+  the Sunray150 component contact sheet in the Windows image viewer and
+  selected it in Explorer; future review prompts should keep paths in packets
+  and present the artifact itself to the user.
+- PMO created the next three task packets: ROS2 033 to diagnose the 032
+  loop-back/zero-output regression, MWORKS R1 016 to advance exactly one
+  post-Iso29 physical/model boundary, and MWORKS R2 sync validation 001 before
+  any auxiliary graphical-model audit work.
+- PMO dispatched all three packets through native visible-thread delivery at
+  22:29 CST. Delivery succeeded for ROS2 R1, MWORKS R1, and MWORKS R2
+  sync-validation.
+- MWORKS R2 sync validation returned `sync_validation_passed` at 22:32 CST.
+  It proves only PMO dispatch receipt, turn start, context read, and return
+  packet write. R2 can now receive explicitly scoped auxiliary model
+  organization / graphical-layout audit tasks, but this is not MWORKS GUI/MCP
+  or model-quality evidence.
+- ROS2 R1 returned 033 as diagnostic-only at 22:56 CST. It found that 032 had
+  early Livox and FAST-LIO output, then a real in-run Livox timestamp
+  regression triggered callback-labeled FAST-LIO loop-back, and the later
+  Livox/FAST-LIO acceptance windows sampled after the finite non-looping source
+  was already consumed. This explains the zero-output window but does not
+  restore no-goal preflight, planner readiness, RViz quality, or closed loop.
+- PMO created the first real auxiliary MWORKS R2 task,
+  `RFLY-MOSIM-MWORKS-R2-GRAPHICAL-MODEL-AUDIT-INVENTORY-20260606-002`.
+  It is read-only static inventory/prioritization for graphical model/interface
+  hygiene only; it forbids GUI/MCP, Smart Layout writeback, model edits, and
+  simulation claims. Native visible-thread delivery to R2 succeeded.
+- Dispatch packets now must explicitly require department-local planning and
+  `subagent_plan` / `subagents_used`. When a safe independent slice exists, the
+  target department should use disposable sub-agents; otherwise it must record
+  why sub-agents are unavailable, unsafe, or not useful.
+
+## 2026-06-06 CST - PMO Integrated MWORKS 015, ROS2 032 Blocker, And MWORKS Window Reuse
+
+- MWORKS R2 completed
+  `RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015`.
+  It added the Iso29 external-frame smoke and proved only that wrapper
+  force/torque can enter an explicit minimal external MultiBody test body.
+  This is not full plant closure, Factory trace consumption, controller
+  performance, parameter identification, planner readiness, live runtime ack,
+  or closed loop.
+- ROS2 032 returned a real technical blocker after the no-op recovery retry:
+  FAST-LIO loop-back reappeared, `/Odometry` and `/cloud_registered` recorder
+  counts were zero, Livox probe count was zero, and TF/RViz CLI evidence cannot
+  override the failed source gates. PMO updated the ledger and P0 manifest
+  integration to keep `planner_ready=false` and `closed_loop_ready=false`.
+- PMO fixed the P0 bundle audit so ROS2 032 zero counts are preserved as
+  blocker evidence instead of being treated as missing values. The refreshed
+  bundle audit and closed-loop gap matrix both pass with smoke-only status.
+- CoAgentOps returned the validated MWORKS background evidence/click capability.
+  PMO verified the two project-local scripts and return packet exist, then
+  updated orchestration rules: delegated departments may collect background
+  screenshots for MWORKS GUI incidents and must stop retries with a blocker;
+  PMO or CoAgentOps owns any approved background recovery/click-through.
+- User clarified that MWORKS/Sysplorer startup/loading windows disrupt normal
+  desktop use and make manual review messy. PMO tightened the project rules:
+  MWORKS/Sysplorer/Syslab must reuse the existing logged-in window/session by
+  default; new windows or full restarts are last-resort blocker recovery actions
+  requiring PMO/user approval except for a clearly frozen or duplicating
+  process.
+- WeChat notification policy remains sparse Chinese only. Routine "task is
+  running" updates are kept in the ledger unless a valid notification packet
+  class applies; blockers, manual review, auth/license, GUI incidents, and
+  completion packets use the short Chinese WeChat format.
+
+## 2026-06-06 CST - PMO Recovered ROS2 R3 Dispatch Surface And Retried 032
+
+- PMO found a stale P0 matrix drift and regenerated the current
+  `RUN_MANIFEST` validation, bundle audit, and closed-loop gap matrix. The
+  evidence bundle gate is now `pass_smoke_only` with zero audit issues, while
+  planner, MWORKS trace consumption, local-map quality, PositionCommand,
+  controller performance, and closed loop remain blocked.
+- PMO ran one native no-op recovery probe against ROS2 R3 after the earlier
+  032 dispatch-surface blocker. The thread replied
+  `ros2_r3_noop_recovered_20260606_214x`, so PMO retried 032 exactly once on
+  the same ROS2 R3 thread. This is dispatch-surface recovery only; 032 has not
+  returned no-goal odom/TF/RViz evidence yet.
+- Sunray150 manual material review notification for 004 was delivered through
+  WeChat at 20:35 CST. Manual pass/fail review remains pending and no final
+  material acceptance is claimed.
+
+## 2026-06-06 CST - WeChat And Dead-Thread Rules Tightened
+
+- User clarified that WeChat notifications must be short Chinese human-facing
+  updates. Routine progress should look like a quiet status message; manual
+  intervention, auth/license, GUI incident, and dead-thread cases must use an
+  obvious alert header.
+- Updated gateway notification behavior and tests so WeChat bodies redact
+  concrete filenames, long paths, JSON/log names, and raw evidence lists. Those
+  details stay in project packets and evidence files.
+- Reconfirmed the dead visible-thread recovery rule in top-level project
+  policy and CoAgent UX docs: bounded CoAgentOps diagnosis first, then blocker
+  plus sparse notification, then Codex++ restart recovery if needed. Do not
+  create replacement threads by default.
+
+## 2026-06-06 CST - Foreground Screenshot Boundary Corrected
+
+- User caught that CoAgentOps used Windows MCP screenshot/snapshot while the
+  user was typing. This is not background screenshot capability.
+- Updated project rules: Windows MCP `Snapshot` / `Screenshot` observe the
+  foreground desktop and must not be used as background capture. For Codex++
+  restart or similar GUI maintenance, prefer UI Automation/PowerShell/app APIs;
+  only use visible desktop screenshots after warning the user or when
+  explicitly authorized.
+
+## 2026-06-06 CST - Codex++ Controlled Restart Rule Added
+
+- User authorized `D:\Program Files\Codex++\codex-plus-plus-manager.exe` as the
+  controlled restart surface for persistent visible-thread dead-thread
+  incidents.
+- Updated CoAgentOps and orchestration rules: after bounded diagnosis writes a
+  blocker, CoAgentOps should attempt one sparse user notification; if
+  notification is unavailable or the user cannot intervene and maintenance
+  would stall, CoAgentOps may trigger Codex++ restart through the manager.
+- Because restart terminates the current conversation, recovery validation must
+  be picked up by the existing 30-minute PMO/CoAgentOps heartbeat automations:
+  read latest blocker, run no-op validation, and classify the thread as
+  `partial_recovery`, `restored`, or `still_quarantined`.
+
+## 2026-06-06 CST - Dead Thread Restart Notification Rule Added
+
+- User clarified the preferred recovery path for future visible-thread
+  start-turn/agent-loop failures: after CoAgentOps confirms a persistent dead
+  thread through the bounded ladder, notify the user directly so the user can
+  restart Codex App.
+- Updated `Docs/Workflows/coagent_meta_maintenance.md` and
+  `Docs/Workflows/agent_orchestration.md`: do not keep retrying the same dead
+  thread and do not create a replacement before restart notification unless
+  PMO/user explicitly authorizes replacement or the critical path cannot wait.
+- Post-restart recovery still requires one no-op validation and classification
+  as `partial_recovery`, `restored`, or quarantined before production routing.
+
+## 2026-06-06 CST - PMO Integrated UE 008, Sunray 004, And ROS2 032 Dispatch Diagnosis
+
+- UE Experiment Console department completed
+  `RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-ACCEPTANCE-FIXTURE-CONTRACT-20260606-008`.
+  It added the source/static future live-echo accepted-state fixture checker
+  and focused tests. Valid accepted rows require `mosim.ue_command_echo.v1`
+  plus authoritative source, command/run/request/seq identity, timestamp,
+  accepted status, ack authority, and no-pose-overwrite pass. Smoke/source/
+  preflight, rejected, malformed, and non-authoritative rows remain disabled
+  or non-runtime. This is not live UE runtime ack.
+- Sunray/PBR department completed
+  `RFLY-MOSIM-SUNRAY150-REVIEW-MANIFEST-PATH-HYGIENE-20260606-004`.
+  It added a headless path-hygiene checker/tests and updated the future render
+  script manifest writer so new outputs use project-relative routing and drop
+  legacy row `path` fields. Current source manifest was not rewritten; legacy
+  absolute fields remain quarantined as existing-manifest risk. Manual visual
+  review remains pending and no final material acceptance is claimed.
+- CoAgentOps completed ROS2 R3 dispatch-surface diagnosis for 032. R3 is
+  visible/readable and title-writable, but no-op start-turn still fails in the
+  current App session. PMO sent a sparse WeChat notification asking for Codex
+  App restart plus recheck, or explicit authorization for exactly one ROS2
+  replacement if the P0 path cannot wait.
+- MWORKS 014 has returned completed minimal bridge evidence: Iso28 proves only
+  the actuator-input alias to physical-wrench adapter smoke. PMO still does not
+  claim Factory trace consumption, full plant closure, controller performance,
+  planner readiness, live runtime ack, or closed loop from this packet.
+
+## 2026-06-06 CST - PMO Routed Gateway R3 And Dispatched Next P0 Slices
+
+- PMO corrected operation-facing Gateway routing docs after a read-only subagent
+  found R2/R3 drift. Production gateway maintenance now points to
+  `MoSim｜微信网关运维部-R3`
+  (`019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c`); R2 remains
+  quarantine/diagnostic-only unless PMO restores it through a bounded ladder.
+- Corrected MWORKS department title drift back to
+  `MoSim｜MWORKS动力学与控制验证部-R2`.
+- Created and queued four narrow continuation packets:
+  MWORKS 014 actuator-to-wrench bridge resume, ROS2 032 no-goal odom/TF/RViz
+  preflight, UE 008 live-echo accepted-state fixture contract, and Sunray 004
+  manifest path hygiene.
+- Dispatch results: MWORKS 014, UE 008, and Sunray 004 native thread dispatch
+  started successfully. ROS2 032 failed before target turn start with
+  `failed to start turn: internal error; agent loop died unexpectedly`; PMO
+  wrote dispatch blocker
+  `Results/agent_packets/blockers/PMO-ROS2-R3-DISPATCH-SURFACE-20260606-032.json`
+  and will route bounded diagnosis to CoAgentOps before creating another
+  ROS2 replacement.
+- CoAgentOps completed the bounded ROS2 R3 diagnosis and confirmed this is a
+  persistent visible-thread start-turn surface failure in the current App
+  session: R3 is listable/readable and title-writable, but two no-op
+  `send_message_to_thread` probes still fail with `agent loop died
+  unexpectedly`. Do not retry ROS2 032 on R3 now. Next step is a Codex App
+  restart plus CoAgentOps no-op recheck, or explicit PMO/user authorization for
+  exactly one replacement ROS2 department if the P0 path cannot wait.
+  Evidence:
+  `Results/agent_packets/blockers/COAGENTOPS-ROS2-R3-DISPATCH-SURFACE-DIAG-20260606-032.json`.
+- Prepared Sunray150 manual visual review WeChat packet:
+  `Results/agent_packets/notifications/RFLY-MOSIM-SUNRAY150-MANUAL-REVIEW-20260606-004.weixin.json`.
+  This asks for human pass/fail review of the 5 component material batches and
+  does not claim final material acceptance.
+
+## 2026-06-06 CST - MWORKS 012 Paused For QuadrotorExperiments Package Restructure
+
+- PMO paused `RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012`
+  before any model edits because `Models/QuadrotorExperiments` needs
+  package-level classification/merge/cleanup design and concurrent writes would
+  be unsafe.
+- MWORKS R2 had only read required rules and parent packets (`010`, `011`,
+  `021`) plus local MWORKS skill instructions. No 012 model file was edited, no
+  new bridge model was created, and no 012 MCP/check_model/simulation/sentinel
+  evidence was generated.
+- Paused blocker packet:
+  `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012.json`.
+- Resume condition: PMO must publish or complete the package restructuring plan
+  and explicitly lift the `Models/QuadrotorExperiments` write lock. A resumed
+  bridge task must start with P0 GUI sentinel, force-load current disk package,
+  check recovered wrapper/physical adapter models, and only then add the minimal
+  actuator-to-wrench bridge smoke.
+
+## 2026-06-06 CST - MWORKS 011 Restored Wrapper Source Reproducibility
+
+- PMO completed `RFLY-MOSIM-MWORKS-WRAPPER-SOURCE-RECOVERY-20260606-011` as a
+  narrow source-recovery task after 010 found the parent wrapper/physical
+  adapter models missing from current disk source.
+- Restored six project-owned model definitions in
+  `Models/QuadrotorExperiments/package.mo`:
+  `Sunray150DynamicsWrapperSurface`, `Sunray150DynamicsWrapperHoverSmoke`,
+  `Sunray150DynamicsWrapperYawStepSmoke`,
+  `Sunray150PhysicalWrenchFrameAdapter`,
+  `Sunray150PhysicalWrenchHoverSmoke`, and
+  `Sunray150PhysicalWrenchYawStepSmoke`. `package.order` already listed these
+  models and was not changed.
+- Verification: P0 GUI sentinel was clean before/after; Sysplorer MCP
+  `session_manager health` passed on dedicated port `49153`;
+  `model_manager load_file force_reload=true` loaded current
+  `Models/QuadrotorExperiments/package.mo`; `check_model` passed for all six
+  restored models. Evidence:
+  `Results/mworks_dynamics_upgrade/20260606_011_wrapper_source_recovery/` and
+  return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRAPPER-SOURCE-RECOVERY-20260606-011.json`.
+- During validation, an initial `check_model` call with `reload_mo_path` caused
+  unwanted Sysplorer Smart Layout writeback churn. PMO reverted that broad diff
+  and reran the gate with `model_manager(load_file)` followed by `check_model`
+  without `reload_mo_path`; the retained diff is limited to six recovered model
+  definitions.
+- Claim boundary: 011 only restores source reproducibility and `check_model`
+  readiness. It does not implement actuator-to-wrench bridge, Factory trace
+  consumption, controller performance, dynamic yaw transient acceptance,
+  parameter identification, allocation/fault-isolation readiness, planner
+  readiness, live UE/ROS2 ack, or closed loop. Next MWORKS task can re-dispatch
+  the actuator-to-wrench bridge as a new bounded 012 task.
+
+## 2026-06-06 CST - MWORKS 010 Blocked On Missing Parent Physical Wrapper Source
+
+- MWORKS R2 stopped `RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010`
+  before implementation and wrote blocker packet
+  `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`.
+- P0 GUI sentinel before and after the MCP gate was clean. Sysplorer MCP
+  `session_manager health` was good on dedicated port `49154`, and
+  `model_manager load_file` force-loaded current
+  `Models/QuadrotorExperiments/package.mo` from disk.
+- Reproducibility gate: `check_model` passed for
+  `QuadrotorExperiments.Sunray150RflyStyleRotorDynamics`, but failed for
+  `QuadrotorExperiments.Sunray150PhysicalWrenchFrameAdapter` because the model
+  does not exist after disk reload. Current `package.order` lists the 006/007
+  wrapper/physical models, but current `package.mo` no longer defines them.
+- No bridge model was added and no simulation was run. 010 does not claim
+  Factory trace consumption, closed loop, controller performance, plant
+  tracking, planner readiness, live runtime ack, parameter identification, or
+  allocation/fault-isolation readiness.
+- Next PMO action: restore or intentionally supersede the missing 006/007
+  wrapper/physical adapter definitions under `Models/QuadrotorExperiments`,
+  then re-run a bounded actuator-to-wrench bridge task with sentinel before/after
+  and `check_model` before smoke.
+
+## 2026-06-06 CST - MWORKS 010 Actuator-To-Wrench Bridge Dispatched
+
+- PMO verified current MWORKS dynamics state before dispatch: 005 already proved
+  the minimal Rfly-style core, 006 added a wrapper surface, 007 added a
+  project-owned physical wrench frame adapter, 008 completed wrapper-level yaw
+  sign/motor-order audit, 009 restored the post-GUI sentinel health gate, and
+  021 proved the Iso27 actuator-input alias surface.
+- Created and dispatched
+  `RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010` to MWORKS R2
+  (`019e9be5-334b-76b1-93f9-8b02caebf376`).
+- Scope: bridge Iso27 actuator input aliases into the project-owned
+  RflySim-style Sunray150 physical-wrench wrapper, or precisely block at the
+  first command-domain/sign/unit/connector boundary. This must stay in
+  `Models/QuadrotorExperiments` and `Results/mworks_dynamics_upgrade/`.
+- Claim boundary: 010 must not replace the official `QuadChassis`, retune
+  controllers, change mass/inertia/motor/thrust/source labels, consume Factory
+  traces, or claim controller performance, parameter identification,
+  planner readiness, live runtime ack, or `closed_loop`.
+
+## 2026-06-06 CST - ROS2 030 IMU Startup Discipline Gate Passed
+
+- ROS2 R3 completed
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-IMU-STARTUP-DISCIPLINE-GATE-20260606-030`
+  with return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-IMU-STARTUP-DISCIPLINE-GATE-20260606-030.json`.
+- Candidate order was evidence-local: start FAST-LIO, start LiDAR replay, wait
+  for the first Livox frame, then start IMU/state replay. This directly
+  targets 029's finding that the prior loop-back came from `imu_cbk` before
+  first accepted LiDAR.
+- Gate result: zero callback-labeled loop-back events, no `No Effective
+  Points`, nonzero `/Odometry=14`, `/cloud_registered=14`, `/path=2`,
+  Livox/IMU input timestamps monotonic, forbidden planner/setpoint topics
+  absent, and final cleanup `no_matching_processes`.
+- Claim boundary: this is only a no-goal FAST-LIO startup discipline
+  precondition pass. It is not localization quality, local-map quality,
+  planner readiness, PositionCommand, 20 Hz adapter runtime, controller
+  performance, mission success, or `closed_loop`.
+- Next ROS2 step should rerun the 028 long-source gate using this ordering
+  before any EGO/planner acceptance.
+- PMO created and dispatched
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-LONG-SOURCE-STARTUP-DISCIPLINE-RERUN-20260606-031`
+  to ROS2 R3. It may run exactly one no-goal long-source rerun using the 030
+  order and must stop before planner/EGO/PositionCommand/20Hz adapter work.
+
+## 2026-06-06 CST - Dead Visible Threads Recovered After Codex App Restart
+
+- User reported that Codex App crashed/restarted and previously "dead"
+  visible threads became usable again. CoAgentOps treated this as a Codex App
+  visible-thread dispatch-surface diagnosis, not a business-domain incident.
+- Post-restart native no-op probes succeeded:
+  Gateway Ops R2 `019e9be0-534e-7c22-97ff-98fa7c2af39b` replied
+  `dead_thread_restart_probe_received_gateway_r2_20260606`, and ROS2 R2
+  `019e9b85-d4d8-7bf3-8afd-a65697cd3889` replied
+  `dead_thread_restart_probe_received_ros2_r2_20260606`. The old MWORKS
+  thread `019e9999-b0d3-7682-bccd-faef08fcf1df` had already passed no-op and
+  settings-override probes after earlier start-turn failures.
+- Working conclusion: the observed pattern strongly points to transient Codex
+  App or agent-loop lifecycle state affecting forwarding/start-turn surfaces.
+  Root cause is not proven because Codex App private DB/session files were not
+  inspected and should not be inspected.
+- Policy updated: restart recovery is only `partial_recovery` unless
+  cross-thread no-op, settings override, user UI composer, and required
+  automation/wakeup surfaces are all revalidated. Production routing stays on
+  current canonical replacements until PMO/CoAgentOps explicitly restores a
+  thread through the bounded validation ladder.
+- Result packet:
+  `Results/agent_packets/returns/COAGENTOPS-DEAD-THREAD-RESTART-RECOVERY-DIAG-20260606-001.json`.
+
+## 2026-06-06 CST - MWORKS Post-GUI Sentinel Health Gate Passed With Writeback Concern
+
+- MWORKS R2 completed `RFLY-MOSIM-MWORKS-POST-GUI-SENTINEL-HEALTH-GATE-20260606-009`.
+  Evidence:
+  `Results/mworks_gui_incidents/post_gui_sentinel_health_gate_20260606_009/`.
+- Gate sequence: pre-sentinel clean, Sysplorer MCP `session_manager health`
+  ok on dedicated port `49152`, narrow `check_model` ok for
+  `QuadrotorExperiments.Sunray150PhysicalWrenchHoverSmoke`, post-sentinel
+  clean, model diff restored, post-restore sentinel clean.
+- Concern recorded: the `check_model` call with `reload_mo_path` triggered MCP
+  Smart Layout writeback on `Models/QuadrotorExperiments/package.mo`. R2
+  detected the unintended diff and restored the file to clean before return.
+  Future read-only health gates should use a no-write check path when exposed,
+  or avoid arguments that trigger Smart Layout writeback.
+- This restores only the minimal post-GUI session/check_model gate for later
+  scoped MWORKS tasks. It is not dynamics performance, controller performance,
+  Factory trace consumption, live runtime ack, planner readiness, or
+  closed_loop evidence.
+
+## 2026-06-06 CST - PMO P0 Mainline Dispatch Continued After Gateway Detach
+
+- User clarified that WeChat gateway maintenance should stay with the gateway
+  owner thread and should not block PMO technical mainline work.
+- PMO created and dispatched
+  `RFLY-MOSIM-MWORKS-CONTROL-DOWNSTREAM-OUTPUT-GROUP-20260606-020` to
+  `MoSim｜MWORKS动力学与控制验证部` (`019e9be5-334b-76b1-93f9-8b02caebf376`).
+  The task fixes the baseline to passing Iso25, requires before/after MWORKS
+  GUI sentinel, allows exactly one downstream control-output or
+  actuator-preflight reconnect group, and still forbids full Factory retry or
+  closed_loop/controller-performance claims.
+- PMO found ROS2 R3 task 028 was `interrupted` with no return/blocker packet,
+  despite partial evidence showing a generated 120-frame body-frame source,
+  nonzero `/Odometry` and `/cloud_registered`, and remaining FAST-LIO
+  `lidar loop back, clear buffer` log events. PMO sent a resume/correction
+  packet to active ROS2 R3
+  (`019e9c72-ee74-79d1-b9fe-621d3c6fc99e`): either rerun one no-goal
+  source/FAST-LIO correction that removes loop-back, or write a blocker. It
+  remains forbidden to run planner goal, `/planning/bspline` acceptance,
+  PositionCommand recorder, `/position_cmd`, 20Hz adapter, or extrinsic/frame
+  edits in 028.
+
+## 2026-06-06 CST - MWORKS GUI Sentinel P0 Completed
+
+- MWORKS R2 implemented the read-only P0 GUI sentinel
+  `Scripts/agent/check_mworks_gui_sentinel.py`. It enumerates Win32
+  top-level/child window title and control text, classifies MWORKS/Sysplorer
+  crash/error-report and login/license patterns, and writes machine-readable
+  JSON without clicking, closing, focusing, restarting, sending reports, or
+  reading external `Documents/MWORKS/log` files.
+- Focused tests pass:
+  `python -m pytest Scripts/tests/test_mworks_gui_sentinel.py -q`.
+  A live dry probe wrote
+  `Results/mworks_gui_incidents/sentinel_probe_20260606_001/sentinel_probe.json`
+  with `status=clean`, `window_count=374`, and no matched MWORKS crash/license
+  windows after tightening a generic `授权` false-positive boundary.
+- Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-GUI-SENTINEL-P0-20260606-001.json`.
+  This is a P0 title/text sentinel only, not hidden-window screenshot evidence
+  and not Computer Use Windows.Graphics.Capture.
+
+## 2026-06-06 CST - CoAgentOps Learned Codex Goal Usage Guidance
+
+- User provided the Feishu page
+  `https://xiangyangqiaomu.feishu.cn/wiki/YQn6wZ1hzijlRvkU1E6cEL5mnic`
+  about Codex `/goal` usage. CoAgentOps used background `windows_mcp.Scrape`
+  and Chrome headless capture; no foreground browser or user desktop takeover
+  was needed. Evidence screenshot:
+  `Results/browser_captures/feishu_goal_20260606/feishu_goal_viewport_1280x2000.png`.
+- Reusable lesson: `/goal` is a durable completion contract for multi-turn
+  work with a clear, testable stop condition, not a generic way to make Codex
+  run longer. Good goals specify outcome, verification surface, constraints,
+  boundaries, iteration policy, blocker stop condition, and evidence to record
+  after each round.
+- Updated `Docs/Workflows/agent_orchestration.md#24-goal-assignment` with a
+  Goal Contract Gate. Short explanations, one-line edits, simple suggestions,
+  routine code-review comments, and vague aims should stay as ordinary prompts
+  or ledger tasks unless rewritten into auditable completion criteria.
+
+## 2026-06-06 CST - ROS2 027 No-Loopback Source Window Blocked Before Goal
+
+## 2026-06-06 CST - PMO Corrects Sunray Notification And Opens MWORKS GUI Sentinel P0
+
+- User correctly challenged two PMO/process gaps:
+  1. the newly generated Sunray150 component review images `battery.png` and
+     `guard_landing_gear.png` were not separately notified for manual review;
+  2. MWORKS/Sysplorer GUI error-report handling cannot rely on a department
+     visually noticing a foreground dialog, because the user may be using other
+     applications and background screenshot is not currently proven.
+- PMO created the missing WeChat review packet:
+  `Results/coagent_gateway/packets/sunray150_component_review_gap_fill_20260606.json`.
+  It asks the user to review only the two new component images:
+  `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/battery.png`
+  and
+  `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/guard_landing_gear.png`.
+  The packet is manual-review only and does not claim final material
+  acceptance.
+- PMO attempted to send the packet through
+  `CoAgent/gateway/cc_connect_weixin.py`; the adapter accepted the packet and
+  reached the Weixin send layer, but failed with
+  `weixin: sendMessage: ret=-2 errcode=0`. The notification has not been
+  delivered.
+- User instructed PMO to hand this to WeChat gateway maintenance thread
+  `019e9be0-534e-7c22-97ff-98fa7c2af39b`. Native
+  `send_message_to_thread` to that visible thread failed with
+  `failed to update thread settings: internal error; agent loop died unexpectedly`.
+  PMO recorded:
+  `Results/agent_packets/blockers/PMO-WEIXIN-GATEWAY-R2-DISPATCH-SURFACE-20260606-001.json`.
+  PMO then routed the combined ret=-2 recovery and gateway-thread dispatch
+  diagnosis to `MoSim｜CoAgent运维平台`
+  (`019e9bc1-ea9f-7102-b41a-4ef9b2308992`). Await its return/blocker.
+- PMO used one read-only disposable sub-agent
+  `019e9c5a-4b69-7142-aa8f-1daa2fbe178e` to audit screenshot options. Result:
+  current Computer Use would be the preferred occluded-window screenshot route
+  because its skill documents Windows.Graphics.Capture, but it is not currently
+  callable in this session (`native pipe path is unavailable`). Current
+  Windows MCP can enumerate windows and capture visible desktop state, but is
+  not a reliable hidden Sysplorer HWND screenshot path.
+- PMO updated `AGENTS.md` and `Docs/Workflows/agent_orchestration.md`:
+  non-trivial tasks must now record an explicit `subagent_plan` decision, and
+  MWORKS GUI-affecting tasks must use a GUI sentinel before/after risky MCP
+  steps when available. Preferred P0 sentinel is read-only UIA/EnumWindows
+  title/text detection for `MWORKS错误报告`, `Sysplorer 遇到错误，需要关闭`, and
+  login/license prompts. Background screenshots remain P1 until Computer Use is
+  repaired.
+- PMO created and dispatched P0 sentinel task:
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-GUI-SENTINEL-P0-20260606-001.json`
+  to MWORKS R2 (`019e9be5-334b-76b1-93f9-8b02caebf376`). Scope is read-only:
+  detector/tests/evidence/return-or-blocker only; no Sysplorer operation,
+  no click/close/restart/send-report, no virtual desktop.
+
+- ROS2 R2 completed the narrow 027 code correction: `dense_lidar_replay_node`
+  now supports explicit `loop` and `exit_after_last_frame` parameters. Default
+  behavior remains `loop=true`, while `loop=false` publishes finite frames
+  without modulo wrap and logs completion.
+- Verification: `python Scripts/tests/test_dense_lidar_cpp_contract.py` passed,
+  and WSL ROS2 `colcon` built `mosim_dense_lidar_cpp` successfully. The older
+  headless dry-run regression is currently blocked on Windows Python
+  subprocess encoding/path handling before producing dry-run JSON; this was
+  recorded as a verification limitation, not a C++ build failure.
+- 027 runtime gate remains blocked before any planner goal. With `loop=false`,
+  the accepted Factory body-frame source has only 40 frames at 10Hz, so the
+  non-wrapping window lasts about 4 seconds. Evidence shows first Livox and
+  first IMU messages were captured, and dense replay completed `40/40` frames,
+  but the Livox+IMU probe later observed `livox_count=0`. FAST-LIO advertised
+  `/Odometry` and `/cloud_registered` publishers but recorded zero samples.
+- No EGO map-readiness, planner goal, `/planning/bspline` acceptance,
+  PositionCommand recorder, `/position_cmd`, 20Hz adapter, fake map/cloud, UE
+  truth planner input, keyboard pose, FAST-LIO `/path` trajectory conversion,
+  or MID-360 extrinsic/frame adapter change was performed. This is not
+  planner_ready, FAST-LIO success, local-map quality, closed_loop, controller
+  performance, or mission success.
+- Blocker packet:
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-NO-LOOPBACK-SOURCE-WINDOW-20260606-027.json`.
+  Evidence:
+  `Results/ros2_runtime/b1_no_loopback_source_window_20260606_027/`.
+  Next minimum correction gate should use a longer accepted
+  `body_lidar_m_z_up` non-wrapping source window or a startup order that leaves
+  enough live non-wrapping Livox for FAST-LIO, then require source probe pass,
+  no loop-back log, nonzero `/Odometry` and `/cloud_registered`, and cleanup
+  before any goal.
+
+## 2026-06-06 CST - PMO Corrects Sunray Component Review Dispatch Gap
+
+- User correctly pointed out that the YunZong/Sunray150 asset thread
+  `019e9b25-066e-7372-8152-209c2b1322a4` was not being advanced enough after
+  the close-up review-prep return.
+- PMO re-read the Sunray return packet and current component-review outputs.
+  The existing task only prepared grouped manual review inputs; it did not
+  generate dedicated `battery.png` or `guard_landing_gear.png` component review
+  images, and the manifest has no dedicated rows for those two components.
+  The script `Scripts/UE5/assets/render_sunray150_component_material_reviews.py`
+  already defines both components, so this is a concrete review-output gap, not
+  a reason to claim final material acceptance.
+- PMO opened the corrective Sunray task packet
+  `Results/agent_packets/RFLY-MOSIM-SUNRAY150-COMPONENT-REVIEW-GAP-FILL-20260606-002.json`.
+  Scope is narrow: generate or precisely block the two missing dedicated
+  component review outputs, update the component-review manifest, save evidence
+  under `Results/unreal_scene_mapping/sunray150_component_review_gap_fill_20260606_002/`,
+  and return a packet. It must not edit geometry, dynamics, FAST-LIO
+  extrinsics, controller/planner parameters, or claim final material
+  acceptance.
+- Sunray department returned completed:
+  `Results/agent_packets/returns/RFLY-MOSIM-SUNRAY150-COMPONENT-REVIEW-GAP-FILL-20260606-002.json`.
+  Headless Blender 5.0 rendered only `battery` and `guard_landing_gear`;
+  generated `battery.png` (`1018043` bytes) and `guard_landing_gear.png`
+  (`1200097` bytes); both are RGBA `1400x1050`, non-flat by file-level pixel
+  extrema, and the manifest now has project-relative rows for both components.
+  Evidence summary:
+  `Results/unreal_scene_mapping/sunray150_component_review_gap_fill_20260606_002/evidence_summary.json`.
+  `python Scripts/UE5/check_sunray150_pbr_miniloop.py` passed after the
+  manifest update. This is still file-level review-output readiness only;
+  manual visual review is required before final material acceptance.
+
+## 2026-06-06 CST - Sysplorer GUI Error Dialog Must Become Blocker Evidence
+
+- User reported that a department encountered a Sysplorer/MWORKS GUI error
+  dialog but did not screenshot or return it to PMO. PMO captured the current
+  desktop evidence at
+  `Results/mworks_gui_incidents/20260606_sysplorer_error_dialog/sysplorer_error_dialog_20260606_1737.png`
+  and recorded incident metadata at
+  `Results/mworks_gui_incidents/20260606_sysplorer_error_dialog/incident.json`.
+- Visible dialog text: `MWORKS错误报告`; `Sysplorer 遇到错误，需要关闭`;
+  the dialog shows a MWORKS error report path under
+  `C:/Users/HP/Documents/MWORKS/log/2026-06-06/...`, offers restart and send
+  report options, and should not be clicked through silently by an agent.
+- Reusable rule landed in `AGENTS.md` and
+  `Docs/Workflows/agent_orchestration.md`: if a Sysplorer/Syslab/MWORKS GUI
+  crash/error-report dialog appears, the department must stop the active
+  MCP/model sequence, capture or reference a screenshot under `Results/`, write
+  a blocker with visible dialog text, triggering command/action, report path or
+  visible prefix, and next recovery step, and must not continue hidden solver
+  retries or click restart/send/confirm without PMO/user approval.
+
+## 2026-06-06 CST - CoAgentOps Diagnosed Old MWORKS Thread As Partial-Recovery UI Failure
+
+- ROS2 026 returned blocker packet:
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-PRECONDITION-CORRECTION-20260606-026.json`.
+  The corrected 019-style source discipline made useful progress: real dense
+  LiDAR replay, MWORKS IMU/state replay, and FAST-LIO started; `/Odometry`
+  stayed meter-scale rather than the 024 kilometer-scale failure; and
+  `/cloud_registered` was non-empty (`width=15859`). The gate is still blocked
+  before any planner goal because FAST-LIO logged `lidar loop back, clear
+  buffer` twice, the Livox/IMU short probe reported non-monotonic stamps, the
+  latest odometry `(12.454, 23.061, -1.304)m` left the configured EGO static
+  envelope, and EGO map-readiness was not accepted before the 60 s window
+  ended. This is not FAST-LIO success, planner readiness, local-map quality, or
+  `closed_loop`.
+- PMO opened the next ROS2 task packet
+  `Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-NO-LOOPBACK-SOURCE-WINDOW-20260606-027.json`.
+  Scope is deliberately narrow: make the dense LiDAR replay source support a
+  bounded/non-wrapping source window, rerun the precondition-only gate, and
+  stop before any planner goal unless timestamp monotonicity, no-loop-back
+  FAST-LIO logs, odometry/envelope checks, and non-empty map-readiness all
+  pass. No MID-360 extrinsic edits, `/planning/bspline`, `/position_cmd`, 20 Hz
+  adapter, fake map/cloud, or planner-ready claim is allowed.
+- MWORKS 007 returned completed:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-PHYSICAL-WRENCH-WRAPPER-20260606-007.json`.
+  R2 added project-owned `Sunray150PhysicalWrenchFrameAdapter`,
+  `Sunray150PhysicalWrenchHoverSmoke`, and
+  `Sunray150PhysicalWrenchYawStepSmoke` under
+  `Models/QuadrotorExperiments`. Sysplorer MCP session health was good, all
+  new models passed `check_model` before simulation, hover smoke applied
+  `9.810000000000002 N` at `body.frame_a.f[3]` with zero force/torque
+  application error, and yaw smoke applied
+  `0.05418494199832341 N.m` at `body.frame_a.t[3]` with zero torque
+  application error. Official baseline remained unmodified. This is a
+  physical-wrench wrapper smoke only, not parameter identification, controller
+  performance, dynamic yaw transient acceptance, Factory trace consumption,
+  ROS2/UE runtime, planner readiness, live runtime ack, or `closed_loop`.
+- PMO opened MWORKS 008:
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-YAW-SIGN-MOTOR-ORDER-AUDIT-20260606-008.json`.
+  Scope is a narrow source/evidence audit for yaw sign and motor order against
+  local PX4/Sunray/YunZong allocation conventions before any fault-isolation or
+  allocation claim. It must not edit the official baseline, retune controllers,
+  consume Factory traces, or promote current parameters to identified truth.
+- PMO heartbeat follow-up opened MWORKS 007:
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-PHYSICAL-WRENCH-WRAPPER-20260606-007.json`.
+  The task goes only to MWORKS R2
+  (`019e9be5-334b-76b1-93f9-8b02caebf376`), not the old quarantined MWORKS
+  thread. Scope is the smallest project-owned physical wrench wrapper that
+  applies the 006 wrapper outputs to a body/frame interface. It must reuse the
+  current logged-in Sysplorer window/MCP where healthy, stop on license/auth
+  symptoms, and must not edit the official baseline, retune controllers,
+  consume Factory traces, or claim parameter identification, controller
+  performance, dynamic yaw transient acceptance, planner readiness, live
+  runtime ack, or `closed_loop`.
+- User asked to keep old MWORKS thread
+  `019e9999-b0d3-7682-bccd-faef08fcf1df` for diagnosis instead of deleting it.
+  The thread remains visible as `MoSim｜MWORKS动力学与控制验证部`; replacement R2
+  remains visible as `MoSim｜MWORKS动力学与控制验证部`
+  (`019e9be5-334b-76b1-93f9-8b02caebf376` in the App list, documented as
+  `-R2` in project routing).
+- Earlier blocker evidence still stands: two MWORKS 004 business dispatch
+  attempts to the old thread failed through `codex_app.send_message_to_thread`,
+  first with `failed to update thread settings: internal error; agent loop died
+  unexpectedly`, then with `failed to start turn: internal error; agent loop
+  died unexpectedly`.
+- New controlled diagnosis found the old thread is not permanently unreadable:
+  a no-op cross-thread healthcheck without settings override completed with
+  `healthcheck_received_old_mworks_thread_20260606`, and a no-op cross-thread
+  healthcheck with `model=gpt-5.5` / `thinking=high` completed with
+  `settings_healthcheck_received_old_mworks_thread_20260606`.
+- User then showed that manual sending from inside the old thread UI still
+  fails with `Error submitting message`. Updated classification: partial
+  recovery only. Cross-thread native no-op dispatch works, but the in-thread UI
+  composer/manual-submit path is still broken. This is not a
+  MWORKS/Sysplorer/Syslab technical blocker and not a fully rescued thread.
+  Production MWORKS task dispatch still stays on R2 unless PMO explicitly
+  approves a bounded CoAgentOps R2 validation ladder for the old thread.
+- User instructed PMO not to rush into creating replacement conversations for
+  future dead-thread incidents. CoAgentOps R2 now owns the first-pass rescue and
+  diagnosis task; create a replacement only after bounded diagnosis or when the
+  critical path cannot wait.
+- Diagnostic packet:
+  `Results/agent_packets/returns/MOSIM-COAGENT-OPS-R2-DEAD-THREAD-DIAG-MWORKS-20260606-001.json`.
+  Updated routing/workflow records:
+  `CoAgent/dispatch/department_threads.json`,
+  `Docs/Workflows/agent_orchestration.md`,
+  `Docs/Workflows/agent_task_ledger.md`, and
+  `Docs/Index/codex_app_session_research.md`.
+
+## 2026-06-06 CST - PMO Recovered Sysplorer License Login State
+
+- User identified that recent odd MWORKS solver/check behavior was likely a
+  dropped Sysplorer login/activation state, not necessarily a code or solver
+  problem. PMO paused further MWORKS trial-and-error and performed one
+  controlled foreground login recovery. User-provided credentials were used
+  only in the official Sysplorer login dialog and were not written to project
+  docs, packets, logs, or scripts.
+- Before recovery, Sysplorer showed demo/unactivated license symptoms and the
+  output contained `L5104-B0` / software-not-activated style messaging. After
+  login, Sysplorer title showed education edition and the license dialog showed
+  account-license status with remaining days and authorized modules.
+- MCP verification after login passed:
+  `session_manager health` returned `driver_ready=true` and `api_ready=true`;
+  a minimal `check_model` for
+  `QuadrotorExperiments.Sunray150DynamicsWrapperHoverSmoke` returned
+  `ok=true`. Evidence summary:
+  `Results/mworks_license_recovery/20260606_pmo_sysplorer_login_recovery.json`.
+- Reusable rule landed in `AGENTS.md`: `L5104-B0`, "软件尚未激活",
+  "当前授权不允许变量方程数大于 300", unexpected demo-edition mode, login
+  prompts, and authorization failures are auth/license incidents first.
+  Department threads must stop solver/model trial-and-error and return an
+  auth/license blocker or ask PMO to recover login state.
+- User confirmed window operation is acceptable and requested avoiding repeated
+  MWORKS window restarts. `AGENTS.md` now strengthens the reuse rule: after
+  license health is restored, keep the current logged-in Sysplorer window open
+  for related MWORKS checks/review and prefer MCP reconnect/reuse over full
+  restarts. Credentials still are not persisted in project files.
+
+## 2026-06-06 CST - PMO Integrated ROS2 025 And Opened B1 Precondition Correction
+
+- ROS2 025 returned a diagnostic completion packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-FRAME-SCALE-Z-DIAG-20260606-025.json`.
+  It did not run a new live probe, publish a planner goal, rerun
+  `/planning/bspline`, run a PositionCommand recorder, publish `/position_cmd`,
+  or start the 20 Hz adapter.
+- Diagnosis: 019 and 024 used the same FAST-LIO topic/config basis
+  (`/mosim/livox/lidar`, `/mosim/forward/imu`, `timestamp_unit=2`,
+  `scan_rate=10`, identity extrinsic), but 019 produced meter-scale odometry
+  in `camera_init` while 024 produced kilometer-scale odometry. The supported
+  primary cause is source replay/runtime sequencing causing FAST-LIO
+  initialization drift; EGO empty map-readiness is downstream. A static
+  extrinsic/frame edit is not justified from current evidence.
+- PMO created the next ROS2 task packet
+  `Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-PRECONDITION-CORRECTION-20260606-026.json`.
+  This is a precondition-only correction gate using the 019-style bounded
+  source startup discipline. It must stop before any goal if odometry remains
+  kilometer-scale/out-of-envelope, map samples are empty, or FAST-LIO logs
+  loop-back buffer clearing / persistent `No Effective Points`.
+- UE 006 compile-only evidence is present and already reflected in the ledger:
+  UnrealBuildTool exit code 0, `QuadrotorMworksExperimentConsoleStateComponent.cpp`
+  compiled, and `UnrealEditor-QuadrotorMworksBridge.dll` linked. This remains
+  compile evidence only, not live UE runtime ack.
+- MWORKS 006 wrapper integration returned completed evidence:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json`.
+  R2 added project-owned `Sunray150DynamicsWrapperSurface`,
+  `Sunray150DynamicsWrapperHoverSmoke`, and
+  `Sunray150DynamicsWrapperYawStepSmoke`; all three passed Sysplorer MCP
+  `check_model` before simulation. Hover smoke read zero thrust error and
+  command-side yaw sign/motor-order gate read
+  `commanded_yaw_moment_gate@end = 0.061549776 N.m`, with
+  `motor_order_gate_error=0.0` and `yaw_direction_gate_error=0.0`.
+  Dynamic lagged yaw transient remains unclaimed from this slice. Official
+  baseline file stayed clean; full baseline `QuadChassis` check was degraded
+  by license limit `当前授权不允许变量方程数大于 300`. Evidence:
+  `Results/mworks_dynamics_upgrade/20260606_006_wrapper_integration/`.
+
+## 2026-06-06 CST - PMO Dispatches Next P0 Parallel Gates
+
+- PMO integrated the CoAgentOps R2 replacement packet, MWORKS 004 return, and
+  ROS2 023 diagnostic return into the active P0 task graph.
+- MWORKS 004 is no longer pending. It passed a fresh
+  `MWORKS_MCP_runtime_adapter_preflight` but precisely blocked live
+  `mosim.ue_command_echo.v1` downlink because no project-owned MWORKS-to-UE or
+  MWORKS-to-ROS2 echo transport/receiver surface exists yet.
+- PMO created three non-conflicting next task packets:
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-MIN-UPGRADE-20260606-005.json`
+  for the project-owned MWORKS dynamics minimal upgrade,
+  `Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-CORRECTED-BSPLINE-GATE-20260606-024.json`
+  for the corrected ROS2 frame/scale/z and `/planning/bspline` gate, and
+  `Results/agent_packets/RFLY-MOSIM-UE-LIVE-ECHO-RECEIVER-BOUNDARY-20260606-004.json`
+  for UE live echo receiver boundary design/static audit.
+- MWORKS 005 completed as a minimal project-owned MWORKS_MCP dynamics smoke:
+  `QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke` and
+  `QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke` passed
+  `check_model` before simulation. Hover smoke verified
+  `dynamics.hover_thrust_error@end = 1.7763568394002505e-15 N`; yaw-step smoke
+  verified `dynamics.total_moment_body[3]@end = 0.06153801695664962 N.m`.
+  The existing `Sunray150RflyStyleRotorDynamics` slice contains command-to-
+  speed mapping, first-order motor lag, `Ct*omega^2` thrust, yaw reaction
+  torque, and rotor-center moment. Official baseline
+  `References/MWORKS/QuadrotorModel/package.mo` was not edited. Evidence:
+  `Results/mworks_dynamics_upgrade/20260606_005_minimal_upgrade/`; return:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-MIN-UPGRADE-20260606-005.json`.
+- PMO created the next MWORKS follow-up task
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json`
+  for `MoSim｜MWORKS动力学与控制验证部-R2`. The task is limited to
+  project-owned wrapper/chassis integration of the checked rotor dynamics core,
+  plus yaw sign/motor-order validation or a precise blocker. It must not edit
+  the official baseline, retune controllers, consume Factory traces, or claim
+  parameter identification, controller performance, planner readiness, live
+  runtime ack, or `closed_loop`.
+- ROS2 024 returned a corrected precondition blocker before any goal was
+  published. Real `/Odometry` and `/cloud_registered` were present, but current
+  odometry in `camera_init` was about
+  `(-2865.728, -228.497, -12849.773)m`; EGO would force the effective goal z
+  to `1.0`, yielding about `12850.77m` start-goal distance outside the static
+  EGO envelope `x/y=[-20,20]`, `z=[-0.01,2.99]`. Occupancy/inflated occupancy
+  samples had `width=0`. No goal was published and `/planning/bspline` was not
+  accepted. Blocker:
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-CORRECTED-BSPLINE-GATE-20260606-024.json`.
+- PMO created follow-up ROS2 diagnosis task
+  `Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-FRAME-SCALE-Z-DIAG-20260606-025.json`
+  to compare 024 against the last bounded good odom/cloud restore and classify
+  the frame/scale/z plus empty-map-readiness failure. It may run only
+  source-graph/odom/cloud/tf diagnostics, not planner goals, Bspline
+  acceptance, PositionCommand recorder, `/position_cmd`, or the 20 Hz adapter.
+- UE 005 completed the source-label safety patch. The state component now
+  treats `offline_adapter_smoke`, `source_level_smoke`,
+  `MWORKS_MCP_result_adapter_smoke`, and
+  `MWORKS_MCP_runtime_adapter_preflight` as non-live smoke/preflight sources:
+  `quality_status=smoke_only` and `accepted_as_runtime_ack=false`. Evidence:
+  `Results/unreal_experiment_console/echo_source_label_safety_20260606_005/`;
+  return:
+  `Results/agent_packets/returns/RFLY-MOSIM-UE-ECHO-SOURCE-LABEL-SAFETY-20260606-005.json`.
+  Runtime echo receiver remains blocked because MWORKS 004 still has no live
+  transport surface.
+- PMO created UE compile-only follow-up
+  `Results/agent_packets/RFLY-MOSIM-UE-SOURCE-LABEL-COMPILE-GATE-20260606-006.json`.
+  `mosim-unreal.project_context` confirmed the renderer project and bridge
+  plugin exist, but did not expose a local Unreal Engine install path, so the
+  UE department must either produce compile-only evidence or a precise
+  UnrealBuildTool/toolchain blocker. No UE GUI, assets, runtime receiver, UI
+  accepted-state controls, MWORKS/ROS2 runtime, or live ack claim is allowed.
+- UE 004 returned a precise static-boundary blocker: the existing
+  `UQuadrotorMworksUdpReceiverComponent` is frame/status-only, and the source
+  state component does not yet downgrade `MWORKS_MCP_result_adapter_smoke` or
+  `MWORKS_MCP_runtime_adapter_preflight` to `smoke_only`. Do not implement a
+  live echo receiver until that source-label gap is fixed and rechecked.
+- PMO created the follow-up source-label safety task
+  `Results/agent_packets/RFLY-MOSIM-UE-ECHO-SOURCE-LABEL-SAFETY-20260606-005.json`
+  for `MoSim｜UE实验控制台与场景交互部`. The task is narrow: patch/check the
+  C++ state component so known offline/source/preflight echo rows remain
+  `quality_status=smoke_only` and `accepted_as_runtime_ack=false`; it must not
+  implement a runtime receiver or claim live ack.
+- Current claim boundary remains strict: no `planner_ready`, no
+  `PositionCommand`, no `/position_cmd`, no 20 Hz adapter runtime, no live UE
+  runtime ack, no final material acceptance, and no `closed_loop` claim until
+  the corresponding MWORKS/ROS2/UE/RViz/MCP evidence exists.
+- Sparse WeChat milestone packet
+  `Results/coagent_gateway/packets/pmo_p0_parallel_gates_dispatched_20260606.json`
+  was attempted once through `CoAgent/gateway/cc_connect_weixin.py` and reached
+  Weixin but failed with `weixin: sendMessage: ret=-2 errcode=0`. Do not retry
+  in a loop. Minimal recovery remains one ordinary user message in the
+  WeChat-side Codex conversation `MoSim｜WechatCodex`
+  (`019e8358-86b4-7070-8fd6-a2b4f4d2af97`), then retry once if a new
+  notification is still needed.
+
+## 2026-06-06 CST - CoAgent Meta Departments Rebuilt As App-Native R2
+
+- Created and titled four App-native replacement department threads:
+  `MoSim｜微信网关运维部-R2`
+  (`019e9be0-534e-7c22-97ff-98fa7c2af39b`),
+  `MoSim｜Codex 上下文维护部-R2`
+  (`019e9be0-f6ac-7762-b80c-b1dd18b0d013`),
+  `MoSim｜开源项目探针-R2`
+  (`019e9be3-94de-7dc3-b067-92a78b678287`), and
+  `MoSim｜开源项目学习部-R2`
+  (`019e9be4-56d0-7981-b71c-a5ded1c7ec76`).
+- Created and verified four Codex App heartbeat automations:
+  `mosim-r2` for gateway health every 4 hours,
+  `mosim-codex-r2` for context maintenance every 6 hours,
+  `mosim-r2-2` for open-source probe inventory daily, and
+  `mosim-r2-3` for open-source learning evaluation weekly.
+- Old thread deletion is gated by content landing, not backup. Reusable content
+  must be recoverable from canonical docs and packets. The replacement result
+  packet with the landing matrix is:
+  `Results/agent_packets/returns/MOSIM-COAGENT-OPS-R2-DEPARTMENT-REPLACEMENT-AUTOMATION-20260606-001.json`.
+- Updated active routing in `CoAgent/dispatch/department_threads.json`,
+  `Docs/Index/codex_app_session_research.md`,
+  `Docs/Workflows/coagent_meta_maintenance.md`,
+  `Docs/Workflows/org_operating_model.md`,
+  `Docs/Workflows/agent_orchestration.md`, `AGENTS.md`, and
+  `Docs/Index/external_learning_index.md`.
+- Dead-thread handling rule is now documented: if a visible department can be
+  read but cannot reliably receive work, expose native tools, run automations,
+  or keep a healthy loop, record the observed failure, treat root cause as
+  unknown unless proven, extract useful history into canonical docs, create an
+  App-native replacement, update the allowlist, and leave deletion to the user.
+
+## 2026-06-06 CST - MWORKS R2 Created And 004 Dispatched
+
+- PMO attempted to dispatch
+  `RFLY-MOSIM-MWORKS-ECHO-LIVE-DOWNLINK-PREFLIGHT-20260606-004` to the old
+  `MoSim｜MWORKS动力学与控制验证部`
+  (`019e9999-b0d3-7682-bccd-faef08fcf1df`) twice through native
+  `send_message_to_thread`.
+- Both attempts failed at the Codex App visible-thread dispatch surface:
+  first `failed to update thread settings: internal error; agent loop died
+  unexpectedly`, then `failed to start turn: internal error; agent loop died
+  unexpectedly`.
+- PMO recorded the dispatch blocker:
+  `Results/agent_packets/blockers/PMO-MWORKS-VISIBLE-THREAD-DISPATCH-SURFACE-20260606-001.json`.
+- PMO created and titled replacement thread
+  `MoSim｜MWORKS动力学与控制验证部-R2`
+  (`019e9be5-334b-76b1-93f9-8b02caebf376`), updated
+  `CoAgent/dispatch/department_threads.json`,
+  `Docs/Index/codex_app_session_research.md`, the 004 task packet, and the
+  ledger. Future MWORKS dispatch should use R2 unless PMO later proves the old
+  thread healthy.
+- 004 is now assigned to R2 through the initialization prompt. Await either
+  return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-LIVE-DOWNLINK-PREFLIGHT-20260606-004.json`
+  or blocker packet
+  `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ECHO-LIVE-DOWNLINK-PREFLIGHT-20260606-004.json`.
+- This is a thread-dispatch recovery only. It does not change any MWORKS model,
+  runtime transport, UE runtime, ROS2 runtime, or control evidence state.
+
+## 2026-06-06 CST - MWORKS 004 Runtime-Adapter Preflight Passed, Live Downlink Blocked
+
+- R2 completed
+  `RFLY-MOSIM-MWORKS-ECHO-LIVE-DOWNLINK-PREFLIGHT-20260606-004` with return
+  packet
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-LIVE-DOWNLINK-PREFLIGHT-20260606-004.json`.
+- Sysplorer MCP evidence was refreshed in this task: `session_manager probe`
+  passed, `ensure` started dedicated port `49152`, `check_model` passed for
+  `QuadrotorExperiments.EchoMcpStateSmoke`, `simulate_model` passed for
+  `0.0..1.0s`, `GetVarTimes` returned `101` samples, and 12 echo-state
+  variables were read at end time.
+- Added `Scripts/mworks/smoke_mworks_echo_live_downlink_preflight.py` and
+  `Scripts/tests/test_mworks_echo_live_downlink_preflight.py`. The script
+  consumes only fresh `source=MWORKS_MCP` preflight input and rejects task-003
+  style result-adapter fixture input.
+- Evidence directory:
+  `Results/mworks_echo_producer_smoke/20260606_004_live_downlink_preflight/`.
+  Generated rows use
+  `source=MWORKS_MCP_runtime_adapter_preflight`,
+  `evidence_level=fresh_result_context_runtime_adapter_preflight`, and
+  `live_downlink_status=blocked_no_transport_surface`.
+- Output summary: 6 `mosim.ue_command_echo.v1` rows, 5 accepted MWORKS-owned
+  commands, 1 forbidden pose rejection, `no_pose_overwrite_status=pass`,
+  `stronger_than_task_003_fixture=true`, and
+  `uses_task_003_fixture_rows=false`.
+- Validation passed:
+  `python Scripts\UE5\check_ue_command_echo_contract.py ... --require-runtime-ack`,
+  `python Scripts\UE5\smoke_ue_command_echo_state_reducer.py ...`, and
+  `python -m pytest Scripts\tests\test_mworks_echo_live_downlink_preflight.py Scripts\tests\test_mworks_mcp_echo_result_adapter.py Scripts\tests\test_ue_command_echo_state_reducer.py -q`.
+  The UE reducer keeps `accepted_as_runtime_ack=false` for this preflight
+  source.
+- Precise blocker remains: no project-owned MWORKS-to-UE/ROS2
+  `mosim.ue_command_echo.v1` live downlink or receiver transport surface is
+  implemented/proven in this task scope. Do not enable UE accepted-state
+  controls or claim live UE runtime ack, live MWORKS downlink, closed_loop,
+  controller performance, planner_ready, FAST-LIO success, Factory trace
+  consumption, plant tracking, mission success, or parameter identification.
+- WeChat sparse completion packet:
+  `Results/coagent_gateway/packets/mworks_echo_live_downlink_preflight_004_completed_20260606.json`.
+  First local notify attempt used unsupported `template_type=status_update` and
+  was blocked before external send; packet was corrected to
+  `template_type=completion_notification` before retry. Second local attempt
+  showed completion packets require `canonical_status=completed`; packet was
+  corrected while preserving the fine-grained status in `status/details`.
+  Final bounded send reached the Weixin layer but failed with
+  `weixin: sendMessage: ret=-2 errcode=0`; do not retry until the user sends
+  one normal text message in the WeChat gateway conversation, then retry once.
+  dynamics parameter, simulation evidence, live UE runtime ack, planner_ready,
+  closed_loop, or controller-performance claim.
+- Sparse WeChat notification for this routing change was attempted through
+  `CoAgent/gateway/cc_connect_weixin.py`. The first packet shape was rejected
+  locally as `unsupported packet type`; PMO corrected the packet to
+  `template_type=blocker_notification`. The single real send then reached
+  Weixin and failed with `weixin: sendMessage: ret=-2 errcode=0`. Per gateway
+  rules, do not retry in a loop or restart cc-connect for this. Minimal user
+  action before any retry is one ordinary message in the WeChat-side Codex
+  conversation `MoSim｜WechatCodex` (`019e8358-86b4-7070-8fd6-a2b4f4d2af97`).
+
+## 2026-06-06 CST - ROS2 023 Bspline No-Sample Diagnosis Integrated
+
+- ROS2 R2 returned diagnostic packet
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-BSPLINE-NO-SAMPLE-DIAG-20260606-023.json`.
+- The diagnosis confirms `/planning/bspline` topic presence in 022 only proved
+  EGO's init-time publisher existed. A non-empty Bspline message is published
+  only after successful `reboundReplan()`, and 022 produced no accepted sample.
+- Strongest current cause: invalid planner-frame geometry. The 022 odometry
+  was approximately `(2456.218, -404.699, -7241.161) m` in `camera_init`, while
+  EGO waypoint handling forced goal z to `1.0`, producing a kilometers-scale
+  vertical planning problem outside the configured local map envelope.
+- Next ROS2 gate must first prove odometry, goal, and local map envelope are in
+  the same bounded frame/scale/z and capture map-readiness evidence, then rerun
+  only the real-goal `/planning/bspline` acceptance.
+- Do not run PositionCommand recorder, publish `/position_cmd`, start the
+  20 Hz adapter, or claim planner_ready/closed_loop from 023.
+
+## 2026-06-06 CST - MWORKS 004 Live/Downlink Echo Preflight Prepared
+
+- PMO created task packet
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-ECHO-LIVE-DOWNLINK-PREFLIGHT-20260606-004.json`
+  for `MoSim｜MWORKS动力学与控制验证部`
+  (`019e9999-b0d3-7682-bccd-faef08fcf1df`).
+- Current MWORKS echo evidence boundary:
+  001 is offline/schema smoke, 002 is project-owned MWORKS_MCP result-context
+  state smoke, and 003 adapts 002 result-context evidence into
+  `mosim.ue_command_echo.v1` fixture rows. None of these prove live UE runtime
+  ack or live MWORKS downlink.
+- 004 must either implement the smallest project-owned MWORKS/model/adapter
+  preflight with source labels stronger than task-003 fixture rows, or return a
+  precise blocker if current project surfaces have no MWORKS-to-UE/ROS2
+  downlink/transport path in scope.
+- Do not enable UE accepted-state controls, expand CoAgent transport/schema,
+  edit official `References/MWORKS` baseline, start ROS2/UE runtime, or claim
+  live runtime ack, closed_loop, controller performance, planner_ready,
+  FAST-LIO success, Factory trace consumption, plant tracking, mission success,
+  or parameter identification from 004 preparation alone.
+
+## 2026-06-06 CST - ROS2 022 Bspline Sample Blocker Integrated
+
+- ROS2 R2 returned blocker
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-GOAL-BSPLINE-ACCEPTANCE-20260606-022.json`.
+- Real `/Odometry` and `/cloud_registered` inputs were present from
+  `/laser_mapping` before and during planner startup, a real waypoint trigger
+  was published, planner log reached `Triggered!`, and `/planning/bspline`
+  existed with publisher `ego_planner_node_preflight`.
+- Acceptance is still blocked: no non-empty
+  `ego_planner_msgs/msg/Bspline` echo sample was captured, and
+  `Results/ros2_runtime/b1_real_goal_bspline_acceptance_20260606_022/bspline_acceptance_status.txt`
+  records `bspline_accepted=false`.
+- Key diagnostic clue: the goal was generated from `/Odometry` in
+  `camera_init` where source position was approximately
+  `(2456.218, -404.699, -7241.161) m`, while the goal z was set to `0.2`.
+  This frame/scale/z drift and EGO waypoint-z handling must be diagnosed
+  before another acceptance run.
+- PMO dispatched ROS2 023 as a diagnostic-only task to
+  `MoSim｜ROS2感知定位与规划运行部-R2`
+  (`019e9b85-d4d8-7bf3-8afd-a65697cd3889`):
+  `Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-BSPLINE-NO-SAMPLE-DIAG-20260606-023.json`.
+  `read_thread` shows the target thread is in progress.
+- Sparse WeChat blocker notification was sent successfully with dedupe key
+  `pmo_ros2_022_bspline_blocker_20260606`; audit log:
+  `Results/coagent_gateway/weixin_notifications.jsonl`.
+- Do not run
+  PositionCommand recorder, enable a 20 Hz adapter, publish or claim
+  `/position_cmd`, accept `/planning/bspline` from topic presence alone, or
+  claim planner_ready/closed_loop/FAST-LIO quality/local-map quality/controller
+  performance/mission success.
+
+## 2026-06-06 CST - Current CoAgent Ops Native Capability Re-Adoption Audit
+
+- `MoSim｜CoAgent运维平台`
+  (`019e9bc1-ea9f-7102-b41a-4ef9b2308992`) is the current baseline thread for
+  Codex App native thread/automation capability adoption.
+- The old `MoSim｜CoAgent运维平台`
+  (`019e74d1-72fa-7d33-8783-90584035ae92`) was deleted by the user. Do not
+  read, restore, dispatch to, or rely on that thread; old capability research
+  from it is historical/incomplete only.
+- Current surface exposes `automation_update` and native thread tools.
+  Read-only checks found `MoSim｜微信网关运维部` by title, found
+  `MoSim｜开源项目探针` by title, and read `MoSim｜Codex 上下文维护部` by ID.
+  The context-maintenance thread shows `cwd=C:\mnt\c\Users\HP\Desktop\MoSim`,
+  so heartbeat/automation delivery there needs a target-thread cwd/visibility
+  validation before use.
+- No Codex App automation was created in this audit. The task forbids reading
+  Codex private automation state, so duplicate detection could not be completed;
+  the CoAgent ops thread must return candidate definitions and missing dedupe
+  evidence rather than create a possible duplicate.
+
+## 2026-06-06 CST - MWORKS Echo Result Adapter Smoke Passed
+
+- MWORKS Dynamics And Control Verification completed
+  `RFLY-MOSIM-MWORKS-ECHO-RESULT-ADAPTER-SMOKE-20260606-003` with return
+  packet
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-RESULT-ADAPTER-SMOKE-20260606-003.json`.
+- Evidence is under
+  `Results/mworks_echo_producer_smoke/20260606_003_result_adapter/`. It reads
+  task-002 `source=MWORKS_MCP` result-context samples and emits
+  `source=MWORKS_MCP_result_adapter_smoke` echo rows only.
+- Adapter output: 6 `mosim.ue_command_echo.v1` rows, 5 accepted MWORKS-owned
+  command rows, 1 rejected forbidden pose row, `no_pose_overwrite_status=pass`.
+  Existing contract checker and UE offline reducer fixture passed; reducer
+  states remain `quality_status=smoke_only` and
+  `accepted_as_runtime_ack=false`.
+- This is not live UE runtime ack, live MWORKS ack/downlink, closed_loop,
+  controller performance, planner_ready, FAST-LIO success, Factory trace
+  consumption, plant tracking, or parameter identification.
+
+## 2026-06-06 CST - WeChat Gateway Email Alert And Background Health Verified
+
+- User's first QQ email alert command failed because it was run from
+  `C:\Users\HP`, so Python searched for
+  `C:\Users\HP\Scripts\agent\send_gateway_email_alert.py`. Correct working
+  directory is `C:\Users\HP\Desktop\MoSim`.
+- The current Codex process did not inherit the user-level SMTP environment
+  variables set by `setx`; verification used the same runtime environment
+  injection style now configured in Windows Task Scheduler. No authorization
+  code was printed or stored in project files.
+- A real sparse email alert to `1062771286@qq.com` succeeded:
+  `Results/coagent_gateway/email/email_alert_20260606_144121.json`
+  reports `ok=true`.
+- Local health is currently healthy:
+  `python Scripts\agent\check_weixin_gateway_health.py` wrote
+  `Results/coagent_gateway/health/weixin_gateway_health_20260606_144142.json`
+  with `ok=true`, `ok_local=true`, and no real WeChat canary.
+- `python -m py_compile Scripts\agent\check_weixin_gateway_health.py
+  Scripts\agent\send_gateway_email_alert.py CoAgent\gateway\cc_connect_weixin.py`
+  passed.
+- `MoSim Weixin Gateway Local Health` is enabled with `Interval=PT15M`; manual
+  scheduled-task trigger at `2026-06-06T14:42:17+08:00` returned
+  `LastTaskResult=0` and wrote
+  `Results/coagent_gateway/health/weixin_gateway_health_20260606_144217.json`.
+- `MoSim Weixin Gateway Canary` remains enabled with `Interval=PT4H`; it was
+  not manually triggered in this round to avoid an extra real WeChat canary.
+  Its previous `LastTaskResult=3221225786` is historical and should be judged
+  again after the next scheduled low-frequency canary.
+
+## 2026-06-06 CST - MWORKS Echo Result-Adapter Task Prepared
+
+- Historical note: at the time this entry was written, UE003 and ROS2 022 were
+  still `inProgress`. Later UE003 completed as source-level static smoke and
+  ROS2 022 returned `blocked_bspline_sample_missing`; use the newer entries and
+  packets above as current state.
+- Sunray close-up visual review is already notified through WeChat. Evidence:
+  `Results/coagent_gateway/weixin_notifications.jsonl` records successful send
+  at `2026-06-06T13:44:41+08:00` for dedupe key
+  `sunray150_closeup_material_review_20260606`. Do not resend unless the user
+  asks or dedupe state is intentionally reset.
+- Prepared MWORKS follow-up task packet
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-ECHO-RESULT-ADAPTER-SMOKE-20260606-003.json`.
+  Scope: convert proven MWORKS_MCP result-context echo-status evidence from
+  task 002 into `mosim.ue_command_echo.v1` rows and validate existing
+  contract/reducer consumption. This is still result-adapter smoke only, not
+  live UE runtime ack, live MWORKS downlink, closed_loop, controller
+  performance, planner_ready, FAST-LIO success, Factory trace consumption,
+  plant tracking, or parameter identification.
+- PMO dispatched MWORKS 003 to `MoSim｜MWORKS动力学与控制验证部`
+  (`019e9999-b0d3-7682-bccd-faef08fcf1df`) via visible `send_message_to_thread`.
+  No WeChat notification was sent because this is neither manual review nor a
+  blocker.
+
+## 2026-06-06 CST - UE Console State Component Source Smoke Returned
+
+- UE003 completed in `MoSim｜UE实验控制台与场景交互部` with return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-UE-EXPERIMENT-CONSOLE-STATE-COMPONENT-SOURCE-SMOKE-20260606-003.json`.
+  Quality is `source_level_component_static_smoke_passed`.
+- Added source-level state component:
+  `UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleStateComponent.h`
+  and
+  `UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleStateComponent.cpp`.
+  It records pending rows from `mosim.ue_command.v1` request JSON and upgrades
+  accepted/rejected only from matching `mosim.ue_command_echo.v1` rows.
+- Evidence under
+  `Results/unreal_experiment_console/console_state_component_smoke_20260606_003/`
+  reports static checker `ok=true`, `sender_remains_sender_only=true`,
+  `runtime_echo_receiver_implemented=false`, `planner_ready=false`, and
+  `closed_loop_ready=false`. Targeted pytest output shows 16 passing tests.
+- PMO spot-check found no Actor pose overwrite or socket receive APIs in the
+  new component. This is not Unreal build evidence, live UE runtime ack,
+  runtime echo receiver, Blueprint/UMG binding, MWORKS runtime ack, ROS2 runtime
+  ack, planner_ready, closed_loop, controller performance, FAST-LIO success, or
+  mission success.
+
+## 2026-06-06 CST - Dead ROS2 Thread Deleted And Recovery Rule Updated
+
+- User reviewed PMO's recovery evidence for dead ROS2 thread
+  `019e9917-6181-7ec2-b3d6-4b624d6d3348` and deleted it manually. Future ROS2
+  work must use `MoSim｜ROS2感知定位与规划运行部-R2`
+  (`019e9b85-d4d8-7bf3-8afd-a65697cd3889`) only.
+- Reusable rule added to `Docs/Workflows/agent_orchestration.md`: if a visible
+  department remains readable but dispatch fails with `agent loop died
+  unexpectedly`, PMO records a blocker, notifies human intervention when
+  WeChat is available, preserves recovery through packets/ledger, and creates
+  or selects a replacement department in parallel instead of waiting on the
+  dead thread.
+- `Docs/Workflows/agent_task_ledger.md` now marks the old ROS2 thread as
+  `active-r2-old-user-deleted` and adds ready-dispatch rows for UE003 source
+  component smoke and ROS2 022 real-goal `/planning/bspline` acceptance.
+- PMO dispatched UE003 to `MoSim｜UE实验控制台与场景交互部`
+  (`019e9b24-50aa-7cd3-9e7c-4c43b224d993`) and ROS2 022 to
+  `MoSim｜ROS2感知定位与规划运行部-R2`
+  (`019e9b85-d4d8-7bf3-8afd-a65697cd3889`). Both target threads are currently
+  `inProgress`; no repeat `continue` tick has been sent.
+
+## 2026-06-06 CST - MWORKS MCP Echo State Smoke Returned
+
+- MWORKS MCP echo state smoke completed in
+  `MoSim｜MWORKS动力学与控制验证部` with return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-MCP-STATE-SMOKE-20260606-002.json`.
+  Quality is `mworks_mcp_state_smoke_passed`.
+- The department added project-owned model
+  `Models/QuadrotorExperiments/EchoMcpStateSmoke.mo` and package-order entry,
+  then used Sysplorer MCP to load `Models/QuadrotorExperiments/package.mo`,
+  pass `check_model`, simulate 0-1 s with `data=true`, read non-empty
+  `GetVarTimes` (`101` samples), and read representative echo-status variables
+  at `t=0.0/0.5/1.0`.
+- Evidence is under
+  `Results/mworks_echo_producer_smoke/20260606_002_mcp_state/`.
+  This is MWORKS_MCP state-smoke evidence only. It is not live UE runtime ack,
+  closed_loop, controller performance, planner_ready, FAST-LIO success, Factory
+  trace consumption, plant tracking, or parameter identification.
+
+## 2026-06-06 CST - UE Reducer Integration Audit Returned
+
+- UE reducer integration audit completed in
+  `MoSim｜UE实验控制台与场景交互部` with return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-UE-EXPERIMENT-CONSOLE-REDUCER-INTEGRATION-AUDIT-20260606-002.json`.
+  Quality is `source_level_integration_audit_only`.
+- The audit rejects overloading `UQuadrotorMworksUdpCommandSenderComponent`
+  or `UQuadrotorMworksUdpReceiverComponent` with command lifecycle reducer
+  state. The next UE source-level slice should add a project-owned
+  `UQuadrotorMworksExperimentConsoleStateComponent` that records pending
+  command rows and upgrades them only from matching `mosim.ue_command_echo.v1`
+  rows.
+- No UE GUI, Blueprint, UMG, asset, texture/material, or runtime C++ edit was
+  performed by the audit. No live UE/MWORKS/ROS2 runtime ack, planner_ready,
+  closed_loop, controller performance, FAST-LIO success, or mission success is
+  claimed.
+
+## 2026-06-06 CST - Echo Producer And Department Returns Integrated
+
+- MWORKS echo producer smoke completed in
+  `MoSim｜MWORKS动力学与控制验证部` with return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-PRODUCER-SMOKE-20260606-001.json`.
+  It added an offline/schema helper and test for MWORKS-owned command echo rows.
+  Quality is `mworks_echo_producer_schema_smoke_passed`, not live MWORKS ack.
+- UE echo-state smoke completed in
+  `MoSim｜UE实验控制台与场景交互部` with return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-UE-EXPERIMENT-CONSOLE-ECHO-STATE-SMOKE-20260606-001.json`.
+  Quality is `offline_reducer_smoke_passed`; pending can come from UE command
+  intent, but accepted/rejected state requires matching echo rows.
+- Sunray close-up review prep completed in
+  `MoSim｜Sunray150资产与PBR审核部` with return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-SUNRAY150-CLOSEUP-REVIEW-PREP-20260606-001.json`.
+  Manual material/texture review remains required; final material acceptance is
+  not claimed.
+- ROS2 021R is now running in the replacement R2 department. Its result is still
+  completed at the narrow input-consumption gate. Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-STABLE-SOURCE-PLANNER-INPUT-20260606-021R.json`.
+  Evidence under
+  `Results/ros2_runtime/b1_stable_source_planner_input_20260606_021R/`
+  proves real `/Odometry` and `/cloud_registered` publishers from
+  `/laser_mapping` plus `echo --once` immediately before and during bounded
+  planner startup, with planner subscriptions visible during the startup
+  window. This only clears the input surface. `/planning/bspline`,
+  PositionCommand recorder, planner_ready, closed_loop, FAST-LIO quality, local
+  map quality, controller performance, and mission success remain unclaimed.
+
+## 2026-06-06 CST - ROS2 Dispatch Surface Recovered With R2 Thread
+
+- PMO diagnosed the user-reported `Error submitting message` on the ROS2
+  department dispatch. The old thread
+  `MoSim｜ROS2感知定位与规划运行部`
+  (`019e9917-6181-7ec2-b3d6-4b624d6d3348`) remains readable, but a short
+  `send_message_to_thread` health check failed with
+  `failed to update thread settings: internal error; agent loop died unexpectedly`.
+  This is a Codex App visible-thread dispatch surface blocker, not a ROS2
+  business blocker.
+- Blocker evidence:
+  `Results/agent_packets/blockers/PMO-ROS2-VISIBLE-THREAD-DISPATCH-SURFACE-20260606-001.json`.
+- PMO created and renamed the replacement visible department
+  `MoSim｜ROS2感知定位与规划运行部-R2`
+  (`019e9b85-d4d8-7bf3-8afd-a65697cd3889`), initialized it successfully, and
+  rerouted pending task packet
+  `Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-STABLE-SOURCE-PLANNER-INPUT-20260606-021R.json`
+  to R2.
+- 2026-06-06 follow-up: PMO rechecked the old thread's latest useful turns and
+  project references. The old thread is no longer a recovery dependency; the
+  current canonical ROS2 department is R2, and historical recovery should use
+  `Results/agent_packets/`, `Results/ros2_runtime/`,
+  `Docs/Workflows/agent_task_ledger.md`, and this file. The user may delete or
+  archive old thread `019e9917-6181-7ec2-b3d6-4b624d6d3348`.
+- 021R is now dispatched to R2. The task still may only prove stable real
+  `/Odometry` and `/cloud_registered` publishers with topic info plus
+  `echo --once` before/during planner startup, then decide whether planner input
+  consumption is blocked. It must not run PositionCommand recorder, accept
+  `/planning/bspline`, publish or claim `/position_cmd`, or claim
+  planner/closed-loop readiness.
+
+## 2026-06-06 CST - UE And Sunray Departments Dispatched In Parallel
+
+- User requested coordinating other departments in parallel when tasks do not
+  conflict.
+- PMO verified both visible department threads are idle:
+  `MoSim｜UE实验控制台与场景交互部`
+  (`019e9b24-50aa-7cd3-9e7c-4c43b224d993`) and
+  `MoSim｜Sunray150资产与PBR审核部`
+  (`019e9b25-066e-7372-8152-209c2b1322a4`).
+- Dispatched UE echo-state smoke task:
+  `Results/agent_packets/RFLY-MOSIM-UE-EXPERIMENT-CONSOLE-ECHO-STATE-SMOKE-20260606-001.json`.
+  Scope: offline command pending/accepted/rejected state reducer or fixture
+  smoke based on MWORKS/ROS2 echo contracts. No UE GUI, no Blueprint/UMG runtime
+  asset edit, no live runtime ack claim.
+- Dispatched Sunray close-up review-prep task:
+  `Results/agent_packets/RFLY-MOSIM-SUNRAY150-CLOSEUP-REVIEW-PREP-20260606-001.json`.
+  Scope: review checklist/image grouping/next bounded PBR rework plan after the
+  path fix. No Blender/UE GUI, no texture/material/geometry/dynamics/extrinsic
+  edits, no final material acceptance claim.
+- The two tasks have disjoint write scopes and can run in parallel with the
+  MWORKS/ROS2 echo contract work already integrated.
+
+## 2026-06-06 CST - PMO PBR Path Fix And UE Echo Boundary
+
+- PMO continued active goal
+  `推进 MoSim P0 后续最小闭环的下一批可落地任务` with two disposable
+  read-only sub-agents:
+  `019e9b68-df76-7dd3-a451-b28e547d4485` audited the Sunray150 PBR path
+  normalization blocker, and `019e9b69-2439-7913-952b-455a0d056547` audited the
+  UE command/echo smoke boundary.
+- Fixed the Windows-native Sunray150 PBR miniloop blocker. The checker now
+  accepts WSL-equivalent `/mnt/<drive>/...` paths only after converting them
+  back through the normal project-boundary guard. The texture generator now
+  writes project-relative manifest paths with stable LF line endings.
+- Regenerated
+  `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_texture_manifest.json`;
+  it no longer contains `/mnt/c`, `C:\mnt\c`, or `C:\Users` absolute paths.
+- Added regression test
+  `Scripts/tests/test_sunray150_pbr_miniloop_paths.py` so future compatibility
+  fixes do not weaken the project path guard.
+- Validation passed:
+  `python Scripts/UE5/check_sunray150_pbr_miniloop.py`;
+  `python -m pytest Scripts/tests/test_sunray150_pbr_miniloop_paths.py -q`;
+  `python -m py_compile Scripts/UE5/check_sunray150_pbr_miniloop.py Scripts/UE5/assets/generate_sunray150_pbr_texture_set.py Scripts/tests/test_sunray150_pbr_miniloop_paths.py`;
+  `git diff --check` on the touched Sunray files.
+- UE command/echo audit boundary was reaffirmed with
+  `python Scripts/UE5/check_ue_command_sender_contract.py` and
+  `python -m pytest Scripts/tests/test_ue_command_sender_contract.py Scripts/tests/test_ue_command_echo_contract.py Scripts/tests/test_ue_command_adapter_smoke.py Scripts/tests/test_ue_command_schema_docs.py -q`.
+  Current evidence is still `source_level_static_check` plus
+  `offline_adapter_smoke`/loopback only. Do not claim live UE console runtime,
+  MWORKS/ROS2 accepted command ack, controller/planner readiness, FAST-LIO
+  success, or closed loop from this smoke.
+- Next PMO task candidate:
+  `RFLY-MOSIM-MWORKS-ROS2-ECHO-ADAPTER-CONTRACT-20260606-001`, owned jointly
+  by `MoSim｜MWORKS动力学与控制验证部` and
+  `MoSim｜ROS2感知定位与规划运行部`, to freeze or implement the authoritative
+  `mosim.ue_command_echo.v1` producer/consumer contract before enabling UE
+  controls as accepted runtime state.
+- WeChat completion notification was verified after two adapter-usage mistakes:
+  `cc_connect_weixin.py notify` requires `--packet <json>` and does not support
+  `--stdin`; custom `mosim.wechat_notification.v1` packets are rejected as
+  `unsupported packet type`. The working sparse completion packet used
+  `template_type=completion_notification`, `canonical_status=completed`, and
+  task fields in
+  `Results/coagent_gateway/packets/pmo_pbr_path_ue_echo_boundary_completed_20260606.json`;
+  the adapter returned `Message sent successfully.`.
+- PMO dispatched follow-up visible-thread contract tasks:
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-ECHO-ADAPTER-CONTRACT-20260606-001.json`
+  to `MoSim｜MWORKS动力学与控制验证部`
+  (`019e9999-b0d3-7682-bccd-faef08fcf1df`) and
+  `Results/agent_packets/RFLY-MOSIM-ROS2-ECHO-ADAPTER-CONTRACT-20260606-001.json`
+  to `MoSim｜ROS2感知定位与规划运行部`
+  (`019e9917-6181-7ec2-b3d6-4b624d6d3348`). Both departments completed
+  read-only contract return packets:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-ADAPTER-CONTRACT-20260606-001.json`
+  and
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-ECHO-ADAPTER-CONTRACT-20260606-001.json`.
+  These packets define command echo authority and rejection semantics only;
+  they do not prove runtime echo producers, live UE console acceptance,
+  planner readiness, PositionCommand, or closed loop.
+- Sunray close-up material manual review was sent through WeChat after fixing
+  the review packet status from unsupported `review_required` to allowed
+  `needs_review`. Packet:
+  `Results/coagent_gateway/packets/sunray150_closeup_material_review_20260606.json`;
+  adapter returned `Message sent successfully.`.
+
+## 2026-06-06 CST - WeChat Thread Route Clarified
+
+- User corrected the WeChat recovery route: for `ret=-2`, the ordinary inbound
+  message such as "你好" should be sent in `MoSim｜WechatCodex`
+  (`019e8358-86b4-7070-8fd6-a2b4f4d2af97`). That conversation is not the
+  gateway operations owner.
+- Gateway incidents, health failures, QR/login/context-token diagnostics, and
+  recovery requests should go to `MoSim｜微信网关运维`
+  (`019e9855-aa43-7fe2-807e-be7d4095877b`).
+- Updated `AGENTS.md`, `Docs/Index/codex_app_session_research.md`,
+  `Docs/Workflows/new_conversation_context.md`, and
+  `Docs/Workflows/debug_mcp.md` with this distinction.
+- PMO reran the gateway health check:
+  `python Scripts/agent/check_weixin_gateway_health.py` returned `ok=true`,
+  `ok_local=true`, with health record
+  `Results/coagent_gateway/health/weixin_gateway_health_20260606_132629.json`.
+- After the inbound refresh, PMO retried the sparse completion packet
+  `Results/coagent_gateway/packets/codex_native_surface_gate_pmo_completed_20260606.json`
+  once through `CoAgent/gateway/cc_connect_weixin.py notify --send`; it returned
+  `Message sent successfully.` No gateway-ops incident dispatch was needed.
+- Current working rule: for future `ret=-2`, request one ordinary inbound
+  message in `MoSim｜WechatCodex`, retry once, and only send an incident to
+  `MoSim｜微信网关运维` if the bounded retry still fails or health diagnostics
+  show a gateway/runtime problem.
+
+## 2026-06-06 CST - PMO Native Surface Gate Checker Added
+
+- PMO created an active Codex goal for landing native Codex surface selection
+  into daily MoSim dispatch practice.
+- Used two read-only disposable sub-agents:
+  `019e9b55-899f-7670-beeb-0d2151c1e521` audited task packet/schema/template/
+  dispatch-helper gaps, and `019e9b55-ca70-7291-baf6-f36a74bb278d` audited P1
+  automation/notify/goal validation entry points. Both confirmed that broad
+  CoAgent schema/runtime/transport expansion should remain gated.
+- Added read-only checker
+  `Scripts/quality/check_agent_task_native_surface_gate.py` and regression test
+  `Scripts/tests/test_agent_task_native_surface_gate.py`. New non-trivial JSON
+  task packets should pass this checker before PMO dispatch.
+- Documented the compatibility rule in
+  `Docs/Workflows/agent_orchestration.md`,
+  `Docs/Workflows/tooling_assets_governance.md`, and
+  `CoAgent/dispatch/communication_contract.md`: `native_surface_gate` may live
+  at top level or under `metadata.native_surface_gate`; required fields include
+  selected surface, selection reason, worktree decision, and delegated
+  return/blocker paths.
+- The checker intentionally rejects existing historical packets such as
+  `Results/agent_packets/RFLY-MOSIM-UE-EXPERIMENT-CONSOLE-P0-SLICE-20260606-001.json`
+  because they predate the new gate. This is expected; do not rewrite history
+  unless the packet is being reused for a new dispatch.
+- Result packet:
+  `Results/agent_packets/returns/CODEX-NATIVE-SURFACE-GATE-PMO-20260606-001.json`.
+- Validation passed:
+  `python -m pytest Scripts/tests/test_agent_task_native_surface_gate.py -q`;
+  `python -m py_compile Scripts/quality/check_agent_task_native_surface_gate.py Scripts/tests/test_agent_task_native_surface_gate.py`;
+  `git diff --check` on the touched docs/scripts.
+- Sparse WeChat completion packet
+  `Results/coagent_gateway/packets/codex_native_surface_gate_pmo_completed_20260606.json`
+  reached the Weixin layer but failed once with
+  `weixin: sendMessage: ret=-2 errcode=0`. Per gateway policy, PMO did not
+  retry in a loop. Next retry should happen only after the user sends one
+  ordinary message in the WeChat gateway chat.
+- Later correction: the ordinary refresh message belongs in
+  `MoSim｜WechatCodex` (`019e8358-86b4-7070-8fd6-a2b4f4d2af97`), not the
+  gateway ops thread. After the user-side refresh, PMO retried this same packet
+  once and the adapter returned `Message sent successfully.`
+
+## 2026-06-06 CST - Visible Department Dispatch Succeeded For UE And Sunray
+
+- PMO corrected the UE and Sunray task packets before dispatch so their
+  `target_thread` and `target_thread_id` point to the new canonical department
+  threads:
+  `MoSim｜UE实验控制台与场景交互部`
+  `019e9b24-50aa-7cd3-9e7c-4c43b224d993`, and
+  `MoSim｜Sunray150资产与PBR审核部`
+  `019e9b25-066e-7372-8152-209c2b1322a4`.
+- `send_message_to_thread` succeeded for both departments. Both visible
+  threads ran to completion and became idle again. No background CLI dispatch
+  or hidden thread workaround was used.
+- UE return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-UE-EXPERIMENT-CONSOLE-P0-SLICE-20260606-001.json`.
+  Result: completed. It defines the P0 operator console shell/contract slice
+  and confirms current evidence is source-level command intent only. No live
+  UE console, runtime MWORKS/ROS2 ack, planner readiness, or closed-loop
+  readiness is claimed.
+- Sunray/PBR return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-SUNRAY150-DAE-PBR-AUDIT-20260606-001.json`.
+  Result: completed with manual review required. Component close-up review
+  targets are carbon/standoffs/fasteners, MID-360 housing/window/connector,
+  motor/prop/guard, and front-camera/PCB/connectors/cables/battery.
+- Sunray/PBR found a real Windows-native portability issue: the texture
+  manifest stores `/mnt/c/...` absolute paths, which Windows Python resolves as
+  `C:\mnt\c\...` and triggers the project path guard in
+  `Scripts/UE5/check_sunray150_pbr_miniloop.py`. This is a path-normalization
+  blocker for the miniloop check, not proof that texture PNGs are missing.
+- Follow-up candidates: one UE schema/fixture smoke implementation task; one
+  MWORKS/ROS2 authoritative command-echo contract task; one Sunray texture
+  manifest path-normalization task; and one user manual review packet for the
+  four Sunray close-up batches.
+
+## 2026-06-06 CST - Renamed ROS2 And MWORKS Department Threads
+
+- User pointed out that the old department names ending in "集成" were awkward
+  as long-term department names.
+- PMO renamed ROS2 department thread `019e9917-6181-7ec2-b3d6-4b624d6d3348`
+  from `MoSim｜ROS2 Runtime 集成` to:
+  `MoSim｜ROS2感知定位与规划运行部`.
+- PMO renamed MWORKS department thread `019e9999-b0d3-7682-bccd-faef08fcf1df`
+  from `MoSim｜MWORKS-Control 集成` to:
+  `MoSim｜MWORKS动力学与控制验证部`.
+- These are now the canonical visible department names. Existing historical
+  task packets may still contain old target labels, but future PMO dispatch
+  prompts and recovery docs should use the new names.
+
+## 2026-06-06 CST - Recreated UE And Sunray Department Threads With Correct Names
+
+- User requested recreating the two previously deleted/problematic department
+  threads and emphasized correct naming.
+- PMO created and verified the new canonical UE department:
+  `MoSim｜UE实验控制台与场景交互部`
+  `019e9b24-50aa-7cd3-9e7c-4c43b224d993`.
+- PMO created and verified the new canonical Sunray/PBR department:
+  `MoSim｜Sunray150资产与PBR审核部`
+  `019e9b25-066e-7372-8152-209c2b1322a4`.
+- Both prompts addressed the target thread as the department itself with
+  "你就是该部门线程，请初始化自己"; neither prompt asked the target to create
+  another thread.
+- Both new departments replied with the expected one-line initialization
+  message and are idle, waiting for PMO task packets.
+- ROS2 department thread `019e9917-6181-7ec2-b3d6-4b624d6d3348` was read-only
+  verified and not modified. Its later canonical title is
+  `MoSim｜ROS2感知定位与规划运行部`.
+- Old problematic UE/Sunray threads remain archived/superseded and must not be
+  used for future dispatch.
+
+## 2026-06-06 CST - Archived Old UE And Sunray Department Threads
+
+- User requested deleting the two problematic visible department threads and
+  explicitly said not to touch the ROS2 thread.
+- PMO archived old Sunray DAE/PBR thread
+  `019e9af4-6ffc-7db0-a037-187dd3787f2e`.
+- PMO archived old UE Experiment Console thread
+  `019e9af5-3768-77b0-aa9d-3c21ea20d99d`.
+- PMO did not archive or modify ROS2 department thread
+  `019e9917-6181-7ec2-b3d6-4b624d6d3348`.
+- Updated `Docs/Workflows/agent_task_ledger.md` and
+  `Docs/Workflows/rfly_mosim_p0_10h_execution_plan.md`: UE and Sunray
+  departments now have no active canonical visible thread. Their old task
+  packets remain PMO-local references only and must not be treated as valid
+  department returns.
+- If UE or Sunray departments are recreated later, the initial prompt must say
+  "你就是该部门线程，请初始化自己"; never say "请创建线程".
+
+## 2026-06-06 CST - Visible Department Dispatch Aborted By User
+
+- PMO prepared two scoped department task packets without creating any new
+  thread:
+  `Results/agent_packets/RFLY-MOSIM-SUNRAY150-DAE-PBR-AUDIT-20260606-001.json`
+  for Sunray thread `019e9af4-6ffc-7db0-a037-187dd3787f2e`, and
+  `Results/agent_packets/RFLY-MOSIM-UE-EXPERIMENT-CONSOLE-P0-SLICE-20260606-001.json`
+  for UE thread `019e9af5-3768-77b0-aa9d-3c21ea20d99d`.
+- Both direct `send_message_to_thread` attempts failed once with Codex App
+  internal error `agent loop died unexpectedly`; `read_thread` still worked.
+  A short CLI `codex exec resume` probe to Sunray returned `SUNRAY_COMM_OK`,
+  but the formal foreground task exceeded PMO's 60s outer timeout and produced
+  an interrupted visible turn. PMO then tried hidden background CLI dispatch for
+  Sunray/UE, which proved unsafe for visible coordination: user reported the
+  Sunray thread did not show the new thread-authority constraint and the UE
+  thread was stuck, then manually terminated the attempts.
+- PMO stopped the residual `sunray_dispatch_resume` and `ue_dispatch`
+  powershell/codex processes. The ledger rows are now
+  `dispatch-aborted-by-user`. No return/blocker packet exists for either task,
+  so neither department result is accepted.
+- Updated `Docs/Workflows/agent_orchestration.md`: App forwarding failures may
+  be probed with CLI resume, but formal tasks must not be launched through
+  unattended background `codex exec resume` until a visible-delivery and
+  controlled-stop workflow is verified. If App forwarding and safe CLI dispatch
+  are unavailable, mark `dispatch-blocked-tool`/manual fallback or keep the work
+  PMO-local.
+- Updated `Docs/Workflows/rfly_mosim_p0_10h_execution_plan.md` with the
+  department communication contract: durable returns must be packet files under
+  `Results/agent_packets/returns/` or `Results/agent_packets/blockers/`; chat
+  and WeChat are notifications only.
+- Sparse WeChat blocker packet
+  `Results/coagent_gateway/packets/rfly_mosim_department_dispatch_blocked_thread_send_20260606.json`
+  reached the Weixin send layer but failed with
+  `weixin: sendMessage: ret=-2 errcode=0`. Per gateway rules, PMO did not retry
+  in a loop. If WeChat notification is needed again, the next minimal action is
+  one ordinary user message in the WeChat gateway chat, then one bounded retry.
+- Manual fallback if the user wants immediate department start: open Sunray
+  thread `019e9af4-6ffc-7db0-a037-187dd3787f2e` and paste the Sunray packet
+  path; open UE thread `019e9af5-3768-77b0-aa9d-3c21ea20d99d` and paste the UE
+  packet path. Otherwise PMO should continue the file-level audit locally in
+  the main thread instead of trying more automatic dispatch. PMO-only thread
+  creation remains in force.
+
+## 2026-06-06 CST - PMO Corrected Duplicate Department Thread Creation
+
+- PMO incorrectly initialized new visible department threads with prompts that
+  said "请创建并初始化一个线程", causing recursive department creation instead
+  of direct self-initialization.
+- Archived duplicate/intermediate threads:
+  `019e9af2-de9e-7093-ac4f-8126b2ce1272`,
+  `019e9af3-6c57-7f21-b6b9-532391b6e08b`, and
+  `019e9af4-3fb5-7b41-9b11-2195c3d4d6b1`.
+- Canonical visible reusable department thread
+  `MoSim｜UE Experiment Console 集成` is now:
+  `019e9af5-3768-77b0-aa9d-3c21ea20d99d`.
+- Canonical visible reusable department thread
+  `MoSim｜Sunray150 DAE/PBR 资产优化` is now:
+  `019e9af4-6ffc-7db0-a037-187dd3787f2e`.
+- Current thread-creation authority is PMO-only: only main PMO thread
+  `019e9868-83ea-70f0-92c5-a3a408bd78c6` may create, fork, rename, or archive
+  visible department threads unless the user explicitly changes this rule.
+  Other departments may return a charter suggestion or blocker, but must not
+  create or delegate visible-thread creation.
+- Future `create_thread` prompts must say "你就是该部门线程，请初始化自己";
+  they must not say "请创建线程" or wrap another creation request.
+- UE department received this thread-authority correction packet. Sending the
+  same correction to the Sunray department failed once with Codex App internal
+  error; the durable file-level rule above applies before the next task packet.
+- Existing `MoSim｜MWORKS动力学与控制验证部`
+  (`019e9999-b0d3-7682-bccd-faef08fcf1df`) remains the dedicated MWORKS
+  thread; no new MWORKS thread is needed now.
+- Historical note: `MoSim｜ROS2感知定位与规划运行部`
+  (`019e9917-6181-7ec2-b3d6-4b624d6d3348`) was the owner at this point in the
+  run, but it was later superseded by R2 after its send surface failed. Current
+  ROS2 work must use `MoSim｜ROS2感知定位与规划运行部-R2`
+  (`019e9b85-d4d8-7bf3-8afd-a65697cd3889`).
+- Thread creation must be done from the PMO thread using Codex App thread
+  management capability. The senior architecture thread
+  `019e0198-a041-77f1-84d0-c5524bfd4b81` can advise prompts and routing, but
+  must not create or relay thread creation.
+- Sparse WeChat notification packet
+  `Results/coagent_gateway/packets/rfly_mosim_departments_created_ue_console_sunray_pbr_20260606.json`
+  reached the Weixin send layer but failed once with
+  `weixin: sendMessage: ret=-2 errcode=0`. Do not retry in a loop; the next
+  valid action is one ordinary user message in the WeChat gateway chat, then
+  one bounded retry if notification is still needed.
+
+## 2026-06-06 CST - MWORKS 019 Attitude Feedback Bridge Passed And ROS2 021 Dispatched
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019`
+  returned completed in thread `019e9999-b0d3-7682-bccd-faef08fcf1df`.
+- Added `FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke`; it extends Iso23,
+  preserves the sampled/held display-position bridge, and changes only the
+  controller roll/pitch/yaw measurement source to sampled/held
+  `sensors1_1.AngleMea[1..3]` through `attitude_sampler/attitude_hold`.
+- Sysplorer MCP `check_model` passed, 0-2 s `SimulateModel` returned
+  `data=true`, `GetVarTimes=1001`, and reference/display/attitude bridge
+  aliases were readable at 0/1/2 s. No 6140 text appeared.
+- This is one incremental result-context bridge pass only. It is not Factory
+  trace consumption, closed_loop, controller performance, plant tracking, or
+  parameter identification evidence.
+- Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json`.
+  Probe artifacts:
+  `Results/mworks_trace_consumption/attitude_feedback_bridge_20260606_019/`.
+- PMO dispatched ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-STABLE-SOURCE-PLANNER-INPUT-20260606-021`
+  to thread `019e9917-6181-7ec2-b3d6-4b624d6d3348`.
+- 021 is a narrow retry after 020: it must keep real `/Odometry` and
+  `/cloud_registered` publishers alive and prove publisher counts plus
+  `ros2 topic echo --once` immediately before and during planner startup.
+- If either topic lacks a live publisher or echo sample before planner launch,
+  021 must write a blocker without launching planner.
+- Recorder, `/position_cmd`, `/mosim/planner/position_cmd`,
+  `/planning/bspline` acceptance, FAST-LIO `/path` conversion, fake
+  pointcloud/map, planner readiness, and closed-loop claims remain forbidden.
+- P0 remains `quality_status=smoke_only`, `planner_ready=false`, and
+  `closed_loop_ready=false`.
+- WeChat notification packet must use the adapter-whitelisted
+  `blocker_notification/manual_review_required` shape even for sparse
+  non-blocking milestones. A first 021 notification attempt with
+  `class=progress_update` was locally rejected by the adapter before Weixin
+  send; PMO corrected the packet shape and retried once.
+- Corrected sparse WeChat checkpoint packet
+  `Results/coagent_gateway/packets/rfly_mosim_p0_dispatched_ros2_021_20260606.json`
+  sent successfully through `CoAgent/gateway/cc_connect_weixin.py`.
+- PMO integrated 019 into
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json`,
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_BUNDLE_AUDIT.json`, and
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_CLOSED_LOOP_GAP_MATRIX.json`.
+  The new `mworks_attitude_feedback_bridge` gate records the Iso25 local pass
+  while keeping P0 `smoke_only`.
+- Sent sparse WeChat checkpoint packet
+  `Results/coagent_gateway/packets/rfly_mosim_p0_integrated_mworks_019_waiting_ros2_021_20260606.json`
+  successfully through the project WeChat adapter.
+
+## 2026-06-06 CST - PMO Integrated MWORKS 018 And Dispatched MWORKS 019
+
+- PMO integrated MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-FIRST-CONTROL-FEEDBACK-GROUP-20260606-018`
+  into the P0 quality chain. P0 remains `quality_status=smoke_only`,
+  `planner_ready=false`, and `closed_loop_ready=false`.
+- 018 is accepted only as blocker evidence: direct
+  `sensors1_1.AngleMea[1..3]` controller attitude feedback on top of Iso23
+  passed `check_model` but failed 0-2 s `SimulateModel data=false`, with
+  `GetVarTimes=[]` and aliases unavailable. No 6140 text was reported.
+- PMO dispatched MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019`
+  to thread `019e9999-b0d3-7682-bccd-faef08fcf1df`. It may test exactly one
+  sampled/held or first-order attitude-feedback bridge variant, must preserve
+  the Iso23 sampled/held display-position bridge, and must not retry the full
+  Factory wrapper or add actuator/motor/speedSensor/control-output reconnects.
+- Evidence/gates regenerated:
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json`,
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_BUNDLE_AUDIT.json`, and
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_CLOSED_LOOP_GAP_MATRIX.json`.
+
+## 2026-06-06 CST - MWORKS 018 Direct Attitude Feedback Boundary Found
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-FIRST-CONTROL-FEEDBACK-GROUP-20260606-018`
+  returned blocked after one allowed controller/control-feedback group.
+- Added `FactoryTraceIso24DirectAttitudeFeedbackSmoke`; it preserves the Iso23
+  sampled/held display-position bridge and changes only the controller
+  measurement path to direct `sensors1_1.AngleMea[1..3]` roll/pitch/yaw
+  feedback via inherited `RealExpression` source overrides.
+- Sysplorer MCP `check_model` passed, but 0-2 s `SimulateModel` returned
+  `data=false`; `GetVarTimes=[]` and alias probes returned `[]`. No 6140 text
+  was reported in this run.
+- First new boundary: direct `AngleMea` attitude feedback on top of Iso23
+  clears the result context. Next validation should test sampled/held or
+  first-order attitude-feedback bridge variants while preserving Iso23.
+- No full Factory retry, actuator/motor/speedSensor/control-output reconnect,
+  direct display `PosMea` reconnect, or closed-loop/Factory trace-consumption
+  claim was made.
+- Blocker packet:
+  `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-FIRST-CONTROL-FEEDBACK-GROUP-20260606-018.json`.
+  Probe artifacts:
+  `Results/mworks_trace_consumption/first_control_feedback_group_20260606_018/`.
+
+## 2026-06-06 CST - PMO Integrated 017/020 Gates And Dispatched MWORKS 018
+
+- PMO integrated MWORKS 017 and ROS2 020 into the P0 quality chain:
+  `RUN_MANIFEST.json`, `P0_BUNDLE_AUDIT.json`, and
+  `P0_CLOSED_LOOP_GAP_MATRIX.json` now keep both gates blocking while
+  preserving `quality_status=smoke_only`, `planner_ready=false`, and
+  `closed_loop_ready=false`.
+- MWORKS 017 is recorded as topology/scope evidence only:
+  sensor/display-only reconnect scope is exhausted after Iso23, so the next
+  MWORKS task must explicitly permit one controller/control-feedback reconnect
+  group. It is not new MWORKS simulation evidence.
+- ROS2 020 is recorded as a startup-surface blocker: fresh odom/cloud restore
+  passed, but planner input consumption was not accepted because the planner
+  window showed `no odom` and zero `/Odometry` and `/cloud_registered`
+  publishers.
+- PMO dispatched MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-FIRST-CONTROL-FEEDBACK-GROUP-20260606-018`
+  to thread `019e9999-b0d3-7682-bccd-faef08fcf1df`. It may add exactly one
+  controller/control-feedback reconnect group from Iso23, must preserve the
+  sampled/held display-position bridge, and must not retry the full Factory
+  wrapper or add actuator/motor reconnects.
+- WeChat notification channel is restored per user confirmation. PMO sparse
+  status packets should include origin/self thread id
+  `019e9868-83ea-70f0-92c5-a3a408bd78c6`.
+
+## 2026-06-06 CST - ROS2 020 Planner Startup Probe Blocked
+
+- ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-PLANNER-STARTUP-PROBE-20260606-020`
+  ran one bounded `runtime_disabled=false` startup-surface probe after a fresh
+  019-style restore.
+- Fresh restore succeeded and recorded current real local sensed inputs:
+  `/Odometry` 149 samples, `/cloud_registered` 148 samples over 16 s, with
+  FAST-LIO truth evaluation `status=pass`, RMSE `0.716944 m`, max error
+  `1.084927 m`, yaw RMSE `0.015175 rad`. Truth remains validation oracle only,
+  not planner input.
+- The isolated EGO planner node started and created graph endpoints, but the
+  probe is blocked: planner log stayed in FSM `INIT` and repeatedly printed
+  `no odom.` / `wait for goal.`, while during-window topic info showed planner
+  subscriptions for `/Odometry` and `/cloud_registered` but publisher count
+  `0` for both topics.
+- `/planning/bspline` appeared only as an unaccepted startup-surface topic-list
+  observation; it is not trajectory/planner evidence. `/position_cmd` and
+  `/mosim/planner/position_cmd` remained absent. No PositionCommand recorder
+  was run.
+- Final cleanup evidence shows only rosbridge/rosapi graph entries and no
+  matching planner/FAST-LIO/replay processes. Blocker packet:
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-PLANNER-STARTUP-PROBE-20260606-020.json`.
+  Evidence directory:
+  `Results/ros2_runtime/b1_planner_startup_probe_20260606_020/`.
+
+## 2026-06-06 CST - MWORKS 017 Sensor/Display Scope Exhausted
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-NEXT-SENSOR-DISPLAY-GROUP-20260606-017`
+  returned blocked without creating a new model.
+- Topology comparison from Iso23 to the target Factory trace wrapper shows the
+  only `navigationDisplay` sensor/display connections are already represented:
+  inherited `planningReference.position_command -> reference_position`, and
+  Iso23 sampled/held `sensors1_1.PosMea -> actual_position`.
+- The remaining differences are controller/control-feedback or actuator paths,
+  which 017 explicitly forbids. Creating an artificial sensor/display group
+  would not correspond to the target wrapper, and full Factory retry remains
+  forbidden.
+- No new MWORKS simulation evidence is claimed for 017. Iso23 remains the last
+  passing MCP simulation baseline from 016.
+- Blocker packet:
+  `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-NEXT-SENSOR-DISPLAY-GROUP-20260606-017.json`.
+  Topology artifact:
+  `Results/mworks_trace_consumption/next_sensor_display_group_20260606_017/`.
+
+## 2026-06-06 CST - PMO Dispatched ROS2 020 And MWORKS 017
+
+- PMO dispatched two follow-up P0 gates after integrating ROS2 019 and MWORKS
+  016. P0 remains `quality_status=smoke_only`, `planner_ready=false`, and
+  `closed_loop_ready=false`.
+- ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-PLANNER-STARTUP-PROBE-20260606-020`
+  historically went to thread `019e9917-6181-7ec2-b3d6-4b624d6d3348`.
+  That thread is now superseded by R2. The task itself remained bounded:
+  `runtime_disabled=false` startup-surface probe after a fresh 019-style
+  `/Odometry` and `/cloud_registered` restore. PositionCommand recorder,
+  `/position_cmd` claims, `/planning/bspline` acceptance, fake pointcloud/map,
+  and planner/closed-loop claims remain forbidden.
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-NEXT-SENSOR-DISPLAY-GROUP-20260606-017`
+  goes to thread `019e9999-b0d3-7682-bccd-faef08fcf1df`. It must use Iso23 as
+  the passing baseline and add exactly one remaining sensor/display reconnect
+  group before any full Factory retry.
+- WeChat local API was repaired by ops, but the last business notification
+  reached Weixin and returned `ret=-2`; PMO will not retry until the user sends
+  one normal gateway-chat message, then retry once with origin thread id
+  `019e9868-83ea-70f0-92c5-a3a408bd78c6`.
+
+## 2026-06-06 CST - PMO Integrated MWORKS 016 And ROS2 019 Into P0 Gates
+
+- PMO integrated MWORKS 016 and ROS2 019 into the P0 generation chain:
+  `RUN_MANIFEST.json`, `P0_BUNDLE_AUDIT.json`,
+  `P0_CLOSED_LOOP_GAP_MATRIX.json`, and sparse status packet
+  `Results/coagent_gateway/packets/rfly_mosim_p0_sparse_status_20260606.json`.
+- Current P0 remains `quality_status=smoke_only`, `planner_ready=false`, and
+  `closed_loop_ready=false`.
+- MWORKS 016 is accepted only as narrow Iso23 display-position bridge evidence:
+  sampled/held `PosMea` restores result context and removes 6140 for
+  `navigationDisplay.actual_position`; it is not Factory trace consumption.
+- ROS2 019 is accepted only as odom/cloud input-source readiness:
+  `/Odometry=93` and `/cloud_registered=92` over 10 s with primary truth
+  evaluation pass. It permits a later separate bounded
+  `runtime_disabled=false` planner startup probe after a fresh restore, but it
+  is not planner runtime, PositionCommand, recorder, or closed-loop evidence.
+- Regenerated artifacts and checks:
+  `python Scripts\quality\build_p0_slice_run_manifest.py --validate`,
+  `python Scripts\quality\check_p0_run_bundle.py ...`,
+  `python Scripts\quality\summarize_p0_closed_loop_gap_matrix.py`,
+  `python Scripts\quality\build_p0_sparse_status_packet.py`,
+  `python -m py_compile ...`, focused P0 pytest, JSON parse, and
+  `git diff --check` all passed.
+- WeChat ops restored the local API socket, but the last business send reached
+  Weixin and returned `ret=-2`; do not retry P0 notification until the user
+  sends one normal message in the gateway chat, then retry once with PMO thread
+  id `019e9868-83ea-70f0-92c5-a3a408bd78c6`.
+
+## 2026-06-06 CST - ROS2 019 Odom/Cloud Restore Completed
+
+- ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-ODOM-CLOUD-RESTORE-20260606-019`
+  completed the odom/cloud input restore gate for later planner startup.
+- Bounded Gate B restore via
+  `Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh` produced current
+  FAST-LIO runtime outputs under
+  `Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/current_restore_live/`.
+- Primary current recording: `/Odometry=93`, `/cloud_registered=92`,
+  `/path=9` over 10 s; estimated odom/cloud rates are about 9 Hz. Livox/IMU
+  input probe passed with Livox CustomMsg at 9.14666 Hz and IMU at 184.332 Hz.
+- Truth evaluation for the primary 10 s restore passed with position RMSE
+  `0.305369 m`, max position error `0.519524 m`, and yaw RMSE
+  `0.013956 rad`. Truth remains a validation oracle only, not planner input.
+- This proves only that real local sensed `/Odometry` and `/cloud_registered`
+  can be restored for a later separate `runtime_disabled=false` planner
+  startup probe. It is not planner runtime, `/planning/bspline`,
+  PositionCommand, recorder, or closed-loop evidence.
+- Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-ODOM-CLOUD-RESTORE-20260606-019.json`.
+  Evidence artifacts:
+  `Results/ros2_runtime/b1_odom_cloud_restore_20260606_019/`.
+
+## 2026-06-06 CST - MWORKS 016 Position Bridge Probe Passed
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016`
+  completed as a display-position bridge/result-context probe only.
+- Added `FactoryTraceIso23PositionSampleHoldBridgeSmoke` under
+  `Models/QuadrotorExperiments/`; it extends the passing Iso21 baseline and
+  changes only the inherited `actual_position` source to sampled/held
+  `sensors1_1.PosMea[1..3]` before `navigationDisplay.actual_position`.
+- Sysplorer MCP load/check passed, 0-2 s `SimulateModel` returned
+  `data=true`, `GetVarTimes=1001`, and display actual/reference/bridge aliases
+  were readable at t=0, t=1, and t=2. Error 6140 was removed for this narrow
+  bridge.
+- The 015 direct vector reconnect remains rejected; it likely overconstrained
+  the inherited Factory-lite `actual_position` input by adding a second source.
+- This is not closed-loop, Factory trace consumption, controller performance,
+  plant tracking, or parameter identification evidence. No full Factory wrapper
+  retry was attempted and no official baseline was edited.
+- Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json`.
+  Probe artifacts:
+  `Results/mworks_trace_consumption/position_bridge_20260606_016/`.
+
+## 2026-06-06 CST - PMO Dispatched MWORKS 016 And ROS2 019
+
+- PMO dispatched the next two P0 gates after integrating ROS2 018 and MWORKS
+  015 blockers.
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016`
+  goes to thread `019e9999-b0d3-7682-bccd-faef08fcf1df`. It may only test an
+  Iso23 sampled/held or RealExpression bridge between `sensors1_1.PosMea` and
+  `navigationDisplay.actual_position`.
+- ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-ODOM-CLOUD-RESTORE-20260606-019`
+  historically went to thread `019e9917-6181-7ec2-b3d6-4b624d6d3348`.
+  That thread is now superseded by R2. The task itself only restored and proved
+  live real `/Odometry` plus `/cloud_registered` input readiness.
+- Both tasks preserve the current P0 boundary: no full Factory retry first, no
+  PositionCommand recorder, no `runtime_disabled=false` planner startup in 019,
+  no planner/closed_loop/Factory trace-consumption claim.
+- WeChat business notification is still not retried because the last business
+  send reached Weixin and returned `ret=-2`; wait for one normal user message in
+  the gateway chat before a single bounded retry.
+
+## 2026-06-06 CST - PMO Integrated ROS2 018 And MWORKS 015 Blockers
+
+- PMO integrated ROS2 018 and MWORKS 015 into the P0 generation chain:
+  `RUN_MANIFEST.json`, `P0_BUNDLE_AUDIT.json`,
+  `P0_CLOSED_LOOP_GAP_MATRIX.json`, and sparse status packet
+  `Results/coagent_gateway/packets/rfly_mosim_p0_sparse_status_20260606.json`.
+- P0 remains `quality_status=smoke_only`, `planner_ready=false`, and
+  `closed_loop_ready=false`.
+- Current ROS2 blocker: live graph lacks real `/Odometry` and
+  `/cloud_registered`, so `runtime_disabled=false` planner startup is not
+  cleared.
+- Current MWORKS blocker: direct `sensors1_1.PosMea` to
+  `navigationDisplay.actual_position` reconnect passes `check_model` but fails
+  simulation with error 6140 and empty result context.
+- WeChat notification remains degraded after prior `ret=-2`; do not retry
+  until the user sends one normal message in the gateway chat.
+
+## 2026-06-06 CST - MWORKS 015 Sensor-Bus Reconnect Blocked
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-SENSOR-BUS-RECONNECT-20260606-015`
+  returned a blocker after one narrow reconnect probe from Iso21.
+- Added `FactoryTraceIso22SensorDisplayReconnectSmoke` under
+  `Models/QuadrotorExperiments/`; it extends the passing Iso21 baseline and
+  adds only `sensors1_1.PosMea -> navigationDisplay.actual_position` plus
+  display actual/reference aliases.
+- Sysplorer MCP dependency load and `check_model` passed, but 0-2 s
+  `SimulateModel` returned `data=false` with error 6140 redundant Real
+  equations. `GetVarTimes` returned 0 samples and alias probes returned no
+  values.
+- First new boundary is direct plant sensor position reconnect into
+  `navigationDisplay.actual_position`. Recommended next validation is an Iso23
+  RealExpression or sampled/held bridge for that display actual-position path.
+- This is not closed-loop, Factory trace consumption, controller performance,
+  plant tracking, or parameter identification evidence. No full Factory wrapper
+  retry was attempted and no official baseline was edited.
+- Blocker packet:
+  `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-BUS-RECONNECT-20260606-015.json`.
+  Probe artifacts:
+  `Results/mworks_trace_consumption/sensor_bus_reconnect_20260606_015/`.
+
+## 2026-06-06 CST - ROS2 018 Real Planner Input Gate Blocked
+
+- ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-PLANNER-INPUT-GATE-20260606-018`
+  returned blocked after a bounded WSL ROS2 live-graph probe.
+- Current live topics are only `/client_count`, `/connected_clients`,
+  `/parameter_events`, and `/rosout`; visible nodes are rosbridge/rosapi
+  surfaces.
+- Required real planner inputs are absent now: `/Odometry` is unknown and
+  `/cloud_registered` is unknown, so no type/rate evidence can be recorded for
+  the needed odom/cloud pair.
+- The isolated `ego_planner` launch/config/executable surface exists, but
+  `runtime_disabled=false` would initialize `EGOReplanFSM`, create timers,
+  subscribe to `/odom_world`, and create `/planning/bspline` publishers. It is
+  not safe to attempt until real local sensed `/Odometry` plus
+  `/cloud_registered` are restored and measured.
+- No PositionCommand recorder ran, no `/position_cmd` or
+  `/mosim/planner/position_cmd` was published, no `/planning/bspline` evidence
+  is claimed, and P0 remains `smoke_only` with `planner_ready=false` and
+  `closed_loop_ready=false`.
+- Blocker packet:
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-PLANNER-INPUT-GATE-20260606-018.json`.
+  Probe artifacts:
+  `Results/ros2_runtime/b1_real_planner_input_gate_20260606_018/`.
+
+## 2026-06-06 CST - PMO Dispatched ROS2 018 And MWORKS 015
+
+- PMO dispatched two next-gate tasks after ROS2 017:
+  - ROS2 Runtime task
+    `RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-PLANNER-INPUT-GATE-20260606-018`
+    to thread `019e9917-6181-7ec2-b3d6-4b624d6d3348`.
+  - MWORKS-Control task
+    `RFLY-MOSIM-MWORKS-CONTROL-SENSOR-BUS-RECONNECT-20260606-015`
+    to thread `019e9999-b0d3-7682-bccd-faef08fcf1df`.
+- Task packets are:
+  `Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-PLANNER-INPUT-GATE-20260606-018.json`
+  and
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-BUS-RECONNECT-20260606-015.json`.
+- 018 may only check real planner runtime input readiness from current ROS2
+  topics such as `/Odometry` and `/cloud_registered`; it must not run the
+  PositionCommand recorder or claim `/planning/bspline`, planner, or
+  closed-loop evidence.
+- 015 may only continue from the passing Iso21 rate-alias baseline with one
+  minimal sensor-bus/component reconnect probe; it must not retry the full
+  Factory wrapper first, edit official baseline, change parameters, or claim
+  Factory trace consumption/controller performance.
+- P0 remains `quality_status=smoke_only`, `planner_ready=false`, and
+  `closed_loop_ready=false` until both real planner runtime and MWORKS
+  same-trace consumption pass their own gates.
+
+## 2026-06-06 CST - ROS2 017 Runtime-Disabled Smoke Integrated
+
+- PMO directly ran the bounded B1 runtime-disabled smoke for the guarded
+  `ego_planner runtime_disabled_preflight.launch.py` artifact from 016.
+- Evidence:
+  `Results/ros2_runtime/b1_runtime_disabled_smoke_20260606_017/`.
+  Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-RUNTIME-DISABLED-SMOKE-20260606-017.json`.
+- The launch exited with code 0 and logged
+  `runtime_disabled=true; skipping EGOReplanFSM init and exiting without creating planner publishers/timers.`
+  Topic lists before and after contained only `/client_count`,
+  `/connected_clients`, `/parameter_events`, and `/rosout`.
+- No planner runtime was accepted, no recorder was run, no `/position_cmd` or
+  `/planning/bspline` evidence was produced, and no closed-loop claim is made.
+- Regenerated `RUN_MANIFEST.json`, `P0_BUNDLE_AUDIT.json`,
+  `P0_CLOSED_LOOP_GAP_MATRIX.json`, and sparse status packet. P0 remains
+  `quality_status=smoke_only`; `planner_ready=false`; `closed_loop_ready=false`.
+- Next gate is a separate real planner runtime input gate only after real local
+  sensed `/Odometry` plus `/cloud_registered` are present. Recorder,
+  PositionCommand evidence, and MWORKS same-trace consumption remain blocked.
+- WeChat still must not be retried until the user sends one normal text message
+  in `MoSim｜微信通知网关`; prior outbound send reached Weixin and returned
+  `ret=-2`.
+
+## 2026-06-06 CST - PMO Integrated MWORKS 014
+
+- PMO consumed
+  `RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014`
+  into the P0 manifest/audit/gap/status flow after its return packet landed.
+- 014 is `quality_status=rate_feedback_isolation_probe_passed`, but it is only
+  rate-alias/result-context evidence. The current AWFF controller has no
+  external `roll_rate/pitch_rate/yaw_rate` inports, so this is not an external
+  gyro/rate-feedback controller claim and not controller performance evidence.
+- Regenerated `RUN_MANIFEST.json`, `P0_BUNDLE_AUDIT.json`,
+  `P0_CLOSED_LOOP_GAP_MATRIX.json`, and sparse status packet. P0 remains
+  `quality_status=smoke_only`; `planner_ready=false`; `closed_loop_ready=false`.
+- Current next packet to consume is only ROS2 016 runtime-disabled
+  launch/config return or blocker:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-RUNTIME-DISABLED-LAUNCH-CONFIG-20260606-016.json`.
+- WeChat still must not be retried until the user sends one normal text message
+  in `MoSim｜微信通知网关`.
+
+## 2026-06-06 CST - Rate Feedback Isolation Probe Passed
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014`
+  completed as a rate alias/result-context isolation probe only.
+- Added `FactoryTraceIso21ControllerRateAliasSmoke` under
+  `Models/QuadrotorExperiments/`; it extends the passing Iso20 baseline and
+  exposes project-owned attitude-derived rate aliases plus controller internal
+  `roll_rate/pitch_rate/yaw_rate` and acceleration probes.
+- The current AWFF controller surface has no external
+  `roll_rate/pitch_rate/yaw_rate` inports, so this did not wire a true
+  external gyro/rate signal.
+- Iso21 passed `check_model`, simulated 0-2 s through Sysplorer MCP with
+  `data=true`, returned `GetVarTimes=1001`, preserved nonzero reference
+  aliases, and exposed nonzero rate aliases. 6140 remained absent.
+- This is not closed-loop, Factory trace consumption, external rate-feedback
+  controller evidence, controller performance, plant tracking, or parameter
+  identification evidence.
+- Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014.json`.
+  Probe artifacts:
+  `Results/mworks_trace_consumption/rate_feedback_isolation_20260606_014/`.
+
+## 2026-06-06 CST - ROS2 016 Runtime-Disabled Launch Config Completed
+
+- ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-RUNTIME-DISABLED-LAUNCH-CONFIG-20260606-016`
+  completed as a guarded runtime-disabled launch/config artifact only.
+- Added isolated `runtime_disabled_preflight.launch.py` and
+  `runtime_disabled_preflight.yaml` under the actual isolated
+  `plan_manage` package, whose CMake project installs as `ego_planner`.
+- Added a `runtime_disabled` guard to `ego_planner_node_preflight`; when true,
+  it exits before initializing `EGOReplanFSM`, so planner publishers, timers,
+  and subscriptions are not created.
+- Static validation passed: launch `py_compile`, YAML text gate, guard/remap
+  scans, and bounded colcon build/install. Installed artifacts are listed in
+  `Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/artifact_inventory_final.json`.
+- No planner runtime was launched, no recorder was run, no `/position_cmd` was
+  published, and no `/planning/bspline` runtime evidence or closed-loop claim
+  is made.
+- Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-RUNTIME-DISABLED-LAUNCH-CONFIG-20260606-016.json`.
+  Config artifacts:
+  `Results/ros2_runtime/b1_runtime_disabled_launch_config_20260606_016/`.
+- WeChat remains gated by the prior `weixin: sendMessage: ret=-2` result. Do
+  not retry until the user sends one normal text message in
+  `MoSim｜微信通知网关`.
+
+## 2026-06-06 CST - Yaw Attitude Decoupling Probe Passed
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-YAW-RATE-DECOUPLING-20260606-013`
+  completed as a yaw attitude decoupling/result-context probe only.
+- Added `FactoryTraceIso20RollPitchYawEstimatorSmoke` under
+  `Models/QuadrotorExperiments/`; it keeps Iso19 roll+pitch extraction and
+  adds only yaw `sensors1_1.AngleMea[3]` through a project-owned first-order
+  `yaw_est_state` before `controller3_2.yaw_mea`.
+- Iso20 passed `check_model`, simulated 0-2 s through Sysplorer MCP with
+  `data=true`, returned `GetVarTimes=1001`, preserved nonzero
+  `x_ref/y_ref/z_ref/yaw_ref` aliases, and exposed yaw estimator/controller
+  input aliases. 6140 remained absent.
+- Rate fallback was not run because yaw attitude extraction passed first.
+  Unknowns remain rate feedback, full sensor bus, full Factory wrapper,
+  yaw wrapping/frame semantics, and long-horizon behavior.
+- This is not closed-loop, Factory trace consumption, controller performance,
+  plant tracking, or parameter identification evidence.
+- Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-YAW-RATE-DECOUPLING-20260606-013.json`.
+  Probe artifacts:
+  `Results/mworks_trace_consumption/yaw_rate_decoupling_20260606_013/`.
+
+## 2026-06-06 CST - ROS2 015 Runtime-Disabled Launch Audit Completed
+
+- ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-RUNTIME-DISABLED-LAUNCH-AUDIT-20260606-015`
+  completed as a static launch/parameter/remap audit only.
+- No planner runtime was launched, no recorder was run, no `/position_cmd` was
+  published, and no `/planning/bspline` runtime evidence is claimed.
+- The audit confirms 014 exposed buildable `ego_planner_node_preflight`,
+  `EGOReplanFSM`, and `EGOPlannerManager` surfaces, but there is still no
+  direct ROS2 `.launch.py`; the legacy EGO launch XML uses ROS1 slash-style
+  parameter names and must be translated to ROS2 dotted parameter names.
+- Reserved real input contract remains `/odom_world:=/Odometry`,
+  `/grid_map/odom:=/Odometry`, and `/grid_map/cloud:=/cloud_registered`.
+  This is a local sensed input contract only; no fake map/cloud or UE global
+  truth planner input is allowed.
+- Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-RUNTIME-DISABLED-LAUNCH-AUDIT-20260606-015.json`.
+  Audit artifacts:
+  `Results/ros2_runtime/b1_runtime_disabled_launch_audit_20260606_015/`.
+
+## 2026-06-06 CST - WeChat Gateway Maintenance Gap Fixed
+
+- User reported WeChat was broken again. Diagnosis showed two separate
+  failures. First, the 07:21 scheduled canary reached Weixin but failed with
+  `weixin: sendMessage: ret=-2 errcode=0`; this is a Weixin/iLink outbound
+  context problem and should not trigger a cc-connect runtime restart. Second,
+  the adapter then restarted cc-connect for `ret=-2`, hit a stale instance lock,
+  and left `api.sock` present but not connectable.
+- Windows Task Scheduler evidence at 09:01 CST:
+  `MoSim Weixin Gateway Local Health` last ran at 08:51 with
+  `LastTaskResult=2`; `MoSim Weixin Gateway Canary` last ran at 07:21 with
+  `LastTaskResult=0` even though the canary send failed and wrote recovery
+  packets. This exposed the maintenance gap: local health detected failure but
+  did not self-recover the cc-connect API socket.
+- Fixed `CoAgent/gateway/cc_connect_weixin.py` so only
+  `internal_api_unavailable` and `timeout` trigger a bounded cc-connect
+  restart/retry. `weixin_ret_minus_2`, `missing_context_token`, and
+  `no_active_session` no longer restart the runtime; they require the documented
+  WeChat context/session recovery path instead.
+- Fixed `Scripts/agent/check_weixin_gateway_health.py` so local `api_socket`
+  failure performs one bounded local recovery: clear stale lock/socket when no
+  live process owns the lock, start cc-connect with
+  `config-wsl-runtime.toml`, and wait for a real Unix socket connect. The same
+  Task Scheduler local-health command can now restore stale API socket state
+  without relying on an open Codex conversation.
+- Validation after repair:
+  `python Scripts\agent\check_weixin_gateway_health.py` wrote
+  `Results/coagent_gateway/health/weixin_gateway_health_20260606_090820.json`
+  with local `ok=true`; `python -m py_compile
+  Scripts\agent\check_weixin_gateway_health.py CoAgent\gateway\cc_connect_weixin.py`
+  passed; WSL shows cc-connect PID `51293` listening on
+  `/home/linux/.cache/mosim/coagent/cc-connect-weixin/data/run/api.sock`.
+- A single explicit canary at 09:07 still failed at Weixin with `ret=-2`:
+  `Results/coagent_gateway/health/weixin_gateway_health_20260606_090718.json`.
+  Minimal user action is to send one ordinary text message in the
+  `MoSim｜微信通知网关` WeChat chat, then retry one canary. Do not restart
+  cc-connect or loop sends for `ret=-2`.
+- After the user sent one ordinary WeChat message, exactly one retry canary
+  passed at 09:37 CST:
+  `Results/coagent_gateway/health/weixin_gateway_health_20260606_093706.json`.
+  The adapter returned `Message sent successfully.` This confirms the shared
+  outbound WeChat notification path was restored after the Weixin/iLink context
+  refresh.
+- Follow-up hardening for offline operators: `Scripts/agent/check_weixin_gateway_health.py`
+  now writes a separate end-to-end canary status file
+  `Results/coagent_gateway/health/gateway_outbound_latest.json`, and writes
+  `gateway_outbound_unhealthy_latest.json` when a real canary fails. Local
+  health snapshots no longer erase the last outbound-canary state. When
+  `--send-canary` fails, the script exits nonzero so the
+  `MoSim Weixin Gateway Canary` scheduled task can surface the failure via
+  `LastTaskResult` while keeping the routine frequency at 4 hours.
+- Validation:
+  `python Scripts\agent\check_weixin_gateway_health.py --send-canary --timeout 30`
+  wrote `Results/coagent_gateway/health/weixin_gateway_health_20260606_093932.json`
+  and `gateway_outbound_latest.json` with `status=healthy` and
+  `Message sent successfully.` Local health remained healthy with cc-connect
+  PID `51293` listening on `api.sock`.
+- Added QQ email fallback scaffolding. SMTP network probes to `smtp.qq.com`
+  passed on ports `465` and `587`; Python `smtplib` EHLO/STARTTLS smoke also
+  passed. New script:
+  `Scripts/agent/send_gateway_email_alert.py`. It sends sparse gateway alerts
+  to `1062771286@qq.com` by default and reads SMTP credentials only from
+  environment variables, never from project files or chat:
+  `MOSIM_ALERT_EMAIL_FROM`, `MOSIM_ALERT_EMAIL_PASSWORD`, optional
+  `MOSIM_ALERT_EMAIL_TO`, `MOSIM_ALERT_SMTP_HOST`, and
+  `MOSIM_ALERT_SMTP_PORT`.
+- `Scripts/agent/check_weixin_gateway_health.py` now attempts this email
+  fallback on local or outbound gateway failure. Without SMTP credentials it
+  records `missing_config` under `Results/coagent_gateway/email/` instead of
+  failing silently. Validation:
+  `python Scripts\agent\send_gateway_email_alert.py --status-json
+  Results\coagent_gateway\health\gateway_outbound_latest.json --cooldown-minutes 0`
+  wrote `Results/coagent_gateway/email/email_alert_20260606_094620.json` with
+  missing `MOSIM_ALERT_EMAIL_FROM` and `MOSIM_ALERT_EMAIL_PASSWORD`;
+  `python -m py_compile Scripts\agent\check_weixin_gateway_health.py
+  Scripts\agent\send_gateway_email_alert.py CoAgent\gateway\cc_connect_weixin.py`
+  passed. Real email send remains blocked until the user configures a QQ SMTP
+  authorization code locally.
+
+## 2026-06-06 CST - PMO Integrated MWORKS 012 And ROS2 014
+
+- PMO consumed MWORKS 012 pitch-decoupling return and ROS2 014
+  plan_manage link-preflight return into the P0 manifest/audit/gap/status
+  flow.
+- P0 remains `quality_status=smoke_only`; 012 is only a roll+pitch
+  result-context probe and 014 is only compile/link preflight. Neither is
+  planner runtime, `/position_cmd`, `/planning/bspline` runtime evidence,
+  Factory trace consumption, controller performance, or closed-loop evidence.
+- Dispatched next bounded department tasks:
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-YAW-RATE-DECOUPLING-20260606-013.json`
+  and
+  `Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-RUNTIME-DISABLED-LAUNCH-AUDIT-20260606-015.json`.
+- Current next packets to consume are MWORKS 013 yaw/rate decoupling and ROS2
+  015 runtime-disabled launch/static audit. No WeChat retry was attempted.
+- WeChat adapter send attempt for
+  `Results/coagent_gateway/packets/rfly_mosim_p0_sparse_status_20260606.json`
+  was rejected before transport with `unsupported packet type`; no direct
+  `cc-connect send` fallback was used.
+- Follow-up repair changed the sparse status packet to the whitelisted
+  `blocker_notification/manual_review_required` shape. Dry-run passed. A first
+  live attempt with the wrong project argument failed as `project "MoSim" not
+  found`; retrying with the adapter default project reached Weixin and returned
+  `weixin: sendMessage: ret=-2`. Per gateway rule, do not retry again until the
+  user sends one normal text message in the `MoSim｜微信通知网关` WeChat chat.
+
+## 2026-06-06 CST - Pitch Decoupling Probe Passed
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-PITCH-DECOUPLING-20260606-012`
+  completed as a pitch decoupling/result-context probe only.
+- Added `FactoryTraceIso19RollPitchEstimatorSmoke` under
+  `Models/QuadrotorExperiments/`; it keeps Iso18 roll extraction and adds only
+  pitch `sensors1_1.AngleMea[2]` through a project-owned first-order
+  `pitch_est_state` before `controller3_2.pitch_mea`.
+- Iso19 passed `check_model`, simulated 0-2 s through Sysplorer MCP with
+  `data=true`, returned `GetVarTimes=1001`, preserved nonzero
+  `x_ref/y_ref/z_ref/yaw_ref` aliases, and exposed roll/pitch estimator and
+  controller input aliases. 6140 remained absent.
+- This confirms the Iso18 project-owned extraction pattern scales from
+  roll-only to roll+pitch result-context stability. It is not closed-loop,
+  Factory trace consumption, controller performance, plant tracking, or
+  parameter identification evidence.
+- Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-PITCH-DECOUPLING-20260606-012.json`.
+  Probe artifacts:
+  `Results/mworks_trace_consumption/pitch_decoupling_20260606_012/`.
+
+## 2026-06-06 CST - PMO Integrated MWORKS 011 And Dispatched 012
+
+- PMO consumed
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json`
+  into the P0 manifest/audit/gap-matrix flow.
+- Current P0 state remains `quality_status=smoke_only`; 011 is a
+  result-context decoupling probe, not Factory trace consumption or
+  closed-loop evidence.
+- Dispatched next MWORKS-Control task packet:
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-PITCH-DECOUPLING-20260606-012.json`.
+  Objective: add only pitch extraction using the Iso18 project-owned
+  first-order extraction pattern before any full Factory retry.
+
+## 2026-06-06 CST - Attitude Decoupling Probe Restored Result Context
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011`
+  completed as an attitude dependency decoupling probe only.
+- Added `FactoryTraceIso17SampleHoldAngleSmoke` and
+  `FactoryTraceIso18ProjectAttitudeEstimatorSmoke` under
+  `Models/QuadrotorExperiments/`.
+- Iso17 sampled/held `sensors1_1.AngleMea[1]` before
+  `controller3_2.roll_mea`; Iso18 used a project-owned first-order
+  `roll_est_state` extraction before `roll_mea`.
+- Both probes passed `check_model`, simulated 0-2 s through Sysplorer MCP with
+  `data=true`, returned `GetVarTimes=1001`, preserved nonzero
+  `x_ref/y_ref/z_ref/yaw_ref` aliases, and kept 6140 absent.
+- This confirms the `AbsoluteAngles/AngleMea` dependency path can be decoupled
+  to restore result context. It is not a closed-loop, Factory trace
+  consumption, controller performance, plant tracking, or parameter
+  identification claim.
+- Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json`.
+  Probe artifacts:
+  `Results/mworks_trace_consumption/attitude_decoupling_20260606_011/`.
+
+## 2026-06-06 CST - Sparse PMO Status Packet Added
+
+- Added `Scripts/quality/build_p0_sparse_status_packet.py` and
+  `Scripts/tests/test_p0_sparse_status_packet.py`.
+- Generated
+  `Results/coagent_gateway/packets/rfly_mosim_p0_sparse_status_20260606.json`.
+- The packet records the current P0 state as waiting for MWORKS 011 and ROS2
+  014 department returns, with `closed_loop_ready=false`,
+  `planner_ready=false`, and no WeChat send attempt.
+- WeChat retry remains gated by a normal user message if outbound send later
+  reaches `weixin: sendMessage: ret=-2`; do not retry in a loop.
+
+## 2026-06-06 CST - P0 Closed Loop Gap Matrix Added
+
+- Added `Scripts/quality/summarize_p0_closed_loop_gap_matrix.py` and
+  `Scripts/tests/test_p0_closed_loop_gap_matrix.py`.
+- Generated
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_CLOSED_LOOP_GAP_MATRIX.json`
+  from the current `RUN_MANIFEST.json` and `P0_BUNDLE_AUDIT.json`.
+- The gap matrix explicitly records `closed_loop_ready=false`,
+  `planner_ready=false`, `quality_status=smoke_only`, active blocking gates for
+  MWORKS same-trace consumption, MWORKS attitude decoupling, ROS2 real planner
+  runtime, ROS2 planner dependency surfaces, and UE runtime command ack.
+- Next packets to consume are MWORKS 011 attitude decoupling and ROS2 014
+  plan_manage link preflight. This is an anti-overclaim artifact, not a new
+  simulation run.
+
+## 2026-06-06 CST - PMO Integrated ROS2 013 Into P0 Bundle
+
+- PMO consumed
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-TRAJ-QUADMSGS-PORT-20260606-013.json`
+  into `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json`
+  and `P0_BUNDLE_AUDIT.json`.
+- 013 is `build_surface_only`: isolated `quadrotor_msgs` and `traj_utils`
+  now build/install in the ROS2 Humble preflight workspace, but no planner
+  runtime, `/planning/bspline`, `/position_cmd`, runtime recorder, fake map, or
+  UE truth shortcut is claimed.
+- Current P0 bundle still passes audit with `quality_status=smoke_only` and no
+  `planner` / `closed_loop` claim.
+- Dispatched next ROS2 Runtime task packet:
+  `Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-PLANMANAGE-LINK-PREFLIGHT-20260606-014.json`.
+  Objective: full `plan_manage` / `EGOPlannerManager` / `EGOReplanFSM` link
+  preflight only, still no runtime planner or recorder.
+
+## 2026-06-06 CST - PMO Integrated MWORKS 010 Into P0 Bundle
+
+- PMO consumed
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json`
+  into `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json`
+  and `P0_BUNDLE_AUDIT.json`.
+- The P0 bundle audit now checks the 010 return packet and artifacts:
+  constant/table attitude inputs pass, while `AngleMea`-dependent
+  `RealExpression` reproduces the empty result context.
+- Current bundle status remains `quality_status=smoke_only`; `planner` and
+  `closed_loop` remain excluded from `claim_scope`.
+- Dispatched next MWORKS-Control task packet:
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json`.
+  Objective: test sampled/held or project-owned attitude extraction decoupling
+  before any full Factory retry.
+
+## 2026-06-06 CST - Attitude Intermediary Classified AbsoluteAngles Coupling
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010`
+  completed as an intermediary-signal diagnostic only, not as Factory
+  closed-loop, controller performance, or trace-consumption evidence.
+- Added `FactoryTraceIso14ConstantAttitudeInputSmoke`,
+  `FactoryTraceIso15TableAttitudeInputSmoke`, and
+  `FactoryTraceIso16RealExpressionAngleSmoke` under
+  `Models/QuadrotorExperiments/`.
+- Iso14 constant roll attitude input and Iso15 inline table roll attitude input
+  both passed `check_model`, simulated 0-2 s with `data=true`, returned
+  `GetVarTimes=1001`, and preserved nonzero `x_ref/y_ref/z_ref/yaw_ref`
+  aliases.
+- Iso16 `RealExpression(y=sensors1_1.AngleMea[1]) -> roll_mea` passed
+  `check_model` but reproduced `SimulateModel data=false`, `GetVarTimes=[]`,
+  and empty alias values. `6140` stayed absent in all three probes.
+- Classification: the current blocker follows the
+  `AbsoluteAngles/AngleMea` dependency path into controller attitude feedback;
+  it is not supported as generic controller inport sensitivity and not just
+  direct-connector syntax. Next bounded step is sampled/held decoupling or a
+  project-owned attitude extraction wrapper before any full Factory retry.
+- Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json`.
+  Probe artifacts:
+  `Results/mworks_trace_consumption/attitude_intermediary_20260606_010/`.
+
+## 2026-06-06 CST - Attitude Feedback Isolation Found Single-Channel Boundary
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009`
+  completed as an attitude-feedback isolation diagnostic only, not as Factory
+  closed-loop, controller performance, or trace-consumption evidence.
+- Added four project-owned probe models under `Models/QuadrotorExperiments/`:
+  `FactoryTraceIso10RollFeedbackSmoke`,
+  `FactoryTraceIso11PitchFeedbackSmoke`,
+  `FactoryTraceIso12RollFeedbackNegatedSmoke`, and
+  `FactoryTraceIso13PitchFeedbackNegatedSmoke`.
+- All four probes passed `check_model`, but 0-2 s `SimulateModel` returned
+  `data=false`; explicit result reads returned `GetVarTimes=[]` and no
+  nonzero `x_ref/y_ref/z_ref/yaw_ref` aliases. `6140` stayed absent.
+- Direct roll-only and pitch-only feedback each reproduce the empty result
+  context. Negating the single angle channel did not restore result binding, so
+  a simple sign inversion is not sufficient.
+- Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json`.
+  Probe artifacts:
+  `Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/`.
+
+## 2026-06-06 CST - UE Command Sender Source Contract Added, P0 Still Smoke-Only
+
+- Added a narrow UE Bridge command uplink component:
+  `UQuadrotorMworksUdpCommandSenderComponent` in
+  `UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h`
+  and
+  `UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp`.
+- The component builds `mosim.ue_command.v1` packets for controller/planner,
+  wind, motor fault, sensor mode, scenario reset, start/goal, recording, and
+  scene switching, with MWORKS/ROS2 acknowledgement guards. It does not expose
+  pose overwrite APIs.
+- Added `Scripts/UE5/check_ue_command_sender_contract.py` and
+  `Scripts/tests/test_ue_command_sender_contract.py`. The source-level check
+  requires the sender to reject `pose_override`, `teleport`, `set_uav_pose`,
+  `actor_transform`, and `keyboard_pose`, and to avoid direct Actor pose APIs.
+- Regenerated
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json` and
+  `P0_BUNDLE_AUDIT.json`. The bundle now records the source-level UE sender
+  contract but remains `quality_status=smoke_only`,
+  `claim_scope=["fast_lio","ue_visual"]`, and `not_runtime_ue_console=true`.
+- Added `Scripts/UE5/smoke_ue_command_sender_loopback.py` and integrated its
+  result into the P0 bundle. It sends four `mosim.ue_command.v1` packets over
+  local UDP loopback, receives all four, and preserves
+  `no_pose_overwrite_status=pass`. This only proves packet/transport shape; it
+  is not a runtime UE console, MWORKS ack, or ROS2 ack.
+- Boundary: this is not a live UE Experiment Console, not runtime MWORKS/ROS2
+  command acknowledgement, and not planner or closed-loop evidence. Runtime
+  acceptance still requires `mosim.ue_command_echo.v1` rows from the MWORKS/ROS2
+  authority path.
+- WeChat notification remains degraded at the Weixin send layer after `ret=-2`;
+  do not retry until the user sends one normal message in the gateway chat, then
+  retry once through `CoAgent/gateway/cc_connect_weixin.py`.
+
+## 2026-06-06 CST - ROS2 012 Path/BSpline Build Surfaces Integrated
+
+- ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-PATH-BSPLINE-PORT-20260606-012` returned
+  `completed_preflight` / `quality_status=build_surface_only`.
+- The isolated `path_searching` and `bspline_opt` packages in
+  `Results/tmp/ego_planner_ros2_port_ws/` are now ROS2 `ament_cmake`
+  build/API surfaces. Installed artifacts include
+  `install/path_searching/lib/libpath_searching.a` and
+  `install/bspline_opt/lib/libbspline_opt.a`.
+- PMO integrated 012 into
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json` and
+  `P0_BUNDLE_AUDIT.json`. P0 remains `smoke_only`; no planner runtime,
+  `/planning/bspline`, `/position_cmd`, runtime recorder, fake map/cloud, UE
+  truth shortcut, FAST-LIO `/path` trajectory conversion, keyboard pose, or
+  replacement planner was used.
+- Remaining ROS2 B1 blocker moved to `traj_utils`, `quadrotor_msgs`, and full
+  `plan_manage/EGOPlannerManager/EGOReplanFSM` linkage/runtime reachability.
+
+## 2026-06-06 CST - MWORKS 009 AngleMea Single-Channel Boundary Integrated
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009`
+  returned `completed` /
+  `quality_status=attitude_feedback_sub_boundary_found`.
+- Starting from the passing Iso08 position-feedback wrapper, direct roll-only
+  `AngleMea[1] -> roll_mea`, direct pitch-only `AngleMea[2] -> pitch_mea`,
+  negated roll-only, and negated pitch-only probes all passed `check_model` but
+  failed 0-2 s `SimulateModel` with `data=false`, `GetVarTimes=0`, and zero
+  aliases. Compiler error 6140 stayed absent.
+- The current boundary is not actuator wiring and not a simple sign issue:
+  direct single-channel `AbsoluteAngles` / `AngleMea` coupling into Sysblock
+  controller inports is sufficient to trigger the empty result context.
+- PMO integrated 009 into the P0 manifest/audit. Next MWORKS slice should test
+  constant/time-table/sampled-held or RealExpression intermediary attitude
+  signals before reconnecting plant sensor angles or retrying the full Factory
+  wrapper.
+
+## 2026-06-06 CST - Sensor Feedback Isolation Found Roll/Pitch Boundary
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008`
+  completed as a sensor-feedback isolation diagnostic only, not as Factory
+  closed-loop or controller trace-consumption evidence.
+- Added `FactoryTraceIso08PositionFeedbackSmoke` and
+  `FactoryTraceIso09PositionAttitudeFeedbackSmoke` under
+  `Models/QuadrotorExperiments/`.
+- Iso08 position feedback only passed: `check_model` passed,
+  `SimulateModel data=true`, `GetVarTimes=1001`, and
+  `x_ref@1s=0.31861753694312633` with nonzero aliases.
+- Iso09 is the first sensor-feedback failure boundary. After adding roll/pitch
+  attitude feedback from `sensors1_1.AngleMea[1..2]` while keeping yaw open,
+  `check_model` still passed but `SimulateModel data=false`, `GetVarTimes=0`,
+  and aliases were zero. Compiler error 6140 remained absent.
+- Next repair/isolation should test roll-only versus pitch-only feedback and
+  compare `AngleMea` frame/sign/range against controller input expectations
+  before retrying any full Factory wrapper.
+- PMO dispatched the follow-up task
+  `RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009` to
+  thread `019e9999-b0d3-7682-bccd-faef08fcf1df` for roll-only, pitch-only, and
+  `AngleMea` frame/sign/range isolation. It remains forbidden to change
+  parameters/gains or claim closed loop.
+- Artifacts:
+  `Results/mworks_trace_consumption/sensor_feedback_isolation_20260606_008/sensor_feedback_isolation_probe.json`,
+  `Results/mworks_trace_consumption/sensor_feedback_isolation_20260606_008/sensor_feedback_isolation_summary.csv`,
+  and return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008.json`.
+
+## 2026-06-06 CST - P0 Bundle Integrates 007, Adds UE Command Schemas, Dispatches 008
+
+- PMO integrated MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007`
+  into the P0 smoke-only bundle. The manifest now records that Iso04's
+  compiler error 6140 was caused by duplicate actuator input sources, while
+  clean sensor-feedback closure remains blocked.
+- Added documented UE Experiment Console packet schemas:
+  `Config/schemas/mosim_ue_command_v1.schema.json` and
+  `Config/schemas/mosim_ue_command_echo_v1.schema.json`. These document the
+  current `controller_select` / `planner_select` / fault / wind / sensor /
+  scene-switch command boundary and explicitly forbid `teleport`,
+  `pose_override`, `set_uav_pose`, `actor_transform`, and `keyboard_pose`.
+- `check_p0_run_bundle.py` now checks the 007 return packet and artifacts and
+  requires the UE command/echo schema docs to exist. The bundle still remains
+  `quality_status=smoke_only`; `claim_scope` still excludes `planner` and
+  `closed_loop`.
+- PMO dispatched the next MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008` to thread
+  `019e9999-b0d3-7682-bccd-faef08fcf1df`. It must start from Iso07 and add
+  position/velocity feedback, attitude/rate feedback, yaw feedback, and
+  remaining sensor bus coupling one group at a time. Full Factory wrapper
+  retry and closed-loop claims remain forbidden.
+- ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-PLANENV-GRIDMAP-PORT-20260606-011` returned
+  `completed_preflight` / `quality_status=build_surface_only`. The isolated
+  `plan_env` package is now ROS2 `ament_cmake` buildable and installs
+  `libplan_env.a`, headers, and package metadata. This is not planner runtime:
+  no `/planning/bspline`, `/position_cmd`, runtime recorder, fake map/cloud, UE
+  global truth, FAST-LIO `/path` shortcut, or keyboard pose was used.
+- PMO integrated 011 into the P0 manifest/audit and dispatched the next ROS2
+  Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-PATH-BSPLINE-PORT-20260606-012` to thread
+  `019e9917-6181-7ec2-b3d6-4b624d6d3348`. The next slice is isolated
+  `path_searching` and `bspline_opt` build/API surface only; planner runtime
+  and B1 recorder remain forbidden.
+- WeChat ops returned that the local cc-connect API socket health check was
+  repaired to use a real Unix socket connect. If a future outbound notification
+  reaches Weixin and returns `ret=-2`, the next valid action remains: user sends
+  one normal message in the WeChat gateway chat, then PMO retries once. PMO
+  notification packets include self/origin thread id
+  `019e9868-83ea-70f0-92c5-a3a408bd78c6`.
+
+## 2026-06-06 CST - Actuator Wiring Isolation Refined 6140 Boundary
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007`
+  completed as an actuator/topology isolation diagnostic only, not as Factory
+  closed-loop or controller trace-consumption evidence.
+- Compared the 006 Iso04 failure model against the known project-owned
+  `Example1LinearMPCSysblockClosedLoop` actuator input pattern. The passing
+  pattern has `hover_u*.y -> motor*_hover_sum.u2` and only
+  `motor*_hover_sum.y -> actuator*.u`; Iso04 inherited direct
+  `hover_u*.y -> actuator*.u` and also added `motor*_hover_sum.y ->
+  actuator*.u`.
+- Added derivative probes
+  `FactoryTraceIso05CleanHoverSumSmoke`,
+  `FactoryTraceIso06CleanControllerPlantWiringSmoke`, and
+  `FactoryTraceIso07CleanControllerOpenFeedbackSmoke`.
+- Iso05 clean hover-sum topology passed and removed compiler error 6140.
+  Iso07 clean controller-to-actuator motor-sum topology also passed when
+  controller feedback was trace-derived/open. Therefore Iso04's 6140 was caused
+  by duplicate actuator input sources, not by the motor-sum topology itself.
+- Remaining boundary: Iso06 with clean actuator input topology but sensor
+  feedback closed into the controller still returned `SimulateModel data=false`,
+  `GetVarTimes=0`, and zero aliases, without 6140 text. Next step is
+  sensor-feedback isolation from Iso07.
+- Artifacts:
+  `Results/mworks_trace_consumption/actuator_wiring_isolation_20260606_007/actuator_wiring_isolation_probe.json`,
+  `Results/mworks_trace_consumption/actuator_wiring_isolation_20260606_007/actuator_wiring_isolation_summary.csv`,
+  and return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json`.
+
+## 2026-06-06 CST - P0 Audit Integrates 006 And UE Echo Gate
+
+- PMO advanced the UE Experiment Console path from placeholder-only to an
+  executable offline command adapter smoke. Added
+  `Scripts/UE5/smoke_ue_command_adapter.py` and
+  `Scripts/tests/test_ue_command_adapter_smoke.py`.
+- `build_p0_slice_run_manifest.py` now writes
+  `ue_command_input_smoke.jsonl`, runs the adapter smoke, and records
+  `ue_command_echo_smoke.jsonl` plus `ue_command_adapter_smoke.json` in the P0
+  manifest. The smoke accepts `controller_select` and `planner_select`, rejects
+  `teleport`, preserves `no_pose_overwrite_status=pass`, and is explicitly
+  marked `source=offline_adapter_smoke` / `not_runtime_ue_console=true`.
+- The UE echo checker now accepts a forbidden pose command only when it is
+  explicitly rejected by the adapter with a pose-forbidden reason; accepted
+  pose override/teleport evidence still fails the gate.
+- Boundary: this is still not a live UE command sender and not a MWORKS/ROS2
+  runtime acknowledgement. `P0_BUNDLE_AUDIT.json` warns:
+  `UE command adapter smoke has accepted/rejected echo rows, but it is offline-only and not runtime UE console evidence`.
+- ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-UPSTREAM-PLANNER-DEPS-20260606-010` returned
+  `blocked_after_classification`. It identified the preferred upstream
+  `/planning/bspline` producer as EGO `plan_manage/EGOReplanFSM`, but real
+  runtime remains blocked because `plan_env` / GridMap and related
+  `path_searching`, `bspline_opt`, and `traj_utils` surfaces are still
+  ROS1/catkin-only in the isolated ROS2 workspace.
+- PMO integrated 010 into `RUN_MANIFEST.json` and `P0_BUNDLE_AUDIT.json`. The
+  audit now checks the 010 blocker packet and logs for producer scan,
+  dependency scan, `colcon list`, and the failed expected `plan_env` build
+  probe. It also confirms no `/position_cmd`, recorder, fake map/cloud, UE
+  global truth, keyboard pose, or new hand-written planner was used.
+- PMO dispatched the next ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-PLANENV-GRIDMAP-PORT-20260606-011` to thread
+  `019e9917-6181-7ec2-b3d6-4b624d6d3348`. It must port/preflight only the
+  isolated `plan_env` GridMap build/API surface for the intended
+  `/grid_map/odom:=/Odometry` and `/grid_map/cloud:=/cloud_registered` route.
+- PMO integrated MWORKS-Control 006 into
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json` and
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_BUNDLE_AUDIT.json`.
+  The bundle remains `quality_status=smoke_only`; `claim_scope` still excludes
+  `planner` and `closed_loop`.
+- Added `Scripts/UE5/check_ue_command_echo_contract.py` and tests in
+  `Scripts/tests/test_ue_command_echo_contract.py`. The checker allows the
+  current UE command echo placeholder only as smoke evidence, requires runtime
+  echo rows to be acknowledged by `MWORKS`, `ROS2`, or `MWORKS_ROS2`, and
+  rejects `teleport`, `pose_override`, `set_uav_pose`, `actor_transform`, and
+  `keyboard_pose` command kinds.
+- `Scripts/quality/check_p0_run_bundle.py` now runs the UE echo checker and
+  warns when the current log is placeholder-only. This prevents
+  `ue_command_echo_placeholder.jsonl` from being promoted to a runtime UE
+  Experiment Console command/ack implementation.
+- PMO dispatched the next MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007` to thread
+  `019e9999-b0d3-7682-bccd-faef08fcf1df`. It must continue from Iso04 and
+  isolate controller-to-actuator wiring/topology without touching official
+  baseline parameters or claiming closed loop.
+- Focused checks passed:
+  `python Scripts\quality\build_p0_slice_run_manifest.py --validate`;
+  `python Scripts\quality\check_p0_run_bundle.py`;
+  `python -m pytest Scripts\tests\test_ue_command_adapter_smoke.py Scripts\tests\test_ue_command_echo_contract.py Scripts\tests\test_p0_run_bundle_audit.py Scripts\tests\test_p0_slice_run_manifest.py Scripts\tests\test_run_manifest_gate.py -q`.
+
+## 2026-06-06 CST - Incremental Factory Trace Isolation Found First Failure Boundary
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006`
+  completed as an incremental isolation diagnostic only, not as Factory
+  closed-loop or controller trace-consumption evidence.
+- Added four project-owned probes under `Models/QuadrotorExperiments/`:
+  `FactoryTraceIso01FullDisplaySmoke`,
+  `FactoryTraceIso02ControllerOnlySmoke`,
+  `FactoryTraceIso03PlantHoverStackSmoke`, and
+  `FactoryTraceIso04ControllerPlantWiringSmoke`.
+- Iso01 full display, Iso02 controller-only math, and Iso03 open-loop hover
+  plant/actuator/sensor stack all passed MCP `check_model`, 0-2 s simulation,
+  `GetVarTimes=1001`, and nonzero aliases with `x_ref@1s=0.31861753694312633`.
+- Iso04 is the first failure boundary: after adding controller feedback plus
+  motor-command scaling/summing/wiring into actuator inputs, `check_model`
+  passed but `SimulateModel` returned `data=false` with compiler error 6140
+  redundant Real equations in the QuadChassis frame rotation system.
+- This narrows but does not exactly reproduce the 004 full-wrapper empty
+  result context: after Iso04 failed simulate, `GetVarTimes` and wrapper
+  aliases were still readable/nonzero. Next work should isolate
+  controller-to-actuator wiring/topology before retrying the full Factory
+  wrapper.
+- Artifacts:
+  `Results/mworks_trace_consumption/incremental_trace_isolation_20260606_006/incremental_trace_isolation_probe.json`,
+  `Results/mworks_trace_consumption/incremental_trace_isolation_20260606_006/incremental_trace_isolation_summary.csv`,
+  and return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006.json`.
+
+## 2026-06-06 CST - ROS2 009 Planner-Node Stub Integrated
+
+- ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-PLANNER-NODE-PORT-PREFLIGHT-20260606-009`
+  returned `completed_preflight` / `quality_status=build_surface_only`.
+  It compiled an isolated ROS2 `plan_manage/traj_server` surface/stub in
+  `Results/tmp/ego_planner_ros2_port_ws`, but did not launch planner runtime,
+  did not publish `/position_cmd`, and did not run the runtime recorder.
+- PMO regenerated
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json` and
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_BUNDLE_AUDIT.json`.
+  The audit now checks the 009 return packet, three build logs, and installed
+  `traj_server_ros2_node` executable path, while keeping the P0 bundle
+  `quality_status=smoke_only` and excluding `planner` / `closed_loop`.
+- Focused checks passed:
+  `python Scripts\quality\build_p0_slice_run_manifest.py --validate`;
+  `python Scripts\quality\check_p0_run_bundle.py`;
+  `python -m pytest Scripts\tests\test_p0_run_bundle_audit.py Scripts\tests\test_p0_slice_run_manifest.py Scripts\tests\test_run_manifest_gate.py -q`.
+- Current blockers remain real: there is still no upstream EGO/Sunray/FUEL
+  planner runtime producing `ego_planner_msgs/msg/Bspline` from `/Odometry`
+  plus `/cloud_registered`, and no sustained real `/position_cmd` recorder
+  evidence. The next ROS2 task is
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-UPSTREAM-PLANNER-DEPS-20260606-010`, not a
+  runtime recorder attempt.
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006` later
+  returned the Iso04 first-failure boundary recorded above; P0 still lacks full
+  Factory/controller trace consumption.
+- WeChat ops reported the gateway root cause and local socket fix: previous
+  health used session-file reads as a false-positive; the repaired health path
+  now performs a real Unix socket connect to `api.sock`. If outbound reaches
+  Weixin and fails with `ret=-2`, the next valid action is still one normal
+  user message in the WeChat gateway chat followed by one bounded retry. PMO
+  notification packets include self/origin thread id
+  `019e9868-83ea-70f0-92c5-a3a408bd78c6`.
+
+## 2026-06-06 CST - Factory-Lite Trace Result Binding Passed
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-FACTORY-LITE-TRACE-20260606-005` completed as a
+  Factory-lite diagnostic only, not as Factory closed-loop or controller
+  consumption evidence.
+- Added `QuadrotorExperiments.FactoryLiteTraceSmoke`, containing only
+  `TraceInlineReference`, `PlanningNavigationDisplay`, wrapper aliases
+  `x_ref/y_ref/z_ref/yaw_ref/z_ref_rate`, and `trace_probe_state`. It excludes
+  QuadChassis, actuators, sensors, and controller components.
+- Sysplorer MCP package load/check passed, the 0-2 s simulation passed, and
+  result binding was nonzero: `GetVarTimes` returned 41 samples and
+  `x_ref@1s=0.31861753694312633`, `y_ref@1s=0.49481767718910424`,
+  `z_ref@1s=1.242037957383867`, `yaw_ref@1s=1.9974016333898024`.
+- Artifacts:
+  `Results/mworks_trace_consumption/factory_lite_trace_20260606_005/factory_lite_trace_probe.json`,
+  `Results/mworks_trace_consumption/factory_lite_trace_20260606_005/factory_lite_trace_raw.csv`,
+  and return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-LITE-TRACE-20260606-005.json`.
+- This narrows the 004 blocker: `TraceInlineReference` plus
+  `PlanningNavigationDisplay` does not cause the empty result context. Next
+  reconnect should add full-wrapper component groups incrementally and must
+  still avoid any `closed_loop`, real planner, or controller-performance claim.
+
+## 2026-06-06 CST - ROS2 008 Message Slice Integrated
+
+- ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-MSG-PORT-SLICE-20260606-008` completed a
+  message/build-surface slice in the isolated workspace only. It did not port
+  planner node logic and did not publish `/position_cmd`.
+- Decision: reuse project-owned `mosim_msgs/msg/PositionCommand` as the
+  external B1 command surface; do not port the full ROS1 `quadrotor_msgs`
+  package for the command interface now.
+- Added isolated `ego_planner_msgs` under
+  `Results/tmp/ego_planner_ros2_port_ws/src/ego_planner_msgs/` with
+  `Bspline.msg` and `DataDisp.msg`. Focused `colcon build --packages-select
+  ego_planner_msgs` passes with clock-skew warnings only, and `ros2 interface
+  show` passes.
+- PMO integrated 008 into
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json` under
+  `ros2.position_command_b1_msg_port_slice`; the run remains
+  `quality_status=smoke_only` and still excludes `planner` and `closed_loop`.
+- Next ROS2 step is planner/traj_server node port preflight in the same
+  isolated workspace. Runtime recorder is still forbidden until a real
+  local-map/planner chain publishes `/position_cmd` from `/Odometry` plus
+  `/cloud_registered`.
+
+## 2026-06-06 CST - P0 Manifest/Audit Now Integrates 007 and 004
+
+- PMO regenerated
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json` and
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_BUNDLE_AUDIT.json` after
+  consuming ROS2 Runtime 007 and MWORKS-Control 004. The run is still
+  `quality_status=smoke_only`; `claim_scope` still excludes `planner` and
+  `closed_loop`.
+- ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-PORT-PREFLIGHT-20260606-007` completed
+  preflight classification only. EGO candidate packages copied to the isolated
+  `Results/tmp/ego_planner_ros2_port_ws/src` are discovered by `colcon` as
+  `ros.catkin`, and the bounded build fails first on missing
+  `catkinConfig.cmake` for `quadrotor_msgs`. Port effort is
+  `medium_to_large_port`; real `/position_cmd` recorder cannot run yet.
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004` is
+  represented under `mworks.factory_trace_reconnect`: alias repair plus
+  `check_model` passed, but 0-2 s smoke still produced empty times and zero
+  alias refs. Next minimal probe is Factory-lite, not another full-wrapper
+  retry.
+- Current bundle audit passes with explicit warnings for the real blockers:
+  standalone trace lookup passed but Factory consumption remains blocked;
+  Factory reconnect aliases still zero; FAST-LIO is restored but planner
+  PositionCommand is absent; EGO/Sunray/FUEL planner route needs porting;
+  WeChat still needs one normal user message before one bounded retry.
+- Focused checks passed:
+  `python Scripts\quality\build_p0_slice_run_manifest.py --validate`;
+  `python Scripts\quality\check_p0_run_bundle.py`;
+  `python -m pytest Scripts\tests\test_p0_run_bundle_audit.py Scripts\tests\test_p0_slice_run_manifest.py Scripts\tests\test_run_manifest_gate.py -q`.
+
+## 2026-06-06 CST - Factory Trace Reconnect Still Blocked
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004` is
+  blocked. This preserves the 003 standalone pass but does not create Factory
+  trace-consumption evidence.
+- Added wrapper-level aliases `x_ref/y_ref/z_ref/yaw_ref/z_ref_rate` and
+  `trace_probe_state` to
+  `QuadrotorExperiments.Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke`.
+  No official baseline, controller gain, or dynamics parameter was edited.
+- Sysplorer MCP probe and `check_model` passed. The required 0-2 s smoke still
+  returned `SimulateModel data=false`; `GetVarTimes` returned `[]`; wrapper
+  aliases and nested `planningReference` probes remained zero.
+- Blocker packet:
+  `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004.json`.
+  Next minimal probe is a Factory-lite model containing `TraceInlineReference`
+  plus only `PlanningNavigationDisplay` and aliases, before adding plant or
+  controller components incrementally.
+
+## 2026-06-06 CST - P0 Manifest/Audit Integrated 006 and 003
+
+- PMO regenerated
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json` and
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_BUNDLE_AUDIT.json`.
+  The manifest remains `quality_status=smoke_only`; `claim_scope` remains only
+  `fast_lio` and `ue_visual`, with no `planner` or `closed_loop`.
+- ROS2 Runtime blocker
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-PLANNER-WRAPPER-20260606-006.json`
+  is now represented under `ros2.position_command_b1_planner_wrapper`. The
+  selected EGO/Sunray/FUEL route is a valid semantic planner candidate, but it
+  is ROS1/catkin while the current lane is ROS2 Humble and has no executable
+  planner package. Converting FAST-LIO `/path` or scripted waypoints into
+  PositionCommand remains rejected.
+- MWORKS-Control return
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json`
+  is now represented under `mworks.trace_lookup_diagnostic`. It is
+  `diagnostic_pass` only: standalone trace lookup and Sysplorer result binding
+  work, but Factory wrapper trace consumption is still blocked.
+- Updated quality gate:
+  `Scripts/quality/check_p0_run_bundle.py` now checks the 006 blocker packet
+  and the 003 return/probe/raw paths. Current audit passes with warnings:
+  standalone trace lookup passed but Factory consumption remains blocked;
+  FAST-LIO runtime is restored but planner PositionCommand is absent; B1
+  planner wrapper is blocked; WeChat still needs one normal user message before
+  a bounded retry.
+- Focused checks passed:
+  `python Scripts\quality\build_p0_slice_run_manifest.py --validate`;
+  `python Scripts\quality\check_p0_run_bundle.py`;
+  `python -m pytest Scripts\tests\test_p0_run_bundle_audit.py Scripts\tests\test_p0_slice_run_manifest.py Scripts\tests\test_run_manifest_gate.py -q`.
+- PMO created follow-up task packets:
+  `Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-PORT-PREFLIGHT-20260606-007.json`
+  for isolated EGO/Sunray/FUEL ROS2 port preflight, and
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004.json`
+  for Factory wrapper alias/reconnect smoke.
+
+## 2026-06-06 CST - MWORKS Standalone Trace Lookup Diagnostic Passed
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003` completed as a
+  standalone diagnostic only, not as Factory/controller or closed-loop
+  evidence.
+- Added `QuadrotorExperiments.TraceLookupStandaloneSmoke`, which uses the
+  existing exact-trace `TraceInlineReference` and exposes `x_ref`, `y_ref`,
+  `z_ref`, `yaw_ref`, `z_ref_rate`, and a simple `probe_state`.
+- Sysplorer MCP probe passed, package load passed, `check_model` passed, and
+  `simulate_model` passed for 0-2 s. Result binding is usable at standalone
+  level: `GetVarTimes` returned 41 samples and `x_ref@1s` was
+  `0.31861753694312633`.
+- Diagnostic artifacts:
+  `Results/mworks_trace_consumption/trace_lookup_diag_20260606_003/trace_lookup_standalone_probe.json`,
+  `Results/mworks_trace_consumption/trace_lookup_diag_20260606_003/trace_lookup_standalone_raw.csv`,
+  and return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json`.
+- This narrows the previous 002 blocker: pure trace lookup and standalone
+  Sysplorer result binding work. The next issue is Factory wrapper integration
+  or result context binding, and B0 must remain `smoke_only`.
+
+## 2026-06-06 CST - P0 Bundle Audit Added
+
+- Added `Scripts/quality/check_p0_run_bundle.py` and
+  `Scripts/tests/test_p0_run_bundle_audit.py` so the current P0 slice has a
+  recoverability and overclaim audit beyond schema-level manifest validation.
+- Current audit output:
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/P0_BUNDLE_AUDIT.json`.
+  It passes with `quality_status=smoke_only`, verifies required evidence and
+  blocker packet paths, and preserves the warnings that FAST-LIO runtime is
+  restored but planner PositionCommand is absent, and WeChat needs one normal
+  user message before one bounded retry.
+- Evidence-Logging task
+  `RFLY-MOSIM-AUDIT-EVIDENCE-LOGGING-20260606-001` is complete with return
+  packet
+  `Results/agent_packets/returns/RFLY-MOSIM-AUDIT-EVIDENCE-LOGGING-20260606-001.json`.
+  The audit proves bundle recoverability and honest smoke-only status; it does
+  not prove planner closure or MWORKS closed_loop.
+
+## 2026-06-06 CST - P0 Follow-Up Department Tasks Dispatched
+
+- PMO dispatched ROS2 Runtime task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-PLANNER-WRAPPER-20260606-006` to persistent
+  thread `019e9917-6181-7ec2-b3d6-4b624d6d3348`. The task starts from the
+  005-restored inputs `/Odometry` plus `/cloud_registered` and asks for a real
+  existing EGO/Sunray/FUEL-style planner wrapper/port that emits sustained
+  `/position_cmd`. It explicitly forbids fake maps, fake PositionCommand,
+  UE global truth planner input, and hand-written planner algorithms.
+- PMO dispatched MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003` to persistent
+  thread `019e9999-b0d3-7682-bccd-faef08fcf1df`. The task reduces the prior
+  trace-consumption blocker to a standalone pure Modelica trace lookup smoke
+  model before reconnecting the Factory/controller wrapper.
+- Expected packets:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-PLANNER-WRAPPER-20260606-006.json`
+  or matching blocker, and
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json`
+  or matching blocker. Until those return, P0 remains `smoke_only`; no
+  `planner` or `closed_loop` claim is allowed.
+
+## 2026-06-06 CST - P0 Manifest Integrated Current Blockers
+
+- PMO integrated two durable department returns into
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json`.
+  The manifest remains `quality_status=smoke_only` and `claim_scope` still
+  excludes `planner` and `closed_loop`.
+- ROS2 Runtime blocker
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-UNBLOCK-20260606-005.json`
+  is a partial restore: Gate B can currently regenerate `/Odometry`,
+  `/cloud_registered`, and `/path` under
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_b1_unblock_20260606_005/`.
+  B1 remains blocked because no planner/local-map runtime consumes `/Odometry`
+  plus `/cloud_registered` and emits sustained real `/position_cmd`.
+- MWORKS-Control blocker
+  `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json`
+  is also integrated. The trace wrapper/check_model pass is recorded only as a
+  blocked attempt; `mworks.setpoint_trace_consumption_status=blocked`, with no
+  consumed trace or trace-consumption evidence claimed.
+- Focused checks passed:
+  `python Scripts\quality\build_p0_slice_run_manifest.py --validate` and
+  `python -m pytest Scripts\tests\test_p0_slice_run_manifest.py Scripts\tests\test_run_manifest_gate.py Scripts\tests\test_position_command_runtime_recorder.py Scripts\tests\test_ros_setpoint_adapter_contract.py -q`.
+- WeChat sparse blocker notification packet
+  `Results/coagent_gateway/packets/rfly_mosim_p0_current_blockers_integrated_20260606.json`
+  reached the Weixin send layer but failed once with
+  `weixin: sendMessage: ret=-2 errcode=0`. Do not retry in a loop. Per
+  gateway ops, the user should send one normal text message in the
+  `MoSim｜微信通知网关` chat before one bounded retry.
+
+## 2026-06-06 CST - MWORKS Trace Consumption Blocked
+
+- MWORKS-Control task
+  `RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002` is blocked, not
+  completed.
+- Created project-owned trace wrapper/table artifacts under
+  `Models/QuadrotorExperiments/`, `Config/scenarios/planning/`, and
+  `Results/mworks_trace_consumption/` from the exact B0 `setpoint_trace.csv`.
+  The source trace has 227 rows and its SHA is recorded in
+  `Results/mworks_trace_consumption/trace_consumption_manifest_20260606.json`.
+- Sysplorer MCP availability, package load, and `check_model` passed for
+  `QuadrotorExperiments.Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke`.
+  `SimulateModel` then returned false; `GetVarTimes` returned `[]`, and probed
+  `planningReference` outputs stayed zero.
+- No MWORKS trace-consumption raw CSV or metrics are claimed. Recovery should
+  start from blocker packet
+  `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json`.
+
+## 2026-06-06 CST - P0 Slice RUN_MANIFEST Created
+
+- Added `Scripts/quality/build_p0_slice_run_manifest.py` and
+  `Scripts/tests/test_p0_slice_run_manifest.py`.
+- Generated the first source-linked P0 slice manifest at
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json` and checked
+  it with `Scripts/quality/check_run_manifest.py`.
+- The manifest deliberately stays `quality_status=smoke_only` and
+  `evidence_level=p0_slice_smoke_manifest`. It links existing source-labeled
+  evidence only:
+  - MWORKS/MCP Factory scene smoke metrics and raw CSV;
+  - Factory FAST-LIO Gate B current-pass evidence;
+  - ROS2 planner setpoint adapter no-RViz smoke evidence.
+- The manifest does not claim a full P0 closed loop. `claim_scope` excludes
+  `planner` and `closed_loop`, and blockers remain:
+  real local 3D map planner output is not bound to
+  `/mosim/planner/position_cmd`; no same-run MWORKS/controller simulation has
+  consumed the ROS2 adapter trace; UE Experiment Console command echo is still
+  placeholder/design-only.
+- Validation passed:
+  `python Scripts/quality/build_p0_slice_run_manifest.py --validate`;
+  `python -m pytest Scripts/tests/test_p0_slice_run_manifest.py Scripts/tests/test_run_manifest_gate.py Scripts/tests/test_ros_setpoint_adapter_contract.py Scripts/tests/test_planner_setpoint_adapter.py -q`;
+  `python -m py_compile Scripts/quality/build_p0_slice_run_manifest.py Scripts/quality/check_run_manifest.py Scripts/ros/smoke_setpoint_adapter.py`;
+  JSON syntax checks for the generated manifest and validation report; and
+  `git diff --check` on the new manifest artifacts.
+- Integrated the ROS2 Runtime department return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-ADAPTER-BINDING-PLAN-20260606-001.json`.
+  The department recommended an EGO/Sunray-style `PositionCommand` stream as
+  the first real planner-output candidate because it directly maps to
+  p/v/a/yaw setpoints and matches local EGO/Sunray reference contracts.
+- Added project-owned ROS2 `PositionCommand` message and converter:
+  `Scripts/ros/mosim_msgs/msg/PositionCommand.msg` and
+  `Scripts/ros/mosim_setpoint_adapter/src/position_command_to_planner_setpoint_node.cpp`.
+  The converter maps `/position_cmd` into `/mosim/planner/position_cmd`
+  without implementing or replacing a planner. It normalizes the local EGO
+  `world` frame alias to adapter `map`, maps position/velocity/acceleration,
+  yaw/yaw_dot, trajectory id/status, and uses planner id `ego_position_cmd`.
+- Added no-RViz chain smoke
+  `Scripts/ros/smoke_position_command_adapter.py`. WSL validation passed:
+  `colcon build --base-paths Scripts/ros/mosim_msgs Scripts/ros/mosim_setpoint_adapter --packages-select mosim_msgs mosim_setpoint_adapter --event-handlers console_direct+ --executor sequential`;
+  `python3 Scripts/ros/smoke_position_command_adapter.py --timeout-s 8`.
+  Result: `converted_count=1`, `setpoint_count=1`, status reached
+  `accepted=true`, `mode=track`, `planner_id=ego_position_cmd`, and no ROS2
+  adapter/converter process remained afterward.
+- Regenerated the P0 slice manifest so it records the PositionCommand converter
+  smoke evidence in addition to the existing setpoint adapter smoke. The
+  manifest remains `smoke_only`; the next blocker is still a real planner/local
+  map runtime stream and a same-run MWORKS/controller consumption of the adapter
+  trace.
+- Sent sparse WeChat completion notification through
+  `CoAgent/gateway/cc_connect_weixin.py notify --packet ... --send` using
+  packet
+  `Results/coagent_gateway/packets/rfly_mosim_position_command_adapter_20260606.json`.
+  The adapter returned `Message sent successfully.` The packet includes origin
+  thread id `019e9868-83ea-70f0-92c5-a3a408bd78c6`.
+- Confirmed the experienced architecture/coordination thread rule is now
+  current project behavior: `019e0198-a041-77f1-84d0-c5524bfd4b81` can be asked
+  directly when PMO is unsure how to create or dispatch a visible department,
+  or when delegating department creation is faster. A matching Codex memory
+  update note was written outside the repo at the user's explicit request.
+- Dispatched the next durable ROS2 Runtime department planning task
+  `RFLY-MOSIM-ROS2-RUNTIME-POSITIONCMD-SOURCE-20260606-002` to
+  `019e9917-6181-7ec2-b3d6-4b624d6d3348`. Latest observed thread state is
+  `inProgress`; no return/blocker packet had landed yet when checked. The
+  target thread had already identified the likely Sunray/EGO ROS1-style route:
+  `sunray_ego_single_mid360.launch` / `sunray_sim_ego.launch` ->
+  `traj_server` -> `/uav1/pos_cmd`, with a ROS1-to-ROS2 routing/porting blocker
+  still to resolve.
+- Integrated the completed ROS2 Runtime return packet
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-POSITIONCMD-SOURCE-20260606-002.json`.
+  Decision: the preferred real runtime source is the local Sunray/EGO chain
+  `ego_planner_node -> traj_server -> /uav1/pos_cmd`. It is not directly
+  claimable in MoSim yet because those launch files are ROS1-style while the
+  current MoSim adapter lane is ROS2 Humble. The next execution route must
+  explicitly choose either a bounded ROS1-to-ROS2 bridge or a narrow native
+  ROS2 port/wrapper of the same runtime output contract.
+- Added passive no-RViz recorder
+  `Scripts/ros/record_position_command_adapter_runtime.py` plus static test
+  `Scripts/tests/test_position_command_runtime_recorder.py`. The recorder does
+  not publish `PositionCommand` and therefore cannot create fake planner
+  evidence. It records an existing runtime source, converter output, adapter
+  setpoint/status, topic rates, timestamp/frame gate, and planner-input gate
+  into `Results/ros2_runtime/...`.
+- Checks passed for this slice:
+  `python -m pytest Scripts/tests/test_position_command_runtime_recorder.py Scripts/tests/test_ros_setpoint_adapter_contract.py -q`;
+  `python -m py_compile Scripts/ros/record_position_command_adapter_runtime.py Scripts/tests/test_position_command_runtime_recorder.py`;
+  Windows `python Scripts/ros/record_position_command_adapter_runtime.py --help`;
+  WSL `source /opt/ros/humble/setup.bash && python3 Scripts/ros/record_position_command_adapter_runtime.py --help`.
+- Quick WSL environment probe after fixing PowerShell-to-Bash `$PATH`
+  expansion confirmed ROS2 Humble and `rclpy` are available, while
+  `roscore`/`catkin_make` were not found. This makes Route A
+  (ROS1 Sunray/EGO source plus ROS1-to-ROS2 bridge) a separate setup task, not
+  the shortest immediate implementation route.
+- PMO dispatched the next read-only Route B planning packet to the ROS2 Runtime
+  department thread `019e9917-6181-7ec2-b3d6-4b624d6d3348`:
+  `RFLY-MOSIM-ROS2-RUNTIME-ROUTEB-PACKET-20260606-003`. Expected return:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-ROUTEB-PACKET-20260606-003.json`;
+  blocker path:
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-ROUTEB-PACKET-20260606-003.json`.
+  The requested plan must separate B0 contract replay (`smoke_only`) from B1
+  real planner/runtime port with real local-map/odom inputs.
+- Hardened `Scripts/ros/record_position_command_adapter_runtime.py` so a missing
+  real planner source records `source_available=false`,
+  `runtime_source_required=true`, and a concrete blocker rather than looking
+  like a silent tool failure. Verified in WSL with project ROS2 overlay:
+  `source /opt/ros/humble/setup.bash && source install/setup.bash &&
+  python3 Scripts/ros/record_position_command_adapter_runtime.py --duration-s 1
+  --output-dir Results/tmp/positioncmd_recorder_no_source_smoke`. Expected exit
+  was non-pass; generated summary reports `quality_status=needs_iteration` and
+  blocker `No real planner runtime source was recorded on source_topic.`
+- Copied this negative smoke evidence to
+  `Results/ros2_runtime/positioncmd_recorder_no_source_smoke_20260606/`. This
+  is not planner evidence; it proves the recorder fails closed until a real
+  `/position_cmd` source is available.
+- Integrated Route B planning packet
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-ROUTEB-PACKET-20260606-003.json`.
+  It separates B0 contract replay (`smoke_only`) from B1 real planner/runtime
+  port, where B1 still needs real local-map/odom input and must preserve
+  Sunray/EGO behavior semantics rather than introducing a hand-written planner.
+- Added B0 smoke-only source/orchestrator:
+  `Scripts/ros/publish_position_command_contract_replay.py` and
+  `Scripts/ros/run_b0_position_command_contract_replay.py`. The source
+  publishes a smooth `mosim_msgs/PositionCommand` contract stream for adapter
+  testing only; it is not a planner and does not consume local map or odometry.
+  The orchestrator uses unique topic prefixes and the passive recorder to avoid
+  shell PID and stale-topic contamination.
+- B0 recorder run passed:
+  `Results/ros2_runtime/positioncmd_b0_contract_replay_orchestrated_20260606_pass/run_summary.json`.
+  Result: `quality_status=pass`, `source_available=true`, `accepted_ratio=1.0`,
+  `stale_samples=0`, `rates_ok=true`, `timestamp_ok=true`, `frame_ok=true`,
+  and `b0_contract_replay.smoke_only=true`. Topic rates were about
+  `/position_cmd=19.99Hz`, converted setpoint `19.99Hz`, adapter setpoint
+  `22.73Hz`, and status `22.73Hz`.
+- Boundary: this B0 pass is only ROS2 adapter/recorder contract evidence. It
+  cannot add `planner` or `closed_loop` to `RUN_MANIFEST.claim_scope` because
+  `planner_input_gate.json` still records no real local-map/odom planner input
+  and MWORKS has not consumed this trace in a same-run controller simulation.
+- Integrated the B0 recorder evidence into
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json` under
+  `ros2.position_command_b0_contract_replay`. The manifest now points
+  `planner.setpoint_trace` at the B0 recorder CSV
+  `Results/ros2_runtime/positioncmd_b0_contract_replay_orchestrated_20260606_pass/setpoint_trace.csv`,
+  while staying `quality_status=smoke_only` and
+  `claim_scope=[fast_lio, ue_visual]`. Validation passed:
+  `python Scripts/quality/build_p0_slice_run_manifest.py --validate`,
+  `python -m py_compile Scripts/quality/build_p0_slice_run_manifest.py Scripts/tests/test_p0_slice_run_manifest.py`,
+  and `python -m pytest Scripts/tests/test_p0_slice_run_manifest.py Scripts/tests/test_run_manifest_gate.py Scripts/tests/test_position_command_runtime_recorder.py Scripts/tests/test_ros_setpoint_adapter_contract.py -q`.
+- Tried to send the required sparse WeChat completion notification with packet
+  `Results/coagent_gateway/packets/rfly_mosim_b0_manifest_integrated_20260606.json`.
+  The gateway failed with `connect: connection refused` on
+  `/home/linux/.cache/mosim/coagent/cc-connect-weixin/data/run/api.sock` even
+  after the adapter's bounded restart/retry. Recovery record:
+  `Results/coagent_gateway/recovery/weixin_recovery_required_20260606_045903.json`.
+  PMO sent the exact incident report, including origin thread id
+  `019e9868-83ea-70f0-92c5-a3a408bd78c6`, to the WeChat ops thread
+  `019e9855-aa43-7fe2-807e-be7d4095877b`.
+- WeChat ops diagnosis found a local health false-positive: the previous
+  health/recovery probe used `cc-connect sessions list --data-dir`, which can
+  read session history from disk and return success without touching the
+  internal API socket. The actual socket probe returned
+  `ConnectionRefusedError: [Errno 111] Connection refused`, and no live
+  `cc-connect` process owned `api.sock`.
+- Fixed `Scripts/agent/check_weixin_gateway_health.py` and
+  `CoAgent/gateway/cc_connect_weixin.py` to verify local API health by a real
+  Unix socket `connect()` to
+  `/home/linux/.cache/mosim/coagent/cc-connect-weixin/data/run/api.sock`.
+  During diagnosis the script correctly wrote
+  `Results/coagent_gateway/health/gateway_unhealthy_latest.json` with
+  `failure_kind=api_socket`, then the stale lock/socket were cleared and the
+  configured runtime was restarted once.
+- Current gateway local state is recovered without a real WeChat canary:
+  `Results/coagent_gateway/health/weixin_gateway_health_20260606_050621.json`
+  and `gateway_healthy_latest.json` report `ok_local=true`,
+  `api_socket_connectable=true`, `active_session_key_type=platform`, and
+  `context_token_files=1`. WSL process evidence showed PID `40786` listening on
+  the cc-connect `api.sock`.
+- PMO retried the original B0 manifest completion packet after the local socket
+  fix. It reached the Weixin layer but failed with
+  `weixin: sendMessage: ret=-2 errcode=0`. Recovery record:
+  `Results/coagent_gateway/recovery/weixin_recovery_required_20260606_050850.json`.
+  Per WeChat ops guidance, do not retry in a loop; the next retry should happen
+  only after the user sends one plain text message in the
+  `MoSim｜微信通知网关` WeChat chat.
+- Dispatched the next B1 ROS2 real-planner/runtime task to the existing
+  ROS2 Runtime department thread `019e9917-6181-7ec2-b3d6-4b624d6d3348`.
+  Task packet:
+  `Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-PLANNER-20260606-004.json`.
+  Expected return:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-PLANNER-20260606-004.json`;
+  blocker:
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-PLANNER-20260606-004.json`.
+  The packet requires real runtime odom plus local sensed map/cloud/voxel input
+  and explicitly forbids B0 replay, offline UE handoff, fake point cloud/map,
+  keyboard pose overwrite, UE global-truth planner input, and hand-written
+  planner/FAST-LIO replacements.
+- Integrated the ROS2 Runtime B1 blocker packet:
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-REAL-PLANNER-20260606-004.json`.
+  Current live ROS2 graph only showed rosbridge/rosapi topics and nodes; it did
+  not provide `/position_cmd`, FAST-LIO odometry, `/cloud_registered`, local
+  occupancy/map/voxel topics, or a real planner runtime package. PMO regenerated
+  `Results/p0_runs/rfly_mosim_p0_slice_20260606/RUN_MANIFEST.json` so the
+  blocker is visible under `ros2.position_command_b1_real_planner` and in the
+  manifest `blockers`/warnings. The manifest still validates and remains
+  `quality_status=smoke_only` with no `planner` or `closed_loop` claim.
+- Dispatched follow-up unblock packet
+  `Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-UNBLOCK-20260606-005.json`
+  to ROS2 Runtime thread `019e9917-6181-7ec2-b3d6-4b624d6d3348`. The packet
+  uses Factory Gate B historical FAST-LIO evidence only as a locator for the
+  runnable route; it requires current live topics or a newly recorded current
+  run before any B1 claim. Expected return:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-UNBLOCK-20260606-005.json`;
+  blocker:
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-UNBLOCK-20260606-005.json`.
+- Created persistent visible department thread `MoSim｜MWORKS-Control 集成` with
+  id `019e9999-b0d3-7682-bccd-faef08fcf1df` and assigned trace-consumption
+  task packet
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json`.
+  Expected return:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json`;
+  blocker:
+  `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json`.
+  PMO static check confirms the B0 `setpoint_trace.csv` has 227 rows and
+  `x_ref/y_ref/z_ref/v*_ref/a*_ref/yaw_ref/yaw_rate_ref` fields suitable for a
+  reference mapping, but this is not MWORKS consumption evidence until a
+  project-owned wrapper is checked/simulated through MCP.
+- Tightened `Scripts/quality/check_run_manifest.py` and documented
+  `Config/schemas/mosim_run_manifest_v1.schema.json` so any future
+  `closed_loop` claim requires MWORKS to consume the same setpoint trace named
+  by `planner.setpoint_trace`. Required fields are now
+  `mworks.setpoint_trace_consumption_status=pass`,
+  `mworks.consumed_setpoint_trace`, and `mworks.trace_consumption_evidence`.
+  Regression test added in `Scripts/tests/test_run_manifest_gate.py` rejects a
+  closed-loop manifest where MWORKS consumed a different trace file.
+
+## 2026-06-06 CST - PMO Thread Dispatch Rule And ROS2 Adapter Smoke
+
+- User clarified the operating model for visible threads versus sub-agents:
+  Codex sub-agents are disposable one-task workers, while visible Codex
+  threads are reusable department-style conversations with durable context.
+  PMO may dispatch existing visible departments or create new ones when a task
+  needs sustained ownership. If the user is online, PMO should use WeChat for
+  sparse coordination; if not, PMO may create/dispatch directly when the next
+  action is clear.
+- Updated `AGENTS.md` and `Docs/Workflows/agent_orchestration.md` with the new
+  rule. The DevOps/Git long-running department
+  `019e74de-a452-7a50-99e7-ca9a247b32f1` must not be repurposed while it owns
+  its current long task. Other suitable visible threads may be dispatched, and
+  missing departments may be created with a full role prompt, origin thread id,
+  request id, return/blocker packet paths, scope, forbidden actions, and
+  checkpoint cadence.
+- User also designated `019e0198-a041-77f1-84d0-c5524bfd4b81`
+  (`MoSim｜四旋翼控制系统设计`) as the experienced architecture/coordination
+  thread. Current corrected rule: if PMO is unsure how to create/dispatch a
+  visible department, it may ask that thread for a charter or blocker only.
+  Actual visible-thread creation, fork, rename, archive, or delegation remains
+  PMO-only unless the user explicitly changes the rule.
+- Cleaned stale WSL ROS2 adapter processes left by the previous timed-out
+  smoke attempt. Root cause of the repeated timeout was PowerShell-to-WSL long
+  inline Bash variable expansion: `$!`, `${SEC}`, and similar Bash variables
+  were consumed before reaching Bash, leaving empty PIDs/timestamps.
+- Added `Scripts/ros/smoke_setpoint_adapter.py` as a reusable no-RViz ROS2
+  smoke harness. It launches the C++ `planner_setpoint_adapter_node`, publishes
+  streamed 20Hz-style `PlannerSetpoint` messages with monotonic stamps and
+  sequence numbers, subscribes to `/mosim/planner/setpoint` and
+  `/mosim/planner/setpoint_adapter_status`, writes
+  `Results/tmp/mosim_setpoint_adapter_smoke.json`, and cleans up the node.
+- WSL ROS2 validation passed:
+  `colcon build --base-paths Scripts/ros/mosim_msgs Scripts/ros/mosim_setpoint_adapter --packages-select mosim_msgs mosim_setpoint_adapter --event-handlers console_direct+ --executor sequential`.
+  No-RViz smoke passed:
+  `python3 Scripts/ros/smoke_setpoint_adapter.py --timeout-s 8`.
+  Result summary: `published=true`, `setpoint_count=1`, `status_count=1`,
+  `accepted=true`, `mode=track`, `planner_id=smoke`, and no adapter process
+  remained afterward.
+- PMO sent a visible-thread task to the experienced architecture/coordination
+  thread `019e0198-a041-77f1-84d0-c5524bfd4b81` to create or locate a reusable
+  `MoSim｜ROS2 Runtime 集成` department thread. Request id:
+  `RFLY-MOSIM-CREATE-ROS2-RUNTIME-DEPT-20260606-001`; expected return path:
+  `Results/agent_packets/returns/RFLY-MOSIM-CREATE-ROS2-RUNTIME-DEPT-20260606-001.json`.
+  The architecture thread returned a blocker packet because its tool surface
+  could not create visible threads:
+  `Results/agent_packets/blockers/RFLY-MOSIM-CREATE-ROS2-RUNTIME-DEPT-20260606-001.json`.
+  PMO then used its own visible thread-management tool to create
+  `MoSim｜ROS2 Runtime 集成` with thread id
+  `019e9917-6181-7ec2-b3d6-4b624d6d3348`, set the title, and dispatched the
+  first read-only planning task:
+  `RFLY-MOSIM-ROS2-RUNTIME-ADAPTER-BINDING-PLAN-20260606-001`.
+- Sent sparse WeChat completion notification through
+  `CoAgent/gateway/cc_connect_weixin.py notify --packet ... --send` using
+  packet
+  `Results/coagent_gateway/packets/rfly_mosim_ros2_adapter_smoke_20260606.json`.
+  The adapter returned `Message sent successfully.`
+
+## 2026-06-06 CST - P0 10h Execution Started
+
+- User approved starting the RflySim-like MoSim architecture execution and asked
+  for an at-least-10h goal, sub-agent planning, timely notifications, and
+  continued progress when manual review is not immediately available.
+- Created active execution plan:
+  `Docs/Workflows/rfly_mosim_p0_10h_execution_plan.md`.
+- Active PMO goal:
+  `Factory scene -> UE sensor oracle / ROS2 sensor topics -> FAST-LIO/local map
+  -> planner/setpoint stream -> 20Hz MWORKS controller -> MWORKS dynamics
+  -> UE/RViz/evidence feedback`.
+- Integrated the architecture design thread return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-AUDIT-UE-FRONTEND-MAP-20260606-001.json`.
+  Status is `completed`; it defines UE Experiment Console, QGC/GCS-style
+  surface placement, map-switching state machine, command/echo schema, and
+  P0 smoke path. It is design evidence only, not UI/runtime implementation.
+- Spawned three sidecar agents:
+  ROS2-FASTLIO sidecar for topic/timing/FAST-LIO/local-map/planner gate;
+  Evidence-Report sidecar for `RUN_MANIFEST` and source/quality gates; and
+  MWORKS-Control sidecar for current wrapper feature matrix and safe model
+  check/edit plan.
+- Manual review policy for this 10h run: if a review packet is needed, send a
+  sparse WeChat message with origin thread id
+  `019e9868-83ea-70f0-92c5-a3a408bd78c6`; if the user does not respond in
+  time, record `review_pending` and continue headless work that does not depend
+  on that review decision.
+- Current worktree has unrelated or concurrent Git/reference changes
+  (`.gitignore`, `References/Agent/...`, `Results/codex_app_debug/`). The PMO
+  thread must not revert or stage those as part of P0 architecture work.
+- First checkpoint:
+  - Sysplorer MCP health passed with `driver_ready=true`.
+  - `QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke` and
+    `QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke` both passed
+    `check_model`.
+  - `HoverSmoke` simulation verified `dynamics.hover_thrust_error@end =
+    1.7763568394002505e-15`.
+  - `YawStepSmoke` simulation verified `dynamics.total_moment_body[3]@end =
+    0.06147367992970332`.
+  - Updated
+    `Results/identification/sunray150/SUNRAY150_DYNAMICS_UPGRADE_20260605.md`
+    with this `source=MWORKS_MCP` refresh.
+- Sidecar checkpoint:
+  - Evidence sidecar says P0 needs a strict `RUN_MANIFEST.json` and cross-layer
+    gate before any full-loop claim.
+  - MWORKS-Control sidecar confirms motor lag/yaw torque/rotor-center moment
+    exist in the project-owned experimental dynamics, not in the official
+    baseline.
+  - ROS2-FASTLIO sidecar confirms Factory FAST-LIO Gate B is current-pass for
+    manual UE/RViz review readiness, but P0 still lacks a real 3D local
+    map/planner gate and 20Hz planner-to-MWORKS setpoint adapter.
+- WeChat checkpoint packet:
+  `Results/coagent_gateway/packets/rfly_mosim_p0_10h_start_checkpoint_20260606.json`.
+  The first send attempts were blocked by packet schema issues
+  (`unsupported packet type`, then missing review `decision`). After adding
+  `template_type=review_packet` and `decision=needs_review`, the adapter sent
+  successfully. Do not treat earlier blocked attempts as user notification.
+- Implemented the first P0 evidence gate:
+  `Config/schemas/mosim_run_manifest_v1.schema.json`,
+  `Scripts/quality/check_run_manifest.py`, and
+  `Scripts/tests/test_run_manifest_gate.py`.
+  The checker prevents slice evidence from being overclaimed as full P0 by
+  requiring formal MWORKS source labels, ROS2 timing/FAST-LIO metrics, no
+  global-truth planner input, 20Hz setpoint trace for planner/closed-loop
+  claims, and `ue.no_pose_overwrite_status=pass`.
+  Checks passed:
+  `python -m pytest Scripts/tests/test_run_manifest_gate.py -q`,
+  `python -m json.tool Config/schemas/mosim_run_manifest_v1.schema.json`, and
+  `python Scripts/quality/check_run_manifest.py --help`.
+
+## 2026-06-06 CST - P0 Planner Setpoint Adapter Contract
+
+- Tightened the P0 planner/closed-loop gate so an offline UE
+  navigation/control handoff cannot be claimed as the runtime
+  planner-to-MWORKS adapter. `Scripts/quality/check_run_manifest.py` now
+  requires `planner.setpoint_trace_source=RUNTIME_20HZ_ADAPTER`,
+  `planner.setpoint_adapter_status=pass`, a positive
+  `planner.stale_command_timeout_s`, and an existing 20Hz trace for
+  planner/closed-loop claims.
+- Added regression coverage in `Scripts/tests/test_run_manifest_gate.py` and
+  kept `Scripts/tests/test_navigation_handoff.py` asserting the generated
+  scenario remains inactive/offline.
+- Added the headless planner setpoint adapter contract at
+  `Scripts/ros/planner_setpoint_adapter.py` with tests in
+  `Scripts/tests/test_planner_setpoint_adapter.py`. It generates a 20Hz
+  setpoint trace and accepted/rejected echo log from runtime-style p/v/a/yaw
+  planner commands, rejects wrong frames/non-finite values, and records stale
+  commands as `mode=hold`.
+- Boundary: this is an executable contract only. It does not publish ROS2
+  messages and does not prove live closed-loop integration until a real ROS2
+  node and MWORKS run bind it under one `RUN_MANIFEST`.
+- Checks passed: `python -m pytest Scripts/tests/test_planner_setpoint_adapter.py -q`;
+  `python Scripts/tests/test_planner_setpoint_adapter.py`;
+  `python -m pytest Scripts/tests/test_run_manifest_gate.py Scripts/tests/test_navigation_handoff.py Scripts/tests/test_mworks_uav_state_ros2.py -q`;
+  `python -m json.tool Config/schemas/mosim_run_manifest_v1.schema.json`;
+  `python Scripts/quality/check_run_manifest.py --help`.
+- Sent sparse WeChat completion notification through
+  `CoAgent/gateway/cc_connect_weixin.py` using packet
+  `Results/coagent_gateway/packets/rfly_mosim_p0_setpoint_adapter_contract_20260606.json`;
+  adapter returned `Message sent successfully.` Origin thread id included:
+  `019e9868-83ea-70f0-92c5-a3a408bd78c6`.
+- Added ROS2 skeleton packages for the same contract:
+  `Scripts/ros/mosim_msgs/` and `Scripts/ros/mosim_setpoint_adapter/`.
+  Static test `Scripts/tests/test_ros_setpoint_adapter_contract.py` checks
+  `PlannerSetpoint`, `SetpointAdapterStatus`, default topics
+  `/mosim/planner/position_cmd`, `/mosim/planner/setpoint`,
+  `/mosim/planner/setpoint_adapter_status`, and reject/stale status strings.
+  This is still not a live ROS2 runtime pass; WSL `colcon build` and a
+  no-RViz topic smoke remain next.
+
+## 2026-06-06 CST - RflySim-like Architecture Audit And Dispatch Plan
+
+- User provided `C:\Users\HP\Downloads\Mosim审核.md` as an external audit
+  checklist and asked to optimize the architecture, plan goals, and dispatch
+  sub-agent work around an RflySim-like MoSim platform. The external read is
+  limited to that user-named file; project state is recorded inside MoSim.
+- Added `Docs/Design/11_RflySim式MoSim最小闭环架构审核.md`. Conclusion:
+  MoSim has the correct RflySim-like boundary and credible implementation
+  slices, but it is not yet a complete minimum closed-loop platform. The
+  missing single run is still:
+  `UE/env sensor -> ROS2 FAST-LIO/local map -> planner -> 20Hz MWORKS
+  controller -> MWORKS plant -> UE/ROS2 feedback`.
+- The audit records a nine-module completion table, breakpoint analysis,
+  P0/P1/P2 roadmap, and 10 tasks for the minimum usable version. Current
+  completion is partial: architecture boundary, accepted rotor geometry,
+  SDF/YunZong parameter seed provenance, Factory Gate B manual-review
+  readiness, and PID-demo codegen/SIL are useful; PX4 integration, live
+  planner-to-MWORKS setpoint flow, UE command/uplink, unified run bundle, and
+  final dynamics upgrade remain open.
+- Generated five scoped dispatch packets:
+  `Results/agent_packets/RFLY-MOSIM-AUDIT-ROS-FASTLIO-20260606-001.json`,
+  `Results/agent_packets/RFLY-MOSIM-AUDIT-MWORKS-CONTROL-20260606-001.json`,
+  `Results/agent_packets/RFLY-MOSIM-AUDIT-PX4-SILHIL-20260606-001.json`,
+  `Results/agent_packets/RFLY-MOSIM-AUDIT-UE-FRONTEND-MAP-20260606-001.json`,
+  and `Results/agent_packets/RFLY-MOSIM-AUDIT-EVIDENCE-LOGGING-20260606-001.json`.
+- Updated `Docs/Workflows/agent_task_ledger.md` with the PMO audit task and
+  five child streams. The UE/frontend/map packet is ready to dispatch to the
+  visible architecture design thread `019e0198-a041-77f1-84d0-c5524bfd4b81`.
+- Guardrails reiterated: no fake point cloud, no fake 2D grid map, no keyboard
+  pose overwrite, no browser active point-cloud review, no hand-rolled
+  FAST-LIO/planning/formation, no direct official QuadChassis baseline damage,
+  and no RflySim/Gazebo sample parameters as identified Sunray150 truth.
+
 ## 2026-06-06 CST - UAV Architecture Sync Dispatched
 
 - User requested a focused design pass to align Gazebo/Sunray and RflySim UAV
@@ -3564,3 +8042,594 @@
   that the actual `←/→` orbit movement direction, not only the fallback key
   mapping, was reversed. The UE input axis remains right-positive, while the
   follow/orbit azimuth delta is now applied with the opposite sign.
+- 2026-06-06 CST: UE Experiment Console source-level command state component
+  smoke added. Use `python Scripts/UE5/check_ue_experiment_console_state_contract.py`
+  plus `python -m pytest Scripts/tests/test_ue_experiment_console_state_contract.py
+  Scripts/tests/test_ue_command_sender_contract.py Scripts/tests/test_ue_command_echo_contract.py
+  Scripts/tests/test_ue_command_adapter_smoke.py Scripts/tests/test_ue_command_echo_state_reducer.py -q`
+  to verify that pending originates only from `mosim.ue_command.v1`, accepted/
+  rejected originates only from matching `mosim.ue_command_echo.v1`, the sender
+  remains sender-only, no runtime echo receiver exists, and no Actor/input pose
+  control API is exposed. Evidence:
+  `Results/unreal_experiment_console/console_state_component_smoke_20260606_003/`.
+- 2026-06-06 CST: UE Experiment Console source-label safety patch completed
+  for task 005. `UQuadrotorMworksExperimentConsoleStateComponent::IsSmokeSource`
+  now also downgrades `MWORKS_MCP_result_adapter_smoke` and
+  `MWORKS_MCP_runtime_adapter_preflight`, in addition to
+  `offline_adapter_smoke` and `source_level_smoke`, so these known
+  offline/source/preflight rows remain `quality_status=smoke_only` and
+  `accepted_as_runtime_ack=false`. Static evidence:
+  `Results/unreal_experiment_console/echo_source_label_safety_20260606_005/`.
+  This does not implement a runtime echo receiver and does not prove live UE,
+  MWORKS, or ROS2 ack.
+- 2026-06-06 CST: UE Experiment Console source-label compile-only gate
+  completed for task 006. `Scripts/UE5/build_unreal_renderer.ps1` called
+  UnrealBuildTool from `D:\Program Files\Epic Games\UE_5.5` for
+  `MoSimSceneLibraryEditor Win64 Development` against
+  `UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject`; exit code was 0.
+  UBT compiled `QuadrotorMworksExperimentConsoleStateComponent.cpp` and linked
+  `UnrealEditor-QuadrotorMworksBridge.dll`. Post-compile static checkers and
+  focused pytest still pass. Evidence:
+  `Results/unreal_experiment_console/source_label_compile_gate_20260606_006/`.
+  This is compile evidence only, not live UE runtime ack or runtime receiver
+  evidence.
+- 2026-06-06 CST: Replaced the old `MoSim｜CoAgent运维平台`
+  thread `019e74d1-72fa-7d33-8783-90584035ae92` for native Codex
+  thread/automation work because it was created through an older WSL/non-App
+  native conversation path. New active CoAgent ops thread:
+  `MoSim｜CoAgent运维平台` / `019e9bc1-ea9f-7102-b41a-4ef9b2308992`.
+  R2 capability smoke confirms `automation_update` and native thread-management
+  tools are visible; no mutation automation was created in that smoke. Updated
+  active routing docs and `CoAgent/dispatch/department_threads.json`; also
+  corrected the deleted ROS2 old thread route to R2
+  `019e9b85-d4d8-7bf3-8afd-a65697cd3889`. Evidence:
+  `Results/agent_packets/returns/MOSIM-COAGENT-OPS-R2-NATIVE-CAPABILITY-SMOKE-20260606-001.json`
+  and
+  `Results/agent_packets/returns/PMO-COAGENT-OPS-R2-THREAD-REPLACEMENT-20260606-001.json`.
+- 2026-06-06 CST: User clarified that existing departments needing recurring
+  checks should not be duplicated as new visible threads now that
+  `MoSim｜CoAgent运维平台` has native thread and automation capability.
+  Updated orchestration/meta-maintenance rules: configure native Codex App
+  automations or thread wakeups against existing threads for
+  `MoSim｜微信网关运维部` (`019e9855-aa43-7fe2-807e-be7d4095877b`),
+  `MoSim｜Codex 上下文维护部` (`019e3dac-de0e-7180-98ad-d7137e8a6275`), and
+  `MoSim｜开源项目探针` (`019e74cf-fb50-7d71-912c-f586b4dd5f06`) instead of
+  creating duplicate departments.
+- 2026-06-06 CST: User confirmed the old CoAgent ops thread
+  `019e74d1-72fa-7d33-8783-90584035ae92` can be deleted from the current
+  operating set. Its earlier Codex App capability research is incomplete for
+  current planning because the thread itself did not have reliable native
+  thread/automation tools. PMO created a redo task packet for
+  `MoSim｜CoAgent运维平台`:
+  `Results/agent_packets/MOSIM-CODEX-NATIVE-CAPABILITY-READOPT-R2-20260606-001.json`.
+- 2026-06-06 CST: User deleted the old CoAgent ops thread
+  `019e74d1-72fa-7d33-8783-90584035ae92`. Updated current routing records so it
+  is no longer described as a recoverable App thread. Future CoAgent ops,
+  native Codex App capability audits, thread-management tasks, and automation
+  setup go to `MoSim｜CoAgent运维平台`
+  (`019e9bc1-ea9f-7102-b41a-4ef9b2308992`). Recover old work only from project
+  docs and `Results/agent_packets/`.
+- 2026-06-06 CST: User reported Codex App list still showed the deleted old
+  `MoSim｜CoAgent运维平台` row even though the history was deleted. PMO
+  `list_threads query=CoAgent运维平台` only returned R2
+  `019e9bc1-ea9f-7102-b41a-4ef9b2308992`; old id archive attempt returned
+  `Inactive thread archive did not persist`, indicating an inactive/App-cache
+  residue rather than a dispatchable thread. PMO renamed the stale id to
+  `MoSim｜CoAgent运维平台-已删除勿用` as a visual guard. If the list row remains,
+  refresh/restart Codex App; do not restore or dispatch to the old id.
+- 2026-06-06 CST: User renamed the new App-native CoAgent ops thread
+  `019e9bc1-ea9f-7102-b41a-4ef9b2308992` back to
+  `MoSim｜CoAgent运维平台` without the temporary `R2` suffix. PMO confirmed the
+  App title through `list_threads query=CoAgent` and updated the current
+  dispatch registry and active routing docs. The durable distinction is now the
+  thread id: current `019e9bc1-ea9f-7102-b41a-4ef9b2308992`; deleted old
+  `019e74d1-72fa-7d33-8783-90584035ae92`.
+- 2026-06-06 CST: MWORKS Dynamics And Control Verification R2 completed task
+  `RFLY-MOSIM-MWORKS-YAW-SIGN-MOTOR-ORDER-AUDIT-20260606-008`. Local source
+  audit found PX4/Sunray quad order `0 front-right ccw`, `1 back-left ccw`,
+  `2 front-left cw`, `3 back-right cw`; current MWORKS wrapper order is
+  front-right, front-left, back-left, back-right, so the documented mapping is
+  PX4/Sunray `0,2,1,3` -> MWORKS `1,2,3,4`. MCP health and check_model passed
+  for existing physical yaw smoke; simulation result binding was degraded and
+  only the internal `torque_application_error@end=0.0` probe was usable.
+  Evidence:
+  `Results/mworks_dynamics_upgrade/20260606_008_yaw_sign_motor_order_audit/`.
+  This is not parameter identification, fault-isolation readiness, allocation
+  reconstruction readiness, controller performance, planner_ready, live runtime
+  ack, Factory trace consumption, or closed_loop.
+- User then reported that the MWORKS/Sysplorer GUI error dialog had not been
+  returned properly by the department. PMO dispatched an immediate correction
+  to MWORKS R2. R2 wrote GUI blocker
+  `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-YAW-SIGN-MOTOR-ORDER-AUDIT-20260606-008-GUI-CRASH-REPORT.json`,
+  referencing PMO screenshot
+  `Results/mworks_gui_incidents/20260606_sysplorer_error_dialog/sysplorer_error_dialog_20260606_1737.png`
+  and incident metadata
+  `Results/mworks_gui_incidents/20260606_sysplorer_error_dialog/incident.json`.
+  The 008 source-audit evidence remains bounded to pre-dialog saved evidence;
+  after the GUI crash dialog, no new MWORKS GUI/MCP evidence may be claimed
+  until PMO/user authorizes recovery and the smallest relevant
+  `session_manager health` plus `check_model` passes.
+- 2026-06-06 CST: User clarified that the `ret=-2` recovery prompt should be
+  handed to `MoSim｜微信网关运维部` (`019e9be0-534e-7c22-97ff-98fa7c2af39b`),
+  which owns WeChat gateway maintenance and sparse fallback handling. PMO
+  verified the thread is visible through `list_threads query=微信网关运维部`,
+  but two native `send_message_to_thread` attempts failed before the task could
+  start: first `failed to update thread settings: internal error; agent loop
+  died unexpectedly`, then a minimal default-settings retry `failed to start
+  turn: internal error; agent loop died unexpectedly`. New blocker:
+  `Results/agent_packets/blockers/PMO-WEIXIN-GATEWAY-R2-DISPATCH-SURFACE-20260606-002.json`.
+  The Sunray150 `battery.png` / `guard_landing_gear.png` review packet remains
+  undelivered. Route the combined Gateway Ops thread-dispatch recovery plus
+  WeChat `ret=-2` / email fallback handling to `MoSim｜CoAgent运维平台`
+  (`019e9bc1-ea9f-7102-b41a-4ef9b2308992`); do not retry WeChat or the
+  Gateway Ops visible thread in a loop.
+- 2026-06-06 CST: CoAgentOps diagnosed `MoSim｜微信网关运维部-R2`
+  (`019e9be0-534e-7c22-97ff-98fa7c2af39b`) as a visible-thread dispatch
+  surface failure, not a WeChat `ret=-2` business failure. Evidence: R2 is
+  listable/readable and title-writable, and its initialization turn completed,
+  but PMO production dispatch and CoAgentOps no-op start-turn probes failed
+  with `agent loop died unexpectedly`. User corrected the operating rule:
+  next time, complete the bounded recovery ladder before creating a replacement.
+  Because the user then explicitly said "新建吧", CoAgentOps created exactly
+  one replacement, `MoSim｜微信网关运维部-R3`
+  (`019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c`). Its first initialization turn was
+  interrupted by the user, then a minimal initialization follow-up completed
+  successfully. Production gateway dispatch should use R3; R2 remains
+  quarantined unless PMO explicitly restores it through a later no-op recovery
+  ladder. The earlier WeChat `ret=-2` Sunray packet retry had already
+  succeeded in
+  `Results/agent_packets/returns/COAGENTOPS-WEIXIN-GATEWAY-R2-DISPATCH-RET2-RECOVERY-20260606-003.json`.
+- 2026-06-06 CST: ROS2 Runtime R3 completed 028 as a blocker, not a pass.
+  It generated a longer accepted body-frame source under
+  `Results/ros2_runtime/b1_long_noloop_source_gate_20260606_028/`: 120 frames,
+  `body_lidar_m_z_up`, 0.0..11.9 s, about 15.6k-17.2k points/frame. The no-goal
+  runner used `loop=false`, replay completed 120/120 frames, Livox/IMU probe
+  passed (`/mosim/livox/lidar` 38 samples around 9.3 Hz, IMU 770 samples around
+  191 Hz, both monotonic), and FAST-LIO output topics were nonzero
+  (`/Odometry=47`, `/cloud_registered=46`). The hard gate still failed because
+  `fast_lio.launch.log` contains one `lidar loop back, clear buffer`. Blocker:
+  `Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-LONG-NOLOOP-SOURCE-GATE-20260606-028.json`.
+  This restores source/output plumbing only; it is not FAST-LIO success,
+  planner_ready, local-map quality, controller performance, mission success, or
+  closed_loop. Next task is a narrow FAST-LIO timestamp/startup-reset diagnosis
+  before any planner/EGO goal, PositionCommand recorder, or 20 Hz adapter.
+- 2026-06-06 CST: PMO created and dispatched 029,
+  `Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-TIMESTAMP-DIAG-20260606-029.json`,
+  to ROS2 Runtime R3 (`019e9c72-ee74-79d1-b9fe-621d3c6fc99e`). Read-only
+  source audit found the same FAST-LIO ROS2 candidate log string can be printed
+  by PointCloud2 callback, Livox CustomMsg callback, or IMU callback; 028's
+  first visible IMU stamp was about 14.07 s earlier than the first visible
+  Livox stamp. 029 is limited to callback-labeled temporary diagnostics in the
+  imported candidate under `Results/tmp/`, first-N Livox/IMU timestamp tracing,
+  and at most one no-goal micro-probe. It must not enter EGO/planner acceptance,
+  publish goals, run PositionCommand recorder, start the 20 Hz adapter, edit
+  `References/`, or change extrinsics/frame adapters.
+- 2026-06-06 CST: MWORKS Dynamics And Control Verification R2 completed task
+  `RFLY-MOSIM-MWORKS-CONTROL-DOWNSTREAM-OUTPUT-GROUP-20260606-020`.
+  `FactoryTraceIso26ControllerOutputAliasSmoke` extends the passing Iso25
+  bridge and adds exactly one downstream controller/pre-actuator alias
+  observation group. P0 GUI sentinel was clean before and after, Sysplorer MCP
+  health passed, `check_model` passed, 0-2 s `simulate_model data=true`,
+  `GetVarTimes=1001`, and selected aliases were readable. No new `connect()`,
+  actuator/motor/speedSensor reconnect, direct PosMea/AngleMea reconnect, or
+  full Factory wrapper retry occurred. Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-DOWNSTREAM-OUTPUT-GROUP-20260606-020.json`.
+  This is only incremental result-context evidence, not Factory trace
+  consumption, closed_loop, controller performance, plant tracking, mission
+  success, or parameter identification.
+- 2026-06-06 CST: PMO created and dispatched MWORKS 021,
+  `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-PREFLIGHT-GROUP-20260606-021.json`,
+  to MWORKS R2 (`019e9be5-334b-76b1-93f9-8b02caebf376`). The next gate fixes
+  the baseline to Iso26 and permits only one actuator-input/preflight group, or
+  a precise blocker at the first actuator boundary. It still forbids full
+  Factory wrapper retry, actuator flange/chassis/speedSensor/full plant paths
+  together, parameter changes, and any Factory trace/closed-loop/performance
+  claim.
+- 2026-06-06 CST: Codex App crashed/restarted during visible-thread recovery.
+  User confirmed CoAgentOps also needs an hourly self-maintenance automation,
+  with Gateway Ops checked first but CoAgentOps acting as fallback when a
+  specialist thread is half-dead. Initial implementation mistakenly created a
+  detached workspace cron `mosim-coagentops`; user corrected that PMO-style
+  self-maintenance must land in the CoAgentOps conversation itself. Fixed by
+  updating existing automation `mosim-wechat-gateway-hourly-health` into a
+  single hourly heartbeat named `MoSim｜CoAgentOps 小时巡检`, targeting
+  CoAgentOps thread `019e9bc1-ea9f-7102-b41a-4ef9b2308992`, with no explicit
+  model/reasoning override. Deleted the redundant detached cron
+  `mosim-coagentops`. Updated `Docs/Workflows/coagent_meta_maintenance.md` with
+  the priority plus fallback policy: one CoAgentOps-thread heartbeat checks
+  Gateway Ops R3 first, then writes blocker/takes urgent recovery ownership if
+  the specialist cannot start turns.
+- 2026-06-06 CST: ROS2 Runtime R3 completed 029 as diagnostic return, not as a
+  FAST-LIO success gate. Callback-labeled temporary logs in the imported
+  `Results/tmp` FAST-LIO candidate showed the remaining 028 loop-back came from
+  `imu_cbk` / `imu_stamp_regression_at_startup_boundary`, not LiDAR callback
+  timestamp regression and not no-repro clean. The event occurred before first
+  accepted LiDAR (`last_timestamp_lidar=0`, `is_first_lidar=1`,
+  `lidar_buffer_size=0`) while the IMU buffer was already large. This no-goal
+  micro-probe did not restore FAST-LIO output counts, so it is not planner_ready
+  or local-map quality evidence. Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-FASTLIO-TIMESTAMP-DIAG-20260606-029.json`.
+  Next ROS2 work must be a bounded IMU startup discipline no-goal gate before
+  returning to 028, with zero callback-labeled loop-back and nonzero FAST-LIO
+  outputs required before any planner/EGO/20 Hz adapter work.
+- 2026-06-06 CST: MWORKS Dynamics And Control Verification R2 completed task
+  `RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-PREFLIGHT-GROUP-20260606-021`.
+  `FactoryTraceIso27ActuatorInputAliasSmoke` extends passing Iso26 and adds
+  exactly one read-only actuator-input alias consistency group:
+  `actuator1_1.u` through `actuator1_4.u`, per-motor error against
+  `pre_actuator_command_1..4`, and `actuator_input_abs_error_sum`. The previous
+  interrupted turn had no return/blocker packet; on resume the existing result
+  context was empty, so R2 performed the one allowed 0-2 s smoke rerun after
+  clean GUI sentinel and MCP health. `check_model` passed, `simulate_model
+  data=true`, `GetVarTimes=1001`, aliases were readable, and actuator input
+  error sum was `0.0`. Evidence:
+  `Results/mworks_trace_consumption/actuator_preflight_group_20260606_021/`;
+  return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-PREFLIGHT-GROUP-20260606-021.json`.
+  This is only actuator-input/preflight result-context evidence, not Factory
+  trace consumption, full actuator/plant closure, closed_loop, controller
+  performance, plant tracking, mission success, parameter identification,
+  planner readiness, or live UE/ROS2 ack.
+- 2026-06-06 CST: PMO completed `QuadrotorExperiments` package classification
+  cleanup after the user reported the package tree was chaotic. Added
+  categorized compatibility entries with Chinese descriptions:
+  `OfficialScenarios`, `ControllerBaselines`, `RobustFaultScenarios`,
+  `PlanningScenarios`, `SceneTraceScenarios`, `TraceIsolation`,
+  `DynamicsUpgrade`, `SystemArchitecture`, `SystemModules`, `SupportModels`,
+  and `FormationScenarios`. Updated `package.order`, registered the real
+  formation model `FormationTriangleFigure8LinearMPCSysblockClosedLoop`, and
+  deleted only `Sunray150DynamicsUpgradeSmoke.mo` after proving it was an
+  exact duplicate of three classes already embedded in `package.mo`. Static
+  checks passed: no missing `.mo` entries in `package.order`, no invalid
+  package.order entries, no duplicate order entries, all terminal `extends`
+  targets found, and `git diff --check` clean. Sysplorer MCP representative
+  checks passed on dedicated port `49153`: dynamics, physical wrench, trace
+  isolation Iso27, echo support, formation, controller baseline, system module,
+  and complete-system aliases all checked after loading `QuadrotorModel` plus
+  the needed independent Sysblock controller files. Evidence:
+  `Results/mworks_package_cleanup/20260606_quadrotor_experiments_classification/`;
+  return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-QUADROTOR-EXPERIMENTS-CLASSIFICATION-20260606-013.json`.
+  This is package organization evidence only, not final physical subpackage
+  migration, controller performance, parameter identification, live runtime
+  ack, planner readiness, or closed_loop. MWORKS 012 package-restructure lock
+  is lifted; resume it only after reloading current package plus needed
+  controller dependencies and running the GUI sentinel.
+- 2026-06-06 CST: CoAgentOps hourly maintenance reported a real dispatch
+  registry drift: production Gateway Ops should use `MoSim｜微信网关运维部-R3`
+  (`019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c`), while
+  `CoAgent/dispatch/department_threads.json` still pointed WeChatGatewayOps to
+  quarantined R2 `019e9be0-534e-7c22-97ff-98fa7c2af39b`. PMO corrected the
+  registry row to R3 and preserved the R2 quarantine note. Evidence blocker:
+  `Results/agent_packets/blockers/COAGENTOPS-HOURLY-MAINTENANCE-20260606-2003.json`.
+- 2026-06-06 CST: PMO verified the UE console and Sunray/PBR department
+  threads are visible and dispatched the next two narrow P0 continuation tasks:
+  `RFLY-MOSIM-UE-CONSOLE-DISABLED-STATE-CONTRACT-SMOKE-20260606-007` to
+  `MoSim｜UE实验控制台与场景交互部`
+  (`019e9b24-50aa-7cd3-9e7c-4c43b224d993`) and
+  `RFLY-MOSIM-SUNRAY150-REVIEW-PACKAGE-HYGIENE-20260606-003` to
+  `MoSim｜Sunray150资产与PBR审核部`
+  (`019e9b25-066e-7372-8152-209c2b1322a4`). Both packets require
+  department-local planning fields and `subagent_plan`. UE 007 is source/static
+  disabled-state contract work only, not live receiver/UI/Blueprint/runtime
+  evidence. Sunray 003 is review-package/path-neutral hygiene only, not
+  material rework or final material acceptance.
+- 2026-06-06 CST: UE Experiment Console department completed
+  `RFLY-MOSIM-UE-CONSOLE-DISABLED-STATE-CONTRACT-SMOKE-20260606-007`.
+  Added `Scripts/UE5/check_ue_console_disabled_state_contract.py` and
+  `Scripts/tests/test_ue_console_disabled_state_contract.py` as a source/static
+  fixture contract. The matrix covers controller switch, planner switch, wind
+  disturbance, fault injection, and map/scene switch controls: pending rows
+  remain `disabled_pending_echo`; `offline_adapter_smoke`,
+  `source_level_smoke`, `MWORKS_MCP_result_adapter_smoke`, and
+  `MWORKS_MCP_runtime_adapter_preflight` remain `quality_status=smoke_only`
+  with `accepted_as_runtime_ack=false`; rejected rows remain disabled; and only
+  a future live `mosim.ue_command_echo.v1` fixture can represent enabled
+  accepted state. Evidence:
+  `Results/unreal_experiment_console/console_disabled_state_contract_20260606_007/`;
+  return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-DISABLED-STATE-CONTRACT-SMOKE-20260606-007.json`.
+  No UE GUI, Blueprint/UMG/assets, runtime receiver, MWORKS/Sysplorer/Syslab
+  runtime, ROS2/RViz2/FAST-LIO/planner runtime, or live ack claim occurred.
+- 2026-06-06 CST: UE Experiment Console department completed
+  `RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-ACCEPTANCE-FIXTURE-CONTRACT-20260606-008`.
+  Added `Scripts/UE5/check_ue_live_echo_acceptance_fixture_contract.py` and
+  `Scripts/tests/test_ue_live_echo_acceptance_fixture_contract.py` as a
+  source/static accepted-state fixture contract. Future enabled accepted state
+  requires `mosim.ue_command_echo.v1` plus authoritative source
+  (`MWORKS_live_downlink`, `ROS2_runtime_echo`, or
+  `MWORKS_ROS2_live_downlink`), command id (`run_id`, `request_id`, `seq`,
+  `command.kind`), timestamp (`time_s`), status, ack authority, and
+  `no_pose_overwrite_status=pass`. Valid future accepted fixtures cover
+  controller, planner, wind, fault, and scene switch controls. Smoke/source/
+  preflight rows, rejected rows, authority mismatch rows, and missing
+  command-id/timestamp/status rows remain disabled or invalid fixture, not
+  runtime accepted. Evidence:
+  `Results/unreal_experiment_console/live_echo_acceptance_fixture_contract_20260606_008/`;
+  return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-ACCEPTANCE-FIXTURE-CONTRACT-20260606-008.json`.
+  No UE GUI, Blueprint/UMG/assets, runtime receiver/socket/UDP implementation,
+  MWORKS/Sysplorer/Syslab runtime, ROS2/RViz2/FAST-LIO/planner runtime, or
+  live ack/planner_ready/closed_loop/controller-performance claim occurred.
+- 2026-06-06 CST: Sunray150 Asset/PBR department completed
+  `RFLY-MOSIM-SUNRAY150-REVIEW-PACKAGE-HYGIENE-20260606-003`. It generated a
+  path-neutral review package index and Markdown manual-review checklist under
+  `Results/unreal_scene_mapping/sunray150_review_package_hygiene_20260606_003/`,
+  covering 20 component PNGs across 5 review batches, including `battery.png`
+  and `guard_landing_gear.png`. All 20 PNGs are present, non-empty, RGBA
+  1400x1050, and non-flat. The source manifest remains recoverable via
+  `project_relative_path` but still contains legacy absolute `path` fields and
+  an absolute top-level `source_blend`; the new review package uses
+  project-relative paths only. Return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-SUNRAY150-REVIEW-PACKAGE-HYGIENE-20260606-003.json`.
+  This is file/package readiness only: manual visual review remains required,
+  and there is no final material acceptance, UE import/export final acceptance,
+  runtime success, planner_ready, closed_loop, or controller-performance claim.
+- 2026-06-06 CST: MWORKS Dynamics/Control R2 completed
+  `RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014`. It added
+  project-owned `FactoryTraceIso28ActuatorToWrenchBridgeSmoke`, extending Iso27
+  and feeding `actuator_input_1..4` into an independent
+  `Sunray150PhysicalWrenchFrameAdapter` command surface. P0 GUI sentinels were
+  clean, Sysplorer health passed, baseline/controller/package force-loads
+  passed, parent checks passed, `check_model` passed, 0-0.25 s
+  `SimulateModel data=true`, `GetVarTimes=251`, and sampled bridge command,
+  force/torque application, motor-order, and yaw-direction errors were all
+  zero. Evidence:
+  `Results/mworks_dynamics_upgrade/20260606_014_actuator_to_wrench_bridge_resume/`;
+  return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json`.
+  This is a minimal sidecar actuator-input alias to physical-wrench adapter
+  smoke only, not Factory trace consumption, full Factory wrapper retry,
+  actuator flange/chassis/speedSensor/full plant closure, controller
+  performance, parameter identification, planner_ready, live runtime ack, or
+  closed_loop.
+- 2026-06-06 CST: MWORKS Dynamics/Control R2 completed
+  `RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015`. It added
+  project-owned `FactoryTraceIso29ExternalFrameWrenchBoundarySmoke`, extending
+  Iso28 and applying wrapper force/torque to a new explicit
+  `external_test_body` through a new `external_force_and_torque` component.
+  P0 GUI sentinels were clean, Sysplorer health passed,
+  baseline/controller/package force-loads passed, Iso28/Iso29 `check_model`
+  passed, 0-0.25 s `SimulateModel data=true`, `GetVarTimes=251`, and sampled
+  external force/torque application and adapter-match errors were all zero.
+  Evidence:
+  `Results/mworks_dynamics_upgrade/20260606_015_wrench_to_external_frame_boundary/`;
+  return packet:
+  `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json`.
+  This is minimal external MultiBody frame/test-body boundary evidence only,
+  not Factory trace consumption, QuadChassis/full plant closure, actuator
+  flange/speedSensor chain, controller performance, parameter identification,
+  planner_ready, live runtime ack, mission success, or closed_loop.
+- 2026-06-06 CST: PMO changed Sunray150 PBR work back to department execution
+  after user correction that the main thread should not spend time
+  implementing the texture pass. PMO updated the Sunray PBR workflow with the
+  external-source adoption rule, added a Sunray PBR/material source row to the
+  external learning index, created
+  `RFLY-MOSIM-SUNRAY150-PBR-ELECTRONICS-CAMERA-REALISM-20260606-005`, and
+  dispatched it to `MoSim｜Sunray150资产与PBR审核部`
+  (`019e9b25-066e-7372-8152-209c2b1322a4`). The task is bounded to component
+  PBR realism for the grey/flat camera, PCB/N150, ports/connectors, cables,
+  battery, and guard/landing-gear review outputs, requires local planning
+  fields and a disposable subagent slice if available, and forbids geometry,
+  dynamics, extrinsics, controller, planner, ROS2/MWORKS runtime, and
+  `References/` changes. PMO also dispatched
+  `RFLY-MOSIM-SUNRAY150-PBR-SOURCE-WHITELIST-LEARNING-20260606-001` to
+  `MoSim｜开源项目学习部-R2` for source whitelist/adopt-adapt-reference-reject
+  advice only. Main-thread role is now coordination, return integration, and
+  opening/showing the resulting contact sheet for manual review; no final
+  material acceptance is claimed.
+- 2026-06-06 CST: PMO integrated three department returns while keeping the
+  Sunray150 PBR implementation delegated to `MoSim｜Sunray150资产与PBR审核部`.
+  Open Source Learning R2 completed the PBR source whitelist: no broad crawl is
+  needed now; use named CC0 Poly Haven/ambientCG assets and local procedural/UV
+  tooling, while YunDrone/N150/Livox images remain visual reference-only.
+  MWORKS R2 completed static graphical-model inventory only; P0 GUI review
+  candidates are FormationTriangle, Sunray150UEFactoryTraceTable smoke, and the
+  FactoryTrace Iso chain, but static inventory is not graphical acceptance.
+  ROS2 R1 completed 034 active-window recovery: Livox/IMU and FAST-LIO outputs
+  were nonzero/monotonic in the active window, `/Odometry=20`,
+  `/cloud_registered=20`, loop-back total was zero, and forbidden planner/
+  setpoint topics were absent. The remaining ROS2 risk is TF/RViz readiness:
+  late diagnostics did not capture `camera_init -> body` and did not observe a
+  `ue_world <-> camera_init` bridge. PMO created and queued 035 for a bounded
+  no-goal TF/RViz diagnostic and 017 for a bounded MWORKS yaw-transient evidence
+  gate. MWORKS R2 GUI review is intentionally not run concurrently with R1,
+  because both contend for the same existing Sysplorer/MWORKS session.
+- 2026-06-07 CST: PMO integrated MWORKS R2 009. R2 completed the static-only
+  `QuadrotorControllerBlocks` package alias repair by replacing all 19
+  leading-dot wrapper aliases with explicit package-local alias targets in
+  `package.mo`. It did not touch the 19 controller `.mo` files, backup/upgrade
+  history, package.order, GUI, MCP, `check_model`, simulation, or Smart Layout;
+  `live_mworks_touched=false`. This clears the static alias spelling issue
+  found in 008 but does not clear live Sysplorer/package-browser acceptance,
+  because the reusable Sysplorer window was still classified as demo/license
+  blocked by 008.
+- 2026-06-07 CST: PMO integrated ROS2 R1 038. R1 completed a read-only/static
+  diagnosis of the 037 Livox regression and used one disposable read-only
+  subagent. 034 and 037 used the same source, rates, loop flags, and declared
+  startup order; the key 037 difference was active `/tf` capture plus TF edge
+  wait conditions. 037 also showed dense LiDAR publish-cost anomaly and Livox
+  active timestamp regression matching the FAST-LIO `livox_pcl_cbk` loop-back
+  timebase. Classification is diagnostic-tooling/load-sensitive runtime Livox
+  publication regression, not source ordering. This is not TF/RViz readiness,
+  FAST-LIO success, localization/local-map quality, planner_ready, controller
+  performance, mission success, or closed_loop evidence.
+- 2026-06-07 CST: PMO strengthened the MWORKS dispatch rule after user
+  correction. Every future live MWORKS/Sysplorer/Syslab task must run a
+  preflight activation sentinel/background screenshot before any MCP/model/GUI
+  operation and must return `activation_sentinel_before`, optional
+  `background_screenshot_before`, `license_state`,
+  `will_not_click_activation_login=true`, and `live_mworks_touched`. Demo
+  edition, unactivated/login/authorization state, GUI error report, or unknown
+  sentinel state is a blocker, not a model or solver tuning task. PMO synced
+  this rule to MWORKS R1 and R2 through native visible-thread dispatch.
+- 2026-06-07 CST follow-up: MWORKS R1 and R2 both acknowledged the live
+  activation-sentinel dispatch contract without touching MWORKS GUI/MCP. R1
+  wrote `MWORKS-R1-LIVE-ACTIVATION-SENTINEL-CONTRACT-ACK-20260607-001`; R2
+  wrote `RFLY-MOSIM-MWORKS-R2-LIVE-ACTIVATION-SENTINEL-CONTRACT-ACK-20260607`.
+  Treat future live MWORKS return/blocker packets as incomplete if they omit
+  the activation sentinel, license state, no-click pledge, and
+  `live_mworks_touched` fields. Static-only MWORKS tasks must explicitly state
+  `live_mworks_touched=false`.
+- 2026-06-07 CST: PMO prepared ROS2 R1 task
+  `RFLY-MOSIM-ROS2-RUNTIME-B1-LOW-LOAD-SOURCE-OUTPUT-RECOVERY-20260607-039`
+  after 038. 039 is the next real runtime gate that does not depend on MWORKS
+  license recovery: restore 034-style low-load active Livox/IMU and
+  `/Odometry`/`/cloud_registered` source/output acceptance, keep `/tf` out of
+  the active recorder, move TF observation to post-active/gap evidence, and
+  require zero FAST-LIO loop-back before any planner, PositionCommand, 20 Hz
+  adapter, TF/RViz readiness, localization-quality, local-map-quality, mission,
+  controller-performance, or closed-loop claim.
+- 2026-06-07 CST: PMO confirmed the user's report that MWORKS activation state
+  had drifted again, using only read-only local evidence. The Win32 sentinel
+  detected `license_or_login` with matched pattern `演示版`, and background
+  screenshots showed mixed Sysplorer state: one window in `[教育版]` and the
+  `QuadrotorControllerBlocks` window in `[演示版]`. PMO wrote blocker
+  `PMO-MWORKS-ACTIVATION-DRIFT-20260607-001`, updated the dispatch contract so
+  every live MWORKS task packet must include `mworks_live_gate`, and prepared
+  `PMO-MWORKS-ACTIVATION-SENTINEL-PRACTICE-20260607-010` for R1/R2. Until a
+  later clean preflight identifies a valid reusable session, live MWORKS MCP,
+  package acceptance, graphical review, check_model, translate, simulate, plot,
+  and animation work remain blocked; static-only work may continue only with
+  `live_mworks_touched=false`.
+- 2026-06-07 CST: PMO integrated ROS2 R1 039 as a blocker. R1 ran the single
+  allowed no-goal low-load source/output probe with active `/tf` capture
+  removed. The run still failed before any planner/goal work: active Livox and
+  IMU stamps were nonmonotonic, and FAST-LIO reported three callback-labeled
+  loop-back events (`livox_pcl_cbk=1`, `imu_cbk=2`). `/Odometry` and
+  `/cloud_registered` remained nonzero/monotonic, dense LiDAR publish stats
+  were normal, forbidden planner/setpoint topics were absent, and cleanup was
+  clean. This blocks source/output recovery even without active `/tf` recorder
+  load; it is not TF/RViz readiness, FAST-LIO success, localization/local-map
+  quality, planner_ready, controller performance, mission success, or
+  closed_loop evidence.
+- 2026-06-07 CST: PMO completed the MWORKS activation-sentinel practice gate
+  for both MWORKS departments after the user pointed out that live MWORKS
+  tasks must check activation before model work. R1 and R2 each ran only the
+  read-only Win32 sentinel plus background screenshot path, detected the same
+  mixed license state (`[教育版]` window plus `[演示版]` window), and returned
+  `license_or_login` blockers with `will_not_click_activation_login=true` and
+  `live_mworks_touched=false`. This proves the department rule is now
+  executable: future live MWORKS dispatches must include `mworks_live_gate`, and
+  missing/unknown/demo activation state is a blocker, not a solver/model
+  tuning task. Live MWORKS acceptance remains blocked until a later clean
+  sentinel verifies a valid reusable session; static file-only work can
+  continue with `live_mworks_touched=false`.
+- 2026-06-07 CST: PMO strengthened the MWORKS activation rule from prose to a
+  machine-checkable gate. `Scripts/quality/check_mworks_live_gate.py` now
+  validates live MWORKS task packets and return/blocker packets for
+  `mworks_live_gate`, preflight sentinel, background screenshot, license state,
+  no-click pledge, and `live_mworks_touched`; tests passed with
+  `python -m pytest Scripts/tests/test_mworks_live_gate.py
+  Scripts/tests/test_agent_task_native_surface_gate.py -q`. PMO also updated
+  MWORKS skills/workflows and `CoAgent/dispatch/dispatch_helper.py` so R1/R2
+  dispatch text explicitly reminds departments to screenshot/check activation
+  before any live MCP/model/GUI work. A fresh read-only PMO sentinel still
+  shows mixed `[教育版]`/`[演示版]` Sysplorer state, so live MWORKS remains
+  blocked; PMO sent R1/R2 synchronization prompts and is waiting for brief
+  acknowledgement packets.
+- 2026-06-07 CST: MWORKS live-gate synchronization completed. R1 returned
+  `MWORKS-R1-LIVE-GATE-MACHINE-CHECK-CONTRACT-ACK-20260607-002`; R2 returned
+  `PMO-MWORKS-R2-LIVE-GATE-HARD-CONSTRAINT-SYNC-20260607-011`. Both static
+  ack packets passed `check_mworks_live_gate.py --kind return --expect static`.
+  Future live MWORKS dispatches must include the gate and future live
+  return/blocker packets can be rejected by PMO if they omit activation
+  sentinel evidence, background screenshot evidence, license state, the
+  no-click pledge, or `live_mworks_touched`.
+- 2026-06-07 CST: PMO closed the remaining MWORKS department loophole after
+  the user clarified that every MWORKS assignment must first screenshot/check
+  activation state. The rule is now stricter than "live only": any future
+  MWORKS R1/R2 business dispatch, including static model organization and R2
+  graphical/layout audit preparation, must start with existing-window
+  activation sentinel plus background screenshot and must return
+  `mworks_window_evidence_touched=true`. Static business work after that
+  preflight uses `live_mworks_touched=false`; MCP/load/check/translate/
+  simulate/plot/animation/GUI review uses `live_mworks_touched=true`.
+  `Scripts/quality/check_mworks_live_gate.py --expect department` now enforces
+  this. R1 and R2 wrote 013 static rule-sync ACK packets; they intentionally
+  pass `--expect static` only because PMO forbade screenshot/GUI in the ACK
+  turn, so they are not activation/window-readiness evidence. Live MWORKS work
+  remains blocked until a later clean sentinel resolves the current mixed
+  `[教育版]`/`[演示版]` state.
+- 2026-06-07 CST: PMO converted the MWORKS screenshot/activation rule from a
+  remembered instruction into the department dispatch template. MWORKS R1/R2
+  dispatch text now includes the exact sentinel and background capture
+  commands, states that the target department must run them itself, and
+  requires a blocker with `license_state=sentinel_unavailable_blocked` if the
+  department cannot run the tools. Added a regression test for the dispatch
+  helper text and reran `python -m pytest
+  Scripts/tests/test_dispatch_helper_mworks_gate.py
+  Scripts/tests/test_mworks_live_gate.py -q` successfully. PMO wrote task
+  packet
+  `PMO-MWORKS-R1R2-BACKGROUND-SCREENSHOT-ACTIVATION-DRILL-20260607-014`,
+  verified it with `check_mworks_live_gate.py --kind task --expect department`,
+  and dispatched it to MWORKS R1 and R2. The drill requires each department to
+  run its own existing-window sentinel/background screenshot and return a
+  machine-checkable department blocker/return packet; no MWORKS model,
+  Sysplorer MCP, GUI click, check_model, simulation, graphical acceptance,
+  controller-performance, planner_ready, live ack, or closed_loop claim is
+  permitted.
+- 2026-06-07 CST: PMO closed the P0 MWORKS authorization infrastructure
+  incident. After `session_manager(action="ensure")`, the reusable Sysplorer
+  window was in `[演示版]` and `License(ltype="info")` reported demo state;
+  maximizing/focusing the existing window exposed the official login/license
+  pane that background screenshot alone did not reveal. With user-authorized
+  foreground recovery on the existing window, PMO restored the account license:
+  final title is `Sysplorer [教育版]`, API reports `教育版`, 149 days remaining,
+  78 licensed modules, and `activate_account=true`; final sentinel is clean and
+  final background screenshot shows the education-mode main window with no
+  blocking license dialog. Return packet:
+  `Results/agent_packets/returns/PMO-MWORKS-INFRA-RECOVERY-20260607-001.json`.
+  The main MWORKS/Sysplorer window remains open for reuse. Rule update: a
+  clean-looking background screenshot is not sufficient if title/sentinel/API
+  indicates demo/login/authorization risk; departments must block and PMO owns
+  any user-authorized foreground recovery. This is authorization recovery only,
+  not model check, simulation, graphical/layout acceptance, controller
+  performance, planner_ready, runtime ack, or closed_loop evidence.
+- 2026-06-07 CST: PMO completed the postmortem hardening for the MWORKS
+  activation/license outage after the user escalated the 6-hour wasted-progress
+  failure. Root cause is classified as a combined PMO/department/probe/
+  acceptance failure, not a single subthread mistake: PMO kept accepting
+  JSON-only control-plane packets while the real critical path required `.mo`,
+  `check_model`, simulation, or graphical/layout evidence; MWORKS departments
+  did not consistently stop on license/login blockers; the previous sentinel
+  could be fooled by one clean `[教育版]` window while another relevant window
+  was `[演示版]` or login-required; and Computer Use was still present in older
+  docs despite the project moving to Windows MCP/Win32 routes. The fix is now
+  executable: `Scripts/agent/check_mworks_gui_sentinel.py` reports all
+  MWORKS/Sysplorer/Syslab windows, mixed/unknown/license state, window counts,
+  and an all-window license gate; `Scripts/quality/check_mworks_live_gate.py`
+  rejects MWORKS department task packets without `expected_engineering_outputs`
+  and rejects completed MWORKS returns that only provide JSON/ledger/progress
+  metadata unless explicitly diagnostic/rule-sync/preflight-only. Updated
+  AGENTS, orchestration/communication/tooling docs, Codex capability index, and
+  MWORKS skills to state that Computer Use is deprecated for MWORKS and that
+  one relevant bad window blocks the whole task. Tests passed:
+  `python -m pytest Scripts/tests/test_mworks_gui_sentinel.py
+  Scripts/tests/test_mworks_live_gate.py
+  Scripts/tests/test_dispatch_helper_mworks_gate.py -q`, plus py_compile for
+  the changed scripts. This is infrastructure hardening only, not MWORKS model
+  optimization or simulation evidence.
+- 2026-06-07 CST: PMO found and fixed one remaining MWORKS sentinel ambiguity
+  during the postmortem recheck. The first live Win32 sentinel recheck saw one
+  `[教育版]` Sysplorer window and five unknown MWORKS/Sysplorer-like windows;
+  this exposed both a misleading clean hint risk and an over-broad
+  `unknown_blocked` risk. PMO repaired
+  `Scripts/tools/capture_window_background.ps1` so it captures all matching
+  top-level windows with Win32 `EnumWindows` instead of only
+  `Get-Process.MainWindowTitle`. The all-window screenshot manifest showed the
+  five unknown windows are hidden Qt/browser-proxy/helper windows, not visible
+  login/demo/authorization windows. `check_mworks_gui_sentinel.py` now
+  separates visible unknown windows from hidden unknown helper windows:
+  explicit demo/login/activation/authorization/error-report and visible
+  unknown windows block; hidden unknown helper windows are counted as risk
+  evidence but do not alone block a clean education window. The current live
+  sentinel now returns `status=clean`,
+  `license_state_hint=education_clean_preflight`,
+  `hidden_unknown_mworks_window_count=5`, and
+  `visible_unknown_mworks_window_count=0`. Targeted tests and py_compile
+  passed. PMO also updated the native capability docs so Computer Use is
+  deprecated for MoSim desktop GUI work generally, not only MWORKS. This is
+  infrastructure evidence only; no MWORKS model optimization, graphical/layout
+  acceptance, `check_model`, simulation, controller evidence, planner_ready,
+  runtime ack, or closed_loop claim is made.

@@ -382,6 +382,52 @@ inventory work. PMO must reject completed returns that lack the declared
 engineering outputs, omit the local plan/sub-agent decision, or convert a real
 blocker into completed metadata.
 
+Before PMO integrates a non-trivial visible-department return/blocker packet,
+run the generic department contract gate:
+
+```powershell
+python Scripts\quality\check_department_packet_contract.py `
+  Results\agent_packets\returns\<request_id>.json
+```
+
+Use the blocker path instead when the department returns a blocker. This gate
+checks the department-local goal/task graph, `subagent_plan` decision,
+`actual_engineering_outputs`, and `claim_boundary`. It is a shared backstop
+only; domain gates still apply, especially `check_mworks_live_gate.py` for
+MWORKS/Sysplorer/Syslab work.
+
+Domain dispatch templates:
+
+```text
+ROS2/RViz2/FAST-LIO:
+  preflight: ROS2 environment/source status, stale MoSim/FAST-LIO/planner
+    processes, source-window/topic contract, forbidden topics, probe_count
+    budget, cleanup plan
+  return evidence: source-window/topic stamps, rates/counts, FAST-LIO/planner
+    evidence when in scope, forbidden-topic absence, cleanup_summary,
+    claim_boundary
+  stop: no-rerun/existing-evidence-only tasks, timestamp regression, callback
+    loop-back, missing required topics, stale cleanup failure, exhausted
+    one-probe budget
+
+UE experiment console / scene interaction:
+  preflight: classify source-static, build, editor/runtime, or manual-review
+    scope
+  return evidence: source/schema edits and tests, build/log proof, runtime
+    echo/transport proof, or review screenshots/packets
+  stop: missing build/runtime evidence, treating schema/registry JSON as
+    runtime ack, teleport/pose override/global-truth planner shortcut
+
+Sunray150 asset / PBR:
+  preflight: DAE-derived Blender asset availability, component identity,
+    material source evidence, UV/material-slot limits, planned review renders
+  return evidence: Blender/UE asset edits, material manifests, rendered
+    close-ups/contact sheets, PBR texture/map evidence, or failed-review images
+  stop: unclear part identity/license/UV/export/review issue, Base Color-only
+    coloring, or any attempted geometry/dynamics/extrinsic/controller/planner
+    change outside scope
+```
+
 Current MWORKS split: `MoSim｜MWORKS动力学与控制验证部-R1`
 (`019e9be5-334b-76b1-93f9-8b02caebf376`) is the primary MWORKS mainline route
 for dynamics/control/model-integration evidence. `MoSim｜MWORKS动力学与控制验证部-R2`

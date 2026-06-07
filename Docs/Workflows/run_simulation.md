@@ -81,6 +81,8 @@ variables:
 Use Sysplorer MCP tools in this order:
 
 ```text
+activation sentinel / background screenshot
+  → stop on demo/login/license/error-report/visible unknown/unavailable state
 session_manager
   → load_library
   → model_manager
@@ -125,6 +127,8 @@ For manual review of `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysb
 use this direct MCP sequence:
 
 ```text
+python Scripts\agent\check_mworks_gui_sentinel.py --output Results\mworks_gui_incidents\<request_id>\sentinel.json
+powershell -NoProfile -ExecutionPolicy Bypass -File Scripts\tools\capture_window_background.ps1 -TitleRegex "Sysplorer|MWORKS|Quadrotor|AWFF" -OutDir Results\mworks_background_capture\<request_id>
 session_manager(action="health")
 model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\References\\MWORKS\\QuadrotorModel\\package.mo", force_reload=true, auto_load_deps=true)
 model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\Models\\QuadrotorControllerBlocks\\AWFF_FullControllerFlatGraphical_Sysblock.mo", force_reload=true, auto_load_deps=true)
@@ -274,7 +278,68 @@ If tools are not listed, follow `Docs/Workflows/debug_mcp.md`.
 
 ---
 
-### Step 2: Connect to Sysplorer
+### Step 2: Check MWORKS activation and GUI state
+
+Before any `session_manager`, model load, check, translate, simulate, plot,
+animation, or graphical review, inspect the existing reusable window:
+
+```powershell
+python Scripts\agent\check_mworks_gui_sentinel.py `
+  --output Results\mworks_gui_incidents\<request_id>\sentinel.json
+powershell -NoProfile -ExecutionPolicy Bypass `
+  -File Scripts\tools\capture_window_background.ps1 `
+  -TitleRegex "Sysplorer|MWORKS|Quadrotor|AWFF" `
+  -OutDir Results\mworks_background_capture\<request_id>
+```
+
+If the sentinel or screenshot shows demo edition, missing activation,
+login/activation prompt, authorization failure, GUI error-report dialog, mixed
+license state, visible unknown window, unavailable tooling, or unknown sentinel
+state, stop live MWORKS work and return a `license_or_login` or GUI blocker.
+Hidden Qt/browser-proxy/helper windows with no license/error text are risk
+evidence, not standalone blockers. Do not open a new MWORKS window, click
+login/activation/error-report controls, or tune solver/model code.
+For activation/license/login/authorization/GUI-error incidents, PMO must send
+both sparse WeChat and sparse email alert for the same open incident. Do not
+rely on WeChat alone.
+
+The task return or blocker packet must include:
+
+```text
+activation_sentinel_before
+gui_sentinel_before
+background_screenshot_before
+activation_state_observation
+license_state
+will_not_click_activation_login=true
+mworks_window_evidence_touched=true
+live_mworks_touched
+mworks_phase_screenshots when live_mworks_touched=true
+mworks_phase_observations when live_mworks_touched=true
+```
+
+For live simulation, continue background screenshots during the task, not only
+at preflight. Capture and inspect phase screenshots after model load/check and
+after simulate/plot/animation phases when those phases run. If a phase
+screenshot shows a missing/changed window, activation/login prompt,
+authorization issue, GUI error-report dialog, or demo/mixed license state,
+stop live work and return a blocker instead of continuing solver/model trials.
+
+Run the packet through the department gate before accepting it:
+
+```powershell
+python Scripts\quality\check_mworks_live_gate.py `
+  Results\agent_packets\returns\<request_id>.json `
+  --kind return --expect department
+```
+
+Older MWORKS business packets that predate this field set remain historical
+evidence only. They must not be reused as templates for new MWORKS/Sysplorer/
+Syslab dispatches.
+
+---
+
+### Step 3: Connect to Sysplorer
 
 Use `session_manager`.
 
@@ -295,7 +360,7 @@ Sysplorer version available
 
 ---
 
-### Step 3: Load required libraries
+### Step 4: Load required libraries
 
 Use `load_library`.
 
@@ -316,7 +381,7 @@ If library loading fails:
 
 ---
 
-### Step 4: Open target model
+### Step 5: Open target model
 
 Use `model_manager`.
 

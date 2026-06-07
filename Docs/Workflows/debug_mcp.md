@@ -216,6 +216,53 @@ Expected follow-up log after reload:
 [startup][renderer] app routes mounted
 ```
 
+### 4.2 WeChat Notification Adapter Packet Shape
+
+Use the narrow project adapter for MoSim WeChat notifications:
+
+```powershell
+python CoAgent\gateway\cc_connect_weixin.py notify --send --packet <packet.json>
+```
+
+Do not use `--stdin`; the adapter requires a packet file. Do not invent a new
+packet schema for routine notifications. The adapter currently recognizes these
+packet forms:
+
+| Purpose | Minimum discriminator |
+|---|---|
+| Completion | `template_type=completion_notification` or `canonical_status=completed` |
+| Blocker / manual action | `template_type=blocker_notification`, or `human_action_required` / `blocked_surface` |
+| Review request | `template_type=review_packet`, or `decision` plus `review_id` |
+| Result packet escalation | `canonical_status` in `auth_required`, `review_required`, `blocked`, `failed` |
+
+For sparse completion notifications, use:
+
+```json
+{
+  "template_type": "completion_notification",
+  "task_id": "TASK-ID",
+  "canonical_status": "completed",
+  "status": "completed",
+  "owner": "MoSim｜主线 PMO / THREAD-ID",
+  "summary": "One short outcome sentence.",
+  "evidence_paths": ["Results/.../return.json"],
+  "next_recommended_action": "One short next action.",
+  "dedupe_key": "stable_key"
+}
+```
+
+If the adapter returns `unsupported packet type`, fix the packet discriminator
+instead of diagnosing the socket/session. If the adapter reaches Weixin and
+returns `ret=-2`, ask the user to send one normal message in
+`MoSim｜WechatCodex` (`019e8358-86b4-7070-8fd6-a2b4f4d2af97`) and retry once.
+Gateway incidents and health failures go to `MoSim｜微信网关运维`
+(`019e9855-aa43-7fe2-807e-be7d4095877b`).
+
+For `review_packet`, use one of the adapter-allowed decisions:
+`needs_review`, `accepted_with_concerns`, `needs_rework`, or `rejected`.
+`review_required` is not accepted by the current adapter and will be skipped
+before any Weixin send is attempted.
+
 If the log still shows `C:\Users\HP\.codex` migration failure after changing
 the setting, fully reload VSCode or close all VSCode windows and reopen the
 MoSim workspace. Do not delete `state_5.sqlite` to fix this without a backup:
@@ -374,7 +421,7 @@ Known local contributors:
   `C:\Users\HP\.codex\plugins\cache\openai-bundled\chrome\...` can remain
   running or be relaunched, and logs can show plugin reconcile access-denied
   errors.
-- Startup probes for Computer Use, plugins, skills, and MCP status can add
+- Startup probes for plugins, skills, Windows MCP, and MCP status can add
   multi-second timeouts. On 2026-06-03 logs showed repeated
   `IpcClient Initialize failed timeout`, `computer-use native pipe startup
   failed`, and `mcpServerStatus/list` requests taking about 16-17 seconds.
@@ -1221,7 +1268,7 @@ Windows-native MCP inventory guard:
   command, remove the duplicate `sysplorer_mcp` section. It is a migration
   residue, not an additional project boundary.
 - `node_repl` is not a MoSim project MCP server. In current Codex builds it is
-  an internal Browser/Chrome/Computer Use plugin JavaScript execution channel
+  an internal Browser/Chrome/plugin JavaScript execution channel
   referenced by bundled plugin/native-host files. Do not add it to the project
   MCP inventory unless a future plugin explicitly requires a managed entry.
 - CC Switch has its own MCP registry in
@@ -1243,7 +1290,7 @@ sqlite3 'C:/Users/HP/.cc-switch/cc-switch.db' `
   different client such as opencode has it enabled. To avoid duplicate Codex
   startup, set `sysplorer_mcp.enabled_codex=0` instead of deleting the row when
   another client still needs it. It is safe to remove `node_repl` from the
-  MoSim/CC Switch project MCP list when Browser/Chrome/Computer Use is not
+  MoSim/CC Switch project MCP list when Browser/Chrome plugin routing is not
   being managed there. Do not remove `sysplorer` or `syslab`; those are the
   correct MWORKS built-in MCP entries.
 - WSL wrappers and Windows direct entries are launch routes, not separate MCP
@@ -1692,7 +1739,10 @@ owns cc-connect runtime health, QR login, stale context-token recovery, and
 notification-path diagnostics.
 
 Send gateway maintenance instructions to `019e9855-aa43-7fe2-807e-be7d4095877b`,
-not to `019e8358-86b4-7070-8fd6-a2b4f4d2af97`.
+not to `019e8358-86b4-7070-8fd6-a2b4f4d2af97`. For `ret=-2` send-context
+refresh, the user should send the ordinary message such as "你好" in
+`019e8358-86b4-7070-8fd6-a2b4f4d2af97`; this is not the gateway operations
+thread.
 
 Scheduled health check route:
 
@@ -1704,6 +1754,16 @@ This is local-only and writes a JSON health snapshot under
 `Results/coagent_gateway/health/`. It checks data-dir existence, API socket,
 project session file, active platform session, and context-token files without
 sending a WeChat message.
+
+The API socket check must be a real Unix socket `connect()` to:
+
+```text
+/home/linux/.cache/mosim/coagent/cc-connect-weixin/data/run/api.sock
+```
+
+Do not use `cc-connect sessions list --data-dir ...` as proof that the internal
+API is alive. That command can read session files from disk and return success
+while `api.sock` is a stale socket file with no listening cc-connect process.
 
 Explicit low-frequency outbound canary:
 
@@ -1740,17 +1800,28 @@ Current scheduled-health verification, 2026-06-06 CST:
 ```text
 MoSim Weixin Gateway Local Health:
   enabled, every 15 minutes
-  command: cmd /c cd /d C:\Users\HP\Desktop\MoSim && python Scripts\agent\check_weixin_gateway_health.py
-  observed last run: 2026/6/6 0:06:01
+  interval: PT15M
+  command: cmd /c powershell -NoProfile -ExecutionPolicy Bypass -Command "<inject User-level email alert env vars>; Set-Location 'C:\Users\HP\Desktop\MoSim'; python Scripts\agent\check_weixin_gateway_health.py"
+  observed manual task trigger: 2026/6/6 14:42:17
   observed last result: 0
-  observed next run: 2026/6/6 0:21:00
+  observed next run: 2026/6/6 14:51:00
+  latest scheduled snapshot: Results/coagent_gateway/health/weixin_gateway_health_20260606_144217.json
 
 MoSim Weixin Gateway Canary:
   enabled, every 4 hours
-  command: cmd /c cd /d C:\Users\HP\Desktop\MoSim && python Scripts\agent\check_weixin_gateway_health.py --send-canary
-  observed next run: 2026/6/6 3:21:00
+  interval: PT4H
+  command: cmd /c powershell -NoProfile -ExecutionPolicy Bypass -Command "<inject User-level email alert env vars>; Set-Location 'C:\Users\HP\Desktop\MoSim'; python Scripts\agent\check_weixin_gateway_health.py --send-canary"
+  observed last run: 2026/6/6 11:21:01
+  observed last result: 3221225786
+  observed next run: 2026/6/6 15:21:00
   frequency must not be increased for routine monitoring
 ```
+
+The scheduled-task commands intentionally read email alert settings from the
+Windows User environment at runtime. This lets Task Scheduler see settings
+configured by `setx` or Windows environment settings without storing the QQ
+SMTP authorization code in project files or task command text. The literal
+authorization code must not be printed, logged, or copied into docs.
 
 Latest-file contract:
 
@@ -1763,6 +1834,14 @@ Results/coagent_gateway/health/gateway_unhealthy_latest.json
   This is the first file to inspect when background maintenance reports a
   problem, because WeChat may be the broken channel and cannot be trusted for
   failure notification.
+
+Results/coagent_gateway/health/gateway_outbound_latest.json
+  Written only by explicit real canary runs. This is the first file to inspect
+  for end-to-end Weixin outbound status.
+
+Results/coagent_gateway/health/gateway_outbound_unhealthy_latest.json
+  Written when a real canary fails. Local health runs must not overwrite this
+  file or hide the last outbound failure.
 ```
 
 The health script classifies local failures into:
@@ -1780,6 +1859,92 @@ On local health failure, the script may attempt a Windows local toast. This is
 best-effort only. The latest JSON file is authoritative. The script must not
 try to report local health failure by WeChat because WeChat may be the failing
 surface.
+
+For `api_socket` failures, the local health script performs one bounded local
+recovery by clearing stale lock/socket state only when no live cc-connect
+process owns the lock, starting cc-connect with
+`Results/tmp/cc-connect-weixin-smoke/config-wsl-runtime.toml`, and waiting for a
+real Unix socket connect. This makes the 15 minute Task Scheduler health check
+able to recover stale API socket state without a Codex conversation staying
+open.
+
+Do not restart cc-connect for Weixin outbound context failures:
+
+| Send failure | Runtime restart? | Minimal action |
+|---|---:|---|
+| `internal_api_unavailable` or send timeout | yes, once | Restart/recover cc-connect, then retry once if the API socket is healthy. |
+| `weixin: sendMessage: ret=-2` | no | Ask the user to send one ordinary message in `MoSim｜WechatCodex` (`019e8358-86b4-7070-8fd6-a2b4f4d2af97`), then retry one canary. Send gateway incidents to `MoSim｜微信网关运维` (`019e9855-aa43-7fe2-807e-be7d4095877b`). |
+| missing `context_token` | no | Ask for one ordinary WeChat message; if still missing, rerun QR login. |
+| missing/invalid `active_session` | no | Ask for one ordinary WeChat message or reselect/recreate the session. |
+
+If an explicit `--send-canary` run has local `ok_local=true` but
+`send_canary.ok=false`, treat the latest status as an outbound Weixin failure,
+not as healthy end-to-end communication. Local API health and end-to-end Weixin
+send health are separate gates.
+
+`Scripts/agent/check_weixin_gateway_health.py --send-canary` must exit nonzero
+when the real canary fails, even if local API health is OK. This lets the
+`MoSim Weixin Gateway Canary` Task Scheduler entry expose true outbound failure
+through `LastTaskResult`. Keep the canary frequency at every 4 hours unless the
+user explicitly asks for a temporary diagnostic run; do not increase routine
+frequency.
+
+Current post-hardening verification, 2026-06-06 CST:
+
+```text
+python Scripts\agent\check_weixin_gateway_health.py
+  ok=true, ok_local=true
+
+python Scripts\agent\check_weixin_gateway_health.py --send-canary --timeout 30
+  ok=true, send_result.stdout="Message sent successfully."
+
+Latest outbound status:
+  Results/coagent_gateway/health/gateway_outbound_latest.json
+  status=healthy
+```
+
+Email fallback for gateway alerts:
+
+```text
+SMTP host:
+  smtp.qq.com
+
+Default recipient:
+  1062771286@qq.com
+
+Script:
+  python Scripts\agent\send_gateway_email_alert.py --status-json <gateway-status.json>
+
+Credential environment variables:
+  MOSIM_ALERT_EMAIL_FROM      sender QQ mailbox, for example 1062771286@qq.com
+  MOSIM_ALERT_EMAIL_PASSWORD  QQ SMTP authorization code, not the QQ login password
+  MOSIM_ALERT_EMAIL_TO        optional recipient override, defaults to 1062771286@qq.com
+  MOSIM_ALERT_SMTP_HOST       optional, defaults to smtp.qq.com
+  MOSIM_ALERT_SMTP_PORT       optional, defaults to 465
+```
+
+Do not write QQ SMTP authorization codes into project files, prompts, packet
+JSON, logs, or docs. Configure them as user-level environment variables or in
+Windows Task Scheduler's runtime environment. If they are missing, the script
+writes a `missing_config` audit JSON under `Results/coagent_gateway/email/`.
+
+The health script calls the email fallback only on local or outbound gateway
+failure. It uses a 4 hour cooldown by default so a broken WeChat path does not
+turn into email spam.
+
+2026-06-06 CST email fallback smoke:
+
+```text
+Test-NetConnection smtp.qq.com -Port 465  -> TcpTestSucceeded=True
+Test-NetConnection smtp.qq.com -Port 587  -> TcpTestSucceeded=True
+Python smtplib SMTP_SSL 465 EHLO          -> ok
+Python smtplib STARTTLS 587               -> ok
+
+Without credentials:
+  Results/coagent_gateway/email/email_alert_20260606_094620.json
+  reason=missing_config
+  missing_env=[MOSIM_ALERT_EMAIL_FROM, MOSIM_ALERT_EMAIL_PASSWORD]
+```
 
 Adapter default route correction, 2026-06-06 CST:
 
@@ -1929,6 +2094,62 @@ failure before asking the user to act:
 | `active_session_present=false` or `active_session_key_type` is not `platform` | `active_session` | Ask the user to send one normal message in the WeChat gateway chat, then retry once. |
 | `context_token_files=0` | `context_token` | Ask the user to send one normal message in the WeChat gateway chat; if still absent, rerun QR login. |
 | outbound `ret=-2` during an explicit canary/send | stale Weixin/iLink send context | Ask the user to send one normal message in the WeChat gateway chat, then retry once. |
+
+2026-06-06 CST incident note:
+
+```text
+Incident:
+  PMO completion packet
+  Results/coagent_gateway/packets/rfly_mosim_b0_manifest_integrated_20260606.json
+  failed with:
+  dial unix /home/linux/.cache/mosim/coagent/cc-connect-weixin/data/run/api.sock:
+  connect: connection refused
+
+Recovery packet:
+  Results/coagent_gateway/recovery/weixin_recovery_required_20260606_045903.json
+
+Root cause:
+  local health and adapter recovery were treating `sessions list --data-dir`
+  as an API socket probe. That command only proved session history was readable.
+  The real socket state was stale: `api.sock` existed, but no process owned it,
+  and a direct Unix socket connect returned ConnectionRefusedError.
+
+Fix:
+  Scripts/agent/check_weixin_gateway_health.py and
+  CoAgent/gateway/cc_connect_weixin.py now probe the Unix socket directly.
+
+Evidence after fix:
+  Results/coagent_gateway/health/weixin_gateway_health_20260606_050445.json
+    ok_local=false, failure_kind=api_socket,
+    stderr_tail=ConnectionRefusedError: [Errno 111] Connection refused
+  Results/coagent_gateway/health/weixin_gateway_health_20260606_050621.json
+    ok_local=true, api_socket_connectable=true, stdout_tail=connect_ok
+  WSL showed cc-connect PID 40786 listening on api.sock.
+
+Operational interpretation:
+  This incident was an API socket/runtime problem first. Do not ask the user to
+  send a WeChat message for `api_socket`; restart/inspect cc-connect once. If a
+  later explicit canary or send reaches Weixin and returns ret=-2, then ask the
+  user to send one ordinary message in MoSim｜微信通知网关 and retry once.
+```
+
+2026-06-06 CST follow-up:
+
+```text
+At 09:07 CST, local API health was good but one explicit canary failed with
+weixin: sendMessage: ret=-2. The operator asked the user for exactly one
+ordinary WeChat message in MoSim｜微信通知网关. After the user sent it, one retry
+canary at 09:37 CST passed:
+
+Results/coagent_gateway/health/weixin_gateway_health_20260606_093706.json
+send_result.ok=true
+stdout="Message sent successfully."
+
+Interpretation:
+  For ret=-2, one inbound ordinary WeChat message can refresh the iLink context.
+  Do not restart cc-connect for ret=-2 and do not loop canaries. If one retry
+  after the inbound message still fails with ret=-2, rerun QR login.
+```
 
 After migration, run:
 
@@ -2543,3 +2764,29 @@ execute_blender_code can run arbitrary Python inside Blender. Use it only on
 project assets, save before destructive edits, and avoid sending secrets,
 tokens, browser paths, or personal files through Blender MCP.
 ```
+## WeChat Gateway Email Alert Verification - 2026-06-06 CST
+
+Manual email alert execution must run from the project root:
+
+```text
+cd /d C:\Users\HP\Desktop\MoSim
+python Scripts\agent\send_gateway_email_alert.py --status-json Results\coagent_gateway\health\gateway_outbound_latest.json
+```
+
+If the command is run from `C:\Users\HP`, Python looks for
+`C:\Users\HP\Scripts\agent\send_gateway_email_alert.py` and fails before SMTP is
+used. In already-open shells or Codex processes, newly configured Windows User
+environment settings may not be inherited; the Task Scheduler actions inject
+those settings at runtime.
+
+Observed verification:
+
+```text
+email audit: Results/coagent_gateway/email/email_alert_20260606_144121.json
+result: ok=true
+recipient: 1062771286@qq.com
+local health: Results/coagent_gateway/health/weixin_gateway_health_20260606_144142.json, ok=true
+scheduled local health: Results/coagent_gateway/health/weixin_gateway_health_20260606_144217.json, LastTaskResult=0
+```
+
+The QQ SMTP authorization code was not printed or written to project files.

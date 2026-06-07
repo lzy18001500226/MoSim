@@ -2,11 +2,16 @@
 
 Date: 2026-05-28
 
-Status: design baseline for `COAGENT-DESIGN-08`.
+Status: active communication contract, updated 2026-06-06.
 
 ## Purpose
 
-This contract defines how work moves between CoAgent conversations and workers.
+This contract defines how work moves between visible Codex department
+conversations and workers. The current operating model is PMO-led direct
+dispatch: PMO sends work to a reusable visible thread or creates a new visible
+thread when the work needs durable specialty context. CoAgent dispatch/runtime
+tools support packet generation, recovery, validation, and result import; they
+are not a mandatory scheduling middle office for ordinary MoSim work.
 
 The rule is:
 
@@ -20,12 +25,12 @@ event log is recovery truth
 
 | Unit | Created By | Consumed By | Purpose |
 |---|---|---|---|
-| task packet | DispatchCenter | owner conversation | start or update durable work |
-| context pack | DispatchCenter / runtime | dedicated task conversation | compact startup state |
-| checkpoint packet | owner conversation | DispatchCenter / PMO | recoverable progress, risk, blocker |
+| task packet | PMO or CoAgent helper | owner conversation | start or update durable work |
+| context pack | PMO / runtime helper | dedicated task conversation | compact startup state |
+| checkpoint packet | owner conversation | PMO / owner department | recoverable progress, risk, blocker |
 | result packet | owner conversation | result router / reviewer | terminal or reviewable output |
-| review note | Verification/Security/Docs/DevOps/PMO | DispatchCenter / owner | accept, reject, or request changes |
-| event log entry | runtime/dispatcher | all recovery flows | state transition evidence |
+| review note | Verification/Security/Docs/DevOps/PMO | PMO / owner | accept, reject, or request changes |
+| event log entry | runtime/helper | all recovery flows | state transition evidence |
 
 Plain chat may explain work, but it is not sufficient for handoff or
 acceptance.
@@ -35,13 +40,14 @@ acceptance.
 ```text
 PMO/main:
   frames user objective
-
-DispatchCenter:
   creates task_id
   records canonical_task_goal
+  records native Codex surface gate before choosing the delivery route
   assigns accountable_owner
   records worktree binding when file isolation is required
   writes task packet
+  sends packet to an existing visible department thread or creates a new
+  visible department thread when no reusable one exists
 
 Owner conversation:
   receives task packet
@@ -54,6 +60,363 @@ Result router/reviewer:
 
 PMO/main:
   reports accepted result or escalation
+```
+
+## Native Surface Gate
+
+Before a non-trivial task is dispatched, PMO records why the work belongs to a
+native Codex surface, a visible department thread, a bounded sub-agent, or
+CoAgent packet/evidence glue. This is a routing decision, not a task result.
+
+Task packets should include:
+
+```yaml
+native_surface_gate:
+  selected_native_surface: [visible_thread, coagent_packet_glue]
+  surface_selection_reason: durable department context plus packet return is required
+  rejected_surfaces:
+    subagent: disposable context is insufficient
+    codex_exec: hidden formal dispatch is not accepted without visible delivery
+  worktree_required: false
+  worktree_decision: read-only planning task; no isolated worktree needed
+expected_return_path: Results/agent_packets/returns/<request_id>.json
+blocker_return_path: Results/agent_packets/blockers/<request_id>.json
+```
+
+## Department Local Planning Template
+
+For every non-trivial visible-department assignment, PMO should include the
+same local-planning block, and the target department must derive and report it
+before deep business work. This is a planning and scheduling decision
+requirement, not a requirement to use at least one sub-agent:
+
+```text
+department_local_goal
+critical_path_steps
+parallelizable_slices
+subagent_plan
+subagent_plan_reason
+subagents_used
+verification_gates
+manual_review_or_blocker_triggers
+```
+
+`subagent_plan` must be one of `used`, `available_but_not_useful`,
+`unavailable`, or `unsafe`. `subagents_used=[]` is acceptable when the
+department runtime has no sub-agent surface, no independent slice exists, or
+serial execution is safer. If a department uses disposable sub-agents, they
+must be bounded, task-local, evidence-returning helpers; they must not become
+hidden durable departments or create/fork/rename/archive visible threads.
+
+## Department Execution And Acceptance Contract
+
+After local planning, the department owns execution inside the declared scope.
+PMO should not have to decompose every internal step. The department must run
+the task-specific infrastructure preflight before business work, then continue
+through the critical path until it has either produced the declared engineering
+output or hit a real blocker.
+
+Task-specific preflights include, for example:
+
+- MWORKS/Sysplorer/Syslab sentinel and background screenshots for MWORKS work;
+- ROS2 stale-process, topic, source-window, and cleanup checks for ROS2 work;
+- UE source/static/build-scope checks for UE work;
+- Blender/source-asset availability and render-output checks for asset/PBR
+  work.
+
+If a preflight, GUI, license, runtime, build, tool-surface, source-data, or
+permission issue blocks the task, the department must stop the domain work and
+return a blocker promptly. It must not spend the turn producing unrelated JSON,
+tuning parameters, retrying solver/runtime/model steps, or turning the symptom
+into a completed metadata packet.
+
+Completed work must include domain evidence that matches the task:
+
+- model/simulation/layout/package work: `.mo` or `package.mo` edits,
+  `check_model`, `SimulateModel`, native result/`.msr`, metrics,
+  diagram/layout screenshots, or wiring observations;
+- ROS2 runtime work: topic/process/source-window/log/cleanup evidence and
+  bounded runtime artifacts when live probing is in scope;
+- UE work: source/static/build/runtime evidence according to the task scope;
+- asset/PBR work: Blender/UE asset files, rendered review images, material
+  manifests, or visual-review artifacts.
+
+JSON task/result/blocker packets, ledger rows, and progress notes are
+control-plane evidence. They count as the engineering deliverable only when the
+task is explicitly `diagnostic_only`, `rule_sync_only`,
+`preflight_drill_only`, `dispatch_surface_diagnostic`, or
+`static_inventory_only`.
+
+For long or live tasks, the return/blocker packet must include phase
+checkpoints: what phase ran, what evidence was inspected, what changed, and
+what remains blocked. If a task produces a user-review artifact such as an
+image, video, native result viewer, or model diagram, the department should
+request PMO display/review instead of returning only a path.
+
+PMO may reject completed packets that lack the declared engineering outputs,
+omit the required local-planning/sub-agent decision fields, or report a real
+infrastructure blocker as completed work.
+
+PMO should run the generic visible-department packet gate before integrating
+non-trivial return/blocker packets:
+
+```powershell
+python Scripts\quality\check_department_packet_contract.py `
+  Results\agent_packets\returns\<request_id>.json
+```
+
+This gate is a shared backstop. It checks the local-planning fields,
+`subagent_plan` decision, `actual_engineering_outputs`, and `claim_boundary`.
+Domain-specific gates such as the MWORKS live gate still apply on top of it.
+
+## Domain Dispatch Gates
+
+Use the matching domain gate in addition to the generic local-planning block.
+These gates should be present in the dispatch prompt, not only remembered by
+PMO.
+
+### ROS2 / RViz2 / FAST-LIO
+
+ROS2 runtime work must treat every live graph as a scarce, bounded probe. If
+the task says existing-evidence-only or no-rerun, the department must not
+launch ROS2; it closes from the existing evidence or returns a blocker.
+
+Before any live ROS2 graph, the department records a runtime preflight:
+
+```text
+ROS2 environment/source status
+stale MoSim/FAST-LIO/planner process check
+expected source-window and topic contract
+forbidden topic list
+probe_count budget
+cleanup plan
+```
+
+Return/blocker packets for ROS2 runtime work must include the relevant runtime
+evidence, not only packet metadata:
+
+```text
+ros2_preflight_before
+probe_count
+source_window_evidence
+topic_evidence
+FAST-LIO or planner evidence when in scope
+forbidden_topic_absence
+cleanup_summary
+claim_boundary
+```
+
+If source timestamps regress, FAST-LIO callback loop-back remains, required
+topics are absent, stale processes cannot be cleaned, or the one-probe budget
+is exhausted, the department stops and returns a blocker. It must not rerun
+until PMO issues a new task. A diagnostic FAST-LIO/source gate must not advance
+into RViz2, planner/EGO, PositionCommand, 20 Hz adapter, TF/RViz readiness, or
+controller claims unless the task packet explicitly opens that phase and the
+previous gate passed.
+
+### UE Experiment Console / Scene Interaction
+
+UE work must classify its scope as source-static, build, editor/runtime, or
+manual-review before execution. Completed UE work needs evidence that matches
+that scope: source/schema edits with tests, build/log evidence, runtime
+echo/transport evidence, or review screenshots/packets. A scene registry row,
+command schema, or JSON packet is not runtime ack.
+
+UE remains the operator/review/render surface. It must not teleport UAV pose,
+feed full UE truth to planners, or label controller/planner success without
+MWORKS/ROS2 evidence. If the task creates a review image/video/window, the
+department asks PMO to display it or send a concise review prompt instead of
+returning only a path.
+
+### Sunray150 Asset / PBR
+
+Sunray150 visual work must follow the DAE-derived Blender asset route and the
+Sunray PBR workflow. The department starts with source asset availability,
+component identity, material evidence, UV/material-slot limitations, and
+intended review outputs.
+
+Completed asset work must produce Blender/UE asset edits, material manifests,
+rendered close-ups/contact sheets, texture/PBR map evidence, or explicit
+failed-review images. A whole-aircraft Base Color pass or a JSON packet is not
+material progress. Asset/PBR work must not change geometry assembly, rotor
+centers, mass/inertia/motor/thrust constants, FAST-LIO extrinsics, ROS2/MWORKS
+runtime behavior, controller, or planner files unless PMO issues a separate
+task.
+
+For every task dispatched to a MWORKS/Sysplorer/Syslab department, the task
+packet must include a MWORKS live gate and must start with a non-invasive
+existing-window activation/screenshot preflight. This is mandatory even when
+the requested business work is static model-file organization, because the
+department must detect demo/login/authorization/error states before doing
+model work. The target department must run this preflight itself. PMO may
+validate or integrate the evidence, but PMO must not be the only actor that
+knows whether the MWORKS window is activated. If the department cannot run the
+sentinel or background screenshot because its current tool surface is missing
+or failing, it must write a blocker instead of continuing model work:
+
+```yaml
+mworks_live_gate:
+  live_mworks_touched: true
+  mworks_window_evidence_touched: true
+  mworks_window_policy: reuse_existing_session_default
+  activation_sentinel_required: true
+  background_screenshot_required: true
+  preflight_order:
+    - run python Scripts\agent\check_mworks_gui_sentinel.py --output Results\mworks_gui_incidents\<task_id>\gui_sentinel_before.json before first business step
+    - capture existing Sysplorer/MWORKS windows with powershell -NoProfile -ExecutionPolicy Bypass -File Scripts\tools\capture_window_background.ps1 -TitleRegex 'Sysplorer|MWORKS|Quadrotor|AWFF' -OutDir Results\mworks_background_capture\<task_id> -RestoreMinimized
+    - treat the screenshot/sentinel as the first business gate; PMO-side screenshots or a static ACK do not satisfy this department task
+    - classify license_state before MCP/model/GUI work
+  required_return_fields:
+    - activation_sentinel_before
+    - activation_state_observation
+    - license_api_before when live_mworks_touched=true and the API surface is available
+    - background_screenshot_before
+    - mworks_phase_screenshots
+    - mworks_phase_observations
+    - license_state
+    - gui_sentinel_before
+    - will_not_click_activation_login=true
+    - live_mworks_touched
+    - mworks_window_evidence_touched
+  blocker_on:
+    - demo edition
+    - unactivated software
+    - login or activation prompt
+    - authorization/equation-limit failure
+    - GUI error-report dialog
+    - unknown or unavailable sentinel state
+    - sentinel or background screenshot tool unavailable
+```
+
+If the MWORKS business work is static file-only after preflight, the packet may
+set `mworks_live_gate.live_mworks_touched=false`, but it must still set
+`mworks_window_evidence_touched=true`, run the sentinel/background screenshot,
+and return `live_mworks_touched=false` plus the full window-evidence fields.
+`live_mworks_touched=true` is reserved for work that proceeds to MCP,
+load/check/translate/simulate, plot, animation, Smart Layout, graphical review,
+or GUI interaction after preflight.
+
+Important correction: a visible `Sysplorer [教育版]` title is only an
+edition/window marker. It does not by itself prove the account is activated,
+because both activated and unactivated states can show the education-edition
+title. When a department only observes the education window/title and no
+login/demo/error marker, use
+`license_state=education_window_observed_activation_unverified` or equivalent
+wording. For `live_mworks_touched=true`, include `license_api_before` when the
+API surface is available, but do not claim permanent account activation unless
+that API explicitly reports account activation status. A successful
+`check_model` or `SimulateModel` without authorization errors is task-local
+license sufficiency evidence, not a standing activation claim.
+
+Live MWORKS work must not rely on a single preflight screenshot. If
+`live_mworks_touched=true`, the owner department must continue taking and
+inspecting background screenshots at the phases it actually runs. R1
+simulation/control tasks capture after load/check and after
+simulate/plot/animation phases when present. R2 graphical/model-audit tasks
+capture during or after graphical layout review and inspect missing wires,
+disconnected blocks, unreadable routing, wrong active windows, and new
+license/login/GUI-error prompts. The return/blocker packet must include
+`mworks_phase_screenshots` and `mworks_phase_observations`; the observations
+must say what the screenshots/window titles showed, not only list artifact
+paths.
+
+A MWORKS department return/blocker packet is incomplete if it omits the
+activation sentinel result, background screenshot locator when available,
+activation-state observation, license state, no-click pledge,
+`mworks_window_evidence_touched`, live-touch flag, or the live phase
+screenshot/observation fields required when `live_mworks_touched=true`.
+`activation_state_observation` must say what the sentinel, window title, or
+screenshot actually showed, such as a single education-mode window, demo
+marker, login/activation prompt, mixed state, visible unknown window, hidden
+helper-window risk count, or unavailable evidence. It is not enough to return
+a path or empty manifest reference; the
+department must read the sentinel JSON/capture manifest or otherwise inspect
+the screenshot/window-title evidence enough to classify activation state in the
+same turn. If the evidence cannot be inspected or classified, return a blocker
+instead of continuing model, solver, MCP, layout, or graphical-review work.
+Do not treat a clean-looking background screenshot as sufficient if the window
+title, sentinel, or API still indicates demo/login/authorization risk.
+Sysplorer can hide the login/license pane until the existing window is
+maximized or brought to foreground. Departments must not perform that recovery
+themselves; they return a blocker. PMO may perform a user-authorized bounded
+foreground recovery on the existing window only, then must prove success with a
+fresh sentinel, background screenshot, and license API probe before live MWORKS
+work resumes.
+PMO should reject packets that contain sentinel or screenshot
+evidence without the `mworks_window_evidence_touched` flag.
+`license_state` must be a concrete classification, for example
+`education_window_observed_activation_unverified`,
+`license_api_recorded_education_version_only`,
+`mixed_education_and_demo_blocked`, `demo_blocked`, `login_required`,
+`authorization_failed`, `gui_error_report_blocked`,
+`sentinel_unavailable_blocked`, or `unknown_blocked`. Vague values such as
+`ok`, `normal`, or `looks_fine` are not acceptable because they hide the exact
+activation/session state.
+When multiple Sysplorer/MWORKS windows are visible and any relevant reusable
+window is in demo edition or visible unknown license state, delegated departments must
+stop before MCP/model retries and return an auth/license blocker for PMO
+classification. The packet status must be `blocked`, with a concrete
+`license_state`, not a completed return that merely mentions the problem. They
+must not close windows, open a fresh session, click login
+or activation controls, or tune solver/model code to bypass the symptom.
+This is an all-window gate: one relevant MWORKS/Sysplorer/Syslab window in
+demo, login/activation, authorization-failed, GUI-error, mixed, or visible
+unknown state blocks the entire MWORKS task even if another window is clean or
+education-mode. Hidden Qt/browser-proxy/helper windows with no license/error
+text are risk evidence and must be counted, but they do not alone block a clean
+education preflight. The department must preserve evidence and return the
+blocker for real blocking windows; it must not close the suspect window and
+continue by selecting the clean one.
+
+MWORKS department packets must declare `expected_engineering_outputs`. For
+model optimization, package/model cleanup, simulation, or graphical/layout
+work, expected and completed outputs must include real engineering artifacts:
+`.mo`/`package.mo` changes, `check_model`, `SimulateModel`, native result/
+`.msr`, metrics, diagram/layout screenshots, or wiring observations as
+applicable. JSON task/result/blocker packets, progress notes, and ledger rows
+are control-plane evidence only. They do not count as MWORKS engineering
+progress unless the task is explicitly `diagnostic_only`, `rule_sync_only`,
+`preflight_drill_only`, `dispatch_surface_diagnostic`, or
+`static_inventory_only`.
+When a department returns `license_state=sentinel_unavailable_blocked`, PMO
+should treat it as a real blocker on that department's tool surface and either
+route a bounded recovery task to CoAgentOps/PMO or dispatch only file-level
+work that explicitly does not rely on MWORKS window state.
+
+Activation/license/login/authorization/GUI-error evidence at preflight or
+mid-task is a P0 MWORKS infrastructure incident, not a solver/model issue. The
+department must stop live work and return a blocker. PMO must send both a
+sparse WeChat alert and a sparse email alert for the same open incident, even
+if WeChat appears healthy, and keep the incident open until a later clean
+department preflight proves a valid reusable session. Human-facing alerts stay
+short and Chinese; paths, screenshots, and command details belong in packets
+and evidence files.
+Use `Scripts/tools/capture_window_background.ps1 -OutDir ...`; `-OutputDir` is
+not a valid parameter for the current project script.
+
+PMO should reject or return-for-fix any live MWORKS task packet or
+return/blocker packet that fails the machine gate:
+
+```powershell
+python Scripts\quality\check_mworks_live_gate.py `
+  Results\agent_packets\<request_id>.json --kind task --expect department
+python Scripts\quality\check_mworks_live_gate.py `
+  Results\agent_packets\returns\<request_id>.json --kind return --expect department
+```
+
+Use `--expect static` only for compatibility checks on non-department,
+explicitly file-only packets that do not inspect MWORKS windows. Use
+`--expect department` for MWORKS R1/R2 dispatches, activation/screenshot
+practice packets, graphical review packets, and static model-organization work
+owned by a MWORKS department.
+
+For compatibility with existing runtime packets, the same object may be stored
+under `metadata.native_surface_gate`. New JSON task packets should be checked
+before dispatch with:
+
+```powershell
+python Scripts\quality\check_agent_task_native_surface_gate.py `
+  Results\agent_packets\<request_id>.json --strict
 ```
 
 ## Worktree-Aware Dispatch
@@ -139,10 +502,10 @@ Support flow:
 
 ```text
 accountable owner requests support
-DispatchCenter records child/support task or review request
+PMO or CoAgent helper records child/support task or review request when needed
 support owner returns result packet or review note
 accountable owner integrates
-PMO/DispatchCenter accepts or escalates
+PMO accepts, rejects, or escalates
 ```
 
 ## Owner Change
@@ -165,7 +528,7 @@ Goal change requires:
 - evidence that current goal is wrong or incomplete,
 - proposed replacement canonical task goal,
 - affected scope and acceptance changes,
-- PMO/user or DispatchCenter decision record,
+- PMO/user decision record, optionally backed by CoAgent runtime metadata,
 - event log entry.
 
 Until accepted, the task remains under the old canonical task goal and should
@@ -202,6 +565,12 @@ updated.
 
 ## V1 Constraint
 
-V1 communication is hub-and-spoke through DispatchCenter. Peer-to-peer
-department communication may happen as human-readable discussion, but it is not
-durable authority unless DispatchCenter records the packet/event.
+V1 communication is PMO-led and packet-based. The durable authority is the
+recorded task packet, return/blocker packet, ledger/runtime entry, and evidence
+path, not a chat reply or a hidden helper process. Departments may request work
+from each other only when they include origin thread id, request id, expected
+return/blocker paths, and responsible owner. PMO does not have to be an
+intermediate chat hop for every support request, but it remains accountable for
+integration and may audit or override routing when the task affects the project
+goal, Git state, evidence claims, user review, credentials, GUI/license state,
+or safety boundary.

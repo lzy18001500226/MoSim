@@ -169,6 +169,60 @@ Use RViz2 for manual visual review when a GUI window is appropriate.
 Active point-cloud and map review must use RViz2 or an equivalent native
 robotics viewer. Browser HTML is not accepted as runtime mapping evidence.
 
+## Department Dispatch Gate
+
+When work is dispatched to `MoSim｜ROS2感知定位与规划运行部`, the department must
+plan its local task graph before live work and record:
+
+```text
+department_local_goal
+critical_path_steps
+parallelizable_slices
+subagent_plan
+subagent_plan_reason
+subagents_used
+verification_gates
+manual_review_or_blocker_triggers
+```
+
+This is not a requirement to use at least one sub-agent. Disposable sub-agents,
+when available, are only for bounded read-only source/log/schema review or
+other independent slices; live ROS2 graph execution, process cleanup, and
+runtime acceptance remain with the ROS2 department owner.
+
+Every live ROS2 task must also declare `expected_engineering_outputs` and run
+the task-specific runtime preflight before launching a graph:
+
+```text
+ROS2 environment/source status
+stale MoSim/FAST-LIO/planner process check
+expected source-window and topic contract
+forbidden topic list
+probe_count budget
+cleanup plan
+```
+
+Return/blocker packets for ROS2 runtime work must include concrete runtime
+evidence, not only JSON packet/progress metadata:
+
+```text
+ros2_preflight_before
+probe_count
+source_window_evidence
+topic_evidence
+FAST-LIO or planner evidence when in scope
+forbidden_topic_absence
+cleanup_summary
+actual_engineering_outputs
+claim_boundary
+```
+
+If a task says existing-evidence-only or no-rerun, do not launch ROS2. If a
+live probe shows source timestamp regression, FAST-LIO callback loop-back,
+missing required topics, stale cleanup failure, or an exhausted one-probe
+budget, stop and return a `status=blocked` packet. Do not repeat live probes to
+get a better result unless PMO sends a new task packet.
+
 For Ubuntu 22.04, the preferred operator layout is:
 
 ```text

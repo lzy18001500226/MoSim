@@ -4,11 +4,11 @@
   "max_total_active_locks": 3,
   "max_active_per_automation": 1,
   "department_concurrency": {
-    "ContextMemoryAgent": 1,
+    "CodexContextMaintenanceAgent": 1,
     "DevOpsReleaseAgent": 1,
-    "ExternalIntelligenceAgent": 1,
-    "KnowledgeSecretaryAgent": 1,
-    "SafetyComplianceAgent": 1
+    "OpenSourceLearningAgent": 1,
+    "OpenSourceProbeAgent": 1,
+    "CoAgentOps": 1
   },
   "notes": [
     "Automation locks are recoverability evidence, not a durable scheduler.",

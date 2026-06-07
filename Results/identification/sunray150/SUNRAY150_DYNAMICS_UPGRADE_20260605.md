@@ -193,3 +193,40 @@ QuadChassis or a derived chassis interface. Do not overwrite the official
 QuadrotorModel.Mechanics.QuadChassis baseline. First acceptance remains
 hover/yaw/step response with source labels, then controller interface checks.
 ```
+
+## 2026-06-06 P0 Execution Refresh
+
+Source: `source=MWORKS_MCP`, PMO thread
+`019e9868-83ea-70f0-92c5-a3a408bd78c6`.
+
+The P0 10h execution round rechecked the project-owned dynamics upgrade smoke
+models through Sysplorer MCP. The official `QuadrotorModel.Mechanics.QuadChassis`
+baseline was not edited.
+
+Checks:
+
+```text
+session_manager(action=health): ok=true, driver_ready=true
+model_manager(load_file Models/QuadrotorExperiments/package.mo): ok=true
+model_manager(load_file References/MWORKS/QuadrotorModel/package.mo): ok=true
+check_model QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke: ok=true
+check_model QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke: ok=true
+simulate_model QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke,
+  verify dynamics.hover_thrust_error@end:
+  1.7763568394002505e-15
+simulate_model QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke,
+  verify dynamics.total_moment_body[3]@end:
+  0.06147367992970332
+```
+
+Interpretation:
+
+- The project-owned `Sunray150RflyStyleRotorDynamics` smoke path still provides
+  the minimum RflySim-style actuator structure needed for P0 planning:
+  first-order motor lag, `Ct * omega^2` thrust, `Cm * thrust` yaw reaction
+  torque, and rotor-center arm moment.
+- This remains an experimental/wrapper-level dynamics smoke, not a replacement
+  of the official QuadChassis baseline and not identified Sunray150 truth.
+- Remaining P0 gaps are integration gaps: connect this actuator structure into
+  a project-owned plant wrapper, wire the planner/setpoint stream into the
+  MWORKS controller path, and keep parameter source labels in the run manifest.

@@ -22,6 +22,38 @@ connector, cable, motor, battery, or frame materials.
    channel before applying a final material.
 5. UE export/import is gated until Blender component material audits pass.
 
+## Department Planning Gate
+
+When the Sunray150 asset/PBR department receives a PMO task, it must plan the
+work before editing assets and must return these fields:
+
+```text
+department_local_goal
+critical_path_steps
+parallelizable_slices
+subagent_plan
+subagent_plan_reason
+subagents_used
+verification_gates
+manual_review_or_blocker_triggers
+expected_engineering_outputs
+actual_engineering_outputs
+claim_boundary
+```
+
+This is not a requirement to use at least one sub-agent. Use disposable
+sub-agents only for safe independent slices such as read-only material-source
+classification, component identity checks, or post-render image review. If no
+sub-agent is used, record `available_but_not_useful`, `unavailable`, or
+`unsafe` with a concrete reason.
+
+Completed Sunray/PBR work must produce real visual evidence: Blender/UE asset
+edits, material manifests, texture/PBR maps, rendered component close-ups,
+contact sheets, or explicit failed-review images. JSON packets, ledger rows,
+and progress notes are control-plane evidence only. If the output needs human
+review, ask PMO to open/display the image or Blender scene instead of returning
+only a path.
+
 ## Required Loop
 
 ```text

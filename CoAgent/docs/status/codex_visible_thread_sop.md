@@ -185,10 +185,10 @@ State after sync: user confirmed this test thread is visible in the front end.
 
 Do not register this test thread, or any future department thread, as `active_visible` until the user confirms it is visible and openable in VSCode Codex or Codex App.
 
-## 2026-05-30 Department Bootstrap
+## 2026-05-30 Historical Department Bootstrap
 
-Created or recovered the 10 required permanent department conversations through
-the verified real TUI path, then synced WSL and Windows metadata:
+Created or recovered 10 historical CoAgent department conversations through the
+verified real TUI path, then synced WSL and Windows metadata:
 
 ```text
 DispatchAgent: 019e74ce-6e2e-7e71-902d-f6cee64e8a61 / MoSim｜调度中台
@@ -203,7 +203,11 @@ DevOpsReleaseAgent: 019e74de-a452-7a50-99e7-ca9a247b32f1 / MoSim｜DevOps 发布
 ExternalIntelligenceAgent: 019e74de-a83c-7fc2-8987-06c95577a1d3 / MoSim｜外部情报进化
 ```
 
-`python3 CoAgent/doctor/check_department_visibility.py` passed with 11
-registered conversations. The 10 department conversations remain
-`visible_pending_user_confirmation` until the user confirms they are visible
-and openable.
+This historical set is no longer the current routing registry. Several entries
+were later deleted by the user or replaced by current visible department titles.
+Do not recreate or resume these old IDs from this section. Current dispatchable
+threads are the user-confirmed allowlist in
+`CoAgent/dispatch/department_threads.json` and
+`Docs/Index/codex_app_session_research.md#department-thread-layout`. If a
+historical ID is absent from the current visible scan, treat it as gone rather
+than maintaining a separate blacklist.

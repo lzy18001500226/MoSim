@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""Bootstrap visible CoAgent department conversations.
+"""Historical bootstrap helper for visible CoAgent department conversations.
 
 This command creates lightweight real Codex sessions for permanent CoAgent
 departments and then syncs their metadata into the WSL and Windows Codex homes
 so the front ends can list them.
+
+Current MoSim dispatch uses the user-confirmed allowlist in
+CoAgent/dispatch/department_threads.json. The old permanent-department
+bootstrap set is intentionally disabled so this helper cannot recreate deleted
+legacy departments by accident. Future PMO-approved thread creation should add
+new current DepartmentSpec entries explicitly.
 """
 
 from __future__ import annotations
@@ -48,74 +54,7 @@ class DepartmentSpec:
     accountable_to: str
 
 
-PERMANENT_DEPARTMENTS = [
-    DepartmentSpec(
-        "MainAgent",
-        "MoSim｜四旋翼无人机仿真系统",
-        "主线用户沟通、最终集成汇报、人工审核入口。",
-        "user",
-    ),
-    DepartmentSpec(
-        "DispatchAgent",
-        "MoSim｜调度中台",
-        "维护任务单、分派任务、记录状态、导入结果包，不做业务实现。",
-        "MainAgent",
-    ),
-    DepartmentSpec(
-        "ProductStrategyAgent",
-        "MoSim｜产品发现战略",
-        "判断任务价值、范围、取舍和路线优先级。",
-        "MainAgent",
-    ),
-    DepartmentSpec(
-        "RuntimePlatformAgent",
-        "MoSim｜Agent Runtime 平台",
-        "维护 CoAgent 会话生命周期、registry、transport、可见性和恢复机制。",
-        "DispatchAgent",
-    ),
-    DepartmentSpec(
-        "ContextMemoryAgent",
-        "MoSim｜上下文记忆索引",
-        "构建上下文包、维护记忆索引、控制上下文预算和新对话前情。",
-        "DispatchAgent",
-    ),
-    DepartmentSpec(
-        "ToolchainMCPAgent",
-        "MoSim｜工具链 MCP",
-        "维护 MCP/工具能力卡、健康探测、最小影响调用和故障降级。",
-        "DispatchAgent",
-    ),
-    DepartmentSpec(
-        "KnowledgeSecretaryAgent",
-        "MoSim｜知识秘书",
-        "沉淀已接受决策、文档更新、索引更新和经验推广。",
-        "DispatchAgent",
-    ),
-    DepartmentSpec(
-        "VerificationAgent",
-        "MoSim｜验证评测",
-        "独立测试、复现实验、证据审核和验收结论。",
-        "DispatchAgent",
-    ),
-    DepartmentSpec(
-        "SafetyComplianceAgent",
-        "MoSim｜安全合规",
-        "审查外部路径、密钥、许可证、破坏性命令和高风险自动化。",
-        "MainAgent",
-    ),
-    DepartmentSpec(
-        "DevOpsReleaseAgent",
-        "MoSim｜DevOps 发布",
-        "负责 Git、分批提交、push、工作树合并、大文件和发布卫生。",
-        "DispatchAgent",
-    ),
-    DepartmentSpec(
-        "ExternalIntelligenceAgent",
-        "MoSim｜外部情报进化",
-        "持续学习模型厂商、Agent 框架、开源项目和管理经验，提出采纳建议。",
-        "ProductStrategyAgent",
-    ),
-]
+PERMANENT_DEPARTMENTS = []  # Disabled: current registry is user-confirmed allowlist only.
 
 
 def load_registry(path: Path) -> dict[str, Any]:

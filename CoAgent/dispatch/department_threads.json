@@ -1,114 +1,169 @@
 {
+  "registry_policy": {
+    "updated_at": "2026-06-06T22:20:00+08:00",
+    "source": "user_confirmed_visible_thread_list",
+    "dispatch_rule": "allowlist_only",
+    "note": "Only thread IDs listed with status=active_visible are dispatchable. If an old thread ID is absent from this registry and cannot be found in the current visible thread scan, treat it as gone instead of maintaining a separate blacklist."
+  },
   "threads": [
     {
-      "department": "MainAgent",
-      "thread_name": "MoSim｜四旋翼无人机仿真系统",
-      "thread_id": "019e0198-a041-77f1-84d0-c5524bfd4b81",
+      "department": "MainPMO",
+      "thread_name": "MoSim｜主线 PMO",
+      "thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
       "surface": "codex_app_or_vscode",
       "status": "active_visible",
       "agent_type": "permanent",
-      "mission": "主线用户沟通、最终集成汇报、人工审核入口。",
+      "mission": "主线用户沟通、任务 intake、跨部门派发、结果集成和最终决策。",
       "accountable_to": "user"
     },
     {
-      "department": "DispatchAgent",
-      "thread_name": "MoSim｜调度中台",
-      "thread_id": "019e74ce-6e2e-7e71-902d-f6cee64e8a61",
-      "surface": "codex_app_or_vscode",
-      "status": "active_visible",
-      "agent_type": "permanent",
-      "mission": "维护任务单、分派任务、记录状态、导入结果包，不做业务实现。",
-      "accountable_to": "MainAgent"
-    },
-    {
-      "department": "ProductStrategyAgent",
-      "thread_name": "MoSim｜产品发现战略",
-      "thread_id": "019e74cf-fb50-7d71-912c-f586b4dd5f06",
-      "surface": "codex_app_or_vscode",
-      "status": "active_visible",
-      "agent_type": "permanent",
-      "mission": "判断任务价值、范围、取舍和路线优先级。",
-      "accountable_to": "MainAgent"
-    },
-    {
-      "department": "RuntimePlatformAgent",
-      "thread_name": "MoSim｜Agent Runtime 平台",
-      "thread_id": "019e74d1-72fa-7d33-8783-90584035ae92",
-      "surface": "codex_app_or_vscode",
-      "status": "active_visible",
-      "agent_type": "permanent",
-      "mission": "维护 CoAgent 会话生命周期、registry、transport、可见性和恢复机制。",
-      "accountable_to": "DispatchAgent"
-    },
-    {
-      "department": "ContextMemoryAgent",
-      "thread_name": "MoSim｜上下文记忆索引",
-      "thread_id": "019e74d2-ec4b-7603-a41b-596508ab6982",
-      "surface": "codex_app_or_vscode",
-      "status": "active_visible",
-      "agent_type": "permanent",
-      "mission": "构建上下文包、维护记忆索引、控制上下文预算和新对话前情。",
-      "accountable_to": "DispatchAgent"
-    },
-    {
-      "department": "ToolchainMCPAgent",
-      "thread_name": "MoSim｜工具链 MCP",
-      "thread_id": "019e74d4-619c-7133-b53f-78fbefff780a",
-      "surface": "codex_app_or_vscode",
-      "status": "active_visible",
-      "agent_type": "permanent",
-      "mission": "维护 MCP/工具能力卡、健康探测、最小影响调用和故障降级。",
-      "accountable_to": "DispatchAgent"
-    },
-    {
-      "department": "KnowledgeSecretaryAgent",
-      "thread_name": "MoSim｜知识秘书",
-      "thread_id": "019e74d5-d833-7e41-a65b-2868fd841ea1",
-      "surface": "codex_app_or_vscode",
-      "status": "active_visible",
-      "agent_type": "permanent",
-      "mission": "沉淀已接受决策、文档更新、索引更新和经验推广。",
-      "accountable_to": "DispatchAgent"
-    },
-    {
-      "department": "VerificationAgent",
-      "thread_name": "MoSim｜验证评测",
-      "thread_id": "019e74d7-4d58-70f1-84f7-873641995f9a",
-      "surface": "codex_app_or_vscode",
-      "status": "active_visible",
-      "agent_type": "permanent",
-      "mission": "独立测试、复现实验、证据审核和验收结论。",
-      "accountable_to": "DispatchAgent"
-    },
-    {
-      "department": "SafetyComplianceAgent",
-      "thread_name": "MoSim｜安全合规",
-      "thread_id": "019e74d8-c6fd-76c2-98fe-832dc1fea97b",
-      "surface": "codex_app_or_vscode",
-      "status": "active_visible",
-      "agent_type": "permanent",
-      "mission": "审查外部路径、密钥、许可证、破坏性命令和高风险自动化。",
-      "accountable_to": "MainAgent"
-    },
-    {
       "department": "DevOpsReleaseAgent",
-      "thread_name": "MoSim｜DevOps 发布",
+      "thread_name": "MoSim｜Git仓库代码管理部",
       "thread_id": "019e74de-a452-7a50-99e7-ca9a247b32f1",
       "surface": "codex_app_or_vscode",
       "status": "active_visible",
       "agent_type": "permanent",
-      "mission": "负责 Git、分批提交、push、工作树合并、大文件和发布卫生。",
-      "accountable_to": "DispatchAgent"
+      "mission": "Git 分批集成、提交、推送、大工作树和发布卫生。",
+      "accountable_to": "MainPMO"
     },
     {
-      "department": "ExternalIntelligenceAgent",
-      "thread_name": "MoSim｜外部情报进化",
-      "thread_id": "019e74de-a83c-7fc2-8987-06c95577a1d3",
+      "department": "UEExperimentConsoleAgent",
+      "thread_name": "MoSim｜UE实验控制台与场景交互部",
+      "thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
       "surface": "codex_app_or_vscode",
       "status": "active_visible",
       "agent_type": "permanent",
-      "mission": "持续学习模型厂商、Agent 框架、开源项目和管理经验，提出采纳建议。",
-      "accountable_to": "ProductStrategyAgent"
+      "mission": "UE operator console, scene interaction, command/echo schema, and render-review integration.",
+      "accountable_to": "MainPMO"
+    },
+    {
+      "department": "Sunray150AssetPBRAgent",
+      "thread_name": "MoSim｜Sunray150资产与PBR审核部",
+      "thread_id": "019e9b25-066e-7372-8152-209c2b1322a4",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "Sunray150 DAE/FBX/GLB visual assets, material/PBR audit, and manual visual-review readiness.",
+      "accountable_to": "MainPMO"
+    },
+    {
+      "department": "MWorksDynamicsControlAgent",
+      "thread_name": "MoSim｜MWORKS动力学与控制验证部-R1",
+      "thread_id": "019e9be5-334b-76b1-93f9-8b02caebf376",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "MWORKS mainline dynamics/control/model integration, trace consumption, controller wrapper validation, and formal simulation evidence.",
+      "accountable_to": "MainPMO",
+      "routing_role": "MWORKS_R1_primary_mainline",
+      "paired_auxiliary_thread_id": "019e9999-b0d3-7682-bccd-faef08fcf1df",
+      "routing_note": "User renamed this thread to R1 on 2026-06-06. Dispatch primary MWORKS dynamics/control/runtime evidence tasks here. Historical packets may still call this thread R2; keep those as historical labels and use this registry for current routing."
+    },
+    {
+      "department": "MWorksGraphicalModelAuditAgent",
+      "thread_name": "MoSim｜MWORKS动力学与控制验证部-R2",
+      "thread_id": "019e9999-b0d3-7682-bccd-faef08fcf1df",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent_auxiliary",
+      "mission": "MWORKS auxiliary model organization, graphical simulation interface review, connection/layout/readability audit, and model hygiene recommendations.",
+      "accountable_to": "MainPMO",
+      "routing_role": "MWORKS_R2_auxiliary_model_graphical_audit",
+      "first_business_task_gate": "Passed on 2026-06-06 via RFLY-MOSIM-MWORKS-R2-SYNC-VALIDATION-20260606-001. The validation proved PMO dispatch receipt, turn start, minimal context read, and return-packet write only; it did not prove MWORKS GUI/MCP/model audit capability.",
+      "history_note": "This thread previously failed two PMO production dispatch attempts and had a user-side UI composer error, but later cross-thread no-op probes completed. It is no longer quarantine-only after the user renamed it to R2, but business use remains gated by the bounded synchronization validation."
+    },
+    {
+      "department": "ROS2RuntimeAgent",
+      "thread_name": "MoSim｜ROS2感知定位与规划运行部-R1",
+      "thread_id": "019e9c72-ee74-79d1-b9fe-621d3c6fc99e",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "ROS2/RViz2/FAST-LIO/local-map/planner runtime integration and topic/timing/truth-error gates.",
+      "accountable_to": "MainPMO",
+      "supersedes_thread_id": "019e9b85-d4d8-7bf3-8afd-a65697cd3889",
+      "routing_role": "ROS2_R1_primary_mainline",
+      "supersedes_note": "This thread is the current ROS2 R1 primary mainline. The previous ROS2 R2 department was listable/readable and could have its title synced, but CoAgentOps diagnosis COAGENTOPS-ROS2-R2-DISPATCH-SURFACE-DIAG-20260606-001 confirmed persistent start-turn failure across no-op probes. Old pre-R2 thread 019e9917-6181-7ec2-b3d6-4b624d6d3348 was deleted by the user after earlier Codex App delivery failures. Current production ROS2 routing uses this R1 thread id unless PMO explicitly restores an older thread through a bounded diagnosis ladder."
+    },
+    {
+      "department": "WeChatGatewayOps",
+      "thread_name": "MoSim｜微信网关运维部",
+      "thread_id": "019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c",
+      "surface": "codex_app_native",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "cc-connect, QR login, context token, active session, scheduled health checks, and gateway incident diagnosis.",
+      "accountable_to": "MainPMO",
+      "supersedes_thread_id": "019e9be0-534e-7c22-97ff-98fa7c2af39b",
+      "supersedes_note": "The previous Gateway Ops thread is quarantined for production dispatch after repeated agent-loop start-turn failures, even though it remains listable/readable and later showed partial no-op recovery. CoAgentOps maintenance verified this thread id is visible, readable, and no-op sendable on 2026-06-06. Current production gateway maintenance uses this thread id unless PMO later restores an older thread through a bounded validation ladder. Original pre-R2 gateway thread was 019e9855-aa43-7fe2-807e-be7d4095877b; procedures are landed in AGENTS.md, Docs/Workflows/debug_mcp.md, Docs/Workflows/coagent_meta_maintenance.md, and Results/coagent_gateway/."
+    },
+    {
+      "department": "CodexEnvironmentMigrationAgent",
+      "thread_name": "MoSim｜Codex 环境迁移部",
+      "thread_id": "019e8181-6653-73b3-9685-f5bc9a24b947",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "Windows-native Codex environment migration, bridge-residue audit, config/MCP launcher cleanup, and related environment repair history.",
+      "accountable_to": "MainPMO"
+    },
+    {
+      "department": "OpenSourceProbeAgent",
+      "thread_name": "MoSim｜开源项目探针",
+      "thread_id": "019e9be3-94de-7dc3-b067-92a78b678287",
+      "surface": "codex_app_native",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "Periodically crawl, inventory, and classify relevant open-source projects or requested URLs. Return manifests and candidate learning queues, not adoption decisions.",
+      "accountable_to": "CoAgentOps",
+      "supersedes_thread_id": "019e74cf-fb50-7d71-912c-f586b4dd5f06",
+      "supersedes_note": "Old probe thread had an early mismatched initialization prompt. Current probe duties are landed in Docs/Workflows/tooling_assets_governance.md, Docs/Workflows/coagent_meta_maintenance.md, Docs/Workflows/org_operating_model.md, and current registry docs."
+    },
+    {
+      "department": "CoAgentOps",
+      "thread_name": "MoSim｜CoAgent运维平台",
+      "thread_id": "019e9bc1-ea9f-7102-b41a-4ef9b2308992",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "Codex App native recurring CoAgent/meta maintenance, thread-registry hygiene, workflow/skill/index checks, crawler cadence, native capability adoption, packet/evidence/gateway/recovery glue.",
+      "accountable_to": "MainPMO",
+      "supersedes_thread_id": "019e74d1-72fa-7d33-8783-90584035ae92",
+      "supersedes_note": "Old CoAgent ops thread was created outside the current Codex App native thread path, was not reliable for native thread or automation tools, and was deleted by the user on 2026-06-06. Do not dispatch there."
+    },
+    {
+      "department": "OpenSourceLearningAgent",
+      "thread_name": "MoSim｜开源项目学习部",
+      "thread_id": "019e9be4-56d0-7981-b71c-a5ded1c7ec76",
+      "surface": "codex_app_native",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "Learn crawled projects/vendor articles and return adopt/adapt/reference-only/reject proposals with evidence.",
+      "accountable_to": "CoAgentOps",
+      "supersedes_thread_id": "019e74de-a83c-7fc2-8987-06c95577a1d3",
+      "supersedes_note": "Old learning thread had an early external-intelligence bootstrap prompt. Current learn/adopt/adapt/reference-only/reject duties are landed in Docs/Workflows/tooling_assets_governance.md, Docs/Workflows/coagent_meta_maintenance.md, Docs/Workflows/org_operating_model.md, and current registry docs."
+    },
+    {
+      "department": "CodexContextMaintenanceAgent",
+      "thread_name": "MoSim｜Codex 上下文维护部",
+      "thread_id": "019e9be0-f6ac-7762-b80c-b1dd18b0d013",
+      "surface": "codex_app_native",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "Scheduled context-memory/index updates, new-conversation context, project memory index, and compact recovery notes.",
+      "accountable_to": "CoAgentOps",
+      "supersedes_thread_id": "019e3dac-de0e-7180-98ad-d7137e8a6275",
+      "supersedes_note": "Old context-maintenance thread was a pre-R2 migrated department. Context recovery and memory migration material is landed in Docs/Workflows/new_conversation_context.md, Docs/Workflows/session_memory_migration.md, Docs/Index/project_work_memory_index.md, and Docs/Cache/session_memory_migration/."
+    },
+    {
+      "department": "WechatCodexMessagePath",
+      "thread_name": "MoSim｜WechatCodex",
+      "thread_id": "019e8358-86b4-7070-8fd6-a2b4f4d2af97",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "message_path",
+      "mission": "WeChat-side Codex message path. Use for inbound refresh after ret=-2 only; do not send gateway operations tasks here.",
+      "accountable_to": "WeChatGatewayOps"
     }
   ]
 }

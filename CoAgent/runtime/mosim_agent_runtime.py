@@ -23,6 +23,14 @@ DEFAULT_EVENTS = ROOT / "Results" / "agent_runtime" / "events.jsonl"
 ALLOWED_ROOT = ROOT.resolve()
 
 
+class ClosingConnection(sqlite3.Connection):
+    def __exit__(self, exc_type: object, exc_value: object, traceback: object) -> bool | None:
+        try:
+            return super().__exit__(exc_type, exc_value, traceback)
+        finally:
+            self.close()
+
+
 TERMINAL_STATES = {"done", "done_with_concerns", "blocked", "failed", "cancelled"}
 VALID_STATES = {"queued", "claimed", "running", *TERMINAL_STATES}
 RUNTIME_TO_CANONICAL_STATE = {
@@ -97,6 +105,15 @@ def metadata_list(metadata: dict[str, Any], key: str) -> list[str]:
     if isinstance(value, list):
         return [str(item) for item in value]
     return [str(value)]
+
+
+def metadata_array(metadata: dict[str, Any], key: str) -> list[Any]:
+    value = metadata.get(key, [])
+    if value in (None, ""):
+        return []
+    if isinstance(value, list):
+        return value
+    return [value]
 
 
 def task_class_for(metadata: dict[str, Any]) -> str:
@@ -188,7 +205,7 @@ def normalize_paths(values: list[str] | None, *, field: str) -> list[str]:
 
 def open_db(path: Path = DEFAULT_DB) -> sqlite3.Connection:
     path.parent.mkdir(parents=True, exist_ok=True)
-    connection = sqlite3.connect(path)
+    connection = sqlite3.connect(path, factory=ClosingConnection)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA journal_mode=WAL")
     connection.execute("PRAGMA foreign_keys=ON")
@@ -550,6 +567,15 @@ def export_task_packet(args: argparse.Namespace) -> dict[str, Any]:
         "definition_of_done": metadata_string(metadata, "definition_of_done", task["acceptance"]),
         "non_goals": metadata_list(metadata, "non_goals"),
         "required_evidence": metadata_list(metadata, "required_evidence"),
+        "department_local_goal_required": metadata.get("department_local_goal_required", False),
+        "subagent_plan_required": metadata.get("subagent_plan_required", False),
+        "expected_engineering_outputs": metadata_list(metadata, "expected_engineering_outputs"),
+        "required_planning_fields": metadata_list(metadata, "required_planning_fields"),
+        "department_execution_gate": metadata.get("department_execution_gate", {}),
+        "ros2_runtime_gate": metadata.get("ros2_runtime_gate", {}),
+        "ue_scope_gate": metadata.get("ue_scope_gate", {}),
+        "sunray_asset_gate": metadata.get("sunray_asset_gate", {}),
+        "mworks_live_gate": metadata.get("mworks_live_gate", {}),
         "stop_condition": task["stop_condition"],
         "appetite": metadata_string(metadata, "appetite", "bounded to declared task scope"),
         "circuit_breaker": metadata_string(metadata, "circuit_breaker", task["stop_condition"]),
@@ -596,6 +622,19 @@ def export_result_packet(args: argparse.Namespace) -> dict[str, Any]:
         "files_changed": metadata_list(metadata, "files_changed"),
         "commands_run": metadata_list(metadata, "commands_run"),
         "evidence": metadata_list(metadata, "evidence"),
+        "department_local_goal": metadata_string(metadata, "department_local_goal", ""),
+        "critical_path_steps": metadata_list(metadata, "critical_path_steps"),
+        "parallelizable_slices": metadata_list(metadata, "parallelizable_slices"),
+        "subagent_plan": metadata_string(metadata, "subagent_plan", ""),
+        "subagent_plan_reason": metadata_string(metadata, "subagent_plan_reason", ""),
+        "subagents_used": metadata_array(metadata, "subagents_used"),
+        "verification_gates": metadata_list(metadata, "verification_gates"),
+        "manual_review_or_blocker_triggers": metadata_list(metadata, "manual_review_or_blocker_triggers"),
+        "expected_engineering_outputs": metadata_list(metadata, "expected_engineering_outputs"),
+        "actual_engineering_outputs": metadata_list(metadata, "actual_engineering_outputs"),
+        "claim_boundary": metadata_list(metadata, "claim_boundary"),
+        "domain_preflight_before": metadata.get("domain_preflight_before", {}),
+        "phase_checkpoints": metadata_array(metadata, "phase_checkpoints"),
         "risks": metadata_list(metadata, "risks"),
         "blockers": metadata_list(metadata, "blockers"),
         "review_status": metadata_string(metadata, "review_status", "pending" if task["state"] == "done_with_concerns" else "not_required"),

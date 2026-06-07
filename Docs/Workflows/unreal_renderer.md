@@ -96,6 +96,33 @@ Relationship to other review/control windows:
 | RViz2 3D map/planner | Open from UE/Studio as a review action; planner state still comes from ROS2 topics. |
 | Sysplorer/Syslab | Remain the model/result authority; UE only mirrors accepted runtime status. |
 
+Department execution rule: `MoSim｜UE实验控制台与场景交互部` must plan every
+non-trivial task with `department_local_goal`, `critical_path_steps`,
+`parallelizable_slices`, `subagent_plan`, `subagent_plan_reason`,
+`subagents_used`, `verification_gates`, and
+`manual_review_or_blocker_triggers`. This is a planning requirement, not a
+requirement to use at least one sub-agent. Disposable sub-agents may be used
+only for bounded source/static/build/review slices; they are not durable UE
+departments.
+
+Each UE task must classify its scope before execution:
+
+```text
+source-static
+build
+editor/runtime
+manual-review
+```
+
+The task packet must declare `expected_engineering_outputs` for that scope.
+Completed UE work needs matching evidence: source/schema edits and tests,
+build/log evidence, runtime command/echo/transport evidence, or review
+screenshots/packets. Scene registry rows, schemas, JSON packets, and progress
+notes are control-plane evidence; they are not runtime ack or visual
+acceptance by themselves. If a review image/video/window is produced, ask PMO
+to open/display it or send a concise review prompt rather than returning only
+a path.
+
 Recommended command/status route:
 
 ```text
@@ -183,16 +210,39 @@ truth artifacts, and evidence path are bound and echoed.
 ### Phased Implementation
 
 1. Define command/status schemas for console actions, scene switching, and
-   accepted-state echoes.
-2. Add a minimal C++/Blueprint-callable UE command sender component.
+   accepted-state echoes. Current P0 source: `Config/schemas/mosim_ue_command_v1.schema.json`
+   and `Config/schemas/mosim_ue_command_echo_v1.schema.json`.
+2. Add a minimal C++/Blueprint-callable UE command sender component. Current
+   P0 source-level component:
+   `UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h`
+   and
+   `UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp`.
 3. Add an adapter smoke that accepts or rejects `controller_select`,
    `planner_select`, `wind_profile`, `motor_fault`, `sensor_mode`, and
-   `scene_switch`.
+   `scene_switch`. Current P0 source:
+   `Scripts/UE5/smoke_ue_command_adapter.py`.
 4. Build the first UMG/Slate panel with disabled states until ack is received.
 5. Add scene cards using the existing scene registries and active links.
 6. Add RViz/QGC/Studio launch buttons only as review/helper actions, never as
    substitute evidence.
 7. Add evidence export and run packet display after MWORKS/ROS2 gates pass.
+
+Current P0 status, 2026-06-06 CST:
+
+- Source-level UE command sender contract passes
+  `Scripts/UE5/check_ue_command_sender_contract.py`.
+- UDP packet/transport loopback passes
+  `Scripts/UE5/smoke_ue_command_sender_loopback.py`; the P0 bundle records
+  `ue_command_sender_loopback_smoke.json` and received command JSONL.
+- The sender builds and can UDP-send `mosim.ue_command.v1` packets for
+  controller/planner/wind/fault/sensor/scenario/start-goal/recording/scene
+  actions.
+- The sender explicitly rejects `pose_override`, `teleport`, `set_uav_pose`,
+  `actor_transform`, and `keyboard_pose`, and the source-level checker rejects
+  direct Actor pose APIs in this component.
+- This is not live UE Experiment Console evidence yet. Runtime acceptance still
+  requires MWORKS/ROS2 `mosim.ue_command_echo.v1` rows and the P0 bundle keeps
+  `not_runtime_ue_console=true` / `not_mworks_or_ros2_ack=true`.
 
 ## Sunray150 Material Review Rule
 
@@ -201,6 +251,25 @@ For Sunray150 appearance work, use the project skill
 Blender, DAE/FBX/glTF, UE materials, or material-generation scripts. That skill
 is the current source of truth for component-first PBR texturing, material
 library use, UV/atlas decisions, and audit gates.
+
+Current accepted visual-asset route: use the DAE-derived Blender audit model as
+the Sunray150 visual asset source line. The active review file is the
+DAE-derived Blender scene under
+`UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/`, currently
+`sunray150_dae_mid360_realistic_material_audit.blend`. This confirms the route,
+not final material acceptance. Primitive UAVs, temporary procedural aircraft,
+and MWORKS STL animation remain forbidden as final vehicle visuals or review
+evidence.
+
+Current manual-review state: the USB camera lens/barrel overlay was removed
+after user review because its position was wrong. The camera body remains a
+black PartBody visual material, but the separate lens/barrel overlay should not
+be regenerated unless a later reviewed geometry route places it correctly. The
+MID-360 visual route currently uses a deep-blue mirror-coated dome plus white
+strip reflection overlays for manual appearance review. These are visual/PBR
+decisions only and must not change geometry assembly parameters, rotor centers,
+mass, inertia, motor/thrust constants, FAST-LIO extrinsics, MWORKS/ROS2/UE
+runtime behavior, controller, or planner evidence.
 
 Do material work by component family, not by whole-aircraft renders first.
 Whole-aircraft images are only final consistency checks after the individual

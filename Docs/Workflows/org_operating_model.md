@@ -12,30 +12,31 @@ is the operational rulebook that applies that closed baseline.
 
 ```text
 MainAgent / GeneralManager
-  -> DispatchCenter / CoordinationOffice
-  -> TaskSecretary / DocumentationOffice
   -> ProjectDepartment / ProjectOwner
-  -> TestDepartment / TestOwner
-  -> SecurityDepartment / SecurityOfficer
   -> DevOpsDepartment / GitIntegrator
   -> ArchitectureCommittee / ArchitectureReviewer
   -> KnowledgeDepartment / KnowledgeManager
+  -> CoAgentOps / MetaOps
   -> IncidentReview / IncidentReviewOwner
 ```
 
 This map lists operating functions, not the final execution topology. The
-current CoAgent architecture has four persistent governance functions:
+current MoSim/Codex App execution topology keeps only a small number of visible
+durable threads. PMO dispatches directly to them; CoAgent ops handles recurring
+meta-maintenance rather than acting as a mandatory middle office.
 
 ```text
 Main / PMO
-Dispatch Center
-Knowledge Secretary
+CoAgent Ops / Meta-maintenance
+Context Maintenance
+Open-source Probe / Learning
 Release Integration
 ```
 
 Verification, security, architecture review, incident review, and research are
-mandatory gates or services when triggered. They become persistent
-conversations only when recurring workload justifies the synchronization cost.
+mandatory gates or services when triggered. They become persistent visible
+conversations only when recurring workload justifies the synchronization and
+runtime-resource cost.
 
 Default rule: the main agent is the general manager. It owns the objective,
 task graph, priority, integration, and final answer. It should not become the
@@ -49,10 +50,11 @@ when the task needs sustained technical context, repeated human review, or
 parallel substreams such as PX4-log-based parameter identification, UE scene
 integration, simulator bring-up, or a broad Git migration.
 
-Important distinction: the departments below are MoSim operating roles, not
-standing Codex subagents. A Codex subagent may temporarily perform one bounded
-role slice, but persistent secretary, Git, test, security, review, and project
-management behavior must be backed by MoSim-owned task state and event logs.
+Important distinction: the functions below are MoSim operating roles, not
+standing Codex subagents and not always visible departments. A Codex subagent
+may temporarily perform one bounded role slice, but persistent Git, runtime,
+review, project management, context maintenance, and meta-ops behavior must be
+backed by MoSim-owned task state and event logs.
 
 The reusable project-owned description of that system now lives under
 `CoAgent/`. This workflow file remains the operating rulebook; `CoAgent/`
@@ -67,11 +69,11 @@ turn every function into an always-on department conversation.
 | Department | Role | Durable Owner | Responsibility | Not Responsible For |
 |---|---|---|---|---|
 | General Management | `MainAgent` | Current Codex main session | Goal decomposition, priority, owner assignment, integration, user escalation, final decision | Grinding through every worker batch when durable workers can be used |
-| Dispatch Center | `DispatchCenter` | MoSim task queue/status board plus current main session supervision | Task tickets, department status board, dependency routing, cadence checks, task packet generation, result-packet intake | Writing feature code, doing Git batches, silently changing technical scope |
-| Documentation Secretary | `TaskSecretary` | Docs/intake records, docs review queue | User directives, decisions, work records, documentation patches, docs second review | Owning the whole task board, implementing features, or supervising all departments alone |
+| CoAgent Ops | `MetaOps` | `MoSim｜CoAgent运维平台` plus project ledgers | Recurring meta-task coordination, context-update cadence, crawler/learning dispatch, thread-registry hygiene, workflow/skill update checklists | Replacing PMO for MoSim engineering decisions or becoming a mandatory dispatch hop |
+| Context Maintenance | `ContextMaintainer` | `MoSim｜Codex 上下文维护` | New-conversation context, project memory index, compact recovery notes, scheduled context refreshes | Owning all documentation or executing business tasks |
 | Project Department | `ProjectOwner` | MoSim queue worker or explicit bounded subagent | One bounded implementation/research/migration stream with workers and evidence | Owning global priorities or cross-stream integration |
-| Test Department | `TestOwner` | MoSim test queue and result logs | Independent verification across code, docs, Git, simulation, and reproducibility | Writing the feature being tested |
-| Security Department | `SecurityOfficer` | MoSim preflight hooks and audit queue | Path boundary, secrets, destructive operations, large files, license/copyright, unsafe GUI/MCP actions | General code quality or product decisions |
+| Test Gate | `TestOwner` | Task-local evidence bundle, isolated subagent, or explicitly scoped test thread | Independent verification across code, docs, Git, simulation, and reproducibility when a task reaches an acceptance gate | Acting as an always-on department that competes for ROS topics, ports, GUI/MCP sessions, or worktrees |
+| Security Gate | `SecurityOfficer` | `AGENTS.md`, prompts, harnesses, preflight checks, and review gates | Path boundary, secrets, destructive operations, large files, license/copyright, unsafe GUI/MCP actions | General code quality, product decisions, or a separate standing department |
 | DevOps Department | `GitIntegrator` | MoSim Git queue with explicit locks/hooks | Branch hygiene, add/commit/push, large-file/LFS gates, release checkpoints | Feature implementation or architecture approval |
 | Architecture Committee | `ArchitectureReviewer` | Durable review task plus optional Codex one-shot review | Module boundaries, MWORKS/UE5/Sysblock integration choices, long-term design risks | Day-to-day execution |
 | Knowledge Department | `KnowledgeManager` | Recurring durable audit task | External Docs/skills/repo learning, source-to-doc coverage, rejected patterns | Importing full external runtimes without approval |
@@ -79,35 +81,100 @@ turn every function into an always-on department conversation.
 
 ## 2.1 Codex App Operating Threads
 
-Use this conversation structure as the current visible routing surface:
+Use this conversation structure as the current visible routing surface for the
+MoSim technical mainline. This is intentionally smaller than the older CoAgent
+company model: PMO dispatches directly to the few durable specialty threads
+that need long context, and treats the remaining functions as on-demand roles or
+one-shot review packets.
 
 | Thread | Department | Includes |
 |---|---|---|
-| `MoSim｜主线总控` | General Management | User dialogue, current goal, final decisions, integrated progress report |
-| `MoSim｜调度中台` | Dispatch Center | Task tickets, owner assignment, department status board, blocked-task checks, result-packet routing |
-| `MoSim｜文档秘书部` | Documentation Secretary | Instruction records, decision logs, docs patches, docs consistency review |
-| `MoSim｜研发工程部` | Project Department | UE/Fab scenes, MCP/skills implementation, MWORKS/Sysplorer work, controllers, planners, scene truth, parameter research implementation |
-| `MoSim｜验证测试部` | Test Department | Unit/regression/simulation/UE/manual-review evidence gates |
-| `MoSim｜安全合规部` | Security Department | Path boundary, secrets, large-file/license checks, destructive-operation review |
-| `MoSim｜DevOps 发布部` | DevOps Department | Git hygiene, branches, commits, pushes, LFS/ignore strategy, release checkpoints |
+| `MoSim｜主线 PMO` | General Management / PMO | User dialogue, task intake, packet dispatch, result integration, final decisions |
+| `MoSim｜UE实验控制台与场景交互部` | UE Experiment Console And Scene Interaction | RflySim-like UE operator console, scene/map switching, command/echo schema, render-review surfaces |
+| `MoSim｜Sunray150资产与PBR审核部` | Sunray150 Asset And PBR Review | DAE/Blender/UE visual asset, PBR materials, component close-up review, UE import readiness |
+| `MoSim｜MWORKS动力学与控制验证部` | MWORKS Dynamics And Control Verification | Sysplorer/Sysblock/Syslab, dynamics/controller wrappers, trace consumption, formal simulation evidence |
+| `MoSim｜ROS2感知定位与规划运行部` | ROS2 Perception, Localization, And Planning Runtime | ROS2/RViz2/FAST-LIO/local-map/planner runtime, topic/timing/truth-error gates, 20Hz setpoint adapter |
+| `MoSim｜DevOps 发布` | DevOps Department | Git hygiene, branches, commits, pushes, LFS/ignore strategy, release checkpoints |
+| `MoSim｜微信网关运维部` | Gateway Operations | cc-connect, QR login, context token/session health, sparse WeChat notification reliability |
 
-As of 2026-05-26, these seven names are the approved visible operating-thread
-set. They are not the architectural ceiling for CoAgent. Do not create
-department or dedicated-task conversations by direct Codex App SQLite/JSONL
-injection. Create them from the WSL/VSCode Codex side first; Codex App should
-only display the synced conversations. Do not use the previous `总经办 PMO` or
-`质量安全部` labels.
+Optional/on-demand roles:
 
-Current WSL-origin department threads visible in Codex App:
-
-| Thread | ID |
+| Role | Use when |
 |---|---|
-| `MoSim｜调度中台` | `019e62b0-d755-7871-b061-0ea63fa12020` |
-| `MoSim｜文档秘书部` | `019e62b1-3333-7870-8e1b-edd0e78f80eb` |
-| `MoSim｜研发工程部` | `019e62b1-6806-7b52-88dd-070461772e79` |
-| `MoSim｜验证测试部` | `019e62b1-a1d3-74c2-853c-85c510e41f59` |
-| `MoSim｜安全合规部` | `019e62b1-d429-7311-8cbe-fbfcaae2f72e` |
-| `MoSim｜DevOps 发布部` | `019e62b2-145f-7fc1-9ad1-914f7c1c6666` |
+| Validation / Evidence Review | A stage claims pass/completion and needs independent evidence review before PMO accepts it; default to bounded subagents or task-local isolated checks |
+| Toolchain/MCP upkeep | MWORKS/UE/WindowsMCP/ROS2 MCP setup or health breaks; owned by the thread using the tool, or by `MoSim｜CoAgent运维平台` for recurring workflow/skill maintenance |
+| Context Memory Update | A new long conversation needs a compact context pack or old-session recovery; route to `MoSim｜Codex 上下文维护` |
+| Security / Compliance Gate | External paths, secrets, destructive actions, licenses, or large-file release gates are involved; enforce through prompts, harnesses, preflight checks, and review records |
+| External Intelligence | A concrete task needs fresh RflySim/Gazebo/PX4/model-vendor/open-source research |
+
+Documentation ownership rule: there is no dedicated `MoSim｜知识秘书` thread in
+the current operating model. Each responsible thread must update the relevant
+project docs, indexes, workflow notes, or result packets before claiming
+completion. PMO may request an extra docs-quality review for high-impact rule
+changes, but that review is a task, not a standing secretary department.
+MCP/skills/workflow ownership follows the same rule: the task thread that
+discovers a reusable command, failure mode, recovery path, or operating
+constraint must update the relevant workflow/skill doc immediately. For
+cross-project or recurring maintenance, route the meta-task to
+`MoSim｜CoAgent运维平台`.
+
+CoAgent/meta-task routing:
+
+| Thread | ID | Responsibility |
+|---|---|---|
+| `MoSim｜Codex 环境迁移部` | `019e8181-6653-73b3-9685-f5bc9a24b947` | Windows-native Codex environment migration, WSL bridge-residue audits, Codex config/MCP launcher cleanup, and related one-time environment repair history. |
+| `MoSim｜Codex 上下文维护部-R2` | `019e9be0-f6ac-7762-b80c-b1dd18b0d013` | Receives scheduled tasks to update `Docs/Workflows/new_conversation_context.md`, `Docs/Index/project_work_memory_index.md`, memory/index docs, and compact recovery notes. |
+| `MoSim｜CoAgent运维平台` | `019e9bc1-ea9f-7102-b41a-4ef9b2308992` | Codex App native coordinator for recurring CoAgent/meta tasks such as scheduled context updates, crawler cadence, external-learning dispatch, native automation/thread capability checks, and ops checklists. It does not replace `MoSim｜主线 PMO` for MoSim engineering work. |
+| `MoSim｜开源项目探针-R2` | `019e9be3-94de-7dc3-b067-92a78b678287` | Periodically checks local reference-project inventory, upstream freshness, metadata completeness, and update candidates. It should return manifests and candidate learning queues, not adoption decisions; broad new crawling belongs to scoped sub-agents or explicit task packets. |
+| `MoSim｜开源项目学习部-R2` | `019e9be4-56d0-7981-b71c-a5ded1c7ec76` | Learns crawled projects/vendor articles, compares them with current MoSim/CoAgent needs, and returns adopt/reject proposals with evidence. |
+
+Tooling-asset governance route: plugins, MCP servers, wrappers, project-local
+skills, workflow docs, and crawled reference projects are maintained through
+`Docs/Workflows/tooling_assets_governance.md`. The task thread owns immediate
+updates discovered during its work. `MoSim｜CoAgent运维平台` owns recurring
+meta-maintenance and index hygiene, `MoSim｜开源项目探针-R2` owns local reference
+inventory and freshness checks, scoped sub-agents own one-shot crawl/fetch
+tasks, and `MoSim｜开源项目学习部-R2` owns adopt/reject/reference-only proposals.
+
+Recurring-task rule: if Codex App automation tools are available, schedule the
+recurring task against the appropriate visible thread. If automation tools are
+not exposed in the current context, `MoSim｜CoAgent运维平台` or PMO must maintain
+a recoverable manual schedule/checklist and dispatch task packets when resumed.
+Do not claim a timed automation exists until a real automation tool or external
+scheduler has been configured and verified.
+
+Thread replacement rule: when a department thread is replaced because an older
+conversation lacks reliable Codex App native thread or automation tools, the
+replacement is not complete merely because a new thread exists. The old
+conversation's reusable decisions and workflows must be landed into the
+canonical project documents that future departments actually read. Use a
+result packet to list the landing document for each important topic, then mark
+the old thread as superseded for user deletion. Backups or chat history are
+only evidence sources, not the long-term operating surface.
+
+The older `MoSim｜调度中台` thread is deprecated for ordinary MoSim work. Do not
+insert it as a mandatory hop between PMO and departments. CoAgent queue/runtime
+tools may still be used as support infrastructure when a task specifically
+needs durable queue state, packet generation, visibility diagnosis, result
+import, or evidence validation.
+
+Current project-registered visible department thread IDs live in
+`CoAgent/dispatch/department_threads.json` and
+`Docs/Index/codex_app_session_research.md#department-thread-layout`. Dispatch
+uses an allowlist-only rule: only IDs registered as `active_visible` in the
+current registry are valid targets. If an old thread ID is absent from the
+current visible scan, treat it as gone and remove it from dispatchable registry
+instead of maintaining a separate blacklist. Future context-memory work routes
+to `MoSim｜Codex 上下文维护部-R2`
+(`019e9be0-f6ac-7762-b80c-b1dd18b0d013`).
+
+Dead-thread rule: if a visible department can be read but cannot reliably
+receive work, expose native tools, run automations, or keep a healthy agent
+loop, do not try to repair Codex App private state and do not keep dispatching
+there. Treat the root cause as unknown unless current evidence proves it.
+Extract any reusable historical content into canonical project documents or
+the session-memory migration flow, create/select an App-native replacement
+thread, update the allowlist, and leave old-thread deletion to the user.
 
 Do not create separate long-lived App conversations for every narrow role such
 as `McpSkillsMaintainer`, `UEScenePipeline`, or `ParameterEstimator` by default.
@@ -121,7 +188,7 @@ the task will span many turns or manual reviews
 the task needs stable technical context not suitable for one-shot subagents
 the task has a parent department and task_id
 the conversation has a stop condition and result-packet contract
-the Dispatch Center records it on the status board
+PMO or CoAgent ops records it in a recoverable ledger/status packet
 ```
 
 Examples:
@@ -136,7 +203,7 @@ Split rule:
 
 ```text
 primary conversation
-  -> Dispatch Center ticket/status record
+  -> PMO/CoAgent ops ledger or status packet when durable state is needed
   -> department conversation for normal work
   -> task team only for long-running high-context work
     -> one or more scoped task conversations
@@ -149,10 +216,12 @@ the parent governance owner or sponsor, canonical task id, member
 conversations, shared context path, worktree bindings, write scopes,
 acceptance gates, and expected result packets.
 
-## 2.2 Task Ticket And Status Board Ownership
+## 2.2 Task Ticket And Status Ownership
 
-The task ticket mechanism and department status board belong to the Dispatch
-Center, not to the Documentation Secretary.
+The current default is PMO direct dispatch. There is no required dispatch-center
+conversation between PMO and durable departments. Durable task records belong in
+project ledgers, result/blocker packets, and status files. CoAgent ops may own
+recurring meta-task schedules and thread-registry maintenance.
 
 Required status-board fields:
 
@@ -178,27 +247,28 @@ Routing rules:
 
 ```text
 Git work:
-  MainAgent defines scope -> DispatchCenter opens/updates ticket ->
-  DevOpsDepartment executes batches -> Test/Security review gates -> MainAgent reports.
+  MainAgent defines scope -> DevOpsDepartment executes batches ->
+  task-local test/security gates run as needed -> MainAgent reports.
 
 Documentation work:
-  MainAgent or DispatchCenter marks a stable decision -> DocumentationSecretary
-  patches docs -> DocsQualityTest reviews -> MainAgent reports.
+  Responsible thread records the stable decision -> patches docs immediately ->
+  optional bounded DocsQualityTest reviews high-impact changes -> MainAgent reports.
 
 Long technical research:
-  MainAgent defines objective -> DispatchCenter creates task-team packet ->
-  ProjectDepartment opens one or more scoped task conversations ->
+  MainAgent defines objective -> PMO creates task-team packet if needed ->
+  ProjectDepartment or durable specialty thread opens scoped conversations ->
   result packets and review notes return to MainAgent for integration.
 ```
 
 The main agent may perform small direct edits in the current turn when that is
 the fastest safe path, but it must not become the default worker for long Git,
-testing, research, or documentation queues.
+runtime bring-up, research, or documentation queues.
 
-## 3. Documentation Secretary Hard Rule
+## 3. Documentation Ownership Rule
 
-The documentation secretary must ensure user instructions and work records are
-not chat-only state. It does not own the whole execution status board.
+There is no dedicated documentation-secretary thread by default. The thread
+doing the work must ensure user instructions and work records are not chat-only
+state. It does not own the whole execution status board.
 
 For every new user directive, correction, manual-review result, sub-agent
 return, blocker, or work checkpoint, record at least one recoverable artifact:
@@ -221,7 +291,7 @@ Promotion rule:
 
 ```text
 chat/user instruction
-  -> TaskSecretary intake
+  -> responsible-thread intake
   -> task ledger or PROGRESS when stable
   -> workflow/skill/doc update when it becomes a reusable rule
 ```
@@ -229,7 +299,7 @@ chat/user instruction
 Do not rely on memory, active sub-agent nicknames, IDE tabs, or transient chat
 history as the only record of work.
 
-Documentation secretary checklist:
+Documentation ownership checklist:
 
 ```text
 [ ] New user directive captured.
@@ -242,19 +312,25 @@ Documentation secretary checklist:
 [ ] Docs update received a second review when important.
 ```
 
-When several independent documentation reviews are needed, the secretary may
-request parallel read-only reviewer tasks with disjoint review scopes. The
-Dispatch Center records and routes those review tasks; the secretary merges the
-results and records the final documentation decision.
+When several independent documentation reviews are needed, PMO or the
+responsible thread may request parallel read-only reviewer tasks with disjoint
+review scopes. PMO or CoAgent ops records and routes those review tasks; the
+responsible owner merges the results and records the final documentation
+decision.
 
 Sub-agents are not peer-to-peer workers. They do not route instructions or
 review findings directly to each other. They also should not be treated as
-standing departments. The secretary role must be implemented as durable MoSim
-state: queue rows, event logs, checkpoints, and human-readable recovery records.
-The main agent or a future MoSim runtime dispatcher must distribute
-instructions, reviewer findings, and next tasks.
+standing departments. Documentation ownership must be implemented as durable
+MoSim state: queue rows, event logs, checkpoints, and human-readable recovery
+records. The main agent, responsible durable thread, or future MoSim runtime
+dispatcher must distribute instructions, reviewer findings, and next tasks.
 
-## 4. Test Department Structure
+## 4. Test Gate Structure
+
+Do not keep an always-on test department by default. Testing is usually a
+bounded verification gate owned by the task that needs acceptance. This avoids
+multiple durable conversations competing for ROS topics, simulator processes,
+ports, GUI/MCP sessions, worktrees, or result directories.
 
 Use separate test lanes when risk is non-trivial:
 
@@ -273,11 +349,36 @@ Use separate test lanes when risk is non-trivial:
 
 Testing has veto power over integration when required evidence is missing.
 
-## 5. Security Department Boundary
+Execution topology for tests:
 
-Security is a standing monitor, not just a test suite.
+| Test Scope | Default Executor | Resource Rule |
+|---|---|---|
+| Small script/doc/git checks | Current task thread | Run locally after implementation and record command/evidence |
+| Independent read-only review | One-shot subagent or bounded reviewer | No runtime mutation; return findings/evidence only |
+| ROS2/UE/MWORKS runtime checks | Single owning task thread | Claim the runtime resource first; no parallel durable test thread on the same topics/ports/session |
+| High-impact acceptance | PMO-created scoped visible test conversation if needed | Explicit read/write scope, resource lock, stop condition, and result packet |
 
-The security officer should stop or escalate when work may:
+Test dispatch contract:
+
+```text
+objective:
+evidence needed:
+allowed commands:
+forbidden mutations:
+resource lock:
+timeout:
+result path:
+pass/fail/blocker criteria:
+```
+
+## 5. Security Gate Boundary
+
+Security is not a standing visible department in the current operating model.
+Security is enforced by written boundaries, prompts, harnesses, preflight
+checks, and review gates. When a task may cross a boundary, the task owner must
+stop or escalate before acting.
+
+Stop or escalate when work may:
 
 ```text
 leave C:\Users\HP\Desktop\MoSim without explicit approval
@@ -294,18 +395,19 @@ Security findings should be short, factual, and action-oriented.
 ## 6. Required Flow For Non-Trivial Tasks
 
 ```text
-1. DispatchCenter creates or updates the task ticket and status-board record.
-2. DocumentationSecretary records the directive/correction when it changes
+1. PMO or CoAgent ops creates or updates a recoverable task record when needed.
+2. The responsible thread records the directive/correction when it changes
    durable project knowledge.
 3. MainAgent builds or confirms the task graph before executing.
-4. MainAgent assigns ProjectOwner/TestOwner/SecurityOfficer/GitIntegrator as
-   durable task roles, not as indefinite Codex subagents.
+4. MainAgent assigns ProjectOwner/GitIntegrator or bounded TestOwner/Security
+   gate roles with explicit scopes, not as indefinite Codex subagents.
 5. Project owners execute bounded work streams through MoSim queue items or
    one-shot subagent calls.
-6. Test and security owners review evidence through durable records.
+6. Test and security gates review evidence through durable records when
+   triggered.
 7. MainAgent routes review findings back to the responsible owner.
 8. GitIntegrator commits and pushes safe changes.
-9. DocumentationSecretary records completion, blockers, and next actions when
+9. The responsible thread records completion, blockers, and next actions when
    they affect project memory.
 10. MainAgent reports the integrated result.
 ```
@@ -337,8 +439,8 @@ stop condition:
 handoff format:
 ```
 
-Use stable role names such as `TaskSecretary`, `GitIntegrator`,
-`SecurityOfficer`, `TestOwner`, `ArchitectureReviewer`, and `KnowledgeManager`.
+Use stable role names such as `ContextMaintainer`, `MetaOps`, `GitIntegrator`,
+`SecurityGate`, `TestOwner`, `ArchitectureReviewer`, and `KnowledgeManager`.
 Avoid arbitrary nicknames that make active work hard to audit.
 
 ## 8. Completion Criteria
@@ -350,7 +452,7 @@ work product exists
 required evidence exists
 review gate passed or risk is explicitly accepted
 Git state is known
-TaskSecretary has recorded final state
+the responsible thread has recorded final state
 next action is clear or unnecessary
 ```
 

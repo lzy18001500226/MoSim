@@ -2,8 +2,8 @@
   "tasks": [
     {
       "automation_id": "agent_architecture_learning_daily",
-      "role": "ExternalIntelligenceAgent",
-      "department": "ExternalIntelligenceAgent",
+      "role": "OpenSourceLearningAgent",
+      "department": "OpenSourceLearningAgent",
       "cadence": "daily",
       "objective": "Run a bounded CoAgent architecture-learning slice across local agent references, agent skills, Anthropic/Claude engineering material, or SDK runtime resources; classify lessons as adopt_now, adapt_later, portable_only, reject, or unknown.",
       "read_scope": [
@@ -43,8 +43,8 @@
     },
     {
       "automation_id": "docs_workflow_improvement_daily",
-      "role": "KnowledgeSecretaryAgent",
-      "department": "KnowledgeSecretaryAgent",
+      "role": "CoAgentOps",
+      "department": "CoAgentOps",
       "cadence": "daily",
       "objective": "Review recent incidents, local skills, workflow docs, and update durable CoAgent or workflow guidance when a real improvement is justified.",
       "read_scope": [
@@ -83,8 +83,8 @@
     },
     {
       "automation_id": "reference_repo_refresh_daily",
-      "role": "ExternalIntelligenceAgent",
-      "department": "ExternalIntelligenceAgent",
+      "role": "OpenSourceProbeAgent",
+      "department": "OpenSourceProbeAgent",
       "cadence": "daily",
       "objective": "Check whether tracked reference repositories or indexes need refresh or reclassification, and record the result.",
       "read_scope": [
@@ -120,8 +120,8 @@
     },
     {
       "automation_id": "knowledge_index_refresh_daily",
-      "role": "ContextMemoryAgent",
-      "department": "ContextMemoryAgent",
+      "role": "CodexContextMaintenanceAgent",
+      "department": "CodexContextMaintenanceAgent",
       "cadence": "daily",
       "objective": "Rebuild the CoAgent knowledge index so current rules, workflows, progress, and ledger entries remain searchable.",
       "read_scope": [
@@ -158,8 +158,8 @@
     },
     {
       "automation_id": "safety_scan_daily",
-      "role": "SafetyComplianceAgent",
-      "department": "SafetyComplianceAgent",
+      "role": "CoAgentOps",
+      "department": "CoAgentOps",
       "cadence": "daily",
       "objective": "Run CoAgent and project-local safety preflight to detect path, large-file, or boundary issues.",
       "read_scope": [

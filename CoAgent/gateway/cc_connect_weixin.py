@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import re
+import socket
 import subprocess
 import sys
 import time
@@ -38,6 +39,9 @@ def default_data_dir() -> Path:
         return Path(rf"\\wsl.localhost\{DEFAULT_WSL_DISTRO}\home\linux\.cache\mosim\coagent\cc-connect-weixin\data")
     return Path(WSL_DATA_DIR)
 
+
+DEFAULT_DATA_DIR = default_data_dir()
+
 ALLOWED_CLASSES = {"auth_required", "approval_required", "manual_review_required", "incident_required"}
 ALLOWED_REVIEW_DECISIONS = {"needs_review", "accepted_with_concerns", "needs_rework", "rejected"}
 SECRET_PATTERNS = [
@@ -48,6 +52,34 @@ SECRET_PATTERNS = [
     re.compile(r"o9cq[A-Za-z0-9_.@-]+"),
     re.compile(r"[A-Za-z0-9_.+-]+@im\.(wechat|bot)"),
 ]
+PATH_PATTERNS = [
+    re.compile(r"(?i)\b[A-Z]:[\\/][^\s，。；;,]+"),
+    re.compile(r"(?i)(?:/mnt/[a-z]|/home|/tmp|/var|/opt)/[^\s，。；;,]+"),
+    re.compile(r"(?i)\\\\(?:wsl\.localhost|wsl\$)\\[^\s，。；;,]+"),
+    re.compile(
+        r"(?i)\b(?:Results|Docs|CoAgent|Scripts|Models|References|UE5|Config|Assets|Source)[\\/][^\s，。；;,]+"
+    ),
+    re.compile(r"(?i)\b[\w.-]+\.(?:json|jsonl|md|py|mo|msr|png|jpg|jpeg|log|txt|yaml|yml|csv|zip)\b"),
+]
+
+CLASS_LABELS = {
+    "auth_required": "账号/授权",
+    "approval_required": "需要批准",
+    "manual_review_required": "需要人工审核",
+    "incident_required": "异常阻塞",
+    "review_required": "需要审核",
+    "blocked": "阻塞",
+    "failed": "失败",
+    "completed": "完成",
+    "done": "完成",
+}
+
+SEVERITY_LABELS = {
+    "critical": "紧急",
+    "high": "高",
+    "medium": "中",
+    "low": "低",
+}
 
 
 @dataclass(frozen=True)
@@ -126,6 +158,28 @@ def truncate(text: str, limit: int) -> str:
     return text[: max(0, limit - 20)].rstrip() + "\n...[truncated]"
 
 
+def one_line(value: Any, *, default: str = "", limit: int = 120) -> str:
+    text = redact(str(value or default)).strip()
+    for pattern in PATH_PATTERNS:
+        text = pattern.sub("（详见项目记录）", text)
+    text = re.sub(r"\s+", " ", text)
+    text = re.sub(r"(（详见项目记录）\s*){2,}", "（详见项目记录）", text)
+    text = text.replace(" （详见项目记录）", "（详见项目记录）")
+    return truncate(text, limit)
+
+
+def label_for(value: str, mapping: dict[str, str]) -> str:
+    return mapping.get(value, value or "未标注")
+
+
+def evidence_notice(payload: dict[str, Any]) -> str:
+    evidence = as_list(payload.get("evidence_paths") or payload.get("evidence"))
+    resume = str(payload.get("resume_packet_path") or "")
+    if evidence or resume:
+        return "证据：已保存到项目记录，主对话可查。"
+    return "证据：如需追溯请看主对话记录。"
+
+
 def to_wsl_path(path: Path) -> str:
     text = str(path)
     if not sys.platform.startswith("win"):
@@ -164,7 +218,72 @@ def cc_arg_path(path: Path) -> str:
     return to_wsl_path(path) if sys.platform.startswith("win") else str(path)
 
 
+def probe_api_socket_connect(*, data_dir: Path, timeout: int = 5) -> dict[str, Any]:
+    """Probe the cc-connect internal Unix socket, not the session history files."""
+    socket_path = data_dir / "run" / "api.sock"
+    if not socket_path.exists():
+        return {"ok": False, "socket_exists": False, "error": "api_socket_missing"}
+    if sys.platform.startswith("win"):
+        script = (
+            "import socket, sys\n"
+            "p = sys.argv[1]\n"
+            "s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)\n"
+            f"s.settimeout({max(1, timeout)!r})\n"
+            "try:\n"
+            "    s.connect(p)\n"
+            "    print('connect_ok')\n"
+            "except Exception as exc:\n"
+            "    print(type(exc).__name__ + ': ' + str(exc), file=sys.stderr)\n"
+            "    raise SystemExit(1)\n"
+            "finally:\n"
+            "    s.close()\n"
+        )
+        command = [
+            "wsl.exe",
+            "-d",
+            DEFAULT_WSL_DISTRO,
+            "--",
+            "python3",
+            "-c",
+            script,
+            to_wsl_path(socket_path),
+        ]
+        try:
+            completed = subprocess.run(
+                command,
+                cwd=ROOT,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=timeout + 2,
+                check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            return {"ok": False, "socket_exists": True, "error": f"{type(exc).__name__}: {exc}"}
+        return {
+            "ok": completed.returncode == 0,
+            "socket_exists": True,
+            "returncode": completed.returncode,
+            "stdout": redact(completed.stdout or ""),
+            "stderr": redact(completed.stderr or ""),
+        }
+    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    sock.settimeout(max(1, timeout))
+    try:
+        sock.connect(str(socket_path))
+    except OSError as exc:
+        return {"ok": False, "socket_exists": True, "error": f"{type(exc).__name__}: {exc}"}
+    finally:
+        sock.close()
+    return {"ok": True, "socket_exists": True}
+
+
 def probe_cc_connect_api(*, cc_bin: Path, data_dir: Path, timeout: int = 5) -> dict[str, Any]:
+    socket_probe = probe_api_socket_connect(data_dir=data_dir, timeout=timeout)
+    if not socket_probe.get("ok"):
+        return socket_probe
     command = cc_connect_command(cc_bin, ["sessions", "list", "--data-dir", cc_arg_path(data_dir)])
     try:
         completed = subprocess.run(
@@ -224,27 +343,23 @@ def format_blocker(payload: dict[str, Any]) -> tuple[bool, str, str]:
     klass = str(payload.get("class") or payload.get("canonical_status") or "")
     if klass not in ALLOWED_CLASSES:
         return False, "", f"blocker class {klass!r} is not allowed for Weixin escalation"
-    task_id = str(payload.get("task_id") or "unknown")
     severity = str(payload.get("severity") or "medium")
-    surface = str(payload.get("blocked_surface") or "unknown surface")
-    action = str(payload.get("human_action_required") or payload.get("next_recommended_action") or "")
-    why = str(payload.get("why_now") or payload.get("summary") or "")
-    evidence = as_list(payload.get("evidence_paths") or payload.get("evidence"))[:5]
-    resume = str(payload.get("resume_packet_path") or "")
+    surface = one_line(payload.get("blocked_surface") or "当前任务被阻塞。")
+    action = one_line(
+        payload.get("human_action_required") or payload.get("next_recommended_action") or "请确认下一步处理方式。"
+    )
+    why = one_line(payload.get("why_now") or payload.get("summary") or "", limit=140)
+    header = "!!! MoSim 需要人工介入 !!!" if severity in {"critical", "high"} else "【MoSim 需要审核】"
     lines = [
-        "【MoSim CoAgent 人工审核】",
-        f"任务: {task_id}",
-        f"类型: {klass} / {severity}",
-        f"阻塞面: {surface}",
-        f"需要你处理: {action or '请查看主对话/证据包并确认下一步。'}",
+        header,
+        f"类型：{label_for(klass, CLASS_LABELS)} / {label_for(severity, SEVERITY_LABELS)}",
+        f"问题：{surface}",
+        f"需要你：{action}",
     ]
     if why:
-        lines.append(f"原因: {why}")
-    if evidence:
-        lines.append("证据: " + ", ".join(evidence))
-    if resume:
-        lines.append(f"恢复包: {resume}")
-    lines.append("处理后请在主对话或微信回复审核结论。")
+        lines.append(f"原因：{why}")
+    lines.append(evidence_notice(payload))
+    lines.append("处理后：在微信或主对话回复结论即可。")
     return True, "\n".join(lines), ""
 
 
@@ -252,27 +367,20 @@ def format_review(payload: dict[str, Any]) -> tuple[bool, str, str]:
     decision = str(payload.get("decision") or payload.get("review_status") or "")
     if decision not in ALLOWED_REVIEW_DECISIONS:
         return False, "", f"review decision {decision!r} does not require Weixin escalation"
-    task_id = str(payload.get("task_id") or "unknown")
-    review_id = str(payload.get("review_id") or "review")
-    summary = str(payload.get("summary") or "")
-    evidence = as_list(payload.get("evidence_paths") or payload.get("evidence"))[:5]
-    risks = as_list(payload.get("risks"))[:5]
-    rework = as_list(payload.get("required_rework"))[:5]
+    summary = one_line(payload.get("summary") or "有一项结果需要人工审核。", limit=160)
+    risks = [one_line(item, limit=80) for item in as_list(payload.get("risks"))[:3]]
+    rework = [one_line(item, limit=80) for item in as_list(payload.get("required_rework"))[:3]]
     lines = [
-        "【MoSim CoAgent 审核请求】",
-        f"任务: {task_id}",
-        f"审核: {review_id}",
-        f"决策状态: {decision}",
+        "!!! MoSim 需要人工审核 !!!",
+        f"状态：{decision}",
+        f"内容：{summary}",
     ]
-    if summary:
-        lines.append(f"摘要: {summary}")
-    if evidence:
-        lines.append("证据: " + ", ".join(evidence))
     if risks:
-        lines.append("风险: " + "; ".join(risks))
+        lines.append("风险：" + "；".join(risks))
     if rework:
-        lines.append("需返工: " + "; ".join(rework))
-    lines.append("请回复: accepted / accepted_with_concerns / needs_rework / rejected，并说明理由。")
+        lines.append("返工点：" + "；".join(rework))
+    lines.append(evidence_notice(payload))
+    lines.append("请回复：通过 / 有条件通过 / 返工 / 拒绝，并说明理由。")
     return True, "\n".join(lines), ""
 
 
@@ -280,23 +388,16 @@ def format_completion(payload: dict[str, Any]) -> tuple[bool, str, str]:
     canonical = str(payload.get("canonical_status") or payload.get("status") or "")
     if canonical not in {"completed", "done"}:
         return False, "", f"completion canonical_status {canonical!r} is not completed"
-    task_id = str(payload.get("task_id") or "unknown")
-    summary = str(payload.get("summary") or "")
-    owner = str(payload.get("owner") or payload.get("role") or "")
-    evidence = as_list(payload.get("evidence_paths") or payload.get("evidence"))[:5]
-    next_action = str(payload.get("next_recommended_action") or payload.get("next_action") or "无需人工处理。")
+    summary = one_line(payload.get("summary") or "一个子任务已完成。", limit=180)
+    next_action = one_line(payload.get("next_recommended_action") or payload.get("next_action") or "无需人工处理。", limit=120)
     lines = [
-        "【MoSim CoAgent 任务完成】",
-        f"任务: {task_id}",
-        "状态: completed",
+        "【MoSim 进度】",
+        "状态：已完成一个子任务。",
     ]
-    if owner:
-        lines.append(f"负责人: {owner}")
     if summary:
-        lines.append(f"结果: {summary}")
-    if evidence:
-        lines.append("证据: " + ", ".join(evidence))
-    lines.append(f"下一步: {next_action}")
+        lines.append(f"结果：{summary}")
+    lines.append(f"下一步：{next_action}")
+    lines.append(evidence_notice(payload))
     return True, "\n".join(lines), ""
 
 
@@ -592,7 +693,7 @@ def resolve_session_key(session: str, *, data_dir: Path, project: str) -> str:
     still valid.
     """
     session = session.strip()
-    if ":" in session:
+    if session.startswith("weixin:"):
         return session
 
     sessions_dir = data_dir / "sessions"
@@ -676,9 +777,6 @@ def notify(args: argparse.Namespace) -> dict[str, Any]:
     recovery: dict[str, Any] | None = None
     failure_kind = classify_send_failure(result)
     if not result["ok"] and args.recover_on_failure and failure_kind in {
-        "weixin_ret_minus_2",
-        "missing_context_token",
-        "no_active_session",
         "internal_api_unavailable",
         "timeout",
     }:

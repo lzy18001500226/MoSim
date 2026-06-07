@@ -7,6 +7,24 @@ description: Use when editing, validating, or extending MoSim's live Unreal Edit
 
 Use this skill when changing MoSim's `mosim-unreal` server.
 
+## Department Execution Gate
+
+For tasks owned by `MoSim｜UE实验控制台与场景交互部`, first classify the scope as
+source-static, build, editor/runtime, or manual-review. The department return
+must include `department_local_goal`, `critical_path_steps`,
+`parallelizable_slices`, `subagent_plan`, `subagent_plan_reason`,
+`subagents_used`, `verification_gates`, `manual_review_or_blocker_triggers`,
+`expected_engineering_outputs`, `actual_engineering_outputs`, and
+`claim_boundary`. This is not a requirement to use at least one sub-agent; it
+is a requirement to make the scheduling decision explicit.
+
+Completed UE work must produce scope-matched engineering evidence. Source work
+needs source/schema edits and tests; build work needs build/log evidence;
+runtime command work needs task-authorized command/echo/transport evidence;
+manual review needs screenshots or review packets. JSON packets, scene
+registry rows, and progress notes alone do not prove runtime ack or visual
+acceptance.
+
 ## Paths
 
 ```text

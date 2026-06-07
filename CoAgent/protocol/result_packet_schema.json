@@ -48,6 +48,22 @@
     "files_changed": { "type": "array", "items": { "type": "string" } },
     "commands_run": { "type": "array", "items": { "type": "string" } },
     "evidence": { "type": "array", "items": { "type": "string" } },
+    "department_local_goal": { "type": "string" },
+    "critical_path_steps": { "type": "array", "items": { "type": "string" } },
+    "parallelizable_slices": { "type": "array", "items": { "type": "string" } },
+    "subagent_plan": {
+      "type": "string",
+      "enum": ["", "used", "available_but_not_useful", "unavailable", "unsafe"]
+    },
+    "subagent_plan_reason": { "type": "string" },
+    "subagents_used": { "type": "array", "items": true },
+    "verification_gates": { "type": "array", "items": { "type": "string" } },
+    "manual_review_or_blocker_triggers": { "type": "array", "items": { "type": "string" } },
+    "expected_engineering_outputs": { "type": "array", "items": { "type": "string" } },
+    "actual_engineering_outputs": { "type": "array", "items": { "type": "string" } },
+    "claim_boundary": { "type": "array", "items": { "type": "string" } },
+    "domain_preflight_before": { "type": "object", "additionalProperties": true },
+    "phase_checkpoints": { "type": "array", "items": true },
     "risks": { "type": "array", "items": { "type": "string" } },
     "blockers": { "type": "array", "items": { "type": "string" } },
     "review_status": {

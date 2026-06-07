@@ -46,17 +46,18 @@ Do not call Sysplorer `ClearAll`, `ChangeDirectory`, or broad workspace-reset AP
 ## 3. Build Sequence
 
 1. Resolve the controller interface and replacement location.
-2. Confirm the modeling path: Sysblock diagram, Modelica wrapper, or hybrid.
-3. Query concrete library blocks and ports when uncertain.
-4. Build the smallest runnable graphical chain.
-5. Add behavior blocks: saturation, filtering, delay/discrete state, switch/mode logic, products, allocation, and debug outputs.
-6. Wire all visible paths with `ConnectPort`.
-7. Run static graphical checks.
-8. Run Sysplorer MCP `load_file/check_model`.
-9. Verify diagram semantics after `check_model`; if the user would see empty blocks, missing wires, or unreadable layout, repair with official API/smart-layout before simulation.
-10. Run targeted simulation only after structure is correct.
-11. Compare behavior against the equation/reference model or scenario metrics.
-12. Save evidence under `Results/model_checks/` or the relevant scenario result folder.
+2. For live Sysplorer/Syslab/MWORKS work, run `Scripts/agent/check_mworks_gui_sentinel.py` and, when available, `Scripts/tools/capture_window_background.ps1` before any MCP/model/GUI operation. Stop on demo, unactivated, login/activation, authorization, GUI error-report, mixed, visible unknown window, unavailable tooling, or unknown sentinel state. Hidden Qt/browser-proxy/helper windows with no license/error text are risk evidence, not standalone blockers.
+3. Confirm the modeling path: Sysblock diagram, Modelica wrapper, or hybrid.
+4. Query concrete library blocks and ports when uncertain.
+5. Build the smallest runnable graphical chain.
+6. Add behavior blocks: saturation, filtering, delay/discrete state, switch/mode logic, products, allocation, and debug outputs.
+7. Wire all visible paths with `ConnectPort`.
+8. Run static graphical checks.
+9. Run Sysplorer MCP `load_file/check_model`.
+10. Verify diagram semantics after `check_model`; if the user would see empty blocks, missing wires, or unreadable layout, repair with official API/smart-layout before simulation.
+11. Run targeted simulation only after structure is correct.
+12. Compare behavior against the equation/reference model or scenario metrics.
+13. Save evidence under `Results/model_checks/` or the relevant scenario result folder.
 
 ## 4. Required Gates
 
@@ -68,6 +69,11 @@ python3 Scripts/mworks/check_graphical_sysblock_mcp.py
 For targeted work, a narrower MCP check is acceptable if it records:
 
 ```text
+activation_sentinel_before
+background_screenshot_before
+license_state
+will_not_click_activation_login=true
+live_mworks_touched
 model file
 model name
 check_model result

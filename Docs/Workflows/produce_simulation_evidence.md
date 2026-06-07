@@ -41,14 +41,15 @@ simulation evidence bundle unless the official model is run through MWORKS.
 ## Procedure
 
 1. Resolve model context with `Docs/Workflows/resolve_model_context.md` if the target component or interface is unclear.
-2. Run `check_model`.
-3. Run the smallest simulation that validates the claim.
-4. Read required variables through `result_manager`.
-5. Export raw CSV under `Results/{group}/{scene}/{experiment}/raw/`.
-6. Compute metrics under `Results/{group}/{scene}/{experiment}/metrics/` or `Results/{group}/{scene}/{experiment}/logs/`.
-7. Run `Scripts/results/evaluate_result_quality.py <scenario> --write-metrics`.
-8. Generate figures or replay assets under `Results/{group}/{scene}/{experiment}/figures/`, `Results/{group}/{scene}/{experiment}/replay/`, `Results/{group}/{scene}/{experiment}/replay_html/`, or `Docs/figures/`.
-9. Update `Docs/simulation_report.md` only when `quality_status=pass` or when the limitation is explicitly documented.
+2. For live MWORKS/Sysplorer/Syslab work, run `Scripts/agent/check_mworks_gui_sentinel.py` and, when available, `Scripts/tools/capture_window_background.ps1` before any MCP/model/GUI operation. Stop on demo, unactivated, login/activation, authorization, GUI error-report, mixed, visible unknown window, unavailable tooling, or unknown sentinel state. Hidden Qt/browser-proxy/helper windows with no license/error text are risk evidence, not standalone blockers.
+3. Run `check_model`.
+4. Run the smallest simulation that validates the claim.
+5. Read required variables through `result_manager`.
+6. Export raw CSV under `Results/{group}/{scene}/{experiment}/raw/`.
+7. Compute metrics under `Results/{group}/{scene}/{experiment}/metrics/` or `Results/{group}/{scene}/{experiment}/logs/`.
+8. Run `Scripts/results/evaluate_result_quality.py <scenario> --write-metrics`.
+9. Generate figures or replay assets under `Results/{group}/{scene}/{experiment}/figures/`, `Results/{group}/{scene}/{experiment}/replay/`, `Results/{group}/{scene}/{experiment}/replay_html/`, or `Docs/figures/`.
+10. Update `Docs/simulation_report.md` only when `quality_status=pass` or when the limitation is explicitly documented.
 
 Project entrypoints:
 
@@ -74,6 +75,11 @@ metrics path
 figure/replay path
 source label
 pass/fail summary
+activation_sentinel_before for live work
+background_screenshot_before for live work
+license_state for live work
+will_not_click_activation_login=true for live work
+live_mworks_touched
 ```
 
 ## Acceptance
@@ -100,5 +106,7 @@ same scenario until the result passes or the limitation is documented.
 |---|---|
 | result variable missing | inspect available variables and update `Docs/Index/variable_mapping.md` |
 | simulation unstable | save as failed evidence and compare against baseline |
-| MCP error | save JSONL/log output and reduce to smoke case |
+| MCP error | save JSONL/log output and reduce to smoke case only after license/GUI sentinel is clean |
+| demo edition / activation lost / login prompt | return `license_or_login` blocker with sentinel/background screenshot evidence; do not tune solver or model code |
+| GUI error-report dialog | stop live work and return GUI blocker; do not click restart/send-report/close |
 | generated artifact too large | keep summary/metrics; ignore or relocate raw bulky output |

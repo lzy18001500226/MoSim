@@ -128,6 +128,9 @@ def main() -> int:
         assert "canonical_task_goal: Prove CoAgent lifecycle" in dispatch["text"]
         assert "definition_of_done:" in dispatch["text"]
         assert "appetite: single smoke lifecycle" in dispatch["text"]
+        assert "Department Local Planning And Subagent Decision Contract" in dispatch["text"]
+        assert "not a requirement to use at least one sub-agent" in dispatch["text"]
+        assert "subagent_plan_reason" in dispatch["text"]
         result_file_rel = extract_result_file(dispatch["text"])
         assert result_file_rel == f"Results/agent_packets/{TASK_ID}.yaml"
 

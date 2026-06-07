@@ -32,19 +32,27 @@ Existing user-facing thread labels remain governed by
 
 ## Current Concrete Agent Profiles
 
-The current required permanent MoSim conversation agents are:
+The current dispatchable MoSim visible conversations are the user-confirmed
+allowlist in `CoAgent/dispatch/department_threads.json`:
 
 1. `MoSim｜主线 PMO`
-2. `MoSim｜调度中台`
-3. `MoSim｜产品发现战略`
-4. `MoSim｜Agent Runtime 平台`
-5. `MoSim｜上下文记忆索引`
-6. `MoSim｜工具链 MCP`
-7. `MoSim｜知识秘书`
-8. `MoSim｜验证评测`
-9. `MoSim｜安全合规`
-10. `MoSim｜DevOps 发布`
-11. `MoSim｜外部情报进化`
+2. `MoSim｜DevOps 发布`
+3. `MoSim｜UE实验控制台与场景交互部`
+4. `MoSim｜Sunray150资产与PBR审核部`
+5. `MoSim｜MWORKS动力学与控制验证部`
+6. `MoSim｜ROS2感知定位与规划运行部`
+7. `MoSim｜微信网关运维部`
+8. `MoSim｜Codex 环境迁移部`
+9. `MoSim｜开源项目探针`
+10. `MoSim｜CoAgent运维平台`
+11. `MoSim｜开源项目学习部`
+12. `MoSim｜Codex 上下文维护部`
+13. `MoSim｜WechatCodex`
+
+`MoSim｜WechatCodex` is a message path for WeChat-side inbound refresh, not a
+gateway-operations owner. Testing, security, documentation-secretary, and
+toolchain/MCP upkeep are task-local gates or CoAgent meta-maintenance duties
+unless PMO explicitly creates a scoped visible thread for a high-impact task.
 
 These agents are governed by:
 
@@ -56,9 +64,10 @@ CoAgent/protocol/templates/agent_profile.yaml
 CoAgent/protocol/templates/task_scoped_agent_profile.yaml
 ```
 
-If this protocol and the concrete agent design appear to conflict, use the
-concrete agent design for role responsibility and this protocol for lifecycle,
-naming, authority, and packet-flow rules.
+If this protocol and older concrete-agent design artifacts conflict, use the
+current allowlist registry and `Docs/Workflows/org_operating_model.md` for live
+routing. Older design files may remain as historical architecture material, but
+they do not make absent old thread IDs dispatchable.
 
 ## Creation Criteria
 

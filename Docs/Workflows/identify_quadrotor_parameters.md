@@ -45,6 +45,19 @@ rotor/camera/collision geometry, but they do not upgrade mass, inertia,
 thrust/motor constants, drag, motor lag, yaw moment, controller gains, or
 FAST-LIO extrinsics.
 
+Current formal model ownership:
+
+| Package | Role |
+|---|---|
+| `QuadrotorModel` | Official/upstream baseline and regression reference. Keep it loadable and avoid destructive MoSim-specific edits. |
+| `MoSimQuadrotorModel` | Project-owned formal Sunray150/MoSim package. Formal dynamics upgrades, controller/planner/fault wrappers, scene-trace adapters, and final classified experiment entry points should migrate here. |
+| `QuadrotorExperiments` | Legacy experiment pool and compatibility layer. Existing flat names may remain as aliases until scenario configs, scripts, docs, and `check_model` evidence are migrated. |
+
+Do not treat "moved into `MoSimQuadrotorModel`" as accepted dynamics evidence.
+For each migrated class, record whether it is an alias-only compatibility
+entry, a static organization move, a checked MWORKS model, or a simulated
+model with metrics.
+
 ---
 
 ## 2. Main Line: ARPL / sysid.tools
@@ -917,3 +930,39 @@ Evidence file:
 ```text
 Results/identification/sunray150/SUNRAY150_DYNAMICS_UPGRADE_20260605.md
 ```
+
+### 10.2 2026-06-07 MoSimQuadrotorModel Formal Package Migration Rule
+
+The project-owned formal package is now named:
+
+```text
+Models/MoSimQuadrotorModel/package.mo
+```
+
+Migration rule:
+
+```text
+QuadrotorModel
+  -> keep as official/upstream baseline and dependency.
+
+QuadrotorExperiments
+  -> keep as legacy experiment/compatibility source during migration.
+
+MoSimQuadrotorModel
+  -> formal project-owned package. Classify and rename useful experiments into
+     Baseline, Dynamics, Missions, Controllers, Robustness, Planning,
+     SceneTrace, System, Formation, Support, and LegacyCompatibility.
+```
+
+The first package skeleton uses alias/extends wrappers so existing evidence and
+scenario references are not broken. Physical file moves and class renames must
+be done in bounded batches. Each batch needs:
+
+1. mapping from old class name to new `MoSimQuadrotorModel.*` name;
+2. updated scenario/script/docs references where the new name becomes
+   canonical;
+3. source labels for geometry, mass, inertia, thrust, yaw moment, motor lag,
+   drag, and controller parameters;
+4. MWORKS activation/screenshot preflight for the department doing the work;
+5. `check_model` and, where relevant, hover/yaw/step or scenario simulation
+   evidence before the old alias is retired.

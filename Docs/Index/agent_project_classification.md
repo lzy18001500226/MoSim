@@ -24,6 +24,15 @@ the matching P0/P1 upstream category here and record one of these decisions:
 - `study`: keep as design reference only;
 - `reject`: not compatible with our safety, license, or runtime boundary.
 
+For MCP/tooling questions, local mirrors are the first lookup surface. Check
+`CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md` and the relevant local
+`References/Agent/Gateway`, `References/Agent/Memory`,
+`References/Agent/Security`, or `References/Agent/Skills` category before web
+search, online MCP registry browsing, or asking the user to download a project.
+For example, `context7` is already under `References/Agent/Memory/context7`,
+and the main MCP/browser/GitHub server references are under
+`References/Agent/Gateway/`.
+
 Keep each upstream repository intact. Do not split one repository's `skills`,
 MCP examples, plugins, hooks, source, docs, and UI into different MoSim
 directories. Many projects mix these concerns by design.
@@ -139,6 +148,7 @@ after license and integration review.
 | `CowAgent` | Personal assistant with skills, memory, bridge/channel/plugin layers |
 | `claw-code` | Coding-agent harness reference |
 | `moltis` | Secure persistent personal agent server |
+| `oh-my-pi` | Full coding-agent/IDE/runtime reference with MCP, workflow, and operator-surface examples |
 | `spacebot` | Long-running agent harness with channels and graph memory |
 | `tinyagi` | Local multi-team, 24/7 agent daemon and web portal |
 | `goclaw-dev` | Multi-tenant agent gateway platform |
@@ -194,6 +204,11 @@ messages to the user or operators.
 | Project | Notes |
 |---|---|
 | `cc-connect` | Multi-channel bridge for WeChat personal account, WeCom, Feishu, DingTalk, Telegram, Slack, Discord, QQ, hooks, Web UI, Management API, and Bridge WebSocket protocol. First candidate for CoAgent human-intervention notification experiments. |
+| `github-mcp-server` | Official GitHub MCP server reference for issues, PRs, code search, code scanning, and remote workflow toolset design. |
+| `playwright-mcp` | Browser automation and screenshot MCP reference. Prefer Codex Browser/headless Chrome for browser targets and Windows MCP/Win32/UI Automation for desktop GUI targets. Do not route MoSim desktop GUI work through Computer Use. |
+| `playwright-mcp-upstream-snapshot-20260606` | Duplicate upstream snapshot retained for dedupe review; primary route remains `playwright-mcp`. |
+| `servers` | Official/community MCP reference server collection. Treat examples as reference-first until MoSim smoke tests pass. |
+| `servers-upstream-snapshot-20260606` | Newer upstream snapshot retained for dedupe review; primary route remains `servers` until reviewed. |
 
 ### Frameworks
 
@@ -348,6 +363,7 @@ Do not start with these unless a task directly touches them.
 
 | Project | Reason |
 |---|---|
+| `ChatGPT-Exporter-main` | Chat export utility; not first-line CoAgent/MCP infrastructure |
 | `coding-interview-university` | General CS material, not CoAgent-specific |
 | `Pearl` | RL library; not central to coding/department CoAgent |
 
@@ -372,9 +388,9 @@ References/Agent/
 
 Current count by primary category:
 
-- `Platforms`: 32
+- `Platforms`: 33
 - `Control`: 15
-- `Gateway`: 13
+- `Gateway`: 16
 - `Workflow`: 18
 - `Frameworks`: 18
 - `Skills`: 27
@@ -383,7 +399,7 @@ Current count by primary category:
 - `UI`: 13
 - `SDK`: 6
 - `Domain`: 7
-- `ReviewLater`: 2
+- `ReviewLater`: 3
 
 Before any physical move:
 

@@ -457,29 +457,30 @@ deferred.
 Current communication state:
 
 ```text
-MainAgent and all 10 permanent department conversations are active_visible.
-The user confirmed the recreated department conversations are visible/openable
-on 2026-05-30. `check_department_visibility.py` currently passes with 11
-active_visible conversations, valid WSL/Windows index rows, valid WSL main DB,
-WSL alternate DB, and Windows DB rows, and no pending confirmations.
+The old 2026-05-30 11-conversation CoAgent bootstrap registry is superseded.
+Current dispatch uses the user-confirmed visible-thread allowlist in:
+CoAgent/dispatch/department_threads.json
+Docs/Index/codex_app_session_research.md#department-thread-layout
 
-Current active permanent conversations:
-- MainAgent / MoSim｜四旋翼无人机仿真系统
-- DispatchAgent / MoSim｜调度中台
-- ProductStrategyAgent / MoSim｜产品发现战略
-- RuntimePlatformAgent / MoSim｜Agent Runtime 平台
-- ContextMemoryAgent / MoSim｜上下文记忆索引
-- ToolchainMCPAgent / MoSim｜工具链 MCP
-- KnowledgeSecretaryAgent / MoSim｜知识秘书
-- VerificationAgent / MoSim｜验证评测
-- SafetyComplianceAgent / MoSim｜安全合规
+Current active visible conversations:
+- MainPMO / MoSim｜主线 PMO
 - DevOpsReleaseAgent / MoSim｜DevOps 发布
-- ExternalIntelligenceAgent / MoSim｜外部情报进化
+- UEExperimentConsoleAgent / MoSim｜UE实验控制台与场景交互部
+- Sunray150AssetPBRAgent / MoSim｜Sunray150资产与PBR审核部
+- MWorksDynamicsControlAgent / MoSim｜MWORKS动力学与控制验证部
+- ROS2RuntimeAgent / MoSim｜ROS2感知定位与规划运行部
+- WeChatGatewayOps / MoSim｜微信网关运维部
+- CodexEnvironmentMigrationAgent / MoSim｜Codex 环境迁移部
+- OpenSourceProbeAgent / MoSim｜开源项目探针
+- CoAgentOps / MoSim｜CoAgent运维平台
+- OpenSourceLearningAgent / MoSim｜开源项目学习部
+- CodexContextMaintenanceAgent / MoSim｜Codex 上下文维护部
+- WechatCodexMessagePath / MoSim｜WechatCodex
 
-Historical invisible, pending, deleted, and test-thread ids are diagnostic
-artifacts only. Do not route from those old records. Use the active registry
-and verify with:
-python3 CoAgent/doctor/check_department_visibility.py
+Dispatch rule: allowlist only. If an old thread ID is absent from the current
+visible scan, treat it as gone and remove it from dispatchable registry instead
+of maintaining a separate blacklist. Historical invisible, pending, deleted,
+and test-thread records are diagnostic artifacts only.
 ```
 
 Current Codex visibility SOP:

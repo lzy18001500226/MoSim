@@ -84,6 +84,19 @@ MWORKS currently carries `lift_cofficient=0.000854858`, which is the SDF
 `motorConstant` scaled by `rotorVelocitySlowdownSim^2`. Treat this as
 `source=SDF_migration`, not as Sunray150 identified truth.
 
+Current MWORKS package boundary:
+
+| Package | ADR status |
+|---|---|
+| `QuadrotorModel` | Official/upstream baseline and dependency. It remains the regression reference and should not be destructively rewritten for MoSim-specific dynamics experiments. |
+| `MoSimQuadrotorModel` | Project-owned formal package for the MoSim/Sunray150 aircraft. It is the target for classified dynamics, mission, controller, planning, robustness, scene-trace, system, formation, and support entry points. |
+| `QuadrotorExperiments` | Legacy experiment pool and compatibility source. It may provide aliases during migration, but new formal work should not keep expanding the flat experiment namespace. |
+
+The first `MoSimQuadrotorModel` layer may be alias-based. That is organization
+and compatibility progress only. It becomes dynamics/control evidence only
+after targeted MWORKS `check_model`, simulation, metric, or graphical-layout
+evidence is recorded for the migrated class.
+
 Current timing policy:
 
 - controller/setpoint contract is 20Hz streamed control, with stale-command and
