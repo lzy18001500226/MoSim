@@ -226,6 +226,8 @@ References/Agent/Frameworks/NeMo-Agent-Toolkit-develop/packages/*
 References/Agent/Skills/awesome-opencode/dist/
 !References/Agent/Memory/
 References/Agent/Memory/*
+!References/Agent/Memory/docs-mcp-server/
+!References/Agent/Memory/docs-mcp-server/**
 !References/Agent/Memory/agentmemory/
 !References/Agent/Memory/agentmemory/**
 !References/Agent/Memory/zep/

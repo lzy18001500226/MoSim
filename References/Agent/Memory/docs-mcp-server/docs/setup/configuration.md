@@ -1,0 +1,403 @@
+# Configuration
+
+The Docs MCP Server uses a unified configuration system that aggregates settings from multiple sources, validating them against a strict schema. This ensures consistency whether you are running the server via CLI, Docker, or as a library.
+
+## Configuration File
+
+By default, configuration is stored in your system's preferences directory:
+
+- **macOS**: `~/Library/Preferences/docs-mcp-server/config.yaml`
+- **Linux**: `~/.config/docs-mcp-server/config.yaml`
+- **Windows**: `%APPDATA%\docs-mcp-server\config.yaml`
+
+Example `config.yaml`:
+
+```yaml
+app:
+  storePath: ~/.docs-mcp-server
+  telemetryEnabled: true
+  embeddingModel: text-embedding-3-small
+
+scraper:
+  maxPages: 1000
+  maxDepth: 3
+  preserveHashes: false
+  document:
+    maxSize: 10485760  # 10MB
+  security:
+    network:
+      mode: open
+      allowPrivateNetworks: false
+      allowedHosts: []
+      allowedCidrs: []
+      allowInvalidTls: false
+    fileAccess:
+      mode: allowedRoots
+      allowedRoots:
+        - $DOCUMENTS
+      followSymlinks: false
+      includeHidden: false
+
+splitter:
+  preferredChunkSize: 1500
+  maxChunkSize: 5000
+```
+
+The server **automatically updates** this file on startup with new defaults.
+
+### Using an Explicit Config File
+
+You can specify a custom config file with `--config` or `DOCS_MCP_CONFIG`:
+
+```bash
+docs-mcp-server --config /path/to/config.yaml
+```
+
+**Note:** Explicit config files are treated as **read-only**. The server will not modify them.
+
+## Overriding Configuration
+
+Configuration values are merged from multiple sources, with **later sources taking precedence**:
+
+1. **Defaults** (lowest priority)
+2. **Config File**
+3. **Environment Variables**
+4. **CLI Arguments** (highest priority)
+
+### Environment Variables
+
+Any configuration setting can be overridden via environment variables using the naming convention:
+
+```
+DOCS_MCP_<SECTION>_<SETTING>
+```
+
+Rules:
+- Convert `camelCase` to `UPPER_SNAKE_CASE`
+- Join nested paths with underscores
+
+**Examples:**
+
+```bash
+# Override scraper settings
+export DOCS_MCP_SCRAPER_MAX_PAGES=2000
+export DOCS_MCP_SCRAPER_DOCUMENT_MAX_SIZE=52428800
+
+# Override splitter settings
+export DOCS_MCP_SPLITTER_PREFERRED_CHUNK_SIZE=2000
+
+# Override app settings
+export DOCS_MCP_APP_TELEMETRY_ENABLED=false
+
+# Override scraper security settings
+export DOCS_MCP_SCRAPER_SECURITY_NETWORK_ALLOW_INVALID_TLS=true
+export DOCS_MCP_SCRAPER_SECURITY_FILE_ACCESS_FOLLOW_SYMLINKS=true
+```
+
+Array-valued settings accept JSON or YAML-style inline arrays:
+
+```bash
+export DOCS_MCP_SCRAPER_SECURITY_NETWORK_ALLOWED_HOSTS='["docs.internal.example","wiki.corp.local"]'
+export DOCS_MCP_SCRAPER_SECURITY_FILE_ACCESS_ALLOWED_ROOTS='["$DOCUMENTS", "/srv/docs"]'
+```
+
+Some settings also have **legacy aliases** for convenience:
+
+| Setting | Alias |
+|---------|-------|
+| `server.ports.default` | `PORT` |
+| `server.host` | `HOST` |
+
+### CLI Arguments
+
+Common settings have dedicated CLI flags:
+
+```bash
+docs-mcp-server --port 8080 --host 0.0.0.0
+docs-mcp-server --store-path /data/docs --read-only
+```
+
+## CLI Configuration Commands
+
+Manage configuration directly from the command line:
+
+```bash
+# View current configuration (JSON format)
+docs-mcp-server config
+
+# View current configuration (YAML format)
+docs-mcp-server config --yaml
+
+# Get a specific value
+docs-mcp-server config get scraper.maxPages
+# Output: 1000
+
+# Get a nested object
+docs-mcp-server config get scraper.fetcher
+# Output: { "maxRetries": 6, ... }
+
+# Set a value (persists to config file)
+docs-mcp-server config set scraper.maxPages 500
+# Output: Updated scraper.maxPages = 500
+```
+
+**Note:** `config set` only modifies the system default configuration file. If you specify `--config`, the file is treated as read-only.
+
+---
+
+## Configuration Reference
+
+### App (`app`)
+
+General application settings.
+
+| Option | Default | Description |
+|:-------|:--------|:------------|
+| `storePath` | `~/.docs-mcp-server` | Directory for storing databases and logs. |
+| `telemetryEnabled` | `true` | Enable anonymous usage telemetry. |
+| `readOnly` | `false` | Prevent modification of data (scraping/indexing). |
+| `embeddingModel` | `text-embedding-3-small` | Model to use for vector embeddings. |
+
+### Server (`server`)
+
+Settings for the API and MCP servers.
+
+| Option | Default | Description |
+|:-------|:--------|:------------|
+| `protocol` | `auto` | Server protocol (`stdio`, `http`, or `auto`). |
+| `host` | `127.0.0.1` | Host interface to bind to. |
+| `heartbeatMs` | `30000` | MCP protocol heartbeat interval (ms). |
+| `ports.default` | `6280` | Default port for the main server. |
+| `ports.worker` | `8080` | Port for the background worker service. |
+| `ports.mcp` | `6280` | Port for the specific MCP interface. |
+| `ports.web` | `6281` | Port for the web dashboard. |
+
+### Authentication (`auth`)
+
+Security settings for the HTTP server.
+
+| Option | Default | Description |
+|:-------|:--------|:------------|
+| `enabled` | `false` | Enable JWT authentication. |
+| `issuerUrl` | - | OIDC Issuer URL (e.g., Clerk, Auth0). |
+| `audience` | - | Expected JWT audience claim. |
+
+### Scraper (`scraper`)
+
+Settings controlling the web scraping behavior.
+
+| Option | Default | Description |
+|:-------|:--------|:------------|
+| `maxPages` | `1000` | Maximum number of pages to crawl per job. |
+| `maxDepth` | `3` | Maximum link depth to traverse. |
+| `maxConcurrency` | `3` | Number of concurrent page fetches. |
+| `preserveHashes` | `false` | Preserve hash fragments as page identity for hash-routed SPA docs sites. |
+| `pageTimeoutMs` | `5000` | Timeout for a single page load (ms). |
+| `browserTimeoutMs` | `30000` | Timeout for the browser instance (ms). |
+| `fetcher.maxRetries` | `6` | Number of retries for failed requests. |
+| `fetcher.baseDelayMs` | `1000` | Initial delay for exponential backoff (ms). |
+| `document.maxSize` | `10485760` | Maximum size (bytes) for PDF/Office documents. |
+
+_Note: Scraper settings are often overridden per-job via CLI arguments like `--max-pages`._
+
+Use `scraper.preserveHashes` only for documentation sites that use hash-based SPA routes such as `https://docs.example.com/#/guide`.
+Leave it disabled for normal sites, where hashes usually point to anchors within the same page.
+
+### Hash Route Behavior
+
+- CLI scrape: use `--preserve-hashes` to enable hash-aware crawling for a job.
+- CLI refresh: use `--preserve-hashes` to override the stored setting for that refresh job.
+- MCP: `scrape_docs` accepts `preserveHashes: true`.
+- Web UI: the scrape form includes a "Preserve Hash Routes" checkbox, and refresh reuses the stored setting.
+- Refresh: stored scraper options retain `preserveHashes` and reuse it by default.
+- Rendering: if `preserveHashes` is enabled and `scrapeMode` is `fetch`, the job is upgraded to `playwright` automatically.
+
+> **Migration Note:** In versions prior to 1.37, `document.maxSize` was a top-level setting. It has been moved to `scraper.document.maxSize`. Update your config files accordingly.
+
+### Scraper Security (`scraper.security`)
+
+Outbound network access and local file access defaults are intentionally conservative so internet-exposed deployments do not automatically gain access to private networks or broad local file trees.
+
+#### Network (`scraper.security.network`)
+
+| Option | Default | Description |
+|:-------|:--------|:------------|
+| `mode` | `open` | Network policy posture. `open` permits public targets and blocks private/special-use targets unless explicitly allowed. `allowlist` permits only the targets matched by `allowedHosts` or `allowedCidrs`. |
+| `allowPrivateNetworks` | `false` | In `open` mode, when `true` allows loopback, RFC1918 private ranges, link-local, and other special-use targets. Ignored in `allowlist` mode. |
+| `allowedHosts` | `[]` | Host patterns to permit. Entries may be literal hostnames (`docs.internal.example`), minimatch globs (`*.example.com`, `docs.*`), or regular expressions wrapped in `/.../`. Patterns match the bare hostname only, case-insensitively. |
+| `allowedCidrs` | `[]` | CIDR ranges to permit. Match against direct-IP targets and resolved host addresses. |
+| `allowInvalidTls` | `false` | Broad HTTPS certificate-verification override. This only applies after the target has already passed network access checks; it does not bypass the network allowlist. |
+
+In `open` mode, empty `allowedHosts` and `allowedCidrs` mean no private or special-use targets are permitted while `allowPrivateNetworks` remains `false`. In `allowlist` mode, empty lists mean no targets are permitted at all.
+
+`allowedHosts` is authoritative for the named hostname: allowlisting `docs.internal.example` trusts that hostname and its DNS answers, even when the service lives on a private network. `allowedCidrs` remains the only way to authorize direct IP requests or hostname lookups that do not themselves match `allowedHosts`. For non-allowlisted hostnames, mixed DNS answers are handled strictly — `open` mode rejects any hostname that resolves to an unapproved special-use address, and `allowlist` mode requires every resolved address to fall inside `allowedCidrs`.
+
+#### File Access (`scraper.security.fileAccess`)
+
+| Option | Default | Description |
+|:-------|:--------|:------------|
+| `mode` | `allowedRoots` | Local file access mode: `disabled`, `allowedRoots`, or `unrestricted`. |
+| `allowedRoots` | `[$DOCUMENTS]` | Allowlisted local roots when `mode` is `allowedRoots`. Empty means no user-requested `file://` access is permitted. Supports literal paths and the tokens `$HOME`, `$DOCUMENTS`, `$DOWNLOADS`, `$DESKTOP`, `$CWD`. |
+| `followSymlinks` | `false` | Blocks symlinks by default. When enabled, resolved targets must still stay inside an allowed root. |
+| `includeHidden` | `false` | Blocks hidden files, hidden directories, and hidden archive members by default, even when explicitly requested. |
+
+Supported tokens in `allowedRoots`:
+
+- `$HOME` — the user's home directory. Broad: includes dotfiles such as `.ssh`, `.aws`, and `.config`. Use intentionally.
+- `$DOCUMENTS` — platform-specific documents directory. The default.
+- `$DOWNLOADS` — platform-specific downloads directory.
+- `$DESKTOP` — platform-specific desktop directory.
+- `$CWD` — the process working directory; useful for CLI invocations.
+
+`$DOCUMENTS`, `$DOWNLOADS`, and `$DESKTOP` resolve only when the corresponding `<home>/<Folder>` exists on the current platform or account; otherwise the token grants no access. `$HOME` and `$CWD` resolve to the literal path even when unusual, so they always grant access when configured.
+
+The default `[$DOCUMENTS]` root is aimed at trusted local use. For shared services, containers, or internet-exposed deployments, narrow `allowedRoots` to an application-owned directory or switch `mode` to `disabled`.
+
+Internally managed temporary archive files created during accepted web archive scraping remain allowed even when they sit outside user-configured roots. That exception is limited to the downloaded archive artifact and its virtual members.
+
+### Security Examples
+
+Selective internal network access with self-signed HTTPS:
+
+```yaml
+scraper:
+  security:
+    network:
+      mode: open
+      allowPrivateNetworks: false
+      allowedHosts:
+        - "*.internal.example"
+      allowedCidrs:
+        - 10.42.0.0/16
+      allowInvalidTls: true
+```
+
+Strict outbound allowlist (only the listed public docs sites are reachable):
+
+```yaml
+scraper:
+  security:
+    network:
+      mode: allowlist
+      allowedHosts:
+        - docs.python.org
+        - "*.rust-lang.org"
+        - /^docs\d+\.example\.com$/
+      allowedCidrs: []
+```
+
+Restricted local file access:
+
+```yaml
+scraper:
+  security:
+    fileAccess:
+      mode: allowedRoots
+      allowedRoots:
+        - $DOCUMENTS
+        - /srv/docs
+      followSymlinks: false
+      includeHidden: false
+```
+
+Fully trusted local deployment:
+
+```yaml
+scraper:
+  security:
+    network:
+      allowPrivateNetworks: true
+      allowInvalidTls: false
+    fileAccess:
+      mode: unrestricted
+      allowedRoots: []
+      followSymlinks: true
+      includeHidden: true
+```
+
+Be explicit with these overrides:
+
+- `allowPrivateNetworks: true` broadens network reach beyond public internet targets.
+- `allowInvalidTls: true` broadly trusts invalid HTTPS certificates, but it still does not bypass network allowlists.
+- `fileAccess.mode: allowedRoots` with `allowedRoots: []` denies all user-requested `file://` access.
+- Unresolved `$DOCUMENTS` tokens do not fall back to `$HOME` or any other implicit path.
+
+### GitHub Authentication
+
+Environment variables for authenticating with GitHub when scraping private repositories.
+
+| Env Var        | Description                                                                                       |
+| :------------- | :------------------------------------------------------------------------------------------------ |
+| `GITHUB_TOKEN` | GitHub personal access token or fine-grained token. Used for private repo access and higher rate limits. |
+| `GH_TOKEN`     | Alternative to `GITHUB_TOKEN`. Used if `GITHUB_TOKEN` is not set.                                 |
+
+**Authentication Resolution Order:**
+
+1. Explicit `Authorization` header passed in scraper options
+2. `GITHUB_TOKEN` environment variable
+3. `GH_TOKEN` environment variable
+4. Local `gh` CLI authentication (via `gh auth token`)
+
+If no authentication is available, public repositories are still accessible but with lower rate limits (60 requests/hour vs 5,000 authenticated).
+
+### Splitter (`splitter`)
+
+Settings for chunking text for vector search.
+
+| Option | Default | Description |
+|:-------|:--------|:------------|
+| `minChunkSize` | `500` | Minimum characters per chunk body. Chunks below this threshold are merged with adjacent chunks by the greedy optimizer. |
+| `preferredChunkSize` | `1500` | Soft target for chunk body size in characters. The greedy optimizer splits when combining two chunks would exceed this value, provided both sides are already above `minChunkSize`. |
+| `maxChunkSize` | `5000` | Hard upper limit for chunk body size in characters. No chunk body will exceed this value. |
+
+> **Note:** These size limits apply to the **text body** of each chunk. Before embedding,
+> a small metadata header (page title, URL, section path) is prepended to each chunk,
+> adding to the total character count sent to the embedding model. Because characters are
+> not tokens, the actual token count depends on your embedding model's tokenizer. If your
+> model has a small context window (e.g., some local models), consider lowering
+> `maxChunkSize` to leave headroom for metadata and token expansion.
+
+### Embeddings (`embeddings`)
+
+Settings for the vector embedding generation.
+
+> **Detailed Guide:** See [Embedding Model Configuration](../guides/embedding-models.md) for provider-specific setup (OpenAI, Ollama, Gemini, etc.).
+
+| Option | Default | Description |
+|:-------|:--------|:------------|
+| `batchSize` | `100` | Number of chunks to embed in one request. |
+| `batchChars` | `50000` | Maximum total characters per embedding batch. |
+| `requestTimeoutMs` | `30000` | Timeout for each embedding API request (ms). |
+| `initTimeoutMs` | `30000` | Timeout for the initial test embedding during model initialization (ms). |
+| `vectorDimension` | `1536` | Dimension of the vector space. Must be a positive integer (minimum 1). Override with `DOCS_MCP_EMBEDDINGS_VECTOR_DIMENSION`. Changing this value triggers a model change confirmation on next startup. |
+
+### Search (`search`)
+
+Settings for the hybrid search ranking system.
+
+| Option | Default | Description |
+|:-------|:--------|:------------|
+| `overfetchFactor` | `2` | Multiplier on the search limit for FTS overfetch (fetches `limit * overfetchFactor` candidates). |
+| `weightVec` | `1` | RRF weight for vector search results. |
+| `weightFts` | `1` | RRF weight for full-text search results. |
+| `vectorMultiplier` | `10` | Additional multiplier for vector search candidate count (`limit * overfetchFactor * vectorMultiplier`). |
+
+### Database (`db`)
+
+Internal database settings.
+
+| Option | Default | Description |
+|:-------|:--------|:------------|
+| `migrationMaxRetries` | `5` | Retries for database migrations on startup. |
+
+### Assembly (`assembly`)
+
+Settings for reassembling search results.
+
+| Option | Default | Description |
+|:-------|:--------|:------------|
+| `maxChunkDistance` | `3` | Maximum sort_order difference to merge chunks. |
+| `maxParentChainDepth` | `10` | Maximum depth for parent context traversal. |
+| `childLimit` | `3` | Maximum number of child chunks to include. |
+| `precedingSiblingsLimit` | `1` | Number of preceding sibling chunks to include. |
+| `subsequentSiblingsLimit` | `2` | Number of subsequent sibling chunks to include. |
