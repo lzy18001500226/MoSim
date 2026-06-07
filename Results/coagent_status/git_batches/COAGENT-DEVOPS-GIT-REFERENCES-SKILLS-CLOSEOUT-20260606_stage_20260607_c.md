@@ -21,6 +21,7 @@ Pushed batches this stage:
 - `cc65d0be32` `devops: add haystack framework reference subset` - 621 files.
 - `4616b8bdb9` `devops: add dify workflow toolchain subset` - 530 files.
 - `7d7e8e46f1` `devops: add mastra small framework modules` - 659 files.
+- `ec02d80cc3` `devops: add aisoc small security ops subset` - 439 files.
 
 Checks:
 
@@ -44,8 +45,9 @@ Deferred:
 - `References/Agent/Frameworks/openai-agents-python/src/agents/extensions/memory/encrypt_session.py` remains deferred because the upstream file fails the whitespace gate.
 - `References/Agent/Workflow/dify` has 27 deferred third-party files recorded in `Results/agent_runtime/dify_toolchain_subset_diffcheck_failed_paths_20260607.txt`; the clean 530-file toolchain subset was committed and pushed.
 - `References/Agent/Frameworks/mastra` has 5 deferred third-party whitespace-gate files recorded in `Results/agent_runtime/mastra_small_modules_diffcheck_failed_paths_20260607.txt`; only `client-sdks`, `server-adapters`, `templates`, and `workflows` were unthrottled and submitted.
+- `References/Agent/Security/AiSOC` has 4 deferred third-party whitespace-gate files recorded in `Results/agent_runtime/aisoc_small_ops_diffcheck_failed_paths_20260607.txt`; `detections` and `services` remain throttled. One extensionless Mach-O test artifact `plugins/mttr-widget/go/mttr-widget-test` was removed from the unpushed commit index, kept on disk, precisely ignored, and verified absent from `HEAD` before push.
 
 Next:
 
 - Continue with small `References/Agent` project groups under 1000 files after filtering generated/local-only outputs.
-- Good next target: `References/Agent/Security/AiSOC` operations/plugins subset, or another under-1000 `References/Agent` project group with generated/local outputs filtered.
+- Good next target: another under-1000 `References/Agent` project group with generated/local outputs filtered. For future security or compiled-language references, include extensionless binary magic/header checks before commit.
