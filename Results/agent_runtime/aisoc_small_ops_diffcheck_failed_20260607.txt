@@ -1,0 +1,23 @@
+References/Agent/Security/AiSOC/.github/PULL_REQUEST_TEMPLATE/detection_rule.md:37: trailing whitespace.
++-
+References/Agent/Security/AiSOC/.github/PULL_REQUEST_TEMPLATE/detection_rule.md:80: trailing whitespace.
++-
+References/Agent/Security/AiSOC/.github/PULL_REQUEST_TEMPLATE/pull_request_template.md:22: trailing whitespace.
++-
+References/Agent/Security/AiSOC/.github/PULL_REQUEST_TEMPLATE/pull_request_template.md:23: trailing whitespace.
++-
+References/Agent/Security/AiSOC/.github/PULL_REQUEST_TEMPLATE/pull_request_template.md:36: trailing whitespace.
++1.
+References/Agent/Security/AiSOC/.github/PULL_REQUEST_TEMPLATE/pull_request_template.md:37: trailing whitespace.
++2.
+References/Agent/Security/AiSOC/docs/architecture/SYSTEM_DESIGN.md:437: new blank line at EOF.
+References/Agent/Security/AiSOC/infra/fly/fly-demo-deploy.sh:2: trailing whitespace.
++#
+References/Agent/Security/AiSOC/infra/fly/fly-demo-deploy.sh:34: trailing whitespace.
++#
+References/Agent/Security/AiSOC/infra/fly/fly-demo-deploy.sh:76: trailing whitespace.
++#  provision
+References/Agent/Security/AiSOC/infra/fly/fly-demo-deploy.sh:140: trailing whitespace.
++#  deploy stack
+References/Agent/Security/AiSOC/infra/fly/fly-demo-deploy.sh:280: trailing whitespace.
++# swallow it. Cert *issuance* still requires the matching CNAME to be live

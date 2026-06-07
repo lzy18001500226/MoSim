@@ -1,0 +1,4 @@
+References/Agent/Security/AiSOC/.github/PULL_REQUEST_TEMPLATE/detection_rule.md
+References/Agent/Security/AiSOC/.github/PULL_REQUEST_TEMPLATE/pull_request_template.md
+References/Agent/Security/AiSOC/docs/architecture/SYSTEM_DESIGN.md
+References/Agent/Security/AiSOC/infra/fly/fly-demo-deploy.sh
