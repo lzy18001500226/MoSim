@@ -227,8 +227,12 @@ References/Agent/Memory/mem0/openclaw/.npmrc
 References/Agent/Platforms/*
 !References/Agent/Platforms/CowAgent/
 !References/Agent/Platforms/CowAgent/**
+!References/Agent/Platforms/SWE-agent/
+!References/Agent/Platforms/SWE-agent/**
 !References/Agent/Platforms/aider/
 !References/Agent/Platforms/aider/**
+!References/Agent/Platforms/spacebot/
+!References/Agent/Platforms/spacebot/**
 References/Agent/Platforms/open-swe/.vscode/
 References/Agent/Platforms/open-interpreter/**/.DS-Store
 References/Agent/Platforms/Agent-S/**/.DS_Store
@@ -236,6 +240,8 @@ References/Agent/Platforms/Agent-S/**/.DS_Store
 References/Agent/UI/*
 !References/Agent/UI/hermes-desktop/
 !References/Agent/UI/hermes-desktop/**
+!References/Agent/UI/plannotator/
+!References/Agent/UI/plannotator/**
 References/Agent/UI/hermes-desktop/.agents/skills/typescript-expert/scripts/ts_diagnostic.py
 References/Agent/UI/gelab-zero/**/.DS_Store
 !References/Agent/Security/

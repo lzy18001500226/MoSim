@@ -1,0 +1,269 @@
+---
+title: Prompts
+description: Template system for dynamic system prompts using MiniJinja.
+---
+
+# Prompt System Architecture
+
+Spacebot uses a bundled template system powered by [MiniJinja](https://github.com/mitsuhiko/minijinja) (a Rust implementation of Jinja2). All system prompts are embedded in the binary at compile time and support runtime variable substitution.
+
+## Overview
+
+```
+prompts/
+├── en/                          # Language-specific templates
+│   ├── channel.md.j2           # Channel process prompt
+│   ├── branch.md.j2            # Branch process prompt
+│   ├── worker.md.j2            # Worker process prompt
+│   ├── cortex.md.j2            # Cortex process prompt
+│   ├── compactor.md.j2         # Compactor worker prompt
+│   ├── memory_persistence.md.j2 # Memory persistence branch prompt
+│   ├── ingestion.md.j2          # File ingestion worker prompt
+│   └── cortex_bulletin.md.j2    # Bulletin synthesis prompt
+```
+
+All templates are embedded into the binary using `include_str!` and loaded into the `PromptEngine` at startup.
+
+## PromptEngine
+
+The `PromptEngine` is the central component for template rendering. It is stored in `RuntimeConfig` and accessible to all processes.
+
+```rust
+// Create the engine (typically done once at startup)
+let engine = PromptEngine::new("en")?;
+
+// Render a static template
+let worker_prompt = engine.render_static("worker")?;
+
+// Render with variables
+let channel_prompt = engine.render_channel_prompt(
+    Some(identity_context),      // Option<String>
+    Some(memory_bulletin),       // Option<String>
+    Some(skills_prompt),         // Option<String>
+    worker_capabilities,         // String
+    conversation_context,        // Option<String>
+    status_text,                 // Option<String>
+)?;
+```
+
+### Fragment Templates
+
+Dynamic strings that were previously hardcoded in Rust source are now fragment templates:
+
+```
+fragments/
+├── worker_capabilities        # Tool list with conditional browser/web_search
+├── conversation_context       # Platform/channel metadata
+├── skills_channel            # Skills listing for channel prompt
+├── skills_worker             # Skill execution header for workers
+└── system/                   # System-injected messages
+    ├── retrigger             # Background completion notification
+    ├── truncation            # Emergency truncation marker
+    ├── worker_overflow       # Context overflow recovery
+    ├── worker_compact        # History compaction marker
+    ├── memory_persistence    # Memory persistence user prompt
+    ├── cortex_synthesis      # Bulletin synthesis instruction
+    └── ingestion_chunk       # File chunk processing prompt
+```
+
+## Template Syntax
+
+MiniJinja uses standard Jinja2 syntax:
+
+### Variables
+```jinja
+{{ variable_name }}
+```
+
+### Conditionals
+```jinja
+{%- if browser_enabled %}
+- **browser** — browse web pages, take screenshots
+{%- endif %}
+```
+
+Note: The `{%-` syntax trims preceding whitespace. Use `{{-` to trim following whitespace.
+
+### Loops
+```jinja
+{%- for skill in skills %}
+  <skill>
+    <name>{{ skill.name }}</name>
+    <description>{{ skill.description }}</description>
+  </skill>
+{%- endfor %}
+```
+
+### Optional Sections
+```jinja
+{%- if identity_context %}
+{{ identity_context }}
+{%- endif %}
+```
+
+## Channel Prompt Assembly
+
+The channel system prompt is the most complex, assembled from multiple dynamic components:
+
+```jinja
+{%- if identity_context %}
+{{ identity_context }}
+{%- endif %}
+
+{%- if memory_bulletin %}
+## Memory Context
+
+{{ memory_bulletin }}
+{%- endif %}
+
+[Base channel instructions...]
+
+{%- if skills_prompt %}
+{{ skills_prompt }}
+{%- endif %}
+
+{{ worker_capabilities }}
+
+{%- if conversation_context %}
+## Conversation Context
+
+{{ conversation_context }}
+{%- endif %}
+
+{%- if status_text %}
+## Current Status
+
+{{ status_text }}
+{%- endif %}
+```
+
+## Adding a New Language
+
+1. Create language directory:
+   ```bash
+   mkdir prompts/{lang}
+   ```
+
+2. Copy and translate templates:
+   ```bash
+   cp prompts/en/*.md.j2 prompts/{lang}/
+   ```
+
+3. Register templates in `engine.rs`:
+   ```rust
+   // Add new language constant
+   const CHANNEL_TEMPLATE_FR: &str = include_str!("../../prompts/fr/channel.md.j2");
+
+   // Register in PromptEngine::new()
+   if language == "fr" {
+       env.add_template("channel", CHANNEL_TEMPLATE_FR)?;
+       // ... etc
+   }
+   ```
+
+4. Language is selected at startup via config:
+   ```toml
+   [defaults]
+   language = "fr"
+   ```
+
+## Creating New Templates
+
+### 1. Add the template file
+
+Create `prompts/en/my_template.md.j2`:
+```jinja
+You are a {{ role }}.
+
+{%- if custom_instructions %}
+{{ custom_instructions }}
+{%- endif %}
+```
+
+### 2. Register in PromptEngine
+
+Add to `src/prompts/engine.rs`:
+```rust
+const MY_TEMPLATE: &str = include_str!("../../prompts/en/my_template.md.j2");
+
+// In PromptEngine::new():
+env.add_template("my_template", MY_TEMPLATE)?;
+```
+
+### 3. Create a render method (optional)
+
+```rust
+pub fn render_my_template(&self, role: &str, custom: Option<&str>) -> Result<String> {
+    self.render(
+        "my_template",
+        context! {
+            role => role,
+            custom_instructions => custom,
+        },
+    )
+}
+```
+
+### 4. Use in code
+
+```rust
+let prompt = engine.render_my_template("analyzer", None)?;
+```
+
+## Migration from Hardcoded Strings
+
+When replacing hardcoded strings with templates:
+
+1. **Identify the string** - Find `format!()` or string literals in agent code
+2. **Create fragment** - Add to `src/prompts/engine.rs` fragment section
+3. **Add render method** - Create convenience method in PromptEngine
+4. **Replace call site** - Use `engine.render_fragment_name()` instead of `format!()`
+
+Example migration:
+```rust
+// Before:
+let marker = format!(
+    "[System: {} messages were truncated...]",
+    remove_count
+);
+
+// After:
+let marker = engine.render_system_truncation(remove_count)?;
+```
+
+## Best Practices
+
+1. **Keep templates focused** - Each template should have a single purpose
+2. **Use fragments for dynamic strings** - Don't inline formatting logic
+3. **Prefer optional blocks** - Use `{%- if var %}` instead of requiring all variables
+4. **Test template rendering** - Verify templates render without errors at startup
+5. **Document variables** - Comment what each template variable represents
+6. **Avoid logic in templates** - Keep complex logic in Rust, use templates for presentation
+
+## No User Overrides
+
+Unlike identity files (SOUL.md, IDENTITY.md, ROLE.md), system prompts cannot be modified by users. This ensures:
+
+- Updates ship reliably (no local modifications to overwrite)
+- Consistent behavior across deployments
+- Template syntax validation at compile time
+
+User customization should happen via:
+- Identity files (personality, preferences)
+- Skills (task-specific instructions)
+- Configuration (behavioral parameters)
+
+## Testing
+
+The PromptEngine validates all templates at construction. Invalid templates will fail at startup with clear error messages.
+
+For testing template rendering:
+```rust
+#[test]
+fn test_worker_capabilities() {
+    let engine = PromptEngine::new("en").unwrap();
+    let rendered = engine.render_worker_capabilities(true, false).unwrap();
+    assert!(rendered.contains("browser"));
+    assert!(!rendered.contains("web_search"));
+}
+```
