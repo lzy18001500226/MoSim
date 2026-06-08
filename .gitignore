@@ -184,7 +184,7 @@ References/Sunray/**/*.plan
 References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_D435i/meshes/150.dae
 References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/meshes/150.dae
 References/Lab/Fast-Racing/src/thirdparty/MavLinkCom/MavLinkComGenerator/obj/
-References/AirSim/spear/
+References/AirSim/spear/third_party/
 # Missing local Git LFS payloads in IsaacSim README screenshots; keep
 # manifest-only until the real LFS objects are restored.
 References/AirSim/IsaacSim/docs/readme/*.png
