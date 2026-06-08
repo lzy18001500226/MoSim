@@ -1,0 +1,26 @@
+{
+  "schema": "mosim.mworks_model_hygiene.pre_live_blockers.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-GRAPHICAL-AUDIT-STATIC-PREP-20260607-011",
+  "generated_at": "2026-06-07T21:25:08+08:00",
+  "blocking_missing_source_count": 0,
+  "static_fix_before_live_count": 0,
+  "package_order_issue_count": 0,
+  "missing_sources": [],
+  "needs_static_fix_first": [],
+  "package_order_issues": [],
+  "live_prerequisite_blockers": [
+    {
+      "blocker": "006 live audit ended as live_surface_session_reuse_blocked",
+      "evidence": "Results/agent_packets/blockers/PMO-MWORKS-R2-MOSIMQUAD-LIVE-PACKAGE-BROWSER-GRAPHICAL-AUDIT-20260607-006.json",
+      "next_step": "Before any 011-derived live audit, PMO/CoAgentOps must provide a route that reuses the intended existing Sysplorer/MWORKS session and does not open a new window."
+    },
+    {
+      "blocker": "R1 live dynamics resources must not be contested",
+      "evidence": "task packet resource boundary",
+      "next_step": "Serialize the live audit queue and run only one MWORKS/Sysplorer GUI/MCP session path at a time."
+    }
+  ],
+  "notes": [
+    "No true project-source missing blockers were found after treating Modelica.Icons.Package as an external standard-library dependency."
+  ]
+}

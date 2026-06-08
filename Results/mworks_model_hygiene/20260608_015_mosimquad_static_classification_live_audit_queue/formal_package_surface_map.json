@@ -1,0 +1,276 @@
+{
+  "schema": "mosim.mworks_model_hygiene.formal_package_surface_map.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-STATIC-CLASSIFICATION-LIVE-AUDIT-QUEUE-20260608-015",
+  "generated_at": "2026-06-08T02:14:53+08:00",
+  "root_package": "MoSimQuadrotorModel",
+  "root_order_entries": [
+    "Baseline",
+    "Dynamics",
+    "Missions",
+    "Controllers",
+    "Robustness",
+    "Planning",
+    "SceneTrace",
+    "System",
+    "Formation",
+    "Support",
+    "LegacyCompatibility"
+  ],
+  "root_order_count": 11,
+  "root_order_duplicates": [],
+  "formal_surface_rows": [
+    {
+      "formal_entry": "MoSimQuadrotorModel.Baseline",
+      "visible_order_index": 1,
+      "category_role": "官方基线适配",
+      "source_surface": "QuadrotorModel",
+      "package_order_entry_count": 4,
+      "extends_targets": [
+        "Modelica.Icons.Package",
+        "QuadrotorModel.Examples.Example1",
+        "QuadrotorModel.Examples.Example2",
+        "QuadrotorModel.Examples.Example3",
+        "QuadrotorModel.Mechanics.QuadChassis"
+      ],
+      "surface_kind": "formal wrapper aliases only",
+      "recommended_next_gate": "package_browser_visibility_then_targeted_check_or_layout_queue"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics",
+      "visible_order_index": 2,
+      "category_role": "Sunray150动力学升级",
+      "source_surface": "QuadrotorExperiments.DynamicsUpgrade",
+      "package_order_entry_count": 9,
+      "extends_targets": [
+        "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+        "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
+        "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
+        "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+        "QuadrotorExperiments.DynamicsUpgrade.WrapperHoverSmoke",
+        "QuadrotorExperiments.DynamicsUpgrade.WrapperYawStepSmoke",
+        "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter",
+        "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchHoverSmoke",
+        "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchYawStepSmoke"
+      ],
+      "surface_kind": "formal wrapper aliases only",
+      "recommended_next_gate": "package_browser_visibility_then_targeted_check_or_layout_queue"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Missions",
+      "visible_order_index": 3,
+      "category_role": "正式任务场景",
+      "source_surface": "QuadrotorExperiments.OfficialScenarios",
+      "package_order_entry_count": 15,
+      "extends_targets": [
+        "Modelica.Icons.Package",
+        "QuadrotorExperiments.OfficialScenarios.Example1AWFF",
+        "QuadrotorExperiments.OfficialScenarios.Example1INDI",
+        "QuadrotorExperiments.OfficialScenarios.Example1L1",
+        "QuadrotorExperiments.OfficialScenarios.Example1LinearMPC",
+        "QuadrotorExperiments.OfficialScenarios.Example1PlanarFigure8Trail",
+        "QuadrotorExperiments.OfficialScenarios.Example1HelicalFigure8Trail",
+        "QuadrotorExperiments.OfficialScenarios.Example2AWFF",
+        "QuadrotorExperiments.OfficialScenarios.Example2HelixTunedAWFF",
+        "QuadrotorExperiments.OfficialScenarios.Example2INDI",
+        "QuadrotorExperiments.OfficialScenarios.Example2HelixTunedINDI",
+        "QuadrotorExperiments.OfficialScenarios.Example2LinearMPC",
+        "QuadrotorExperiments.OfficialScenarios.Example3AWFF",
+        "QuadrotorExperiments.OfficialScenarios.Example3INDI",
+        "QuadrotorExperiments.OfficialScenarios.Example3L1",
+        "QuadrotorExperiments.OfficialScenarios.Example3LinearMPC"
+      ],
+      "surface_kind": "formal wrapper aliases only",
+      "recommended_next_gate": "package_browser_visibility_then_targeted_check_or_layout_queue"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Controllers",
+      "visible_order_index": 4,
+      "category_role": "控制器基线与对比",
+      "source_surface": "QuadrotorExperiments.ControllerBaselines + QuadrotorControllerBlocks",
+      "package_order_entry_count": 7,
+      "extends_targets": [
+        "QuadrotorExperiments.ControllerBaselines",
+        "QuadrotorControllerBlocks.AWFFPidBlocks",
+        "QuadrotorControllerBlocks.InnovationControllers",
+        "QuadrotorControllerBlocks.FaultAllocationControllers",
+        "QuadrotorControllerBlocks.LinearMPCControllers",
+        "QuadrotorControllerBlocks.SafetyControllers",
+        "QuadrotorControllerBlocks.DemosAndSIL",
+        "QuadrotorControllerBlocks.CompatibilityAndLegacy"
+      ],
+      "surface_kind": "formal wrapper/category aliases only",
+      "recommended_next_gate": "package_browser_visibility_then_targeted_check_or_layout_queue"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Robustness",
+      "visible_order_index": 5,
+      "category_role": "鲁棒、故障、安全与扰动",
+      "source_surface": "QuadrotorExperiments.RobustFaultScenarios",
+      "package_order_entry_count": 12,
+      "extends_targets": [
+        "Modelica.Icons.Package",
+        "Modelica.Icons.Package",
+        "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Mass20PID",
+        "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Mass20ImprovedPID",
+        "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Mass20EnhancedPID",
+        "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.WindGustPID",
+        "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.WindGustImprovedPID",
+        "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.WindGustEnhancedPID",
+        "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Rotor1LossPID",
+        "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Rotor1LossImprovedPID",
+        "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Rotor1LossEnhancedPID",
+        "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Rotor2LossPID",
+        "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Rotor3LossPID",
+        "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Rotor4LossPID",
+        "Modelica.Icons.Package",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1AWFF",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1AWFFBaseline",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1L1",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1L1FaultAllocation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1L1OnlineFaultAllocation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1L1MultiFaultIsolation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1LinearMPC",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1LinearMPCOnlineFaultAllocation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2AWFF",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3AWFF",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4AWFF",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1WindGustAWFF",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1WindGustAWFFFaultCompensation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1WindGustL1MultiFaultIsolation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1WindGustLinearMPCOnlineFaultAllocation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2WindGustAWFF",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2L1MultiFaultIsolation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2WindGustL1MultiFaultIsolation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2WindGustLinearMPCOnlineFaultAllocation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3WindGustAWFF",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3L1MultiFaultIsolation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3WindGustL1MultiFaultIsolation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3WindGustLinearMPCOnlineFaultAllocation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4WindGustAWFF",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4L1MultiFaultIsolation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4WindGustL1MultiFaultIsolation",
+        "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4WindGustLinearMPCOnlineFaultAllocation",
+        "QuadrotorExperiments.RobustFaultScenarios.Mass20AWFFBaseline",
+        "QuadrotorExperiments.RobustFaultScenarios.Mass20AWFF",
+        "QuadrotorExperiments.RobustFaultScenarios.Mass20L1",
+        "QuadrotorExperiments.RobustFaultScenarios.Mass20LinearMPC",
+        "QuadrotorExperiments.RobustFaultScenarios.WindGustAWFF",
+        "QuadrotorExperiments.RobustFaultScenarios.WindGustAWFFBaseline",
+        "QuadrotorExperiments.RobustFaultScenarios.WindGustL1",
+        "QuadrotorExperiments.RobustFaultScenarios.WindGustLinearMPC",
+        "QuadrotorExperiments.RobustFaultScenarios.SafetyQPNMPC",
+        "QuadrotorExperiments.RobustFaultScenarios.SafetyReturnLand"
+      ],
+      "surface_kind": "formal wrapper aliases only",
+      "recommended_next_gate": "package_browser_visibility_then_targeted_check_or_layout_queue"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Planning",
+      "visible_order_index": 6,
+      "category_role": "规划与地图场景",
+      "source_surface": "QuadrotorExperiments.PlanningScenarios",
+      "package_order_entry_count": 7,
+      "extends_targets": [
+        "Modelica.Icons.Package",
+        "QuadrotorExperiments.PlanningScenarios.QuinticReference",
+        "QuadrotorExperiments.PlanningScenarios.NavigationDisplay",
+        "QuadrotorExperiments.PlanningScenarios.OpenBlocksAWFF",
+        "QuadrotorExperiments.PlanningScenarios.OpenBlocksLinearMPC",
+        "QuadrotorExperiments.PlanningScenarios.OpenBlocksColorMapReview",
+        "QuadrotorExperiments.PlanningScenarios.CorridorGateAWFF",
+        "QuadrotorExperiments.PlanningScenarios.CorridorGateLinearMPC"
+      ],
+      "surface_kind": "formal wrapper aliases only",
+      "recommended_next_gate": "package_browser_visibility_then_targeted_check_or_layout_queue"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.SceneTrace",
+      "visible_order_index": 7,
+      "category_role": "UE场景trace与显示隔离",
+      "source_surface": "QuadrotorExperiments.SceneTraceScenarios + TraceIsolation",
+      "package_order_entry_count": 2,
+      "extends_targets": [
+        "QuadrotorExperiments.SceneTraceScenarios",
+        "QuadrotorExperiments.TraceIsolation"
+      ],
+      "surface_kind": "aggregate package aliases",
+      "recommended_next_gate": "package_browser_visibility_then_targeted_check_or_layout_queue"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.System",
+      "visible_order_index": 8,
+      "category_role": "系统级图形和硬件抽象",
+      "source_surface": "QuadrotorExperiments.SystemArchitecture + SystemModules",
+      "package_order_entry_count": 2,
+      "extends_targets": [
+        "QuadrotorExperiments.SystemArchitecture",
+        "QuadrotorExperiments.SystemModules"
+      ],
+      "surface_kind": "aggregate package aliases",
+      "recommended_next_gate": "package_browser_visibility_then_targeted_check_or_layout_queue"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Formation",
+      "visible_order_index": 9,
+      "category_role": "编队扩展",
+      "source_surface": "QuadrotorExperiments.FormationScenarios",
+      "package_order_entry_count": 1,
+      "extends_targets": [
+        "Modelica.Icons.Package",
+        "QuadrotorExperiments.FormationScenarios.TriangleFigure8LinearMPC"
+      ],
+      "surface_kind": "formal wrapper aliases only",
+      "recommended_next_gate": "package_browser_visibility_then_targeted_check_or_layout_queue"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Support",
+      "visible_order_index": 10,
+      "category_role": "支撑/trace/MCP工具模型",
+      "source_surface": "QuadrotorExperiments.SupportModels",
+      "package_order_entry_count": 4,
+      "extends_targets": [
+        "Modelica.Icons.Package",
+        "QuadrotorExperiments.SupportModels.TraceInline",
+        "QuadrotorExperiments.SupportModels.TraceTable",
+        "QuadrotorExperiments.SupportModels.TraceLookupStandalone",
+        "QuadrotorExperiments.SupportModels.EchoMcpState"
+      ],
+      "surface_kind": "formal wrapper aliases only",
+      "recommended_next_gate": "package_browser_visibility_then_targeted_check_or_layout_queue"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.LegacyCompatibility",
+      "visible_order_index": 11,
+      "category_role": "旧入口兼容",
+      "source_surface": "QuadrotorExperiments",
+      "package_order_entry_count": 1,
+      "extends_targets": [
+        "QuadrotorExperiments",
+        "QuadrotorExperiments"
+      ],
+      "surface_kind": "compatibility aggregate only",
+      "recommended_next_gate": "package_browser_visibility_then_targeted_check_or_layout_queue"
+    }
+  ],
+  "compatibility_surfaces": [
+    {
+      "surface": "QuadrotorExperiments.package.mo",
+      "role": "root hidden deprecated aliases preserve old flat load paths"
+    },
+    {
+      "surface": "MoSimQuadrotorModel.LegacyCompatibility.LegacyExperimentPool",
+      "role": "formal aggregate backstop, not preferred new entry"
+    },
+    {
+      "surface": "QuadrotorControllerBlocks package shell",
+      "role": "controller category aliases preserve flat controller classes"
+    }
+  ],
+  "static_validation": {
+    "no_mosim_implementation_mo_files_observed": true,
+    "mosim_package_order_has_11_entries": true,
+    "mosim_package_order_duplicates": [],
+    "controller_backup_dirs_not_in_public_order": true,
+    "official_baseline_treated_read_only": true
+  }
+}

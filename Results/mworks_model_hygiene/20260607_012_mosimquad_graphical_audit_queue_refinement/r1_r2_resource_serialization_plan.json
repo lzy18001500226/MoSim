@@ -1,0 +1,99 @@
+{
+  "schema": "mosim.mworks_model_hygiene.r1_r2_resource_serialization_plan.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-GRAPHICAL-AUDIT-QUEUE-REFINEMENT-20260607-012",
+  "generated_at": "2026-06-07T23:19:46+08:00",
+  "current_live_surface_status": {
+    "status": "blocked_for_live_mworks_routing",
+    "blocker_path": "Results/agent_packets/blockers/PMO-COAGENTOPS-MWORKS-REUSABLE-SESSION-REBIND-20260607-001.json",
+    "blocker_kind": "mcp_session_reuse_violation_persistent",
+    "summary": "MWORKS/Sysplorer MCP reusable-session route is still blocked. A no-start probe found existing Sysplorer port 49152 without starting a process, but session_manager(action=health) then started a new Sysplorer/MWORKS process and new dedicated port 49153 instead of binding to the already visible Sysplorer session. R1/R2 must not use this route for live load_file/check_model/simulate until an attach-only or no-start health route is proven.",
+    "routing_decision": {
+      "allow_r1_r2_live_mworks_dispatch": false,
+      "allow_r1_006_redispatch": false,
+      "allow_static_file_only_mworks_tasks": "only_if_live_mworks_touched_false_and_task_does_not_need_MCP_GUI_check_model_simulation",
+      "reason": "The current MCP session_manager health route cannot prove reuse of an existing session and demonstrably creates duplicate MWORKS/Sysplorer sessions."
+    }
+  },
+  "serialization_rules": [
+    {
+      "rule": "single_reusable_session",
+      "detail": "Exactly one existing MWORKS/Sysplorer GUI/MCP session may be used for future live audit; no parallel R1/R2 sessions."
+    },
+    {
+      "rule": "r1_priority_for_dynamics",
+      "detail": "R1 owns Dynamics check_model/simulation gates; R2 waits or limits itself to static/browser planning for Dynamics."
+    },
+    {
+      "rule": "r2_scope_for_graphical_audit",
+      "detail": "R2 owns package-browser visibility, diagram screenshot, connection/layout readability observations, and issue list; not controller performance."
+    },
+    {
+      "rule": "phase_order",
+      "detail": "Phase A package-browser root expand, Phase B controller category browser/topology, Phase C planning/system/trace diagram screenshots, Phase D issue triage and next task packets."
+    },
+    {
+      "rule": "no_smart_layout_writeback",
+      "detail": "Any layout repair or Smart Layout writeback must be a separate explicit source-edit/live task after screenshots identify the issue."
+    },
+    {
+      "rule": "stop_on_infrastructure_drift",
+      "detail": "Stop if session_manager starts a new window/port, if process/window count drifts unexpectedly, or if license/login/gui-error evidence appears."
+    }
+  ],
+  "live_execution_phases": [
+    {
+      "phase": "A_package_browser_roots",
+      "candidate_sequences": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "resource_owner": "R2_when_R1_idle",
+      "output": "one or more package-browser screenshots plus tree observations for root categories"
+    },
+    {
+      "phase": "B_controller_categories",
+      "candidate_sequences": [
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "resource_owner": "R2_when_R1_idle",
+      "output": "category visibility, representative Sysblock/topology screenshot if available, no behavior claim"
+    },
+    {
+      "phase": "C_graphical_representatives",
+      "candidate_sequences": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "resource_owner": "R2_when_R1_idle",
+      "output": "planning display/map, system complete graphical, and trace-isolation wiring screenshots/observations"
+    },
+    {
+      "phase": "D_issue_triage",
+      "candidate_sequences": [],
+      "resource_owner": "R2_static_followup_or_PMO",
+      "output": "separate repair/check_model/smart-layout task packets only if evidence demands them"
+    }
+  ],
+  "manual_review_or_blocker_triggers": [
+    "Existing-session attach route cannot be proven without startup.",
+    "Any relevant MWORKS/Sysplorer/Syslab window is demo/login/authorization/gui-error/mixed/unknown.",
+    "Package/browser tree cannot expose the selected formal candidate.",
+    "Diagram opens as blank/empty/white proxy surface or unreadable layout requiring foreground PMO/user review.",
+    "A check_model failure appears before visual acceptance; preserve evidence and return blocker/issue list instead of editing in the audit task."
+  ]
+}

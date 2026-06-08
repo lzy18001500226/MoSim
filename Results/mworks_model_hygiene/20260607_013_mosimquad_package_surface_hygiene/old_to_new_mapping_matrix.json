@@ -1,0 +1,424 @@
+{
+  "schema": "mosim.mworks_model_hygiene.old_to_new_mapping_matrix.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-PACKAGE-SURFACE-HYGIENE-20260607-013",
+  "generated_at": "2026-06-08T00:03:57.075421+08:00",
+  "source_scope": [
+    "Models/MoSimQuadrotorModel/package.mo and category package.mo/package.order files",
+    "Read-only mapping references from QuadrotorExperiments and QuadrotorControllerBlocks package/category surfaces",
+    "010/011/012 static return evidence"
+  ],
+  "mapping_count": 41,
+  "mappings": [
+    {
+      "old_or_source_entry": "QuadrotorModel.Examples.Example1",
+      "new_formal_entry": "MoSimQuadrotorModel.Baseline",
+      "category": "Baseline",
+      "role_cn": "官方基线适配",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorModel.Examples.Example2",
+      "new_formal_entry": "MoSimQuadrotorModel.Baseline",
+      "category": "Baseline",
+      "role_cn": "官方基线适配",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorModel.Examples.Example3",
+      "new_formal_entry": "MoSimQuadrotorModel.Baseline",
+      "category": "Baseline",
+      "role_cn": "官方基线适配",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorModel.Mechanics.QuadChassis",
+      "new_formal_entry": "MoSimQuadrotorModel.Baseline",
+      "category": "Baseline",
+      "role_cn": "官方基线适配",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.DynamicsUpgrade",
+      "new_formal_entry": "MoSimQuadrotorModel.Dynamics",
+      "category": "Dynamics",
+      "role_cn": "Sunray150动力学升级",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "alias_only_no_local_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.ControllerBaselines",
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers",
+      "category": "Controllers",
+      "role_cn": "控制器基线与对比",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorControllerBlocks",
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers",
+      "category": "Controllers",
+      "role_cn": "控制器基线与对比",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "alias_only_no_local_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.PlanningScenarios",
+      "new_formal_entry": "MoSimQuadrotorModel.Planning",
+      "category": "Planning",
+      "role_cn": "规划与地图场景",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "alias_only_no_local_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.SceneTraceScenarios",
+      "new_formal_entry": "MoSimQuadrotorModel.SceneTrace",
+      "category": "SceneTrace",
+      "role_cn": "UE场景trace与显示隔离",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.TraceIsolation",
+      "new_formal_entry": "MoSimQuadrotorModel.SceneTrace",
+      "category": "SceneTrace",
+      "role_cn": "UE场景trace与显示隔离",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.SystemArchitecture",
+      "new_formal_entry": "MoSimQuadrotorModel.System",
+      "category": "System",
+      "role_cn": "系统级图形和硬件抽象",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.SystemModules",
+      "new_formal_entry": "MoSimQuadrotorModel.System",
+      "category": "System",
+      "role_cn": "系统级图形和硬件抽象",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.FormationScenarios",
+      "new_formal_entry": "MoSimQuadrotorModel.Formation",
+      "category": "Formation",
+      "role_cn": "编队扩展",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "alias_only_no_local_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.SupportModels",
+      "new_formal_entry": "MoSimQuadrotorModel.Support",
+      "category": "Support",
+      "role_cn": "支撑/trace/MCP工具模型",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "alias_only_no_local_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments",
+      "new_formal_entry": "MoSimQuadrotorModel.LegacyCompatibility",
+      "category": "LegacyCompatibility",
+      "role_cn": "旧入口兼容",
+      "migration_state": "formal_alias_or_wrapper_surface",
+      "compatibility_policy": "preserve old source path; no deletion, move, or rename in 013",
+      "package_order_state": "alias_only_no_local_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorModel.Examples.Example1",
+      "new_formal_entry": "MoSimQuadrotorModel.Baseline.OfficialExample1",
+      "category": "Baseline",
+      "role_cn": "官方基线适配",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorModel.Examples.Example2",
+      "new_formal_entry": "MoSimQuadrotorModel.Baseline.OfficialExample2",
+      "category": "Baseline",
+      "role_cn": "官方基线适配",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorModel.Examples.Example3",
+      "new_formal_entry": "MoSimQuadrotorModel.Baseline.OfficialExample3",
+      "category": "Baseline",
+      "role_cn": "官方基线适配",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorModel.Mechanics.QuadChassis",
+      "new_formal_entry": "MoSimQuadrotorModel.Baseline.OfficialQuadChassis",
+      "category": "Baseline",
+      "role_cn": "官方基线适配",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+      "new_formal_entry": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+      "category": "Dynamics",
+      "role_cn": "Sunray150动力学升级",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
+      "new_formal_entry": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "category": "Dynamics",
+      "role_cn": "Sunray150动力学升级",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
+      "new_formal_entry": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "category": "Dynamics",
+      "role_cn": "Sunray150动力学升级",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+      "new_formal_entry": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+      "category": "Dynamics",
+      "role_cn": "Sunray150动力学升级",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.DynamicsUpgrade.WrapperHoverSmoke",
+      "new_formal_entry": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+      "category": "Dynamics",
+      "role_cn": "Sunray150动力学升级",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.DynamicsUpgrade.WrapperYawStepSmoke",
+      "new_formal_entry": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+      "category": "Dynamics",
+      "role_cn": "Sunray150动力学升级",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter",
+      "new_formal_entry": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+      "category": "Dynamics",
+      "role_cn": "Sunray150动力学升级",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchHoverSmoke",
+      "new_formal_entry": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+      "category": "Dynamics",
+      "role_cn": "Sunray150动力学升级",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchYawStepSmoke",
+      "new_formal_entry": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
+      "category": "Dynamics",
+      "role_cn": "Sunray150动力学升级",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorControllerBlocks.AWFFPidBlocks",
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.AWFFPidBlocks",
+      "category": "Controllers",
+      "role_cn": "控制器基线与对比",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorControllerBlocks.InnovationControllers",
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.InnovationControllers",
+      "category": "Controllers",
+      "role_cn": "控制器基线与对比",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorControllerBlocks.FaultAllocationControllers",
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.FaultAllocationControllers",
+      "category": "Controllers",
+      "role_cn": "控制器基线与对比",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorControllerBlocks.LinearMPCControllers",
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.LinearMPCControllers",
+      "category": "Controllers",
+      "role_cn": "控制器基线与对比",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorControllerBlocks.SafetyControllers",
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.SafetyControllers",
+      "category": "Controllers",
+      "role_cn": "控制器基线与对比",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorControllerBlocks.DemosAndSIL",
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.DemosAndSIL",
+      "category": "Controllers",
+      "role_cn": "控制器基线与对比",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorControllerBlocks.CompatibilityAndLegacy",
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.CompatibilityAndLegacy",
+      "category": "Controllers",
+      "role_cn": "控制器基线与对比",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.SceneTraceScenarios",
+      "new_formal_entry": "MoSimQuadrotorModel.SceneTrace.AcceptedScenes",
+      "category": "SceneTrace",
+      "role_cn": "UE场景trace与显示隔离",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.TraceIsolation",
+      "new_formal_entry": "MoSimQuadrotorModel.SceneTrace.Isolation",
+      "category": "SceneTrace",
+      "role_cn": "UE场景trace与显示隔离",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.SystemArchitecture",
+      "new_formal_entry": "MoSimQuadrotorModel.System.Architecture",
+      "category": "System",
+      "role_cn": "系统级图形和硬件抽象",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.SystemModules",
+      "new_formal_entry": "MoSimQuadrotorModel.System.Modules",
+      "category": "System",
+      "role_cn": "系统级图形和硬件抽象",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "preserve source target; no implementation migration in 013",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_013"
+    }
+  ],
+  "claim_boundary": "Static mapping only; not live package-browser acceptance, check_model, simulation, graphical/layout/wiring acceptance, controller performance, planner_ready, runtime ack, mission success, or closed_loop."
+}

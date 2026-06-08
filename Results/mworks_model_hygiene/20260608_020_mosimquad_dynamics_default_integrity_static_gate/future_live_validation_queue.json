@@ -1,0 +1,60 @@
+{
+  "schema": "mosim.mworks.future_live_validation_queue.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-DEFAULT-INTEGRITY-STATIC-GATE-20260608-020",
+  "status": "queued_for_future_live_task",
+  "preconditions": [
+    "PMO/CoAgentOps must prove a reusable existing MWORKS/Sysplorer session route without opening a new window.",
+    "Stop immediately on demo, login, activation, authorization, GUI error-report, mixed-license, unavailable, or unknown GUI/API state.",
+    "Use targeted model_manager(load_file, force_reload=true) and check_model(model_names=[...]). Avoid check_model(reload_mo_path=...).",
+    "Do not call ClearAll or ChangeDirectory.",
+    "Do not edit References/MWORKS/QuadrotorModel."
+  ],
+  "check_model_targets": [
+    "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+    "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+    "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+    "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+    "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
+    "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+    "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
+    "MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance"
+  ],
+  "eligible_minimal_smokes_after_checks": [
+    "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+    "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke"
+  ],
+  "optional_probe_queue": [
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+      "probe": "default-disabled force/moment delta stays zero under default flags",
+      "boundary": "future live result probe only; 020 does not claim it"
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
+      "probe": "normalized command maps to signed visual rotor speed and feeds wrapper.motor_command",
+      "boundary": "future live check/smoke only; 020 proves static wiring only"
+    }
+  ],
+  "not_claimed_by_020": [
+    "live MWORKS load",
+    "check_model",
+    "SimulateModel",
+    ".msr or native result evidence",
+    "graphical layout or package-browser acceptance",
+    "controller performance",
+    "planner_ready",
+    "runtime ack",
+    "parameter identification",
+    "mission success",
+    "closed_loop"
+  ]
+}

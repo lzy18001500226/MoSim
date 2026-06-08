@@ -1,0 +1,32 @@
+{
+  "schema": "mosim.mworks_model_hygiene.unresolved_migration_blockers.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-ALIAS-CATEGORY-MIGRATION-PLAN-20260608-014",
+  "generated_at": "2026-06-08T01:13:00+08:00",
+  "blocking_for_014_completion": false,
+  "blockers": [
+    {
+      "category": "all",
+      "kind": "live_validation_not_performed",
+      "reason": "014 is static-only and forbids MWORKS/Sysplorer/Syslab GUI/MCP/check_model/SimulateModel/Smart Layout.",
+      "follow_up": "Future live package-browser, check_model, graphical layout, wiring, or simulation work must be separately dispatched and serialized with current MWORKS session/patrol state."
+    },
+    {
+      "category": "all",
+      "kind": "implementation_migration_not_performed",
+      "reason": "014 creates explicit alias/wrapper surfaces only; it does not move, delete, rename, or rewrite legacy implementation files.",
+      "follow_up": "A later real namespace migration must update scenario YAML, scripts, docs, reports, compatibility aliases, and targeted live MWORKS checks before retiring old names."
+    },
+    {
+      "category": "Robustness",
+      "kind": "nested_package_order_not_split_to_real_subdirectories",
+      "reason": "PIDBaselines and RotorLoss are embedded grouping packages in Robustness/package.mo; the task forbids creating new implementation directories and only allowed Robustness/package.mo/package.order.",
+      "follow_up": "If PMO wants separate package.order inside PIDBaselines/RotorLoss, dispatch a later task that explicitly permits creating real subpackage directories or keeps embedded declaration order as the accepted static surface."
+    },
+    {
+      "category": "LegacyCompatibility",
+      "kind": "legacy_full_pool_not_flattened_under_formal_package",
+      "reason": "Flattening every QuadrotorExperiments legacy class under MoSimQuadrotorModel.LegacyCompatibility would duplicate many compatibility names and obscure canonical migration batches.",
+      "follow_up": "Keep LegacyExperimentPool as the explicit historical aggregate until PMO decides which legacy flat names need permanent formal aliases."
+    }
+  ]
+}

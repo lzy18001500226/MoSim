@@ -1,0 +1,42 @@
+{
+  "schema": "mosim.static_validation_summary.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-ACTUATOR-MAPPER-STATIC-IMPLEMENTATION-20260608-017",
+  "created_at": "2026-06-08T03:57:56+08:00",
+  "status": "passed_static_checks_before_packet_quality",
+  "scope": "static_model_source_implementation",
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "validation_notes": [
+    "Only project-owned Modelica source and evidence/packet files were touched.",
+    "No MWORKS/Sysplorer/Syslab GUI, MCP, check_model, SimulateModel, Smart Layout, result viewer, ClearAll, or ChangeDirectory action was performed.",
+    "The new boundary is normalized actuator command to signed MWORKS visual rotor speed; the existing motor lag, thrust, yaw reaction torque, and rotor-center moment core was not edited.",
+    "New map bounds are source-labeled interface seeds, not identified Sunray150 physical truth."
+  ],
+  "checks": [
+    {
+      "command": "python -m json.tool Results\\mworks_model_hygiene\\20260608_017_mosimquad_actuator_mapper_static_implementation\\changed_files.json",
+      "ok": true,
+      "summary": "changed_files.json parses as JSON"
+    },
+    {
+      "command": "python -m json.tool Results\\mworks_model_hygiene\\20260608_017_mosimquad_actuator_mapper_static_implementation\\static_validation_summary.json",
+      "ok": true,
+      "summary": "initial validation summary parsed before final update"
+    },
+    {
+      "command": "rg -n \"<<<<<<<|=======|>>>>>>>|ClearAll|ChangeDirectory|check_model|SimulateModel|Smart Layout|session_manager|model_manager\" <changed source/evidence scope>",
+      "ok": true,
+      "summary": "no conflict markers or forbidden live-operation calls in changed Modelica files; evidence files only mention forbidden live calls as non-actions/claim boundary"
+    },
+    {
+      "command": "git diff --check -- <modified package files and evidence dir>",
+      "ok": true,
+      "summary": "tracked diff whitespace/conflict-marker check passed"
+    },
+    {
+      "command": "git status --short -- <017 allowed source/evidence/packet scope>",
+      "ok": true,
+      "summary": "changes confined to allowed project-owned source, evidence dir, and return packet scope"
+    }
+  ]
+}

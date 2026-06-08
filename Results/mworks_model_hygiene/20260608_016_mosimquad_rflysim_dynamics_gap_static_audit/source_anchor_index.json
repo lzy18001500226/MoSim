@@ -1,0 +1,124 @@
+{
+  "schema": "mosim.source_anchor_index.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-RFLYSIM-DYNAMICS-GAP-STATIC-AUDIT-20260608-016",
+  "created_at": "2026-06-08T03:25:08+08:00",
+  "scope": "static_inventory_only",
+  "anchors": [
+    {
+      "id": "mosim_dynamics_alias_surface",
+      "path": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "lines": "5-48",
+      "summary": "Formal MoSimQuadrotorModel.Dynamics alias entries for rotor core, hover/yaw smoke, wrapper, and physical wrench adapter."
+    },
+    {
+      "id": "dynamics_upgrade_alias_surface",
+      "path": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "lines": "6-58",
+      "summary": "Legacy/project-owned DynamicsUpgrade aliases pointing to implementation files."
+    },
+    {
+      "id": "rotor_core_parameters",
+      "path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+      "lines": "4-28",
+      "summary": "Mass, lift coefficient, moment ratio, motor lag constants, hover speed seed, rotor centers, sign conventions, motor command, and omega variables."
+    },
+    {
+      "id": "rotor_core_equations",
+      "path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+      "lines": "42-54",
+      "summary": "Motor first-order lag, Ct*omega^2 thrust, yaw reaction moment, rotor-center moments, total thrust, total moment, and hover error."
+    },
+    {
+      "id": "wrapper_command_side_surface",
+      "path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
+      "lines": "13-58",
+      "summary": "Wrapper command surface, command-side thrust/yaw/r x F algebra, lagged total outputs, and motor/yaw gate errors."
+    },
+    {
+      "id": "physical_wrench_adapter",
+      "path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchFrameAdapter.mo",
+      "lines": "31-58",
+      "summary": "WorldForceAndTorque application of wrapper force and torque to an explicit MultiBody body plus application error variables."
+    },
+    {
+      "id": "official_baseline_quadchassis_body",
+      "path": "References/MWORKS/QuadrotorModel/package.mo",
+      "lines": "922-955",
+      "summary": "Official QuadChassis lift coefficient, body mass/inertia, and rotor inertias."
+    },
+    {
+      "id": "official_baseline_rotor_frames_and_forces",
+      "path": "References/MWORKS/QuadrotorModel/package.mo",
+      "lines": "977-1055",
+      "summary": "Official QuadChassis rotor fixed translations, per-rotor WorldForce, speed sensor, product, and gain thrust path."
+    },
+    {
+      "id": "official_contact_model",
+      "path": "References/MWORKS/QuadrotorModel/package.mo",
+      "lines": "2122-2252",
+      "summary": "Official TouchModel contact/ground support, not part of the current nominal DynamicsUpgrade free-flight wrapper."
+    },
+    {
+      "id": "dae_scope_boundary",
+      "path": "Results/unreal_scene_mapping/sunray150_dae_assembly_parameters_20260604.json",
+      "lines": "5-22",
+      "summary": "DAE manifest replacement scope: rotor centers, camera extrinsics, collision geometry; explicitly not mass, inertia, motorConstant, momentConstant, lift coefficient, controller gains, or sensor timing."
+    },
+    {
+      "id": "identification_workflow_provenance",
+      "path": "Docs/Workflows/identify_quadrotor_parameters.md",
+      "lines": "34-45",
+      "summary": "Do not claim identified Sunray150 truth without ULog/sysid evidence; DAE/Blender geometry does not upgrade mass, inertia, thrust/motor constants, drag, motor lag, yaw moment, controller gains, or FAST-LIO extrinsics."
+    },
+    {
+      "id": "rflysim_structure_reference",
+      "path": "Docs/Workflows/identify_quadrotor_parameters.md",
+      "lines": "786-797",
+      "summary": "RflySim-like structure checklist: motor command to speed, motor lag, thrust, yaw moment, rotor arm moment, gyro moment, drag, angular damping, contact, and fault/dynamic parameters."
+    },
+    {
+      "id": "current_mworks_state_after_geometry_migration",
+      "path": "Docs/Workflows/identify_quadrotor_parameters.md",
+      "lines": "811-823",
+      "summary": "Current MWORKS base state after SDF/DAE migration and missing base-plant yaw/motor-lag/drag/damping items."
+    },
+    {
+      "id": "current_minimal_structure_upgrade_checkpoint",
+      "path": "Docs/Workflows/identify_quadrotor_parameters.md",
+      "lines": "874-915",
+      "summary": "Prior checkpoint documenting implemented command lag, thrust, yaw reaction moment, rotor-center moment, source labels, and non-identified truth boundary."
+    },
+    {
+      "id": "prior_live_005_boundary",
+      "path": "Results/agent_packets/returns/PMO-MWORKS-R1-PHYSICAL-WRENCH-ADAPTER-WORLD-CONDITIONAL-FIX-20260607-005.json",
+      "lines": "602-607",
+      "summary": "Prior 005 claim boundary for narrow live check/smoke evidence; 016 references it only as history and does not revalidate live evidence."
+    },
+    {
+      "id": "prior_live_006_blocker",
+      "path": "Results/agent_packets/blockers/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-WRAPPER-CHASSIS-STRUCTURE-GATE-20260607-006.json",
+      "lines": "1-6",
+      "summary": "Prior 006 blocker: live work stopped because MCP health appeared to start a new MWORKS process instead of proving reusable-session attach."
+    }
+  ],
+  "negative_static_searches": [
+    {
+      "feature": "rotor_gyroscopic_moment",
+      "path_glob": "Models/QuadrotorExperiments/DynamicsUpgrade/*.mo",
+      "patterns": ["gyro", "gyroscopic", "Jm"],
+      "result": "No implemented gyro moment term found in current DynamicsUpgrade source during static audit."
+    },
+    {
+      "feature": "body_drag",
+      "path_glob": "Models/QuadrotorExperiments/DynamicsUpgrade/*.mo",
+      "patterns": ["drag", "Cd", "aerodynamic"],
+      "result": "No translational aerodynamic drag term found in current DynamicsUpgrade source during static audit."
+    },
+    {
+      "feature": "angular_damping",
+      "path_glob": "Models/QuadrotorExperiments/DynamicsUpgrade/*.mo",
+      "patterns": ["damping", "CCm", "rotational drag"],
+      "result": "No angular damping moment term found in current DynamicsUpgrade source during static audit."
+    }
+  ]
+}

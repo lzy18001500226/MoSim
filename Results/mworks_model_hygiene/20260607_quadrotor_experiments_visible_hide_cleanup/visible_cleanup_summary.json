@@ -1,0 +1,303 @@
+{
+  "schema_version": "mosim.mworks_model_hygiene.quadrotor_experiments_folder_migration.v1",
+  "created_at": "2026-06-07T20:18:00+08:00",
+  "scope": "static_file_only_no_mcp_no_check_model_no_simulation",
+  "activation_sentinel_before": "Results/mworks_gui_incidents/QUADROTOR-EXPERIMENTS-VISIBLE-CATEGORY-CLEANUP-20260607/gui_sentinel_before.json",
+  "background_screenshot_before": "Results/mworks_background_capture/QUADROTOR-EXPERIMENTS-VISIBLE-CATEGORY-CLEANUP-20260607/capture_manifest.json",
+  "activation_state_observation": "sentinel status=clean; visible main title Missions[MoSimQuadrotorModel] - Sysplorer [教育版]; no demo/login/authorization/license-dialog/crash matches; hidden helper windows counted as risk evidence only",
+  "license_state": "education_window_observed_activation_unverified",
+  "mworks_window_evidence_touched": true,
+  "live_mworks_touched": false,
+  "root_package_order_entries": [
+    "OfficialScenarios",
+    "ControllerBaselines",
+    "RobustFaultScenarios",
+    "PlanningScenarios",
+    "SceneTraceScenarios",
+    "TraceIsolation",
+    "DynamicsUpgrade",
+    "SystemArchitecture",
+    "SystemModules",
+    "SupportModels",
+    "FormationScenarios"
+  ],
+  "root_package_order_only_11_categories": true,
+  "root_mo_files": [
+    "package.mo"
+  ],
+  "category_directories": [
+    "ControllerBaselines",
+    "DynamicsUpgrade",
+    "FormationScenarios",
+    "OfficialScenarios",
+    "PlanningScenarios",
+    "RobustFaultScenarios",
+    "SceneTraceScenarios",
+    "SupportModels",
+    "SystemArchitecture",
+    "SystemModules",
+    "TraceIsolation"
+  ],
+  "nested_category_packages": [
+    "QuadrotorExperiments.ControllerBaselines",
+    "QuadrotorExperiments.DynamicsUpgrade",
+    "QuadrotorExperiments.FormationScenarios",
+    "QuadrotorExperiments.OfficialScenarios",
+    "QuadrotorExperiments.PlanningScenarios",
+    "QuadrotorExperiments.RobustFaultScenarios",
+    "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines",
+    "QuadrotorExperiments.RobustFaultScenarios.RotorLoss",
+    "QuadrotorExperiments.SceneTraceScenarios",
+    "QuadrotorExperiments.SupportModels",
+    "QuadrotorExperiments.SystemArchitecture",
+    "QuadrotorExperiments.SystemModules",
+    "QuadrotorExperiments.TraceIsolation"
+  ],
+  "real_model_files_under_categories": 137,
+  "root_hidden_compatibility_aliases": 137,
+  "public_category_wrappers": 146,
+  "compatibility_boundary": "old QuadrotorExperiments.<LegacyName> paths are preserved as hidden root aliases; real definitions now live under category subpackages; no check_model/simulation claimed",
+  "static_validation": {
+    "root_has_no_flat_sibling_mo": true,
+    "all_extends_targets_static_resolved": true,
+    "all_within_clauses_match_category_paths": true,
+    "git_diff_check_scope_passed": true,
+    "trailing_whitespace_scan_passed": true
+  },
+  "not_claimed": [
+    "GUI package browser acceptance",
+    "check_model",
+    "simulation",
+    "controller performance",
+    "planner_ready",
+    "closed_loop"
+  ],
+  "category_packages": [
+    {
+      "package_path": "QuadrotorExperiments.ControllerBaselines",
+      "package_order_entries": [
+        "AntiWindupFeedforwardCore",
+        "Example1AWFFBaseline",
+        "Example2AWFFBaseline",
+        "Example2HelixTunedAWFFBaseline",
+        "Example3AWFFBaseline",
+        "Example1ImprovedPIDBaseline",
+        "Example1EnhancedPIDBaseline",
+        "Example2ImprovedPIDBaseline",
+        "Example2EnhancedPIDBaseline",
+        "Example2HelixTunedEnhancedPIDBaseline",
+        "Example3ImprovedPIDBaseline",
+        "Example3EnhancedPIDBaseline"
+      ],
+      "public_wrapper_count": 12
+    },
+    {
+      "package_path": "QuadrotorExperiments.DynamicsUpgrade",
+      "package_order_entries": [
+        "RotorDynamicsCore",
+        "RotorHoverSmoke",
+        "RotorYawStepSmoke",
+        "WrapperSurface",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "public_wrapper_count": 9
+    },
+    {
+      "package_path": "QuadrotorExperiments.FormationScenarios",
+      "package_order_entries": [
+        "TriangleFigure8LinearMPC"
+      ],
+      "public_wrapper_count": 1
+    },
+    {
+      "package_path": "QuadrotorExperiments.OfficialScenarios",
+      "package_order_entries": [
+        "Example1AWFF",
+        "Example1INDI",
+        "Example1L1",
+        "Example1LinearMPC",
+        "Example1PlanarFigure8Trail",
+        "Example1HelicalFigure8Trail",
+        "Example2AWFF",
+        "Example2HelixTunedAWFF",
+        "Example2INDI",
+        "Example2HelixTunedINDI",
+        "Example2LinearMPC",
+        "Example3AWFF",
+        "Example3INDI",
+        "Example3L1",
+        "Example3LinearMPC"
+      ],
+      "public_wrapper_count": 15
+    },
+    {
+      "package_path": "QuadrotorExperiments.PlanningScenarios",
+      "package_order_entries": [
+        "QuinticReference",
+        "NavigationDisplay",
+        "OpenBlocksAWFF",
+        "OpenBlocksLinearMPC",
+        "OpenBlocksColorMapReview",
+        "CorridorGateAWFF",
+        "CorridorGateLinearMPC"
+      ],
+      "public_wrapper_count": 7
+    },
+    {
+      "package_path": "QuadrotorExperiments.RobustFaultScenarios",
+      "package_order_entries": [
+        "PIDBaselines",
+        "RotorLoss",
+        "Mass20AWFFBaseline",
+        "Mass20AWFF",
+        "Mass20L1",
+        "Mass20LinearMPC",
+        "WindGustAWFF",
+        "WindGustAWFFBaseline",
+        "WindGustL1",
+        "WindGustLinearMPC",
+        "SafetyQPNMPC",
+        "SafetyReturnLand"
+      ],
+      "public_wrapper_count": 10
+    },
+    {
+      "package_path": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines",
+      "package_order_entries": [
+        "Mass20PID",
+        "Mass20ImprovedPID",
+        "Mass20EnhancedPID",
+        "WindGustPID",
+        "WindGustImprovedPID",
+        "WindGustEnhancedPID",
+        "Rotor1LossPID",
+        "Rotor1LossImprovedPID",
+        "Rotor1LossEnhancedPID",
+        "Rotor2LossPID",
+        "Rotor3LossPID",
+        "Rotor4LossPID"
+      ],
+      "public_wrapper_count": 12
+    },
+    {
+      "package_path": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss",
+      "package_order_entries": [
+        "Rotor1AWFF",
+        "Rotor1AWFFBaseline",
+        "Rotor1L1",
+        "Rotor1L1FaultAllocation",
+        "Rotor1L1OnlineFaultAllocation",
+        "Rotor1L1MultiFaultIsolation",
+        "Rotor1LinearMPC",
+        "Rotor1LinearMPCOnlineFaultAllocation",
+        "Rotor2AWFF",
+        "Rotor3AWFF",
+        "Rotor4AWFF",
+        "Rotor1WindGustAWFF",
+        "Rotor1WindGustAWFFFaultCompensation",
+        "Rotor1WindGustL1MultiFaultIsolation",
+        "Rotor1WindGustLinearMPCOnlineFaultAllocation",
+        "Rotor2WindGustAWFF",
+        "Rotor2L1MultiFaultIsolation",
+        "Rotor2WindGustL1MultiFaultIsolation",
+        "Rotor2WindGustLinearMPCOnlineFaultAllocation",
+        "Rotor3WindGustAWFF",
+        "Rotor3L1MultiFaultIsolation",
+        "Rotor3WindGustL1MultiFaultIsolation",
+        "Rotor3WindGustLinearMPCOnlineFaultAllocation",
+        "Rotor4WindGustAWFF",
+        "Rotor4L1MultiFaultIsolation",
+        "Rotor4WindGustL1MultiFaultIsolation",
+        "Rotor4WindGustLinearMPCOnlineFaultAllocation"
+      ],
+      "public_wrapper_count": 27
+    },
+    {
+      "package_path": "QuadrotorExperiments.SceneTraceScenarios",
+      "package_order_entries": [
+        "UEFactoryLinearMPC",
+        "UEFactoryTraceTable",
+        "UEDerelictLinearMPC"
+      ],
+      "public_wrapper_count": 3
+    },
+    {
+      "package_path": "QuadrotorExperiments.SupportModels",
+      "package_order_entries": [
+        "TraceInline",
+        "TraceTable",
+        "TraceLookupStandalone",
+        "EchoMcpState"
+      ],
+      "public_wrapper_count": 4
+    },
+    {
+      "package_path": "QuadrotorExperiments.SystemArchitecture",
+      "package_order_entries": [
+        "CompleteSystemGraphical",
+        "GPSDropout",
+        "BatteryLow",
+        "OffboardLoss",
+        "MissionFailure",
+        "GeofenceBreach"
+      ],
+      "public_wrapper_count": 6
+    },
+    {
+      "package_path": "QuadrotorExperiments.SystemModules",
+      "package_order_entries": [
+        "PerceptionInterface",
+        "FlightController",
+        "MissionComputer",
+        "Supervisor",
+        "BatteryPower",
+        "ESCDrive",
+        "AWFFController",
+        "MotorDrive",
+        "AirframeSensor"
+      ],
+      "public_wrapper_count": 9
+    },
+    {
+      "package_path": "QuadrotorExperiments.TraceIsolation",
+      "package_order_entries": [
+        "FactoryLite",
+        "Iso01FullDisplay",
+        "Iso02ControllerOnly",
+        "Iso03PlantHoverStack",
+        "Iso04ControllerPlantWiring",
+        "Iso05CleanHoverSum",
+        "Iso06CleanControllerPlantWiring",
+        "Iso07ControllerOpenFeedback",
+        "Iso08PositionFeedback",
+        "Iso09PositionAttitudeFeedback",
+        "Iso10RollFeedback",
+        "Iso11PitchFeedback",
+        "Iso12RollFeedbackNegated",
+        "Iso13PitchFeedbackNegated",
+        "Iso14ConstantAttitudeInput",
+        "Iso15TableAttitudeInput",
+        "Iso16RealExpressionAngle",
+        "Iso17SampleHoldAngle",
+        "Iso18ProjectAttitudeEstimator",
+        "Iso19RollPitchEstimator",
+        "Iso20RollPitchYawEstimator",
+        "Iso21RateAlias",
+        "Iso22SensorDisplayReconnect",
+        "Iso23PositionSampleHold",
+        "Iso24DirectAttitudeFeedback",
+        "Iso25AttitudeSampleHold",
+        "Iso26ControllerOutput",
+        "Iso27ActuatorInput",
+        "Iso28ActuatorToWrenchBridge",
+        "Iso29ExternalFrameWrenchBoundary",
+        "Iso30ExternalBodyStateBoundary"
+      ],
+      "public_wrapper_count": 31
+    }
+  ]
+}

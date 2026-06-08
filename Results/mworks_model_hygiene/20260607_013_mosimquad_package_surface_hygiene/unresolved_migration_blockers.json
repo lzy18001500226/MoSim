@@ -1,0 +1,56 @@
+{
+  "schema": "mosim.mworks_model_hygiene.unresolved_migration_blockers.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-PACKAGE-SURFACE-HYGIENE-20260607-013",
+  "generated_at": "2026-06-08T00:03:57.075421+08:00",
+  "blockers": [
+    {
+      "category": "Missions",
+      "kind": "alias_only_no_local_package_order",
+      "reason": "package.mo exposes only an inherited compatibility/package surface; adding package.order would invent entries not declared in this package.",
+      "follow_up": "If PMO wants real leaf migration, create explicit wrapper classes or real subpackage directories in a separate migration batch and then run static plus live package-browser/check_model gates."
+    },
+    {
+      "category": "Robustness",
+      "kind": "alias_only_no_local_package_order",
+      "reason": "package.mo exposes only an inherited compatibility/package surface; adding package.order would invent entries not declared in this package.",
+      "follow_up": "If PMO wants real leaf migration, create explicit wrapper classes or real subpackage directories in a separate migration batch and then run static plus live package-browser/check_model gates."
+    },
+    {
+      "category": "Planning",
+      "kind": "alias_only_no_local_package_order",
+      "reason": "package.mo exposes only an inherited compatibility/package surface; adding package.order would invent entries not declared in this package.",
+      "follow_up": "If PMO wants real leaf migration, create explicit wrapper classes or real subpackage directories in a separate migration batch and then run static plus live package-browser/check_model gates."
+    },
+    {
+      "category": "Formation",
+      "kind": "alias_only_no_local_package_order",
+      "reason": "package.mo exposes only an inherited compatibility/package surface; adding package.order would invent entries not declared in this package.",
+      "follow_up": "If PMO wants real leaf migration, create explicit wrapper classes or real subpackage directories in a separate migration batch and then run static plus live package-browser/check_model gates."
+    },
+    {
+      "category": "Support",
+      "kind": "alias_only_no_local_package_order",
+      "reason": "package.mo exposes only an inherited compatibility/package surface; adding package.order would invent entries not declared in this package.",
+      "follow_up": "If PMO wants real leaf migration, create explicit wrapper classes or real subpackage directories in a separate migration batch and then run static plus live package-browser/check_model gates."
+    },
+    {
+      "category": "LegacyCompatibility",
+      "kind": "alias_only_no_local_package_order",
+      "reason": "package.mo exposes only an inherited compatibility/package surface; adding package.order would invent entries not declared in this package.",
+      "follow_up": "If PMO wants real leaf migration, create explicit wrapper classes or real subpackage directories in a separate migration batch and then run static plus live package-browser/check_model gates."
+    },
+    {
+      "category": "all",
+      "kind": "live_validation_not_performed",
+      "reason": "013 is static-only and forbids MWORKS/Sysplorer/Syslab GUI/MCP/check_model/SimulateModel/Smart Layout.",
+      "follow_up": "Future live package-browser/layout/check_model work must be separately dispatched and serialized with R1, referencing CoAgentOps patrol/session reuse state."
+    },
+    {
+      "category": "all",
+      "kind": "implementation_migration_not_performed",
+      "reason": "013 preserves alias/wrapper compatibility and does not move, delete, rename, or rewrite implementation files.",
+      "follow_up": "Real namespace migration requires scenario/script/doc reference updates plus compatibility aliases and targeted check_model/simulation gates."
+    }
+  ],
+  "blocking_for_013_completion": false
+}

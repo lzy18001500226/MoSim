@@ -1,0 +1,406 @@
+{
+  "schema": "mosim.mworks_model_hygiene.next_live_audit_queue.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-STATIC-CLASSIFICATION-LIVE-AUDIT-QUEUE-20260608-015",
+  "generated_at": "2026-06-08T02:14:53+08:00",
+  "source_inputs": [
+    "Results/mworks_model_hygiene/20260607_012_mosimquad_graphical_audit_queue_refinement/first_batch_live_audit_queue.json",
+    "Results/mworks_model_hygiene/20260608_014_mosimquad_alias_category_migration_plan/category_order_coverage.json",
+    "Current Models/MoSimQuadrotorModel package surfaces"
+  ],
+  "queue_count": 20,
+  "max_first_batch_count": 20,
+  "queue": [
+    {
+      "queue_index": 1,
+      "target": "MoSimQuadrotorModel",
+      "audit_batch": "package_browser_visibility",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "root package visible with 11 ordered categories",
+        "no unexpected flat implementation clutter under formal package root"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 2,
+      "target": "MoSimQuadrotorModel.Baseline",
+      "audit_batch": "package_browser_visibility",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "package browser category visible",
+        "order and child entries match static package.order"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 3,
+      "target": "MoSimQuadrotorModel.Dynamics",
+      "audit_batch": "package_browser_visibility",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "package browser category visible",
+        "order and child entries match static package.order"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 4,
+      "target": "MoSimQuadrotorModel.Missions",
+      "audit_batch": "package_browser_visibility",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "package browser category visible",
+        "order and child entries match static package.order"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 5,
+      "target": "MoSimQuadrotorModel.Controllers",
+      "audit_batch": "package_browser_visibility",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "package browser category visible",
+        "order and child entries match static package.order"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 6,
+      "target": "MoSimQuadrotorModel.Robustness",
+      "audit_batch": "package_browser_visibility",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "package browser category visible",
+        "order and child entries match static package.order"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 7,
+      "target": "MoSimQuadrotorModel.Planning",
+      "audit_batch": "package_browser_visibility",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "package browser category visible",
+        "order and child entries match static package.order"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 8,
+      "target": "MoSimQuadrotorModel.SceneTrace",
+      "audit_batch": "package_browser_visibility",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "package browser category visible",
+        "order and child entries match static package.order"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 9,
+      "target": "MoSimQuadrotorModel.System",
+      "audit_batch": "package_browser_visibility",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "package browser category visible",
+        "order and child entries match static package.order"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 10,
+      "target": "MoSimQuadrotorModel.Formation",
+      "audit_batch": "package_browser_visibility",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "package browser category visible",
+        "order and child entries match static package.order"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 11,
+      "target": "MoSimQuadrotorModel.Support",
+      "audit_batch": "package_browser_visibility",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "package browser category visible",
+        "order and child entries match static package.order"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 12,
+      "target": "MoSimQuadrotorModel.Controllers.AWFFPidBlocks",
+      "audit_batch": "controller_category_package_browser_and_topology_screen",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "controller category visible",
+        "representative child graphical/equation bridge distinction recorded"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 13,
+      "target": "MoSimQuadrotorModel.Controllers.InnovationControllers",
+      "audit_batch": "controller_category_package_browser_and_topology_screen",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "controller category visible",
+        "representative child graphical/equation bridge distinction recorded"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 14,
+      "target": "MoSimQuadrotorModel.Controllers.FaultAllocationControllers",
+      "audit_batch": "controller_category_package_browser_and_topology_screen",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "controller category visible",
+        "representative child graphical/equation bridge distinction recorded"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 15,
+      "target": "MoSimQuadrotorModel.Planning.NavigationDisplay",
+      "audit_batch": "planning_display_or_map_visual_screen",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "visible display/map model opens to meaningful diagram",
+        "blank/white/proxy surface recorded as issue if present"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 16,
+      "target": "MoSimQuadrotorModel.Planning.OpenBlocksColorMapReview",
+      "audit_batch": "planning_display_or_map_visual_screen",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "visible display/map model opens to meaningful diagram",
+        "blank/white/proxy surface recorded as issue if present"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 17,
+      "target": "MoSimQuadrotorModel.System.Architecture",
+      "audit_batch": "system_graphical_layout_screen",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "complete system graphical architecture opens",
+        "missing wires, unreadable routing, blank panels listed"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 18,
+      "target": "MoSimQuadrotorModel.SceneTrace.Isolation",
+      "audit_batch": "factory_trace_wiring_isolation_screen",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "trace isolation package and representative smoke diagrams visible",
+        "wiring boundary labels readable"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 19,
+      "target": "MoSimQuadrotorModel.Robustness.RotorLoss",
+      "audit_batch": "package_browser_visibility_then_r1_serialized_check_model_sample",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "nested robustness group visible",
+        "representative rotor-loss class selected for later check_model only by R1/R2 serialized live task"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    },
+    {
+      "queue_index": 20,
+      "target": "MoSimQuadrotorModel.LegacyCompatibility.LegacyExperimentPool",
+      "audit_batch": "package_browser_visibility",
+      "static_source_surface": "Models/MoSimQuadrotorModel",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_window_serialized_with_R1_R2",
+      "required_pre_live_gate": "latest CoAgentOps activation/window patrol or bounded current-turn check if live task packet permits it",
+      "expected_live_evidence_later": [
+        "package browser category visible",
+        "order and child entries match static package.order"
+      ],
+      "stop_conditions_later": [
+        "demo/login/authorization/gui-error/mixed/unknown MWORKS state",
+        "new window required",
+        "MCP session reuse violation",
+        "check_model/layout requires model edits outside live audit scope"
+      ],
+      "015_status": "queued_not_executed_static_only"
+    }
+  ],
+  "serialization_plan": {
+    "resource_lock": "one reusable MWORKS/Sysplorer session; no parallel R1/R2 live model operations",
+    "phase_order": [
+      "activation/window patrol reference",
+      "package-browser visibility screenshot/observation",
+      "representative graphical/layout/wiring screenshot/observation",
+      "R1/R2 serialized check_model smoke only in a separate scoped task"
+    ],
+    "r2_scope": "package browser, diagram/layout/wiring readability observations",
+    "r1_scope": "dynamics/control check_model/simulation behavior evidence where needed"
+  },
+  "claim_boundary": "Queue only; no live audit was executed in 015."
+}

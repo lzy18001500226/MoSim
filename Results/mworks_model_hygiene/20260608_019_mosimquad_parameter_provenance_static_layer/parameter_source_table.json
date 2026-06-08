@@ -1,0 +1,181 @@
+{
+  "schema": "mosim.mworks.parameter_provenance.v1",
+  "task_id": "PMO-MWORKS-R1-MOSIMQUAD-PARAMETER-PROVENANCE-STATIC-LAYER-20260608-019",
+  "modelica_record": "MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance",
+  "source_file": "Models/MoSimQuadrotorModel/Parameters/package.mo",
+  "provenance_boundary": {
+    "accepted_geometry": "Rotor centers are user-reviewed DAE/Blender screw-pair assembly geometry in MWORKS Dronefixed1..4 order.",
+    "non_geometry_seed_status": "Mass, inertia, Ct/motor constants, Cm/yaw ratio, lag, drag, damping, and gyro values are source-labeled seeds, not identified Sunray150 truth.",
+    "do_not_promote": "RflySim/Gazebo/YunZong/SDF values remain structure or seed references until PX4 ULog, bench, weighing, or validated system-identification evidence replaces them."
+  },
+  "geometry_parameters": [
+    {
+      "name": "rotor_center_mworks_dronefixed",
+      "unit": "m",
+      "value": [
+        [
+          0.053745,
+          -0.05374,
+          -0.014052
+        ],
+        [
+          0.053746,
+          0.053759,
+          -0.014052
+        ],
+        [
+          -0.053761,
+          0.05376,
+          -0.014052
+        ],
+        [
+          -0.053761,
+          -0.053739,
+          -0.014052
+        ]
+      ],
+      "source_label": "user-reviewed DAE screw-pair fit",
+      "source_artifact": "Results/unreal_scene_mapping/sunray150_dae_assembly_parameters_20260604.json",
+      "claim_boundary": "geometry/assembly only"
+    }
+  ],
+  "non_geometry_parameters": [
+    {
+      "name": "mass_kg",
+      "unit": "kg",
+      "value": 1.0,
+      "source_label": "SDF_migration",
+      "claim_boundary": "not measured Sunray150 takeoff mass"
+    },
+    {
+      "name": "body_inertia_diagonal_kg_m2",
+      "unit": "kg.m2",
+      "value": [
+        0.0085,
+        0.0085,
+        0.012
+      ],
+      "source_label": "SDF_migration",
+      "claim_boundary": "not identified inertia; payload and battery sensitive"
+    },
+    {
+      "name": "sdf_motor_constant",
+      "unit": "N/(rad/s)^2",
+      "value": 0.00000854858,
+      "source_label": "Sunray/Gazebo SDF motorConstant seed",
+      "claim_boundary": "not identified thrust curve"
+    },
+    {
+      "name": "rotor_velocity_slowdown_sim",
+      "unit": "dimensionless",
+      "value": 10,
+      "source_label": "Sunray/Gazebo SDF visual slowdown seed",
+      "claim_boundary": "visual simulation scaling only"
+    },
+    {
+      "name": "mworks_lift_coefficient",
+      "unit": "N/(rad/s)^2",
+      "value": 0.000854858,
+      "source_label": "SDF_migration",
+      "claim_boundary": "sdf_motor_constant scaled by rotor_velocity_slowdown_sim^2 for MWORKS visual rotor speed; not ULog identified"
+    },
+    {
+      "name": "yaw_moment_ratio_seed",
+      "unit": "dimensionless",
+      "value": 0.06,
+      "source_label": "Sunray/Gazebo SDF momentConstant ratio seed",
+      "claim_boundary": "not identified yaw torque coefficient"
+    },
+    {
+      "name": "motor_time_constant_up_s",
+      "unit": "s",
+      "value": 0.0125,
+      "source_label": "Sunray/Gazebo SDF timeConstantUp seed",
+      "claim_boundary": "not ESC/RPM bench identified"
+    },
+    {
+      "name": "motor_time_constant_down_s",
+      "unit": "s",
+      "value": 0.025,
+      "source_label": "Sunray/Gazebo SDF timeConstantDown seed",
+      "claim_boundary": "not ESC/RPM bench identified"
+    },
+    {
+      "name": "spin_command_sign",
+      "unit": "dimensionless",
+      "value": [
+        1,
+        -1,
+        1,
+        -1
+      ],
+      "source_label": "current MWORKS signed visual rotor convention",
+      "claim_boundary": "not PX4 allocation proof"
+    },
+    {
+      "name": "yaw_direction",
+      "unit": "dimensionless",
+      "value": [
+        1,
+        -1,
+        1,
+        -1
+      ],
+      "source_label": "Sunray SDF turningDirection mapped to MWORKS Dronefixed1..4 order",
+      "claim_boundary": "sign convention remains experimental"
+    },
+    {
+      "name": "normalized_command_range",
+      "unit": "dimensionless",
+      "value": [
+        0.0,
+        1.0
+      ],
+      "source_label": "interface_seed",
+      "claim_boundary": "not measured PWM/throttle/ESC command evidence"
+    },
+    {
+      "name": "hover_normalized_command",
+      "unit": "dimensionless",
+      "value": 0.5,
+      "source_label": "interface_seed placeholder",
+      "claim_boundary": "not measured hover command"
+    },
+    {
+      "name": "rotor_polar_inertia_seed",
+      "unit": "kg.m2",
+      "value": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "source_label": "zero_seed",
+      "claim_boundary": "optional rotor inertia placeholder; not identified"
+    },
+    {
+      "name": "body_drag_coefficient_seed",
+      "unit": "N.s/m",
+      "value": [
+        0,
+        0,
+        0
+      ],
+      "source_label": "zero_seed",
+      "claim_boundary": "translational drag placeholder; not identified"
+    },
+    {
+      "name": "angular_damping_coefficient_seed",
+      "unit": "N.m.s/rad",
+      "value": [
+        0,
+        0,
+        0
+      ],
+      "source_label": "zero_seed",
+      "claim_boundary": "angular damping placeholder; not identified"
+    }
+  ],
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false
+}

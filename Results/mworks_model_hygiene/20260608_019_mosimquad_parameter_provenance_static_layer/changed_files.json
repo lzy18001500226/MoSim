@@ -1,0 +1,40 @@
+{
+  "schema": "mosim.changed_files.v1",
+  "task_id": "PMO-MWORKS-R1-MOSIMQUAD-PARAMETER-PROVENANCE-STATIC-LAYER-20260608-019",
+  "changed_files": [
+    {
+      "path": "Models/MoSimQuadrotorModel/Parameters/package.mo",
+      "change_type": "added",
+      "summary": "Adds record-only Sunray150ParameterProvenance source/provenance table."
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/Parameters/package.order",
+      "change_type": "added",
+      "summary": "Exposes Sunray150ParameterProvenance within the new Parameters package."
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/package.order",
+      "change_type": "modified",
+      "summary": "Adds Parameters to the formal MoSimQuadrotorModel package order."
+    }
+  ],
+  "unchanged_behavioral_sources": [
+    "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+    "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+    "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorCommandMapper.mo",
+    "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorMappedWrapperSurface.mo",
+    "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150OptionalDampingGyroLayer.mo"
+  ],
+  "forbidden_scopes_not_touched": [
+    "References/MWORKS/QuadrotorModel",
+    "References",
+    "UE",
+    "ROS2",
+    "FAST-LIO",
+    "planner",
+    "controller runtime",
+    "Sunray visual assets"
+  ],
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false
+}

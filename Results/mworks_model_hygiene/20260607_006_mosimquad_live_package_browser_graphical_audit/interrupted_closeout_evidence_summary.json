@@ -1,0 +1,82 @@
+{
+  "schema": "mosim.mworks_r2.interrupted_closeout_evidence_summary.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-LIVE-PACKAGE-BROWSER-GRAPHICAL-AUDIT-20260607-006",
+  "created_at": "2026-06-07T18:20:38+08:00",
+  "status": "blocked",
+  "primary_blocker_kind": "live_surface_session_reuse_blocked",
+  "secondary_blocker_kind": "license_or_login_visible_unknown_current_turn",
+  "current_turn_closeout_gate": {
+    "sentinel_path": "Results/mworks_gui_incidents/PMO-MWORKS-R2-MOSIMQUAD-LIVE-PACKAGE-BROWSER-GRAPHICAL-AUDIT-20260607-006/closeout_current_turn_gui_sentinel_before.json",
+    "sentinel_status": "incident_detected",
+    "sentinel_error_kind": "license_or_login",
+    "license_state_hint": "unknown_blocked",
+    "all_window_license_gate": "blocked",
+    "target_window_count": 13,
+    "education_window_count": 2,
+    "demo_window_count": 0,
+    "login_activation_window_count": 0,
+    "authorization_window_count": 0,
+    "visible_unknown_mworks_window_count": 1,
+    "hidden_unknown_mworks_window_count": 10,
+    "visible_unknown_title": "51748_0x2020FAE_MWORKS.png - MoSim (工作区) - Visual Studio Code",
+    "background_capture_manifest": "Results/mworks_background_capture/PMO-MWORKS-R2-MOSIMQUAD-LIVE-PACKAGE-BROWSER-GRAPHICAL-AUDIT-20260607-006/closeout_current_turn/capture_manifest.json",
+    "background_capture_count": 13,
+    "background_visible_titles": [
+      "51748_0x2020FAE_MWORKS.png - MoSim (工作区) - Visual Studio Code",
+      "QuadrotorModel - Sysplorer [教育版]"
+    ],
+    "classification": "Current closeout turn is blocked by sentinel incident_detected/license_or_login because an MWORKS-named screenshot viewer window is visible and classified as visible unknown; no further live MWORKS/MCP/GUI work is safe in this turn."
+  },
+  "interrupted_turn_preflight": {
+    "sentinel_path": "Results/mworks_gui_incidents/PMO-MWORKS-R2-MOSIMQUAD-LIVE-PACKAGE-BROWSER-GRAPHICAL-AUDIT-20260607-006/gui_sentinel_before.json",
+    "sentinel_status": "clean",
+    "license_state_hint": "education_window_observed_activation_unverified",
+    "all_window_license_gate": "pass",
+    "target_window_count": 12,
+    "education_window_count": 2,
+    "visible_unknown_mworks_window_count": 0,
+    "background_capture_manifest": "Results/mworks_background_capture/PMO-MWORKS-R2-MOSIMQUAD-LIVE-PACKAGE-BROWSER-GRAPHICAL-AUDIT-20260607-006/capture_manifest.json",
+    "background_capture_count": 12,
+    "background_visible_titles": [
+      "QuadrotorModel - Sysplorer [教育版]",
+      "MoSimQuadrotorModel - Sysplorer [教育版]"
+    ],
+    "representative_package_browser_screenshot": "Results/mworks_background_capture/PMO-MWORKS-R2-MOSIMQUAD-LIVE-PACKAGE-BROWSER-GRAPHICAL-AUDIT-20260607-006/88520_0x3370CAC_MoSimQuadrotorModel - Sysplorer _教育版_.png",
+    "representative_observation": "Screenshot shows MoSimQuadrotorModel - Sysplorer [教育版] with QuadrotorModel, QuadrotorExperiments, and MoSimQuadrotorModel tabs open. The left user-model list still exposes many legacy flat FactoryTrace/Planning/Sunray entries, the main graphical area is blank, and the output pane contains prior simulation text. This is partial package/browser evidence only, not graphical/layout acceptance."
+  },
+  "interrupted_mcp_evidence": {
+    "durable_mcp_result_file_found": false,
+    "tool_state_summary_not_replayed": "The interrupted turn tool state reported session_manager(action=probe) ok=true with existing ports only, then session_manager(action=health) ok=true with sysplorer_startup.attempted=true, sysplorer_startup.started=true, and dedicated_sysplorer_port=49155. This closeout did not replay or extend any MCP call.",
+    "durable_corollary_evidence": "The post-MCP sentinel/capture evidence below shows the window count increased and a new blank Sysplorer [教育版] start page appeared, which is sufficient to block the live package/browser audit under the reuse-existing-session boundary."
+  },
+  "post_mcp_blocker_evidence": {
+    "sentinel_path": "Results/mworks_gui_incidents/PMO-MWORKS-R2-MOSIMQUAD-LIVE-PACKAGE-BROWSER-GRAPHICAL-AUDIT-20260607-006/gui_sentinel_after_mcp_blocker.json",
+    "sentinel_status": "clean",
+    "license_state_hint": "education_window_observed_activation_unverified",
+    "target_window_count": 19,
+    "education_window_count": 3,
+    "visible_unknown_mworks_window_count": 0,
+    "background_capture_manifest": "Results/mworks_background_capture/PMO-MWORKS-R2-MOSIMQUAD-LIVE-PACKAGE-BROWSER-GRAPHICAL-AUDIT-20260607-006/post_mcp_blocker/capture_manifest.json",
+    "background_capture_count": 19,
+    "background_visible_titles": [
+      "Sysplorer [教育版]",
+      "QuadrotorModel - Sysplorer [教育版]",
+      "MoSimQuadrotorModel - Sysplorer [教育版]"
+    ],
+    "new_blank_sysplorer_screenshot": "Results/mworks_background_capture/PMO-MWORKS-R2-MOSIMQUAD-LIVE-PACKAGE-BROWSER-GRAPHICAL-AUDIT-20260607-006/post_mcp_blocker/46656_0x3A17E8_Sysplorer _教育版_.png",
+    "new_blank_sysplorer_observation": "Screenshot shows a standalone Sysplorer [教育版] start page with recent file list and no loaded MoSimQuadrotorModel package tab, consistent with a new Sysplorer window/session surface appearing after the interrupted MCP health action."
+  },
+  "closeout_actions": {
+    "mcp_retried_in_closeout": false,
+    "mworks_gui_clicked_or_edited": false,
+    "mworks_window_opened_closed_or_restarted_in_closeout": false,
+    "model_files_edited": false,
+    "git_actions_run": false,
+    "license_api_before": "not_executed_due_closeout_boundary_and_prior_session_reuse_blocker"
+  },
+  "claim_boundary": [
+    "This closeout records a live package/browser graphical-audit blocker only.",
+    "The partial package/browser screenshot is not graphical/layout acceptance.",
+    "No check_model, SimulateModel, Smart Layout, controller performance, parameter identification, planner_ready, UE/ROS2 runtime ack, mission success, closed_loop, or final graphical acceptance is claimed."
+  ]
+}

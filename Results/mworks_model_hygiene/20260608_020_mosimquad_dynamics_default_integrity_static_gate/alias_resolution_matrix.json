@@ -1,0 +1,138 @@
+{
+  "schema": "mosim.mworks.static_alias_resolution_matrix.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-DEFAULT-INTEGRITY-STATIC-GATE-20260608-020",
+  "status": "passed_static",
+  "generated_at": "2026-06-08T08:52:11+08:00",
+  "scope": {
+    "formal_package": "MoSimQuadrotorModel.Dynamics",
+    "compatibility_package": "QuadrotorExperiments.DynamicsUpgrade",
+    "static_only": true,
+    "live_mworks_touched": false,
+    "mworks_window_evidence_touched": false
+  },
+  "source_anchors": {
+    "formal_package_mo": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+    "formal_package_order": "Models/MoSimQuadrotorModel/Dynamics/package.order",
+    "compat_package_mo": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+    "compat_package_order": "Models/QuadrotorExperiments/DynamicsUpgrade/package.order",
+    "implementation_dir": "Models/QuadrotorExperiments/DynamicsUpgrade/"
+  },
+  "entries": [
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+      "compat_extends": "QuadrotorExperiments.DynamicsUpgrade.Sunray150RflyStyleRotorDynamics",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+      "package_order_present": true,
+      "implementation_file_present": true,
+      "static_resolution": "resolved"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
+      "compat_extends": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeHoverSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeHoverSmoke.mo",
+      "package_order_present": true,
+      "implementation_file_present": true,
+      "static_resolution": "resolved"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
+      "compat_extends": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeYawStepSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeYawStepSmoke.mo",
+      "package_order_present": true,
+      "implementation_file_present": true,
+      "static_resolution": "resolved"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+      "compat_extends": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperSurface",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
+      "package_order_present": true,
+      "implementation_file_present": true,
+      "static_resolution": "resolved"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.ActuatorCommandMapper",
+      "compat_extends": "QuadrotorExperiments.DynamicsUpgrade.Sunray150ActuatorCommandMapper",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorCommandMapper.mo",
+      "package_order_present": true,
+      "implementation_file_present": true,
+      "static_resolution": "resolved"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.ActuatorMappedWrapperSurface",
+      "compat_extends": "QuadrotorExperiments.DynamicsUpgrade.Sunray150ActuatorMappedWrapperSurface",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorMappedWrapperSurface.mo",
+      "package_order_present": true,
+      "implementation_file_present": true,
+      "static_resolution": "resolved"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.OptionalDampingGyroLayer",
+      "compat_extends": "QuadrotorExperiments.DynamicsUpgrade.Sunray150OptionalDampingGyroLayer",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150OptionalDampingGyroLayer.mo",
+      "package_order_present": true,
+      "implementation_file_present": true,
+      "static_resolution": "resolved"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.WrapperHoverSmoke",
+      "compat_extends": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperHoverSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperHoverSmoke.mo",
+      "package_order_present": true,
+      "implementation_file_present": true,
+      "static_resolution": "resolved"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.WrapperYawStepSmoke",
+      "compat_extends": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperYawStepSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperYawStepSmoke.mo",
+      "package_order_present": true,
+      "implementation_file_present": true,
+      "static_resolution": "resolved"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter",
+      "compat_extends": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchFrameAdapter",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchFrameAdapter.mo",
+      "package_order_present": true,
+      "implementation_file_present": true,
+      "static_resolution": "resolved"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchHoverSmoke",
+      "compat_extends": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchHoverSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchHoverSmoke.mo",
+      "package_order_present": true,
+      "implementation_file_present": true,
+      "static_resolution": "resolved"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchYawStepSmoke",
+      "compat_extends": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchYawStepSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchYawStepSmoke.mo",
+      "package_order_present": true,
+      "implementation_file_present": true,
+      "static_resolution": "resolved"
+    }
+  ],
+  "summary": {
+    "formal_entry_count": 12,
+    "resolved_entry_count": 12,
+    "unresolved_entry_count": 0,
+    "source_fix_required_by_020": false,
+    "live_check_required_for_modelica_semantics": true,
+    "live_check_boundary": "020 proves only source/package/order static resolution. Modelica equation balance, package browser acceptance, check_model, and SimulateModel remain future live validation."
+  }
+}

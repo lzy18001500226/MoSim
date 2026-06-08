@@ -1,0 +1,44 @@
+{
+  "schema": "mosim.mworks_model_hygiene.unresolved_classification_blockers.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-STATIC-CLASSIFICATION-LIVE-AUDIT-QUEUE-20260608-015",
+  "generated_at": "2026-06-08T02:14:53+08:00",
+  "blocking_for_015_completion": false,
+  "blockers": [
+    {
+      "kind": "live_package_browser_not_run",
+      "scope": "all formal MoSimQuadrotorModel categories",
+      "reason": "015 is static-only and forbids MWORKS/Sysplorer/Syslab GUI, screenshots, MCP, check_model, simulation, and Smart Layout.",
+      "follow_up": "Dispatch a separate live package/browser + graphical audit task using current patrol/session rules."
+    },
+    {
+      "kind": "implementation_migration_not_performed",
+      "scope": "QuadrotorExperiments -> MoSimQuadrotorModel",
+      "reason": "Formal package surfaces are wrappers/aliases; implementation files remain in legacy pools by design.",
+      "follow_up": "For each migration batch, explicitly permit file moves/renames and update scenario YAML/scripts/docs plus compatibility aliases and live check_model evidence."
+    },
+    {
+      "kind": "official_baseline_read_only",
+      "scope": "References/MWORKS/QuadrotorModel",
+      "reason": "Official baseline must remain regression dependency and was not edited.",
+      "follow_up": "Use MoSimQuadrotorModel.Baseline adapters for comparison; only change official reference with separate explicit approval."
+    },
+    {
+      "kind": "controller_backup_dirs_preserved",
+      "scope": "Models/QuadrotorControllerBlocks/*_backup",
+      "reason": "015 forbids archive/delete/rename; backups remain out of public package.order.",
+      "follow_up": "Later hygiene task may hash and archive/delete backup dirs only if explicitly authorized."
+    },
+    {
+      "kind": "blank_or_white_gui_surfaces_require_live_review",
+      "scope": "user-reported white GUI surfaces and graphical layout concerns",
+      "reason": "Static files cannot prove what the live Qt/Sysplorer package browser or diagram canvas renders.",
+      "follow_up": "Queue foreground/maximized live review with screenshot observations when PMO/CoAgentOps authorizes GUI audit."
+    },
+    {
+      "kind": "nested_package_order_real_subdir_not_created",
+      "scope": "MoSimQuadrotorModel.Robustness.PIDBaselines and RotorLoss",
+      "reason": "Nested packages are embedded declarations inside Robustness/package.mo; no real subdirectories were created in 014/015.",
+      "follow_up": "If package browser needs true subfolder package.order, create a later package-surface task permitting subdirectories."
+    }
+  ]
+}

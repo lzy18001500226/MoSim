@@ -1,0 +1,33 @@
+{
+  "schema": "mosim.mworks_model_hygiene.queue_refinement_blockers.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-GRAPHICAL-AUDIT-QUEUE-REFINEMENT-20260607-012",
+  "generated_at": "2026-06-07T23:19:46+08:00",
+  "blocking_missing_source_count": 0,
+  "static_fix_before_live_count": 0,
+  "live_prerequisite_blockers": [
+    {
+      "blocker_kind": "mcp_session_reuse_violation_persistent",
+      "source_packet": "Results/agent_packets/blockers/PMO-COAGENTOPS-MWORKS-REUSABLE-SESSION-REBIND-20260607-001.json",
+      "effect_on_012": "Does not block static queue refinement; blocks executing the future live audit until attach-only/no-start reuse route is proven.",
+      "required_resolution_before_live": "PMO/CoAgentOps validates a route that binds to the existing Sysplorer window without starting a new process/port."
+    },
+    {
+      "blocker_kind": "r1_r2_single_resource_serialization",
+      "source_packet": "Docs/Workflows/agent_task_ledger.md and 011 return packet",
+      "effect_on_012": "Does not block static queue refinement; live audit must be scheduled when R1 is not using MWORKS for Dynamics/control checks.",
+      "required_resolution_before_live": "PMO grants the live MWORKS resource window to R2 and records R1 idle/paused state."
+    }
+  ],
+  "not_blockers_for_012_static": [
+    "No 011 blocking missing-source candidate remains after Modelica.Icons.Package and old nonformal Dynamics names were filtered.",
+    "No MWORKS activation screenshot is required for this static-only queue refinement because live_mworks_touched=false and mworks_window_evidence_touched=false.",
+    "No package.order/source edit is required or allowed in 012."
+  ],
+  "stop_conditions_for_future_live_task": [
+    "Existing-session attach route cannot be proven without startup.",
+    "Any relevant MWORKS/Sysplorer/Syslab window is demo/login/authorization/gui-error/mixed/unknown.",
+    "Package/browser tree cannot expose the selected formal candidate.",
+    "Diagram opens as blank/empty/white proxy surface or unreadable layout requiring foreground PMO/user review.",
+    "A check_model failure appears before visual acceptance; preserve evidence and return blocker/issue list instead of editing in the audit task."
+  ]
+}

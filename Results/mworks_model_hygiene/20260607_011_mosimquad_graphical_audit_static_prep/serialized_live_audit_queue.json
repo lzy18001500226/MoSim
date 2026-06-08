@@ -1,0 +1,3265 @@
+{
+  "schema": "mosim.mworks_model_hygiene.serialized_live_audit_queue.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-GRAPHICAL-AUDIT-STATIC-PREP-20260607-011",
+  "generated_at": "2026-06-07T21:25:08+08:00",
+  "queue_policy": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict_no_new_windows_no_smart_layout_writeback_without_separate_task",
+  "queue_count": 126,
+  "queue": [
+    {
+      "sequence": 1,
+      "queue_group": "package_browser_root",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers",
+      "source_fqn": "MoSimQuadrotorModel.Controllers",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 2,
+      "queue_group": "package_browser_root",
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics",
+      "source_fqn": "MoSimQuadrotorModel.Dynamics",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "R1_dynamics_live_resource_serialization"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 3,
+      "queue_group": "package_browser_root",
+      "formal_candidate": "MoSimQuadrotorModel.Formation",
+      "source_fqn": "MoSimQuadrotorModel.Formation",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 4,
+      "queue_group": "package_browser_root",
+      "formal_candidate": "MoSimQuadrotorModel.Missions",
+      "source_fqn": "MoSimQuadrotorModel.Missions",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 5,
+      "queue_group": "package_browser_root",
+      "formal_candidate": "MoSimQuadrotorModel.Planning",
+      "source_fqn": "MoSimQuadrotorModel.Planning",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 6,
+      "queue_group": "package_browser_root",
+      "formal_candidate": "MoSimQuadrotorModel.Robustness",
+      "source_fqn": "MoSimQuadrotorModel.Robustness",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 7,
+      "queue_group": "package_browser_root",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace",
+      "source_fqn": "MoSimQuadrotorModel.SceneTrace",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 8,
+      "queue_group": "package_browser_root",
+      "formal_candidate": "MoSimQuadrotorModel.Support",
+      "source_fqn": "MoSimQuadrotorModel.Support",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 9,
+      "queue_group": "package_browser_root",
+      "formal_candidate": "MoSimQuadrotorModel.System",
+      "source_fqn": "MoSimQuadrotorModel.System",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 10,
+      "queue_group": "package_browser_root",
+      "formal_candidate": "MoSimQuadrotorModel.Baseline",
+      "source_fqn": "MoSimQuadrotorModel.Baseline",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 11,
+      "queue_group": "package_browser_root",
+      "formal_candidate": "MoSimQuadrotorModel.LegacyCompatibility",
+      "source_fqn": "MoSimQuadrotorModel.LegacyCompatibility",
+      "classification": "low_priority",
+      "priority": "P3",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 12,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Baseline.OfficialExample1",
+      "source_fqn": "QuadrotorModel.Examples.Example1",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 13,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Baseline.OfficialExample2",
+      "source_fqn": "QuadrotorModel.Examples.Example2",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 14,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Baseline.OfficialExample3",
+      "source_fqn": "QuadrotorModel.Examples.Example3",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 15,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Baseline.OfficialQuadChassis",
+      "source_fqn": "QuadrotorModel.Mechanics.QuadChassis",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 16,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.AWFFPidBlocks",
+      "source_fqn": "QuadrotorControllerBlocks.AWFFPidBlocks",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 17,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.DemosAndSIL",
+      "source_fqn": "QuadrotorControllerBlocks.DemosAndSIL",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 18,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.FaultAllocationControllers",
+      "source_fqn": "QuadrotorControllerBlocks.FaultAllocationControllers",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 19,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.InnovationControllers",
+      "source_fqn": "QuadrotorControllerBlocks.InnovationControllers",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 20,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.LinearMPCControllers",
+      "source_fqn": "QuadrotorControllerBlocks.LinearMPCControllers",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 21,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.SafetyControllers",
+      "source_fqn": "QuadrotorControllerBlocks.SafetyControllers",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 22,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 23,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.Sunray150DynamicsUpgradeHoverSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeHoverSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 24,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.Sunray150DynamicsUpgradeYawStepSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeYawStepSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 25,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.Sunray150DynamicsWrapperHoverSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperHoverSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 26,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.Sunray150DynamicsWrapperYawStepSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperYawStepSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 27,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.Sunray150PhysicalWrenchHoverSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchHoverSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 28,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.Sunray150PhysicalWrenchYawStepSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchYawStepSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 29,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 30,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Formation.FormationTriangleFigure8LinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.FormationScenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 31,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example1AWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example1AWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 32,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example1HelicalFigure8TrailSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example1HelicalFigure8TrailSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 33,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example1INDISysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example1INDISysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 34,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example1L1SysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example1L1SysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 35,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example1LinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example1LinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 36,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example1PlanarFigure8TrailSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example1PlanarFigure8TrailSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 37,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example2AWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example2AWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 38,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example2HelixTunedAWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example2HelixTunedAWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 39,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example2HelixTunedINDISysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example2HelixTunedINDISysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 40,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example2INDISysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example2INDISysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 41,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example2LinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example2LinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 42,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example3AWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example3AWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 43,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example3INDISysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example3INDISysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 44,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example3L1SysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example3L1SysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 45,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example3LinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example3LinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 46,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Planning.PlannedQuinticReference",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.PlannedQuinticReference",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 47,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Planning.PlanningNavigationDisplay",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.PlanningNavigationDisplay",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 48,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Planning.Sunray150PlanningCorridorGateAWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.Sunray150PlanningCorridorGateAWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 49,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Planning.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 50,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Planning.Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 51,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Planning.Sunray150PlanningOpenBlocksColorMapReview",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.Sunray150PlanningOpenBlocksColorMapReview",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 52,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Planning.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 53,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1Mass20AWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1Mass20AWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 54,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1Mass20L1SysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1Mass20L1SysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 55,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1Mass20LinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1Mass20LinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 56,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1QPNMPCSafetyReturnLandSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1QPNMPCSafetyReturnLandSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 57,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1QPNMPCSafetySysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1QPNMPCSafetySysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 58,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1WindGustAWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1WindGustAWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 59,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1WindGustL1SysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1WindGustL1SysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 60,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1WindGustLinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1WindGustLinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 61,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.AcceptedScenes",
+      "source_fqn": "QuadrotorExperiments.SceneTraceScenarios",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 62,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.AcceptedScenes.Sunray150UEDerelictLinearMPCSysblockSmoke",
+      "source_fqn": "QuadrotorExperiments.SceneTraceScenarios.Sunray150UEDerelictLinearMPCSysblockSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 63,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.AcceptedScenes.Sunray150UEFactoryLinearMPCSysblockSmoke",
+      "source_fqn": "QuadrotorExperiments.SceneTraceScenarios.Sunray150UEFactoryLinearMPCSysblockSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 64,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.AcceptedScenes.Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke",
+      "source_fqn": "QuadrotorExperiments.SceneTraceScenarios.Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 65,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 66,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryLiteTraceSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryLiteTraceSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 67,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso01FullDisplaySmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso01FullDisplaySmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 68,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso02ControllerOnlySmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso02ControllerOnlySmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 69,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso03PlantHoverStackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso03PlantHoverStackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 70,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso04ControllerPlantWiringSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso04ControllerPlantWiringSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 71,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso05CleanHoverSumSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso05CleanHoverSumSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 72,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso06CleanControllerPlantWiringSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso06CleanControllerPlantWiringSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 73,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso07CleanControllerOpenFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso07CleanControllerOpenFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 74,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso08PositionFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso08PositionFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 75,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso09PositionAttitudeFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso09PositionAttitudeFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 76,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso10RollFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso10RollFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 77,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso11PitchFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso11PitchFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 78,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso12RollFeedbackNegatedSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso12RollFeedbackNegatedSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 79,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso13PitchFeedbackNegatedSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso13PitchFeedbackNegatedSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 80,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso14ConstantAttitudeInputSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso14ConstantAttitudeInputSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 81,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso15TableAttitudeInputSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso15TableAttitudeInputSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 82,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso16RealExpressionAngleSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso16RealExpressionAngleSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 83,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso17SampleHoldAngleSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso17SampleHoldAngleSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 84,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso18ProjectAttitudeEstimatorSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso18ProjectAttitudeEstimatorSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 85,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso19RollPitchEstimatorSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso19RollPitchEstimatorSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 86,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso20RollPitchYawEstimatorSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso20RollPitchYawEstimatorSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 87,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso21ControllerRateAliasSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso21ControllerRateAliasSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 88,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 89,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso23PositionSampleHoldBridgeSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso23PositionSampleHoldBridgeSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 90,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso24DirectAttitudeFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso24DirectAttitudeFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 91,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 92,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso26ControllerOutputAliasSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso26ControllerOutputAliasSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 93,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso27ActuatorInputAliasSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso27ActuatorInputAliasSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 94,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 95,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 96,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 97,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Support.EchoMcpStateSmoke",
+      "source_fqn": "QuadrotorExperiments.SupportModels.EchoMcpStateSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 98,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Support.TraceInlineReference",
+      "source_fqn": "QuadrotorExperiments.SupportModels.TraceInlineReference",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 99,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Support.TraceLookupStandaloneSmoke",
+      "source_fqn": "QuadrotorExperiments.SupportModels.TraceLookupStandaloneSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 100,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Support.TraceTableReference",
+      "source_fqn": "QuadrotorExperiments.SupportModels.TraceTableReference",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 101,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 102,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemBatteryLowSysblock",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture.Sunray150CompleteSystemBatteryLowSysblock",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 103,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGPSDropoutSysblock",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture.Sunray150CompleteSystemGPSDropoutSysblock",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 104,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGeofenceBreachSysblock",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture.Sunray150CompleteSystemGeofenceBreachSysblock",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 105,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGraphical_Sysblock",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture.Sunray150CompleteSystemGraphical_Sysblock",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 106,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemMissionFailureSysblock",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture.Sunray150CompleteSystemMissionFailureSysblock",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 107,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemOffboardLossSysblock",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture.Sunray150CompleteSystemOffboardLossSysblock",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 108,
+      "queue_group": "graphical_high_priority",
+      "formal_candidate": "MoSimQuadrotorModel.System.Modules",
+      "source_fqn": "QuadrotorExperiments.SystemModules",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 109,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+      "source_fqn": "QuadrotorExperiments.Sunray150PhysicalWrenchFrameAdapter",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "R1_dynamics_live_resource_serialization"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 110,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "R1_dynamics_live_resource_serialization"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 111,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "R1_dynamics_live_resource_serialization"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 112,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.AntiWindupFeedforwardController",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.AntiWindupFeedforwardController",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 113,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example1AntiWindupFeedforwardPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example1AntiWindupFeedforwardPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 114,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example1EnhancedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example1EnhancedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 115,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example1ImprovedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example1ImprovedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 116,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example2AntiWindupFeedforwardPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example2AntiWindupFeedforwardPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 117,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example2EnhancedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example2EnhancedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 118,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example2HelixTunedAntiWindupFeedforwardPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example2HelixTunedAntiWindupFeedforwardPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 119,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example2HelixTunedEnhancedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example2HelixTunedEnhancedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 120,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example2ImprovedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example2ImprovedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 121,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example3AntiWindupFeedforwardPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example3AntiWindupFeedforwardPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 122,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example3EnhancedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example3EnhancedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 123,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example3ImprovedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example3ImprovedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 124,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1Mass20AntiWindupFeedforwardPID",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1Mass20AntiWindupFeedforwardPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 125,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1WindGustAntiWindupFeedforwardPID",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1WindGustAntiWindupFeedforwardPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    },
+    {
+      "sequence": 126,
+      "queue_group": "check_model_or_package_visibility_lower_priority",
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.CompatibilityAndLegacy",
+      "source_fqn": "QuadrotorControllerBlocks.CompatibilityAndLegacy",
+      "classification": "low_priority",
+      "priority": "P3",
+      "action": "serialized_live_audit",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_no_parallel_R1_conflict",
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ],
+      "do_not_claim": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop"
+      ]
+    }
+  ]
+}

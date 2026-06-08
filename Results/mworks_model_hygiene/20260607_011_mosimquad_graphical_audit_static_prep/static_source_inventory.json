@@ -1,0 +1,256 @@
+{
+  "schema": "mosim.mworks_model_hygiene.static_source_inventory.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-GRAPHICAL-AUDIT-STATIC-PREP-20260607-011",
+  "generated_at": "2026-06-07T21:25:08+08:00",
+  "root_package": "MoSimQuadrotorModel",
+  "root_package_mo": "Models/MoSimQuadrotorModel/package.mo",
+  "root_package_order": {
+    "entries": [
+      "Baseline",
+      "Dynamics",
+      "Missions",
+      "Controllers",
+      "Robustness",
+      "Planning",
+      "SceneTrace",
+      "System",
+      "Formation",
+      "Support",
+      "LegacyCompatibility"
+    ],
+    "count": 11,
+    "duplicates": [],
+    "trailing_newline": true
+  },
+  "formal_category_count": 11,
+  "formal_categories": [
+    "Baseline",
+    "Dynamics",
+    "Missions",
+    "Controllers",
+    "Robustness",
+    "Planning",
+    "SceneTrace",
+    "System",
+    "Formation",
+    "Support",
+    "LegacyCompatibility"
+  ],
+  "package_summaries": {
+    "Baseline": {
+      "package_fqn": "MoSimQuadrotorModel.Baseline",
+      "package_mo": "Models/MoSimQuadrotorModel/Baseline/package.mo",
+      "package_mo_exists": true,
+      "package_order": null,
+      "package_order_exists": false,
+      "embedded_child_count": 4,
+      "embedded_children": [
+        "MoSimQuadrotorModel.Baseline.OfficialExample1",
+        "MoSimQuadrotorModel.Baseline.OfficialExample2",
+        "MoSimQuadrotorModel.Baseline.OfficialExample3",
+        "MoSimQuadrotorModel.Baseline.OfficialQuadChassis"
+      ],
+      "package_extends_targets": [
+        "Modelica.Icons.Package"
+      ],
+      "has_folder_child_mo_files": false,
+      "order_entries": []
+    },
+    "Dynamics": {
+      "package_fqn": "MoSimQuadrotorModel.Dynamics",
+      "package_mo": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "package_mo_exists": true,
+      "package_order": null,
+      "package_order_exists": false,
+      "embedded_child_count": 5,
+      "embedded_children": [
+        "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+        "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+        "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+        "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+        "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter"
+      ],
+      "package_extends_targets": [],
+      "has_folder_child_mo_files": false,
+      "order_entries": []
+    },
+    "Missions": {
+      "package_fqn": "MoSimQuadrotorModel.Missions",
+      "package_mo": "Models/MoSimQuadrotorModel/Missions/package.mo",
+      "package_mo_exists": true,
+      "package_order": null,
+      "package_order_exists": false,
+      "embedded_child_count": 0,
+      "embedded_children": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.OfficialScenarios"
+      ],
+      "has_folder_child_mo_files": false,
+      "order_entries": []
+    },
+    "Controllers": {
+      "package_fqn": "MoSimQuadrotorModel.Controllers",
+      "package_mo": "Models/MoSimQuadrotorModel/Controllers/package.mo",
+      "package_mo_exists": true,
+      "package_order": "Models/MoSimQuadrotorModel/Controllers/package.order",
+      "package_order_exists": true,
+      "embedded_child_count": 7,
+      "embedded_children": [
+        "MoSimQuadrotorModel.Controllers.AWFFPidBlocks",
+        "MoSimQuadrotorModel.Controllers.InnovationControllers",
+        "MoSimQuadrotorModel.Controllers.FaultAllocationControllers",
+        "MoSimQuadrotorModel.Controllers.LinearMPCControllers",
+        "MoSimQuadrotorModel.Controllers.SafetyControllers",
+        "MoSimQuadrotorModel.Controllers.DemosAndSIL",
+        "MoSimQuadrotorModel.Controllers.CompatibilityAndLegacy"
+      ],
+      "package_extends_targets": [
+        "QuadrotorExperiments.ControllerBaselines"
+      ],
+      "has_folder_child_mo_files": false,
+      "order_entries": [
+        "AWFFPidBlocks",
+        "InnovationControllers",
+        "FaultAllocationControllers",
+        "LinearMPCControllers",
+        "SafetyControllers",
+        "DemosAndSIL",
+        "CompatibilityAndLegacy"
+      ]
+    },
+    "Robustness": {
+      "package_fqn": "MoSimQuadrotorModel.Robustness",
+      "package_mo": "Models/MoSimQuadrotorModel/Robustness/package.mo",
+      "package_mo_exists": true,
+      "package_order": null,
+      "package_order_exists": false,
+      "embedded_child_count": 0,
+      "embedded_children": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.RobustFaultScenarios"
+      ],
+      "has_folder_child_mo_files": false,
+      "order_entries": []
+    },
+    "Planning": {
+      "package_fqn": "MoSimQuadrotorModel.Planning",
+      "package_mo": "Models/MoSimQuadrotorModel/Planning/package.mo",
+      "package_mo_exists": true,
+      "package_order": null,
+      "package_order_exists": false,
+      "embedded_child_count": 0,
+      "embedded_children": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.PlanningScenarios"
+      ],
+      "has_folder_child_mo_files": false,
+      "order_entries": []
+    },
+    "SceneTrace": {
+      "package_fqn": "MoSimQuadrotorModel.SceneTrace",
+      "package_mo": "Models/MoSimQuadrotorModel/SceneTrace/package.mo",
+      "package_mo_exists": true,
+      "package_order": null,
+      "package_order_exists": false,
+      "embedded_child_count": 2,
+      "embedded_children": [
+        "MoSimQuadrotorModel.SceneTrace.AcceptedScenes",
+        "MoSimQuadrotorModel.SceneTrace.Isolation"
+      ],
+      "package_extends_targets": [],
+      "has_folder_child_mo_files": false,
+      "order_entries": []
+    },
+    "System": {
+      "package_fqn": "MoSimQuadrotorModel.System",
+      "package_mo": "Models/MoSimQuadrotorModel/System/package.mo",
+      "package_mo_exists": true,
+      "package_order": null,
+      "package_order_exists": false,
+      "embedded_child_count": 2,
+      "embedded_children": [
+        "MoSimQuadrotorModel.System.Architecture",
+        "MoSimQuadrotorModel.System.Modules"
+      ],
+      "package_extends_targets": [],
+      "has_folder_child_mo_files": false,
+      "order_entries": []
+    },
+    "Formation": {
+      "package_fqn": "MoSimQuadrotorModel.Formation",
+      "package_mo": "Models/MoSimQuadrotorModel/Formation/package.mo",
+      "package_mo_exists": true,
+      "package_order": null,
+      "package_order_exists": false,
+      "embedded_child_count": 0,
+      "embedded_children": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.FormationScenarios"
+      ],
+      "has_folder_child_mo_files": false,
+      "order_entries": []
+    },
+    "Support": {
+      "package_fqn": "MoSimQuadrotorModel.Support",
+      "package_mo": "Models/MoSimQuadrotorModel/Support/package.mo",
+      "package_mo_exists": true,
+      "package_order": null,
+      "package_order_exists": false,
+      "embedded_child_count": 0,
+      "embedded_children": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.SupportModels"
+      ],
+      "has_folder_child_mo_files": false,
+      "order_entries": []
+    },
+    "LegacyCompatibility": {
+      "package_fqn": "MoSimQuadrotorModel.LegacyCompatibility",
+      "package_mo": "Models/MoSimQuadrotorModel/LegacyCompatibility/package.mo",
+      "package_mo_exists": true,
+      "package_order": null,
+      "package_order_exists": false,
+      "embedded_child_count": 0,
+      "embedded_children": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments"
+      ],
+      "has_folder_child_mo_files": false,
+      "order_entries": []
+    }
+  },
+  "package_order_issues": [],
+  "indexed_class_count": 608,
+  "candidate_count": 126,
+  "candidate_classification_counts": {
+    "ready_for_live_audit": 109,
+    "needs_static_fix_first": 0,
+    "low_priority": 17,
+    "blocked_by_missing_source": 0
+  },
+  "source_category_to_formal_mapping": {
+    "QuadrotorExperiments.OfficialScenarios": "MoSimQuadrotorModel.Missions",
+    "QuadrotorExperiments.RobustFaultScenarios": "MoSimQuadrotorModel.Robustness",
+    "QuadrotorExperiments.PlanningScenarios": "MoSimQuadrotorModel.Planning",
+    "QuadrotorExperiments.SceneTraceScenarios": "MoSimQuadrotorModel.SceneTrace.AcceptedScenes",
+    "QuadrotorExperiments.TraceIsolation": "MoSimQuadrotorModel.SceneTrace.Isolation",
+    "QuadrotorExperiments.SystemArchitecture": "MoSimQuadrotorModel.System.Architecture",
+    "QuadrotorExperiments.SystemModules": "MoSimQuadrotorModel.System.Modules",
+    "QuadrotorExperiments.FormationScenarios": "MoSimQuadrotorModel.Formation",
+    "QuadrotorExperiments.SupportModels": "MoSimQuadrotorModel.Support",
+    "QuadrotorExperiments.ControllerBaselines": "MoSimQuadrotorModel.Controllers",
+    "QuadrotorExperiments.DynamicsUpgrade": "MoSimQuadrotorModel.Dynamics",
+    "QuadrotorControllerBlocks.AWFFPidBlocks": "MoSimQuadrotorModel.Controllers.AWFFPidBlocks",
+    "QuadrotorControllerBlocks.InnovationControllers": "MoSimQuadrotorModel.Controllers.InnovationControllers",
+    "QuadrotorControllerBlocks.FaultAllocationControllers": "MoSimQuadrotorModel.Controllers.FaultAllocationControllers",
+    "QuadrotorControllerBlocks.LinearMPCControllers": "MoSimQuadrotorModel.Controllers.LinearMPCControllers",
+    "QuadrotorControllerBlocks.SafetyControllers": "MoSimQuadrotorModel.Controllers.SafetyControllers",
+    "QuadrotorControllerBlocks.DemosAndSIL": "MoSimQuadrotorModel.Controllers.DemosAndSIL"
+  },
+  "notes": [
+    "This is static text inventory only; it does not prove package-browser, check_model, simulation, diagram, wiring, or layout acceptance.",
+    "package.order absence is treated as a browser-review risk only when folder child .mo files are present; embedded package.mo children can still require live package-browser review.",
+    "Modelica.Icons.Package is treated as an external standard-library icon base and not as missing project source.",
+    "Dynamics queue excludes old Sunray150* source-file names that are not current formal MoSimQuadrotorModel.Dynamics entries; direct formal Dynamics entries remain queued."
+  ]
+}

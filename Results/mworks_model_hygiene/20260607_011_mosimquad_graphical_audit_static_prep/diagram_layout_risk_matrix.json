@@ -1,0 +1,3941 @@
+{
+  "schema": "mosim.mworks_model_hygiene.diagram_layout_risk_matrix.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-GRAPHICAL-AUDIT-STATIC-PREP-20260607-011",
+  "generated_at": "2026-06-07T21:25:08+08:00",
+  "candidate_count": 126,
+  "matrix": [
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Baseline",
+      "source_fqn": "MoSimQuadrotorModel.Baseline",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/MoSimQuadrotorModel/Baseline/package.mo",
+      "one_hop_leaf_source_path": "Models/MoSimQuadrotorModel/Baseline/package.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 27
+      },
+      "risk_reasons": [
+        "extends Modelica.Icons.Package is an external standard-library icon base, not a missing project source",
+        "package-browser category for official baseline adapters"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.AcceptedScenes",
+      "source_fqn": "QuadrotorExperiments.SceneTraceScenarios",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SceneTraceScenarios/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SceneTraceScenarios/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 25
+      },
+      "risk_reasons": [
+        "formal target still depends on broad legacy package inheritance",
+        "extends Modelica.Icons.Package is an external standard-library icon base, not a missing project source"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 193
+      },
+      "risk_reasons": [
+        "formal target still depends on broad legacy package inheritance",
+        "extends Modelica.Icons.Package is an external standard-library icon base, not a missing project source"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SystemArchitecture/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SystemArchitecture/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 43
+      },
+      "risk_reasons": [
+        "formal target still depends on broad legacy package inheritance",
+        "extends Modelica.Icons.Package is an external standard-library icon base, not a missing project source"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.System.Modules",
+      "source_fqn": "QuadrotorExperiments.SystemModules",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SystemModules/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SystemModules/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 61
+      },
+      "risk_reasons": [
+        "formal target still depends on broad legacy package inheritance",
+        "extends Modelica.Icons.Package is an external standard-library icon base, not a missing project source"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Baseline.OfficialExample1",
+      "source_fqn": "QuadrotorModel.Examples.Example1",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "one_hop_leaf_source_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": true,
+        "has_line_annotation": true,
+        "has_connect_equation": true,
+        "has_diagram_annotation": true,
+        "placement_count": 184,
+        "line_annotation_count": 249,
+        "connect_count": 222,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 2567
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Baseline.OfficialExample2",
+      "source_fqn": "QuadrotorModel.Examples.Example2",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "one_hop_leaf_source_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": true,
+        "has_line_annotation": true,
+        "has_connect_equation": true,
+        "has_diagram_annotation": true,
+        "placement_count": 184,
+        "line_annotation_count": 249,
+        "connect_count": 222,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 2567
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Baseline.OfficialExample3",
+      "source_fqn": "QuadrotorModel.Examples.Example3",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "one_hop_leaf_source_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": true,
+        "has_line_annotation": true,
+        "has_connect_equation": true,
+        "has_diagram_annotation": true,
+        "placement_count": 184,
+        "line_annotation_count": 249,
+        "connect_count": 222,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 2567
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Baseline.OfficialQuadChassis",
+      "source_fqn": "QuadrotorModel.Mechanics.QuadChassis",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "one_hop_leaf_source_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": true,
+        "has_line_annotation": true,
+        "has_connect_equation": true,
+        "has_diagram_annotation": true,
+        "placement_count": 184,
+        "line_annotation_count": 249,
+        "connect_count": 222,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 2567
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers",
+      "source_fqn": "MoSimQuadrotorModel.Controllers",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/MoSimQuadrotorModel/Controllers/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/package.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 79
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.AWFFPidBlocks",
+      "source_fqn": "QuadrotorControllerBlocks.AWFFPidBlocks",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 108
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.CompatibilityAndLegacy",
+      "source_fqn": "QuadrotorControllerBlocks.CompatibilityAndLegacy",
+      "classification": "low_priority",
+      "priority": "P3",
+      "source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 108
+      },
+      "risk_reasons": [
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required",
+        "empty compatibility retention package; keep as low-priority package-browser presence check, not an active graphical model"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.DemosAndSIL",
+      "source_fqn": "QuadrotorControllerBlocks.DemosAndSIL",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 108
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.FaultAllocationControllers",
+      "source_fqn": "QuadrotorControllerBlocks.FaultAllocationControllers",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 108
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.InnovationControllers",
+      "source_fqn": "QuadrotorControllerBlocks.InnovationControllers",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 108
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.LinearMPCControllers",
+      "source_fqn": "QuadrotorControllerBlocks.LinearMPCControllers",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 108
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.SafetyControllers",
+      "source_fqn": "QuadrotorControllerBlocks.SafetyControllers",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 108
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics",
+      "source_fqn": "MoSimQuadrotorModel.Dynamics",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "one_hop_leaf_source_path": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 30
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "R1_dynamics_live_resource_serialization"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeHoverSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 14
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+      "source_fqn": "QuadrotorExperiments.Sunray150PhysicalWrenchFrameAdapter",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchFrameAdapter.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 1,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 63
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only",
+        "formal target still depends on broad legacy package inheritance"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "R1_dynamics_live_resource_serialization"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 57
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "R1_dynamics_live_resource_serialization"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.Sunray150DynamicsUpgradeHoverSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeHoverSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeHoverSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeHoverSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 14
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.Sunray150DynamicsUpgradeYawStepSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeYawStepSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeYawStepSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeYawStepSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 18
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.Sunray150DynamicsWrapperHoverSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperHoverSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperHoverSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperHoverSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 14
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.Sunray150DynamicsWrapperYawStepSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperYawStepSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperYawStepSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperYawStepSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 18
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.Sunray150PhysicalWrenchHoverSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchHoverSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchHoverSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchHoverSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 14
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.Sunray150PhysicalWrenchYawStepSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchYawStepSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchYawStepSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchYawStepSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 18
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 60
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "R1_dynamics_live_resource_serialization"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "source_fqn": "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeYawStepSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 18
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "R1_dynamics_live_resource_serialization"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Formation",
+      "source_fqn": "MoSimQuadrotorModel.Formation",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/MoSimQuadrotorModel/Formation/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/FormationScenarios/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": false,
+        "line_count": 13
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Formation.FormationTriangleFigure8LinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.FormationScenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/FormationScenarios/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/FormationScenarios/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 105,
+        "sysblock_hint": true,
+        "graphical_hint": false,
+        "line_count": 271
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions",
+      "source_fqn": "MoSimQuadrotorModel.Missions",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/MoSimQuadrotorModel/Missions/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": false,
+        "line_count": 97
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example1AWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example1AWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example1AWFFSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example1AWFFSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example1HelicalFigure8TrailSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example1HelicalFigure8TrailSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example1HelicalFigure8TrailSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example1HelicalFigure8TrailSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 42,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 213
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example1INDISysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example1INDISysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example1INDISysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example1INDISysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example1L1SysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example1L1SysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example1L1SysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example1L1SysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example1LinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example1LinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example1LinearMPCSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example1LinearMPCSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example1PlanarFigure8TrailSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example1PlanarFigure8TrailSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example1PlanarFigure8TrailSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example1PlanarFigure8TrailSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 42,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 212
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example2AWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example2AWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example2AWFFSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example2AWFFSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example2HelixTunedAWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example2HelixTunedAWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example2HelixTunedAWFFSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example2HelixTunedAWFFSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": false,
+        "line_count": 11
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example2HelixTunedINDISysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example2HelixTunedINDISysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example2HelixTunedINDISysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example2HelixTunedINDISysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": false,
+        "line_count": 11
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example2INDISysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example2INDISysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example2INDISysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example2INDISysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example2LinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example2LinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example2LinearMPCSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example2LinearMPCSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 92
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example3AWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example3AWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example3AWFFSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example3AWFFSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example3INDISysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example3INDISysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example3INDISysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example3INDISysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example3L1SysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example3L1SysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example3L1SysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example3L1SysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Missions.Example3LinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.OfficialScenarios.Example3LinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example3LinearMPCSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/Example3LinearMPCSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 89
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Planning",
+      "source_fqn": "MoSimQuadrotorModel.Planning",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/MoSimQuadrotorModel/Planning/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/PlanningScenarios/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 49
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Planning.PlannedQuinticReference",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.PlannedQuinticReference",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/PlanningScenarios/PlannedQuinticReference.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/PlanningScenarios/PlannedQuinticReference.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": true,
+        "has_line_annotation": true,
+        "has_connect_equation": false,
+        "has_diagram_annotation": true,
+        "placement_count": 3,
+        "line_annotation_count": 1,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 131
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Planning.PlanningNavigationDisplay",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.PlanningNavigationDisplay",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/PlanningScenarios/PlanningNavigationDisplay.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/PlanningScenarios/PlanningNavigationDisplay.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": true,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 2,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 1017
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Planning.Sunray150PlanningCorridorGateAWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.Sunray150PlanningCorridorGateAWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/PlanningScenarios/Sunray150PlanningCorridorGateAWFFSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/PlanningScenarios/Sunray150PlanningCorridorGateAWFFSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 90
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Planning.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/PlanningScenarios/Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/PlanningScenarios/Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 41,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 128
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Planning.Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/PlanningScenarios/Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/PlanningScenarios/Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 90
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Planning.Sunray150PlanningOpenBlocksColorMapReview",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.Sunray150PlanningOpenBlocksColorMapReview",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/PlanningScenarios/Sunray150PlanningOpenBlocksColorMapReview.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/PlanningScenarios/Sunray150PlanningOpenBlocksColorMapReview.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 18
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Planning.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/PlanningScenarios/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/PlanningScenarios/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 41,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 663
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation",
+        "planning_display_or_map_visual_review_if_opened"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Robustness",
+      "source_fqn": "MoSimQuadrotorModel.Robustness",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/MoSimQuadrotorModel/Robustness/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": false,
+        "line_count": 67
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1Mass20AWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1Mass20AWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1Mass20AWFFSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1Mass20AWFFSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1Mass20L1SysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1Mass20L1SysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1Mass20L1SysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1Mass20L1SysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1Mass20LinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1Mass20LinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1Mass20LinearMPCSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1Mass20LinearMPCSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1QPNMPCSafetyReturnLandSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1QPNMPCSafetyReturnLandSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1QPNMPCSafetyReturnLandSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1QPNMPCSafetyReturnLandSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 99
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1QPNMPCSafetySysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1QPNMPCSafetySysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1QPNMPCSafetySysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1QPNMPCSafetySysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1WindGustAWFFSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1WindGustAWFFSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1WindGustAWFFSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1WindGustAWFFSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 40,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 107
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1WindGustL1SysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1WindGustL1SysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1WindGustL1SysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1WindGustL1SysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 40,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 107
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1WindGustLinearMPCSysblockClosedLoop",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1WindGustLinearMPCSysblockClosedLoop",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1WindGustLinearMPCSysblockClosedLoop.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1WindGustLinearMPCSysblockClosedLoop.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 40,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 107
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace",
+      "source_fqn": "MoSimQuadrotorModel.SceneTrace",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/MoSimQuadrotorModel/SceneTrace/package.mo",
+      "one_hop_leaf_source_path": "Models/MoSimQuadrotorModel/SceneTrace/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 15
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.AcceptedScenes.Sunray150UEDerelictLinearMPCSysblockSmoke",
+      "source_fqn": "QuadrotorExperiments.SceneTraceScenarios.Sunray150UEDerelictLinearMPCSysblockSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SceneTraceScenarios/Sunray150UEDerelictLinearMPCSysblockSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SceneTraceScenarios/Sunray150UEDerelictLinearMPCSysblockSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 41,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 262
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.AcceptedScenes.Sunray150UEFactoryLinearMPCSysblockSmoke",
+      "source_fqn": "QuadrotorExperiments.SceneTraceScenarios.Sunray150UEFactoryLinearMPCSysblockSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SceneTraceScenarios/Sunray150UEFactoryLinearMPCSysblockSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SceneTraceScenarios/Sunray150UEFactoryLinearMPCSysblockSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 41,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 262
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.AcceptedScenes.Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke",
+      "source_fqn": "QuadrotorExperiments.SceneTraceScenarios.Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SceneTraceScenarios/Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SceneTraceScenarios/Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 41,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 207
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryLiteTraceSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryLiteTraceSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryLiteTraceSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryLiteTraceSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 2,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 52
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso01FullDisplaySmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso01FullDisplaySmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso01FullDisplaySmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso01FullDisplaySmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 87
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso02ControllerOnlySmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso02ControllerOnlySmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso02ControllerOnlySmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso02ControllerOnlySmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 14,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 41
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso03PlantHoverStackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso03PlantHoverStackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso03PlantHoverStackSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso03PlantHoverStackSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 13,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 40
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso04ControllerPlantWiringSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso04ControllerPlantWiringSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso04ControllerPlantWiringSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso04ControllerPlantWiringSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 30,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 71
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso05CleanHoverSumSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso05CleanHoverSumSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso05CleanHoverSumSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso05CleanHoverSumSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 21,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 65
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso06CleanControllerPlantWiringSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso06CleanControllerPlantWiringSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso06CleanControllerPlantWiringSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso06CleanControllerPlantWiringSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 93
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso07CleanControllerOpenFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso07CleanControllerOpenFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso07CleanControllerOpenFeedbackSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso07CleanControllerOpenFeedbackSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 95
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso08PositionFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso08PositionFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso08PositionFeedbackSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso08PositionFeedbackSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 95
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso09PositionAttitudeFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso09PositionAttitudeFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso09PositionAttitudeFeedbackSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso09PositionAttitudeFeedbackSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 93
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso10RollFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso10RollFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso10RollFeedbackSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso10RollFeedbackSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 94
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso11PitchFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso11PitchFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso11PitchFeedbackSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso11PitchFeedbackSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 94
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso12RollFeedbackNegatedSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso12RollFeedbackNegatedSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso12RollFeedbackNegatedSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso12RollFeedbackNegatedSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 40,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 96
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso13PitchFeedbackNegatedSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso13PitchFeedbackNegatedSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso13PitchFeedbackNegatedSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso13PitchFeedbackNegatedSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 40,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 96
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso14ConstantAttitudeInputSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso14ConstantAttitudeInputSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso14ConstantAttitudeInputSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso14ConstantAttitudeInputSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 95
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso15TableAttitudeInputSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso15TableAttitudeInputSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso15TableAttitudeInputSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso15TableAttitudeInputSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 99
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso16RealExpressionAngleSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso16RealExpressionAngleSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso16RealExpressionAngleSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso16RealExpressionAngleSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 95
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso17SampleHoldAngleSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso17SampleHoldAngleSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso17SampleHoldAngleSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso17SampleHoldAngleSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 41,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 98
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso18ProjectAttitudeEstimatorSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso18ProjectAttitudeEstimatorSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso18ProjectAttitudeEstimatorSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso18ProjectAttitudeEstimatorSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 100
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso19RollPitchEstimatorSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso19RollPitchEstimatorSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso19RollPitchEstimatorSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso19RollPitchEstimatorSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 102
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso20RollPitchYawEstimatorSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso20RollPitchYawEstimatorSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso20RollPitchYawEstimatorSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso20RollPitchYawEstimatorSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 39,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 105
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso21ControllerRateAliasSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso21ControllerRateAliasSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso21ControllerRateAliasSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso21ControllerRateAliasSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 28
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso22SensorDisplayReconnectSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso22SensorDisplayReconnectSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 1,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 23
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso23PositionSampleHoldBridgeSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso23PositionSampleHoldBridgeSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso23PositionSampleHoldBridgeSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso23PositionSampleHoldBridgeSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 2,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 39
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso24DirectAttitudeFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso24DirectAttitudeFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso24DirectAttitudeFeedbackSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso24DirectAttitudeFeedbackSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 19
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 2,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 29
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso26ControllerOutputAliasSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso26ControllerOutputAliasSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso26ControllerOutputAliasSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso26ControllerOutputAliasSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 36
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso27ActuatorInputAliasSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso27ActuatorInputAliasSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso27ActuatorInputAliasSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso27ActuatorInputAliasSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 28
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso28ActuatorToWrenchBridgeSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso28ActuatorToWrenchBridgeSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 52
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso29ExternalFrameWrenchBoundarySmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso29ExternalFrameWrenchBoundarySmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 1,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 69
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso30ExternalBodyStateBoundarySmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso30ExternalBodyStateBoundarySmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso30ExternalBodyStateBoundarySmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 37
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Support",
+      "source_fqn": "MoSimQuadrotorModel.Support",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/MoSimQuadrotorModel/Support/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SupportModels/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 31
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Support.EchoMcpStateSmoke",
+      "source_fqn": "QuadrotorExperiments.SupportModels.EchoMcpStateSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SupportModels/EchoMcpStateSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SupportModels/EchoMcpStateSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 32
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Support.TraceInlineReference",
+      "source_fqn": "QuadrotorExperiments.SupportModels.TraceInlineReference",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SupportModels/TraceInlineReference.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SupportModels/TraceInlineReference.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": true,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": true,
+        "placement_count": 3,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 288
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Support.TraceLookupStandaloneSmoke",
+      "source_fqn": "QuadrotorExperiments.SupportModels.TraceLookupStandaloneSmoke",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SupportModels/TraceLookupStandaloneSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SupportModels/TraceLookupStandaloneSmoke.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 24
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Support.TraceTableReference",
+      "source_fqn": "QuadrotorExperiments.SupportModels.TraceTableReference",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SupportModels/TraceTableReference.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SupportModels/TraceTableReference.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": true,
+        "has_line_annotation": true,
+        "has_connect_equation": false,
+        "has_diagram_annotation": true,
+        "placement_count": 3,
+        "line_annotation_count": 1,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 38
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.System",
+      "source_fqn": "MoSimQuadrotorModel.System",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/MoSimQuadrotorModel/System/package.mo",
+      "one_hop_leaf_source_path": "Models/MoSimQuadrotorModel/System/package.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 15
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemBatteryLowSysblock",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture.Sunray150CompleteSystemBatteryLowSysblock",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemBatteryLowSysblock.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemBatteryLowSysblock.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 9
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGPSDropoutSysblock",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture.Sunray150CompleteSystemGPSDropoutSysblock",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemGPSDropoutSysblock.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemGPSDropoutSysblock.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 12
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGeofenceBreachSysblock",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture.Sunray150CompleteSystemGeofenceBreachSysblock",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemGeofenceBreachSysblock.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemGeofenceBreachSysblock.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 10
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGraphical_Sysblock",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture.Sunray150CompleteSystemGraphical_Sysblock",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemGraphical_Sysblock.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemGraphical_Sysblock.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": true,
+        "has_line_annotation": true,
+        "has_connect_equation": true,
+        "has_diagram_annotation": true,
+        "placement_count": 75,
+        "line_annotation_count": 27,
+        "connect_count": 68,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 636
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemMissionFailureSysblock",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture.Sunray150CompleteSystemMissionFailureSysblock",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemMissionFailureSysblock.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemMissionFailureSysblock.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 10
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemOffboardLossSysblock",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture.Sunray150CompleteSystemOffboardLossSysblock",
+      "classification": "ready_for_live_audit",
+      "priority": "P1",
+      "source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemOffboardLossSysblock.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemOffboardLossSysblock.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 10
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "targeted_check_model_before_acceptance",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.AntiWindupFeedforwardController",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.AntiWindupFeedforwardController",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/ControllerBaselines/AntiWindupFeedforwardController.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/AntiWindupFeedforwardController.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 136
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example1AntiWindupFeedforwardPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example1AntiWindupFeedforwardPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example1AntiWindupFeedforwardPID.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example1AntiWindupFeedforwardPID.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 7
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example1EnhancedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example1EnhancedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example1EnhancedPID.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example1EnhancedPID.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 18
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example1ImprovedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example1ImprovedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example1ImprovedPID.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example1ImprovedPID.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 13
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example2AntiWindupFeedforwardPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example2AntiWindupFeedforwardPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example2AntiWindupFeedforwardPID.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example2AntiWindupFeedforwardPID.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 7
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example2EnhancedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example2EnhancedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example2EnhancedPID.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example2EnhancedPID.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 18
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example2HelixTunedAntiWindupFeedforwardPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example2HelixTunedAntiWindupFeedforwardPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example2HelixTunedAntiWindupFeedforwardPID.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example2HelixTunedAntiWindupFeedforwardPID.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 11
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example2HelixTunedEnhancedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example2HelixTunedEnhancedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example2HelixTunedEnhancedPID.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example2HelixTunedEnhancedPID.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 18
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example2ImprovedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example2ImprovedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example2ImprovedPID.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example2ImprovedPID.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 13
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example3AntiWindupFeedforwardPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example3AntiWindupFeedforwardPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example3AntiWindupFeedforwardPID.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example3AntiWindupFeedforwardPID.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 7
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example3EnhancedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example3EnhancedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example3EnhancedPID.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example3EnhancedPID.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 18
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.Example3ImprovedPID",
+      "source_fqn": "QuadrotorExperiments.ControllerBaselines.Example3ImprovedPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example3ImprovedPID.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/Example3ImprovedPID.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 13
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "controller_behavior_equivalence_status_not_claimed_until_check_model_or_sim"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1Mass20AntiWindupFeedforwardPID",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1Mass20AntiWindupFeedforwardPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1Mass20AntiWindupFeedforwardPID.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1Mass20AntiWindupFeedforwardPID.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 9
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.Robustness.Example1WindGustAntiWindupFeedforwardPID",
+      "source_fqn": "QuadrotorExperiments.RobustFaultScenarios.Example1WindGustAntiWindupFeedforwardPID",
+      "classification": "low_priority",
+      "priority": "P2",
+      "source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1WindGustAntiWindupFeedforwardPID.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1WindGustAntiWindupFeedforwardPID.mo",
+      "graphical_relevance": false,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 7
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot"
+      ]
+    },
+    {
+      "formal_candidate": "MoSimQuadrotorModel.LegacyCompatibility",
+      "source_fqn": "MoSimQuadrotorModel.LegacyCompatibility",
+      "classification": "low_priority",
+      "priority": "P3",
+      "source_path": "Models/MoSimQuadrotorModel/LegacyCompatibility/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/package.mo",
+      "graphical_relevance": true,
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 842
+      },
+      "risk_reasons": [
+        "legacy compatibility package; package-browser smoke only, not active modeling target"
+      ],
+      "required_future_gates": [
+        "pre_live_session_reuse_gate",
+        "package_browser_visibility_screenshot",
+        "diagram_or_sysblock_open_screenshot",
+        "wiring_connection_layout_observation"
+      ]
+    }
+  ]
+}

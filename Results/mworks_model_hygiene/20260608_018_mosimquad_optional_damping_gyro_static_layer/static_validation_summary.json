@@ -1,0 +1,60 @@
+{
+  "schema": "mosim.static_validation_summary.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-OPTIONAL-DAMPING-GYRO-STATIC-LAYER-20260608-018",
+  "status": "passed_static_source_checks_before_packet_validation",
+  "task_class": "static_model_source_implementation",
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "static_source_checks": [
+    {
+      "check": "new_model_exists",
+      "status": "passed",
+      "evidence": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150OptionalDampingGyroLayer.mo"
+    },
+    {
+      "check": "default_disabled_flags",
+      "status": "passed",
+      "evidence": [
+        "enable_rotor_gyro=false",
+        "enable_body_drag=false",
+        "enable_angular_damping=false"
+      ]
+    },
+    {
+      "check": "zero_seed_coefficients",
+      "status": "passed",
+      "evidence": [
+        "rotor_polar_inertia={0,0,0,0}",
+        "body_drag_coefficient={0,0,0}",
+        "angular_damping_coefficient={0,0,0}"
+      ]
+    },
+    {
+      "check": "base_chain_preserved",
+      "status": "passed_static",
+      "evidence": "The new layer instantiates Sunray150ActuatorMappedWrapperSurface and only adds optional force/moment terms after base_force_body/base_moment_body."
+    },
+    {
+      "check": "formal_package_exposure",
+      "status": "passed_static",
+      "evidence": [
+        "QuadrotorExperiments.DynamicsUpgrade.OptionalDampingGyroLayer",
+        "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer"
+      ]
+    },
+    {
+      "check": "live_mworks_boundary",
+      "status": "passed",
+      "evidence": "No live MWORKS/Sysplorer/Syslab GUI/MCP/check_model/SimulateModel/screenshot/result-viewer action was performed."
+    }
+  ],
+  "pending_live_followup": [
+    "MWORKS check_model for MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer after no-start reusable attach route is proven.",
+    "Smoke/result probe for default_disabled_force_delta and default_disabled_moment_delta only if PMO dispatches a future live task."
+  ],
+  "claim_boundary": [
+    "Static source implementation only.",
+    "No live MWORKS load/check/simulation/layout/package-browser acceptance.",
+    "No identified Sunray150 gyro/drag/damping parameter truth."
+  ]
+}

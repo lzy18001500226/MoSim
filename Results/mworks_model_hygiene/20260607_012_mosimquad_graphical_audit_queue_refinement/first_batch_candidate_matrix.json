@@ -1,0 +1,1126 @@
+{
+  "schema": "mosim.mworks_model_hygiene.first_batch_candidate_matrix.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-GRAPHICAL-AUDIT-QUEUE-REFINEMENT-20260607-012",
+  "generated_at": "2026-06-07T23:19:46+08:00",
+  "source_evidence": {
+    "011_return": "Results/agent_packets/returns/PMO-MWORKS-R2-MOSIMQUAD-GRAPHICAL-AUDIT-STATIC-PREP-20260607-011.json",
+    "011_static_source_inventory": "Results/mworks_model_hygiene/20260607_011_mosimquad_graphical_audit_static_prep/static_source_inventory.json",
+    "011_diagram_layout_risk_matrix": "Results/mworks_model_hygiene/20260607_011_mosimquad_graphical_audit_static_prep/diagram_layout_risk_matrix.json",
+    "011_serialized_live_audit_queue": "Results/mworks_model_hygiene/20260607_011_mosimquad_graphical_audit_static_prep/serialized_live_audit_queue.json",
+    "coagentops_reusable_session_blocker": "Results/agent_packets/blockers/PMO-COAGENTOPS-MWORKS-REUSABLE-SESSION-REBIND-20260607-001.json"
+  },
+  "selection_policy": {
+    "max_candidates": 20,
+    "selected_count": 20,
+    "excluded_from_first_batch": [
+      "Baseline official examples are already lower urgency for R2 graphical package audit and are excluded from this first batch.",
+      "LegacyCompatibility and controller CompatibilityAndLegacy are package-retention checks, not first-batch engineering targets.",
+      "Direct Dynamics leaf check_model/smoke candidates remain R1-owned and are not scheduled for R2 first-batch graphical work.",
+      "Large mission/robustness/formation scenario leaves remain queued after root package visibility and representative system/planning/trace checks."
+    ],
+    "bucket_counts": {
+      "package_browser_visibility": 8,
+      "package_browser_visibility_and_r1_serialized_check_model": 1,
+      "controller_category_package_browser_and_topology_screen": 5,
+      "planning_display_or_map_visual_screen": 2,
+      "system_level_sysblock_layout_screen": 1,
+      "factory_trace_wiring_isolation_screen": 3
+    },
+    "011_candidate_count": 126,
+    "011_classification_counts": {
+      "ready_for_live_audit": 109,
+      "needs_static_fix_first": 0,
+      "low_priority": 17,
+      "blocked_by_missing_source": 0
+    }
+  },
+  "candidate_matrix": [
+    {
+      "batch_sequence": 1,
+      "formal_candidate": "MoSimQuadrotorModel.Controllers",
+      "source_fqn": "MoSimQuadrotorModel.Controllers",
+      "source_path": "Models/MoSimQuadrotorModel/Controllers/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/ControllerBaselines/package.mo",
+      "011_queue_sequence": 1,
+      "011_queue_group": "package_browser_root",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "package_browser_visibility",
+      "selection_reason": "Root browser gate for the seven controller categories added by 010; validates browse visibility before individual controller topology review.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 79
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser expand screenshot for the candidate",
+        "browser tree observation: visible, duplicated, red/white/unresolved, or empty"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "package tree is not visible enough to classify without foreground user/PMO review"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 2,
+      "formal_candidate": "MoSimQuadrotorModel.Dynamics",
+      "source_fqn": "MoSimQuadrotorModel.Dynamics",
+      "source_path": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "one_hop_leaf_source_path": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "011_queue_sequence": 2,
+      "011_queue_group": "package_browser_root",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "package_browser_visibility_and_r1_serialized_check_model",
+      "selection_reason": "Root browser gate only; check_model/smoke ownership is serialized behind R1 dynamics work.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "R1 owns dynamics check_model/smoke; R2 may only browser/diagram-review this candidate when R1 live work is idle.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 30
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser expand screenshot for the candidate",
+        "browser tree observation: visible, duplicated, red/white/unresolved, or empty",
+        "R1-owned targeted check_model only after R1 resource lock is free"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "package tree is not visible enough to classify without foreground user/PMO review"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 3,
+      "formal_candidate": "MoSimQuadrotorModel.Missions",
+      "source_fqn": "MoSimQuadrotorModel.Missions",
+      "source_path": "Models/MoSimQuadrotorModel/Missions/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/OfficialScenarios/package.mo",
+      "011_queue_sequence": 4,
+      "011_queue_group": "package_browser_root",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "package_browser_visibility",
+      "selection_reason": "Root browser gate for formal mission scenarios migrated from OfficialScenarios.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": false,
+        "line_count": 97
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser expand screenshot for the candidate",
+        "browser tree observation: visible, duplicated, red/white/unresolved, or empty"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "package tree is not visible enough to classify without foreground user/PMO review"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 4,
+      "formal_candidate": "MoSimQuadrotorModel.Robustness",
+      "source_fqn": "MoSimQuadrotorModel.Robustness",
+      "source_path": "Models/MoSimQuadrotorModel/Robustness/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/RobustFaultScenarios/package.mo",
+      "011_queue_sequence": 6,
+      "011_queue_group": "package_browser_root",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "package_browser_visibility",
+      "selection_reason": "Root browser gate for fault/wind/safety categories before deeper failure-mode diagrams.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": false,
+        "line_count": 67
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser expand screenshot for the candidate",
+        "browser tree observation: visible, duplicated, red/white/unresolved, or empty"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "package tree is not visible enough to classify without foreground user/PMO review"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 5,
+      "formal_candidate": "MoSimQuadrotorModel.Planning",
+      "source_fqn": "MoSimQuadrotorModel.Planning",
+      "source_path": "Models/MoSimQuadrotorModel/Planning/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/PlanningScenarios/package.mo",
+      "011_queue_sequence": 5,
+      "011_queue_group": "package_browser_root",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "package_browser_visibility",
+      "selection_reason": "Root browser gate for path-planning and map-display scenarios.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 49
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser expand screenshot for the candidate",
+        "browser tree observation: visible, duplicated, red/white/unresolved, or empty"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "package tree is not visible enough to classify without foreground user/PMO review"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 6,
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace",
+      "source_fqn": "MoSimQuadrotorModel.SceneTrace",
+      "source_path": "Models/MoSimQuadrotorModel/SceneTrace/package.mo",
+      "one_hop_leaf_source_path": "Models/MoSimQuadrotorModel/SceneTrace/package.mo",
+      "011_queue_sequence": 7,
+      "011_queue_group": "package_browser_root",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "package_browser_visibility",
+      "selection_reason": "Root browser gate for UE scene trace and trace isolation display chains.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 15
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser expand screenshot for the candidate",
+        "browser tree observation: visible, duplicated, red/white/unresolved, or empty"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "package tree is not visible enough to classify without foreground user/PMO review"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 7,
+      "formal_candidate": "MoSimQuadrotorModel.System",
+      "source_fqn": "MoSimQuadrotorModel.System",
+      "source_path": "Models/MoSimQuadrotorModel/System/package.mo",
+      "one_hop_leaf_source_path": "Models/MoSimQuadrotorModel/System/package.mo",
+      "011_queue_sequence": 9,
+      "011_queue_group": "package_browser_root",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "package_browser_visibility",
+      "selection_reason": "Root browser gate for system architecture and module shells.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": false,
+        "line_count": 15
+      },
+      "risk_reasons": [
+        "source resolves statically; visual risk is lower or package-browser/check_model only"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser expand screenshot for the candidate",
+        "browser tree observation: visible, duplicated, red/white/unresolved, or empty"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "package tree is not visible enough to classify without foreground user/PMO review"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 8,
+      "formal_candidate": "MoSimQuadrotorModel.Formation",
+      "source_fqn": "MoSimQuadrotorModel.Formation",
+      "source_path": "Models/MoSimQuadrotorModel/Formation/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/FormationScenarios/package.mo",
+      "011_queue_sequence": 3,
+      "011_queue_group": "package_browser_root",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "package_browser_visibility",
+      "selection_reason": "Root browser gate for formation scenario visibility; one formal category with a high-connect closed-loop source.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": false,
+        "line_count": 13
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser expand screenshot for the candidate",
+        "browser tree observation: visible, duplicated, red/white/unresolved, or empty"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "package tree is not visible enough to classify without foreground user/PMO review"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 9,
+      "formal_candidate": "MoSimQuadrotorModel.Support",
+      "source_fqn": "MoSimQuadrotorModel.Support",
+      "source_path": "Models/MoSimQuadrotorModel/Support/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SupportModels/package.mo",
+      "011_queue_sequence": 8,
+      "011_queue_group": "package_browser_root",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "package_browser_visibility",
+      "selection_reason": "Root browser gate for trace/MCP helper models; low runtime cost and useful for later trace review.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 31
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser expand screenshot for the candidate",
+        "browser tree observation: visible, duplicated, red/white/unresolved, or empty"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "package tree is not visible enough to classify without foreground user/PMO review"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 10,
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.AWFFPidBlocks",
+      "source_fqn": "QuadrotorControllerBlocks.AWFFPidBlocks",
+      "source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "011_queue_sequence": 16,
+      "011_queue_group": "graphical_high_priority",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "controller_category_package_browser_and_topology_screen",
+      "selection_reason": "Representative controller baseline category with Sysblock naming risk and no static Placement/Line semantics.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 108
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser screenshot for controller category",
+        "targeted open/check_model when MCP route is safe",
+        "diagram/topology screenshot if Sysblock surface opens",
+        "wiring/readability observation without controller performance claim"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "diagram opens blank/empty or with unreadable proxy surface requiring foreground review",
+        "check_model fails before diagram acceptance can be claimed"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 11,
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.InnovationControllers",
+      "source_fqn": "QuadrotorControllerBlocks.InnovationControllers",
+      "source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "011_queue_sequence": 19,
+      "011_queue_group": "graphical_high_priority",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "controller_category_package_browser_and_topology_screen",
+      "selection_reason": "Representative INDI/L1 innovation category; must expose meaningful controller topology before behavior claims.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 108
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser screenshot for controller category",
+        "targeted open/check_model when MCP route is safe",
+        "diagram/topology screenshot if Sysblock surface opens",
+        "wiring/readability observation without controller performance claim"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "diagram opens blank/empty or with unreadable proxy surface requiring foreground review",
+        "check_model fails before diagram acceptance can be claimed"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 12,
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.FaultAllocationControllers",
+      "source_fqn": "QuadrotorControllerBlocks.FaultAllocationControllers",
+      "source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "011_queue_sequence": 18,
+      "011_queue_group": "graphical_high_priority",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "controller_category_package_browser_and_topology_screen",
+      "selection_reason": "Fault allocation category is high-value for R2 wiring readability and future fault scenario review.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 108
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser screenshot for controller category",
+        "targeted open/check_model when MCP route is safe",
+        "diagram/topology screenshot if Sysblock surface opens",
+        "wiring/readability observation without controller performance claim"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "diagram opens blank/empty or with unreadable proxy surface requiring foreground review",
+        "check_model fails before diagram acceptance can be claimed"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 13,
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.LinearMPCControllers",
+      "source_fqn": "QuadrotorControllerBlocks.LinearMPCControllers",
+      "source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "011_queue_sequence": 20,
+      "011_queue_group": "graphical_high_priority",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "controller_category_package_browser_and_topology_screen",
+      "selection_reason": "MPC category is central to formal comparisons and planning/system scenarios.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 108
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser screenshot for controller category",
+        "targeted open/check_model when MCP route is safe",
+        "diagram/topology screenshot if Sysblock surface opens",
+        "wiring/readability observation without controller performance claim"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "diagram opens blank/empty or with unreadable proxy surface requiring foreground review",
+        "check_model fails before diagram acceptance can be claimed"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 14,
+      "formal_candidate": "MoSimQuadrotorModel.Controllers.SafetyControllers",
+      "source_fqn": "QuadrotorControllerBlocks.SafetyControllers",
+      "source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorControllerBlocks/package.mo",
+      "011_queue_sequence": 21,
+      "011_queue_group": "graphical_high_priority",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "controller_category_package_browser_and_topology_screen",
+      "selection_reason": "Safety/QP category is a critical review target for later return-land/fail-safe diagrams.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 108
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser screenshot for controller category",
+        "targeted open/check_model when MCP route is safe",
+        "diagram/topology screenshot if Sysblock surface opens",
+        "wiring/readability observation without controller performance claim"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "diagram opens blank/empty or with unreadable proxy surface requiring foreground review",
+        "check_model fails before diagram acceptance can be claimed"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 15,
+      "formal_candidate": "MoSimQuadrotorModel.Planning.PlanningNavigationDisplay",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.PlanningNavigationDisplay",
+      "source_path": "Models/QuadrotorExperiments/PlanningScenarios/PlanningNavigationDisplay.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/PlanningScenarios/PlanningNavigationDisplay.mo",
+      "011_queue_sequence": 47,
+      "011_queue_group": "graphical_high_priority",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "planning_display_or_map_visual_screen",
+      "selection_reason": "Direct display/review model; first planning visual check before closed-loop planning scenarios.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": true,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 2,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 1017
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser screenshot",
+        "display or map screenshot if model opens",
+        "layout/readability observation for display/map components",
+        "no planner_ready or closed_loop claim"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "diagram opens blank/empty or with unreadable proxy surface requiring foreground review",
+        "check_model fails before diagram acceptance can be claimed"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 16,
+      "formal_candidate": "MoSimQuadrotorModel.Planning.Sunray150PlanningOpenBlocksColorMapReview",
+      "source_fqn": "QuadrotorExperiments.PlanningScenarios.Sunray150PlanningOpenBlocksColorMapReview",
+      "source_path": "Models/QuadrotorExperiments/PlanningScenarios/Sunray150PlanningOpenBlocksColorMapReview.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/PlanningScenarios/Sunray150PlanningOpenBlocksColorMapReview.mo",
+      "011_queue_sequence": 51,
+      "011_queue_group": "graphical_high_priority",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "planning_display_or_map_visual_screen",
+      "selection_reason": "Explicit color-map review model; validates map visualization surface without claiming planner readiness.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 18
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser screenshot",
+        "display or map screenshot if model opens",
+        "layout/readability observation for display/map components",
+        "no planner_ready or closed_loop claim"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "diagram opens blank/empty or with unreadable proxy surface requiring foreground review",
+        "check_model fails before diagram acceptance can be claimed"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 17,
+      "formal_candidate": "MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGraphical_Sysblock",
+      "source_fqn": "QuadrotorExperiments.SystemArchitecture.Sunray150CompleteSystemGraphical_Sysblock",
+      "source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemGraphical_Sysblock.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/SystemArchitecture/Sunray150CompleteSystemGraphical_Sysblock.mo",
+      "011_queue_sequence": 105,
+      "011_queue_group": "graphical_high_priority",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "system_level_sysblock_layout_screen",
+      "selection_reason": "Highest-value system graphical model with static Placement/Line/connect evidence and complete-system layout risk.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": true,
+        "has_line_annotation": true,
+        "has_connect_equation": true,
+        "has_diagram_annotation": true,
+        "placement_count": 75,
+        "line_annotation_count": 27,
+        "connect_count": 68,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 636
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser screenshot",
+        "Sysblock/diagram screenshot for complete-system model",
+        "wire crossing/missing-connection/layout observation",
+        "targeted check_model before any structural acceptance"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "diagram opens blank/empty or with unreadable proxy surface requiring foreground review",
+        "check_model fails before diagram acceptance can be claimed"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 18,
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso04ControllerPlantWiringSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso04ControllerPlantWiringSmoke",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso04ControllerPlantWiringSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso04ControllerPlantWiringSmoke.mo",
+      "011_queue_sequence": 70,
+      "011_queue_group": "graphical_high_priority",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "factory_trace_wiring_isolation_screen",
+      "selection_reason": "Early factory trace controller-plant wiring isolation link; validates core wiring display.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 30,
+        "sysblock_hint": true,
+        "graphical_hint": true,
+        "line_count": 71
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser screenshot",
+        "trace-isolation diagram screenshot",
+        "controller/plant/sensor/actuator bridge wiring observation",
+        "targeted check_model before any Factory trace acceptance"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "diagram opens blank/empty or with unreadable proxy surface requiring foreground review",
+        "check_model fails before diagram acceptance can be claimed"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 19,
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso22SensorDisplayReconnectSmoke",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso22SensorDisplayReconnectSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso22SensorDisplayReconnectSmoke.mo",
+      "011_queue_sequence": 88,
+      "011_queue_group": "graphical_high_priority",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "factory_trace_wiring_isolation_screen",
+      "selection_reason": "Sensor display reconnect checkpoint from prior TraceIsolation cleanup; verifies visible display bridge continuity.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": true,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 1,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 23
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser screenshot",
+        "trace-isolation diagram screenshot",
+        "controller/plant/sensor/actuator bridge wiring observation",
+        "targeted check_model before any Factory trace acceptance"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "diagram opens blank/empty or with unreadable proxy surface requiring foreground review",
+        "check_model fails before diagram acceptance can be claimed"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    },
+    {
+      "batch_sequence": 20,
+      "formal_candidate": "MoSimQuadrotorModel.SceneTrace.Isolation.FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+      "source_fqn": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso28ActuatorToWrenchBridgeSmoke",
+      "source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso28ActuatorToWrenchBridgeSmoke.mo",
+      "one_hop_leaf_source_path": "Models/QuadrotorExperiments/TraceIsolation/FactoryTraceIso28ActuatorToWrenchBridgeSmoke.mo",
+      "011_queue_sequence": 94,
+      "011_queue_group": "graphical_high_priority",
+      "011_classification": "ready_for_live_audit",
+      "priority": "P0-first-batch",
+      "audit_bucket": "factory_trace_wiring_isolation_screen",
+      "selection_reason": "Actuator-to-wrench boundary checkpoint; validates bridge wiring before external frame/body boundaries.",
+      "resource_lock": "single_reusable_MWORKS_Sysplorer_session_serialized_with_R1",
+      "r1_dependency": "No direct R1 compute dependency, but still serialize all MWORKS GUI/MCP use.",
+      "static_visual_metrics": {
+        "has_placement": false,
+        "has_line_annotation": false,
+        "has_connect_equation": false,
+        "has_diagram_annotation": false,
+        "placement_count": 0,
+        "line_annotation_count": 0,
+        "connect_count": 0,
+        "sysblock_hint": false,
+        "graphical_hint": true,
+        "line_count": 52
+      },
+      "risk_reasons": [
+        "graphical/sysblock/display/planning/trace naming requires live screenshot and wiring/layout review",
+        "static text has no obvious Placement/Line/connect/Diagram semantics; live package-browser or Sysblock topology review is required"
+      ],
+      "expected_future_evidence": [
+        "current-task CoAgentOps patrol or bounded gate confirms no demo/login/authorization/gui-error blocker",
+        "existing-session reuse route validated; no new Sysplorer/MWORKS window or port",
+        "package-browser screenshot",
+        "trace-isolation diagram screenshot",
+        "controller/plant/sensor/actuator bridge wiring observation",
+        "targeted check_model before any Factory trace acceptance"
+      ],
+      "stop_conditions": [
+        "demo/login/activation/authorization/gui-error/mixed/unknown MWORKS state appears",
+        "MCP/session route starts a new Sysplorer/MWORKS process or dedicated port",
+        "package candidate cannot be located or expands to a red/unresolved node",
+        "diagram opens blank/empty or with unreadable proxy surface requiring foreground review",
+        "check_model fails before diagram acceptance can be claimed"
+      ],
+      "claim_boundary": [
+        "package_browser_acceptance_until_screenshot_reviewed",
+        "graphical_layout_acceptance",
+        "wiring_acceptance",
+        "simulation_success",
+        "controller_performance",
+        "planner_ready",
+        "closed_loop",
+        "012_static_queue_refinement_is_not_live_acceptance"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "schema": "mosim.mworks_model_hygiene.controller_category_mapping_matrix.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-CONTROLLERS-CONTROLLERBLOCKS-STATIC-INTEGRATION-20260607-010",
+  "source_package": "QuadrotorControllerBlocks",
+  "formal_package": "MoSimQuadrotorModel.Controllers",
+  "compatibility_package_preserved": "QuadrotorExperiments.ControllerBaselines",
+  "category_count": 7,
+  "controller_wrapper_alias_count_from_source_categories": 19,
+  "categories": [
+    {
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.AWFFPidBlocks",
+      "role": "AWFF PID 基线分解、混控与完整控制器正式入口",
+      "extends_target": "QuadrotorControllerBlocks.AWFFPidBlocks",
+      "source_category_exists_in_package_mo": true,
+      "source_category_in_package_order": true,
+      "formal_entry_declared": true,
+      "formal_extends_declared": true,
+      "formal_order_entry": true,
+      "source_child_alias_count": 6,
+      "source_child_aliases": [
+        {
+          "alias": "PositionOuterLoop",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_PositionOuterLoop_Sysblock"
+        },
+        {
+          "alias": "AttitudeInnerLoop",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_AttitudeInnerLoop_Sysblock"
+        },
+        {
+          "alias": "MotorMixer",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_MotorMixer_Sysblock"
+        },
+        {
+          "alias": "FullControllerGraphical",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_FullController_Sysblock"
+        },
+        {
+          "alias": "FullControllerEquation",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_FullControllerEquation_Sysblock"
+        },
+        {
+          "alias": "FullControllerFlatGraphical",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_FullControllerFlatGraphical_Sysblock"
+        }
+      ]
+    },
+    {
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.InnovationControllers",
+      "role": "INDI、L1 残差与创新控制器正式入口",
+      "extends_target": "QuadrotorControllerBlocks.InnovationControllers",
+      "source_category_exists_in_package_mo": true,
+      "source_category_in_package_order": true,
+      "formal_entry_declared": true,
+      "formal_extends_declared": true,
+      "formal_order_entry": true,
+      "source_child_alias_count": 3,
+      "source_child_aliases": [
+        {
+          "alias": "INDIEquation",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_INDIControllerEquation_Sysblock"
+        },
+        {
+          "alias": "L1ResidualEquation",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_L1ResidualControllerEquation_Sysblock"
+        },
+        {
+          "alias": "InnovationGraphicalOverview",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_InnovationGraphicalControllers"
+        }
+      ]
+    },
+    {
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.FaultAllocationControllers",
+      "role": "故障补偿、在线故障分配与多故障隔离正式入口",
+      "extends_target": "QuadrotorControllerBlocks.FaultAllocationControllers",
+      "source_category_exists_in_package_mo": true,
+      "source_category_in_package_order": true,
+      "formal_entry_declared": true,
+      "formal_extends_declared": true,
+      "formal_order_entry": true,
+      "source_child_alias_count": 6,
+      "source_child_aliases": [
+        {
+          "alias": "FaultCompensationEquation",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_FaultCompensationControllerEquation_Sysblock"
+        },
+        {
+          "alias": "L1FaultAllocationEquation",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_L1FaultAllocationControllerEquation_Sysblock"
+        },
+        {
+          "alias": "L1OnlineFaultAllocationEquation",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock"
+        },
+        {
+          "alias": "L1MultiFaultIsolationEquation",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_L1MultiFaultIsolationControllerEquation_Sysblock"
+        },
+        {
+          "alias": "LinearMPCOnlineFaultAllocation",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_LinearMPCOnlineFaultAllocationController_Sysblock"
+        },
+        {
+          "alias": "LinearMPCMultiFaultAllocation",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_LinearMPCMultiFaultAllocationController_Sysblock"
+        }
+      ]
+    },
+    {
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.LinearMPCControllers",
+      "role": "标称线性 MPC 外环控制器正式入口",
+      "extends_target": "QuadrotorControllerBlocks.LinearMPCControllers",
+      "source_category_exists_in_package_mo": true,
+      "source_category_in_package_order": true,
+      "formal_entry_declared": true,
+      "formal_extends_declared": true,
+      "formal_order_entry": true,
+      "source_child_alias_count": 1,
+      "source_child_aliases": [
+        {
+          "alias": "OuterLoopEquation",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_LinearMPCOuterLoopControllerEquation_Sysblock"
+        }
+      ]
+    },
+    {
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.SafetyControllers",
+      "role": "QP/NMPC 安全滤波与返航降落控制正式入口",
+      "extends_target": "QuadrotorControllerBlocks.SafetyControllers",
+      "source_category_exists_in_package_mo": true,
+      "source_category_in_package_order": true,
+      "formal_entry_declared": true,
+      "formal_extends_declared": true,
+      "formal_order_entry": true,
+      "source_child_alias_count": 1,
+      "source_child_aliases": [
+        {
+          "alias": "QPNMPCSafety",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_QPNMPCSafetyController_Sysblock"
+        }
+      ]
+    },
+    {
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.DemosAndSIL",
+      "role": "演示、代码生成与 SIL 验证正式入口",
+      "extends_target": "QuadrotorControllerBlocks.DemosAndSIL",
+      "source_category_exists_in_package_mo": true,
+      "source_category_in_package_order": true,
+      "formal_entry_declared": true,
+      "formal_extends_declared": true,
+      "formal_order_entry": true,
+      "source_child_alias_count": 2,
+      "source_child_aliases": [
+        {
+          "alias": "PIDDemo",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo"
+        },
+        {
+          "alias": "PIDDemoSILConstant",
+          "extends_target": "QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo_SIL_Constant"
+        }
+      ]
+    },
+    {
+      "new_formal_entry": "MoSimQuadrotorModel.Controllers.CompatibilityAndLegacy",
+      "role": "控制器库兼容与废弃候选保留入口",
+      "extends_target": "QuadrotorControllerBlocks.CompatibilityAndLegacy",
+      "source_category_exists_in_package_mo": true,
+      "source_category_in_package_order": true,
+      "formal_entry_declared": true,
+      "formal_extends_declared": true,
+      "formal_order_entry": true,
+      "source_child_alias_count": 0,
+      "source_child_aliases": []
+    }
+  ]
+}

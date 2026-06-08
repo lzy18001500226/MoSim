@@ -1,0 +1,129 @@
+{
+  "schema": "mosim.mworks_model_hygiene.package_order_validation.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-PACKAGE-SURFACE-HYGIENE-20260607-013",
+  "generated_at": "2026-06-08T00:03:57.075421+08:00",
+  "validated_files": [
+    {
+      "path": "Models/MoSimQuadrotorModel/Baseline/package.order",
+      "sibling_package_mo": "Models/MoSimQuadrotorModel/Baseline/package.mo",
+      "declared_entries": [
+        "OfficialExample1",
+        "OfficialExample2",
+        "OfficialExample3",
+        "OfficialQuadChassis"
+      ],
+      "order_entries": [
+        "OfficialExample1",
+        "OfficialExample2",
+        "OfficialExample3",
+        "OfficialQuadChassis"
+      ],
+      "duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "trailing_newline": true,
+      "status": "pass"
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/Dynamics/package.order",
+      "sibling_package_mo": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "declared_entries": [
+        "RotorActuatorCore",
+        "HoverSmoke",
+        "YawStepSmoke",
+        "WrapperSurface",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "order_entries": [
+        "RotorActuatorCore",
+        "HoverSmoke",
+        "YawStepSmoke",
+        "WrapperSurface",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "trailing_newline": true,
+      "status": "pass"
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/Controllers/package.order",
+      "sibling_package_mo": "Models/MoSimQuadrotorModel/Controllers/package.mo",
+      "declared_entries": [
+        "AWFFPidBlocks",
+        "InnovationControllers",
+        "FaultAllocationControllers",
+        "LinearMPCControllers",
+        "SafetyControllers",
+        "DemosAndSIL",
+        "CompatibilityAndLegacy"
+      ],
+      "order_entries": [
+        "AWFFPidBlocks",
+        "InnovationControllers",
+        "FaultAllocationControllers",
+        "LinearMPCControllers",
+        "SafetyControllers",
+        "DemosAndSIL",
+        "CompatibilityAndLegacy"
+      ],
+      "duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "trailing_newline": true,
+      "status": "pass"
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/SceneTrace/package.order",
+      "sibling_package_mo": "Models/MoSimQuadrotorModel/SceneTrace/package.mo",
+      "declared_entries": [
+        "AcceptedScenes",
+        "Isolation"
+      ],
+      "order_entries": [
+        "AcceptedScenes",
+        "Isolation"
+      ],
+      "duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "trailing_newline": true,
+      "status": "pass"
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/System/package.order",
+      "sibling_package_mo": "Models/MoSimQuadrotorModel/System/package.mo",
+      "declared_entries": [
+        "Architecture",
+        "Modules"
+      ],
+      "order_entries": [
+        "Architecture",
+        "Modules"
+      ],
+      "duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "trailing_newline": true,
+      "status": "pass"
+    }
+  ],
+  "overall_status": "pass",
+  "notes": [
+    "Missions: no package.order because package.mo declares no local visible entries and only exposes inherited compatibility surface.",
+    "Robustness: no package.order because package.mo declares no local visible entries and only exposes inherited compatibility surface.",
+    "Planning: no package.order because package.mo declares no local visible entries and only exposes inherited compatibility surface.",
+    "Formation: no package.order because package.mo declares no local visible entries and only exposes inherited compatibility surface.",
+    "Support: no package.order because package.mo declares no local visible entries and only exposes inherited compatibility surface.",
+    "LegacyCompatibility: no package.order because package.mo declares no local visible entries and only exposes inherited compatibility surface."
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-ALIAS-PACKAGE-ORDER-INTEGRITY-STATIC-GATE-20260608-017",
+  "r2_015_snapshot": {
+    "mosim_formal_top_categories": 11,
+    "mosim_formal_ordered_child_entries": 64,
+    "root_order": [
+      "Baseline",
+      "Dynamics",
+      "Missions",
+      "Controllers",
+      "Robustness",
+      "Planning",
+      "SceneTrace",
+      "System",
+      "Formation",
+      "Support",
+      "LegacyCompatibility"
+    ],
+    "dynamics_order_count": 9
+  },
+  "current_after_r1_017_018_019": {
+    "mosim_formal_top_categories": 12,
+    "mosim_formal_ordered_child_entries": 68,
+    "root_order": [
+      "Baseline",
+      "Dynamics",
+      "Parameters",
+      "Missions",
+      "Controllers",
+      "Robustness",
+      "Planning",
+      "SceneTrace",
+      "System",
+      "Formation",
+      "Support",
+      "LegacyCompatibility"
+    ],
+    "dynamics_order_count": 12,
+    "parameters_order_count": 1,
+    "dynamics_upgrade_order_count": 12
+  },
+  "stale_fields": [
+    {
+      "field": "formal_package_surface_map.root_order_count / mosim_formal_top_categories",
+      "r2_015": 11,
+      "current": 12,
+      "reason": "R1 019 added the formal Parameters package to MoSimQuadrotorModel/package.order."
+    },
+    {
+      "field": "formal_package_surface_map.root_order_entries",
+      "r2_015": "no Parameters entry",
+      "current": "Parameters appears after Dynamics",
+      "reason": "R1 019 created Models/MoSimQuadrotorModel/Parameters with Sunray150ParameterProvenance."
+    },
+    {
+      "field": "MoSimQuadrotorModel.Dynamics entries",
+      "r2_015": "pre-017/018 Dynamics surface",
+      "current": [
+        "RotorActuatorCore",
+        "HoverSmoke",
+        "YawStepSmoke",
+        "WrapperSurface",
+        "ActuatorCommandMapper",
+        "ActuatorMappedWrapperSurface",
+        "OptionalDampingGyroLayer",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "reason": "R1 017 added ActuatorCommandMapper and ActuatorMappedWrapperSurface; R1 018 added OptionalDampingGyroLayer."
+    },
+    {
+      "field": "QuadrotorExperiments.DynamicsUpgrade entries",
+      "r2_015": "pre-017/018 compatibility DynamicsUpgrade surface",
+      "current": [
+        "RotorDynamicsCore",
+        "RotorHoverSmoke",
+        "RotorYawStepSmoke",
+        "WrapperSurface",
+        "ActuatorCommandMapper",
+        "ActuatorMappedWrapperSurface",
+        "OptionalDampingGyroLayer",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "reason": "R1 017/018 appended compatibility aliases and concrete sibling sources."
+    },
+    {
+      "field": "mosim_formal_ordered_child_entries",
+      "r2_015": 64,
+      "current": 68,
+      "reason": "Dynamics gained three entries and Parameters gained one ordered child entry."
+    }
+  ],
+  "conclusion": "R2 015 remains useful as an ownership taxonomy, but its counts and live-audit queue are stale for current Dynamics/Parameters/package.order integrity."
+}

@@ -1,0 +1,183 @@
+{
+  "schema": "mosim.mworks_dynamics_gap_matrix.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-RFLYSIM-DYNAMICS-GAP-STATIC-AUDIT-20260608-016",
+  "created_at": "2026-06-08T03:25:08+08:00",
+  "scope": "static_inventory_only",
+  "live_mworks_touched": false,
+  "source_surfaces": [
+    "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+    "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+    "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+    "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
+    "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchFrameAdapter.mo",
+    "References/MWORKS/QuadrotorModel/package.mo",
+    "Results/unreal_scene_mapping/sunray150_dae_assembly_parameters_20260604.json",
+    "Docs/Workflows/identify_quadrotor_parameters.md"
+  ],
+  "matrix": [
+    {
+      "feature": "formal_mosim_dynamics_surface",
+      "classification": "implemented_alias_surface",
+      "current_implementation": "MoSimQuadrotorModel.Dynamics formal entries extend QuadrotorExperiments.DynamicsUpgrade aliases.",
+      "source_anchors": [
+        "Models/MoSimQuadrotorModel/Dynamics/package.mo:5-48",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo:6-58"
+      ],
+      "gap_or_boundary": "Alias surface is a controlled compatibility step, not final implementation-file migration.",
+      "next_minimal_action": "Keep alias until live check_model and package migration plan approve file moves."
+    },
+    {
+      "feature": "command_to_speed_mapping",
+      "classification": "partially_implemented",
+      "current_implementation": "The core accepts signed visual rotor speed commands in rad/s and preserves spin/yaw sign labels.",
+      "source_anchors": [
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo:22-28",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo:13-20"
+      ],
+      "gap_or_boundary": "No normalized PWM/actuator command map, throttle gate, speed saturation, or voltage model.",
+      "next_minimal_action": "Add a project-owned actuator-command mapper before the rotor core; keep signed visual speed as the internal boundary."
+    },
+    {
+      "feature": "motor_first_order_lag",
+      "classification": "implemented",
+      "current_implementation": "Asymmetric up/down motor_tau and der(omega) first-order lag.",
+      "source_anchors": [
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo:10-13",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo:42-43"
+      ],
+      "gap_or_boundary": "Time constants are SDF migration seeds, not ULog or bench identified.",
+      "next_minimal_action": "Preserve source labels; replace only from a project-owned identification bundle."
+    },
+    {
+      "feature": "ct_omega_squared_thrust",
+      "classification": "implemented",
+      "current_implementation": "Per-rotor thrust equals lift_coefficient * omega^2; wrapper exposes command-side algebraic thrust too.",
+      "source_anchors": [
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo:6",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo:31-32",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo:44",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo:39"
+      ],
+      "gap_or_boundary": "Lift coefficient is an SDF/visual-speed convention seed, not identified truth.",
+      "next_minimal_action": "Keep speed scaling and source labels explicit; do not import RflySim numeric Ct."
+    },
+    {
+      "feature": "cm_yaw_reaction_torque",
+      "classification": "implemented",
+      "current_implementation": "yaw_reaction_moment = yaw_direction * moment_constant * thrust and contributes to total_moment_body[3].",
+      "source_anchors": [
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo:8",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo:24-25",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo:45",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo:48",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo:53",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo:40",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo:54-55"
+      ],
+      "gap_or_boundary": "Moment ratio and sign/order are source-labeled and need motor-order validation before allocation claims.",
+      "next_minimal_action": "Retain sign/order gate variables and verify with narrow yaw smoke before any controller or allocation claim."
+    },
+    {
+      "feature": "rotor_center_r_cross_f_moment",
+      "classification": "implemented",
+      "current_implementation": "Roll/pitch moments are computed from rotor center coordinates and thrust; yaw component comes from reaction moment.",
+      "source_anchors": [
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo:16-21",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo:46-53",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo:41-43",
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo:50-52"
+      ],
+      "gap_or_boundary": "Rotor centers are DAE geometry anchors only.",
+      "next_minimal_action": "Keep geometry provenance separate from mass/inertia/Ct/Cm/motor lag truth."
+    },
+    {
+      "feature": "explicit_physical_wrench_application",
+      "classification": "implemented_static_structure",
+      "current_implementation": "PhysicalWrenchFrameAdapter applies wrapper total force and torque through MultiBody WorldForceAndTorque.",
+      "source_anchors": [
+        "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchFrameAdapter.mo:31-58"
+      ],
+      "gap_or_boundary": "No live check_model or simulation was run in 016; prior 005 live evidence is not revalidated here.",
+      "next_minimal_action": "Use as the next live boundary only after reusable-session MCP attach is safe."
+    },
+    {
+      "feature": "rotor_gyroscopic_moment",
+      "classification": "missing",
+      "current_implementation": "No gyro moment term was found in the DynamicsUpgrade source.",
+      "source_anchors": [
+        "Docs/Workflows/identify_quadrotor_parameters.md:793",
+        "negative_static_search: Models/QuadrotorExperiments/DynamicsUpgrade/* gyro terms"
+      ],
+      "gap_or_boundary": "Optional RflySim-like module; needs rotor inertia, body rates, rotor speeds, and direction signs.",
+      "next_minimal_action": "Add as disabled/tunable optional module after thrust/yaw/r x F chain is validated live."
+    },
+    {
+      "feature": "body_aerodynamic_drag",
+      "classification": "missing",
+      "current_implementation": "No translational aerodynamic drag force term was found in DynamicsUpgrade.",
+      "source_anchors": [
+        "Docs/Workflows/identify_quadrotor_parameters.md:794",
+        "negative_static_search: Models/QuadrotorExperiments/DynamicsUpgrade/* drag terms"
+      ],
+      "gap_or_boundary": "Drag coefficients are not identified and cannot come from DAE/visual geometry alone.",
+      "next_minimal_action": "Add an optional wrapper-level drag module with source labels and null/seed coefficients."
+    },
+    {
+      "feature": "angular_damping",
+      "classification": "missing",
+      "current_implementation": "No rotational damping moment term was found in DynamicsUpgrade.",
+      "source_anchors": [
+        "Docs/Workflows/identify_quadrotor_parameters.md:795",
+        "negative_static_search: Models/QuadrotorExperiments/DynamicsUpgrade/* damping terms"
+      ],
+      "gap_or_boundary": "Angular damping coefficients are not identified.",
+      "next_minimal_action": "Add only after basic physical wrench chain is stable; keep coefficients source-labeled."
+    },
+    {
+      "feature": "contact_ground_support",
+      "classification": "out_of_scope_for_current_wrapper",
+      "current_implementation": "Official QuadrotorModel contains TouchModel; DynamicsUpgrade free-flight wrapper does not include contact.",
+      "source_anchors": [
+        "References/MWORKS/QuadrotorModel/package.mo:2122-2252",
+        "Docs/Workflows/identify_quadrotor_parameters.md:796"
+      ],
+      "gap_or_boundary": "Contact should remain separate from nominal free-flight rotor dynamics.",
+      "next_minimal_action": "Create takeoff/landing/contact scenario wrapper only when needed."
+    },
+    {
+      "feature": "fault_dynamic_parameter_layers",
+      "classification": "missing_from_core_by_design",
+      "current_implementation": "Nominal core uses fixed source-labeled seed parameters.",
+      "source_anchors": [
+        "Docs/Workflows/identify_quadrotor_parameters.md:797",
+        "Docs/Workflows/identify_quadrotor_parameters.md:861-869"
+      ],
+      "gap_or_boundary": "Fault/dynamic parameter changes should not be hard-coded into nominal plant constants.",
+      "next_minimal_action": "Add scenario-level modifiers or wrappers after nominal live checks pass."
+    },
+    {
+      "feature": "parameter_identification_status",
+      "classification": "not_identified_truth",
+      "current_implementation": "Source labels distinguish DAE geometry from SDF migration seed parameters.",
+      "source_anchors": [
+        "Docs/Workflows/identify_quadrotor_parameters.md:34-45",
+        "Docs/Workflows/identify_quadrotor_parameters.md:250-251",
+        "Docs/Workflows/identify_quadrotor_parameters.md:908-915",
+        "Results/unreal_scene_mapping/sunray150_dae_assembly_parameters_20260604.json:5-22"
+      ],
+      "gap_or_boundary": "No PX4 ULog/sysid evidence bundle exists for identified Sunray150 truth.",
+      "next_minimal_action": "Keep non-geometry values source-labeled until ULog/bench identification evidence exists."
+    },
+    {
+      "feature": "live_verification_state_for_016",
+      "classification": "not_run_by_design",
+      "current_implementation": "016 produced static source audit artifacts only.",
+      "source_anchors": [
+        "Results/agent_packets/PMO-MWORKS-R1-MOSIMQUAD-RFLYSIM-DYNAMICS-GAP-STATIC-AUDIT-20260608-016.json:mworks_live_gate"
+      ],
+      "gap_or_boundary": "No new check_model, simulation, GUI, layout, activation, or result evidence was produced.",
+      "next_minimal_action": "Resume live verification only after CoAgentOps/PMO resolves reusable-session attach."
+    }
+  ],
+  "overall_static_conclusion": "The current project-owned implementation statically covers the minimum RflySim-like rotor force/moment chain up through an explicit physical wrench adapter, but it lacks normalized actuator-to-speed mapping, rotor gyro, drag, angular damping, and scenario fault/contact layers. It is not an identified Sunray150 truth model and was not live-validated in 016."
+}

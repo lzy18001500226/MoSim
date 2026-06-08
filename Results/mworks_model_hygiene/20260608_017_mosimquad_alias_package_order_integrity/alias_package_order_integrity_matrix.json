@@ -1,0 +1,1042 @@
+{
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-ALIAS-PACKAGE-ORDER-INTEGRITY-STATIC-GATE-20260608-017",
+  "status": "blocked",
+  "scope": "static package/order integrity for current MoSimQuadrotorModel root, Dynamics, Parameters, and QuadrotorExperiments.DynamicsUpgrade",
+  "root_package_order": [
+    "Baseline",
+    "Dynamics",
+    "Parameters",
+    "Missions",
+    "Controllers",
+    "Robustness",
+    "Planning",
+    "SceneTrace",
+    "System",
+    "Formation",
+    "Support",
+    "LegacyCompatibility"
+  ],
+  "root_package_order_count": 12,
+  "root_order_duplicates": [],
+  "current_mosim_category_count": 12,
+  "current_mosim_ordered_child_entries": 68,
+  "focus_packages": [
+    {
+      "package": "MoSimQuadrotorModel",
+      "dir": "Models/MoSimQuadrotorModel",
+      "package_mo": "Models/MoSimQuadrotorModel/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/package.order",
+      "package_mo_exists": true,
+      "package_order_exists": true,
+      "order_entries": [
+        "Baseline",
+        "Dynamics",
+        "Parameters",
+        "Missions",
+        "Controllers",
+        "Robustness",
+        "Planning",
+        "SceneTrace",
+        "System",
+        "Formation",
+        "Support",
+        "LegacyCompatibility"
+      ],
+      "order_count": 12,
+      "order_duplicates": [],
+      "order_entry_resolution": [
+        {
+          "entry": "Baseline",
+          "qualified_name": "MoSimQuadrotorModel.Baseline",
+          "status": "resolved",
+          "resolution_sources": [
+            "child_package_dir"
+          ],
+          "embedded_kind": null,
+          "child_package_dir": "Models/MoSimQuadrotorModel/Baseline",
+          "sibling_mo": null
+        },
+        {
+          "entry": "Dynamics",
+          "qualified_name": "MoSimQuadrotorModel.Dynamics",
+          "status": "resolved",
+          "resolution_sources": [
+            "child_package_dir"
+          ],
+          "embedded_kind": null,
+          "child_package_dir": "Models/MoSimQuadrotorModel/Dynamics",
+          "sibling_mo": null
+        },
+        {
+          "entry": "Parameters",
+          "qualified_name": "MoSimQuadrotorModel.Parameters",
+          "status": "resolved",
+          "resolution_sources": [
+            "child_package_dir"
+          ],
+          "embedded_kind": null,
+          "child_package_dir": "Models/MoSimQuadrotorModel/Parameters",
+          "sibling_mo": null
+        },
+        {
+          "entry": "Missions",
+          "qualified_name": "MoSimQuadrotorModel.Missions",
+          "status": "resolved",
+          "resolution_sources": [
+            "child_package_dir"
+          ],
+          "embedded_kind": null,
+          "child_package_dir": "Models/MoSimQuadrotorModel/Missions",
+          "sibling_mo": null
+        },
+        {
+          "entry": "Controllers",
+          "qualified_name": "MoSimQuadrotorModel.Controllers",
+          "status": "resolved",
+          "resolution_sources": [
+            "child_package_dir"
+          ],
+          "embedded_kind": null,
+          "child_package_dir": "Models/MoSimQuadrotorModel/Controllers",
+          "sibling_mo": null
+        },
+        {
+          "entry": "Robustness",
+          "qualified_name": "MoSimQuadrotorModel.Robustness",
+          "status": "resolved",
+          "resolution_sources": [
+            "child_package_dir"
+          ],
+          "embedded_kind": null,
+          "child_package_dir": "Models/MoSimQuadrotorModel/Robustness",
+          "sibling_mo": null
+        },
+        {
+          "entry": "Planning",
+          "qualified_name": "MoSimQuadrotorModel.Planning",
+          "status": "resolved",
+          "resolution_sources": [
+            "child_package_dir"
+          ],
+          "embedded_kind": null,
+          "child_package_dir": "Models/MoSimQuadrotorModel/Planning",
+          "sibling_mo": null
+        },
+        {
+          "entry": "SceneTrace",
+          "qualified_name": "MoSimQuadrotorModel.SceneTrace",
+          "status": "resolved",
+          "resolution_sources": [
+            "child_package_dir"
+          ],
+          "embedded_kind": null,
+          "child_package_dir": "Models/MoSimQuadrotorModel/SceneTrace",
+          "sibling_mo": null
+        },
+        {
+          "entry": "System",
+          "qualified_name": "MoSimQuadrotorModel.System",
+          "status": "resolved",
+          "resolution_sources": [
+            "child_package_dir"
+          ],
+          "embedded_kind": null,
+          "child_package_dir": "Models/MoSimQuadrotorModel/System",
+          "sibling_mo": null
+        },
+        {
+          "entry": "Formation",
+          "qualified_name": "MoSimQuadrotorModel.Formation",
+          "status": "resolved",
+          "resolution_sources": [
+            "child_package_dir"
+          ],
+          "embedded_kind": null,
+          "child_package_dir": "Models/MoSimQuadrotorModel/Formation",
+          "sibling_mo": null
+        },
+        {
+          "entry": "Support",
+          "qualified_name": "MoSimQuadrotorModel.Support",
+          "status": "resolved",
+          "resolution_sources": [
+            "child_package_dir"
+          ],
+          "embedded_kind": null,
+          "child_package_dir": "Models/MoSimQuadrotorModel/Support",
+          "sibling_mo": null
+        },
+        {
+          "entry": "LegacyCompatibility",
+          "qualified_name": "MoSimQuadrotorModel.LegacyCompatibility",
+          "status": "resolved",
+          "resolution_sources": [
+            "child_package_dir"
+          ],
+          "embedded_kind": null,
+          "child_package_dir": "Models/MoSimQuadrotorModel/LegacyCompatibility",
+          "sibling_mo": null
+        }
+      ],
+      "embedded_declarations": [],
+      "embedded_not_in_package_order": [],
+      "status": "pass"
+    },
+    {
+      "package": "MoSimQuadrotorModel.Dynamics",
+      "dir": "Models/MoSimQuadrotorModel/Dynamics",
+      "package_mo": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/Dynamics/package.order",
+      "package_mo_exists": true,
+      "package_order_exists": true,
+      "order_entries": [
+        "RotorActuatorCore",
+        "HoverSmoke",
+        "YawStepSmoke",
+        "WrapperSurface",
+        "ActuatorCommandMapper",
+        "ActuatorMappedWrapperSurface",
+        "OptionalDampingGyroLayer",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "order_count": 12,
+      "order_duplicates": [],
+      "order_entry_resolution": [
+        {
+          "entry": "RotorActuatorCore",
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "HoverSmoke",
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "YawStepSmoke",
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "WrapperSurface",
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "ActuatorCommandMapper",
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "ActuatorMappedWrapperSurface",
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "OptionalDampingGyroLayer",
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "WrapperHoverSmoke",
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "WrapperYawStepSmoke",
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "PhysicalWrenchAdapter",
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "PhysicalWrenchHoverSmoke",
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "PhysicalWrenchYawStepSmoke",
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        }
+      ],
+      "embedded_declarations": [
+        {
+          "name": "ActuatorCommandMapper",
+          "kind": "model",
+          "line": 24,
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper"
+        },
+        {
+          "name": "ActuatorMappedWrapperSurface",
+          "kind": "model",
+          "line": 29,
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface"
+        },
+        {
+          "name": "HoverSmoke",
+          "kind": "model",
+          "line": 9,
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.HoverSmoke"
+        },
+        {
+          "name": "OptionalDampingGyroLayer",
+          "kind": "model",
+          "line": 34,
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer"
+        },
+        {
+          "name": "PhysicalWrenchAdapter",
+          "kind": "model",
+          "line": 49,
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter"
+        },
+        {
+          "name": "PhysicalWrenchHoverSmoke",
+          "kind": "model",
+          "line": 54,
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke"
+        },
+        {
+          "name": "PhysicalWrenchYawStepSmoke",
+          "kind": "model",
+          "line": 59,
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke"
+        },
+        {
+          "name": "RotorActuatorCore",
+          "kind": "model",
+          "line": 4,
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore"
+        },
+        {
+          "name": "WrapperHoverSmoke",
+          "kind": "model",
+          "line": 39,
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke"
+        },
+        {
+          "name": "WrapperSurface",
+          "kind": "model",
+          "line": 19,
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.WrapperSurface"
+        },
+        {
+          "name": "WrapperYawStepSmoke",
+          "kind": "model",
+          "line": 44,
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke"
+        },
+        {
+          "name": "YawStepSmoke",
+          "kind": "model",
+          "line": 14,
+          "qualified_name": "MoSimQuadrotorModel.Dynamics.YawStepSmoke"
+        }
+      ],
+      "embedded_not_in_package_order": [],
+      "status": "pass"
+    },
+    {
+      "package": "MoSimQuadrotorModel.Parameters",
+      "dir": "Models/MoSimQuadrotorModel/Parameters",
+      "package_mo": "Models/MoSimQuadrotorModel/Parameters/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/Parameters/package.order",
+      "package_mo_exists": true,
+      "package_order_exists": true,
+      "order_entries": [
+        "Sunray150ParameterProvenance"
+      ],
+      "order_count": 1,
+      "order_duplicates": [],
+      "order_entry_resolution": [
+        {
+          "entry": "Sunray150ParameterProvenance",
+          "qualified_name": "MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "record",
+          "child_package_dir": null,
+          "sibling_mo": null
+        }
+      ],
+      "embedded_declarations": [
+        {
+          "name": "Sunray150ParameterProvenance",
+          "kind": "record",
+          "line": 6,
+          "qualified_name": "MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance"
+        }
+      ],
+      "embedded_not_in_package_order": [],
+      "status": "pass"
+    },
+    {
+      "package": "QuadrotorExperiments.DynamicsUpgrade",
+      "dir": "Models/QuadrotorExperiments/DynamicsUpgrade",
+      "package_mo": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "package_order": "Models/QuadrotorExperiments/DynamicsUpgrade/package.order",
+      "package_mo_exists": true,
+      "package_order_exists": true,
+      "order_entries": [
+        "RotorDynamicsCore",
+        "RotorHoverSmoke",
+        "RotorYawStepSmoke",
+        "WrapperSurface",
+        "ActuatorCommandMapper",
+        "ActuatorMappedWrapperSurface",
+        "OptionalDampingGyroLayer",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "order_count": 12,
+      "order_duplicates": [],
+      "order_entry_resolution": [
+        {
+          "entry": "RotorDynamicsCore",
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "RotorHoverSmoke",
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "RotorYawStepSmoke",
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "WrapperSurface",
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "ActuatorCommandMapper",
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.ActuatorCommandMapper",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "ActuatorMappedWrapperSurface",
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.ActuatorMappedWrapperSurface",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "OptionalDampingGyroLayer",
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.OptionalDampingGyroLayer",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "WrapperHoverSmoke",
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.WrapperHoverSmoke",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "WrapperYawStepSmoke",
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.WrapperYawStepSmoke",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "PhysicalWrenchAdapter",
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "PhysicalWrenchHoverSmoke",
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchHoverSmoke",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        },
+        {
+          "entry": "PhysicalWrenchYawStepSmoke",
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchYawStepSmoke",
+          "status": "resolved",
+          "resolution_sources": [
+            "embedded_declaration"
+          ],
+          "embedded_kind": "model",
+          "child_package_dir": null,
+          "sibling_mo": null
+        }
+      ],
+      "embedded_declarations": [
+        {
+          "name": "ActuatorCommandMapper",
+          "kind": "model",
+          "line": 29,
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.ActuatorCommandMapper"
+        },
+        {
+          "name": "ActuatorMappedWrapperSurface",
+          "kind": "model",
+          "line": 35,
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.ActuatorMappedWrapperSurface"
+        },
+        {
+          "name": "OptionalDampingGyroLayer",
+          "kind": "model",
+          "line": 41,
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.OptionalDampingGyroLayer"
+        },
+        {
+          "name": "PhysicalWrenchAdapter",
+          "kind": "model",
+          "line": 59,
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter"
+        },
+        {
+          "name": "PhysicalWrenchHoverSmoke",
+          "kind": "model",
+          "line": 65,
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchHoverSmoke"
+        },
+        {
+          "name": "PhysicalWrenchYawStepSmoke",
+          "kind": "model",
+          "line": 71,
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchYawStepSmoke"
+        },
+        {
+          "name": "RotorDynamicsCore",
+          "kind": "model",
+          "line": 5,
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore"
+        },
+        {
+          "name": "RotorHoverSmoke",
+          "kind": "model",
+          "line": 11,
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke"
+        },
+        {
+          "name": "RotorYawStepSmoke",
+          "kind": "model",
+          "line": 17,
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke"
+        },
+        {
+          "name": "WrapperHoverSmoke",
+          "kind": "model",
+          "line": 47,
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.WrapperHoverSmoke"
+        },
+        {
+          "name": "WrapperSurface",
+          "kind": "model",
+          "line": 23,
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface"
+        },
+        {
+          "name": "WrapperYawStepSmoke",
+          "kind": "model",
+          "line": 53,
+          "qualified_name": "QuadrotorExperiments.DynamicsUpgrade.WrapperYawStepSmoke"
+        }
+      ],
+      "embedded_not_in_package_order": [],
+      "status": "pass"
+    }
+  ],
+  "all_mosim_category_summary": [
+    {
+      "package": "MoSimQuadrotorModel.Baseline",
+      "order_count": 4,
+      "order_duplicates": [],
+      "embedded_declaration_count": 4,
+      "embedded_not_in_package_order_count": 0,
+      "status": "pass"
+    },
+    {
+      "package": "MoSimQuadrotorModel.Controllers",
+      "order_count": 7,
+      "order_duplicates": [],
+      "embedded_declaration_count": 7,
+      "embedded_not_in_package_order_count": 0,
+      "status": "pass"
+    },
+    {
+      "package": "MoSimQuadrotorModel.Dynamics",
+      "order_count": 12,
+      "order_duplicates": [],
+      "embedded_declaration_count": 12,
+      "embedded_not_in_package_order_count": 0,
+      "status": "pass"
+    },
+    {
+      "package": "MoSimQuadrotorModel.Formation",
+      "order_count": 1,
+      "order_duplicates": [],
+      "embedded_declaration_count": 1,
+      "embedded_not_in_package_order_count": 0,
+      "status": "pass"
+    },
+    {
+      "package": "MoSimQuadrotorModel.LegacyCompatibility",
+      "order_count": 1,
+      "order_duplicates": [],
+      "embedded_declaration_count": 1,
+      "embedded_not_in_package_order_count": 0,
+      "status": "pass"
+    },
+    {
+      "package": "MoSimQuadrotorModel.Missions",
+      "order_count": 15,
+      "order_duplicates": [],
+      "embedded_declaration_count": 15,
+      "embedded_not_in_package_order_count": 0,
+      "status": "pass"
+    },
+    {
+      "package": "MoSimQuadrotorModel.Parameters",
+      "order_count": 1,
+      "order_duplicates": [],
+      "embedded_declaration_count": 1,
+      "embedded_not_in_package_order_count": 0,
+      "status": "pass"
+    },
+    {
+      "package": "MoSimQuadrotorModel.Planning",
+      "order_count": 7,
+      "order_duplicates": [],
+      "embedded_declaration_count": 7,
+      "embedded_not_in_package_order_count": 0,
+      "status": "pass"
+    },
+    {
+      "package": "MoSimQuadrotorModel.Robustness",
+      "order_count": 12,
+      "order_duplicates": [],
+      "embedded_declaration_count": 51,
+      "embedded_not_in_package_order_count": 39,
+      "status": "pass"
+    },
+    {
+      "package": "MoSimQuadrotorModel.SceneTrace",
+      "order_count": 2,
+      "order_duplicates": [],
+      "embedded_declaration_count": 2,
+      "embedded_not_in_package_order_count": 0,
+      "status": "pass"
+    },
+    {
+      "package": "MoSimQuadrotorModel.Support",
+      "order_count": 4,
+      "order_duplicates": [],
+      "embedded_declaration_count": 4,
+      "embedded_not_in_package_order_count": 0,
+      "status": "pass"
+    },
+    {
+      "package": "MoSimQuadrotorModel.System",
+      "order_count": 2,
+      "order_duplicates": [],
+      "embedded_declaration_count": 2,
+      "embedded_not_in_package_order_count": 0,
+      "status": "pass"
+    }
+  ],
+  "blocking_findings": [
+    {
+      "source_package": "QuadrotorExperiments.DynamicsUpgrade",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "line": 8,
+      "target": "QuadrotorExperiments.DynamicsUpgrade.Sunray150RflyStyleRotorDynamics",
+      "status": "unresolved",
+      "target_source": null,
+      "target_resolution": null,
+      "target_kind": null
+    },
+    {
+      "source_package": "QuadrotorExperiments.DynamicsUpgrade",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "line": 14,
+      "target": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeHoverSmoke",
+      "status": "unresolved",
+      "target_source": null,
+      "target_resolution": null,
+      "target_kind": null
+    },
+    {
+      "source_package": "QuadrotorExperiments.DynamicsUpgrade",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "line": 20,
+      "target": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeYawStepSmoke",
+      "status": "unresolved",
+      "target_source": null,
+      "target_resolution": null,
+      "target_kind": null
+    },
+    {
+      "source_package": "QuadrotorExperiments.DynamicsUpgrade",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "line": 26,
+      "target": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperSurface",
+      "status": "unresolved",
+      "target_source": null,
+      "target_resolution": null,
+      "target_kind": null
+    },
+    {
+      "source_package": "QuadrotorExperiments.DynamicsUpgrade",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "line": 32,
+      "target": "QuadrotorExperiments.DynamicsUpgrade.Sunray150ActuatorCommandMapper",
+      "status": "unresolved",
+      "target_source": null,
+      "target_resolution": null,
+      "target_kind": null
+    },
+    {
+      "source_package": "QuadrotorExperiments.DynamicsUpgrade",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "line": 38,
+      "target": "QuadrotorExperiments.DynamicsUpgrade.Sunray150ActuatorMappedWrapperSurface",
+      "status": "unresolved",
+      "target_source": null,
+      "target_resolution": null,
+      "target_kind": null
+    },
+    {
+      "source_package": "QuadrotorExperiments.DynamicsUpgrade",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "line": 44,
+      "target": "QuadrotorExperiments.DynamicsUpgrade.Sunray150OptionalDampingGyroLayer",
+      "status": "unresolved",
+      "target_source": null,
+      "target_resolution": null,
+      "target_kind": null
+    },
+    {
+      "source_package": "QuadrotorExperiments.DynamicsUpgrade",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "line": 50,
+      "target": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperHoverSmoke",
+      "status": "unresolved",
+      "target_source": null,
+      "target_resolution": null,
+      "target_kind": null
+    },
+    {
+      "source_package": "QuadrotorExperiments.DynamicsUpgrade",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "line": 56,
+      "target": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperYawStepSmoke",
+      "status": "unresolved",
+      "target_source": null,
+      "target_resolution": null,
+      "target_kind": null
+    },
+    {
+      "source_package": "QuadrotorExperiments.DynamicsUpgrade",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "line": 62,
+      "target": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchFrameAdapter",
+      "status": "unresolved",
+      "target_source": null,
+      "target_resolution": null,
+      "target_kind": null
+    },
+    {
+      "source_package": "QuadrotorExperiments.DynamicsUpgrade",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "line": 68,
+      "target": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchHoverSmoke",
+      "status": "unresolved",
+      "target_source": null,
+      "target_resolution": null,
+      "target_kind": null
+    },
+    {
+      "source_package": "QuadrotorExperiments.DynamicsUpgrade",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "line": 74,
+      "target": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchYawStepSmoke",
+      "status": "unresolved",
+      "target_source": null,
+      "target_resolution": null,
+      "target_kind": null
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+      "compat_alias_in_order": true,
+      "compat_alias_resolved": true,
+      "final_target": null,
+      "final_target_status": "unresolved",
+      "final_target_source": null,
+      "final_target_resolution": null
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
+      "compat_alias_in_order": true,
+      "compat_alias_resolved": true,
+      "final_target": null,
+      "final_target_status": "unresolved",
+      "final_target_source": null,
+      "final_target_resolution": null
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
+      "compat_alias_in_order": true,
+      "compat_alias_resolved": true,
+      "final_target": null,
+      "final_target_status": "unresolved",
+      "final_target_source": null,
+      "final_target_resolution": null
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+      "compat_alias_in_order": true,
+      "compat_alias_resolved": true,
+      "final_target": null,
+      "final_target_status": "unresolved",
+      "final_target_source": null,
+      "final_target_resolution": null
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.ActuatorCommandMapper",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.ActuatorCommandMapper",
+      "compat_alias_in_order": true,
+      "compat_alias_resolved": true,
+      "final_target": null,
+      "final_target_status": "unresolved",
+      "final_target_source": null,
+      "final_target_resolution": null
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.ActuatorMappedWrapperSurface",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.ActuatorMappedWrapperSurface",
+      "compat_alias_in_order": true,
+      "compat_alias_resolved": true,
+      "final_target": null,
+      "final_target_status": "unresolved",
+      "final_target_source": null,
+      "final_target_resolution": null
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.OptionalDampingGyroLayer",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.OptionalDampingGyroLayer",
+      "compat_alias_in_order": true,
+      "compat_alias_resolved": true,
+      "final_target": null,
+      "final_target_status": "unresolved",
+      "final_target_source": null,
+      "final_target_resolution": null
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.WrapperHoverSmoke",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperHoverSmoke",
+      "compat_alias_in_order": true,
+      "compat_alias_resolved": true,
+      "final_target": null,
+      "final_target_status": "unresolved",
+      "final_target_source": null,
+      "final_target_resolution": null
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.WrapperYawStepSmoke",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperYawStepSmoke",
+      "compat_alias_in_order": true,
+      "compat_alias_resolved": true,
+      "final_target": null,
+      "final_target_status": "unresolved",
+      "final_target_source": null,
+      "final_target_resolution": null
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter",
+      "compat_alias_in_order": true,
+      "compat_alias_resolved": true,
+      "final_target": null,
+      "final_target_status": "unresolved",
+      "final_target_source": null,
+      "final_target_resolution": null
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchHoverSmoke",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchHoverSmoke",
+      "compat_alias_in_order": true,
+      "compat_alias_resolved": true,
+      "final_target": null,
+      "final_target_status": "unresolved",
+      "final_target_source": null,
+      "final_target_resolution": null
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+      "formal_extends": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchYawStepSmoke",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchYawStepSmoke",
+      "compat_alias_in_order": true,
+      "compat_alias_resolved": true,
+      "final_target": null,
+      "final_target_status": "unresolved",
+      "final_target_source": null,
+      "final_target_resolution": null
+    }
+  ]
+}

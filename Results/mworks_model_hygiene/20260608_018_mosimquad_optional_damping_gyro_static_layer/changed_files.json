@@ -1,0 +1,52 @@
+{
+  "schema": "mosim.evidence.changed_files.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-OPTIONAL-DAMPING-GYRO-STATIC-LAYER-20260608-018",
+  "task_class": "static_model_source_implementation",
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "changed_files": [
+    {
+      "path": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150OptionalDampingGyroLayer.mo",
+      "change_type": "added",
+      "task_018_change": true,
+      "summary": "Adds default-disabled rotor gyro, body drag, and angular damping optional boundary layer over the existing mapped wrapper."
+    },
+    {
+      "path": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+      "change_type": "modified",
+      "task_018_change": true,
+      "summary": "Adds visible compatibility alias OptionalDampingGyroLayer. File also contains pre-existing 017 mapper aliases in the current worktree."
+    },
+    {
+      "path": "Models/QuadrotorExperiments/DynamicsUpgrade/package.order",
+      "change_type": "modified",
+      "task_018_change": true,
+      "summary": "Adds OptionalDampingGyroLayer package order entry after the 017 mapped wrapper surface."
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "change_type": "modified",
+      "task_018_change": true,
+      "summary": "Adds formal MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer alias."
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/Dynamics/package.order",
+      "change_type": "modified",
+      "task_018_change": true,
+      "summary": "Adds OptionalDampingGyroLayer package order entry."
+    }
+  ],
+  "not_modified_by_018": [
+    "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+    "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
+    "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorCommandMapper.mo",
+    "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorMappedWrapperSurface.mo",
+    "References/MWORKS/QuadrotorModel/package.mo"
+  ],
+  "forbidden_actions_respected": [
+    "No live MWORKS/Sysplorer/Syslab action.",
+    "No MCP/check_model/SimulateModel/Smart Layout/result viewer/screenshot.",
+    "No official baseline or References edit.",
+    "No Git stage/commit/push."
+  ]
+}

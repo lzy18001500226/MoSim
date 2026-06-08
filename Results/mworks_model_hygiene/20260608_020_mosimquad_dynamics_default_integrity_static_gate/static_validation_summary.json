@@ -1,0 +1,52 @@
+{
+  "schema": "mosim.static_validation_summary.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-DEFAULT-INTEGRITY-STATIC-GATE-20260608-020",
+  "status": "passed_static_before_final_quality_checks",
+  "generated_at": "2026-06-08T08:52:11+08:00",
+  "planning": {
+    "department_local_goal": "Run the 017/018/019 default-integrity static gate for MoSimQuadrotorModel Dynamics and Parameters, repairing only safe source/package issues if found.",
+    "subagent_plan": "available_but_not_useful",
+    "subagent_plan_reason": "The task is a narrow static package/source integrity gate over a small, tightly coupled Modelica source set. No independent disposable subagent slice would reduce risk, and live MWORKS work is forbidden."
+  },
+  "checks": [
+    {
+      "gate": "formal_alias_resolution",
+      "status": "passed_static",
+      "evidence": "All 12 MoSimQuadrotorModel.Dynamics formal entries resolve via QuadrotorExperiments.DynamicsUpgrade aliases to concrete project-owned implementation files."
+    },
+    {
+      "gate": "formal_package_order_integrity",
+      "status": "passed_static",
+      "evidence": "MoSimQuadrotorModel.Dynamics/package.mo and package.order contain the same 12 entries in order."
+    },
+    {
+      "gate": "compat_package_order_integrity",
+      "status": "passed_static",
+      "evidence": "QuadrotorExperiments/DynamicsUpgrade/package.mo and package.order contain the same 12 compatibility aliases in order."
+    },
+    {
+      "gate": "parameters_package_integrity",
+      "status": "passed_static",
+      "evidence": "MoSimQuadrotorModel.Parameters defines Sunray150ParameterProvenance and package.order lists it."
+    },
+    {
+      "gate": "default_behavior_preservation",
+      "status": "passed_static",
+      "evidence": "Optional gyro, drag, and angular damping are disabled or zero by default; optional force/moment terms add to base wrapper force/moment after the existing chain."
+    },
+    {
+      "gate": "parameter_provenance_consistency",
+      "status": "passed_static",
+      "evidence": "DAE/Blender rotor centers remain geometry only; non-geometry values remain YunZong/Gazebo/SDF_migration seeds, not identified truth."
+    },
+    {
+      "gate": "mworks_static_boundary",
+      "status": "passed",
+      "evidence": "live_mworks_touched=false; no MWORKS/Sysplorer/Syslab GUI, MCP, check_model, SimulateModel, Smart Layout, screenshot, result viewer, ClearAll, or ChangeDirectory was used."
+    }
+  ],
+  "source_fix_required": false,
+  "source_files_changed_by_020": [],
+  "future_live_validation_required": true,
+  "claim_boundary": "Static source/package/order integrity only. No live check_model, simulation, graphical acceptance, controller performance, parameter identification, runtime ack, mission success, or closed_loop claim."
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "mosim.changed_files.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-DEFAULT-INTEGRITY-STATIC-GATE-20260608-020",
+  "status": "completed",
+  "source_files_changed_by_020": [],
+  "source_fix_required_by_020": false,
+  "evidence_files_written_by_020": [
+    "Results/mworks_model_hygiene/20260608_020_mosimquad_dynamics_default_integrity_static_gate/alias_resolution_matrix.json",
+    "Results/mworks_model_hygiene/20260608_020_mosimquad_dynamics_default_integrity_static_gate/alias_resolution_matrix.md",
+    "Results/mworks_model_hygiene/20260608_020_mosimquad_dynamics_default_integrity_static_gate/package_order_integrity.md",
+    "Results/mworks_model_hygiene/20260608_020_mosimquad_dynamics_default_integrity_static_gate/default_behavior_preservation.md",
+    "Results/mworks_model_hygiene/20260608_020_mosimquad_dynamics_default_integrity_static_gate/parameter_provenance_consistency.md",
+    "Results/mworks_model_hygiene/20260608_020_mosimquad_dynamics_default_integrity_static_gate/future_live_validation_queue.json",
+    "Results/mworks_model_hygiene/20260608_020_mosimquad_dynamics_default_integrity_static_gate/changed_files.json",
+    "Results/mworks_model_hygiene/20260608_020_mosimquad_dynamics_default_integrity_static_gate/static_validation_summary.json"
+  ],
+  "return_packet_written_by_020": "Results/agent_packets/returns/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-DEFAULT-INTEGRITY-STATIC-GATE-20260608-020.json",
+  "forbidden_scopes_touched": false,
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "notes": [
+    "020 found the current 017/018/019 source/package surfaces statically consistent.",
+    "No narrow .mo/package.order repair was needed or performed.",
+    "Official References/MWORKS/QuadrotorModel and all References/UE/ROS2/FAST-LIO/planner/controller/Sunray/Blender assets were not touched."
+  ]
+}

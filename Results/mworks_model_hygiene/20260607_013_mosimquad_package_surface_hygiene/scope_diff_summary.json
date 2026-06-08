@@ -1,0 +1,26 @@
+{
+  "schema": "mosim.mworks_model_hygiene.scope_diff_summary.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-PACKAGE-SURFACE-HYGIENE-20260607-013",
+  "generated_at": "2026-06-08T00:03:57.075421+08:00",
+  "allowed_source_edits": [
+    "Models/MoSimQuadrotorModel/Baseline/package.order",
+    "Models/MoSimQuadrotorModel/Dynamics/package.order",
+    "Models/MoSimQuadrotorModel/SceneTrace/package.order",
+    "Models/MoSimQuadrotorModel/System/package.order"
+  ],
+  "preserved_existing_surfaces": [
+    "Models/MoSimQuadrotorModel/package.mo",
+    "Models/MoSimQuadrotorModel/package.order",
+    "Models/MoSimQuadrotorModel/Controllers/package.mo",
+    "Models/MoSimQuadrotorModel/Controllers/package.order"
+  ],
+  "forbidden_scope_not_modified_by_013_intent": [
+    "References/MWORKS/QuadrotorModel",
+    "Models/QuadrotorExperiments",
+    "Models/QuadrotorControllerBlocks implementation files",
+    "ROS2/UE/FAST-LIO/planner/controller runtime/configs"
+  ],
+  "note_on_preexisting_diff": "Scoped pre-edit diff showed prior modifications in MoSimQuadrotorModel and QuadrotorExperiments from earlier tasks; 013 did not revert or expand those legacy edits and added only the listed package.order files plus evidence/return packet.",
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false
+}

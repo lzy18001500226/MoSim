@@ -1,0 +1,37 @@
+{
+  "schema": "mosim.mworks_model_hygiene.package_order_validation.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-CONTROLLERS-CONTROLLERBLOCKS-STATIC-INTEGRATION-20260607-010",
+  "controllers_package_order_path": "Models/MoSimQuadrotorModel/Controllers/package.order",
+  "expected_entries": [
+    "AWFFPidBlocks",
+    "InnovationControllers",
+    "FaultAllocationControllers",
+    "LinearMPCControllers",
+    "SafetyControllers",
+    "DemosAndSIL",
+    "CompatibilityAndLegacy"
+  ],
+  "actual_entries": [
+    "AWFFPidBlocks",
+    "InnovationControllers",
+    "FaultAllocationControllers",
+    "LinearMPCControllers",
+    "SafetyControllers",
+    "DemosAndSIL",
+    "CompatibilityAndLegacy"
+  ],
+  "exact_match": true,
+  "duplicate_entries": [],
+  "trailing_newline": true,
+  "source_quadrotor_controller_blocks_order_entries": [
+    "AWFFPidBlocks",
+    "InnovationControllers",
+    "FaultAllocationControllers",
+    "LinearMPCControllers",
+    "SafetyControllers",
+    "DemosAndSIL",
+    "CompatibilityAndLegacy"
+  ],
+  "source_exact_match": true,
+  "source_trailing_newline": true
+}

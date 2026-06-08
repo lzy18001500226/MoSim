@@ -1,0 +1,864 @@
+{
+  "schema": "mosim.mworks_model_hygiene.alias_category_mapping_matrix.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-ALIAS-CATEGORY-MIGRATION-PLAN-20260608-014",
+  "generated_at": "2026-06-08T01:13:00+08:00",
+  "source_scope": [
+    "Models/MoSimQuadrotorModel alias-only category package.mo/package.order files",
+    "Read-only legacy source package surfaces under Models/QuadrotorExperiments",
+    "013 package-surface hygiene return and evidence"
+  ],
+  "mapping_count": 85,
+  "mappings": [
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "explicit_static_wrapper_surface_created",
+      "compatibility_policy": "legacy source path preserved; no implementation migration in 014",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example1AWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example1AWFF",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example1INDI",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example1INDI",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example1L1",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example1L1",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example1LinearMPC",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example1LinearMPC",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example1PlanarFigure8Trail",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example1PlanarFigure8Trail",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example1HelicalFigure8Trail",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example1HelicalFigure8Trail",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example2AWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example2AWFF",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example2HelixTunedAWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example2HelixTunedAWFF",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example2INDI",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example2INDI",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example2HelixTunedINDI",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example2HelixTunedINDI",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example2LinearMPC",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example2LinearMPC",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example3AWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example3AWFF",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example3INDI",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example3INDI",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example3L1",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example3L1",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.OfficialScenarios.Example3LinearMPC",
+      "new_formal_entry": "MoSimQuadrotorModel.Missions.Example3LinearMPC",
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "explicit_static_wrapper_surface_created",
+      "compatibility_policy": "legacy source path preserved; no implementation migration in 014",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.PIDBaselines",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "explicit_static_grouping_package_created",
+      "compatibility_policy": "legacy source path preserved; no real subdirectory migration in 014",
+      "package_order_state": "listed_in_parent_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Mass20PID",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.PIDBaselines.Mass20PID",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Mass20ImprovedPID",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.PIDBaselines.Mass20ImprovedPID",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Mass20EnhancedPID",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.PIDBaselines.Mass20EnhancedPID",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.WindGustPID",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.PIDBaselines.WindGustPID",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.WindGustImprovedPID",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.PIDBaselines.WindGustImprovedPID",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.WindGustEnhancedPID",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.PIDBaselines.WindGustEnhancedPID",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Rotor1LossPID",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.PIDBaselines.Rotor1LossPID",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Rotor1LossImprovedPID",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.PIDBaselines.Rotor1LossImprovedPID",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Rotor1LossEnhancedPID",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.PIDBaselines.Rotor1LossEnhancedPID",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Rotor2LossPID",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.PIDBaselines.Rotor2LossPID",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Rotor3LossPID",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.PIDBaselines.Rotor3LossPID",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines.Rotor4LossPID",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.PIDBaselines.Rotor4LossPID",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "explicit_static_grouping_package_created",
+      "compatibility_policy": "legacy source path preserved; no real subdirectory migration in 014",
+      "package_order_state": "listed_in_parent_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1AWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor1AWFF",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1AWFFBaseline",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor1AWFFBaseline",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1L1",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor1L1",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1L1FaultAllocation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor1L1FaultAllocation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1L1OnlineFaultAllocation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor1L1OnlineFaultAllocation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1L1MultiFaultIsolation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor1L1MultiFaultIsolation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1LinearMPC",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor1LinearMPC",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1LinearMPCOnlineFaultAllocation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor1LinearMPCOnlineFaultAllocation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2AWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor2AWFF",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3AWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor3AWFF",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4AWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor4AWFF",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1WindGustAWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor1WindGustAWFF",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1WindGustAWFFFaultCompensation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor1WindGustAWFFFaultCompensation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1WindGustL1MultiFaultIsolation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor1WindGustL1MultiFaultIsolation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor1WindGustLinearMPCOnlineFaultAllocation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor1WindGustLinearMPCOnlineFaultAllocation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2WindGustAWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor2WindGustAWFF",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2L1MultiFaultIsolation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor2L1MultiFaultIsolation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2WindGustL1MultiFaultIsolation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor2WindGustL1MultiFaultIsolation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor2WindGustLinearMPCOnlineFaultAllocation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor2WindGustLinearMPCOnlineFaultAllocation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3WindGustAWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor3WindGustAWFF",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3L1MultiFaultIsolation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor3L1MultiFaultIsolation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3WindGustL1MultiFaultIsolation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor3WindGustL1MultiFaultIsolation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor3WindGustLinearMPCOnlineFaultAllocation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor3WindGustLinearMPCOnlineFaultAllocation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4WindGustAWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor4WindGustAWFF",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4L1MultiFaultIsolation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor4L1MultiFaultIsolation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4WindGustL1MultiFaultIsolation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor4WindGustL1MultiFaultIsolation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss.Rotor4WindGustLinearMPCOnlineFaultAllocation",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.RotorLoss.Rotor4WindGustLinearMPCOnlineFaultAllocation",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "embedded_nested_package_declaration_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.Mass20AWFFBaseline",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.Mass20AWFFBaseline",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.Mass20AWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.Mass20AWFF",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.Mass20L1",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.Mass20L1",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.Mass20LinearMPC",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.Mass20LinearMPC",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.WindGustAWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.WindGustAWFF",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.WindGustAWFFBaseline",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.WindGustAWFFBaseline",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.WindGustL1",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.WindGustL1",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.WindGustLinearMPC",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.WindGustLinearMPC",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.SafetyQPNMPC",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.SafetyQPNMPC",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.RobustFaultScenarios.SafetyReturnLand",
+      "new_formal_entry": "MoSimQuadrotorModel.Robustness.SafetyReturnLand",
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.PlanningScenarios",
+      "new_formal_entry": "MoSimQuadrotorModel.Planning",
+      "category": "Planning",
+      "role_cn": "规划与地图场景",
+      "migration_state": "explicit_static_wrapper_surface_created",
+      "compatibility_policy": "legacy source path preserved; no implementation migration in 014",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.PlanningScenarios.QuinticReference",
+      "new_formal_entry": "MoSimQuadrotorModel.Planning.QuinticReference",
+      "category": "Planning",
+      "role_cn": "规划与地图场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.PlanningScenarios.NavigationDisplay",
+      "new_formal_entry": "MoSimQuadrotorModel.Planning.NavigationDisplay",
+      "category": "Planning",
+      "role_cn": "规划与地图场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.PlanningScenarios.OpenBlocksAWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Planning.OpenBlocksAWFF",
+      "category": "Planning",
+      "role_cn": "规划与地图场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.PlanningScenarios.OpenBlocksLinearMPC",
+      "new_formal_entry": "MoSimQuadrotorModel.Planning.OpenBlocksLinearMPC",
+      "category": "Planning",
+      "role_cn": "规划与地图场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.PlanningScenarios.OpenBlocksColorMapReview",
+      "new_formal_entry": "MoSimQuadrotorModel.Planning.OpenBlocksColorMapReview",
+      "category": "Planning",
+      "role_cn": "规划与地图场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.PlanningScenarios.CorridorGateAWFF",
+      "new_formal_entry": "MoSimQuadrotorModel.Planning.CorridorGateAWFF",
+      "category": "Planning",
+      "role_cn": "规划与地图场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.PlanningScenarios.CorridorGateLinearMPC",
+      "new_formal_entry": "MoSimQuadrotorModel.Planning.CorridorGateLinearMPC",
+      "category": "Planning",
+      "role_cn": "规划与地图场景",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.FormationScenarios",
+      "new_formal_entry": "MoSimQuadrotorModel.Formation",
+      "category": "Formation",
+      "role_cn": "编队扩展",
+      "migration_state": "explicit_static_wrapper_surface_created",
+      "compatibility_policy": "legacy source path preserved; no implementation migration in 014",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.FormationScenarios.TriangleFigure8LinearMPC",
+      "new_formal_entry": "MoSimQuadrotorModel.Formation.TriangleFigure8LinearMPC",
+      "category": "Formation",
+      "role_cn": "编队扩展",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.SupportModels",
+      "new_formal_entry": "MoSimQuadrotorModel.Support",
+      "category": "Support",
+      "role_cn": "支撑/trace/MCP工具模型",
+      "migration_state": "explicit_static_wrapper_surface_created",
+      "compatibility_policy": "legacy source path preserved; no implementation migration in 014",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.SupportModels.TraceInline",
+      "new_formal_entry": "MoSimQuadrotorModel.Support.TraceInline",
+      "category": "Support",
+      "role_cn": "支撑/trace/MCP工具模型",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.SupportModels.TraceTable",
+      "new_formal_entry": "MoSimQuadrotorModel.Support.TraceTable",
+      "category": "Support",
+      "role_cn": "支撑/trace/MCP工具模型",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.SupportModels.TraceLookupStandalone",
+      "new_formal_entry": "MoSimQuadrotorModel.Support.TraceLookupStandalone",
+      "category": "Support",
+      "role_cn": "支撑/trace/MCP工具模型",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments.SupportModels.EchoMcpState",
+      "new_formal_entry": "MoSimQuadrotorModel.Support.EchoMcpState",
+      "category": "Support",
+      "role_cn": "支撑/trace/MCP工具模型",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments",
+      "new_formal_entry": "MoSimQuadrotorModel.LegacyCompatibility",
+      "category": "LegacyCompatibility",
+      "role_cn": "旧入口兼容",
+      "migration_state": "explicit_static_wrapper_surface_created",
+      "compatibility_policy": "legacy source path preserved; no implementation migration in 014",
+      "package_order_state": "ordered_declared_entries",
+      "live_validation_state": "not_run_static_only_014"
+    },
+    {
+      "old_or_source_entry": "QuadrotorExperiments",
+      "new_formal_entry": "MoSimQuadrotorModel.LegacyCompatibility.LegacyExperimentPool",
+      "category": "LegacyCompatibility",
+      "role_cn": "旧入口兼容",
+      "migration_state": "declared_formal_child_alias_or_wrapper",
+      "compatibility_policy": "legacy source target preserved; no implementation migration in 014",
+      "package_order_state": "listed_in_package_order",
+      "live_validation_state": "not_run_static_only_014"
+    }
+  ],
+  "claim_boundary": "Static mapping only; not live package-browser acceptance, check_model, simulation, graphical/layout/wiring acceptance, controller performance, planner_ready, runtime ack, mission success, or closed_loop."
+}

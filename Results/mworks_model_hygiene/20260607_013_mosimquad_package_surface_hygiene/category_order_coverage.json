@@ -1,0 +1,326 @@
+{
+  "schema": "mosim.mworks_model_hygiene.package_surface_coverage.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-PACKAGE-SURFACE-HYGIENE-20260607-013",
+  "generated_at": "2026-06-08T00:03:57.075421+08:00",
+  "root_package": "MoSimQuadrotorModel",
+  "root_package_order": {
+    "path": "Models/MoSimQuadrotorModel/package.order",
+    "entries": [
+      "Baseline",
+      "Dynamics",
+      "Missions",
+      "Controllers",
+      "Robustness",
+      "Planning",
+      "SceneTrace",
+      "System",
+      "Formation",
+      "Support",
+      "LegacyCompatibility"
+    ],
+    "count": 11,
+    "duplicates": [],
+    "trailing_newline": true
+  },
+  "categories": [
+    {
+      "category": "Baseline",
+      "role_cn": "官方基线适配",
+      "package_mo": "Models/MoSimQuadrotorModel/Baseline/package.mo",
+      "package_mo_exists": true,
+      "declared_local_entries": [
+        "OfficialExample1",
+        "OfficialExample2",
+        "OfficialExample3",
+        "OfficialQuadChassis"
+      ],
+      "declared_local_entry_count": 4,
+      "package_order": "Models/MoSimQuadrotorModel/Baseline/package.order",
+      "package_order_exists": true,
+      "order_entries": [
+        "OfficialExample1",
+        "OfficialExample2",
+        "OfficialExample3",
+        "OfficialQuadChassis"
+      ],
+      "order_entry_count": 4,
+      "order_duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "package_extends_targets": [
+        "Modelica.Icons.Package",
+        "QuadrotorModel.Examples.Example1",
+        "QuadrotorModel.Examples.Example2",
+        "QuadrotorModel.Examples.Example3",
+        "QuadrotorModel.Mechanics.QuadChassis"
+      ],
+      "surface_status": "ordered_declared_entries",
+      "013_action": "created_package_order_for_declared_local_entries"
+    },
+    {
+      "category": "Dynamics",
+      "role_cn": "Sunray150动力学升级",
+      "package_mo": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "package_mo_exists": true,
+      "declared_local_entries": [
+        "RotorActuatorCore",
+        "HoverSmoke",
+        "YawStepSmoke",
+        "WrapperSurface",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "declared_local_entry_count": 9,
+      "package_order": "Models/MoSimQuadrotorModel/Dynamics/package.order",
+      "package_order_exists": true,
+      "order_entries": [
+        "RotorActuatorCore",
+        "HoverSmoke",
+        "YawStepSmoke",
+        "WrapperSurface",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "order_entry_count": 9,
+      "order_duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+        "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
+        "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
+        "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+        "QuadrotorExperiments.DynamicsUpgrade.WrapperHoverSmoke",
+        "QuadrotorExperiments.DynamicsUpgrade.WrapperYawStepSmoke",
+        "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter",
+        "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchHoverSmoke",
+        "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchYawStepSmoke"
+      ],
+      "surface_status": "ordered_declared_entries",
+      "013_action": "created_package_order_for_declared_local_entries"
+    },
+    {
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "package_mo": "Models/MoSimQuadrotorModel/Missions/package.mo",
+      "package_mo_exists": true,
+      "declared_local_entries": [],
+      "declared_local_entry_count": 0,
+      "package_order": null,
+      "package_order_exists": false,
+      "order_entries": [],
+      "order_entry_count": 0,
+      "order_duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.OfficialScenarios"
+      ],
+      "surface_status": "alias_only_no_local_order",
+      "013_action": "left_alias_only_no_invented_order"
+    },
+    {
+      "category": "Controllers",
+      "role_cn": "控制器基线与对比",
+      "package_mo": "Models/MoSimQuadrotorModel/Controllers/package.mo",
+      "package_mo_exists": true,
+      "declared_local_entries": [
+        "AWFFPidBlocks",
+        "InnovationControllers",
+        "FaultAllocationControllers",
+        "LinearMPCControllers",
+        "SafetyControllers",
+        "DemosAndSIL",
+        "CompatibilityAndLegacy"
+      ],
+      "declared_local_entry_count": 7,
+      "package_order": "Models/MoSimQuadrotorModel/Controllers/package.order",
+      "package_order_exists": true,
+      "order_entries": [
+        "AWFFPidBlocks",
+        "InnovationControllers",
+        "FaultAllocationControllers",
+        "LinearMPCControllers",
+        "SafetyControllers",
+        "DemosAndSIL",
+        "CompatibilityAndLegacy"
+      ],
+      "order_entry_count": 7,
+      "order_duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.ControllerBaselines",
+        "QuadrotorControllerBlocks.AWFFPidBlocks",
+        "QuadrotorControllerBlocks.InnovationControllers",
+        "QuadrotorControllerBlocks.FaultAllocationControllers",
+        "QuadrotorControllerBlocks.LinearMPCControllers",
+        "QuadrotorControllerBlocks.SafetyControllers",
+        "QuadrotorControllerBlocks.DemosAndSIL",
+        "QuadrotorControllerBlocks.CompatibilityAndLegacy"
+      ],
+      "surface_status": "ordered_declared_entries",
+      "013_action": "preserved_existing_order"
+    },
+    {
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "package_mo": "Models/MoSimQuadrotorModel/Robustness/package.mo",
+      "package_mo_exists": true,
+      "declared_local_entries": [],
+      "declared_local_entry_count": 0,
+      "package_order": null,
+      "package_order_exists": false,
+      "order_entries": [],
+      "order_entry_count": 0,
+      "order_duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.RobustFaultScenarios"
+      ],
+      "surface_status": "alias_only_no_local_order",
+      "013_action": "left_alias_only_no_invented_order"
+    },
+    {
+      "category": "Planning",
+      "role_cn": "规划与地图场景",
+      "package_mo": "Models/MoSimQuadrotorModel/Planning/package.mo",
+      "package_mo_exists": true,
+      "declared_local_entries": [],
+      "declared_local_entry_count": 0,
+      "package_order": null,
+      "package_order_exists": false,
+      "order_entries": [],
+      "order_entry_count": 0,
+      "order_duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.PlanningScenarios"
+      ],
+      "surface_status": "alias_only_no_local_order",
+      "013_action": "left_alias_only_no_invented_order"
+    },
+    {
+      "category": "SceneTrace",
+      "role_cn": "UE场景trace与显示隔离",
+      "package_mo": "Models/MoSimQuadrotorModel/SceneTrace/package.mo",
+      "package_mo_exists": true,
+      "declared_local_entries": [
+        "AcceptedScenes",
+        "Isolation"
+      ],
+      "declared_local_entry_count": 2,
+      "package_order": "Models/MoSimQuadrotorModel/SceneTrace/package.order",
+      "package_order_exists": true,
+      "order_entries": [
+        "AcceptedScenes",
+        "Isolation"
+      ],
+      "order_entry_count": 2,
+      "order_duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.SceneTraceScenarios",
+        "QuadrotorExperiments.TraceIsolation"
+      ],
+      "surface_status": "ordered_declared_entries",
+      "013_action": "created_package_order_for_declared_local_entries"
+    },
+    {
+      "category": "System",
+      "role_cn": "系统级图形和硬件抽象",
+      "package_mo": "Models/MoSimQuadrotorModel/System/package.mo",
+      "package_mo_exists": true,
+      "declared_local_entries": [
+        "Architecture",
+        "Modules"
+      ],
+      "declared_local_entry_count": 2,
+      "package_order": "Models/MoSimQuadrotorModel/System/package.order",
+      "package_order_exists": true,
+      "order_entries": [
+        "Architecture",
+        "Modules"
+      ],
+      "order_entry_count": 2,
+      "order_duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.SystemArchitecture",
+        "QuadrotorExperiments.SystemModules"
+      ],
+      "surface_status": "ordered_declared_entries",
+      "013_action": "created_package_order_for_declared_local_entries"
+    },
+    {
+      "category": "Formation",
+      "role_cn": "编队扩展",
+      "package_mo": "Models/MoSimQuadrotorModel/Formation/package.mo",
+      "package_mo_exists": true,
+      "declared_local_entries": [],
+      "declared_local_entry_count": 0,
+      "package_order": null,
+      "package_order_exists": false,
+      "order_entries": [],
+      "order_entry_count": 0,
+      "order_duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.FormationScenarios"
+      ],
+      "surface_status": "alias_only_no_local_order",
+      "013_action": "left_alias_only_no_invented_order"
+    },
+    {
+      "category": "Support",
+      "role_cn": "支撑/trace/MCP工具模型",
+      "package_mo": "Models/MoSimQuadrotorModel/Support/package.mo",
+      "package_mo_exists": true,
+      "declared_local_entries": [],
+      "declared_local_entry_count": 0,
+      "package_order": null,
+      "package_order_exists": false,
+      "order_entries": [],
+      "order_entry_count": 0,
+      "order_duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments.SupportModels"
+      ],
+      "surface_status": "alias_only_no_local_order",
+      "013_action": "left_alias_only_no_invented_order"
+    },
+    {
+      "category": "LegacyCompatibility",
+      "role_cn": "旧入口兼容",
+      "package_mo": "Models/MoSimQuadrotorModel/LegacyCompatibility/package.mo",
+      "package_mo_exists": true,
+      "declared_local_entries": [],
+      "declared_local_entry_count": 0,
+      "package_order": null,
+      "package_order_exists": false,
+      "order_entries": [],
+      "order_entry_count": 0,
+      "order_duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "package_extends_targets": [
+        "QuadrotorExperiments"
+      ],
+      "surface_status": "alias_only_no_local_order",
+      "013_action": "left_alias_only_no_invented_order"
+    }
+  ]
+}

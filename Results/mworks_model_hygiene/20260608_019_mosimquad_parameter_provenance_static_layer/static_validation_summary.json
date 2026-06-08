@@ -1,0 +1,57 @@
+{
+  "schema": "mosim.static_validation_summary.v1",
+  "task_id": "PMO-MWORKS-R1-MOSIMQUAD-PARAMETER-PROVENANCE-STATIC-LAYER-20260608-019",
+  "status": "passed_static_source_checks_before_packet_validation",
+  "static_only_boundary": {
+    "live_mworks_touched": false,
+    "mworks_window_evidence_touched": false,
+    "mworks_window_policy": "static_file_only_no_mworks_window_or_mcp",
+    "forbidden_live_actions_performed": false
+  },
+  "source_validation": {
+    "record_only": true,
+    "new_equations": 0,
+    "new_connectors": 0,
+    "behavioral_dynamics_sources_modified": false,
+    "official_baseline_modified": false,
+    "numeric_parameter_tuning_performed": false
+  },
+  "checks": [
+    {
+      "command": "python -m json.tool Results\\mworks_model_hygiene\\20260608_019_mosimquad_parameter_provenance_static_layer\\parameter_source_table.json",
+      "ok": true
+    },
+    {
+      "command": "python -m json.tool Results\\mworks_model_hygiene\\20260608_019_mosimquad_parameter_provenance_static_layer\\changed_files.json",
+      "ok": true
+    },
+    {
+      "command": "python -m json.tool Results\\mworks_model_hygiene\\20260608_019_mosimquad_parameter_provenance_static_layer\\static_validation_summary.json",
+      "ok": true
+    },
+    {
+      "command": "git diff --check -- Models\\MoSimQuadrotorModel\\package.order Models\\MoSimQuadrotorModel\\Parameters\\package.mo Models\\MoSimQuadrotorModel\\Parameters\\package.order Results\\mworks_model_hygiene\\20260608_019_mosimquad_parameter_provenance_static_layer",
+      "ok": true
+    },
+    {
+      "command": "rg -n \"[ \\\\t]$\" Models\\MoSimQuadrotorModel\\Parameters\\package.mo Models\\MoSimQuadrotorModel\\Parameters\\package.order Results\\mworks_model_hygiene\\20260608_019_mosimquad_parameter_provenance_static_layer",
+      "ok": true,
+      "summary": "No trailing whitespace matches."
+    },
+    {
+      "command": "rg conflict-marker and forbidden-live-call patterns in Models\\MoSimQuadrotorModel\\Parameters\\package.mo Models\\MoSimQuadrotorModel\\Parameters\\package.order",
+      "ok": true,
+      "summary": "No conflict markers or forbidden live/MCP/check/sim/screenshot strings in new Modelica source."
+    }
+  ],
+  "artifacts": [
+    "Results/mworks_model_hygiene/20260608_019_mosimquad_parameter_provenance_static_layer/parameter_provenance_summary.md",
+    "Results/mworks_model_hygiene/20260608_019_mosimquad_parameter_provenance_static_layer/parameter_source_table.json",
+    "Results/mworks_model_hygiene/20260608_019_mosimquad_parameter_provenance_static_layer/changed_files.json",
+    "Results/mworks_model_hygiene/20260608_019_mosimquad_parameter_provenance_static_layer/static_validation_summary.json"
+  ],
+  "claim_boundary": [
+    "Static project-owned parameter provenance organization only.",
+    "No live MWORKS load, check_model, SimulateModel, graphical/layout acceptance, controller performance, planner readiness, runtime ack, mission success, parameter identification, or closed_loop claim."
+  ]
+}

@@ -1,0 +1,668 @@
+{
+  "schema": "mosim.mworks_model_hygiene.model_ownership_classification.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-STATIC-CLASSIFICATION-LIVE-AUDIT-QUEUE-20260608-015",
+  "generated_at": "2026-06-08T02:14:53+08:00",
+  "task_scope": "static_only_no_mworks_gui_no_mcp_no_model_edits",
+  "ownership_summary": [
+    {
+      "owner_surface": "References/MWORKS/QuadrotorModel",
+      "classification": "official_upstream_baseline",
+      "write_policy": "read_only_do_not_destructively_rewrite",
+      "current_use": "baseline adapters under MoSimQuadrotorModel.Baseline and regression reference"
+    },
+    {
+      "owner_surface": "Models/MoSimQuadrotorModel",
+      "classification": "formal_project_package_surface",
+      "write_policy": "formal wrapper/package surface; real migration requires later scoped task",
+      "current_use": "11 top-level categories and package/order surfaces for user navigation and future audit"
+    },
+    {
+      "owner_surface": "Models/QuadrotorExperiments",
+      "classification": "legacy_experiment_pool_and_compatibility_source",
+      "write_policy": "preserve old paths and flat compatibility aliases until migration batches pass live gates",
+      "current_use": "actual legacy implementations and categorized source surfaces for experiments/smokes"
+    },
+    {
+      "owner_surface": "Models/QuadrotorControllerBlocks",
+      "classification": "controller_block_library_and_package_shell",
+      "write_policy": "preserve flat controller implementations and backup dirs; formal controller surface via category package aliases",
+      "current_use": "controller block categories consumed by MoSimQuadrotorModel.Controllers"
+    }
+  ],
+  "formal_categories": [
+    {
+      "category": "Baseline",
+      "role_cn": "官方基线适配",
+      "role_key": "official_baseline_adapter",
+      "formal_package": "MoSimQuadrotorModel.Baseline",
+      "package_mo": "Models/MoSimQuadrotorModel/Baseline/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/Baseline/package.order",
+      "order_entries": [
+        "OfficialExample1",
+        "OfficialExample2",
+        "OfficialExample3",
+        "OfficialQuadChassis"
+      ],
+      "order_count": 4,
+      "declared_entries": [
+        "OfficialExample1",
+        "OfficialExample2",
+        "OfficialExample3",
+        "OfficialQuadChassis"
+      ],
+      "declared_entry_count": 4,
+      "source_or_dependency_surface": "QuadrotorModel",
+      "implementation_state": "formal wrapper aliases only",
+      "canonicality_state": "formal_entry_alias_surface_not_real_namespace_migration",
+      "live_validation_state": "not_run_static_only_015"
+    },
+    {
+      "category": "Dynamics",
+      "role_cn": "Sunray150动力学升级",
+      "role_key": "project_owned_dynamics_upgrade",
+      "formal_package": "MoSimQuadrotorModel.Dynamics",
+      "package_mo": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/Dynamics/package.order",
+      "order_entries": [
+        "RotorActuatorCore",
+        "HoverSmoke",
+        "YawStepSmoke",
+        "WrapperSurface",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "order_count": 9,
+      "declared_entries": [
+        "RotorActuatorCore",
+        "HoverSmoke",
+        "YawStepSmoke",
+        "WrapperSurface",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "declared_entry_count": 9,
+      "source_or_dependency_surface": "QuadrotorExperiments.DynamicsUpgrade",
+      "implementation_state": "formal wrapper aliases only",
+      "canonicality_state": "formal_entry_alias_surface_not_real_namespace_migration",
+      "live_validation_state": "not_run_static_only_015"
+    },
+    {
+      "category": "Missions",
+      "role_cn": "正式任务场景",
+      "role_key": "official_task_scenarios",
+      "formal_package": "MoSimQuadrotorModel.Missions",
+      "package_mo": "Models/MoSimQuadrotorModel/Missions/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/Missions/package.order",
+      "order_entries": [
+        "Example1AWFF",
+        "Example1INDI",
+        "Example1L1",
+        "Example1LinearMPC",
+        "Example1PlanarFigure8Trail",
+        "Example1HelicalFigure8Trail",
+        "Example2AWFF",
+        "Example2HelixTunedAWFF",
+        "Example2INDI",
+        "Example2HelixTunedINDI",
+        "Example2LinearMPC",
+        "Example3AWFF",
+        "Example3INDI",
+        "Example3L1",
+        "Example3LinearMPC"
+      ],
+      "order_count": 15,
+      "declared_entries": [
+        "Example1AWFF",
+        "Example1INDI",
+        "Example1L1",
+        "Example1LinearMPC",
+        "Example1PlanarFigure8Trail",
+        "Example1HelicalFigure8Trail",
+        "Example2AWFF",
+        "Example2HelixTunedAWFF",
+        "Example2INDI",
+        "Example2HelixTunedINDI",
+        "Example2LinearMPC",
+        "Example3AWFF",
+        "Example3INDI",
+        "Example3L1",
+        "Example3LinearMPC"
+      ],
+      "declared_entry_count": 15,
+      "source_or_dependency_surface": "QuadrotorExperiments.OfficialScenarios",
+      "implementation_state": "formal wrapper aliases only",
+      "canonicality_state": "formal_entry_alias_surface_not_real_namespace_migration",
+      "live_validation_state": "not_run_static_only_015"
+    },
+    {
+      "category": "Controllers",
+      "role_cn": "控制器基线与对比",
+      "role_key": "controller_baselines_and_blocks",
+      "formal_package": "MoSimQuadrotorModel.Controllers",
+      "package_mo": "Models/MoSimQuadrotorModel/Controllers/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/Controllers/package.order",
+      "order_entries": [
+        "AWFFPidBlocks",
+        "InnovationControllers",
+        "FaultAllocationControllers",
+        "LinearMPCControllers",
+        "SafetyControllers",
+        "DemosAndSIL",
+        "CompatibilityAndLegacy"
+      ],
+      "order_count": 7,
+      "declared_entries": [
+        "AWFFPidBlocks",
+        "InnovationControllers",
+        "FaultAllocationControllers",
+        "LinearMPCControllers",
+        "SafetyControllers",
+        "DemosAndSIL",
+        "CompatibilityAndLegacy"
+      ],
+      "declared_entry_count": 7,
+      "source_or_dependency_surface": "QuadrotorExperiments.ControllerBaselines + QuadrotorControllerBlocks",
+      "implementation_state": "formal wrapper/category aliases only",
+      "canonicality_state": "formal_entry_alias_surface_not_real_namespace_migration",
+      "live_validation_state": "not_run_static_only_015"
+    },
+    {
+      "category": "Robustness",
+      "role_cn": "鲁棒、故障、安全与扰动",
+      "role_key": "robust_fault_safety_disturbance",
+      "formal_package": "MoSimQuadrotorModel.Robustness",
+      "package_mo": "Models/MoSimQuadrotorModel/Robustness/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/Robustness/package.order",
+      "order_entries": [
+        "PIDBaselines",
+        "RotorLoss",
+        "Mass20AWFFBaseline",
+        "Mass20AWFF",
+        "Mass20L1",
+        "Mass20LinearMPC",
+        "WindGustAWFF",
+        "WindGustAWFFBaseline",
+        "WindGustL1",
+        "WindGustLinearMPC",
+        "SafetyQPNMPC",
+        "SafetyReturnLand"
+      ],
+      "order_count": 12,
+      "declared_entries": [
+        "PIDBaselines",
+        "Mass20PID",
+        "Mass20ImprovedPID",
+        "Mass20EnhancedPID",
+        "WindGustPID",
+        "WindGustImprovedPID",
+        "WindGustEnhancedPID",
+        "Rotor1LossPID",
+        "Rotor1LossImprovedPID",
+        "Rotor1LossEnhancedPID",
+        "Rotor2LossPID",
+        "Rotor3LossPID",
+        "Rotor4LossPID",
+        "RotorLoss",
+        "Rotor1AWFF",
+        "Rotor1AWFFBaseline",
+        "Rotor1L1",
+        "Rotor1L1FaultAllocation",
+        "Rotor1L1OnlineFaultAllocation",
+        "Rotor1L1MultiFaultIsolation",
+        "Rotor1LinearMPC",
+        "Rotor1LinearMPCOnlineFaultAllocation",
+        "Rotor2AWFF",
+        "Rotor3AWFF",
+        "Rotor4AWFF",
+        "Rotor1WindGustAWFF",
+        "Rotor1WindGustAWFFFaultCompensation",
+        "Rotor1WindGustL1MultiFaultIsolation",
+        "Rotor1WindGustLinearMPCOnlineFaultAllocation",
+        "Rotor2WindGustAWFF",
+        "Rotor2L1MultiFaultIsolation",
+        "Rotor2WindGustL1MultiFaultIsolation",
+        "Rotor2WindGustLinearMPCOnlineFaultAllocation",
+        "Rotor3WindGustAWFF",
+        "Rotor3L1MultiFaultIsolation",
+        "Rotor3WindGustL1MultiFaultIsolation",
+        "Rotor3WindGustLinearMPCOnlineFaultAllocation",
+        "Rotor4WindGustAWFF",
+        "Rotor4L1MultiFaultIsolation",
+        "Rotor4WindGustL1MultiFaultIsolation",
+        "Rotor4WindGustLinearMPCOnlineFaultAllocation",
+        "Mass20AWFFBaseline",
+        "Mass20AWFF",
+        "Mass20L1",
+        "Mass20LinearMPC",
+        "WindGustAWFF",
+        "WindGustAWFFBaseline",
+        "WindGustL1",
+        "WindGustLinearMPC",
+        "SafetyQPNMPC",
+        "SafetyReturnLand"
+      ],
+      "declared_entry_count": 51,
+      "source_or_dependency_surface": "QuadrotorExperiments.RobustFaultScenarios",
+      "implementation_state": "formal wrapper aliases only",
+      "canonicality_state": "formal_entry_alias_surface_not_real_namespace_migration",
+      "live_validation_state": "not_run_static_only_015"
+    },
+    {
+      "category": "Planning",
+      "role_cn": "规划与地图场景",
+      "role_key": "planning_and_map_scenarios",
+      "formal_package": "MoSimQuadrotorModel.Planning",
+      "package_mo": "Models/MoSimQuadrotorModel/Planning/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/Planning/package.order",
+      "order_entries": [
+        "QuinticReference",
+        "NavigationDisplay",
+        "OpenBlocksAWFF",
+        "OpenBlocksLinearMPC",
+        "OpenBlocksColorMapReview",
+        "CorridorGateAWFF",
+        "CorridorGateLinearMPC"
+      ],
+      "order_count": 7,
+      "declared_entries": [
+        "QuinticReference",
+        "NavigationDisplay",
+        "OpenBlocksAWFF",
+        "OpenBlocksLinearMPC",
+        "OpenBlocksColorMapReview",
+        "CorridorGateAWFF",
+        "CorridorGateLinearMPC"
+      ],
+      "declared_entry_count": 7,
+      "source_or_dependency_surface": "QuadrotorExperiments.PlanningScenarios",
+      "implementation_state": "formal wrapper aliases only",
+      "canonicality_state": "formal_entry_alias_surface_not_real_namespace_migration",
+      "live_validation_state": "not_run_static_only_015"
+    },
+    {
+      "category": "SceneTrace",
+      "role_cn": "UE场景trace与显示隔离",
+      "role_key": "scene_trace_and_isolation",
+      "formal_package": "MoSimQuadrotorModel.SceneTrace",
+      "package_mo": "Models/MoSimQuadrotorModel/SceneTrace/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/SceneTrace/package.order",
+      "order_entries": [
+        "AcceptedScenes",
+        "Isolation"
+      ],
+      "order_count": 2,
+      "declared_entries": [
+        "AcceptedScenes",
+        "Isolation"
+      ],
+      "declared_entry_count": 2,
+      "source_or_dependency_surface": "QuadrotorExperiments.SceneTraceScenarios + TraceIsolation",
+      "implementation_state": "aggregate package aliases",
+      "canonicality_state": "formal_entry_alias_surface_not_real_namespace_migration",
+      "live_validation_state": "not_run_static_only_015"
+    },
+    {
+      "category": "System",
+      "role_cn": "系统级图形和硬件抽象",
+      "role_key": "system_graphical_architecture_modules",
+      "formal_package": "MoSimQuadrotorModel.System",
+      "package_mo": "Models/MoSimQuadrotorModel/System/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/System/package.order",
+      "order_entries": [
+        "Architecture",
+        "Modules"
+      ],
+      "order_count": 2,
+      "declared_entries": [
+        "Architecture",
+        "Modules"
+      ],
+      "declared_entry_count": 2,
+      "source_or_dependency_surface": "QuadrotorExperiments.SystemArchitecture + SystemModules",
+      "implementation_state": "aggregate package aliases",
+      "canonicality_state": "formal_entry_alias_surface_not_real_namespace_migration",
+      "live_validation_state": "not_run_static_only_015"
+    },
+    {
+      "category": "Formation",
+      "role_cn": "编队扩展",
+      "role_key": "formation_extension",
+      "formal_package": "MoSimQuadrotorModel.Formation",
+      "package_mo": "Models/MoSimQuadrotorModel/Formation/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/Formation/package.order",
+      "order_entries": [
+        "TriangleFigure8LinearMPC"
+      ],
+      "order_count": 1,
+      "declared_entries": [
+        "TriangleFigure8LinearMPC"
+      ],
+      "declared_entry_count": 1,
+      "source_or_dependency_surface": "QuadrotorExperiments.FormationScenarios",
+      "implementation_state": "formal wrapper aliases only",
+      "canonicality_state": "formal_entry_alias_surface_not_real_namespace_migration",
+      "live_validation_state": "not_run_static_only_015"
+    },
+    {
+      "category": "Support",
+      "role_cn": "支撑/trace/MCP工具模型",
+      "role_key": "support_trace_mcp_helpers",
+      "formal_package": "MoSimQuadrotorModel.Support",
+      "package_mo": "Models/MoSimQuadrotorModel/Support/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/Support/package.order",
+      "order_entries": [
+        "TraceInline",
+        "TraceTable",
+        "TraceLookupStandalone",
+        "EchoMcpState"
+      ],
+      "order_count": 4,
+      "declared_entries": [
+        "TraceInline",
+        "TraceTable",
+        "TraceLookupStandalone",
+        "EchoMcpState"
+      ],
+      "declared_entry_count": 4,
+      "source_or_dependency_surface": "QuadrotorExperiments.SupportModels",
+      "implementation_state": "formal wrapper aliases only",
+      "canonicality_state": "formal_entry_alias_surface_not_real_namespace_migration",
+      "live_validation_state": "not_run_static_only_015"
+    },
+    {
+      "category": "LegacyCompatibility",
+      "role_cn": "旧入口兼容",
+      "role_key": "legacy_compatibility_pool",
+      "formal_package": "MoSimQuadrotorModel.LegacyCompatibility",
+      "package_mo": "Models/MoSimQuadrotorModel/LegacyCompatibility/package.mo",
+      "package_order": "Models/MoSimQuadrotorModel/LegacyCompatibility/package.order",
+      "order_entries": [
+        "LegacyExperimentPool"
+      ],
+      "order_count": 1,
+      "declared_entries": [
+        "LegacyExperimentPool"
+      ],
+      "declared_entry_count": 1,
+      "source_or_dependency_surface": "QuadrotorExperiments",
+      "implementation_state": "compatibility aggregate only",
+      "canonicality_state": "formal_entry_alias_surface_not_real_namespace_migration",
+      "live_validation_state": "not_run_static_only_015"
+    }
+  ],
+  "legacy_quadrotor_experiments_categories": [
+    {
+      "legacy_category": "ControllerBaselines",
+      "path": "Models/QuadrotorExperiments/ControllerBaselines",
+      "mo_file_count": 13,
+      "sample_mo_files": [
+        "AntiWindupFeedforwardController.mo",
+        "Example1AntiWindupFeedforwardPID.mo",
+        "Example1EnhancedPID.mo",
+        "Example1ImprovedPID.mo",
+        "Example2AntiWindupFeedforwardPID.mo",
+        "Example2EnhancedPID.mo",
+        "Example2HelixTunedAntiWindupFeedforwardPID.mo",
+        "Example2HelixTunedEnhancedPID.mo"
+      ],
+      "has_package_mo": true,
+      "has_package_order": true,
+      "package_order_count": 12,
+      "package_extends_target_count": 13,
+      "role_in_015": "legacy_implementation_or_compatibility_source_preserved"
+    },
+    {
+      "legacy_category": "DynamicsUpgrade",
+      "path": "Models/QuadrotorExperiments/DynamicsUpgrade",
+      "mo_file_count": 10,
+      "sample_mo_files": [
+        "Sunray150DynamicsUpgradeHoverSmoke.mo",
+        "Sunray150DynamicsUpgradeYawStepSmoke.mo",
+        "Sunray150DynamicsWrapperHoverSmoke.mo",
+        "Sunray150DynamicsWrapperSurface.mo",
+        "Sunray150DynamicsWrapperYawStepSmoke.mo",
+        "Sunray150PhysicalWrenchFrameAdapter.mo",
+        "Sunray150PhysicalWrenchHoverSmoke.mo",
+        "Sunray150PhysicalWrenchYawStepSmoke.mo"
+      ],
+      "has_package_mo": true,
+      "has_package_order": true,
+      "package_order_count": 9,
+      "package_extends_target_count": 10,
+      "role_in_015": "legacy_implementation_or_compatibility_source_preserved"
+    },
+    {
+      "legacy_category": "FormationScenarios",
+      "path": "Models/QuadrotorExperiments/FormationScenarios",
+      "mo_file_count": 2,
+      "sample_mo_files": [
+        "FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo",
+        "package.mo"
+      ],
+      "has_package_mo": true,
+      "has_package_order": true,
+      "package_order_count": 1,
+      "package_extends_target_count": 2,
+      "role_in_015": "legacy_implementation_or_compatibility_source_preserved"
+    },
+    {
+      "legacy_category": "OfficialScenarios",
+      "path": "Models/QuadrotorExperiments/OfficialScenarios",
+      "mo_file_count": 16,
+      "sample_mo_files": [
+        "Example1AWFFSysblockClosedLoop.mo",
+        "Example1HelicalFigure8TrailSysblockClosedLoop.mo",
+        "Example1INDISysblockClosedLoop.mo",
+        "Example1L1SysblockClosedLoop.mo",
+        "Example1LinearMPCSysblockClosedLoop.mo",
+        "Example1PlanarFigure8TrailSysblockClosedLoop.mo",
+        "Example2AWFFSysblockClosedLoop.mo",
+        "Example2HelixTunedAWFFSysblockClosedLoop.mo"
+      ],
+      "has_package_mo": true,
+      "has_package_order": true,
+      "package_order_count": 15,
+      "package_extends_target_count": 16,
+      "role_in_015": "legacy_implementation_or_compatibility_source_preserved"
+    },
+    {
+      "legacy_category": "PlanningScenarios",
+      "path": "Models/QuadrotorExperiments/PlanningScenarios",
+      "mo_file_count": 8,
+      "sample_mo_files": [
+        "PlannedQuinticReference.mo",
+        "PlanningNavigationDisplay.mo",
+        "Sunray150PlanningCorridorGateAWFFSysblockClosedLoop.mo",
+        "Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop.mo",
+        "Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop.mo",
+        "Sunray150PlanningOpenBlocksColorMapReview.mo",
+        "Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo",
+        "package.mo"
+      ],
+      "has_package_mo": true,
+      "has_package_order": true,
+      "package_order_count": 7,
+      "package_extends_target_count": 8,
+      "role_in_015": "legacy_implementation_or_compatibility_source_preserved"
+    },
+    {
+      "legacy_category": "RobustFaultScenarios",
+      "path": "Models/QuadrotorExperiments/RobustFaultScenarios",
+      "mo_file_count": 11,
+      "sample_mo_files": [
+        "Example1Mass20AWFFSysblockClosedLoop.mo",
+        "Example1Mass20AntiWindupFeedforwardPID.mo",
+        "Example1Mass20L1SysblockClosedLoop.mo",
+        "Example1Mass20LinearMPCSysblockClosedLoop.mo",
+        "Example1QPNMPCSafetyReturnLandSysblockClosedLoop.mo",
+        "Example1QPNMPCSafetySysblockClosedLoop.mo",
+        "Example1WindGustAWFFSysblockClosedLoop.mo",
+        "Example1WindGustAntiWindupFeedforwardPID.mo"
+      ],
+      "has_package_mo": true,
+      "has_package_order": true,
+      "package_order_count": 12,
+      "package_extends_target_count": 11,
+      "role_in_015": "legacy_implementation_or_compatibility_source_preserved"
+    },
+    {
+      "legacy_category": "SceneTraceScenarios",
+      "path": "Models/QuadrotorExperiments/SceneTraceScenarios",
+      "mo_file_count": 4,
+      "sample_mo_files": [
+        "Sunray150UEDerelictLinearMPCSysblockSmoke.mo",
+        "Sunray150UEFactoryLinearMPCSysblockSmoke.mo",
+        "Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke.mo",
+        "package.mo"
+      ],
+      "has_package_mo": true,
+      "has_package_order": true,
+      "package_order_count": 3,
+      "package_extends_target_count": 4,
+      "role_in_015": "legacy_implementation_or_compatibility_source_preserved"
+    },
+    {
+      "legacy_category": "SupportModels",
+      "path": "Models/QuadrotorExperiments/SupportModels",
+      "mo_file_count": 5,
+      "sample_mo_files": [
+        "EchoMcpStateSmoke.mo",
+        "TraceInlineReference.mo",
+        "TraceLookupStandaloneSmoke.mo",
+        "TraceTableReference.mo",
+        "package.mo"
+      ],
+      "has_package_mo": true,
+      "has_package_order": true,
+      "package_order_count": 4,
+      "package_extends_target_count": 5,
+      "role_in_015": "legacy_implementation_or_compatibility_source_preserved"
+    },
+    {
+      "legacy_category": "SystemArchitecture",
+      "path": "Models/QuadrotorExperiments/SystemArchitecture",
+      "mo_file_count": 7,
+      "sample_mo_files": [
+        "Sunray150CompleteSystemBatteryLowSysblock.mo",
+        "Sunray150CompleteSystemGPSDropoutSysblock.mo",
+        "Sunray150CompleteSystemGeofenceBreachSysblock.mo",
+        "Sunray150CompleteSystemGraphical_Sysblock.mo",
+        "Sunray150CompleteSystemMissionFailureSysblock.mo",
+        "Sunray150CompleteSystemOffboardLossSysblock.mo",
+        "package.mo"
+      ],
+      "has_package_mo": true,
+      "has_package_order": true,
+      "package_order_count": 6,
+      "package_extends_target_count": 7,
+      "role_in_015": "legacy_implementation_or_compatibility_source_preserved"
+    },
+    {
+      "legacy_category": "SystemModules",
+      "path": "Models/QuadrotorExperiments/SystemModules",
+      "mo_file_count": 1,
+      "sample_mo_files": [
+        "package.mo"
+      ],
+      "has_package_mo": true,
+      "has_package_order": true,
+      "package_order_count": 9,
+      "package_extends_target_count": 10,
+      "role_in_015": "legacy_implementation_or_compatibility_source_preserved"
+    },
+    {
+      "legacy_category": "TraceIsolation",
+      "path": "Models/QuadrotorExperiments/TraceIsolation",
+      "mo_file_count": 32,
+      "sample_mo_files": [
+        "FactoryLiteTraceSmoke.mo",
+        "FactoryTraceIso01FullDisplaySmoke.mo",
+        "FactoryTraceIso02ControllerOnlySmoke.mo",
+        "FactoryTraceIso03PlantHoverStackSmoke.mo",
+        "FactoryTraceIso04ControllerPlantWiringSmoke.mo",
+        "FactoryTraceIso05CleanHoverSumSmoke.mo",
+        "FactoryTraceIso06CleanControllerPlantWiringSmoke.mo",
+        "FactoryTraceIso07CleanControllerOpenFeedbackSmoke.mo"
+      ],
+      "has_package_mo": true,
+      "has_package_order": true,
+      "package_order_count": 31,
+      "package_extends_target_count": 32,
+      "role_in_015": "legacy_implementation_or_compatibility_source_preserved"
+    }
+  ],
+  "controller_blocks_surface": {
+    "package": "QuadrotorControllerBlocks",
+    "path": "Models/QuadrotorControllerBlocks",
+    "flat_controller_mo_count": 19,
+    "flat_controller_mo_files": [
+      "AWFF_AttitudeInnerLoop_Sysblock.mo",
+      "AWFF_FaultCompensationControllerEquation_Sysblock.mo",
+      "AWFF_FullControllerEquation_Sysblock.mo",
+      "AWFF_FullControllerFlatGraphical_Sysblock.mo",
+      "AWFF_FullController_Sysblock.mo",
+      "AWFF_INDIControllerEquation_Sysblock.mo",
+      "AWFF_InnovationGraphicalControllers.mo",
+      "AWFF_L1FaultAllocationControllerEquation_Sysblock.mo",
+      "AWFF_L1MultiFaultIsolationControllerEquation_Sysblock.mo",
+      "AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock.mo",
+      "AWFF_L1ResidualControllerEquation_Sysblock.mo",
+      "AWFF_LinearMPCMultiFaultAllocationController_Sysblock.mo",
+      "AWFF_LinearMPCOnlineFaultAllocationController_Sysblock.mo",
+      "AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "AWFF_MotorMixer_Sysblock.mo",
+      "AWFF_PID_Sysblock_Demo.mo",
+      "AWFF_PID_Sysblock_Demo_SIL_Constant.mo",
+      "AWFF_PositionOuterLoop_Sysblock.mo",
+      "AWFF_QPNMPCSafetyController_Sysblock.mo"
+    ],
+    "package_order_entries": [
+      "AWFFPidBlocks",
+      "InnovationControllers",
+      "FaultAllocationControllers",
+      "LinearMPCControllers",
+      "SafetyControllers",
+      "DemosAndSIL",
+      "CompatibilityAndLegacy"
+    ],
+    "package_order_count": 7,
+    "backup_or_upgrade_dirs_preserved_count": 5,
+    "backup_or_upgrade_dirs_preserved": [
+      "AWFF_AttitudeInnerLoop_Sysblock_backup",
+      "AWFF_InnovationGraphicalControllers_backup",
+      "AWFF_MotorMixer_Sysblock_backup",
+      "AWFF_PID_Sysblock_Demo_backup",
+      "AWFF_PositionOuterLoop_Sysblock_backup"
+    ],
+    "extends_targets_count": 19,
+    "role_in_015": "controller_block_package_shell_and_legacy_flat_controller_library_preserved"
+  },
+  "official_quadrotor_model_surface": {
+    "package": "QuadrotorModel",
+    "path": "References/MWORKS/QuadrotorModel/package.mo",
+    "role_in_015": "official_upstream_baseline_and_regression_dependency_read_only",
+    "resource_files_observed": 20,
+    "do_not_edit_policy": true,
+    "formal_adapter_entries": [
+      "MoSimQuadrotorModel.Baseline.OfficialExample1",
+      "MoSimQuadrotorModel.Baseline.OfficialExample2",
+      "MoSimQuadrotorModel.Baseline.OfficialExample3",
+      "MoSimQuadrotorModel.Baseline.OfficialQuadChassis"
+    ]
+  },
+  "counts": {
+    "mosim_formal_top_categories": 11,
+    "mosim_formal_ordered_child_entries": 64,
+    "quadrotor_experiments_category_dirs": 11,
+    "quadrotor_experiments_category_mo_files_in_dirs": 109,
+    "quadrotor_controller_flat_mo_files": 19,
+    "quadrotor_controller_backup_dirs": 5
+  },
+  "claim_boundary": "Static ownership and classification only; no package-browser acceptance, graphical/layout/wiring acceptance, check_model, simulation, controller performance, planner_ready, runtime ack, mission success, or closed_loop."
+}

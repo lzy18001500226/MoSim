@@ -1,0 +1,175 @@
+{
+  "schema": "mosim.mworks_model_hygiene.package_order_validation.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-ALIAS-CATEGORY-MIGRATION-PLAN-20260608-014",
+  "generated_at": "2026-06-08T01:13:00+08:00",
+  "validated_scope": [
+    "Models/MoSimQuadrotorModel/Missions/package.order",
+    "Models/MoSimQuadrotorModel/Robustness/package.order",
+    "Models/MoSimQuadrotorModel/Planning/package.order",
+    "Models/MoSimQuadrotorModel/Formation/package.order",
+    "Models/MoSimQuadrotorModel/Support/package.order",
+    "Models/MoSimQuadrotorModel/LegacyCompatibility/package.order"
+  ],
+  "validations": [
+    {
+      "path": "Models/MoSimQuadrotorModel/Missions/package.order",
+      "category": "Missions",
+      "entries": [
+        "Example1AWFF",
+        "Example1INDI",
+        "Example1L1",
+        "Example1LinearMPC",
+        "Example1PlanarFigure8Trail",
+        "Example1HelicalFigure8Trail",
+        "Example2AWFF",
+        "Example2HelixTunedAWFF",
+        "Example2INDI",
+        "Example2HelixTunedINDI",
+        "Example2LinearMPC",
+        "Example3AWFF",
+        "Example3INDI",
+        "Example3L1",
+        "Example3LinearMPC"
+      ],
+      "declared_local_entries": [
+        "Example1AWFF",
+        "Example1INDI",
+        "Example1L1",
+        "Example1LinearMPC",
+        "Example1PlanarFigure8Trail",
+        "Example1HelicalFigure8Trail",
+        "Example2AWFF",
+        "Example2HelixTunedAWFF",
+        "Example2INDI",
+        "Example2HelixTunedINDI",
+        "Example2LinearMPC",
+        "Example3AWFF",
+        "Example3INDI",
+        "Example3L1",
+        "Example3LinearMPC"
+      ],
+      "duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "trailing_newline": true,
+      "status": "pass"
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/Robustness/package.order",
+      "category": "Robustness",
+      "entries": [
+        "PIDBaselines",
+        "RotorLoss",
+        "Mass20AWFFBaseline",
+        "Mass20AWFF",
+        "Mass20L1",
+        "Mass20LinearMPC",
+        "WindGustAWFF",
+        "WindGustAWFFBaseline",
+        "WindGustL1",
+        "WindGustLinearMPC",
+        "SafetyQPNMPC",
+        "SafetyReturnLand"
+      ],
+      "declared_local_entries": [
+        "PIDBaselines",
+        "RotorLoss",
+        "Mass20AWFFBaseline",
+        "Mass20AWFF",
+        "Mass20L1",
+        "Mass20LinearMPC",
+        "WindGustAWFF",
+        "WindGustAWFFBaseline",
+        "WindGustL1",
+        "WindGustLinearMPC",
+        "SafetyQPNMPC",
+        "SafetyReturnLand"
+      ],
+      "duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "trailing_newline": true,
+      "status": "pass"
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/Planning/package.order",
+      "category": "Planning",
+      "entries": [
+        "QuinticReference",
+        "NavigationDisplay",
+        "OpenBlocksAWFF",
+        "OpenBlocksLinearMPC",
+        "OpenBlocksColorMapReview",
+        "CorridorGateAWFF",
+        "CorridorGateLinearMPC"
+      ],
+      "declared_local_entries": [
+        "QuinticReference",
+        "NavigationDisplay",
+        "OpenBlocksAWFF",
+        "OpenBlocksLinearMPC",
+        "OpenBlocksColorMapReview",
+        "CorridorGateAWFF",
+        "CorridorGateLinearMPC"
+      ],
+      "duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "trailing_newline": true,
+      "status": "pass"
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/Formation/package.order",
+      "category": "Formation",
+      "entries": [
+        "TriangleFigure8LinearMPC"
+      ],
+      "declared_local_entries": [
+        "TriangleFigure8LinearMPC"
+      ],
+      "duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "trailing_newline": true,
+      "status": "pass"
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/Support/package.order",
+      "category": "Support",
+      "entries": [
+        "TraceInline",
+        "TraceTable",
+        "TraceLookupStandalone",
+        "EchoMcpState"
+      ],
+      "declared_local_entries": [
+        "TraceInline",
+        "TraceTable",
+        "TraceLookupStandalone",
+        "EchoMcpState"
+      ],
+      "duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "trailing_newline": true,
+      "status": "pass"
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/LegacyCompatibility/package.order",
+      "category": "LegacyCompatibility",
+      "entries": [
+        "LegacyExperimentPool"
+      ],
+      "declared_local_entries": [
+        "LegacyExperimentPool"
+      ],
+      "duplicates": [],
+      "missing_from_order": [],
+      "extra_in_order": [],
+      "trailing_newline": true,
+      "status": "pass"
+    }
+  ],
+  "all_passed": true,
+  "missing_extends_targets": []
+}
