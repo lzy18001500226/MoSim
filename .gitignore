@@ -188,6 +188,14 @@ References/AirSim/spear/
 # Missing local Git LFS payloads in IsaacSim README screenshots; keep
 # manifest-only until the real LFS objects are restored.
 References/AirSim/IsaacSim/docs/readme/*.png
+# IsaacSim local checkout contains Git LFS pointer placeholders for bundled
+# assets; keep those asset classes manifest-only until real payloads exist.
+References/AirSim/IsaacSim/**/*.png
+References/AirSim/IsaacSim/**/*.dae
+References/AirSim/IsaacSim/**/*.stl
+References/AirSim/IsaacSim/**/*.usd
+References/AirSim/IsaacSim/**/*.usda
+References/AirSim/IsaacSim/**/*.ico
 References/AirSim/Cosys-AirSim/Docs/annsim23_tutorial/*.mp4
 References/AirSim/Cosys-AirSim/Docs/annsim23_tutorial/*.pdf
 References/AirSim/Cosys-AirSim/Unreal/Plugins/AirSim/Content/

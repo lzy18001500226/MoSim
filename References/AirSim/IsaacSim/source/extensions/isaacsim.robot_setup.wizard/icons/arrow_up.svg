@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27">
+  <g id="Arrow_up" transform="translate(-6479 -552)">
+    <rect id="Rectangle_1007" data-name="Rectangle 1007" width="27" height="27" transform="translate(6479 552)" fill="none"/>
+    <path id="Arrow_up-2" data-name="Arrow_up" d="M9.822,8.106,2.66,15.173l-.106.082-.1.04-.106.042-.125.019-.125-.019-.106-.042-.1-.04-.106-.082L.188,13.584.1,13.5l-.041-.1-.043-.122L0,13.176l.019-.122.043-.122.041-.1.084-.08L5.3,7.678.188,2.626.1,2.526l-.041-.1-.043-.1L0,2.2l.019-.122.043-.1L.1,1.852l.084-.1L1.779.183,1.885.1l.1-.061L2.094,0h.25l.106.04.1.061L2.66.183,9.822,7.249l.084.1.063.1.022.124V7.8l-.022.122L9.906,8Z" transform="translate(6485.05 570.895) rotate(-90)" fill="#9e9e9e" fill-rule="evenodd"/>
+  </g>
+</svg>
