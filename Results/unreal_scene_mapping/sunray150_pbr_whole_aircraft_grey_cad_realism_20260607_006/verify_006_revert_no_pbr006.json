@@ -1,0 +1,10 @@
+{
+  "schema_version": "mosim.sunray150_pbr006_revert_verify.v1",
+  "blend": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_dae_mid360_realistic_material_audit.blend",
+  "pbr006_object_count": 0,
+  "pbr006_material_count": 0,
+  "pbr006_objects": [],
+  "pbr006_materials": [],
+  "ok": true,
+  "note": "Verifies the 006 whole-aircraft review overlays/materials were removed from the restored 005-approved Blender audit asset."
+}

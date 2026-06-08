@@ -1,0 +1,2971 @@
+{
+  "schema_version": "mosim.sunray150_pbr_whole_aircraft_realism.v1",
+  "request_id": "RFLY-MOSIM-SUNRAY150-PBR-WHOLE-AIRCRAFT-GREY-CAD-REALISM-20260607-006",
+  "created_at": "2026-06-07T23:52:49+08:00",
+  "source_blend": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_dae_mid360_realistic_material_audit.blend",
+  "edited_blend": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_dae_mid360_realistic_material_audit.blend",
+  "department_local_goal": "Reduce whole-aircraft grey CAD appearance in the accepted DAE-derived Sunray150 Blender audit asset while preserving geometry and simulation boundaries.",
+  "material_edits": [],
+  "object_level_reassignments": [
+    {
+      "object": "AUDIT_STANDALONE_MID360_013_ahs_71839628D0F2A2C7A2738D6245838489666693EB_B8A4396250C5687B1D31E70758B30729E1AC4426_13",
+      "assigned_review_family": "mid360_housing",
+      "material": "PBR006_MID360_Satin_Darker_Grey_Metal_Housing"
+    },
+    {
+      "object": "AUDIT_STANDALONE_MID360_014_ahs_71839628D0F2A2C7A2738D6245838489666693EB_B8A4396250C5687B1D31E70758B30729E1AC4426_14",
+      "assigned_review_family": "mid360_housing",
+      "material": "PBR006_MID360_Satin_Darker_Grey_Metal_Housing"
+    },
+    {
+      "object": "AUDIT_STANDALONE_MID360_015_40C072FF4AB5B85FE19E237CA4010A5A3C409110_B8A4396250C5687B1D31E70758B30729E1AC4426",
+      "assigned_review_family": "mid360_dome",
+      "material": "PBR006_MID360_Dark_Blue_Mirror_Optical_Glass_Dome"
+    },
+    {
+      "object": "red_wire_hint",
+      "assigned_review_family": "cables",
+      "material": "PBR006_Red_Silicone_Wire_Accent"
+    },
+    {
+      "object": "blue_wire_hint",
+      "assigned_review_family": "cables",
+      "material": "PBR006_Blue_Silicone_Wire_Accent"
+    },
+    {
+      "object": "yellow_wire_hint",
+      "assigned_review_family": "cables",
+      "material": "PBR006_Yellow_Silicone_Wire_Accent"
+    },
+    {
+      "object": "decal_n150_ic_package_1",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "decal_n150_ic_package_2",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "decal_n150_ic_package_3",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "decal_n150_gold_pad_bank_a",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "decal_n150_gold_pad_bank_b",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "decal_n150_m2_label",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "decal_n150_usb9_black_core_a",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "decal_n150_usb9_black_core_b",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "decal_n150_usb9_black_core_c",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "decal_n150_hdmi_black_core",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "decal_n150_rj45_black_core",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_MAIN_STRUCTURE.1_MAIN_STRUCTURE _ MAIN_STRUCTURE.1_MAIN_STRUCTUREMesh",
+      "assigned_review_family": "carbon_frame",
+      "material": "PBR006_Dark_Woven_Carbon_Frame"
+    },
+    {
+      "object": "DAE_FULL_TOP_PANNEL.1_TOP _ TOP_PANNEL.1_TOPMesh",
+      "assigned_review_family": "carbon_frame",
+      "material": "PBR006_Dark_Woven_Carbon_Frame"
+    },
+    {
+      "object": "DAE_FULL_Fill.1 _ Fill.1Mesh",
+      "assigned_review_family": "carbon_frame",
+      "material": "PBR006_Dark_Woven_Carbon_Frame"
+    },
+    {
+      "object": "DAE_FULL_Fill.1_ncl1_1 _ Fill.1_ncl1_1Mesh",
+      "assigned_review_family": "carbon_frame",
+      "material": "PBR006_Dark_Woven_Carbon_Frame"
+    },
+    {
+      "object": "DAE_FULL_RANGING_LIDAR_CAMERA_BASE.1_RANGING_LIDAR_CAMERA_BASE _ RANGING_LIDAR_CAMERA_BASE.1_RANGING_LIDAR_CAMERA_BASEMesh",
+      "assigned_review_family": "camera_black",
+      "material": "PBR006_USB_Camera_All_Black_Polymer"
+    },
+    {
+      "object": "DAE_FULL_FRONT_CAMERA_CONNECTOR.1_MAIN_STRUCTURE _ FRONT_CAMERA_CONNECTOR.1_MAIN_STRUCTUREMesh",
+      "assigned_review_family": "camera_black",
+      "material": "PBR006_USB_Camera_All_Black_Polymer"
+    },
+    {
+      "object": "DAE_FULL_CAMERA_SHIM.1_PartBody _ CAMERA_SHIM.1_PartBodyMesh",
+      "assigned_review_family": "camera_black",
+      "material": "PBR006_USB_Camera_All_Black_Polymer"
+    },
+    {
+      "object": "DAE_FULL_MID360_PROTECT_ARC_CONNECTOR.1_PartBody _ MID360_PROTECT_ARC_CONNECTOR.1_PartBodyMesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_MID360_PROTECT_ARC_CONNECTOR.2_PartBody _ MID360_PROTECT_ARC_CONNECTOR.2_PartBodyMesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_MID360_PROTECT_ARC_CONNECTOR.3_PartBody _ MID360_PROTECT_ARC_CONNECTOR.3_PartBodyMesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_MID360_PROTECT_ARC_CONNECTOR.4_PartBody _ MID360_PROTECT_ARC_CONNECTOR.4_PartBodyMesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_MID360_PROTECT_ARC_CONNECTOR.5_PartBody _ MID360_PROTECT_ARC_CONNECTOR.5_PartBodyMesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_MID360_PROTECT_ARC_CONNECTOR.6_PartBody _ MID360_PROTECT_ARC_CONNECTOR.6_PartBodyMesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_PROTECTIVE_RING.1_MAIN_STRUCTURE _ PROTECTIVE_RING.1_MAIN_STRUCTUREMesh",
+      "assigned_review_family": "liuli_guard",
+      "material": "PBR006_Clear_Liuli_Glass_Guard_Landing_Gear"
+    },
+    {
+      "object": "DAE_FULL_LAND_GEAR.1_PartBody _ LAND_GEAR.1_PartBodyMesh",
+      "assigned_review_family": "liuli_guard",
+      "material": "PBR006_Clear_Liuli_Glass_Guard_Landing_Gear"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_SMT_NUT_CT177B67D51.stp.1_WS_SHORT_ME_3D-20211122.stp_1_ _ N150_AllCATPart.1_SMT_NUT_CT177B67D51.stp.",
+      "assigned_review_family": "dark_hardware",
+      "material": "PBR006_Dark_Anodized_Hardware"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_SMT_NUT_CT177B67D51.stp.2_WS_SHORT_ME_3D-20211122.stp_1_ _ N150_AllCATPart.1_SMT_NUT_CT177B67D51.stp.",
+      "assigned_review_family": "dark_hardware",
+      "material": "PBR006_Dark_Anodized_Hardware"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_AL_COLUMNS.1_PartBody _ N150_AllCATPart.1_AL_COLUMNS.1_PartBodyMesh",
+      "assigned_review_family": "dark_hardware",
+      "material": "PBR006_Dark_Anodized_Hardware"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_AL_COLUMNS.2_PartBody _ N150_AllCATPart.1_AL_COLUMNS.2_PartBodyMesh",
+      "assigned_review_family": "dark_hardware",
+      "material": "PBR006_Dark_Anodized_Hardware"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_AL_COLUMNS.3_PartBody _ N150_AllCATPart.1_AL_COLUMNS.3_PartBodyMesh",
+      "assigned_review_family": "dark_hardware",
+      "material": "PBR006_Dark_Anodized_Hardware"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_AL_COLUMNS.4_PartBody _ N150_AllCATPart.1_AL_COLUMNS.4_PartBodyMesh",
+      "assigned_review_family": "dark_hardware",
+      "material": "PBR006_Dark_Anodized_Hardware"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_AL_COLUMNS.5_PartBody _ N150_AllCATPart.1_AL_COLUMNS.5_PartBodyMesh",
+      "assigned_review_family": "dark_hardware",
+      "material": "PBR006_Dark_Anodized_Hardware"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_AL_COLUMNS.6_PartBody _ N150_AllCATPart.1_AL_COLUMNS.6_PartBodyMesh",
+      "assigned_review_family": "dark_hardware",
+      "material": "PBR006_Dark_Anodized_Hardware"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_AL_COLUMNS.7_PartBody _ N150_AllCATPart.1_AL_COLUMNS.7_PartBodyMesh",
+      "assigned_review_family": "dark_hardware",
+      "material": "PBR006_Dark_Anodized_Hardware"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_AL_COLUMNS.8_PartBody _ N150_AllCATPart.1_AL_COLUMNS.8_PartBodyMesh",
+      "assigned_review_family": "dark_hardware",
+      "material": "PBR006_Dark_Anodized_Hardware"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 1_1_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 1_2_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 1_3_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 1_4_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 1_5_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 1_6_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 1_7_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_1_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_2_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_3_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_4_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_5_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_6_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_7_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_8_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_9_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_10_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_11_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_12_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_13_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_14_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_15_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_16_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_17_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_18_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_19_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_20_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_21_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_22_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_23_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_24_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_25_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_26_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_27_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_28_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_29_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_30_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_31_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_32_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_33_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_34_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_35_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_36_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_37_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_38_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_39_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_40_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_41_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_42_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_43_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_44_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_45_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_46_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_47_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_48_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_49_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_50_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_51_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_52_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_53_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_54_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_55_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_56_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_57_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_58_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_59_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_60_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_61_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_62_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_63_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_64_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_65_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_66_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_67_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_68_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_69_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_70_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_71_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_72_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_73_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_74_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_75_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_76_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_NAUO2_Stator Wire 2_77_ _ MOTOR_2104_3000KV_AllCATPart.1_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 1_1_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 1_2_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 1_3_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 1_4_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 1_5_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 1_6_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 1_7_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_1_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_2_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_3_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_4_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_5_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_6_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_7_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_8_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_9_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_10_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_11_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_12_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_13_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_14_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_15_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_16_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_17_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_18_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_19_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_20_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_21_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_22_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_23_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_24_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_25_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_26_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_27_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_28_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_29_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_30_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_31_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_32_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_33_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_34_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_35_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_36_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_37_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_38_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_39_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_40_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_41_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_42_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_43_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_44_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_45_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_46_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_47_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_48_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_49_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_50_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_51_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_52_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_53_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_54_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_55_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_56_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_57_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_58_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_59_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_60_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_61_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_62_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_63_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_64_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_65_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_66_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_67_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_68_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_69_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_70_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_71_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_72_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_73_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_74_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_75_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_76_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_NAUO2_Stator Wire 2_77_ _ MOTOR_2104_3000KV_AllCATPart.2_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 1_1_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 1_2_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 1_3_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 1_4_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 1_5_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 1_6_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 1_7_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_1_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_2_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_3_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_4_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_5_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_6_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_7_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_8_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_9_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_10_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_11_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_12_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_13_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_14_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_15_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_16_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_17_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_18_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_19_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_20_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_21_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_22_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_23_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_24_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_25_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_26_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_27_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_28_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_29_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_30_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_31_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_32_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_33_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_34_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_35_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_36_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_37_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_38_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_39_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_40_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_41_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_42_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_43_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_44_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_45_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_46_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_47_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_48_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_49_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_50_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_51_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_52_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_53_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_54_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_55_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_56_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_57_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_58_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_59_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_60_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_61_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_62_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_63_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_64_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_65_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_66_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_67_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_68_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_69_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_70_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_71_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_72_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_73_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_74_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_75_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_76_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_NAUO2_Stator Wire 2_77_ _ MOTOR_2104_3000KV_AllCATPart.3_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 1_1_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 1_2_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 1_3_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 1_4_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 1_5_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 1_6_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 1_7_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_1_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_2_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_3_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_4_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_5_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_6_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_7_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_8_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_9_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_10_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_11_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_12_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_13_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_14_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_15_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_16_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_17_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_18_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_19_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_20_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_21_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_22_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_23_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_24_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_25_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_26_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_27_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_28_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_29_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_30_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_31_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_32_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_33_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_34_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_35_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_36_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_37_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_38_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_39_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_40_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_41_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_42_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_43_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_44_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_45_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_46_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_47_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_48_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_49_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_50_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_51_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_52_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_53_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_54_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_55_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_56_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_57_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_58_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_59_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_60_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_61_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_62_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_63_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_64_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_65_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_66_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_67_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_68_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_69_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_70_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_71_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_72_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_73_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_74_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_75_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_76_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_NAUO2_Stator Wire 2_77_ _ MOTOR_2104_3000KV_AllCATPart.4_MOTOR_STATOR.1_N",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_C_H_AllCATPart.1_5_MANIFOLD_SOLID_BREP #20315 _ CABLE_FRONT_CAMERA_TO_N150_USB_C_H_AllCA",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_C_H_AllCATPart.1_8_7_6_MANIFOLD_SOLID_BREP #24148 _ CABLE_FRONT_CAMERA_TO_N150_USB_C_H_A",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD_SOLID_BREP #33976 _ CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD_SOLID_BREP #34528 _ CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD_SOLID_BREP #34942 _ CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD_SOLID_BREP #35474 _ CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD_SOLID_BREP #35970 _ CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD_SOLID_BREP #36384 _ CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD_SOLID_BREP #37216 _ CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD_SOLID_BREP #38041 _ CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD_SOLID_BREP #38584 _ CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD_SOLID_BREP #38998 _ CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD_SOLID_BREP #39530 _ CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD_SOLID_BREP #40026 _ CABLE_FRONT_CAMERA_TO_N150_USB_A.1_8_7_6_MANIFOLD",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_7_6_MANIFOLD_SOLID_BREP #28720 _ CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_7_6_MANIFOLD_SOLID_BREP #29272 _ CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_7_6_MANIFOLD_SOLID_BREP #29686 _ CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_7_6_MANIFOLD_SOLID_BREP #30218 _ CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_7_6_MANIFOLD_SOLID_BREP #30714 _ CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_7_6_MANIFOLD_SOLID_BREP #31128 _ CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_7_6_MANIFOLD_SOLID_BREP #31960 _ CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_7_6_MANIFOLD_SOLID_BREP #32785 _ CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_7_6_MANIFOLD_SOLID_BREP #33328 _ CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_7_6_MANIFOLD_SOLID_BREP #33742 _ CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_7_6_MANIFOLD_SOLID_BREP #34274 _ CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_7_6_MANIFOLD_SOLID_BREP #34770 _ CABLE_BOTTOM_CAMERA_TO_N150_PCBModel.6.2_8_",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_USB_C_S_AllCATPart.2_5_MANIFOLD_SOLID_BREP #20375 _ CABLE_BOTTOM_CAMERA_TO_N150_USB_C_S_All",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_BOTTOM_CAMERA_TO_N150_USB_C_S_AllCATPart.2_8_7_6_MANIFOLD_SOLID_BREP #24356 _ CABLE_BOTTOM_CAMERA_TO_N150_USB_C_S",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_PCBModel.6.1_5_MANIFOLD_SOLID_BREP #16986 _ CABLE_FCU_TO_N150_PCBModel.6.1_5_MANIFOLD_SOLID_BREP #169",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_PCBModel.6.1_8_7_6_MANIFOLD_SOLID_BREP #20581 _ CABLE_FCU_TO_N150_PCBModel.6.1_8_7_6_MANIFOLD_SOLID_B",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_PCBModel.6.1_8_7_6_MANIFOLD_SOLID_BREP #25131 _ CABLE_FCU_TO_N150_PCBModel.6.1_8_7_6_MANIFOLD_SOLID_B",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_Part1.1_PartBody _ CABLE_FCU_TO_N150_Part1.1_PartBodyMesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_ESC_SPEEDYBEE_4IN1_BL_35.1_ESC_SPEEDYBEE_4IN1_BL_35_BOARD.1_MAIN_BOARD _ ESC_SPEEDYBEE_4IN1_BL_35.1_ESC_SPEEDYBEE_4IN1_",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "DAE_FULL_ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN1 _ ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN1Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN2 _ ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN2Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN3 _ ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN3Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN4 _ ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN4Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN5 _ ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN5Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN6 _ ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN6Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN7 _ ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN7Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN8 _ ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN8Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN9 _ ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN9Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN10 _ ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_PIN10Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_BODY _ ESC_SPEEDYBEE_4IN1_BL_35.1_BM8B-SRSS-TB.1_BODYMesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_Part1.1_PartBody _ N150_AllCATPart.1_Part1.1_PartBodyMesh",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_Part1.2_PartBody _ N150_AllCATPart.1_Part1.2_PartBodyMesh",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_Part1.2_Body.2 _ N150_AllCATPart.1_Part1.2_Body.2Mesh",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_Part1.2_Body.3 _ N150_AllCATPart.1_Part1.2_Body.3Mesh",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_Part2.1_PartBody _ N150_AllCATPart.1_Part2.1_PartBodyMesh",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_Part2.2_PartBody _ N150_AllCATPart.1_Part2.2_PartBodyMesh",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "DAE_FULL_BATTERY_LIMITER.1_BATTERY_LIMITER _ BATTERY_LIMITER.1_BATTERY_LIMITERMesh",
+      "assigned_review_family": "battery_black",
+      "material": "PBR006_Battery_Black_Heatshrink_With_Label_Cues"
+    },
+    {
+      "object": "DAE_FULL_BATTERY_LIMITER.2_BATTERY_LIMITER _ BATTERY_LIMITER.2_BATTERY_LIMITERMesh",
+      "assigned_review_family": "battery_black",
+      "material": "PBR006_Battery_Black_Heatshrink_With_Label_Cues"
+    },
+    {
+      "object": "DAE_FULL_YUNDRONE_4S1P_21700_AllCATPart.1_NAUO2_NONE _ YUNDRONE_4S1P_21700_AllCATPart.1_NAUO2_NONEMesh",
+      "assigned_review_family": "battery_black",
+      "material": "PBR006_Battery_Black_Heatshrink_With_Label_Cues"
+    },
+    {
+      "object": "DAE_FULL_YUNDRONE_4S1P_21700_AllCATPart.1_NAUO3_NONE _ YUNDRONE_4S1P_21700_AllCATPart.1_NAUO3_NONEMesh",
+      "assigned_review_family": "battery_black",
+      "material": "PBR006_Battery_Black_Heatshrink_With_Label_Cues"
+    },
+    {
+      "object": "DAE_FULL_YUNDRONE_4S1P_21700_AllCATPart.1_NAUO1_NONE _ YUNDRONE_4S1P_21700_AllCATPart.1_NAUO1_NONEMesh",
+      "assigned_review_family": "battery_black",
+      "material": "PBR006_Battery_Black_Heatshrink_With_Label_Cues"
+    },
+    {
+      "object": "DAE_FULL_YUNDRONE_4S1P_21700_AllCATPart.1_NAUO4_NONE _ YUNDRONE_4S1P_21700_AllCATPart.1_NAUO4_NONEMesh",
+      "assigned_review_family": "battery_black",
+      "material": "PBR006_Battery_Black_Heatshrink_With_Label_Cues"
+    },
+    {
+      "object": "DAE_FULL_BATTERY_CLIP_AllCATPart.1_BATTERY_CLIP_BASE.1_PartBody _ BATTERY_CLIP_AllCATPart.1_BATTERY_CLIP_BASE.1_PartBodyMesh",
+      "assigned_review_family": "battery_black",
+      "material": "PBR006_Battery_Black_Heatshrink_With_Label_Cues"
+    },
+    {
+      "object": "DAE_FULL_BATTERY_CLIP_AllCATPart.1_BATTERY_CLIP_ARM.1_PartBody _ BATTERY_CLIP_AllCATPart.1_BATTERY_CLIP_ARM.1_PartBodyMesh",
+      "assigned_review_family": "battery_black",
+      "material": "PBR006_Battery_Black_Heatshrink_With_Label_Cues"
+    },
+    {
+      "object": "DAE_FULL_FRONT_CAMERA_PartBody _ FRONT_CAMERA_PartBodyMesh",
+      "assigned_review_family": "camera_black",
+      "material": "PBR006_USB_Camera_All_Black_Polymer"
+    },
+    {
+      "object": "DAE_FULL_BOTTOM_CAMERA_PartBody _ BOTTOM_CAMERA_PartBodyMesh",
+      "assigned_review_family": "camera_black",
+      "material": "PBR006_USB_Camera_All_Black_Polymer"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_C-3-1734795-2.1_MANIFOLD_SOLID_BREP #5985 _ N150_AllCATPart.1_C-3-1734795-2.1_MANIFOLD_SOLID_BREP #59",
+      "assigned_review_family": "pcb_deep",
+      "material": "PBR006_Deep_Green_Black_PCB_With_Gold_Accents"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_PJ311D_WOPos.1_NAUO4__6 _ N150_AllCATPart.1_PJ311D_WOPos.1_NAUO4__6Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_PJ311D_WOPos.1_NAUO3__5 _ N150_AllCATPart.1_PJ311D_WOPos.1_NAUO3__5Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_PJ311D_WOPos.1_NAUO2_0_05 _ N150_AllCATPart.1_PJ311D_WOPos.1_NAUO2_0_05Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_PJ311D_WOPos.1_NAUO1__1 _ N150_AllCATPart.1_PJ311D_WOPos.1_NAUO1__1Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_PJ311D_WOPos.1_NAUO5__2 _ N150_AllCATPart.1_PJ311D_WOPos.1_NAUO5__2Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_PJ311D_WOPos.1_NAUO6__5 _ N150_AllCATPart.1_PJ311D_WOPos.1_NAUO6__5Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_PJ311D_WOPos.1_NAUO7_0_05 _ N150_AllCATPart.1_PJ311D_WOPos.1_NAUO7_0_05Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_USB_9P_4HLD_RA_TCONN.stp.1_WS_SHORT_ME_3D-20211122.stp_1_ _ N150_AllCATPart.1_A_USB_9P_4HLD_RA_TCON",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONEMesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_1 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_1Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_2 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_2Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_3 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_3Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_4 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_4Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_5 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_5Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_6 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_6Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_7 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_7Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_8 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_8Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_9 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_9Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_10 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_10",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_11 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_11",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_12 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_12",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_13 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_13",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_14 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_14",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_15 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_15",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_16 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_16",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_17 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_17",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_18 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_18",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_19 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_19",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_20 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_20",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_21 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_21",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_22 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_22",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_23 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_23",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_24 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_24",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_25 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_25",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_26 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_26",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_27 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_27",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_28 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_28",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_29 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_29",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_30 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_30",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_31 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_31",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_32 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_32",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_33 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.1_NONE_ncl1_33",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONEMesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_1 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_1Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_2 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_2Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_3 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_3Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_4 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_4Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_5 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_5Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_6 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_6Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_7 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_7Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_8 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_8Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_9 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_9Me",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_10 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_10",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_11 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_11",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_12 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_12",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_13 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_13",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_14 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_14",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_15 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_15",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_16 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_16",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_17 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_17",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_18 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_18",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_19 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_19",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_20 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_20",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_21 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_21",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_22 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_22",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_23 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_23",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_24 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_24",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_25 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_25",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_26 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_26",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_27 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_27",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_28 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_28",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_29 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_29",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_30 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_30",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_31 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_31",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_32 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_32",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_33 _ N150_AllCATPart.1_A_NGFF_67P_20_4HLD_FC.stp.2_NONE_ncl1_33",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_USB_9P_4HLD_RA_TCONN.stp.2_WS_SHORT_ME_3D-20211122.stp_1_ _ N150_AllCATPart.1_A_USB_9P_4HLD_RA_TCON",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_USB_9P_4HLD_RA_TCONN.stp.3_WS_SHORT_ME_3D-20211122.stp_1_ _ N150_AllCATPart.1_A_USB_9P_4HLD_RA_TCON",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_HDMI connector.1_K_rper1 _ N150_AllCATPart.1_HDMI connector.1_K_rper1Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_HDMI connector.1_K_rper4 _ N150_AllCATPart.1_HDMI connector.1_K_rper4Mesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_USB_24P_12H_RA_LOTE_WS.stp.1_NONE _ N150_AllCATPart.1_A_USB_24P_12H_RA_LOTE_WS.stp.1_NONEMesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_USB_24P_12H_RA_LOTE_WS.stp.1_NONE_ncl1_1 _ N150_AllCATPart.1_A_USB_24P_12H_RA_LOTE_WS.stp.1_NONE_nc",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_USB_24P_12H_RA_LOTE_WS.stp.2_NONE _ N150_AllCATPart.1_A_USB_24P_12H_RA_LOTE_WS.stp.2_NONEMesh",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_A_USB_24P_12H_RA_LOTE_WS.stp.2_NONE_ncl1_1 _ N150_AllCATPart.1_A_USB_24P_12H_RA_LOTE_WS.stp.2_NONE_nc",
+      "assigned_review_family": "connector_nickel",
+      "material": "PBR006_Darker_Brushed_Nickel_Port_Shells"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Fillet4 _ CABLE_FCU_TO_N150_USB C male for soldering.1_Fillet4Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Boss-Extrude10_1_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Boss-Extr",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Boss-Extrude10_2_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Boss-Extr",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Boss-Extrude11 _ CABLE_FCU_TO_N150_USB C male for soldering.1_Boss-Extrude",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_LPattern5 _ CABLE_FCU_TO_N150_USB C male for soldering.1_LPattern5Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_LPattern6 _ CABLE_FCU_TO_N150_USB C male for soldering.1_LPattern6Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Boss-Extrude12 _ CABLE_FCU_TO_N150_USB C male for soldering.1_Boss-Extrude",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_LPattern7 _ CABLE_FCU_TO_N150_USB C male for soldering.1_LPattern7Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror5_1_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror5_1_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror5_2_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror5_2_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror5_3_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror5_3_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror5_4_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror5_4_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror5_5_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror5_5_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_1_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_1_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_2_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_2_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_3_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_3_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_4_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_4_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_5_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_5_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_6_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_6_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_7_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_7_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_8_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_8_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_9_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_9_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_10_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_Mirror6_10_Mesh",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_LPattern8_1_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_LPattern8_1_Me",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_CABLE_FCU_TO_N150_USB C male for soldering.1_LPattern8_2_ _ CABLE_FCU_TO_N150_USB C male for soldering.1_LPattern8_2_Me",
+      "assigned_review_family": "cables",
+      "material": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_TURBO_FAN.1_Cut-Extrude1 _ N150_AllCATPart.1_TURBO_FAN.1_Cut-Extrude1Mesh",
+      "assigned_review_family": "connector_core",
+      "material": "PBR006_Port_Black_Plastic_Cores"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_TURBO_FAN.1_Body.2 _ N150_AllCATPart.1_TURBO_FAN.1_Body.2Mesh",
+      "assigned_review_family": "connector_core",
+      "material": "PBR006_Port_Black_Plastic_Cores"
+    },
+    {
+      "object": "DAE_FULL_N150_AllCATPart.1_TN_MTS400_29-3462_M2_2242.stp.1_NONE _ N150_AllCATPart.1_TN_MTS400_29-3462_M2_2242.stp.1_NONEMesh",
+      "assigned_review_family": "white_label",
+      "material": "PBR006_Battery_And_Module_Satin_Label"
+    },
+    {
+      "object": "DAE_FULL_Sensor TF Mini PLUS.1_Ressalto-extrus_o5 _ Sensor TF Mini PLUS.1_Ressalto-extrus_o5Mesh",
+      "assigned_review_family": "tfmini_black",
+      "material": "PBR006_TF_Mini_Black_Optical_Sensor"
+    },
+    {
+      "object": "TriBlade_flipped_around_screw_axis_rotor_0_front_right_sunray_cw_stl",
+      "assigned_review_family": "liuli_prop",
+      "material": "PBR006_Clear_Liuli_Glass_Propeller"
+    },
+    {
+      "object": "TriBlade_flipped_around_screw_axis_rotor_1_back_left_sunray_cw_stl",
+      "assigned_review_family": "liuli_prop",
+      "material": "PBR006_Clear_Liuli_Glass_Propeller"
+    },
+    {
+      "object": "TriBlade_flipped_around_screw_axis_rotor_2_front_left_sunray_cw_stl",
+      "assigned_review_family": "liuli_prop",
+      "material": "PBR006_Clear_Liuli_Glass_Propeller"
+    },
+    {
+      "object": "TriBlade_flipped_around_screw_axis_rotor_3_back_right_sunray_cw_stl",
+      "assigned_review_family": "liuli_prop",
+      "material": "PBR006_Clear_Liuli_Glass_Propeller"
+    }
+  ],
+  "review_overlays": [
+    {
+      "object": "pbr006_n150_pcb_accent_00",
+      "purpose": "whole-aircraft electronics accent",
+      "material": "PBR006_Port_Black_Plastic_Cores"
+    },
+    {
+      "object": "pbr006_n150_pcb_accent_01",
+      "purpose": "whole-aircraft electronics accent",
+      "material": "PBR006_Port_Black_Plastic_Cores"
+    },
+    {
+      "object": "pbr006_n150_pcb_accent_02",
+      "purpose": "whole-aircraft electronics accent",
+      "material": "PBR006_Port_Black_Plastic_Cores"
+    },
+    {
+      "object": "pbr006_n150_pcb_accent_03",
+      "purpose": "whole-aircraft electronics accent",
+      "material": "PBR006_Electronics_Gold_Pad_Accent"
+    },
+    {
+      "object": "pbr006_n150_pcb_accent_04",
+      "purpose": "whole-aircraft electronics accent",
+      "material": "PBR006_Electronics_Gold_Pad_Accent"
+    },
+    {
+      "object": "pbr006_n150_pcb_accent_05",
+      "purpose": "whole-aircraft electronics accent",
+      "material": "PBR006_Battery_And_Module_Satin_Label"
+    },
+    {
+      "object": "pbr006_n150_pcb_accent_06",
+      "purpose": "whole-aircraft electronics accent",
+      "material": "PBR006_Port_Black_Plastic_Cores"
+    },
+    {
+      "object": "pbr006_n150_pcb_accent_07",
+      "purpose": "whole-aircraft electronics accent",
+      "material": "PBR006_Port_Black_Plastic_Cores"
+    },
+    {
+      "object": "pbr006_colored_wire_accent_00",
+      "purpose": "whole-aircraft colored wire accent",
+      "material": "PBR006_Red_Silicone_Wire_Accent"
+    },
+    {
+      "object": "pbr006_colored_wire_accent_01",
+      "purpose": "whole-aircraft colored wire accent",
+      "material": "PBR006_Blue_Silicone_Wire_Accent"
+    },
+    {
+      "object": "pbr006_colored_wire_accent_02",
+      "purpose": "whole-aircraft colored wire accent",
+      "material": "PBR006_Yellow_Silicone_Wire_Accent"
+    },
+    {
+      "object": "pbr006_colored_wire_accent_03",
+      "purpose": "whole-aircraft colored wire accent",
+      "material": "PBR006_Red_Silicone_Wire_Accent"
+    },
+    {
+      "object": "pbr006_battery_label_accent_00",
+      "purpose": "battery heat-shrink label cue",
+      "material": "PBR006_Battery_And_Module_Satin_Label"
+    },
+    {
+      "object": "pbr006_battery_label_accent_01",
+      "purpose": "battery heat-shrink label cue",
+      "material": "PBR006_Battery_Red_Warning_Label"
+    },
+    {
+      "object": "pbr006_mid360_mirror_reflection_strip_00",
+      "purpose": "MID-360 mirror-like white reflection strip",
+      "material": "PBR006_MID360_Mirror_White_Reflection_Strips"
+    },
+    {
+      "object": "pbr006_mid360_mirror_reflection_strip_01",
+      "purpose": "MID-360 mirror-like white reflection strip",
+      "material": "PBR006_MID360_Mirror_White_Reflection_Strips"
+    },
+    {
+      "object": "pbr006_mid360_mirror_reflection_strip_02",
+      "purpose": "MID-360 mirror-like white reflection strip",
+      "material": "PBR006_MID360_Mirror_White_Reflection_Strips"
+    }
+  ],
+  "render_outputs": [
+    {
+      "name": "whole_aircraft_iso",
+      "path": "Results/unreal_scene_mapping/sunray150_pbr_whole_aircraft_grey_cad_realism_20260607_006/whole_aircraft_iso.png",
+      "ortho_scale": 0.285,
+      "camera_offset": [
+        0.26,
+        -0.42,
+        0.22
+      ],
+      "claim": "rendered Blender visual/PBR review evidence only"
+    },
+    {
+      "name": "top_electronics_mid360",
+      "path": "Results/unreal_scene_mapping/sunray150_pbr_whole_aircraft_grey_cad_realism_20260607_006/top_electronics_mid360.png",
+      "ortho_scale": 0.185,
+      "camera_offset": [
+        0.02,
+        -0.18,
+        0.3
+      ],
+      "claim": "rendered Blender visual/PBR review evidence only"
+    },
+    {
+      "name": "front_camera_tfmini_electronics",
+      "path": "Results/unreal_scene_mapping/sunray150_pbr_whole_aircraft_grey_cad_realism_20260607_006/front_camera_tfmini_electronics.png",
+      "ortho_scale": 0.135,
+      "camera_offset": [
+        0.1,
+        -0.24,
+        0.085
+      ],
+      "claim": "rendered Blender visual/PBR review evidence only"
+    },
+    {
+      "name": "transparent_guard_propeller_check",
+      "path": "Results/unreal_scene_mapping/sunray150_pbr_whole_aircraft_grey_cad_realism_20260607_006/transparent_guard_propeller_check.png",
+      "ortho_scale": 0.21,
+      "camera_offset": [
+        0.22,
+        -0.24,
+        0.105
+      ],
+      "claim": "rendered Blender visual/PBR review evidence only"
+    }
+  ],
+  "scene_bounds": {
+    "bounds_min": [
+      -0.105751,
+      -0.105751,
+      -0.036
+    ],
+    "bounds_max": [
+      0.105751,
+      0.1089,
+      0.12593
+    ],
+    "center": [
+      0.0,
+      0.001574,
+      0.044965
+    ]
+  },
+  "stats": {
+    "mesh_object_count": 761,
+    "material_assignment_count": 761,
+    "family_object_counts": {
+      "carbon_frame": 26,
+      "pcb_electronics": 192,
+      "connector_ports": 6,
+      "cables_wires": 343,
+      "battery_payload": 10,
+      "camera_tfmini": 4,
+      "mid360": 36,
+      "transparent_guard_propeller": 5,
+      "motors_fasteners_standoffs": 125
+    },
+    "remaining_low_saturation_mid_luminance_risk_count": 0,
+    "remaining_low_saturation_mid_luminance_sample": []
+  },
+  "manual_review_status": "pending_user_visual_pass_fail",
+  "claim_boundary": {
+    "visual_asset_only": true,
+    "final_material_acceptance": false,
+    "ue_import_export_final_acceptance": false,
+    "geometry_modified": false,
+    "rotor_centers_modified": false,
+    "dynamics_modified": false,
+    "fast_lio_extrinsics_modified": false,
+    "ros2_mworks_ue_runtime_modified": false,
+    "controller_or_planner_modified": false
+  },
+  "elapsed_sec": 116.775
+}

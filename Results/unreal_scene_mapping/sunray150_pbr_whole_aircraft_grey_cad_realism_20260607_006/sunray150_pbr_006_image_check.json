@@ -1,0 +1,456 @@
+{
+  "schema_version": "mosim.sunray150_pbr_006_review_image_check.v1",
+  "created_at": "2026-06-07T23:53:18+08:00",
+  "request_id": "RFLY-MOSIM-SUNRAY150-PBR-WHOLE-AIRCRAFT-GREY-CAD-REALISM-20260607-006",
+  "contact_sheet": "Results/unreal_scene_mapping/sunray150_pbr_whole_aircraft_grey_cad_realism_20260607_006/sunray150_pbr_006_whole_aircraft_review_contact_sheet.png",
+  "manual_review_required": true,
+  "final_material_acceptance": false,
+  "missing_images": [],
+  "flat_images": [],
+  "checks": [
+    {
+      "path": "Results/unreal_scene_mapping/sunray150_pbr_whole_aircraft_grey_cad_realism_20260607_006/whole_aircraft_iso.png",
+      "exists": true,
+      "bytes": 2549111,
+      "mode": "RGBA",
+      "size": [
+        1800,
+        1350
+      ],
+      "mean_rgb": [
+        86.79,
+        96.95,
+        96.9
+      ],
+      "stddev_rgb": [
+        95.72,
+        103.51,
+        103.77
+      ],
+      "rgb_extrema": [
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "non_flat": true,
+      "sample_unique_color_count": 2247,
+      "name": "whole_aircraft_iso"
+    },
+    {
+      "path": "Results/unreal_scene_mapping/sunray150_pbr_whole_aircraft_grey_cad_realism_20260607_006/top_electronics_mid360.png",
+      "exists": true,
+      "bytes": 2860700,
+      "mode": "RGBA",
+      "size": [
+        1800,
+        1350
+      ],
+      "mean_rgb": [
+        156.74,
+        170.66,
+        171.11
+      ],
+      "stddev_rgb": [
+        102.01,
+        104.42,
+        105.03
+      ],
+      "rgb_extrema": [
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "non_flat": true,
+      "sample_unique_color_count": 2764,
+      "name": "top_electronics_mid360"
+    },
+    {
+      "path": "Results/unreal_scene_mapping/sunray150_pbr_whole_aircraft_grey_cad_realism_20260607_006/front_camera_tfmini_electronics.png",
+      "exists": true,
+      "bytes": 2741630,
+      "mode": "RGBA",
+      "size": [
+        1800,
+        1350
+      ],
+      "mean_rgb": [
+        169.36,
+        179.91,
+        177.5
+      ],
+      "stddev_rgb": [
+        94.44,
+        91.59,
+        92.09
+      ],
+      "rgb_extrema": [
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "non_flat": true,
+      "sample_unique_color_count": 2748,
+      "name": "front_camera_tfmini_electronics"
+    },
+    {
+      "path": "Results/unreal_scene_mapping/sunray150_pbr_whole_aircraft_grey_cad_realism_20260607_006/transparent_guard_propeller_check.png",
+      "exists": true,
+      "bytes": 2827548,
+      "mode": "RGBA",
+      "size": [
+        1800,
+        1350
+      ],
+      "mean_rgb": [
+        117.08,
+        131.42,
+        131.22
+      ],
+      "stddev_rgb": [
+        101.32,
+        104.62,
+        104.82
+      ],
+      "rgb_extrema": [
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "non_flat": true,
+      "sample_unique_color_count": 3038,
+      "name": "transparent_guard_propeller_check"
+    },
+    {
+      "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/mid360_sensor.png",
+      "exists": true,
+      "bytes": 1300332,
+      "mode": "RGBA",
+      "size": [
+        1400,
+        1050
+      ],
+      "mean_rgb": [
+        120.33,
+        145.23,
+        152.78
+      ],
+      "stddev_rgb": [
+        93.31,
+        95.04,
+        100.69
+      ],
+      "rgb_extrema": [
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "non_flat": true,
+      "sample_unique_color_count": 2381,
+      "name": "mid360_component_closeup"
+    },
+    {
+      "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/front_camera.png",
+      "exists": true,
+      "bytes": 1320607,
+      "mode": "RGBA",
+      "size": [
+        1400,
+        1050
+      ],
+      "mean_rgb": [
+        45.12,
+        45.16,
+        42.79
+      ],
+      "stddev_rgb": [
+        26.54,
+        26.57,
+        24.69
+      ],
+      "rgb_extrema": [
+        [
+          0,
+          230
+        ],
+        [
+          0,
+          231
+        ],
+        [
+          0,
+          225
+        ]
+      ],
+      "non_flat": true,
+      "sample_unique_color_count": 386,
+      "name": "front_camera_component_closeup"
+    },
+    {
+      "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/bottom_camera.png",
+      "exists": true,
+      "bytes": 1584452,
+      "mode": "RGBA",
+      "size": [
+        1400,
+        1050
+      ],
+      "mean_rgb": [
+        63.7,
+        63.59,
+        61.54
+      ],
+      "stddev_rgb": [
+        70.32,
+        70.43,
+        67.31
+      ],
+      "rgb_extrema": [
+        [
+          0,
+          234
+        ],
+        [
+          0,
+          235
+        ],
+        [
+          0,
+          227
+        ]
+      ],
+      "non_flat": true,
+      "sample_unique_color_count": 615,
+      "name": "bottom_camera_component_closeup"
+    },
+    {
+      "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/tfmini_laser_rangefinder.png",
+      "exists": true,
+      "bytes": 1030642,
+      "mode": "RGBA",
+      "size": [
+        1400,
+        1050
+      ],
+      "mean_rgb": [
+        28.37,
+        28.37,
+        28.37
+      ],
+      "stddev_rgb": [
+        21.07,
+        20.97,
+        21.01
+      ],
+      "rgb_extrema": [
+        [
+          0,
+          111
+        ],
+        [
+          0,
+          111
+        ],
+        [
+          0,
+          111
+        ]
+      ],
+      "non_flat": true,
+      "sample_unique_color_count": 190,
+      "name": "tfmini_component_closeup"
+    },
+    {
+      "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/n150_ports.png",
+      "exists": true,
+      "bytes": 1366570,
+      "mode": "RGBA",
+      "size": [
+        1400,
+        1050
+      ],
+      "mean_rgb": [
+        53.93,
+        54.22,
+        52.67
+      ],
+      "stddev_rgb": [
+        54.52,
+        55.04,
+        53.51
+      ],
+      "rgb_extrema": [
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "non_flat": true,
+      "sample_unique_color_count": 1171,
+      "name": "pcb_n150_component_closeup"
+    },
+    {
+      "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/battery.png",
+      "exists": true,
+      "bytes": 990722,
+      "mode": "RGBA",
+      "size": [
+        1400,
+        1050
+      ],
+      "mean_rgb": [
+        35.96,
+        35.62,
+        35.54
+      ],
+      "stddev_rgb": [
+        31.75,
+        29.88,
+        29.58
+      ],
+      "rgb_extrema": [
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "non_flat": true,
+      "sample_unique_color_count": 366,
+      "name": "battery_component_closeup"
+    },
+    {
+      "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/cables_wires.png",
+      "exists": true,
+      "bytes": 1046959,
+      "mode": "RGBA",
+      "size": [
+        1400,
+        1050
+      ],
+      "mean_rgb": [
+        36.92,
+        36.5,
+        36.16
+      ],
+      "stddev_rgb": [
+        27.06,
+        23.93,
+        22.78
+      ],
+      "rgb_extrema": [
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "non_flat": true,
+      "sample_unique_color_count": 486,
+      "name": "cables_component_closeup"
+    },
+    {
+      "path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/guard_landing_gear.png",
+      "exists": true,
+      "bytes": 1252211,
+      "mode": "RGBA",
+      "size": [
+        1400,
+        1050
+      ],
+      "mean_rgb": [
+        82.06,
+        92.66,
+        96.27
+      ],
+      "stddev_rgb": [
+        82.93,
+        93.68,
+        97.36
+      ],
+      "rgb_extrema": [
+        [
+          17,
+          255
+        ],
+        [
+          17,
+          255
+        ],
+        [
+          18,
+          255
+        ]
+      ],
+      "non_flat": true,
+      "sample_unique_color_count": 2101,
+      "name": "guard_component_closeup"
+    }
+  ]
+}

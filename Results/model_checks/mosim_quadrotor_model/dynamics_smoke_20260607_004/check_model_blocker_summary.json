@@ -1,0 +1,167 @@
+{
+  "schema": "mosim.mworks_model_check_evidence.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-SMOKE-CHECK-20260607-004",
+  "created_at": "2026-06-07T16:37:30+08:00",
+  "source_thread": "MoSim｜MWORKS动力学与控制验证部-R1",
+  "source": "MWORKS_MCP",
+  "scope": "MoSimQuadrotorModel.Dynamics formal entry check_model gate before smoke simulation",
+  "preflight_summary": {
+    "gui_sentinel_before": {
+      "path": "Results/mworks_gui_incidents/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-SMOKE-CHECK-20260607-004/gui_sentinel_before.json",
+      "status": "clean",
+      "license_state_hint": "education_window_observed_activation_unverified",
+      "all_window_license_gate": "pass",
+      "sha256": "B8CA62BAA9DA392254F510EB7DE45B22F19F03AECEDC463E2340B9EB89F12419"
+    },
+    "background_capture_before": {
+      "manifest_path": "Results/mworks_background_capture/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-SMOKE-CHECK-20260607-004/capture_manifest.json",
+      "manifest_sha256": "E3E05F62D39E9676BEA1801810EAB5C129B6B18B6F1627E9A279D39D56AA0CF8",
+      "visible_title": "QuadrotorModel - Sysplorer [教育版]",
+      "inspected_screenshot": "Results/mworks_background_capture/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-SMOKE-CHECK-20260607-004/71532_0x43D0ED2_QuadrotorModel - Sysplorer _教育版_.png",
+      "inspected_screenshot_sha256": "0A96859CF2A966D0A0F52EE627D7ACA8C74AC1C96861C15E433AE2DE99F6C745",
+      "observation": "Screenshot shows QuadrotorModel - Sysplorer [教育版] with no visible demo, login, authorization, or GUI error-report dialog."
+    },
+    "license_api_before": {
+      "available": true,
+      "api": "ModelingPy.License",
+      "results": [
+        {
+          "expr": "License(ltype='info')",
+          "ok": true,
+          "value": {
+            "许可证版本": "教育版"
+          }
+        },
+        {
+          "expr": "License('info')",
+          "ok": true,
+          "value": {
+            "许可证版本": "教育版"
+          }
+        }
+      ],
+      "boundary": "Education edition from API is current-turn task-local license evidence, not a permanent activation claim."
+    }
+  },
+  "load_model_results": [
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true,
+      "notes": "Top-level load succeeded. Auto-load dependency warnings for Icons/TY-like names were not the blocking failure."
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true,
+      "notes": "Top-level load succeeded; official QuadrotorModel dependency was available."
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/MoSimQuadrotorModel/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true,
+      "notes": "Top-level load succeeded; QuadrotorModel and QuadrotorExperiments dependencies were available."
+    }
+  ],
+  "check_model_results": [
+    {
+      "model": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+      "tool": "check_model",
+      "api": "CheckModel",
+      "ok": true,
+      "data": true,
+      "dt_s": 0.099,
+      "gate_status": "passed"
+    },
+    {
+      "model": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "tool": "check_model",
+      "api": "CheckModel",
+      "ok": true,
+      "data": true,
+      "dt_s": 0.103,
+      "gate_status": "passed"
+    },
+    {
+      "model": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "tool": "check_model",
+      "api": "CheckModel",
+      "ok": true,
+      "data": true,
+      "dt_s": 0.099,
+      "gate_status": "passed"
+    },
+    {
+      "model": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+      "tool": "check_model",
+      "api": "CheckModel",
+      "ok": true,
+      "data": true,
+      "dt_s": 0.095,
+      "gate_status": "passed"
+    },
+    {
+      "model": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+      "tool": "check_model",
+      "api": "CheckModel",
+      "ok": false,
+      "data": false,
+      "dt_s": 0.22,
+      "gate_status": "failed",
+      "error_summary": "CheckModel returned False; compiler error 4492: conditional component condition enableAnimation and animateWorld evaluation failed.",
+      "error_detail": "编译器错误(4492): 条件组件中条件 enableAnimation and animateWorld 估值失败",
+      "component_context_examples": [
+        "world.x_arrowLine",
+        "world.x_arrowHead",
+        "world.x_label",
+        "world.y_arrowLine"
+      ]
+    }
+  ],
+  "overall_check_model_gate": {
+    "ok": false,
+    "count": 5,
+    "passed_count": 4,
+    "failed_count": 1,
+    "blocking_model": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+    "blocker_kind": "model_check_failed"
+  },
+  "simulate_model_results": {
+    "status": "not_run",
+    "reason": "Task requires all five Dynamics formal entries to pass check_model before simulating HoverSmoke/YawStepSmoke; PhysicalWrenchAdapter failed check_model."
+  },
+  "post_failure_window_evidence": {
+    "gui_sentinel_after_check_failure": {
+      "path": "Results/mworks_gui_incidents/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-SMOKE-CHECK-20260607-004/gui_sentinel_after_check_failure.json",
+      "status": "clean",
+      "license_state_hint": "education_window_observed_activation_unverified",
+      "all_window_license_gate": "pass",
+      "sha256": "39E4CABA381D115020F6E2BBC3B5D0C90CE79CB31A952A2E555863B154A59526"
+    },
+    "background_capture_after_check_failure": {
+      "manifest_path": "Results/mworks_background_capture/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-SMOKE-CHECK-20260607-004/post_check_failure/capture_manifest.json",
+      "manifest_sha256": "2E152696952727E0D1323417F6775A145EA78C0AFBC09C1FFDB9A9F41E574D75",
+      "visible_titles": [
+        "QuadrotorModel - Sysplorer [教育版]",
+        "MoSimQuadrotorModel - Sysplorer [教育版]"
+      ],
+      "inspected_screenshot": "Results/mworks_background_capture/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-SMOKE-CHECK-20260607-004/post_check_failure/88520_0x3370CAC_MoSimQuadrotorModel - Sysplorer _教育版_.png",
+      "inspected_screenshot_sha256": "A9745A0294F0E229EFAD7D489C85A1A1968C2EDBAF3A3B822C75EE7B68AD5AA9",
+      "observation": "Post-check screenshot shows MoSimQuadrotorModel - Sysplorer [教育版] with no visible demo, login, authorization, or GUI error-report dialog."
+    }
+  },
+  "claim_boundary": [
+    "This evidence proves only the current-turn check_model failure boundary for the MoSimQuadrotorModel.Dynamics formal entry batch.",
+    "HoverSmoke and YawStepSmoke simulation evidence is not claimed because the pre-simulation check_model gate failed.",
+    "No real Sunray150 parameter identification, controller performance, planner readiness, UE/ROS2 runtime success, mission success, or closed_loop evidence is claimed."
+  ]
+}

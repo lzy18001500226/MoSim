@@ -1,0 +1,250 @@
+{
+  "schema": "mosim.mworks_evidence_summary.v1",
+  "request_id": "PMO-MWORKS-R1-PHYSICAL-WRENCH-ADAPTER-WORLD-CONDITIONAL-FIX-20260607-005",
+  "created_at": "2026-06-07T17:28:29+08:00",
+  "source_thread": "MoSim｜MWORKS动力学与控制验证部-R1",
+  "summary": "Narrow project-owned PhysicalWrenchAdapter World/animation conditional repair completed. Five MoSimQuadrotorModel.Dynamics formal entries passed check_model, then HoverSmoke and YawStepSmoke completed minimal 0.25 s SimulateModel smoke checks with result probes.",
+  "preflight": {
+    "gui_sentinel_before": {
+      "path": "Results/mworks_gui_incidents/PMO-MWORKS-R1-PHYSICAL-WRENCH-ADAPTER-WORLD-CONDITIONAL-FIX-20260607-005/gui_sentinel_before.json",
+      "sha256": "58442ABC5055AEE3BD392E5B3303E0453F8F0621F512DC812DA1F64CAD33C1CE",
+      "status": "clean",
+      "license_state_hint": "education_window_observed_activation_unverified",
+      "all_window_license_gate": "pass",
+      "target_window_count": 10,
+      "education_window_count": 2,
+      "demo_window_count": 0,
+      "login_activation_window_count": 0,
+      "authorization_window_count": 0,
+      "visible_unknown_mworks_window_count": 0,
+      "hidden_unknown_mworks_window_count": 8,
+      "blocking_mworks_window_count": 0
+    },
+    "background_screenshot_before": {
+      "manifest_path": "Results/mworks_background_capture/PMO-MWORKS-R1-PHYSICAL-WRENCH-ADAPTER-WORLD-CONDITIONAL-FIX-20260607-005/capture_manifest.json",
+      "manifest_sha256": "FC9E1877144A0AB87223994CDDD30BBBBC3EA1768DCC52F12952923D2784286E",
+      "observed_visible_titles": [
+        "QuadrotorModel - Sysplorer [教育版]",
+        "MoSimQuadrotorModel - Sysplorer [教育版]"
+      ],
+      "inspected_screenshot": "Results/mworks_background_capture/PMO-MWORKS-R1-PHYSICAL-WRENCH-ADAPTER-WORLD-CONDITIONAL-FIX-20260607-005/88520_0x3370CAC_MoSimQuadrotorModel - Sysplorer _教育版_.png",
+      "observation": "Capture manifest and inspected screenshot showed education-edition Sysplorer main windows. No demo, login, authorization, activation prompt, visible unknown MWORKS window, or GUI error-report dialog was observed."
+    },
+    "license_api_before": {
+      "session_health": {
+        "tool": "session_manager",
+        "action": "health",
+        "ok": true,
+        "driver_ready": true,
+        "api_ready": true,
+        "dedicated_sysplorer_port": 49153
+      },
+      "license_calls": [
+        {
+          "expr": "License(ltype='info')",
+          "ok": true,
+          "value": {
+            "许可证版本": "教育版"
+          }
+        },
+        {
+          "expr": "License('info')",
+          "ok": true,
+          "value": {
+            "许可证版本": "教育版"
+          }
+        }
+      ],
+      "directory_probe": {
+        "api": "GetDirectory",
+        "value": "C:/Users/HP/Documents/MWORKS"
+      },
+      "boundary": "Education title is only an edition/window marker. License(ltype='info') plus successful task-local check_model/simulate without authorization errors is used only as current-task license sufficiency evidence, not permanent activation proof."
+    }
+  },
+  "source_patch_summary": [
+    {
+      "file": "Models/QuadrotorExperiments/package.mo",
+      "line_range": "2126-2131",
+      "change": "In Sunray150PhysicalWrenchFrameAdapter, made the inner MultiBody World animation controls final false: enableAnimation, animateWorld, animateGravity, animateGround, axisShowLabels.",
+      "intent": "Prevent conditional animation components under World/body/ForceAndTorque from remaining structurally conditional during check_model.",
+      "parameters_changed": false
+    },
+    {
+      "file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "line_range": "2-27",
+      "change": "Removed package-level extends QuadrotorExperiments.DynamicsUpgrade and kept only explicit formal entries. PhysicalWrenchAdapter now explicitly extends QuadrotorExperiments.Sunray150PhysicalWrenchFrameAdapter.",
+      "intent": "Avoid package-level inherited class shadowing of the formal PhysicalWrenchAdapter alias and bind the formal entry to the adapter that passed direct check_model.",
+      "parameters_changed": false
+    }
+  ],
+  "modified_file_hashes": [
+    {
+      "path": "Models/QuadrotorExperiments/package.mo",
+      "sha256": "420BCF253435048E5743461B9F081F9413117BE250BB11C007AAA77073E69F24"
+    },
+    {
+      "path": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "sha256": "6C137D8BEE84554953BC54F3056337A11322B17AAB0E2FFAAEDAE8CD314CF762"
+    }
+  ],
+  "dynamics_alias_map": [
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+      "project_source": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+      "status": "explicit_alias_retained"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "project_source": "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
+      "status": "explicit_alias_retained"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "project_source": "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
+      "status": "explicit_alias_retained"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+      "project_source": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+      "status": "explicit_alias_retained"
+    },
+    {
+      "formal_entry": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+      "project_source": "QuadrotorExperiments.Sunray150PhysicalWrenchFrameAdapter",
+      "status": "explicit_alias_retargeted_to_checked_adapter"
+    }
+  ],
+  "load_model_results": [
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "References/MWORKS/QuadrotorModel/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true,
+      "boundary": "Read-only official baseline dependency load; official source was not edited."
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/QuadrotorExperiments/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    },
+    {
+      "tool": "model_manager",
+      "action": "load_file",
+      "file_path": "Models/MoSimQuadrotorModel/package.mo",
+      "force_reload": true,
+      "ok": true,
+      "data": true
+    }
+  ],
+  "check_model_results": [
+    {
+      "model": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+      "ok": true,
+      "data": true,
+      "dt_s": 0.043
+    },
+    {
+      "model": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "ok": true,
+      "data": true,
+      "dt_s": 0.042
+    },
+    {
+      "model": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "ok": true,
+      "data": true,
+      "dt_s": 0.045
+    },
+    {
+      "model": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+      "ok": true,
+      "data": true,
+      "dt_s": 0.038
+    },
+    {
+      "model": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+      "ok": true,
+      "data": true,
+      "dt_s": 0.101
+    }
+  ],
+  "simulate_model_results": [
+    {
+      "model": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "target_time": [
+        0.0,
+        0.25
+      ],
+      "ok": true,
+      "api": "SimulateModel",
+      "data": true,
+      "verify_result_var": "dynamics.hover_thrust_error",
+      "verify_time_point": "end",
+      "verified_value": 1.7763568394002505e-15
+    },
+    {
+      "model": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "target_time": [
+        0.0,
+        0.25
+      ],
+      "ok": true,
+      "api": "SimulateModel",
+      "data": true,
+      "verify_result_var": "dynamics.total_moment_body[3]",
+      "verify_time_point": "end",
+      "verified_value": 0.06153801695664962
+    }
+  ],
+  "result_probe_summary": {
+    "current_result_context": "MoSimQuadrotorModel.Dynamics.YawStepSmoke after the second smoke simulation",
+    "get_var_times": {
+      "ok": true,
+      "count": 126,
+      "first": 0.0,
+      "last": 0.25,
+      "min": 0.0,
+      "max": 0.25,
+      "mean": 0.125
+    },
+    "yaw_end_values": {
+      "yaw_step": 300.0,
+      "dynamics.total_thrust": 9.810193917515512,
+      "dynamics.hover_thrust_error": 0.00019391751551189884,
+      "dynamics.total_moment_body[1]": 0.00009810193917515753,
+      "dynamics.total_moment_body[2]": 0.00007628541126475374,
+      "dynamics.total_moment_body[3]": 0.06153801695664962
+    },
+    "hover_probe_boundary": "HoverSmoke result context was superseded by the later YawStepSmoke run; the HoverSmoke SimulateModel built-in verification still recorded dynamics.hover_thrust_error@end=1.7763568394002505e-15."
+  },
+  "phase_window_evidence": [
+    {
+      "phase": "post_load_check",
+      "sentinel_path": "Results/mworks_gui_incidents/PMO-MWORKS-R1-PHYSICAL-WRENCH-ADAPTER-WORLD-CONDITIONAL-FIX-20260607-005/gui_sentinel_after_check.json",
+      "sentinel_sha256": "9210FA1470A88D11344A0CDA0EA05733C1E458AA5D733B43715DC5B3B9AE1E2C",
+      "manifest_path": "Results/mworks_background_capture/PMO-MWORKS-R1-PHYSICAL-WRENCH-ADAPTER-WORLD-CONDITIONAL-FIX-20260607-005/post_check/capture_manifest.json",
+      "manifest_sha256": "1E642C785E1BB2B9A1684EC972046EB0639FCDCC7D695F7B29F5849F0B4409C0",
+      "observation": "Post-load/check sentinel remained clean. Capture manifest showed education-edition QuadrotorModel and MoSimQuadrotorModel Sysplorer windows plus hidden helper windows; no demo/login/authorization/gui-error marker."
+    },
+    {
+      "phase": "post_simulate_result_probe",
+      "sentinel_path": "Results/mworks_gui_incidents/PMO-MWORKS-R1-PHYSICAL-WRENCH-ADAPTER-WORLD-CONDITIONAL-FIX-20260607-005/gui_sentinel_after_sim.json",
+      "sentinel_sha256": "5C90140ACD9AD1A800C85162A488DE7AAED96338BDCD66B56F69B6C71CAFA14A",
+      "manifest_path": "Results/mworks_background_capture/PMO-MWORKS-R1-PHYSICAL-WRENCH-ADAPTER-WORLD-CONDITIONAL-FIX-20260607-005/post_sim/capture_manifest.json",
+      "manifest_sha256": "2CB6CFB5F670C186ECDC0927867D71896BB8D91E7F4B2A8C8614F98D2DF360AB",
+      "observation": "Post-simulate capture showed the education-edition Sysplorer windows and a MoSimQuadrotorModel result viewer window. Sentinel status stayed clean; no visible unknown, demo, login, authorization, or GUI error-report marker appeared."
+    }
+  ],
+  "parameter_source_boundary": "No mass, inertia, motor/thrust/yaw constants, rotor geometry, controller gains, ROS2/UE/FAST-LIO files, official QuadrotorModel baseline source, or source labels were changed. Existing RflySim/SDF/DAE-labeled seed parameters remain unchanged and are not claimed as identified Sunray150 truth.",
+  "claim_boundary": [
+    "005 proves only a narrow project-owned MoSimQuadrotorModel.Dynamics check/smoke repair for the PhysicalWrenchAdapter World/animation conditional failure.",
+    "The evidence covers five formal Dynamics entries passing check_model and two minimal 0.25 s smoke simulations with result probes.",
+    "This is not full MoSimQuadrotorModel migration acceptance, graphical/layout acceptance, real Sunray150 parameter identification, controller performance, ROS2/UE runtime success, planner_ready, mission success, Factory trace consumption, plant tracking, or closed_loop evidence."
+  ]
+}

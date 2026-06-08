@@ -1,0 +1,451 @@
+{
+  "schema": "mosim.external_learning.local_inventory.v1",
+  "request_id": "PMO-OPENSOURCE-PROBE-RFLYSIM-GAZEBO-SUNRAY150-LOCAL-INVENTORY-20260608-001",
+  "created_at": "2026-06-08T16:45:00+08:00",
+  "department": "MoSim｜开源项目探针",
+  "thread_id": "019e9be3-94de-7dc3-b067-92a78b678287",
+  "state_class": "inventory_only",
+  "decision_scope": "Local reference availability for RflySim, Gazebo/Iris/PX4, Sunray/YunZong, FAST-LIO, EGO/Planner, ROS2 and timing-sync related assets.",
+  "claim_boundary": [
+    "This manifest is local inventory only.",
+    "It does not decide adopt/adapt/reject project direction.",
+    "It does not validate runtime behavior.",
+    "It does not modify References content."
+  ],
+  "source_boundaries": {
+    "workspace_root": "C:/Users/HP/Desktop/MoSim",
+    "local_only": true,
+    "network_used": false,
+    "git_remote_used": false,
+    "references_modified": false
+  },
+  "planning_record": {
+    "department_local_goal": "Return a local reference inventory manifest for RflySim/Gazebo/Sunray150-related dynamics/control/ROS2 flow.",
+    "critical_path_steps": [
+      "Read task packet and required read-first documents.",
+      "Scan local References and current external-learning/research indexes for relevant RflySim, Gazebo/Iris/PX4, Sunray/YunZong, MID360/Livox, FAST-LIO, EGO/Planner and timing-sync candidates.",
+      "Classify each candidate as inventory_only and assign a likely downstream owner.",
+      "Write manifest and return packet under allowed write scope."
+    ],
+    "parallelizable_slices": [
+      "RflySim compressed API archive inspection.",
+      "Sunray/YunZong Gazebo model, launch and plugin inventory.",
+      "FAST-LIO/EGO/ROS2 planner and perception reference inventory.",
+      "PX4/MAVROS/Iris SITL bridge inventory."
+    ],
+    "subagent_plan": "not_used",
+    "subagent_plan_reason": "The task is local-only, bounded to inventory, and the relevant directories can be inspected inline without creating disposable subagents. Subagents would add coordination overhead and no extra authority.",
+    "subagents_used": [],
+    "verification_gates": [
+      "All output paths are inside allowed_write_scope.",
+      "No network or Git remote commands were run.",
+      "References content was not modified.",
+      "Candidate paths are marked inventory_only.",
+      "Downstream owners are suggestions for evaluation, not adoption decisions."
+    ],
+    "manual_review_or_blocker_triggers": [
+      "Need to inspect archive payloads beyond directory listings by extracting large zips.",
+      "Need to update or crawl upstream repositories.",
+      "Need to decide adoption, license compatibility, or technical route.",
+      "Need runtime validation in Gazebo, ROS2, MWORKS, UE or Sysplorer."
+    ]
+  },
+  "local_reference_roots": [
+    {
+      "path": "References/RflySim",
+      "family": "RflySim",
+      "inventory_note": "RflySim Advanced API archives and scene/application bundles are present locally; primary API material is inside zip archives."
+    },
+    {
+      "path": "References/Sunray",
+      "family": "Sunray/YunZong",
+      "inventory_note": "Sunray local tree includes Gazebo simulation, Sunray150 models, MID360/D435i/3D lidar sensor models, PX4/MAVROS configs, FAST-LIO/EGO integration launchers and UAV control modules."
+    },
+    {
+      "path": "References/Lab",
+      "family": "FAST-LIO/EGO/Planner lab references",
+      "inventory_note": "Lab local tree includes FAST_LIO, FAST-LIVO2, ego-planner, ego-planner-swarm, EGO-Planner-v2, SUPER, GCOPTER and Fast-Racing style planner/perception projects."
+    },
+    {
+      "path": "References/PX4",
+      "family": "PX4/MAVROS/MAVLink",
+      "inventory_note": "PX4 local tree includes PX4 source, mavros-ros2, mavlink, QGroundControl and SITL/MAVROS launch/test references."
+    }
+  ],
+  "rflysim_candidates": [
+    {
+      "id": "rflysim_api_pers_archive",
+      "classification": "inventory_only",
+      "path": "References/RflySim/RflySimAdv3Full/4.HILApps/RflySimAPIs/RflySimAPIsPers.zip",
+      "candidate_type": "compressed_reference_archive",
+      "why_relevant": "Contains RflySim model/API examples for external control, model integration, parameter APIs, UE interaction and copter data interfaces.",
+      "notable_archive_entries": [
+        "RflySimAPIs/4.RflySimModel/3.CustExps/e0_AdvApiExps/1.inCtrlExt/1.Matlab/MulticopterNoCtrl.slx",
+        "RflySimAPIs/4.RflySimModel/3.CustExps/e0_AdvApiExps/1.inCtrlExt/1.Matlab/MulticopterNoCtrl_init.m",
+        "RflySimAPIs/4.RflySimModel/3.CustExps/e0_AdvApiExps/1.inCtrlExt/1.Matlab/MulticopterModel.zip",
+        "RflySimAPIs/4.RflySimModel/3.CustExps/e0_AdvApiExps/1.inCtrlExt/2.Python/inCtrl.py",
+        "RflySimAPIs/4.RflySimModel/3.CustExps/e0_AdvApiExps/5.ParamAPI/",
+        "RflySimAPIs/4.RflySimModel/3.CustExps/e0_AdvApiExps/9.inCopterData/"
+      ],
+      "downstream_owner_suggestion": "MoSim｜开源项目学习部-R2",
+      "handoff_reason": "Needs structured comparison of external-control model patterns and parameter/fault APIs before any adoption decision."
+    },
+    {
+      "id": "rflysim_scene_and_ue_bundles",
+      "classification": "inventory_only",
+      "paths": [
+        "References/RflySim/RflySimAdv3Full/4.HILApps/scenes427/",
+        "References/RflySim/RflySimAdv3Full/4.HILApps/scenesUE5/",
+        "References/RflySim/RflySimAdv3Full/4.HILApps/UE4/",
+        "References/RflySim/RflySimAdv3Full/4.HILApps/UE5/"
+      ],
+      "candidate_type": "local_scene_visual_reference_archives",
+      "why_relevant": "Scene and UE bundles may inform visual simulation asset organization and RflySim-style external scene interaction.",
+      "downstream_owner_suggestion": "PMO or UE/visual integration owner",
+      "handoff_reason": "Use only if a later visual-scene or RflySim-to-UE comparison task is opened."
+    }
+  ],
+  "sunray_gazebo_sunray150_candidates": [
+    {
+      "id": "sunray150_base_and_sensor_models",
+      "classification": "inventory_only",
+      "paths": [
+        "References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150/sunray150.sdf",
+        "References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150/sunray150.sdf.jinja",
+        "References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/sunray150_with_mid360.sdf",
+        "References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_D435i/sunray150_D435i.sdf",
+        "References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150/meshes/",
+        "References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/meshes/",
+        "References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_D435i/meshes/"
+      ],
+      "candidate_type": "gazebo_sdf_mesh_model",
+      "why_relevant": "Primary local Sunray150 Gazebo model entries, including MID360 and D435i variants.",
+      "downstream_owner_suggestion": "MoSim｜开源项目学习部-R2 and MWORKS/UE asset owners",
+      "handoff_reason": "Needs structural comparison for geometry, mass/inertia, sensor mounting and asset provenance before reuse."
+    },
+    {
+      "id": "sunray_sensor_models",
+      "classification": "inventory_only",
+      "paths": [
+        "References/Sunray/simulation/sunray_simulator/models/sensor_models/livox_mid360/livox_mid360.sdf",
+        "References/Sunray/simulation/sunray_simulator/models/sensor_models/livox_mid360/scan_mode/mid360.csv",
+        "References/Sunray/simulation/sunray_simulator/models/sensor_models/D435i/model.sdf",
+        "References/Sunray/simulation/sunray_simulator/models/sensor_models/3D_lidar/3D_lidar.sdf"
+      ],
+      "candidate_type": "gazebo_sensor_model",
+      "why_relevant": "MID360, D435i and 3D lidar model entries are relevant for perception, point-cloud and topic mapping comparisons.",
+      "downstream_owner_suggestion": "ROS2 Runtime / perception owner",
+      "handoff_reason": "Needs ROS topic, frame, timestamp and sensor payload comparison against MoSim perception flow."
+    },
+    {
+      "id": "sunray_gazebo_plugins",
+      "classification": "inventory_only",
+      "paths": [
+        "References/Sunray/simulation/gazebo_plugin/wind_zone_plugin/src/WindZonePlugin.cpp",
+        "References/Sunray/simulation/gazebo_plugin/realsense_gazebo_plugin/src/RealSensePlugin.cpp"
+      ],
+      "candidate_type": "gazebo_plugin_source",
+      "why_relevant": "Wind and RealSense Gazebo plugins are candidates for disturbance and sensor-simulation reference study.",
+      "downstream_owner_suggestion": "MoSim｜开源项目学习部-R2, ROS2 Runtime, MWORKS validation",
+      "handoff_reason": "Needs API behavior and license/provenance review before translating concepts into MoSim or MWORKS workflows."
+    },
+    {
+      "id": "sunray_launch_worlds",
+      "classification": "inventory_only",
+      "paths": [
+        "References/Sunray/simulation/sunray_simulator/launch_basic/sunray_px4_basic.launch",
+        "References/Sunray/simulation/sunray_simulator/launch_basic/sunray_mavros_sim.launch",
+        "References/Sunray/simulation/sunray_simulator/launch_ego/sunray_sim_ego.launch",
+        "References/Sunray/simulation/sunray_simulator/launch_ego/sunray_sim_ego_3uav.launch",
+        "References/Sunray/simulation/sunray_simulator/launch_slam/mapping_mid360.launch",
+        "References/Sunray/simulation/sunray_simulator/worlds/yundrone_cup.world",
+        "References/Sunray/simulation/sunray_simulator/worlds/planning_test.world",
+        "References/Sunray/simulation/sunray_simulator/worlds/planning_test2.world",
+        "References/Sunray/simulation/sunray_simulator/worlds/planning_test3.world",
+        "References/Sunray/simulation/sunray_simulator/worlds/2025_drone_map_competition.world"
+      ],
+      "candidate_type": "gazebo_launch_world",
+      "why_relevant": "Launch and world files expose scenario assembly, PX4/MAVROS simulation routing, EGO planning demos and YunZong competition scene candidates.",
+      "downstream_owner_suggestion": "MoSim｜开源项目学习部-R2 and ROS2 Runtime",
+      "handoff_reason": "Good next input for route/flow comparison, not direct project adoption."
+    },
+    {
+      "id": "sunray_uav_control_and_px4_bridge_configs",
+      "classification": "inventory_only",
+      "paths": [
+        "References/Sunray/General_Module/sunray_uav_control/config/uav_control_param_sim.yaml",
+        "References/Sunray/General_Module/sunray_uav_control/config/px4_config.yaml",
+        "References/Sunray/General_Module/sunray_uav_control/config/px4_pluginlists.yaml",
+        "References/Sunray/General_Module/sunray_uav_control/externalFusion/externalFusion.cpp",
+        "References/Sunray/General_Module/sunray_uav_control/include/type_mask.h",
+        "References/Sunray/General_Module/sunray_uav_control/include/traj_generator.h"
+      ],
+      "candidate_type": "control_bridge_config_source",
+      "why_relevant": "Contains UAV control parameters, PX4/MAVROS timesync settings, plugin lists, local-position/IMU/velocity topic handling, setpoint type masks and trajectory helper interfaces.",
+      "notable_parameters_or_surfaces": [
+        "uav_control_param_sim.yaml: Takeoff_height, quad_mass, TRAJ_GENERATOR",
+        "px4_config.yaml: timesync_rate, timesync_mode, thrust_scaling, odometry/frame settings",
+        "externalFusion.cpp: MAVROS state, local pose, local velocity and IMU subscription surfaces"
+      ],
+      "downstream_owner_suggestion": "ROS2 Runtime and MWORKS validation",
+      "handoff_reason": "Needs bridge/timing/topic comparison before it can inform MoSim runtime or MWORKS control tests."
+    },
+    {
+      "id": "sunray_mid360_fastlio_pointcloud_flow",
+      "classification": "inventory_only",
+      "paths": [
+        "References/Sunray/simulation/sunray_simulator/launch_slam/mid360.yaml",
+        "References/Sunray/General_Module/sunray_planner_utils/launch_driver/mapping_mid360.launch",
+        "References/Sunray/General_Module/sunray_planner_utils/launch_driver/msg_MID360.launch",
+        "References/Sunray/General_Module/sunray_planner_utils/src/livox2Point.cpp",
+        "References/Sunray/General_Module/sunray_planner_utils/launch/point_cloud_transform.launch",
+        "References/Sunray/General_Module/sunray_planner_utils/launch/point_cloud_transform_swarm.launch"
+      ],
+      "candidate_type": "perception_topic_timing_flow",
+      "why_relevant": "Shows MID360 topic names, Livox custom-message conversion, point-cloud transforms, odom linkage and FAST-LIO launch integration.",
+      "notable_parameters_or_surfaces": [
+        "mid360.yaml: lid_topic /uav1/livox/lidar",
+        "mid360.yaml: imu_topic /uav1/livox/imu",
+        "mid360.yaml: time_sync_en false",
+        "mid360.yaml: time_offset_lidar_to_imu 0.0",
+        "mid360.yaml: extrinsic_T [0,0,0.01]"
+      ],
+      "downstream_owner_suggestion": "ROS2 Runtime / perception owner",
+      "handoff_reason": "High-value candidate for topic, timestamp and frame mapping review."
+    },
+    {
+      "id": "sunray_formation_and_trajectory_helpers",
+      "classification": "inventory_only",
+      "paths": [
+        "References/Sunray/sunray_formation/formation_control/src/traj_generator.cpp",
+        "References/Sunray/sunray_formation/formation_control/src/traj_generator_node.cpp",
+        "References/Sunray/sunray_formation/formation_control/include/traj_generator.h",
+        "References/Sunray/General_Module/sunray_uav_control/include/traj_generator.h"
+      ],
+      "candidate_type": "formation_trajectory_source",
+      "why_relevant": "Contains formation/trajectory generation helpers that may inform later leader-follower or route-smoothing comparison.",
+      "downstream_owner_suggestion": "MoSim｜开源项目学习部-R2 and planning owner",
+      "handoff_reason": "Needs algorithmic comparison and provenance review before any adaptation."
+    }
+  ],
+  "fast_lio_ego_ros2_candidates": [
+    {
+      "id": "lab_fast_lio_mid360_flow",
+      "classification": "inventory_only",
+      "paths": [
+        "References/Lab/FAST_LIO/launch/mapping_mid360.launch",
+        "References/Lab/FAST_LIO/src/laserMapping.cpp",
+        "References/Lab/FAST_LIO/src/preprocess.cpp",
+        "References/Lab/FAST_LIO/src/IMU_Processing.hpp",
+        "References/Lab/FAST_LIO/rviz_cfg/loam_livox.rviz"
+      ],
+      "candidate_type": "fast_lio_perception_source",
+      "why_relevant": "Primary local FAST-LIO reference for LiDAR/IMU preprocessing, mapping and MID360 launch setup.",
+      "downstream_owner_suggestion": "ROS2 Runtime / perception owner",
+      "handoff_reason": "Needs topic/frame/timestamp comparison against Sunray and MoSim perception paths."
+    },
+    {
+      "id": "lab_fast_livo2_flow",
+      "classification": "inventory_only",
+      "paths": [
+        "References/Lab/FAST-LIVO2/config/",
+        "References/Lab/FAST-LIVO2/launch/",
+        "References/Lab/FAST-LIVO2/src/IMU_Processing.cpp",
+        "References/Lab/FAST-LIVO2/src/LIVMapper.cpp",
+        "References/Lab/FAST-LIVO2/src/preprocess.cpp"
+      ],
+      "candidate_type": "fast_livo2_perception_source",
+      "why_relevant": "Local FAST-LIVO2 source/config/launch set for LiDAR-inertial-visual reference comparison.",
+      "downstream_owner_suggestion": "OpenSourceLearning and ROS2 Runtime",
+      "handoff_reason": "Broader perception candidate; should be learned before route or runtime changes."
+    },
+    {
+      "id": "lab_ego_planner_swarm",
+      "classification": "inventory_only",
+      "paths": [
+        "References/Lab/ego-planner-swarm/",
+        "References/Lab/ego-planner-swarm/src/planner/plan_manage/src/planner_manager.cpp",
+        "References/Lab/ego-planner-swarm/src/planner/traj_utils/msg/Bspline.msg",
+        "References/Lab/ego-planner-swarm/src/planner/traj_utils/msg/MultiBsplines.msg"
+      ],
+      "candidate_type": "ego_planner_swarm_source",
+      "why_relevant": "Local EGO planner swarm source includes planning manager, Bspline messages and multi-agent trajectory structures.",
+      "downstream_owner_suggestion": "MoSim｜开源项目学习部-R2 and planning owner",
+      "handoff_reason": "Needs source-first structural comparison before route decisions or planner integration."
+    },
+    {
+      "id": "lab_ego_planner_v2_swarm_playground",
+      "classification": "inventory_only",
+      "paths": [
+        "References/Lab/EGO-Planner-v2/swarm-playground/",
+        "References/Lab/EGO-Planner-v2/swarm-playground/main_ws/src/planner/plan_manage/src/planner_manager.cpp",
+        "References/Lab/EGO-Planner-v2/swarm-playground/main_ws/src/planner/traj_utils/msg/PolyTraj.msg",
+        "References/Lab/EGO-Planner-v2/swarm-playground/main_ws/src/planner/traj_utils/msg/MINCOTraj.msg"
+      ],
+      "candidate_type": "ego_planner_v2_source",
+      "why_relevant": "EGO-Planner-v2 local tree includes newer swarm playground planning and trajectory message candidates.",
+      "downstream_owner_suggestion": "MoSim｜开源项目学习部-R2 and planning owner",
+      "handoff_reason": "Needs comparison with existing MoSim planning acceptance gates and route smoothing goals."
+    },
+    {
+      "id": "sunray_embedded_ego_so3_simulator",
+      "classification": "inventory_only",
+      "paths": [
+        "References/Sunray/External_Module/ego-planner-swarm/src/planner/plan_manage/launch_sunray/simulator.xml",
+        "References/Sunray/External_Module/ego-planner-swarm/src/uav_simulator/so3_quadrotor_simulator/src/dynamics/Quadrotor.cpp",
+        "References/Sunray/External_Module/ego-planner-swarm/src/uav_simulator/so3_quadrotor_simulator/src/quadrotor_simulator_so3.cpp"
+      ],
+      "candidate_type": "quadrotor_dynamics_planner_sim_source",
+      "why_relevant": "Embedded Sunray EGO route exposes SO3 quadrotor dynamics, odom/imu/cmd topics, moment disturbance input and simulator update-rate surfaces.",
+      "notable_parameters_or_surfaces": [
+        "Quadrotor.cpp default mass and inertia constants are present in source.",
+        "quadrotor_simulator_so3.cpp publishes odom and imu, subscribes cmd and moment_disturbance.",
+        "quadrotor_simulator_so3.cpp includes simulation-rate handling."
+      ],
+      "downstream_owner_suggestion": "MWORKS validation and OpenSourceLearning",
+      "handoff_reason": "Potentially useful for dynamics/control comparison, but requires careful evidence review before use."
+    },
+    {
+      "id": "lab_super_ros2_planner",
+      "classification": "inventory_only",
+      "paths": [
+        "References/Lab/SUPER/super_planner/Apps/fsm_node_ros2.cpp",
+        "References/Lab/SUPER/super_planner/config/click_smooth_ros2.yaml",
+        "References/Lab/SUPER/super_planner/src/utils/minco.cpp",
+        "References/Lab/SUPER/super_planner/include/utils/geometry/quadrotor_flatness.hpp"
+      ],
+      "candidate_type": "ros2_planner_reference",
+      "why_relevant": "SUPER includes ROS2-facing planner app/config and MINCO/flatness helper candidates.",
+      "downstream_owner_suggestion": "OpenSourceLearning and planning owner",
+      "handoff_reason": "Optional comparative material for trajectory smoothing and ROS2 planner interface design."
+    }
+  ],
+  "px4_mavros_gazebo_iris_candidates": [
+    {
+      "id": "px4_mavros_ros2_bridge",
+      "classification": "inventory_only",
+      "paths": [
+        "References/PX4/mavros-ros2/README.md",
+        "References/PX4/mavros-ros2/mavros/",
+        "References/PX4/mavros-ros2/mavros_msgs/",
+        "References/PX4/mavros-ros2/libmavconn/",
+        "References/PX4/mavros-ros2/mavros_examples/mavros_examples/px4_offboard.py",
+        "References/PX4/mavros-ros2/mavros_examples/mavros_examples/flight_task_control.py",
+        "References/PX4/mavros-ros2/mavros_examples/mavros_examples/waypoint_mission_manager.py"
+      ],
+      "candidate_type": "ros2_mavros_bridge_source",
+      "why_relevant": "Local MAVROS ROS2 source and examples can guide topic/service surfaces for PX4 bridge comparisons.",
+      "downstream_owner_suggestion": "ROS2 Runtime",
+      "handoff_reason": "Needs ROS2 bridge comparison and topic/service mapping, not adoption by this inventory."
+    },
+    {
+      "id": "px4_mavros_plugin_and_timesync_docs",
+      "classification": "inventory_only",
+      "paths": [
+        "References/PX4/mavros-ros2/tools/plugin_doc_extract.cpp",
+        "References/PX4/mavros-ros2/mavros/mavros_plugins.xml",
+        "References/PX4/mavros-ros2/mavros/test/test_uas.cpp",
+        "References/PX4/PX4/src/modules/mavlink/mavlink_timesync.cpp",
+        "References/PX4/PX4/src/modules/mavlink/streams/TIMESYNC.hpp"
+      ],
+      "candidate_type": "mavros_plugin_timesync_reference",
+      "why_relevant": "Contains plugin extraction tooling, plugin registration surfaces, UAS tests and MAVLink timesync implementation references.",
+      "downstream_owner_suggestion": "ROS2 Runtime",
+      "handoff_reason": "Relevant for time-sync and bridge-state evidence gates."
+    },
+    {
+      "id": "px4_gazebo_iris_sitl_launch",
+      "classification": "inventory_only",
+      "paths": [
+        "References/PX4/mavros-ros2/test_mavros/launch/px4/iris_empty_world_offboard_ctl.launch",
+        "References/PX4/PX4/launch/single_vehicle_spawn_sdf.launch",
+        "References/PX4/PX4/launch/multi_uav_mavros_sitl_sdf.launch",
+        "References/PX4/PX4/src/modules/ekf2/test/replay_data/iris_gps.csv",
+        "References/PX4/PX4/src/modules/ekf2/test/change_indication/iris_gps.csv"
+      ],
+      "candidate_type": "gazebo_iris_sitl_reference",
+      "why_relevant": "Local PX4/MAVROS SITL launch and Iris-related EKF replay/test assets can inform Gazebo/Iris bridge inventory.",
+      "downstream_owner_suggestion": "ROS2 Runtime and OpenSourceLearning",
+      "handoff_reason": "Needs focused comparison before using as a runtime or acceptance reference."
+    },
+    {
+      "id": "px4_mavlink_message_definitions",
+      "classification": "inventory_only",
+      "paths": [
+        "References/PX4/mavlink/message_definitions/v1.0/common.xml",
+        "References/PX4/mavlink/message_definitions/v1.0/development.xml",
+        "References/PX4/mavlink/examples/c/udp_example.c"
+      ],
+      "candidate_type": "mavlink_message_protocol_reference",
+      "why_relevant": "MAVLink definitions and UDP example are local protocol references for bridge/message-level comparison.",
+      "downstream_owner_suggestion": "ROS2 Runtime",
+      "handoff_reason": "Use only as protocol inventory unless a later bridge task requests details."
+    }
+  ],
+  "downstream_owner_suggestions": [
+    {
+      "owner": "MoSim｜开源项目学习部-R2",
+      "candidate_ids": [
+        "rflysim_api_pers_archive",
+        "sunray150_base_and_sensor_models",
+        "sunray_gazebo_plugins",
+        "sunray_launch_worlds",
+        "lab_ego_planner_swarm",
+        "lab_ego_planner_v2_swarm_playground",
+        "sunray_embedded_ego_so3_simulator",
+        "lab_super_ros2_planner"
+      ],
+      "suggested_next_work": "Perform structured source-first comparison and provenance/license review with adopt/adapt/reference_only/reject fields only when PMO opens a learning task."
+    },
+    {
+      "owner": "ROS2 Runtime",
+      "candidate_ids": [
+        "sunray_sensor_models",
+        "sunray_uav_control_and_px4_bridge_configs",
+        "sunray_mid360_fastlio_pointcloud_flow",
+        "lab_fast_lio_mid360_flow",
+        "lab_fast_livo2_flow",
+        "px4_mavros_ros2_bridge",
+        "px4_mavros_plugin_and_timesync_docs",
+        "px4_gazebo_iris_sitl_launch",
+        "px4_mavlink_message_definitions"
+      ],
+      "suggested_next_work": "Map topics, frames, timestamps, MAVROS/PX4 service surfaces and bounded runtime evidence gates."
+    },
+    {
+      "owner": "MWORKS validation",
+      "candidate_ids": [
+        "sunray_gazebo_plugins",
+        "sunray_uav_control_and_px4_bridge_configs",
+        "sunray_embedded_ego_so3_simulator"
+      ],
+      "suggested_next_work": "Compare dynamics/control parameters and disturbance/fault surfaces against MWORKS/Sysplorer model evidence."
+    },
+    {
+      "owner": "UE/visual asset owner",
+      "candidate_ids": [
+        "rflysim_scene_and_ue_bundles",
+        "sunray150_base_and_sensor_models"
+      ],
+      "suggested_next_work": "Use only for bounded visual/asset provenance comparison if PMO opens a visual or UE export task."
+    }
+  ],
+  "scan_evidence": {
+    "read_first_completed": [
+      "AGENTS.md",
+      "Docs/Workflows/new_conversation_context.md",
+      "Docs/Workflows/tooling_assets_governance.md",
+      "Docs/Index/external_learning_index.md",
+      "CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md"
+    ],
+    "local_scan_methods": [
+      "Path-limited rg --files scans under References/RflySim, References/Sunray, References/Lab and References/PX4.",
+      "Path existence checks with Test-Path for manifest candidate entries.",
+      "Read-only zip directory listing for RflySimAPIsPers.zip with System.IO.Compression.ZipFile.OpenRead."
+    ],
+    "write_scope": [
+      "Results/external_learning/rflysim_gazebo_sunray150_local_inventory_20260608_001/",
+      "Results/agent_packets/returns/PMO-OPENSOURCE-PROBE-RFLYSIM-GAZEBO-SUNRAY150-LOCAL-INVENTORY-20260608-001.json"
+    ]
+  }
+}
