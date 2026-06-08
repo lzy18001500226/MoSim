@@ -1,9 +1,9 @@
-# Completion Audit - Session Memory Migration
+﻿# Completion Audit - Session Memory Migration
 
 Date: 2026-06-04 CST
 
 Scope: closeout audit for the cache-first migration of the long
-`MoSim|四旋翼无人机仿真系统` conversation into project-local memory.
+`MoSim|鍥涙棆缈兼棤浜烘満浠跨湡绯荤粺` conversation into project-local memory.
 
 This file is cache-only. It does not turn old chat records into formal project
 truth. It records whether the currently identified historical topic set has a
@@ -46,10 +46,10 @@ Read in this order:
 4. PROGRESS.md only for the newest active entries, not as a full transcript
 5. Docs/Workflows/agent_task_ledger.md
 6. Docs/Workflows/session_memory_migration.md
-7. Docs/Cache/session_memory_migration/long_goal_plan_20260604.md
-8. Docs/Cache/session_memory_migration/coverage_matrix_20260604.md
-9. Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md
-10. Docs/Cache/session_memory_migration/completion_audit_20260604.md
+7. Docs/Cache/session_memory_migration/00_index/long_goal_plan_20260604.md
+8. Docs/Cache/session_memory_migration/00_index/coverage_matrix_20260604.md
+9. Docs/Cache/session_memory_migration/03_round3_disposition/round3_promotion_rejection_map_20260604.md
+10. Docs/Cache/session_memory_migration/00_index/completion_audit_20260604.md
 11. The topic-specific round-2 or round-3 cache file named by the coverage matrix
 ```
 
@@ -74,7 +74,7 @@ formal_patches_from_round3:
   - Docs/Workflows/pre_submit_check.md
 
 supplemental_routing_cache:
-  - Docs/Cache/session_memory_migration/round2_core_competition_report_docs_memory_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_core_competition_report_docs_memory_20260604.md
 
 round3_rechecked_no_formal_patch:
   - MWORKS code generation / SIL boundary

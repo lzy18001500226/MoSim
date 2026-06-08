@@ -1,4 +1,4 @@
-# Round 1 MWORKS Codegen Runtime Memory Cache
+﻿# Round 1 MWORKS Codegen Runtime Memory Cache
 
 Date: 2026-06-04 CST
 
@@ -219,7 +219,7 @@ candidate_statement:
   evidence with explicit source labels.
 known_sources:
   - `Docs/Workflows/mworks_codegen_controller_runtime.md`.
-  - `Docs/Cache/session_memory_migration/round2_mworks_controller_evidence_memory_20260604.md`.
+  - `Docs/Cache/session_memory_migration/02_round2_review/round2_mworks_controller_evidence_memory_20260604.md`.
   - `AGENTS.md` simulation evidence rule.
 contradictions_or_history:
   Long-session architecture work discussed runtime handoff to ROS2/PX4/V6X.

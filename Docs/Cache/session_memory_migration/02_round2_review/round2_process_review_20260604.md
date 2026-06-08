@@ -1,4 +1,4 @@
-# Round 2 Process Review - Session Memory Migration
+﻿# Round 2 Process Review - Session Memory Migration
 
 Date: 2026-06-04 CST
 
@@ -15,8 +15,8 @@ status: process_round2_verified
 formal_docs_patched_this_round:
   - Docs/Workflows/session_memory_migration.md
 cache_files:
-  - Docs/Cache/session_memory_migration/round1_candidate_cache_20260604.md
-  - Docs/Cache/session_memory_migration/round2_process_review_20260604.md
+  - Docs/Cache/session_memory_migration/01_round1_capture/round1_candidate_cache_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_process_review_20260604.md
 not_promoted:
   - high-risk technical facts from round 1
 next_required_round:
@@ -117,7 +117,7 @@ audits before any round 3 formal promotion.
    relevant `Scripts/UE5/assets/*sunray*`, and manual-review status before
    stating any final parameter or accepted/rejected asset fact.
 2. UE/ROS2/FAST-LIO architecture memory:
-   Re-read `Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md`,
+   Re-read `Docs/Design/09_UE_ROS_MWORKS鏃犱汉鏈轰豢鐪熸灦鏋勯噸鏋?md`,
    `Docs/Workflows/unreal_renderer.md`, active ledger rows, and current result
    manifests before stating what is implemented, blocked, or smoke-only.
 3. MWORKS/controller/evidence memory:
@@ -134,8 +134,8 @@ audits before any round 3 formal promotion.
 
 ```text
 git diff --check -- Docs/Workflows/session_memory_migration.md \
-  Docs/Cache/session_memory_migration/round1_candidate_cache_20260604.md \
-  Docs/Cache/session_memory_migration/round2_process_review_20260604.md \
+  Docs/Cache/session_memory_migration/01_round1_capture/round1_candidate_cache_20260604.md \
+  Docs/Cache/session_memory_migration/02_round2_review/round2_process_review_20260604.md \
   Docs/Index/workflow_index.md Docs/Workflows/agent_task_ledger.md PROGRESS.md
 ```
 

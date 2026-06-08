@@ -1,4 +1,4 @@
-# Round 3 CLI/App Infrastructure Detail Disposition
+﻿# Round 3 CLI/App Infrastructure Detail Disposition
 
 Date: 2026-06-04 CST
 
@@ -6,8 +6,8 @@ Scope: round-3 disposition for post-closeout CLI/App infrastructure detail
 memory captured in:
 
 ```text
-Docs/Cache/session_memory_migration/round1_cli_app_infrastructure_detail_memory_20260604.md
-Docs/Cache/session_memory_migration/round2_cli_app_infrastructure_detail_memory_20260604.md
+Docs/Cache/session_memory_migration/01_round1_capture/round1_cli_app_infrastructure_detail_memory_20260604.md
+Docs/Cache/session_memory_migration/02_round2_review/round2_cli_app_infrastructure_detail_memory_20260604.md
 ```
 
 This file is cache-only. No formal project document was patched in this round
@@ -34,8 +34,8 @@ reason_no_formal_patch:
 
 | Source | Round-3 Use |
 |---|---|
-| `Docs/Cache/session_memory_migration/round1_cli_app_infrastructure_detail_memory_20260604.md` | Candidate list and anti-pollution constraints. |
-| `Docs/Cache/session_memory_migration/round2_cli_app_infrastructure_detail_memory_20260604.md` | Project-local verification and item-level disposition. |
+| `Docs/Cache/session_memory_migration/01_round1_capture/round1_cli_app_infrastructure_detail_memory_20260604.md` | Candidate list and anti-pollution constraints. |
+| `Docs/Cache/session_memory_migration/02_round2_review/round2_cli_app_infrastructure_detail_memory_20260604.md` | Project-local verification and item-level disposition. |
 | `Docs/Workflows/debug_mcp.md` | Confirmed formal coverage for Codex App large-session risk, loopback syntax/moniker/SID fallback, Windows-MCP, ROS-MCP, and rosbridge auto-start. |
 | `Docs/Index/codex_app_session_research.md` | Confirmed durable-state and stale-path resume boundaries. |
 | `Docs/Workflows/ros2_runtime_setup.md` | Confirmed ROS2 Humble, rosbridge prior-state, and ROS-MCP auto-start boundaries. |

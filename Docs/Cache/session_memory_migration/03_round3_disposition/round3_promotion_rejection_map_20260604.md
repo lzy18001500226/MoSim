@@ -1,4 +1,4 @@
-# Round 3 Promotion / Rejection Map - Session Memory Migration
+﻿# Round 3 Promotion / Rejection Map - Session Memory Migration
 
 Date: 2026-06-04 CST
 
@@ -22,20 +22,20 @@ round3_rechecked_no_formal_patch:
   - External reference learning boundary
 this_file_cache_only: true
 source_rounds:
-  - Docs/Cache/session_memory_migration/round1_candidate_cache_20260604.md
-  - Docs/Cache/session_memory_migration/round2_process_review_20260604.md
-  - Docs/Cache/session_memory_migration/round2_sunray150_asset_memory_20260604.md
-  - Docs/Cache/session_memory_migration/round2_ue_ros_fastlio_memory_20260604.md
-  - Docs/Cache/session_memory_migration/round2_mworks_controller_evidence_memory_20260604.md
-  - Docs/Cache/session_memory_migration/round2_infrastructure_memory_20260604.md
-  - Docs/Cache/session_memory_migration/round2_mworks_codegen_runtime_memory_20260604.md
-  - Docs/Cache/session_memory_migration/round2_ros2_runtime_setup_memory_20260604.md
-  - Docs/Cache/session_memory_migration/round2_scene_source_renderer_memory_20260604.md
-  - Docs/Cache/session_memory_migration/round2_parameter_identification_memory_20260604.md
-  - Docs/Cache/session_memory_migration/round2_coagent_operating_memory_20260604.md
-  - Docs/Cache/session_memory_migration/round2_external_reference_memory_20260604.md
+  - Docs/Cache/session_memory_migration/01_round1_capture/round1_candidate_cache_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_process_review_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_sunray150_asset_memory_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_ue_ros_fastlio_memory_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_mworks_controller_evidence_memory_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_infrastructure_memory_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_mworks_codegen_runtime_memory_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_ros2_runtime_setup_memory_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_scene_source_renderer_memory_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_parameter_identification_memory_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_coagent_operating_memory_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_external_reference_memory_20260604.md
 completion_audit:
-  - Docs/Cache/session_memory_migration/completion_audit_20260604.md
+  - Docs/Cache/session_memory_migration/00_index/completion_audit_20260604.md
 ```
 
 This map does not make old chat facts formal truth. A later formal patch must
@@ -51,10 +51,10 @@ Round-3 application checkpoint on 2026-06-04:
 ```text
 PARAM-MEM-001/PARAM-MEM-002/PARAM-MEM-003/PARAM-MEM-004/PARAM-MEM-006:
   evidence_re_read:
-    - Docs/Cache/session_memory_migration/round2_parameter_identification_memory_20260604.md
+    - Docs/Cache/session_memory_migration/02_round2_review/round2_parameter_identification_memory_20260604.md
     - Docs/Workflows/identify_quadrotor_parameters.md
-    - Docs/Design/02_模型接口与运行流程.md
-    - Docs/Design/03_控制系统架构.md
+    - Docs/Design/02_妯″瀷鎺ュ彛涓庤繍琛屾祦绋?md
+    - Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md
     - project-local search for Results/identification, .ulg, .params,
       sunray150_identified, fit_report, residual_summary, and mworks_check
   disposition:
@@ -70,9 +70,9 @@ PARAM-MEM-001/PARAM-MEM-002/PARAM-MEM-003/PARAM-MEM-004/PARAM-MEM-006:
 
 CODEGEN-MEM-001/CODEGEN-MEM-005/CODEGEN-MEM-007/CODEGEN-MEM-008:
   evidence_re_read:
-    - Docs/Cache/session_memory_migration/round2_mworks_codegen_runtime_memory_20260604.md
+    - Docs/Cache/session_memory_migration/02_round2_review/round2_mworks_codegen_runtime_memory_20260604.md
     - Docs/Workflows/mworks_codegen_controller_runtime.md
-    - Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+    - Docs/Design/09_UE_ROS_MWORKS鏃犱汉鏈轰豢鐪熸灦鏋勯噸鏋?md
     - Results/codegen_probe/AWFF_PID_Sysblock_Demo_api/runtime_check.json
     - Results/codegen_probe/AWFF_PID_Sysblock_Demo_api/mworks_constant_0p1_reference.json
     - Results/codegen_probe/AWFF_PID_Sysblock_Demo_api/sil_constant_0p1_check.json
@@ -95,7 +95,7 @@ CODEGEN-MEM-001/CODEGEN-MEM-005/CODEGEN-MEM-007/CODEGEN-MEM-008:
 
 SCENE-MEM-001/SCENE-MEM-002/SCENE-MEM-003/SCENE-MEM-005/SCENE-MEM-006:
   evidence_re_read:
-    - Docs/Cache/session_memory_migration/round2_scene_source_renderer_memory_20260604.md
+    - Docs/Cache/session_memory_migration/02_round2_review/round2_scene_source_renderer_memory_20260604.md
     - Docs/Workflows/unreal_renderer.md
     - UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json
     - UE5/MoSimSceneLibrary/Content/MworksData/active_scene_links.json
@@ -122,7 +122,7 @@ SCENE-MEM-001/SCENE-MEM-002/SCENE-MEM-003/SCENE-MEM-005/SCENE-MEM-006:
 
 ROS2-MEM-001/ROS2-MEM-002/ROS2-MEM-003/ROS2-MEM-004/ROS2-MEM-005/ROS2-MEM-007/ROS2-MEM-008/ROS2-MEM-010:
   evidence_re_read:
-    - Docs/Cache/session_memory_migration/round2_ros2_runtime_setup_memory_20260604.md
+    - Docs/Cache/session_memory_migration/02_round2_review/round2_ros2_runtime_setup_memory_20260604.md
     - Docs/Workflows/ros2_runtime_setup.md
     - Results/unreal_scene_mapping/factoryenvironmentcollect/REALSTACK_MINILOOP_GATE_CURRENT.md
     - Results/unreal_scene_mapping/factoryenvironmentcollect/realstack_miniloop_gate_current.json
@@ -172,7 +172,7 @@ ROS2-MEM-001/ROS2-MEM-002/ROS2-MEM-003/ROS2-MEM-004/ROS2-MEM-005/ROS2-MEM-007/RO
 
 COAGENT-MEM-001/COAGENT-MEM-002/COAGENT-MEM-003/COAGENT-MEM-004/COAGENT-MEM-005/COAGENT-MEM-006/COAGENT-MEM-007/COAGENT-MEM-008:
   evidence_re_read:
-    - Docs/Cache/session_memory_migration/round2_coagent_operating_memory_20260604.md
+    - Docs/Cache/session_memory_migration/02_round2_review/round2_coagent_operating_memory_20260604.md
     - CoAgent/STATUS.md
     - CoAgent/README.md
     - CoAgent/docs/decisions/coagent_design_decision_record.md
@@ -207,7 +207,7 @@ COAGENT-MEM-001/COAGENT-MEM-002/COAGENT-MEM-003/COAGENT-MEM-004/COAGENT-MEM-005/
 
 EXTREF-MEM-001/EXTREF-MEM-002/EXTREF-MEM-003/EXTREF-MEM-004/EXTREF-MEM-005/EXTREF-MEM-006/EXTREF-MEM-007/EXTREF-MEM-008:
   evidence_re_read:
-    - Docs/Cache/session_memory_migration/round2_external_reference_memory_20260604.md
+    - Docs/Cache/session_memory_migration/02_round2_review/round2_external_reference_memory_20260604.md
     - Docs/Index/external_learning_index.md
     - Docs/Workflows/audit_external_repo.md
     - CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md
@@ -215,7 +215,7 @@ EXTREF-MEM-001/EXTREF-MEM-002/EXTREF-MEM-003/EXTREF-MEM-004/EXTREF-MEM-005/EXTRE
     - Results/unreal_scene_mapping/REAL_UAV_STACK_REUSE_MATRIX_20260602.md
     - Results/unreal_scene_mapping/REAL_UAV_STACK_SOURCE_AUDIT_20260602.md
     - Docs/Workflows/unreal_renderer.md
-    - Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+    - Docs/Design/09_UE_ROS_MWORKS鏃犱汉鏈轰豢鐪熸灦鏋勯噸鏋?md
   disposition:
     - no formal patch was needed: external learning and audit workflows already
       state reference-index-first routing, patch-or-no-patch outcomes, and the
@@ -311,7 +311,7 @@ UE-ROS-MEM-001:
   formal entries:
     - AGENTS.md
     - Docs/Workflows/unreal_renderer.md
-    - Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+    - Docs/Design/09_UE_ROS_MWORKS鏃犱汉鏈轰豢鐪熸灦鏋勯噸鏋?md
 
 UE-ROS-MEM-002:
   MWORKS is control/truth authority, UE is rendering/sensor oracle, and ROS2
@@ -319,7 +319,7 @@ UE-ROS-MEM-002:
   formal entries:
     - AGENTS.md
     - Docs/Workflows/unreal_renderer.md
-    - Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+    - Docs/Design/09_UE_ROS_MWORKS鏃犱汉鏈轰豢鐪熸灦鏋勯噸鏋?md
 
 ROS2-MEM-001:
   ROS2 Humble plus RViz2 is the documented Ubuntu 22.04 mapping/review route
@@ -372,8 +372,8 @@ PARAM-MEM-001:
   identified physical truth
   formal entries:
     - Docs/Workflows/identify_quadrotor_parameters.md
-    - Docs/Design/02_模型接口与运行流程.md
-    - Docs/Design/03_控制系统架构.md
+    - Docs/Design/02_妯″瀷鎺ュ彛涓庤繍琛屾祦绋?md
+    - Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md
   round3_disposition:
     - applied_no_numeric_promotion
     - formal wording clarified that accepted takeoff mass is not a full
@@ -384,7 +384,7 @@ PARAM-MEM-002:
   and MWORKS verification
   formal entries:
     - Docs/Workflows/identify_quadrotor_parameters.md
-    - Docs/Design/02_模型接口与运行流程.md
+    - Docs/Design/02_妯″瀷鎺ュ彛涓庤繍琛屾祦绋?md
   round3_disposition:
     - already_represented_and_rechecked
     - no complete identification bundle found in this round
@@ -394,7 +394,7 @@ CODEGEN-MEM-001:
   `TranslateModel`
   formal entries:
     - Docs/Workflows/mworks_codegen_controller_runtime.md
-    - Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+    - Docs/Design/09_UE_ROS_MWORKS鏃犱汉鏈轰豢鐪熸灦鏋勯噸鏋?md
 
 CODEGEN-MEM-008:
   generated runtime results are not MWORKS/Sysplorer simulation evidence before
@@ -601,7 +601,7 @@ CODEGEN-MEM-005:
       SIL smoke passed; this remains PID-demo-only architecture evidence.
   possible target:
     - Docs/Workflows/mworks_codegen_controller_runtime.md
-    - Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+    - Docs/Design/09_UE_ROS_MWORKS鏃犱汉鏈轰豢鐪熸灦鏋勯噸鏋?md
   required immediate evidence before patch:
     - re-read latest `Results/codegen_probe/**/sil_*` files and current
       codegen workflow

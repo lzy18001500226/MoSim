@@ -1,9 +1,9 @@
-# Round 1 CLI/App Infrastructure Detail Memory
+﻿# Round 1 CLI/App Infrastructure Detail Memory
 
 Date: 2026-06-04 CST
 
 Scope: newly surfaced fine-grained Codex CLI/App/VSCode/MCP operating memories
-from the visible `MoSim|四旋翼无人机仿真系统` conversation after the main
+from the visible `MoSim|鍥涙棆缈兼棤浜烘満浠跨湡绯荤粺` conversation after the main
 session-memory migration closeout.
 
 This file is cache-only. It does not prove the current machine state, does not
@@ -263,7 +263,7 @@ known_sources:
     inspection/click attempts, installed ROS-MCP, and asked whether it is ROS1
     or ROS2.
   - Docs/Workflows/debug_mcp.md contains Windows-MCP and ROS-MCP sections.
-  - Docs/Cache/session_memory_migration/round1_ros2_runtime_setup_memory_20260604.md
+  - Docs/Cache/session_memory_migration/01_round1_capture/round1_ros2_runtime_setup_memory_20260604.md
     records the ROS-MCP/rosbridge candidate route.
 contradictions_or_history:
   ROS-MCP server capability is not proof that the current ROS2 runtime,

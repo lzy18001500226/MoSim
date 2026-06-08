@@ -1,8 +1,8 @@
-# Long Goal Plan - Session Memory Migration
+﻿# Long Goal Plan - Session Memory Migration
 
 Date: 2026-06-04 CST
 
-Scope: long-running recovery plan for migrating the `MoSim|四旋翼无人机仿真系统`
+Scope: long-running recovery plan for migrating the `MoSim|鍥涙棆缈兼棤浜烘満浠跨湡绯荤粺`
 conversation into project-local memory.
 
 This file is cache-only. It is a task plan and recovery surface, not formal
@@ -72,9 +72,9 @@ Read in this order:
 5. Docs/Workflows/agent_task_ledger.md
    row: SESSION-MEMORY-MIGRATION-20260604
 6. Docs/Workflows/session_memory_migration.md
-7. Docs/Cache/session_memory_migration/coverage_matrix_20260604.md
-8. Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md
-9. Docs/Cache/session_memory_migration/completion_audit_20260604.md
+7. Docs/Cache/session_memory_migration/00_index/coverage_matrix_20260604.md
+8. Docs/Cache/session_memory_migration/03_round3_disposition/round3_promotion_rejection_map_20260604.md
+9. Docs/Cache/session_memory_migration/00_index/completion_audit_20260604.md
 10. The topic-specific round-2 cache file for the item being worked
 ```
 
@@ -149,7 +149,7 @@ Pick one item per round:
 
 7. Completion audit:
    completed for migration closeout on 2026-06-04. Current disposition:
-   `Docs/Cache/session_memory_migration/completion_audit_20260604.md` records
+   `Docs/Cache/session_memory_migration/00_index/completion_audit_20260604.md` records
    that the current identified topic set has round-3 dispositions and that a
    new conversation can recover from project-local docs/cache without the old
    chat transcript. This does not certify unknown external session lines; any
@@ -163,11 +163,11 @@ Pick one item per round:
    rosbridge auto-start intent, and a historical filesystem-MCP startup
    failure. Current disposition: round 1, project-local round 2, and round 3
    disposition caches at
-   `Docs/Cache/session_memory_migration/round1_cli_app_infrastructure_detail_memory_20260604.md`
+   `Docs/Cache/session_memory_migration/01_round1_capture/round1_cli_app_infrastructure_detail_memory_20260604.md`
    ,
-   `Docs/Cache/session_memory_migration/round2_cli_app_infrastructure_detail_memory_20260604.md`
+   `Docs/Cache/session_memory_migration/02_round2_review/round2_cli_app_infrastructure_detail_memory_20260604.md`
    , and
-   `Docs/Cache/session_memory_migration/round3_cli_app_infrastructure_detail_disposition_20260604.md`.
+   `Docs/Cache/session_memory_migration/03_round3_disposition/round3_cli_app_infrastructure_detail_disposition_20260604.md`.
    Round 3 completed with no formal patch: `CheckNetIsolation`, Windows-MCP,
    ROS-MCP, and rosbridge auto-start are already represented; lowercase path
    display is rejected as project state; token totals, `/tokens`, resume

@@ -1,4 +1,4 @@
-# Round 1 Candidate Cache - MoSim Long Session Memory
+﻿# Round 1 Candidate Cache - MoSim Long Session Memory
 
 Date: 2026-06-04 CST
 
@@ -15,7 +15,7 @@ status: not_promoted
 formal_docs_patched_this_round:
   - Docs/Workflows/session_memory_migration.md
 cache_files:
-  - Docs/Cache/session_memory_migration/round1_candidate_cache_20260604.md
+  - Docs/Cache/session_memory_migration/01_round1_capture/round1_candidate_cache_20260604.md
 next_required_round:
   round 2 source/evidence verification against current files and result artifacts
 ```
@@ -126,7 +126,7 @@ round: 1
 status: candidate
 risk: medium
 candidate_statement:
-  Codex App `未响应` hangs are likely a combination of huge active session
+  Codex App `鏈搷搴擿 hangs are likely a combination of huge active session
   files, packaged-App localhost/loopback behavior, startup probes, plugins/MCP,
   and residual plugin host processes; not simply WSL vs Windows.
 known_sources:
@@ -212,7 +212,7 @@ candidate_statement:
   ROS2 LiDAR/IMU/TF, RViz2 windows, and real FAST-LIO/planner evidence.
 known_sources:
   - Docs/Workflows/agent_task_ledger.md active rows for UE-UAV architecture.
-  - Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md.
+  - Docs/Design/09_UE_ROS_MWORKS鏃犱汉鏈轰豢鐪熸灦鏋勯噸鏋?md.
   - PROGRESS.md entries around 2026-06-01 and 2026-06-02.
 contradictions_or_history:
   Many earlier generated maps, HTML point clouds, and keyboard loops are

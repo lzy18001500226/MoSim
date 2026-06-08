@@ -1,4 +1,4 @@
-# Round 2 Scene Source And Renderer Memory Audit
+﻿# Round 2 Scene Source And Renderer Memory Audit
 
 Date: 2026-06-04 CST
 
@@ -31,7 +31,7 @@ runtime_or_gui_checks_run: none
 | `Results/unreal_scene_mapping/UE_SCENE_RUNTIME_READINESS.md` | Preflight only; file loop ready but runtime was not ready in that snapshot. Global truth is validation oracle only. |
 | `Results/unreal_scene_mapping/UE_SCENE_RUNTIME_BUNDLE_STATUS.md` | Execution contract summary, not runtime evidence; both scenes had runtime dependencies blocked in that older status. |
 | `Results/unreal_scene_mapping/factoryenvironmentcollect/runtime_review_bundle.md` | Current Factory bundle is `ready_for_manual_rviz_ue_review`, but explicitly says it is a launch package and not proof that manual review already ran. |
-| `Docs/Cache/session_memory_migration/round2_ue_ros_fastlio_memory_20260604.md` | Current Factory Gate B opens manual UE/RViz review only; old keyboard/grid/static/HTML routes are rejected. |
+| `Docs/Cache/session_memory_migration/02_round2_review/round2_ue_ros_fastlio_memory_20260604.md` | Current Factory Gate B opens manual UE/RViz review only; old keyboard/grid/static/HTML routes are rejected. |
 
 ## Round 2 Findings
 

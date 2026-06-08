@@ -1,4 +1,4 @@
-# Round 2 CLI/App Infrastructure Detail Memory
+﻿# Round 2 CLI/App Infrastructure Detail Memory
 
 Date: 2026-06-04 CST
 
@@ -30,11 +30,11 @@ next_required_round:
 
 | Source | Finding |
 |---|---|
-| `Docs/Cache/session_memory_migration/round1_cli_app_infrastructure_detail_memory_20260604.md` | New candidate items cover `/status`/`/tokens`, token totals, `codex resume -C`, resume cwd prompts, lowercase path display, WSL proxy, `CheckNetIsolation`, Windows-MCP, ROS-MCP, rosbridge auto-start, and filesystem MCP startup failure. |
+| `Docs/Cache/session_memory_migration/01_round1_capture/round1_cli_app_infrastructure_detail_memory_20260604.md` | New candidate items cover `/status`/`/tokens`, token totals, `codex resume -C`, resume cwd prompts, lowercase path display, WSL proxy, `CheckNetIsolation`, Windows-MCP, ROS-MCP, rosbridge auto-start, and filesystem MCP startup failure. |
 | `Docs/Workflows/debug_mcp.md` | Already documents Codex App large-session/token row risk, localhost proxy, PowerShell and `cmd` loopback commands, lower-case AppContainer moniker, SID fallback, Windows-MCP install/security boundary, ROS-MCP rosbridge auto-start, and robot-control approval gating. |
 | `Docs/Index/codex_app_session_research.md` | Already documents that live App/VSCode/CLI sync is not a reliable durable state source, stale-path resume can happen, and manual SQLite/JSONL handoff is emergency-only. |
 | `Docs/Workflows/ros2_runtime_setup.md` | Already documents ROS2 Humble, prior 2026-06-01 apt/key/rosbridge state as non-current evidence, ROS-MCP through rosbridge, and wrapper auto-start behavior. |
-| `Docs/Cache/session_memory_migration/round2_infrastructure_memory_20260604.md` | Already verifies broad infrastructure lessons and says external `.codex` edits are not authorized by migration memory. |
+| `Docs/Cache/session_memory_migration/02_round2_review/round2_infrastructure_memory_20260604.md` | Already verifies broad infrastructure lessons and says external `.codex` edits are not authorized by migration memory. |
 
 ## Round 2 Disposition By Item
 

@@ -1,8 +1,8 @@
-# Session Memory Migration Coverage Matrix
+﻿# Session Memory Migration Coverage Matrix
 
 Date: 2026-06-04 CST
 
-Scope: coverage ledger for migrating the long `MoSim|四旋翼无人机仿真系统`
+Scope: coverage ledger for migrating the long `MoSim|鍥涙棆缈兼棤浜烘満浠跨湡绯荤粺`
 conversation into recoverable project-local memory.
 
 This file is cache-only. It does not promote historical chat or old
@@ -30,11 +30,11 @@ round3_rechecked_no_formal_patch:
   - CoAgent operating boundary
   - External reference learning boundary
 new_round1_after_closeout:
-  - Docs/Cache/session_memory_migration/round1_cli_app_infrastructure_detail_memory_20260604.md
+  - Docs/Cache/session_memory_migration/01_round1_capture/round1_cli_app_infrastructure_detail_memory_20260604.md
 new_round2_after_closeout:
-  - Docs/Cache/session_memory_migration/round2_cli_app_infrastructure_detail_memory_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_cli_app_infrastructure_detail_memory_20260604.md
 new_round3_after_closeout:
-  - Docs/Cache/session_memory_migration/round3_cli_app_infrastructure_detail_disposition_20260604.md
+  - Docs/Cache/session_memory_migration/03_round3_disposition/round3_cli_app_infrastructure_detail_disposition_20260604.md
 this_file_cache_only: true
 primary_recovery_files:
   - AGENTS.md
@@ -43,11 +43,11 @@ primary_recovery_files:
   - PROGRESS.md
   - Docs/Workflows/agent_task_ledger.md
   - Docs/Workflows/session_memory_migration.md
-  - Docs/Cache/session_memory_migration/long_goal_plan_20260604.md
-  - Docs/Cache/session_memory_migration/coverage_matrix_20260604.md
-  - Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md
-  - Docs/Cache/session_memory_migration/completion_audit_20260604.md
-  - Docs/Cache/session_memory_migration/round2_core_competition_report_docs_memory_20260604.md
+  - Docs/Cache/session_memory_migration/00_index/long_goal_plan_20260604.md
+  - Docs/Cache/session_memory_migration/00_index/coverage_matrix_20260604.md
+  - Docs/Cache/session_memory_migration/03_round3_disposition/round3_promotion_rejection_map_20260604.md
+  - Docs/Cache/session_memory_migration/00_index/completion_audit_20260604.md
+  - Docs/Cache/session_memory_migration/02_round2_review/round2_core_competition_report_docs_memory_20260604.md
 ```
 
 The current migration has a reliable process and the currently identified topic
