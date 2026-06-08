@@ -4,6 +4,15 @@
 
 ---
 
+2026-06-08 current notification/gateway boundary: MoSim routine notifications
+use sparse Chinese email, not WeChat. The historical WeChat-side message path
+`019e8358-86b4-7070-8fd6-a2b4f4d2af97` and historical WeChat Gateway Ops
+thread `019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c` were deleted by the user on
+2026-06-08. Treat older WeChat recovery steps below as incident history only:
+do not dispatch, patrol, no-op, recover, or ask the user to send refresh
+messages in those deleted threads unless the user explicitly reopens WeChat
+diagnosis with a new scoped route.
+
 ## 1. Success Criteria
 
 For Sysplorer/Syslab, MCP startup is successful when `/mcp` shows tools.

@@ -114,7 +114,7 @@ There is no standing `MoSim｜工具链 MCP` department.
 | `MoSim｜CoAgent运维平台` | Owns recurring meta-maintenance: asset inventory cadence, current visible-thread allowlist hygiene, duplicate skill/workflow cleanup proposals, crawler/learning dispatch, and missing-index reports. Details live in `Docs/Workflows/coagent_meta_maintenance.md`. |
 | `MoSim｜开源项目探针` | Keeps local reference-project inventory fresh, checks upstream freshness, and returns manifests/update candidates. It does not execute broad new crawls and does not decide adoption. |
 | `MoSim｜开源项目学习` | Studies crawled projects/vendor articles and returns adopt/reject/reference-only proposals with evidence. |
-| `MoSim｜Codex 上下文维护` | Updates new-conversation context, project memory index, and recovery notes when tooling decisions affect startup context. |
+| `MoSim｜文档秘书部` | Updates new-conversation context, project memory index, and recovery notes when tooling decisions affect startup context. Former `MoSim｜Codex 上下文维护` wording is alias/history only. |
 | `MoSim｜DevOps 发布` | Handles safe Git import, ignore/LFS rules, large-file checks, and commits for reference projects or tool assets. |
 
 PMO responsibility: the main PMO thread

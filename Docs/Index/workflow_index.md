@@ -33,7 +33,8 @@
 | Consult official Sysplorer modeling rules | `Docs/Skills/Sysplorer/ty-sysplorer-modeling-rules`, `Docs/Skills/Sysplorer/ty-sysblock-diagram-modeling`, `Docs/Skills/Sysplorer/ty-sysblock-signal-modeling`, `Docs/Skills/Sysplorer/modelica-library-workflow` |
 | Main-agent orchestration / visible-thread PMO dispatch | `AGENTS.md#331-parallel-agent-rule`, `Docs/Workflows/agent_orchestration.md`, `CoAgent/dispatch/communication_contract.md` |
 | Agent organization operating model | `Docs/Workflows/org_operating_model.md` |
-| CoAgent recurring meta-maintenance / thread registry hygiene | `Docs/Workflows/coagent_meta_maintenance.md`, `CoAgent/dispatch/department_threads.json`, `Docs/Index/codex_app_session_research.md#department-thread-layout` |
+| CoAgentOps patrol, bounded dispatch, dead-thread recovery, and semantic-boundary classification | `Docs/Workflows/coagent_ops_patrol_workflow.md`, `CoAgent/dispatch/communication_contract.md`, `Scripts/quality/check_agent_task_native_surface_gate.py` |
+| CoAgent recurring meta-maintenance / thread registry hygiene | `Docs/Workflows/coagent_meta_maintenance.md`, `Docs/Workflows/coagent_ops_patrol_workflow.md`, `CoAgent/dispatch/department_threads.json`, `Docs/Index/codex_app_session_research.md#department-thread-layout` |
 | CoAgent reusable architecture root | `CoAgent/README.md`, `CoAgent/docs/architecture/ARCHITECTURE.md`, `CoAgent/docs/status/MIGRATION_STATUS.md` |
 | CoAgent design approval gate | `CoAgent/docs/decisions/coagent_design_review_brief.zh.md`, `CoAgent/docs/decisions/coagent_design_decision_record.md`, `CoAgent/docs/decisions/coagent_goal_readiness_audit.md`, `CoAgent/docs/decisions/coagent_post_approval_backlog.md` |
 | External project master index | `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`, `Docs/Index/external_learning_index.md` |

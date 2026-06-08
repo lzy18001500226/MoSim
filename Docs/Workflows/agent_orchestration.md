@@ -84,6 +84,12 @@ surface gate in PMO planning:
 Do not add CoAgent runtime, queue, schema, or department machinery until this
 native surface gate shows a real gap.
 
+PMO dispatch priority: MoSim P0 mainline work is MWORKS R1/R2, ROS2 R1, and
+UE gate progress, with Sunray active only when the user reopens asset work.
+Reference-study/probe work is a support lane for named source-first questions.
+It must not be counted as mainline progress and must not suppress
+`dispatch_needed` for an idle P0 engineering thread.
+
 Codex App context-compression exception: when a visible thread appears stalled
 but the App UI itself shows an abnormal context-compression state, for example
 `Context Left 100.0%` and manual slash-command compression is needed, classify
@@ -383,6 +389,19 @@ return/blocker should record `available_but_not_useful`, `unavailable`, or
 this as "use at least one sub-agent"; the requirement is to plan the task graph
 and make the sub-agent scheduling decision consistently.
 
+When PMO dispatches MWORKS R1/R2 work or a disposable MWORKS sub-agent that
+needs screenshots, include the current screenshot skill boundary: ordinary
+simulation/check/layout phase evidence should prefer the DPI-aware
+`capture_window_background.ps1 -RestoreMinimized -Maximize` route against the
+real main Sysplorer/MWORKS window, while activation/login/license/
+authorization and complete GUI acceptance still require foreground or
+maximized target-window visual evidence. PMO must not force every child thread
+to rediscover helper/proxy windows, DPI scaling, or the `PrintWindow` limits.
+If a MWORKS task produces a graphical simulation, wiring/layout, Smart Layout,
+result viewer, or animation artifact that needs audit, route the review to
+MWORKS R2 as a bounded review task. The expected output is the screenshot plus
+observations, not a path-only report.
+
 Department execution and acceptance rule: after planning, the visible
 department owns the task execution inside the declared read/write scope. It must
 run the task-specific infrastructure preflight before business work and must
@@ -452,7 +471,8 @@ Current MWORKS split: `MoSim｜MWORKS动力学与控制验证部-R1`
 for dynamics/control/model-integration evidence. `MoSim｜MWORKS动力学与控制验证部-R2`
 (`019e9999-b0d3-7682-bccd-faef08fcf1df`) is an auxiliary route for model
 organization, graphical simulation interface completeness, connection
-correctness, line-layout/readability, and diagram hygiene. R2 had historical
+correctness, line-layout/readability, diagram hygiene, and graphical/result
+review using the approved screenshot route. R2 had historical
 dispatch-surface instability, so its first business task requires a bounded
 synchronization/no-op validation return packet; until then, use R1 for
 production MWORKS work. Historical packets may preserve older R2 labels for the
@@ -530,9 +550,11 @@ documented local route, write a blocker packet and send one sparse email
 blocker notification through `Scripts/agent/send_gateway_email_alert.py`.
 There is no active WeChat gateway operations route. `MoSim｜微信网关运维部`
 (`019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c`) and `MoSim｜WechatCodex`
-(`019e8358-86b4-7070-8fd6-a2b4f4d2af97`) are historical/inactive unless the
-user explicitly restores WeChat diagnosis. Use sparse email for blockers and
-intervention notices.
+(`019e8358-86b4-7070-8fd6-a2b4f4d2af97`) were deleted by the user on
+2026-06-08 after the email-only notification switch. They are historical
+evidence only: do not dispatch, patrol, no-op, recover, or treat absence as an
+outage unless the user explicitly restores WeChat diagnosis with a new scoped
+route. Use sparse email for blockers and intervention notices.
 
 Email body-format rule: send short Chinese status text only. Do not include
 concrete English file names, long paths, JSON/log names, or raw evidence lists
@@ -586,6 +608,42 @@ blocker, routes the incident to CoAgentOps, and continues unrelated work
 through healthy surfaces. Only CoAgentOps performs bounded delivery/no-op
 diagnosis for a failed department, except when CoAgentOps itself is the failed
 surface and PMO must execute the documented dual-mainline recovery.
+
+`waitingOnApproval` is a separate branch. If `read_thread`, Codex App UI, or
+the target department state shows `waitingOnApproval`, pending approvals, or a
+permission prompt, do not treat the condition as a normal missing-packet stall
+or dead-thread solely from elapsed time. First classify it as
+`approval_pending_or_ui_blocked`, and when practical use Windows MCP
+foreground/screenshot evidence of the Codex App or target thread to confirm
+whether a manual permission prompt is visible. Confirmed approval surfaces
+should be recorded in the blocker/ledger with `approval_state=pending` and
+`error_kind=permission` or `approval_denied` as appropriate. Business dispatch
+to that department stays paused until the user or an approved route decides
+the prompt. Do not loop no-op probes, trigger Codex++ restart, or create a
+replacement thread just because the approval prompt prevented the expected
+packet from being written.
+
+Elapsed time is only a stale-response trigger. If a short dispatch has no
+final reply or expected packet after about five minutes, inspect the target
+with `read_thread` and packet lookup before classifying it. Keep the target
+`busy_in_progress` when the latest turn shows agent output, tool activity,
+file changes, or checkpoint commentary. Use
+`dispatch_surface_or_agent_loop_failure` only for unreadable threads, failed
+start-turns, agent-loop errors, completed turns with no agent output or
+expected packet, or inProgress turns with no readable activity beyond the
+bounded validation window.
+
+Provider or review UI is the same control-plane branch, not a dead-thread
+shortcut. If the visible thread or user/operator screenshot shows a provider
+gateway error such as `502 Bad Gateway`, reconnect banner, generated-file
+review pending state, `审核`/review button, approval button, or similar manual
+review surface, classify it as `provider_gateway_or_pending_review` or
+`approval_pending_or_ui_blocked`. Record the UI state and stop the affected
+business dispatch until it is cleared or explicitly approved. Do not treat a
+provider/review surface as proof of MWORKS/ROS2/UE business failure, do not
+run repeated no-op probes while the UI is waiting for review, and do not
+trigger Codex++ restart or replacement unless a separate start-turn/agent-loop
+failure persists after the provider/review surface is cleared.
 
 If a visible department is readable but cannot receive messages, especially
 with `failed to update thread settings: internal error; agent loop died
@@ -657,11 +715,22 @@ or if notification is sent and no explicit manual deferral or visible
 intervention is available after a short window, CoAgentOps may trigger the
 Codex++ restart action through this manager. This will terminate the current
 conversation, so any recovery attempt must leave a durable packet first and rely
-on the 30-minute PMO/CoAgentOps heartbeat automations to resume validation
+on the 10-minute CoAgentOps heartbeat or the next healthy PMO interactive turn to resume validation
 after Codex++ comes back. The post-restart gate is still a no-op delivery check
 plus routing-status classification; restart alone is not task completion. In
 normal dead-thread recovery, validated restart recovery keeps using the same
 visible thread id instead of creating another department conversation.
+
+Recovery validation must distinguish execution-surface recovery from task
+completion. A previously blocked thread is restored at the
+`thread_execution_surface_restored` layer when the same visible thread starts a
+new turn and produces agent output, an expected packet, or an explicit
+user-requested ACK. Exact no-op text is still valid when that is the stated
+probe, but it is not the only recovery proof once the target clearly executes.
+Native list/read/send success without agent output remains insufficient. A
+restored execution surface only reopens routing; it does not prove the
+department completed the patrol, wrote the expected return/blocker packet, or
+delivered any MWORKS/ROS2/UE engineering evidence.
 
 Observed restart behavior: on 2026-06-06, a Codex App crash/restart changed
 several readable-but-unsendable threads back into no-op-sendable threads. This
@@ -1021,6 +1090,30 @@ Prompt and task-packet semantic sanity gate:
    relevant workflow if the mistake is reusable.
 ```
 
+Semantic boundary gate:
+
+```text
+1. If the instruction uses words like healthy, normal, blocked, review, 审核,
+   window, live, done, or continue, check whether it defines the decision
+   boundary for that word.
+2. The prompt/packet must include decision_scope, state_class,
+   evidence_minimum, allowed_actions, forbidden_actions, stop_triggers, and
+   next_owner.
+3. For visible-thread patrols, choose one concrete state_class:
+   routable, approval_pending_or_ui_blocked,
+   provider_gateway_or_pending_review,
+   dispatch_surface_or_agent_loop_failure, or unknown_blocked.
+4. For MWORKS patrol/live-task routing, choose one concrete state_class:
+   window_patrol_clean, helper_only_nonblocking, login_or_license_blocked,
+   authorization_blocked, gui_error_blocked, visible_unknown_blocked,
+   live_attach_blocked, or unknown_blocked.
+5. If the state is not one of the known values, define the new value inside
+   the packet before dispatch. Do not let the receiving thread invent what
+   "healthy" or "blocked" means.
+6. Reject instructions or packets whose only classification is ok, normal,
+   healthy, looks fine, still running, probably blocked, or similar free text.
+```
+
 For JSON task packets, `native_surface_gate` may live at the top level or under
 `metadata.native_surface_gate` during the compatibility period. New PMO-created
 non-trivial task packets should pass:
@@ -1139,9 +1232,9 @@ verified for the current installed App version. Until then, model them as
 normal task tickets:
 
 ```text
-Daily workflow/skills improvement:
-  owner: PMO + KnowledgeDepartment
-  action: inspect recent incidents, official docs, local skills, and update workflow docs
+Workflow/skills gap repair:
+  owner: responsible frontline task thread, with PMO/CoAgentOps recording recurring gaps
+  action: update workflow/skill docs only when actual execution exposes repeated misunderstanding, missing template, or rule conflict
 
 Daily external repository update:
   owner: DevOpsDepartment + KnowledgeDepartment
@@ -1149,7 +1242,7 @@ Daily external repository update:
   summarize changes, and flag useful upstream fixes
 
 Context documentation drift check:
-  owner: MoSim｜Codex 上下文维护, or responsible task thread
+  owner: MoSim｜文档秘书部, or responsible task thread
   action: compare PROGRESS/ledger/workflows against current task state
 
 Security constraint scan:
@@ -1450,7 +1543,7 @@ the existing process is frozen or opening duplicate sessions uncontrollably.
 
 PMO dispatch packets for MWORKS department work must include a
 `mworks_live_gate` object before delivery, but the activation/window-health
-owner is now CoAgentOps' 30-minute automation rather than each engineering
+owner is now CoAgentOps' 10-minute automation rather than each engineering
 thread. Required task fields are `live_mworks_touched`,
 `mworks_window_policy`, `activation_patrol_owner`,
 `recent_patrol_required`, `max_patrol_age_minutes`, `required_return_fields`,
@@ -1458,6 +1551,28 @@ thread. Required task fields are `live_mworks_touched`,
 `activation_patrol_owner` should be `CoAgentOps`; for static file-only work,
 set `live_mworks_touched=false` and do not turn the task into an activation
 probe.
+
+For MWORKS patrols and review routing, `window health` must not be used as a
+standalone conclusion. The patrol/review packet must classify:
+
+```text
+main_window_identified: true | false
+helper_or_proxy_windows: counted_and_nonblocking | blocking_text_seen | not_checked
+state_class: window_patrol_clean | helper_only_nonblocking |
+  login_or_license_blocked | authorization_blocked | gui_error_blocked |
+  visible_unknown_blocked | live_attach_blocked | unknown_blocked
+evidence_minimum_met: true | false
+next_owner: CoAgentOps | PMO | MWORKS_R1 | MWORKS_R2 | user
+```
+
+`window_patrol_clean` requires a real target main MWORKS/Sysplorer/Syslab
+window and no visible login/license/demo/authorization/error-report or
+blocking unknown window. `helper_only_nonblocking` means helper/proxy/Qt/IME/
+docsearch windows were observed or counted but showed no blocking text and did
+not replace the target main-window evidence. `live_attach_blocked` means the
+GUI may look usable but MWORKS MCP/session attach still cannot prove no-new-
+window reuse; R1/R2 live `check_model`, `SimulateModel`, package-browser, and
+graphical live audit remain blocked until attach-only validation exists.
 
 The return or blocker packet should carry `mworks_activation_patrol_reference`
 and, when known, `mworks_activation_patrol_age_minutes`, plus
@@ -1556,16 +1671,19 @@ dialog. Use a sentinel before/after MWORKS GUI-affecting steps:
    MWORKS screenshots before falling back to foreground desktop capture. If a
    minimized window must be inspected, use `-RestoreMinimized`; for
    login/license patrols or suspected hidden panes, use `-Maximize` as well.
-   The script may briefly restore or maximize the existing window, capture
-   through `PrintWindow`, then restore/minimize depending on flags. Use
-   `-OutDir` for the output directory; `-OutputDir` is not a valid parameter
-   for the current script. This is GUI incident evidence, not simulation
-   success evidence. Background `PrintWindow` capture is also not a full-GUI
-   acceptance tool: without `-RestoreMinimized` it can produce only a tiny
-   minimized title fragment, and even with maximize it can miss composite
-   Qt/browser-proxy surfaces such as the right MWORKS AI panel. Return packets
-   must treat the script output as window-state/preflight evidence unless a
-   human/foreground/Windows-MCP visual check confirms the complete GUI.
+   The script may briefly restore or maximize the existing target main window,
+   capture through `PrintWindow`, then restore/minimize depending on flags. It
+   lists helper/proxy windows by default but does not restore or maximize them;
+   use `-IncludeHelperWindows` or `-MaximizeAllMatches` only for a bounded
+   PMO/CoAgentOps helper diagnostic. Use `-OutDir` for the output directory;
+   `-OutputDir` is not a valid parameter for the current script. This is GUI
+   incident evidence, not simulation success evidence. Background
+   `PrintWindow` capture is also not a full-GUI acceptance tool: without
+   `-RestoreMinimized` it can produce only a tiny minimized title fragment,
+   and even with maximize it can miss composite Qt/browser-proxy surfaces such
+   as the right MWORKS AI panel. Return packets must treat the script output as
+   window-state/preflight evidence unless a human/foreground/Windows-MCP visual
+   check confirms the complete GUI.
 3. Windows UI Automation / EnumWindows style title/text detector for
    `MWORKS错误报告`, `Sysplorer 遇到错误，需要关闭`, login/license prompts, and
    Sysplorer/MWORKS window titles. This can detect incidents even when no image

@@ -22,7 +22,7 @@ source label
 Do not let replay or offline animation replace real simulation evidence.
 
 If the work is owned by a MWORKS/Sysplorer/Syslab department, reference the
-latest CoAgentOps 30-minute activation/window patrol when available. Return or
+latest CoAgentOps 10-minute activation/window patrol when available. Return or
 blocker packets should include `mworks_activation_patrol_reference`,
 `mworks_activation_patrol_age_minutes` when known,
 `will_not_click_activation_login=true`, and `live_mworks_touched`. Do not turn

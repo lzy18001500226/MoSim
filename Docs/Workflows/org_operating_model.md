@@ -70,7 +70,7 @@ turn every function into an always-on department conversation.
 |---|---|---|---|---|
 | General Management | `MainAgent` | Current Codex main session | Goal decomposition, priority, owner assignment, integration, user escalation, final decision | Grinding through every worker batch when durable workers can be used |
 | CoAgent Ops | `MetaOps` | `MoSim｜CoAgent运维平台` plus project ledgers | Recurring meta-task coordination, context-update cadence, crawler/learning dispatch, thread-registry hygiene, workflow/skill update checklists | Replacing PMO for MoSim engineering decisions or becoming a mandatory dispatch hop |
-| Context Maintenance | `ContextMaintainer` | `MoSim｜Codex 上下文维护` | New-conversation context, project memory index, compact recovery notes, scheduled context refreshes | Owning all documentation or executing business tasks |
+| Context Maintenance | `ContextMaintainer` | `MoSim｜文档秘书部` | New-conversation context, project memory index, compact recovery notes, scheduled context refreshes. Former title `MoSim｜Codex 上下文维护` is alias/history only. | Owning all documentation or executing business tasks |
 | Project Department | `ProjectOwner` | MoSim queue worker or explicit bounded subagent | One bounded implementation/research/migration stream with workers and evidence | Owning global priorities or cross-stream integration |
 | Test Gate | `TestOwner` | Task-local evidence bundle, isolated subagent, or explicitly scoped test thread | Independent verification across code, docs, Git, simulation, and reproducibility when a task reaches an acceptance gate | Acting as an always-on department that competes for ROS topics, ports, GUI/MCP sessions, or worktrees |
 | Security Gate | `SecurityOfficer` | `AGENTS.md`, prompts, harnesses, preflight checks, and review gates | Path boundary, secrets, destructive operations, large files, license/copyright, unsafe GUI/MCP actions | General code quality, product decisions, or a separate standing department |
@@ -94,8 +94,8 @@ one-shot review packets.
 | `MoSim｜Sunray150资产与PBR审核部` | Sunray150 Asset And PBR Review | DAE/Blender/UE visual asset, PBR materials, component close-up review, UE import readiness |
 | `MoSim｜MWORKS动力学与控制验证部` | MWORKS Dynamics And Control Verification | Sysplorer/Sysblock/Syslab, dynamics/controller wrappers, trace consumption, formal simulation evidence |
 | `MoSim｜ROS2感知定位与规划运行部` | ROS2 Perception, Localization, And Planning Runtime | ROS2/RViz2/FAST-LIO/local-map/planner runtime, topic/timing/truth-error gates, 20Hz setpoint adapter |
-| `MoSim｜DevOps 发布` | DevOps Department | Git hygiene, branches, commits, pushes, LFS/ignore strategy, release checkpoints |
-| `MoSim｜微信网关运维部` | Archived historical gateway route | Archived by the user on 2026-06-07 after email-only notification switch; no periodic self-check or active dispatch unless explicitly restored |
+| `MoSim｜Git仓库代码管理部` | DevOps Department | Git hygiene, branches, commits, pushes, LFS/ignore strategy, release checkpoints |
+| `MoSim｜微信网关运维部-R3-已删除` | Deleted historical gateway route | Archived by the user on 2026-06-07 after email-only notification switch, then deleted on 2026-06-08; no periodic self-check, no no-op/recovery, and no active dispatch unless explicitly restored with a new scoped route |
 
 Optional/on-demand roles:
 
@@ -103,15 +103,17 @@ Optional/on-demand roles:
 |---|---|
 | Validation / Evidence Review | A stage claims pass/completion and needs independent evidence review before PMO accepts it; default to bounded subagents or task-local isolated checks |
 | Toolchain/MCP upkeep | MWORKS/UE/WindowsMCP/ROS2 MCP setup or health breaks; owned by the thread using the tool, or by `MoSim｜CoAgent运维平台` for recurring workflow/skill maintenance |
-| Context Memory Update | A new long conversation needs a compact context pack or old-session recovery; route to `MoSim｜Codex 上下文维护` |
+| Context Memory Update | A new long conversation needs a compact context pack or old-session recovery; route to `MoSim｜文档秘书部` |
 | Security / Compliance Gate | External paths, secrets, destructive actions, licenses, or large-file release gates are involved; enforce through prompts, harnesses, preflight checks, and review records |
 | External Intelligence | A concrete task needs fresh RflySim/Gazebo/PX4/model-vendor/open-source research |
 
-Documentation ownership rule: there is no dedicated `MoSim｜知识秘书` thread in
-the current operating model. Each responsible thread must update the relevant
-project docs, indexes, workflow notes, or result packets before claiming
-completion. PMO may request an extra docs-quality review for high-impact rule
-changes, but that review is a task, not a standing secretary department.
+Documentation ownership rule: `MoSim｜文档秘书部` is the current
+documentation-secretary/context-maintenance route for scheduled context,
+memory/index drift, and consistency tasks. Former `MoSim｜知识秘书` wording is
+history only. Each responsible thread must still update the relevant project
+docs, indexes, workflow notes, or result packets before claiming completion.
+PMO may request an extra docs-quality review for high-impact rule changes, but
+that review is a task, not a standing owner of all documentation.
 MCP/skills/workflow ownership follows the same rule: the task thread that
 discovers a reusable command, failure mode, recovery path, or operating
 constraint must update the relevant workflow/skill doc immediately. For
@@ -122,19 +124,19 @@ CoAgent/meta-task routing:
 
 | Thread | ID | Responsibility |
 |---|---|---|
-| `MoSim｜Codex 环境迁移部` | `019e8181-6653-73b3-9685-f5bc9a24b947` | Windows-native Codex environment migration, WSL bridge-residue audits, Codex config/MCP launcher cleanup, and related one-time environment repair history. |
-| `MoSim｜Codex 上下文维护部-R2` | `019e9be0-f6ac-7762-b80c-b1dd18b0d013` | Receives scheduled tasks to update `Docs/Workflows/new_conversation_context.md`, `Docs/Index/project_work_memory_index.md`, memory/index docs, and compact recovery notes. |
+| `MoSim｜Codex 环境迁移部-旧` | `019e8181-6653-73b3-9685-f5bc9a24b947` | Historical Windows-native Codex environment migration, WSL bridge-residue audits, Codex config/MCP launcher cleanup, and related one-time environment repair history; not dispatchable unless the user explicitly restores it. |
+| `MoSim｜文档秘书部` | `019e9be0-f6ac-7762-b80c-b1dd18b0d013` | Receives scheduled tasks to update `Docs/Workflows/new_conversation_context.md`, `Docs/Index/project_work_memory_index.md`, memory/index docs, compact recovery notes, documentation consistency checks, and cache-first migration drafts. Legacy internal key: `CodexContextMaintenanceAgent`; former title: `MoSim｜Codex 上下文维护部`. |
 | `MoSim｜CoAgent运维平台` | `019e9bc1-ea9f-7102-b41a-4ef9b2308992` | Codex App native coordinator for recurring CoAgent/meta tasks such as scheduled context updates, crawler cadence, external-learning dispatch, native automation/thread capability checks, and ops checklists. It does not replace `MoSim｜主线 PMO` for MoSim engineering work. |
-| `MoSim｜开源项目探针-R2` | `019e9be3-94de-7dc3-b067-92a78b678287` | Periodically checks local reference-project inventory, upstream freshness, metadata completeness, and update candidates. It should return manifests and candidate learning queues, not adoption decisions; broad new crawling belongs to scoped sub-agents or explicit task packets. |
-| `MoSim｜开源项目学习部-R2` | `019e9be4-56d0-7981-b71c-a5ded1c7ec76` | Learns crawled projects/vendor articles, compares them with current MoSim/CoAgent needs, and returns adopt/reject proposals with evidence. |
+| `MoSim｜开源项目探针` | `019e9be3-94de-7dc3-b067-92a78b678287` | Periodically checks local reference-project inventory, upstream freshness, metadata completeness, and update candidates. It should return manifests and candidate learning queues, not adoption decisions; broad new crawling belongs to scoped sub-agents or explicit task packets. |
+| `MoSim｜开源项目学习部` | `019e9be4-56d0-7981-b71c-a5ded1c7ec76` | Learns crawled projects/vendor articles, compares them with current MoSim/CoAgent needs, and returns adopt/reject proposals with evidence. |
 
 Tooling-asset governance route: plugins, MCP servers, wrappers, project-local
 skills, workflow docs, and crawled reference projects are maintained through
 `Docs/Workflows/tooling_assets_governance.md`. The task thread owns immediate
 updates discovered during its work. `MoSim｜CoAgent运维平台` owns recurring
-meta-maintenance and index hygiene, `MoSim｜开源项目探针-R2` owns local reference
+meta-maintenance and index hygiene, `MoSim｜开源项目探针` owns local reference
 inventory and freshness checks, scoped sub-agents own one-shot crawl/fetch
-tasks, and `MoSim｜开源项目学习部-R2` owns adopt/reject/reference-only proposals.
+tasks, and `MoSim｜开源项目学习部` owns adopt/reject/reference-only proposals.
 
 Recurring-task rule: if Codex App automation tools are available, schedule the
 recurring task against the appropriate visible thread. If automation tools are
@@ -164,8 +166,8 @@ Current project-registered visible department thread IDs live in
 uses an allowlist-only rule: only IDs registered as `active_visible` in the
 current registry are valid targets. If an old thread ID is absent from the
 current visible scan, treat it as gone and remove it from dispatchable registry
-instead of maintaining a separate blacklist. Future context-memory work routes
-to `MoSim｜Codex 上下文维护部-R2`
+instead of maintaining a separate blacklist. Future context-memory and
+documentation-secretary work routes to `MoSim｜文档秘书部`
 (`019e9be0-f6ac-7762-b80c-b1dd18b0d013`).
 
 Dead-thread rule: if a visible department can be read but cannot reliably

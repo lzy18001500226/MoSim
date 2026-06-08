@@ -110,7 +110,20 @@ Current Codex native capability adoption after the 2026-06-06 hook audit:
 | Multi-agent/thread tools | PMO may use visible threads for reusable departments and sub-agents for bounded slices. Do not assume App cross-thread send is synchronous RPC. |
 | Automations / thread wakeups | Use for recurring checks only after current behavior is verified. Automation output must become a task packet, ledger row, or evidence file. |
 | Workspace dependencies | Use when document/sheet/slide/runtime dependencies are needed instead of guessing local bundled paths. |
-| Native notify | Useful local completion/blocker signal. For MoSim long tasks, WeChat remains the default sparse user-facing intervention channel when available. |
+| Native notify | Useful local completion/blocker signal. For MoSim long tasks, sparse email is the default user-facing intervention channel; WeChat is diagnostic or explicitly requested only. |
+
+2026-06-08 native tool-surface correction: a conversation that was created or
+migrated from the WSL/VSCode/CLI side may be visible in Codex App but still not
+expose Codex App native thread-management or automation tools in that
+conversation. In the current project, App-native visible threads are the
+correct execution surface for `create_thread`, `read_thread`,
+`send_message_to_thread`, `set_thread_title`, `set_thread_archived`, and
+`automation_update` work. If a migrated or WSL-origin conversation cannot see
+those tools after `tool_search`, it must not edit Codex private state or click
+through the UI as a substitute. It should write the intended operation as a
+request/blocker packet and ask an App-native operations thread, currently
+`MoSim｜CoAgent运维平台` (`019e9bc1-ea9f-7102-b41a-4ef9b2308992`), to perform the
+native-thread or automation task.
 
 Adoption priority for MoSim:
 
@@ -126,7 +139,7 @@ Adoption priority for MoSim:
 | P1 | `codex review` | Use as a bounded review gate. It does not replace owner-thread integration or targeted tests. |
 | P1 | `codex exec` | Use for one-shot background audits, packet generation, and narrow department prompts. |
 | P1 | Workspace dependencies | Use for docs/sheets/slides/report assets and bundled runtimes. |
-| P1 | Native notify | Use as local signal; keep WeChat for user-facing long-task intervention. |
+| P1 | Native notify | Use as local signal; use sparse email for user-facing long-task intervention. |
 | P2 | App server / remote control | Not a dependency until separately validated. |
 | P2 | Experimental memory/chronicle/artifact surfaces | Auxiliary only; do not store project truth there. |
 
@@ -159,8 +172,8 @@ thread. Every cross-thread department request must include `origin_thread`,
 `origin_thread_id`, `target_thread`, `target_thread_id`, `request_id`, and the
 expected packet paths. The target department writes its result to
 `Results/agent_packets/returns/<request_id>.json` or its blocker to
-`Results/agent_packets/blockers/<request_id>.json`; WeChat remains only a
-sparse alert channel.
+`Results/agent_packets/blockers/<request_id>.json`; email/WeChat remain only
+sparse alert channels.
 
 Codex App can display conversations created from the WSL/VSCode side. That is
 the required route for department and dedicated-task conversations. Manual
@@ -258,23 +271,29 @@ Operational result on 2026-05-26:
 ```
 
 Current visible thread registry, refreshed from the Windows Codex App thread
-surface on 2026-06-06 CST:
+surface on 2026-06-08 CST after a Codex App / VSCode history-title drift. Use
+the titles in `CoAgent/dispatch/department_threads.json` for active routing;
+stable `thread_id` and registry `status` remain authoritative. Titles ending
+in `-历史` or `-旧` are display hygiene for restored archived/legacy threads and
+do not make those threads dispatchable:
 
 | Thread | ID | Use |
 | --- | --- | --- |
 | `MoSim｜主线 PMO` | `019e9868-83ea-70f0-92c5-a3a408bd78c6` | Current mainline PMO task conversation for Sunray150/MoSim dynamics work |
-| `MoSim｜DevOps 发布` | `019e74de-a452-7a50-99e7-ca9a247b32f1` | Git split, path-limited staging, commits, push hygiene |
+| `MoSim｜Git仓库代码管理部` | `019e74de-a452-7a50-99e7-ca9a247b32f1` | Git split, path-limited staging, commits, push hygiene |
 | `MoSim｜UE实验控制台与场景交互部` | `019e9b24-50aa-7cd3-9e7c-4c43b224d993` | Durable UE operator console, scene interaction, command/echo schema, and render-review integration thread |
 | `MoSim｜Sunray150资产与PBR审核部` | `019e9b25-066e-7372-8152-209c2b1322a4` | Durable Sunray150 visual asset, DAE/FBX/GLB, material/PBR, and manual visual-review thread |
-| `MoSim｜MWORKS动力学与控制验证部-R2` | `019e9be5-334b-76b1-93f9-8b02caebf376` | Durable MWORKS trace-consumption, controller wrapper, dynamics, and control evidence integration thread; replaces old MWORKS thread `019e9999-b0d3-7682-bccd-faef08fcf1df` after Codex App delivery failures |
-| `MoSim｜ROS2感知定位与规划运行部-R3` | `019e9c72-ee74-79d1-b9fe-621d3c6fc99e` | Durable ROS2/RViz2/FAST-LIO/local-map/planner runtime integration thread; replaces deleted old ROS2 thread `019e9917-6181-7ec2-b3d6-4b624d6d3348` and quarantined R2 `019e9b85-d4d8-7bf3-8afd-a65697cd3889` |
-| `MoSim｜微信网关运维部-R3` | `019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c` | App-native gateway operations owner: cc-connect, QR login, context token, active session, scheduled health checks, and incident diagnosis; R2 `019e9be0-534e-7c22-97ff-98fa7c2af39b` is quarantine/diagnostic-only |
-| `MoSim｜Codex 环境迁移部` | `019e8181-6653-73b3-9685-f5bc9a24b947` | Windows-native Codex environment migration, bridge-residue audit, config/MCP launcher cleanup, and related one-time environment repair history |
-| `MoSim｜开源项目探针-R2` | `019e9be3-94de-7dc3-b067-92a78b678287` | App-native inventory owner for relevant open-source projects and local reference-project update candidates |
+| `MoSim｜MWORKS动力学与控制验证部-R1` | `019e9be5-334b-76b1-93f9-8b02caebf376` | Durable MWORKS mainline dynamics/control/model-integration evidence thread |
+| `MoSim｜MWORKS动力学与控制验证部-R2` | `019e9999-b0d3-7682-bccd-faef08fcf1df` | Durable MWORKS auxiliary model organization, graphical interface, connection/layout/readability, and model-hygiene thread. This ID had old dispatch/UI-submit incidents, but the user later restored it as the current R2 auxiliary route. |
+| `MoSim｜ROS2感知定位与规划运行部-R1` | `019e9c72-ee74-79d1-b9fe-621d3c6fc99e` | Durable ROS2/RViz2/FAST-LIO/local-map/planner runtime integration thread; current default production route in the registry after deleted old ROS2 thread `019e9917-6181-7ec2-b3d6-4b624d6d3348` |
+| `MoSim｜ROS2感知定位与规划运行部-R2` | `019e9b85-d4d8-7bf3-8afd-a65697cd3889` | Non-historical visible ROS2 department thread. Do not label it `-历史`; production dispatch still follows registry status or explicit user/PMO routing confirmation. |
+| `MoSim｜微信网关运维部-R3-已删除` | `019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c` | Archived by the user on 2026-06-07 after MoSim moved to email-only notifications, then deleted by the user on 2026-06-08; not visible, not `active_visible`, no scheduled health checks, no routine no-op/canary/diagnosis/recovery dispatch unless explicitly restored with a new scoped route |
+| `MoSim｜Codex 环境迁移部-旧` | `019e8181-6653-73b3-9685-f5bc9a24b947` | Historical Windows-native Codex environment migration, bridge-residue audit, config/MCP launcher cleanup, and related one-time environment repair history; user restored it only to repair its title and will re-archive |
+| `MoSim｜开源项目探针` | `019e9be3-94de-7dc3-b067-92a78b678287` | App-native inventory owner for relevant open-source projects and local reference-project update candidates |
 | `MoSim｜CoAgent运维平台` | `019e9bc1-ea9f-7102-b41a-4ef9b2308992` | Codex App native CoAgent/meta operations thread; coordinates recurring CoAgent/meta tasks, thread-registry hygiene, and native capability adoption checklists |
-| `MoSim｜开源项目学习部-R2` | `019e9be4-56d0-7981-b71c-a5ded1c7ec76` | App-native learning owner for crawled projects/vendor articles and adopt/adapt/reference-only/reject proposals |
-| `MoSim｜Codex 上下文维护部-R2` | `019e9be0-f6ac-7762-b80c-b1dd18b0d013` | App-native scheduled context-memory/index update owner |
-| `MoSim｜WechatCodex` | `019e8358-86b4-7070-8fd6-a2b4f4d2af97` | WeChat-side Codex message path. For `ret=-2` refresh, the user sends a normal message such as "你好" here; do not send gateway ops tasks here |
+| `MoSim｜开源项目学习部` | `019e9be4-56d0-7981-b71c-a5ded1c7ec76` | App-native learning owner for crawled projects/vendor articles and adopt/adapt/reference-only/reject proposals |
+| `MoSim｜文档秘书部` | `019e9be0-f6ac-7762-b80c-b1dd18b0d013` | App-native documentation secretary for scheduled context-memory/index updates, documentation consistency review, and cache-first migration drafts. Legacy internal key: `CodexContextMaintenanceAgent`; former title: `MoSim｜Codex 上下文维护部`. |
+| `MoSim｜WechatCodex-已删除` | `019e8358-86b4-7070-8fd6-a2b4f4d2af97` | Historical WeChat-side message path deleted by the user on 2026-06-08; inactive for MoSim notifications, not visible, not a routing/no-op/recovery target unless the user explicitly restores WeChat diagnosis with a new scoped route |
 
 Replacement rule: if a listed department is replaced with an App-native R2
 thread, the old conversation is not the durable source after deletion. Before
@@ -293,28 +312,18 @@ Historical deleted or absent thread note:
   project docs and result/blocker packets.
 019e9917-6181-7ec2-b3d6-4b624d6d3348: old ROS2 department, deleted by user
   after Codex App delivery failures.
-019e9999-b0d3-7682-bccd-faef08fcf1df: old MWORKS department. Renamed from
-  MoSim｜MWORKS-Control 集成, then replaced by
-  MoSim｜MWORKS动力学与控制验证部-R2
-  (019e9be5-334b-76b1-93f9-8b02caebf376) after two native business dispatch
-  attempts failed with agent loop died unexpectedly on 2026-06-06. A later
-  CoAgentOps diagnostic found the old thread still visible/readable and able
-  to complete two no-op cross-thread healthcheck turns, including one with
-  model/thinking settings override. User-side manual sending from inside the
-  old thread UI still showed `Error submitting message`. Current
-  classification is partial recovery: cross-thread dispatch can work for
-  no-op probes, but the in-thread UI composer path is still broken. Keep
-  production MWORKS routing on R2 and keep the old thread only for bounded
-  CoAgentOps R2 diagnosis unless PMO explicitly restores it.
 019e9855-aa43-7fe2-807e-be7d4095877b: old MoSim｜微信网关运维部, superseded by
-  App-native R2 019e9be0-534e-7c22-97ff-98fa7c2af39b, which was later
-  quarantined for production dispatch. Current production gateway route is
-  MoSim｜微信网关运维部-R3
-  (019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c). Reusable gateway procedures are
-  landed in AGENTS.md, Docs/Workflows/debug_mcp.md,
-  Docs/Workflows/coagent_meta_maintenance.md, and Results/coagent_gateway/.
+  App-native R2 019e9be0-534e-7c22-97ff-98fa7c2af39b (`MoSim｜微信网关运维部-R2-历史`),
+  then replacement 019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c
+  (`MoSim｜微信网关运维部-R3-已删除`). The replacement was archived by the
+  user on 2026-06-07 after MoSim moved to email-only notifications, then
+  deleted by the user on 2026-06-08. Reusable
+  gateway procedures remain historical in AGENTS.md,
+  Docs/Workflows/debug_mcp.md, Docs/Workflows/coagent_meta_maintenance.md, and
+  Results/coagent_gateway/.
 019e3dac-de0e-7180-98ad-d7137e8a6275: old MoSim｜Codex 上下文维护部,
-  superseded by App-native R2 019e9be0-f6ac-7762-b80c-b1dd18b0d013. Reusable
+  superseded by App-native `MoSim｜文档秘书部`
+  019e9be0-f6ac-7762-b80c-b1dd18b0d013. Reusable
   context recovery content is landed in Docs/Workflows/new_conversation_context.md,
   Docs/Workflows/session_memory_migration.md, Docs/Index/project_work_memory_index.md,
   and Docs/Cache/session_memory_migration/.
@@ -340,8 +349,8 @@ a current blacklist that must be maintained forever. Current dispatch uses the
 allowlist in `CoAgent/dispatch/department_threads.json`; if one of these old IDs
 is absent from the current visible scan, treat it as gone and remove it from
 dispatchable registry rather than trying to resume, restore, archive, or route
-work to it. Future context-memory work routes to
-`MoSim｜Codex 上下文维护部-R2`
+work to it. Future context-memory and documentation-secretary work routes to
+`MoSim｜文档秘书部`
 (`019e9be0-f6ac-7762-b80c-b1dd18b0d013`). Durable documentation updates are no
 longer centralized in a secretary thread; each responsible thread must update
 the relevant project docs before returning completion.
@@ -446,7 +455,7 @@ Planned recurring automation candidates:
 | Workflow/skills improvement | Responsible task thread or `MoSim｜CoAgent运维平台` | Inspect recent incidents and update workflows/skills when they become reusable rules |
 | External-repo inventory update | `MoSim｜开源项目探针` | Crawl or inventory relevant open-source projects and produce manifests |
 | External-learning review | `MoSim｜开源项目学习` | Study crawled projects/vendor articles and return adopt/reject proposals |
-| Context-memory drift check | `MoSim｜Codex 上下文维护` | Update new-conversation context, memory index, and recovery notes |
+| Context-memory drift check | `MoSim｜文档秘书部` | Update new-conversation context, memory index, and recovery notes; `MoSim｜Codex 上下文维护` is alias/history only |
 | Git/release hygiene | `MoSim｜DevOps 发布` | Check large files, ignored/generated assets, split commits, and push readiness |
 | Security constraint scan | Task owner with preflight/harness checks | Apply path/secrets/destructive-operation/license constraints without creating a security department |
 
@@ -456,9 +465,10 @@ Do not treat an App automation notification as completed work.
 Preferred automation candidates now that native surfaces are available:
 
 ```text
-1. WeChat gateway heartbeat: wake `MoSim｜微信网关运维`, run the documented
-   health check, write evidence, and alert PMO only on failure.
-2. Context recovery drift: wake `MoSim｜Codex 上下文维护`, compare the current
+1. PMO/CoAgentOps heartbeat: do not wake the archived WeChat gateway route.
+   Use email-only notifications and check only active-visible departments plus
+   explicit recovery validation targets.
+2. Context recovery drift: wake `MoSim｜文档秘书部`, compare the current
    thread registry and startup docs, then return a packet.
 3. Hook/preflight health: run hook smoke tests and `codex doctor`; if hook trust
    or feature availability changed, update `CoAgent/hooks/README.md`.
