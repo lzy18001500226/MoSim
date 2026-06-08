@@ -138,6 +138,21 @@ STAGED_EXTERNAL_PREFIXES = (
     "Docs/Skills/Agent/",
 )
 STAGED_BROAD_THRESHOLD = 200
+MWORKS_WINDOW_MANAGEMENT_SCRIPT = "scripts/tools/manage_mworks_windows.ps1"
+MWORKS_WINDOW_CLOSE_MODES = {"closesafeerrors", "cleanup"}
+MWORKS_WINDOW_MODES = {"list", "minimizehelpers", *MWORKS_WINDOW_CLOSE_MODES}
+MWORKS_WINDOW_SCRIPT_PARAMS = (
+    "mode",
+    "outjson",
+    "dryrun",
+    "authorizedrequestid",
+    "expectedhwnd",
+    "expectedtitlepattern",
+    "expectedprocess",
+    "incidentpacketpath",
+    "fixturejson",
+)
+MWORKS_WINDOW_SCRIPT_SWITCH_PARAMS = {"dryrun"}
 
 
 def run(command: list[str], timeout: int = 20) -> dict:
@@ -419,6 +434,186 @@ def secret_command_findings(commands: list[str]) -> list[dict]:
     return findings
 
 
+def _command_policy_tokens(command: str) -> list[str]:
+    try:
+        raw_tokens = shlex.split(command, posix=False)
+    except ValueError:
+        raw_tokens = command.split()
+    tokens: list[str] = []
+    for raw in raw_tokens:
+        cleaned = _clean_shell_fragment(raw)
+        if cleaned:
+            tokens.append(cleaned)
+    return tokens
+
+
+def _param_name(token: str) -> str:
+    value = _clean_shell_fragment(token).lower()
+    if value.startswith("--"):
+        value = value[2:]
+    elif value.startswith("-"):
+        value = value[1:]
+    for separator in (":", "="):
+        if separator in value:
+            value = value.split(separator, 1)[0]
+    return value
+
+
+def _canonical_param_name(token: str, known_params: tuple[str, ...] | None = None) -> str | None:
+    cleaned = _clean_shell_fragment(token)
+    if known_params is not None and not cleaned.startswith("-"):
+        return None
+    name = _param_name(cleaned)
+    if not name:
+        return None
+    if known_params is None:
+        return name
+    matches = [candidate for candidate in known_params if candidate.startswith(name)]
+    if len(matches) != 1:
+        return None
+    return matches[0]
+
+
+def _inline_param_value(token: str) -> str | None:
+    cleaned = _clean_shell_fragment(token)
+    for separator in (":", "="):
+        if separator in cleaned:
+            return _clean_shell_fragment(cleaned.split(separator, 1)[1])
+    return None
+
+
+def _param_value(tokens: list[str], param: str, *, known_params: tuple[str, ...] | None = None) -> str | None:
+    expected = param.lower()
+    for index, token in enumerate(tokens):
+        cleaned = _clean_shell_fragment(token)
+        if _canonical_param_name(cleaned, known_params) != expected:
+            continue
+        inline_value = _inline_param_value(cleaned)
+        if inline_value is not None:
+            return inline_value
+        if index + 1 < len(tokens):
+            next_value = _clean_shell_fragment(tokens[index + 1])
+            if not next_value.startswith("-"):
+                return next_value
+        return ""
+    return None
+
+
+def _param_value_present(
+    tokens: list[str],
+    param: str,
+    *,
+    allow_zero: bool = True,
+    known_params: tuple[str, ...] | None = None,
+) -> bool:
+    value = _param_value(tokens, param, known_params=known_params)
+    if value is None:
+        return False
+    if not value.strip():
+        return False
+    if not allow_zero and value.strip() == "0":
+        return False
+    return True
+
+
+def _references_mworks_window_manager(command: str) -> bool:
+    normalized = command.replace("\\", "/").lower()
+    return MWORKS_WINDOW_MANAGEMENT_SCRIPT in normalized
+
+
+def _mworks_window_script_args(tokens: list[str]) -> list[str]:
+    for index, token in enumerate(tokens):
+        normalized = _clean_shell_fragment(token).replace("\\", "/").lower()
+        if MWORKS_WINDOW_MANAGEMENT_SCRIPT in normalized:
+            return tokens[index + 1 :]
+    return tokens
+
+
+def _skip_script_param_value(tokens: list[str], index: int) -> int:
+    token = _clean_shell_fragment(tokens[index])
+    param_name = _canonical_param_name(token, MWORKS_WINDOW_SCRIPT_PARAMS)
+    if param_name is None:
+        return index + 1
+    if param_name in MWORKS_WINDOW_SCRIPT_SWITCH_PARAMS or _inline_param_value(token) is not None:
+        return index + 1
+    if index + 1 < len(tokens) and not _clean_shell_fragment(tokens[index + 1]).startswith("-"):
+        return index + 2
+    return index + 1
+
+
+def _mworks_window_mode(tokens: list[str]) -> str:
+    script_args = _mworks_window_script_args(tokens)
+    named_mode = _param_value(script_args, "mode", known_params=MWORKS_WINDOW_SCRIPT_PARAMS)
+    if named_mode is not None:
+        return named_mode.strip().lower()
+
+    index = 0
+    while index < len(script_args):
+        cleaned = _clean_shell_fragment(script_args[index])
+        if not cleaned:
+            index += 1
+            continue
+        if cleaned.startswith("-"):
+            index = _skip_script_param_value(script_args, index)
+            continue
+        lowered = cleaned.lower()
+        if lowered in MWORKS_WINDOW_MODES:
+            return lowered
+        index += 1
+    return "list"
+
+
+def mworks_window_management_findings(commands: list[str]) -> list[dict]:
+    findings = []
+    for command in commands:
+        if not _references_mworks_window_manager(command):
+            continue
+        tokens = _command_policy_tokens(command)
+        script_args = _mworks_window_script_args(tokens)
+        mode = _mworks_window_mode(tokens)
+        if mode not in MWORKS_WINDOW_CLOSE_MODES:
+            continue
+        has_request = _param_value_present(
+            script_args,
+            "authorizedrequestid",
+            known_params=MWORKS_WINDOW_SCRIPT_PARAMS,
+        )
+        has_incident_packet = _param_value_present(
+            script_args,
+            "incidentpacketpath",
+            known_params=MWORKS_WINDOW_SCRIPT_PARAMS,
+        )
+        has_expected_hwnd = _param_value_present(
+            script_args,
+            "expectedhwnd",
+            allow_zero=False,
+            known_params=MWORKS_WINDOW_SCRIPT_PARAMS,
+        )
+        has_expected_title_process = (
+            _param_value_present(script_args, "expectedtitlepattern", known_params=MWORKS_WINDOW_SCRIPT_PARAMS)
+            and _param_value_present(script_args, "expectedprocess", known_params=MWORKS_WINDOW_SCRIPT_PARAMS)
+        )
+        missing = []
+        if not has_request:
+            missing.append("-AuthorizedRequestId")
+        if not has_incident_packet:
+            missing.append("-IncidentPacketPath")
+        if not (has_expected_hwnd or has_expected_title_process):
+            missing.append("-ExpectedHwnd or -ExpectedTitlePattern plus -ExpectedProcess")
+        if missing:
+            findings.append(
+                {
+                    "severity": "fail",
+                    "field": "command",
+                    "value": command,
+                    "reason": "mworks_window_close_requires_authorization",
+                    "mode": mode,
+                    "missing": missing,
+                }
+            )
+    return findings
+
+
 def check_secret_paths(paths: list[str]) -> dict:
     findings = secret_path_findings(paths, field="path")
     return {"ok": not findings, "findings": findings, "checked_paths": len(paths)}
@@ -480,6 +675,7 @@ def check_command_policy(commands: list[str], *, allow_destructive: bool = False
                 if hint in compact:
                     findings.append({"severity": "fail", "field": "command", "value": command, "reason": "broad_git_risk", "hint": hint})
                     break
+    findings.extend(mworks_window_management_findings(commands))
     findings.extend(secret_command_findings(commands))
     return {"ok": not findings, "findings": findings, "checked_commands": len(commands)}
 

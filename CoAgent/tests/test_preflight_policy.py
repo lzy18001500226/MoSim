@@ -177,6 +177,77 @@ def main() -> int:
         combo_bad_env_policy = preflight.check_command_policy([token_env + "; Write-Output ok"])
         assert not combo_bad_env_policy["ok"], combo_bad_env_policy
 
+        window_script = "Scripts/tools/" + "manage_mworks_windows.ps1"
+        close_mode = "Close" + "SafeErrors"
+        cleanup_mode = "Clean" + "up"
+        unauthorized_close = f"powershell -File {window_script} -Mode {close_mode}"
+        unauthorized_cleanup = f"powershell -File {window_script} -Mode {cleanup_mode}"
+        unauthorized_combo = "Write-Output before; " + unauthorized_close + "; Write-Output after"
+        unauthorized_abbrev_close = f"powershell -File {window_script} -M {close_mode}"
+        unauthorized_abbrev_cleanup = f"powershell -File {window_script} -Mo {cleanup_mode}"
+        unauthorized_positional_close = f"powershell -File {window_script} {close_mode}"
+        unauthorized_positional_cleanup = f"powershell -File {window_script} {cleanup_mode}"
+        unauthorized_window_policy = preflight.check_command_policy(
+            [
+                unauthorized_close,
+                unauthorized_cleanup,
+                unauthorized_combo,
+                unauthorized_abbrev_close,
+                unauthorized_abbrev_cleanup,
+                unauthorized_positional_close,
+                unauthorized_positional_cleanup,
+            ]
+        )
+        assert not unauthorized_window_policy["ok"], unauthorized_window_policy
+        window_findings = [
+            item
+            for item in unauthorized_window_policy["findings"]
+            if item["reason"] == "mworks_window_close_requires_authorization"
+        ]
+        assert len(window_findings) == 7, unauthorized_window_policy
+        detected_close_modes = {item["mode"] for item in window_findings}
+        assert {"closesafeerrors", "cleanup"}.issubset(detected_close_modes), unauthorized_window_policy
+
+        minimize_window_policy = preflight.check_command_policy(
+            [
+                f"powershell -File {window_script} -Mode MinimizeHelpers",
+                f"powershell -File {window_script} -M MinimizeHelpers",
+                f"powershell -File {window_script} MinimizeHelpers",
+            ]
+        )
+        assert minimize_window_policy["ok"], minimize_window_policy
+
+        authorized_hwnd_policy = preflight.check_command_policy(
+            [
+                f"powershell -File {window_script} -Mode {close_mode} "
+                "-AuthorizedRequestId COAGENTOPS-TEST "
+                "-ExpectedHwnd 12345 "
+                "-IncidentPacketPath Results/agent_packets/blockers/COAGENTOPS-TEST.json"
+            ]
+        )
+        assert authorized_hwnd_policy["ok"], authorized_hwnd_policy
+
+        authorized_abbrev_hwnd_policy = preflight.check_command_policy(
+            [
+                f"powershell -File {window_script} -M {close_mode} "
+                "-A COAGENTOPS-TEST "
+                "-ExpectedH 12345 "
+                "-I Results/agent_packets/blockers/COAGENTOPS-TEST.json"
+            ]
+        )
+        assert authorized_abbrev_hwnd_policy["ok"], authorized_abbrev_hwnd_policy
+
+        authorized_title_policy = preflight.check_command_policy(
+            [
+                f"powershell -File {window_script} -Mode {cleanup_mode} "
+                "-AuthorizedRequestId COAGENTOPS-TEST "
+                "-ExpectedTitlePattern Memory "
+                "-ExpectedProcess mw_memory_monitor "
+                "-IncidentPacketPath Results/agent_packets/blockers/COAGENTOPS-TEST.json"
+            ]
+        )
+        assert authorized_title_policy["ok"], authorized_title_policy
+
         runtime_ignore = preflight.check_runtime_output_ignore()
         assert runtime_ignore["ok"], runtime_ignore
         assert runtime_ignore["missing"] == [], runtime_ignore
