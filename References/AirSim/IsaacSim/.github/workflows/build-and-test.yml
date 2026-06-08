@@ -1,0 +1,94 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, public-main ]
+  pull_request:
+    branches: [ main, public-main ]
+
+# Concurrency control to prevent parallel runs on the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build-and-test:
+    runs-on: [self-hosted, gpu]
+    timeout-minutes: 240
+    env:
+      OMNI_KIT_ALLOW_ROOT: 1
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        lfs: true
+
+    - name: Clean checkout
+      run: |
+        git clean -fdx
+        git reset --hard HEAD
+
+    - name: Make all files user-writable
+      run: |
+        chmod -R u+w .
+
+    - name: Build and Test Isaac Sim
+      run: |
+        set -euo pipefail  # Exit on error, undefined vars, pipe failures
+        set -x  # Print commands being executed
+
+        echo "::group::Clear Caches"
+        rm -rf ~/.local/share/ov
+        rm -rf ~/.cache/ov
+        rm -rf ~/.cache/packman
+        # rm -rf /tmp/*
+        # chmod -R u+w /tmp
+        echo "::endgroup::"
+
+        echo "::group::Build Isaac Sim"
+        # Build Isaac Sim
+        touch .eula_accepted
+        find . -type f -iname "*.sh" -exec chmod +x {} +
+        chmod +x build.sh
+        chmod +x repo.sh
+        ./build.sh
+        if [ $? -ne 0 ]; then
+          echo 'BUILD FAILED with exit code ' $?
+          exit 1
+        fi
+        echo "::endgroup::"
+
+        # echo "::group::Test Isaac Sim"
+        # # Test Isaac Sim
+        # cd _build/linux-x86_64/release
+        # touch .eula_accepted
+        # find . -type f -iname "*.sh" -exec chmod +x {} +
+        # chmod +x exts/isaacsim.ros2.bridge/bin/isaacsim.ros2.bridge.check
+        # chmod +x post_install.sh
+        # chmod +x warmup.sh
+        # chmod +x isaac-sim.sh
+        # ./post_install.sh
+        # # ./warmup.sh
+        # ./isaac-sim.sh --no-window --/app/quitAfter=500 --/app/file/ignoreUnsavedOnExit=1
+        # echo "::endgroup::"

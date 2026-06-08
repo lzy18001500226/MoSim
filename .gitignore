@@ -113,7 +113,6 @@ Results/codex_watchdog/codex_outer_watchdog_check_*.json
 *.mat
 *.h5
 *.hdf5
-*.dae
 *.plan
 
 # OS
@@ -185,8 +184,10 @@ References/Sunray/**/*.plan
 References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_D435i/meshes/150.dae
 References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/meshes/150.dae
 References/Lab/Fast-Racing/src/thirdparty/MavLinkCom/MavLinkComGenerator/obj/
-References/AirSim/IsaacSim/
 References/AirSim/spear/
+# Missing local Git LFS payloads in IsaacSim README screenshots; keep
+# manifest-only until the real LFS objects are restored.
+References/AirSim/IsaacSim/docs/readme/*.png
 References/AirSim/Cosys-AirSim/Docs/annsim23_tutorial/*.mp4
 References/AirSim/Cosys-AirSim/Docs/annsim23_tutorial/*.pdf
 References/AirSim/Cosys-AirSim/Unreal/Plugins/AirSim/Content/
@@ -249,7 +250,7 @@ Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
 References/Blender/blender/assets/nodes/
 References/Blender/blender/assets/brushes/
 References/Blender/blender/doc/python_api/static/favicon.png
-References/Blender/blender/scripts/startup/bl_app_templates_system/
+References/Blender/blender/scripts/startup/bl_app_templates_system/**/*.blend
 References/Blender/blender/release/datafiles/
 References/Blender/blender/release/darwin/
 References/Blender/blender/release/windows/
@@ -273,7 +274,6 @@ Results/agent_runs/
 Results/unreal_scene_review/
 Results/unreal_scene_mapping/*probe*.json
 Results/unreal_scene_mapping/*object_bounds*.json
-UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/component_material_reviews/
 
 # Final reference-wide class guard. This sits after project unignore rules so
 # ordinary project whitelists cannot accidentally reopen archives, dependency
@@ -287,6 +287,7 @@ References/**/Build/
 References/**/BUILD/
 References/**/dist/
 References/**/out/
+References/**/obj/
 References/**/Binaries/
 References/**/Intermediate/
 References/**/Saved/

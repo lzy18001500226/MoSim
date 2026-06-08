@@ -1,0 +1,61 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "intelliSenseMode": "clang-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "compileCommands": "${workspaceFolder}/_build/linux-x86_64/release/compile_commands.json"
+        },
+        {
+            "name": "linux-x86_64-release",
+            "intelliSenseMode": "clang-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "compileCommands": "${workspaceFolder}/_build/linux-x86_64/release/compile_commands.json"
+        },
+        {
+            "name": "linux-x86_64-debug",
+            "intelliSenseMode": "clang-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "compileCommands": "${workspaceFolder}/_build/linux-x86_64/debug/compile_commands.json"
+        },
+        {
+            "name": "linux-aarch64-release",
+            "intelliSenseMode": "clang-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "compileCommands": "${workspaceFolder}/_build/linux-aarch64/release/compile_commands.json"
+        },
+        {
+            "name": "linux-aarch64-debug",
+            "intelliSenseMode": "clang-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "compileCommands": "${workspaceFolder}/_build/linux-aarch64/debug/compile_commands.json"
+        },
+        {
+            "name": "Win32",
+            "intelliSenseMode": "msvc-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "compileCommands": "${workspaceFolder}/_build/windows-x86_64/release/compile_commands.json"
+        },
+        {
+            "name": "windows-x86_64-release",
+            "intelliSenseMode": "msvc-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "compileCommands": "${workspaceFolder}/_build/windows-x86_64/release/compile_commands.json"
+        },
+        {
+            "name": "windows-x86_64-debug",
+            "intelliSenseMode": "msvc-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "compileCommands": "${workspaceFolder}/_build/windows-x86_64/debug/compile_commands.json"
+        }
+    ],
+    "version": 4
+}

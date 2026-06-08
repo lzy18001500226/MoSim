@@ -1,0 +1,89 @@
+#!/bin/bash
+# SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Bug report
+description: File a bug report for the repository
+
+body:
+- type: markdown
+  attributes:
+    value: |
+      **Your help in making Isaac Sim better is greatly appreciated!**
+
+      * Please ensure that:
+        * The issue hasn't already been reported by using the [issue search](https://github.com/isaac-sim/IsaacSim/search?q=is%3Aissue&type=issues).
+        * The issue is not listed in the Isaac Sim's [Known Issues](https://docs.isaacsim.omniverse.nvidia.com/latest/overview/known_issues.html) documentation.
+      * For questions, please consider [open a discussion](https://github.com/isaac-sim/IsaacSim/discussions).
+      <br>
+
+- type: textarea
+  attributes:
+    label: Description
+    description: A clear and concise description of the bug/issue. Try to provide a minimal example to reproduce it.
+    placeholder: |
+      Markdown formatting might be applied to the text.
+
+      ```python
+      # use triple backticks for code blocks or terminal output/error messages
+      ```
+  validations:
+    required: true
+
+- type: input
+  attributes:
+    label: Isaac Sim version
+    description: It can be found in the `VERSION` file located in either the repository or the build folder.
+    placeholder: e.g. 5.1.0
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Operating System (OS)
+    placeholder: e.g. Ubuntu 24.04
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: GPU Name
+    placeholder: e.g. RTX 4090
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: GPU Driver and CUDA versions
+    description: The GPU driver and CUDA versions can be obtained with the command `nvidia-smi`.
+    placeholder: e.g. Driver 550.144.03, CUDA 12.4
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Logs
+    description: |
+      Include the relevant log files. See the *Common Path Locations* in Isaac Sim's
+      [Setup Tips](https://docs.isaacsim.omniverse.nvidia.com/latest/installation/install_faq.html)
+      documentation for details about the locations of the log files.
+    placeholder: |
+      Paste the log content here or attach the log files.
+
+      ```txt
+      Use triple backticks to format the pasted log text.
+      ```
+
+- type: textarea
+  attributes:
+    label: Additional information
+    placeholder: Any other information that might be helpful.

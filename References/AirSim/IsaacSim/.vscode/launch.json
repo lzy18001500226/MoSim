@@ -1,0 +1,112 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "env": {
+                "RESOURCE_NAME": "IsaacSim",
+                "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+            },
+            "python": "${workspaceFolder}/_build/linux-x86_64/release/kit/python/bin/python3",
+            "envFile": "${workspaceFolder}/.vscode/.python_samples.env",
+            "args": "",
+            "preLaunchTask": "setup_python_env"
+        },
+        {
+            "name": "Python: Attach (windows-x86_64/linux-x86_64)",
+            "type": "python",
+            "request": "attach",
+            "port": 3000,
+            "host": "localhost",
+        },
+        {
+            "name": "(Linux) isaac-sim [release]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/_build/linux-x86_64/release/kit/kit",
+            "args": ["${workspaceFolder}/_build/linux-x86_64/release/apps/isaacsim.exp.full.kit",
+                "--ext-folder", "${workspaceFolder}/_build/linux-x86_64/release/apps"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+        },
+        {
+            "name": "(Linux) isaac-sim [debug]",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/_build/linux-x86_64/debug/kit/kit",
+            "args": ["${workspaceFolder}/_build/linux-x86_64/debug/apps/isaacsim.exp.full.kit",
+                "--ext-folder", "${workspaceFolder}/_build/linux-x86_64/debug/apps"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+        },
+        {
+            "name": "(windows-x86_64) isaac-sim [release]",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/_build/windows-x86_64/release/kit/kit.exe",
+            "args": ["${workspaceFolder}/_build/windows-x86_64/release/apps/isaacsim.exp.full.kit",
+                "--ext-folder", "${workspaceFolder}/_build/windows-x86_64/release/apps"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "internalConsoleOptions": "openOnSessionStart",
+        },
+        {
+            "name": "(gdb) Attach",
+            "type": "cppdbg",
+            "request": "attach",
+            "program": "${workspaceFolder}/_build/linux-x86_64/debug/kit/kit",
+            "processId": "${command:pickProcess}",
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "{lldb) Attach (release)",
+            "type": "lldb",
+            "request": "attach",
+            "program": "${workspaceFolder}/_build/linux-x86_64/release/kit/kit",
+            "pid": "${command:pickProcess}",
+        },
+        {
+            "name": "{lldb) Attach (debug)",
+            "type": "lldb",
+            "request": "attach",
+            "program": "${workspaceFolder}/_build/linux-x86_64/debug/kit/kit",
+            "pid": "${command:pickProcess}",
+        }
+    ]
+}
