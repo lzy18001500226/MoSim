@@ -65,6 +65,15 @@ few hundred MB is not itself a reason to keep it ignored; the hard gate is
 single-file size and risk class. A rule-only commit must name the next content
 drain batch or the exact blocker.
 
+When a crawled upstream project fails `git diff --cached --check` because of
+its own trailing whitespace or blank-line style, do not convert that failure
+into a broader ignore rule. Split out the files that already pass the gate,
+record the failing file list under `Results/coagent_status/git_batches/<task>/`,
+then either repair those files mechanically in a dedicated reviewed batch or
+leave them as an explicit follow-up queue. Whitespace failures are not evidence
+that ordinary source, docs, scripts, configs, or small assets should stay
+hidden behind `.gitignore`.
+
 Use the handoff packet when the current Git surface is already broad and needs
 DevOps/reviewer ownership before any commit:
 
