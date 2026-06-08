@@ -151,6 +151,10 @@ References/Agent/*
 # project slice at a time with pathspec-based force-add; do not grow this
 # file into a per-project index. Generic generated/dependency/archive/binary
 # and local-only file classes are handled by the final References/** guard.
+!References/Agent/Gateway/
+!References/Agent/Gateway/**
+!References/Agent/SDK/
+!References/Agent/SDK/**
 References/Log/
 !References/Log/
 !References/Log/px4_pid_tuner/
@@ -296,11 +300,19 @@ References/**/BUILD/
 References/**/dist/
 References/**/out/
 References/**/obj/
+References/**/bin/Debug/
+References/**/bin/Release/
 References/**/Binaries/
 References/**/Intermediate/
 References/**/Saved/
 References/**/DerivedDataCache/
+References/**/logs/
 References/**/.vs/
+References/**/.npmrc
+References/**/.env
+References/**/.env.*
+References/**/*.pem
+References/**/*.key
 References/**/cmake-build-*/
 References/**/CMakeFiles/
 References/**/.cache/
