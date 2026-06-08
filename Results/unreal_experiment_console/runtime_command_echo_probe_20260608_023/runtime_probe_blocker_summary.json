@@ -1,0 +1,57 @@
+{
+  "schema": "mosim.ue_console_runtime_command_echo_probe_blocker_summary.v1",
+  "task_id": "RFLY-MOSIM-UE-CONSOLE-RUNTIME-COMMAND-ECHO-PROBE-GATE-20260608-023",
+  "created_at": "2026-06-08T05:39:12+08:00",
+  "status": "blocked",
+  "blocker_code": "blocked_no_authoritative_runtime_echo_probe_surface",
+  "scope_classification": "editor/runtime-probe-preflight",
+  "runtime_probe_executed": false,
+  "probe_budget_consumed": 0,
+  "probe_budget_allowed": 1,
+  "preflight": {
+    "project_unreal_editor_processes_found": 0,
+    "udp_5015_endpoints_found": 0,
+    "unreal_editor_launch_attempted": false,
+    "ue_runtime_or_pie_started": false,
+    "unreal_build_run": false,
+    "source_or_asset_edits": false
+  },
+  "decision": {
+    "can_run_bounded_probe_safely": false,
+    "reason": "No existing project-owned runtime path can produce an authoritative mosim.ue_command_echo.v1 row from MWORKS_live_downlink/MWORKS, ROS2_runtime_echo/ROS2, or MWORKS_ROS2_live_downlink/MWORKS_ROS2 and match it to a pending mosim.ue_command.v1 request in UE runtime. Existing UE source provides a sender-only mosim.ue_command.v1 uplink, a source-static command echo receiver shell, and source/static reducer guards; the runtime socket/listener/downlink producer remains unimplemented or out of scope."
+  },
+  "source_anchor_summary": {
+    "command_sender": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp is sender-only; Result.bSent is explicitly not command ack.",
+    "command_echo_receiver_shell": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.cpp validates mosim.ue_command_echo.v1 JSON and forwards it to the state component, but has no runtime socket/listener/timer/background receive loop.",
+    "state_component": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleStateComponent.cpp records pending requests and applies echo JSON only after schema, source/authority, timestamp, identity, no-pose-overwrite, and matching-pending checks.",
+    "frame_receiver": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp remains a quadrotor.unreal_state frame/status receiver and must not be treated as command echo ack."
+  },
+  "evidence": {
+    "preflight_unreal_editor_processes": "Results/unreal_experiment_console/runtime_command_echo_probe_20260608_023/preflight_unreal_editor_processes.json",
+    "preflight_udp_5015_endpoints": "Results/unreal_experiment_console/runtime_command_echo_probe_20260608_023/preflight_udp_5015_endpoints.json",
+    "receiver_shell_static_contract": "Results/unreal_experiment_console/runtime_command_echo_probe_20260608_023/receiver_shell_static_contract_for_023.json",
+    "command_echo_runtime_prep": "Results/unreal_experiment_console/runtime_command_echo_probe_20260608_023/command_echo_runtime_prep_for_023.json",
+    "prior_build_summary": "Results/unreal_experiment_console/build_only_compile_20260608_022/build_only_compile_summary.json"
+  },
+  "negative_evidence": {
+    "build_or_ubt_success_is_runtime_ack": false,
+    "pytest_or_checker_success_is_runtime_ack": false,
+    "udp_send_success_or_Result_bSent_is_runtime_ack": false,
+    "quadrotor_unreal_state_frame_is_runtime_ack": false,
+    "fixture_or_source_static_row_is_runtime_ack": false,
+    "manual_json_or_packet_row_is_runtime_ack": false
+  },
+  "future_minimum_live_probe_gate": [
+    "A UE runtime/editor session records one pending mosim.ue_command.v1 request by run_id, request_id, seq, time_s, and command kind.",
+    "A task-authorized live producer/downlink emits one mosim.ue_command_echo.v1 row with source/ack_authority from MWORKS_live_downlink/MWORKS, ROS2_runtime_echo/ROS2, or MWORKS_ROS2_live_downlink/MWORKS_ROS2.",
+    "The echo row includes time_s, accepted or rejected status, no_pose_overwrite_status=pass, and matching command identity.",
+    "The consumer sink UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson updates accepted/rejected state only for the matching pending request.",
+    "The probe captures command packet, pending state, echo packet, UE log/evidence, negative false-ack checks, exit/cleanup state, and runs only once."
+  ],
+  "claim_boundary": [
+    "023 is a runtime-probe preflight blocker, not live UE runtime ack evidence.",
+    "No UE runtime/editor probe was run and no authoritative live mosim.ue_command_echo.v1 row was produced.",
+    "No live MWORKS downlink, ROS2 runtime ack, planner_ready, controller performance, mission success, final UI acceptance, or closed_loop claim is made.",
+    "Sunray150 visual material work remains untouched; the 005 baseline remains frozen and 006 remains rejected rollback history."
+  ]
+}

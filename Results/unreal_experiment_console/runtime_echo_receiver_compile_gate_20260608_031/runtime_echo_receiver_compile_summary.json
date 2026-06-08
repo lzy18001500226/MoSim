@@ -1,0 +1,48 @@
+{
+  "schema": "mosim.ue_runtime_echo_receiver_compile_gate_summary.v1",
+  "task_id": "RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-COMPILE-GATE-20260608-031",
+  "scope_classification": "compile-only",
+  "evidence_dir": "Results/unreal_experiment_console/runtime_echo_receiver_compile_gate_20260608_031",
+  "build_command": "wsl.exe bash -lc \"cd /mnt/c/Users/HP/Desktop/MoSim && Scripts/UE5/build_unreal_renderer.sh\"",
+  "build_attempt_count": 1,
+  "build_started_at": "2026-06-08T18:45:39.6215968+08:00",
+  "build_finished_at": "2026-06-08T18:45:52.7089676+08:00",
+  "exit_code": 0,
+  "classification": "compile_pass_warning_only",
+  "target": "MoSimSceneLibraryEditor Win64 Development",
+  "uproject": "UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject",
+  "engine_association": "5.5",
+  "plugin": "UE5/Bridge/QuadrotorMworksBridge.uplugin",
+  "module": "QuadrotorMworksBridge",
+  "build_cs": "UE5/Bridge/Source/QuadrotorMworksBridge/QuadrotorMworksBridge.Build.cs",
+  "source_surface_under_test": [
+    "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+    "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+    "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.h",
+    "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.cpp"
+  ],
+  "compiled_or_linked_actions": [
+    "[1/5] Compile [x64] QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+    "[2/5] Compile [x64] Module.QuadrotorMworksBridge.cpp",
+    "[3/5] Link [x64] UnrealEditor-QuadrotorMworksBridge.lib",
+    "[4/5] Link [x64] UnrealEditor-QuadrotorMworksBridge.dll",
+    "[5/5] WriteMetadata MoSimSceneLibraryEditor.target (UBA disabled)"
+  ],
+  "warnings": [
+    "Visual Studio 2022 compiler version 14.44.35226 is not a preferred version. Please use the latest preferred version 14.38.33130",
+    "  Running Internal UnrealHeaderTool C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\MoSimSceneLibrary.uproject C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\Intermediate\\Build\\Win64\\MoSimSceneLibraryEditor\\Development\\MoSimSceneLibraryEditor.uhtmanifest -WarningsAsErrors -installed",
+    "Warning: Visual Studio 2022 compiler is not a preferred version"
+  ],
+  "stderr_nonempty": false,
+  "preflight": {
+    "project_owned_unreal_editor_process_count": 0,
+    "missing_required_paths": [],
+    "dll_lock_risk_classification": "no_project_editor_process_observed",
+    "safe_to_attempt_single_build": true
+  },
+  "dll_lock_detected": false,
+  "source_compile_failure_detected": false,
+  "toolchain_or_path_failure_detected": false,
+  "runtime_probe_executed": false,
+  "authoritative_runtime_ack_claimable_now": false
+}

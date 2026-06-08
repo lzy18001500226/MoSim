@@ -1,0 +1,425 @@
+{
+  "schema": "mosim.ue_authoritative_echo_runtime_readiness_gate.v1",
+  "ok": true,
+  "task_id": "RFLY-MOSIM-UE-CONSOLE-AUTHORITATIVE-ECHO-RUNTIME-READINESS-GATE-20260608-027",
+  "scope_classification": "source-static/build-prep/runtime-readiness",
+  "runtime_readiness_classification": "source_static_ready_live_runtime_probe_blocked_by_missing_authoritative_producer_transport_capture",
+  "source_static_readiness_ok": true,
+  "runtime_ready_now": false,
+  "authoritative_runtime_ack_claimable_now": false,
+  "unreal_editor_opened": false,
+  "ue_runtime_started": false,
+  "unreal_build_executed_in_027": false,
+  "live_socket_listener_or_transport_started": false,
+  "ue_cpp_source_edited_by_027": false,
+  "accepted_state_ui_controls_enabled": false,
+  "prior_gate_inputs": {
+    "ue_024_return": "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-PRODUCER-DOWNLINK-GATE-20260608-024.json",
+    "ue_024_status": "completed",
+    "ue_024_quality_status": "runtime_echo_producer_downlink_source_static_build_prep_passed",
+    "ue_025_return": "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-DOWNLINK-COMPILE-GATE-20260608-025.json",
+    "ue_025_status": "completed",
+    "ue_025_quality_status": "runtime_echo_downlink_compile_gate_passed",
+    "ue_025_compile_exit_code": 0,
+    "ue_025_compile_classification": "compile_pass_warning_only",
+    "ue_026_return": "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-BOUNDARY-CHECKER-REFRESH-20260608-026.json",
+    "ue_026_status": "completed",
+    "ue_026_quality_status": "runtime_echo_boundary_checker_refresh_source_static_passed",
+    "ue_026_runtime_ack_leaks_now": 0,
+    "ue_026_actual_runtime_claim_rows": 0
+  },
+  "source_anchor_summary": {
+    "command_echo_receiver_shell": {
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.cpp",
+      "has_authoritative_validate_method": true,
+      "has_authoritative_apply_method": true,
+      "calls_state_sink": true,
+      "runtime_transport_patterns_present": [],
+      "forbidden_pose_patterns_present": [],
+      "records_pending_requests": false,
+      "parses_command_request_schema": false,
+      "parses_quadrotor_unreal_state": false
+    },
+    "state_component": {
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleStateComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleStateComponent.cpp",
+      "pending_source": "RecordPendingCommandFromPacketJson",
+      "echo_sink": "ApplyCommandEchoJson",
+      "non_live_labels_downgraded": [
+        "MWORKS_MCP_result_adapter_smoke",
+        "MWORKS_MCP_runtime_adapter_preflight",
+        "offline_adapter_smoke",
+        "source_level_smoke"
+      ],
+      "non_live_source_quality_status": "smoke_only",
+      "non_live_accepted_as_runtime_ack": false
+    },
+    "frame_status_receiver": {
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpReceiverComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp",
+      "role": "quadrotor.unreal_state frame/status receiver only",
+      "parses_command_echo_schema": false,
+      "calls_echo_sink": false
+    },
+    "command_sender": {
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp",
+      "role": "mosim.ue_command.v1 sender only",
+      "parses_command_echo_schema": false,
+      "calls_echo_sink": false,
+      "send_success_is_ack": false
+    },
+    "build_surface": {
+      "uproject": "UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject",
+      "engine_association": "5.5",
+      "plugin": "UE5/Bridge/QuadrotorMworksBridge.uplugin",
+      "module": "QuadrotorMworksBridge",
+      "build_cs": "UE5/Bridge/Source/QuadrotorMworksBridge/QuadrotorMworksBridge.Build.cs",
+      "build_command_for_future_gate": "Scripts/UE5/build_unreal_renderer.sh"
+    }
+  },
+  "authoritative_echo_acceptance_contract": {
+    "pending_precondition": "matching mosim.ue_command.v1 request recorded by RecordPendingCommandFromPacketJson",
+    "echo_schema": "mosim.ue_command_echo.v1",
+    "consumer_handoff": "UQuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.ApplyAuthoritativeRuntimeCommandEchoDownlinkJsonToState",
+    "consumer_sink": "UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson",
+    "authoritative_source_authority_pairs": {
+      "MWORKS_live_downlink": "MWORKS",
+      "ROS2_runtime_echo": "ROS2",
+      "MWORKS_ROS2_live_downlink": "MWORKS_ROS2"
+    },
+    "required_echo_fields": [
+      "schema",
+      "source",
+      "ack_authority",
+      "run_id",
+      "request_id",
+      "seq",
+      "time_s",
+      "status",
+      "command.kind or command_kind",
+      "no_pose_overwrite_status"
+    ],
+    "required_runtime_evidence": [
+      "live producer identity",
+      "transport capture/log",
+      "pending request capture",
+      "matching request/echo identity",
+      "no_pose_overwrite_status=pass",
+      "negative false-ack rejection evidence",
+      "bounded probe exit/cleanup evidence"
+    ]
+  },
+  "source_static_readiness_matrix": [
+    {
+      "row_id": "source_static_authoritative_downlink_handoff",
+      "layer": "UE C++ source anchor",
+      "description": "Future authoritative echo handoff validates mosim.ue_command_echo.v1 before the state sink.",
+      "available_now": true,
+      "required_for_live_ack": true,
+      "accepted_as_runtime_ack_now": false,
+      "evidence": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.h; UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.cpp",
+      "missing_reason": ""
+    },
+    {
+      "row_id": "compile_only_evidence_for_handoff",
+      "layer": "build-prep evidence",
+      "description": "024 C++ handoff compiled once through the project renderer build script in UE 025.",
+      "available_now": true,
+      "required_for_live_ack": true,
+      "accepted_as_runtime_ack_now": false,
+      "evidence": "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-DOWNLINK-COMPILE-GATE-20260608-025.json",
+      "missing_reason": ""
+    },
+    {
+      "row_id": "boundary_checker_false_ack_rejection",
+      "layer": "source-static checker evidence",
+      "description": "UE 026 refreshed the live-echo boundary checker and preserved zero current runtime-ack leaks.",
+      "available_now": true,
+      "required_for_live_ack": true,
+      "accepted_as_runtime_ack_now": false,
+      "evidence": "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-BOUNDARY-CHECKER-REFRESH-20260608-026.json",
+      "missing_reason": ""
+    },
+    {
+      "row_id": "pending_command_request_reducer",
+      "layer": "state reducer source anchor",
+      "description": "Pending state can be recorded only from mosim.ue_command.v1 request identity.",
+      "available_now": true,
+      "required_for_live_ack": true,
+      "accepted_as_runtime_ack_now": false,
+      "evidence": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleStateComponent.h; UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleStateComponent.cpp",
+      "missing_reason": ""
+    },
+    {
+      "row_id": "command_echo_state_sink",
+      "layer": "state reducer source anchor",
+      "description": "Accepted/rejected state sink exists for authoritative echo rows after validation.",
+      "available_now": true,
+      "required_for_live_ack": true,
+      "accepted_as_runtime_ack_now": false,
+      "evidence": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleStateComponent.h; UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleStateComponent.cpp",
+      "missing_reason": ""
+    },
+    {
+      "row_id": "live_authoritative_echo_producer",
+      "layer": "runtime producer",
+      "description": "A live MWORKS/ROS2 producer emits mosim.ue_command_echo.v1 rows.",
+      "available_now": false,
+      "required_for_live_ack": true,
+      "accepted_as_runtime_ack_now": false,
+      "evidence": "not present in 027 source-static scope",
+      "missing_reason": "No MWORKS/ROS2 live downlink producer evidence is available or authorized in 027."
+    },
+    {
+      "row_id": "live_transport_capture_surface",
+      "layer": "runtime transport",
+      "description": "A bounded transport capture proves the echo row was received from a live producer.",
+      "available_now": false,
+      "required_for_live_ack": true,
+      "accepted_as_runtime_ack_now": false,
+      "evidence": "not present in 027 source-static scope",
+      "missing_reason": "027 forbids sockets/listeners/runtime transport and does not run UE runtime."
+    },
+    {
+      "row_id": "bounded_ue_runtime_probe_authorization",
+      "layer": "editor/runtime probe",
+      "description": "PMO-authorized single bounded UE runtime/editor probe with capture and cleanup.",
+      "available_now": false,
+      "required_for_live_ack": true,
+      "accepted_as_runtime_ack_now": false,
+      "evidence": "not authorized by 027",
+      "missing_reason": "027 explicitly forbids opening Unreal Editor, PIE, standalone runtime, or live sockets."
+    },
+    {
+      "row_id": "matching_pending_request_and_echo_capture",
+      "layer": "runtime evidence",
+      "description": "Captured echo matches a pending mosim.ue_command.v1 by run_id/request_id/seq/command kind/time_s/status.",
+      "available_now": false,
+      "required_for_live_ack": true,
+      "accepted_as_runtime_ack_now": false,
+      "evidence": "not present in 027 source-static scope",
+      "missing_reason": "No live command/echo pair was produced or captured in 027."
+    },
+    {
+      "row_id": "runtime_no_pose_overwrite_proof",
+      "layer": "runtime negative evidence",
+      "description": "Runtime capture proves no_pose_overwrite_status=pass and no direct UAV pose override path was used.",
+      "available_now": false,
+      "required_for_live_ack": true,
+      "accepted_as_runtime_ack_now": false,
+      "evidence": "source-static guards only",
+      "missing_reason": "027 proves source guards but not runtime no-pose behavior."
+    },
+    {
+      "row_id": "runtime_negative_false_ack_proof",
+      "layer": "runtime negative evidence",
+      "description": "Runtime evidence rejects build/checker/sender/fixture/operator/frame rows as accepted state.",
+      "available_now": false,
+      "required_for_live_ack": true,
+      "accepted_as_runtime_ack_now": false,
+      "evidence": "static false-ack matrix only",
+      "missing_reason": "027 can only provide static false-ack rejection, not runtime negative capture."
+    },
+    {
+      "row_id": "final_operator_ui_acceptance",
+      "layer": "UI/manual review",
+      "description": "Final UI displays accepted/rejected state only after authoritative echo evidence.",
+      "available_now": false,
+      "required_for_live_ack": false,
+      "accepted_as_runtime_ack_now": false,
+      "evidence": "not present in 027 source-static scope",
+      "missing_reason": "027 does not implement or review final UI controls."
+    }
+  ],
+  "false_ack_rejection_matrix": [
+    {
+      "source": "024_source_static_handoff",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "025_compile_pass",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "026_checker_success",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "MWORKS_MCP_result_adapter_smoke",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "MWORKS_MCP_runtime_adapter_preflight",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "UnrealBuildTool_success",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "build_success",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "checker_success",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "cli_build_success",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "compile_pass_warning_only",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "fixture_only_echo",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "offline_adapter_smoke",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "operator_intent",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "pytest_success",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "quadrotor.unreal_state.frame",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "quadrotor.unreal_state.v1",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "sender_result_bSent",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "source_level_smoke",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "static_fixture_row",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    },
+    {
+      "source": "udp_send_success",
+      "accepted_as_runtime_ack_now": false,
+      "runtime_transport_evidence": false,
+      "policy": "reject_as_false_ack",
+      "reason": "not an authoritative live mosim.ue_command_echo.v1 transport capture matching a pending mosim.ue_command.v1 request"
+    }
+  ],
+  "matrix_summary": {
+    "total_readiness_rows": 12,
+    "required_rows_available_now": 5,
+    "required_rows_missing_now": 6,
+    "false_ack_rows": 20,
+    "false_ack_runtime_leaks_now": 0,
+    "runtime_ready_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  "next_safe_runtime_gate": {
+    "recommendation": "Do not run a live UE runtime probe from 027. Schedule a separate PMO-authorized editor/runtime command-echo probe only after a live MWORKS/ROS2 echo producer/downlink and capture route are available.",
+    "minimum_preconditions": [
+      "explicit runtime/editor probe authorization",
+      "single bounded probe budget and cleanup plan",
+      "live authoritative producer for mosim.ue_command_echo.v1",
+      "transport capture route from producer to UE command echo receiver",
+      "pending mosim.ue_command.v1 request capture",
+      "matching run_id/request_id/seq/time_s/command kind/status",
+      "no_pose_overwrite_status=pass",
+      "negative proof that build/checker/sender/fixture/operator/frame rows cannot satisfy ack"
+    ],
+    "blocked_now_reason": "No live authoritative producer/downlink transport or runtime capture is available or authorized in 027."
+  },
+  "claim_boundary": [
+    "027 proves only source-static/build-prep/runtime-readiness classification after UE 024/025/026.",
+    "027 does not run Unreal Editor, PIE, standalone runtime, UE runtime, Unreal build, sockets/listeners/timers/background loops, or live transport.",
+    "027 does not edit UE C++ source, Blueprint/UMG/Slate/Web UI, assets/materials/maps/project settings, Sunray/PBR, MWORKS, ROS2, FAST-LIO, planner, controller, References, or Git.",
+    "024 source handoff, 025 compile pass, 026 checker success, static fixtures, operator intent, sender success, or quadrotor.unreal_state frames are not live runtime ack.",
+    "027 does not prove authoritative runtime ack, live MWORKS downlink, ROS2 runtime echo, final UI acceptance, planner_ready, controller performance, mission success, or closed_loop."
+  ],
+  "forbidden_runtime_claims": {
+    "authoritative_runtime_ack": false,
+    "live_ue_runtime_ack": false,
+    "live_mworks_downlink": false,
+    "ros2_runtime_ack": false,
+    "final_ui_acceptance": false,
+    "planner_ready": false,
+    "closed_loop": false,
+    "controller_performance": false,
+    "fast_lio_success": false,
+    "mission_success": false
+  },
+  "issues": [],
+  "warnings": [
+    "027 is source-static/build-prep/runtime-readiness classification only.",
+    "024 source handoff, 025 compile pass, and 026 checker success remain engineering readiness evidence, not live runtime ack."
+  ]
+}

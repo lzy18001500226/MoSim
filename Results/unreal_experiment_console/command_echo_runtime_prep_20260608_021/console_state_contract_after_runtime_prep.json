@@ -1,0 +1,37 @@
+{
+  "schema": "mosim.ue_experiment_console_state_component_source_contract.v1",
+  "ok": true,
+  "source": "source_level_static_check",
+  "component_header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleStateComponent.h",
+  "component_source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleStateComponent.cpp",
+  "sender_remains_sender_only": true,
+  "not_runtime_ue_console": true,
+  "runtime_echo_receiver_implemented": false,
+  "runtime_ack_required_before_acceptance": true,
+  "accepted_rejected_source": "matching mosim.ue_command_echo.v1 only",
+  "pending_source": "mosim.ue_command.v1 request only",
+  "non_live_source_labels": [
+    "MWORKS_MCP_result_adapter_smoke",
+    "MWORKS_MCP_runtime_adapter_preflight",
+    "offline_adapter_smoke",
+    "source_level_smoke"
+  ],
+  "non_live_source_coverage": {
+    "MWORKS_MCP_result_adapter_smoke": true,
+    "MWORKS_MCP_runtime_adapter_preflight": true,
+    "offline_adapter_smoke": true,
+    "source_level_smoke": true
+  },
+  "non_live_quality_status": "smoke_only",
+  "non_live_accepted_as_runtime_ack": false,
+  "no_pose_overwrite_status": "pass",
+  "planner_ready": false,
+  "closed_loop_ready": false,
+  "issues": [],
+  "warnings": [
+    "source-level console state component only; no live UE runtime ack is claimed",
+    "runtime socket echo receiver is intentionally out of scope",
+    "accepted string appears before pending method due to helper definitions; static order is not semantic",
+    "rejected string appears before pending method due to helper definitions; static order is not semantic"
+  ]
+}

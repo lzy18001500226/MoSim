@@ -1,0 +1,750 @@
+{
+  "schema": "mosim.ue_console_operator_command_catalog.v1",
+  "ok": true,
+  "task_id": "RFLY-MOSIM-UE-CONSOLE-OPERATOR-COMMAND-CATALOG-SOURCE-STATIC-GATE-20260607-018",
+  "scope_classification": "source-static",
+  "checker_only_contract": true,
+  "not_live_runtime_evidence": true,
+  "accepted_state_ui_controls_enabled": false,
+  "runtime_transport_implemented": false,
+  "umg_blueprint_slate_or_web_ui_implemented": false,
+  "operator_catalog_gate": {
+    "gate_id": "RFLY-MOSIM-UE-CONSOLE-OPERATOR-COMMAND-CATALOG-SOURCE-STATIC-GATE-20260607-018",
+    "prior_live_echo_gate": "RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017",
+    "accepted_state_precondition_summary": "Every catalog command remains pending/disabled until a matching mosim.ue_command.v1 pending request and a future authoritative mosim.ue_command_echo.v1 row pass 017.",
+    "consumer_sink": "UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson",
+    "receiver_shell_entry": "UQuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.ApplyCommandEchoJsonToState",
+    "catalog_entries_required": [
+      "controller.switch",
+      "disturbance.wind.set_or_clear",
+      "experiment.run_control",
+      "manual_review.request",
+      "motor_fault.inject_or_clear",
+      "planner.switch",
+      "scene_map.switch"
+    ],
+    "catalog_entries_present": [
+      "controller.switch",
+      "disturbance.wind.set_or_clear",
+      "experiment.run_control",
+      "manual_review.request",
+      "motor_fault.inject_or_clear",
+      "planner.switch",
+      "scene_map.switch"
+    ]
+  },
+  "catalog_entries": [
+    {
+      "command_kind": "motor_fault.inject_or_clear",
+      "operator_catalog_label": "motor_fault.inject_or_clear",
+      "command_kind_status": "source_static_operator_catalog_label",
+      "domain_owner": "MWORKS",
+      "payload_contract": [
+        "motor_id or rotor_index",
+        "fault_mode",
+        "severity",
+        "start_time_s",
+        "duration_s or clear flag"
+      ],
+      "required_ack_evidence_fields": [
+        "schema=mosim.ue_command_echo.v1",
+        "source",
+        "ack_authority",
+        "run_id",
+        "request_id",
+        "seq",
+        "time_s",
+        "status=accepted|rejected",
+        "command.kind or command_kind",
+        "matching pending request recorded from mosim.ue_command.v1",
+        "no_pose_overwrite_status=pass",
+        "MWORKS fault wrapper echo",
+        "fault command accepted/rejected reason",
+        "MWORKS event log or metrics bundle reference for later effect review"
+      ],
+      "required_ack_authority_values": [
+        "MWORKS"
+      ],
+      "required_live_source_options": [
+        "MWORKS_live_downlink"
+      ],
+      "forbidden_shortcut": [
+        "SetActorLocation",
+        "SetActorTransform",
+        "TeleportTo",
+        "UE-side rotor visual disable as fault evidence",
+        "UE_truth_map_to_planner",
+        "UnrealBuildTool_success",
+        "actor_transform",
+        "browser_point_cloud_review",
+        "build_success",
+        "checker_success",
+        "fake_grid_map",
+        "fake_point_cloud",
+        "fixture_only_echo",
+        "keyboard_pose",
+        "mouse_pose",
+        "offline_source_preflight_smoke_row",
+        "pose_override",
+        "pytest_success",
+        "quadrotor.unreal_state.frame",
+        "sender_result_bSent",
+        "set_uav_pose",
+        "udp_send_success"
+      ],
+      "accepted_state_precondition": "motor_fault.inject_or_clear remains pending/disabled until RecordPendingCommandFromPacketJson records a matching mosim.ue_command.v1 request and a future authoritative mosim.ue_command_echo.v1 row passes RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017 with source/ack_authority, identity, time_s, accepted|rejected status, and no_pose_overwrite_status=pass.",
+      "claim_boundary": "UE may request and display the command state, but MWORKS decides dynamics/control effect and metrics.",
+      "guard_contract": {
+        "require_mworks_ack": true,
+        "require_ros2_ack": false,
+        "reject_if_gate_open": [
+          "RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017",
+          "manual_review_gate_open_when_required"
+        ]
+      },
+      "requires_mworks_ack": true,
+      "requires_ros2_ack": false,
+      "accepted_state_allowed_now": false,
+      "ui_control_enabled_now": false,
+      "source_static_catalog_only": true,
+      "not_live_runtime_ack": true,
+      "source_static_note": "",
+      "current_wire_kind": "motor_fault"
+    },
+    {
+      "command_kind": "disturbance.wind.set_or_clear",
+      "operator_catalog_label": "disturbance.wind.set_or_clear",
+      "command_kind_status": "source_static_operator_catalog_label",
+      "domain_owner": "MWORKS",
+      "payload_contract": [
+        "wind_vector or profile_id",
+        "frame",
+        "start_time_s",
+        "duration_s"
+      ],
+      "required_ack_evidence_fields": [
+        "schema=mosim.ue_command_echo.v1",
+        "source",
+        "ack_authority",
+        "run_id",
+        "request_id",
+        "seq",
+        "time_s",
+        "status=accepted|rejected",
+        "command.kind or command_kind",
+        "matching pending request recorded from mosim.ue_command.v1",
+        "no_pose_overwrite_status=pass",
+        "MWORKS wind/disturbance adapter echo",
+        "wind command accepted/rejected reason",
+        "MWORKS run/event evidence for later disturbance effect review"
+      ],
+      "required_ack_authority_values": [
+        "MWORKS"
+      ],
+      "required_live_source_options": [
+        "MWORKS_live_downlink"
+      ],
+      "forbidden_shortcut": [
+        "SetActorLocation",
+        "SetActorTransform",
+        "TeleportTo",
+        "UE visual wind arrow as physics truth",
+        "UE_truth_map_to_planner",
+        "UnrealBuildTool_success",
+        "actor_transform",
+        "browser_point_cloud_review",
+        "build_success",
+        "checker_success",
+        "fake_grid_map",
+        "fake_point_cloud",
+        "fixture_only_echo",
+        "keyboard_pose",
+        "mouse_pose",
+        "offline_source_preflight_smoke_row",
+        "pose_override",
+        "pytest_success",
+        "quadrotor.unreal_state.frame",
+        "sender_result_bSent",
+        "set_uav_pose",
+        "udp_send_success"
+      ],
+      "accepted_state_precondition": "disturbance.wind.set_or_clear remains pending/disabled until RecordPendingCommandFromPacketJson records a matching mosim.ue_command.v1 request and a future authoritative mosim.ue_command_echo.v1 row passes RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017 with source/ack_authority, identity, time_s, accepted|rejected status, and no_pose_overwrite_status=pass.",
+      "claim_boundary": "UE may visualize wind intent; MWORKS owns physics truth and controller effect.",
+      "guard_contract": {
+        "require_mworks_ack": true,
+        "require_ros2_ack": false,
+        "reject_if_gate_open": [
+          "RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017",
+          "manual_review_gate_open_when_required"
+        ]
+      },
+      "requires_mworks_ack": true,
+      "requires_ros2_ack": false,
+      "accepted_state_allowed_now": false,
+      "ui_control_enabled_now": false,
+      "source_static_catalog_only": true,
+      "not_live_runtime_ack": true,
+      "source_static_note": "",
+      "current_wire_kind": "wind_profile"
+    },
+    {
+      "command_kind": "controller.switch",
+      "operator_catalog_label": "controller.switch",
+      "command_kind_status": "source_static_operator_catalog_label",
+      "domain_owner": "MWORKS",
+      "payload_contract": [
+        "controller_id",
+        "switch_time_s",
+        "safe_transition_policy"
+      ],
+      "required_ack_evidence_fields": [
+        "schema=mosim.ue_command_echo.v1",
+        "source",
+        "ack_authority",
+        "run_id",
+        "request_id",
+        "seq",
+        "time_s",
+        "status=accepted|rejected",
+        "command.kind or command_kind",
+        "matching pending request recorded from mosim.ue_command.v1",
+        "no_pose_overwrite_status=pass",
+        "MWORKS controller adapter echo",
+        "controller switch accepted/rejected reason",
+        "MWORKS controller mode/event evidence for later performance review"
+      ],
+      "required_ack_authority_values": [
+        "MWORKS"
+      ],
+      "required_live_source_options": [
+        "MWORKS_live_downlink"
+      ],
+      "forbidden_shortcut": [
+        "SetActorLocation",
+        "SetActorTransform",
+        "TeleportTo",
+        "UE label-only controller mode as active controller",
+        "UE_truth_map_to_planner",
+        "UnrealBuildTool_success",
+        "actor_transform",
+        "browser_point_cloud_review",
+        "build_success",
+        "checker_success",
+        "fake_grid_map",
+        "fake_point_cloud",
+        "fixture_only_echo",
+        "keyboard_pose",
+        "mouse_pose",
+        "offline_source_preflight_smoke_row",
+        "pose_override",
+        "pytest_success",
+        "quadrotor.unreal_state.frame",
+        "sender_result_bSent",
+        "set_uav_pose",
+        "udp_send_success"
+      ],
+      "accepted_state_precondition": "controller.switch remains pending/disabled until RecordPendingCommandFromPacketJson records a matching mosim.ue_command.v1 request and a future authoritative mosim.ue_command_echo.v1 row passes RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017 with source/ack_authority, identity, time_s, accepted|rejected status, and no_pose_overwrite_status=pass.",
+      "claim_boundary": "UE may expose operator choice; MWORKS owns controller execution and performance evidence.",
+      "guard_contract": {
+        "require_mworks_ack": true,
+        "require_ros2_ack": false,
+        "reject_if_gate_open": [
+          "RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017",
+          "manual_review_gate_open_when_required"
+        ]
+      },
+      "requires_mworks_ack": true,
+      "requires_ros2_ack": false,
+      "accepted_state_allowed_now": false,
+      "ui_control_enabled_now": false,
+      "source_static_catalog_only": true,
+      "not_live_runtime_ack": true,
+      "source_static_note": "",
+      "current_wire_kind": "controller_select"
+    },
+    {
+      "command_kind": "planner.switch",
+      "operator_catalog_label": "planner.switch",
+      "command_kind_status": "source_static_operator_catalog_label",
+      "domain_owner": "ROS2",
+      "payload_contract": [
+        "planner_id",
+        "switch_time_s",
+        "review_mode"
+      ],
+      "required_ack_evidence_fields": [
+        "schema=mosim.ue_command_echo.v1",
+        "source",
+        "ack_authority",
+        "run_id",
+        "request_id",
+        "seq",
+        "time_s",
+        "status=accepted|rejected",
+        "command.kind or command_kind",
+        "matching pending request recorded from mosim.ue_command.v1",
+        "no_pose_overwrite_status=pass",
+        "ROS2 planner adapter echo",
+        "planner switch accepted/rejected reason",
+        "ROS2 topic/review evidence reference for later planner review"
+      ],
+      "required_ack_authority_values": [
+        "ROS2"
+      ],
+      "required_live_source_options": [
+        "ROS2_runtime_echo"
+      ],
+      "forbidden_shortcut": [
+        "SetActorLocation",
+        "SetActorTransform",
+        "TeleportTo",
+        "UE label-only planner mode as planner_ready",
+        "UE_truth_map_to_planner",
+        "UnrealBuildTool_success",
+        "actor_transform",
+        "browser local-map review as RViz2 replacement",
+        "browser_point_cloud_review",
+        "build_success",
+        "checker_success",
+        "fake_grid_map",
+        "fake_point_cloud",
+        "fixture_only_echo",
+        "keyboard_pose",
+        "mouse_pose",
+        "offline_source_preflight_smoke_row",
+        "pose_override",
+        "pytest_success",
+        "quadrotor.unreal_state.frame",
+        "sender_result_bSent",
+        "set_uav_pose",
+        "udp_send_success"
+      ],
+      "accepted_state_precondition": "planner.switch remains pending/disabled until RecordPendingCommandFromPacketJson records a matching mosim.ue_command.v1 request and a future authoritative mosim.ue_command_echo.v1 row passes RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017 with source/ack_authority, identity, time_s, accepted|rejected status, and no_pose_overwrite_status=pass.",
+      "claim_boundary": "UE may expose operator choice; ROS2/RViz2 owns planner topic/runtime evidence. No planner_ready claim from UE.",
+      "guard_contract": {
+        "require_mworks_ack": true,
+        "require_ros2_ack": true,
+        "reject_if_gate_open": [
+          "RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017",
+          "manual_review_gate_open_when_required"
+        ]
+      },
+      "requires_mworks_ack": true,
+      "requires_ros2_ack": true,
+      "accepted_state_allowed_now": false,
+      "ui_control_enabled_now": false,
+      "source_static_catalog_only": true,
+      "not_live_runtime_ack": true,
+      "source_static_note": "",
+      "current_wire_kind": "planner_select"
+    },
+    {
+      "command_kind": "scene_map.switch",
+      "operator_catalog_label": "scene_map.switch",
+      "command_kind_status": "source_static_operator_catalog_label",
+      "domain_owner": "UE",
+      "payload_contract": [
+        "scene_id or map_id",
+        "loading_policy",
+        "review_gate"
+      ],
+      "required_ack_evidence_fields": [
+        "schema=mosim.ue_command_echo.v1",
+        "source",
+        "ack_authority",
+        "run_id",
+        "request_id",
+        "seq",
+        "time_s",
+        "status=accepted|rejected",
+        "command.kind or command_kind",
+        "matching pending request recorded from mosim.ue_command.v1",
+        "no_pose_overwrite_status=pass",
+        "UE scene/map load state",
+        "MWORKS scenario binding echo",
+        "ROS2 topic/scene contract echo when planner or perception is touched"
+      ],
+      "required_ack_authority_values": [
+        "MWORKS_ROS2"
+      ],
+      "required_live_source_options": [
+        "MWORKS_ROS2_live_downlink"
+      ],
+      "forbidden_shortcut": [
+        "SetActorLocation",
+        "SetActorTransform",
+        "TeleportTo",
+        "UE global truth map to planner",
+        "UE_truth_map_to_planner",
+        "UnrealBuildTool_success",
+        "actor_transform",
+        "browser_point_cloud_review",
+        "build_success",
+        "checker_success",
+        "fake_grid_map",
+        "fake_point_cloud",
+        "fixture_only_echo",
+        "keyboard_pose",
+        "mouse_pose",
+        "offline_source_preflight_smoke_row",
+        "pose_override",
+        "pytest_success",
+        "quadrotor.unreal_state.frame",
+        "sender_result_bSent",
+        "set_uav_pose",
+        "udp_send_success",
+        "visual-only level dropdown as simulation scene acceptance"
+      ],
+      "accepted_state_precondition": "scene_map.switch remains pending/disabled until RecordPendingCommandFromPacketJson records a matching mosim.ue_command.v1 request and a future authoritative mosim.ue_command_echo.v1 row passes RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017 with source/ack_authority, identity, time_s, accepted|rejected status, and no_pose_overwrite_status=pass.",
+      "claim_boundary": "UE owns rendering scene/map selection and sensor-oracle context; it must not feed global truth map to planner.",
+      "guard_contract": {
+        "require_mworks_ack": true,
+        "require_ros2_ack": true,
+        "reject_if_gate_open": [
+          "RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017",
+          "manual_review_gate_open_when_required"
+        ]
+      },
+      "requires_mworks_ack": true,
+      "requires_ros2_ack": true,
+      "accepted_state_allowed_now": false,
+      "ui_control_enabled_now": false,
+      "source_static_catalog_only": true,
+      "not_live_runtime_ack": true,
+      "source_static_note": "",
+      "current_wire_kind": "scene_switch"
+    },
+    {
+      "command_kind": "experiment.run_control",
+      "operator_catalog_label": "experiment.run_control",
+      "command_kind_status": "source_static_operator_catalog_label",
+      "domain_owner": "PMO",
+      "payload_contract": [
+        "run_id",
+        "action",
+        "target_domain",
+        "evidence_policy"
+      ],
+      "required_ack_evidence_fields": [
+        "schema=mosim.ue_command_echo.v1",
+        "source",
+        "ack_authority",
+        "run_id",
+        "request_id",
+        "seq",
+        "time_s",
+        "status=accepted|rejected",
+        "command.kind or command_kind",
+        "matching pending request recorded from mosim.ue_command.v1",
+        "no_pose_overwrite_status=pass",
+        "PMO run packet or evidence bundle reference",
+        "MWORKS run-state echo when dynamics/control is touched",
+        "ROS2 run-state echo when planner/perception is touched"
+      ],
+      "required_ack_authority_values": [
+        "MWORKS_ROS2"
+      ],
+      "required_live_source_options": [
+        "MWORKS_ROS2_live_downlink"
+      ],
+      "forbidden_shortcut": [
+        "SetActorLocation",
+        "SetActorTransform",
+        "TeleportTo",
+        "UE_truth_map_to_planner",
+        "UnrealBuildTool_success",
+        "actor_transform",
+        "browser_point_cloud_review",
+        "build_success",
+        "checker_success",
+        "fake_grid_map",
+        "fake_point_cloud",
+        "fixture_only_echo",
+        "keyboard_pose",
+        "mouse_pose",
+        "offline_source_preflight_smoke_row",
+        "pose_override",
+        "pytest_success",
+        "quadrotor.unreal_state.frame",
+        "recording started as mission success",
+        "sender_result_bSent",
+        "set_uav_pose",
+        "start button as closed_loop evidence",
+        "udp_send_success"
+      ],
+      "accepted_state_precondition": "experiment.run_control remains pending/disabled until RecordPendingCommandFromPacketJson records a matching mosim.ue_command.v1 request and a future authoritative mosim.ue_command_echo.v1 row passes RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017 with source/ack_authority, identity, time_s, accepted|rejected status, and no_pose_overwrite_status=pass.",
+      "claim_boundary": "Run control coordinates surfaces; it does not prove controller/planner success.",
+      "guard_contract": {
+        "require_mworks_ack": true,
+        "require_ros2_ack": true,
+        "reject_if_gate_open": [
+          "RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017",
+          "manual_review_gate_open_when_required"
+        ]
+      },
+      "requires_mworks_ack": true,
+      "requires_ros2_ack": true,
+      "accepted_state_allowed_now": false,
+      "ui_control_enabled_now": false,
+      "source_static_catalog_only": true,
+      "not_live_runtime_ack": true,
+      "source_static_note": "",
+      "current_wire_kind_options": [
+        "scenario_reset",
+        "start_goal_update",
+        "recording"
+      ]
+    },
+    {
+      "command_kind": "manual_review.request",
+      "operator_catalog_label": "manual_review.request",
+      "command_kind_status": "source_static_operator_catalog_label",
+      "domain_owner": "PMO",
+      "payload_contract": [
+        "review_target",
+        "artifact_type",
+        "blocking_policy"
+      ],
+      "required_ack_evidence_fields": [
+        "schema=mosim.ue_command_echo.v1",
+        "source",
+        "ack_authority",
+        "run_id",
+        "request_id",
+        "seq",
+        "time_s",
+        "status=accepted|rejected",
+        "command.kind or command_kind",
+        "matching pending request recorded from mosim.ue_command.v1",
+        "no_pose_overwrite_status=pass",
+        "manual review packet path or display request id",
+        "review target and artifact type",
+        "human review verdict required when blocking_policy requires it"
+      ],
+      "required_ack_authority_values": [
+        "MWORKS_ROS2"
+      ],
+      "required_live_source_options": [
+        "MWORKS_ROS2_live_downlink"
+      ],
+      "forbidden_shortcut": [
+        "SetActorLocation",
+        "SetActorTransform",
+        "TeleportTo",
+        "UE_truth_map_to_planner",
+        "UnrealBuildTool_success",
+        "actor_transform",
+        "browser_point_cloud_review",
+        "build_success",
+        "checker_success",
+        "fake_grid_map",
+        "fake_point_cloud",
+        "fixture_only_echo",
+        "keyboard_pose",
+        "manual review request as final UI acceptance",
+        "mouse_pose",
+        "offline_source_preflight_smoke_row",
+        "pose_override",
+        "pytest_success",
+        "quadrotor.unreal_state.frame",
+        "screenshot path alone as visual acceptance",
+        "sender_result_bSent",
+        "set_uav_pose",
+        "udp_send_success"
+      ],
+      "accepted_state_precondition": "manual_review.request remains pending/disabled until RecordPendingCommandFromPacketJson records a matching mosim.ue_command.v1 request and a future authoritative mosim.ue_command_echo.v1 row passes RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017 with source/ack_authority, identity, time_s, accepted|rejected status, and no_pose_overwrite_status=pass.",
+      "claim_boundary": "Manual review opens or reports evidence; it is not automated acceptance.",
+      "guard_contract": {
+        "require_mworks_ack": true,
+        "require_ros2_ack": true,
+        "reject_if_gate_open": [
+          "RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017",
+          "manual_review_gate_open_when_required"
+        ]
+      },
+      "requires_mworks_ack": true,
+      "requires_ros2_ack": true,
+      "accepted_state_allowed_now": false,
+      "ui_control_enabled_now": false,
+      "source_static_catalog_only": true,
+      "not_live_runtime_ack": true,
+      "source_static_note": "Current wire kind uses recording/evidence request shape only; final manual-review UI binding remains a future task.",
+      "current_wire_kind": "recording"
+    }
+  ],
+  "catalog_summary": {
+    "total_entries": 7,
+    "domain_owner_counts": {
+      "MWORKS": 3,
+      "PMO": 2,
+      "ROS2": 1,
+      "UE": 1
+    },
+    "entries_with_current_wire_support": [
+      "controller.switch",
+      "disturbance.wind.set_or_clear",
+      "experiment.run_control",
+      "manual_review.request",
+      "motor_fault.inject_or_clear",
+      "planner.switch",
+      "scene_map.switch"
+    ],
+    "catalog_only_operator_labels": [
+      "controller.switch",
+      "disturbance.wind.set_or_clear",
+      "experiment.run_control",
+      "manual_review.request",
+      "motor_fault.inject_or_clear",
+      "planner.switch",
+      "scene_map.switch"
+    ],
+    "current_wire_kinds_used": [
+      "controller_select",
+      "motor_fault",
+      "planner_select",
+      "recording",
+      "scenario_reset",
+      "scene_switch",
+      "start_goal_update",
+      "wind_profile"
+    ],
+    "current_wire_kind_options_only": [
+      "experiment.run_control"
+    ],
+    "all_entries_disable_accepted_state_now": true,
+    "all_entries_require_017_gate": true,
+    "all_entries_reject_global_shortcuts": true
+  },
+  "schema_anchor_summary": {
+    "command_schema": "Config/schemas/mosim_ue_command_v1.schema.json",
+    "echo_schema": "Config/schemas/mosim_ue_command_echo_v1.schema.json",
+    "current_allowed_wire_kinds": [
+      "controller_select",
+      "motor_fault",
+      "planner_select",
+      "recording",
+      "scenario_reset",
+      "scene_switch",
+      "sensor_mode",
+      "start_goal_update",
+      "wind_profile"
+    ],
+    "forbidden_wire_kinds": [
+      "actor_transform",
+      "keyboard_pose",
+      "pose_override",
+      "set_uav_pose",
+      "teleport"
+    ],
+    "echo_ack_authority_values": [
+      "MWORKS",
+      "MWORKS_ROS2",
+      "ROS2"
+    ],
+    "echo_status_values": [
+      "accepted",
+      "rejected"
+    ]
+  },
+  "source_anchor_summary": {
+    "command_sender": {
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp",
+      "role": "current mosim.ue_command.v1 sender only",
+      "has_component": true,
+      "supported_wire_kinds_present": [
+        "controller_select",
+        "motor_fault",
+        "planner_select",
+        "recording",
+        "scenario_reset",
+        "scene_switch",
+        "sensor_mode",
+        "start_goal_update",
+        "wind_profile"
+      ],
+      "send_success_is_runtime_ack": false
+    },
+    "state_component": {
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleStateComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleStateComponent.cpp",
+      "role": "pending command and command echo state reducer",
+      "has_pending_method": true,
+      "has_echo_sink": true,
+      "has_echo_schema_guard": true
+    },
+    "command_echo_receiver_shell": {
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.cpp",
+      "role": "source-static echo shell only; no runtime listener",
+      "has_receiver_shell_entry": true,
+      "has_echo_schema_guard": true
+    },
+    "prior_017_return": {
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-LIVE-ECHO-PRODUCER-CONSUMER-GATE-20260607-017.json",
+      "status": "completed",
+      "gate_status": "future_task_defined_no_runtime_receiver"
+    }
+  },
+  "future_live_ui_task_recommendation": {
+    "recommended_next_scope": "source-static UI binding catalog-to-control checker, then separately authorized editor/runtime UI work",
+    "minimum_future_live_acceptance_gate": [
+      "operator action emits mosim.ue_command.v1 with a catalog entry mapped to an allowed base wire kind",
+      "state component records matching pending request by run_id/request_id/seq",
+      "authorized MWORKS/ROS2/MWORKS_ROS2 producer emits mosim.ue_command_echo.v1",
+      "source matches ack_authority and domain owner",
+      "time_s and command identity are present",
+      "status is accepted or rejected",
+      "no_pose_overwrite_status=pass",
+      "negative evidence rejects build, sender, fixture, frame, source, and preflight rows as ack"
+    ],
+    "blocker_conditions": [
+      "future work needs Unreal Editor/runtime without explicit PMO runtime authorization",
+      "future work tries to enable accepted-state UI before authoritative echo evidence",
+      "future work treats sender success, UBT/build success, pytest/checker success, fixture rows, or quadrotor.unreal_state frames as ack",
+      "future work uses keyboard/mouse/direct Actor transform to move UAV pose",
+      "future work feeds UE global truth map to planner or uses browser point-cloud review as RViz2 replacement"
+    ]
+  },
+  "forbidden_shortcuts_global": [
+    "keyboard_pose",
+    "mouse_pose",
+    "actor_transform",
+    "SetActorLocation",
+    "SetActorTransform",
+    "TeleportTo",
+    "set_uav_pose",
+    "pose_override",
+    "fake_point_cloud",
+    "fake_grid_map",
+    "browser_point_cloud_review",
+    "UE_truth_map_to_planner",
+    "build_success",
+    "UnrealBuildTool_success",
+    "pytest_success",
+    "checker_success",
+    "udp_send_success",
+    "sender_result_bSent",
+    "quadrotor.unreal_state.frame",
+    "fixture_only_echo",
+    "offline_source_preflight_smoke_row"
+  ],
+  "forbidden_runtime_claims": {
+    "live_ue_runtime_ack": false,
+    "live_mworks_downlink": false,
+    "ros2_runtime_ack": false,
+    "planner_ready": false,
+    "closed_loop_ready": false,
+    "controller_performance": false,
+    "fast_lio_success": false,
+    "localization_or_local_map_quality": false,
+    "mission_success": false,
+    "final_ui_acceptance": false
+  },
+  "issues": [],
+  "warnings": [
+    "operator catalog command_kind labels are source-static contract labels, not current UI controls",
+    "dotted catalog labels map to current base mosim.ue_command.v1 wire kinds where possible",
+    "accepted-state UI remains disabled until a future authoritative live echo task passes 017"
+  ]
+}

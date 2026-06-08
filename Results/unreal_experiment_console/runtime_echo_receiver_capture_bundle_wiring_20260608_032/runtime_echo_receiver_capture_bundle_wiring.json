@@ -1,0 +1,362 @@
+{
+  "schema": "mosim.ue_runtime_echo_receiver_capture_bundle_wiring.v1",
+  "ok": true,
+  "task_id": "RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-CAPTURE-BUNDLE-WIRING-20260608-032",
+  "scope_classification": "source-static wiring/checker",
+  "source_static_wiring_ready": true,
+  "runtime_probe_executed": false,
+  "unreal_editor_opened": false,
+  "ue_runtime_started": false,
+  "unreal_build_executed_in_032": false,
+  "socket_listener_timer_or_background_loop_started": false,
+  "accepted_state_ui_controls_enabled": false,
+  "authoritative_runtime_ack_claimable_now": false,
+  "live_transport_evidence_rows": 0,
+  "runtime_ack_leaks_now": 0,
+  "receiver_surface_anchor": {
+    "class": "UQuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent",
+    "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+    "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+    "validate_method": "ValidateAuthoritativeRuntimeCommandEchoDownlinkJson",
+    "ingest_method": "IngestAuthoritativeRuntimeCommandEchoDownlinkJson",
+    "boundary_method": "GetSourceStaticReceiverBoundary",
+    "calls_authoritative_validate": true,
+    "calls_authoritative_apply": true,
+    "tick_disabled": true,
+    "runtime_transport_patterns_present": [],
+    "forbidden_pose_patterns_present": [],
+    "parses_pending_command_request_schema": false,
+    "parses_quadrotor_unreal_state": false
+  },
+  "capture_bundle_contract_anchor": {
+    "validator_script": "Scripts/UE5/check_ue_runtime_probe_capture_bundle_validator.py",
+    "expected_artifacts": [
+      "runtime_probe_manifest.json",
+      "pending_request_capture.json",
+      "authoritative_echo_capture.json",
+      "request_echo_match_report.json",
+      "no_pose_overwrite_report.json",
+      "false_ack_negative_report.json",
+      "timeout_cleanup_manifest.json"
+    ],
+    "authoritative_source_authority_pairs": {
+      "MWORKS_live_downlink": "MWORKS",
+      "ROS2_runtime_echo": "ROS2",
+      "MWORKS_ROS2_live_downlink": "MWORKS_ROS2"
+    },
+    "false_ack_or_non_live_sources_rejected": [
+      "024_source_static_handoff",
+      "025_compile_pass",
+      "026_checker_success",
+      "027_runtime_readiness_checker",
+      "028_harness_prep_checker",
+      "029_capture_bundle_validator",
+      "030_source_static_receiver_surface",
+      "031_compile_pass",
+      "032_capture_bundle_wiring_checker",
+      "MWORKS_MCP_result_adapter_smoke",
+      "MWORKS_MCP_runtime_adapter_preflight",
+      "UnrealBuildTool_success",
+      "build_success",
+      "checker_success",
+      "cli_build_success",
+      "compile_pass_warning_only",
+      "fixture_only_echo",
+      "offline_adapter_smoke",
+      "operator_intent",
+      "pytest_success",
+      "quadrotor.unreal_state.frame",
+      "quadrotor.unreal_state.v1",
+      "sender_result_bSent",
+      "source_level_smoke",
+      "static_fixture_row",
+      "udp_send_success"
+    ]
+  },
+  "source_static_handoff_chain": [
+    "UQuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.ValidateAuthoritativeRuntimeCommandEchoDownlinkJson",
+    "UQuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.IsAuthoritativeRuntimeCommandEchoPacketJson",
+    "UQuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.IngestAuthoritativeRuntimeCommandEchoDownlinkJson",
+    "UQuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.ApplyAuthoritativeRuntimeCommandEchoDownlinkJsonToState",
+    "UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson"
+  ],
+  "pending_request_precondition": {
+    "schema": "mosim.ue_command.v1",
+    "source": "UE command request path only",
+    "state_anchor": "RecordPendingCommandFromPacketJson",
+    "receiver_surface_must_not_synthesize_pending": true
+  },
+  "wiring_matrix": [
+    {
+      "artifact": "runtime_probe_manifest.json",
+      "required_for_future_bundle": true,
+      "receiver_surface_role": "future probe identity and source/authority metadata; not ingested by the receiver component",
+      "validator_role": "requires bounded probe metadata and authoritative producer identity",
+      "state_or_boundary": "source-static receiver boundary must remain no-transport/no-ack",
+      "direct_receiver_input": false,
+      "future_live_probe_required": true,
+      "live_transport_evidence_now": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "artifact": "pending_request_capture.json",
+      "required_for_future_bundle": true,
+      "receiver_surface_role": "precondition only; receiver surface must not synthesize or parse pending mosim.ue_command.v1 requests",
+      "validator_role": "requires captured pending mosim.ue_command.v1 request before echo",
+      "state_or_boundary": "pending reducer remains UQuadrotorMworksExperimentConsoleStateComponent.RecordPendingCommandFromPacketJson",
+      "direct_receiver_input": false,
+      "future_live_probe_required": true,
+      "live_transport_evidence_now": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "artifact": "authoritative_echo_capture.json",
+      "required_for_future_bundle": true,
+      "receiver_surface_role": "future authoritative mosim.ue_command_echo.v1 payload enters through Validate/Ingest receiver methods",
+      "validator_role": "requires source/ack_authority/run_id/request_id/seq/time_s/status/command/no_pose fields",
+      "state_or_boundary": "sink chain reaches UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson",
+      "direct_receiver_input": true,
+      "future_live_probe_required": true,
+      "live_transport_evidence_now": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "artifact": "request_echo_match_report.json",
+      "required_for_future_bundle": true,
+      "receiver_surface_role": "receiver sink path is not enough by itself; future bundle must prove pending/echo identity match",
+      "validator_role": "requires run_id/request_id/seq/time_s/command_kind/status match report",
+      "state_or_boundary": "accepted/rejected state remains gated by matching pending request",
+      "direct_receiver_input": false,
+      "future_live_probe_required": true,
+      "live_transport_evidence_now": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "artifact": "no_pose_overwrite_report.json",
+      "required_for_future_bundle": true,
+      "receiver_surface_role": "receiver surface must contain no pose shortcuts and future echo must include no_pose_overwrite_status=pass",
+      "validator_role": "requires no forbidden pose command or direct actor transform evidence",
+      "state_or_boundary": "static source scan plus future live capture proof",
+      "direct_receiver_input": false,
+      "future_live_probe_required": true,
+      "live_transport_evidence_now": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "artifact": "false_ack_negative_report.json",
+      "required_for_future_bundle": true,
+      "receiver_surface_role": "receiver wiring must reject build/checker/sender/fixture/operator/frame/static rows as live ack",
+      "validator_role": "requires false-ack negative report covering non-live/static sources",
+      "state_or_boundary": "state rows from source/static/preflight quality remain smoke-only until live authoritative echo",
+      "direct_receiver_input": false,
+      "future_live_probe_required": true,
+      "live_transport_evidence_now": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "artifact": "timeout_cleanup_manifest.json",
+      "required_for_future_bundle": true,
+      "receiver_surface_role": "source-static receiver has no listener/timer/socket cleanup burden; future probe still must prove cleanup",
+      "validator_role": "requires one bounded attempt, timeout, cleanup pass, and no leftover listener/timer/background loop/socket",
+      "state_or_boundary": "future runtime probe cleanup gate",
+      "direct_receiver_input": false,
+      "future_live_probe_required": true,
+      "live_transport_evidence_now": false,
+      "accepted_as_runtime_ack_now": false
+    }
+  ],
+  "false_ack_negative_matrix": [
+    {
+      "source": "024_source_static_handoff",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "025_compile_pass",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "026_checker_success",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "027_runtime_readiness_checker",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "028_harness_prep_checker",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "029_capture_bundle_validator",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "030_source_static_receiver_surface",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "031_compile_pass",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "032_capture_bundle_wiring_checker",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "MWORKS_MCP_result_adapter_smoke",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "MWORKS_MCP_runtime_adapter_preflight",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "UnrealBuildTool_success",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "build_success",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "checker_success",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "cli_build_success",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "compile_pass_warning_only",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "fixture_only_echo",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "offline_adapter_smoke",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "operator_intent",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "pytest_success",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "quadrotor.unreal_state.frame",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "quadrotor.unreal_state.v1",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "sender_result_bSent",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "source_level_smoke",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "static_fixture_row",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    },
+    {
+      "source": "udp_send_success",
+      "accepted_as_runtime_ack_now": false,
+      "eligible_for_future_authoritative_echo": false,
+      "reason": "static/build/checker/sender/operator/frame/preflight rows cannot satisfy authoritative live command echo"
+    }
+  ],
+  "matrix_summary": {
+    "capture_artifact_rows": 7,
+    "false_ack_negative_rows": 26,
+    "direct_receiver_input_rows": 1,
+    "runtime_ack_leaks_now": 0,
+    "live_transport_evidence_rows": 0,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  "prior_evidence_consumed": {
+    "ue_029_status": "completed",
+    "ue_029_source_static_validator_ready": true,
+    "ue_030_status": "completed",
+    "ue_030_receiver_does_not_start_transport": true,
+    "ue_031_status": "completed",
+    "ue_031_compile_exit_code": 0,
+    "ue_031_compiled_receiver_surface_cpp": true
+  },
+  "future_live_probe_acceptance_gates": [
+    "PMO explicitly authorizes a single bounded Unreal runtime/editor probe",
+    "runtime_probe_manifest.json identifies authoritative producer source and authority",
+    "pending_request_capture.json captures matching mosim.ue_command.v1 request before echo",
+    "authoritative_echo_capture.json captures runtime mosim.ue_command_echo.v1 through the receiver surface",
+    "request_echo_match_report.json proves run_id/request_id/seq/time_s/command/status match",
+    "no_pose_overwrite_report.json proves no pose overwrite or direct Actor transform",
+    "false_ack_negative_report.json rejects build/checker/sender/fixture/operator/frame/static rows",
+    "timeout_cleanup_manifest.json proves bounded timeout and cleanup"
+  ],
+  "claim_boundary": [
+    "032 proves only source-static wiring between the compiled UE receiver surface and the 029 capture-bundle validator contract.",
+    "032 does not open Unreal Editor, PIE, standalone runtime, or UE runtime.",
+    "032 does not run Unreal build, bind sockets, start listeners/timers/background loops, or execute live transport.",
+    "032 does not edit UE C++ source, Blueprint, UMG, assets, materials, maps, project settings, Sunray/PBR/Blender, MWORKS, ROS2, FAST-LIO, planner, controller, MoSimQuadrotorModel, References, CoAgent runtime, or Git.",
+    "032 checker/test/static rows, 031 compile success, 030 source surface, 029 validator success, sender success, fixture rows, operator intent, and quadrotor.unreal_state frames are not live runtime ack.",
+    "032 does not prove live UE runtime ack, live MWORKS downlink, ROS2 runtime echo, final UI acceptance, planner_ready, FAST-LIO success, controller performance, mission success, or closed_loop."
+  ],
+  "issues": []
+}

@@ -1,0 +1,79 @@
+[
+  {
+    "artifact": "runtime_probe_manifest.json",
+    "required_for_future_bundle": true,
+    "receiver_surface_role": "future probe identity and source/authority metadata; not ingested by the receiver component",
+    "validator_role": "requires bounded probe metadata and authoritative producer identity",
+    "state_or_boundary": "source-static receiver boundary must remain no-transport/no-ack",
+    "direct_receiver_input": false,
+    "future_live_probe_required": true,
+    "live_transport_evidence_now": false,
+    "accepted_as_runtime_ack_now": false
+  },
+  {
+    "artifact": "pending_request_capture.json",
+    "required_for_future_bundle": true,
+    "receiver_surface_role": "precondition only; receiver surface must not synthesize or parse pending mosim.ue_command.v1 requests",
+    "validator_role": "requires captured pending mosim.ue_command.v1 request before echo",
+    "state_or_boundary": "pending reducer remains UQuadrotorMworksExperimentConsoleStateComponent.RecordPendingCommandFromPacketJson",
+    "direct_receiver_input": false,
+    "future_live_probe_required": true,
+    "live_transport_evidence_now": false,
+    "accepted_as_runtime_ack_now": false
+  },
+  {
+    "artifact": "authoritative_echo_capture.json",
+    "required_for_future_bundle": true,
+    "receiver_surface_role": "future authoritative mosim.ue_command_echo.v1 payload enters through Validate/Ingest receiver methods",
+    "validator_role": "requires source/ack_authority/run_id/request_id/seq/time_s/status/command/no_pose fields",
+    "state_or_boundary": "sink chain reaches UQuadrotorMworksExperimentConsoleStateComponent.ApplyCommandEchoJson",
+    "direct_receiver_input": true,
+    "future_live_probe_required": true,
+    "live_transport_evidence_now": false,
+    "accepted_as_runtime_ack_now": false
+  },
+  {
+    "artifact": "request_echo_match_report.json",
+    "required_for_future_bundle": true,
+    "receiver_surface_role": "receiver sink path is not enough by itself; future bundle must prove pending/echo identity match",
+    "validator_role": "requires run_id/request_id/seq/time_s/command_kind/status match report",
+    "state_or_boundary": "accepted/rejected state remains gated by matching pending request",
+    "direct_receiver_input": false,
+    "future_live_probe_required": true,
+    "live_transport_evidence_now": false,
+    "accepted_as_runtime_ack_now": false
+  },
+  {
+    "artifact": "no_pose_overwrite_report.json",
+    "required_for_future_bundle": true,
+    "receiver_surface_role": "receiver surface must contain no pose shortcuts and future echo must include no_pose_overwrite_status=pass",
+    "validator_role": "requires no forbidden pose command or direct actor transform evidence",
+    "state_or_boundary": "static source scan plus future live capture proof",
+    "direct_receiver_input": false,
+    "future_live_probe_required": true,
+    "live_transport_evidence_now": false,
+    "accepted_as_runtime_ack_now": false
+  },
+  {
+    "artifact": "false_ack_negative_report.json",
+    "required_for_future_bundle": true,
+    "receiver_surface_role": "receiver wiring must reject build/checker/sender/fixture/operator/frame/static rows as live ack",
+    "validator_role": "requires false-ack negative report covering non-live/static sources",
+    "state_or_boundary": "state rows from source/static/preflight quality remain smoke-only until live authoritative echo",
+    "direct_receiver_input": false,
+    "future_live_probe_required": true,
+    "live_transport_evidence_now": false,
+    "accepted_as_runtime_ack_now": false
+  },
+  {
+    "artifact": "timeout_cleanup_manifest.json",
+    "required_for_future_bundle": true,
+    "receiver_surface_role": "source-static receiver has no listener/timer/socket cleanup burden; future probe still must prove cleanup",
+    "validator_role": "requires one bounded attempt, timeout, cleanup pass, and no leftover listener/timer/background loop/socket",
+    "state_or_boundary": "future runtime probe cleanup gate",
+    "direct_receiver_input": false,
+    "future_live_probe_required": true,
+    "live_transport_evidence_now": false,
+    "accepted_as_runtime_ack_now": false
+  }
+]

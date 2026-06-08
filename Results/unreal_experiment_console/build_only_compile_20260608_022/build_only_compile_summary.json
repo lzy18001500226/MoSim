@@ -1,0 +1,44 @@
+{
+  "schema": "mosim.ue_console_build_only_compile_gate.v1",
+  "task_id": "RFLY-MOSIM-UE-CONSOLE-BUILD-ONLY-COMPILE-GATE-20260608-022",
+  "scope_classification": "build-only",
+  "status": "passed",
+  "classification": "compile_pass_warning_only",
+  "build_command": "wsl.exe bash -lc \"cd /mnt/c/Users/HP/Desktop/MoSim && Scripts/UE5/build_unreal_renderer.sh\"",
+  "exit_code": 0,
+  "preflight_unreal_editor_processes": [],
+  "unreal_editor_opened_by_department": false,
+  "ue_runtime_or_pie_started": false,
+  "socket_listener_timer_or_background_loop_started": false,
+  "source_or_asset_edits": false,
+  "target": "MoSimSceneLibraryEditor Win64 Development",
+  "uproject": "UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject",
+  "engine_association": "5.5",
+  "plugin": "UE5/Bridge/QuadrotorMworksBridge.uplugin",
+  "module": "QuadrotorMworksBridge",
+  "build_cs": "UE5/Bridge/Source/QuadrotorMworksBridge/QuadrotorMworksBridge.Build.cs",
+  "toolchain_summary": {
+    "visual_studio": "Visual Studio 2022 14.44.35226",
+    "msvc_path": "D:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207",
+    "windows_sdk": "Windows 10.0.26100.0",
+    "warning": "Visual Studio 2022 compiler is not a preferred version"
+  },
+  "build_actions": [
+    "Compile [x64] QuadrotorMworksExperimentConsoleStateComponent.cpp",
+    "Link [x64] UnrealEditor-QuadrotorMworksBridge.lib",
+    "Link [x64] UnrealEditor-QuadrotorMworksBridge.dll",
+    "WriteMetadata MoSimSceneLibraryEditor.target"
+  ],
+  "log_paths": {
+    "stdout_stderr": "Results/unreal_experiment_console/build_only_compile_20260608_022/build_unreal_renderer_stdout_stderr.log",
+    "exit_code": "Results/unreal_experiment_console/build_only_compile_20260608_022/build_exit_code.txt",
+    "command": "Results/unreal_experiment_console/build_only_compile_20260608_022/build_command.txt",
+    "preflight_processes_json": "Results/unreal_experiment_console/build_only_compile_20260608_022/preflight_unreal_editor_processes.json",
+    "preflight_processes_txt": "Results/unreal_experiment_console/build_only_compile_20260608_022/preflight_unreal_editor_processes.txt"
+  },
+  "not_runtime_ack": true,
+  "claim_boundary": [
+    "Build success is compile evidence only.",
+    "This does not prove live UE runtime ack, live MWORKS downlink, ROS2 runtime ack, accepted UI, planner_ready, FAST-LIO success, controller performance, mission success, final UI acceptance, or closed_loop."
+  ]
+}

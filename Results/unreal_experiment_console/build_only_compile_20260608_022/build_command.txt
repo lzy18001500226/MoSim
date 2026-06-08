@@ -1,0 +1,1 @@
+wsl.exe bash -lc "cd /mnt/c/Users/HP/Desktop/MoSim && Scripts/UE5/build_unreal_renderer.sh"

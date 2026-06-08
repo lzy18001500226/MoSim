@@ -1,0 +1,36 @@
+{
+  "schema": "mosim.ue_compile_only_gate_summary.v1",
+  "task_id": "RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-DOWNLINK-COMPILE-GATE-20260608-025",
+  "scope_classification": "build-only",
+  "build_command": "wsl.exe bash -lc \"cd /mnt/c/Users/HP/Desktop/MoSim && Scripts/UE5/build_unreal_renderer.sh\"",
+  "build_attempt_count": 1,
+  "exit_code": 0,
+  "classification": "compile_pass_warning_only",
+  "target": "MoSimSceneLibraryEditor Win64 Development",
+  "uproject": "UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject",
+  "engine_association": "5.5",
+  "plugin": "UE5/Bridge/QuadrotorMworksBridge.uplugin",
+  "module": "QuadrotorMworksBridge",
+  "build_cs": "UE5/Bridge/Source/QuadrotorMworksBridge/QuadrotorMworksBridge.Build.cs",
+  "source_patch_under_test": [
+    "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.h",
+    "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.cpp"
+  ],
+  "compiled_or_linked_actions": [
+    "[1/5] Compile [x64] QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.cpp",
+    "[2/5] Compile [x64] Module.QuadrotorMworksBridge.cpp",
+    "[3/5] Link [x64] UnrealEditor-QuadrotorMworksBridge.lib",
+    "[4/5] Link [x64] UnrealEditor-QuadrotorMworksBridge.dll",
+    "[5/5] WriteMetadata MoSimSceneLibraryEditor.target (UBA disabled)"
+  ],
+  "warnings": [
+    "Warning: Visual Studio 2022 compiler is not a preferred version"
+  ],
+  "dll_lock_detected": false,
+  "source_compile_failure_detected": false,
+  "toolchain_or_path_failure_detected": false,
+  "unreal_editor_or_runtime_opened_by_department": false,
+  "runtime_probe_executed": false,
+  "runtime_ack_claimed": false,
+  "log": "Results/unreal_experiment_console/runtime_echo_downlink_compile_gate_20260608_025/build_unreal_renderer_stdout_stderr.log"
+}

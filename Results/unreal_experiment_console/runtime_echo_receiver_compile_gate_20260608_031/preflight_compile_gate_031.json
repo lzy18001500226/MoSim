@@ -1,0 +1,52 @@
+{
+  "schema": "mosim.ue_runtime_echo_receiver_compile_gate_preflight.v1",
+  "task_id": "RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-COMPILE-GATE-20260608-031",
+  "created_at": "2026-06-08T18:45:17.4776960+08:00",
+  "scope": "compile-only",
+  "unreal_editor_process_filter": "Name = 'UnrealEditor.exe' OR Name = 'UE4Editor.exe', command line contains MoSimSceneLibrary.uproject",
+  "project_owned_unreal_editor_processes": [],
+  "project_owned_unreal_editor_process_count": 0,
+  "required_path_checks": [
+    {
+      "path": "Scripts/UE5/build_unreal_renderer.sh",
+      "exists": true
+    },
+    {
+      "path": "UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject",
+      "exists": true
+    },
+    {
+      "path": "UE5/Bridge/QuadrotorMworksBridge.uplugin",
+      "exists": true
+    },
+    {
+      "path": "UE5/Bridge/Source/QuadrotorMworksBridge/QuadrotorMworksBridge.Build.cs",
+      "exists": true
+    },
+    {
+      "path": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+      "exists": true
+    },
+    {
+      "path": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "exists": true
+    },
+    {
+      "path": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.h",
+      "exists": true
+    },
+    {
+      "path": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleCommandEchoReceiverComponent.cpp",
+      "exists": true
+    }
+  ],
+  "missing_required_paths": [],
+  "dll_lock_risk_classification": "no_project_editor_process_observed",
+  "safe_to_attempt_single_build": true,
+  "forbidden_actions_confirmed": {
+    "closed_or_killed_unreal_process": false,
+    "opened_unreal_editor_or_runtime": false,
+    "bound_socket_or_started_listener": false,
+    "edited_source_or_assets": false
+  }
+}
