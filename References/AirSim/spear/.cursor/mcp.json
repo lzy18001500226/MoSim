@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "spear-mcp": {
+      "command": "python",
+      "args": [
+        "tools/run_mcp_server.py"
+      ]
+    }
+  }
+}
