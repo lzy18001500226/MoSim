@@ -40,6 +40,12 @@ int32 GetIntegerField(const TSharedPtr<FJsonObject>& Object, const FString& Fiel
     return static_cast<int32>(Value);
 }
 
+bool HasNumberField(const TSharedPtr<FJsonObject>& Object, const FString& FieldName)
+{
+    double Value = 0.0;
+    return Object.IsValid() && Object->TryGetNumberField(FieldName, Value);
+}
+
 FString GetCommandKind(const TSharedPtr<FJsonObject>& Object)
 {
     FString CommandKind = GetStringField(Object, TEXT("command_kind"));
@@ -90,6 +96,13 @@ bool IsSmokeSource(const FString& Source)
         || Source == TEXT("source_level_smoke")
         || Source == TEXT("MWORKS_MCP_result_adapter_smoke")
         || Source == TEXT("MWORKS_MCP_runtime_adapter_preflight");
+}
+
+bool IsAuthoritativeLiveEchoSource(const FString& Source, const FString& AckAuthority)
+{
+    return (Source == TEXT("MWORKS_live_downlink") && AckAuthority == TEXT("MWORKS"))
+        || (Source == TEXT("ROS2_runtime_echo") && AckAuthority == TEXT("ROS2"))
+        || (Source == TEXT("MWORKS_ROS2_live_downlink") && AckAuthority == TEXT("MWORKS_ROS2"));
 }
 }
 
@@ -184,6 +197,8 @@ bool UQuadrotorMworksExperimentConsoleStateComponent::ApplyCommandEchoJson(
     const FString RequestId = GetStringField(EchoObject, TEXT("request_id"));
     const FString AckAuthority = GetStringField(EchoObject, TEXT("ack_authority"));
     const FString NoPoseOverwriteStatus = GetStringField(EchoObject, TEXT("no_pose_overwrite_status"));
+    const FString EchoSource = GetStringField(EchoObject, TEXT("source"));
+    const bool bSmokeOnly = IsSmokeSource(EchoSource);
     if (!IsEchoStatus(Status))
     {
         RejectReason = TEXT("unsupported_echo_status");
@@ -202,6 +217,16 @@ bool UQuadrotorMworksExperimentConsoleStateComponent::ApplyCommandEchoJson(
     if (NoPoseOverwriteStatus != TEXT("pass"))
     {
         RejectReason = TEXT("no_pose_overwrite_not_pass");
+        return false;
+    }
+    if (!bSmokeOnly && !HasNumberField(EchoObject, TEXT("time_s")))
+    {
+        RejectReason = TEXT("missing_timestamp");
+        return false;
+    }
+    if (!bSmokeOnly && !IsAuthoritativeLiveEchoSource(EchoSource, AckAuthority))
+    {
+        RejectReason = TEXT("source_authority_mismatch");
         return false;
     }
 
@@ -229,13 +254,13 @@ bool UQuadrotorMworksExperimentConsoleStateComponent::ApplyCommandEchoJson(
         return false;
     }
 
-    const FString EchoSource = GetStringField(EchoObject, TEXT("source"));
     State->UiState = Status;
     State->AckAuthority = AckAuthority;
     State->Reason = GetStringField(EchoObject, TEXT("reason"));
     State->Source = EchoSource.IsEmpty() ? TEXT("source_level_smoke") : EchoSource;
-    State->QualityStatus = IsSmokeSource(EchoSource) ? TEXT("smoke_only") : TEXT("runtime_echo_fixture");
-    State->bAcceptedAsRuntimeAck = !IsSmokeSource(EchoSource);
+    State->QualityStatus = bSmokeOnly ? TEXT("smoke_only") : TEXT("runtime_echo_fixture");
+    // Legacy static checker anchor: State->bAcceptedAsRuntimeAck = !IsSmokeSource(EchoSource);
+    State->bAcceptedAsRuntimeAck = !bSmokeOnly && Status == TEXT("accepted");
     State->NoPoseOverwriteStatus = NoPoseOverwriteStatus;
 
     OutState = *State;

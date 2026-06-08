@@ -17,7 +17,17 @@ public:
     bool IsCommandEchoPacketJson(const FString& EchoJson, FString& RejectReason) const;
 
     UFUNCTION(BlueprintCallable, Category = "MWORKS Experiment Console")
+    bool IsAuthoritativeRuntimeCommandEchoPacketJson(const FString& EchoJson, FString& RejectReason) const;
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Experiment Console")
     bool ApplyCommandEchoJsonToState(
+        const FString& EchoJson,
+        UQuadrotorMworksExperimentConsoleStateComponent* StateComponent,
+        FQuadrotorMworksExperimentConsoleCommandState& OutState,
+        FString& RejectReason) const;
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Experiment Console")
+    bool ApplyAuthoritativeRuntimeCommandEchoDownlinkJsonToState(
         const FString& EchoJson,
         UQuadrotorMworksExperimentConsoleStateComponent* StateComponent,
         FQuadrotorMworksExperimentConsoleCommandState& OutState,
