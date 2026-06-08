@@ -173,7 +173,7 @@
       "classification": "not_run_by_design",
       "current_implementation": "016 produced static source audit artifacts only.",
       "source_anchors": [
-        "Results/agent_packets/PMO-MWORKS-R1-MOSIMQUAD-RFLYSIM-DYNAMICS-GAP-STATIC-AUDIT-20260608-016.json:mworks_live_gate"
+        "Results/agent_packets/tasks/mworks/PMO-MWORKS-R1-MOSIMQUAD-RFLYSIM-DYNAMICS-GAP-STATIC-AUDIT-20260608-016.json:mworks_live_gate"
       ],
       "gap_or_boundary": "No new check_model, simulation, GUI, layout, activation, or result evidence was produced.",
       "next_minimal_action": "Resume live verification only after CoAgentOps/PMO resolves reusable-session attach."
