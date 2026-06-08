@@ -320,6 +320,7 @@ References/**/.eggs/
 References/**/.pytest_cache/
 References/**/.mypy_cache/
 References/**/.ruff_cache/
+References/**/.react-router/
 References/**/__pycache__/
 References/**/.venv/
 References/**/venv/
