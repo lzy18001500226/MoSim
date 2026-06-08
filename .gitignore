@@ -92,6 +92,15 @@ Results/ros2_runtime/**/livox_like_lidar_frames*.jsonl
 Results/ros2_runtime/**/fastlio_runtime/
 Results/ros2_runtime/**/fastlio_runtime_*/
 Results/ros2_runtime/**/colcon_log/
+Results/ros2_runtime/
+Results/mworks_background_capture/
+Results/mworks_foreground_capture/
+Results/mworks_gui_incidents/
+Results/mworks_window_management/
+Results/mworks_gui_sentinel/
+Results/mworks_window_patrol/
+Results/coagent_thread_health/
+Results/codex_watchdog/codex_outer_watchdog_check_*.json
 *_backup/
 
 # ROS2/colcon local build outputs at repository root
