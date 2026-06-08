@@ -1,0 +1,460 @@
+{
+  "schema": "mosim.ue_runtime_echo_receiver_single_bounded_probe_plan.v1",
+  "ok": true,
+  "task_id": "RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-SINGLE-BOUNDED-PROBE-PLAN-20260609-033",
+  "scope_classification": "source-static single-bounded-probe plan/readiness",
+  "source_static_plan_ready": true,
+  "runtime_probe_executed": false,
+  "unreal_editor_opened": false,
+  "ue_runtime_started": false,
+  "unreal_build_executed_in_033": false,
+  "socket_listener_timer_thread_or_background_loop_started": false,
+  "accepted_state_ui_controls_enabled": false,
+  "authoritative_runtime_ack_claimable_now": false,
+  "live_transport_evidence_rows": 0,
+  "runtime_ack_leaks_now": 0,
+  "single_bounded_probe_plan": {
+    "future_pmo_runtime_authorization_required": true,
+    "future_probe_attempt_count": 1,
+    "future_probe_retry_budget": 0,
+    "timeout_seconds_range": {
+      "exclusive_min": 0,
+      "inclusive_max": 60,
+      "recommended_default": 60
+    },
+    "future_probe_must_stop_after_first_attempt": true,
+    "future_runtime_surface": "bounded UE runtime/editor command-echo probe only when a later PMO packet explicitly authorizes runtime scope",
+    "authoritative_producer_identity": {
+      "allowed_source_authority_pairs": {
+        "MWORKS_live_downlink": "MWORKS",
+        "ROS2_runtime_echo": "ROS2",
+        "MWORKS_ROS2_live_downlink": "MWORKS_ROS2"
+      },
+      "required_fields": [
+        "producer_surface",
+        "producer_instance_id",
+        "source",
+        "ack_authority",
+        "capture_session_id",
+        "transport_capture_id"
+      ]
+    },
+    "pending_request_capture": {
+      "schema": "mosim.ue_command.v1",
+      "source": "UE command request path only",
+      "must_exist_before_echo": true,
+      "receiver_surface_must_not_synthesize_pending": true
+    },
+    "authoritative_echo_capture": {
+      "schema": "mosim.ue_command_echo.v1",
+      "direct_receiver_input": "authoritative_echo_capture.json",
+      "receiver_surface_class": "UQuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent",
+      "receiver_surface_validate_method": "ValidateAuthoritativeRuntimeCommandEchoDownlinkJson",
+      "receiver_surface_ingest_method": "IngestAuthoritativeRuntimeCommandEchoDownlinkJson",
+      "status_values": [
+        "accepted",
+        "rejected"
+      ]
+    },
+    "request_echo_identity_match_fields": [
+      "run_id",
+      "request_id",
+      "seq",
+      "time_s",
+      "command.kind or command_kind",
+      "status"
+    ],
+    "seven_capture_bundle_artifacts": [
+      "runtime_probe_manifest.json",
+      "pending_request_capture.json",
+      "authoritative_echo_capture.json",
+      "request_echo_match_report.json",
+      "no_pose_overwrite_report.json",
+      "false_ack_negative_report.json",
+      "timeout_cleanup_manifest.json"
+    ],
+    "timeout_cleanup_required": true,
+    "false_ack_negative_report_required": true,
+    "no_pose_overwrite_report_required": true
+  },
+  "capture_bundle_precondition_matrix": [
+    {
+      "artifact": "runtime_probe_manifest.json",
+      "precondition": "Future PMO packet explicitly authorizes exactly one bounded UE runtime/editor probe and records producer identity.",
+      "required_fields": [
+        "probe_id",
+        "run_id",
+        "request_id",
+        "capture_session_id",
+        "transport_capture_id",
+        "producer_identity.source",
+        "producer_identity.ack_authority",
+        "bounded_probe=true",
+        "probe_attempt_count=1"
+      ],
+      "direct_receiver_input": false,
+      "current_runtime_evidence": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "artifact": "pending_request_capture.json",
+      "precondition": "Capture the matching mosim.ue_command.v1 request before any echo is accepted or rejected.",
+      "required_fields": [
+        "schema",
+        "run_id",
+        "request_id",
+        "seq",
+        "time_s",
+        "command.kind",
+        "command.payload"
+      ],
+      "direct_receiver_input": false,
+      "current_runtime_evidence": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "artifact": "authoritative_echo_capture.json",
+      "precondition": "Capture mosim.ue_command_echo.v1 from an authoritative live source and feed it through the receiver surface Validate/Ingest methods.",
+      "required_fields": [
+        "schema",
+        "source",
+        "ack_authority",
+        "run_id",
+        "request_id",
+        "seq",
+        "time_s",
+        "status",
+        "command.kind or command_kind",
+        "no_pose_overwrite_status=pass"
+      ],
+      "direct_receiver_input": true,
+      "current_runtime_evidence": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "artifact": "request_echo_match_report.json",
+      "precondition": "Prove pending request identity matches the authoritative echo identity.",
+      "required_fields": [
+        "match_status=pass",
+        "run_id_match=true",
+        "request_id_match=true",
+        "seq_match=true",
+        "time_s_match=true",
+        "command_kind_match=true",
+        "status_match=true"
+      ],
+      "direct_receiver_input": false,
+      "current_runtime_evidence": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "artifact": "no_pose_overwrite_report.json",
+      "precondition": "Prove the probe did not use keyboard pose, direct Actor transform, teleport, pose_override, set_uav_pose, or UE truth shortcuts.",
+      "required_fields": [
+        "no_pose_overwrite_status=pass",
+        "forbidden_pose_command_seen=false",
+        "direct_actor_transform_seen=false",
+        "keyboard_pose_control_seen=false",
+        "pose_override_seen=false",
+        "set_uav_pose_seen=false",
+        "actor_teleport_seen=false"
+      ],
+      "direct_receiver_input": false,
+      "current_runtime_evidence": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "artifact": "false_ack_negative_report.json",
+      "precondition": "Prove build/checker/sender/fixture/operator/static/frame rows were rejected as live command ack.",
+      "required_fields": [
+        "false_ack_negative_status=pass",
+        "checked_sources",
+        "false_ack_rows_accepted_as_runtime_ack=0",
+        "accepted_runtime_ack_from_false_sources=false"
+      ],
+      "direct_receiver_input": false,
+      "current_runtime_evidence": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "artifact": "timeout_cleanup_manifest.json",
+      "precondition": "Prove the single attempt stayed within timeout and left no listener, timer, background loop, socket, or accepted-state UI running.",
+      "required_fields": [
+        "timeout_seconds in (0, 60]",
+        "probe_attempt_count=1",
+        "cleanup_status=pass",
+        "cleanup_completed=true",
+        "listener_left_running=false",
+        "timer_left_running=false",
+        "background_loop_left_running=false",
+        "socket_left_bound=false",
+        "accepted_ui_controls_enabled=false"
+      ],
+      "direct_receiver_input": false,
+      "current_runtime_evidence": false,
+      "accepted_as_runtime_ack_now": false
+    }
+  ],
+  "false_ack_negative_rules": [
+    {
+      "source": "024_source_static_handoff",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "025_compile_pass",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "026_checker_success",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "027_runtime_readiness_checker",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "028_harness_prep_checker",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "029_capture_bundle_validator",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "030_source_static_receiver_surface",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "031_compile_pass",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "032_capture_bundle_wiring_checker",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "033_single_bounded_probe_plan_checker",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "MWORKS_MCP_result_adapter_smoke",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "MWORKS_MCP_runtime_adapter_preflight",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "UnrealBuildTool_success",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "build_success",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "checker_success",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "cli_build_success",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "compile_pass_warning_only",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "fixture_only_echo",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "offline_adapter_smoke",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "operator_intent",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "pytest_success",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "quadrotor.unreal_state.frame",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "quadrotor.unreal_state.v1",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "sender_result_bSent",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "source_level_smoke",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "static_fixture_row",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    },
+    {
+      "source": "udp_send_success",
+      "future_probe_expected_result": "reject_as_runtime_ack",
+      "accepted_as_runtime_ack_now": false,
+      "reason": "Only matching authoritative mosim.ue_command_echo.v1 from an approved live producer can accept or reject a pending command."
+    }
+  ],
+  "no_pose_overwrite_checks": [
+    {
+      "check": "keyboard_pose",
+      "required_result": "absent_or_false",
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "check": "direct_actor_transform",
+      "required_result": "absent_or_false",
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "check": "actor_teleport",
+      "required_result": "absent_or_false",
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "check": "pose_override",
+      "required_result": "absent_or_false",
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "check": "set_uav_pose",
+      "required_result": "absent_or_false",
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "check": "SetActorLocation",
+      "required_result": "absent_or_false",
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "check": "SetActorTransform",
+      "required_result": "absent_or_false",
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "check": "TeleportTo",
+      "required_result": "absent_or_false",
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "check": "UE_truth_shortcut",
+      "required_result": "absent_or_false",
+      "accepted_as_runtime_ack_now": false
+    }
+  ],
+  "source_static_evidence_consumed": {
+    "ue_029_return_status": "completed",
+    "ue_030_return_status": "completed",
+    "ue_031_return_status": "completed",
+    "ue_031_compile_exit_code": 0,
+    "ue_032_return_status": "completed",
+    "ue_032_source_static_wiring_ready": true,
+    "ue_032_runtime_ack_leaks_now": 0,
+    "ue_032_live_transport_evidence_rows": 0
+  },
+  "receiver_surface_source_scan": {
+    "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+    "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+    "validate_method_present": true,
+    "ingest_method_present": true,
+    "boundary_method_present": true,
+    "runtime_transport_patterns_present": [],
+    "forbidden_pose_patterns_present": [],
+    "parses_pending_command_request_schema": false
+  },
+  "future_single_probe_stop_triggers": [
+    "More than one live probe attempt would be required.",
+    "Timeout would exceed 60 seconds or no cleanup manifest can be produced.",
+    "Authoritative producer identity or source/authority pair is missing.",
+    "Pending mosim.ue_command.v1 request capture is missing or mismatched.",
+    "Authoritative mosim.ue_command_echo.v1 capture does not pass through the receiver surface.",
+    "Request/echo identity fields do not match.",
+    "No-pose-overwrite report fails or any forbidden pose shortcut appears.",
+    "False-ack negative report accepts build/checker/sender/fixture/operator/static/frame rows.",
+    "UE runtime/editor, MWORKS, ROS2, planner, controller, or manual review needs exceed the future packet authorization."
+  ],
+  "matrix_summary": {
+    "capture_bundle_precondition_rows": 7,
+    "false_ack_negative_rows": 27,
+    "no_pose_overwrite_check_rows": 9,
+    "future_probe_attempt_count": 1,
+    "max_timeout_seconds": 60,
+    "runtime_ack_leaks_now": 0,
+    "live_transport_evidence_rows": 0,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  "claim_boundary": [
+    "033 proves only a source-static plan/readiness contract for one future bounded UE runtime command-echo probe.",
+    "033 does not open Unreal Editor, PIE, standalone runtime, game window, or UE runtime.",
+    "033 does not run Unreal build, bind sockets, start listeners/timers/threads/background loops, or execute live transport.",
+    "033 does not edit UE C++ source, Blueprint, UMG, Slate/Web UI, assets, materials, maps, project settings, Sunray/PBR/Blender, MWORKS, ROS2, FAST-LIO, planner, controller, MoSimQuadrotorModel, References, CoAgent runtime, or Git.",
+    "033 checker/test/static rows, 032 wiring, 031 compile success, 030 source surface, 029 validator success, sender success, fixture rows, operator intent, and quadrotor.unreal_state frames are not live runtime ack.",
+    "A later live probe requires a separate PMO task packet with explicit runtime authorization, one-attempt budget, timeout, cleanup, capture bundle, false-ack negative report, and no-pose-overwrite proof.",
+    "033 does not prove live UE runtime ack, live MWORKS downlink, ROS2 runtime echo, final UI acceptance, planner_ready, FAST-LIO success, controller performance, mission success, or closed_loop."
+  ],
+  "issues": []
+}

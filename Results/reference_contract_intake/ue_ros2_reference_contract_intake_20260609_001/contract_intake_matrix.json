@@ -1,0 +1,336 @@
+{
+  "request_id": "COAGENTOPS-UE-ROS2-REFERENCE-CONTRACT-INTAKE-20260609-001",
+  "generated_at": "2026-06-09T00:00:00+08:00",
+  "scope": "local static source-first reference contract intake for UE rendering, ROS2, FAST-LIO, planner, and RflySim-like simulator patterns",
+  "constraints": {
+    "no_dispatch": true,
+    "no_thread_restart": true,
+    "no_live_mworks": true,
+    "no_live_ros2": true,
+    "no_live_ue": true,
+    "no_mainline_workflow_doc_edits": true,
+    "workspace_root": "C:/Users/HP/Desktop/MoSim"
+  },
+  "decision_values": [
+    "adopt",
+    "adapt",
+    "reference_only",
+    "reject"
+  ],
+  "entries": [
+    {
+      "source_family": "AirSim ROS wrapper",
+      "source_path": "References/AirSim/AirSim/docs/airsim_ros_pkgs.md",
+      "source_version_or_runtime": "AirSim ROS wrapper documentation, ROS1-era semantics",
+      "reusable_pattern": "GPS, odometry, camera, IMU, magnetometer, distance, LiDAR PointCloud2, takeoff/land/reset services, NED/ENU frame parameters",
+      "target_contract": "ROS2FrameTopicContract",
+      "target_owner": "ros2_r1",
+      "reuse_decision": "adapt",
+      "version_risk": "ROS1 naming and AirSim runtime assumptions must be translated to MoSim ROS2/Humble and project frames",
+      "why": "The topic/frame discipline is directly useful, but AirSim must not become the MoSim runtime authority.",
+      "required_local_gate": "Static contract must map each adopted topic/frame to MoSim producer, consumer, frequency, frame_id, and evidence source.",
+      "forbidden_claims": [
+        "AirSim runtime is a MoSim dependency",
+        "PointCloud2 display alone proves FAST-LIO localization",
+        "AirSim odometry is MoSim truth"
+      ],
+      "priority": "P0",
+      "next_task_candidate": "Draft ROS2 topic/frame contract table for LiDAR, IMU, odometry, path, planner setpoint, and review topics."
+    },
+    {
+      "source_family": "AirSim simple_flight Offboard API",
+      "source_path": "References/AirSim/AirSim/AirLib/include/vehicles/multirotor/firmwares/simple_flight/firmware/OffboardApi.hpp",
+      "source_version_or_runtime": "AirSim simple_flight C++",
+      "reusable_pattern": "requestApiControl gate, goal mode/value, goal timestamp, API timeout entering hover, arm/disarm state checks",
+      "target_contract": "CommandStateEchoContract",
+      "target_owner": "mworks_r1",
+      "reuse_decision": "adapt",
+      "version_risk": "AirSim firmware state machine is not MWORKS; semantics must be rewritten as controller/setpoint adapter logic.",
+      "why": "The timeout and API-control gate are exactly the safety shape MoSim needs for UE console commands and stale setpoints.",
+      "required_local_gate": "MWORKS/ROS2 adapter smoke must reject commands without authority and echo timeout/fallback reason.",
+      "forbidden_claims": [
+        "AirSim firmware behavior proves MoSim controller performance",
+        "UE command accepted before MWORKS/ROS2 echo",
+        "Timeout hover implemented without local adapter evidence"
+      ],
+      "priority": "P0",
+      "next_task_candidate": "Encode stale-command timeout and rejected-command echo fields in the command/status schema."
+    },
+    {
+      "source_family": "ProjectAirSim topic registry",
+      "source_path": "References/AirSim/ProjectAirSim/client/cpp/AirSimClientDLL/src/Topics.cpp",
+      "source_version_or_runtime": "ProjectAirSim C++ client topic transport",
+      "reusable_pattern": "/$topics discovery, subscribe/unsubscribe frames, callback registration, subscription token invalidation",
+      "target_contract": "BridgeTopicRegistry",
+      "target_owner": "ue",
+      "reuse_decision": "reference_only",
+      "version_risk": "Transport details are ProjectAirSim-specific and should not be copied into MoSim before the narrower UDP/schema path is stable.",
+      "why": "Useful later for introspection and UI topic browsing, but not required for the first MoSim command/echo gate.",
+      "required_local_gate": "Only promote after MoSim has a stable topic manifest and adapter-owned producer/consumer registry.",
+      "forbidden_claims": [
+        "MoSim needs ProjectAirSim transport",
+        "Topic discovery replaces explicit ROS2FrameTopicContract"
+      ],
+      "priority": "P2",
+      "next_task_candidate": "Keep as later UX/reference item for a topic browser after P0 contracts pass."
+    },
+    {
+      "source_family": "UnrealCV command server",
+      "source_path": "References/AirSim/unrealcv-5.2/Source/UnrealCV/Private/Server/CommandDispatcher.cpp; References/AirSim/unrealcv-5.2/Source/UnrealCV/Private/Server/UnrealcvServer.cpp",
+      "source_version_or_runtime": "UnrealCV 5.2 plugin source",
+      "reusable_pattern": "URI-style command templates, handler registration, command aliasing, game-thread execution guard, request/reply status",
+      "target_contract": "UECommandServerPattern",
+      "target_owner": "ue",
+      "reuse_decision": "adapt",
+      "version_risk": "UnrealCV plugin API and command strings are not MoSim-specific; implementation must be adapted to MoSim schemas and UE5 project layout.",
+      "why": "This is a proven UE-side command-dispatch shape for a simulator console without direct actor-pose control.",
+      "required_local_gate": "Source-static checker must prove MoSim UE commands route through schema validation and do not call direct transform/pose override APIs.",
+      "forbidden_claims": [
+        "UnrealCV command handlers are already integrated into MoSim",
+        "UE command execution proves MWORKS/ROS2 acceptance",
+        "Direct actor transform is allowed for UAV control"
+      ],
+      "priority": "P0",
+      "next_task_candidate": "Create a source-static checklist for UE command handler registration, reject paths, and echo display."
+    },
+    {
+      "source_family": "UnrealCV camera and view modes",
+      "source_path": "References/AirSim/unrealcv-5.2/Source/UnrealCV/Public/Sensor/CameraSensor/*.h; References/AirSim/unrealcv-5.2/Source/UnrealCV/Private/Controller/PlayerViewMode.cpp",
+      "source_version_or_runtime": "UnrealCV 5.2 plugin source",
+      "reusable_pattern": "lit, depth, normal, optical_flow, object_mask, base_color, unlit, wireframe view modes and camera sensor components",
+      "target_contract": "UESensorOracleContract",
+      "target_owner": "ue",
+      "reuse_decision": "adapt",
+      "version_risk": "Camera capture APIs and material paths must match MoSimSceneLibrary and cannot be assumed runtime-ready.",
+      "why": "MoSim can avoid reinventing render/sensor review modes by adapting this sensor-oracle pattern.",
+      "required_local_gate": "UE source/build or screenshot evidence must prove each enabled mode renders a nonblank expected artifact.",
+      "forbidden_claims": [
+        "UE depth/mask is planner truth",
+        "Sensor oracle proves controller success",
+        "Runtime sensor output exists without UE build/runtime evidence"
+      ],
+      "priority": "P0",
+      "next_task_candidate": "Define first sensor-oracle subset: RGB/lit, depth, object mask, collision oracle review."
+    },
+    {
+      "source_family": "PX4 mavros-ros2 offboard",
+      "source_path": "References/PX4/mavros-ros2/README.md; References/PX4/mavros-ros2/mavros/README.md; References/PX4/mavros-ros2/test_mavros/README.md",
+      "source_version_or_runtime": "mavros-ros2, Humble+ support noted in local README",
+      "reusable_pattern": "ROS2 Humble+ support, plugin container, OFFBOARD mode, position/velocity setpoint test pattern",
+      "target_contract": "OffboardSetpointStateContract",
+      "target_owner": "ros2_r1",
+      "reuse_decision": "adapt",
+      "version_risk": "PX4/MAVROS runtime should not be introduced into the first MoSim loop unless explicitly approved.",
+      "why": "OFFBOARD keepalive/state semantics are useful for MoSim setpoint safety even when PX4 is not the runtime.",
+      "required_local_gate": "Contract must specify setpoint frequency, stale timeout, mode/armed/connected status, and fallback.",
+      "forbidden_claims": [
+        "PX4 is active in the MoSim loop",
+        "MAVROS plugin evidence is MoSim controller evidence",
+        "Offboard mode is complete without local setpoint/echo evidence"
+      ],
+      "priority": "P0",
+      "next_task_candidate": "Translate OFFBOARD mode/keepalive/state fields into MoSim command echo schema."
+    },
+    {
+      "source_family": "PX4 mavros-ros2 messages",
+      "source_path": "References/PX4/mavros-ros2/mavros_msgs/msg/PositionTarget.msg; References/PX4/mavros-ros2/mavros_msgs/msg/State.msg",
+      "source_version_or_runtime": "mavros_msgs ROS2 message definitions",
+      "reusable_pattern": "PositionTarget coordinate_frame/type_mask and State connected/armed/guided/manual_input/mode/system_status fields",
+      "target_contract": "SetpointAndModeEchoFields",
+      "target_owner": "pmo",
+      "reuse_decision": "adapt",
+      "version_risk": "Field names must be normalized for MoSim; not all PX4/APM modes apply.",
+      "why": "These fields prevent a UI from showing accepted command state without explicit mode/connection/armed evidence.",
+      "required_local_gate": "Schema review must show equivalent fields in MoSim command echo and blocker conditions for missing mode/state evidence.",
+      "forbidden_claims": [
+        "All MAVROS modes are supported by MoSim",
+        "Mode string alone proves controller readiness"
+      ],
+      "priority": "P0",
+      "next_task_candidate": "Add mode/state echo checklist to PMO acceptance of UE/ROS2 command packets."
+    },
+    {
+      "source_family": "FAST-LIO Mid360 local config",
+      "source_path": "References/Lab/FAST_LIO/config/mid360.yaml; References/Lab/FAST_LIO/src/laserMapping.cpp; References/Lab/FAST_LIO/launch/mapping_mid360.launch",
+      "source_version_or_runtime": "ROS1 FAST-LIO with Livox Mid360 config",
+      "reusable_pattern": "/livox/lidar, /livox/imu, Livox CustomMsg callback, extrinsic_T/R, /cloud_registered, /cloud_registered_body, /Odometry, /path",
+      "target_contract": "Mid360FastlioInputContract",
+      "target_owner": "ros2_r1",
+      "reuse_decision": "adapt",
+      "version_risk": "Local FAST_LIO sample is ROS1/catkin; direct runtime on ROS2 is rejected unless a bridge/container/candidate route is approved.",
+      "why": "The Mid360 input/output semantics are high-value and should drive MoSim topic/message checks.",
+      "required_local_gate": "ROS2 route must prove real FAST-LIO-family runtime output topics and truth-error evaluation before localization claims.",
+      "forbidden_claims": [
+        "ROS1 FAST_LIO is a native ROS2 runtime",
+        "Nonzero point cloud proves localization",
+        "/mosim/replay_odometry is FAST-LIO odometry"
+      ],
+      "priority": "P0",
+      "next_task_candidate": "Freeze Mid360 input fields, timestamp monotonicity, extrinsics, and output-topic acceptance checks."
+    },
+    {
+      "source_family": "FAST-LIVO2 and Point-LIO Livox compatibility",
+      "source_path": "References/Lab/FAST-LIVO2/include/livox_ros_driver/CustomMsg.h; References/Lab/Point-LIO-point-lio-with-grid-map/",
+      "source_version_or_runtime": "ROS1 FAST-LIO-family compatibility references",
+      "reusable_pattern": "Livox CustomMsg/CustomPoint semantics and preprocess expectations",
+      "target_contract": "FASTLIOCompatibilityGate",
+      "target_owner": "ros2_r1",
+      "reuse_decision": "reference_only",
+      "version_risk": "These are not current MoSim ROS2 runtime candidates by themselves.",
+      "why": "Useful for checking message compatibility and avoiding field loss, not for claiming runtime.",
+      "required_local_gate": "Any promoted runtime must pass local ROS2 build/run and topic/quality checks.",
+      "forbidden_claims": [
+        "FAST-LIVO2 or Point-LIO is currently accepted runtime",
+        "Message header existence proves executable compatibility"
+      ],
+      "priority": "P1",
+      "next_task_candidate": "Use as a schema compatibility checklist when testing ROS2 FAST-LIO candidates."
+    },
+    {
+      "source_family": "SUPER perfect_drone ROS2 model",
+      "source_path": "References/Lab/SUPER/mars_uav_sim/perfect_drone_sim/include/perfect_drone_sim/ros2_perfect_drone_model.hpp",
+      "source_version_or_runtime": "ROS2 C++ planner/sim reference",
+      "reusable_pattern": "mars_quadrotor_msgs::msg::PositionCommand subscription on /planning/pos_cmd, odom/pose/path/PointCloud2 publishers, map_ego TF",
+      "target_contract": "PlannerSetpointContract",
+      "target_owner": "ros2_r1",
+      "reuse_decision": "adapt",
+      "version_risk": "SUPER simulator should not become MoSim truth; command semantics must be mapped to MWORKS setpoints.",
+      "why": "This gives a concrete ROS2 planner-output shape that MoSim can adapt instead of inventing a new setpoint topic blindly.",
+      "required_local_gate": "Map PositionCommand fields to MWORKS setpoint input and define invalid localization/stale-command fallback.",
+      "forbidden_claims": [
+        "SUPER simulator proves MoSim closed-loop control",
+        "Planner command can bypass MWORKS controller/state machine"
+      ],
+      "priority": "P0",
+      "next_task_candidate": "Draft PlannerSetpointContract with PositionCommand-like fields and MWORKS adapter acceptance."
+    },
+    {
+      "source_family": "SUPER ROG map ROS2",
+      "source_path": "References/Lab/SUPER/rog_map/include/rog_map_ros/rog_map_ros2.hpp",
+      "source_version_or_runtime": "ROS2 C++ local map/reference map visualization",
+      "reusable_pattern": "Odometry and PointCloud2 subscriptions, occupancy/unknown/inflated/esdf/frontier publishers, MarkerArray map-bound visualization",
+      "target_contract": "LocalMapReviewContract",
+      "target_owner": "ros2_r1",
+      "reuse_decision": "adapt",
+      "version_risk": "Map semantics must come after valid sensor/localization gate; do not feed full UE truth as planner map.",
+      "why": "This is a strong pattern for native ROS2/RViz local map review after FAST-LIO is credible.",
+      "required_local_gate": "Only dispatch after FAST-LIO output and truth-error gate are available for the target scene.",
+      "forbidden_claims": [
+        "Local map is accepted before FAST-LIO/localization gate",
+        "Full UE collision truth is planner input",
+        "2D occupancy grid is sufficient UAV local 3D map"
+      ],
+      "priority": "P1",
+      "next_task_candidate": "Hold as next map review contract after Mid360/FAST-LIO input/output pass."
+    },
+    {
+      "source_family": "RflySim APIs",
+      "source_path": "References/RflySim/RflySimAdv3Full/4.HILApps/RflySimAPIs/RflySimAPIsPers.zip",
+      "source_version_or_runtime": "RflySim packaged API examples",
+      "reusable_pattern": "inCtrlExt, Init/Fault/Dynamic parameter injection, process split between plant/control, UE rendering, ROS/RViz review",
+      "target_contract": "ScenarioFaultParamContract",
+      "target_owner": "mworks_r1",
+      "reuse_decision": "adapt",
+      "version_risk": "Packaged examples and sample parameters are not Sunray150 identified truth and may not be directly editable source.",
+      "why": "The process and parameter injection shape is useful for MWORKS wrappers and fault experiments.",
+      "required_local_gate": "MWORKS wrapper design must label parameter provenance and pass check_model/simulation before replacing baseline behavior.",
+      "forbidden_claims": [
+        "RflySim sample mass/inertia/Ct/Cm are Sunray150 truth",
+        "CopterSim translates directly to one .mo file",
+        "RflySim scene packages are accepted editable UE scenes"
+      ],
+      "priority": "P1",
+      "next_task_candidate": "Turn RflySim fault/dynamic-parameter injection into a MWORKS wrapper design checklist."
+    },
+    {
+      "source_family": "RflySim architecture",
+      "source_path": "Docs/Design/10_架构边界与当前状态ADR.md; Results/unreal_scene_mapping/REAL_UAV_STACK_REUSE_MATRIX_20260602.md",
+      "source_version_or_runtime": "project-accepted architecture reference",
+      "reusable_pattern": "CopterSim/PX4/generated plant for motion, UE/RflySim3D for rendering/perception, ROS/RViz for algorithm review",
+      "target_contract": "AuthoritySplitContract",
+      "target_owner": "pmo",
+      "reuse_decision": "reference_only",
+      "version_risk": "Architecture reference is already accepted, but each runtime slice still needs local evidence.",
+      "why": "This is the key anti-duplication rule: MoSim should reuse the role split, not clone the runtime.",
+      "required_local_gate": "Every task packet must declare which layer owns truth, command, sensor, review, and evidence.",
+      "forbidden_claims": [
+        "UE owns controller truth",
+        "ROS2 owns plant truth",
+        "Reference stack acceptance equals MoSim implementation acceptance"
+      ],
+      "priority": "P0",
+      "next_task_candidate": "Use this as PMO acceptance checklist for future cross-layer task packets."
+    },
+    {
+      "source_family": "AirSim runtime",
+      "source_path": "References/AirSim/AirSim/",
+      "source_version_or_runtime": "full AirSim simulator stack",
+      "reusable_pattern": "simulator runtime, physics, ROS wrapper, UE renderer",
+      "target_contract": "RejectedRuntimeDependency",
+      "target_owner": "pmo",
+      "reuse_decision": "reject",
+      "version_risk": "Direct runtime adoption would conflict with MWORKS authority and create duplicate simulator truth.",
+      "why": "AirSim is valuable as API/message/reference design, not as the MoSim core runtime.",
+      "required_local_gate": "No gate; rejected for direct runtime adoption unless PMO reopens architecture.",
+      "forbidden_claims": [
+        "MoSim should switch core simulation to AirSim",
+        "AirSim physics replaces MWORKS",
+        "AirSim ROS output proves MoSim control"
+      ],
+      "priority": "P0",
+      "next_task_candidate": "Use only source/API references from AirSim rows above."
+    },
+    {
+      "source_family": "ROS1 FAST-LIO direct runtime",
+      "source_path": "References/Lab/FAST_LIO/; References/Lab/FAST-LIVO2/; References/Lab/Point-LIO-point-lio-with-grid-map/",
+      "source_version_or_runtime": "ROS1/catkin FAST-LIO-family sources",
+      "reusable_pattern": "FAST-LIO algorithm and Livox/Mid360 semantics",
+      "target_contract": "RejectedDirectROS2RuntimeClaim",
+      "target_owner": "ros2_r1",
+      "reuse_decision": "reject",
+      "version_risk": "Current MoSim runtime lane is ROS2 Humble; ROS1 sources need candidate port, container, or bridge approval.",
+      "why": "Directly running ROS1 sources as if they were native ROS2 would produce false acceptance evidence.",
+      "required_local_gate": "Use ROS2 candidate build/run evidence or explicit bridge/container approval before runtime dispatch.",
+      "forbidden_claims": [
+        "ROS1 FAST-LIO is a ROS2 runtime",
+        "ROS1 launch file proves ROS2 gate readiness",
+        "Static source presence proves current localization"
+      ],
+      "priority": "P0",
+      "next_task_candidate": "Keep as semantic reference until ROS2 candidate gate is explicitly assigned."
+    },
+    {
+      "source_family": "Scene identity and existing MoSim UE registry",
+      "source_path": "Docs/Workflows/unreal_renderer.md; UE5/MoSimSceneLibrary/Content/MworksData/",
+      "source_version_or_runtime": "current MoSim project registry pattern",
+      "reusable_pattern": "scene_source_id, scene_id, map_id, run_id, active_scene_links, scene_source_registry, unreal_scene_profiles",
+      "target_contract": "SceneRunIdentityContract",
+      "target_owner": "ue",
+      "reuse_decision": "adopt",
+      "version_risk": "Registry exists, but UI and cross-runtime echo must still be implemented.",
+      "why": "This is already the accepted local identity model and should be used instead of inventing new scene IDs.",
+      "required_local_gate": "Scene switch must echo UE-loaded, MWORKS-bound, ROS2-bound, gate-passed, and evidence path states.",
+      "forbidden_claims": [
+        "Visible UE map switch is accepted scenario switch",
+        "Scene registry row is runtime evidence",
+        "UE-only map id proves ROS2/MWORKS binding"
+      ],
+      "priority": "P1",
+      "next_task_candidate": "Add scene/run identity fields to the command/status echo checklist."
+    }
+  ],
+  "decision_counts": {
+    "adopt": 1,
+    "adapt": 10,
+    "reference_only": 3,
+    "reject": 2
+  },
+  "top_contract_backlog": [
+    "CommandStateEchoContract",
+    "ROS2FrameTopicContract",
+    "Mid360FastlioInputContract",
+    "UESensorOracleContract",
+    "PlannerSetpointContract",
+    "SceneRunIdentityContract"
+  ]
+}

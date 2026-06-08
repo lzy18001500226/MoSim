@@ -1,0 +1,42 @@
+{
+  "request_id": "COAGENTOPS-UE-ROS2-REFERENCE-CONTRACT-INTAKE-20260609-001",
+  "generated_at": "2026-06-09T00:00:00+08:00",
+  "status": "completed_static_intake",
+  "total_sources_sampled": 16,
+  "classified_entries": 16,
+  "unknown_entries": 0,
+  "decision_counts": {
+    "adopt": 1,
+    "adapt": 10,
+    "reference_only": 3,
+    "reject": 2
+  },
+  "priority_counts": {
+    "P0": 11,
+    "P1": 4,
+    "P2": 1
+  },
+  "top_contract_backlog": [
+    "CommandStateEchoContract",
+    "ROS2FrameTopicContract",
+    "Mid360FastlioInputContract",
+    "UESensorOracleContract",
+    "PlannerSetpointContract",
+    "SceneRunIdentityContract"
+  ],
+  "outputs": {
+    "review_md": "Results/reference_contract_intake/ue_ros2_reference_contract_intake_20260609_001/review.md",
+    "contract_intake_matrix_json": "Results/reference_contract_intake/ue_ros2_reference_contract_intake_20260609_001/contract_intake_matrix.json",
+    "summary_json": "Results/reference_contract_intake/ue_ros2_reference_contract_intake_20260609_001/summary.json"
+  },
+  "claim_boundary": {
+    "no_live_runtime_touched": true,
+    "no_engineering_dispatch_performed": true,
+    "no_workflow_doc_modified": true,
+    "does_not_claim_ue_runtime_success": true,
+    "does_not_claim_ros2_fastlio_runtime_success": true,
+    "does_not_claim_mworks_check_or_simulation": true,
+    "does_not_claim_controller_or_planner_performance": true
+  },
+  "recommended_next_action": "PMO review the top contract backlog and dispatch only static/source-static contract-freeze tasks while live runtime and workflow-doc restructuring remain gated."
+}
