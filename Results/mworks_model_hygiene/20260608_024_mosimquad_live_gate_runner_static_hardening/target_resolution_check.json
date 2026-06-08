@@ -1,0 +1,614 @@
+{
+  "schema": "mosim.mworks.live_gate_target_resolution_check.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-LIVE-GATE-RUNNER-STATIC-HARDENING-20260608-024",
+  "input_request_id": "PMO-MWORKS-R1-MOSIMQUAD-FORMAL-SMOKE-SURFACE-STATIC-PREP-20260608-023",
+  "status": "passed_static",
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "input_artifacts": [
+    "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/formal_smoke_target_matrix.json",
+    "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/future_live_validation_surface.json",
+    "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/expected_result_variables.json"
+  ],
+  "source_anchors": {
+    "formal_dynamics_package": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+    "formal_dynamics_order": "Models/MoSimQuadrotorModel/Dynamics/package.order",
+    "formal_parameters_package": "Models/MoSimQuadrotorModel/Parameters/package.mo",
+    "formal_parameters_order": "Models/MoSimQuadrotorModel/Parameters/package.order",
+    "compat_dynamics_package": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+    "compat_dynamics_order": "Models/QuadrotorExperiments/DynamicsUpgrade/package.order"
+  },
+  "target_count": 13,
+  "dynamics_target_count": 12,
+  "parameter_target_count": 1,
+  "findings": [],
+  "resolutions": [
+    {
+      "target": "MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance",
+      "kind": "parameter_record",
+      "source_file": "Models/MoSimQuadrotorModel/Parameters/package.mo",
+      "static_status": "resolved",
+      "checks": {
+        "package_order_contains": true,
+        "package_defines_record": true,
+        "expected_fields_present": [
+          {
+            "field": "geometry_source",
+            "present": true
+          },
+          {
+            "field": "geometry_claim_boundary",
+            "present": true
+          },
+          {
+            "field": "rotor_center_mworks_dronefixed",
+            "present": true
+          },
+          {
+            "field": "non_geometry_seed_source",
+            "present": true
+          },
+          {
+            "field": "mass_kg",
+            "present": true
+          },
+          {
+            "field": "body_inertia_diagonal_kg_m2",
+            "present": true
+          },
+          {
+            "field": "sdf_motor_constant",
+            "present": true
+          },
+          {
+            "field": "mworks_lift_coefficient",
+            "present": true
+          },
+          {
+            "field": "yaw_moment_ratio_seed",
+            "present": true
+          },
+          {
+            "field": "motor_time_constant_up_s",
+            "present": true
+          },
+          {
+            "field": "motor_time_constant_down_s",
+            "present": true
+          },
+          {
+            "field": "enable_rotor_gyro_default",
+            "present": true
+          },
+          {
+            "field": "enable_body_drag_default",
+            "present": true
+          },
+          {
+            "field": "enable_angular_damping_default",
+            "present": true
+          },
+          {
+            "field": "identification_status",
+            "present": true
+          },
+          {
+            "field": "do_not_promote_boundary",
+            "present": true
+          }
+        ]
+      }
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+      "kind": "dynamics_model",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150RflyStyleRotorDynamics",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/RotorActuatorCore.mo",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+      "check_model_order": 1,
+      "simulate_order_after_all_checks": null,
+      "static_status": "resolved",
+      "checks": {
+        "formal_package_order_contains": true,
+        "formal_package_defines_model": true,
+        "formal_extends_compat_alias": true,
+        "compat_package_order_contains": true,
+        "compat_package_defines_model": true,
+        "compat_extends_implementation": true,
+        "implementation_file_exists": true,
+        "implementation_defines_model": true,
+        "required_source_anchors": [
+          {
+            "snippet": "der(omega[i]) = (motor_command[i] - omega[i]) / motor_tau[i]",
+            "present": true
+          },
+          {
+            "snippet": "thrust[i] = lift_coefficient * omega[i] * omega[i]",
+            "present": true
+          },
+          {
+            "snippet": "yaw_reaction_moment[i] = yaw_direction[i] * moment_constant * thrust[i]",
+            "present": true
+          },
+          {
+            "snippet": "rotor_arm_moment[i, 1] = rotor_center[i, 2] * thrust[i]",
+            "present": true
+          },
+          {
+            "snippet": "rotor_arm_moment[i, 2] = -rotor_center[i, 1] * thrust[i]",
+            "present": true
+          }
+        ],
+        "expected_result_variables_match": true,
+        "expected_result_source_matches": true
+      }
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+      "kind": "dynamics_model",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.ActuatorCommandMapper",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150ActuatorCommandMapper",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorCommandMapper.mo",
+      "check_model_order": 2,
+      "simulate_order_after_all_checks": null,
+      "static_status": "resolved",
+      "checks": {
+        "formal_package_order_contains": true,
+        "formal_package_defines_model": true,
+        "formal_extends_compat_alias": true,
+        "compat_package_order_contains": true,
+        "compat_package_defines_model": true,
+        "compat_extends_implementation": true,
+        "implementation_file_exists": true,
+        "implementation_defines_model": true,
+        "required_source_anchors": [
+          {
+            "snippet": "input Real normalized_command[4]",
+            "present": true
+          },
+          {
+            "snippet": "saturated_normalized_command[i]",
+            "present": true
+          },
+          {
+            "snippet": "actuator_saturation_error[i] = normalized_command[i] - saturated_normalized_command[i]",
+            "present": true
+          },
+          {
+            "snippet": "signed_visual_rotor_speed_command[i] =",
+            "present": true
+          },
+          {
+            "snippet": "hover_command_error[i]",
+            "present": true
+          }
+        ],
+        "expected_result_variables_match": true,
+        "expected_result_source_matches": true
+      }
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+      "kind": "dynamics_model",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperSurface",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
+      "check_model_order": 3,
+      "simulate_order_after_all_checks": null,
+      "static_status": "resolved",
+      "checks": {
+        "formal_package_order_contains": true,
+        "formal_package_defines_model": true,
+        "formal_extends_compat_alias": true,
+        "compat_package_order_contains": true,
+        "compat_package_defines_model": true,
+        "compat_extends_implementation": true,
+        "implementation_file_exists": true,
+        "implementation_defines_model": true,
+        "required_source_anchors": [
+          {
+            "snippet": "dynamics.motor_command = motor_command",
+            "present": true
+          },
+          {
+            "snippet": "commanded_thrust[i] = dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
+            "present": true
+          },
+          {
+            "snippet": "commanded_total_moment_body[3]",
+            "present": true
+          },
+          {
+            "snippet": "motor_order_gate_error =",
+            "present": true
+          },
+          {
+            "snippet": "yaw_direction_gate_error =",
+            "present": true
+          }
+        ],
+        "expected_result_variables_match": true,
+        "expected_result_source_matches": true
+      }
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
+      "kind": "dynamics_model",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.ActuatorMappedWrapperSurface",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150ActuatorMappedWrapperSurface",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorMappedWrapperSurface.mo",
+      "check_model_order": 4,
+      "simulate_order_after_all_checks": null,
+      "static_status": "resolved",
+      "checks": {
+        "formal_package_order_contains": true,
+        "formal_package_defines_model": true,
+        "formal_extends_compat_alias": true,
+        "compat_package_order_contains": true,
+        "compat_package_defines_model": true,
+        "compat_extends_implementation": true,
+        "implementation_file_exists": true,
+        "implementation_defines_model": true,
+        "required_source_anchors": [
+          {
+            "snippet": "input Real normalized_actuator_command[4]",
+            "present": true
+          },
+          {
+            "snippet": "actuator_mapper.normalized_command = normalized_actuator_command",
+            "present": true
+          },
+          {
+            "snippet": "wrapper.motor_command = actuator_mapper.signed_visual_rotor_speed_command",
+            "present": true
+          },
+          {
+            "snippet": "signed_visual_rotor_speed_command = actuator_mapper.signed_visual_rotor_speed_command",
+            "present": true
+          }
+        ],
+        "expected_result_variables_match": true,
+        "expected_result_source_matches": true
+      }
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+      "kind": "dynamics_model",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.OptionalDampingGyroLayer",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150OptionalDampingGyroLayer",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150OptionalDampingGyroLayer.mo",
+      "check_model_order": 5,
+      "simulate_order_after_all_checks": null,
+      "static_status": "resolved",
+      "checks": {
+        "formal_package_order_contains": true,
+        "formal_package_defines_model": true,
+        "formal_extends_compat_alias": true,
+        "compat_package_order_contains": true,
+        "compat_package_defines_model": true,
+        "compat_extends_implementation": true,
+        "implementation_file_exists": true,
+        "implementation_defines_model": true,
+        "required_source_anchors": [
+          {
+            "snippet": "parameter Boolean enable_rotor_gyro = false",
+            "present": true
+          },
+          {
+            "snippet": "parameter Boolean enable_body_drag = false",
+            "present": true
+          },
+          {
+            "snippet": "parameter Boolean enable_angular_damping = false",
+            "present": true
+          },
+          {
+            "snippet": "optional_force_body[j] = body_drag_force_body[j]",
+            "present": true
+          },
+          {
+            "snippet": "default_disabled_force_delta =",
+            "present": true
+          },
+          {
+            "snippet": "default_disabled_moment_delta =",
+            "present": true
+          }
+        ],
+        "expected_result_variables_match": true,
+        "expected_result_source_matches": true
+      }
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+      "kind": "dynamics_model",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchFrameAdapter",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchFrameAdapter.mo",
+      "check_model_order": 6,
+      "simulate_order_after_all_checks": null,
+      "static_status": "resolved",
+      "checks": {
+        "formal_package_order_contains": true,
+        "formal_package_defines_model": true,
+        "formal_extends_compat_alias": true,
+        "compat_package_order_contains": true,
+        "compat_package_defines_model": true,
+        "compat_extends_implementation": true,
+        "implementation_file_exists": true,
+        "implementation_defines_model": true,
+        "required_source_anchors": [
+          {
+            "snippet": "WorldForceAndTorque",
+            "present": true
+          },
+          {
+            "snippet": "applied_force_body = {0, 0, wrapper.total_thrust}",
+            "present": true
+          },
+          {
+            "snippet": "applied_torque_body = wrapper.total_moment_body",
+            "present": true
+          },
+          {
+            "snippet": "forceAndTorque.force = applied_force_body",
+            "present": true
+          },
+          {
+            "snippet": "forceAndTorque.torque = applied_torque_body",
+            "present": true
+          },
+          {
+            "snippet": "connect(forceAndTorque.frame_b, body.frame_a)",
+            "present": true
+          }
+        ],
+        "expected_result_variables_match": true,
+        "expected_result_source_matches": true
+      }
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "kind": "dynamics_model",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeHoverSmoke",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeHoverSmoke.mo",
+      "check_model_order": 7,
+      "simulate_order_after_all_checks": 1,
+      "static_status": "resolved",
+      "checks": {
+        "formal_package_order_contains": true,
+        "formal_package_defines_model": true,
+        "formal_extends_compat_alias": true,
+        "compat_package_order_contains": true,
+        "compat_package_defines_model": true,
+        "compat_extends_implementation": true,
+        "implementation_file_exists": true,
+        "implementation_defines_model": true,
+        "required_source_anchors": [
+          {
+            "snippet": "Sunray150RflyStyleRotorDynamics dynamics",
+            "present": true
+          },
+          {
+            "snippet": "dynamics.motor_command =",
+            "present": true
+          },
+          {
+            "snippet": "annotation(experiment(",
+            "present": true
+          },
+          {
+            "snippet": "StopTime = 0.25",
+            "present": true
+          }
+        ],
+        "expected_result_variables_match": true,
+        "expected_result_source_matches": true
+      }
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "kind": "dynamics_model",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeYawStepSmoke",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeYawStepSmoke.mo",
+      "check_model_order": 8,
+      "simulate_order_after_all_checks": 2,
+      "static_status": "resolved",
+      "checks": {
+        "formal_package_order_contains": true,
+        "formal_package_defines_model": true,
+        "formal_extends_compat_alias": true,
+        "compat_package_order_contains": true,
+        "compat_package_defines_model": true,
+        "compat_extends_implementation": true,
+        "implementation_file_exists": true,
+        "implementation_defines_model": true,
+        "required_source_anchors": [
+          {
+            "snippet": "parameter Real yaw_delta_omega2 = 300",
+            "present": true
+          },
+          {
+            "snippet": "yaw_step = if time >= 0.05 then yaw_delta_omega2 else 0",
+            "present": true
+          },
+          {
+            "snippet": "rotor_speed_mag[i] = sqrt(",
+            "present": true
+          },
+          {
+            "snippet": "dynamics.motor_command[i] =",
+            "present": true
+          }
+        ],
+        "expected_result_variables_match": true,
+        "expected_result_source_matches": true
+      }
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+      "kind": "dynamics_model",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperHoverSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperHoverSmoke",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperHoverSmoke.mo",
+      "check_model_order": 9,
+      "simulate_order_after_all_checks": 3,
+      "static_status": "resolved",
+      "checks": {
+        "formal_package_order_contains": true,
+        "formal_package_defines_model": true,
+        "formal_extends_compat_alias": true,
+        "compat_package_order_contains": true,
+        "compat_package_defines_model": true,
+        "compat_extends_implementation": true,
+        "implementation_file_exists": true,
+        "implementation_defines_model": true,
+        "required_source_anchors": [
+          {
+            "snippet": "Sunray150DynamicsWrapperSurface wrapper",
+            "present": true
+          },
+          {
+            "snippet": "wrapper.motor_command =",
+            "present": true
+          },
+          {
+            "snippet": "StopTime = 0.25",
+            "present": true
+          }
+        ],
+        "expected_result_variables_match": true,
+        "expected_result_source_matches": true
+      }
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+      "kind": "dynamics_model",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperYawStepSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperYawStepSmoke",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperYawStepSmoke.mo",
+      "check_model_order": 10,
+      "simulate_order_after_all_checks": 4,
+      "static_status": "resolved",
+      "checks": {
+        "formal_package_order_contains": true,
+        "formal_package_defines_model": true,
+        "formal_extends_compat_alias": true,
+        "compat_package_order_contains": true,
+        "compat_package_defines_model": true,
+        "compat_extends_implementation": true,
+        "implementation_file_exists": true,
+        "implementation_defines_model": true,
+        "required_source_anchors": [
+          {
+            "snippet": "Sunray150DynamicsWrapperSurface wrapper",
+            "present": true
+          },
+          {
+            "snippet": "yaw_step = if time >= 0.05 then yaw_delta_omega2 else 0",
+            "present": true
+          },
+          {
+            "snippet": "wrapper.motor_command[i] =",
+            "present": true
+          }
+        ],
+        "expected_result_variables_match": true,
+        "expected_result_source_matches": true
+      }
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+      "kind": "dynamics_model",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchHoverSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchHoverSmoke",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchHoverSmoke.mo",
+      "check_model_order": 11,
+      "simulate_order_after_all_checks": 5,
+      "static_status": "resolved",
+      "checks": {
+        "formal_package_order_contains": true,
+        "formal_package_defines_model": true,
+        "formal_extends_compat_alias": true,
+        "compat_package_order_contains": true,
+        "compat_package_defines_model": true,
+        "compat_extends_implementation": true,
+        "implementation_file_exists": true,
+        "implementation_defines_model": true,
+        "required_source_anchors": [
+          {
+            "snippet": "Sunray150PhysicalWrenchFrameAdapter adapter",
+            "present": true
+          },
+          {
+            "snippet": "adapter.wrapper.motor_command =",
+            "present": true
+          },
+          {
+            "snippet": "StopTime = 0.25",
+            "present": true
+          }
+        ],
+        "expected_result_variables_match": true,
+        "expected_result_source_matches": true
+      }
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
+      "kind": "dynamics_model",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchYawStepSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchYawStepSmoke",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchYawStepSmoke.mo",
+      "check_model_order": 12,
+      "simulate_order_after_all_checks": 6,
+      "static_status": "resolved",
+      "checks": {
+        "formal_package_order_contains": true,
+        "formal_package_defines_model": true,
+        "formal_extends_compat_alias": true,
+        "compat_package_order_contains": true,
+        "compat_package_defines_model": true,
+        "compat_extends_implementation": true,
+        "implementation_file_exists": true,
+        "implementation_defines_model": true,
+        "required_source_anchors": [
+          {
+            "snippet": "Sunray150PhysicalWrenchFrameAdapter adapter",
+            "present": true
+          },
+          {
+            "snippet": "yaw_step = if time >= 0.05 then yaw_delta_omega2 else 0",
+            "present": true
+          },
+          {
+            "snippet": "adapter.wrapper.motor_command[i] =",
+            "present": true
+          }
+        ],
+        "expected_result_variables_match": true,
+        "expected_result_source_matches": true
+      }
+    }
+  ],
+  "static_rejection_contract": [
+    "Reject if any target in future_live_validation_surface is absent from formal_smoke_target_matrix.",
+    "Reject if expected_result_variables target lists drift from formal_smoke_target_matrix.",
+    "Reject if MoSimQuadrotorModel.Dynamics/package.mo or package.order no longer exposes the formal target.",
+    "Reject if QuadrotorExperiments.DynamicsUpgrade alias or implementation source anchors are missing.",
+    "Reject if the future SimulateModel queue contains a non-smoke/check-only target."
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-STATIC-ORGANIZATION-CLASSIFICATION-AUDIT-20260608-023",
+  "generated_at": "2026-06-08T16:35:08+08:00",
+  "rows": [
+    {
+      "batch": "023-A missions authority references",
+      "scope": "YAML/scripts/docs/report references only after live package load/check succeeds",
+      "targets": "MoSimQuadrotorModel.Missions.*",
+      "action": "migrate authoritative references from QuadrotorExperiments.OfficialScenarios to MoSimQuadrotorModel.Missions; keep legacy aliases",
+      "risk": "medium_requires_live_check_model"
+    },
+    {
+      "batch": "023-B robustness nested review",
+      "scope": "Robustness Mass20/WindGust/Safety/RotorLoss split",
+      "targets": "MoSimQuadrotorModel.Robustness.*",
+      "action": "create user-facing Chinese sub-buckets in future package surface if PMO approves source/package edits; keep PIDBaselines labeled as baseline",
+      "risk": "medium_large_surface_requires_serialized_live"
+    },
+    {
+      "batch": "023-C planning helper separation",
+      "scope": "Planning closed-loop scenarios versus display/review helpers",
+      "targets": "MoSimQuadrotorModel.Planning",
+      "action": "mark NavigationDisplay and ColorMapReview as review/support; migrate OpenBlocks/CorridorGate closed-loop references after live review",
+      "risk": "medium_user_visible_category_semantics"
+    },
+    {
+      "batch": "023-D scene trace diagnostic folding",
+      "scope": "SceneTrace AcceptedScenes and Isolation",
+      "targets": "MoSimQuadrotorModel.SceneTrace",
+      "action": "keep FactoryTraceIso01-30 as diagnostic ladder; live review only first/last and representative wiring stages before broader acceptance",
+      "risk": "high_requires_graphical_evidence"
+    },
+    {
+      "batch": "023-E system graphical audit",
+      "scope": "SystemArchitecture and SystemModules",
+      "targets": "MoSimQuadrotorModel.System",
+      "action": "queue CompleteSystemGraphical, GPSDropout, BatteryLow, OffboardLoss, MissionFailure, GeofenceBreach and module diagrams for R2 live graphical review",
+      "risk": "high_requires_no_start_route_and_layout_review"
+    },
+    {
+      "batch": "023-F legacy compatibility cleanup",
+      "scope": "QuadrotorExperiments root hidden aliases",
+      "targets": "QuadrotorExperiments package.mo hidden aliases",
+      "action": "after all references migrate, decide permanent report-reproducibility aliases versus deprecated hidden aliases; no deletion in static audit",
+      "risk": "high_breaks_old_evidence_if_done_early"
+    }
+  ]
+}

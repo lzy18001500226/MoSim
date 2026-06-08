@@ -1,0 +1,30 @@
+{
+  "schema": "mosim.mworks.static_validation_summary.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-WRAPPER-SURFACE-FORMAL-SOURCE-SURFACE-20260608-026",
+  "status": "passed",
+  "static_only": true,
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "formal_source_materialized": true,
+  "behavior_preservation": {
+    "formal_source_is_extends_only": true,
+    "formal_source_duplicates_wrapper_behavior": false,
+    "legacy_alias_preserved": true,
+    "legacy_implementation_preserved": true,
+    "legacy_core_preserved": true,
+    "dynamics_equations_changed_by_026": false,
+    "numeric_parameters_changed_by_026": false
+  },
+  "findings": [],
+  "evidence_files": [
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/wrapper_surface_recheck/wrapper_surface_check.json",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/wrapper_surface_recheck/wrapper_surface.md",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/wrapper_surface_recheck/package_order_integrity.json",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/wrapper_surface_recheck/changed_files.json",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/wrapper_surface_recheck/static_validation_summary.json"
+  ],
+  "claim_boundary": [
+    "026 prepares a static formal source surface for WrapperSurface only.",
+    "026 does not call or prove MWORKS load, check_model, SimulateModel, native result, graphical/layout acceptance, controller performance, planner_ready, runtime ack, mission success, identified parameter truth, or closed_loop."
+  ]
+}

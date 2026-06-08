@@ -1,0 +1,23 @@
+{
+  "schema": "mosim.changed_files_manifest.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-ACTUATOR-COMMAND-MAPPER-FORMAL-SOURCE-SURFACE-20260608-027",
+  "modelica_source_files_changed": [
+    "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+    "Models/MoSimQuadrotorModel/Dynamics/ActuatorCommandMapper.mo"
+  ],
+  "legacy_source_files_changed": [],
+  "script_files_changed_by_027": [
+    "Scripts/mworks/validate_mosimquad_actuator_command_mapper_surface.py",
+    "Scripts/tests/test_mosimquad_actuator_command_mapper_surface.py"
+  ],
+  "evidence_files_written_by_027": [
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/actuator_command_mapper_surface_check.json",
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/actuator_command_mapper_surface.md",
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/package_order_integrity.json",
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/changed_files.json",
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/static_validation_summary.json",
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/formal_smoke_surface_recheck/",
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/live_gate_runner_recheck/"
+  ],
+  "return_packet_expected": "Results/agent_packets/returns/PMO-MWORKS-R1-MOSIMQUAD-ACTUATOR-COMMAND-MAPPER-FORMAL-SOURCE-SURFACE-20260608-027.json"
+}

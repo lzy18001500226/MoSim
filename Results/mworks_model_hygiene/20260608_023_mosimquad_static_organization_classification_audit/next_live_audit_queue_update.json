@@ -1,0 +1,48 @@
+{
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-STATIC-ORGANIZATION-CLASSIFICATION-AUDIT-20260608-023",
+  "generated_at": "2026-06-08T16:35:08+08:00",
+  "rows": [
+    {
+      "order": 1,
+      "target": "MoSimQuadrotorModel root package browser",
+      "review": "12 top categories visible with Chinese package description; no unexpected flat legacy clutter.",
+      "blocked_until": "approved attach-existing/no-start foreground route exists and reusable main MWORKS window is available"
+    },
+    {
+      "order": 2,
+      "target": "MoSimQuadrotorModel.Missions package browser",
+      "review": "15 official mission wrappers visible; check labels separate Example1/2/3 and trajectory variants.",
+      "blocked_until": "same live route gate"
+    },
+    {
+      "order": 3,
+      "target": "MoSimQuadrotorModel.Robustness package browser",
+      "review": "PIDBaselines/RotorLoss nested packages plus Mass/Wind/Safety entries are not visually confusing.",
+      "blocked_until": "same live route gate"
+    },
+    {
+      "order": 4,
+      "target": "MoSimQuadrotorModel.Planning package browser",
+      "review": "Closed-loop planning entries are distinguishable from NavigationDisplay and ColorMapReview helpers.",
+      "blocked_until": "same live route gate"
+    },
+    {
+      "order": 5,
+      "target": "MoSimQuadrotorModel.SceneTrace package browser",
+      "review": "AcceptedScenes and Isolation are understandable; trace isolation ladder does not overwhelm primary package surface.",
+      "blocked_until": "same live route gate"
+    },
+    {
+      "order": 6,
+      "target": "MoSimQuadrotorModel.System.Architecture.CompleteSystemGraphical",
+      "review": "Diagram opens without blank/white surface; wiring, ports, subsystem layout, and labels are readable.",
+      "blocked_until": "same live route gate; no Smart Layout writeback unless future task explicitly permits"
+    },
+    {
+      "order": 7,
+      "target": "QuadrotorExperiments legacy root",
+      "review": "Legacy package surface shows category packages and hidden compatibility aliases do not clutter public browser.",
+      "blocked_until": "same live route gate"
+    }
+  ]
+}

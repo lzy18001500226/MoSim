@@ -1,0 +1,25 @@
+{
+  "schema": "mosim.changed_files_manifest.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025",
+  "modelica_source_files_in_batch_a_surface": [
+    "Models/MoSimQuadrotorModel/Dynamics/RotorActuatorCore.mo",
+    "Models/MoSimQuadrotorModel/Dynamics/WrapperSurface.mo",
+    "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+    "Models/MoSimQuadrotorModel/Dynamics/package.order"
+  ],
+  "modelica_source_files_changed_by_this_closeout": [],
+  "legacy_source_files_changed_by_this_closeout": [],
+  "script_files_added_by_this_closeout": [
+    "Scripts/mworks/validate_mosimquad_dynamics_batch_a_source_migration.py",
+    "Scripts/tests/test_mosimquad_dynamics_batch_a_source_migration.py"
+  ],
+  "evidence_files_written_by_this_closeout": [
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/batch_a_source_migration_matrix.json",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/batch_a_source_migration_matrix.md",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/changed_files.json",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/static_validation_summary.json",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/rotor_actuator_core_recheck",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/wrapper_surface_recheck"
+  ],
+  "return_packet_expected": "Results/agent_packets/returns/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025.json"
+}

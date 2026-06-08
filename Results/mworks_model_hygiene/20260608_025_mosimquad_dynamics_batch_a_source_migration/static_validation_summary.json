@@ -1,0 +1,43 @@
+{
+  "schema": "mosim.mworks.static_validation_summary.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025",
+  "status": "passed",
+  "static_only": true,
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "batch_scope": [
+    "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+    "MoSimQuadrotorModel.Dynamics.WrapperSurface"
+  ],
+  "deferred_targets": [
+    "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+    "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+    "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
+    "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+    "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke"
+  ],
+  "source_surface_policy": {
+    "formal_sources_are_extends_only": true,
+    "legacy_aliases_preserved": true,
+    "legacy_implementations_preserved": true,
+    "dynamics_equations_changed_by_batch_a": false,
+    "numeric_parameters_changed_by_batch_a": false,
+    "broad_rename_or_search_replace_used": false
+  },
+  "findings": [],
+  "evidence_files": [
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/batch_a_source_migration_matrix.json",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/batch_a_source_migration_matrix.md",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/changed_files.json",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/static_validation_summary.json"
+  ],
+  "claim_boundary": [
+    "Batch A claims only static formal source migration readiness for RotorActuatorCore and WrapperSurface.",
+    "Batch A does not call or prove MWORKS load, check_model, SimulateModel, native result, graphical/layout acceptance, controller performance, planner_ready, runtime ack, mission success, identified parameter truth, or closed_loop."
+  ]
+}

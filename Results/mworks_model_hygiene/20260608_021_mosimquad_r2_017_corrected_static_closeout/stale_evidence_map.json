@@ -1,0 +1,46 @@
+{
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-017-CORRECTED-STATIC-CLOSEOUT-20260608-021",
+  "r2_015": {
+    "usable": [
+      "Ownership taxonomy separating official QuadrotorModel, formal MoSimQuadrotorModel, legacy QuadrotorExperiments, and QuadrotorControllerBlocks remains useful.",
+      "Static-only claim boundary remains valid."
+    ],
+    "stale": [
+      "Root category count changed from 11 to 12 because Parameters was added.",
+      "Root package.order now includes Parameters after Dynamics.",
+      "Formal ordered child entries changed from 64 to 68.",
+      "Dynamics and DynamicsUpgrade queues must include ActuatorCommandMapper, ActuatorMappedWrapperSurface, OptionalDampingGyroLayer, and Sunray150ParameterProvenance."
+    ],
+    "source_packet": "Results/agent_packets/returns/PMO-MWORKS-R2-MOSIMQUAD-STATIC-CLASSIFICATION-LIVE-AUDIT-QUEUE-20260608-015.json"
+  },
+  "r2_017": {
+    "usable": [
+      "Root/package.order count snapshot after R1 017/018/019 is directionally current: 12 root categories and 68 ordered child entries.",
+      "Package.order duplicate checks and category surface inventory are useful where they do not depend on the flawed extends resolution."
+    ],
+    "stale_or_corrected": [
+      "The 12 unresolved DynamicsUpgrade target rows are corrected as sibling .mo implementation targets, not source blockers.",
+      "The 12 unresolved alias chain rows are corrected as false positives.",
+      "The old blocking status is not accepted as current model-source truth.",
+      "The old chain table reused incorrect formal_entry labels for several rows; 021 regenerates it from declaring class context."
+    ],
+    "source_packet": "Results/agent_packets/returns/PMO-MWORKS-R2-MOSIMQUAD-ALIAS-PACKAGE-ORDER-INTEGRITY-STATIC-GATE-20260608-017.json"
+  },
+  "provider_gateway_supersede": {
+    "usable": [
+      "Provider/API 502, review UI, or approval surface is a control-plane condition, not a model-source failure.",
+      "R2 may resume bounded static dispatch after the UI condition clears."
+    ],
+    "not_model_evidence": true,
+    "source_packet": "Results/agent_packets/returns/PMO-MWORKS-R2-017-PROVIDER-GATEWAY-PENDING-REVIEW-SUPERSEDE-20260608-001.json",
+    "result_class": "provider_gateway_or_pending_review_supersede"
+  },
+  "r1_020": {
+    "usable": [
+      "Current static Dynamics/Parameters integrity closeout is aligned with 021 corrected parser.",
+      "All 12 formal Dynamics entries were recorded as statically resolved by R1 020."
+    ],
+    "claim_boundary": "R1 020 is static integrity evidence only; it is not live package-browser/check_model/simulation/layout acceptance.",
+    "source_packet": "Results/agent_packets/returns/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-DEFAULT-INTEGRITY-STATIC-GATE-20260608-020.json"
+  }
+}

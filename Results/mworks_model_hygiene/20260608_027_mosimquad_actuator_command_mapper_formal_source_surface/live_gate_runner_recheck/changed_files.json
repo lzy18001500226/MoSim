@@ -1,0 +1,20 @@
+{
+  "schema": "mosim.changed_files_manifest.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-LIVE-GATE-RUNNER-STATIC-HARDENING-20260608-024",
+  "source_files_changed_by_024": [],
+  "modelica_source_files_changed": [],
+  "script_files_changed_by_024": [
+    "Scripts/mworks/build_mosimquad_live_gate_runner_plan.py",
+    "Scripts/tests/test_mosimquad_live_gate_runner_plan.py"
+  ],
+  "evidence_files_written_by_024": [
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/live_gate_runner_recheck/live_gate_runner_plan.json",
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/live_gate_runner_recheck/live_gate_runner_plan.md",
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/live_gate_runner_recheck/target_resolution_check.json",
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/live_gate_runner_recheck/result_variable_probe_plan.json",
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/live_gate_runner_recheck/future_live_runner_contract.md",
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/live_gate_runner_recheck/changed_files.json",
+    "Results/mworks_model_hygiene/20260608_027_mosimquad_actuator_command_mapper_formal_source_surface/live_gate_runner_recheck/static_validation_summary.json"
+  ],
+  "return_packet_expected": "Results/agent_packets/returns/PMO-MWORKS-R1-MOSIMQUAD-LIVE-GATE-RUNNER-STATIC-HARDENING-20260608-024.json"
+}

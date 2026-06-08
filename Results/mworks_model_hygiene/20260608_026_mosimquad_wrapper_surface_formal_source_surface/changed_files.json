@@ -1,0 +1,23 @@
+{
+  "schema": "mosim.changed_files_manifest.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-WRAPPER-SURFACE-FORMAL-SOURCE-SURFACE-20260608-026",
+  "modelica_source_files_changed": [
+    "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+    "Models/MoSimQuadrotorModel/Dynamics/WrapperSurface.mo"
+  ],
+  "legacy_source_files_changed": [],
+  "script_files_changed_by_026": [
+    "Scripts/mworks/validate_mosimquad_wrapper_surface.py",
+    "Scripts/tests/test_mosimquad_wrapper_surface.py"
+  ],
+  "evidence_files_written_by_026": [
+    "Results/mworks_model_hygiene/20260608_026_mosimquad_wrapper_surface_formal_source_surface/wrapper_surface_check.json",
+    "Results/mworks_model_hygiene/20260608_026_mosimquad_wrapper_surface_formal_source_surface/wrapper_surface.md",
+    "Results/mworks_model_hygiene/20260608_026_mosimquad_wrapper_surface_formal_source_surface/package_order_integrity.json",
+    "Results/mworks_model_hygiene/20260608_026_mosimquad_wrapper_surface_formal_source_surface/changed_files.json",
+    "Results/mworks_model_hygiene/20260608_026_mosimquad_wrapper_surface_formal_source_surface/static_validation_summary.json",
+    "Results/mworks_model_hygiene/20260608_026_mosimquad_wrapper_surface_formal_source_surface/formal_smoke_surface_recheck/",
+    "Results/mworks_model_hygiene/20260608_026_mosimquad_wrapper_surface_formal_source_surface/live_gate_runner_recheck/"
+  ],
+  "return_packet_expected": "Results/agent_packets/returns/PMO-MWORKS-R1-MOSIMQUAD-WRAPPER-SURFACE-FORMAL-SOURCE-SURFACE-20260608-026.json"
+}

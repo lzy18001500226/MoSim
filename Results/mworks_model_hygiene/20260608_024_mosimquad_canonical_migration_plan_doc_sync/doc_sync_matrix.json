@@ -1,0 +1,96 @@
+{
+  "schema": "mosim.mworks_model_hygiene.doc_sync_matrix.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-CANONICAL-MIGRATION-PLAN-DOC-SYNC-20260608-024",
+  "status": "completed_static_doc_sync",
+  "updated_document": "Docs/Design/12_MoSimQuadrotorModel模型归档与迁移计划.md",
+  "source_evidence": [
+    {
+      "path": "Results/agent_packets/returns/PMO-MWORKS-R2-MOSIMQUAD-STATIC-ORGANIZATION-CLASSIFICATION-AUDIT-20260608-023.json",
+      "used_for": "accepted static classification return, planning fields, package counts, and claim boundary"
+    },
+    {
+      "path": "Results/mworks_model_hygiene/20260608_023_mosimquad_static_organization_classification_audit/static_organization_classification_map.md",
+      "used_for": "12-category formal package tree and Chinese category roles"
+    },
+    {
+      "path": "Results/mworks_model_hygiene/20260608_023_mosimquad_static_organization_classification_audit/quadrotor_experiments_migration_disposition_matrix.md",
+      "used_for": "legacy package migration, reference, diagnostic, review-helper, support, and formation dispositions"
+    },
+    {
+      "path": "Results/mworks_model_hygiene/20260608_023_mosimquad_static_organization_classification_audit/safe_migration_queue.md",
+      "used_for": "serialized future migration batch order"
+    },
+    {
+      "path": "Results/mworks_model_hygiene/20260608_023_mosimquad_static_organization_classification_audit/next_live_audit_queue_update.md",
+      "used_for": "future live package/browser and graphical audit queue"
+    }
+  ],
+  "doc_sync_items": [
+    {
+      "section": "Status",
+      "change": "Updated status date and canonical baseline note for R2 023/024.",
+      "evidence": "023 return completed static organization/classification audit."
+    },
+    {
+      "section": "Package roles",
+      "change": "Added QuadrotorControllerBlocks as controller block library consumed through MoSimQuadrotorModel.Controllers.",
+      "evidence": "023 classification map: Controllers category references QuadrotorControllerBlocks and excludes backup/upgrade files from public surface."
+    },
+    {
+      "section": "Category tree",
+      "change": "Added Parameters category and synchronized 12 top-level MoSimQuadrotorModel categories.",
+      "evidence": "023 package_tree_audit.mosim_top_categories."
+    },
+    {
+      "section": "Current static package surface",
+      "change": "Recorded MoSim top category count, legacy implementation count, controller library count, and static-only claim boundary.",
+      "evidence": "023 package_tree_audit and claim_boundary."
+    },
+    {
+      "section": "Legacy disposition policy",
+      "change": "Added disposition table for OfficialScenarios, ControllerBaselines, RobustFaultScenarios, PlanningScenarios, SceneTraceScenarios, TraceIsolation, DynamicsUpgrade, SystemArchitecture, SystemModules, SupportModels, and FormationScenarios.",
+      "evidence": "023 quadrotor_experiments_migration_disposition_matrix.md."
+    },
+    {
+      "section": "Rejected or non-primary public surfaces",
+      "change": "Marked trace-isolation ladder, planning display/color-map helpers, white/blank GUI tiles, and backup/upgrade files as non-acceptance surfaces.",
+      "evidence": "023 drift_duplicate_obsolete_surface_report and next_live_audit_queue_update."
+    },
+    {
+      "section": "Batch order",
+      "change": "Replaced broad migration sequence with serialized batches from the 023 safe migration queue.",
+      "evidence": "023 safe_migration_queue.md."
+    },
+    {
+      "section": "Acceptance gates",
+      "change": "Separated static/documentation gates from live MWORKS gates and preserved no-start route blocker.",
+      "evidence": "AGENTS.md, new_conversation_context.md, and 023 claim boundary."
+    },
+    {
+      "section": "Next live audit queue",
+      "change": "Promoted the first R2 live audit queue as future work only, blocked until approved reusable no-start main-window route exists.",
+      "evidence": "023 next_live_audit_queue_update.md."
+    }
+  ],
+  "changed_files": [
+    "Docs/Design/12_MoSimQuadrotorModel模型归档与迁移计划.md",
+    "Results/mworks_model_hygiene/20260608_024_mosimquad_canonical_migration_plan_doc_sync/doc_sync_report.md",
+    "Results/mworks_model_hygiene/20260608_024_mosimquad_canonical_migration_plan_doc_sync/doc_sync_matrix.json",
+    "Results/mworks_model_hygiene/20260608_024_mosimquad_canonical_migration_plan_doc_sync/scope_diff_summary.md",
+    "Results/agent_packets/returns/PMO-MWORKS-R2-MOSIMQUAD-CANONICAL-MIGRATION-PLAN-DOC-SYNC-20260608-024.json"
+  ],
+  "forbidden_actions_confirmed": {
+    "edited_model_source_mo_package_mo_or_package_order": false,
+    "moved_deleted_or_renamed_legacy_implementation_files": false,
+    "opened_closed_switched_maximized_restarted_or_screenshotted_mworks_sysplorer_syslab_window": false,
+    "called_mworks_sysplorer_syslab_mcp": false,
+    "ran_check_model_or_simulate_model": false,
+    "ran_smart_layout_package_browser_or_result_viewer": false,
+    "edited_references_ue_ros2_sunray_blender_coagent_runtime_or_git": false
+  },
+  "claim_boundary": [
+    "024 claims only static canonical documentation sync.",
+    "024 does not claim live package-browser acceptance, graphical/layout/wiring acceptance, check_model, simulation, controller performance, planner_ready, runtime success, mission success, or closed_loop.",
+    "024 does not move, delete, rename, or edit any Modelica implementation, package.mo, or package.order file."
+  ]
+}

@@ -1,0 +1,533 @@
+{
+  "schema": "mosim.mworks.live_gate_runner_plan.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-LIVE-GATE-RUNNER-STATIC-HARDENING-20260608-024",
+  "input_request_id": "PMO-MWORKS-R1-MOSIMQUAD-FORMAL-SMOKE-SURFACE-STATIC-PREP-20260608-023",
+  "status": "passed_static",
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "runner_mode": "future_live_contract_static_only",
+  "input_artifacts": {
+    "formal_smoke_target_matrix": "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/formal_smoke_target_matrix.json",
+    "future_live_validation_surface": "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/future_live_validation_surface.json",
+    "expected_result_variables": "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/expected_result_variables.json"
+  },
+  "future_preflight_boundary": [
+    "A future live task must consume current CoAgentOps/PMO reusable-window patrol or run its own allowed preflight if the task packet requires it.",
+    "Stop before load/check/simulate on demo, login, activation, authorization, GUI error-report, mixed license, visible unknown, unavailable, or unknown state.",
+    "Do not open, close, restart, maximize, screenshot, log into, or operate MWORKS from this static runner."
+  ],
+  "future_load_plan": [
+    {
+      "order": 1,
+      "operation": "model_manager.load_file",
+      "file": "Models/MoSimQuadrotorModel/package.mo",
+      "force_reload": true,
+      "static_file_status": "exists"
+    },
+    {
+      "order": 2,
+      "operation": "dependency_package_available",
+      "file": "Models/QuadrotorExperiments/package.mo",
+      "force_reload": false,
+      "static_file_status": "exists"
+    }
+  ],
+  "future_check_model_plan": [
+    {
+      "order": 1,
+      "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance",
+      "target_kind": "parameter_provenance_record",
+      "source_file": "Models/MoSimQuadrotorModel/Parameters/package.mo",
+      "expected_fields": [
+        "geometry_source",
+        "geometry_claim_boundary",
+        "rotor_center_mworks_dronefixed",
+        "non_geometry_seed_source",
+        "mass_kg",
+        "body_inertia_diagonal_kg_m2",
+        "sdf_motor_constant",
+        "mworks_lift_coefficient",
+        "yaw_moment_ratio_seed",
+        "motor_time_constant_up_s",
+        "motor_time_constant_down_s",
+        "enable_rotor_gyro_default",
+        "enable_body_drag_default",
+        "enable_angular_damping_default",
+        "identification_status",
+        "do_not_promote_boundary"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "record source lacks source-labeled provenance fields",
+        "future MWORKS check_model reports authorization, translation, or structural error"
+      ]
+    },
+    {
+      "order": 2,
+      "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+      "target_kind": "formal_dynamics_alias",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150RflyStyleRotorDynamics",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+      "expected_result_variables": [
+        "motor_command",
+        "omega",
+        "motor_tau",
+        "thrust",
+        "yaw_reaction_moment",
+        "rotor_arm_moment",
+        "total_thrust",
+        "total_moment_body",
+        "hover_thrust_error"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "formal alias or compatibility alias missing",
+        "future MWORKS check_model reports authorization, translation, package, or structural error"
+      ]
+    },
+    {
+      "order": 3,
+      "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+      "target_kind": "formal_dynamics_alias",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.ActuatorCommandMapper",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150ActuatorCommandMapper",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorCommandMapper.mo",
+      "expected_result_variables": [
+        "normalized_command",
+        "saturated_normalized_command",
+        "actuator_saturation_error",
+        "visual_rotor_speed_unsigned",
+        "signed_visual_rotor_speed_command",
+        "hover_command_error"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "formal alias or compatibility alias missing",
+        "future MWORKS check_model reports authorization, translation, package, or structural error"
+      ]
+    },
+    {
+      "order": 4,
+      "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+      "target_kind": "formal_dynamics_alias",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperSurface",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
+      "expected_result_variables": [
+        "motor_command",
+        "commanded_thrust",
+        "commanded_yaw_reaction_moment",
+        "commanded_rotor_arm_moment",
+        "total_thrust",
+        "total_moment_body",
+        "commanded_total_thrust",
+        "commanded_total_moment_body",
+        "hover_thrust_error",
+        "commanded_hover_thrust_error",
+        "yaw_moment_gate",
+        "commanded_yaw_moment_gate",
+        "motor_order_gate_error",
+        "yaw_direction_gate_error"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "formal alias or compatibility alias missing",
+        "future MWORKS check_model reports authorization, translation, package, or structural error"
+      ]
+    },
+    {
+      "order": 5,
+      "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
+      "target_kind": "formal_dynamics_alias",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.ActuatorMappedWrapperSurface",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150ActuatorMappedWrapperSurface",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorMappedWrapperSurface.mo",
+      "expected_result_variables": [
+        "normalized_actuator_command",
+        "saturated_normalized_command",
+        "actuator_saturation_error",
+        "signed_visual_rotor_speed_command",
+        "total_thrust",
+        "total_moment_body",
+        "commanded_total_thrust",
+        "commanded_total_moment_body",
+        "hover_thrust_error",
+        "commanded_hover_thrust_error",
+        "yaw_moment_gate",
+        "commanded_yaw_moment_gate",
+        "motor_order_gate_error",
+        "yaw_direction_gate_error"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "formal alias or compatibility alias missing",
+        "future MWORKS check_model reports authorization, translation, package, or structural error"
+      ]
+    },
+    {
+      "order": 6,
+      "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+      "target_kind": "formal_dynamics_alias",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.OptionalDampingGyroLayer",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150OptionalDampingGyroLayer",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150OptionalDampingGyroLayer.mo",
+      "expected_result_variables": [
+        "enable_rotor_gyro",
+        "enable_body_drag",
+        "enable_angular_damping",
+        "normalized_actuator_command",
+        "body_velocity_body",
+        "body_angular_velocity_body",
+        "base_force_body",
+        "base_moment_body",
+        "rotor_angular_momentum_body_z",
+        "rotor_gyro_moment_body",
+        "rotor_gyro_total_moment_body",
+        "body_drag_force_body",
+        "angular_damping_moment_body",
+        "optional_force_body",
+        "optional_moment_body",
+        "total_force_body",
+        "total_moment_body",
+        "optional_force_norm",
+        "optional_moment_norm",
+        "default_disabled_force_delta",
+        "default_disabled_moment_delta"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "formal alias or compatibility alias missing",
+        "future MWORKS check_model reports authorization, translation, package, or structural error"
+      ]
+    },
+    {
+      "order": 7,
+      "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+      "target_kind": "formal_dynamics_alias",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchFrameAdapter",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchFrameAdapter.mo",
+      "expected_result_variables": [
+        "applied_force_body",
+        "applied_torque_body",
+        "applied_force_z_body",
+        "applied_yaw_torque_body",
+        "force_application_error",
+        "torque_application_error",
+        "hover_weight_balance_error",
+        "wrapper_total_thrust",
+        "wrapper_yaw_moment",
+        "motor_order_gate_error",
+        "yaw_direction_gate_error"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "formal alias or compatibility alias missing",
+        "future MWORKS check_model reports authorization, translation, package, or structural error"
+      ]
+    },
+    {
+      "order": 8,
+      "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "target_kind": "formal_dynamics_alias",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeHoverSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeHoverSmoke.mo",
+      "expected_result_variables": [
+        "dynamics.total_thrust",
+        "dynamics.total_moment_body",
+        "dynamics.hover_thrust_error",
+        "dynamics.omega",
+        "dynamics.thrust"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "formal alias or compatibility alias missing",
+        "future MWORKS check_model reports authorization, translation, package, or structural error"
+      ]
+    },
+    {
+      "order": 9,
+      "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "target_kind": "formal_dynamics_alias",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeYawStepSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeYawStepSmoke.mo",
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag",
+        "dynamics.total_thrust",
+        "dynamics.total_moment_body",
+        "dynamics.hover_thrust_error",
+        "dynamics.yaw_reaction_moment"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "formal alias or compatibility alias missing",
+        "future MWORKS check_model reports authorization, translation, package, or structural error"
+      ]
+    },
+    {
+      "order": 10,
+      "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+      "target_kind": "formal_dynamics_alias",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperHoverSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperHoverSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperHoverSmoke.mo",
+      "expected_result_variables": [
+        "wrapper.total_thrust",
+        "wrapper.total_moment_body",
+        "wrapper.commanded_total_thrust",
+        "wrapper.commanded_total_moment_body",
+        "wrapper.hover_thrust_error",
+        "wrapper.commanded_hover_thrust_error",
+        "wrapper.motor_order_gate_error",
+        "wrapper.yaw_direction_gate_error"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "formal alias or compatibility alias missing",
+        "future MWORKS check_model reports authorization, translation, package, or structural error"
+      ]
+    },
+    {
+      "order": 11,
+      "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+      "target_kind": "formal_dynamics_alias",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperYawStepSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperYawStepSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperYawStepSmoke.mo",
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag",
+        "wrapper.total_thrust",
+        "wrapper.total_moment_body",
+        "wrapper.commanded_total_thrust",
+        "wrapper.commanded_total_moment_body",
+        "wrapper.yaw_moment_gate",
+        "wrapper.commanded_yaw_moment_gate"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "formal alias or compatibility alias missing",
+        "future MWORKS check_model reports authorization, translation, package, or structural error"
+      ]
+    },
+    {
+      "order": 12,
+      "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+      "target_kind": "formal_dynamics_alias",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchHoverSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchHoverSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchHoverSmoke.mo",
+      "expected_result_variables": [
+        "adapter.applied_force_body",
+        "adapter.applied_torque_body",
+        "adapter.applied_force_z_body",
+        "adapter.applied_yaw_torque_body",
+        "adapter.force_application_error",
+        "adapter.torque_application_error",
+        "adapter.hover_weight_balance_error",
+        "adapter.wrapper_total_thrust",
+        "adapter.wrapper_yaw_moment"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "formal alias or compatibility alias missing",
+        "future MWORKS check_model reports authorization, translation, package, or structural error"
+      ]
+    },
+    {
+      "order": 13,
+      "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
+      "target_kind": "formal_dynamics_alias",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchYawStepSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchYawStepSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchYawStepSmoke.mo",
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag",
+        "adapter.applied_force_body",
+        "adapter.applied_torque_body",
+        "adapter.applied_force_z_body",
+        "adapter.applied_yaw_torque_body",
+        "adapter.force_application_error",
+        "adapter.torque_application_error",
+        "adapter.wrapper_yaw_moment"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "formal alias or compatibility alias missing",
+        "future MWORKS check_model reports authorization, translation, package, or structural error"
+      ]
+    }
+  ],
+  "future_simulate_model_plan": [
+    {
+      "order": 1,
+      "operation": "SimulateModel",
+      "target": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "only_after": "all check_model plan entries pass in this exact order",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeHoverSmoke.mo",
+      "expected_result_variables": [
+        "dynamics.total_thrust",
+        "dynamics.total_moment_body",
+        "dynamics.hover_thrust_error",
+        "dynamics.omega",
+        "dynamics.thrust"
+      ],
+      "result_probe_required": true,
+      "blocker_on": [
+        "any preceding check_model target failed",
+        "SimulateModel fails or has no native result/.msr locator",
+        "any expected result variable is missing from native result/.msr evidence"
+      ]
+    },
+    {
+      "order": 2,
+      "operation": "SimulateModel",
+      "target": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "only_after": "all check_model plan entries pass in this exact order",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeYawStepSmoke.mo",
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag",
+        "dynamics.total_thrust",
+        "dynamics.total_moment_body",
+        "dynamics.hover_thrust_error",
+        "dynamics.yaw_reaction_moment"
+      ],
+      "result_probe_required": true,
+      "blocker_on": [
+        "any preceding check_model target failed",
+        "SimulateModel fails or has no native result/.msr locator",
+        "any expected result variable is missing from native result/.msr evidence"
+      ]
+    },
+    {
+      "order": 3,
+      "operation": "SimulateModel",
+      "target": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+      "only_after": "all check_model plan entries pass in this exact order",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperHoverSmoke.mo",
+      "expected_result_variables": [
+        "wrapper.total_thrust",
+        "wrapper.total_moment_body",
+        "wrapper.commanded_total_thrust",
+        "wrapper.commanded_total_moment_body",
+        "wrapper.hover_thrust_error",
+        "wrapper.commanded_hover_thrust_error",
+        "wrapper.motor_order_gate_error",
+        "wrapper.yaw_direction_gate_error"
+      ],
+      "result_probe_required": true,
+      "blocker_on": [
+        "any preceding check_model target failed",
+        "SimulateModel fails or has no native result/.msr locator",
+        "any expected result variable is missing from native result/.msr evidence"
+      ]
+    },
+    {
+      "order": 4,
+      "operation": "SimulateModel",
+      "target": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+      "only_after": "all check_model plan entries pass in this exact order",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperYawStepSmoke.mo",
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag",
+        "wrapper.total_thrust",
+        "wrapper.total_moment_body",
+        "wrapper.commanded_total_thrust",
+        "wrapper.commanded_total_moment_body",
+        "wrapper.yaw_moment_gate",
+        "wrapper.commanded_yaw_moment_gate"
+      ],
+      "result_probe_required": true,
+      "blocker_on": [
+        "any preceding check_model target failed",
+        "SimulateModel fails or has no native result/.msr locator",
+        "any expected result variable is missing from native result/.msr evidence"
+      ]
+    },
+    {
+      "order": 5,
+      "operation": "SimulateModel",
+      "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+      "only_after": "all check_model plan entries pass in this exact order",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchHoverSmoke.mo",
+      "expected_result_variables": [
+        "adapter.applied_force_body",
+        "adapter.applied_torque_body",
+        "adapter.applied_force_z_body",
+        "adapter.applied_yaw_torque_body",
+        "adapter.force_application_error",
+        "adapter.torque_application_error",
+        "adapter.hover_weight_balance_error",
+        "adapter.wrapper_total_thrust",
+        "adapter.wrapper_yaw_moment"
+      ],
+      "result_probe_required": true,
+      "blocker_on": [
+        "any preceding check_model target failed",
+        "SimulateModel fails or has no native result/.msr locator",
+        "any expected result variable is missing from native result/.msr evidence"
+      ]
+    },
+    {
+      "order": 6,
+      "operation": "SimulateModel",
+      "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
+      "only_after": "all check_model plan entries pass in this exact order",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchYawStepSmoke.mo",
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag",
+        "adapter.applied_force_body",
+        "adapter.applied_torque_body",
+        "adapter.applied_force_z_body",
+        "adapter.applied_yaw_torque_body",
+        "adapter.force_application_error",
+        "adapter.torque_application_error",
+        "adapter.wrapper_yaw_moment"
+      ],
+      "result_probe_required": true,
+      "blocker_on": [
+        "any preceding check_model target failed",
+        "SimulateModel fails or has no native result/.msr locator",
+        "any expected result variable is missing from native result/.msr evidence"
+      ]
+    }
+  ],
+  "result_variable_probe_manifest": "Results/mworks_model_hygiene/20260608_024_mosimquad_live_gate_runner_static_hardening/result_variable_probe_plan.json",
+  "target_resolution_manifest": "Results/mworks_model_hygiene/20260608_024_mosimquad_live_gate_runner_static_hardening/target_resolution_check.json",
+  "stop_conditions": [
+    "target resolution status is not passed_static",
+    "license/login/authorization/GUI/preflight state is blocking or unknown in a future live task",
+    "any check_model target fails",
+    "any simulate target fails",
+    "any expected result variable is absent from the future native result/.msr output",
+    "a future repair would change dynamics behavior or tune parameters"
+  ],
+  "forbidden_future_shortcuts": [
+    "Do not use check_model(reload_mo_path=...) as a reload shortcut.",
+    "Do not call ClearAll or ChangeDirectory.",
+    "Do not run SimulateModel before every check_model target passes.",
+    "Do not treat a JSON packet, ledger, or PROGRESS entry as engineering evidence."
+  ],
+  "findings": []
+}

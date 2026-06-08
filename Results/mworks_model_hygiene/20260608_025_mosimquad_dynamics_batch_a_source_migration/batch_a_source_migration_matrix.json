@@ -1,0 +1,75 @@
+{
+  "schema": "mosim.mworks.dynamics_batch_a_source_migration_matrix.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025",
+  "status": "passed_static",
+  "static_only": true,
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "batch_scope": [
+    "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+    "MoSimQuadrotorModel.Dynamics.WrapperSurface"
+  ],
+  "deferred_targets": [
+    "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+    "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+    "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
+    "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+    "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke"
+  ],
+  "targets": [
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+      "formal_source": "Models/MoSimQuadrotorModel/Dynamics/RotorActuatorCore.mo",
+      "formal_source_present": true,
+      "formal_order_present": true,
+      "formal_package_inline_duplicate": false,
+      "formal_extends_expected_legacy_alias": true,
+      "legacy_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+      "legacy_order_present": true,
+      "legacy_alias_present": true,
+      "legacy_alias_extends_expected_implementation": true,
+      "legacy_implementation": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+      "legacy_implementation_present": true,
+      "migration_state": "formal_source_materialized_extends_only"
+    },
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+      "formal_source": "Models/MoSimQuadrotorModel/Dynamics/WrapperSurface.mo",
+      "formal_source_present": true,
+      "formal_order_present": true,
+      "formal_package_inline_duplicate": false,
+      "formal_extends_expected_legacy_alias": true,
+      "legacy_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+      "legacy_order_present": true,
+      "legacy_alias_present": true,
+      "legacy_alias_extends_expected_implementation": true,
+      "legacy_implementation": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
+      "legacy_implementation_present": true,
+      "migration_state": "formal_source_materialized_extends_only"
+    }
+  ],
+  "source_surface_policy": {
+    "formal_sources_are_extends_only": true,
+    "legacy_aliases_preserved": true,
+    "legacy_implementations_preserved": true,
+    "dynamics_equations_changed_by_batch_a": false,
+    "numeric_parameters_changed_by_batch_a": false,
+    "broad_rename_or_search_replace_used": false
+  },
+  "component_rechecks": {
+    "rotor_actuator_core": {
+      "status": "passed",
+      "artifact_dir": "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/rotor_actuator_core_recheck"
+    },
+    "wrapper_surface": {
+      "status": "passed",
+      "artifact_dir": "Results/mworks_model_hygiene/20260608_025_mosimquad_dynamics_batch_a_source_migration/wrapper_surface_recheck"
+    }
+  },
+  "findings": []
+}

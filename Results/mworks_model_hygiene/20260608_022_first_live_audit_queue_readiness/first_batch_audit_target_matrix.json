@@ -1,0 +1,140 @@
+{
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-FIRST-LIVE-AUDIT-QUEUE-STATIC-READINESS-20260608-022",
+  "source_queue": "Results/mworks_model_hygiene/20260608_021_mosimquad_r2_017_corrected_static_closeout/future_live_audit_queue_update.json",
+  "status": "readiness_matrix_prepared_but_live_execution_blocked",
+  "resource_lock": "one reusable existing MWORKS/Sysplorer main session; no parallel R1/R2 live model work",
+  "live_route_required_before_execution": "approved attach-existing/no-start/foreground route with before/after inventory proving no new MWORKS/Sysplorer process, window, or port",
+  "first_batch_targets": [
+    {
+      "batch_order": 1,
+      "target": "MoSimQuadrotorModel",
+      "target_type": "root_package",
+      "static_source_basis": "021 future live audit queue",
+      "package_browser_acceptance_items": [
+        "Root package browser shows 12 categories.",
+        "Categories include Baseline, Dynamics, Parameters, Missions, Controllers, Robustness, Planning, SceneTrace, System, Formation, Support, LegacyCompatibility.",
+        "Parameters appears after Dynamics in the visible order."
+      ],
+      "required_screenshots": [
+        "foreground_or_maximized_target_window evidence before live acceptance if activation/login/license readiness is being claimed",
+        "DPI-aware background full-window capture after root package browser is visible"
+      ],
+      "owner_split": "R2 observes package-browser surface after PMO/CoAgentOps proves live route; no check_model claim in this row.",
+      "blocker_conditions": [
+        "approved no-start route missing",
+        "root package not visible",
+        "category count/order mismatch",
+        "helper/proxy/unknown window obstructs review",
+        "demo/login/license/authorization/error-report evidence"
+      ]
+    },
+    {
+      "batch_order": 2,
+      "target": "MoSimQuadrotorModel.Dynamics",
+      "target_type": "formal_dynamics_package",
+      "static_source_basis": "021 corrected static closeout resolved sibling .mo targets and queued 12 formal entries",
+      "entries": [
+        "RotorActuatorCore",
+        "HoverSmoke",
+        "YawStepSmoke",
+        "WrapperSurface",
+        "ActuatorCommandMapper",
+        "ActuatorMappedWrapperSurface",
+        "OptionalDampingGyroLayer",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "package_browser_acceptance_items": [
+        "Package browser shows all 12 public formal Dynamics entries.",
+        "No hidden Sunray150 implementation-only sibling file is treated as public browser acceptance evidence unless package/order intentionally exposes it.",
+        "Names match 021 queue exactly."
+      ],
+      "check_model_owner": "R1 or separately scoped live validation after route proof; R2 does not claim check_model in 022.",
+      "graphical_review_after_gate": "R2 layout/wiring review starts only after package-browser/load/check gates identify which classes need diagram inspection.",
+      "required_screenshots": [
+        "DPI-aware package-browser capture for Dynamics package",
+        "For diagram/layout rows, full-window capture with the target diagram open and written observations of blank/white blocks, crossing lines, hidden ports, or unreadable labels"
+      ],
+      "blocker_conditions": [
+        "any entry missing from package browser",
+        "check_model is required but live route is not approved",
+        "diagram opens blank or ambiguous and cannot be captured without GUI operation outside scope"
+      ]
+    },
+    {
+      "batch_order": 3,
+      "target": "QuadrotorExperiments.DynamicsUpgrade",
+      "target_type": "legacy_compatibility_package",
+      "static_source_basis": "021 queue keeps compatibility aliases public and sibling implementation classes hidden from package.order",
+      "entries": [
+        "RotorDynamicsCore",
+        "RotorHoverSmoke",
+        "RotorYawStepSmoke",
+        "WrapperSurface",
+        "ActuatorCommandMapper",
+        "ActuatorMappedWrapperSurface",
+        "OptionalDampingGyroLayer",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "package_browser_acceptance_items": [
+        "Compatibility package browser shows 12 public aliases.",
+        "Legacy public aliases still resolve as compatibility entry points after formal package migration.",
+        "Implementation-only Sunray150*.mo sibling classes stay out of public package.order unless a later migration task explicitly promotes them."
+      ],
+      "owner_split": "R2 package-browser observation; R1 check_model if PMO assigns live compatibility check.",
+      "blocker_conditions": [
+        "compatibility alias missing",
+        "implementation-only sibling classes appear as unintended public order entries",
+        "legacy compatibility surface requires source edits, which are not allowed in 022"
+      ]
+    },
+    {
+      "batch_order": 4,
+      "target": "MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance",
+      "target_type": "parameter_provenance_package_entry",
+      "static_source_basis": "021 queue identifies Parameters visibility/load/check as a future live gate",
+      "package_browser_acceptance_items": [
+        "Parameters package is visible from root.",
+        "Sunray150ParameterProvenance is visible/loadable as a provenance entry.",
+        "No parameter identification or promotion claim is made from visibility alone."
+      ],
+      "check_model_owner": "R1 or separately scoped live validation after approved route proof.",
+      "blocker_conditions": [
+        "Parameters category absent",
+        "provenance class absent",
+        "reviewer attempts to treat provenance visibility as identified Sunray150 parameter truth"
+      ]
+    },
+    {
+      "batch_order": 5,
+      "target": "R2 graphical/layout/wiring review queue",
+      "target_type": "future_review_phase",
+      "static_source_basis": "021 queue step 5",
+      "entry_condition": "Run only after package-browser/load/check gates are available and live route is proven no-start.",
+      "review_items": [
+        "Diagram opens on intended model/class, not a helper/proxy or wrong app surface.",
+        "No blank/white placeholder blocks or unknown icons are left without a classification note.",
+        "Port labels, component names, and signal direction are readable in full-window capture.",
+        "Crossing lines, hidden lines, and overlapping annotations are listed as layout risks.",
+        "Result windows are reviewed only if a later task explicitly produces result evidence; 022 does not."
+      ],
+      "required_screenshots": [
+        "DPI-aware full-window background captures for ordinary layout/wiring review",
+        "Foreground/maximized target-window evidence only when activation/login/license acceptance is asserted"
+      ],
+      "blocker_conditions": [
+        "package/load/check gates not complete",
+        "no approved live route",
+        "review would require Smart Layout writeback or model edits",
+        "review would require closing/restarting/saving MWORKS"
+      ]
+    }
+  ]
+}

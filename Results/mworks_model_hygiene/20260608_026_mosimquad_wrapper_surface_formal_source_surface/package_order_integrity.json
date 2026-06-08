@@ -1,0 +1,14 @@
+{
+  "schema": "mosim.mworks.package_order_integrity.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-WRAPPER-SURFACE-FORMAL-SOURCE-SURFACE-20260608-026",
+  "status": "passed_static",
+  "formal_package_order_contains_wrapper_surface": true,
+  "formal_package_mo_no_inline_duplicate": true,
+  "formal_source_file_present": true,
+  "legacy_package_order_contains_wrapper_surface": true,
+  "legacy_package_alias_present": true,
+  "legacy_implementation_file_present": true,
+  "legacy_core_file_present": true,
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false
+}

@@ -1,0 +1,102 @@
+{
+  "schema": "mosim.mworks.rotor_actuator_core_surface_check.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-ROTOR-ACTUATOR-CORE-FORMAL-SOURCE-SURFACE-20260608-025",
+  "status": "passed_static",
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "formal_target": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+  "formal_source": "Models/MoSimQuadrotorModel/Dynamics/RotorActuatorCore.mo",
+  "formal_package": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+  "formal_package_order": "Models/MoSimQuadrotorModel/Dynamics/package.order",
+  "legacy_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+  "legacy_package": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+  "legacy_package_order": "Models/QuadrotorExperiments/DynamicsUpgrade/package.order",
+  "legacy_implementation": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+  "behavior_preservation": {
+    "formal_source_is_extends_only": true,
+    "formal_source_duplicates_equations": false,
+    "legacy_alias_preserved": true,
+    "legacy_implementation_preserved": true,
+    "dynamics_equations_changed_by_025": false,
+    "numeric_parameters_changed_by_025": false
+  },
+  "implementation_anchors": [
+    {
+      "anchor": "der(omega[i]) = (motor_command[i] - omega[i]) / motor_tau[i]",
+      "present": true
+    },
+    {
+      "anchor": "thrust[i] = lift_coefficient * omega[i] * omega[i]",
+      "present": true
+    },
+    {
+      "anchor": "yaw_reaction_moment[i] = yaw_direction[i] * moment_constant * thrust[i]",
+      "present": true
+    },
+    {
+      "anchor": "rotor_arm_moment[i, 1] = rotor_center[i, 2] * thrust[i]",
+      "present": true
+    },
+    {
+      "anchor": "rotor_arm_moment[i, 2] = -rotor_center[i, 1] * thrust[i]",
+      "present": true
+    },
+    {
+      "anchor": "rotor_arm_moment[i, 3] = yaw_reaction_moment[i]",
+      "present": true
+    },
+    {
+      "anchor": "total_thrust = sum(thrust)",
+      "present": true
+    },
+    {
+      "anchor": "hover_thrust_error = total_thrust - mass_kg * 9.81",
+      "present": true
+    }
+  ],
+  "provenance_anchors": [
+    {
+      "anchor": "source=SDF_migration; not a measured Sunray150 takeoff mass",
+      "present": true
+    },
+    {
+      "anchor": "source=SDF_migration; Sunray motorConstant scaled by rotorVelocitySlowdownSim^2",
+      "present": true
+    },
+    {
+      "anchor": "source=SDF_migration; Gazebo/Sunray yaw moment ratio seed, not ULog identified",
+      "present": true
+    },
+    {
+      "anchor": "source=SDF_migration; Sunray SDF motor plugin timeConstantUp",
+      "present": true
+    },
+    {
+      "anchor": "source=SDF_migration; Sunray SDF motor plugin timeConstantDown",
+      "present": true
+    },
+    {
+      "anchor": "source=user-reviewed DAE screw-pair fit, mapped to MWORKS Dronefixed1..4 order",
+      "present": true
+    }
+  ],
+  "rotor_center_anchors": [
+    {
+      "row": "0.053745, -0.053740, -0.014052",
+      "present_in_legacy_impl_and_parameters": true
+    },
+    {
+      "row": "0.053746,  0.053759, -0.014052",
+      "present_in_legacy_impl_and_parameters": true
+    },
+    {
+      "row": "-0.053761,  0.053760, -0.014052",
+      "present_in_legacy_impl_and_parameters": true
+    },
+    {
+      "row": "-0.053761, -0.053739, -0.014052",
+      "present_in_legacy_impl_and_parameters": true
+    }
+  ],
+  "findings": []
+}

@@ -1,0 +1,265 @@
+{
+  "schema": "mosim.mworks.result_variable_probe_plan.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-LIVE-GATE-RUNNER-STATIC-HARDENING-20260608-024",
+  "status": "prepared_static_only",
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "boundary": "This manifest defines future native result/.msr probes only; 024 does not claim variables were produced by MWORKS.",
+  "probe_count": 12,
+  "simulate_probe_count": 6,
+  "check_only_observability_count": 6,
+  "probes": [
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+      "role": "core_dynamics_check",
+      "probe_phase": "future_observability_queue_check_only",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+      "expected_result_variables": [
+        "motor_command",
+        "omega",
+        "motor_tau",
+        "thrust",
+        "yaw_reaction_moment",
+        "rotor_arm_moment",
+        "total_thrust",
+        "total_moment_body",
+        "hover_thrust_error"
+      ],
+      "missing_variable_classification": "smoke_surface_blocker",
+      "live_evidence_required_in_future_task": false,
+      "not_claimed_by_024": true
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+      "role": "normalized_command_mapper_check",
+      "probe_phase": "future_observability_queue_check_only",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorCommandMapper.mo",
+      "expected_result_variables": [
+        "normalized_command",
+        "saturated_normalized_command",
+        "actuator_saturation_error",
+        "visual_rotor_speed_unsigned",
+        "signed_visual_rotor_speed_command",
+        "hover_command_error"
+      ],
+      "missing_variable_classification": "smoke_surface_blocker",
+      "live_evidence_required_in_future_task": false,
+      "not_claimed_by_024": true
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+      "role": "wrapper_force_moment_surface_check",
+      "probe_phase": "future_observability_queue_check_only",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
+      "expected_result_variables": [
+        "motor_command",
+        "commanded_thrust",
+        "commanded_yaw_reaction_moment",
+        "commanded_rotor_arm_moment",
+        "total_thrust",
+        "total_moment_body",
+        "commanded_total_thrust",
+        "commanded_total_moment_body",
+        "hover_thrust_error",
+        "commanded_hover_thrust_error",
+        "yaw_moment_gate",
+        "commanded_yaw_moment_gate",
+        "motor_order_gate_error",
+        "yaw_direction_gate_error"
+      ],
+      "missing_variable_classification": "smoke_surface_blocker",
+      "live_evidence_required_in_future_task": false,
+      "not_claimed_by_024": true
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
+      "role": "mapper_to_wrapper_surface_check",
+      "probe_phase": "future_observability_queue_check_only",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorMappedWrapperSurface.mo",
+      "expected_result_variables": [
+        "normalized_actuator_command",
+        "saturated_normalized_command",
+        "actuator_saturation_error",
+        "signed_visual_rotor_speed_command",
+        "total_thrust",
+        "total_moment_body",
+        "commanded_total_thrust",
+        "commanded_total_moment_body",
+        "hover_thrust_error",
+        "commanded_hover_thrust_error",
+        "yaw_moment_gate",
+        "commanded_yaw_moment_gate",
+        "motor_order_gate_error",
+        "yaw_direction_gate_error"
+      ],
+      "missing_variable_classification": "smoke_surface_blocker",
+      "live_evidence_required_in_future_task": false,
+      "not_claimed_by_024": true
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+      "role": "default_disabled_optional_layer_check",
+      "probe_phase": "future_observability_queue_check_only",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150OptionalDampingGyroLayer.mo",
+      "expected_result_variables": [
+        "enable_rotor_gyro",
+        "enable_body_drag",
+        "enable_angular_damping",
+        "normalized_actuator_command",
+        "body_velocity_body",
+        "body_angular_velocity_body",
+        "base_force_body",
+        "base_moment_body",
+        "rotor_angular_momentum_body_z",
+        "rotor_gyro_moment_body",
+        "rotor_gyro_total_moment_body",
+        "body_drag_force_body",
+        "angular_damping_moment_body",
+        "optional_force_body",
+        "optional_moment_body",
+        "total_force_body",
+        "total_moment_body",
+        "optional_force_norm",
+        "optional_moment_norm",
+        "default_disabled_force_delta",
+        "default_disabled_moment_delta"
+      ],
+      "missing_variable_classification": "smoke_surface_blocker",
+      "live_evidence_required_in_future_task": false,
+      "not_claimed_by_024": true
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+      "role": "physical_wrench_boundary_check",
+      "probe_phase": "future_observability_queue_check_only",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchFrameAdapter.mo",
+      "expected_result_variables": [
+        "applied_force_body",
+        "applied_torque_body",
+        "applied_force_z_body",
+        "applied_yaw_torque_body",
+        "force_application_error",
+        "torque_application_error",
+        "hover_weight_balance_error",
+        "wrapper_total_thrust",
+        "wrapper_yaw_moment",
+        "motor_order_gate_error",
+        "yaw_direction_gate_error"
+      ],
+      "missing_variable_classification": "smoke_surface_blocker",
+      "live_evidence_required_in_future_task": false,
+      "not_claimed_by_024": true
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "role": "core_hover_smoke",
+      "probe_phase": "after_simulate_model",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeHoverSmoke.mo",
+      "expected_result_variables": [
+        "dynamics.total_thrust",
+        "dynamics.total_moment_body",
+        "dynamics.hover_thrust_error",
+        "dynamics.omega",
+        "dynamics.thrust"
+      ],
+      "missing_variable_classification": "smoke_surface_blocker",
+      "live_evidence_required_in_future_task": true,
+      "not_claimed_by_024": true
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "role": "core_yaw_step_smoke",
+      "probe_phase": "after_simulate_model",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeYawStepSmoke.mo",
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag",
+        "dynamics.total_thrust",
+        "dynamics.total_moment_body",
+        "dynamics.hover_thrust_error",
+        "dynamics.yaw_reaction_moment"
+      ],
+      "missing_variable_classification": "smoke_surface_blocker",
+      "live_evidence_required_in_future_task": true,
+      "not_claimed_by_024": true
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+      "role": "wrapper_hover_smoke",
+      "probe_phase": "after_simulate_model",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperHoverSmoke.mo",
+      "expected_result_variables": [
+        "wrapper.total_thrust",
+        "wrapper.total_moment_body",
+        "wrapper.commanded_total_thrust",
+        "wrapper.commanded_total_moment_body",
+        "wrapper.hover_thrust_error",
+        "wrapper.commanded_hover_thrust_error",
+        "wrapper.motor_order_gate_error",
+        "wrapper.yaw_direction_gate_error"
+      ],
+      "missing_variable_classification": "smoke_surface_blocker",
+      "live_evidence_required_in_future_task": true,
+      "not_claimed_by_024": true
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+      "role": "wrapper_yaw_step_smoke",
+      "probe_phase": "after_simulate_model",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperYawStepSmoke.mo",
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag",
+        "wrapper.total_thrust",
+        "wrapper.total_moment_body",
+        "wrapper.commanded_total_thrust",
+        "wrapper.commanded_total_moment_body",
+        "wrapper.yaw_moment_gate",
+        "wrapper.commanded_yaw_moment_gate"
+      ],
+      "missing_variable_classification": "smoke_surface_blocker",
+      "live_evidence_required_in_future_task": true,
+      "not_claimed_by_024": true
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+      "role": "physical_wrench_hover_smoke",
+      "probe_phase": "after_simulate_model",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchHoverSmoke.mo",
+      "expected_result_variables": [
+        "adapter.applied_force_body",
+        "adapter.applied_torque_body",
+        "adapter.applied_force_z_body",
+        "adapter.applied_yaw_torque_body",
+        "adapter.force_application_error",
+        "adapter.torque_application_error",
+        "adapter.hover_weight_balance_error",
+        "adapter.wrapper_total_thrust",
+        "adapter.wrapper_yaw_moment"
+      ],
+      "missing_variable_classification": "smoke_surface_blocker",
+      "live_evidence_required_in_future_task": true,
+      "not_claimed_by_024": true
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
+      "role": "physical_wrench_yaw_step_smoke",
+      "probe_phase": "after_simulate_model",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchYawStepSmoke.mo",
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag",
+        "adapter.applied_force_body",
+        "adapter.applied_torque_body",
+        "adapter.applied_force_z_body",
+        "adapter.applied_yaw_torque_body",
+        "adapter.force_application_error",
+        "adapter.torque_application_error",
+        "adapter.wrapper_yaw_moment"
+      ],
+      "missing_variable_classification": "smoke_surface_blocker",
+      "live_evidence_required_in_future_task": true,
+      "not_claimed_by_024": true
+    }
+  ]
+}

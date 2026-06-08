@@ -1,0 +1,70 @@
+{
+  "schema": "mosim.mworks.formal_smoke_surface.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-FORMAL-SMOKE-SURFACE-STATIC-PREP-20260608-023",
+  "status": "prepared_static_only",
+  "preconditions": [
+    "CoAgentOps/PMO must provide a reusable existing MWORKS/Sysplorer attach route before live work.",
+    "Stop on demo, login, activation, authorization, GUI error-report, mixed license, visible unknown, unavailable, or unknown GUI/API state.",
+    "Use targeted model_manager(load_file, force_reload=true) followed by check_model(model_names=[...]); avoid check_model(reload_mo_path=...).",
+    "Do not call ClearAll or ChangeDirectory.",
+    "Do not edit References/MWORKS/QuadrotorModel."
+  ],
+  "check_model_target_order": [
+    "MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance",
+    "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+    "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+    "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+    "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
+    "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+    "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+    "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke"
+  ],
+  "minimal_simulate_order_after_all_checks_pass": [
+    "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+    "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke"
+  ],
+  "result_probe_required": [
+    "Open/read native result or .msr variables for each simulated target.",
+    "Classify missing result variables as smoke-surface blocker, not as simulation success.",
+    "Record phase screenshots/observations only in the future live task, not in this static 023 task."
+  ],
+  "optional_probe_queue": [
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
+      "probe": "normalized_actuator_command feeds signed_visual_rotor_speed_command into wrapper.motor_command",
+      "not_claimed_by_023": true
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+      "probe": "default_disabled_force_delta and default_disabled_moment_delta remain zero under default flags",
+      "not_claimed_by_023": true
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+      "probe": "applied_force_body and applied_torque_body reach explicit minimal MultiBody body through WorldForceAndTorque",
+      "not_claimed_by_023": true
+    }
+  ],
+  "not_claimed_by_023": [
+    "live MWORKS load",
+    "check_model",
+    "SimulateModel",
+    ".msr or native result evidence",
+    "graphical/layout/package-browser acceptance",
+    "controller performance",
+    "planner_ready",
+    "runtime ack",
+    "mission success",
+    "identified parameter truth",
+    "closed_loop"
+  ]
+}

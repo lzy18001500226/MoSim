@@ -1,0 +1,70 @@
+{
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-STATIC-ORGANIZATION-CLASSIFICATION-AUDIT-20260608-023",
+  "generated_at": "2026-06-08T16:35:08+08:00",
+  "drift_from_r2_015_and_021": [
+    {
+      "source": "R2 015",
+      "status": "partially_stale",
+      "details": "015 formal package map had older counts. Current root package.order has 12 categories including Parameters and current ordered child entries are regenerated from source."
+    },
+    {
+      "source": "R2 021",
+      "status": "current_for_static_parser_boundary",
+      "details": "021 corrected sibling .mo false positives and remains the boundary for static extends resolution, but 023 focuses on user-facing classification, not parser correction."
+    },
+    {
+      "source": "R2 022",
+      "status": "still_blocks_live_audit",
+      "details": "022 live route blocker remains: approved reusable attach-existing/no-start foreground route is missing."
+    }
+  ],
+  "duplicate_or_confusing_surfaces": [
+    {
+      "surface": "MoSimQuadrotorModel.Missions versus QuadrotorExperiments.OfficialScenarios",
+      "status": "intentional_duplicate_alias_surface",
+      "recommendation": "Use MoSimQuadrotorModel as user-facing formal surface; keep legacy for compatibility."
+    },
+    {
+      "surface": "MoSimQuadrotorModel.Robustness.PIDBaselines versus ControllerBaselines",
+      "status": "baseline_overlap",
+      "recommendation": "Keep both as baseline/reference; do not promote PID baseline variants as new control achievements."
+    },
+    {
+      "surface": "Planning display/review helpers mixed with closed-loop planning entries",
+      "status": "classification_risk",
+      "recommendation": "Future package-surface cleanup should separate review helpers from closed-loop planning models."
+    },
+    {
+      "surface": "SceneTrace AcceptedScenes and TraceIsolation",
+      "status": "diagnostic_ladder_risk",
+      "recommendation": "Keep Isolation visible only as diagnostic, and do not overpopulate the first live audit batch."
+    }
+  ],
+  "obsolete_or_review_helper_candidates": [
+    {
+      "surface": "QuadrotorExperiments.TraceIsolation.FactoryTraceIso01..FactoryTraceIso30",
+      "classification": "diagnostic_ladder_not_obsolete_but_not_primary_surface",
+      "recommendation": "在中文说明中标为 trace/接线逐层诊断，后续 package browser 可放到 SceneTrace.Isolation 折叠入口，不进入 Missions/Planning 主线。"
+    },
+    {
+      "surface": "QuadrotorExperiments.PlanningScenarios.PlanningNavigationDisplay",
+      "classification": "review_display_helper",
+      "recommendation": "保留为 Planning 支撑/显示审查对象；不能当作规划闭环性能验收。"
+    },
+    {
+      "surface": "QuadrotorExperiments.PlanningScenarios.Sunray150PlanningOpenBlocksColorMapReview",
+      "classification": "review_display_helper",
+      "recommendation": "保留为地图/颜色审查入口；下一步 live 图形审核只检查显示完整性，不声明控制性能。"
+    },
+    {
+      "surface": "Any user-observed white/blank package/browser or diagram tiles",
+      "classification": "live_graphical_review_required",
+      "recommendation": "静态审查不能解释白色/空白 GUI；等待 approved no-start MWORKS route 后由 R2 做截图和 written observation。"
+    },
+    {
+      "surface": "QuadrotorControllerBlocks *_backup/upgrade",
+      "classification": "private_backup_not_public_package_surface",
+      "recommendation": "继续排除在 public package.order 和 MoSimQuadrotorModel.Controllers 分类入口之外。"
+    }
+  ]
+}

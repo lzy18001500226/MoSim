@@ -1,0 +1,161 @@
+{
+  "schema": "mosim.mworks.actuator_command_mapper_surface_check.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-ACTUATOR-COMMAND-MAPPER-FORMAL-SOURCE-SURFACE-20260608-027",
+  "status": "passed_static",
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "formal_target": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+  "formal_source": "Models/MoSimQuadrotorModel/Dynamics/ActuatorCommandMapper.mo",
+  "formal_package": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+  "formal_package_order": "Models/MoSimQuadrotorModel/Dynamics/package.order",
+  "legacy_alias": "QuadrotorExperiments.DynamicsUpgrade.ActuatorCommandMapper",
+  "legacy_package": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+  "legacy_package_order": "Models/QuadrotorExperiments/DynamicsUpgrade/package.order",
+  "legacy_implementation": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorCommandMapper.mo",
+  "behavior_preservation": {
+    "formal_source_is_extends_only": true,
+    "formal_source_duplicates_mapper_behavior": false,
+    "legacy_alias_preserved": true,
+    "legacy_implementation_preserved": true,
+    "command_mapping_equations_changed_by_027": false,
+    "numeric_parameters_changed_by_027": false,
+    "spin_command_sign_changed_by_027": false
+  },
+  "mapper_anchors": [
+    {
+      "anchor": "parameter Real normalized_command_min = 0.0",
+      "present": true
+    },
+    {
+      "anchor": "parameter Real normalized_command_max = 1.0",
+      "present": true
+    },
+    {
+      "anchor": "parameter Real hover_normalized_command = 0.5",
+      "present": true
+    },
+    {
+      "anchor": "parameter Real min_visual_rotor_speed = 0.0",
+      "present": true
+    },
+    {
+      "anchor": "parameter Real hover_visual_rotor_speed = sqrt(mass_kg * 9.81 / (4 * lift_coefficient))",
+      "present": true
+    },
+    {
+      "anchor": "parameter Real max_visual_rotor_speed = hover_visual_rotor_speed / hover_normalized_command",
+      "present": true
+    },
+    {
+      "anchor": "parameter Real spin_command_sign[4] = {1, -1, 1, -1}",
+      "present": true
+    },
+    {
+      "anchor": "input Real normalized_command[4]",
+      "present": true
+    },
+    {
+      "anchor": "Real saturated_normalized_command[4]",
+      "present": true
+    },
+    {
+      "anchor": "Real actuator_saturation_error[4]",
+      "present": true
+    },
+    {
+      "anchor": "Real visual_rotor_speed_unsigned[4](each unit = \"rad/s\")",
+      "present": true
+    },
+    {
+      "anchor": "Real signed_visual_rotor_speed_command[4](each unit = \"rad/s\")",
+      "present": true
+    },
+    {
+      "anchor": "Real hover_command_error[4]",
+      "present": true
+    },
+    {
+      "anchor": "saturated_normalized_command[i] =",
+      "present": true
+    },
+    {
+      "anchor": "if normalized_command[i] < normalized_command_min then normalized_command_min",
+      "present": true
+    },
+    {
+      "anchor": "else if normalized_command[i] > normalized_command_max then normalized_command_max",
+      "present": true
+    },
+    {
+      "anchor": "actuator_saturation_error[i] = normalized_command[i] - saturated_normalized_command[i]",
+      "present": true
+    },
+    {
+      "anchor": "visual_rotor_speed_unsigned[i] =",
+      "present": true
+    },
+    {
+      "anchor": "* (max_visual_rotor_speed - min_visual_rotor_speed)",
+      "present": true
+    },
+    {
+      "anchor": "/ (normalized_command_max - normalized_command_min)",
+      "present": true
+    },
+    {
+      "anchor": "signed_visual_rotor_speed_command[i] =",
+      "present": true
+    },
+    {
+      "anchor": "spin_command_sign[i] * visual_rotor_speed_unsigned[i]",
+      "present": true
+    },
+    {
+      "anchor": "hover_command_error[i] =",
+      "present": true
+    },
+    {
+      "anchor": "saturated_normalized_command[i] - hover_normalized_command",
+      "present": true
+    }
+  ],
+  "provenance_anchors": [
+    {
+      "anchor": "source=SDF_migration seed used only to derive hover visual speed; not identified truth",
+      "present": true
+    },
+    {
+      "anchor": "source=SDF_migration visual-speed thrust coefficient seed; not ULog identified",
+      "present": true
+    },
+    {
+      "anchor": "source=interface_seed; lower bound for normalized actuator/throttle command",
+      "present": true
+    },
+    {
+      "anchor": "source=interface_seed; upper bound for normalized actuator/throttle command",
+      "present": true
+    },
+    {
+      "anchor": "source=interface_seed; placeholder until real actuator command/RPM evidence exists",
+      "present": true
+    },
+    {
+      "anchor": "source=interface_seed; zero normalized command maps to stopped visual rotor",
+      "present": true
+    },
+    {
+      "anchor": "Derived MWORKS visual rotor hover-speed seed, not physical RPM truth",
+      "present": true
+    },
+    {
+      "anchor": "source=interface_seed derived from hover_normalized_command; not identified max speed",
+      "present": true
+    },
+    {
+      "anchor": "Existing MWORKS signed visual speed convention; not PX4 allocation proof",
+      "present": true
+    }
+  ],
+  "findings": []
+}

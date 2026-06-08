@@ -1,0 +1,65 @@
+{
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-017-CORRECTED-STATIC-CLOSEOUT-20260608-021",
+  "status": "queued_for_future_live_task_only",
+  "resource_lock": "one reusable existing MWORKS/Sysplorer main session; no parallel R1/R2 live model work",
+  "hard_preconditions": [
+    "PMO/CoAgentOps must prove an attach-only/no-start route or another approved reusable-window route before live MCP/package-browser/check_model work.",
+    "Use current live gate and stop on demo/login/authorization/error-report/visible-unknown evidence.",
+    "Do not infer live acceptance from this static 021 closeout."
+  ],
+  "first_batch_targets": [
+    {
+      "priority": 1,
+      "target": "MoSimQuadrotorModel root package",
+      "audit": "package-browser visibility for 12 categories, including Parameters after Dynamics"
+    },
+    {
+      "priority": 2,
+      "target": "MoSimQuadrotorModel.Dynamics",
+      "audit": "package-browser and check_model queue for 12 formal aliases",
+      "entries": [
+        "RotorActuatorCore",
+        "HoverSmoke",
+        "YawStepSmoke",
+        "WrapperSurface",
+        "ActuatorCommandMapper",
+        "ActuatorMappedWrapperSurface",
+        "OptionalDampingGyroLayer",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ]
+    },
+    {
+      "priority": 3,
+      "target": "QuadrotorExperiments.DynamicsUpgrade",
+      "audit": "compatibility package-browser visibility for 12 public aliases; hidden sibling implementation files are not public package.order entries",
+      "entries": [
+        "RotorDynamicsCore",
+        "RotorHoverSmoke",
+        "RotorYawStepSmoke",
+        "WrapperSurface",
+        "ActuatorCommandMapper",
+        "ActuatorMappedWrapperSurface",
+        "OptionalDampingGyroLayer",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ]
+    },
+    {
+      "priority": 4,
+      "target": "MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance",
+      "audit": "record visibility/load/check gate if live MWORKS is authorized"
+    },
+    {
+      "priority": 5,
+      "target": "R2 graphical/layout queue",
+      "audit": "future diagram/layout/wiring review only after package-browser/load gates; not claimed by 021"
+    }
+  ]
+}

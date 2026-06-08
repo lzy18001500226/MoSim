@@ -1,0 +1,275 @@
+{
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-STATIC-ORGANIZATION-CLASSIFICATION-AUDIT-20260608-023",
+  "generated_at": "2026-06-08T16:35:08+08:00",
+  "summary": "Disposition matrix for legacy QuadrotorExperiments categories and their MoSimQuadrotorModel migration/keep/deprecate treatment.",
+  "rows": [
+    {
+      "legacy_package": "QuadrotorExperiments.OfficialScenarios",
+      "current_entries": [
+        "Example1AWFF",
+        "Example1INDI",
+        "Example1L1",
+        "Example1LinearMPC",
+        "Example1PlanarFigure8Trail",
+        "Example1HelicalFigure8Trail",
+        "Example2AWFF",
+        "Example2HelixTunedAWFF",
+        "Example2INDI",
+        "Example2HelixTunedINDI",
+        "Example2LinearMPC",
+        "Example3AWFF",
+        "Example3INDI",
+        "Example3L1",
+        "Example3LinearMPC"
+      ],
+      "target_surface": "MoSimQuadrotorModel.Missions",
+      "disposition": "migrate_to_mosim_formal",
+      "reason": "这些是正式任务/控制器闭环对比入口，已经有 MoSimQuadrotorModel.Missions wrapper 和中文说明。",
+      "keep_legacy": "保留旧路径作为 compatibility alias/source until YAML/scripts/docs and live checks migrate."
+    },
+    {
+      "legacy_package": "QuadrotorExperiments.ControllerBaselines",
+      "current_entries": [
+        "AntiWindupFeedforwardCore",
+        "Example1AWFFBaseline",
+        "Example2AWFFBaseline",
+        "Example2HelixTunedAWFFBaseline",
+        "Example3AWFFBaseline",
+        "Example1ImprovedPIDBaseline",
+        "Example1EnhancedPIDBaseline",
+        "Example2ImprovedPIDBaseline",
+        "Example2EnhancedPIDBaseline",
+        "Example2HelixTunedEnhancedPIDBaseline",
+        "Example3ImprovedPIDBaseline",
+        "Example3EnhancedPIDBaseline"
+      ],
+      "target_surface": "MoSimQuadrotorModel.Controllers and legacy ControllerBaselines compatibility",
+      "disposition": "keep_legacy_reference_or_baseline",
+      "reason": "这些是 PID/AWFF 对比基线，不应被当作新主线任务；控制器正式库入口已经转到 QuadrotorControllerBlocks。",
+      "keep_legacy": "长期保留对比/报告复现实验入口，后续只补清晰中文注释和旧入口说明。"
+    },
+    {
+      "legacy_package": "QuadrotorExperiments.RobustFaultScenarios",
+      "current_entries": [
+        "PIDBaselines",
+        "RotorLoss",
+        "Mass20AWFFBaseline",
+        "Mass20AWFF",
+        "Mass20L1",
+        "Mass20LinearMPC",
+        "WindGustAWFF",
+        "WindGustAWFFBaseline",
+        "WindGustL1",
+        "WindGustLinearMPC",
+        "SafetyQPNMPC",
+        "SafetyReturnLand"
+      ],
+      "target_surface": "MoSimQuadrotorModel.Robustness",
+      "disposition": "migrate_to_mosim_formal_with_nested_batches",
+      "reason": "质量扰动、阵风、安全滤波和故障场景是工程价值主线，应分批归入 Robustness。",
+      "keep_legacy": "旧路径保留，PIDBaselines 子包保持对比基线而非正式控制改进成果。"
+    },
+    {
+      "legacy_package": "QuadrotorExperiments.RobustFaultScenarios.RotorLoss",
+      "current_entries": [
+        "Rotor1AWFF",
+        "Rotor1AWFFBaseline",
+        "Rotor1L1",
+        "Rotor1L1FaultAllocation",
+        "Rotor1L1OnlineFaultAllocation",
+        "Rotor1L1MultiFaultIsolation",
+        "Rotor1LinearMPC",
+        "Rotor1LinearMPCOnlineFaultAllocation",
+        "Rotor2AWFF",
+        "Rotor3AWFF",
+        "Rotor4AWFF",
+        "Rotor1WindGustAWFF",
+        "Rotor1WindGustAWFFFaultCompensation",
+        "Rotor1WindGustL1MultiFaultIsolation",
+        "Rotor1WindGustLinearMPCOnlineFaultAllocation",
+        "Rotor2WindGustAWFF",
+        "Rotor2L1MultiFaultIsolation",
+        "Rotor2WindGustL1MultiFaultIsolation",
+        "Rotor2WindGustLinearMPCOnlineFaultAllocation",
+        "Rotor3WindGustAWFF",
+        "Rotor3L1MultiFaultIsolation",
+        "Rotor3WindGustL1MultiFaultIsolation",
+        "Rotor3WindGustLinearMPCOnlineFaultAllocation",
+        "Rotor4WindGustAWFF",
+        "Rotor4L1MultiFaultIsolation",
+        "Rotor4WindGustL1MultiFaultIsolation",
+        "Rotor4WindGustLinearMPCOnlineFaultAllocation"
+      ],
+      "target_surface": "MoSimQuadrotorModel.Robustness.RotorLoss",
+      "disposition": "migrate_to_mosim_formal",
+      "reason": "单/多电机损失、故障分配、阵风叠加是鲁棒控制核心场景。",
+      "keep_legacy": "保留旧路径直到 live package-browser/check_model 和结果脚本完成迁移。"
+    },
+    {
+      "legacy_package": "QuadrotorExperiments.RobustFaultScenarios.PIDBaselines",
+      "current_entries": [
+        "Mass20PID",
+        "Mass20ImprovedPID",
+        "Mass20EnhancedPID",
+        "WindGustPID",
+        "WindGustImprovedPID",
+        "WindGustEnhancedPID",
+        "Rotor1LossPID",
+        "Rotor1LossImprovedPID",
+        "Rotor1LossEnhancedPID",
+        "Rotor2LossPID",
+        "Rotor3LossPID",
+        "Rotor4LossPID"
+      ],
+      "target_surface": "MoSimQuadrotorModel.Robustness.PIDBaselines",
+      "disposition": "keep_legacy_reference_or_baseline",
+      "reason": "这些是扰动/故障下的 PID 对照，不应包装成新控制成果。",
+      "keep_legacy": "保留为 baseline/reference，中文注释标明对比基线。"
+    },
+    {
+      "legacy_package": "QuadrotorExperiments.PlanningScenarios",
+      "current_entries": [
+        "QuinticReference",
+        "NavigationDisplay",
+        "OpenBlocksAWFF",
+        "OpenBlocksLinearMPC",
+        "OpenBlocksColorMapReview",
+        "CorridorGateAWFF",
+        "CorridorGateLinearMPC"
+      ],
+      "target_surface": "MoSimQuadrotorModel.Planning",
+      "disposition": "mixed_migrate_and_review_helper",
+      "reason": "OpenBlocks/CorridorGate 闭环可迁入正式规划场景；NavigationDisplay/ColorMapReview 是审查辅助。",
+      "keep_legacy": "保留旧路径；review helper 后续可放 Support/Planning.ReviewTools，不能声明控制验收。"
+    },
+    {
+      "legacy_package": "QuadrotorExperiments.SceneTraceScenarios",
+      "current_entries": [
+        "UEFactoryLinearMPC",
+        "UEFactoryTraceTable",
+        "UEDerelictLinearMPC"
+      ],
+      "target_surface": "MoSimQuadrotorModel.SceneTrace.AcceptedScenes",
+      "disposition": "migrate_to_mosim_formal_after_live_review",
+      "reason": "UE Factory/Derelict trace smoke 有工程价值，但需 live 图形/trace 证据才能升级为 accepted scene。",
+      "keep_legacy": "保留旧路径和 smoke 标签，避免误称 UE runtime acceptance。"
+    },
+    {
+      "legacy_package": "QuadrotorExperiments.TraceIsolation",
+      "current_entries": [
+        "FactoryLite",
+        "Iso01FullDisplay",
+        "Iso02ControllerOnly",
+        "Iso03PlantHoverStack",
+        "Iso04ControllerPlantWiring",
+        "Iso05CleanHoverSum",
+        "Iso06CleanControllerPlantWiring",
+        "Iso07ControllerOpenFeedback",
+        "Iso08PositionFeedback",
+        "Iso09PositionAttitudeFeedback",
+        "Iso10RollFeedback",
+        "Iso11PitchFeedback",
+        "Iso12RollFeedbackNegated",
+        "Iso13PitchFeedbackNegated",
+        "Iso14ConstantAttitudeInput",
+        "Iso15TableAttitudeInput",
+        "Iso16RealExpressionAngle",
+        "Iso17SampleHoldAngle",
+        "Iso18ProjectAttitudeEstimator",
+        "Iso19RollPitchEstimator",
+        "Iso20RollPitchYawEstimator",
+        "Iso21RateAlias",
+        "Iso22SensorDisplayReconnect",
+        "Iso23PositionSampleHold",
+        "Iso24DirectAttitudeFeedback",
+        "Iso25AttitudeSampleHold",
+        "Iso26ControllerOutput",
+        "Iso27ActuatorInput",
+        "Iso28ActuatorToWrenchBridge",
+        "Iso29ExternalFrameWrenchBoundary",
+        "Iso30ExternalBodyStateBoundary"
+      ],
+      "target_surface": "MoSimQuadrotorModel.SceneTrace.Isolation",
+      "disposition": "diagnostic_ladder_keep_out_of_primary_user_surface",
+      "reason": "FactoryTraceIso01-30 是逐层接线/显示隔离诊断梯，不是正式任务场景。",
+      "keep_legacy": "保留为诊断工具；后续 package-browser 可折叠或中文标明诊断用途。"
+    },
+    {
+      "legacy_package": "QuadrotorExperiments.DynamicsUpgrade",
+      "current_entries": [
+        "RotorDynamicsCore",
+        "RotorHoverSmoke",
+        "RotorYawStepSmoke",
+        "WrapperSurface",
+        "ActuatorCommandMapper",
+        "ActuatorMappedWrapperSurface",
+        "OptionalDampingGyroLayer",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchAdapter",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke"
+      ],
+      "target_surface": "MoSimQuadrotorModel.Dynamics",
+      "disposition": "migrate_to_mosim_formal_source_later",
+      "reason": "动力学升级是正式包核心，但 023 不移动真实实现；021 已修正隐藏 sibling .mo 静态解析边界。",
+      "keep_legacy": "保留旧实现文件直到 R1/R2 live gates 和 source migration task 明确允许。"
+    },
+    {
+      "legacy_package": "QuadrotorExperiments.SystemArchitecture",
+      "current_entries": [
+        "CompleteSystemGraphical",
+        "GPSDropout",
+        "BatteryLow",
+        "OffboardLoss",
+        "MissionFailure",
+        "GeofenceBreach"
+      ],
+      "target_surface": "MoSimQuadrotorModel.System.Architecture",
+      "disposition": "migrate_as_alias_then_live_validate",
+      "reason": "完整系统图形和故障场景需要 R2 live 图形/走线审核；当前仅可作为静态 alias surface。",
+      "keep_legacy": "保留旧路径；CompleteSystemGraphical 是优先 live 审核对象。"
+    },
+    {
+      "legacy_package": "QuadrotorExperiments.SystemModules",
+      "current_entries": [
+        "PerceptionInterface",
+        "FlightController",
+        "MissionComputer",
+        "Supervisor",
+        "BatteryPower",
+        "ESCDrive",
+        "AWFFController",
+        "MotorDrive",
+        "AirframeSensor"
+      ],
+      "target_surface": "MoSimQuadrotorModel.System.Modules",
+      "disposition": "migrate_as_alias_then_live_validate",
+      "reason": "Perception/FlightController/MissionComputer 等模块是系统包面候选，但需要图形/端口 live 审核。",
+      "keep_legacy": "保留模块旧路径和中文接口说明，禁止未经审核改连线。"
+    },
+    {
+      "legacy_package": "QuadrotorExperiments.SupportModels",
+      "current_entries": [
+        "TraceInline",
+        "TraceTable",
+        "TraceLookupStandalone",
+        "EchoMcpState"
+      ],
+      "target_surface": "MoSimQuadrotorModel.Support",
+      "disposition": "keep_as_support_not_user_mission",
+      "reason": "trace/MCP/lookup helper 是工具依赖，不应显示为正式任务或控制结果。",
+      "keep_legacy": "保留旧路径并标注工具/支撑用途。"
+    },
+    {
+      "legacy_package": "QuadrotorExperiments.FormationScenarios",
+      "current_entries": [
+        "TriangleFigure8LinearMPC"
+      ],
+      "target_surface": "MoSimQuadrotorModel.Formation",
+      "disposition": "migrate_to_mosim_formal_after_single_uav_gates",
+      "reason": "编队场景有展示价值，但应排在单机动力学/鲁棒/规划 gates 之后。",
+      "keep_legacy": "保留旧路径到 formation live audit 通过。"
+    }
+  ]
+}

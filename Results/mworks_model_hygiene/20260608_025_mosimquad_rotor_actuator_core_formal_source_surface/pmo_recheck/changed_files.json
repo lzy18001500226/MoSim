@@ -1,0 +1,26 @@
+{
+  "schema": "mosim.changed_files_manifest.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-ROTOR-ACTUATOR-CORE-FORMAL-SOURCE-SURFACE-20260608-025",
+  "modelica_source_files_changed": [
+    "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+    "Models/MoSimQuadrotorModel/Dynamics/RotorActuatorCore.mo"
+  ],
+  "legacy_source_files_changed": [],
+  "script_files_changed_by_025": [
+    "Scripts/mworks/validate_mosimquad_rotor_actuator_core_surface.py",
+    "Scripts/mworks/validate_mosimquad_formal_smoke_surface.py",
+    "Scripts/mworks/build_mosimquad_live_gate_runner_plan.py",
+    "Scripts/tests/test_mosimquad_rotor_actuator_core_surface.py",
+    "Scripts/tests/test_mosimquad_live_gate_runner_plan.py"
+  ],
+  "evidence_files_written_by_025": [
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_rotor_actuator_core_formal_source_surface/rotor_actuator_core_surface_check.json",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_rotor_actuator_core_formal_source_surface/rotor_actuator_core_surface.md",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_rotor_actuator_core_formal_source_surface/package_order_integrity.json",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_rotor_actuator_core_formal_source_surface/changed_files.json",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_rotor_actuator_core_formal_source_surface/static_validation_summary.json",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_rotor_actuator_core_formal_source_surface/formal_smoke_surface_recheck/",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_rotor_actuator_core_formal_source_surface/live_gate_runner_recheck/"
+  ],
+  "return_packet_expected": "Results/agent_packets/returns/PMO-MWORKS-R1-MOSIMQUAD-ROTOR-ACTUATOR-CORE-FORMAL-SOURCE-SURFACE-20260608-025.json"
+}

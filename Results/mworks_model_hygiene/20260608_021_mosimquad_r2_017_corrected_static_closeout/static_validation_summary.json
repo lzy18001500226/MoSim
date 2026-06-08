@@ -1,0 +1,20 @@
+{
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-017-CORRECTED-STATIC-CLOSEOUT-20260608-021",
+  "status": "passed_static_corrected_closeout",
+  "corrected_unresolved_extends_count": 0,
+  "corrected_unresolved_alias_chains_count": 0,
+  "corrected_false_positive_count": 12,
+  "source_files_changed_by_021": [],
+  "evidence_files_written_by_021": [
+    "Results/mworks_model_hygiene/20260608_021_mosimquad_r2_017_corrected_static_closeout/corrected_static_closeout_matrix.json",
+    "Results/mworks_model_hygiene/20260608_021_mosimquad_r2_017_corrected_static_closeout/corrected_static_closeout_matrix.md",
+    "Results/mworks_model_hygiene/20260608_021_mosimquad_r2_017_corrected_static_closeout/corrected_017_findings.md",
+    "Results/mworks_model_hygiene/20260608_021_mosimquad_r2_017_corrected_static_closeout/static_parser_boundary.md",
+    "Results/mworks_model_hygiene/20260608_021_mosimquad_r2_017_corrected_static_closeout/stale_evidence_map.json",
+    "Results/mworks_model_hygiene/20260608_021_mosimquad_r2_017_corrected_static_closeout/future_live_audit_queue_update.json",
+    "Results/mworks_model_hygiene/20260608_021_mosimquad_r2_017_corrected_static_closeout/future_live_audit_queue_update.md",
+    "Results/mworks_model_hygiene/20260608_021_mosimquad_r2_017_corrected_static_closeout/unresolved_blockers.json",
+    "Results/mworks_model_hygiene/20260608_021_mosimquad_r2_017_corrected_static_closeout/scope_diff_summary.md",
+    "Results/mworks_model_hygiene/20260608_021_mosimquad_r2_017_corrected_static_closeout/generate_021_corrected_static_closeout.py"
+  ]
+}

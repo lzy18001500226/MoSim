@@ -1,0 +1,17 @@
+{
+  "schema": "mosim.mworks.static_validation_summary.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-FORMAL-SMOKE-SURFACE-STATIC-PREP-20260608-023",
+  "status": "passed",
+  "static_only": true,
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "formal_targets": 12,
+  "parameter_targets": 1,
+  "findings": [],
+  "source_diff_required": false,
+  "source_diff_performed": false,
+  "claim_boundary": [
+    "023 prepares static smoke/check surface artifacts only.",
+    "023 does not claim live MWORKS load, check_model, SimulateModel, graphical/layout acceptance, controller performance, runtime ack, identified parameter truth, mission success, or closed_loop."
+  ]
+}

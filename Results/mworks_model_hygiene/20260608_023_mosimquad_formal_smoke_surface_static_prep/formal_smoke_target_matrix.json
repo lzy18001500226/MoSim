@@ -1,0 +1,383 @@
+{
+  "schema": "mosim.mworks.formal_smoke_target_matrix.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-FORMAL-SMOKE-SURFACE-STATIC-PREP-20260608-023",
+  "status": "passed_static",
+  "targets": [
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150RflyStyleRotorDynamics",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+      "role": "core_dynamics_check",
+      "check_model_order": 1,
+      "simulate_order_after_all_checks": null,
+      "expected_result_variables": [
+        "motor_command",
+        "omega",
+        "motor_tau",
+        "thrust",
+        "yaw_reaction_moment",
+        "rotor_arm_moment",
+        "total_thrust",
+        "total_moment_body",
+        "hover_thrust_error"
+      ],
+      "required_source_anchors": [
+        "der(omega[i]) = (motor_command[i] - omega[i]) / motor_tau[i]",
+        "thrust[i] = lift_coefficient * omega[i] * omega[i]",
+        "yaw_reaction_moment[i] = yaw_direction[i] * moment_constant * thrust[i]",
+        "rotor_arm_moment[i, 1] = rotor_center[i, 2] * thrust[i]",
+        "rotor_arm_moment[i, 2] = -rotor_center[i, 1] * thrust[i]"
+      ],
+      "pass_fail_boundary": "check_model must accept command lag, Ct*omega^2 thrust, yaw reaction torque, rotor-center moment, and exposed total force/moment variables.",
+      "source_status": "present_static_anchor_verified"
+    },
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.ActuatorCommandMapper",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150ActuatorCommandMapper",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorCommandMapper.mo",
+      "role": "normalized_command_mapper_check",
+      "check_model_order": 2,
+      "simulate_order_after_all_checks": null,
+      "expected_result_variables": [
+        "normalized_command",
+        "saturated_normalized_command",
+        "actuator_saturation_error",
+        "visual_rotor_speed_unsigned",
+        "signed_visual_rotor_speed_command",
+        "hover_command_error"
+      ],
+      "required_source_anchors": [
+        "input Real normalized_command[4]",
+        "saturated_normalized_command[i]",
+        "actuator_saturation_error[i] = normalized_command[i] - saturated_normalized_command[i]",
+        "signed_visual_rotor_speed_command[i] =",
+        "hover_command_error[i]"
+      ],
+      "pass_fail_boundary": "future live result probe must show normalized command saturation and signed visual rotor speed outputs are present; no PWM/RPM truth is claimed.",
+      "source_status": "present_static_anchor_verified"
+    },
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperSurface",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
+      "role": "wrapper_force_moment_surface_check",
+      "check_model_order": 3,
+      "simulate_order_after_all_checks": null,
+      "expected_result_variables": [
+        "motor_command",
+        "commanded_thrust",
+        "commanded_yaw_reaction_moment",
+        "commanded_rotor_arm_moment",
+        "total_thrust",
+        "total_moment_body",
+        "commanded_total_thrust",
+        "commanded_total_moment_body",
+        "hover_thrust_error",
+        "commanded_hover_thrust_error",
+        "yaw_moment_gate",
+        "commanded_yaw_moment_gate",
+        "motor_order_gate_error",
+        "yaw_direction_gate_error"
+      ],
+      "required_source_anchors": [
+        "dynamics.motor_command = motor_command",
+        "commanded_thrust[i] = dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
+        "commanded_total_moment_body[3]",
+        "motor_order_gate_error =",
+        "yaw_direction_gate_error ="
+      ],
+      "pass_fail_boundary": "future live check must preserve wrapper command-side and lagged force/moment observability before any plant integration claim.",
+      "source_status": "present_static_anchor_verified"
+    },
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.ActuatorMappedWrapperSurface",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150ActuatorMappedWrapperSurface",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorMappedWrapperSurface.mo",
+      "role": "mapper_to_wrapper_surface_check",
+      "check_model_order": 4,
+      "simulate_order_after_all_checks": null,
+      "expected_result_variables": [
+        "normalized_actuator_command",
+        "saturated_normalized_command",
+        "actuator_saturation_error",
+        "signed_visual_rotor_speed_command",
+        "total_thrust",
+        "total_moment_body",
+        "commanded_total_thrust",
+        "commanded_total_moment_body",
+        "hover_thrust_error",
+        "commanded_hover_thrust_error",
+        "yaw_moment_gate",
+        "commanded_yaw_moment_gate",
+        "motor_order_gate_error",
+        "yaw_direction_gate_error"
+      ],
+      "required_source_anchors": [
+        "input Real normalized_actuator_command[4]",
+        "actuator_mapper.normalized_command = normalized_actuator_command",
+        "wrapper.motor_command = actuator_mapper.signed_visual_rotor_speed_command",
+        "signed_visual_rotor_speed_command = actuator_mapper.signed_visual_rotor_speed_command"
+      ],
+      "pass_fail_boundary": "future live probe may claim only normalized command to signed visual speed to wrapper feedthrough, not closed-loop control.",
+      "source_status": "present_static_anchor_verified"
+    },
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.OptionalDampingGyroLayer",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150OptionalDampingGyroLayer",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150OptionalDampingGyroLayer.mo",
+      "role": "default_disabled_optional_layer_check",
+      "check_model_order": 5,
+      "simulate_order_after_all_checks": null,
+      "expected_result_variables": [
+        "enable_rotor_gyro",
+        "enable_body_drag",
+        "enable_angular_damping",
+        "normalized_actuator_command",
+        "body_velocity_body",
+        "body_angular_velocity_body",
+        "base_force_body",
+        "base_moment_body",
+        "rotor_angular_momentum_body_z",
+        "rotor_gyro_moment_body",
+        "rotor_gyro_total_moment_body",
+        "body_drag_force_body",
+        "angular_damping_moment_body",
+        "optional_force_body",
+        "optional_moment_body",
+        "total_force_body",
+        "total_moment_body",
+        "optional_force_norm",
+        "optional_moment_norm",
+        "default_disabled_force_delta",
+        "default_disabled_moment_delta"
+      ],
+      "required_source_anchors": [
+        "parameter Boolean enable_rotor_gyro = false",
+        "parameter Boolean enable_body_drag = false",
+        "parameter Boolean enable_angular_damping = false",
+        "optional_force_body[j] = body_drag_force_body[j]",
+        "default_disabled_force_delta =",
+        "default_disabled_moment_delta ="
+      ],
+      "pass_fail_boundary": "future live probe must see default-disabled deltas at zero or write a blocker; 023 does not claim live numeric deltas.",
+      "source_status": "present_static_anchor_verified"
+    },
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchFrameAdapter",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchFrameAdapter.mo",
+      "role": "physical_wrench_boundary_check",
+      "check_model_order": 6,
+      "simulate_order_after_all_checks": null,
+      "expected_result_variables": [
+        "applied_force_body",
+        "applied_torque_body",
+        "applied_force_z_body",
+        "applied_yaw_torque_body",
+        "force_application_error",
+        "torque_application_error",
+        "hover_weight_balance_error",
+        "wrapper_total_thrust",
+        "wrapper_yaw_moment",
+        "motor_order_gate_error",
+        "yaw_direction_gate_error"
+      ],
+      "required_source_anchors": [
+        "WorldForceAndTorque",
+        "applied_force_body = {0, 0, wrapper.total_thrust}",
+        "applied_torque_body = wrapper.total_moment_body",
+        "forceAndTorque.force = applied_force_body",
+        "forceAndTorque.torque = applied_torque_body",
+        "connect(forceAndTorque.frame_b, body.frame_a)"
+      ],
+      "pass_fail_boundary": "future live validation may claim only wrapper force/torque application to the explicit minimal MultiBody body, not full plant integration.",
+      "source_status": "present_static_anchor_verified"
+    },
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeHoverSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeHoverSmoke.mo",
+      "role": "core_hover_smoke",
+      "check_model_order": 7,
+      "simulate_order_after_all_checks": 1,
+      "expected_result_variables": [
+        "dynamics.total_thrust",
+        "dynamics.total_moment_body",
+        "dynamics.hover_thrust_error",
+        "dynamics.omega",
+        "dynamics.thrust"
+      ],
+      "required_source_anchors": [
+        "Sunray150RflyStyleRotorDynamics dynamics",
+        "dynamics.motor_command =",
+        "annotation(experiment(",
+        "StopTime = 0.25"
+      ],
+      "pass_fail_boundary": "simulate only after all check_model targets pass; probe hover thrust/moment variables without claiming controller or plant performance.",
+      "source_status": "present_static_anchor_verified"
+    },
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeYawStepSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeYawStepSmoke.mo",
+      "role": "core_yaw_step_smoke",
+      "check_model_order": 8,
+      "simulate_order_after_all_checks": 2,
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag",
+        "dynamics.total_thrust",
+        "dynamics.total_moment_body",
+        "dynamics.hover_thrust_error",
+        "dynamics.yaw_reaction_moment"
+      ],
+      "required_source_anchors": [
+        "parameter Real yaw_delta_omega2 = 300",
+        "yaw_step = if time >= 0.05 then yaw_delta_omega2 else 0",
+        "rotor_speed_mag[i] = sqrt(",
+        "dynamics.motor_command[i] ="
+      ],
+      "pass_fail_boundary": "simulate only after all check_model targets pass; yaw response observation is a source-level smoke, not dynamic yaw acceptance.",
+      "source_status": "present_static_anchor_verified"
+    },
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperHoverSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperHoverSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperHoverSmoke.mo",
+      "role": "wrapper_hover_smoke",
+      "check_model_order": 9,
+      "simulate_order_after_all_checks": 3,
+      "expected_result_variables": [
+        "wrapper.total_thrust",
+        "wrapper.total_moment_body",
+        "wrapper.commanded_total_thrust",
+        "wrapper.commanded_total_moment_body",
+        "wrapper.hover_thrust_error",
+        "wrapper.commanded_hover_thrust_error",
+        "wrapper.motor_order_gate_error",
+        "wrapper.yaw_direction_gate_error"
+      ],
+      "required_source_anchors": [
+        "Sunray150DynamicsWrapperSurface wrapper",
+        "wrapper.motor_command =",
+        "StopTime = 0.25"
+      ],
+      "pass_fail_boundary": "probe wrapper hover observability only; no full plant, controller, or Factory trace claim.",
+      "source_status": "present_static_anchor_verified"
+    },
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperYawStepSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperYawStepSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperYawStepSmoke.mo",
+      "role": "wrapper_yaw_step_smoke",
+      "check_model_order": 10,
+      "simulate_order_after_all_checks": 4,
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag",
+        "wrapper.total_thrust",
+        "wrapper.total_moment_body",
+        "wrapper.commanded_total_thrust",
+        "wrapper.commanded_total_moment_body",
+        "wrapper.yaw_moment_gate",
+        "wrapper.commanded_yaw_moment_gate"
+      ],
+      "required_source_anchors": [
+        "Sunray150DynamicsWrapperSurface wrapper",
+        "yaw_step = if time >= 0.05 then yaw_delta_omega2 else 0",
+        "wrapper.motor_command[i] ="
+      ],
+      "pass_fail_boundary": "probe wrapper yaw moment variables only; no dynamic yaw transient acceptance.",
+      "source_status": "present_static_anchor_verified"
+    },
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchHoverSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchHoverSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchHoverSmoke.mo",
+      "role": "physical_wrench_hover_smoke",
+      "check_model_order": 11,
+      "simulate_order_after_all_checks": 5,
+      "expected_result_variables": [
+        "adapter.applied_force_body",
+        "adapter.applied_torque_body",
+        "adapter.applied_force_z_body",
+        "adapter.applied_yaw_torque_body",
+        "adapter.force_application_error",
+        "adapter.torque_application_error",
+        "adapter.hover_weight_balance_error",
+        "adapter.wrapper_total_thrust",
+        "adapter.wrapper_yaw_moment"
+      ],
+      "required_source_anchors": [
+        "Sunray150PhysicalWrenchFrameAdapter adapter",
+        "adapter.wrapper.motor_command =",
+        "StopTime = 0.25"
+      ],
+      "pass_fail_boundary": "probe explicit adapter/body force/torque variables only; no QuadChassis or full plant closure.",
+      "source_status": "present_static_anchor_verified"
+    },
+    {
+      "formal_target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchYawStepSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchYawStepSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchYawStepSmoke.mo",
+      "role": "physical_wrench_yaw_step_smoke",
+      "check_model_order": 12,
+      "simulate_order_after_all_checks": 6,
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag",
+        "adapter.applied_force_body",
+        "adapter.applied_torque_body",
+        "adapter.applied_force_z_body",
+        "adapter.applied_yaw_torque_body",
+        "adapter.force_application_error",
+        "adapter.torque_application_error",
+        "adapter.wrapper_yaw_moment"
+      ],
+      "required_source_anchors": [
+        "Sunray150PhysicalWrenchFrameAdapter adapter",
+        "yaw_step = if time >= 0.05 then yaw_delta_omega2 else 0",
+        "adapter.wrapper.motor_command[i] ="
+      ],
+      "pass_fail_boundary": "probe explicit physical-wrench yaw application only; no full plant tracking or closed loop claim.",
+      "source_status": "present_static_anchor_verified"
+    }
+  ],
+  "parameter_target": {
+    "formal_target": "MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance",
+    "implementation_file": "Models/MoSimQuadrotorModel/Parameters/package.mo",
+    "check_phase": 0,
+    "expected_fields": [
+      "geometry_source",
+      "geometry_claim_boundary",
+      "rotor_center_mworks_dronefixed",
+      "non_geometry_seed_source",
+      "mass_kg",
+      "body_inertia_diagonal_kg_m2",
+      "sdf_motor_constant",
+      "mworks_lift_coefficient",
+      "yaw_moment_ratio_seed",
+      "motor_time_constant_up_s",
+      "motor_time_constant_down_s",
+      "enable_rotor_gyro_default",
+      "enable_body_drag_default",
+      "enable_angular_damping_default",
+      "identification_status",
+      "do_not_promote_boundary"
+    ],
+    "pass_fail_boundary": "parameter record must remain source-labeled provenance only and not identified Sunray150 truth."
+  },
+  "findings": []
+}

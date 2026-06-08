@@ -1,0 +1,10 @@
+{
+  "source_or_package_blockers": [],
+  "live_mworks_blockers": [
+    "Live package-browser, graphical layout, wiring, check_model, and SimulateModel evidence still require a separately authorized live task.",
+    "Known attach-only/no-start reusable-session route remains a PMO/CoAgentOps infrastructure precondition before live work."
+  ],
+  "control_plane_blockers": [
+    "Provider/API 502, review UI, approval pending, or waitingOnApproval must be classified separately as provider_gateway_or_pending_review or approval_pending_or_ui_blocked if it reappears."
+  ]
+}
