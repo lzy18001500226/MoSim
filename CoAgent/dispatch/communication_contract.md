@@ -7,11 +7,15 @@ Status: active communication contract, updated 2026-06-06.
 ## Purpose
 
 This contract defines how work moves between visible Codex department
-conversations and workers. The current operating model is PMO-led direct
-dispatch: PMO sends work to a reusable visible thread or creates a new visible
-thread when the work needs durable specialty context. CoAgent dispatch/runtime
-tools support packet generation, recovery, validation, and result import; they
-are not a mandatory scheduling middle office for ordinary MoSim work.
+conversations and workers. The current operating model is PMO-authorized
+direct dispatch with bounded CoAgentOps dispatch. PMO owns user-facing
+priority, scope, acceptance, and final integration. CoAgentOps owns recurring
+patrol and may send pre-authorized low-risk P0 tasks to reusable visible
+department threads when waiting for PMO would leave safe engineering capacity
+idle. CoAgent dispatch/runtime tools support packet generation, recovery,
+validation, result import, and bounded dispatch; they are not an independent
+product-management layer or a mandatory scheduling middle office for ordinary
+MoSim work.
 
 The rule is:
 
@@ -62,11 +66,68 @@ PMO/main:
   reports accepted result or escalation
 ```
 
+## CoAgentOps Bounded Dispatch
+
+CoAgentOps may dispatch during patrol only when every precondition below is
+true:
+
+```text
+target thread status is active_visible in CoAgent/dispatch/department_threads.json
+task is already inside the current P0 queue or latest accepted return/blocker
+task class is static/source-static, diagnostic_only, recovery_validation,
+  packet_contract_fix, rule_sync_only, preflight_drill_only, or another
+  explicitly pre-authorized low-risk follow-up
+task packet declares read scope, write scope, expected return path, blocker
+  path, evidence minimum, forbidden actions, stop triggers, and next owner
+native visible-thread send/read surface is available
+MainPMO can be notified in the same run
+```
+
+CoAgentOps must not dispatch or execute when any condition below is true:
+
+```text
+new user-facing priority or product scope decision is needed
+the target thread is not active_visible or is a deleted/archived/historical id
+visible-thread lifecycle changes are needed, including create/fork/rename/archive
+automation lifecycle changes are needed
+foreground desktop interaction, click/login/license/activation, private auth
+  material, or approval buttons are needed
+destructive Git, force push, history rewrite, broad staging, or cleanup outside
+  the declared project scope is needed
+live MWORKS load/check/simulation/layout/package-browser work is required
+  without the current approved live gate
+live ROS2/RViz/FAST-LIO probing would exceed the declared probe budget or skip
+  required cleanup/source-window gates
+UE runtime mutation or live command-echo claims are required without the
+  accepted producer/consumer gate
+the packet cannot satisfy the semantic boundary and native surface gate
+```
+
+Every CoAgentOps-dispatched task must use the same durable task packet and
+result/blocker paths as PMO dispatch. After dispatch, CoAgentOps must notify
+MainPMO in the same run with:
+
+```text
+request_id
+target_department
+target_thread_id
+task_class
+expected_return_path
+blocker_return_path
+why_dispatch_was_pre_authorized
+```
+
+If a dispatch precondition is missing, CoAgentOps writes a blocker packet
+instead of dispatching. PMO remains the acceptance owner and may reject,
+supersede, narrow, or pause any CoAgentOps-dispatched task after reviewing the
+return/blocker evidence.
+
 ## Native Surface Gate
 
-Before a non-trivial task is dispatched, PMO records why the work belongs to a
-native Codex surface, a visible department thread, a bounded sub-agent, or
-CoAgent packet/evidence glue. This is a routing decision, not a task result.
+Before a non-trivial task is dispatched, PMO or bounded CoAgentOps records why
+the work belongs to a native Codex surface, a visible department thread, a
+bounded sub-agent, or CoAgent packet/evidence glue. This is a routing
+decision, not a task result.
 
 Task packets should include:
 
@@ -81,6 +142,18 @@ native_surface_gate:
   worktree_decision: read-only planning task; no isolated worktree needed
 expected_return_path: Results/agent_packets/returns/<request_id>.json
 blocker_return_path: Results/agent_packets/blockers/<request_id>.json
+```
+
+Use `CoAgent/protocol/templates/visible_thread_dispatch_packet.json` as the
+machine-checkable scaffold for new visible-thread dispatches, then replace the
+placeholder values before sending. The sibling YAML file is a human-readable
+draft scaffold only; instantiate or edit the JSON packet before running the
+checker. The schema keeps `semantic_boundary` and return paths explicit, while
+the checker enforces the current routing fields before dispatch:
+
+```powershell
+python Scripts\quality\check_agent_task_native_surface_gate.py `
+  CoAgent\protocol\templates\visible_thread_dispatch_packet.json --strict
 ```
 
 ## Department Local Planning Template
@@ -113,6 +186,61 @@ department runtime has no sub-agent surface, no independent slice exists, or
 serial execution is safer. If a department uses disposable sub-agents, they
 must be bounded, task-local, evidence-returning helpers; they must not become
 hidden durable departments or create/fork/rename/archive visible threads.
+
+## Semantic Boundary Template
+
+Every dispatch, checkpoint, patrol, recovery, and review packet must avoid
+standalone vague status words. If a task says `health`, `healthy`, `normal`,
+`blocked`, `review`, `审核`, `window`, `live`, or `done`, it must also declare
+the classification boundary that makes those words executable:
+
+```yaml
+semantic_boundary:
+  decision_scope: visible_thread | mworks_window_patrol | mworks_live_task | ros2_runtime | ue_runtime | asset_review | other
+  state_class: <one concrete enum value>
+  evidence_minimum:
+    - <minimum evidence that must exist before this state can be claimed>
+  allowed_actions:
+    - <actions allowed in this state>
+  forbidden_actions:
+    - <actions forbidden in this state>
+  stop_triggers:
+    - <observations that force blocker/checkpoint instead of continued work>
+  next_owner: PMO | CoAgentOps | MWORKS_R1 | MWORKS_R2 | ROS2_R1 | UE | user | current_department
+```
+
+Accepted visible-thread `state_class` values include:
+
+```text
+routable
+busy_in_progress
+dispatch_needed
+idle_blocked_by_open_dependency
+approval_pending_or_ui_blocked
+provider_gateway_or_pending_review
+dispatch_surface_or_agent_loop_failure
+context_compression_surface
+unknown_blocked
+```
+
+Accepted MWORKS patrol/task `state_class` values include:
+
+```text
+window_patrol_clean
+helper_only_nonblocking
+login_or_license_blocked
+authorization_blocked
+gui_error_blocked
+visible_unknown_blocked
+live_attach_blocked
+unknown_blocked
+```
+
+If a different domain needs additional values, define them in the task packet
+before dispatch. Free-text values such as `ok`, `normal`, `looks fine`,
+`healthy`, `still running`, or `probably blocked` are not sufficient because
+they do not tell the next thread what evidence was inspected or what it may
+do next.
 
 ## Department Execution And Acceptance Contract
 
@@ -251,7 +379,7 @@ task.
 
 For every task dispatched to a MWORKS/Sysplorer/Syslab department, the task
 packet must include a MWORKS live gate. Routine activation/window-health patrol
-is owned by `MoSim｜CoAgent运维平台` through its 30-minute automation, so MWORKS
+is owned by `MoSim｜CoAgent运维平台` through its 10-minute automation, so MWORKS
 R1/R2 should reference the latest patrol and focus the business turn on
 engineering evidence. The target department must not spend the turn repeatedly
 proving activation or return only sentinel JSON as engineering progress.

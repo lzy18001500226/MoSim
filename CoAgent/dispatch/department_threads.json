@@ -1,6 +1,6 @@
 {
   "registry_policy": {
-    "updated_at": "2026-06-07T19:30:00+08:00",
+    "updated_at": "2026-06-08T16:59:43+08:00",
     "source": "user_confirmed_visible_thread_list",
     "dispatch_rule": "allowlist_only",
     "default_model": "gpt-5.5",
@@ -73,7 +73,7 @@
       "accountable_to": "MainPMO",
       "routing_role": "MWORKS_R2_auxiliary_model_graphical_audit",
       "first_business_task_gate": "Passed on 2026-06-06 via RFLY-MOSIM-MWORKS-R2-SYNC-VALIDATION-20260606-001. The validation proved PMO dispatch receipt, turn start, minimal context read, and return-packet write only; it did not prove MWORKS GUI/MCP/model audit capability.",
-      "history_note": "This thread previously failed two PMO production dispatch attempts and had a user-side UI composer error, but later cross-thread no-op probes completed. It is no longer quarantine-only after the user renamed it to R2, but business use remains gated by the bounded synchronization validation."
+      "history_note": "This thread previously failed two PMO production dispatch attempts and had a user-side UI composer error, but later cross-thread no-op probes completed. It is no longer quarantine-only after the user renamed it to R2, and the 2026-06-08 R2 017 incident was later superseded by user visual audit as provider_gateway_or_pending_review plus pending review UI rather than durable dead-thread state. Bounded static business dispatch is allowed; live MWORKS work still waits for the no-start attach route."
     },
     {
       "department": "ROS2RuntimeAgent",
@@ -86,29 +86,30 @@
       "accountable_to": "MainPMO",
       "supersedes_thread_id": "019e9b85-d4d8-7bf3-8afd-a65697cd3889",
       "routing_role": "ROS2_R1_primary_mainline",
-      "supersedes_note": "This thread is the current ROS2 R1 primary mainline. The previous ROS2 R2 department was listable/readable and could have its title synced, but CoAgentOps diagnosis COAGENTOPS-ROS2-R2-DISPATCH-SURFACE-DIAG-20260606-001 confirmed persistent start-turn failure across no-op probes. Old pre-R2 thread 019e9917-6181-7ec2-b3d6-4b624d6d3348 was deleted by the user after earlier Codex App delivery failures. Current production ROS2 routing uses this R1 thread id unless PMO explicitly restores an older thread through a bounded diagnosis ladder."
+      "supersedes_note": "This thread is the current default ROS2 R1 primary mainline route. Thread 019e9b85-d4d8-7bf3-8afd-a65697cd3889 is a non-historical visible ROS2 R2 department title, but current production ROS2 routing still uses this R1 thread id unless the registry or explicit user/PMO instruction restores R2 for a bounded task. Old pre-R2 thread 019e9917-6181-7ec2-b3d6-4b624d6d3348 was deleted by the user after earlier Codex App delivery failures."
     },
     {
       "department": "WeChatGatewayOps",
-      "thread_name": "MoSim｜微信网关运维部",
+      "thread_name": "MoSim｜微信网关运维部-R3-已删除",
       "thread_id": "019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c",
       "surface": "codex_app_native",
-      "status": "archived_by_user_not_dispatchable",
-      "agent_type": "archived_department",
-      "mission": "Historical WeChat gateway diagnostics only. User archived this thread after switching MoSim notifications to email-only.",
+      "status": "deleted_by_user_not_visible",
+      "agent_type": "historical_deleted_department",
+      "mission": "Historical WeChat gateway diagnostics only. User archived this thread after switching MoSim notifications to email-only, then deleted it on 2026-06-08.",
       "accountable_to": "MainPMO",
       "supersedes_thread_id": "019e9be0-534e-7c22-97ff-98fa7c2af39b",
-      "supersedes_note": "This gateway route was active until 2026-06-07, when the user switched MoSim notifications to email-only and archived 019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c. Do not dispatch production work here. Historical gateway procedures remain only for explicit future WeChat restoration or diagnosis."
+      "supersedes_note": "This gateway route was active until 2026-06-07, when the user switched MoSim notifications to email-only and archived 019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c. On 2026-06-08 the user deleted the thread. Do not dispatch, patrol, no-op, recover, or treat absence as an incident. Historical gateway procedures remain only as evidence; explicit future WeChat diagnosis must define a new scoped route or ask the user to restore/create one."
     },
     {
       "department": "CodexEnvironmentMigrationAgent",
-      "thread_name": "MoSim｜Codex 环境迁移部",
+      "thread_name": "MoSim｜Codex 环境迁移部-旧",
       "thread_id": "019e8181-6653-73b3-9685-f5bc9a24b947",
       "surface": "codex_app_or_vscode",
-      "status": "active_visible",
-      "agent_type": "permanent",
+      "status": "archived_by_user_not_dispatchable",
+      "agent_type": "archived_department",
       "mission": "Windows-native Codex environment migration, bridge-residue audit, config/MCP launcher cleanup, and related environment repair history.",
-      "accountable_to": "MainPMO"
+      "accountable_to": "MainPMO",
+      "archive_note": "User confirmed on 2026-06-08 that this environment migration thread has been archived. Keep it as historical context only; do not include it in active_visible patrol or business dispatch."
     },
     {
       "department": "OpenSourceProbeAgent",
@@ -148,24 +149,24 @@
     },
     {
       "department": "CodexContextMaintenanceAgent",
-      "thread_name": "MoSim｜Codex 上下文维护部",
+      "thread_name": "MoSim｜文档秘书部",
       "thread_id": "019e9be0-f6ac-7762-b80c-b1dd18b0d013",
       "surface": "codex_app_native",
       "status": "active_visible",
       "agent_type": "permanent",
-      "mission": "Scheduled context-memory/index updates, new-conversation context, project memory index, and compact recovery notes.",
+      "mission": "Documentation secretary work: scheduled context-memory/index updates, new-conversation context, project memory index, compact recovery notes, documentation consistency review, and cache-first migration drafts.",
       "accountable_to": "CoAgentOps",
       "supersedes_thread_id": "019e3dac-de0e-7180-98ad-d7137e8a6275",
-      "supersedes_note": "Old context-maintenance thread was a pre-R2 migrated department. Context recovery and memory migration material is landed in Docs/Workflows/new_conversation_context.md, Docs/Workflows/session_memory_migration.md, Docs/Index/project_work_memory_index.md, and Docs/Cache/session_memory_migration/."
+      "supersedes_note": "Old context-maintenance thread was a pre-R2 migrated department. The current user-facing department title is MoSim｜文档秘书部; CodexContextMaintenanceAgent remains a legacy internal role key for existing automation/worker-policy compatibility. Context recovery and memory migration material is landed in Docs/Workflows/new_conversation_context.md, Docs/Workflows/session_memory_migration.md, Docs/Index/project_work_memory_index.md, and Docs/Cache/session_memory_migration/."
     },
     {
       "department": "WechatCodexMessagePath",
-      "thread_name": "MoSim｜WechatCodex",
+      "thread_name": "MoSim｜WechatCodex-已删除",
       "thread_id": "019e8358-86b4-7070-8fd6-a2b4f4d2af97",
       "surface": "codex_app_or_vscode",
-      "status": "inactive_wechat_message_path_not_dispatchable",
-      "agent_type": "historical_message_path",
-      "mission": "Historical WeChat-side Codex message path. MoSim notifications are now email-only; use this only if the user explicitly reopens WeChat gateway diagnosis.",
+      "status": "deleted_by_user_not_visible",
+      "agent_type": "historical_deleted_message_path",
+      "mission": "Historical WeChat-side Codex message path. MoSim notifications are now email-only; the user deleted this thread on 2026-06-08. Do not dispatch, patrol, no-op, or use it for inbound refresh.",
       "accountable_to": "MainPMO"
     }
   ]

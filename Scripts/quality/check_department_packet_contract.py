@@ -23,6 +23,58 @@ PLANNING_FIELDS = [
 
 SUBAGENT_PLAN_VALUES = {"used", "available_but_not_useful", "unavailable", "unsafe"}
 
+SEMANTIC_BOUNDARY_REQUIRED_FIELDS = [
+    "decision_scope",
+    "state_class",
+    "evidence_minimum",
+    "allowed_actions",
+    "forbidden_actions",
+    "stop_triggers",
+    "next_owner",
+]
+
+DECISION_SCOPES = {
+    "visible_thread",
+    "mworks_window_patrol",
+    "mworks_live_task",
+    "ros2_runtime",
+    "ue_runtime",
+    "asset_review",
+    "other",
+}
+
+VISIBLE_THREAD_STATES = {
+    "routable",
+    "busy_in_progress",
+    "dispatch_needed",
+    "idle_blocked_by_open_dependency",
+    "approval_pending_or_ui_blocked",
+    "provider_gateway_or_pending_review",
+    "dispatch_surface_or_agent_loop_failure",
+    "context_compression_surface",
+    "unknown_blocked",
+}
+
+MWORKS_STATES = {
+    "window_patrol_clean",
+    "helper_only_nonblocking",
+    "login_or_license_blocked",
+    "authorization_blocked",
+    "gui_error_blocked",
+    "visible_unknown_blocked",
+    "live_attach_blocked",
+    "unknown_blocked",
+}
+
+FREE_TEXT_ONLY_STATES = {
+    "ok",
+    "normal",
+    "healthy",
+    "looks fine",
+    "still running",
+    "probably blocked",
+}
+
 CONTROL_PLANE_ONLY_HINTS = {
     "json",
     "packet",
@@ -90,6 +142,47 @@ def _normalise_outputs(value: Any) -> list[str]:
     return [str(value)]
 
 
+def _is_non_empty_list(value: Any) -> bool:
+    return isinstance(value, list) and any(isinstance(item, str) and item.strip() for item in value)
+
+
+def _semantic_boundary(packet: dict[str, Any]) -> dict[str, Any] | None:
+    boundary = packet.get("semantic_boundary")
+    if isinstance(boundary, dict):
+        return boundary
+    metadata = packet.get("metadata")
+    if isinstance(metadata, dict) and isinstance(metadata.get("semantic_boundary"), dict):
+        return metadata["semantic_boundary"]
+    return None
+
+
+def _validate_semantic_boundary(packet: dict[str, Any]) -> list[str]:
+    boundary = _semantic_boundary(packet)
+    if boundary is None:
+        return ["missing required semantic_boundary"]
+
+    errors: list[str] = []
+    for field in SEMANTIC_BOUNDARY_REQUIRED_FIELDS:
+        value = boundary.get(field)
+        if field in {"evidence_minimum", "allowed_actions", "forbidden_actions", "stop_triggers"}:
+            if not _is_non_empty_list(value):
+                errors.append(f"semantic_boundary.{field} must be a non-empty list")
+        elif not isinstance(value, str) or not value.strip():
+            errors.append(f"semantic_boundary.{field} must be a non-empty string")
+
+    decision_scope = str(boundary.get("decision_scope", ""))
+    state_class = str(boundary.get("state_class", ""))
+    if decision_scope and decision_scope not in DECISION_SCOPES:
+        errors.append(f"semantic_boundary.decision_scope unknown: {decision_scope}")
+    if state_class.casefold() in FREE_TEXT_ONLY_STATES:
+        errors.append(f"semantic_boundary.state_class is free-text-only: {state_class}")
+    if decision_scope == "visible_thread" and state_class and state_class not in VISIBLE_THREAD_STATES:
+        errors.append(f"semantic_boundary.state_class unknown for visible_thread: {state_class}")
+    if decision_scope in {"mworks_window_patrol", "mworks_live_task"} and state_class and state_class not in MWORKS_STATES:
+        errors.append(f"semantic_boundary.state_class unknown for MWORKS: {state_class}")
+    return errors
+
+
 def validate(packet: dict[str, Any], *, strict_completed_outputs: bool) -> list[str]:
     errors: list[str] = []
 
@@ -149,6 +242,8 @@ def validate(packet: dict[str, Any], *, strict_completed_outputs: bool) -> list[
             or _is_present(packet.get("summary"))
         ):
             errors.append("blocked packet missing blocker summary")
+
+    errors.extend(_validate_semantic_boundary(packet))
 
     return errors
 

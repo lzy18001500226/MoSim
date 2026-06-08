@@ -45,16 +45,18 @@ allowlist in `CoAgent/dispatch/department_threads.json`:
 8. `MoSim｜开源项目探针`
 9. `MoSim｜CoAgent运维平台`
 10. `MoSim｜开源项目学习部`
-11. `MoSim｜Codex 上下文维护部`
+11. `MoSim｜文档秘书部`
 
-Historical inactive routes:
+Historical deleted routes:
 
 - `MoSim｜微信网关运维部`
 - `MoSim｜WechatCodex`
 
-`MoSim｜WechatCodex` is a message path for WeChat-side inbound refresh, not a
-gateway-operations owner. Both WeChat routes are archived/inactive unless the
-user explicitly restores WeChat diagnosis. Testing, security,
+`MoSim｜WechatCodex` was a message path for WeChat-side inbound refresh, not a
+gateway-operations owner. The user deleted both WeChat routes on 2026-06-08
+after MoSim moved to email-only notifications. Do not dispatch, patrol, no-op,
+recover, or treat their absence as an outage unless the user explicitly
+restores WeChat diagnosis with a new scoped route. Testing, security,
 documentation-secretary, and toolchain/MCP upkeep are task-local gates or
 CoAgent meta-maintenance duties unless PMO explicitly creates a scoped visible
 thread for a high-impact task.

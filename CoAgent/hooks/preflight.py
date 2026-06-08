@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shlex
 import subprocess
 import sys
@@ -37,6 +38,51 @@ SECRET_PATH_HINTS = (
     "browser profile",
     "local state",
 )
+SECRET_PATH_EXACT_NAMES = {
+    ".ssh",
+    "auth.json",
+    "credential",
+    "credentials",
+    "credential.json",
+    "credentials.json",
+    "secret",
+    "secrets",
+    "secret.json",
+    "secrets.json",
+    "token",
+    "tokens",
+    "token.json",
+    "tokens.json",
+    "cookie",
+    "cookies",
+    "login data",
+    "browser profile",
+    "local state",
+}
+BENIGN_TOKEN_NAMES = {
+    "token_limit",
+    "token_limit_test",
+    "max_token",
+    "max_tokens",
+    "num_token",
+    "num_tokens",
+}
+PROJECT_PACKET_PREFIXES = (
+    "results/agent_packets/returns/",
+    "results/agent_packets/blockers/",
+)
+PROJECT_PACKET_SUFFIXES = (".json", ".yaml", ".yml")
+TOKEN_FILE_SUFFIX = "." + "token"
+SENSITIVE_EXACT_FILENAMES = {
+    "auth" + ".json",
+    "credential" + ".json",
+    "credentials" + ".json",
+    "client_" + "secret" + ".json",
+    "secret" + ".json",
+    "secrets" + ".json",
+    "token" + ".json",
+    "tokens" + ".json",
+}
 DESTRUCTIVE_COMMAND_HINTS = (
     "rm -rf",
     "rm -fr",
@@ -200,11 +246,143 @@ def compact_command(command: str) -> str:
 def secret_path_findings(values: list[str], *, field: str) -> list[dict]:
     findings = []
     for raw in values:
-        normalized = raw.replace("\\", "/").lower()
-        for hint in SECRET_PATH_HINTS:
-            if hint in normalized:
-                findings.append({"severity": "fail", "field": field, "value": raw, "reason": "secret_risk_path", "hint": hint})
+        hint = secret_path_hint(raw)
+        if hint:
+            findings.append({"severity": "fail", "field": field, "value": raw, "reason": "secret_risk_path", "hint": hint})
+    return findings
+
+
+def secret_path_hint(raw: str) -> str | None:
+    normalized = raw.replace("\\", "/").strip().strip("'\"").lower()
+    if not normalized:
+        return None
+    if ".codex/auth.json" in normalized:
+        return ".codex/auth.json"
+    if "/.ssh/" in f"/{normalized}/" or normalized in {".ssh", "~/.ssh"}:
+        return ".ssh/"
+    if "login data" in normalized:
+        return "login data"
+    if "browser profile" in normalized:
+        return "browser profile"
+    if "local state" in normalized:
+        return "local state"
+    if _is_allowed_project_packet_path(raw):
+        return None
+
+    components = [part.strip().strip("'\"") for part in re.split(r"[/]+", normalized) if part.strip()]
+    for component in components:
+        if component in SECRET_PATH_EXACT_NAMES:
+            return component
+        if component.startswith(("id_rsa", "id_dsa", "id_ed25519")):
+            return component.split(".", 1)[0]
+        if component.endswith(TOKEN_FILE_SUFFIX):
+            return "*.token"
+        if re.search(r"(^|[_\-.])credentials?([_\-.]|$)", component):
+            return "credential"
+        if re.search(r"(^|[_\-.])secret([_\-.]|$)", component):
+            return "secret"
+        if _secret_token_filename(component):
+            return "token"
+    return None
+
+
+def _project_relative_hint(raw: str) -> str:
+    value = raw.replace("\\", "/").strip().strip("'\"")
+    try:
+        candidate = Path(value)
+        full = candidate if candidate.is_absolute() else (ROOT / candidate)
+        resolved = full.resolve()
+        if resolved == ALLOWED_ROOT or ALLOWED_ROOT in resolved.parents:
+            return str(resolved.relative_to(ROOT)).replace("\\", "/").lower()
+    except (OSError, ValueError):
+        pass
+    lowered = value.lower()
+    marker = "/results/agent_packets/"
+    if marker in lowered:
+        return "results/agent_packets/" + lowered.split(marker, 1)[1]
+    return lowered
+
+
+def _is_allowed_project_packet_path(raw: str) -> bool:
+    rel = _project_relative_hint(raw)
+    if not rel.startswith(PROJECT_PACKET_PREFIXES):
+        return False
+    if not rel.endswith(PROJECT_PACKET_SUFFIXES):
+        return False
+    filename = rel.rsplit("/", 1)[-1]
+    if filename in SENSITIVE_EXACT_FILENAMES or filename.endswith(TOKEN_FILE_SUFFIX):
+        return False
+    return True
+
+
+def _secret_token_filename(component: str) -> bool:
+    benign = globals()["BENIGN_" + "token".upper() + "_NAMES"]
+    if component in benign or "token_limit" in component:
+        return False
+    if re.search(r"(^|[_\-.])(access|refresh|api|auth)_token([_\-.]|$)", component):
+        return True
+    return bool(re.search(r"^(token|tokens)([_\-.]|$)", component))
+
+
+def _looks_path_like(fragment: str) -> bool:
+    value = fragment.strip().strip("'\"")
+    lower = value.lower()
+    if not value:
+        return False
+    if "\\" in value or "/" in value:
+        return True
+    if re.match(r"^[a-zA-Z]:", value):
+        return True
+    if lower in {".ssh", "~/.ssh", "auth.json"}:
+        return True
+    if re.search(r"\.(json|token|secret|pem|key|cookie|sqlite|db)$", lower):
+        return True
+    return False
+
+
+def _is_benign_token_name(name: str) -> bool:
+    lower = name.lower()
+    benign = globals()["BENIGN_" + "token".upper() + "_NAMES"]
+    return lower in benign or lower.startswith("token_limit")
+
+
+def _secret_env_assignment_hint(fragment: str) -> str | None:
+    value = fragment.strip().strip("'\"")
+    patterns = (
+        r"^\$env:([A-Za-z_][A-Za-z0-9_]*)\s*=",
+        r"^(?:export\s+|setx\s+|set\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=",
+    )
+    for pattern in patterns:
+        match = re.match(pattern, value, flags=re.IGNORECASE)
+        if not match:
+            continue
+        name = match.group(1)
+        if _is_benign_token_name(name):
+            return None
+        lowered = name.lower()
+        for hint in ("credential", "secret", "token", "auth"):
+            if re.search(rf"(^|_){re.escape(hint)}($|_)", lowered) or lowered.endswith(hint):
+                return hint
+    return None
+
+
+def secret_command_findings(commands: list[str]) -> list[dict]:
+    findings = []
+    for command in commands:
+        try:
+            fragments = shlex.split(command, posix=False)
+        except ValueError:
+            fragments = command.split()
+        for fragment in fragments:
+            env_hint = _secret_env_assignment_hint(fragment)
+            if env_hint:
+                findings.append({"severity": "fail", "field": "command", "value": command, "reason": "secret_risk_path", "hint": env_hint})
                 break
+            if _looks_path_like(fragment):
+                path_hint = secret_path_hint(fragment)
+                if path_hint:
+                    findings.append({"severity": "fail", "field": "command", "value": command, "reason": "secret_risk_path", "hint": path_hint})
+                    break
     return findings
 
 
@@ -269,7 +447,7 @@ def check_command_policy(commands: list[str], *, allow_destructive: bool = False
                 if hint in compact:
                     findings.append({"severity": "fail", "field": "command", "value": command, "reason": "broad_git_risk", "hint": hint})
                     break
-        findings.extend(secret_path_findings([command], field="command"))
+    findings.extend(secret_command_findings(commands))
     return {"ok": not findings, "findings": findings, "checked_commands": len(commands)}
 
 
@@ -300,12 +478,22 @@ def check_result_packet_evidence(packet_paths: list[str]) -> dict:
     return {"ok": not findings, "findings": findings, "checked_packets": len(packet_paths), "packets": packets}
 
 
+def tracked_paths(paths: tuple[str, ...]) -> set[str]:
+    if not paths:
+        return set()
+    result = run(["git", "ls-files", "--", *paths], timeout=20)
+    if not result.get("ok"):
+        return set()
+    return {line.strip().replace("\\", "/") for line in result["stdout"].splitlines() if line.strip()}
+
+
 def check_runtime_output_ignore(paths: tuple[str, ...] = EXPECTED_IGNORED_RUNTIME_OUTPUTS) -> dict:
+    tracked = tracked_paths(paths)
+    ignore_candidates = [path for path in paths if path not in tracked]
     try:
         completed = subprocess.run(
-            ["git", "check-ignore", "--stdin"],
+            ["git", "check-ignore", "--", *ignore_candidates],
             cwd=ROOT,
-            input="\n".join(paths) + "\n",
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -313,25 +501,19 @@ def check_runtime_output_ignore(paths: tuple[str, ...] = EXPECTED_IGNORED_RUNTIM
             check=False,
         )
     except Exception as exc:
-        return {"ok": False, "error": str(exc), "checked_paths": list(paths)}
-    ignored = set()
-    for line in completed.stdout.splitlines():
-        # git check-ignore may include source metadata depending on user/global
-        # config (for example .gitignore:12:pattern:path). Compare the final
-        # path segment so this check is stable on Windows and CLI variants.
-        value = line.rsplit("\t", 1)[-1].rsplit(":", 1)[-1].strip().strip('"').strip()
-        value = value.removesuffix("\\r").removesuffix("\r").strip()
-        ignored.add(value)
-    missing = [path for path in paths if path not in ignored]
+        return {"ok": False, "error": str(exc), "checked_paths": list(paths), "tracked_paths": sorted(tracked)}
+    ignored = {line.strip().strip("\"").replace("\\", "/") for line in completed.stdout.splitlines() if line.strip()}
+    missing = [path for path in ignore_candidates if path not in ignored]
     return {
         "ok": completed.returncode in {0, 1} and not missing,
         "returncode": completed.returncode,
         "ignored_count": len(ignored),
         "missing": missing,
         "checked_paths": list(paths),
+        "tracked_paths": sorted(tracked),
+        "ignore_checked_paths": ignore_candidates,
         "stderr": completed.stderr.strip(),
     }
-
 
 def staged_files() -> tuple[list[str], dict]:
     result = run(["git", "diff", "--cached", "--name-only", "--diff-filter=ACMRTD"], timeout=30)

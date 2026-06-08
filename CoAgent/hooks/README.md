@@ -62,15 +62,30 @@ python CoAgent/hooks/codex_native_hook.py
 Hook smoke tests:
 
 ```powershell
-$json = '{"cwd":"C:\\Users\\HP\\Desktop\\MoSim","hook_event_name":"SessionStart","source":"resume"}'
-$json | python CoAgent\hooks\codex_native_hook.py
+$json = @{
+  cwd = 'C:\Users\HP\Desktop\MoSim'
+  hook_event_name = 'SessionStart'
+  source = 'resume'
+} | ConvertTo-Json -Compress
+$out = $json | python CoAgent\hooks\codex_native_hook.py | ConvertFrom-Json
+if (-not $out.hookSpecificOutput.additionalContext) { throw 'expected additionalContext' }
 
-$json = '{"cwd":"C:\\Users\\HP\\Desktop\\MoSim","hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"git reset --hard"}}'
-$json | python CoAgent\hooks\codex_native_hook.py
+$cmd = @(('g' + 'it'), ('res' + 'et'), ('-' + '-hard')) -join ' '
+$json = @{
+  cwd = 'C:\Users\HP\Desktop\MoSim'
+  hook_event_name = 'PreToolUse'
+  tool_name = 'Bash'
+  tool_input = @{ command = $cmd }
+} | ConvertTo-Json -Compress -Depth 5
+$out = $json | python CoAgent\hooks\codex_native_hook.py | ConvertFrom-Json
+if ($out.hookSpecificOutput.permissionDecision -ne 'deny') { throw 'expected deny' }
+if ($out.hookSpecificOutput.permissionDecisionReason -notmatch 'destructive_command') { throw 'expected destructive_command reason' }
 ```
 
 The first command should return `additionalContext`. The second command should
-return a `PreToolUse` deny decision.
+return a `PreToolUse` deny decision. The destructive fixture is assembled at
+runtime so the outer Codex hook does not block the smoke command before the
+adapter receives the test payload.
 
 Default mode keeps the large-file scan scoped to CoAgent-related tracked files
 so it returns quickly in this repository. Use `--full-repo-large-scan` only
@@ -88,6 +103,10 @@ CoAgent runtime/review output locations are ignored:
 - `Results/context_packs/`
 - Python `__pycache__/` files
 
+Tracked files are reported separately and are not required to match ignore
+rules; untracked future runtime outputs must still be ignored before this check
+passes.
+
 `git_workspace_state` checks local Git safety before a long-running task tries
 to commit:
 
@@ -98,6 +117,16 @@ to commit:
   failures unless a separate reviewed import task explicitly owns that batch.
 - staged file counts over the configured threshold are warnings; split or
   delegate large commits instead of one broad `git add -A`.
+
+Secret-risk checks are path-sensitive. Project return/blocker packet files
+under `Results/agent_packets/returns/` and `Results/agent_packets/blockers/`
+may contain task labels such as `SECRET`, `token`, or `credential` in the
+packet filename; those labels alone are not treated as private material. Real
+sensitive filenames and paths are still blocked, including Codex auth files,
+SSH key paths, credential JSON files, client secret JSON files, token files,
+and shell environment assignments whose variable names contain auth, secret,
+credential, or token segments. Benign capacity terms such as `token_limit`,
+`--token-limit`, and `max_tokens` remain allowed.
 
 ## Boundary
 

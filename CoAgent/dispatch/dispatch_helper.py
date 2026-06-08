@@ -122,8 +122,11 @@ def _mworks_live_gate_contract_lines(department: str) -> list[str]:
     return [
         "",
         "[MWORKS Live Gate Contract]",
-        "This is a MWORKS department. Routine activation/window-health patrol is owned by CoAgentOps every 30 minutes; do not spend this engineering turn repeatedly proving activation.",
+        "This is a MWORKS department. Routine activation/window-health patrol is owned by CoAgentOps every 10 minutes; do not spend this engineering turn repeatedly proving activation.",
         "- The task packet must include mworks_live_gate with activation_patrol_owner=CoAgentOps, recent_patrol_required as appropriate, max_patrol_age_minutes, live_mworks_touched, required_return_fields, blocker_on, and expected_engineering_outputs.",
+        "- Return a semantic_boundary with decision_scope, state_class, evidence_minimum_met, allowed_actions, forbidden_actions, stop_triggers, and next_owner; vague state words such as ok/normal/healthy/looks_fine/still_running are not sufficient.",
+        "- Accepted MWORKS state_class values are: window_patrol_clean, helper_only_nonblocking, login_or_license_blocked, authorization_blocked, gui_error_blocked, visible_unknown_blocked, live_attach_blocked, unknown_blocked.",
+        "- live_attach_blocked means the GUI may look usable but no-start MCP/session reuse is unproven; stop live check_model/SimulateModel/package-browser/graphical live audit until attach-only validation exists.",
         "- Reference the latest CoAgentOps patrol in the return/blocker as mworks_activation_patrol_reference and mworks_activation_patrol_age_minutes when known.",
         "- If no recent patrol exists and live MWORKS/Sysplorer/Syslab MCP or GUI work is required, run at most one bounded current-turn sentinel/API check or return a blocker. Do not loop on activation checks.",
         "- If the business task is static file-only, set live_mworks_touched=false and focus on file/package/model organization evidence.",

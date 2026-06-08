@@ -36,13 +36,17 @@ def test_mworks_department_dispatch_text_includes_self_evidence_gate() -> None:
     lines = module._mworks_live_gate_contract_lines(args.department)
     text = "\n".join(lines)
 
-    assert "Routine activation/window-health patrol is owned by CoAgentOps" in text
+    assert "Routine activation/window-health patrol is owned by CoAgentOps every 10 minutes" in text
     assert "activation_patrol_owner=CoAgentOps" in text
     assert "mworks_activation_patrol_reference" in text
     assert "run at most one bounded current-turn sentinel/API check" in text
     assert "Do not loop on activation checks" in text
     assert "education-edition title only proves the visible edition/window marker" in text
     assert "it also is not by itself a blocker" in text
+    assert "semantic_boundary" in text
+    assert "state_class" in text
+    assert "live_attach_blocked" in text
+    assert "vague state words" in text
     assert "maximized target-window evidence" in text
     assert "not Codex, another app, helper/proxy windows" in text
     assert "official login action does not return" in text

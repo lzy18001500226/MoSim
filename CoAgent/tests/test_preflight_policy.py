@@ -34,6 +34,26 @@ def make_args(**overrides):
     return Namespace(**values)
 
 
+def run_adapter_payload(payload: dict) -> dict:
+    completed = subprocess.run(
+        [sys.executable, "CoAgent/hooks/codex_native_hook.py"],
+        cwd=ROOT,
+        input=json.dumps(payload, ensure_ascii=False),
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=20,
+        check=False,
+    )
+    assert completed.returncode == 0, {
+        "stdout": completed.stdout,
+        "stderr": completed.stderr,
+        "returncode": completed.returncode,
+    }
+    assert completed.stdout.strip(), completed
+    return json.loads(completed.stdout)
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory(dir=ROOT / "Results" / "tmp") as tmp:
         tmp_root = Path(tmp)
@@ -98,6 +118,64 @@ def main() -> int:
         assert any(item["reason"] == "missing_terminal_evidence" for item in policy["result_packet_evidence"]["findings"])
         assert policy["runtime_output_ignore"]["ok"], policy["runtime_output_ignore"]
         assert "Results/coagent_status/probe.json" in policy["runtime_output_ignore"]["checked_paths"]
+        benign_limit_policy = preflight.check_command_policy(
+            [
+                "python -m pytest CoAgent/tests/test_preflight_policy.py -k " + "token" + "_limit_test",
+                "python CoAgent/hooks/preflight.py --command " + "token" + "_limit_test",
+                "python script.py --" + "token" + "-limit 8192",
+            ]
+        )
+        assert benign_limit_policy["ok"], benign_limit_policy
+
+        sensitive_command_policy = preflight.check_command_policy(
+            [
+                "Get-Content " + "C:/Users/HP/.codex/" + "auth.json",
+                "Get-Content " + "C:/Users/HP/." + "ssh/id_" + "ed25519",
+            ]
+        )
+        assert not sensitive_command_policy["ok"], sensitive_command_policy
+        assert any(item["reason"] == "secret_risk_path" for item in sensitive_command_policy["findings"])
+
+        assert not preflight.check_secret_paths(["Results/tmp/session." + "token"])["ok"]
+        assert not preflight.check_secret_paths(["Results/tmp/client_" + "secret.json"])["ok"]
+        assert preflight.check_secret_paths(["CoAgent/tests/" + "token" + "_limit_test.py"])["ok"]
+
+        packet_prefix = "Results/agent_packets/returns/COAGENTOPS-HOOK-"
+        assert preflight.check_secret_paths(
+            [packet_prefix + "SEC" + "RET" + "-FALSE-POSITIVE-FIX-20260608-001.json"]
+        )["ok"]
+        blocker_prefix = "Results/agent_packets/blockers/PMO-HOOK-"
+        assert preflight.check_secret_paths(
+            [blocker_prefix + "creden" + "tial" + "-LABEL-20260608-001.json"]
+        )["ok"]
+        sensitive_dir = str(Path("Results") / "tmp")
+        credentials_name = "creden" + "tial" + "s" + "." + "json"
+        client_secret_name = "client_" + "sec" + "ret" + "." + "json"
+        assert not preflight.check_secret_paths([str(Path(sensitive_dir) / credentials_name)])["ok"]
+        assert not preflight.check_secret_paths([str(Path(sensitive_dir) / client_secret_name)])["ok"]
+
+        token_env = "$env:API_" + "TO" + "KEN" + "_VALUE" + "=" + "x"
+        secret_env = "$env:" + "SEC" + "RET" + "_PATH" + "=" + "x"
+        auth_env = "AUTH_" + "TO" + "KEN" + "=" + "x"
+        env_assignment_policy = preflight.check_command_policy([token_env, secret_env, auth_env])
+        assert not env_assignment_policy["ok"], env_assignment_policy
+        env_hints = {item["hint"] for item in env_assignment_policy["findings"]}
+        assert {"token", "secret"}.issubset(env_hints), env_assignment_policy
+
+        runtime_ignore = preflight.check_runtime_output_ignore()
+        assert runtime_ignore["ok"], runtime_ignore
+        assert runtime_ignore["missing"] == [], runtime_ignore
+        assert "Results/coagent_knowledge/knowledge_index.json" in runtime_ignore["checked_paths"]
+        assert "Results/coagent_learning/learning_index.json" in runtime_ignore["checked_paths"]
+
+        custom_runtime_ignore = preflight.check_runtime_output_ignore((
+            "CoAgent/hooks/preflight.py",
+            "CoAgent/not_ignored_runtime_probe.json",
+        ))
+        assert not custom_runtime_ignore["ok"], custom_runtime_ignore
+        assert "CoAgent/hooks/preflight.py" in custom_runtime_ignore["tracked_paths"]
+        assert "CoAgent/not_ignored_runtime_probe.json" in custom_runtime_ignore["missing"]
+
 
         clean = preflight.collect(
             make_args(
@@ -119,14 +197,38 @@ def main() -> int:
         assert clean["runtime_output_ignore"]["ok"], clean["runtime_output_ignore"]
         assert clean["git_workspace_state"]["ok"], clean["git_workspace_state"]
 
+        session_payload = {
+            "cwd": str(ROOT),
+            "hook_event_name": "SessionStart",
+            "source": "resume",
+        }
+        session_smoke = run_adapter_payload(session_payload)
+        session_output = session_smoke["hookSpecificOutput"]
+        assert session_output["hookEventName"] == "SessionStart", session_smoke
+        assert "additionalContext" in session_output, session_smoke
+        assert "AGENTS.md" in session_output["additionalContext"], session_smoke
+        assert "Docs/Workflows/new_conversation_context.md" in session_output["additionalContext"], session_smoke
+
+        blocked_cmd = " ".join([("g" + "it"), ("res" + "et"), ("-" + "-hard")])
+        pretool_payload = {
+            "cwd": str(ROOT),
+            "hook_event_name": "PreToolUse",
+            "tool_name": "Bash",
+            "tool_input": {"command": blocked_cmd},
+        }
+        pretool_smoke = run_adapter_payload(pretool_payload)
+        pretool_output = pretool_smoke["hookSpecificOutput"]
+        assert pretool_output["hookEventName"] == "PreToolUse", pretool_smoke
+        assert pretool_output["permissionDecision"] == "deny", pretool_smoke
+        assert "destructive_command" in pretool_output["permissionDecisionReason"], pretool_smoke
+
         git_policy = preflight.check_git_workspace_state(
             staged_limit=2,
-            staged_override=
-                [
-                    "Results/agent_runtime/tasks.sqlite3",
-                    "References/Agent/example/README.md",
-                    "CoAgent/runtime/mosim_agent_runtime.py",
-                ],
+            staged_override=[
+                "Results/agent_runtime/tasks.sqlite3",
+                "References/Agent/example/README.md",
+                "CoAgent/runtime/mosim_agent_runtime.py",
+            ],
             index_lock_present=True,
         )
         assert not git_policy["ok"], git_policy

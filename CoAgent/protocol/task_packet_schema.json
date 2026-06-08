@@ -47,6 +47,14 @@
     "ue_scope_gate": { "type": "object", "additionalProperties": true },
     "sunray_asset_gate": { "type": "object", "additionalProperties": true },
     "mworks_live_gate": { "type": "object", "additionalProperties": true },
+    "native_surface_gate": { "$ref": "#/$defs/native_surface_gate" },
+    "semantic_boundary": { "$ref": "#/$defs/semantic_boundary" },
+    "expected_return_path": { "type": "string", "minLength": 1 },
+    "blocker_return_path": { "type": "string", "minLength": 1 },
+    "origin_thread": { "type": "string", "minLength": 1 },
+    "origin_thread_id": { "type": "string", "minLength": 1 },
+    "target_thread": { "type": "string", "minLength": 1 },
+    "target_thread_id": { "type": "string", "minLength": 1 },
     "stop_condition": { "type": "string", "minLength": 1 },
     "appetite": { "type": "string", "minLength": 1 },
     "circuit_breaker": { "type": "string", "minLength": 1 },
@@ -82,6 +90,65 @@
         "disordered_task",
         "long_running_task"
       ]
+    },
+    "native_surface_gate": {
+      "type": "object",
+      "required": [
+        "selected_native_surface",
+        "surface_selection_reason",
+        "worktree_required",
+        "worktree_decision"
+      ],
+      "properties": {
+        "selected_native_surface": {
+          "oneOf": [
+            { "type": "string", "minLength": 1 },
+            { "type": "array", "items": { "type": "string", "minLength": 1 } }
+          ]
+        },
+        "surface_selection_reason": { "type": "string", "minLength": 1 },
+        "rejected_surfaces": { "type": "object", "additionalProperties": true },
+        "worktree_required": { "type": "boolean" },
+        "worktree_decision": { "type": "string", "minLength": 1 },
+        "expected_return_path": { "type": "string", "minLength": 1 },
+        "blocker_return_path": { "type": "string", "minLength": 1 },
+        "target_thread": { "type": "string", "minLength": 1 },
+        "target_thread_id": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "semantic_boundary": {
+      "type": "object",
+      "required": [
+        "decision_scope",
+        "state_class",
+        "evidence_minimum",
+        "allowed_actions",
+        "forbidden_actions",
+        "stop_triggers",
+        "next_owner"
+      ],
+      "properties": {
+        "decision_scope": {
+          "type": "string",
+          "enum": [
+            "visible_thread",
+            "mworks_window_patrol",
+            "mworks_live_task",
+            "ros2_runtime",
+            "ue_runtime",
+            "asset_review",
+            "other"
+          ]
+        },
+        "state_class": { "type": "string", "minLength": 1 },
+        "evidence_minimum": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "allowed_actions": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "forbidden_actions": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "stop_triggers": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "next_owner": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
     }
   },
   "additionalProperties": true

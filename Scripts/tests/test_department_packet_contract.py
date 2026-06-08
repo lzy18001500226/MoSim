@@ -35,6 +35,15 @@ def base_packet() -> dict:
         "manual_review_or_blocker_triggers": ["missing evidence"],
         "actual_engineering_outputs": ["ROS2 source-window topic evidence"],
         "claim_boundary": ["diagnostic only"],
+        "semantic_boundary": {
+            "decision_scope": "visible_thread",
+            "state_class": "routable",
+            "evidence_minimum": ["expected packet exists"],
+            "allowed_actions": ["integrate return packet"],
+            "forbidden_actions": ["claim runtime success"],
+            "stop_triggers": ["missing evidence"],
+            "next_owner": "PMO",
+        },
     }
 
 
@@ -92,3 +101,28 @@ def test_completed_packet_requires_claim_boundary() -> None:
     packet.pop("claim_boundary")
     errors = checker.validate(packet, strict_completed_outputs=True)
     assert "completed packet missing claim_boundary" in errors
+
+
+def test_missing_semantic_boundary_fails_for_current_packet() -> None:
+    checker = load_checker()
+    packet = base_packet()
+    packet.pop("semantic_boundary")
+    errors = checker.validate(packet, strict_completed_outputs=True)
+    assert "missing required semantic_boundary" in errors
+
+
+def test_semantic_boundary_rejects_free_text_state_class() -> None:
+    checker = load_checker()
+    packet = base_packet()
+    packet["semantic_boundary"]["state_class"] = "healthy"
+    errors = checker.validate(packet, strict_completed_outputs=True)
+    assert "semantic_boundary.state_class is free-text-only: healthy" in errors
+
+
+def test_semantic_boundary_rejects_unknown_mworks_state_class() -> None:
+    checker = load_checker()
+    packet = base_packet()
+    packet["semantic_boundary"]["decision_scope"] = "mworks_window_patrol"
+    packet["semantic_boundary"]["state_class"] = "window_ok"
+    errors = checker.validate(packet, strict_completed_outputs=True)
+    assert "semantic_boundary.state_class unknown for MWORKS: window_ok" in errors

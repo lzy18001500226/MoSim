@@ -473,7 +473,7 @@ Current active visible conversations:
 - OpenSourceProbeAgent / MoSim｜开源项目探针
 - CoAgentOps / MoSim｜CoAgent运维平台
 - OpenSourceLearningAgent / MoSim｜开源项目学习部
-- CodexContextMaintenanceAgent / MoSim｜Codex 上下文维护部
+- CodexContextMaintenanceAgent / MoSim｜文档秘书部
 
 Archived/non-dispatchable:
 - WeChatGatewayOps / MoSim｜微信网关运维部

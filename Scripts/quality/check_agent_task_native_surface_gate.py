@@ -37,6 +37,58 @@ RETURN_PATH_SURFACES = {
     "coagent_packet_glue",
 }
 
+SEMANTIC_BOUNDARY_REQUIRED_FIELDS = [
+    "decision_scope",
+    "state_class",
+    "evidence_minimum",
+    "allowed_actions",
+    "forbidden_actions",
+    "stop_triggers",
+    "next_owner",
+]
+
+DECISION_SCOPES = {
+    "visible_thread",
+    "mworks_window_patrol",
+    "mworks_live_task",
+    "ros2_runtime",
+    "ue_runtime",
+    "asset_review",
+    "other",
+}
+
+VISIBLE_THREAD_STATES = {
+    "routable",
+    "busy_in_progress",
+    "dispatch_needed",
+    "idle_blocked_by_open_dependency",
+    "approval_pending_or_ui_blocked",
+    "provider_gateway_or_pending_review",
+    "dispatch_surface_or_agent_loop_failure",
+    "context_compression_surface",
+    "unknown_blocked",
+}
+
+MWORKS_STATES = {
+    "window_patrol_clean",
+    "helper_only_nonblocking",
+    "login_or_license_blocked",
+    "authorization_blocked",
+    "gui_error_blocked",
+    "visible_unknown_blocked",
+    "live_attach_blocked",
+    "unknown_blocked",
+}
+
+FREE_TEXT_ONLY_STATES = {
+    "ok",
+    "normal",
+    "healthy",
+    "looks fine",
+    "still running",
+    "probably blocked",
+}
+
 MWORKS_TARGET_FIELDS = [
     "target_department",
     "target_thread",
@@ -81,6 +133,89 @@ def _native_gate(packet: dict[str, Any]) -> dict[str, Any] | None:
     if isinstance(metadata, dict) and isinstance(metadata.get("native_surface_gate"), dict):
         return metadata["native_surface_gate"]
     return None
+
+
+def _semantic_boundary(packet: dict[str, Any]) -> dict[str, Any] | None:
+    boundary = packet.get("semantic_boundary")
+    if isinstance(boundary, dict):
+        return boundary
+    metadata = packet.get("metadata")
+    if isinstance(metadata, dict) and isinstance(metadata.get("semantic_boundary"), dict):
+        return metadata["semantic_boundary"]
+    return None
+
+
+def _is_non_empty_list(value: Any) -> bool:
+    return isinstance(value, list) and any(isinstance(item, str) and item.strip() for item in value)
+
+
+def _check_semantic_boundary(packet: dict[str, Any]) -> list[dict[str, str]]:
+    boundary = _semantic_boundary(packet)
+    if boundary is None:
+        return [
+            {
+                "field": "semantic_boundary",
+                "reason": "missing_semantic_boundary",
+                "message": "Task packet must declare decision_scope, state_class, evidence_minimum, allowed_actions, forbidden_actions, stop_triggers, and next_owner.",
+            }
+        ]
+
+    findings: list[dict[str, str]] = []
+    for field in SEMANTIC_BOUNDARY_REQUIRED_FIELDS:
+        value = boundary.get(field)
+        if field in {"evidence_minimum", "allowed_actions", "forbidden_actions", "stop_triggers"}:
+            if not _is_non_empty_list(value):
+                findings.append(
+                    {
+                        "field": f"semantic_boundary.{field}",
+                        "reason": f"missing_{field}",
+                        "message": f"{field} must be a non-empty list of concrete strings.",
+                    }
+                )
+        elif not isinstance(value, str) or not value.strip():
+            findings.append(
+                {
+                    "field": f"semantic_boundary.{field}",
+                    "reason": f"missing_{field}",
+                    "message": f"{field} must be a non-empty string.",
+                }
+            )
+
+    decision_scope = str(boundary.get("decision_scope", ""))
+    state_class = str(boundary.get("state_class", ""))
+    if decision_scope and decision_scope not in DECISION_SCOPES:
+        findings.append(
+            {
+                "field": "semantic_boundary.decision_scope",
+                "reason": "unknown_decision_scope",
+                "message": decision_scope,
+            }
+        )
+    if state_class.casefold() in FREE_TEXT_ONLY_STATES:
+        findings.append(
+            {
+                "field": "semantic_boundary.state_class",
+                "reason": "free_text_only_state_class",
+                "message": state_class,
+            }
+        )
+    if decision_scope == "visible_thread" and state_class and state_class not in VISIBLE_THREAD_STATES:
+        findings.append(
+            {
+                "field": "semantic_boundary.state_class",
+                "reason": "unknown_visible_thread_state_class",
+                "message": state_class,
+            }
+        )
+    if decision_scope in {"mworks_window_patrol", "mworks_live_task"} and state_class and state_class not in MWORKS_STATES:
+        findings.append(
+            {
+                "field": "semantic_boundary.state_class",
+                "reason": "unknown_mworks_state_class",
+                "message": state_class,
+            }
+        )
+    return findings
 
 
 def _looks_like_mworks_department_packet(packet: dict[str, Any]) -> bool:
@@ -141,7 +276,10 @@ def check_packet(packet: dict[str, Any], *, strict: bool = False) -> dict[str, A
                 "message": "Task packet must record the PMO native Codex surface gate before dispatch.",
             }
         )
+        findings.extend(_check_semantic_boundary(packet))
         return {"ok": False, "warning_count": 0, "fail_count": len(findings), "findings": findings, "warnings": warnings}
+
+    findings.extend(_check_semantic_boundary(packet))
 
     surfaces = _as_surface_set(gate.get("selected_native_surface"))
     if not surfaces:

@@ -1,0 +1,402 @@
+{
+  "request_id": "PMO-COAGENTOPS-WORK-QUEUE-DRYRUN-20260608-001",
+  "generated_at": "2026-06-08T20:36:00+08:00",
+  "workspace": "C:\\Users\\HP\\Desktop\\MoSim",
+  "dryrun_result": {
+    "p0_task_count": 6,
+    "dispatchable_now_count": 0,
+    "dispatched_this_run": false,
+    "reason": "MainPMO already has an active dispatch turn and latest P0 target threads are either in progress or need same-thread validation before any duplicate dispatch."
+  },
+  "tasks": [
+    {
+      "request_id": "PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025",
+      "priority": "P0",
+      "owner_domain": "mworks_r1",
+      "target_thread_id": "019e9be5-334b-76b1-93f9-8b02caebf376",
+      "task_class": "mworks_static_modelica_source_migration_batch_a",
+      "state_class": "routable",
+      "dispatch_readiness": "blocked_by_unknown_state",
+      "read_scope": [
+        "AGENTS.md",
+        "Docs/Workflows/new_conversation_context.md",
+        "Docs/Workflows/agent_task_ledger.md",
+        "Docs/Design/12_MoSimQuadrotorModel模型归档与迁移计划.md",
+        "Results/agent_packets/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025.json",
+        "Models/MoSimQuadrotorModel/Dynamics",
+        "Models/QuadrotorExperiments/DynamicsUpgrade"
+      ],
+      "write_scope": [
+        "Models/MoSimQuadrotorModel/Dynamics",
+        "Scripts/mworks",
+        "Scripts/tests",
+        "Results/mworks_model_hygiene",
+        "Results/agent_packets/returns/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025.json",
+        "Results/agent_packets/blockers/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025.json"
+      ],
+      "evidence_minimum": [
+        "current package/source anchors inspected",
+        "source edits limited to narrow Batch A",
+        "legacy aliases remain valid at source-text level",
+        "static checker/test evidence exists",
+        "return or blocker packet lists exact changed files"
+      ],
+      "allowed_actions": [
+        "perform narrow source-static Modelica migration if safe",
+        "write static checker/test/evidence",
+        "write return or blocker packet"
+      ],
+      "forbidden_actions": [
+        "do not touch live MWORKS GUI/MCP/check_model/SimulateModel",
+        "do not edit References or official QuadrotorModel baseline",
+        "do not tune parameters or claim Sunray150 truth",
+        "do not touch UE, ROS2, Sunray, CoAgent runtime, or Git"
+      ],
+      "stop_triggers": [
+        "live MWORKS evidence is required",
+        "legacy alias compatibility would break",
+        "broad rename/search-replace is needed",
+        "Codex approval/review/provider surface appears"
+      ],
+      "expected_return_path": "Results/agent_packets/returns/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025.json",
+      "blocker_path": "Results/agent_packets/blockers/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025.json",
+      "next_owner": "MWorksDynamicsControlAgent",
+      "reason": "Target thread has a visible in-progress 025 turn with agent commentary. Do not dispatch another R1 model-source task until expected return/blocker exists."
+    },
+    {
+      "request_id": "RFLY-MOSIM-ROS2-RUNTIME-B1-HEADLESS-LIVE-EVIDENCE-BUNDLE-20260608-074",
+      "priority": "P0",
+      "owner_domain": "ros2_r1",
+      "target_thread_id": "019e9c72-ee74-79d1-b9fe-621d3c6fc99e",
+      "task_class": "ros2_b1_single_bounded_headless_live_evidence_bundle_after_073",
+      "state_class": "routable",
+      "dispatch_readiness": "blocked_by_unknown_state",
+      "read_scope": [
+        "AGENTS.md",
+        "Docs/Workflows/new_conversation_context.md",
+        "Docs/Workflows/ros2_runtime_setup.md",
+        "Docs/Workflows/agent_task_ledger.md",
+        "Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-HEADLESS-LIVE-EVIDENCE-BUNDLE-20260608-074.json",
+        "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-LIVE-EVIDENCE-BUNDLE-CHECKER-STATIC-GATE-20260608-073.json",
+        "Scripts/ros/validate_ros2_b1_live_evidence_bundle.py",
+        "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh",
+        "Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh"
+      ],
+      "write_scope": [
+        "Results/ros2_runtime",
+        "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-HEADLESS-LIVE-EVIDENCE-BUNDLE-20260608-074.json",
+        "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-HEADLESS-LIVE-EVIDENCE-BUNDLE-20260608-074.json"
+      ],
+      "evidence_minimum": [
+        "preflight process/source-window check",
+        "single live probe budget manifest if probe runs",
+        "runtime topic/TF/output evidence if probe runs",
+        "073 validator summary if bundle is collected",
+        "cleanup summary"
+      ],
+      "allowed_actions": [
+        "run at most one bounded headless no-goal ROS2/FAST-LIO probe",
+        "collect declared topic/TF evidence",
+        "run 073 validator",
+        "write return or blocker packet"
+      ],
+      "forbidden_actions": [
+        "do not open RViz2 foreground",
+        "do not publish planner/controller topics or goals",
+        "do not start UE, MWORKS, TF bridge, planner, controller handoff, or 20Hz adapter",
+        "do not fake point clouds, maps, odometry, TF, or pose",
+        "do not edit extrinsics, source data, References, CoAgent runtime, or Git"
+      ],
+      "stop_triggers": [
+        "source window is insufficient",
+        "stale runtime processes cannot be classified",
+        "probe would require foreground GUI/manual approval",
+        "cleanup cannot be proven",
+        "Codex approval/review/provider surface appears"
+      ],
+      "expected_return_path": "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-HEADLESS-LIVE-EVIDENCE-BUNDLE-20260608-074.json",
+      "blocker_path": "Results/agent_packets/blockers/RFLY-MOSIM-ROS2-RUNTIME-B1-HEADLESS-LIVE-EVIDENCE-BUNDLE-20260608-074.json",
+      "next_owner": "ROS2RuntimeAgent",
+      "reason": "Target thread has a visible in-progress 074 turn with agent commentary. Additional dispatch would consume or confuse live probe budget."
+    },
+    {
+      "request_id": "RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-CAPTURE-BUNDLE-WIRING-20260608-032",
+      "priority": "P0",
+      "owner_domain": "ue",
+      "target_thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
+      "task_class": "ue_source_static_receiver_capture_bundle_wiring",
+      "state_class": "routable",
+      "dispatch_readiness": "blocked_by_unknown_state",
+      "read_scope": [
+        "AGENTS.md",
+        "Docs/Workflows/new_conversation_context.md",
+        "Results/agent_packets/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-CAPTURE-BUNDLE-WIRING-20260608-032.json",
+        "UE5/Bridge/Source/QuadrotorMworksBridge",
+        "Scripts/UE5",
+        "prior UE 030/031 return packets"
+      ],
+      "write_scope": [
+        "UE5/Bridge/Source/QuadrotorMworksBridge",
+        "Scripts/UE5",
+        "Scripts/tests",
+        "Results/ue_runtime",
+        "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-CAPTURE-BUNDLE-WIRING-20260608-032.json",
+        "Results/agent_packets/blockers/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-CAPTURE-BUNDLE-WIRING-20260608-032.json"
+      ],
+      "evidence_minimum": [
+        "source-static receiver/capture wiring inspected or patched",
+        "checker/test/evidence report exists",
+        "no live runtime/editor/socket/listener is started",
+        "return or blocker packet separates compile/static from live ack"
+      ],
+      "allowed_actions": [
+        "perform source-static wiring/checker work",
+        "write source-static evidence",
+        "write return or blocker packet"
+      ],
+      "forbidden_actions": [
+        "do not open Unreal Editor, PIE, or runtime",
+        "do not start live socket, listener, timer, or background loop",
+        "do not touch MWORKS, ROS2, FAST-LIO, planner, controller, Sunray, References, CoAgent runtime, or Git",
+        "do not claim live UE runtime ack or final UI acceptance"
+      ],
+      "stop_triggers": [
+        "live runtime/editor is required",
+        "source-static evidence is inconsistent",
+        "Codex approval/review/provider surface appears",
+        "missing tool or permission"
+      ],
+      "expected_return_path": "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-CAPTURE-BUNDLE-WIRING-20260608-032.json",
+      "blocker_path": "Results/agent_packets/blockers/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-CAPTURE-BUNDLE-WIRING-20260608-032.json",
+      "next_owner": "UEExperimentConsoleAgent",
+      "reason": "Target thread has a visible in-progress 032 turn with agent commentary. Do not duplicate dispatch while expected packet is pending."
+    },
+    {
+      "request_id": "PMO-MWORKS-R2-MOSIMQUAD-DYNAMICS-BATCH-A-STATIC-REVIEW-20260608-025",
+      "priority": "P0",
+      "owner_domain": "mworks_r2",
+      "target_thread_id": "019e9999-b0d3-7682-bccd-faef08fcf1df",
+      "task_class": "mworks_static_model_migration_review_batch_a",
+      "state_class": "unknown_blocked",
+      "dispatch_readiness": "blocked_by_unknown_state",
+      "read_scope": [
+        "AGENTS.md",
+        "Docs/Workflows/new_conversation_context.md",
+        "Docs/Workflows/agent_task_ledger.md",
+        "Docs/Design/12_MoSimQuadrotorModel模型归档与迁移计划.md",
+        "Results/agent_packets/PMO-MWORKS-R2-MOSIMQUAD-DYNAMICS-BATCH-A-STATIC-REVIEW-20260608-025.json",
+        "Results/agent_packets/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025.json"
+      ],
+      "write_scope": [
+        "Results/mworks_model_hygiene",
+        "Results/agent_packets/returns/PMO-MWORKS-R2-MOSIMQUAD-DYNAMICS-BATCH-A-STATIC-REVIEW-20260608-025.json",
+        "Results/agent_packets/blockers/PMO-MWORKS-R2-MOSIMQUAD-DYNAMICS-BATCH-A-STATIC-REVIEW-20260608-025.json"
+      ],
+      "evidence_minimum": [
+        "R1 025 dependency state classified",
+        "R1 025 return/blocker inspected if available",
+        "review packet separates static organization review from live graphical acceptance"
+      ],
+      "allowed_actions": [
+        "read R1 025 task and any resulting packet",
+        "read current model package/source files",
+        "write static review evidence",
+        "write return or blocker packet"
+      ],
+      "forbidden_actions": [
+        "do not edit .mo, package.mo, package.order, docs, scripts, or source files",
+        "do not operate MWORKS/Sysplorer/Syslab or call live MCP/check/sim/layout tools",
+        "do not touch UE, ROS2, FAST-LIO, planner, controller, Sunray, References, CoAgent runtime, or Git",
+        "do not claim graphical package-browser/check_model/simulation acceptance"
+      ],
+      "stop_triggers": [
+        "R1 025 has not produced a return/blocker",
+        "review would require live package browser or diagram screenshot",
+        "source/package inconsistency cannot be resolved without editing",
+        "Codex approval/review/provider surface appears"
+      ],
+      "expected_return_path": "Results/agent_packets/returns/PMO-MWORKS-R2-MOSIMQUAD-DYNAMICS-BATCH-A-STATIC-REVIEW-20260608-025.json",
+      "blocker_path": "Results/agent_packets/blockers/PMO-MWORKS-R2-MOSIMQUAD-DYNAMICS-BATCH-A-STATIC-REVIEW-20260608-025.json",
+      "next_owner": "MainPMO",
+      "reason": "Task packet exists and PMO claims dispatch success, but current R2 read_thread view does not yet show a 025 turn. Validate same-thread activity or expected packet before any retry."
+    },
+    {
+      "request_id": "PMO-MWORKS-R1-MOSIMQUAD-ACTUATOR-COMMAND-MAPPER-FORMAL-SOURCE-SURFACE-20260608-027",
+      "priority": "P0",
+      "owner_domain": "mworks_r1",
+      "target_thread_id": "019e9be5-334b-76b1-93f9-8b02caebf376",
+      "task_class": "mworks_static_modelica_formal_source_surface",
+      "state_class": "routable",
+      "dispatch_readiness": "blocked_by_user_or_pmo_decision",
+      "read_scope": [
+        "Results/agent_packets/PMO-MWORKS-R1-MOSIMQUAD-ACTUATOR-COMMAND-MAPPER-FORMAL-SOURCE-SURFACE-20260608-027.json",
+        "Results/agent_packets/blockers/PMO-MWORKS-R1-027-DISPATCH-SURFACE-FAILURE-20260608-001.json",
+        "current R1 025 turn state"
+      ],
+      "write_scope": [
+        "Models/MoSimQuadrotorModel/Dynamics",
+        "Scripts/mworks",
+        "Scripts/tests",
+        "Results/mworks_model_hygiene",
+        "Results/agent_packets/returns/PMO-MWORKS-R1-MOSIMQUAD-ACTUATOR-COMMAND-MAPPER-FORMAL-SOURCE-SURFACE-20260608-027.json",
+        "Results/agent_packets/blockers/PMO-MWORKS-R1-MOSIMQUAD-ACTUATOR-COMMAND-MAPPER-FORMAL-SOURCE-SURFACE-20260608-027.json"
+      ],
+      "evidence_minimum": [
+        "PMO decides whether 027 remains needed after 025 Batch A",
+        "no active conflicting R1 model-source turn",
+        "task packet fields remain current",
+        "return or blocker packet written if redispatched"
+      ],
+      "allowed_actions": [
+        "after PMO decision, redispatch as source-static task or supersede with a later batch",
+        "write precise supersede/blocker if old 027 is no longer current"
+      ],
+      "forbidden_actions": [
+        "do not dispatch concurrently with current R1 025",
+        "do not treat old dispatch failure as business completion",
+        "do not touch live MWORKS/MCP/check_model/SimulateModel",
+        "do not touch UE, ROS2, Sunray, CoAgent runtime, or Git"
+      ],
+      "stop_triggers": [
+        "R1 025 has not returned",
+        "scope overlaps with current source migration batch",
+        "Codex approval/review/provider surface appears",
+        "PMO has not decided whether to preserve or supersede 027"
+      ],
+      "expected_return_path": "Results/agent_packets/returns/PMO-MWORKS-R1-MOSIMQUAD-ACTUATOR-COMMAND-MAPPER-FORMAL-SOURCE-SURFACE-20260608-027.json",
+      "blocker_path": "Results/agent_packets/blockers/PMO-MWORKS-R1-MOSIMQUAD-ACTUATOR-COMMAND-MAPPER-FORMAL-SOURCE-SURFACE-20260608-027.json",
+      "next_owner": "MainPMO",
+      "reason": "Old 027 dispatch failed, but same R1 thread now shows new 025 agent output. Business 027 still lacks return/blocker and should be decided after 025 to avoid model-source conflicts."
+    },
+    {
+      "request_id": "MWORKS-LIVE-CHECK-SIM-GRAPHICAL-GATE-OPEN-DEPENDENCY-20260608",
+      "priority": "P0",
+      "owner_domain": "mworks_r1",
+      "target_thread_id": "019e9be5-334b-76b1-93f9-8b02caebf376",
+      "task_class": "mworks_live_gate_dependency",
+      "state_class": "unknown_blocked",
+      "dispatch_readiness": "blocked_by_live_gate",
+      "read_scope": [
+        "AGENTS.md MWORKS live-window boundaries",
+        "Docs/Workflows/new_conversation_context.md MWORKS hotfix entries",
+        "Results/agent_packets/blockers/COAGENTOPS-HEARTBEAT-P0-MWORKS-MAIN-WINDOW-MISSING-20260608-0808.json",
+        "Results/agent_packets/blockers/COAGENTOPS-HEARTBEAT-P0-MWORKS-MAIN-WINDOW-MISSING-20260608-0818.json"
+      ],
+      "write_scope": [
+        "future PMO/CoAgentOps blocker or live-gate validation packet only after approved route"
+      ],
+      "evidence_minimum": [
+        "true reusable MWORKS/Sysplorer main window identified",
+        "login/license/authorization/gui-error surfaces classified",
+        "approved attach-existing/no-start or foreground validation route exists",
+        "no helper/proxy/window-title-only evidence is used as acceptance"
+      ],
+      "allowed_actions": [
+        "read current window/blocker evidence",
+        "write blocker or request for PMO/user decision",
+        "route static model tasks that do not need live MWORKS"
+      ],
+      "forbidden_actions": [
+        "do not call session_manager health as reusable-window proof",
+        "do not open/close/login/authorize/save/restart MWORKS without approved live gate",
+        "do not run check_model, SimulateModel, Smart Layout, package browser, result viewer",
+        "do not claim controller performance or live MWORKS acceptance"
+      ],
+      "stop_triggers": [
+        "main window remains absent or unknown",
+        "login/license/authorization/error surface appears",
+        "only helper/proxy windows are visible",
+        "foreground or maximized target-window proof is missing"
+      ],
+      "expected_return_path": "",
+      "blocker_path": "Results/agent_packets/blockers/COAGENTOPS-HEARTBEAT-P0-MWORKS-MAIN-WINDOW-MISSING-20260608-0818.json",
+      "next_owner": "MainPMO",
+      "reason": "Live MWORKS work remains blocked by main-window/no-start attach dependency. Only static source/model tasks are dispatchable while this gate is unresolved."
+    },
+    {
+      "request_id": "CODEX-CONTEXT-MAINTENANCE-QUEUE-20260608",
+      "priority": "P1",
+      "owner_domain": "context_maintenance",
+      "target_thread_id": "019e9be0-f6ac-7762-b80c-b1dd18b0d013",
+      "task_class": "context_and_packet_maintenance",
+      "state_class": "routable",
+      "dispatch_readiness": "not_mainline",
+      "read_scope": [
+        "AGENTS.md",
+        "Docs/Workflows/new_conversation_context.md",
+        "Docs/Index/project_work_memory_index.md",
+        "Docs/Workflows/agent_task_ledger.md",
+        "PROGRESS.md",
+        "Results/agent_packets"
+      ],
+      "write_scope": [
+        "maintenance audit outputs",
+        "suggested patches or review notes only"
+      ],
+      "evidence_minimum": [
+        "review markdown or maintenance packet",
+        "no file moves/deletes/renames without user confirmation",
+        "sparse email audit if required"
+      ],
+      "allowed_actions": [
+        "audit context recovery package",
+        "draft patch suggestions",
+        "audit packet folder organization"
+      ],
+      "forbidden_actions": [
+        "do not move, delete, rename, or reorganize files without confirmation",
+        "do not override P0 engineering dispatch",
+        "do not touch CoAgent runtime or Git"
+      ],
+      "stop_triggers": [
+        "large rewrite needed",
+        "automation/thread tools unavailable",
+        "user confirmation required for migration"
+      ],
+      "expected_return_path": "Results/agent_packets/returns/CODEX-CONTEXT-MAINTENANCE-QUEUE-20260608.json",
+      "blocker_path": "Results/agent_packets/blockers/CODEX-CONTEXT-MAINTENANCE-QUEUE-20260608.json",
+      "next_owner": "CodexContextMaintenanceAgent",
+      "reason": "Maintenance/context work is useful but not P0 mainline. It must not mask active or blocked MWORKS/ROS2/UE gates."
+    },
+    {
+      "request_id": "OPEN-SOURCE-SUPPORT-LANE-QUEUE-20260608",
+      "priority": "P2",
+      "owner_domain": "unknown",
+      "target_thread_id": "019e9be3-94de-7dc3-b067-92a78b678287",
+      "task_class": "source_first_support_probe_or_learning",
+      "state_class": "routable",
+      "dispatch_readiness": "not_mainline",
+      "read_scope": [
+        "explicit PMO source-first reference question",
+        "CoAgent/dispatch/department_threads.json"
+      ],
+      "write_scope": [
+        "inventory manifests",
+        "adopt/adapt/reference_only/reject proposals"
+      ],
+      "evidence_minimum": [
+        "named source or project family",
+        "provenance classification",
+        "clear non-mainline claim boundary"
+      ],
+      "allowed_actions": [
+        "crawl or inventory explicit sources",
+        "return learning proposals when requested"
+      ],
+      "forbidden_actions": [
+        "do not replace P0 MWORKS/ROS2/UE dispatch",
+        "do not mutate References or project source without a task packet",
+        "do not decide adoption without PMO/user review"
+      ],
+      "stop_triggers": [
+        "no explicit source question",
+        "adoption would alter mainline engineering scope",
+        "P0 thread is idle or abnormal and needs attention first"
+      ],
+      "expected_return_path": "Results/agent_packets/returns/OPEN-SOURCE-SUPPORT-LANE-QUEUE-20260608.json",
+      "blocker_path": "Results/agent_packets/blockers/OPEN-SOURCE-SUPPORT-LANE-QUEUE-20260608.json",
+      "next_owner": "MainPMO",
+      "reason": "Reference-study is support-only and cannot count as mainline progress."
+    }
+  ]
+}
