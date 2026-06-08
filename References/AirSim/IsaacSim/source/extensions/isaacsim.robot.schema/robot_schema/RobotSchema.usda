@@ -1,0 +1,206 @@
+#usda 1.0
+(
+    "Robot Codeless schema"
+    subLayers = [
+    @usdGeom/schema.usda@,
+    ]
+
+
+)
+
+over "GLOBAL"(
+    customData= {
+        string libraryName = "RobotSchema"
+        string libraryPath = "./"
+        string libraryPrefix = "RobotSchema"
+        bool skipCodeGeneration = true
+    }
+)
+{
+
+}
+class "IsaacRobotAPI"
+(
+    inherits = </APISchemaBase>
+    customData = {
+        token apiSchemaType = "singleApply"
+    }
+)
+{
+    string isaac:description= ""
+    string isaac:namespace = ""
+    token isaac:robotType = "Default" (
+        doc = """
+        Type of robot.
+        """
+        allowedTokens = ["Default", "End Effector", "Manipulator", "Humanoid", "Wheeled", "Holonomic", "Quadruped", "Mobile Manipulators", "Aerial"]
+    )
+    token isaac:license = "Other" (
+        allowedTokens = ["MIT", "Apache-2.0", "GPL-3.0", "LGPL-3.0", "BSD-3-Clause", "BSD-2-Clause", "ISC", "MPL-2.0", "EPL-2.0", "CC0-1.0", "Unlicense", "Other"]
+        doc = """
+        License for using the robot.
+        """
+    )
+    string isaac:version = "" (
+        doc = """
+        Version of the robot.
+        """
+    )
+    string isaac:source = "" (
+        doc = """
+        Source of the robot.
+        """
+    )
+    string[] isaac:changelog = [] (
+        doc = """
+        Changelog of the robot.
+        """
+    )
+
+
+
+
+
+    rel isaac:physics:robotLinks (
+        doc = """
+        Sorted list of bodies, Reference points or Robot assemblies ( all bodies from the robot are inserted) to be listed in the robot kinematics tree.
+        The order defines how the robot will be reported both in communication protocols as in the body poses
+        tensor.
+        """
+    )
+    rel isaac:physics:robotJoints (
+        doc = """
+        Sorted list of joints to be reported in the robot structure. This list can contain either direct references to Robot Joints, or to a Robot composition - which inserts all sub-components into the list.
+        """
+    )
+}
+
+class "IsaacLinkAPI"
+(
+    inherits = </APISchemaBase>
+    customData = {
+        token apiSchemaType = "singleApply"
+    }
+)
+{
+    string isaac:nameOverride = ""
+}
+
+
+class "IsaacReferencePointAPI"
+(
+    inherits = </APISchemaBase>
+    customData = {
+        token apiSchemaType = "singleApply"
+    }
+)
+{
+    string isaac:Description = ""
+    uniform token isaac:forwardAxis = "X" (
+        allowedTokens = ["X", "Y", "Z"]
+    )
+}
+
+
+
+class "IsaacJointAPI"
+(
+inherits = </APISchemaBase>
+    customData = {
+        token apiSchemaType = "singleApply"
+    }
+)
+{
+    int isaac:physics:Rot_X:DoFOffset = 0
+    int isaac:physics:Rot_Y:DoFOffset = 1
+    int isaac:physics:Rot_Z:DoFOffset = 2
+    int isaac:physics:Tr_X:DoFOffset = 3
+    int isaac:physics:Tr_Y:DoFOffset = 4
+    int isaac:physics:Tr_Z:DoFOffset = 5
+    string isaac:NameOverride = ""
+    float[] isaac:physics:AccelerationLimit = [-1,-1,-1,-1,-1,-1]
+    float[] isaac:physics:JerkLimit = [-1, -1 ,-1 ,-1 ,-1 ,-1 ,-1]
+    bool[] isaac:actuator = [0,0,0,0,0,0]
+}
+
+class "IsaacSurfaceGripper"
+(
+	  inherits = </Typed>
+)
+
+{
+    rel isaac:attachmentPoints (
+        doc = """
+        List of D6 Joints to be used as components of the Surface Gripper.
+        These joints represent the contact points where the gripper can attach to objects.
+        """
+    )
+
+    float isaac:maxGripDistance = 0.01 (
+        displayName = "Max Grip Distance"
+        doc = """
+        Maximum distance the gripper can check to grab an object, measured in meters.
+        """
+    )
+
+    uniform token isaac:status = "Open" (
+        displayName = "Status"
+        allowedTokens = ["Open", "Closed", "Closing"]
+        doc = """
+        Current status of the surface gripper.
+        """
+    )
+    float isaac:retryInterval = 0.0 (
+        displayName = "Retry Interval"
+        doc = """
+        Time interval while the gripper is trying to close before it times out, measured in seconds.
+        """
+    )
+
+    rel isaac:grippedObjects (
+        displayName = "Gripped Objects"
+        doc = """
+        List of objects currently being gripped. This relationship is updated at runtime
+        to reflect the current state of the gripper's interactions.
+        """
+    )
+
+    float isaac:shearForceLimit = -1 (
+        displayName = "Shear Force Limit"
+        doc = """
+        Maximum allowable shear force per attachment point, measured in Newtons.
+        A value of -1 indicates no limit.
+        """
+    )
+
+    float isaac:coaxialForceLimit = -1 (
+        displayName = "Coaxial Force Limit"
+        doc = """
+        Maximum allowable coaxial force per attachment point, measured in Newtons.
+        A value of -1 indicates no limit.
+        """
+    )
+}
+
+class "IsaacAttachmentPointAPI"
+(
+inherits = </APISchemaBase>
+    customData = {
+        token apiSchemaType = "singleApply"
+    }
+)
+{
+    uniform token isaac:forwardAxis = "X" (
+        displayName = "Forward Axis"
+        allowedTokens = ["X", "Y", "Z"]
+        doc = """
+        Axis along which the gripper opens and closes.
+        """
+    )
+    float isaac:clearanceOffset = 0.0 (
+        displayName = "Clearance Offset"
+        doc = """
+        Offset to be added to the grip distance to avoid self-collision, measured in meters.
+        """
+    )
+}

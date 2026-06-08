@@ -1,0 +1,6 @@
+# python cache
+__pycache__/
+
+# isaacsim.code_editor.jupyter extension runtime data
+data/launchers/*.txt
+data/notebooks/*.ipynb
