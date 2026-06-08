@@ -155,6 +155,12 @@ References/Agent/*
 !References/Agent/Gateway/**
 !References/Agent/SDK/
 !References/Agent/SDK/**
+# ag2 local checkout has pointer-only Git LFS media; keep source/docs tracked
+# and leave media payload restoration to a separate LFS recovery task.
+References/Agent/Frameworks/ag2/**/*.png
+References/Agent/Frameworks/ag2/**/*.jpg
+References/Agent/Frameworks/ag2/**/*.jpeg
+References/Agent/Frameworks/ag2/**/*.webp
 References/Log/
 !References/Log/
 !References/Log/px4_pid_tuner/
