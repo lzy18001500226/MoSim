@@ -2,11 +2,6 @@ within MoSimQuadrotorModel;
 package Dynamics
   "Sunray150动力学升级（RflySim结构思想迁移，参数仍按来源标注）"
 
-  model RotorActuatorCore
-    "旋翼执行器核心（电机指令、转速滞后、推力和偏航反扭矩）"
-    extends QuadrotorExperiments.DynamicsUpgrade.RotorDynamicsCore;
-  end RotorActuatorCore;
-
   model HoverSmoke
     "悬停烟测（动力学升级最小验证）"
     extends QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke;
@@ -17,10 +12,15 @@ package Dynamics
     extends QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke;
   end YawStepSmoke;
 
-  model WrapperSurface
-    "动力学wrapper接口面（后续正式机体替换入口）"
-    extends QuadrotorExperiments.DynamicsUpgrade.WrapperSurface;
-  end WrapperSurface;
+  model ActuatorMappedWrapperSurface
+    "归一化执行器命令经mapper接入现有动力学wrapper接口"
+    extends QuadrotorExperiments.DynamicsUpgrade.ActuatorMappedWrapperSurface;
+  end ActuatorMappedWrapperSurface;
+
+  model OptionalDampingGyroLayer
+    "默认关闭的旋翼陀螺、机体阻力和角阻尼可选边界层"
+    extends QuadrotorExperiments.DynamicsUpgrade.OptionalDampingGyroLayer;
+  end OptionalDampingGyroLayer;
 
   model WrapperHoverSmoke
     "动力学wrapper悬停烟测（正式入口）"

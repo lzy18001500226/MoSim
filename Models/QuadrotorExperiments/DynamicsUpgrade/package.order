@@ -2,6 +2,9 @@ RotorDynamicsCore
 RotorHoverSmoke
 RotorYawStepSmoke
 WrapperSurface
+ActuatorCommandMapper
+ActuatorMappedWrapperSurface
+OptionalDampingGyroLayer
 WrapperHoverSmoke
 WrapperYawStepSmoke
 PhysicalWrenchAdapter
