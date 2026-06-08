@@ -36,7 +36,8 @@ This removes the previous flat pile of round files while keeping the migration w
 
 ## Agent Packets
 
-`Results/agent_packets` now keeps workflow lanes at root and moves request/task packets into `tasks/*`.
+`Results/agent_packets` now keeps workflow lanes at root and moves request/task
+packets into `tasks/*`.
 
 Stable lanes kept at root:
 
@@ -50,6 +51,15 @@ Stable lanes kept at root:
 - `summaries`
 - `closeouts`
 - `tasks`
+
+One root-level active contract exception remains:
+
+- `COAGENT-DEVOPS-GIT-DIVIDE-20260531.yaml`: current Git closeout checkpoint.
+  The Git closeout owner restored this exact root path after this cleanup. It is
+  not a task/request packet, and moving it again would fight an active task
+  contract. A non-conflicting older checkpoint snapshot is also kept under
+  `returns/COAGENT-DEVOPS-GIT-DIVIDE-20260531-LATEST-CHECKPOINT.yaml` for
+  review continuity.
 
 Task/request packet categories:
 
@@ -88,21 +98,61 @@ Important cleanup categories:
 
 ROS2 workspaces under `Results/tmp/*_ws` remain in place because scripts and historical command examples may refer to their `install/setup` files.
 
+## CoAgent Transport
+
+`Results/coagent_transport` now has no root-level loose files. Current
+tool-owned directories remain at the top level:
+
+- `runs`: current/historical transport run logs referenced by CoAgent tooling.
+- `codex_home`: isolated transport Codex home.
+- `sqlite_home`: isolated transport SQLite/runtime home.
+- `visible_lifecycle`: lifecycle proof evidence.
+- `archive`: historical flat transport outputs moved out of the root.
+
+The archive is organized by evidence class instead of one large dump:
+
+- `archive/automation/<automation_id>/<YYYYMMDD>/`: old daily automation packets.
+- `archive/legacy_packets/<task_id>/`: old CoAgent packet/result text files.
+- `archive/smoke_and_probe/<task_id>/`: transport smoke and probe packets.
+- `archive/manual_dispatch_20260531/`: one-off manual dispatch prompts and
+  visibility snapshots.
+
+Current CoAgent automation code may still write new `*_packet.txt` and
+`*_result.txt` files to the `Results/coagent_transport` root. If that happens,
+those are fresh runtime outputs, not evidence that this historical cleanup
+failed.
+
 ## Kept Stable By Design
 
 - `Models`, `References`, and `Scripts` were not reorganized in this task; the user identified them as acceptable or already clear enough for now.
 - `Results/agent_packets/returns` and `Results/agent_packets/blockers` remain stable current workflow paths.
-- Existing high-volume result families such as `Results/agent_runtime`, `Results/coagent_status/git_batches`, and domain evidence folders remain grouped by their current domain. They may need separate deep cleanup, but they are not root-level clutter.
+- Existing high-volume result families such as `Results/agent_runtime`,
+  `Results/coagent_status/git_batches`, `Results/ros2_runtime`,
+  `Results/mworks_background_capture`, and other domain evidence folders remain
+  grouped by their current domain. They may need separate deep cleanup, but they
+  are not root-level clutter and were not moved in this pass.
 
 ## Verification Notes
 
 - `Results/tmp` loose file count: 0.
 - `Results/tmp` root random `tmp*` and `test_p0_slice_*` directory count: 0.
-- `Results/agent_packets` loose task/request packet count: 0.
+- `Results/agent_packets` root task/request packet count: 0.
+- `Results/agent_packets` root active contract exception count: 1
+  (`COAGENT-DEVOPS-GIT-DIVIDE-20260531.yaml`).
+- `Results/coagent_transport` loose file count: 0.
 - `Docs/Cache/session_memory_migration` root loose file count: 0.
 - `.codex-title-backups`, `build`, `install`, and `log` are absent from project root.
 
 ## Residual Follow-Up
 
 - Some historical evidence files may still contain old path strings as historical records. Current operating docs and this review point to the new categories.
+- `Results/agent_packets/COAGENT-DEVOPS-GIT-DIVIDE-20260531.yaml` remains at
+  root only because an active Git closeout contract currently writes and reads
+  that path. Moving it needs a separate Git closeout packet-path migration, not
+  another blind file move.
+- `Results/agent_packets/returns` and `Results/agent_packets/blockers` still
+  contain hundreds of flat current packets. They were intentionally not split
+  because current dispatch packets and workflow contracts use exact
+  `expected_return_path` / `blocker_return_path` values under those stable
+  lanes. Splitting them requires a separate packet-path migration plan.
 - A future task can further normalize tracked historical result families if needed, but this pass fixed the named messy areas and root-level clutter without touching live runtime state.
