@@ -45,14 +45,19 @@ DECISION_SCOPES = {
 
 VISIBLE_THREAD_STATES = {
     "routable",
-    "busy_in_progress",
-    "dispatch_needed",
-    "idle_blocked_by_open_dependency",
     "approval_pending_or_ui_blocked",
     "provider_gateway_or_pending_review",
     "dispatch_surface_or_agent_loop_failure",
     "context_compression_surface",
     "unknown_blocked",
+}
+
+DISPATCH_READINESS_STATES = {
+    "busy_in_progress",
+    "idle_needs_dispatch",
+    "idle_blocked_by_open_dependency",
+    "idle_no_ready_task",
+    "idle_waiting_review_or_approval",
 }
 
 MWORKS_STATES = {
@@ -180,6 +185,12 @@ def _validate_semantic_boundary(packet: dict[str, Any]) -> list[str]:
         errors.append(f"semantic_boundary.state_class unknown for visible_thread: {state_class}")
     if decision_scope in {"mworks_window_patrol", "mworks_live_task"} and state_class and state_class not in MWORKS_STATES:
         errors.append(f"semantic_boundary.state_class unknown for MWORKS: {state_class}")
+    readiness = packet.get("dispatch_readiness")
+    if readiness is not None:
+        if not isinstance(readiness, str) or not readiness.strip():
+            errors.append("dispatch_readiness must be a non-empty string when present")
+        elif readiness not in DISPATCH_READINESS_STATES:
+            errors.append(f"dispatch_readiness unknown: {readiness}")
     return errors
 
 

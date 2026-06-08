@@ -67,6 +67,31 @@ def test_native_surface_gate_accepts_visible_thread_packet(tmp_path: Path) -> No
     assert report["selected_native_surfaces"] == ["coagent_packet_glue", "visible_thread"]
 
 
+def test_native_surface_gate_accepts_idle_needs_dispatch_readiness(tmp_path: Path) -> None:
+    packet = {
+        "task_id": "IDLE-NEEDS-DISPATCH-SMOKE",
+        "target_thread": "MoSim｜UE实验控制台与场景交互部",
+        "target_thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
+        "expected_return_path": "Results/agent_packets/returns/IDLE-NEEDS-DISPATCH-SMOKE.json",
+        "blocker_return_path": "Results/agent_packets/blockers/IDLE-NEEDS-DISPATCH-SMOKE.json",
+        "dispatch_readiness": "idle_needs_dispatch",
+        "semantic_boundary": semantic_boundary(),
+        "native_surface_gate": {
+            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "surface_selection_reason": "Bounded dispatch is allowed only after queue readiness is separated from thread state.",
+            "worktree_required": False,
+            "worktree_decision": "No worktree needed for a visible-thread task packet.",
+        },
+    }
+    packet_path = tmp_path / "packet.json"
+    packet_path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    completed = run_checker(packet_path)
+    assert completed.returncode == 0, completed.stdout + completed.stderr
+    report = json.loads(completed.stdout)
+    assert report["ok"] is True
+
+
 def test_native_surface_gate_rejects_missing_gate(tmp_path: Path) -> None:
     packet_path = tmp_path / "packet.json"
     packet_path.write_text(
@@ -237,6 +262,31 @@ def test_native_surface_gate_rejects_free_text_state_class(tmp_path: Path) -> No
     report = json.loads(completed.stdout)
     reasons = {finding["reason"] for finding in report["findings"]}
     assert "free_text_only_state_class" in reasons
+
+
+def test_native_surface_gate_rejects_old_dispatch_needed_state_class(tmp_path: Path) -> None:
+    packet = {
+        "task_id": "OLD-DISPATCH-NEEDED-STATE",
+        "target_thread": "MoSim｜UE实验控制台与场景交互部",
+        "target_thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
+        "expected_return_path": "Results/agent_packets/returns/OLD-DISPATCH-NEEDED-STATE.json",
+        "blocker_return_path": "Results/agent_packets/blockers/OLD-DISPATCH-NEEDED-STATE.json",
+        "semantic_boundary": semantic_boundary("dispatch_needed"),
+        "native_surface_gate": {
+            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "surface_selection_reason": "Regression guard for separating queue state from visible-thread state.",
+            "worktree_required": False,
+            "worktree_decision": "No worktree needed.",
+        },
+    }
+    packet_path = tmp_path / "packet.json"
+    packet_path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    completed = run_checker(packet_path)
+    assert completed.returncode == 1
+    report = json.loads(completed.stdout)
+    reasons = {finding["reason"] for finding in report["findings"]}
+    assert "unknown_visible_thread_state_class" in reasons
 
 
 def test_visible_thread_dispatch_json_template_passes_strict_gate() -> None:

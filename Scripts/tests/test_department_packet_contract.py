@@ -52,6 +52,13 @@ def test_valid_completed_packet_passes() -> None:
     assert checker.validate(base_packet(), strict_completed_outputs=True) == []
 
 
+def test_visible_thread_dispatch_readiness_idle_needs_dispatch_passes() -> None:
+    checker = load_checker()
+    packet = base_packet()
+    packet["dispatch_readiness"] = "idle_needs_dispatch"
+    assert checker.validate(packet, strict_completed_outputs=True) == []
+
+
 def test_missing_planning_fields_fail() -> None:
     checker = load_checker()
     packet = base_packet()
@@ -117,6 +124,14 @@ def test_semantic_boundary_rejects_free_text_state_class() -> None:
     packet["semantic_boundary"]["state_class"] = "healthy"
     errors = checker.validate(packet, strict_completed_outputs=True)
     assert "semantic_boundary.state_class is free-text-only: healthy" in errors
+
+
+def test_semantic_boundary_rejects_old_dispatch_needed_state_class() -> None:
+    checker = load_checker()
+    packet = base_packet()
+    packet["semantic_boundary"]["state_class"] = "dispatch_needed"
+    errors = checker.validate(packet, strict_completed_outputs=True)
+    assert "semantic_boundary.state_class unknown for visible_thread: dispatch_needed" in errors
 
 
 def test_semantic_boundary_rejects_unknown_mworks_state_class() -> None:
