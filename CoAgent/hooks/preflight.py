@@ -252,8 +252,17 @@ def secret_path_findings(values: list[str], *, field: str) -> list[dict]:
     return findings
 
 
+def _clean_shell_fragment(raw: str) -> str:
+    value = raw.strip()
+    for _ in range(2):
+        value = value.strip().strip("'\"")
+        value = value.rstrip(";&|")
+    return value.strip().strip("'\"")
+
+
 def secret_path_hint(raw: str) -> str | None:
-    normalized = raw.replace("\\", "/").strip().strip("'\"").lower()
+    cleaned = _clean_shell_fragment(raw)
+    normalized = cleaned.replace("\\", "/").lower()
     if not normalized:
         return None
     if ".codex/auth.json" in normalized:
@@ -266,7 +275,7 @@ def secret_path_hint(raw: str) -> str | None:
         return "browser profile"
     if "local state" in normalized:
         return "local state"
-    if _is_allowed_project_packet_path(raw):
+    if _is_allowed_project_packet_path(cleaned):
         return None
 
     components = [part.strip().strip("'\"") for part in re.split(r"[/]+", normalized) if part.strip()]
@@ -287,7 +296,7 @@ def secret_path_hint(raw: str) -> str | None:
 
 
 def _project_relative_hint(raw: str) -> str:
-    value = raw.replace("\\", "/").strip().strip("'\"")
+    value = _clean_shell_fragment(raw).replace("\\", "/")
     try:
         candidate = Path(value)
         full = candidate if candidate.is_absolute() else (ROOT / candidate)
@@ -325,7 +334,7 @@ def _secret_token_filename(component: str) -> bool:
 
 
 def _looks_path_like(fragment: str) -> bool:
-    value = fragment.strip().strip("'\"")
+    value = _clean_shell_fragment(fragment)
     lower = value.lower()
     if not value:
         return False
@@ -347,7 +356,7 @@ def _is_benign_token_name(name: str) -> bool:
 
 
 def _secret_env_assignment_hint(fragment: str) -> str | None:
-    value = fragment.strip().strip("'\"")
+    value = _clean_shell_fragment(fragment)
     patterns = (
         r"^\$env:([A-Za-z_][A-Za-z0-9_]*)\s*=",
         r"^(?:export\s+|setx\s+|set\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=",
@@ -366,19 +375,43 @@ def _secret_env_assignment_hint(fragment: str) -> str | None:
     return None
 
 
+def _iter_secret_check_fragments(command: str) -> list[str]:
+    try:
+        fragments = shlex.split(command, posix=False)
+    except ValueError:
+        fragments = command.split()
+
+    expanded: list[str] = []
+    for fragment in fragments:
+        expanded.append(fragment)
+        cleaned = _clean_shell_fragment(fragment)
+        if not any(char.isspace() for char in cleaned):
+            continue
+        try:
+            expanded.extend(shlex.split(cleaned, posix=False))
+        except ValueError:
+            expanded.extend(cleaned.split())
+    return expanded
+
+
+def _fragment_can_be_checked_as_path(fragment: str) -> bool:
+    cleaned = _clean_shell_fragment(fragment)
+    if not cleaned:
+        return False
+    if any(char.isspace() for char in cleaned):
+        return False
+    return True
+
+
 def secret_command_findings(commands: list[str]) -> list[dict]:
     findings = []
     for command in commands:
-        try:
-            fragments = shlex.split(command, posix=False)
-        except ValueError:
-            fragments = command.split()
-        for fragment in fragments:
+        for fragment in _iter_secret_check_fragments(command):
             env_hint = _secret_env_assignment_hint(fragment)
             if env_hint:
                 findings.append({"severity": "fail", "field": "command", "value": command, "reason": "secret_risk_path", "hint": env_hint})
                 break
-            if _looks_path_like(fragment):
+            if _fragment_can_be_checked_as_path(fragment) and _looks_path_like(fragment):
                 path_hint = secret_path_hint(fragment)
                 if path_hint:
                     findings.append({"severity": "fail", "field": "command", "value": command, "reason": "secret_risk_path", "hint": path_hint})

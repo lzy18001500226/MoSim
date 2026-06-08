@@ -144,6 +144,15 @@ def main() -> int:
         assert preflight.check_secret_paths(
             [packet_prefix + "SEC" + "RET" + "-FALSE-POSITIVE-FIX-20260608-001.json"]
         )["ok"]
+        combo_ok_command = (
+            "Get-Content "
+            + packet_prefix
+            + "SEC"
+            + "RET"
+            + "-FALSE-POSITIVE-FIX-20260608-001.json; Write-Output ok"
+        )
+        combo_ok_policy = preflight.check_command_policy([combo_ok_command])
+        assert combo_ok_policy["ok"], combo_ok_policy
         blocker_prefix = "Results/agent_packets/blockers/PMO-HOOK-"
         assert preflight.check_secret_paths(
             [blocker_prefix + "creden" + "tial" + "-LABEL-20260608-001.json"]
@@ -161,6 +170,12 @@ def main() -> int:
         assert not env_assignment_policy["ok"], env_assignment_policy
         env_hints = {item["hint"] for item in env_assignment_policy["findings"]}
         assert {"token", "secret"}.issubset(env_hints), env_assignment_policy
+        shell_read = "Get" + "-Content "
+        combo_bad_path = shell_read + str(Path(sensitive_dir) / credentials_name) + "; Write-Output ok"
+        combo_bad_path_policy = preflight.check_command_policy([combo_bad_path])
+        assert not combo_bad_path_policy["ok"], combo_bad_path_policy
+        combo_bad_env_policy = preflight.check_command_policy([token_env + "; Write-Output ok"])
+        assert not combo_bad_env_policy["ok"], combo_bad_env_policy
 
         runtime_ignore = preflight.check_runtime_output_ignore()
         assert runtime_ignore["ok"], runtime_ignore

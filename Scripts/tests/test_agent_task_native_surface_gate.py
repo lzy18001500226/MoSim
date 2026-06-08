@@ -237,3 +237,19 @@ def test_native_surface_gate_rejects_free_text_state_class(tmp_path: Path) -> No
     report = json.loads(completed.stdout)
     reasons = {finding["reason"] for finding in report["findings"]}
     assert "free_text_only_state_class" in reasons
+
+
+def test_visible_thread_dispatch_json_template_passes_strict_gate() -> None:
+    template = ROOT / "CoAgent" / "protocol" / "templates" / "visible_thread_dispatch_packet.json"
+    completed = subprocess.run(
+        [sys.executable, str(CHECKER), str(template), "--strict"],
+        cwd=ROOT,
+        text=True,
+        encoding="utf-8",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stdout + completed.stderr
+    report = json.loads(completed.stdout)
+    assert report["ok"] is True

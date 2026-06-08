@@ -2,6 +2,8 @@ param(
     [string]$TitleRegex = 'Sysplorer|MWORKS|Quadrotor|AWFF',
     [string]$ProcessRegex = '^(mworks|mw_browser_proxy|mw_crash_handler|syslab|sysplorer)',
     [string]$OutDir = 'Results/mworks_background_capture/manual',
+    [switch]$IncludeHelperWindows,
+    [switch]$MaximizeAllMatches,
     [switch]$RestoreMinimized,
     [switch]$Maximize,
     [switch]$KeepRestored
@@ -22,6 +24,8 @@ using System.Text;
 using System.Threading;
 
 public static class BackgroundWindowCapture {
+  [DllImport("user32.dll")] public static extern bool SetProcessDPIAware();
+  [DllImport("user32.dll")] public static extern bool SetProcessDpiAwarenessContext(IntPtr value);
   public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
   [DllImport("user32.dll")] public static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
   [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
@@ -37,6 +41,22 @@ public static class BackgroundWindowCapture {
 
   [StructLayout(LayoutKind.Sequential)]
   public struct RECT { public int Left; public int Top; public int Right; public int Bottom; }
+
+  static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = new IntPtr(-4);
+
+  public static string EnableDpiAwareness() {
+    try {
+      if (SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)) {
+        return "per_monitor_v2";
+      }
+    } catch {}
+    try {
+      if (SetProcessDPIAware()) {
+        return "system_dpi_aware";
+      }
+    } catch {}
+    return "not_changed_or_already_set";
+  }
 
   public static string Title(IntPtr hwnd) {
     StringBuilder title = new StringBuilder(512);
@@ -114,6 +134,7 @@ public static class BackgroundWindowCapture {
 "@
 
 Add-Type -TypeDefinition $code -ReferencedAssemblies System.Drawing
+$dpiAwareness = [BackgroundWindowCapture]::EnableDpiAwareness()
 
 $resolvedOut = (Resolve-Path $OutDir).Path
 $windowMatches = New-Object System.Collections.Generic.List[object]
@@ -146,16 +167,26 @@ $callback = [BackgroundWindowCapture+EnumWindowsProc]{
 $rows = $windowMatches |
     Sort-Object pid, handle |
     ForEach-Object {
+        $isHelperWindow =
+            ($_.process -match '^(mw_browser_proxy|mw_crash_handler|mw_memory_monitor|sysplorer-acp-server|sysplorer_docsearch)$') -or
+            ($_.class_name -match '^(IME|MSCTFIME UI|QtitanTitleBarGlowWindow|Chrome_SystemMessageWindow|Base_PowerMessageWindow|PyInstallerOnefileHiddenWindow)$') -or
+            ($_.title -eq 'MWORKS.Sysplorer 2026a')
+        $shouldCapture = (-not $isHelperWindow) -or [bool]$IncludeHelperWindows
+        $shouldMaximize = [bool]$Maximize -and ((-not $isHelperWindow) -or [bool]$MaximizeAllMatches)
+        $shouldRestoreMinimized = [bool]$RestoreMinimized -and ((-not $isHelperWindow) -or [bool]$IncludeHelperWindows)
         $safeTitle = $_.title -replace '[\\/:*?"<>|\[\]]', '_'
         $leaf = "$($_.pid)_$($_.handle_hex)_$safeTitle.png"
         $path = Join-Path $resolvedOut $leaf
-        $capture = [BackgroundWindowCapture]::Capture(
-            [IntPtr]$_.handle,
-            $path,
-            [bool]$RestoreMinimized,
-            [bool]$Maximize,
-            [bool]$KeepRestored
-        )
+        $capture = "skipped_by_default_helper_window"
+        if ($shouldCapture) {
+            $capture = [BackgroundWindowCapture]::Capture(
+                [IntPtr]$_.handle,
+                $path,
+                $shouldRestoreMinimized,
+                $shouldMaximize,
+                [bool]$KeepRestored
+            )
+        }
         $captureWidth = $null
         $captureHeight = $null
         if ($capture -match 'size=(\d+)x(\d+)') {
@@ -180,12 +211,16 @@ $rows = $windowMatches |
             handle_hex = $_.handle_hex
             visible = $_.visible
             minimized = $_.minimized
+            helper_window = $isHelperWindow
+            helper_capture_included = [bool]$IncludeHelperWindows
+            maximize_applied = $shouldMaximize
             capture_width = $captureWidth
             capture_height = $captureHeight
             capture_reliability = $captureReliability
             known_blind_spot = 'PrintWindow may miss Qt/browser-proxy child surfaces such as the right MWORKS AI panel or separate login panes; use -Maximize and foreground/Windows MCP visible-desktop evidence for login/license and full GUI/layout acceptance.'
             capture = $capture
-            path = $path
+            dpi_awareness = $dpiAwareness
+            path = if ($shouldCapture) { $path } else { $null }
         }
     }
 

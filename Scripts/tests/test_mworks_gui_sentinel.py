@@ -246,6 +246,70 @@ def test_hidden_unknown_mworks_windows_do_not_override_clean_education_hint(tmp_
     assert payload["all_window_license_gate"] == "pass"
 
 
+def test_minimized_offscreen_unknown_mworks_windows_do_not_block(tmp_path: Path) -> None:
+    payload = run_fixture(
+        tmp_path,
+        [
+            {
+                "hwnd": 340,
+                "title": "Sysplorer [教育版]",
+                "class_name": "Qt5152QWindowIcon",
+                "visible": True,
+                "rect": {"left": 10, "top": 10, "right": 1200, "bottom": 900},
+                "children": [{"text": "main window", "class_name": "Static"}],
+            },
+            {
+                "hwnd": 341,
+                "title": "MWORKS",
+                "class_name": "Qt5152QWindowIcon",
+                "process_name": "mw_browser_proxy.exe",
+                "visible": True,
+                "rect": {"left": -25600, "top": -25600, "right": -25441, "bottom": -25573},
+                "children": [{"text": "blank browser proxy helper", "class_name": "Static"}],
+            },
+        ],
+    )
+    assert payload["status"] == "clean"
+    assert payload["error_kind"] is None
+    assert payload["helper_mworks_window_count"] == 1
+    assert payload["unknown_mworks_window_count"] == 0
+    assert payload["visible_unknown_mworks_window_count"] == 0
+    assert payload["minimized_or_offscreen_unknown_mworks_window_count"] == 0
+    assert payload["license_state_hint"] == "education_window_observed_activation_unverified"
+    assert payload["all_window_license_gate"] == "pass"
+
+
+def test_onscreen_unknown_mworks_windows_still_block(tmp_path: Path) -> None:
+    payload = run_fixture(
+        tmp_path,
+        [
+            {
+                "hwnd": 350,
+                "title": "Sysplorer [教育版]",
+                "class_name": "Qt5152QWindowIcon",
+                "visible": True,
+                "rect": {"left": 10, "top": 10, "right": 1200, "bottom": 900},
+                "children": [{"text": "main window", "class_name": "Static"}],
+            },
+            {
+                "hwnd": 351,
+                "title": "MWORKS",
+                "class_name": "Qt5152QWindowIcon",
+                "visible": True,
+                "rect": {"left": 200, "top": 200, "right": 900, "bottom": 700},
+                "children": [{"text": "unknown on-screen MWORKS pane", "class_name": "Static"}],
+            },
+        ],
+    )
+    assert payload["status"] == "incident_detected"
+    assert payload["error_kind"] == "license_or_login"
+    assert payload["unknown_mworks_window_count"] == 1
+    assert payload["visible_unknown_mworks_window_count"] == 1
+    assert payload["minimized_or_offscreen_unknown_mworks_window_count"] == 0
+    assert payload["license_state_hint"] == "unknown_blocked"
+    assert payload["all_window_license_gate"] == "blocked"
+
+
 def test_crash_precedence_over_license_words(tmp_path: Path) -> None:
     payload = run_fixture(
         tmp_path,

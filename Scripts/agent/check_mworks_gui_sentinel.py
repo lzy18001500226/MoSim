@@ -160,6 +160,71 @@ def _is_mworks_process(window: dict[str, Any]) -> bool:
     return _process_stem(window) in MWORKS_PROCESS_STEMS
 
 
+def _has_mworks_text_context(text: str) -> bool:
+    return bool(
+        _contains_any(
+            text,
+            MWORKS_CONTEXT_PATTERNS
+            + CRASH_PATTERNS
+            + LICENSE_STRONG_PATTERNS
+            + AUTHORIZATION_FAILURE_PATTERNS,
+        )
+    )
+
+
+def _is_mworks_helper_window(window: dict[str, Any]) -> bool:
+    stem = _process_stem(window)
+    title = str(window.get("title") or "")
+    class_name = str(window.get("class_name") or "")
+    if stem in {
+        "mw_browser_proxy",
+        "mw_crash_handler",
+        "mw_memory_monitor",
+        "sysplorer-acp-server",
+        "sysplorer_docsearch",
+    }:
+        return True
+    if stem == "mworks" and title == "MWORKS.Sysplorer 2026a":
+        return True
+    return class_name in {
+        "QtitanTitleBarGlowWindow",
+        "IME",
+        "MSCTFIME UI",
+        "Chrome_SystemMessageWindow",
+        "Base_PowerMessageWindow",
+        "PyInstallerOnefileHiddenWindow",
+    }
+
+
+def _rect_bounds(window: dict[str, Any]) -> tuple[int, int, int, int] | None:
+    rect = window.get("rect") or {}
+    try:
+        return (
+            int(rect.get("left")),
+            int(rect.get("top")),
+            int(rect.get("right")),
+            int(rect.get("bottom")),
+        )
+    except (TypeError, ValueError):
+        return None
+
+
+def _is_minimized_or_offscreen(window: dict[str, Any]) -> bool:
+    if bool(window.get("minimized")):
+        return True
+    bounds = _rect_bounds(window)
+    if bounds is None:
+        return False
+    left, top, right, bottom = bounds
+    width = right - left
+    height = bottom - top
+    if left <= -20000 or top <= -20000:
+        return True
+    if right <= 0 or bottom <= 0:
+        return True
+    return width <= 1 or height <= 1
+
+
 def _window_ref(window: dict[str, Any]) -> dict[str, Any]:
     return {
         "hwnd": window.get("hwnd"),
@@ -171,6 +236,8 @@ def _window_ref(window: dict[str, Any]) -> dict[str, Any]:
         "visible": window.get("visible"),
         "enabled": window.get("enabled"),
         "rect": window.get("rect"),
+        "minimized": window.get("minimized"),
+        "minimized_or_offscreen": _is_minimized_or_offscreen(window),
     }
 
 
@@ -182,9 +249,12 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
     login_activation_windows: list[dict[str, Any]] = []
     authorization_windows: list[dict[str, Any]] = []
     license_dialog_windows: list[dict[str, Any]] = []
+    helper_mworks_windows: list[dict[str, Any]] = []
+    visible_helper_mworks_windows: list[dict[str, Any]] = []
     unknown_mworks_windows: list[dict[str, Any]] = []
     visible_unknown_mworks_windows: list[dict[str, Any]] = []
     hidden_unknown_mworks_windows: list[dict[str, Any]] = []
+    minimized_or_offscreen_unknown_mworks_windows: list[dict[str, Any]] = []
     all_crash_matches: list[str] = []
     all_license_matches: list[str] = []
 
@@ -199,15 +269,8 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
         authorization_matches = _contains_any(text, AUTHORIZATION_FAILURE_PATTERNS)
         license_dialog_matches = _contains_any(text, LICENSE_DIALOG_PATTERNS)
         context_license_matches = _contains_any(text, LICENSE_CONTEXT_PATTERNS)
-        has_mworks_context = process_is_mworks and bool(
-            _contains_any(
-                text,
-                MWORKS_CONTEXT_PATTERNS
-                + CRASH_PATTERNS
-                + LICENSE_CONTEXT_PATTERNS
-                + LICENSE_STRONG_PATTERNS,
-            )
-        )
+        has_mworks_context = process_is_mworks or _has_mworks_text_context(text)
+        helper_window = _is_mworks_helper_window(window)
         license_dialog_is_relevant = has_mworks_context and bool(license_dialog_matches)
         license_matches = strong_license_matches + (
             demo_matches
@@ -227,6 +290,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
                 "matched_authorization_patterns": authorization_matches,
                 "matched_license_dialog_patterns": license_dialog_matches if license_dialog_is_relevant else [],
                 "matched_crash_patterns": crash_matches,
+                "helper_window": helper_window,
             }
             mworks_like_windows.append(summary)
             if education_matches:
@@ -248,11 +312,18 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
                 or license_dialog_is_relevant
                 or crash_matches
             ):
-                unknown_mworks_windows.append(summary)
-                if summary.get("visible"):
-                    visible_unknown_mworks_windows.append(summary)
+                if helper_window:
+                    helper_mworks_windows.append(summary)
+                    if summary.get("visible") and not summary.get("minimized_or_offscreen"):
+                        visible_helper_mworks_windows.append(summary)
                 else:
-                    hidden_unknown_mworks_windows.append(summary)
+                    unknown_mworks_windows.append(summary)
+                    if summary.get("minimized_or_offscreen"):
+                        minimized_or_offscreen_unknown_mworks_windows.append(summary)
+                    elif summary.get("visible"):
+                        visible_unknown_mworks_windows.append(summary)
+                    else:
+                        hidden_unknown_mworks_windows.append(summary)
 
         if crash_matches or license_matches:
             matched_windows.append(
@@ -360,18 +431,24 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
         "login_activation_windows": login_activation_windows,
         "authorization_windows": authorization_windows,
         "license_dialog_windows": license_dialog_windows,
+        "helper_mworks_windows": helper_mworks_windows,
+        "visible_helper_mworks_windows": visible_helper_mworks_windows,
         "unknown_mworks_windows": unknown_mworks_windows,
         "visible_unknown_mworks_windows": visible_unknown_mworks_windows,
         "hidden_unknown_mworks_windows": hidden_unknown_mworks_windows,
+        "minimized_or_offscreen_unknown_mworks_windows": minimized_or_offscreen_unknown_mworks_windows,
         "target_window_count": len(mworks_like_windows),
         "education_window_count": len(education_windows),
         "demo_window_count": len(demo_windows),
         "login_activation_window_count": len(login_activation_windows),
         "authorization_window_count": len(authorization_windows),
         "license_dialog_window_count": len(license_dialog_windows),
+        "helper_mworks_window_count": len(helper_mworks_windows),
+        "visible_helper_mworks_window_count": len(visible_helper_mworks_windows),
         "unknown_mworks_window_count": len(unknown_mworks_windows),
         "visible_unknown_mworks_window_count": len(visible_unknown_mworks_windows),
         "hidden_unknown_mworks_window_count": len(hidden_unknown_mworks_windows),
+        "minimized_or_offscreen_unknown_mworks_window_count": len(minimized_or_offscreen_unknown_mworks_windows),
         "mixed_license_state": mixed_license_state,
         "blocking_mworks_window_count": blocking_window_count,
         "license_state_hint": license_state_hint,
