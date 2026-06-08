@@ -10,6 +10,7 @@ ROS_LOG_DIR="${ROS_LOG_DIR:-${PROJECT_ROOT}/Results/tmp/ros_logs}"
 WORKSPACE_ENV="${WORKSPACE:-}"
 SCENE_ID="${1:-factoryenvironmentcollect}"
 RVIZ_PROFILE="${RVIZ_PROFILE:-split}"
+RVIZ_CONFIG="${RVIZ_CONFIG:-}"
 START_RVIZ="${START_RVIZ:-1}"
 START_FASTLIO="${START_FASTLIO:-0}"
 FASTLIO_ROS2_LAUNCH_CMD="${FASTLIO_ROS2_LAUNCH_CMD:-}"
@@ -29,7 +30,6 @@ WALL_TIME="${WALL_TIME:-1}"
 DRY_RUN="${DRY_RUN:-0}"
 
 cd "${PROJECT_ROOT}"
-mkdir -p "${ROS_LOG_DIR}"
 export ROS_LOG_DIR
 
 case "${SCENE_ID}" in
@@ -52,22 +52,6 @@ else
   WORKSPACE="${PROJECT_ROOT}/Results/tmp/mosim_scene_replay_ros2_ws_${SCENE_ID}"
 fi
 
-if [[ ! -f "${ROS_SETUP}" ]]; then
-  echo "Missing ROS2 setup file: ${ROS_SETUP}" >&2
-  exit 4
-fi
-# shellcheck disable=SC1090
-set +u
-source "${ROS_SETUP}"
-set -u
-
-for command_name in ros2 colcon python3; do
-  if ! command -v "${command_name}" >/dev/null 2>&1; then
-    echo "Missing ${command_name}. Source/install ROS2 Humble before running the launch workflow." >&2
-    exit 4
-  fi
-done
-
 bool_arg() {
   case "$1" in
     1|true|TRUE|yes|YES|on|ON) printf "true" ;;
@@ -79,6 +63,28 @@ LOOP_ARG="$(bool_arg "${LOOP}")"
 WALL_TIME_ARG="$(bool_arg "${WALL_TIME}")"
 START_RVIZ_ARG="$(bool_arg "${START_RVIZ}")"
 START_FASTLIO_ARG="$(bool_arg "${START_FASTLIO}")"
+EXPLICIT_RVIZ_CONFIG=""
+EXPLICIT_RVIZ_CONFIG_EXISTS="false"
+EXPLICIT_RVIZ_ROUTE="false"
+LAUNCH_START_RVIZ_ARG="${START_RVIZ_ARG}"
+
+if [[ -n "${RVIZ_CONFIG}" ]]; then
+  if [[ "${RVIZ_CONFIG}" = /* ]]; then
+    EXPLICIT_RVIZ_CONFIG="${RVIZ_CONFIG}"
+  else
+    EXPLICIT_RVIZ_CONFIG="${PROJECT_ROOT}/${RVIZ_CONFIG}"
+  fi
+  if [[ -f "${EXPLICIT_RVIZ_CONFIG}" ]]; then
+    EXPLICIT_RVIZ_CONFIG_EXISTS="true"
+  fi
+fi
+
+if [[ "${START_RVIZ_ARG}" == "true" && -n "${EXPLICIT_RVIZ_CONFIG}" ]]; then
+  # When an explicit output-only config is provided, keep the launch profile
+  # RViz path disabled so the older pointcloud profile cannot open instead.
+  LAUNCH_START_RVIZ_ARG="false"
+  EXPLICIT_RVIZ_ROUTE="true"
+fi
 
 if [[ "${START_FASTLIO_ARG}" == "true" && -z "${FASTLIO_ROS2_LAUNCH_CMD}" ]]; then
   echo "START_FASTLIO=1 requires FASTLIO_ROS2_LAUNCH_CMD for a real ROS2 FAST-LIO package." >&2
@@ -88,7 +94,7 @@ fi
 LAUNCH_ARGS=(
   "scene:=${SCENE_ID}"
   "rviz_profile:=${RVIZ_PROFILE}"
-  "start_rviz:=${START_RVIZ_ARG}"
+  "start_rviz:=${LAUNCH_START_RVIZ_ARG}"
   "start_fastlio:=${START_FASTLIO_ARG}"
   "fps:=${FPS}"
   "scan_duration_s:=${SCAN_DURATION_S}"
@@ -113,16 +119,25 @@ if [[ "${DRY_RUN}" == "1" ]]; then
   START_FASTLIO_JSON="false"
   [[ "${START_RVIZ_ARG}" == "true" ]] && START_RVIZ_JSON="true"
   [[ "${START_FASTLIO_ARG}" == "true" ]] && START_FASTLIO_JSON="true"
+  LAUNCH_ARGS_JSON="$(printf '%s\n' "${LAUNCH_ARGS[@]}" | python3 -c 'import json, sys; print(json.dumps([line.rstrip("\n") for line in sys.stdin], ensure_ascii=False))')"
   python3 - <<PY
 import json
 print(json.dumps({
   "schema": "mosim.ros2_launch_workflow_dryrun.v1",
+  "mode": "dry_run_static_contract",
+  "live_graph_started": False,
+  "ros_setup_sourced": False,
+  "ros2_command_executed": False,
   "workspace": "${WORKSPACE}",
   "package": "mosim_scene_replay",
   "launch_file": "mosim_scene_replay.launch.py",
   "scene_id": "${SCENE_ID}",
   "rviz_profile": "${RVIZ_PROFILE}",
   "start_rviz": "${START_RVIZ_JSON}" == "true",
+  "launch_start_rviz": "${LAUNCH_START_RVIZ_ARG}" == "true",
+  "explicit_rviz_route": "${EXPLICIT_RVIZ_ROUTE}" == "true",
+  "rviz_config": "${EXPLICIT_RVIZ_CONFIG}",
+  "rviz_config_exists": "${EXPLICIT_RVIZ_CONFIG_EXISTS}" == "true",
   "start_fastlio": "${START_FASTLIO_JSON}" == "true",
   "fastlio_lidar_topic": "${FASTLIO_LIDAR_TOPIC}",
   "fastlio_pointcloud_topic": "${FASTLIO_POINTCLOUD_TOPIC}",
@@ -133,12 +148,29 @@ print(json.dumps({
   "scan_duration_s": ${SCAN_DURATION_S},
   "imu_span_s": ${IMU_SPAN_S},
   "imu_lead_sleep_s": ${IMU_LEAD_SLEEP_S},
-  "claim": "dry-run only; no workspace files were created and no ROS2 process was launched"
+  "launch_args": ${LAUNCH_ARGS_JSON},
+  "claim": "dry-run only; no ROS setup was sourced, no workspace files were created, and no ROS2 process was launched"
 }, indent=2))
 PY
-  ros2 launch "${PROJECT_ROOT}/Scripts/ros/mosim_scene_replay/launch/mosim_scene_replay.launch.py" --show-args
   exit 0
 fi
+
+if [[ ! -f "${ROS_SETUP}" ]]; then
+  echo "Missing ROS2 setup file: ${ROS_SETUP}" >&2
+  exit 4
+fi
+mkdir -p "${ROS_LOG_DIR}"
+# shellcheck disable=SC1090
+set +u
+source "${ROS_SETUP}"
+set -u
+
+for command_name in ros2 colcon python3; do
+  if ! command -v "${command_name}" >/dev/null 2>&1; then
+    echo "Missing ${command_name}. Source/install ROS2 Humble before running the launch workflow." >&2
+    exit 4
+  fi
+done
 
 mkdir -p "${WORKSPACE}/src"
 ln -sfn "${PROJECT_ROOT}/Scripts/ros/mosim_scene_replay" "${WORKSPACE}/src/mosim_scene_replay"
@@ -152,5 +184,22 @@ colcon --log-base "${WORKSPACE}/log" build --base-paths "${WORKSPACE}/src/mosim_
 set +u
 source "${WORKSPACE}/install/setup.bash"
 set -u
+
+rviz_pid=""
+cleanup_explicit_rviz() {
+  if [[ -n "${rviz_pid}" ]] && kill -0 "${rviz_pid}" >/dev/null 2>&1; then
+    kill "${rviz_pid}" >/dev/null 2>&1 || true
+  fi
+}
+
+if [[ "${EXPLICIT_RVIZ_ROUTE}" == "true" ]]; then
+  if [[ "${EXPLICIT_RVIZ_CONFIG_EXISTS}" != "true" ]]; then
+    echo "Missing explicit RViz2 config: ${EXPLICIT_RVIZ_CONFIG}" >&2
+    exit 6
+  fi
+  trap cleanup_explicit_rviz EXIT
+  rviz2 -d "${EXPLICIT_RVIZ_CONFIG}" &
+  rviz_pid="$!"
+fi
 
 ros2 launch mosim_scene_replay mosim_scene_replay.launch.py "${LAUNCH_ARGS[@]}"
