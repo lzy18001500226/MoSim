@@ -68,20 +68,32 @@ PMO/main:
 
 ## CoAgentOps Bounded Dispatch
 
-CoAgentOps may dispatch during patrol only when every precondition below is
-true:
+CoAgentOps is allowed to dispatch during patrol only when every precondition
+below is true; when they are all true, dispatch is required in that patrol run:
 
 ```text
 target thread status is active_visible in CoAgent/dispatch/department_threads.json
-task is already inside the current P0 queue or latest accepted return/blocker
+target thread is routable through the native visible-thread send/read surface
+task is already inside the current P0 queue, mainline_operations_board.md,
+  latest active PROGRESS entry, or latest accepted return/blocker
 task class is static/source-static, diagnostic_only, recovery_validation,
   packet_contract_fix, rule_sync_only, preflight_drill_only, or another
   explicitly pre-authorized low-risk follow-up
 task packet declares read scope, write scope, expected return path, blocker
-  path, evidence minimum, forbidden actions, stop triggers, and next owner
+  path, native_surface_gate, semantic_boundary, evidence minimum, allowed
+  actions, forbidden actions, stop triggers, expected engineering outputs, and
+  next owner
 native visible-thread send/read surface is available
 MainPMO can be notified in the same run
+no approval/review/provider UI surface, open dependency, live GUI/license gate,
+  manual-review risk, or PMO/user product-priority choice is required first
 ```
+
+When every precondition is true, CoAgentOps dispatches directly in that patrol
+run; it does not merely report `dispatch_needed` and wait for PMO to send the
+same pre-authorized packet later. `dispatch_needed` is reserved for cases where
+a ready P0 gate exists but a bounded-dispatch precondition is missing, ambiguous,
+or explicitly deferred.
 
 CoAgentOps must not dispatch or execute when any condition below is true:
 
@@ -115,12 +127,14 @@ task_class
 expected_return_path
 blocker_return_path
 why_dispatch_was_pre_authorized
+task_packet_path
+native_dispatch_result
 ```
 
-If a dispatch precondition is missing, CoAgentOps writes a blocker packet
-instead of dispatching. PMO remains the acceptance owner and may reject,
-supersede, narrow, or pause any CoAgentOps-dispatched task after reviewing the
-return/blocker evidence.
+If a dispatch precondition is missing, CoAgentOps writes a blocker packet or
+returns `dispatch_needed` with the missing precondition instead of dispatching.
+PMO remains the acceptance owner and may reject, supersede, narrow, or pause
+any CoAgentOps-dispatched task after reviewing the return/blocker evidence.
 
 ## Native Surface Gate
 
@@ -213,14 +227,21 @@ Accepted visible-thread `state_class` values include:
 
 ```text
 routable
-busy_in_progress
-dispatch_needed
-idle_blocked_by_open_dependency
 approval_pending_or_ui_blocked
 provider_gateway_or_pending_review
 dispatch_surface_or_agent_loop_failure
 context_compression_surface
 unknown_blocked
+```
+
+Queue state is reported separately as `dispatch_readiness`:
+
+```text
+busy_in_progress
+idle_needs_dispatch
+idle_blocked_by_open_dependency
+idle_no_ready_task
+idle_waiting_review_or_approval
 ```
 
 Accepted MWORKS patrol/task `state_class` values include:

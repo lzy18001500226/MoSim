@@ -1,4 +1,4 @@
-# COAGENT-ARCH-LONGRUN-01 Architecture Problem Matrix
+﻿# COAGENT-ARCH-LONGRUN-01 Architecture Problem Matrix
 
 Date: 2026-05-30
 Status: active working matrix
@@ -279,7 +279,7 @@ Template status:
 
 Source:
 
-`Results/agent_packets/COAGENT-ARCH-LONGRUN-01-DISPATCH-01.yaml`
+`Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-DISPATCH-01.yaml`
 
 Accepted finding:
 
@@ -309,7 +309,7 @@ Remaining Dispatch-visible risks:
 
 Source:
 
-`Results/agent_packets/COAGENT-ARCH-LONGRUN-01-CONTEXT-01.yaml`
+`Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-CONTEXT-01.yaml`
 
 Accepted with caveat:
 
@@ -502,7 +502,7 @@ blocker creation before investigating Codex internals.
 
 Source:
 
-`Results/agent_packets/COAGENT-ARCH-LONGRUN-01-VERIFY-01.yaml`
+`Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-VERIFY-01.yaml`
 
 Accepted with caveat:
 

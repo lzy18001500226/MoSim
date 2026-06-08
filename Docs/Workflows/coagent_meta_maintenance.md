@@ -25,8 +25,10 @@ workflow:
    permission, or evidence;
 5. after restart, validate the same visible thread with a no-op or expected
    packet and write restored/partial/still-quarantined status;
-6. report `dispatch_readiness` for every active engineering thread, and return
-   routable idle P0 work as `dispatch_needed` for PMO.
+6. report `dispatch_readiness` for every active engineering thread; directly
+   dispatch routable idle P0 work when the bounded-dispatch gate in
+   `Docs/Workflows/coagent_ops_patrol_workflow.md` is satisfied, and return
+   `dispatch_needed` for PMO only when that gate is missing or deferred.
 
 Patrol triage order is fixed:
 
@@ -45,8 +47,9 @@ Support-lane correction: open-source probe and open-source learning are
 support lanes for named evidence questions; their activity or queued crawl/
 learning work cannot substitute for MWORKS/ROS2/UE P0 mainline dispatch. When a
 mainline engineering thread is routable and idle while `PROGRESS.md` or this
-ledger has a ready P0 gate, CoAgentOps must return `dispatch_needed` instead
-of treating support-lane activity as a healthy closeout.
+ledger has a ready P0 gate, CoAgentOps must either dispatch it under the
+bounded-dispatch gate or return `dispatch_needed` with the missing gate,
+instead of treating support-lane activity as a healthy closeout.
 
 Hard stop conditions for this workflow: a routable idle engineering thread with
 a ready P0 gate cannot be closed as healthy, and a dead-thread recovery cannot
@@ -56,7 +59,8 @@ blocker that names the missing tool, permission, evidence, or explicit deferral.
 Mainline priority: MoSim P0 progress means MWORKS R1/R2, ROS2 R1, and UE gates.
 Sunray is active only when the user reopens asset work. Reference-study
 threads are support lanes for named evidence questions; their activity or
-completion must not hide `dispatch_needed` on an idle P0 engineering thread.
+completion must not hide a direct bounded dispatch or `dispatch_needed` on an
+idle P0 engineering thread.
 
 Stale-response triage: a short dispatch with no reply after about five minutes
 must be inspected with `read_thread`, but elapsed time alone is not a failure
@@ -638,10 +642,14 @@ email-default notification rules, MWORKS activation/window patrol, MWORKS
 graphical-review routing, open-source probe/learning split, DevOps/Git
 large-worktree need, and subagent-vs-visible-thread wording.
 allowed_actions: read project docs/configs, run lightweight project-local
-  syntax/preflight checks, write one result or blocker packet.
+  syntax/preflight checks, perform CoAgentOps bounded dispatch only when
+  `Docs/Workflows/coagent_ops_patrol_workflow.md` and
+  `CoAgent/dispatch/communication_contract.md` gates are fully satisfied,
+  write PMO sync/result/blocker packets.
 forbidden_actions: create/archive/rename threads, edit Codex App private DB,
   expand CoAgent runtime/transport/schema, perform broad Git staging, dispatch
-  engineering work, or send high-volume notifications.
+  engineering work outside the bounded-dispatch gate, execute real non-DryRun
+  window close actions, or send high-volume notifications.
 evidence: Results/agent_packets/returns/ or Results/agent_packets/blockers/
 notify: email sparse blocker notification only when user action is needed or
   a blocker changes the plan.
@@ -651,7 +659,7 @@ Current created native automations:
 
 | Automation ID | Owner | Cadence | Purpose |
 |---|---|---|---|
-| `mosim-wechat-gateway-hourly-health` | `MoSim｜CoAgent运维平台` thread `019e9bc1-ea9f-7102-b41a-4ef9b2308992` | 10-minute heartbeat | Historical id for the current CoAgentOps status and mainline patrol heartbeat; user-facing name is `MoSim CoAgentOps 状态与主线巡检`. It is the single active automation on the CoAgentOps conversation. It excludes deleted or archived WeChat gateway/message-path routes, performs active-visible thread patrol, MWORKS activation/window patrol, pending MWORKS graphical-review routing to R2, and integrates latest UE/Sunray/MWORKS/ROS2/CoAgentOps return/blocker packets into ledger/PROGRESS. It uses explicit `semantic_boundary` state classes and does not claim runtime/model success without evidence. For dead-thread or MWORKS license/GUI fail-close it records a sparse email audit, gives the user only a short manual-restart window when restart is planned, then continues authorized recovery if no explicit deferral arrives. It may record workflow/skill/MCP gaps when repeated mistakes expose them, but it must not run detached periodic skill/workflow optimization or edit rules away from the responsible frontline task. |
+| `mosim-wechat-gateway-hourly-health` | `MoSim｜CoAgent运维平台` thread `019e9bc1-ea9f-7102-b41a-4ef9b2308992` | 10-minute heartbeat | Historical id for the current CoAgentOps status and mainline patrol heartbeat; user-facing name is `MoSim CoAgentOps 状态与主线巡检`. It is the single active automation on the CoAgentOps conversation. It excludes deleted or archived WeChat gateway/message-path routes, performs active-visible thread patrol, MWORKS activation/window patrol, bounded P0 dispatch when all workflow/contract gates are satisfied, pending MWORKS graphical-review routing to R2, and integrates latest UE/Sunray/MWORKS/ROS2/CoAgentOps return/blocker packets into the PMO board/ledger/PROGRESS. It uses explicit `semantic_boundary` state classes and does not claim runtime/model success without evidence. For routable idle P0 work, it directly writes a task packet, sends the visible department thread, and writes PMO sync evidence only when the bounded-dispatch gate is complete; otherwise it reports `dispatch_needed` or blocker with the missing gate. For dead-thread or MWORKS license/GUI fail-close it records a sparse email audit, gives the user only a short manual-restart window when restart is planned, then continues authorized recovery if no explicit deferral arrives. It may record workflow/skill/MCP gaps when repeated mistakes expose them, but it must not run detached periodic skill/workflow optimization or edit rules away from the responsible frontline task. |
 
 If this automation is found `PAUSED` and there is no explicit user deferral,
 classify it as a patrol outage. PMO or a healthy CoAgentOps turn should restore
@@ -795,11 +803,12 @@ window_patrol_clean, helper_only_nonblocking, login_or_license_blocked,
 authorization_blocked, gui_error_blocked, visible_unknown_blocked,
 live_attach_blocked, unknown_blocked
 if visible-thread patrol is in scope, state_class is one of:
-routable, busy_in_progress, dispatch_needed,
-idle_blocked_by_open_dependency, approval_pending_or_ui_blocked,
-provider_gateway_or_pending_review,
+routable, approval_pending_or_ui_blocked, provider_gateway_or_pending_review,
 dispatch_surface_or_agent_loop_failure, context_compression_surface,
 unknown_blocked
+if visible-thread queue state is in scope, dispatch_readiness is one of:
+busy_in_progress, idle_needs_dispatch, idle_blocked_by_open_dependency,
+idle_no_ready_task, idle_waiting_review_or_approval
 ```
 
 ## 4. Current Owner Boundaries

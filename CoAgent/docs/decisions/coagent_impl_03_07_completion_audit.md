@@ -1,4 +1,4 @@
-# CoAgent IMPL-03 to IMPL-07 Completion Audit
+﻿# CoAgent IMPL-03 to IMPL-07 Completion Audit
 
 Date: 2026-05-28
 
@@ -18,9 +18,9 @@ This audit verifies the active checkpoint objective:
 
 | Requirement | Evidence | Result |
 |---|---|---|
-| IMPL-03 catches outside-project writes, secret-risk paths, destructive commands, broad Git risk, large-file risk, and missing result-packet evidence | `CoAgent/hooks/preflight.py`; `CoAgent/tests/test_preflight_policy.py`; `python3 CoAgent/hooks/preflight.py --result-packet Results/agent_packets/COAGENT-IMPL-04-VISIBLE-LIFECYCLE.yaml --result-packet Results/agent_packets/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.yaml` | pass |
-| IMPL-04 sends a task packet to a visible department conversation and imports the visible result packet | `Results/agent_packets/COAGENT-IMPL-04-VISIBLE-LIFECYCLE.yaml`; isolated runtime summary under `Results/coagent_transport/visible_lifecycle/`; ledger row `COAGENT-IMPL-04` | pass |
-| IMPL-05 starts from a compact context pack, records a checkpoint, imports a result packet, summarizes recovery, and closes the edge | `Results/context_packs/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.context.md`; `Results/agent_packets/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.yaml`; `Results/coagent_bootstrap/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.recovery.json`; `task_bootstrap.py status-task` terminal `done` | pass |
+| IMPL-03 catches outside-project writes, secret-risk paths, destructive commands, broad Git risk, large-file risk, and missing result-packet evidence | `CoAgent/hooks/preflight.py`; `CoAgent/tests/test_preflight_policy.py`; `python3 CoAgent/hooks/preflight.py --result-packet Results/agent_packets/tasks/coagent_implementation/COAGENT-IMPL-04-VISIBLE-LIFECYCLE.yaml --result-packet Results/agent_packets/tasks/coagent_implementation/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.yaml` | pass |
+| IMPL-04 sends a task packet to a visible department conversation and imports the visible result packet | `Results/agent_packets/tasks/coagent_implementation/COAGENT-IMPL-04-VISIBLE-LIFECYCLE.yaml`; isolated runtime summary under `Results/coagent_transport/visible_lifecycle/`; ledger row `COAGENT-IMPL-04` | pass |
+| IMPL-05 starts from a compact context pack, records a checkpoint, imports a result packet, summarizes recovery, and closes the edge | `Results/context_packs/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.context.md`; `Results/agent_packets/tasks/coagent_implementation/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.yaml`; `Results/coagent_bootstrap/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.recovery.json`; `task_bootstrap.py status-task` terminal `done` | pass |
 | IMPL-06 decides transport expansion only after lifecycle evidence and documents the app-server proof gate | `CoAgent/transport/TRANSPORT_EXPANSION_DECISION.md`; `Results/coagent_doctor/latest.json` | pass, app-server deferred |
 | IMPL-07 decides scheduled automation expansion and keeps human review explicit | `CoAgent/automation/SCHEDULED_AUTOMATION_DECISION.md`; `automation_runner.py guard-due`; `automation_runner.py plan-due-dispatch`; isolated `enqueue-due` DB under `Results/coagent_automation/impl07/` | pass, unattended scheduler deferred |
 | Status, progress, and ledger are updated | `CoAgent/STATUS.md`; `PROGRESS.md`; `Docs/Workflows/agent_task_ledger.md`; `CoAgent/docs/decisions/coagent_post_approval_backlog.md` | pass |
@@ -28,7 +28,7 @@ This audit verifies the active checkpoint objective:
 ## Verification Commands
 
 ```bash
-python3 CoAgent/hooks/preflight.py --result-packet Results/agent_packets/COAGENT-IMPL-04-VISIBLE-LIFECYCLE.yaml --result-packet Results/agent_packets/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.yaml
+python3 CoAgent/hooks/preflight.py --result-packet Results/agent_packets/tasks/coagent_implementation/COAGENT-IMPL-04-VISIBLE-LIFECYCLE.yaml --result-packet Results/agent_packets/tasks/coagent_implementation/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.yaml
 python3 CoAgent/doctor/check_design_gate.py
 python3 CoAgent/tests/test_preflight_policy.py
 python3 CoAgent/tests/test_transport_adapter.py

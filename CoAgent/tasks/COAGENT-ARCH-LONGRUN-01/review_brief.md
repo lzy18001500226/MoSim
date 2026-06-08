@@ -1,4 +1,4 @@
-# COAGENT-ARCH-LONGRUN-01 Review Brief
+﻿# COAGENT-ARCH-LONGRUN-01 Review Brief
 
 Date: 2026-05-30
 Status: active review entry
@@ -136,9 +136,9 @@ Stress-test templates:
 
 Department review packets:
 
-- `Results/agent_packets/COAGENT-ARCH-LONGRUN-01-DISPATCH-01.yaml`
-- `Results/agent_packets/COAGENT-ARCH-LONGRUN-01-CONTEXT-01.yaml`
-- `Results/agent_packets/COAGENT-ARCH-LONGRUN-01-VERIFY-01.yaml`
+- `Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-DISPATCH-01.yaml`
+- `Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-CONTEXT-01.yaml`
+- `Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-VERIFY-01.yaml`
 
 Runtime/transport failure evidence:
 

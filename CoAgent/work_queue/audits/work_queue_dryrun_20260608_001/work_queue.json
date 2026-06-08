@@ -1,4 +1,4 @@
-{
+﻿{
   "request_id": "PMO-COAGENTOPS-WORK-QUEUE-DRYRUN-20260608-001",
   "generated_at": "2026-06-08T20:36:00+08:00",
   "workspace": "C:\\Users\\HP\\Desktop\\MoSim",
@@ -21,8 +21,8 @@
         "AGENTS.md",
         "Docs/Workflows/new_conversation_context.md",
         "Docs/Workflows/agent_task_ledger.md",
-        "Docs/Design/12_MoSimQuadrotorModel模型归档与迁移计划.md",
-        "Results/agent_packets/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025.json",
+        "Docs/Design/12_MoSimQuadrotorModel妯″瀷褰掓。涓庤縼绉昏鍒?md",
+        "Results/agent_packets/tasks/mworks/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025.json",
         "Models/MoSimQuadrotorModel/Dynamics",
         "Models/QuadrotorExperiments/DynamicsUpgrade"
       ],
@@ -76,7 +76,7 @@
         "Docs/Workflows/new_conversation_context.md",
         "Docs/Workflows/ros2_runtime_setup.md",
         "Docs/Workflows/agent_task_ledger.md",
-        "Results/agent_packets/RFLY-MOSIM-ROS2-RUNTIME-B1-HEADLESS-LIVE-EVIDENCE-BUNDLE-20260608-074.json",
+        "Results/agent_packets/tasks/ros2/RFLY-MOSIM-ROS2-RUNTIME-B1-HEADLESS-LIVE-EVIDENCE-BUNDLE-20260608-074.json",
         "Results/agent_packets/returns/RFLY-MOSIM-ROS2-RUNTIME-B1-LIVE-EVIDENCE-BUNDLE-CHECKER-STATIC-GATE-20260608-073.json",
         "Scripts/ros/validate_ros2_b1_live_evidence_bundle.py",
         "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh",
@@ -130,7 +130,7 @@
       "read_scope": [
         "AGENTS.md",
         "Docs/Workflows/new_conversation_context.md",
-        "Results/agent_packets/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-CAPTURE-BUNDLE-WIRING-20260608-032.json",
+        "Results/agent_packets/tasks/ue/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-CAPTURE-BUNDLE-WIRING-20260608-032.json",
         "UE5/Bridge/Source/QuadrotorMworksBridge",
         "Scripts/UE5",
         "prior UE 030/031 return packets"
@@ -183,9 +183,9 @@
         "AGENTS.md",
         "Docs/Workflows/new_conversation_context.md",
         "Docs/Workflows/agent_task_ledger.md",
-        "Docs/Design/12_MoSimQuadrotorModel模型归档与迁移计划.md",
-        "Results/agent_packets/PMO-MWORKS-R2-MOSIMQUAD-DYNAMICS-BATCH-A-STATIC-REVIEW-20260608-025.json",
-        "Results/agent_packets/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025.json"
+        "Docs/Design/12_MoSimQuadrotorModel妯″瀷褰掓。涓庤縼绉昏鍒?md",
+        "Results/agent_packets/tasks/mworks/PMO-MWORKS-R2-MOSIMQUAD-DYNAMICS-BATCH-A-STATIC-REVIEW-20260608-025.json",
+        "Results/agent_packets/tasks/mworks/PMO-MWORKS-R1-MOSIMQUAD-DYNAMICS-BATCH-A-SOURCE-MIGRATION-20260608-025.json"
       ],
       "write_scope": [
         "Results/mworks_model_hygiene",
@@ -229,7 +229,7 @@
       "state_class": "routable",
       "dispatch_readiness": "blocked_by_user_or_pmo_decision",
       "read_scope": [
-        "Results/agent_packets/PMO-MWORKS-R1-MOSIMQUAD-ACTUATOR-COMMAND-MAPPER-FORMAL-SOURCE-SURFACE-20260608-027.json",
+        "Results/agent_packets/tasks/mworks/PMO-MWORKS-R1-MOSIMQUAD-ACTUATOR-COMMAND-MAPPER-FORMAL-SOURCE-SURFACE-20260608-027.json",
         "Results/agent_packets/blockers/PMO-MWORKS-R1-027-DISPATCH-SURFACE-FAILURE-20260608-001.json",
         "current R1 025 turn state"
       ],

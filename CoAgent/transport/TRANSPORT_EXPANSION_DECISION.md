@@ -1,4 +1,4 @@
-# CoAgent Transport Expansion Decision
+﻿# CoAgent Transport Expansion Decision
 
 Date: 2026-05-28
 
@@ -15,7 +15,7 @@ matching local rollout file and repeated non-TestOwner lifecycles pass.
 ## Evidence
 
 - IMPL-04 visible TestOwner lifecycle:
-  `Results/agent_packets/COAGENT-IMPL-04-VISIBLE-LIFECYCLE.yaml`.
+  `Results/agent_packets/tasks/coagent_implementation/COAGENT-IMPL-04-VISIBLE-LIFECYCLE.yaml`.
 - IMPL-05 dedicated long-task lifecycle:
   `Results/coagent_bootstrap/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.recovery.json`.
 - Current doctor output:

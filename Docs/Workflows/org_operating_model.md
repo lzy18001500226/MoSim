@@ -22,8 +22,9 @@ MainAgent / GeneralManager
 
 This map lists operating functions, not the final execution topology. The
 current MoSim/Codex App execution topology keeps only a small number of visible
-durable threads. PMO dispatches directly to them; CoAgent ops handles recurring
-meta-maintenance rather than acting as a mandatory middle office.
+durable threads. PMO dispatches directly to them; CoAgentOps handles patrol,
+recovery, bounded dispatch, and status reporting rather than acting as a
+mandatory middle office.
 
 ```text
 Main / PMO
@@ -69,7 +70,7 @@ turn every function into an always-on department conversation.
 | Department | Role | Durable Owner | Responsibility | Not Responsible For |
 |---|---|---|---|---|
 | General Management | `MainAgent` | Current Codex main session | Goal decomposition, priority, owner assignment, integration, user escalation, final decision | Grinding through every worker batch when durable workers can be used |
-| CoAgent Ops | `MetaOps` | `MoSim｜CoAgent运维平台` plus project ledgers | Recurring meta-task coordination, context-update cadence, crawler/learning dispatch, thread-registry hygiene, workflow/skill update checklists | Replacing PMO for MoSim engineering decisions or becoming a mandatory dispatch hop |
+| CoAgent Ops | `MetaOps` | `MoSim｜CoAgent运维平台` plus patrol/recovery packets | 10-minute patrol, visible-thread recovery, bounded pre-authorized P0 dispatch, PMO state reporting, thread-registry hygiene, and MWORKS activation/window patrol | Replacing PMO for MoSim engineering decisions, defining PMO runtime rules, doing routine docs/skills rewrites, owning crawler/learning queues, or becoming a mandatory dispatch hop |
 | Context Maintenance | `ContextMaintainer` | `MoSim｜文档秘书部` | New-conversation context, project memory index, compact recovery notes, scheduled context refreshes. Former title `MoSim｜Codex 上下文维护` is alias/history only. | Owning all documentation or executing business tasks |
 | Project Department | `ProjectOwner` | MoSim queue worker or explicit bounded subagent | One bounded implementation/research/migration stream with workers and evidence | Owning global priorities or cross-stream integration |
 | Test Gate | `TestOwner` | Task-local evidence bundle, isolated subagent, or explicitly scoped test thread | Independent verification across code, docs, Git, simulation, and reproducibility when a task reaches an acceptance gate | Acting as an always-on department that competes for ROS topics, ports, GUI/MCP sessions, or worktrees |
@@ -102,7 +103,7 @@ Optional/on-demand roles:
 | Role | Use when |
 |---|---|
 | Validation / Evidence Review | A stage claims pass/completion and needs independent evidence review before PMO accepts it; default to bounded subagents or task-local isolated checks |
-| Toolchain/MCP upkeep | MWORKS/UE/WindowsMCP/ROS2 MCP setup or health breaks; owned by the thread using the tool, or by `MoSim｜CoAgent运维平台` for recurring workflow/skill maintenance |
+| Toolchain/MCP upkeep | MWORKS/UE/WindowsMCP/ROS2 MCP setup or health breaks; owned by the thread using the tool, or by `MoSim｜CoAgent运维平台` only when the issue is patrol/recovery infrastructure |
 | Context Memory Update | A new long conversation needs a compact context pack or old-session recovery; route to `MoSim｜文档秘书部` |
 | Security / Compliance Gate | External paths, secrets, destructive actions, licenses, or large-file release gates are involved; enforce through prompts, harnesses, preflight checks, and review records |
 | External Intelligence | A concrete task needs fresh RflySim/Gazebo/PX4/model-vendor/open-source research |
@@ -117,8 +118,9 @@ that review is a task, not a standing owner of all documentation.
 MCP/skills/workflow ownership follows the same rule: the task thread that
 discovers a reusable command, failure mode, recovery path, or operating
 constraint must update the relevant workflow/skill doc immediately. For
-cross-project or recurring maintenance, route the meta-task to
-`MoSim｜CoAgent运维平台`.
+documentation consistency or context cleanup, route the support task to
+`MoSim｜文档秘书部`; route to `MoSim｜CoAgent运维平台` only for patrol/recovery
+infrastructure, thread-registry hygiene, or bounded ops workflow issues.
 
 CoAgent/meta-task routing:
 
@@ -126,15 +128,15 @@ CoAgent/meta-task routing:
 |---|---|---|
 | `MoSim｜Codex 环境迁移部-旧` | `019e8181-6653-73b3-9685-f5bc9a24b947` | Historical Windows-native Codex environment migration, WSL bridge-residue audits, Codex config/MCP launcher cleanup, and related one-time environment repair history; not dispatchable unless the user explicitly restores it. |
 | `MoSim｜文档秘书部` | `019e9be0-f6ac-7762-b80c-b1dd18b0d013` | Receives scheduled tasks to update `Docs/Workflows/new_conversation_context.md`, `Docs/Index/project_work_memory_index.md`, memory/index docs, compact recovery notes, documentation consistency checks, and cache-first migration drafts. Legacy internal key: `CodexContextMaintenanceAgent`; former title: `MoSim｜Codex 上下文维护部`. |
-| `MoSim｜CoAgent运维平台` | `019e9bc1-ea9f-7102-b41a-4ef9b2308992` | Codex App native coordinator for recurring CoAgent/meta tasks such as scheduled context updates, crawler cadence, external-learning dispatch, native automation/thread capability checks, and ops checklists. It does not replace `MoSim｜主线 PMO` for MoSim engineering work. |
+| `MoSim｜CoAgent运维平台` | `019e9bc1-ea9f-7102-b41a-4ef9b2308992` | Codex App native coordinator for 10-minute patrol, visible-thread recovery, MWORKS activation/window patrol, bounded pre-authorized P0 dispatch, PMO state reporting, thread-registry hygiene, and ops recovery checklists. It does not replace `MoSim｜主线 PMO` for MoSim engineering work and does not own routine context/docs/skills/crawler-learning queues. |
 | `MoSim｜开源项目探针` | `019e9be3-94de-7dc3-b067-92a78b678287` | Periodically checks local reference-project inventory, upstream freshness, metadata completeness, and update candidates. It should return manifests and candidate learning queues, not adoption decisions; broad new crawling belongs to scoped sub-agents or explicit task packets. |
 | `MoSim｜开源项目学习部` | `019e9be4-56d0-7981-b71c-a5ded1c7ec76` | Learns crawled projects/vendor articles, compares them with current MoSim/CoAgent needs, and returns adopt/reject proposals with evidence. |
 
 Tooling-asset governance route: plugins, MCP servers, wrappers, project-local
 skills, workflow docs, and crawled reference projects are maintained through
 `Docs/Workflows/tooling_assets_governance.md`. The task thread owns immediate
-updates discovered during its work. `MoSim｜CoAgent运维平台` owns recurring
-meta-maintenance and index hygiene, `MoSim｜开源项目探针` owns local reference
+updates discovered during its work. `MoSim｜CoAgent运维平台` owns patrol/recovery
+infrastructure and thread-registry hygiene, `MoSim｜开源项目探针` owns local reference
 inventory and freshness checks, scoped sub-agents own one-shot crawl/fetch
 tasks, and `MoSim｜开源项目学习部` owns adopt/reject/reference-only proposals.
 
@@ -170,13 +172,16 @@ instead of maintaining a separate blacklist. Future context-memory and
 documentation-secretary work routes to `MoSim｜文档秘书部`
 (`019e9be0-f6ac-7762-b80c-b1dd18b0d013`).
 
-Dead-thread rule: if a visible department can be read but cannot reliably
-receive work, expose native tools, run automations, or keep a healthy agent
-loop, do not try to repair Codex App private state and do not keep dispatching
-there. Treat the root cause as unknown unless current evidence proves it.
-Extract any reusable historical content into canonical project documents or
-the session-memory migration flow, create/select an App-native replacement
-thread, update the allowlist, and leave old-thread deletion to the user.
+Dead-thread rule: `Docs/Workflows/coagent_ops_patrol_workflow.md` is the only
+execution source for visible-thread recovery. If a visible department can be
+read but cannot reliably receive work, expose native tools, run automations, or
+keep a healthy agent loop, stop business dispatch and follow that workflow's
+bounded diagnosis/restart-recovery sequence. Do not create/select a replacement
+thread merely because the first start-turn failed. Replacement requires
+explicit PMO/user approval, repeated failed restart recovery, or a critical
+path that cannot wait. Reusable historical content must still be landed into
+canonical project documents or the session-memory migration flow before any
+old thread is marked superseded for user deletion.
 
 Do not create separate long-lived App conversations for every narrow role such
 as `McpSkillsMaintainer`, `UEScenePipeline`, or `ParameterEstimator` by default.
@@ -221,9 +226,13 @@ acceptance gates, and expected result packets.
 ## 2.2 Task Ticket And Status Ownership
 
 The current default is PMO direct dispatch. There is no required dispatch-center
-conversation between PMO and durable departments. Durable task records belong in
-project ledgers, result/blocker packets, and status files. CoAgent ops may own
-recurring meta-task schedules and thread-registry maintenance.
+conversation between PMO and durable departments. PMO's current operating
+surface is `Docs/Workflows/mainline_operations_board.md`. Durable historical
+task records remain in result/blocker packets, recovery packets, event logs,
+and `Docs/Workflows/agent_task_ledger.md`. CoAgent ops may own recurring
+meta-task schedules, patrol/recovery state, bounded dispatch, and
+thread-registry maintenance, but PMO owns product priority, dispatch,
+acceptance, integration, and recovery decisions.
 
 Required status-board fields:
 
@@ -268,9 +277,17 @@ runtime bring-up, research, or documentation queues.
 
 ## 3. Documentation Ownership Rule
 
-There is no dedicated documentation-secretary thread by default. The thread
-doing the work must ensure user instructions and work records are not chat-only
-state. It does not own the whole execution status board.
+`MoSim｜文档秘书部` is the current documentation-secretary/context-maintenance
+route. It owns context maintenance, documentation consistency review,
+cache-first migration drafts, and periodic cleanup. It does not define PMO
+runtime rules, product priority, dispatch order, engineering acceptance, or
+thread recovery decisions. Those remain PMO responsibilities, with
+CoAgentOps owning patrol/recovery execution only within
+`Docs/Workflows/coagent_ops_patrol_workflow.md`.
+
+The thread doing the work must still ensure user instructions and work records
+are not chat-only state. Documentation secretary review is a support lane, not
+a substitute for the responsible thread's immediate doc/packet updates.
 
 For every new user directive, correction, manual-review result, sub-agent
 return, blocker, or work checkpoint, record at least one recoverable artifact:
@@ -279,7 +296,10 @@ return, blocker, or work checkpoint, record at least one recoverable artifact:
 short-lived intake:
   Results/tmp/task_intake/<date>_*.md
 
-long-running task state:
+current PMO operating board:
+  Docs/Workflows/mainline_operations_board.md
+
+historical/recovery task state:
   Docs/Workflows/agent_task_ledger.md
 
 current project status and repeated mistakes:
@@ -294,7 +314,8 @@ Promotion rule:
 ```text
 chat/user instruction
   -> responsible-thread intake
-  -> task ledger or PROGRESS when stable
+  -> PMO board for current operations when it affects dispatch
+  -> task ledger / PROGRESS / packets when stable or historical
   -> workflow/skill/doc update when it becomes a reusable rule
 ```
 

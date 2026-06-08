@@ -1,4 +1,4 @@
-# COAGENT-ARCH-LONGRUN-01 Transport Timeout Hardening Design
+﻿# COAGENT-ARCH-LONGRUN-01 Transport Timeout Hardening Design
 
 Date: 2026-05-30
 Status: design contract for `COAGENT-IMPL-NEXT-12`
@@ -27,7 +27,7 @@ Evidence:
 - `Results/coagent_transport/runs/COAGENT-ARCH-LONGRUN-01-RUNTIME-01.json`
 - `Results/coagent_transport/runs/COAGENT-ARCH-LONGRUN-01-RUNTIME-01.stdout.log`
 - `Results/coagent_transport/runs/COAGENT-ARCH-LONGRUN-01-RUNTIME-01.stderr.log`
-- `Results/agent_packets/COAGENT-ARCH-LONGRUN-01-RUNTIME-01.yaml`
+- `Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-RUNTIME-01.yaml`
 - `transport_reliability_findings.md`
 
 Current inconsistency:

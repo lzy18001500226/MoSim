@@ -1,4 +1,4 @@
-# COAGENT-ARCH-LONGRUN-01 Transport Reliability Findings
+﻿# COAGENT-ARCH-LONGRUN-01 Transport Reliability Findings
 
 Date: 2026-05-30
 Status: active finding
@@ -60,7 +60,7 @@ router-compatible flat result packet and imported it.
 
 Evidence:
 
-- `Results/agent_packets/COAGENT-ARCH-LONGRUN-01-VERIFY-01.yaml`
+- `Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-VERIFY-01.yaml`
 - `Results/agent_packets/reviews/COAGENT-ARCH-LONGRUN-01-VERIFY-01.review.json`
 - `Results/coagent_transport/runs/COAGENT-ARCH-LONGRUN-01-VERIFY-01.stderr.log`
 

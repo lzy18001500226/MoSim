@@ -1,4 +1,4 @@
-# CoAgent Migration Status
+﻿# CoAgent Migration Status
 
 ## Scope Correction
 
@@ -99,7 +99,7 @@ MoSim has also now absorbed these structural pieces into project files:
   details in dispatch logic,
 - first live transport proof:
   project-local shadow `CODEX_HOME` and `sqlite_home` allowed a real department
-  thread to write `Results/agent_packets/transport_probe_task_v2.yaml`, and
+  thread to write `Results/agent_packets/tasks/coagent_smoke/transport_probe_task_v2.yaml`, and
   CoAgent imported that packet back into runtime state as `task_completed`,
 - transport recovery proof:
   even when `run-dispatch` times out, `reconcile-result` can import the

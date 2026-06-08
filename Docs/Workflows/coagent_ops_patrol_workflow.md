@@ -34,8 +34,10 @@ Each patrol run must execute the steps below in order:
 
 1. Read `AGENTS.md`, `Docs/Workflows/new_conversation_context.md`, this file,
    `CoAgent/dispatch/communication_contract.md`,
-   `CoAgent/dispatch/department_threads.json`, `PROGRESS.md`, and the active
-   section of `Docs/Workflows/agent_task_ledger.md`.
+   `CoAgent/dispatch/department_threads.json`,
+   `Docs/Workflows/mainline_operations_board.md`, and the newest active
+   entries in `PROGRESS.md`. Read `Docs/Workflows/agent_task_ledger.md` only
+   when the board or a packet names a row that must be traced for recovery.
 2. Scan `MainPMO`, `CoAgentOps`, and only current `status=active_visible`
    engineering departments. Deleted or archived WeChat routes are not targets.
 3. Classify approval/review/provider surfaces before dead-thread recovery.
@@ -49,9 +51,14 @@ Each patrol run must execute the steps below in order:
 11. Only then do support-lane probe, learning, or meta checks.
 
 An active engineering thread that is routable and idle while a P0 next gate
-exists is `dispatch_needed`, not healthy closeout. The patrol must notify PMO
-through the native thread surface in the same run, or write a blocker naming
-the missing PMO/thread tool.
+exists is not healthy closeout. If the bounded-dispatch preconditions in
+section 6 are satisfied, CoAgentOps must dispatch the task to the visible
+department in the same patrol run and notify PMO with the dispatch metadata.
+Use `dispatch_needed` as a PMO-facing state only when a ready gate exists but
+one or more bounded-dispatch preconditions are missing. In that case, notify
+PMO through the native thread surface in the same run, or write a blocker
+naming the missing PMO/thread tool, packet field, dependency, or explicit
+deferral.
 
 ## 3. Semantic Boundary
 
@@ -78,14 +85,23 @@ Accepted visible-thread `state_class` values:
 
 ```text
 routable
-busy_in_progress
-dispatch_needed
-idle_blocked_by_open_dependency
 approval_pending_or_ui_blocked
 provider_gateway_or_pending_review
 dispatch_surface_or_agent_loop_failure
 context_compression_surface
 unknown_blocked
+```
+
+`state_class` is the visible-thread control-plane classification. It must not
+carry queue state such as busy, idle, or dispatch-needed. Report queue state in
+`dispatch_readiness` separately:
+
+```text
+busy_in_progress
+idle_needs_dispatch
+idle_blocked_by_open_dependency
+idle_no_ready_task
+idle_waiting_review_or_approval
 ```
 
 Accepted MWORKS window/session `state_class` values:
@@ -154,19 +170,34 @@ recovery, or a critical path that cannot wait.
 
 ## 6. Bounded CoAgentOps Dispatch
 
-CoAgentOps may dispatch a P0 task only when all conditions hold:
+CoAgentOps is allowed to dispatch a P0 task only when all conditions hold; when
+all conditions hold, direct dispatch is required in that patrol run:
 
 - Target is `status=active_visible`.
-- Task is already in the current P0 queue or explicitly recommended by the
-  latest accepted return/blocker.
+- Target thread is routable through the native visible-thread send/read
+  surface.
+- Task is already in the current P0 queue, `mainline_operations_board.md`,
+  newest active `PROGRESS.md` entry, or explicitly recommended by the latest
+  accepted return/blocker.
 - Task is static/source-static, diagnostic-only, recovery validation,
   packet-contract fix, rule-sync/preflight drill, or another pre-authorized
   low-risk follow-up.
 - Packet declares read scope, write scope, `native_surface_gate`,
   `semantic_boundary`, expected return path, blocker path, evidence minimum,
-  forbidden actions, stop triggers, and next owner.
+  allowed actions, forbidden actions, stop triggers, expected engineering
+  outputs, and next owner.
 - Native visible-thread send/read surface is available.
 - PMO can be notified in the same run.
+- No approval/review/provider UI surface, open dependency, unresolved
+  dispatch-surface recovery, live GUI/license/manual-review risk, or PMO/user
+  product-priority choice is required first.
+
+When all conditions hold, dispatch is the required action, not a recommendation
+for PMO to dispatch later. CoAgentOps must instantiate a task packet, send it
+to the target visible department thread, and write or send the PMO sync record
+in the same run. The dispatch packet must carry the expected engineering
+output and stop before any live/manual/destructive action that is outside the
+pre-authorized task class.
 
 CoAgentOps must not dispatch when a task requires PMO/user product judgment,
 thread or automation lifecycle change, foreground GUI action, approval click,
@@ -185,6 +216,8 @@ task_class
 expected_return_path
 blocker_return_path
 why_dispatch_was_pre_authorized
+task_packet_path
+native_dispatch_result
 ```
 
 ## 7. MWORKS Window And Review Routing
@@ -271,20 +304,31 @@ python Scripts\quality\check_department_packet_contract.py `
 MWORKS department packets must also pass `check_mworks_live_gate.py` with the
 right `--expect` mode.
 
-## 9. Ledger Split Proposal
+## 9. Board And Ledger Responsibility
 
-`Docs/Workflows/agent_task_ledger.md` should stop being a routine full-context
-entry for fresh conversations. Keep it as the active delegated-task ledger and
-split older rows into an archive when the active section becomes too large:
+`Docs/Workflows/mainline_operations_board.md` is the PMO current operating
+surface. It records current P0 partition state, waiting returns, blockers,
+manual decisions, integrable results, next PMO actions, and forbidden actions.
+CoAgentOps patrol must report idle/blocked/recovery findings back into PMO's
+dispatch queue through that board or a directly referenced packet.
+
+`Docs/Workflows/agent_task_ledger.md` is a historical/recovery ledger. It keeps
+durable delegated-task history, restart/recovery context, and trace-back rows.
+It is not the normal PMO real-time board and should not be loaded as a full
+routine context entry.
+
+When the ledger becomes too large, split older completed rows into archive
+files without changing current packet paths:
 
 ```text
-Docs/Workflows/agent_task_ledger.md              current active/routable rows
-Docs/Archive/agent_task_ledger_2026_H1.md        completed historical rows
+Docs/Workflows/mainline_operations_board.md      current PMO operating board
+Docs/Workflows/agent_task_ledger.md              historical/recovery rows
+Docs/Archive/agent_task_ledger_2026_H1.md        archived completed rows
 ```
 
-Fresh conversations should read the current active section, latest
-`PROGRESS.md`, and relevant packets. Historical rows are consulted only when a
-current task references them.
+Fresh conversations should read the PMO board, newest `PROGRESS.md` entries,
+and packets named by the board. Ledger rows are consulted only when a current
+board item, packet, or recovery question references them.
 
 ## 10. Constraint Ownership Review Table
 
@@ -298,14 +342,14 @@ current task references them.
 | `native_surface_gate` and return/blocker paths | pointer | yes | yes | explicit fields | native gate |
 | `semantic_boundary` fields | pointer | yes | yes | explicit fields | native gate and packet contract |
 | Documentation secretary routing | pointer | yes | no | no | stale-name search |
-| `agent_task_ledger.md` routine context load | pointer | yes | no | no | pending archive split |
+| PMO board and historical ledger boundary | pointer | yes | no | no | stale-entry search plus PMO review |
 
 ## 11. Still Needs Human Review
 
 - Whether to make `semantic_boundary` mandatory for every historical packet, or
   only for newly dispatched packets and current returns.
-- When to physically split `Docs/Workflows/agent_task_ledger.md` into current
-  and archive files.
+- When to physically archive old completed rows out of
+  `Docs/Workflows/agent_task_ledger.md`.
 - Whether the Codex++ restart surface remains acceptable for all persistent
   dead-thread incidents.
 - Whether CoAgentOps bounded dispatch should stay limited to one task per
