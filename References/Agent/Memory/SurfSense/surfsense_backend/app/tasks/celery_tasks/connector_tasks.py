@@ -1,0 +1,487 @@
+"""Celery tasks for connector indexing."""
+
+import logging
+import traceback
+
+from app.celery_app import celery_app
+from app.tasks.celery_tasks import get_celery_session_maker, run_async_celery_task
+
+logger = logging.getLogger(__name__)
+
+
+def _handle_greenlet_error(e: Exception, task_name: str, connector_id: int) -> None:
+    """
+    Handle greenlet_spawn errors with detailed logging for debugging.
+
+    The 'greenlet_spawn has not been called' error occurs when:
+    1. SQLAlchemy lazy-loads a relationship outside of an async context
+    2. A sync operation is called from an async context (or vice versa)
+    3. Session objects are accessed after the session is closed
+
+    This helper logs detailed context to help identify the root cause.
+    """
+    error_str = str(e)
+    if "greenlet_spawn has not been called" in error_str:
+        logger.error(
+            f"GREENLET ERROR in {task_name} for connector {connector_id}: {error_str}\n"
+            f"This error typically occurs when SQLAlchemy tries to lazy-load a relationship "
+            f"outside of an async context. Check for:\n"
+            f"1. Accessing relationship attributes (e.g., document.chunks, connector.search_space) "
+            f"without using selectinload() or joinedload()\n"
+            f"2. Accessing model attributes after the session is closed\n"
+            f"3. Passing ORM objects between different async contexts\n"
+            f"Stack trace:\n{traceback.format_exc()}"
+        )
+    else:
+        logger.error(
+            f"Error in {task_name} for connector {connector_id}: {error_str}\n"
+            f"Stack trace:\n{traceback.format_exc()}"
+        )
+
+
+@celery_app.task(name="index_notion_pages", bind=True)
+def index_notion_pages_task(
+    self,
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Celery task to index Notion pages."""
+    try:
+        return run_async_celery_task(
+            lambda: _index_notion_pages(
+                connector_id, search_space_id, user_id, start_date, end_date
+            )
+        )
+    except Exception as e:
+        _handle_greenlet_error(e, "index_notion_pages", connector_id)
+        raise
+
+
+async def _index_notion_pages(
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Index Notion pages with new session."""
+    from app.routes.search_source_connectors_routes import (
+        run_notion_indexing,
+    )
+
+    async with get_celery_session_maker()() as session:
+        await run_notion_indexing(
+            session, connector_id, search_space_id, user_id, start_date, end_date
+        )
+
+
+@celery_app.task(name="index_github_repos", bind=True)
+def index_github_repos_task(
+    self,
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Celery task to index GitHub repositories."""
+    return run_async_celery_task(
+        lambda: _index_github_repos(
+            connector_id, search_space_id, user_id, start_date, end_date
+        )
+    )
+
+
+async def _index_github_repos(
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Index GitHub repositories with new session."""
+    from app.routes.search_source_connectors_routes import (
+        run_github_indexing,
+    )
+
+    async with get_celery_session_maker()() as session:
+        await run_github_indexing(
+            session, connector_id, search_space_id, user_id, start_date, end_date
+        )
+
+
+@celery_app.task(name="index_confluence_pages", bind=True)
+def index_confluence_pages_task(
+    self,
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Celery task to index Confluence pages."""
+    return run_async_celery_task(
+        lambda: _index_confluence_pages(
+            connector_id, search_space_id, user_id, start_date, end_date
+        )
+    )
+
+
+async def _index_confluence_pages(
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Index Confluence pages with new session."""
+    from app.routes.search_source_connectors_routes import (
+        run_confluence_indexing,
+    )
+
+    async with get_celery_session_maker()() as session:
+        await run_confluence_indexing(
+            session, connector_id, search_space_id, user_id, start_date, end_date
+        )
+
+
+@celery_app.task(name="index_google_calendar_events", bind=True)
+def index_google_calendar_events_task(
+    self,
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Celery task to index Google Calendar events."""
+    try:
+        return run_async_celery_task(
+            lambda: _index_google_calendar_events(
+                connector_id, search_space_id, user_id, start_date, end_date
+            )
+        )
+    except Exception as e:
+        _handle_greenlet_error(e, "index_google_calendar_events", connector_id)
+        raise
+
+
+async def _index_google_calendar_events(
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Index Google Calendar events with new session."""
+    from app.routes.search_source_connectors_routes import (
+        run_google_calendar_indexing,
+    )
+
+    async with get_celery_session_maker()() as session:
+        await run_google_calendar_indexing(
+            session, connector_id, search_space_id, user_id, start_date, end_date
+        )
+
+
+@celery_app.task(name="index_google_gmail_messages", bind=True)
+def index_google_gmail_messages_task(
+    self,
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Celery task to index Google Gmail messages."""
+    return run_async_celery_task(
+        lambda: _index_google_gmail_messages(
+            connector_id, search_space_id, user_id, start_date, end_date
+        )
+    )
+
+
+async def _index_google_gmail_messages(
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Index Google Gmail messages with new session."""
+    from app.routes.search_source_connectors_routes import (
+        run_google_gmail_indexing,
+    )
+
+    async with get_celery_session_maker()() as session:
+        await run_google_gmail_indexing(
+            session, connector_id, search_space_id, user_id, start_date, end_date
+        )
+
+
+@celery_app.task(name="index_google_drive_files", bind=True)
+def index_google_drive_files_task(
+    self,
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    items_dict: dict,  # Dictionary with 'folders', 'files', and 'indexing_options'
+):
+    """Celery task to index Google Drive folders and files."""
+    return run_async_celery_task(
+        lambda: _index_google_drive_files(
+            connector_id,
+            search_space_id,
+            user_id,
+            items_dict,
+        )
+    )
+
+
+async def _index_google_drive_files(
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    items_dict: dict,  # Dictionary with 'folders', 'files', and 'indexing_options'
+):
+    """Index Google Drive folders and files with new session."""
+    from app.routes.search_source_connectors_routes import (
+        run_google_drive_indexing,
+    )
+
+    async with get_celery_session_maker()() as session:
+        await run_google_drive_indexing(
+            session,
+            connector_id,
+            search_space_id,
+            user_id,
+            items_dict,
+        )
+
+
+@celery_app.task(name="index_onedrive_files", bind=True)
+def index_onedrive_files_task(
+    self,
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    items_dict: dict,
+):
+    """Celery task to index OneDrive folders and files."""
+    return run_async_celery_task(
+        lambda: _index_onedrive_files(
+            connector_id,
+            search_space_id,
+            user_id,
+            items_dict,
+        )
+    )
+
+
+async def _index_onedrive_files(
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    items_dict: dict,
+):
+    """Index OneDrive folders and files with new session."""
+    from app.routes.search_source_connectors_routes import (
+        run_onedrive_indexing,
+    )
+
+    async with get_celery_session_maker()() as session:
+        await run_onedrive_indexing(
+            session,
+            connector_id,
+            search_space_id,
+            user_id,
+            items_dict,
+        )
+
+
+@celery_app.task(name="index_dropbox_files", bind=True)
+def index_dropbox_files_task(
+    self,
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    items_dict: dict,
+):
+    """Celery task to index Dropbox folders and files."""
+    return run_async_celery_task(
+        lambda: _index_dropbox_files(
+            connector_id,
+            search_space_id,
+            user_id,
+            items_dict,
+        )
+    )
+
+
+async def _index_dropbox_files(
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    items_dict: dict,
+):
+    """Index Dropbox folders and files with new session."""
+    from app.routes.search_source_connectors_routes import (
+        run_dropbox_indexing,
+    )
+
+    async with get_celery_session_maker()() as session:
+        await run_dropbox_indexing(
+            session,
+            connector_id,
+            search_space_id,
+            user_id,
+            items_dict,
+        )
+
+
+@celery_app.task(name="index_elasticsearch_documents", bind=True)
+def index_elasticsearch_documents_task(
+    self,
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Celery task to index Elasticsearch documents."""
+    return run_async_celery_task(
+        lambda: _index_elasticsearch_documents(
+            connector_id, search_space_id, user_id, start_date, end_date
+        )
+    )
+
+
+async def _index_elasticsearch_documents(
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Index Elasticsearch documents with new session."""
+    from app.routes.search_source_connectors_routes import (
+        run_elasticsearch_indexing,
+    )
+
+    async with get_celery_session_maker()() as session:
+        await run_elasticsearch_indexing(
+            session, connector_id, search_space_id, user_id, start_date, end_date
+        )
+
+
+@celery_app.task(name="index_crawled_urls", bind=True)
+def index_crawled_urls_task(
+    self,
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Celery task to index Web page Urls."""
+    try:
+        return run_async_celery_task(
+            lambda: _index_crawled_urls(
+                connector_id, search_space_id, user_id, start_date, end_date
+            )
+        )
+    except Exception as e:
+        _handle_greenlet_error(e, "index_crawled_urls", connector_id)
+        raise
+
+
+async def _index_crawled_urls(
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Index Web page Urls with new session."""
+    from app.routes.search_source_connectors_routes import (
+        run_web_page_indexing,
+    )
+
+    async with get_celery_session_maker()() as session:
+        await run_web_page_indexing(
+            session, connector_id, search_space_id, user_id, start_date, end_date
+        )
+
+
+@celery_app.task(name="index_bookstack_pages", bind=True)
+def index_bookstack_pages_task(
+    self,
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Celery task to index BookStack pages."""
+    return run_async_celery_task(
+        lambda: _index_bookstack_pages(
+            connector_id, search_space_id, user_id, start_date, end_date
+        )
+    )
+
+
+async def _index_bookstack_pages(
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str,
+    end_date: str,
+):
+    """Index BookStack pages with new session."""
+    from app.routes.search_source_connectors_routes import (
+        run_bookstack_indexing,
+    )
+
+    async with get_celery_session_maker()() as session:
+        await run_bookstack_indexing(
+            session, connector_id, search_space_id, user_id, start_date, end_date
+        )
+
+
+@celery_app.task(name="index_composio_connector", bind=True)
+def index_composio_connector_task(
+    self,
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str | None,
+    end_date: str | None,
+):
+    """Celery task to index Composio connector content (Google Drive, Gmail, Calendar via Composio)."""
+    return run_async_celery_task(
+        lambda: _index_composio_connector(
+            connector_id, search_space_id, user_id, start_date, end_date
+        )
+    )
+
+
+async def _index_composio_connector(
+    connector_id: int,
+    search_space_id: int,
+    user_id: str,
+    start_date: str | None,
+    end_date: str | None,
+):
+    """Index Composio connector content with new session and real-time notifications."""
+    # Import from routes to use the notification-wrapped version
+    from app.routes.search_source_connectors_routes import (
+        run_composio_indexing,
+    )
+
+    async with get_celery_session_maker()() as session:
+        await run_composio_indexing(
+            session, connector_id, search_space_id, user_id, start_date, end_date
+        )
