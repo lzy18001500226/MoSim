@@ -126,6 +126,7 @@ target_thread_id
 task_class
 expected_return_path
 blocker_return_path
+dispatch_ticket_path
 why_dispatch_was_pre_authorized
 task_packet_path
 native_dispatch_result
@@ -135,6 +136,87 @@ If a dispatch precondition is missing, CoAgentOps writes a blocker packet or
 returns `dispatch_needed` with the missing precondition instead of dispatching.
 PMO remains the acceptance owner and may reject, supersede, narrow, or pause
 any CoAgentOps-dispatched task after reviewing the return/blocker evidence.
+
+## Dispatch Ticket And SLO
+
+Every visible-thread dispatch must create a JSON dispatch ticket under
+`Results/agent_packets/dispatch_tickets/<request_id>.json`. The task packet
+describes the engineering work; the dispatch ticket describes whether the
+native visible-thread delivery and readback surface actually worked.
+
+Use `CoAgent/protocol/templates/visible_thread_dispatch_ticket.json` as the
+starting point and validate each ticket with:
+
+```powershell
+python Scripts\quality\check_dispatch_ticket_slo.py `
+  Results\agent_packets\dispatch_tickets\<request_id>.json
+```
+
+Dispatch monitoring sequence:
+
+```text
+1. Before send, create the dispatch ticket and set dispatcher_owns_slo_closure=true.
+2. Send the visible-thread task packet.
+3. Immediately read_thread once and record last_observed_turn.
+4. If no visible turn is observed, set second_readback_due_if_no_visible_turn
+   within 2 minutes of sent_at and read again before that due time.
+5. If a visible turn is observed but it only remains in progress/thinking and
+   has no agent output, final response, checkpoint, expected return packet,
+   blocker packet, approval/provider surface, or context-compression surface
+   by first_agent_output_due, set breach_action to
+   dispatch_surface_failure_suspected and write a blocker/recovery packet.
+6. If 5 minutes after sent_at there is still no meaningful progress, set
+   breach_action to dispatch_surface_failure_suspected and write a
+   blocker/recovery packet. A visible in-progress turn without agent output is
+   not meaningful progress.
+7. The dispatcher that sent the task owns this ticket until it reaches a
+   terminal state: expected_return_packet_seen, blocker_packet_seen,
+   completed_without_expected_packet with escalation, approval/provider surface,
+   context-compression surface, or dispatch_surface_failure_suspected.
+8. Do not duplicate-dispatch the same request while delivery/readback remains
+   ambiguous.
+```
+
+SLO profiles:
+
+| Task type | Expected packet due | Extra requirement |
+|---|---:|---|
+| `source_static` | 10-20 minutes after `sent_at` | agent output/packet/checkpoint or explicit surface must appear inside the 5-minute surface window |
+| `control_plane` / `packet_contract_fix` | 10-20 minutes after `sent_at` | same 5-minute meaningful-progress window |
+| `dispatch_surface_diagnostic` / `recovery_validation` | 2-10 minutes after `sent_at` | same 5-minute meaningful-progress window |
+| `live_runtime` / `mworks_gui` | may run longer, normally up to the declared ticket due time | `checkpoint_due` is required and must be within 10 minutes of `sent_at` |
+| `manual_review` | may run longer, normally up to the declared ticket due time | `checkpoint_due` is required and must be within 15 minutes of `sent_at` |
+
+The 5-minute rule is not a completion timeout. It detects an unhealthy
+delivery/readback surface. A long live/runtime task may continue past 5 minutes
+only if PMO or CoAgentOps can see agent output, checkpoint, approval/provider
+surface, expected return packet, blocker packet, or context-compression
+surface. A visible turn stuck in "thinking"/in-progress with no agent output is
+not enough to continue waiting.
+
+When a visible-thread row or transcript is slow to refresh, first record the
+observation as `view_refresh_required` in the dispatch ticket or recovery
+packet notes. Do not classify it as a dead thread until a bounded refresh
+sweep, native read/send checks, expected packet checks, and approval/provider/
+context inspection all fail to produce agent output, ACK, checkpoint,
+return/blocker packet, or a known UI blocker. Selecting a thread and waiting
+about 30 seconds for context to load is normal refresh evidence, not failure
+evidence.
+
+PMO board entries for active dispatch monitoring must stay short. The board
+shows only these columns:
+
+```text
+sent_at
+first_readback_due
+expected_packet_due
+last_observed_turn
+breach_action
+owner
+```
+
+Detailed target thread, task class, expected paths, checkpoint due, and SLO
+evidence belong in the dispatch ticket JSON, not in the board or ledger.
 
 ## Native Surface Gate
 
@@ -156,13 +238,15 @@ native_surface_gate:
   worktree_decision: read-only planning task; no isolated worktree needed
 expected_return_path: Results/agent_packets/returns/<request_id>.json
 blocker_return_path: Results/agent_packets/blockers/<request_id>.json
+dispatch_ticket_path: Results/agent_packets/dispatch_tickets/<request_id>.json
 ```
 
 Use `CoAgent/protocol/templates/visible_thread_dispatch_packet.json` as the
 machine-checkable scaffold for new visible-thread dispatches, then replace the
 placeholder values before sending. The sibling YAML file is a human-readable
 draft scaffold only; instantiate or edit the JSON packet before running the
-checker. The schema keeps `semantic_boundary` and return paths explicit, while
+checker. The schema keeps `semantic_boundary`, return paths, and the optional
+`dispatch_ticket_path` explicit, while
 the checker enforces the current routing fields before dispatch:
 
 ```powershell
@@ -200,6 +284,50 @@ department runtime has no sub-agent surface, no independent slice exists, or
 serial execution is safer. If a department uses disposable sub-agents, they
 must be bounded, task-local, evidence-returning helpers; they must not become
 hidden durable departments or create/fork/rename/archive visible threads.
+
+Dispatch packets for non-trivial department work must explicitly tell the
+target to plan before deep execution. The packet should require the department
+to state a local goal, split critical-path and parallelizable work, decide
+whether a disposable sub-agent is useful, and record that decision in its
+return or blocker. This is a scheduling requirement, not a requirement to spawn
+a sub-agent. Use `available_but_not_useful`, `unavailable`, or `unsafe` when no
+safe independent slice exists.
+
+## R2/R3 Failover Scope
+
+For MWORKS, ROS2, and UE, R2 is the default failover lane when R1 is blocked by
+a confirmed or suspected dispatch-surface failure and a safe task is available.
+R2 task packets may use only these task classes unless PMO explicitly creates a
+new exception:
+
+```text
+source_static
+diagnostic_only
+packet_contract_fix
+rule_sync_only
+checker/review
+```
+
+R2 failover packets must forbid:
+
+```text
+MWORKS live work
+ROS2 live work
+UE runtime/build/editor work
+GUI clicks
+login/authorization/save/restart actions
+setpoint publication
+```
+
+R2 returns still need real engineering or review evidence for the declared task
+class. JSON packets, ledger rows, and board updates are only control-plane
+evidence unless the task class is explicitly diagnostic/control-plane.
+
+R3 is reserve capacity, not an automatic second backup. PMO proposes or
+approves R3 only after R2 failover still leaves a P0 partition idle or blocked
+long enough that another static/diagnostic/checker/review lane is useful. Do
+not trigger R3 merely because the same department's R1/R2 had repeated
+dead-thread incidents in a 24-hour window.
 
 ## Semantic Boundary Template
 
@@ -460,6 +588,23 @@ packet must include `mworks_phase_screenshots` and
 `mworks_phase_observations`; the observations must say what the screenshots/
 window titles showed, not only list artifact paths.
 
+MWORKS window action split:
+
+- Activation/license/login/window-health audit is an audit task, not ordinary
+  phase evidence. It requires the reusable target main window to be foreground
+  or maximized, because background capture can miss hidden login/license panes.
+  If no reusable main window exists, CoAgentOps opens MWORKS directly and then
+  captures/rechecks; it must not end the patrol by only reporting that the
+  window is missing.
+- Ordinary non-activation phase screenshots, diagram/layout captures, and
+  approved low-risk background clicks should use the background Win32 route and
+  normally do not maximize the window. If the target was minimized, temporarily
+  restore it for the capture/click and minimize it again afterward.
+- Cold start screenshots are first evidence only. A first screenshot shortly
+  after launch may show blank/loading content; classification needs bounded
+  follow-up screenshots or sentinel/window evidence before declaring healthy or
+  blocked.
+
 A MWORKS department return/blocker packet is incomplete if it omits the latest
 patrol reference or a current-turn sentinel/capture set for a real incident,
 the no-click pledge, live-touch flag, declared engineering outputs, or the live
@@ -474,13 +619,14 @@ path or empty manifest reference.
 Do not treat a clean-looking background screenshot as sufficient if other
 evidence indicates demo/login/authorization risk. Sysplorer can hide the
 login/license pane until the existing window is maximized or brought to
-foreground. Departments must not perform that recovery themselves; they return
-a blocker. PMO or CoAgentOps may perform a user-authorized bounded foreground
-recovery or full layout screenshot on the existing window first, then prove
-success before live MWORKS work resumes. Login/license patrols require
-maximized target-window evidence: the screenshot must visually show the target
-reusable MWORKS/Sysplorer/Syslab main window, not Codex, another application,
-a helper/proxy window, or incomplete background `PrintWindow` output. If the
+foreground. Delegated departments must not perform login/license recovery
+themselves; they return a blocker. PMO or CoAgentOps may perform a bounded
+foreground recovery on the existing window first, then prove success before
+live MWORKS work resumes. Login/license patrols require maximized
+target-window evidence: the screenshot must visually show the target reusable
+MWORKS/Sysplorer/Syslab main window, not Codex, another application, a
+helper/proxy window, or incomplete background `PrintWindow` output. If no
+main window exists, CoAgentOps opens MWORKS directly and rechecks. If the
 official login action does not return or cannot complete on the existing
 window, PMO/CoAgentOps may reopen MWORKS and log in through the official UI as
 a bounded recovery.

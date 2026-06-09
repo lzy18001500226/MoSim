@@ -7,8 +7,27 @@
     "default_thinking": "high",
     "default_model_policy_note": "Apply these defaults to future mainline, visible department, automation, business dispatch, and disposable sub-agent calls when the native tool/runtime accepts explicit settings. Do not send no-op turns only to mutate settings on healthy existing threads. Dead-thread recovery no-op probes should omit settings overrides unless specifically testing settings update.",
     "note": "Only thread IDs listed with status=active_visible are dispatchable. If an old thread ID is absent from this registry and cannot be found in the current visible thread scan, treat it as gone instead of maintaining a separate blacklist.",
-    "r3_failover_note": "User approved creation of MWORKS/ROS2/UE R3 reserve threads on 2026-06-09. R3 threads are active_visible reserve routes for explicit PMO/CoAgentOps packets only. They may receive static/diagnostic/checker/review failover work when R1/R2 dead-thread surfaces block progress, and must not run live MWORKS/ROS2/UE runtime or GUI/editor/build tasks by default."
+    "r2_failover_note": "For MWORKS/ROS2/UE, R2 may receive explicit PMO/CoAgentOps packets for source_static, diagnostic_only, packet_contract_fix, rule_sync_only, or checker/review work when R1 is dead, stale, or blocked and a safe task is available. R2 must not run live MWORKS, live ROS2/RViz/FAST-LIO, UE runtime/build/editor, GUI clicks, login/authorization/save/restart actions, or setpoint publication under this default failover rule.",
+    "r3_failover_note": "User approved creation of MWORKS/ROS2/UE R3 reserve threads on 2026-06-09. R3 threads are active_visible reserve routes for explicit PMO/CoAgentOps packets only. PMO proposes or approves R3 only after R2 failover still leaves a P0 partition idle or blocked long enough that reserve static/diagnostic/checker/review capacity is useful. Do not trigger R3 merely because R1/R2 had repeated dead-thread incidents within 24 hours. R3 must not run live MWORKS/ROS2/UE runtime or GUI/editor/build tasks by default."
   },
+  "refresh_only_watchlist": [
+    {
+      "thread_name": "DH｜TDMS存储重构主线",
+      "thread_id": "019de24d-e993-72c0-a0b2-caf2ac8ac85e",
+      "scope": "post_restart_goal_refresh_only",
+      "reason": "User noted this non-MoSim thread has an active Codex goal that may resume only after the Codex App window is refreshed after restart.",
+      "dispatchable": false,
+      "forbidden_actions": [
+        "mosim_business_dispatch",
+        "thread_lifecycle_change",
+        "approval_click",
+        "send_click",
+        "restart_click",
+        "login_or_authorization_click",
+        "save_click"
+      ]
+    }
+  ],
   "threads": [
     {
       "department": "MainPMO",
@@ -56,7 +75,28 @@
       "routing_role": "UE_R2_auxiliary_source_static_backup",
       "paired_primary_thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
       "first_business_task_gate": "Initialization ACK completed on 2026-06-09: MoSim｜UE实验控制台与场景交互部-R2 已建立，等待 PMO/CoAgentOps 任务包.",
-      "routing_note": "R2 must not steal R1 mainline work. Use only for explicit PMO/CoAgentOps task packets, preferably source-static, contract, checker, review, or low-risk auxiliary slices. Non-trivial returns/blockers must include department-local planning and subagent_plan fields.",
+      "allowed_task_classes": [
+        "source_static",
+        "diagnostic_only",
+        "packet_contract_fix",
+        "rule_sync_only",
+        "checker",
+        "review"
+      ],
+      "forbidden_actions": [
+        "ue_editor",
+        "ue_build",
+        "ue_runtime",
+        "live_command_echo",
+        "gui_clicks",
+        "login_or_authorization_click",
+        "save_or_restart_click",
+        "setpoint_publication",
+        "mworks_downlink",
+        "ros2_runtime_echo",
+        "planner_ready_or_closed_loop_claim"
+      ],
+      "routing_note": "R2 must not steal R1 mainline work. Use only for explicit PMO/CoAgentOps packets, normally source_static, diagnostic_only, packet_contract_fix, rule_sync_only, checker, or review. Non-trivial returns/blockers must include department-local planning and subagent_plan fields.",
       "paired_reserve_thread_id": "019eac00-8645-7da3-b43e-d9169b2713e7"
     },
     {
@@ -95,7 +135,64 @@
       "routing_role": "MWORKS_R2_auxiliary_model_graphical_audit",
       "first_business_task_gate": "Passed on 2026-06-06 via RFLY-MOSIM-MWORKS-R2-SYNC-VALIDATION-20260606-001. The validation proved PMO dispatch receipt, turn start, minimal context read, and return-packet write only; it did not prove MWORKS GUI/MCP/model audit capability.",
       "history_note": "This thread previously failed two PMO production dispatch attempts and had a user-side UI composer error, but later cross-thread no-op probes completed. It is no longer quarantine-only after the user renamed it to R2, and the 2026-06-08 R2 017 incident was later superseded by user visual audit as provider_gateway_or_pending_review plus pending review UI rather than durable dead-thread state. Bounded static business dispatch is allowed; live MWORKS work still waits for the no-start attach route.",
+      "allowed_task_classes": [
+        "source_static",
+        "diagnostic_only",
+        "packet_contract_fix",
+        "rule_sync_only",
+        "checker",
+        "review"
+      ],
+      "forbidden_actions": [
+        "live_mworks_gui",
+        "sysplorer_mcp",
+        "syslab_mcp",
+        "check_model",
+        "simulate_model",
+        "package_browser",
+        "smart_layout",
+        "result_viewer",
+        "gui_clicks",
+        "login_or_activation_click",
+        "save_or_restart_click"
+      ],
       "paired_reserve_thread_id": "019eac00-55d6-7443-b986-1b501503195a"
+    },
+    {
+      "department": "ROS2RuntimeAuxAgent",
+      "thread_name": "MoSim｜ROS2感知定位与规划运行部-R2",
+      "thread_id": "019e9b85-d4d8-7bf3-8afd-a65697cd3889",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent_auxiliary",
+      "mission": "ROS2 auxiliary source/static, diagnostic, packet-contract, rule-sync, checker, and review backup when R1 dispatch-surface recovery would otherwise leave safe ROS2 work idle.",
+      "accountable_to": "MainPMO",
+      "routing_role": "ROS2_R2_auxiliary_source_static_backup",
+      "paired_primary_thread_id": "019e9c72-ee74-79d1-b9fe-621d3c6fc99e",
+      "paired_reserve_thread_id": "019eac00-70be-7172-b158-b585079c7d67",
+      "allowed_task_classes": [
+        "source_static",
+        "diagnostic_only",
+        "packet_contract_fix",
+        "rule_sync_only",
+        "checker",
+        "review"
+      ],
+      "forbidden_actions": [
+        "live_ros2_runtime",
+        "rviz_foreground",
+        "fast_lio_live_probe",
+        "planner_runtime",
+        "controller_handoff",
+        "setpoint_publication",
+        "keyboard_pose",
+        "fake_tf_or_map",
+        "ue_truth_shortcut",
+        "gui_clicks",
+        "login_or_authorization_click",
+        "save_or_restart_click"
+      ],
+      "routing_note": "Restored as a current R2 auxiliary route for the user's all-R2 static/diagnostic failover rule. Do not route production ROS2 live/runtime work here without a new explicit PMO packet and live-resource decision."
     },
     {
       "department": "ROS2RuntimeAgent",
@@ -106,9 +203,10 @@
       "agent_type": "permanent",
       "mission": "ROS2/RViz2/FAST-LIO/local-map/planner runtime integration and topic/timing/truth-error gates.",
       "accountable_to": "MainPMO",
-      "supersedes_thread_id": "019e9b85-d4d8-7bf3-8afd-a65697cd3889",
       "routing_role": "ROS2_R1_primary_mainline",
-      "supersedes_note": "This thread is the current default ROS2 R1 primary mainline route. Thread 019e9b85-d4d8-7bf3-8afd-a65697cd3889 is a non-historical visible ROS2 R2 department title, but current production ROS2 routing still uses this R1 thread id unless the registry or explicit user/PMO instruction restores R2 for a bounded task. Old pre-R2 thread 019e9917-6181-7ec2-b3d6-4b624d6d3348 was deleted by the user after earlier Codex App delivery failures.",
+      "paired_auxiliary_thread_id": "019e9b85-d4d8-7bf3-8afd-a65697cd3889",
+      "history_note": "Old pre-R2 thread 019e9917-6181-7ec2-b3d6-4b624d6d3348 was deleted by the user after earlier Codex App delivery failures.",
+      "routing_note": "This thread is the current default ROS2 R1 primary mainline route for live ROS2/RViz/FAST-LIO/local-map/planner integration. Use ROS2 R2 only for explicit static/diagnostic/checker/review backup packets under the R2 failover rule.",
       "paired_reserve_thread_id": "019eac00-70be-7172-b158-b585079c7d67"
     },
     {
@@ -225,7 +323,7 @@
         "login_or_activation_click",
         "save_or_restart_click"
       ],
-      "routing_note": "Do not dispatch live MWORKS tasks by default. Use only through explicit packet when R1/R2 dead-thread or static reserve capacity is needed."
+      "routing_note": "Do not dispatch live MWORKS tasks by default. PMO proposes or approves this R3 route only after R2 failover still leaves the P0 MWORKS partition idle or blocked long enough that reserve static/diagnostic/checker/review capacity is useful."
     },
     {
       "department": "ROS2RuntimeReserveAgent",
@@ -258,7 +356,7 @@
         "fake_tf_or_map",
         "ue_truth_shortcut"
       ],
-      "routing_note": "Do not dispatch live ROS2/RViz/FAST-LIO/planner/controller tasks by default. Use only through explicit packet when R1/R2 dead-thread or static reserve capacity is needed."
+      "routing_note": "Do not dispatch live ROS2/RViz/FAST-LIO/planner/controller tasks by default. PMO proposes or approves this R3 route only after R2 failover still leaves the P0 ROS2 partition idle or blocked long enough that reserve static/diagnostic/checker/review capacity is useful."
     },
     {
       "department": "UEExperimentConsoleReserveAgent",
@@ -291,7 +389,7 @@
         "ros2_runtime_echo",
         "planner_ready_or_closed_loop_claim"
       ],
-      "routing_note": "Do not dispatch UE editor/build/runtime/live command-echo tasks by default. Use only through explicit packet when R1/R2 dead-thread or static reserve capacity is needed."
+      "routing_note": "Do not dispatch UE editor/build/runtime/live command-echo tasks by default. PMO proposes or approves this R3 route only after R2 failover still leaves the P0 UE partition idle or blocked long enough that reserve static/diagnostic/checker/review capacity is useful."
     }
   ]
 }

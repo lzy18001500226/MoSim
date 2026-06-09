@@ -1,5 +1,24 @@
 # Project Progress
 
+## 2026-06-09 CST - PMO Documented Goal/Subagent Planning And Failover Rules
+
+- Current goal: document and encode visible-thread refresh, R2/R3 failover,
+  CoAgentOps board-write scope, refresh-only goal-thread handling, and required
+  department goal/subagent planning before any operational dispatch.
+- Subagent plan for this documentation pass:
+  `available_but_not_useful`. The work is a small control-plane document and
+  registry sync, so the main thread handled it directly rather than creating a
+  disposable review agent or touching visible-thread lifecycle.
+- Rules landed in `Docs/Workflows/coagent_ops_patrol_workflow.md`,
+  `CoAgent/dispatch/communication_contract.md`,
+  `Docs/Workflows/mainline_operations_board.md`, and
+  `CoAgent/dispatch/department_threads.json`: stale UI view refresh is separate
+  from dead-thread proof; R2 may receive only static/diagnostic/contract/rule
+  sync/checker/review failover packets; R3 requires PMO proposal after R2
+  failover still leaves P0 idle/blocked; CoAgentOps may update only fixed board
+  areas; non-trivial dispatch packets must require department-local goal and
+  `subagent_plan` reporting.
+
 ## 2026-06-09 CST - PMO Created MWORKS/ROS2/UE R3 Reserve Threads
 
 - User explicitly approved creating R3 reserve routes for the three main

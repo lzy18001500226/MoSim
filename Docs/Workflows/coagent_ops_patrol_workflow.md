@@ -12,16 +12,16 @@
 |---|---|
 | Patrol owner | `MoSim｜CoAgent运维平台` (`019e9bc1-ea9f-7102-b41a-4ef9b2308992`) |
 | PMO owner | `MoSim｜主线 PMO` (`019e9868-83ea-70f0-92c5-a3a408bd78c6`) |
-| Documentation secretary | `MoSim｜文档秘书部` (`019e9be0-f6ac-7762-b80c-b1dd18b0d013`) |
+| Documentation secretary | `MoSim｜Codex 上下文维护部` (`019eab73-c5bc-7740-a6d1-5e0541bdb0c5`) |
 | Registry source | `CoAgent/dispatch/department_threads.json` |
 | Return channel | `Results/agent_packets/returns/<request_id>.json` |
 | Blocker channel | `Results/agent_packets/blockers/<request_id>.json` |
 
-Former names such as `MoSim｜Codex 上下文维护部`,
-`MoSim｜Codex 上下文维护部-R2`, and `MoSim｜知识秘书` are alias/history only.
+Former names such as `MoSim｜文档秘书部`, R-suffixed context-maintenance titles,
+and `MoSim｜知识秘书` are alias/history only.
 Future context-memory, documentation consistency, startup recovery, and
-cache-first migration tasks route to `MoSim｜文档秘书部`. The internal key
-`CodexContextMaintenanceAgent` may remain in compatibility metadata.
+cache-first migration tasks route to `MoSim｜Codex 上下文维护部`. The internal
+key `CodexContextMaintenanceAgent` may remain in compatibility metadata.
 
 CoAgentOps does not own product priority, engineering acceptance, visible
 thread lifecycle changes, automation lifecycle changes, destructive Git,
@@ -168,6 +168,87 @@ Default policy is restart recovery on the same thread, not replacement.
 Replacement requires explicit PMO/user approval, repeated failed restart
 recovery, or a critical path that cannot wait.
 
+### 5.1 Post-Restart Probe Sweep
+
+When the user restarts Codex App or the computer after widespread visible-thread
+failure, start a fresh incident clock from the confirmed app restart time:
+
+```text
+app_restart_completed_at=<ISO timestamp from the first healthy PMO turn>
+```
+
+Before dispatching business work, PMO or CoAgentOps must run a bounded probe
+sweep over every current `status=active_visible` route in
+`CoAgent/dispatch/department_threads.json`:
+
+1. Read the current registry and list/read each active visible thread.
+2. Send exactly one short no-op probe per active department thread, unless the
+   thread is the current PMO thread or the user explicitly excludes it.
+3. Immediately `read_thread` after each send and record whether a new visible
+   turn appears.
+4. Recheck any thread without a visible turn within 2 minutes.
+5. At 5 minutes after that thread's probe `sent_at`, classify it as
+   `dispatch_surface_failure_suspected` if there is still no visible turn,
+   agent output, expected ACK, return/blocker packet, approval/provider
+   surface, or context-compression surface.
+6. Record per-thread timing as:
+   `last_known_alive_at`, `probe_sent_at`, `first_missing_at`,
+   `failure_suspected_at`, and `dead_thread_duration_minutes`.
+7. Do not restart Codex again during the sweep unless the user explicitly
+   authorizes it for the active incident.
+
+The probe text must be minimal and must not include business work. Example:
+
+```text
+PMO post-restart health probe only. If you can start a new turn, reply exactly:
+<department_key>_post_restart_probe_ok_<YYYYMMDD_HHMM>
+Do not read/write project files, do not run commands, do not dispatch work.
+```
+
+The sweep result belongs in
+`Results/agent_packets/returns/PMO-POST-RESTART-PROBE-SWEEP-<date>-001.json`
+or, if the sweep itself is blocked,
+`Results/agent_packets/blockers/PMO-POST-RESTART-PROBE-SWEEP-<date>-001.json`.
+It must include one row per active visible thread and the measured timing
+fields above. This sweep is control-plane recovery evidence only; it does not
+prove MWORKS/ROS2/UE business progress.
+
+### 5.2 Visible Thread UI Refresh Sweep
+
+When a visible thread appears stale for more than 5 minutes, classify the first
+UI symptom as `view_refresh_required`, not as a dead thread. A slow context load
+or a blank/old transcript after selecting a thread can take about 30 seconds and
+is not by itself proof of start-turn failure.
+
+CoAgentOps may run a bounded refresh sweep only for observation and view
+recovery:
+
+1. Target only the left thread-title text area containing `MoSim|` / `MoSim｜`
+   in the thread list. Do not click right-side controls, overflow menus,
+   composer controls, approval/review buttons, send buttons, restart controls,
+   login/authorization/save/archive/delete/pin controls, or any unknown UI.
+2. Prefer native title matching, UI Automation, OCR, or stable element bounds
+   over raw coordinates. If coordinates are used, record drift risk and keep the
+   click inside the title-text area.
+3. Cycle through the relevant active visible MoSim thread rows once, wait about
+   5 seconds, then cycle through them again. If a selected thread needs up to
+   30 seconds to load its transcript, keep it in `view_refresh_required` until
+   the load grace expires.
+4. After a Codex App or PC restart, include the refresh-only watchlist entries
+   recorded in `CoAgent/dispatch/department_threads.json`, such as
+   `019de24d-e993-72c0-a0b2-caf2ac8ac85e`, because active Codex goals may need
+   a visible refresh before they continue. These watchlist rows are not MoSim
+   dispatch targets.
+5. If bounded refresh cycles still do not expose a usable thread view, write a
+   recovery/blocker packet, send one sparse Chinese email when user awareness is
+   needed, and stop before restart unless the current incident explicitly
+   authorizes restart.
+
+Escalate from `view_refresh_required` to
+`dispatch_surface_failure_suspected` only when refresh cycles, native read/send
+checks, packet checks, and approval/provider/context-compression inspection all
+show no agent output, ACK, expected packet, checkpoint, or known UI blocker.
+
 ## 6. Bounded CoAgentOps Dispatch
 
 CoAgentOps is allowed to dispatch a P0 task only when all conditions hold; when
@@ -215,10 +296,79 @@ target_thread_id
 task_class
 expected_return_path
 blocker_return_path
+dispatch_ticket_path
 why_dispatch_was_pre_authorized
 task_packet_path
 native_dispatch_result
 ```
+
+Before the visible-thread send call, the dispatcher must create/update the
+dispatch ticket at `Results/agent_packets/dispatch_tickets/<request_id>.json`
+with `dispatcher_owns_slo_closure=true`, then validate it with
+`Scripts/quality/check_dispatch_ticket_slo.py`. The dispatcher is the PMO or
+CoAgentOps turn that actually sends the task; a 10-minute patrol may audit or
+catch a missed ticket, but it is not the primary timer owner. The delivery SLO
+is:
+
+```text
+sent_at -> immediate read_thread once
+if no visible turn -> read again within 2 minutes
+if visible turn is only inProgress/thinking with no agent output/final/packet
+  by first_agent_output_due -> classify dispatch_surface_failure_suspected
+if 5 minutes passes with no meaningful progress -> classify
+  dispatch_surface_failure_suspected and write a recovery/blocker
+```
+
+Meaningful progress means one of: agent output, expected return packet, blocker
+packet, checkpoint packet, approval/provider surface, or context-compression
+surface. Native send success, an old exact ACK, or a new visible turn stuck in
+thinking/in-progress with no agent output is not meaningful progress.
+
+Task-type SLO is layered. `source_static`, `control_plane`, and
+`packet_contract_fix` tasks normally expect a return/blocker packet within
+10-20 minutes. `dispatch_surface_diagnostic` and `recovery_validation` expect
+2-10 minutes. `live_runtime`, `mworks_gui`, and `manual_review` may run longer,
+but their ticket must declare `checkpoint_due`; the first checkpoint is due
+within 10 minutes for live/runtime/MWORKS GUI and within 15 minutes for manual
+review.
+
+The PMO board must show only the dispatch watch fields
+`sent_at / first_readback_due / expected_packet_due / last_observed_turn /
+breach_action / owner`. Detailed thread id, expected paths, checkpoint due,
+and observations stay in the JSON ticket.
+
+If CoAgentOps discovers an active ticket whose `dispatcher_next_check_due` has
+passed and the dispatcher has not advanced it to a terminal state, CoAgentOps
+reports the missed dispatcher closure to PMO and may write an audit blocker.
+That is a fail-close catch for a broken dispatch loop, not the normal way a
+task timer should close.
+
+### 6.1 R2/R3 Failover Lane
+
+For the three main engineering departments, R2 is the first failover lane when
+R1 is dead, stale, or blocked by dispatch-surface recovery and a safe task is
+available. CoAgentOps must check this during each 10-minute patrol.
+
+R2 failover packets are limited to:
+
+```text
+source_static
+diagnostic_only
+packet_contract_fix
+rule_sync_only
+checker/review
+```
+
+R2 failover must not run MWORKS live work, ROS2 live work, UE runtime/build/
+editor work, GUI clicks, login/authorization/save/restart actions, or setpoint
+publication. Default R2 work is still accountable department work: the packet
+must include expected outputs, return/blocker paths, stop triggers, and the
+department-local planning fields.
+
+R3 is not an automatic response to any single R1 or R2 failure. PMO proposes or
+approves R3 only when R2 failover still leaves a P0 partition idle/blocked long
+enough that reserve capacity is useful. Do not use a generic "R1/R2 died
+multiple times in 24 hours" rule as an R3 trigger.
 
 ## 7. MWORKS Window And Review Routing
 
@@ -241,6 +391,24 @@ animation review is routed to MWORKS R2. Use the DPI-aware background capture
 route for ordinary non-activation review and include observations, not only a
 path. Activation/login/license/authorization and hidden-login-pane claims still
 need foreground or maximized target-main-window evidence.
+
+Window action boundary:
+
+- Activation/license/login/window-health audit uses the real reusable main
+  MWORKS/Sysplorer/Syslab window, foreground or maximized evidence, because
+  hidden login panes can be missed by background capture.
+- If audit finds no reusable main window, CoAgentOps opens MWORKS directly,
+  captures a first screenshot after a short startup wait, then continues a
+  bounded stability check before classifying the state. Do not close the run by
+  only reporting "window not open" when opening the window is the authorized
+  recovery action.
+- Ordinary non-activation screenshots and approved low-risk background clicks
+  do not need maximization. Prefer the background Win32 route; if the target was
+  minimized and must be temporarily restored, restore it for the capture/action
+  and minimize it again afterward.
+- If ordinary background capture shows blank, wrong, or ambiguous content,
+  retry once after a short wait; only then escalate to foreground/maximized
+  review or a blocker.
 
 Do not close, restart, open fresh MWORKS windows, or click login/activation/
 save/error-report controls from delegated MWORKS departments. PMO/CoAgentOps
@@ -311,6 +479,19 @@ surface. It records current P0 partition state, waiting returns, blockers,
 manual decisions, integrable results, next PMO actions, and forbidden actions.
 CoAgentOps patrol must report idle/blocked/recovery findings back into PMO's
 dispatch queue through that board or a directly referenced packet.
+
+CoAgentOps may update only these fixed board areas during patrol:
+
+```text
+P0 partition state
+Dispatch SLO watchlist
+Ops/recovery state
+Support lane state
+```
+
+CoAgentOps must not change product priority, PMO accept/reject conclusions, or
+final integration judgments. When such a decision is needed, write a packet or
+board note that clearly assigns the next owner to PMO/user.
 
 `Docs/Workflows/agent_task_ledger.md` is a historical/recovery ledger. It keeps
 durable delegated-task history, restart/recovery context, and trace-back rows.

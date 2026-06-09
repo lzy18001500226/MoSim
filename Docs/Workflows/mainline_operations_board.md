@@ -4,7 +4,10 @@
 > it is not a history ledger, not a packet archive, and not a replacement for
 > `Docs/Workflows/coagent_ops_patrol_workflow.md`.
 
-Status: current PMO snapshot, 2026-06-09 01:50 CST.
+Status: MWORKS/Sysplorer main window restored and maximized by PMO after the
+user challenged the missing live window; no login/license dialog was observed
+by sentinel or foreground screenshot. UE 036, ROS2 079, and MWORKS R2 031 remain
+integrated as source/static or bounded evidence only, 2026-06-09 17:25 CST.
 
 ## 1. PMO Startup Loop
 
@@ -54,25 +57,35 @@ done_no_action
 Do not write vague states such as `healthy`, `normal`, `looks fine`, or
 `probably blocked`.
 
-## 4. P0 Partition Board
+## 4. Dispatch SLO Watchlist
+
+Active dispatch monitoring rows use exactly these columns. The detailed
+dispatch ticket JSON stores target thread, task type, expected paths,
+checkpoint due, observations, and validation evidence.
+
+| sent_at | first_readback_due | expected_packet_due | last_observed_turn | breach_action | owner |
+|---|---|---|---|---|---|
+
+## 5. P0 Partition Board
 
 | Partition | Current State | Waiting Returns | Blockers | Human Decisions | Integrable Results | Next PMO Action | Forbidden Actions |
 |---|---|---|---|---|---|---|---|
-| MWORKS | recovery_pending | None ready for live redispatch; `PMO-MWORKS-R1-MOSIMQUAD-ACTUATOR-COMMAND-MAPPER-FORMAL-SOURCE-SURFACE-20260608-027` has been accepted only as static source-surface evidence | `COAGENTOPS-MWORKS-R1-028-DISPATCH-SURFACE-RECOVERY-20260608-001`; `COAGENTOPS-MWORKS-R2-025-DISPATCH-SURFACE-RECOVERY-REOPEN-20260608-002`; the earlier R2 025 supersede is stale for the reopened incident; live work also waits for true reusable MWORKS/Sysplorer main-window and no-start attach evidence | PMO/user decides whether to authorize or wait for MWORKS main-window recovery before live checks | R1 static Batch A and R1 027 actuator mapper returns are static-only integrable source evidence | Keep MWORKS live/review redispatch paused until current recovery supersede packets prove same-thread execution restored after the latest blockers | No live `check_model`, `SimulateModel`, package-browser, Smart Layout, graphical/layout review, new MWORKS window, login click, or retry loop without current patrol/recovery evidence |
-| ROS2 | ready_to_integrate | None for 075; `RFLY-MOSIM-ROS2-RUNTIME-B1-CAMERA-INIT-MAP-WORLD-GROUNDING-STATIC-GATE-20260609-075` returned and passed JSON/department packet/static test checks | 074 proves only bounded headless no-goal FAST-LIO output evidence; 075 provides only a source/static `camera_init` to map/world grounding contract; controller handoff remains blocked until a future authorized same-run bundle proves non-fake grounding | PMO later decides whether to authorize a future live TF/RViz/controller-handoff probe using the 075 checklist | `RFLY-MOSIM-ROS2-RUNTIME-B1-HEADLESS-LIVE-EVIDENCE-BUNDLE-20260608-074`; `RFLY-MOSIM-ROS2-RUNTIME-B1-CAMERA-INIT-MAP-WORLD-GROUNDING-STATIC-GATE-20260609-075` | Integrate 075 as the static grounding contract; next ROS2 dispatch should be a separately authorized bounded same-run grounding/handoff evidence gate, not a closed-loop claim | No fake pointcloud/map/TF/odom, no keyboard pose, no UE truth shortcut, no planner_ready/closed_loop/runtime success/controller-performance claim from 074 or 075 |
-| UE | ready_to_integrate | None for 033; `RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-SINGLE-BOUNDED-PROBE-PLAN-20260609-033` returned and passed JSON/department packet/focused test checks | Live runtime ack still unproven; MWORKS/ROS2 authoritative producer/capture surfaces are not final | PMO later decides whether to authorize exactly one bounded live UE runtime command-echo probe with the 033 capture bundle, timeout, cleanup, false-ack, and no-pose-overwrite gates | `RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-CAPTURE-BUNDLE-WIRING-20260608-032`; `RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-SINGLE-BOUNDED-PROBE-PLAN-20260609-033` | Integrate 033 as the future live-probe readiness contract; do not start UE runtime until a new bounded runtime task is explicitly dispatched | No UE runtime ack, final UI acceptance, MWORKS downlink, ROS2 runtime echo, planner_ready, or closed_loop claim from source-static returns |
+| MWORKS | dispatch_needed | No active MWORKS return is waiting; R2 031 completed and passed PMO validation | R1 failed current post-PC-restart send with `no active turn to steer`; 029 remains blocked/superseded by validated R2 backup evidence. PMO restored a reusable MWORKS/Sysplorer main window at 2026-06-09 17:20 CST, but live work still needs task-local no-start attach, GUI/license sufficiency, and engineering evidence | No user decision needed to keep the restored main window open; PMO/user decision is still needed before any live `check_model`, `SimulateModel`, package-browser, Smart Layout, or graphical/layout acceptance task | R1 static Batch A, R1 027 actuator mapper, R2 026 `OptionalDampingGyroLayer`, R2 030 `ActuatorMappedWrapperSurface`, R2 031 `PhysicalWrenchAdapter`, and PMO main-window recovery evidence are integrable only within their declared scopes | Next MWORKS action must start from the restored `Sysplorer [教育版]` window: either run a narrow no-start attach/live-gate validation task, or continue bounded static R2 work while R1 recovery remains pending | No duplicate 031, no R1 029 duplicate, no new MWORKS window unless the restored window fails, no login click, no activation/license claim from title alone, no live simulation/layout claim without current task-local evidence, and no retry loop from routing-surface recovery alone |
+| ROS2 | blocked_open_dependency | No active ROS2 return is waiting; 079 post-reboot redispatch completed and the expected return packet passed PMO validation | 079 consumed its single live attempt, so no second probe is allowed; same-run raw TF/static TF still has no non-fake `camera_init` to `map/world/ue_world` chain; controller handoff remains blocked_no_map_world_grounding | PMO/user decision needed before any second probe, foreground RViz/manual review, planner/controller handoff, or setpoint publication | 074 headless live evidence bundle; 075 static gate; 076 same-run probe; 077 source route design; 078 same-run TF-chain capture contract; 079 single same-run TF-chain evidence probe and PMO integration, accepted only as `blocked_absent` grounding evidence | Decide the next low-risk source/static route task for real grounding or keep ROS2 blocked until PMO/user authorizes a new live probe/review path | No duplicate 079, no second 076/079 probe, no foreground RViz/manual GUI, no fake pointcloud/map/TF/odom, no keyboard pose, no UE truth shortcut, no planner_ready/closed_loop/runtime success/controller-performance claim |
+| UE | ready_to_integrate | No active UE return is waiting; 036 post-reboot redispatch completed and the expected return packet passed PMO validation | Old 15:03 dispatch-surface failure remains historical evidence but is superseded for UE by the completed post-reboot 036 turn; 034 remains latest live preflight and did not consume the live attempt; 035/036 are source/static only | No restart now; any UE runtime/editor/build/live probe remains a separate PMO/user decision | 032 capture-bundle wiring; 033 bounded probe plan; 034 live-probe blocker integration; 035 producer/capture/cleanup route contract; 036 producer/capture/cleanup implementation surface and PMO integration | Treat 036 as source/static integrable evidence; decide a separate build-only gate or bounded live probe only through a new task packet | No UE runtime/editor/build/live probe by implication, no duplicate 036/035, no rerun 034, no UE runtime ack, final UI acceptance, MWORKS downlink, ROS2 runtime echo, planner_ready, or closed_loop claim |
 | Git | running | DevOps closeout remains active by ledger | Large-tree ignore/drain queue still active; broad Git porcelain can be slow/noisy | PMO decides specific next path-limited batch when Git work becomes priority | Prior pushed slices are historical evidence; current staged runtime outputs are not this board's completion evidence | Keep Git work path-limited and do not let support work mask P0 engineering blockers | No `git add -A`, no force push/reset/clean, no broad cleanup, no hidden `.gitignore` backlog |
-| Ops | running | None for bounded-dispatch automation semantics; `COAGENTOPS-BOUNDED-DISPATCH-AUTOMATION-SEMANTICS-REPAIR-20260609-001` has been accepted as control-plane repair evidence | Current open recovery blockers for MWORKS R1 028 and R2 025; old WeChat routes are deleted history | If CoAgentOps itself cannot start turns, PMO sends sparse email and handles restart recovery from the live PMO turn | CoAgentOps bounded-dispatch semantics repair is integrable; PMO/CoAgentOps execution-surface supersede packets can restore routing only and do not complete business tasks | Keep 10-minute patrol active; when every bounded-dispatch precondition is satisfied CoAgentOps must directly generate/send the task packet and write PMO sync evidence, otherwise report the missing gate to PMO | No WeChat health checks, no archived gateway no-op, no replacement thread without explicit approval, no quiet closeout when dispatch_needed exists |
+| Ops | recovery_pending | Post-PC-restart sweep blocker is available at `PMO-POST-PC-RESTART-P0-DISPATCH-SURFACE-SWEEP-20260609-001`; CoAgentOps is currently ACK-capable | MWORKS R1, ROS2 R1, and UE failed current post-PC-restart send attempts; 文档秘书部 also remains support-lane recovery debt | No restart now. User-facing notice was sent by sparse email at 2026-06-09T15:17:03+08:00 | CoAgentOps and MWORKS R2 returned exact post-PC-restart ACKs; CoAgentOps 029/079/036 blocker is validated; R2 030 delivery completed and return passed validation | Keep recovery evidence current; use R2 only for bounded static MWORKS work until primary P0 threads are superseded restored | No WeChat health checks, no archived gateway no-op, no replacement thread without explicit approval, no Codex restart from this sweep, no treating probe ACK as business/runtime success |
 
-## 5. Support Lanes
+## 6. Support Lanes
 
 | Lane | State | Rule |
 |---|---|---|
 | Sunray/PBR | frozen_by_user | Do not dispatch material/PBR/DAE visual changes unless the user explicitly reopens the lane. |
 | Open-source probe/learning | support_only | Use only for a concrete source-first question; it cannot substitute for idle P0 engineering dispatch. |
 | 文档秘书部 | support_only | Use for consistency review, context maintenance, and cleanup; it does not define PMO runtime rules. |
+| DH TDMS goal thread | support_only | Refresh-only watch target `019de24d-e993-72c0-a0b2-caf2ac8ac85e` after Codex App/PC restart so its active goal can resume; not a MoSim dispatchable department. |
 
-## 6. Current Board Maintenance Rules
+## 7. Current Board Maintenance Rules
 
 - PMO updates this board when accepting a return, recording a blocker, changing
   the next dispatch, or after a CoAgentOps patrol changes a P0 state.
@@ -81,10 +94,24 @@ Do not write vague states such as `healthy`, `normal`, `looks fine`, or
   any gate is missing, it reports `dispatch_needed` with the missing
   precondition. PMO decides acceptance, priority changes, narrowing,
   supersede, and any dispatch that needs product/user judgment.
+- CoAgentOps may update only the fixed operating areas needed for patrol:
+  P0 partition state, Dispatch SLO watchlist, Ops/recovery state, and Support
+  lane state. It must not change product priority, accept/reject conclusions,
+  or final integration judgments.
 - Historical detail belongs in `Docs/Workflows/agent_task_ledger.md` and
   `Results/agent_packets/`, not in this board.
 - Packet paths remain the durable evidence; this board is the short operating
   index that points to them.
+- Dispatch SLO details belong in
+  `Results/agent_packets/dispatch_tickets/<request_id>.json`. This board only
+  displays `sent_at`, `first_readback_due`, `expected_packet_due`,
+  `last_observed_turn`, `breach_action`, and `owner` for active dispatch
+  monitoring.
+- The dispatcher that sends a visible-thread task owns the dispatch ticket
+  until terminal closure. A row with a visible turn stuck in progress/thinking
+  but no agent output, checkpoint, final response, expected packet, blocker,
+  approval/provider surface, or context-compression surface is not healthy
+  progress and must breach through the ticket workflow.
 - This board and the return packet
   `Results/agent_packets/returns/PMO-MAINLINE-OPERATIONS-BOARD-ARCHITECTURE-20260608-001.json`
   are the durable evidence for the PMO operating-architecture update.

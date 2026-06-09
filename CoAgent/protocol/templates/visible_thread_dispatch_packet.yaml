@@ -41,6 +41,7 @@ required_planning_fields:
   - verification_gates
   - manual_review_or_blocker_triggers
 expected_engineering_outputs: []
+dispatch_ticket_path: Results/agent_packets/dispatch_tickets/PMO-REQUEST-YYYYMMDD-001.json
 acceptance: ""
 definition_of_done: ""
 stop_condition: ""
