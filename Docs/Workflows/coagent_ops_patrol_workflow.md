@@ -216,9 +216,11 @@ prove MWORKS/ROS2/UE business progress.
 ### 5.2 Visible Thread UI Refresh Sweep
 
 When a visible thread appears stale for more than 5 minutes, classify the first
-UI symptom as `view_refresh_required`, not as a dead thread. A slow context load
-or a blank/old transcript after selecting a thread can take about 30 seconds and
-is not by itself proof of start-turn failure.
+UI symptom as `view_refresh_required`, not as a dead thread. A blank/all-white
+or old transcript after selecting a thread is refresh evidence, not by itself
+proof of start-turn failure. Do not wait on a blank view inside the same pass:
+capture it, mark it, move to the next thread, and retry it in the next pass or
+next heartbeat round.
 
 CoAgentOps may run a bounded refresh sweep only for observation and view
 recovery:
@@ -230,16 +232,27 @@ recovery:
 2. Prefer native title matching, UI Automation, OCR, or stable element bounds
    over raw coordinates. If coordinates are used, record drift risk and keep the
    click inside the title-text area.
-3. Cycle through the relevant active visible MoSim thread rows once, wait about
-   5 seconds, then cycle through them again. If a selected thread needs up to
-   30 seconds to load its transcript, keep it in `view_refresh_required` until
-   the load grace expires.
-4. After a Codex App or PC restart, include the refresh-only watchlist entries
+3. Click through every relevant active visible MoSim thread row one by one.
+   After selecting each thread, stay on that thread for about 2 seconds, capture
+   a screenshot/visual observation, then move to the next row. This is an
+   observation dwell, not a send/action step.
+4. If the screenshot/visual observation is blank or all-white like an unloaded
+   transcript surface, record `blank_view_observed=true`, keep the thread in
+   `view_refresh_required`, and immediately move to the next thread. Do not wait
+   on that blank thread inside the same pass.
+5. On the next patrol pass or next heartbeat round, retry the blank thread the
+   same way: select the title area, stay about 2 seconds, capture, and move on
+   again if it is still blank. Continue until a nonblank transcript/status
+   surface loads; only then confirm the thread state.
+6. After one full pass over the relevant rows, wait about 5 seconds, then run a
+   second pass the same way. A slow or blank view is refresh evidence, not
+   dead-thread evidence.
+7. After a Codex App or PC restart, include the refresh-only watchlist entries
    recorded in `CoAgent/dispatch/department_threads.json`, such as
    `019de24d-e993-72c0-a0b2-caf2ac8ac85e`, because active Codex goals may need
    a visible refresh before they continue. These watchlist rows are not MoSim
    dispatch targets.
-5. If bounded refresh cycles still do not expose a usable thread view, write a
+8. If bounded refresh cycles still do not expose a usable thread view, write a
    recovery/blocker packet, send one sparse Chinese email when user awareness is
    needed, and stop before restart unless the current incident explicitly
    authorizes restart.

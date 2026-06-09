@@ -199,9 +199,17 @@ observation as `view_refresh_required` in the dispatch ticket or recovery
 packet notes. Do not classify it as a dead thread until a bounded refresh
 sweep, native read/send checks, expected packet checks, and approval/provider/
 context inspection all fail to produce agent output, ACK, checkpoint,
-return/blocker packet, or a known UI blocker. Selecting a thread and waiting
-about 30 seconds for context to load is normal refresh evidence, not failure
-evidence.
+return/blocker packet, or a known UI blocker. A bounded refresh sweep means
+clicking through every relevant active visible MoSim thread title one by one,
+staying on each selected thread for about 2 seconds, capturing a screenshot or
+visual observation, and then moving to the next row. Select only the title-text
+area; do not click approval/review/send/restart/login/save or unknown controls.
+If the screenshot is blank/all-white like an unloaded transcript surface, record
+`blank_view_observed=true`, keep the thread in `view_refresh_required`, and move
+to the next thread immediately. On the next pass or next heartbeat round, retry
+the blank thread the same way until a nonblank transcript/status surface loads;
+only then confirm its state. A slow or blank view is refresh evidence, not
+failure evidence by itself.
 
 PMO board entries for active dispatch monitoring must stay short. The board
 shows only these columns:
