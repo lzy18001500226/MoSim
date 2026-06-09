@@ -200,11 +200,18 @@ packet notes. Do not classify it as a dead thread until a bounded refresh
 sweep, native read/send checks, expected packet checks, and approval/provider/
 context inspection all fail to produce agent output, ACK, checkpoint,
 return/blocker packet, or a known UI blocker. A bounded refresh sweep means
+using background UI Automation/Win32 clicking and capture when available,
 clicking through every relevant active visible MoSim thread title one by one,
-staying on each selected thread for about 2 seconds, capturing a screenshot or
-visual observation, and then moving to the next row. Select only the title-text
-area; do not click approval/review/send/restart/login/save or unknown controls.
-If the screenshot is blank/all-white like an unloaded transcript surface, record
+staying on each selected thread for about 0.5 seconds, capturing a screenshot or
+visual observation, and then moving to the next row. Do not bring Codex App
+foreground or maximize it only for ordinary refresh patrol; foreground/maximized
+evidence is reserved for activation, login, license, authorization, or explicit
+GUI review gates. Select only the title-text area; do not click approval/review/
+send/restart/login/save/archive/delete/pin/overflow/composer controls, the
+`Pinned`/`置顶` section label, the project folder row `MoSim`, or unknown
+controls. If the MoSim list is collapsed, click only `展开显示`, wait about 0.5
+seconds, re-read the UI tree, and then resume thread-title selection. If the
+screenshot is blank/all-white like an unloaded transcript surface, record
 `blank_view_observed=true`, keep the thread in `view_refresh_required`, and move
 to the next thread immediately. On the next pass or next heartbeat round, retry
 the blank thread the same way until a nonblank transcript/status surface loads;

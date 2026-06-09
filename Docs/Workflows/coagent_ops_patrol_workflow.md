@@ -229,30 +229,42 @@ recovery:
    in the thread list. Do not click right-side controls, overflow menus,
    composer controls, approval/review buttons, send buttons, restart controls,
    login/authorization/save/archive/delete/pin controls, or any unknown UI.
+   Do not click the `Pinned`/`置顶` section label, the project folder row
+   `MoSim`, or the `折叠显示`/`展开显示` row as ordinary thread targets.
 2. Prefer native title matching, UI Automation, OCR, or stable element bounds
    over raw coordinates. If coordinates are used, record drift risk and keep the
    click inside the title-text area.
-3. Click through every relevant active visible MoSim thread row one by one.
-   After selecting each thread, stay on that thread for about 2 seconds, capture
-   a screenshot/visual observation, then move to the next row. This is an
-   observation dwell, not a send/action step.
-4. If the screenshot/visual observation is blank or all-white like an unloaded
+3. Prefer background UI Automation/Win32 clicking and capture when the native
+   surface supports it. Do not bring Codex App foreground or maximize it only
+   for ordinary thread-refresh patrol. Foreground/maximized evidence is reserved
+   for activation, login, license, authorization, or similarly explicit GUI
+   review gates.
+4. If the MoSim thread list is collapsed after restart or during patrol, click
+   only `展开显示` to restore list visibility, wait about 0.5 seconds, and
+   re-read the UI tree before thread selection. Do not click the project folder
+   row `MoSim`; if a mistaken fold occurs, recover by the same `展开显示`
+   workflow.
+5. Click through every relevant active visible MoSim thread row one by one.
+   After selecting each thread, stay on that thread for about 0.5 seconds,
+   capture a screenshot/visual observation, then move to the next row. This is
+   an observation dwell, not a send/action step.
+6. If the screenshot/visual observation is blank or all-white like an unloaded
    transcript surface, record `blank_view_observed=true`, keep the thread in
    `view_refresh_required`, and immediately move to the next thread. Do not wait
    on that blank thread inside the same pass.
-5. On the next patrol pass or next heartbeat round, retry the blank thread the
-   same way: select the title area, stay about 2 seconds, capture, and move on
+7. On the next patrol pass or next heartbeat round, retry the blank thread the
+   same way: select the title area, stay about 0.5 seconds, capture, and move on
    again if it is still blank. Continue until a nonblank transcript/status
    surface loads; only then confirm the thread state.
-6. After one full pass over the relevant rows, wait about 5 seconds, then run a
-   second pass the same way. A slow or blank view is refresh evidence, not
-   dead-thread evidence.
-7. After a Codex App or PC restart, include the refresh-only watchlist entries
+8. After one full pass over the relevant rows, immediately proceed to the next
+   patrol decision unless the task explicitly asks for a second refresh pass. A
+   slow or blank view is refresh evidence, not dead-thread evidence.
+9. After a Codex App or PC restart, include the refresh-only watchlist entries
    recorded in `CoAgent/dispatch/department_threads.json`, such as
    `019de24d-e993-72c0-a0b2-caf2ac8ac85e`, because active Codex goals may need
    a visible refresh before they continue. These watchlist rows are not MoSim
    dispatch targets.
-8. If bounded refresh cycles still do not expose a usable thread view, write a
+10. If bounded refresh cycles still do not expose a usable thread view, write a
    recovery/blocker packet, send one sparse Chinese email when user awareness is
    needed, and stop before restart unless the current incident explicitly
    authorizes restart.
