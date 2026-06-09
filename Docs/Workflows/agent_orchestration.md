@@ -1,5 +1,10 @@
 # Agent Orchestration Workflow
 
+> MoSim compatibility entrypoint. The portable CoAgent OS source of truth is
+> `CoAgent/docs/operating/agent_orchestration.md`; keep reusable task graph,
+> sub-agent, checkpoint, SLO, review, and long-running-task rules there first,
+> then mirror only MoSim-specific workflow adapters here.
+
 > Use this when a task is large enough that sub-agents, long Git work, or
 > reference-repository audits could continue across user turns.
 
@@ -2188,18 +2193,23 @@ Large batch default strategy:
 4. Run the batch gates: >100 MB scan, gitlink scan, LFS pointer scan, secret
    scan, generated-artifact scan, and path-count sanity check.
 5. Stage only the reviewed slice with path-limited `git add`.
-6. Commit and push that slice before opening the next slice.
-7. Cache the completed review in the task evidence or ledger, including the
+6. Run `git diff --cached --check` as a hard gate and explicitly inspect the
+   command exit code before any commit. Do not chain `git diff --cached --check`
+   and `git commit` in a way that lets the commit continue after whitespace or
+   path-check failures; if the gate fails, unstage the slice, narrow or defer
+   the failing files, then rerun the gate.
+7. Commit and push that slice before opening the next slice.
+8. Cache the completed review in the task evidence or ledger, including the
    exact committed paths, gate results, commit hash, and push state. Future Git
    passes must not repeat full gates for that exact committed slice unless its
    path status changes, a temporary throttle is being narrowed for that path,
    or the remote/branch state contradicts the recorded commit.
-8. Record skipped paths and the next batch in the ledger.
-9. Drain the temporary ignore rules themselves. The final state must not keep
+9. Record skipped paths and the next batch in the ledger.
+10. Drain the temporary ignore rules themselves. The final state must not keep
    broad "hide the incoming tree" rules just because the source-control view is
    quiet. Convert each temporary rule into committed tracked content, a narrow
    long-term ignore for a justified class, or a documented manifest-only skip.
-10. Record the drain state. Each temporary throttle must have an owner task,
+11. Record the drain state. Each temporary throttle must have an owner task,
     intended next batch, and closeout decision in the ledger/result packet. If a
     rule has no drain owner, treat it as unfinished Git work rather than release
     hygiene.
