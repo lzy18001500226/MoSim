@@ -1,0 +1,242 @@
+<template>
+  <div class="flex bg-white flex-col pt-8 pb-15">
+    <div class="flex flex-wrap gap-1">
+      <TagCategory
+        v-for="category in avaliableCategories"
+        :name="category.name"
+        :zhName="category.show_name"
+        :activeCategory="activeNavItem"
+        :activeTags="activeTags"
+        @changeActiveItem="changeActiveItem" />
+    </div>
+    <div>
+      <TagList
+        :activeCategory="activeNavItem"
+        :taskTags="tagsForCategory['task']"
+        :tags="tagsForCategory[activeNavItem]"
+        :activeTags="activeTags"
+        :repoType="repoType"
+        @setActiveTag="setActiveTag"
+      />
+    </div>
+  </div>
+</template>
+
+<script setup>
+  import { ref, onMounted, computed, watch } from 'vue'
+  import TagList from './TagList.vue'
+  import useFetchApi from '../../packs/useFetchApi'
+  import { ElMessage } from 'element-plus'
+  import { useI18n } from 'vue-i18n'
+  import TagCategory from './TagCategory.vue'
+  const props = defineProps({
+    repoType: String,
+    selectedTag: String,
+    selectedTagType: String,
+    externalActiveTags: {
+      type: Object,
+      default: () => ({})
+    }
+  })
+
+  const emit = defineEmits(['resetTags', 'updateCategories'])
+
+  const { t } = useI18n()
+
+  const tagFields = {
+    model: [
+      'computer_vision',
+      'natural_language_processing',
+      'audio_processing',
+      'multimodal'
+    ],
+    dataset: ['text_processing', 'graphics', 'audio', 'video', 'multimodal', 'scientific_computing'],
+    code: []
+  }
+
+  const tagCategories = ref([])
+  const tagsForCategory = ref({})
+
+  const activeNavItem = ref('task')
+
+  const activeTags = ref({})
+
+  const avaliableCategories = computed(() => {
+    return tagCategories.value.filter((c) => {
+      // 当repoType为mcp时，过滤掉runmode类别
+      if (props.repoType === 'mcp' && c.name === 'runmode') {
+        return false
+      }
+      return c.scope === props.repoType && c.enabled && c.name !== 'publisher'
+    })
+  })
+
+  watch(avaliableCategories,
+    (newValue, _) => {
+      if (newValue.length > 0 && newValue[0]?.name) {
+        activeNavItem.value = newValue[0].name
+      }
+      emit('updateCategories', newValue.map(item => item.name))
+    }
+  )
+
+  const changeActiveItem = (currentCategory) => {
+    activeNavItem.value = currentCategory
+  }
+
+  const emitTag = () => {
+    emit('resetTags', activeTags.value)
+  }
+
+  const setActiveTag = (category, tagName) => {
+    if (activeTags.value[category] === undefined) {
+      activeTags.value[category] = []
+      activeTags.value[category].push(tagName)
+    } else if (Array.isArray(activeTags.value[category])) {
+      if (activeTags.value[category].includes(tagName)) {
+        const filteredTags = activeTags.value[category].filter((tag) => tag !== tagName)
+        activeTags.value[category] = filteredTags
+      } else {
+        activeTags.value[category].push(tagName)
+      }
+    }
+    emitTag()
+  }
+
+  const setTagNameFromParams = () => {
+    if (props.selectedTagType && props.selectedTag) {
+      const tags = props.selectedTag.split(',').map(t => t.trim()).filter(t => t)
+      if (activeTags.value[props.selectedTagType] === undefined) {
+        activeTags.value[props.selectedTagType] = tags
+        return true
+      } else if (Array.isArray(activeTags.value[props.selectedTagType])) {
+        tags.forEach(tag => {
+          if (!activeTags.value[props.selectedTagType].includes(tag)) {
+            activeTags.value[props.selectedTagType].push(tag)
+          }
+        })
+        return true
+      }
+    }
+    return false
+  }
+
+  const setTagTypeFromParams = () => {
+    if (props.selectedTagType) {
+      activeNavItem.value = props.selectedTagType
+    }
+  }
+
+  const emitTagFromParams = () => {
+    setTagTypeFromParams()
+    const changed = setTagNameFromParams()
+    if (changed) emitTag()
+  }
+
+  const syncUIFromActiveTags = () => {
+    const categoriesWithTags = Object.entries(activeTags.value).filter(
+      ([_, tags]) => Array.isArray(tags) && tags.length > 0
+    )
+
+    const currentCategoryTags = activeTags.value[activeNavItem.value]
+    const currentHasTags = Array.isArray(currentCategoryTags) && currentCategoryTags.length > 0
+
+    if (!currentHasTags) {
+      if (categoriesWithTags.length > 0) {
+        activeNavItem.value = categoriesWithTags[0][0]
+      } else {
+        if (avaliableCategories.value.length > 0) {
+          activeNavItem.value = avaliableCategories.value[0].name
+        }
+      }
+    }
+  }
+
+  defineExpose({
+    syncUIFromActiveTags
+  })
+
+  watch(
+    () => props.externalActiveTags,
+    (val) => {
+      activeTags.value = JSON.parse(JSON.stringify(val || {}))
+    },
+    { deep: true, immediate: true }
+  )
+
+  watch(
+    () => [props.selectedTag, props.selectedTagType],
+    ([tag, type]) => {
+      if (type && tag) {
+        activeNavItem.value = type
+        const tags = tag.split(',').map(t => t.trim()).filter(t => t)
+        activeTags.value = { [type]: tags }
+      }
+    }
+  )
+
+  async function fetchTags() {
+    const params = new URLSearchParams({
+      scope: props.repoType,
+      built_in: true
+    })
+    avaliableCategories.value.forEach((category) => {
+      params.append('category', category.name)
+    })
+    const { _, data } = await useFetchApi(`/tags?${params.toString()}`).json()
+    if (data.value?.data) {
+      let tempTaskTags = {}
+      const allTaskTags = data.value.data.filter(
+        (tag) =>
+          tag.category === 'task' &&
+          tag.scope === props.repoType &&
+          tag.built_in === true
+      )
+      tagFields[props.repoType]?.forEach((field) => {
+        const fieldTags = allTaskTags.filter((tag) => tag.group === field)
+        tempTaskTags[field] = fieldTags
+      })
+
+      avaliableCategories.value.forEach((category) => {
+        if (category.name === 'task' && props.repoType !== 'mcp' && props.repoType !== 'skill') {
+          tagsForCategory.value['task'] = tempTaskTags
+        } else {
+          tagsForCategory.value[category.name] = data.value.data.filter(
+            (tag) =>
+              tag.category === category.name &&
+              tag.scope === props.repoType &&
+              tag.built_in === true
+          )
+        }
+      })
+    }
+  }
+
+  const fetchTagCategories = async () => {
+    const { data, error } = await useFetchApi('/tags/categories').json()
+    if (data.value) {
+      tagCategories.value = data.value.data
+    } else {
+      ElMessage.error(`Failed to fetch tag category: ${error.value}`)
+    }
+  }
+
+  onMounted(async () => {
+    await fetchTagCategories()
+    await fetchTags()
+
+    // init selected tag from params
+    emitTagFromParams()
+
+    // activeNavItem.value = avaliableCategories[0]?.name
+
+    // init initial tag category
+
+    // if (props.repoType === 'code' || props.repoType === 'space') {
+    //   activeNavItem.value = 'license'
+    //   // toggleTagType()
+    // } else {
+    //   activeNavItem.value = 'task'
+    // }
+  })
+</script>
