@@ -96,7 +96,9 @@ Relationship to other review/control windows:
 | RViz2 3D map/planner | Open from UE/Studio as a review action; planner state still comes from ROS2 topics. |
 | Sysplorer/Syslab | Remain the model/result authority; UE only mirrors accepted runtime status. |
 
-Department execution rule: `MoSim｜UE实验控制台与场景交互部` must plan every
+Department execution rule: UE R1/R2 department threads
+(`MoSim｜UE实验控制台与场景交互部-R1` and
+`MoSim｜UE实验控制台与场景交互部-R2`) must plan every
 non-trivial task with `department_local_goal`, `critical_path_steps`,
 `parallelizable_slices`, `subagent_plan`, `subagent_plan_reason`,
 `subagents_used`, `verification_gates`, and
@@ -284,14 +286,15 @@ identify physical part
   -> assign material/texture only for that part family
   -> render isolated close-up audit image
   -> inspect for material realism and wrong fallback colors
-  -> ask the user by WeChat if the part identity or physical role is unclear
+  -> ask the user by sparse Chinese email if the part identity or physical role is unclear
 ```
 
 Do not guess unknown parts from object names alone. If a part cannot be mapped
 to a known Sunray150/MID-360/camera/PCB/motor/propeller/battery/connector
-component with reasonable confidence, leave it neutral in the manifest and ask
-for clarification through the project WeChat gateway before applying a final
-material.
+component with reasonable confidence, leave it neutral in the manifest and send
+a sparse Chinese email clarification request before applying a final material.
+Use WeChat only if the user explicitly restores or requests a scoped WeChat
+diagnosis/notification route.
 
 Material-library rule: prefer an existing PBR material/map set before manual
 color tuning. A valid texture pass normally has albedo/base color, roughness,
@@ -553,7 +556,7 @@ identify physical component
   -> assign material / texture maps without changing accepted geometry
   -> render component close-up
   -> inspect render and material probe
-  -> pass / iterate / ask user by WeChat if identity is unknown
+  -> pass / iterate / ask user by sparse Chinese email if identity is unknown
 ```
 
 Do not treat a good or bad whole-aircraft view as sufficient evidence for
@@ -572,9 +575,10 @@ battery / heat-shrink / clip
 ```
 
 If a DAE/SDF object cannot be confidently mapped to a physical component, do
-not guess a final material. Send a sparse WeChat question with the object name,
-close-up image path, and the decision needed. Continue with other independent
-component families while waiting if no geometry or material conflict exists.
+not guess a final material. Send a sparse Chinese email question with the object
+name, close-up image reference, and the decision needed. Continue with other
+independent component families while waiting if no geometry or material
+conflict exists. Use WeChat only for an explicit restored WeChat route.
 
 2026-06-03 Blender launch safety correction: do not open `.blend` files through
 Windows file association, Windows MCP `App`, or `blender-launcher.exe` for

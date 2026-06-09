@@ -34,10 +34,10 @@ Returned UE/frontend design:
 
 Planned task packets:
 
-- `Results/agent_packets/RFLY-MOSIM-AUDIT-ROS-FASTLIO-20260606-001.json`
-- `Results/agent_packets/RFLY-MOSIM-AUDIT-MWORKS-CONTROL-20260606-001.json`
-- `Results/agent_packets/RFLY-MOSIM-AUDIT-PX4-SILHIL-20260606-001.json`
-- `Results/agent_packets/RFLY-MOSIM-AUDIT-EVIDENCE-LOGGING-20260606-001.json`
+- `Results/agent_packets/tasks/audit/RFLY-MOSIM-AUDIT-ROS-FASTLIO-20260606-001.json`
+- `Results/agent_packets/tasks/audit/RFLY-MOSIM-AUDIT-MWORKS-CONTROL-20260606-001.json`
+- `Results/agent_packets/tasks/audit/RFLY-MOSIM-AUDIT-PX4-SILHIL-20260606-001.json`
+- `Results/agent_packets/tasks/audit/RFLY-MOSIM-AUDIT-EVIDENCE-LOGGING-20260606-001.json`
 
 ## 2. 10h Critical Path
 
@@ -48,7 +48,7 @@ Planned task packets:
 | 3-5h | Implement or tighten project-owned MWORKS wrapper only if current model gap is clear. | Evidence agent drafts `RUN_MANIFEST` and gate checks. | checked Modelica diff or explicit no-edit blocker. |
 | 5-7h | Run smallest MWORKS hover/yaw/step check where MCP is healthy. | ROS2 agent returns commands/gaps; UE return is converted into implementation tasks. | `source=MWORKS_MCP` check/smoke evidence or recorded MCP blocker. |
 | 7-9h | Compose P0 loop integration plan from returned sidecar packets. | Optional PX4 design audit if time remains. | one P0 execution queue with owners and acceptance gates. |
-| 9-10h | Send completion/manual-review WeChat packet, update docs, run checks, prepare next work item. | Close or checkpoint subagents. | final status packet and recovery instructions. |
+| 9-10h | Send completion/manual-review sparse Chinese email packet, update docs, run checks, prepare next work item. | Close or checkpoint subagents. | final status packet and recovery instructions. |
 
 ## 3. Work Ownership
 
@@ -81,7 +81,8 @@ Manual review triggers:
 If review is needed:
 
 1. Write a review packet under `Results/coagent_gateway/packets/`.
-2. Send a sparse WeChat notification through `CoAgent/gateway/cc_connect_weixin.py`.
+2. Send a sparse Chinese email notification through
+   `Scripts/agent/send_gateway_email_alert.py`.
 3. Expose origin thread id `019e9868-83ea-70f0-92c5-a3a408bd78c6`.
 4. If the user does not answer, record `review_pending` in `PROGRESS.md` and
    continue with headless work that does not depend on the review result.
@@ -94,8 +95,10 @@ direction or destroy/overwrite user work.
 PMO dispatches only to existing canonical visible department threads unless the
 user explicitly approves a new thread. Department threads must return durable
 packets under `Results/agent_packets/returns/` or
-`Results/agent_packets/blockers/`; chat replies and WeChat messages are
-notifications only and are not evidence.
+`Results/agent_packets/blockers/`; chat replies, email, and WeChat messages are
+notifications only and are not evidence. Current routine user notification is
+sparse Chinese email; WeChat is used only for explicit restored gateway
+diagnosis or a user-requested WeChat retry.
 
 Department threads must also plan locally. For every non-trivial task packet,
 the target department should derive and report:
@@ -129,7 +132,14 @@ rule-sync, preflight-drill, dispatch-surface diagnostic, or static inventory.
 PMO rejects completed returns that lack domain artifacts, omit the local
 plan/sub-agent decision, or turn a real blocker into completed metadata.
 
-Current canonical department threads for this P0 run:
+Historical department-thread snapshot for this P0 run:
+
+This table is retained as execution-plan history only. For new dispatch,
+always use `CoAgent/dispatch/department_threads.json`,
+`Docs/Workflows/mainline_operations_board.md`, and
+`Docs/Workflows/org_operating_model.md` as the current routing sources.
+Do not route new work from this table when a thread title, id, or status has
+changed.
 
 | Department | Thread id | Current dispatch rule |
 |---|---|---|
@@ -137,8 +147,8 @@ Current canonical department threads for this P0 run:
 | ROS2 old R2 diagnostic sample | `019e9b85-d4d8-7bf3-8afd-a65697cd3889` | Not production routing. Use only after bounded no-op/dispatch-surface diagnosis and explicit PMO restoration. |
 | MWORKS Dynamics And Control Verification R1 | `019e9be5-334b-76b1-93f9-8b02caebf376` | Primary MWORKS dynamics/control/model-integration evidence route. Every business task must include the MWORKS live gate and expected engineering outputs. |
 | MWORKS Graphical Model Audit R2 | `019e9999-b0d3-7682-bccd-faef08fcf1df` | Auxiliary route for model organization, graphical simulation interface completeness, connection/layout/readability, and diagram hygiene. Also requires the MWORKS live gate before static or live business work. |
-| UE Experiment Console Integration | `019e9b24-50aa-7cd3-9e7c-4c43b224d993` | Canonical thread title: `MoSim｜UE实验控制台与场景交互部`. Use for UE operator console, command/echo, fault/wind/controller/planner switching, and manual-review UI tasks. |
-| Sunray150 DAE/PBR Asset Optimization | `019e9b25-066e-7372-8152-209c2b1322a4` | Canonical thread title: `MoSim｜Sunray150资产与PBR审核部`. Use for Sunray150 DAE/Blender/UE asset, PBR texture, component close-up, and visual audit tasks. |
+| UE Experiment Console Integration | see current registry | Use current UE R1/R2/R3 rows from the registry for UE operator console, command/echo, fault/wind/controller/planner switching, and manual-review UI tasks. |
+| Sunray150 DAE/PBR Asset Optimization | see current registry | Frozen unless the user reopens Sunray/PBR; use current registry only after explicit reopen. |
 
 Only PMO thread `019e9868-83ea-70f0-92c5-a3a408bd78c6` may create, fork,
 rename, or archive visible department threads. Other departments may request a
@@ -379,14 +389,16 @@ PMO verified that visible department dispatch is working again through
 Codex App `send_message_to_thread`, without hidden background CLI dispatch:
 
 ```text
-UE target:     MoSim｜UE实验控制台与场景交互部
-UE thread id: 019e9b24-50aa-7cd3-9e7c-4c43b224d993
-Sunray target:     MoSim｜Sunray150资产与PBR审核部
+UE target:     MoSim｜UE实验控制台与场景交互部-R1
+UE thread id:  019e9b24-50aa-7cd3-9e7c-4c43b224d993
+Sunray target: MoSim｜Sunray150资产与PBR审核部
 Sunray thread id: 019e9b25-066e-7372-8152-209c2b1322a4
 ```
 
-Both target task packets were corrected before dispatch so their
-`target_thread` and `target_thread_id` match the new canonical threads.
+Both target task packets were corrected before dispatch so their historical
+`target_thread` and `target_thread_id` matched the then-canonical threads.
+For new dispatch, use `CoAgent/dispatch/department_threads.json`; Sunray/PBR
+remains frozen unless the user explicitly reopens it.
 
 Returned packets:
 

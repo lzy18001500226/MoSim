@@ -39,6 +39,17 @@ Skills/Sysplorer/modelica-library-workflow
 
 ## Non-Negotiable Rules
 
+0. Classify the modeling path before editing:
+   - **Modelica physical/composite models** live in `.mo` project files and
+     should keep meaningful `Placement` and `annotation(Line(...))` diagram
+     semantics when used for graphical review.
+   - **Sysblock internal block diagrams** are built and repaired with official
+     Sysplorer/Sysblock APIs such as `call_code(mode="run_script")`,
+     `ModelingPy`, `NewModel(..., "Sysblock")`, `AddComponent`,
+     `ConnectPort`, and `SetModelParamValue`.
+   - **Hybrid Modelica + Sysblock** means layered integration: finish/check the
+     Sysblock controller first, then instantiate or connect it from a Modelica
+     physical wrapper.
 1. Sysblock topology must be created or repaired through official Sysplorer/Sysblock APIs when available, preferably `call_code(mode="run_script")`.
 2. Use `ModelingPy` / official APIs for new graphical topology:
    - `NewModel(..., "Sysblock")`
@@ -52,8 +63,9 @@ Skills/Sysplorer/modelica-library-workflow
 6. Use full library component paths and verify concrete block ports before wiring.
 7. Every formal controller simulation must have a graphical counterpart that expresses the same structure and time behavior.
 8. Equation-form Sysblock models are allowed only as full-plant integration bridges when graphical embedding is blocked by platform/compiler limits. They do not replace the graphical deliverable.
-9. Hybrid Modelica + Sysblock integration is layered: build/check the Sysblock controller first, then instantiate/connect it in the Modelica physical wrapper. Do not force physical components and SysplorerEmbeddedCoder blocks into one ordinary Sysblock layer.
+9. Hybrid Modelica + Sysblock integration is layered: build/check the Sysblock controller first, then instantiate/connect it in the Modelica physical wrapper. Do not force physical components and SysplorerEmbeddedCoder blocks into one ordinary Sysblock layer, and do not interpret that failure as proof that hybrid modeling is unsupported.
 10. Never call Sysplorer `ClearAll`, `ChangeDirectory`, or broad workspace-reset APIs while authoring diagrams. Use targeted model load/unload/reload operations and explicit project paths.
+11. If a Sysblock graphical controller cannot be embedded into the physical plant because of current compiler/platform limitations, keep the graphical controller as the design/time-behavior artifact and use an equation bridge only for full-plant simulation evidence.
 
 ## Required Gates
 
@@ -70,6 +82,11 @@ Before claiming a graphical Sysblock controller is ready:
 9. **Behavior gate**: compare against the equation/reference implementation or expected scenario signals.
 10. **Engineering-output gate**: for graphical/model organization work, completion must include concrete `.mo`/`package.mo`, `check_model`, diagram/layout screenshot, topology/wiring observation, or simulation evidence. JSON packets, ledgers, and progress notes are not the graphical engineering deliverable unless the task type is explicitly one of `diagnostic_only`, `rule_sync_only`, `preflight_drill_only`, `dispatch_surface_diagnostic`, or `static_inventory_only`.
 11. **Evidence gate**: save logs under `results/model_checks/` or the relevant scenario result folder.
+
+Do not present a controller scenario as complete if its numerical simulation
+has no behavior-equivalent graphical Sysblock counterpart. In that case, label
+the result as equation-bridge evidence and keep the graphical model task open
+until both `structure_ok=true` and `behavior_equivalence_ok=true`.
 
 ## Behavior Elements That Must Be Visible
 

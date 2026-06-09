@@ -98,6 +98,45 @@ Pass only if:
 10. The report does not overclaim offline evidence.
 11. Formal Sysblock controller claims have a behavior-equivalent graphical Sysblock counterpart, or are explicitly labeled as equation-bridge evidence.
 
+## Simulation Cleanup And Session Rules
+
+For MWORKS simulations:
+
+1. Run `check_model` before simulation.
+2. Run the smallest simulation that validates the current change first.
+3. Read the required result variables after simulation; do not treat
+   `simulate_model ok` alone as quality evidence.
+4. Save logs, smoke-test evidence, and native result references only when they
+   support a claim or future debugging.
+5. Keep one Sysplorer/Syslab/MWORKS GUI window open during a related batch of
+   checks to avoid repeated startup cost and license reactivation. Do not close
+   it before Git unless the user asks or it is blocking progress.
+6. Do not leave long-running simulations active after the task is complete.
+7. Prefer one active Sysplorer/Syslab session at a time unless parallel
+   simulation is explicitly required.
+8. Reuse an existing session for related operations instead of opening many
+   windows.
+9. If repeated simulations open multiple windows, stop opening new MCP
+   sessions, clean up clearly identifiable stale windows before Git, and prefer
+   fixing model files offline before retrying MCP.
+10. Do not document a model as verified unless its latest version has a
+    successful `load_file` and `check_model` log, or the report explicitly
+    marks it as an unverified draft.
+11. After temporary smoke tests, probes, or failed MCP attempts, delete
+    `.running`, `.tmp`, `__pycache__`, and ad-hoc probe logs before commit.
+12. If previously working simulations start returning unexplained activation,
+    login, license, library-load, or authorization failures, preserve source
+    changes, remove temporary artifacts, stop retrying MCP, and return a
+    blocker for PMO/CoAgentOps recovery. Known signatures include `L5104-B0`,
+    `软件尚未激活`, equation-limit authorization errors, unexpected demo mode,
+    login prompts, and authorization failures.
+13. If a MWORKS/Sysplorer GUI error-report dialog appears, save or reference a
+    screenshot and write a GUI-incident blocker before further simulation work.
+    Include visible dialog text, triggering task/command, report path or
+    visible prefix when available, and proposed recovery action.
+14. At the end of a completed simulation task, leave reusable GUI windows open
+    and report which scenario/result should be manually reviewed.
+
 ## Failure Handling
 
 | Failure | Action |

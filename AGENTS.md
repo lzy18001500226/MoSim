@@ -31,7 +31,10 @@ Historical chat claims must go through
 ## 1. Hard Boundaries
 
 1. Work only inside `C:\Users\HP\Desktop\MoSim` unless the user explicitly
-   approves a named infrastructure action outside the repository.
+   approves a named infrastructure action outside the repository. Project-local
+   means do not read or modify sibling personal directories, token files,
+   browser profiles, SSH folders, other drives, `/home/linux`, or WSL/user
+   home paths unless the approved infrastructure task names that path and why.
 2. PMO owns product priority, scope, acceptance/rejection, final integration,
    visible-thread lifecycle decisions, manual/GUI action decisions, and restart
    decisions.
@@ -68,6 +71,10 @@ Historical chat claims must go through
 11. Temporary broad `.gitignore` rules for reference imports are only a drain
     queue. Durable ignores must be class/exact-risk decisions, not a hidden
     backlog of ordinary source, docs, scripts, configs, or small assets.
+12. CoAgent runtime, transport, automation, schema, tool/MCP surface, and
+    permanent department design changes remain gated by `CoAgent/STATUS.md`
+    and `Docs/Workflows/agent_orchestration.md`; do not infer approval from
+    this compact entry file.
 
 ## 2. Current Visible Routes
 
@@ -111,6 +118,9 @@ publication.
 | Workflow index | `Docs/Index/workflow_index.md` |
 | Project memory index | `Docs/Index/project_work_memory_index.md` |
 | API/MCP index | `Docs/Index/api_index.md` |
+| CoAgent runtime/task graph/timeout/prompt sanity | `Docs/Workflows/agent_orchestration.md` |
+| MCP/tooling/native hook governance, entry-document slimming, and immediate doc updates | `Docs/Workflows/tooling_assets_governance.md` |
+| Final competition packaging checklist | `Docs/Workflows/pre_submit_check.md` |
 
 ## 4. Project Direction
 

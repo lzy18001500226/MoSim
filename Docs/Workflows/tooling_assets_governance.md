@@ -114,7 +114,7 @@ There is no standing `MoSim｜工具链 MCP` department.
 | `MoSim｜CoAgent运维平台` | Owns recurring meta-maintenance: asset inventory cadence, current visible-thread allowlist hygiene, duplicate skill/workflow cleanup proposals, crawler/learning dispatch, and missing-index reports. Details live in `Docs/Workflows/coagent_meta_maintenance.md`. |
 | `MoSim｜开源项目探针` | Keeps local reference-project inventory fresh, checks upstream freshness, and returns manifests/update candidates. It does not execute broad new crawls and does not decide adoption. |
 | `MoSim｜开源项目学习` | Studies crawled projects/vendor articles and returns adopt/reject/reference-only proposals with evidence. |
-| `MoSim｜文档秘书部` | Updates new-conversation context, project memory index, and recovery notes when tooling decisions affect startup context. Former `MoSim｜Codex 上下文维护` wording is alias/history only. |
+| `MoSim｜Codex 上下文维护部` | Updates new-conversation context, project memory index, and recovery notes when tooling decisions affect startup context. Former `MoSim｜文档秘书部` and R-suffixed context-maintenance wording are alias/history only. |
 | `MoSim｜DevOps 发布` | Handles safe Git import, ignore/LFS rules, large-file checks, and commits for reference projects or tool assets. |
 
 PMO responsibility: the main PMO thread
@@ -283,7 +283,7 @@ Use these boundaries unless a later approved workflow changes them:
 | Unreal / UE5 | UE is rendering, scene, sensor/collision oracle, and operator intent UI. It must not be the source of controller/planner success. |
 | ROS2 / RViz2 / FAST-LIO | WSL runtime lane by default. Native robotics windows are required for active point-cloud/map review. Browser HTML is not accepted active evidence. |
 | Blender / material tooling | Use for visual asset assembly and material work. Verify import/export compatibility before replacing UE assets. |
-| WindowsMCP / Computer-use tools | Use only when desktop inspection or GUI operation is necessary. Prefer screenshots and narrow probes over broad GUI automation. |
+| Windows MCP / Win32 / UI Automation | Use only when desktop inspection or GUI operation is necessary. Prefer project-local evidence scripts, screenshots, and narrow probes over broad GUI automation. Computer Use is deprecated for MoSim desktop GUI work and must not be used for MWORKS/Sysplorer/Syslab. |
 | Codex plugins | Use installed plugin skills/tools on demand. Do not assume plugin cache contents are project-owned source. |
 | Codex native hooks | Global hook config lives under `C:\Users\HP\.codex\hooks.json`; the MoSim adapter is project-owned and acts only for this repository. Hooks may block risky tool calls, but they do not replace tests, reviews, result packets, or startup context reading. |
 
@@ -317,7 +317,39 @@ Rules:
    primary memory-loading mechanism. New conversations still follow the read
    order in `Docs/Workflows/new_conversation_context.md`.
 
-## 6. Maintenance Cadence
+## 6. Official MWORKS Documentation Routing
+
+Official MWORKS/Sysplorer/Syslab documentation can be large. Do not paste
+manuals, converted PDFs, or broad API extracts into `AGENTS.md` or fresh
+conversation context.
+
+Use the current project documentation route:
+
+```text
+official docs / PDFs / web docs
+  -> scan or convert with Scripts/docs tools
+  -> store curated outputs under Docs/MworksDocs/
+  -> index them through Docs/Index/doc_index.md and Docs/Index/api_index.md
+  -> promote repeatable project practice into Docs/Skills/Mworks/ or Docs/Workflows/
+  -> consult MCP documentation tools when executable API behavior is unclear
+```
+
+Current entry points:
+
+| Need | Entry |
+|---|---|
+| MWORKS documentation inventory | `Docs/Index/doc_index.md` |
+| MCP/API/script lookup | `Docs/Index/api_index.md` |
+| Converted official docs | `Docs/MworksDocs/converted/` |
+| Scan/category indexes | `Docs/MworksDocs/scan/` |
+| Project execution procedures | `Docs/Skills/Mworks/` and `Docs/Workflows/` |
+
+If a newly converted official document changes the preferred project route,
+update `Docs/Index/workflow_index.md` and only add startup-context text when
+fresh conversations need that fact immediately. Historical paths such as
+`Docs/Mworks/` are obsolete unless a current file explicitly reintroduces them.
+
+## 7. Maintenance Cadence
 
 When Codex App automation tools or an external scheduler are configured and
 verified, recurring checks may be scheduled. Until then,
@@ -335,7 +367,7 @@ Recommended recurring checks:
 | Before Git import | `MoSim｜DevOps 发布` | Check large files, secrets, license markers, gitlinks, generated assets, and ignore/LFS strategy. |
 | After repeated failure | Task owner plus `MoSim｜CoAgent运维平台` if reusable | Update workflow/skill with the recovery path or anti-pattern. |
 
-## 7. Acceptance Gates
+## 8. Acceptance Gates
 
 A tooling asset is accepted only when:
 
@@ -361,7 +393,7 @@ it encourages fake evidence, toy visualization, or bypassing MWORKS/ROS/UE bound
 it cannot pass a minimal health check and no task depends on fixing it now
 ```
 
-## 8. Immediate Documentation Rule
+## 9. Immediate Documentation Rule
 
 When a task reveals a reusable command, successful recovery route, workflow
 correction, or new operating constraint, update the relevant project document in
@@ -379,3 +411,96 @@ the same task:
 | Codex native hook or App capability change | `CoAgent/hooks/README.md`, `Docs/Index/codex_app_session_research.md`, and this workflow |
 
 Do not end a task with "record later" when the reusable rule is already known.
+
+## 10. Entry-Document Slimming Rule
+
+`AGENTS.md` and `Docs/Workflows/new_conversation_context.md` are routing and
+startup documents. They may be shortened only after executable or durable
+content has a verified destination.
+
+Before deleting or compressing content from an entry document:
+
+1. Classify each removed block as one of:
+   `hard_boundary`, `startup_context`, `workflow_procedure`, `packet_contract`,
+   `domain_skill_rule`, `index_pointer`, `historical_rejected_route`, or
+   `obsolete_superseded`.
+2. Move executable detail to the narrowest active destination:
+
+   | Content Type | Destination |
+   |---|---|
+   | visible-thread dispatch, SLO, semantic boundary, packet fields | `CoAgent/dispatch/communication_contract.md` |
+   | CoAgentOps patrol, recovery, bounded dispatch, R2/R3 failover | `Docs/Workflows/coagent_ops_patrol_workflow.md` |
+   | task graph, sub-agent planning, timeouts, native surface choice, prompt sanity, long Git | `Docs/Workflows/agent_orchestration.md` |
+   | tool/MCP/plugin/hook governance, context hygiene, documentation promotion, entry-doc slimming | this file |
+   | organization, route names, department ownership | `Docs/Workflows/org_operating_model.md` |
+   | current startup facts, accepted/rejected routes, current product boundaries | `Docs/Workflows/new_conversation_context.md` |
+   | MWORKS execution details | the relevant `Docs/Skills/Mworks/*/SKILL.md` |
+   | official documentation routing | `Docs/Index/doc_index.md`, `Docs/Index/api_index.md`, and `Docs/Index/workflow_index.md` |
+   | final packaging and release checks | `Docs/Workflows/pre_submit_check.md` |
+
+3. If a block is obsolete, name the superseding document or evidence packet in
+   the commit/diff note. Do not silently delete it.
+4. Update `Docs/Index/workflow_index.md` or `Docs/Index/project_work_memory_index.md`
+   when the preferred route changes.
+5. Run a targeted search for stale wording, deleted thread names, deprecated
+   model-effort settings, mojibake, and old paths such as `Docs/Mworks/` when
+   the edit touches startup or routing docs.
+
+An entry-document slimming task is incomplete if removed executable content
+cannot be found in a child workflow, skill, contract, checker, packet template,
+or index. In that case, restore the block or add the missing child-document
+rule before reporting completion.
+
+### 10.1 Current Slimming Landing Map
+
+The 2026-06-09 `AGENTS.md` /
+`Docs/Workflows/new_conversation_context.md` slimming keeps only routing and
+startup facts in entry documents. The removed executable/detail blocks are
+valid only because they are landed here:
+
+| Removed Entry-Doc Topic | Landing Document |
+|---|---|
+| project-local filesystem boundary, external infrastructure exceptions, desktop GUI tool choice, Computer Use deprecation, source-first troubleshooting | `AGENTS.md`, this workflow section 11, `Docs/Workflows/new_conversation_context.md#10-codex-native-feature-use` |
+| CoAgent runtime/transport/schema/permanent-department approval gate and native-surface-first rule | `Docs/Workflows/agent_orchestration.md`, this workflow section 1.1, `CoAgent/STATUS.md` |
+| PMO direct visible-thread routing, no mandatory DispatchCenter, visible-thread lifecycle authority, department ownership, context-maintenance title aliases | `Docs/Workflows/org_operating_model.md`, `Docs/Workflows/agent_orchestration.md`, `CoAgent/dispatch/department_threads.json` |
+| visible-thread packet fields, local department goal, critical-path split, `subagent_plan`, evidence outputs, semantic-boundary enums, dispatch-ticket SLO, R2/R3 failover scope | `CoAgent/dispatch/communication_contract.md`, `Docs/Workflows/coagent_ops_patrol_workflow.md`, `Docs/Workflows/agent_orchestration.md` |
+| CoAgentOps 10-minute patrol, approval/review/provider classification, view refresh, dead-thread recovery, restart fail-close, board update limits, MWORKS window classification | `Docs/Workflows/coagent_ops_patrol_workflow.md`, `Docs/Workflows/mainline_operations_board.md` |
+| sparse Chinese email notification, manual-intervention alert wording, deleted WeChat route boundary, explicit WeChat-diagnosis-only path | `Docs/Workflows/agent_orchestration.md`, `Docs/Workflows/coagent_meta_maintenance.md`, `Docs/Workflows/debug_mcp.md`, `CoAgent/dispatch/department_threads.json` |
+| MWORKS MCP minimal-impact rules, session reuse, forbidden Sysplorer APIs, activation/license/login/GUI-error stop rules, background screenshot limitations, phase screenshot and engineering-output requirements | `Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md`, `Docs/Skills/Mworks/mworks-simulation-evidence/SKILL.md`, `Docs/Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`, `CoAgent/dispatch/communication_contract.md` |
+| simulation evidence source labels, graphical Sysblock counterpart requirement, cleanup/session rules, native result / `.msr` review boundary | `Docs/Skills/Mworks/mworks-simulation-evidence/SKILL.md`, `Docs/Workflows/run_simulation.md`, `Docs/Workflows/produce_simulation_evidence.md` |
+| Sysplorer/Sysblock modeling modality, hybrid Modelica + Sysblock bridge limits, no text-overwrite topology rule | `Docs/Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`, `Docs/Skills/Sysplorer/ty-sysplorer-modeling-rules` |
+| UE/RViz/FAST-LIO window split, rejected toy mapping routes, source-first UAV simulator references, current Factory Gate B limitation, Sunray visual/material boundary | `Docs/Workflows/new_conversation_context.md`, `Docs/Workflows/unreal_renderer.md`, `Docs/Workflows/ros2_runtime_setup.md`, `Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md` |
+| algorithm/source-of-truth design routing, final report/checklist routing, project directory map | `Docs/Index/doc_index.md`, `Docs/Index/workflow_index.md`, `Docs/Workflows/pre_submit_check.md`, `AGENTS.md#8-directory-map` |
+| long Git work, temporary `.gitignore` throttle/drain rules, large-file/LFS/gitlink gates, GitIntegrator ownership | `Docs/Workflows/agent_orchestration.md#5-long-git-work`, `AGENTS.md#7-git-and-documentation-hygiene` |
+| prompt/task-packet semantic sanity, bad-prompt correction, vague status word rejection | `Docs/Workflows/agent_orchestration.md#prompt-and-task-packet-semantic-sanity-gate`, `Docs/Workflows/coagent_meta_maintenance.md` |
+| session-memory migration, cache-first three-round promotion/rejection, startup read order | `Docs/Workflows/new_conversation_context.md`, `Docs/Workflows/session_memory_migration.md`, `Docs/Index/project_work_memory_index.md` |
+
+If a future slimming edit removes a topic that is not covered by this table,
+add its landing document before deleting the entry text. If a landing document
+is renamed, update this table and `Docs/Index/workflow_index.md` in the same
+change.
+
+## 11. Filesystem And Desktop Tool Boundary
+
+Default project operations stay inside `C:\Users\HP\Desktop\MoSim`.
+Infrastructure exceptions must name the external path and reason before acting.
+Common approved exception classes are Codex config/hook inspection, MCP wrapper
+repair, SSH/Git authentication setup, or environment-variable verification.
+
+Do not read or modify sibling user directories, browser profiles, SSH folders,
+token/key files, other drives, WSL user homes, `/home/linux`, or
+`/home/lzy18001500226` unless the approved task explicitly names that path.
+
+MoSim desktop GUI monitoring, screenshots, recovery, and click workflows should
+use Windows MCP, Win32/UI Automation, and project-local evidence scripts.
+Computer Use is deprecated for MoSim desktop GUI work and must not be used for
+MWORKS/Sysplorer/Syslab authorization, screenshots, login recovery, reusable
+window checks, or GUI-error handling. Browser remains the route for
+browser/local web targets.
+
+Source-first troubleshooting rule: when a UE/UAV behavior problem matches an
+existing ecosystem pattern, inspect local references first, especially RflySim,
+Sunray/YunZong, PX4/Gazebo, AirSim, FAST-LIO, and EGO-Planner material under
+`References/`. Use official docs or online sources only after local references
+do not resolve the issue, and record any confirmed reusable pattern in the
+relevant workflow before continuing.

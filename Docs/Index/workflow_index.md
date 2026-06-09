@@ -31,19 +31,21 @@
 | Build graphical Sysblock controller | `Docs/Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`, `Docs/Workflows/build_sysblock_graphical_controller.md` |
 | Generate MWORKS/Sysblock C/C++ controller runtime | `Docs/Workflows/mworks_codegen_controller_runtime.md`, `Scripts/mworks/check_codegen_runtime.py`, `Scripts/tests/test_mworks_codegen_runtime.py` |
 | Consult official Sysplorer modeling rules | `Docs/Skills/Sysplorer/ty-sysplorer-modeling-rules`, `Docs/Skills/Sysplorer/ty-sysblock-diagram-modeling`, `Docs/Skills/Sysplorer/ty-sysblock-signal-modeling`, `Docs/Skills/Sysplorer/modelica-library-workflow` |
-| Main-agent orchestration / visible-thread PMO dispatch | `AGENTS.md#331-parallel-agent-rule`, `Docs/Workflows/agent_orchestration.md`, `CoAgent/dispatch/communication_contract.md` |
+| Main-agent orchestration / visible-thread PMO dispatch | `Docs/Workflows/agent_orchestration.md#1-task-graph-first`, `CoAgent/dispatch/communication_contract.md` |
+| PMO mainline operations board | `Docs/Workflows/mainline_operations_board.md` |
 | Agent organization operating model | `Docs/Workflows/org_operating_model.md` |
 | CoAgentOps patrol, bounded dispatch, dead-thread recovery, and semantic-boundary classification | `Docs/Workflows/coagent_ops_patrol_workflow.md`, `CoAgent/dispatch/communication_contract.md`, `Scripts/quality/check_agent_task_native_surface_gate.py` |
-| CoAgent recurring meta-maintenance / thread registry hygiene | `Docs/Workflows/coagent_meta_maintenance.md`, `Docs/Workflows/coagent_ops_patrol_workflow.md`, `CoAgent/dispatch/department_threads.json`, `Docs/Index/codex_app_session_research.md#department-thread-layout` |
+| Visible-thread dispatch ticket SLO and readback breach classification | `CoAgent/dispatch/communication_contract.md#dispatch-ticket-and-slo`, `CoAgent/protocol/templates/visible_thread_dispatch_ticket.json`, `Scripts/quality/check_dispatch_ticket_slo.py` |
+| CoAgentOps patrol/recovery and thread registry hygiene | `Docs/Workflows/coagent_ops_patrol_workflow.md`, `Docs/Workflows/coagent_meta_maintenance.md`, `CoAgent/dispatch/department_threads.json`, `Docs/Index/codex_app_session_research.md#department-thread-layout` |
 | CoAgent reusable architecture root | `CoAgent/README.md`, `CoAgent/docs/architecture/ARCHITECTURE.md`, `CoAgent/docs/status/MIGRATION_STATUS.md` |
 | CoAgent design approval gate | `CoAgent/docs/decisions/coagent_design_review_brief.zh.md`, `CoAgent/docs/decisions/coagent_design_decision_record.md`, `CoAgent/docs/decisions/coagent_goal_readiness_audit.md`, `CoAgent/docs/decisions/coagent_post_approval_backlog.md` |
 | External project master index | `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`, `Docs/Index/external_learning_index.md` |
 | Current project progress and recovery memory | `PROGRESS.md` |
 | New conversation recovery context | `Docs/Workflows/new_conversation_context.md` |
 | Full project work memory index | `Docs/Index/project_work_memory_index.md` |
-| Sub-agent WAL / run ledger | `Docs/Workflows/agent_task_ledger.md` |
-| Interrupted task resume / WAL recovery | `Docs/Workflows/agent_orchestration.md`, `Docs/Workflows/agent_task_ledger.md` |
-| Long-session memory migration | `Docs/Workflows/session_memory_migration.md`, `Docs/Cache/session_memory_migration/long_goal_plan_20260604.md`, `Docs/Cache/session_memory_migration/coverage_matrix_20260604.md`, `Docs/Cache/session_memory_migration/round3_promotion_rejection_map_20260604.md`, `Docs/Cache/session_memory_migration/completion_audit_20260604.md`, `Docs/Cache/session_memory_migration/` |
+| Historical/recovery task ledger | `Docs/Workflows/agent_task_ledger.md` |
+| Interrupted task resume / WAL recovery | `Docs/Workflows/agent_orchestration.md`, `Docs/Workflows/agent_task_ledger.md`, `Docs/Workflows/mainline_operations_board.md` |
+| Long-session memory migration | `Docs/Workflows/session_memory_migration.md`, `Docs/Cache/session_memory_migration/00_index/long_goal_plan_20260604.md`, `Docs/Cache/session_memory_migration/00_index/coverage_matrix_20260604.md`, `Docs/Cache/session_memory_migration/03_round3_disposition/round3_promotion_rejection_map_20260604.md`, `Docs/Cache/session_memory_migration/00_index/completion_audit_20260604.md`, `Docs/Cache/session_memory_migration/` |
 | Codex App / WSL session research and handoff | `Docs/Index/codex_app_session_research.md`, `Docs/Workflows/debug_mcp.md#6-codex-app--wsl-session-policy` |
 | External repository audit | `Docs/Workflows/audit_external_repo.md`, `Scripts/reference/audit_external_repo.py` |
 | Validate external project master index | `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`, `Scripts/reference/check_reference_index.py`, `Docs/Workflows/audit_external_repo.md` |
@@ -58,8 +60,8 @@
 | Read simulation results | `Docs/Workflows/read_results.md` |
 | Calculate metrics | `Docs/Workflows/calc_metrics.md` |
 | Generate report figures | `Docs/Workflows/generate_report_figures.md` |
-| Parallel agent execution | `AGENTS.md#331-parallel-agent-rule`, `Docs/Workflows/agent_orchestration.md`, `Docs/Workflows/unreal_renderer.md#long-running-ue5-reconstruction-queue` |
-| Persistent long-running agent task ledger | `Docs/Workflows/agent_task_ledger.md` |
+| Parallel agent execution | `Docs/Workflows/agent_orchestration.md#1-task-graph-first`, `Docs/Workflows/unreal_renderer.md#long-running-ue5-reconstruction-queue` |
+| Persistent long-running agent recovery ledger | `Docs/Workflows/agent_task_ledger.md` |
 | Review Sunray migration source | `Docs/Index/sunray_migration_index.md` |
 | Identify Sunray150 quadrotor parameters from PX4 ULog | `Docs/Workflows/identify_quadrotor_parameters.md` |
 | Add a controller | `Docs/Workflows/add_controller.md` |
@@ -90,13 +92,13 @@ check.
 
 ```text
 debug_mcp
-  → run_simulation
-  → read_results
-  → calc_metrics
-  → generate_report_figures
-  → code_review
-  → run_tests
-  → pre_submit_check
+  -> run_simulation
+  -> read_results
+  -> calc_metrics
+  -> generate_report_figures
+  -> code_review
+  -> run_tests
+  -> pre_submit_check
 ```
 
 ---
@@ -206,7 +208,7 @@ Docs/Workflows/debug_mcp.md
 ```
 
 For graphical system model review, use `Docs/Workflows/run_simulation.md` section
-“Direct MCP Review For Graphical System Models”. It records the required load
+"Direct MCP Review For Graphical System Models". It records the required load
 order, the `1401` duplicate-definition trap, and the known embedded graphical
 Sysblock multi-input-port limitation.
 
@@ -263,8 +265,10 @@ Rules:
 5. If an agent finds a license, credential, activation, or destructive-action
    issue, it must stop that stream and report the blocker.
 
-Use `Docs/Workflows/agent_orchestration.md` for the full delegation contract and
-`Docs/Workflows/agent_task_ledger.md` for persistent recovery state.
+Use `Docs/Workflows/mainline_operations_board.md` for the current PMO operating
+surface, `Docs/Workflows/agent_orchestration.md` for the full delegation
+contract, and `Docs/Workflows/agent_task_ledger.md` only for persistent
+recovery or trace-back state.
 
 ---
 

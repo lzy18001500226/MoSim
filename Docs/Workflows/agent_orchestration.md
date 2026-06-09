@@ -84,6 +84,14 @@ surface gate in PMO planning:
 Do not add CoAgent runtime, queue, schema, or department machinery until this
 native surface gate shows a real gap.
 
+CoAgent gated-change rule: before changing `CoAgent/` runtime, transport,
+automation, task-state schema, task/result packet schema, permanent department
+conversation design, tool/MCP surfaces, or broad hooks, read `CoAgent/STATUS.md`
+and the current decision record. As of this workflow, only explicitly approved
+implementation scopes such as `COAGENT-IMPL-MINILOOP-01` may proceed. Later
+app-server transport, unattended automation, new permanent departments, broad
+hook rewrites, and tool/MCP expansion require their own approved task.
+
 PMO dispatch priority: MoSim P0 mainline work is MWORKS R1/R2, ROS2 R1, and
 UE gate progress, with Sunray active only when the user reopens asset work.
 Reference-study/probe work is a support lane for named source-first questions.
@@ -95,8 +103,8 @@ but the App UI itself shows an abnormal context-compression state, for example
 `Context Left 100.0%` and manual slash-command compression is needed, classify
 the first incident as `codex_context_compression_surface`. Notify the user and
 use the user-confirmed manual recovery path: switch the affected conversation
-to `gpt-5.4` with `xhigh`, type `/`, select compression, wait for completion,
-then switch back to `gpt-5.5` with `xhigh`. Only after that run the normal
+to `gpt-5.4` with `high`, type `/`, select compression, wait for completion,
+then switch back to `gpt-5.5` with `high`. Only after that run the normal
 no-op or expected-packet validation. Do not immediately create a replacement
 thread or trigger Codex++ restart for this specific surface issue.
 
@@ -153,6 +161,11 @@ timeout, terminate only the directly related child process, record what was
 created or not created, and return to the task graph. Do not spend multi-minute
 turns waiting for a bootstrap command unless the user explicitly approved that
 wait.
+
+The 60 second rule applies to interactive or unclear-progress attempts, not to
+known long-running simulations, builds, conversions, or validated live-runtime
+tasks that declare their expected runtime and checkpoint cadence. Long tasks
+must poll/checkpoint rather than silently wait.
 
 Minimum planning gate:
 
@@ -494,8 +507,8 @@ permanently bypass the specialist after CoAgentOps restores it.
 
 Default model/effort rule: normal mainline, visible department, sub-agent,
 thread creation, department dispatch, automation, and spawn calls should request
-`model=gpt-5.5` plus `thinking=xhigh` or the tool-equivalent
-`reasoning_effort=xhigh` whenever the current native surface accepts explicit
+`model=gpt-5.5` plus `thinking=high` or the tool-equivalent
+`reasoning_effort=high` whenever the current native surface accepts explicit
 settings. Do not wake healthy existing threads merely to mutate settings.
 Dead-thread recovery no-op probes omit model/thinking overrides unless the
 specific recovery task is testing settings update behavior.
@@ -594,7 +607,7 @@ Known visible department dispatch command pattern:
 ```bash
 codex exec resume <department_thread_id> \
   -m gpt-5.5 \
-  -c model_reasoning_effort='"xhigh"' \
+  -c model_reasoning_effort='"high"' \
   --dangerously-bypass-approvals-and-sandbox \
   --output-last-message /tmp/<task_id>_result.txt \
   - < /tmp/<task_id>_packet.txt
@@ -1075,7 +1088,7 @@ return_format:
   next_recommended_action:
 ```
 
-Prompt and task-packet semantic sanity gate:
+### Prompt And Task-Packet Semantic Sanity Gate
 
 ```text
 1. Read the instruction once as the target thread would read it.
@@ -1820,7 +1833,7 @@ Recommended goal split:
 
 Every sub-agent prompt for this project should include a concrete goal and
 terminal condition. If runtime support allows it, request `model=gpt-5.5` and
-`reasoning_effort=xhigh` explicitly at spawn time.
+`reasoning_effort=high` explicitly at spawn time.
 
 If a goal record becomes malformed, stale, over-narrow, or impossible to update
 through the available goal tools, do not let it block execution. Reset/delete

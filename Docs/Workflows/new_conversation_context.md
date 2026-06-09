@@ -75,6 +75,20 @@ recovery route. Historical claims not already represented in current source
 documents must go through `Docs/Workflows/session_memory_migration.md` before
 they become project truth.
 
+The long-session migration is cache-first and three-round-gated. When a task
+needs old conversation coverage, start from these indexes instead of raw JSONL:
+
+```text
+Docs/Cache/session_memory_migration/00_index/coverage_matrix_20260604.md
+Docs/Cache/session_memory_migration/03_round3_disposition/round3_promotion_rejection_map_20260604.md
+Docs/Cache/session_memory_migration/00_index/completion_audit_20260604.md
+Docs/Cache/session_memory_migration/02_round2_review/
+```
+
+These files do not certify every old chat line. They record current-evidence
+review and promote/reject/cache-only disposition for identified important
+topics.
+
 ## 2. Current Product Direction
 
 MoSim is being developed as an RflySim-like UAV simulation system with strict
@@ -165,6 +179,23 @@ Models/QuadrotorExperiments/package.mo
   -> legacy experiment pool and compatibility source.
 ```
 
+Current dynamics boundary:
+
+- `QuadrotorModel.Mechanics.QuadChassis` is still a simplified plant seed.
+- Current nominal body parameters include `m=1.0`, `Ixx=0.0085`,
+  `Iyy=0.0085`, `Izz=0.012`; rotor inertias and current thrust seed are
+  documented in `Docs/Workflows/identify_quadrotor_parameters.md`.
+- `lift_cofficient=0.000854858` comes from Sunray
+  `motorConstant=8.54858e-06` scaled by `rotorVelocitySlowdownSim^2=100`.
+- Missing or weak dynamics include explicit command-to-speed mapping, motor
+  lag, yaw reaction torque, rotor gyroscopic moment, body drag, angular
+  damping, and contact/fault parameter layers until model text and simulation
+  evidence prove otherwise.
+- RflySim is local structure reference only:
+  `References/RflySim/RflySimAdv3Full/4.HILApps/RflySimAPIs/RflySimAPIsPers.zip`.
+  Use it to design wrappers or experimental chassis structure; do not copy
+  RflySim sample parameters into Sunray150 truth.
+
 ## 5. Current MID-360 Boundary
 
 Do not collapse these into one number:
@@ -226,6 +257,11 @@ Rejected product routes:
 - toy 2D grid maps as UAV local maps;
 - browser/HTML point-cloud review as active evidence;
 - hand-polishing RViz display parameters while the UAV/sensor stack is wrong.
+- primitive UAV, giant cylinder, cube/cylinder fallback, MWORKS STL runtime
+  animation, procedural runtime vehicle mesh, and simple whole-aircraft color
+  passes as final Sunray150 vehicle review evidence.
+- opening `.blend` through Windows file association, Ansys, or Visual Studio
+  Blend routes after wrong-app dialogs.
 
 Current accepted direction:
 
@@ -236,6 +272,21 @@ MWORKS continuous truth/state
   -> native FAST-LIO / RViz2 windows
   -> truth-error and topic-rate evidence
 ```
+
+UE vehicle visual state:
+
+- DAE-derived geometry/assembly is the source route.
+- The current accepted visual propeller basis is the three-blade
+  `sunray_cw.stl` source under the Sunray150-with-MID360 local assets.
+- Material/texture realism is not final until component close-ups are reviewed:
+  MID-360, carbon frame, screws/standoffs, cameras, electronics/connectors/
+  cables, motors/propellers, battery/payload, and landing gear/guards.
+
+Factory Gate B / FAST-LIO state:
+
+- Current Factory Gate B evidence opens manual UE/RViz review only.
+- It does not prove final controller integration, planner performance, scene
+  acceptance, product completion, or closed-loop runtime success.
 
 Before making UE/ROS2/FAST-LIO runtime claims, read only the relevant workflow:
 
