@@ -1,12 +1,13 @@
 {
   "registry_policy": {
-    "updated_at": "2026-06-08T16:59:43+08:00",
+    "updated_at": "2026-06-09T18:51:00+08:00",
     "source": "user_confirmed_visible_thread_list",
     "dispatch_rule": "allowlist_only",
     "default_model": "gpt-5.5",
-    "default_thinking": "xhigh",
+    "default_thinking": "high",
     "default_model_policy_note": "Apply these defaults to future mainline, visible department, automation, business dispatch, and disposable sub-agent calls when the native tool/runtime accepts explicit settings. Do not send no-op turns only to mutate settings on healthy existing threads. Dead-thread recovery no-op probes should omit settings overrides unless specifically testing settings update.",
-    "note": "Only thread IDs listed with status=active_visible are dispatchable. If an old thread ID is absent from this registry and cannot be found in the current visible thread scan, treat it as gone instead of maintaining a separate blacklist."
+    "note": "Only thread IDs listed with status=active_visible are dispatchable. If an old thread ID is absent from this registry and cannot be found in the current visible thread scan, treat it as gone instead of maintaining a separate blacklist.",
+    "r3_failover_note": "User approved creation of MWORKS/ROS2/UE R3 reserve threads on 2026-06-09. R3 threads are active_visible reserve routes for explicit PMO/CoAgentOps packets only. They may receive static/diagnostic/checker/review failover work when R1/R2 dead-thread surfaces block progress, and must not run live MWORKS/ROS2/UE runtime or GUI/editor/build tasks by default."
   },
   "threads": [
     {
@@ -31,13 +32,32 @@
     },
     {
       "department": "UEExperimentConsoleAgent",
-      "thread_name": "MoSim｜UE实验控制台与场景交互部",
+      "thread_name": "MoSim｜UE实验控制台与场景交互部-R1",
       "thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
       "surface": "codex_app_or_vscode",
       "status": "active_visible",
       "agent_type": "permanent",
       "mission": "UE operator console, scene interaction, command/echo schema, and render-review integration.",
-      "accountable_to": "MainPMO"
+      "accountable_to": "MainPMO",
+      "routing_role": "UE_R1_primary_mainline",
+      "paired_auxiliary_thread_id": "019eab9f-b0ef-7433-893d-3235ea9f3c7e",
+      "routing_note": "User designated this existing UE thread as R1 on 2026-06-09. Dispatch primary UE operator-console, scene-interaction, command/echo, implementation-surface, build, and authorized runtime-review work here. Historical packets may omit the R1 suffix; keep those labels historical and use this registry for current routing.",
+      "paired_reserve_thread_id": "019eac00-8645-7da3-b43e-d9169b2713e7"
+    },
+    {
+      "department": "UEExperimentConsoleAuxAgent",
+      "thread_name": "MoSim｜UE实验控制台与场景交互部-R2",
+      "thread_id": "019eab9f-b0ef-7433-893d-3235ea9f3c7e",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent_auxiliary",
+      "mission": "Auxiliary UE source/static review, implementation-surface backup, UI/command/echo contract review, source-only fixture/checker work, and bounded parallel support when PMO or CoAgentOps explicitly dispatches a packet.",
+      "accountable_to": "MainPMO",
+      "routing_role": "UE_R2_auxiliary_source_static_backup",
+      "paired_primary_thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
+      "first_business_task_gate": "Initialization ACK completed on 2026-06-09: MoSim｜UE实验控制台与场景交互部-R2 已建立，等待 PMO/CoAgentOps 任务包.",
+      "routing_note": "R2 must not steal R1 mainline work. Use only for explicit PMO/CoAgentOps task packets, preferably source-static, contract, checker, review, or low-risk auxiliary slices. Non-trivial returns/blockers must include department-local planning and subagent_plan fields.",
+      "paired_reserve_thread_id": "019eac00-8645-7da3-b43e-d9169b2713e7"
     },
     {
       "department": "Sunray150AssetPBRAgent",
@@ -60,7 +80,8 @@
       "accountable_to": "MainPMO",
       "routing_role": "MWORKS_R1_primary_mainline",
       "paired_auxiliary_thread_id": "019e9999-b0d3-7682-bccd-faef08fcf1df",
-      "routing_note": "User renamed this thread to R1 on 2026-06-06. Dispatch primary MWORKS dynamics/control/runtime evidence tasks here. Historical packets may still call this thread R2; keep those as historical labels and use this registry for current routing."
+      "routing_note": "User renamed this thread to R1 on 2026-06-06. Dispatch primary MWORKS dynamics/control/runtime evidence tasks here. Historical packets may still call this thread R2; keep those as historical labels and use this registry for current routing.",
+      "paired_reserve_thread_id": "019eac00-55d6-7443-b986-1b501503195a"
     },
     {
       "department": "MWorksGraphicalModelAuditAgent",
@@ -73,7 +94,8 @@
       "accountable_to": "MainPMO",
       "routing_role": "MWORKS_R2_auxiliary_model_graphical_audit",
       "first_business_task_gate": "Passed on 2026-06-06 via RFLY-MOSIM-MWORKS-R2-SYNC-VALIDATION-20260606-001. The validation proved PMO dispatch receipt, turn start, minimal context read, and return-packet write only; it did not prove MWORKS GUI/MCP/model audit capability.",
-      "history_note": "This thread previously failed two PMO production dispatch attempts and had a user-side UI composer error, but later cross-thread no-op probes completed. It is no longer quarantine-only after the user renamed it to R2, and the 2026-06-08 R2 017 incident was later superseded by user visual audit as provider_gateway_or_pending_review plus pending review UI rather than durable dead-thread state. Bounded static business dispatch is allowed; live MWORKS work still waits for the no-start attach route."
+      "history_note": "This thread previously failed two PMO production dispatch attempts and had a user-side UI composer error, but later cross-thread no-op probes completed. It is no longer quarantine-only after the user renamed it to R2, and the 2026-06-08 R2 017 incident was later superseded by user visual audit as provider_gateway_or_pending_review plus pending review UI rather than durable dead-thread state. Bounded static business dispatch is allowed; live MWORKS work still waits for the no-start attach route.",
+      "paired_reserve_thread_id": "019eac00-55d6-7443-b986-1b501503195a"
     },
     {
       "department": "ROS2RuntimeAgent",
@@ -86,7 +108,8 @@
       "accountable_to": "MainPMO",
       "supersedes_thread_id": "019e9b85-d4d8-7bf3-8afd-a65697cd3889",
       "routing_role": "ROS2_R1_primary_mainline",
-      "supersedes_note": "This thread is the current default ROS2 R1 primary mainline route. Thread 019e9b85-d4d8-7bf3-8afd-a65697cd3889 is a non-historical visible ROS2 R2 department title, but current production ROS2 routing still uses this R1 thread id unless the registry or explicit user/PMO instruction restores R2 for a bounded task. Old pre-R2 thread 019e9917-6181-7ec2-b3d6-4b624d6d3348 was deleted by the user after earlier Codex App delivery failures."
+      "supersedes_note": "This thread is the current default ROS2 R1 primary mainline route. Thread 019e9b85-d4d8-7bf3-8afd-a65697cd3889 is a non-historical visible ROS2 R2 department title, but current production ROS2 routing still uses this R1 thread id unless the registry or explicit user/PMO instruction restores R2 for a bounded task. Old pre-R2 thread 019e9917-6181-7ec2-b3d6-4b624d6d3348 was deleted by the user after earlier Codex App delivery failures.",
+      "paired_reserve_thread_id": "019eac00-70be-7172-b158-b585079c7d67"
     },
     {
       "department": "WeChatGatewayOps",
@@ -149,15 +172,15 @@
     },
     {
       "department": "CodexContextMaintenanceAgent",
-      "thread_name": "MoSim｜文档秘书部",
-      "thread_id": "019e9be0-f6ac-7762-b80c-b1dd18b0d013",
+      "thread_name": "MoSim｜Codex 上下文维护部",
+      "thread_id": "019eab73-c5bc-7740-a6d1-5e0541bdb0c5",
       "surface": "codex_app_native",
       "status": "active_visible",
       "agent_type": "permanent",
       "mission": "Documentation secretary work: scheduled context-memory/index updates, new-conversation context, project memory index, compact recovery notes, documentation consistency review, and cache-first migration drafts.",
       "accountable_to": "CoAgentOps",
       "supersedes_thread_id": "019e3dac-de0e-7180-98ad-d7137e8a6275",
-      "supersedes_note": "Old context-maintenance thread was a pre-R2 migrated department. The current user-facing department title is MoSim｜文档秘书部; CodexContextMaintenanceAgent remains a legacy internal role key for existing automation/worker-policy compatibility. Context recovery and memory migration material is landed in Docs/Workflows/new_conversation_context.md, Docs/Workflows/session_memory_migration.md, Docs/Index/project_work_memory_index.md, and Docs/Cache/session_memory_migration/."
+      "supersedes_note": "The user restored the current title to MoSim｜Codex 上下文维护部 without an R suffix on 2026-06-09. It replaces the old WSL-migrated conversation 019e3dac-de0e-7180-98ad-d7137e8a6275 for current context-maintenance dispatch. MoSim｜文档秘书部 and R-suffixed context-maintenance titles are alias/history only. CodexContextMaintenanceAgent remains a legacy internal role key for existing automation/worker-policy compatibility. Context recovery and memory migration material is landed in Docs/Workflows/new_conversation_context.md, Docs/Workflows/session_memory_migration.md, Docs/Index/project_work_memory_index.md, and Docs/Cache/session_memory_migration/."
     },
     {
       "department": "WechatCodexMessagePath",
@@ -168,6 +191,107 @@
       "agent_type": "historical_deleted_message_path",
       "mission": "Historical WeChat-side Codex message path. MoSim notifications are now email-only; the user deleted this thread on 2026-06-08. Do not dispatch, patrol, no-op, or use it for inbound refresh.",
       "accountable_to": "MainPMO"
+    },
+    {
+      "department": "MWorksDynamicsControlReserveAgent",
+      "thread_name": "MoSim｜MWORKS动力学与控制验证部-R3",
+      "thread_id": "019eac00-55d6-7443-b986-1b501503195a",
+      "surface": "codex_app_native",
+      "status": "active_visible",
+      "agent_type": "permanent_reserve",
+      "mission": "MWORKS R3 reserve failover for explicit PMO/CoAgentOps static, diagnostic, checker, and review packets when R1/R2 dead-thread surfaces block progress.",
+      "accountable_to": "MainPMO",
+      "routing_role": "MWORKS_R3_dead_thread_static_diagnostic_reserve",
+      "paired_primary_thread_id": "019e9be5-334b-76b1-93f9-8b02caebf376",
+      "paired_auxiliary_thread_id": "019e9999-b0d3-7682-bccd-faef08fcf1df",
+      "first_business_task_gate": "Initialization ACK completed on 2026-06-09: MoSim｜MWORKS动力学与控制验证部-R3 已初始化，等待 PMO/CoAgentOps 任务包.",
+      "allowed_task_classes": [
+        "source_static",
+        "diagnostic_only",
+        "packet_contract_fix",
+        "rule_sync_only",
+        "checker",
+        "review"
+      ],
+      "forbidden_actions": [
+        "live_mworks_gui",
+        "sysplorer_mcp",
+        "syslab_mcp",
+        "check_model",
+        "simulate_model",
+        "package_browser",
+        "smart_layout",
+        "result_viewer",
+        "login_or_activation_click",
+        "save_or_restart_click"
+      ],
+      "routing_note": "Do not dispatch live MWORKS tasks by default. Use only through explicit packet when R1/R2 dead-thread or static reserve capacity is needed."
+    },
+    {
+      "department": "ROS2RuntimeReserveAgent",
+      "thread_name": "MoSim｜ROS2感知定位与规划运行部-R3",
+      "thread_id": "019eac00-70be-7172-b158-b585079c7d67",
+      "surface": "codex_app_native",
+      "status": "active_visible",
+      "agent_type": "permanent_reserve",
+      "mission": "ROS2 R3 reserve failover for explicit PMO/CoAgentOps static, diagnostic, checker, and review packets when R1/R2 dead-thread surfaces block progress.",
+      "accountable_to": "MainPMO",
+      "routing_role": "ROS2_R3_dead_thread_static_diagnostic_reserve",
+      "paired_primary_thread_id": "019e9c72-ee74-79d1-b9fe-621d3c6fc99e",
+      "first_business_task_gate": "Initialization ACK completed on 2026-06-09: MoSim｜ROS2感知定位与规划运行部-R3 已初始化，等待 PMO/CoAgentOps 任务包.",
+      "allowed_task_classes": [
+        "source_static",
+        "diagnostic_only",
+        "packet_contract_fix",
+        "rule_sync_only",
+        "checker",
+        "review"
+      ],
+      "forbidden_actions": [
+        "live_ros2_runtime",
+        "rviz_foreground",
+        "fast_lio_live_probe",
+        "planner_runtime",
+        "controller_handoff",
+        "setpoint_publication",
+        "keyboard_pose",
+        "fake_tf_or_map",
+        "ue_truth_shortcut"
+      ],
+      "routing_note": "Do not dispatch live ROS2/RViz/FAST-LIO/planner/controller tasks by default. Use only through explicit packet when R1/R2 dead-thread or static reserve capacity is needed."
+    },
+    {
+      "department": "UEExperimentConsoleReserveAgent",
+      "thread_name": "MoSim｜UE实验控制台与场景交互部-R3",
+      "thread_id": "019eac00-8645-7da3-b43e-d9169b2713e7",
+      "surface": "codex_app_native",
+      "status": "active_visible",
+      "agent_type": "permanent_reserve",
+      "mission": "UE R3 reserve failover for explicit PMO/CoAgentOps static, diagnostic, checker, and review packets when R1/R2 dead-thread surfaces block progress.",
+      "accountable_to": "MainPMO",
+      "routing_role": "UE_R3_dead_thread_static_diagnostic_reserve",
+      "paired_primary_thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
+      "paired_auxiliary_thread_id": "019eab9f-b0ef-7433-893d-3235ea9f3c7e",
+      "first_business_task_gate": "Initialization ACK completed on 2026-06-09: MoSim｜UE实验控制台与场景交互部-R3 已初始化，等待 PMO/CoAgentOps 任务包.",
+      "allowed_task_classes": [
+        "source_static",
+        "diagnostic_only",
+        "packet_contract_fix",
+        "rule_sync_only",
+        "checker",
+        "review"
+      ],
+      "forbidden_actions": [
+        "ue_editor",
+        "ue_build",
+        "ue_runtime",
+        "live_command_echo",
+        "render_review",
+        "mworks_downlink",
+        "ros2_runtime_echo",
+        "planner_ready_or_closed_loop_claim"
+      ],
+      "routing_note": "Do not dispatch UE editor/build/runtime/live command-echo tasks by default. Use only through explicit packet when R1/R2 dead-thread or static reserve capacity is needed."
     }
   ]
 }
