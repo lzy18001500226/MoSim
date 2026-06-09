@@ -1,0 +1,69 @@
+/**
+ * @file RobotVehicle.h
+ * @brief Base RobotVehicle class.
+ * Example is #ATurtlebotBurger.
+ * @copyright Copyright 2020-2022 Rapyuta Robotics Co., Ltd.
+ */
+
+#pragma once
+
+// UE
+#include "Components/SkeletalMeshComponent.h"
+#include "CoreMinimal.h"
+
+// RapyutaSimulationPlugins
+#include "Robots/RRBaseRobot.h"
+
+// rclUE
+#include "ROS2NodeComponent.h"
+
+#include "RobotVehicle.generated.h"
+
+/**
+ * @brief RobotVehicle class.
+ * This class represents robot vehicles built up from a Skeletal Mesh component that is also its Root.
+ * @deprecated Please use #ARRBaseRobot directly
+ */
+UCLASS()
+class RAPYUTASIMULATIONPLUGINS_API ARobotVehicle : public ARRBaseRobot
+{
+    GENERATED_BODY()
+
+public:
+    /**
+     * @brief Construct a new ARobotVehicle object
+     *
+     */
+    ARobotVehicle();
+
+    /**
+     * @brief Construct a new ARobotVehicle object
+     *
+     * @param ObjectInitializer
+     */
+    ARobotVehicle(const FObjectInitializer& ObjectInitializer);
+
+    //! Robot Mesh
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+    USkeletalMeshComponent* SkeletalMeshComp = nullptr;
+
+    /**
+     * @brief Initialize #SkeletalMeshComp.
+     *
+     */
+    void SetupDefaultRootSkeletal();
+
+    /**
+     * @brief Returns the properties used for network replication, this needs to be overridden by all actor classes with native
+     * replicated properties
+     *
+     * @param OutLifetimeProps Output lifetime properties
+     */
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
+protected:
+    /**
+     * @brief Pre-Initialize components
+     */
+    void PreInitializeComponents() override;
+};
