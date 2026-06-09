@@ -1,0 +1,16 @@
+References/Agent/Memory/SurfSense/.pre-commit-config.yaml
+References/Agent/Memory/SurfSense/CONTRIBUTING.md
+References/Agent/Memory/SurfSense/README.es.md
+References/Agent/Memory/SurfSense/README.hi.md
+References/Agent/Memory/SurfSense/README.md
+References/Agent/Memory/SurfSense/README.pt-BR.md
+References/Agent/Memory/SurfSense/README.zh-CN.md
+References/Agent/Memory/SurfSense/docs/chinese-llm-setup.md
+References/Agent/Memory/SurfSense/surfsense_backend/app/agents/new_chat/prompts/tools/_preamble.md
+References/Agent/Memory/SurfSense/surfsense_backend/app/agents/podcaster/prompts.py
+References/Agent/Memory/SurfSense/surfsense_backend/app/connectors/luma_connector.py
+References/Agent/Memory/SurfSense/surfsense_backend/app/prompts/__init__.py
+References/Agent/Memory/SurfSense/surfsense_backend/app/services/docling_service.py
+References/Agent/Memory/SurfSense/surfsense_backend/app/tasks/celery_tasks/stale_notification_cleanup_task.py
+References/Agent/Memory/SurfSense/surfsense_web/components/homepage/cta.tsx
+References/Agent/Memory/SurfSense/surfsense_web/components/theme/theme-toggle.tsx
