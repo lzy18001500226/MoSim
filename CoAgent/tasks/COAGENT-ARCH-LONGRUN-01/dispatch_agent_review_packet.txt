@@ -1,24 +1,17 @@
-[MoSim Task Packet]
+﻿[MoSim Task Packet]
 task_id: COAGENT-ARCH-LONGRUN-01-DISPATCH-01
 task_class: clear_task
 role: DispatchAgent
-objective: DispatchAgent 对 COAGENT-ARCH-LONGRUN-01 的动态任务团队规则进行只读审查，返回一个 JSON result packet，指出拓扑/通信/上下文设计是否足以继续推进。
-project_goal: CoAgent 架构设计
-phase_objective: CoAgent 架构设计
-canonical_task_goal: 审查 COAGENT-ARCH-LONGRUN-01 的动态任务团队设计是否足以继续后续 10 小时架构推进。
-conversation_objective: 只读审查长任务控制面、动态团队规则、通信上下文协议和问题矩阵，写 result packet。
-accountable_owner: DispatchAgent
+objective: DispatchAgent 瀵?COAGENT-ARCH-LONGRUN-01 鐨勫姩鎬佷换鍔″洟闃熻鍒欒繘琛屽彧璇诲鏌ワ紝杩斿洖涓€涓?JSON result packet锛屾寚鍑烘嫇鎵?閫氫俊/涓婁笅鏂囪璁℃槸鍚﹁冻浠ョ户缁帹杩涖€?project_goal: CoAgent 鏋舵瀯璁捐
+phase_objective: CoAgent 鏋舵瀯璁捐
+canonical_task_goal: 瀹℃煡 COAGENT-ARCH-LONGRUN-01 鐨勫姩鎬佷换鍔″洟闃熻璁℃槸鍚﹁冻浠ョ户缁悗缁?10 灏忔椂鏋舵瀯鎺ㄨ繘銆?conversation_objective: 鍙瀹℃煡闀夸换鍔℃帶鍒堕潰銆佸姩鎬佸洟闃熻鍒欍€侀€氫俊涓婁笅鏂囧崗璁拰闂鐭╅樀锛屽啓 result packet銆?accountable_owner: DispatchAgent
 supporting_departments: []
 read_scope: ["CoAgent/docs/architecture", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01"]
 write_scope: ["Results/agent_packets"]
-acceptance: 返回 schema-valid result packet，包含结论、证据、风险、下一步，不修改项目源文件。
-definition_of_done: 返回 schema-valid result packet，包含结论、证据、风险、下一步，不修改项目源文件。
-non_goals: []
+acceptance: 杩斿洖 schema-valid result packet锛屽寘鍚粨璁恒€佽瘉鎹€侀闄┿€佷笅涓€姝ワ紝涓嶄慨鏀归」鐩簮鏂囦欢銆?definition_of_done: 杩斿洖 schema-valid result packet锛屽寘鍚粨璁恒€佽瘉鎹€侀闄┿€佷笅涓€姝ワ紝涓嶄慨鏀归」鐩簮鏂囦欢銆?non_goals: []
 required_evidence: ["CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/dynamic_team_decision_rules.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/communication_context_protocol.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/architecture_problem_matrix.md"]
-stop_condition: 如无法读取上下文、无法写 result packet、或 transport/provider 失败，则返回 blocker 或由主线程记录 blocker。
-appetite: bounded to declared task scope
-circuit_breaker: 如无法读取上下文、无法写 result packet、或 transport/provider 失败，则返回 blocker 或由主线程记录 blocker。
-checkpoint_plan: checkpoint on blocker, scope change, or completion
+stop_condition: 濡傛棤娉曡鍙栦笂涓嬫枃銆佹棤娉曞啓 result packet銆佹垨 transport/provider 澶辫触锛屽垯杩斿洖 blocker 鎴栫敱涓荤嚎绋嬭褰?blocker銆?appetite: bounded to declared task scope
+circuit_breaker: 濡傛棤娉曡鍙栦笂涓嬫枃銆佹棤娉曞啓 result packet銆佹垨 transport/provider 澶辫触锛屽垯杩斿洖 blocker 鎴栫敱涓荤嚎绋嬭褰?blocker銆?checkpoint_plan: checkpoint on blocker, scope change, or completion
 escalation_conditions: []
 review_gates: []
 dependencies: []
@@ -34,12 +27,12 @@ close_condition:
 review_owner: MainAgent
 human_review_points: []
 git_status:
-metadata: {"accountable_owner": "DispatchAgent", "allowed_actions": ["read project files", "write one result packet under Results/agent_packets"], "canonical_task_goal": "审查 COAGENT-ARCH-LONGRUN-01 的动态任务团队设计是否足以继续后续 10 小时架构推进。", "conversation_objective": "只读审查长任务控制面、动态团队规则、通信上下文协议和问题矩阵，写 result packet。", "forbidden_actions": ["modify source docs", "run broad git", "create new conversations", "change canonical goal"], "next_action": "dispatch to active DispatchAgent conversation with 60s bounded transport", "parent_goal": "CoAgent 架构设计", "parent_task_id": "COAGENT-ARCH-LONGRUN-01", "required_evidence": ["CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/dynamic_team_decision_rules.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/communication_context_protocol.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/architecture_problem_matrix.md"], "review_owner": "MainAgent", "task_class": "clear_task"}
-result_file: Results/agent_packets/COAGENT-ARCH-LONGRUN-01-DISPATCH-01.yaml
+metadata: {"accountable_owner": "DispatchAgent", "allowed_actions": ["read project files", "write one result packet under Results/agent_packets"], "canonical_task_goal": "瀹℃煡 COAGENT-ARCH-LONGRUN-01 鐨勫姩鎬佷换鍔″洟闃熻璁℃槸鍚﹁冻浠ョ户缁悗缁?10 灏忔椂鏋舵瀯鎺ㄨ繘銆?, "conversation_objective": "鍙瀹℃煡闀夸换鍔℃帶鍒堕潰銆佸姩鎬佸洟闃熻鍒欍€侀€氫俊涓婁笅鏂囧崗璁拰闂鐭╅樀锛屽啓 result packet銆?, "forbidden_actions": ["modify source docs", "run broad git", "create new conversations", "change canonical goal"], "next_action": "dispatch to active DispatchAgent conversation with 60s bounded transport", "parent_goal": "CoAgent 鏋舵瀯璁捐", "parent_task_id": "COAGENT-ARCH-LONGRUN-01", "required_evidence": ["CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/dynamic_team_decision_rules.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/communication_context_protocol.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/architecture_problem_matrix.md"], "review_owner": "MainAgent", "task_class": "clear_task"}
+result_file: Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-DISPATCH-01.yaml
 
 [Required Output Format]
 Write exactly one result packet to:
-Results/agent_packets/COAGENT-ARCH-LONGRUN-01-DISPATCH-01.yaml
+Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-DISPATCH-01.yaml
 
 Use plain key/value lines compatible with CoAgent result_router, for example:
 
@@ -53,7 +46,7 @@ owner: DispatchAgent
 role: DispatchAgent
 read_scope: ["CoAgent/tasks/COAGENT-ARCH-LONGRUN-01", "CoAgent/docs/architecture"]
 write_scope: ["Results/agent_packets"]
-files_changed: ["Results/agent_packets/COAGENT-ARCH-LONGRUN-01-DISPATCH-01.yaml"]
+files_changed: ["Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-DISPATCH-01.yaml"]
 commands_run: []
 evidence: ["CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/dynamic_team_decision_rules.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/communication_context_protocol.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/architecture_problem_matrix.md"]
 risks: []

@@ -40,6 +40,12 @@ public:
         const FString& PayloadJson,
         const FQuadrotorMworksCommandGuard& Guard) const;
 
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Command")
+    bool BuildPendingRequestCaptureJson(
+        const FQuadrotorMworksCommandResult& CommandResult,
+        FString& PendingRequestCaptureJson,
+        FString& RejectReason) const;
+
 protected:
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 

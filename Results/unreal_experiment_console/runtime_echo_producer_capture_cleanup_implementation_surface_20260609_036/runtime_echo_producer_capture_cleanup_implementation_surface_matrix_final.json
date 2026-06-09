@@ -1,0 +1,152 @@
+{
+  "implementation_surface_rows": [
+    {
+      "route": "pending_request_capture",
+      "artifact": "pending_request_capture.json",
+      "schema": "mosim.ue_runtime_probe_capture.pending_request.v1",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp",
+      "method": "BuildPendingRequestCaptureJson",
+      "method_declared_in_header": true,
+      "method_defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "current_runtime_ready": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "route": "runtime_probe_manifest",
+      "artifact": "runtime_probe_manifest.json",
+      "schema": "mosim.ue_runtime_probe_manifest.v1",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "method": "BuildRuntimeProbeManifestJson",
+      "method_declared_in_header": true,
+      "method_defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "current_runtime_ready": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "route": "authoritative_echo_capture",
+      "artifact": "authoritative_echo_capture.json",
+      "schema": "mosim.ue_runtime_probe_capture.authoritative_echo.v1",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "method": "BuildAuthoritativeEchoCaptureJson",
+      "method_declared_in_header": true,
+      "method_defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "current_runtime_ready": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "route": "request_echo_match_report",
+      "artifact": "request_echo_match_report.json",
+      "schema": "mosim.ue_runtime_probe_capture.request_echo_match_report.v1",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "method": "BuildRequestEchoMatchReportJson",
+      "method_declared_in_header": true,
+      "method_defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "current_runtime_ready": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "route": "no_pose_overwrite_report",
+      "artifact": "no_pose_overwrite_report.json",
+      "schema": "mosim.ue_runtime_probe_capture.no_pose_overwrite_report.v1",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "method": "BuildNoPoseOverwriteReportJson",
+      "method_declared_in_header": true,
+      "method_defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "current_runtime_ready": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "route": "false_ack_negative_report",
+      "artifact": "false_ack_negative_report.json",
+      "schema": "mosim.ue_runtime_probe_capture.false_ack_negative_report.v1",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "method": "BuildFalseAckNegativeReportJson",
+      "method_declared_in_header": true,
+      "method_defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "current_runtime_ready": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "route": "timeout_cleanup_manifest",
+      "artifact": "timeout_cleanup_manifest.json",
+      "schema": "mosim.ue_runtime_probe_capture.timeout_cleanup_manifest.v1",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "method": "BuildTimeoutCleanupManifestJson",
+      "method_declared_in_header": true,
+      "method_defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "current_runtime_ready": false,
+      "accepted_as_runtime_ack_now": false
+    }
+  ],
+  "false_ack_rejection_boundary": {
+    "checked_sources": [
+      "034_no_side_effect_preflight_blocker",
+      "033_single_bounded_probe_plan_checker",
+      "032_capture_bundle_wiring_checker",
+      "031_compile_pass",
+      "build_success",
+      "checker_success",
+      "sender_result_bSent",
+      "udp_send_success",
+      "fixture_only_echo",
+      "operator_intent",
+      "quadrotor.unreal_state.frame",
+      "quadrotor.unreal_state.v1",
+      "MWORKS_MCP_runtime_adapter_preflight"
+    ],
+    "accepted_runtime_ack_from_false_sources": false,
+    "actual_runtime_ack_claimed_from_static_sources": false
+  },
+  "no_pose_overwrite_boundary": {
+    "checked_markers": [
+      "pose_override",
+      "set_uav_pose",
+      "actor_transform",
+      "keyboard_pose",
+      "direct_actor_transform",
+      "actor_teleport",
+      "SetActorLocation",
+      "SetActorTransform",
+      "TeleportTo",
+      "UE_truth_shortcut"
+    ],
+    "forbidden_pose_command_seen": false,
+    "direct_actor_transform_seen": false,
+    "keyboard_pose_control_seen": false,
+    "pose_override_seen": false,
+    "set_uav_pose_seen": false,
+    "actor_teleport_seen": false,
+    "ue_truth_shortcut_seen": false
+  },
+  "matrix_summary": {
+    "implementation_surface_rows": 7,
+    "implemented_artifact_rows": 7,
+    "false_ack_rejection_rows": 13,
+    "no_pose_overwrite_marker_rows": 10,
+    "current_runtime_ready_rows": 0,
+    "runtime_ack_leaks_now": 0,
+    "live_transport_evidence_rows": 0,
+    "authoritative_runtime_ack_claimable_now": false
+  }
+}

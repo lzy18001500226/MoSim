@@ -1,0 +1,168 @@
+{
+  "schema": "mosim.mworks.optional_damping_gyro_surface_check.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-OPTIONAL-DAMPING-GYRO-FORMAL-SOURCE-SURFACE-20260609-026",
+  "status": "passed_static",
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "formal_target": "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+  "formal_source": "Models/MoSimQuadrotorModel/Dynamics/OptionalDampingGyroLayer.mo",
+  "formal_package": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+  "formal_package_order": "Models/MoSimQuadrotorModel/Dynamics/package.order",
+  "legacy_alias": "QuadrotorExperiments.DynamicsUpgrade.OptionalDampingGyroLayer",
+  "legacy_package": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
+  "legacy_package_order": "Models/QuadrotorExperiments/DynamicsUpgrade/package.order",
+  "legacy_implementation": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150OptionalDampingGyroLayer.mo",
+  "behavior_preservation": {
+    "formal_source_is_extends_only": true,
+    "formal_source_duplicates_optional_layer_behavior": false,
+    "legacy_alias_preserved": true,
+    "legacy_implementation_preserved": true,
+    "optional_layer_equations_changed_by_026": false,
+    "numeric_parameters_changed_by_026": false,
+    "enable_flags_changed_by_026": false,
+    "gyro_sign_convention_changed_by_026": false,
+    "drag_damping_zero_seeds_changed_by_026": false,
+    "mapper_wrapper_behavior_changed_by_026": false
+  },
+  "optional_layer_anchors": [
+    {
+      "anchor": "parameter Boolean enable_rotor_gyro = false",
+      "present": true
+    },
+    {
+      "anchor": "parameter Boolean enable_body_drag = false",
+      "present": true
+    },
+    {
+      "anchor": "parameter Boolean enable_angular_damping = false",
+      "present": true
+    },
+    {
+      "anchor": "parameter Real rotor_polar_inertia[4](each unit = \"kg.m2\") = {0, 0, 0, 0}",
+      "present": true
+    },
+    {
+      "anchor": "parameter Real gyro_axis_sign[4] = {1, -1, 1, -1}",
+      "present": true
+    },
+    {
+      "anchor": "parameter Real gyro_convention_sign = -1",
+      "present": true
+    },
+    {
+      "anchor": "parameter Real body_drag_coefficient[3](each unit = \"N.s/m\") = {0, 0, 0}",
+      "present": true
+    },
+    {
+      "anchor": "parameter Real angular_damping_coefficient[3](each unit = \"N.m.s/rad\") = {0, 0, 0}",
+      "present": true
+    },
+    {
+      "anchor": "input Real normalized_actuator_command[4]",
+      "present": true
+    },
+    {
+      "anchor": "input Real body_velocity_body[3](each unit = \"m/s\")",
+      "present": true
+    },
+    {
+      "anchor": "input Real body_angular_velocity_body[3](each unit = \"rad/s\")",
+      "present": true
+    },
+    {
+      "anchor": "mapped_wrapper.normalized_actuator_command = normalized_actuator_command",
+      "present": true
+    },
+    {
+      "anchor": "rotor_angular_momentum_body_z[i] =",
+      "present": true
+    },
+    {
+      "anchor": "rotor_polar_inertia[i] * gyro_axis_sign[i] * mapped_wrapper.wrapper.dynamics.omega[i]",
+      "present": true
+    },
+    {
+      "anchor": "gyro_convention_sign * body_angular_velocity_body[2] * rotor_angular_momentum_body_z[i]",
+      "present": true
+    },
+    {
+      "anchor": "-gyro_convention_sign * body_angular_velocity_body[1] * rotor_angular_momentum_body_z[i]",
+      "present": true
+    },
+    {
+      "anchor": "body_drag_force_body[j] =",
+      "present": true
+    },
+    {
+      "anchor": "-body_drag_coefficient[j] * body_velocity_body[j]",
+      "present": true
+    },
+    {
+      "anchor": "angular_damping_moment_body[j] =",
+      "present": true
+    },
+    {
+      "anchor": "-angular_damping_coefficient[j] * body_angular_velocity_body[j]",
+      "present": true
+    },
+    {
+      "anchor": "optional_force_norm = abs(optional_force_body[1]) + abs(optional_force_body[2]) + abs(optional_force_body[3])",
+      "present": true
+    },
+    {
+      "anchor": "optional_moment_norm = abs(optional_moment_body[1]) + abs(optional_moment_body[2]) + abs(optional_moment_body[3])",
+      "present": true
+    },
+    {
+      "anchor": "default_disabled_force_delta =",
+      "present": true
+    },
+    {
+      "anchor": "default_disabled_moment_delta =",
+      "present": true
+    },
+    {
+      "anchor": "motor_order_gate_error = mapped_wrapper.motor_order_gate_error",
+      "present": true
+    },
+    {
+      "anchor": "yaw_direction_gate_error = mapped_wrapper.yaw_direction_gate_error",
+      "present": true
+    }
+  ],
+  "provenance_anchors": [
+    {
+      "anchor": "Default disabled; rotor gyro moment is not identified Sunray150 truth",
+      "present": true
+    },
+    {
+      "anchor": "Default disabled; translational body drag coefficients are not identified",
+      "present": true
+    },
+    {
+      "anchor": "Default disabled; angular damping coefficients are not identified",
+      "present": true
+    },
+    {
+      "anchor": "source=zero_seed; optional rotor inertia placeholder, not ULog/bench identified",
+      "present": true
+    },
+    {
+      "anchor": "source=sign_convention_seed; follows current MWORKS visual spin convention until motor-order validation",
+      "present": true
+    },
+    {
+      "anchor": "source=interface_seed; sign for body-rate cross rotor-angular-momentum convention",
+      "present": true
+    },
+    {
+      "anchor": "source=zero_seed; body-frame linear drag coefficients, not identified",
+      "present": true
+    },
+    {
+      "anchor": "source=zero_seed; body angular-rate damping coefficients, not identified",
+      "present": true
+    }
+  ],
+  "findings": []
+}

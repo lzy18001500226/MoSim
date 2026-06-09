@@ -1,4 +1,4 @@
-# COAGENT-ARCH-LONGRUN-01 Shared Task Board
+﻿# COAGENT-ARCH-LONGRUN-01 Shared Task Board
 
 Date: 2026-05-30
 Status: active
@@ -24,17 +24,17 @@ packet, mailbox, and context-refresh rules are fully audited.
 
 | Department | Thread | State | Role In This Task |
 |---|---|---|---|
-| MainAgent | `MoSim｜四旋翼无人机仿真系统` | active_visible | user PMO, final synthesis, review entry |
-| DispatchAgent | `MoSim｜调度中台` | active_visible | task board, topology, mailbox, result routing |
-| ProductStrategyAgent | `MoSim｜产品发现战略` | active_visible | product goals, appetite, non-goals |
-| RuntimePlatformAgent | `MoSim｜Agent Runtime 平台` | active_visible | conversation/session/transport/worktree design |
-| ContextMemoryAgent | `MoSim｜上下文记忆索引` | active_visible | context pack, memory, indexing, drift controls |
-| ToolchainMCPAgent | `MoSim｜工具链 MCP` | active_visible | MCP/tool capability and failure-mode design |
-| KnowledgeSecretaryAgent | `MoSim｜知识秘书` | active_visible | docs, decisions, knowledge promotion |
-| VerificationAgent | `MoSim｜验证评测` | active_visible | evidence, tests, trace/eval rubric |
-| SafetyComplianceAgent | `MoSim｜安全合规` | active_visible | safety, policy, human-intervention gates |
-| DevOpsReleaseAgent | `MoSim｜DevOps 发布` | active_visible | Git/worktree/merge/release strategy |
-| ExternalIntelligenceAgent | `MoSim｜外部情报进化` | active_visible | vendor/open-source learning loop |
+| MainAgent | `MoSim锝滃洓鏃嬬考鏃犱汉鏈轰豢鐪熺郴缁焋 | active_visible | user PMO, final synthesis, review entry |
+| DispatchAgent | `MoSim锝滆皟搴︿腑鍙癭 | active_visible | task board, topology, mailbox, result routing |
+| ProductStrategyAgent | `MoSim锝滀骇鍝佸彂鐜版垬鐣 | active_visible | product goals, appetite, non-goals |
+| RuntimePlatformAgent | `MoSim锝淎gent Runtime 骞冲彴` | active_visible | conversation/session/transport/worktree design |
+| ContextMemoryAgent | `MoSim锝滀笂涓嬫枃璁板繂绱㈠紩` | active_visible | context pack, memory, indexing, drift controls |
+| ToolchainMCPAgent | `MoSim锝滃伐鍏烽摼 MCP` | active_visible | MCP/tool capability and failure-mode design |
+| KnowledgeSecretaryAgent | `MoSim锝滅煡璇嗙涔 | active_visible | docs, decisions, knowledge promotion |
+| VerificationAgent | `MoSim锝滈獙璇佽瘎娴媊 | active_visible | evidence, tests, trace/eval rubric |
+| SafetyComplianceAgent | `MoSim锝滃畨鍏ㄥ悎瑙刞 | active_visible | safety, policy, human-intervention gates |
+| DevOpsReleaseAgent | `MoSim锝淒evOps 鍙戝竷` | active_visible | Git/worktree/merge/release strategy |
+| ExternalIntelligenceAgent | `MoSim锝滃閮ㄦ儏鎶ヨ繘鍖朻 | active_visible | vendor/open-source learning loop |
 
 ## Phase 1 Items
 
@@ -143,10 +143,10 @@ Known gated items:
 
 | Result | State | Key Finding |
 |---|---|---|
-| `Results/agent_packets/COAGENT-ARCH-LONGRUN-01-DISPATCH-01.yaml` | imported_done | Topology, communication, and context rules are concrete enough to continue; remaining Dispatch risks are runtime enforcement, transport/recovery, and review-gate operationalization. |
-| `Results/agent_packets/COAGENT-ARCH-LONGRUN-01-CONTEXT-01.yaml` | imported_done_needs_review | Context packs are sufficient for scoped handoff only if task packets carry version/hash, acknowledgement state, pause/resume state, and stale-context ownership. Current stale-context handling is procedural, not yet machine-checkable. |
-| `Results/agent_packets/COAGENT-ARCH-LONGRUN-01-RUNTIME-01.yaml` | blocked_no_result | RuntimePlatformAgent dispatch reached the visible conversation and read evidence, but did not produce a result packet within the 60s budget. The identified dispatch process was cleaned up. Treat this as a transport reliability risk. |
-| `Results/agent_packets/COAGENT-ARCH-LONGRUN-01-VERIFY-01.yaml` | imported_done_needs_review | Verification protocol can detect long-task drift conceptually, but thresholds, required packet fields, evidence templates, and negative drift tests are still required before it becomes an executable gate. |
+| `Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-DISPATCH-01.yaml` | imported_done | Topology, communication, and context rules are concrete enough to continue; remaining Dispatch risks are runtime enforcement, transport/recovery, and review-gate operationalization. |
+| `Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-CONTEXT-01.yaml` | imported_done_needs_review | Context packs are sufficient for scoped handoff only if task packets carry version/hash, acknowledgement state, pause/resume state, and stale-context ownership. Current stale-context handling is procedural, not yet machine-checkable. |
+| `Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-RUNTIME-01.yaml` | blocked_no_result | RuntimePlatformAgent dispatch reached the visible conversation and read evidence, but did not produce a result packet within the 60s budget. The identified dispatch process was cleaned up. Treat this as a transport reliability risk. |
+| `Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-VERIFY-01.yaml` | imported_done_needs_review | Verification protocol can detect long-task drift conceptually, but thresholds, required packet fields, evidence templates, and negative drift tests are still required before it becomes an executable gate. |
 
 ## Current Risk Register
 

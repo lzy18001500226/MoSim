@@ -1,4 +1,4 @@
-# CoAgent Post-Approval Backlog
+﻿# CoAgent Post-Approval Backlog
 
 Date: 2026-05-27
 
@@ -40,8 +40,8 @@ CoAgent/docs/decisions/coagent_impl_03_07_completion_audit.md
 Key evidence paths:
 
 ```text
-Results/agent_packets/COAGENT-IMPL-04-VISIBLE-LIFECYCLE.yaml
-Results/agent_packets/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.yaml
+Results/agent_packets/tasks/coagent_implementation/COAGENT-IMPL-04-VISIBLE-LIFECYCLE.yaml
+Results/agent_packets/tasks/coagent_implementation/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.yaml
 Results/coagent_bootstrap/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.recovery.json
 Results/coagent_doctor/latest.json
 CoAgent/transport/TRANSPORT_EXPANSION_DECISION.md
@@ -101,8 +101,7 @@ After approval, start with:
 
 ```text
 task_id: COAGENT-IMPL-01
-owner_department: MoSim｜调度中台
-objective: Freeze CoAgent task-state, event vocabulary, task-intake classes, and goal hierarchy after design approval.
+owner_department: MoSim锝滆皟搴︿腑鍙?objective: Freeze CoAgent task-state, event vocabulary, task-intake classes, and goal hierarchy after design approval.
 read_scope:
   - CoAgent/docs/decisions/coagent_design_review_brief.md
   - CoAgent/docs/decisions/coagent_goal_readiness_audit.md

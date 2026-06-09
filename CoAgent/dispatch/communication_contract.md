@@ -605,13 +605,19 @@ MWORKS window action split:
   captures/rechecks; it must not end the patrol by only reporting that the
   window is missing.
 - Ordinary non-activation phase screenshots, diagram/layout captures, and
-  approved low-risk background clicks should use the background Win32 route and
-  normally do not maximize the window. If the target was minimized, temporarily
-  restore it for the capture/click and minimize it again afterward.
+  approved low-risk background clicks should use the background Win32
+  `PrintWindow` route and normally do not maximize the window. The canonical
+  script is `Scripts/tools/capture_window_background.ps1`; it is not a Windows
+  MCP foreground desktop screenshot. If the target was minimized and full-window
+  review is required, use `-RestoreMinimized -Maximize -MaximizeWaitMs 500
+  -MinimizeAfter`, then verify the manifest `dpi_awareness`, physical
+  `capture_width`/`capture_height`, and that the window was minimized after
+  capture. If the task only needs ordinary background evidence, do not maximize
+  solely for appearance.
 - Cold start screenshots are first evidence only. A first screenshot shortly
-  after launch may show blank/loading content; classification needs bounded
-  follow-up screenshots or sentinel/window evidence before declaring healthy or
-  blocked.
+  after launch may show blank/loading content; take the first screenshot after
+  5 seconds, then use bounded follow-up screenshots or sentinel/window evidence
+  before declaring healthy or blocked.
 
 A MWORKS department return/blocker packet is incomplete if it omits the latest
 patrol reference or a current-turn sentinel/capture set for a real incident,

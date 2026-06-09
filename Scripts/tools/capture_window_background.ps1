@@ -6,7 +6,11 @@ param(
     [switch]$MaximizeAllMatches,
     [switch]$RestoreMinimized,
     [switch]$Maximize,
-    [switch]$KeepRestored
+    [switch]$KeepRestored,
+    [switch]$MinimizeAfter,
+    [int]$RestoreWaitMs = 800,
+    [int]$RestoreSettleMs = 300,
+    [int]$MaximizeWaitMs = 500
 )
 
 $ErrorActionPreference = 'Stop'
@@ -85,19 +89,19 @@ public static class BackgroundWindowCapture {
   const int SW_MINIMIZE = 6;
   const int SW_RESTORE = 9;
 
-  public static string Capture(IntPtr hwnd, string path, bool restoreMinimized, bool maximize, bool keepRestored) {
+  public static string Capture(IntPtr hwnd, string path, bool restoreMinimized, bool maximize, bool keepRestored, bool minimizeAfter, int restoreWaitMs, int restoreSettleMs, int maximizeWaitMs) {
     bool wasMinimized = IsIconic(hwnd);
     bool wasMaximized = IsZoomed(hwnd);
     if (wasMinimized && restoreMinimized) {
       ShowWindowAsync(hwnd, SW_SHOWNOACTIVATE);
-      Thread.Sleep(800);
+      Thread.Sleep(Math.Max(0, restoreWaitMs));
       SetWindowPos(hwnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-      Thread.Sleep(300);
+      Thread.Sleep(Math.Max(0, restoreSettleMs));
     }
 
     if (maximize) {
       ShowWindowAsync(hwnd, SW_SHOWMAXIMIZED);
-      Thread.Sleep(900);
+      Thread.Sleep(Math.Max(0, maximizeWaitMs));
     }
 
     RECT rect;
@@ -118,15 +122,17 @@ public static class BackgroundWindowCapture {
 
     bool minimizedBeforeReMinimize = IsIconic(hwnd);
 
-    if (wasMinimized && restoreMinimized && !keepRestored) {
+    if (minimizeAfter && !keepRestored) {
+      ShowWindowAsync(hwnd, SW_MINIMIZE);
+    } else if (wasMinimized && restoreMinimized && !keepRestored) {
       ShowWindowAsync(hwnd, SW_MINIMIZE);
     } else if (maximize && !wasMaximized && !keepRestored) {
       ShowWindowAsync(hwnd, SW_RESTORE);
     }
 
     return String.Format(
-      "ok={0}; was_minimized={1}; was_maximized={2}; maximize_requested={3}; minimized_before_reminimize={4}; visible={5}; rect={6},{7},{8},{9}; size={10}x{11}; title={12}; path={13}",
-      ok, wasMinimized, wasMaximized, maximize, minimizedBeforeReMinimize, IsWindowVisible(hwnd),
+      "ok={0}; was_minimized={1}; was_maximized={2}; maximize_requested={3}; minimize_after_requested={4}; restore_wait_ms={5}; restore_settle_ms={6}; maximize_wait_ms={7}; minimized_before_reminimize={8}; visible={9}; rect={10},{11},{12},{13}; size={14}x{15}; title={16}; path={17}",
+      ok, wasMinimized, wasMaximized, maximize, minimizeAfter, restoreWaitMs, restoreSettleMs, maximizeWaitMs, minimizedBeforeReMinimize, IsWindowVisible(hwnd),
       rect.Left, rect.Top, rect.Right, rect.Bottom, width, height, Title(hwnd), path
     );
   }
@@ -184,7 +190,11 @@ $rows = $windowMatches |
                 $path,
                 $shouldRestoreMinimized,
                 $shouldMaximize,
-                [bool]$KeepRestored
+                [bool]$KeepRestored,
+                [bool]$MinimizeAfter,
+                $RestoreWaitMs,
+                $RestoreSettleMs,
+                $MaximizeWaitMs
             )
         }
         $captureWidth = $null
@@ -214,6 +224,10 @@ $rows = $windowMatches |
             helper_window = $isHelperWindow
             helper_capture_included = [bool]$IncludeHelperWindows
             maximize_applied = $shouldMaximize
+            minimize_after_requested = [bool]$MinimizeAfter
+            restore_wait_ms = $RestoreWaitMs
+            restore_settle_ms = $RestoreSettleMs
+            maximize_wait_ms = $MaximizeWaitMs
             capture_width = $captureWidth
             capture_height = $captureHeight
             capture_reliability = $captureReliability

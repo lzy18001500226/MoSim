@@ -1,0 +1,34 @@
+{
+  "schema": "mosim.mworks.static_validation_summary.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-OPTIONAL-DAMPING-GYRO-FORMAL-SOURCE-SURFACE-20260609-026",
+  "status": "passed",
+  "static_only": true,
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "formal_source_materialized": true,
+  "behavior_preservation": {
+    "formal_source_is_extends_only": true,
+    "formal_source_duplicates_optional_layer_behavior": false,
+    "legacy_alias_preserved": true,
+    "legacy_implementation_preserved": true,
+    "optional_layer_equations_changed_by_026": false,
+    "numeric_parameters_changed_by_026": false,
+    "enable_flags_changed_by_026": false,
+    "gyro_sign_convention_changed_by_026": false,
+    "drag_damping_zero_seeds_changed_by_026": false,
+    "mapper_wrapper_behavior_changed_by_026": false
+  },
+  "findings": [],
+  "evidence_files": [
+    "Results/mworks_model_hygiene/20260609_026_mosimquad_optional_damping_gyro_formal_source_surface/optional_damping_gyro_surface_check.json",
+    "Results/mworks_model_hygiene/20260609_026_mosimquad_optional_damping_gyro_formal_source_surface/optional_damping_gyro_surface.md",
+    "Results/mworks_model_hygiene/20260609_026_mosimquad_optional_damping_gyro_formal_source_surface/package_order_integrity.json",
+    "Results/mworks_model_hygiene/20260609_026_mosimquad_optional_damping_gyro_formal_source_surface/changed_files.json",
+    "Results/mworks_model_hygiene/20260609_026_mosimquad_optional_damping_gyro_formal_source_surface/static_validation_summary.json"
+  ],
+  "claim_boundary": [
+    "026 prepares a static formal source surface for OptionalDampingGyroLayer only.",
+    "026 does not call or prove MWORKS load, check_model, SimulateModel, native result, graphical/layout acceptance, controller performance, planner_ready, runtime ack, mission success, identified parameter truth, or closed_loop.",
+    "026 preserves optional gyro, body drag, and angular damping as default-disabled/zero-seed source-labeled behavior."
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "schema": "mosim.ue_runtime_echo_receiver_single_bounded_live_probe_preflight.v1",
+  "task_id": "RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-SINGLE-BOUNDED-LIVE-PROBE-20260609-034",
+  "created_at": "2026-06-09T04:57:08+08:00",
+  "scope_classification": "bounded-live-probe-preflight-no-side-effect",
+  "preflight_ok_to_consume_live_attempt": false,
+  "live_attempt_consumed": false,
+  "runtime_probe_executed": false,
+  "retry_count": 0,
+  "max_allowed_attempts": 1,
+  "max_timeout_seconds": 60,
+  "blocker_code": "blocked_missing_authoritative_live_producer_and_capture_routes",
+  "blocker_summary": "The 034 task authorizes at most one bounded live UE command-echo receiver probe, but current evidence does not prove a safe executable authoritative live producer, pending request capture route, authoritative echo capture route, or timeout cleanup route. The live attempt was not consumed.",
+  "preflight_checks": [
+    {
+      "check": "pmo_runtime_authorization",
+      "required": true,
+      "status": "present",
+      "evidence": "034 task packet authorizes exactly one bounded live UE command-echo receiver probe only after no-side-effect preflight."
+    },
+    {
+      "check": "authoritative_producer_identity",
+      "required": true,
+      "status": "missing_current_live_route",
+      "evidence": "033 defines allowed future source/authority pairs: MWORKS_live_downlink/MWORKS, ROS2_runtime_echo/ROS2, and MWORKS_ROS2_live_downlink/MWORKS_ROS2. It does not prove a current live producer instance or transport capture route. MWORKS 004 reports live_downlink_status=blocked_no_transport_surface."
+    },
+    {
+      "check": "pending_request_capture_route",
+      "required": true,
+      "status": "not_proven_live",
+      "evidence": "033 requires pending mosim.ue_command.v1 capture before echo; no current authorized executable route proves a live pending request capture for the 034 probe."
+    },
+    {
+      "check": "authoritative_echo_capture_route",
+      "required": true,
+      "status": "not_proven_live",
+      "evidence": "030 provides a source-static receiver surface with ValidateAuthoritativeRuntimeCommandEchoDownlinkJson and IngestAuthoritativeRuntimeCommandEchoDownlinkJson, but the component boundary states it starts no socket, listener, timer, thread, background loop, pose control, or runtime ack claim."
+    },
+    {
+      "check": "seven_artifact_paths",
+      "required": true,
+      "status": "directory_ready_generation_route_missing",
+      "evidence": "The 034 evidence directory is writable and the required artifact names are known, but no safe live route exists to generate runtime_probe_manifest.json, pending_request_capture.json, authoritative_echo_capture.json, request_echo_match_report.json, no_pose_overwrite_report.json, false_ack_negative_report.json, and timeout_cleanup_manifest.json as live capture evidence."
+    },
+    {
+      "check": "timeout_cleanup_route",
+      "required": true,
+      "status": "not_proven_live",
+      "evidence": "033 requires timeout_seconds in (0,60] and cleanup proof, but without an executable live producer/capture route there is no bounded resource lifecycle to run and no cleanup manifest that would be live evidence."
+    },
+    {
+      "check": "false_ack_negative_boundary",
+      "required": true,
+      "status": "static_guard_available_but_not_live_attempt_evidence",
+      "evidence": "029 and 033 define rejection rules for build/checker/sender/fixture/operator/static/frame rows; these guards support blocking the probe rather than converting static evidence into live ack."
+    },
+    {
+      "check": "no_pose_overwrite_boundary",
+      "required": true,
+      "status": "static_guard_available_but_not_live_attempt_evidence",
+      "evidence": "033 defines no-pose-overwrite checks; no keyboard pose, direct Actor transform, teleport, pose_override, set_uav_pose, or UE truth shortcut was used."
+    }
+  ],
+  "evidence_consumed": [
+    {
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-RUNTIME-PROBE-CAPTURE-BUNDLE-VALIDATOR-20260608-029.json",
+      "finding": "source-static validator exists for future seven-artifact bundle; validator rows are not live ack."
+    },
+    {
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-SOURCE-GATE-20260608-030.json",
+      "finding": "receiver surface is source-static; no UE runtime/editor, socket/listener/timer/background loop, or live transport was proven."
+    },
+    {
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-COMPILE-GATE-20260608-031.json",
+      "finding": "build-only compile evidence exists; compile success is not live runtime ack."
+    },
+    {
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-UE-CONSOLE-RUNTIME-ECHO-RECEIVER-CAPTURE-BUNDLE-WIRING-20260608-032.json",
+      "finding": "source-static wiring exists; no live transport evidence rows were established."
+    },
+    {
+      "path": "Results/unreal_experiment_console/runtime_echo_receiver_single_bounded_probe_plan_20260609_033/runtime_echo_receiver_single_bounded_probe_plan.json",
+      "finding": "source_static_plan_ready=true, runtime_probe_executed=false, live_transport_evidence_rows=0, authoritative_runtime_ack_claimable_now=false."
+    },
+    {
+      "path": "Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-LIVE-DOWNLINK-PREFLIGHT-20260606-004.json",
+      "finding": "live_downlink_status=blocked_no_transport_surface; no project-owned MWORKS-to-UE/ROS2 command echo transport surface exists in that evidence."
+    },
+    {
+      "path": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "finding": "source boundary string states no socket/listener/timer/thread/background loop/pose control/runtime ack claim is started by the component."
+    }
+  ],
+  "artifact_requirements_for_future_live_probe": [
+    "runtime_probe_manifest.json",
+    "pending_request_capture.json",
+    "authoritative_echo_capture.json",
+    "request_echo_match_report.json",
+    "no_pose_overwrite_report.json",
+    "false_ack_negative_report.json",
+    "timeout_cleanup_manifest.json"
+  ],
+  "future_unblock_conditions": [
+    "A task-authorized executable live producer route with source/ack_authority/producer_surface/producer_instance_id/capture_session_id/transport_capture_id.",
+    "A task-authorized pending mosim.ue_command.v1 request capture route before echo ingestion.",
+    "A task-authorized authoritative mosim.ue_command_echo.v1 capture route that feeds the receiver surface without fixture/static substitution.",
+    "A bounded timeout and cleanup route that can prove no listener, socket, timer, thread, background loop, or accepted-state UI remains.",
+    "Seven capture artifacts generated by the single live attempt and accepted by the existing validator."
+  ],
+  "forbidden_actions_confirmed": {
+    "opened_unreal_editor_or_pie_or_runtime": false,
+    "started_live_socket_listener_timer_or_background_loop": false,
+    "ran_unreal_build": false,
+    "edited_ue_cpp_blueprint_umg_assets_maps_or_project_settings": false,
+    "touched_mworks_ros2_fast_lio_planner_controller_sunray_references_coagent_or_git": false,
+    "used_keyboard_pose_actor_teleport_pose_override_fake_echo_fake_pointcloud_fake_map_or_ue_truth_shortcut": false,
+    "claimed_live_ue_runtime_ack": false,
+    "claimed_mworks_downlink_success": false,
+    "claimed_ros2_runtime_echo_success": false,
+    "claimed_final_ui_planner_controller_mission_or_closed_loop_success": false
+  },
+  "claim_boundary": [
+    "034 preflight produced a precise blocker and did not consume the one authorized live attempt.",
+    "No live UE runtime command echo ack is claimed.",
+    "No MWORKS downlink, ROS2 runtime echo, final UI acceptance, planner_ready, controller performance, mission success, or closed_loop is claimed."
+  ]
+}

@@ -1,4 +1,4 @@
-# QuadrotorExperiments Reference Migration Risk Register
+﻿# QuadrotorExperiments Reference Migration Risk Register
 
 Request: `RFLY-MOSIM-MWORKS-R2-QUADROTOR-EXPERIMENTS-ORGANIZATION-20260606-004`
 
@@ -17,7 +17,7 @@ This register separates current project references from historical temporary res
 ### `Example1AWFFSysblockClosedLoop`
 - `Config/controllers/awff_sysblock/default.yaml`
 - `Config/scenarios/official/example1_awff_sysblock.yaml`
-- `Docs/Design/02_模型接口与运行流程.md`
+- `Docs/Design/02_妯″瀷鎺ュ彛涓庤繍琛屾祦绋?md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example1AWFFSysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -36,7 +36,7 @@ This register separates current project references from historical temporary res
 ### `Example1INDISysblockClosedLoop`
 - `Config/controllers/awff_indi_sysblock/default.yaml`
 - `Config/scenarios/official/example1_awff_indi_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example1INDISysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -46,7 +46,7 @@ This register separates current project references from historical temporary res
 ### `Example1L1SysblockClosedLoop`
 - `Config/controllers/l1_residual_sysblock/default.yaml`
 - `Config/scenarios/official/example1_l1_residual_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example1L1SysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -75,7 +75,7 @@ This register separates current project references from historical temporary res
 ### `Example1Mass20L1SysblockClosedLoop`
 - `Config/controllers/l1_residual_sysblock/default.yaml`
 - `Config/scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example1Mass20L1SysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -92,7 +92,7 @@ This register separates current project references from historical temporary res
 
 ### `Example1PlanarFigure8TrailSysblockClosedLoop`
 - `Config/scenarios/official/example1_planar_figure8_trail_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example1PlanarFigure8TrailSysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -102,8 +102,8 @@ This register separates current project references from historical temporary res
 
 ### `Example1QPNMPCSafetyReturnLandSysblockClosedLoop`
 - `Config/scenarios/official/example1_qp_nmpc_safety_return_land_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
-- `Docs/Design/04_安全故障与容错.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
+- `Docs/Design/04_瀹夊叏鏁呴殰涓庡閿?md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example1QPNMPCSafetyReturnLandSysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -113,8 +113,8 @@ This register separates current project references from historical temporary res
 ### `Example1QPNMPCSafetySysblockClosedLoop`
 - `Config/controllers/nmpc_indi_l1/default.yaml`
 - `Config/scenarios/official/example1_qp_nmpc_safety_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
-- `Docs/Design/04_安全故障与容错.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
+- `Docs/Design/04_瀹夊叏鏁呴殰涓庡閿?md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example1QPNMPCSafetySysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -133,7 +133,7 @@ This register separates current project references from historical temporary res
 ### `Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop`
 - `Config/controllers/l1_fault_allocation_sysblock/default.yaml`
 - `Config/scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -151,8 +151,8 @@ This register separates current project references from historical temporary res
 ### `Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop`
 - `Config/controllers/l1_online_fault_allocation_sysblock/default.yaml`
 - `Config/scenarios/robustness/example1_rotor1_loss15_l1_online_fault_allocation_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
-- `Docs/Design/04_安全故障与容错.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
+- `Docs/Design/04_瀹夊叏鏁呴殰涓庡閿?md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -161,7 +161,7 @@ This register separates current project references from historical temporary res
 ### `Example1Rotor1Loss15L1SysblockClosedLoop`
 - `Config/controllers/l1_residual_sysblock/default.yaml`
 - `Config/scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example1Rotor1Loss15L1SysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -171,7 +171,7 @@ This register separates current project references from historical temporary res
 ### `Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop`
 - `Config/controllers/linear_mpc_online_fault_allocation_sysblock/default.yaml`
 - `Config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
 - `Models/QuadrotorExperiments/Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
@@ -180,7 +180,7 @@ This register separates current project references from historical temporary res
 ### `Example1Rotor1Loss15LinearMPCSysblockClosedLoop`
 - `Config/controllers/linear_mpc_sysblock/default.yaml`
 - `Config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
 - `Models/QuadrotorExperiments/Example1Rotor1Loss15LinearMPCSysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
@@ -349,7 +349,7 @@ This register separates current project references from historical temporary res
 ### `Example1WindGustL1SysblockClosedLoop`
 - `Config/controllers/l1_residual_sysblock/default.yaml`
 - `Config/scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example1WindGustL1SysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -367,7 +367,7 @@ This register separates current project references from historical temporary res
 ### `Example2AWFFSysblockClosedLoop`
 - `Config/controllers/awff_sysblock/default.yaml`
 - `Config/scenarios/official/example2_awff_sysblock.yaml`
-- `Docs/Design/02_模型接口与运行流程.md`
+- `Docs/Design/02_妯″瀷鎺ュ彛涓庤繍琛屾祦绋?md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example2AWFFSysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/Example2HelixTunedAWFFSysblockClosedLoop.mo`
@@ -415,7 +415,7 @@ This register separates current project references from historical temporary res
 ### `Example3AWFFSysblockClosedLoop`
 - `Config/controllers/awff_sysblock/default.yaml`
 - `Config/scenarios/official/example3_awff_sysblock.yaml`
-- `Docs/Design/02_模型接口与运行流程.md`
+- `Docs/Design/02_妯″瀷鎺ュ彛涓庤繍琛屾祦绋?md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example3AWFFSysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -425,7 +425,7 @@ This register separates current project references from historical temporary res
 ### `Example3INDISysblockClosedLoop`
 - `Config/controllers/awff_indi_sysblock/default.yaml`
 - `Config/scenarios/official/example3_awff_indi_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example3INDISysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -435,7 +435,7 @@ This register separates current project references from historical temporary res
 ### `Example3L1SysblockClosedLoop`
 - `Config/controllers/l1_residual_sysblock/default.yaml`
 - `Config/scenarios/official/example3_l1_residual_sysblock.yaml`
-- `Docs/Design/03_控制系统架构.md`
+- `Docs/Design/03_鎺у埗绯荤粺鏋舵瀯.md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Example3L1SysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -457,7 +457,7 @@ This register separates current project references from historical temporary res
 - `Models/QuadrotorExperiments/FactoryLiteTraceSmoke.mo`
 - `Models/QuadrotorExperiments/FactoryTraceIso01FullDisplaySmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006.json`
 - `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-NEXT-SENSOR-DISPLAY-GROUP-20260606-017.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-LITE-TRACE-20260606-005.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json`
@@ -484,7 +484,7 @@ This register separates current project references from historical temporary res
 - `Models/QuadrotorExperiments/FactoryTraceIso03PlantHoverStackSmoke.mo`
 - `Models/QuadrotorExperiments/FactoryTraceIso04ControllerPlantWiringSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
 - `Results/mworks_trace_consumption/incremental_trace_isolation_20260606_006/incremental_trace_isolation_probe.json`
@@ -493,7 +493,7 @@ This register separates current project references from historical temporary res
 ### `FactoryTraceIso04ControllerPlantWiringSmoke`
 - `Models/QuadrotorExperiments/FactoryTraceIso04ControllerPlantWiringSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
 - `Results/mworks_trace_consumption/incremental_trace_isolation_20260606_006/incremental_trace_isolation_probe.json`
@@ -510,7 +510,7 @@ This register separates current project references from historical temporary res
 ### `FactoryTraceIso06CleanControllerPlantWiringSmoke`
 - `Models/QuadrotorExperiments/FactoryTraceIso06CleanControllerPlantWiringSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
 - `Results/mworks_trace_consumption/actuator_wiring_isolation_20260606_007/actuator_wiring_isolation_probe.json`
@@ -520,7 +520,7 @@ This register separates current project references from historical temporary res
 ### `FactoryTraceIso07CleanControllerOpenFeedbackSmoke`
 - `Models/QuadrotorExperiments/FactoryTraceIso07CleanControllerOpenFeedbackSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-WIRING-ISOLATION-20260606-007.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
 - `Results/mworks_trace_consumption/actuator_wiring_isolation_20260606_007/actuator_wiring_isolation_probe.json`
@@ -530,8 +530,8 @@ This register separates current project references from historical temporary res
 ### `FactoryTraceIso08PositionFeedbackSmoke`
 - `Models/QuadrotorExperiments/FactoryTraceIso08PositionFeedbackSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
 - `Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_isolation_probe.json`
@@ -540,7 +540,7 @@ This register separates current project references from historical temporary res
 ### `FactoryTraceIso09PositionAttitudeFeedbackSmoke`
 - `Models/QuadrotorExperiments/FactoryTraceIso09PositionAttitudeFeedbackSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-FEEDBACK-ISOLATION-20260606-008.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
 - `Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_isolation_probe.json`
@@ -550,7 +550,7 @@ This register separates current project references from historical temporary res
 ### `FactoryTraceIso10RollFeedbackSmoke`
 - `Models/QuadrotorExperiments/FactoryTraceIso10RollFeedbackSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-ISOLATION-20260606-009.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
 - `Results/mworks_trace_consumption/attitude_feedback_isolation_20260606_009/attitude_feedback_isolation_probe.json`
@@ -587,7 +587,7 @@ This register separates current project references from historical temporary res
 ### `FactoryTraceIso14ConstantAttitudeInputSmoke`
 - `Models/QuadrotorExperiments/FactoryTraceIso14ConstantAttitudeInputSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
 - `Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_mcp_log.json`
@@ -597,7 +597,7 @@ This register separates current project references from historical temporary res
 ### `FactoryTraceIso15TableAttitudeInputSmoke`
 - `Models/QuadrotorExperiments/FactoryTraceIso15TableAttitudeInputSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
 - `Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_mcp_log.json`
@@ -607,7 +607,7 @@ This register separates current project references from historical temporary res
 ### `FactoryTraceIso16RealExpressionAngleSmoke`
 - `Models/QuadrotorExperiments/FactoryTraceIso16RealExpressionAngleSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-DECOUPLING-20260606-011.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-INTERMEDIARY-20260606-010.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
 - `Results/mworks_trace_consumption/attitude_intermediary_20260606_010/attitude_intermediary_mcp_log.json`
@@ -635,7 +635,7 @@ This register separates current project references from historical temporary res
 ### `FactoryTraceIso19RollPitchEstimatorSmoke`
 - `Models/QuadrotorExperiments/FactoryTraceIso19RollPitchEstimatorSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-YAW-RATE-DECOUPLING-20260606-013.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-YAW-RATE-DECOUPLING-20260606-013.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-PITCH-DECOUPLING-20260606-012.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
 - `Results/mworks_trace_consumption/pitch_decoupling_20260606_012/pitch_decoupling_mcp_log.json`
@@ -646,7 +646,7 @@ This register separates current project references from historical temporary res
 - `Models/QuadrotorExperiments/FactoryTraceIso20RollPitchYawEstimatorSmoke.mo`
 - `Models/QuadrotorExperiments/FactoryTraceIso21ControllerRateAliasSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-YAW-RATE-DECOUPLING-20260606-013.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
@@ -657,15 +657,15 @@ This register separates current project references from historical temporary res
 - `Models/QuadrotorExperiments/FactoryTraceIso22SensorDisplayReconnectSmoke.mo`
 - `Models/QuadrotorExperiments/FactoryTraceIso23PositionSampleHoldBridgeSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-BUS-RECONNECT-20260606-015.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-BUS-RECONNECT-20260606-015.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-RATE-FEEDBACK-ISOLATION-20260606-014.json`
 
 ### `FactoryTraceIso22SensorDisplayReconnectSmoke`
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/FactoryTraceIso22SensorDisplayReconnectSmoke.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-POSITION-BRIDGE-20260606-016.json`
 - `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-SENSOR-BUS-RECONNECT-20260606-015.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/category_migration_table.md`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
@@ -678,15 +678,15 @@ This register separates current project references from historical temporary res
 - `Models/QuadrotorExperiments/FactoryTraceIso24DirectAttitudeFeedbackSmoke.mo`
 - `Models/QuadrotorExperiments/FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-FIRST-CONTROL-FEEDBACK-GROUP-20260606-018.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-NEXT-SENSOR-DISPLAY-GROUP-20260606-017.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-FIRST-CONTROL-FEEDBACK-GROUP-20260606-018.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-NEXT-SENSOR-DISPLAY-GROUP-20260606-017.json`
 
 ### `FactoryTraceIso24DirectAttitudeFeedbackSmoke`
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/FactoryTraceIso24DirectAttitudeFeedbackSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json`
 - `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-CONTROL-FIRST-CONTROL-FEEDBACK-GROUP-20260606-018.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json`
@@ -697,7 +697,7 @@ This register separates current project references from historical temporary res
 - `Models/QuadrotorExperiments/FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke.mo`
 - `Models/QuadrotorExperiments/FactoryTraceIso26ControllerOutputAliasSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-DOWNSTREAM-OUTPUT-GROUP-20260606-020.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-DOWNSTREAM-OUTPUT-GROUP-20260606-020.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ATTITUDE-FEEDBACK-BRIDGE-20260606-019.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-DOWNSTREAM-OUTPUT-GROUP-20260606-020.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json`
@@ -707,7 +707,7 @@ This register separates current project references from historical temporary res
 - `Models/QuadrotorExperiments/FactoryTraceIso26ControllerOutputAliasSmoke.mo`
 - `Models/QuadrotorExperiments/FactoryTraceIso27ActuatorInputAliasSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-PREFLIGHT-GROUP-20260606-021.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-PREFLIGHT-GROUP-20260606-021.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-ACTUATOR-PREFLIGHT-GROUP-20260606-021.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-DOWNSTREAM-OUTPUT-GROUP-20260606-020.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json`
@@ -717,8 +717,8 @@ This register separates current project references from historical temporary res
 - `Models/QuadrotorExperiments/FactoryTraceIso27ActuatorInputAliasSmoke.mo`
 - `Models/QuadrotorExperiments/FactoryTraceIso28ActuatorToWrenchBridgeSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012.json`
 - `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json`
 
@@ -726,7 +726,7 @@ This register separates current project references from historical temporary res
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/FactoryTraceIso28ActuatorToWrenchBridgeSmoke.mo`
 - `Models/QuadrotorExperiments/FactoryTraceIso29ExternalFrameWrenchBoundarySmoke.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json`
@@ -736,7 +736,7 @@ This register separates current project references from historical temporary res
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/FactoryTraceIso29ExternalFrameWrenchBoundarySmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-POST-ISO29-ONE-BOUNDARY-20260606-016.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-STATIC-GUI-REVIEW-PREP-20260606-003.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json`
@@ -745,7 +745,7 @@ This register separates current project references from historical temporary res
 ### `FactoryTraceIso30ExternalBodyStateBoundarySmoke`
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-POST-ISO29-ONE-BOUNDARY-20260606-016.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-R2-GRAPHICAL-MODEL-AUDIT-INVENTORY-20260606-002.json`
@@ -756,8 +756,8 @@ This register separates current project references from historical temporary res
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/EchoMcpStateSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-ECHO-LIVE-DOWNLINK-PREFLIGHT-20260606-004.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-POST-GUI-SENTINEL-HEALTH-GATE-20260606-009.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-ECHO-LIVE-DOWNLINK-PREFLIGHT-20260606-004.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-POST-GUI-SENTINEL-HEALTH-GATE-20260606-009.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-LIVE-DOWNLINK-PREFLIGHT-20260606-004.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ECHO-MCP-STATE-SMOKE-20260606-002.json`
 - `Results/mworks_echo_producer_smoke/20260606_002_mcp_state/echo_mcp_state_mcp_log.json`
@@ -769,8 +769,8 @@ This register separates current project references from historical temporary res
 - `Config/scenarios/planning/sunray150_planning_open_blocks_linear_mpc_sysblock.yaml`
 - `Config/scenarios/planning/sunray150_ue_derelictcorridormegascans_linear_mpc_smoke.yaml`
 - `Config/scenarios/planning/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.yaml`
-- `Docs/Design/05_路径规划与轨迹生成.md`
-- `Docs/Design/11_RflySim式MoSim最小闭环架构审核.md`
+- `Docs/Design/05_璺緞瑙勫垝涓庤建杩圭敓鎴?md`
+- `Docs/Design/11_RflySim寮廙oSim鏈€灏忛棴鐜灦鏋勫鏍?md`
 
 ### `PlanningNavigationDisplay`
 - `Config/scenarios/planning/sunray150_planning_corridor_gate_linear_mpc_sysblock.yaml`
@@ -778,7 +778,7 @@ This register separates current project references from historical temporary res
 - `Config/scenarios/planning/sunray150_ue_derelictcorridormegascans_linear_mpc_smoke.yaml`
 - `Config/scenarios/planning/sunray150_ue_factory_trace_table_linear_mpc_smoke.yaml`
 - `Config/scenarios/planning/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.yaml`
-- `Docs/Design/05_路径规划与轨迹生成.md`
+- `Docs/Design/05_璺緞瑙勫垝涓庤建杩圭敓鎴?md`
 - `Docs/Workflows/agent_task_ledger.md`
 - `Docs/Workflows/run_simulation.md`
 
@@ -790,14 +790,14 @@ This register separates current project references from historical temporary res
 - `Models/QuadrotorExperiments/TraceInlineReference.mo`
 - `Models/QuadrotorExperiments/TraceLookupStandaloneSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-LITE-TRACE-20260606-005.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-LITE-TRACE-20260606-005.json`
 
 ### `TraceLookupStandaloneSmoke`
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/TraceLookupStandaloneSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/reference_migration_risk_register.md`
@@ -820,7 +820,7 @@ This register separates current project references from historical temporary res
 
 ### `Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop`
 - `Config/scenarios/planning/sunray150_planning_corridor_gate_linear_mpc_sysblock.yaml`
-- `Docs/Design/05_路径规划与轨迹生成.md`
+- `Docs/Design/05_璺緞瑙勫垝涓庤建杩圭敓鎴?md`
 - `Models/QuadrotorExperiments/Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
 - `Results/mworks_model_hygiene/20260606_002_graphical_audit_inventory/review_priority.md`
@@ -829,14 +829,14 @@ This register separates current project references from historical temporary res
 
 ### `Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop`
 - `Config/scenarios/planning/sunray150_planning_open_blocks_awff_sysblock.yaml`
-- `Docs/Design/05_路径规划与轨迹生成.md`
+- `Docs/Design/05_璺緞瑙勫垝涓庤建杩圭敓鎴?md`
 - `Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop.mo`
 - `Models/QuadrotorExperiments/package.mo`
 - `Results/mworks_model_hygiene/20260606_004_quadrotor_experiments_organization/flat_entry_inventory.json`
 - `Results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_awff_sysblock/replay/sunray150_planning_open_blocks_awff_sysblock.json`
 
 ### `Sunray150PlanningOpenBlocksColorMapReview`
-- `Docs/Design/05_路径规划与轨迹生成.md`
+- `Docs/Design/05_璺緞瑙勫垝涓庤建杩圭敓鎴?md`
 - `Docs/Workflows/run_simulation.md`
 - `Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksColorMapReview.mo`
 - `Models/QuadrotorExperiments/package.mo`
@@ -845,8 +845,8 @@ This register separates current project references from historical temporary res
 
 ### `Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop`
 - `Config/scenarios/planning/sunray150_planning_open_blocks_linear_mpc_sysblock.yaml`
-- `Docs/Cache/session_memory_migration/round2_parameter_identification_memory_20260604.md`
-- `Docs/Design/05_路径规划与轨迹生成.md`
+- `Docs/Cache/session_memory_migration/02_round2_review/round2_parameter_identification_memory_20260604.md`
+- `Docs/Design/05_璺緞瑙勫垝涓庤建杩圭敓鎴?md`
 - `Docs/Workflows/run_simulation.md`
 - `Docs/simulation_report.md`
 - `Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksColorMapReview.mo`
@@ -855,12 +855,12 @@ This register separates current project references from historical temporary res
 
 ### `Sunray150UEFactoryLinearMPCSysblockSmoke`
 - `Config/scenarios/planning/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.yaml`
-- `Docs/Cache/session_memory_migration/round2_parameter_identification_memory_20260604.md`
+- `Docs/Cache/session_memory_migration/02_round2_review/round2_parameter_identification_memory_20260604.md`
 - `Docs/Workflows/agent_task_ledger.md`
 - `Docs/Workflows/unreal_renderer.md`
 - `Models/QuadrotorExperiments/Sunray150UEFactoryLinearMPCSysblockSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-TRACE-CONSUME-20260606-002.json`
 - `Results/diagnostics/smoke/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke/replay/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.json`
 
 ### `Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke`
@@ -868,10 +868,10 @@ This register separates current project references from historical temporary res
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/Sunray150UEFactoryTraceTableLinearMPCSysblockSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-LITE-TRACE-20260606-005.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-LITE-TRACE-20260606-005.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-FACTORY-TRACE-RECONNECT-20260606-004.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-INCREMENTAL-TRACE-ISOLATION-20260606-006.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-CONTROL-TRACELOOKUP-DIAG-20260606-003.json`
 
 ### `Sunray150UEDerelictLinearMPCSysblockSmoke`
 - `Config/scenarios/planning/sunray150_ue_derelictcorridormegascans_linear_mpc_smoke.yaml`
@@ -887,9 +887,9 @@ This register separates current project references from historical temporary res
 - `Docs/Workflows/agent_task_ledger.md`
 - `Docs/Workflows/identify_quadrotor_parameters.md`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json`
 - `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-MIN-UPGRADE-20260606-005.json`
 
@@ -897,7 +897,7 @@ This register separates current project references from historical temporary res
 - `Docs/Workflows/identify_quadrotor_parameters.md`
 - `Docs/Workflows/rfly_mosim_p0_10h_execution_plan.md`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-MIN-UPGRADE-20260606-005.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-QUADROTOR-EXPERIMENTS-CLASSIFICATION-20260606-013.json`
 - `Results/coagent_gateway/packets/sunray150_dynamics_model_check_complete_20260605.json`
@@ -907,7 +907,7 @@ This register separates current project references from historical temporary res
 - `Docs/Workflows/identify_quadrotor_parameters.md`
 - `Docs/Workflows/rfly_mosim_p0_10h_execution_plan.md`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json`
 - `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-MIN-UPGRADE-20260606-005.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-QUADROTOR-EXPERIMENTS-CLASSIFICATION-20260606-013.json`
@@ -916,8 +916,8 @@ This register separates current project references from historical temporary res
 ### `Sunray150DynamicsWrapperSurface`
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012.json`
 - `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json`
@@ -936,7 +936,7 @@ This register separates current project references from historical temporary res
 ### `Sunray150DynamicsWrapperYawStepSmoke`
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json`
 - `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-WRAPPER-INTEGRATION-20260606-006.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json`
@@ -947,16 +947,16 @@ This register separates current project references from historical temporary res
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/FactoryTraceIso28ActuatorToWrenchBridgeSmoke.mo`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012.json`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-012.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json`
 - `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json`
 
 ### `Sunray150PhysicalWrenchHoverSmoke`
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-POST-GUI-SENTINEL-HEALTH-GATE-20260606-009.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-POST-GUI-SENTINEL-HEALTH-GATE-20260606-009.json`
 - `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-PHYSICAL-WRENCH-WRAPPER-20260606-007.json`
@@ -966,7 +966,7 @@ This register separates current project references from historical temporary res
 ### `Sunray150PhysicalWrenchYawStepSmoke`
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/package.mo`
-- `Results/agent_packets/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json`
+- `Results/agent_packets/tasks/mworks/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json`
 - `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-20260606-010.json`
 - `Results/agent_packets/blockers/RFLY-MOSIM-MWORKS-YAW-SIGN-MOTOR-ORDER-AUDIT-20260606-008-GUI-CRASH-REPORT.json`
 - `Results/agent_packets/returns/RFLY-MOSIM-MWORKS-DYNAMICS-YAW-TRANSIENT-EVIDENCE-GATE-20260606-017.json`
@@ -975,7 +975,7 @@ This register separates current project references from historical temporary res
 
 ### `FormationTriangleFigure8LinearMPCSysblockClosedLoop`
 - `Config/scenarios/formation/formation_triangle_figure8_linear_mpc_sysblock.yaml`
-- `Docs/Design/06_多机编队控制.md`
+- `Docs/Design/06_澶氭満缂栭槦鎺у埗.md`
 - `Docs/Index/project_work_memory_index.md`
 - `Docs/Workflows/agent_task_ledger.md`
 - `Models/QuadrotorExperiments/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo`

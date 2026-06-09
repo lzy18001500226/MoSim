@@ -1,0 +1,35 @@
+{
+  "schema": "mosim.mworks.static_validation_summary.v1",
+  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-PHYSICAL-WRENCH-ADAPTER-FORMAL-SOURCE-SURFACE-20260609-031",
+  "status": "passed",
+  "static_only": true,
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "formal_source_materialized": true,
+  "behavior_preservation": {
+    "formal_source_is_extends_only": true,
+    "formal_source_duplicates_physical_wrench_behavior": false,
+    "legacy_alias_preserved": true,
+    "legacy_implementation_preserved": true,
+    "legacy_wrapper_implementation_preserved": true,
+    "physical_wrench_equations_changed_by_031": false,
+    "wrapper_equations_changed_by_031": false,
+    "numeric_parameters_changed_by_031": false,
+    "multibody_world_body_force_adapter_changed_by_031": false,
+    "frame_connection_changed_by_031": false,
+    "motor_order_yaw_gate_behavior_changed_by_031": false
+  },
+  "findings": [],
+  "evidence_files": [
+    "Results/mworks_model_hygiene/20260609_031_mosimquad_physical_wrench_adapter_formal_source_surface/physical_wrench_adapter_surface_check.json",
+    "Results/mworks_model_hygiene/20260609_031_mosimquad_physical_wrench_adapter_formal_source_surface/physical_wrench_adapter_surface.md",
+    "Results/mworks_model_hygiene/20260609_031_mosimquad_physical_wrench_adapter_formal_source_surface/package_order_integrity.json",
+    "Results/mworks_model_hygiene/20260609_031_mosimquad_physical_wrench_adapter_formal_source_surface/changed_files.json",
+    "Results/mworks_model_hygiene/20260609_031_mosimquad_physical_wrench_adapter_formal_source_surface/static_validation_summary.json"
+  ],
+  "claim_boundary": [
+    "031 prepares a static formal source surface for PhysicalWrenchAdapter only.",
+    "031 does not call or prove MWORKS load, check_model, SimulateModel, native result, package browser, graphical/layout acceptance, controller performance, planner_ready, runtime ack, mission success, identified parameter truth, or closed_loop.",
+    "031 preserves the legacy physical wrench and MultiBody adapter behavior as source-labeled static behavior."
+  ]
+}

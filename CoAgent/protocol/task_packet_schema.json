@@ -51,6 +51,7 @@
     "semantic_boundary": { "$ref": "#/$defs/semantic_boundary" },
     "expected_return_path": { "type": "string", "minLength": 1 },
     "blocker_return_path": { "type": "string", "minLength": 1 },
+    "dispatch_ticket_path": { "type": "string", "minLength": 1 },
     "origin_thread": { "type": "string", "minLength": 1 },
     "origin_thread_id": { "type": "string", "minLength": 1 },
     "target_thread": { "type": "string", "minLength": 1 },

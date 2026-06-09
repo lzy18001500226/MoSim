@@ -1,0 +1,18 @@
+{
+  "schema": "mosim.changed_files_manifest.v1",
+  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-FORMAL-SMOKE-SURFACE-STATIC-PREP-20260608-023",
+  "source_files_changed_by_023": [],
+  "script_files_changed_by_023": [
+    "Scripts/mworks/validate_mosimquad_formal_smoke_surface.py"
+  ],
+  "evidence_files_written_by_023": [
+    "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/formal_smoke_target_matrix.json",
+    "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/formal_smoke_target_matrix.md",
+    "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/future_live_validation_surface.json",
+    "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/expected_result_variables.json",
+    "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/pass_fail_boundaries.md",
+    "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/source_anchor_no_diff_rationale.md",
+    "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/changed_files.json",
+    "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/static_validation_summary.json"
+  ]
+}

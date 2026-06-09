@@ -1,4 +1,4 @@
-# CoAgent Status
+﻿# CoAgent Status
 
 Date: 2026-05-31
 
@@ -22,8 +22,7 @@ and logs existed but the real WSL/Windows Codex conversation stores were not
 updated for the user's front end.
 
 Visible DevOps ping was repaired through the real WSL Codex session:
-DevOps 可见通信测试 2026-05-31 收到。
-
+DevOps 鍙閫氫俊娴嬭瘯 2026-05-31 鏀跺埌銆?
 Then `codex_session_repair.py sync-visible --apply` synced DevOps metadata and
 rollout state to `/home/linux/.codex` and `/mnt/c/Users/HP/.codex`.
 
@@ -463,21 +462,16 @@ CoAgent/dispatch/department_threads.json
 Docs/Index/codex_app_session_research.md#department-thread-layout
 
 Current active visible conversations:
-- MainPMO / MoSim｜主线 PMO
-- DevOpsReleaseAgent / MoSim｜DevOps 发布
-- UEExperimentConsoleAgent / MoSim｜UE实验控制台与场景交互部
-- Sunray150AssetPBRAgent / MoSim｜Sunray150资产与PBR审核部
-- MWorksDynamicsControlAgent / MoSim｜MWORKS动力学与控制验证部
-- ROS2RuntimeAgent / MoSim｜ROS2感知定位与规划运行部
-- CodexEnvironmentMigrationAgent / MoSim｜Codex 环境迁移部
-- OpenSourceProbeAgent / MoSim｜开源项目探针
-- CoAgentOps / MoSim｜CoAgent运维平台
-- OpenSourceLearningAgent / MoSim｜开源项目学习部
-- CodexContextMaintenanceAgent / MoSim｜文档秘书部
+- MainPMO / MoSim锝滀富绾?PMO
+- DevOpsReleaseAgent / MoSim锝淒evOps 鍙戝竷
+- UEExperimentConsoleAgent / MoSim锝淯E瀹為獙鎺у埗鍙颁笌鍦烘櫙浜や簰閮?- Sunray150AssetPBRAgent / MoSim锝淪unray150璧勪骇涓嶱BR瀹℃牳閮?- MWorksDynamicsControlAgent / MoSim锝淢WORKS鍔ㄥ姏瀛︿笌鎺у埗楠岃瘉閮?- ROS2RuntimeAgent / MoSim锝淩OS2鎰熺煡瀹氫綅涓庤鍒掕繍琛岄儴
+- CodexEnvironmentMigrationAgent / MoSim锝淐odex 鐜杩佺Щ閮?- OpenSourceProbeAgent / MoSim锝滃紑婧愰」鐩帰閽?- CoAgentOps / MoSim锝淐oAgent杩愮淮骞冲彴
+- OpenSourceLearningAgent / MoSim锝滃紑婧愰」鐩涔犻儴
+- CodexContextMaintenanceAgent / MoSim锝滄枃妗ｇ涔﹂儴
 
 Archived/non-dispatchable:
-- WeChatGatewayOps / MoSim｜微信网关运维部
-- WechatCodexMessagePath / MoSim｜WechatCodex
+- WeChatGatewayOps / MoSim锝滃井淇＄綉鍏宠繍缁撮儴
+- WechatCodexMessagePath / MoSim锝淲echatCodex
 
 Dispatch rule: allowlist only. If an old thread ID is absent from the current
 visible scan, treat it as gone and remove it from dispatchable registry instead
@@ -1104,8 +1098,8 @@ Git staging, or tool/MCP execution is approved by it.
 Current checkpoint evidence:
 
 ```text
-Results/agent_packets/COAGENT-IMPL-04-VISIBLE-LIFECYCLE.yaml
-Results/agent_packets/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.yaml
+Results/agent_packets/tasks/coagent_implementation/COAGENT-IMPL-04-VISIBLE-LIFECYCLE.yaml
+Results/agent_packets/tasks/coagent_implementation/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.yaml
 Results/coagent_bootstrap/COAGENT-IMPL-05-LONG-TASK-LIFECYCLE.recovery.json
 Results/coagent_doctor/latest.json
 CoAgent/transport/TRANSPORT_EXPANSION_DECISION.md

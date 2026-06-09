@@ -1,0 +1,48 @@
+name: GoReleaser Release
+on:
+  push:
+    tags:
+      - "v*"
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - name: Build UI
+        uses: ./.github/actions/build-ui
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: "go.mod"
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@5daf1e915a5f0af01ddbcd89a43b8061ff4f1a89
+        with:
+          distribution: goreleaser
+          # GoReleaser version
+          version: "~> v2"
+          # Arguments to pass to GoReleaser
+          args: release --clean
+          workdir: .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate signed build provenance attestations for workflow artifacts
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/*.txt

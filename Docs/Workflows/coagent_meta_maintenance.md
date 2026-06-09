@@ -98,8 +98,8 @@ issue, such as `Context Left 100.0%` plus slash-command compression requiring
 manual recovery, do not skip directly to replacement or Codex++ restart. Record
 `context_compression_surface`, send a sparse Chinese notification, and
 let the user perform the confirmed manual workaround: switch to `gpt-5.4` with
-`xhigh`, type `/`, run compression, then switch back to `gpt-5.5` with
-`xhigh`. After the user reports the UI is fixed, perform the normal bounded
+`high`, type `/`, run compression, then switch back to `gpt-5.5` with
+`high`. After the user reports the UI is fixed, perform the normal bounded
 no-op/packet validation before declaring the thread routable.
 
 2026-06-07 email-default notification hotfix: WeChat outbound can lose usable
@@ -149,7 +149,7 @@ to MWORKS R1/R2 and disposable sub-agents in future task packets.
 
 2026-06-07 model-effort default: future MoSim mainline, visible department,
 automation, and disposable sub-agent dispatch should request `gpt-5.5` with
-`xhigh` thinking whenever the current native tool/runtime accepts explicit
+`high` thinking whenever the current native tool/runtime accepts explicit
 settings. Do not send health no-ops only to mutate existing thread settings.
 
 2026-06-07 dispatch-surface ownership hotfix: after PMO observes that a visible
@@ -690,7 +690,7 @@ Preferred existing-thread automation targets:
 
 | Existing Thread | ID | Automation Need | Owner For Configuration |
 |---|---|---|---|
-| `MoSim｜文档秘书部` | `019e9be0-f6ac-7762-b80c-b1dd18b0d013` | New-conversation context, project memory/index drift, compact recovery updates, documentation consistency checks, and cache-first migration drafts | `MoSim｜CoAgent运维平台` configures the native automation; documentation secretary owns doc updates. Legacy internal key: `CodexContextMaintenanceAgent`. |
+| `MoSim｜Codex 上下文维护部` | `019eab73-c5bc-7740-a6d1-5e0541bdb0c5` | New-conversation context, project memory/index drift, compact recovery updates, documentation consistency checks, and cache-first migration drafts | `MoSim｜CoAgent运维平台` configures the native automation; documentation secretary owns doc updates. Legacy internal key: `CodexContextMaintenanceAgent`; former `MoSim｜文档秘书部` and R-suffixed titles are alias/history only. |
 | `MoSim｜开源项目探针` | `019e9be3-94de-7dc3-b067-92a78b678287` | Local reference-project inventory, upstream freshness checks, and manifest/update-candidate queues. New broad crawling belongs to scoped sub-agents or explicit task packets, not the standing probe thread. | `MoSim｜CoAgent运维平台` configures the native automation; probe thread owns manifests |
 | `MoSim｜开源项目学习部` | `019e9be4-56d0-7981-b71c-a5ded1c7ec76` | Adopt/adapt/reference-only/reject review for probe candidates | `MoSim｜CoAgent运维平台` configures the native automation; learning thread owns evaluation output |
 
@@ -817,7 +817,7 @@ idle_no_ready_task, idle_waiting_review_or_approval
 |---|---|---|
 | Main routing and engineering priority | `MoSim｜主线 PMO` | CoAgent ops can return blocker/proposal packets, but does not decide the MoSim technical roadmap. |
 | Thread registry hygiene | `MoSim｜CoAgent运维平台` | Only current visible allowlist entries are dispatchable. |
-| Context memory, startup recovery, and documentation-secretary work | `MoSim｜文档秘书部` | Not the same as Windows-native environment migration. Legacy internal key: `CodexContextMaintenanceAgent`. |
+| Context memory, startup recovery, and documentation-secretary work | `MoSim｜Codex 上下文维护部` | Not the same as Windows-native environment migration. Legacy internal key: `CodexContextMaintenanceAgent`; former `MoSim｜文档秘书部` and R-suffixed titles are alias/history only. |
 | Windows-native Codex migration/history | `MoSim｜Codex 环境迁移部` | One-time environment repair and bridge residue audits, not routine context maintenance. |
 | WeChat gateway implementation/health | Deleted; no active owner | `MoSim｜微信网关运维部` and `MoSim｜WechatCodex` are historical deleted routes. Restore only after explicit user/PMO approval for a scoped WeChat diagnosis task and do not treat their absence as an outage. |
 | External doc/manual-access blocker | Task owner writes blocker; sparse email sends user notification | Do not silently wait or only leave the blocker in chat when the user needs to provide permission/content. |

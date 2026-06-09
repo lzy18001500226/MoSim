@@ -281,7 +281,8 @@ do not make those threads dispatchable:
 | --- | --- | --- |
 | `MoSim｜主线 PMO` | `019e9868-83ea-70f0-92c5-a3a408bd78c6` | Current mainline PMO task conversation for Sunray150/MoSim dynamics work |
 | `MoSim｜Git仓库代码管理部` | `019e74de-a452-7a50-99e7-ca9a247b32f1` | Git split, path-limited staging, commits, push hygiene |
-| `MoSim｜UE实验控制台与场景交互部` | `019e9b24-50aa-7cd3-9e7c-4c43b224d993` | Durable UE operator console, scene interaction, command/echo schema, and render-review integration thread |
+| `MoSim｜UE实验控制台与场景交互部-R1` | `019e9b24-50aa-7cd3-9e7c-4c43b224d993` | Primary UE operator console, scene interaction, command/echo schema, render-review integration, build-gate, and authorized runtime-review thread |
+| `MoSim｜UE实验控制台与场景交互部-R2` | `019eab9f-b0ef-7433-893d-3235ea9f3c7e` | Auxiliary UE source/static review, implementation-surface backup, UI/command/echo contract review, source-only fixture/checker work, and bounded parallel support thread |
 | `MoSim｜Sunray150资产与PBR审核部` | `019e9b25-066e-7372-8152-209c2b1322a4` | Durable Sunray150 visual asset, DAE/FBX/GLB, material/PBR, and manual visual-review thread |
 | `MoSim｜MWORKS动力学与控制验证部-R1` | `019e9be5-334b-76b1-93f9-8b02caebf376` | Durable MWORKS mainline dynamics/control/model-integration evidence thread |
 | `MoSim｜MWORKS动力学与控制验证部-R2` | `019e9999-b0d3-7682-bccd-faef08fcf1df` | Durable MWORKS auxiliary model organization, graphical interface, connection/layout/readability, and model-hygiene thread. This ID had old dispatch/UI-submit incidents, but the user later restored it as the current R2 auxiliary route. |
@@ -292,7 +293,7 @@ do not make those threads dispatchable:
 | `MoSim｜开源项目探针` | `019e9be3-94de-7dc3-b067-92a78b678287` | App-native inventory owner for relevant open-source projects and local reference-project update candidates |
 | `MoSim｜CoAgent运维平台` | `019e9bc1-ea9f-7102-b41a-4ef9b2308992` | Codex App native CoAgent/meta operations thread; coordinates recurring CoAgent/meta tasks, thread-registry hygiene, and native capability adoption checklists |
 | `MoSim｜开源项目学习部` | `019e9be4-56d0-7981-b71c-a5ded1c7ec76` | App-native learning owner for crawled projects/vendor articles and adopt/adapt/reference-only/reject proposals |
-| `MoSim｜文档秘书部` | `019e9be0-f6ac-7762-b80c-b1dd18b0d013` | App-native documentation secretary for scheduled context-memory/index updates, documentation consistency review, and cache-first migration drafts. Legacy internal key: `CodexContextMaintenanceAgent`; former title: `MoSim｜Codex 上下文维护部`. |
+| `MoSim｜Codex 上下文维护部` | `019eab73-c5bc-7740-a6d1-5e0541bdb0c5` | App-native documentation secretary/context-maintenance route for scheduled context-memory/index updates, documentation consistency review, and cache-first migration drafts. Legacy internal key: `CodexContextMaintenanceAgent`; former titles include `MoSim｜文档秘书部` and R-suffixed context-maintenance titles. |
 | `MoSim｜WechatCodex-已删除` | `019e8358-86b4-7070-8fd6-a2b4f4d2af97` | Historical WeChat-side message path deleted by the user on 2026-06-08; inactive for MoSim notifications, not visible, not a routing/no-op/recovery target unless the user explicitly restores WeChat diagnosis with a new scoped route |
 
 Replacement rule: if a listed department is replaced with an App-native R2
@@ -321,9 +322,9 @@ Historical deleted or absent thread note:
   gateway procedures remain historical in AGENTS.md,
   Docs/Workflows/debug_mcp.md, Docs/Workflows/coagent_meta_maintenance.md, and
   Results/coagent_gateway/.
-019e3dac-de0e-7180-98ad-d7137e8a6275: old MoSim｜Codex 上下文维护部,
-  superseded by App-native `MoSim｜文档秘书部`
-  019e9be0-f6ac-7762-b80c-b1dd18b0d013. Reusable
+019e3dac-de0e-7180-98ad-d7137e8a6275: old WSL-migrated MoSim｜Codex 上下文维护部,
+  superseded for current dispatch by App-native `MoSim｜Codex 上下文维护部`
+  019eab73-c5bc-7740-a6d1-5e0541bdb0c5. Reusable
   context recovery content is landed in Docs/Workflows/new_conversation_context.md,
   Docs/Workflows/session_memory_migration.md, Docs/Index/project_work_memory_index.md,
   and Docs/Cache/session_memory_migration/.
@@ -350,8 +351,8 @@ allowlist in `CoAgent/dispatch/department_threads.json`; if one of these old IDs
 is absent from the current visible scan, treat it as gone and remove it from
 dispatchable registry rather than trying to resume, restore, archive, or route
 work to it. Future context-memory and documentation-secretary work routes to
-`MoSim｜文档秘书部`
-(`019e9be0-f6ac-7762-b80c-b1dd18b0d013`). Durable documentation updates are no
+`MoSim｜Codex 上下文维护部`
+(`019eab73-c5bc-7740-a6d1-5e0541bdb0c5`). Durable documentation updates are no
 longer centralized in a secretary thread; each responsible thread must update
 the relevant project docs before returning completion.
 
@@ -455,7 +456,7 @@ Planned recurring automation candidates:
 | Workflow/skills improvement | Responsible task thread or `MoSim｜CoAgent运维平台` | Inspect recent incidents and update workflows/skills when they become reusable rules |
 | External-repo inventory update | `MoSim｜开源项目探针` | Crawl or inventory relevant open-source projects and produce manifests |
 | External-learning review | `MoSim｜开源项目学习` | Study crawled projects/vendor articles and return adopt/reject proposals |
-| Context-memory drift check | `MoSim｜文档秘书部` | Update new-conversation context, memory index, and recovery notes; `MoSim｜Codex 上下文维护` is alias/history only |
+| Context-memory drift check | `MoSim｜Codex 上下文维护部` | Update new-conversation context, memory index, and recovery notes; `MoSim｜文档秘书部` and R-suffixed context-maintenance titles are alias/history only |
 | Git/release hygiene | `MoSim｜DevOps 发布` | Check large files, ignored/generated assets, split commits, and push readiness |
 | Security constraint scan | Task owner with preflight/harness checks | Apply path/secrets/destructive-operation/license constraints without creating a security department |
 
@@ -468,7 +469,7 @@ Preferred automation candidates now that native surfaces are available:
 1. PMO/CoAgentOps heartbeat: do not wake the archived WeChat gateway route.
    Use email-only notifications and check only active-visible departments plus
    explicit recovery validation targets.
-2. Context recovery drift: wake `MoSim｜文档秘书部`, compare the current
+2. Context recovery drift: wake `MoSim｜Codex 上下文维护部`, compare the current
    thread registry and startup docs, then return a packet.
 3. Hook/preflight health: run hook smoke tests and `codex doctor`; if hook trust
    or feature availability changed, update `CoAgent/hooks/README.md`.

@@ -155,6 +155,66 @@ FQuadrotorMworksCommandResult UQuadrotorMworksUdpCommandSenderComponent::SendCom
     return Result;
 }
 
+bool UQuadrotorMworksUdpCommandSenderComponent::BuildPendingRequestCaptureJson(
+    const FQuadrotorMworksCommandResult& CommandResult,
+    FString& PendingRequestCaptureJson,
+    FString& RejectReason) const
+{
+    PendingRequestCaptureJson.Reset();
+    RejectReason.Reset();
+
+    if (!CommandResult.RejectReason.IsEmpty())
+    {
+        RejectReason = TEXT("command_result_rejected");
+        return false;
+    }
+    if (CommandResult.PacketJson.IsEmpty())
+    {
+        RejectReason = TEXT("missing_command_packet_json");
+        return false;
+    }
+
+    TSharedPtr<FJsonObject> CommandPacket;
+    const TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(CommandResult.PacketJson);
+    if (!FJsonSerializer::Deserialize(Reader, CommandPacket) || !CommandPacket.IsValid())
+    {
+        RejectReason = TEXT("invalid_command_packet_json");
+        return false;
+    }
+
+    FString Schema;
+    if (!CommandPacket->TryGetStringField(TEXT("schema"), Schema) || Schema != CommandSchema)
+    {
+        RejectReason = TEXT("not_mosim_ue_command_v1");
+        return false;
+    }
+
+    FString RequestId;
+    if (!CommandPacket->TryGetStringField(TEXT("request_id"), RequestId) || RequestId.IsEmpty())
+    {
+        RejectReason = TEXT("missing_request_id");
+        return false;
+    }
+
+    TSharedRef<FJsonObject> Capture = MakeShared<FJsonObject>();
+    Capture->SetStringField(TEXT("artifact"), TEXT("pending_request_capture.json"));
+    Capture->SetStringField(TEXT("schema"), TEXT("mosim.ue_runtime_probe_capture.pending_request.v1"));
+    Capture->SetStringField(TEXT("captured_schema"), CommandSchema);
+    Capture->SetStringField(TEXT("request_id"), RequestId);
+    Capture->SetBoolField(TEXT("pending_request_captured_before_echo"), true);
+    Capture->SetBoolField(TEXT("accepted_as_runtime_ack"), false);
+    Capture->SetObjectField(TEXT("command_packet"), CommandPacket.ToSharedRef());
+
+    TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&PendingRequestCaptureJson);
+    if (!FJsonSerializer::Serialize(Capture, Writer))
+    {
+        PendingRequestCaptureJson.Reset();
+        RejectReason = TEXT("serialize_pending_request_capture_failed");
+        return false;
+    }
+    return true;
+}
+
 bool UQuadrotorMworksUdpCommandSenderComponent::EnsureSocket()
 {
     if (SenderSocket)

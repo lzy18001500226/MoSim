@@ -1,24 +1,17 @@
-[MoSim Task Packet]
+﻿[MoSim Task Packet]
 task_id: COAGENT-ARCH-LONGRUN-01-VERIFY-01
 task_class: clear_task
 role: VerificationAgent
-objective: VerificationAgent 对 COAGENT-ARCH-LONGRUN-01 的验证评价协议、stress tests 和防跑偏指标进行只读审查，指出验收是否足以防止长任务跑偏。
-project_goal: CoAgent 架构设计
-phase_objective: CoAgent 架构设计
-canonical_task_goal: VerificationAgent 对 COAGENT-ARCH-LONGRUN-01 的验证评价协议、stress tests 和防跑偏指标进行只读审查，指出验收是否足以防止长任务跑偏。
-conversation_objective: 只读审查指定架构材料并写 result packet。
-accountable_owner: VerificationAgent
+objective: VerificationAgent 瀵?COAGENT-ARCH-LONGRUN-01 鐨勯獙璇佽瘎浠峰崗璁€乻tress tests 鍜岄槻璺戝亸鎸囨爣杩涜鍙瀹℃煡锛屾寚鍑洪獙鏀舵槸鍚﹁冻浠ラ槻姝㈤暱浠诲姟璺戝亸銆?project_goal: CoAgent 鏋舵瀯璁捐
+phase_objective: CoAgent 鏋舵瀯璁捐
+canonical_task_goal: VerificationAgent 瀵?COAGENT-ARCH-LONGRUN-01 鐨勯獙璇佽瘎浠峰崗璁€乻tress tests 鍜岄槻璺戝亸鎸囨爣杩涜鍙瀹℃煡锛屾寚鍑洪獙鏀舵槸鍚﹁冻浠ラ槻姝㈤暱浠诲姟璺戝亸銆?conversation_objective: 鍙瀹℃煡鎸囧畾鏋舵瀯鏉愭枡骞跺啓 result packet銆?accountable_owner: VerificationAgent
 supporting_departments: []
 read_scope: ["CoAgent/doctor", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01", "CoAgent/tests"]
 write_scope: ["Results/agent_packets"]
-acceptance: 返回 schema-valid result packet，包含结论、证据、风险、下一步，不修改项目源文件。
-definition_of_done: 返回 schema-valid result packet，包含结论、证据、风险、下一步，不修改项目源文件。
-non_goals: []
+acceptance: 杩斿洖 schema-valid result packet锛屽寘鍚粨璁恒€佽瘉鎹€侀闄┿€佷笅涓€姝ワ紝涓嶄慨鏀归」鐩簮鏂囦欢銆?definition_of_done: 杩斿洖 schema-valid result packet锛屽寘鍚粨璁恒€佽瘉鎹€侀闄┿€佷笅涓€姝ワ紝涓嶄慨鏀归」鐩簮鏂囦欢銆?non_goals: []
 required_evidence: ["CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/verification_evaluation_protocol.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/stress_test_px4_parameter_identification.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/stress_test_ue_scene_truth_product.md"]
-stop_condition: 如无法读取上下文、无法写 result packet、或 transport/provider 失败，则返回 blocker 或由主线程记录 blocker。
-appetite: bounded to declared task scope
-circuit_breaker: 如无法读取上下文、无法写 result packet、或 transport/provider 失败，则返回 blocker 或由主线程记录 blocker。
-checkpoint_plan: checkpoint on blocker, scope change, or completion
+stop_condition: 濡傛棤娉曡鍙栦笂涓嬫枃銆佹棤娉曞啓 result packet銆佹垨 transport/provider 澶辫触锛屽垯杩斿洖 blocker 鎴栫敱涓荤嚎绋嬭褰?blocker銆?appetite: bounded to declared task scope
+circuit_breaker: 濡傛棤娉曡鍙栦笂涓嬫枃銆佹棤娉曞啓 result packet銆佹垨 transport/provider 澶辫触锛屽垯杩斿洖 blocker 鎴栫敱涓荤嚎绋嬭褰?blocker銆?checkpoint_plan: checkpoint on blocker, scope change, or completion
 escalation_conditions: []
 review_gates: []
 dependencies: []
@@ -34,12 +27,12 @@ close_condition:
 review_owner: MainAgent
 human_review_points: []
 git_status:
-metadata: {"accountable_owner": "VerificationAgent", "allowed_actions": ["read project files", "write one result packet under Results/agent_packets"], "canonical_task_goal": "VerificationAgent 对 COAGENT-ARCH-LONGRUN-01 的验证评价协议、stress tests 和防跑偏指标进行只读审查，指出验收是否足以防止长任务跑偏。", "conversation_objective": "只读审查指定架构材料并写 result packet。", "forbidden_actions": ["modify source docs", "run broad git", "create new conversations", "change canonical goal"], "next_action": "dispatch to active department conversation with 60s bounded transport", "parent_goal": "CoAgent 架构设计", "parent_task_id": "COAGENT-ARCH-LONGRUN-01", "required_evidence": ["CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/verification_evaluation_protocol.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/stress_test_px4_parameter_identification.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/stress_test_ue_scene_truth_product.md"], "review_owner": "MainAgent", "task_class": "clear_task"}
-result_file: Results/agent_packets/COAGENT-ARCH-LONGRUN-01-VERIFY-01.yaml
+metadata: {"accountable_owner": "VerificationAgent", "allowed_actions": ["read project files", "write one result packet under Results/agent_packets"], "canonical_task_goal": "VerificationAgent 瀵?COAGENT-ARCH-LONGRUN-01 鐨勯獙璇佽瘎浠峰崗璁€乻tress tests 鍜岄槻璺戝亸鎸囨爣杩涜鍙瀹℃煡锛屾寚鍑洪獙鏀舵槸鍚﹁冻浠ラ槻姝㈤暱浠诲姟璺戝亸銆?, "conversation_objective": "鍙瀹℃煡鎸囧畾鏋舵瀯鏉愭枡骞跺啓 result packet銆?, "forbidden_actions": ["modify source docs", "run broad git", "create new conversations", "change canonical goal"], "next_action": "dispatch to active department conversation with 60s bounded transport", "parent_goal": "CoAgent 鏋舵瀯璁捐", "parent_task_id": "COAGENT-ARCH-LONGRUN-01", "required_evidence": ["CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/verification_evaluation_protocol.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/stress_test_px4_parameter_identification.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/stress_test_ue_scene_truth_product.md"], "review_owner": "MainAgent", "task_class": "clear_task"}
+result_file: Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-VERIFY-01.yaml
 
 [Required Output Format]
 Write exactly one result packet to:
-Results/agent_packets/COAGENT-ARCH-LONGRUN-01-VERIFY-01.yaml
+Results/agent_packets/tasks/coagent_architecture/COAGENT-ARCH-LONGRUN-01-VERIFY-01.yaml
 
 Required fields:
 task_id, status, canonical_status, task_class, summary, owner, role,

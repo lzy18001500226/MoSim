@@ -30,4 +30,57 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "MWORKS Experiment Console")
     FString GetSourceStaticReceiverBoundary() const;
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Experiment Console")
+    bool BuildRuntimeProbeManifestJson(
+        const FString& ProbeId,
+        const FString& RunId,
+        const FString& RequestId,
+        const FString& ProducerSource,
+        const FString& AckAuthority,
+        const FString& ProducerSurface,
+        const FString& ProducerInstanceId,
+        const FString& CaptureSessionId,
+        const FString& TransportCaptureId,
+        FString& RuntimeProbeManifestJson,
+        FString& RejectReason) const;
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Experiment Console")
+    bool BuildAuthoritativeEchoCaptureJson(
+        const FString& EchoJson,
+        const FString& ProducerSource,
+        const FString& AckAuthority,
+        const FString& CaptureSessionId,
+        const FString& TransportCaptureId,
+        UQuadrotorMworksExperimentConsoleCommandEchoReceiverComponent* CommandEchoReceiver,
+        FString& AuthoritativeEchoCaptureJson,
+        FString& RejectReason) const;
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Experiment Console")
+    bool BuildRequestEchoMatchReportJson(
+        const FString& PendingRequestCaptureJson,
+        const FString& AuthoritativeEchoCaptureJson,
+        FString& RequestEchoMatchReportJson,
+        FString& RejectReason) const;
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Experiment Console")
+    bool BuildNoPoseOverwriteReportJson(
+        const FString& EchoJson,
+        FString& NoPoseOverwriteReportJson,
+        FString& RejectReason) const;
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Experiment Console")
+    bool BuildFalseAckNegativeReportJson(
+        const TArray<FString>& CheckedSources,
+        FString& FalseAckNegativeReportJson,
+        FString& RejectReason) const;
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Experiment Console")
+    bool BuildTimeoutCleanupManifestJson(
+        float TimeoutSeconds,
+        int32 ProbeAttemptCount,
+        int32 RetryCount,
+        bool bCleanupCompleted,
+        FString& TimeoutCleanupManifestJson,
+        FString& RejectReason) const;
 };

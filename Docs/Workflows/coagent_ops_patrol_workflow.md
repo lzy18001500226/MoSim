@@ -411,14 +411,17 @@ Window action boundary:
   MWORKS/Sysplorer/Syslab window, foreground or maximized evidence, because
   hidden login panes can be missed by background capture.
 - If audit finds no reusable main window, CoAgentOps opens MWORKS directly,
-  captures a first screenshot after a short startup wait, then continues a
+  captures a first screenshot after 5 seconds, then continues a
   bounded stability check before classifying the state. Do not close the run by
   only reporting "window not open" when opening the window is the authorized
   recovery action.
 - Ordinary non-activation screenshots and approved low-risk background clicks
-  do not need maximization. Prefer the background Win32 route; if the target was
-  minimized and must be temporarily restored, restore it for the capture/action
-  and minimize it again afterward.
+  do not need maximization. Prefer the background Win32 `PrintWindow` route
+  `Scripts/tools/capture_window_background.ps1`; this is not a Windows MCP
+  foreground desktop screenshot. If the target was minimized and a full-window
+  review is required, use `-RestoreMinimized -Maximize -MaximizeWaitMs 500
+  -MinimizeAfter`, verify manifest `dpi_awareness` and physical capture size,
+  and leave the window minimized afterward.
 - If ordinary background capture shows blank, wrong, or ambiguous content,
   retry once after a short wait; only then escalate to foreground/maximized
   review or a blocker.
