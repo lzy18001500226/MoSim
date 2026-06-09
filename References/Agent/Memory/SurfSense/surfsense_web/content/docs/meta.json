@@ -1,0 +1,18 @@
+{
+	"title": "Documentation",
+	"description": "SurfSense Documentation",
+	"root": true,
+	"pages": [
+		"---Guides---",
+		"index",
+		"prerequisites",
+		"installation",
+		"manual-installation",
+		"docker-installation",
+		"connectors",
+		"how-to",
+		"---Developers---",
+		"testing",
+		"code-of-conduct"
+	]
+}

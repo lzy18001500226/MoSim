@@ -1,0 +1,393 @@
+import type { ZodType } from "zod";
+import { getClientPlatform } from "../agent-filesystem";
+import { getBearerToken, handleUnauthorized, refreshAccessToken } from "../auth-utils";
+import {
+	AbortedError,
+	AppError,
+	AuthenticationError,
+	AuthorizationError,
+	NetworkError,
+	NotFoundError,
+} from "../error";
+import { BACKEND_URL } from "@/lib/env-config";
+enum ResponseType {
+	JSON = "json",
+	TEXT = "text",
+	BLOB = "blob",
+	ARRAY_BUFFER = "arrayBuffer",
+	// Add more response types as needed
+}
+
+export type RequestOptions = {
+	method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+	headers?: Record<string, string>;
+	contentType?: "application/json" | "application/x-www-form-urlencoded";
+	signal?: AbortSignal;
+	body?: unknown;
+	responseType?: ResponseType;
+	_isRetry?: boolean; // Internal flag to prevent infinite retry loops
+	// Add more options as needed
+};
+
+class BaseApiService {
+	baseUrl: string;
+
+	noAuthEndpoints: string[] = ["/auth/jwt/login", "/auth/register", "/auth/refresh"];
+
+	// Prefixes that don't require auth (checked with startsWith)
+	noAuthPrefixes: string[] = ["/api/v1/public/"];
+
+	// Use a getter to always read fresh token from localStorage
+	// This ensures the token is always up-to-date after login/logout
+	get bearerToken(): string {
+		return typeof window !== "undefined" ? getBearerToken() || "" : "";
+	}
+
+	constructor(baseUrl: string) {
+		this.baseUrl = baseUrl;
+	}
+
+	// Keep for backward compatibility, but token is now always read from localStorage
+	setBearerToken(_bearerToken: string) {
+		// No-op: token is now always read fresh from localStorage via the getter
+	}
+
+	async request<T, R extends ResponseType = ResponseType.JSON>(
+		url: string,
+		responseSchema?: ZodType<T>,
+		options?: RequestOptions & { responseType?: R }
+	): Promise<
+		R extends ResponseType.JSON
+			? T
+			: R extends ResponseType.TEXT
+				? string
+				: R extends ResponseType.BLOB
+					? Blob
+					: R extends ResponseType.ARRAY_BUFFER
+						? ArrayBuffer
+						: unknown
+	> {
+		try {
+			/**
+			 * ----------
+			 * REQUEST
+			 * ----------
+			 */
+			const defaultOptions: RequestOptions = {
+				headers: {
+					Authorization: `Bearer ${this.bearerToken || ""}`,
+					"X-SurfSense-Client-Platform":
+						typeof window === "undefined" ? "web" : getClientPlatform(),
+				},
+				method: "GET",
+				responseType: ResponseType.JSON,
+			};
+
+			const mergedOptions: RequestOptions = {
+				...defaultOptions,
+				...(options ?? {}),
+				headers: {
+					...defaultOptions.headers,
+					...(options?.headers ?? {}),
+				},
+			};
+
+			// Validate the base URL
+			if (!this.baseUrl) {
+				throw new AppError("Base URL is not set.");
+			}
+
+			// Validate the bearer token
+			const isNoAuthEndpoint =
+				this.noAuthEndpoints.includes(url) ||
+				this.noAuthPrefixes.some((prefix) => url.startsWith(prefix)) ||
+				/^\/api\/v1\/invites\/[^/]+\/info$/.test(url);
+			if (!this.bearerToken && !isNoAuthEndpoint) {
+				throw new AuthenticationError("You are not authenticated. Please login again.");
+			}
+
+			// Construct the full URL
+			const fullUrl = new URL(url, this.baseUrl).toString();
+
+			// Prepare fetch options
+			const fetchOptions: RequestInit = {
+				method: mergedOptions.method,
+				headers: mergedOptions.headers,
+				signal: mergedOptions.signal,
+			};
+
+			// Automatically stringify body if Content-Type is application/json and body is an object
+			if (mergedOptions.body !== undefined) {
+				const contentType = mergedOptions.headers?.["Content-Type"];
+				if (contentType === "application/json" && typeof mergedOptions.body === "object") {
+					fetchOptions.body = JSON.stringify(mergedOptions.body);
+				} else {
+					// Pass body as-is for other content types (e.g., form data, already stringified)
+					fetchOptions.body = mergedOptions.body;
+				}
+			}
+
+			const response = await fetch(fullUrl, fetchOptions);
+
+			/**
+			 * ----------
+			 * RESPONSE
+			 * ----------
+			 */
+
+			// Handle errors
+			if (!response.ok) {
+				// biome-ignore lint/suspicious: Unknown
+				let data;
+
+				try {
+					data = await response.json();
+				} catch (error) {
+					console.error("Failed to parse response as JSON: ", JSON.stringify(error));
+					throw new AppError("Failed to parse response", response.status, response.statusText);
+				}
+
+				// Extract structured fields from new envelope or legacy shape
+				const envelope = typeof data === "object" && data?.error;
+				const errorMessage: string =
+					envelope?.message ??
+					(typeof data === "object" && typeof data?.detail === "string" ? data.detail : "");
+				const errorCode: string | undefined = envelope?.code;
+				const requestId: string | undefined =
+					envelope?.request_id ?? response.headers.get("X-Request-ID") ?? undefined;
+				const reportUrl: string | undefined = envelope?.report_url;
+
+				// Handle 401 - try to refresh token first (only once)
+				if (response.status === 401) {
+					if (!options?._isRetry) {
+						const newToken = await refreshAccessToken();
+						if (newToken) {
+							return this.request(url, responseSchema, {
+								...mergedOptions,
+								headers: {
+									...mergedOptions.headers,
+									Authorization: `Bearer ${newToken}`,
+								},
+								_isRetry: true,
+							} as RequestOptions & { responseType?: R });
+						}
+					}
+					handleUnauthorized();
+					throw new AuthenticationError(
+						errorMessage || "You are not authenticated. Please login again.",
+						response.status,
+						response.statusText
+					);
+				}
+
+				// Map status to typed error
+				switch (response.status) {
+					case 403:
+						throw new AuthorizationError(
+							errorMessage || "You don't have permission to access this resource.",
+							response.status,
+							response.statusText
+						);
+					case 404:
+						throw new NotFoundError(
+							errorMessage || "Resource not found",
+							response.status,
+							response.statusText
+						);
+					default:
+						throw new AppError(
+							errorMessage || "Something went wrong",
+							response.status,
+							response.statusText,
+							errorCode,
+							requestId,
+							reportUrl
+						);
+				}
+			}
+
+			// biome-ignore lint/suspicious: Unknown
+			let data;
+			const responseType = mergedOptions.responseType;
+
+			try {
+				switch (responseType) {
+					case ResponseType.JSON:
+						data = await response.json();
+						break;
+					case ResponseType.TEXT:
+						data = await response.text();
+						break;
+					case ResponseType.BLOB:
+						data = await response.blob();
+						break;
+					case ResponseType.ARRAY_BUFFER:
+						data = await response.arrayBuffer();
+						break;
+					//  Add more cases as needed
+					default:
+						data = await response.json();
+				}
+			} catch (error) {
+				console.error("Failed to parse response as JSON:", error);
+				throw new AppError("Failed to parse response", response.status, response.statusText);
+			}
+
+			// Validate response
+			if (responseType === ResponseType.JSON) {
+				if (!responseSchema) {
+					return data;
+				}
+				const parsedData = responseSchema.safeParse(data);
+
+				if (!parsedData.success) {
+					/** The request was successful, but the response data does not match the expected schema.
+					 * 	This is a client side error, and should be fixed by updating the responseSchema to keep things typed.
+					 *  This error should not be shown to the user , it is for dev only.
+					 */
+					console.error(`Invalid API response schema - ${url} :`, JSON.stringify(parsedData.error));
+				}
+
+				return data;
+			}
+
+			return data;
+		} catch (error) {
+			// Normalize browser-level fetch failures before anything else
+			if (error instanceof DOMException && error.name === "AbortError") {
+				throw new AbortedError();
+			}
+			if (error instanceof TypeError && !(error instanceof AppError)) {
+				throw new NetworkError(
+					"Unable to connect to the server. Check your internet connection and try again."
+				);
+			}
+
+			console.error("Request failed:", JSON.stringify(error));
+			if (!(error instanceof AuthenticationError)) {
+				import("posthog-js")
+					.then(({ default: posthog }) => {
+						posthog.captureException(error, {
+							api_url: url,
+							api_method: options?.method ?? "GET",
+							...(error instanceof AppError && {
+								status_code: error.status,
+								status_text: error.statusText,
+								error_code: error.code,
+								request_id: error.requestId,
+							}),
+						});
+					})
+					.catch(() => {
+						console.error("Failed to capture exception in PostHog");
+					});
+			}
+			throw error;
+		}
+	}
+
+	async get<T>(
+		url: string,
+		responseSchema?: ZodType<T>,
+		options?: Omit<RequestOptions, "method" | "responseType">
+	) {
+		return this.request(url, responseSchema, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			...options,
+			responseType: ResponseType.JSON,
+		});
+	}
+
+	async post<T>(
+		url: string,
+		responseSchema?: ZodType<T>,
+		options?: Omit<RequestOptions, "method" | "responseType">
+	) {
+		return this.request(url, responseSchema, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			...options,
+			responseType: ResponseType.JSON,
+		});
+	}
+
+	async put<T>(
+		url: string,
+		responseSchema?: ZodType<T>,
+		options?: Omit<RequestOptions, "method" | "responseType">
+	) {
+		return this.request(url, responseSchema, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			...options,
+			responseType: ResponseType.JSON,
+		});
+	}
+
+	async delete<T>(
+		url: string,
+		responseSchema?: ZodType<T>,
+		options?: Omit<RequestOptions, "method" | "responseType">
+	) {
+		return this.request(url, responseSchema, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			...options,
+			responseType: ResponseType.JSON,
+		});
+	}
+
+	async patch<T>(
+		url: string,
+		responseSchema?: ZodType<T>,
+		options?: Omit<RequestOptions, "method" | "responseType">
+	) {
+		return this.request(url, responseSchema, {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			...options,
+			responseType: ResponseType.JSON,
+		});
+	}
+
+	async getBlob(url: string, options?: Omit<RequestOptions, "method" | "responseType">) {
+		return this.request(url, undefined, {
+			...options,
+			method: "GET",
+			responseType: ResponseType.BLOB,
+		});
+	}
+
+	async postFormData<T>(
+		url: string,
+		responseSchema?: ZodType<T>,
+		options?: Omit<RequestOptions, "method" | "responseType" | "body"> & { body: FormData }
+	) {
+		// Remove Content-Type from options headers if present
+		const { "Content-Type": _, ...headersWithoutContentType } = options?.headers ?? {};
+
+		return this.request(url, responseSchema, {
+			method: "POST",
+			...options,
+			headers: {
+				// Don't set Content-Type - let browser set it with multipart boundary
+				Authorization: `Bearer ${this.bearerToken}`,
+				...headersWithoutContentType,
+			},
+			responseType: ResponseType.JSON,
+		});
+	}
+}
+
+export const baseApiService = new BaseApiService(BACKEND_URL);
