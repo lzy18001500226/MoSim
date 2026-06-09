@@ -1,0 +1,62 @@
+"use client";
+
+import { ChevronsUpDown, Settings, UserPen } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import type { SearchSpace } from "../../types/layout.types";
+
+interface SidebarHeaderProps {
+	searchSpace: SearchSpace | null;
+	isCollapsed?: boolean;
+	onSettings?: () => void;
+	onManageMembers?: () => void;
+	className?: string;
+}
+
+export function SidebarHeader({
+	searchSpace,
+	isCollapsed,
+	onSettings,
+	onManageMembers,
+	className,
+}: SidebarHeaderProps) {
+	const t = useTranslations("sidebar");
+
+	return (
+		<div className={cn("flex min-w-0 flex-1 items-center", className)}>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button
+						variant="ghost"
+						className={cn(
+							"flex h-8 w-full items-center justify-between gap-1 overflow-hidden px-2 py-0.5 font-semibold",
+							isCollapsed && "w-10"
+						)}
+					>
+						<span className="truncate text-sm">
+							{searchSpace?.name ?? t("select_search_space")}
+						</span>
+						<ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="start" className="w-48">
+					<DropdownMenuItem onClick={onManageMembers}>
+						<UserPen className="h-4 w-4" />
+						{t("manage_members")}
+					</DropdownMenuItem>
+					<DropdownMenuItem onClick={onSettings}>
+						<Settings className="h-4 w-4" />
+						{t("search_space_settings")}
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+		</div>
+	);
+}
