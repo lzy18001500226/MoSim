@@ -1,0 +1,40 @@
+%% Activation diagram for Worker with `debugMode` option on
+sequenceDiagram
+    participant Server
+    participant Core as Rust Core
+    participant MT as Node Main Thread
+    participant VM as Workflow VM Sandbox
+
+    MT->>+Core: Poll Workflow Activation
+    opt No pending work
+        Core->>+Server: Poll Workflow Task
+        Server-->>-Core: Respond with Workflow Task
+    end
+    Core->>-MT: Respond with Activation
+    MT->>MT: Decode Payloads
+    MT->>+WT: Run Workflow Activation
+
+    WT->>VM: Update Activator (now, WorkflowInfo, SDK flags, patches)
+
+    alt "Single Batch mode"
+        WT->>VM: Activate(queries)
+        VM->>VM: Run Microtasks
+        WT->>VM: Try Unblock Conditions
+    else Legacy "Multi Batches mode"
+        loop [signals, updates+completions] as jobs
+            WT->>VM: Activate(jobs)
+            VM->>VM: Run Microtasks
+            WT->>VM: Try Unblock Conditions
+        end
+    end
+
+    MT->>VM: Collect Commands
+    MT->>MT: Encode Payloads
+    MT->>+VM: Collect Sink Calls
+    VM-->>-MT: Respond with Sink Calls
+    MT->>MT: Run Sink Functions
+    MT->>Core: Complete Activation
+    opt Completed Workflow Task
+        Core->>Server: Complete Workflow Task
+    end
+
