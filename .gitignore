@@ -347,6 +347,7 @@ References/**/*.7z
 References/**/*.rar
 References/**/*.tar
 References/**/*.tar.gz
+References/**/*.whl
 # PX4 board dist folders contain source/config inputs, not generated outputs.
 !References/PX4/PX4/boards/**/dist/
 !References/PX4/PX4/boards/**/dist/**
