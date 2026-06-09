@@ -1,0 +1,7 @@
+References/Agent/Platforms/plandex/.github/workflows/docker-publish.yml
+References/Agent/Platforms/plandex/app/docker-compose.yml
+References/Agent/Platforms/plandex/app/scripts/cmd/provider/gen_provider.go
+References/Agent/Platforms/plandex/app/server/Dockerfile
+References/Agent/Platforms/plandex/app/server/litellm_proxy.py
+References/Agent/Platforms/plandex/docs/docs/environment-variables.md
+References/Agent/Platforms/plandex/docs/docs/models/model-providers.md
