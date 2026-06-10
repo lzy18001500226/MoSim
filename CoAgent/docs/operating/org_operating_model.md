@@ -1,8 +1,12 @@
 # Agent Organization Operating Model
 
-> MoSim compatibility entrypoint. The portable CoAgent OS source of truth is
-> `CoAgent/docs/operating/org_operating_model.md`; keep reusable agent-OS
-> changes there first, then mirror only MoSim-specific adapter notes here.
+> Conservative no-loss migration landing. This file was seeded from
+> `Docs/Workflows/org_operating_model.md` on 2026-06-10 so organization,
+> ownership, department-boundary, and visible-thread rules are not lost while
+> CoAgent is made portable. It is currently a mixed portable-core +
+> MoSim-adapter copy. Do not slim this file or its MoSim compatibility source
+> until `CoAgent/docs/operating/MIGRATION_MAP.md` records each removed block as
+> exact, equivalent, intentionally host-local, or obsolete.
 
 > Use this file as the operational structure for multi-agent work. `AGENTS.md`
 > stays policy-level; this file defines departments, responsibilities, records,

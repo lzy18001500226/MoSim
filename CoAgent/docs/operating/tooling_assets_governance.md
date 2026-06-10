@@ -1,9 +1,12 @@
 # Tooling Assets Governance
 
-> MoSim compatibility entrypoint. The portable CoAgent OS source of truth is
-> `CoAgent/docs/operating/tooling_assets_governance.md`; keep reusable
-> native-surface/tooling governance there first, then mirror only MoSim-specific
-> MWORKS/ROS2/UE/tooling adapter notes here.
+> Conservative no-loss migration landing. This file was seeded from
+> `Docs/Workflows/tooling_assets_governance.md` on 2026-06-10 so native-surface,
+> tooling, hook, context-hygiene, and entry-document slimming rules are not lost
+> while CoAgent is made portable. It is currently a mixed portable-core +
+> MoSim-adapter copy. Do not slim this file or its MoSim compatibility source
+> until `CoAgent/docs/operating/MIGRATION_MAP.md` records each removed block as
+> exact, equivalent, intentionally host-local, or obsolete.
 
 > Purpose: maintain MoSim plugins, MCP servers, project-local skills, workflow
 > docs, and crawled reference projects without creating a standing

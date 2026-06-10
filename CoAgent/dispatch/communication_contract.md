@@ -157,23 +157,26 @@ Dispatch monitoring sequence:
 ```text
 1. Before send, create the dispatch ticket and set dispatcher_owns_slo_closure=true.
 2. Send the visible-thread task packet.
-3. Immediately read_thread once and record last_observed_turn.
-4. If no visible turn is observed, set second_readback_due_if_no_visible_turn
+3. The target thread's first execution step, except for exact no-op probes,
+   is to create or update one durable project-local artifact declared by the
+   packet's durable_start_requirement.
+4. Immediately read_thread once and record last_observed_turn.
+5. If no visible turn is observed, set second_readback_due_if_no_visible_turn
    within 2 minutes of sent_at and read again before that due time.
-5. If a visible turn is observed but it only remains in progress/thinking and
-   has no agent output, final response, checkpoint, expected return packet,
-   blocker packet, approval/provider surface, or context-compression surface
-   by first_agent_output_due, set breach_action to
+6. If a visible turn is observed but it only remains in progress/thinking and
+   has no durable-start artifact, agent output, final response, checkpoint,
+   expected return packet, blocker packet, approval/provider surface, or
+   context-compression surface by first_agent_output_due, set breach_action to
    dispatch_surface_failure_suspected and write a blocker/recovery packet.
-6. If 5 minutes after sent_at there is still no meaningful progress, set
+7. If 5 minutes after sent_at there is still no meaningful progress, set
    breach_action to dispatch_surface_failure_suspected and write a
    blocker/recovery packet. A visible in-progress turn without agent output is
    not meaningful progress.
-7. The dispatcher that sent the task owns this ticket until it reaches a
+8. The dispatcher that sent the task owns this ticket until it reaches a
    terminal state: expected_return_packet_seen, blocker_packet_seen,
    completed_without_expected_packet with escalation, approval/provider surface,
    context-compression surface, or dispatch_surface_failure_suspected.
-8. Do not duplicate-dispatch the same request while delivery/readback remains
+9. Do not duplicate-dispatch the same request while delivery/readback remains
    ambiguous.
 ```
 
@@ -181,7 +184,7 @@ SLO profiles:
 
 | Task type | Expected packet due | Extra requirement |
 |---|---:|---|
-| `source_static` | 10-20 minutes after `sent_at` | agent output/packet/checkpoint or explicit surface must appear inside the 5-minute surface window |
+| `source_static` | 10-20 minutes after `sent_at` | durable-start artifact, agent output, packet, checkpoint, or explicit surface must appear inside the 5-minute surface window |
 | `control_plane` / `packet_contract_fix` | 10-20 minutes after `sent_at` | same 5-minute meaningful-progress window |
 | `dispatch_surface_diagnostic` / `recovery_validation` | 2-10 minutes after `sent_at` | same 5-minute meaningful-progress window |
 | `live_runtime` / `mworks_gui` | may run longer, normally up to the declared ticket due time | `checkpoint_due` is required and must be within 10 minutes of `sent_at` |
@@ -189,34 +192,63 @@ SLO profiles:
 
 The 5-minute rule is not a completion timeout. It detects an unhealthy
 delivery/readback surface. A long live/runtime task may continue past 5 minutes
-only if PMO or CoAgentOps can see agent output, checkpoint, approval/provider
-surface, expected return packet, blocker packet, or context-compression
-surface. A visible turn stuck in "thinking"/in-progress with no agent output is
-not enough to continue waiting.
+only if PMO or CoAgentOps can see a durable-start artifact, agent output,
+checkpoint, approval/provider surface, expected return packet, blocker packet,
+or context-compression surface. A visible turn stuck in "thinking"/in-progress
+with no durable artifact or agent output is not enough to continue waiting.
 
-When a visible-thread row or transcript is slow to refresh, first record the
-observation as `view_refresh_required` in the dispatch ticket or recovery
-packet notes. Do not classify it as a dead thread until a bounded refresh
-sweep, native read/send checks, expected packet checks, and approval/provider/
-context inspection all fail to produce agent output, ACK, checkpoint,
-return/blocker packet, or a known UI blocker. A bounded refresh sweep means
-using background UI Automation/Win32 clicking and capture when available,
-clicking through every relevant active visible MoSim thread title one by one,
-staying on each selected thread for about 0.5 seconds, capturing a screenshot or
-visual observation, and then moving to the next row. Do not bring Codex App
-foreground or maximize it only for ordinary refresh patrol; foreground/maximized
-evidence is reserved for activation, login, license, authorization, or explicit
-GUI review gates. Select only the title-text area; do not click approval/review/
-send/restart/login/save/archive/delete/pin/overflow/composer controls, the
-`Pinned`/`置顶` section label, the project folder row `MoSim`, or unknown
-controls. If the MoSim list is collapsed, click only `展开显示`, wait about 0.5
-seconds, re-read the UI tree, and then resume thread-title selection. If the
-screenshot is blank/all-white like an unloaded transcript surface, record
-`blank_view_observed=true`, keep the thread in `view_refresh_required`, and move
-to the next thread immediately. On the next pass or next heartbeat round, retry
-the blank thread the same way until a nonblank transcript/status surface loads;
-only then confirm its state. A slow or blank view is refresh evidence, not
-failure evidence by itself.
+`durable_start_requirement` is required for non-trivial visible-department
+dispatches. It should name the first artifact path or artifact class, the due
+time, and the minimum content. Acceptable first artifacts include a checkpoint,
+return packet, blocker packet, task-local notes file, declared output scaffold,
+or another small project-local file inside the packet write scope. The artifact
+does not prove completion; it proves that the target execution surface started
+and can write recoverable state. Exact no-op probes that explicitly forbid file
+writes are exempt.
+
+The preferred first artifact is a runtime lease:
+
+```text
+Results/runtime_leases/<target_thread_id>/<request_id>.json
+```
+
+Minimum runtime lease content:
+
+```json
+{
+  "request_id": "<request_id>",
+  "target_thread_id": "<target_thread_id>",
+  "nonce": "<unique dispatch nonce from the ticket/task packet>",
+  "started_at": "<ISO timestamp>",
+  "last_checkpoint_at": "<ISO timestamp>",
+  "current_phase": "started|reading|planning|editing|verifying|blocked|returning",
+  "next_checkpoint_due_at": "<ISO timestamp>"
+}
+```
+
+The dispatcher must put a fresh nonce in the ticket and task packet. The target
+thread must echo the same nonce in the runtime lease so patrol can reject stale
+lease files from older attempts. If the target thread shows a visible in-
+progress turn but no matching runtime lease, agent output, checkpoint, packet,
+approval/provider surface, or context-compression surface by the 5-minute
+surface window, classify it as `dispatch_surface_failure_suspected`.
+
+Codex App transcript clicking is not the default liveness mechanism. Slow or
+blank transcript views should be recorded as `view_refresh_required`, then
+classified through native read/send checks, expected packet checks, durable
+artifact checks, approval/provider/context inspection, and main-shell
+observation. Do not click through every thread as a routine heartbeat. A
+host-project adapter may authorize a bounded UI refresh exception only for a
+specific incident; the exception must forbid approval/review/send/restart/
+login/save/archive/delete/pin/overflow/composer controls and must not be used
+as ordinary progress evidence.
+
+The 10-minute patrol may capture or inspect the Codex App main shell/list area
+when the native desktop surface is available. Its default UI purpose is only to
+detect global pending-approval/review/provider indicators, such as a green
+`待批准`/approval badge in the left thread list, and send a sparse Chinese email
+or PMO notice. It must not click the badge or treat the badge as a dead-thread
+failure.
 
 PMO board entries for active dispatch monitoring must stay short. The board
 shows only these columns:
@@ -246,6 +278,12 @@ Task packets should include:
 native_surface_gate:
   selected_native_surface: [visible_thread, coagent_packet_glue]
   surface_selection_reason: durable department context plus packet return is required
+  capability_index_consulted: Docs/Index/capability_index.md
+  selected_capabilities:
+    - Codex visible thread dispatch
+    - Review / evidence gate
+  rejected_capabilities:
+    Disposable subagent: disposable context is insufficient
   rejected_surfaces:
     subagent: disposable context is insufficient
     codex_exec: hidden formal dispatch is not accepted without visible delivery
@@ -268,6 +306,13 @@ the checker enforces the current routing fields before dispatch:
 python Scripts\quality\check_agent_task_native_surface_gate.py `
   CoAgent\protocol\templates\visible_thread_dispatch_packet.json --strict
 ```
+
+Capability fields are advisory routing evidence, not permission. A selected
+capability means PMO or the dispatcher considered that surface. Actual
+authority still comes from `read_scope`, `write_scope`, `allowed_actions`,
+`forbidden_actions`, `semantic_boundary`, domain gates, hooks/checkers, and
+PMO/user approval when required. If a rule is mechanically enforceable, prefer
+a checker, schema, or hook over prose-only workflow text.
 
 ## Department Local Planning Template
 
@@ -469,230 +514,27 @@ Domain-specific gates such as the MWORKS live gate still apply on top of it.
 
 ## Domain Dispatch Gates
 
-Use the matching domain gate in addition to the generic local-planning block.
-These gates should be present in the dispatch prompt, not only remembered by
-PMO.
+Use the matching host-project domain gate in addition to the generic
+local-planning block. These gates must be present in the dispatch prompt, not
+only remembered by PMO.
 
-### ROS2 / RViz2 / FAST-LIO
+Portable CoAgent does not own MWORKS, ROS2, UE, or asset-specific engineering
+truth. Host projects must keep those rules in host adapters, workflows, skills,
+or checkers and point task packets to them.
 
-ROS2 runtime work must treat every live graph as a scarce, bounded probe. If
-the task says existing-evidence-only or no-rerun, the department must not
-launch ROS2; it closes from the existing evidence or returns a blocker.
-
-Before any live ROS2 graph, the department records a runtime preflight:
+For MoSim, the host adapter is:
 
 ```text
-ROS2 environment/source status
-stale MoSim/FAST-LIO/planner process check
-expected source-window and topic contract
-forbidden topic list
-probe_count budget
-cleanup plan
+Docs/Workflows/mosim_visible_dispatch_adapter.md
 ```
 
-Return/blocker packets for ROS2 runtime work must include the relevant runtime
-evidence, not only packet metadata:
+It contains the current MWORKS/Sysplorer/Syslab live gate, ROS2/RViz2/FAST-LIO
+runtime boundary, UE source/build/runtime/review boundary, Sunray150 asset/PBR
+boundary, R2/R3 failover specialization, and engineering-output requirements.
+Other projects should provide their own equivalent host adapter.
 
-```text
-ros2_preflight_before
-probe_count
-source_window_evidence
-topic_evidence
-FAST-LIO or planner evidence when in scope
-forbidden_topic_absence
-cleanup_summary
-claim_boundary
-```
-
-If source timestamps regress, FAST-LIO callback loop-back remains, required
-topics are absent, stale processes cannot be cleaned, or the one-probe budget
-is exhausted, the department stops and returns a blocker. It must not rerun
-until PMO issues a new task. A diagnostic FAST-LIO/source gate must not advance
-into RViz2, planner/EGO, PositionCommand, 20 Hz adapter, TF/RViz readiness, or
-controller claims unless the task packet explicitly opens that phase and the
-previous gate passed.
-
-### UE Experiment Console / Scene Interaction
-
-UE work must classify its scope as source-static, build, editor/runtime, or
-manual-review before execution. Completed UE work needs evidence that matches
-that scope: source/schema edits with tests, build/log evidence, runtime
-echo/transport evidence, or review screenshots/packets. A scene registry row,
-command schema, or JSON packet is not runtime ack.
-
-UE remains the operator/review/render surface. It must not teleport UAV pose,
-feed full UE truth to planners, or label controller/planner success without
-MWORKS/ROS2 evidence. If the task creates a review image/video/window, the
-department asks PMO to display it or send a concise review prompt instead of
-returning only a path.
-
-### Sunray150 Asset / PBR
-
-Sunray150 visual work must follow the DAE-derived Blender asset route and the
-Sunray PBR workflow. The department starts with source asset availability,
-component identity, material evidence, UV/material-slot limitations, and
-intended review outputs.
-
-Completed asset work must produce Blender/UE asset edits, material manifests,
-rendered close-ups/contact sheets, texture/PBR map evidence, or explicit
-failed-review images. A whole-aircraft Base Color pass or a JSON packet is not
-material progress. Asset/PBR work must not change geometry assembly, rotor
-centers, mass/inertia/motor/thrust constants, FAST-LIO extrinsics, ROS2/MWORKS
-runtime behavior, controller, or planner files unless PMO issues a separate
-task.
-
-For every task dispatched to a MWORKS/Sysplorer/Syslab department, the task
-packet must include a MWORKS live gate. Routine activation/window-health patrol
-is owned by `MoSim｜CoAgent运维平台` through its 10-minute automation, so MWORKS
-R1/R2 should reference the latest patrol and focus the business turn on
-engineering evidence. The target department must not spend the turn repeatedly
-proving activation or return only sentinel JSON as engineering progress.
-
-```yaml
-mworks_live_gate:
-  live_mworks_touched: true
-  mworks_window_policy: reuse_existing_session_default
-  activation_patrol_owner: CoAgentOps
-  recent_patrol_required: true
-  max_patrol_age_minutes: 30
-  required_return_fields:
-    - mworks_activation_patrol_reference
-    - mworks_activation_patrol_age_minutes when known
-    - mworks_phase_screenshots
-    - mworks_phase_observations
-    - will_not_click_activation_login=true
-    - live_mworks_touched
-  blocker_on:
-    - demo edition
-    - unactivated software
-    - login or activation prompt
-    - authorization/equation-limit failure
-    - GUI error-report dialog
-    - mixed or visible-unknown blocking MWORKS/Sysplorer/Syslab windows
-    - no recent patrol and required bounded live check unavailable
-```
-
-If no recent CoAgentOps patrol exists and the MWORKS task needs live MCP/GUI
-work, the department may run at most one bounded current-turn sentinel/API
-check or return a blocker. If it collects current-turn sentinel/capture
-evidence for a real incident, it must inspect the JSON/capture/window-title
-evidence and include `activation_state_observation`, `license_state`, and
-`mworks_window_evidence_touched=true`. Static file-only MWORKS work may set
-`live_mworks_touched=false` and proceed without touching live MWORKS when it
-does not make live GUI/MCP claims.
-
-Important correction: a visible `Sysplorer [教育版]` title is only an
-edition/window marker. It does not by itself prove the account is activated,
-because both activated and unactivated states can show the education-edition
-title. It is also not by itself a stop signal. If no demo/login/authorization/
-error marker exists, continue with the requested model/check/simulation/layout
-work and use task-local API/check/simulation success only as license sufficiency
-for that task. Do not claim permanent account activation unless an API/result
-explicitly reports account activation status.
-
-Live MWORKS work must still provide evidence for the engineering claim. If
-`live_mworks_touched=true` and the claim includes result-viewer, plot,
-animation, Smart Layout, wiring, or graphical review, the owner department must
-capture and inspect phase screenshots or request PMO/CoAgentOps foreground
-review of the existing window. R1 simulation/control tasks capture after
-load/check and after simulate/plot/animation phases when those visuals are
-claimed. R2 graphical/model-audit tasks capture during or after layout review
-and inspect missing wires, disconnected blocks, unreadable routing, wrong
-active windows, and new license/login/GUI-error prompts. The return/blocker
-packet must include `mworks_phase_screenshots` and
-`mworks_phase_observations`; the observations must say what the screenshots/
-window titles showed, not only list artifact paths.
-
-MWORKS window action split:
-
-- Activation/license/login/window-health audit is an audit task, not ordinary
-  phase evidence. It requires the reusable target main window to be foreground
-  or maximized, because background capture can miss hidden login/license panes.
-  If no reusable main window exists, CoAgentOps opens MWORKS directly and then
-  captures/rechecks; it must not end the patrol by only reporting that the
-  window is missing.
-- Ordinary non-activation phase screenshots, diagram/layout captures, and
-  approved low-risk background clicks should use the background Win32
-  `PrintWindow` route and normally do not maximize the window. The canonical
-  script is `Scripts/tools/capture_window_background.ps1`; it is not a Windows
-  MCP foreground desktop screenshot. If the target was minimized and full-window
-  review is required, use `-RestoreMinimized -Maximize -MaximizeWaitMs 500
-  -MinimizeAfter`, then verify the manifest `dpi_awareness`, physical
-  `capture_width`/`capture_height`, and that the window was minimized after
-  capture. If the task only needs ordinary background evidence, do not maximize
-  solely for appearance.
-- Cold start screenshots are first evidence only. A first screenshot shortly
-  after launch may show blank/loading content; take the first screenshot after
-  5 seconds, then use bounded follow-up screenshots or sentinel/window evidence
-  before declaring healthy or blocked.
-
-A MWORKS department return/blocker packet is incomplete if it omits the latest
-patrol reference or a current-turn sentinel/capture set for a real incident,
-the no-click pledge, live-touch flag, declared engineering outputs, or the live
-phase screenshot/observation fields required for claimed GUI evidence. When
-current-turn sentinel/capture evidence is included,
-`activation_state_observation` must say what the sentinel, window title, or
-screenshot actually showed, such as a single education-mode window, demo
-marker, login/activation prompt, mixed state, visible unknown window, hidden
-helper-window risk count, or unavailable evidence. It is not enough to return a
-path or empty manifest reference.
-
-Do not treat a clean-looking background screenshot as sufficient if other
-evidence indicates demo/login/authorization risk. Sysplorer can hide the
-login/license pane until the existing window is maximized or brought to
-foreground. Delegated departments must not perform login/license recovery
-themselves; they return a blocker. PMO or CoAgentOps may perform a bounded
-foreground recovery on the existing window first, then prove success before
-live MWORKS work resumes. Login/license patrols require maximized
-target-window evidence: the screenshot must visually show the target reusable
-MWORKS/Sysplorer/Syslab main window, not Codex, another application, a
-helper/proxy window, or incomplete background `PrintWindow` output. If no
-main window exists, CoAgentOps opens MWORKS directly and rechecks. If the
-official login action does not return or cannot complete on the existing
-window, PMO/CoAgentOps may reopen MWORKS and log in through the official UI as
-a bounded recovery.
-
-`license_state`, when reported, must be a concrete classification, for example
-`education_window_observed_activation_unverified`,
-`license_api_recorded_education_version_only`,
-`mixed_education_and_demo_blocked`, `demo_blocked`, `login_required`,
-`authorization_failed`, `gui_error_report_blocked`,
-`sentinel_unavailable_blocked`, or `unknown_blocked`. Vague values such as
-`ok`, `normal`, or `looks_fine` are not acceptable because they hide the exact
-activation/session state.
-When multiple Sysplorer/MWORKS windows are visible and any relevant reusable
-window is in demo edition, login/activation, authorization-failed, GUI-error,
-mixed, or visible-unknown blocking state, delegated departments must stop
-before MCP/model retries and return an auth/license blocker for PMO
-classification. The packet status must be `blocked`, with a concrete observed
-state, not a completed return that merely mentions the problem. They must not
-close windows, open a fresh session, click login or activation controls, or
-tune solver/model code to bypass the symptom. Hidden Qt/browser-proxy/helper
-windows with no license/error text are risk evidence and must be counted by
-CoAgentOps patrol, but they do not alone block live work.
-
-MWORKS department packets must declare `expected_engineering_outputs`. For
-model optimization, package/model cleanup, simulation, or graphical/layout
-work, expected and completed outputs must include real engineering artifacts:
-`.mo`/`package.mo` changes, `check_model`, `SimulateModel`, native result/
-`.msr`, metrics, diagram/layout screenshots, or wiring observations as
-applicable. JSON task/result/blocker packets, progress notes, and ledger rows
-are control-plane evidence only. They do not count as MWORKS engineering
-progress unless the task is explicitly `diagnostic_only`, `rule_sync_only`,
-`preflight_drill_only`, `dispatch_surface_diagnostic`, or
-`static_inventory_only`.
-Activation/license/login/authorization/GUI-error evidence from CoAgentOps
-patrol or from current MWORKS work is a P0 MWORKS infrastructure incident, not
-a solver/model issue. The department must stop live work and return a blocker.
-CoAgentOps/PMO sends the sparse email alert for the open incident and keeps it
-open until a later patrol or recovery check proves a reusable session.
-Human-facing alerts stay short and Chinese; paths, screenshots, and command
-details belong in packets and evidence files.
-Use `Scripts/tools/capture_window_background.ps1 -OutDir ...`; `-OutputDir` is
-not a valid parameter for the current project script.
-
-PMO should reject or return-for-fix any live MWORKS task packet or
-return/blocker packet that fails the machine gate:
+Host-specific gates may still have machine checks. For example, MoSim live
+MWORKS packets are checked with:
 
 ```powershell
 python Scripts\quality\check_mworks_live_gate.py `
@@ -700,14 +542,6 @@ python Scripts\quality\check_mworks_live_gate.py `
 python Scripts\quality\check_mworks_live_gate.py `
   Results\agent_packets\returns\<request_id>.json --kind return --expect department
 ```
-
-Use `--expect static` only for compatibility checks on non-department,
-explicitly file-only packets that do not inspect MWORKS windows. Use
-`--expect department` for MWORKS R1/R2 dispatches, graphical review packets,
-and static model-organization work owned by a MWORKS department. The current
-gate accepts a recent CoAgentOps patrol reference or a current-turn
-sentinel/capture set for a real incident; it still rejects JSON-only completed
-returns and missing engineering outputs.
 
 For compatibility with existing runtime packets, the same object may be stored
 under `metadata.native_surface_gate`. New JSON task packets should be checked

@@ -9,8 +9,9 @@
 | Task | Workflow File |
 |---|---|
 | Debug MCP | `Docs/Workflows/debug_mcp.md` |
-| Govern plugins, MCP servers, skills, workflows, and reference tooling assets | `Docs/Workflows/tooling_assets_governance.md` |
-| Operate Codex native hooks and App capability governance | `CoAgent/hooks/README.md`, `Docs/Workflows/tooling_assets_governance.md#11-codex-native-surface-policy`, `Docs/Index/codex_app_session_research.md` |
+| Govern plugins, MCP servers, skills, workflows, and reference tooling assets | `CoAgent/docs/operating/tooling_assets_governance.md`; MoSim adapter at `Docs/Workflows/tooling_assets_governance.md` |
+| Select native/plugin/MCP/skill/script/thread capability for a task | `Docs/Index/capability_index.md` |
+| Operate Codex native hooks and App capability governance | `CoAgent/hooks/README.md`, `CoAgent/docs/operating/tooling_assets_governance.md#11-codex-native-surface-policy`, `Docs/Index/codex_app_session_research.md` |
 | Operate Unreal MCP | `Docs/Skills/Unreal/mosim-unreal/SKILL.md`, `Docs/Workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `Docs/Index/api_index.md#5-unreal-mcp-tools` |
 | Inspect Epic/Fab/Launcher scene library | `Docs/Skills/Unreal/mosim-epic/SKILL.md`, `Docs/Workflows/debug_mcp.md#73-epicfab-library-index-mcp`, `Docs/Workflows/unreal_renderer.md#scene-source-selection`, `Scripts/UE5/epic_library_view.py`, `Scripts/UE5/epic_library_index.py`, `Scripts/UE5/check_epic_library_inventory.py`, `Scripts/UE5/audit_scene_source.py`, `Scripts/UE5/build_scene_source_registry.py`, `Scripts/UE5/plan_scene_truth_export.py`, `Scripts/UE5/run_scene_truth_export.py`, `Scripts/UE5/export_unreal_scene_truth.py` |
 | Operate MoSim Unreal Editor MCP | `Docs/Skills/Unreal/mosim-unreal/SKILL.md`, `Docs/Workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `Scripts/UE5/probe_unreal_mcp_listener.py`, `Scripts/UE5/probe_unreal_editor_mcp_tools.py` |
@@ -31,12 +32,14 @@
 | Build graphical Sysblock controller | `Docs/Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`, `Docs/Workflows/build_sysblock_graphical_controller.md` |
 | Generate MWORKS/Sysblock C/C++ controller runtime | `Docs/Workflows/mworks_codegen_controller_runtime.md`, `Scripts/mworks/check_codegen_runtime.py`, `Scripts/tests/test_mworks_codegen_runtime.py` |
 | Consult official Sysplorer modeling rules | `Docs/Skills/Sysplorer/ty-sysplorer-modeling-rules`, `Docs/Skills/Sysplorer/ty-sysblock-diagram-modeling`, `Docs/Skills/Sysplorer/ty-sysblock-signal-modeling`, `Docs/Skills/Sysplorer/modelica-library-workflow` |
-| Main-agent orchestration / visible-thread PMO dispatch | `Docs/Workflows/agent_orchestration.md#1-task-graph-first`, `CoAgent/dispatch/communication_contract.md` |
+| Main-agent orchestration / visible-thread PMO dispatch | `CoAgent/docs/operating/agent_orchestration.md#1-task-graph-first`, `CoAgent/dispatch/communication_contract.md` |
 | PMO mainline operations board | `Docs/Workflows/mainline_operations_board.md` |
-| Agent organization operating model | `Docs/Workflows/org_operating_model.md` |
-| CoAgentOps patrol, bounded dispatch, dead-thread recovery, and semantic-boundary classification | `Docs/Workflows/coagent_ops_patrol_workflow.md`, `CoAgent/dispatch/communication_contract.md`, `Scripts/quality/check_agent_task_native_surface_gate.py` |
+| CoAgent portable agent-OS operating model | `CoAgent/docs/operating/agent_os_operating_model.md`, `CoAgent/docs/operating/MIGRATION_MAP.md` |
+| MoSim visible-department domain gates and dispatch adapter | `Docs/Workflows/mosim_visible_dispatch_adapter.md` |
+| Agent organization operating model | `CoAgent/docs/operating/org_operating_model.md`; MoSim adapter at `Docs/Workflows/org_operating_model.md` |
+| CoAgentOps patrol, bounded dispatch, durable-start liveness, main-shell pending indicators, dead-thread recovery, and semantic-boundary classification | `CoAgent/docs/operating/coagent_ops_patrol_workflow.md`, `CoAgent/dispatch/communication_contract.md`, `Scripts/quality/check_agent_task_native_surface_gate.py` |
 | Visible-thread dispatch ticket SLO and readback breach classification | `CoAgent/dispatch/communication_contract.md#dispatch-ticket-and-slo`, `CoAgent/protocol/templates/visible_thread_dispatch_ticket.json`, `Scripts/quality/check_dispatch_ticket_slo.py` |
-| CoAgentOps patrol/recovery and thread registry hygiene | `Docs/Workflows/coagent_ops_patrol_workflow.md`, `Docs/Workflows/coagent_meta_maintenance.md`, `CoAgent/dispatch/department_threads.json`, `Docs/Index/codex_app_session_research.md#department-thread-layout` |
+| CoAgentOps patrol/recovery and thread registry hygiene | `CoAgent/docs/operating/coagent_ops_patrol_workflow.md`, `CoAgent/docs/operating/coagent_meta_maintenance.md`, `CoAgent/dispatch/department_threads.json`, `Docs/Index/codex_app_session_research.md#department-thread-layout` |
 | CoAgent reusable architecture root | `CoAgent/README.md`, `CoAgent/docs/architecture/ARCHITECTURE.md`, `CoAgent/docs/status/MIGRATION_STATUS.md` |
 | CoAgent design approval gate | `CoAgent/docs/decisions/coagent_design_review_brief.zh.md`, `CoAgent/docs/decisions/coagent_design_decision_record.md`, `CoAgent/docs/decisions/coagent_goal_readiness_audit.md`, `CoAgent/docs/decisions/coagent_post_approval_backlog.md` |
 | External project master index | `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`, `Docs/Index/external_learning_index.md` |
@@ -44,15 +47,15 @@
 | New conversation recovery context | `Docs/Workflows/new_conversation_context.md` |
 | Full project work memory index | `Docs/Index/project_work_memory_index.md` |
 | Historical/recovery task ledger | `Docs/Workflows/agent_task_ledger.md` |
-| Interrupted task resume / WAL recovery | `Docs/Workflows/agent_orchestration.md`, `Docs/Workflows/agent_task_ledger.md`, `Docs/Workflows/mainline_operations_board.md` |
-| Long-session memory migration | `Docs/Workflows/session_memory_migration.md`, `Docs/Cache/session_memory_migration/00_index/long_goal_plan_20260604.md`, `Docs/Cache/session_memory_migration/00_index/coverage_matrix_20260604.md`, `Docs/Cache/session_memory_migration/03_round3_disposition/round3_promotion_rejection_map_20260604.md`, `Docs/Cache/session_memory_migration/00_index/completion_audit_20260604.md`, `Docs/Cache/session_memory_migration/` |
+| Interrupted task resume / WAL recovery | `CoAgent/docs/operating/agent_orchestration.md`, `Docs/Workflows/agent_task_ledger.md`, `Docs/Workflows/mainline_operations_board.md` |
+| Long-session memory migration | `CoAgent/docs/operating/session_memory_migration.md`, MoSim cache adapter `Docs/Workflows/session_memory_migration.md`, `Docs/Cache/session_memory_migration/00_index/long_goal_plan_20260604.md`, `Docs/Cache/session_memory_migration/00_index/coverage_matrix_20260604.md`, `Docs/Cache/session_memory_migration/03_round3_disposition/round3_promotion_rejection_map_20260604.md`, `Docs/Cache/session_memory_migration/00_index/completion_audit_20260604.md`, `Docs/Cache/session_memory_migration/` |
 | Codex App / WSL session research and handoff | `Docs/Index/codex_app_session_research.md`, `Docs/Workflows/debug_mcp.md#6-codex-app--wsl-session-policy` |
 | External repository audit | `Docs/Workflows/audit_external_repo.md`, `Scripts/reference/audit_external_repo.py` |
 | Validate external project master index | `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`, `Scripts/reference/check_reference_index.py`, `Docs/Workflows/audit_external_repo.md` |
-| AirSim external repository batch migration | `Docs/Workflows/agent_orchestration.md#51-airsim-batch-migration-with-nested-agents`, `Docs/Workflows/audit_external_repo.md` |
-| Docs/Skills/workflow external repo audit | `Docs/Workflows/tooling_assets_governance.md`, `Docs/Workflows/audit_external_repo.md`, `Docs/Workflows/agent_orchestration.md#7-skills--workflow-runtime-audits` |
-| Three-round learn-and-update audit | `Docs/Workflows/audit_external_repo.md`, `Docs/Workflows/agent_orchestration.md#7-skills--workflow-runtime-audits` |
-| Recurring external Docs/skills learning | `Docs/Workflows/agent_orchestration.md#71-recurring-learning-owner`, `Docs/Index/external_learning_index.md` |
+| AirSim external repository batch migration | `CoAgent/docs/operating/agent_orchestration.md#51-airsim-batch-migration-with-nested-agents`, `Docs/Workflows/audit_external_repo.md` |
+| Docs/Skills/workflow external repo audit | `CoAgent/docs/operating/tooling_assets_governance.md`, `Docs/Workflows/audit_external_repo.md`, `CoAgent/docs/operating/agent_orchestration.md#7-skills--workflow-runtime-audits` |
+| Three-round learn-and-update audit | `Docs/Workflows/audit_external_repo.md`, `CoAgent/docs/operating/agent_orchestration.md#7-skills--workflow-runtime-audits` |
+| Recurring external Docs/skills learning | `CoAgent/docs/operating/agent_orchestration.md#71-recurring-learning-owner`, `Docs/Index/external_learning_index.md` |
 | Project doctor / self-check | `Scripts/quality/doctor.py`, `Docs/Workflows/pre_submit_check.md`, `Docs/Workflows/debug_mcp.md` |
 | Resolve model context workflow | `Docs/Workflows/resolve_model_context.md` |
 | Produce simulation evidence workflow | `Docs/Workflows/produce_simulation_evidence.md` |
@@ -60,7 +63,7 @@
 | Read simulation results | `Docs/Workflows/read_results.md` |
 | Calculate metrics | `Docs/Workflows/calc_metrics.md` |
 | Generate report figures | `Docs/Workflows/generate_report_figures.md` |
-| Parallel agent execution | `Docs/Workflows/agent_orchestration.md#1-task-graph-first`, `Docs/Workflows/unreal_renderer.md#long-running-ue5-reconstruction-queue` |
+| Parallel agent execution | `CoAgent/docs/operating/agent_orchestration.md#1-task-graph-first`, `Docs/Workflows/unreal_renderer.md#long-running-ue5-reconstruction-queue` |
 | Persistent long-running agent recovery ledger | `Docs/Workflows/agent_task_ledger.md` |
 | Review Sunray migration source | `Docs/Index/sunray_migration_index.md` |
 | Identify Sunray150 quadrotor parameters from PX4 ULog | `Docs/Workflows/identify_quadrotor_parameters.md` |
@@ -266,7 +269,7 @@ Rules:
    issue, it must stop that stream and report the blocker.
 
 Use `Docs/Workflows/mainline_operations_board.md` for the current PMO operating
-surface, `Docs/Workflows/agent_orchestration.md` for the full delegation
+surface, `CoAgent/docs/operating/agent_orchestration.md` for the full delegation
 contract, and `Docs/Workflows/agent_task_ledger.md` only for persistent
 recovery or trace-back state.
 

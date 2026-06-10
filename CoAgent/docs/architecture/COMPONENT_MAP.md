@@ -39,8 +39,9 @@ Current implementation gate:
 | Layer | Current implementation | Notes |
 |---|---|---|
 | Policy | `AGENTS.md` | highest-priority project rules |
-| Organization model | `Docs/Workflows/org_operating_model.md` | department responsibilities and thread model |
-| Orchestration workflow | `Docs/Workflows/agent_orchestration.md` | task graph, queue, visible thread routing, runtime contracts |
+| Agent OS operating model | `CoAgent/docs/operating/agent_os_operating_model.md` | portable CoAgent operating overview and source map |
+| Organization model | `CoAgent/docs/operating/org_operating_model.md` | department responsibilities and thread model |
+| Orchestration workflow | `CoAgent/docs/operating/agent_orchestration.md` | task graph, queue, visible thread routing, runtime contracts |
 | Progress memory | `PROGRESS.md` | short current-state recovery file |
 | Durable task ledger | `Docs/Workflows/agent_task_ledger.md` | long-running tasks and ownership |
 | External learning routing | `Docs/Index/external_learning_index.md` | recurring audit trigger and patch rules |

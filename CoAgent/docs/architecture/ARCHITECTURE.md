@@ -156,8 +156,9 @@ surface are coherent enough to start or resume work.
 Source:
 
 - `AGENTS.md`
-- `Docs/Workflows/org_operating_model.md`
-- `Docs/Workflows/agent_orchestration.md`
+- `CoAgent/docs/operating/agent_os_operating_model.md`
+- `CoAgent/docs/operating/org_operating_model.md`
+- `CoAgent/docs/operating/agent_orchestration.md`
 
 Responsibility:
 

@@ -28,6 +28,7 @@ layer. The current concrete 11-agent role design is defined in
 | `Subagent` | one-shot | bounded research, review, or execution slice | own durable state |
 
 Existing user-facing thread labels remain governed by
+`CoAgent/docs/operating/org_operating_model.md`, with MoSim adapter notes in
 `Docs/Workflows/org_operating_model.md`.
 
 ## Current Concrete Agent Profiles
@@ -45,7 +46,7 @@ allowlist in `CoAgent/dispatch/department_threads.json`:
 8. `MoSim｜开源项目探针`
 9. `MoSim｜CoAgent运维平台`
 10. `MoSim｜开源项目学习部`
-11. `MoSim｜文档秘书部`
+11. `MoSim｜Codex 上下文维护部`
 
 Historical deleted routes:
 
@@ -56,10 +57,12 @@ Historical deleted routes:
 gateway-operations owner. The user deleted both WeChat routes on 2026-06-08
 after MoSim moved to email-only notifications. Do not dispatch, patrol, no-op,
 recover, or treat their absence as an outage unless the user explicitly
-restores WeChat diagnosis with a new scoped route. Testing, security,
-documentation-secretary, and toolchain/MCP upkeep are task-local gates or
-CoAgent meta-maintenance duties unless PMO explicitly creates a scoped visible
-thread for a high-impact task.
+restores WeChat diagnosis with a new scoped route. Testing, security, and
+toolchain/MCP upkeep are task-local gates or CoAgent meta-maintenance duties
+unless PMO explicitly creates a scoped visible thread for a high-impact task.
+`MoSim｜文档秘书部`, R-suffixed context-maintenance titles, and
+`MoSim｜知识秘书` are alias/history only; current context-maintenance dispatch
+uses `MoSim｜Codex 上下文维护部`.
 
 These agents are governed by:
 
@@ -72,7 +75,8 @@ CoAgent/protocol/templates/task_scoped_agent_profile.yaml
 ```
 
 If this protocol and older concrete-agent design artifacts conflict, use the
-current allowlist registry and `Docs/Workflows/org_operating_model.md` for live
+current allowlist registry and `CoAgent/docs/operating/org_operating_model.md`
+for live
 routing. Older design files may remain as historical architecture material, but
 they do not make absent old thread IDs dispatchable.
 

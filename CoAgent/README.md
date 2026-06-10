@@ -11,10 +11,12 @@ health checks for MoSim's task-first multi-conversation agent system.
 Read these first in a new conversation:
 
 1. `CoAgent/STATUS.md`
-2. `CoAgent/docs/README.md`
-3. `CoAgent/docs/architecture/coagent_architecture_issue_register.md`
-4. `CoAgent/docs/architecture/coagent_problem_driven_operating_model.md`
-5. `CoAgent/docs/architecture/COMPONENT_MAP.md`
+2. `CoAgent/docs/operating/agent_os_operating_model.md`
+3. `CoAgent/docs/operating/README.md`
+4. `CoAgent/docs/README.md`
+5. `CoAgent/docs/architecture/coagent_architecture_issue_register.md`
+6. `CoAgent/docs/architecture/coagent_problem_driven_operating_model.md`
+7. `CoAgent/docs/architecture/COMPONENT_MAP.md`
 
 Do not infer the current CoAgent direction from old chat history alone.
 
@@ -83,6 +85,7 @@ first_allowed_task: COAGENT-IMPL-01
 | Path | Purpose |
 |---|---|
 | `docs/` | Human-facing architecture, decision, research, and status documents |
+| `docs/operating/` | Portable CoAgent agent-OS operating model, patrol/recovery, orchestration, tooling governance, and migration map |
 | `learning/` | Structured audit database and learning indexer only |
 | `runtime/` | Local task queue, event stream, and conversation graph seed |
 | `protocol/` | Task/result packet schemas and conversation protocol |

@@ -10,19 +10,27 @@ Status: current recovery entry, 2026-06-09 CST.
 
 Executable details live in:
 
-- `Docs/Workflows/coagent_ops_patrol_workflow.md` for CoAgentOps patrol,
-  bounded dispatch, visible-thread refresh, dead-thread recovery,
-  approval/review/provider surfaces, MWORKS window classification,
+- `CoAgent/docs/operating/agent_os_operating_model.md` for the portable
+  CoAgent agent-OS model and migration boundary.
+- `CoAgent/docs/operating/coagent_ops_patrol_workflow.md` for CoAgentOps patrol,
+  bounded dispatch, durable-start liveness, main-shell pending indicators,
+  dead-thread recovery, approval/review/provider surfaces, MWORKS window classification,
   email-before-restart, R2/R3 failover, and semantic-boundary state classes.
-- `CoAgent/dispatch/communication_contract.md` for cross-thread packets,
-  dispatch ticket SLOs, `native_surface_gate`, `semantic_boundary`,
-  return/blocker paths, department-local planning fields, and domain gates.
+- `CoAgent/dispatch/communication_contract.md` for portable cross-thread
+  packets, dispatch ticket SLOs, `native_surface_gate`, `semantic_boundary`,
+  return/blocker paths, and department-local planning fields.
+- `Docs/Workflows/mosim_visible_dispatch_adapter.md` for MoSim-specific
+  MWORKS/ROS2/UE/Sunray visible-department domain gates.
 - `Docs/Workflows/mainline_operations_board.md` for the current PMO operating
   board, P0 partition state, dispatch SLO watchlist, ops/recovery state, and
   support-lane state.
 - `CoAgent/dispatch/department_threads.json` for current visible routes,
-  refresh-only watchlist, default model/thinking settings, and R2/R3 routing
+  non-dispatch watchlist, default model/thinking settings, and R2/R3 routing
   constraints.
+- `Docs/Workflows/*` compatibility entrypoints for MoSim-specific adapters and
+  host-project boards. Reusable agent-OS changes should land under
+  `CoAgent/docs/operating/` first; MoSim engineering facts and domain gates
+  should land in host docs/adapters, not portable CoAgent policy.
 
 Current short rules:
 
@@ -38,10 +46,13 @@ Current short rules:
    `CoAgent/dispatch/department_threads.json`.
 5. Cross-thread work needs `native_surface_gate`, `semantic_boundary`,
    `expected_return_path`, and `blocker_return_path`; non-trivial work also
-   needs department-local goal and `subagent_plan` fields.
+   needs department-local goal, `subagent_plan`, and a first
+   `durable_start_requirement` unless it is an exact no-write probe.
 6. Treat approval/review/provider UI and `view_refresh_required` before
    dead-thread recovery. Native send/read success alone is not recovery
-   evidence.
+   evidence. CoAgentOps heartbeat must not click through every thread as the
+   default liveness check; use durable-start artifacts, native read/send state,
+   expected packets, and main-shell approval/review/provider indicators first.
 7. Sparse Chinese email is the default user-notification route. Deleted WeChat
    gateway/message-path threads are historical only.
 8. MWORKS routine activation/window patrol belongs to CoAgentOps. Graphical,
@@ -72,8 +83,10 @@ Start with this short chain:
 
 Do not read raw Codex session JSONL files or old chat dumps as the first
 recovery route. Historical claims not already represented in current source
-documents must go through `Docs/Workflows/session_memory_migration.md` before
-they become project truth.
+documents must go through
+`CoAgent/docs/operating/session_memory_migration.md` before they become project
+truth; MoSim cache paths remain documented in
+`Docs/Workflows/session_memory_migration.md`.
 
 The long-session migration is cache-first and three-round-gated. When a task
 needs old conversation coverage, start from these indexes instead of raw JSONL:
@@ -120,6 +133,7 @@ Use the board, registry, and packets as current truth:
 Docs/Workflows/mainline_operations_board.md
 CoAgent/dispatch/department_threads.json
 Results/agent_packets/
+Docs/Workflows/mosim_visible_dispatch_adapter.md
 ```
 
 Current routing highlights:
@@ -302,10 +316,11 @@ gate.
 
 ## 8. Current CoAgent Boundary
 
-CoAgent is MoSim-specific support glue for packet formatting, registry checks,
+CoAgent is the portable support core for packet formatting, registry checks,
 result import, evidence validation, sparse notifications, bounded P0 queue
-dispatch, and recovery audit. It is not an independent product-management
-authority.
+dispatch, and recovery audit. In MoSim it is used through host-local adapters
+and evidence docs such as `Docs/Workflows/mosim_visible_dispatch_adapter.md`.
+It is not an independent product-management authority.
 
 Visible threads are durable department surfaces, not disposable sub-agents.
 Disposable sub-agents may be used only for bounded task-local research, review,

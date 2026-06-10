@@ -1,9 +1,13 @@
 # CoAgent Meta-Maintenance Checklist
 
-> MoSim compatibility entrypoint. The portable CoAgent OS source of truth is
-> `CoAgent/docs/operating/coagent_meta_maintenance.md`; keep reusable
-> meta-maintenance rules there first, then mirror only MoSim-specific
-> automation ids, board paths, and incident notes here.
+> Conservative no-loss migration landing. This file was seeded from
+> `Docs/Workflows/coagent_meta_maintenance.md` on 2026-06-10 so recurring
+> meta-maintenance, registry hygiene, stale-rule prevention, and incident-review
+> rules are not lost while CoAgent is made portable. It is currently a mixed
+> portable-core + MoSim-adapter copy. Do not slim this file or its MoSim
+> compatibility source until `CoAgent/docs/operating/MIGRATION_MAP.md` records
+> each removed block as exact, equivalent, intentionally host-local, or
+> obsolete.
 
 > Purpose: keep MoSim visible-thread registry, CoAgent/native Codex capability
 > adoption, workflow/skill/index health, archived gateway-route records, and recurring

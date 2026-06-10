@@ -2,6 +2,11 @@
 
 > Quick lookup for MCP tools, project scripts, and common API-related questions.
 
+For deciding which native Codex surface, plugin, MCP, skill, script, visible
+thread, subagent, automation, review route, or checker to use for a task, start
+from `Docs/Index/capability_index.md`. This file keeps concrete API/tool
+sequences and examples.
+
 ---
 
 ## 1. Sysplorer MCP Tools
@@ -222,6 +227,10 @@ Before write operations, prove an editor-side listener and map source first.
 Avoid switching back to broad generic scene-generation tools to bypass
 import/editability/truth acceptance gates.
 
+---
+
+## 6. Syslab Script Execution
+
 ### Script execution
 
 ```text
@@ -246,7 +255,7 @@ map_matlab_functions_to_julia
 
 ---
 
-## 5. Project Scripts
+## 7. Project Scripts
 
 | Script | Purpose | Expected Input | Expected Output |
 |---|---|---|---|
@@ -257,7 +266,7 @@ map_matlab_functions_to_julia
 | `Scripts/results/evaluate_result_quality.py` | Decide whether a completed scenario passes, is smoke-only, or needs iteration | scenario YAML and existing metrics/raw files | `quality_status` fields written into metrics JSON |
 | `Scripts/results/plot_results.jl` | Write figure manifest for report assets | raw CSV and figure dir | `figure_manifest.md` |
 
-## 6. MinerU Precise Parsing API
+## 8. MinerU Precise Parsing API
 
 | Item | Value |
 |---|---|
@@ -280,7 +289,7 @@ Rules:
 
 ---
 
-## 7. Common API Questions
+## 9. Common API Questions
 
 ### How to check a model?
 
@@ -414,7 +423,7 @@ Current project rule:
 
 ---
 
-## 8. API Usage Rules
+## 10. API Usage Rules
 
 1. Do not guess API names.
 2. Use `get_api_document` for Sysplorer API.
@@ -425,7 +434,7 @@ Current project rule:
 
 ---
 
-## 9. Blender MCP
+## 11. Blender MCP
 
 Local MCP source:
 

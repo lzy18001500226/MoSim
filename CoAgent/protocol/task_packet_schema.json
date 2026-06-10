@@ -41,6 +41,18 @@
     "department_local_goal_required": { "type": "boolean" },
     "subagent_plan_required": { "type": "boolean" },
     "required_planning_fields": { "type": "array", "items": { "type": "string" } },
+    "durable_start_requirement": {
+      "type": "object",
+      "properties": {
+        "required": { "type": "boolean" },
+        "exempt_when": { "type": "string" },
+        "first_artifact_due_minutes": { "type": "number" },
+        "artifact_path_or_class": { "type": "string" },
+        "minimum_content": { "type": "array", "items": { "type": "string" } },
+        "completion_claim_allowed": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
     "expected_engineering_outputs": { "type": "array", "items": { "type": "string" } },
     "department_execution_gate": { "type": "object", "additionalProperties": true },
     "ros2_runtime_gate": { "type": "object", "additionalProperties": true },
@@ -108,6 +120,15 @@
           ]
         },
         "surface_selection_reason": { "type": "string", "minLength": 1 },
+        "capability_index_consulted": { "type": "string", "minLength": 1 },
+        "selected_capabilities": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "rejected_capabilities": {
+          "type": "object",
+          "additionalProperties": true
+        },
         "rejected_surfaces": { "type": "object", "additionalProperties": true },
         "worktree_required": { "type": "boolean" },
         "worktree_decision": { "type": "string", "minLength": 1 },

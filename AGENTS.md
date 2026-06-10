@@ -26,7 +26,9 @@ requires trace-back evidence.
 
 Do not load raw Codex session JSONL files or old chat dumps as routine context.
 Historical chat claims must go through
-`Docs/Workflows/session_memory_migration.md` before becoming project truth.
+`CoAgent/docs/operating/session_memory_migration.md` before becoming project
+truth; MoSim cache paths are documented in
+`Docs/Workflows/session_memory_migration.md`.
 
 ## 1. Hard Boundaries
 
@@ -39,7 +41,7 @@ Historical chat claims must go through
    visible-thread lifecycle decisions, manual/GUI action decisions, and restart
    decisions.
 3. CoAgentOps may patrol, recover, and perform bounded pre-authorized P0
-   dispatch only under `Docs/Workflows/coagent_ops_patrol_workflow.md`.
+   dispatch only under `CoAgent/docs/operating/coagent_ops_patrol_workflow.md`.
    CoAgentOps does not gain product authority.
 4. Cross-thread work must use `status=active_visible` routes from
    `CoAgent/dispatch/department_threads.json`, carry `native_surface_gate`,
@@ -50,7 +52,8 @@ Historical chat claims must go through
    `subagent_plan` decision. A department must record whether disposable
    sub-agents were `used`, `available_but_not_useful`, `unavailable`, or
    `unsafe`. This is a planning requirement, not a requirement to spawn a
-   sub-agent.
+   sub-agent. They must also declare a first durable-start artifact unless the
+   task is an exact no-write probe.
 6. Sparse Chinese email is the default human notification channel. Deleted
    WeChat gateway/message-path threads are historical only and must not be
    scanned, no-oped, recovered, or used unless the user explicitly restores a
@@ -61,20 +64,27 @@ Historical chat claims must go through
 8. MWORKS activation/window patrol is owned by CoAgentOps. MWORKS departments
    stop on observed login/license/authorization/GUI-error/unknown blocking
    states and return blockers instead of retrying solver/model work.
-9. For normal MoSim mainline, visible-department, automation, and disposable
+9. CoAgentOps heartbeat must not click through every visible thread as the
+   default liveness check. Use durable-start artifacts, native read/send state,
+   expected packets, and main-shell approval/review/provider indicators first.
+10. For normal MoSim mainline, visible-department, automation, and disposable
    sub-agent dispatches, request `gpt-5.5` and `thinking=high` when the native
    tool accepts those settings. Do not wake healthy threads only to change
    settings.
-10. Do not re-create deleted PMO heartbeat, detached CoAgentOps cron, Windows
+11. Do not re-create deleted PMO heartbeat, detached CoAgentOps cron, Windows
     watchdog, or replacement visible threads without explicit user/PMO
     approval.
-11. Temporary broad `.gitignore` rules for reference imports are only a drain
+12. Temporary broad `.gitignore` rules for reference imports are only a drain
     queue. Durable ignores must be class/exact-risk decisions, not a hidden
     backlog of ordinary source, docs, scripts, configs, or small assets.
-12. CoAgent runtime, transport, automation, schema, tool/MCP surface, and
-    permanent department design changes remain gated by `CoAgent/STATUS.md`
-    and `Docs/Workflows/agent_orchestration.md`; do not infer approval from
-    this compact entry file.
+13. CoAgent runtime, transport, automation, schema, tool/MCP surface, permanent
+    department design changes, and reusable agent-OS workflow changes remain
+    gated by `CoAgent/STATUS.md`,
+    `CoAgent/docs/operating/agent_os_operating_model.md`, and
+    `CoAgent/docs/operating/agent_orchestration.md`; do not infer approval from
+    this compact entry file. CoAgent implementation work still starts from
+    `COAGENT-IMPL-01` and must remain gated by the CoAgent status and decision
+    records.
 
 ## 2. Current Visible Routes
 
@@ -110,16 +120,18 @@ publication.
 | Need | Source Of Truth |
 |---|---|
 | Current PMO board and next action | `Docs/Workflows/mainline_operations_board.md` |
-| CoAgentOps patrol, dead-thread recovery, visible-thread refresh, bounded dispatch, R2/R3 failover, MWORKS window patrol | `Docs/Workflows/coagent_ops_patrol_workflow.md` |
-| Cross-thread packets, dispatch ticket SLO, semantic boundary, local goal/sub-agent planning fields, MWORKS/ROS2/UE return contracts | `CoAgent/dispatch/communication_contract.md` |
-| Current visible departments and owner boundaries | `Docs/Workflows/org_operating_model.md` |
+| Portable CoAgent agent-OS overview | `CoAgent/docs/operating/agent_os_operating_model.md` |
+| CoAgentOps patrol, durable-start liveness, main-shell pending indicators, dead-thread recovery, bounded dispatch, R2/R3 failover, MWORKS window patrol | `CoAgent/docs/operating/coagent_ops_patrol_workflow.md`; MoSim adapter at `Docs/Workflows/coagent_ops_patrol_workflow.md` |
+| Cross-thread packets, dispatch ticket SLO, semantic boundary, local goal/sub-agent planning fields | `CoAgent/dispatch/communication_contract.md` |
+| MoSim visible-department domain gates for MWORKS/ROS2/UE/Sunray dispatch | `Docs/Workflows/mosim_visible_dispatch_adapter.md` |
+| Current visible departments and owner boundaries | `CoAgent/docs/operating/org_operating_model.md`; MoSim adapter at `Docs/Workflows/org_operating_model.md` |
 | Historical/recovery delegated-task trace | `Docs/Workflows/agent_task_ledger.md` |
-| Session-memory promotion/rejection | `Docs/Workflows/session_memory_migration.md` |
+| Session-memory promotion/rejection | `CoAgent/docs/operating/session_memory_migration.md`; MoSim cache paths in `Docs/Workflows/session_memory_migration.md` |
 | Workflow index | `Docs/Index/workflow_index.md` |
 | Project memory index | `Docs/Index/project_work_memory_index.md` |
 | API/MCP index | `Docs/Index/api_index.md` |
-| CoAgent runtime/task graph/timeout/prompt sanity | `Docs/Workflows/agent_orchestration.md` |
-| MCP/tooling/native hook governance, entry-document slimming, and immediate doc updates | `Docs/Workflows/tooling_assets_governance.md` |
+| CoAgent runtime/task graph/timeout/prompt sanity | `CoAgent/docs/operating/agent_orchestration.md` |
+| MCP/tooling/native hook governance, entry-document slimming, and immediate doc updates | `CoAgent/docs/operating/tooling_assets_governance.md`; MoSim adapter at `Docs/Workflows/tooling_assets_governance.md` |
 | Final competition packaging checklist | `Docs/Workflows/pre_submit_check.md` |
 
 ## 4. Project Direction

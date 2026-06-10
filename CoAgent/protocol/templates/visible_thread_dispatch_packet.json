@@ -28,6 +28,15 @@
       "coagent_packet_glue"
     ],
     "surface_selection_reason": "Durable visible-department context plus packet return is required.",
+    "capability_index_consulted": "Docs/Index/capability_index.md",
+    "selected_capabilities": [
+      "Codex visible thread dispatch",
+      "Review / evidence gate"
+    ],
+    "rejected_capabilities": {
+      "Disposable subagent": "Disposable context is insufficient for this reusable department assignment.",
+      "Automation / recurring patrol": "A recurring patrol is not the primary execution surface for this task."
+    },
     "rejected_surfaces": {
       "subagent": "Disposable context is insufficient for this reusable department assignment.",
       "codex_exec": "Hidden formal dispatch is not accepted without visible delivery."
@@ -64,6 +73,20 @@
     "verification_gates",
     "manual_review_or_blocker_triggers"
   ],
+  "durable_start_requirement": {
+    "required": true,
+    "exempt_when": "Exact no-op probes that explicitly forbid file writes.",
+    "first_artifact_due_minutes": 5,
+    "artifact_path_or_class": "A project-local checkpoint/notes/output-scaffold path declared by this packet and inside write_scope",
+    "minimum_content": [
+      "request_id",
+      "target_thread_id",
+      "started_at",
+      "current_goal",
+      "first_safe_next_step_or_blocker"
+    ],
+    "completion_claim_allowed": false
+  },
   "expected_engineering_outputs": [
     "Replace with concrete engineering evidence expected from this task"
   ],

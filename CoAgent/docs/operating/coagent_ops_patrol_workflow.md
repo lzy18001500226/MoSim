@@ -1,9 +1,13 @@
 # CoAgentOps Patrol And Recovery Workflow
 
-> MoSim compatibility entrypoint. The portable CoAgent OS source of truth is
-> `CoAgent/docs/operating/coagent_ops_patrol_workflow.md`; keep reusable
-> patrol/recovery/dispatch SLO rules there first, then mirror only MoSim PMO,
-> board, MWORKS, ROS2, UE, and thread-id adapter notes here.
+> Conservative no-loss migration landing. This file was seeded from
+> `Docs/Workflows/coagent_ops_patrol_workflow.md` on 2026-06-10 so
+> patrol/recovery/dispatch SLO, bounded dispatch, failover, and window-patrol
+> rules are not lost while CoAgent is made portable. It is currently a mixed
+> portable-core + MoSim-adapter copy. Do not slim this file or its MoSim
+> compatibility source until `CoAgent/docs/operating/MIGRATION_MAP.md` records
+> each removed block as exact, equivalent, intentionally host-local, or
+> obsolete.
 
 > Executable workflow for `MoSim｜CoAgent运维平台` 10-minute patrol, bounded
 > dispatch, visible-thread recovery, MWORKS window classification, and PMO

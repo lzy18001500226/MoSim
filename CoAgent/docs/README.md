@@ -8,26 +8,29 @@ module folders such as `runtime/`, `dispatch/`, `context/`, and `transport/`.
 For a new conversation, read in this order:
 
 1. `../STATUS.md`
-2. `architecture/coagent_architecture_issue_register.md`
-3. `architecture/coagent_problem_driven_operating_model.md`
-4. `architecture/coagent_department_capability_model.md`
-5. `architecture/coagent_conversation_mapping.md`
-6. `architecture/coagent_concrete_agent_design.md`
-7. `architecture/coagent_vendor_gap_review_2026_05_29.md`
-8. `architecture/coagent_dynamic_agent_codex_feature_gap_2026_05_29.md`
-9. `architecture/coagent_dynamic_task_team_v2_design.md`
-10. `architecture/coagent_minimal_closed_loop_protocol.md`
-11. `architecture/coagent_solution_synthesis.md`
-12. `architecture/coagent_user_intervention_ux.md`
-13. `architecture/COMPONENT_MAP.md`
-14. `architecture/coagent_task_team_architecture.md`
-15. `decisions/coagent_post_approval_backlog.md`
+2. `operating/agent_os_operating_model.md`
+3. `operating/README.md`
+4. `architecture/coagent_architecture_issue_register.md`
+5. `architecture/coagent_problem_driven_operating_model.md`
+6. `architecture/coagent_department_capability_model.md`
+7. `architecture/coagent_conversation_mapping.md`
+8. `architecture/coagent_concrete_agent_design.md`
+9. `architecture/coagent_vendor_gap_review_2026_05_29.md`
+10. `architecture/coagent_dynamic_agent_codex_feature_gap_2026_05_29.md`
+11. `architecture/coagent_dynamic_task_team_v2_design.md`
+12. `architecture/coagent_minimal_closed_loop_protocol.md`
+13. `architecture/coagent_solution_synthesis.md`
+14. `architecture/coagent_user_intervention_ux.md`
+15. `architecture/COMPONENT_MAP.md`
+16. `architecture/coagent_task_team_architecture.md`
+17. `decisions/coagent_post_approval_backlog.md`
 
 ## Folders
 
 | Folder | Use |
 |---|---|
 | `architecture/` | Current design model, architecture issues, task/team/context/worktree protocols |
+| `operating/` | Portable operating model, organization, patrol/recovery, orchestration, tooling governance, and migration map |
 | `decisions/` | Approval records, review briefs, readiness audits, backlog, completion audits |
 | `research/` | Learning strategy, external project index, URL seeds, synthesis notes |
 | `status/` | Migration and status snapshots |
@@ -37,6 +40,8 @@ For a new conversation, read in this order:
 | File | Purpose |
 |---|---|
 | `architecture/ARCHITECTURE.md` | Layered CoAgent architecture and runtime boundaries |
+| `operating/agent_os_operating_model.md` | Portable CoAgent agent-OS entrypoint and source map |
+| `operating/MIGRATION_MAP.md` | Map from former MoSim workflow paths to CoAgent canonical operating docs |
 | `architecture/COMPONENT_MAP.md` | Map from concepts to files, modules, and current gaps |
 | `architecture/coagent_architecture_issue_register.md` | Open design questions that must not be treated as solved |
 | `architecture/coagent_problem_driven_operating_model.md` | Problem-driven matrix from PX4 parameter identification and UE/navigation simulation workflows |
@@ -64,6 +69,7 @@ For a new conversation, read in this order:
 Do not put every new CoAgent note at the root. Place it by purpose:
 
 - design claim or architecture model -> `architecture/`
+- reusable operating workflow or agent-OS rule -> `operating/`
 - user decision, gate, backlog, approval, closeout -> `decisions/`
 - external source study or source index -> `research/`
 - migration/status snapshot -> `status/`

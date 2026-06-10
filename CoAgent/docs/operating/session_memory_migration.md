@@ -1,9 +1,12 @@
 # Session Memory Migration Workflow
 
-> MoSim compatibility entrypoint. The portable CoAgent OS source of truth is
-> `CoAgent/docs/operating/session_memory_migration.md`; keep reusable
-> cache-first anti-pollution rules there first, then mirror only MoSim cache
-> paths and host-project promotion targets here.
+> Conservative no-loss migration landing. This file was seeded from
+> `Docs/Workflows/session_memory_migration.md` on 2026-06-10 so cache-first
+> anti-pollution and multi-round promotion rules are not lost while CoAgent is
+> made portable. It is currently a mixed portable-core + MoSim-adapter copy. Do
+> not slim this file or its MoSim compatibility source until
+> `CoAgent/docs/operating/MIGRATION_MAP.md` records each removed block as exact,
+> equivalent, intentionally host-local, or obsolete.
 
 > Purpose: migrate important context from long Codex conversations into MoSim
 > project documents without letting stale or wrong historical conclusions pollute

@@ -15,7 +15,7 @@
       "write_scope": [
         "CoAgent",
         "Docs/Index/external_learning_index.md",
-        "Docs/Workflows/agent_orchestration.md",
+        "CoAgent/docs/operating/agent_orchestration.md",
         "PROGRESS.md"
       ],
       "tool_scope": {
