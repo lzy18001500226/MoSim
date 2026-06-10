@@ -1,0 +1,7 @@
+References/Agent/Platforms/openwork-dev/ee/LICENSE
+References/Agent/Platforms/openwork-dev/ee/packages/utils/package.json
+References/Agent/Platforms/openwork-dev/ee/packages/utils/src/index.ts
+References/Agent/Platforms/openwork-dev/ee/packages/utils/src/skill-markdown.ts
+References/Agent/Platforms/openwork-dev/ee/packages/utils/src/typeid.ts
+References/Agent/Platforms/openwork-dev/ee/packages/utils/tsconfig.json
+References/Agent/Platforms/openwork-dev/ee/packages/utils/tsup.config.ts
