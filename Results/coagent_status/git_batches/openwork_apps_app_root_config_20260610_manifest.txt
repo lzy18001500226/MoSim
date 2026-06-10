@@ -1,0 +1,8 @@
+References/Agent/Platforms/openwork-dev/apps/app/components.json
+References/Agent/Platforms/openwork-dev/apps/app/index.html
+References/Agent/Platforms/openwork-dev/apps/app/overlay.html
+References/Agent/Platforms/openwork-dev/apps/app/package.json
+References/Agent/Platforms/openwork-dev/apps/app/tailwind.config.ts
+References/Agent/Platforms/openwork-dev/apps/app/tsconfig.json
+References/Agent/Platforms/openwork-dev/apps/app/vercel.json
+References/Agent/Platforms/openwork-dev/apps/app/vite.config.ts
