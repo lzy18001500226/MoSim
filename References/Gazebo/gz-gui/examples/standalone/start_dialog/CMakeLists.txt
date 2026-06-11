@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.22.1 FATAL_ERROR)
+
+project(gz-gui-start-dialog)
+
+if(POLICY CMP0100)
+  cmake_policy(SET CMP0100 NEW)
+endif()
+
+set(CMAKE_AUTOMOC ON)
+
+find_package(gz-gui REQUIRED)
+
+set(EXEC_NAME "start_dialog")
+
+QT_ADD_RESOURCES(resources_RCC ${EXEC_NAME}.qrc)
+
+add_executable(${EXEC_NAME}
+  ${EXEC_NAME}.cc
+  ${resources_RCC}
+)
+target_link_libraries(${EXEC_NAME}
+  gz-gui::gz-gui
+)

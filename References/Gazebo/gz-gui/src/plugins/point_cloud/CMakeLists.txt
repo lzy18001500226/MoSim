@@ -1,0 +1,10 @@
+gz_gui_add_plugin(PointCloud
+  SOURCES
+    PointCloud.cc
+  QT_HEADERS
+    PointCloud.hh
+  PUBLIC_LINK_LIBS
+    gz-rendering::gz-rendering
+  TEST_SOURCES
+    PointCloud_TEST.cc
+)

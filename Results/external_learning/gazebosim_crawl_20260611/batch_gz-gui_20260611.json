@@ -1,0 +1,27 @@
+{
+  "repo": "gz-gui",
+  "source": "git@github.com:gazebosim/gz-gui.git",
+  "source_sha": "7c662418d2a7d567b6f5d27487d3629f2df3b20e",
+  "clone_path": "Results/external_learning/gazebosim_crawl_20260611/tmp_clone/run_036/gz-gui",
+  "target_path": "References/Gazebo/gz-gui",
+  "file_count": 418,
+  "total_bytes": 12264204.0,
+  "large_file_hits": [],
+  "sensitive_path_hits": [],
+  "lfs_pointer_hits": [],
+  "nested_risk_dirs": [],
+  "excluded_runtime_dirs": [
+    ".git",
+    "build",
+    "install",
+    "log",
+    ".venv",
+    "venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache",
+    ".cache",
+    "dist",
+    "out"
+  ]
+}
