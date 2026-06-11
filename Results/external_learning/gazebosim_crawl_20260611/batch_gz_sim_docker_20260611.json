@@ -1,0 +1,108 @@
+{
+  "batch": "gz_sim_docker",
+  "repo": "gazebosim/gz-sim",
+  "head": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "tree_sha": "67bf92c939db3dd92e517e1b6f51ca0e471c15a8",
+  "files": [
+    {
+      "path": "References/Gazebo/gz-sim/docker/build.bash",
+      "source_path": "docker/build.bash",
+      "size": 629,
+      "sha": "b3ee429514c5b6435aa25a643860bad0655580be",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/docker/Dockerfile.base",
+      "source_path": "docker/Dockerfile.base",
+      "size": 326,
+      "sha": "490764ffa5eef4f4ff0bd5e5d546388bed97b9fd",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/docker/Dockerfile.gz",
+      "source_path": "docker/Dockerfile.gz",
+      "size": 1771,
+      "sha": "9fa2b76061a93cfa8bcd6c92894bc4f245b7588e",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/docker/Dockerfile.nightly",
+      "source_path": "docker/Dockerfile.nightly",
+      "size": 872,
+      "sha": "01d2cfb1f72a075485677117bac101ea1c28c3fd",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/docker/README.md",
+      "source_path": "docker/README.md",
+      "size": 5516,
+      "sha": "b038c709a856e2800981bf8205319cda5c007d41",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/docker/run.bash",
+      "source_path": "docker/run.bash",
+      "size": 1041,
+      "sha": "e6e68937bd88e34b33c8cc596dfac835ebeddde7",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/docker/scripts/build_gz_sim.sh",
+      "source_path": "docker/scripts/build_gz_sim.sh",
+      "size": 175,
+      "sha": "75249f907ce9b1a835884a1bd5a4763b45e55e3a",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/docker/scripts/build_gz.sh",
+      "source_path": "docker/scripts/build_gz.sh",
+      "size": 369,
+      "sha": "45be6c1eb3b8d5990747dc84b646896667d5dde9",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/docker/scripts/enable_nightly.sh",
+      "source_path": "docker/scripts/enable_nightly.sh",
+      "size": 262,
+      "sha": "727cc2e33149f92eaf1cbde59c6f44446d58bd94",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/docker/scripts/enable_prerelease.sh",
+      "source_path": "docker/scripts/enable_prerelease.sh",
+      "size": 268,
+      "sha": "17e8862c29e7dcf2c16bc965397e8649fa4c8adc",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/docker/scripts/enable_stable.sh",
+      "source_path": "docker/scripts/enable_stable.sh",
+      "size": 259,
+      "sha": "d509044dd96d853424e8493d32e9b16c89001857",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/docker/scripts/entrypoint.sh",
+      "source_path": "docker/scripts/entrypoint.sh",
+      "size": 86,
+      "sha": "56f20116eaa73d41eaaf3b218f9dfb0b5ad83d9a",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/docker/scripts/install_common_deps.sh",
+      "source_path": "docker/scripts/install_common_deps.sh",
+      "size": 566,
+      "sha": "1b8d637599c8aec3afd0cd8339121466505440d5",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/docker/scripts/upload_json_benchmark.sh",
+      "source_path": "docker/scripts/upload_json_benchmark.sh",
+      "size": 504,
+      "sha": "2fd5e040521a8013666b1f838052f40a970c9bae",
+      "source": "github_blob_api"
+    }
+  ],
+  "file_count": 14,
+  "large_100MiB_count": 0
+}

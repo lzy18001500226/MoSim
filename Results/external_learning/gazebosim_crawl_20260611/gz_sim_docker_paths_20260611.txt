@@ -1,0 +1,16 @@
+References/Gazebo/gz-sim/docker/build.bash
+References/Gazebo/gz-sim/docker/Dockerfile.base
+References/Gazebo/gz-sim/docker/Dockerfile.gz
+References/Gazebo/gz-sim/docker/Dockerfile.nightly
+References/Gazebo/gz-sim/docker/README.md
+References/Gazebo/gz-sim/docker/run.bash
+References/Gazebo/gz-sim/docker/scripts/build_gz_sim.sh
+References/Gazebo/gz-sim/docker/scripts/build_gz.sh
+References/Gazebo/gz-sim/docker/scripts/enable_nightly.sh
+References/Gazebo/gz-sim/docker/scripts/enable_prerelease.sh
+References/Gazebo/gz-sim/docker/scripts/enable_stable.sh
+References/Gazebo/gz-sim/docker/scripts/entrypoint.sh
+References/Gazebo/gz-sim/docker/scripts/install_common_deps.sh
+References/Gazebo/gz-sim/docker/scripts/upload_json_benchmark.sh
+Results/external_learning/gazebosim_crawl_20260611/gz_sim_docker_paths_20260611.txt
+Results/external_learning/gazebosim_crawl_20260611/batch_gz_sim_docker_20260611.json
