@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
+  <name>gz-rotary</name>
+  <version>1.0.0</version>
+  <description>Gazebo Rotary Metapackage</description>
+  <maintainer email="addisu@openrobotics.org">Addisu Z. Taddese</maintainer>
+  <license>Apache License 2.0</license>
+  <url type="website">https://github.com/gazebosim/gz-rotary</url>
+
+  <buildtool_depend>cmake</buildtool_depend>
+
+  <depend>gz-cmake</depend>
+  <depend>gz-common</depend>
+  <depend>gz-fuel_tools</depend>
+  <depend>gz-gui</depend>
+  <depend>gz-math</depend>
+  <depend>gz-msgs</depend>
+  <depend>gz-physics</depend>
+  <depend>gz-plugin</depend>
+  <depend>gz-rendering</depend>
+  <depend>gz-sensors</depend>
+  <depend>gz-sim</depend>
+  <depend>gz-transport</depend>
+  <depend>gz-utils</depend>
+  <depend>sdformat</depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>

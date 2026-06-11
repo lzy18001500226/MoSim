@@ -1,0 +1,28 @@
+{
+  "task_id": "COAGENT-DEVOPS-GAZEBOSIM-REFERENCES-INGEST-20260611",
+  "repo": "gz-rotary",
+  "source": "git@github.com:gazebosim/gz-rotary.git",
+  "branch": "main",
+  "head_sha": "1a1864ad697360b049e025e6dea1d559e70f8e02",
+  "imported_at": "2026-06-11",
+  "file_count": 5,
+  "max_file_bytes": 10351.0,
+  "excluded": [
+    ".git",
+    "build",
+    "install",
+    "log",
+    ".venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache"
+  ],
+  "risk_gate": "passed_no_100MiB_no_nested_git_no_lfs_pointer_detected",
+  "files": [
+    "References/Gazebo/gz-rotary/CMakeLists.txt",
+    "References/Gazebo/gz-rotary/LICENSE",
+    "References/Gazebo/gz-rotary/package.xml",
+    "References/Gazebo/gz-rotary/README.md",
+    "References/Gazebo/gz-rotary/.github/workflows/package_xml.yml"
+  ]
+}
