@@ -1,0 +1,2 @@
+import %workspace%/bazel/bazel.rc
+import %workspace%/bazel/dynamic_analysis/bazel.rc

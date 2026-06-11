@@ -1,0 +1,18 @@
+# -*- python -*-
+load(
+    "@gz//bazel/skylark:build_defs.bzl",
+    "GZ_FEATURES",
+    "GZ_VISIBILITY",
+    "add_lint_tests",
+)
+
+package(
+    default_visibility = GZ_VISIBILITY,
+    features = GZ_FEATURES,
+)
+
+licenses(["notice"])
+
+exports_files(["LICENSE"])
+
+add_lint_tests()

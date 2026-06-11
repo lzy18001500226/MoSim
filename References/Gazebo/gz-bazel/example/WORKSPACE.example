@@ -1,0 +1,41 @@
+workspace(name = "gz")
+
+load("@gz//bazel/workspace:default.bzl", "add_default_workspace")
+
+add_default_workspace()
+
+load(
+    "@rules_proto//proto:repositories.bzl",
+    "rules_proto_dependencies",
+    "rules_proto_toolchains",
+)
+
+rules_proto_dependencies()
+
+rules_proto_toolchains()
+
+load("@com_justbuchanan_rules_qt//:qt_configure.bzl", "qt_configure")
+
+qt_configure()
+
+load("@local_config_qt//:local_qt.bzl", "local_qt_path")
+
+new_local_repository(
+    name = "qt",
+    build_file = "@com_justbuchanan_rules_qt//:qt.BUILD",
+    path = local_qt_path(),
+)
+
+load("@com_justbuchanan_rules_qt//tools:qt_toolchain.bzl", "register_qt_toolchains")
+
+register_qt_toolchains()
+
+load(
+    "@bazelruby_rules_ruby//ruby:deps.bzl",
+    "rules_ruby_dependencies",
+    "rules_ruby_select_sdk",
+)
+
+rules_ruby_dependencies()
+
+rules_ruby_select_sdk(version = "host")

@@ -1,0 +1,15 @@
+# -*- python -*-
+
+load(":build_defs.bzl", "gz_py_binary")
+
+gz_py_binary(
+    name = "gz_configure_file",
+    srcs = ["gz_configure_file.py"],
+    visibility = ["//visibility:public"],
+)
+
+gz_py_binary(
+    name = "cmake_configure_file",
+    srcs = ["cmake_configure_file.py"],
+    visibility = ["//visibility:public"],
+)
