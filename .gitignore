@@ -56,6 +56,7 @@ Docs/Mworks/raw/
 Results/tmp/
 Results/tmp_*
 Results/cache/
+Results/external_learning/gazebosim_crawl_20260611/tmp_clone/
 Results/native_result_cache/
 Results/coagent_transport/
 Results/coagent_automation/
