@@ -1,0 +1,50 @@
+[
+  {
+    "path": "include/CMakeLists.txt",
+    "dest": "References\\Gazebo\\gz-sim\\include\\CMakeLists.txt",
+    "sha": "a35a0475ed24caccb75dcbe635814dfd28c36a0e",
+    "size": 21,
+    "verified_hash": "a35a0475ed24caccb75dcbe635814dfd28c36a0e",
+    "verified_size": 21
+  },
+  {
+    "path": "include/gz/CMakeLists.txt",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\CMakeLists.txt",
+    "sha": "e4f01467e842998204aaa476991f391ef59cb9dd",
+    "size": 22,
+    "verified_hash": "e4f01467e842998204aaa476991f391ef59cb9dd",
+    "verified_size": 22
+  },
+  {
+    "path": "include/gz/sim/Actor.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Actor.hh",
+    "sha": "f9497eef1427009f892e60ef5a56aba9c0e64016",
+    "size": 6517,
+    "verified_hash": "f9497eef1427009f892e60ef5a56aba9c0e64016",
+    "verified_size": 6517
+  },
+  {
+    "path": "include/gz/sim/CMakeLists.txt",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\CMakeLists.txt",
+    "sha": "76d1fc4d040d4cdb0105d66f1e4dea00ebb22e5a",
+    "size": 219,
+    "verified_hash": "76d1fc4d040d4cdb0105d66f1e4dea00ebb22e5a",
+    "verified_size": 219
+  },
+  {
+    "path": "include/gz/sim/comms/Broker.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\comms\\Broker.hh",
+    "sha": "82db8d1b0676a9cc0a6c4bd507fe886d87ce63ad",
+    "size": 5594,
+    "verified_hash": "82db8d1b0676a9cc0a6c4bd507fe886d87ce63ad",
+    "verified_size": 5594
+  },
+  {
+    "path": "include/gz/sim/comms/ICommsModel.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\comms\\ICommsModel.hh",
+    "sha": "dc94f5148ee77bd8cea2d70a481e2027fb628f9e",
+    "size": 4943,
+    "verified_hash": "dc94f5148ee77bd8cea2d70a481e2027fb628f9e",
+    "verified_size": 4943
+  }
+]
