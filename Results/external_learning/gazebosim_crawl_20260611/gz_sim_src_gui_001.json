@@ -1,0 +1,92 @@
+[
+  {
+    "path": "src/gui/AboutDialogHandler.cc",
+    "sha": "ef8963b34eedc8be0976d94c968b0b949d7a01af",
+    "size": 2259
+  },
+  {
+    "path": "src/gui/AboutDialogHandler.hh",
+    "sha": "dbd3d1f500c9a740fb9a18abfb6da5fc7b0ad857",
+    "size": 1539
+  },
+  {
+    "path": "src/gui/CMakeLists.txt",
+    "sha": "762d01b60a97190b96a8b5fc5e3fb3ce66101048",
+    "size": 2237
+  },
+  {
+    "path": "src/gui/Gui_clean_exit_TEST.cc",
+    "sha": "4a96d17f1b781affb7e94d91b04cc10ea2afe4e3",
+    "size": 3646
+  },
+  {
+    "path": "src/gui/Gui_TEST.cc",
+    "sha": "4c4c3bd8e028a967b368dc53584a44fd2962c8af",
+    "size": 9427
+  },
+  {
+    "path": "src/gui/Gui.cc",
+    "sha": "ecbeff016c3d219298a54d308a3fa56bc59e9535",
+    "size": 22856
+  },
+  {
+    "path": "src/gui/gui.config",
+    "sha": "98214b4e3362ae7d6ce4174a77824b9974b2affd",
+    "size": 8945
+  },
+  {
+    "path": "src/gui/GuiEvents_TEST.cc",
+    "sha": "771b0b63910e1893687a889d0af715a6625a2456",
+    "size": 2340
+  },
+  {
+    "path": "src/gui/GuiEvents.cc",
+    "sha": "e0093cb38ed4205aebc66e1eef0a7b4a7ac72b15",
+    "size": 4533
+  },
+  {
+    "path": "src/gui/GuiFileHandler.cc",
+    "sha": "e9ee9e2f8d7b261049bb9a366ee44904f77eb053",
+    "size": 3612
+  },
+  {
+    "path": "src/gui/GuiFileHandler.hh",
+    "sha": "582d563ab4ee6ee2e6ab063902ac62d29a50dc5d",
+    "size": 1799
+  },
+  {
+    "path": "src/gui/GuiRunner.cc",
+    "sha": "7c40d51da78f711fe76d98395a276dc4a979e3fe",
+    "size": 13309
+  },
+  {
+    "path": "src/gui/GuiRunner.hh",
+    "sha": "6eb70d6fb301cac5b587a76f0c9afdbecdef208c",
+    "size": 2539
+  },
+  {
+    "path": "src/gui/PathManager.cc",
+    "sha": "898d9955f2960c5975aa791153ead44035385949",
+    "size": 2109
+  },
+  {
+    "path": "src/gui/PathManager.hh",
+    "sha": "1b5b2963a40d6bfa453d8c1e329baadd3aab1c5a",
+    "size": 1299
+  },
+  {
+    "path": "src/gui/playback_gui.config",
+    "sha": "c76f551a7136c79af4b170895ecf9b5771d640bf",
+    "size": 5518
+  },
+  {
+    "path": "src/gui/QuickStartHandler.cc",
+    "sha": "0f0f80d01f9503b30687fce817ac6e28205b2e6d",
+    "size": 2218
+  },
+  {
+    "path": "src/gui/QuickStartHandler.hh",
+    "sha": "1a918cdeab94c0f3b0f38a0a642c3f3a31a75df4",
+    "size": 2419
+  }
+]
