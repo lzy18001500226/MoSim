@@ -1,0 +1,67 @@
+name: Ubuntu CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'ign-transport[1-9]?[0-9]'
+      - 'gz-transport[1-9]?[0-9]'
+      - 'main'
+
+jobs:
+  noble-ci:
+    runs-on: ubuntu-latest
+    name: Ubuntu Noble CI
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Compile and test
+        id: ci
+        uses: gazebo-tooling/action-gz-ci@noble
+        with:
+          gzdev-project-name: rotary
+          # codecov-enabled: true
+          cppcheck-enabled: true
+          cpplint-enabled: true
+          doxygen-enabled: true
+          cmake-args: '-DGZ_TRANSPORT_ENABLE_ZENOH=OFF'
+  noble-ci-zenoh:
+    runs-on: ubuntu-latest
+    name: Ubuntu Noble CI - Zenoh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Compile and test
+        id: ci
+        uses: gazebo-tooling/action-gz-ci@noble
+        with:
+          gzdev-project-name: rotary
+          cmake-args: '-DGZ_TRANSPORT_DEFAULT_IMPLEMENTATION=zenoh'
+  resolute-ci:
+    runs-on: ubuntu-latest
+    name: Ubuntu Resolute CI
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Compile and test
+        id: ci
+        uses: gazebo-tooling/action-gz-ci@resolute
+        with:
+          gzdev-project-name: rotary
+          # codecov-enabled: true
+          cppcheck-enabled: true
+          cpplint-enabled: true
+          doxygen-enabled: true
+          cmake-args: '-DGZ_TRANSPORT_ENABLE_ZENOH=OFF'
+  resolute-ci-zenoh:
+    runs-on: ubuntu-latest
+    name: Ubuntu Resolute CI - Zenoh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Compile and test
+        id: ci
+        uses: gazebo-tooling/action-gz-ci@resolute
+        with:
+          gzdev-project-name: rotary
+          cmake-args: '-DGZ_TRANSPORT_DEFAULT_IMPLEMENTATION=zenoh'

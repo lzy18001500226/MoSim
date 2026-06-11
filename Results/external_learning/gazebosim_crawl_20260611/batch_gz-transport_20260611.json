@@ -1,0 +1,24 @@
+{
+  "repo": "gz-transport",
+  "source": "git@github.com:gazebosim/gz-transport.git",
+  "source_sha": "a901bc681c623909eb823c60eddad020f717e341",
+  "temp": "Results/external_learning/gazebosim_crawl_20260611/tmp_clone/run_038/gz-transport",
+  "target": "References/Gazebo/gz-transport",
+  "copied_file_count": 282,
+  "copied_total_bytes": 2485887,
+  "excluded_components": [
+    ".git",
+    "build",
+    "install",
+    "log",
+    ".venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache",
+    ".cache",
+    "dist",
+    "out"
+  ],
+  "stage_file": "Results/external_learning/gazebosim_crawl_20260611/stage_gz-transport_20260611.txt",
+  "created_at": "2026-06-11T00:00:00+08:00"
+}

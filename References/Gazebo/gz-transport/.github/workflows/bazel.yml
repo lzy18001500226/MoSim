@@ -1,0 +1,28 @@
+name: Bazel CI
+on:
+  pull_request:
+  push:
+    branches:
+      - 'gz-transport[1-9]?[0-9]'
+      - 'main'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    uses: bazel-contrib/.github/.github/workflows/bazel.yaml@v7.2.2
+    with:
+      folders: |
+        [
+          ".",
+        ]
+      exclude: |
+        [
+          {"folder": ".", "bzlmodEnabled": false},
+        ]
+      exclude_windows: true
+      # Use opt compilation mode to prevent perf-related test flakiness.
+      # This only adds a couple minutes of build time overhead.
+      bazel_test_command: "bazel test -c opt --test_output=errors //..."
