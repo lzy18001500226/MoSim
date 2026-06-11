@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/LightType.hh",
+    "sha": "bbef149698e11017d84d0d977f41604097b19c66",
+    "size": 1354
+  },
+  {
+    "path": "include/gz/sim/components/LinearAcceleration.hh",
+    "sha": "211440b93b3f5275e87a7fdf96069e07967f9cf5",
+    "size": 1694
+  },
+  {
+    "path": "include/gz/sim/components/LinearVelocity.hh",
+    "sha": "38e48b2580346499cfec611989c45f8d6c5320b9",
+    "size": 1615
+  },
+  {
+    "path": "include/gz/sim/components/LinearVelocityCmd.hh",
+    "sha": "df0796b32fbdad7b044303fdf42dee1e9fc5c5c7",
+    "size": 1735
+  },
+  {
+    "path": "include/gz/sim/components/LinearVelocityReset.hh",
+    "sha": "c7343105f3067a20cd0d0cae7ec9b910102d95cf",
+    "size": 1854
+  }
+]

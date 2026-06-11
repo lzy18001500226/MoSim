@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/LightType.hh
+References/Gazebo/gz-sim/include/gz/sim/components/LinearAcceleration.hh
+References/Gazebo/gz-sim/include/gz/sim/components/LinearVelocity.hh
+References/Gazebo/gz-sim/include/gz/sim/components/LinearVelocityCmd.hh
+References/Gazebo/gz-sim/include/gz/sim/components/LinearVelocityReset.hh
