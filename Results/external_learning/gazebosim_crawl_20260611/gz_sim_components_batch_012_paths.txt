@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/LevelBuffer.hh
+References/Gazebo/gz-sim/include/gz/sim/components/LevelEntityNames.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Lidar.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Light.hh
+References/Gazebo/gz-sim/include/gz/sim/components/LightCmd.hh

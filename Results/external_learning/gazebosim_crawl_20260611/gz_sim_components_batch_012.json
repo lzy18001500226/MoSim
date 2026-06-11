@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/LevelBuffer.hh",
+    "sha": "e745114f4e5b1f556d9a09ee50744c839f261f19",
+    "size": 1225
+  },
+  {
+    "path": "include/gz/sim/components/LevelEntityNames.hh",
+    "sha": "5027f48e191a38508695daee697cdaa9c9a3c8fb",
+    "size": 2491
+  },
+  {
+    "path": "include/gz/sim/components/Lidar.hh",
+    "sha": "84a80d1832d84337755d89dc2a57cbcd6e9c12dd",
+    "size": 1280
+  },
+  {
+    "path": "include/gz/sim/components/Light.hh",
+    "sha": "fc718732cc522dce5fa8262e187d72e49eb42d17",
+    "size": 1554
+  },
+  {
+    "path": "include/gz/sim/components/LightCmd.hh",
+    "sha": "655db8226c35b29e93b62af9f623234a3308ff16",
+    "size": 1398
+  }
+]
