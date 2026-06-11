@@ -1,0 +1,144 @@
+{
+  "repo": "gazebosim/docs",
+  "head": "fc0832680c6908c4850e8f4af3b8190181bf877f",
+  "batch": "docs_harmonic_02b_media_remaining",
+  "count": 27,
+  "total_bytes": 4944108.0,
+  "paths": [
+    {
+      "path": "harmonic/tutorials/fuel_insert/husky.gif",
+      "sha": "fb09b9e84f7647b4f05ce4532b21f20540e5c969",
+      "size": 1526043
+    },
+    {
+      "path": "harmonic/tutorials/fuel_insert/mine_cart_engine_detail.png",
+      "sha": "61c2c9104fbfdcba560c03fc85e9bb6991a0930f",
+      "size": 324748
+    },
+    {
+      "path": "harmonic/tutorials/fuel_insert/resource_spawner_cloud.png",
+      "sha": "2fe7d259a7d6bd99a52db48fe29778f00dc040d8",
+      "size": 174966
+    },
+    {
+      "path": "harmonic/tutorials/fuel_insert/resource_spawner_local.png",
+      "sha": "f42147cd3e4f33dd15132ee4182da2f38a9a60cb",
+      "size": 118904
+    },
+    {
+      "path": "harmonic/tutorials/gui/entity_select.png",
+      "sha": "76b166365cd9c28c0d3e079f472f4e309ede1729",
+      "size": 193762
+    },
+    {
+      "path": "harmonic/tutorials/gui/grid_config.png",
+      "sha": "6e16417aea4c9e37f0de429739e4c573561356c6",
+      "size": 277642
+    },
+    {
+      "path": "harmonic/tutorials/gui/hover_steps.png",
+      "sha": "2e240e3ac6baee0ee26cbc28214ce09f4cb798f9",
+      "size": 9506
+    },
+    {
+      "path": "harmonic/tutorials/gui/menu_btn.png",
+      "sha": "6cb185d3566090390ee064682c60a31c664b2ddd",
+      "size": 469
+    },
+    {
+      "path": "harmonic/tutorials/gui/playback.png",
+      "sha": "1dbe1694518fcdeb7b7c684831b0e3f530692819",
+      "size": 13261
+    },
+    {
+      "path": "harmonic/tutorials/gui/plugins_btn.png",
+      "sha": "ddbdaa2896afaf78239f66a0e1f2bc76d06e578e",
+      "size": 596
+    },
+    {
+      "path": "harmonic/tutorials/gui/rtf_expanded.png",
+      "sha": "85f275dfa954d3b249e839755d327b03cf018734",
+      "size": 12851
+    },
+    {
+      "path": "harmonic/tutorials/gui/shape_insertion.png",
+      "sha": "15a9b1d92018810ef52ab9ed2a5103f539b675ed",
+      "size": 211629
+    },
+    {
+      "path": "harmonic/tutorials/gui/shapes.png",
+      "sha": "61567ec577e90210ab5853d5e6e224ec9f50716f",
+      "size": 167090
+    },
+    {
+      "path": "harmonic/tutorials/gui/toolbars.png",
+      "sha": "17af3459ca89d94061e82820b95ce3a45a5c61ad",
+      "size": 17064
+    },
+    {
+      "path": "harmonic/tutorials/ros2_integration/empty_world.png",
+      "sha": "0b48a4ef07578cb9e4bec53be3025adc984fc16b",
+      "size": 69120
+    },
+    {
+      "path": "harmonic/tutorials/ros2_integration/jsp_diagram.jpg",
+      "sha": "2c5e6230523019a268b1ce2824ca01f398f648ab",
+      "size": 52392
+    },
+    {
+      "path": "harmonic/tutorials/ros2_integration/jsp_gui.png",
+      "sha": "5326e690b895c0c95c08c298d04a22404471e6d2",
+      "size": 958359
+    },
+    {
+      "path": "harmonic/tutorials/ros2_integration/use_template.png",
+      "sha": "b5413c09d249b876f685fb63de1c79b42c1e0ca4",
+      "size": 168866
+    },
+    {
+      "path": "harmonic/tutorials/sdf_worlds/coke_world.png",
+      "sha": "7ac8b9892db111c965257cf90b15ba86116e8897",
+      "size": 34626
+    },
+    {
+      "path": "harmonic/tutorials/sdf_worlds/entity_tree.png",
+      "sha": "23a815192775f179b003bceff536f7bc2467903c",
+      "size": 12526
+    },
+    {
+      "path": "harmonic/tutorials/sdf_worlds/two_cokes.png",
+      "sha": "527cc0b74fcbd88bed055a21848dda7e59e1cdc5",
+      "size": 47770
+    },
+    {
+      "path": "harmonic/tutorials/sdf_worlds/world_stats.png",
+      "sha": "7dadcab3688408f8319a25e744585d371e94956f",
+      "size": 49813
+    },
+    {
+      "path": "harmonic/tutorials/sensors/imu_msgs.png",
+      "sha": "56663f83bf6fddcfc3a02f574fec1305cf57ceb7",
+      "size": 60666
+    },
+    {
+      "path": "harmonic/tutorials/sensors/sensor_wall.png",
+      "sha": "95b07c4b516a0f32014c4d4d78d7e9143e14bb30",
+      "size": 87856
+    },
+    {
+      "path": "harmonic/tutorials/spawn_urdf/empty_world.png",
+      "sha": "9671ce270b656eff94572c006b529a0d669ba462",
+      "size": 81733
+    },
+    {
+      "path": "harmonic/tutorials/spawn_urdf/rrbot.gif",
+      "sha": "1dfad37ce007240cf665c094a325cd69da717f7f",
+      "size": 183628
+    },
+    {
+      "path": "harmonic/tutorials/spawn_urdf/urdf_spawned.png",
+      "sha": "aa032c0a67a9065e936b4cb957b5a0219b3a0965",
+      "size": 88222
+    }
+  ]
+}
