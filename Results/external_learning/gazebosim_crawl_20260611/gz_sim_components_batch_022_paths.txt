@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/SourceFilePath.hh
+References/Gazebo/gz-sim/include/gz/sim/components/SphericalCoordinates.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Static.hh
+References/Gazebo/gz-sim/include/gz/sim/components/SystemPluginInfo.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Temperature.hh

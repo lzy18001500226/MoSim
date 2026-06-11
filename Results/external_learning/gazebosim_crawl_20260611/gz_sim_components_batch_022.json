@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/SourceFilePath.hh",
+    "sha": "ed2411187ffccddaef1a7effb506f84d1979f40a",
+    "size": 1456
+  },
+  {
+    "path": "include/gz/sim/components/SphericalCoordinates.hh",
+    "sha": "11a11b142244bcdb0749f83c766ebe6ca3b046c6",
+    "size": 1629
+  },
+  {
+    "path": "include/gz/sim/components/Static.hh",
+    "sha": "269bad72190332ed2391cdc4c805565525b54f4a",
+    "size": 1410
+  },
+  {
+    "path": "include/gz/sim/components/SystemPluginInfo.hh",
+    "sha": "73559b255fec3086d78e902e5baf1832f4488ab6",
+    "size": 1503
+  },
+  {
+    "path": "include/gz/sim/components/Temperature.hh",
+    "sha": "c8485e67223c2f0d9d422b6d74540ea489899c6b",
+    "size": 1505
+  }
+]
