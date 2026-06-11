@@ -1,0 +1,40 @@
+name: ROS2 CI
+
+on: [push, pull_request]
+
+jobs:
+  pre-commit:
+    name: Pre-commit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.1
+
+  ros_gz_ci:
+    name: ros_gz CI
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # rolling no longer releases for noble (24.04). Per rosdistro's
+          # rolling/distribution.yaml, release_platforms.ubuntu = [resolute]
+          # (Ubuntu 26.04 LTS).
+          - docker-image: "ubuntu:resolute"
+            ros-distro: "rolling"
+    container:
+      image: ${{ matrix.docker-image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build and Test
+        run: .github/workflows/build-and-test.sh
+        env:
+          DOCKER_IMAGE: ${{ matrix.docker-image }}
+          ROS_DISTRO: ${{ matrix.ros-distro }}

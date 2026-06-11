@@ -1,0 +1,17 @@
+{
+  "task_id": "COAGENT-DEVOPS-GAZEBOSIM-REFERENCES-INGEST-20260611",
+  "repo": "ros_gz",
+  "acquisition": "archive-first",
+  "run": "Results\\external_learning\\gazebosim_crawl_20260611\\tmp_archive\\run_048",
+  "source_org": "gazebosim",
+  "default_branch": "ros2",
+  "source_sha": "cd3d1bc4a5d8f524efdc2f3328d596b4629f5c65",
+  "target": "References\\Gazebo\\ros_gz",
+  "file_count": 350,
+  "total_bytes": 7026811.0,
+  "large_file_count": 0,
+  "sensitive_path_count": 0,
+  "nested_risk_dir_count": 0,
+  "lfs_pointer_count": 0,
+  "staging_strategy": "single path-limited batch because file_count under 1000"
+}
