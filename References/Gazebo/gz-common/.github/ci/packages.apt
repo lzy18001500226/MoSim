@@ -1,0 +1,15 @@
+libassimp-dev
+libavcodec-dev
+libavdevice-dev
+libavformat-dev
+libavutil-dev
+libgdal-dev
+libgz-rotary-cmake-dev
+libgz-rotary-math-dev
+libgz-rotary-utils-dev
+libgz-rotary-utils-log-dev
+libspdlog-dev
+libswscale-dev
+libtinyxml2-dev
+pkg-config
+uuid-dev

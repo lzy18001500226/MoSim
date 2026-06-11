@@ -1,0 +1,26 @@
+{
+  "repo": "gz-common",
+  "source": "https://github.com/gazebosim/gz-common",
+  "acquisition": "github_archive_zip",
+  "source_sha": "b632fbd39641cdcb4c72e3742882790b17368524",
+  "archive": "Results/external_learning/gazebosim_crawl_20260611/tmp_archive/run_044/gz-common.zip",
+  "temp": "Results/external_learning/gazebosim_crawl_20260611/tmp_archive/run_044/extract/gz-common-b632fbd39641cdcb4c72e3742882790b17368524",
+  "target": "References/Gazebo/gz-common",
+  "copied_file_count": 463,
+  "copied_total_bytes": 33170635,
+  "excluded_components": [
+    ".git",
+    "build",
+    "install",
+    "log",
+    ".venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache",
+    ".cache",
+    "dist",
+    "out"
+  ],
+  "stage_file": "Results/external_learning/gazebosim_crawl_20260611/stage_gz-common_20260611.txt",
+  "created_at": "2026-06-11T00:00:00+08:00"
+}
