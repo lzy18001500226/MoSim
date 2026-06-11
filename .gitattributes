@@ -16,7 +16,9 @@ References/Gazebo/**/*.wav binary
 References/Gazebo/**/*.glb binary
 References/Gazebo/**/*.gltf binary
 References/Gazebo/**/*.fbx binary
+References/Gazebo/**/*.blend binary
 References/Gazebo/**/*.stl binary
+References/Gazebo/**/*.tlog binary
 References/Gazebo/**/*.zip binary
 References/Gazebo/**/*.gz binary
 References/Gazebo/**/*.tar binary

@@ -1,0 +1,32 @@
+{
+  "repo": "gazebosim/gz-sim",
+  "commit": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "batch": "gz_sim_deferred_binary_001",
+  "generated_at": "2026-06-12T03:41:31.2834578+08:00",
+  "file_count": 4,
+  "total_size": 4659530.0,
+  "max_file_size": 2105344.0,
+  "attribute_change": "Added narrow binary attributes for References/Gazebo/**/*.blend and **/*.tlog",
+  "files": [
+    {
+      "path": "test/media/levels_log/state.tlog",
+      "size": 778240,
+      "sha": "b9d7e513df9f2f618ba968b29ad68a766a0a5d13"
+    },
+    {
+      "path": "test/media/rolling_shapes_log/state.tlog",
+      "size": 2105344,
+      "sha": "b4c8ac2cc708b2d467c4befc136af23c90ed08f9"
+    },
+    {
+      "path": "tutorials/files/blender_procedural_datasets/rock.blend",
+      "size": 1439687,
+      "sha": "afcf231c2397744fafbaf03a76cfbfd952a101c2"
+    },
+    {
+      "path": "tutorials/files/blender_procedural_datasets/woodland.blend",
+      "size": 336259,
+      "sha": "7e2ba8f689fc82f5f93e3d52c4bc6dec985b451d"
+    }
+  ]
+}

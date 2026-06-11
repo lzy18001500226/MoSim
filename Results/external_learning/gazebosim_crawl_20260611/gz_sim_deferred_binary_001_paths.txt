@@ -1,0 +1,4 @@
+References/Gazebo/gz-sim/test/media/levels_log/state.tlog
+References/Gazebo/gz-sim/test/media/rolling_shapes_log/state.tlog
+References/Gazebo/gz-sim/tutorials/files/blender_procedural_datasets/rock.blend
+References/Gazebo/gz-sim/tutorials/files/blender_procedural_datasets/woodland.blend
