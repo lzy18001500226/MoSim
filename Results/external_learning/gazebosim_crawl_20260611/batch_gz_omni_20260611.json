@@ -1,0 +1,18 @@
+{
+  "task_id": "COAGENT-DEVOPS-GAZEBOSIM-REFERENCES-INGEST-20260611",
+  "repo": "gz-omni",
+  "acquisition": "archive-first",
+  "run": "Results/external_learning/gazebosim_crawl_20260611/tmp_archive/run_054_gz_omni",
+  "source_org": "gazebosim",
+  "default_branch": "main",
+  "source_sha": "95b18621816a9d99966a5d472402fee1f98fa15f",
+  "target": "References\\Gazebo\\gz-omni",
+  "file_count": 157,
+  "total_bytes": 69092677.0,
+  "max_file_bytes": 42630923.0,
+  "large_file_count": 0,
+  "sensitive_path_count": 0,
+  "nested_risk_dir_count": 0,
+  "lfs_pointer_count": 0,
+  "staging_strategy": "single path-limited batch because file_count under 1000 and scan clean"
+}
