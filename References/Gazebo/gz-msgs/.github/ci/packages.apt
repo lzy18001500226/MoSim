@@ -1,0 +1,11 @@
+libgz-rotary-cmake-dev
+libgz-rotary-math-dev
+libgz-rotary-tools-dev
+libgz-rotary-utils-cli-dev
+libprotobuf-dev
+libprotoc-dev
+libtinyxml2-dev
+protobuf-compiler
+ruby
+python3-pytest
+python3-protobuf

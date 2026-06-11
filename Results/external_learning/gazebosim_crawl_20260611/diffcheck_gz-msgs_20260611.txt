@@ -1,0 +1,6 @@
+gz-msgs initial git diff --cached --check exit=2
+raw output contained upstream trailing whitespace and EOF blank-line diagnostics
+generated/binary descriptors excluded from this batch:
+References/Gazebo/gz-msgs/test/desc/stringmsg.desc
+References/Gazebo/gz-msgs/test/desc/testing.proto.bin
+text files normalized mechanically for trailing whitespace and final blank lines

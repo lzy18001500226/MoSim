@@ -1,0 +1,2 @@
+References/Gazebo/gz-msgs/test/desc/stringmsg.desc
+References/Gazebo/gz-msgs/test/desc/testing.proto.bin
