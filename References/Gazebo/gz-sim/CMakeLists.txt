@@ -1,0 +1,311 @@
+cmake_minimum_required(VERSION 3.22.1 FATAL_ERROR)
+
+#============================================================================
+# Initialize the project
+#============================================================================
+project(gz-sim VERSION 11.0.0)
+set (GZ_DISTRIBUTION "Rotary")
+
+#============================================================================
+# Find gz-cmake
+#============================================================================
+# If you get an error at this line, you need to install gz-cmake
+find_package(gz-cmake REQUIRED)
+
+#============================================================================
+# Configure the project
+#============================================================================
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+gz_configure_project(VERSION_SUFFIX pre1)
+
+#============================================================================
+# Set project-specific options
+#============================================================================
+
+option(ENABLE_PROFILER "Enable Gazebo Profiler" FALSE)
+
+if(ENABLE_PROFILER)
+  add_definitions("-DGZ_PROFILER_ENABLE=1")
+else()
+  add_definitions("-DGZ_PROFILER_ENABLE=0")
+endif()
+
+#--------------------------------------
+# Find Backward-cpp for stack trace support
+# See https://github.com/gazebosim/gz-cmake/issues/477 before copy this code
+
+set(BACKWARD_TESTS OFF)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/backward-cpp)
+
+# Using other CMake interfaces from backwards won't work here since
+# CMake would not resolve them into gz-cmake (uses EXTRA_TEST_LIB_DEPS)
+# using backward_object set the object file path.
+if (UNIX AND NOT APPLE)
+  set (EXTRA_TEST_LIB_DEPS stdc++fs backward_object)
+else()
+  set (EXTRA_TEST_LIB_DEPS backward_object)
+endif()
+
+# We're disabling pybind11 by default on Windows because they
+# don't have active CI on them for now.
+set(skip_pybind11_default_value OFF)
+if (MSVC)
+  set(skip_pybind11_default_value ON)
+endif()
+
+option(SKIP_PYBIND11
+      "Skip generating Python bindings via pybind11"
+      ${skip_pybind11_default_value})
+
+include(test/find_dri.cmake)
+FindDRI()
+
+include(CMakeDependentOption)
+cmake_dependent_option(USE_SYSTEM_PATHS_FOR_PYTHON_INSTALLATION
+      "Install python modules in standard system paths in the system"
+      OFF "NOT SKIP_PYBIND11" OFF)
+
+cmake_dependent_option(USE_DIST_PACKAGES_FOR_PYTHON
+      "Use dist-packages instead of site-package to install python modules"
+      OFF "NOT SKIP_PYBIND11" OFF)
+
+#============================================================================
+# Search for project-specific dependencies
+#============================================================================
+
+# Setting this policy enables using the protobuf_MODULE_COMPATIBLE
+# set command when cmake_minimum_required is less than 3.13
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+# This option is needed to use the PROTOBUF_GENERATE_CPP
+# in case protobuf is found with the CMake config files
+# It needs to be set before any find_package(...) call
+# as protobuf could be find transitively by any dependency
+set(protobuf_MODULE_COMPATIBLE TRUE)
+
+gz_find_package(sdformat REQUIRED)
+
+#--------------------------------------
+# Find gz-plugin
+gz_find_package(gz-plugin REQUIRED COMPONENTS loader register)
+
+#--------------------------------------
+# Find gz-transport
+gz_find_package(gz-transport REQUIRED COMPONENTS log parameters)
+
+#--------------------------------------
+# Find gz-msgs
+gz_find_package(gz-msgs REQUIRED)
+
+#--------------------------------------
+# Find gz-common
+# Always use the profiler component to get the headers, regardless of status.
+gz_find_package(gz-common
+  COMPONENTS
+    av
+    events
+    graphics
+    io
+    profiler
+    testing
+  REQUIRED
+)
+
+list(APPEND EXTRA_TEST_LIB_DEPS gz-common::testing)
+
+#--------------------------------------
+# Find gz-fuel_tools
+gz_find_package(gz-fuel_tools REQUIRED)
+
+# Option to build gz-sim with GUI support
+option(ENABLE_GUI "Build gz-sim with GUI enabled" ON)
+
+if(ENABLE_GUI)
+  gz_find_package(gz-gui REQUIRED)
+  gz_find_package(TINYXML2 REQUIRED)
+
+  set(QT_MAJOR_VERSION 6)
+  set(QT_MINOR_VERSION 4)
+  gz_find_package (Qt${QT_MAJOR_VERSION}
+    VERSION ${QT_MAJOR_VERSION}.${QT_MINOR_VERSION}
+    COMPONENTS
+      Core
+      Quick
+      QuickControls2
+    REQUIRED
+    PKGCONFIG "Qt${QT_MAJOR_VERSION}Core Qt${QT_MAJOR_VERSION}Quick Qt${QT_MAJOR_VERSION}QuickControls2")
+endif()
+
+#--------------------------------------
+# Find gz-physics
+gz_find_package(gz-physics
+  COMPONENTS
+    heightmap
+    mesh
+    sdf
+  REQUIRED
+)
+
+#--------------------------------------
+# Find gz-sensors
+gz_find_package(gz-sensors REQUIRED
+  # component order is important
+  COMPONENTS
+    # non-rendering
+    air_pressure
+    air_speed
+    altimeter
+    cpu_lidar
+    imu
+    force_torque
+    logical_camera
+    magnetometer
+    navsat
+
+    # rendering
+    dvl
+    rendering
+    lidar
+    gpu_lidar
+
+    # cameras
+    camera
+    boundingbox_camera
+    segmentation_camera
+    depth_camera
+    rgbd_camera
+    thermal_camera
+    wide_angle_camera
+)
+
+#--------------------------------------
+# Find gz-rendering
+gz_find_package(gz-rendering REQUIRED)
+
+#--------------------------------------
+# Find gz-math
+gz_find_package(gz-math REQUIRED COMPONENTS eigen3)
+
+#--------------------------------------
+# Find if gz command is available
+find_program(GZ_TOOLS_PROGRAM gz)
+if (GZ_TOOLS_PROGRAM)
+  message (STATUS "Searching for gz program - found. CLI tests can be built.")
+else()
+  message (STATUS "Searching for gz program - not found. CLI tests are skipped.")
+endif()
+# Note that CLI files are installed regardless of whether the dependency is
+# available during build time
+
+#--------------------------------------
+# Find gz-utils
+gz_find_package(gz-utils REQUIRED COMPONENTS cli)
+
+
+#--------------------------------------
+# Find libwebsockets
+# Disable on windows as there is an issue linking against websockets_shared,
+# see #2802
+if (NOT WIN32)
+  gz_find_package(libwebsockets)
+  if (NOT libwebsockets_FOUND)
+    gz_build_warning("Unable to find libwebsockets. The websocket_server system will not be built.")
+  endif()
+endif()
+
+#--------------------------------------
+# Find protobuf
+gz_find_package(GzProtobuf
+                REQUIRED
+                COMPONENTS all
+                PRETTY Protobuf)
+set(Protobuf_IMPORT_DIRS ${gz-msgs_INCLUDE_DIRS})
+
+#--------------------------------------
+# Find python
+if (SKIP_PYBIND11)
+  message(STATUS "SKIP_PYBIND11 set - disabling python bindings")
+else()
+  find_package(Python3 QUIET COMPONENTS Interpreter Development)
+  if (NOT Python3_FOUND)
+    GZ_BUILD_WARNING("Python is missing: Python interfaces are disabled.")
+    message (STATUS "Searching for Python - not found.")
+  else()
+    message (STATUS "Searching for Python - found version ${PYTHONLIBS_VERSION_STRING}.")
+
+    set(PYBIND11_PYTHON_VERSION 3)
+    find_package(pybind11 2.9 CONFIG QUIET)
+
+    if (pybind11_FOUND)
+      message (STATUS "Searching for pybind11 - found version ${pybind11_VERSION}.")
+    else()
+      GZ_BUILD_WARNING("pybind11 is missing: Python interfaces are disabled.")
+      message (STATUS "Searching for pybind11 - not found.")
+    endif()
+  endif()
+endif()
+# Plugin install dirs
+set(GZ_SIM_PLUGIN_RELATIVE_INSTALL_DIR
+  ${GZ_LIB_INSTALL_DIR}/gz-${GZ_DESIGNATION}/plugins
+)
+set(GZ_SIM_PLUGIN_INSTALL_DIR
+  ${CMAKE_INSTALL_PREFIX}/${GZ_SIM_PLUGIN_RELATIVE_INSTALL_DIR}
+)
+set(GZ_SIM_GUI_PLUGIN_RELATIVE_INSTALL_DIR
+  ${GZ_LIB_INSTALL_DIR}/gz-${GZ_DESIGNATION}/plugins/gui
+)
+set(GZ_SIM_GUI_PLUGIN_INSTALL_DIR
+  ${CMAKE_INSTALL_PREFIX}/${GZ_SIM_GUI_PLUGIN_RELATIVE_INSTALL_DIR}
+)
+
+#============================================================================
+# Configure the build
+#============================================================================
+gz_configure_build(QUIT_IF_BUILD_ERRORS)
+
+add_subdirectory(examples)
+
+#============================================================================
+# Create package information
+#============================================================================
+gz_create_packages()
+
+if (pybind11_FOUND AND NOT SKIP_PYBIND11)
+	add_subdirectory(python)
+endif()
+#============================================================================
+# Configure documentation
+#============================================================================
+configure_file(${CMAKE_SOURCE_DIR}/api.md.in ${CMAKE_BINARY_DIR}/api.md)
+configure_file(${CMAKE_SOURCE_DIR}/tutorials.md.in ${CMAKE_BINARY_DIR}/tutorials.md)
+configure_file(${CMAKE_SOURCE_DIR}/tools/desktop/gz-sim.desktop.in ${CMAKE_BINARY_DIR}/gz-sim.desktop)
+configure_file(${CMAKE_SOURCE_DIR}/tools/desktop/gz-logo.svg.in ${CMAKE_BINARY_DIR}/gz-logo.svg)
+
+set(gz_sim_doxygen_tagfiles
+  "${GZ-MATH_DOXYGEN_TAGFILE} = ${GZ-MATH_API_URL}"
+  "${GZ-MSGS_DOXYGEN_TAGFILE} = ${GZ-MSGS_API_URL}"
+  "${GZ-PHYSICS_DOXYGEN_TAGFILE} = ${GZ-PHYSICS_API_URL}"
+  "${GZ-PLUGIN_DOXYGEN_TAGFILE} = ${GZ-PLUGIN_API_URL}"
+  "${GZ-TRANSPORT_DOXYGEN_TAGFILE} = ${GZ-TRANSPORT_API_URL}"
+  "${GZ-SENSORS_DOXYGEN_TAGFILE} = ${GZ-SENSORS_API_URL}"
+  "${GZ-COMMON_DOXYGEN_TAGFILE} = ${GZ-COMMON_API_URL}"
+)
+
+if(EXISTS "${GZ-GUI_DOXYGEN_TAGFILE}")
+  list(APPEND gz_sim_doxygen_tagfiles
+    "${GZ-GUI_DOXYGEN_TAGFILE} = ${GZ-GUI_API_URL}")
+endif()
+
+gz_create_docs(
+  API_MAINPAGE_MD "${CMAKE_BINARY_DIR}/api.md"
+  TUTORIALS_MAINPAGE_MD "${CMAKE_BINARY_DIR}/tutorials.md"
+  ADDITIONAL_INPUT_DIRS "${CMAKE_SOURCE_DIR}/src/systems ${CMAKE_SOURCE_DIR}/src/gui/plugins"
+  IMAGE_PATH_DIRS "${CMAKE_SOURCE_DIR}/tutorials/files"
+  TAGFILES
+   ${gz_sim_doxygen_tagfiles}
+)
+
+if(TARGET doc)
+  file(COPY ${CMAKE_SOURCE_DIR}/tutorials/files/ DESTINATION ${CMAKE_BINARY_DIR}/doxygen/html/files/)
+endif()

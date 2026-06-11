@@ -1,0 +1,3 @@
+References/Gazebo/gz-sim/CMakeLists.txt
+Results/external_learning/gazebosim_crawl_20260611/gz_sim_cmake_paths_20260611.txt
+Results/external_learning/gazebosim_crawl_20260611/batch_gz_sim_cmake_20260611.json
