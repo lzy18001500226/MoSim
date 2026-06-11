@@ -1,0 +1,427 @@
+[
+  {
+    "path": "src/gui/plugins/resource_spawner/CloudDownload.png",
+    "sha": "011385884dfebeadb92673cd4f71c94454c6f119",
+    "size": 20813
+  },
+  {
+    "path": "src/gui/plugins/resource_spawner/CMakeLists.txt",
+    "sha": "6102b6fbaff25cb3e58c0a6262a7529e3d0b8929",
+    "size": 140
+  },
+  {
+    "path": "src/gui/plugins/resource_spawner/DownloadToUse.png",
+    "sha": "59134a067c733aaab653a4298038fd4d457ac552",
+    "size": 6544
+  },
+  {
+    "path": "src/gui/plugins/resource_spawner/folder_closed.png",
+    "sha": "62dacdb562fe3b93c38ff3e4bf42543c1a8fd133",
+    "size": 8283
+  },
+  {
+    "path": "src/gui/plugins/resource_spawner/folder_open.png",
+    "sha": "06cf142a62318fabc2f0384990d68e963abc4f35",
+    "size": 27102
+  },
+  {
+    "path": "src/gui/plugins/resource_spawner/NoThumbnail.png",
+    "sha": "be33b0b21c3ccd379470f84b5d72ce823538ef97",
+    "size": 7617
+  },
+  {
+    "path": "src/gui/plugins/resource_spawner/ResourceSpawner.cc",
+    "sha": "7bd8a162e428f1e900c85d1f90c5b8e1045e2a6e",
+    "size": 24080
+  },
+  {
+    "path": "src/gui/plugins/resource_spawner/ResourceSpawner.hh",
+    "sha": "03249ad533be91d7f2e8dd9a57a630a034db62a2",
+    "size": 11062
+  },
+  {
+    "path": "src/gui/plugins/resource_spawner/ResourceSpawner.qml",
+    "sha": "adb90117d86b252c3eeebeef93d9ea49873ca31b",
+    "size": 18563
+  },
+  {
+    "path": "src/gui/plugins/resource_spawner/ResourceSpawner.qrc",
+    "sha": "07b219ec187ff842fcbf8bc7b1d087ff53fc20e0",
+    "size": 288
+  },
+  {
+    "path": "src/gui/plugins/scene_manager/CMakeLists.txt",
+    "sha": "e3c09450b286c556f878f2460d459190dcac35ad",
+    "size": 182
+  },
+  {
+    "path": "src/gui/plugins/scene_manager/GzSceneManager.cc",
+    "sha": "d9bba451945689bef849b83f192ee4d73214208d",
+    "size": 7665
+  },
+  {
+    "path": "src/gui/plugins/scene_manager/GzSceneManager.hh",
+    "sha": "aeb07260de26f0ab21019fd6a8e20273957b509f",
+    "size": 1936
+  },
+  {
+    "path": "src/gui/plugins/scene_manager/GzSceneManager.qml",
+    "sha": "576c828bc105ee0bd23a0374af34fb0f8b26a61a",
+    "size": 1163
+  },
+  {
+    "path": "src/gui/plugins/scene_manager/GzSceneManager.qrc",
+    "sha": "b28c13c3b4651dd661cef08e98a17bc1b103fb21",
+    "size": 125
+  },
+  {
+    "path": "src/gui/plugins/select_entities/CMakeLists.txt",
+    "sha": "2e1c8276be3dec01537dc319bdf2edf2c8aff483",
+    "size": 248
+  },
+  {
+    "path": "src/gui/plugins/select_entities/SelectEntities.cc",
+    "sha": "2f61fdf8ba552511c2a33cff98993fd84fa410fa",
+    "size": 17505
+  },
+  {
+    "path": "src/gui/plugins/select_entities/SelectEntities.hh",
+    "sha": "8b5c7ec7695ad8096d452277d26e85392494a4f0",
+    "size": 1522
+  },
+  {
+    "path": "src/gui/plugins/select_entities/SelectEntities.qml",
+    "sha": "71cb574e5078e15653a214d8f2ec6813ad8cb552",
+    "size": 1035
+  },
+  {
+    "path": "src/gui/plugins/select_entities/SelectEntities.qrc",
+    "sha": "d303772321f84666be76cab238c1fc16aa5875a9",
+    "size": 125
+  },
+  {
+    "path": "src/gui/plugins/shapes/box.png",
+    "sha": "9064dfc0abbad8e2291b671116e3f1e46bef23fe",
+    "size": 863
+  },
+  {
+    "path": "src/gui/plugins/shapes/capsule.png",
+    "sha": "367f17e608e67dc5e8476cebb4df00b2bb08fcbc",
+    "size": 10173
+  },
+  {
+    "path": "src/gui/plugins/shapes/CMakeLists.txt",
+    "sha": "389ef8440581749887277845947eec2171482250",
+    "size": 113
+  },
+  {
+    "path": "src/gui/plugins/shapes/cone.png",
+    "sha": "53f26d831c7b5f129ab2c47739781ebcfcb9dcee",
+    "size": 5605
+  },
+  {
+    "path": "src/gui/plugins/shapes/cylinder.png",
+    "sha": "c9040f35e4500c53aa32794899c374083551aca5",
+    "size": 983
+  },
+  {
+    "path": "src/gui/plugins/shapes/ellipsoid.png",
+    "sha": "0f5cde80f2f2a224e1e18204632b32be831e9ae8",
+    "size": 8489
+  },
+  {
+    "path": "src/gui/plugins/shapes/Shapes.cc",
+    "sha": "a2466c58e924c39bf3aea0f7f44fd9fc2c4dfb83",
+    "size": 2114
+  },
+  {
+    "path": "src/gui/plugins/shapes/Shapes.hh",
+    "sha": "5628d1a3f100688408041f6d39503873b23f22fb",
+    "size": 1433
+  },
+  {
+    "path": "src/gui/plugins/shapes/Shapes.qml",
+    "sha": "edca9255bdfd8679bc9500206d64f2b12fb54f3a",
+    "size": 3782
+  },
+  {
+    "path": "src/gui/plugins/shapes/Shapes.qrc",
+    "sha": "00fddab57c59dcd6bbdb570b7292ade33edc9740",
+    "size": 266
+  },
+  {
+    "path": "src/gui/plugins/shapes/sphere.png",
+    "sha": "824befa12efc96cda444668dd29443a342820880",
+    "size": 1449
+  },
+  {
+    "path": "src/gui/plugins/spawn/CMakeLists.txt",
+    "sha": "dada40b6b380af2bbbc00806b7f5194550ca3593",
+    "size": 139
+  },
+  {
+    "path": "src/gui/plugins/spawn/Spawn.cc",
+    "sha": "eabe03aea71a9015346ca5681ff6f6a9694ed805",
+    "size": 19566
+  },
+  {
+    "path": "src/gui/plugins/spawn/Spawn.hh",
+    "sha": "5a0f4bbe9f2efd7ecc34324bc1e8a2ef0549300f",
+    "size": 2401
+  },
+  {
+    "path": "src/gui/plugins/spawn/Spawn.qml",
+    "sha": "9c45a27ede068ff9ff982be11d79f6296ab73cdf",
+    "size": 1476
+  },
+  {
+    "path": "src/gui/plugins/spawn/Spawn.qrc",
+    "sha": "bbdcea6f132376dfc14090f14c562c48ced85a03",
+    "size": 107
+  },
+  {
+    "path": "src/gui/plugins/transform_control/arrow.png",
+    "sha": "66b310652b1a4d32fdfb565714774b363c1004e5",
+    "size": 846
+  },
+  {
+    "path": "src/gui/plugins/transform_control/CMakeLists.txt",
+    "sha": "1002d33ac0b137e289c506901cc56641d0131452",
+    "size": 174
+  },
+  {
+    "path": "src/gui/plugins/transform_control/rotate.png",
+    "sha": "ae61767479eff4c360e332b3cd3cc8fa77810664",
+    "size": 941
+  },
+  {
+    "path": "src/gui/plugins/transform_control/scale.png",
+    "sha": "99165467e7a9be8d8944c057fe3526f7fd1e0254",
+    "size": 1481
+  },
+  {
+    "path": "src/gui/plugins/transform_control/snap_to_grid.png",
+    "sha": "4324fd9988411e2402c46f22e592e9a3335a5971",
+    "size": 1988
+  },
+  {
+    "path": "src/gui/plugins/transform_control/snap.png",
+    "sha": "46fb770d242b7693c36aa7b40b21b49b00fb8833",
+    "size": 14898
+  },
+  {
+    "path": "src/gui/plugins/transform_control/TransformControl.cc",
+    "sha": "b559d76a903caad1251a46399caab470b67aa4a2",
+    "size": 27940
+  },
+  {
+    "path": "src/gui/plugins/transform_control/TransformControl.hh",
+    "sha": "79e5cb8291b48509af5b79f87b351c1ccae235c1",
+    "size": 5654
+  },
+  {
+    "path": "src/gui/plugins/transform_control/TransformControl.qml",
+    "sha": "efacd8c7a97cfdc5b7feb3a7aa94af24d8869e30",
+    "size": 14416
+  },
+  {
+    "path": "src/gui/plugins/transform_control/TransformControl.qrc",
+    "sha": "952c30ad125ee0a06d755a30e9259e546afb4bd3",
+    "size": 290
+  },
+  {
+    "path": "src/gui/plugins/transform_control/translate.png",
+    "sha": "565e796fe32f927723644e02c5ddcbd039c4fea0",
+    "size": 1075
+  },
+  {
+    "path": "src/gui/plugins/video_recorder/CMakeLists.txt",
+    "sha": "4e675a9b479ffa99d981eb3fe634c7fadc5d1922",
+    "size": 149
+  },
+  {
+    "path": "src/gui/plugins/video_recorder/video_camera.svg",
+    "sha": "f369e4a70da0e55af0c3d0d0b53fbb060ba5bf09",
+    "size": 1713
+  },
+  {
+    "path": "src/gui/plugins/video_recorder/VideoRecorder.cc",
+    "sha": "785ef24faf96711e0eec35c23e6ab455dbc53ff0",
+    "size": 11878
+  },
+  {
+    "path": "src/gui/plugins/video_recorder/VideoRecorder.hh",
+    "sha": "399b0ed4f36a0998904ab00d9c46b545d44818e1",
+    "size": 2125
+  },
+  {
+    "path": "src/gui/plugins/video_recorder/VideoRecorder.qml",
+    "sha": "a5ab24566d39f1f340d39a0ebd07446b225bdac6",
+    "size": 5206
+  },
+  {
+    "path": "src/gui/plugins/video_recorder/VideoRecorder.qrc",
+    "sha": "45cef1fd6d3f647da8e933c65b931c154044d812",
+    "size": 155
+  },
+  {
+    "path": "src/gui/plugins/view_angle/CMakeLists.txt",
+    "sha": "22fa0770c881caaa93a2773641209028681b12fc",
+    "size": 144
+  },
+  {
+    "path": "src/gui/plugins/view_angle/view_angle_back.png",
+    "sha": "a2a447f09abfafc2144c437772ba5c2250e8e660",
+    "size": 4026
+  },
+  {
+    "path": "src/gui/plugins/view_angle/view_angle_bottom.png",
+    "sha": "a94bffc10734613b4596dfea46c9af6bf635eebc",
+    "size": 4033
+  },
+  {
+    "path": "src/gui/plugins/view_angle/view_angle_front.png",
+    "sha": "a3487843edd82cc02c3335632042c4df08ee1669",
+    "size": 3852
+  },
+  {
+    "path": "src/gui/plugins/view_angle/view_angle_home.png",
+    "sha": "b1384f2232b93cbd9f5ac9dd7bfed5d7a32b543d",
+    "size": 3883
+  },
+  {
+    "path": "src/gui/plugins/view_angle/view_angle_left.png",
+    "sha": "af051295f4815661b6ed0e235758a221981ef85f",
+    "size": 4023
+  },
+  {
+    "path": "src/gui/plugins/view_angle/view_angle_right.png",
+    "sha": "503e37738a72c2fcff39e17fce8087819433dc03",
+    "size": 4194
+  },
+  {
+    "path": "src/gui/plugins/view_angle/view_angle_top.png",
+    "sha": "23b2e3207de3159c3806397d16884d0adee7cabf",
+    "size": 4281
+  },
+  {
+    "path": "src/gui/plugins/view_angle/ViewAngle.cc",
+    "sha": "5c5015d9efcb3924a5d05a86291375666ccf2377",
+    "size": 18778
+  },
+  {
+    "path": "src/gui/plugins/view_angle/ViewAngle.hh",
+    "sha": "dc5721154d94e01b255dcc0a15bee7267ae2b4a2",
+    "size": 5546
+  },
+  {
+    "path": "src/gui/plugins/view_angle/ViewAngle.qml",
+    "sha": "0cb792bf5508b3410df4d231e4ce03b78b8e15d6",
+    "size": 9516
+  },
+  {
+    "path": "src/gui/plugins/view_angle/ViewAngle.qrc",
+    "sha": "49820efee5a57893b099db6e7e77be489e3317e9",
+    "size": 363
+  },
+  {
+    "path": "src/gui/plugins/visualization_capabilities/CMakeLists.txt",
+    "sha": "9aef2c05979dd40470711263a91bfc20c63bf4d3",
+    "size": 199
+  },
+  {
+    "path": "src/gui/plugins/visualization_capabilities/VisualizationCapabilities.cc",
+    "sha": "4d3a115bdf54d844d16203bb5755ac60d5633919",
+    "size": 92070
+  },
+  {
+    "path": "src/gui/plugins/visualization_capabilities/VisualizationCapabilities.hh",
+    "sha": "8e1c87ce3423638bde48b8cf96296ff2484bc69c",
+    "size": 1657
+  },
+  {
+    "path": "src/gui/plugins/visualization_capabilities/VisualizationCapabilities.qml",
+    "sha": "66469fdae778bd0481caad0d40c69cf85b7e8112",
+    "size": 1093
+  },
+  {
+    "path": "src/gui/plugins/visualization_capabilities/VisualizationCapabilities.qrc",
+    "sha": "e1522da1d52a5feb3e00c679fbfc501ce2a496a3",
+    "size": 147
+  },
+  {
+    "path": "src/gui/plugins/visualize_contacts/CMakeLists.txt",
+    "sha": "e8f646c2f5895e286fdde3b64788fe03a6cd91b8",
+    "size": 153
+  },
+  {
+    "path": "src/gui/plugins/visualize_contacts/VisualizeContacts.cc",
+    "sha": "6e3a51de1b60c82b2ffc6887725017435501c1f8",
+    "size": 9673
+  },
+  {
+    "path": "src/gui/plugins/visualize_contacts/VisualizeContacts.hh",
+    "sha": "884216dccf1aa1185904fdc6be5568f234780a1e",
+    "size": 2177
+  },
+  {
+    "path": "src/gui/plugins/visualize_contacts/VisualizeContacts.qml",
+    "sha": "4de1cc2c6d7680bdf41fbb80176e60fbf41ed944",
+    "size": 2143
+  },
+  {
+    "path": "src/gui/plugins/visualize_contacts/VisualizeContacts.qrc",
+    "sha": "fe1bf74e0a7113f9b882febf236bdfa2f5e54704",
+    "size": 131
+  },
+  {
+    "path": "src/gui/plugins/visualize_frustum/CMakeLists.txt",
+    "sha": "67c0800efe4c7ef5956a02f6666ca2b1431ab653",
+    "size": 141
+  },
+  {
+    "path": "src/gui/plugins/visualize_frustum/VisualizeFrustum.cc",
+    "sha": "e7de3b380e76a267fe957638c17583c1cfe3a1ff",
+    "size": 14505
+  },
+  {
+    "path": "src/gui/plugins/visualize_frustum/VisualizeFrustum.hh",
+    "sha": "a2e877197e5704ccfc3645aa13d0504bb6c0cb48",
+    "size": 5028
+  },
+  {
+    "path": "src/gui/plugins/visualize_frustum/VisualizeFrustum.qml",
+    "sha": "e199cecc517cf65496e678ef98ace75f30d8e114",
+    "size": 2130
+  },
+  {
+    "path": "src/gui/plugins/visualize_frustum/VisualizeFrustum.qrc",
+    "sha": "a4001232f170c2d342e8693e998390827a4cff29",
+    "size": 129
+  },
+  {
+    "path": "src/gui/plugins/visualize_lidar/CMakeLists.txt",
+    "sha": "6b600b0169dd4c203ed2656de9e8f573e969733e",
+    "size": 137
+  },
+  {
+    "path": "src/gui/plugins/visualize_lidar/VisualizeLidar.cc",
+    "sha": "9dcf8d18af4c46286d9d6b83c08748c02b386040",
+    "size": 13022
+  },
+  {
+    "path": "src/gui/plugins/visualize_lidar/VisualizeLidar.hh",
+    "sha": "f6c52cbc9c36715200be34fc134e2fbc08785508",
+    "size": 4514
+  },
+  {
+    "path": "src/gui/plugins/visualize_lidar/VisualizeLidar.qml",
+    "sha": "a78f2e3fdd0cbe2ec623ef0d24777b34bedb7d2a",
+    "size": 3474
+  },
+  {
+    "path": "src/gui/plugins/visualize_lidar/VisualizeLidar.qrc",
+    "sha": "ae58a0abb52893e854eb104653dd702f9f3e52a7",
+    "size": 125
+  }
+]
