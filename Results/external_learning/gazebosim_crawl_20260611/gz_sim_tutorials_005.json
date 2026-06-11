@@ -1,0 +1,176 @@
+{
+  "repo": "gazebosim/gz-sim",
+  "commit": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "batch": "gz_sim_tutorials_005",
+  "generated_at": "2026-06-12T03:28:12.6207184+08:00",
+  "file_count": 33,
+  "total_size": 24432613,
+  "max_file_size": 12072909.0,
+  "files": [
+    {
+      "path": "tutorials/files/digital_elevation_models/qgis_satellite_and_dem.png",
+      "size": 12072909,
+      "sha": "4eda4ee2804302c128e1c0f017c2240069ad662f"
+    },
+    {
+      "path": "tutorials/files/distributed_step.png",
+      "size": 37347,
+      "sha": "b028320c4d0a47ba7cc1bf34389861cab2a1f2ac"
+    },
+    {
+      "path": "tutorials/files/frame_reference/turtle_frames.png",
+      "size": 150124,
+      "sha": "33fcfc24106a95be24948528ecb5cb6fe1019273"
+    },
+    {
+      "path": "tutorials/files/global_illumination/global_illumination.gif",
+      "size": 954108,
+      "sha": "fbc1435e28cda16e3a51df9681f3d696838cff8c"
+    },
+    {
+      "path": "tutorials/files/global_illumination/gui_demo_default.png",
+      "size": 466874,
+      "sha": "516d32dea6777f2bff7553ad5456e4b42c85b2a0"
+    },
+    {
+      "path": "tutorials/files/global_illumination/gui_demo_with_vct.png",
+      "size": 738495,
+      "sha": "823d23b3dcc1ec4e3e836b5130ec7cafac7577c9"
+    },
+    {
+      "path": "tutorials/files/gui_config/cmd_line.png",
+      "size": 130532,
+      "sha": "50c846da232fcaa701bf14da222002fe4a0c8255"
+    },
+    {
+      "path": "tutorials/files/gui_config/dark_gui.png",
+      "size": 59269,
+      "sha": "77a8ecff62d9164f71dd315eb7cd77a2d484c935"
+    },
+    {
+      "path": "tutorials/files/gui_config/default_gui.png",
+      "size": 60909,
+      "sha": "b34fe3a106130a438a14529f753cc536e2ee0d23"
+    },
+    {
+      "path": "tutorials/files/gui_config/fuel_preview_no_gui.png",
+      "size": 173547,
+      "sha": "de9ef0ab0e8763b7ea45fd8b20c2004bbb3b890c"
+    },
+    {
+      "path": "tutorials/files/gui_config/fuel_preview.png",
+      "size": 114772,
+      "sha": "7626df582b016f966a1c2ae7f601fdb37f778166"
+    },
+    {
+      "path": "tutorials/files/gui_config/save_config.gif",
+      "size": 1196357,
+      "sha": "77548f702396667861eda7290bbec0fd671d0369"
+    },
+    {
+      "path": "tutorials/files/joint_controllers/JoinControllerForceMode.gif",
+      "size": 668840,
+      "sha": "0754b1eb077a62dd2f577a4bfe4e9974f07b7df3"
+    },
+    {
+      "path": "tutorials/files/joint_controllers/JointController.png",
+      "size": 277096,
+      "sha": "b88711e4cf219ff264b05234fd58d23bdab22bbd"
+    },
+    {
+      "path": "tutorials/files/joint_controllers/JointControllerVelMode1.gif",
+      "size": 736172,
+      "sha": "1f7578027d409620d73feb6190460db755704d6b"
+    },
+    {
+      "path": "tutorials/files/joint_controllers/JointControllerVelMode2.gif",
+      "size": 757613,
+      "sha": "26d52802123f3ab404075fd0fb9602f303bb4281"
+    },
+    {
+      "path": "tutorials/files/joint_controllers/JointPositionController.gif",
+      "size": 539904,
+      "sha": "a5ae36a17647a5ef8c2e95cc093ac5038af63841"
+    },
+    {
+      "path": "tutorials/files/joint_controllers/JointTrajectoryController.gif",
+      "size": 211396,
+      "sha": "c1419854a0db54a5a18e49aaf0bce8a1fa444276"
+    },
+    {
+      "path": "tutorials/files/joint_controllers/JointTrajectoryController.png",
+      "size": 206004,
+      "sha": "f1445fac290e57275339b9c29c1de134b5e61872"
+    },
+    {
+      "path": "tutorials/files/lander/buoyant_lander.sdf",
+      "size": 10863,
+      "sha": "2bdbf62c59520924ecd26b51cda90353ff976c36"
+    },
+    {
+      "path": "tutorials/files/lander/gui_transform_control.png",
+      "size": 49226,
+      "sha": "fac215d5d34115c14f995cbaecd47394bd5ef3ab"
+    },
+    {
+      "path": "tutorials/files/lander/inkfish-lander.dae",
+      "size": 4157342,
+      "sha": "04cfc1d390ab2427c5451f6a5390b5a70dd622c8"
+    },
+    {
+      "path": "tutorials/files/lander/lander_collisions.png",
+      "size": 28081,
+      "sha": "55b6a55876f93b7778ef711a824238184fbf81cd"
+    },
+    {
+      "path": "tutorials/files/lander/lander_visuals.png",
+      "size": 98224,
+      "sha": "51b08228f2fac01ba91387c2e83025ad8804bddf"
+    },
+    {
+      "path": "tutorials/files/lander/model.config",
+      "size": 292,
+      "sha": "31364c4593c4fa7b53e41af2ce7896e66bd61b1c"
+    },
+    {
+      "path": "tutorials/files/lander/simple_lander.png",
+      "size": 96199,
+      "sha": "fa292e76783c2dd599bdfbee7b56aed01ab80774"
+    },
+    {
+      "path": "tutorials/files/logical_audio_sensor_plugin.png",
+      "size": 108684,
+      "sha": "e29a2ecf11481f0c4d4293007d45008ee6ddf3fa"
+    },
+    {
+      "path": "tutorials/files/mesh_to_fuel/delete2.png",
+      "size": 15160,
+      "sha": "aae8dc2941191fdb0313eab116af68f31ac462e3"
+    },
+    {
+      "path": "tutorials/files/mesh_to_fuel/launch_world2.png",
+      "size": 20362,
+      "sha": "ea0773dbe4914150be04212ad1ca51ccebcd1a47"
+    },
+    {
+      "path": "tutorials/files/mesh_to_fuel/model_info2.png",
+      "size": 69655,
+      "sha": "745b0d53f68b73d8371c764b4ef82ce8756451c7"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/1_wheels.jpg",
+      "size": 86292,
+      "sha": "5a17d20775251d440af8531338fe389239f28fe7"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/10_loop_cut.jpg",
+      "size": 85801,
+      "sha": "242f79f1180bd1fff9edcf6db8105383eec9e579"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/11_duplicate.jpg",
+      "size": 54164,
+      "sha": "3482b65757bbd828319a3ec2d86d2a68ecf75080"
+    }
+  ]
+}
