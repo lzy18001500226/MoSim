@@ -1,0 +1,646 @@
+/*
+ * Copyright (C) 2022 Open Source Robotics Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+*/
+#include <gtest/gtest.h>
+
+#include <gz/common/Console.hh>
+#include <gz/plugin/Loader.hh>
+
+#include <gz/math/Pose3.hh>
+#include <gz/math/MassMatrix3.hh>
+#include <gz/math/Vector3.hh>
+#include <gz/math/eigen3/Conversions.hh>
+
+#include "test/TestLibLoader.hh"
+#include "test/Utils.hh"
+#include "test/Resources.hh"
+#include "Worlds.hh"
+
+#include <gz/physics/FindFeatures.hh>
+#include <gz/physics/GetEntities.hh>
+#include <gz/physics/RequestEngine.hh>
+#include <gz/physics/ForwardStep.hh>
+#include <gz/physics/FrameSemantics.hh>
+#include <gz/physics/Gravity.hh>
+#include <gz/physics/GetBoundingBox.hh>
+#include <gz/physics/Link.hh>
+#include <gz/physics/World.hh>
+#include <gz/physics/sdf/ConstructWorld.hh>
+#include <gz/physics/sdf/ConstructModel.hh>
+#include <gz/physics/sdf/ConstructLink.hh>
+
+#include <sdf/Root.hh>
+#include <sdf/Model.hh>
+
+template <class T>
+class LinkFeaturesTest:
+  public testing::Test, public gz::physics::TestLibLoader
+{
+  // Documentation inherited
+  public: void SetUp() override
+  {
+    gz::common::Console::SetVerbosity(4);
+
+    loader.LoadLib(LinkFeaturesTest::GetLibToTest());
+
+    // TODO(ahcorde): We should also run the 3f, 2d, and 2f variants of
+    // FindFeatures
+    pluginNames = gz::physics::FindFeatures3d<T>::From(loader);
+    if (pluginNames.empty())
+    {
+      std::cerr << "No plugins with required features found in "
+                << GetLibToTest() << std::endl;
+      GTEST_SKIP();
+    }
+    for (const std::string &name : this->pluginNames)
+    {
+      if(this->PhysicsEngineName(name) == "tpe")
+      {
+        GTEST_SKIP();
+      }
+    }
+  }
+
+  public: std::set<std::string> pluginNames;
+  public: gz::plugin::Loader loader;
+};
+
+using AssertVectorApprox = gz::physics::test::AssertVectorApprox;
+
+struct LinkFeaturesList : gz::physics::FeatureList<
+    gz::physics::AddLinkExternalForceTorque,
+    gz::physics::ForwardStep,
+    gz::physics::Gravity,
+    gz::physics::sdf::ConstructSdfWorld,
+    gz::physics::sdf::ConstructSdfModel,
+    gz::physics::sdf::ConstructSdfLink,
+    gz::physics::GetEntities,
+    gz::physics::GetLinkBoundingBox,
+    gz::physics::GetModelBoundingBox
+> { };
+
+using LinkFeaturesTestTypes =
+  ::testing::Types<LinkFeaturesList>;
+TYPED_TEST_SUITE(LinkFeaturesTest,
+                 LinkFeaturesTestTypes);
+
+TYPED_TEST(LinkFeaturesTest, JointSetCommand)
+{
+  for (const std::string &name : this->pluginNames)
+  {
+    std::cout << "Testing plugin: " << name << std::endl;
+    gz::plugin::PluginPtr plugin = this->loader.Instantiate(name);
+
+    auto engine = gz::physics::RequestEngine3d<LinkFeaturesList>::From(plugin);
+    ASSERT_NE(nullptr, engine);
+
+    sdf::Root root;
+    const sdf::Errors errors = root.Load(common_test::worlds::kEmptySdf);
+    ASSERT_TRUE(errors.empty()) << errors.front();
+
+    const std::string modelName{"double_pendulum_with_base"};
+    const std::string jointName{"upper_joint"};
+
+    auto world = engine->ConstructWorld(*root.WorldByIndex(0));
+    EXPECT_NE(nullptr, world);
+
+    EXPECT_NE(nullptr, world);
+    world->SetGravity(Eigen::Vector3d::Zero());
+
+    AssertVectorApprox vectorPredicateGravity(1e-10);
+    EXPECT_PRED_FORMAT2(vectorPredicateGravity, Eigen::Vector3d::Zero(),
+      world->GetGravity());
+
+    // Add a sphere
+    sdf::Model modelSDF;
+    modelSDF.SetName("sphere");
+    modelSDF.SetRawPose(gz::math::Pose3d(0, 0, 2, 0, 0, GZ_PI));
+    auto model = world->ConstructModel(modelSDF);
+
+    const double mass = 1.0;
+    gz::math::MassMatrix3d massMatrix{
+      mass,
+      gz::math::Vector3d{0.4, 0.4, 0.4},
+      gz::math::Vector3d::Zero};
+
+    sdf::Link linkSDF;
+    linkSDF.SetName("sphere_link");
+    linkSDF.SetInertial({massMatrix, gz::math::Pose3d::Zero});
+    auto link = model->ConstructLink(linkSDF);
+
+    gz::physics::ForwardStep::Input input;
+    gz::physics::ForwardStep::State state;
+    gz::physics::ForwardStep::Output output;
+
+    AssertVectorApprox vectorPredicate(1e-4);
+
+    // Check that link is at rest
+    {
+      const auto frameData = link->FrameDataRelativeToWorld();
+
+      EXPECT_PRED_FORMAT2(vectorPredicate, Eigen::Vector3d::Zero(),
+                          frameData.linearVelocity);
+      EXPECT_PRED_FORMAT2(vectorPredicate, Eigen::Vector3d::Zero(),
+                          frameData.angularVelocity);
+      EXPECT_PRED_FORMAT2(vectorPredicate, Eigen::Vector3d::Zero(),
+                          frameData.linearAcceleration);
+      EXPECT_PRED_FORMAT2(vectorPredicate, Eigen::Vector3d::Zero(),
+                          frameData.angularAcceleration);
+    }
+
+    // The moment of inertia of the sphere is a multiple of the identity matrix.
+    // This means that the moi is invariant to rotation so we can use this matrix
+    // without converting it to the world frame.
+    Eigen::Matrix3d moi = gz::math::eigen3::convert(massMatrix.Moi());
+
+    // Apply forces in the world frame at zero offset
+    // API: AddExternalForce(relForce, relPosition)
+    // API: AddExternalTorque(relTorque)
+
+    const Eigen::Vector3d cmdForce{1, -1, 0};
+    link->AddExternalForce(
+        gz::physics::RelativeForce3d(gz::physics::FrameID::World(), cmdForce),
+        gz::physics::RelativePosition3d(*link, Eigen::Vector3d::Zero()));
+
+    const Eigen::Vector3d cmdTorque{0, 0, 0.1 * GZ_PI};
+    link->AddExternalTorque(
+        gz::physics::RelativeTorque3d(gz::physics::FrameID::World(), cmdTorque));
+
+    world->Step(output, state, input);
+
+    {
+      const auto frameData = link->FrameDataRelativeToWorld();
+      EXPECT_PRED_FORMAT2(vectorPredicate, cmdForce,
+                          mass * (frameData.linearAcceleration));
+
+      // The moment of inertia of the sphere is a multiple of the identity matrix.
+      // Hence the gyroscopic coupling terms are zero
+      EXPECT_PRED_FORMAT2(vectorPredicate, cmdTorque,
+                          moi * frameData.angularAcceleration);
+    }
+
+    world->Step(output, state, input);
+
+    // Check that the forces and torques are reset
+    {
+      const auto frameData = link->FrameDataRelativeToWorld();
+
+      EXPECT_PRED_FORMAT2(vectorPredicate, Eigen::Vector3d::Zero(),
+                          frameData.linearAcceleration);
+
+      EXPECT_PRED_FORMAT2(vectorPredicate, Eigen::Vector3d::Zero(),
+                          frameData.angularAcceleration);
+    }
+
+    // Apply forces in the local frame
+    // The sphere is rotated by pi in the +z so the local x and y axes are in
+    // the -x and -y of the world frame respectively
+    const Eigen::Vector3d cmdLocalForce{1, -1, 0};
+    link->AddExternalForce(
+        gz::physics::RelativeForce3d(*link, cmdLocalForce),
+        gz::physics::RelativePosition3d(*link, Eigen::Vector3d::Zero()));
+
+    const Eigen::Vector3d cmdLocalTorque{0.1 * GZ_PI, 0, 0};
+    link->AddExternalTorque(gz::physics::RelativeTorque3d(*link, cmdLocalTorque));
+
+    world->Step(output, state, input);
+
+    {
+      const Eigen::Vector3d expectedForce =
+          Eigen::AngleAxisd(GZ_PI, Eigen::Vector3d::UnitZ()) * cmdLocalForce;
+
+      const Eigen::Vector3d expectedTorque =
+          Eigen::AngleAxisd(GZ_PI, Eigen::Vector3d::UnitZ()) * cmdLocalTorque;
+
+      const auto frameData = link->FrameDataRelativeToWorld();
+
+      EXPECT_PRED_FORMAT2(vectorPredicate, expectedForce,
+                          mass * (frameData.linearAcceleration));
+
+      // The moment of inertia of the sphere is a multiple of the identity matrix.
+      // Hence the gyroscopic coupling terms are zero
+      EXPECT_PRED_FORMAT2(vectorPredicate, expectedTorque,
+                          moi * frameData.angularAcceleration);
+    }
+
+    // Test the other AddExternalForce and AddExternalTorque APIs
+    // API: AddExternalForce(force)
+    // API: AddExternalTorque(torque)
+    link->AddExternalForce(cmdForce);
+    link->AddExternalTorque(cmdTorque);
+
+    world->Step(output, state, input);
+
+    {
+      const auto frameData = link->FrameDataRelativeToWorld();
+      EXPECT_PRED_FORMAT2(vectorPredicate, cmdForce,
+                          mass * (frameData.linearAcceleration));
+
+      // The moment of inertia of the sphere is a multiple of the identity matrix.
+      // Hence the gyroscopic coupling terms are zero
+      EXPECT_PRED_FORMAT2(vectorPredicate, cmdTorque,
+                          moi * frameData.angularAcceleration);
+    }
+
+    // Apply the force at an offset
+    // API: AddExternalForce(relForce, relPosition)
+    Eigen::Vector3d offset{0.1, 0.2, 0.3};
+    link->AddExternalForce(gz::physics::RelativeForce3d(*link, cmdLocalForce),
+                           gz::physics::RelativePosition3d(*link, offset));
+
+    world->Step(output, state, input);
+    {
+      const auto frameData = link->FrameDataRelativeToWorld();
+      EXPECT_PRED_FORMAT2(vectorPredicate,
+                          frameData.pose.linear() * cmdLocalForce,
+                          mass * (frameData.linearAcceleration));
+
+      // The moment of inertia of the sphere is a multiple of the identity matrix.
+      // Hence the gyroscopic coupling terms are zero
+      EXPECT_PRED_FORMAT2(vectorPredicate,
+                          frameData.pose.linear() * offset.cross(cmdLocalForce),
+                          moi * frameData.angularAcceleration);
+    }
+
+    // Apply force at an offset using the more convenient API
+    // API: AddExternalForce(force, frame, position)
+    link->AddExternalForce(cmdLocalForce, *link, offset);
+
+    world->Step(output, state, input);
+    {
+      const auto frameData = link->FrameDataRelativeToWorld();
+      EXPECT_PRED_FORMAT2(vectorPredicate,
+                          frameData.pose.linear() * cmdLocalForce,
+                          mass * (frameData.linearAcceleration));
+
+      // The moment of inertia of the sphere is a multiple of the identity matrix.
+      // Hence the gyroscopic coupling terms are zero
+      EXPECT_PRED_FORMAT2(vectorPredicate,
+                          frameData.pose.linear() * offset.cross(cmdLocalForce),
+                          moi * frameData.angularAcceleration);
+    }
+  }
+}
+
+using LinkGravityFeaturesList = gz::physics::FeatureList<
+    gz::physics::ForwardStep,
+    gz::physics::Gravity,
+    gz::physics::GravityEnabled,
+    gz::physics::LinkFrameSemantics,
+    gz::physics::sdf::ConstructSdfWorld,
+    gz::physics::sdf::ConstructSdfModel,
+    gz::physics::sdf::ConstructSdfLink,
+    gz::physics::GetEntities
+>;
+
+using LinkGravityFeaturesTestTypes =
+  LinkFeaturesTest<LinkGravityFeaturesList>;
+
+TEST_F(LinkGravityFeaturesTestTypes, LinkGravityEnabled)
+{
+  for (const std::string &name : this->pluginNames)
+  {
+    std::cout << "Testing plugin: " << name << std::endl;
+    gz::plugin::PluginPtr plugin = this->loader.Instantiate(name);
+
+    auto engine = gz::physics::RequestEngine3d<
+        LinkGravityFeaturesList>::From(plugin);
+    ASSERT_NE(nullptr, engine);
+
+    sdf::Root root;
+    const sdf::Errors errors = root.Load(common_test::worlds::kEmptySdf);
+    ASSERT_TRUE(errors.empty()) << errors.front();
+
+    auto world = engine->ConstructWorld(*root.WorldByIndex(0));
+    EXPECT_NE(nullptr, world);
+    // Make sure the world gravity is enabled
+    world->SetGravity(Eigen::Vector3d(0, 0, -9.8));
+
+    // Add a sphere
+    sdf::Model modelSDF;
+    modelSDF.SetName("sphere");
+    modelSDF.SetRawPose(gz::math::Pose3d(0, 0, 2, 0, 0, 0));
+    auto model = world->ConstructModel(modelSDF);
+
+    sdf::Link linkSDF;
+    linkSDF.SetName("sphere_link");
+    auto link = model->ConstructLink(linkSDF);
+
+    gz::physics::ForwardStep::Input input;
+    gz::physics::ForwardStep::State state;
+    gz::physics::ForwardStep::Output output;
+
+    AssertVectorApprox vectorPredicate(1e-4);
+
+    // By default, link gravity should be enabled
+    EXPECT_TRUE(link->GetGravityEnabled());
+
+    // Disable gravity for link
+    link->SetGravityEnabled(false);
+    EXPECT_FALSE(link->GetGravityEnabled());
+
+    const Eigen::Vector3d initialPos =
+        link->FrameDataRelativeToWorld().pose.translation();
+
+    const int steps = 10;
+    for (int i = 0; i < steps; ++i)
+      world->Step(output, state, input);
+
+    // Link should not move (zero acceleration, velocity and same position)
+    {
+      const auto frameData = link->FrameDataRelativeToWorld();
+      EXPECT_PRED_FORMAT2(vectorPredicate, Eigen::Vector3d::Zero(),
+                          frameData.linearAcceleration);
+      EXPECT_PRED_FORMAT2(vectorPredicate, Eigen::Vector3d::Zero(),
+                          frameData.linearVelocity);
+      EXPECT_PRED_FORMAT2(vectorPredicate, initialPos,
+                          frameData.pose.translation());
+    }
+
+    // Enable gravity
+    link->SetGravityEnabled(true);
+    EXPECT_TRUE(link->GetGravityEnabled());
+
+    // Step a few times to let velocity and position build up
+    // Assuming default step size of 0.001
+    const double dt = 0.001;
+    const double gravity = -9.8;
+
+    for (int i = 0; i < steps; ++i)
+      world->Step(output, state, input);
+
+    // Link should accelerate downwards
+    {
+      const auto frameData = link->FrameDataRelativeToWorld();
+
+      // Acceleration should be gravity
+      EXPECT_PRED_FORMAT2(vectorPredicate, Eigen::Vector3d(0, 0, gravity),
+                          frameData.linearAcceleration);
+
+      // Velocity should be g * t
+      double expectedVel = gravity * steps * dt;
+      EXPECT_NEAR(expectedVel, frameData.linearVelocity.z(), 1e-3);
+
+      // Position should be z0 + 0.5 * g * t^2
+      double expectedPos = initialPos.z() + 0.5 * gravity * pow(steps * dt, 2);
+      EXPECT_NEAR(expectedPos, frameData.pose.translation().z(), 1e-3);
+    }
+  }
+}
+
+using LinkBoundingBoxFeaturesList = gz::physics::FeatureList<
+    gz::physics::ForwardStep,
+    gz::physics::sdf::ConstructSdfWorld,
+    gz::physics::sdf::ConstructSdfModel,
+    gz::physics::GetEngineInfo,
+    gz::physics::GetWorldFromEngine,
+    gz::physics::GetModelFromWorld,
+    gz::physics::GetLinkFromModel,
+    gz::physics::GetShapeFromLink,
+    gz::physics::GetShapeBoundingBox,
+    gz::physics::GetLinkBoundingBox,
+    gz::physics::GetModelBoundingBox
+>;
+
+using LinkBoundingBoxFeaturesTestTypes =
+  LinkFeaturesTest<LinkBoundingBoxFeaturesList>;
+
+TEST_F(LinkBoundingBoxFeaturesTestTypes, AxisAlignedBoundingBox)
+{
+  for (const std::string &name : this->pluginNames)
+  {
+    std::cout << "Testing plugin: " << name << std::endl;
+    gz::plugin::PluginPtr plugin = this->loader.Instantiate(name);
+
+    auto engine =
+        gz::physics::RequestEngine3d<LinkBoundingBoxFeaturesList>::From(plugin);
+    ASSERT_NE(nullptr, engine);
+
+    sdf::Root root;
+    const sdf::Errors errors = root.Load(common_test::worlds::kTestWorld);
+    ASSERT_TRUE(errors.empty()) << errors.front();
+
+    const std::string modelName{"double_pendulum_with_base"};
+    const std::string jointName{"upper_joint"};
+
+    auto world = engine->ConstructWorld(*root.WorldByIndex(0));
+    EXPECT_NE(nullptr, world);
+
+    auto model = world->GetModel("double_pendulum_with_base");
+    auto baseLink = model->GetLink("base");
+    auto bbox = baseLink->GetAxisAlignedBoundingBox();
+    AssertVectorApprox vectorPredicate(1e-4);
+    EXPECT_PRED_FORMAT2(
+        vectorPredicate, gz::physics::Vector3d(0.2, -0.8, 0), bbox.min());
+    EXPECT_PRED_FORMAT2(
+        vectorPredicate, gz::physics::Vector3d(1.8, 0.8, 2.2), bbox.max());
+
+    // test with non-world frame
+    auto bboxModelFrame = baseLink->GetAxisAlignedBoundingBox(
+        model->GetFrameID());
+    EXPECT_PRED_FORMAT2(
+        vectorPredicate, gz::physics::Vector3d(-0.8, -0.8, 0), bboxModelFrame.min());
+    EXPECT_PRED_FORMAT2(
+        vectorPredicate, gz::physics::Vector3d(0.8, 0.8, 2.2), bboxModelFrame.max());
+
+    // test with non-world rotated frame
+    auto upperLink = model->GetLink("upper_link");
+    auto bboxUpperLinkFrame = baseLink->GetAxisAlignedBoundingBox(
+        upperLink->GetFrameID());
+    EXPECT_PRED_FORMAT2(vectorPredicate,
+        gz::physics::Vector3d(-0.8, -0.1, -0.8), bboxUpperLinkFrame.min());
+    EXPECT_PRED_FORMAT2(vectorPredicate,
+        gz::physics::Vector3d(0.8, 2.1, 0.8), bboxUpperLinkFrame.max());
+  }
+}
+
+TEST_F(LinkBoundingBoxFeaturesTestTypes, ConeBoundingBox)
+{
+  for (const std::string &name : this->pluginNames)
+  {
+    std::cout << "Testing plugin: " << name << std::endl;
+    gz::plugin::PluginPtr plugin = this->loader.Instantiate(name);
+
+    auto engine =
+        gz::physics::RequestEngine3d<LinkBoundingBoxFeaturesList>::From(plugin);
+    ASSERT_NE(nullptr, engine);
+
+    sdf::Root root;
+    const sdf::Errors errors = root.Load(common_test::worlds::kShapesWorld);
+    ASSERT_TRUE(errors.empty()) << errors.front();
+
+    auto world = engine->ConstructWorld(*root.WorldByIndex(0));
+    EXPECT_NE(nullptr, world);
+
+    auto coneModel = world->GetModel("cone");
+    ASSERT_NE(nullptr, coneModel);
+    auto coneLink = coneModel->GetLink(0);
+    ASSERT_NE(nullptr, coneLink);
+    auto coneShape = coneLink->GetShape(0);
+    ASSERT_NE(nullptr, coneShape);
+
+    // shapes.world cone: radius=0.5, length=1.1
+    // expected AABB ±(0.5, 0.5, 0.55)
+    auto aabb = coneShape->GetAxisAlignedBoundingBox(*coneShape);
+    const double tol = 0.05;
+    EXPECT_NEAR(-0.5,  aabb.min().x(), tol);
+    EXPECT_NEAR(-0.5,  aabb.min().y(), tol);
+    EXPECT_NEAR(-0.55, aabb.min().z(), tol);
+    EXPECT_NEAR( 0.5,  aabb.max().x(), tol);
+    EXPECT_NEAR( 0.5,  aabb.max().y(), tol);
+    EXPECT_NEAR( 0.55, aabb.max().z(), tol);
+  }
+}
+
+TEST_F(LinkBoundingBoxFeaturesTestTypes, MeshAxisAlignedBoundingBox)
+{
+  for (const std::string &name : this->pluginNames)
+  {
+    std::cout << "Testing plugin: " << name << std::endl;
+    if (this->PhysicsEngineName(name) == "dartsim")
+    {
+      std::cout << "Skipping test for dartsim because mesh "
+                << "construction from SDF is not supported." << std::endl;
+      continue;
+    }
+    gz::plugin::PluginPtr plugin = this->loader.Instantiate(name);
+
+    auto engine = gz::physics::RequestEngine3d<
+        LinkBoundingBoxFeaturesList>::From(plugin);
+    ASSERT_NE(nullptr, engine);
+
+    sdf::Root root;
+    const sdf::Errors errors = root.Load(common_test::worlds::kEmptySdf);
+    ASSERT_TRUE(errors.empty()) << errors.front();
+
+    auto world = engine->ConstructWorld(*root.WorldByIndex(0));
+    EXPECT_NE(nullptr, world);
+
+    std::stringstream modelStr;
+    modelStr << R"(
+      <sdf version="1.11">
+        <model name="mesh_model">
+          <pose>0 0 0 0 0 0</pose>
+          <link name="link">
+            <collision name="collision">
+              <geometry>
+                <mesh>
+                  <uri>)";
+    modelStr << gz::physics::test::resources::kRotatedBoxObj;
+    modelStr << R"(</uri>
+                </mesh>
+              </geometry>
+            </collision>
+          </link>
+        </model>
+      </sdf>)";
+
+    sdf::Root rootModel;
+    sdf::Errors modelErrors = rootModel.LoadSdfString(modelStr.str());
+    ASSERT_TRUE(modelErrors.empty()) << modelErrors;
+
+    auto model = world->ConstructModel(*rootModel.Model());
+    ASSERT_NE(nullptr, model);
+
+    auto link = model->GetLink("link");
+    ASSERT_NE(nullptr, link);
+
+    auto shape = link->GetShape(0);
+    ASSERT_NE(nullptr, shape);
+
+    auto bbox = shape->GetAxisAlignedBoundingBox(*shape);
+
+    EXPECT_FALSE(bbox.isEmpty());
+
+    // The AABB should reflect the rotated box.
+    // Max X and Y should be around 0.707, and Max Z should be 0.5.
+    // If the rotation is ignored, the AABB might reflect the unrotated mesh,
+    // resulting in Max X and Y around 0.5.
+    EXPECT_NEAR(0.707107, bbox.max().x(), 0.02);
+    EXPECT_NEAR(0.707107, bbox.max().y(), 0.02);
+    EXPECT_NEAR(0.5, bbox.max().z(), 0.02);
+
+    EXPECT_NEAR(-0.707107, bbox.min().x(), 0.02);
+    EXPECT_NEAR(-0.707107, bbox.min().y(), 0.02);
+    EXPECT_NEAR(-0.5, bbox.min().z(), 0.02);
+  }
+}
+
+TEST_F(LinkBoundingBoxFeaturesTestTypes, ModelAxisAlignedBoundingBox)
+{
+  for (const std::string &name : this->pluginNames)
+  {
+    std::cout << "Testing plugin: " << name << std::endl;
+    gz::plugin::PluginPtr plugin = this->loader.Instantiate(name);
+
+    // bullet-featherstone does not support floating bodies
+    if(this->PhysicsEngineName(name) == "bullet-featherstone")
+    {
+      std::cout << "Skipping test for bullet-featherstone because floating "
+                << "bodies are not supported." << std::endl;
+      continue;
+    }
+
+    auto engine =
+        gz::physics::RequestEngine3d<LinkBoundingBoxFeaturesList>::From(plugin);
+    ASSERT_NE(nullptr, engine);
+
+    sdf::Root root;
+    const sdf::Errors errors = root.Load(common_test::worlds::kContactSdf);
+    ASSERT_TRUE(errors.empty()) << errors.front();
+
+    const std::string modelName{"double_pendulum_with_base"};
+    const std::string jointName{"upper_joint"};
+
+    auto world = engine->ConstructWorld(*root.WorldByIndex(0));
+    EXPECT_NE(nullptr, world);
+
+    auto model = world->GetModel("sphere");
+    auto bbox = model->GetAxisAlignedBoundingBox();
+    AssertVectorApprox vectorPredicate(1e-4);
+    EXPECT_PRED_FORMAT2(
+        vectorPredicate, gz::physics::Vector3d(-1, -1, -0.5), bbox.min());
+    EXPECT_PRED_FORMAT2(
+        vectorPredicate, gz::physics::Vector3d(2, 2, 1.5), bbox.max());
+
+    // test with non-world frame
+    auto link = model->GetLink("link0");
+    auto bboxLinkFrame = model->GetAxisAlignedBoundingBox(
+        link->GetFrameID());
+    EXPECT_PRED_FORMAT2(
+        vectorPredicate, gz::physics::Vector3d(-1, -1, -1.0), bboxLinkFrame.min());
+    EXPECT_PRED_FORMAT2(
+        vectorPredicate, gz::physics::Vector3d(2, 2, 1.0), bboxLinkFrame.max());
+
+    auto bboxModelFrame = model->GetAxisAlignedBoundingBox(
+        model->GetFrameID());
+    EXPECT_PRED_FORMAT2(
+        vectorPredicate, gz::physics::Vector3d(-1, -1, -0.5),
+        bboxModelFrame.min());
+    EXPECT_PRED_FORMAT2(
+        vectorPredicate, gz::physics::Vector3d(2, 2, 1.5),
+        bboxModelFrame.max());
+  }
+}
+
+int main(int argc, char *argv[])
+{
+  ::testing::InitGoogleTest(&argc, argv);
+  if (!LinkFeaturesTest<LinkFeaturesList>::init(
+       argc, argv))
+    return -1;
+  return RUN_ALL_TESTS();
+}

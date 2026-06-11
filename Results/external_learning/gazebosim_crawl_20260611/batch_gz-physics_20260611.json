@@ -1,0 +1,8 @@
+{
+  "repo": "gz-physics",
+  "source_sha": "67a7d5ce505d6cfca5c3aa41e7d842a98ac144c4",
+  "target": "References/Gazebo/gz-physics",
+  "file_count": 522,
+  "total_bytes": 23424044.0,
+  "stage_file": "Results/external_learning/gazebosim_crawl_20260611/stage_gz-physics_20260611.txt"
+}
