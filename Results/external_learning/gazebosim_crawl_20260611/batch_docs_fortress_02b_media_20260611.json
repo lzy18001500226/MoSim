@@ -1,0 +1,59 @@
+{
+  "repo": "gazebosim/docs",
+  "head": "fc0832680c6908c4850e8f4af3b8190181bf877f",
+  "batch": "docs_fortress_02b_media_remaining",
+  "count": 10,
+  "total_bytes": 866921.0,
+  "paths": [
+    {
+      "path": "fortress/tutorials/ros2_integration/ros_ign.png",
+      "sha": "e6738ff8e45171d6a0a1dfefc7b0181b10055af9",
+      "size": 98985
+    },
+    {
+      "path": "fortress/tutorials/ros2_integration/use_template.png",
+      "sha": "b5413c09d249b876f685fb63de1c79b42c1e0ca4",
+      "size": 168866
+    },
+    {
+      "path": "fortress/tutorials/sdf_worlds/coke_world.png",
+      "sha": "7ac8b9892db111c965257cf90b15ba86116e8897",
+      "size": 34626
+    },
+    {
+      "path": "fortress/tutorials/sdf_worlds/entity_tree.png",
+      "sha": "23a815192775f179b003bceff536f7bc2467903c",
+      "size": 12526
+    },
+    {
+      "path": "fortress/tutorials/sdf_worlds/world_stats.png",
+      "sha": "7dadcab3688408f8319a25e744585d371e94956f",
+      "size": 49813
+    },
+    {
+      "path": "fortress/tutorials/sensors/imu_msgs.png",
+      "sha": "56663f83bf6fddcfc3a02f574fec1305cf57ceb7",
+      "size": 60666
+    },
+    {
+      "path": "fortress/tutorials/sensors/sensor_wall.png",
+      "sha": "95b07c4b516a0f32014c4d4d78d7e9143e14bb30",
+      "size": 87856
+    },
+    {
+      "path": "fortress/tutorials/spawn_urdf/empty_world.png",
+      "sha": "9671ce270b656eff94572c006b529a0d669ba462",
+      "size": 81733
+    },
+    {
+      "path": "fortress/tutorials/spawn_urdf/rrbot.gif",
+      "sha": "1dfad37ce007240cf665c094a325cd69da717f7f",
+      "size": 183628
+    },
+    {
+      "path": "fortress/tutorials/spawn_urdf/urdf_spawned.png",
+      "sha": "aa032c0a67a9065e936b4cb957b5a0219b3a0965",
+      "size": 88222
+    }
+  ]
+}
