@@ -1,0 +1,2 @@
+citadel/tutorials/spawn_urdf/rrbot.gif
+citadel/tutorials/spawn_urdf/urdf_spawned.png
