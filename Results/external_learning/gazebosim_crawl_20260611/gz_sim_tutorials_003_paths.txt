@@ -1,0 +1,1 @@
+References/Gazebo/gz-sim/tutorials/files/digital_elevation_models/half_dome_example/textures/rocks_normal.png

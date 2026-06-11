@@ -1,0 +1,16 @@
+{
+  "repo": "gazebosim/gz-sim",
+  "commit": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "batch": "gz_sim_tutorials_003",
+  "generated_at": "2026-06-12T03:23:53.2359804+08:00",
+  "file_count": 1,
+  "total_size": 23066317,
+  "max_file_size": 23066317.0,
+  "files": [
+    {
+      "path": "tutorials/files/digital_elevation_models/half_dome_example/textures/rocks_normal.png",
+      "size": 23066317,
+      "sha": "35dd4405bd39ab04d16d401b000716ad4497e3b1"
+    }
+  ]
+}
