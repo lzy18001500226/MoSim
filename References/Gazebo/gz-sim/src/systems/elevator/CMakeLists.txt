@@ -1,0 +1,12 @@
+gz_add_system(elevator
+  SOURCES
+    Elevator.cc
+    utils/DoorTimer.cc
+    utils/JointMonitor.cc
+  PUBLIC_LINK_LIBS
+    gz-common::gz-common
+    gz-transport::gz-transport
+  PRIVATE_INCLUDE_DIRS
+    vender/afsm/include
+    vender/metapushkin/include
+)
