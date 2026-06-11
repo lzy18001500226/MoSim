@@ -1,0 +1,61 @@
+<!DOCTYPE RCC><RCC version="1.0">
+  <qresource prefix="AxesDisplay/">
+    <file alias="AxesDisplay.qml">qml/AxesDisplay.qml</file>
+  </qresource>
+
+  <qresource prefix="GlobalOptions/">
+    <file alias="GlobalOptions.qml">qml/GlobalOptions.qml</file>
+  </qresource>
+
+  <qresource prefix="GPSDisplay/">
+    <file alias="GPSDisplay.qml">qml/GPSDisplay.qml</file>
+  </qresource>
+
+  <qresource prefix="ImageDisplay/">
+    <file alias="ImageDisplay.qml">qml/ImageDisplay.qml</file>
+  </qresource>
+
+  <qresource prefix="LaserScanDisplay/">
+    <file alias="LaserScanDisplay.qml">qml/LaserScanDisplay.qml</file>
+  </qresource>
+
+  <qresource prefix="MarkerDisplay/">
+    <file alias="MarkerDisplay.qml">qml/MarkerDisplay.qml</file>
+  </qresource>
+
+  <qresource prefix="MarkerArrayDisplay/">
+    <file alias="MarkerArrayDisplay.qml">qml/MarkerArrayDisplay.qml</file>
+  </qresource>
+
+  <qresource prefix="PathDisplay/">
+    <file alias="PathDisplay.qml">qml/PathDisplay.qml</file>
+  </qresource>
+
+  <qresource prefix="PointStampedDisplay/">
+    <file alias="PointStampedDisplay.qml">qml/PointStampedDisplay.qml</file>
+  </qresource>
+
+  <qresource prefix="PolygonDisplay/">
+    <file alias="PolygonDisplay.qml">qml/PolygonDisplay.qml</file>
+  </qresource>
+
+  <qresource prefix="PoseDisplay/">
+    <file alias="PoseDisplay.qml">qml/PoseDisplay.qml</file>
+  </qresource>
+
+  <qresource prefix="PoseArrayDisplay/">
+    <file alias="PoseArrayDisplay.qml">qml/PoseArrayDisplay.qml</file>
+  </qresource>
+
+  <qresource prefix="QoSConfig/">
+    <file alias="QoSConfig.qml">qml/QoSConfig.qml</file>
+  </qresource>
+
+  <qresource prefix="RobotModelDisplay/">
+    <file alias="RobotModelDisplay.qml">qml/RobotModelDisplay.qml</file>
+  </qresource>
+
+  <qresource prefix="TFDisplay/">
+    <file alias="TFDisplay.qml">qml/TFDisplay.qml</file>
+  </qresource>
+</RCC>

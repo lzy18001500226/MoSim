@@ -1,0 +1,48 @@
+name: Ignition RViz CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ignition: ['fortress']
+        ros: ['rolling']
+    container:
+      image: osrf/ros:${{ matrix.ros }}-desktop
+    env:
+      IGNITION_VERSION: ${{ matrix.ignition }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Dependencies
+      run: |
+        apt update -y
+        apt install -y wget
+        sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+        wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+        apt update -y
+        apt install -y libignition-common4-dev \
+                       libignition-math6-dev \
+                       libignition-rendering6-dev \
+                       libignition-gui6-dev
+
+    - name: Setup colcon workspace
+      id: configure
+      run: |
+        cd ..
+        mkdir -p /home/colcon_ws/src
+        cp -r gz-rviz /home/colcon_ws/src/
+    - name: Build project
+      id: build
+      run: |
+        cd /home/colcon_ws/
+        . /opt/ros/${{ matrix.ros }}/setup.sh
+        colcon build
+    - name: Run tests
+      id: test
+      run: |
+        cd /home/colcon_ws/
+        . /opt/ros/${{ matrix.ros }}/setup.sh
+        colcon test --event-handlers console_direct+
+        colcon test-result
