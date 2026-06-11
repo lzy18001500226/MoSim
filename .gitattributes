@@ -3,6 +3,8 @@ References/Gazebo/** text eol=lf
 References/Gazebo/**/*.png binary
 References/Gazebo/**/*.jpg binary
 References/Gazebo/**/*.jpeg binary
+References/Gazebo/**/*.tif binary
+References/Gazebo/**/*.tiff binary
 References/Gazebo/**/*.gif binary
 References/Gazebo/**/*.bmp binary
 References/Gazebo/**/*.ico binary

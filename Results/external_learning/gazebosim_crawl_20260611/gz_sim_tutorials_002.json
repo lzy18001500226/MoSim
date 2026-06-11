@@ -1,0 +1,51 @@
+{
+  "repo": "gazebosim/gz-sim",
+  "commit": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "batch": "gz_sim_tutorials_002",
+  "generated_at": "2026-06-12T03:19:46.9921861+08:00",
+  "file_count": 8,
+  "max_file_size": 54079608.0,
+  "download_timeout_note": "initial 40-file download command timed out at 60s; committed only fully verified landed subset",
+  "files": [
+    {
+      "path": "tutorials/files/digital_elevation_models/ex_of_grid_of_elevations.png",
+      "size": 391557,
+      "sha": "03d8f922403dd287dec993b7daeb0380cb65bd71"
+    },
+    {
+      "path": "tutorials/files/digital_elevation_models/fortress_heightmap_in_gazebo.jpg",
+      "size": 164527,
+      "sha": "80305251e0d0f67bf108185652e2df94566c6cd4"
+    },
+    {
+      "path": "tutorials/files/digital_elevation_models/fortress_heightmap_in_gazebo2.jpg",
+      "size": 190394,
+      "sha": "9a8593c605699842529d6050a2b2e59342f40c28"
+    },
+    {
+      "path": "tutorials/files/digital_elevation_models/fortress_heightmap.png",
+      "size": 32464,
+      "sha": "f4281d864481dd7012658b2908a1f572f6f5946b"
+    },
+    {
+      "path": "tutorials/files/digital_elevation_models/gazebo_half_dome.png",
+      "size": 2141349,
+      "sha": "b5715153a547753fbc7b58a88979cf7cbcf5c632"
+    },
+    {
+      "path": "tutorials/files/digital_elevation_models/half_dome_example/half_dome.sdf",
+      "size": 3271,
+      "sha": "3563d1ace4d3a3175dfdfa1c5c6b46d7e30827a1"
+    },
+    {
+      "path": "tutorials/files/digital_elevation_models/half_dome_example/half_dome.tif",
+      "size": 54079608,
+      "sha": "12cc46cfe561de6784fe71e241e0c504cd81344b"
+    },
+    {
+      "path": "tutorials/files/digital_elevation_models/half_dome_example/textures/rocks_diffuse.png",
+      "size": 5311362,
+      "sha": "3297b6d154252b9485edf088241212b024f7f1eb"
+    }
+  ]
+}
