@@ -1,0 +1,145 @@
+{
+  "task_id": "COAGENT-DEVOPS-GAZEBOSIM-REFERENCES-INGEST-20260611",
+  "repo": "gz-rendering",
+  "acquisition": "archive-first",
+  "run": "Results/external_learning/gazebosim_crawl_20260611/tmp_archive/run_049_gz_rendering",
+  "source_org": "gazebosim",
+  "default_branch": "gz-rendering9",
+  "source_sha": "7f0a813fb8c9dc69f4ddf83e6b26c0d04a7687f0",
+  "target": "References\\Gazebo\\gz-rendering",
+  "file_count": 792,
+  "total_bytes": 66092500.0,
+  "max_file_bytes": 23066317.0,
+  "large_file_count": 0,
+  "sensitive_path_count": 0,
+  "nested_risk_dir_count": 0,
+  "lfs_pointer_count": 0,
+  "top_level": [
+    {
+      "top": ".bazelrc",
+      "files": 1,
+      "bytes": 382.0
+    },
+    {
+      "top": ".bazelversion",
+      "files": 1,
+      "bytes": 6.0
+    },
+    {
+      "top": ".bcr",
+      "files": 3,
+      "bytes": 1002.0
+    },
+    {
+      "top": ".codespell-ignore",
+      "files": 1,
+      "bytes": 46.0
+    },
+    {
+      "top": ".github",
+      "files": 12,
+      "bytes": 9419.0
+    },
+    {
+      "top": ".gitignore",
+      "files": 1,
+      "bytes": 101.0
+    },
+    {
+      "top": "api.md.in",
+      "files": 1,
+      "bytes": 456.0
+    },
+    {
+      "top": "AUTHORS",
+      "files": 1,
+      "bytes": 14.0
+    },
+    {
+      "top": "bazel",
+      "files": 2,
+      "bytes": 4679.0
+    },
+    {
+      "top": "BUILD.bazel",
+      "files": 1,
+      "bytes": 2521.0
+    },
+    {
+      "top": "Changelog.md",
+      "files": 1,
+      "bytes": 90562.0
+    },
+    {
+      "top": "CMakeLists.txt",
+      "files": 1,
+      "bytes": 7637.0
+    },
+    {
+      "top": "CONTRIBUTING.md",
+      "files": 1,
+      "bytes": 82.0
+    },
+    {
+      "top": "coverage.ignore.in",
+      "files": 1,
+      "bytes": 41.0
+    },
+    {
+      "top": "cppcheck.suppress.in",
+      "files": 1,
+      "bytes": 14.0
+    },
+    {
+      "top": "doc",
+      "files": 2,
+      "bytes": 1445720.0
+    },
+    {
+      "top": "examples",
+      "files": 229,
+      "bytes": 57859411.0
+    },
+    {
+      "top": "include",
+      "files": 121,
+      "bytes": 863473.0
+    },
+    {
+      "top": "LICENSE",
+      "files": 1,
+      "bytes": 10175.0
+    },
+    {
+      "top": "Migration.md",
+      "files": 1,
+      "bytes": 10112.0
+    },
+    {
+      "top": "MODULE.bazel",
+      "files": 1,
+      "bytes": 1506.0
+    },
+    {
+      "top": "NEWS",
+      "files": 1,
+      "bytes": 21.0
+    },
+    {
+      "top": "ogre",
+      "files": 182,
+      "bytes": 4387720.0
+    },
+    {
+      "top": "ogre2",
+      "files": 224,
+      "bytes": 1393330.0
+    },
+    {
+      "top": "README.md",
+      "files": 1,
+      "bytes": 4070.0
+    }
+  ],
+  "staging_strategy": "single path-limited batch because file_count under 1000 and scan clean"
+}

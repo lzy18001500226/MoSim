@@ -1,0 +1,224 @@
+cmake_minimum_required(VERSION 3.22.1 FATAL_ERROR)
+
+#============================================================================
+# Initialize the project
+#============================================================================
+project(gz-rendering VERSION 11.0.0)
+
+#============================================================================
+# Find gz-cmake
+#============================================================================
+# If you get an error at this line, you need to install gz-cmake
+find_package(gz-cmake REQUIRED)
+
+#============================================================================
+# Set up the project
+#============================================================================
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+gz_configure_project(VERSION_SUFFIX pre1)
+
+#============================================================================
+# Set project-specific options
+#============================================================================
+option(USE_UNOFFICIAL_OGRE_VERSIONS "Accept unsupported Ogre versions in the build" OFF)
+
+option(ENABLE_PROFILER "Enable Gazebo Profiler" FALSE)
+
+if(ENABLE_PROFILER)
+  add_definitions("-DGZ_PROFILER_ENABLE=1")
+else()
+  add_definitions("-DGZ_PROFILER_ENABLE=0")
+endif()
+
+#============================================================================
+# Search for project-specific dependencies
+#============================================================================
+
+#--------------------------------------
+# Find gz-math
+gz_find_package(gz-math REQUIRED COMPONENTS eigen3)
+
+#--------------------------------------
+# Find gz-common
+gz_find_package(gz-common REQUIRED
+  COMPONENTS graphics events profiler geospatial)
+
+#--------------------------------------
+# Find gz-plugin
+gz_find_package(gz-plugin REQUIRED COMPONENTS all)
+
+#--------------------------------------
+# Find gz-utils
+gz_find_package(gz-utils REQUIRED)
+
+#--------------------------------------
+# Find OpenGL
+if (APPLE)
+  gz_find_package(OpenGL
+    REQUIRED_BY ogre ogre2
+    PKGCONFIG gl)
+else()
+  gz_find_package(OpenGL REQUIRED
+    COMPONENTS OpenGL
+    OPTIONAL_COMPONENTS EGL
+    REQUIRED_BY ogre ogre2
+    PKGCONFIG gl)
+endif()
+
+if (OpenGL_FOUND)
+  set(HAVE_OPENGL TRUE)
+endif()
+
+#--------------------------------------
+# Find OGRE
+list(APPEND gz_ogre_components "RTShaderSystem" "Terrain" "Overlay" "Paging")
+
+gz_find_package(GzOGRE VERSION 1.9.0
+  COMPONENTS ${gz_ogre_components}
+  REQUIRED_BY ogre
+  PRIVATE_FOR ogre)
+
+# Ogre versions greater than 1.9.x are not officially supported.
+# Display a warning for the users on this setup unless they provide
+# USE_UNOFFICIAL_OGRE_VERSIONS flag
+if (NOT USE_UNOFFICIAL_OGRE_VERSIONS)
+  if (OGRE_VERSION VERSION_GREATER_EQUAL 1.10.0)
+    GZ_BUILD_WARNING("Ogre 1.x versions greater than 1.9 are not officially supported."
+                     "The software might compile and even work but support from upstream"
+                     "could be reduced to accepting patches for newer versions")
+  endif()
+endif()
+
+if (OGRE_FOUND)
+  # find boost - mainly needed on macOS and also by the terrain component
+  if(POLICY CMP0167)
+    # Prefer boost config supplied by package over find module
+    cmake_policy(SET CMP0167 NEW)
+  endif()
+  find_package(Boost)
+  if (Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+  endif()
+
+  set(GZ_RENDERING_HAVE_OGRE TRUE)
+endif()
+
+#--------------------------------------
+# Find OGRE2: first try to find OGRE2 built with PlanarReflections support and
+# fallback to look for OGRE2 without it. Both seems to works for gz-rendering.
+# See https://github.com/gazebosim/gz-rendering/issues/597
+gz_find_package(GzOGRE2 VERSION 2.3.1
+    COMPONENTS HlmsPbs HlmsUnlit PlanarReflections
+    PRIVATE_FOR ogre2
+    QUIET)
+
+if ("${OGRE2-PlanarReflections}" STREQUAL "OGRE2-PlanarReflections-NOTFOUND")
+  message(STATUS "PlanarReflections component was not found. Try looking without it:")
+  gz_find_package(GzOGRE2 VERSION 2.3.1
+    COMPONENTS HlmsPbs HlmsUnlit
+    REQUIRED_BY ogre2
+    PRIVATE_FOR ogre2)
+endif()
+
+if (OGRE2_FOUND)
+  set(GZ_RENDERING_HAVE_OGRE2 TRUE)
+endif()
+
+#--------------------------------------
+# Find Vulkan
+# ogre-next 2.3 is built with vulkan support on Jammy
+# Make sure we have vulkan headers, e.g. vulkan/vulkan_core.h
+if (UNIX AND NOT APPLE)
+  # check if ogre-next vulkan headers are installed
+  find_path(ogre_vulkan_INCLUDE "RenderSystems/Vulkan/OgreVulkanDevice.h"
+    HINTS ${OGRE2_INCLUDE_DIRS})
+
+  # if not installed, ogre-next is likely built on platform without vulkan
+  # support, e.g. Focal
+  if (NOT ogre_vulkan_INCLUDE)
+    message(STATUS "Skipping vulkan support for component [ogre2]")
+  else()
+    find_path(vulkan_INCLUDE vulkan/vulkan_core.h)
+    if(NOT vulkan_INCLUDE)
+      message(STATUS "Looking for vulkan header (vulkan/vulkan_core.h) - not found")
+      gz_build_warning("Skipping component [ogre2]: Missing vulkan headers.\n")
+      # Create a variable to indicate that we need to skip the component
+      set(INTERNAL_SKIP_ogre2 true)
+      set(GZ_RENDERING_HAVE_OGRE2 FALSE)
+    else()
+      message(STATUS "Looking for vulkan header (vulkan/vulkan_core.h) - found")
+      set(GZ_RENDERING_HAVE_VULKAN TRUE)
+    endif()
+  endif()
+endif()
+
+# Plugin install dirs
+set(GZ_RENDERING_ENGINE_RELATIVE_INSTALL_DIR
+  ${GZ_LIB_INSTALL_DIR}/gz-${GZ_DESIGNATION}/engine-plugins
+)
+
+set(GZ_RENDERING_ENGINE_INSTALL_DIR
+  ${CMAKE_INSTALL_PREFIX}/${GZ_RENDERING_ENGINE_RELATIVE_INSTALL_DIR})
+
+#--------------------------------------
+# Find DL if doing relocatable installation
+if (GZ_ENABLE_RELOCATABLE_INSTALL)
+  gz_find_package(DL REQUIRED)
+endif()
+
+#####################################
+# Define compile-time default variables
+if(MSVC)
+  set(GZ_RENDERING_PLUGIN_PATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+else()
+  set(GZ_RENDERING_PLUGIN_PATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+endif()
+
+set(GZ_RENDERING_RELATIVE_RESOURCE_PATH ${GZ_DATA_INSTALL_DIR})
+
+#============================================================================
+# Configure the build
+#============================================================================
+if (GZ_RENDERING_HAVE_OGRE)
+  list(APPEND RENDERING_COMPONENTS ogre)
+endif()
+
+if (GZ_RENDERING_HAVE_OGRE2)
+  list(APPEND RENDERING_COMPONENTS ogre2)
+endif()
+
+configure_file("${PROJECT_SOURCE_DIR}/cppcheck.suppress.in"
+               ${PROJECT_BINARY_DIR}/cppcheck.suppress)
+
+gz_configure_build(QUIT_IF_BUILD_ERRORS
+    COMPONENTS ${RENDERING_COMPONENTS})
+
+if (GZ_RENDERING_HAVE_OGRE2)
+  # Must be done after gz_configure_build or else Terra
+  # won't see GZ_ADD_fPIC_TO_LIBRARIES
+  add_subdirectory(ogre2/src/terrain/Terra)
+endif()
+
+#============================================================================
+# Create package information
+#============================================================================
+gz_create_packages()
+
+#============================================================================
+# Configure documentation
+#============================================================================
+configure_file(${CMAKE_SOURCE_DIR}/api.md.in ${CMAKE_BINARY_DIR}/api.md)
+configure_file(${CMAKE_SOURCE_DIR}/tutorials.md.in ${CMAKE_BINARY_DIR}/tutorials.md)
+
+gz_create_docs(
+  API_MAINPAGE_MD "${CMAKE_BINARY_DIR}/api.md"
+  TUTORIALS_MAINPAGE_MD "${CMAKE_BINARY_DIR}/tutorials.md"
+  IMAGE_PATH_DIRS "${CMAKE_SOURCE_DIR}/tutorials/img"
+  TAGFILES
+    "${GZ-COMMON_DOXYGEN_TAGFILE} = ${GZ-COMMON_API_URL}"
+    "${GZ-MATH_DOXYGEN_TAGFILE} = ${GZ-MATH_API_URL}"
+)
+
+file(COPY ${CMAKE_SOURCE_DIR}/tutorials/img/ DESTINATION ${CMAKE_BINARY_DIR}/doxygen/html/img/)
