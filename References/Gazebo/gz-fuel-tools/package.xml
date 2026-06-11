@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
+  <name>gz-fuel_tools</name>
+  <version>12.0.0</version>
+  <description>Gazebo Fuel Tools: Classes and tools for interacting with Gazebo Fuel</description>
+  <maintainer email="natekoenig@gmail.com">Nate Koenig</maintainer>
+  <license>Apache License 2.0</license>
+  <url type="website">https://github.com/gazebosim/gz-fuel-tools</url>
+
+  <buildtool_depend>cmake</buildtool_depend>
+
+  <build_depend>gz-cmake</build_depend>
+
+  <depend>gz-common</depend>
+  <depend>gz-math</depend>
+  <depend>gz-msgs</depend>
+  <depend>gz-tools</depend>
+  <depend>gz-utils</depend>
+  <depend>libcurl-dev</depend>
+  <depend>libgflags-dev</depend>
+  <depend>libjsoncpp-dev</depend>
+  <depend>libyaml-dev</depend>
+  <depend>libzip-dev</depend>
+  <depend>tinyxml2</depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>

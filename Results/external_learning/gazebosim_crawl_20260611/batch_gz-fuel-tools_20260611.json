@@ -1,0 +1,27 @@
+{
+  "repo": "gz-fuel-tools",
+  "source": "git@github.com:gazebosim/gz-fuel-tools.git",
+  "source_sha": "69f9e63b582c79d5184cd1fe4978d24e79e87396",
+  "clone_path": "Results/external_learning/gazebosim_crawl_20260611/tmp_clone/run_031/gz-fuel-tools",
+  "target_path": "References/Gazebo/gz-fuel-tools",
+  "file_count": 157,
+  "total_bytes": 1644753.0,
+  "large_file_hits": [],
+  "sensitive_path_hits": [],
+  "lfs_pointer_hits": [],
+  "nested_risk_dirs": [],
+  "excluded_runtime_dirs": [
+    ".git",
+    "build",
+    "install",
+    "log",
+    ".venv",
+    "venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache",
+    ".cache",
+    "dist",
+    "out"
+  ]
+}
