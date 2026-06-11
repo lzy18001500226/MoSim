@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/SemanticLabel.hh",
+    "sha": "9e723e97a285614806833a254c17fe45d491adbf",
+    "size": 1338
+  },
+  {
+    "path": "include/gz/sim/components/SemanticTags.hh",
+    "sha": "9dbc5793e55bd36cd5d59d21c2376de7e2c27abf",
+    "size": 2440
+  },
+  {
+    "path": "include/gz/sim/components/Sensor.hh",
+    "sha": "04c411b854bbac0e9b99e6e80f0751ca14c43277",
+    "size": 1619
+  },
+  {
+    "path": "include/gz/sim/components/Serialization.hh",
+    "sha": "5f6e88fa7a92910d54f32570fb5a74413af79bff",
+    "size": 8337
+  },
+  {
+    "path": "include/gz/sim/components/SlipComplianceCmd.hh",
+    "sha": "ce6989059476639f7ece25bc1d4b5e744198d265",
+    "size": 1587
+  }
+]

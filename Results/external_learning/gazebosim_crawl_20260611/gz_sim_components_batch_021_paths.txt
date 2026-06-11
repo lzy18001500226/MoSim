@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/SemanticLabel.hh
+References/Gazebo/gz-sim/include/gz/sim/components/SemanticTags.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Sensor.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Serialization.hh
+References/Gazebo/gz-sim/include/gz/sim/components/SlipComplianceCmd.hh
