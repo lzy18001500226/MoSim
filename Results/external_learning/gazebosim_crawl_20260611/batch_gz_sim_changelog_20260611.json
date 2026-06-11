@@ -1,0 +1,17 @@
+{
+  "batch": "gz_sim_changelog",
+  "repo": "gazebosim/gz-sim",
+  "head": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "tree_sha": "67bf92c939db3dd92e517e1b6f51ca0e471c15a8",
+  "files": [
+    {
+      "path": "References/Gazebo/gz-sim/Changelog.md",
+      "source_path": "Changelog.md",
+      "size": 278545,
+      "sha": "922b783b711c013c75433b08f729d80a82a8dfbc",
+      "source": "github_blob_api"
+    }
+  ],
+  "file_count": 1,
+  "large_100MiB_count": 0
+}
