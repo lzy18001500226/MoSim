@@ -1,0 +1,8 @@
+--- # Model subcommand available inside ignition pkg_create.
+format: 1.0.0
+library_name:  @PROJECT_NAME_NO_VERSION@
+library_version: @PROJECT_VERSION_FULL@
+library_path: @ign_model_ruby_path@
+commands:
+    - pkg_create   : Create a new ignition package
+---

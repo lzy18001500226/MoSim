@@ -1,0 +1,196 @@
+#!/usr/bin/ruby
+
+# Copyright (C) 2022 Open Source Robotics Foundation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require 'optparse'
+require 'erb'
+require 'open-uri'
+require 'yaml'
+require 'ostruct'
+require_relative 'resources/add_files'
+
+# Constants.
+LIBRARY_NAME = '@library_location@'
+LIBRARY_VERSION = '@PROJECT_VERSION_FULL@'
+
+COMMON_OPTIONS =
+               "  -h [--help]                 Print this help message.\n"\
+               "                                                    \n"        +
+               "  --force-version <VERSION>   Use a specific library version.\n"\
+               "                                                    \n"        +
+               '  --versions                  Show the available versions.'
+
+COMMANDS = { 'pkg_create' =>
+  "Create a new ignition package.\n"+
+  "                                                                        \n"\
+  "  ign pkg_create [options]                                              \n\n"\
+  "                                                                         \n"\
+  "Available Options:                                                       \n\n"\
+  "  -n [--name] arg                          Name of new package [Required]             \n\n"\
+  "  -i [--init-with-example-system]          Package with various example resources     \n\n"+
+  "  -b [--built_type] arg                    Build type between ament_cmake or cmake    \n\n"+
+  "  -e [--export_type] arg                   Export type between colcon or plain-camke] \n\n"+
+  "  -d [--ign_dependecies]                   Package depends on common ign packages   \n\n"+
+  "  -g [--gazebo_version] arg                Gazebo version name for dependencies       \n\n"+
+
+  COMMON_OPTIONS
+}
+
+#
+# Class for the Gazebo pkg_create command line tools.
+#
+class Cmd
+
+  #
+  # Return a structure describing the options.
+  #
+  def parse(args)
+    options = {
+    }
+    usage = COMMANDS[args[0]]
+
+    opt_parser = OptionParser.new do |opts|
+      opts.banner = usage
+
+      opts.on('-h', '--help') do
+        puts usage
+        exit
+      end
+      opts.on('-n [arg]', '--name [arg]', String, 'Name of new package') do |n|
+        options['name'] = n
+      end
+      opts.on('-i','--init-with-example-system', String, 'Package with various example resources') do
+        options['init-with-example-system'] = 1
+      end
+      opts.on('-b [arg]', '--built_type [arg]', String, 'Build type between ament_cmake or cmake') do |b|
+        options['built_type'] = b
+      end
+      opts.on('-e [arg]', '--export_type [arg]', String, 'Export type between colcon or plain-camke') do |e|
+        options['export_type'] = e
+      end
+      opts.on('-d','--ign_dependecies', String, 'Package depends on common ign packages') do
+        options['ign_dependecies'] = 1
+      end
+      opts.on('-g [arg]', '--gazebo_version [arg]',String, 'Gazebo version name for dependencies') do |g|
+        options['gazebo_version'] = g
+      end
+
+    end # opt_parser do
+    begin
+      opt_parser.parse!(args)
+    rescue
+      puts usage
+      exit(-1)
+    end
+
+    # Check if all options are correct
+
+    if !(options.key?('name') && options['name'].class()==String)
+     puts "ERROR: Please provide proper package name.\n"
+     puts usage
+     exit(-1)
+    end
+    if (options.key?('built_type') && !(['ament_cmake','cmake'].include? options["built_type"]))
+      puts "WARNING: Invalid Built-type,defaulting to cmake\n"
+      options['built_type'] = "cmake"
+    end
+    if (options.key?('export_type') && !(['plain_cmake','colcon'].include? options["export_type"]))
+      puts "WARNING: Invalid Export-type,defaulting to colcon\n"
+      options['export_type'] = "colcon"
+    end
+    if (options.key?('gazebo_version') && !(['acropolis','blueprint','citadel','dome','edifice','fortress','garden'].include? options["gazebo_version"]))
+      puts "WARNING: Invalid Gazebo Version,defaulting to fortress\n"
+      options['gazebo_version'] = "fortress"
+    end
+    #Giving default values
+
+    if !options.key?('init-with-example-system')
+      options['init-with-example-system'] = 0
+    end
+    if !options.key?('built_type')
+      options['built_type'] = "cmake"
+    end
+    if !options.key?('export_type')
+      options['export_type'] = "colcon"
+    end
+    if !options.key?('ign_dependecies')
+      options['ign_dependecies'] = 0
+    end
+    if !options.key?('gazebo_version')
+      options['gazebo_version'] = "fortress"
+    end
+
+    options['command'] = args[0]
+
+    options
+  end # parse()
+
+  def execute(args)
+    options = parse(args)
+
+    # Read the plugin that handles the command.
+    if LIBRARY_NAME[0] == '/'
+      # If the first character is a slash, we'll assume that we've been given an
+      # absolute path to the library. This is only used during test mode.
+      plugin = LIBRARY_NAME
+    else
+      # We're assuming that the library path is relative to the current
+      # location of this script.
+      plugin = File.expand_path(File.join(File.dirname(__FILE__), LIBRARY_NAME))
+    end
+    conf_version = LIBRARY_VERSION
+
+
+
+    ##Code for package generation
+    if Dir.exists?(options['name'])
+      puts "ERROR:Folder with this name already exists."
+      exit(-1)
+    end
+
+    #Creates Package folder
+    Dir.mkdir(options['name'])
+
+    #Fetching dependencies versions for common dependencies
+    if options['ign_dependecies']==1
+      dependencies = URI.open('https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-%s.yaml'% options['gazebo_version']){|f| f.read}
+      dependencies_yaml = YAML.load(dependencies)
+      dependencies_dict={}
+      for dependency in dependencies_yaml.fetch('repositories').keys
+        dependencies_dict[dependency]=dependencies_yaml['repositories'][dependency]['version'].scan( /\d+$/ ).first
+      end
+    end
+
+    resources_dir=__dir__+"/resources"
+    config_yaml=YAML.load_file(__dir__+'/config/files_config.yaml')
+
+    #Creates CMakeLists.txt file
+    add_required_files("base",config_yaml,(OpenStruct.new(options).instance_eval { binding }),options,resources_dir)
+
+    #Creates package.xml for ament dependent
+    if options['built_type']=='ament_cmake'
+      add_required_files("ament_cmake",config_yaml,(OpenStruct.new(options).instance_eval { binding }),options,resources_dir)
+    end
+
+    #Creates example resources for advance package
+    if options['init-with-example-system']==1
+      add_required_files("init-with-example-system",config_yaml,(OpenStruct.new(options).instance_eval { binding }),options,resources_dir)
+    end
+
+  # # execute
+  end
+
+# class
+end

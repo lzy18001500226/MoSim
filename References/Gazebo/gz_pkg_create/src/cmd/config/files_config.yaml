@@ -1,0 +1,4 @@
+base: [['cmake_lists','/CMakeLists.erb']]
+ament_cmake: [['package_xml','/package_xml.erb']]
+init-with-example-system: [['plugins','/plugins/HelloWorld.cc','/plugins/HelloWorld.hh'],['executable','/executables/random_points.cc'],
+                           ['models',"/models/elevator/model.config","/models/elevator/model.sdf"],['worlds',"/worlds/empty_platform_with_elevator.sdf"]]
