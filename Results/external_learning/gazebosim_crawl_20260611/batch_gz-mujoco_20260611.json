@@ -1,0 +1,26 @@
+{
+  "repo": "gz-mujoco",
+  "source": "git@github.com:gazebosim/gz-mujoco.git",
+  "source_sha": "60d9855be95015cf3282b139c7dbdaed02333f5b",
+  "imported_at": "2026-06-11",
+  "target": "References/Gazebo/gz-mujoco",
+  "file_count": 97,
+  "total_bytes": 2838713,
+  "large_files": [],
+  "sensitive_name_paths": [],
+  "lfs_pointer_paths": [],
+  "nested_risk_dirs": [],
+  "skipped_dir_names": [
+    ".git",
+    "build",
+    "install",
+    "log",
+    ".venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache",
+    ".cache",
+    "dist",
+    "out"
+  ]
+}
