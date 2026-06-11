@@ -1,0 +1,12 @@
+References/Gazebo/gz-sim/src/systems/buoyancy/Buoyancy.cc
+References/Gazebo/gz-sim/src/systems/buoyancy/Buoyancy.hh
+References/Gazebo/gz-sim/src/systems/buoyancy/CMakeLists.txt
+References/Gazebo/gz-sim/src/systems/camera_video_recorder/CameraVideoRecorder.cc
+References/Gazebo/gz-sim/src/systems/camera_video_recorder/CameraVideoRecorder.hh
+References/Gazebo/gz-sim/src/systems/camera_video_recorder/CMakeLists.txt
+References/Gazebo/gz-sim/src/systems/collada_world_exporter/CMakeLists.txt
+References/Gazebo/gz-sim/src/systems/collada_world_exporter/ColladaWorldExporter.cc
+References/Gazebo/gz-sim/src/systems/collada_world_exporter/ColladaWorldExporter.hh
+References/Gazebo/gz-sim/src/systems/comms_endpoint/CMakeLists.txt
+References/Gazebo/gz-sim/src/systems/comms_endpoint/CommsEndpoint.cc
+References/Gazebo/gz-sim/src/systems/comms_endpoint/CommsEndpoint.hh
