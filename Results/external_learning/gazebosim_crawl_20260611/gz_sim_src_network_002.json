@@ -1,0 +1,32 @@
+[
+  {
+    "path": "src/network/NetworkManagerPrimary.cc",
+    "sha": "6c47837dc75a408b12d6a774c5024aa6239e9347",
+    "size": 9077
+  },
+  {
+    "path": "src/network/NetworkManagerPrimary.hh",
+    "sha": "b896801fa4367d204dfd18cdc234613e448e36c5",
+    "size": 4537
+  },
+  {
+    "path": "src/network/NetworkManagerPrivate.hh",
+    "sha": "fbae8ff3f37fc7252de940295c002bc7ef64d100",
+    "size": 2385
+  },
+  {
+    "path": "src/network/NetworkManagerSecondary.cc",
+    "sha": "2d836ef52a3299f7f9ff5395054c7783e792fd4f",
+    "size": 5537
+  },
+  {
+    "path": "src/network/NetworkManagerSecondary.hh",
+    "sha": "f7df1a26975febaa26d0bbb3fc8847fc9118ecbf",
+    "size": 3042
+  },
+  {
+    "path": "src/network/NetworkRole.hh",
+    "sha": "fbd4535b7f02e508c344b55f4441c247d09cab77",
+    "size": 1805
+  }
+]

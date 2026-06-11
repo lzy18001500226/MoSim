@@ -1,0 +1,6 @@
+References/Gazebo/gz-sim/src/network/NetworkManagerPrimary.cc
+References/Gazebo/gz-sim/src/network/NetworkManagerPrimary.hh
+References/Gazebo/gz-sim/src/network/NetworkManagerPrivate.hh
+References/Gazebo/gz-sim/src/network/NetworkManagerSecondary.cc
+References/Gazebo/gz-sim/src/network/NetworkManagerSecondary.hh
+References/Gazebo/gz-sim/src/network/NetworkRole.hh
