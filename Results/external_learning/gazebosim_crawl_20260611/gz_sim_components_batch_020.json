@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/Scene.hh",
+    "sha": "ac2176e0442ac2328c4f9362df379ff8f9e28c51",
+    "size": 1446
+  },
+  {
+    "path": "include/gz/sim/components/SegmentationCamera.hh",
+    "sha": "3feddf53b3fe2b1d58857786e4841f9f4991a45a",
+    "size": 1380
+  },
+  {
+    "path": "include/gz/sim/components/SelfCollide.hh",
+    "sha": "d6468bc130fb5ef51d09d7340a55f56f212787f3",
+    "size": 1216
+  },
+  {
+    "path": "include/gz/sim/components/SemanticCategory.hh",
+    "sha": "235854dfc1a1f77413c530caf3d58ddafa6537b0",
+    "size": 1561
+  },
+  {
+    "path": "include/gz/sim/components/SemanticDescription.hh",
+    "sha": "5535bdef56042c6ccc6c048f3107f483cccaa459",
+    "size": 2305
+  }
+]

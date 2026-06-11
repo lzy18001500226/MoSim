@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/Scene.hh
+References/Gazebo/gz-sim/include/gz/sim/components/SegmentationCamera.hh
+References/Gazebo/gz-sim/include/gz/sim/components/SelfCollide.hh
+References/Gazebo/gz-sim/include/gz/sim/components/SemanticCategory.hh
+References/Gazebo/gz-sim/include/gz/sim/components/SemanticDescription.hh
