@@ -1,0 +1,28 @@
+{
+  "task_id": "COAGENT-DEVOPS-GAZEBOSIM-REFERENCES-INGEST-20260611",
+  "repo": "testing",
+  "source_org": "gazebosim",
+  "default_branch": "main",
+  "source_sha": "50ffc78012bdc47e8b9c844a4666dda0cbaf6a1d",
+  "acquisition": "archive-first-with-windows-invalid-path-filter",
+  "archive_run": "Results\\external_learning\\gazebosim_crawl_20260611\\tmp_archive\\run_053_testing",
+  "target": "References\\Gazebo\\testing",
+  "written_file_count": 5,
+  "written_total_bytes": 819.0,
+  "invalid_windows_paths": [
+    {
+      "upstream_path": ".github/ubuntu:bionic",
+      "length": 2,
+      "content": "ci",
+      "mapped_policy": "manifest_only_not_written_to_windows_worktree"
+    },
+    {
+      "upstream_path": ".github/ubuntu:focal",
+      "length": 2,
+      "content": "ci",
+      "mapped_policy": "manifest_only_not_written_to_windows_worktree"
+    }
+  ],
+  "large_file_count": 0,
+  "sensitive_path_count": 0
+}
