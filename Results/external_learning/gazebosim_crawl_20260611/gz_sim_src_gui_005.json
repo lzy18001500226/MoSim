@@ -1,0 +1,112 @@
+[
+  {
+    "path": "src/gui/resources/FuelThumbnail.qml",
+    "sha": "aad2fcdacfe7deee7fc49a5439a4eb6ac5e824d0",
+    "size": 1445
+  },
+  {
+    "path": "src/gui/resources/gazebo.qrc",
+    "sha": "eb860136cebe81464af78b377c7ef436555be83e",
+    "size": 847
+  },
+  {
+    "path": "src/gui/resources/GazeboDrawer.qml",
+    "sha": "7b021adc0000ce5e02650b733a77701aeba8d2f3",
+    "size": 6790
+  },
+  {
+    "path": "src/gui/resources/images/actor.png",
+    "sha": "259f35fb38a2b8cef39f217dffedecee81f0cef8",
+    "size": 182923
+  },
+  {
+    "path": "src/gui/resources/images/chevron-down.svg",
+    "sha": "4e51b0d2578940d9a667579afd81cdf0345ef94a",
+    "size": 1972
+  },
+  {
+    "path": "src/gui/resources/images/chevron-right.svg",
+    "sha": "9f1b78b9436f9cac9bef25aa3799cb3f88be18e7",
+    "size": 1974
+  },
+  {
+    "path": "src/gui/resources/images/collision.png",
+    "sha": "5b76054dbf151cd6d8f43b62c726d5311217698e",
+    "size": 246672
+  },
+  {
+    "path": "src/gui/resources/images/gazebo_horz_pos_topbar.svg",
+    "sha": "1a1bc0473e05da0049f8220d2463ccd524350524",
+    "size": 8208
+  },
+  {
+    "path": "src/gui/resources/images/joint.png",
+    "sha": "d364d95ed4c3a8af95ba7f2fefc265020f7230fc",
+    "size": 191253
+  },
+  {
+    "path": "src/gui/resources/images/light.png",
+    "sha": "5aea3f73be171888a44356442fecc51042ca084f",
+    "size": 54089
+  },
+  {
+    "path": "src/gui/resources/images/link.png",
+    "sha": "68db9d9fb720a22a880a99fb71b962b483310b69",
+    "size": 124551
+  },
+  {
+    "path": "src/gui/resources/images/lock.svg",
+    "sha": "7fd3afbaf7f8c77504ce5bb32b5b82ae6be2766a",
+    "size": 2355
+  },
+  {
+    "path": "src/gui/resources/images/minus.png",
+    "sha": "14dc6c4dc853edafd46cb31788293c986ed3e19b",
+    "size": 388
+  },
+  {
+    "path": "src/gui/resources/images/model.png",
+    "sha": "e277846665985559823e390bc713056227dfef3c",
+    "size": 129676
+  },
+  {
+    "path": "src/gui/resources/images/plus-link.png",
+    "sha": "527fd36d09a5803a3800a3a9ac2da4a59a053648",
+    "size": 33627
+  },
+  {
+    "path": "src/gui/resources/images/plus-sensor.png",
+    "sha": "2053152b415beb2afd6759e420521a7b7d3b003d",
+    "size": 68590
+  },
+  {
+    "path": "src/gui/resources/images/plus.png",
+    "sha": "7d9de070476800cd8c2eba0bbc00162499d1c66b",
+    "size": 775
+  },
+  {
+    "path": "src/gui/resources/images/search.svg",
+    "sha": "40ab947b256dab0e1768733ac499659c51622a5c",
+    "size": 1890
+  },
+  {
+    "path": "src/gui/resources/images/sensor.png",
+    "sha": "eeb2ff65c7484da760b1febda756ca0c46dbaf60",
+    "size": 7013
+  },
+  {
+    "path": "src/gui/resources/images/unlock.svg",
+    "sha": "46d8cbda201dbfd6c030605df4dea1948a30801f",
+    "size": 2367
+  },
+  {
+    "path": "src/gui/resources/images/visual.png",
+    "sha": "ec19697e005fdef6afe81afaecf7a4e6da7b475b",
+    "size": 79570
+  },
+  {
+    "path": "src/gui/resources/QuickStart.qml",
+    "sha": "72cd31af02a05f8e1967c312b45490f42e355d02",
+    "size": 8490
+  }
+]
