@@ -1,10 +1,10 @@
 task_id: COAGENT-DEVOPS-GAZEBOSIM-REFERENCES-INGEST-20260611
-status: in_progress_pushed_gz_sim_tutorials_002
+status: in_progress_pushed_gz_sim_tutorials_007
 decision: continue_gz_sim_manifest_driven_small_batches
-summary: Pushed gz-sim tutorials DEM assets slice after recovering from a 60s timeout on an initial larger download batch. Added narrow .gitattributes binary rules for References/Gazebo/**/*.tif and **/*.tiff to preserve upstream blob hashes. Commit pushed: be61224cf9 Add gz-sim tutorials DEM assets slice. Upstream divergence verified 0 0 after push.
-evidence: branch_main; index_lock_false; upstream_0_0; gz_sim_expected_blobs_1984; gz_sim_tracked_1815; gz_sim_missing_169; missing_groups_examples_2;test_2;tutorials_164;vendor_1; gz_sim_tutorials_002_files_8; gz_sim_tutorials_002_max_file_size_54079608; staged_hash_check_passed; diff_cached_check_passed_after_lf_manifest_normalization; staged_100MiB_check_passed; sensitive_name_scan_passed; github_push_warning_half_dome_tif_51_57MiB_over_recommended_50MiB_under_100MiB
-risks: GitHub warned that half_dome.tif is larger than the recommended 50MiB but below the 100MiB hard limit; remaining deferred files include upstream example localhost.key, gz3d.js whitespace issue, backward-cpp patch whitespace issue, two tlog line-ending hash mismatches, and three tutorial files previously deferred for line-ending or binary preservation handling.
-next_action: Continue gz-sim tutorials in smaller manifest-driven batches, separating large media and applying narrow binary attributes only when required for exact upstream blob preservation.
+summary: Pushed gz-sim tutorial slices through tutorials_007. New commits after the prior packet: a9a6bfe5a1 tutorials_003, e75792c65b tutorials_004, 6042ac9bb4 tutorials_005, 2f6a0cc3ac tutorials_006, 2f40c7ba69 tutorials_007. Upstream divergence verified 0 0 after each push. tutorials_007 deferred gz_maritime_ws.zip because zip archives are ignored by repository policy and were not force-added.
+evidence: branch_main; index_lock_false; upstream_0_0; gz_sim_expected_blobs_1984; gz_sim_tracked_1914; gz_sim_missing_70; missing_groups_examples_2;test_2;tutorials_65;vendor_1; staged_hash_checks_passed_for_committed_batches; diff_cached_checks_passed; staged_100MiB_checks_passed; sensitive_name_scans_passed; github_push_warning_half_dome_tif_51_57MiB_over_recommended_50MiB_under_100MiB; gz_maritime_ws_zip_deferred_manifest_only
+risks: Remaining files include explicit deferred risk files and still-unprocessed tutorial files. Deferred risk set includes upstream example localhost.key, gz3d.js whitespace issue, backward-cpp patch whitespace issue, two tlog line-ending hash mismatches, three tutorial line-ending/binary preservation files, and gz_maritime_ws.zip archive ignored by policy.
+next_action: Continue remaining tutorials in small batches, then handle deferred non-secret files using narrow attributes or documented manifest-only exceptions; keep localhost.key deferred unless human approval is given.
 needs_human: false
 blocked_reason: none
-updated_at: 2026-06-12T03:22:38.9285070+08:00
+updated_at: 2026-06-12T03:34:42.4074140+08:00
