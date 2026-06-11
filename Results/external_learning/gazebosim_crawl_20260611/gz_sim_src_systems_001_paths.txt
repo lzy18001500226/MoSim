@@ -1,0 +1,10 @@
+References/Gazebo/gz-sim/src/systems/ackermann_steering/AckermannSteering.cc
+References/Gazebo/gz-sim/src/systems/ackermann_steering/AckermannSteering.hh
+References/Gazebo/gz-sim/src/systems/ackermann_steering/CMakeLists.txt
+References/Gazebo/gz-sim/src/systems/acoustic_comms/AcousticComms.cc
+References/Gazebo/gz-sim/src/systems/acoustic_comms/AcousticComms.hh
+References/Gazebo/gz-sim/src/systems/acoustic_comms/CMakeLists.txt
+References/Gazebo/gz-sim/src/systems/advanced_lift_drag/AdvancedLiftDrag.cc
+References/Gazebo/gz-sim/src/systems/advanced_lift_drag/AdvancedLiftDrag.hh
+References/Gazebo/gz-sim/src/systems/advanced_lift_drag/CMakeLists.txt
+References/Gazebo/gz-sim/src/systems/CMakeLists.txt
