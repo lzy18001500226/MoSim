@@ -1,0 +1,211 @@
+{
+  "repo": "gazebosim/gz-sim",
+  "commit": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "batch": "gz_sim_tutorials_010",
+  "generated_at": "2026-06-12T03:39:55.8577708+08:00",
+  "file_count": 40,
+  "total_size": 269240.0,
+  "max_file_size": 26092.0,
+  "files": [
+    {
+      "path": "tutorials/logical_audio_sensor.md",
+      "size": 10164,
+      "sha": "326d68e2dcfd68815d97b377c4946836100f637d"
+    },
+    {
+      "path": "tutorials/mesh_to_fuel.md",
+      "size": 7127,
+      "sha": "00ee4243c5fae6eea5d5a87f37efb3d6a49c6dab"
+    },
+    {
+      "path": "tutorials/migrating_ardupilot_plugin.md",
+      "size": 26092,
+      "sha": "da24d85b9efd3028704612ce9a142d3e597294bb"
+    },
+    {
+      "path": "tutorials/migration_actor_api.md",
+      "size": 7700,
+      "sha": "d285ff016ed791ca3891968ab2b32d14c0c07ca2"
+    },
+    {
+      "path": "tutorials/migration_joint_api.md",
+      "size": 6633,
+      "sha": "ac3ced7543d39f8db587d7437a75f6e1d87b6054"
+    },
+    {
+      "path": "tutorials/migration_light_api.md",
+      "size": 6089,
+      "sha": "ca303337a88d8164443ea9ab60eb64983a79077f"
+    },
+    {
+      "path": "tutorials/migration_link_api.md",
+      "size": 8470,
+      "sha": "5b418b5734f0bf70f0f2c6c46f7a5656eed36036"
+    },
+    {
+      "path": "tutorials/migration_model_api.md",
+      "size": 7086,
+      "sha": "52920536b7aca18286d79d0d8fc8998ea96ffe49"
+    },
+    {
+      "path": "tutorials/migration_plugins.md",
+      "size": 9219,
+      "sha": "a134f796e80250aa0854a65ae5ea96bab74ce9f3"
+    },
+    {
+      "path": "tutorials/migration_sdf.md",
+      "size": 11119,
+      "sha": "545ea41bedcd66e655efce7704c9b34777dd6cf0"
+    },
+    {
+      "path": "tutorials/migration_sensor_api.md",
+      "size": 4162,
+      "sha": "24d687fff36dcb22f81c24fae6a17a436d94811c"
+    },
+    {
+      "path": "tutorials/migration_world_api.md",
+      "size": 5924,
+      "sha": "e309b44c33a1a35f1b2932798e4ba1e2cb342b72"
+    },
+    {
+      "path": "tutorials/model_and_optimize_meshes.md",
+      "size": 8638,
+      "sha": "2f503c269722a5a76213bc637242e73e5c5c18cc"
+    },
+    {
+      "path": "tutorials/model_command.md",
+      "size": 5619,
+      "sha": "d78ba82bdecb287421f4cf095a27956afc45443a"
+    },
+    {
+      "path": "tutorials/model_photo_shoot.md",
+      "size": 3283,
+      "sha": "0730e337a1e2b84cd10ef9cfd10b8469f9eb2b85"
+    },
+    {
+      "path": "tutorials/mouse_drag.md",
+      "size": 2820,
+      "sha": "9e07a4acb6b34523d566ccc19729a608b40724a0"
+    },
+    {
+      "path": "tutorials/move_camera_to_model.md",
+      "size": 1534,
+      "sha": "a11af53b328f931d85b3b2aa000d08424005934c"
+    },
+    {
+      "path": "tutorials/particle_tutorial.md",
+      "size": 6981,
+      "sha": "c17c29db5fab90ba2a380452053e136bc3a37c03"
+    },
+    {
+      "path": "tutorials/pause_run_simulation.md",
+      "size": 1731,
+      "sha": "ef757b75a02aad52dd1d8e72a911c2884a780605"
+    },
+    {
+      "path": "tutorials/physics.md",
+      "size": 5308,
+      "sha": "183e65c2acab217f815ff5eee2d491f649342219"
+    },
+    {
+      "path": "tutorials/point_cloud_to_mesh.md",
+      "size": 7773,
+      "sha": "04d710013c56bc8f269cfab655154c4db3c91413"
+    },
+    {
+      "path": "tutorials/python_interfaces.md",
+      "size": 4621,
+      "sha": "8c3f7984952514c1193dca7781dc1d4b5e3ab694"
+    },
+    {
+      "path": "tutorials/rendering_plugins.md",
+      "size": 5895,
+      "sha": "74defbf3932c1949c0bdbb3d103ba8c22bca4280"
+    },
+    {
+      "path": "tutorials/reset_simulation.md",
+      "size": 2001,
+      "sha": "bf8ae121ab52c5c9628a6c5f5a9502fbdfd3cf8d"
+    },
+    {
+      "path": "tutorials/resources.md",
+      "size": 6158,
+      "sha": "06bc2083248b52f2126bfbbf18eee8cc553c33ff"
+    },
+    {
+      "path": "tutorials/server_config.md",
+      "size": 13728,
+      "sha": "650eafe0c4f5c9658f57375b8a1477eab33d087e"
+    },
+    {
+      "path": "tutorials/shadow_texture_size.md",
+      "size": 3727,
+      "sha": "dfe328ed589e84a5940880276f2679697e39a11a"
+    },
+    {
+      "path": "tutorials/spacecraft_thrusters.md",
+      "size": 4124,
+      "sha": "5cbf8f6bd4d2a4a69ac0a69ad74eb3db97ebf2cd"
+    },
+    {
+      "path": "tutorials/spherical_coordinates.md",
+      "size": 5782,
+      "sha": "c33ba8578c6ac6241b4acd2015e2d2dede6b22ba"
+    },
+    {
+      "path": "tutorials/surface_vehicles.md",
+      "size": 11743,
+      "sha": "793b4f82a7f5c871264d31f6c93da749ec581a55"
+    },
+    {
+      "path": "tutorials/terminology.md",
+      "size": 3955,
+      "sha": "ec0391475b946ec0288156dfcf61ba463954cafb"
+    },
+    {
+      "path": "tutorials/test_fixture.md",
+      "size": 1064,
+      "sha": "765632cbf7441f505900b60c31d02cf9773e26f6"
+    },
+    {
+      "path": "tutorials/theory_buoyancy.md",
+      "size": 4390,
+      "sha": "b7620613d8760caea990e1a6d50d961102ba501f"
+    },
+    {
+      "path": "tutorials/theory_hydrodynamics.md",
+      "size": 7947,
+      "sha": "3a0aaded7c83d96f561ddc7b24b7538a1a0091f4"
+    },
+    {
+      "path": "tutorials/triggered_publisher.md",
+      "size": 10104,
+      "sha": "11132595b532389fe1d3b302573f131042a97af1"
+    },
+    {
+      "path": "tutorials/underwater_vehicles.md",
+      "size": 12429,
+      "sha": "022705f9f491b2d92298ac63b62e0474e51312a6"
+    },
+    {
+      "path": "tutorials/using_components.md",
+      "size": 3334,
+      "sha": "a87284e748ddbd5c3d0c1262a4e13a9c7c7827d3"
+    },
+    {
+      "path": "tutorials/video_recorder.md",
+      "size": 5188,
+      "sha": "432bd94f21b13401a37a3f1b1399cd705cd14230"
+    },
+    {
+      "path": "tutorials/websocket_server.md",
+      "size": 3241,
+      "sha": "ec3c87107b23bb086ed7aba459437aff81a9f3e6"
+    },
+    {
+      "path": "tutorials/wheel_slip_systems.md",
+      "size": 6337,
+      "sha": "33b7b188868159c2a4a3dd28062c537f6f63cb82"
+    }
+  ]
+}
