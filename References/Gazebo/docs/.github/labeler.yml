@@ -1,0 +1,27 @@
+📜 blueprint:
+  - blueprint/*
+  - blueprint/**/*
+🏰 citadel:
+  - citadel/*
+  - citadel/**/*
+🔮 dome:
+  - dome/*
+  - dome/**/*
+🏢 edifice:
+  - edifice/*
+  - edifice/**/*
+🏯 fortress:
+  - fortress/*
+  - fortress/**/*
+🌱 garden:
+  - garden/*
+  - garden/**/*
+🎵 harmonic:
+  - harmonic/*
+  - harmonic/**/*
+🏛️ ionic:
+  - ionic/*
+  - ionic/**/*
+🪵 jetty:
+  - jetty/*
+  - jetty/**/*
