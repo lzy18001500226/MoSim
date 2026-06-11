@@ -1,0 +1,12 @@
+test/worlds/tire_drum.sdf
+test/worlds/touch_plugin.sdf
+test/worlds/tracked_vehicle_simple.sdf
+test/worlds/triball_drift.sdf
+test/worlds/triggered_camera_sensor.sdf
+test/worlds/triggered_publisher.sdf
+test/worlds/trisphere_cycle_wheel_slip.sdf
+test/worlds/underwater_currents.csv
+test/worlds/underwater_currents.sdf
+test/worlds/velocity_control.sdf
+test/worlds/wide_angle_camera_sensor.sdf
+test/worlds/wind_effects.sdf
