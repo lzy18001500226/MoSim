@@ -1,0 +1,9 @@
+References/Gazebo/gz-sim/.gitignore
+References/Gazebo/gz-sim/.pre-commit-config.yaml
+References/Gazebo/gz-sim/api.md.in
+References/Gazebo/gz-sim/AUTHORS
+References/Gazebo/gz-sim/bazel/BUILD.bazel
+References/Gazebo/gz-sim/bazel/gz_sim_system_libraries.bzl
+References/Gazebo/gz-sim/BUILD.bazel
+Results/external_learning/gazebosim_crawl_20260611/gz_sim_root_bazel_partial_paths_20260611.txt
+Results/external_learning/gazebosim_crawl_20260611/batch_gz_sim_root_bazel_partial_20260611.json

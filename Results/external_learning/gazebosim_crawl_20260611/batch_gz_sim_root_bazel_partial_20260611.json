@@ -1,0 +1,53 @@
+{
+  "batch": "gz_sim_root_bazel_partial",
+  "repo": "gazebosim/gz-sim",
+  "head": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "tree_sha": "67bf92c939db3dd92e517e1b6f51ca0e471c15a8",
+  "files": [
+    {
+      "path": "References/Gazebo/gz-sim/.gitignore",
+      "source_path": ".gitignore",
+      "size": 221,
+      "sha": "822ba7909b01166b766f7fabdac8cb525208815a"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/.pre-commit-config.yaml",
+      "source_path": ".pre-commit-config.yaml",
+      "size": 740,
+      "sha": "d19b0223afd5231050a52ae7db190f7f971fbcc1"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/api.md.in",
+      "source_path": "api.md.in",
+      "size": 869,
+      "sha": "ea548c89a7c4324008b8e7fe4f09bdd063d46127"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/AUTHORS",
+      "source_path": "AUTHORS",
+      "size": 14,
+      "sha": "20b087a866e8eb0d7297683c05458412f25af539"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/bazel/BUILD.bazel",
+      "source_path": "bazel/BUILD.bazel",
+      "size": 176,
+      "sha": "365cb6edc2b829c865523e6a2084e265f478095c"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/bazel/gz_sim_system_libraries.bzl",
+      "source_path": "bazel/gz_sim_system_libraries.bzl",
+      "size": 4637,
+      "sha": "828869a433c358c8b1b91686a7b3666354ec8728"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/BUILD.bazel",
+      "source_path": "BUILD.bazel",
+      "size": 51407,
+      "sha": "410e8b5d77898527dcb702cbcd50cc7d27c8d232"
+    }
+  ],
+  "file_count": 7,
+  "large_100MiB_count": 0,
+  "deferred_partial_or_absent": "Changelog.md_and_remaining_root_docker_doc_tools_vendor"
+}
