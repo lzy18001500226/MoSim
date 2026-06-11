@@ -1,4 +1,5 @@
 .gitattributes text eol=lf
+References/Gazebo/** text eol=lf
 *.pdf binary
 *.dae binary
 *.DAE binary

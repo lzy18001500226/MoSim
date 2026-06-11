@@ -1,6 +1,6 @@
 name: Ubuntu CI
 
-on: 
+on:
   push:
     branches:
       - 'main'
