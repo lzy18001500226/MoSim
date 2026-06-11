@@ -1,0 +1,16 @@
+FROM ubuntu:focal
+
+RUN apt-get update \
+ && apt-get install -y \
+      sudo wget lsb-release gnupg curl \
+ && apt-get clean
+
+COPY docker/scripts/enable_gz_stable.sh scripts/enable_gz_stable.sh
+RUN scripts/enable_gz_stable.sh
+
+COPY docker/scripts/install_common_deps.sh scripts/install_common_deps.sh
+RUN scripts/install_common_deps.sh
+
+# This is not strictly necessary, but makes things faster down the line.
+COPY docker/scripts/install_gz_deps.sh scripts/install_gz_deps.sh
+RUN scripts/install_gz_deps.sh

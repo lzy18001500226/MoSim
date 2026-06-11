@@ -1,0 +1,77 @@
+# Name of the scenario
+name: diff-drive-scenario
+
+# Description of the scenario
+description: "Test suite for differential drive robot"
+
+# Software configuration
+configuration:
+  # SDF world to use. This can be a Fuel URI, an installed SDF file, an
+  # absolute path, or a relative path to an SDF file.
+  world: empty.sdf
+
+  # List of models to place in the world
+  models:
+    # Each model has a URI, pose and name.
+    - uri: "https://fuel.gazebosim.org/1.0/OpenRobotics/models/X1 UGV"
+      pose: { x: 0.0, y: 0.0, z: 0.2, roll: 0.0, pitch: 0.0, yaw: 0.0 }
+      name: x1-a
+    - uri: "https://fuel.gazebosim.org/1.0/OpenRobotics/models/X1 UGV"
+      pose: { x: 0.0, y: 10.0, z: 0.2, roll: 0.0, pitch: 0.0, yaw: 0.0 }
+      name: x1-b
+
+  # Simualtion state recording information.
+  record:
+    sim-state: true
+
+# A list of tests to execute
+tests:
+  # Each test has a name
+  - name: linear-1
+    # A set of triggers, each with a unique name, define how the test is
+    # executed.
+    triggers:
+      # This is a "time" trigger, which requires a time
+      - name: time-trigger-1
+        type: time
+
+        # This time trigger will process the "on" commands when a simulation
+        # time of 2 seconds is reached.
+        time:
+          duration: "0 00:00:02.000"
+          type: sim
+
+        # The "on" commands define what should happen when the trigger is
+        # tripped.
+        on:
+          # This expression checks that the x1-a model has not moved.
+          - expect: ${{x1-a.pose.x == 0.0}}
+          # The "run" command executes a command. In this case, it sends a
+          # command velocity to the x1-a robot.
+          - run: 'ign topic -t /model/x1-a/cmd_vel -m gz.msgs.Twist -p linear:{x:1.0}'
+
+      # This is a "region" trigger, which requires a box region.
+      - name: region-trigger-1
+        type: region
+        geometry:
+          # Geometry position in world coordinates
+          pos: {x: 10.0, y: 0.0, z: 0.0}
+          # This is the pose and dimensions of the region
+          box: {size: {x: 1.0, y: 1.0, z: 1.0}}
+        # When an entiy enters the regions the following commands are
+        # executed.
+        on:
+          - expect: ${{region-trigger-1.contains(x1-a)}}
+          - expect: ${{!region-trigger-1.contains(x1-b)}}
+          - expect: ${{simulation.time >= 10.0}}
+
+      # Another time trigger checks that the region no longer contains the
+      # x1-a robot.
+      - name: time-trigger-2
+        type: time
+        time:
+          duration: "0 00:00:15.000"
+          type: sim
+        on:
+          - expect: ${{!region-trigger-1.contains(x1-a)}}
+          - expect: ${{!region-trigger-1.contains(x1-b)}}

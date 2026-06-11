@@ -1,0 +1,52 @@
+/*
+ * Copyright (C) 2022 Open Source Robotics Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+*/
+syntax = "proto3";
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+import "test.proto";
+
+package domain;
+
+option go_package = "gitlab.com/gazebosim/cloudsim/api/domain";
+
+// Iteration holds one iteration of the set of tests in a Scenario.
+message Iteration
+{
+  // Params are the parameters used during an iteration. The key is the parameter name, and the value is the
+  // parameter value.
+  map<string, string> params = 1;
+
+  // Tests groups a set of tests executed by the testing library.
+  repeated Test tests = 2;
+
+  // StartTime is the time point, in UTC epoch time,
+  // that this iteration started.
+  google.protobuf.Timestamp start_time = 3;
+
+  // Duration contains the duration that it took to run this iteration.
+  google.protobuf.Duration duration = 4;
+
+  // Failed is true if any test in this iteration failed.
+  bool failed = 5;
+
+  // TestCount contains the total number of tests that ran.
+  int32 test_count = 6;
+
+  // TestFailCount contains the number of tests that failed.
+  int32 test_fail_count = 7;
+}

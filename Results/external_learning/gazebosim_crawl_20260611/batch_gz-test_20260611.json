@@ -1,0 +1,19 @@
+{
+  "repo": "gz-test",
+  "target": "References/Gazebo/gz-test",
+  "source_sha": "adbda9d6d0809ff5d27add6fbf782cf9eeee5fe4",
+  "scanned_at": "2026-06-11T00:00:00+08:00",
+  "files_scanned": 158,
+  "bytes_scanned": 2307128.0,
+  "large_file_threshold_bytes": 104857600,
+  "large_file_count": 0,
+  "large_files": [],
+  "nested_risk_dir_count": 0,
+  "nested_risk_dirs": [],
+  "sensitive_name_count": 0,
+  "sensitive_name_hits": [],
+  "lfs_pointer_count": 0,
+  "lfs_pointer_hits": [],
+  "staged_subset_file_count": 158,
+  "scan_passed_for_staged_subset": true
+}

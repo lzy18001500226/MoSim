@@ -1,0 +1,158 @@
+# Gazebo Test : Testing framework for Gazebo
+
+Naming ideas:
+
+  1. simtest
+  2. gztest
+  3. behavior...
+  4. hygiene....
+  5. genie, jinn
+  6. audition
+  7. appraise
+  8. exam
+  8. quiz
+  9. insight
+  10. scenario
+
+**Maintainer:** nate AT openrobotics DOT org
+
+[![GitHub open issues](https://img.shields.io/github/issues-raw/gazebosim/gz-test.svg)](https://github.com/gazebosim/gz-test/issues)
+[![GitHub open pull requests](https://img.shields.io/github/issues-pr-raw/gazebosim/gz-test.svg)](https://github.com/gazebosim/gz-test/pulls)
+[![Discourse topics](https://img.shields.io/discourse/https/community.gazebosim.org/topics.svg)](https://community.gazebosim.org)
+[![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+
+Build | Status
+-- | --
+Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-test/branch/main/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-test)
+Ubuntu Bionic | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=_test-ci-main-bionic-amd64)](https://build.osrfoundation.org/job/gz_test-ci-main-bionic-amd64)
+Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=_test-ci-main-homebrew-amd64)](https://build.osrfoundation.org/job/gz_test-ci-main-homebrew-amd64)
+Windows       | [![Build Status](https://build.osrfoundation.org/job/gz_test-ci-win/badge/icon)](https://build.osrfoundation.org/job/gz_test-ci-win/)
+
+Gazebo Test, a component of [Gazebo](https://gazebosim.org), provides testing framework for
+robot applications.
+
+# Table of Contents
+
+[Features](#features)
+
+[Install](#install)
+
+[Usage](#usage)
+
+[Documentation](#documentation)
+
+[Testing](#testing)
+
+[Folder Structure](#folder-structure)
+
+[Code of Conduct](#code-of-conduct)
+
+[Contributing](#code-of-contributing)
+
+[Versioning](#versioning)
+
+[License](#license)
+
+# Features
+
+Gazebo Test provides a testing framework.
+
+# Install
+
+See the [installation tutorial](https://gazebosim.org/api/test/0.1/install.html).
+
+# Usage
+
+Please refer to the [examples directory](https://github.com/gazebosim/gz-test/blob/main/examples/).
+
+# Documentation
+
+API and tutorials can be found at [https://gazebosim.org/libs/test](https://gazebosim.org/libs/test).
+
+You can also generate the documentation from a clone of this repository by following these steps.
+
+1. You will need Doxygen. On Ubuntu Doxygen can be installed using
+
+    ```
+    sudo apt-get install doxygen
+    ```
+
+2. Clone the repository
+
+    ```
+    git clone https://github.com/gazebosim/gz-test
+    ```
+
+3. Configure and build the documentation.
+
+    ```
+    cd gz-test; mkdir build; cd build; cmake ../; make doc
+    ```
+
+4. View the documentation by running the following command from the build directory.
+
+    ```
+    firefox doxygen/html/index.html
+    ```
+
+# Testing
+
+Follow these steps to run tests and static code analysis in your clone of this repository.
+
+1. Follow the [source install instruction](https://gazebosim.org/libs/test#source-install).
+
+2. Run tests.
+
+    ```
+    make test
+    ```
+
+3. Static code checker.
+
+    ```
+    make codecheck
+    ```
+
+# Folder Structure
+
+Refer to the following table for information about important directories and files in this repository.
+
+```
+gz-test
+├── examples                 Example programs.
+├── include//test   Header files.
+├── src                      Source files and unit tests.
+├── test
+│    ├── integration         Integration tests.
+│    ├── performance         Performance tests.
+│    └── regression          Regression tests.
+├── tutorials                Tutorials, written in markdown.
+├── Changelog.md             Changelog.
+└── CMakeLists.txt           CMake build script.
+```
+# Contributing
+
+Please see
+[CONTRIBUTING.md](https://gazebosim.org/docs/all/contributing).
+
+# Code of Conduct
+
+Please see
+[CODE_OF_CONDUCT.md](https://github.com/gazebosim/gz-test/blob/main/CODE_OF_CONDUCT.md)
+
+# Versioning
+
+This library uses [Semantic Versioning](https://semver.org/).
+Additionally, this library is part of the
+[Gazebo project](https://gazebosim.org) which periodically
+releases a versioned set of compatible and complimentary libraries. See the
+[Gazebo website](https://gazebosim.org) for version and
+release information.
+
+# License
+
+This library is licensed under
+[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+See also the
+[LICENSE](https://github.com/gazebosim/gz-test/blob/main/LICENSE)
+file.

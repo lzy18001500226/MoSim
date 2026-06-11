@@ -1,0 +1,83 @@
+/*
+ * Copyright (C) 2022 Open Source Robotics Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+*/
+syntax = "proto3";
+
+import "repository.proto";
+import "scenario.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+package domain;
+
+option go_package = "gitlab.com/gazebosim/cloudsim/api/domain";
+
+// Suite contains a group of scenario runs.
+message Suite {
+  // SHA is the head SHA that originated this suite.
+  string SHA = 1;
+
+  // Provider contains the name of the git provider that originated this suite.
+  string provider = 2;
+
+  // Repository contains information about the git repository that triggered this suite.
+  Repository repository = 3;
+
+  // Branch contains the branch that originated this suite.
+  string branch = 4;
+
+  // Scenarios contains information about each one of the scenarios that were run in this suite.
+  repeated Scenario scenarios = 5;
+
+  // StartTime is the time point, in UTC epoch time, that this suite was requested.
+  google.protobuf.Timestamp start_time = 6;
+
+  // Duration contains the duration that it took to run this suite.
+  google.protobuf.Duration duration = 7;
+
+  enum Status {
+    UNKNOWN = 0;
+    PENDING = 1000;
+    RUNNING = 2000;
+    FINISHED = 3000;
+  }
+
+  // Status contains the lifecycle state this suite is in.
+  Status status = 8;
+
+  // Error contains an optional error message explaining why the suite failed.
+  // Error is empty if there are no errors with this suite. It must only be set if Suite.Status == Finished.
+  string error = 9;
+
+  // ScenarioCount contains the total number of scenarios that ran.
+  int32 scenario_count = 10;
+
+  // ScenarioFailCount contains the number of scenarios that failed.
+  // The count of scenarios can be used to determine the number of
+  // passed scenarios by subtracting it from `scenario_count`.
+  int32 scenario_fail_count = 11;
+
+  // TestCount contains the total number of tests over all scenarios
+  // and iterations that ran for this suite.
+  int32 test_count = 12;
+
+  // TestFaileCount contains the total number of failed tests over all
+  // scenarios and iterations that ran for this suite.
+  int32 test_fail_count = 13;
+
+  // Failed is set to true if any the scenarios failed.
+  bool failed = 14;
+}

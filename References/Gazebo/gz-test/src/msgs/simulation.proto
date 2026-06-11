@@ -1,0 +1,55 @@
+/*
+ * Copyright (C) 2022 Open Source Robotics Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+*/
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "artifact.proto";
+
+package domain;
+
+option go_package = "gitlab.com/gazebosim/cloudsim/api/domain";
+
+// Simulation contains information about a simulation run.
+// There is a one-to-one relationship between a Simulation and a Scenario.
+message Simulation {
+  // GroupId is the Simulation identifier. It's used across different services when they need to refer
+  // to a specific Simulation.
+  string group_id = 1;
+
+  // LaunchedAt is the date and time at which this Simulation has been launched.
+  // A nil value means that the simulation hasn't been launched yet, and is likely waiting in a queue to get picker up by a worker.
+  google.protobuf.Timestamp launched_at = 2;
+
+  // StoppedAt is the date and time at which this Simulation has stopped.
+  google.protobuf.Timestamp stopped_at = 3;
+
+  // Name contains a user-defined name for this Simulation.
+  string name = 4;
+
+  // Image contains a URL to a valid OCI image that was used to run this simulation.
+  string image = 5;
+
+  // Status contains the current status of this Simulation.
+  string status = 6;
+
+  // Error contains an error message explaining why the simulation failed. If set to nil, the simulation doesn't have
+  // any errors.
+  string error = 7;
+
+  // Restarted is set to true if the simulation has been restarted.
+  bool restarted = 8;
+}

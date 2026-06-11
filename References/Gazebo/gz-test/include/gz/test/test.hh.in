@@ -1,0 +1,3 @@
+// Automatically generated
+#include <gz/test/config.hh>
+${gz_headers}
