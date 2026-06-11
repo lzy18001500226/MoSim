@@ -1,0 +1,20 @@
+{
+  "batch": "docs_rotary_medium_gifs",
+  "repo": "gazebosim/docs",
+  "head": "fc0832680c6908c4850e8f4af3b8190181bf877f",
+  "files": [
+    {
+      "path": "References/Gazebo/docs/rotary/img/plot3d_plugin_locked.gif",
+      "source_path": "rotary/img/plot3d_plugin_locked.gif",
+      "size": 1989071,
+      "sha": "df4d7d46b75d7d48bee0561f7fb283af7e8a83b0"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/tutorials/ros2_integration/gz_rviz.gif",
+      "source_path": "rotary/tutorials/ros2_integration/gz_rviz.gif",
+      "size": 5592843,
+      "sha": "d81e105768887553d1bef3c559b354c05b0c420e"
+    }
+  ],
+  "large_100MiB_count": 0
+}

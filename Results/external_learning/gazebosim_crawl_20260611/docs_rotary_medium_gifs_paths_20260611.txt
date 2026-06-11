@@ -1,0 +1,2 @@
+References/Gazebo/docs/rotary/img/plot3d_plugin_locked.gif
+References/Gazebo/docs/rotary/tutorials/ros2_integration/gz_rviz.gif
