@@ -1,0 +1,582 @@
+[
+  {
+    "path": "src/gui/plugins/align_tool/AlignTool.cc",
+    "sha": "6996ff8384d2ade85e4b45dc3b9550d7287a733b",
+    "size": 18242
+  },
+  {
+    "path": "src/gui/plugins/align_tool/AlignTool.hh",
+    "sha": "be479089e3057cd2c2d21f653073d74da1bca769",
+    "size": 5138
+  },
+  {
+    "path": "src/gui/plugins/align_tool/AlignTool.qml",
+    "sha": "ed0df58b2ec22e66c77d0ded86e7b28d6c1886a6",
+    "size": 10240
+  },
+  {
+    "path": "src/gui/plugins/align_tool/AlignTool.qrc",
+    "sha": "118a48268922b8b9f65825188adbe2bab44499b1",
+    "size": 340
+  },
+  {
+    "path": "src/gui/plugins/align_tool/CMakeLists.txt",
+    "sha": "8bbba824597dc6605916f2d400f8d46f9230851f",
+    "size": 121
+  },
+  {
+    "path": "src/gui/plugins/align_tool/x_center.png",
+    "sha": "731eacda4c713715658e82d2f4f9a8b429e1e410",
+    "size": 2202
+  },
+  {
+    "path": "src/gui/plugins/align_tool/x_max.png",
+    "sha": "4b11aea552a1ef91a8a4c1c58f081067cb90b229",
+    "size": 3249
+  },
+  {
+    "path": "src/gui/plugins/align_tool/x_mid.png",
+    "sha": "731eacda4c713715658e82d2f4f9a8b429e1e410",
+    "size": 2202
+  },
+  {
+    "path": "src/gui/plugins/align_tool/x_min.png",
+    "sha": "2693b6800750c2332d3906427bb0d2fcea1ea03a",
+    "size": 3296
+  },
+  {
+    "path": "src/gui/plugins/align_tool/y_center.png",
+    "sha": "e006c7b74f61e1e4d7065934c23444e4e8940511",
+    "size": 731
+  },
+  {
+    "path": "src/gui/plugins/align_tool/y_max.png",
+    "sha": "20123fd34c991ff0396106f428e92fd5d8eb5297",
+    "size": 610
+  },
+  {
+    "path": "src/gui/plugins/align_tool/y_mid.png",
+    "sha": "e006c7b74f61e1e4d7065934c23444e4e8940511",
+    "size": 731
+  },
+  {
+    "path": "src/gui/plugins/align_tool/y_min.png",
+    "sha": "deee52d72c53209d0751e4847deb5ea4abad3f56",
+    "size": 602
+  },
+  {
+    "path": "src/gui/plugins/align_tool/z_center.png",
+    "sha": "b3f6820a9620ccd95ff175cff2bcea4c44f1ec3b",
+    "size": 724
+  },
+  {
+    "path": "src/gui/plugins/align_tool/z_max.png",
+    "sha": "a8256b6fcca1e8d31598e2c89aac7e3c96d1345b",
+    "size": 598
+  },
+  {
+    "path": "src/gui/plugins/align_tool/z_mid.png",
+    "sha": "b3f6820a9620ccd95ff175cff2bcea4c44f1ec3b",
+    "size": 724
+  },
+  {
+    "path": "src/gui/plugins/align_tool/z_min.png",
+    "sha": "58addf3c8d95233f0be9e1632ae2bfa3b4218255",
+    "size": 597
+  },
+  {
+    "path": "src/gui/plugins/apply_force_torque/ApplyForceTorque.cc",
+    "sha": "20a44743cbf29764aa318357b51aec0c34cb69a3",
+    "size": 31643
+  },
+  {
+    "path": "src/gui/plugins/apply_force_torque/ApplyForceTorque.hh",
+    "sha": "9c9e219834b2f95e854effe1c7569e9d22c04b28",
+    "size": 5781
+  },
+  {
+    "path": "src/gui/plugins/apply_force_torque/ApplyForceTorque.qml",
+    "sha": "7656df6e3e1ba8829d03ed9648a91fab910c9bc7",
+    "size": 7902
+  },
+  {
+    "path": "src/gui/plugins/apply_force_torque/ApplyForceTorque.qrc",
+    "sha": "b95739311d91eef6f9ca44364f0f384fab84a35d",
+    "size": 129
+  },
+  {
+    "path": "src/gui/plugins/apply_force_torque/CMakeLists.txt",
+    "sha": "db13a65144b70eb175558079ffba612413a3905e",
+    "size": 164
+  },
+  {
+    "path": "src/gui/plugins/banana_for_scale/banana.png",
+    "sha": "b3c4e98a1ab67ba29769c983687f6506dc17adfa",
+    "size": 908
+  },
+  {
+    "path": "src/gui/plugins/banana_for_scale/BananaForScale.cc",
+    "sha": "54b12621b1bf193aeb69ada30f9bb2545b01b4e5",
+    "size": 2985
+  },
+  {
+    "path": "src/gui/plugins/banana_for_scale/BananaForScale.hh",
+    "sha": "f49d552a411faa7e2ecaaeb46f87a7775bb8169e",
+    "size": 1449
+  },
+  {
+    "path": "src/gui/plugins/banana_for_scale/BananaForScale.qml",
+    "sha": "e4208eb9cc9c807a9058cc51d75fece76b94b6d4",
+    "size": 1967
+  },
+  {
+    "path": "src/gui/plugins/banana_for_scale/BananaForScale.qrc",
+    "sha": "7ffb8b9d36fb32b433120a3e8872c6d485e9e7fc",
+    "size": 151
+  },
+  {
+    "path": "src/gui/plugins/banana_for_scale/CMakeLists.txt",
+    "sha": "9f4810495f8c5eb718c65f3bb762de09a83016bc",
+    "size": 137
+  },
+  {
+    "path": "src/gui/plugins/CMakeLists.txt",
+    "sha": "0def78d3a01f4deaa2bb732cb8fc2718f7b195db",
+    "size": 5435
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/AirPressure.cc",
+    "sha": "b3b873fb023f34043234b767574aed7d912f17e9",
+    "size": 3795
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/AirPressure.hh",
+    "sha": "ba72252564af21411887b8d2751fba894f107827",
+    "size": 2245
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/AirPressure.qml",
+    "sha": "74447bb0adf2e5915366e62833a31c02c7746f64",
+    "size": 3747
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Altimeter.cc",
+    "sha": "793b7d716b5c504b0a2a553747dfc55810c11374",
+    "size": 4338
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Altimeter.hh",
+    "sha": "a36308cdba71e2c2b827304c298f94f5ef85b973",
+    "size": 2697
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Altimeter.qml",
+    "sha": "08e8176cc4d11ab1aeb2ae584064ef3d84c0600e",
+    "size": 4095
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Boolean.qml",
+    "sha": "0a3478af5198c04647c08e0581d0740f2c993514",
+    "size": 2527
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/CMakeLists.txt",
+    "sha": "291509f9c18d705313c8b8714b5565d21c115e9e",
+    "size": 449
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/ComponentInspectorEditor.cc",
+    "sha": "dfec8daba96a148f91ff6ce78b518c7e6d25d544",
+    "size": 41961
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/ComponentInspectorEditor.hh",
+    "sha": "a67a22c00fa1ae59f36f56d4d4da59c68f39b2fc",
+    "size": 14836
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/ComponentInspectorEditor.qml",
+    "sha": "84c86182275d6cadb4468dc2b56d429b358531af",
+    "size": 21479
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/ComponentInspectorEditor.qrc",
+    "sha": "7f01fd6c965fef771723310c7c10c6f2e2067d99",
+    "size": 810
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/ExpandingTypeHeader.qml",
+    "sha": "64b3b12015d41ab260d2a44fffdd127d536c562d",
+    "size": 1860
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Float.qml",
+    "sha": "360b3a7016070085d43dd49b22fafdc319b0d877",
+    "size": 1944
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Imu.cc",
+    "sha": "df5805265e3fe5240d84f984ba1d37aa6d1e0af5",
+    "size": 9604
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Imu.hh",
+    "sha": "b8e4d6671d2b5b27dfc71d163c1c9cfda01e085e",
+    "size": 5596
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Imu.qml",
+    "sha": "fefdd7853160f2d9bde333ac66d6fd1a6d07f7de",
+    "size": 8329
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Integer.qml",
+    "sha": "4438c3044e2ae7d9e298f7d86b7d0a5f52007c8e",
+    "size": 1876
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/JointType.cc",
+    "sha": "67710ea5edf9c9998ee3a1ff49e0f9def5ef1466",
+    "size": 4144
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/JointType.hh",
+    "sha": "e2bd0506e3caa94e201bc95703cabe1881bd8eb7",
+    "size": 1422
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/JointType.qml",
+    "sha": "9c955d26fa2cb3267c2f60629414574866844de9",
+    "size": 2781
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Lidar.cc",
+    "sha": "5d027f178a8345adbf334efa87aa4c2ca44192c4",
+    "size": 4973
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Lidar.hh",
+    "sha": "b81e4c0038be10fdef49b00b316d9537dcb1d014",
+    "size": 2436
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Lidar.qml",
+    "sha": "a5a4e990082c2d8a66105d7b944fda1ae5b8de43",
+    "size": 13770
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/LidarScan.qml",
+    "sha": "a5a1cf9b4052931a5aa2414cf6d41162eef67187",
+    "size": 6242
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Light.qml",
+    "sha": "fb01dffba5d5ce833f10113e2a9d025154c482bd",
+    "size": 32719
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Magnetometer.cc",
+    "sha": "9459e4a6864a2b2e25d0a0cad541f2e00e3f6102",
+    "size": 5321
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Magnetometer.hh",
+    "sha": "7754ef078a159bef6838ff3b883f73020ec64ad9",
+    "size": 3279
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Magnetometer.qml",
+    "sha": "52726e6915dd1a3cd30d56040ce803cef48085f7",
+    "size": 5121
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Material.qml",
+    "sha": "0861d6aa63c0ca3ea06d2bf4cd433760dfc7e5ea",
+    "size": 17462
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/ModelEditor.cc",
+    "sha": "2f32916f6682336dd028cbe5196b8a6c7a4f503d",
+    "size": 16671
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/ModelEditor.hh",
+    "sha": "bd8b3ab57f3d488980f80a643ed64f4d955b9e2b",
+    "size": 1559
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/NoData.qml",
+    "sha": "125f76d4ae5892f83718844115122d82463ebcb5",
+    "size": 1291
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Noise.qml",
+    "sha": "87f9f2a73072f1ca03edc228461bce772db9840e",
+    "size": 11835
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Physics.qml",
+    "sha": "81571ea453dbf2ed2994aadb147fd3e053b435ef",
+    "size": 6005
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/plottable_icon.svg",
+    "sha": "bcac9afc2ec93d666f8a67e9869ad12de89253f0",
+    "size": 3474
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Pose3d.cc",
+    "sha": "99c834ee8fa0f6351da9243b6e73b32e386809f3",
+    "size": 2866
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Pose3d.hh",
+    "sha": "f270dcf8542d82aa7bc21bc4f57cf3ef71436239",
+    "size": 1944
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Pose3d.qml",
+    "sha": "f6d80f87aff4ab8259f82cdbe43d3e16fd0febd1",
+    "size": 9858
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/SphericalCoordinates.qml",
+    "sha": "f8ef1ff0d93cb9599cd7a6d52ab58a8e674625eb",
+    "size": 8700
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/StateAwareSpin.qml",
+    "sha": "20b4893b2ac572c51186a6307f6867e53b7893be",
+    "size": 2832
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/String.qml",
+    "sha": "fb02d5d21d23c1674754b26820041157754c48d2",
+    "size": 2060
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/TypeHeader.qml",
+    "sha": "99433395921442694e878685c268ecb705c276d9",
+    "size": 1917
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Types.cc",
+    "sha": "06c6f784ce474b2ff21a93788728fa2149676b48",
+    "size": 1079
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Types.hh",
+    "sha": "64ceea1f0eeb4abea372a6f129298c6840de566c",
+    "size": 2117
+  },
+  {
+    "path": "src/gui/plugins/component_inspector_editor/Vector3d.qml",
+    "sha": "1ff8537ea2dba1e32f1b8a192177d26c4cf17b39",
+    "size": 6540
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Boolean.qml",
+    "sha": "d3d1a951c8e6ec8061f989b38a90a9ff71ec1c70",
+    "size": 2549
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/CMakeLists.txt",
+    "sha": "5eca36cc5b2ee611122b36e05cf8104072675453",
+    "size": 222
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/ComponentInspector.cc",
+    "sha": "c97ccbf9147a41f21a4327683caeadce7245a33f",
+    "size": 40497
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/ComponentInspector.hh",
+    "sha": "5b8d4a939326728b0744ca0e850c281f7c8d3f8f",
+    "size": 14548
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/ComponentInspector.qml",
+    "sha": "65a4654cdd7dad1400345854cf76dfc23f4039c5",
+    "size": 10678
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/ComponentInspector.qrc",
+    "sha": "61bdcc07f2adb469df0f965c9a586e30fa8e36d7",
+    "size": 632
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/ExpandingTypeHeader.qml",
+    "sha": "080495597b2078fa9f15090baff03a6d3a83c4dd",
+    "size": 2030
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Float.qml",
+    "sha": "3655de4aa517dd66268260d380a7ec65dc9220c0",
+    "size": 1923
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Gravity.qml",
+    "sha": "9395f4cf498bc2814954f46b4caef83c5c1d9f6d",
+    "size": 3173
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Inertial.cc",
+    "sha": "7ec9e35ede40369df0c93b5233eb55629d089b18",
+    "size": 3732
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Inertial.hh",
+    "sha": "9d55cce1153dc49057ebf99c1175a67551c038ad",
+    "size": 1615
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Inertial.qml",
+    "sha": "8ec62b783894ce232df0b2dfb9ef18b2146e68d3",
+    "size": 17724
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Integer.qml",
+    "sha": "bcdad495dfd4afe30fdaf5bd85271ae03f50833e",
+    "size": 1855
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Light.qml",
+    "sha": "ff6ecbbb45d804438a6f0f2b47099f4c940ef98b",
+    "size": 23708
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Material.qml",
+    "sha": "929dd323624364cdb70b8931e997301d29af2365",
+    "size": 12140
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/NoData.qml",
+    "sha": "b41d26c105480f1fb49c3911e138c668c40d0616",
+    "size": 1279
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Physics.qml",
+    "sha": "70e6122202c7278a72c503dc8038265b59e203d3",
+    "size": 5147
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/plottable_icon.svg",
+    "sha": "bcac9afc2ec93d666f8a67e9869ad12de89253f0",
+    "size": 3474
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Pose3d.cc",
+    "sha": "c2da3d197add3e79517fe0aec9d201582becf89d",
+    "size": 2999
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Pose3d.hh",
+    "sha": "e2162bb9e24da1f4cd323d8509343f24fed38079",
+    "size": 3073
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Pose3d.qml",
+    "sha": "6d01e7ce3cd02753e3dbede7fbe04195f2f2944a",
+    "size": 5280
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/SphericalCoordinates.qml",
+    "sha": "554eeea39d01692138ba04231a6cde41a2769b61",
+    "size": 7635
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/String.qml",
+    "sha": "042fe9230d52355b7548850ee2c07b963e242e77",
+    "size": 2047
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/SystemPluginInfo.cc",
+    "sha": "1712b3c65f3b532aabd97ded4aee2e2d632ae90d",
+    "size": 2167
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/SystemPluginInfo.hh",
+    "sha": "48cd39b03735381f4374c27c576852136699feac",
+    "size": 1580
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/SystemPluginInfo.qml",
+    "sha": "c77cb560a56edf731d8b88d35d1ecf428461a663",
+    "size": 6777
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/TypeHeader.qml",
+    "sha": "d14786e47093574094ed182fd3f23e8c966bad32",
+    "size": 1816
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Types.hh",
+    "sha": "1c68ca9c7dc5452da59dca6d5faf4dd41d51c470",
+    "size": 1195
+  },
+  {
+    "path": "src/gui/plugins/component_inspector/Vector3d.qml",
+    "sha": "42207b44630a70e08863748f9ff8c4522e2dc1cd",
+    "size": 3012
+  },
+  {
+    "path": "src/gui/plugins/copy_paste/CMakeLists.txt",
+    "sha": "8eadfbeb2add9dd1eccb582aad081275484b6899",
+    "size": 79
+  },
+  {
+    "path": "src/gui/plugins/copy_paste/copy_object.png",
+    "sha": "ccda68f882f84ee868a9c6d83f8d1a62cc66cacb",
+    "size": 537
+  },
+  {
+    "path": "src/gui/plugins/copy_paste/CopyPaste.cc",
+    "sha": "f78abc78cd9b157114bb3f56caab718e47f7050a",
+    "size": 5284
+  },
+  {
+    "path": "src/gui/plugins/copy_paste/CopyPaste.hh",
+    "sha": "03cbea394a543f96b83bd70dfbb41158d1a64f75",
+    "size": 2562
+  },
+  {
+    "path": "src/gui/plugins/copy_paste/CopyPaste.qml",
+    "sha": "502331906a688edfdb01706880169c09ee41ab20",
+    "size": 1906
+  },
+  {
+    "path": "src/gui/plugins/copy_paste/CopyPaste.qrc",
+    "sha": "07e6a4e1fa11bdf10ddbf945841659bac9ad42ff",
+    "size": 189
+  },
+  {
+    "path": "src/gui/plugins/copy_paste/paste_object.png",
+    "sha": "3f31523082b69e45f7cea6880d7032bd4d290ce4",
+    "size": 927
+  },
+  {
+    "path": "src/gui/plugins/entity_context_menu/CMakeLists.txt",
+    "sha": "85dddd702a6f65b17e7eec9238b3ab6e4e5af1fc",
+    "size": 193
+  },
+  {
+    "path": "src/gui/plugins/entity_context_menu/EntityContextMenuPlugin.cc",
+    "sha": "f6d0796b4431ec3abfc867d1c830a269aa5023e0",
+    "size": 5635
+  },
+  {
+    "path": "src/gui/plugins/entity_context_menu/EntityContextMenuPlugin.hh",
+    "sha": "eb849d41ddc3aea9e1767f0c43c20db55c8d7ffa",
+    "size": 3143
+  },
+  {
+    "path": "src/gui/plugins/entity_context_menu/EntityContextMenuPlugin.qml",
+    "sha": "5f14a00a7dc39edf95b75cc44a770a0ded16f273",
+    "size": 1923
+  },
+  {
+    "path": "src/gui/plugins/entity_context_menu/EntityContextMenuPlugin.qrc",
+    "sha": "96bffedd5e8fc1ed6a42b64e63813ca7af547d34",
+    "size": 145
+  }
+]
