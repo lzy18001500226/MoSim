@@ -1,0 +1,11 @@
+{
+  "repo": "sdformat",
+  "part": "part2_sdf_schema",
+  "source_sha": "e44eaf7dfdd6e72830f14b07f8822ceec3f7b190",
+  "target": "References/Gazebo/sdformat",
+  "file_count": 653,
+  "paths": [
+    "References/Gazebo/sdformat/sdf"
+  ],
+  "stage_file": "Results/external_learning/gazebosim_crawl_20260611/stage_sdformat_part2_sdf_20260611.txt"
+}
