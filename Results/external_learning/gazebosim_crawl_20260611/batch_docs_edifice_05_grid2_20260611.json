@@ -1,0 +1,10 @@
+{
+  "repo": "gazebosim/docs",
+  "head": "fc0832680c6908c4850e8f4af3b8190181bf877f",
+  "batch": "docs_edifice_05_grid2",
+  "paths": [
+    "edifice/img/grid2.gif"
+  ],
+  "expected_sha": "4eed529a6eb2bade21e7d22630a87a4ba611a29d",
+  "expected_size": 7137994
+}
