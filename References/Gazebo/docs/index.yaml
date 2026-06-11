@@ -1,0 +1,461 @@
+# This file is the master manifest and configuration for the documentation website.
+# It defines the releases, their included libraries, and general library metadata
+# used to generate the site content and navigation.
+#
+# For more information about the structure of this file, see the README.md file at the root of the repository.
+#
+# Components of the file:
+#
+# 1. "releases:" A list of releases to display on the website.
+#    Each release has:
+#    - "name:" The name of the release (e.g., jetty, ionic).
+#    - "lts:", "dev:", "eol:", "preferred:": Booleans indicating release status.
+#    - "description:" Support period description.
+#    - "libraries:" A list of libraries included in the release, with their major versions.
+#      This list is used to generate the "Library Reference" navigation in the sidebar
+#      (see build_multiversion.py) and to populate links in "library_howtos.md"
+#      via MyST substitutions (see conf.py).
+#
+# 2. "library_info:" A dictionary containing descriptions of each library.
+#    This is used to populate the /libs page.
+
+releases:
+  - name: rotary
+    lts: false
+    dev: true
+    eol: false
+    preferred: false
+    description: Rolling release stream built from main branches
+    libraries:
+      - name: cmake
+        version: main
+      - name: common
+        version: main
+      - name: fuel_tools
+        version: main
+      - name: gui
+        version: main
+      - name: launch
+        version: main
+      - name: math
+        version: main
+      - name: msgs
+        version: main
+      - name: physics
+        version: main
+      - name: plugin
+        version: main
+      - name: rendering
+        version: main
+      - name: sensors
+        version: main
+      - name: sim
+        version: main
+      - name: tools
+        version: main
+      - name: transport
+        version: main
+      - name: utils
+        version: main
+      - name: sdformat
+        version: main
+  - name: jetty
+    lts: true
+    dev: false
+    eol: false
+    preferred: true # Only one preferred=true is allowed
+    description: Supported Sep, 2025 to Sep, 2030
+    libraries:
+      - name: cmake
+        version: 5
+      - name: common
+        version: 7
+      - name: fuel_tools
+        version: 11
+      - name: gui
+        version: 10
+      - name: launch
+        version: 9
+      - name: math
+        version: 9
+      - name: msgs
+        version: 12
+      - name: physics
+        version: 9
+      - name: plugin
+        version: 4
+      - name: rendering
+        version: 10
+      - name: sensors
+        version: 10
+      - name: sim
+        version: 10
+      - name: tools
+        version: 2
+      - name: transport
+        version: 15
+      - name: utils
+        version: 4
+      - name: sdformat
+        version: 16
+  - name: ionic
+    lts: false
+    eol: false
+    preferred: false # Only one preferred=true is allowed
+    description: Supported Sep, 2024 to Sep, 2026
+    libraries:
+      - name: cmake
+        version: 4
+      - name: common
+        version: 6
+      - name: fuel_tools
+        version: 10
+      - name: gui
+        version: 9
+      - name: launch
+        version: 8
+      - name: math
+        version: 8
+      - name: msgs
+        version: 11
+      - name: physics
+        version: 8
+      - name: plugin
+        version: 3
+      - name: rendering
+        version: 9
+      - name: sensors
+        version: 9
+      - name: sim
+        version: 9
+      - name: tools
+        version: 2
+      - name: transport
+        version: 14
+      - name: utils
+        version: 3
+      - name: sdformat
+        version: 15
+  - name: harmonic
+    lts: true
+    eol: false
+    description: Supported Sep, 2023 to Sep, 2028
+    libraries:
+      - name: cmake
+        version: 3
+      - name: common
+        version: 5
+      - name: fuel_tools
+        version: 9
+      - name: gui
+        version: 8
+      - name: launch
+        version: 7
+      - name: math
+        version: 7
+      - name: msgs
+        version: 10
+      - name: physics
+        version: 7
+      - name: plugin
+        version: 2
+      - name: rendering
+        version: 8
+      - name: sensors
+        version: 8
+      - name: sim
+        version: 8
+      - name: tools
+        version: 2
+      - name: transport
+        version: 13
+      - name: utils
+        version: 2
+      - name: sdformat
+        version: 14
+  - name: garden
+    lts: false
+    eol: true
+    description: Supported Sep, 2022 to Sep, 2024
+    libraries:
+      - name: cmake
+        version: 3
+      - name: common
+        version: 5
+      - name: fuel_tools
+        version: 8
+      - name: gui
+        version: 7
+      - name: launch
+        version: 6
+      - name: math
+        version: 7
+      - name: msgs
+        version: 9
+      - name: physics
+        version: 6
+      - name: plugin
+        version: 2
+      - name: rendering
+        version: 7
+      - name: sensors
+        version: 7
+      - name: sim
+        version: 7
+      - name: tools
+        version: 2
+      - name: transport
+        version: 12
+      - name: utils
+        version: 2
+      - name: sdformat
+        version: 13
+  - name: fortress
+    lts: true
+    eol: false
+    description: Supported Sep, 2021 to Sep, 2026
+    libraries:
+      - name: cmake
+        version: 2
+      - name: common
+        version: 4
+      - name: fuel_tools
+        version: 7
+      - name: gui
+        version: 6
+      - name: launch
+        version: 5
+      - name: math
+        version: 6
+      - name: msgs
+        version: 8
+      - name: physics
+        version: 5
+      - name: plugin
+        version: 1
+      - name: rendering
+        version: 6
+      - name: sensors
+        version: 6
+      - name: sim
+        version: 6
+      - name: tools
+        version: 1
+      - name: transport
+        version: 11
+      - name: utils
+        version: 1
+      - name: sdformat
+        version: 12
+  - name: edifice
+    lts: false
+    eol: true
+    description: Supported Mar, 2021 to Mar, 2022
+    libraries:
+      - name: cmake
+        version: 2
+      - name: common
+        version: 4
+      - name: fuel_tools
+        version: 6
+      - name: gui
+        version: 5
+      - name: launch
+        version: 4
+      - name: math
+        version: 6
+      - name: msgs
+        version: 7
+      - name: physics
+        version: 4
+      - name: plugin
+        version: 1
+      - name: rendering
+        version: 5
+      - name: sensors
+        version: 5
+      - name: sim
+        version: 5
+      - name: tools
+        version: 1
+      - name: transport
+        version: 10
+      - name: utils
+        version: 1
+      - name: sdformat
+        version: 11
+  - name: dome
+    lts: false
+    eol: true
+    description: Supported Sep, 2020 to Dec, 2021
+    libraries:
+      - name: cmake
+        version: 2
+      - name: common
+        version: 3
+      - name: fuel_tools
+        version: 5
+      - name: gui
+        version: 4
+      - name: launch
+        version: 3
+      - name: math
+        version: 6
+      - name: msgs
+        version: 6
+      - name: physics
+        version: 3
+      - name: plugin
+        version: 1
+      - name: rendering
+        version: 4
+      - name: sensors
+        version: 4
+      - name: sim
+        version: 4
+      - name: tools
+        version: 1
+      - name: transport
+        version: 9
+      - name: sdformat
+        version: 10
+  - name: citadel
+    lts: true
+    eol: true
+    description: Supported Dec, 2019 to Dec, 2024
+    libraries:
+      - name: cmake
+        version: 2
+      - name: common
+        version: 3
+      - name: fuel_tools
+        version: 4
+      - name: gui
+        version: 3
+      - name: launch
+        version: 2
+      - name: math
+        version: 6
+      - name: msgs
+        version: 5
+      - name: physics
+        version: 2
+      - name: plugin
+        version: 1
+      - name: rendering
+        version: 3
+      - name: sensors
+        version: 3
+      - name: sim
+        version: 3
+      - name: tools
+        version: 1
+      - name: transport
+        version: 8
+      - name: sdformat
+        version: 9
+  - name: blueprint
+    lts: false
+    eol: true
+    description: Supported May, 2019 to Dec, 2020
+    libraries:
+      - name: cmake
+        version: 2
+      - name: common
+        version: 3
+      - name: fuel_tools
+        version: 3
+      - name: gui
+        version: 2
+      - name: launch
+        version: 1
+      - name: math
+        version: 6
+      - name: msgs
+        version: 4
+      - name: physics
+        version: 1
+      - name: plugin
+        version: 1
+      - name: rendering
+        version: 2
+      - name: sensors
+        version: 2
+      - name: sim
+        version: 2
+      - name: tools
+        version: 0
+      - name: transport
+        version: 7
+      - name: sdformat
+        version: 8
+  - name: acropolis
+    lts: false
+    eol: true
+    description: Gazebo's first release.
+    libraries:
+      - name: cmake
+        version: 2
+      - name: common
+        version: 3
+      - name: fuel_tools
+        version: 3
+      - name: gui
+        version: 1
+      - name: launch
+        version: 0
+      - name: math
+        version: 6
+      - name: msgs
+        version: 3
+      - name: physics
+        version: 1
+      - name: plugin
+        version: 1
+      - name: rendering
+        version: 1
+      - name: sensors
+        version: 1
+      - name: sim
+        version: 1
+      - name: tools
+        version: 0
+      - name: transport
+        version: 6
+      - name: sdformat
+        version: 8
+# This dictionary is used to supply the description of each library and any other
+# information about each library that doesn't change between releases
+library_info:
+  cmake:
+    description: Provides modules that are used to find dependencies of Gazebo projects and generate cmake targets for consumers of Gazebo projects to link against.
+  common:
+    description: A collection of useful classes and functions for handling many command tasks. This includes parsing 3D mesh files, managing console output, and using PID controllers.
+  fuel_tools:
+    description: A C++ client library and command line tools for interacting with Gazebo Fuel servers
+  gui:
+    description: A framework for graphical user interfaces centered around QT. Each component in Gazebo GUI is an independent plugin
+  launch:
+    description: Launch is a system that runs and manages plugins and programs. A configuration script can be used to specify which programs and plugins to run. Alternatively, individual programs and plugins can be run from the command line.
+  math:
+    description: A small, fast, and high performance math library. This library is a self-contained set of classes and functions suitable for robot applications.
+  msgs:
+    description: Standard set of message definitions, used by Gazebo Transport, and other applications.
+  physics:
+    description: A plugin based interface to physics engines, such as ODE, Bullet, and DART.
+  plugin:
+    description: A plugin loading library
+  rendering:
+    description: A plugin based interface to rendering engines, such as OGRE and Optix.
+  sensors:
+    description: A large set of sensor and noise models suitable for generating realistic data in simulation.
+  sim:
+    description: Gazebo simulates multiple robots in a 3D environment, with extensive dynamic interaction between objects.
+  tools:
+    description: Gazebo tools provides the gz command line tool that accepts multiple subcommands.
+  transport:
+    description: The transport library combines ZeroMQ with Protobufs to create a fast and efficient message passing system. Asynchronous message publication and subscription is provided along with service calls and discovery.
+  sdformat:
+    description: Simulation Description Format parser and description files.
+  utils:
+    description: General purpose classes and functions with minimal dependencies. It includes command line parsing, a helper class to implement the PIMPL pattern, macros to suppress warnings, etc.
