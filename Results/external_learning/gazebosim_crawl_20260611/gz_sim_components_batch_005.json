@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/Collision.hh",
+    "sha": "63395626771067e491506a091edd5dacf182c059",
+    "size": 2737
+  },
+  {
+    "path": "include/gz/sim/components/Component.hh",
+    "sha": "9aba08981e81a1eeef617f29e66708b77cccacda",
+    "size": 21617
+  },
+  {
+    "path": "include/gz/sim/components/components.hh.in",
+    "sha": "f93046a8e66a9bc4085d89d4babba42c7492b792",
+    "size": 762
+  },
+  {
+    "path": "include/gz/sim/components/ContactSensor.hh",
+    "sha": "f60f18a60d49f832a9f21d84de7fe5662f1fa9a4",
+    "size": 1320
+  },
+  {
+    "path": "include/gz/sim/components/ContactSensorData.hh",
+    "sha": "f615dc6a35ac063214d8dff00d9293409836135e",
+    "size": 1403
+  }
+]
