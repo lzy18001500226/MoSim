@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
+  <name>gz-sim</name>
+  <version>11.0.0</version>
+  <description>Gazebo Sim : A Robotic Simulator</description>
+  <maintainer email="mjcarroll@intrinsic.ai">Michael Carroll</maintainer>
+  <license>Apache License 2.0</license>
+  <url type="website">https://github.com/gazebosim/gz-sim</url>
+
+  <buildtool_depend>cmake</buildtool_depend>
+
+  <depend>benchmark</depend>
+  <depend>binutils</depend>
+  <depend>glut</depend>
+  <depend>gz-cmake</depend>
+  <depend>gz-common</depend>
+  <depend>gz-fuel_tools</depend>
+  <depend>gz-gui</depend>
+  <depend>gz-math</depend>
+  <depend>gz-msgs</depend>
+  <depend>gz-physics</depend>
+  <depend>gz-plugin</depend>
+  <depend>gz-rendering</depend>
+  <depend>gz-sensors</depend>
+  <depend>gz-tools</depend>
+  <depend>gz-transport</depend>
+  <depend>gz-utils</depend>
+  <depend>libdw-dev</depend>
+  <depend>libdwarf-dev</depend>
+  <depend>libfreeimage-dev</depend>
+  <depend>libglew-dev</depend>
+  <depend>libwebsockets-dev</depend>
+  <depend>libxi-dev</depend>
+  <depend>libxmu-dev</depend>
+  <depend>protobuf-dev</depend>
+  <depend>pybind11-dev</depend>
+  <depend>qml6-module-qt-labs-folderlistmodel</depend>
+  <depend>qml6-module-qt-labs-settings</depend>
+  <depend>qml6-module-qt5compat-graphicaleffects</depend>
+  <depend>qml6-module-qtquick-controls</depend>
+  <depend>qml6-module-qtquick-dialogs</depend>
+  <depend>qml6-module-qtquick-layouts</depend>
+  <depend>qml6-module-qtquick</depend>
+  <depend>qt6-5compat-dev</depend>
+  <depend>qt6-base-dev</depend>
+  <depend>qt6-base-private-dev</depend>
+  <depend>qt6-declarative-dev</depend>
+  <depend>sdformat</depend>
+  <depend>tinyxml2</depend>
+  <depend>uuid</depend>
+
+  <test_depend>xvfb</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>

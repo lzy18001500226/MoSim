@@ -1,0 +1,12 @@
+References/Gazebo/gz-sim/CODE_OF_CONDUCT.md
+References/Gazebo/gz-sim/codecov.yml
+References/Gazebo/gz-sim/CONTRIBUTING.md
+References/Gazebo/gz-sim/LICENSE
+References/Gazebo/gz-sim/Migration.md
+References/Gazebo/gz-sim/MODULE.bazel
+References/Gazebo/gz-sim/NEWS
+References/Gazebo/gz-sim/package.xml
+References/Gazebo/gz-sim/README.md
+References/Gazebo/gz-sim/tutorials.md.in
+Results/external_learning/gazebosim_crawl_20260611/gz_sim_root_docs_small_paths_20260611.txt
+Results/external_learning/gazebosim_crawl_20260611/batch_gz_sim_root_docs_small_20260611.json

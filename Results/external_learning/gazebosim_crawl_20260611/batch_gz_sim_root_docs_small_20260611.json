@@ -1,0 +1,81 @@
+{
+  "batch": "gz_sim_root_docs_small",
+  "repo": "gazebosim/gz-sim",
+  "head": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "tree_sha": "67bf92c939db3dd92e517e1b6f51ca0e471c15a8",
+  "files": [
+    {
+      "path": "References/Gazebo/gz-sim/CODE_OF_CONDUCT.md",
+      "source_path": "CODE_OF_CONDUCT.md",
+      "size": 3397,
+      "sha": "65eec816ef126d51878d6c08e8d5f4bd1c4d721e",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/codecov.yml",
+      "source_path": "codecov.yml",
+      "size": 19,
+      "sha": "b52d0c4968657c91ae786eff414f0975cc3b2e1e",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/CONTRIBUTING.md",
+      "source_path": "CONTRIBUTING.md",
+      "size": 80,
+      "sha": "fbcac678cf69d4b72684ebd35635a96257008ad3",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/LICENSE",
+      "source_path": "LICENSE",
+      "size": 10173,
+      "sha": "d9a10c0d8e868ebf8da0b3dc95bb0be634c34bfe",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/Migration.md",
+      "source_path": "Migration.md",
+      "size": 19386,
+      "sha": "4517d49eebb75289106a012a545a5ff3ba295e5f",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/MODULE.bazel",
+      "source_path": "MODULE.bazel",
+      "size": 3227,
+      "sha": "d77401cf144e62e007375bb022b4bd1efcfc2e4e",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/NEWS",
+      "source_path": "NEWS",
+      "size": 21,
+      "sha": "a73d9b7c1af3b2242ee69a2d1d6d418321e7daf6",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/package.xml",
+      "source_path": "package.xml",
+      "size": 1965,
+      "sha": "a20f721641b58a1aa99bcdfd3c00be3e940e6cee",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/README.md",
+      "source_path": "README.md",
+      "size": 7684,
+      "sha": "baeb72f5d7382850dba8e72df391a77655139b73",
+      "source": "github_blob_api"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/tutorials.md.in",
+      "source_path": "tutorials.md.in",
+      "size": 8397,
+      "sha": "2677a4332e264c3dac508ddedc0e4a5706ddeda2",
+      "source": "github_blob_api"
+    }
+  ],
+  "file_count": 10,
+  "large_100MiB_count": 0,
+  "deferred": "Changelog.md_due_to_raw_timeout_and_size"
+}
