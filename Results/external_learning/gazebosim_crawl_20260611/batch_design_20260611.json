@@ -1,0 +1,72 @@
+{
+  "task_id": "COAGENT-DEVOPS-GAZEBOSIM-REFERENCES-INGEST-20260611",
+  "repo": "design",
+  "source_full_name": "gazebosim/design",
+  "source_url": "https://github.com/gazebosim/design",
+  "clone_url": "git@github.com:gazebosim/design.git",
+  "default_branch": "main",
+  "source_head_sha": "046101c92974db8b57c10f4f60d0e43f3fa6b780",
+  "imported_path": "References/Gazebo/design",
+  "copied_file_count": 11,
+  "copied_total_bytes": 1659515.0,
+  "largest_files": [
+    {
+      "path": "References/Gazebo/design/images/gui_server_ECM_sync_design.png",
+      "bytes": 1367328
+    },
+    {
+      "path": "References/Gazebo/design/images/tape_ui.png",
+      "bytes": 115746
+    },
+    {
+      "path": "References/Gazebo/design/images/resource_flow_chart.png",
+      "bytes": 66497
+    },
+    {
+      "path": "References/Gazebo/design/images/cloudsim_app_instantiation_sequence.png",
+      "bytes": 35175
+    },
+    {
+      "path": "References/Gazebo/design/images/cloudsim_app_interaction.png",
+      "bytes": 26246
+    },
+    {
+      "path": "References/Gazebo/design/gui_interactions.md",
+      "bytes": 19160
+    },
+    {
+      "path": "References/Gazebo/design/finding_resources.md",
+      "bytes": 10996
+    },
+    {
+      "path": "References/Gazebo/design/cloudsim_apps.md",
+      "bytes": 8799
+    },
+    {
+      "path": "References/Gazebo/design/gui_server_ecm_sync.md",
+      "bytes": 5034
+    },
+    {
+      "path": "References/Gazebo/design/tape_measure_tool.md",
+      "bytes": 4449
+    }
+  ],
+  "excluded_dirs": [
+    ".git",
+    "build",
+    "install",
+    "log",
+    ".venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache",
+    ".cache"
+  ],
+  "large_file_threshold_bytes": 104857600,
+  "large_file_count": 0,
+  "nested_risk_dir_count": 0,
+  "sensitive_name_count": 0,
+  "lfs_pointer_count": 0,
+  "scan_passed": true,
+  "generated_at_cst": "2026-06-11T13:00:52+08:00"
+}
