@@ -1,0 +1,8 @@
+References/Gazebo/gz-sim/src/cmd/model.bash_completion.sh
+References/Gazebo/gz-sim/src/cmd/model.yaml.in
+References/Gazebo/gz-sim/src/cmd/ModelCommandAPI_TEST.cc
+References/Gazebo/gz-sim/src/cmd/ModelCommandAPI.cc
+References/Gazebo/gz-sim/src/cmd/ModelCommandAPI.hh
+References/Gazebo/gz-sim/src/cmd/sim_main.cc
+References/Gazebo/gz-sim/src/cmd/sim.bash_completion.sh
+References/Gazebo/gz-sim/src/cmd/sim.yaml.in
