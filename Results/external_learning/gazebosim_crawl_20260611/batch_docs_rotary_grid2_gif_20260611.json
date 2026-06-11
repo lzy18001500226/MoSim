@@ -1,0 +1,14 @@
+{
+  "batch": "docs_rotary_grid2_gif",
+  "repo": "gazebosim/docs",
+  "head": "fc0832680c6908c4850e8f4af3b8190181bf877f",
+  "files": [
+    {
+      "path": "References/Gazebo/docs/rotary/img/grid2.gif",
+      "source_path": "rotary/img/grid2.gif",
+      "size": 7137994,
+      "sha": "4eed529a6eb2bade21e7d22630a87a4ba611a29d"
+    }
+  ],
+  "large_100MiB_count": 0
+}
