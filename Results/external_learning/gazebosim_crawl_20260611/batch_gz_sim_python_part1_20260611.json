@@ -1,0 +1,354 @@
+[
+  {
+    "path": "python/CMakeLists.txt",
+    "dest": "References\\Gazebo\\gz-sim\\python\\CMakeLists.txt",
+    "sha": "d877d03e88a798773beff0acfd51c9b03500b518",
+    "size": 3577,
+    "verified_hash": "d877d03e88a798773beff0acfd51c9b03500b518",
+    "verified_size": 3577
+  },
+  {
+    "path": "python/src/gz/common/_gz_common_pybind11.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\common\\_gz_common_pybind11.cc",
+    "sha": "79bea9d98c7981997ff20fa1f44a0bfdad497609",
+    "size": 855,
+    "verified_hash": "79bea9d98c7981997ff20fa1f44a0bfdad497609",
+    "verified_size": 855
+  },
+  {
+    "path": "python/src/gz/common/Console.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\common\\Console.cc",
+    "sha": "e07d490f07a242b313a8027ffd223360c9f378e1",
+    "size": 859,
+    "verified_hash": "e07d490f07a242b313a8027ffd223360c9f378e1",
+    "verified_size": 859
+  },
+  {
+    "path": "python/src/gz/common/Console.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\common\\Console.hh",
+    "sha": "c1193318dde46ff231703a27d82ead3e77b7834f",
+    "size": 844,
+    "verified_hash": "c1193318dde46ff231703a27d82ead3e77b7834f",
+    "verified_size": 844
+  },
+  {
+    "path": "python/src/gz/sim/_gz_sim_pybind11.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\_gz_sim_pybind11.cc",
+    "sha": "fea576a161ee103009cdde91d518ef28c5edf299",
+    "size": 1809,
+    "verified_hash": "fea576a161ee103009cdde91d518ef28c5edf299",
+    "verified_size": 1809
+  },
+  {
+    "path": "python/src/gz/sim/Actor.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Actor.cc",
+    "sha": "cafb43aa27d1c5d8e1e869349bc4aa2bdb900e63",
+    "size": 4192,
+    "verified_hash": "cafb43aa27d1c5d8e1e869349bc4aa2bdb900e63",
+    "verified_size": 4192
+  },
+  {
+    "path": "python/src/gz/sim/Actor.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Actor.hh",
+    "sha": "7095343e5ff6320fd872a370532b468aa73f806c",
+    "size": 1065,
+    "verified_hash": "7095343e5ff6320fd872a370532b468aa73f806c",
+    "verified_size": 1065
+  },
+  {
+    "path": "python/src/gz/sim/EntityComponentManager.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\EntityComponentManager.cc",
+    "sha": "97f580394a629da10c172232a10e85f5846a6d49",
+    "size": 1144,
+    "verified_hash": "97f580394a629da10c172232a10e85f5846a6d49",
+    "verified_size": 1144
+  },
+  {
+    "path": "python/src/gz/sim/EntityComponentManager.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\EntityComponentManager.hh",
+    "sha": "6e288e39304e2307b4703cc904d216eab7b759bc",
+    "size": 1173,
+    "verified_hash": "6e288e39304e2307b4703cc904d216eab7b759bc",
+    "verified_size": 1173
+  },
+  {
+    "path": "python/src/gz/sim/EventManager.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\EventManager.cc",
+    "sha": "9db0d283122dafb7d860839aa190cb730d32a65c",
+    "size": 1027,
+    "verified_hash": "9db0d283122dafb7d860839aa190cb730d32a65c",
+    "verified_size": 1027
+  },
+  {
+    "path": "python/src/gz/sim/EventManager.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\EventManager.hh",
+    "sha": "b03fca88db5590c1c3bc01d03b038ac2b8932fe9",
+    "size": 1076,
+    "verified_hash": "b03fca88db5590c1c3bc01d03b038ac2b8932fe9",
+    "verified_size": 1076
+  },
+  {
+    "path": "python/src/gz/sim/InstallationDirectories.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\InstallationDirectories.cc",
+    "sha": "e73b89214d05c8d77727a78902e6119aee883f67",
+    "size": 1987,
+    "verified_hash": "e73b89214d05c8d77727a78902e6119aee883f67",
+    "verified_size": 1987
+  },
+  {
+    "path": "python/src/gz/sim/InstallationDirectories.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\InstallationDirectories.hh",
+    "sha": "621f8986365d34822d6935098a823737490fa2b7",
+    "size": 1116,
+    "verified_hash": "621f8986365d34822d6935098a823737490fa2b7",
+    "verified_size": 1116
+  },
+  {
+    "path": "python/src/gz/sim/Joint.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Joint.cc",
+    "sha": "606db62d6cb95751e277ef179eefee75f6ff988e",
+    "size": 6075,
+    "verified_hash": "606db62d6cb95751e277ef179eefee75f6ff988e",
+    "verified_size": 6075
+  },
+  {
+    "path": "python/src/gz/sim/Joint.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Joint.hh",
+    "sha": "4fc179eb26632a4bdca8f76bf43045bb7ef796ae",
+    "size": 1065,
+    "verified_hash": "4fc179eb26632a4bdca8f76bf43045bb7ef796ae",
+    "verified_size": 1065
+  },
+  {
+    "path": "python/src/gz/sim/Light.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Light.cc",
+    "sha": "dc769cae12f8b4bb6c86561cb945ca852bc1a6b9",
+    "size": 6236,
+    "verified_hash": "dc769cae12f8b4bb6c86561cb945ca852bc1a6b9",
+    "verified_size": 6236
+  },
+  {
+    "path": "python/src/gz/sim/Light.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Light.hh",
+    "sha": "1daea7e789949d1c97feb73e612054190c947438",
+    "size": 1065,
+    "verified_hash": "1daea7e789949d1c97feb73e612054190c947438",
+    "verified_size": 1065
+  },
+  {
+    "path": "python/src/gz/sim/Link.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Link.cc",
+    "sha": "4d9531f7bdb8de3ff3bcad78048ea51e303691aa",
+    "size": 10750,
+    "verified_hash": "4d9531f7bdb8de3ff3bcad78048ea51e303691aa",
+    "verified_size": 10750
+  },
+  {
+    "path": "python/src/gz/sim/Link.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Link.hh",
+    "sha": "29be3380dd6e8279794b5efbd84470d8ba99bdd7",
+    "size": 1059,
+    "verified_hash": "29be3380dd6e8279794b5efbd84470d8ba99bdd7",
+    "verified_size": 1059
+  },
+  {
+    "path": "python/src/gz/sim/Model.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Model.cc",
+    "sha": "eb8176d20547dd6f42a1545a68b25d6dd59fd78c",
+    "size": 3755,
+    "verified_hash": "eb8176d20547dd6f42a1545a68b25d6dd59fd78c",
+    "verified_size": 3755
+  },
+  {
+    "path": "python/src/gz/sim/Model.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Model.hh",
+    "sha": "2807f84b8e54ec71d0d6abc9f4876f058b257c6e",
+    "size": 1065,
+    "verified_hash": "2807f84b8e54ec71d0d6abc9f4876f058b257c6e",
+    "verified_size": 1065
+  },
+  {
+    "path": "python/src/gz/sim/Sensor.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Sensor.cc",
+    "sha": "0650a3d855782464419c4f99ea76c4cbd2d5a546",
+    "size": 2337,
+    "verified_hash": "0650a3d855782464419c4f99ea76c4cbd2d5a546",
+    "verified_size": 2337
+  },
+  {
+    "path": "python/src/gz/sim/Sensor.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Sensor.hh",
+    "sha": "00f09598c2d8b0ac15034409551fd4db36cecc15",
+    "size": 1071,
+    "verified_hash": "00f09598c2d8b0ac15034409551fd4db36cecc15",
+    "verified_size": 1071
+  },
+  {
+    "path": "python/src/gz/sim/Server.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Server.cc",
+    "sha": "46694be40a2a44950d2983327157b771eb322d38",
+    "size": 2035,
+    "verified_hash": "46694be40a2a44950d2983327157b771eb322d38",
+    "verified_size": 2035
+  },
+  {
+    "path": "python/src/gz/sim/Server.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Server.hh",
+    "sha": "f64c8f9eb72d0f60f56a1759d364e3680074845e",
+    "size": 1043,
+    "verified_hash": "f64c8f9eb72d0f60f56a1759d364e3680074845e",
+    "verified_size": 1043
+  },
+  {
+    "path": "python/src/gz/sim/ServerConfig.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\ServerConfig.cc",
+    "sha": "262a9f083b5b947a5b2d4b7350aaf72c87e40809",
+    "size": 1257,
+    "verified_hash": "262a9f083b5b947a5b2d4b7350aaf72c87e40809",
+    "verified_size": 1257
+  },
+  {
+    "path": "python/src/gz/sim/ServerConfig.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\ServerConfig.hh",
+    "sha": "7416e0e895bec2c1cea9879c0c7cfa819a580947",
+    "size": 1076,
+    "verified_hash": "7416e0e895bec2c1cea9879c0c7cfa819a580947",
+    "verified_size": 1076
+  },
+  {
+    "path": "python/src/gz/sim/TestFixture.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\TestFixture.cc",
+    "sha": "11b2a901884f13f35cec102f169968566881b2c2",
+    "size": 3756,
+    "verified_hash": "11b2a901884f13f35cec102f169968566881b2c2",
+    "verified_size": 3756
+  },
+  {
+    "path": "python/src/gz/sim/TestFixture.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\TestFixture.hh",
+    "sha": "cf61488dc95db0df9b63b25246ba1559f7d25e17",
+    "size": 1015,
+    "verified_hash": "cf61488dc95db0df9b63b25246ba1559f7d25e17",
+    "verified_size": 1015
+  },
+  {
+    "path": "python/src/gz/sim/UpdateInfo.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\UpdateInfo.cc",
+    "sha": "ee2b5d44ab31695049951802aae8ec9dce09e10c",
+    "size": 1516,
+    "verified_hash": "ee2b5d44ab31695049951802aae8ec9dce09e10c",
+    "verified_size": 1516
+  },
+  {
+    "path": "python/src/gz/sim/UpdateInfo.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\UpdateInfo.hh",
+    "sha": "bd9a5dab9d1680e454fc5cf1b5b9ca294eaf3506",
+    "size": 1066,
+    "verified_hash": "bd9a5dab9d1680e454fc5cf1b5b9ca294eaf3506",
+    "verified_size": 1066
+  },
+  {
+    "path": "python/src/gz/sim/Util.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Util.cc",
+    "sha": "005e5d6f3e706fa0cf5da696057d0f24579353ee",
+    "size": 1082,
+    "verified_hash": "005e5d6f3e706fa0cf5da696057d0f24579353ee",
+    "verified_size": 1082
+  },
+  {
+    "path": "python/src/gz/sim/Util.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\Util.hh",
+    "sha": "cc7c2df715d11b74b3546ad8f21488996b2ca999",
+    "size": 1056,
+    "verified_hash": "cc7c2df715d11b74b3546ad8f21488996b2ca999",
+    "verified_size": 1056
+  },
+  {
+    "path": "python/src/gz/sim/World.cc",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\World.cc",
+    "sha": "48bd36d744d73a21ec1d4001891efe42e6894644",
+    "size": 3915,
+    "verified_hash": "48bd36d744d73a21ec1d4001891efe42e6894644",
+    "verified_size": 3915
+  },
+  {
+    "path": "python/src/gz/sim/World.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\World.hh",
+    "sha": "6a3fde2c701a24580a28e47fb817831addf7456d",
+    "size": 1065,
+    "verified_hash": "6a3fde2c701a24580a28e47fb817831addf7456d",
+    "verified_size": 1065
+  },
+  {
+    "path": "python/src/gz/sim/wrap_functions.hh",
+    "dest": "References\\Gazebo\\gz-sim\\python\\src\\gz\\sim\\wrap_functions.hh",
+    "sha": "4b4acc46971b4dedf690bf6ce70fba8ca684bbe4",
+    "size": 13627,
+    "verified_hash": "4b4acc46971b4dedf690bf6ce70fba8ca684bbe4",
+    "verified_size": 13627
+  },
+  {
+    "path": "python/test/actor_TEST.py",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\actor_TEST.py",
+    "sha": "55c8e3772f5141c072395df66fa504aac86a3b00",
+    "size": 3500,
+    "verified_hash": "55c8e3772f5141c072395df66fa504aac86a3b00",
+    "verified_size": 3500
+  },
+  {
+    "path": "python/test/actor_test.sdf",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\actor_test.sdf",
+    "sha": "97f9ff15c0269c8f96eb643fa79d27090b0744fe",
+    "size": 232,
+    "verified_hash": "97f9ff15c0269c8f96eb643fa79d27090b0744fe",
+    "verified_size": 232
+  },
+  {
+    "path": "python/test/gravity.sdf",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\gravity.sdf",
+    "sha": "301fa6ee5daee6fd5830981014ca26d124682692",
+    "size": 650,
+    "verified_hash": "301fa6ee5daee6fd5830981014ca26d124682692",
+    "verified_size": 650
+  },
+  {
+    "path": "python/test/joint_TEST.py",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\joint_TEST.py",
+    "sha": "ce55f498400799aa21dc142fcd3005c947a90418",
+    "size": 3632,
+    "verified_hash": "ce55f498400799aa21dc142fcd3005c947a90418",
+    "verified_size": 3632
+  },
+  {
+    "path": "python/test/joint_test.sdf",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\joint_test.sdf",
+    "sha": "078f3974b70a9d9081087963258bfd22c56e5a43",
+    "size": 919,
+    "verified_hash": "078f3974b70a9d9081087963258bfd22c56e5a43",
+    "verified_size": 919
+  },
+  {
+    "path": "python/test/light_TEST.py",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\light_TEST.py",
+    "sha": "595d2d3e04bf4bb0e0e889d5a93e4b64606de1d4",
+    "size": 5468,
+    "verified_hash": "595d2d3e04bf4bb0e0e889d5a93e4b64606de1d4",
+    "verified_size": 5468
+  },
+  {
+    "path": "python/test/light_test.sdf",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\light_test.sdf",
+    "sha": "bb53c012e9c0cc98dc27e83000d7dd7974fb7a01",
+    "size": 797,
+    "verified_hash": "bb53c012e9c0cc98dc27e83000d7dd7974fb7a01",
+    "verified_size": 797
+  },
+  {
+    "path": "python/test/link_TEST.py",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\link_TEST.py",
+    "sha": "1d581b7025b4ae45bfbb16c9ea20f9e18a9961b9",
+    "size": 5785,
+    "verified_hash": "1d581b7025b4ae45bfbb16c9ea20f9e18a9961b9",
+    "verified_size": 5785
+  }
+]
