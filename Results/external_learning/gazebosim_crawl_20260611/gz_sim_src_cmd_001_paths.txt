@@ -1,0 +1,8 @@
+References/Gazebo/gz-sim/src/cmd/CMakeLists.txt
+References/Gazebo/gz-sim/src/cmd/cmdmodel.rb.in
+References/Gazebo/gz-sim/src/cmd/cmdsim.rb.in
+References/Gazebo/gz-sim/src/cmd/gui_main.cc
+References/Gazebo/gz-sim/src/cmd/gz_TEST.cc
+References/Gazebo/gz-sim/src/cmd/gz.cc
+References/Gazebo/gz-sim/src/cmd/gz.hh
+References/Gazebo/gz-sim/src/cmd/model_main.cc

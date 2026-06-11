@@ -1,0 +1,42 @@
+[
+  {
+    "path": "src/cmd/CMakeLists.txt",
+    "sha": "8a0fa2c83c2ff81322ad2c3201f3a3f1276bc232",
+    "size": 9365
+  },
+  {
+    "path": "src/cmd/cmdmodel.rb.in",
+    "sha": "96d4739c1988f0697aa44794af32ad3e4e29a1a5",
+    "size": 1624
+  },
+  {
+    "path": "src/cmd/cmdsim.rb.in",
+    "sha": "1d61f1d3931bf8d9634fe6f04298ba9d9e01a757",
+    "size": 1614
+  },
+  {
+    "path": "src/cmd/gui_main.cc",
+    "sha": "b030679bba2fcfc92d1e641d70254a2a3da40743",
+    "size": 3527
+  },
+  {
+    "path": "src/cmd/gz_TEST.cc",
+    "sha": "2ad8a7832e2783edbe43c4a13a499e5217b95382",
+    "size": 8646
+  },
+  {
+    "path": "src/cmd/gz.cc",
+    "sha": "4edf7f8f2e66550e8586b3b347228094b58cee73",
+    "size": 15861
+  },
+  {
+    "path": "src/cmd/gz.hh",
+    "sha": "65b0903dd34e0306104a394151ea02b4f7f176d5",
+    "size": 4987
+  },
+  {
+    "path": "src/cmd/model_main.cc",
+    "sha": "ef9b3eba03863ffbf983565c46e3f37e48ea173e",
+    "size": 5383
+  }
+]
