@@ -1,0 +1,9 @@
+gz_add_system(particle-emitter
+  SOURCES
+    ParticleEmitter.cc
+  PUBLIC_LINK_LIBS
+    gz-common::gz-common
+    gz-msgs::gz-msgs
+    gz-plugin::gz-plugin
+    gz-transport::gz-transport
+)

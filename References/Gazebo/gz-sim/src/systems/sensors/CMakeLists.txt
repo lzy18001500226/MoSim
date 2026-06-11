@@ -1,0 +1,18 @@
+gz_add_system(sensors
+  SOURCES
+    Sensors.cc
+  PUBLIC_LINK_LIBS
+    ${rendering_target}
+    gz-common::gz-common
+    gz-rendering::gz-rendering
+    gz-sensors::boundingbox_camera
+    gz-sensors::camera
+    gz-sensors::depth_camera
+    gz-sensors::gpu_lidar
+    gz-sensors::gz-sensors
+    gz-sensors::lidar
+    gz-sensors::rgbd_camera
+    gz-sensors::segmentation_camera
+    gz-sensors::thermal_camera
+    gz-sensors::wide_angle_camera
+)

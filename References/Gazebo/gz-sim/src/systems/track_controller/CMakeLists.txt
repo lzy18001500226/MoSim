@@ -1,0 +1,11 @@
+gz_add_system(track-controller
+  SOURCES
+    TrackController.cc
+  PUBLIC_LINK_LIBS
+    gz-common::gz-common
+    gz-physics::gz-physics
+    gz-msgs::gz-msgs
+    gz-math::gz-math
+    gz-plugin::gz-plugin
+    gz-transport::gz-transport
+)
