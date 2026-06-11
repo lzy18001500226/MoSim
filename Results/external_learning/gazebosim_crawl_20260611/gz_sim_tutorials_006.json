@@ -1,0 +1,217 @@
+{
+  "repo": "gazebosim/gz-sim",
+  "commit": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "batch": "gz_sim_tutorials_006",
+  "generated_at": "2026-06-12T03:31:05.7306228+08:00",
+  "file_count": 41,
+  "total_size": 12205848.0,
+  "max_file_size": 2581193.0,
+  "download_timeout_note": "initial larger download command timed out at 60s; committed only fully verified landed subset",
+  "files": [
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/12_other_modifiers.png",
+      "size": 744523,
+      "sha": "9d0b06ceab8406a8f5a4b185aa0ba1ecf2f0663f"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/13_polygons.jpg",
+      "size": 68023,
+      "sha": "b006af0ea79ab8a7e36ce995154d128945b73ba1"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/14_export_model.png",
+      "size": 494464,
+      "sha": "e93b4f947b2309382514a0b340bffc1926bb4dcc"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/15_axis.png",
+      "size": 24205,
+      "sha": "309f538ea951d102ab2f7450e299808772e2a4c1"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/16_check_scale.png",
+      "size": 530526,
+      "sha": "ef14b636cd045fcbc465326fb8b2bb3449b655d6"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/17_check_pivot_point_a.jpg",
+      "size": 26257,
+      "sha": "50fa52d0a1bf27f1e20c589ebfbee190980dd3ea"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/18_check_pivot_point_b.jpg",
+      "size": 57925,
+      "sha": "e463095bacb4b84c7b7bb5b784014be1cdbeebf5"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/2_cylinder.jpg",
+      "size": 23781,
+      "sha": "5d577c1d9793f37ed324d1188e27167a549fb609"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/3_transform_gizmos.png",
+      "size": 69466,
+      "sha": "a746211f12e11b08d5a69bd54a2e160f31f0dec1"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/4_move.png",
+      "size": 190068,
+      "sha": "3ac88eea61c561ed82b386c7530e437654e09247"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/5_rotate.jpg",
+      "size": 15865,
+      "sha": "dcf6b633aef54530dd702253ba533a6f742982d9"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/7_scale.jpg",
+      "size": 22627,
+      "sha": "486dd969904fa959a45c5ac6d888a840ada2344f"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/8_bevel.jpg",
+      "size": 43457,
+      "sha": "3f2e4c9ff76543b6ddd7fa72981b81aff3903e01"
+    },
+    {
+      "path": "tutorials/files/model_and_optimize_meshes/9_extrude.png",
+      "size": 415965,
+      "sha": "b028fa47e8a2d24bd988bec691bde4bd3f948629"
+    },
+    {
+      "path": "tutorials/files/mouse_drag/Interface.png",
+      "size": 31912,
+      "sha": "fa7946c07b6da72b378f447a7bd83af71883a07b"
+    },
+    {
+      "path": "tutorials/files/mouse_drag/Rotation.png",
+      "size": 265771,
+      "sha": "d1d0c297486daef861aa7e500f39c867ca28fce2"
+    },
+    {
+      "path": "tutorials/files/mouse_drag/Translation.png",
+      "size": 276052,
+      "sha": "3b00c8b723c2514d9bdebe73ae8831f552c2d3e6"
+    },
+    {
+      "path": "tutorials/files/move_camera_to_model/box_20.png",
+      "size": 100798,
+      "sha": "64dd32cf4787192c72b00a41633f6f84a042689c"
+    },
+    {
+      "path": "tutorials/files/move_camera_to_model/box_5.png",
+      "size": 106505,
+      "sha": "e6841357eeeb2b47476db2092ca1e025541d7b24"
+    },
+    {
+      "path": "tutorials/files/move_camera_to_model/move_to_model.gif",
+      "size": 2581193,
+      "sha": "6518d805c4e6495c0b48a5539153d7825f19a985"
+    },
+    {
+      "path": "tutorials/files/particle_emitter/fog_generator.png",
+      "size": 88840,
+      "sha": "a97f51413ea39986fffb7664ffb6a65871896c9b"
+    },
+    {
+      "path": "tutorials/files/particle_emitter/particle_emitter_scatter_effects.sdf",
+      "size": 9256,
+      "sha": "4a1c8e666b2066990fe756ffa0dccd7239476315"
+    },
+    {
+      "path": "tutorials/files/particle_emitter/particle_scatter_ratio.png",
+      "size": 272169,
+      "sha": "57535bb407cf624d0f1eaa0563497aadb243cfc2"
+    },
+    {
+      "path": "tutorials/files/particle_emitter/sensor_scatter_tutorial.gif",
+      "size": 1756028,
+      "sha": "4663b2ac5b43176bc5dcfa68395c39f242020ed5"
+    },
+    {
+      "path": "tutorials/files/pause_run_simulation/gui_pause_run.png",
+      "size": 103939,
+      "sha": "49dd5396534722d1161a7305ffdacc422646befa"
+    },
+    {
+      "path": "tutorials/files/point_cloud_to_mesh/blob2.jpg",
+      "size": 106687,
+      "sha": "b78a8543136ff38e9ee348816d634b4808d73867"
+    },
+    {
+      "path": "tutorials/files/point_cloud_to_mesh/cloudcompare2.png",
+      "size": 165970,
+      "sha": "fc4cdf994938dba25b70a2c48676ab11b60c7d14"
+    },
+    {
+      "path": "tutorials/files/point_cloud_to_mesh/complete2.png",
+      "size": 543947,
+      "sha": "d244b81e6fb7ff5097868bf1cb18c18a04f9acf4"
+    },
+    {
+      "path": "tutorials/files/point_cloud_to_mesh/compute_normals.png",
+      "size": 148700,
+      "sha": "0915f8ba47554129d3f23f2ac064aca62d7f2b5b"
+    },
+    {
+      "path": "tutorials/files/point_cloud_to_mesh/error.jpg",
+      "size": 38380,
+      "sha": "f1d57861cde54fb0e3df290c032da3031722a490"
+    },
+    {
+      "path": "tutorials/files/point_cloud_to_mesh/hidden_polygons2.jpg",
+      "size": 100371,
+      "sha": "584a98976b2476a5ab873039b9880915e732dc0d"
+    },
+    {
+      "path": "tutorials/files/point_cloud_to_mesh/min_space.jpg",
+      "size": 28644,
+      "sha": "e19615659bde1b31de5c021f342061d2f2187b4b"
+    },
+    {
+      "path": "tutorials/files/point_cloud_to_mesh/outputdensity.png",
+      "size": 130057,
+      "sha": "bccc2754d3144b4a6ea21675873a3067d14b75c3"
+    },
+    {
+      "path": "tutorials/files/point_cloud_to_mesh/properties.png",
+      "size": 51990,
+      "sha": "83fc909f42c0b7f6c6a2dacc8a803a19d09c82dc"
+    },
+    {
+      "path": "tutorials/files/point_cloud_to_mesh/secondcloud.png",
+      "size": 19807,
+      "sha": "aebc8e60a18632caf7e088a4fb304e69c9236dd5"
+    },
+    {
+      "path": "tutorials/files/point_cloud_to_mesh/sf_display.png",
+      "size": 31877,
+      "sha": "15b15cbdf4f7012cde139e65a4b5d15f03a3fee4"
+    },
+    {
+      "path": "tutorials/files/point_cloud_to_mesh/split.png",
+      "size": 59374,
+      "sha": "8e6e2a5308e07a4f0771ad8f2d883d948b8d3c1b"
+    },
+    {
+      "path": "tutorials/files/rendering_plugins.gif",
+      "size": 301592,
+      "sha": "19ff4f8596236b3f77d5d055d5f5fe4c8fee26b6"
+    },
+    {
+      "path": "tutorials/files/reset_simulation/reset_button.gif",
+      "size": 1677408,
+      "sha": "205e97afec409ef66ffde50bda2c9e9496226ee1"
+    },
+    {
+      "path": "tutorials/files/server_config/camera_env.gif",
+      "size": 267416,
+      "sha": "409b0c2b5c422661cb1c17d3de945e8ea347afaa"
+    },
+    {
+      "path": "tutorials/files/server_config/camera_no_env.gif",
+      "size": 214013,
+      "sha": "d7a1fda7f25fd75226c1a793613b692fdda89317"
+    }
+  ]
+}
