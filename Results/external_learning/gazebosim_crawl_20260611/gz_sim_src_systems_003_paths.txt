@@ -1,0 +1,12 @@
+References/Gazebo/gz-sim/src/systems/apply_link_wrench/ApplyLinkWrench.cc
+References/Gazebo/gz-sim/src/systems/apply_link_wrench/ApplyLinkWrench.hh
+References/Gazebo/gz-sim/src/systems/apply_link_wrench/CMakeLists.txt
+References/Gazebo/gz-sim/src/systems/battery_plugin/CMakeLists.txt
+References/Gazebo/gz-sim/src/systems/battery_plugin/LinearBatteryPlugin.cc
+References/Gazebo/gz-sim/src/systems/battery_plugin/LinearBatteryPlugin.hh
+References/Gazebo/gz-sim/src/systems/breadcrumbs/Breadcrumbs.cc
+References/Gazebo/gz-sim/src/systems/breadcrumbs/Breadcrumbs.hh
+References/Gazebo/gz-sim/src/systems/breadcrumbs/CMakeLists.txt
+References/Gazebo/gz-sim/src/systems/buoyancy_engine/BuoyancyEngine.cc
+References/Gazebo/gz-sim/src/systems/buoyancy_engine/BuoyancyEngine.hh
+References/Gazebo/gz-sim/src/systems/buoyancy_engine/CMakeLists.txt
