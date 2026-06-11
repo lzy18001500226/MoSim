@@ -1,0 +1,184 @@
+{
+  "repo": "gazebosim/docs",
+  "head": "fc0832680c6908c4850e8f4af3b8190181bf877f",
+  "batch": "docs_garden_01_text",
+  "count": 35,
+  "total_bytes": 245922.0,
+  "paths": [
+    {
+      "path": "garden/actors.md",
+      "sha": "5534d8e8d0ebc2cdb1c722279480e942049b3045",
+      "size": 7793
+    },
+    {
+      "path": "garden/building_robot.md",
+      "sha": "cbe125b77e3067ad89c2785bd47c6d91041e4685",
+      "size": 15524
+    },
+    {
+      "path": "garden/comparison.md",
+      "sha": "2068bd3faacf9fcfab930a07b5fe9e5865ae6dbb",
+      "size": 11706
+    },
+    {
+      "path": "garden/GUI_tutorial.md",
+      "sha": "eb097984fc22b39d5f14f3ee3d00e4798f1fca41",
+      "size": 6378
+    },
+    {
+      "path": "garden/hotkeys.md",
+      "sha": "fa19f4c89541e26550aed06990b0f300aa5c59f9",
+      "size": 2413
+    },
+    {
+      "path": "garden/index.yaml",
+      "sha": "8841a3341bc4ac0282733ac09b1af748c6b946af",
+      "size": 8684
+    },
+    {
+      "path": "garden/install_osx_src.md",
+      "sha": "9ff9fa2223f79fdc491290ab9b8802315696947b",
+      "size": 7502
+    },
+    {
+      "path": "garden/install_osx.md",
+      "sha": "d55d840d8ea9b865793e33f4d14b3e9204ca24b5",
+      "size": 941
+    },
+    {
+      "path": "garden/install_ubuntu_src.md",
+      "sha": "82b18e8256c172e82fa6034db3513f09a80b7324",
+      "size": 8732
+    },
+    {
+      "path": "garden/install_ubuntu.md",
+      "sha": "6d2f357309b3139d910ebba4981d696a4c96bbf2",
+      "size": 1644
+    },
+    {
+      "path": "garden/install_windows_src.md",
+      "sha": "2e0cebc6eebdd9a805087a6fe16ec91d75473f91",
+      "size": 5672
+    },
+    {
+      "path": "garden/install_windows.md",
+      "sha": "45808f808faf12fa82e66517190cb97cdddc2201",
+      "size": 3154
+    },
+    {
+      "path": "garden/install.md",
+      "sha": "b3d6935d105f49857e1c9763071fdefac94f9542",
+      "size": 2535
+    },
+    {
+      "path": "garden/library_howtos.md",
+      "sha": "2936df3a10c5c8629b0ee1173769c0a78c1d97b0",
+      "size": 267
+    },
+    {
+      "path": "garden/Manipulating_models.md",
+      "sha": "379166842fa5adfa5ac8cf4686c40d90c3808496",
+      "size": 7139
+    },
+    {
+      "path": "garden/migration_from_ignition.md",
+      "sha": "b0fe2a9f6714582e9126cd54f08f02b1afafc717",
+      "size": 16974
+    },
+    {
+      "path": "garden/Model_insertion_fuel.md",
+      "sha": "9c19a4904c95032b75d7ec168c9405850d59a30b",
+      "size": 3947
+    },
+    {
+      "path": "garden/moving_robot.md",
+      "sha": "c4ac500b92b218ee6e1f48e93ef56f0a10945bd6",
+      "size": 7889
+    },
+    {
+      "path": "garden/ros_gz_project_template_guide.md",
+      "sha": "73b10e14af32bea880edeadecc14d18796071a2e",
+      "size": 6690
+    },
+    {
+      "path": "garden/ros2_integration.md",
+      "sha": "e9cc0c197a8b002be4f2952e41e79806df8c466f",
+      "size": 4868
+    },
+    {
+      "path": "garden/ros2_interop.md",
+      "sha": "d713173106e504453410e8e44027731a4db008a1",
+      "size": 7065
+    },
+    {
+      "path": "garden/sdf_worlds.md",
+      "sha": "f042a6f0b041ce60b56e3d5f5979a7a3a105d6c8",
+      "size": 11853
+    },
+    {
+      "path": "garden/sensors.md",
+      "sha": "fbf229c243938c916b2142d6935d3b849b2ba2ff",
+      "size": 14353
+    },
+    {
+      "path": "garden/spawn_urdf.md",
+      "sha": "8d4e02669ec0b501f0830d4ff6b16ba2b2c0f99d",
+      "size": 3274
+    },
+    {
+      "path": "garden/troubleshooting.md",
+      "sha": "6f2c79c3d3b63a4d2a49bd805cfb52989fd6c467",
+      "size": 7288
+    },
+    {
+      "path": "garden/tutorials/actors/actor_demo.sdf",
+      "sha": "5ee6a14ccea33eaf8fac05b2f554f4d001f57c19",
+      "size": 3252
+    },
+    {
+      "path": "garden/tutorials/building_robot/building_robot.sdf",
+      "sha": "05a1bdbef9eac338c2cebabc0f39188afe7bb59c",
+      "size": 9327
+    },
+    {
+      "path": "garden/tutorials/moving_robot/moving_robot.sdf",
+      "sha": "3630c1ae5d037a641ea35b0dff7bf3646d968954",
+      "size": 11722
+    },
+    {
+      "path": "garden/tutorials/sdf_worlds/world_demo.sdf",
+      "sha": "abbeb611e10a7399ccb4e5b48935ff571dbaa02b",
+      "size": 4365
+    },
+    {
+      "path": "garden/tutorials/sensors/CMakeLists.txt",
+      "sha": "09d0a88628efcff53c81189e7a46b33d791d608d",
+      "size": 447
+    },
+    {
+      "path": "garden/tutorials/sensors/lidar_node.cc",
+      "sha": "7b6e744583c7684eee11862f77e26e7fef4fe0c2",
+      "size": 1861
+    },
+    {
+      "path": "garden/tutorials/sensors/sensor_launch.gzlaunch",
+      "sha": "f52c47c291ef959bb597e959a5485d403c5dd03c",
+      "size": 241
+    },
+    {
+      "path": "garden/tutorials/sensors/sensor_tutorial.sdf",
+      "sha": "73c9639f6d0a1e784635edef60654aa93a694671",
+      "size": 27489
+    },
+    {
+      "path": "garden/tutorials/spawn_urdf/rrbot.urdf",
+      "sha": "ff57a914c37018f12938e862c896662c76ca21ab",
+      "size": 10102
+    },
+    {
+      "path": "garden/web_visualization.md",
+      "sha": "ad9cd95df8238e31e4cba30fd9b8c9e5f9456b5c",
+      "size": 2831
+    }
+  ]
+}
