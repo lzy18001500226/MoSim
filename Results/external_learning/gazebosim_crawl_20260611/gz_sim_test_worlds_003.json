@@ -1,0 +1,642 @@
+[
+  {
+    "path": "test/worlds/models/include_connected_nested/model.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "808e114cc2ab701b17a1a10dbd3efcacdcf4bec6",
+    "size": 1118,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/808e114cc2ab701b17a1a10dbd3efcacdcf4bec6"
+  },
+  {
+    "path": "test/worlds/models/include_nested/model.config",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "baee5e611f29c0ca38ca7a0c70090f0c7500d675",
+    "size": 138,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/baee5e611f29c0ca38ca7a0c70090f0c7500d675"
+  },
+  {
+    "path": "test/worlds/models/include_nested/model.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "c60e64947adbc2edb10173da6290ac1819ba82ad",
+    "size": 1318,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/c60e64947adbc2edb10173da6290ac1819ba82ad"
+  },
+  {
+    "path": "test/worlds/models/lift_drag_wing/model.config",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "ef4c9e89b6fc0c3c26530f86a31c2631f30369cb",
+    "size": 138,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/ef4c9e89b6fc0c3c26530f86a31c2631f30369cb"
+  },
+  {
+    "path": "test/worlds/models/lift_drag_wing/model.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "9e2d6e83c0e16912a6e14c62cbbfc5c5f8418fbe",
+    "size": 838,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/9e2d6e83c0e16912a6e14c62cbbfc5c5f8418fbe"
+  },
+  {
+    "path": "test/worlds/models/mesh_with_submeshes/materials/textures/cordless_drill.png",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "9db22b59ffd2ba080eeba0ea279f66b1a12e5c28",
+    "size": 40661,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/9db22b59ffd2ba080eeba0ea279f66b1a12e5c28"
+  },
+  {
+    "path": "test/worlds/models/mesh_with_submeshes/meshes/mesh_with_submeshes.dae",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "7a9077b497c43c1b329b6f47cf815358da0cac4c",
+    "size": 364171,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/7a9077b497c43c1b329b6f47cf815358da0cac4c"
+  },
+  {
+    "path": "test/worlds/models/mesh_with_submeshes/model.config",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "cc2ad49b4a17512a1be8a44aa0829e101832d521",
+    "size": 143,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/cc2ad49b4a17512a1be8a44aa0829e101832d521"
+  },
+  {
+    "path": "test/worlds/models/mesh_with_submeshes/model.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "5e6f942368fb110202a304e01d46de3c1660a9b2",
+    "size": 909,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/5e6f942368fb110202a304e01d46de3c1660a9b2"
+  },
+  {
+    "path": "test/worlds/models/nested_models/model.config",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "d37b2c18033d3328f8f0924a25618a2ce0985f3b",
+    "size": 137,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/d37b2c18033d3328f8f0924a25618a2ce0985f3b"
+  },
+  {
+    "path": "test/worlds/models/nested_models/model.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "4ba4c94617a6c3dc3e8f0f7a6cdc3bb81f47adf5",
+    "size": 2072,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/4ba4c94617a6c3dc3e8f0f7a6cdc3bb81f47adf5"
+  },
+  {
+    "path": "test/worlds/models/relative_resource_uri/meshes/box.dae",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "75b5742f3dfb3432e62a8c675f02e2e122a76a00",
+    "size": 5362,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/75b5742f3dfb3432e62a8c675f02e2e122a76a00"
+  },
+  {
+    "path": "test/worlds/models/relative_resource_uri/model.config",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "de9fb1f685827d7452d7f9c4ca3aded0fd408864",
+    "size": 145,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/de9fb1f685827d7452d7f9c4ca3aded0fd408864"
+  },
+  {
+    "path": "test/worlds/models/relative_resource_uri/model.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "e9a438ca0dc61fdbe365524f3878d9e0e9853ccd",
+    "size": 959,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/e9a438ca0dc61fdbe365524f3878d9e0e9853ccd"
+  },
+  {
+    "path": "test/worlds/models/relative_resource_uri/model2.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "eaa3845b14c476675dcb3e15dd6ae1b45a20d5ba",
+    "size": 561,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/eaa3845b14c476675dcb3e15dd6ae1b45a20d5ba"
+  },
+  {
+    "path": "test/worlds/models/scheme_resource_uri/meshes/box.dae",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "75b5742f3dfb3432e62a8c675f02e2e122a76a00",
+    "size": 5362,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/75b5742f3dfb3432e62a8c675f02e2e122a76a00"
+  },
+  {
+    "path": "test/worlds/models/scheme_resource_uri/model.config",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "9144f1d8dab39cad6ca36ef38a0fa7b0a4e058d4",
+    "size": 143,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/9144f1d8dab39cad6ca36ef38a0fa7b0a4e058d4"
+  },
+  {
+    "path": "test/worlds/models/scheme_resource_uri/model.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "6685c1320202b641abe9ad085274a3879daebe9e",
+    "size": 552,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/6685c1320202b641abe9ad085274a3879daebe9e"
+  },
+  {
+    "path": "test/worlds/models/scheme_resource_uri/scheme_resource_uri.urdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "545fbc2a427c49f5d9e0b9925e96659607f29cbf",
+    "size": 392,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/545fbc2a427c49f5d9e0b9925e96659607f29cbf"
+  },
+  {
+    "path": "test/worlds/models/sphere/model.config",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "3f465654bc8e928d6f16456ba49d1acbe4a779bd",
+    "size": 130,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/3f465654bc8e928d6f16456ba49d1acbe4a779bd"
+  },
+  {
+    "path": "test/worlds/models/sphere/model.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "f5c56cab9e460f9c947e24f44f82de2f6e292ef7",
+    "size": 450,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/f5c56cab9e460f9c947e24f44f82de2f6e292ef7"
+  },
+  {
+    "path": "test/worlds/multiple_worlds.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "3a9590f7260710d9dd4813e8746e5214810a1eb5",
+    "size": 3880,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/3a9590f7260710d9dd4813e8746e5214810a1eb5"
+  },
+  {
+    "path": "test/worlds/navsat.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "31f0082c5c4739b951cd9517617c979fc2364420",
+    "size": 1204,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/31f0082c5c4739b951cd9517617c979fc2364420"
+  },
+  {
+    "path": "test/worlds/nested_model_canonical_link.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "63011aeea2b014c534f5c53fe022057a84bd420c",
+    "size": 3005,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/63011aeea2b014c534f5c53fe022057a84bd420c"
+  },
+  {
+    "path": "test/worlds/nested_model.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "0fdc0cc29ec65afe8636be4d2983c82c85f117f0",
+    "size": 2234,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/0fdc0cc29ec65afe8636be4d2983c82c85f117f0"
+  },
+  {
+    "path": "test/worlds/non_link_components.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "596213031ab46c4aace4b97ee488522e067501b7",
+    "size": 2200,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/596213031ab46c4aace4b97ee488522e067501b7"
+  },
+  {
+    "path": "test/worlds/non_rendering_sensors.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "6b149df6dc68f9c59d5c0472450516adfb6317c0",
+    "size": 5787,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/6b149df6dc68f9c59d5c0472450516adfb6317c0"
+  },
+  {
+    "path": "test/worlds/nondefault_canonical.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "a17618044740bb2daffb98819c7e808dcc316f40",
+    "size": 2369,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/a17618044740bb2daffb98819c7e808dcc316f40"
+  },
+  {
+    "path": "test/worlds/odometry_noise.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "2c018e9d5e7bf463d4feeb3078daa5e0220341ff",
+    "size": 6035,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/2c018e9d5e7bf463d4feeb3078daa5e0220341ff"
+  },
+  {
+    "path": "test/worlds/odometry_offset.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "13cd18c7e60a28d344ad04a5b5daa3e63d15114e",
+    "size": 6074,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/13cd18c7e60a28d344ad04a5b5daa3e63d15114e"
+  },
+  {
+    "path": "test/worlds/odometry_publisher_3d_singularity.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "d74288d69ff82a89406184160a063e41f3cf9b79",
+    "size": 2601,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/d74288d69ff82a89406184160a063e41f3cf9b79"
+  },
+  {
+    "path": "test/worlds/odometry_publisher_3d.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "7b5695e6c00b6a1a265a3b3ee25409b6cee6e082",
+    "size": 12757,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/7b5695e6c00b6a1a265a3b3ee25409b6cee6e082"
+  },
+  {
+    "path": "test/worlds/odometry_publisher_custom.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "5992f68c73e3bd66e8e5ec6c2fd06554e2b198c5",
+    "size": 6200,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/5992f68c73e3bd66e8e5ec6c2fd06554e2b198c5"
+  },
+  {
+    "path": "test/worlds/odometry_publisher.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "3f56f86f01da5b7e604cdfbc56bdea3ac3b54849",
+    "size": 5991,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/3f56f86f01da5b7e604cdfbc56bdea3ac3b54849"
+  },
+  {
+    "path": "test/worlds/office.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "c2815d265ef460b136d0821a7f2f5813772811c8",
+    "size": 1224,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/c2815d265ef460b136d0821a7f2f5813772811c8"
+  },
+  {
+    "path": "test/worlds/only_canonical_link_moves.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "ac95950790f656cc3d6b9faa8b80a171d7bce3a1",
+    "size": 7619,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/ac95950790f656cc3d6b9faa8b80a171d7bce3a1"
+  },
+  {
+    "path": "test/worlds/optical_tactile_plugin.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "504c8a3de77a4bfa01fdfddc2a4fbd011d359776",
+    "size": 2756,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/504c8a3de77a4bfa01fdfddc2a4fbd011d359776"
+  },
+  {
+    "path": "test/worlds/particle_emitter.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "f89e9d9e269123abad6e0b67ebe6bf57f2738821",
+    "size": 3121,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/f89e9d9e269123abad6e0b67ebe6bf57f2738821"
+  },
+  {
+    "path": "test/worlds/performer_detector.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "9b1cae5d510ede195b5f5777199280514fd4b22a",
+    "size": 11191,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/9b1cae5d510ede195b5f5777199280514fd4b22a"
+  },
+  {
+    "path": "test/worlds/performers.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "82d3290023a7129fbdf9c6c47ca50c7c9f1fad79",
+    "size": 2814,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/82d3290023a7129fbdf9c6c47ca50c7c9f1fad79"
+  },
+  {
+    "path": "test/worlds/physics_options.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "1d6817521958059c2eb60660311feb3ccb22faa3",
+    "size": 554,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/1d6817521958059c2eb60660311feb3ccb22faa3"
+  },
+  {
+    "path": "test/worlds/plugins_empty.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "106fc9d8f82744fb754af900b7dcd1562f422b54",
+    "size": 369,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/106fc9d8f82744fb754af900b7dcd1562f422b54"
+  },
+  {
+    "path": "test/worlds/plugins.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "91800ed7d80313a6059dd8d8bf759a904bc7e717",
+    "size": 982,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/91800ed7d80313a6059dd8d8bf759a904bc7e717"
+  },
+  {
+    "path": "test/worlds/pose_publisher.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "8a5bf0157b11ec9b61eb7a0672190b5760148efc",
+    "size": 17212,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/8a5bf0157b11ec9b61eb7a0672190b5760148efc"
+  },
+  {
+    "path": "test/worlds/projector.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "bf5facfd838bb7aaab85c329205dc0489a67c9ee",
+    "size": 2085,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/bf5facfd838bb7aaab85c329205dc0489a67c9ee"
+  },
+  {
+    "path": "test/worlds/python_system_loader.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "d7c2ba1e6f28620261b2f6462026ea476696d387",
+    "size": 2411,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/d7c2ba1e6f28620261b2f6462026ea476696d387"
+  },
+  {
+    "path": "test/worlds/quadcopter_velocity_control_nested.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "be2b6eda242b1f80186489f34bde2310aaddf6db",
+    "size": 14538,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/be2b6eda242b1f80186489f34bde2310aaddf6db"
+  },
+  {
+    "path": "test/worlds/quadcopter_velocity_control.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "1650b5852caa5a167efe25f9259cd7cf65d9126b",
+    "size": 12294,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/1650b5852caa5a167efe25f9259cd7cf65d9126b"
+  },
+  {
+    "path": "test/worlds/quadcopter.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "b45f431aa40645be95566ce672dc261cb77d0254",
+    "size": 10750,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/b45f431aa40645be95566ce672dc261cb77d0254"
+  },
+  {
+    "path": "test/worlds/README.md",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "faaa619e1de56dff26f463310f620f0da8f7a7dc",
+    "size": 340,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/faaa619e1de56dff26f463310f620f0da8f7a7dc"
+  },
+  {
+    "path": "test/worlds/reset_detachable_joint.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "98925fdc7e844e6a837105ee911e4f1d0559336a",
+    "size": 3310,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/98925fdc7e844e6a837105ee911e4f1d0559336a"
+  },
+  {
+    "path": "test/worlds/reset_sensors.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "7f8db14a7e7ea7eadfbbbc811a72a02c64ea83e4",
+    "size": 3805,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/7f8db14a7e7ea7eadfbbbc811a72a02c64ea83e4"
+  },
+  {
+    "path": "test/worlds/reset.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "35095d1ed5f1a38f6b3ef5ffedc0b3f9b71111c3",
+    "size": 1120,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/35095d1ed5f1a38f6b3ef5ffedc0b3f9b71111c3"
+  },
+  {
+    "path": "test/worlds/resource_paths.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "4c8faf80e6d243138458bb187405afb8d5503dec",
+    "size": 410,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/4c8faf80e6d243138458bb187405afb8d5503dec"
+  },
+  {
+    "path": "test/worlds/revolute_joint_equilibrium.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "7cc65cd50140aa7e9f25e12832a390a62c558d12",
+    "size": 4082,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/7cc65cd50140aa7e9f25e12832a390a62c558d12"
+  },
+  {
+    "path": "test/worlds/revolute_joint.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "3ba80517c30871b99897d8c8b0e3557fc1d239f4",
+    "size": 4319,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/3ba80517c30871b99897d8c8b0e3557fc1d239f4"
+  },
+  {
+    "path": "test/worlds/rgbd_camera_sensor.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "062d93f6ccf23e17ac657541282c3d8d4ec832f5",
+    "size": 3985,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/062d93f6ccf23e17ac657541282c3d8d4ec832f5"
+  },
+  {
+    "path": "test/worlds/save_world.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "e013dcea6560e211d7156cbab32263cacf21b7ea",
+    "size": 1617,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/e013dcea6560e211d7156cbab32263cacf21b7ea"
+  },
+  {
+    "path": "test/worlds/sea_storm_effects.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "ba35e2eaec23df53c66a66564723fb8c5932d8a5",
+    "size": 5022,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/ba35e2eaec23df53c66a66564723fb8c5932d8a5"
+  },
+  {
+    "path": "test/worlds/sensor.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "d025b942f9e6f71c13a263d34946608ab35d675c",
+    "size": 5862,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/d025b942f9e6f71c13a263d34946608ab35d675c"
+  },
+  {
+    "path": "test/worlds/sensors_system_battery.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "f50661a7ec84e46d498dd73ae00122985905ebf5",
+    "size": 3562,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/f50661a7ec84e46d498dd73ae00122985905ebf5"
+  },
+  {
+    "path": "test/worlds/sensors_system_mem_leak.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "8e144eaa9bff3ca6b38539de1917ef4cb25f2c38",
+    "size": 1801,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/8e144eaa9bff3ca6b38539de1917ef4cb25f2c38"
+  },
+  {
+    "path": "test/worlds/server_invalid.config",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "ff0d74c7b1ea2b095e77d598c7c41de99f9d30d8",
+    "size": 262,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/ff0d74c7b1ea2b095e77d598c7c41de99f9d30d8"
+  },
+  {
+    "path": "test/worlds/server_valid.config",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "4da1809bdab0548d054e0f46079717ac8b8f6551",
+    "size": 689,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/4da1809bdab0548d054e0f46079717ac8b8f6551"
+  },
+  {
+    "path": "test/worlds/server_valid2.config",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "26ab5553da5f576e6f4be435b3a412fcbce26d24",
+    "size": 472,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/26ab5553da5f576e6f4be435b3a412fcbce26d24"
+  },
+  {
+    "path": "test/worlds/shapes_scene_broadcaster_only.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "ab93f83ebad57f1c3918b8c70f6908fe1f1a0d40",
+    "size": 7127,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/ab93f83ebad57f1c3918b8c70f6908fe1f1a0d40"
+  },
+  {
+    "path": "test/worlds/shapes.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "8fd01f57eb61540440231e6a666efa1d9f0b05a2",
+    "size": 6898,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/8fd01f57eb61540440231e6a666efa1d9f0b05a2"
+  },
+  {
+    "path": "test/worlds/shininess.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "faf159c6ddc93a957bc6f6db58db0c80013f6de9",
+    "size": 3053,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/faf159c6ddc93a957bc6f6db58db0c80013f6de9"
+  },
+  {
+    "path": "test/worlds/spherical_coordinates.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "0099db8278a8c284bd3077833fb053b757ba6885",
+    "size": 855,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/0099db8278a8c284bd3077833fb053b757ba6885"
+  },
+  {
+    "path": "test/worlds/static_diff_drive_vehicle.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "5613755e8195cac7e25a9e6fac6fcd7a6629a9e0",
+    "size": 6017,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/5613755e8195cac7e25a9e6fac6fcd7a6629a9e0"
+  },
+  {
+    "path": "test/worlds/thermal_invalid.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "7d003570c5b9cf968bec9bf738bb867f2fdd5ed0",
+    "size": 5096,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/7d003570c5b9cf968bec9bf738bb867f2fdd5ed0"
+  },
+  {
+    "path": "test/worlds/thermal.sdf.in",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "2ec333e6e53aca8cadb8f694fbc0ba897fd76f8a",
+    "size": 10675,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/2ec333e6e53aca8cadb8f694fbc0ba897fd76f8a"
+  },
+  {
+    "path": "test/worlds/thrust_coefficient.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "8d320273dbdfc2fcfada18d680d367b014cc4f2a",
+    "size": 2977,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/8d320273dbdfc2fcfada18d680d367b014cc4f2a"
+  },
+  {
+    "path": "test/worlds/thruster_ang_vel_cmd.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "7bb8cc3b1177b618d390d4b955df0305979bed1a",
+    "size": 2974,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/7bb8cc3b1177b618d390d4b955df0305979bed1a"
+  },
+  {
+    "path": "test/worlds/thruster_battery.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "a72d395b500247950f5c535d4c67d0797a9f6dd0",
+    "size": 3871,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/a72d395b500247950f5c535d4c67d0797a9f6dd0"
+  },
+  {
+    "path": "test/worlds/thruster_ccw_ang_vel_cmd.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "eece39103ea3f6fe738b754c08968afe44da1dcd",
+    "size": 3078,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/eece39103ea3f6fe738b754c08968afe44da1dcd"
+  },
+  {
+    "path": "test/worlds/thruster_ccw_force_cmd.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "98fb7e44d85c37b51ea8b36511554468d3195516",
+    "size": 3020,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/98fb7e44d85c37b51ea8b36511554468d3195516"
+  },
+  {
+    "path": "test/worlds/thruster_deadband.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "b26facbba49a8869682054c2af2ac94c734cfe71",
+    "size": 3765,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/b26facbba49a8869682054c2af2ac94c734cfe71"
+  },
+  {
+    "path": "test/worlds/thruster_pid.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "904bd6bd08a35c6cce141b98a939018b0ec7a903",
+    "size": 2948,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/904bd6bd08a35c6cce141b98a939018b0ec7a903"
+  },
+  {
+    "path": "test/worlds/thruster_vel_cmd.sdf",
+    "mode": "100644",
+    "type": "blob",
+    "sha": "98c7634087e15a88d2e3f56bfabc44107b5c7521",
+    "size": 2926,
+    "url": "https://api.github.com/repos/gazebosim/gz-sim/git/blobs/98c7634087e15a88d2e3f56bfabc44107b5c7521"
+  }
+]
