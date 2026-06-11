@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/AngularAcceleration.hh",
+    "sha": "adbd0b4fc86c3c0797808c270e81e08ed278f89d",
+    "size": 1741
+  },
+  {
+    "path": "include/gz/sim/components/AngularVelocity.hh",
+    "sha": "a0e2c740ea7f682eb08c3abbaf80c17cdc1e4ab8",
+    "size": 1658
+  },
+  {
+    "path": "include/gz/sim/components/AngularVelocityCmd.hh",
+    "sha": "433436e2ef338a8800652a1a89ad138d948281e1",
+    "size": 1706
+  },
+  {
+    "path": "include/gz/sim/components/AngularVelocityReset.hh",
+    "sha": "11292852ed62a5223661e72d35848edb48a1a507",
+    "size": 1871
+  },
+  {
+    "path": "include/gz/sim/components/Atmosphere.hh",
+    "sha": "68a47104a42c57344a39e6ea0834fc4710441fff",
+    "size": 1486
+  }
+]

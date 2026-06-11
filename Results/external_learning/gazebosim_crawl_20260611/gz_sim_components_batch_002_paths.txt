@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/AngularAcceleration.hh
+References/Gazebo/gz-sim/include/gz/sim/components/AngularVelocity.hh
+References/Gazebo/gz-sim/include/gz/sim/components/AngularVelocityCmd.hh
+References/Gazebo/gz-sim/include/gz/sim/components/AngularVelocityReset.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Atmosphere.hh
