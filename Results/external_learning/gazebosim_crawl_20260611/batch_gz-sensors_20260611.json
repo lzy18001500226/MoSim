@@ -1,0 +1,8 @@
+{
+  "repo": "gz-sensors",
+  "source_sha": "956f4a48670baff8d83c9504217ceac06824f5e9",
+  "target": "References/Gazebo/gz-sensors",
+  "file_count": 240,
+  "total_bytes": 6062929.0,
+  "stage_file": "Results/external_learning/gazebosim_crawl_20260611/stage_gz-sensors_20260611.txt"
+}

@@ -1,0 +1,10 @@
+libgz-rotary-cmake-dev
+libgz-rotary-common-dev
+libgz-rotary-math-dev
+libgz-rotary-msgs-dev
+libgz-rotary-rendering-dev
+libgz-rotary-tools-dev
+libgz-rotary-transport-dev
+libgz-rotary-utils-dev
+libgz-rotary-sdformat-dev
+xvfb
