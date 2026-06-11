@@ -1,0 +1,26 @@
+{
+  "repo": "gz-launch",
+  "target": "References/Gazebo/gz-launch",
+  "scanned_at": "2026-06-11T00:00:00+08:00",
+  "files_scanned": 133,
+  "bytes_scanned": 3496990.0,
+  "large_file_threshold_bytes": 104857600,
+  "large_file_count": 0,
+  "large_files": [],
+  "nested_risk_dir_count": 0,
+  "sensitive_name_count": 1,
+  "sensitive_name_hits": [
+    {
+      "path": "References/Gazebo/gz-launch/plugins/websocket_server/localhost.key",
+      "bytes": 1732
+    }
+  ],
+  "excluded_sensitive_files": [
+    "References/Gazebo/gz-launch/plugins/websocket_server/localhost.key"
+  ],
+  "lfs_pointer_count": 0,
+  "lfs_pointer_hits": [],
+  "staged_subset_file_count": 132,
+  "scan_passed_for_staged_subset": true,
+  "note": "localhost.key is excluded from explicit pathspec and remains ignored by References/**/*.key; do not force-stage it."
+}
