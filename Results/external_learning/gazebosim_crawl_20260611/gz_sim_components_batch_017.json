@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/PerformerAffinity.hh",
+    "sha": "ce58992a73dcf329152f30a22903bde726b018b9",
+    "size": 1412
+  },
+  {
+    "path": "include/gz/sim/components/PerformerLevels.hh",
+    "sha": "d1208b36b637afdec57a554fa236063da110b539",
+    "size": 2379
+  },
+  {
+    "path": "include/gz/sim/components/Physics.hh",
+    "sha": "22f6b3f84923125bbc78dbe28e11a10ef0491a95",
+    "size": 2525
+  },
+  {
+    "path": "include/gz/sim/components/PhysicsCmd.hh",
+    "sha": "f4630c8b261eddeb5c4eca0233d6fd4008a94d18",
+    "size": 1276
+  },
+  {
+    "path": "include/gz/sim/components/PhysicsEnginePlugin.hh",
+    "sha": "dd36a58679fea0607c9af13b112d30e3f46cb351",
+    "size": 1327
+  }
+]

@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/PerformerAffinity.hh
+References/Gazebo/gz-sim/include/gz/sim/components/PerformerLevels.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Physics.hh
+References/Gazebo/gz-sim/include/gz/sim/components/PhysicsCmd.hh
+References/Gazebo/gz-sim/include/gz/sim/components/PhysicsEnginePlugin.hh
