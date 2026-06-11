@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/TemperatureRange.hh
+References/Gazebo/gz-sim/include/gz/sim/components/ThermalCamera.hh
+References/Gazebo/gz-sim/include/gz/sim/components/ThreadPitch.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Transparency.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Visibility.hh

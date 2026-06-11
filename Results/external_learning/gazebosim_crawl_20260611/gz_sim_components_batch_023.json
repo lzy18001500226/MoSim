@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/TemperatureRange.hh",
+    "sha": "ba8cd85b25754924277709163a8e79029fbc163d",
+    "size": 2808
+  },
+  {
+    "path": "include/gz/sim/components/ThermalCamera.hh",
+    "sha": "09d26e3fefd191e50655d06ff32be40504df3d71",
+    "size": 1345
+  },
+  {
+    "path": "include/gz/sim/components/ThreadPitch.hh",
+    "sha": "e0833ec6940ef17b787b711c7a89ecb19e663abf",
+    "size": 1194
+  },
+  {
+    "path": "include/gz/sim/components/Transparency.hh",
+    "sha": "725a39a1acf0f3dd320cc9857b4f5f186dbfaa14",
+    "size": 1290
+  },
+  {
+    "path": "include/gz/sim/components/Visibility.hh",
+    "sha": "032c8915c0cfa6b254430cd69ffcc500efb725ba",
+    "size": 1485
+  }
+]
