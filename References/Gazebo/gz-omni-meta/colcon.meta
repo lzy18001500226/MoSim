@@ -1,0 +1,40 @@
+paths:
+  src/gz-cmake:
+    cmake-args:
+      - -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_TESTING=OFF
+  src/gz-common:
+    cmake-args:
+      - -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_TESTING=OFF
+  src/gz-math:
+    cmake-args:
+      - -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_TESTING=OFF
+  src/gz-utils:
+    cmake-args:
+      - -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_TESTING=OFF
+  src/gz-msgs:
+    dependencies:
+      - protobuf
+    cmake-args:
+      - -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_TESTING=OFF
+  src/gz-transport:
+    cmake-args:
+      - -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_TESTING=OFF
+  src/sdformat:
+    cmake-args:
+      - -DSKIP_usd=TRUE
+      - -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_TESTING=OFF
+      - -DUSE_INTERNAL_URDF=1

@@ -1,0 +1,37 @@
+repositories:
+  gz-omni:
+    type: git
+    url: https://github.com/gazebosim/gz-omni.git
+    version: main
+  gz-common:
+    type: git
+    url: https://github.com/gazebosim/gz-common
+    version: gz-common5
+  gz-cmake:
+    type: git
+    url: https://github.com/gazebosim/gz-cmake
+    version: gz-cmake3
+  gz-math:
+    type: git
+    url: https://github.com/gazebosim/gz-math
+    version: gz-math7
+  gz-utils:
+    type: git
+    url: https://github.com/gazebosim/gz-utils
+    version: gz-utils2
+  gz-msgs:
+    type: git
+    url: https://github.com/gazebosim/gz-msgs
+    version: gz-msgs10
+  gz-transport:
+    type: git
+    url: https://github.com/gazebosim/gz-transport
+    version: gz-transport13
+  protobuf:
+    type: git
+    url: https://github.com/protocolbuffers/protobuf.git
+    version: v3.16.1
+  sdformat:
+    type: git
+    url: https://github.com/gazebosim/sdformat
+    version: sdf14

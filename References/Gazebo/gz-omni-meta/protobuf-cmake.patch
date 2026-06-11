@@ -1,0 +1,35 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 000000000..0f2a24336
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,29 @@
++cmake_minimum_required(VERSION 3.16)
++project(protobuf NONE)
++
++include(ProcessorCount)
++
++ProcessorCount(N)
++file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/protobuf)
++
++execute_process(
++	COMMAND
++		./autogen.sh
++	WORKING_DIRECTORY
++		${CMAKE_CURRENT_SOURCE_DIR}
++)
++execute_process(
++	COMMAND
++		${CMAKE_CURRENT_SOURCE_DIR}/configure --prefix=${CMAKE_INSTALL_PREFIX} CXXFLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
++	WORKING_DIRECTORY
++		protobuf
++)
++
++add_custom_target(build ALL
++	COMMAND
++		make -j${N}
++	WORKING_DIRECTORY
++		protobuf
++)
++
++install(CODE "execute_process(COMMAND make install WORKING_DIRECTORY protobuf)")

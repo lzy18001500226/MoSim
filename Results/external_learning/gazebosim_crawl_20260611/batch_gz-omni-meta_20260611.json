@@ -1,0 +1,29 @@
+{
+  "task_id": "COAGENT-DEVOPS-GAZEBOSIM-REFERENCES-INGEST-20260611",
+  "repo": "gz-omni-meta",
+  "source": "git@github.com:gazebosim/gz-omni-meta.git",
+  "branch": "main",
+  "head_sha": "bbb099d92302aa83b53f513ee97cf086996ff8a5",
+  "imported_at": "2026-06-11",
+  "file_count": 6,
+  "max_file_bytes": 1175.0,
+  "excluded": [
+    ".git",
+    "build",
+    "install",
+    "log",
+    ".venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache"
+  ],
+  "risk_gate": "passed_no_100MiB_no_nested_git_no_lfs_pointer_detected",
+  "files": [
+    "References/Gazebo/gz-omni-meta/.clang-format",
+    "References/Gazebo/gz-omni-meta/.gitignore",
+    "References/Gazebo/gz-omni-meta/colcon.meta",
+    "References/Gazebo/gz-omni-meta/protobuf-cmake.patch",
+    "References/Gazebo/gz-omni-meta/README.md",
+    "References/Gazebo/gz-omni-meta/repos.yaml"
+  ]
+}
