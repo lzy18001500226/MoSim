@@ -1,0 +1,10 @@
+gz_add_system(multicopter-control
+  SOURCES
+  MulticopterVelocityControl.cc
+  Common.cc
+  LeeVelocityController.cc
+  PUBLIC_LINK_LIBS
+    gz-common::gz-common
+    gz-transport::gz-transport
+    Eigen3::Eigen
+)
