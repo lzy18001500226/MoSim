@@ -1,0 +1,27 @@
+[
+  {
+    "path": "src/rendering/MaterialParser/MaterialParser.cc",
+    "sha": "d85b7d783f35ff12b1e664ef5ec466019147b3cf",
+    "size": 2881
+  },
+  {
+    "path": "src/rendering/MaterialParser/MaterialParser.hh",
+    "sha": "b3df18643b51442edcd1bdd1ea7764e2acae1d43",
+    "size": 1316
+  },
+  {
+    "path": "src/rendering/RenderUtil.cc",
+    "sha": "9d1c1886f025e318b613f9727f58e142efe8d2c1",
+    "size": 129680
+  },
+  {
+    "path": "src/rendering/SceneManager.cc",
+    "sha": "2b552633eaff87b2da843076d89572ba1bcad4a1",
+    "size": 79576
+  },
+  {
+    "path": "src/rendering/WrenchVisualizer.cc",
+    "sha": "61203f501fa69f801749f360f55918e6d434f916",
+    "size": 4035
+  }
+]

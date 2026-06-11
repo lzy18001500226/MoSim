@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/src/rendering/MaterialParser/MaterialParser.cc
+References/Gazebo/gz-sim/src/rendering/MaterialParser/MaterialParser.hh
+References/Gazebo/gz-sim/src/rendering/RenderUtil.cc
+References/Gazebo/gz-sim/src/rendering/SceneManager.cc
+References/Gazebo/gz-sim/src/rendering/WrenchVisualizer.cc
