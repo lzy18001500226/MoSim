@@ -1,0 +1,29 @@
+[
+  {
+    "path": "include/gz/sim/gui/Gui.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\gui\\Gui.hh",
+    "sha": "64dbb63b72d1401f346706dd11b9c7acb531f6aa",
+    "size": 6163,
+    "verified_hash": "64dbb63b72d1401f346706dd11b9c7acb531f6aa",
+    "verified_size": 6163,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/gui/GuiEvents.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\gui\\GuiEvents.hh",
+    "sha": "0a49277415a73e2cc24d87973e84b8b6d9a9124f",
+    "size": 7944,
+    "verified_hash": "0a49277415a73e2cc24d87973e84b8b6d9a9124f",
+    "verified_size": 7944,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/gui/GuiSystem.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\gui\\GuiSystem.hh",
+    "sha": "1120124a3e81597eddcae1b5b182bdbabb7a6f92",
+    "size": 2138,
+    "verified_hash": "1120124a3e81597eddcae1b5b182bdbabb7a6f92",
+    "verified_size": 2138,
+    "source": "raw.githubusercontent.com"
+  }
+]

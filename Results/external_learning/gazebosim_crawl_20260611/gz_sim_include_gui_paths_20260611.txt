@@ -1,0 +1,3 @@
+References\Gazebo\gz-sim\include\gz\sim\gui\Gui.hh
+References\Gazebo\gz-sim\include\gz\sim\gui\GuiEvents.hh
+References\Gazebo\gz-sim\include\gz\sim\gui\GuiSystem.hh
