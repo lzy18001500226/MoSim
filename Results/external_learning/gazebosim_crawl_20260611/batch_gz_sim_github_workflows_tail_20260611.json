@@ -1,0 +1,34 @@
+{
+  "batch": "gz_sim_github_workflows_tail",
+  "repo": "gazebosim/gz-sim",
+  "head": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "tree_sha": "67bf92c939db3dd92e517e1b6f51ca0e471c15a8",
+  "files": [
+    {
+      "path": "References/Gazebo/gz-sim/.github/workflows/package_xml.yml",
+      "source_path": ".github/workflows/package_xml.yml",
+      "size": 208,
+      "sha": "4bd4a9aa0bfa3a52d0ffe2fc75081c873c2e8678"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/.github/workflows/pr-collection-labeler.yml",
+      "source_path": ".github/workflows/pr-collection-labeler.yml",
+      "size": 313,
+      "sha": "38c4fc13bfae0c279c342ef19f4b8461330672e1"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/.github/workflows/publish.yaml",
+      "source_path": ".github/workflows/publish.yaml",
+      "size": 2027,
+      "sha": "91d08fec47b157c277e75b670a5df2b16f765afe"
+    },
+    {
+      "path": "References/Gazebo/gz-sim/.github/workflows/triage.yml",
+      "source_path": ".github/workflows/triage.yml",
+      "size": 393,
+      "sha": "7ba103ff15426b9c4783dd15e433bc8dc06e7106"
+    }
+  ],
+  "file_count": 4,
+  "large_100MiB_count": 0
+}
