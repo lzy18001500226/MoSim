@@ -1,0 +1,115 @@
+{
+  "repo": "gazebosim/gz-sim",
+  "commit": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "batch": "gz_sim_tutorials_009",
+  "generated_at": "2026-06-12T03:37:52.6359507+08:00",
+  "file_count": 19,
+  "total_size": 8772654.0,
+  "max_file_size": 3182591.0,
+  "deferred_count": 1,
+  "deferred_reason": "markdown staged hash changed by text normalization; handle later with explicit preservation strategy or documented exception",
+  "deferred_files": [
+    {
+      "path": "tutorials/joint_controller.md",
+      "size": 19717,
+      "sha": "373585f9ff6626dd8c451aa3c0808004456898a0"
+    }
+  ],
+  "files": [
+    {
+      "path": "tutorials/files/underwater_vehicles/my_lrauv/meshes/propeller.dae",
+      "size": 2291082,
+      "sha": "9b71d8a8156af61ac640ba7a6767265475959bbc"
+    },
+    {
+      "path": "tutorials/files/underwater_vehicles/my_lrauv/meshes/tethys.dae",
+      "size": 3182591,
+      "sha": "c8a8f2941c8b72a00100874939a9ae769989d838"
+    },
+    {
+      "path": "tutorials/files/underwater_vehicles/my_lrauv/model.config",
+      "size": 293,
+      "sha": "e663075c3aa866d880b1f8c821402fe74766b3d0"
+    },
+    {
+      "path": "tutorials/files/underwater_vehicles/my_lrauv/model.sdf",
+      "size": 6969,
+      "sha": "55d2e36b26ebd9591784f0f8a1fe46d02ad6b97b"
+    },
+    {
+      "path": "tutorials/files/video_recorder/video_recorder.gif",
+      "size": 222842,
+      "sha": "e9e9b28dc9351a56f6f34434f41b1e1d10bf0952"
+    },
+    {
+      "path": "tutorials/files/video_recorder/video_recorder.png",
+      "size": 480303,
+      "sha": "65204b6358b09d9428c9e5dd0999cc43cfbbe5e0"
+    },
+    {
+      "path": "tutorials/files/websocket_server/fuel_visualization_gzweb.png",
+      "size": 829275,
+      "sha": "7f13dada8a6fd37e1102b55a59a09aee35013791"
+    },
+    {
+      "path": "tutorials/files/wheel_slip_systems/lookup_wheel_slip.gif",
+      "size": 665685,
+      "sha": "33851a5cb1ddf9b1701ade40a5664eb6dd372890"
+    },
+    {
+      "path": "tutorials/files/wheel_slip_systems/wheel_slip.gif",
+      "size": 1003757,
+      "sha": "437c204dc2bb68e5ad3b59be62b66830fca85b11"
+    },
+    {
+      "path": "tutorials/frame_reference.md",
+      "size": 3272,
+      "sha": "bf7c8c1a976a833d47006ce32165a4298193bd1c"
+    },
+    {
+      "path": "tutorials/global_illumination.md",
+      "size": 14004,
+      "sha": "29c2d38bb2228fb2ac41a07dcc48d48555eef2d2"
+    },
+    {
+      "path": "tutorials/gui_config.md",
+      "size": 10006,
+      "sha": "0304f1131a0c451e3f6f025b1801252b8b05e950"
+    },
+    {
+      "path": "tutorials/headless_rendering.md",
+      "size": 3776,
+      "sha": "558fc516525b6a08b48a9ed6436d3883be3ed7f9"
+    },
+    {
+      "path": "tutorials/hpc_clusters.md",
+      "size": 24829,
+      "sha": "58b3300182ac8f3bdbac5af5d1fc3f7cb6a4b4c4"
+    },
+    {
+      "path": "tutorials/install.md",
+      "size": 6159,
+      "sha": "7ecadbfd3c670c181a2ec92549018898efb95c61"
+    },
+    {
+      "path": "tutorials/lander.md",
+      "size": 10899,
+      "sha": "41cc5ce51f365bcd937fced3cacc50f7483f63dc"
+    },
+    {
+      "path": "tutorials/levels.md",
+      "size": 12145,
+      "sha": "f397d7c6e11fcf33715f4943a13dc08d0d9f8231"
+    },
+    {
+      "path": "tutorials/light_config.md",
+      "size": 1474,
+      "sha": "7d6d906386316942172f8bf05574decf41dc98d1"
+    },
+    {
+      "path": "tutorials/log.md",
+      "size": 3293,
+      "sha": "c8aaa379b68cc586ae0dff969ffae65c20bef0d4"
+    }
+  ]
+}
