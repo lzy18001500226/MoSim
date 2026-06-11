@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/LinearVelocitySeed.hh",
+    "sha": "258e1e2b175d579ce6d21110dd885ef7f1eb100c",
+    "size": 1982
+  },
+  {
+    "path": "include/gz/sim/components/Link.hh",
+    "sha": "c3f7ee5adb88cf9cef610f0b056d9b39bcb5b7e4",
+    "size": 1139
+  },
+  {
+    "path": "include/gz/sim/components/LogicalAudio.hh",
+    "sha": "db27ee08e2adf3a474c5a193d24edf08bd2dd782",
+    "size": 10531
+  },
+  {
+    "path": "include/gz/sim/components/LogicalCamera.hh",
+    "sha": "c4c1b92a28097cc1978741e71b9dde566949e3c5",
+    "size": 1299
+  },
+  {
+    "path": "include/gz/sim/components/LogPlaybackStatistics.hh",
+    "sha": "c82bbcc63c099ea6270ab9e00fecc17810a66c2a",
+    "size": 1555
+  }
+]

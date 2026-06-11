@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/LinearVelocitySeed.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Link.hh
+References/Gazebo/gz-sim/include/gz/sim/components/LogicalAudio.hh
+References/Gazebo/gz-sim/include/gz/sim/components/LogicalCamera.hh
+References/Gazebo/gz-sim/include/gz/sim/components/LogPlaybackStatistics.hh
