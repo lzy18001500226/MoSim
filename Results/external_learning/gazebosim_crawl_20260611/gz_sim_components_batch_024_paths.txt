@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/Visual.hh
+References/Gazebo/gz-sim/include/gz/sim/components/VisualCmd.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Volume.hh
+References/Gazebo/gz-sim/include/gz/sim/components/WheelSlipCmd.hh
+References/Gazebo/gz-sim/include/gz/sim/components/WideAngleCamera.hh

@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/Visual.hh",
+    "sha": "89a15a190b4707bc1bd9ef1db196dd9200f8d15e",
+    "size": 2771
+  },
+  {
+    "path": "include/gz/sim/components/VisualCmd.hh",
+    "sha": "9a2ae3758f2fc78e322c2387a2d2971ebba57554",
+    "size": 1409
+  },
+  {
+    "path": "include/gz/sim/components/Volume.hh",
+    "sha": "f1285d7cb31bda92094313429e651805d0937928",
+    "size": 1190
+  },
+  {
+    "path": "include/gz/sim/components/WheelSlipCmd.hh",
+    "sha": "850062a60eccfd1bdbba1b895e996b128a0b1e02",
+    "size": 1464
+  },
+  {
+    "path": "include/gz/sim/components/WideAngleCamera.hh",
+    "sha": "9d41b2822b6c9aa056dc7dfa51a6db3973061273",
+    "size": 1360
+  }
+]
