@@ -1,0 +1,26 @@
+{
+  "repo": "gz-usd",
+  "source": "git@github.com:gazebosim/gz-usd.git",
+  "source_sha": "0b699a615ddf4201003b8fc32e96b9b83f97c225",
+  "imported_at": "2026-06-11",
+  "target": "References/Gazebo/gz-usd",
+  "file_count": 160,
+  "total_bytes": 2420128.0,
+  "large_files": [],
+  "sensitive_name_paths": [],
+  "lfs_pointer_paths": [],
+  "nested_risk_dirs": [],
+  "skipped_dir_names": [
+    ".git",
+    "build",
+    "install",
+    "log",
+    ".venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache",
+    ".cache",
+    "dist",
+    "out"
+  ]
+}
