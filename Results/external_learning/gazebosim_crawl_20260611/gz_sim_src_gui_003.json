@@ -1,0 +1,362 @@
+[
+  {
+    "path": "src/gui/plugins/entity_tree/CMakeLists.txt",
+    "sha": "30ae4b713bdc0390371cde89938cb9d4b19ec005",
+    "size": 126
+  },
+  {
+    "path": "src/gui/plugins/entity_tree/EntityTree.cc",
+    "sha": "a9f5a74c53d6986c53c8d09106f3113734630fef",
+    "size": 17689
+  },
+  {
+    "path": "src/gui/plugins/entity_tree/EntityTree.hh",
+    "sha": "8ac7ca871721e6ee2491fddbfc290e7dce488f26",
+    "size": 4723
+  },
+  {
+    "path": "src/gui/plugins/entity_tree/EntityTree.qml",
+    "sha": "0c826de9b91d8951195f2817909b4afdebed3b21",
+    "size": 11406
+  },
+  {
+    "path": "src/gui/plugins/entity_tree/EntityTree.qrc",
+    "sha": "98aff7435c87d79c08eac683362269fe26fe5b53",
+    "size": 117
+  },
+  {
+    "path": "src/gui/plugins/environment_loader/CMakeLists.txt",
+    "sha": "1f624ba7daf90984b8504fdb6dda8fe137deaca4",
+    "size": 187
+  },
+  {
+    "path": "src/gui/plugins/environment_loader/EnvironmentLoader.cc",
+    "sha": "cb688b3a8aed08680afb19b9474c1279b406b913",
+    "size": 11634
+  },
+  {
+    "path": "src/gui/plugins/environment_loader/EnvironmentLoader.hh",
+    "sha": "6a77d1e00c1001b815533953f1c7f5f00a8820c7",
+    "size": 6200
+  },
+  {
+    "path": "src/gui/plugins/environment_loader/EnvironmentLoader.qml",
+    "sha": "c727b517f70c6598b6a8e1c5c92b26c62c10309e",
+    "size": 5913
+  },
+  {
+    "path": "src/gui/plugins/environment_loader/EnvironmentLoader.qrc",
+    "sha": "1f66f199b8448662107256b8a3467f98ab964a6a",
+    "size": 130
+  },
+  {
+    "path": "src/gui/plugins/environment_visualization/CMakeLists.txt",
+    "sha": "64e781013504e0f41f8d8ed62884a93c8547ecc6",
+    "size": 208
+  },
+  {
+    "path": "src/gui/plugins/environment_visualization/EnvironmentVisualization.cc",
+    "sha": "c9c040f454126861aa518b9e9ea87e2129891685",
+    "size": 3838
+  },
+  {
+    "path": "src/gui/plugins/environment_visualization/EnvironmentVisualization.hh",
+    "sha": "e5a3eb439707843916f4cdc3fbff61d03f22e360",
+    "size": 2279
+  },
+  {
+    "path": "src/gui/plugins/environment_visualization/EnvironmentVisualization.qml",
+    "sha": "dc27f02be82bed180f58c047551c2cd02ddbbcab",
+    "size": 2488
+  },
+  {
+    "path": "src/gui/plugins/environment_visualization/EnvironmentVisualization.qrc",
+    "sha": "db66d953270e2258e87b0ad687d008eb38c422f2",
+    "size": 144
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_civct/CiVctCascadePrivate.cc",
+    "sha": "97a2912208cc745d586a67f3b6c52f3270f25a78",
+    "size": 6064
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_civct/CiVctCascadePrivate.hh",
+    "sha": "eacde8b0432173651a5cc8c7458de670835373d5",
+    "size": 9364
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_civct/CiVctCascadePrivate.qml",
+    "sha": "7b645a52e68843bd08e9dfd8e24580eeb04df645",
+    "size": 5832
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_civct/CMakeLists.txt",
+    "sha": "3ebf36c93ddad4dc527358d0aeb51a0b16d13e25",
+    "size": 297
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_civct/GlobalIlluminationCiVct.cc",
+    "sha": "09a5b34bab979f10c57a762ebbddfb3bbacf2074",
+    "size": 25370
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_civct/GlobalIlluminationCiVct.hh",
+    "sha": "d5327ae32f7702208436d25a86144c5d7497da3b",
+    "size": 8603
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_civct/GlobalIlluminationCiVct.qml",
+    "sha": "ccbb0535c57d27fd23686fe9526c4dd34a378b7f",
+    "size": 6045
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_civct/GlobalIlluminationCiVct.qrc",
+    "sha": "e38ebf4eed6cf8eb23b478d4458d4a9edca23faa",
+    "size": 174
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_civct/Tsa.hh",
+    "sha": "d825a531ded7878319b54ba146f33366d3c0dfe5",
+    "size": 5046
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_vct/CMakeLists.txt",
+    "sha": "50f3330edd0b9743963356373c2938f65b004583",
+    "size": 217
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_vct/GlobalIlluminationVct.cc",
+    "sha": "98da09e2765a7b2631255585e221fb36df078467",
+    "size": 24132
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_vct/GlobalIlluminationVct.hh",
+    "sha": "19a6d3ec615be65936d8fb9fb2aea8d8a07e4878",
+    "size": 10399
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_vct/GlobalIlluminationVct.qml",
+    "sha": "92fbf41734ec871c9a2d49731322646d122182f7",
+    "size": 6538
+  },
+  {
+    "path": "src/gui/plugins/global_illumination_vct/GlobalIlluminationVct.qrc",
+    "sha": "a4fa2b20cdca5b85bac1a91ff74e89ea9f682cf1",
+    "size": 125
+  },
+  {
+    "path": "src/gui/plugins/joint_position_controller/CMakeLists.txt",
+    "sha": "5b61f0b2395be77b755144f9d30de5269af62524",
+    "size": 180
+  },
+  {
+    "path": "src/gui/plugins/joint_position_controller/Joint.qml",
+    "sha": "f27e1dcd8b873d90e4b1c9630dc50d496a1dc44a",
+    "size": 2546
+  },
+  {
+    "path": "src/gui/plugins/joint_position_controller/JointPositionController_TEST.cc",
+    "sha": "484f5a9cee38cedf75e915079fc7d2f5b886f4dc",
+    "size": 6915
+  },
+  {
+    "path": "src/gui/plugins/joint_position_controller/JointPositionController.cc",
+    "sha": "bebef2d31cf3b17f9b69e75cd6589f37a77d36d8",
+    "size": 12031
+  },
+  {
+    "path": "src/gui/plugins/joint_position_controller/JointPositionController.hh",
+    "sha": "7bea9fd7404c227dc1a8899b31bbaa6c2239c9a7",
+    "size": 5902
+  },
+  {
+    "path": "src/gui/plugins/joint_position_controller/JointPositionController.qml",
+    "sha": "0092d43a6bcfb98cd49cead096f95a099424fa78",
+    "size": 4686
+  },
+  {
+    "path": "src/gui/plugins/joint_position_controller/JointPositionController.qrc",
+    "sha": "748bd816ab7883783582cab1dba89f2ed52ad3df",
+    "size": 168
+  },
+  {
+    "path": "src/gui/plugins/lights/CMakeLists.txt",
+    "sha": "2afebdbea1822fc77bfdd1a6ece961471882c4dc",
+    "size": 70
+  },
+  {
+    "path": "src/gui/plugins/lights/directionallight.png",
+    "sha": "bacb9f6c521992bc8aae7d6d01977cce258d3fc9",
+    "size": 1194
+  },
+  {
+    "path": "src/gui/plugins/lights/Lights.cc",
+    "sha": "266dbb1179206a2fadea1ddfcada489bba383a02",
+    "size": 2087
+  },
+  {
+    "path": "src/gui/plugins/lights/Lights.hh",
+    "sha": "ba468cafc60c6d362cf7d74100d3e7f41a9a8165",
+    "size": 1481
+  },
+  {
+    "path": "src/gui/plugins/lights/Lights.qml",
+    "sha": "514db2f38095e3267b82efe33f1c8feddb2d6ff7",
+    "size": 2428
+  },
+  {
+    "path": "src/gui/plugins/lights/Lights.qrc",
+    "sha": "b2cc7df01d3eab85a5c4a5e82480ed1709cb3e54",
+    "size": 217
+  },
+  {
+    "path": "src/gui/plugins/lights/pointlight.png",
+    "sha": "b5239c9afeed82fc11fd4ebcc190c9237197c4ec",
+    "size": 1507
+  },
+  {
+    "path": "src/gui/plugins/lights/spotlight.png",
+    "sha": "a6ef20f8eae9576d6baf567172aab5494088184f",
+    "size": 1400
+  },
+  {
+    "path": "src/gui/plugins/modules/CMakeLists.txt",
+    "sha": "4721a155cd5f5f3602de72ba2f9121d25502eb55",
+    "size": 401
+  },
+  {
+    "path": "src/gui/plugins/modules/EntityContextMenu.cc",
+    "sha": "6af4435972a525e01f83b8caf5f0c013c7e66ac2",
+    "size": 10860
+  },
+  {
+    "path": "src/gui/plugins/modules/EntityContextMenu.hh",
+    "sha": "ff51abd08e9587eb44752b51f68061879718f155",
+    "size": 2965
+  },
+  {
+    "path": "src/gui/plugins/modules/EntityContextMenu.qml",
+    "sha": "9085f7df9fd61a2b1573d577663a07b5906ef4aa",
+    "size": 6052
+  },
+  {
+    "path": "src/gui/plugins/modules/EntityContextMenu.qrc",
+    "sha": "ad2d570409d760c57554cb0688d42d36f5e11c08",
+    "size": 147
+  },
+  {
+    "path": "src/gui/plugins/modules/qmldir",
+    "sha": "d544007784d577970a3d4a1716349324f72933ce",
+    "size": 132
+  },
+  {
+    "path": "src/gui/plugins/modules/TypeIcon.qml",
+    "sha": "ece067c38b4d9b889b15e1af472c262f744c129b",
+    "size": 1762
+  },
+  {
+    "path": "src/gui/plugins/mouse_drag/CMakeLists.txt",
+    "sha": "9d34ef4653fb09389fbf48313b87d979513d4e27",
+    "size": 79
+  },
+  {
+    "path": "src/gui/plugins/mouse_drag/MouseDrag.cc",
+    "sha": "38068205662ddb6413b28c65df2e141ea18eaf5b",
+    "size": 25687
+  },
+  {
+    "path": "src/gui/plugins/mouse_drag/MouseDrag.hh",
+    "sha": "6f61a3197417567af2b7e60c54939e4c9bc29197",
+    "size": 3154
+  },
+  {
+    "path": "src/gui/plugins/mouse_drag/MouseDrag.qml",
+    "sha": "1bbdac4fe14743e15d1706fb32e7be02f7ea75d6",
+    "size": 2355
+  },
+  {
+    "path": "src/gui/plugins/mouse_drag/MouseDrag.qrc",
+    "sha": "89e46ce6cb05a370c05926478e89db4f2362e014",
+    "size": 115
+  },
+  {
+    "path": "src/gui/plugins/playback_scrubber/CMakeLists.txt",
+    "sha": "b314b6b46c79ba9d5c5c9c939d46f1dbc98b5533",
+    "size": 100
+  },
+  {
+    "path": "src/gui/plugins/playback_scrubber/PlaybackScrubber.cc",
+    "sha": "c7725fe9743cbec094725c09e1fb0d8e70cd7c39",
+    "size": 7657
+  },
+  {
+    "path": "src/gui/plugins/playback_scrubber/PlaybackScrubber.hh",
+    "sha": "7b8c31772cf57b0b942848440a179a1346a545ca",
+    "size": 2986
+  },
+  {
+    "path": "src/gui/plugins/playback_scrubber/PlaybackScrubber.qml",
+    "sha": "db758ff92cdbc07a748b4e6e3f73d21756bdc605",
+    "size": 3348
+  },
+  {
+    "path": "src/gui/plugins/playback_scrubber/PlaybackScrubber.qrc",
+    "sha": "3103fd1571377a6f843d10961818e7ed3b8b1c5e",
+    "size": 129
+  },
+  {
+    "path": "src/gui/plugins/plot_3d/CMakeLists.txt",
+    "sha": "3ff591a861c0c02bcf4115722540680732f279c4",
+    "size": 112
+  },
+  {
+    "path": "src/gui/plugins/plot_3d/Plot3D_TEST.cc",
+    "sha": "99ffb35577ea7c7b85367245c3d72598752dfdba",
+    "size": 3240
+  },
+  {
+    "path": "src/gui/plugins/plot_3d/Plot3D.cc",
+    "sha": "377b87bd3a5ee65b20a20eaea4a2423454cc2a32",
+    "size": 11068
+  },
+  {
+    "path": "src/gui/plugins/plot_3d/Plot3D.hh",
+    "sha": "180f68a78573890d3f548b837ceaa24827d8c5c7",
+    "size": 7162
+  },
+  {
+    "path": "src/gui/plugins/plot_3d/Plot3D.qml",
+    "sha": "2a1504e3cb0b302869cdb05713836b9e9dbe5966",
+    "size": 7659
+  },
+  {
+    "path": "src/gui/plugins/plot_3d/Plot3D.qrc",
+    "sha": "f1327f014df4bb7c33defa92c82bd7dde67aca1d",
+    "size": 109
+  },
+  {
+    "path": "src/gui/plugins/plotting/CMakeLists.txt",
+    "sha": "dc26ac4083b8ebf35e7afdb1d360a0e1ba37c143",
+    "size": 76
+  },
+  {
+    "path": "src/gui/plugins/plotting/Plotting.cc",
+    "sha": "8efe6f593b72990f7378613cdc3aff8a79cefcf8",
+    "size": 20142
+  },
+  {
+    "path": "src/gui/plugins/plotting/Plotting.hh",
+    "sha": "2c3bf69a06d7075578bd1de0e9bfde18eade072f",
+    "size": 7243
+  },
+  {
+    "path": "src/gui/plugins/plotting/Plotting.qml",
+    "sha": "fe8d835fc974c1d9303f2d66184247768235c9a6",
+    "size": 765
+  },
+  {
+    "path": "src/gui/plugins/plotting/Plotting.qrc",
+    "sha": "e520bf6c0363315d8ac19e97f4d9dc0f962cd270",
+    "size": 113
+  }
+]
