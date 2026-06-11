@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/RenderEngineGuiPlugin.hh",
+    "sha": "e03008e0cc7f236499c9bdd65973163cc4834703",
+    "size": 1342
+  },
+  {
+    "path": "include/gz/sim/components/RenderEngineServerApiBackend.hh",
+    "sha": "45b6175ee0e422e815ace754070982f3e1d20cd9",
+    "size": 1396
+  },
+  {
+    "path": "include/gz/sim/components/RenderEngineServerHeadless.hh",
+    "sha": "66a071ffbf56e31a8948147da48d773863c98829",
+    "size": 1322
+  },
+  {
+    "path": "include/gz/sim/components/RenderEngineServerPlugin.hh",
+    "sha": "52ede4acf99ad01412a5a718cd2397de0f8144bc",
+    "size": 1370
+  },
+  {
+    "path": "include/gz/sim/components/RgbdCamera.hh",
+    "sha": "8c016b580c38a187f4ab151cb0581bec66f2dad4",
+    "size": 1318
+  }
+]

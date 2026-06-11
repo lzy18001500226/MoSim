@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/RenderEngineGuiPlugin.hh
+References/Gazebo/gz-sim/include/gz/sim/components/RenderEngineServerApiBackend.hh
+References/Gazebo/gz-sim/include/gz/sim/components/RenderEngineServerHeadless.hh
+References/Gazebo/gz-sim/include/gz/sim/components/RenderEngineServerPlugin.hh
+References/Gazebo/gz-sim/include/gz/sim/components/RgbdCamera.hh
