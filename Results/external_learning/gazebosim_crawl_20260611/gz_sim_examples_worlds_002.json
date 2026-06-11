@@ -1,0 +1,352 @@
+[
+  {
+    "path": "examples/worlds/ackermann_steering.sdf",
+    "sha": "26c19d8565365eb84e891cc6ea95c632534c89bb",
+    "size": 13381
+  },
+  {
+    "path": "examples/worlds/acoustic_comms_demo.sdf",
+    "sha": "6e1be4c4b925c619a5aef37f8b0f4db1db898be5",
+    "size": 10899
+  },
+  {
+    "path": "examples/worlds/acoustic_comms_moving_targets.sdf",
+    "sha": "1a474f1cbf7bb22d509924fa1d91e635425327f2",
+    "size": 6347
+  },
+  {
+    "path": "examples/worlds/acoustic_comms_packet_collision.sdf",
+    "sha": "cde89b70155ddebfc592f8c87e23d90255f136fa",
+    "size": 6564
+  },
+  {
+    "path": "examples/worlds/acoustic_comms_propagation.sdf",
+    "sha": "7ccde3ad2ddc067cc1e62c565f8092a78984a778",
+    "size": 6735
+  },
+  {
+    "path": "examples/worlds/acoustic_comms.sdf",
+    "sha": "6b20c698fb2edc5f95f2962072e00cad19a458ef",
+    "size": 6438
+  },
+  {
+    "path": "examples/worlds/actor_crowd.sdf",
+    "sha": "39b89bfbbdf63057ad99e1be2a069001f5ab0a24",
+    "size": 21551
+  },
+  {
+    "path": "examples/worlds/actor.sdf",
+    "sha": "78fc3cceb645080506bf25c57be22ca2537f356a",
+    "size": 6178
+  },
+  {
+    "path": "examples/worlds/actors_population.sdf.erb",
+    "sha": "de69953d5f3456252f08858bb40a3a5d04cfad50",
+    "size": 3266
+  },
+  {
+    "path": "examples/worlds/advanced_lift_drag_system.sdf",
+    "sha": "062f7208b46f7ce3620e4d4d9b8b730300d9708f",
+    "size": 26542
+  },
+  {
+    "path": "examples/worlds/apply_joint_force.sdf",
+    "sha": "9350befb25356a04ce9eb14361cab8906187e937",
+    "size": 4327
+  },
+  {
+    "path": "examples/worlds/apply_link_wrench.sdf",
+    "sha": "b6e354e8c1fd036b8a68cd65bd5ad64488eda52d",
+    "size": 5180
+  },
+  {
+    "path": "examples/worlds/auto_inertia_pendulum.sdf",
+    "sha": "3b9cef933e21cf4dbd3afb853c1904ea5ed93ae8",
+    "size": 10703
+  },
+  {
+    "path": "examples/worlds/auto_inertia_rolling_shapes.sdf",
+    "sha": "dbf777fb03d3f35d376af58dfcca962ca73e895b",
+    "size": 5116
+  },
+  {
+    "path": "examples/worlds/auv_controls.sdf",
+    "sha": "18914a6629ad8effd27daaa21524193c08a1c8ea",
+    "size": 4857
+  },
+  {
+    "path": "examples/worlds/boundingbox_camera.sdf",
+    "sha": "7697d1768449267518de45d7da98279c3d85f069",
+    "size": 12766
+  },
+  {
+    "path": "examples/worlds/breadcrumbs.sdf",
+    "sha": "bb9a40a80f05cd5bf6f48e3a390aa92589adc73e",
+    "size": 12431
+  },
+  {
+    "path": "examples/worlds/buoyancy_engine.sdf",
+    "sha": "1a68f4d3236bd7fdab696f59de16c5e0f4aad137",
+    "size": 6005
+  },
+  {
+    "path": "examples/worlds/buoyancy.sdf",
+    "sha": "7f8e7da9a0fc2fb60a0cc6a33696913706ef207b",
+    "size": 16868
+  },
+  {
+    "path": "examples/worlds/camera_lens_flare.sdf",
+    "sha": "439db8aeeea0c4eec5dad03337375676b521161e",
+    "size": 14019
+  },
+  {
+    "path": "examples/worlds/camera_sensor.sdf",
+    "sha": "0cee711b4783e7951c4dca452e5022184a27f511",
+    "size": 5556
+  },
+  {
+    "path": "examples/worlds/camera_video_record_dbl_pendulum.sdf",
+    "sha": "770b30411cf4ec1c5ea6801b4ccb6a7769f7c06b",
+    "size": 9454
+  },
+  {
+    "path": "examples/worlds/CMakeLists.txt",
+    "sha": "258ee1529eb61ae5314a8fa3291961eed4c3a576",
+    "size": 225
+  },
+  {
+    "path": "examples/worlds/collada_world_exporter.sdf",
+    "sha": "0d1abdbdf3a47f2c36e2bdf0455391d2c166354c",
+    "size": 4597
+  },
+  {
+    "path": "examples/worlds/contact_sensor.sdf",
+    "sha": "0714c34bf7f6e154e4e8814253b9281c2a25d17b",
+    "size": 2267
+  },
+  {
+    "path": "examples/worlds/conveyor.sdf",
+    "sha": "61ba5eb15963725fa379d99571a0edd3e3e0940d",
+    "size": 17355
+  },
+  {
+    "path": "examples/worlds/cpu_lidar_sensor.sdf",
+    "sha": "063b31fa1b716e5e092c856b07f3031ec0901a08",
+    "size": 6510
+  },
+  {
+    "path": "examples/worlds/debug_shapes.sdf",
+    "sha": "3e49243bf5524a8f841dfe469135fac5f058ec82",
+    "size": 3712
+  },
+  {
+    "path": "examples/worlds/default.sdf",
+    "sha": "34cfb29ebdc5ae5fb1f87ac2a5b5a2c0dfe8589e",
+    "size": 1770
+  },
+  {
+    "path": "examples/worlds/dem_monterey_bay.sdf",
+    "sha": "39539ca1f2644dc6648bac5be70a2d524fa64d4d",
+    "size": 5311
+  },
+  {
+    "path": "examples/worlds/dem_moon.sdf",
+    "sha": "047607d3f12bfa219113acabec860d8487862050",
+    "size": 6268
+  },
+  {
+    "path": "examples/worlds/dem_volcano.sdf",
+    "sha": "f2f766b8698ac1700a8cb2b529c42f70860f4cbe",
+    "size": 6115
+  },
+  {
+    "path": "examples/worlds/depth_camera_sensor.sdf",
+    "sha": "e666d12f428c170d737a31d15efe2eb45d0ea240",
+    "size": 7598
+  },
+  {
+    "path": "examples/worlds/detachable_joint.sdf",
+    "sha": "1ae187cadba482be284344a6fa5634a0474791e1",
+    "size": 14970
+  },
+  {
+    "path": "examples/worlds/diff_drive_skid.sdf",
+    "sha": "58cce3ca0410433a04d90365298efef97464ba74",
+    "size": 11073
+  },
+  {
+    "path": "examples/worlds/diff_drive.sdf",
+    "sha": "0004a898c02bbeb8f766f720f54e31cf017c4570",
+    "size": 14534
+  },
+  {
+    "path": "examples/worlds/drive_to_pose_controller.sdf",
+    "sha": "8da20faf98ee691461a9cc1888a28a38b523a7ce",
+    "size": 15053
+  },
+  {
+    "path": "examples/worlds/dvl_world.sdf",
+    "sha": "0b599a3cb468a793e6a87ab83a9aad5eb6018795",
+    "size": 8826
+  },
+  {
+    "path": "examples/worlds/elevator.sdf",
+    "sha": "0cbcd8702e08679327fb68afd554687cd5490736",
+    "size": 2275
+  },
+  {
+    "path": "examples/worlds/empty_gui.sdf",
+    "sha": "54df8c2e31d0b82ac7271a179405274754847f2e",
+    "size": 5728
+  },
+  {
+    "path": "examples/worlds/empty.sdf",
+    "sha": "3f0ad8dfdab60a9133057626f6a42b12c9869f6e",
+    "size": 3323
+  },
+  {
+    "path": "examples/worlds/environmental_data.csv",
+    "sha": "fbd1ee7d0a56ca47b7ea3d21d68e51d361939254",
+    "size": 249
+  },
+  {
+    "path": "examples/worlds/environmental_sensor.sdf",
+    "sha": "ce9eccaccab36f919bce31fda0af0862ffbdcbae",
+    "size": 3839
+  },
+  {
+    "path": "examples/worlds/export_occupancy_grid.sdf",
+    "sha": "67374206da3834618f4c864ea3053738869bf4af",
+    "size": 5312
+  },
+  {
+    "path": "examples/worlds/fluid_added_mass.sdf",
+    "sha": "a2f55687beb511a968c592d3ef2ac21a9af2519a",
+    "size": 8677
+  },
+  {
+    "path": "examples/worlds/follow_actor.sdf",
+    "sha": "df20b144abb052e83c83dec3aaf72920d08f33b7",
+    "size": 7431
+  },
+  {
+    "path": "examples/worlds/fuel_textured_mesh.sdf",
+    "sha": "251e1958108d3053680be010f74ca9130a84d17b",
+    "size": 8312
+  },
+  {
+    "path": "examples/worlds/fuel.sdf",
+    "sha": "039cae1be79cd4cdfc6955d0671a24e170e44074",
+    "size": 5603
+  },
+  {
+    "path": "examples/worlds/global_illumination.sdf",
+    "sha": "1c2f0b0baca1b63a240588c2c97a52c378651559",
+    "size": 11221
+  },
+  {
+    "path": "examples/worlds/gpu_lidar_retro_values_sensor.sdf",
+    "sha": "6c870beb7d622db6afbe443c0ca1cd8461bb9de2",
+    "size": 5662
+  },
+  {
+    "path": "examples/worlds/gpu_lidar_sensor.sdf",
+    "sha": "00163d7966041ee22aff8dee3580a64800237620",
+    "size": 4746
+  },
+  {
+    "path": "examples/worlds/graded_buoyancy.sdf",
+    "sha": "98ff90a8dfab5ce9ac14003c9d7c843f94383390",
+    "size": 10411
+  },
+  {
+    "path": "examples/worlds/grid.sdf",
+    "sha": "184a946f85844e13cc1aa5e54f8b865ab6d3ec99",
+    "size": 5128
+  },
+  {
+    "path": "examples/worlds/ground_spacecraft_testbed.sdf",
+    "sha": "abad03dc2b3c1c15c8698116772e1e5cdb9c6bbb",
+    "size": 2293
+  },
+  {
+    "path": "examples/worlds/heightmap.sdf",
+    "sha": "9725b539bc562487ca0fb81413922315d1e81cc9",
+    "size": 4530
+  },
+  {
+    "path": "examples/worlds/import_mesh.sdf",
+    "sha": "0432a03f754009b28f766630768bde86bcc6bccf",
+    "size": 2184
+  },
+  {
+    "path": "examples/worlds/joint_controller.sdf",
+    "sha": "a02ff06900664edd4d726898bca69aeca57c033d",
+    "size": 5934
+  },
+  {
+    "path": "examples/worlds/joint_position_controller.sdf",
+    "sha": "8265059ad7955e5f43a890ed059f95ceb2c9ca1a",
+    "size": 3502
+  },
+  {
+    "path": "examples/worlds/joint_trajectory_controller.sdf",
+    "sha": "d6b62a5b8ce5e92670266c95273cbe98dbbb386b",
+    "size": 19885
+  },
+  {
+    "path": "examples/worlds/kinetic_energy_monitor.sdf",
+    "sha": "df64964db5c44e0ae3e9bdc62d5110acc9a27b3c",
+    "size": 2963
+  },
+  {
+    "path": "examples/worlds/led_plugin.sdf",
+    "sha": "035c7df58502dd436f4e37a8d136a0e71e5dc8c9",
+    "size": 31911
+  },
+  {
+    "path": "examples/worlds/lift_drag_battery.sdf",
+    "sha": "3ca0a7e6cc3a4e6f1802bc07e0b1415592280f55",
+    "size": 9004
+  },
+  {
+    "path": "examples/worlds/lift_drag_nested.sdf",
+    "sha": "1af6885bf226f6e858182764b760e337eeb8c505",
+    "size": 8250
+  },
+  {
+    "path": "examples/worlds/lift_drag.sdf",
+    "sha": "9a05b816a57d4c820231e9726468cd902dcf1e47",
+    "size": 7906
+  },
+  {
+    "path": "examples/worlds/lighter_than_air_blimp.sdf",
+    "sha": "b3558ddff2abb149acd01ef1df88b1953fb9c22a",
+    "size": 2058
+  },
+  {
+    "path": "examples/worlds/lightmap.sdf",
+    "sha": "35f026df4a4a626c27997d2bbbbff0f212412cba",
+    "size": 710
+  },
+  {
+    "path": "examples/worlds/lights.sdf",
+    "sha": "3407339432720ff9de4b78cdf672bef4cc4293e8",
+    "size": 6150
+  },
+  {
+    "path": "examples/worlds/linear_battery_demo.sdf",
+    "sha": "99128bf928e4b74b8f61f8e2c856de9ffa250b7d",
+    "size": 14992
+  },
+  {
+    "path": "examples/worlds/log_record_dbl_pendulum.sdf",
+    "sha": "a1c81625e4b72cc5815be9246ee4cce1400c07d8",
+    "size": 8227
+  },
+  {
+    "path": "examples/worlds/log_record_keyboard.sdf",
+    "sha": "75c7dad9009d0978a1195a8561b00da2a4890505",
+    "size": 11924
+  }
+]
