@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/ExternalWorldWrenchCmd.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Factory.hh
+References/Gazebo/gz-sim/include/gz/sim/components/ForceTorque.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Geometry.hh
+References/Gazebo/gz-sim/include/gz/sim/components/GpuLidar.hh
