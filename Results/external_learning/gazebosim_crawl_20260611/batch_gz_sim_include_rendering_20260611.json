@@ -1,0 +1,47 @@
+[
+  {
+    "path": "include/gz/sim/rendering/Events.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\rendering\\Events.hh",
+    "sha": "786092a33ae56b5078ea5ee24e80b69b90abce74",
+    "size": 3887,
+    "verified_hash": "786092a33ae56b5078ea5ee24e80b69b90abce74",
+    "verified_size": 3887,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/rendering/MarkerManager.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\rendering\\MarkerManager.hh",
+    "sha": "752f2ff55f824ec8b2d713faf929fce166396268",
+    "size": 2357,
+    "verified_hash": "752f2ff55f824ec8b2d713faf929fce166396268",
+    "verified_size": 2357,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/rendering/RenderUtil.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\rendering\\RenderUtil.hh",
+    "sha": "f03d609eee02dcb55823c8bfba221e2f49833228",
+    "size": 9386,
+    "verified_hash": "f03d609eee02dcb55823c8bfba221e2f49833228",
+    "verified_size": 9386,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/rendering/SceneManager.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\rendering\\SceneManager.hh",
+    "sha": "05321a05ae93dd9090c8a6fec90745eee0995a7d",
+    "size": 15954,
+    "verified_hash": "05321a05ae93dd9090c8a6fec90745eee0995a7d",
+    "verified_size": 15954,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/rendering/WrenchVisualizer.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\rendering\\WrenchVisualizer.hh",
+    "sha": "bb3c804c51295e583cdfc6404e628c61819c87d5",
+    "size": 2846,
+    "verified_hash": "bb3c804c51295e583cdfc6404e628c61819c87d5",
+    "verified_size": 2846,
+    "source": "raw.githubusercontent.com"
+  }
+]

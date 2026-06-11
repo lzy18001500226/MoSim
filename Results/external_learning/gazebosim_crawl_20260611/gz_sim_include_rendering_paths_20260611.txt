@@ -1,0 +1,5 @@
+References\Gazebo\gz-sim\include\gz\sim\rendering\Events.hh
+References\Gazebo\gz-sim\include\gz\sim\rendering\MarkerManager.hh
+References\Gazebo\gz-sim\include\gz\sim\rendering\RenderUtil.hh
+References\Gazebo\gz-sim\include\gz\sim\rendering\SceneManager.hh
+References\Gazebo\gz-sim\include\gz\sim\rendering\WrenchVisualizer.hh
