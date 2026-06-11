@@ -1,0 +1,50 @@
+{
+  "batch": "docs_rotary_actor_fuel_spawn_gifs",
+  "repo": "gazebosim/docs",
+  "head": "fc0832680c6908c4850e8f4af3b8190181bf877f",
+  "files": [
+    {
+      "path": "References/Gazebo/docs/rotary/tutorials/actors/actor_demo.gif",
+      "source_path": "rotary/tutorials/actors/actor_demo.gif",
+      "size": 500495,
+      "sha": "d1692f8f1e4d03c0930bae017acd7a159538aa51"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/tutorials/actors/actor_skin.gif",
+      "source_path": "rotary/tutorials/actors/actor_skin.gif",
+      "size": 288777,
+      "sha": "7292afe3069336a38b0dbbc7dd915e169f3b175e"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/tutorials/actors/combined_movement.gif",
+      "source_path": "rotary/tutorials/actors/combined_movement.gif",
+      "size": 454669,
+      "sha": "50afbb6f0d66758c4260b548de12520a7298172f"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/tutorials/actors/skeleton_movement.gif",
+      "source_path": "rotary/tutorials/actors/skeleton_movement.gif",
+      "size": 87657,
+      "sha": "d13e07a4c6deda13eaefe91253456505ca155f61"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/tutorials/actors/trajectory_movement.gif",
+      "source_path": "rotary/tutorials/actors/trajectory_movement.gif",
+      "size": 147109,
+      "sha": "046e84120aa415bd9d7ac467643841af6cb0f555"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/tutorials/fuel_insert/husky.gif",
+      "source_path": "rotary/tutorials/fuel_insert/husky.gif",
+      "size": 1526043,
+      "sha": "fb09b9e84f7647b4f05ce4532b21f20540e5c969"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/tutorials/spawn_urdf/rrbot.gif",
+      "source_path": "rotary/tutorials/spawn_urdf/rrbot.gif",
+      "size": 183628,
+      "sha": "1dfad37ce007240cf665c094a325cd69da717f7f"
+    }
+  ],
+  "large_100MiB_count": 0
+}

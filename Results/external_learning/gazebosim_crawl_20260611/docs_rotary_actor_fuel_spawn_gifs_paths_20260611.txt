@@ -1,0 +1,7 @@
+References/Gazebo/docs/rotary/tutorials/actors/actor_demo.gif
+References/Gazebo/docs/rotary/tutorials/actors/actor_skin.gif
+References/Gazebo/docs/rotary/tutorials/actors/combined_movement.gif
+References/Gazebo/docs/rotary/tutorials/actors/skeleton_movement.gif
+References/Gazebo/docs/rotary/tutorials/actors/trajectory_movement.gif
+References/Gazebo/docs/rotary/tutorials/fuel_insert/husky.gif
+References/Gazebo/docs/rotary/tutorials/spawn_urdf/rrbot.gif
