@@ -1,0 +1,32 @@
+{
+  "repo": "gazebosim/gz-sim",
+  "commit": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "batch": "gz_sim_deferred_text_001",
+  "generated_at": "2026-06-12T03:43:07.4851851+08:00",
+  "file_count": 4,
+  "total_size": 2057714.0,
+  "max_file_size": 2028937.0,
+  "attribute_change": "Added exact-path -text attributes to preserve upstream blobs for files with whitespace or line-ending normalization conflicts",
+  "files": [
+    {
+      "path": "examples/scripts/websocket_server/gz3d.js",
+      "size": 2028937,
+      "sha": "bd7514d8c4e22bc047e42b92d0191a274cb9b6fc"
+    },
+    {
+      "path": "tutorials/auto_inertia_calculation.md",
+      "size": 7750,
+      "sha": "2e77af897589867a241f01816df72feab8bdef9c"
+    },
+    {
+      "path": "tutorials/joint_controller.md",
+      "size": 19717,
+      "sha": "373585f9ff6626dd8c451aa3c0808004456898a0"
+    },
+    {
+      "path": "vendor/backward-cpp/GAZEBO_MODIFIED_CODE.patch",
+      "size": 1310,
+      "sha": "f0eb5d53c55215f5b4418ec2ce9599ded0d6c0ea"
+    }
+  ]
+}

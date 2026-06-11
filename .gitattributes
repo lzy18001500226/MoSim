@@ -20,6 +20,10 @@ References/Gazebo/**/*.blend binary
 References/Gazebo/**/*.stl binary
 References/Gazebo/**/*.tlog binary
 References/Gazebo/**/*.zip binary
+References/Gazebo/gz-sim/examples/scripts/websocket_server/gz3d.js -text
+References/Gazebo/gz-sim/tutorials/auto_inertia_calculation.md -text
+References/Gazebo/gz-sim/tutorials/joint_controller.md -text
+References/Gazebo/gz-sim/vendor/backward-cpp/GAZEBO_MODIFIED_CODE.patch -text
 References/Gazebo/**/*.gz binary
 References/Gazebo/**/*.tar binary
 *.pdf binary

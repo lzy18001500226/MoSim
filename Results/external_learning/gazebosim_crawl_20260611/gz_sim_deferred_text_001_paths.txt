@@ -1,0 +1,4 @@
+References/Gazebo/gz-sim/examples/scripts/websocket_server/gz3d.js
+References/Gazebo/gz-sim/tutorials/auto_inertia_calculation.md
+References/Gazebo/gz-sim/tutorials/joint_controller.md
+References/Gazebo/gz-sim/vendor/backward-cpp/GAZEBO_MODIFIED_CODE.patch
