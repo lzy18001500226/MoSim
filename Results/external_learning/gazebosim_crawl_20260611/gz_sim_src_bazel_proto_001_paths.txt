@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/src/bazel/InstallationDirectories.cc
+References/Gazebo/gz-sim/src/proto/gz/sim/private_msgs/peer_control.proto
+References/Gazebo/gz-sim/src/proto/gz/sim/private_msgs/peer_info.proto
+References/Gazebo/gz-sim/src/proto/gz/sim/private_msgs/performer_affinity.proto
+References/Gazebo/gz-sim/src/proto/gz/sim/private_msgs/simulation_step.proto
