@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>gz-utils</name>
+  <version>5.0.0</version>
+  <description>Gazebo Utils : Classes and functions for robot applications</description>
+
+  <maintainer email="addisu@openrobotics.org">Addizu Z. Taddese</maintainer>
+  <license>Apache License 2.0</license>
+
+  <url type="website">https://github.com/gazebosim/gz-utils</url>
+
+  <buildtool_depend>cmake</buildtool_depend>
+
+  <build_depend>gz-cmake</build_depend>
+
+  <depend>cli11</depend>
+  <depend>spdlog</depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>
