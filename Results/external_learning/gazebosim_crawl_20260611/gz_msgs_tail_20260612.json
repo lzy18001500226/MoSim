@@ -1,0 +1,22 @@
+{
+  "repo": "gazebosim/gz-msgs",
+  "commit": "f091672c868a59b1e5bbf36c9e797d5fb8c23cfa",
+  "batch": "gz_msgs_tail_20260612",
+  "generated_at": "2026-06-12T03:48:32.6514728+08:00",
+  "file_count": 2,
+  "total_size": 315.0,
+  "max_file_size": 255.0,
+  "reason": "tail untracked protobuf descriptor artifacts found by path-limited inventory",
+  "files": [
+    {
+      "path": "References/Gazebo/gz-msgs/test/desc/stringmsg.desc",
+      "size": 60,
+      "sha": "cc2f57419b1e2d444bc82a59c9a2c5c6164a7c73"
+    },
+    {
+      "path": "References/Gazebo/gz-msgs/test/desc/testing.proto.bin",
+      "size": 255,
+      "sha": "20422275d191e417f628533d75754ed3f66c0314"
+    }
+  ]
+}
