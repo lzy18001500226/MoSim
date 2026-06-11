@@ -1,0 +1,10 @@
+References/Gazebo/docs/rotary/img/align.gif
+References/Gazebo/docs/rotary/img/align_reverse.gif
+References/Gazebo/docs/rotary/img/pose2.gif
+References/Gazebo/docs/rotary/img/pose_value.gif
+References/Gazebo/docs/rotary/img/rotate.gif
+References/Gazebo/docs/rotary/img/rotate_worldframe.gif
+References/Gazebo/docs/rotary/img/snap.gif
+References/Gazebo/docs/rotary/img/translate.gif
+References/Gazebo/docs/rotary/img/translate_worldframe.gif
+References/Gazebo/docs/rotary/img/view.gif

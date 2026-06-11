@@ -1,0 +1,68 @@
+{
+  "batch": "docs_rotary_img_controls_gifs",
+  "repo": "gazebosim/docs",
+  "head": "fc0832680c6908c4850e8f4af3b8190181bf877f",
+  "files": [
+    {
+      "path": "References/Gazebo/docs/rotary/img/align.gif",
+      "source_path": "rotary/img/align.gif",
+      "size": 184770,
+      "sha": "04b15b6cfd7b728c16df3f482ca5e02cdd478378"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/img/align_reverse.gif",
+      "source_path": "rotary/img/align_reverse.gif",
+      "size": 210298,
+      "sha": "3854876a2459a5ff848b3161ce23f1bd9c9902c6"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/img/pose2.gif",
+      "source_path": "rotary/img/pose2.gif",
+      "size": 653564,
+      "sha": "630377ebd63bafa42c56ea159e82e51538ac6a0b"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/img/pose_value.gif",
+      "source_path": "rotary/img/pose_value.gif",
+      "size": 1239988,
+      "sha": "df1263b28ac8a7f73f65930dc8ff31a4d5687e96"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/img/rotate.gif",
+      "source_path": "rotary/img/rotate.gif",
+      "size": 916039,
+      "sha": "649b7227abbc38da8bceb69542bed2990635a8a0"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/img/rotate_worldframe.gif",
+      "source_path": "rotary/img/rotate_worldframe.gif",
+      "size": 147131,
+      "sha": "d57f531cb8f29b2276fb3fb2c15a1de85be04913"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/img/snap.gif",
+      "source_path": "rotary/img/snap.gif",
+      "size": 607922,
+      "sha": "d113f863d1a40335888fe73cb5327db527567631"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/img/translate.gif",
+      "source_path": "rotary/img/translate.gif",
+      "size": 490016,
+      "sha": "0956282b0117fe4e4f7d39989e83ab751dfc0ba9"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/img/translate_worldframe.gif",
+      "source_path": "rotary/img/translate_worldframe.gif",
+      "size": 101021,
+      "sha": "ba11d4b3d62d4b5254bbdf731f17522caec9e31e"
+    },
+    {
+      "path": "References/Gazebo/docs/rotary/img/view.gif",
+      "source_path": "rotary/img/view.gif",
+      "size": 1397731,
+      "sha": "badc9da1a8b8c0e19879ca22e0382b7553e59b75"
+    }
+  ],
+  "large_100MiB_count": 0
+}
