@@ -1,0 +1,20 @@
+{
+  "repo": "sdformat",
+  "part": "part1_core_meta_src",
+  "source_sha": "e44eaf7dfdd6e72830f14b07f8822ceec3f7b190",
+  "target": "References/Gazebo/sdformat",
+  "file_count": 466,
+  "paths": [
+    "References/Gazebo/sdformat/.bcr",
+    "References/Gazebo/sdformat/.github",
+    "References/Gazebo/sdformat/cmake",
+    "References/Gazebo/sdformat/conf",
+    "References/Gazebo/sdformat/doc",
+    "References/Gazebo/sdformat/examples",
+    "References/Gazebo/sdformat/include",
+    "References/Gazebo/sdformat/python",
+    "References/Gazebo/sdformat/src",
+    "References/Gazebo/sdformat/tools"
+  ],
+  "stage_file": "Results/external_learning/gazebosim_crawl_20260611/stage_sdformat_part1_core_20260611.txt"
+}
