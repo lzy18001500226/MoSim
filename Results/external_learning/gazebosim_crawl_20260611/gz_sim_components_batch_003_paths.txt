@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/AxisAlignedBox.hh
+References/Gazebo/gz-sim/include/gz/sim/components/BatteryPowerLoad.hh
+References/Gazebo/gz-sim/include/gz/sim/components/BatterySoC.hh
+References/Gazebo/gz-sim/include/gz/sim/components/BoundingBoxCamera.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Camera.hh

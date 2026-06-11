@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/AxisAlignedBox.hh",
+    "sha": "c103a1249bd1eaacfd68cfe76ef3b80f350c6e6a",
+    "size": 1689
+  },
+  {
+    "path": "include/gz/sim/components/BatteryPowerLoad.hh",
+    "sha": "a4bb9d5abb42f361f3b9fb39c71dc1e41a26e269",
+    "size": 1621
+  },
+  {
+    "path": "include/gz/sim/components/BatterySoC.hh",
+    "sha": "8b8ea8dadb35c52cfd5994f64c12ba3c5b56642d",
+    "size": 1211
+  },
+  {
+    "path": "include/gz/sim/components/BoundingBoxCamera.hh",
+    "sha": "496d6ff51387e9893a75047ea697eaf7d3c43936",
+    "size": 1373
+  },
+  {
+    "path": "include/gz/sim/components/Camera.hh",
+    "sha": "07aedbb60aef2a4b98b46ca0f3d5baeaf0f1fd74",
+    "size": 1290
+  }
+]
