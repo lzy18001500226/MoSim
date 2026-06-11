@@ -1,0 +1,120 @@
+{
+  "repo": "gazebosim/gz-sim",
+  "commit": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "batch": "gz_sim_tutorials_007",
+  "generated_at": "2026-06-12T03:33:45.4386106+08:00",
+  "file_count": 20,
+  "total_size": 3402784.0,
+  "max_file_size": 850994.0,
+  "deferred_count": 1,
+  "deferred_reason": "zip archive is ignored by repository policy; keep manifest-only unless explicitly approved",
+  "deferred_files": [
+    {
+      "path": "tutorials/files/surface_vehicles/gz_maritime_ws.zip",
+      "size": 3899202,
+      "sha": "a0799d3d2ccfa3d3d89564cd4d58b0fc4b3dae90"
+    }
+  ],
+  "files": [
+    {
+      "path": "tutorials/files/server_config/default_server.gif",
+      "size": 134365,
+      "sha": "0230eb529a93466b7abdb4b03f40390dd891bc1e"
+    },
+    {
+      "path": "tutorials/files/server_config/from_sdf_no_plugins.gif",
+      "size": 78768,
+      "sha": "1e631bdb5a3d43fc72433bcfeee58a1311fd9af7"
+    },
+    {
+      "path": "tutorials/files/server_config/from_sdf.png",
+      "size": 50007,
+      "sha": "391ebe9240b8bf2b5b4657a9ced529e695c65b40"
+    },
+    {
+      "path": "tutorials/files/server_config/modified_default_config.gif",
+      "size": 145290,
+      "sha": "da620c130eb24eb028f38a0994ec9ea2e52dd453"
+    },
+    {
+      "path": "tutorials/files/shadow_texture_size/shadow_texsize_2k_to_16k.gif",
+      "size": 208230,
+      "sha": "09cfabbea83432d762cf4e00d89810ed43aa1934"
+    },
+    {
+      "path": "tutorials/files/spacecraft/dart.png",
+      "size": 193442,
+      "sha": "2f109cd5c0c1fc70dd0d5ae842517a4927f52be1"
+    },
+    {
+      "path": "tutorials/files/spacecraft/kth_spacecraft_simulator.png",
+      "size": 51892,
+      "sha": "11fa8807d16da4d7b23651ffbded1f8b036479eb"
+    },
+    {
+      "path": "tutorials/files/spherical_coordinates/ENU.svg",
+      "size": 26765,
+      "sha": "add223c17097ad968c88a339e44555bb744716f2"
+    },
+    {
+      "path": "tutorials/files/spherical_coordinates/inspector.png",
+      "size": 85829,
+      "sha": "f96ac82d2a78394aeb5bcee1b47713dce1647c48"
+    },
+    {
+      "path": "tutorials/files/surface_vehicles/sydney_regatta.png",
+      "size": 572873,
+      "sha": "7a56c0bd1cc0c0b29ccbc690f9b4d4e90a61b5b6"
+    },
+    {
+      "path": "tutorials/files/surface_vehicles/wamv_reference_frame.png",
+      "size": 386172,
+      "sha": "b95e59e939d95718da491ff064416ab764d525b3"
+    },
+    {
+      "path": "tutorials/files/surface_vehicles/wamv.png",
+      "size": 282702,
+      "sha": "db80c3cfc277c8955a407c554f491dd5e4451aaf"
+    },
+    {
+      "path": "tutorials/files/theory_hydrodynamics/buoyant_cylinder.sdf",
+      "size": 12532,
+      "sha": "1fac04516bd6e43a999a544de07d67590d7a53d6"
+    },
+    {
+      "path": "tutorials/files/underwater_vehicles/buoyant_lrauv.sdf",
+      "size": 10443,
+      "sha": "e9f40fcbc0ac5e363bf87bbea9e628474256c6f0"
+    },
+    {
+      "path": "tutorials/files/underwater_vehicles/lrauv_turn_left.png",
+      "size": 50738,
+      "sha": "808e5babb36b6dd01e717a78d83e8303ac93d150"
+    },
+    {
+      "path": "tutorials/files/underwater_vehicles/MBARI forces.png",
+      "size": 33069,
+      "sha": "07e8e327317bc44f67afcf23134b50f3364c6bbd"
+    },
+    {
+      "path": "tutorials/files/underwater_vehicles/my_lrauv/materials/textures/Tethys_Albedo.png",
+      "size": 850994,
+      "sha": "5ac52c63d5fd97b9424755f9046ff59a376ad5fb"
+    },
+    {
+      "path": "tutorials/files/underwater_vehicles/my_lrauv/materials/textures/Tethys_Metalness.png",
+      "size": 27685,
+      "sha": "ae4c0f401309090a1307c8809c595ef2e41a2fec"
+    },
+    {
+      "path": "tutorials/files/underwater_vehicles/my_lrauv/materials/textures/Tethys_Normal.png",
+      "size": 147397,
+      "sha": "0e4826e47ea1ec8fc73a4b1d70c013d10d036360"
+    },
+    {
+      "path": "tutorials/files/underwater_vehicles/my_lrauv/materials/textures/Tethys_Roughness.png",
+      "size": 53591,
+      "sha": "50597e7b846c71091ecbef186cd8cfee490062a3"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+References/Gazebo/gz-sim/tutorials/files/server_config/default_server.gif
+References/Gazebo/gz-sim/tutorials/files/server_config/from_sdf_no_plugins.gif
+References/Gazebo/gz-sim/tutorials/files/server_config/from_sdf.png
+References/Gazebo/gz-sim/tutorials/files/server_config/modified_default_config.gif
+References/Gazebo/gz-sim/tutorials/files/shadow_texture_size/shadow_texsize_2k_to_16k.gif
+References/Gazebo/gz-sim/tutorials/files/spacecraft/dart.png
+References/Gazebo/gz-sim/tutorials/files/spacecraft/kth_spacecraft_simulator.png
+References/Gazebo/gz-sim/tutorials/files/spherical_coordinates/ENU.svg
+References/Gazebo/gz-sim/tutorials/files/spherical_coordinates/inspector.png
+References/Gazebo/gz-sim/tutorials/files/surface_vehicles/sydney_regatta.png
+References/Gazebo/gz-sim/tutorials/files/surface_vehicles/wamv_reference_frame.png
+References/Gazebo/gz-sim/tutorials/files/surface_vehicles/wamv.png
+References/Gazebo/gz-sim/tutorials/files/theory_hydrodynamics/buoyant_cylinder.sdf
+References/Gazebo/gz-sim/tutorials/files/underwater_vehicles/buoyant_lrauv.sdf
+References/Gazebo/gz-sim/tutorials/files/underwater_vehicles/lrauv_turn_left.png
+References/Gazebo/gz-sim/tutorials/files/underwater_vehicles/MBARI forces.png
+References/Gazebo/gz-sim/tutorials/files/underwater_vehicles/my_lrauv/materials/textures/Tethys_Albedo.png
+References/Gazebo/gz-sim/tutorials/files/underwater_vehicles/my_lrauv/materials/textures/Tethys_Metalness.png
+References/Gazebo/gz-sim/tutorials/files/underwater_vehicles/my_lrauv/materials/textures/Tethys_Normal.png
+References/Gazebo/gz-sim/tutorials/files/underwater_vehicles/my_lrauv/materials/textures/Tethys_Roughness.png
