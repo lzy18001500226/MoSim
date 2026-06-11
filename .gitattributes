@@ -1,5 +1,23 @@
 .gitattributes text eol=lf
 References/Gazebo/** text eol=lf
+References/Gazebo/**/*.png binary
+References/Gazebo/**/*.jpg binary
+References/Gazebo/**/*.jpeg binary
+References/Gazebo/**/*.gif binary
+References/Gazebo/**/*.bmp binary
+References/Gazebo/**/*.ico binary
+References/Gazebo/**/*.webp binary
+References/Gazebo/**/*.mp3 binary
+References/Gazebo/**/*.mp4 binary
+References/Gazebo/**/*.ogg binary
+References/Gazebo/**/*.wav binary
+References/Gazebo/**/*.glb binary
+References/Gazebo/**/*.gltf binary
+References/Gazebo/**/*.fbx binary
+References/Gazebo/**/*.stl binary
+References/Gazebo/**/*.zip binary
+References/Gazebo/**/*.gz binary
+References/Gazebo/**/*.tar binary
 *.pdf binary
 *.dae binary
 *.DAE binary

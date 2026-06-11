@@ -1,0 +1,56 @@
+{
+  "task_id": "COAGENT-DEVOPS-GAZEBOSIM-REFERENCES-INGEST-20260611",
+  "repo": ".github",
+  "source_full_name": "gazebosim/.github",
+  "source_url": "https://github.com/gazebosim/.github",
+  "clone_url": "git@github.com:gazebosim/.github.git",
+  "default_branch": "main",
+  "source_head_sha": "d34e6b8bef676fe480f7d19ad2bc21c634bfe726",
+  "imported_path": "References/Gazebo/.github",
+  "copied_file_count": 6,
+  "copied_total_bytes": 224946.0,
+  "largest_files": [
+    {
+      "path": "References/Gazebo/.github/profile/img/gazebosim.png",
+      "bytes": 212014
+    },
+    {
+      "path": "References/Gazebo/.github/PULL_REQUEST_TEMPLATE.md",
+      "bytes": 5906
+    },
+    {
+      "path": "References/Gazebo/.github/profile/README.md",
+      "bytes": 5467
+    },
+    {
+      "path": "References/Gazebo/.github/.github/ISSUE_TEMPLATE/bug_report.md",
+      "bytes": 757
+    },
+    {
+      "path": "References/Gazebo/.github/.github/ISSUE_TEMPLATE/feature_request.md",
+      "bytes": 731
+    },
+    {
+      "path": "References/Gazebo/.github/README.md",
+      "bytes": 71
+    }
+  ],
+  "excluded_dirs": [
+    ".git",
+    "build",
+    "install",
+    "log",
+    ".venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache",
+    ".cache"
+  ],
+  "large_file_threshold_bytes": 104857600,
+  "large_file_count": 0,
+  "nested_risk_dir_count": 0,
+  "sensitive_name_count": 0,
+  "lfs_pointer_count": 0,
+  "scan_passed": true,
+  "generated_at_cst": "2026-06-11T12:53:30+08:00"
+}
