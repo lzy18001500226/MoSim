@@ -1,0 +1,3 @@
+References\Gazebo\gz-sim\include\gz\sim\detail\BaseView.hh
+References\Gazebo\gz-sim\include\gz\sim\detail\EntityComponentManager.hh
+References\Gazebo\gz-sim\include\gz\sim\detail\View.hh

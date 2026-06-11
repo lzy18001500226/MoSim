@@ -1,0 +1,29 @@
+[
+  {
+    "path": "include/gz/sim/detail/BaseView.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\detail\\BaseView.hh",
+    "sha": "234455701c73c13c642d2d521d42632f19556a20",
+    "size": 9603,
+    "verified_hash": "234455701c73c13c642d2d521d42632f19556a20",
+    "verified_size": 9603,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/detail/EntityComponentManager.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\detail\\EntityComponentManager.hh",
+    "sha": "c55c2de083b354f22cfadc2a54b9984e90716491",
+    "size": 18269,
+    "verified_hash": "c55c2de083b354f22cfadc2a54b9984e90716491",
+    "verified_size": 18269,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/detail/View.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\detail\\View.hh",
+    "sha": "19a555735b1ce04dcec67678c81bd27993b47b37",
+    "size": 8328,
+    "verified_hash": "19a555735b1ce04dcec67678c81bd27993b47b37",
+    "verified_size": 8328,
+    "source": "raw.githubusercontent.com"
+  }
+]
