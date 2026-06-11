@@ -1,0 +1,94 @@
+﻿# Spawn a Gazebo model from ROS 2
+
+Gazebo will spawn all the models included in the provided world file at startup.
+Additionally, it's possible to spawn new models at any time. To do so using ROS
+we have provided the following mechanisms:
+
+:::{note}
+**Gazebo Harmonic + ROS 2 Humble**
+
+The `gz_spawn_model.launch.py` launch file is not available in this
+configuration. Models must be spawned using the `create` executable
+provided by `ros_gz_sim`.
+:::
+
+## Spawn a model using `ros_gz_sim` (Gazebo Harmonic + ROS 2 Humble)
+
+Models must be spawned using the `create` executable provided by `ros_gz_sim`. Here's an example:
+
+```bash
+ros2 run ros_gz_sim create --world empty --file $(ros2 pkg prefix --share ros_gz_sim_demos)/models/vehicle/model.sdf --name my_vehicle -x 5.0 -y 5.0 -z 0.5
+```
+
+## Spawn a model using the launch file included in `ros_gz_sim` (ROS 2 Jazzy and later).
+
+The package `ros_gz_sim` contains a launch file named
+`gz_spawn_model.launch.py`. You can use it to spawn a new model into an
+existing simulation. Here's an example:
+
+```bash
+ros2 launch ros_gz_sim gz_spawn_model.launch.py world:=empty file:=$(ros2 pkg prefix --share ros_gz_sim_demos)/models/vehicle/model.sdf entity_name:=my_vehicle x:=5.0 y:=5.0 z:=0.5
+```
+
+Check [this block](https://github.com/gazebosim/ros_gz/blob/jazzy/ros_gz_sim/launch/gz_spawn_model.launch.py#L26-L45)
+from the source code to know all the different parameters accepted by this
+launch file.
+
+## Spawn a model from a custom launch file.
+
+> **Note:** This workflow is supported starting from **ROS 2 Jazzy**.
+
+It's also possible to spawn the model from your custom launch file. For that
+purpose we have created the `<gz_spawn_model/>` tag that can be used from you
+XML or YAML launch file. In this case, the arguments are passed as attributes
+within this tag. Here's an example:
+
+```xml
+<launch>
+  <arg name="world" default="" />
+  <arg name="file" default="" />
+  <arg name="model_string" default="" />
+  <arg name="topic" default="" />
+  <arg name="entity_name" default="" />
+  <arg name="allow_renaming" default="False" />
+  <arg name="x" default="" />
+  <arg name="y" default="" />
+  <arg name="z" default="" />
+  <arg name="roll" default="" />
+  <arg name="pitch" default="" />
+  <arg name="yaw" default="" />
+  <gz_spawn_model
+    world="$(var world)"
+    file="$(var file)"
+    model_string="$(var model_string)"
+    topic="$(var topic)"
+    entity_name="$(var entity_name)"
+    allow_renaming="$(var allow_renaming)"
+    x="$(var x)"
+    y="$(var y)"
+    z="$(var z)"
+    roll="$(var roll)"
+    pitch="$(var pitch)"
+    yaw="$(var yaw)">
+  </gz_spawn_model>
+</launch>
+```
+
+In this case the `<gz_spawn_model>` parameters are read from the command line.
+That's an option but not strictly necessary as you could decide to hardcode some
+of the values or not even use all of the parameters.
+
+
+## Spawning a model alongside launching ros_gz_bridge
+
+> **Note:** This workflow is supported starting from **ROS 2 Jazzy**.
+
+An example launch file for XML can be viewed [here](https://github.com/gazebosim/ros_gz/blob/jazzy/ros_gz_sim/launch/ros_gz_spawn_model.launch)
+An example launch file for Python can be viewed [here](https://github.com/gazebosim/ros_gz/blob/jazzy/ros_gz_sim/launch/ros_gz_spawn_model.launch.py)
+
+Example command for directly using these launch files from the terminal:
+```bash
+ros2 launch ros_gz_sim ros_gz_spawn_model.launch.py world:=empty file:=$(ros2 pkg prefix --share ros_gz_sim_demos)/models/vehicle/model.sdf entity_name:=my_vehicle x:=5.0 y:=5.0 z:=0.5 bridge_name:=ros_gz_bridge config_file:=<path_to_your_YAML_file>
+```
+
+More info about `ros_gz_bridge` can be viewed [here](ros2_integration).

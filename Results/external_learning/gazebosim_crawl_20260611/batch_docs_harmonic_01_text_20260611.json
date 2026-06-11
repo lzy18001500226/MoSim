@@ -1,0 +1,204 @@
+{
+  "repo": "gazebosim/docs",
+  "head": "fc0832680c6908c4850e8f4af3b8190181bf877f",
+  "batch": "docs_harmonic_01_text",
+  "count": 39,
+  "total_bytes": 276883.0,
+  "paths": [
+    {
+      "path": "harmonic/actors.md",
+      "sha": "d8c5f1a9838372c88406fcd206e1a7574f790349",
+      "size": 7811
+    },
+    {
+      "path": "harmonic/building_robot.md",
+      "sha": "178d0cf44c6d3ca7e3b5bb533c64d6fe3bf8c4b9",
+      "size": 15525
+    },
+    {
+      "path": "harmonic/comparison.md",
+      "sha": "c8493519a36205324f11571fa6aed3bc0f27c894",
+      "size": 11404
+    },
+    {
+      "path": "harmonic/GUI_tutorial.md",
+      "sha": "6c592fc1ea354996a33c58eeb478c57da05d4040",
+      "size": 6546
+    },
+    {
+      "path": "harmonic/hotkeys.md",
+      "sha": "fa19f4c89541e26550aed06990b0f300aa5c59f9",
+      "size": 2413
+    },
+    {
+      "path": "harmonic/index.yaml",
+      "sha": "0631e13fce463e7d76c3ce9b0c8c75371ad0c1ec",
+      "size": 5052
+    },
+    {
+      "path": "harmonic/install_osx_src.md",
+      "sha": "46122ae934960d5fefc77fe1c8d14ddf62cac4e9",
+      "size": 4916
+    },
+    {
+      "path": "harmonic/install_osx.md",
+      "sha": "1b9b515714976d81827743c5460e9a025b762e0f",
+      "size": 774
+    },
+    {
+      "path": "harmonic/install_ubuntu_src.md",
+      "sha": "0514948b26e88de2eaaac0ba30d35192fcd8e7a5",
+      "size": 8618
+    },
+    {
+      "path": "harmonic/install_ubuntu.md",
+      "sha": "46a9f726f1d1aec42006c1aa8fe38fa5c89b198d",
+      "size": 1683
+    },
+    {
+      "path": "harmonic/install_windows_src.md",
+      "sha": "cf54e4bf17a760237d944822a32ab5e10944677a",
+      "size": 8325
+    },
+    {
+      "path": "harmonic/install_windows.md",
+      "sha": "5b544ad606c6702da2b9dc906b6e89ae9ab13884",
+      "size": 3040
+    },
+    {
+      "path": "harmonic/install.md",
+      "sha": "12d7eee681eec79e4fc91162a35ba510f13044f1",
+      "size": 1914
+    },
+    {
+      "path": "harmonic/library_howtos.md",
+      "sha": "2936df3a10c5c8629b0ee1173769c0a78c1d97b0",
+      "size": 267
+    },
+    {
+      "path": "harmonic/Manipulating_models.md",
+      "sha": "4e7b3d161e4126d153c2d3c60d36c7da280832f3",
+      "size": 7594
+    },
+    {
+      "path": "harmonic/migration_from_ignition.md",
+      "sha": "d630b85584dc7e44334a9e0373286f034c626efc",
+      "size": 16986
+    },
+    {
+      "path": "harmonic/Model_insertion_fuel.md",
+      "sha": "f08fea01a482b8b3cf4a69636cf5313dfb6a7ca3",
+      "size": 3952
+    },
+    {
+      "path": "harmonic/moving_robot.md",
+      "sha": "59462cabf8e639f45e6f60d2fe22cd3e4c117335",
+      "size": 7987
+    },
+    {
+      "path": "harmonic/ros_gz_project_template_guide.md",
+      "sha": "e4b8213294ac47e3d63b58a9cea49a45b5c1b3fd",
+      "size": 6683
+    },
+    {
+      "path": "harmonic/ros2_integration.md",
+      "sha": "c96e34d3d46049efd42a39d728dd4a9aff1242af",
+      "size": 10943
+    },
+    {
+      "path": "harmonic/ros2_interop.md",
+      "sha": "2ec477b2b2eb783880f2203c3f6c4fc4cdcb50f8",
+      "size": 7053
+    },
+    {
+      "path": "harmonic/ros2_launch_gazebo.md",
+      "sha": "1ed1f8c2d08009bd53e308a039cb665c91019317",
+      "size": 7898
+    },
+    {
+      "path": "harmonic/ros2_overview.md",
+      "sha": "2ffc3ab447be0ac30c49dbecdcf4c410ca056f71",
+      "size": 4449
+    },
+    {
+      "path": "harmonic/ros2_sim_interfaces.md",
+      "sha": "4c59b1b8d8ad161bcb7e67601ee34839b4ba54a1",
+      "size": 7966
+    },
+    {
+      "path": "harmonic/ros2_spawn_model.md",
+      "sha": "adf091a7b487432afc4c51192b353d04669bc08f",
+      "size": 3681
+    },
+    {
+      "path": "harmonic/sdf_worlds.md",
+      "sha": "6a3a3fc70aceaa5900ad5ff4044087c1e35f15c9",
+      "size": 11855
+    },
+    {
+      "path": "harmonic/sensors.md",
+      "sha": "cbc3e4a17c4dc9ae2b479ba716cafcb5c0f8941b",
+      "size": 15457
+    },
+    {
+      "path": "harmonic/spawn_urdf.md",
+      "sha": "d428a70125dd3dda45288d2d7e14380d8565dd6a",
+      "size": 3344
+    },
+    {
+      "path": "harmonic/troubleshooting.md",
+      "sha": "a3a37417823ecf10f1c03b7723f20cccd8bdefe5",
+      "size": 11110
+    },
+    {
+      "path": "harmonic/tutorials/actors/actor_demo.sdf",
+      "sha": "5ee6a14ccea33eaf8fac05b2f554f4d001f57c19",
+      "size": 3252
+    },
+    {
+      "path": "harmonic/tutorials/building_robot/building_robot.sdf",
+      "sha": "05a1bdbef9eac338c2cebabc0f39188afe7bb59c",
+      "size": 9327
+    },
+    {
+      "path": "harmonic/tutorials/moving_robot/moving_robot.sdf",
+      "sha": "3630c1ae5d037a641ea35b0dff7bf3646d968954",
+      "size": 11722
+    },
+    {
+      "path": "harmonic/tutorials/sdf_worlds/world_demo.sdf",
+      "sha": "abbeb611e10a7399ccb4e5b48935ff571dbaa02b",
+      "size": 4365
+    },
+    {
+      "path": "harmonic/tutorials/sensors/CMakeLists.txt",
+      "sha": "4968584d2754bb9133c0871b4d93b41edf2d82ef",
+      "size": 447
+    },
+    {
+      "path": "harmonic/tutorials/sensors/lidar_node.cc",
+      "sha": "7b6e744583c7684eee11862f77e26e7fef4fe0c2",
+      "size": 1861
+    },
+    {
+      "path": "harmonic/tutorials/sensors/sensor_launch.gzlaunch",
+      "sha": "f52c47c291ef959bb597e959a5485d403c5dd03c",
+      "size": 241
+    },
+    {
+      "path": "harmonic/tutorials/sensors/sensor_tutorial.sdf",
+      "sha": "73c9639f6d0a1e784635edef60654aa93a694671",
+      "size": 27489
+    },
+    {
+      "path": "harmonic/tutorials/spawn_urdf/rrbot.urdf",
+      "sha": "ff57a914c37018f12938e862c896662c76ca21ab",
+      "size": 10102
+    },
+    {
+      "path": "harmonic/web_visualization.md",
+      "sha": "ad9cd95df8238e31e4cba30fd9b8c9e5f9456b5c",
+      "size": 2831
+    }
+  ]
+}
