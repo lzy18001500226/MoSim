@@ -1,0 +1,10 @@
+{
+  "repo": "gazebosim/docs",
+  "head": "fc0832680c6908c4850e8f4af3b8190181bf877f",
+  "batch": "docs_fortress_03_grid",
+  "paths": [
+    "fortress/img/grid.gif"
+  ],
+  "expected_sha": "562b55e11856f12802347a2c890d2abb04d4dcec",
+  "expected_size": 8823775
+}
