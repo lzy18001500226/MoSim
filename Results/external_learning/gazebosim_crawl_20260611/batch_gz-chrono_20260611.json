@@ -1,0 +1,29 @@
+{
+  "task_id": "COAGENT-DEVOPS-GAZEBOSIM-REFERENCES-INGEST-20260611",
+  "repo": "gz-chrono",
+  "source": "git@github.com:gazebosim/gz-chrono.git",
+  "branch": "main",
+  "head_sha": "da388f276af1f8f1d7630671e74bd93048ce9f65",
+  "imported_at": "2026-06-11",
+  "file_count": 6,
+  "max_file_bytes": 11558.0,
+  "excluded": [
+    ".git",
+    "build",
+    "install",
+    "log",
+    ".venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache"
+  ],
+  "risk_gate": "passed_no_100MiB_no_nested_git_no_lfs_pointer_detected",
+  "files": [
+    "References/Gazebo/gz-chrono/CMakeLists.txt",
+    "References/Gazebo/gz-chrono/LICENSE",
+    "References/Gazebo/gz-chrono/README.md",
+    "References/Gazebo/gz-chrono/.github/workflows/ci.yml",
+    "References/Gazebo/gz-chrono/src/CMakeLists.txt",
+    "References/Gazebo/gz-chrono/src/plugin.cc"
+  ]
+}
