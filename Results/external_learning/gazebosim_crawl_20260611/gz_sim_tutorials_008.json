@@ -1,0 +1,16 @@
+{
+  "repo": "gazebosim/gz-sim",
+  "commit": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "batch": "gz_sim_tutorials_008",
+  "generated_at": "2026-06-12T03:35:33.4627142+08:00",
+  "file_count": 1,
+  "total_size": 10844008,
+  "max_file_size": 10844008.0,
+  "files": [
+    {
+      "path": "tutorials/files/underwater_vehicles/my_lrauv/meshes/base.dae",
+      "size": 10844008,
+      "sha": "01560ab1bf03c697707e91d58c2af59cc3c48d30"
+    }
+  ]
+}

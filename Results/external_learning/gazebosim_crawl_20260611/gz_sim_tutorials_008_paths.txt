@@ -1,0 +1,1 @@
+References/Gazebo/gz-sim/tutorials/files/underwater_vehicles/my_lrauv/meshes/base.dae
