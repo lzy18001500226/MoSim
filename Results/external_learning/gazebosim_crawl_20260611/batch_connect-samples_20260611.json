@@ -1,0 +1,26 @@
+{
+  "repo": "connect-samples",
+  "source": "https://github.com/gazebosim/connect-samples",
+  "acquisition": "github_archive_zip",
+  "source_sha": "be7c4bde023aca535788b7cf685e97c0c80e01ee",
+  "archive": "Results/external_learning/gazebosim_crawl_20260611/tmp_archive/run_042/connect-samples.zip",
+  "temp": "Results/external_learning/gazebosim_crawl_20260611/tmp_archive/run_042/extract/connect-samples-be7c4bde023aca535788b7cf685e97c0c80e01ee",
+  "target": "References/Gazebo/connect-samples",
+  "copied_file_count": 79,
+  "copied_total_bytes": 5879281,
+  "excluded_components": [
+    ".git",
+    "build",
+    "install",
+    "log",
+    ".venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache",
+    ".cache",
+    "dist",
+    "out"
+  ],
+  "stage_file": "Results/external_learning/gazebosim_crawl_20260611/stage_connect-samples_20260611.txt",
+  "created_at": "2026-06-11T00:00:00+08:00"
+}
