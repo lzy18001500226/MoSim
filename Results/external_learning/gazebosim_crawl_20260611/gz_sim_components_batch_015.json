@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/MagneticField.hh",
+    "sha": "578230099dad4bdabe5a50121244d48b8b0e306d",
+    "size": 1252
+  },
+  {
+    "path": "include/gz/sim/components/Magnetometer.hh",
+    "sha": "7c620f8fc68d95b5f8c44f547a14cc41e1858ed5",
+    "size": 1401
+  },
+  {
+    "path": "include/gz/sim/components/Material.hh",
+    "sha": "fc40357cdbe2e49ccf8eb8b8d6f6e869c6d13bcb",
+    "size": 1459
+  },
+  {
+    "path": "include/gz/sim/components/Model.hh",
+    "sha": "1c4d88474f540d7b96d5ebe5720b37ccc769dd59",
+    "size": 4002
+  },
+  {
+    "path": "include/gz/sim/components/Name.hh",
+    "sha": "6681c183f82185f71b401f252847e9ac6fa3418c",
+    "size": 1315
+  }
+]

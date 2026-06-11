@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/MagneticField.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Magnetometer.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Material.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Model.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Name.hh
