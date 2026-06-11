@@ -1,0 +1,10 @@
+{
+  "repo": "gazebosim/docs",
+  "head": "fc0832680c6908c4850e8f4af3b8190181bf877f",
+  "batch": "docs_fortress_05_gz_rviz",
+  "paths": [
+    "fortress/tutorials/ros2_integration/gz_rviz.gif"
+  ],
+  "expected_sha": "d81e105768887553d1bef3c559b354c05b0c420e",
+  "expected_size": 5592843
+}
