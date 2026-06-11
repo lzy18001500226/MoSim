@@ -1,0 +1,370 @@
+<?xml version='1.0'?>
+<content>
+  <tutorials>
+
+    <!-- ****************** -->
+    <!-- Beginner tutorials -->
+
+    <tutorial title="Install" ref='install'>
+      <markdown version="2.0">install/tutorial_2-0.md</markdown>
+      <markdown version="6.x">install/tutorial_6-x.md</markdown>
+      <markdown version=">= 9">install/tutorial_9_later.md</markdown>
+      <markdown version=">= 12">install/tutorial_12.md</markdown>
+      <description>Installation instructions for libsdformat.</description>
+      <tags>
+        <tag>install</tag>
+      </tags>
+      <skill>beginner</skill>
+    </tutorial>
+
+    <tutorial title="Quickstart" ref='quickstart'>
+      <markdown version="X.0">quickstart/tutorial_2-0.md</markdown>
+      <description>Quickstart guide to SDFormat parsing with libsdformat.</description>
+      <tags>
+        <tag>quickstart</tag>
+      </tags>
+      <skill>beginner</skill>
+    </tutorial>
+
+    <tutorial title="Specifying pose" ref='specify_pose' type='documentation'>
+      <markdown version="1.4">specify_pose/tutorial.md</markdown>
+      <description>Specifying pose in SDFormat.</description>
+      <tags>
+        <tag>pose</tag>
+      </tags>
+      <skill>beginner</skill>
+    </tutorial>
+
+    <tutorial title="Proposal for a better pose" ref='better_pose_proposal' type='proposal'>
+      <markdown version="1.9">specify_pose/proposal.md</markdown>
+      <description>Specifying pose in SDFormat using different rotation representations.</description>
+      <tags>
+        <tag>pose</tag>
+      </tags>
+      <skill>advanced</skill>
+    </tutorial>
+
+    <tutorial title="Model kinematics" ref='spec_model_kinematics' type='documentation'>
+      <markdown version="1.4">spec_model_kinematics/tutorial.md</markdown>
+      <description>Specifying model kinematics with links and joints in SDFormat.</description>
+      <tags>
+        <tag>joint</tag>
+        <tag>link</tag>
+        <tag>model</tag>
+      </tags>
+      <skill>beginner</skill>
+    </tutorial>
+
+    <tutorial title="Collisions and Visuals" ref='spec_shapes' type='documentation'>
+      <markdown version="1.4">spec_shapes/tutorial.md</markdown>
+      <description>Adding shapes to a model with collisions and visuals in SDFormat.</description>
+      <tags>
+        <tag>shape</tag>
+        <tag>collision</tag>
+        <tag>visual</tag>
+      </tags>
+      <skill>beginner</skill>
+    </tutorial>
+
+    <tutorial title="Creating Worlds" ref='spec_world' type='documentation'>
+      <markdown version="1.4">spec_world/tutorial1.md</markdown>
+      <description>Creating worlds in SDFormat.</description>
+      <tags>
+        <tag>world</tag>
+        <tag>model</tag>
+      </tags>
+      <skill>beginner</skill>
+    </tutorial>
+
+    <tutorial title="Material properties of a Visual" ref='spec_materials' type='documentation'>
+      <markdown version="1.4">spec_materials/tutorial.md</markdown>
+      <description>Setting the material properties of visuals in SDFormat.</description>
+      <tags>
+        <tag>shape</tag>
+        <tag>visual</tag>
+        <tag>material</tag>
+      </tags>
+      <skill>intermediate</skill>
+    </tutorial>
+
+    <tutorial title="Pose frame semantics" ref='pose_frame_semantics' type='documentation'>
+      <markdown version="1.5">pose_frame_semantics/tutorial_1-5.md</markdown>
+      <markdown version="1.7">pose_frame_semantics/tutorial.md</markdown>
+      <description>
+        Describing existing behavior for element naming, definition of
+        coordinate frames, referencing parent and child links,
+        and nested model behavior.
+      </description>
+      <tags>
+        <tag>pose</tag>
+        <tag>frame</tag>
+      </tags>
+      <skill>advanced</skill>
+    </tutorial>
+
+    <tutorial title="Pose frame semantics" ref='pose_frame_semantics_proposal' type='documentation'>
+      <markdown version="1.7">pose_frame_semantics/proposal.md</markdown>
+      <description>
+        Proposing new behavior for SDFormat 1.7, including semantics for the
+        pose frame attribute, the frame element, new rules
+        for element naming, and corresponding examples.
+      </description>
+      <tags>
+        <tag>pose</tag>
+        <tag>frame</tag>
+      </tags>
+      <skill>advanced</skill>
+    </tutorial>
+
+    <tutorial title='Convention' ref='convention_tutorial' type='documentation'>
+      <markdown version='1.7'>convention/tutorial.md</markdown>
+      <description>
+          Describing syntax conventions used in newer tutorials and proposals.
+      </description>
+      <tags>
+        <tag>nesting</tag>
+        <tag>conventions</tag>
+      </tags>
+      <skill>intermediate</skill>
+    </tutorial>
+
+    <tutorial title='Interoperability with other modeling formats' ref='interoperability_formats' type='documentation'>
+      <markdown version='12'>interoperability_formats/tutorial.md</markdown>
+      <description>
+          Interoperability with other modeling formats
+      </description>
+      <tags>
+        <tag>usd</tag>
+        <tag>mjcf</tag>
+        <tag>mujoco</tag>
+        <tag>nvidia</tag>
+        <tag>omniverse</tag>
+        <tag>isaac sim</tag>
+      </tags>
+      <skill>beginner</skill>
+    </tutorial>
+
+    <tutorial title='Python bindings' ref='python_bindings' type='documentation'>
+      <markdown version='1.6'>python/tutorial_13.md</markdown>
+      <description>
+          How to use SDFormat Python bindings
+      </description>
+      <tags>
+        <tag>python</tag>
+      </tags>
+      <skill>beginner</skill>
+    </tutorial>
+
+    <tutorial title="Custom elements and attributes" ref='custom_elements_attributes_proposal' type='proposal'>
+      <markdown version="1.7">custom_elements_attributes/proposal.md</markdown>
+      <description>
+        Proposal for supporting custom elements and attributes in SDFormat and libsdformat.
+      </description>
+      <tags>
+        <tag>custom</tag>
+        <tag>extension</tag>
+      </tags>
+      <skill>advanced</skill>
+    </tutorial>
+
+    <tutorial title="Roadmap" ref='roadmap' type='documentation'>
+      <markdown version="1.7">developers/roadmap.md</markdown>
+      <description>
+        Proposal for supporting custom elements and attributes in SDFormat and libsdformat.
+      </description>
+      <tags>
+        <tag>roadmap</tag>
+      </tags>
+      <skill>advanced</skill>
+    </tutorial>
+
+    <tutorial title='Composition' ref='composition' type='documentation'>
+      <markdown version='1.5'>composition/legacy_behavior_1-5.md</markdown>
+      <markdown version='1.7'>composition/legacy_behavior.md</markdown>
+      <description>
+          Describing existing behavior of composition in SDFormat.
+      </description>
+      <tags>
+        <tag>nesting</tag>
+        <tag>composition</tag>
+      </tags>
+      <skill>intermediate</skill>
+    </tutorial>
+
+    <tutorial title="Composition: Proposed behavior" ref='composition_proposal' type='proposal'>
+      <markdown version="1.8">composition/proposal.md</markdown>
+      <description>
+          Propose new behavior for model level composition.
+      </description>
+      <tags>
+        <tag>nesting</tag>
+        <tag>composition</tag>
+      </tags>
+      <skill>advanced</skill>
+    </tutorial>
+
+    <tutorial title="Merging for Composition: Proposed behavior" ref='composition_merge_proposal' type='proposal'>
+      <markdown version="1.9">composition/merge_proposal.md</markdown>
+      <description>
+          Proposed new behavior for merging models via composition, rather than
+          purely scoped nesting.
+      </description>
+      <tags>
+        <tag>nesting</tag>
+        <tag>composition</tag>
+      </tags>
+      <skill>advanced</skill>
+    </tutorial>
+
+    <tutorial title="Proposal for parameter passing" ref='param_passing_proposal' type='proposal'>
+      <markdown version="1.7">param_passing/proposal.md</markdown>
+      <description>
+          Proposal for additional parameter passing when including models.
+      </description>
+      <tags>
+        <tag>model</tag>
+      </tags>
+      <skill>advanced</skill>
+    </tutorial>
+
+    <tutorial title="Tutorial for parameter passing" ref='param_passing_tutorial' type='tutorial'>
+      <markdown version="1.7">param_passing/tutorial.md</markdown>
+      <description>
+          Tutorial for parameter passing when including models.
+      </description>
+      <tags>
+        <tag>model</tag>
+      </tags>
+      <skill>intermediate</skill>
+    </tutorial>
+
+    <tutorial title="SDFormat extensions to URDF (the 'gazebo' tag)" ref='sdformat_urdf_extensions' type='tutorial'>
+      <markdown version="1.6">urdf/sdf_extensions.md</markdown>
+      <description>
+        Describes how the "gazebo" tag can be used to extend URDF to include SDFormat content.
+
+      </description>
+      <tags>
+        <tag>model</tag>
+        <tag>urdf</tag>
+        <tag>gazebo</tag>
+      </tags>
+      <skill>intermediate</skill>
+    </tutorial>
+
+    <tutorial title="Proposal Procedure and Format" ref='proposal_format' type='documentation'>
+      <markdown version="1.7">developers/proposal_format.md</markdown>
+      <description>
+        Provides procedure and guidelines for writing proposals for
+        SDFormat (specification) / libsdformat (implementation).
+      </description>
+      <tags>
+        <tag>proposal</tag>
+      </tags>
+      <skill>advanced</skill>
+    </tutorial>
+
+    <tutorial title="Proposal for added mass" ref='added_mass_proposal' type='proposal'>
+      <markdown version="1.9">added_mass/proposal.md</markdown>
+      <description>Setting fluid added mass inertial parameters.</description>
+      <tags>
+        <tag>proposal</tag>
+      </tags>
+      <skill>advanced</skill>
+    </tutorial>
+
+    <tutorial title="Mimic constraint to replace the Gearbox joint type" ref='mimic_proposal' type='proposal'>
+      <markdown version="1.11">mimic_constraint/proposal.md</markdown>
+      <description>
+          Proposal for a mimic constraint between joint axes to replace the Gearbox joint type.
+      </description>
+      <tags>
+        <tag>joint</tag>
+      </tags>
+      <skill>advanced</skill>
+    </tutorial>
+
+    <tutorial title="Proposal for Automatic Moments of Inertia Calculations" ref='auto_inertial_params_proposal' type='proposal'>
+      <markdown version="1.11">auto_inertial_params/proposal.md</markdown>
+      <description>Enabling automatic calculations for inertial parameters</description>
+      <tags>
+        <tag>proposal</tag>
+      </tags>
+      <skill>advanced</skill>
+    </tutorial>
+
+ </tutorials>
+
+  <!-- *************************************** -->
+  <categories>
+
+    <category title="Get Started" skill="beginner" ref="get_started">
+      <description>
+        This section will soon be removed. Please see the
+        [Specification](/tutorials?cat=specification) or
+        [Developer](/tutorials?cat=developers) sections intead.
+      </description>
+      <tutorials>
+      </tutorials>
+    </category>
+
+    <category title="SDFormat Specification" skill="beginner" ref="specification">
+      <description>
+        Here you'll find explanations for elements of the SDFormat
+        specification. This is a great place for new and experienced SDFormat
+        users to start.
+
+        Each category to the left presents a collection of relevant
+        documentation.
+
+        Use the *Edit* button in the upper right corner of a tutorial page to
+        go directly to its source at
+        [github.com/osrf/sdf_tutorials](https://github.com/osrf/sdf_tutorials).
+      </description>
+      <tutorials>
+        <tutorial>convention_tutorial</tutorial>
+        <tutorial>specify_pose</tutorial>
+        <tutorial>spec_model_kinematics</tutorial>
+        <tutorial>spec_shapes</tutorial>
+        <tutorial>spec_materials</tutorial>
+        <tutorial>spec_world</tutorial>
+        <tutorial>pose_frame_semantics</tutorial>
+        <tutorial>composition</tutorial>
+        <tutorial>param_passing_tutorial</tutorial>
+        <tutorial>sdformat_urdf_extensions</tutorial>
+      </tutorials>
+    </category>
+
+    <category title="SDFormat Proposals" skill="advanced" ref="pose_semantics_docs">
+      <description>These proposals suggest new behavior in SDFormat.</description>
+      <tutorials>
+        <tutorial>pose_frame_semantics_proposal</tutorial>
+        <tutorial>custom_elements_attributes_proposal</tutorial>
+        <tutorial>param_passing_proposal</tutorial>
+        <tutorial>composition_proposal</tutorial>
+        <tutorial>composition_merge_proposal</tutorial>
+        <tutorial>better_pose_proposal</tutorial>
+        <tutorial>added_mass_proposal</tutorial>
+        <tutorial>mimic_proposal</tutorial>
+        <tutorial>auto_inertial_params_proposal</tutorial>
+      </tutorials>
+    </category>
+
+    <category title="For Developers" skill="beginner" ref="developers">
+      <description>
+        Information for developers wishing to use libsdformat to parse the
+        SDFormat specification.
+      </description>
+      <tutorials>
+        <tutorial>install</tutorial>
+        <tutorial>quickstart</tutorial>
+        <tutorial>python_bindings</tutorial>
+        <tutorial>interoperability_formats</tutorial>
+        <tutorial>roadmap</tutorial>
+        <tutorial>proposal_format</tutorial>
+      </tutorials>
+    </category>
+
+  </categories>
+
+</content>
