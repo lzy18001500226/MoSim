@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/Gravity.hh
+References/Gazebo/gz-sim/include/gz/sim/components/HaltMotion.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Imu.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Inertial.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Joint.hh

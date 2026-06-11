@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/Gravity.hh",
+    "sha": "aab20dfe224c76549b56ed19cace9adee82b9f00",
+    "size": 1610
+  },
+  {
+    "path": "include/gz/sim/components/HaltMotion.hh",
+    "sha": "25ed79066749d3e46f43db380e1507821e82f8ff",
+    "size": 1183
+  },
+  {
+    "path": "include/gz/sim/components/Imu.hh",
+    "sha": "73b1b0fbd7c1275343fca081ca5015976d0810e8",
+    "size": 1295
+  },
+  {
+    "path": "include/gz/sim/components/Inertial.hh",
+    "sha": "67688f0303c0cbc31e5cb07bdfd9db58b2c3621a",
+    "size": 1499
+  },
+  {
+    "path": "include/gz/sim/components/Joint.hh",
+    "sha": "4318d6637fa5d4969a8ddd6416c3065d9212b21c",
+    "size": 1146
+  }
+]
