@@ -1,0 +1,497 @@
+{
+  "source_org": "gazebosim",
+  "snapshot_date": "2026-06-11",
+  "manifest_stage": "head_sha_complete_or_pending",
+  "policy": "reference_snapshot_only_no_adopt_adapt_decision",
+  "target_layout": "References/Gazebo/<repo_name>/",
+  "selected_count": 36,
+  "excluded_count": 20,
+  "selected_repos": [
+    {
+      "name": ".github",
+      "clone_url": "https://github.com/gazebosim/.github.git",
+      "default_branch": "main",
+      "head_sha": "d34e6b8bef676fe480f7d19ad2bc21c634bfe726",
+      "license": null,
+      "size_kb": 257,
+      "pushed_at": "2026-06-09T01:29:15Z"
+    },
+    {
+      "name": "connect-samples",
+      "clone_url": "https://github.com/gazebosim/connect-samples.git",
+      "default_branch": "main",
+      "head_sha": "be7c4bde023aca535788b7cf685e97c0c80e01ee",
+      "license": "MIT",
+      "size_kb": 4649,
+      "pushed_at": "2025-01-31T23:43:26Z"
+    },
+    {
+      "name": "design",
+      "clone_url": "https://github.com/gazebosim/design.git",
+      "default_branch": "main",
+      "head_sha": "046101c92974db8b57c10f4f60d0e43f3fa6b780",
+      "license": null,
+      "size_kb": 1368,
+      "pushed_at": "2022-08-23T22:14:46Z"
+    },
+    {
+      "name": "docs",
+      "clone_url": "https://github.com/gazebosim/docs.git",
+      "default_branch": "master",
+      "head_sha": "fc0832680c6908c4850e8f4af3b8190181bf877f",
+      "license": "CC-BY-4.0",
+      "size_kb": 603655,
+      "pushed_at": "2026-06-09T13:45:51Z"
+    },
+    {
+      "name": "gazebo_test_cases",
+      "clone_url": "https://github.com/gazebosim/gazebo_test_cases.git",
+      "default_branch": "master",
+      "head_sha": "e509e250511700278c9a93fb16765133687f8d85",
+      "license": null,
+      "size_kb": 1885,
+      "pushed_at": "2025-09-12T20:33:23Z"
+    },
+    {
+      "name": "gz_pkg_create",
+      "clone_url": "https://github.com/gazebosim/gz_pkg_create.git",
+      "default_branch": "main",
+      "head_sha": "0fe33764f534756da0f60fdc2d622ee458f1cba0",
+      "license": "Apache-2.0",
+      "size_kb": 21,
+      "pushed_at": "2022-10-03T19:59:56Z"
+    },
+    {
+      "name": "gz-bazel",
+      "clone_url": "https://github.com/gazebosim/gz-bazel.git",
+      "default_branch": "garden",
+      "head_sha": "da8334877062ad1fdf3bca41c5ce40af28207d3a",
+      "license": "BSD-3-Clause",
+      "size_kb": 207,
+      "pushed_at": "2024-11-07T17:47:24Z"
+    },
+    {
+      "name": "gz-chrono",
+      "clone_url": "https://github.com/gazebosim/gz-chrono.git",
+      "default_branch": "main",
+      "head_sha": "da388f276af1f8f1d7630671e74bd93048ce9f65",
+      "license": "Apache-2.0",
+      "size_kb": 9,
+      "pushed_at": "2025-04-08T16:37:52Z"
+    },
+    {
+      "name": "gz-cmake",
+      "clone_url": "https://github.com/gazebosim/gz-cmake.git",
+      "default_branch": "main",
+      "head_sha": "293ee4c1452ac30d0698c13400c5f82d3788f928",
+      "license": "Apache-2.0",
+      "size_kb": 4365,
+      "pushed_at": "2026-05-20T16:55:08Z"
+    },
+    {
+      "name": "gz-common",
+      "clone_url": "https://github.com/gazebosim/gz-common.git",
+      "default_branch": "main",
+      "head_sha": "b632fbd39641cdcb4c72e3742882790b17368524",
+      "license": "Apache-2.0",
+      "size_kb": 20549,
+      "pushed_at": "2026-06-10T18:49:58Z"
+    },
+    {
+      "name": "gz-fuel-tools",
+      "clone_url": "https://github.com/gazebosim/gz-fuel-tools.git",
+      "default_branch": "main",
+      "head_sha": "69f9e63b582c79d5184cd1fe4978d24e79e87396",
+      "license": "Apache-2.0",
+      "size_kb": 4548,
+      "pushed_at": "2026-05-25T15:25:39Z"
+    },
+    {
+      "name": "gz-gui",
+      "clone_url": "https://github.com/gazebosim/gz-gui.git",
+      "default_branch": "main",
+      "head_sha": "7c662418d2a7d567b6f5d27487d3629f2df3b20e",
+      "license": "Apache-2.0",
+      "size_kb": 12001,
+      "pushed_at": "2026-06-10T11:37:07Z"
+    },
+    {
+      "name": "gz-launch",
+      "clone_url": "https://github.com/gazebosim/gz-launch.git",
+      "default_branch": "main",
+      "head_sha": "f9aa744932ff91861d51af2d31d9b9de1e905ce6",
+      "license": "Apache-2.0",
+      "size_kb": 2566,
+      "pushed_at": "2026-06-11T02:25:22Z"
+    },
+    {
+      "name": "gz-math",
+      "clone_url": "https://github.com/gazebosim/gz-math.git",
+      "default_branch": "main",
+      "head_sha": "13a9f2a7a1b9f26b14655bb277b21e350a50373b",
+      "license": "Apache-2.0",
+      "size_kb": 12160,
+      "pushed_at": "2026-06-06T00:34:01Z"
+    },
+    {
+      "name": "gz-msgs",
+      "clone_url": "https://github.com/gazebosim/gz-msgs.git",
+      "default_branch": "main",
+      "head_sha": "f091672c868a59b1e5bbf36c9e797d5fb8c23cfa",
+      "license": "Apache-2.0",
+      "size_kb": 3832,
+      "pushed_at": "2026-06-11T02:48:45Z"
+    },
+    {
+      "name": "gz-mujoco",
+      "clone_url": "https://github.com/gazebosim/gz-mujoco.git",
+      "default_branch": "main",
+      "head_sha": "60d9855be95015cf3282b139c7dbdaed02333f5b",
+      "license": null,
+      "size_kb": 2029,
+      "pushed_at": "2026-03-04T22:45:11Z"
+    },
+    {
+      "name": "gz-omni",
+      "clone_url": "https://github.com/gazebosim/gz-omni.git",
+      "default_branch": "main",
+      "head_sha": "95b18621816a9d99966a5d472402fee1f98fa15f",
+      "license": null,
+      "size_kb": 72374,
+      "pushed_at": "2025-02-04T22:04:23Z"
+    },
+    {
+      "name": "gz-omni-meta",
+      "clone_url": "https://github.com/gazebosim/gz-omni-meta.git",
+      "default_branch": "main",
+      "head_sha": "bbb099d92302aa83b53f513ee97cf086996ff8a5",
+      "license": null,
+      "size_kb": 12,
+      "pushed_at": "2024-09-30T08:49:49Z"
+    },
+    {
+      "name": "gz-physics",
+      "clone_url": "https://github.com/gazebosim/gz-physics.git",
+      "default_branch": "main",
+      "head_sha": "67a7d5ce505d6cfca5c3aa41e7d842a98ac144c4",
+      "license": "Apache-2.0",
+      "size_kb": 27651,
+      "pushed_at": "2026-06-11T00:07:25Z"
+    },
+    {
+      "name": "gz-plugin",
+      "clone_url": "https://github.com/gazebosim/gz-plugin.git",
+      "default_branch": "main",
+      "head_sha": "05c5fb2368fa88767446813a99bdb4c36675905e",
+      "license": "Apache-2.0",
+      "size_kb": 2794,
+      "pushed_at": "2026-05-06T15:53:14Z"
+    },
+    {
+      "name": "gz-rendering",
+      "clone_url": "https://github.com/gazebosim/gz-rendering.git",
+      "default_branch": "main",
+      "head_sha": "7f0a813fb8c9dc69f4ddf83e6b26c0d04a7687f0",
+      "license": "Apache-2.0",
+      "size_kb": 132769,
+      "pushed_at": "2026-06-09T17:07:02Z"
+    },
+    {
+      "name": "gz-rotary",
+      "clone_url": "https://github.com/gazebosim/gz-rotary.git",
+      "default_branch": "main",
+      "head_sha": "1a1864ad697360b049e025e6dea1d559e70f8e02",
+      "license": "Apache-2.0",
+      "size_kb": 12,
+      "pushed_at": "2026-04-16T16:57:38Z"
+    },
+    {
+      "name": "gz-rviz",
+      "clone_url": "https://github.com/gazebosim/gz-rviz.git",
+      "default_branch": "main",
+      "head_sha": null,
+      "license": null,
+      "size_kb": 387,
+      "pushed_at": "2023-05-31T16:48:23Z"
+    },
+    {
+      "name": "gz-sensors",
+      "clone_url": "https://github.com/gazebosim/gz-sensors.git",
+      "default_branch": "main",
+      "head_sha": null,
+      "license": "Apache-2.0",
+      "size_kb": 9451,
+      "pushed_at": "2026-06-08T15:06:58Z"
+    },
+    {
+      "name": "gz-sim",
+      "clone_url": "https://github.com/gazebosim/gz-sim.git",
+      "default_branch": "main",
+      "head_sha": null,
+      "license": "Apache-2.0",
+      "size_kb": 246215,
+      "pushed_at": "2026-06-11T03:25:56Z"
+    },
+    {
+      "name": "gz-test",
+      "clone_url": "https://github.com/gazebosim/gz-test.git",
+      "default_branch": "main",
+      "head_sha": null,
+      "license": "NOASSERTION",
+      "size_kb": 994,
+      "pushed_at": "2026-06-09T18:02:51Z"
+    },
+    {
+      "name": "gz-tools",
+      "clone_url": "https://github.com/gazebosim/gz-tools.git",
+      "default_branch": "main",
+      "head_sha": null,
+      "license": "Apache-2.0",
+      "size_kb": 925,
+      "pushed_at": "2026-05-23T14:57:17Z"
+    },
+    {
+      "name": "gz-transport",
+      "clone_url": "https://github.com/gazebosim/gz-transport.git",
+      "default_branch": "main",
+      "head_sha": null,
+      "license": "Apache-2.0",
+      "size_kb": 21118,
+      "pushed_at": "2026-05-26T17:23:52Z"
+    },
+    {
+      "name": "gz-usd",
+      "clone_url": "https://github.com/gazebosim/gz-usd.git",
+      "default_branch": "main",
+      "head_sha": null,
+      "license": "Apache-2.0",
+      "size_kb": 971,
+      "pushed_at": "2025-11-26T05:41:57Z"
+    },
+    {
+      "name": "gz-utils",
+      "clone_url": "https://github.com/gazebosim/gz-utils.git",
+      "default_branch": "main",
+      "head_sha": null,
+      "license": "Apache-2.0",
+      "size_kb": 859,
+      "pushed_at": "2026-04-28T21:06:41Z"
+    },
+    {
+      "name": "ros_gz",
+      "clone_url": "https://github.com/gazebosim/ros_gz.git",
+      "default_branch": "ros2",
+      "head_sha": null,
+      "license": "Apache-2.0",
+      "size_kb": 8583,
+      "pushed_at": "2026-06-08T12:55:40Z"
+    },
+    {
+      "name": "ros_gz_project_template",
+      "clone_url": "https://github.com/gazebosim/ros_gz_project_template.git",
+      "default_branch": "main",
+      "head_sha": null,
+      "license": "Apache-2.0",
+      "size_kb": 55,
+      "pushed_at": "2025-06-11T08:56:16Z"
+    },
+    {
+      "name": "rules_gazebo",
+      "clone_url": "https://github.com/gazebosim/rules_gazebo.git",
+      "default_branch": "main",
+      "head_sha": null,
+      "license": "Apache-2.0",
+      "size_kb": 113,
+      "pushed_at": "2026-06-11T00:39:42Z"
+    },
+    {
+      "name": "sdf_tutorials",
+      "clone_url": "https://github.com/gazebosim/sdf_tutorials.git",
+      "default_branch": "master",
+      "head_sha": null,
+      "license": null,
+      "size_kb": 2837,
+      "pushed_at": "2026-05-11T06:27:37Z"
+    },
+    {
+      "name": "sdformat",
+      "clone_url": "https://github.com/gazebosim/sdformat.git",
+      "default_branch": "main",
+      "head_sha": null,
+      "license": "Apache-2.0",
+      "size_kb": 19907,
+      "pushed_at": "2026-05-22T22:35:19Z"
+    },
+    {
+      "name": "testing",
+      "clone_url": "https://github.com/gazebosim/testing.git",
+      "default_branch": "main",
+      "head_sha": null,
+      "license": null,
+      "size_kb": 24,
+      "pushed_at": "2025-06-18T21:41:50Z"
+    }
+  ],
+  "excluded_repos": [
+    {
+      "name": "fortress_demo",
+      "archived": true,
+      "demo_like": true,
+      "release_metapackage": false,
+      "initial_candidate": false,
+      "exclude_reason": "archived"
+    },
+    {
+      "name": "garden_demo",
+      "archived": false,
+      "demo_like": true,
+      "release_metapackage": false,
+      "initial_candidate": false,
+      "exclude_reason": "demo_like"
+    },
+    {
+      "name": "garden-tutorial-party",
+      "archived": true,
+      "demo_like": false,
+      "release_metapackage": false,
+      "initial_candidate": false,
+      "exclude_reason": "archived"
+    },
+    {
+      "name": "gazebo-classic",
+      "archived": true,
+      "demo_like": false,
+      "release_metapackage": false,
+      "initial_candidate": false,
+      "exclude_reason": "archived"
+    },
+    {
+      "name": "gz-citadel",
+      "archived": false,
+      "demo_like": false,
+      "release_metapackage": true,
+      "initial_candidate": false,
+      "exclude_reason": "release_metapackage"
+    },
+    {
+      "name": "gz-edifice",
+      "archived": true,
+      "demo_like": false,
+      "release_metapackage": true,
+      "initial_candidate": false,
+      "exclude_reason": "archived"
+    },
+    {
+      "name": "gz-fortress",
+      "archived": false,
+      "demo_like": false,
+      "release_metapackage": true,
+      "initial_candidate": false,
+      "exclude_reason": "release_metapackage"
+    },
+    {
+      "name": "gz-garden",
+      "archived": true,
+      "demo_like": false,
+      "release_metapackage": true,
+      "initial_candidate": false,
+      "exclude_reason": "archived"
+    },
+    {
+      "name": "gz-harmonic",
+      "archived": false,
+      "demo_like": false,
+      "release_metapackage": true,
+      "initial_candidate": false,
+      "exclude_reason": "release_metapackage"
+    },
+    {
+      "name": "gz-ionic",
+      "archived": false,
+      "demo_like": false,
+      "release_metapackage": true,
+      "initial_candidate": false,
+      "exclude_reason": "release_metapackage"
+    },
+    {
+      "name": "gz-jetty",
+      "archived": false,
+      "demo_like": false,
+      "release_metapackage": true,
+      "initial_candidate": false,
+      "exclude_reason": "release_metapackage"
+    },
+    {
+      "name": "gz-kura",
+      "archived": false,
+      "demo_like": false,
+      "release_metapackage": true,
+      "initial_candidate": false,
+      "exclude_reason": "release_metapackage"
+    },
+    {
+      "name": "gz-rndf",
+      "archived": true,
+      "demo_like": false,
+      "release_metapackage": false,
+      "initial_candidate": false,
+      "exclude_reason": "archived"
+    },
+    {
+      "name": "harmonic_demo",
+      "archived": false,
+      "demo_like": true,
+      "release_metapackage": false,
+      "initial_candidate": false,
+      "exclude_reason": "demo_like"
+    },
+    {
+      "name": "ign-acropolis",
+      "archived": true,
+      "demo_like": false,
+      "release_metapackage": false,
+      "initial_candidate": false,
+      "exclude_reason": "archived"
+    },
+    {
+      "name": "ign-blueprint",
+      "archived": true,
+      "demo_like": false,
+      "release_metapackage": false,
+      "initial_candidate": false,
+      "exclude_reason": "archived"
+    },
+    {
+      "name": "ign-dome",
+      "archived": true,
+      "demo_like": false,
+      "release_metapackage": false,
+      "initial_candidate": false,
+      "exclude_reason": "archived"
+    },
+    {
+      "name": "ign-go1",
+      "archived": true,
+      "demo_like": false,
+      "release_metapackage": false,
+      "initial_candidate": false,
+      "exclude_reason": "archived"
+    },
+    {
+      "name": "ionic_demo",
+      "archived": false,
+      "demo_like": true,
+      "release_metapackage": false,
+      "initial_candidate": false,
+      "exclude_reason": "demo_like"
+    },
+    {
+      "name": "jetty_demo",
+      "archived": false,
+      "demo_like": true,
+      "release_metapackage": false,
+      "initial_candidate": false,
+      "exclude_reason": "demo_like"
+    }
+  ]
+}
