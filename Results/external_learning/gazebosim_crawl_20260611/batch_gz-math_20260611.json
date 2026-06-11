@@ -1,0 +1,72 @@
+{
+  "task_id": "COAGENT-DEVOPS-GAZEBOSIM-REFERENCES-INGEST-20260611",
+  "repo": "gz-math",
+  "source_full_name": "gazebosim/gz-math",
+  "source_url": "https://github.com/gazebosim/gz-math",
+  "clone_url": "git@github.com:gazebosim/gz-math.git",
+  "default_branch": "main",
+  "source_head_sha": "13a9f2a7a1b9f26b14655bb277b21e350a50373b",
+  "imported_path": "References/Gazebo/gz-math",
+  "copied_file_count": 536,
+  "copied_total_bytes": 4116089.0,
+  "largest_files": [
+    {
+      "path": "References/Gazebo/gz-math/test/gtest_vendor/src/gtest.cc",
+      "bytes": 262335
+    },
+    {
+      "path": "References/Gazebo/gz-math/test/gtest_vendor/include/gtest/gtest.h",
+      "bytes": 92011
+    },
+    {
+      "path": "References/Gazebo/gz-math/test/gtest_vendor/include/gtest/internal/gtest-port.h",
+      "bytes": 90050
+    },
+    {
+      "path": "References/Gazebo/gz-math/Changelog.md",
+      "bytes": 67740
+    },
+    {
+      "path": "References/Gazebo/gz-math/test/gtest_vendor/include/gtest/internal/gtest-internal.h",
+      "bytes": 65365
+    },
+    {
+      "path": "References/Gazebo/gz-math/test/gtest_vendor/src/gtest-death-test.cc",
+      "bytes": 64749
+    },
+    {
+      "path": "References/Gazebo/gz-math/test/gtest_vendor/src/gtest-port.cc",
+      "bytes": 49251
+    },
+    {
+      "path": "References/Gazebo/gz-math/test/gtest_vendor/src/gtest-internal-inl.h",
+      "bytes": 48876
+    },
+    {
+      "path": "References/Gazebo/gz-math/include/gz/math/MassMatrix3.hh",
+      "bytes": 45927
+    },
+    {
+      "path": "References/Gazebo/gz-math/src/MassMatrix3_TEST.cc",
+      "bytes": 37979
+    }
+  ],
+  "excluded_dirs": [
+    ".git",
+    "build",
+    "install",
+    "log",
+    ".venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache",
+    ".cache"
+  ],
+  "large_file_threshold_bytes": 104857600,
+  "large_file_count": 0,
+  "nested_risk_dir_count": 0,
+  "sensitive_name_count": 0,
+  "lfs_pointer_count": 0,
+  "scan_passed": true,
+  "generated_at_cst": "2026-06-11T12:34:49+08:00"
+}
