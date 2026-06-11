@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/Pose.hh",
+    "sha": "d9a9fa309657ff963d939e3c269d6093ff812499",
+    "size": 1725
+  },
+  {
+    "path": "include/gz/sim/components/PoseCmd.hh",
+    "sha": "0d8691664a786c1457acffcfad4264145e8f2b72",
+    "size": 1309
+  },
+  {
+    "path": "include/gz/sim/components/Projector.hh",
+    "sha": "9824e88594bb2dd4db5d97257edfaa101c92cabc",
+    "size": 1486
+  },
+  {
+    "path": "include/gz/sim/components/RaycastData.hh",
+    "sha": "076f3ba7a7c7caa0cd89bc935693bae845e01c84",
+    "size": 3429
+  },
+  {
+    "path": "include/gz/sim/components/Recreate.hh",
+    "sha": "a2e06be1ce062093bd9b3e016b96825f4c4972fe",
+    "size": 1622
+  }
+]

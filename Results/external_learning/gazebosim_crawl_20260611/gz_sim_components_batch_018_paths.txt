@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/Pose.hh
+References/Gazebo/gz-sim/include/gz/sim/components/PoseCmd.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Projector.hh
+References/Gazebo/gz-sim/include/gz/sim/components/RaycastData.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Recreate.hh
