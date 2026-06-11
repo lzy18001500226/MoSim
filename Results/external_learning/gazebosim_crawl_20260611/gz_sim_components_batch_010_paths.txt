@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/JointPositionLimitsCmd.hh
+References/Gazebo/gz-sim/include/gz/sim/components/JointPositionReset.hh
+References/Gazebo/gz-sim/include/gz/sim/components/JointTransmittedWrench.hh
+References/Gazebo/gz-sim/include/gz/sim/components/JointType.hh
+References/Gazebo/gz-sim/include/gz/sim/components/JointVelocity.hh
