@@ -74,6 +74,14 @@ leave them as an explicit follow-up queue. Whitespace failures are not evidence
 that ordinary source, docs, scripts, configs, or small assets should stay
 hidden behind `.gitignore`.
 
+For external reference snapshot imports, generated batch manifests are part of
+the same gate as the imported files. Write those manifests with LF line endings,
+or normalize them before staging, so `git diff --cached --check` validates the
+real batch instead of reporting local Windows line-ending noise. In PowerShell
+commit pipelines, do not rely on semicolon-separated commands after
+`git diff --cached --check`; explicitly stop on a non-zero `$LASTEXITCODE`
+before `git commit` or `git push`.
+
 Use the handoff packet when the current Git surface is already broad and needs
 DevOps/reviewer ownership before any commit:
 
