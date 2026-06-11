@@ -1,0 +1,31 @@
+{
+  "repo": "gazebosim/gz-sim",
+  "commit": "af5d2ac7f022547d4146324b08aee4af32318576",
+  "batch": "gz_sim_tutorials_004",
+  "generated_at": "2026-06-12T03:25:58.8262848+08:00",
+  "file_count": 4,
+  "total_size": 23655029,
+  "max_file_size": 9642530.0,
+  "files": [
+    {
+      "path": "tutorials/files/digital_elevation_models/mesh_cave.png",
+      "size": 9642530,
+      "sha": "d9c90955cd8c4efd8b37d45c9ab3a433d59c708c"
+    },
+    {
+      "path": "tutorials/files/digital_elevation_models/mesh_tunnel_entrance.png",
+      "size": 1805048,
+      "sha": "95bdb54efc2c9ff3a15fcc3cd0ddc8b20daa344e"
+    },
+    {
+      "path": "tutorials/files/digital_elevation_models/open_topography_region_selection.png",
+      "size": 3799500,
+      "sha": "b4a7c7213a95cfd5d3b6e875be701369cddfce12"
+    },
+    {
+      "path": "tutorials/files/digital_elevation_models/qgis_draw_on_map_canvas.png",
+      "size": 8407951,
+      "sha": "5768b6f5f885b27890549646dc50cfdbb8a6713b"
+    }
+  ]
+}

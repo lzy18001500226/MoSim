@@ -1,0 +1,4 @@
+References/Gazebo/gz-sim/tutorials/files/digital_elevation_models/mesh_cave.png
+References/Gazebo/gz-sim/tutorials/files/digital_elevation_models/mesh_tunnel_entrance.png
+References/Gazebo/gz-sim/tutorials/files/digital_elevation_models/open_topography_region_selection.png
+References/Gazebo/gz-sim/tutorials/files/digital_elevation_models/qgis_draw_on_map_canvas.png
