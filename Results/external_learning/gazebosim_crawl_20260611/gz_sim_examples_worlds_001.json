@@ -1,0 +1,42 @@
+[
+  {
+    "path": "examples/worlds/3k_shapes.sdf",
+    "sha": "21c62231ff220ae6c5218a7a73d7dbcbcac39122",
+    "size": 2798468
+  },
+  {
+    "path": "examples/worlds/thumbnails/OpenRobotics.Tugbot in Warehouse.png",
+    "sha": "36798d8169506ee4d40156acc01df2fe40fdcfa8",
+    "size": 1254963
+  },
+  {
+    "path": "examples/worlds/thumbnails/OpenRobotics.Prius on Sonoma Raceway.png",
+    "sha": "3f889a9bbbafc852cffb0dbcc7510bb4be5e1e8d",
+    "size": 542958
+  },
+  {
+    "path": "examples/worlds/thumbnails/OpenRobotics.Panda joint control world.png",
+    "sha": "7cccc8667eb42e233f8bb101785c24709957b5a9",
+    "size": 271179
+  },
+  {
+    "path": "examples/worlds/thumbnails/OpenRobotics.NAO joint control.png",
+    "sha": "4b2b8551bc4cb20207e3372e022b16d128418220",
+    "size": 185956
+  },
+  {
+    "path": "examples/worlds/levels_no_performers.sdf",
+    "sha": "6b2a39f05c5aeaf672360e43f39aab97f9e90f29",
+    "size": 128324
+  },
+  {
+    "path": "examples/worlds/levels.sdf",
+    "sha": "dbd7de276b9cbaed01a84c6619c130e34e3fd148",
+    "size": 128032
+  },
+  {
+    "path": "examples/worlds/thumbnails/OpenRobotics.Quadcopter teleop.png",
+    "sha": "486dffb841865a3d73e79b2a204cf099b71af4d9",
+    "size": 118483
+  }
+]

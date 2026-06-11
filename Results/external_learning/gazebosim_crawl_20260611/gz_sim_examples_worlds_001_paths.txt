@@ -1,0 +1,8 @@
+References/Gazebo/gz-sim/examples/worlds/3k_shapes.sdf
+References/Gazebo/gz-sim/examples/worlds/thumbnails/OpenRobotics.Tugbot in Warehouse.png
+References/Gazebo/gz-sim/examples/worlds/thumbnails/OpenRobotics.Prius on Sonoma Raceway.png
+References/Gazebo/gz-sim/examples/worlds/thumbnails/OpenRobotics.Panda joint control world.png
+References/Gazebo/gz-sim/examples/worlds/thumbnails/OpenRobotics.NAO joint control.png
+References/Gazebo/gz-sim/examples/worlds/levels_no_performers.sdf
+References/Gazebo/gz-sim/examples/worlds/levels.sdf
+References/Gazebo/gz-sim/examples/worlds/thumbnails/OpenRobotics.Quadcopter teleop.png
