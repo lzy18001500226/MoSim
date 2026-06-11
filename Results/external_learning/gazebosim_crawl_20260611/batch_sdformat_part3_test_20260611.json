@@ -1,0 +1,11 @@
+{
+  "repo": "sdformat",
+  "part": "part3_tests_resources",
+  "source_sha": "e44eaf7dfdd6e72830f14b07f8822ceec3f7b190",
+  "target": "References/Gazebo/sdformat",
+  "file_count": 393,
+  "paths": [
+    "References/Gazebo/sdformat/test"
+  ],
+  "stage_file": "Results/external_learning/gazebosim_crawl_20260611/stage_sdformat_part3_test_20260611.txt"
+}
