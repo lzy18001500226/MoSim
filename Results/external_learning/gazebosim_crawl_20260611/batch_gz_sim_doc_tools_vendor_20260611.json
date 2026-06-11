@@ -1,0 +1,114 @@
+[
+  {
+    "path": "doc/architecture_design.md",
+    "dest": "References\\Gazebo\\gz-sim\\doc\\architecture_design.md",
+    "sha": "33ddd345511f4b80baf05cb889d81a24c1568dc8",
+    "size": 5463,
+    "verified_hash": "33ddd345511f4b80baf05cb889d81a24c1568dc8",
+    "verified_size": 5463
+  },
+  {
+    "path": "doc/architecture_design/07.png",
+    "dest": "References\\Gazebo\\gz-sim\\doc\\architecture_design\\07.png",
+    "sha": "6523bb4888067e5eb2740d5dcdb5fe0a72cdc4c8",
+    "size": 75465,
+    "verified_hash": "6523bb4888067e5eb2740d5dcdb5fe0a72cdc4c8",
+    "verified_size": 75465
+  },
+  {
+    "path": "doc/architecture_design/08.png",
+    "dest": "References\\Gazebo\\gz-sim\\doc\\architecture_design\\08.png",
+    "sha": "15a199fcb1e9be500b2210dfba2e50955572f830",
+    "size": 75560,
+    "verified_hash": "15a199fcb1e9be500b2210dfba2e50955572f830",
+    "verified_size": 75560
+  },
+  {
+    "path": "tools/.codespell_ignore_words",
+    "dest": "References\\Gazebo\\gz-sim\\tools\\.codespell_ignore_words",
+    "sha": "536cc39c16c3d53252842e0d78baafeb14230ebc",
+    "size": 101,
+    "verified_hash": "536cc39c16c3d53252842e0d78baafeb14230ebc",
+    "verified_size": 101
+  },
+  {
+    "path": "tools/clang_tidy.sh",
+    "dest": "References\\Gazebo\\gz-sim\\tools\\clang_tidy.sh",
+    "sha": "a93c0ba3bbdb96945346e27e9ec7b7f8c783435d",
+    "size": 529,
+    "verified_hash": "a93c0ba3bbdb96945346e27e9ec7b7f8c783435d",
+    "verified_size": 529
+  },
+  {
+    "path": "tools/desktop/gz-logo.svg.in",
+    "dest": "References\\Gazebo\\gz-sim\\tools\\desktop\\gz-logo.svg.in",
+    "sha": "944756d1c39dd9e7f1445f287ec0efd15e51a786",
+    "size": 4447,
+    "verified_hash": "944756d1c39dd9e7f1445f287ec0efd15e51a786",
+    "verified_size": 4447
+  },
+  {
+    "path": "tools/desktop/gz-sim.desktop.in",
+    "dest": "References\\Gazebo\\gz-sim\\tools\\desktop\\gz-sim.desktop.in",
+    "sha": "1d19187da0e82174863101c846957feef22b6806",
+    "size": 279,
+    "verified_hash": "1d19187da0e82174863101c846957feef22b6806",
+    "verified_size": 279
+  },
+  {
+    "path": "tools/gl-test.py",
+    "dest": "References\\Gazebo\\gz-sim\\tools\\gl-test.py",
+    "sha": "ea3a958c9ce019799c408e6d599001932d85ecae",
+    "size": 445,
+    "verified_hash": "ea3a958c9ce019799c408e6d599001932d85ecae",
+    "verified_size": 445
+  },
+  {
+    "path": "tools/pyproject.toml",
+    "dest": "References\\Gazebo\\gz-sim\\tools\\pyproject.toml",
+    "sha": "9fbe60f9561fdb9666d8abf07f0e825271495c16",
+    "size": 83,
+    "verified_hash": "9fbe60f9561fdb9666d8abf07f0e825271495c16",
+    "verified_size": 83
+  },
+  {
+    "path": "vendor/backward-cpp/backward.cpp",
+    "dest": "References\\Gazebo\\gz-sim\\vendor\\backward-cpp\\backward.cpp",
+    "sha": "110441cba92c2951addb4b62030338d79ba5dffc",
+    "size": 1096,
+    "verified_hash": "110441cba92c2951addb4b62030338d79ba5dffc",
+    "verified_size": 1096
+  },
+  {
+    "path": "vendor/backward-cpp/backward.hpp",
+    "dest": "References\\Gazebo\\gz-sim\\vendor\\backward-cpp\\backward.hpp",
+    "sha": "40160236de26a4440768fa30d2c712af440daf4b",
+    "size": 144142,
+    "verified_hash": "40160236de26a4440768fa30d2c712af440daf4b",
+    "verified_size": 144142
+  },
+  {
+    "path": "vendor/backward-cpp/BackwardConfig.cmake",
+    "dest": "References\\Gazebo\\gz-sim\\vendor\\backward-cpp\\BackwardConfig.cmake",
+    "sha": "353cdc5dc4a16ddd052d68f67e32f26825e07ec1",
+    "size": 10380,
+    "verified_hash": "353cdc5dc4a16ddd052d68f67e32f26825e07ec1",
+    "verified_size": 10380
+  },
+  {
+    "path": "vendor/backward-cpp/CMakeLists.txt",
+    "dest": "References\\Gazebo\\gz-sim\\vendor\\backward-cpp\\CMakeLists.txt",
+    "sha": "711637e2dbd4c7d41919e06be06a43f88752642f",
+    "size": 5629,
+    "verified_hash": "711637e2dbd4c7d41919e06be06a43f88752642f",
+    "verified_size": 5629
+  },
+  {
+    "path": "vendor/backward-cpp/LICENSE.txt",
+    "dest": "References\\Gazebo\\gz-sim\\vendor\\backward-cpp\\LICENSE.txt",
+    "sha": "269e8abbc0ffcae554f10c2295b7199c89f34354",
+    "size": 1095,
+    "verified_hash": "269e8abbc0ffcae554f10c2295b7199c89f34354",
+    "verified_size": 1095
+  }
+]

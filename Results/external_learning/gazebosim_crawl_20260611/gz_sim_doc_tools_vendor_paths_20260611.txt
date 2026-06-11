@@ -1,0 +1,14 @@
+References\Gazebo\gz-sim\doc\architecture_design.md
+References\Gazebo\gz-sim\doc\architecture_design\07.png
+References\Gazebo\gz-sim\doc\architecture_design\08.png
+References\Gazebo\gz-sim\tools\.codespell_ignore_words
+References\Gazebo\gz-sim\tools\clang_tidy.sh
+References\Gazebo\gz-sim\tools\desktop\gz-logo.svg.in
+References\Gazebo\gz-sim\tools\desktop\gz-sim.desktop.in
+References\Gazebo\gz-sim\tools\gl-test.py
+References\Gazebo\gz-sim\tools\pyproject.toml
+References\Gazebo\gz-sim\vendor\backward-cpp\backward.cpp
+References\Gazebo\gz-sim\vendor\backward-cpp\backward.hpp
+References\Gazebo\gz-sim\vendor\backward-cpp\BackwardConfig.cmake
+References\Gazebo\gz-sim\vendor\backward-cpp\CMakeLists.txt
+References\Gazebo\gz-sim\vendor\backward-cpp\LICENSE.txt
