@@ -1,0 +1,144 @@
+{
+  "repo": "gazebosim/docs",
+  "head": "fc0832680c6908c4850e8f4af3b8190181bf877f",
+  "batch": "docs_garden_02b_media_remaining",
+  "count": 27,
+  "total_bytes": 3194683.0,
+  "paths": [
+    {
+      "path": "garden/tutorials/fuel_insert/mine_cart_engine_detail.png",
+      "sha": "61c2c9104fbfdcba560c03fc85e9bb6991a0930f",
+      "size": 324748
+    },
+    {
+      "path": "garden/tutorials/fuel_insert/resource_spawner_cloud.png",
+      "sha": "2fe7d259a7d6bd99a52db48fe29778f00dc040d8",
+      "size": 174966
+    },
+    {
+      "path": "garden/tutorials/fuel_insert/resource_spawner_local.png",
+      "sha": "f42147cd3e4f33dd15132ee4182da2f38a9a60cb",
+      "size": 118904
+    },
+    {
+      "path": "garden/tutorials/gui/entity_select.png",
+      "sha": "aa95fd538c896f466c738b4d4de07e8b62985a09",
+      "size": 138373
+    },
+    {
+      "path": "garden/tutorials/gui/grid_config.png",
+      "sha": "f09f797f7e2e8299adfe2347b1aa609f438d21ed",
+      "size": 132794
+    },
+    {
+      "path": "garden/tutorials/gui/hover_steps.png",
+      "sha": "e77f1c3fe10cab0a0e04b97611806646d8b36857",
+      "size": 8549
+    },
+    {
+      "path": "garden/tutorials/gui/menu_btn.png",
+      "sha": "6cb185d3566090390ee064682c60a31c664b2ddd",
+      "size": 469
+    },
+    {
+      "path": "garden/tutorials/gui/playback.png",
+      "sha": "bd521bce15cbb7270e8b5d7317a2109307890608",
+      "size": 10225
+    },
+    {
+      "path": "garden/tutorials/gui/plugins_btn.png",
+      "sha": "ddbdaa2896afaf78239f66a0e1f2bc76d06e578e",
+      "size": 596
+    },
+    {
+      "path": "garden/tutorials/gui/rtf_expanded.png",
+      "sha": "85f275dfa954d3b249e839755d327b03cf018734",
+      "size": 12851
+    },
+    {
+      "path": "garden/tutorials/gui/shape_insertion.png",
+      "sha": "e342221507cf53bf8846278693c11f0bc9064054",
+      "size": 161048
+    },
+    {
+      "path": "garden/tutorials/gui/shapes.png",
+      "sha": "8763a263dec84d5a96e305a3c013685eb9cd4bce",
+      "size": 163347
+    },
+    {
+      "path": "garden/tutorials/gui/toolbars.png",
+      "sha": "821ea37334a43c3525d0fa70ff60bd2a11a04f67",
+      "size": 14196
+    },
+    {
+      "path": "garden/tutorials/moving_robot/keypublisher_data.png",
+      "sha": "0b357dbbd745f2372e93da90de9a7132c99e9538",
+      "size": 38040
+    },
+    {
+      "path": "garden/tutorials/ros2_integration/empty_world.png",
+      "sha": "0b48a4ef07578cb9e4bec53be3025adc984fc16b",
+      "size": 69120
+    },
+    {
+      "path": "garden/tutorials/ros2_integration/jsp_diagram.jpg",
+      "sha": "2c5e6230523019a268b1ce2824ca01f398f648ab",
+      "size": 52392
+    },
+    {
+      "path": "garden/tutorials/ros2_integration/jsp_gui.png",
+      "sha": "5326e690b895c0c95c08c298d04a22404471e6d2",
+      "size": 958359
+    },
+    {
+      "path": "garden/tutorials/ros2_integration/use_template.png",
+      "sha": "b5413c09d249b876f685fb63de1c79b42c1e0ca4",
+      "size": 168866
+    },
+    {
+      "path": "garden/tutorials/sdf_worlds/coke_world.png",
+      "sha": "7ac8b9892db111c965257cf90b15ba86116e8897",
+      "size": 34626
+    },
+    {
+      "path": "garden/tutorials/sdf_worlds/entity_tree.png",
+      "sha": "23a815192775f179b003bceff536f7bc2467903c",
+      "size": 12526
+    },
+    {
+      "path": "garden/tutorials/sdf_worlds/two_cokes.png",
+      "sha": "527cc0b74fcbd88bed055a21848dda7e59e1cdc5",
+      "size": 47770
+    },
+    {
+      "path": "garden/tutorials/sdf_worlds/world_stats.png",
+      "sha": "7dadcab3688408f8319a25e744585d371e94956f",
+      "size": 49813
+    },
+    {
+      "path": "garden/tutorials/sensors/imu_msgs.png",
+      "sha": "56663f83bf6fddcfc3a02f574fec1305cf57ceb7",
+      "size": 60666
+    },
+    {
+      "path": "garden/tutorials/sensors/sensor_wall.png",
+      "sha": "95b07c4b516a0f32014c4d4d78d7e9143e14bb30",
+      "size": 87856
+    },
+    {
+      "path": "garden/tutorials/spawn_urdf/empty_world.png",
+      "sha": "9671ce270b656eff94572c006b529a0d669ba462",
+      "size": 81733
+    },
+    {
+      "path": "garden/tutorials/spawn_urdf/rrbot.gif",
+      "sha": "1dfad37ce007240cf665c094a325cd69da717f7f",
+      "size": 183628
+    },
+    {
+      "path": "garden/tutorials/spawn_urdf/urdf_spawned.png",
+      "sha": "aa032c0a67a9065e936b4cb957b5a0219b3a0965",
+      "size": 88222
+    }
+  ]
+}
