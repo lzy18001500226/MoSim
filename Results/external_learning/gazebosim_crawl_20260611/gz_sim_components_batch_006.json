@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/CpuLidar.hh",
+    "sha": "d2449015fcb54f9e00ec21c4690e68035e12b271",
+    "size": 1305
+  },
+  {
+    "path": "include/gz/sim/components/CustomSensor.hh",
+    "sha": "eea386fc2b1173d8eb228cbd70cb3b09e19fc271",
+    "size": 1408
+  },
+  {
+    "path": "include/gz/sim/components/DepthCamera.hh",
+    "sha": "13d6ff2c7ccf26f1d7229cdcd7b0035ed48288ce",
+    "size": 1331
+  },
+  {
+    "path": "include/gz/sim/components/DetachableJoint.hh",
+    "sha": "a2286e4dad9d8eab285793f3ab1d7fa2bd21c4f9",
+    "size": 3215
+  },
+  {
+    "path": "include/gz/sim/components/Environment.hh",
+    "sha": "e3a52ab3bacaf6267adc5a75d8a7555937261510",
+    "size": 2884
+  }
+]

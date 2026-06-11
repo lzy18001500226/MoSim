@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/CpuLidar.hh
+References/Gazebo/gz-sim/include/gz/sim/components/CustomSensor.hh
+References/Gazebo/gz-sim/include/gz/sim/components/DepthCamera.hh
+References/Gazebo/gz-sim/include/gz/sim/components/DetachableJoint.hh
+References/Gazebo/gz-sim/include/gz/sim/components/Environment.hh
