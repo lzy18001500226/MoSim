@@ -1,0 +1,66 @@
+[
+  {
+    "path": "python/test/link_test.sdf",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\link_test.sdf",
+    "sha": "0f0b4f4e2553524253f4684178c92b27bba1f81c",
+    "size": 1335,
+    "verified_hash": "0f0b4f4e2553524253f4684178c92b27bba1f81c",
+    "verified_size": 1335
+  },
+  {
+    "path": "python/test/model_TEST.py",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\model_TEST.py",
+    "sha": "f40aafa09fd4f2c0ca423e7792ccc83076cae2d7",
+    "size": 2849,
+    "verified_hash": "f40aafa09fd4f2c0ca423e7792ccc83076cae2d7",
+    "verified_size": 2849
+  },
+  {
+    "path": "python/test/model_test.sdf",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\model_test.sdf",
+    "sha": "87de87ab2728eef54b0fba66eb919e0b4b68052e",
+    "size": 709,
+    "verified_hash": "87de87ab2728eef54b0fba66eb919e0b4b68052e",
+    "verified_size": 709
+  },
+  {
+    "path": "python/test/plugins/test_model_system.py",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\plugins\\test_model_system.py",
+    "sha": "56e0118250d134cbae28c28c6c828ea6a3ec2255",
+    "size": 2414,
+    "verified_hash": "56e0118250d134cbae28c28c6c828ea6a3ec2255",
+    "verified_size": 2414
+  },
+  {
+    "path": "python/test/sensor_TEST.py",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\sensor_TEST.py",
+    "sha": "db76b719eb1b8ad0b167996b4810a491c02d0ce3",
+    "size": 2747,
+    "verified_hash": "db76b719eb1b8ad0b167996b4810a491c02d0ce3",
+    "verified_size": 2747
+  },
+  {
+    "path": "python/test/testFixture_TEST.py",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\testFixture_TEST.py",
+    "sha": "ca5808c114c30815baf134572fd0088fbeb278ec",
+    "size": 2004,
+    "verified_hash": "ca5808c114c30815baf134572fd0088fbeb278ec",
+    "verified_size": 2004
+  },
+  {
+    "path": "python/test/world_TEST.py",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\world_TEST.py",
+    "sha": "e9a27099ec94abb8ef04e210f371d0ad192c6771",
+    "size": 4269,
+    "verified_hash": "e9a27099ec94abb8ef04e210f371d0ad192c6771",
+    "verified_size": 4269
+  },
+  {
+    "path": "python/test/world_test.sdf",
+    "dest": "References\\Gazebo\\gz-sim\\python\\test\\world_test.sdf",
+    "sha": "e3c301ccbc1ad9c48e2f8ab88cefd6f37146626e",
+    "size": 1239,
+    "verified_hash": "e3c301ccbc1ad9c48e2f8ab88cefd6f37146626e",
+    "verified_size": 1239
+  }
+]
