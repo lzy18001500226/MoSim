@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/include/gz/sim/components/CanonicalLink.hh
+References/Gazebo/gz-sim/include/gz/sim/components/CastShadows.hh
+References/Gazebo/gz-sim/include/gz/sim/components/CenterOfVolume.hh
+References/Gazebo/gz-sim/include/gz/sim/components/ChildLinkName.hh
+References/Gazebo/gz-sim/include/gz/sim/components/CMakeLists.txt

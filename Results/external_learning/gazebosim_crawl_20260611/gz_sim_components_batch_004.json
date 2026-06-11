@@ -1,0 +1,27 @@
+[
+  {
+    "path": "include/gz/sim/components/CanonicalLink.hh",
+    "sha": "12744fb59614acadca78c32d461db83a1ba9b700",
+    "size": 1509
+  },
+  {
+    "path": "include/gz/sim/components/CastShadows.hh",
+    "sha": "47af35130e10fab400786a3690f2da683214596b",
+    "size": 1216
+  },
+  {
+    "path": "include/gz/sim/components/CenterOfVolume.hh",
+    "sha": "ff43f901f7aba04a1c5d8cadc0139ddf889d0423",
+    "size": 1440
+  },
+  {
+    "path": "include/gz/sim/components/ChildLinkName.hh",
+    "sha": "573c4b18c12d99d54c52dc2cbedc1eb5cd730c1f",
+    "size": 1336
+  },
+  {
+    "path": "include/gz/sim/components/CMakeLists.txt",
+    "sha": "4a3860478ca2cbc5a56bcf12a317fd8a4c0dabe5",
+    "size": 486
+  }
+]
