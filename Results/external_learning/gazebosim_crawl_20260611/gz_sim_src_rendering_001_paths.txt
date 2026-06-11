@@ -1,0 +1,5 @@
+References/Gazebo/gz-sim/src/rendering/CMakeLists.txt
+References/Gazebo/gz-sim/src/rendering/MarkerManager.cc
+References/Gazebo/gz-sim/src/rendering/MaterialParser/ConfigLoader.cc
+References/Gazebo/gz-sim/src/rendering/MaterialParser/ConfigLoader.hh
+References/Gazebo/gz-sim/src/rendering/MaterialParser/gazebo.material

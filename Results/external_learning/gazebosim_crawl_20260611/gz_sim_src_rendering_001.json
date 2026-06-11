@@ -1,0 +1,27 @@
+[
+  {
+    "path": "src/rendering/CMakeLists.txt",
+    "sha": "8a6df65b431dc9e1d4289372369abcba3d5be878",
+    "size": 895
+  },
+  {
+    "path": "src/rendering/MarkerManager.cc",
+    "sha": "04b1bef0e14bfcf8113973cfaa988044cfbcaaf1",
+    "size": 18781
+  },
+  {
+    "path": "src/rendering/MaterialParser/ConfigLoader.cc",
+    "sha": "8f702749f0d5889431c9337763e6970990a607fc",
+    "size": 10215
+  },
+  {
+    "path": "src/rendering/MaterialParser/ConfigLoader.hh",
+    "sha": "833519745009e91c0f2bdd687a910b8efd60fc20",
+    "size": 3667
+  },
+  {
+    "path": "src/rendering/MaterialParser/gazebo.material",
+    "sha": "4e96dc2c769fe3d4239dbd3e5f1520dcd4555645",
+    "size": 24643
+  }
+]
