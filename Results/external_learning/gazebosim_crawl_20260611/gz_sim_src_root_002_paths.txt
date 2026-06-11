@@ -1,0 +1,10 @@
+References/Gazebo/gz-sim/src/Conversions.cc
+References/Gazebo/gz-sim/src/EntityComponentManager_TEST.cc
+References/Gazebo/gz-sim/src/EntityComponentManager.cc
+References/Gazebo/gz-sim/src/EntityComponentManagerDiff.cc
+References/Gazebo/gz-sim/src/EntityComponentManagerDiff.hh
+References/Gazebo/gz-sim/src/EventManager_TEST.cc
+References/Gazebo/gz-sim/src/InstallationDirectories.cc
+References/Gazebo/gz-sim/src/Joint_TEST.cc
+References/Gazebo/gz-sim/src/Joint.cc
+References/Gazebo/gz-sim/src/LevelManager.cc
