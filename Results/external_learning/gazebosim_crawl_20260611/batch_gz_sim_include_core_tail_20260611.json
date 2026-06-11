@@ -1,0 +1,254 @@
+[
+  {
+    "path": "include/gz/sim/comms/MsgManager.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\comms\\MsgManager.hh",
+    "sha": "480c93618466e8177655b72ce0c626ba04884f96",
+    "size": 5487,
+    "verified_hash": "480c93618466e8177655b72ce0c626ba04884f96",
+    "verified_size": 5487,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/config.hh.in",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\config.hh.in",
+    "sha": "87cca7d1788db4fb414160a5b7986ff962cf3b3d",
+    "size": 1376,
+    "verified_hash": "87cca7d1788db4fb414160a5b7986ff962cf3b3d",
+    "verified_size": 1376,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/Constants.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Constants.hh",
+    "sha": "96d281ccc7b20e38c566999dae99a9cc3b4404f9",
+    "size": 935,
+    "verified_hash": "96d281ccc7b20e38c566999dae99a9cc3b4404f9",
+    "verified_size": 935,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/Conversions.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Conversions.hh",
+    "sha": "2f5c3a0dd5d3ed5c150d74a804b293b4d72e9f70",
+    "size": 25660,
+    "verified_hash": "2f5c3a0dd5d3ed5c150d74a804b293b4d72e9f70",
+    "verified_size": 25660,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/Entity.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Entity.hh",
+    "sha": "e405ac7edb86b8930c51ff9ac5e684a36c79327a",
+    "size": 2496,
+    "verified_hash": "e405ac7edb86b8930c51ff9ac5e684a36c79327a",
+    "verified_size": 2496,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/EntityComponentManager.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\EntityComponentManager.hh",
+    "sha": "73a1355d72ff6546410bbfe96905322ae0f36ef1",
+    "size": 42922,
+    "verified_hash": "73a1355d72ff6546410bbfe96905322ae0f36ef1",
+    "verified_size": 42922,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/EventManager.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\EventManager.hh",
+    "sha": "91013832600eca53a39e3aa5d055f3d7018d590b",
+    "size": 6186,
+    "verified_hash": "91013832600eca53a39e3aa5d055f3d7018d590b",
+    "verified_size": 6186,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/Events.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Events.hh",
+    "sha": "a0b8c3589e201e6e6bbc4b29e2beed264a6eef52",
+    "size": 2328,
+    "verified_hash": "a0b8c3589e201e6e6bbc4b29e2beed264a6eef52",
+    "verified_size": 2328,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/InstallationDirectories.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\InstallationDirectories.hh",
+    "sha": "a34478376bbe1c0449d5e242b0a8a75ca34e7961",
+    "size": 1919,
+    "verified_hash": "a34478376bbe1c0449d5e242b0a8a75ca34e7961",
+    "verified_size": 1919,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/Joint.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Joint.hh",
+    "sha": "c7cc1ffdc0b92fe674dd592bf96f402bd67100d1",
+    "size": 14291,
+    "verified_hash": "c7cc1ffdc0b92fe674dd592bf96f402bd67100d1",
+    "verified_size": 14291,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/Light.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Light.hh",
+    "sha": "215f36809315b791897f2764f3c7fb7f9a7e113d",
+    "size": 12486,
+    "verified_hash": "215f36809315b791897f2764f3c7fb7f9a7e113d",
+    "verified_size": 12486,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/Link.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Link.hh",
+    "sha": "735493b1bf0eb432a3fd7e0dc60611b4dba7b335",
+    "size": 20310,
+    "verified_hash": "735493b1bf0eb432a3fd7e0dc60611b4dba7b335",
+    "verified_size": 20310,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/Model.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Model.hh",
+    "sha": "588d16885e33f5901d1713890a2b08bebc9de8ce",
+    "size": 9295,
+    "verified_hash": "588d16885e33f5901d1713890a2b08bebc9de8ce",
+    "verified_size": 9295,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/physics/Events.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\physics\\Events.hh",
+    "sha": "633cad5441e76b1b18f37d058d62ed5aad3948e5",
+    "size": 2180,
+    "verified_hash": "633cad5441e76b1b18f37d058d62ed5aad3948e5",
+    "verified_size": 2180,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/playback_server.config",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\playback_server.config",
+    "sha": "dd8e5ac91fb446e9130c7dcb498951988d81daee",
+    "size": 418,
+    "verified_hash": "dd8e5ac91fb446e9130c7dcb498951988d81daee",
+    "verified_size": 418,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/Primitives.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Primitives.hh",
+    "sha": "b90b9e75537361b23db7796e1dd9934e1ca3d021",
+    "size": 2542,
+    "verified_hash": "b90b9e75537361b23db7796e1dd9934e1ca3d021",
+    "verified_size": 2542,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/SdfEntityCreator.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\SdfEntityCreator.hh",
+    "sha": "00bdfaabd9b2360e5a681999e659c5d22c6b98bb",
+    "size": 8452,
+    "verified_hash": "00bdfaabd9b2360e5a681999e659c5d22c6b98bb",
+    "verified_size": 8452,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/Sensor.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Sensor.hh",
+    "sha": "e2558bee9907f2a386825850add5bc4773df4bd5",
+    "size": 4069,
+    "verified_hash": "e2558bee9907f2a386825850add5bc4773df4bd5",
+    "verified_size": 4069,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/server.config",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\server.config",
+    "sha": "99029de3eaea2be6f6923979c6b25c3e139d917b",
+    "size": 583,
+    "verified_hash": "99029de3eaea2be6f6923979c6b25c3e139d917b",
+    "verified_size": 583,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/Server.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Server.hh",
+    "sha": "83e9a2dc5b225a1787ff69d67325d92f9e6cd283",
+    "size": 16987,
+    "verified_hash": "83e9a2dc5b225a1787ff69d67325d92f9e6cd283",
+    "verified_size": 16987,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/ServerConfig.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\ServerConfig.hh",
+    "sha": "dc267ca744784f715500e312688768b4f8179784",
+    "size": 21276,
+    "verified_hash": "dc267ca744784f715500e312688768b4f8179784",
+    "verified_size": 21276,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/System.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\System.hh",
+    "sha": "e99719b28af0ea6bd93b81fe63ace56d2f63b5e2",
+    "size": 9304,
+    "verified_hash": "e99719b28af0ea6bd93b81fe63ace56d2f63b5e2",
+    "verified_size": 9304,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/SystemLoader.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\SystemLoader.hh",
+    "sha": "44540229fd3de44d594df1c511469ac9ca88f41a",
+    "size": 2417,
+    "verified_hash": "44540229fd3de44d594df1c511469ac9ca88f41a",
+    "verified_size": 2417,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/SystemPluginPtr.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\SystemPluginPtr.hh",
+    "sha": "f99e0e2b71dcd79fe3aaf67f623ef8060b53ec72",
+    "size": 991,
+    "verified_hash": "f99e0e2b71dcd79fe3aaf67f623ef8060b53ec72",
+    "verified_size": 991,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/TestFixture.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\TestFixture.hh",
+    "sha": "2348b41c33131c7d7ea742f50a605eb633f4c125",
+    "size": 3979,
+    "verified_hash": "2348b41c33131c7d7ea742f50a605eb633f4c125",
+    "verified_size": 3979,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/Types.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Types.hh",
+    "sha": "be1c15c86795e1a426b555105a0c5975938e6dfa",
+    "size": 3242,
+    "verified_hash": "be1c15c86795e1a426b555105a0c5975938e6dfa",
+    "verified_size": 3242,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/Util.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\Util.hh",
+    "sha": "96665464c3e4e56254a58c91c960c0bdb1beaca1",
+    "size": 16543,
+    "verified_hash": "96665464c3e4e56254a58c91c960c0bdb1beaca1",
+    "verified_size": 16543,
+    "source": "raw.githubusercontent.com"
+  },
+  {
+    "path": "include/gz/sim/World.hh",
+    "dest": "References\\Gazebo\\gz-sim\\include\\gz\\sim\\World.hh",
+    "sha": "8aad4fa59c07bbf9f8a0ffac0da69e9fbb62253c",
+    "size": 8066,
+    "verified_hash": "8aad4fa59c07bbf9f8a0ffac0da69e9fbb62253c",
+    "verified_size": 8066,
+    "source": "raw.githubusercontent.com"
+  }
+]
