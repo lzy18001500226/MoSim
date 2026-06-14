@@ -1,0 +1,66 @@
+{
+  "schema": "mosim.ue.review_path_packet.v1",
+  "status": "review_material_opened_nonfinal",
+  "created_at_local": "2026-06-12T18:40:00+08:00",
+  "scope": "UE runtime replay review material and next executable path planning",
+  "opened_review_material": {
+    "after_stream_main_window_screenshot": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/screenshots_after_stream/101392_0x2AE1882_MoSimSceneLibrary （64-位 Development PCD3D_SM6） .png",
+    "after_stream_capture_manifest": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/screenshots_after_stream/capture_manifest.json",
+    "runtime_summary": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/ue_runtime_replay_probe_summary.json",
+    "ue_log_tail": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/ue_log_tail_after_stream.txt"
+  },
+  "human_visible_observation": {
+    "scene_window_nonblank": true,
+    "factory_scene_visible": true,
+    "sidecar_review_agrees": true,
+    "uav_body_clearly_visible_by_eye_in_opened_screenshot": false,
+    "final_visual_acceptance_claimable_from_opened_screenshot": false,
+    "reason": "before-stream and after-stream screenshots show the UE Factory scene but do not clearly show the Sunray150 UAV body"
+  },
+  "log_supported_runtime_facts": {
+    "mworks_udp_first_frame_reported": true,
+    "sunray_first_applied_frame_reported": true,
+    "sunray_visible_reported": true,
+    "sunray_hidden_in_game_reported_false": true,
+    "sunray_bounds_nonzero_reported": true
+  },
+  "claim_boundary": {
+    "ue_scene_rendered": true,
+    "runtime_replay_ingest_log_supported": true,
+    "authoritative_command_echo_ack": false,
+    "final_manual_visual_acceptance": false,
+    "material_acceptance": false,
+    "ros2_fast_lio_success": false,
+    "planner_ready": false,
+    "controller_performance_from_ue": false,
+    "multi_uav_readiness": false,
+    "closed_loop_success": false
+  },
+  "next_executable_paths": {
+    "visual_review_hardening": {
+      "goal": "produce human-readable screenshots where Sunray150 UAV body is clearly visible in the Factory scene",
+      "requires": [
+        "before/after capture manifest",
+        "main UE window screenshot",
+        "UAV-close review screenshot",
+        "front/side/top or three-quarter views when possible",
+        "frame/seq/timestamp screenshot series or short video for replay-motion claims",
+        "log tail showing first UDP frame and Sunray first applied frame",
+        "review notes stating what is accepted or still unclear"
+      ]
+    },
+    "command_echo_live_probe": {
+      "goal": "run exactly one bounded live command-echo probe and validate the seven-artifact bundle",
+      "required_artifacts": [
+        "runtime_probe_manifest.json",
+        "pending_request_capture.json",
+        "authoritative_echo_capture.json",
+        "request_echo_match_report.json",
+        "no_pose_overwrite_report.json",
+        "false_ack_negative_report.json",
+        "timeout_cleanup_manifest.json"
+      ],
+      "validator": "Scripts/UE5/check_ue_runtime_probe_capture_bundle_validator.py --bundle-dir <future_live_bundle_dir>"
+    }
+  }
+}

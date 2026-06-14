@@ -1,0 +1,32 @@
+{
+  "asset_class": "StaticMesh",
+  "asset_data_package_name": "/Game/Sunray150/sunray150_with_mid360_textured",
+  "asset_name": "sunray150_with_mid360_textured",
+  "asset_path": "/Game/Sunray150/sunray150_with_mid360_textured",
+  "bounds": {
+    "get_bounds": "<Struct 'BoxSphereBounds' (0x000008E1CC183A40) {origin: {x: 7.920059, y: -6.198502, z: 177.027496}, box_extent: {x: 424.263260, y: 422.541733, z: 318.759888}, sphere_radius: 606.680539}>"
+  },
+  "claim_boundary": [
+    "UE Content StaticMesh import/readiness only.",
+    "Not final visual material acceptance.",
+    "Not MWORKS/ROS2 controller, planner, runtime, or closed-loop evidence."
+  ],
+  "destination_path": "/Game/Sunray150",
+  "imported_paths": [
+    "/Game/Sunray150/MoSim_CableBlack.MoSim_CableBlack",
+    "/Game/Sunray150/MoSim_CarbonFrame.MoSim_CarbonFrame",
+    "/Game/Sunray150/MoSim_ConnectorGold.MoSim_ConnectorGold",
+    "/Game/Sunray150/MoSim_DarkGuards.MoSim_DarkGuards",
+    "/Game/Sunray150/MoSim_LightPlastic.MoSim_LightPlastic",
+    "/Game/Sunray150/MoSim_MetalFasteners.MoSim_MetalFasteners",
+    "/Game/Sunray150/MoSim_Mid360BaseGrey.MoSim_Mid360BaseGrey",
+    "/Game/Sunray150/MoSim_Mid360DomeBlue.MoSim_Mid360DomeBlue",
+    "/Game/Sunray150/MoSim_PCBGreen.MoSim_PCBGreen",
+    "/Game/Sunray150/MoSim_Propeller.MoSim_Propeller",
+    "/Game/Sunray150/sunray150_with_mid360_textured.sunray150_with_mid360_textured"
+  ],
+  "object_path": "/Game/Sunray150/sunray150_with_mid360_textured.sunray150_with_mid360_textured",
+  "ok": true,
+  "schema": "mosim.sunray150_runtime_static_mesh_import.v1",
+  "source_fbx": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\sunray150_with_mid360_textured.fbx"
+}

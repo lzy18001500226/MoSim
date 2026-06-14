@@ -1,0 +1,31 @@
+[
+    {
+        "id":  3276,
+        "process":  "UnrealEditor",
+        "title":  "MoSimSceneLibrary （64-位 Development PCD3D_SM6） ",
+        "class_name":  "UnrealWindow",
+        "handle":  16519722,
+        "handle_hex":  "0xFC122A",
+        "visible":  true,
+        "minimized":  false,
+        "helper_window":  false,
+        "helper_capture_included":  false,
+        "restore_minimized_requested":  true,
+        "restore_minimized_applied":  true,
+        "skipped_minimized_requires_restore":  false,
+        "maximize_applied":  false,
+        "minimize_after_requested":  false,
+        "restore_wait_ms":  800,
+        "restore_settle_ms":  300,
+        "maximize_wait_ms":  500,
+        "capture_width":  1620,
+        "capture_height":  949,
+        "still_minimized_at_capture":  false,
+        "capture_reliability":  "window_level_capture",
+        "recommended_action":  "",
+        "known_blind_spot":  "PrintWindow cannot capture a full client area for minimized windows without restoring first, and may miss Qt/browser-proxy child surfaces such as the right MWORKS AI panel or separate login panes; use -RestoreMinimized and, when needed, -Maximize plus foreground/Windows MCP visible-desktop evidence for login/license and full GUI/layout acceptance.",
+        "capture":  "ok=True; was_minimized=False; was_maximized=False; maximize_requested=False; minimize_after_requested=False; restore_wait_ms=800; restore_settle_ms=300; maximize_wait_ms=500; minimized_before_reminimize=False; visible=True; rect=470,201,2090,1150; size=1620x949; title=MoSimSceneLibrary （64-位 Development PCD3D_SM6） ; path=C:\\Users\\HP\\Desktop\\MoSim\\Results\\ue_replay_input\\20260612_rotor1_loss15_linear_mpc_online_fault_allocation\\ue_visual_review_hardening_20260613_002\\screenshots\\3276_0xFC122A_MoSimSceneLibrary （64-位 Development PCD3D_SM6） .png",
+        "dpi_awareness":  "per_monitor_v2",
+        "path":  "C:\\Users\\HP\\Desktop\\MoSim\\Results\\ue_replay_input\\20260612_rotor1_loss15_linear_mpc_online_fault_allocation\\ue_visual_review_hardening_20260613_002\\screenshots\\3276_0xFC122A_MoSimSceneLibrary （64-位 Development PCD3D_SM6） .png"
+    }
+]

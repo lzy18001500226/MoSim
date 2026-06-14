@@ -1,0 +1,39 @@
+{
+  "asset_class": "StaticMesh",
+  "asset_data_package_name": "/Game/Sunray150/sunray150_with_mid360_textured_merged_runtime",
+  "asset_name": "sunray150_with_mid360_textured_merged_runtime",
+  "asset_path": "/Game/Sunray150/sunray150_with_mid360_textured_merged_runtime",
+  "bounds": {
+    "get_bounds": "<Struct 'BoxSphereBounds' (0x00000701B5387080) {origin: {x: 0.000000, y: -0.157442, z: 4.496498}, box_extent: {x: 10.575117, y: 10.732560, z: 8.096500}, sphere_radius: 14.287838}>"
+  },
+  "claim_boundary": [
+    "UE Content StaticMesh import/readiness only.",
+    "Not final visual material acceptance.",
+    "Not MWORKS/ROS2 controller, planner, runtime, or closed-loop evidence."
+  ],
+  "destination_path": "/Game/Sunray150",
+  "imported_paths": [
+    "/Game/Sunray150/mid360_blue_optical_window_roughness.mid360_blue_optical_window_roughness",
+    "/Game/Sunray150/mid360_silver_grey_aluminum_base.mid360_silver_grey_aluminum_base",
+    "/Game/Sunray150/mid360_silver_grey_aluminum_roughness.mid360_silver_grey_aluminum_roughness",
+    "/Game/Sunray150/sunray150_battery_heatshrink_base.sunray150_battery_heatshrink_base",
+    "/Game/Sunray150/sunray150_battery_heatshrink_roughness.sunray150_battery_heatshrink_roughness",
+    "/Game/Sunray150/sunray150_black_rubber_base.sunray150_black_rubber_base",
+    "/Game/Sunray150/sunray150_black_rubber_roughness.sunray150_black_rubber_roughness",
+    "/Game/Sunray150/sunray150_camera_black_polymer_base.sunray150_camera_black_polymer_base",
+    "/Game/Sunray150/sunray150_camera_black_polymer_roughness.sunray150_camera_black_polymer_roughness",
+    "/Game/Sunray150/sunray150_carbon_fiber_base.sunray150_carbon_fiber_base",
+    "/Game/Sunray150/sunray150_carbon_fiber_roughness.sunray150_carbon_fiber_roughness",
+    "/Game/Sunray150/sunray150_dark_anodized_metal_base.sunray150_dark_anodized_metal_base",
+    "/Game/Sunray150/sunray150_dark_anodized_metal_roughness.sunray150_dark_anodized_metal_roughness",
+    "/Game/Sunray150/sunray150_gold_anodized_aluminum_base.sunray150_gold_anodized_aluminum_base",
+    "/Game/Sunray150/sunray150_gold_anodized_aluminum_roughness.sunray150_gold_anodized_aluminum_roughness",
+    "/Game/Sunray150/sunray150_pcb_black_base.sunray150_pcb_black_base",
+    "/Game/Sunray150/sunray150_pcb_black_roughness.sunray150_pcb_black_roughness",
+    "/Game/Sunray150/sunray150_with_mid360_textured_merged_runtime.sunray150_with_mid360_textured_merged_runtime"
+  ],
+  "object_path": "/Game/Sunray150/sunray150_with_mid360_textured_merged_runtime.sunray150_with_mid360_textured_merged_runtime",
+  "ok": true,
+  "schema": "mosim.sunray150_runtime_static_mesh_import.v1",
+  "source_fbx": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\sunray150_with_mid360_textured_merged_runtime.fbx"
+}

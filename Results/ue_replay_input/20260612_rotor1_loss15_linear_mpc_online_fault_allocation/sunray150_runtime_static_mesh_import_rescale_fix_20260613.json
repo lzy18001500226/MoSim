@@ -1,0 +1,22 @@
+{
+  "asset_class": "StaticMesh",
+  "asset_data_package_name": "/Game/Sunray150/sunray150_with_mid360_textured",
+  "asset_name": "sunray150_with_mid360_textured",
+  "asset_path": "/Game/Sunray150/sunray150_with_mid360_textured",
+  "bounds": {
+    "get_bounds": "<Struct 'BoxSphereBounds' (0x0000072C11A43B00) {origin: {x: 0.000000, y: -3.350658, z: 16.476946}, box_extent: {x: 108.000008, y: 82.000004, z: 53.500006}, sphere_radius: 120.524896}>"
+  },
+  "claim_boundary": [
+    "UE Content StaticMesh import/readiness only.",
+    "Not final visual material acceptance.",
+    "Not MWORKS/ROS2 controller, planner, runtime, or closed-loop evidence."
+  ],
+  "destination_path": "/Game/Sunray150",
+  "imported_paths": [
+    "/Game/Sunray150/sunray150_with_mid360_textured.sunray150_with_mid360_textured"
+  ],
+  "object_path": "/Game/Sunray150/sunray150_with_mid360_textured.sunray150_with_mid360_textured",
+  "ok": true,
+  "schema": "mosim.sunray150_runtime_static_mesh_import.v1",
+  "source_fbx": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\sunray150_with_mid360_textured.fbx"
+}

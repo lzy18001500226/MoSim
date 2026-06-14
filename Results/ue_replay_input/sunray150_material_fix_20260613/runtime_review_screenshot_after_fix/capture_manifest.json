@@ -1,0 +1,31 @@
+[
+  {
+    "id": 66632,
+    "process": "UnrealEditor",
+    "title": "MoSimSceneLibrary （64-位 Development PCD3D_SM6） ",
+    "class_name": "UnrealWindow",
+    "handle": 41356782,
+    "handle_hex": "0x2770DEE",
+    "visible": true,
+    "minimized": false,
+    "helper_window": false,
+    "helper_capture_included": false,
+    "restore_minimized_requested": true,
+    "restore_minimized_applied": true,
+    "skipped_minimized_requires_restore": false,
+    "maximize_applied": true,
+    "minimize_after_requested": true,
+    "restore_wait_ms": 800,
+    "restore_settle_ms": 300,
+    "maximize_wait_ms": 500,
+    "capture_width": 2580,
+    "capture_height": 1400,
+    "still_minimized_at_capture": false,
+    "capture_reliability": "window_level_capture",
+    "recommended_action": "",
+    "known_blind_spot": "PrintWindow cannot capture a full client area for minimized windows without restoring first, and may miss Qt/browser-proxy child surfaces such as the right MWORKS AI panel or separate login panes; use -RestoreMinimized and, when needed, -Maximize plus foreground/Windows MCP visible-desktop evidence for login/license and full GUI/layout acceptance.",
+    "capture": "ok=True; was_minimized=False; was_maximized=False; maximize_requested=True; minimize_after_requested=True; restore_wait_ms=800; restore_settle_ms=300; maximize_wait_ms=500; minimized_before_reminimize=False; visible=True; rect=-10,-10,2570,1390; size=2580x1400; title=MoSimSceneLibrary （64-位 Development PCD3D_SM6） ; path=C:\\Users\\HP\\Desktop\\MoSim\\Results\\ue_replay_input\\sunray150_material_fix_20260613\\runtime_review_screenshot_after_fix\\66632_0x2770DEE_MoSimSceneLibrary （64-位 Development PCD3D_SM6） .png",
+    "dpi_awareness": "per_monitor_v2",
+    "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\ue_replay_input\\sunray150_material_fix_20260613\\runtime_review_screenshot_after_fix\\66632_0x2770DEE_MoSimSceneLibrary （64-位 Development PCD3D_SM6） .png"
+  }
+]

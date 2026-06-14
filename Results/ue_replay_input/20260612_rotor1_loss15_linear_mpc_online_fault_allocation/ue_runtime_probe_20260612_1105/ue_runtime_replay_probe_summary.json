@@ -1,0 +1,73 @@
+{
+  "schema": "mosim.ue_runtime_replay_probe_summary.v1",
+  "status": "runtime_ingest_and_visual_uav_visible_pass",
+  "created_at_local": "2026-06-12T11:20:00+08:00",
+  "scope": "Bounded UE runtime replay probe for the accepted MWORKS single-UAV rotor1-loss run.",
+  "input_run": {
+    "controller_id": "linear_mpc_online_fault_allocation_sysblock",
+    "scenario": "Config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml",
+    "raw_csv": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.csv",
+    "scene_id": "robust_rotor1_loss15_example1",
+    "map_id": "local_factoryenvironmentcollect"
+  },
+  "runtime_asset_import": {
+    "ok": true,
+    "source_fbx": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured.fbx",
+    "asset_path": "/Game/Sunray150/sunray150_with_mid360_textured",
+    "object_path": "/Game/Sunray150/sunray150_with_mid360_textured.sunray150_with_mid360_textured",
+    "evidence_json": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/sunray150_runtime_static_mesh_import_20260612_1100.json",
+    "evidence_log": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/sunray150_runtime_static_mesh_import_20260612_1100.log",
+    "asset_class": "StaticMesh",
+    "bounds_nonzero": true
+  },
+  "ue_runtime_launch": {
+    "launch_manifest": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/ue_runtime_launch_manifest.json",
+    "process_id": 101392,
+    "window_found": true,
+    "main_window_title": "MoSimSceneLibrary （64-位 Development PCD3D_SM6） ",
+    "stop_conditions_observed": []
+  },
+  "screenshots": {
+    "before_stream_manifest": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/screenshots/capture_manifest.json",
+    "before_stream_main_window": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/screenshots/101392_0x2AE1882_MoSimSceneLibrary （64-位 Development PCD3D_SM6） .png",
+    "after_stream_manifest": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/screenshots_after_stream/capture_manifest.json",
+    "after_stream_main_window": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/screenshots_after_stream/101392_0x2AE1882_MoSimSceneLibrary （64-位 Development PCD3D_SM6） .png",
+    "capture_reliability": "window_level_capture",
+    "main_window_capture_nonempty": true
+  },
+  "stream": {
+    "command": "python Scripts/UE5/stream_unreal_udp.py Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.csv --scene-id robust_rotor1_loss15_example1 --map-id local_factoryenvironmentcollect --max-frames 120 --fps 120 --disable-visual-helpers --print-every 60",
+    "stream_log": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/stream_unreal_udp_120frames.log",
+    "frames_sent": 120,
+    "target": "udp://127.0.0.1:5005"
+  },
+  "ue_log_evidence": {
+    "tail_path": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/ue_log_tail_after_stream.txt",
+    "factory_scene_visible": true,
+    "udp_first_frame_received": true,
+    "sunray_first_frame_applied": true,
+    "sunray_visible": true,
+    "sunray_hidden_in_game": false,
+    "sunray_bounds_nonzero": true,
+    "diagnostic_excerpt": {
+      "udp_first_frame": "Quadrotor MWORKS UDP first frame: scene=robust_rotor1_loss15_example1 map=local_factoryenvironmentcollect seq=0",
+      "sunray_first_frame": "MoSim Sunray first applied frame: scene=robust_rotor1_loss15_example1 map=local_factoryenvironmentcollect seq=0",
+      "sunray_component": "SunrayDaeDerivedVehicleAfterFirstFrame visible=true hidden_in_game=false box_extent=(424.263, 422.542, 318.760) sphere_radius=606.681"
+    }
+  },
+  "checks": [
+    "python -m py_compile Scripts/UE5/import_sunray150_runtime_static_mesh.py Scripts/tests/test_factory_uav_platform_review.py",
+    "python Scripts/tests/test_factory_uav_platform_review.py",
+    "python Scripts/tests/test_ue_runtime_echo_build_readiness_surface.py",
+    "python Scripts/UE5/check_ue_runtime_echo_build_readiness_surface.py"
+  ],
+  "known_non_blocking_warnings": [
+    "Factory/ForkLift/Robot blueprint missing-outer/script warnings are present in the scene log and are not the Sunray runtime visual blocker.",
+    "The Windows-native host currently reports Bash/Service RPC failure for bash-backed dry-run script execution; source and asset assertions still ran."
+  ],
+  "claim_boundary": [
+    "This proves UE runtime ingestion of the accepted MWORKS state stream and visibility of the imported Sunray150 StaticMesh in the UE runtime window.",
+    "This does not prove authoritative UE command echo ack.",
+    "This does not prove ROS2 planner_ready, FAST-LIO, closed_loop beyond the accepted MWORKS run, controller performance from UE, final material acceptance, or multi-UAV formation readiness."
+  ]
+}

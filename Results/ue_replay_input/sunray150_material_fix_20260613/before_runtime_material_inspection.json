@@ -1,0 +1,296 @@
+{
+  "asset_class": "StaticMesh",
+  "asset_path": "/Game/Sunray150/sunray150_with_mid360_textured",
+  "claim_boundary": [
+    "UE asset material binding inspection only.",
+    "Does not prove visual acceptance without screenshot review.",
+    "Does not change MWORKS, ROS2, controller, planner, or runtime evidence."
+  ],
+  "dependencies": [
+    "/Engine/EngineMaterials/WorldGridMaterial",
+    "/Game/Sunray150/MoSim_CableBlack",
+    "/Game/Sunray150/MoSim_CarbonFrame",
+    "/Game/Sunray150/MoSim_ConnectorGold",
+    "/Game/Sunray150/MoSim_DarkGuards",
+    "/Game/Sunray150/MoSim_LightPlastic",
+    "/Game/Sunray150/MoSim_MetalFasteners",
+    "/Game/Sunray150/MoSim_Mid360BaseGrey",
+    "/Game/Sunray150/MoSim_Mid360DomeBlue",
+    "/Game/Sunray150/MoSim_PCBGreen",
+    "/Game/Sunray150/MoSim_Propeller",
+    "/Script/InterchangeEngine",
+    "/Script/NavigationSystem"
+  ],
+  "expected_manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\sunray150_with_mid360_textured_export_manifest.json",
+  "expected_material_count": 25,
+  "expected_materials_first": [
+    "MID360_Texture_Black_Base",
+    "MID360_Texture_Black_M12_Connector",
+    "MID360_Texture_Black_Mount_Inserts",
+    "MID360_Texture_Dark_Blue_Mirror_Coated_Optical_Dome",
+    "MID360_Texture_Satin_Black_Protection_Frame",
+    "MID360_Texture_Satin_Silver_Grey_Coated_Metal_Housing",
+    "Mount_Rectangle_Green",
+    "Selected_TopPanel_Holes_Gold",
+    "Sunray150_Texture_Black_Heatshrink_Battery",
+    "Sunray150_Texture_Black_Motor_Bell",
+    "Sunray150_Texture_CarbonFiber_Woven_Graphite",
+    "Sunray150_Texture_Clear_Liuli_Glass_Prop_Guard",
+    "Sunray150_Texture_Clear_Liuli_Glass_Propeller",
+    "Sunray150_Texture_Copper_Motor_Windings",
+    "Sunray150_Texture_Dark_Anodized_Aluminum",
+    "Sunray150_Texture_Dark_Chromoly_Steel_Screws",
+    "Sunray150_Texture_Gold_7075_Aluminum_Standoffs",
+    "Sunray150_Texture_Matte_Black_Plastic",
+    "Sunray150_Texture_N150_Black_Cooling_Fan",
+    "Sunray150_Texture_N150_M2_Storage_Module",
+    "Sunray150_Texture_PCB_Black_Soldermask",
+    "Sunray150_Texture_Rubber_Cable_Black",
+    "Sunray150_Texture_TF_Mini_Black_Sensor",
+    "Sunray150_Texture_USB_Camera_Matte_Black_Housing",
+    "Sunray150_Texture_USB_HDMI_Nickel_Shell"
+  ],
+  "expected_review_slot_count": 0,
+  "material_slot_count": 26,
+  "object_path": "/Game/Sunray150/sunray150_with_mid360_textured.sunray150_with_mid360_textured",
+  "ok": true,
+  "old_mosim_slot_count": 10,
+  "referencers": [],
+  "schema": "mosim.sunray150_runtime_material_inspection.v1",
+  "slots": [
+    {
+      "imported_slot_name": "",
+      "index": 0,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": true,
+      "material_name": "MoSim_CableBlack",
+      "material_path": "/Game/Sunray150/MoSim_CableBlack.MoSim_CableBlack",
+      "slot_name": "MID360_Texture_Black_Mount_Inserts"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 1,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": true,
+      "material_name": "MoSim_CarbonFrame",
+      "material_path": "/Game/Sunray150/MoSim_CarbonFrame.MoSim_CarbonFrame",
+      "slot_name": "Sunray150_Texture_Dark_Anodized_Aluminum"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 2,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": true,
+      "material_name": "MoSim_ConnectorGold",
+      "material_path": "/Game/Sunray150/MoSim_ConnectorGold.MoSim_ConnectorGold",
+      "slot_name": "MID360_Texture_Black_M12_Connector"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 3,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": true,
+      "material_name": "MoSim_DarkGuards",
+      "material_path": "/Game/Sunray150/MoSim_DarkGuards.MoSim_DarkGuards",
+      "slot_name": "MID360_Texture_Satin_Silver_Grey_Coated_Metal_Housing"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 4,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": true,
+      "material_name": "MoSim_LightPlastic",
+      "material_path": "/Game/Sunray150/MoSim_LightPlastic.MoSim_LightPlastic",
+      "slot_name": "MID360_Texture_Dark_Blue_Mirror_Coated_Optical_Dome"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 5,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": true,
+      "material_name": "MoSim_MetalFasteners",
+      "material_path": "/Game/Sunray150/MoSim_MetalFasteners.MoSim_MetalFasteners",
+      "slot_name": "MID360_Texture_Black_Base"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 6,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": true,
+      "material_name": "MoSim_Mid360BaseGrey",
+      "material_path": "/Game/Sunray150/MoSim_Mid360BaseGrey.MoSim_Mid360BaseGrey",
+      "slot_name": "Sunray150_Texture_Gold_7075_Aluminum_Standoffs"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 7,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": true,
+      "material_name": "MoSim_Mid360DomeBlue",
+      "material_path": "/Game/Sunray150/MoSim_Mid360DomeBlue.MoSim_Mid360DomeBlue",
+      "slot_name": "Sunray150_Texture_Black_Heatshrink_Battery"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 8,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": true,
+      "material_name": "MoSim_PCBGreen",
+      "material_path": "/Game/Sunray150/MoSim_PCBGreen.MoSim_PCBGreen",
+      "slot_name": "Sunray150_Texture_USB_Camera_Matte_Black_Housing"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 9,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": true,
+      "material_name": "MoSim_Propeller",
+      "material_path": "/Game/Sunray150/MoSim_Propeller.MoSim_Propeller",
+      "slot_name": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 10,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Sunray150_Texture_USB_HDMI_Nickel_Shell"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 11,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Sunray150_Texture_Matte_Black_Plastic"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 12,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Sunray150_Texture_PCB_Black_Soldermask"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 13,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Sunray150_Texture_CarbonFiber_Woven_Graphite"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 14,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Sunray150_Texture_Dark_Chromoly_Steel_Screws"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 15,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Sunray150_Texture_Clear_Liuli_Glass_Prop_Guard"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 16,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "MID360_Texture_Satin_Black_Protection_Frame"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 17,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Sunray150_Texture_Black_Motor_Bell"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 18,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Sunray150_Texture_Copper_Motor_Windings"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 19,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Sunray150_Texture_N150_M2_Storage_Module"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 20,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Sunray150_Texture_N150_Black_Cooling_Fan"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 21,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Sunray150_Texture_TF_Mini_Black_Sensor"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 22,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Sunray150_Texture_Clear_Liuli_Glass_Propeller"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 23,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Audit_Text_Dark"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 24,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Mount_Rectangle_Green"
+    },
+    {
+      "imported_slot_name": "",
+      "index": 25,
+      "is_expected_review_material": false,
+      "is_old_mosim_material": false,
+      "material_name": "WorldGridMaterial",
+      "material_path": "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial",
+      "slot_name": "Selected_TopPanel_Holes_Gold"
+    }
+  ]
+}

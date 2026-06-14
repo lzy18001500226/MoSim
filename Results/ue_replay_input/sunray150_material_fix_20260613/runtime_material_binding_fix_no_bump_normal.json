@@ -1,0 +1,333 @@
+{
+  "after_slots": [
+    {
+      "index": 0,
+      "material_name": "Audit_Text_Dark",
+      "material_path": "/Game/Sunray150/Materials/Audit_Text_Dark.Audit_Text_Dark",
+      "slot_name": "Audit_Text_Dark"
+    },
+    {
+      "index": 1,
+      "material_name": "Mount_Rectangle_Green",
+      "material_path": "/Game/Sunray150/Materials/Mount_Rectangle_Green.Mount_Rectangle_Green",
+      "slot_name": "Mount_Rectangle_Green"
+    },
+    {
+      "index": 2,
+      "material_name": "Selected_TopPanel_Holes_Gold",
+      "material_path": "/Game/Sunray150/Materials/Selected_TopPanel_Holes_Gold.Selected_TopPanel_Holes_Gold",
+      "slot_name": "Selected_TopPanel_Holes_Gold"
+    },
+    {
+      "index": 3,
+      "material_name": "MID360_Texture_Black_Mount_Inserts",
+      "material_path": "/Game/Sunray150/Materials/MID360_Texture_Black_Mount_Inserts.MID360_Texture_Black_Mount_Inserts",
+      "slot_name": "MID360_Texture_Black_Mount_Inserts"
+    },
+    {
+      "index": 4,
+      "material_name": "Sunray150_Texture_Dark_Anodized_Aluminum",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Dark_Anodized_Aluminum.Sunray150_Texture_Dark_Anodized_Aluminum",
+      "slot_name": "Sunray150_Texture_Dark_Anodized_Aluminum"
+    },
+    {
+      "index": 5,
+      "material_name": "MID360_Texture_Black_M12_Connector",
+      "material_path": "/Game/Sunray150/Materials/MID360_Texture_Black_M12_Connector.MID360_Texture_Black_M12_Connector",
+      "slot_name": "MID360_Texture_Black_M12_Connector"
+    },
+    {
+      "index": 6,
+      "material_name": "MID360_Texture_Satin_Silver_Grey_Coated_Metal_Housing",
+      "material_path": "/Game/Sunray150/Materials/MID360_Texture_Satin_Silver_Grey_Coated_Metal_Housing.MID360_Texture_Satin_Silver_Grey_Coated_Metal_Housing",
+      "slot_name": "MID360_Texture_Satin_Silver_Grey_Coated_Metal_Housing"
+    },
+    {
+      "index": 7,
+      "material_name": "MID360_Texture_Dark_Blue_Mirror_Coated_Optical_Dome",
+      "material_path": "/Game/Sunray150/Materials/MID360_Texture_Dark_Blue_Mirror_Coated_Optical_Dome.MID360_Texture_Dark_Blue_Mirror_Coated_Optical_Dome",
+      "slot_name": "MID360_Texture_Dark_Blue_Mirror_Coated_Optical_Dome"
+    },
+    {
+      "index": 8,
+      "material_name": "MID360_Texture_Black_Base",
+      "material_path": "/Game/Sunray150/Materials/MID360_Texture_Black_Base.MID360_Texture_Black_Base",
+      "slot_name": "MID360_Texture_Black_Base"
+    },
+    {
+      "index": 9,
+      "material_name": "Sunray150_Texture_CarbonFiber_Woven_Graphite",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_CarbonFiber_Woven_Graphite.Sunray150_Texture_CarbonFiber_Woven_Graphite",
+      "slot_name": "Sunray150_Texture_CarbonFiber_Woven_Graphite"
+    },
+    {
+      "index": 10,
+      "material_name": "Sunray150_Texture_Matte_Black_Plastic",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Matte_Black_Plastic.Sunray150_Texture_Matte_Black_Plastic",
+      "slot_name": "Sunray150_Texture_Matte_Black_Plastic"
+    },
+    {
+      "index": 11,
+      "material_name": "MID360_Texture_Satin_Black_Protection_Frame",
+      "material_path": "/Game/Sunray150/Materials/MID360_Texture_Satin_Black_Protection_Frame.MID360_Texture_Satin_Black_Protection_Frame",
+      "slot_name": "MID360_Texture_Satin_Black_Protection_Frame"
+    },
+    {
+      "index": 12,
+      "material_name": "Sunray150_Texture_Clear_Liuli_Glass_Prop_Guard",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Clear_Liuli_Glass_Prop_Guard.Sunray150_Texture_Clear_Liuli_Glass_Prop_Guard",
+      "slot_name": "Sunray150_Texture_Clear_Liuli_Glass_Prop_Guard"
+    },
+    {
+      "index": 13,
+      "material_name": "Sunray150_Texture_Dark_Chromoly_Steel_Screws",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Dark_Chromoly_Steel_Screws.Sunray150_Texture_Dark_Chromoly_Steel_Screws",
+      "slot_name": "Sunray150_Texture_Dark_Chromoly_Steel_Screws"
+    },
+    {
+      "index": 14,
+      "material_name": "Sunray150_Texture_Gold_7075_Aluminum_Standoffs",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Gold_7075_Aluminum_Standoffs.Sunray150_Texture_Gold_7075_Aluminum_Standoffs",
+      "slot_name": "Sunray150_Texture_Gold_7075_Aluminum_Standoffs"
+    },
+    {
+      "index": 15,
+      "material_name": "Sunray150_Texture_Copper_Motor_Windings",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Copper_Motor_Windings.Sunray150_Texture_Copper_Motor_Windings",
+      "slot_name": "Sunray150_Texture_Copper_Motor_Windings"
+    },
+    {
+      "index": 16,
+      "material_name": "Sunray150_Texture_Black_Motor_Bell",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Black_Motor_Bell.Sunray150_Texture_Black_Motor_Bell",
+      "slot_name": "Sunray150_Texture_Black_Motor_Bell"
+    },
+    {
+      "index": 17,
+      "material_name": "Sunray150_Texture_Rubber_Cable_Black",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Rubber_Cable_Black.Sunray150_Texture_Rubber_Cable_Black",
+      "slot_name": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "index": 18,
+      "material_name": "Sunray150_Texture_PCB_Black_Soldermask",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_PCB_Black_Soldermask.Sunray150_Texture_PCB_Black_Soldermask",
+      "slot_name": "Sunray150_Texture_PCB_Black_Soldermask"
+    },
+    {
+      "index": 19,
+      "material_name": "Sunray150_Texture_Black_Heatshrink_Battery",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Black_Heatshrink_Battery.Sunray150_Texture_Black_Heatshrink_Battery",
+      "slot_name": "Sunray150_Texture_Black_Heatshrink_Battery"
+    },
+    {
+      "index": 20,
+      "material_name": "Sunray150_Texture_USB_Camera_Matte_Black_Housing",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_USB_Camera_Matte_Black_Housing.Sunray150_Texture_USB_Camera_Matte_Black_Housing",
+      "slot_name": "Sunray150_Texture_USB_Camera_Matte_Black_Housing"
+    },
+    {
+      "index": 21,
+      "material_name": "Sunray150_Texture_USB_HDMI_Nickel_Shell",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_USB_HDMI_Nickel_Shell.Sunray150_Texture_USB_HDMI_Nickel_Shell",
+      "slot_name": "Sunray150_Texture_USB_HDMI_Nickel_Shell"
+    },
+    {
+      "index": 22,
+      "material_name": "Sunray150_Texture_N150_Black_Cooling_Fan",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_N150_Black_Cooling_Fan.Sunray150_Texture_N150_Black_Cooling_Fan",
+      "slot_name": "Sunray150_Texture_N150_Black_Cooling_Fan"
+    },
+    {
+      "index": 23,
+      "material_name": "Sunray150_Texture_N150_M2_Storage_Module",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_N150_M2_Storage_Module.Sunray150_Texture_N150_M2_Storage_Module",
+      "slot_name": "Sunray150_Texture_N150_M2_Storage_Module"
+    },
+    {
+      "index": 24,
+      "material_name": "Sunray150_Texture_TF_Mini_Black_Sensor",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_TF_Mini_Black_Sensor.Sunray150_Texture_TF_Mini_Black_Sensor",
+      "slot_name": "Sunray150_Texture_TF_Mini_Black_Sensor"
+    },
+    {
+      "index": 25,
+      "material_name": "Sunray150_Texture_Clear_Liuli_Glass_Propeller",
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Clear_Liuli_Glass_Propeller.Sunray150_Texture_Clear_Liuli_Glass_Propeller",
+      "slot_name": "Sunray150_Texture_Clear_Liuli_Glass_Propeller"
+    }
+  ],
+  "asset_path": "/Game/Sunray150/sunray150_with_mid360_textured",
+  "bindings": [
+    {
+      "family": "text_dark",
+      "index": 0,
+      "material_path": "/Game/Sunray150/Materials/Audit_Text_Dark.Audit_Text_Dark",
+      "slot_name": "Audit_Text_Dark"
+    },
+    {
+      "family": "mount_debug_green",
+      "index": 1,
+      "material_path": "/Game/Sunray150/Materials/Mount_Rectangle_Green.Mount_Rectangle_Green",
+      "slot_name": "Mount_Rectangle_Green"
+    },
+    {
+      "family": "gold_aluminum",
+      "index": 2,
+      "material_path": "/Game/Sunray150/Materials/Selected_TopPanel_Holes_Gold.Selected_TopPanel_Holes_Gold",
+      "slot_name": "Selected_TopPanel_Holes_Gold"
+    },
+    {
+      "family": "dark_metal",
+      "index": 3,
+      "material_path": "/Game/Sunray150/Materials/MID360_Texture_Black_Mount_Inserts.MID360_Texture_Black_Mount_Inserts",
+      "slot_name": "MID360_Texture_Black_Mount_Inserts"
+    },
+    {
+      "family": "dark_metal",
+      "index": 4,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Dark_Anodized_Aluminum.Sunray150_Texture_Dark_Anodized_Aluminum",
+      "slot_name": "Sunray150_Texture_Dark_Anodized_Aluminum"
+    },
+    {
+      "family": "black_rubber",
+      "index": 5,
+      "material_path": "/Game/Sunray150/Materials/MID360_Texture_Black_M12_Connector.MID360_Texture_Black_M12_Connector",
+      "slot_name": "MID360_Texture_Black_M12_Connector"
+    },
+    {
+      "family": "mid360_silver",
+      "index": 6,
+      "material_path": "/Game/Sunray150/Materials/MID360_Texture_Satin_Silver_Grey_Coated_Metal_Housing.MID360_Texture_Satin_Silver_Grey_Coated_Metal_Housing",
+      "slot_name": "MID360_Texture_Satin_Silver_Grey_Coated_Metal_Housing"
+    },
+    {
+      "family": "mid360_window",
+      "index": 7,
+      "material_path": "/Game/Sunray150/Materials/MID360_Texture_Dark_Blue_Mirror_Coated_Optical_Dome.MID360_Texture_Dark_Blue_Mirror_Coated_Optical_Dome",
+      "slot_name": "MID360_Texture_Dark_Blue_Mirror_Coated_Optical_Dome"
+    },
+    {
+      "family": "black_rubber",
+      "index": 8,
+      "material_path": "/Game/Sunray150/Materials/MID360_Texture_Black_Base.MID360_Texture_Black_Base",
+      "slot_name": "MID360_Texture_Black_Base"
+    },
+    {
+      "family": "carbon_fiber",
+      "index": 9,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_CarbonFiber_Woven_Graphite.Sunray150_Texture_CarbonFiber_Woven_Graphite",
+      "slot_name": "Sunray150_Texture_CarbonFiber_Woven_Graphite"
+    },
+    {
+      "family": "camera_polymer",
+      "index": 10,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Matte_Black_Plastic.Sunray150_Texture_Matte_Black_Plastic",
+      "slot_name": "Sunray150_Texture_Matte_Black_Plastic"
+    },
+    {
+      "family": "dark_metal",
+      "index": 11,
+      "material_path": "/Game/Sunray150/Materials/MID360_Texture_Satin_Black_Protection_Frame.MID360_Texture_Satin_Black_Protection_Frame",
+      "slot_name": "MID360_Texture_Satin_Black_Protection_Frame"
+    },
+    {
+      "family": "smoked_guard",
+      "index": 12,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Clear_Liuli_Glass_Prop_Guard.Sunray150_Texture_Clear_Liuli_Glass_Prop_Guard",
+      "slot_name": "Sunray150_Texture_Clear_Liuli_Glass_Prop_Guard"
+    },
+    {
+      "family": "dark_metal",
+      "index": 13,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Dark_Chromoly_Steel_Screws.Sunray150_Texture_Dark_Chromoly_Steel_Screws",
+      "slot_name": "Sunray150_Texture_Dark_Chromoly_Steel_Screws"
+    },
+    {
+      "family": "gold_aluminum",
+      "index": 14,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Gold_7075_Aluminum_Standoffs.Sunray150_Texture_Gold_7075_Aluminum_Standoffs",
+      "slot_name": "Sunray150_Texture_Gold_7075_Aluminum_Standoffs"
+    },
+    {
+      "family": "copper_windings",
+      "index": 15,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Copper_Motor_Windings.Sunray150_Texture_Copper_Motor_Windings",
+      "slot_name": "Sunray150_Texture_Copper_Motor_Windings"
+    },
+    {
+      "family": "dark_metal",
+      "index": 16,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Black_Motor_Bell.Sunray150_Texture_Black_Motor_Bell",
+      "slot_name": "Sunray150_Texture_Black_Motor_Bell"
+    },
+    {
+      "family": "black_rubber",
+      "index": 17,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Rubber_Cable_Black.Sunray150_Texture_Rubber_Cable_Black",
+      "slot_name": "Sunray150_Texture_Rubber_Cable_Black"
+    },
+    {
+      "family": "pcb_black",
+      "index": 18,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_PCB_Black_Soldermask.Sunray150_Texture_PCB_Black_Soldermask",
+      "slot_name": "Sunray150_Texture_PCB_Black_Soldermask"
+    },
+    {
+      "family": "battery_heatshrink",
+      "index": 19,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Black_Heatshrink_Battery.Sunray150_Texture_Black_Heatshrink_Battery",
+      "slot_name": "Sunray150_Texture_Black_Heatshrink_Battery"
+    },
+    {
+      "family": "camera_polymer",
+      "index": 20,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_USB_Camera_Matte_Black_Housing.Sunray150_Texture_USB_Camera_Matte_Black_Housing",
+      "slot_name": "Sunray150_Texture_USB_Camera_Matte_Black_Housing"
+    },
+    {
+      "family": "nickel_connector",
+      "index": 21,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_USB_HDMI_Nickel_Shell.Sunray150_Texture_USB_HDMI_Nickel_Shell",
+      "slot_name": "Sunray150_Texture_USB_HDMI_Nickel_Shell"
+    },
+    {
+      "family": "camera_polymer",
+      "index": 22,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_N150_Black_Cooling_Fan.Sunray150_Texture_N150_Black_Cooling_Fan",
+      "slot_name": "Sunray150_Texture_N150_Black_Cooling_Fan"
+    },
+    {
+      "family": "nickel_connector",
+      "index": 23,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_N150_M2_Storage_Module.Sunray150_Texture_N150_M2_Storage_Module",
+      "slot_name": "Sunray150_Texture_N150_M2_Storage_Module"
+    },
+    {
+      "family": "camera_polymer",
+      "index": 24,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_TF_Mini_Black_Sensor.Sunray150_Texture_TF_Mini_Black_Sensor",
+      "slot_name": "Sunray150_Texture_TF_Mini_Black_Sensor"
+    },
+    {
+      "family": "smoked_propeller",
+      "index": 25,
+      "material_path": "/Game/Sunray150/Materials/Sunray150_Texture_Clear_Liuli_Glass_Propeller.Sunray150_Texture_Clear_Liuli_Glass_Propeller",
+      "slot_name": "Sunray150_Texture_Clear_Liuli_Glass_Propeller"
+    }
+  ],
+  "bound_slot_count": 26,
+  "claim_boundary": [
+    "UE StaticMesh material binding fix only.",
+    "Does not alter geometry, camera, MWORKS, ROS2, controller, planner, or runtime truth.",
+    "Still requires runtime screenshot and user visual review before final material acceptance."
+  ],
+  "configured_material_count": 26,
+  "missing_config_slots": [],
+  "object_path": "/Game/Sunray150/sunray150_with_mid360_textured.sunray150_with_mid360_textured",
+  "ok": true,
+  "schema": "mosim.sunray150_runtime_material_binding_fix.v1",
+  "texture_dir": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Textures",
+  "ue_material_dir": "/Game/Sunray150/Materials",
+  "ue_texture_dir": "/Game/Sunray150/Textures"
+}

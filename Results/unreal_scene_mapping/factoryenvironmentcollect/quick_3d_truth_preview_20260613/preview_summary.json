@@ -1,0 +1,19 @@
+{
+  "schema": "mosim.factory_truth_quick_3d_preview.v1",
+  "truth_path": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\Content\\MworksData\\scene_truth\\factoryenvironmentcollect_collision_truth.json",
+  "output_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\unreal_scene_mapping\\factoryenvironmentcollect\\quick_3d_truth_preview_20260613",
+  "selected_proxy_count": 1200,
+  "source_proxy_count": 8658,
+  "sampled_point_count": 20697,
+  "voxel_count": 17157,
+  "voxel_resolution_m": 1.0,
+  "roi_center_m": [
+    -55.33,
+    -24.23,
+    1.9
+  ],
+  "roi_radius_m": 28.0,
+  "pointcloud_png": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\unreal_scene_mapping\\factoryenvironmentcollect\\quick_3d_truth_preview_20260613\\factory_truth_3d_pointcloud_preview.png",
+  "voxel_grid_png": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\unreal_scene_mapping\\factoryenvironmentcollect\\quick_3d_truth_preview_20260613\\factory_truth_3d_voxel_grid_preview.png",
+  "render_policy": "quick static matplotlib preview from UE collision truth; final dynamic sensor review should be UE or RViz2"
+}

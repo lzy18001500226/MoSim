@@ -1,0 +1,9 @@
+{
+  "schema": "mosim.ue_runtime_probe_stop_manifest.v1",
+  "stopped_at_local": "2026-06-12T11:25:00+08:00",
+  "process_id": 101392,
+  "process_name": "UnrealEditor",
+  "scope": "Stopped only the UE runtime process launched for ue_runtime_probe_20260612_1105.",
+  "post_stop_observed": "Get-Process -Id 101392 returned no process after Stop-Process.",
+  "unrelated_processes_touched": false
+}

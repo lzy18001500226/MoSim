@@ -1,0 +1,177 @@
+[
+  {
+    "row_id": "valid_future_accepted_MWORKS_live_downlink",
+    "expected_valid_bundle": true,
+    "reason": "authoritative source, matching identity, no-pose pass, negative report pass, cleanup pass",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "valid_future_rejected_MWORKS_live_downlink",
+    "expected_valid_bundle": true,
+    "reason": "authoritative rejected echo is valid echo evidence but not accepted-state evidence",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "valid_future_accepted_ROS2_runtime_echo",
+    "expected_valid_bundle": true,
+    "reason": "ROS2 authoritative echo source/authority pair",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "valid_future_accepted_MWORKS_ROS2_live_downlink",
+    "expected_valid_bundle": true,
+    "reason": "shared MWORKS_ROS2 authoritative echo source/authority pair",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "missing_runtime_probe_manifest",
+    "expected_valid_bundle": false,
+    "reason": "all seven expected JSON artifacts are mandatory",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "missing_pending_request_capture",
+    "expected_valid_bundle": false,
+    "reason": "pending can come only from mosim.ue_command.v1 request",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "missing_authoritative_echo_capture",
+    "expected_valid_bundle": false,
+    "reason": "accepted/rejected can come only from authoritative mosim.ue_command_echo.v1",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "missing_request_echo_match_report",
+    "expected_valid_bundle": false,
+    "reason": "run_id/request_id/seq/time_s/command kind/status match must be reported",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "missing_no_pose_overwrite_report",
+    "expected_valid_bundle": false,
+    "reason": "no-pose-overwrite proof is mandatory",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "missing_false_ack_negative_report",
+    "expected_valid_bundle": false,
+    "reason": "false-ack negative proof is mandatory",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "missing_timeout_cleanup_manifest",
+    "expected_valid_bundle": false,
+    "reason": "bounded timeout and cleanup manifest is mandatory",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "missing_producer_identity",
+    "expected_valid_bundle": false,
+    "reason": "producer identity requires source, authority, surface, instance, session, and transport ids",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "identity_mismatch_request_id",
+    "expected_valid_bundle": false,
+    "reason": "pending and echo identity must match",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "identity_mismatch_seq",
+    "expected_valid_bundle": false,
+    "reason": "pending and echo sequence must match",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "identity_mismatch_time_s",
+    "expected_valid_bundle": false,
+    "reason": "pending and echo command timestamp must match",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "identity_mismatch_command_kind",
+    "expected_valid_bundle": false,
+    "reason": "pending and echo command kind must match",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "wrong_source_authority_pair",
+    "expected_valid_bundle": false,
+    "reason": "source must match the expected authoritative ack authority",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "no_pose_overwrite_failure",
+    "expected_valid_bundle": false,
+    "reason": "no_pose_overwrite_status must be pass",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "forbidden_pose_command",
+    "expected_valid_bundle": false,
+    "reason": "pose override, teleport, set_uav_pose, actor_transform, and keyboard_pose are forbidden",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "false_ack_build_success",
+    "expected_valid_bundle": false,
+    "reason": "build success cannot be runtime command ack",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "false_ack_sender_success",
+    "expected_valid_bundle": false,
+    "reason": "sender success cannot be runtime command ack",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "false_ack_fixture_only_echo",
+    "expected_valid_bundle": false,
+    "reason": "fixture-only echo cannot be runtime command ack",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "false_ack_operator_intent",
+    "expected_valid_bundle": false,
+    "reason": "operator intent cannot be runtime command ack",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "false_ack_quadrotor_unreal_state",
+    "expected_valid_bundle": false,
+    "reason": "quadrotor.unreal_state frames are status frames, not command echo",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  {
+    "row_id": "cleanup_failure_socket_left_bound",
+    "expected_valid_bundle": false,
+    "reason": "cleanup must prove no socket/listener/timer/background loop remains",
+    "accepted_as_runtime_ack_now": false,
+    "authoritative_runtime_ack_claimable_now": false
+  }
+]

@@ -1,0 +1,129 @@
+{
+  "schema": "mosim.ue_replay_input_bundle.v1",
+  "status": "ready_for_source_static_ue_replay_input",
+  "source_static_only": true,
+  "ue_editor_opened": false,
+  "ue_runtime_started": false,
+  "udp_sent": false,
+  "closeout_gate": "Results/mworks_model_hygiene/20260612_single_uav_pre_multi_uav_closeout_gate/single_uav_pre_multi_uav_closeout_gate.json",
+  "scene_binding": {
+    "scene_id": "robust_rotor1_loss15_example1",
+    "map_id": "local_factoryenvironmentcollect",
+    "map_id_role": "registry_scene_source_id_for_AQuadrotorMworksMapActor.ResolveSceneSourceId",
+    "scenario_visual_label": "open_grass_robustness",
+    "coordinate_frame": "MWORKS world, meters, z-up",
+    "unreal_conversion": "X=mworks_x*100, Y=-mworks_y*100, Z=mworks_z*100",
+    "display_only": true
+  },
+  "accepted_candidate": {
+    "scenario": "Config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml",
+    "controller_id": "linear_mpc_online_fault_allocation_sysblock",
+    "model_name": "QuadrotorExperiments.Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop",
+    "experiment_id": "robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock",
+    "quality_status": "pass",
+    "position_rmse_m": 0.1675687242474305,
+    "total_health_score": 62.536015057605155
+  },
+  "artifacts": {
+    "scenario": {
+      "path": "Config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml",
+      "bytes": 3155
+    },
+    "raw": {
+      "path": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.csv",
+      "headers": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref",
+        "roll",
+        "pitch",
+        "yaw",
+        "u1",
+        "u2",
+        "u3",
+        "u4",
+        "eta_hat"
+      ],
+      "row_count": 25001,
+      "time_start_s": 0.0,
+      "time_end_s": 50.0,
+      "required_columns_present": true
+    },
+    "metrics": {
+      "path": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/metrics/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.json",
+      "bytes": 2950
+    },
+    "replay": {
+      "path": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/replay/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.json",
+      "bytes": 431693
+    },
+    "figures": [
+      {
+        "path": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock_altitude_tracking.svg",
+        "bytes": 665453
+      },
+      {
+        "path": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock_figure_manifest.md",
+        "bytes": 949
+      },
+      {
+        "path": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock_metrics_summary.svg",
+        "bytes": 2537
+      },
+      {
+        "path": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock_position_error.svg",
+        "bytes": 352259
+      },
+      {
+        "path": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock_trajectory_xy.svg",
+        "bytes": 702069
+      }
+    ]
+  },
+  "metrics_summary": {
+    "source": "MWORKS_MCP",
+    "quality_checked_at": "2026-06-12T05:32:10",
+    "row_count": 25001,
+    "duration_s": 50.0,
+    "position_rmse_m": 0.1675687242474305,
+    "max_position_error_m": 0.6938188238421894,
+    "steady_state_error_m": 0.1309865010516861,
+    "disturbance_peak_error_m": 0.1160462800047718,
+    "disturbance_recovery_time_s": 2.490000000000002,
+    "total_health_score": 62.536015057605155
+  },
+  "stream_contract_dry_run": {
+    "command": "D:\\Dev\\Anaconda3\\python.exe Scripts/UE5/stream_unreal_udp.py Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.csv --scene-id robust_rotor1_loss15_example1 --map-id local_factoryenvironmentcollect --max-frames 1 --dry-run --no-sleep",
+    "packet_types": [
+      "hello",
+      "frame",
+      "end"
+    ],
+    "frame_schema": "quadrotor.unreal_state.v1",
+    "frame_scene_id": "robust_rotor1_loss15_example1",
+    "frame_map_id": "local_factoryenvironmentcollect",
+    "frame_status": {
+      "controller_mode": "unknown",
+      "planner_state": "render_contract_smoke",
+      "safety_state": "unknown",
+      "evidence_level": "render_only_preview",
+      "notes": "local_known_map and preview local_plan are display contracts unless evidence_backed=true"
+    }
+  },
+  "next_allowed_actions": [
+    "If the user has authorized direct continuation, run the next bounded UE replay/render readiness step without waiting for PMO idleness.",
+    "Use stream_unreal_udp.py with the same raw CSV, scene_id, and map_id when the UE workflow gate authorizes UDP/runtime scope.",
+    "Keep UE output as visual/replay evidence only; MWORKS metrics remain the controller-performance source."
+  ],
+  "forbidden_claims": [
+    "UE runtime success",
+    "UE editor/build acceptance",
+    "closed_loop success beyond the MWORKS evidence scope",
+    "planner_ready",
+    "multi-UAV formation readiness"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "mosim.ue_runtime_replay_probe_summary.v1",
+  "status": "runtime_ingest_pass_visual_uav_hidden_fix_needed",
+  "launch_manifest": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1038/ue_runtime_launch_manifest.json",
+  "stream_log": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1038/stream_unreal_udp_120frames.log",
+  "ue_log_tail": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1038/ue_log_tail_after_stream.txt",
+  "screenshots_before_stream": [
+    "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1038/screenshots/94848_0x923642_D__Program Files_Epic Games_UE_5.5_Engine_Binaries_Win64_UnrealEditor.exe.png",
+    "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1038/screenshots/94848_0xA70B38_MoSimSceneLibrary （64-位 Development PCD3D_SM6） .png"
+  ],
+  "screenshots_after_stream": [
+    "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1038/screenshots_after_stream/94848_0x923642_D__Program Files_Epic Games_UE_5.5_Engine_Binaries_Win64_UnrealEditor.exe.png",
+    "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1038/screenshots_after_stream/94848_0xA70B38_MoSimSceneLibrary （64-位 Development PCD3D_SM6） .png"
+  ],
+  "factory_scene_visible": true,
+  "ue_window_visible": true,
+  "udp_first_frame_received": true,
+  "sunray_first_frame_applied": true,
+  "sunray_visible": false,
+  "sunray_hidden_evidence": true,
+  "known_visual_warnings": [
+    "VSM one-pass projection max lights overflow warning visible in screenshot"
+  ],
+  "next_fix": "Make the Sunray playback visual component visible in simulation-review/game runtime after first frame, then rebuild and rerun runtime replay probe.",
+  "forbidden_claims": [
+    "Do not claim final visual replay acceptance while SunrayDaeDerivedVehicle is hidden_in_game=true.",
+    "Do not claim authoritative command echo ack from quadrotor.unreal_state frames.",
+    "Do not claim controller performance from UE visual replay."
+  ]
+}

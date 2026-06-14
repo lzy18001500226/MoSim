@@ -1,0 +1,60 @@
+﻿{
+    "timestamp":  "2026-06-12T14:44:26+08:00",
+    "status":  "dry_run_no_click_posted",
+    "method":  "Win32 ShowWindow optional SW_SHOWNOACTIVATE + PostMessage WM_MOUSEMOVE/WM_LBUTTONDOWN/WM_LBUTTONUP + optional SW_SHOWMINNOACTIVE",
+    "title_regex":  "Docker|Containers - Docker Desktop",
+    "target_before":  {
+                          "hwnd":  "0x9113BC",
+                          "pid":  72020,
+                          "title":  "Containers - Docker Desktop",
+                          "class":  "Chrome_WidgetWin_1",
+                          "visible":  true,
+                          "minimized":  true
+                      },
+    "target_after":  {
+                         "hwnd":  "0x9113BC",
+                         "pid":  72020,
+                         "title":  "Containers - Docker Desktop",
+                         "class":  "Chrome_WidgetWin_1",
+                         "visible":  true,
+                         "minimized":  true
+                     },
+    "restore_minimized":  true,
+    "keep_restored":  false,
+    "was_minimized":  true,
+    "rect":  {
+                 "left":  -7,
+                 "bottom":  1111,
+                 "top":  -7,
+                 "right":  2055,
+                 "height":  1118,
+                 "width":  2062
+             },
+    "click_client":  {
+                         "y":  559,
+                         "x":  1031
+                     },
+    "click_ratio":  {
+                        "y":  0.5,
+                        "x":  0.5
+                    },
+    "click_posted":  false,
+    "foreground_before":  {
+                              "hwnd":  "0xFA2368",
+                              "pid":  55068,
+                              "title":  "Codex",
+                              "class":  "Chrome_WidgetWin_1",
+                              "visible":  true,
+                              "minimized":  false
+                          },
+    "foreground_after":  {
+                             "hwnd":  "0x9113BC",
+                             "pid":  72020,
+                             "title":  "Containers - Docker Desktop",
+                             "class":  "Chrome_WidgetWin_1",
+                             "visible":  true,
+                             "minimized":  true
+                         },
+    "focus_stolen_by_target":  true,
+    "claim_boundary":  "Background PostMessage works for some Qt/window controls but not all. Use only for approved low-risk UI actions; for license, login, crash, or error-report dialogs, capture evidence and return to PMO instead of clicking recovery buttons."
+}

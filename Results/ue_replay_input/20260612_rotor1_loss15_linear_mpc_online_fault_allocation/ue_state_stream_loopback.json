@@ -1,0 +1,40 @@
+{
+  "schema": "mosim.mworks_accepted_run_ue_state_stream_loopback.v1",
+  "ok": true,
+  "bundle": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_replay_input_bundle.json",
+  "raw_csv": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.csv",
+  "scene_id": "robust_rotor1_loss15_example1",
+  "map_id": "local_factoryenvironmentcollect",
+  "max_frames": 8,
+  "stream_command": "D:\\Dev\\Anaconda3\\python.exe Scripts/UE5/stream_unreal_udp.py Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.csv --host 127.0.0.1 --port 64177 --scene-id robust_rotor1_loss15_example1 --map-id local_factoryenvironmentcollect --max-frames 8 --no-sleep --disable-visual-helpers",
+  "process_exit_code": 0,
+  "received_packets": 10,
+  "received_frames": 8,
+  "received_jsonl": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/received_ue_state_packets.jsonl",
+  "packet_types": [
+    "hello",
+    "frame",
+    "frame",
+    "frame",
+    "frame",
+    "frame",
+    "frame",
+    "frame",
+    "frame",
+    "end"
+  ],
+  "ue_editor_opened": false,
+  "ue_runtime_started": false,
+  "mworks_started": false,
+  "ros2_started": false,
+  "not_runtime_ue_ack": true,
+  "not_controller_performance_evidence": true,
+  "claim_boundary": [
+    "Local UDP transport smoke for quadrotor.unreal_state.v1 replay packets only.",
+    "Does not run Unreal Editor, UE runtime, MWORKS, ROS2, RViz, or command-echo acknowledgement.",
+    "MWORKS metrics remain the controller-performance source."
+  ],
+  "stdout_tail": "Streamed 8 frames to udp://127.0.0.1:64177 scene=robust_rotor1_loss15_example1\n",
+  "stderr_tail": "",
+  "issues": []
+}

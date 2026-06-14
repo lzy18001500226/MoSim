@@ -1,0 +1,122 @@
+{
+  "schema": "mosim.ue_stage_progress_summary.v1",
+  "status": "runtime_ingest_and_visual_uav_visible_pass",
+  "stage": "MWORKS accepted single-UAV run to UE replay/render readiness",
+  "direct_continuation_without_visible_subthreads": true,
+  "accepted_mworks_run": {
+    "controller_id": "linear_mpc_online_fault_allocation_sysblock",
+    "scenario": "Config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml",
+    "model_name": "QuadrotorExperiments.Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop",
+    "experiment_id": "robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock",
+    "quality_status": "pass",
+    "raw_csv": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.csv",
+    "metrics_json": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/metrics/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.json",
+    "replay_json": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/replay/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.json",
+    "figures_count": 5,
+    "metrics_summary": {
+      "source": "MWORKS_MCP",
+      "quality_checked_at": "2026-06-12T05:32:10",
+      "row_count": 25001,
+      "duration_s": 50.0,
+      "position_rmse_m": 0.1675687242474305,
+      "max_position_error_m": 0.6938188238421894,
+      "steady_state_error_m": 0.1309865010516861,
+      "disturbance_peak_error_m": 0.1160462800047718,
+      "disturbance_recovery_time_s": 2.490000000000002,
+      "total_health_score": 62.536015057605155
+    }
+  },
+  "closeout_gate": {
+    "path": "Results/mworks_model_hygiene/20260612_single_uav_pre_multi_uav_closeout_gate/single_uav_pre_multi_uav_closeout_gate.json",
+    "status": "single_uav_gate_ready_for_ue_prep",
+    "accepted_current_rerun": true
+  },
+  "ue_replay_input_bundle": {
+    "path": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_replay_input_bundle.json",
+    "status": "ready_for_source_static_ue_replay_input",
+    "source_static_only": true,
+    "scene_id": "robust_rotor1_loss15_example1",
+    "map_id": "local_factoryenvironmentcollect",
+    "map_id_role": "registry_scene_source_id_for_AQuadrotorMworksMapActor.ResolveSceneSourceId",
+    "scenario_visual_label": "open_grass_robustness",
+    "dry_run_frame_schema": "quadrotor.unreal_state.v1"
+  },
+  "ue_scene_binding": {
+    "active_scene_source_id": "local_factoryenvironmentcollect",
+    "registry_primary_scene_source_id": "local_factoryenvironmentcollect",
+    "map_load_probe": "Results/tmp/renderer_map_load_probe_factory_20260612_102841.json",
+    "map_load_ok": true,
+    "map_package": "/Game/Maps/Demonstration",
+    "actor_count": 11872
+  },
+  "ue_build_only_gate": {
+    "path": "Results/ue_build/20260612_102452_mosim_scene_library_editor_build/build_manifest.json",
+    "status": "build_passed",
+    "exit_code": 0,
+    "duration_s": 7.729,
+    "ue_runtime_started": false,
+    "authoritative_runtime_ack_claimable_now": false
+  },
+  "ue_state_stream_loopback": {
+    "path": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_state_stream_loopback.json",
+    "ok": true,
+    "received_packets": 10,
+    "received_frames": 8,
+    "received_jsonl": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/received_ue_state_packets.jsonl",
+    "not_runtime_ue_ack": true
+  },
+  "checks_passed_this_stage": [
+    "python Scripts/tests/test_mworks_accepted_run_ue_replay_input_bundle.py",
+    "python Scripts/UE5/check_scene_source_udp_contract.py",
+    "python Scripts/UE5/check_ue_runtime_echo_build_readiness_surface.py",
+    "python Scripts/tests/test_mworks_accepted_run_ue_state_stream_loopback.py",
+    "python Scripts/UE5/smoke_mworks_accepted_run_ue_state_stream_loopback.py --max-frames 8",
+    "python -m py_compile Scripts/UE5/import_sunray150_runtime_static_mesh.py Scripts/tests/test_factory_uav_platform_review.py",
+    "python Scripts/tests/test_factory_uav_platform_review.py",
+    "python Scripts/tests/test_ue_runtime_echo_build_readiness_surface.py"
+  ],
+  "known_non_blocking_gap_for_current_path": {
+    "fab_goal_acceptance": "5/8 gates passed; Fab inventory/edit route missing, local Factory fallback remains active for current UE replay path."
+  },
+  "next_executable_slice": {
+    "name": "UE post-replay evidence hardening or command-echo runtime evidence gate",
+    "requires": [
+      "Preserve current runtime replay evidence baseline.",
+      "For command echo, require producer identity, pending request capture, authoritative echo capture, match report, no-pose overwrite report, false-ack negative report, and timeout cleanup evidence.",
+      "Stop on crash, save/overwrite, login/license, unknown prompts, or missing capture surface."
+    ],
+    "allowed_now_by_user": true
+  },
+  "forbidden_claims": [
+    "authoritative command echo ack before mosim.ue_command_echo.v1 producer/capture/match evidence",
+    "planner_ready",
+    "ROS2/FAST-LIO runtime success",
+    "closed_loop beyond MWORKS accepted evidence scope",
+    "controller performance from UE visual replay",
+    "final material acceptance",
+    "multi-UAV formation readiness"
+  ],
+  "sunray150_runtime_static_mesh_import": {
+    "path": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/sunray150_runtime_static_mesh_import_20260612_1100.json",
+    "status": "pass",
+    "asset_path": "/Game/Sunray150/sunray150_with_mid360_textured",
+    "asset_class": "StaticMesh",
+    "bounds_nonzero": true
+  },
+  "ue_runtime_replay_probe": {
+    "path": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/ue_runtime_replay_probe_summary.json",
+    "status": "runtime_ingest_and_visual_uav_visible_pass",
+    "process_id": 101392,
+    "frames_sent": 120,
+    "factory_scene_visible": true,
+    "udp_first_frame_received": true,
+    "sunray_first_frame_applied": true,
+    "sunray_visible": true,
+    "sunray_hidden_in_game": false,
+    "sunray_bounds_nonzero": true,
+    "before_stream_screenshot_manifest": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/screenshots/capture_manifest.json",
+    "after_stream_screenshot_manifest": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/screenshots_after_stream/capture_manifest.json",
+    "stream_log": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/stream_unreal_udp_120frames.log",
+    "ue_log_tail": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/ue_log_tail_after_stream.txt"
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "schema": "mosim.ue.next_execution_plan.v1",
+  "status": "ready_for_next_executable_slice",
+  "created_at_local": "2026-06-12T19:05:00+08:00",
+  "goal": {
+    "objective": "Advance the UE stage from nonfinal runtime replay evidence to reviewable visual evidence, then to command-echo live evidence only after the visual gate is not blocked.",
+    "critical_path_order": [
+      "visual_review_hardening",
+      "command_echo_live_probe"
+    ],
+    "reason_for_order": "The existing runtime replay probe already has log-level Sunray150 visibility and nonzero bounds, but the opened screenshot does not show the UAV clearly by eye. A close or follow-camera visual gate is the shortest missing UE evidence before deeper command-echo work."
+  },
+  "current_evidence": {
+    "review_packet": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_review_path_20260612_001/current_review_packet.json",
+    "after_stream_screenshot": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/screenshots_after_stream/101392_0x2AE1882_MoSimSceneLibrary \uff0864-\u4f4d Development PCD3D_SM6\uff09 .png",
+    "runtime_summary": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/ue_runtime_replay_probe_summary.json",
+    "ue_log_tail": "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/ue_log_tail_after_stream.txt",
+    "current_runtime_process_observation": "No current UnrealEditor.exe process with MoSimSceneLibrary.uproject was found in the local process check during this planning turn."
+  },
+  "subagent_plan": {
+    "used": true,
+    "mode": "bounded disposable sidecar review only",
+    "agents": [
+      {
+        "role": "UE evidence reviewer",
+        "scope": "Read current review packet, screenshots, runtime summary, and UE log evidence.",
+        "write_scope": "none",
+        "live_scope": "none",
+        "result": "Existing screenshots are review-ready for scene/window nonblank evidence but not final Sunray150 visual acceptance."
+      },
+      {
+        "role": "UE script inventory reviewer",
+        "scope": "Read Scripts/UE5 and workflow docs to identify visual-review and command-echo executable paths.",
+        "write_scope": "none",
+        "live_scope": "none",
+        "result": "Factory UAV platform review and command-echo validator/plan scripts were identified."
+      },
+      {
+        "role": "Claim-boundary reviewer",
+        "scope": "Read UE workflow, board, and command-echo hardening evidence.",
+        "write_scope": "none",
+        "live_scope": "none",
+        "result": "Confirmed prohibited claims and seven-artifact command-echo minimum."
+      }
+    ]
+  },
+  "path_a_visual_review_hardening": {
+    "status": "next_preferred_slice",
+    "scope_classification": "UE runtime/review evidence",
+    "purpose": "Produce human-readable Factory scene screenshots where the Sunray150 UAV body is clearly visible by eye.",
+    "primary_script": "Scripts/UE5/review_factory_uav_platform.sh",
+    "documented_follow_camera_command": "FOLLOW_UAV_CAMERA=1 STREAM_FPS=60 STREAM_RESAMPLE_HZ=60 STREAM_REPLAY_SPEED=1.0 Scripts/UE5/review_factory_uav_platform.sh",
+    "already_open_window_replay_command": "STREAM_ONLY=1 STREAM_MAX_FRAMES=1 STREAM_FPS=6 Scripts/UE5/review_factory_uav_platform.sh",
+    "capture_skill": "CoAgent/skills/window-capture-evidence/SKILL.md",
+    "capture_command_template": "powershell -NoProfile -ExecutionPolicy Bypass -File Scripts\\tools\\capture_window_background.ps1 -TitleRegex \"MoSimSceneLibrary\" -ProcessRegex \"^UnrealEditor$\" -OutDir Results\\ue_replay_input\\20260612_rotor1_loss15_linear_mpc_online_fault_allocation\\ue_visual_review_hardening_20260612_001\\screenshots -RestoreMinimized",
+    "expected_outputs": [
+      "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_visual_review_hardening_20260612_001/visual_review_manifest.json",
+      "Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_visual_review_hardening_20260612_001/screenshots/capture_manifest.json",
+      "at least one after-stream close or follow-camera screenshot where the Sunray150 UAV body is visible by eye",
+      "UE log tail with first MWORKS UDP frame and Sunray first applied frame",
+      "review notes stating whether UAV visibility is accepted or still unclear"
+    ],
+    "minimum_acceptance": [
+      "Factory/Demonstration scene is nonblank and readable.",
+      "Sunray150 or YunZong UAV body is visible by eye in at least one screenshot, not only by log.",
+      "The screenshot is from the MoSimSceneLibrary Unreal game window, not Codex or a console/helper window.",
+      "The log still reports first MWORKS UDP frame and Sunray component visibility/nonzero bounds for the same probe.",
+      "No primitive cube/cylinder/STL fallback is used as final vehicle visual evidence."
+    ],
+    "stop_conditions": [
+      "No matching MoSimSceneLibrary Unreal runtime window appears after the bounded launch/wait.",
+      "UDP port 5005 is not exposed by the expected Unreal game process within the documented timeout.",
+      "The captured image is blank, wrong-window, cropped beyond review use, or still does not show the UAV clearly after one bounded retry.",
+      "UE log lacks the MWORKS UDP first frame or Sunray first-applied-frame diagnostics.",
+      "The run would require keyboard/camera operations that move the UAV truth, save the map, change assets, or use actor pose override."
+    ],
+    "claims_allowed_if_passed": [
+      "UE Factory scene rendered and captured.",
+      "Imported Sunray150 runtime visual is human-visible in the UE review window.",
+      "The accepted MWORKS replay stream reached the UE runtime visual path."
+    ],
+    "claims_still_forbidden_if_passed": [
+      "authoritative UE command echo acknowledgement",
+      "controller performance from UE",
+      "ROS2/FAST-LIO success",
+      "planner_ready",
+      "closed_loop beyond the accepted MWORKS run",
+      "final material acceptance",
+      "multi-UAV readiness"
+    ]
+  },
+  "path_b_command_echo_live_probe": {
+    "status": "second_slice_after_visual_gate_or_if_user_prioritizes_command_echo",
+    "scope_classification": "bounded live UE command-echo probe",
+    "purpose": "Produce and validate one seven-artifact live command-echo capture bundle.",
+    "validator": "Scripts/UE5/check_ue_runtime_probe_capture_bundle_validator.py --bundle-dir <future_live_bundle_dir>",
+    "required_artifacts": [
+      "runtime_probe_manifest.json",
+      "pending_request_capture.json",
+      "authoritative_echo_capture.json",
+      "request_echo_match_report.json",
+      "no_pose_overwrite_report.json",
+      "false_ack_negative_report.json",
+      "timeout_cleanup_manifest.json"
+    ],
+    "authoritative_sources": [
+      "MWORKS_live_downlink",
+      "ROS2_runtime_echo",
+      "MWORKS_ROS2_live_downlink"
+    ],
+    "stop_conditions": [
+      "More than one live attempt would be needed.",
+      "The probe cannot produce an authoritative mosim.ue_command_echo.v1 row.",
+      "The pending request and echo identity do not match.",
+      "No-pose-overwrite report is not pass.",
+      "False-ack negative report accepts build/checker/sender/fixture/operator/state-frame evidence as command ack.",
+      "Cleanup cannot prove no listener, timer, background loop, or socket remains bound."
+    ],
+    "claims_allowed_if_passed": [
+      "A single bounded live command echo bundle passed the validator.",
+      "The named command request and authoritative echo matched under the declared source/authority pair."
+    ],
+    "claims_still_forbidden_if_passed": [
+      "final UE visual/material acceptance",
+      "ROS2/FAST-LIO success unless the authoritative source is specifically ROS2 runtime echo and the ROS2 evidence gate also passes",
+      "planner_ready",
+      "controller performance from UE",
+      "multi-UAV readiness"
+    ]
+  },
+  "next_owner": "current single-thread executor",
+  "board_update_needed": true,
+  "terminal_email_needed": "only when the next executable slice reaches completion, blocker, or review-required terminal state"
+}

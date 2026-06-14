@@ -1,0 +1,22 @@
+{
+  "schema": "mosim.ue_runtime_probe_launch.v1",
+  "started_at": "2026-06-12T10:38:16.7666408+08:00",
+  "process_id": 94848,
+  "editor": "D:\\Program Files\\Epic Games\\UE_5.5\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+  "uproject": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\MoSimSceneLibrary.uproject",
+  "arguments": [
+    "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\MoSimSceneLibrary.uproject",
+    "/Game/Maps/Demonstration?game=/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode",
+    "-game",
+    "-windowed",
+    "-ResX=1280",
+    "-ResY=720",
+    "-MoSimSimulationReview",
+    "-log"
+  ],
+  "window_found": true,
+  "main_window_title": "D:\\Program Files\\Epic Games\\UE_5.5\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+  "stop_conditions_observed": [],
+  "ended_wait_at": "2026-06-12T10:38:18.7859894+08:00",
+  "process_running_after_wait": true
+}

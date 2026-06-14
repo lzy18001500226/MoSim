@@ -1,0 +1,260 @@
+
+[2026.06.12-02.50.23:442][  0]LogScript: Warning: Attempted to access TRASH_StaticMeshComponent_2 via property x0, but TRASH_StaticMeshComponent_2 is not valid (pending kill or garbage)
+	AB_IK_RobotArm_C /Game/Maps/TechArt.TechArt:PersistentLevel.BP_RobotHend4.SK_RoboArm04.AB_IK_RobotArm_C_0
+	Function /Game/Meshes/Robot/AB_IK_RobotArm.AB_IK_RobotArm_C:ExecuteUbergraph_AB_IK_RobotArm:009F
+[2026.06.12-02.50.23:442][  0]LogScript: Warning: Script call stack:
+	Function /Game/Meshes/Robot/AB_IK_RobotArm.AB_IK_RobotArm_C:BlueprintUpdateAnimation
+	Function /Game/Meshes/Robot/AB_IK_RobotArm.AB_IK_RobotArm_C:ExecuteUbergraph_AB_IK_RobotArm
+
+[2026.06.12-02.50.23:443][  0]LogScript: Warning: Attempted to access TRASH_StaticMeshComponent_2 via property x0, but TRASH_StaticMeshComponent_2 is not valid (pending kill or garbage)
+	AB_IK_RobotArm_C /Game/Maps/TechArt.TechArt:PersistentLevel.BP_RobotHend3.SK_RoboArm04.AB_IK_RobotArm_C_0
+	Function /Game/Meshes/Robot/AB_IK_RobotArm.AB_IK_RobotArm_C:ExecuteUbergraph_AB_IK_RobotArm:009F
+[2026.06.12-02.50.23:443][  0]LogScript: Warning: Script call stack:
+	Function /Game/Meshes/Robot/AB_IK_RobotArm.AB_IK_RobotArm_C:BlueprintUpdateAnimation
+	Function /Game/Meshes/Robot/AB_IK_RobotArm.AB_IK_RobotArm_C:ExecuteUbergraph_AB_IK_RobotArm
+
+[2026.06.12-02.50.23:443][  0]LogScript: Warning: Attempted to access TRASH_StaticMeshComponent_2 via property x0, but TRASH_StaticMeshComponent_2 is not valid (pending kill or garbage)
+	AB_IK_RobotArm_C /Game/Maps/TechArt.TechArt:PersistentLevel.BP_RobotHend2.SK_RoboArm04.AB_IK_RobotArm_C_0
+	Function /Game/Meshes/Robot/AB_IK_RobotArm.AB_IK_RobotArm_C:ExecuteUbergraph_AB_IK_RobotArm:009F
+[2026.06.12-02.50.23:444][  0]LogScript: Warning: Script call stack:
+	Function /Game/Meshes/Robot/AB_IK_RobotArm.AB_IK_RobotArm_C:BlueprintUpdateAnimation
+	Function /Game/Meshes/Robot/AB_IK_RobotArm.AB_IK_RobotArm_C:ExecuteUbergraph_AB_IK_RobotArm
+
+[2026.06.12-02.50.23:669][  0]LogWorld: Bringing World /Game/Maps/Demonstration.Demonstration up for play (max tick rate 0) at 2026.06.12-10.50.23
+[2026.06.12-02.50.23:676][  0]LogWorld: Bringing up level for play took: 0.207679
+[2026.06.12-02.50.23:678][  0]LogTemp: Display: MWORKS review camera input bindings installed.
+[2026.06.12-02.50.23:679][  0]LogTemp: Display: MWORKS review camera input bindings installed.
+[2026.06.12-02.50.23:687][  0]LogTemp: Display: MWORKS renderer spawned default review lighting: sun=true sky=true
+[2026.06.12-02.50.23:688][  0]LogTemp: Display: MWORKS scene-review control enforced: pawn=MworksReviewCameraPawn_0 review_pawn=MworksReviewCameraPawn_0 disabled_imported_pawns=3
+[2026.06.12-02.50.23:688][  0]LogTemp: Display: MWORKS preview map auto-spawn disabled by command line.
+[2026.06.12-02.50.23:690][  0]LogTemp: Display: Quadrotor MWORKS UDP receiver listening on 0.0.0.0:5005
+[2026.06.12-02.50.23:703][  0]LogTemp: Display: MoSim Sunray component diagnostic: SunrayDaeDerivedVehicleMesh visible=true hidden_in_game=false relative_location=(0.000, 0.000, 0.000) relative_rotation=P=0.000000 Y=0.000000 R=0.000000 relative_scale=(1.000, 1.000, 1.000) world_origin=(7.920, -6.199, 327.027) box_extent=(424.263, 422.542, 318.760) sphere_radius=606.681
+[2026.06.12-02.50.23:703][  0]LogTemp: Display: MWORKS renderer spawned playback actor and linked map actor.
+[2026.06.12-02.50.23:704][  0]LogTemp: Display: MWORKS review camera active at location=(-5733.0, 2423.0, 280.0) rotation=(pitch=-12.0, yaw=0.0, roll=0.0) head_light=true. Controls: hold RMB+mouse look, WASD move, Q/E down/up, arrows look, Shift fast, Ctrl slow.
+[2026.06.12-02.50.23:704][  0]LogTemp: Display: MWORKS review camera collision enabled radius=40.0 cm strict_sweep=true. Movement sweep prevents visual review from passing through collidable scene geometry.
+[2026.06.12-02.50.23:706][  0]LogLoad: Took 2.370717 seconds to LoadMap(/Game/Maps/Demonstration)
+[2026.06.12-02.50.23:706][  0]LogGlobalStatus: UEngine::LoadMap Load map complete /Game/Maps/Demonstration
+[2026.06.12-02.50.23:894][  0]LogSlate: Took 0.000135 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/Roboto-Regular.ttf' (155K)
+[2026.06.12-02.50.23:951][  0]LogAssetRegistry: Display: Triggering cache save on discovery complete
+[2026.06.12-02.50.24:073][  0]LogAssetRegistry: Display: AssetDataGatherer spent 0.000s loading caches C:/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/Intermediate/CachedAssetRegistry_*.bin.
+[2026.06.12-02.50.24:216][  0]LogRenderer: Display: Invalidated clipmap due to WPO threshold change. This can occur due to resolution or FOV changes.
+[2026.06.12-02.50.24:227][  0]LogRenderer: Warning: [VSM] One Pass Projection max lights overflow. If you see shadow artifacts, decrease the amount of local lights per pixel, or increase r.Shadow.Virtual.OnePassProjection.MaxLightsPerPixel.
+[2026.06.12-02.50.24:233][  0]LogRenderer: Display: Invalidated clipmap due to WPO threshold change. This can occur due to resolution or FOV changes.
+[2026.06.12-02.50.24:265][  0]LogRenderer: Display: Invalidated clipmap due to WPO threshold change. This can occur due to resolution or FOV changes.
+[2026.06.12-02.50.24:270][  0]LogAssetRegistry: AssetRegistryGather time 0.1707s: AssetDataDiscovery 0.0000s, AssetDataGather 0.1213s, StoreResults 0.0494s. Wall time 5.6340s.
+	NumCachedDirectories 0. NumUncachedDirectories 1562. NumCachedFiles 7217. NumUncachedFiles 2130.
+	BackgroundTickInterruptions 0.
+[2026.06.12-02.50.24:300][  0]LogInit: Display: Engine is initialized. Leaving FEngineLoop::Init()
+[2026.06.12-02.50.24:301][  0]LogLoad: (Engine Initialization) Total time: 9.18 seconds
+[2026.06.12-02.50.24:323][  0]LogSlate: Took 0.000169 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/Roboto-Regular.ttf' (155K)
+[2026.06.12-02.50.24:384][  0]LogWindowsTextInputMethodSystem: Activated input method: 简体中文(中国大陆) - 微软拼音 (TSF IME).
+[2026.06.12-02.50.24:411][  0]LogContentStreaming: Texture pool size now 1000 MB
+[2026.06.12-02.50.24:412][  0]LogCsvProfiler: Display: Metadata set : streamingpoolsizemb="1000"
+[2026.06.12-02.50.24:475][  0]LogRenderer: Forcing update for all mesh draw commands: SkyLight change
+[2026.06.12-02.50.24:488][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/Sunray150/sunray150_with_mid360_textured.sunray150_with_mid360_textured being ready before playing
+[2026.06.12-02.50.24:494][  0]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2026.06.12-02.50.24:850][  0]LogAutomationController: Ignoring very large delta of 16851447.56 seconds in calls to FAutomationControllerManager::Tick() and not penalizing unresponsive tests
+[2026.06.12-02.50.25:033][  0]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2026.06.12-02.50.25:035][  0]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2026.06.12-02.50.25:035][  0]LogPython: Display: Running start-up script D:/Program Files/Epic Games/UE_5.5/Engine/Plugins/Animation/ControlRig/Content/Python/init_unreal.py... started...
+[2026.06.12-02.50.25:036][  0]LogPython: registering <class 'ControlRigWorkflows.workflow_deformation_rig_preset.provider'>
+
+[2026.06.12-02.50.25:049][  0]LogPython: Display: Running start-up script D:/Program Files/Epic Games/UE_5.5/Engine/Plugins/Animation/ControlRig/Content/Python/init_unreal.py... took 198.857 ms
+[2026.06.12-02.50.25:050][  0]LogPackageName: Warning: GetLocalFullPath called on FPackagePath C:/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/Content/StarterContent/Particles/P_Ambient_Dust which has an unspecified header extension, and the path does not exist on disk. Assuming EPackageExtension::Asset.
+[2026.06.12-02.50.25:050][  0]LoadErrors: Warning: While trying to load package /Game/Maps/Demonstration, a dependent package /Game/StarterContent/Particles/P_Ambient_Dust was not available. Additional explanatory information follows:
+FPackageName: Skipped package /Game/StarterContent/Particles/P_Ambient_Dust has a valid, mounted, mount point but does not exist either on disk or in iostore. The uncooked file would be expected on disk at 'C:/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/Content/StarterContent/Particles/P_Ambient_Dust.uasset'. Perhaps it has been deleted or was not synced?
+
+[2026.06.12-02.50.25:052][  0]LogLiveCoding: Display: LiveCodingConsole Arguments: MoSimSceneLibraryEditor Win64 Development
+[2026.06.12-02.50.25:059][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'UberGraphFrame': AnimBlueprintGeneratedClass /Game/Meshes/ForkLift/SK_ForkLift_Skeleton_AnimBlueprint.SK_ForkLift_Skeleton_AnimBlueprint_C
+[2026.06.12-02.50.25:060][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'NewVar_0': AnimBlueprintGeneratedClass /Game/Meshes/ForkLift/SK_ForkLift_Skeleton_AnimBlueprint.SK_ForkLift_Skeleton_AnimBlueprint_C
+[2026.06.12-02.50.25:060][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'ExecuteUbergraph_SK_ForkLift_Skeleton_AnimBlueprint': AnimBlueprintGeneratedClass /Game/Meshes/ForkLift/SK_ForkLift_Skeleton_AnimBlueprint.SK_ForkLift_Skeleton_AnimBlueprint_C
+[2026.06.12-02.50.25:060][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'EntryPoint': Function /Game/Meshes/ForkLift/SK_ForkLift_Skeleton_AnimBlueprint.SK_ForkLift_Skeleton_AnimBlueprint_C:ExecuteUbergraph_SK_ForkLift_Skeleton_AnimBlueprint
+[2026.06.12-02.50.25:061][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'AnimGraphNode_ComponentToLocalSpace_D0EE66D44632933617A493B7593C21D0': AnimBlueprintGeneratedClass /Game/Meshes/ForkLift/SK_ForkLift_Skeleton_AnimBlueprint.SK_ForkLift_Skeleton_AnimBlueprint_C
+[2026.06.12-02.50.25:066][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'AnimGraphNode_MeshRefPose_BDE04F154585CF5CC7907889FE26D9B7': AnimBlueprintGeneratedClass /Game/Meshes/ForkLift/SK_ForkLift_Skeleton_AnimBlueprint.SK_ForkLift_Skeleton_AnimBlueprint_C
+[2026.06.12-02.50.25:067][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'AnimGraphNode_Root_D7B640B34BE6A19A59AEA8AED1739271': AnimBlueprintGeneratedClass /Game/Meshes/ForkLift/SK_ForkLift_Skeleton_AnimBlueprint.SK_ForkLift_Skeleton_AnimBlueprint_C
+[2026.06.12-02.50.25:067][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'AnimGraphNode_RotationMultiplier_57CC1BE2429C16F9B3613C8FDC53F5E0': AnimBlueprintGeneratedClass /Game/Meshes/ForkLift/SK_ForkLift_Skeleton_AnimBlueprint.SK_ForkLift_Skeleton_AnimBlueprint_C
+[2026.06.12-02.50.25:067][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'AnimGraphNode_WheelHandler_C4A12C4E44DD0BAA1EC6F9AB97877C05': AnimBlueprintGeneratedClass /Game/Meshes/ForkLift/SK_ForkLift_Skeleton_AnimBlueprint.SK_ForkLift_Skeleton_AnimBlueprint_C
+[2026.06.12-02.50.25:067][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'UberGraphFrame': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:068][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'AC_SitInCar_GEN_VARIABLE': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:068][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow3': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:076][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'ExecuteUbergraph_PW_ForkLift': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:173][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'EntryPoint': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:174][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_MakeArray_Array': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:175][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_MakeArray_Array': ArrayProperty /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift.K2Node_MakeArray_Array
+[2026.06.12-02.50.25:175][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow1_GEN_VARIABLE': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:175][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow2_GEN_VARIABLE': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:177][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow3_GEN_VARIABLE': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:177][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow_GEN_VARIABLE': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:177][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Depth': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:178][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_IsValid_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:178][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_IsValid_ReturnValue1': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:178][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_LessEqual_IntInt_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:179][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Temp_bool_Has_Been_Initd_Variable': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:179][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Temp_bool_IsClosed_Variable': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:179][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Temp_bool_Whether_the_gate_is_currently_open_or_close_Variable': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:180][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Box_GEN_VARIABLE': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:180][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Camera_GEN_VARIABLE': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:180][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_Add_FloatFloat_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:181][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_Add_FloatFloat_ReturnValue1': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:181][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_Add_FloatFloat_ReturnValue2': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:182][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_BreakRotator_Pitch': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:230][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_BreakRotator_Roll': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:284][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_BreakRotator_Yaw': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:287][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_BreakVector_X': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:289][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_BreakVector_Y': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:290][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_BreakVector_Z': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:292][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_ClampAngle_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:292][  1]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_FClamp_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:329][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_GetInputAxisValue_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:330][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_GetInputAxisValue_ReturnValue1': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:330][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_GetWorldDeltaSeconds_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:332][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_Multiply_FloatFloat_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:332][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_Event_DeltaSeconds': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:332][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_InputAxisEvent_AxisValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:333][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_InputAxisEvent_AxisValue1': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:334][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'ReceiveBeginPlay': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:334][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'InpAxisEvt_MoveRight_K2Node_InputAxisEvent_1': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:334][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'AxisValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:InpAxisEvt_MoveRight_K2Node_InputAxisEvent_1
+[2026.06.12-02.50.25:335][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'InpAxisEvt_MoveForward_K2Node_InputAxisEvent_0': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:335][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'AxisValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:InpAxisEvt_MoveForward_K2Node_InputAxisEvent_0
+[2026.06.12-02.50.25:336][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'lableValue': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:336][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'MoveFSpeed': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:336][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'MoveSideSpeed': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:336][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'ReceiveUnpossessed': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:337][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'OldController': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ReceiveUnpossessed
+[2026.06.12-02.50.25:337][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'ReceivePossessed': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:337][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'NewController': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ReceivePossessed
+[2026.06.12-02.50.25:338][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'ReceiveTick': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:338][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'DeltaSeconds': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ReceiveTick
+[2026.06.12-02.50.25:339][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Speed': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:339][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_Event_Owner': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:340][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Action': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:340][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Owner': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:Action
+[2026.06.12-02.50.25:340][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_InputActionEvent_Key': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:341][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'InpActEvt_Action_K2Node_InputActionEvent_0': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:341][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Key': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:InpActEvt_Action_K2Node_InputActionEvent_0
+[2026.06.12-02.50.25:342][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_InputActionEvent_Key1': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:342][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'InpActEvt_LeftMouse_K2Node_InputActionEvent_1': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:343][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Key': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:InpActEvt_LeftMouse_K2Node_InputActionEvent_1
+[2026.06.12-02.50.25:343][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_InputActionEvent_Key2': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:343][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'InpActEvt_LeftMouse_K2Node_InputActionEvent_2': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:344][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Key': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:InpActEvt_LeftMouse_K2Node_InputActionEvent_2
+[2026.06.12-02.50.25:344][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_InputActionEvent_Key3': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:344][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'InpActEvt_RightMouse_K2Node_InputActionEvent_3': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:345][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Key': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:InpActEvt_RightMouse_K2Node_InputActionEvent_3
+[2026.06.12-02.50.25:346][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_InputActionEvent_Key4': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:346][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'InpActEvt_RightMouse_K2Node_InputActionEvent_4': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:347][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Key': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:InpActEvt_RightMouse_K2Node_InputActionEvent_4
+[2026.06.12-02.50.25:347][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_Event_UVLocation': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:355][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Paint': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:356][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'UVLocation': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:Paint
+[2026.06.12-02.50.25:359][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'PreAction': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:419][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'UserConstructionScript': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:419][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'InputActionDelegateBinding_5': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:420][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'InputAxisDelegateBinding_5': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:420][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_Add_IntInt_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:422][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Temp_int_Variable': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:424][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SelectSpawnPoint': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:425][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'AC_SitInCar': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:425][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:426][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow1': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:426][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow2': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:426][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Box': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:427][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Camera': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:427][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_BeginDeferredActorSpawnFromClass_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:427][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_Create_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:428][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_FinishSpawningActor_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:429][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_Event_NewController': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:429][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'K2Node_Event_OldController': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:429][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Scene': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:429][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SM_Ladle': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:430][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'UI': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:430][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'DefaultSceneRoot_GEN_VARIABLE': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:430][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Scene_GEN_VARIABLE': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:431][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SimpleConstructionScript_0': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:431][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SCS_Node_0': SimpleConstructionScript /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:SimpleConstructionScript_0
+[2026.06.12-02.50.25:431][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SCS_Node_1': SimpleConstructionScript /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:SimpleConstructionScript_0
+[2026.06.12-02.50.25:431][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SCS_Node_2': SimpleConstructionScript /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:SimpleConstructionScript_0
+[2026.06.12-02.50.25:432][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SCS_Node_3': SimpleConstructionScript /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:SimpleConstructionScript_0
+[2026.06.12-02.50.25:432][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SCS_Node_4': SimpleConstructionScript /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:SimpleConstructionScript_0
+[2026.06.12-02.50.25:432][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SCS_Node_5': SimpleConstructionScript /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:SimpleConstructionScript_0
+[2026.06.12-02.50.25:433][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SCS_Node_6': SimpleConstructionScript /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:SimpleConstructionScript_0
+[2026.06.12-02.50.25:433][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SCS_Node_7': SimpleConstructionScript /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:SimpleConstructionScript_0
+[2026.06.12-02.50.25:434][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SCS_Node_8': SimpleConstructionScript /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:SimpleConstructionScript_0
+[2026.06.12-02.50.25:436][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SCS_Node_9': SimpleConstructionScript /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:SimpleConstructionScript_0
+[2026.06.12-02.50.25:437][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'VehicleMesh': PW_ForkLift_C /Game/Blueprints/Pawn/Cars/PW_ForkLift.Default__PW_ForkLift_C
+[2026.06.12-02.50.25:437][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SM_Ladle_GEN_VARIABLE': BlueprintGeneratedClass /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C
+[2026.06.12-02.50.25:437][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_Array_Get_Item': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:438][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_K2_GetComponentLocation_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:439][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_K2_GetComponentLocation_ReturnValue1': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:440][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_K2_GetComponentLocation_ReturnValue2': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:441][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_K2_GetComponentLocation_ReturnValue3': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:443][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_K2_SetRelativeLocation_SweepHitResult': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:444][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_K2_SetRelativeRotation_SweepHitResult': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:444][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_MakeRotator_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:445][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_MakeTransform_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:445][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'CallFunc_MakeVector_ReturnValue': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:446][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Temp_struct_Variable': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:446][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Temp_struct_Variable1': Function /Game/Blueprints/Pawn/Cars/PW_ForkLift.PW_ForkLift_C:ExecuteUbergraph_PW_ForkLift
+[2026.06.12-02.50.25:446][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'AC_SitInCar': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift3_2
+[2026.06.12-02.50.25:447][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'AC_SitInCar': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift4_5
+[2026.06.12-02.50.25:447][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift3_2
+[2026.06.12-02.50.25:447][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow1': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift3_2
+[2026.06.12-02.50.25:448][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow2': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift3_2
+[2026.06.12-02.50.25:448][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow3': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift3_2
+[2026.06.12-02.50.25:448][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift4_5
+[2026.06.12-02.50.25:449][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow1': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift4_5
+[2026.06.12-02.50.25:450][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow2': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift4_5
+[2026.06.12-02.50.25:450][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow3': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift4_5
+[2026.06.12-02.50.25:452][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Box': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift3_2
+[2026.06.12-02.50.25:452][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Box': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift4_5
+[2026.06.12-02.50.25:453][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Camera': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift3_2
+[2026.06.12-02.50.25:453][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Camera': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift4_5
+[2026.06.12-02.50.25:454][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Scene': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift3_2
+[2026.06.12-02.50.25:454][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Scene': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift4_5
+[2026.06.12-02.50.25:454][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'VehicleMesh': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift3_2
+[2026.06.12-02.50.25:455][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'VehicleMesh': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift4_5
+[2026.06.12-02.50.25:455][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SM_Ladle': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift3_2
+[2026.06.12-02.50.25:455][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SM_Ladle': PW_ForkLift_C /Game/Maps/Demonstration.Demonstration:PersistentLevel.PW_ForkLift4_5
+[2026.06.12-02.50.25:455][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'AC_SitInCar': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift2_2
+[2026.06.12-02.50.25:456][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'AC_SitInCar': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift_2
+[2026.06.12-02.50.25:457][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift2_2
+[2026.06.12-02.50.25:464][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow1': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift2_2
+[2026.06.12-02.50.25:464][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow2': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift2_2
+[2026.06.12-02.50.25:465][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow3': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift2_2
+[2026.06.12-02.50.25:465][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift_2
+[2026.06.12-02.50.25:466][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow1': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift_2
+[2026.06.12-02.50.25:466][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow2': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift_2
+[2026.06.12-02.50.25:466][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Arrow3': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift_2
+[2026.06.12-02.50.25:467][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Box': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift2_2
+[2026.06.12-02.50.25:467][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Box': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift_2
+[2026.06.12-02.50.25:467][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Camera': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift2_2
+[2026.06.12-02.50.25:468][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Camera': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift_2
+[2026.06.12-02.50.25:468][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Scene': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift2_2
+[2026.06.12-02.50.25:469][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'Scene': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift_2
+[2026.06.12-02.50.25:469][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'VehicleMesh': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift2_2
+[2026.06.12-02.50.25:469][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'VehicleMesh': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift_2
+[2026.06.12-02.50.25:470][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SM_Ladle': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift2_2
+[2026.06.12-02.50.25:470][  2]LoadErrors: Warning: CreateExport: Failed to load Outer for resource 'SM_Ladle': PW_ForkLift_C /Game/Maps/TechArt.TechArt:PersistentLevel.PW_ForkLift_2
+[2026.06.12-02.50.25:470][  2]LogSlate: Took 0.000204 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/Roboto-Regular.ttf' (155K)
+[2026.06.12-02.50.25:793][  3]LogRenderer: Forcing update for all mesh draw commands: SkyLight change
+[2026.06.12-02.50.25:947][  3]LogRenderer: Forcing update for all mesh draw commands: SkyLight change
+[2026.06.12-02.50.29:809][152]LogTemp: Display: MWORKS scene-review control enforced: pawn=MworksReviewCameraPawn_0 review_pawn=MworksReviewCameraPawn_0 disabled_imported_pawns=3
+[2026.06.12-02.50.34:818][455]LogTemp: Display: MWORKS scene-review control enforced: pawn=MworksReviewCameraPawn_0 review_pawn=MworksReviewCameraPawn_0 disabled_imported_pawns=3
+[2026.06.12-02.50.39:827][709]LogTemp: Display: MWORKS scene-review control enforced: pawn=MworksReviewCameraPawn_0 review_pawn=MworksReviewCameraPawn_0 disabled_imported_pawns=3
+[2026.06.12-02.50.44:832][997]LogTemp: Display: MWORKS scene-review control enforced: pawn=MworksReviewCameraPawn_0 review_pawn=MworksReviewCameraPawn_0 disabled_imported_pawns=3
+[2026.06.12-02.50.49:846][282]LogTemp: Display: MWORKS scene-review control enforced: pawn=MworksReviewCameraPawn_0 review_pawn=MworksReviewCameraPawn_0 disabled_imported_pawns=3
+[2026.06.12-02.50.54:858][592]LogTemp: Display: MWORKS scene-review control enforced: pawn=MworksReviewCameraPawn_0 review_pawn=MworksReviewCameraPawn_0 disabled_imported_pawns=3
+[2026.06.12-02.50.59:871][883]LogTemp: Display: MWORKS scene-review control enforced: pawn=MworksReviewCameraPawn_0 review_pawn=MworksReviewCameraPawn_0 disabled_imported_pawns=3
+[2026.06.12-02.51.01:508][968]LogScript: Warning: Script Msg: Attempted to access index 4 from array 'SocketName' of length 0 in '/Game/Blueprints/GamePlay/BP_RobotHend.BP_RobotHend_C'!
+[2026.06.12-02.51.01:512][968]LogScript: Warning: Script Msg called by: BP_RobotHend_C /Game/Maps/TechArt.TechArt:PersistentLevel.BP_RobotHend6
+[2026.06.12-02.51.02:730][ 39]LogTemp: Display: Quadrotor MWORKS UDP first frame: scene=robust_rotor1_loss15_example1 map=local_factoryenvironmentcollect seq=0 t=0.000 position_m=(0.000, 0.000, 0.000) rpy_rad=(-0.000, -0.000, -0.000) coordinate_policy=mworks_world_m_z_up local_map_cells=0 local_map_evidence=false lidar_points=0 lidar_evidence=false local_plan_points=0 local_plan_evidence=false
+[2026.06.12-02.51.02:738][ 40]LogTemp: Display: MoSim Sunray first applied frame: scene=robust_rotor1_loss15_example1 map=local_factoryenvironmentcollect seq=0 mworks_position_m=(0.000, 0.000, 0.000) unreal_location_cm=(0.000, -0.000, 0.000) actor_location_cm=(0.000, 0.000, 0.000) actor_rotation=P=0.000000 Y=0.000000 R=0.000000 coordinate_policy=mworks_world_m_z_up
+[2026.06.12-02.51.02:739][ 40]LogTemp: Display: MoSim Sunray component diagnostic: SunrayDaeDerivedVehicleAfterFirstFrame visible=true hidden_in_game=false relative_location=(0.000, 0.000, 0.000) relative_rotation=P=0.000000 Y=0.000000 R=0.000000 relative_scale=(1.000, 1.000, 1.000) world_origin=(7.920, -6.199, 177.027) box_extent=(424.263, 422.542, 318.760) sphere_radius=606.681
+[2026.06.12-02.51.02:739][ 40]LogTemp: Display: MoSim Sunray component diagnostic: ReferenceMarkerAfterFirstFrame visible=false hidden_in_game=true relative_location=(0.000, 0.000, 0.000) relative_rotation=P=0.000000 Y=0.000000 R=0.000000 relative_scale=(0.140, 0.140, 0.140) world_origin=(0.000, 0.000, 0.000) box_extent=(7.000, 7.000, 7.000) sphere_radius=9.899
+[2026.06.12-02.51.02:739][ 40]LogTemp: Display: MoSim Sunray component diagnostic: RadarDirectionMarkerAfterFirstFrame visible=false hidden_in_game=true relative_location=(0.000, 0.000, 0.000) relative_rotation=P=0.000000 Y=0.000000 R=0.000000 relative_scale=(1.000, 0.035, 0.025) world_origin=(0.000, 0.000, 0.000) box_extent=(50.000, 1.750, 1.250) sphere_radius=50.046
+[2026.06.12-02.51.04:880][167]LogTemp: Display: MWORKS scene-review control enforced: pawn=MworksReviewCameraPawn_0 review_pawn=MworksReviewCameraPawn_0 disabled_imported_pawns=3
+[2026.06.12-02.51.09:890][470]LogTemp: Display: MWORKS scene-review control enforced: pawn=MworksReviewCameraPawn_0 review_pawn=MworksReviewCameraPawn_0 disabled_imported_pawns=3
+[2026.06.12-02.51.13:466][677]LogScript: Warning: Script Msg: Attempted to access index 3 from array 'SocketName' of length 0 in '/Game/Blueprints/GamePlay/BP_RobotHend.BP_RobotHend_C'!
+[2026.06.12-02.51.13:468][677]LogScript: Warning: Script Msg called by: BP_RobotHend_C /Game/Maps/TechArt.TechArt:PersistentLevel.BP_RobotHend3
+[2026.06.12-02.51.14:905][761]LogTemp: Display: MWORKS scene-review control enforced: pawn=MworksReviewCameraPawn_0 review_pawn=MworksReviewCameraPawn_0 disabled_imported_pawns=3

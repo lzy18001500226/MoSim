@@ -1,0 +1,189 @@
+{
+  "next_gate_classification": "build_only_gate_ready",
+  "module_dependency_rows": [
+    {
+      "dependency": "Core",
+      "declared_in_build_cs": true,
+      "required_for_static_surface": true
+    },
+    {
+      "dependency": "CoreUObject",
+      "declared_in_build_cs": true,
+      "required_for_static_surface": true
+    },
+    {
+      "dependency": "Engine",
+      "declared_in_build_cs": true,
+      "required_for_static_surface": true
+    },
+    {
+      "dependency": "Json",
+      "declared_in_build_cs": true,
+      "required_for_static_surface": true
+    },
+    {
+      "dependency": "JsonUtilities",
+      "declared_in_build_cs": true,
+      "required_for_static_surface": true
+    },
+    {
+      "dependency": "Networking",
+      "declared_in_build_cs": true,
+      "required_for_static_surface": true
+    },
+    {
+      "dependency": "Sockets",
+      "declared_in_build_cs": true,
+      "required_for_static_surface": true
+    }
+  ],
+  "build_symbol_rows": [
+    {
+      "symbol": "BuildPendingRequestCaptureJson",
+      "owner": "sender",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp",
+      "declared_in_header": true,
+      "blueprint_callable_header_surface": true,
+      "defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "accepted_as_runtime_ack_literal_present": true,
+      "build_only_gate_ready_static_symbol": true,
+      "runtime_ready_now": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "symbol": "BuildRuntimeProbeManifestJson",
+      "owner": "receiver",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "declared_in_header": true,
+      "blueprint_callable_header_surface": true,
+      "defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "accepted_as_runtime_ack_literal_present": true,
+      "build_only_gate_ready_static_symbol": true,
+      "runtime_ready_now": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "symbol": "BuildAuthoritativeEchoCaptureJson",
+      "owner": "receiver",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "declared_in_header": true,
+      "blueprint_callable_header_surface": true,
+      "defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "accepted_as_runtime_ack_literal_present": true,
+      "build_only_gate_ready_static_symbol": true,
+      "runtime_ready_now": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "symbol": "BuildRequestEchoMatchReportJson",
+      "owner": "receiver",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "declared_in_header": true,
+      "blueprint_callable_header_surface": true,
+      "defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "accepted_as_runtime_ack_literal_present": true,
+      "build_only_gate_ready_static_symbol": true,
+      "runtime_ready_now": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "symbol": "BuildNoPoseOverwriteReportJson",
+      "owner": "receiver",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "declared_in_header": true,
+      "blueprint_callable_header_surface": true,
+      "defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "accepted_as_runtime_ack_literal_present": true,
+      "build_only_gate_ready_static_symbol": true,
+      "runtime_ready_now": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "symbol": "BuildFalseAckNegativeReportJson",
+      "owner": "receiver",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "declared_in_header": true,
+      "blueprint_callable_header_surface": true,
+      "defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "accepted_as_runtime_ack_literal_present": true,
+      "build_only_gate_ready_static_symbol": true,
+      "runtime_ready_now": false,
+      "accepted_as_runtime_ack_now": false
+    },
+    {
+      "symbol": "BuildTimeoutCleanupManifestJson",
+      "owner": "receiver",
+      "header": "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.h",
+      "source": "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksExperimentConsoleRuntimeEchoReceiverSurfaceComponent.cpp",
+      "declared_in_header": true,
+      "blueprint_callable_header_surface": true,
+      "defined_in_source": true,
+      "artifact_literal_present": true,
+      "schema_literal_present": true,
+      "accepted_as_runtime_ack_literal_present": true,
+      "build_only_gate_ready_static_symbol": true,
+      "runtime_ready_now": false,
+      "accepted_as_runtime_ack_now": false
+    }
+  ],
+  "schema_anchor_rows": [
+    {
+      "name": "command_schema",
+      "path": "Config/schemas/mosim_ue_command_v1.schema.json",
+      "exists": true,
+      "schema_matches": true,
+      "runtime_ack_is_required_for_acceptance": true
+    },
+    {
+      "name": "echo_schema",
+      "path": "Config/schemas/mosim_ue_command_echo_v1.schema.json",
+      "exists": true,
+      "schema_matches": true,
+      "runtime_ack_is_required_for_acceptance": false,
+      "ack_authorities_present": true,
+      "forbidden_pose_kinds_present": true
+    }
+  ],
+  "no_live_ack_boundary": {
+    "static_sources_rejected_as_runtime_ack": [
+      "034_no_side_effect_preflight_blocker",
+      "033_single_bounded_probe_plan_checker",
+      "032_capture_bundle_wiring_checker",
+      "031_compile_pass",
+      "build_success",
+      "checker_success",
+      "sender_result_bSent",
+      "udp_send_success",
+      "fixture_only_echo",
+      "operator_intent",
+      "quadrotor.unreal_state.frame",
+      "quadrotor.unreal_state.v1",
+      "MWORKS_MCP_runtime_adapter_preflight"
+    ],
+    "build_success_is_not_runtime_ack": true,
+    "checker_success_is_not_runtime_ack": true,
+    "sender_success_is_not_runtime_ack": true,
+    "fixture_echo_is_not_runtime_ack": true,
+    "operator_intent_is_not_runtime_ack": true,
+    "quadrotor_unreal_state_frame_is_not_runtime_ack": true,
+    "accepted_as_runtime_ack_from_static_rows": false
+  }
+}
