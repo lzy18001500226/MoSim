@@ -1,0 +1,12 @@
+{
+  "schema": "mosim.audio.source_asset.v1",
+  "asset_id": "sunray_rotor_hover_loop_854382_cc0_preview",
+  "source_title": "Big Slow Heavy Drone Hovering Idle Loop",
+  "source_page": "https://freesound.org/people/qubodup/sounds/854382/",
+  "source_author": "qubodup",
+  "license": "CC0 1.0 Universal per Freesound page; verify before final packaging",
+  "downloaded_preview": "Results/tmp/audio_candidates/freesound_854382_qubodup_hover_loop/854382_qubodup_big_slow_heavy_drone_hovering_idle_loop_hq_preview.mp3",
+  "derived_wav": "UE5/MoSimSceneLibrary/SourceAssets/Audio/SunrayRotor/sunray_rotor_hover_loop_854382_cc0_preview.wav",
+  "conversion": "ffmpeg -ac 1 -ar 48000 -c:a pcm_s16le",
+  "use": "UE rotor base hover loop driven by MWORKS MotorCommand/pose state; not physics evidence"
+}

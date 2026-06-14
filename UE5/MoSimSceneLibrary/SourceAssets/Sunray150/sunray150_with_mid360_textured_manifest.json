@@ -7,7 +7,7 @@
     "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\sunray150_with_mid360_textured_manifest.json"
   },
   "generated_by": "Scripts/UE5/assets/build_sunray150_with_mid360_blender_asset.py",
-  "elapsed_sec": 3.102,
+  "elapsed_sec": 3.204,
   "geometry_count": 701,
   "instance_count": 701,
   "group_counts": {
@@ -61,16 +61,16 @@
       "source_rule": "Propeller remains an independent tri-blade STL runtime object so it can be reviewed/replaced without touching body or MID-360.",
       "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray_cw.stl",
       "sdf_center_m": [
-        0.065,
-        -0.065,
-        -0.025
+        0.053745,
+        -0.05374,
+        -0.014052
       ],
-      "dae_center": [
-        2.5590551181102366,
-        -2.5590551181102366,
-        -0.984251968503937
+      "meter_center": [
+        0.053745,
+        -0.05374,
+        -0.014052
       ],
-      "unit_rule": "SDF rotor centers are meters; tri-blade STL is millimeter-scale; both are converted into the DAE unit declared by 150.dae, meter=0.0254."
+      "unit_rule": "DAE vertices and node transforms are baked to meters using 150.dae unit meter=0.0254 before Blender/FBX export; SDF rotor centers are already meters; tri-blade STL is millimeter-scale and is converted with scale=0.001."
     },
     {
       "name": "sunray150_with_mid360_tri_blade_prop_back_left",
@@ -80,16 +80,16 @@
       "source_rule": "Propeller remains an independent tri-blade STL runtime object so it can be reviewed/replaced without touching body or MID-360.",
       "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray_cw.stl",
       "sdf_center_m": [
-        -0.065,
-        0.065,
-        -0.025
+        -0.053761,
+        0.05376,
+        -0.014052
       ],
-      "dae_center": [
-        -2.5590551181102366,
-        2.5590551181102366,
-        -0.984251968503937
+      "meter_center": [
+        -0.053761,
+        0.05376,
+        -0.014052
       ],
-      "unit_rule": "SDF rotor centers are meters; tri-blade STL is millimeter-scale; both are converted into the DAE unit declared by 150.dae, meter=0.0254."
+      "unit_rule": "DAE vertices and node transforms are baked to meters using 150.dae unit meter=0.0254 before Blender/FBX export; SDF rotor centers are already meters; tri-blade STL is millimeter-scale and is converted with scale=0.001."
     },
     {
       "name": "sunray150_with_mid360_tri_blade_prop_front_left",
@@ -99,16 +99,16 @@
       "source_rule": "Propeller remains an independent tri-blade STL runtime object so it can be reviewed/replaced without touching body or MID-360.",
       "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray_cw.stl",
       "sdf_center_m": [
-        0.065,
-        0.065,
-        -0.025
+        0.053746,
+        0.053759,
+        -0.014052
       ],
-      "dae_center": [
-        2.5590551181102366,
-        2.5590551181102366,
-        -0.984251968503937
+      "meter_center": [
+        0.053746,
+        0.053759,
+        -0.014052
       ],
-      "unit_rule": "SDF rotor centers are meters; tri-blade STL is millimeter-scale; both are converted into the DAE unit declared by 150.dae, meter=0.0254."
+      "unit_rule": "DAE vertices and node transforms are baked to meters using 150.dae unit meter=0.0254 before Blender/FBX export; SDF rotor centers are already meters; tri-blade STL is millimeter-scale and is converted with scale=0.001."
     },
     {
       "name": "sunray150_with_mid360_tri_blade_prop_back_right",
@@ -118,35 +118,47 @@
       "source_rule": "Propeller remains an independent tri-blade STL runtime object so it can be reviewed/replaced without touching body or MID-360.",
       "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray_cw.stl",
       "sdf_center_m": [
-        -0.065,
-        -0.065,
-        -0.025
+        -0.053761,
+        -0.053739,
+        -0.014052
       ],
-      "dae_center": [
-        -2.5590551181102366,
-        -2.5590551181102366,
-        -0.984251968503937
+      "meter_center": [
+        -0.053761,
+        -0.053739,
+        -0.014052
       ],
-      "unit_rule": "SDF rotor centers are meters; tri-blade STL is millimeter-scale; both are converted into the DAE unit declared by 150.dae, meter=0.0254."
+      "unit_rule": "DAE vertices and node transforms are baked to meters using 150.dae unit meter=0.0254 before Blender/FBX export; SDF rotor centers are already meters; tri-blade STL is millimeter-scale and is converted with scale=0.001."
     }
   ],
   "supplemental_geometry": {
     "Sunray150_Mid360BaseSupplement": {
       "reason": "DAE MID-360 body shell is not visually complete after Blender 5.0 no-Collada fallback parsing.",
       "material": "Mid360BaseGrey",
-      "center": [
-        8.974896102655129e-07,
-        1.3191562583211993,
-        2.133131055831909
+      "center_m": [
+        2.2802135494888804e-08,
+        0.03350656741054454,
+        0.05376952984929085
+      ],
+      "radius_m": 0.027,
+      "depth_m": 0.012,
+      "scale_xy": [
+        1.08,
+        0.82
       ]
     },
     "Sunray150_Mid360DomeSupplement": {
       "reason": "DAE blue optical cue imports as a near-flat strip, so add a review-grade blue optical dome proxy.",
       "material": "Mid360DomeBlue",
-      "center": [
-        8.974896102655129e-07,
-        1.3191562583211993,
-        2.4731310558319093
+      "center_m": [
+        2.2802135494888804e-08,
+        0.03350656741054454,
+        0.06455352984929084
+      ],
+      "radius_m": 0.023,
+      "scale_xyz": [
+        0.92,
+        0.7,
+        0.52
       ]
     }
   },

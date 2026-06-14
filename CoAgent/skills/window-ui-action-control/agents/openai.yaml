@@ -1,0 +1,4 @@
+interface:
+  display_name: "Window UI Action Control"
+  short_description: "Control windows with safe actions"
+  default_prompt: "Use this skill only for explicitly authorized desktop window UI actions."
