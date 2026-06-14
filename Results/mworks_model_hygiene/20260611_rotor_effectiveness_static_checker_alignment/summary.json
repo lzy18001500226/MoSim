@@ -1,0 +1,52 @@
+{
+  "schema": "mosim.mworks.rotor_effectiveness_static_checker_alignment.v1",
+  "date_cst": "2026-06-11",
+  "status": "passed_static",
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "visible_thread_dispatch_touched": false,
+  "source_changes": [
+    "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorMappedWrapperSurface.mo",
+    "Scripts/mworks/validate_mosimquad_wrapper_surface.py",
+    "Scripts/mworks/validate_mosimquad_actuator_mapped_wrapper_surface.py",
+    "Scripts/tests/test_sunray150_dynamics_upgrade_model.py"
+  ],
+  "documentation_updates": [
+    "Docs/Index/simulation_model_structure_index.md",
+    "Docs/Design/13_RflySim四旋翼模型对标与MoSim优化路线.md",
+    "Docs/Workflows/single_thread_longrun_execution_queue_20260610.md"
+  ],
+  "regenerated_static_evidence": [
+    "Results/mworks_model_hygiene/20260608_026_mosimquad_wrapper_surface_formal_source_surface/static_validation_summary.json",
+    "Results/mworks_model_hygiene/20260609_030_mosimquad_actuator_mapped_wrapper_formal_source_surface_backup/static_validation_summary.json",
+    "Results/mworks_model_hygiene/20260608_025_mosimquad_rotor_actuator_core_formal_source_surface/static_validation_summary.json",
+    "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/static_validation_summary.json"
+  ],
+  "checks": [
+    "python -m pytest Scripts/tests/test_sunray150_dynamics_upgrade_model.py",
+    "python Scripts/tests/test_mosimquad_wrapper_surface.py",
+    "python Scripts/tests/test_mosimquad_actuator_mapped_wrapper_surface.py",
+    "python Scripts/tests/test_mosimquad_rotor_actuator_core_surface.py",
+    "python Scripts/mworks/validate_mosimquad_wrapper_surface.py",
+    "python Scripts/mworks/validate_mosimquad_actuator_mapped_wrapper_surface.py",
+    "python Scripts/mworks/validate_mosimquad_rotor_actuator_core_surface.py",
+    "python Scripts/mworks/validate_mosimquad_formal_smoke_surface.py",
+    "exact old-anchor search over Scripts/mworks and Scripts/tests",
+    "git diff --check over touched paths"
+  ],
+  "claim_boundary": [
+    "static source and checker consistency only",
+    "no live MWORKS check_model",
+    "no SimulateModel",
+    "no GUI or screenshot acceptance",
+    "no controller performance claim",
+    "no runtime success or closed_loop claim"
+  ],
+  "next_live_gate_if_authorized": [
+    "MWORKS activation/window precheck",
+    "check_model for formal Dynamics entry points",
+    "nominal hover smoke",
+    "nominal yaw-step smoke",
+    "single-rotor effectiveness degradation smoke"
+  ]
+}

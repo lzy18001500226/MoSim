@@ -1,0 +1,12 @@
+{
+  "workflow": "post_simulation_task_flow",
+  "scenario_config": "Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml",
+  "result_root": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_pid_baseline",
+  "claim_scope": "robustness",
+  "started_at": "2026-06-12T02:29:00+08:00",
+  "live_mworks_touched": true,
+  "subagent_plan": {
+    "decision": "available_but_not_useful",
+    "reason": "single-thread execution requested; logical roles run inline"
+  }
+}

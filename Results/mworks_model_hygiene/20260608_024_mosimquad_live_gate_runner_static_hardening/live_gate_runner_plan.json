@@ -80,7 +80,11 @@
         "rotor_arm_moment",
         "total_thrust",
         "total_moment_body",
-        "hover_thrust_error"
+        "hover_thrust_error",
+        "thrust_effectiveness",
+        "reaction_moment_effectiveness",
+        "minimum_thrust_effectiveness",
+        "minimum_reaction_moment_effectiveness"
       ],
       "blocker_on": [
         "target missing or renamed",
@@ -113,6 +117,28 @@
     {
       "order": 4,
       "operation": "check_model",
+      "target": "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke",
+      "target_kind": "formal_dynamics_alias",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorEffectivenessSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150RotorEffectivenessSmoke",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RotorEffectivenessSmoke.mo",
+      "expected_result_variables": [
+        "dynamics.thrust_effectiveness",
+        "dynamics.minimum_thrust_effectiveness",
+        "total_thrust_loss",
+        "roll_moment_imbalance",
+        "pitch_moment_imbalance",
+        "yaw_moment_imbalance"
+      ],
+      "blocker_on": [
+        "target missing or renamed",
+        "formal alias or compatibility alias missing",
+        "future MWORKS check_model reports authorization, translation, package, or structural error"
+      ]
+    },
+    {
+      "order": 5,
+      "operation": "check_model",
       "target": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
       "target_kind": "formal_dynamics_alias",
       "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
@@ -141,7 +167,7 @@
       ]
     },
     {
-      "order": 5,
+      "order": 6,
       "operation": "check_model",
       "target": "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
       "target_kind": "formal_dynamics_alias",
@@ -171,7 +197,7 @@
       ]
     },
     {
-      "order": 6,
+      "order": 7,
       "operation": "check_model",
       "target": "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
       "target_kind": "formal_dynamics_alias",
@@ -208,7 +234,7 @@
       ]
     },
     {
-      "order": 7,
+      "order": 8,
       "operation": "check_model",
       "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
       "target_kind": "formal_dynamics_alias",
@@ -235,7 +261,7 @@
       ]
     },
     {
-      "order": 8,
+      "order": 9,
       "operation": "check_model",
       "target": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
       "target_kind": "formal_dynamics_alias",
@@ -256,7 +282,7 @@
       ]
     },
     {
-      "order": 9,
+      "order": 10,
       "operation": "check_model",
       "target": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
       "target_kind": "formal_dynamics_alias",
@@ -278,7 +304,7 @@
       ]
     },
     {
-      "order": 10,
+      "order": 11,
       "operation": "check_model",
       "target": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
       "target_kind": "formal_dynamics_alias",
@@ -302,7 +328,7 @@
       ]
     },
     {
-      "order": 11,
+      "order": 12,
       "operation": "check_model",
       "target": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
       "target_kind": "formal_dynamics_alias",
@@ -326,7 +352,7 @@
       ]
     },
     {
-      "order": 12,
+      "order": 13,
       "operation": "check_model",
       "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
       "target_kind": "formal_dynamics_alias",
@@ -351,7 +377,7 @@
       ]
     },
     {
-      "order": 13,
+      "order": 14,
       "operation": "check_model",
       "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
       "target_kind": "formal_dynamics_alias",
@@ -421,6 +447,27 @@
     {
       "order": 3,
       "operation": "SimulateModel",
+      "target": "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke",
+      "only_after": "all check_model plan entries pass in this exact order",
+      "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RotorEffectivenessSmoke.mo",
+      "expected_result_variables": [
+        "dynamics.thrust_effectiveness",
+        "dynamics.minimum_thrust_effectiveness",
+        "total_thrust_loss",
+        "roll_moment_imbalance",
+        "pitch_moment_imbalance",
+        "yaw_moment_imbalance"
+      ],
+      "result_probe_required": true,
+      "blocker_on": [
+        "any preceding check_model target failed",
+        "SimulateModel fails or has no native result/.msr locator",
+        "any expected result variable is missing from native result/.msr evidence"
+      ]
+    },
+    {
+      "order": 4,
+      "operation": "SimulateModel",
       "target": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
       "only_after": "all check_model plan entries pass in this exact order",
       "implementation_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperHoverSmoke.mo",
@@ -442,7 +489,7 @@
       ]
     },
     {
-      "order": 4,
+      "order": 5,
       "operation": "SimulateModel",
       "target": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
       "only_after": "all check_model plan entries pass in this exact order",
@@ -465,7 +512,7 @@
       ]
     },
     {
-      "order": 5,
+      "order": 6,
       "operation": "SimulateModel",
       "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
       "only_after": "all check_model plan entries pass in this exact order",
@@ -489,7 +536,7 @@
       ]
     },
     {
-      "order": 6,
+      "order": 7,
       "operation": "SimulateModel",
       "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
       "only_after": "all check_model plan entries pass in this exact order",

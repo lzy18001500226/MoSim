@@ -1,0 +1,294 @@
+{
+  "schema": "mosim.mworks.rotor1_loss15_error_profile.v1",
+  "status": "diagnostic_profile_ready",
+  "static_read_only": true,
+  "live_mworks_touched": false,
+  "scope": "single_uav_rotor1_loss15_diagnostics_before_multi_uav",
+  "scenario_count": 2,
+  "profiles": [
+    {
+      "scenario": "Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml",
+      "experiment_id": "robust_rotor1_loss15_example1_pid_baseline",
+      "controller_id": "pid_baseline",
+      "raw_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_pid_baseline/raw/robust_rotor1_loss15_example1_pid_baseline.csv",
+      "metrics_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_pid_baseline/metrics/robust_rotor1_loss15_example1_pid_baseline.json",
+      "quality_status": "needs_iteration",
+      "quality_pass": false,
+      "position_rmse_m": 0.3921196664904746,
+      "total_health_score": 35.6257817116079,
+      "steady_state_error_m": 0.28688403392258666,
+      "disturbance_recovery_time_s": null,
+      "phase_profiles": [
+        {
+          "phase": "startup",
+          "start_s": 0.0,
+          "end_s": 5.0,
+          "row_count": 500,
+          "position_rmse_m": 0.7451895358152125,
+          "axis_rmse_m": {
+            "x": 0.19335830099373097,
+            "y": 0.19335893029603549,
+            "z": 0.6932043968412798
+          },
+          "dominant_axis": "z",
+          "max_position_error_m": 1.4019694591268086,
+          "max_error_time_s": 0.99,
+          "max_axis_error_m": {
+            "x": 0.07769590182536483,
+            "y": -0.07768479124440315,
+            "z": -1.3976576062731434
+          }
+        },
+        {
+          "phase": "pre_fault",
+          "start_s": 5.0,
+          "end_s": 15.0,
+          "row_count": 1000,
+          "position_rmse_m": 0.29361459658887906,
+          "axis_rmse_m": {
+            "x": 0.1926556083980378,
+            "y": 0.19265531342082845,
+            "z": 0.10944075152133435
+          },
+          "dominant_axis": "x",
+          "max_position_error_m": 0.3979775350348464,
+          "max_error_time_s": 5.33,
+          "max_axis_error_m": {
+            "x": 0.1767304919558312,
+            "y": -0.17673098428813327,
+            "z": 0.3097072985869236
+          }
+        },
+        {
+          "phase": "fault_window",
+          "start_s": 15.0,
+          "end_s": 19.0,
+          "row_count": 400,
+          "position_rmse_m": 0.2798344557052102,
+          "axis_rmse_m": {
+            "x": 0.19656526283845366,
+            "y": 0.1965652505905568,
+            "z": 0.03211732095540517
+          },
+          "dominant_axis": "x",
+          "max_position_error_m": 0.2828419058422375,
+          "max_error_time_s": 16.56,
+          "max_axis_error_m": {
+            "x": 0.19983265528511848,
+            "y": -0.19983261107223427,
+            "z": -0.011549075037478929
+          }
+        },
+        {
+          "phase": "recovery",
+          "start_s": 19.0,
+          "end_s": 35.0,
+          "row_count": 1600,
+          "position_rmse_m": 0.3941928528278898,
+          "axis_rmse_m": {
+            "x": 0.2829782409325136,
+            "y": 0.27442238393692847,
+            "z": 0.0019171785789709743
+          },
+          "dominant_axis": "x",
+          "max_position_error_m": 0.9741875762341372,
+          "max_error_time_s": 31.02,
+          "max_axis_error_m": {
+            "x": 0.6883826923323877,
+            "y": -0.6892901489038672,
+            "z": -0.007056430417778259
+          }
+        },
+        {
+          "phase": "late_tracking",
+          "start_s": 35.0,
+          "end_s": 50.0,
+          "row_count": 1500,
+          "position_rmse_m": 0.28874111174800454,
+          "axis_rmse_m": {
+            "x": 0.197524168491743,
+            "y": 0.2106057757360671,
+            "z": 0.0009163524041382953
+          },
+          "dominant_axis": "y",
+          "max_position_error_m": 0.37262801344047064,
+          "max_error_time_s": 43.84,
+          "max_axis_error_m": {
+            "x": 0.1955664480670105,
+            "y": -0.3171832935025769,
+            "z": 0.00039889084100330763
+          }
+        }
+      ],
+      "worst_phase": "startup",
+      "worst_phase_position_rmse_m": 0.7451895358152125,
+      "dominant_axis_overall": "y"
+    },
+    {
+      "scenario": "Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml",
+      "experiment_id": "robust_rotor1_loss15_example1_awff_sysblock",
+      "controller_id": "awff_sysblock",
+      "raw_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/raw/robust_rotor1_loss15_example1_awff_sysblock.csv",
+      "metrics_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/metrics/robust_rotor1_loss15_example1_awff_sysblock.json",
+      "quality_status": "needs_iteration",
+      "quality_pass": false,
+      "position_rmse_m": 0.36905752375323286,
+      "total_health_score": 36.043895052437605,
+      "steady_state_error_m": 0.2654186987470864,
+      "disturbance_recovery_time_s": 13.759999999999998,
+      "phase_profiles": [
+        {
+          "phase": "startup",
+          "start_s": 0.0,
+          "end_s": 5.0,
+          "row_count": 500,
+          "position_rmse_m": 0.7178165039121472,
+          "axis_rmse_m": {
+            "x": 0.17537546230475973,
+            "y": 0.17537613443246075,
+            "z": 0.6736075949553841
+          },
+          "dominant_axis": "z",
+          "max_position_error_m": 1.3293133598711917,
+          "max_error_time_s": 0.93,
+          "max_axis_error_m": {
+            "x": 0.06404030391664287,
+            "y": -0.06402997682636256,
+            "z": -1.326225097890217
+          }
+        },
+        {
+          "phase": "pre_fault",
+          "start_s": 5.0,
+          "end_s": 15.0,
+          "row_count": 1000,
+          "position_rmse_m": 0.27831931107612445,
+          "axis_rmse_m": {
+            "x": 0.17977581238862286,
+            "y": 0.17977489958978343,
+            "z": 0.11323992968640738
+          },
+          "dominant_axis": "x",
+          "max_position_error_m": 0.42207699077085475,
+          "max_error_time_s": 5.32,
+          "max_axis_error_m": {
+            "x": 0.15900285045881338,
+            "y": -0.15900178165136147,
+            "z": 0.35719114366938776
+          }
+        },
+        {
+          "phase": "fault_window",
+          "start_s": 15.0,
+          "end_s": 19.0,
+          "row_count": 400,
+          "position_rmse_m": 0.2557460705358685,
+          "axis_rmse_m": {
+            "x": 0.1795594174376388,
+            "y": 0.17955925022079244,
+            "z": 0.03037999118071053
+          },
+          "dominant_axis": "x",
+          "max_position_error_m": 0.2618316807309318,
+          "max_error_time_s": 16.3,
+          "max_axis_error_m": {
+            "x": 0.18440168221277095,
+            "y": -0.18440121667883985,
+            "z": -0.023410252430258183
+          }
+        },
+        {
+          "phase": "recovery",
+          "start_s": 19.0,
+          "end_s": 35.0,
+          "row_count": 1600,
+          "position_rmse_m": 0.36477759895698375,
+          "axis_rmse_m": {
+            "x": 0.26311723323998043,
+            "y": 0.2526386808189694,
+            "z": 0.002390654096838478
+          },
+          "dominant_axis": "x",
+          "max_position_error_m": 0.9390980744815353,
+          "max_error_time_s": 30.95,
+          "max_axis_error_m": {
+            "x": 0.6622147823197118,
+            "y": -0.66581243576691,
+            "z": -0.008400949370065192
+          }
+        },
+        {
+          "phase": "late_tracking",
+          "start_s": 35.0,
+          "end_s": 50.0,
+          "row_count": 1500,
+          "position_rmse_m": 0.26700169681457386,
+          "axis_rmse_m": {
+            "x": 0.18049429477242623,
+            "y": 0.1967497193801385,
+            "z": 0.0011240908783969777
+          },
+          "dominant_axis": "y",
+          "max_position_error_m": 0.3567439256214125,
+          "max_error_time_s": 40.96,
+          "max_axis_error_m": {
+            "x": 0.1794960658884044,
+            "y": 0.3082686754765067,
+            "z": -0.0042207248573760126
+          }
+        }
+      ],
+      "worst_phase": "startup",
+      "worst_phase_position_rmse_m": 0.7178165039121472,
+      "dominant_axis_overall": "z"
+    }
+  ],
+  "comparison": {
+    "available": true,
+    "rmse_improvement_pct": 5.88140425183238,
+    "health_score_delta": 0.41811334082970575,
+    "phase_deltas": [
+      {
+        "phase": "startup",
+        "pid_position_rmse_m": 0.7451895358152125,
+        "awff_position_rmse_m": 0.7178165039121472,
+        "awff_delta_rmse_m": -0.02737303190306528,
+        "awff_improvement_pct": 3.6732979446792817
+      },
+      {
+        "phase": "pre_fault",
+        "pid_position_rmse_m": 0.29361459658887906,
+        "awff_position_rmse_m": 0.27831931107612445,
+        "awff_delta_rmse_m": -0.015295285512754608,
+        "awff_improvement_pct": 5.209306924945274
+      },
+      {
+        "phase": "fault_window",
+        "pid_position_rmse_m": 0.2798344557052102,
+        "awff_position_rmse_m": 0.2557460705358685,
+        "awff_delta_rmse_m": -0.024088385169341697,
+        "awff_improvement_pct": 8.608084057639225
+      },
+      {
+        "phase": "recovery",
+        "pid_position_rmse_m": 0.3941928528278898,
+        "awff_position_rmse_m": 0.36477759895698375,
+        "awff_delta_rmse_m": -0.029415253870906044,
+        "awff_improvement_pct": 7.462147946083935
+      },
+      {
+        "phase": "late_tracking",
+        "pid_position_rmse_m": 0.28874111174800454,
+        "awff_position_rmse_m": 0.26700169681457386,
+        "awff_delta_rmse_m": -0.02173941493343068,
+        "awff_improvement_pct": 7.529033465938685
+      }
+    ]
+  },
+  "next_engineering_focus": [
+    "Both current rotor1_loss15 artifacts remain quality_status=needs_iteration.",
+    "The profile is read-only historical evidence; it does not prove a new live MWORKS run.",
+    "Use the phase and dominant-axis profile to choose the smallest next controller/model change after a fresh rerun.",
+    "Stop before multi-UAV formation work."
+  ]
+}

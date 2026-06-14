@@ -10,7 +10,8 @@
 
 ## Target Boundaries
 
-- `MoSimQuadrotorModel.Dynamics.RotorActuatorCore`: check_model must accept command lag, Ct*omega^2 thrust, yaw reaction torque, rotor-center moment, and exposed total force/moment variables.
+- `MoSimQuadrotorModel.Dynamics.RotorActuatorCore`: check_model must accept command lag, effectiveness-scaled Ct*omega^2 thrust, yaw reaction torque, rotor-center moment, exposed total force/moment variables, and single-rotor effectiveness hooks.
+- `MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke`: probe single-rotor thrust-effectiveness degradation observability only; this is not an identified fault model or controller robustness acceptance.
 - `MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper`: future live result probe must show normalized command saturation and signed visual rotor speed outputs are present; no PWM/RPM truth is claimed.
 - `MoSimQuadrotorModel.Dynamics.WrapperSurface`: future live check must preserve wrapper command-side and lagged force/moment observability before any plant integration claim.
 - `MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface`: future live probe may claim only normalized command to signed visual speed to wrapper feedthrough, not closed-loop control.

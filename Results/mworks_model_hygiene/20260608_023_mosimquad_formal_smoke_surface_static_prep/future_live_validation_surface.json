@@ -13,6 +13,7 @@
     "MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance",
     "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
     "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
+    "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke",
     "MoSimQuadrotorModel.Dynamics.WrapperSurface",
     "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
     "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
@@ -27,6 +28,7 @@
   "minimal_simulate_order_after_all_checks_pass": [
     "MoSimQuadrotorModel.Dynamics.HoverSmoke",
     "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+    "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke",
     "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
     "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
     "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",

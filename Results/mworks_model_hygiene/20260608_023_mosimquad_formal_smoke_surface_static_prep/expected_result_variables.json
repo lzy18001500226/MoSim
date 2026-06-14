@@ -14,9 +14,26 @@
         "rotor_arm_moment",
         "total_thrust",
         "total_moment_body",
-        "hover_thrust_error"
+        "hover_thrust_error",
+        "thrust_effectiveness",
+        "reaction_moment_effectiveness",
+        "minimum_thrust_effectiveness",
+        "minimum_reaction_moment_effectiveness"
       ],
       "source": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo"
+    },
+    {
+      "target": "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke",
+      "role": "single_rotor_effectiveness_smoke",
+      "expected_result_variables": [
+        "dynamics.thrust_effectiveness",
+        "dynamics.minimum_thrust_effectiveness",
+        "total_thrust_loss",
+        "roll_moment_imbalance",
+        "pitch_moment_imbalance",
+        "yaw_moment_imbalance"
+      ],
+      "source": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RotorEffectivenessSmoke.mo"
     },
     {
       "target": "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",

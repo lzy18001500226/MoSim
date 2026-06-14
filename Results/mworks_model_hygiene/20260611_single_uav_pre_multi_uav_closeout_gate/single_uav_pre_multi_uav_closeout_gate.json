@@ -1,0 +1,141 @@
+{
+  "schema": "mosim.mworks.single_uav_pre_multi_uav_closeout_gate.v1",
+  "status": "blocked_by_live_mworks_gate",
+  "decision": "do_not_enter_multi_uav_yet",
+  "static_read_only": true,
+  "live_mworks_touched": false,
+  "scope": "single_uav_closeout_before_multi_uav",
+  "input_artifacts": {
+    "batch_acceptance": "Results/mworks_model_hygiene/20260611_single_uav_control_batch_result_acceptance/single_uav_control_batch_result_acceptance.json",
+    "rotor1_error_profile": "Results/mworks_model_hygiene/20260611_rotor1_loss15_error_profile/rotor1_loss15_error_profile.json",
+    "rotor1_candidate_matrix": "Results/mworks_model_hygiene/20260611_rotor1_loss15_candidate_matrix/rotor1_loss15_candidate_matrix.json",
+    "mworks_gui_sentinel": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_live_preflight/current_gui_sentinel_after_upgrade_classifier_20260611_234725.json"
+  },
+  "live_gate": {
+    "state": "blocked_by_mworks_gui",
+    "sentinel": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_live_preflight/current_gui_sentinel_after_upgrade_classifier_20260611_234725.json",
+    "live_mworks_allowed": false,
+    "status": "incident_detected",
+    "error_kind": "gui_blocked",
+    "license_state_hint": "upgrade_model_surface_blocked",
+    "blocking_mworks_window_count": 1,
+    "upgrade_model_window_count": 1
+  },
+  "batch_acceptance_summary": {
+    "status": "needs_iteration",
+    "scenario_count": 13,
+    "accepted_result_count": 11,
+    "needs_iteration_count": 2,
+    "iteration_targets": [
+      {
+        "scenario": "Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml",
+        "quality_status": "needs_iteration",
+        "quality_pass": false,
+        "position_rmse_m": 1.3752511875197824,
+        "total_health_score": 18.80013043497445
+      },
+      {
+        "scenario": "Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml",
+        "quality_status": "needs_iteration",
+        "quality_pass": false,
+        "position_rmse_m": 5229.534690333248,
+        "total_health_score": 0.0
+      }
+    ]
+  },
+  "rotor1_diagnostic_summary": {
+    "status": "diagnostic_profile_ready",
+    "comparison": {
+      "available": true,
+      "rmse_improvement_pct": 5.88140425183238,
+      "health_score_delta": 0.41811334082970575,
+      "phase_deltas": [
+        {
+          "phase": "startup",
+          "pid_position_rmse_m": 0.7451895358152125,
+          "awff_position_rmse_m": 0.7178165039121472,
+          "awff_delta_rmse_m": -0.02737303190306528,
+          "awff_improvement_pct": 3.6732979446792817
+        },
+        {
+          "phase": "pre_fault",
+          "pid_position_rmse_m": 0.29361459658887906,
+          "awff_position_rmse_m": 0.27831931107612445,
+          "awff_delta_rmse_m": -0.015295285512754608,
+          "awff_improvement_pct": 5.209306924945274
+        },
+        {
+          "phase": "fault_window",
+          "pid_position_rmse_m": 0.2798344557052102,
+          "awff_position_rmse_m": 0.2557460705358685,
+          "awff_delta_rmse_m": -0.024088385169341697,
+          "awff_improvement_pct": 8.608084057639225
+        },
+        {
+          "phase": "recovery",
+          "pid_position_rmse_m": 0.3941928528278898,
+          "awff_position_rmse_m": 0.36477759895698375,
+          "awff_delta_rmse_m": -0.029415253870906044,
+          "awff_improvement_pct": 7.462147946083935
+        },
+        {
+          "phase": "late_tracking",
+          "pid_position_rmse_m": 0.28874111174800454,
+          "awff_position_rmse_m": 0.26700169681457386,
+          "awff_delta_rmse_m": -0.02173941493343068,
+          "awff_improvement_pct": 7.529033465938685
+        }
+      ]
+    },
+    "next_engineering_focus": [
+      "Both current rotor1_loss15 artifacts remain quality_status=needs_iteration.",
+      "The profile is read-only historical evidence; it does not prove a new live MWORKS run.",
+      "Use the phase and dominant-axis profile to choose the smallest next controller/model change after a fresh rerun.",
+      "Stop before multi-UAV formation work."
+    ]
+  },
+  "rotor1_candidate_summary": {
+    "status": "ready_with_accepted_candidates",
+    "scenario_count": 11,
+    "accepted_candidate_count": 4,
+    "needs_iteration_or_unverified_count": 7,
+    "best_rmse_candidate": {
+      "scenario": "Config/scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml",
+      "scenario_present": true,
+      "experiment_id": "robust_rotor1_loss15_example1_l1_fault_allocation_sysblock",
+      "controller_id": "l1_fault_allocation_sysblock",
+      "priority": "P1-B",
+      "model_name": "QuadrotorExperiments.Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop",
+      "params_file": "Config/controllers/l1_fault_allocation_sysblock/default.yaml",
+      "sysblock_controller_file": "Models/QuadrotorControllerBlocks/AWFF_L1FaultAllocationControllerEquation_Sysblock.mo",
+      "known_to_controller": true,
+      "efficiency_ratio": 0.85,
+      "metrics_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock/metrics/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock.json",
+      "metrics_present": true,
+      "quality_status": "pass",
+      "quality_pass": true,
+      "position_rmse_m": 0.2443402964122832,
+      "max_position_error_m": 1.2215183849368774,
+      "steady_state_error_m": 0.08294588176009905,
+      "disturbance_recovery_time_s": 2.7300000000000004,
+      "total_health_score": 55.81662285060871,
+      "quality_baseline_experiment": "robust_rotor1_loss15_example1_l1_residual_sysblock",
+      "quality_rmse_improvement_pct": 23.608797777676383,
+      "eta_hat_final": null,
+      "fault_index_accuracy_pct": null,
+      "candidate_state": "accepted_candidate"
+    }
+  },
+  "required_before_multi_uav": [
+    "Clear the current MWORKS upgrade-model GUI blocker and collect fresh clean preflight evidence.",
+    "If report wording needs current baseline comparison, rerun the two plain PID/AWFF rotor1_loss15 scenarios and acceptance checker.",
+    "If selecting a rotor-loss controller for final single-UAV robustness, rerun the selected accepted candidate under current MWORKS.",
+    "PMO/report review must decide whether historical accepted candidates are enough for design transition language."
+  ],
+  "claim_boundary": [
+    "This closeout gate is read-only and historical-artifact based.",
+    "It does not prove this turn ran live MWORKS.",
+    "It does not start or authorize multi-UAV formation work.",
+    "It does not grant final report acceptance."
+  ]
+}

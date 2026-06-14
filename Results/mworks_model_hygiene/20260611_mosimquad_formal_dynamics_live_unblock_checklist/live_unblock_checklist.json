@@ -1,0 +1,52 @@
+{
+  "schema": "mosim.mworks.formal_dynamics_live_unblock_checklist.v1",
+  "status": "blocked_needs_user_or_pmo_ui_decision",
+  "static_only": true,
+  "live_mworks_touched": false,
+  "mworks_window_action_touched": false,
+  "preflight_blocker": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_live_preflight/live_preflight_blocker_summary.json",
+  "smoke_readiness": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_live_smoke_readiness/live_smoke_readiness.json",
+  "result_acceptance": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_smoke_result_acceptance/result_acceptance.json",
+  "unblock_state": "blocked_needs_user_or_pmo_ui_decision",
+  "unblock_reason": "current MWORKS surface still reports upgrade_model_surface_blocked",
+  "required_user_or_pmo_decision": true,
+  "allowed_next_action_when_clean": {
+    "action": "bounded_formal_dynamics_live_smoke_preflight",
+    "command": [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/mworks/run_mworks_batch.py",
+      "--no-gui-result-viewer",
+      "--no-gui-open",
+      "Config/scenarios/diagnostics/mosimquad_dynamics_hover_smoke.yaml",
+      "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_hover_smoke.yaml",
+      "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_yaw_step_smoke.yaml",
+      "Config/scenarios/diagnostics/mosimquad_dynamics_rotor_effectiveness_smoke.yaml",
+      "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_hover_smoke.yaml",
+      "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_yaw_step_smoke.yaml",
+      "Config/scenarios/diagnostics/mosimquad_dynamics_yaw_step_smoke.yaml"
+    ],
+    "must_run_before_command": [
+      "fresh MWORKS/Sysplorer/Syslab sentinel or foreground/maximized evidence reports clean, non-login, non-license, non-upgrade, non-error state",
+      "no unknown blocking MWORKS windows are visible",
+      "no GUI click, close, restart, save, authorization, or upgrade confirmation is performed by an engineering task"
+    ],
+    "stop_before_command_on": [
+      "升级模型 or any model-upgrade/progress modal remains visible",
+      "login, activation, authorization, license, demo, mixed-license, GUI error-report, crash, save, restart, or unknown window",
+      "classifier output is missing, stale, or not explicitly clean"
+    ]
+  },
+  "operator_checklist": [
+    "If the upgrade-model surface is still present, stop live smoke and ask PMO/user for a UI decision.",
+    "After the surface is cleared by an authorized owner, collect a fresh sentinel or foreground/maximized target-main-window evidence.",
+    "Run the static readiness guard again before any live smoke command.",
+    "Run the future live command only with no GUI result viewer and no GUI open flags.",
+    "After live output exists, run the result-acceptance checker before using any result in a report or controller claim."
+  ],
+  "claim_boundary": [
+    "This checklist is an executable gate for future live work only.",
+    "It does not prove live load, check_model, SimulateModel, result variables, controller performance, mission success, or closed_loop.",
+    "It does not authorize automatic GUI clicking, closing, restart, login, save, or model-upgrade confirmation."
+  ],
+  "findings": []
+}

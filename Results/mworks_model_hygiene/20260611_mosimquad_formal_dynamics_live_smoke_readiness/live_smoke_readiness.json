@@ -1,0 +1,248 @@
+{
+  "schema": "mosim.mworks.formal_dynamics_live_smoke_readiness.v1",
+  "status": "ready_but_blocked_by_gui",
+  "static_only": true,
+  "live_mworks_touched": false,
+  "mworks_window_action_touched": false,
+  "scenario_check": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_smoke_scenario_bindings/static_validation_summary.json",
+  "batch_manifest": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_smoke_batch_manifest/formal_dynamics_smoke_batch_manifest.json",
+  "live_preflight_blocker": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_live_preflight/live_preflight_blocker_summary.json",
+  "live_gate_state": "blocked_by_current_gui_surface",
+  "current_gui_classifier": {
+    "status": "incident_detected",
+    "error_kind": "gui_blocked",
+    "license_state_hint": "upgrade_model_surface_blocked",
+    "upgrade_model_window_count": 1,
+    "all_window_license_gate": "blocked"
+  },
+  "scenario_count": 7,
+  "scenarios": [
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_hover_smoke.yaml",
+      "experiment_id": "mosimquad_dynamics_hover_smoke",
+      "model_name": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "output_paths": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_hover_smoke/raw/mosimquad_dynamics_hover_smoke.csv",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_hover_smoke/metrics/mosimquad_dynamics_hover_smoke.json",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_hover_smoke/logs/sysplorer_mosimquad_dynamics_hover_smoke.jsonl"
+      ],
+      "output_parent_dirs": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_hover_smoke/logs",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_hover_smoke/metrics",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_hover_smoke/raw"
+      ],
+      "expected_result_variables": [
+        "dynamics.total_thrust",
+        "dynamics.hover_thrust_error",
+        "dynamics.total_moment_body[1]",
+        "dynamics.total_moment_body[2]",
+        "dynamics.total_moment_body[3]",
+        "dynamics.thrust[1]",
+        "dynamics.thrust[2]",
+        "dynamics.thrust[3]",
+        "dynamics.thrust[4]"
+      ],
+      "extra_variable_alias_count": 9,
+      "required_variable_profile": "diagnostics_declared",
+      "required_metrics_profile": "diagnostics_smoke",
+      "missing_extra_variable_mappings": []
+    },
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_hover_smoke.yaml",
+      "experiment_id": "mosimquad_dynamics_physical_wrench_hover_smoke",
+      "model_name": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+      "output_paths": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_hover_smoke/raw/mosimquad_dynamics_physical_wrench_hover_smoke.csv",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_hover_smoke/metrics/mosimquad_dynamics_physical_wrench_hover_smoke.json",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_hover_smoke/logs/sysplorer_mosimquad_dynamics_physical_wrench_hover_smoke.jsonl"
+      ],
+      "output_parent_dirs": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_hover_smoke/logs",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_hover_smoke/metrics",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_hover_smoke/raw"
+      ],
+      "expected_result_variables": [
+        "adapter.applied_force_z_body",
+        "adapter.applied_yaw_torque_body",
+        "adapter.force_application_error",
+        "adapter.torque_application_error",
+        "adapter.hover_weight_balance_error",
+        "adapter.wrapper_total_thrust",
+        "adapter.wrapper_yaw_moment"
+      ],
+      "extra_variable_alias_count": 7,
+      "required_variable_profile": "diagnostics_declared",
+      "required_metrics_profile": "diagnostics_smoke",
+      "missing_extra_variable_mappings": []
+    },
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_yaw_step_smoke.yaml",
+      "experiment_id": "mosimquad_dynamics_physical_wrench_yaw_step_smoke",
+      "model_name": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
+      "output_paths": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_yaw_step_smoke/raw/mosimquad_dynamics_physical_wrench_yaw_step_smoke.csv",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_yaw_step_smoke/metrics/mosimquad_dynamics_physical_wrench_yaw_step_smoke.json",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_yaw_step_smoke/logs/sysplorer_mosimquad_dynamics_physical_wrench_yaw_step_smoke.jsonl"
+      ],
+      "output_parent_dirs": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_yaw_step_smoke/logs",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_yaw_step_smoke/metrics",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_yaw_step_smoke/raw"
+      ],
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag[1]",
+        "rotor_speed_mag[2]",
+        "rotor_speed_mag[3]",
+        "rotor_speed_mag[4]",
+        "adapter.applied_force_z_body",
+        "adapter.applied_yaw_torque_body",
+        "adapter.force_application_error",
+        "adapter.torque_application_error",
+        "adapter.wrapper_yaw_moment"
+      ],
+      "extra_variable_alias_count": 10,
+      "required_variable_profile": "diagnostics_declared",
+      "required_metrics_profile": "diagnostics_smoke",
+      "missing_extra_variable_mappings": []
+    },
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_rotor_effectiveness_smoke.yaml",
+      "experiment_id": "mosimquad_dynamics_rotor_effectiveness_smoke",
+      "model_name": "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke",
+      "output_paths": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_rotor_effectiveness_smoke/raw/mosimquad_dynamics_rotor_effectiveness_smoke.csv",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_rotor_effectiveness_smoke/metrics/mosimquad_dynamics_rotor_effectiveness_smoke.json",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_rotor_effectiveness_smoke/logs/sysplorer_mosimquad_dynamics_rotor_effectiveness_smoke.jsonl"
+      ],
+      "output_parent_dirs": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_rotor_effectiveness_smoke/logs",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_rotor_effectiveness_smoke/metrics",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_rotor_effectiveness_smoke/raw"
+      ],
+      "expected_result_variables": [
+        "dynamics.thrust_effectiveness[2]",
+        "dynamics.minimum_thrust_effectiveness",
+        "total_thrust_loss",
+        "roll_moment_imbalance",
+        "pitch_moment_imbalance",
+        "yaw_moment_imbalance"
+      ],
+      "extra_variable_alias_count": 6,
+      "required_variable_profile": "diagnostics_declared",
+      "required_metrics_profile": "diagnostics_smoke",
+      "missing_extra_variable_mappings": []
+    },
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_hover_smoke.yaml",
+      "experiment_id": "mosimquad_dynamics_wrapper_hover_smoke",
+      "model_name": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+      "output_paths": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_hover_smoke/raw/mosimquad_dynamics_wrapper_hover_smoke.csv",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_hover_smoke/metrics/mosimquad_dynamics_wrapper_hover_smoke.json",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_hover_smoke/logs/sysplorer_mosimquad_dynamics_wrapper_hover_smoke.jsonl"
+      ],
+      "output_parent_dirs": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_hover_smoke/logs",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_hover_smoke/metrics",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_hover_smoke/raw"
+      ],
+      "expected_result_variables": [
+        "wrapper.total_thrust",
+        "wrapper.commanded_total_thrust",
+        "wrapper.hover_thrust_error",
+        "wrapper.commanded_hover_thrust_error",
+        "wrapper.motor_order_gate_error",
+        "wrapper.yaw_direction_gate_error",
+        "wrapper.yaw_moment_gate",
+        "wrapper.commanded_yaw_moment_gate"
+      ],
+      "extra_variable_alias_count": 8,
+      "required_variable_profile": "diagnostics_declared",
+      "required_metrics_profile": "diagnostics_smoke",
+      "missing_extra_variable_mappings": []
+    },
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_yaw_step_smoke.yaml",
+      "experiment_id": "mosimquad_dynamics_wrapper_yaw_step_smoke",
+      "model_name": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+      "output_paths": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_yaw_step_smoke/raw/mosimquad_dynamics_wrapper_yaw_step_smoke.csv",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_yaw_step_smoke/metrics/mosimquad_dynamics_wrapper_yaw_step_smoke.json",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_yaw_step_smoke/logs/sysplorer_mosimquad_dynamics_wrapper_yaw_step_smoke.jsonl"
+      ],
+      "output_parent_dirs": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_yaw_step_smoke/logs",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_yaw_step_smoke/metrics",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_yaw_step_smoke/raw"
+      ],
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag[1]",
+        "rotor_speed_mag[2]",
+        "rotor_speed_mag[3]",
+        "rotor_speed_mag[4]",
+        "wrapper.total_thrust",
+        "wrapper.commanded_total_thrust",
+        "wrapper.yaw_moment_gate",
+        "wrapper.commanded_yaw_moment_gate"
+      ],
+      "extra_variable_alias_count": 9,
+      "required_variable_profile": "diagnostics_declared",
+      "required_metrics_profile": "diagnostics_smoke",
+      "missing_extra_variable_mappings": []
+    },
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_yaw_step_smoke.yaml",
+      "experiment_id": "mosimquad_dynamics_yaw_step_smoke",
+      "model_name": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "output_paths": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_yaw_step_smoke/raw/mosimquad_dynamics_yaw_step_smoke.csv",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_yaw_step_smoke/metrics/mosimquad_dynamics_yaw_step_smoke.json",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_yaw_step_smoke/logs/sysplorer_mosimquad_dynamics_yaw_step_smoke.jsonl"
+      ],
+      "output_parent_dirs": [
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_yaw_step_smoke/logs",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_yaw_step_smoke/metrics",
+        "Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_yaw_step_smoke/raw"
+      ],
+      "expected_result_variables": [
+        "yaw_step",
+        "rotor_speed_mag[1]",
+        "rotor_speed_mag[2]",
+        "rotor_speed_mag[3]",
+        "rotor_speed_mag[4]",
+        "dynamics.total_thrust",
+        "dynamics.hover_thrust_error",
+        "dynamics.total_moment_body[3]",
+        "dynamics.yaw_reaction_moment[1]",
+        "dynamics.yaw_reaction_moment[2]",
+        "dynamics.yaw_reaction_moment[3]",
+        "dynamics.yaw_reaction_moment[4]"
+      ],
+      "extra_variable_alias_count": 12,
+      "required_variable_profile": "diagnostics_declared",
+      "required_metrics_profile": "diagnostics_smoke",
+      "missing_extra_variable_mappings": []
+    }
+  ],
+  "future_live_batch_command": [
+    "D:\\Dev\\Anaconda3\\python.exe",
+    "Scripts/mworks/run_mworks_batch.py",
+    "--no-gui-result-viewer",
+    "--no-gui-open",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_hover_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_hover_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_yaw_step_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_rotor_effectiveness_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_hover_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_yaw_step_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_yaw_step_smoke.yaml"
+  ],
+  "claim_boundary": [
+    "This readiness guard validates executable preparation only.",
+    "It does not run MWORKS, check_model, SimulateModel, result extraction, controller performance, mission success, or closed_loop.",
+    "Live execution remains blocked while current_gui_classifier reports upgrade_model_surface_blocked."
+  ],
+  "findings": []
+}

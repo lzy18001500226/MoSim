@@ -11,26 +11,26 @@ text { font-family: Arial, 'Microsoft YaHei', sans-serif; fill: #1f2937; }
 <line x1="92" y1="386" x2="724" y2="386" stroke="#2f3542" stroke-width="1.4"/>
 <line x1="92" y1="64" x2="92" y2="386" stroke="#2f3542" stroke-width="1.4"/>
 <line x1="92" y1="64.00" x2="724" y2="64.00" stroke="#d7dde8" stroke-width="0.8"/>
-<text x="82" y="68.00" text-anchor="end" class="tick">1.5</text>
+<text x="82" y="68.00" text-anchor="end" class="tick">0.833</text>
 <line x1="92" y1="128.40" x2="724" y2="128.40" stroke="#d7dde8" stroke-width="0.8"/>
-<text x="82" y="132.40" text-anchor="end" class="tick">1.2</text>
+<text x="82" y="132.40" text-anchor="end" class="tick">0.666</text>
 <line x1="92" y1="192.80" x2="724" y2="192.80" stroke="#d7dde8" stroke-width="0.8"/>
-<text x="82" y="196.80" text-anchor="end" class="tick">0.898</text>
+<text x="82" y="196.80" text-anchor="end" class="tick">0.5</text>
 <line x1="92" y1="257.20" x2="724" y2="257.20" stroke="#d7dde8" stroke-width="0.8"/>
-<text x="82" y="261.20" text-anchor="end" class="tick">0.598</text>
+<text x="82" y="261.20" text-anchor="end" class="tick">0.333</text>
 <line x1="92" y1="321.60" x2="724" y2="321.60" stroke="#d7dde8" stroke-width="0.8"/>
-<text x="82" y="325.60" text-anchor="end" class="tick">0.299</text>
+<text x="82" y="325.60" text-anchor="end" class="tick">0.167</text>
 <line x1="92" y1="386.00" x2="724" y2="386.00" stroke="#d7dde8" stroke-width="0.8"/>
 <text x="82" y="390.00" text-anchor="end" class="tick">0</text>
 <text x="408.00" y="462" text-anchor="middle" class="label">metric</text>
 <text x="22" y="225.00" text-anchor="middle" class="label" transform="rotate(-90 22 225.00)">value</text>
-<rect x="126.00" y="330.56" width="165.33" height="55.44" fill="#1f77b4"/>
+<rect x="126.00" y="321.19" width="165.33" height="64.81" fill="#1f77b4"/>
 <text x="208.67" y="428" text-anchor="middle" class="tick">RMSE / m</text>
-<text x="208.67" y="322.56" text-anchor="middle" class="tick">0.2576</text>
+<text x="208.67" y="313.19" text-anchor="middle" class="tick">0.1676</text>
 <rect x="325.33" y="117.67" width="165.33" height="268.33" fill="#1f77b4"/>
 <text x="408.00" y="428" text-anchor="middle" class="tick">Max error / m</text>
-<text x="408.00" y="109.67" text-anchor="middle" class="tick">1.247</text>
-<rect x="524.67" y="361.35" width="165.33" height="24.65" fill="#1f77b4"/>
+<text x="408.00" y="109.67" text-anchor="middle" class="tick">0.6938</text>
+<rect x="524.67" y="335.34" width="165.33" height="50.66" fill="#1f77b4"/>
 <text x="607.33" y="428" text-anchor="middle" class="tick">Steady error / m</text>
-<text x="607.33" y="353.35" text-anchor="middle" class="tick">0.1145</text>
+<text x="607.33" y="327.34" text-anchor="middle" class="tick">0.131</text>
 </svg>

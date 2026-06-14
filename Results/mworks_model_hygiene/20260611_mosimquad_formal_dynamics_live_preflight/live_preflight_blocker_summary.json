@@ -1,0 +1,80 @@
+{
+  "schema": "mosim.mworks.formal_dynamics_live_preflight_blocker.v1",
+  "status": "blocked_by_upgrade_model_surface",
+  "static_only": true,
+  "live_mworks_touched_in_source_attempt": true,
+  "mworks_window_evidence_touched_in_source_attempt": true,
+  "current_live_gate_result": "blocked",
+  "blocking_surface": "upgrade_model_modal_or_progress_window",
+  "blocked_operation": "model_manager.load_file Models/MoSimQuadrotorModel/package.mo",
+  "blocker_reason": "Top-level MoSimQuadrotorModel load entered a broad package/dependency load and exposed an unknown MWORKS '升级模型' window; MCP session probe then timed out. No click/confirm/close/restart was performed.",
+  "initial_sentinel": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_live_preflight/sentinel_before_minimal_retry_20260611_234254.json",
+  "post_timeout_sentinel": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_live_preflight/sentinel_after_load_timeout_20260611_231549.json",
+  "current_upgrade_classifier_sentinel": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_live_preflight/current_gui_sentinel_after_upgrade_classifier_20260611_234725.json",
+  "current_upgrade_classifier": {
+    "status": "incident_detected",
+    "error_kind": "gui_blocked",
+    "license_state_hint": "upgrade_model_surface_blocked",
+    "upgrade_model_window_count": 1,
+    "all_window_license_gate": "blocked"
+  },
+  "main_window_capture_manifest": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_live_preflight/window_capture_20260611_231614/capture_manifest.json",
+  "upgrade_window_capture_manifest": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_live_preflight/upgrade_window_capture_20260611_231717/capture_manifest.json",
+  "next_load_strategy": {
+    "name": "minimal_dynamics_only",
+    "purpose": "avoid re-entering full MoSimQuadrotorModel controller/System/Planning package load before Dynamics smoke gates",
+    "scenario_field": "model.live_load_strategy",
+    "required_before_next_live_attempt": true
+  },
+  "scenario_count": 7,
+  "scenarios": [
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_hover_smoke.yaml",
+      "model_name": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
+      "live_load_strategy": "minimal_dynamics_only",
+      "base_model_path_hint": "Models/MoSimQuadrotorModel/package.mo"
+    },
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_hover_smoke.yaml",
+      "model_name": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
+      "live_load_strategy": "minimal_dynamics_only",
+      "base_model_path_hint": "Models/MoSimQuadrotorModel/package.mo"
+    },
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_yaw_step_smoke.yaml",
+      "model_name": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
+      "live_load_strategy": "minimal_dynamics_only",
+      "base_model_path_hint": "Models/MoSimQuadrotorModel/package.mo"
+    },
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_rotor_effectiveness_smoke.yaml",
+      "model_name": "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke",
+      "live_load_strategy": "minimal_dynamics_only",
+      "base_model_path_hint": "Models/MoSimQuadrotorModel/package.mo"
+    },
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_hover_smoke.yaml",
+      "model_name": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
+      "live_load_strategy": "minimal_dynamics_only",
+      "base_model_path_hint": "Models/MoSimQuadrotorModel/package.mo"
+    },
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_yaw_step_smoke.yaml",
+      "model_name": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
+      "live_load_strategy": "minimal_dynamics_only",
+      "base_model_path_hint": "Models/MoSimQuadrotorModel/package.mo"
+    },
+    {
+      "scenario": "Config/scenarios/diagnostics/mosimquad_dynamics_yaw_step_smoke.yaml",
+      "model_name": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
+      "live_load_strategy": "minimal_dynamics_only",
+      "base_model_path_hint": "Models/MoSimQuadrotorModel/package.mo"
+    }
+  ],
+  "claim_boundary": [
+    "This records a live-preflight blocker and a future load strategy only.",
+    "It does not claim check_model, SimulateModel, result variables, controller performance, mission success, or closed_loop.",
+    "Do not click the upgrade-model window automatically; require a narrower load strategy or explicit user/PMO UI decision."
+  ],
+  "findings": []
+}

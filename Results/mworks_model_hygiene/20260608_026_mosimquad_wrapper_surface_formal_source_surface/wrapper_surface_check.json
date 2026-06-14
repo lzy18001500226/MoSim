@@ -84,15 +84,23 @@
       "present": true
     },
     {
+      "anchor": "Real minimum_thrust_effectiveness",
+      "present": true
+    },
+    {
+      "anchor": "Real minimum_reaction_moment_effectiveness",
+      "present": true
+    },
+    {
       "anchor": "dynamics.motor_command = motor_command",
       "present": true
     },
     {
-      "anchor": "commanded_thrust[i] = dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
+      "anchor": "commanded_thrust[i] = dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
       "present": true
     },
     {
-      "anchor": "commanded_yaw_reaction_moment[i] = dynamics.yaw_direction[i] * dynamics.moment_constant * commanded_thrust[i]",
+      "anchor": "commanded_yaw_reaction_moment[i] = dynamics.yaw_direction[i] * dynamics.reaction_moment_effectiveness[i] * dynamics.moment_constant * commanded_thrust[i]",
       "present": true
     },
     {
@@ -117,6 +125,14 @@
     },
     {
       "anchor": "hover_thrust_error = dynamics.hover_thrust_error",
+      "present": true
+    },
+    {
+      "anchor": "minimum_thrust_effectiveness = dynamics.minimum_thrust_effectiveness",
+      "present": true
+    },
+    {
+      "anchor": "minimum_reaction_moment_effectiveness = dynamics.minimum_reaction_moment_effectiveness",
       "present": true
     },
     {
@@ -162,11 +178,11 @@
       "present": true
     },
     {
-      "anchor": "thrust[i] = lift_coefficient * omega[i] * omega[i]",
+      "anchor": "thrust[i] = thrust_effectiveness[i] * lift_coefficient * omega[i] * omega[i]",
       "present": true
     },
     {
-      "anchor": "yaw_reaction_moment[i] = yaw_direction[i] * moment_constant * thrust[i]",
+      "anchor": "yaw_reaction_moment[i] = yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust[i]",
       "present": true
     },
     {

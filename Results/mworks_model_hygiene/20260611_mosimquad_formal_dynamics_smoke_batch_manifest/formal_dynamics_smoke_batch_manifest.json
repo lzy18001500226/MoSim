@@ -1,0 +1,59 @@
+{
+  "schema": "mosim.mworks.formal_dynamics_smoke_batch_manifest.v1",
+  "status": "passed",
+  "static_only": true,
+  "live_mworks_touched": false,
+  "mworks_window_evidence_touched": false,
+  "scenario_binding_check": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_smoke_scenario_bindings/static_validation_summary.json",
+  "scenario_count": 7,
+  "scenario_files": [
+    "Config/scenarios/diagnostics/mosimquad_dynamics_hover_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_hover_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_yaw_step_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_rotor_effectiveness_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_hover_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_yaw_step_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_yaw_step_smoke.yaml"
+  ],
+  "runner_support_status": "minimal_dynamics_strategy_consumed",
+  "future_live_batch_command": [
+    "D:\\Dev\\Anaconda3\\python.exe",
+    "Scripts/mworks/run_mworks_batch.py",
+    "--no-gui-result-viewer",
+    "--no-gui-open",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_hover_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_hover_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_yaw_step_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_rotor_effectiveness_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_hover_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_yaw_step_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_yaw_step_smoke.yaml"
+  ],
+  "dry_run_batch_command": [
+    "D:\\Dev\\Anaconda3\\python.exe",
+    "Scripts/mworks/run_mworks_batch.py",
+    "--dry-run",
+    "--no-gui-result-viewer",
+    "--no-gui-open",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_hover_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_hover_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_physical_wrench_yaw_step_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_rotor_effectiveness_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_hover_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_wrapper_yaw_step_smoke.yaml",
+    "Config/scenarios/diagnostics/mosimquad_dynamics_yaw_step_smoke.yaml"
+  ],
+  "preconditions_for_future_live_run": [
+    "User or PMO explicitly authorizes live MWORKS/Sysplorer/Syslab execution.",
+    "CoAgentOps/PMO or the live task provides a current non-blocking MWORKS activation/window preflight.",
+    "Stop before execution on demo, login, activation, authorization, GUI error-report, mixed license, visible unknown, unavailable, or unknown state.",
+    "The runner must consume model.live_load_strategy=minimal_dynamics_only, or the task must use an explicitly reviewed native MCP minimal-loading sequence.",
+    "All formal check_model targets in the 024 live-gate plan pass before treating SimulateModel outputs as evidence."
+  ],
+  "claim_boundary": [
+    "This manifest prepares a future live batch command only.",
+    "It does not run or prove MWORKS load, check_model, SimulateModel, result variables, controller performance, mission success, or closed_loop.",
+    "RotorEffectivenessSmoke remains a single-rotor effectiveness observability smoke, not controller robustness acceptance."
+  ],
+  "findings": []
+}

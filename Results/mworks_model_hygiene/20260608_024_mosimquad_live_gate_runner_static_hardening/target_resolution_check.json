@@ -18,8 +18,8 @@
     "compat_dynamics_package": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
     "compat_dynamics_order": "Models/QuadrotorExperiments/DynamicsUpgrade/package.order"
   },
-  "target_count": 13,
-  "dynamics_target_count": 12,
+  "target_count": 14,
+  "dynamics_target_count": 13,
   "parameter_target_count": 1,
   "findings": [],
   "resolutions": [
@@ -124,11 +124,11 @@
             "present": true
           },
           {
-            "snippet": "thrust[i] = lift_coefficient * omega[i] * omega[i]",
+            "snippet": "thrust[i] = thrust_effectiveness[i] * lift_coefficient * omega[i] * omega[i]",
             "present": true
           },
           {
-            "snippet": "yaw_reaction_moment[i] = yaw_direction[i] * moment_constant * thrust[i]",
+            "snippet": "yaw_reaction_moment[i] = yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust[i]",
             "present": true
           },
           {
@@ -137,6 +137,14 @@
           },
           {
             "snippet": "rotor_arm_moment[i, 2] = -rotor_center[i, 1] * thrust[i]",
+            "present": true
+          },
+          {
+            "snippet": "minimum_thrust_effectiveness = min(thrust_effectiveness)",
+            "present": true
+          },
+          {
+            "snippet": "minimum_reaction_moment_effectiveness = min(reaction_moment_effectiveness)",
             "present": true
           }
         ],
@@ -149,7 +157,7 @@
       "kind": "dynamics_model",
       "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.ActuatorCommandMapper",
       "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150ActuatorCommandMapper",
-      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/ActuatorCommandMapper.mo",
       "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorCommandMapper.mo",
       "check_model_order": 2,
       "simulate_order_after_all_checks": null,
@@ -190,13 +198,70 @@
       }
     },
     {
+      "target": "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke",
+      "kind": "dynamics_model",
+      "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorEffectivenessSmoke",
+      "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150RotorEffectivenessSmoke",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/RotorEffectivenessSmoke.mo",
+      "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RotorEffectivenessSmoke.mo",
+      "check_model_order": 3,
+      "simulate_order_after_all_checks": 3,
+      "static_status": "resolved",
+      "checks": {
+        "formal_package_order_contains": true,
+        "formal_package_defines_model": true,
+        "formal_extends_compat_alias": true,
+        "compat_package_order_contains": true,
+        "compat_package_defines_model": true,
+        "compat_extends_implementation": true,
+        "implementation_file_exists": true,
+        "implementation_defines_model": true,
+        "required_source_anchors": [
+          {
+            "snippet": "parameter Integer degraded_rotor_index = 1",
+            "present": true
+          },
+          {
+            "snippet": "parameter Real degraded_rotor_thrust_effectiveness = 0.85",
+            "present": true
+          },
+          {
+            "snippet": "Sunray150RflyStyleRotorDynamics dynamics(",
+            "present": true
+          },
+          {
+            "snippet": "thrust_effectiveness = {",
+            "present": true
+          },
+          {
+            "snippet": "total_thrust_loss = expected_nominal_total_thrust - dynamics.total_thrust",
+            "present": true
+          },
+          {
+            "snippet": "roll_moment_imbalance = dynamics.total_moment_body[1]",
+            "present": true
+          },
+          {
+            "snippet": "pitch_moment_imbalance = dynamics.total_moment_body[2]",
+            "present": true
+          },
+          {
+            "snippet": "yaw_moment_imbalance = dynamics.total_moment_body[3]",
+            "present": true
+          }
+        ],
+        "expected_result_variables_match": true,
+        "expected_result_source_matches": true
+      }
+    },
+    {
       "target": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
       "kind": "dynamics_model",
       "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
       "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperSurface",
-      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/WrapperSurface.mo",
       "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
-      "check_model_order": 3,
+      "check_model_order": 4,
       "simulate_order_after_all_checks": null,
       "static_status": "resolved",
       "checks": {
@@ -214,7 +279,7 @@
             "present": true
           },
           {
-            "snippet": "commanded_thrust[i] = dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
+            "snippet": "commanded_thrust[i] = dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
             "present": true
           },
           {
@@ -239,9 +304,9 @@
       "kind": "dynamics_model",
       "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.ActuatorMappedWrapperSurface",
       "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150ActuatorMappedWrapperSurface",
-      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/ActuatorMappedWrapperSurface.mo",
       "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150ActuatorMappedWrapperSurface.mo",
-      "check_model_order": 4,
+      "check_model_order": 5,
       "simulate_order_after_all_checks": null,
       "static_status": "resolved",
       "checks": {
@@ -280,9 +345,9 @@
       "kind": "dynamics_model",
       "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.OptionalDampingGyroLayer",
       "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150OptionalDampingGyroLayer",
-      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/OptionalDampingGyroLayer.mo",
       "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150OptionalDampingGyroLayer.mo",
-      "check_model_order": 5,
+      "check_model_order": 6,
       "simulate_order_after_all_checks": null,
       "static_status": "resolved",
       "checks": {
@@ -329,9 +394,9 @@
       "kind": "dynamics_model",
       "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter",
       "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchFrameAdapter",
-      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchAdapter.mo",
       "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchFrameAdapter.mo",
-      "check_model_order": 6,
+      "check_model_order": 7,
       "simulate_order_after_all_checks": null,
       "static_status": "resolved",
       "checks": {
@@ -378,9 +443,9 @@
       "kind": "dynamics_model",
       "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorHoverSmoke",
       "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeHoverSmoke",
-      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/HoverSmoke.mo",
       "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeHoverSmoke.mo",
-      "check_model_order": 7,
+      "check_model_order": 8,
       "simulate_order_after_all_checks": 1,
       "static_status": "resolved",
       "checks": {
@@ -419,9 +484,9 @@
       "kind": "dynamics_model",
       "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.RotorYawStepSmoke",
       "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsUpgradeYawStepSmoke",
-      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/YawStepSmoke.mo",
       "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeYawStepSmoke.mo",
-      "check_model_order": 8,
+      "check_model_order": 9,
       "simulate_order_after_all_checks": 2,
       "static_status": "resolved",
       "checks": {
@@ -460,10 +525,10 @@
       "kind": "dynamics_model",
       "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperHoverSmoke",
       "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperHoverSmoke",
-      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/WrapperHoverSmoke.mo",
       "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperHoverSmoke.mo",
-      "check_model_order": 9,
-      "simulate_order_after_all_checks": 3,
+      "check_model_order": 10,
+      "simulate_order_after_all_checks": 4,
       "static_status": "resolved",
       "checks": {
         "formal_package_order_contains": true,
@@ -497,10 +562,10 @@
       "kind": "dynamics_model",
       "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperYawStepSmoke",
       "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperYawStepSmoke",
-      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/WrapperYawStepSmoke.mo",
       "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperYawStepSmoke.mo",
-      "check_model_order": 10,
-      "simulate_order_after_all_checks": 4,
+      "check_model_order": 11,
+      "simulate_order_after_all_checks": 5,
       "static_status": "resolved",
       "checks": {
         "formal_package_order_contains": true,
@@ -534,10 +599,10 @@
       "kind": "dynamics_model",
       "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchHoverSmoke",
       "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchHoverSmoke",
-      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchHoverSmoke.mo",
       "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchHoverSmoke.mo",
-      "check_model_order": 11,
-      "simulate_order_after_all_checks": 5,
+      "check_model_order": 12,
+      "simulate_order_after_all_checks": 6,
       "static_status": "resolved",
       "checks": {
         "formal_package_order_contains": true,
@@ -571,10 +636,10 @@
       "kind": "dynamics_model",
       "compat_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchYawStepSmoke",
       "implementation_model": "QuadrotorExperiments.DynamicsUpgrade.Sunray150PhysicalWrenchYawStepSmoke",
-      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+      "formal_source_file": "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchYawStepSmoke.mo",
       "source_file": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchYawStepSmoke.mo",
-      "check_model_order": 12,
-      "simulate_order_after_all_checks": 6,
+      "check_model_order": 13,
+      "simulate_order_after_all_checks": 7,
       "static_status": "resolved",
       "checks": {
         "formal_package_order_contains": true,

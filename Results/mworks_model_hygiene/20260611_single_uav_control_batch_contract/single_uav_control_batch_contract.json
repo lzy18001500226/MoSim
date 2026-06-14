@@ -1,0 +1,597 @@
+{
+  "schema": "mosim.mworks.single_uav_control_batch_contract.v1",
+  "status": "passed",
+  "static_only": true,
+  "live_mworks_touched": false,
+  "scope": "single_uav_control_before_multi_uav",
+  "scenario_count": 13,
+  "scenarios": [
+    {
+      "scenario": "Config/scenarios/official/example1_pid_baseline.yaml",
+      "state": "present",
+      "group": "official_tracking",
+      "experiment_id": "official_example1_pid_baseline",
+      "scene_id": "official_example1",
+      "controller_id": "pid_baseline",
+      "model_name": "QuadrotorModel.Examples.Example1",
+      "model_path_hint": "References/MWORKS/QuadrotorModel/package.mo",
+      "baseline_experiment": "",
+      "baseline_source": "none",
+      "disturbance_type": null,
+      "simulation": {
+        "stop_time_s": 50.0,
+        "step_size_s": 0.01,
+        "solver": "Dassl",
+        "tolerance": 0.0001
+      },
+      "result": {
+        "raw_file": "Results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv",
+        "metrics_file": "Results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.json",
+        "figure_dir": null,
+        "replay_file": "Results/official/example1_step/official_example1_pid_baseline/replay/official_example1_pid_baseline.json",
+        "mcp_log": "Results/official/example1_step/official_example1_pid_baseline/logs/sysplorer_example1_pid_baseline_full_20260509.jsonl"
+      },
+      "required_result_columns": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref"
+      ]
+    },
+    {
+      "scenario": "Config/scenarios/official/example1_awff_sysblock.yaml",
+      "state": "present",
+      "group": "official_tracking",
+      "experiment_id": "official_example1_awff_sysblock",
+      "scene_id": "official_example1",
+      "controller_id": "awff_sysblock",
+      "model_name": "QuadrotorExperiments.Example1AWFFSysblockClosedLoop",
+      "model_path_hint": "Models/QuadrotorExperiments/Example1AWFFSysblockClosedLoop.mo",
+      "baseline_experiment": "official_example1_pid_baseline",
+      "baseline_source": "inferred_same_scene_pid",
+      "disturbance_type": null,
+      "simulation": {
+        "stop_time_s": 50.0,
+        "step_size_s": 0.01,
+        "solver": "Dassl",
+        "tolerance": 0.0001
+      },
+      "result": {
+        "raw_file": "Results/official/example1_step/official_example1_awff_sysblock/raw/official_example1_awff_sysblock.csv",
+        "metrics_file": "Results/official/example1_step/official_example1_awff_sysblock/metrics/official_example1_awff_sysblock.json",
+        "figure_dir": "Results/official/example1_step/official_example1_awff_sysblock/figures",
+        "replay_file": "Results/official/example1_step/official_example1_awff_sysblock/replay/official_example1_awff_sysblock.json",
+        "mcp_log": "Results/official/example1_step/official_example1_awff_sysblock/logs/sysplorer_example1_awff_sysblock_full_20260510.jsonl"
+      },
+      "required_result_columns": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref"
+      ]
+    },
+    {
+      "scenario": "Config/scenarios/official/example2_pid_baseline.yaml",
+      "state": "present",
+      "group": "official_tracking",
+      "experiment_id": "official_example2_pid_baseline",
+      "scene_id": "official_example2",
+      "controller_id": "pid_baseline",
+      "model_name": "QuadrotorModel.Examples.Example2",
+      "model_path_hint": "References/MWORKS/QuadrotorModel/package.mo",
+      "baseline_experiment": "",
+      "baseline_source": "none",
+      "disturbance_type": null,
+      "simulation": {
+        "stop_time_s": 50.0,
+        "step_size_s": 0.01,
+        "solver": "Dassl",
+        "tolerance": 0.0001
+      },
+      "result": {
+        "raw_file": "Results/official/example2_helix/official_example2_pid_baseline/raw/official_example2_pid_baseline.csv",
+        "metrics_file": "Results/official/example2_helix/official_example2_pid_baseline/metrics/official_example2_pid_baseline.json",
+        "figure_dir": null,
+        "replay_file": "Results/official/example2_helix/official_example2_pid_baseline/replay/official_example2_pid_baseline.json",
+        "mcp_log": "Results/official/example2_helix/official_example2_pid_baseline/logs/sysplorer_example2_pid_baseline_full_20260509.jsonl"
+      },
+      "required_result_columns": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref"
+      ]
+    },
+    {
+      "scenario": "Config/scenarios/official/example2_improved_pid.yaml",
+      "state": "present",
+      "group": "official_tracking",
+      "experiment_id": "official_example2_improved_pid",
+      "scene_id": "official_example2",
+      "controller_id": "improved_pid",
+      "model_name": "QuadrotorExperiments.Example2ImprovedPID",
+      "model_path_hint": "Models/QuadrotorExperiments/package.mo",
+      "baseline_experiment": "official_example2_pid_baseline",
+      "baseline_source": "declared",
+      "disturbance_type": null,
+      "simulation": {
+        "stop_time_s": 50.0,
+        "step_size_s": 0.01,
+        "solver": "Dassl",
+        "tolerance": 0.0001
+      },
+      "result": {
+        "raw_file": "Results/official/example2_helix/official_example2_improved_pid/raw/official_example2_improved_pid.csv",
+        "metrics_file": "Results/official/example2_helix/official_example2_improved_pid/metrics/official_example2_improved_pid.json",
+        "figure_dir": "Results/official/example2_helix/official_example2_improved_pid/figures",
+        "replay_file": "Results/official/example2_helix/official_example2_improved_pid/replay/official_example2_improved_pid.json",
+        "mcp_log": "Results/official/example2_helix/official_example2_improved_pid/logs/sysplorer_example2_improved_pid_full_20260509.jsonl"
+      },
+      "required_result_columns": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref"
+      ]
+    },
+    {
+      "scenario": "Config/scenarios/official/example2_awff_sysblock_helix_tuned.yaml",
+      "state": "present",
+      "group": "official_tracking",
+      "experiment_id": "official_example2_awff_sysblock_helix_tuned",
+      "scene_id": "official_example2",
+      "controller_id": "awff_sysblock",
+      "model_name": "QuadrotorExperiments.Example2HelixTunedAWFFSysblockClosedLoop",
+      "model_path_hint": "Models/QuadrotorExperiments/Example2HelixTunedAWFFSysblockClosedLoop.mo",
+      "baseline_experiment": "official_example2_improved_pid",
+      "baseline_source": "declared",
+      "disturbance_type": null,
+      "simulation": {
+        "stop_time_s": 50.0,
+        "step_size_s": 0.01,
+        "solver": "Dassl",
+        "tolerance": 0.0001
+      },
+      "result": {
+        "raw_file": "Results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/raw/official_example2_awff_sysblock_helix_tuned.csv",
+        "metrics_file": "Results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/metrics/official_example2_awff_sysblock_helix_tuned.json",
+        "figure_dir": "Results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/figures",
+        "replay_file": "Results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/replay/official_example2_awff_sysblock_helix_tuned.json",
+        "mcp_log": "Results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/logs/sysplorer_example2_awff_sysblock_helix_tuned_full_20260511.jsonl"
+      },
+      "required_result_columns": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref"
+      ]
+    },
+    {
+      "scenario": "Config/scenarios/official/example3_pid_baseline.yaml",
+      "state": "present",
+      "group": "official_tracking",
+      "experiment_id": "official_example3_pid_baseline",
+      "scene_id": "official_example3",
+      "controller_id": "pid_baseline",
+      "model_name": "QuadrotorModel.Examples.Example3",
+      "model_path_hint": "References/MWORKS/QuadrotorModel/package.mo",
+      "baseline_experiment": "",
+      "baseline_source": "none",
+      "disturbance_type": null,
+      "simulation": {
+        "stop_time_s": 120.0,
+        "step_size_s": 0.01,
+        "solver": "Dassl",
+        "tolerance": 0.0001
+      },
+      "result": {
+        "raw_file": "Results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv",
+        "metrics_file": "Results/official/example3_figure8/official_example3_pid_baseline/metrics/official_example3_pid_baseline.json",
+        "figure_dir": null,
+        "replay_file": "Results/official/example3_figure8/official_example3_pid_baseline/replay/official_example3_pid_baseline.json",
+        "mcp_log": "Results/official/example3_figure8/official_example3_pid_baseline/logs/sysplorer_example3_pid_baseline_full_20260509.jsonl"
+      },
+      "required_result_columns": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref"
+      ]
+    },
+    {
+      "scenario": "Config/scenarios/official/example3_awff_sysblock.yaml",
+      "state": "present",
+      "group": "official_tracking",
+      "experiment_id": "official_example3_awff_sysblock",
+      "scene_id": "official_example3",
+      "controller_id": "awff_sysblock",
+      "model_name": "QuadrotorExperiments.Example3AWFFSysblockClosedLoop",
+      "model_path_hint": "Models/QuadrotorExperiments/Example3AWFFSysblockClosedLoop.mo",
+      "baseline_experiment": "official_example3_pid_baseline",
+      "baseline_source": "inferred_same_scene_pid",
+      "disturbance_type": null,
+      "simulation": {
+        "stop_time_s": 120.0,
+        "step_size_s": 0.01,
+        "solver": "Dassl",
+        "tolerance": 0.0001
+      },
+      "result": {
+        "raw_file": "Results/official/example3_figure8/official_example3_awff_sysblock/raw/official_example3_awff_sysblock.csv",
+        "metrics_file": "Results/official/example3_figure8/official_example3_awff_sysblock/metrics/official_example3_awff_sysblock.json",
+        "figure_dir": "Results/official/example3_figure8/official_example3_awff_sysblock/figures",
+        "replay_file": "Results/official/example3_figure8/official_example3_awff_sysblock/replay/official_example3_awff_sysblock.json",
+        "mcp_log": "Results/official/example3_figure8/official_example3_awff_sysblock/logs/sysplorer_example3_awff_sysblock_full_20260510.jsonl"
+      },
+      "required_result_columns": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref"
+      ]
+    },
+    {
+      "scenario": "Config/scenarios/official/example3_awff_indi_sysblock.yaml",
+      "state": "present",
+      "group": "official_tracking",
+      "experiment_id": "official_example3_awff_indi_sysblock",
+      "scene_id": "official_example3",
+      "controller_id": "awff_indi_sysblock",
+      "model_name": "QuadrotorExperiments.Example3INDISysblockClosedLoop",
+      "model_path_hint": "Models/QuadrotorExperiments/Example3INDISysblockClosedLoop.mo",
+      "baseline_experiment": "official_example3_awff_sysblock",
+      "baseline_source": "declared",
+      "disturbance_type": null,
+      "simulation": {
+        "stop_time_s": 120.0,
+        "step_size_s": 0.01,
+        "solver": "Dassl",
+        "tolerance": 0.0001
+      },
+      "result": {
+        "raw_file": "Results/official/example3_figure8/official_example3_awff_indi_sysblock/raw/official_example3_awff_indi_sysblock.csv",
+        "metrics_file": "Results/official/example3_figure8/official_example3_awff_indi_sysblock/metrics/official_example3_awff_indi_sysblock.json",
+        "figure_dir": "Results/official/example3_figure8/official_example3_awff_indi_sysblock/figures",
+        "replay_file": "Results/official/example3_figure8/official_example3_awff_indi_sysblock/replay/official_example3_awff_indi_sysblock.json",
+        "mcp_log": "Results/official/example3_figure8/official_example3_awff_indi_sysblock/logs/sysplorer_example3_awff_indi_sysblock_full_20260511.jsonl"
+      },
+      "required_result_columns": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref"
+      ]
+    },
+    {
+      "scenario": "Config/scenarios/official/example3_linear_mpc_sysblock.yaml",
+      "state": "present",
+      "group": "official_tracking",
+      "experiment_id": "official_example3_linear_mpc_sysblock",
+      "scene_id": "official_example3",
+      "controller_id": "linear_mpc_sysblock",
+      "model_name": "QuadrotorExperiments.Example3LinearMPCSysblockClosedLoop",
+      "model_path_hint": "Models/QuadrotorExperiments/Example3LinearMPCSysblockClosedLoop.mo",
+      "baseline_experiment": "official_example3_awff_indi_sysblock",
+      "baseline_source": "declared",
+      "disturbance_type": null,
+      "simulation": {
+        "stop_time_s": 120.0,
+        "step_size_s": 0.01,
+        "solver": "Dassl",
+        "tolerance": 0.0001
+      },
+      "result": {
+        "raw_file": "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/raw/official_example3_linear_mpc_sysblock.csv",
+        "metrics_file": "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/metrics/official_example3_linear_mpc_sysblock.json",
+        "figure_dir": "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures",
+        "replay_file": "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/replay/official_example3_linear_mpc_sysblock.json",
+        "mcp_log": "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/logs/sysplorer_example3_linear_mpc_sysblock_full_20260512.jsonl"
+      },
+      "required_result_columns": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref"
+      ]
+    },
+    {
+      "scenario": "Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml",
+      "state": "present",
+      "group": "robustness",
+      "experiment_id": "robust_rotor1_loss15_example1_pid_baseline",
+      "scene_id": "robust_rotor1_loss15_example1",
+      "controller_id": "pid_baseline",
+      "model_name": "QuadrotorExperiments.Example1Rotor1Loss15PID",
+      "model_path_hint": "Models/QuadrotorExperiments/package.mo",
+      "baseline_experiment": "",
+      "baseline_source": "none",
+      "disturbance_type": "actuator_efficiency_loss",
+      "simulation": {
+        "stop_time_s": 50.0,
+        "step_size_s": 0.01,
+        "solver": "Dassl",
+        "tolerance": 0.0001
+      },
+      "result": {
+        "raw_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_pid_baseline/raw/robust_rotor1_loss15_example1_pid_baseline.csv",
+        "metrics_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_pid_baseline/metrics/robust_rotor1_loss15_example1_pid_baseline.json",
+        "figure_dir": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_pid_baseline/figures",
+        "replay_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_pid_baseline/replay/robust_rotor1_loss15_example1_pid_baseline.json",
+        "mcp_log": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_pid_baseline/logs/sysplorer_robust_rotor1_loss15_example1_pid_baseline_20260510.jsonl"
+      },
+      "required_result_columns": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref"
+      ]
+    },
+    {
+      "scenario": "Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml",
+      "state": "present",
+      "group": "robustness",
+      "experiment_id": "robust_rotor1_loss15_example1_awff_sysblock",
+      "scene_id": "robust_rotor1_loss15_example1",
+      "controller_id": "awff_sysblock",
+      "model_name": "QuadrotorExperiments.Example1Rotor1Loss15AWFFSysblockClosedLoop",
+      "model_path_hint": "Models/QuadrotorExperiments/Example1Rotor1Loss15AWFFSysblockClosedLoop.mo",
+      "baseline_experiment": "robust_rotor1_loss15_example1_pid_baseline",
+      "baseline_source": "declared",
+      "disturbance_type": "actuator_efficiency_loss",
+      "simulation": {
+        "stop_time_s": 50.0,
+        "step_size_s": 0.01,
+        "solver": "Dassl",
+        "tolerance": 0.0001
+      },
+      "result": {
+        "raw_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/raw/robust_rotor1_loss15_example1_awff_sysblock.csv",
+        "metrics_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/metrics/robust_rotor1_loss15_example1_awff_sysblock.json",
+        "figure_dir": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/figures",
+        "replay_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/replay/robust_rotor1_loss15_example1_awff_sysblock.json",
+        "mcp_log": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_awff_sysblock_20260510.jsonl"
+      },
+      "required_result_columns": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref"
+      ]
+    },
+    {
+      "scenario": "Config/scenarios/robustness/example1_wind_gust_pid_baseline.yaml",
+      "state": "present",
+      "group": "robustness",
+      "experiment_id": "robust_wind_gust_example1_pid_baseline",
+      "scene_id": "robust_wind_gust_example1",
+      "controller_id": "pid_baseline",
+      "model_name": "QuadrotorExperiments.Example1WindGustPID",
+      "model_path_hint": "Models/QuadrotorExperiments/package.mo",
+      "baseline_experiment": "",
+      "baseline_source": "none",
+      "disturbance_type": "lateral_world_force_gust",
+      "simulation": {
+        "stop_time_s": 50.0,
+        "step_size_s": 0.01,
+        "solver": "Dassl",
+        "tolerance": 0.0001
+      },
+      "result": {
+        "raw_file": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_pid_baseline/raw/robust_wind_gust_example1_pid_baseline.csv",
+        "metrics_file": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_pid_baseline/metrics/robust_wind_gust_example1_pid_baseline.json",
+        "figure_dir": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_pid_baseline/figures",
+        "replay_file": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_pid_baseline/replay/robust_wind_gust_example1_pid_baseline.json",
+        "mcp_log": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_pid_baseline/logs/sysplorer_robust_wind_gust_example1_pid_baseline_20260510.jsonl"
+      },
+      "required_result_columns": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref"
+      ]
+    },
+    {
+      "scenario": "Config/scenarios/robustness/example1_wind_gust_awff_sysblock.yaml",
+      "state": "present",
+      "group": "robustness",
+      "experiment_id": "robust_wind_gust_example1_awff_sysblock",
+      "scene_id": "robust_wind_gust_example1",
+      "controller_id": "awff_sysblock",
+      "model_name": "QuadrotorExperiments.Example1WindGustAWFFSysblockClosedLoop",
+      "model_path_hint": "Models/QuadrotorExperiments/Example1WindGustAWFFSysblockClosedLoop.mo",
+      "baseline_experiment": "robust_wind_gust_example1_pid_baseline",
+      "baseline_source": "declared",
+      "disturbance_type": "lateral_world_force_gust",
+      "simulation": {
+        "stop_time_s": 50.0,
+        "step_size_s": 0.01,
+        "solver": "Dassl",
+        "tolerance": 0.0001
+      },
+      "result": {
+        "raw_file": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/raw/robust_wind_gust_example1_awff_sysblock.csv",
+        "metrics_file": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/metrics/robust_wind_gust_example1_awff_sysblock.json",
+        "figure_dir": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/figures",
+        "replay_file": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/replay/robust_wind_gust_example1_awff_sysblock.json",
+        "mcp_log": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/logs/sysplorer_robust_wind_gust_example1_awff_sysblock_20260510.jsonl"
+      },
+      "required_result_columns": [
+        "time",
+        "x",
+        "y",
+        "z",
+        "x_ref",
+        "y_ref",
+        "z_ref"
+      ]
+    }
+  ],
+  "coverage": {
+    "official_step": true,
+    "official_helix": true,
+    "official_figure8": true,
+    "pid_baseline": true,
+    "awff_sysblock": true,
+    "linear_mpc_sysblock": true,
+    "single_rotor_efficiency_degradation": true,
+    "wind_gust": true,
+    "formation_excluded": true
+  },
+  "future_live_batch_command": [
+    "D:\\Dev\\Anaconda3\\python.exe",
+    "Scripts/mworks/run_mworks_batch.py",
+    "--no-gui-result-viewer",
+    "--no-gui-open",
+    "--continue-on-failure",
+    "Config/scenarios/official/example1_pid_baseline.yaml",
+    "Config/scenarios/official/example1_awff_sysblock.yaml",
+    "Config/scenarios/official/example2_pid_baseline.yaml",
+    "Config/scenarios/official/example2_improved_pid.yaml",
+    "Config/scenarios/official/example2_awff_sysblock_helix_tuned.yaml",
+    "Config/scenarios/official/example3_pid_baseline.yaml",
+    "Config/scenarios/official/example3_awff_sysblock.yaml",
+    "Config/scenarios/official/example3_awff_indi_sysblock.yaml",
+    "Config/scenarios/official/example3_linear_mpc_sysblock.yaml",
+    "Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml",
+    "Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml",
+    "Config/scenarios/robustness/example1_wind_gust_pid_baseline.yaml",
+    "Config/scenarios/robustness/example1_wind_gust_awff_sysblock.yaml"
+  ],
+  "dry_run_batch_command": [
+    "D:\\Dev\\Anaconda3\\python.exe",
+    "Scripts/mworks/run_mworks_batch.py",
+    "--dry-run",
+    "--no-gui-result-viewer",
+    "--no-gui-open",
+    "--continue-on-failure",
+    "Config/scenarios/official/example1_pid_baseline.yaml",
+    "Config/scenarios/official/example1_awff_sysblock.yaml",
+    "Config/scenarios/official/example2_pid_baseline.yaml",
+    "Config/scenarios/official/example2_improved_pid.yaml",
+    "Config/scenarios/official/example2_awff_sysblock_helix_tuned.yaml",
+    "Config/scenarios/official/example3_pid_baseline.yaml",
+    "Config/scenarios/official/example3_awff_sysblock.yaml",
+    "Config/scenarios/official/example3_awff_indi_sysblock.yaml",
+    "Config/scenarios/official/example3_linear_mpc_sysblock.yaml",
+    "Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml",
+    "Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml",
+    "Config/scenarios/robustness/example1_wind_gust_pid_baseline.yaml",
+    "Config/scenarios/robustness/example1_wind_gust_awff_sysblock.yaml"
+  ],
+  "post_live_quality_commands": [
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/official/example1_pid_baseline.yaml"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/official/example1_awff_sysblock.yaml"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/official/example2_pid_baseline.yaml"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/official/example2_improved_pid.yaml"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/official/example2_awff_sysblock_helix_tuned.yaml"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/official/example3_pid_baseline.yaml"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/official/example3_awff_sysblock.yaml"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/official/example3_awff_indi_sysblock.yaml"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/official/example3_linear_mpc_sysblock.yaml"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/robustness/example1_wind_gust_pid_baseline.yaml"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/robustness/example1_wind_gust_awff_sysblock.yaml"
+    ]
+  ],
+  "preconditions_for_future_live_run": [
+    "current MWORKS/Sysplorer/Syslab preflight is clean and not blocked by upgrade, login, license, authorization, crash, save, restart, or unknown windows",
+    "formal Dynamics smoke blocker is either cleared or explicitly declared unrelated to this single-UAV control batch by PMO/user",
+    "live run uses no automatic GUI result viewer and no GUI-open side paths",
+    "after each live result, evaluate_result_quality.py must pass or preserve the failed result as iteration evidence"
+  ],
+  "claim_boundary": [
+    "This contract prepares a single-UAV control batch only.",
+    "It does not run MWORKS, check_model, SimulateModel, or GUI actions.",
+    "It does not prove controller performance, mission success, closed_loop, or multi-UAV readiness.",
+    "Formation scenarios are explicitly out of scope for this goal stage."
+  ],
+  "findings": []
+}

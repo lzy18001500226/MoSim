@@ -1,0 +1,136 @@
+{
+  "schema": "mosim.mworks.rotor1_loss15_iteration_plan.v1",
+  "status": "blocked_by_mworks_gui",
+  "static_read_only": true,
+  "live_mworks_touched": false,
+  "scope": "single_uav_rotor1_loss15_iteration_before_multi_uav",
+  "live_gate": {
+    "state": "blocked_by_current_sentinel",
+    "sentinel": "Results/mworks_model_hygiene/20260611_mosimquad_formal_dynamics_live_preflight/current_gui_sentinel_after_upgrade_classifier_20260611_234725.json",
+    "live_run_allowed_now": false,
+    "status": "incident_detected",
+    "error_kind": "gui_blocked",
+    "license_state_hint": "upgrade_model_surface_blocked",
+    "blocking_mworks_window_count": 1,
+    "upgrade_model_window_count": 1
+  },
+  "scenario_count": 2,
+  "scenarios": [
+    {
+      "scenario": "Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml",
+      "experiment_id": "robust_rotor1_loss15_example1_pid_baseline",
+      "scene_id": "robust_rotor1_loss15_example1",
+      "controller_id": "pid_baseline",
+      "model_name": "QuadrotorExperiments.Example1Rotor1Loss15PID",
+      "disturbance": {
+        "type": "actuator_efficiency_loss",
+        "affected_rotor": "rotor_1",
+        "efficiency_ratio": 0.85,
+        "target_component": "quadChassisTest17_1.gain2.k"
+      },
+      "metrics_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_pid_baseline/metrics/robust_rotor1_loss15_example1_pid_baseline.json",
+      "current_quality_status": "needs_iteration",
+      "current_quality_pass": false,
+      "position_rmse_m": 0.3921196664904746,
+      "max_position_error_m": 1.4019694591268086,
+      "total_health_score": 35.6257817116079,
+      "disturbance_recovery_time_s": null,
+      "steady_state_error_m": 0.28688403392258666,
+      "quality_issues": [
+        "total_health_score=35.6258 below 40"
+      ],
+      "quality_recommendations": [
+        "preserve current evidence, update controller/scenario, rerun, and compare against this result"
+      ]
+    },
+    {
+      "scenario": "Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml",
+      "experiment_id": "robust_rotor1_loss15_example1_awff_sysblock",
+      "scene_id": "robust_rotor1_loss15_example1",
+      "controller_id": "awff_sysblock",
+      "model_name": "QuadrotorExperiments.Example1Rotor1Loss15AWFFSysblockClosedLoop",
+      "disturbance": {
+        "type": "actuator_efficiency_loss",
+        "affected_rotor": "rotor_1",
+        "efficiency_ratio": 0.85,
+        "target_component": "quadChassisTest17_1.gain2.k"
+      },
+      "metrics_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/metrics/robust_rotor1_loss15_example1_awff_sysblock.json",
+      "current_quality_status": "needs_iteration",
+      "current_quality_pass": false,
+      "position_rmse_m": 0.36905752375323286,
+      "max_position_error_m": 1.3293133598711917,
+      "total_health_score": 36.043895052437605,
+      "disturbance_recovery_time_s": 13.759999999999998,
+      "steady_state_error_m": 0.2654186987470864,
+      "quality_issues": [
+        "total_health_score=36.0439 below 40"
+      ],
+      "quality_recommendations": [
+        "preserve current evidence, update controller/scenario, rerun, and compare against this result"
+      ]
+    }
+  ],
+  "acceptance_targets": {
+    "min_total_health_score": 40.0,
+    "max_position_rmse_m": 0.45,
+    "max_position_error_m": 1.6,
+    "min_awff_rmse_improvement_pct": 0.5
+  },
+  "future_live_rerun_command": [
+    "D:\\Dev\\Anaconda3\\python.exe",
+    "Scripts/mworks/run_mworks_batch.py",
+    "--no-gui-result-viewer",
+    "--no-gui-open",
+    "--continue-on-failure",
+    "--allow-needs-iteration",
+    "Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml",
+    "Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml"
+  ],
+  "dry_run_command": [
+    "D:\\Dev\\Anaconda3\\python.exe",
+    "Scripts/mworks/run_mworks_batch.py",
+    "--dry-run",
+    "--no-gui-result-viewer",
+    "--no-gui-open",
+    "--continue-on-failure",
+    "--allow-needs-iteration",
+    "Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml",
+    "Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml"
+  ],
+  "post_rerun_checks": [
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml",
+      "--write-metrics"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/results/evaluate_result_quality.py",
+      "Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml",
+      "--write-metrics"
+    ],
+    [
+      "D:\\Dev\\Anaconda3\\python.exe",
+      "Scripts/quality/check_single_uav_control_batch_result_acceptance.py"
+    ]
+  ],
+  "iteration_strategy": [
+    "First rerun only the two rotor1_loss15 scenarios after fresh clean MWORKS preflight.",
+    "Do not tune controller parameters until the two-scenario rerun refreshes raw/metrics evidence.",
+    "If both remain needs_iteration, inspect AWFF fault-allocation/control-allocation parameters against the rotor-1 0.85 effectiveness case.",
+    "Keep PID baseline as comparative failure/robustness evidence; do not require PID baseline to pass before optimizing AWFF."
+  ],
+  "forbidden_actions": [
+    "do not run live MWORKS while the upgrade-model GUI blocker is present",
+    "do not click upgrade/login/license/save/restart/close controls from this engineering task",
+    "do not enter multi-UAV formation work from this plan",
+    "do not claim controller improvement until fresh rerun metrics pass the declared quality gate"
+  ],
+  "claim_boundary": [
+    "This is an iteration/rerun plan, not a completed simulation.",
+    "Existing metrics are historical evidence and remain the baseline for the next rerun.",
+    "The plan does not modify model/controller files."
+  ]
+}

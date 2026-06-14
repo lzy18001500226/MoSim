@@ -16,8 +16,9 @@ The formal source is intentionally an extends-only project-owned surface. It doe
 ## Static Anchors
 
 - Motor lag: `der(omega[i]) = (motor_command[i] - omega[i]) / motor_tau[i]`
-- Thrust: `thrust[i] = lift_coefficient * omega[i] * omega[i]`
-- Yaw reaction torque: `yaw_reaction_moment[i] = yaw_direction[i] * moment_constant * thrust[i]`
+- Thrust: `thrust[i] = thrust_effectiveness[i] * lift_coefficient * omega[i] * omega[i]`
+- Yaw reaction torque: `yaw_reaction_moment[i] = yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust[i]`
+- Fault hooks: thrust/reaction effectiveness loss and minimum-effectiveness variables remain exposed.
 - Rotor-center r x F moment: x/y terms remain in `Sunray150RflyStyleRotorDynamics.mo`.
 - Rotor centers remain matched with `MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance`.
 

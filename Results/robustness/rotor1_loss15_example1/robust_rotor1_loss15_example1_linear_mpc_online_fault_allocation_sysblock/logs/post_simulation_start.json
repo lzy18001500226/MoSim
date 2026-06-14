@@ -1,0 +1,20 @@
+{
+  "workflow": "post_simulation_task_flow",
+  "scenario_config": "Config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml",
+  "result_root": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock",
+  "claim_scope": "robustness",
+  "started_at": "2026-06-12T04:57:03",
+  "live_mworks_touched": true,
+  "subagent_plan": {
+    "decision": "available_but_not_useful",
+    "reason": "single-thread execution requested; visible subthreads disabled while CoAgent architecture is under maintenance",
+    "internal_roles": [
+      "model_iteration",
+      "simulation_evidence",
+      "quality_gate",
+      "ue_gatekeeper"
+    ]
+  },
+  "current_gate": "single_uav_mworks_before_ue",
+  "controller_change": "eta_signature_gain 2.65 -> 1.35 for conservative rotor1 efficiency estimation"
+}

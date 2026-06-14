@@ -26,11 +26,11 @@
       "present": true
     },
     {
-      "anchor": "thrust[i] = lift_coefficient * omega[i] * omega[i]",
+      "anchor": "thrust[i] = thrust_effectiveness[i] * lift_coefficient * omega[i] * omega[i]",
       "present": true
     },
     {
-      "anchor": "yaw_reaction_moment[i] = yaw_direction[i] * moment_constant * thrust[i]",
+      "anchor": "yaw_reaction_moment[i] = yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust[i]",
       "present": true
     },
     {
@@ -51,6 +51,22 @@
     },
     {
       "anchor": "hover_thrust_error = total_thrust - mass_kg * 9.81",
+      "present": true
+    },
+    {
+      "anchor": "thrust_effectiveness_loss[i] = 1 - thrust_effectiveness[i]",
+      "present": true
+    },
+    {
+      "anchor": "reaction_moment_effectiveness_loss[i] = 1 - reaction_moment_effectiveness[i]",
+      "present": true
+    },
+    {
+      "anchor": "minimum_thrust_effectiveness = min(thrust_effectiveness)",
+      "present": true
+    },
+    {
+      "anchor": "minimum_reaction_moment_effectiveness = min(reaction_moment_effectiveness)",
       "present": true
     }
   ],

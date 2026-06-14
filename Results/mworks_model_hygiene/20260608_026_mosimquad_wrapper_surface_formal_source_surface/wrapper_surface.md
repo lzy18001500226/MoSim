@@ -16,8 +16,9 @@ The formal source is intentionally an extends-only project-owned surface. It doe
 ## Static Anchors
 
 - Wrapper command input: `dynamics.motor_command = motor_command`.
-- Command-side thrust: `commanded_thrust[i] = dynamics.lift_coefficient * motor_command[i] * motor_command[i]`.
-- Command-side yaw reaction: `commanded_yaw_reaction_moment[i] = dynamics.yaw_direction[i] * dynamics.moment_constant * commanded_thrust[i]`.
+- Command-side thrust: `commanded_thrust[i] = dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]`.
+- Command-side yaw reaction: `commanded_yaw_reaction_moment[i] = dynamics.yaw_direction[i] * dynamics.reaction_moment_effectiveness[i] * dynamics.moment_constant * commanded_thrust[i]`.
+- Effectiveness monitors: `minimum_thrust_effectiveness` and `minimum_reaction_moment_effectiveness` remain surfaced through the wrapper.
 - Rotor-center r x F moment: command-side x/y/z terms remain in `Sunray150DynamicsWrapperSurface.mo`.
 - Lagged outputs: `total_thrust`, `total_moment_body`, `hover_thrust_error`, and yaw gates remain in the legacy wrapper implementation.
 - Rotor centers remain matched across wrapper, core implementation, and `MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance`.

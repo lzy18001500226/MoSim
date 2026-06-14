@@ -1,0 +1,63 @@
+{
+  "schema": "mosim.longrun.single_thread_execution_plan.v1",
+  "created_at": "2026-06-12T02:29:00+08:00",
+  "mode": "single_thread_executor",
+  "goal": "Finish the MWORKS simulation/result/metrics/evidence loop before moving to UE replay/rendering preparation.",
+  "visible_thread_dispatch": false,
+  "live_authority": {
+    "mworks_simulation": "user_authorized_this_turn",
+    "ue_transition": "only_after_mworks_evidence_gate_or_diagnostic_display_gate",
+    "ros2_runtime": "not_in_scope"
+  },
+  "critical_path": [
+    "preflight_mworks_gui_state",
+    "rerun_rotor1_loss15_pid_baseline_and_awff_sysblock",
+    "recalculate_quality_and_batch_acceptance",
+    "select_or_rerun_accepted_rotor1_loss15_candidate_if_needed",
+    "close_single_uav_pre_multi_uav_gate",
+    "prepare_ue_replay_rendering_inputs"
+  ],
+  "logical_subagent_plan": [
+    {
+      "name": "planner",
+      "status": "inline",
+      "responsibility": "Maintain critical path and stop before overclaiming."
+    },
+    {
+      "name": "mworks_runner",
+      "status": "inline",
+      "responsibility": "Run bounded MWORKS scenarios and preserve raw, metrics, logs, figures, replay, screenshots."
+    },
+    {
+      "name": "quality_checker",
+      "status": "inline",
+      "responsibility": "Run single-UAV acceptance and pre-multi-UAV closeout gates."
+    },
+    {
+      "name": "ue_transition_auditor",
+      "status": "inline_later",
+      "responsibility": "Use accepted MWORKS results as display-only UE replay inputs; do not claim UE proves controller or plant truth."
+    }
+  ],
+  "current_mworks_preflight": {
+    "sentinel": "Results/mworks_model_hygiene/20260612_post_simulation_preflight/current_gui_sentinel.json",
+    "status": "clean",
+    "screenshot": "Results/mworks_model_hygiene/20260612_post_simulation_preflight/screenshots/68652_0x370CAE_MoSimQuadrotorModel - Sysplorer _教育版_.png",
+    "note": "Visible [education edition] title alone is not a blocker under current MWORKS workflow."
+  },
+  "first_simulation_targets": [
+    "Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml",
+    "Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml"
+  ],
+  "post_run_checks": [
+    "python Scripts/quality/check_single_uav_control_batch_result_acceptance.py",
+    "python Scripts/quality/build_single_uav_pre_multi_uav_closeout_gate.py"
+  ],
+  "stop_triggers": [
+    "mworks_login_license_authorization_or_gui_error_surface",
+    "unknown_mworks_window_blocker",
+    "runner_raises_model_or_solver_error_without_preserved_logs",
+    "metrics_or_raw_artifact_missing_after_rerun",
+    "ue_transition_would_require_editor_build_runtime_without_separate_gate"
+  ]
+}
