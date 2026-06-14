@@ -1,0 +1,15 @@
+task_id: COAGENT-DEVOPS-GIT-BULK-COMMIT-20260614
+status: completed
+summary: Drained the MoSim Git working tree with path-limited batches. Resolved the Git LFS push blocker by removing broken external RapyutaSimulationPlugins LFS pointer files from the unpushed history, then committed and pushed remaining governance, reference, Results, static audit, UE replay, and generated evidence artifacts.
+decision: Do not use lfs.allowincompletepush. Rebuild local unpushed history from upstream after creating a local backup branch, exclude missing external UE_ROS/RapyutaSimulationPlugins LFS pointers, and commit only reviewed path-limited batches.
+evidence: AGENTS.md and Docs/Workflows/new_conversation_context.md read; index_lock_absent; branch_main; initial_changed_paths_5501; initial_over100MiB_0; initial_sensitive_name_matches_0; git_lfs_fsck_retry_found_127_missing_paths_all_under_References/UE_ROS/RapyutaSimulationPlugins; backup_branch_backup/devops-before-lfs-history-rewrite-20260614-132022; push_succeeded_https; final_tracked_diff_count_0; final_cached_count_0; final_untracked_count_0; final_ahead_behind_0_0; final_git_lfs_fsck_OK.
+commits: e094ea6842 Update MoSim governance and project assets; 6a6aaaf383 Update MoSim governance and reference assets; d365561642 Normalize remaining governance and asset metadata files; bc02476160 Record results and runtime evidence batches; b558fc1143 Record Gazebo crawl manifests and ignore temp trees; ad125874ef Add static audit result artifacts; 59f19c5021 Add UE replay and generated evidence artifacts.
+push_status: pushed_to_origin_main
+risk_controls: no_broad_git_add_A; no_force_push; no_reset_hard; no_git_clean; no_100MiB_files_committed; no_sensitive_name_matches; batches_under_1000_paths; git_diff_cached_check_run_before_commits; bad_lfs_pointers_removed_in_rebuilt_unpushed_history_not_bypassed.
+ignored_or_isolated: Results/external_learning/gazebosim_crawl_*/tmp_*/ added to .gitignore for temporary crawl work directories; durable source and manifest files remain committable.
+remaining_worktree_state: tracked_diff_0; cached_0; untracked_0; upstream_ahead_behind_0_0.
+risks: Backup branch remains local for recovery. Removed RapyutaSimulationPlugins LFS pointer assets were external reference UE assets with missing payloads; restoring real payloads later would require a fresh valid source or LFS objects.
+next_action: Continue future reference imports with the documented drain strategy: isolate tmp/build/cache trees first, commit manifest/source slices under 1000 paths, run large-file and diff checks before each commit, then push.
+needs_human: false
+blocked_reason: none
+updated_at: 2026-06-14T13:42:00+08:00
