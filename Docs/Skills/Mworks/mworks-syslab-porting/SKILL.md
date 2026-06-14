@@ -62,16 +62,23 @@ MWORKS department-owned Syslab/Sysplorer porting tasks should reference the
 latest CoAgentOps activation/window patrol. Return or blocker packets must
 include `mworks_activation_patrol_reference`,
 `mworks_activation_patrol_age_minutes` when known,
-`will_not_click_activation_login=true`, and `live_mworks_touched`. If no recent
-patrol exists and live Sysplorer/MWORKS work is needed, run at most one bounded
-sentinel/API check or return a blocker. Do not treat demo, login, activation,
-authorization, visible unknown blocking state, unknown blocking evidence, or
-GUI-error-report states as porting or solver bugs.
+`will_not_click_activation_login=true` for engineering departments, and
+`live_mworks_touched`. If no recent patrol exists and live Sysplorer/MWORKS
+work is needed, run at most one bounded sentinel/API check or return a blocker.
+Do not treat demo, login, activation, authorization, visible unknown blocking
+state, unknown blocking evidence, or GUI-error-report states as porting or
+solver bugs. PMO/CoAgentOps may perform bounded official login recovery only
+when user-authorized, with foreground/maximized evidence, credential redaction,
+and the MoSim stop conditions.
 If the porting task proceeds into live Sysplorer/MWORKS model work, capture and
-inspect phase screenshots after load/check/simulate/plot phases as applicable
-and return `mworks_phase_screenshots` plus `mworks_phase_observations`. If
-activation/license/login/authorization/GUI-error evidence appears in the patrol
-or mid-task, stop live work and return a P0 MWORKS infrastructure blocker.
+inspect phase screenshots after load/check/simulate/plot phases as applicable.
+Ordinary phase screenshots use DPI-aware background capture with
+`-RestoreMinimized -MinimizeAfter`, size/nonblank validation, and no maximize.
+Return `mworks_phase_screenshots`, `mworks_phase_observations`, and
+`screenshot_manifest` for formal live simulation bundles. If activation/
+license/login/authorization/GUI-error evidence appears in the patrol or
+mid-task, engineering departments stop live work and return a P0 MWORKS
+infrastructure blocker.
 
 ## Output Rules
 

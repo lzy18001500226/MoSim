@@ -275,9 +275,9 @@ Sysplorer 迁移建议：
 | 优先级 | 任务 | 输出位置 |
 |---|---|---|
 | P0 | 维持单机控制器结果收尾和人工审核清单更新 | `Results/人工审核清单.csv`、`Docs/simulation_report.md` |
-| P1 | 建立 `PlannerCommand`、`GridMap`、`TrajectoryReference`、`FormationCommand` 标准接口 | `Docs/Design/02_模型接口与运行流程.md`、`Docs/Index/variable_mapping.md` |
-| P1 | 从 EGO 抽取 A*/B-spline/minimum-snap 迁移设计 | `Docs/Design/05_路径规划与轨迹生成.md` |
-| P1 | 从 ORCA/formation_control 抽取多机避障和队形状态机 | `Docs/Design/06_多机编队控制.md` |
+| P1 | 建立 `PlannerCommand`、`GridMap`、`TrajectoryReference`、`FormationCommand` 标准接口 | `Docs/Design/04_接口数据契约与时钟频率.md`、`Docs/Index/variable_mapping.md`；旧细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/02_模型接口与运行流程.md` |
+| P1 | 从 EGO 抽取 A*/B-spline/minimum-snap 迁移设计 | `Docs/Design/06_控制规划安全与评估目标.md`；旧细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/05_路径规划与轨迹生成.md` |
+| P1 | 从 ORCA/formation_control 抽取多机避障和队形状态机 | `Docs/Design/06_控制规划安全与评估目标.md`；旧细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/06_多机编队控制.md` |
 | P2 | 建立 Sysplorer 图形化单机避障规划模型 | `Models/QuadrotorPlanning*` |
 | P2 | 建立 Sysplorer 三机编队与 ORCA/CBF 安全层模型 | `Models/QuadrotorFormation*` |
-| P2 | 增加多机指标：队形 RMSE、最小机间距、避障约束违反数 | `Scripts/results/calc_metrics.py`、`Docs/Design/08_仿真指标与自动评估.md` |
+| P2 | 增加多机指标：队形 RMSE、最小机间距、避障约束违反数 | `Scripts/results/calc_metrics.py`、`Docs/Design/07_验收Gate与交付物.md`；旧指标细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/08_仿真指标与自动评估.md` |

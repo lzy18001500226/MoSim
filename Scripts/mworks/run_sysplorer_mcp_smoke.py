@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 import os
 import queue
 import re
@@ -73,6 +74,8 @@ DEFAULT_VARIABLES = {
     "u4": "controller3_2.y3",
 }
 CORE_VARIABLE_ALIASES = {"time", "x", "y", "z", "x_ref", "y_ref", "z_ref"}
+VARIABLE_PROFILES = {"standard_tracking", "diagnostics_declared"}
+METRICS_PROFILES = {"standard_tracking", "diagnostics_smoke"}
 
 
 def windows_path(path: Path) -> str:
@@ -104,6 +107,16 @@ def parse_extra_variables(items: list[str], *, allow_default_override: bool = Fa
     return variables
 
 
+def choose_verify_result_var(variable_profile: str, variables: dict[str, str]) -> str:
+    """Pick a result variable that should exist for this export profile."""
+    if variable_profile == "diagnostics_declared":
+        for alias, model_var in variables.items():
+            if alias != "time" and model_var != "time":
+                return model_var
+        return "time"
+    return variables.get("z", "sensors1_1.PosMea[3]")
+
+
 class JsonlMcpClient:
     """Minimal JSON-lines MCP client for the local Sysplorer wrapper."""
 
@@ -116,6 +129,8 @@ class JsonlMcpClient:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             bufsize=1,
         )
         self.stdout_queue: queue.Queue[str] = queue.Queue()
@@ -228,6 +243,22 @@ def write_csv(series_by_alias: dict[str, list[float]], variables: dict[str, str]
                 for name in names
             ])
     temp_output.replace(output)
+
+
+def read_numeric_csv(path: Path) -> dict[str, list[float]]:
+    with path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        if not reader.fieldnames:
+            raise ValueError(f"CSV has no header: {path}")
+        data = {name: [] for name in reader.fieldnames}
+        for row in reader:
+            for name in reader.fieldnames:
+                value = row.get(name, "")
+                try:
+                    data[name].append(float(value) if value != "" else float("nan"))
+                except ValueError:
+                    data[name].append(float("nan"))
+    return data
 
 
 def read_result_series(
@@ -346,13 +377,53 @@ def write_metrics(
     scene_id: str,
     controller_id: str,
     evidence_level: str,
+    metrics_profile: str = "standard_tracking",
 ) -> None:
-    from calc_metrics import read_csv as read_project_csv
+    if metrics_profile == "standard_tracking":
+        from calc_metrics import read_csv as read_project_csv
 
-    data = read_project_csv(raw_csv)
-    metrics = compute_metrics(data, raw_csv, scene_id, controller_id)
+        data = read_project_csv(raw_csv)
+        metrics = compute_metrics(data, raw_csv, scene_id, controller_id)
+    elif metrics_profile == "diagnostics_smoke":
+        data = read_numeric_csv(raw_csv)
+        time_values = data.get("time", [])
+        if not time_values:
+            raise ValueError(f"Diagnostics smoke metrics input has no time column/data: {raw_csv}")
+        duration_s = (max(time_values) - min(time_values)) if time_values else float("nan")
+        numeric_columns = [name for name in data if name != "time"]
+        nan_count = sum(
+            1
+            for values in data.values()
+            for value in values
+            if not math.isfinite(value)
+        )
+        metrics = {
+            "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+            "raw_file": str(raw_csv),
+            "scene_id": scene_id,
+            "controller_id": controller_id,
+            "row_count": len(time_values),
+            "duration_s": duration_s,
+            "sample_rate_hz": (len(time_values) - 1) / duration_s
+            if duration_s and duration_s > 0 and len(time_values) > 1
+            else None,
+            "diagnostics_column_count": len(numeric_columns),
+            "diagnostics_columns": numeric_columns,
+            "nan_count": nan_count,
+            "valid": len(time_values) > 10 and nan_count == 0 and bool(numeric_columns),
+            "claim_role": "dynamics_smoke_only",
+        }
+        for name in numeric_columns:
+            values = [value for value in data[name] if math.isfinite(value)]
+            if values:
+                metrics[f"{name}_min"] = min(values)
+                metrics[f"{name}_max"] = max(values)
+                metrics[f"{name}_final"] = values[-1]
+    else:
+        raise ValueError(f"Unsupported metrics profile: {metrics_profile}")
     metrics["source"] = "MWORKS_MCP"
     metrics["evidence_level"] = evidence_level
+    metrics["metrics_profile"] = metrics_profile
     metrics_json.parent.mkdir(parents=True, exist_ok=True)
     metrics_json.write_text(json.dumps(metrics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -396,6 +467,21 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--scene-id", default="official_example1_pid_baseline")
     parser.add_argument("--controller-id", default="pid_baseline")
     parser.add_argument("--evidence-level", default="real_sysplorer_mcp_full_baseline")
+    parser.add_argument(
+        "--variable-profile",
+        choices=sorted(VARIABLE_PROFILES),
+        default="standard_tracking",
+        help=(
+            "standard_tracking exports trajectory/control defaults; diagnostics_declared exports only time "
+            "plus --extra-variable/--override-variable declarations."
+        ),
+    )
+    parser.add_argument(
+        "--metrics-profile",
+        choices=sorted(METRICS_PROFILES),
+        default="standard_tracking",
+        help="Metric writer profile. Use diagnostics_smoke for non-trajectory Dynamics smoke outputs.",
+    )
     parser.add_argument(
         "--extra-variable",
         action="append",
@@ -772,9 +858,10 @@ def run_mcp_simulation(
         client.set_log_path(active_log_output)
 
     target_time = parse_target_time(args.target_time)
-    variables = dict(DEFAULT_VARIABLES)
+    variables = {"time": "time"} if args.variable_profile == "diagnostics_declared" else dict(DEFAULT_VARIABLES)
     variables.update(parse_extra_variables(args.override_variable, allow_default_override=True))
     variables.update(parse_extra_variables(args.extra_variable))
+    verify_result_var = choose_verify_result_var(args.variable_profile, variables)
     native_result_dir, native_result_manifest = resolve_native_result_dir(
         args.raw_output,
         args.native_result_dir,
@@ -848,7 +935,7 @@ def run_mcp_simulation(
                 model_name=args.model_name,
                 target_time=target_time,
                 native_result_dir=native_result_dir,
-                verify_result_var=variables.get("z", "sensors1_1.PosMea[3]"),
+                verify_result_var=verify_result_var,
                 verify_time_point="end",
             )
         else:
@@ -858,7 +945,7 @@ def run_mcp_simulation(
                     "model_name": args.model_name,
                     "sim_mode": 0,
                     "target_time": target_time,
-                    "verify_result_var": variables.get("z", "sensors1_1.PosMea[3]"),
+                    "verify_result_var": verify_result_var,
                     "verify_time_point": "end",
                 },
                 timeout_s=360,
@@ -887,6 +974,7 @@ def run_mcp_simulation(
             args.scene_id,
             args.controller_id,
             args.evidence_level,
+            args.metrics_profile,
         )
         gui_result: dict[str, Any] | None = None
         if gui_open:
@@ -897,7 +985,7 @@ def run_mcp_simulation(
                     model_name=args.model_name,
                     target_time=gui_target_time,
                     native_result_dir=gui_native_result_dir,
-                    verify_result_var=variables.get("z", "sensors1_1.PosMea[3]"),
+                    verify_result_var=verify_result_var,
                     verify_time_point="end",
                     interval=args.gui_review_interval,
                 )

@@ -1,0 +1,42 @@
+experiment_id: mosimquad_dynamics_physical_wrench_hover_smoke
+scene_id: mosimquad_formal_dynamics_physical_wrench_hover_smoke
+controller_id: diagnostics_no_controller
+priority: P0
+evidence_level: future_live_mworks_formal_dynamics_smoke_contract
+postprocess_profile: diagnostics_smoke
+
+model:
+  source_package: MoSimQuadrotorModel
+  live_load_strategy: minimal_dynamics_only
+  model_name: MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke
+  model_path_hint: Models/QuadrotorExperiments/package.mo
+  base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
+  official_description: formal Dynamics physical-wrench hover smoke
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 0.25
+  step_size_s: 0.001
+  solver: Dassl
+  tolerance: 0.0001
+
+result:
+  raw_file: Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_hover_smoke/raw/mosimquad_dynamics_physical_wrench_hover_smoke.csv
+  metrics_file: Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_hover_smoke/metrics/mosimquad_dynamics_physical_wrench_hover_smoke.json
+  mcp_log: Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_physical_wrench_hover_smoke/logs/sysplorer_mosimquad_dynamics_physical_wrench_hover_smoke.jsonl
+  expected_result_variables:
+    - adapter.applied_force_z_body
+    - adapter.applied_yaw_torque_body
+    - adapter.force_application_error
+    - adapter.torque_application_error
+    - adapter.hover_weight_balance_error
+    - adapter.wrapper_total_thrust
+    - adapter.wrapper_yaw_moment
+  extra_variables:
+    adapter_applied_force_z_body: adapter.applied_force_z_body
+    adapter_applied_yaw_torque_body: adapter.applied_yaw_torque_body
+    adapter_force_application_error: adapter.force_application_error
+    adapter_torque_application_error: adapter.torque_application_error
+    adapter_hover_weight_balance_error: adapter.hover_weight_balance_error
+    adapter_wrapper_total_thrust: adapter.wrapper_total_thrust
+    adapter_wrapper_yaw_moment: adapter.wrapper_yaw_moment

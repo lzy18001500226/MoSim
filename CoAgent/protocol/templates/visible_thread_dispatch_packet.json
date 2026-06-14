@@ -1,7 +1,8 @@
 {
   "template_type": "visible_thread_dispatch_packet",
-  "template_version": 1,
+  "template_version": 2,
   "request_id": "PMO-REQUEST-YYYYMMDD-001",
+  "dispatch_nonce": "replace-with-unique-dispatch-nonce",
   "task_id": "PMO-TASK-YYYYMMDD-001",
   "origin_thread": "MoSim｜主线 PMO",
   "origin_thread_id": "019e9868-83ea-70f0-92c5-a3a408bd78c6",
@@ -44,6 +45,36 @@
     "worktree_required": false,
     "worktree_decision": "No isolated worktree is required for this template instance unless the task packet declares one."
   },
+  "capability_resolution": {
+    "required": true,
+    "capability_index_consulted": true,
+    "consulted_index_path": "Docs/Index/capability_index.md",
+    "matched_capability_ids": [
+      "codex.visible_thread.dispatch",
+      "review.evidence_gate"
+    ],
+    "matched_capabilities": [
+      "Codex visible thread dispatch",
+      "Review / evidence gate"
+    ],
+    "existing_assets_to_reuse": [
+      "CoAgent/dispatch/communication_contract.md",
+      "Docs/Index/capability_index.md"
+    ],
+    "searched_existing_assets": [
+      "Docs/Index/capability_index.md",
+      "CoAgent/skills/",
+      "Docs/Skills/",
+      "Scripts/"
+    ],
+    "create_new_assets": [],
+    "reason_existing_assets_insufficient": "",
+    "do_not_recreate": [
+      "visible-thread dispatch contract",
+      "review evidence gate"
+    ],
+    "unresolved_capabilities": []
+  },
   "semantic_boundary": {
     "decision_scope": "visible_thread",
     "state_class": "routable",
@@ -77,13 +108,17 @@
     "required": true,
     "exempt_when": "Exact no-op probes that explicitly forbid file writes.",
     "first_artifact_due_minutes": 5,
-    "artifact_path_or_class": "A project-local checkpoint/notes/output-scaffold path declared by this packet and inside write_scope",
+    "artifact_path_or_class": "Results/runtime_leases/replace-with-active-visible-thread-id/PMO-REQUEST-YYYYMMDD-001.json",
+    "artifact_type": "runtime_lease",
+    "nonce": "replace-with-unique-dispatch-nonce",
     "minimum_content": [
       "request_id",
       "target_thread_id",
+      "nonce",
       "started_at",
-      "current_goal",
-      "first_safe_next_step_or_blocker"
+      "last_checkpoint_at",
+      "current_phase",
+      "next_checkpoint_due_at"
     ],
     "completion_claim_allowed": false
   },

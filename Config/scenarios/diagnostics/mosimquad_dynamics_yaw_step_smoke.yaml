@@ -1,0 +1,52 @@
+experiment_id: mosimquad_dynamics_yaw_step_smoke
+scene_id: mosimquad_formal_dynamics_yaw_step_smoke
+controller_id: diagnostics_no_controller
+priority: P0
+evidence_level: future_live_mworks_formal_dynamics_smoke_contract
+postprocess_profile: diagnostics_smoke
+
+model:
+  source_package: MoSimQuadrotorModel
+  live_load_strategy: minimal_dynamics_only
+  model_name: MoSimQuadrotorModel.Dynamics.YawStepSmoke
+  model_path_hint: Models/QuadrotorExperiments/package.mo
+  base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
+  official_description: formal Dynamics yaw-step smoke
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 0.25
+  step_size_s: 0.001
+  solver: Dassl
+  tolerance: 0.0001
+
+result:
+  raw_file: Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_yaw_step_smoke/raw/mosimquad_dynamics_yaw_step_smoke.csv
+  metrics_file: Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_yaw_step_smoke/metrics/mosimquad_dynamics_yaw_step_smoke.json
+  mcp_log: Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_yaw_step_smoke/logs/sysplorer_mosimquad_dynamics_yaw_step_smoke.jsonl
+  expected_result_variables:
+    - yaw_step
+    - rotor_speed_mag[1]
+    - rotor_speed_mag[2]
+    - rotor_speed_mag[3]
+    - rotor_speed_mag[4]
+    - dynamics.total_thrust
+    - dynamics.hover_thrust_error
+    - dynamics.total_moment_body[3]
+    - dynamics.yaw_reaction_moment[1]
+    - dynamics.yaw_reaction_moment[2]
+    - dynamics.yaw_reaction_moment[3]
+    - dynamics.yaw_reaction_moment[4]
+  extra_variables:
+    yaw_step: yaw_step
+    rotor_speed_mag_1: rotor_speed_mag[1]
+    rotor_speed_mag_2: rotor_speed_mag[2]
+    rotor_speed_mag_3: rotor_speed_mag[3]
+    rotor_speed_mag_4: rotor_speed_mag[4]
+    dynamics_total_thrust: dynamics.total_thrust
+    dynamics_hover_thrust_error: dynamics.hover_thrust_error
+    dynamics_yaw_moment: dynamics.total_moment_body[3]
+    dynamics_yaw_reaction_moment_1: dynamics.yaw_reaction_moment[1]
+    dynamics_yaw_reaction_moment_2: dynamics.yaw_reaction_moment[2]
+    dynamics_yaw_reaction_moment_3: dynamics.yaw_reaction_moment[3]
+    dynamics_yaw_reaction_moment_4: dynamics.yaw_reaction_moment[4]

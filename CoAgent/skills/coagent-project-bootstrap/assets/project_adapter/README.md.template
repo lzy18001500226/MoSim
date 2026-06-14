@@ -1,0 +1,32 @@
+# CoAgent Adapter For {{PROJECT_NAME}}
+
+This folder is the project-local CoAgent adapter for:
+
+```text
+{{PROJECT_ROOT}}
+```
+
+Global reusable CoAgent core pointer:
+
+```text
+{{GLOBAL_COAGENT_ROOT}}
+```
+
+## Boundary
+
+This adapter owns project-local routes, packet paths, workflow adapters, and
+permission boundaries. It does not contain the global CoAgent core and does not
+grant project authority to reusable tools by itself.
+
+Project facts, task state, evidence, and acceptance decisions remain under this
+project directory unless the user approves a named infrastructure action.
+
+## Initial Map
+
+| Path | Purpose |
+|---|---|
+| `dispatch/department_threads.json` | Project visible-thread and watch-target registry seed. |
+| `docs/adapters/` | Project-specific adapters from portable CoAgent workflows to this host project. |
+| `protocol/` | Project-local protocol notes or overrides that point back to the global core. |
+
+Generated at: {{CREATED_AT}}

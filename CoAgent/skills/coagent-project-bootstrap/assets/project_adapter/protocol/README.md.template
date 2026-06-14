@@ -1,0 +1,13 @@
+# Project Protocol Notes
+
+This folder holds project-local protocol notes or overrides.
+
+Portable packet schemas and reusable templates should stay in the global
+CoAgent core when available:
+
+```text
+{{GLOBAL_COAGENT_ROOT}}
+```
+
+Host-local packet instances, evidence, and acceptance state should stay under
+this project directory.

@@ -8,11 +8,13 @@
 |---|---|---|
 | Project overview | `README.md` | Repository entry point |
 | Agent rules | `AGENTS.md` | Codex/MCP usage, project conventions, implementation rules |
-| Design documents | `Docs/Design/00_系统总体设计.md` to `Docs/Design/08_仿真指标与自动评估.md` | Architecture, scope, interfaces, control design, scenarios, and metrics |
+| Design documents | `Docs/Design/README.md` | Current system-design source set, architecture, interfaces, gates, and cache/ADR routing |
 | User manual | `Docs/user_manual.md` | Usage guide and reproducible command entry points |
 | Simulation report | `Docs/simulation_report.md` | Current evidence, metrics, figures, and experiment gaps |
 | API/tool index | `Docs/Index/api_index.md` | Available MCP tools, scripts, and API references |
 | Workflow index | `Docs/Index/workflow_index.md` | Repeatable development workflows |
+| Simulation model structure index | `Docs/Index/simulation_model_structure_index.md` | Maintained map of model packages, scenario configs, runner scripts, and result locations |
+| Post-simulation task flow | `Docs/Workflows/post_simulation_task_flow.md` | Total queue after simulation: inventory, raw extraction, metrics, quality, figures, evidence, report, and UE transition |
 | Variable mapping | `Docs/Index/variable_mapping.md` | Standard raw CSV names vs Sysplorer result variables |
 | MathWorks to MWORKS migration | `Docs/Index/mathworks_to_mworks_migration.md` | How to translate MATLAB/Simulink skills into MWORKS workflows |
 | Sunray migration index | `Docs/Index/sunray_migration_index.md` | Sunray code/model/config index for Sysplorer migration |
@@ -37,6 +39,7 @@
 |---|---|---|
 | Resolve model context | `Docs/Workflows/resolve_model_context.md` | Confirm model/component/interface before editing |
 | Produce simulation evidence | `Docs/Workflows/produce_simulation_evidence.md` | Build a labeled evidence bundle for report claims |
+| Post-simulation task flow | `Docs/Workflows/post_simulation_task_flow.md` | Connect simulation completion to result reading, metrics, quality, figures, evidence audit, report candidates, and UE replay readiness |
 | Build Sysblock graphical controller | `Docs/Workflows/build_sysblock_graphical_controller.md` | Create or repair behavior-equivalent graphical Sysblock controllers |
 
 ## MWORKS Reference Docs
@@ -92,15 +95,22 @@
 
 | Topic | File |
 |---|---|
-| System overview | `Docs/Design/00_系统总体设计.md` |
-| Scope and acceptance | `Docs/Design/01_需求范围与验收.md` |
-| Model interfaces and runtime flow | `Docs/Design/02_模型接口与运行流程.md` |
-| Control architecture | `Docs/Design/03_控制系统架构.md` |
-| Safety, fault, and tolerance | `Docs/Design/04_安全故障与容错.md` |
-| Planning and trajectory generation | `Docs/Design/05_路径规划与轨迹生成.md` |
-| Formation control | `Docs/Design/06_多机编队控制.md` |
-| Scenarios and test matrix | `Docs/Design/07_场景扰动与测试矩阵.md` |
-| Metrics and automated evaluation | `Docs/Design/08_仿真指标与自动评估.md` |
+| Design entrypoint | `Docs/Design/README.md` |
+| System goals and requirement boundary | `Docs/Design/01_系统目标与需求边界.md` |
+| Overall architecture and authority boundary | `Docs/Design/02_总体架构与权威边界.md` |
+| Core module design | `Docs/Design/03_核心模块设计.md` |
+| Interfaces, data contracts, clocks, and rates | `Docs/Design/04_接口数据契约与时钟频率.md` |
+| Scene, sensor, UE, ROS2, FAST-LIO, and local-map path | `Docs/Design/05_场景传感器与UE_ROS2链路.md` |
+| Control, planning, safety, fault, formation, and metrics goals | `Docs/Design/06_控制规划安全与评估目标.md` |
+| Acceptance gates and deliverables | `Docs/Design/07_验收Gate与交付物.md` |
+| Competition closure implementation evidence matrix | `Docs/Design/08_赛题闭环实现证据矩阵.md` |
+| ROS2 formal integration, controller ABI, codegen, and future Simulink backend | `Docs/Design/14_ROS2正式接入与控制器后端迁移设计.md` |
+| Active architecture ADR | `Docs/Design/10_架构边界与当前状态ADR.md` |
+| Active RflySim-like gap audit | `Docs/Design/11_RflySim式MoSim最小闭环架构审核.md` |
+| Active model migration plan | `Docs/Design/12_MoSimQuadrotorModel模型归档与迁移计划.md` |
+| Simulation model structure index | `Docs/Index/simulation_model_structure_index.md` |
+| Design rebuild audit | `Docs/Design/design_rebuild_audit_20260610.md` |
+| Cached pre-rebuild design inputs | `Docs/Design/cache/pre_rebuild_20260610/README.md` |
 
 ## Maintenance Rules
 

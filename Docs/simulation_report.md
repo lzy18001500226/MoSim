@@ -12,6 +12,165 @@
 
 证据包审查：2026-05-15 使用 `Scripts/quality/audit_evidence_bundle.py` 对正式场景矩阵执行完整性审查，结果为 `scenarios_checked=76`、`issue_count=0`、`pass_evidence=59`、`boundary_or_negative_evidence=17`。17 个 `needs_iteration` 场景均为基线、边界负样本或未加故障分配的消融项，只能用于说明“低复杂度控制器在旋翼退化/复合扰动下不足”，不能作为完成控制器声明。审查报告见 `Results/test_reports/evidence_bundle_audit_20260515.md`、`Results/test_reports/evidence_bundle_audit_20260515.json` 和 `Results/人工审核清单.csv`。
 
+当前候选证据清单：2026-06-10 已生成
+`Results/static_audits/submission_evidence_manifest_20260610/candidate_submission_evidence_manifest.json`
+和
+`Results/static_audits/pre_submit_readiness_inventory_20260610/pre_submit_readiness_inventory.md`；
+候选图表就绪度见
+`Results/static_audits/candidate_figure_readiness_20260610/candidate_figure_readiness_inventory.md`，
+候选报告表格草稿见
+`Results/static_audits/candidate_report_table_scaffold_20260610/candidate_report_table_scaffold.md`，
+最终包装缺口见
+`Results/static_audits/final_packaging_gap_20260610/final_packaging_gap_inventory.md`，
+最终报告章节缺口见
+`Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.md`，
+未承接候选族改写方案见
+`Results/static_audits/final_report_unmapped_claim_rewrite_20260610/final_report_unmapped_claim_rewrite_plan.md`，
+报告源文档卫生计划见
+`Results/static_audits/simulation_report_source_hygiene_20260610/simulation_report_source_hygiene_plan.md`，
+报告源最小编辑序列计划见
+`Results/static_audits/simulation_report_edit_sequence_20260610/simulation_report_edit_sequence_plan.md`，
+非应用型补丁预览见
+`Results/static_audits/simulation_report_patch_preview_20260610/simulation_report_patch_preview.md`，
+报告源编辑准入门见
+`Results/static_audits/simulation_report_source_edit_readiness_20260610/simulation_report_source_edit_readiness_gate.md`，
+报告源编辑应用计划见
+`Results/static_audits/simulation_report_source_edit_application_plan_20260610/simulation_report_source_edit_application_plan.md`，
+报告源编辑人工审查摘要见
+`Results/static_audits/simulation_report_source_edit_reviewer_summary_20260610/simulation_report_source_edit_reviewer_summary.md`，
+报告源编辑应用审计清单见
+`Results/static_audits/simulation_report_source_edit_application_audit_checklist_20260610/simulation_report_source_edit_application_audit_checklist.md`，
+提交源输出准备度见
+`Results/static_audits/submission_source_output_readiness_20260610/submission_source_output_readiness.md`，
+最终提交产物清单检查见
+`Results/static_audits/final_submission_artifacts_20260610/final_submission_artifact_manifest_check.md`，
+PDF 导出 dry-run 计划见
+`Results/static_audits/pdf_export_dry_run_plan_20260610/pdf_export_dry_run_plan.md`，
+演示视频 storyboard 计划见
+`Results/static_audits/demo_video_storyboard_plan_20260610/demo_video_storyboard_plan.md`，
+最终验收 packet 前置条件计划见
+`Results/static_audits/final_acceptance_packet_prereq_20260610/final_acceptance_packet_prereq_plan.md`，
+最终提交 readiness dashboard 见
+`Results/static_audits/final_submission_readiness_dashboard_20260610/final_submission_readiness_dashboard.md`，
+最终提交人工动作清单见
+`Results/static_audits/final_submission_human_action_checklist_20260610/final_submission_human_action_checklist.md`，
+最终提交 reviewer action map 见
+`Results/static_audits/final_submission_reviewer_action_map_20260610/final_submission_reviewer_action_map.md`，
+最终提交人工审查决策包模板见
+`Results/static_audits/final_submission_human_review_decision_packet_20260610/final_submission_human_review_decision_packet_template.md`，
+最终提交人工审查指南见
+`Results/static_audits/final_submission_human_review_guide_20260610/final_submission_human_review_guide.md`，
+报告源编辑决策模板见
+`Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision_template.md`，
+报告源编辑决策校验见
+`Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision_check.json`，
+最终提交 readiness 链路校验见
+`Results/static_audits/final_submission_readiness_chain_20260610/final_submission_readiness_chain_check.md`，
+最终输出执行决策模板见
+`Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision_template.md`，
+最终提交静态刷新顺序校验见
+`Results/static_audits/final_submission_refresh_order_20260610/final_submission_refresh_order_check.md`，
+最终提交静态审计索引见
+`Results/static_audits/final_submission_static_audit_index_20260610/final_submission_static_audit_index.md`。
+该索引目录的 `README.md` 仅帮助人工区分 Hard Gates 和 Review Aids，不改变执行授权或最终提交状态。
+最终提交 blocked-gate triage map 见
+`Results/static_audits/final_submission_blocked_gate_triage_map_20260610/final_submission_blocked_gate_triage_map.md`，
+它只把 blocked artifacts 归类到 blocker class、下一步人工动作和安全重跑命令。
+最终提交人工决策字段 diff 模板见
+`Results/static_audits/final_submission_human_decision_diff_template_20260610/final_submission_human_decision_diff_template.md`，
+它只列出 pending A1/A6 决策字段，不修改决策模板。
+最终提交 reviewer quickstart 见
+`Results/static_audits/final_submission_reviewer_quickstart_20260610/final_submission_reviewer_quickstart.md`，
+它只压缩 A1/A3/A6 的最小人工打开文件和审核问题。
+最终提交 review progress snapshot 见
+`Results/static_audits/final_submission_review_progress_snapshot_20260610/final_submission_review_progress_snapshot.md`，
+它只汇总 downstream review aids 的 review progress snapshot，不改变门禁、批准、决策模板或最终输出。
+最终提交 post-review rerun matrix 见
+`Results/static_audits/final_submission_post_review_rerun_matrix_20260610/final_submission_post_review_rerun_matrix.md`，
+它只列出未来人工决策后的 post-review rerun matrix，不运行命令或授权输出。
+最终提交 manual-review answer sheet 见
+`Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_manual_review_answer_sheet_template.md`，
+它只提供人工填写占位，不代填答案、不复制到决策模板。
+最终提交 answer-sheet consistency 检查见
+`Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_answer_sheet_decision_consistency_check.json`，
+它只确认 answer-sheet consistency 仍为占位且未复制到真实决策模板。
+最终提交 review artifact bundle 见
+`Results/static_audits/final_submission_review_artifact_bundle_20260610/final_submission_review_artifact_bundle_index.md`，
+它只作为人工审查入口，不回填到静态审计索引。
+最终提交 reviewer handoff note 见
+`Results/static_audits/final_submission_reviewer_handoff_note_20260610/final_submission_reviewer_handoff_note.md`，
+它只把 review artifact bundle、manual-review answer sheet 和 answer-sheet consistency 串成 reviewer handoff note，不填写答案、不修改决策模板、不授权重跑。
+最终提交 manual review closure checklist 见
+`Results/static_audits/final_submission_manual_review_closure_checklist_20260610/final_submission_manual_review_closure_checklist.md`，
+它只列出人工填写答案后需要关闭确认的 manual review closure checklist，不复制答案、不运行重跑命令。
+最终提交 post-review state transition plan 见
+`Results/static_audits/final_submission_post_review_state_transition_plan_20260610/final_submission_post_review_state_transition_plan.md`，
+它只描述人工决策后 post-review state transition plan 的未来可转移状态，不应用状态、不运行命令。
+最终提交 post-review command plan coverage 见
+`Results/static_audits/final_submission_post_review_command_plan_coverage_20260610/final_submission_post_review_command_plan_coverage_check.md`，
+它只验证 post-review command plan coverage 的命令引用存在，不执行命令。
+最终提交 review artifact dependency graph 见
+`Results/static_audits/final_submission_review_artifact_dependency_graph_20260610/final_submission_review_artifact_dependency_graph.md`，
+它只记录下游人工审查辅助物之间的依赖关系，不回填静态审计索引、不运行命令。
+最终提交 review-aid freshness check 见
+`Results/static_audits/final_submission_review_aid_freshness_20260610/final_submission_review_aid_freshness_check.md`，
+它只检查下游人工审查辅助物是否存在、状态是否匹配、是否存在陈旧依赖，不重生成产物。
+最终提交 reviewer packet index 见
+`Results/static_audits/final_submission_reviewer_packet_index_20260610/final_submission_reviewer_packet_index.md`，
+它只把 A1/A3/A6 待人工决策映射到审查文件、答题字段和未来重跑命令，不填写答案、不修改决策模板。
+最终提交 blocker-to-question crosswalk 见
+`Results/static_audits/final_submission_blocker_question_crosswalk_20260610/final_submission_blocker_question_crosswalk.md`，
+它只把阻塞项映射到已有人工审查问题，不回答问题、不修改审批状态。
+最终提交 post-review command grouping index 见
+`Results/static_audits/final_submission_post_review_command_grouping_20260610/final_submission_post_review_command_grouping_index.md`，
+它只把未来重跑命令按 artifact family 和 A1/A3/A6 决策动作分组，不运行命令、不修改决策状态。
+最终提交 post-review command critical-path index 见
+`Results/static_audits/final_submission_post_review_command_critical_path_20260610/final_submission_post_review_command_critical_path_index.md`，
+它只把未来重跑命令压缩为 action-specific prefixes 和 shared tail，不运行命令、不做资源调度。
+最终提交 post-review shared-tail deduplication note 见
+`Results/static_audits/final_submission_post_review_shared_tail_deduplication_20260610/final_submission_post_review_shared_tail_deduplication_note.md`，
+它只说明 A1/A3/A6 未来重跑路径中的共享尾部 families，不执行命令、不实际去重。
+最终提交 post-review reviewer checklist 见
+`Results/static_audits/final_submission_post_review_reviewer_checklist_20260610/final_submission_post_review_reviewer_checklist.md`，
+它只把阻塞问题、命令分组、关键路径和共享尾部说明合并成人工审查导航，不回答问题、不改审批状态。
+最终提交 human-review execution gate summary 见
+`Results/static_audits/final_submission_human_review_execution_gate_20260610/final_submission_human_review_execution_gate_summary.md`，
+它只汇总报告源编辑、PDF 导出、演示视频录制和最终验收 packet 仍被阻塞的执行门禁，不回答人工问题、不修改决策、不运行命令、不导出 PDF/视频、不做最终验收。
+最终提交 execution authorization blocker index 见
+`Results/static_audits/final_submission_execution_authorization_blocker_20260610/final_submission_execution_authorization_blocker_index.md`，
+它只把 4 个阻塞执行目标映射到 A1/A3/A6 人审动作、A2/A4/A5 无 packet 动作和未来命令族，不创建 reviewer packet、不授权执行、不运行命令。
+最终提交 no-packet action escalation note 见
+`Results/static_audits/final_submission_no_packet_action_escalation_20260610/final_submission_no_packet_action_escalation_note.md`，
+它只说明 A2 PDF engine、A4 最终产物创建、A5 gate rerun 为什么需要单独授权，不安装工具、不创建产物、不重跑门禁。
+最终提交 forbidden-action guard 见
+`Results/static_audits/final_submission_forbidden_action_guard_20260610/final_submission_forbidden_action_guard_check.md`，
+它只横向检查当前 review aids 仍禁止 PDF 导出、演示视频录制、最终验收写入、live 工具和可见线程派发，不修改决策、不运行工具。
+最终提交 reviewer evidence index 见
+`Results/static_audits/final_submission_reviewer_evidence_index_20260610/final_submission_reviewer_evidence_index.md`，
+它只列出 A1/A3/A6 人审动作和 A2/A4/A5 无 packet 动作需要打开的证据文件，不填写答案、不改模板、不授权执行。
+最终提交 reviewer open-file checksum index 见
+`Results/static_audits/final_submission_reviewer_open_file_checksum_index_20260610/final_submission_reviewer_open_file_checksum_index.md`，
+它只记录 reviewer evidence index 中 21 个唯一打开文件的大小、mtime 和 SHA256，用于发现审查证据漂移，不打开 UI、不填写答案、不改模板、不授权执行。
+最终提交 execution-blocker owner/status digest 见
+`Results/static_audits/final_submission_execution_blocker_owner_status_digest_20260610/final_submission_execution_blocker_owner_status_digest.md`，
+它只把 4 个 owner、6 个动作、4 个阻塞执行目标和 16 个 dashboard blocker 聚合成审查导航，不回答问题、不改模板、不授权执行。
+最终提交 manual-review shortest-path note 见
+`Results/static_audits/final_submission_manual_review_shortest_path_20260610/final_submission_manual_review_shortest_path_note.md`，
+它只把 A1-A6 转换为 6 步人工审核最短路径，标明 3 个 reviewer-packet 动作和 3 个 no-packet 动作，不回答问题、不改模板、不运行命令、不授权执行。
+最终提交 open-file shortest-path bundle 见
+`Results/static_audits/final_submission_open_file_shortest_path_bundle_20260610/final_submission_open_file_shortest_path_bundle.md`，
+它只把 21 个唯一审查文件按 6 步路径分为新增打开文件和可复用文件，记录 12 个复用引用，不打开 UI、不回答问题、不授权执行。
+最终提交 human-review status packet skeleton 见
+`Results/static_audits/final_submission_human_review_status_packet_skeleton_20260610/final_submission_human_review_status_packet_skeleton.md`，
+它只汇总 A1/A3/A6 仍故意留空的 38 个审核字段、29 个必填字段和 A2/A4/A5/仪表盘前置条件，不填写答案、不改模板、不授权执行。
+最终提交 status-packet dependency summary 见
+`Results/static_audits/final_submission_status_packet_dependency_summary_20260610/final_submission_status_packet_dependency_summary.md`，
+它只把 16 个 dashboard blocker 压缩为 5 类前置依赖并映射回 A1-A6，不满足依赖、不运行命令、不授权执行。
+它们只用于报告草稿选材、图表就绪度确认、表格起草、预提交准备度盘点、草稿改写规划、旧阶段/冲突内容审查、报告源编辑排序、人工审查前的片段预览、正文编辑准入判断和最终导出前置条件盘点，不是最终 PMO 验收。当前 13 条候选行的
+metrics/raw/figure/replay/log 路径均可解析，但最终 PDF、演示视频和最终验收 packet 仍未完成。静态清单也不证明
+native Syslab 完整报告生成、live MWORKS no-start attach、ROS2 `planner_ready`/`closed_loop`
+或 UE build/runtime/editor 成功。
+
 当前已完成的可复现资产：
 
 ```text

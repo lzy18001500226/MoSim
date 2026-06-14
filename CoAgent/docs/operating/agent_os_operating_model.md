@@ -22,11 +22,11 @@ board = current state
 ledger/archive = historical trace
 ```
 
-CoAgent should be portable. Project-specific facts stay in the host project.
-For MoSim, that means MWORKS/ROS2/UE engineering rules, competition priorities,
-model evidence, PMO board state, and result artifacts remain in MoSim docs and
-`Results/`. CoAgent carries only the reusable coordination machinery and
-generic operating rules.
+CoAgent should be portable. Project-specific facts stay in the host project:
+domain engineering rules, product priorities, model evidence, board state, and
+result artifacts remain in host docs and host result folders. CoAgent carries
+only the reusable coordination machinery and generic operating rules. The
+current MoSim host landing is recorded in `CoAgent/docs/operating/MIGRATION_MAP.md`.
 
 ## 2. Core Roles
 
@@ -223,6 +223,7 @@ Use this enforcement split:
 | Tooling/native surface governance | `CoAgent/docs/operating/tooling_assets_governance.md` |
 | Session-memory anti-pollution | `CoAgent/docs/operating/session_memory_migration.md` |
 | Capability routing model | portable capability template `CoAgent/protocol/templates/capability_template.yaml`; host index such as `Docs/Index/capability_index.md` |
+| Desktop window observation/action skills | `CoAgent/skills/window-capture-evidence/SKILL.md`; `CoAgent/skills/window-ui-action-control/SKILL.md` |
 | CoAgent implementation status | `CoAgent/STATUS.md` |
 
 Host projects may keep local adapter documents that point here and add

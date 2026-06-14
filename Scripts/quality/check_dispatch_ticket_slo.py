@@ -44,6 +44,12 @@ REQUIRED_FIELDS = [
     "breach_action",
 ]
 
+VERSION_2_REQUIRED_FIELDS = [
+    "dispatch_nonce",
+    "durable_start_due",
+    "durable_start_requirement",
+]
+
 TASK_TYPE_PROFILES = {
     "source_static": {
         "expected_min_minutes": 10,
@@ -101,6 +107,11 @@ OBSERVED_STATES = {
     "visible_turn_in_progress",
     "visible_turn_stuck_no_agent_output",
     "view_refresh_required",
+    "durable_start_artifact_seen",
+    "lease_missing",
+    "lease_seen",
+    "lease_checkpoint_fresh",
+    "lease_checkpoint_stale",
     "agent_output_seen",
     "checkpoint_packet_seen",
     "expected_return_packet_seen",
@@ -119,6 +130,9 @@ NO_AGENT_OUTPUT_STATES = {
 }
 PACKET_STATES = {"expected_return_packet_seen", "blocker_packet_seen"}
 CHECKPOINT_OR_PROGRESS_STATES = {
+    "durable_start_artifact_seen",
+    "lease_seen",
+    "lease_checkpoint_fresh",
     "agent_output_seen",
     "checkpoint_packet_seen",
     "expected_return_packet_seen",
@@ -131,7 +145,6 @@ BREACH_ACTIONS = {
     "none",
     "immediate_readback_pending",
     "recheck_within_2m",
-    "run_view_refresh_sweep",
     "wait_for_expected_packet",
     "wait_for_checkpoint",
     "dispatch_surface_failure_suspected",
@@ -152,6 +165,26 @@ ESCALATION_ACTIONS = {
     "checkpoint_overdue",
     "expected_packet_overdue",
     "manual_review_needed",
+}
+
+LEASE_MINIMUM_FIELDS = {
+    "request_id",
+    "target_thread_id",
+    "nonce",
+    "started_at",
+    "last_checkpoint_at",
+    "current_phase",
+    "next_checkpoint_due_at",
+}
+
+ARTIFACT_TYPES = {
+    "runtime_lease",
+    "checkpoint_packet",
+    "return_packet",
+    "blocker_packet",
+    "notes_file",
+    "output_scaffold",
+    "other",
 }
 
 
@@ -186,6 +219,11 @@ def _present(value: Any) -> bool:
     return True
 
 
+def _ticket_version(ticket: dict[str, Any]) -> int:
+    value = ticket.get("ticket_version")
+    return value if isinstance(value, int) else 1
+
+
 def _project_relative(path_text: str) -> bool:
     path = Path(path_text)
     if path.is_absolute():
@@ -203,14 +241,115 @@ def _check_required_fields(ticket: dict[str, Any]) -> list[str]:
     for field in REQUIRED_FIELDS:
         if not _present(ticket.get(field)):
             errors.append(f"missing required field: {field}")
+    if _ticket_version(ticket) >= 2:
+        for field in VERSION_2_REQUIRED_FIELDS:
+            if not _present(ticket.get(field)):
+                errors.append(f"missing required field: {field}")
     for field in BOARD_FIELDS:
         if not _present(ticket.get(field)):
             errors.append(f"missing PMO board field: {field}")
     return errors
 
 
+def _check_durable_start_requirement(
+    ticket: dict[str, Any],
+    sent_at: datetime | None,
+    errors: list[str],
+) -> dict[str, Any] | None:
+    requirement = ticket.get("durable_start_requirement")
+    if not isinstance(requirement, dict):
+        errors.append("durable_start_requirement must be an object")
+        return None
+
+    required = requirement.get("required")
+    exempt = requirement.get("exempt")
+    if not isinstance(required, bool):
+        errors.append("durable_start_requirement.required must be boolean")
+    if not isinstance(exempt, bool):
+        errors.append("durable_start_requirement.exempt must be boolean")
+    if required is True and exempt is True:
+        errors.append("durable_start_requirement cannot be both required and exempt")
+
+    artifact = requirement.get("artifact_path_or_class")
+    require_dispatch_nonce = _ticket_version(ticket) >= 2
+    dispatch_nonce = ticket.get("dispatch_nonce")
+    if require_dispatch_nonce and (not isinstance(dispatch_nonce, str) or not dispatch_nonce.strip()):
+        errors.append("dispatch_nonce is required")
+    if required is True and exempt is not True:
+        if not isinstance(artifact, str) or not artifact.strip():
+            errors.append("durable_start_requirement.artifact_path_or_class is required")
+        elif not _project_relative(artifact):
+            errors.append(
+                "durable_start_requirement.artifact_path_or_class must stay inside the project"
+            )
+
+        artifact_type = requirement.get("artifact_type")
+        if artifact_type not in ARTIFACT_TYPES:
+            errors.append(
+                "durable_start_requirement.artifact_type must be one of "
+                + ", ".join(sorted(ARTIFACT_TYPES))
+                + f"; got {artifact_type!r}"
+            )
+
+        if requirement.get("artifact_seen") is not False and requirement.get("artifact_seen") is not True:
+            errors.append("durable_start_requirement.artifact_seen must be boolean")
+
+        if artifact_type == "runtime_lease":
+            nonce = requirement.get("nonce")
+            if not isinstance(nonce, str) or not nonce.strip():
+                errors.append("runtime_lease durable_start_requirement.nonce is required")
+            elif require_dispatch_nonce and nonce != dispatch_nonce:
+                errors.append(
+                    "runtime_lease durable_start_requirement.nonce must match dispatch_nonce"
+                )
+            if require_dispatch_nonce and isinstance(artifact, str) and artifact.strip():
+                expected_path = (
+                    Path("Results")
+                    / "runtime_leases"
+                    / str(ticket.get("target_thread_id", ""))
+                    / f"{ticket.get('request_id', '')}.json"
+                )
+                actual_parts = Path(artifact).parts
+                expected_parts = expected_path.parts
+                if tuple(actual_parts) != tuple(expected_parts):
+                    errors.append(
+                        "runtime_lease durable_start_requirement.artifact_path_or_class "
+                        f"must be {expected_path.as_posix()}"
+                    )
+            minimum_fields = requirement.get("minimum_fields")
+            if not isinstance(minimum_fields, list):
+                errors.append("runtime_lease durable_start_requirement.minimum_fields must be a list")
+            else:
+                missing = sorted(LEASE_MINIMUM_FIELDS - {str(field) for field in minimum_fields})
+                if missing:
+                    errors.append(
+                        "runtime_lease durable_start_requirement.minimum_fields missing: "
+                        + ", ".join(missing)
+                    )
+
+    artifact_seen = requirement.get("artifact_seen")
+    if artifact_seen is True:
+        observed_at = _parse_dt(
+            requirement.get("artifact_observed_at"),
+            "durable_start_requirement.artifact_observed_at",
+            errors,
+        )
+        if sent_at and observed_at and observed_at < sent_at:
+            errors.append("durable_start_requirement.artifact_observed_at must not be before sent_at")
+
+    for field in ["last_checkpoint_at", "next_checkpoint_due_at"]:
+        if requirement.get(field) is not None:
+            _parse_dt(requirement.get(field), f"durable_start_requirement.{field}", errors)
+
+    return requirement
+
+
 def validate(ticket: dict[str, Any], *, now: datetime | None = None) -> list[str]:
     errors = _check_required_fields(ticket)
+    ticket_version_value = ticket.get("ticket_version")
+    if not isinstance(ticket_version_value, int):
+        errors.append("ticket_version must be an integer")
+    ticket_version = _ticket_version(ticket)
 
     task_type = ticket.get("task_type")
     if not isinstance(task_type, str) or task_type not in TASK_TYPE_PROFILES:
@@ -259,10 +398,19 @@ def validate(ticket: dict[str, Any], *, now: datetime | None = None) -> list[str
         ticket.get("dispatcher_next_check_due"), "dispatcher_next_check_due", errors
     )
     expected_due = _parse_dt(ticket.get("expected_packet_due"), "expected_packet_due", errors)
+    durable_start_due = None
+    if ticket_version >= 2 or ticket.get("durable_start_due") is not None:
+        durable_start_due = _parse_dt(ticket.get("durable_start_due"), "durable_start_due", errors)
 
     checkpoint_due = None
     if ticket.get("checkpoint_due") is not None:
         checkpoint_due = _parse_dt(ticket.get("checkpoint_due"), "checkpoint_due", errors)
+
+    durable_start_requirement = None
+    if ticket_version >= 2 and "durable_start_requirement" not in ticket:
+        errors.append("missing required field: durable_start_requirement")
+    elif "durable_start_requirement" in ticket:
+        durable_start_requirement = _check_durable_start_requirement(ticket, sent_at, errors)
 
     if sent_at and first_due:
         if first_due < sent_at:
@@ -281,6 +429,14 @@ def validate(ticket: dict[str, Any], *, now: datetime | None = None) -> list[str
             errors.append("failure_suspected_due must not be before sent_at")
         if failure_due - sent_at > timedelta(minutes=5):
             errors.append("failure_suspected_due must be within 5 minutes of sent_at")
+
+    if sent_at and durable_start_due:
+        if durable_start_due < sent_at:
+            errors.append("durable_start_due must not be before sent_at")
+        if durable_start_due - sent_at > timedelta(minutes=5):
+            errors.append("durable_start_due must be within 5 minutes of sent_at")
+        if failure_due and durable_start_due > failure_due:
+            errors.append("durable_start_due must not be after failure_suspected_due")
 
     if sent_at and first_agent_output_due:
         if first_agent_output_due < sent_at:
@@ -325,6 +481,15 @@ def validate(ticket: dict[str, Any], *, now: datetime | None = None) -> list[str
 
     if not is_template:
         check_now = now or datetime.now(tz=sent_at.tzinfo if sent_at and sent_at.tzinfo else None)
+        durable_start_required = (
+            isinstance(durable_start_requirement, dict)
+            and durable_start_requirement.get("required") is True
+            and durable_start_requirement.get("exempt") is not True
+        )
+        durable_start_seen = (
+            isinstance(durable_start_requirement, dict)
+            and durable_start_requirement.get("artifact_seen") is True
+        )
         if (
             failure_due
             and check_now >= failure_due
@@ -337,11 +502,34 @@ def validate(ticket: dict[str, Any], *, now: datetime | None = None) -> list[str
         if (
             failure_due
             and check_now >= failure_due
-            and observed_state == "view_refresh_required"
-            and breach_action not in {"run_view_refresh_sweep", "dispatch_surface_failure_suspected"}
+            and durable_start_required
+            and not durable_start_seen
+            and observed_state not in CHECKPOINT_OR_PROGRESS_STATES
+            and observed_state not in {"approval_or_provider_surface", "context_compression_surface"}
+            and breach_action != "dispatch_surface_failure_suspected"
         ):
             errors.append(
-                "view_refresh_required after 5 minutes must run a bounded refresh sweep or escalate to dispatch_surface_failure_suspected"
+                "after durable_start_due/failure_suspected_due without required lease/artifact, breach_action must be dispatch_surface_failure_suspected"
+            )
+        if (
+            failure_due
+            and check_now >= failure_due
+            and observed_state == "lease_missing"
+            and breach_action != "dispatch_surface_failure_suspected"
+        ):
+            errors.append(
+                "lease_missing after failure_suspected_due must use breach_action dispatch_surface_failure_suspected"
+            )
+        if observed_state == "lease_checkpoint_stale" and breach_action not in ESCALATION_ACTIONS:
+            errors.append("lease_checkpoint_stale must escalate through breach_action")
+        if (
+            failure_due
+            and check_now >= failure_due
+            and observed_state == "view_refresh_required"
+            and breach_action != "dispatch_surface_failure_suspected"
+        ):
+            errors.append(
+                "view_refresh_required after 5 minutes must escalate to dispatch_surface_failure_suspected; UI refresh is incident-scoped, not a dispatch-ticket breach action"
             )
         if (
             first_agent_output_due

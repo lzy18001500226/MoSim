@@ -1,0 +1,44 @@
+experiment_id: mosimquad_dynamics_wrapper_hover_smoke
+scene_id: mosimquad_formal_dynamics_wrapper_hover_smoke
+controller_id: diagnostics_no_controller
+priority: P0
+evidence_level: future_live_mworks_formal_dynamics_smoke_contract
+postprocess_profile: diagnostics_smoke
+
+model:
+  source_package: MoSimQuadrotorModel
+  live_load_strategy: minimal_dynamics_only
+  model_name: MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke
+  model_path_hint: Models/QuadrotorExperiments/package.mo
+  base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
+  official_description: formal Dynamics wrapper hover smoke
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 0.25
+  step_size_s: 0.001
+  solver: Dassl
+  tolerance: 0.0001
+
+result:
+  raw_file: Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_hover_smoke/raw/mosimquad_dynamics_wrapper_hover_smoke.csv
+  metrics_file: Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_hover_smoke/metrics/mosimquad_dynamics_wrapper_hover_smoke.json
+  mcp_log: Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_wrapper_hover_smoke/logs/sysplorer_mosimquad_dynamics_wrapper_hover_smoke.jsonl
+  expected_result_variables:
+    - wrapper.total_thrust
+    - wrapper.commanded_total_thrust
+    - wrapper.hover_thrust_error
+    - wrapper.commanded_hover_thrust_error
+    - wrapper.motor_order_gate_error
+    - wrapper.yaw_direction_gate_error
+    - wrapper.yaw_moment_gate
+    - wrapper.commanded_yaw_moment_gate
+  extra_variables:
+    wrapper_total_thrust: wrapper.total_thrust
+    wrapper_commanded_total_thrust: wrapper.commanded_total_thrust
+    wrapper_hover_thrust_error: wrapper.hover_thrust_error
+    wrapper_commanded_hover_thrust_error: wrapper.commanded_hover_thrust_error
+    wrapper_motor_order_gate_error: wrapper.motor_order_gate_error
+    wrapper_yaw_direction_gate_error: wrapper.yaw_direction_gate_error
+    wrapper_yaw_moment_gate: wrapper.yaw_moment_gate
+    wrapper_commanded_yaw_moment_gate: wrapper.commanded_yaw_moment_gate

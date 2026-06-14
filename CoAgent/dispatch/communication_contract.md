@@ -152,14 +152,26 @@ python Scripts\quality\check_dispatch_ticket_slo.py `
   Results\agent_packets\dispatch_tickets\<request_id>.json
 ```
 
+New visible-thread tickets use `ticket_version=2`. The dispatcher must generate
+a fresh `dispatch_nonce`, write the same value into the dispatch ticket and the
+visible task packet, and require the target thread to echo it in the runtime
+lease. `Scripts/quality/check_dispatch_ticket_slo.py` rejects v2 runtime-lease
+tickets when the nonce is missing, mismatched, or the lease path is not the
+canonical `Results/runtime_leases/<target_thread_id>/<request_id>.json` path.
+Older v1 tickets remain readable recovery evidence and must not be bulk
+rewritten only to satisfy the newer checker rules.
+
 Dispatch monitoring sequence:
 
 ```text
-1. Before send, create the dispatch ticket and set dispatcher_owns_slo_closure=true.
+1. Before send, create the dispatch ticket with ticket_version=2,
+   dispatcher_owns_slo_closure=true, dispatch_nonce, durable_start_due, and
+   durable_start_requirement.
 2. Send the visible-thread task packet.
 3. The target thread's first execution step, except for exact no-op probes,
    is to create or update one durable project-local artifact declared by the
-   packet's durable_start_requirement.
+   packet's durable_start_requirement, normally the runtime lease that echoes
+   the dispatch_nonce.
 4. Immediately read_thread once and record last_observed_turn.
 5. If no visible turn is observed, set second_readback_due_if_no_visible_turn
    within 2 minutes of sent_at and read again before that due time.
@@ -184,7 +196,7 @@ SLO profiles:
 
 | Task type | Expected packet due | Extra requirement |
 |---|---:|---|
-| `source_static` | 10-20 minutes after `sent_at` | durable-start artifact, agent output, packet, checkpoint, or explicit surface must appear inside the 5-minute surface window |
+| `source_static` | 10-20 minutes after `sent_at` | first-start artifact, agent output, packet, or explicit surface must appear inside the 5-minute surface window |
 | `control_plane` / `packet_contract_fix` | 10-20 minutes after `sent_at` | same 5-minute meaningful-progress window |
 | `dispatch_surface_diagnostic` / `recovery_validation` | 2-10 minutes after `sent_at` | same 5-minute meaningful-progress window |
 | `live_runtime` / `mworks_gui` | may run longer, normally up to the declared ticket due time | `checkpoint_due` is required and must be within 10 minutes of `sent_at` |
@@ -206,6 +218,15 @@ does not prove completion; it proves that the target execution surface started
 and can write recoverable state. Exact no-op probes that explicitly forbid file
 writes are exempt.
 
+For `source_static`, `control_plane`, `packet_contract_fix`,
+`dispatch_surface_diagnostic`, and `recovery_validation`, this is a first-start
+proof, not a continuing heartbeat contract. Once a fresh matching first-start
+artifact, agent output, return/blocker packet, approval/provider surface, or
+context-compression surface is observed, the dispatcher waits for the declared
+expected packet due time instead of repeatedly probing the worker. Continuing
+checkpoint freshness is required only when the task type declares
+`checkpoint_due`, normally live/runtime/MWORKS GUI/manual review work.
+
 The preferred first artifact is a runtime lease:
 
 ```text
@@ -226,12 +247,21 @@ Minimum runtime lease content:
 }
 ```
 
-The dispatcher must put a fresh nonce in the ticket and task packet. The target
-thread must echo the same nonce in the runtime lease so patrol can reject stale
-lease files from older attempts. If the target thread shows a visible in-
-progress turn but no matching runtime lease, agent output, checkpoint, packet,
-approval/provider surface, or context-compression surface by the 5-minute
-surface window, classify it as `dispatch_surface_failure_suspected`.
+For first-start-only task types, `last_checkpoint_at` may equal `started_at`
+and `next_checkpoint_due_at` may be the same as `expected_packet_due`; patrol
+must not treat that as a stale-worker heartbeat violation. The dispatcher must
+put a fresh `dispatch_nonce` in the v2 ticket and task packet. The target
+thread must echo the same value as `nonce` in the runtime lease so patrol can
+reject stale lease files from older attempts. If the target thread shows a
+visible in-progress turn but no matching runtime lease, agent output,
+checkpoint, packet, approval/provider surface, or context-compression surface
+by the 5-minute surface window, classify it as
+`dispatch_surface_failure_suspected`.
+
+If multiple unrelated visible threads stop producing new turns at the same
+time after they had already started, classify the incident as a global
+Codex/App/network surface until evidence proves a single department failure.
+Do not use a per-thread stale-worker model for ordinary source/static work.
 
 Codex App transcript clicking is not the default liveness mechanism. Slow or
 blank transcript views should be recorded as `view_refresh_required`, then
@@ -313,6 +343,72 @@ authority still comes from `read_scope`, `write_scope`, `allowed_actions`,
 `forbidden_actions`, `semantic_boundary`, domain gates, hooks/checkers, and
 PMO/user approval when required. If a rule is mechanically enforceable, prefer
 a checker, schema, or hook over prose-only workflow text.
+
+## Capability Resolution
+
+When a task involves selecting or creating a skill, workflow, MCP/plugin
+surface, script, checker, desktop-window capability, or other reusable tool
+asset, the dispatch packet should include `capability_resolution`. This block
+prevents multi-thread context drift where an existing capability is planned as
+new because the responding thread did not resolve current assets first.
+
+Use `CoAgent/protocol/templates/capability_resolution.json` as the minimal
+scaffold. For visible-thread dispatch packets, include the block beside
+`native_surface_gate`.
+
+Minimum fields:
+
+```json
+{
+  "capability_resolution": {
+    "required": true,
+    "capability_index_consulted": true,
+    "consulted_index_path": "Docs/Index/capability_index.md",
+    "matched_capability_ids": [],
+    "matched_capabilities": [],
+    "existing_assets_to_reuse": [],
+    "searched_existing_assets": [
+      "Docs/Index/capability_index.md",
+      "CoAgent/skills/",
+      "Docs/Skills/",
+      "Scripts/"
+    ],
+    "create_new_assets": [],
+    "reason_existing_assets_insufficient": "",
+    "do_not_recreate": [],
+    "unresolved_capabilities": []
+  }
+}
+```
+
+Rules:
+
+1. Prefer existing indexed capabilities over new files.
+2. If `create_new_assets` includes a skill, workflow, script, checker, or MCP
+   adapter, the packet must name `searched_existing_assets` and explain why
+   the existing assets are insufficient.
+3. If a capability is already present and reusable, list it in
+   `existing_assets_to_reuse` and add the duplicate concept to
+   `do_not_recreate`.
+4. `capability_resolution` is routing evidence, not permission. It does not
+   authorize clicking, login, save, restart, live MWORKS/ROS2/UE work, Git
+   mutation, or visible-thread lifecycle actions.
+5. Validate reusable-capability decisions with:
+
+```powershell
+python Scripts\quality\check_capability_resolution.py `
+  Results\agent_packets\<request_id>.json --strict
+```
+
+The checker fails packets that skip the capability index, create duplicate
+assets without a clear insufficiency reason, or treat capability resolution as
+permission to click, login, save, restart, dispatch, or perform another
+authority-gated action.
+
+`check_agent_task_native_surface_gate.py --strict` also invokes this
+capability-resolution gate for visible-thread dispatch packets, so new strict
+preflight runs catch both native-surface routing errors and duplicate-capability
+planning errors.
 
 ## Department Local Planning Template
 

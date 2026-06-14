@@ -1,0 +1,18 @@
+# Project CoAgent Adapters
+
+This folder maps portable CoAgent operating procedures to this project.
+
+Use it for host-specific rules such as:
+
+- project board location;
+- packet result paths;
+- active visible departments;
+- project evidence directories;
+- domain-specific stop conditions.
+
+Do not put reusable global skill source here. Put reusable capabilities under
+the global CoAgent core:
+
+```text
+{{GLOBAL_COAGENT_ROOT}}
+```

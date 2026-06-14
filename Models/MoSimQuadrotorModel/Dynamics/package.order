@@ -1,6 +1,7 @@
 RotorActuatorCore
 HoverSmoke
 YawStepSmoke
+RotorEffectivenessSmoke
 WrapperSurface
 ActuatorCommandMapper
 ActuatorMappedWrapperSurface

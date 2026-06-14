@@ -145,12 +145,12 @@ restore live MWORKS routing.
 
 2026-06-08 MWORKS background screenshot DPI hotfix: the background capture
 script now runs DPI-aware and records `dpi_awareness`. CoAgentOps should use
-`capture_window_background.ps1 -RestoreMinimized -Maximize` against the real
-main Sysplorer/MWORKS window for ordinary phase screenshots, then let the
-script restore/minimize the window when appropriate. This is the default
-low-disruption evidence route for normal simulation/check/layout work, not a
-license/login/authorization acceptance route. PMO must pass this distinction
-to MWORKS R1/R2 and disposable sub-agents in future task packets.
+`capture_window_background.ps1 -RestoreMinimized -MinimizeAfter` against the
+real main Sysplorer/MWORKS window for ordinary phase screenshots, then let the
+script restore/minimize the window when appropriate. Use `-Maximize` only for
+activation/login/license/authorization evidence or explicitly requested
+full-window wiring/layout review. PMO must pass this distinction to MWORKS
+R1/R2 and disposable sub-agents in future task packets.
 
 2026-06-07 model-effort default: future MoSim mainline, visible department,
 automation, and disposable sub-agent dispatch should request `gpt-5.5` with
@@ -574,7 +574,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass `
   -File Scripts/tools/capture_window_background.ps1 `
   -TitleRegex 'Sysplorer|MWORKS|Quadrotor|AWFF' `
   -OutDir Results/mworks_background_capture/<request_id> `
-  -RestoreMinimized -Maximize
+  -RestoreMinimized -MinimizeAfter
 ```
 
 By default, the capture script lists helper/proxy windows but does not restore

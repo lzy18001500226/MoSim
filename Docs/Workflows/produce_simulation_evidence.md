@@ -41,7 +41,7 @@ simulation evidence bundle unless the official model is run through MWORKS.
 ## Procedure
 
 1. Resolve model context with `Docs/Workflows/resolve_model_context.md` if the target component or interface is unclear.
-2. For live MWORKS/Sysplorer/Syslab work, run `Scripts/agent/check_mworks_gui_sentinel.py` and, when available, `Scripts/tools/capture_window_background.ps1` before any MCP/model/GUI operation. Stop on demo, unactivated, login/activation, authorization, GUI error-report, mixed, visible unknown window, unavailable tooling, or unknown sentinel state. Hidden Qt/browser-proxy/helper windows with no license/error text are risk evidence, not standalone blockers.
+2. For live MWORKS/Sysplorer/Syslab work, run `Scripts/agent/check_mworks_gui_sentinel.py` and, when available, `Scripts/tools/capture_window_background.ps1` before any MCP/model/GUI operation. Engineering departments stop and return a blocker on demo, unactivated, login/activation, authorization, GUI error-report, mixed, visible unknown window, unavailable tooling, or unknown sentinel state. PMO/CoAgentOps may perform bounded official MWORKS login recovery only when authorized by the user, using a secure credential source and redacting credentials from all docs, logs, packets, screenshot manifests, email, and terminal output. Hidden Qt/browser-proxy/helper windows with no license/error text are risk evidence, not standalone blockers.
 3. Run `check_model`.
 4. Run the smallest simulation that validates the claim.
 5. Read required variables through `result_manager`.
@@ -50,6 +50,25 @@ simulation evidence bundle unless the official model is run through MWORKS.
 8. Run `Scripts/results/evaluate_result_quality.py <scenario> --write-metrics`.
 9. Generate figures or replay assets under `Results/{group}/{scene}/{experiment}/figures/`, `Results/{group}/{scene}/{experiment}/replay/`, `Results/{group}/{scene}/{experiment}/replay_html/`, or `Docs/figures/`.
 10. Update `Docs/simulation_report.md` only when `quality_status=pass` or when the limitation is explicitly documented.
+11. For every live simulation, save phase screenshots and a screenshot manifest under the formal result bundle:
+
+```text
+Results/{group}/{scene}/{experiment}/screenshots/
+Results/{group}/{scene}/{experiment}/logs/screenshot_manifest.json
+```
+
+Use maximized/foreground screenshots only for activation/login/license/
+authorization evidence. Use DPI-aware background screenshots for ordinary
+load/check/simulate/plot/result/animation phases; if the target is minimized,
+restore it only enough to paint, capture, validate size/content, then minimize
+after.
+
+After the run finishes, use `Docs/Workflows/post_simulation_task_flow.md` as
+the total post-run queue. It owns the order for result inventory, raw CSV
+extraction, metric calculation, quality classification, figure/replay
+generation, evidence-bundle audit, report update candidates, and UE transition
+readiness. Do not skip directly from `simulate_model ok` to report wording or
+UE rendering.
 
 Project entrypoints:
 
@@ -78,8 +97,10 @@ pass/fail summary
 activation_sentinel_before for live work
 background_screenshot_before for live work
 license_state for live work
-will_not_click_activation_login=true for live work
+will_not_click_activation_login=true for engineering departments
+bounded_login_recovery_authorized_for_pmo_or_coagentops when applicable
 live_mworks_touched
+screenshot_manifest for live work
 ```
 
 ## Acceptance
@@ -107,6 +128,6 @@ same scenario until the result passes or the limitation is documented.
 | result variable missing | inspect available variables and update `Docs/Index/variable_mapping.md` |
 | simulation unstable | save as failed evidence and compare against baseline |
 | MCP error | save JSONL/log output and reduce to smoke case only after license/GUI sentinel is clean |
-| demo edition / activation lost / login prompt | return `license_or_login` blocker with sentinel/background screenshot evidence; do not tune solver or model code |
+| demo edition / activation lost / login prompt | engineering department returns `license_or_login` blocker; PMO/CoAgentOps may perform bounded official login recovery with foreground evidence, credential redaction, and stop on MFA/captcha/unknown/authorization/error states |
 | GUI error-report dialog | stop live work and return GUI blocker; do not click restart/send-report/close |
 | generated artifact too large | keep summary/metrics; ignore or relocate raw bulky output |

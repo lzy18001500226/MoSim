@@ -61,7 +61,7 @@ def read_order(path: Path) -> list[str]:
 
 
 def write_json(path: Path, data: Any) -> None:
-    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
 def rel(path: Path) -> str:
@@ -622,7 +622,7 @@ def write_plan_markdown(path: Path, plan: dict[str, Any]) -> None:
     for item in plan["stop_conditions"]:
         lines.append(f"- {item}")
 
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def write_contract_markdown(path: Path, resolution_check: dict[str, Any]) -> None:
@@ -646,7 +646,7 @@ def write_contract_markdown(path: Path, resolution_check: dict[str, Any]) -> Non
             "- Future live work must preserve the 023 target order and stop on missing or renamed targets.",
         ]
     )
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def build_changed_files(out_dir: Path) -> dict[str, Any]:

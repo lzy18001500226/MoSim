@@ -7,7 +7,7 @@ evidence_level: real_sysplorer_mcp_sysblock_l1_online_fault_allocation_rotor_los
 model:
   source_package: QuadrotorExperiments
   model_name: QuadrotorExperiments.Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop
-  model_path_hint: Models/QuadrotorExperiments/Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop.mo
+  model_path_hint: Models/QuadrotorExperiments/RobustFaultScenarios/RotorLoss/Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
   official_description: 阶梯爬升 1号旋翼升力效率85% L1 residual + online eta_hat allocation Sysblock
 

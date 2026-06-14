@@ -71,10 +71,10 @@ public:
     bool bFollowTarget = false;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
-    FVector FollowOffsetCm = FVector(-80.0f, -20.0f, 40.0f);
+    FVector FollowOffsetCm = FVector(-10.0f, 40.0f, 20.0f);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
-    float FollowPitchDeg = -16.0f;
+    float FollowPitchDeg = -18.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
     float FollowLocationInterpSpeed = 0.0f;

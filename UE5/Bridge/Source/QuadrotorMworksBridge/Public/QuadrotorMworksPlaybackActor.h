@@ -6,6 +6,7 @@
 #include "QuadrotorMworksPlaybackActor.generated.h"
 
 class UQuadrotorMworksPlaybackComponent;
+class UQuadrotorRotorAudioComponent;
 class UQuadrotorMworksUdpReceiverComponent;
 class UMaterialInterface;
 class UProceduralMeshComponent;
@@ -56,6 +57,9 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS")
     UQuadrotorMworksPlaybackComponent* Playback = nullptr;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Audio")
+    UQuadrotorRotorAudioComponent* RotorAudio = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
     UMaterialInterface* BaseMaterial = nullptr;

@@ -36,13 +36,17 @@ DEFAULT_OUTPUT_DIR = (
 
 REQUIRED_IMPL_ANCHORS = [
     "der(omega[i]) = (motor_command[i] - omega[i]) / motor_tau[i]",
-    "thrust[i] = lift_coefficient * omega[i] * omega[i]",
-    "yaw_reaction_moment[i] = yaw_direction[i] * moment_constant * thrust[i]",
+    "thrust[i] = thrust_effectiveness[i] * lift_coefficient * omega[i] * omega[i]",
+    "yaw_reaction_moment[i] = yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust[i]",
     "rotor_arm_moment[i, 1] = rotor_center[i, 2] * thrust[i]",
     "rotor_arm_moment[i, 2] = -rotor_center[i, 1] * thrust[i]",
     "rotor_arm_moment[i, 3] = yaw_reaction_moment[i]",
     "total_thrust = sum(thrust)",
     "hover_thrust_error = total_thrust - mass_kg * 9.81",
+    "thrust_effectiveness_loss[i] = 1 - thrust_effectiveness[i]",
+    "reaction_moment_effectiveness_loss[i] = 1 - reaction_moment_effectiveness[i]",
+    "minimum_thrust_effectiveness = min(thrust_effectiveness)",
+    "minimum_reaction_moment_effectiveness = min(reaction_moment_effectiveness)",
 ]
 
 REQUIRED_PROVENANCE_ANCHORS = [
@@ -217,8 +221,9 @@ def write_markdown(path: Path, check: dict[str, Any]) -> None:
         "## Static Anchors",
         "",
         "- Motor lag: `der(omega[i]) = (motor_command[i] - omega[i]) / motor_tau[i]`",
-        "- Thrust: `thrust[i] = lift_coefficient * omega[i] * omega[i]`",
-        "- Yaw reaction torque: `yaw_reaction_moment[i] = yaw_direction[i] * moment_constant * thrust[i]`",
+        "- Thrust: `thrust[i] = thrust_effectiveness[i] * lift_coefficient * omega[i] * omega[i]`",
+        "- Yaw reaction torque: `yaw_reaction_moment[i] = yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust[i]`",
+        "- Fault hooks: thrust/reaction effectiveness loss and minimum-effectiveness variables remain exposed.",
         "- Rotor-center r x F moment: x/y terms remain in `Sunray150RflyStyleRotorDynamics.mo`.",
         "- Rotor centers remain matched with `MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance`.",
         "",

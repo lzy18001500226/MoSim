@@ -17,6 +17,34 @@ SCENE_SOURCE_REGISTRY = RENDERER / "Content" / "MworksData" / "scene_source_regi
 S0_S1_READINESS_CHECKER = ROOT / "Scripts" / "UE5" / "check_unreal_s0_s1_readiness.py"
 GATE_RING_RENDER_MAP = RENDERER / "Content" / "MworksData" / "map_corridor_gate_render_map.json"
 SCENE_PROFILE_PLANNER = ROOT / "Scripts" / "UE5" / "plan_unreal_scene_profiles.py"
+ROTOR_AUDIO_IMPORT_SCRIPT = ROOT / "Scripts" / "UE5" / "import_sunray_rotor_hover_audio.py"
+ROTOR_AUDIO_SOURCE_WAV = (
+    RENDERER
+    / "SourceAssets"
+    / "Audio"
+    / "SunrayRotor"
+    / "sunray_rotor_hover_loop_854382_cc0_preview.wav"
+)
+ROTOR_AUDIO_SOURCE_MANIFEST = (
+    RENDERER
+    / "SourceAssets"
+    / "Audio"
+    / "SunrayRotor"
+    / "sunray_rotor_hover_loop_854382_cc0_preview_manifest.json"
+)
+ROTOR_AUDIO_CONTENT_ASSET = RENDERER / "Content" / "Audio" / "MoSim" / "SunrayRotorHoverLoop.uasset"
+ROTOR_AUDIO_DERIVED_DIR = RENDERER / "SourceAssets" / "Audio" / "SunrayRotor" / "Derived"
+ROTOR_AUDIO_DERIVED_WAVS = [
+    ROTOR_AUDIO_DERIVED_DIR / "sunray_rotor_load_loop_854382_cc0_derived.wav",
+    ROTOR_AUDIO_DERIVED_DIR / "sunray_rotor_spool_up_854382_cc0_derived.wav",
+    ROTOR_AUDIO_DERIVED_DIR / "sunray_rotor_spool_down_854382_cc0_derived.wav",
+]
+ROTOR_AUDIO_LAYER_CONTENT_ASSETS = [
+    ROTOR_AUDIO_CONTENT_ASSET,
+    RENDERER / "Content" / "Audio" / "MoSim" / "SunrayRotorLoadLoop.uasset",
+    RENDERER / "Content" / "Audio" / "MoSim" / "SunrayRotorSpoolUp.uasset",
+    RENDERER / "Content" / "Audio" / "MoSim" / "SunrayRotorSpoolDown.uasset",
+]
 
 REQUIRED_FILES = [
     "QuadrotorMworksBridge.uplugin",
@@ -27,12 +55,14 @@ REQUIRED_FILES = [
     "Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpCommandSenderComponent.h",
     "Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackComponent.h",
     "Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackActor.h",
+    "Source/QuadrotorMworksBridge/Public/QuadrotorRotorAudioComponent.h",
     "Source/QuadrotorMworksBridge/Public/QuadrotorMworksMapActor.h",
     "Source/QuadrotorMworksBridge/Private/QuadrotorMworksBridge.cpp",
     "Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp",
     "Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpCommandSenderComponent.cpp",
     "Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackComponent.cpp",
     "Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackActor.cpp",
+    "Source/QuadrotorMworksBridge/Private/QuadrotorRotorAudioComponent.cpp",
     "Source/QuadrotorMworksBridge/Private/QuadrotorMworksMapActor.cpp",
 ]
 
@@ -48,6 +78,16 @@ def main() -> int:
     if not renderer_descriptor.exists():
         print(f"[FAIL] missing {renderer_descriptor}")
         return 1
+    for path in [
+        ROTOR_AUDIO_IMPORT_SCRIPT,
+        ROTOR_AUDIO_SOURCE_WAV,
+        ROTOR_AUDIO_SOURCE_MANIFEST,
+        *ROTOR_AUDIO_DERIVED_WAVS,
+        *ROTOR_AUDIO_LAYER_CONTENT_ASSETS,
+    ]:
+        if not path.exists():
+            print(f"[FAIL] missing rotor audio asset/import file: {path}")
+            return 1
 
     descriptor = json.loads((PLUGIN / "QuadrotorMworksBridge.uplugin").read_text(encoding="utf-8"))
     modules = descriptor.get("Modules", [])
@@ -194,6 +234,10 @@ def main() -> int:
         if token not in playback_actor:
             print(f"[FAIL] playback actor missing token: {token}")
             return 1
+    for token in ["QuadrotorRotorAudioComponent.h", "RotorAudio"]:
+        if token not in playback_actor:
+            print(f"[FAIL] playback actor missing rotor-audio token: {token}")
+            return 1
     playback_actor_header = (
         PLUGIN / "Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackActor.h"
     ).read_text(encoding="utf-8")
@@ -309,6 +353,39 @@ def main() -> int:
     for token in ["UpdateMapSelection", "ApplyFrameMapSelection"]:
         if token not in playback_actor:
             print(f"[FAIL] playback actor missing map-selection token: {token}")
+            return 1
+
+    rotor_audio_header = (
+        PLUGIN / "Source/QuadrotorMworksBridge/Public/QuadrotorRotorAudioComponent.h"
+    ).read_text(encoding="utf-8")
+    rotor_audio_source = (
+        PLUGIN / "Source/QuadrotorMworksBridge/Private/QuadrotorRotorAudioComponent.cpp"
+    ).read_text(encoding="utf-8")
+    for token in [
+        "UQuadrotorRotorAudioComponent",
+        "UAudioComponent",
+        "RotorHoverLoopSound",
+        "RotorLoadLoopSound",
+        "RotorSpoolUpSound",
+        "RotorSpoolDownSound",
+        "/Game/Audio/MoSim/SunrayRotorHoverLoop.SunrayRotorHoverLoop",
+        "/Game/Audio/MoSim/SunrayRotorLoadLoop.SunrayRotorLoadLoop",
+        "/Game/Audio/MoSim/SunrayRotorSpoolUp.SunrayRotorSpoolUp",
+        "/Game/Audio/MoSim/SunrayRotorSpoolDown.SunrayRotorSpoolDown",
+        "MotorCommand",
+        "RotationRadians",
+        "PositionMeters",
+        "SetPitchMultiplier",
+        "SetVolumeMultiplier",
+        "bAllowSpatialization = false",
+        "ComputeLoadCue",
+        "UpdateSpoolOneShot",
+        "CurrentLoadLayerVolume",
+        "MotorSpreadLoadGain",
+        "StaleFrameFadeSeconds",
+    ]:
+        if token not in rotor_audio_header and token not in rotor_audio_source:
+            print(f"[FAIL] rotor audio component missing state-driven token: {token}")
             return 1
 
     if not ASSET_REGISTRY_SCHEMA.exists():

@@ -7,7 +7,7 @@ evidence_level: real_sysplorer_mcp_sysblock_linear_mpc_online_fault_allocation_r
 model:
   source_package: QuadrotorExperiments
   model_name: QuadrotorExperiments.Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop
-  model_path_hint: Models/QuadrotorExperiments/Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop.mo
+  model_path_hint: Models/QuadrotorExperiments/RobustFaultScenarios/RotorLoss/Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
   official_description: 阶梯爬升 1号旋翼升力效率85% LinearMPC outer loop + online eta_hat allocation Sysblock
 

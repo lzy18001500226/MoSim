@@ -25,6 +25,33 @@ def semantic_boundary(state_class: str = "routable") -> dict:
     }
 
 
+def runtime_lease_requirement(
+    request_id: str = "NATIVE-SURFACE-GATE-SMOKE",
+    target_thread_id: str = "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
+    nonce: str = "native-surface-gate-smoke-nonce",
+) -> dict:
+    return {
+        "required": True,
+        "exempt_when": "Exact no-op probes that explicitly forbid file writes.",
+        "first_artifact_due_minutes": 5,
+        "artifact_path_or_class": (
+            f"Results/runtime_leases/{target_thread_id}/{request_id}.json"
+        ),
+        "artifact_type": "runtime_lease",
+        "nonce": nonce,
+        "minimum_content": [
+            "request_id",
+            "target_thread_id",
+            "nonce",
+            "started_at",
+            "last_checkpoint_at",
+            "current_phase",
+            "next_checkpoint_due_at",
+        ],
+        "completion_claim_allowed": False,
+    }
+
+
 def run_checker(packet_path: Path) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [sys.executable, str(CHECKER), str(packet_path)],
@@ -40,11 +67,14 @@ def run_checker(packet_path: Path) -> subprocess.CompletedProcess[str]:
 def test_native_surface_gate_accepts_visible_thread_packet(tmp_path: Path) -> None:
     packet = {
         "task_id": "NATIVE-SURFACE-GATE-SMOKE",
+        "request_id": "NATIVE-SURFACE-GATE-SMOKE",
+        "dispatch_nonce": "native-surface-gate-smoke-nonce",
         "target_thread": "MoSim｜UE实验控制台与场景交互部",
         "target_thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
         "expected_return_path": "Results/agent_packets/returns/NATIVE-SURFACE-GATE-SMOKE.json",
         "blocker_return_path": "Results/agent_packets/blockers/NATIVE-SURFACE-GATE-SMOKE.json",
         "semantic_boundary": semantic_boundary(),
+        "durable_start_requirement": runtime_lease_requirement(),
         "native_surface_gate": {
             "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
             "surface_selection_reason": "Durable UE department context is needed; packet files are the return channel.",
@@ -67,15 +97,94 @@ def test_native_surface_gate_accepts_visible_thread_packet(tmp_path: Path) -> No
     assert report["selected_native_surfaces"] == ["coagent_packet_glue", "visible_thread"]
 
 
+def test_native_surface_gate_strict_requires_capability_resolution(tmp_path: Path) -> None:
+    packet = {
+        "task_id": "NATIVE-SURFACE-GATE-MISSING-CAPABILITY",
+        "request_id": "NATIVE-SURFACE-GATE-MISSING-CAPABILITY",
+        "dispatch_nonce": "native-surface-gate-missing-capability-nonce",
+        "target_thread": "MoSim｜UE实验控制台与场景交互部",
+        "target_thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
+        "expected_return_path": "Results/agent_packets/returns/NATIVE-SURFACE-GATE-MISSING-CAPABILITY.json",
+        "blocker_return_path": "Results/agent_packets/blockers/NATIVE-SURFACE-GATE-MISSING-CAPABILITY.json",
+        "semantic_boundary": semantic_boundary(),
+        "durable_start_requirement": runtime_lease_requirement(
+            request_id="NATIVE-SURFACE-GATE-MISSING-CAPABILITY",
+            nonce="native-surface-gate-missing-capability-nonce",
+        ),
+        "native_surface_gate": {
+            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "surface_selection_reason": "Durable UE department context is needed; packet files are the return channel.",
+            "worktree_required": False,
+            "worktree_decision": "Read-only planning task; no code or asset writes are allowed.",
+            "rejected_surfaces": {
+                "subagent": "Disposable context is insufficient.",
+            },
+        },
+    }
+    packet_path = tmp_path / "packet.json"
+    packet_path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    completed = subprocess.run(
+        [sys.executable, str(CHECKER), str(packet_path), "--strict"],
+        cwd=ROOT,
+        text=True,
+        encoding="utf-8",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    assert completed.returncode == 1
+    report = json.loads(completed.stdout)
+    reasons = {finding["reason"] for finding in report["findings"]}
+    assert "capability_resolution_missing_capability_resolution" in reasons
+
+
+def test_native_surface_gate_rejects_runtime_lease_nonce_mismatch(tmp_path: Path) -> None:
+    packet = {
+        "task_id": "NATIVE-SURFACE-GATE-NONCE-MISMATCH",
+        "request_id": "NATIVE-SURFACE-GATE-NONCE-MISMATCH",
+        "dispatch_nonce": "fresh-nonce",
+        "target_thread": "MoSim｜UE实验控制台与场景交互部",
+        "target_thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
+        "expected_return_path": "Results/agent_packets/returns/NATIVE-SURFACE-GATE-NONCE-MISMATCH.json",
+        "blocker_return_path": "Results/agent_packets/blockers/NATIVE-SURFACE-GATE-NONCE-MISMATCH.json",
+        "semantic_boundary": semantic_boundary(),
+        "durable_start_requirement": runtime_lease_requirement(
+            request_id="NATIVE-SURFACE-GATE-NONCE-MISMATCH",
+            nonce="stale-nonce",
+        ),
+        "native_surface_gate": {
+            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "surface_selection_reason": "Durable UE department context is needed; packet files are the return channel.",
+            "worktree_required": False,
+            "worktree_decision": "Read-only planning task; no code or asset writes are allowed.",
+        },
+    }
+    packet_path = tmp_path / "packet.json"
+    packet_path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    completed = run_checker(packet_path)
+    assert completed.returncode == 1
+    report = json.loads(completed.stdout)
+    reasons = {finding["reason"] for finding in report["findings"]}
+    assert "runtime_lease_nonce_mismatch" in reasons
+
+
 def test_native_surface_gate_accepts_idle_needs_dispatch_readiness(tmp_path: Path) -> None:
     packet = {
         "task_id": "IDLE-NEEDS-DISPATCH-SMOKE",
+        "request_id": "IDLE-NEEDS-DISPATCH-SMOKE",
+        "dispatch_nonce": "idle-needs-dispatch-smoke-nonce",
         "target_thread": "MoSim｜UE实验控制台与场景交互部",
         "target_thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
         "expected_return_path": "Results/agent_packets/returns/IDLE-NEEDS-DISPATCH-SMOKE.json",
         "blocker_return_path": "Results/agent_packets/blockers/IDLE-NEEDS-DISPATCH-SMOKE.json",
         "dispatch_readiness": "idle_needs_dispatch",
         "semantic_boundary": semantic_boundary(),
+        "durable_start_requirement": runtime_lease_requirement(
+            request_id="IDLE-NEEDS-DISPATCH-SMOKE",
+            nonce="idle-needs-dispatch-smoke-nonce",
+        ),
         "native_surface_gate": {
             "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
             "surface_selection_reason": "Bounded dispatch is allowed only after queue readiness is separated from thread state.",
@@ -90,6 +199,94 @@ def test_native_surface_gate_accepts_idle_needs_dispatch_readiness(tmp_path: Pat
     assert completed.returncode == 0, completed.stdout + completed.stderr
     report = json.loads(completed.stdout)
     assert report["ok"] is True
+
+
+def test_native_surface_gate_rejects_visible_thread_packet_without_durable_start(tmp_path: Path) -> None:
+    packet = {
+        "task_id": "VISIBLE-MISSING-DURABLE-START",
+        "request_id": "VISIBLE-MISSING-DURABLE-START",
+        "target_thread": "MoSim｜UE实验控制台与场景交互部",
+        "target_thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
+        "expected_return_path": "Results/agent_packets/returns/VISIBLE-MISSING-DURABLE-START.json",
+        "blocker_return_path": "Results/agent_packets/blockers/VISIBLE-MISSING-DURABLE-START.json",
+        "semantic_boundary": semantic_boundary(),
+        "native_surface_gate": {
+            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "surface_selection_reason": "Durable UE department context is needed.",
+            "worktree_required": False,
+            "worktree_decision": "No worktree needed.",
+        },
+    }
+    packet_path = tmp_path / "packet.json"
+    packet_path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    completed = run_checker(packet_path)
+    assert completed.returncode == 1
+    report = json.loads(completed.stdout)
+    reasons = {finding["reason"] for finding in report["findings"]}
+    assert "missing_durable_start_requirement" in reasons
+
+
+def test_native_surface_gate_accepts_exact_no_write_probe_exemption(tmp_path: Path) -> None:
+    packet = {
+        "task_id": "VISIBLE-EXACT-NO-WRITE-PROBE",
+        "target_thread": "MoSim｜UE实验控制台与场景交互部",
+        "target_thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
+        "expected_return_path": "Results/agent_packets/returns/VISIBLE-EXACT-NO-WRITE-PROBE.json",
+        "blocker_return_path": "Results/agent_packets/blockers/VISIBLE-EXACT-NO-WRITE-PROBE.json",
+        "semantic_boundary": semantic_boundary(),
+        "durable_start_requirement": {
+            "required": False,
+            "exempt_when": "Exact no-op probe explicitly forbids file writes.",
+        },
+        "native_surface_gate": {
+            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "surface_selection_reason": "No-op probe only validates whether a new turn can start.",
+            "worktree_required": False,
+            "worktree_decision": "No file writes are allowed by the probe.",
+        },
+    }
+    packet_path = tmp_path / "packet.json"
+    packet_path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    completed = run_checker(packet_path)
+    assert completed.returncode == 0, completed.stdout + completed.stderr
+    report = json.loads(completed.stdout)
+    assert report["ok"] is True
+
+
+def test_native_surface_gate_rejects_runtime_lease_minimum_content_gaps(tmp_path: Path) -> None:
+    packet = {
+        "task_id": "NATIVE-SURFACE-GATE-LEASE-FIELDS",
+        "request_id": "NATIVE-SURFACE-GATE-LEASE-FIELDS",
+        "dispatch_nonce": "lease-fields-nonce",
+        "target_thread": "MoSim｜UE实验控制台与场景交互部",
+        "target_thread_id": "019e9b24-50aa-7cd3-9e7c-4c43b224d993",
+        "expected_return_path": "Results/agent_packets/returns/NATIVE-SURFACE-GATE-LEASE-FIELDS.json",
+        "blocker_return_path": "Results/agent_packets/blockers/NATIVE-SURFACE-GATE-LEASE-FIELDS.json",
+        "semantic_boundary": semantic_boundary(),
+        "durable_start_requirement": {
+            **runtime_lease_requirement(
+                request_id="NATIVE-SURFACE-GATE-LEASE-FIELDS",
+                nonce="lease-fields-nonce",
+            ),
+            "minimum_content": ["request_id", "target_thread_id"],
+        },
+        "native_surface_gate": {
+            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "surface_selection_reason": "Durable UE department context is needed.",
+            "worktree_required": False,
+            "worktree_decision": "No worktree needed.",
+        },
+    }
+    packet_path = tmp_path / "packet.json"
+    packet_path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    completed = run_checker(packet_path)
+    assert completed.returncode == 1
+    report = json.loads(completed.stdout)
+    reasons = {finding["reason"] for finding in report["findings"]}
+    assert "runtime_lease_minimum_content_missing_fields" in reasons
 
 
 def test_native_surface_gate_rejects_missing_gate(tmp_path: Path) -> None:
@@ -115,6 +312,8 @@ def test_native_surface_gate_rejects_missing_gate(tmp_path: Path) -> None:
 def test_native_surface_gate_rejects_mworks_department_packet_without_mworks_gate(tmp_path: Path) -> None:
     packet = {
         "task_id": "MWORKS-MISSING-LIVE-GATE",
+        "request_id": "MWORKS-MISSING-LIVE-GATE",
+        "dispatch_nonce": "mworks-missing-live-gate-nonce",
         "target_department": "MWorksDynamicsControlAgent",
         "target_thread": "MoSim｜MWORKS动力学与控制验证部-R1",
         "target_thread_id": "019e9be5-334b-76b1-93f9-8b02caebf376",
@@ -129,6 +328,11 @@ def test_native_surface_gate_rejects_mworks_department_packet_without_mworks_gat
             "stop_triggers": ["missing mworks_live_gate"],
             "next_owner": "PMO",
         },
+        "durable_start_requirement": runtime_lease_requirement(
+            request_id="MWORKS-MISSING-LIVE-GATE",
+            target_thread_id="019e9be5-334b-76b1-93f9-8b02caebf376",
+            nonce="mworks-missing-live-gate-nonce",
+        ),
         "native_surface_gate": {
             "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
             "surface_selection_reason": "Durable MWORKS department context is needed.",
@@ -150,6 +354,8 @@ def test_native_surface_gate_rejects_mworks_department_packet_without_mworks_gat
 def test_native_surface_gate_accepts_mworks_department_packet_with_mworks_gate(tmp_path: Path) -> None:
     packet = {
         "task_id": "MWORKS-WITH-LIVE-GATE",
+        "request_id": "MWORKS-WITH-LIVE-GATE",
+        "dispatch_nonce": "mworks-with-live-gate-nonce",
         "target_department": "MWorksGraphicalModelAuditAgent",
         "target_thread": "MoSim｜MWORKS动力学与控制验证部-R2",
         "target_thread_id": "019e9999-b0d3-7682-bccd-faef08fcf1df",
@@ -164,6 +370,11 @@ def test_native_surface_gate_accepts_mworks_department_packet_with_mworks_gate(t
             "stop_triggers": ["task attempts live GUI work"],
             "next_owner": "MWORKS_R2",
         },
+        "durable_start_requirement": runtime_lease_requirement(
+            request_id="MWORKS-WITH-LIVE-GATE",
+            target_thread_id="019e9999-b0d3-7682-bccd-faef08fcf1df",
+            nonce="mworks-with-live-gate-nonce",
+        ),
         "native_surface_gate": {
             "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
             "surface_selection_reason": "Durable MWORKS department context is needed.",

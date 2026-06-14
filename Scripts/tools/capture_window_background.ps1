@@ -42,6 +42,7 @@ public static class BackgroundWindowCapture {
   [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
   [DllImport("user32.dll")] public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
   [DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+  [DllImport("kernel32.dll")] public static extern void Sleep(uint dwMilliseconds);
 
   [StructLayout(LayoutKind.Sequential)]
   public struct RECT { public int Left; public int Top; public int Right; public int Bottom; }
@@ -94,14 +95,14 @@ public static class BackgroundWindowCapture {
     bool wasMaximized = IsZoomed(hwnd);
     if (wasMinimized && restoreMinimized) {
       ShowWindowAsync(hwnd, SW_SHOWNOACTIVATE);
-      Thread.Sleep(Math.Max(0, restoreWaitMs));
+      Sleep((uint)Math.Max(0, restoreWaitMs));
       SetWindowPos(hwnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-      Thread.Sleep(Math.Max(0, restoreSettleMs));
+      Sleep((uint)Math.Max(0, restoreSettleMs));
     }
 
     if (maximize) {
       ShowWindowAsync(hwnd, SW_SHOWMAXIMIZED);
-      Thread.Sleep(Math.Max(0, maximizeWaitMs));
+      Sleep((uint)Math.Max(0, maximizeWaitMs));
     }
 
     RECT rect;
@@ -139,7 +140,38 @@ public static class BackgroundWindowCapture {
 }
 "@
 
-Add-Type -TypeDefinition $code -ReferencedAssemblies System.Drawing
+$drawingAssemblies = @('System.Drawing')
+$drawingCommon = @(
+    (Join-Path $PSHOME 'System.Drawing.Common.dll'),
+    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\10.0.9\System.Drawing.Common.dll',
+    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\9.0.15\System.Drawing.Common.dll',
+    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.26\System.Drawing.Common.dll',
+    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\6.0.8\System.Drawing.Common.dll'
+) | Where-Object { Test-Path $_ } | Select-Object -First 1
+if ($drawingCommon) {
+    $drawingAssemblies += $drawingCommon
+}
+$gdiPlus = @(
+    (Join-Path $PSHOME 'System.Private.Windows.GdiPlus.dll'),
+    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\10.0.9\System.Private.Windows.GdiPlus.dll',
+    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\9.0.15\System.Private.Windows.GdiPlus.dll',
+    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.26\System.Private.Windows.GdiPlus.dll',
+    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\6.0.8\System.Private.Windows.GdiPlus.dll'
+) | Where-Object { Test-Path $_ } | Select-Object -First 1
+if ($gdiPlus) {
+    $drawingAssemblies += $gdiPlus
+}
+$windowsCore = @(
+    (Join-Path $PSHOME 'System.Private.Windows.Core.dll'),
+    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\10.0.9\System.Private.Windows.Core.dll',
+    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\9.0.15\System.Private.Windows.Core.dll',
+    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.26\System.Private.Windows.Core.dll',
+    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\6.0.8\System.Private.Windows.Core.dll'
+) | Where-Object { Test-Path $_ } | Select-Object -First 1
+if ($windowsCore) {
+    $drawingAssemblies += $windowsCore
+}
+Add-Type -TypeDefinition $code -ReferencedAssemblies $drawingAssemblies
 $dpiAwareness = [BackgroundWindowCapture]::EnableDpiAwareness()
 
 $resolvedOut = (Resolve-Path $OutDir).Path
@@ -177,13 +209,20 @@ $rows = $windowMatches |
             ($_.process -match '^(mw_browser_proxy|mw_crash_handler|mw_memory_monitor|sysplorer-acp-server|sysplorer_docsearch)$') -or
             ($_.class_name -match '^(IME|MSCTFIME UI|QtitanTitleBarGlowWindow|Chrome_SystemMessageWindow|Base_PowerMessageWindow|PyInstallerOnefileHiddenWindow)$') -or
             ($_.title -eq 'MWORKS.Sysplorer 2026a')
-        $shouldCapture = (-not $isHelperWindow) -or [bool]$IncludeHelperWindows
+        $baseShouldCapture = (-not $isHelperWindow) -or [bool]$IncludeHelperWindows
         $shouldMaximize = [bool]$Maximize -and ((-not $isHelperWindow) -or [bool]$MaximizeAllMatches)
-        $shouldRestoreMinimized = [bool]$RestoreMinimized -and ((-not $isHelperWindow) -or [bool]$IncludeHelperWindows)
+        $shouldRestoreMinimized = [bool]$RestoreMinimized -and $baseShouldCapture
+        $minimizedRequiresRestore = $baseShouldCapture -and [bool]$_.minimized -and -not $shouldRestoreMinimized
+        $shouldCapture = $baseShouldCapture -and -not $minimizedRequiresRestore
         $safeTitle = $_.title -replace '[\\/:*?"<>|\[\]]', '_'
         $leaf = "$($_.pid)_$($_.handle_hex)_$safeTitle.png"
         $path = Join-Path $resolvedOut $leaf
         $capture = "skipped_by_default_helper_window"
+        $recommendedAction = ""
+        if ($minimizedRequiresRestore) {
+            $capture = "skipped_minimized_window_requires_restoreminimized"
+            $recommendedAction = "rerun with -RestoreMinimized, and add -Maximize -MinimizeAfter when full-window evidence is required"
+        }
         if ($shouldCapture) {
             $capture = [BackgroundWindowCapture]::Capture(
                 [IntPtr]$_.handle,
@@ -203,10 +242,22 @@ $rows = $windowMatches |
             $captureWidth = [int]$Matches[1]
             $captureHeight = [int]$Matches[2]
         }
+        $stillMinimizedAtCapture = $false
+        if ($capture -match 'minimized_before_reminimize=True') {
+            $stillMinimizedAtCapture = $true
+        }
+        $smallCapture = (($null -ne $captureWidth -and $captureWidth -lt 500) -or ($null -ne $captureHeight -and $captureHeight -lt 300))
         $captureReliability = 'window_level_capture'
-        if ($_.minimized -and -not [bool]$RestoreMinimized) {
-            $captureReliability = 'incomplete_minimized_window'
-        } elseif (($null -ne $captureWidth -and $captureWidth -lt 500) -or ($null -ne $captureHeight -and $captureHeight -lt 300)) {
+        if ($minimizedRequiresRestore) {
+            $captureReliability = 'not_captured_minimized_window_requires_restore'
+        } elseif (-not $baseShouldCapture -and $isHelperWindow) {
+            $captureReliability = 'not_captured_default_helper_window'
+        } elseif ($_.minimized -and $shouldRestoreMinimized -and ($stillMinimizedAtCapture -or $smallCapture)) {
+            $captureReliability = 'incomplete_restored_minimized_window'
+            $recommendedAction = "rerun with -RestoreMinimized -Maximize -MinimizeAfter, or use foreground/window-specific evidence if full client-area capture is required"
+        } elseif ($_.minimized -and $shouldRestoreMinimized) {
+            $captureReliability = 'restored_minimized_window_capture'
+        } elseif ($smallCapture) {
             $captureReliability = 'small_helper_or_incomplete_window'
         } elseif ($_.title -match 'Sysplorer.*教育版|Sysplorer.*演示版|QuadrotorModel') {
             $captureReliability = if ([bool]$Maximize) { 'maximized_main_qt_window_body_printwindow' } else { 'main_qt_window_body_printwindow' }
@@ -223,6 +274,9 @@ $rows = $windowMatches |
             minimized = $_.minimized
             helper_window = $isHelperWindow
             helper_capture_included = [bool]$IncludeHelperWindows
+            restore_minimized_requested = [bool]$RestoreMinimized
+            restore_minimized_applied = $shouldRestoreMinimized
+            skipped_minimized_requires_restore = $minimizedRequiresRestore
             maximize_applied = $shouldMaximize
             minimize_after_requested = [bool]$MinimizeAfter
             restore_wait_ms = $RestoreWaitMs
@@ -230,8 +284,10 @@ $rows = $windowMatches |
             maximize_wait_ms = $MaximizeWaitMs
             capture_width = $captureWidth
             capture_height = $captureHeight
+            still_minimized_at_capture = $stillMinimizedAtCapture
             capture_reliability = $captureReliability
-            known_blind_spot = 'PrintWindow may miss Qt/browser-proxy child surfaces such as the right MWORKS AI panel or separate login panes; use -Maximize and foreground/Windows MCP visible-desktop evidence for login/license and full GUI/layout acceptance.'
+            recommended_action = $recommendedAction
+            known_blind_spot = 'PrintWindow cannot capture a full client area for minimized windows without restoring first, and may miss Qt/browser-proxy child surfaces such as the right MWORKS AI panel or separate login panes; use -RestoreMinimized and, when needed, -Maximize plus foreground/Windows MCP visible-desktop evidence for login/license and full GUI/layout acceptance.'
             capture = $capture
             dpi_awareness = $dpiAwareness
             path = if ($shouldCapture) { $path } else { $null }
@@ -239,7 +295,8 @@ $rows = $windowMatches |
     }
 
 $manifest = Join-Path $resolvedOut 'capture_manifest.json'
-$manifestJson = $rows | ConvertTo-Json -Depth 4
+$rowArray = @($rows)
+$manifestJson = ConvertTo-Json -InputObject $rowArray -Depth 4
 [System.IO.File]::WriteAllText(
     $manifest,
     $manifestJson,

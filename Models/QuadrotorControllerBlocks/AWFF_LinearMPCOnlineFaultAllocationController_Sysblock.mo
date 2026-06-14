@@ -16,6 +16,8 @@ model AWFF_LinearMPCOnlineFaultAllocationController_Sysblock
   parameter Real rotor1_allocation_blend = 0.52;
   parameter Real output_limit = 20.0;
   parameter Real position_signature_filter_T = 0.05;
+  parameter Real steady_xy_integral_gain = 0.28;
+  parameter Real steady_xy_integral_limit = 0.22;
 
   SysplorerEmbeddedCoder.Port.Inport x_error annotation(Placement(transformation(origin={-300,180},extent={{-10,-10},{10,10}}),iconTransformation(origin={-101.8,87.5},extent={{-1.8,-1.8},{1.8,1.8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.Port.Inport y_error annotation(Placement(transformation(origin={-300,130},extent={{-10,-10},{10,10}}),iconTransformation(origin={-101.8,62.5},extent={{-1.8,-1.8},{1.8,1.8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
@@ -36,6 +38,10 @@ model AWFF_LinearMPCOnlineFaultAllocationController_Sysblock
 
   Real x_error_filter(start = 0, fixed = true);
   Real y_error_filter(start = 0, fixed = true);
+  Real x_bias_integral(start = 0, fixed = true);
+  Real y_bias_integral(start = 0, fixed = true);
+  Real x_bias_comp;
+  Real y_bias_comp;
   Real eta_signature;
   Real eta_target_raw;
   Real eta_target;
@@ -49,8 +55,12 @@ model AWFF_LinearMPCOnlineFaultAllocationController_Sysblock
   end ModelWorkspace;
 
 equation
-  connect(x_error, base_mpc.x_error);
-  connect(y_error, base_mpc.y_error);
+  der(x_bias_integral) = x_error;
+  der(y_bias_integral) = y_error;
+  x_bias_comp = steady_xy_integral_gain * (if x_bias_integral > steady_xy_integral_limit then steady_xy_integral_limit else if x_bias_integral < -steady_xy_integral_limit then -steady_xy_integral_limit else x_bias_integral);
+  y_bias_comp = steady_xy_integral_gain * (if y_bias_integral > steady_xy_integral_limit then steady_xy_integral_limit else if y_bias_integral < -steady_xy_integral_limit then -steady_xy_integral_limit else y_bias_integral);
+  base_mpc.x_error = x_error + x_bias_comp;
+  base_mpc.y_error = y_error + y_bias_comp;
   connect(z_error, base_mpc.z_error);
   connect(z_ref_rate, base_mpc.z_ref_rate);
   connect(roll_mea, base_mpc.roll_mea);

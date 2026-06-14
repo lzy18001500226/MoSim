@@ -51,6 +51,10 @@ model Sunray150ActuatorMappedWrapperSurface
   Real commanded_hover_thrust_error(unit = "N");
   Real yaw_moment_gate(unit = "N.m");
   Real commanded_yaw_moment_gate(unit = "N.m");
+  Real minimum_thrust_effectiveness
+    "Forwarded minimum per-rotor thrust effectiveness";
+  Real minimum_reaction_moment_effectiveness
+    "Forwarded minimum per-rotor yaw reaction moment effectiveness";
   Real motor_order_gate_error;
   Real yaw_direction_gate_error;
 equation
@@ -69,6 +73,8 @@ equation
   commanded_hover_thrust_error = wrapper.commanded_hover_thrust_error;
   yaw_moment_gate = wrapper.yaw_moment_gate;
   commanded_yaw_moment_gate = wrapper.commanded_yaw_moment_gate;
+  minimum_thrust_effectiveness = wrapper.minimum_thrust_effectiveness;
+  minimum_reaction_moment_effectiveness = wrapper.minimum_reaction_moment_effectiveness;
   motor_order_gate_error = wrapper.motor_order_gate_error;
   yaw_direction_gate_error = wrapper.yaw_direction_gate_error;
   annotation(__MWORKS(hide=true));

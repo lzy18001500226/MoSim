@@ -39,17 +39,23 @@ class MoSimQuadrotorLiveGateRunnerPlanTest(unittest.TestCase):
             plan = json.loads((output_dir / "live_gate_runner_plan.json").read_text(encoding="utf-8"))
             self.assertEqual(plan["status"], "passed_static")
             self.assertEqual(plan["future_check_model_plan"][0]["target"], "MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance")
-            self.assertEqual(len(plan["future_check_model_plan"]), 13)
-            self.assertEqual(len(plan["future_simulate_model_plan"]), 6)
+            self.assertEqual(len(plan["future_check_model_plan"]), 14)
+            self.assertEqual(len(plan["future_simulate_model_plan"]), 7)
+            self.assertIn(
+                "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke",
+                [item["target"] for item in plan["future_simulate_model_plan"]],
+            )
             self.assertIn("target_resolution_manifest", plan)
 
             resolution = json.loads((output_dir / "target_resolution_check.json").read_text(encoding="utf-8"))
             self.assertEqual(resolution["status"], "passed_static")
-            self.assertEqual(resolution["target_count"], 13)
+            self.assertEqual(resolution["target_count"], 14)
+            self.assertEqual(resolution["dynamics_target_count"], 13)
+            self.assertEqual(resolution["parameter_target_count"], 1)
             self.assertEqual(resolution["findings"], [])
 
             probes = json.loads((output_dir / "result_variable_probe_plan.json").read_text(encoding="utf-8"))
-            self.assertEqual(probes["simulate_probe_count"], 6)
+            self.assertEqual(probes["simulate_probe_count"], 7)
             self.assertEqual(probes["check_only_observability_count"], 6)
 
 

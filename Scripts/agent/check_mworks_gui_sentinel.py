@@ -85,6 +85,13 @@ LICENSE_DIALOG_PATTERNS = [
     "License",
 ]
 
+UPGRADE_MODEL_PATTERNS = [
+    "升级模型",
+    "升级 Model",
+    "Upgrade Model",
+    "upgrade model",
+]
+
 MWORKS_CONTEXT_PATTERNS = [
     "MWORKS",
     "Sysplorer",
@@ -249,6 +256,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
     login_activation_windows: list[dict[str, Any]] = []
     authorization_windows: list[dict[str, Any]] = []
     license_dialog_windows: list[dict[str, Any]] = []
+    upgrade_model_windows: list[dict[str, Any]] = []
     helper_mworks_windows: list[dict[str, Any]] = []
     visible_helper_mworks_windows: list[dict[str, Any]] = []
     unknown_mworks_windows: list[dict[str, Any]] = []
@@ -268,6 +276,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
         login_activation_matches = _contains_any(text, LOGIN_ACTIVATION_PATTERNS)
         authorization_matches = _contains_any(text, AUTHORIZATION_FAILURE_PATTERNS)
         license_dialog_matches = _contains_any(text, LICENSE_DIALOG_PATTERNS)
+        upgrade_model_matches = _contains_any(text, UPGRADE_MODEL_PATTERNS)
         context_license_matches = _contains_any(text, LICENSE_CONTEXT_PATTERNS)
         has_mworks_context = process_is_mworks or _has_mworks_text_context(text)
         helper_window = _is_mworks_helper_window(window)
@@ -289,6 +298,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
                 "matched_login_activation_patterns": login_activation_matches,
                 "matched_authorization_patterns": authorization_matches,
                 "matched_license_dialog_patterns": license_dialog_matches if license_dialog_is_relevant else [],
+                "matched_upgrade_model_patterns": upgrade_model_matches,
                 "matched_crash_patterns": crash_matches,
                 "helper_window": helper_window,
             }
@@ -303,6 +313,8 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
                 authorization_windows.append(summary)
             if license_dialog_is_relevant:
                 license_dialog_windows.append(summary)
+            if upgrade_model_matches:
+                upgrade_model_windows.append(summary)
             if not (
                 education_matches
                 or demo_matches
@@ -310,6 +322,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
                 or login_activation_matches
                 or authorization_matches
                 or license_dialog_is_relevant
+                or upgrade_model_matches
                 or crash_matches
             ):
                 if helper_window:
@@ -336,6 +349,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
                     "matched_login_activation_patterns": login_activation_matches,
                     "matched_authorization_patterns": authorization_matches,
                     "matched_license_dialog_patterns": license_dialog_matches if license_dialog_is_relevant else [],
+                    "matched_upgrade_model_patterns": upgrade_model_matches,
                     "text_sample": text[:1200],
                     "children": [
                         child
@@ -357,6 +371,9 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
     if all_crash_matches:
         status = "incident_detected"
         error_kind = "gui_crash_report"
+    elif upgrade_model_windows:
+        status = "incident_detected"
+        error_kind = "gui_blocked"
     elif all_license_matches:
         status = "incident_detected"
         error_kind = "license_or_login"
@@ -381,6 +398,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
                 + login_activation_windows
                 + authorization_windows
                 + license_dialog_windows
+                + upgrade_model_windows
             )
             if item.get("hwnd") is not None
         }
@@ -397,6 +415,8 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
 
     if all_crash_matches:
         license_state_hint = "gui_error_report_blocked"
+    elif upgrade_model_windows:
+        license_state_hint = "upgrade_model_surface_blocked"
     elif mixed_license_state:
         license_state_hint = "mixed_education_and_demo_blocked"
     elif demo_windows:
@@ -431,6 +451,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
         "login_activation_windows": login_activation_windows,
         "authorization_windows": authorization_windows,
         "license_dialog_windows": license_dialog_windows,
+        "upgrade_model_windows": upgrade_model_windows,
         "helper_mworks_windows": helper_mworks_windows,
         "visible_helper_mworks_windows": visible_helper_mworks_windows,
         "unknown_mworks_windows": unknown_mworks_windows,
@@ -443,6 +464,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
         "login_activation_window_count": len(login_activation_windows),
         "authorization_window_count": len(authorization_windows),
         "license_dialog_window_count": len(license_dialog_windows),
+        "upgrade_model_window_count": len(upgrade_model_windows),
         "helper_mworks_window_count": len(helper_mworks_windows),
         "visible_helper_mworks_window_count": len(visible_helper_mworks_windows),
         "unknown_mworks_window_count": len(unknown_mworks_windows),

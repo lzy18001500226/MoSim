@@ -93,7 +93,7 @@ Use a compact subset in MWORKS instead of importing the full PX4 state space.
 
 ## 7. Implementation Priority
 
-1. Freeze a PX4-like `system_status_bus` in `Docs/Design/02_模型接口与运行流程.md`.
+1. Freeze a PX4-like status/control contract in `Docs/Design/02_总体架构与权威边界.md` and `Docs/Design/04_接口数据契约与时钟频率.md`.
 2. Add formal `battery_warning`, `home_position_valid`, `offboard_heartbeat_ok`, `mission_feasible`, and `geofence_ok` signals.
 3. Extend `SystemSupervisorModule` from GPS dropout only to multi-trigger failsafe.
 4. Add scenarios for battery low, offboard loss, planner failure, and geofence breach.

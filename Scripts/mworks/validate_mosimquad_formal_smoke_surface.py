@@ -26,6 +26,7 @@ FORMAL_PACKAGE_ORDER = [
     "RotorActuatorCore",
     "HoverSmoke",
     "YawStepSmoke",
+    "RotorEffectivenessSmoke",
     "WrapperSurface",
     "ActuatorCommandMapper",
     "ActuatorMappedWrapperSurface",
@@ -41,6 +42,7 @@ COMPAT_PACKAGE_ORDER = [
     "RotorDynamicsCore",
     "RotorHoverSmoke",
     "RotorYawStepSmoke",
+    "RotorEffectivenessSmoke",
     "WrapperSurface",
     "ActuatorCommandMapper",
     "ActuatorMappedWrapperSurface",
@@ -72,15 +74,49 @@ TARGETS: list[dict[str, Any]] = [
             "total_thrust",
             "total_moment_body",
             "hover_thrust_error",
+            "thrust_effectiveness",
+            "reaction_moment_effectiveness",
+            "minimum_thrust_effectiveness",
+            "minimum_reaction_moment_effectiveness",
         ],
         "required_snippets": [
             "der(omega[i]) = (motor_command[i] - omega[i]) / motor_tau[i]",
-            "thrust[i] = lift_coefficient * omega[i] * omega[i]",
-            "yaw_reaction_moment[i] = yaw_direction[i] * moment_constant * thrust[i]",
+            "thrust[i] = thrust_effectiveness[i] * lift_coefficient * omega[i] * omega[i]",
+            "yaw_reaction_moment[i] = yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust[i]",
             "rotor_arm_moment[i, 1] = rotor_center[i, 2] * thrust[i]",
             "rotor_arm_moment[i, 2] = -rotor_center[i, 1] * thrust[i]",
+            "minimum_thrust_effectiveness = min(thrust_effectiveness)",
+            "minimum_reaction_moment_effectiveness = min(reaction_moment_effectiveness)",
         ],
-        "pass_fail_boundary": "check_model must accept command lag, Ct*omega^2 thrust, yaw reaction torque, rotor-center moment, and exposed total force/moment variables.",
+        "pass_fail_boundary": "check_model must accept command lag, effectiveness-scaled Ct*omega^2 thrust, yaw reaction torque, rotor-center moment, exposed total force/moment variables, and single-rotor effectiveness hooks.",
+    },
+    {
+        "formal_name": "RotorEffectivenessSmoke",
+        "compat_name": "RotorEffectivenessSmoke",
+        "implementation_model": "Sunray150RotorEffectivenessSmoke",
+        "implementation_file": "Sunray150RotorEffectivenessSmoke.mo",
+        "role": "single_rotor_effectiveness_smoke",
+        "check_phase": 3,
+        "simulate_phase": 3,
+        "expected_result_variables": [
+            "dynamics.thrust_effectiveness",
+            "dynamics.minimum_thrust_effectiveness",
+            "total_thrust_loss",
+            "roll_moment_imbalance",
+            "pitch_moment_imbalance",
+            "yaw_moment_imbalance",
+        ],
+        "required_snippets": [
+            "parameter Integer degraded_rotor_index = 1",
+            "parameter Real degraded_rotor_thrust_effectiveness = 0.85",
+            "Sunray150RflyStyleRotorDynamics dynamics(",
+            "thrust_effectiveness = {",
+            "total_thrust_loss = expected_nominal_total_thrust - dynamics.total_thrust",
+            "roll_moment_imbalance = dynamics.total_moment_body[1]",
+            "pitch_moment_imbalance = dynamics.total_moment_body[2]",
+            "yaw_moment_imbalance = dynamics.total_moment_body[3]",
+        ],
+        "pass_fail_boundary": "probe single-rotor thrust-effectiveness degradation observability only; this is not an identified fault model or controller robustness acceptance.",
     },
     {
         "formal_name": "ActuatorCommandMapper",
@@ -113,7 +149,7 @@ TARGETS: list[dict[str, Any]] = [
         "implementation_model": "Sunray150DynamicsWrapperSurface",
         "implementation_file": "Sunray150DynamicsWrapperSurface.mo",
         "role": "wrapper_force_moment_surface_check",
-        "check_phase": 3,
+        "check_phase": 4,
         "simulate_phase": None,
         "expected_result_variables": [
             "motor_command",
@@ -133,7 +169,7 @@ TARGETS: list[dict[str, Any]] = [
         ],
         "required_snippets": [
             "dynamics.motor_command = motor_command",
-            "commanded_thrust[i] = dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
+            "commanded_thrust[i] = dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
             "commanded_total_moment_body[3]",
             "motor_order_gate_error =",
             "yaw_direction_gate_error =",
@@ -146,7 +182,7 @@ TARGETS: list[dict[str, Any]] = [
         "implementation_model": "Sunray150ActuatorMappedWrapperSurface",
         "implementation_file": "Sunray150ActuatorMappedWrapperSurface.mo",
         "role": "mapper_to_wrapper_surface_check",
-        "check_phase": 4,
+        "check_phase": 5,
         "simulate_phase": None,
         "expected_result_variables": [
             "normalized_actuator_command",
@@ -178,7 +214,7 @@ TARGETS: list[dict[str, Any]] = [
         "implementation_model": "Sunray150OptionalDampingGyroLayer",
         "implementation_file": "Sunray150OptionalDampingGyroLayer.mo",
         "role": "default_disabled_optional_layer_check",
-        "check_phase": 5,
+        "check_phase": 6,
         "simulate_phase": None,
         "expected_result_variables": [
             "enable_rotor_gyro",
@@ -219,7 +255,7 @@ TARGETS: list[dict[str, Any]] = [
         "implementation_model": "Sunray150PhysicalWrenchFrameAdapter",
         "implementation_file": "Sunray150PhysicalWrenchFrameAdapter.mo",
         "role": "physical_wrench_boundary_check",
-        "check_phase": 6,
+        "check_phase": 7,
         "simulate_phase": None,
         "expected_result_variables": [
             "applied_force_body",
@@ -250,7 +286,7 @@ TARGETS: list[dict[str, Any]] = [
         "implementation_model": "Sunray150DynamicsUpgradeHoverSmoke",
         "implementation_file": "Sunray150DynamicsUpgradeHoverSmoke.mo",
         "role": "core_hover_smoke",
-        "check_phase": 7,
+        "check_phase": 8,
         "simulate_phase": 1,
         "expected_result_variables": [
             "dynamics.total_thrust",
@@ -273,7 +309,7 @@ TARGETS: list[dict[str, Any]] = [
         "implementation_model": "Sunray150DynamicsUpgradeYawStepSmoke",
         "implementation_file": "Sunray150DynamicsUpgradeYawStepSmoke.mo",
         "role": "core_yaw_step_smoke",
-        "check_phase": 8,
+        "check_phase": 9,
         "simulate_phase": 2,
         "expected_result_variables": [
             "yaw_step",
@@ -297,8 +333,8 @@ TARGETS: list[dict[str, Any]] = [
         "implementation_model": "Sunray150DynamicsWrapperHoverSmoke",
         "implementation_file": "Sunray150DynamicsWrapperHoverSmoke.mo",
         "role": "wrapper_hover_smoke",
-        "check_phase": 9,
-        "simulate_phase": 3,
+        "check_phase": 10,
+        "simulate_phase": 4,
         "expected_result_variables": [
             "wrapper.total_thrust",
             "wrapper.total_moment_body",
@@ -322,8 +358,8 @@ TARGETS: list[dict[str, Any]] = [
         "implementation_model": "Sunray150DynamicsWrapperYawStepSmoke",
         "implementation_file": "Sunray150DynamicsWrapperYawStepSmoke.mo",
         "role": "wrapper_yaw_step_smoke",
-        "check_phase": 10,
-        "simulate_phase": 4,
+        "check_phase": 11,
+        "simulate_phase": 5,
         "expected_result_variables": [
             "yaw_step",
             "rotor_speed_mag",
@@ -347,8 +383,8 @@ TARGETS: list[dict[str, Any]] = [
         "implementation_model": "Sunray150PhysicalWrenchHoverSmoke",
         "implementation_file": "Sunray150PhysicalWrenchHoverSmoke.mo",
         "role": "physical_wrench_hover_smoke",
-        "check_phase": 11,
-        "simulate_phase": 5,
+        "check_phase": 12,
+        "simulate_phase": 6,
         "expected_result_variables": [
             "adapter.applied_force_body",
             "adapter.applied_torque_body",
@@ -373,8 +409,8 @@ TARGETS: list[dict[str, Any]] = [
         "implementation_model": "Sunray150PhysicalWrenchYawStepSmoke",
         "implementation_file": "Sunray150PhysicalWrenchYawStepSmoke.mo",
         "role": "physical_wrench_yaw_step_smoke",
-        "check_phase": 12,
-        "simulate_phase": 6,
+        "check_phase": 13,
+        "simulate_phase": 7,
         "expected_result_variables": [
             "yaw_step",
             "rotor_speed_mag",
@@ -439,6 +475,10 @@ def assert_contains(findings: list[str], text: str, snippet: str, label: str) ->
         findings.append(f"{label}: missing snippet {snippet!r}")
 
 
+def requires_dedicated_formal_source(formal_name: str) -> bool:
+    return formal_name in FORMAL_PACKAGE_ORDER
+
+
 def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
     findings: list[str] = []
     formal_package = read_text(FORMAL_DYNAMICS_DIR / "package.mo")
@@ -463,7 +503,13 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
         implementation_path = COMPAT_DIR / target["implementation_file"]
         implementation_text = read_text(implementation_path)
         formal_source_path = FORMAL_DYNAMICS_DIR / f"{formal_name}.mo"
-        formal_text = read_text(formal_source_path) if formal_source_path.exists() else formal_package
+        formal_source_present = formal_source_path.exists()
+        if requires_dedicated_formal_source(formal_name) and not formal_source_present:
+            findings.append(
+                f"MoSimQuadrotorModel.Dynamics.{formal_name}: missing dedicated formal source file "
+                f"{rel(formal_source_path)!r}"
+            )
+        formal_text = read_text(formal_source_path) if formal_source_present else formal_package
 
         assert_contains(
             findings,
@@ -509,7 +555,9 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
                 "compat_alias": f"QuadrotorExperiments.DynamicsUpgrade.{compat_name}",
                 "implementation_model": f"QuadrotorExperiments.DynamicsUpgrade.{implementation_model}",
                 "implementation_file": rel(implementation_path),
-                "formal_source_file": rel(formal_source_path) if formal_source_path.exists() else rel(FORMAL_DYNAMICS_DIR / "package.mo"),
+                "formal_source_file": rel(formal_source_path) if formal_source_present else rel(FORMAL_DYNAMICS_DIR / "package.mo"),
+                "formal_source_present": formal_source_present,
+                "dedicated_formal_source_required": requires_dedicated_formal_source(formal_name),
                 "role": target["role"],
                 "check_model_order": target["check_phase"],
                 "simulate_order_after_all_checks": target["simulate_phase"],
@@ -589,7 +637,7 @@ def build_future_surface(matrix: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def write_json(path: Path, data: Any) -> None:
-    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
 def write_markdown_matrix(path: Path, matrix: list[dict[str, Any]]) -> None:
@@ -618,7 +666,7 @@ def write_markdown_matrix(path: Path, matrix: list[dict[str, Any]]) -> None:
             "- Mass, inertia, Ct, Cm, motor lag, drag, damping, gyro, and command mapping values remain source-labeled seeds, not identified Sunray150 truth.",
         ]
     )
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def write_pass_fail(path: Path, matrix: list[dict[str, Any]]) -> None:
@@ -638,26 +686,47 @@ def write_pass_fail(path: Path, matrix: list[dict[str, Any]]) -> None:
     ]
     for item in matrix:
         lines.append(f"- `{item['formal_target']}`: {item['pass_fail_boundary']}")
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
-def write_no_diff(path: Path) -> None:
+def write_source_materialization_rationale(path: Path) -> None:
     lines = [
-        "# Source Anchor No-Diff Rationale",
+        "# Source Anchor Materialization Rationale",
         "",
         "023 inspected the formal `MoSimQuadrotorModel.Dynamics` alias package, `package.order`, the `MoSimQuadrotorModel.Parameters` provenance record, and the concrete project-owned `QuadrotorExperiments.DynamicsUpgrade` implementation files.",
         "",
-        "No `.mo` or `package.order` source repair was required because:",
+        "The current formal source-surface rule is:",
         "",
-        "- The 12 formal Dynamics entries are present and ordered in `Models/MoSimQuadrotorModel/Dynamics/package.order`.",
-        "- Each formal entry extends the expected `QuadrotorExperiments.DynamicsUpgrade` compatibility alias.",
+        "- All formal Dynamics entries should be dedicated extends-only `.mo` files.",
+        "- Dedicated formal sources must not duplicate equations from `QuadrotorExperiments.DynamicsUpgrade`.",
+        "",
+        "Current materialized dedicated surfaces:",
+        "",
+        "- `RotorActuatorCore.mo`",
+        "- `HoverSmoke.mo`",
+        "- `YawStepSmoke.mo`",
+        "- `RotorEffectivenessSmoke.mo`",
+        "- `WrapperSurface.mo`",
+        "- `ActuatorCommandMapper.mo`",
+        "- `ActuatorMappedWrapperSurface.mo`",
+        "- `OptionalDampingGyroLayer.mo`",
+        "- `WrapperHoverSmoke.mo`",
+        "- `WrapperYawStepSmoke.mo`",
+        "- `PhysicalWrenchAdapter.mo`",
+        "- `PhysicalWrenchHoverSmoke.mo`",
+        "- `PhysicalWrenchYawStepSmoke.mo`",
+        "",
+        "Static acceptance basis:",
+        "",
+        "- The 13 formal Dynamics entries are present and ordered in `Models/MoSimQuadrotorModel/Dynamics/package.order`.",
+        "- All formal Dynamics entries exist as extends-only formal source files.",
+        "- `Dynamics/package.mo` is a package shell and does not duplicate model definitions.",
         "- Each compatibility alias extends a concrete project-owned implementation model under `Models/QuadrotorExperiments/DynamicsUpgrade/`.",
-        "- The formal smoke surface can be prepared as a target matrix, expected variable manifest, and future live validation queue without changing dynamics behavior.",
-        "- Optional gyro, body drag, and angular damping remain default-disabled/zero and are only queued for future live result probes.",
+        "- The formal smoke surface can be prepared as a target matrix, expected variable manifest, and future live validation queue without duplicating dynamics behavior.",
         "",
-        "Therefore 023 writes checker/evidence artifacts only and does not edit Modelica source.",
+        "This rationale remains static-only. Live `check_model` and `SimulateModel` acceptance are still future gates.",
     ]
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def main() -> int:
@@ -693,6 +762,16 @@ def main() -> int:
         "schema": "mosim.changed_files_manifest.v1",
         "request_id": REQUEST_ID,
         "source_files_changed_by_023": [],
+        "source_files_materialized_by_current_static_alignment": [
+            "Models/MoSimQuadrotorModel/Dynamics/HoverSmoke.mo",
+            "Models/MoSimQuadrotorModel/Dynamics/YawStepSmoke.mo",
+            "Models/MoSimQuadrotorModel/Dynamics/RotorEffectivenessSmoke.mo",
+            "Models/MoSimQuadrotorModel/Dynamics/WrapperHoverSmoke.mo",
+            "Models/MoSimQuadrotorModel/Dynamics/WrapperYawStepSmoke.mo",
+            "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchHoverSmoke.mo",
+            "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchYawStepSmoke.mo",
+            "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+        ],
         "script_files_changed_by_023": [
             "Scripts/mworks/validate_mosimquad_formal_smoke_surface.py"
         ],
@@ -702,7 +781,7 @@ def main() -> int:
             "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/future_live_validation_surface.json",
             "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/expected_result_variables.json",
             "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/pass_fail_boundaries.md",
-            "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/source_anchor_no_diff_rationale.md",
+            "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/source_anchor_materialization_rationale.md",
             "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/changed_files.json",
             "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/static_validation_summary.json",
         ],
@@ -717,8 +796,8 @@ def main() -> int:
         "formal_targets": len(matrix),
         "parameter_targets": 1,
         "findings": findings,
-        "source_diff_required": False,
-        "source_diff_performed": False,
+        "source_diff_required": True,
+        "source_diff_performed": True,
         "claim_boundary": [
             "023 prepares static smoke/check surface artifacts only.",
             "023 does not claim live MWORKS load, check_model, SimulateModel, graphical/layout acceptance, controller performance, runtime ack, identified parameter truth, mission success, or closed_loop.",
@@ -740,7 +819,7 @@ def main() -> int:
     write_json(out_dir / "future_live_validation_surface.json", future_surface)
     write_json(out_dir / "expected_result_variables.json", expected_variables)
     write_pass_fail(out_dir / "pass_fail_boundaries.md", matrix)
-    write_no_diff(out_dir / "source_anchor_no_diff_rationale.md")
+    write_source_materialization_rationale(out_dir / "source_anchor_materialization_rationale.md")
     write_json(out_dir / "changed_files.json", changed_files)
     write_json(out_dir / "static_validation_summary.json", summary)
 

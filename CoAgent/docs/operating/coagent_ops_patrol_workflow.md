@@ -1,83 +1,76 @@
 # CoAgentOps Patrol And Recovery Workflow
 
-> Conservative no-loss migration landing. This file was seeded from
-> `Docs/Workflows/coagent_ops_patrol_workflow.md` on 2026-06-10 so
-> patrol/recovery/dispatch SLO, bounded dispatch, failover, and window-patrol
-> rules are not lost while CoAgent is made portable. It is currently a mixed
-> portable-core + MoSim-adapter copy. Do not slim this file or its MoSim
-> compatibility source until `CoAgent/docs/operating/MIGRATION_MAP.md` records
-> each removed block as exact, equivalent, intentionally host-local, or
-> obsolete.
+Status: portable core, split-audited 2026-06-10 CST.
 
-> Executable workflow for `MoSim｜CoAgent运维平台` 10-minute patrol, bounded
-> dispatch, visible-thread recovery, MWORKS window classification, and PMO
-> escalation. This file replaces scattered dated hotfix prose in startup entry
-> docs; keep `AGENTS.md` and `new_conversation_context.md` as hard-boundary
-> pointers.
+This file defines reusable CoAgentOps patrol, dispatch-SLO, liveness, recovery,
+and failover behavior. Host-project details such as concrete thread IDs,
+current boards, domain windows, email wording, and tool paths belong in host
+adapters.
 
-## 1. Scope And Owners
+MoSim host adapters:
 
-| Item | Current Rule |
-|---|---|
-| Patrol owner | `MoSim｜CoAgent运维平台` (`019e9bc1-ea9f-7102-b41a-4ef9b2308992`) |
-| PMO owner | `MoSim｜主线 PMO` (`019e9868-83ea-70f0-92c5-a3a408bd78c6`) |
-| Documentation secretary | `MoSim｜Codex 上下文维护部` (`019eab73-c5bc-7740-a6d1-5e0541bdb0c5`) |
-| Registry source | `CoAgent/dispatch/department_threads.json` |
-| Return channel | `Results/agent_packets/returns/<request_id>.json` |
-| Blocker channel | `Results/agent_packets/blockers/<request_id>.json` |
+```text
+Docs/Workflows/coagent_ops_patrol_workflow.md
+Docs/Workflows/mosim_visible_dispatch_adapter.md
+Docs/Workflows/mainline_operations_board.md
+CoAgent/dispatch/department_threads.json
+```
 
-Former names such as `MoSim｜文档秘书部`, R-suffixed context-maintenance titles,
-and `MoSim｜知识秘书` are alias/history only.
-Future context-memory, documentation consistency, startup recovery, and
-cache-first migration tasks route to `MoSim｜Codex 上下文维护部`. The internal
-key `CodexContextMaintenanceAgent` may remain in compatibility metadata.
+The no-loss split is recorded in:
 
-CoAgentOps does not own product priority, engineering acceptance, visible
-thread lifecycle changes, automation lifecycle changes, destructive Git,
-private auth material, foreground approval clicks, or final integration. PMO
-owns those decisions.
+```text
+CoAgent/docs/operating/audits/no_loss_split_audit_20260610.md
+CoAgent/docs/operating/MIGRATION_MAP.md
+```
 
-## 2. Patrol Workflow
+## 1. Authority Boundary
 
-Each patrol run must execute the steps below in order:
+CoAgentOps is a control-plane operator. It may patrol, classify visible-thread
+state, maintain dispatch SLO records, recover dispatch surfaces, and perform
+bounded pre-authorized dispatch when every gate in this workflow is satisfied.
 
-1. Read `AGENTS.md`, `Docs/Workflows/new_conversation_context.md`, this file,
-   `CoAgent/dispatch/communication_contract.md`,
-   `CoAgent/dispatch/department_threads.json`,
-   `Docs/Workflows/mainline_operations_board.md`, and the newest active
-   entries in `PROGRESS.md`. Read `Docs/Workflows/agent_task_ledger.md` only
-   when the board or a packet names a row that must be traced for recovery.
-2. Scan `MainPMO`, `CoAgentOps`, and only current `status=active_visible`
-   engineering departments. Deleted or archived WeChat routes are not targets.
-3. Classify approval/review/provider surfaces before dead-thread recovery.
-4. Classify latest turn and expected packet state.
-5. Classify MWORKS/Sysplorer/Syslab window state when relevant.
-6. Report `dispatch_readiness` for every active engineering department.
-7. Handle abnormal/recovery-pending threads first.
-8. Then handle routable idle P0 engineering threads with ready gates.
-9. Then handle PMO/user-resolvable open dependencies.
-10. Then route review/audit work.
-11. Only then do support-lane probe, learning, or meta checks.
+CoAgentOps does not own product priority, acceptance/rejection, final
+integration, visible-thread lifecycle decisions, automation lifecycle changes,
+destructive Git, private authentication material, foreground approval clicks,
+or host-specific GUI actions unless a host adapter and task packet explicitly
+authorize that action.
 
-An active engineering thread that is routable and idle while a P0 next gate
-exists is not healthy closeout. If the bounded-dispatch preconditions in
-section 6 are satisfied, CoAgentOps must dispatch the task to the visible
-department in the same patrol run and notify PMO with the dispatch metadata.
-Use `dispatch_needed` as a PMO-facing state only when a ready gate exists but
-one or more bounded-dispatch preconditions are missing. In that case, notify
-PMO through the native thread surface in the same run, or write a blocker
-naming the missing PMO/thread tool, packet field, dependency, or explicit
-deferral.
+The host project must define:
+
+```text
+PMO/product owner
+CoAgentOps owner
+current visible-route registry
+current operating board
+return/blocker/checkpoint packet roots
+human notification channel
+domain adapters and live-resource gates
+```
+
+## 2. Patrol Inputs
+
+Each patrol reads only the minimum current control-plane context:
+
+1. Compact project entry instructions.
+2. CoAgent communication contract and packet templates.
+3. Current visible-route registry.
+4. Current PMO/operating board or queue.
+5. Active dispatch tickets, return packets, blockers, checkpoints, recovery
+   packets, and board-referenced ledger rows.
+6. Host adapter documents only for domains touched in this patrol.
+
+Patrol must ignore routes that the registry marks archived, deleted,
+superseded, or not currently dispatchable. Absence of an archived/deleted route
+is not a failure.
 
 ## 3. Semantic Boundary
 
-Every patrol, recovery, dispatch, checkpoint, or review packet that uses words
-such as `healthy`, `normal`, `blocked`, `review`, `审核`, `window`, `live`,
-`done`, or `continue` must include:
+Every patrol, recovery, dispatch, checkpoint, or review packet that makes a
+state claim must include a semantic boundary:
 
 ```yaml
 semantic_boundary:
-  decision_scope: visible_thread | mworks_window_patrol | mworks_live_task | ros2_runtime | ue_runtime | asset_review | other
+  decision_scope: visible_thread | domain_window_patrol | live_task | runtime_task | asset_review | other
   state_class: <one concrete value>
   evidence_minimum:
     - <minimum evidence inspected before this state was claimed>
@@ -87,7 +80,7 @@ semantic_boundary:
     - <actions forbidden while in this state>
   stop_triggers:
     - <observations that force blocker/checkpoint>
-  next_owner: PMO | CoAgentOps | MWORKS_R1 | MWORKS_R2 | ROS2_R1 | UE | user | current_department
+  next_owner: <PMO | CoAgentOps | target_department | user | other>
 ```
 
 Accepted visible-thread `state_class` values:
@@ -101,9 +94,7 @@ context_compression_surface
 unknown_blocked
 ```
 
-`state_class` is the visible-thread control-plane classification. It must not
-carry queue state such as busy, idle, or dispatch-needed. Report queue state in
-`dispatch_readiness` separately:
+`state_class` is not queue state. Report queue readiness separately as:
 
 ```text
 busy_in_progress
@@ -113,236 +104,158 @@ idle_no_ready_task
 idle_waiting_review_or_approval
 ```
 
-Accepted MWORKS window/session `state_class` values:
-
-```text
-window_patrol_clean
-helper_only_nonblocking
-login_or_license_blocked
-authorization_blocked
-gui_error_blocked
-visible_unknown_blocked
-live_attach_blocked
-unknown_blocked
-```
-
+Domain-specific state classes, such as simulator window or runtime resource
+states, must be supplied by the host adapter and named in the task packet.
 Free-text-only states such as `ok`, `normal`, `healthy`, `looks fine`,
-`still running`, and `probably blocked` are invalid.
+`probably blocked`, and `still running` are invalid.
 
 ## 4. Approval, Review, And Provider Surfaces
 
 Classify these before dead-thread recovery:
 
-- Codex App `waitingOnApproval` or permission prompt.
-- Visible `审核` / review / approval button.
-- Pending generated-file review.
-- Provider/API gateway banner such as `502 Bad Gateway` or reconnect UI.
-- A completed turn with a visible review surface but no expected packet.
+```text
+permission or waiting-on-approval prompt
+visible review/approval surface
+pending generated-file review
+provider/API gateway banner
+reconnect surface
+completed turn with pending review UI and no expected packet
+```
 
 Use `approval_pending_or_ui_blocked` or
 `provider_gateway_or_pending_review`. These states are not proof that the
-department is dead and are not by themselves a reason for Codex++ restart,
+department is dead and are not by themselves a reason for app restart,
 replacement thread creation, or repeated no-op retries. Pause only the
 affected business dispatch until the surface clears or PMO/user decides.
 
-## 5. Dead-Thread Recovery
-
-Treat native send/read success as transport evidence only. A thread is not
-restored until the same visible thread can start a new turn and produce agent
-output, an explicit requested ACK, an expected return/blocker packet, or a
-successful recovery validation requested by the packet.
-
-Recovery sequence for non-CoAgentOps departments:
-
-1. PMO or patrol writes an initial blocker/recovery packet.
-2. Stop business dispatch to the affected thread.
-3. Route bounded diagnosis/recovery to CoAgentOps.
-4. CoAgentOps checks list/read, latest turn, approval/provider surfaces, and
-   at most one no-op or expected-packet probe when needed.
-5. For confirmed start-turn or agent-loop failure, write a recovery packet.
-6. Send one sparse Chinese email audit. Email is notification/audit only.
-7. If the authorized Codex++ restart surface is available and no explicit
-   deferral exists, continue restart in the same run.
-8. After restart, validate the same visible thread before restoring routing.
-9. Write a superseding packet with `thread_execution_surface_restored` and
-   `business_task_or_patrol_completed` as separate claims.
-
-If CoAgentOps itself cannot start turns, PMO must become the recovery owner
-from a healthy user-triggered/current turn. PMO writes/reads the blocker,
-sends sparse email, uses the authorized restart route when appropriate, and
-then validates CoAgentOps after restart. A heartbeat attached to a dead
-CoAgentOps conversation cannot self-rescue.
-
-Default policy is restart recovery on the same thread, not replacement.
-Replacement requires explicit PMO/user approval, repeated failed restart
-recovery, or a critical path that cannot wait.
-
-### 5.1 Post-Restart Probe Sweep
-
-When the user restarts Codex App or the computer after widespread visible-thread
-failure, start a fresh incident clock from the confirmed app restart time:
-
-```text
-app_restart_completed_at=<ISO timestamp from the first healthy PMO turn>
-```
-
-Before dispatching business work, PMO or CoAgentOps must run a bounded probe
-sweep over every current `status=active_visible` route in
-`CoAgent/dispatch/department_threads.json`:
-
-1. Read the current registry and list/read each active visible thread.
-2. Send exactly one short no-op probe per active department thread, unless the
-   thread is the current PMO thread or the user explicitly excludes it.
-3. Immediately `read_thread` after each send and record whether a new visible
-   turn appears.
-4. Recheck any thread without a visible turn within 2 minutes.
-5. At 5 minutes after that thread's probe `sent_at`, classify it as
-   `dispatch_surface_failure_suspected` if there is still no visible turn,
-   agent output, expected ACK, return/blocker packet, approval/provider
-   surface, or context-compression surface.
-6. Record per-thread timing as:
-   `last_known_alive_at`, `probe_sent_at`, `first_missing_at`,
-   `failure_suspected_at`, and `dead_thread_duration_minutes`.
-7. Do not restart Codex again during the sweep unless the user explicitly
-   authorizes it for the active incident.
-
-The probe text must be minimal and must not include business work. Example:
-
-```text
-PMO post-restart health probe only. If you can start a new turn, reply exactly:
-<department_key>_post_restart_probe_ok_<YYYYMMDD_HHMM>
-Do not read/write project files, do not run commands, do not dispatch work.
-```
-
-The sweep result belongs in
-`Results/agent_packets/returns/PMO-POST-RESTART-PROBE-SWEEP-<date>-001.json`
-or, if the sweep itself is blocked,
-`Results/agent_packets/blockers/PMO-POST-RESTART-PROBE-SWEEP-<date>-001.json`.
-It must include one row per active visible thread and the measured timing
-fields above. This sweep is control-plane recovery evidence only; it does not
-prove MWORKS/ROS2/UE business progress.
-
-### 5.2 Durable Start And Main-Shell Observation
+## 5. Durable Start And Dispatch SLO
 
 Default liveness evidence is durable project state, not transcript clicking.
-For every non-trivial visible-department dispatch, the task packet must include
-`durable_start_requirement`. The target thread's first execution step is to
-create or update that small artifact inside the declared write scope, then
-continue with the actual work. Acceptable durable-start artifacts include a
-checkpoint, return packet, blocker packet, task-local notes file, declared
-output scaffold, or another project-local file named by the packet.
+Every non-trivial visible-department dispatch must include:
 
-The durable-start artifact proves that the execution surface has started and
-can write recoverable state. It does not prove engineering completion.
-Exact no-op probes that explicitly forbid file writes are exempt.
+```text
+dispatch ticket
+fresh dispatch nonce
+durable_start_requirement
+expected return path
+blocker path
+expected packet due time
+first readback due time
+breach action
+```
 
-Dispatch-surface classification after send:
+For visible-thread dispatch, the default durable-start artifact is a runtime
+lease:
 
-1. Check native read/send state and latest visible turn.
-2. Check the expected return, blocker, checkpoint, and durable-start paths.
-3. Check approval/review/provider/context-compression surfaces.
-4. Check the Codex App main shell/list area only for global indicators such as
-   green `待批准`/approval, pending review, reconnect, or provider banners.
-5. If 5 minutes after `sent_at` there is no durable-start artifact, no agent
-   output, no expected packet/checkpoint/blocker, and no known UI/provider
-   surface, classify as `dispatch_surface_failure_suspected` and write a
-   recovery/blocker packet.
+```text
+Results/runtime_leases/<target_thread_id>/<request_id>.json
+```
 
-Routine heartbeat patrol must not click through every thread row to refresh
-transcripts. Slow or blank transcript views are `view_refresh_required`
-observations, not dead-thread evidence. Record them in the ticket or recovery
-notes, then rely on native read/send checks, expected-packet checks,
-durable-start artifact checks, and main-shell observation.
+The dispatcher must create a `ticket_version=2` dispatch ticket with a fresh
+`dispatch_nonce` and put the same nonce in the task packet's
+`durable_start_requirement`. The target thread must echo the nonce in the
+runtime lease. A lease with the wrong nonce is stale evidence and does not
+count as progress.
 
-The 10-minute patrol may capture or inspect the Codex App main shell/list area
-when the native desktop surface is available. Its default UI purpose is only to
-notice pending approval/review/provider indicators and send a sparse Chinese
-email or PMO notice. It must not click approval/review/send/restart/login/save/
-archive/delete/pin/overflow/composer controls.
+Exact no-write probes are exempt from durable-start writes only when the probe
+explicitly forbids file writes.
 
-A bounded thread-row refresh exception is allowed only when a specific recovery
-incident explicitly authorizes it. That exception must be observation-only,
-must prefer stable UI Automation/OCR/title matching over raw coordinates, must
-avoid all controls listed above, and must not become the default heartbeat
-mechanism. If the thread list is collapsed and the incident explicitly requires
-view recovery, the only allowed list-control action is restoring list visibility
-through the documented expand control; record drift risk and stop if the target
-cannot be identified safely.
+Meaningful progress means one of:
 
-### 5.3 Incident-Scoped Thread-Row Refresh Appendix
+```text
+matching durable-start artifact or runtime lease
+agent output
+expected return packet
+blocker packet
+checkpoint packet
+approval/provider/review surface
+context-compression surface
+```
 
-This appendix preserves the user-approved refresh details as a recovery-only
-tool. It is not part of the routine 10-minute patrol and does not override the
-durable-start evidence ladder.
+Native send success, old exact ACKs, stale leases, or a new visible turn stuck
+in thinking/in-progress with no agent output are not meaningful progress.
 
-Allowed only when a named recovery incident or PMO packet explicitly requests
-visible-thread refresh:
+Default SLO ladder:
 
-1. Use background/native UI automation when available; do not maximize Codex
-   App solely for this action.
-2. Click only the stable title region for rows whose title begins with
-   `MoSim｜`. Do not click pin controls, project/folder headers, overflow
-   menus, composer/send areas, approval/review controls, restart controls, or
-   unknown UI chrome.
-3. If the project/thread list is collapsed, expand only through the documented
-   list expand control, wait `0.5s`, then re-identify the target rows. If the
-   target cannot be identified after expansion, stop and report a blocker.
-4. Dwell time on each selected row is `0.5s`. Capture/observe after the dwell,
-   then move to the next scoped target.
-5. If a transcript pane is blank, loading, or visually ambiguous, record
-   `view_refresh_required`, skip business classification for that row, and
-   continue to the next scoped target. Recheck on the next authorized refresh
-   pass; do not wait on the blank pane inside the sweep.
-6. If two passes still show blank/loading content while native read/send,
-   durable-start, expected-packet, and main-shell checks show no progress or UI
-   blocker, write a recovery/blocker packet and send the sparse Chinese alert.
-7. Include the refresh-only non-MoSim watch target
-   `019de24d-e993-72c0-a0b2-caf2ac8ac85e` only after Codex App/PC restart, and
-   only to refresh its goal-bearing window. It is not dispatchable MoSim work.
+```text
+sent_at -> immediate readback
+if no visible turn -> read again within 2 minutes
+if 5 minutes passes without meaningful progress -> classify
+  dispatch_surface_failure_suspected and write recovery/blocker evidence
+```
 
-Forbidden actions remain absolute: do not click approval, review, send,
-restart, login, authorization, save, archive, delete, pin, overflow, unknown
-controls, or any MWORKS/Sysplorer/Syslab UI from this refresh procedure.
+Task-type SLO is layered:
 
-## 6. Bounded CoAgentOps Dispatch
+```text
+source_static / control_plane / packet_contract_fix: return or blocker in 10-20 minutes
+dispatch_surface_diagnostic / recovery_validation: return or blocker in 2-10 minutes
+live_runtime / GUI / manual_review: checkpoint_due must be declared
+```
 
-CoAgentOps is allowed to dispatch a P0 task only when all conditions hold; when
-all conditions hold, direct dispatch is required in that patrol run:
+Continuing checkpoint freshness is required only for task types that declare
+`checkpoint_due`. For static/control-plane work, once a matching durable-start
+artifact, return/blocker, approval/provider surface, or context-compression
+surface appears, missing later checkpoints must not be reclassified as a
+dead-thread signal before the expected packet due time.
 
-- Target is `status=active_visible`.
-- Target thread is routable through the native visible-thread send/read
-  surface.
-- Task is already in the current P0 queue, `mainline_operations_board.md`,
-  newest active `PROGRESS.md` entry, or explicitly recommended by the latest
-  accepted return/blocker.
-- Task is static/source-static, diagnostic-only, recovery validation,
-  packet-contract fix, rule-sync/preflight drill, or another pre-authorized
-  low-risk follow-up.
-- Packet declares read scope, write scope, `native_surface_gate`,
-  `semantic_boundary`, expected return path, blocker path, evidence minimum,
-  allowed actions, forbidden actions, stop triggers, expected engineering
-  outputs, and next owner.
-- Native visible-thread send/read surface is available.
-- PMO can be notified in the same run.
-- No approval/review/provider UI surface, open dependency, unresolved
-  dispatch-surface recovery, live GUI/license/manual-review risk, or PMO/user
-  product-priority choice is required first.
+## 6. Main-Shell Observation And Transcript Refresh
 
-When all conditions hold, dispatch is the required action, not a recommendation
-for PMO to dispatch later. CoAgentOps must instantiate a task packet, send it
-to the target visible department thread, and write or send the PMO sync record
-in the same run. The dispatch packet must carry the expected engineering
-output and stop before any live/manual/destructive action that is outside the
-pre-authorized task class.
+Routine heartbeat patrol must not click through every visible thread row as
+the default liveness mechanism. Slow or blank transcript views are
+`view_refresh_required` observations, not dead-thread evidence.
 
-CoAgentOps must not dispatch when a task requires PMO/user product judgment,
-thread or automation lifecycle change, foreground GUI action, approval click,
-login/license/activation click, private auth material, destructive Git, live
-MWORKS work without a current live gate, out-of-budget ROS2/RViz/FAST-LIO
-probe, UE runtime mutation without producer/consumer gate, or any scope not
-represented by the current P0 queue.
+The default liveness ladder is:
 
-After dispatch, CoAgentOps notifies PMO with:
+```text
+dispatch ticket
+  -> native read/send state
+  -> durable-start / packet / checkpoint checks
+  -> approval/review/provider/context-compression classification
+  -> main-shell pending indicator observation
+  -> recovery/blocker if no meaningful progress exists
+```
+
+The patrol may observe or capture the application main shell/list area when the
+native desktop surface is available. The default UI purpose is only to notice
+global pending approval/review/provider indicators and trigger the host
+notification route. It must not click approval, review, send, restart, login,
+save, archive, delete, pin, overflow, composer controls, or unknown UI chrome.
+
+A bounded thread-row refresh exception is allowed only when a named recovery
+incident or PMO packet explicitly requests it. That exception must be
+observation-only, must prefer stable UI Automation/OCR/title matching over raw
+coordinates, must avoid forbidden controls, and must not become a routine
+heartbeat mechanism. Host adapters may define title prefixes, dwell time, and
+blank-pane handling for a specific desktop application.
+
+## 7. Bounded Dispatch
+
+CoAgentOps may dispatch a task only when all conditions hold:
+
+```text
+target route is current and dispatchable
+target native send/read surface is available
+task is already in the current queue/board or latest accepted packet
+task class is pre-authorized low risk
+packet declares complete read/write/evidence/stop boundaries
+dispatch ticket and durable-start requirement are valid
+PMO can be notified in the same run
+no approval/review/provider surface blocks the target
+no open dependency or product-priority decision is needed first
+no host live-resource, GUI, auth, destructive, or manual-review risk is present
+```
+
+When all conditions hold, direct dispatch is the required action, not merely a
+recommendation for PMO to dispatch later. CoAgentOps must instantiate the task
+packet, create/update the dispatch ticket, send the task to the target route,
+and write or send the PMO sync record in the same run.
+
+CoAgentOps must not dispatch when the next step requires PMO/user product
+judgment, route/automation lifecycle change, foreground GUI action, approval
+click, login/license/activation click, private auth material, destructive Git,
+unapproved live runtime work, or any scope outside the current queue.
+
+The PMO sync record includes:
 
 ```text
 request_id
@@ -357,54 +270,82 @@ task_packet_path
 native_dispatch_result
 ```
 
-Before the visible-thread send call, the dispatcher must create/update the
-dispatch ticket at `Results/agent_packets/dispatch_tickets/<request_id>.json`
-with `dispatcher_owns_slo_closure=true`, then validate it with
-`Scripts/quality/check_dispatch_ticket_slo.py`. The dispatcher is the PMO or
-CoAgentOps turn that actually sends the task; a 10-minute patrol may audit or
-catch a missed ticket, but it is not the primary timer owner. The delivery SLO
-is:
+## 8. Recovery
+
+Treat native send/read success as transport evidence only. A thread is not
+restored until the same visible route can start a new turn and produce agent
+output, an explicit requested ACK, an expected return/blocker packet, or a
+successful recovery validation requested by the packet.
+
+Recovery sequence for a department route:
+
+1. Write an initial blocker or recovery packet.
+2. Stop business dispatch to the affected route.
+3. Check native list/read state, latest turn, approval/review/provider
+   surfaces, durable-start artifacts, expected packets, and active tickets.
+4. Use at most one no-op or expected-packet probe when the packet authorizes
+   it.
+5. For confirmed start-turn or agent-loop failure, write a recovery packet.
+6. Notify through the host human-notification channel.
+7. If an authorized restart surface is available and no explicit deferral
+   exists, continue restart recovery in the same run.
+8. After restart, validate the same visible route before restoring business
+   dispatch.
+9. Write a superseding packet that separates
+   `thread_execution_surface_restored` from
+   `business_task_or_patrol_completed`.
+
+If CoAgentOps itself cannot start turns, a healthy PMO/current user-triggered
+turn becomes recovery owner. A dead CoAgentOps heartbeat cannot self-rescue.
+
+Default policy is restart recovery on the same route, not replacement.
+Replacement requires explicit PMO/user approval, repeated failed restart
+recovery, or a critical path that cannot wait.
+
+## 9. Post-Restart Probe Sweep
+
+After an application or machine restart that may affect multiple visible
+routes, start a fresh incident clock from the confirmed restart completion time:
 
 ```text
-sent_at -> immediate read_thread once
-if no visible turn -> read again within 2 minutes
-if visible turn is only inProgress/thinking with no agent output/final/packet
-  by first_agent_output_due -> classify dispatch_surface_failure_suspected
-if 5 minutes passes with no meaningful progress -> classify
-  dispatch_surface_failure_suspected and write a recovery/blocker
+app_restart_completed_at=<ISO timestamp from first healthy PMO/current turn>
 ```
 
-Meaningful progress means one of: agent output, expected return packet, blocker
-packet, checkpoint packet, approval/provider surface, or context-compression
-surface. Native send success, an old exact ACK, or a new visible turn stuck in
-thinking/in-progress with no agent output is not meaningful progress.
+Before dispatching business work, run a bounded probe sweep over current
+dispatchable routes:
 
-Task-type SLO is layered. `source_static`, `control_plane`, and
-`packet_contract_fix` tasks normally expect a return/blocker packet within
-10-20 minutes. `dispatch_surface_diagnostic` and `recovery_validation` expect
-2-10 minutes. `live_runtime`, `mworks_gui`, and `manual_review` may run longer,
-but their ticket must declare `checkpoint_due`; the first checkpoint is due
-within 10 minutes for live/runtime/MWORKS GUI and within 15 minutes for manual
-review.
+1. Read the current registry and each active visible route.
+2. Send exactly one short no-op probe per scoped route unless excluded by the
+   incident packet.
+3. Immediately read back after each send.
+4. Recheck missing visible turns within 2 minutes.
+5. At 5 minutes after that route's `probe_sent_at`, classify suspected
+   dispatch-surface failure only if there is still no visible turn, output,
+   expected ACK, return/blocker packet, approval/provider surface, or
+   context-compression surface.
+6. Record `last_known_alive_at`, `probe_sent_at`, `first_missing_at`,
+   `failure_suspected_at`, and `dead_thread_duration_minutes`.
+7. Do not restart again during the sweep unless explicitly authorized for the
+   active incident.
 
-The PMO board must show only the dispatch watch fields
-`sent_at / first_readback_due / expected_packet_due / last_observed_turn /
-breach_action / owner`. Detailed thread id, expected paths, checkpoint due,
-and observations stay in the JSON ticket.
+The probe text must be minimal and must not include business work.
 
-If CoAgentOps discovers an active ticket whose `dispatcher_next_check_due` has
-passed and the dispatcher has not advanced it to a terminal state, CoAgentOps
-reports the missed dispatcher closure to PMO and may write an audit blocker.
-That is a fail-close catch for a broken dispatch loop, not the normal way a
-task timer should close.
+## 10. Failover
 
-### 6.1 R2/R3 Failover Lane
+The portable failover model is:
 
-For the three main engineering departments, R2 is the first failover lane when
-R1 is dead, stale, or blocked by dispatch-surface recovery and a safe task is
-available. CoAgentOps must check this during each 10-minute patrol.
+```text
+R1: primary execution lane
+R2: first safe failover lane for static/diagnostic/contract/review work
+R3: reserve capacity proposed or approved only after R2 failover still leaves
+    important work idle or blocked
+```
 
-R2 failover packets are limited to:
+R2 failover is appropriate when R1 has a confirmed dispatch/start-turn failure,
+is blocked by dispatch-surface recovery, or has an overdue declared checkpoint
+for a live/manual task and a safe failover task exists.
+
+Default R2/R3 failover task classes:
 
 ```text
 source_static
@@ -414,182 +355,86 @@ rule_sync_only
 checker/review
 ```
 
-R2 failover must not run MWORKS live work, ROS2 live work, UE runtime/build/
-editor work, GUI clicks, login/authorization/save/restart actions, or setpoint
-publication. Default R2 work is still accountable department work: the packet
-must include expected outputs, return/blocker paths, stop triggers, and the
-department-local planning fields.
+Default failover must not perform live runtime work, GUI clicks, login,
+authorization, save, restart, destructive mutation, or host-specific live
+resource actions. A host adapter may narrow this further. It may broaden it
+only with explicit PMO/user approval and a task packet that names the live
+resource and stop conditions.
 
-R3 is not an automatic response to any single R1 or R2 failure. PMO proposes or
-approves R3 only when R2 failover still leaves a P0 partition idle/blocked long
-enough that reserve capacity is useful. Do not use a generic "R1/R2 died
-multiple times in 24 hours" rule as an R3 trigger.
+Do not use a generic "R1/R2 died multiple times in 24 hours" rule as an R3
+trigger. The trigger is current critical-path idle/blockage after R2 failover
+is insufficient.
 
-## 7. MWORKS Window And Review Routing
+## 11. Desktop Window And Host Live-Resource Adapters
 
-Routine activation/window patrol belongs to CoAgentOps. MWORKS R1/R2 business
-tasks should focus on engineering output and stop only when their current
-MCP/API/GUI work observes demo, login, license, authorization, GUI-error, or
-unknown blocking evidence.
+Desktop observation and desktop action are separate capabilities:
 
-Patrol must separate:
-
-- Real reusable `mworks.exe` / Sysplorer / Syslab main windows.
-- Helper/proxy windows such as `mw_browser_proxy.exe`, CEF, Qt glow/IME,
-  docsearch, crash monitors, memory monitors, ACP server, and titlebar helper
-  surfaces.
-- Login/license/demo/authorization/error dialogs.
-- Visible unknown MWORKS/Sysplorer/Syslab windows.
-
-Ordinary graphical simulation, wiring/layout, Smart Layout, result-window, and
-animation review is routed to MWORKS R2. Use the DPI-aware background capture
-route for ordinary non-activation review and include observations, not only a
-path. Activation/login/license/authorization and hidden-login-pane claims still
-need foreground or maximized target-main-window evidence.
-
-Window action boundary:
-
-- Activation/license/login/window-health audit uses the real reusable main
-  MWORKS/Sysplorer/Syslab window, foreground or maximized evidence, because
-  hidden login panes can be missed by background capture.
-- If audit finds no reusable main window, CoAgentOps opens MWORKS directly,
-  captures a first screenshot after 5 seconds, then continues a
-  bounded stability check before classifying the state. Do not close the run by
-  only reporting "window not open" when opening the window is the authorized
-  recovery action.
-- Ordinary non-activation screenshots and approved low-risk background clicks
-  do not need maximization. Prefer the background Win32 `PrintWindow` route
-  `Scripts/tools/capture_window_background.ps1`; this is not a Windows MCP
-  foreground desktop screenshot. If the target was minimized and a full-window
-  review is required, use `-RestoreMinimized -Maximize -MaximizeWaitMs 500
-  -MinimizeAfter`, verify manifest `dpi_awareness` and physical capture size,
-  and leave the window minimized afterward.
-- If ordinary background capture shows blank, wrong, or ambiguous content,
-  retry once after a short wait; only then escalate to foreground/maximized
-  review or a blocker.
-
-Do not close, restart, open fresh MWORKS windows, or click login/activation/
-save/error-report controls from delegated MWORKS departments. PMO/CoAgentOps
-may perform bounded recovery only after blocker evidence or explicit approval.
-
-## 8. Packet Template
-
-Task packets should be instantiated as JSON before dispatch. Use
-`CoAgent/protocol/templates/visible_thread_dispatch_packet.json` as the
-machine-checkable starting point for visible-thread dispatch. The sibling
-`visible_thread_dispatch_packet.yaml` is a human-readable scaffold only and
-must not be passed directly to the JSON checker.
-
-The JSON task packet should include this control-plane envelope:
-
-```yaml
-request_id: <stable id>
-origin_thread: MoSim｜主线 PMO
-origin_thread_id: 019e9868-83ea-70f0-92c5-a3a408bd78c6
-target_thread: <target visible thread title>
-target_thread_id: <target visible thread id>
-responsible_department: <owner>
-task_id: <task id>
-native_surface_gate:
-  selected_native_surface: [visible_thread, coagent_packet_glue]
-  surface_selection_reason: <why this route is the narrowest safe route>
-  rejected_surfaces:
-    subagent: <why disposable context is insufficient, or empty if not applicable>
-  worktree_required: false
-  worktree_decision: <why no isolated worktree is required, or binding if required>
-semantic_boundary:
-  decision_scope: <scope enum>
-  state_class: <state enum>
-  evidence_minimum:
-    - <required evidence>
-  allowed_actions:
-    - <allowed action>
-  forbidden_actions:
-    - <forbidden action>
-  stop_triggers:
-    - <stop trigger>
-  next_owner: <owner enum>
-read_scope: []
-write_scope: []
-expected_return_path: Results/agent_packets/returns/<request_id>.json
-blocker_return_path: Results/agent_packets/blockers/<request_id>.json
-definition_of_done: <observable completion condition>
+```text
+screenshot/capture evidence does not imply click/action authority
+background capture does not prove login/license/authorization success
+foreground/maximized evidence may be required by host adapters
 ```
 
-Run these checks for new packeted dispatch/recovery work:
+Host adapters define domain-specific window/session state classes, live
+resource ownership, screenshot requirements, and allowed/forbidden UI actions.
+The portable default is stop-and-block on unknown, login/license/auth,
+crash/error-report, destructive, or manually ambiguous UI surfaces.
+
+## 12. Packet And Checker Requirements
+
+Task packets should start from:
+
+```text
+CoAgent/protocol/templates/visible_thread_dispatch_packet.json
+```
+
+Dispatch tickets should start from:
+
+```text
+CoAgent/protocol/templates/visible_thread_dispatch_ticket.json
+```
+
+New visible-thread dispatch/recovery work must pass the host's relevant
+checkers. At minimum, use the native-surface and dispatch-ticket validators
+when present:
 
 ```powershell
-python Scripts\quality\check_agent_task_native_surface_gate.py `
-  Results\agent_packets\<request_id>.json --strict
-python Scripts\quality\check_agent_task_native_surface_gate.py `
-  CoAgent\protocol\templates\visible_thread_dispatch_packet.json --strict
-python Scripts\quality\check_department_packet_contract.py `
-  Results\agent_packets\returns\<request_id>.json
+python Scripts\quality\check_agent_task_native_surface_gate.py <packet.json> --strict
+python Scripts\quality\check_dispatch_ticket_slo.py <ticket.json>
 ```
 
-MWORKS department packets must also pass `check_mworks_live_gate.py` with the
-right `--expect` mode.
+Host domains may add stricter checkers, such as live-resource gates or
+department-specific return contracts.
 
-## 9. Board And Ledger Responsibility
+## 13. Board And Ledger Responsibility
 
-`Docs/Workflows/mainline_operations_board.md` is the PMO current operating
-surface. It records current P0 partition state, waiting returns, blockers,
-manual decisions, integrable results, next PMO actions, and forbidden actions.
-CoAgentOps patrol must report idle/blocked/recovery findings back into PMO's
-dispatch queue through that board or a directly referenced packet.
+The current operating board records current queue state, waiting returns,
+blockers, manual decisions, integrable results, next actions, and forbidden
+actions. CoAgentOps may update only host-authorized control-plane areas. It
+must not change product priority, accept/reject conclusions, or final
+integration judgments.
 
-CoAgentOps may update only these fixed board areas during patrol:
+Detailed dispatch timing, ticket paths, checkpoint due times, and observations
+belong in JSON tickets or recovery packets. A board should show only a compact
+watchlist view.
+
+Historical/recovery ledgers are not routine startup context. Read them only
+when a current board item, packet, or recovery question references them.
+
+## 14. Human Review Triggers
+
+Escalate rather than acting when:
 
 ```text
-P0 partition state
-Dispatch SLO watchlist
-Ops/recovery state
-Support lane state
+semantic evidence is missing
+packet fields are incomplete
+route status or native surface is uncertain
+host adapter is absent or contradictory
+PMO/user priority decision is needed
+approval/review/provider surface is present
+live GUI/runtime/manual-review risk is present
+restart/replacement/automation lifecycle change is required
 ```
 
-CoAgentOps must not change product priority, PMO accept/reject conclusions, or
-final integration judgments. When such a decision is needed, write a packet or
-board note that clearly assigns the next owner to PMO/user.
-
-`Docs/Workflows/agent_task_ledger.md` is a historical/recovery ledger. It keeps
-durable delegated-task history, restart/recovery context, and trace-back rows.
-It is not the normal PMO real-time board and should not be loaded as a full
-routine context entry.
-
-When the ledger becomes too large, split older completed rows into archive
-files without changing current packet paths:
-
-```text
-Docs/Workflows/mainline_operations_board.md      current PMO operating board
-Docs/Workflows/agent_task_ledger.md              historical/recovery rows
-Docs/Archive/agent_task_ledger_2026_H1.md        archived completed rows
-```
-
-Fresh conversations should read the PMO board, newest `PROGRESS.md` entries,
-and packets named by the board. Ledger rows are consulted only when a current
-board item, packet, or recovery question references them.
-
-## 10. Constraint Ownership Review Table
-
-| Constraint | AGENTS hard boundary | Workflow | Packet template | JSON schema | Quality checker |
-|---|---|---|---|---|---|
-| Workspace, secrets, destructive operations, live GUI safety | yes | pointer only | no | no | preflight hooks |
-| PMO final authority and CoAgentOps bounded authority | yes | yes | yes | no | semantic/native gate |
-| Dead-thread recovery and restart order | pointer | yes | yes | optional fields | semantic/native gate |
-| Approval/review/provider classification | pointer | yes | yes | `semantic_boundary` | semantic checker |
-| MWORKS window/session classification | pointer | yes | yes | `semantic_boundary`, `mworks_live_gate` | native gate plus MWORKS gate |
-| `native_surface_gate` and return/blocker paths | pointer | yes | yes | explicit fields | native gate |
-| `semantic_boundary` fields | pointer | yes | yes | explicit fields | native gate and packet contract |
-| Documentation secretary routing | pointer | yes | no | no | stale-name search |
-| PMO board and historical ledger boundary | pointer | yes | no | no | stale-entry search plus PMO review |
-
-## 11. Still Needs Human Review
-
-- Whether to make `semantic_boundary` mandatory for every historical packet, or
-  only for newly dispatched packets and current returns.
-- When to physically archive old completed rows out of
-  `Docs/Workflows/agent_task_ledger.md`.
-- Whether the Codex++ restart surface remains acceptable for all persistent
-  dead-thread incidents.
-- Whether CoAgentOps bounded dispatch should stay limited to one task per
-  patrol run or use a stricter active-capacity budget.
+The correct output in those cases is a blocker, recovery packet, or PMO/user
+question with the missing gate named explicitly.

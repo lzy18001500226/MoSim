@@ -25,21 +25,28 @@ If the work is owned by a MWORKS/Sysplorer/Syslab department, reference the
 latest CoAgentOps 10-minute activation/window patrol when available. Return or
 blocker packets should include `mworks_activation_patrol_reference`,
 `mworks_activation_patrol_age_minutes` when known,
-`will_not_click_activation_login=true`, and `live_mworks_touched`. Do not turn
-report/visualization work into repeated activation probing or accept sentinel
-JSON as the report artifact.
+`will_not_click_activation_login=true` for engineering departments,
+`bounded_login_recovery_authorized_for_pmo_or_coagentops` when applicable, and
+`live_mworks_touched`. Do not turn report/visualization work into repeated
+activation probing or accept sentinel JSON as the report artifact.
 
 If no recent patrol exists and the work needs live MWORKS GUI/result-viewer
 evidence, run at most one bounded current-turn sentinel/API check or return a
 blocker. If the patrol or current task evidence shows demo, login, activation,
 authorization, mixed blocking state, unavailable tooling, unknown blocking
-state, or GUI error-report state, stop MWORKS/report evidence work and return a
-`status=blocked` blocker. For live report/result-viewer/plot/animation work,
-capture the necessary foreground/maximized or phase screenshots after
-plot/result-viewer/animation phases and return `mworks_phase_screenshots` plus
-`mworks_phase_observations`. If a phase screenshot shows activation/license/
-login/authorization/GUI-error state, treat it as a P0 MWORKS infrastructure
-incident and stop live evidence work.
+state, or GUI error-report state, engineering departments stop MWORKS/report
+evidence work and return a `status=blocked` blocker. PMO/CoAgentOps may perform
+bounded official login recovery only when user-authorized, with
+foreground/maximized target-window evidence, credential redaction, and the
+MoSim stop conditions. For live report/result-viewer/plot/animation work,
+ordinary phase screenshots use DPI-aware background capture with
+`-RestoreMinimized -MinimizeAfter`, size/nonblank validation, and no maximize.
+Use foreground/maximized screenshots only for activation/login/license/
+authorization evidence or explicitly requested full-window review. Return
+`mworks_phase_screenshots`, `mworks_phase_observations`, and
+`screenshot_manifest`. If a phase screenshot shows activation/license/login/
+authorization/GUI-error state, treat it as a P0 MWORKS infrastructure incident
+and stop live evidence work.
 
 ## Workflows
 

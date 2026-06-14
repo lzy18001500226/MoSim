@@ -9,6 +9,7 @@
 #include "ProceduralMeshComponent.h"
 #include "QuadrotorMworksMapActor.h"
 #include "QuadrotorMworksPlaybackComponent.h"
+#include "QuadrotorRotorAudioComponent.h"
 #include "QuadrotorMworksUdpReceiverComponent.h"
 #include "UObject/UObjectGlobals.h"
 #include "UObject/ConstructorHelpers.h"
@@ -111,6 +112,7 @@ AQuadrotorMworksPlaybackActor::AQuadrotorMworksPlaybackActor()
 
     Receiver = CreateDefaultSubobject<UQuadrotorMworksUdpReceiverComponent>(TEXT("MworksUdpReceiver"));
     Playback = CreateDefaultSubobject<UQuadrotorMworksPlaybackComponent>(TEXT("MworksPlayback"));
+    RotorAudio = CreateDefaultSubobject<UQuadrotorRotorAudioComponent>(TEXT("RotorAudio"));
 }
 
 void AQuadrotorMworksPlaybackActor::BeginPlay()

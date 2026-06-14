@@ -7,8 +7,10 @@ evidence_level: real_sysplorer_mcp_sysblock_robust_rotor_loss_ablation
 model:
   source_package: QuadrotorExperiments
   model_name: QuadrotorExperiments.Example1Rotor1Loss15AWFFSysblockClosedLoop
-  model_path_hint: Models/QuadrotorExperiments/Example1Rotor1Loss15AWFFSysblockClosedLoop.mo
+  model_path_hint: Models/QuadrotorExperiments/RobustFaultScenarios/RotorLoss/Example1Rotor1Loss15AWFFSysblockClosedLoop.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  extra_model_files:
+    - Models/QuadrotorControllerBlocks/package.mo
   official_description: 阶梯爬升 1号旋翼升力效率85% AWFF Sysblock
 
 controller:

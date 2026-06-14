@@ -82,7 +82,9 @@ Use Sysplorer MCP tools in this order:
 
 ```text
 activation sentinel / maximized target-window screenshot
-  → stop on demo/login/license/error-report/visible unknown/unavailable state
+  -> if clean, continue
+  -> if login/license blocks live work, route bounded recovery to PMO/CoAgentOps
+  -> stop on authorization error, GUI error-report, visible unknown, unavailable, or unsafe recovery state
 session_manager
   → load_library
   → model_manager
@@ -301,15 +303,36 @@ powershell -NoProfile -ExecutionPolicy Bypass `
   -OutDir Results\mworks_background_capture\<request_id>
 ```
 
-If the sentinel or screenshot shows demo edition, missing activation,
-login/activation prompt, authorization failure, GUI error-report dialog, mixed
-license state, visible unknown window, unavailable tooling, or unknown sentinel
-state, stop live MWORKS work and return a `license_or_login` or GUI blocker.
-Hidden Qt/browser-proxy/helper windows with no license/error text are risk
-evidence, not standalone blockers. Do not open a new MWORKS window, click
-login/activation/error-report controls, or tune solver/model code.
-For activation/license/login/authorization/GUI-error incidents, PMO must send
-a sparse email alert for the open incident. WeChat is optional and
+If the sentinel or screenshot shows a login/license/activation prompt, the
+engineering department stops model/check/simulation work and returns a
+`license_or_login` blocker to PMO/CoAgentOps. PMO/CoAgentOps may recover the
+official MWORKS/Sysplorer/Syslab login only under the bounded recovery rules
+below; ordinary MWORKS R1/R2/R3 tasks must not type credentials or click login.
+
+Bounded login recovery is allowed only for MWORKS/Sysplorer/Syslab activation
+or account prompts that block live simulation:
+
+```text
+1. Use foreground or maximized target-main-window evidence before recovery.
+2. Use only the user-provided secure credential source; never write credentials
+   into docs, logs, packets, screenshot manifests, email, or terminal output.
+3. Do not capture screenshots with password text visible.
+4. After login, capture foreground/maximized evidence that the target window is
+   back to a usable main-window state, then return to the normal background
+   phase-screenshot route.
+5. Stop and escalate on MFA/captcha, account/password error, abnormal
+   authorization, unknown modal/window, crash/error-report, save/overwrite
+   prompt, non-MWORKS credential surface, or any uncertainty about the target.
+```
+
+If the sentinel or screenshot shows authorization failure, GUI error-report
+dialog, mixed blocking license state, visible unknown window, unavailable
+tooling, or unknown sentinel state, stop live MWORKS work and return a
+`license_or_login` or GUI blocker. Hidden Qt/browser-proxy/helper windows with
+no license/error text are risk evidence, not standalone blockers. Do not tune
+solver/model code while a login/license/GUI incident is open.
+For activation/license/login/authorization/GUI-error incidents, PMO must send a
+sparse email alert for the open incident. WeChat is optional and
 diagnostic-only unless the user explicitly asks for it.
 
 The task return or blocker packet must include:
@@ -320,7 +343,8 @@ gui_sentinel_before
 background_screenshot_before
 activation_state_observation
 license_state
-will_not_click_activation_login=true
+will_not_click_activation_login=true for engineering departments
+bounded_login_recovery_authorized_for_pmo_or_coagentops
 mworks_window_evidence_touched=true
 live_mworks_touched
 mworks_phase_screenshots when live_mworks_touched=true
@@ -329,10 +353,42 @@ mworks_phase_observations when live_mworks_touched=true
 
 For live simulation, continue background screenshots during the task, not only
 at preflight. Capture and inspect phase screenshots after model load/check and
-after simulate/plot/animation phases when those phases run. If a phase
-screenshot shows a missing/changed window, activation/login prompt,
-authorization issue, GUI error-report dialog, or demo/mixed license state,
-stop live work and return a blocker instead of continuing solver/model trials.
+after simulate/plot/animation phases when those phases run. Ordinary phase
+screenshots use DPI-aware background capture and must keep the target paintable:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass `
+  -File Scripts\tools\capture_window_background.ps1 `
+  -TitleRegex "Sysplorer|MWORKS|Quadrotor|AWFF" `
+  -OutDir Results\mworks_background_capture\<request_id> `
+  -RestoreMinimized `
+  -MinimizeAfter
+```
+
+Do not use `-Maximize` for ordinary phase screenshots. Use maximize/foreground
+only for activation/login/license/authorization evidence or when a task packet
+explicitly requests full-window graphical review.
+
+Every formal simulation result bundle should include:
+
+```text
+Results/<group>/<scene>/<experiment>/screenshots/
+Results/<group>/<scene>/<experiment>/logs/screenshot_manifest.json
+```
+
+The manifest records phase, capture mode, target title/process, source capture
+path, copied/indexed evidence path, width, height, DPI-awareness mode,
+blank/cropped/ambiguous status, and reviewer observation. If a phase screenshot
+is blank, cropped, wrong-window, or ambiguous, retry once with a safer capture
+mode. If activation/license evidence fails, stop. If ordinary phase evidence
+fails but MCP result export is valid, record `screenshot_incomplete=true` and
+do not claim GUI/layout/animation acceptance from that phase. If graphical
+layout or wiring evidence fails, do not claim graphical acceptance.
+
+If a phase screenshot shows a missing/changed window, activation/login prompt,
+authorization issue, GUI error-report dialog, or demo/mixed license state, stop
+live work and route the incident through the bounded recovery/blocker path
+instead of continuing solver/model trials.
 
 Run the packet through the department gate before accepting it:
 

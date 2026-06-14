@@ -27,6 +27,7 @@ package QuadrotorControllerBlocks
       "AWFF 扁平图形化完整控制器"
       extends QuadrotorControllerBlocks.AWFF_FullControllerFlatGraphical_Sysblock;
     end FullControllerFlatGraphical;
+    annotation(__MWORKS(version="26.3.0"));
   end AWFFPidBlocks;
 
   package InnovationControllers
@@ -43,6 +44,7 @@ package QuadrotorControllerBlocks
       "创新控制器图形化总览入口"
       extends QuadrotorControllerBlocks.AWFF_InnovationGraphicalControllers;
     end InnovationGraphicalOverview;
+    annotation(__MWORKS(version="26.3.0"));
   end InnovationControllers;
 
   package FaultAllocationControllers
@@ -71,6 +73,7 @@ package QuadrotorControllerBlocks
       "线性 MPC 多故障分配入口"
       extends QuadrotorControllerBlocks.AWFF_LinearMPCMultiFaultAllocationController_Sysblock;
     end LinearMPCMultiFaultAllocation;
+    annotation(__MWORKS(version="26.3.0"));
   end FaultAllocationControllers;
 
   package LinearMPCControllers
@@ -79,6 +82,7 @@ package QuadrotorControllerBlocks
       "标称线性 MPC-style 外环方程入口"
       extends QuadrotorControllerBlocks.AWFF_LinearMPCOuterLoopControllerEquation_Sysblock;
     end OuterLoopEquation;
+    annotation(__MWORKS(version="26.3.0"));
   end LinearMPCControllers;
 
   package SafetyControllers
@@ -87,6 +91,7 @@ package QuadrotorControllerBlocks
       "QP/NMPC-style 安全控制器入口"
       extends QuadrotorControllerBlocks.AWFF_QPNMPCSafetyController_Sysblock;
     end QPNMPCSafety;
+    annotation(__MWORKS(version="26.3.0"));
   end SafetyControllers;
 
   package DemosAndSIL
@@ -99,9 +104,12 @@ package QuadrotorControllerBlocks
       "AWFF PID 常量输入 SIL 演示入口"
       extends QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo_SIL_Constant;
     end PIDDemoSILConstant;
+    annotation(__MWORKS(version="26.3.0"));
   end DemosAndSIL;
 
   package CompatibilityAndLegacy
     "兼容与废弃候选保留区；本轮不放入主动模型"
+    annotation(__MWORKS(version="26.3.0"));
   end CompatibilityAndLegacy;
+  annotation(__MWORKS(version="26.3.0"));
 end QuadrotorControllerBlocks;

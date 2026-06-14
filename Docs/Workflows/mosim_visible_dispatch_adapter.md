@@ -146,7 +146,9 @@ mworks_live_gate:
     - mworks_activation_patrol_age_minutes when known
     - mworks_phase_screenshots
     - mworks_phase_observations
-    - will_not_click_activation_login=true
+    - will_not_click_activation_login=true for engineering departments
+    - bounded_login_recovery_authorized_for_pmo_or_coagentops when applicable
+    - screenshot_manifest for formal live simulation result bundles
     - live_mworks_touched
   blocker_on:
     - demo edition
@@ -197,16 +199,18 @@ MWORKS window action split:
   If no reusable main window exists, CoAgentOps opens MWORKS directly and then
   captures/rechecks; it must not end the patrol by only reporting that the
   window is missing.
-- Ordinary non-activation phase screenshots, diagram/layout captures, and
-  approved low-risk background clicks should use the background Win32
-  `PrintWindow` route and normally do not maximize the window. The canonical
-  script is `Scripts/tools/capture_window_background.ps1`; it is not a Windows
-  MCP foreground desktop screenshot. If the target was minimized and full-window
-  review is required, use `-RestoreMinimized -Maximize -MaximizeWaitMs 500
-  -MinimizeAfter`, then verify the manifest `dpi_awareness`, physical
-  `capture_width`/`capture_height`, and that the window was minimized after
-  capture. If the task only needs ordinary background evidence, do not maximize
-  solely for appearance.
+- Ordinary non-activation phase screenshots and ordinary result/animation
+  evidence should use the background Win32 `PrintWindow` route and should not
+  maximize the window. The canonical script is
+  `Scripts/tools/capture_window_background.ps1`; it is not a Windows MCP
+  foreground desktop screenshot. If the target was minimized, use
+  `-RestoreMinimized -MinimizeAfter` so the client area can paint, then verify
+  the manifest `dpi_awareness`, physical `capture_width`/`capture_height`,
+  nonblank content, and that the window was minimized after capture.
+- Diagram/layout captures that explicitly require full wiring/layout review may
+  use foreground or maximized evidence when the task packet says so, because
+  composited panes can defeat background capture. Do not use `-Maximize` for
+  ordinary load/check/simulate/plot/result/animation phase screenshots.
 - Cold start screenshots are first evidence only. A first screenshot shortly
   after launch may show blank/loading content; take the first screenshot after
   5 seconds, then use bounded follow-up screenshots or sentinel/window evidence
@@ -236,7 +240,14 @@ helper/proxy window, or incomplete background `PrintWindow` output. If no main
 window exists, CoAgentOps opens MWORKS directly and rechecks. If the official
 login action does not return or cannot complete on the existing window,
 PMO/CoAgentOps may reopen MWORKS and log in through the official UI as a
-bounded recovery.
+bounded recovery. Use only the approved secure credential source. Never write
+account names, passwords, authorization codes, tokens, or other credentials to
+docs, logs, packets, screenshot manifests, emails, or terminal output. Do not
+capture screenshots while password text is visible. Stop and return a blocker
+on MFA/captcha/scan-code/manual approval, account/password error, abnormal
+authorization, unknown modal/window, non-MWORKS credential surface,
+crash/error-report, save/overwrite prompt, restart/send-report/close prompts,
+or any title/control mismatch.
 
 `license_state`, when reported, must be a concrete classification, for example
 `education_window_observed_activation_unverified`,

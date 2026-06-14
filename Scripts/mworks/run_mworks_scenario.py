@@ -4,6 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import csv
+import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -18,6 +21,8 @@ except ImportError:  # pragma: no cover
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MODEL_FILE = ROOT / "References/MWORKS/QuadrotorModel/package.mo"
 DEFAULT_EXTRA_MODEL_FILE = ROOT / "Models/QuadrotorExperiments/package.mo"
+MINIMAL_DYNAMICS_BUILD_ROOT = ROOT / "Results/generated_mworks/minimal_dynamics_only"
+MINIMAL_DYNAMICS_STRATEGY = "minimal_dynamics_only"
 
 
 def to_windows_path(path: Path) -> str:
@@ -89,6 +94,73 @@ def windows_path(repo_path: str, *, default: Path | None = None) -> str:
     return to_windows_path(ROOT / repo_path)
 
 
+def copy_tree_files(source: Path, target: Path) -> None:
+    if not source.exists():
+        raise FileNotFoundError(f"Minimal Dynamics source directory not found: {source}")
+    target.mkdir(parents=True, exist_ok=True)
+    for item in sorted(source.iterdir()):
+        if item.is_file() and item.suffix in {".mo", ".order"}:
+            shutil.copy2(item, target / item.name)
+
+
+def write_minimal_root_package(path: Path, *, package_name: str, description: str, uses: list[str]) -> None:
+    uses_text = ""
+    if uses:
+        uses_lines = ",\n    ".join(uses)
+        uses_text = f"\n  annotation(uses(\n    {uses_lines}));"
+    text = (
+        f"package {package_name}\n"
+        f"  \"{description}\"\n\n"
+        "  extends Modelica.Icons.Package;"
+        f"{uses_text}\n"
+        f"end {package_name};\n"
+    )
+    path.write_text(text, encoding="utf-8", newline="\n")
+
+
+def build_minimal_dynamics_load_tree() -> tuple[Path, Path]:
+    """Build a generated load tree that excludes Controllers/System/Planning packages.
+
+    The official project source remains under Models/. This tree is only a live
+    smoke loading surface so Sysplorer does not pull broad top-level packages
+    that can trigger upgrade-model UI.
+    """
+    dependency_root = MINIMAL_DYNAMICS_BUILD_ROOT / "QuadrotorExperiments"
+    formal_root = MINIMAL_DYNAMICS_BUILD_ROOT / "MoSimQuadrotorModel"
+
+    for root in [dependency_root, formal_root]:
+        root.mkdir(parents=True, exist_ok=True)
+
+    write_minimal_root_package(
+        dependency_root / "package.mo",
+        package_name="QuadrotorExperiments",
+        description="Generated minimal live-load dependency package for DynamicsUpgrade smoke tests",
+        uses=["Modelica(version = \"4.0.0.TY.1\")"],
+    )
+    (dependency_root / "package.order").write_text("DynamicsUpgrade\n", encoding="utf-8", newline="\n")
+    copy_tree_files(
+        ROOT / "Models/QuadrotorExperiments/DynamicsUpgrade",
+        dependency_root / "DynamicsUpgrade",
+    )
+
+    write_minimal_root_package(
+        formal_root / "package.mo",
+        package_name="MoSimQuadrotorModel",
+        description="Generated minimal live-load formal package for MoSimQuadrotorModel.Dynamics smoke tests",
+        uses=[
+            "Modelica(version = \"4.0.0.TY.1\")",
+            "QuadrotorExperiments",
+        ],
+    )
+    (formal_root / "package.order").write_text("Dynamics\n", encoding="utf-8", newline="\n")
+    copy_tree_files(
+        ROOT / "Models/MoSimQuadrotorModel/Dynamics",
+        formal_root / "Dynamics",
+    )
+
+    return dependency_root / "package.mo", formal_root / "package.mo"
+
+
 def default_result_base(config: dict[str, Any], experiment_id: str) -> Path:
     scene_id = str(config.get("scene_id", "") or "")
     controller_id = str(config.get("controller_id", "") or "")
@@ -116,6 +188,16 @@ def default_result_base(config: dict[str, Any], experiment_id: str) -> Path:
     return Path("Results") / "uncategorized" / experiment_id
 
 
+def is_formal_dynamics_smoke(config: dict[str, Any]) -> bool:
+    model = config.get("model", {})
+    if not isinstance(model, dict):
+        return False
+    return (
+        str(model.get("live_load_strategy", "")) == MINIMAL_DYNAMICS_STRATEGY
+        and str(config.get("evidence_level", "")) == "future_live_mworks_formal_dynamics_smoke_contract"
+    )
+
+
 def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[str]:
     experiment_id = str(config.get("experiment_id", args.scenario.stem))
     model = require_mapping(config, "model")
@@ -136,17 +218,26 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
     start_time = float(simulation.get("start_time_s", 0.0))
     target_time = f"{start_time:g},{stop_time:g}"
 
+    live_load_strategy = str(model.get("live_load_strategy", ""))
+    if live_load_strategy and live_load_strategy != MINIMAL_DYNAMICS_STRATEGY:
+        raise ValueError(f"Unsupported model.live_load_strategy `{live_load_strategy}` in {args.scenario}")
+
     model_file = windows_path(str(model.get("base_model_path_hint") or model.get("model_path_hint", "")), default=DEFAULT_MODEL_FILE)
     extra_model_files: list[str] = []
-    for extra_model_file in model.get("extra_model_files", []) or []:
-        extra_model_files.append(windows_path(str(extra_model_file)))
-    sysblock_controller_file = str(controller.get("sysblock_controller_file", ""))
-    if sysblock_controller_file:
-        extra_model_files.append(windows_path(sysblock_controller_file))
-    for extra_model_file in controller.get("extra_sysblock_controller_files", []) or []:
-        extra_model_files.append(windows_path(str(extra_model_file)))
-    if str(model.get("source_package", "")) != "QuadrotorModel":
-        extra_model_files.append(windows_path(str(model.get("model_path_hint", "")), default=DEFAULT_EXTRA_MODEL_FILE))
+    if live_load_strategy == MINIMAL_DYNAMICS_STRATEGY:
+        dependency_package, formal_package = build_minimal_dynamics_load_tree()
+        model_file = to_windows_path(dependency_package)
+        extra_model_files.append(to_windows_path(formal_package))
+    else:
+        for extra_model_file in model.get("extra_model_files", []) or []:
+            extra_model_files.append(windows_path(str(extra_model_file)))
+        sysblock_controller_file = str(controller.get("sysblock_controller_file", ""))
+        if sysblock_controller_file:
+            extra_model_files.append(windows_path(sysblock_controller_file))
+        for extra_model_file in controller.get("extra_sysblock_controller_files", []) or []:
+            extra_model_files.append(windows_path(str(extra_model_file)))
+        if str(model.get("source_package", "")) != "QuadrotorModel":
+            extra_model_files.append(windows_path(str(model.get("model_path_hint", "")), default=DEFAULT_EXTRA_MODEL_FILE))
 
     default_evidence_level = (
         str(config.get("evidence_level", ""))
@@ -182,6 +273,9 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
         "--evidence-level",
         evidence_level,
     ]
+    if is_formal_dynamics_smoke(config):
+        command.extend(["--variable-profile", "diagnostics_declared"])
+        command.extend(["--metrics-profile", "diagnostics_smoke"])
     if args.wrapper:
         command.extend(["--wrapper", args.wrapper])
     if args.no_gui_result_viewer:
@@ -224,6 +318,84 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
     return command
 
 
+def write_diagnostics_smoke_postprocess_summary(
+    config: dict[str, Any],
+    raw_file: Path,
+    metrics_file: Path,
+) -> None:
+    experiment_id = str(config.get("experiment_id", "diagnostics_smoke"))
+    result = require_mapping(config, "result")
+    summary_file = Path(
+        str(
+            result.get(
+                "postprocess_summary",
+                metrics_file.parent / f"{experiment_id}_postprocess_summary.json",
+            )
+        )
+    )
+    raw_path = raw_file if raw_file.is_absolute() else ROOT / raw_file
+    metrics_path = metrics_file if metrics_file.is_absolute() else ROOT / metrics_file
+    if not raw_path.exists():
+        raise FileNotFoundError(f"Diagnostics smoke raw CSV missing: {raw_file}")
+    if not metrics_path.exists():
+        raise FileNotFoundError(f"Diagnostics smoke metrics JSON missing: {metrics_file}")
+
+    with raw_path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        headers = list(reader.fieldnames or [])
+        row_count = sum(1 for _ in reader)
+    metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+    expected = [str(item) for item in result.get("expected_result_variables", []) or []]
+    extra_variables = result.get("extra_variables", {})
+    mapped_aliases = sorted(str(key) for key in extra_variables) if isinstance(extra_variables, dict) else []
+    missing_aliases = sorted(set(mapped_aliases) - set(headers))
+    payload = {
+        "schema": "mosim.mworks.diagnostics_smoke_postprocess_summary.v1",
+        "experiment_id": experiment_id,
+        "scene_id": config.get("scene_id", experiment_id),
+        "model_name": require_mapping(config, "model").get("model_name"),
+        "raw_file": str(raw_file),
+        "metrics_file": str(metrics_file),
+        "row_count": row_count,
+        "csv_headers": headers,
+        "expected_result_variables": expected,
+        "mapped_aliases": mapped_aliases,
+        "missing_mapped_aliases_in_csv": missing_aliases,
+        "metrics_profile": metrics.get("metrics_profile"),
+        "claim_role": metrics.get("claim_role"),
+        "valid": bool(metrics.get("valid", False)) and not missing_aliases,
+        "claim_boundary": [
+            "diagnostics smoke postprocess only",
+            "no trajectory replay generated",
+            "no tracking RMSE/performance claim",
+            "no controller acceptance claim",
+        ],
+    }
+    summary_path = summary_file if summary_file.is_absolute() else ROOT / summary_file
+    summary_path.parent.mkdir(parents=True, exist_ok=True)
+    summary_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
+
+    markdown_path = summary_path.with_suffix(".md")
+    lines = [
+        "# Diagnostics Smoke Postprocess Summary",
+        "",
+        f"Experiment: `{experiment_id}`",
+        f"Status: `{'passed' if payload['valid'] else 'failed'}`",
+        f"Raw rows: `{row_count}`",
+        f"Metrics profile: `{payload['metrics_profile']}`",
+        f"Claim role: `{payload['claim_role']}`",
+        "",
+        "This summary intentionally does not generate trajectory figures or replay assets.",
+        "",
+        "## CSV Headers",
+        "",
+    ]
+    lines.extend(f"- `{item}`" for item in headers)
+    lines.extend(["", "## Claim Boundary", ""])
+    lines.extend(f"- {item}" for item in payload["claim_boundary"])
+    markdown_path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+
+
 def run_postprocess(config: dict[str, Any]) -> None:
     experiment_id = str(config.get("experiment_id", ""))
     model = require_mapping(config, "model")
@@ -235,6 +407,10 @@ def run_postprocess(config: dict[str, Any]) -> None:
     figure_dir = Path(str(result.get("figure_dir", result_base / "figures")))
     replay_file = Path(str(result.get("replay_file", result_base / "replay" / f"{experiment_id}.json")))
     event_log_file = result.get("event_log_file")
+
+    if is_formal_dynamics_smoke(config):
+        write_diagnostics_smoke_postprocess_summary(config, raw_file, metrics_file)
+        return
 
     subprocess.run(
         [

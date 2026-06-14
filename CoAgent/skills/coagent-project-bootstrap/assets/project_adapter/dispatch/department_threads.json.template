@@ -1,0 +1,15 @@
+{
+  "schema": "coagent.project.department_threads.v1",
+  "project_name": {{PROJECT_NAME_JSON}},
+  "project_root": {{PROJECT_ROOT_JSON}},
+  "global_coagent_root": {{GLOBAL_COAGENT_ROOT_JSON}},
+  "generated_at": {{CREATED_AT_JSON}},
+  "status": "bootstrap_seed",
+  "routes": [],
+  "watch_targets": [],
+  "notes": [
+    "This is a project-local registry seed.",
+    "Add real thread ids only after the user or PMO creates/approves visible routes.",
+    "Do not copy another project's thread ids into this file."
+  ]
+}

@@ -21,6 +21,12 @@ package DynamicsUpgrade
     annotation(__MWORKS(hide=false));
   end RotorYawStepSmoke;
 
+  model RotorEffectivenessSmoke
+    "单桨效率退化烟测"
+    extends QuadrotorExperiments.DynamicsUpgrade.Sunray150RotorEffectivenessSmoke;
+    annotation(__MWORKS(hide=false));
+  end RotorEffectivenessSmoke;
+
   model WrapperSurface
     "动力学包装接口：电机命令到合力/合矩"
     extends QuadrotorExperiments.DynamicsUpgrade.Sunray150DynamicsWrapperSurface;

@@ -27,11 +27,13 @@ The goal is to answer:
 | Agent systems | `References/Agent/` | Multi-agent architecture, runtime, memory, transport, workflow, skill/operator systems, safety/eval, SDK, UI, and orchestration references |
 | UE / AirSim / simulator stacks | `References/AirSim/` | UE-based simulator and planner integration references |
 | Blender / material references | `References/Blender` | Blender source, ArmorPaint, material/PBR, UV, and asset-preparation references |
+| Gazebo source snapshots | `References/Gazebo/` | Gazebo / gazebosim source snapshots for simulator architecture, SDFormat, physics, sensors, rendering, transport, ROS bridge, tools, and docs; update workflow: `Docs/Workflows/reference_snapshot_update.md` |
 | Logs / identification | `References/Log/` | PX4 logs, ULog tooling, ESC test, system identification, data-driven dynamics references |
 | Planning / mapping labs | `References/Lab/` | EGO-Planner, FAST-LIO, GCOPTER, racing, swarm, mapping references |
 | Official MWORKS materials | `References/MWORKS/` | Official competition case, docs, training materials, and reference examples |
 | PX4 source | `References/PX4/` | Flight-stack and control/runtime reference |
 | RflySim materials | `References/RflySim/` | RflySim packages and scene reference |
+| ROS2 source snapshots | `References/ROS2/` | ROS2 organization source snapshots for client libraries, RMW/DDS layers, interfaces, launch, CLI, RViz, rosbag2, bridge, tracing, docs, and selected integration references; update workflow: `Docs/Workflows/reference_snapshot_update.md` |
 | Sunray source | `References/Sunray/` | Sunray simulation, scripts, formation, communication, and physical-model references |
 | Unreal scene projects | `References/UnrealScenes/` | Local editable UE scene projects for renderer/map work |
 | Device/vendor assets | `References/CUAV/` | CUAV images and vendor-side visual/material assets |

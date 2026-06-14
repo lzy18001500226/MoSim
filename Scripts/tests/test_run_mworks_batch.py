@@ -145,7 +145,7 @@ def test_include_inactive_official_scenarios() -> None:
     output = proc.stdout
     if "Skipped inactive: 0" not in output:
         raise AssertionError(output)
-    if "Scripts/mworks/run_mworks_scenario.py Config/scenarios/official/example2_awff_pid.yaml" not in output:
+    if "Scripts/mworks/run_mworks_scenario.py Config/scenarios/official/example2_awff_pid.yaml" not in output.replace("\\", "/"):
         raise AssertionError(output)
 
 

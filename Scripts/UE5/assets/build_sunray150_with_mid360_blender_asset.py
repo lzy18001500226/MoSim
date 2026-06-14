@@ -28,8 +28,15 @@ DAE_PATH = PROJECT_ROOT / "References" / "Sunray" / "simulation" / "sunray_simul
 TRI_BLADE_PROP_STL = PROJECT_ROOT / "References" / "Sunray" / "simulation" / "sunray_simulator" / "models" / "drone_models" / "sunray150_with_mid360" / "meshes" / "sunray_cw.stl"
 OUT_DIR = PROJECT_ROOT / "UE5" / "MoSimSceneLibrary" / "SourceAssets" / "Sunray150"
 DAE_UNIT_METER = 0.0254
-SDF_METER_TO_DAE_UNIT = 1.0 / DAE_UNIT_METER
-STL_MM_TO_DAE_UNIT = 0.001 / DAE_UNIT_METER
+STL_MM_TO_METER = 0.001
+MID360_BASE_RADIUS_M = 0.027
+MID360_BASE_DEPTH_M = 0.012
+MID360_BASE_SCALE_X = 1.08
+MID360_BASE_SCALE_Y = 0.82
+MID360_DOME_RADIUS_M = 0.023
+MID360_DOME_SCALE_X = 0.92
+MID360_DOME_SCALE_Y = 0.70
+MID360_DOME_SCALE_Z = 0.52
 
 NS = {"c": "http://www.collada.org/2005/11/COLLADASchema"}
 FBX_ASC_RE = re.compile(r"FBXASC(\d{3})")
@@ -325,10 +332,12 @@ def build_asset() -> dict:
             )
             continue
         matrix = inst["matrix"]
-        # DAE declares Y_UP and centimeter units. Keep unit scale in mesh data;
-        # only rotate from Y-up to Blender Z-up for review/export consistency.
+        # DAE declares Y_UP and meter=0.0254. Bake the DAE unit into the mesh
+        # data before FBX export so UE receives a meter-scale aircraft instead
+        # of an inch-unit aircraft interpreted as meters.
         y_up_to_z_up = Matrix.Rotation(math.radians(90.0), 4, "X")
-        transform = y_up_to_z_up @ matrix
+        dae_unit_to_meter = Matrix.Diagonal((DAE_UNIT_METER, DAE_UNIT_METER, DAE_UNIT_METER, 1.0))
+        transform = y_up_to_z_up @ dae_unit_to_meter @ matrix
         verts = []
         for v in geom["verts"]:
             tv = transform @ Vector(v)
@@ -354,11 +363,8 @@ def build_asset() -> dict:
         ("front_left", (0.053746, 0.053759, -0.014052)),
         ("back_right", (-0.053761, -0.053739, -0.014052)),
     ]
-    rotor_centers = [
-        (name, tuple(coord * SDF_METER_TO_DAE_UNIT for coord in center))
-        for name, center in rotor_centers_m
-    ]
-    prop_transform_base = Matrix.Diagonal((STL_MM_TO_DAE_UNIT, STL_MM_TO_DAE_UNIT, STL_MM_TO_DAE_UNIT, 1.0))
+    rotor_centers = rotor_centers_m
+    prop_transform_base = Matrix.Diagonal((STL_MM_TO_METER, STL_MM_TO_METER, STL_MM_TO_METER, 1.0))
     for rotor_name, center in rotor_centers:
         transform = Matrix.Translation(center) @ prop_transform_base
         verts = []
@@ -372,7 +378,7 @@ def build_asset() -> dict:
                 "faces": list(prop_faces),
                 "class": "Propeller",
                 "sdf_center_m": dict(rotor_centers_m)[rotor_name],
-                "dae_center": center,
+                "meter_center": center,
             }
         )
 
@@ -409,20 +415,30 @@ def build_asset() -> dict:
     else:
         cx, cy, cz = 0.0, 1.32, 2.35
 
-    bpy.ops.mesh.primitive_cylinder_add(vertices=96, radius=1.0, depth=0.42, location=(cx, cy, cz - 0.22))
+    bpy.ops.mesh.primitive_cylinder_add(
+        vertices=96,
+        radius=MID360_BASE_RADIUS_M,
+        depth=MID360_BASE_DEPTH_M,
+        location=(cx, cy, cz - MID360_BASE_DEPTH_M * 0.5),
+    )
     base = bpy.context.object
     base.name = "Sunray150_Mid360BaseSupplement"
-    base.scale.x = 1.08
-    base.scale.y = 0.82
+    base.scale.x = MID360_BASE_SCALE_X
+    base.scale.y = MID360_BASE_SCALE_Y
     base.data.materials.append(materials["Mid360BaseGrey"])
     objects.append(base)
 
-    bpy.ops.mesh.primitive_uv_sphere_add(segments=96, ring_count=32, radius=1.0, location=(cx, cy, cz + 0.12))
+    bpy.ops.mesh.primitive_uv_sphere_add(
+        segments=96,
+        ring_count=32,
+        radius=MID360_DOME_RADIUS_M,
+        location=(cx, cy, cz + MID360_DOME_RADIUS_M * MID360_DOME_SCALE_Z * 0.40),
+    )
     dome = bpy.context.object
     dome.name = "Sunray150_Mid360DomeSupplement"
-    dome.scale.x = 0.92
-    dome.scale.y = 0.70
-    dome.scale.z = 0.52
+    dome.scale.x = MID360_DOME_SCALE_X
+    dome.scale.y = MID360_DOME_SCALE_Y
+    dome.scale.z = MID360_DOME_SCALE_Z
     dome.data.materials.append(materials["Mid360DomeBlue"])
     objects.append(dome)
 
@@ -487,8 +503,8 @@ def build_asset() -> dict:
                 "source_rule": "Propeller remains an independent tri-blade STL runtime object so it can be reviewed/replaced without touching body or MID-360.",
                 "source": str(TRI_BLADE_PROP_STL),
                 "sdf_center_m": item["sdf_center_m"],
-                "dae_center": item["dae_center"],
-                "unit_rule": "SDF rotor centers are meters; tri-blade STL is millimeter-scale; both are converted into the DAE unit declared by 150.dae, meter=0.0254.",
+                "meter_center": item["meter_center"],
+                "unit_rule": "DAE vertices and node transforms are baked to meters using 150.dae unit meter=0.0254 before Blender/FBX export; SDF rotor centers are already meters; tri-blade STL is millimeter-scale and is converted with scale=0.001.",
             }
             for item in independent_meshes
         ],
@@ -496,12 +512,17 @@ def build_asset() -> dict:
             "Sunray150_Mid360BaseSupplement": {
                 "reason": "DAE MID-360 body shell is not visually complete after Blender 5.0 no-Collada fallback parsing.",
                 "material": "Mid360BaseGrey",
-                "center": [cx, cy, cz - 0.22],
+                "center_m": [cx, cy, cz - MID360_BASE_DEPTH_M * 0.5],
+                "radius_m": MID360_BASE_RADIUS_M,
+                "depth_m": MID360_BASE_DEPTH_M,
+                "scale_xy": [MID360_BASE_SCALE_X, MID360_BASE_SCALE_Y],
             },
             "Sunray150_Mid360DomeSupplement": {
                 "reason": "DAE blue optical cue imports as a near-flat strip, so add a review-grade blue optical dome proxy.",
                 "material": "Mid360DomeBlue",
-                "center": [cx, cy, cz + 0.12],
+                "center_m": [cx, cy, cz + MID360_DOME_RADIUS_M * MID360_DOME_SCALE_Z * 0.40],
+                "radius_m": MID360_DOME_RADIUS_M,
+                "scale_xyz": [MID360_DOME_SCALE_X, MID360_DOME_SCALE_Y, MID360_DOME_SCALE_Z],
             },
         },
         "palette": {k: v["rgba"] for k, v in PALETTE.items()},

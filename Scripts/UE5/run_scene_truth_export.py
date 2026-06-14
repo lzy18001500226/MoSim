@@ -16,12 +16,14 @@ from export_unreal_scene_truth import slug
 from plan_scene_truth_export import ROOT, plan_exports, quote, to_windows_path
 
 
-ENGINE_ROOT_BY_VERSION = {
-    "4.27": Path("/mnt/d/Program Files/Epic Games/UE_4.27"),
-    "5.4": Path("/mnt/d/Program Files/Epic Games/UE_5.4"),
-    "5.5": Path("/mnt/d/Program Files/Epic Games/UE_5.5"),
-    "5.7": Path("/mnt/d/Program Files/Epic Games/UE_5.7"),
-}
+def engine_roots(version: str) -> list[Path]:
+    return [
+        Path(f"D:/Program Files/Epic Games/UE_{version}"),
+        Path(f"/mnt/d/Program Files/Epic Games/UE_{version}"),
+    ]
+
+
+ENGINE_ROOT_BY_VERSION = {version: engine_roots(version)[0] for version in ["4.27", "5.4", "5.5", "5.7"]}
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -77,13 +79,13 @@ def resolve_editor_cmd(uproject_path: Path, engine_root: Path | None, editor_cmd
                 env_root_path / "Engine/Binaries/Win64/UE4Editor-Cmd.exe",
             ]
         )
-    version_root = ENGINE_ROOT_BY_VERSION[engine_version_for_project(uproject_path)]
-    candidates.extend(
-        [
-            version_root / "Engine/Binaries/Win64/UnrealEditor-Cmd.exe",
-            version_root / "Engine/Binaries/Win64/UE4Editor-Cmd.exe",
-        ]
-    )
+    for version_root in engine_roots(engine_version_for_project(uproject_path)):
+        candidates.extend(
+            [
+                version_root / "Engine/Binaries/Win64/UnrealEditor-Cmd.exe",
+                version_root / "Engine/Binaries/Win64/UE4Editor-Cmd.exe",
+            ]
+        )
     for candidate in candidates:
         if candidate.exists():
             return candidate

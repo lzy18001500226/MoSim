@@ -410,11 +410,12 @@ and make the sub-agent scheduling decision consistently.
 When PMO dispatches MWORKS R1/R2 work or a disposable MWORKS sub-agent that
 needs screenshots, include the current screenshot skill boundary: ordinary
 simulation/check/layout phase evidence should prefer the DPI-aware
-`capture_window_background.ps1 -RestoreMinimized -Maximize` route against the
-real main Sysplorer/MWORKS window, while activation/login/license/
-authorization and complete GUI acceptance still require foreground or
-maximized target-window visual evidence. PMO must not force every child thread
-to rediscover helper/proxy windows, DPI scaling, or the `PrintWindow` limits.
+`capture_window_background.ps1 -RestoreMinimized -MinimizeAfter` route against
+the real main Sysplorer/MWORKS window, while activation/login/license/
+authorization and explicitly requested complete GUI/wiring/layout acceptance
+still require foreground or maximized target-window visual evidence. PMO must
+not force every child thread to rediscover helper/proxy windows, DPI scaling,
+or the `PrintWindow` limits.
 If a MWORKS task produces a graphical simulation, wiring/layout, Smart Layout,
 result viewer, or animation artifact that needs audit, route the review to
 MWORKS R2 as a bounded review task. The expected output is the screenshot plus
@@ -1594,8 +1595,8 @@ graphical live audit remain blocked until attach-only validation exists.
 
 The return or blocker packet should carry `mworks_activation_patrol_reference`
 and, when known, `mworks_activation_patrol_age_minutes`, plus
-`will_not_click_activation_login=true` and `live_mworks_touched`. If no recent
-CoAgentOps patrol is available and the work is live MCP/GUI work, the
+`will_not_click_activation_login=true` for engineering departments and
+`live_mworks_touched`. If no recent CoAgentOps patrol is available and the work is live MCP/GUI work, the
 department may run one bounded current-turn sentinel/API check or return a
 blocker; it must not loop on activation checks, open a fresh MWORKS window, or
 produce only JSON/sentinel metadata as a completed engineering result. If the
@@ -1623,7 +1624,12 @@ that case. PMO/CoAgentOps first uses the existing maximized foreground window.
 If the official login action does not return or cannot complete on the existing
 window, PMO/CoAgentOps may reopen MWORKS and log in through the official UI as
 a bounded recovery. Successful recovery closes only the license/login dialog
-and keeps the reusable main window open when possible.
+and keeps the reusable main window open when possible. Use only the approved
+secure credential source; never write credentials to docs, logs, packets,
+screenshot manifests, email, or terminal output. Stop on MFA/captcha,
+account/password error, abnormal authorization, unknown modal/window,
+non-MWORKS credential surface, crash/error-report, save/overwrite prompt,
+restart/send-report/close prompt, or any title/control mismatch.
 
 Run the machine gate before dispatching or accepting MWORKS packets:
 

@@ -134,16 +134,21 @@ verified_evidence:
     raw_file: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.csv
     metrics_file: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/metrics/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.json
     mcp_log: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock_20260512.jsonl
-    row_count: 5001
+    row_count: 25001
     quality_status: pass
-    position_rmse_m: 0.25820987678817897
-    steady_state_error_m: 0.11495400361443171
-    disturbance_peak_error_m: 0.10852229247699297
-    disturbance_recovery_time_s: 2.530000000000001
-    total_health_score: 51.29889148883444
-    rmse_reduction_vs_linear_mpc_pct: 17.778
-    eta_hat_final: 0.90557548713665
-    eta_hat_tail_mean_45_50s: 0.9083956325514871
+    duration_s: 50.0
+    sample_rate_hz: 500.0
+    position_rmse_m: 0.1675687242474305
+    max_position_error_m: 0.6938188238421894
+    steady_state_error_m: 0.1309865010516861
+    settling_time_s: 3.0060000000000002
+    disturbance_peak_error_m: 0.1160462800047718
+    disturbance_recovery_time_s: 2.490000000000002
+    total_health_score: 62.536015057605155
+    rmse_reduction_vs_linear_mpc_pct: 46.64112813132643
+    eta_hat_final: 0.8618845368208018
+    eta_hat_tail_mean_45_50s: 0.8632038045085464
+    quality_checked_at: 2026-06-12T05:32:10
 
   rotor_wind_gust_multi_rotor_full:
     scenario_files:

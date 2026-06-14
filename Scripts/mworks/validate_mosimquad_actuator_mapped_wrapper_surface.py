@@ -54,6 +54,8 @@ REQUIRED_MAPPED_WRAPPER_ANCHORS = [
     "commanded_yaw_moment_gate = wrapper.commanded_yaw_moment_gate",
     "motor_order_gate_error = wrapper.motor_order_gate_error",
     "yaw_direction_gate_error = wrapper.yaw_direction_gate_error",
+    "minimum_thrust_effectiveness = wrapper.minimum_thrust_effectiveness",
+    "minimum_reaction_moment_effectiveness = wrapper.minimum_reaction_moment_effectiveness",
 ]
 
 REQUIRED_MAPPER_ANCHORS = [
@@ -78,13 +80,18 @@ REQUIRED_WRAPPER_ANCHORS = [
     "Real total_moment_body[3](each unit = \"N.m\")",
     "Real commanded_total_thrust(unit = \"N\")",
     "Real commanded_total_moment_body[3](each unit = \"N.m\")",
+    "Real minimum_thrust_effectiveness",
+    "Real minimum_reaction_moment_effectiveness",
     "Real motor_order_gate_error",
     "Real yaw_direction_gate_error",
     "dynamics.motor_command = motor_command",
-    "commanded_thrust[i] = dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
+    "commanded_thrust[i] = dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
+    "commanded_yaw_reaction_moment[i] = dynamics.yaw_direction[i] * dynamics.reaction_moment_effectiveness[i] * dynamics.moment_constant * commanded_thrust[i]",
     "total_thrust = dynamics.total_thrust",
     "total_moment_body = dynamics.total_moment_body",
     "commanded_total_thrust = sum(commanded_thrust)",
+    "minimum_thrust_effectiveness = dynamics.minimum_thrust_effectiveness",
+    "minimum_reaction_moment_effectiveness = dynamics.minimum_reaction_moment_effectiveness",
     "motor_order_gate_error = sum({abs(dynamics.rotor_center[i, j] - expected_rotor_center[i, j]) for i in 1:4, j in 1:3})",
     "yaw_direction_gate_error = sum({abs(dynamics.yaw_direction[i] - expected_yaw_direction[i]) for i in 1:4})",
 ]
@@ -277,7 +284,7 @@ def write_markdown(path: Path, check: dict[str, Any]) -> None:
         "",
         "- Mapper-to-wrapper chain: `actuator_mapper.normalized_command = normalized_actuator_command` and `wrapper.motor_command = actuator_mapper.signed_visual_rotor_speed_command` remain in the legacy implementation.",
         "- Mapper observability: `saturated_normalized_command`, `actuator_saturation_error`, and `signed_visual_rotor_speed_command` remain exposed.",
-        "- Wrapper observability: `total_thrust`, `total_moment_body`, `commanded_total_thrust`, `commanded_total_moment_body`, hover/yaw gates, motor-order gate, and yaw-direction gate remain exposed.",
+        "- Wrapper observability: `total_thrust`, `total_moment_body`, `commanded_total_thrust`, `commanded_total_moment_body`, hover/yaw gates, effectiveness monitors, motor-order gate, and yaw-direction gate remain exposed.",
         "- Legacy mapper and wrapper implementations remain separate source anchors and were not edited by 030.",
         "",
         "## Claim Boundary",

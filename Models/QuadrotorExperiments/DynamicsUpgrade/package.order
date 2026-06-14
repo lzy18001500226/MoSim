@@ -1,6 +1,7 @@
 RotorDynamicsCore
 RotorHoverSmoke
 RotorYawStepSmoke
+RotorEffectivenessSmoke
 WrapperSurface
 ActuatorCommandMapper
 ActuatorMappedWrapperSurface

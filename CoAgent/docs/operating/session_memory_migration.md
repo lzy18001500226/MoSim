@@ -1,76 +1,65 @@
 # Session Memory Migration Workflow
 
-> Conservative no-loss migration landing. This file was seeded from
-> `Docs/Workflows/session_memory_migration.md` on 2026-06-10 so cache-first
-> anti-pollution and multi-round promotion rules are not lost while CoAgent is
-> made portable. It is currently a mixed portable-core + MoSim-adapter copy. Do
-> not slim this file or its MoSim compatibility source until
-> `CoAgent/docs/operating/MIGRATION_MAP.md` records each removed block as exact,
-> equivalent, intentionally host-local, or obsolete.
+> Portable CoAgent workflow for turning old conversation context into reviewed
+> project memory without letting stale chat become current truth.
 
-> Purpose: migrate important context from long Codex conversations into MoSim
-> project documents without letting stale or wrong historical conclusions pollute
-> the current engineering source of truth.
+Status: split-audited portable core, 2026-06-10 CST.
 
-This workflow applies to the long conversation currently named around
-`MoSim|四旋翼无人机仿真系统` / `四旋翼无人机图形化仿真系统`, and to any later
-high-context Codex App / VSCode / CLI thread that must be summarized before
-starting a new conversation.
+Host projects must provide their own cache folders, formal target documents,
+and project-specific risk examples. For the MoSim host adapter, use
+`Docs/Workflows/session_memory_migration.md` and
+`Docs/Index/project_work_memory_index.md`.
 
-## Core Rule
+## 1. Core Rule
 
 No historical chat item may be promoted directly into a formal design,
-workflow, parameter, model, or evidence document.
+workflow, parameter, model, operating, or evidence document.
 
 Every item must pass at least three rounds:
 
 ```text
-round 1: capture in cache as a candidate
+round 1: capture as a sourced candidate
 round 2: verify against current project files, evidence, and contradictions
-round 3: re-verify narrow final wording, then patch the formal target document
+round 3: re-verify narrow final wording, then patch the formal target
 ```
 
 Until round 3 is complete, the item is cache-only. It may guide investigation,
 but it is not a project claim.
 
-## Storage Layout
+## 2. Authority And Source Priority
 
-Use project-local storage only:
-
-```text
-Docs/Workflows/session_memory_migration.md
-  Formal workflow and promotion gate.
-
-Docs/Cache/session_memory_migration/
-  Tracked cache-only candidate facts, rejected historical notes, extraction
-  backlog, and round review logs. These files are recoverable across new
-  conversations but are not formal project truth until promoted.
-
-Results/tmp/session_memory_migration/
-  Optional local scratch output only. Do not use this ignored directory as the
-  durable memory surface.
-```
-
-Do not paste full session dumps into the repository. Store compact facts,
-source pointers, contradiction notes, and next verification actions.
-
-## Source Priority
-
-When sources disagree, use this priority order:
+When sources disagree, use this order:
 
 ```text
-1. Current source files, scripts, model files, generated manifests, and test output.
-2. Current project workflow/design docs that have evidence references.
-3. Explicit user manual-review results recorded in project docs or result files.
+1. Current source files, generated artifacts, test output, and result packets.
+2. Current workflow/design/operating docs with evidence references.
+3. Explicit user or PMO decisions recorded in current project docs or packets.
 4. Current visible conversation content.
 5. Old session transcript content.
 ```
 
-Old transcript content is useful for locating work, but it is not proof. It is
-especially weak for numeric assembly parameters, controller behavior,
-simulation evidence, visual acceptance, MCP state, and Codex runtime behavior.
+Old transcript content is useful for locating work. It is not proof of current
+parameters, runtime state, acceptance, tool health, or operating authority.
 
-## Candidate Schema
+## 3. Host Storage Contract
+
+A host project using this workflow must define:
+
+```text
+formal workflow pointer:
+candidate cache folder:
+review logs:
+scratch folder, if any:
+formal target document classes:
+index file for migration coverage:
+ledger or event log for long migrations:
+```
+
+Do not paste full session dumps into the portable CoAgent layer. Store compact
+facts, source pointers, contradiction notes, and next verification actions in
+the host cache.
+
+## 4. Candidate Schema
 
 Each cached item should record:
 
@@ -88,86 +77,87 @@ formal_target_if_promoted:
 next_round_action:
 ```
 
-Use `risk=high` for:
+Use `risk=high` when a remembered claim would affect physical parameters,
+runtime behavior, acceptance, external tool state, manual review, private auth
+state, or any irreversible workflow decision.
 
-- physical or visual assembly parameters;
-- controller or simulation performance claims;
-- MWORKS/Sysplorer integration claims;
-- ROS/FAST-LIO/RViz evidence claims;
-- manual visual acceptance or rejection;
-- Codex state repair commands that touch files outside the project.
-
-## Round Gates
+## 5. Round Gates
 
 Round 1 is complete only when:
 
-- the item is written to a cache file under
-  `Docs/Cache/session_memory_migration/`;
+- the item is written to a host cache file;
 - the item has a risk level and an explicit next verification action;
-- stale or rejected history is marked separately from candidate current facts.
+- stale or rejected history is separated from candidate current facts.
 
 Round 2 is complete only when:
 
-- the current project files or result artifacts have been re-read;
+- current project files or result artifacts have been re-read;
 - contradictions are listed;
-- high-risk items include exact file paths, test commands, screenshots,
-  result manifests, or manual-review packet paths needed for proof.
-- the cache item is updated to `round2_verified`, `rejected`, `superseded`, or
+- high-risk items name the exact files, commands, screenshots, packets, or
+  manual-review artifacts needed for proof;
+- the item is updated to `round2_verified`, `rejected`, `superseded`, or
   `needs_user_review`.
 
 Round 3 is complete only when:
 
 - final wording is narrow and tied to current evidence;
 - a formal target document is named;
-- `git diff --check` passes for the changed docs;
-- the cache item records where it was promoted.
+- the changed docs pass the host project's formatting or doc checks;
+- the cache records where the item was promoted.
 
-For long migrations, also record round checkpoints in
-`Docs/Workflows/agent_task_ledger.md` or an event log under
-`Results/agent_runs/<run_id>/events.jsonl`, using the existing
-`round_started`, `round_learned`, and `round_doc_patched` event vocabulary.
+Long migrations should also write round checkpoints to a host ledger or event
+log with stable event names such as:
 
-## Promotion Rules
+```text
+round_started
+round_learned
+round_doc_patched
+round_rejected
+round_promoted
+```
+
+## 6. Promotion Rules
 
 Promote to formal docs only when the target is the right owner:
 
-| Item Type | Formal Target |
+| Item Type | Formal Target Class |
 |---|---|
-| Current operating rule | `AGENTS.md` or the relevant `Docs/Workflows/*.md` |
-| Active task state | `Docs/Workflows/agent_task_ledger.md` or `PROGRESS.md` |
-| Algorithm/system architecture | `Docs/Design/*.md` |
-| Simulation evidence | `Results/...` manifest plus report/workflow reference |
-| MWORKS/Sysplorer procedure | `Docs/Workflows/*.md` or `Docs/Skills/Mworks/*/SKILL.md` |
-| Codex/App/CLI repair | `Docs/Workflows/debug_mcp.md` |
-| Candidate or uncertain memory | `Docs/Cache/session_memory_migration/*.md` only |
+| Reusable operating rule | operating workflow, schema, checker, or entry pointer |
+| Current task state | board, ledger, progress file, or result packet |
+| Product or domain architecture | host design document |
+| Runtime or simulation evidence | result artifact plus workflow reference |
+| Tool procedure | host workflow or skill |
+| Repair command | host debugging workflow |
+| Candidate or uncertain memory | host cache only |
 
-Never promote obsolete experiments as the latest answer. Keep them only in a
-`rejected` or `superseded` section if they explain why a route must not be
+Never promote obsolete experiments as the latest answer. Keep them only as
+`rejected` or `superseded` entries when they explain why a route must not be
 resumed.
 
-## Explicit Anti-Pollution Rules
+## 7. Anti-Pollution Rules
 
-- Do not turn a historic parameter into a final parameter without checking the
-  current asset/model/source file and the latest manual review status.
-- Do not call an offline script result MWORKS evidence unless it ran through
-  MWORKS/Sysplorer/MCP or is explicitly labeled `source=offline_script`.
-- Do not treat Codex App/VSCode/CLI live sync as durable project memory.
+- Do not turn a historical parameter into a current parameter without checking
+  the current owning source or evidence file.
+- Do not turn offline helper output into formal runtime evidence unless the
+  source is explicitly labeled and accepted by the host workflow.
+- Do not treat App, CLI, or visible-thread state as durable project memory
+  unless it is represented in current project files or packets.
 - Do not keep only chat memory for user corrections, manual review decisions,
   or rejected routes.
-- Do not store secrets, auth files, full account caches, full session JSONL
-  dumps, or private database contents in the cache.
+- Do not store private auth material, full account caches, full session JSONL
+  dumps, or private database contents in the migration cache.
 
-## Completion Definition For A Full Session Migration
+## 8. Completion Definition
 
-The long-session migration is complete only when:
+A full session-memory migration is complete only when:
 
-1. All extractable important items from the selected session have round-1 cache
-   entries or are explicitly marked out of scope.
-2. All high-risk items have either completed round 3 promotion or are recorded
-   as `rejected`, `superseded`, or `needs_user_review`.
+1. All extractable important items from the selected session have round-1
+   cache entries or are explicitly marked out of scope.
+2. All high-risk items have completed round 3 promotion or are recorded as
+   `rejected`, `superseded`, or `needs_user_review`.
 3. The cache has a promoted-target map showing which formal docs received each
    stable item.
-4. `Docs/Index/workflow_index.md`, `PROGRESS.md`, and
-   `Docs/Workflows/agent_task_ledger.md` point to the migration state.
-5. A new Codex conversation can recover project direction from repository docs
-   plus the cache without reading the old chat transcript.
+4. Host indexes, board/progress files, and ledgers point to the migration
+   state when they are needed for recovery.
+5. A new conversation can recover project direction from repository docs plus
+   the reviewed cache without reading the old transcript.

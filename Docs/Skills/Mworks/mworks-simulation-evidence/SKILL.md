@@ -37,7 +37,8 @@ Minimum MCP sequence:
 ```text
 latest CoAgentOps activation patrol reference
   -> if no recent patrol and live work is needed: one bounded sentinel/API check or blocker
-  -> if license/login/GUI blocker: stop and return blocker
+  -> if license/login/GUI blocker: engineering department stops and returns blocker
+  -> PMO/CoAgentOps may perform bounded official login recovery when authorized
 session_manager
   -> load_library / model_manager
   -> check_model
@@ -74,7 +75,8 @@ mworks_activation_patrol_reference
 mworks_activation_patrol_age_minutes when known
 mworks_phase_screenshots
 mworks_phase_observations
-will_not_click_activation_login=true
+will_not_click_activation_login=true for engineering departments
+bounded_login_recovery_authorized_for_pmo_or_coagentops when applicable
 live_mworks_touched
 current-turn activation_state_observation/license_state only if sentinel or capture was collected for an incident
 ```
@@ -88,8 +90,8 @@ Pass only if:
 
 1. MWORKS department work references the latest CoAgentOps activation/window patrol when available. Static file-only department work records `live_mworks_touched=false`; real MCP/model/GUI simulation work records `live_mworks_touched=true`.
 2. If no recent patrol exists and live MCP/GUI work is needed, the department ran at most one bounded current-turn sentinel/API check or returned a blocker. If current-turn evidence was collected, the department inspected it and classified `activation_state_observation` and `license_state`; path-only evidence is not enough.
-3. The reusable MWORKS/Sysplorer/Syslab session was not in demo, unactivated, login, authorization-failed, mixed education/demo, unknown blocking, or GUI-error-report state according to the patrol or current task evidence.
-4. Live simulation/model/GUI work included phase screenshots and observations after load/check and after simulate/plot/animation phases when those visuals were claimed. A patrol reference alone is not sufficient for GUI/result-viewer evidence claims.
+3. The reusable MWORKS/Sysplorer/Syslab session was not in demo, unactivated, login, authorization-failed, mixed education/demo, unknown blocking, or GUI-error-report state according to the patrol or current task evidence, or PMO/CoAgentOps completed bounded official login recovery with foreground/maximized evidence and credential redaction before live work continued.
+4. Live simulation/model/GUI work included phase screenshots and observations after load/check and after simulate/plot/animation phases when those phases ran. Ordinary phase screenshots use DPI-aware background capture with `-RestoreMinimized -MinimizeAfter`, size/nonblank validation, and no maximize. Formal simulation result bundles include `screenshots/` and `logs/screenshot_manifest.json`. A patrol reference alone is not sufficient for GUI/result-viewer evidence claims.
 5. `check_model` succeeded before simulation.
 6. Required variables were found or mapped.
 7. Raw result has a valid `time` column and more than 10 rows.
@@ -126,8 +128,9 @@ For MWORKS simulations:
     `.running`, `.tmp`, `__pycache__`, and ad-hoc probe logs before commit.
 12. If previously working simulations start returning unexplained activation,
     login, license, library-load, or authorization failures, preserve source
-    changes, remove temporary artifacts, stop retrying MCP, and return a
-    blocker for PMO/CoAgentOps recovery. Known signatures include `L5104-B0`,
+    changes, remove temporary artifacts, stop retrying MCP from the engineering
+    task, and return a blocker for PMO/CoAgentOps bounded recovery. Known
+    signatures include `L5104-B0`,
     `软件尚未激活`, equation-limit authorization errors, unexpected demo mode,
     login prompts, and authorization failures.
 13. If a MWORKS/Sysplorer GUI error-report dialog appears, save or reference a
@@ -144,6 +147,6 @@ For MWORKS simulations:
 | missing result variable | inspect available variables and update `docs/index/variable_mapping.md` |
 | simulation fails | save error, inspect model, reduce to smoke scenario |
 | controller unstable | preserve result as failed evidence; do not hide it |
-| GUI disturbance | stop live work if sentinel or phase screenshots report login/license/error-report state; otherwise continue minimal MCP calls and keep reusable windows open |
+| GUI disturbance | engineering department stops live work if sentinel or phase screenshots report login/license/error-report state; otherwise continue minimal MCP calls and keep reusable windows open |
 | graphical counterpart missing | do not mark the controller complete; route to `mworks-sysblock-graphical-modeling` |
-| demo edition / activation lost / login prompt / mixed or unknown license state | return a `status=blocked` `license_or_login` blocker with sentinel and background screenshot evidence; PMO sends sparse email alert; do not tune solver/model code |
+| demo edition / activation lost / login prompt / mixed or unknown license state | engineering department returns a `status=blocked` `license_or_login` blocker with sentinel and screenshot evidence; PMO/CoAgentOps may perform bounded official login recovery under user authorization; do not tune solver/model code |

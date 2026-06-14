@@ -1,7 +1,8 @@
 {
   "template_type": "visible_thread_dispatch_ticket",
-  "ticket_version": 1,
+  "ticket_version": 2,
   "request_id": "PMO-REQUEST-YYYYMMDD-001",
+  "dispatch_nonce": "replace-with-unique-dispatch-nonce",
   "task_type": "source_static",
   "owner": "PMO",
   "origin_thread": "MoSim｜主线 PMO",
@@ -24,7 +25,7 @@
   "durable_start_requirement": {
     "required": true,
     "exempt": false,
-    "artifact_path_or_class": "Results/runtime_leases/replace-with-target-thread-id/PMO-REQUEST-YYYYMMDD-001.json",
+    "artifact_path_or_class": "Results/runtime_leases/replace-with-active-visible-thread-id/PMO-REQUEST-YYYYMMDD-001.json",
     "artifact_type": "runtime_lease",
     "nonce": "replace-with-unique-dispatch-nonce",
     "minimum_fields": [

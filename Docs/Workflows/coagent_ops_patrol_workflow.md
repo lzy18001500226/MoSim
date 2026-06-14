@@ -228,14 +228,34 @@ continue with the actual work. Acceptable durable-start artifacts include a
 checkpoint, return packet, blocker packet, task-local notes file, declared
 output scaffold, or another project-local file named by the packet.
 
+For new visible-thread dispatches, the default artifact is a runtime lease at
+`Results/runtime_leases/<target_thread_id>/<request_id>.json`. The dispatcher
+must create a `ticket_version=2` dispatch ticket with a fresh `dispatch_nonce`
+and must put the same nonce in the task packet's
+`durable_start_requirement`. The target thread must echo that value as `nonce`
+in the runtime lease. A lease with the wrong nonce is stale evidence and does
+not count as dispatch progress.
+
 The durable-start artifact proves that the execution surface has started and
 can write recoverable state. It does not prove engineering completion.
 Exact no-op probes that explicitly forbid file writes are exempt.
 
+For `source_static`, `control_plane`, `packet_contract_fix`,
+`dispatch_surface_diagnostic`, and `recovery_validation`, durable-start is a
+first-start proof, not a continuing heartbeat. Once patrol sees a fresh
+matching durable-start artifact, agent output, return/blocker packet,
+approval/provider surface, or context-compression surface for the dispatched
+request, it must stop treating missing later checkpoints as a dead-thread
+signal and wait for the declared expected packet due time. Continuing
+checkpoint freshness is required only for task types that declare
+`checkpoint_due`, normally `live_runtime`, `mworks_gui`, and `manual_review`.
+
 Dispatch-surface classification after send:
 
 1. Check native read/send state and latest visible turn.
-2. Check the expected return, blocker, checkpoint, and durable-start paths.
+2. Check the expected return, blocker, checkpoint, and durable-start paths;
+   for runtime leases, require the same request id, target thread id, and
+   nonce from the current dispatch ticket.
 3. Check approval/review/provider/context-compression surfaces.
 4. Check the Codex App main shell/list area only for global indicators such as
    green `待批准`/approval, pending review, reconnect, or provider banners.
@@ -243,6 +263,11 @@ Dispatch-surface classification after send:
    output, no expected packet/checkpoint/blocker, and no known UI/provider
    surface, classify as `dispatch_surface_failure_suspected` and write a
    recovery/blocker packet.
+
+If several unrelated active visible threads stop producing new turns after they
+had already started, classify the situation as a global Codex/App/network
+incident first. Do not convert source/static tasks into per-thread
+stale-worker incidents merely because no later checkpoint was written.
 
 Routine heartbeat patrol must not click through every thread row to refresh
 transcripts. Slow or blank transcript views are `view_refresh_required`
@@ -370,10 +395,12 @@ if 5 minutes passes with no meaningful progress -> classify
   dispatch_surface_failure_suspected and write a recovery/blocker
 ```
 
-Meaningful progress means one of: agent output, expected return packet, blocker
-packet, checkpoint packet, approval/provider surface, or context-compression
-surface. Native send success, an old exact ACK, or a new visible turn stuck in
-thinking/in-progress with no agent output is not meaningful progress.
+Meaningful progress means one of: matching runtime lease/durable-start
+artifact, agent output, expected return packet, blocker packet, checkpoint
+packet, approval/provider surface, or context-compression surface. Native send
+success, an old exact ACK, a stale lease with the wrong nonce, or a new visible
+turn stuck in thinking/in-progress with no agent output is not meaningful
+progress.
 
 Task-type SLO is layered. `source_static`, `control_plane`, and
 `packet_contract_fix` tasks normally expect a return/blocker packet within
@@ -397,8 +424,12 @@ task timer should close.
 ### 6.1 R2/R3 Failover Lane
 
 For the three main engineering departments, R2 is the first failover lane when
-R1 is dead, stale, or blocked by dispatch-surface recovery and a safe task is
-available. CoAgentOps must check this during each 10-minute patrol.
+R1 has a confirmed dispatch/start-turn failure, is blocked by dispatch-surface
+recovery, or has a live/manual task with an overdue declared checkpoint and a
+safe failover task is available. CoAgentOps must check this during each
+10-minute patrol. For source/static/control-plane work, do not use missing
+post-start checkpoints as the R2 trigger; use missing first-start proof,
+missing expected return/blocker by the ticket due time, or an explicit blocker.
 
 R2 failover packets are limited to:
 
@@ -453,20 +484,23 @@ Window action boundary:
   bounded stability check before classifying the state. Do not close the run by
   only reporting "window not open" when opening the window is the authorized
   recovery action.
-- Ordinary non-activation screenshots and approved low-risk background clicks
-  do not need maximization. Prefer the background Win32 `PrintWindow` route
+- Ordinary non-activation screenshots do not need maximization. Prefer the
+  background Win32 `PrintWindow` route
   `Scripts/tools/capture_window_background.ps1`; this is not a Windows MCP
-  foreground desktop screenshot. If the target was minimized and a full-window
-  review is required, use `-RestoreMinimized -Maximize -MaximizeWaitMs 500
-  -MinimizeAfter`, verify manifest `dpi_awareness` and physical capture size,
-  and leave the window minimized afterward.
+  foreground desktop screenshot. If the target was minimized, use
+  `-RestoreMinimized -MinimizeAfter`, verify manifest `dpi_awareness`,
+  physical capture size, nonblank content, and leave the window minimized
+  afterward. Use `-Maximize` only for activation/login/license/authorization
+  evidence or an explicitly requested full-window wiring/layout review.
 - If ordinary background capture shows blank, wrong, or ambiguous content,
   retry once after a short wait; only then escalate to foreground/maximized
   review or a blocker.
 
 Do not close, restart, open fresh MWORKS windows, or click login/activation/
 save/error-report controls from delegated MWORKS departments. PMO/CoAgentOps
-may perform bounded recovery only after blocker evidence or explicit approval.
+may perform bounded official login recovery only when user-authorized, using a
+secure credential source, foreground/maximized target-window evidence, and the
+documented stop conditions.
 
 ## 8. Packet Template
 

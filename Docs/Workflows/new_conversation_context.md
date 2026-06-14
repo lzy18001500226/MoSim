@@ -4,7 +4,7 @@
 > `C:\Users\HP\Desktop\MoSim`. This file should stay short; load detailed
 > workflows only when the current task needs them.
 
-Status: current recovery entry, 2026-06-09 CST.
+Status: current recovery entry, 2026-06-11 CST.
 
 ## 0. Startup Boundary Summary
 
@@ -105,14 +105,20 @@ topics.
 ## 2. Current Product Direction
 
 MoSim is being developed as an RflySim-like UAV simulation system with strict
-authority boundaries:
+authority boundaries. The current architecture is four-layer:
 
 | Layer | Authority | Current Rule |
 |---|---|---|
-| MWORKS/Sysplorer/Syslab | Dynamics, controller, planner, truth, metrics, report evidence | Formal simulation source. |
-| UE5 / MoSimSceneLibrary | High-quality scene rendering, UAV visual, camera, video, sensor/collision oracle | UE must not decide controller/planner success. |
-| ROS2 / RViz2 / FAST-LIO | LiDAR/IMU transport, TF, localization/map/planner review windows | Use native robotics windows, not HTML/browser point-cloud demos. |
+| Modeling / MIL-SIL | MWORKS/Sysplorer/Sysblock/Syslab model and controller design, model checks, simulations, generated artifacts, Syslab metrics | Current formal design and evidence source; does not by itself grant runtime authority. |
+| Flight Control | Exactly one active controller backend per run: MWORKS-native now, generated C/C++ or PX4/QGC later | Owns mode, arming, setpoint, stale-command, failsafe, and command echo semantics. |
+| Runtime Plant / Sensors / HIL | CopterSim-like plant role: actuator/motor dynamics, multirotor truth state, sensors, faults, disturbances, events | Currently hosted mainly by MWORKS dynamics models; must be reported as Runtime Plant evidence, not generic "MWORKS success." |
+| Display / Scene / Review | UE5/MoSimSceneLibrary, RViz2, QGC/operator review, video/screenshots, authorized scene/sensor oracle | UE/RViz/QGC must not decide controller, planner, or plant success. |
 | CoAgent / notification glue | Sparse progress, recovery packets, user-intervention channel | Support infrastructure, not the technical mainline. |
+
+MWORKS may host Modeling/MIL-SIL, Flight Control, and Runtime Plant roles in
+the current competition slice. Claims must name the role being validated:
+`MWORKS as Modeling/MIL-SIL`, `MWORKS as Flight Control backend`, or
+`MWORKS as Runtime Plant backend`.
 
 Current agent/runtime entry point:
 
@@ -193,6 +199,16 @@ Models/QuadrotorExperiments/package.mo
   -> legacy experiment pool and compatibility source.
 ```
 
+For a maintained folder-level map of model packages, scenario configs, MWORKS
+runners, and result/evidence directories, read:
+
+```text
+Docs/Index/simulation_model_structure_index.md
+```
+
+When a completed model or simulation task changes a model/scenario/runner/result
+path or its accepted meaning, update that index before reporting completion.
+
 Current dynamics boundary:
 
 - `QuadrotorModel.Mechanics.QuadChassis` is still a simplified plant seed.
@@ -245,7 +261,7 @@ CoAgentOps 10-minute automation
 MWORKS R1/R2 engineering departments
   -> model/check/simulation/layout evidence, referencing the latest patrol
 PMO or CoAgentOps
-  -> foreground/maximized review or official login/license recovery when needed
+  -> foreground/maximized review or bounded official login/license recovery when needed
 ```
 
 Rules:
@@ -255,6 +271,18 @@ Rules:
 - Background screenshots are useful for ordinary layout/result review; hidden
   login/license panes require foreground or maximized target-main-window
   evidence.
+- Ordinary simulation/load/check/result phase screenshots should stay on the
+  DPI-aware background route. If a target window is minimized, restore it only
+  enough to make the client area paintable, capture and validate width/height
+  plus nonblank content, then minimize after. Do not maximize ordinary phase
+  screenshots.
+- PMO/CoAgentOps have user authorization for bounded MWORKS/Sysplorer/Syslab
+  login recovery when dropped activation or an official login/license prompt
+  blocks live simulation. Use only the user-provided secure credential source;
+  never write credentials to project files, packets, screenshot manifests,
+  emails, logs, or docs. Stop and escalate on MFA/captcha, account/password
+  error, abnormal authorization, unknown modal/window, crash/error-report,
+  save/overwrite prompt, or any non-MWORKS credential surface.
 - If CoAgentOps audit finds no reusable MWORKS/Sysplorer/Syslab main window,
   it should open MWORKS directly and recheck instead of only reporting a
   missing-window blocker.
@@ -307,7 +335,9 @@ Before making UE/ROS2/FAST-LIO runtime claims, read only the relevant workflow:
 ```text
 Docs/Workflows/unreal_renderer.md
 Docs/Workflows/ros2_runtime_setup.md
-Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md
+Docs/Design/05_场景传感器与UE_ROS2链路.md
+Docs/Design/07_验收Gate与交付物.md
+Docs/Design/10_架构边界与当前状态ADR.md
 ```
 
 Do not declare `planner_ready`, `closed_loop`, runtime success, controller
@@ -369,9 +399,18 @@ Foreground desktop caution: Windows MCP screenshot/snapshot observes the
 active desktop. Use UI Automation, PowerShell, app APIs, or project-local
 evidence scripts first; use visible desktop screenshots only when explicitly
 authorized or when the workflow requires them.
+Desktop window observation and desktop window action are separate routes:
+load `CoAgent/skills/window-capture-evidence/SKILL.md` for screenshots and
+`CoAgent/skills/window-ui-action-control/SKILL.md` only for explicitly
+authorized UI actions.
 
 Email notification format: short Chinese status only. Keep file paths, JSON
 names, logs, and raw evidence details in packets and project files. Routine
 completion can use `【MoSim 进度】`; manual intervention, incident, auth/license,
 GUI crash, or dead-thread messages should use
 `!!! MoSim 需要人工介入 !!!`.
+When any MoSim project conversation reaches a completion, blocker, or
+review-required terminal state, send one sparse Chinese completion email with
+`Scripts/agent/send_gateway_email_alert.py` so the user can catch up when away.
+This also applies to non-delegated single-thread work. Do not email every
+ordinary chat reply, brainstorming turn, or intermediate observation.

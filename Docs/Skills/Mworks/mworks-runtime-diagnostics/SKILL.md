@@ -10,12 +10,12 @@ Translate Simulink debugging/profiling habits into MWORKS evidence-first diagnos
 ## Triage Order
 
 1. Identify the model, scenario, controller, and expected variable.
-2. For MWORKS/Sysplorer/Syslab department work, use the latest CoAgentOps 10-minute activation/window-health patrol when available. Record `mworks_activation_patrol_reference`, `mworks_activation_patrol_age_minutes` when known, `will_not_click_activation_login=true`, and `live_mworks_touched`. Do not spend the diagnostics turn repeatedly proving activation or return only sentinel JSON.
+2. For MWORKS/Sysplorer/Syslab department work, use the latest CoAgentOps 10-minute activation/window-health patrol when available. Record `mworks_activation_patrol_reference`, `mworks_activation_patrol_age_minutes` when known, `will_not_click_activation_login=true` for engineering departments, and `live_mworks_touched`. Do not spend the diagnostics turn repeatedly proving activation or return only sentinel JSON.
 3. If no recent patrol is available and the diagnostic needs live MCP/GUI work, run at most one bounded current-turn sentinel/API check or return a blocker. Activation/login/license evidence must include a maximized or foreground screenshot whose content actually shows the target reusable MWORKS/Sysplorer/Syslab main window; `capture_window_background.ps1` background output is auxiliary window-state evidence and uses `-OutDir`, not `-OutputDir`.
 4. A visible `[教育版]` title is not proof of activation, but it is not by itself a blocker. Continue to the requested diagnostic/check/simulation work when no demo/login/authorization/error marker exists.
-5. If the patrol or current task evidence reports demo edition, missing activation/login prompt, authorization failure, mixed education/demo state, error-report dialog, unavailable tooling, visible unknown blocking state, or unknown blocking evidence, stop runtime diagnostics and return a `status=blocked` `license_or_login` or GUI blocker to PMO. Do not treat these symptoms as solver/model bugs.
-6. Background screenshots can miss a hidden login/license pane. PMO or CoAgentOps may run a user-authorized foreground/maximized recovery on the existing window first, and login/license screenshots must be maximized target-window evidence whose content visually matches that window; departments do not click login/activation/save/close/restart/send-report controls. If the official login action does not return or cannot complete on the existing window, PMO/CoAgentOps may reopen MWORKS and log in through the official UI as a bounded recovery.
-7. During live diagnostics, capture and inspect phase screenshots after load/check and after simulate/plot/animation phases when those visuals are part of the claim. Return `mworks_phase_screenshots` and `mworks_phase_observations`; the observations must state what the screenshot/window evidence showed.
+5. If the patrol or current task evidence reports demo edition, missing activation/login prompt, authorization failure, mixed education/demo state, error-report dialog, unavailable tooling, visible unknown blocking state, or unknown blocking evidence, engineering departments stop runtime diagnostics and return a `status=blocked` `license_or_login` or GUI blocker to PMO. Do not treat these symptoms as solver/model bugs.
+6. Background screenshots can miss a hidden login/license pane. PMO or CoAgentOps may run a user-authorized foreground/maximized official login recovery on the existing window first, and login/license screenshots must be maximized target-window evidence whose content visually matches that window; departments do not click login/activation/save/close/restart/send-report controls. If the official login action does not return or cannot complete on the existing window, PMO/CoAgentOps may reopen MWORKS and log in through the official UI as a bounded recovery. Use only the approved secure credential source; never write credentials to docs, logs, packets, screenshot manifests, email, or terminal output. Stop on MFA/captcha, account/password error, abnormal authorization, unknown modal/window, non-MWORKS credential surface, crash/error-report, save/overwrite prompt, restart/send-report/close prompt, or any title/control mismatch.
+7. During live diagnostics, capture and inspect phase screenshots after load/check and after simulate/plot/animation phases when those visuals are part of the claim. Ordinary phase screenshots use DPI-aware background capture with `-RestoreMinimized -MinimizeAfter`, size/nonblank validation, and no maximize. Formal simulation result bundles include `screenshots/` and `logs/screenshot_manifest.json`. Return `mworks_phase_screenshots` and `mworks_phase_observations`; the observations must state what the screenshot/window evidence showed.
 8. If activation/license/login/authorization/GUI-error evidence appears mid-task, stop live diagnostics and return a P0 MWORKS infrastructure blocker to PMO. PMO/CoAgentOps handles notification and recovery.
 9. Run or inspect `check_model`.
 10. If structure changed, inspect model text and component ports.
@@ -29,7 +29,8 @@ Translate Simulink debugging/profiling habits into MWORKS evidence-first diagnos
 ```text
 latest CoAgentOps activation patrol reference
   -> if no recent patrol and live work is needed: one bounded sentinel/API check or blocker
-  -> if license/login/GUI blocker: stop and return blocker
+  -> if license/login/GUI blocker: engineering department stops and returns blocker
+  -> PMO/CoAgentOps may perform bounded official login recovery when authorized
   -> otherwise continue
 session_manager
   -> after load/check: phase screenshot and observation when GUI evidence is claimed
@@ -51,7 +52,7 @@ session_manager
 | slow simulation | reduce scenario, compare target time, note compile vs run-time symptoms |
 | model check failure | inspect source text and library docs before patching |
 | solver/runtime issue | record error, time range, model name, controller, and minimal reproduction |
-| demo edition / activation lost / login prompt | stop live diagnostics and return a `license_or_login` blocker; PMO sends sparse email alert and retries only after clean preflight proves recovery |
+| demo edition / activation lost / login prompt | engineering department stops live diagnostics and returns a `license_or_login` blocker; PMO/CoAgentOps may perform bounded official login recovery under user authorization and credential-redaction rules |
 | clean-looking background screenshot but title/API says demo or logged out | block and ask PMO for bounded foreground recovery; do not continue solver/model diagnostics |
 
 ## Outputs

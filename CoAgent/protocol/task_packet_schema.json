@@ -23,6 +23,7 @@
   "properties": {
     "task_id": { "type": "string", "minLength": 1 },
     "task_class": { "$ref": "#/$defs/task_class" },
+    "dispatch_nonce": { "type": "string", "minLength": 1 },
     "role": { "type": "string", "minLength": 1 },
     "objective": { "type": "string", "minLength": 1 },
     "project_goal": { "type": "string", "minLength": 1 },
@@ -48,6 +49,19 @@
         "exempt_when": { "type": "string" },
         "first_artifact_due_minutes": { "type": "number" },
         "artifact_path_or_class": { "type": "string" },
+        "artifact_type": {
+          "type": "string",
+          "enum": [
+            "runtime_lease",
+            "checkpoint_packet",
+            "return_packet",
+            "blocker_packet",
+            "notes_file",
+            "output_scaffold",
+            "other"
+          ]
+        },
+        "nonce": { "type": "string", "minLength": 1 },
         "minimum_content": { "type": "array", "items": { "type": "string" } },
         "completion_claim_allowed": { "type": "boolean" }
       },

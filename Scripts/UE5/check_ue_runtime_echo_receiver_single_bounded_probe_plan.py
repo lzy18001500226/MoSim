@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -154,6 +155,16 @@ def read_json(path: Path) -> Any:
 
 def present(source: str, patterns: set[str]) -> list[str]:
     return sorted(pattern for pattern in patterns if pattern in source)
+
+
+def remove_declared_forbidden_marker_tables(source: str) -> str:
+    """Ignore literal deny-list tables when scanning for actual pose shortcuts."""
+    return re.sub(
+        r"const\s+TArray<\s*FString\s*>\s+ForbiddenMarkers\s*=\s*\{.*?\};",
+        "",
+        source,
+        flags=re.DOTALL,
+    )
 
 
 def build_capture_precondition_rows() -> list[dict[str, Any]]:
@@ -384,7 +395,8 @@ def build_report() -> dict[str, Any]:
             issues.append(f"receiver surface missing anchor: {anchor}")
 
     runtime_patterns = present(surface_combined, FORBIDDEN_RUNTIME_PATTERNS)
-    pose_patterns = present(surface_combined, FORBIDDEN_SOURCE_POSE_PATTERNS)
+    pose_scan_source = remove_declared_forbidden_marker_tables(surface_combined)
+    pose_patterns = present(pose_scan_source, FORBIDDEN_SOURCE_POSE_PATTERNS)
     if runtime_patterns:
         issues.append("receiver surface contains runtime transport pattern(s): " + ", ".join(runtime_patterns))
     if pose_patterns:

@@ -110,6 +110,26 @@ MWORKS_TARGET_MARKERS = [
     "mworks控制",
 ]
 
+LEASE_MINIMUM_FIELDS = {
+    "request_id",
+    "target_thread_id",
+    "nonce",
+    "started_at",
+    "last_checkpoint_at",
+    "current_phase",
+    "next_checkpoint_due_at",
+}
+
+ARTIFACT_TYPES = {
+    "runtime_lease",
+    "checkpoint_packet",
+    "return_packet",
+    "blocker_packet",
+    "notes_file",
+    "output_scaffold",
+    "other",
+}
+
 
 def _project_relative(path_text: str) -> bool:
     path = Path(path_text)
@@ -248,6 +268,172 @@ def _looks_like_mworks_department_packet(packet: dict[str, Any]) -> bool:
     return any(marker.casefold() in target_text for marker in MWORKS_TARGET_MARKERS)
 
 
+def _check_durable_start_requirement(
+    packet: dict[str, Any],
+    *,
+    visible_thread_dispatch: bool,
+) -> list[dict[str, str]]:
+    requirement = packet.get("durable_start_requirement")
+    if not isinstance(requirement, dict):
+        if visible_thread_dispatch:
+            return [
+                {
+                    "field": "durable_start_requirement",
+                    "reason": "missing_durable_start_requirement",
+                    "message": "Visible-thread dispatch packets must declare a first durable-start artifact, or an explicit exact no-write probe exemption.",
+                }
+            ]
+        return []
+
+    findings: list[dict[str, str]] = []
+    required = requirement.get("required")
+    if not isinstance(required, bool):
+        findings.append(
+            {
+                "field": "durable_start_requirement.required",
+                "reason": "missing_durable_start_required_bool",
+                "message": "durable_start_requirement.required must be true for normal visible-thread dispatch or false only for exact no-write probes.",
+            }
+        )
+        return findings
+
+    if required is not True:
+        exempt_when = requirement.get("exempt_when")
+        if visible_thread_dispatch and (not isinstance(exempt_when, str) or not exempt_when.strip()):
+            findings.append(
+                {
+                    "field": "durable_start_requirement.exempt_when",
+                    "reason": "missing_durable_start_exemption_reason",
+                    "message": "Visible-thread packets that skip durable-start must explain the exact no-write probe exemption.",
+                }
+            )
+        return findings
+
+    artifact_type = requirement.get("artifact_type")
+    if artifact_type not in ARTIFACT_TYPES:
+        findings.append(
+            {
+                "field": "durable_start_requirement.artifact_type",
+                "reason": "unknown_durable_start_artifact_type",
+                "message": ", ".join(sorted(ARTIFACT_TYPES)),
+            }
+        )
+
+    first_due = requirement.get("first_artifact_due_minutes")
+    if not isinstance(first_due, (int, float)) or first_due <= 0 or first_due > 5:
+        findings.append(
+            {
+                "field": "durable_start_requirement.first_artifact_due_minutes",
+                "reason": "invalid_first_artifact_due_minutes",
+                "message": "First durable-start artifact must be due within 5 minutes.",
+            }
+        )
+
+    if requirement.get("completion_claim_allowed") is not False:
+        findings.append(
+            {
+                "field": "durable_start_requirement.completion_claim_allowed",
+                "reason": "durable_start_cannot_claim_completion",
+                "message": "Durable-start proves execution began; it must not be treated as completion evidence.",
+            }
+        )
+
+    minimum_content = requirement.get("minimum_content")
+    if not isinstance(minimum_content, list) or not minimum_content:
+        findings.append(
+            {
+                "field": "durable_start_requirement.minimum_content",
+                "reason": "missing_durable_start_minimum_content",
+                "message": "Durable-start requirement must declare minimum artifact content.",
+            }
+        )
+
+    dispatch_nonce = packet.get("dispatch_nonce")
+    requirement_nonce = requirement.get("nonce")
+    if artifact_type == "runtime_lease":
+        if not isinstance(dispatch_nonce, str) or not dispatch_nonce.strip():
+            findings.append(
+                {
+                    "field": "dispatch_nonce",
+                    "reason": "missing_dispatch_nonce",
+                    "message": "Runtime-lease durable start requires a unique dispatch_nonce in the task packet.",
+                }
+            )
+        if not isinstance(requirement_nonce, str) or not requirement_nonce.strip():
+            findings.append(
+                {
+                    "field": "durable_start_requirement.nonce",
+                    "reason": "missing_runtime_lease_nonce",
+                    "message": "Runtime-lease durable start must echo the dispatch nonce.",
+                }
+            )
+        elif isinstance(dispatch_nonce, str) and requirement_nonce != dispatch_nonce:
+            findings.append(
+                {
+                    "field": "durable_start_requirement.nonce",
+                    "reason": "runtime_lease_nonce_mismatch",
+                    "message": "Runtime-lease nonce must match task packet dispatch_nonce.",
+                }
+            )
+
+        target_thread_id = packet.get("target_thread_id")
+        request_id = packet.get("request_id")
+        expected_path = None
+        if not isinstance(request_id, str) or not request_id.strip():
+            findings.append(
+                {
+                    "field": "request_id",
+                    "reason": "missing_request_id_for_runtime_lease",
+                    "message": "Runtime-lease durable start requires request_id so the canonical lease path is unique.",
+                }
+            )
+        if isinstance(target_thread_id, str) and target_thread_id and isinstance(request_id, str) and request_id:
+            expected_path = (
+                Path("Results")
+                / "runtime_leases"
+                / target_thread_id
+                / f"{request_id}.json"
+            )
+        artifact = requirement.get("artifact_path_or_class")
+        if not isinstance(artifact, str) or not artifact.strip():
+            findings.append(
+                {
+                    "field": "durable_start_requirement.artifact_path_or_class",
+                    "reason": "missing_runtime_lease_path",
+                    "message": "Runtime-lease durable start requires an explicit project-local lease path.",
+                }
+            )
+        elif not _project_relative(artifact):
+            findings.append(
+                {
+                    "field": "durable_start_requirement.artifact_path_or_class",
+                    "reason": "runtime_lease_path_outside_project",
+                    "message": artifact,
+                }
+            )
+        elif expected_path is not None and tuple(Path(artifact).parts) != tuple(expected_path.parts):
+            findings.append(
+                {
+                    "field": "durable_start_requirement.artifact_path_or_class",
+                    "reason": "runtime_lease_path_not_canonical",
+                    "message": f"Expected {expected_path.as_posix()}",
+                }
+            )
+
+        if isinstance(minimum_content, list):
+            missing = sorted(LEASE_MINIMUM_FIELDS - {str(field) for field in minimum_content})
+            if missing:
+                findings.append(
+                    {
+                        "field": "durable_start_requirement.minimum_content",
+                        "reason": "runtime_lease_minimum_content_missing_fields",
+                        "message": ", ".join(missing),
+                    }
+                )
+
+    return findings
+
+
 def _check_mworks_department_task(packet: dict[str, Any]) -> list[dict[str, str]]:
     try:
         from check_mworks_live_gate import _check_task as check_mworks_task
@@ -286,6 +472,36 @@ def _check_mworks_department_task(packet: dict[str, Any]) -> list[dict[str, str]
     return findings
 
 
+def _check_capability_resolution(packet: dict[str, Any], *, strict: bool) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
+    try:
+        from check_capability_resolution import validate_packet as validate_capability_packet
+    except Exception as exc:  # pragma: no cover - defensive for direct script use.
+        return [
+            {
+                "field": "capability_resolution",
+                "reason": "capability_resolution_checker_unavailable",
+                "message": f"Could not import check_capability_resolution.py: {exc}",
+            }
+        ], []
+
+    capability_result = validate_capability_packet(packet, strict=strict)
+    errors: list[dict[str, str]] = []
+    warnings: list[dict[str, str]] = []
+    for finding in capability_result.get("findings", []):
+        if not isinstance(finding, dict):
+            continue
+        mapped = {
+            "field": str(finding.get("field", "capability_resolution")),
+            "reason": f"capability_resolution_{finding.get('reason', 'failed')}",
+            "message": str(finding.get("message", "Capability resolution failed.")),
+        }
+        if finding.get("severity") == "warning":
+            warnings.append(mapped)
+        else:
+            errors.append(mapped)
+    return errors, warnings
+
+
 def check_packet(packet: dict[str, Any], *, strict: bool = False) -> dict[str, Any]:
     findings: list[dict[str, str]] = []
     warnings: list[dict[str, str]] = []
@@ -302,9 +518,15 @@ def check_packet(packet: dict[str, Any], *, strict: bool = False) -> dict[str, A
         findings.extend(_check_semantic_boundary(packet))
         return {"ok": False, "warning_count": 0, "fail_count": len(findings), "findings": findings, "warnings": warnings}
 
-    findings.extend(_check_semantic_boundary(packet))
-
     surfaces = _as_surface_set(gate.get("selected_native_surface"))
+    findings.extend(_check_semantic_boundary(packet))
+    findings.extend(
+        _check_durable_start_requirement(
+            packet,
+            visible_thread_dispatch="visible_thread" in surfaces,
+        )
+    )
+
     if not surfaces:
         findings.append(
             {
@@ -400,6 +622,11 @@ def check_packet(packet: dict[str, Any], *, strict: bool = False) -> dict[str, A
 
     if _looks_like_mworks_department_packet(packet):
         findings.extend(_check_mworks_department_task(packet))
+
+    if strict:
+        capability_findings, capability_warnings = _check_capability_resolution(packet, strict=True)
+        findings.extend(capability_findings)
+        warnings.extend(capability_warnings)
 
     return {
         "ok": not findings,

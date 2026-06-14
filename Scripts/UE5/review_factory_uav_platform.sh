@@ -36,10 +36,14 @@ REVIEW_CAMERA_Z_CM="${REVIEW_CAMERA_Z_CM:-280}"
 REVIEW_CAMERA_PITCH_DEG="${REVIEW_CAMERA_PITCH_DEG:--12}"
 REVIEW_CAMERA_YAW_DEG="${REVIEW_CAMERA_YAW_DEG:-0}"
 REVIEW_CAMERA_ROLL_DEG="${REVIEW_CAMERA_ROLL_DEG:-0}"
-FOLLOW_CAMERA_BACK_CM="${FOLLOW_CAMERA_BACK_CM:-80}"
-FOLLOW_CAMERA_RIGHT_CM="${FOLLOW_CAMERA_RIGHT_CM:--20}"
-FOLLOW_CAMERA_UP_CM="${FOLLOW_CAMERA_UP_CM:-40}"
-FOLLOW_CAMERA_PITCH_DEG="${FOLLOW_CAMERA_PITCH_DEG:--16}"
+# Follow-camera controls use the accepted UE runtime mesh orientation:
+# +Y is visually aft, +X is visually right, +Z is up. Therefore a left-aft-up
+# view uses positive BACK, negative RIGHT, and positive UP.
+FOLLOW_CAMERA_BACK_CM="${FOLLOW_CAMERA_BACK_CM:-40}"
+FOLLOW_CAMERA_RIGHT_CM="${FOLLOW_CAMERA_RIGHT_CM:--10}"
+FOLLOW_CAMERA_UP_CM="${FOLLOW_CAMERA_UP_CM:-20}"
+FOLLOW_CAMERA_PITCH_DEG="${FOLLOW_CAMERA_PITCH_DEG:--18}"
+FOLLOW_CAMERA_OFFSET_CM="${FOLLOW_CAMERA_OFFSET_CM:-}"
 EXPECTED_FIRST_X_M="${EXPECTED_FIRST_X_M:--55.33}"
 EXPECTED_FIRST_Y_M="${EXPECTED_FIRST_Y_M:--24.23}"
 EXPECTED_FIRST_Z_M="${EXPECTED_FIRST_Z_M:-1.90}"
@@ -54,10 +58,6 @@ if [[ -z "${REPLAY_CSV:-}" ]]; then
   else
     REPLAY_CSV="${VISUAL_GATE_REPLAY_CSV}"
   fi
-fi
-
-if [[ "${FOLLOW_UAV_CAMERA}" == "1" && "${STREAM_PATH_REPLAY}" == "0" && "${STREAM_MAX_FRAMES}" == "1" ]]; then
-  STREAM_PATH_REPLAY=1
 fi
 
 if [[ ! -f "${REPLAY_CSV}" ]]; then
@@ -113,13 +113,21 @@ fi
 if [[ "${OPEN_UE}" == "1" ]]; then
   FOLLOW_CAMERA_ARGS=()
   if [[ "${FOLLOW_UAV_CAMERA}" == "1" ]]; then
-    FOLLOW_CAMERA_ARGS=(
-      "-MoSimFollowPlaybackCamera"
-      "-MoSimFollowCameraBackCm=${FOLLOW_CAMERA_BACK_CM}"
-      "-MoSimFollowCameraRightCm=${FOLLOW_CAMERA_RIGHT_CM}"
-      "-MoSimFollowCameraUpCm=${FOLLOW_CAMERA_UP_CM}"
-      "-MoSimFollowCameraPitch=${FOLLOW_CAMERA_PITCH_DEG}"
-    )
+    if [[ -n "${FOLLOW_CAMERA_OFFSET_CM}" ]]; then
+      FOLLOW_CAMERA_ARGS=(
+        "-MoSimFollowPlaybackCamera"
+        "-MoSimFollowCameraOffset=${FOLLOW_CAMERA_OFFSET_CM}"
+        "-MoSimFollowCameraPitch=${FOLLOW_CAMERA_PITCH_DEG}"
+      )
+    else
+      FOLLOW_CAMERA_ARGS=(
+        "-MoSimFollowPlaybackCamera"
+        "-MoSimFollowCameraBackCm=${FOLLOW_CAMERA_BACK_CM}"
+        "-MoSimFollowCameraRightCm=${FOLLOW_CAMERA_RIGHT_CM}"
+        "-MoSimFollowCameraUpCm=${FOLLOW_CAMERA_UP_CM}"
+        "-MoSimFollowCameraPitch=${FOLLOW_CAMERA_PITCH_DEG}"
+      )
+    fi
   fi
   UNREAL_EXTRA_ARGS="${MAP_PACKAGE} -MoSimDayReview -MoSimReviewCameraX=${REVIEW_CAMERA_X_CM} -MoSimReviewCameraY=${REVIEW_CAMERA_Y_CM} -MoSimReviewCameraZ=${REVIEW_CAMERA_Z_CM} -MoSimReviewCameraPitch=${REVIEW_CAMERA_PITCH_DEG} -MoSimReviewCameraYaw=${REVIEW_CAMERA_YAW_DEG} -MoSimReviewCameraRoll=${REVIEW_CAMERA_ROLL_DEG} ${FOLLOW_CAMERA_ARGS[*]}" \
     RESTART_UNREAL_GAME=1 \

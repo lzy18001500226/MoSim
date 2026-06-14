@@ -54,23 +54,31 @@ truth; MoSim cache paths are documented in
    `unsafe`. This is a planning requirement, not a requirement to spawn a
    sub-agent. They must also declare a first durable-start artifact unless the
    task is an exact no-write probe.
-6. Sparse Chinese email is the default human notification channel. Deleted
-   WeChat gateway/message-path threads are historical only and must not be
-   scanned, no-oped, recovered, or used unless the user explicitly restores a
-   scoped WeChat diagnosis route.
+6. Sparse Chinese email is the default human notification channel. When a
+   project conversation reaches a completion, blocker, or review-required
+   terminal state, send one short Chinese email through
+   `Scripts/agent/send_gateway_email_alert.py`; do not email every ordinary
+   chat reply or intermediate observation. Deleted WeChat gateway/message-path
+   threads are historical only and must not be scanned, no-oped, recovered, or
+   used unless the user explicitly restores a scoped WeChat diagnosis route.
 7. P0 progress means moving MWORKS R1/R2, ROS2 R1/R2, and UE R1/R2 gates
    forward. Sunray/PBR remains frozen unless the user reopens it. Support lanes
    cannot mask idle P0 engineering work.
-8. MWORKS activation/window patrol is owned by CoAgentOps. MWORKS departments
-   stop on observed login/license/authorization/GUI-error/unknown blocking
-   states and return blockers instead of retrying solver/model work.
+8. MWORKS activation/window patrol is owned by CoAgentOps. MWORKS engineering
+   departments stop on observed login/license/authorization/GUI-error/unknown
+   blocking states and return blockers instead of retrying solver/model work.
+   PMO/CoAgentOps may perform bounded MWORKS/Sysplorer/Syslab login recovery
+   only when the user has explicitly authorized it and the workflow's credential
+   redaction, screenshot, and stop-condition rules are satisfied.
 9. CoAgentOps heartbeat must not click through every visible thread as the
    default liveness check. Use durable-start artifacts, native read/send state,
    expected packets, and main-shell approval/review/provider indicators first.
+   Desktop window observation and desktop window action are separate skills:
+   screenshot/capture ability does not imply click/action authority.
 10. For normal MoSim mainline, visible-department, automation, and disposable
-   sub-agent dispatches, request `gpt-5.5` and `thinking=high` when the native
-   tool accepts those settings. Do not wake healthy threads only to change
-   settings.
+    sub-agent dispatches, request `gpt-5.5` and `thinking=high` when the native
+    tool accepts those settings. Do not wake healthy threads only to change
+    settings.
 11. Do not re-create deleted PMO heartbeat, detached CoAgentOps cron, Windows
     watchdog, or replacement visible threads without explicit user/PMO
     approval.
@@ -132,6 +140,7 @@ publication.
 | API/MCP index | `Docs/Index/api_index.md` |
 | CoAgent runtime/task graph/timeout/prompt sanity | `CoAgent/docs/operating/agent_orchestration.md` |
 | MCP/tooling/native hook governance, entry-document slimming, and immediate doc updates | `CoAgent/docs/operating/tooling_assets_governance.md`; MoSim adapter at `Docs/Workflows/tooling_assets_governance.md` |
+| Desktop window screenshot evidence and explicitly authorized UI actions | `CoAgent/skills/window-capture-evidence/SKILL.md`; `CoAgent/skills/window-ui-action-control/SKILL.md` |
 | Final competition packaging checklist | `Docs/Workflows/pre_submit_check.md` |
 
 ## 4. Project Direction
@@ -180,6 +189,10 @@ Important MWORKS rules:
   work is planned.
 - Activation/login/license/authorization acceptance needs foreground or
   maximized target-main-window evidence when a hidden UI blocker is possible.
+- Ordinary live-simulation phase screenshots use the DPI-aware background
+  capture route. If the target is minimized, restore it only enough to paint,
+  capture, validate size/content, and minimize after; do not maximize except
+  for activation/login/license/authorization evidence.
 - Ordinary graphical/layout/result-window review routes to MWORKS R2 and uses
   DPI-aware screenshot evidence plus written observations.
 - Do not close or restart reusable Sysplorer/Syslab/MWORKS windows unless the

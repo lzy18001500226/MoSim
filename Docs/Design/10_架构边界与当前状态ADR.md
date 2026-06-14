@@ -34,6 +34,30 @@ reference stacks. They provide structure, behavior contracts, message
 semantics, and sanity checks. They do not become project truth until a local
 MoSim workflow adopts them with build/runtime evidence.
 
+2026-06-12 current-slice decision:
+
+```text
+Current executable implementation:
+  MWORKS-native / Equation-backed controller
+  MWORKS-hosted Runtime Plant
+  Syslab-compatible metrics
+  no ROS2 requirement
+  no PX4/QGC requirement
+  no generated C/C++ requirement
+
+Future-compatible contracts:
+  graphical Sysblock structure review
+  generated C/C++ backend
+  ROS2/RViz2/FAST-LIO backend
+  PX4/QGC/SITL/HIL backend
+```
+
+Graphical Sysblock remains the controller-structure and review artifact.
+Equation controllers are the stable full-system execution bridge when
+Sysplorer cannot embed graphical Sysblock internals such as `x_sum.u1`,
+`y_sum.u1`, or `thrust_sum.u1`. Generated C/C++ is a future deployment/SIL/HIL
+backend and is not required for the present MWORKS-first simulation path.
+
 ## 2. Authority Boundary
 
 | Layer | Owns | Must Not Own |
@@ -203,6 +227,7 @@ Rejected RflySim uses:
 | Gate A: MWORKS controller codegen/SIL | prove generated controller C/C++ can be a runtime candidate | PID demo compile/runtime/nonzero constant-input SIL passed | codegen path is credible for checked controllers | all controllers are deployable; `TranslateModel` proves codegen |
 | Gate B: UE truth + ROS2 + Mid360/FAST-LIO | prove sensor/robotics stack is coherent before GUI review | Factory headless gate reached manual-review readiness in current docs; final product acceptance still open | open UE/RViz review only for the passed evidence bundle | final localization, navigation, planner, or controller performance |
 | Gate C: system closed-loop contract | freeze MWORKS/UE/ROS2 responsibility split and timing | this ADR closes the current design boundary; implementation still must verify modules | downstream conversations can use this as architecture contract | implementation is complete |
+| Gate D: MWORKS single-UAV closeout to UE replay/render entry | prove the current single-UAV MWORKS result set can feed UE replay/render evidence | `single_uav_gate_ready_for_ue_prep`; 7/7 formal Dynamics smoke results accepted as `dynamics_smoke_only`; rotor1-loss LinearMPC online fault-allocation candidate accepted; UE replay input bundle, local UDP loopback smoke, build-only gate, and bounded UE runtime replay ingest probe passed | source-static UE replay input, local `quadrotor.unreal_state.v1` UDP loopback, build-only pass, and bounded runtime replay ingest with log-level Sunray150 visibility/nonzero-bounds evidence | authoritative UE command echo ack, final/manual visual acceptance, ROS2/FAST-LIO success, planner_ready, controller performance from UE, final material acceptance, multi-UAV readiness |
 | Parameter identification | upgrade SDF seeds to Sunray150 evidence | no ULog/bench identification bundle found | use SDF values as baseline seeds with source label | call values identified truth |
 | UE vehicle visual | use accepted DAE-derived runtime visual | accepted source route exists; material realism remains separate review | DAE-derived FBX/GLB is the runtime visual route | MWORKS STL, cube/cylinder, primitive vehicle, MWORKS animation |
 
@@ -307,10 +332,12 @@ Do not restart or optimize these routes:
 
 ## 9. Next Architecture-Driven Tasks
 
-1. MWORKS plant delta design: add or wrap yaw reaction torque, motor lag,
-   rotor drag/rolling moment, and optional body drag as explicit modules.
-2. Run minimal hover, yaw, and step-response checks before touching complex
-   scenes.
+1. Keep the accepted single-UAV MWORKS run as the source for UE replay input
+   and local state-stream evidence.
+2. Preserve the passed UE replay input bundle, UDP loopback, build-only, and
+   bounded runtime replay ingest artifacts as the baseline for the next UE gate.
+   The next executable UE slice should be command-echo evidence hardening or
+   visual-review hardening; neither is already proved by replay ingest.
 3. Keep Sunray SDF parameters as baseline seeds, but label all values with
    `source=SDF_migration` until PX4 ULog/bench identification exists.
 4. Keep UE and RViz windows closed until headless gates pass for the target

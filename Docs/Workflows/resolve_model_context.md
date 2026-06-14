@@ -30,7 +30,8 @@ expected signal interface if known
 
 ```text
 activation sentinel / maximized target-window screenshot for live MCP/GUI context work
-  -> stop on demo/login/license/error-report/visible unknown/unavailable state
+  -> engineering departments stop on demo/login/license/error-report/visible unknown/unavailable state
+  -> PMO/CoAgentOps may perform bounded official login recovery when authorized
 session_manager
   -> model_manager(open/load_file/get_components/get_model_text)
   -> model_manager(get_component_ports / lookup_component)
@@ -60,10 +61,13 @@ Pass if:
 5. Any structural change is followed by `check_model`.
 6. Live MWORKS context work records `activation_sentinel_before`,
    maximized target-window screenshot evidence when activation/login/license
-   state is claimed, `license_state`, `will_not_click_activation_login=true`,
-   and `live_mworks_touched`. Background screenshots are auxiliary and do not
-   prove activation unless the screenshot content visibly matches the target
-   reusable MWORKS/Sysplorer/Syslab main window.
+   state is claimed, `license_state`, `will_not_click_activation_login=true`
+   for engineering departments, and `live_mworks_touched`. Background
+   screenshots are auxiliary and do not prove activation unless the screenshot
+   content visibly matches the target reusable MWORKS/Sysplorer/Syslab main
+   window. PMO/CoAgentOps login recovery, when authorized, uses only a secure
+   credential source and redacts credentials from all docs/logs/packets/
+   screenshot manifests/email/terminal output.
 
 ## Failure Handling
 
@@ -73,5 +77,5 @@ Pass if:
 | port mismatch | stop and document expected vs actual interface |
 | API unclear | query `get_api_document` before scripting |
 | model check fails | save error log and inspect source text |
-| demo edition / activation lost / login prompt | stop live context probing and return `license_or_login` blocker with sentinel plus maximized target-window evidence; background capture is auxiliary only |
+| demo edition / activation lost / login prompt | engineering department stops live context probing and returns `license_or_login` blocker with sentinel plus maximized target-window evidence; PMO/CoAgentOps may perform bounded official login recovery under user authorization |
 | GUI error-report dialog | stop live context probing and return GUI blocker; do not click restart/send-report/close |

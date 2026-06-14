@@ -34,7 +34,7 @@ model Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop
   Modelica.Blocks.Sources.Constant z_ref_rate(k = 0);
   Modelica.Blocks.Sources.Constant yaw_ref(k = 0);
 
-  AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock controller3_2;
+  QuadrotorControllerBlocks.AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock controller3_2;
 
 equation
   connect(actuator1_1.flange_a, quadChassisTest17_1.flange_a);

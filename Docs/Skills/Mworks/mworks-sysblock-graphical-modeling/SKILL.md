@@ -71,12 +71,12 @@ Skills/Sysplorer/modelica-library-workflow
 
 Before claiming a graphical Sysblock controller is ready:
 
-1. **Activation patrol gate**: reference the latest CoAgentOps 10-minute MWORKS/Sysplorer/Syslab activation/window patrol when available. Static file-only work records `live_mworks_touched=false`; live MCP/model/GUI work records `live_mworks_touched=true`. If no recent patrol exists and live work is needed, run at most one bounded sentinel/API check or return a blocker. If current-turn evidence is collected, inspect the JSON/capture/window-title evidence and classify it in the same turn; path-only evidence is not enough. Stop with `status=blocked` when the patrol or current task shows demo, unactivated/login, authorization, GUI error-report, mixed, visible unknown blocking, or unknown blocking state. Hidden Qt/browser-proxy/helper windows with no license/error text are risk evidence but do not alone block live work.
+1. **Activation patrol gate**: reference the latest CoAgentOps 10-minute MWORKS/Sysplorer/Syslab activation/window patrol when available. Static file-only work records `live_mworks_touched=false`; live MCP/model/GUI work records `live_mworks_touched=true`. If no recent patrol exists and live work is needed, run at most one bounded sentinel/API check or return a blocker. If current-turn evidence is collected, inspect the JSON/capture/window-title evidence and classify it in the same turn; path-only evidence is not enough. Engineering departments stop with `status=blocked` when the patrol or current task shows demo, unactivated/login, authorization, GUI error-report, mixed, visible unknown blocking, or unknown blocking state. PMO/CoAgentOps may perform bounded official login recovery only when user-authorized, with foreground/maximized evidence and credential redaction. Hidden Qt/browser-proxy/helper windows with no license/error text are risk evidence but do not alone block live work.
 2. **Context gate**: identify model name, file path, controller role, ports, sample-time/continuous assumption, and replacement location.
 3. **Modeling-path gate**: classify the target as Sysblock internal diagram, Modelica physical/wrapper model, or hybrid integration before editing.
 4. **Topology gate**: verify visible blocks and wires exist in Sysplorer, not only equations.
 5. **Diagram gate**: after `check_model`, inspect whether the diagram has meaningful visible semantics; if layout is poor or missing, use API layout/smart-layout rather than text-only patches.
-6. **Phase screenshot gate**: during or after graphical layout review, capture and inspect phase screenshots. Use foreground/maximized evidence when full wiring/layout review is needed, because background `PrintWindow` can miss composited panes. R2 must check for missing wires, disconnected blocks, unreadable routing, wrong active window, stretched icons, hidden empty child diagrams, and new license/login/error dialogs. Return `mworks_phase_screenshots` and `mworks_phase_observations` when `live_mworks_touched=true`.
+6. **Phase screenshot gate**: during or after graphical layout review, capture and inspect phase screenshots. Ordinary phase screenshots use DPI-aware background capture with `-RestoreMinimized -MinimizeAfter`, size/nonblank validation, and no maximize. Use foreground/maximized evidence only when activation/login/license/authorization evidence or explicitly requested full wiring/layout review is needed, because background `PrintWindow` can miss composited panes. R2 must check for missing wires, disconnected blocks, unreadable routing, wrong active window, stretched icons, hidden empty child diagrams, and new license/login/error dialogs. Return `mworks_phase_screenshots`, `mworks_phase_observations`, and `screenshot_manifest` when `live_mworks_touched=true`.
 7. **Structure gate**: run `scripts/check_sysblock_graphics.py`.
 8. **MCP gate**: run `scripts/check_graphical_sysblock_mcp.py` or a targeted `check_model` through Sysplorer MCP.
 9. **Behavior gate**: compare against the equation/reference implementation or expected scenario signals.
@@ -111,7 +111,8 @@ Use the smallest sequence that proves the current claim:
 ```text
 latest CoAgentOps activation patrol reference
   -> if no recent patrol and live work is needed: one bounded sentinel/API check or blocker
-  -> if license/login/GUI blocker: stop and return blocker
+  -> if license/login/GUI blocker: engineering department stops and returns blocker
+  -> PMO/CoAgentOps may perform bounded official login recovery when authorized
 session_manager
   -> load_library / model_manager(load_file)
   -> get_api_document or get_lib_model_document if a block/API is unclear
@@ -134,8 +135,8 @@ Keep reusable Sysplorer windows open by default. Do not close them before Git un
 | API call succeeds but model fails | save JSONL log, inspect ports/classes, repair the smallest failing chain |
 | simulation works but diagram is incomplete | mark as equation-bridge evidence, not completed graphical Sysblock |
 | user or screenshot sees no wires | stop claiming graphical acceptance; inspect phase screenshots and topology evidence, then repair with official Sysblock APIs |
-| demo edition / activation lost / login prompt / mixed or unknown license state | stop live diagram work; return a `status=blocked` `license_or_login` blocker with patrol/current-task evidence |
+| demo edition / activation lost / login prompt / mixed or unknown license state | engineering department stops live diagram work and returns a `status=blocked` `license_or_login` blocker with patrol/current-task evidence; PMO/CoAgentOps may perform bounded official login recovery under user authorization |
 
 ## Output
 
-State the model file, graphical model name, gates run, logs produced, behavior-equivalence status, and remaining risks. For MWORKS department work, include `mworks_activation_patrol_reference`, `mworks_activation_patrol_age_minutes` when known, `will_not_click_activation_login=true`, and `live_mworks_touched`. If current-turn sentinel/capture evidence is collected, include `activation_sentinel_before`, `gui_sentinel_before`, `background_screenshot_before`, `activation_state_observation`, `license_state`, and `mworks_window_evidence_touched=true`. For live graphical/layout review, also include `mworks_phase_screenshots` and `mworks_phase_observations` describing the visible wiring/layout state.
+State the model file, graphical model name, gates run, logs produced, behavior-equivalence status, and remaining risks. For MWORKS department work, include `mworks_activation_patrol_reference`, `mworks_activation_patrol_age_minutes` when known, `will_not_click_activation_login=true` for engineering departments, and `live_mworks_touched`. If current-turn sentinel/capture evidence is collected, include `activation_sentinel_before`, `gui_sentinel_before`, `background_screenshot_before`, `activation_state_observation`, `license_state`, and `mworks_window_evidence_touched=true`. For live graphical/layout review, also include `mworks_phase_screenshots`, `mworks_phase_observations`, and `screenshot_manifest` describing the visible wiring/layout state.

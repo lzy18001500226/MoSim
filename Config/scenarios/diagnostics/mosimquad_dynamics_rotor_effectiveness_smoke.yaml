@@ -1,0 +1,46 @@
+experiment_id: mosimquad_dynamics_rotor_effectiveness_smoke
+scene_id: mosimquad_formal_dynamics_rotor_effectiveness_smoke
+controller_id: diagnostics_no_controller
+priority: P0
+evidence_level: future_live_mworks_formal_dynamics_smoke_contract
+postprocess_profile: diagnostics_smoke
+
+model:
+  source_package: MoSimQuadrotorModel
+  live_load_strategy: minimal_dynamics_only
+  model_name: MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke
+  model_path_hint: Models/QuadrotorExperiments/package.mo
+  base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
+  official_description: formal Dynamics single-rotor effectiveness smoke
+
+disturbance:
+  type: actuator_efficiency_loss
+  affected_rotor: rotor_1
+  efficiency_ratio: 0.85
+  purpose: single_rotor_effectiveness_observability_only
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 0.25
+  step_size_s: 0.001
+  solver: Dassl
+  tolerance: 0.0001
+
+result:
+  raw_file: Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_rotor_effectiveness_smoke/raw/mosimquad_dynamics_rotor_effectiveness_smoke.csv
+  metrics_file: Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_rotor_effectiveness_smoke/metrics/mosimquad_dynamics_rotor_effectiveness_smoke.json
+  mcp_log: Results/diagnostics/mosimquad_formal_dynamics_smoke/mosimquad_dynamics_rotor_effectiveness_smoke/logs/sysplorer_mosimquad_dynamics_rotor_effectiveness_smoke.jsonl
+  expected_result_variables:
+    - dynamics.thrust_effectiveness[2]
+    - dynamics.minimum_thrust_effectiveness
+    - total_thrust_loss
+    - roll_moment_imbalance
+    - pitch_moment_imbalance
+    - yaw_moment_imbalance
+  extra_variables:
+    dynamics_rotor2_thrust_effectiveness: dynamics.thrust_effectiveness[2]
+    dynamics_minimum_thrust_effectiveness: dynamics.minimum_thrust_effectiveness
+    total_thrust_loss: total_thrust_loss
+    roll_moment_imbalance: roll_moment_imbalance
+    pitch_moment_imbalance: pitch_moment_imbalance
+    yaw_moment_imbalance: yaw_moment_imbalance

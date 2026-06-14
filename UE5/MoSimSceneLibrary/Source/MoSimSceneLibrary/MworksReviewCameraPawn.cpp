@@ -265,11 +265,11 @@ void AMworksReviewCameraPawn::ApplyCommandLineOverrides()
     }
     if (FParse::Value(FCommandLine::Get(), TEXT("MoSimFollowCameraBackCm="), ParsedFloat))
     {
-        FollowOffsetCm.X = -FMath::Max(20.0f, ParsedFloat);
+        FollowOffsetCm.Y = FMath::Max(10.0f, ParsedFloat);
     }
     if (FParse::Value(FCommandLine::Get(), TEXT("MoSimFollowCameraRightCm="), ParsedFloat))
     {
-        FollowOffsetCm.Y = ParsedFloat;
+        FollowOffsetCm.X = ParsedFloat;
     }
     if (FParse::Value(FCommandLine::Get(), TEXT("MoSimFollowCameraUpCm="), ParsedFloat))
     {

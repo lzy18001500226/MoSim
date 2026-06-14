@@ -28,6 +28,12 @@ UE5/Bridge/Binaries/
 UE5/MoSimSceneLibrary/Content/*
 !UE5/MoSimSceneLibrary/Content/MworksData/
 !UE5/MoSimSceneLibrary/Content/MworksData/**
+!UE5/MoSimSceneLibrary/Content/Audio/
+!UE5/MoSimSceneLibrary/Content/Audio/MoSim/
+!UE5/MoSimSceneLibrary/Content/Audio/MoSim/SunrayRotorHoverLoop.uasset
+!UE5/MoSimSceneLibrary/Content/Audio/MoSim/SunrayRotorLoadLoop.uasset
+!UE5/MoSimSceneLibrary/Content/Audio/MoSim/SunrayRotorSpoolUp.uasset
+!UE5/MoSimSceneLibrary/Content/Audio/MoSim/SunrayRotorSpoolDown.uasset
 UE5/MoSimSceneLibrary/Plugins/
 UE5/MoSimSceneLibrary/Collections/
 UE5/MoSimSceneLibrary/Developers/

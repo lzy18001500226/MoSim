@@ -56,6 +56,56 @@ deprecated unless explicitly revalidated under this UAV-stack-first route.
 The current minimum review gate is Factory scene rendering plus a visible
 YunZong/Sunray150 UAV body driven by the MWORKS/Bridge state path.
 
+## Sunray150 Rotor Audio Route
+
+Rotor sound is part of the UE visual/auditory review layer. It must not be used
+as MWORKS dynamics, controller, planner, closed-loop, or performance evidence.
+
+Current accepted source:
+
+```text
+source page: https://freesound.org/people/qubodup/sounds/854382/
+source title: Big Slow Heavy Drone Hovering Idle Loop
+author: qubodup
+source manifest:
+  UE5/MoSimSceneLibrary/SourceAssets/Audio/SunrayRotor/sunray_rotor_hover_loop_854382_cc0_preview_manifest.json
+converted WAV:
+  UE5/MoSimSceneLibrary/SourceAssets/Audio/SunrayRotor/sunray_rotor_hover_loop_854382_cc0_preview.wav
+UE asset path:
+  /Game/Audio/MoSim/SunrayRotorHoverLoop.SunrayRotorHoverLoop
+derived UE asset paths:
+  /Game/Audio/MoSim/SunrayRotorLoadLoop.SunrayRotorLoadLoop
+  /Game/Audio/MoSim/SunrayRotorSpoolUp.SunrayRotorSpoolUp
+  /Game/Audio/MoSim/SunrayRotorSpoolDown.SunrayRotorSpoolDown
+import helper:
+  Scripts/UE5/import_sunray_rotor_hover_audio.py
+runtime component:
+  UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorRotorAudioComponent.h
+```
+
+Runtime policy:
+
+- Use the 7-second stationary hover loop as the base sound. Do not use
+  fly-by/moving-camera recordings for ordinary motion because they bake in
+  distance and Doppler cues that conflict with MoSim's fixed follow camera.
+- Use only the accepted hover source as audio material. The load, takeoff, and
+  landing layers are generated from that same source by pitch/envelope/filter
+  processing in `Scripts/UE5/import_sunray_rotor_hover_audio.py`; do not add a
+  separate external moving/fly-by recording for forward/backward motion.
+- `UQuadrotorRotorAudioComponent` reads `FQuadrotorMworksFrame.MotorCommand`,
+  `PositionMeters`, and `RotationRadians` from `UQuadrotorMworksPlaybackComponent`.
+  It plays a base hover loop, fades in a derived load loop for forward/backward/
+  lateral maneuvers and other high-load motion, and triggers derived spool-up
+  or spool-down one-shots for takeoff/landing transitions. Volume and pitch are
+  driven by mean motor command, motor spread, tilt, horizontal/vertical speed,
+  and attitude rate.
+- Distance attenuation is disabled for this first route because the review
+  camera follows the UAV at a fixed distance. If later free-camera/operator
+  modes need spatial review, add a separate attenuation profile instead of
+  changing the fixed-camera evidence route.
+- If no fresh MWORKS/Bridge frame is available, the runtime component fades the
+  loop down instead of implying live vehicle state.
+
 ## RflySim-like Experiment Console
 
 MoSim should provide a UE in-scene operator console similar in purpose to
@@ -263,6 +313,20 @@ not final material acceptance. Primitive UAVs, temporary procedural aircraft,
 and MWORKS STL animation remain forbidden as final vehicle visuals or review
 evidence.
 
+Runtime import rule: do not manually approximate this reviewed Blender asset in
+UE. Export the accepted Blender audit scene as a merged runtime FBX/GLB, import
+it as the UE StaticMesh
+`/Game/Sunray150/sunray150_with_mid360_textured.sunray150_with_mid360_textured`,
+then bind UE materials to that imported StaticMesh. If UE shows grey/white
+default materials, diagnose UE material compilation and binding first; do not
+start a new whole-aircraft repaint pass.
+
+The current Blender audit materials use grayscale bump/height textures. Import
+those textures as Non-Color data when needed, but do not wire them directly to
+UE `MP_NORMAL` unless they have been converted to true tangent-space normal
+maps. Wiring grayscale bump/height maps as UE Normal inputs can make D3D
+material compilation fail and force `Default Material` in game.
+
 Current manual-review state: the USB camera lens/barrel overlay was removed
 after user review because its position was wrong. The camera body remains a
 black PartBody visual material, but the separate lens/barrel overlay should not
@@ -337,9 +401,10 @@ if UE logs report that the DAE-derived StaticMesh asset is missing, treat the
 stage as failed and import/fix the reviewed Sunray FBX/GLB asset path before
 continuing. Do not fall back to MWORKS STL or MWORKS animation.
 
-If the user reports a huge cylinder, broken/fragmented mesh, wrong scale, or
+If the user reports a huge cylinder, broken/fragmented mesh, wrong scale, the
+camera trapped inside the aircraft, an unrecognizable DAE-derived aircraft, or
 wrong initial position, the gate has failed. Do not ask for point-cloud,
-FAST-LIO, or planner review. Diagnose with logs first:
+FAST-LIO, command-echo, or planner review. Diagnose with logs first:
 
 ```text
 imported DAE-derived StaticMesh asset path
@@ -350,6 +415,17 @@ absence of primitive/STL vehicle fallback components
 spawn transform and first UDP-driven transform
 review camera initial transform
 ```
+
+The DAE source declares `unit meter=0.0254`, but the Blender/FBX runtime export
+must be meter-baked before UE import. Treat an imported
+`/Game/Sunray150/sunray150_with_mid360_textured` StaticMesh with multi-meter
+extents or a sphere radius of several hundred centimeters as stale or
+incorrectly imported. Rebuild
+`UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured.*`
+with `Scripts/UE5/assets/build_sunray150_with_mid360_blender_asset.py`, reimport
+with `Scripts/UE5/import_sunray150_runtime_static_mesh.py`, and regenerate
+screenshot/log evidence before asking for visual acceptance. Do not compensate
+for a 39.37x asset-scale error by only moving the camera farther away.
 
 Before inventing a new UE/UAV behavior fix, check the local DAE-derived asset
 route and its manifests first, then Sunray/YunZong SDF/mesh files for
@@ -367,11 +443,20 @@ MWORKS STL/runtime animation fallback is not used
 primitive cube/cylinder fallback is hidden
 render-only helper geometry is disabled for the vehicle-visual gate
 first UDP position maps to the accepted UAV task start
+no new "Default Material will be used in game" material fallback lines
 ```
 
 The bridge must fail loudly when the imported DAE-derived UE StaticMesh is
 missing. Do not restore runtime STL loading, primitive geometry, or MWORKS animation as a
 convenience fallback.
+
+Use `Scripts/UE5/import_sunray150_runtime_static_mesh.py` to reproduce the
+runtime asset import when `/Game/Sunray150/sunray150_with_mid360_textured` is
+missing or stale. The script imports
+`UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured.fbx`
+through `UnrealEditor-Cmd.exe`, writes a JSON evidence file, and must still be
+followed by runtime log/screenshot evidence before claiming visual replay
+success.
 
 Build check note: when invoking Windows UnrealBuildTool from WSL, pass the
 `.uproject` as a Windows path, for example from
@@ -961,11 +1046,13 @@ rotor visual:
     sunray150_with_mid360 SDF, SDF.jinja, 150.dae, and sunray_cw.stl match the
     local files, so upstream has no propeller assembly fix to pull
     150.dae declares unit meter=0.0254 and Y_UP
-    SDF rotor centers are meters and must be converted to DAE units with
-    center_dae = center_m / 0.0254
-    the selected tri-blade STL is millimeter-scale and must be converted to DAE
-    units with scale = 0.001 / 0.0254
-    do not mix DAE-unit body geometry with meter-scale propeller geometry
+    raw DAE geometry must be baked to meters before Blender/FBX export with
+    scale = 0.0254, then rotated from Y_UP to Blender/UE Z_UP
+    SDF rotor centers are already meters and remain meter coordinates after
+    the DAE body is meter-baked
+    the selected tri-blade STL is millimeter-scale and must be converted to
+    meters with scale = 0.001
+    do not export mixed-unit geometry; the runtime FBX/GLB must be meter-baked
 front camera:
   pose 0.12 0 0.025 0 0 0
 down camera:
@@ -1194,6 +1281,15 @@ those components. The June 3 manual DAE source review showed the standalone
 MID-360/Livox direction is also wrong; track that as a separate radar-orientation
 issue instead of mixing it with propeller assembly correction.
 
+Supplemental MID-360 review geometry must be explicit meter-scale geometry
+after the runtime DAE body is meter-baked. Do not leave Blender placeholder
+primitives such as `radius=1.0` or `depth=0.42` in the runtime export: after
+meter baking those become meter-class cylinders/spheres that cover the
+aircraft. The current supplement is intentionally small, with the base and dome
+dimensions recorded in
+`UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured_manifest.json`
+under `center_m`, `radius_m`, and `depth_m`/`scale_xyz`.
+
 For the Factory visual placement gate, neutralize only the first-frame yaw to
 `0 rad`. This is a manual body/propeller/heading review pose, not a controller
 or trajectory truth claim. Full replay yaw belongs to later path/controller
@@ -1228,14 +1324,14 @@ This mode enables `-MoSimFollowPlaybackCamera` and replays the existing short
 MWORKS/Sysplorer smoke state source once. It must not use sparse
 `render_replay.csv` path points as simulation evidence. The review camera
 follows the playback actor with the
-current accepted close-inspection offset of `80 cm` behind, `20 cm` left, and
-`40 cm` above the UAV. The offset is
+current accepted inspection offset of `40 cm` behind, `10 cm` left, and
+`20 cm` above the UAV. The offset is
 rotated by the UAV yaw, so if the UAV turns, the camera view turns with it.
 In follow-camera mode, the arrow keys are not free-look keys: left/right orbit
 the camera around the UAV azimuth in the manually accepted actual movement
 direction, up/down orbit elevation, and the spherical camera-target radius from
 the current `FollowOffsetCm` is preserved. The
-default offset remains `FVector(-80.0f, -20.0f, 40.0f)`. The camera rotation is
+default offset remains `FVector(-10.0f, 40.0f, 20.0f)`. The camera rotation is
 recomputed to look back at the UAV after each orbit update.
 The display contract is separate from the controller contract: controller/state
 evidence is expected at 20 Hz or higher where the formal MWORKS/Sysplorer
@@ -3328,7 +3424,7 @@ scene and the manual review becomes misleading.
 
 Manual acceptance for this gate is limited to:
 
-- visible blue UAV body in the accepted Factory scene;
+- reference-colored Sunray150 body in the accepted Factory scene;
 - UAV motion comes from the MWORKS/Bridge replay stream;
 - keyboard/mouse controls only the review camera/view;
 - UAV starts in the usable factory area and does not visibly clip through

@@ -36,8 +36,12 @@ references, and MWORKS checks are complete.
 | `Baseline` | 官方基线适配 | `QuadrotorModel.Examples.*`, `QuadrotorModel.Mechanics.QuadChassis` |
 | `Dynamics` | Sunray150动力学升级 | `QuadrotorExperiments.DynamicsUpgrade` |
 | `Parameters` | 参数来源与标定记录 | `MoSimQuadrotorModel.Parameters` |
+| `Sensors` | 传感器模型、噪声、延迟、外参 | planned formal package branch; current sources are split across UE/ROS2/MWORKS design and scenario docs |
 | `Missions` | 正式任务场景 | `QuadrotorExperiments.OfficialScenarios` |
 | `Controllers` | 控制器基线与对比 | `QuadrotorExperiments.ControllerBaselines` |
+| `Runtime` | 运行时状态机、时钟、模式、failsafe、stale-command | planned formal package branch; current semantics live in design/contracts |
+| `Interfaces` | UE/ROS2/PX4/QGC/setpoint/command-echo适配 | planned formal package branch; current sources are adapters/workflows |
+| `Experiments` | 可复现实验组合与运行入口 | planned formal package branch; current scenarios/results/scripts are distributed |
 | `Robustness` | 鲁棒、故障、安全与扰动 | `QuadrotorExperiments.RobustFaultScenarios` |
 | `Planning` | 规划与地图场景 | `QuadrotorExperiments.PlanningScenarios` |
 | `SceneTrace` | UE场景trace与显示隔离 | `QuadrotorExperiments.SceneTraceScenarios`, `TraceIsolation` |
@@ -52,6 +56,11 @@ Current static package surface from R2 023:
   `Baseline`, `Dynamics`, `Parameters`, `Missions`, `Controllers`,
   `Robustness`, `Planning`, `SceneTrace`, `System`, `Formation`, `Support`,
   and `LegacyCompatibility`.
+- Target package design adds four future top-level categories:
+  `Sensors`, `Runtime`, `Interfaces`, and `Experiments`. They are design
+  targets only until package files, `package.order`, reference updates, and
+  MWORKS checks are completed. Do not report them as current package-browser
+  entries before that migration batch.
 - `QuadrotorExperiments` remains the legacy implementation and compatibility
   source during migration. R2 023 counted 11 legacy category directories and
   about 140 implementation `.mo` files excluding `package.mo`.
@@ -131,6 +140,16 @@ Rejected or non-primary public surfaces:
 2. Dynamics source surface: continue narrow source tasks such as
    `Dynamics.RotorActuatorCore` without moving legacy implementations until
    each wrapper/source boundary is explicit.
+2a. Target-branch design: reserve `Sensors`, `Runtime`, `Interfaces`, and
+    `Experiments` as formal package branches in design before implementation;
+    create their package files only in a separate checked migration batch.
+2b. Architecture-contract checkpoint: before adding any reserved branch to
+    `Models/MoSimQuadrotorModel/package.order`, verify that its first class
+    preserves the stable core contract in
+    `Docs/Design/13_RflySim四旋翼模型对标与MoSim优化路线.md`: `Dynamics`
+    remains plant truth, `Parameters` owns provenance, `Runtime` owns run/time/
+    mode/event semantics, `Interfaces` adapts external surfaces without
+    bypassing the plant, and `Experiments` owns reproducible run manifests.
 3. Missions authority references: migrate YAML/scripts/docs authoritative
    references from `QuadrotorExperiments.OfficialScenarios` to
    `MoSimQuadrotorModel.Missions` only after live package load/check succeeds.
@@ -158,6 +177,10 @@ For each migration batch:
 - Static gate: no broken package names, missing `package.order` entries,
   duplicate class definitions, or unreviewed public/private package-surface
   leaks.
+- Architecture gate: if the batch introduces `Sensors`, `Runtime`,
+  `Interfaces`, or `Experiments`, it must include a written interface role,
+  source/provenance boundary, accepted/rejected command or event semantics
+  where applicable, and a reason the branch cannot remain design-only.
 - Documentation gate: migration disposition, Chinese category wording, and
   old-to-new mapping are updated in this plan and the task evidence.
 - Live MWORKS gate when live work is actually used: follow the current

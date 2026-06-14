@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+"""Tests for RotorEffectivenessSmoke formal source-surface materialization."""
+
+from __future__ import annotations
+
+import importlib.util
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[2]
+FORMAL_SOURCE = ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics" / "RotorEffectivenessSmoke.mo"
+FORMAL_DYNAMICS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics"
+FORMAL_PACKAGE = ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics" / "package.mo"
+SCRIPT_PATH = ROOT / "Scripts" / "mworks" / "validate_mosimquad_formal_smoke_surface.py"
+
+
+def load_module():
+    spec = importlib.util.spec_from_file_location("validate_mosimquad_formal_smoke_surface", SCRIPT_PATH)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"failed to load script module: {SCRIPT_PATH}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+class RotorEffectivenessSmokeSurfaceTest(unittest.TestCase):
+    def test_formal_source_is_dedicated_extends_only_surface(self) -> None:
+        source = FORMAL_SOURCE.read_text(encoding="utf-8")
+        package = FORMAL_PACKAGE.read_text(encoding="utf-8")
+
+        self.assertIn("within MoSimQuadrotorModel.Dynamics;", source)
+        self.assertIn("model RotorEffectivenessSmoke", source)
+        self.assertIn("extends QuadrotorExperiments.DynamicsUpgrade.RotorEffectivenessSmoke;", source)
+        self.assertIn("annotation(__MWORKS(hide=false));", source)
+        self.assertNotIn("equation", source)
+        self.assertNotIn("model RotorEffectivenessSmoke", package)
+
+    def test_all_formal_dynamics_targets_are_dedicated_sources(self) -> None:
+        module = load_module()
+        package = FORMAL_PACKAGE.read_text(encoding="utf-8")
+
+        self.assertNotIn("\n  model ", package)
+        for formal_name in module.FORMAL_PACKAGE_ORDER:
+            source_path = FORMAL_DYNAMICS_DIR / f"{formal_name}.mo"
+            self.assertTrue(source_path.exists(), f"missing {source_path}")
+            source = source_path.read_text(encoding="utf-8")
+            self.assertIn(f"model {formal_name}", source)
+            self.assertIn("extends QuadrotorExperiments.DynamicsUpgrade.", source)
+            self.assertNotIn("\nequation", source)
+
+    def test_formal_smoke_matrix_requires_dedicated_source(self) -> None:
+        module = load_module()
+        matrix, findings = module.build_matrix()
+        self.assertEqual(findings, [])
+        target = next(
+            item
+            for item in matrix
+            if item["formal_target"] == "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke"
+        )
+        self.assertTrue(target["dedicated_formal_source_required"])
+        self.assertTrue(target["formal_source_present"])
+        self.assertEqual(
+            target["formal_source_file"],
+            "Models/MoSimQuadrotorModel/Dynamics/RotorEffectivenessSmoke.mo",
+        )
+        self.assertTrue(all(item["dedicated_formal_source_required"] for item in matrix))
+        self.assertTrue(all(item["formal_source_present"] for item in matrix))
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -29,6 +29,8 @@ subagent_plan_reason: >
   repaired missing landing files and source-of-truth pointers.
 subagents_used:
   - 019ead8c-f748-7411-b54f-8b10b31dcdd3
+  - 019eb065-b9b3-7f21-ba95-975318c9daf4
+  - 019eb066-0095-7191-aecf-85cded33f193
 verification_gates:
   - targeted text searches for stale click-refresh rules
   - deletion-to-landing audit table for removed or weakened semantics
@@ -62,14 +64,20 @@ manual_review_or_blocker_triggers:
 8. Thread-row refresh clicking is an incident-scoped exception only, not the
    routine heartbeat mechanism.
 9. The six `CoAgent/docs/operating/*.md` workflow files created on
-   2026-06-10 are conservative no-loss landing copies, not yet fully portable
-   rewrites. Do not delete their MoSim compatibility sources until each removed
-   block has an exact/equivalent/host-local/obsolete audit row.
+   2026-06-10 started as conservative no-loss landing copies. As of this
+   second-pass audit, `org_operating_model.md`,
+   `coagent_ops_patrol_workflow.md`, `agent_orchestration.md`,
+   `coagent_meta_maintenance.md`, `tooling_assets_governance.md`, and
+   `session_memory_migration.md` are split-audited portable cores.
 10. `Docs/Workflows/mosim_visible_dispatch_adapter.md` is the MoSim host
     adapter for MWORKS/ROS2/UE/Sunray-specific dispatch gates. The former
     MoSim-specific domain gate text from `CoAgent/dispatch/communication_contract.md`
     has been audited as an exact landing in that adapter; the portable contract
     now keeps only the host-adapter rule and checker pointer.
+11. `CoAgent/docs/operating/context_documentation_governance.md` was created
+    as the missing portable core for context authority, document responsibility,
+    documentation-secretary scope, capability routing, project-owned memory, and
+    no-loss documentation migration.
 
 ## Portable Core Vs MoSim Adapter
 
@@ -81,6 +89,8 @@ manual_review_or_blocker_triggers:
 | Liveness | native read/send, expected packet, durable-start artifact, approval/provider/context classification | Codex App main-shell observation and MoSim-specific pending approval email wording |
 | UI action | no default transcript clicking; incident-scoped observation-only exception | MWORKS activation/window patrol and any approved host GUI evidence path |
 | Documentation memory | cache-first promotion before old chat becomes project truth | MoSim cache folders, `PROGRESS.md`, `agent_task_ledger.md`, board history |
+| Context governance | authority ladder, document responsibilities, documentation-secretary boundary, no-loss migration rule | MoSim startup context, project memory index, concrete route registry |
+| Organization model | shared core, role views, conflict owner, task packet scope, capability router, reusable role catalogue | current MoSim route IDs, deleted route history, R1/R2/R3 concrete assignments |
 
 ## Semantics Preserved
 
@@ -105,29 +115,41 @@ Independent read-only deletion audit result:
 | Domain dispatch gates overall | `CoAgent/dispatch/communication_contract.md#domain-dispatch-gates`, `Docs/Workflows/mosim_visible_dispatch_adapter.md#4-domain-gates` | split-exact | Portable contract keeps host-adapter requirement; MoSim specifics live in adapter. |
 | R2/R3 failover rules | `CoAgent/dispatch/communication_contract.md`, `Docs/Workflows/coagent_ops_patrol_workflow.md` | exact | No semantic loss found. |
 | MWORKS window/license/activation rules | `Docs/Workflows/mosim_visible_dispatch_adapter.md#4-domain-gates`, `Docs/Workflows/coagent_ops_patrol_workflow.md`, `Docs/Skills/Mworks/*` | exact | MoSim-specific rule has moved out of portable contract. |
-| ROS2/RViz/FAST-LIO gates | `Docs/Workflows/mosim_visible_dispatch_adapter.md#ros2--rviz2--fast-lio`, `Docs/Workflows/ros2_runtime_setup.md` | exact | MoSim-specific rule has moved out of portable contract. |
-| UE gates | `Docs/Workflows/mosim_visible_dispatch_adapter.md#ue-experiment-console--scene-interaction`, `Docs/Workflows/unreal_renderer.md` | exact | MoSim-specific rule has moved out of portable contract. |
-| Sunray/PBR gates and freeze | `Docs/Workflows/mosim_visible_dispatch_adapter.md#sunray150-asset--pbr` | exact | MoSim-specific rule has moved out of portable contract. |
+| ROS2/RViz/FAST-LIO gates | `Docs/Workflows/mosim_visible_dispatch_adapter.md#4-domain-gates`, `Docs/Workflows/ros2_runtime_setup.md` | exact | MoSim-specific rule has moved out of portable contract. |
+| UE gates | `Docs/Workflows/mosim_visible_dispatch_adapter.md#4-domain-gates`, `Docs/Workflows/unreal_renderer.md` | exact | MoSim-specific rule has moved out of portable contract. |
+| Sunray/PBR gates and freeze | `Docs/Workflows/mosim_visible_dispatch_adapter.md#4-domain-gates` | exact | MoSim-specific rule has moved out of portable contract. |
 | Dispatch SLO and durable-start rule | `CoAgent/dispatch/communication_contract.md`, `Docs/Workflows/coagent_ops_patrol_workflow.md` | strengthened | Keep strengthened gate. |
 | Detailed thread-row click/refresh sweep | `Docs/Workflows/coagent_ops_patrol_workflow.md#53-incident-scoped-thread-row-refresh-appendix` | restored as recovery-only | Restored the 0.5s dwell, title-region-only click, blank-view skip/retry-next-pass, and forbidden-control details without making it routine heartbeat. |
 | MoSim visible dispatch adapter | `Docs/Workflows/mosim_visible_dispatch_adapter.md` | audited exact landing | Adapter is now the host landing for the former contract domain-gate text. |
+| Portable CoAgentOps patrol workflow | `CoAgent/docs/operating/coagent_ops_patrol_workflow.md`; MoSim long-form adapter remains `Docs/Workflows/coagent_ops_patrol_workflow.md` | split-audited | Portable file now keeps reusable SLO, liveness, bounded dispatch, recovery, failover, and packet/checker mechanics. |
+| Portable organization model | `CoAgent/docs/operating/org_operating_model.md`; MoSim long-form adapter remains `Docs/Workflows/org_operating_model.md` | split-audited | Portable file now keeps shared core, role views, registry requirements, task flow, delegation, gates, and completion criteria. |
+| Portable agent orchestration | `CoAgent/docs/operating/agent_orchestration.md`; MoSim long-form adapter remains `Docs/Workflows/agent_orchestration.md` | split-audited | Portable file now keeps task graph, queue, durable-start, packet, delegation, checkpoint, review, evidence, resume, and Git ownership rules. |
+| Portable meta-maintenance | `CoAgent/docs/operating/coagent_meta_maintenance.md`; MoSim long-form adapter remains `Docs/Workflows/coagent_meta_maintenance.md` | split-audited | Portable file now keeps registry hygiene, capability inventory, automation records, incident follow-up, and stale-rule prevention. |
+| Portable tooling governance | `CoAgent/docs/operating/tooling_assets_governance.md`; MoSim long-form adapter remains `Docs/Workflows/tooling_assets_governance.md` | split-audited | Portable file now keeps native-surface policy, capability router, tool intake, runtime boundaries, context hygiene, and entry-document slimming. |
+| Portable session-memory migration | `CoAgent/docs/operating/session_memory_migration.md`; MoSim adapter remains `Docs/Workflows/session_memory_migration.md` | split-audited | Portable file now keeps three-round cache-first promotion and anti-pollution rules. |
+| Portable context/documentation governance | `CoAgent/docs/operating/context_documentation_governance.md`; MoSim startup/memory adapters remain in `Docs/Workflows/` and `Docs/Index/` | created and audited | Missing indexed operating document has been added as portable core. |
+
+Second-pass no-loss audit file:
+
+```text
+CoAgent/docs/operating/audits/no_loss_split_audit_20260610.md
+```
 
 ## Cleanup Candidates
 
 These are candidates only; do not delete without a follow-up review:
 
 ```text
-CoAgent/docs/operating/agent_orchestration.md
-  - still contains many MoSim examples and historical references
-  - next pass should split portable task-graph rules from host examples
+CoAgent/docs/operating/audits/
+  - keep current audit rows; later archive only after another review.
 
-CoAgent/docs/operating/coagent_meta_maintenance.md
-  - still mixes recurring meta-maintenance with MoSim incident history
-  - next pass should keep generic cadence/checklists and archive historical incidents
+CoAgent/docs/research/context_documentation_governance_research_20260610.md
+  - research note now partially promoted to operating policy; keep as source
+    record unless a later review marks it superseded.
 
-CoAgent/docs/operating/tooling_assets_governance.md
-  - still names host-specific local paths and tools
-  - next pass should separate portable hook/tool governance from MoSim tool adapters
+CoAgent/docs/status/*
+  - one-off status snapshots may be pruned only after current indexes and
+    migration records no longer depend on them.
 ```
 
 ## Verification Plan
@@ -137,6 +159,7 @@ Run targeted checks after edits:
 ```powershell
 python -m pytest CoAgent/tests/test_design_surface_docs.py CoAgent/tests/test_protocol_vocabulary.py -q
 python Scripts/quality/check_dispatch_ticket_slo.py CoAgent/protocol/templates/visible_thread_dispatch_ticket.json
+python Scripts/quality/check_agent_task_native_surface_gate.py CoAgent/protocol/templates/visible_thread_dispatch_packet.json --strict
 ```
 
 Do not run Git staging/commit operations in this pass because the worktree has

@@ -25,6 +25,7 @@ from export_unreal_scene_truth import validate_truth_payload
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json"
 RENDERER_CONTENT = ROOT / "UE5/MoSimSceneLibrary/Content"
+ACTIVE_SCENE_LINKS = RENDERER_CONTENT / "MworksData" / "active_scene_links.json"
 SCHEMA = "mosim.unreal_scene_source_registry.v1"
 FORBIDDEN_PATH_PATTERNS = (
     re.compile(r"[A-Za-z]:[\\/]", re.IGNORECASE),
@@ -221,10 +222,24 @@ def compact_scene_entry(row: dict[str, Any]) -> dict[str, Any]:
     return entry
 
 
+def active_scene_source_id() -> str:
+    if not ACTIVE_SCENE_LINKS.exists():
+        return ""
+    try:
+        payload = load_json(ACTIVE_SCENE_LINKS)
+    except Exception:
+        return ""
+    return str(payload.get("scene_source_id", ""))
+
+
 def selected_primary(local_sources: list[dict[str, Any]]) -> str:
     accepted = [source for source in local_sources if source["status"] == "accepted_local_truth_fallback"]
     if not accepted:
         return ""
+    active_id = active_scene_source_id()
+    for source in accepted:
+        if source.get("scene_source_id") == active_id and source.get("imported_into_renderer"):
+            return active_id
     active = [source for source in accepted if source.get("imported_into_renderer")]
     if active:
         return sorted(active, key=lambda source: str(source.get("scene_source_id", "")))[0]["scene_source_id"]

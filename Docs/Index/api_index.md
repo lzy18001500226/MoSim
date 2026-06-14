@@ -466,3 +466,77 @@ Details and repair steps live in:
 ```text
 Docs/Workflows/debug_mcp.md#11-blender-mcp
 ```
+
+## 12. Desktop Window Screenshot And Action Helpers
+
+For reusable desktop-window observation, load:
+
+```text
+CoAgent/skills/window-capture-evidence/SKILL.md
+```
+
+For explicitly authorized desktop-window actions, load:
+
+```text
+CoAgent/skills/window-ui-action-control/SKILL.md
+```
+
+Observation and action are separate capabilities. Screenshot permission does
+not authorize clicking, closing, logging in, saving, restarting, sending,
+approving, pinning, deleting, archiving, or operating unknown controls.
+
+### Background screenshot evidence
+
+MoSim's current background screenshot helper:
+
+```text
+Scripts/tools/capture_window_background.ps1
+```
+
+Default background capture uses Win32 `PrintWindow` and should not maximize,
+focus, move, minimize, or click the target window. It is intended for windows
+that are visible but covered or behind other windows. It cannot prove full
+client-area content for a minimized window; minimized matches should be treated
+as state evidence and skipped or marked incomplete unless restore is
+authorized:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File Scripts\tools\capture_window_background.ps1 -TitleRegex "Sysplorer|MWORKS|Quadrotor|AWFF" -ProcessRegex "^(mworks|mw_browser_proxy|mw_crash_handler|syslab|sysplorer)" -OutDir Results\mworks_background_capture\manual
+```
+
+The output parameter is `-OutDir`, not `-OutputDir`.
+
+Current helper behavior: when a matching window is minimized and
+`-RestoreMinimized` is not supplied, the script does not save a tiny title-bar
+PNG as evidence. It writes the manifest row with
+`capture_reliability=not_captured_minimized_window_requires_restore`,
+`skipped_minimized_requires_restore=true`, `path=null`, and a recommended
+rerun action.
+
+### Minimized-window full capture exception
+
+Use restore/maximize/capture/minimize only when the target is minimized and the
+owning workflow requires full-window visual evidence:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File Scripts\tools\capture_window_background.ps1 -TitleRegex "Sysplorer|MWORKS|Quadrotor|AWFF" -ProcessRegex "^(mworks|syslab|sysplorer)" -OutDir Results\mworks_background_capture\manual -RestoreMinimized -Maximize -MaximizeWaitMs 500 -MinimizeAfter
+```
+
+If a screenshot is blank, wrong, stale, cropped, or ambiguous, retry once after
+a short wait or with the required capture mode. If still unclear, return a
+blocker instead of overclaiming.
+
+### MoSim MWORKS window management helper
+
+MoSim also has a narrow MWORKS helper:
+
+```text
+Scripts/tools/manage_mworks_windows.ps1
+```
+
+Use it only under its owning workflow and mode gates. It is not a generic click
+tool. `-DryRun` is the default review route for risky cleanup. Real close or
+window-management actions require the script's explicit authorization fields
+and must not target main, login, license, authorization, save, restart, send,
+approval, crash-report submission, or unknown windows unless the owning
+workflow explicitly allows that exact action.

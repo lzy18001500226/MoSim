@@ -445,6 +445,77 @@ def test_hidden_unknown_mworks_windows_do_not_override_clean_education_hint(tmp_
     assert payload["all_window_license_gate"] == "pass"
 
 
+def test_upgrade_model_window_blocks_even_with_education_main_window(tmp_path: Path) -> None:
+    payload = run_fixture(
+        tmp_path,
+        [
+            {
+                "hwnd": 335,
+                "title": "MoSimQuadrotorModel - Sysplorer [教育版]",
+                "class_name": "Qt5152QWindowIcon",
+                "process_name": "mworks.exe",
+                "visible": True,
+                "enabled": False,
+                "rect": {"left": -32000, "top": -32000, "right": -31800, "bottom": -31800},
+                "children": [{"text": "main window disabled by modal", "class_name": "Static"}],
+            },
+            {
+                "hwnd": 336,
+                "title": "升级模型",
+                "class_name": "Qt5152QWindowIcon",
+                "process_name": "mworks.exe",
+                "visible": True,
+                "enabled": True,
+                "rect": {"left": 220, "top": 180, "right": 840, "bottom": 520},
+                "children": [
+                    {"text": "升级模型", "class_name": "Static"},
+                    {"text": "正在升级模型，请等待。", "class_name": "Static"},
+                ],
+            },
+        ],
+    )
+    assert payload["status"] == "incident_detected"
+    assert payload["error_kind"] == "gui_blocked"
+    assert payload["education_window_count"] == 1
+    assert payload["upgrade_model_window_count"] == 1
+    assert payload["unknown_mworks_window_count"] == 0
+    assert payload["license_state_hint"] == "upgrade_model_surface_blocked"
+    assert payload["all_window_license_gate"] == "blocked"
+
+
+def test_hidden_helper_window_still_does_not_block_education_main_window(tmp_path: Path) -> None:
+    payload = run_fixture(
+        tmp_path,
+        [
+            {
+                "hwnd": 337,
+                "title": "MoSimQuadrotorModel - Sysplorer [教育版]",
+                "class_name": "Qt5152QWindowIcon",
+                "process_name": "mworks.exe",
+                "visible": True,
+                "rect": {"left": 10, "top": 10, "right": 1200, "bottom": 900},
+                "children": [{"text": "main window", "class_name": "Static"}],
+            },
+            {
+                "hwnd": 338,
+                "title": "MWORKS",
+                "class_name": "Chrome_WidgetWin_0",
+                "process_name": "mw_browser_proxy.exe",
+                "visible": False,
+                "rect": {"left": -32000, "top": -32000, "right": -31800, "bottom": -31800},
+                "children": [{"text": "hidden browser proxy helper", "class_name": "Static"}],
+            },
+        ],
+    )
+    assert payload["status"] == "clean"
+    assert payload["error_kind"] is None
+    assert payload["helper_mworks_window_count"] == 1
+    assert payload["unknown_mworks_window_count"] == 0
+    assert payload["upgrade_model_window_count"] == 0
+    assert payload["license_state_hint"] == "education_window_observed_activation_unverified"
+    assert payload["all_window_license_gate"] == "pass"
+
+
 def test_minimized_offscreen_unknown_mworks_windows_do_not_block(tmp_path: Path) -> None:
     payload = run_fixture(
         tmp_path,
