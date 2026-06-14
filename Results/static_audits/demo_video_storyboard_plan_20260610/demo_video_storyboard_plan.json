@@ -1,0 +1,590 @@
+{
+  "plan_id": "demo_video_storyboard_plan_20260610",
+  "status": "storyboard_plan_not_demo_video_acceptance",
+  "inputs": {
+    "candidate_submission_evidence_manifest": "Results/static_audits/submission_evidence_manifest_20260610/candidate_submission_evidence_manifest.json",
+    "candidate_figure_readiness_inventory": "Results/static_audits/candidate_figure_readiness_20260610/candidate_figure_readiness_inventory.json",
+    "final_submission_artifact_manifest": "Results/static_audits/final_submission_artifacts_20260610/final_submission_artifact_manifest_check.json"
+  },
+  "summary": {
+    "candidate_row_count": 13,
+    "scene_count": 7,
+    "storyboard_duration_s": 280,
+    "missing_figure_link_count": 0,
+    "storyboard_ready_for_review": true,
+    "demo_video_exists": false,
+    "safe_to_record_demo_video_now": false,
+    "records_or_renders_video_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "scenes": [
+    {
+      "order": 1,
+      "scene_id": "S0-boundary-title",
+      "title": "Scope and evidence boundary",
+      "duration_s": 20,
+      "claim_families": [],
+      "candidate_row_count": 0,
+      "candidate_rows": [],
+      "allowed_narration": [
+        "This demo is planned from static candidate evidence only.",
+        "Final video recording and PMO acceptance are still pending."
+      ],
+      "forbidden_claims": [
+        "final PMO acceptance",
+        "final submission ready",
+        "planner_ready",
+        "closed_loop",
+        "ROS2 controller handoff",
+        "UE build/runtime/editor success",
+        "native Syslab complete report generation",
+        "live MWORKS no-start attach success",
+        "final visual acceptance"
+      ],
+      "recording_status": "not_recorded",
+      "claim_boundary": "storyboard_only_not_demo_video_acceptance"
+    },
+    {
+      "order": 2,
+      "scene_id": "S1-official-pid-baseline",
+      "title": "Official PID baseline across required scenes",
+      "duration_s": 45,
+      "claim_families": [
+        "official_baseline"
+      ],
+      "candidate_row_count": 3,
+      "candidate_rows": [
+        {
+          "claim_slot": "C0-baseline-step-example1",
+          "experiment_id": "official_example1_pid_baseline",
+          "scene_id": "official_example1",
+          "controller_id": "pid_baseline",
+          "claim_family": "official_baseline",
+          "quality_status": "pass",
+          "position_rmse_m": 0.276295,
+          "total_health_score": 52.464,
+          "formation_score": "",
+          "metrics_file": "Results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.json",
+          "raw_file": "results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv",
+          "primary_figures": [
+            "Results/official/example1_step/official_example1_pid_baseline/figures/official_example1_pid_baseline_trajectory_xy.svg",
+            "Results/official/example1_step/official_example1_pid_baseline/figures/official_example1_pid_baseline_position_error.svg",
+            "Results/official/example1_step/official_example1_pid_baseline/figures/metrics_summary.svg",
+            "Results/official/example1_step/official_example1_pid_baseline/figures/altitude_tracking.svg"
+          ],
+          "replay_files": [
+            "Results/official/example1_step/official_example1_pid_baseline/replay/official_example1_pid_baseline.json"
+          ],
+          "log_files": [
+            "Results/official/example1_step/official_example1_pid_baseline/logs/sysplorer_example1_pid_baseline_full_20260509.jsonl"
+          ],
+          "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance"
+        },
+        {
+          "claim_slot": "C0-baseline-helix-example2",
+          "experiment_id": "official_example2_pid_baseline",
+          "scene_id": "official_example2",
+          "controller_id": "pid_baseline",
+          "claim_family": "official_baseline",
+          "quality_status": "pass",
+          "position_rmse_m": 0.487183,
+          "total_health_score": 47.8827,
+          "formation_score": "",
+          "metrics_file": "Results/official/example2_helix/official_example2_pid_baseline/metrics/official_example2_pid_baseline.json",
+          "raw_file": "Results/official/example2_helix/official_example2_pid_baseline/raw/official_example2_pid_baseline.csv",
+          "primary_figures": [
+            "Results/official/example2_helix/official_example2_pid_baseline/figures/trajectory_xy.svg",
+            "Results/official/example2_helix/official_example2_pid_baseline/figures/position_error.svg",
+            "Results/official/example2_helix/official_example2_pid_baseline/figures/metrics_summary.svg",
+            "Results/official/example2_helix/official_example2_pid_baseline/figures/altitude_tracking.svg"
+          ],
+          "replay_files": [
+            "Results/official/example2_helix/official_example2_pid_baseline/replay/official_example2_pid_baseline.json"
+          ],
+          "log_files": [
+            "Results/official/example2_helix/official_example2_pid_baseline/logs/sysplorer_example2_pid_baseline_full_20260509.jsonl"
+          ],
+          "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance"
+        },
+        {
+          "claim_slot": "C0-baseline-figure8-example3",
+          "experiment_id": "official_example3_pid_baseline",
+          "scene_id": "official_example3",
+          "controller_id": "pid_baseline",
+          "claim_family": "official_baseline",
+          "quality_status": "pass",
+          "position_rmse_m": 0.172311,
+          "total_health_score": 60.5054,
+          "formation_score": "",
+          "metrics_file": "Results/official/example3_figure8/official_example3_pid_baseline/metrics/official_example3_pid_baseline.json",
+          "raw_file": "Results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv",
+          "primary_figures": [
+            "Results/official/example3_figure8/official_example3_pid_baseline/figures/trajectory_xy.svg",
+            "Results/official/example3_figure8/official_example3_pid_baseline/figures/position_error.svg",
+            "Results/official/example3_figure8/official_example3_pid_baseline/figures/metrics_summary.svg",
+            "Results/official/example3_figure8/official_example3_pid_baseline/figures/altitude_tracking.svg"
+          ],
+          "replay_files": [
+            "Results/official/example3_figure8/official_example3_pid_baseline/replay/official_example3_pid_baseline.json"
+          ],
+          "log_files": [
+            "Results/official/example3_figure8/official_example3_pid_baseline/logs/sysplorer_example3_pid_baseline_full_20260509.jsonl"
+          ],
+          "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance"
+        }
+      ],
+      "allowed_narration": [
+        "Show baseline PID behavior for step, helix, and figure-8 scenes.",
+        "Use saved raw data, metrics, replay, and figures as candidate evidence."
+      ],
+      "forbidden_claims": [
+        "final PMO acceptance",
+        "final submission ready",
+        "planner_ready",
+        "closed_loop",
+        "ROS2 controller handoff",
+        "UE build/runtime/editor success",
+        "native Syslab complete report generation",
+        "live MWORKS no-start attach success",
+        "final visual acceptance"
+      ],
+      "recording_status": "not_recorded",
+      "claim_boundary": "storyboard_only_not_demo_video_acceptance"
+    },
+    {
+      "order": 3,
+      "scene_id": "S2-optimized-controller-comparison",
+      "title": "Optimized controller comparison",
+      "duration_s": 55,
+      "claim_families": [
+        "optimized_controller"
+      ],
+      "candidate_row_count": 3,
+      "candidate_rows": [
+        {
+          "claim_slot": "C1-optimized-step-example1",
+          "experiment_id": "official_example1_linear_mpc_sysblock",
+          "scene_id": "official_example1",
+          "controller_id": "linear_mpc_sysblock",
+          "claim_family": "optimized_controller",
+          "quality_status": "pass",
+          "position_rmse_m": 0.135014,
+          "total_health_score": 65.6656,
+          "formation_score": "",
+          "metrics_file": "Results/official/example1_step/official_example1_linear_mpc_sysblock/metrics/official_example1_linear_mpc_sysblock.json",
+          "raw_file": "results/official/example1_step/official_example1_linear_mpc_sysblock/raw/official_example1_linear_mpc_sysblock.csv",
+          "primary_figures": [
+            "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures/official_example1_linear_mpc_sysblock_trajectory_xy.svg",
+            "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures/official_example1_linear_mpc_sysblock_position_error.svg",
+            "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures/official_example1_linear_mpc_sysblock_metrics_summary.svg",
+            "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures/official_example1_linear_mpc_sysblock_altitude_tracking.svg"
+          ],
+          "replay_files": [
+            "Results/official/example1_step/official_example1_linear_mpc_sysblock/replay/official_example1_linear_mpc_sysblock.json"
+          ],
+          "log_files": [
+            "Results/official/example1_step/official_example1_linear_mpc_sysblock/logs/sysplorer_example1_linear_mpc_sysblock_full_20260512.jsonl"
+          ],
+          "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance"
+        },
+        {
+          "claim_slot": "C1-optimized-helix-example2",
+          "experiment_id": "official_example2_linear_mpc_sysblock",
+          "scene_id": "official_example2",
+          "controller_id": "linear_mpc_sysblock",
+          "claim_family": "optimized_controller",
+          "quality_status": "pass",
+          "position_rmse_m": 0.429079,
+          "total_health_score": 62.0578,
+          "formation_score": "",
+          "metrics_file": "Results/official/example2_helix/official_example2_linear_mpc_sysblock/metrics/official_example2_linear_mpc_sysblock.json",
+          "raw_file": "results/official/example2_helix/official_example2_linear_mpc_sysblock/raw/official_example2_linear_mpc_sysblock.csv",
+          "primary_figures": [
+            "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures/official_example2_linear_mpc_sysblock_trajectory_xy.svg",
+            "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures/official_example2_linear_mpc_sysblock_position_error.svg",
+            "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures/official_example2_linear_mpc_sysblock_metrics_summary.svg",
+            "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures/official_example2_linear_mpc_sysblock_altitude_tracking.svg"
+          ],
+          "replay_files": [
+            "Results/official/example2_helix/official_example2_linear_mpc_sysblock/replay/official_example2_linear_mpc_sysblock.json"
+          ],
+          "log_files": [
+            "Results/official/example2_helix/official_example2_linear_mpc_sysblock/logs/sysplorer_example2_linear_mpc_sysblock_full_20260512.jsonl"
+          ],
+          "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance"
+        },
+        {
+          "claim_slot": "C1-optimized-figure8-example3",
+          "experiment_id": "official_example3_linear_mpc_sysblock",
+          "scene_id": "official_example3",
+          "controller_id": "linear_mpc_sysblock",
+          "claim_family": "optimized_controller",
+          "quality_status": "pass",
+          "position_rmse_m": 0.084584,
+          "total_health_score": 68.3362,
+          "formation_score": "",
+          "metrics_file": "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/metrics/official_example3_linear_mpc_sysblock.json",
+          "raw_file": "results/official/example3_figure8/official_example3_linear_mpc_sysblock/raw/official_example3_linear_mpc_sysblock.csv",
+          "primary_figures": [
+            "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures/official_example3_linear_mpc_sysblock_trajectory_xy.svg",
+            "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures/official_example3_linear_mpc_sysblock_position_error.svg",
+            "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures/official_example3_linear_mpc_sysblock_metrics_summary.svg",
+            "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures/official_example3_linear_mpc_sysblock_altitude_tracking.svg"
+          ],
+          "replay_files": [
+            "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/replay/official_example3_linear_mpc_sysblock.json"
+          ],
+          "log_files": [
+            "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/logs/sysplorer_example3_linear_mpc_sysblock_full_20260512.jsonl"
+          ],
+          "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance"
+        }
+      ],
+      "allowed_narration": [
+        "Compare optimized Sysblock controller candidates against official PID baseline.",
+        "Discuss tracking RMSE and health-score changes from saved metrics only."
+      ],
+      "forbidden_claims": [
+        "final PMO acceptance",
+        "final submission ready",
+        "planner_ready",
+        "closed_loop",
+        "ROS2 controller handoff",
+        "UE build/runtime/editor success",
+        "native Syslab complete report generation",
+        "live MWORKS no-start attach success",
+        "final visual acceptance"
+      ],
+      "recording_status": "not_recorded",
+      "claim_boundary": "storyboard_only_not_demo_video_acceptance"
+    },
+    {
+      "order": 4,
+      "scene_id": "S3-robustness-fault-safety",
+      "title": "Robustness, fault tolerance, and safety filter",
+      "duration_s": 60,
+      "claim_families": [
+        "robustness",
+        "fault_tolerance",
+        "safety_filter"
+      ],
+      "candidate_row_count": 4,
+      "candidate_rows": [
+        {
+          "claim_slot": "C1-robustness-mass20",
+          "experiment_id": "robust_mass20_example1_linear_mpc_sysblock",
+          "scene_id": "robust_mass20_example1",
+          "controller_id": "linear_mpc_sysblock",
+          "claim_family": "robustness",
+          "quality_status": "pass",
+          "position_rmse_m": 0.2588,
+          "total_health_score": 55.3882,
+          "formation_score": "",
+          "metrics_file": "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/metrics/robust_mass20_example1_linear_mpc_sysblock.json",
+          "raw_file": "results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/raw/robust_mass20_example1_linear_mpc_sysblock.csv",
+          "primary_figures": [
+            "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures/robust_mass20_example1_linear_mpc_sysblock_trajectory_xy.svg",
+            "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures/robust_mass20_example1_linear_mpc_sysblock_position_error.svg",
+            "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures/robust_mass20_example1_linear_mpc_sysblock_metrics_summary.svg",
+            "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures/robust_mass20_example1_linear_mpc_sysblock_altitude_tracking.svg"
+          ],
+          "replay_files": [
+            "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/replay/robust_mass20_example1_linear_mpc_sysblock.json"
+          ],
+          "log_files": [
+            "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/logs/sysplorer_robust_mass20_example1_linear_mpc_sysblock_20260512.jsonl"
+          ],
+          "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance"
+        },
+        {
+          "claim_slot": "C1-robustness-wind-gust",
+          "experiment_id": "robust_wind_gust_example1_linear_mpc_sysblock",
+          "scene_id": "robust_wind_gust_example1",
+          "controller_id": "linear_mpc_sysblock",
+          "claim_family": "robustness",
+          "quality_status": "pass",
+          "position_rmse_m": 0.2588,
+          "total_health_score": 55.3882,
+          "formation_score": "",
+          "metrics_file": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/metrics/robust_wind_gust_example1_linear_mpc_sysblock.json",
+          "raw_file": "results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/raw/robust_wind_gust_example1_linear_mpc_sysblock.csv",
+          "primary_figures": [
+            "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures/robust_wind_gust_example1_linear_mpc_sysblock_trajectory_xy.svg",
+            "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures/robust_wind_gust_example1_linear_mpc_sysblock_position_error.svg",
+            "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures/robust_wind_gust_example1_linear_mpc_sysblock_metrics_summary.svg",
+            "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures/robust_wind_gust_example1_linear_mpc_sysblock_altitude_tracking.svg"
+          ],
+          "replay_files": [
+            "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/replay/robust_wind_gust_example1_linear_mpc_sysblock.json"
+          ],
+          "log_files": [
+            "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/logs/sysplorer_robust_wind_gust_example1_linear_mpc_sysblock_20260512.jsonl"
+          ],
+          "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance"
+        },
+        {
+          "claim_slot": "C1-fault-tolerance-rotor1-loss-wind",
+          "experiment_id": "robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock",
+          "scene_id": "robust_rotor1_loss15_wind_gust_example1",
+          "controller_id": "linear_mpc_online_fault_allocation_sysblock",
+          "claim_family": "fault_tolerance",
+          "quality_status": "pass",
+          "position_rmse_m": 0.261434,
+          "total_health_score": 51.3177,
+          "formation_score": "",
+          "metrics_file": "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/metrics/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.json",
+          "raw_file": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.csv",
+          "primary_figures": [
+            "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_trajectory_xy.svg",
+            "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_position_error.svg",
+            "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_metrics_summary.svg",
+            "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_altitude_tracking.svg"
+          ],
+          "replay_files": [
+            "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/replay/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.json"
+          ],
+          "log_files": [
+            "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/logs/sysplorer_robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_20260513.jsonl"
+          ],
+          "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance"
+        },
+        {
+          "claim_slot": "C1-safety-filter-return-land",
+          "experiment_id": "official_example1_qp_nmpc_safety_return_land_sysblock",
+          "scene_id": "official_example1",
+          "controller_id": "nmpc_indi_l1",
+          "claim_family": "safety_filter",
+          "quality_status": "pass",
+          "position_rmse_m": 0.208361,
+          "total_health_score": 56.146,
+          "formation_score": "",
+          "metrics_file": "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/metrics/official_example1_qp_nmpc_safety_return_land_sysblock.json",
+          "raw_file": "results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/raw/official_example1_qp_nmpc_safety_return_land_sysblock.csv",
+          "primary_figures": [
+            "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures/official_example1_qp_nmpc_safety_return_land_sysblock_trajectory_xy.svg",
+            "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures/official_example1_qp_nmpc_safety_return_land_sysblock_position_error.svg",
+            "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures/official_example1_qp_nmpc_safety_return_land_sysblock_metrics_summary.svg",
+            "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures/official_example1_qp_nmpc_safety_return_land_sysblock_altitude_tracking.svg"
+          ],
+          "replay_files": [
+            "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/replay/official_example1_qp_nmpc_safety_return_land_sysblock.json"
+          ],
+          "log_files": [
+            "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/logs/sysplorer_example1_qp_nmpc_safety_return_land_sysblock_full_20260514.jsonl"
+          ],
+          "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance"
+        }
+      ],
+      "allowed_narration": [
+        "Show mass perturbation, wind gust, rotor degradation, and safety-filter candidate evidence.",
+        "Keep boundary cases separate from completed pass cases."
+      ],
+      "forbidden_claims": [
+        "final PMO acceptance",
+        "final submission ready",
+        "planner_ready",
+        "closed_loop",
+        "ROS2 controller handoff",
+        "UE build/runtime/editor success",
+        "native Syslab complete report generation",
+        "live MWORKS no-start attach success",
+        "final visual acceptance"
+      ],
+      "recording_status": "not_recorded",
+      "claim_boundary": "storyboard_only_not_demo_video_acceptance"
+    },
+    {
+      "order": 5,
+      "scene_id": "S4-formation-control",
+      "title": "Leader-follower multi-UAV formation",
+      "duration_s": 40,
+      "claim_families": [
+        "multi_uav_formation"
+      ],
+      "candidate_row_count": 1,
+      "candidate_rows": [
+        {
+          "claim_slot": "C2-formation-triangle-figure8",
+          "experiment_id": "formation_triangle_figure8_linear_mpc_sysblock",
+          "scene_id": "formation_triangle_figure8",
+          "controller_id": "linear_mpc_sysblock",
+          "claim_family": "multi_uav_formation",
+          "quality_status": "pass",
+          "position_rmse_m": 0.0212508,
+          "total_health_score": 93.6862,
+          "formation_score": 100.0,
+          "metrics_file": "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/metrics/formation_triangle_figure8_linear_mpc_sysblock.json",
+          "raw_file": "results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/raw/formation_triangle_figure8_linear_mpc_sysblock.csv",
+          "primary_figures": [
+            "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures/formation_triangle_figure8_linear_mpc_sysblock_trajectory_xy.svg",
+            "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures/formation_triangle_figure8_linear_mpc_sysblock_position_error.svg",
+            "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures/formation_triangle_figure8_linear_mpc_sysblock_metrics_summary.svg",
+            "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures/formation_triangle_figure8_linear_mpc_sysblock_altitude_tracking.svg"
+          ],
+          "replay_files": [
+            "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/replay/formation_triangle_figure8_linear_mpc_sysblock.json"
+          ],
+          "log_files": [
+            "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/logs/sysplorer_formation_triangle_figure8_linear_mpc_sysblock_20260515.jsonl"
+          ],
+          "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance"
+        }
+      ],
+      "allowed_narration": [
+        "Show the triangle figure-8 formation candidate and its formation score.",
+        "Describe this as saved Sysplorer/MWORKS candidate evidence, not live closed-loop acceptance."
+      ],
+      "forbidden_claims": [
+        "final PMO acceptance",
+        "final submission ready",
+        "planner_ready",
+        "closed_loop",
+        "ROS2 controller handoff",
+        "UE build/runtime/editor success",
+        "native Syslab complete report generation",
+        "live MWORKS no-start attach success",
+        "final visual acceptance"
+      ],
+      "recording_status": "not_recorded",
+      "claim_boundary": "storyboard_only_not_demo_video_acceptance"
+    },
+    {
+      "order": 6,
+      "scene_id": "S5-visual-trajectory-review",
+      "title": "Visual trajectory review assets",
+      "duration_s": 35,
+      "claim_families": [
+        "visual_trajectory_review"
+      ],
+      "candidate_row_count": 2,
+      "candidate_rows": [
+        {
+          "claim_slot": "C1-visual-helical-figure8",
+          "experiment_id": "official_example1_helical_figure8_trail_sysblock",
+          "scene_id": "official_example1_helical_figure8",
+          "controller_id": "linear_mpc_sysblock",
+          "claim_family": "visual_trajectory_review",
+          "quality_status": "pass",
+          "position_rmse_m": 0.0188363,
+          "total_health_score": 93.3606,
+          "formation_score": "",
+          "metrics_file": "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/metrics/official_example1_helical_figure8_trail_sysblock.json",
+          "raw_file": "results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/raw/official_example1_helical_figure8_trail_sysblock.csv",
+          "primary_figures": [
+            "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures/official_example1_helical_figure8_trail_sysblock_trajectory_xy.svg",
+            "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures/official_example1_helical_figure8_trail_sysblock_position_error.svg",
+            "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures/official_example1_helical_figure8_trail_sysblock_metrics_summary.svg",
+            "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures/official_example1_helical_figure8_trail_sysblock_altitude_tracking.svg"
+          ],
+          "replay_files": [
+            "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/replay/official_example1_helical_figure8_trail_sysblock.json"
+          ],
+          "log_files": [
+            "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/logs/sysplorer_example1_helical_figure8_trail_sysblock_full_20260514.jsonl"
+          ],
+          "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance"
+        },
+        {
+          "claim_slot": "C1-visual-planar-figure8",
+          "experiment_id": "official_example1_planar_figure8_trail_sysblock",
+          "scene_id": "official_example1_planar_figure8",
+          "controller_id": "linear_mpc_sysblock",
+          "claim_family": "visual_trajectory_review",
+          "quality_status": "pass",
+          "position_rmse_m": 0.0188624,
+          "total_health_score": 93.3638,
+          "formation_score": "",
+          "metrics_file": "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/metrics/official_example1_planar_figure8_trail_sysblock.json",
+          "raw_file": "results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/raw/official_example1_planar_figure8_trail_sysblock.csv",
+          "primary_figures": [
+            "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures/official_example1_planar_figure8_trail_sysblock_trajectory_xy.svg",
+            "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures/official_example1_planar_figure8_trail_sysblock_position_error.svg",
+            "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures/official_example1_planar_figure8_trail_sysblock_metrics_summary.svg",
+            "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures/official_example1_planar_figure8_trail_sysblock_altitude_tracking.svg"
+          ],
+          "replay_files": [
+            "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/replay/official_example1_planar_figure8_trail_sysblock.json"
+          ],
+          "log_files": [
+            "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/logs/sysplorer_example1_planar_figure8_trail_sysblock_full_20260514.jsonl"
+          ],
+          "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance"
+        }
+      ],
+      "allowed_narration": [
+        "Show planar and helical figure-8 visual-review trajectory candidates.",
+        "Do not claim UE build, runtime, editor, or final visual acceptance from these rows."
+      ],
+      "forbidden_claims": [
+        "final PMO acceptance",
+        "final submission ready",
+        "planner_ready",
+        "closed_loop",
+        "ROS2 controller handoff",
+        "UE build/runtime/editor success",
+        "native Syslab complete report generation",
+        "live MWORKS no-start attach success",
+        "final visual acceptance"
+      ],
+      "recording_status": "not_recorded",
+      "claim_boundary": "storyboard_only_not_demo_video_acceptance"
+    },
+    {
+      "order": 7,
+      "scene_id": "S6-final-packaging-gates",
+      "title": "Final packaging gates",
+      "duration_s": 25,
+      "claim_families": [],
+      "candidate_row_count": 0,
+      "candidate_rows": [],
+      "allowed_narration": [
+        "List remaining final artifacts: PDFs, demo video, and PMO acceptance packet.",
+        "State that final submission readiness remains blocked until those artifacts exist and are reviewed."
+      ],
+      "forbidden_claims": [
+        "final PMO acceptance",
+        "final submission ready",
+        "planner_ready",
+        "closed_loop",
+        "ROS2 controller handoff",
+        "UE build/runtime/editor success",
+        "native Syslab complete report generation",
+        "live MWORKS no-start attach success",
+        "final visual acceptance"
+      ],
+      "recording_status": "not_recorded",
+      "claim_boundary": "storyboard_only_not_demo_video_acceptance"
+    }
+  ],
+  "missing_figure_links": [],
+  "forbidden_video_claims": [
+    "final PMO acceptance",
+    "final submission ready",
+    "planner_ready",
+    "closed_loop",
+    "ROS2 controller handoff",
+    "UE build/runtime/editor success",
+    "native Syslab complete report generation",
+    "live MWORKS no-start attach success",
+    "final visual acceptance"
+  ],
+  "blockers": [
+    {
+      "blocker_id": "demo_video_not_recorded",
+      "reason": "Results/submission/demo_video.mp4 is missing",
+      "needed_action": "record or render the reviewed storyboard only after approval"
+    },
+    {
+      "blocker_id": "manual_storyboard_review_required",
+      "reason": "storyboard content must be reviewed before recording",
+      "needed_action": "confirm scenes, wording, and evidence boundaries before producing video"
+    }
+  ],
+  "claim_boundary": [
+    "This artifact is a storyboard and recording checklist only.",
+    "It does not record, render, encode, or create demo_video.mp4.",
+    "It does not claim final PMO acceptance or final submission readiness.",
+    "It does not prove ROS2 planner_ready, closed_loop, or UE runtime success."
+  ]
+}

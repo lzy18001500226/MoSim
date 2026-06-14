@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "error_count": 0,
+  "warning_count": 0,
+  "capability_count": 16,
+  "markdown_stable_id_count": 16,
+  "findings": [],
+  "capability_index": "CoAgent/capabilities/capability_index.json",
+  "markdown_index": "Docs/Index/capability_index.md"
+}

@@ -1,0 +1,155 @@
+{
+  "plan_id": "simulation_report_edit_sequence_20260610",
+  "status": "draft_edit_sequence_not_report_edit",
+  "inputs": {
+    "final_report_outline_gap_inventory": "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json",
+    "final_report_unmapped_claim_rewrite_plan": "Results/static_audits/final_report_unmapped_claim_rewrite_20260610/final_report_unmapped_claim_rewrite_plan.json",
+    "simulation_report_source_hygiene_plan": "Results/static_audits/simulation_report_source_hygiene_20260610/simulation_report_source_hygiene_plan.json"
+  },
+  "summary": {
+    "action_count": 7,
+    "candidate_family_count": 3,
+    "hygiene_finding_count": 6,
+    "edits_report_source": false,
+    "deletes_content": false,
+    "final_acceptance": false
+  },
+  "actions": [
+    {
+      "action_id": "preserve_final_acceptance_boundary",
+      "order": 1,
+      "kind": "boundary_guard",
+      "target_section": "1. 报告范围",
+      "claim_family": "",
+      "source_finding_id": "final_artifact_missing_boundary",
+      "report_line_hint": 29,
+      "rationale": "Final PDF, demo video, and final PMO acceptance packet are still missing.",
+      "inputs": [
+        "Results/static_audits/simulation_report_source_hygiene_20260610/simulation_report_source_hygiene_plan.json",
+        "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json"
+      ],
+      "proposed_change": "Keep the current not-final paragraph near the front matter before any source rewrite.",
+      "safety_boundary": "Do not convert static candidate readiness into final acceptance.",
+      "edits_now": false,
+      "requires_human_review_before_apply": true
+    },
+    {
+      "action_id": "rewrite_formation_next_stage_boundary",
+      "order": 2,
+      "kind": "targeted_sentence_rewrite",
+      "target_section": "12. 扩展场景状态",
+      "claim_family": "multi_uav_formation",
+      "source_finding_id": "formation_next_stage_statement_conflict",
+      "report_line_hint": 594,
+      "rationale": "The current sentence says planning and formation are next-stage goals, but a formation candidate row now exists.",
+      "inputs": [
+        "Results/static_audits/simulation_report_source_hygiene_20260610/simulation_report_source_hygiene_plan.json",
+        "Results/static_audits/final_report_unmapped_claim_rewrite_20260610/final_report_unmapped_claim_rewrite_plan.json"
+      ],
+      "proposed_change": "Rewrite the sentence to separate static MWORKS/Sysplorer formation candidate evidence from unproven ROS2/PX4/QGC online formation claims.",
+      "safety_boundary": "Do not claim ROS2/PX4/QGC online formation or final formation acceptance.",
+      "edits_now": false,
+      "requires_human_review_before_apply": true
+    },
+    {
+      "action_id": "insert_visual_trajectory_review_candidate_subsection",
+      "order": 3,
+      "kind": "candidate_subsection_insert",
+      "target_section": "11. 当前图表",
+      "claim_family": "visual_trajectory_review",
+      "source_finding_id": "",
+      "report_line_hint": null,
+      "rationale": "Candidate family `visual_trajectory_review` is not yet represented as a dedicated final-report subsection.",
+      "inputs": [
+        "Results/static_audits/final_report_unmapped_claim_rewrite_20260610/final_report_unmapped_claim_rewrite_plan.json",
+        "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json"
+      ],
+      "proposed_change": "当前候选证据可用于报告草稿说明：平面 8 字和螺旋上升 8 字留痕审查模型已有 native GUI 候选行与图表路径。 候选实验包括 `official_example1_helical_figure8_trail_sysblock`、`official_example1_planar_figure8_trail_sysblock`，position_rmse_m 分别为 0.0188363、0.0188624。不支撑 UE build/runtime/editor 成功、最终演示视频完成或最终视觉验收声明。",
+      "safety_boundary": "不支撑 UE build/runtime/editor 成功、最终演示视频完成或最终视觉验收声明。",
+      "edits_now": false,
+      "requires_human_review_before_apply": true
+    },
+    {
+      "action_id": "insert_fault_tolerance_candidate_subsection",
+      "order": 4,
+      "kind": "candidate_subsection_insert",
+      "target_section": "13. Linear MPC-style 外环闭环结果",
+      "claim_family": "fault_tolerance",
+      "source_finding_id": "",
+      "report_line_hint": null,
+      "rationale": "Candidate family `fault_tolerance` is not yet represented as a dedicated final-report subsection.",
+      "inputs": [
+        "Results/static_audits/final_report_unmapped_claim_rewrite_20260610/final_report_unmapped_claim_rewrite_plan.json",
+        "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json"
+      ],
+      "proposed_change": "当前候选证据可用于报告草稿说明：在 rotor1 85% 效率退化叠加横向阵风场景中，加入在线效率估计与控制分配的 LinearMPC Sysblock 候选行通过质量门。 候选实验 `robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock` 的 position_rmse_m=0.261434，total_health_score=51.3177，证据路径包括 metrics、raw CSV 和核心 SVG 图表。不支撑瞬态故障切换、多旋翼同时故障、真实飞控容错或最终 PMO 验收声明。",
+      "safety_boundary": "不支撑瞬态故障切换、多旋翼同时故障、真实飞控容错或最终 PMO 验收声明。",
+      "edits_now": false,
+      "requires_human_review_before_apply": true
+    },
+    {
+      "action_id": "insert_multi_uav_formation_candidate_subsection",
+      "order": 5,
+      "kind": "candidate_subsection_insert",
+      "target_section": "13. Linear MPC-style 外环闭环结果",
+      "claim_family": "multi_uav_formation",
+      "source_finding_id": "",
+      "report_line_hint": null,
+      "rationale": "Candidate family `multi_uav_formation` is not yet represented as a dedicated final-report subsection.",
+      "inputs": [
+        "Results/static_audits/final_report_unmapped_claim_rewrite_20260610/final_report_unmapped_claim_rewrite_plan.json",
+        "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json"
+      ],
+      "proposed_change": "当前候选证据可用于报告草稿说明：triangle figure-8 编队场景已有一条 MWORKS/Sysplorer 候选行，记录了位置 RMSE、健康分和 formation_score。 候选实验 `formation_triangle_figure8_linear_mpc_sysblock` 的 position_rmse_m=0.0212508，formation_score=100，total_health_score=93.6862。不支撑 ROS2/PX4/QGC 在线编队、真实多机通信链路或最终编队验收声明。",
+      "safety_boundary": "不支撑 ROS2/PX4/QGC 在线编队、真实多机通信链路或最终编队验收声明。",
+      "edits_now": false,
+      "requires_human_review_before_apply": true
+    },
+    {
+      "action_id": "condense_smoke_and_legacy_sections",
+      "order": 6,
+      "kind": "condense_without_delete",
+      "target_section": "5-9 legacy/smoke sections",
+      "claim_family": "",
+      "source_finding_id": "smoke_and_staged_prominence;legacy_controller_comparison_sections",
+      "report_line_hint": 3,
+      "rationale": "Smoke/staged and legacy comparison sections are useful provenance but should not dominate the final candidate narrative.",
+      "inputs": [
+        "Results/static_audits/simulation_report_source_hygiene_20260610/simulation_report_source_hygiene_plan.json",
+        "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json"
+      ],
+      "proposed_change": "Condense these sections into a short history/background block or appendix pointer after final table review.",
+      "safety_boundary": "Do not delete provenance or use smoke/staged rows as full performance conclusions.",
+      "edits_now": false,
+      "requires_human_review_before_apply": true
+    },
+    {
+      "action_id": "renumber_l1_residual_subsection",
+      "order": 7,
+      "kind": "structure_cleanup",
+      "target_section": "9.4 L1-inspired 残差补偿控制器首轮消融",
+      "claim_family": "",
+      "source_finding_id": "heading_number_mismatch",
+      "report_line_hint": 497,
+      "rationale": "The numbered subsection appears under a later report flow and can confuse navigation.",
+      "inputs": [
+        "Results/static_audits/simulation_report_source_hygiene_20260610/simulation_report_source_hygiene_plan.json"
+      ],
+      "proposed_change": "Renumber or remove explicit subsection numbering after content placement is approved.",
+      "safety_boundary": "Structure cleanup only; do not change technical claims.",
+      "edits_now": false,
+      "requires_human_review_before_apply": true
+    }
+  ],
+  "apply_prerequisites": [
+    "Human/PMO review approves which candidate families enter the report body.",
+    "Historical evidence retention policy is confirmed before condensing legacy sections.",
+    "Final acceptance boundary remains in the first report scope section."
+  ],
+  "claim_boundary": [
+    "This plan sequences report-source edits only.",
+    "It does not edit Docs/simulation_report.md.",
+    "It does not delete historical evidence.",
+    "It does not generate PDFs/video or PMO final acceptance."
+  ]
+}

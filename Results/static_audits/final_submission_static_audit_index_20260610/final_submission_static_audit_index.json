@@ -1,0 +1,185 @@
+{
+  "index_id": "final_submission_static_audit_index_20260610",
+  "status": "static_audit_index_not_final_submission",
+  "summary": {
+    "artifact_count": 18,
+    "missing_count": 0,
+    "unreadable_count": 0,
+    "ready_count": 1,
+    "blocked_count": 17,
+    "final_submission_ready": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "artifacts": [
+    {
+      "artifact_id": "report_source_edit_decision",
+      "path": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision_check.json",
+      "exists": true,
+      "status": "ok=True",
+      "ready": false,
+      "role": "validates report-source edit decision before source edits",
+      "issue": ""
+    },
+    {
+      "artifact_id": "source_edit_readiness",
+      "path": "Results/static_audits/simulation_report_source_edit_readiness_20260610/simulation_report_source_edit_readiness_gate.json",
+      "exists": true,
+      "status": "source_edit_application_blocked_pending_human_review",
+      "ready": false,
+      "role": "blocks applying report-source preview snippets until approved",
+      "issue": ""
+    },
+    {
+      "artifact_id": "source_edit_application_plan",
+      "path": "Results/static_audits/simulation_report_source_edit_application_plan_20260610/simulation_report_source_edit_application_plan.json",
+      "exists": true,
+      "status": "source_edit_application_plan_blocked_pending_human_review",
+      "ready": false,
+      "role": "turns approved report-source previews into non-applying application steps",
+      "issue": ""
+    },
+    {
+      "artifact_id": "source_edit_reviewer_summary",
+      "path": "Results/static_audits/simulation_report_source_edit_reviewer_summary_20260610/simulation_report_source_edit_reviewer_summary.json",
+      "exists": true,
+      "status": "source_edit_reviewer_summary_not_execution",
+      "ready": false,
+      "role": "summarizes preview impact and A1 review questions without executing",
+      "issue": ""
+    },
+    {
+      "artifact_id": "source_edit_application_audit_checklist",
+      "path": "Results/static_audits/simulation_report_source_edit_application_audit_checklist_20260610/simulation_report_source_edit_application_audit_checklist.json",
+      "exists": true,
+      "status": "source_edit_application_audit_checklist_not_execution",
+      "ready": false,
+      "role": "lists backup, diff, revert, and post-edit guard requirements before future source edits",
+      "issue": ""
+    },
+    {
+      "artifact_id": "source_output_readiness",
+      "path": "Results/static_audits/submission_source_output_readiness_20260610/submission_source_output_readiness.json",
+      "exists": true,
+      "status": "static_source_output_readiness_not_final_submission",
+      "ready": false,
+      "role": "checks source docs/tooling before final PDF export",
+      "issue": ""
+    },
+    {
+      "artifact_id": "pdf_export_plan",
+      "path": "Results/static_audits/pdf_export_dry_run_plan_20260610/pdf_export_dry_run_plan.json",
+      "exists": true,
+      "status": "dry_run_pdf_export_plan_not_final_output",
+      "ready": false,
+      "role": "records future PDF commands without running them",
+      "issue": ""
+    },
+    {
+      "artifact_id": "demo_video_storyboard",
+      "path": "Results/static_audits/demo_video_storyboard_plan_20260610/demo_video_storyboard_plan.json",
+      "exists": true,
+      "status": "storyboard_plan_not_demo_video_acceptance",
+      "ready": false,
+      "role": "maps evidence to demo scenes before video recording",
+      "issue": ""
+    },
+    {
+      "artifact_id": "final_artifact_manifest",
+      "path": "Results/static_audits/final_submission_artifacts_20260610/final_submission_artifact_manifest_check.json",
+      "exists": true,
+      "status": "final_artifacts_missing_not_final_submission",
+      "ready": false,
+      "role": "checks final PDFs, demo video, and acceptance packet presence",
+      "issue": ""
+    },
+    {
+      "artifact_id": "final_acceptance_prereq",
+      "path": "Results/static_audits/final_acceptance_packet_prereq_20260610/final_acceptance_packet_prereq_plan.json",
+      "exists": true,
+      "status": "blocked_template_not_final_acceptance",
+      "ready": false,
+      "role": "blocks canonical final acceptance packet until prerequisites pass",
+      "issue": ""
+    },
+    {
+      "artifact_id": "final_output_execution_decision",
+      "path": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision_check.json",
+      "exists": true,
+      "status": "execution_decision_check_not_execution",
+      "ready": false,
+      "role": "records human/PMO execution decision without executing",
+      "issue": ""
+    },
+    {
+      "artifact_id": "final_submission_dashboard",
+      "path": "Results/static_audits/final_submission_readiness_dashboard_20260610/final_submission_readiness_dashboard.json",
+      "exists": true,
+      "status": "static_dashboard_not_final_submission_acceptance",
+      "ready": false,
+      "role": "aggregates static readiness gates",
+      "issue": ""
+    },
+    {
+      "artifact_id": "final_submission_human_action_checklist",
+      "path": "Results/static_audits/final_submission_human_action_checklist_20260610/final_submission_human_action_checklist.json",
+      "exists": true,
+      "status": "human_action_checklist_not_execution",
+      "ready": false,
+      "role": "groups human actions but does not execute them",
+      "issue": ""
+    },
+    {
+      "artifact_id": "final_submission_reviewer_action_map",
+      "path": "Results/static_audits/final_submission_reviewer_action_map_20260610/final_submission_reviewer_action_map.json",
+      "exists": true,
+      "status": "reviewer_action_map_not_execution",
+      "ready": false,
+      "role": "maps human actions to reviewer decisions and evidence",
+      "issue": ""
+    },
+    {
+      "artifact_id": "final_submission_human_review_decision_packet",
+      "path": "Results/static_audits/final_submission_human_review_decision_packet_20260610/final_submission_human_review_decision_packet_check.json",
+      "exists": true,
+      "status": "human_review_decision_packet_check_not_execution",
+      "ready": false,
+      "role": "validates pending A1/A3/A6 human review decisions",
+      "issue": ""
+    },
+    {
+      "artifact_id": "final_submission_human_review_guide",
+      "path": "Results/static_audits/final_submission_human_review_guide_20260610/final_submission_human_review_guide.json",
+      "exists": true,
+      "status": "human_review_guide_not_execution",
+      "ready": false,
+      "role": "explains how to review A1/A3/A6 without executing",
+      "issue": ""
+    },
+    {
+      "artifact_id": "final_submission_readiness_chain",
+      "path": "Results/static_audits/final_submission_readiness_chain_20260610/final_submission_readiness_chain_check.json",
+      "exists": true,
+      "status": "static_chain_check_not_final_submission",
+      "ready": false,
+      "role": "checks static artifact chain integrity",
+      "issue": ""
+    },
+    {
+      "artifact_id": "final_submission_refresh_order",
+      "path": "Results/static_audits/final_submission_refresh_order_20260610/final_submission_refresh_order_check.json",
+      "exists": true,
+      "status": "static_refresh_order_check_not_execution",
+      "ready": true,
+      "role": "checks static audit refresh order and serial barriers",
+      "issue": ""
+    }
+  ],
+  "claim_boundary": [
+    "This index summarizes static audit artifacts only.",
+    "It does not run generators.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

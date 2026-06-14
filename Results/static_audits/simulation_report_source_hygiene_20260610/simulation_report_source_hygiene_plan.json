@@ -1,0 +1,234 @@
+{
+  "plan_id": "simulation_report_source_hygiene_20260610",
+  "status": "draft_hygiene_plan_not_report_edit",
+  "inputs": {
+    "simulation_report": "Docs/simulation_report.md",
+    "final_report_outline_gap_inventory": "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json",
+    "final_report_unmapped_claim_rewrite_plan": "Results/static_audits/final_report_unmapped_claim_rewrite_20260610/final_report_unmapped_claim_rewrite_plan.json"
+  },
+  "summary": {
+    "finding_count": 6,
+    "severity_counts": {
+      "high": 2,
+      "low": 1,
+      "medium": 3
+    },
+    "category_counts": {
+      "candidate_mismatch": 1,
+      "final_acceptance_boundary": 1,
+      "legacy_comparison": 1,
+      "old_stage_context": 1,
+      "report_structure": 1,
+      "smoke_context": 1
+    },
+    "edits_report_source": false,
+    "deletes_content": false,
+    "final_acceptance": false
+  },
+  "findings": [
+    {
+      "finding_id": "old_airframe_snapshot_warnings",
+      "severity": "medium",
+      "category": "old_stage_context",
+      "evidence": [
+        {
+          "line": 56,
+          "text": "迁移后，质量 +20% 场景的质量扰动改为 `1.0 kg -> 1.2 kg`；旋翼 85% 退化场景的升力增益改为 `0.000854858 -> 0.0007266293`。本报告后续历史表格是旧机体证据快照，不应继续作为新机体性能结论；正式控制器排名和视频素材需要基于 `sunray150_with_mid360` 重新运行 Sysplorer/MWORKS 仿真后刷新。"
+        },
+        {
+          "line": 384,
+          "text": "当前 `robust_mass20_example1` 场景用于真实模型鲁棒性验证：在 Example1 阶梯爬升任务中，将 `quadChassisTest17_1.body.m` 从当前 Sunray150 机体 `1.0 kg` 改为 `1.2 kg`，即中心机体质量 +20%。本节下方历史表格仍是旧轻量机架证据快照；新机体正式结论需要重跑后刷新。"
+        },
+        {
+          "line": 461,
+          "text": "当前 `robust_rotor1_loss15_example1` 场景用于执行器退化鲁棒性验证：在 Example1 阶梯爬升任务中，将 1 号旋翼对应升力增益 `quadChassisTest17_1.gain2.k` 从当前 Sunray150 nominal `0.000854858` 改为 `0.0007266293`，等效为单旋翼升力效率下降到 `85%`。本节下方历史表格仍是旧轻量机架证据快照；新机体正式结论需要重跑后刷新。"
+        },
+        {
+          "line": 725,
+          "text": "2026-05-14 收尾修正：Sunray150_with_mid360 迁移后，所有 `Models/QuadrotorExperiments/*SysblockClosedLoop.mo` 单机实验包装模型均补入悬停电机速度偏置 `53.5621 rad/s` 和控制增量缩放 `53.5621 / 13.9854`，避免旧控制器速度输出直接接入新机体电机输入域。修正后 Example1/2/3 LinearMPC 全时长真实 Sysplorer MCP 复测均为 `pass`，上表已更新为新机体指标。"
+        }
+      ],
+      "risk": "Old-airframe or old-controller notes are useful history, but they can distract from the final candidate evidence set.",
+      "recommendation": "Move or condense old-stage context into a history/appendix block during the next report rewrite.",
+      "proposed_action": "condense_keep_boundary"
+    },
+    {
+      "finding_id": "smoke_and_staged_prominence",
+      "severity": "medium",
+      "category": "smoke_context",
+      "evidence": [
+        {
+          "line": 3,
+          "text": "> 当前 smoke 数据均只覆盖 0-1 s，用于验证 MCP 结果读取、CSV 导出和指标计算链路。完整性能结论只引用 `official_example*_*.csv` 对应的全时长真实 Sysplorer MCP 结果。"
+        },
+        {
+          "line": 11,
+          "text": "质量判定规则：`check_model ok` 和 `simulate_model ok` 只说明模型可以执行；完整性能结论还必须通过 `Scripts/results/evaluate_result_quality.py` 写入的 `quality_status`。`pass` 可支撑报告结论，`smoke_only` 只证明链路可用，`needs_iteration` 必须继续调控制器或明确写为未完成限制。当前 Example2 已通过 `helix_tuned` Enhanced PID、AWFF PID 和 AWFF Sysblock 分支解决 RMSE 门禁问题；旋翼退化场景显示“仅靠外环鲁棒控制不足”，需要控制分配或故障补偿层。"
+        },
+        {
+          "line": 44,
+          "text": "Example1/2/3 AWFF Sysblock 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标"
+        },
+        {
+          "line": 45,
+          "text": "Example1 L1 residual Sysblock nominal/wind-gust 0-1 s smoke 与 50 s full CSV、指标、图表和 replay JSON"
+        },
+        {
+          "line": 82,
+          "text": "| Example1 smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已有 CSV、指标、图表 |"
+        },
+        {
+          "line": 83,
+          "text": "| Example1 MWORKS MCP smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已通过 Sysplorer MCP 真实加载、检查、仿真和读取变量 |"
+        },
+        {
+          "line": 96,
+          "text": "`Scripts/quality/qa_check.py` 会阻止短时 smoke 数据误放入上述正式结果路径。"
+        },
+        {
+          "line": 107,
+          "text": "→ Scripts/mworks/run_sysplorer_mcp_smoke.py 导出标准 CSV"
+        },
+        {
+          "line": 148,
+          "text": "其中 `mworks_mcp_example1_pid_smoke` 是 `source=MWORKS_MCP` 的真实 Sysplorer MCP smoke：脚本通过 `model_manager load_file` 加载 `References/MWORKS/QuadrotorModel/package.mo`，`check_model` 检查 `QuadrotorModel.Examples.Example1`，`simulate_model` 运行 0-1 s，并通过 `result_manager get_vars_values` 导出 `time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4`。"
+        },
+        {
+          "line": 275,
+          "text": "因此当前整机闭环主线继续使用等价扁平方程实现 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop`。该主线已经完成 Example1 0-1 s、5 s、10 s、20 s 渐进验证，以及 active official 场景中的 Example1 50 s、Example2 helix-tuned 50 s、Example3 120 s 全时长真实 Sysplorer MCP 闭环复测，均通过质量门禁，可作为当前 Sysblock 控制器整机仿真的主证据。图形化 Sysblock 文件用于控制器结构、时间行为和非线性/模式逻辑审核；Equation 版仅作为当前整机混合仿真的临时桥接实现。2026-05-12 基础图形化控制器 5 个模型和创新图形化控制器 15 个模型均完成真实 MCP `load_file/check_model` 复测，日志分别见 `Results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_behavior_check_20260512_summary.json` 和 `Results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_l1_online_fault_allocation_check_20260512_summary.json`。后续新仿真场景仍必须同步维护图形化行为等价模型。"
+        },
+        {
+          "line": 299,
+          "text": "AWFF_PID_Sysblock_Demo: load_file/check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行"
+        },
+        {
+          "line": 311,
+          "text": "AWFF_FullController_Sysblock: load_file/check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行"
+        },
+        {
+          "line": 334,
+          "text": "QuadrotorExperiments.Example1AWFFSysblockClosedLoop: check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行，50 s 输出 5001 行。"
+        },
+        {
+          "line": 335,
+          "text": "QuadrotorExperiments.Example2AWFFSysblockClosedLoop: check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行，50 s 输出 5001 行。"
+        },
+        {
+          "line": 336,
+          "text": "QuadrotorExperiments.Example3AWFFSysblockClosedLoop: check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行，120 s 输出 12001 行。"
+        },
+        {
+          "line": 345,
+          "text": "| Sysblock smoke | 1.0 | 101 | 0.952870 | 0.855110 | 0.000000 | 28.844595 |"
+        },
+        {
+          "line": 346,
+          "text": "| Sysblock staged | 5.0 | 501 | 0.659238 | 0.474227 | 0.000000 | 32.857746 |"
+        },
+        {
+          "line": 347,
+          "text": "| Sysblock staged | 10.0 | 1001 | 0.473190 | 0.073953 | 0.000000 | 53.758541 |"
+        },
+        {
+          "line": 348,
+          "text": "| Sysblock staged | 20.0 | 2001 | 0.339268 | 0.015494 | 0.000000 | 54.844389 |"
+        },
+        {
+          "line": 799,
+          "text": "证据包状态：截至 2026-05-13，active 非 smoke 场景证据包无 blocking issue；`linear_mpc_sysblock` 的 rotor1 退化纯外环结果保留为边界负样本，`linear_mpc_online_fault_allocation_sysblock` 和 `l1_multi_fault_isolation_sysblock` 才是可用于“退化/复合扰动场景通过”的正式证据。完整差异审计见 `Results/summaries/experiment_summary/simulation_gap_review.md`。"
+        },
+        {
+          "line": 803,
+          "text": "1. 不使用 smoke 数据做完整控制性能结论。"
+        }
+      ],
+      "risk": "Smoke/staged rows are valid pipeline evidence but should not dominate the final performance narrative.",
+      "recommendation": "Keep the smoke boundary, but move detailed smoke/staged tables out of the main final-results path.",
+      "proposed_action": "move_to_appendix_or_summary"
+    },
+    {
+      "finding_id": "legacy_controller_comparison_sections",
+      "severity": "medium",
+      "category": "legacy_comparison",
+      "evidence": [
+        {
+          "line": 160,
+          "text": "7. 改进 PID 对比"
+        },
+        {
+          "line": 179,
+          "text": "8. Enhanced PID P1 初步结果"
+        },
+        {
+          "line": 202,
+          "text": "9. AWFF 独立控制器初步结果"
+        }
+      ],
+      "risk": "Legacy Improved PID / Enhanced PID / AWFF sections are useful provenance but may compete with the current candidate LinearMPC report path.",
+      "recommendation": "Compress these sections after the final candidate table is accepted; preserve evidence references until review completes.",
+      "proposed_action": "compress_after_candidate_table_review"
+    },
+    {
+      "finding_id": "heading_number_mismatch",
+      "severity": "low",
+      "category": "report_structure",
+      "evidence": [
+        {
+          "line": 497,
+          "text": "### 9.4 L1-inspired 残差补偿控制器首轮消融"
+        }
+      ],
+      "risk": "A 9.4 subsection appears under the later report flow and can confuse navigation.",
+      "recommendation": "Renumber or remove explicit subsection numbering during the final report rewrite.",
+      "proposed_action": "renumber_in_report_rewrite"
+    },
+    {
+      "finding_id": "formation_next_stage_statement_conflict",
+      "severity": "high",
+      "category": "candidate_mismatch",
+      "evidence": [
+        {
+          "line": 594,
+          "text": "质量 +20% 参数摄动、15-19 s 横向阵风扰动、1 号旋翼 85% 效率退化、Example1 AWFF 独立控制器替换、Example1/2/3 AWFF Sysblock 官方场景、L1 residual Sysblock 消融，以及已知效率退化控制分配补偿均已完成真实 MWORKS MCP 闭环。规划和编队仍保留在 `Docs/Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论："
+        }
+      ],
+      "risk": "The report says planning and formation remain next-stage goals, while the static candidate set now includes a multi-UAV formation candidate row.",
+      "recommendation": "Rewrite this sentence to distinguish final acceptance from available candidate formation evidence.",
+      "proposed_action": "rewrite_with_candidate_boundary"
+    },
+    {
+      "finding_id": "final_artifact_missing_boundary",
+      "severity": "high",
+      "category": "final_acceptance_boundary",
+      "evidence": [
+        {
+          "line": 29,
+          "text": "它们只用于报告草稿选材、图表就绪度确认、表格起草、预提交准备度盘点和草稿改写规划，不是最终 PMO 验收。当前 13 条候选行的"
+        },
+        {
+          "line": 30,
+          "text": "metrics/raw/figure/replay/log 路径均可解析，但最终 PDF、演示视频和最终验收 packet 仍未完成。静态清单也不证明"
+        },
+        {
+          "line": 683,
+          "text": "对应证据目录位于 `Results/robustness/rotor{1..4}_loss15_example1/robust_rotor{1..4}_loss15_example1_l1_multi_fault_isolation_sysblock/`，其中包含 `raw/`、`metrics/`、`figures/`、`replay/` 和 `logs/`。`figures/` 中除轨迹、误差和指标图外，还包含 `*_eta_hat_diagnostics.svg` 与 `*_fault_index_diagnostics.svg`，用于报告和演示视频中展示在线效率估计与故障编号锁存过程。该组结果可以支撑“四旋翼持续单故障隔离验证已完成”的表述；不支撑瞬态故障、复合多故障或故障切换声明。"
+        }
+      ],
+      "risk": "The report correctly states final packaging is not complete; any source rewrite must keep this boundary.",
+      "recommendation": "Keep the not-final boundary until final PDFs, demo video, and PMO acceptance packet exist.",
+      "proposed_action": "preserve_boundary"
+    }
+  ],
+  "recommended_order": [
+    "Preserve current not-final and no-live-runtime boundaries.",
+    "Rewrite the formation/planning next-stage sentence with candidate-evidence boundaries.",
+    "Move smoke/staged details and legacy comparisons toward summary/appendix form.",
+    "Renumber report sections after content placement is approved."
+  ],
+  "claim_boundary": [
+    "This plan is a review aid only.",
+    "It does not edit Docs/simulation_report.md.",
+    "It does not delete report content.",
+    "It does not change final PMO acceptance or live-runtime status."
+  ]
+}

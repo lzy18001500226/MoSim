@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "report": "Docs/simulation_report.md",
+  "preview": "Results/static_audits/simulation_report_patch_preview_20260610/simulation_report_patch_preview.json",
+  "issues": [],
+  "warnings": [],
+  "preview_count": 7
+}

@@ -1,0 +1,162 @@
+{
+  "closure_checklist_id": "final_submission_manual_review_closure_checklist_20260610",
+  "status": "manual_review_closure_checklist_not_execution",
+  "sources": {
+    "reviewer_handoff_note": {
+      "source_id": "reviewer_handoff_note",
+      "path": "Results/static_audits/final_submission_reviewer_handoff_note_20260610/final_submission_reviewer_handoff_note.json",
+      "status": "reviewer_handoff_note_not_execution",
+      "summary": {
+        "handoff_step_count": 5,
+        "bundle_artifact_count": 7,
+        "ready_bundle_artifact_count": 7,
+        "answer_field_count": 38,
+        "required_answer_field_count": 29,
+        "copied_field_count": 0,
+        "automated_execution_allowed": false,
+        "approves_or_executes_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "manual_review_answer_sheet": {
+      "source_id": "manual_review_answer_sheet",
+      "path": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_manual_review_answer_sheet_template.json",
+      "status": "manual_review_answer_sheet_template_not_execution",
+      "summary": {
+        "review_action_count": 3,
+        "answer_field_count": 38,
+        "required_answer_field_count": 29,
+        "missing_open_file_count": 0,
+        "automated_execution_allowed": false,
+        "copies_answers_now": false,
+        "edits_decision_artifacts_now": false,
+        "approves_or_executes_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "answer_sheet_decision_consistency": {
+      "source_id": "answer_sheet_decision_consistency",
+      "path": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_answer_sheet_decision_consistency_check.json",
+      "status": "answer_sheet_decision_consistency_check_not_execution",
+      "summary": {
+        "review_action_count": 3,
+        "answer_field_count": 38,
+        "unfilled_placeholder_field_count": 38,
+        "copied_field_count": 0,
+        "issue_count": 0,
+        "warning_count": 0,
+        "report_source_decision": "pending_review",
+        "final_output_pending_action_count": 3,
+        "automated_execution_allowed": false,
+        "applies_decisions_now": false,
+        "edits_decision_templates_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "post_review_rerun_matrix": {
+      "source_id": "post_review_rerun_matrix",
+      "path": "Results/static_audits/final_submission_post_review_rerun_matrix_20260610/final_submission_post_review_rerun_matrix.json",
+      "status": "post_review_rerun_matrix_not_execution",
+      "summary": {
+        "matrix_row_count": 3,
+        "blocked_pending_review_row_count": 3,
+        "total_rerun_command_count": 45,
+        "unique_rerun_command_count": 20,
+        "automated_execution_allowed": false,
+        "runs_rerun_commands_now": false,
+        "applies_decisions_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    }
+  },
+  "summary": {
+    "closure_item_count": 3,
+    "handoff_step_count": 5,
+    "answer_field_count": 38,
+    "required_answer_field_count": 29,
+    "copied_field_count": 0,
+    "rerun_matrix_row_count": 3,
+    "automated_execution_allowed": false,
+    "copies_answers_now": false,
+    "edits_decision_templates_now": false,
+    "runs_rerun_commands_now": false,
+    "approves_or_executes_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "closure_items": [
+    {
+      "item_id": "CLOSE-01-A1-approve-or-reject-report-source-edits",
+      "action_id": "A1-approve-or-reject-report-source-edits",
+      "decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+      "answer_field_count": 8,
+      "required_answer_field_count": 5,
+      "must_confirm": [
+        "Human/PMO reviewed the corresponding source files.",
+        "Required answer fields are no longer placeholders in a separately edited answer artifact.",
+        "Any decision-template edit is performed in a separate authorized step.",
+        "Post-review rerun commands remain blocked until the decision edit is complete."
+      ],
+      "copies_answers_now": false,
+      "edits_decision_templates_now": false,
+      "runs_rerun_commands_now": false,
+      "approves_or_executes_now": false
+    },
+    {
+      "item_id": "CLOSE-02-A3-review-demo-storyboard",
+      "action_id": "A3-review-demo-storyboard",
+      "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+      "answer_field_count": 15,
+      "required_answer_field_count": 12,
+      "must_confirm": [
+        "Human/PMO reviewed the corresponding source files.",
+        "Required answer fields are no longer placeholders in a separately edited answer artifact.",
+        "Any decision-template edit is performed in a separate authorized step.",
+        "Post-review rerun commands remain blocked until the decision edit is complete."
+      ],
+      "copies_answers_now": false,
+      "edits_decision_templates_now": false,
+      "runs_rerun_commands_now": false,
+      "approves_or_executes_now": false
+    },
+    {
+      "item_id": "CLOSE-03-A6-review-final-output-execution-decision",
+      "action_id": "A6-review-final-output-execution-decision",
+      "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+      "answer_field_count": 15,
+      "required_answer_field_count": 12,
+      "must_confirm": [
+        "Human/PMO reviewed the corresponding source files.",
+        "Required answer fields are no longer placeholders in a separately edited answer artifact.",
+        "Any decision-template edit is performed in a separate authorized step.",
+        "Post-review rerun commands remain blocked until the decision edit is complete."
+      ],
+      "copies_answers_now": false,
+      "edits_decision_templates_now": false,
+      "runs_rerun_commands_now": false,
+      "approves_or_executes_now": false
+    }
+  ],
+  "required_after_manual_fill_checks": [
+    "python Scripts/quality/check_final_submission_answer_sheet_decision_consistency.py",
+    "python Scripts/quality/check_report_source_edit_decision.py",
+    "python Scripts/quality/check_final_output_execution_decision.py",
+    "python Scripts/quality/check_final_submission_refresh_order.py"
+  ],
+  "claim_boundary": [
+    "This closure checklist is a static checklist for after future human review.",
+    "It does not fill answer-sheet values.",
+    "It does not copy answer values into decision artifacts.",
+    "It does not edit decision templates.",
+    "It does not approve decisions.",
+    "It does not run rerun commands.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

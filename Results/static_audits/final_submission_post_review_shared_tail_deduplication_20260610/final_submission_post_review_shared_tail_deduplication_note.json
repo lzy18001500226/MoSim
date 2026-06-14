@@ -1,0 +1,315 @@
+{
+  "note_id": "final_submission_post_review_shared_tail_deduplication_20260610",
+  "status": "post_review_shared_tail_deduplication_note_not_execution",
+  "source_critical_path_index": "Results/static_audits/final_submission_post_review_command_critical_path_20260610/final_submission_post_review_command_critical_path_index.json",
+  "summary": {
+    "action_count": 3,
+    "shared_tail_family_count": 12,
+    "shared_tail_action_coverage_issue_count": 0,
+    "action_specific_prefix_group_count": 3,
+    "automated_execution_allowed": false,
+    "runs_commands_now": false,
+    "applies_transitions_now": false,
+    "edits_decision_artifacts_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "shared_tail_families": [
+    {
+      "order": 1,
+      "family": "final_submission_dashboard",
+      "action_count": 3,
+      "actions": [
+        "A1-approve-or-reject-report-source-edits",
+        "A3-review-demo-storyboard",
+        "A6-review-final-output-execution-decision"
+      ],
+      "command_count_by_action": {
+        "A1-approve-or-reject-report-source-edits": 1,
+        "A3-review-demo-storyboard": 1,
+        "A6-review-final-output-execution-decision": 1
+      },
+      "representative_commands": [
+        "python Scripts/quality/build_final_submission_readiness_dashboard.py"
+      ],
+      "dedupe_guidance": "Review once as a common downstream family after the action-specific prefix has been handled.",
+      "run_once_now": false,
+      "runs_commands_now": false
+    },
+    {
+      "order": 2,
+      "family": "human_action_checklist",
+      "action_count": 3,
+      "actions": [
+        "A1-approve-or-reject-report-source-edits",
+        "A3-review-demo-storyboard",
+        "A6-review-final-output-execution-decision"
+      ],
+      "command_count_by_action": {
+        "A1-approve-or-reject-report-source-edits": 1,
+        "A3-review-demo-storyboard": 1,
+        "A6-review-final-output-execution-decision": 1
+      },
+      "representative_commands": [
+        "python Scripts/quality/build_final_submission_human_action_checklist.py"
+      ],
+      "dedupe_guidance": "Review once as a common downstream family after the action-specific prefix has been handled.",
+      "run_once_now": false,
+      "runs_commands_now": false
+    },
+    {
+      "order": 3,
+      "family": "reviewer_action_map",
+      "action_count": 3,
+      "actions": [
+        "A1-approve-or-reject-report-source-edits",
+        "A3-review-demo-storyboard",
+        "A6-review-final-output-execution-decision"
+      ],
+      "command_count_by_action": {
+        "A1-approve-or-reject-report-source-edits": 1,
+        "A3-review-demo-storyboard": 1,
+        "A6-review-final-output-execution-decision": 1
+      },
+      "representative_commands": [
+        "python Scripts/quality/build_final_submission_reviewer_action_map.py"
+      ],
+      "dedupe_guidance": "Review once as a common downstream family after the action-specific prefix has been handled.",
+      "run_once_now": false,
+      "runs_commands_now": false
+    },
+    {
+      "order": 4,
+      "family": "human_review_decision_packet",
+      "action_count": 3,
+      "actions": [
+        "A1-approve-or-reject-report-source-edits",
+        "A3-review-demo-storyboard",
+        "A6-review-final-output-execution-decision"
+      ],
+      "command_count_by_action": {
+        "A1-approve-or-reject-report-source-edits": 1,
+        "A3-review-demo-storyboard": 1,
+        "A6-review-final-output-execution-decision": 1
+      },
+      "representative_commands": [
+        "python Scripts/quality/build_final_submission_human_review_decision_packet_template.py"
+      ],
+      "dedupe_guidance": "Review once as a common downstream family after the action-specific prefix has been handled.",
+      "run_once_now": false,
+      "runs_commands_now": false
+    },
+    {
+      "order": 5,
+      "family": "human_review_guide",
+      "action_count": 3,
+      "actions": [
+        "A1-approve-or-reject-report-source-edits",
+        "A3-review-demo-storyboard",
+        "A6-review-final-output-execution-decision"
+      ],
+      "command_count_by_action": {
+        "A1-approve-or-reject-report-source-edits": 1,
+        "A3-review-demo-storyboard": 1,
+        "A6-review-final-output-execution-decision": 1
+      },
+      "representative_commands": [
+        "python Scripts/quality/build_final_submission_human_review_guide.py"
+      ],
+      "dedupe_guidance": "Review once as a common downstream family after the action-specific prefix has been handled.",
+      "run_once_now": false,
+      "runs_commands_now": false
+    },
+    {
+      "order": 6,
+      "family": "readiness_chain",
+      "action_count": 3,
+      "actions": [
+        "A1-approve-or-reject-report-source-edits",
+        "A3-review-demo-storyboard",
+        "A6-review-final-output-execution-decision"
+      ],
+      "command_count_by_action": {
+        "A1-approve-or-reject-report-source-edits": 1,
+        "A3-review-demo-storyboard": 1,
+        "A6-review-final-output-execution-decision": 1
+      },
+      "representative_commands": [
+        "python Scripts/quality/check_final_submission_readiness_chain.py"
+      ],
+      "dedupe_guidance": "Review once as a common downstream family after the action-specific prefix has been handled.",
+      "run_once_now": false,
+      "runs_commands_now": false
+    },
+    {
+      "order": 7,
+      "family": "refresh_order",
+      "action_count": 3,
+      "actions": [
+        "A1-approve-or-reject-report-source-edits",
+        "A3-review-demo-storyboard",
+        "A6-review-final-output-execution-decision"
+      ],
+      "command_count_by_action": {
+        "A1-approve-or-reject-report-source-edits": 1,
+        "A3-review-demo-storyboard": 1,
+        "A6-review-final-output-execution-decision": 1
+      },
+      "representative_commands": [
+        "python Scripts/quality/check_final_submission_refresh_order.py"
+      ],
+      "dedupe_guidance": "Review once as a common downstream family after the action-specific prefix has been handled.",
+      "run_once_now": false,
+      "runs_commands_now": false
+    },
+    {
+      "order": 8,
+      "family": "static_audit_index",
+      "action_count": 3,
+      "actions": [
+        "A1-approve-or-reject-report-source-edits",
+        "A3-review-demo-storyboard",
+        "A6-review-final-output-execution-decision"
+      ],
+      "command_count_by_action": {
+        "A1-approve-or-reject-report-source-edits": 1,
+        "A3-review-demo-storyboard": 1,
+        "A6-review-final-output-execution-decision": 1
+      },
+      "representative_commands": [
+        "python Scripts/quality/build_final_submission_static_audit_index.py"
+      ],
+      "dedupe_guidance": "Review once as a common downstream family after the action-specific prefix has been handled.",
+      "run_once_now": false,
+      "runs_commands_now": false
+    },
+    {
+      "order": 9,
+      "family": "blocked_gate_triage",
+      "action_count": 3,
+      "actions": [
+        "A1-approve-or-reject-report-source-edits",
+        "A3-review-demo-storyboard",
+        "A6-review-final-output-execution-decision"
+      ],
+      "command_count_by_action": {
+        "A1-approve-or-reject-report-source-edits": 1,
+        "A3-review-demo-storyboard": 1,
+        "A6-review-final-output-execution-decision": 1
+      },
+      "representative_commands": [
+        "python Scripts/quality/build_final_submission_blocked_gate_triage_map.py"
+      ],
+      "dedupe_guidance": "Review once as a common downstream family after the action-specific prefix has been handled.",
+      "run_once_now": false,
+      "runs_commands_now": false
+    },
+    {
+      "order": 10,
+      "family": "human_decision_diff",
+      "action_count": 3,
+      "actions": [
+        "A1-approve-or-reject-report-source-edits",
+        "A3-review-demo-storyboard",
+        "A6-review-final-output-execution-decision"
+      ],
+      "command_count_by_action": {
+        "A1-approve-or-reject-report-source-edits": 1,
+        "A3-review-demo-storyboard": 1,
+        "A6-review-final-output-execution-decision": 1
+      },
+      "representative_commands": [
+        "python Scripts/quality/build_final_submission_human_decision_diff_template.py"
+      ],
+      "dedupe_guidance": "Review once as a common downstream family after the action-specific prefix has been handled.",
+      "run_once_now": false,
+      "runs_commands_now": false
+    },
+    {
+      "order": 11,
+      "family": "reviewer_quickstart",
+      "action_count": 3,
+      "actions": [
+        "A1-approve-or-reject-report-source-edits",
+        "A3-review-demo-storyboard",
+        "A6-review-final-output-execution-decision"
+      ],
+      "command_count_by_action": {
+        "A1-approve-or-reject-report-source-edits": 1,
+        "A3-review-demo-storyboard": 1,
+        "A6-review-final-output-execution-decision": 1
+      },
+      "representative_commands": [
+        "python Scripts/quality/build_final_submission_reviewer_quickstart.py"
+      ],
+      "dedupe_guidance": "Review once as a common downstream family after the action-specific prefix has been handled.",
+      "run_once_now": false,
+      "runs_commands_now": false
+    },
+    {
+      "order": 12,
+      "family": "review_progress_snapshot",
+      "action_count": 3,
+      "actions": [
+        "A1-approve-or-reject-report-source-edits",
+        "A3-review-demo-storyboard",
+        "A6-review-final-output-execution-decision"
+      ],
+      "command_count_by_action": {
+        "A1-approve-or-reject-report-source-edits": 1,
+        "A3-review-demo-storyboard": 1,
+        "A6-review-final-output-execution-decision": 1
+      },
+      "representative_commands": [
+        "python Scripts/quality/build_final_submission_review_progress_snapshot.py"
+      ],
+      "dedupe_guidance": "Review once as a common downstream family after the action-specific prefix has been handled.",
+      "run_once_now": false,
+      "runs_commands_now": false
+    }
+  ],
+  "action_specific_prefixes_not_deduped": [
+    {
+      "action_id": "A1-approve-or-reject-report-source-edits",
+      "action_specific_prefix_families": [
+        "report_source_review",
+        "source_output_readiness",
+        "pdf_export",
+        "final_acceptance_prereq"
+      ]
+    },
+    {
+      "action_id": "A3-review-demo-storyboard",
+      "action_specific_prefix_families": [
+        "demo_video",
+        "final_output_execution_decision"
+      ]
+    },
+    {
+      "action_id": "A6-review-final-output-execution-decision",
+      "action_specific_prefix_families": [
+        "final_output_execution_decision"
+      ]
+    }
+  ],
+  "deduplication_rules": [
+    "Only shared-tail families are deduplication candidates.",
+    "Action-specific prefixes remain action-scoped and must not be collapsed across A1/A3/A6.",
+    "This note is for reviewer navigation only; it does not authorize running a command once or many times.",
+    "Any future rerun still requires separate human/PMO authorization and current refresh-order checks."
+  ],
+  "issues": [],
+  "claim_boundary": [
+    "This shared-tail note is a static review-aid artifact only.",
+    "It does not run post-review rerun commands.",
+    "It does not deduplicate executed work now.",
+    "It does not choose live resource scheduling.",
+    "It does not edit decision artifacts.",
+    "It does not approve decisions.",
+    "It does not apply transitions.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

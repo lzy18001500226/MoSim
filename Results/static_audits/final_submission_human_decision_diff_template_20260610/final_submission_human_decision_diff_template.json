@@ -1,0 +1,278 @@
+{
+  "template_id": "final_submission_human_decision_diff_template_20260610",
+  "status": "human_decision_diff_template_not_execution",
+  "source_templates": {
+    "report_source_edit_decision": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+    "final_output_execution_decision": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json"
+  },
+  "summary": {
+    "report_source_field_count": 8,
+    "final_output_action_count": 3,
+    "final_output_field_count": 15,
+    "applies_decisions_now": false,
+    "edits_decision_templates_now": false,
+    "automated_execution_allowed": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "decision_groups": [
+    {
+      "decision_group_id": "A1-report-source-edit-decision",
+      "owner": "user_or_PMO",
+      "source_template": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+      "required_checker_after_edit": "python Scripts/quality/check_report_source_edit_decision.py",
+      "field_changes": [
+        {
+          "field_path": "decision",
+          "current_value": "pending_review",
+          "allowed_values": [
+            "pending_review",
+            "approved",
+            "rejected",
+            "narrowed"
+          ],
+          "human_choice_required": true,
+          "notes": "Keep pending_review, or choose approved/rejected/narrowed after reviewing preview snippets."
+        },
+        {
+          "field_path": "decision_owner",
+          "current_value": "<user_or_PMO>",
+          "allowed_values": [
+            "<non-placeholder user_or_PMO identity>"
+          ],
+          "human_choice_required": true,
+          "notes": "Required for approved or narrowed decisions."
+        },
+        {
+          "field_path": "decided_at",
+          "current_value": "<ISO8601_after_review>",
+          "allowed_values": [
+            "<ISO8601_after_review>"
+          ],
+          "human_choice_required": true,
+          "notes": "Required for approved or narrowed decisions."
+        },
+        {
+          "field_path": "approved_preview_ids",
+          "current_value": [],
+          "allowed_values": [
+            "preserve_final_acceptance_boundary_preview",
+            "rewrite_formation_next_stage_boundary_preview",
+            "insert_visual_trajectory_review_candidate_subsection_preview",
+            "insert_fault_tolerance_candidate_subsection_preview",
+            "insert_multi_uav_formation_candidate_subsection_preview",
+            "condense_smoke_and_legacy_sections_preview",
+            "renumber_l1_residual_subsection_preview"
+          ],
+          "human_choice_required": true,
+          "notes": "Must name approved preview ids when decision is approved or narrowed."
+        },
+        {
+          "field_path": "rejected_preview_ids",
+          "current_value": [],
+          "allowed_values": [
+            "preserve_final_acceptance_boundary_preview",
+            "rewrite_formation_next_stage_boundary_preview",
+            "insert_visual_trajectory_review_candidate_subsection_preview",
+            "insert_fault_tolerance_candidate_subsection_preview",
+            "insert_multi_uav_formation_candidate_subsection_preview",
+            "condense_smoke_and_legacy_sections_preview",
+            "renumber_l1_residual_subsection_preview"
+          ],
+          "human_choice_required": false,
+          "notes": "May record rejected preview ids for rejected or narrowed decisions."
+        },
+        {
+          "field_path": "narrowed_scope_notes",
+          "current_value": "",
+          "allowed_values": [
+            "<freeform reviewed scope note>"
+          ],
+          "human_choice_required": false,
+          "notes": "Required in practice when decision is narrowed."
+        },
+        {
+          "field_path": "review_notes",
+          "current_value": "",
+          "allowed_values": [
+            "<freeform review note>"
+          ],
+          "human_choice_required": false,
+          "notes": "Recommended for approved or narrowed decisions."
+        },
+        {
+          "field_path": "safe_to_apply_report_source_edits",
+          "current_value": false,
+          "allowed_values": [
+            false,
+            true
+          ],
+          "human_choice_required": true,
+          "notes": "May become true only when decision is approved or narrowed and approved_preview_ids is non-empty."
+        }
+      ]
+    },
+    {
+      "decision_group_id": "A6-final-output-execution-decision",
+      "owner": "user_or_PMO",
+      "source_template": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+      "required_checker_after_edit": "python Scripts/quality/check_final_output_execution_decision.py",
+      "field_changes": [
+        {
+          "field_path": "actions.pdf_export.decision",
+          "current_value": "pending_review",
+          "allowed_values": [
+            "pending_review",
+            "approved",
+            "rejected"
+          ],
+          "human_choice_required": true,
+          "notes": "Approval still requires the upstream readiness gate to be true."
+        },
+        {
+          "field_path": "actions.pdf_export.approved",
+          "current_value": false,
+          "allowed_values": [
+            false,
+            true
+          ],
+          "human_choice_required": true,
+          "notes": "Must match decision==approved; true is invalid while upstream gate is false."
+        },
+        {
+          "field_path": "actions.pdf_export.approved_by",
+          "current_value": "<user_or_PMO>",
+          "allowed_values": [
+            "<non-placeholder user_or_PMO identity>"
+          ],
+          "human_choice_required": true,
+          "notes": "Required when this action is approved."
+        },
+        {
+          "field_path": "actions.pdf_export.approved_at",
+          "current_value": "<ISO8601_after_review>",
+          "allowed_values": [
+            "<ISO8601_after_review>"
+          ],
+          "human_choice_required": true,
+          "notes": "Required when this action is approved."
+        },
+        {
+          "field_path": "actions.pdf_export.review_notes",
+          "current_value": "",
+          "allowed_values": [
+            "<freeform review note>"
+          ],
+          "human_choice_required": false,
+          "notes": "Recommended when this action is approved."
+        },
+        {
+          "field_path": "actions.demo_video_recording.decision",
+          "current_value": "pending_review",
+          "allowed_values": [
+            "pending_review",
+            "approved",
+            "rejected"
+          ],
+          "human_choice_required": true,
+          "notes": "Approval still requires the upstream readiness gate to be true."
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved",
+          "current_value": false,
+          "allowed_values": [
+            false,
+            true
+          ],
+          "human_choice_required": true,
+          "notes": "Must match decision==approved; true is invalid while upstream gate is false."
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved_by",
+          "current_value": "<user_or_PMO>",
+          "allowed_values": [
+            "<non-placeholder user_or_PMO identity>"
+          ],
+          "human_choice_required": true,
+          "notes": "Required when this action is approved."
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved_at",
+          "current_value": "<ISO8601_after_review>",
+          "allowed_values": [
+            "<ISO8601_after_review>"
+          ],
+          "human_choice_required": true,
+          "notes": "Required when this action is approved."
+        },
+        {
+          "field_path": "actions.demo_video_recording.review_notes",
+          "current_value": "",
+          "allowed_values": [
+            "<freeform review note>"
+          ],
+          "human_choice_required": false,
+          "notes": "Recommended when this action is approved."
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.decision",
+          "current_value": "pending_review",
+          "allowed_values": [
+            "pending_review",
+            "approved",
+            "rejected"
+          ],
+          "human_choice_required": true,
+          "notes": "Approval still requires the upstream readiness gate to be true."
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved",
+          "current_value": false,
+          "allowed_values": [
+            false,
+            true
+          ],
+          "human_choice_required": true,
+          "notes": "Must match decision==approved; true is invalid while upstream gate is false."
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved_by",
+          "current_value": "<user_or_PMO>",
+          "allowed_values": [
+            "<non-placeholder user_or_PMO identity>"
+          ],
+          "human_choice_required": true,
+          "notes": "Required when this action is approved."
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved_at",
+          "current_value": "<ISO8601_after_review>",
+          "allowed_values": [
+            "<ISO8601_after_review>"
+          ],
+          "human_choice_required": true,
+          "notes": "Required when this action is approved."
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.review_notes",
+          "current_value": "",
+          "allowed_values": [
+            "<freeform review note>"
+          ],
+          "human_choice_required": false,
+          "notes": "Recommended when this action is approved."
+        }
+      ]
+    }
+  ],
+  "claim_boundary": [
+    "This is a non-applying diff template for human review.",
+    "It does not edit report_source_edit_decision.template.json.",
+    "It does not edit final_output_execution_decision.template.json.",
+    "It does not approve pending decisions.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

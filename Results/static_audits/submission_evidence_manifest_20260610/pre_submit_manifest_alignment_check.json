@@ -1,0 +1,7 @@
+{
+  "ok": true,
+  "pre_submit_doc": "Docs/Workflows/pre_submit_check.md",
+  "candidate_manifest": "Results/static_audits/submission_evidence_manifest_20260610/candidate_submission_evidence_manifest.json",
+  "issues": [],
+  "warnings": []
+}

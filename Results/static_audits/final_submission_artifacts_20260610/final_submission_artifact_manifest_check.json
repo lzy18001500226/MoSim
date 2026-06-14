@@ -1,0 +1,77 @@
+{
+  "manifest_id": "final_submission_artifact_manifest_20260610",
+  "status": "final_artifacts_missing_not_final_submission",
+  "summary": {
+    "artifact_count": 4,
+    "missing_artifact_count": 4,
+    "failing_artifact_count": 4,
+    "final_submission_artifacts_ready": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "artifacts": {
+    "user_manual_pdf": {
+      "artifact_id": "user_manual_pdf",
+      "path": "Results/submission/user_manual.pdf",
+      "kind": "pdf",
+      "exists": false,
+      "size_bytes": 0,
+      "ok": false,
+      "issues": [
+        "missing"
+      ]
+    },
+    "simulation_analysis_report_pdf": {
+      "artifact_id": "simulation_analysis_report_pdf",
+      "path": "Results/submission/simulation_analysis_report.pdf",
+      "kind": "pdf",
+      "exists": false,
+      "size_bytes": 0,
+      "ok": false,
+      "issues": [
+        "missing"
+      ]
+    },
+    "demo_video": {
+      "artifact_id": "demo_video",
+      "path": "Results/submission/demo_video.mp4",
+      "kind": "mp4",
+      "exists": false,
+      "size_bytes": 0,
+      "ok": false,
+      "issues": [
+        "missing"
+      ]
+    },
+    "final_acceptance_packet": {
+      "artifact_id": "final_acceptance_packet",
+      "path": "Results/agent_packets/returns/PMO-FINAL-SUBMISSION-ACCEPTANCE.json",
+      "kind": "json",
+      "exists": false,
+      "size_bytes": 0,
+      "ok": false,
+      "issues": [
+        "missing"
+      ]
+    }
+  },
+  "missing_artifacts": [
+    "user_manual_pdf",
+    "simulation_analysis_report_pdf",
+    "demo_video",
+    "final_acceptance_packet"
+  ],
+  "failing_artifacts": [
+    "user_manual_pdf",
+    "simulation_analysis_report_pdf",
+    "demo_video",
+    "final_acceptance_packet"
+  ],
+  "claim_boundary": [
+    "This checker validates final artifacts only if they exist.",
+    "It does not create PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance.",
+    "Missing artifacts mean final submission is not ready."
+  ]
+}

@@ -1,0 +1,263 @@
+{
+  "transition_plan_id": "final_submission_post_review_state_transition_plan_20260610",
+  "status": "post_review_state_transition_plan_not_execution",
+  "sources": {
+    "post_review_rerun_matrix": {
+      "source_id": "post_review_rerun_matrix",
+      "path": "Results/static_audits/final_submission_post_review_rerun_matrix_20260610/final_submission_post_review_rerun_matrix.json",
+      "status": "post_review_rerun_matrix_not_execution",
+      "summary": {
+        "matrix_row_count": 3,
+        "blocked_pending_review_row_count": 3,
+        "total_rerun_command_count": 45,
+        "unique_rerun_command_count": 20,
+        "automated_execution_allowed": false,
+        "runs_rerun_commands_now": false,
+        "applies_decisions_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "manual_review_closure_checklist": {
+      "source_id": "manual_review_closure_checklist",
+      "path": "Results/static_audits/final_submission_manual_review_closure_checklist_20260610/final_submission_manual_review_closure_checklist.json",
+      "status": "manual_review_closure_checklist_not_execution",
+      "summary": {
+        "closure_item_count": 3,
+        "handoff_step_count": 5,
+        "answer_field_count": 38,
+        "required_answer_field_count": 29,
+        "copied_field_count": 0,
+        "rerun_matrix_row_count": 3,
+        "automated_execution_allowed": false,
+        "copies_answers_now": false,
+        "edits_decision_templates_now": false,
+        "runs_rerun_commands_now": false,
+        "approves_or_executes_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "final_submission_readiness_dashboard": {
+      "source_id": "final_submission_readiness_dashboard",
+      "path": "Results/static_audits/final_submission_readiness_dashboard_20260610/final_submission_readiness_dashboard.json",
+      "status": "static_dashboard_not_final_submission_acceptance",
+      "summary": {
+        "gate_count": 7,
+        "ready_gate_count": 0,
+        "blocking_gate_count": 7,
+        "blocker_count": 16,
+        "final_submission_ready": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    }
+  },
+  "summary": {
+    "transition_count": 3,
+    "blocked_pending_review_row_count": 3,
+    "closure_item_count": 3,
+    "dashboard_blocking_gate_count": 7,
+    "automated_execution_allowed": false,
+    "applies_transitions_now": false,
+    "runs_rerun_commands_now": false,
+    "edits_decision_templates_now": false,
+    "approves_or_executes_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "transitions": [
+    {
+      "transition_id": "TRANSITION-A1-approve-or-reject-report-source-edits",
+      "action_id": "A1-approve-or-reject-report-source-edits",
+      "current_state": {
+        "decision": "pending_review",
+        "rerun_readiness": "blocked_pending_human_review"
+      },
+      "eligible_future_states_after_separate_human_edit": [
+        "approved",
+        "rejected",
+        "narrowed",
+        "pending_review"
+      ],
+      "state_transition_guard": [
+        "A separate human/PMO decision edit has been made.",
+        "Decision artifact checker passes after the edit.",
+        "Manual-review closure checklist has been reviewed.",
+        "Post-review rerun commands are still launched in a separate authorized step."
+      ],
+      "rerun_command_summary": {
+        "rerun_command_count": 18,
+        "first_command": "python Scripts/quality/check_report_source_edit_decision.py",
+        "last_command": "python Scripts/quality/build_final_submission_review_progress_snapshot.py",
+        "commands": [
+          "python Scripts/quality/check_report_source_edit_decision.py",
+          "python Scripts/quality/build_simulation_report_source_edit_readiness_gate.py",
+          "python Scripts/quality/build_simulation_report_source_edit_application_plan.py",
+          "python Scripts/quality/build_submission_source_output_readiness.py",
+          "python Scripts/quality/build_pdf_export_dry_run_plan.py",
+          "python Scripts/quality/build_final_acceptance_packet_prereq_plan.py",
+          "python Scripts/quality/build_final_submission_readiness_dashboard.py",
+          "python Scripts/quality/build_final_submission_human_action_checklist.py",
+          "python Scripts/quality/build_final_submission_reviewer_action_map.py",
+          "python Scripts/quality/build_final_submission_human_review_decision_packet_template.py",
+          "python Scripts/quality/build_final_submission_human_review_guide.py",
+          "python Scripts/quality/check_final_submission_readiness_chain.py",
+          "python Scripts/quality/check_final_submission_refresh_order.py",
+          "python Scripts/quality/build_final_submission_static_audit_index.py",
+          "python Scripts/quality/build_final_submission_blocked_gate_triage_map.py",
+          "python Scripts/quality/build_final_submission_human_decision_diff_template.py",
+          "python Scripts/quality/build_final_submission_reviewer_quickstart.py",
+          "python Scripts/quality/build_final_submission_review_progress_snapshot.py"
+        ]
+      },
+      "execution_still_requires": [
+        "explicit approved or narrowed report-source decision",
+        "non-empty approved_preview_ids when edits are approved",
+        "a separate authorized report-source edit step before final source-output readiness can pass"
+      ],
+      "forbidden_actions": [
+        "Do not apply report-source edits from this matrix.",
+        "Do not run post-review checkers from this matrix.",
+        "Do not export PDFs from this matrix.",
+        "Do not record or render demo video from this matrix.",
+        "Do not write PMO final acceptance from this matrix.",
+        "Do not run live MWORKS, ROS2, UE, or visible-thread dispatch from this matrix."
+      ],
+      "applies_transition_now": false,
+      "runs_rerun_commands_now": false,
+      "approves_now": false
+    },
+    {
+      "transition_id": "TRANSITION-A3-review-demo-storyboard",
+      "action_id": "A3-review-demo-storyboard",
+      "current_state": {
+        "decision": "pending_review",
+        "rerun_readiness": "blocked_pending_human_review"
+      },
+      "eligible_future_states_after_separate_human_edit": [
+        "approved",
+        "rejected",
+        "pending_review"
+      ],
+      "state_transition_guard": [
+        "A separate human/PMO decision edit has been made.",
+        "Decision artifact checker passes after the edit.",
+        "Manual-review closure checklist has been reviewed.",
+        "Post-review rerun commands are still launched in a separate authorized step."
+      ],
+      "rerun_command_summary": {
+        "rerun_command_count": 14,
+        "first_command": "python Scripts/quality/build_demo_video_storyboard_plan.py",
+        "last_command": "python Scripts/quality/build_final_submission_review_progress_snapshot.py",
+        "commands": [
+          "python Scripts/quality/build_demo_video_storyboard_plan.py",
+          "python Scripts/quality/check_final_output_execution_decision.py",
+          "python Scripts/quality/build_final_submission_readiness_dashboard.py",
+          "python Scripts/quality/build_final_submission_human_action_checklist.py",
+          "python Scripts/quality/build_final_submission_reviewer_action_map.py",
+          "python Scripts/quality/build_final_submission_human_review_decision_packet_template.py",
+          "python Scripts/quality/build_final_submission_human_review_guide.py",
+          "python Scripts/quality/check_final_submission_readiness_chain.py",
+          "python Scripts/quality/check_final_submission_refresh_order.py",
+          "python Scripts/quality/build_final_submission_static_audit_index.py",
+          "python Scripts/quality/build_final_submission_blocked_gate_triage_map.py",
+          "python Scripts/quality/build_final_submission_human_decision_diff_template.py",
+          "python Scripts/quality/build_final_submission_reviewer_quickstart.py",
+          "python Scripts/quality/build_final_submission_review_progress_snapshot.py"
+        ]
+      },
+      "execution_still_requires": [
+        "storyboard review outcome recorded in a separate decision step",
+        "demo video recording remains blocked until final-output execution decision and upstream gates pass"
+      ],
+      "forbidden_actions": [
+        "Do not apply report-source edits from this matrix.",
+        "Do not run post-review checkers from this matrix.",
+        "Do not export PDFs from this matrix.",
+        "Do not record or render demo video from this matrix.",
+        "Do not write PMO final acceptance from this matrix.",
+        "Do not run live MWORKS, ROS2, UE, or visible-thread dispatch from this matrix."
+      ],
+      "applies_transition_now": false,
+      "runs_rerun_commands_now": false,
+      "approves_now": false
+    },
+    {
+      "transition_id": "TRANSITION-A6-review-final-output-execution-decision",
+      "action_id": "A6-review-final-output-execution-decision",
+      "current_state": {
+        "decision": "pending_review",
+        "rerun_readiness": "blocked_pending_human_review"
+      },
+      "eligible_future_states_after_separate_human_edit": [
+        "approved",
+        "rejected",
+        "pending_review"
+      ],
+      "state_transition_guard": [
+        "A separate human/PMO decision edit has been made.",
+        "Decision artifact checker passes after the edit.",
+        "Manual-review closure checklist has been reviewed.",
+        "Post-review rerun commands are still launched in a separate authorized step."
+      ],
+      "rerun_command_summary": {
+        "rerun_command_count": 13,
+        "first_command": "python Scripts/quality/check_final_output_execution_decision.py",
+        "last_command": "python Scripts/quality/build_final_submission_review_progress_snapshot.py",
+        "commands": [
+          "python Scripts/quality/check_final_output_execution_decision.py",
+          "python Scripts/quality/build_final_submission_readiness_dashboard.py",
+          "python Scripts/quality/build_final_submission_human_action_checklist.py",
+          "python Scripts/quality/build_final_submission_reviewer_action_map.py",
+          "python Scripts/quality/build_final_submission_human_review_decision_packet_template.py",
+          "python Scripts/quality/build_final_submission_human_review_guide.py",
+          "python Scripts/quality/check_final_submission_readiness_chain.py",
+          "python Scripts/quality/check_final_submission_refresh_order.py",
+          "python Scripts/quality/build_final_submission_static_audit_index.py",
+          "python Scripts/quality/build_final_submission_blocked_gate_triage_map.py",
+          "python Scripts/quality/build_final_submission_human_decision_diff_template.py",
+          "python Scripts/quality/build_final_submission_reviewer_quickstart.py",
+          "python Scripts/quality/build_final_submission_review_progress_snapshot.py"
+        ]
+      },
+      "execution_still_requires": [
+        "upstream source-output readiness true before PDF export",
+        "PDF engine available before PDF export",
+        "storyboard gate permits recording before demo video work",
+        "final acceptance prerequisite gate true before canonical PMO packet writing",
+        "a separate final-output execution authorization before any output generation"
+      ],
+      "forbidden_actions": [
+        "Do not apply report-source edits from this matrix.",
+        "Do not run post-review checkers from this matrix.",
+        "Do not export PDFs from this matrix.",
+        "Do not record or render demo video from this matrix.",
+        "Do not write PMO final acceptance from this matrix.",
+        "Do not run live MWORKS, ROS2, UE, or visible-thread dispatch from this matrix."
+      ],
+      "applies_transition_now": false,
+      "runs_rerun_commands_now": false,
+      "approves_now": false
+    }
+  ],
+  "global_state_transition_sequence": [
+    "Human/PMO fills answer sheet in a separately authorized artifact.",
+    "Human/PMO edits decision templates in a separately authorized step.",
+    "Run decision-template checkers after the edit.",
+    "Run only the applicable post-review rerun command chain after authorization.",
+    "Regenerate dashboard and readiness chain to observe changed gate state."
+  ],
+  "claim_boundary": [
+    "This state-transition plan is a static planning artifact only.",
+    "It does not fill answer-sheet values.",
+    "It does not edit decision templates.",
+    "It does not approve decisions.",
+    "It does not apply state transitions.",
+    "It does not run rerun commands.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

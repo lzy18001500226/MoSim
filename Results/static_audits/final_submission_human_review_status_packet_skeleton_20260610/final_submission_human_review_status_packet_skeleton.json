@@ -1,0 +1,560 @@
+{
+  "packet_skeleton_id": "final_submission_human_review_status_packet_skeleton_20260610",
+  "status": "human_review_status_packet_skeleton_not_execution",
+  "sources": {
+    "manual_review_answer_sheet": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_manual_review_answer_sheet.template.json",
+    "human_review_execution_gate_summary": "Results/static_audits/final_submission_human_review_execution_gate_20260610/final_submission_human_review_execution_gate_summary.json",
+    "execution_authorization_blocker_index": "Results/static_audits/final_submission_execution_authorization_blocker_20260610/final_submission_execution_authorization_blocker_index.json",
+    "readiness_dashboard": "Results/static_audits/final_submission_readiness_dashboard_20260610/final_submission_readiness_dashboard.json",
+    "open_file_shortest_path_bundle": "Results/static_audits/final_submission_open_file_shortest_path_bundle_20260610/final_submission_open_file_shortest_path_bundle.json"
+  },
+  "summary": {
+    "review_action_count": 3,
+    "reviewer_packet_action_count": 3,
+    "no_packet_action_count": 3,
+    "pending_field_count": 38,
+    "required_pending_field_count": 29,
+    "review_question_count": 9,
+    "minimum_open_file_count": 10,
+    "unique_open_file_count": 21,
+    "blocked_execution_target_count": 4,
+    "dashboard_blocking_gate_count": 7,
+    "dashboard_blocker_count": 16,
+    "issue_count": 0,
+    "automated_execution_allowed": false,
+    "answers_questions_now": false,
+    "fills_answers_now": false,
+    "copies_answers_now": false,
+    "edits_decision_artifacts_now": false,
+    "runs_commands_now": false,
+    "authorizes_execution_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "review_actions": [
+    {
+      "action_id": "A1-approve-or-reject-report-source-edits",
+      "decision_owner": "user_or_PMO",
+      "current_decision": "pending_review",
+      "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope",
+      "decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+      "pending_field_count": 8,
+      "required_pending_field_count": 5,
+      "review_question_count": 3,
+      "minimum_open_file_count": 4,
+      "blocked_execution_targets": [
+        "final_acceptance_packet",
+        "pdf_export",
+        "report_source_edit"
+      ],
+      "intentionally_blank_fields": [
+        {
+          "field_path": "decision",
+          "current_value": "pending_review",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "decision_owner",
+          "current_value": "<user_or_PMO>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "decided_at",
+          "current_value": "<ISO8601_after_review>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "approved_preview_ids",
+          "current_value": [],
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "rejected_preview_ids",
+          "current_value": [],
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "narrowed_scope_notes",
+          "current_value": "",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "review_notes",
+          "current_value": "",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "safe_to_apply_report_source_edits",
+          "current_value": false,
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "intentionally_blank": true
+        }
+      ],
+      "execution_still_requires": [
+        "explicit approved or narrowed report-source decision",
+        "non-empty approved_preview_ids when edits are approved",
+        "a separate authorized report-source edit step before final source-output readiness can pass"
+      ],
+      "copies_answers_now": false,
+      "edits_decision_artifact_now": false,
+      "approves_or_executes_now": false
+    },
+    {
+      "action_id": "A3-review-demo-storyboard",
+      "decision_owner": "user_or_PMO",
+      "current_decision": "pending_review",
+      "decision_needed": "approve, reject, or revise storyboard scenes, wording, and evidence boundaries",
+      "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+      "pending_field_count": 15,
+      "required_pending_field_count": 12,
+      "review_question_count": 3,
+      "minimum_open_file_count": 2,
+      "blocked_execution_targets": [
+        "demo_video_recording",
+        "final_acceptance_packet"
+      ],
+      "intentionally_blank_fields": [
+        {
+          "field_path": "actions.pdf_export.decision",
+          "current_value": "pending_review",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.pdf_export.approved",
+          "current_value": false,
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.pdf_export.approved_by",
+          "current_value": "<user_or_PMO>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.pdf_export.approved_at",
+          "current_value": "<ISO8601_after_review>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.pdf_export.review_notes",
+          "current_value": "",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.demo_video_recording.decision",
+          "current_value": "pending_review",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved",
+          "current_value": false,
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved_by",
+          "current_value": "<user_or_PMO>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved_at",
+          "current_value": "<ISO8601_after_review>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.demo_video_recording.review_notes",
+          "current_value": "",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.decision",
+          "current_value": "pending_review",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved",
+          "current_value": false,
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved_by",
+          "current_value": "<user_or_PMO>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved_at",
+          "current_value": "<ISO8601_after_review>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.review_notes",
+          "current_value": "",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        }
+      ],
+      "execution_still_requires": [
+        "storyboard review outcome recorded in a separate decision step",
+        "demo video recording remains blocked until final-output execution decision and upstream gates pass"
+      ],
+      "copies_answers_now": false,
+      "edits_decision_artifact_now": false,
+      "approves_or_executes_now": false
+    },
+    {
+      "action_id": "A6-review-final-output-execution-decision",
+      "decision_owner": "user_or_PMO",
+      "current_decision": "pending_review",
+      "decision_needed": "explicitly authorize or keep blocked PDF export, demo video recording, and final acceptance packet writing",
+      "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+      "pending_field_count": 15,
+      "required_pending_field_count": 12,
+      "review_question_count": 3,
+      "minimum_open_file_count": 4,
+      "blocked_execution_targets": [
+        "demo_video_recording",
+        "final_acceptance_packet",
+        "pdf_export"
+      ],
+      "intentionally_blank_fields": [
+        {
+          "field_path": "actions.pdf_export.decision",
+          "current_value": "pending_review",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.pdf_export.approved",
+          "current_value": false,
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.pdf_export.approved_by",
+          "current_value": "<user_or_PMO>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.pdf_export.approved_at",
+          "current_value": "<ISO8601_after_review>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.pdf_export.review_notes",
+          "current_value": "",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.demo_video_recording.decision",
+          "current_value": "pending_review",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved",
+          "current_value": false,
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved_by",
+          "current_value": "<user_or_PMO>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved_at",
+          "current_value": "<ISO8601_after_review>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.demo_video_recording.review_notes",
+          "current_value": "",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.decision",
+          "current_value": "pending_review",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved",
+          "current_value": false,
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved_by",
+          "current_value": "<user_or_PMO>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved_at",
+          "current_value": "<ISO8601_after_review>",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.review_notes",
+          "current_value": "",
+          "proposed_value": "<fill_after_review>",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "intentionally_blank": true
+        }
+      ],
+      "execution_still_requires": [
+        "upstream source-output readiness true before PDF export",
+        "PDF engine available before PDF export",
+        "storyboard gate permits recording before demo video work",
+        "final acceptance prerequisite gate true before canonical PMO packet writing",
+        "a separate final-output execution authorization before any output generation"
+      ],
+      "copies_answers_now": false,
+      "edits_decision_artifact_now": false,
+      "approves_or_executes_now": false
+    }
+  ],
+  "no_packet_actions": [
+    "A2-provide-pdf-engine",
+    "A4-create-reviewed-final-artifacts",
+    "A5-rerun-readiness-gates"
+  ],
+  "upstream_change_requirements": [
+    {
+      "class": "human_review_answers",
+      "required_change": "A1/A3/A6 review fields must be filled by an explicit human or PMO review step.",
+      "current_state": "29 required fields remain intentionally blank."
+    },
+    {
+      "class": "decision_artifacts",
+      "required_change": "Decision templates must be edited only in a separately authorized step after review.",
+      "current_state": "Current skeleton does not edit report-source or final-output decision templates."
+    },
+    {
+      "class": "no_packet_dependencies",
+      "required_change": "A2/A4/A5 no-packet dependencies must be satisfied by the owning manual/operator action.",
+      "current_state": "A2-provide-pdf-engine, A4-create-reviewed-final-artifacts, A5-rerun-readiness-gates"
+    },
+    {
+      "class": "readiness_dashboard",
+      "required_change": "All blocking readiness gates must turn ready before final-output execution can be requested.",
+      "current_state": "7 gates and 16 blockers remain blocked."
+    }
+  ],
+  "dashboard_blockers": [
+    {
+      "gate_id": "source_output_readiness",
+      "blocker_id": "report_source_edit_not_approved",
+      "reason": "simulation report source edit readiness gate does not permit applying preview snippets",
+      "needed_action": "obtain explicit human/PMO approval before applying report-source preview edits"
+    },
+    {
+      "gate_id": "source_output_readiness",
+      "blocker_id": "report_source_edit_application_plan_not_ready",
+      "reason": "simulation report source edit application plan is not approved for application",
+      "needed_action": "approve or narrow the A1 report-source edit decision before source edit application planning can proceed"
+    },
+    {
+      "gate_id": "source_output_readiness",
+      "blocker_id": "report_source_edit_application_not_applied",
+      "reason": "no evidence shows the approved report-source application plan has been applied to Docs/simulation_report.md",
+      "needed_action": "apply approved report-source edits in a separate authorized step, then regenerate source-output readiness"
+    },
+    {
+      "gate_id": "source_output_readiness",
+      "blocker_id": "final_outputs_missing",
+      "reason": "final PDFs, demo video, or PMO final acceptance packet are missing",
+      "needed_action": "export reviewed PDFs, create reviewed demo video, then write PMO final acceptance packet"
+    },
+    {
+      "gate_id": "pdf_export_plan",
+      "blocker_id": "pdf_engine_missing",
+      "reason": "no preferred Pandoc PDF engine is available on PATH",
+      "needed_action": "install or expose xelatex, lualatex, tectonic, wkhtmltopdf, or another approved engine"
+    },
+    {
+      "gate_id": "pdf_export_plan",
+      "blocker_id": "report_source_edit_not_approved",
+      "reason": "source-output readiness does not permit final PDF export yet",
+      "needed_action": "obtain explicit human/PMO approval for report-source edits and final PDF export"
+    },
+    {
+      "gate_id": "pdf_export_plan",
+      "blocker_id": "final_artifacts_missing",
+      "reason": "final artifact manifest still reports missing final outputs",
+      "needed_action": "after approved export and video creation, rerun final artifact manifest check"
+    },
+    {
+      "gate_id": "demo_video_storyboard",
+      "blocker_id": "demo_video_not_recorded",
+      "reason": "Results/submission/demo_video.mp4 is missing",
+      "needed_action": "record or render the reviewed storyboard only after approval"
+    },
+    {
+      "gate_id": "demo_video_storyboard",
+      "blocker_id": "manual_storyboard_review_required",
+      "reason": "storyboard content must be reviewed before recording",
+      "needed_action": "confirm scenes, wording, and evidence boundaries before producing video"
+    },
+    {
+      "gate_id": "final_acceptance_prereq",
+      "blocker_id": "final_artifacts_not_ready",
+      "reason": "one or more final artifacts are missing or failing",
+      "needed_action": "create reviewed final PDFs and demo video, then rerun artifact manifest without --allow-missing"
+    },
+    {
+      "gate_id": "final_acceptance_prereq",
+      "blocker_id": "pdf_export_not_ready",
+      "reason": "PDF export dry-run plan does not permit final PDF export yet",
+      "needed_action": "satisfy PDF engine, report-source approval, and final export gates"
+    },
+    {
+      "gate_id": "final_acceptance_prereq",
+      "blocker_id": "demo_video_recording_not_approved",
+      "reason": "storyboard plan does not permit video recording yet",
+      "needed_action": "manually review storyboard and authorize recording or rendering"
+    },
+    {
+      "gate_id": "final_acceptance_prereq",
+      "blocker_id": "source_output_readiness_blocks_acceptance",
+      "reason": "source-output readiness does not permit writing final acceptance",
+      "needed_action": "complete final artifacts and source-output readiness gates first"
+    },
+    {
+      "gate_id": "final_output_execution_decision",
+      "blocker_id": "authorizes_pdf_export",
+      "reason": "PDF export execution is not authorized",
+      "needed_action": "review final output execution decision template and satisfy upstream readiness gates"
+    },
+    {
+      "gate_id": "final_output_execution_decision",
+      "blocker_id": "authorizes_demo_video_recording",
+      "reason": "demo video recording/rendering is not authorized",
+      "needed_action": "review final output execution decision template and satisfy upstream readiness gates"
+    },
+    {
+      "gate_id": "final_output_execution_decision",
+      "blocker_id": "authorizes_final_acceptance_packet",
+      "reason": "canonical final acceptance packet writing is not authorized",
+      "needed_action": "review final output execution decision template and satisfy upstream readiness gates"
+    }
+  ],
+  "issues": [],
+  "claim_boundary": [
+    "This status packet skeleton is a static review-state artifact only.",
+    "It intentionally leaves human-review fields blank.",
+    "It does not answer review questions.",
+    "It does not fill or copy answer-sheet values.",
+    "It does not edit report-source or final-output decision templates.",
+    "It does not approve or reject decisions.",
+    "It does not create reviewer packets for no-packet actions.",
+    "It does not run post-review commands.",
+    "It does not install PDF tooling.",
+    "It does not create final artifacts.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance.",
+    "It does not run live tools or visible-thread dispatch."
+  ]
+}

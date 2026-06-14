@@ -1,0 +1,358 @@
+{
+  "summary_id": "final_submission_human_review_execution_gate_20260610",
+  "status": "human_review_execution_gate_summary_not_execution",
+  "sources": {
+    "reviewer_checklist": {
+      "path": "Results/static_audits/final_submission_post_review_reviewer_checklist_20260610/final_submission_post_review_reviewer_checklist.json",
+      "status": "post_review_reviewer_checklist_not_execution",
+      "summary": {
+        "review_action_count": 3,
+        "actions_without_reviewer_packet_count": 3,
+        "total_blocker_row_count": 9,
+        "total_question_count": 9,
+        "total_command_reference_count": 45,
+        "shared_tail_family_count": 12,
+        "issue_count": 0,
+        "automated_execution_allowed": false,
+        "answers_questions_now": false,
+        "edits_decision_artifacts_now": false,
+        "runs_commands_now": false,
+        "applies_transitions_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "readiness_dashboard": {
+      "path": "Results/static_audits/final_submission_readiness_dashboard_20260610/final_submission_readiness_dashboard.json",
+      "status": "static_dashboard_not_final_submission_acceptance",
+      "summary": {
+        "gate_count": 7,
+        "ready_gate_count": 0,
+        "blocking_gate_count": 7,
+        "blocker_count": 16,
+        "final_submission_ready": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "source_output_readiness": {
+      "path": "Results/static_audits/submission_source_output_readiness_20260610/submission_source_output_readiness.json",
+      "status": "static_source_output_readiness_not_final_submission",
+      "summary": {
+        "source_docs_ready": true,
+        "pandoc_available": true,
+        "submission_dir_exists": false,
+        "missing_final_output_count": 4,
+        "source_edit_readiness_safe_to_apply": false,
+        "source_edit_application_plan_safe_to_apply": false,
+        "source_edit_application_plan_applied": false,
+        "safe_to_export_final_pdfs_now": false,
+        "safe_to_record_demo_video_now": false,
+        "safe_to_write_final_acceptance_now": false,
+        "final_submission_ready": false,
+        "edits_report_source": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "pdf_export_dry_run_plan": {
+      "path": "Results/static_audits/pdf_export_dry_run_plan_20260610/pdf_export_dry_run_plan.json",
+      "status": "dry_run_pdf_export_plan_not_final_output",
+      "summary": {
+        "source_docs_ready": true,
+        "pandoc_available": true,
+        "pdf_engine_available": false,
+        "selected_pdf_engine": "",
+        "source_edit_approved_for_export": false,
+        "final_artifacts_ready": false,
+        "safe_to_run_pdf_export_now": false,
+        "runs_pandoc_now": false,
+        "creates_submission_dir_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "demo_video_storyboard_plan": {
+      "path": "Results/static_audits/demo_video_storyboard_plan_20260610/demo_video_storyboard_plan.json",
+      "status": "storyboard_plan_not_demo_video_acceptance",
+      "summary": {
+        "candidate_row_count": 13,
+        "scene_count": 7,
+        "storyboard_duration_s": 280,
+        "missing_figure_link_count": 0,
+        "storyboard_ready_for_review": true,
+        "demo_video_exists": false,
+        "safe_to_record_demo_video_now": false,
+        "records_or_renders_video_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "final_output_execution_decision": {
+      "path": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision_check.json",
+      "status": "execution_decision_check_not_execution",
+      "summary": {
+        "issue_count": 0,
+        "warning_count": 3,
+        "authorizes_pdf_export": false,
+        "authorizes_demo_video_recording": false,
+        "authorizes_final_acceptance_packet": false,
+        "creates_submission_dir_now": false,
+        "runs_pandoc_now": false,
+        "records_or_renders_video_now": false,
+        "writes_canonical_acceptance_packet_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "final_acceptance_prereq": {
+      "path": "Results/static_audits/final_acceptance_packet_prereq_20260610/final_acceptance_packet_prereq_plan.json",
+      "status": "blocked_template_not_final_acceptance",
+      "summary": {
+        "required_field_count": 11,
+        "missing_or_failing_final_artifact_count": 4,
+        "final_artifacts_ready": false,
+        "pdf_export_ready": false,
+        "demo_video_recording_ready": false,
+        "source_output_allows_final_acceptance": false,
+        "canonical_acceptance_packet_exists": false,
+        "safe_to_write_final_acceptance_packet_now": false,
+        "writes_canonical_acceptance_packet_now": false,
+        "final_acceptance": false
+      }
+    }
+  },
+  "summary": {
+    "execution_target_count": 4,
+    "blocked_execution_target_count": 4,
+    "dashboard_blocking_gate_count": 7,
+    "dashboard_blocker_count": 16,
+    "review_action_count": 3,
+    "total_question_count": 9,
+    "automated_execution_allowed": false,
+    "answers_questions_now": false,
+    "edits_decision_artifacts_now": false,
+    "runs_commands_now": false,
+    "creates_submission_dir_now": false,
+    "runs_pandoc_now": false,
+    "records_or_renders_video_now": false,
+    "writes_canonical_acceptance_packet_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "execution_targets": [
+    {
+      "target_id": "report_source_edit",
+      "label": "Report-source edit application",
+      "gate_sources": [
+        "Results/static_audits/final_submission_post_review_reviewer_checklist_20260610/final_submission_post_review_reviewer_checklist.json",
+        "Results/static_audits/submission_source_output_readiness_20260610/submission_source_output_readiness.json"
+      ],
+      "ready_now": false,
+      "blocking_reason_count": 4,
+      "blocking_reasons": [
+        "review questions are not answered",
+        "decision artifacts are not edited",
+        "source edit readiness safe_to_apply remains false",
+        "source edit application plan is not applied"
+      ],
+      "readiness_flags": {
+        "review_action_count": 3,
+        "answers_questions_now": false,
+        "edits_decision_artifacts_now": false,
+        "source_edit_readiness_safe_to_apply": false,
+        "source_edit_application_plan_applied": false
+      },
+      "requires_separate_authorization": true,
+      "executes_now": false
+    },
+    {
+      "target_id": "pdf_export",
+      "label": "Final PDF export",
+      "gate_sources": [
+        "Results/static_audits/pdf_export_dry_run_plan_20260610/pdf_export_dry_run_plan.json",
+        "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision_check.json",
+        "Results/static_audits/submission_source_output_readiness_20260610/submission_source_output_readiness.json"
+      ],
+      "ready_now": false,
+      "blocking_reason_count": 4,
+      "blocking_reasons": [
+        "PDF engine is missing",
+        "report-source edit is not approved for export",
+        "final artifacts are not ready",
+        "final-output execution decision does not authorize PDF export"
+      ],
+      "readiness_flags": {
+        "pdf_engine_available": false,
+        "source_edit_approved_for_export": false,
+        "safe_to_run_pdf_export_now": false,
+        "authorizes_pdf_export": false,
+        "runs_pandoc_now": false
+      },
+      "requires_separate_authorization": true,
+      "executes_now": false
+    },
+    {
+      "target_id": "demo_video_recording",
+      "label": "Demo video recording/rendering",
+      "gate_sources": [
+        "Results/static_audits/demo_video_storyboard_plan_20260610/demo_video_storyboard_plan.json",
+        "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision_check.json"
+      ],
+      "ready_now": false,
+      "blocking_reason_count": 3,
+      "blocking_reasons": [
+        "storyboard still requires manual review before recording",
+        "demo video artifact does not exist",
+        "final-output execution decision does not authorize demo video recording"
+      ],
+      "readiness_flags": {
+        "storyboard_ready_for_review": true,
+        "demo_video_exists": false,
+        "safe_to_record_demo_video_now": false,
+        "authorizes_demo_video_recording": false,
+        "records_or_renders_video_now": false
+      },
+      "requires_separate_authorization": true,
+      "executes_now": false
+    },
+    {
+      "target_id": "final_acceptance_packet",
+      "label": "Canonical PMO final acceptance packet",
+      "gate_sources": [
+        "Results/static_audits/final_acceptance_packet_prereq_20260610/final_acceptance_packet_prereq_plan.json",
+        "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision_check.json",
+        "Results/static_audits/final_submission_readiness_dashboard_20260610/final_submission_readiness_dashboard.json"
+      ],
+      "ready_now": false,
+      "blocking_reason_count": 5,
+      "blocking_reasons": [
+        "final artifacts are missing or failing",
+        "PDF export is not ready",
+        "demo video recording is not approved",
+        "source-output readiness blocks acceptance",
+        "final-output execution decision does not authorize final acceptance packet writing"
+      ],
+      "readiness_flags": {
+        "final_artifacts_ready": false,
+        "pdf_export_ready": false,
+        "demo_video_recording_ready": false,
+        "safe_to_write_final_acceptance_packet_now": false,
+        "authorizes_final_acceptance_packet": false,
+        "writes_canonical_acceptance_packet_now": false
+      },
+      "requires_separate_authorization": true,
+      "executes_now": false
+    }
+  ],
+  "dashboard_blockers": [
+    {
+      "gate_id": "source_output_readiness",
+      "blocker_id": "report_source_edit_not_approved",
+      "reason": "simulation report source edit readiness gate does not permit applying preview snippets",
+      "needed_action": "obtain explicit human/PMO approval before applying report-source preview edits"
+    },
+    {
+      "gate_id": "source_output_readiness",
+      "blocker_id": "report_source_edit_application_plan_not_ready",
+      "reason": "simulation report source edit application plan is not approved for application",
+      "needed_action": "approve or narrow the A1 report-source edit decision before source edit application planning can proceed"
+    },
+    {
+      "gate_id": "source_output_readiness",
+      "blocker_id": "report_source_edit_application_not_applied",
+      "reason": "no evidence shows the approved report-source application plan has been applied to Docs/simulation_report.md",
+      "needed_action": "apply approved report-source edits in a separate authorized step, then regenerate source-output readiness"
+    },
+    {
+      "gate_id": "source_output_readiness",
+      "blocker_id": "final_outputs_missing",
+      "reason": "final PDFs, demo video, or PMO final acceptance packet are missing",
+      "needed_action": "export reviewed PDFs, create reviewed demo video, then write PMO final acceptance packet"
+    },
+    {
+      "gate_id": "pdf_export_plan",
+      "blocker_id": "pdf_engine_missing",
+      "reason": "no preferred Pandoc PDF engine is available on PATH",
+      "needed_action": "install or expose xelatex, lualatex, tectonic, wkhtmltopdf, or another approved engine"
+    },
+    {
+      "gate_id": "pdf_export_plan",
+      "blocker_id": "report_source_edit_not_approved",
+      "reason": "source-output readiness does not permit final PDF export yet",
+      "needed_action": "obtain explicit human/PMO approval for report-source edits and final PDF export"
+    },
+    {
+      "gate_id": "pdf_export_plan",
+      "blocker_id": "final_artifacts_missing",
+      "reason": "final artifact manifest still reports missing final outputs",
+      "needed_action": "after approved export and video creation, rerun final artifact manifest check"
+    },
+    {
+      "gate_id": "demo_video_storyboard",
+      "blocker_id": "demo_video_not_recorded",
+      "reason": "Results/submission/demo_video.mp4 is missing",
+      "needed_action": "record or render the reviewed storyboard only after approval"
+    },
+    {
+      "gate_id": "demo_video_storyboard",
+      "blocker_id": "manual_storyboard_review_required",
+      "reason": "storyboard content must be reviewed before recording",
+      "needed_action": "confirm scenes, wording, and evidence boundaries before producing video"
+    },
+    {
+      "gate_id": "final_acceptance_prereq",
+      "blocker_id": "final_artifacts_not_ready",
+      "reason": "one or more final artifacts are missing or failing",
+      "needed_action": "create reviewed final PDFs and demo video, then rerun artifact manifest without --allow-missing"
+    },
+    {
+      "gate_id": "final_acceptance_prereq",
+      "blocker_id": "pdf_export_not_ready",
+      "reason": "PDF export dry-run plan does not permit final PDF export yet",
+      "needed_action": "satisfy PDF engine, report-source approval, and final export gates"
+    },
+    {
+      "gate_id": "final_acceptance_prereq",
+      "blocker_id": "demo_video_recording_not_approved",
+      "reason": "storyboard plan does not permit video recording yet",
+      "needed_action": "manually review storyboard and authorize recording or rendering"
+    },
+    {
+      "gate_id": "final_acceptance_prereq",
+      "blocker_id": "source_output_readiness_blocks_acceptance",
+      "reason": "source-output readiness does not permit writing final acceptance",
+      "needed_action": "complete final artifacts and source-output readiness gates first"
+    },
+    {
+      "gate_id": "final_output_execution_decision",
+      "blocker_id": "authorizes_pdf_export",
+      "reason": "PDF export execution is not authorized",
+      "needed_action": "review final output execution decision template and satisfy upstream readiness gates"
+    },
+    {
+      "gate_id": "final_output_execution_decision",
+      "blocker_id": "authorizes_demo_video_recording",
+      "reason": "demo video recording/rendering is not authorized",
+      "needed_action": "review final output execution decision template and satisfy upstream readiness gates"
+    },
+    {
+      "gate_id": "final_output_execution_decision",
+      "blocker_id": "authorizes_final_acceptance_packet",
+      "reason": "canonical final acceptance packet writing is not authorized",
+      "needed_action": "review final output execution decision template and satisfy upstream readiness gates"
+    }
+  ],
+  "claim_boundary": [
+    "This execution-gate summary is a static review artifact only.",
+    "It does not answer reviewer questions.",
+    "It does not fill answer-sheet values.",
+    "It does not edit decision artifacts.",
+    "It does not apply report-source edits.",
+    "It does not create Results/submission.",
+    "It does not run Pandoc.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write canonical PMO final acceptance."
+  ]
+}

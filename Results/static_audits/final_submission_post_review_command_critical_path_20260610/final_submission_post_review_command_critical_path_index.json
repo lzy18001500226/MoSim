@@ -1,0 +1,671 @@
+{
+  "index_id": "final_submission_post_review_command_critical_path_20260610",
+  "status": "post_review_command_critical_path_index_not_execution",
+  "sources": {
+    "command_plan_coverage": "Results/static_audits/final_submission_post_review_command_plan_coverage_20260610/final_submission_post_review_command_plan_coverage_check.json",
+    "command_grouping_index": "Results/static_audits/final_submission_post_review_command_grouping_20260610/final_submission_post_review_command_grouping_index.json"
+  },
+  "summary": {
+    "action_count": 3,
+    "critical_path_count": 3,
+    "family_count": 18,
+    "unique_command_count": 20,
+    "total_command_reference_count": 45,
+    "total_family_step_count": 43,
+    "shared_tail_family_count": 12,
+    "action_specific_prefix_step_count": 7,
+    "unique_action_specific_family_count": 6,
+    "issue_count": 0,
+    "automated_execution_allowed": false,
+    "runs_commands_now": false,
+    "applies_transitions_now": false,
+    "edits_decision_artifacts_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "shared_tail_families": [
+    "final_submission_dashboard",
+    "human_action_checklist",
+    "reviewer_action_map",
+    "human_review_decision_packet",
+    "human_review_guide",
+    "readiness_chain",
+    "refresh_order",
+    "static_audit_index",
+    "blocked_gate_triage",
+    "human_decision_diff",
+    "reviewer_quickstart",
+    "review_progress_snapshot"
+  ],
+  "critical_paths": [
+    {
+      "action_id": "A1-approve-or-reject-report-source-edits",
+      "transition_id": "TRANSITION-A1-approve-or-reject-report-source-edits",
+      "command_reference_count": 18,
+      "covered_command_count": 18,
+      "family_sequence": [
+        "report_source_review",
+        "source_output_readiness",
+        "pdf_export",
+        "final_acceptance_prereq",
+        "final_submission_dashboard",
+        "human_action_checklist",
+        "reviewer_action_map",
+        "human_review_decision_packet",
+        "human_review_guide",
+        "readiness_chain",
+        "refresh_order",
+        "static_audit_index",
+        "blocked_gate_triage",
+        "human_decision_diff",
+        "reviewer_quickstart",
+        "review_progress_snapshot"
+      ],
+      "family_steps": [
+        {
+          "order": 1,
+          "family": "report_source_review",
+          "command_count": 3,
+          "commands": [
+            "python Scripts/quality/check_report_source_edit_decision.py",
+            "python Scripts/quality/build_simulation_report_source_edit_readiness_gate.py",
+            "python Scripts/quality/build_simulation_report_source_edit_application_plan.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "action_specific_prefix"
+        },
+        {
+          "order": 2,
+          "family": "source_output_readiness",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_submission_source_output_readiness.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "action_specific_prefix"
+        },
+        {
+          "order": 3,
+          "family": "pdf_export",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_pdf_export_dry_run_plan.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "action_specific_prefix"
+        },
+        {
+          "order": 4,
+          "family": "final_acceptance_prereq",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_acceptance_packet_prereq_plan.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "action_specific_prefix"
+        },
+        {
+          "order": 5,
+          "family": "final_submission_dashboard",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_readiness_dashboard.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 6,
+          "family": "human_action_checklist",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_human_action_checklist.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 7,
+          "family": "reviewer_action_map",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_reviewer_action_map.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 8,
+          "family": "human_review_decision_packet",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_human_review_decision_packet_template.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 9,
+          "family": "human_review_guide",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_human_review_guide.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 10,
+          "family": "readiness_chain",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/check_final_submission_readiness_chain.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 11,
+          "family": "refresh_order",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/check_final_submission_refresh_order.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 12,
+          "family": "static_audit_index",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_static_audit_index.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 13,
+          "family": "blocked_gate_triage",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_blocked_gate_triage_map.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 14,
+          "family": "human_decision_diff",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_human_decision_diff_template.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 15,
+          "family": "reviewer_quickstart",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_reviewer_quickstart.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 16,
+          "family": "review_progress_snapshot",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_review_progress_snapshot.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        }
+      ],
+      "runs_rerun_commands_now": false,
+      "applies_transition_now": false,
+      "family_step_count": 16,
+      "action_specific_prefix_families": [
+        "report_source_review",
+        "source_output_readiness",
+        "pdf_export",
+        "final_acceptance_prereq"
+      ],
+      "shared_tail_families": [
+        "final_submission_dashboard",
+        "human_action_checklist",
+        "reviewer_action_map",
+        "human_review_decision_packet",
+        "human_review_guide",
+        "readiness_chain",
+        "refresh_order",
+        "static_audit_index",
+        "blocked_gate_triage",
+        "human_decision_diff",
+        "reviewer_quickstart",
+        "review_progress_snapshot"
+      ],
+      "automated_execution_allowed": false
+    },
+    {
+      "action_id": "A3-review-demo-storyboard",
+      "transition_id": "TRANSITION-A3-review-demo-storyboard",
+      "command_reference_count": 14,
+      "covered_command_count": 14,
+      "family_sequence": [
+        "demo_video",
+        "final_output_execution_decision",
+        "final_submission_dashboard",
+        "human_action_checklist",
+        "reviewer_action_map",
+        "human_review_decision_packet",
+        "human_review_guide",
+        "readiness_chain",
+        "refresh_order",
+        "static_audit_index",
+        "blocked_gate_triage",
+        "human_decision_diff",
+        "reviewer_quickstart",
+        "review_progress_snapshot"
+      ],
+      "family_steps": [
+        {
+          "order": 1,
+          "family": "demo_video",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_demo_video_storyboard_plan.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "action_specific_prefix"
+        },
+        {
+          "order": 2,
+          "family": "final_output_execution_decision",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/check_final_output_execution_decision.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "action_specific_prefix"
+        },
+        {
+          "order": 3,
+          "family": "final_submission_dashboard",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_readiness_dashboard.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 4,
+          "family": "human_action_checklist",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_human_action_checklist.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 5,
+          "family": "reviewer_action_map",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_reviewer_action_map.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 6,
+          "family": "human_review_decision_packet",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_human_review_decision_packet_template.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 7,
+          "family": "human_review_guide",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_human_review_guide.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 8,
+          "family": "readiness_chain",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/check_final_submission_readiness_chain.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 9,
+          "family": "refresh_order",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/check_final_submission_refresh_order.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 10,
+          "family": "static_audit_index",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_static_audit_index.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 11,
+          "family": "blocked_gate_triage",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_blocked_gate_triage_map.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 12,
+          "family": "human_decision_diff",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_human_decision_diff_template.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 13,
+          "family": "reviewer_quickstart",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_reviewer_quickstart.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 14,
+          "family": "review_progress_snapshot",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_review_progress_snapshot.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        }
+      ],
+      "runs_rerun_commands_now": false,
+      "applies_transition_now": false,
+      "family_step_count": 14,
+      "action_specific_prefix_families": [
+        "demo_video",
+        "final_output_execution_decision"
+      ],
+      "shared_tail_families": [
+        "final_submission_dashboard",
+        "human_action_checklist",
+        "reviewer_action_map",
+        "human_review_decision_packet",
+        "human_review_guide",
+        "readiness_chain",
+        "refresh_order",
+        "static_audit_index",
+        "blocked_gate_triage",
+        "human_decision_diff",
+        "reviewer_quickstart",
+        "review_progress_snapshot"
+      ],
+      "automated_execution_allowed": false
+    },
+    {
+      "action_id": "A6-review-final-output-execution-decision",
+      "transition_id": "TRANSITION-A6-review-final-output-execution-decision",
+      "command_reference_count": 13,
+      "covered_command_count": 13,
+      "family_sequence": [
+        "final_output_execution_decision",
+        "final_submission_dashboard",
+        "human_action_checklist",
+        "reviewer_action_map",
+        "human_review_decision_packet",
+        "human_review_guide",
+        "readiness_chain",
+        "refresh_order",
+        "static_audit_index",
+        "blocked_gate_triage",
+        "human_decision_diff",
+        "reviewer_quickstart",
+        "review_progress_snapshot"
+      ],
+      "family_steps": [
+        {
+          "order": 1,
+          "family": "final_output_execution_decision",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/check_final_output_execution_decision.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "action_specific_prefix"
+        },
+        {
+          "order": 2,
+          "family": "final_submission_dashboard",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_readiness_dashboard.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 3,
+          "family": "human_action_checklist",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_human_action_checklist.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 4,
+          "family": "reviewer_action_map",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_reviewer_action_map.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 5,
+          "family": "human_review_decision_packet",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_human_review_decision_packet_template.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 6,
+          "family": "human_review_guide",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_human_review_guide.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 7,
+          "family": "readiness_chain",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/check_final_submission_readiness_chain.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 8,
+          "family": "refresh_order",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/check_final_submission_refresh_order.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 9,
+          "family": "static_audit_index",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_static_audit_index.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 10,
+          "family": "blocked_gate_triage",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_blocked_gate_triage_map.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 11,
+          "family": "human_decision_diff",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_human_decision_diff_template.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 12,
+          "family": "reviewer_quickstart",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_reviewer_quickstart.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        },
+        {
+          "order": 13,
+          "family": "review_progress_snapshot",
+          "command_count": 1,
+          "commands": [
+            "python Scripts/quality/build_final_submission_review_progress_snapshot.py"
+          ],
+          "all_commands_covered": true,
+          "runs_now": false,
+          "phase": "shared_tail"
+        }
+      ],
+      "runs_rerun_commands_now": false,
+      "applies_transition_now": false,
+      "family_step_count": 13,
+      "action_specific_prefix_families": [
+        "final_output_execution_decision"
+      ],
+      "shared_tail_families": [
+        "final_submission_dashboard",
+        "human_action_checklist",
+        "reviewer_action_map",
+        "human_review_decision_packet",
+        "human_review_guide",
+        "readiness_chain",
+        "refresh_order",
+        "static_audit_index",
+        "blocked_gate_triage",
+        "human_decision_diff",
+        "reviewer_quickstart",
+        "review_progress_snapshot"
+      ],
+      "automated_execution_allowed": false
+    }
+  ],
+  "issues": [],
+  "claim_boundary": [
+    "This critical-path index is a static navigation artifact only.",
+    "It groups already-listed future rerun commands into family order.",
+    "It does not run post-review rerun commands.",
+    "It does not choose live resource scheduling.",
+    "It does not edit decision artifacts.",
+    "It does not approve decisions.",
+    "It does not apply transitions.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "decision_path": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+  "patch_preview": "Results/static_audits/simulation_report_patch_preview_20260610/simulation_report_patch_preview.json",
+  "decision": "pending_review",
+  "valid_decisions": [
+    "pending_review",
+    "approved",
+    "rejected",
+    "narrowed"
+  ],
+  "approved_preview_count": 0,
+  "rejected_preview_count": 0,
+  "available_preview_count": 7,
+  "safe_to_apply_report_source_edits": false,
+  "authorizes_application": false,
+  "issues": [],
+  "warnings": [
+    "decision is pending_review and does not authorize report-source edits"
+  ],
+  "claim_boundary": [
+    "This checker validates a decision artifact only.",
+    "It does not edit Docs/simulation_report.md.",
+    "It does not approve pending_review decisions.",
+    "It does not export PDFs/video or write PMO final acceptance."
+  ]
+}

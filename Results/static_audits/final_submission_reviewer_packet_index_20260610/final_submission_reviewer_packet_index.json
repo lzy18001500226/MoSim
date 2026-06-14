@@ -1,0 +1,497 @@
+{
+  "index_id": "final_submission_reviewer_packet_index_20260610",
+  "status": "reviewer_packet_index_not_execution",
+  "sources": {
+    "human_review_decision_packet": "Results/static_audits/final_submission_human_review_decision_packet_20260610/final_submission_human_review_decision_packet_template.json",
+    "manual_review_answer_sheet": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_manual_review_answer_sheet_template.json",
+    "post_review_rerun_matrix": "Results/static_audits/final_submission_post_review_rerun_matrix_20260610/final_submission_post_review_rerun_matrix.json",
+    "reviewer_action_map": "Results/static_audits/final_submission_reviewer_action_map_20260610/final_submission_reviewer_action_map.json"
+  },
+  "summary": {
+    "packet_count": 3,
+    "pending_packet_count": 3,
+    "total_review_artifact_count": 13,
+    "total_answer_field_count": 38,
+    "required_answer_field_count": 29,
+    "total_rerun_command_count": 45,
+    "issue_count": 0,
+    "automated_execution_allowed": false,
+    "fills_answers_now": false,
+    "copies_answers_now": false,
+    "edits_decision_artifacts_now": false,
+    "runs_rerun_commands_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "review_packets": [
+    {
+      "action_id": "A1-approve-or-reject-report-source-edits",
+      "decision": "pending_review",
+      "approved": false,
+      "decision_owner": "user_or_PMO",
+      "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope",
+      "decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+      "source_blocker_count": 4,
+      "action_priority": 1,
+      "review_artifacts": [
+        {
+          "path": "Results/static_audits/simulation_report_patch_preview_20260610/simulation_report_patch_preview.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/simulation_report_source_edit_readiness_20260610/simulation_report_source_edit_readiness_gate.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/simulation_report_source_edit_application_plan_20260610/simulation_report_source_edit_application_plan.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision_check.json",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/final_submission_human_decision_diff_template_20260610/final_submission_human_decision_diff_template.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/simulation_report_source_edit_reviewer_summary_20260610/simulation_report_source_edit_reviewer_summary.md",
+          "exists": true,
+          "required": true
+        }
+      ],
+      "review_artifact_count": 7,
+      "answer_fields": [
+        {
+          "field_path": "decision",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "decision_owner",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "decided_at",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "approved_preview_ids",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "rejected_preview_ids",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "narrowed_scope_notes",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "review_notes",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "safe_to_apply_report_source_edits",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        }
+      ],
+      "answer_field_count": 8,
+      "required_answer_field_count": 5,
+      "post_review_rerun_readiness": "blocked_pending_human_review",
+      "post_review_rerun_commands": [
+        "python Scripts/quality/check_report_source_edit_decision.py",
+        "python Scripts/quality/build_simulation_report_source_edit_readiness_gate.py",
+        "python Scripts/quality/build_simulation_report_source_edit_application_plan.py",
+        "python Scripts/quality/build_submission_source_output_readiness.py",
+        "python Scripts/quality/build_pdf_export_dry_run_plan.py",
+        "python Scripts/quality/build_final_acceptance_packet_prereq_plan.py",
+        "python Scripts/quality/build_final_submission_readiness_dashboard.py",
+        "python Scripts/quality/build_final_submission_human_action_checklist.py",
+        "python Scripts/quality/build_final_submission_reviewer_action_map.py",
+        "python Scripts/quality/build_final_submission_human_review_decision_packet_template.py",
+        "python Scripts/quality/build_final_submission_human_review_guide.py",
+        "python Scripts/quality/check_final_submission_readiness_chain.py",
+        "python Scripts/quality/check_final_submission_refresh_order.py",
+        "python Scripts/quality/build_final_submission_static_audit_index.py",
+        "python Scripts/quality/build_final_submission_blocked_gate_triage_map.py",
+        "python Scripts/quality/build_final_submission_human_decision_diff_template.py",
+        "python Scripts/quality/build_final_submission_reviewer_quickstart.py",
+        "python Scripts/quality/build_final_submission_review_progress_snapshot.py"
+      ],
+      "post_review_rerun_command_count": 18,
+      "execution_still_requires": [
+        "explicit approved or narrowed report-source decision",
+        "non-empty approved_preview_ids when edits are approved",
+        "a separate authorized report-source edit step before final source-output readiness can pass"
+      ],
+      "forbidden_actions": [
+        "Do not apply report-source edits from this matrix.",
+        "Do not run post-review checkers from this matrix.",
+        "Do not export PDFs from this matrix.",
+        "Do not record or render demo video from this matrix.",
+        "Do not write PMO final acceptance from this matrix.",
+        "Do not run live MWORKS, ROS2, UE, or visible-thread dispatch from this matrix."
+      ],
+      "fills_answers_now": false,
+      "copies_answers_now": false,
+      "edits_decision_artifacts_now": false,
+      "runs_rerun_commands_now": false,
+      "approves_or_executes_now": false
+    },
+    {
+      "action_id": "A3-review-demo-storyboard",
+      "decision": "pending_review",
+      "approved": false,
+      "decision_owner": "user_or_PMO",
+      "decision_needed": "approve, reject, or revise storyboard scenes, wording, and evidence boundaries",
+      "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+      "source_blocker_count": 2,
+      "action_priority": 3,
+      "review_artifacts": [
+        {
+          "path": "Results/static_audits/demo_video_storyboard_plan_20260610/demo_video_storyboard_plan.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "exists": true,
+          "required": true
+        }
+      ],
+      "review_artifact_count": 2,
+      "answer_fields": [
+        {
+          "field_path": "actions.pdf_export.decision",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.pdf_export.approved",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.pdf_export.approved_by",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.pdf_export.approved_at",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.pdf_export.review_notes",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.demo_video_recording.decision",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved_by",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved_at",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.demo_video_recording.review_notes",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.decision",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved_by",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved_at",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.review_notes",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        }
+      ],
+      "answer_field_count": 15,
+      "required_answer_field_count": 12,
+      "post_review_rerun_readiness": "blocked_pending_human_review",
+      "post_review_rerun_commands": [
+        "python Scripts/quality/build_demo_video_storyboard_plan.py",
+        "python Scripts/quality/check_final_output_execution_decision.py",
+        "python Scripts/quality/build_final_submission_readiness_dashboard.py",
+        "python Scripts/quality/build_final_submission_human_action_checklist.py",
+        "python Scripts/quality/build_final_submission_reviewer_action_map.py",
+        "python Scripts/quality/build_final_submission_human_review_decision_packet_template.py",
+        "python Scripts/quality/build_final_submission_human_review_guide.py",
+        "python Scripts/quality/check_final_submission_readiness_chain.py",
+        "python Scripts/quality/check_final_submission_refresh_order.py",
+        "python Scripts/quality/build_final_submission_static_audit_index.py",
+        "python Scripts/quality/build_final_submission_blocked_gate_triage_map.py",
+        "python Scripts/quality/build_final_submission_human_decision_diff_template.py",
+        "python Scripts/quality/build_final_submission_reviewer_quickstart.py",
+        "python Scripts/quality/build_final_submission_review_progress_snapshot.py"
+      ],
+      "post_review_rerun_command_count": 14,
+      "execution_still_requires": [
+        "storyboard review outcome recorded in a separate decision step",
+        "demo video recording remains blocked until final-output execution decision and upstream gates pass"
+      ],
+      "forbidden_actions": [
+        "Do not apply report-source edits from this matrix.",
+        "Do not run post-review checkers from this matrix.",
+        "Do not export PDFs from this matrix.",
+        "Do not record or render demo video from this matrix.",
+        "Do not write PMO final acceptance from this matrix.",
+        "Do not run live MWORKS, ROS2, UE, or visible-thread dispatch from this matrix."
+      ],
+      "fills_answers_now": false,
+      "copies_answers_now": false,
+      "edits_decision_artifacts_now": false,
+      "runs_rerun_commands_now": false,
+      "approves_or_executes_now": false
+    },
+    {
+      "action_id": "A6-review-final-output-execution-decision",
+      "decision": "pending_review",
+      "approved": false,
+      "decision_owner": "user_or_PMO",
+      "decision_needed": "explicitly authorize or keep blocked PDF export, demo video recording, and final acceptance packet writing",
+      "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+      "source_blocker_count": 3,
+      "action_priority": 6,
+      "review_artifacts": [
+        {
+          "path": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision_template.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision_check.json",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/final_submission_human_decision_diff_template_20260610/final_submission_human_decision_diff_template.md",
+          "exists": true,
+          "required": true
+        }
+      ],
+      "review_artifact_count": 4,
+      "answer_fields": [
+        {
+          "field_path": "actions.pdf_export.decision",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.pdf_export.approved",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.pdf_export.approved_by",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.pdf_export.approved_at",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.pdf_export.review_notes",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.demo_video_recording.decision",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved_by",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.demo_video_recording.approved_at",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.demo_video_recording.review_notes",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.decision",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved_by",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.approved_at",
+          "human_choice_required": true,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        },
+        {
+          "field_path": "actions.final_acceptance_packet.review_notes",
+          "human_choice_required": false,
+          "copy_to_decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "proposed_value": "<fill_after_review>"
+        }
+      ],
+      "answer_field_count": 15,
+      "required_answer_field_count": 12,
+      "post_review_rerun_readiness": "blocked_pending_human_review",
+      "post_review_rerun_commands": [
+        "python Scripts/quality/check_final_output_execution_decision.py",
+        "python Scripts/quality/build_final_submission_readiness_dashboard.py",
+        "python Scripts/quality/build_final_submission_human_action_checklist.py",
+        "python Scripts/quality/build_final_submission_reviewer_action_map.py",
+        "python Scripts/quality/build_final_submission_human_review_decision_packet_template.py",
+        "python Scripts/quality/build_final_submission_human_review_guide.py",
+        "python Scripts/quality/check_final_submission_readiness_chain.py",
+        "python Scripts/quality/check_final_submission_refresh_order.py",
+        "python Scripts/quality/build_final_submission_static_audit_index.py",
+        "python Scripts/quality/build_final_submission_blocked_gate_triage_map.py",
+        "python Scripts/quality/build_final_submission_human_decision_diff_template.py",
+        "python Scripts/quality/build_final_submission_reviewer_quickstart.py",
+        "python Scripts/quality/build_final_submission_review_progress_snapshot.py"
+      ],
+      "post_review_rerun_command_count": 13,
+      "execution_still_requires": [
+        "upstream source-output readiness true before PDF export",
+        "PDF engine available before PDF export",
+        "storyboard gate permits recording before demo video work",
+        "final acceptance prerequisite gate true before canonical PMO packet writing",
+        "a separate final-output execution authorization before any output generation"
+      ],
+      "forbidden_actions": [
+        "Do not apply report-source edits from this matrix.",
+        "Do not run post-review checkers from this matrix.",
+        "Do not export PDFs from this matrix.",
+        "Do not record or render demo video from this matrix.",
+        "Do not write PMO final acceptance from this matrix.",
+        "Do not run live MWORKS, ROS2, UE, or visible-thread dispatch from this matrix."
+      ],
+      "fills_answers_now": false,
+      "copies_answers_now": false,
+      "edits_decision_artifacts_now": false,
+      "runs_rerun_commands_now": false,
+      "approves_or_executes_now": false
+    }
+  ],
+  "issues": [],
+  "claim_boundary": [
+    "This reviewer packet index is a static navigation artifact only.",
+    "It does not fill answer-sheet fields.",
+    "It does not copy answers into decision artifacts.",
+    "It does not edit decision templates.",
+    "It does not approve decisions.",
+    "It does not run post-review rerun commands.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

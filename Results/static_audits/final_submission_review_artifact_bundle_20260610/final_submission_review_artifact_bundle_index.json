@@ -1,0 +1,195 @@
+{
+  "bundle_id": "final_submission_review_artifact_bundle_20260610",
+  "status": "review_artifact_bundle_index_not_execution",
+  "summary": {
+    "bundle_artifact_count": 7,
+    "ready_bundle_artifact_count": 7,
+    "missing_or_incomplete_count": 0,
+    "status_mismatch_count": 0,
+    "automated_execution_allowed": false,
+    "included_in_static_audit_index": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "review_order": [
+    "reviewer_quickstart",
+    "blocked_gate_triage_map",
+    "human_decision_diff_template",
+    "manual_review_answer_sheet",
+    "answer_sheet_decision_consistency",
+    "post_review_rerun_matrix",
+    "review_progress_snapshot"
+  ],
+  "artifacts": [
+    {
+      "artifact_id": "blocked_gate_triage_map",
+      "json_path": "Results/static_audits/final_submission_blocked_gate_triage_map_20260610/final_submission_blocked_gate_triage_map.json",
+      "markdown_path": "Results/static_audits/final_submission_blocked_gate_triage_map_20260610/final_submission_blocked_gate_triage_map.md",
+      "json_exists": true,
+      "markdown_exists": true,
+      "status": "blocked_gate_triage_map_not_execution",
+      "expected_status": "blocked_gate_triage_map_not_execution",
+      "purpose": "group blocked gates before human review",
+      "summary": {
+        "blocked_artifact_count": 17,
+        "blocker_class_count": 10,
+        "dashboard_blocker_count": 16,
+        "automated_execution_allowed": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      },
+      "ready_for_review_bundle": true,
+      "issues": []
+    },
+    {
+      "artifact_id": "human_decision_diff_template",
+      "json_path": "Results/static_audits/final_submission_human_decision_diff_template_20260610/final_submission_human_decision_diff_template.json",
+      "markdown_path": "Results/static_audits/final_submission_human_decision_diff_template_20260610/final_submission_human_decision_diff_template.md",
+      "json_exists": true,
+      "markdown_exists": true,
+      "status": "human_decision_diff_template_not_execution",
+      "expected_status": "human_decision_diff_template_not_execution",
+      "purpose": "show editable decision fields without editing templates",
+      "summary": {
+        "report_source_field_count": 8,
+        "final_output_action_count": 3,
+        "final_output_field_count": 15,
+        "applies_decisions_now": false,
+        "edits_decision_templates_now": false,
+        "automated_execution_allowed": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      },
+      "ready_for_review_bundle": true,
+      "issues": []
+    },
+    {
+      "artifact_id": "reviewer_quickstart",
+      "json_path": "Results/static_audits/final_submission_reviewer_quickstart_20260610/final_submission_reviewer_quickstart.json",
+      "markdown_path": "Results/static_audits/final_submission_reviewer_quickstart_20260610/final_submission_reviewer_quickstart.md",
+      "json_exists": true,
+      "markdown_exists": true,
+      "status": "reviewer_quickstart_not_execution",
+      "expected_status": "reviewer_quickstart_not_execution",
+      "purpose": "order the minimum A1/A3/A6 review files",
+      "summary": {
+        "review_action_count": 3,
+        "minimum_open_file_count": 10,
+        "missing_open_file_count": 0,
+        "automated_execution_allowed": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      },
+      "ready_for_review_bundle": true,
+      "issues": []
+    },
+    {
+      "artifact_id": "review_progress_snapshot",
+      "json_path": "Results/static_audits/final_submission_review_progress_snapshot_20260610/final_submission_review_progress_snapshot.json",
+      "markdown_path": "Results/static_audits/final_submission_review_progress_snapshot_20260610/final_submission_review_progress_snapshot.md",
+      "json_exists": true,
+      "markdown_exists": true,
+      "status": "review_progress_snapshot_not_execution",
+      "expected_status": "review_progress_snapshot_not_execution",
+      "purpose": "summarize downstream review progress",
+      "summary": {
+        "review_aid_count": 3,
+        "pending_review_action_count": 3,
+        "blocked_artifact_count": 17,
+        "blocker_class_count": 10,
+        "minimum_open_file_count": 10,
+        "missing_open_file_count": 0,
+        "automated_execution_allowed": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      },
+      "ready_for_review_bundle": true,
+      "issues": []
+    },
+    {
+      "artifact_id": "post_review_rerun_matrix",
+      "json_path": "Results/static_audits/final_submission_post_review_rerun_matrix_20260610/final_submission_post_review_rerun_matrix.json",
+      "markdown_path": "Results/static_audits/final_submission_post_review_rerun_matrix_20260610/final_submission_post_review_rerun_matrix.md",
+      "json_exists": true,
+      "markdown_exists": true,
+      "status": "post_review_rerun_matrix_not_execution",
+      "expected_status": "post_review_rerun_matrix_not_execution",
+      "purpose": "plan future reruns after separate human decisions",
+      "summary": {
+        "matrix_row_count": 3,
+        "blocked_pending_review_row_count": 3,
+        "total_rerun_command_count": 45,
+        "unique_rerun_command_count": 20,
+        "automated_execution_allowed": false,
+        "runs_rerun_commands_now": false,
+        "applies_decisions_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      },
+      "ready_for_review_bundle": true,
+      "issues": []
+    },
+    {
+      "artifact_id": "manual_review_answer_sheet",
+      "json_path": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_manual_review_answer_sheet_template.json",
+      "markdown_path": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_manual_review_answer_sheet_template.md",
+      "json_exists": true,
+      "markdown_exists": true,
+      "status": "manual_review_answer_sheet_template_not_execution",
+      "expected_status": "manual_review_answer_sheet_template_not_execution",
+      "purpose": "provide placeholders for future human answers",
+      "summary": {
+        "review_action_count": 3,
+        "answer_field_count": 38,
+        "required_answer_field_count": 29,
+        "missing_open_file_count": 0,
+        "automated_execution_allowed": false,
+        "copies_answers_now": false,
+        "edits_decision_artifacts_now": false,
+        "approves_or_executes_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      },
+      "ready_for_review_bundle": true,
+      "issues": []
+    },
+    {
+      "artifact_id": "answer_sheet_decision_consistency",
+      "json_path": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_answer_sheet_decision_consistency_check.json",
+      "markdown_path": "",
+      "json_exists": true,
+      "markdown_exists": true,
+      "status": "answer_sheet_decision_consistency_check_not_execution",
+      "expected_status": "answer_sheet_decision_consistency_check_not_execution",
+      "purpose": "confirm answer-sheet placeholders were not copied into decisions",
+      "summary": {
+        "review_action_count": 3,
+        "answer_field_count": 38,
+        "unfilled_placeholder_field_count": 38,
+        "copied_field_count": 0,
+        "issue_count": 0,
+        "warning_count": 0,
+        "report_source_decision": "pending_review",
+        "final_output_pending_action_count": 3,
+        "automated_execution_allowed": false,
+        "applies_decisions_now": false,
+        "edits_decision_templates_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      },
+      "ready_for_review_bundle": true,
+      "issues": []
+    }
+  ],
+  "claim_boundary": [
+    "This bundle index summarizes downstream review artifacts only.",
+    "It is intentionally not added back into final_submission_static_audit_index.json.",
+    "It does not edit decision templates.",
+    "It does not approve decisions.",
+    "It does not run post-review checkers.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

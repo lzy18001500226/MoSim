@@ -1,0 +1,171 @@
+{
+  "checklist_id": "final_submission_human_action_checklist_20260610",
+  "status": "human_action_checklist_not_execution",
+  "source_dashboard": "Results/static_audits/final_submission_readiness_dashboard_20260610/final_submission_readiness_dashboard.json",
+  "summary": {
+    "source_blocker_count": 16,
+    "action_count": 6,
+    "automated_execution_allowed": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "actions": [
+    {
+      "action_id": "A1-approve-or-reject-report-source-edits",
+      "priority": 1,
+      "owner": "user_or_PMO",
+      "action": "Review the simulation-report source edit preview/readiness gate and approve, reject, or narrow final report-source edits.",
+      "success_evidence": "A reviewed decision is recorded and the source edit readiness gate can be regenerated with the decision reflected.",
+      "source_blockers": [
+        {
+          "gate_id": "source_output_readiness",
+          "blocker_id": "report_source_edit_not_approved",
+          "reason": "simulation report source edit readiness gate does not permit applying preview snippets",
+          "needed_action": "obtain explicit human/PMO approval before applying report-source preview edits"
+        },
+        {
+          "gate_id": "source_output_readiness",
+          "blocker_id": "report_source_edit_application_plan_not_ready",
+          "reason": "simulation report source edit application plan is not approved for application",
+          "needed_action": "approve or narrow the A1 report-source edit decision before source edit application planning can proceed"
+        },
+        {
+          "gate_id": "source_output_readiness",
+          "blocker_id": "report_source_edit_application_not_applied",
+          "reason": "no evidence shows the approved report-source application plan has been applied to Docs/simulation_report.md",
+          "needed_action": "apply approved report-source edits in a separate authorized step, then regenerate source-output readiness"
+        },
+        {
+          "gate_id": "pdf_export_plan",
+          "blocker_id": "report_source_edit_not_approved",
+          "reason": "source-output readiness does not permit final PDF export yet",
+          "needed_action": "obtain explicit human/PMO approval for report-source edits and final PDF export"
+        }
+      ]
+    },
+    {
+      "action_id": "A2-provide-pdf-engine",
+      "priority": 2,
+      "owner": "local_environment_owner",
+      "action": "Install or expose a Pandoc-compatible PDF engine such as xelatex, lualatex, tectonic, pdflatex, wkhtmltopdf, or weasyprint.",
+      "success_evidence": "The PDF export dry-run plan reports pdf_engine_available=true.",
+      "source_blockers": [
+        {
+          "gate_id": "pdf_export_plan",
+          "blocker_id": "pdf_engine_missing",
+          "reason": "no preferred Pandoc PDF engine is available on PATH",
+          "needed_action": "install or expose xelatex, lualatex, tectonic, wkhtmltopdf, or another approved engine"
+        }
+      ]
+    },
+    {
+      "action_id": "A3-review-demo-storyboard",
+      "priority": 3,
+      "owner": "user_or_PMO",
+      "action": "Review the demo-video storyboard, wording, evidence mapping, and forbidden claims before any recording.",
+      "success_evidence": "Storyboard review decision is recorded and safe_to_record_demo_video_now can become true in a follow-up gate.",
+      "source_blockers": [
+        {
+          "gate_id": "demo_video_storyboard",
+          "blocker_id": "manual_storyboard_review_required",
+          "reason": "storyboard content must be reviewed before recording",
+          "needed_action": "confirm scenes, wording, and evidence boundaries before producing video"
+        },
+        {
+          "gate_id": "final_acceptance_prereq",
+          "blocker_id": "demo_video_recording_not_approved",
+          "reason": "storyboard plan does not permit video recording yet",
+          "needed_action": "manually review storyboard and authorize recording or rendering"
+        }
+      ]
+    },
+    {
+      "action_id": "A4-create-reviewed-final-artifacts",
+      "priority": 4,
+      "owner": "packaging_or_manual_operator",
+      "action": "After approvals, create reviewed final PDFs and demo_video.mp4, then rerun the final artifact manifest without --allow-missing.",
+      "success_evidence": "Final artifact manifest reports final_submission_artifacts_ready=true.",
+      "source_blockers": [
+        {
+          "gate_id": "source_output_readiness",
+          "blocker_id": "final_outputs_missing",
+          "reason": "final PDFs, demo video, or PMO final acceptance packet are missing",
+          "needed_action": "export reviewed PDFs, create reviewed demo video, then write PMO final acceptance packet"
+        },
+        {
+          "gate_id": "pdf_export_plan",
+          "blocker_id": "final_artifacts_missing",
+          "reason": "final artifact manifest still reports missing final outputs",
+          "needed_action": "after approved export and video creation, rerun final artifact manifest check"
+        },
+        {
+          "gate_id": "demo_video_storyboard",
+          "blocker_id": "demo_video_not_recorded",
+          "reason": "Results/submission/demo_video.mp4 is missing",
+          "needed_action": "record or render the reviewed storyboard only after approval"
+        },
+        {
+          "gate_id": "final_acceptance_prereq",
+          "blocker_id": "final_artifacts_not_ready",
+          "reason": "one or more final artifacts are missing or failing",
+          "needed_action": "create reviewed final PDFs and demo video, then rerun artifact manifest without --allow-missing"
+        }
+      ]
+    },
+    {
+      "action_id": "A5-rerun-readiness-gates",
+      "priority": 5,
+      "owner": "operator",
+      "action": "Rerun PDF, video, artifact, source-output, acceptance-prereq, and dashboard gates after A1-A4 are complete.",
+      "success_evidence": "Dashboard blocking_gate_count decreases and final_submission_ready reflects current artifacts.",
+      "source_blockers": [
+        {
+          "gate_id": "final_acceptance_prereq",
+          "blocker_id": "pdf_export_not_ready",
+          "reason": "PDF export dry-run plan does not permit final PDF export yet",
+          "needed_action": "satisfy PDF engine, report-source approval, and final export gates"
+        },
+        {
+          "gate_id": "final_acceptance_prereq",
+          "blocker_id": "source_output_readiness_blocks_acceptance",
+          "reason": "source-output readiness does not permit writing final acceptance",
+          "needed_action": "complete final artifacts and source-output readiness gates first"
+        }
+      ]
+    },
+    {
+      "action_id": "A6-review-final-output-execution-decision",
+      "priority": 6,
+      "owner": "user_or_PMO",
+      "action": "Review and approve or keep pending the final-output execution decision for PDF export, demo video, and final acceptance packet writing.",
+      "success_evidence": "The final output execution decision checker reports the relevant authorizes_* fields as true after upstream gates pass.",
+      "source_blockers": [
+        {
+          "gate_id": "final_output_execution_decision",
+          "blocker_id": "authorizes_pdf_export",
+          "reason": "PDF export execution is not authorized",
+          "needed_action": "review final output execution decision template and satisfy upstream readiness gates"
+        },
+        {
+          "gate_id": "final_output_execution_decision",
+          "blocker_id": "authorizes_demo_video_recording",
+          "reason": "demo video recording/rendering is not authorized",
+          "needed_action": "review final output execution decision template and satisfy upstream readiness gates"
+        },
+        {
+          "gate_id": "final_output_execution_decision",
+          "blocker_id": "authorizes_final_acceptance_packet",
+          "reason": "canonical final acceptance packet writing is not authorized",
+          "needed_action": "review final output execution decision template and satisfy upstream readiness gates"
+        }
+      ]
+    }
+  ],
+  "claim_boundary": [
+    "This checklist is a human-action planning artifact.",
+    "It does not install tools.",
+    "It does not approve report-source edits.",
+    "It does not export PDFs or record video.",
+    "It does not write PMO final acceptance."
+  ]
+}

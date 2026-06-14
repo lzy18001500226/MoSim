@@ -1,0 +1,245 @@
+{
+  "note_id": "final_submission_manual_review_shortest_path_20260610",
+  "status": "manual_review_shortest_path_note_not_execution",
+  "sources": {
+    "execution_blocker_owner_status_digest": "Results/static_audits/final_submission_execution_blocker_owner_status_digest_20260610/final_submission_execution_blocker_owner_status_digest.json"
+  },
+  "summary": {
+    "source_status": "execution_blocker_owner_status_digest_not_execution",
+    "owner_count": 4,
+    "source_action_count": 6,
+    "path_step_count": 6,
+    "human_review_action_count": 3,
+    "no_packet_action_count": 3,
+    "independent_start_action_count": 3,
+    "blocked_execution_target_count": 4,
+    "target_action_reference_count": 16,
+    "dashboard_blocker_count": 16,
+    "reviewer_open_file_count": 21,
+    "reviewer_open_file_drift_count": 0,
+    "issue_count": 0,
+    "automated_execution_allowed": false,
+    "answers_questions_now": false,
+    "fills_answers_now": false,
+    "copies_answers_now": false,
+    "edits_decision_artifacts_now": false,
+    "runs_commands_now": false,
+    "authorizes_execution_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "shortest_path": [
+    {
+      "order": 1,
+      "action_id": "A1-approve-or-reject-report-source-edits",
+      "owner": "user_or_PMO",
+      "stage_class": "reviewer_packet_action",
+      "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope",
+      "instruction": "Review report-source edit preview and decide approve, reject, keep pending, or narrow scope.",
+      "prerequisite_action_ids": [],
+      "target_ids": [
+        "final_acceptance_packet",
+        "pdf_export",
+        "report_source_edit"
+      ],
+      "blocker_classes": [
+        "human_report_source_decision",
+        "review_aid_not_execution",
+        "source_output_not_ready"
+      ],
+      "blocked_artifact_count": 6,
+      "can_review_in_same_human_session": true,
+      "requires_separate_authorization_before_execution": true,
+      "answers_questions_now": false,
+      "fills_answers_now": false,
+      "copies_answers_now": false,
+      "edits_decision_artifacts_now": false,
+      "runs_commands_now": false,
+      "authorizes_execution_now": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "order": 2,
+      "action_id": "A3-review-demo-storyboard",
+      "owner": "user_or_PMO",
+      "stage_class": "reviewer_packet_action",
+      "decision_needed": "approve, reject, or revise storyboard scenes, wording, and evidence boundaries",
+      "instruction": "Review demo storyboard wording, scenes, and evidence boundaries.",
+      "prerequisite_action_ids": [],
+      "target_ids": [
+        "demo_video_recording",
+        "final_acceptance_packet"
+      ],
+      "blocker_classes": [
+        "human_storyboard_review"
+      ],
+      "blocked_artifact_count": 1,
+      "can_review_in_same_human_session": true,
+      "requires_separate_authorization_before_execution": true,
+      "answers_questions_now": false,
+      "fills_answers_now": false,
+      "copies_answers_now": false,
+      "edits_decision_artifacts_now": false,
+      "runs_commands_now": false,
+      "authorizes_execution_now": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "order": 3,
+      "action_id": "A2-provide-pdf-engine",
+      "owner": "local_environment_owner",
+      "stage_class": "no_packet_escalation_action",
+      "decision_needed": "install or expose an approved Pandoc PDF engine, or keep final PDF export blocked",
+      "instruction": "Decide whether an approved PDF engine is available or keep PDF export blocked.",
+      "prerequisite_action_ids": [],
+      "target_ids": [
+        "final_acceptance_packet",
+        "pdf_export"
+      ],
+      "blocker_classes": [
+        "environment_or_export_authorization"
+      ],
+      "blocked_artifact_count": 1,
+      "can_review_in_same_human_session": false,
+      "requires_separate_authorization_before_execution": true,
+      "answers_questions_now": false,
+      "fills_answers_now": false,
+      "copies_answers_now": false,
+      "edits_decision_artifacts_now": false,
+      "runs_commands_now": false,
+      "authorizes_execution_now": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "order": 4,
+      "action_id": "A6-review-final-output-execution-decision",
+      "owner": "user_or_PMO",
+      "stage_class": "reviewer_packet_action",
+      "decision_needed": "explicitly authorize or keep blocked PDF export, demo video recording, and final acceptance packet writing",
+      "instruction": "Review final-output execution decision after upstream review/environment decisions are known.",
+      "prerequisite_action_ids": [
+        "A1-approve-or-reject-report-source-edits",
+        "A2-provide-pdf-engine",
+        "A3-review-demo-storyboard"
+      ],
+      "target_ids": [
+        "demo_video_recording",
+        "final_acceptance_packet",
+        "pdf_export"
+      ],
+      "blocker_classes": [
+        "human_execution_authorization",
+        "human_review_decision_pending",
+        "review_aid_not_execution"
+      ],
+      "blocked_artifact_count": 3,
+      "can_review_in_same_human_session": true,
+      "requires_separate_authorization_before_execution": true,
+      "answers_questions_now": false,
+      "fills_answers_now": false,
+      "copies_answers_now": false,
+      "edits_decision_artifacts_now": false,
+      "runs_commands_now": false,
+      "authorizes_execution_now": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "order": 5,
+      "action_id": "A4-create-reviewed-final-artifacts",
+      "owner": "packaging_or_manual_operator",
+      "stage_class": "no_packet_escalation_action",
+      "decision_needed": "after approvals, create reviewed final PDFs and demo_video.mp4, then verify artifact presence",
+      "instruction": "Create reviewed final artifacts only after separate authorization changes the blockers.",
+      "prerequisite_action_ids": [
+        "A1-approve-or-reject-report-source-edits",
+        "A2-provide-pdf-engine",
+        "A3-review-demo-storyboard",
+        "A6-review-final-output-execution-decision"
+      ],
+      "target_ids": [
+        "demo_video_recording",
+        "final_acceptance_packet",
+        "pdf_export"
+      ],
+      "blocker_classes": [
+        "acceptance_prerequisites_blocked",
+        "final_outputs_missing"
+      ],
+      "blocked_artifact_count": 2,
+      "can_review_in_same_human_session": false,
+      "requires_separate_authorization_before_execution": true,
+      "answers_questions_now": false,
+      "fills_answers_now": false,
+      "copies_answers_now": false,
+      "edits_decision_artifacts_now": false,
+      "runs_commands_now": false,
+      "authorizes_execution_now": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "order": 6,
+      "action_id": "A5-rerun-readiness-gates",
+      "owner": "operator",
+      "stage_class": "no_packet_escalation_action",
+      "decision_needed": "rerun readiness gates only after A1-A4 decisions or artifacts change",
+      "instruction": "Rerun readiness gates only after human decisions, environment setup, or artifacts change.",
+      "prerequisite_action_ids": [
+        "A1-approve-or-reject-report-source-edits",
+        "A2-provide-pdf-engine",
+        "A3-review-demo-storyboard",
+        "A4-create-reviewed-final-artifacts",
+        "A6-review-final-output-execution-decision"
+      ],
+      "target_ids": [
+        "demo_video_recording",
+        "final_acceptance_packet",
+        "pdf_export"
+      ],
+      "blocker_classes": [
+        "acceptance_prerequisites_blocked",
+        "aggregate_static_gate_blocked",
+        "environment_or_export_authorization",
+        "review_aid_not_execution",
+        "source_output_not_ready"
+      ],
+      "blocked_artifact_count": 7,
+      "can_review_in_same_human_session": false,
+      "requires_separate_authorization_before_execution": true,
+      "answers_questions_now": false,
+      "fills_answers_now": false,
+      "copies_answers_now": false,
+      "edits_decision_artifacts_now": false,
+      "runs_commands_now": false,
+      "authorizes_execution_now": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    }
+  ],
+  "review_session_hints": [
+    "A1, A3, and A6 share user_or_PMO ownership and can be opened in one human review session.",
+    "A6 should not authorize output execution until A1/A2/A3 status is known.",
+    "A4 and A5 remain future execution/check steps after separate authorization or artifact changes."
+  ],
+  "issues": [],
+  "claim_boundary": [
+    "This shortest-path note is a static navigation artifact only.",
+    "It orders existing A1-A6 review and blocker actions.",
+    "It does not answer review questions.",
+    "It does not fill or copy answer-sheet values.",
+    "It does not edit decision artifacts.",
+    "It does not approve or reject decisions.",
+    "It does not install PDF tooling.",
+    "It does not create final artifacts.",
+    "It does not rerun readiness gates.",
+    "It does not run commands.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance.",
+    "It does not run live tools or visible-thread dispatch."
+  ]
+}

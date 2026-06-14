@@ -1,0 +1,278 @@
+{
+  "graph_id": "final_submission_review_artifact_dependency_graph_20260610",
+  "status": "review_artifact_dependency_graph_not_execution",
+  "sources": {
+    "refresh_order": "Results/static_audits/final_submission_refresh_order_20260610/final_submission_refresh_order_check.json",
+    "review_artifact_bundle": "Results/static_audits/final_submission_review_artifact_bundle_20260610/final_submission_review_artifact_bundle_index.json"
+  },
+  "summary": {
+    "review_node_count": 12,
+    "dependency_edge_count": 11,
+    "bundle_artifact_count": 7,
+    "missing_output_count": 0,
+    "automated_execution_allowed": false,
+    "updates_static_audit_index": false,
+    "runs_commands_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "nodes": [
+    {
+      "node_id": "final_submission_blocked_gate_triage_map",
+      "command": "python Scripts/quality/build_final_submission_blocked_gate_triage_map.py",
+      "outputs": [
+        "Results/static_audits/final_submission_blocked_gate_triage_map_20260610/final_submission_blocked_gate_triage_map.json"
+      ],
+      "output_exists_count": 1,
+      "after": [
+        "final_submission_static_audit_index"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_human_decision_diff_template",
+      "command": "python Scripts/quality/build_final_submission_human_decision_diff_template.py",
+      "outputs": [
+        "Results/static_audits/final_submission_human_decision_diff_template_20260610/final_submission_human_decision_diff_template.json"
+      ],
+      "output_exists_count": 1,
+      "after": [
+        "final_submission_blocked_gate_triage_map"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_reviewer_quickstart",
+      "command": "python Scripts/quality/build_final_submission_reviewer_quickstart.py",
+      "outputs": [
+        "Results/static_audits/final_submission_reviewer_quickstart_20260610/final_submission_reviewer_quickstart.json"
+      ],
+      "output_exists_count": 1,
+      "after": [
+        "final_submission_human_decision_diff_template"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_review_progress_snapshot",
+      "command": "python Scripts/quality/build_final_submission_review_progress_snapshot.py",
+      "outputs": [
+        "Results/static_audits/final_submission_review_progress_snapshot_20260610/final_submission_review_progress_snapshot.json"
+      ],
+      "output_exists_count": 1,
+      "after": [
+        "final_submission_reviewer_quickstart"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_post_review_rerun_matrix",
+      "command": "python Scripts/quality/build_final_submission_post_review_rerun_matrix.py",
+      "outputs": [
+        "Results/static_audits/final_submission_post_review_rerun_matrix_20260610/final_submission_post_review_rerun_matrix.json"
+      ],
+      "output_exists_count": 1,
+      "after": [
+        "final_submission_review_progress_snapshot"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_manual_review_answer_sheet",
+      "command": "python Scripts/quality/build_final_submission_manual_review_answer_sheet_template.py",
+      "outputs": [
+        "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_manual_review_answer_sheet_template.json"
+      ],
+      "output_exists_count": 1,
+      "after": [
+        "final_submission_post_review_rerun_matrix"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_answer_sheet_decision_consistency",
+      "command": "python Scripts/quality/check_final_submission_answer_sheet_decision_consistency.py",
+      "outputs": [
+        "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_answer_sheet_decision_consistency_check.json"
+      ],
+      "output_exists_count": 1,
+      "after": [
+        "final_submission_manual_review_answer_sheet"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_review_artifact_bundle_index",
+      "command": "python Scripts/quality/build_final_submission_review_artifact_bundle_index.py",
+      "outputs": [
+        "Results/static_audits/final_submission_review_artifact_bundle_20260610/final_submission_review_artifact_bundle_index.json"
+      ],
+      "output_exists_count": 1,
+      "after": [
+        "final_submission_answer_sheet_decision_consistency"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_reviewer_handoff_note",
+      "command": "python Scripts/quality/build_final_submission_reviewer_handoff_note.py",
+      "outputs": [
+        "Results/static_audits/final_submission_reviewer_handoff_note_20260610/final_submission_reviewer_handoff_note.json"
+      ],
+      "output_exists_count": 1,
+      "after": [
+        "final_submission_review_artifact_bundle_index"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_manual_review_closure_checklist",
+      "command": "python Scripts/quality/build_final_submission_manual_review_closure_checklist.py",
+      "outputs": [
+        "Results/static_audits/final_submission_manual_review_closure_checklist_20260610/final_submission_manual_review_closure_checklist.json"
+      ],
+      "output_exists_count": 1,
+      "after": [
+        "final_submission_reviewer_handoff_note"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_post_review_state_transition_plan",
+      "command": "python Scripts/quality/build_final_submission_post_review_state_transition_plan.py",
+      "outputs": [
+        "Results/static_audits/final_submission_post_review_state_transition_plan_20260610/final_submission_post_review_state_transition_plan.json"
+      ],
+      "output_exists_count": 1,
+      "after": [
+        "final_submission_manual_review_closure_checklist"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_post_review_command_plan_coverage",
+      "command": "python Scripts/quality/check_final_submission_post_review_command_plan_coverage.py",
+      "outputs": [
+        "Results/static_audits/final_submission_post_review_command_plan_coverage_20260610/final_submission_post_review_command_plan_coverage_check.json"
+      ],
+      "output_exists_count": 1,
+      "after": [
+        "final_submission_post_review_state_transition_plan"
+      ],
+      "runs_now": false
+    }
+  ],
+  "edges": [
+    {
+      "from": "final_submission_blocked_gate_triage_map",
+      "to": "final_submission_human_decision_diff_template",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_human_decision_diff_template",
+      "to": "final_submission_reviewer_quickstart",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_reviewer_quickstart",
+      "to": "final_submission_review_progress_snapshot",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_review_progress_snapshot",
+      "to": "final_submission_post_review_rerun_matrix",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_post_review_rerun_matrix",
+      "to": "final_submission_manual_review_answer_sheet",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_manual_review_answer_sheet",
+      "to": "final_submission_answer_sheet_decision_consistency",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_answer_sheet_decision_consistency",
+      "to": "final_submission_review_artifact_bundle_index",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_review_artifact_bundle_index",
+      "to": "final_submission_reviewer_handoff_note",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_reviewer_handoff_note",
+      "to": "final_submission_manual_review_closure_checklist",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_manual_review_closure_checklist",
+      "to": "final_submission_post_review_state_transition_plan",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_post_review_state_transition_plan",
+      "to": "final_submission_post_review_command_plan_coverage",
+      "type": "after"
+    }
+  ],
+  "bundle_artifact_links": [
+    {
+      "bundle_artifact_id": "blocked_gate_triage_map",
+      "json_path": "Results/static_audits/final_submission_blocked_gate_triage_map_20260610/final_submission_blocked_gate_triage_map.json",
+      "markdown_path": "Results/static_audits/final_submission_blocked_gate_triage_map_20260610/final_submission_blocked_gate_triage_map.md",
+      "status": "blocked_gate_triage_map_not_execution"
+    },
+    {
+      "bundle_artifact_id": "human_decision_diff_template",
+      "json_path": "Results/static_audits/final_submission_human_decision_diff_template_20260610/final_submission_human_decision_diff_template.json",
+      "markdown_path": "Results/static_audits/final_submission_human_decision_diff_template_20260610/final_submission_human_decision_diff_template.md",
+      "status": "human_decision_diff_template_not_execution"
+    },
+    {
+      "bundle_artifact_id": "reviewer_quickstart",
+      "json_path": "Results/static_audits/final_submission_reviewer_quickstart_20260610/final_submission_reviewer_quickstart.json",
+      "markdown_path": "Results/static_audits/final_submission_reviewer_quickstart_20260610/final_submission_reviewer_quickstart.md",
+      "status": "reviewer_quickstart_not_execution"
+    },
+    {
+      "bundle_artifact_id": "review_progress_snapshot",
+      "json_path": "Results/static_audits/final_submission_review_progress_snapshot_20260610/final_submission_review_progress_snapshot.json",
+      "markdown_path": "Results/static_audits/final_submission_review_progress_snapshot_20260610/final_submission_review_progress_snapshot.md",
+      "status": "review_progress_snapshot_not_execution"
+    },
+    {
+      "bundle_artifact_id": "post_review_rerun_matrix",
+      "json_path": "Results/static_audits/final_submission_post_review_rerun_matrix_20260610/final_submission_post_review_rerun_matrix.json",
+      "markdown_path": "Results/static_audits/final_submission_post_review_rerun_matrix_20260610/final_submission_post_review_rerun_matrix.md",
+      "status": "post_review_rerun_matrix_not_execution"
+    },
+    {
+      "bundle_artifact_id": "manual_review_answer_sheet",
+      "json_path": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_manual_review_answer_sheet_template.json",
+      "markdown_path": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_manual_review_answer_sheet_template.md",
+      "status": "manual_review_answer_sheet_template_not_execution"
+    },
+    {
+      "bundle_artifact_id": "answer_sheet_decision_consistency",
+      "json_path": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_answer_sheet_decision_consistency_check.json",
+      "markdown_path": "",
+      "status": "answer_sheet_decision_consistency_check_not_execution"
+    }
+  ],
+  "missing_outputs": [],
+  "claim_boundary": [
+    "This dependency graph is a static navigation artifact only.",
+    "It does not change final_submission_static_audit_index.json.",
+    "It does not run generators or checkers.",
+    "It does not edit decision templates.",
+    "It does not approve decisions.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

@@ -1,0 +1,290 @@
+{
+  "inventory_id": "pre_submit_readiness_inventory_20260610",
+  "status": "static_inventory_not_final_submission_acceptance",
+  "source_manifest": "Results/static_audits/submission_evidence_manifest_20260610/candidate_submission_evidence_manifest.json",
+  "source_manifest_status": "review_candidate_not_final_acceptance",
+  "summary": {
+    "ready_static_inputs": true,
+    "candidate_paths_ready": true,
+    "candidate_row_count": 13,
+    "claim_family_counts": {
+      "fault_tolerance": 1,
+      "multi_uav_formation": 1,
+      "official_baseline": 3,
+      "optimized_controller": 3,
+      "robustness": 2,
+      "safety_filter": 1,
+      "visual_trajectory_review": 2
+    },
+    "final_review_missing_count": 4,
+    "live_claim_blocker_count": 4
+  },
+  "core_paths": {
+    "design_docs": {
+      "path": "Docs/Design",
+      "exists": true,
+      "kind": "directory"
+    },
+    "workflow_docs": {
+      "path": "Docs/Workflows",
+      "exists": true,
+      "kind": "directory"
+    },
+    "capability_index": {
+      "path": "Docs/Index/capability_index.md",
+      "exists": true,
+      "kind": "file"
+    },
+    "machine_capability_index": {
+      "path": "CoAgent/capabilities/capability_index.json",
+      "exists": true,
+      "kind": "file"
+    },
+    "models": {
+      "path": "Models",
+      "exists": true,
+      "kind": "directory"
+    },
+    "controller_config": {
+      "path": "Config/controllers",
+      "exists": true,
+      "kind": "directory"
+    },
+    "scenario_config": {
+      "path": "Config/scenarios",
+      "exists": true,
+      "kind": "directory"
+    },
+    "quality_scripts": {
+      "path": "Scripts/quality",
+      "exists": true,
+      "kind": "directory"
+    },
+    "tests": {
+      "path": "Scripts/tests",
+      "exists": true,
+      "kind": "directory"
+    },
+    "candidate_manifest": {
+      "path": "Results/static_audits/submission_evidence_manifest_20260610/candidate_submission_evidence_manifest.json",
+      "exists": true,
+      "kind": "file"
+    },
+    "evidence_map": {
+      "path": "Results/static_audits/mworks_control_evidence_map_20260610/evidence_map.json",
+      "exists": true,
+      "kind": "file"
+    }
+  },
+  "candidate_rows": [
+    {
+      "claim_slot": "C0-baseline-step-example1",
+      "experiment_id": "official_example1_pid_baseline",
+      "claim_family": "official_baseline",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "metrics_file": "Results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.json",
+      "metrics_exists": true,
+      "raw_file": "results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv",
+      "raw_exists": true
+    },
+    {
+      "claim_slot": "C0-baseline-helix-example2",
+      "experiment_id": "official_example2_pid_baseline",
+      "claim_family": "official_baseline",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "metrics_file": "Results/official/example2_helix/official_example2_pid_baseline/metrics/official_example2_pid_baseline.json",
+      "metrics_exists": true,
+      "raw_file": "Results/official/example2_helix/official_example2_pid_baseline/raw/official_example2_pid_baseline.csv",
+      "raw_exists": true
+    },
+    {
+      "claim_slot": "C0-baseline-figure8-example3",
+      "experiment_id": "official_example3_pid_baseline",
+      "claim_family": "official_baseline",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "metrics_file": "Results/official/example3_figure8/official_example3_pid_baseline/metrics/official_example3_pid_baseline.json",
+      "metrics_exists": true,
+      "raw_file": "Results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv",
+      "raw_exists": true
+    },
+    {
+      "claim_slot": "C1-optimized-step-example1",
+      "experiment_id": "official_example1_linear_mpc_sysblock",
+      "claim_family": "optimized_controller",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "metrics_file": "Results/official/example1_step/official_example1_linear_mpc_sysblock/metrics/official_example1_linear_mpc_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "results/official/example1_step/official_example1_linear_mpc_sysblock/raw/official_example1_linear_mpc_sysblock.csv",
+      "raw_exists": true
+    },
+    {
+      "claim_slot": "C1-optimized-helix-example2",
+      "experiment_id": "official_example2_linear_mpc_sysblock",
+      "claim_family": "optimized_controller",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "metrics_file": "Results/official/example2_helix/official_example2_linear_mpc_sysblock/metrics/official_example2_linear_mpc_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "results/official/example2_helix/official_example2_linear_mpc_sysblock/raw/official_example2_linear_mpc_sysblock.csv",
+      "raw_exists": true
+    },
+    {
+      "claim_slot": "C1-optimized-figure8-example3",
+      "experiment_id": "official_example3_linear_mpc_sysblock",
+      "claim_family": "optimized_controller",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "metrics_file": "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/metrics/official_example3_linear_mpc_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "results/official/example3_figure8/official_example3_linear_mpc_sysblock/raw/official_example3_linear_mpc_sysblock.csv",
+      "raw_exists": true
+    },
+    {
+      "claim_slot": "C1-robustness-mass20",
+      "experiment_id": "robust_mass20_example1_linear_mpc_sysblock",
+      "claim_family": "robustness",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "metrics_file": "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/metrics/robust_mass20_example1_linear_mpc_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/raw/robust_mass20_example1_linear_mpc_sysblock.csv",
+      "raw_exists": true
+    },
+    {
+      "claim_slot": "C1-robustness-wind-gust",
+      "experiment_id": "robust_wind_gust_example1_linear_mpc_sysblock",
+      "claim_family": "robustness",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "metrics_file": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/metrics/robust_wind_gust_example1_linear_mpc_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/raw/robust_wind_gust_example1_linear_mpc_sysblock.csv",
+      "raw_exists": true
+    },
+    {
+      "claim_slot": "C1-fault-tolerance-rotor1-loss-wind",
+      "experiment_id": "robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock",
+      "claim_family": "fault_tolerance",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "metrics_file": "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/metrics/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.csv",
+      "raw_exists": true
+    },
+    {
+      "claim_slot": "C1-safety-filter-return-land",
+      "experiment_id": "official_example1_qp_nmpc_safety_return_land_sysblock",
+      "claim_family": "safety_filter",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "metrics_file": "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/metrics/official_example1_qp_nmpc_safety_return_land_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/raw/official_example1_qp_nmpc_safety_return_land_sysblock.csv",
+      "raw_exists": true
+    },
+    {
+      "claim_slot": "C2-formation-triangle-figure8",
+      "experiment_id": "formation_triangle_figure8_linear_mpc_sysblock",
+      "claim_family": "multi_uav_formation",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "metrics_file": "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/metrics/formation_triangle_figure8_linear_mpc_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/raw/formation_triangle_figure8_linear_mpc_sysblock.csv",
+      "raw_exists": true
+    },
+    {
+      "claim_slot": "C1-visual-helical-figure8",
+      "experiment_id": "official_example1_helical_figure8_trail_sysblock",
+      "claim_family": "visual_trajectory_review",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "metrics_file": "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/metrics/official_example1_helical_figure8_trail_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/raw/official_example1_helical_figure8_trail_sysblock.csv",
+      "raw_exists": true
+    },
+    {
+      "claim_slot": "C1-visual-planar-figure8",
+      "experiment_id": "official_example1_planar_figure8_trail_sysblock",
+      "claim_family": "visual_trajectory_review",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "metrics_file": "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/metrics/official_example1_planar_figure8_trail_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/raw/official_example1_planar_figure8_trail_sysblock.csv",
+      "raw_exists": true
+    }
+  ],
+  "missing_candidate_files": [],
+  "final_review_artifacts": {
+    "user_manual_source": {
+      "path": "Docs/user_manual.md",
+      "exists": true,
+      "kind": "file"
+    },
+    "simulation_report_source": {
+      "path": "Docs/simulation_report.md",
+      "exists": true,
+      "kind": "file"
+    },
+    "user_manual_pdf": {
+      "path": "Results/submission/user_manual.pdf",
+      "exists": false,
+      "kind": "missing"
+    },
+    "simulation_report_pdf": {
+      "path": "Results/submission/simulation_analysis_report.pdf",
+      "exists": false,
+      "kind": "missing"
+    },
+    "demo_video": {
+      "path": "Results/submission/demo_video.mp4",
+      "exists": false,
+      "kind": "missing"
+    },
+    "final_acceptance_packet": {
+      "path": "Results/agent_packets/returns/PMO-FINAL-SUBMISSION-ACCEPTANCE.json",
+      "exists": false,
+      "kind": "missing"
+    }
+  },
+  "final_review_missing": [
+    "user_manual_pdf",
+    "simulation_report_pdf",
+    "demo_video",
+    "final_acceptance_packet"
+  ],
+  "live_claim_blockers": [
+    {
+      "claim": "native Syslab final report generation",
+      "status": "not_proven_by_static_manifest",
+      "needed_evidence": "Syslab run output or equivalent reviewed metric/report-generation packet"
+    },
+    {
+      "claim": "live MWORKS no-start attach success",
+      "status": "blocked_open_dependency",
+      "needed_evidence": "authorized live MWORKS/Sysplorer gate with terminal return packet"
+    },
+    {
+      "claim": "ROS2 planner_ready, controller handoff, or closed_loop",
+      "status": "blocked_absent_live_grounding",
+      "needed_evidence": "same-run ROS2 TF/map/world grounding and planner/controller handoff evidence"
+    },
+    {
+      "claim": "UE build/runtime/editor success or live command echo",
+      "status": "source_static_only",
+      "needed_evidence": "separately authorized UE build/runtime/echo gate and return packet"
+    }
+  ],
+  "claim_boundary": [
+    "This inventory supports planning and report-drafting readiness only.",
+    "It is not final PMO acceptance.",
+    "It does not prove native Syslab completion, live MWORKS attach, ROS2 planner_ready/closed_loop, or UE build/runtime/editor success."
+  ]
+}

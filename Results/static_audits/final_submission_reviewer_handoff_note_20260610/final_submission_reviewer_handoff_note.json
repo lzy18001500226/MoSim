@@ -1,0 +1,134 @@
+{
+  "handoff_id": "final_submission_reviewer_handoff_note_20260610",
+  "status": "reviewer_handoff_note_not_execution",
+  "sources": {
+    "review_artifact_bundle": {
+      "source_id": "review_artifact_bundle",
+      "path": "Results/static_audits/final_submission_review_artifact_bundle_20260610/final_submission_review_artifact_bundle_index.json",
+      "status": "review_artifact_bundle_index_not_execution",
+      "summary": {
+        "bundle_artifact_count": 7,
+        "ready_bundle_artifact_count": 7,
+        "missing_or_incomplete_count": 0,
+        "status_mismatch_count": 0,
+        "automated_execution_allowed": false,
+        "included_in_static_audit_index": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "manual_review_answer_sheet": {
+      "source_id": "manual_review_answer_sheet",
+      "path": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_manual_review_answer_sheet_template.json",
+      "status": "manual_review_answer_sheet_template_not_execution",
+      "summary": {
+        "review_action_count": 3,
+        "answer_field_count": 38,
+        "required_answer_field_count": 29,
+        "missing_open_file_count": 0,
+        "automated_execution_allowed": false,
+        "copies_answers_now": false,
+        "edits_decision_artifacts_now": false,
+        "approves_or_executes_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "answer_sheet_decision_consistency": {
+      "source_id": "answer_sheet_decision_consistency",
+      "path": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_answer_sheet_decision_consistency_check.json",
+      "status": "answer_sheet_decision_consistency_check_not_execution",
+      "summary": {
+        "review_action_count": 3,
+        "answer_field_count": 38,
+        "unfilled_placeholder_field_count": 38,
+        "copied_field_count": 0,
+        "issue_count": 0,
+        "warning_count": 0,
+        "report_source_decision": "pending_review",
+        "final_output_pending_action_count": 3,
+        "automated_execution_allowed": false,
+        "applies_decisions_now": false,
+        "edits_decision_templates_now": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    }
+  },
+  "summary": {
+    "handoff_step_count": 5,
+    "bundle_artifact_count": 7,
+    "ready_bundle_artifact_count": 7,
+    "answer_field_count": 38,
+    "required_answer_field_count": 29,
+    "copied_field_count": 0,
+    "automated_execution_allowed": false,
+    "approves_or_executes_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "handoff_steps": [
+    {
+      "step_id": "H1-open-reviewer-quickstart-first",
+      "action": "Open reviewer_quickstart before any decision edit.",
+      "artifact_id": "reviewer_quickstart",
+      "artifact_path": "Results/static_audits/final_submission_reviewer_quickstart_20260610/final_submission_reviewer_quickstart.md",
+      "expected_status": "reviewer_quickstart_not_execution",
+      "execution_allowed": false
+    },
+    {
+      "step_id": "H2-pick-blocker-lane-from-triage-map",
+      "action": "Use the blocked-gate triage map to choose whether A1, A3, or A6 should be reviewed first.",
+      "artifact_id": "blocked_gate_triage_map",
+      "artifact_path": "Results/static_audits/final_submission_blocked_gate_triage_map_20260610/final_submission_blocked_gate_triage_map.md",
+      "expected_status": "blocked_gate_triage_map_not_execution",
+      "execution_allowed": false
+    },
+    {
+      "step_id": "H3-use-decision-diff-and-answer-sheet",
+      "action": "Use the human-decision diff template plus the manual-review answer sheet for A1/A3/A6 answers.",
+      "artifact_id": "manual_review_answer_sheet",
+      "artifact_path": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_manual_review_answer_sheet_template.md",
+      "expected_status": "manual_review_answer_sheet_template_not_execution",
+      "execution_allowed": false
+    },
+    {
+      "step_id": "H4-confirm-answer-sheet-consistency",
+      "action": "Confirm copied_field_count remains 0 before treating answers as still un-applied placeholders.",
+      "artifact_id": "answer_sheet_decision_consistency",
+      "artifact_path": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_answer_sheet_decision_consistency_check.json",
+      "expected_status": "answer_sheet_decision_consistency_check_not_execution",
+      "execution_allowed": false
+    },
+    {
+      "step_id": "H5-use-rerun-matrix-only-after-human-decision-edit",
+      "action": "Use the post-review rerun matrix only after a separate human decision edit authorizes reruns.",
+      "artifact_id": "post_review_rerun_matrix",
+      "artifact_path": "Results/static_audits/final_submission_post_review_rerun_matrix_20260610/final_submission_post_review_rerun_matrix.md",
+      "expected_status": "post_review_rerun_matrix_not_execution",
+      "execution_allowed": false
+    }
+  ],
+  "first_review_targets": [
+    "A1-approve-or-reject-report-source-edits",
+    "A3-review-demo-storyboard",
+    "A6-review-final-output-execution-decision"
+  ],
+  "pre_execution_guard": [
+    "Do not edit decision templates from this handoff note.",
+    "Do not copy answer-sheet placeholders into decision artifacts.",
+    "Do not run post-review rerun commands before a separate human decision edit.",
+    "Do not export PDFs, record demo video, or write final acceptance from this handoff note."
+  ],
+  "claim_boundary": [
+    "This handoff note summarizes the review order only.",
+    "It does not fill answer-sheet values.",
+    "It does not edit decision templates.",
+    "It does not approve decisions.",
+    "It does not run post-review commands.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

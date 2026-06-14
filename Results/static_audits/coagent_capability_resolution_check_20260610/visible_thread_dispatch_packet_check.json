@@ -1,0 +1,7 @@
+{
+  "ok": true,
+  "error_count": 0,
+  "warning_count": 0,
+  "findings": [],
+  "packet": "CoAgent/protocol/templates/visible_thread_dispatch_packet.json"
+}

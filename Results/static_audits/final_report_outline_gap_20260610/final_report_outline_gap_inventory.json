@@ -1,0 +1,284 @@
+{
+  "inventory_id": "final_report_outline_gap_20260610",
+  "status": "static_report_outline_gap_not_final_acceptance",
+  "inputs": {
+    "simulation_report": "Docs/simulation_report.md",
+    "candidate_report_table_scaffold": "Results/static_audits/candidate_report_table_scaffold_20260610/candidate_report_table_scaffold.json",
+    "pre_submit_readiness_inventory": "Results/static_audits/pre_submit_readiness_inventory_20260610/pre_submit_readiness_inventory.json",
+    "final_packaging_gap_inventory": "Results/static_audits/final_packaging_gap_20260610/final_packaging_gap_inventory.json"
+  },
+  "summary": {
+    "section_count": 17,
+    "candidate_row_count": 13,
+    "claim_family_row_counts": {
+      "fault_tolerance": 1,
+      "multi_uav_formation": 1,
+      "official_baseline": 3,
+      "optimized_controller": 3,
+      "robustness": 2,
+      "safety_filter": 1,
+      "visual_trajectory_review": 2
+    },
+    "static_update_section_count": 7,
+    "human_or_live_review_section_count": 5,
+    "unmapped_claim_family_count": 3,
+    "missing_final_artifact_count": 4,
+    "live_claim_blocker_count": 4,
+    "final_submission_ready": false
+  },
+  "sections": [
+    {
+      "heading": "仿真分析报告",
+      "line": 1,
+      "level": 1,
+      "role": "unclassified",
+      "claim_family": "",
+      "candidate_row_count": 0,
+      "can_update_from_static_evidence": false,
+      "needs_human_or_live_acceptance": true,
+      "editing_guidance": "manual review needed before editing this section"
+    },
+    {
+      "heading": "1. 报告范围",
+      "line": 5,
+      "level": 2,
+      "role": "scope_boundary",
+      "claim_family": "",
+      "candidate_row_count": 0,
+      "can_update_from_static_evidence": false,
+      "needs_human_or_live_acceptance": true,
+      "editing_guidance": "current manifest and packaging boundary paragraph can stay near the front matter"
+    },
+    {
+      "heading": "2. 当前机体模型迁移状态",
+      "line": 48,
+      "level": 2,
+      "role": "platform_context",
+      "claim_family": "",
+      "candidate_row_count": 0,
+      "can_update_from_static_evidence": false,
+      "needs_human_or_live_acceptance": false,
+      "editing_guidance": "keep as context; do not use as current final performance ranking"
+    },
+    {
+      "heading": "3. 模型与场景",
+      "line": 54,
+      "level": 2,
+      "role": "scenario_catalog",
+      "claim_family": "",
+      "candidate_row_count": 0,
+      "can_update_from_static_evidence": true,
+      "needs_human_or_live_acceptance": false,
+      "editing_guidance": "refresh scenario catalog from candidate rows before final report freeze"
+    },
+    {
+      "heading": "4. 数据链路",
+      "line": 94,
+      "level": 2,
+      "role": "pipeline_and_evidence",
+      "claim_family": "",
+      "candidate_row_count": 0,
+      "can_update_from_static_evidence": true,
+      "needs_human_or_live_acceptance": false,
+      "editing_guidance": "keep reproducible pipeline and evidence boundary"
+    },
+    {
+      "heading": "5. 当前正式基线指标",
+      "line": 123,
+      "level": 2,
+      "role": "historical_smoke_boundary",
+      "claim_family": "",
+      "candidate_row_count": 0,
+      "can_update_from_static_evidence": false,
+      "needs_human_or_live_acceptance": false,
+      "editing_guidance": "retain as smoke/background only unless final report chooses to remove it"
+    },
+    {
+      "heading": "6. 官方 PID Baseline 指标",
+      "line": 148,
+      "level": 2,
+      "role": "candidate_family:official_baseline",
+      "claim_family": "official_baseline",
+      "candidate_row_count": 3,
+      "can_update_from_static_evidence": true,
+      "needs_human_or_live_acceptance": false,
+      "editing_guidance": "can refresh with three candidate baseline rows and their figures"
+    },
+    {
+      "heading": "7. 改进 PID 对比",
+      "line": 160,
+      "level": 2,
+      "role": "legacy_comparison",
+      "claim_family": "",
+      "candidate_row_count": 0,
+      "can_update_from_static_evidence": false,
+      "needs_human_or_live_acceptance": false,
+      "editing_guidance": "legacy comparison; should not compete with current candidate LinearMPC table unless explicitly retained"
+    },
+    {
+      "heading": "8. Enhanced PID P1 初步结果",
+      "line": 179,
+      "level": 2,
+      "role": "legacy_comparison",
+      "claim_family": "",
+      "candidate_row_count": 0,
+      "can_update_from_static_evidence": false,
+      "needs_human_or_live_acceptance": false,
+      "editing_guidance": "legacy comparison; can be shortened after final candidate table is accepted"
+    },
+    {
+      "heading": "9. AWFF 独立控制器初步结果",
+      "line": 202,
+      "level": 2,
+      "role": "legacy_comparison",
+      "claim_family": "",
+      "candidate_row_count": 0,
+      "can_update_from_static_evidence": false,
+      "needs_human_or_live_acceptance": false,
+      "editing_guidance": "legacy comparison and Sysblock implementation history; separate from final candidate ranking"
+    },
+    {
+      "heading": "10. P1 鲁棒场景与控制器消融",
+      "line": 378,
+      "level": 2,
+      "role": "candidate_family:robustness",
+      "claim_family": "robustness",
+      "candidate_row_count": 2,
+      "can_update_from_static_evidence": true,
+      "needs_human_or_live_acceptance": false,
+      "editing_guidance": "can refresh with mass and wind robustness candidate rows"
+    },
+    {
+      "heading": "9.4 L1-inspired 残差补偿控制器首轮消融",
+      "line": 493,
+      "level": 3,
+      "role": "unclassified",
+      "claim_family": "",
+      "candidate_row_count": 0,
+      "can_update_from_static_evidence": false,
+      "needs_human_or_live_acceptance": true,
+      "editing_guidance": "manual review needed before editing this section"
+    },
+    {
+      "heading": "11. 当前图表",
+      "line": 536,
+      "level": 2,
+      "role": "figure_inventory",
+      "claim_family": "",
+      "candidate_row_count": 0,
+      "can_update_from_static_evidence": true,
+      "needs_human_or_live_acceptance": false,
+      "editing_guidance": "can replace broad directory list with candidate figure pointers"
+    },
+    {
+      "heading": "12. 扩展场景状态",
+      "line": 586,
+      "level": 2,
+      "role": "known_mismatch_review",
+      "claim_family": "",
+      "candidate_row_count": 0,
+      "can_update_from_static_evidence": false,
+      "needs_human_or_live_acceptance": true,
+      "editing_guidance": "needs review because candidate scaffold now includes formation and visual-review rows"
+    },
+    {
+      "heading": "13. Linear MPC-style 外环闭环结果",
+      "line": 696,
+      "level": 2,
+      "role": "candidate_family:optimized_controller",
+      "claim_family": "optimized_controller",
+      "candidate_row_count": 3,
+      "can_update_from_static_evidence": true,
+      "needs_human_or_live_acceptance": false,
+      "editing_guidance": "can refresh with optimized controller candidate rows"
+    },
+    {
+      "heading": "14. QP/NMPC-style Safety Filter 与返航/降落闭环",
+      "line": 763,
+      "level": 2,
+      "role": "candidate_family:safety_filter",
+      "claim_family": "safety_filter",
+      "candidate_row_count": 1,
+      "can_update_from_static_evidence": true,
+      "needs_human_or_live_acceptance": false,
+      "editing_guidance": "can refresh with safety return/land candidate row"
+    },
+    {
+      "heading": "15. 结论约束",
+      "line": 797,
+      "level": 2,
+      "role": "final_boundary",
+      "claim_family": "",
+      "candidate_row_count": 0,
+      "can_update_from_static_evidence": false,
+      "needs_human_or_live_acceptance": true,
+      "editing_guidance": "must keep not-final boundaries until PDF/video/final acceptance exist"
+    }
+  ],
+  "static_update_sections": [
+    "3. 模型与场景",
+    "4. 数据链路",
+    "6. 官方 PID Baseline 指标",
+    "10. P1 鲁棒场景与控制器消融",
+    "11. 当前图表",
+    "13. Linear MPC-style 外环闭环结果",
+    "14. QP/NMPC-style Safety Filter 与返航/降落闭环"
+  ],
+  "human_or_live_review_sections": [
+    "仿真分析报告",
+    "1. 报告范围",
+    "9.4 L1-inspired 残差补偿控制器首轮消融",
+    "12. 扩展场景状态",
+    "15. 结论约束"
+  ],
+  "candidate_insertion_actions": [
+    {
+      "claim_family": "fault_tolerance",
+      "candidate_row_count": 1,
+      "suggested_action": "add or refresh a final fault-tolerance subsection from the rotor-loss wind candidate row"
+    },
+    {
+      "claim_family": "multi_uav_formation",
+      "candidate_row_count": 1,
+      "suggested_action": "add or refresh a formation subsection from the triangle figure-8 candidate row"
+    },
+    {
+      "claim_family": "visual_trajectory_review",
+      "candidate_row_count": 2,
+      "suggested_action": "add or refresh a visual trajectory review subsection from helical/planar figure-8 rows"
+    }
+  ],
+  "missing_final_artifacts": [
+    "user_manual_pdf",
+    "simulation_analysis_report_pdf",
+    "demo_video",
+    "final_acceptance_packet"
+  ],
+  "live_claim_blockers": [
+    {
+      "claim": "native Syslab final report generation",
+      "status": "not_proven_by_static_manifest",
+      "needed_evidence": "Syslab run output or equivalent reviewed metric/report-generation packet"
+    },
+    {
+      "claim": "live MWORKS no-start attach success",
+      "status": "blocked_open_dependency",
+      "needed_evidence": "authorized live MWORKS/Sysplorer gate with terminal return packet"
+    },
+    {
+      "claim": "ROS2 planner_ready, controller handoff, or closed_loop",
+      "status": "blocked_absent_live_grounding",
+      "needed_evidence": "same-run ROS2 TF/map/world grounding and planner/controller handoff evidence"
+    },
+    {
+      "claim": "UE build/runtime/editor success or live command echo",
+      "status": "source_static_only",
+      "needed_evidence": "separately authorized UE build/runtime/echo gate and return packet"
+    }
+  ],
+  "claim_boundary": [
+    "This is an outline/editing inventory only.",
+    "It does not edit the report, generate final PDFs or video, or write PMO final acceptance.",
+    "Candidate rows remain candidate_report_evidence_only_not_final_pmo_acceptance until final PMO/report review."
+  ]
+}

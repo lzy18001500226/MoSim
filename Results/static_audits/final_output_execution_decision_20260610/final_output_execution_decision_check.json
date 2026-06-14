@@ -1,0 +1,60 @@
+{
+  "ok": true,
+  "check_id": "final_output_execution_decision_20260610",
+  "status": "execution_decision_check_not_execution",
+  "decision_path": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+  "summary": {
+    "issue_count": 0,
+    "warning_count": 3,
+    "authorizes_pdf_export": false,
+    "authorizes_demo_video_recording": false,
+    "authorizes_final_acceptance_packet": false,
+    "creates_submission_dir_now": false,
+    "runs_pandoc_now": false,
+    "records_or_renders_video_now": false,
+    "writes_canonical_acceptance_packet_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "actions": {
+    "pdf_export": {
+      "action_id": "pdf_export",
+      "decision": "pending_review",
+      "approved": false,
+      "upstream_ready": false,
+      "authorizes_execution": false
+    },
+    "demo_video_recording": {
+      "action_id": "demo_video_recording",
+      "decision": "pending_review",
+      "approved": false,
+      "upstream_ready": false,
+      "authorizes_execution": false
+    },
+    "final_acceptance_packet": {
+      "action_id": "final_acceptance_packet",
+      "decision": "pending_review",
+      "approved": false,
+      "upstream_ready": false,
+      "authorizes_execution": false
+    }
+  },
+  "upstream_ready": {
+    "pdf_export": false,
+    "demo_video_recording": false,
+    "final_acceptance_packet": false
+  },
+  "issues": [],
+  "warnings": [
+    "pdf_export is pending_review and does not authorize execution",
+    "demo_video_recording is pending_review and does not authorize execution",
+    "final_acceptance_packet is pending_review and does not authorize execution"
+  ],
+  "claim_boundary": [
+    "This checker validates final-output execution decisions only.",
+    "It does not create Results/submission.",
+    "It does not run Pandoc.",
+    "It does not record or render demo video.",
+    "It does not write canonical PMO final acceptance."
+  ]
+}

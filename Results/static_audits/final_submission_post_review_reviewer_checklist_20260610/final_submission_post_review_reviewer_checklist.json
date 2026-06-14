@@ -1,0 +1,192 @@
+{
+  "checklist_id": "final_submission_post_review_reviewer_checklist_20260610",
+  "status": "post_review_reviewer_checklist_not_execution",
+  "sources": {
+    "blocker_question_crosswalk": "Results/static_audits/final_submission_blocker_question_crosswalk_20260610/final_submission_blocker_question_crosswalk.json",
+    "command_grouping_index": "Results/static_audits/final_submission_post_review_command_grouping_20260610/final_submission_post_review_command_grouping_index.json",
+    "command_critical_path_index": "Results/static_audits/final_submission_post_review_command_critical_path_20260610/final_submission_post_review_command_critical_path_index.json",
+    "shared_tail_deduplication_note": "Results/static_audits/final_submission_post_review_shared_tail_deduplication_20260610/final_submission_post_review_shared_tail_deduplication_note.json"
+  },
+  "summary": {
+    "review_action_count": 3,
+    "actions_without_reviewer_packet_count": 3,
+    "total_blocker_row_count": 9,
+    "total_question_count": 9,
+    "total_command_reference_count": 45,
+    "shared_tail_family_count": 12,
+    "issue_count": 0,
+    "automated_execution_allowed": false,
+    "answers_questions_now": false,
+    "edits_decision_artifacts_now": false,
+    "runs_commands_now": false,
+    "applies_transitions_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "review_items": [
+    {
+      "action_id": "A1-approve-or-reject-report-source-edits",
+      "blocker_row_count": 4,
+      "reviewer_packet_available": true,
+      "question_count": 3,
+      "review_questions": [
+        "Which report-source preview ids are approved, rejected, narrowed, or still pending?",
+        "Does any approved/narrowed choice preserve final-acceptance, planner_ready, closed_loop, and UE runtime boundaries?",
+        "Should safe_to_apply_report_source_edits remain false or become true after explicit approval?"
+      ],
+      "decision_artifacts": [
+        "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json"
+      ],
+      "answer_field_count": 32,
+      "command_reference_count": 18,
+      "unique_command_count": 18,
+      "action_specific_prefix_families": [
+        "report_source_review",
+        "source_output_readiness",
+        "pdf_export",
+        "final_acceptance_prereq"
+      ],
+      "shared_tail_families": [
+        "final_submission_dashboard",
+        "human_action_checklist",
+        "reviewer_action_map",
+        "human_review_decision_packet",
+        "human_review_guide",
+        "readiness_chain",
+        "refresh_order",
+        "static_audit_index",
+        "blocked_gate_triage",
+        "human_decision_diff",
+        "reviewer_quickstart",
+        "review_progress_snapshot"
+      ],
+      "shared_tail_family_count": 12,
+      "shared_tail_matches_note": true,
+      "review_steps": [
+        "Read the blocker rows and reviewer questions.",
+        "Record human answers in a separately authorized artifact if the reviewer proceeds.",
+        "Edit decision artifacts only in a separately authorized step.",
+        "Use action-specific prefix families before the shared tail after separate authorization.",
+        "Regenerate downstream static audits only after the relevant decision/edit step is authorized."
+      ],
+      "answers_questions_now": false,
+      "edits_decision_artifacts_now": false,
+      "runs_commands_now": false,
+      "applies_transitions_now": false
+    },
+    {
+      "action_id": "A3-review-demo-storyboard",
+      "blocker_row_count": 2,
+      "reviewer_packet_available": true,
+      "question_count": 3,
+      "review_questions": [
+        "Are the storyboard scenes, evidence references, and wording acceptable for a future demo video?",
+        "Does the storyboard avoid unsupported final performance, runtime, or acceptance claims?",
+        "Should demo video recording stay blocked or be considered for a separate execution decision after gates pass?"
+      ],
+      "decision_artifacts": [
+        "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json"
+      ],
+      "answer_field_count": 30,
+      "command_reference_count": 14,
+      "unique_command_count": 14,
+      "action_specific_prefix_families": [
+        "demo_video",
+        "final_output_execution_decision"
+      ],
+      "shared_tail_families": [
+        "final_submission_dashboard",
+        "human_action_checklist",
+        "reviewer_action_map",
+        "human_review_decision_packet",
+        "human_review_guide",
+        "readiness_chain",
+        "refresh_order",
+        "static_audit_index",
+        "blocked_gate_triage",
+        "human_decision_diff",
+        "reviewer_quickstart",
+        "review_progress_snapshot"
+      ],
+      "shared_tail_family_count": 12,
+      "shared_tail_matches_note": true,
+      "review_steps": [
+        "Read the blocker rows and reviewer questions.",
+        "Record human answers in a separately authorized artifact if the reviewer proceeds.",
+        "Edit decision artifacts only in a separately authorized step.",
+        "Use action-specific prefix families before the shared tail after separate authorization.",
+        "Regenerate downstream static audits only after the relevant decision/edit step is authorized."
+      ],
+      "answers_questions_now": false,
+      "edits_decision_artifacts_now": false,
+      "runs_commands_now": false,
+      "applies_transitions_now": false
+    },
+    {
+      "action_id": "A6-review-final-output-execution-decision",
+      "blocker_row_count": 3,
+      "reviewer_packet_available": true,
+      "question_count": 3,
+      "review_questions": [
+        "Should PDF export, demo video recording, and final acceptance packet writing remain pending, be rejected, or be approved?",
+        "Are upstream readiness gates true before any action is approved?",
+        "Do all execution flags stay false until a separate authorized execution step?"
+      ],
+      "decision_artifacts": [
+        "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json"
+      ],
+      "answer_field_count": 45,
+      "command_reference_count": 13,
+      "unique_command_count": 13,
+      "action_specific_prefix_families": [
+        "final_output_execution_decision"
+      ],
+      "shared_tail_families": [
+        "final_submission_dashboard",
+        "human_action_checklist",
+        "reviewer_action_map",
+        "human_review_decision_packet",
+        "human_review_guide",
+        "readiness_chain",
+        "refresh_order",
+        "static_audit_index",
+        "blocked_gate_triage",
+        "human_decision_diff",
+        "reviewer_quickstart",
+        "review_progress_snapshot"
+      ],
+      "shared_tail_family_count": 12,
+      "shared_tail_matches_note": true,
+      "review_steps": [
+        "Read the blocker rows and reviewer questions.",
+        "Record human answers in a separately authorized artifact if the reviewer proceeds.",
+        "Edit decision artifacts only in a separately authorized step.",
+        "Use action-specific prefix families before the shared tail after separate authorization.",
+        "Regenerate downstream static audits only after the relevant decision/edit step is authorized."
+      ],
+      "answers_questions_now": false,
+      "edits_decision_artifacts_now": false,
+      "runs_commands_now": false,
+      "applies_transitions_now": false
+    }
+  ],
+  "actions_without_reviewer_packet": [
+    "A2-provide-pdf-engine",
+    "A4-create-reviewed-final-artifacts",
+    "A5-rerun-readiness-gates"
+  ],
+  "issues": [],
+  "claim_boundary": [
+    "This reviewer checklist is a static navigation artifact only.",
+    "It does not answer reviewer questions.",
+    "It does not fill answer-sheet values.",
+    "It does not edit decision artifacts.",
+    "It does not approve decisions.",
+    "It does not run post-review rerun commands.",
+    "It does not apply transitions.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "ok": true,
+  "status": "human_review_decision_packet_check_not_execution",
+  "summary": {
+    "decision_count": 3,
+    "pending_decision_count": 3,
+    "issue_count": 0,
+    "warning_count": 0,
+    "automated_execution_allowed": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "issues": [],
+  "warnings": [],
+  "claim_boundary": [
+    "This checker validates a pending human-review decision draft only.",
+    "It does not approve decisions.",
+    "It does not execute commands.",
+    "It does not export PDFs, record video, edit report source, or write PMO final acceptance."
+  ]
+}

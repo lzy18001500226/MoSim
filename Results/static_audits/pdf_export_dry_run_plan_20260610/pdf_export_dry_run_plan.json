@@ -1,0 +1,127 @@
+{
+  "plan_id": "pdf_export_dry_run_plan_20260610",
+  "status": "dry_run_pdf_export_plan_not_final_output",
+  "inputs": {
+    "submission_source_output_readiness": "Results/static_audits/submission_source_output_readiness_20260610/submission_source_output_readiness.json",
+    "final_submission_artifact_manifest": "Results/static_audits/final_submission_artifacts_20260610/final_submission_artifact_manifest_check.json"
+  },
+  "summary": {
+    "source_docs_ready": true,
+    "pandoc_available": true,
+    "pdf_engine_available": false,
+    "selected_pdf_engine": "",
+    "source_edit_approved_for_export": false,
+    "final_artifacts_ready": false,
+    "safe_to_run_pdf_export_now": false,
+    "runs_pandoc_now": false,
+    "creates_submission_dir_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "tooling": {
+    "pandoc": {
+      "name": "pandoc",
+      "available": true,
+      "source": "D:\\Dev\\Anaconda3\\Library\\bin\\pandoc.EXE"
+    },
+    "pdf_engines": [
+      {
+        "name": "xelatex",
+        "available": false,
+        "source": ""
+      },
+      {
+        "name": "lualatex",
+        "available": false,
+        "source": ""
+      },
+      {
+        "name": "tectonic",
+        "available": false,
+        "source": ""
+      },
+      {
+        "name": "pdflatex",
+        "available": false,
+        "source": ""
+      },
+      {
+        "name": "wkhtmltopdf",
+        "available": false,
+        "source": ""
+      },
+      {
+        "name": "weasyprint",
+        "available": false,
+        "source": ""
+      }
+    ]
+  },
+  "exports": {
+    "user_manual_pdf": {
+      "export_id": "user_manual_pdf",
+      "title": "MoSim user manual",
+      "source": "Docs/user_manual.md",
+      "output": "Results/submission/user_manual.pdf",
+      "source_exists": true,
+      "output_exists_before_run": false,
+      "dry_run_only": true,
+      "runs_command_now": false,
+      "creates_output_now": false,
+      "command_after_approval": "pandoc Docs/user_manual.md --from markdown --standalone --pdf-engine=<approved_pdf_engine> --output Results/submission/user_manual.pdf",
+      "blocked_by": [
+        "final_artifacts_missing",
+        "pdf_engine_missing",
+        "report_source_edit_not_approved"
+      ]
+    },
+    "simulation_analysis_report_pdf": {
+      "export_id": "simulation_analysis_report_pdf",
+      "title": "MoSim simulation analysis report",
+      "source": "Docs/simulation_report.md",
+      "output": "Results/submission/simulation_analysis_report.pdf",
+      "source_exists": true,
+      "output_exists_before_run": false,
+      "dry_run_only": true,
+      "runs_command_now": false,
+      "creates_output_now": false,
+      "command_after_approval": "pandoc Docs/simulation_report.md --from markdown --standalone --pdf-engine=<approved_pdf_engine> --output Results/submission/simulation_analysis_report.pdf",
+      "blocked_by": [
+        "final_artifacts_missing",
+        "pdf_engine_missing",
+        "report_source_edit_not_approved"
+      ]
+    }
+  },
+  "blockers": [
+    {
+      "blocker_id": "pdf_engine_missing",
+      "reason": "no preferred Pandoc PDF engine is available on PATH",
+      "needed_action": "install or expose xelatex, lualatex, tectonic, wkhtmltopdf, or another approved engine"
+    },
+    {
+      "blocker_id": "report_source_edit_not_approved",
+      "reason": "source-output readiness does not permit final PDF export yet",
+      "needed_action": "obtain explicit human/PMO approval for report-source edits and final PDF export"
+    },
+    {
+      "blocker_id": "final_artifacts_missing",
+      "reason": "final artifact manifest still reports missing final outputs",
+      "needed_action": "after approved export and video creation, rerun final artifact manifest check"
+    }
+  ],
+  "claim_boundary": [
+    "This is a dry-run export command plan only.",
+    "It does not run Pandoc.",
+    "It does not create Results/submission.",
+    "It does not write PDF files.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ],
+  "next_gates_after_approval": [
+    "Create Results/submission only after explicit approval.",
+    "Run the selected Pandoc commands after source edits and export are approved.",
+    "Run check_final_submission_artifact_manifest.py without --allow-missing.",
+    "Do not write PMO final acceptance until PDFs, demo video, and review evidence exist."
+  ]
+}

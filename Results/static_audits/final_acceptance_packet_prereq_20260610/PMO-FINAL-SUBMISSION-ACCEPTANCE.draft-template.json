@@ -1,0 +1,35 @@
+{
+  "packet_type": "return",
+  "request_id": "PMO-FINAL-SUBMISSION-ACCEPTANCE",
+  "status": "draft_template_not_final_acceptance",
+  "accepted_by": "<PMO_or_user_after_manual_review>",
+  "accepted_at": "<ISO8601_after_manual_review>",
+  "final_submission": {
+    "accepted": false,
+    "canonical_packet_path": "Results/agent_packets/returns/PMO-FINAL-SUBMISSION-ACCEPTANCE.json",
+    "must_not_write_until_prereqs_pass": true
+  },
+  "accepted_artifacts": {
+    "user_manual_pdf": "Results/submission/user_manual.pdf",
+    "simulation_analysis_report_pdf": "Results/submission/simulation_analysis_report.pdf",
+    "demo_video": "Results/submission/demo_video.mp4"
+  },
+  "evidence_inputs": {
+    "final_submission_artifact_manifest": "Results/static_audits/final_submission_artifacts_20260610/final_submission_artifact_manifest_check.json",
+    "submission_source_output_readiness": "Results/static_audits/submission_source_output_readiness_20260610/submission_source_output_readiness.json",
+    "pdf_export_dry_run_plan": "Results/static_audits/pdf_export_dry_run_plan_20260610/pdf_export_dry_run_plan.json",
+    "demo_video_storyboard_plan": "Results/static_audits/demo_video_storyboard_plan_20260610/demo_video_storyboard_plan.json"
+  },
+  "claim_boundaries_checked": [
+    "No final PMO acceptance before PDFs, demo video, and review evidence exist.",
+    "No planner_ready or closed_loop claim without separate ROS2/runtime evidence.",
+    "No UE build/runtime/editor success claim without separate UE evidence.",
+    "No native Syslab complete report generation claim without separate evidence."
+  ],
+  "manual_review_notes": [
+    "<confirm final PDFs match reviewed source>",
+    "<confirm demo video follows reviewed storyboard and avoids forbidden claims>",
+    "<confirm final artifact manifest passes without --allow-missing>"
+  ],
+  "remaining_risks": []
+}

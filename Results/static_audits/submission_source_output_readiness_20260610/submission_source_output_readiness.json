@@ -1,0 +1,108 @@
+{
+  "inventory_id": "submission_source_output_readiness_20260610",
+  "status": "static_source_output_readiness_not_final_submission",
+  "inputs": {
+    "final_packaging_gap_inventory": "Results/static_audits/final_packaging_gap_20260610/final_packaging_gap_inventory.json",
+    "simulation_report_source_edit_readiness_gate": "Results/static_audits/simulation_report_source_edit_readiness_20260610/simulation_report_source_edit_readiness_gate.json",
+    "simulation_report_source_edit_application_plan": "Results/static_audits/simulation_report_source_edit_application_plan_20260610/simulation_report_source_edit_application_plan.json"
+  },
+  "summary": {
+    "source_docs_ready": true,
+    "pandoc_available": true,
+    "submission_dir_exists": false,
+    "missing_final_output_count": 4,
+    "source_edit_readiness_safe_to_apply": false,
+    "source_edit_application_plan_safe_to_apply": false,
+    "source_edit_application_plan_applied": false,
+    "safe_to_export_final_pdfs_now": false,
+    "safe_to_record_demo_video_now": false,
+    "safe_to_write_final_acceptance_now": false,
+    "final_submission_ready": false,
+    "edits_report_source": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "tooling": {
+    "pandoc": {
+      "available": true,
+      "source": "D:\\Dev\\Anaconda3\\Library\\bin\\pandoc.EXE",
+      "version": "pandoc 3.8",
+      "note": "tool presence only; this inventory does not run PDF export"
+    }
+  },
+  "source_docs": {
+    "user_manual_source": {
+      "path": "Docs/user_manual.md",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 26166
+    },
+    "simulation_report_source": {
+      "path": "Docs/simulation_report.md",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 88927
+    }
+  },
+  "final_outputs": {
+    "user_manual_pdf": {
+      "path": "Results/submission/user_manual.pdf",
+      "exists": false,
+      "kind": "missing",
+      "size_bytes": 0
+    },
+    "simulation_analysis_report_pdf": {
+      "path": "Results/submission/simulation_analysis_report.pdf",
+      "exists": false,
+      "kind": "missing",
+      "size_bytes": 0
+    },
+    "demo_video": {
+      "path": "Results/submission/demo_video.mp4",
+      "exists": false,
+      "kind": "missing",
+      "size_bytes": 0
+    },
+    "final_acceptance_packet": {
+      "path": "Results/agent_packets/returns/PMO-FINAL-SUBMISSION-ACCEPTANCE.json",
+      "exists": false,
+      "kind": "missing",
+      "size_bytes": 0
+    }
+  },
+  "missing_final_outputs": [
+    "user_manual_pdf",
+    "simulation_analysis_report_pdf",
+    "demo_video",
+    "final_acceptance_packet"
+  ],
+  "blockers": [
+    {
+      "blocker_id": "report_source_edit_not_approved",
+      "reason": "simulation report source edit readiness gate does not permit applying preview snippets",
+      "needed_action": "obtain explicit human/PMO approval before applying report-source preview edits"
+    },
+    {
+      "blocker_id": "report_source_edit_application_plan_not_ready",
+      "reason": "simulation report source edit application plan is not approved for application",
+      "needed_action": "approve or narrow the A1 report-source edit decision before source edit application planning can proceed"
+    },
+    {
+      "blocker_id": "report_source_edit_application_not_applied",
+      "reason": "no evidence shows the approved report-source application plan has been applied to Docs/simulation_report.md",
+      "needed_action": "apply approved report-source edits in a separate authorized step, then regenerate source-output readiness"
+    },
+    {
+      "blocker_id": "final_outputs_missing",
+      "reason": "final PDFs, demo video, or PMO final acceptance packet are missing",
+      "needed_action": "export reviewed PDFs, create reviewed demo video, then write PMO final acceptance packet"
+    }
+  ],
+  "claim_boundary": [
+    "This inventory checks source-output readiness only.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance.",
+    "It does not edit Docs/simulation_report.md."
+  ]
+}

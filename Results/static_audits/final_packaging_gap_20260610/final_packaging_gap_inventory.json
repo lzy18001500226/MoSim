@@ -1,0 +1,93 @@
+{
+  "inventory_id": "final_packaging_gap_20260610",
+  "status": "final_packaging_gap_inventory_not_final_acceptance",
+  "summary": {
+    "source_inputs_ready": true,
+    "missing_final_artifact_count": 4,
+    "final_submission_ready": false
+  },
+  "source_inputs": {
+    "user_manual_source": {
+      "path": "Docs/user_manual.md",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 21083
+    },
+    "simulation_report_source": {
+      "path": "Docs/simulation_report.md",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 85160
+    },
+    "candidate_manifest": {
+      "path": "Results/static_audits/submission_evidence_manifest_20260610/candidate_submission_evidence_manifest.json",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 13908
+    },
+    "candidate_figure_readiness": {
+      "path": "Results/static_audits/candidate_figure_readiness_20260610/candidate_figure_readiness_inventory.json",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 42905
+    },
+    "pre_submit_readiness": {
+      "path": "Results/static_audits/pre_submit_readiness_inventory_20260610/pre_submit_readiness_inventory.json",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 13316
+    }
+  },
+  "readiness_signals": {
+    "candidate_figure_not_ready_count": 0,
+    "candidate_figure_ready_count": 13,
+    "candidate_row_count": 13,
+    "pre_submit_final_review_missing_count": 4,
+    "pre_submit_live_claim_blocker_count": 4
+  },
+  "final_artifacts": {
+    "user_manual_pdf": {
+      "path": "Results/submission/user_manual.pdf",
+      "exists": false,
+      "kind": "missing",
+      "size_bytes": 0,
+      "owner": "report_packaging_or_human_export",
+      "needed_action": "export reviewed user manual source to PDF"
+    },
+    "simulation_analysis_report_pdf": {
+      "path": "Results/submission/simulation_analysis_report.pdf",
+      "exists": false,
+      "kind": "missing",
+      "size_bytes": 0,
+      "owner": "report_packaging_or_human_export",
+      "needed_action": "export reviewed simulation analysis report source to PDF"
+    },
+    "demo_video": {
+      "path": "Results/submission/demo_video.mp4",
+      "exists": false,
+      "kind": "missing",
+      "size_bytes": 0,
+      "owner": "manual_review_or_video_packaging",
+      "needed_action": "record or render demo video using implemented features only"
+    },
+    "final_acceptance_packet": {
+      "path": "Results/agent_packets/returns/PMO-FINAL-SUBMISSION-ACCEPTANCE.json",
+      "exists": false,
+      "kind": "missing",
+      "size_bytes": 0,
+      "owner": "PMO_or_user",
+      "needed_action": "write final acceptance packet after final artifacts and claim boundaries are reviewed"
+    }
+  },
+  "missing_final_artifacts": [
+    "user_manual_pdf",
+    "simulation_analysis_report_pdf",
+    "demo_video",
+    "final_acceptance_packet"
+  ],
+  "claim_boundary": [
+    "This inventory lists packaging gaps only.",
+    "It does not generate final PDFs, demo video, or PMO final acceptance.",
+    "Static evidence readiness must not be treated as final submission readiness."
+  ]
+}

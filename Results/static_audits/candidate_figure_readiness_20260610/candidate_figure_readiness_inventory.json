@@ -1,0 +1,643 @@
+{
+  "inventory_id": "candidate_figure_readiness_20260610",
+  "status": "static_figure_inventory_not_final_report_acceptance",
+  "source_manifest": "Results/static_audits/submission_evidence_manifest_20260610/candidate_submission_evidence_manifest.json",
+  "source_manifest_status": "review_candidate_not_final_acceptance",
+  "summary": {
+    "candidate_row_count": 13,
+    "report_figure_ready_count": 13,
+    "not_ready_count": 0,
+    "missing_replay_count": 0,
+    "missing_log_count": 0
+  },
+  "claim_boundary": [
+    "Report-figure readiness means local static files exist near candidate evidence.",
+    "It is not final PMO acceptance and does not prove live MWORKS, ROS2, UE, or native Syslab completion.",
+    "Replay and log absence is recorded as review context; it does not by itself invalidate figure readiness."
+  ],
+  "candidate_rows": [
+    {
+      "claim_slot": "C0-baseline-step-example1",
+      "experiment_id": "official_example1_pid_baseline",
+      "claim_family": "official_baseline",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "experiment_root": "Results/official/example1_step/official_example1_pid_baseline",
+      "metrics_file": "Results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.json",
+      "metrics_exists": true,
+      "raw_file": "Results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv",
+      "raw_exists": true,
+      "figures_dir": "Results/official/example1_step/official_example1_pid_baseline/figures",
+      "figures_dir_exists": true,
+      "figure_count": 8,
+      "figure_files": [
+        "Results/official/example1_step/official_example1_pid_baseline/figures/altitude_tracking.svg",
+        "Results/official/example1_step/official_example1_pid_baseline/figures/metrics_summary.svg",
+        "Results/official/example1_step/official_example1_pid_baseline/figures/official_example1_pid_baseline_altitude_tracking.svg",
+        "Results/official/example1_step/official_example1_pid_baseline/figures/official_example1_pid_baseline_metrics_summary.svg",
+        "Results/official/example1_step/official_example1_pid_baseline/figures/official_example1_pid_baseline_position_error.svg",
+        "Results/official/example1_step/official_example1_pid_baseline/figures/official_example1_pid_baseline_trajectory_xy.svg",
+        "Results/official/example1_step/official_example1_pid_baseline/figures/position_error.svg",
+        "Results/official/example1_step/official_example1_pid_baseline/figures/trajectory_xy.svg"
+      ],
+      "figure_manifest_files": [
+        "Results/official/example1_step/official_example1_pid_baseline/figures/figure_manifest.md",
+        "Results/official/example1_step/official_example1_pid_baseline/figures/official_example1_pid_baseline_figure_manifest.md"
+      ],
+      "core_figures": {
+        "trajectory_xy": [
+          "Results/official/example1_step/official_example1_pid_baseline/figures/official_example1_pid_baseline_trajectory_xy.svg",
+          "Results/official/example1_step/official_example1_pid_baseline/figures/trajectory_xy.svg"
+        ],
+        "position_error": [
+          "Results/official/example1_step/official_example1_pid_baseline/figures/official_example1_pid_baseline_position_error.svg",
+          "Results/official/example1_step/official_example1_pid_baseline/figures/position_error.svg"
+        ],
+        "metrics_summary": [
+          "Results/official/example1_step/official_example1_pid_baseline/figures/metrics_summary.svg",
+          "Results/official/example1_step/official_example1_pid_baseline/figures/official_example1_pid_baseline_metrics_summary.svg"
+        ],
+        "altitude_tracking": [
+          "Results/official/example1_step/official_example1_pid_baseline/figures/altitude_tracking.svg",
+          "Results/official/example1_step/official_example1_pid_baseline/figures/official_example1_pid_baseline_altitude_tracking.svg"
+        ]
+      },
+      "missing_core_figures": [],
+      "replay_files": [
+        "Results/official/example1_step/official_example1_pid_baseline/replay/official_example1_pid_baseline.json"
+      ],
+      "log_files": [
+        "Results/official/example1_step/official_example1_pid_baseline/logs/sysplorer_example1_pid_baseline_full_20260509.jsonl"
+      ],
+      "report_figure_ready": true,
+      "review_notes": []
+    },
+    {
+      "claim_slot": "C0-baseline-helix-example2",
+      "experiment_id": "official_example2_pid_baseline",
+      "claim_family": "official_baseline",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "experiment_root": "Results/official/example2_helix/official_example2_pid_baseline",
+      "metrics_file": "Results/official/example2_helix/official_example2_pid_baseline/metrics/official_example2_pid_baseline.json",
+      "metrics_exists": true,
+      "raw_file": "Results/official/example2_helix/official_example2_pid_baseline/raw/official_example2_pid_baseline.csv",
+      "raw_exists": true,
+      "figures_dir": "Results/official/example2_helix/official_example2_pid_baseline/figures",
+      "figures_dir_exists": true,
+      "figure_count": 4,
+      "figure_files": [
+        "Results/official/example2_helix/official_example2_pid_baseline/figures/altitude_tracking.svg",
+        "Results/official/example2_helix/official_example2_pid_baseline/figures/metrics_summary.svg",
+        "Results/official/example2_helix/official_example2_pid_baseline/figures/position_error.svg",
+        "Results/official/example2_helix/official_example2_pid_baseline/figures/trajectory_xy.svg"
+      ],
+      "figure_manifest_files": [
+        "Results/official/example2_helix/official_example2_pid_baseline/figures/figure_manifest.md"
+      ],
+      "core_figures": {
+        "trajectory_xy": [
+          "Results/official/example2_helix/official_example2_pid_baseline/figures/trajectory_xy.svg"
+        ],
+        "position_error": [
+          "Results/official/example2_helix/official_example2_pid_baseline/figures/position_error.svg"
+        ],
+        "metrics_summary": [
+          "Results/official/example2_helix/official_example2_pid_baseline/figures/metrics_summary.svg"
+        ],
+        "altitude_tracking": [
+          "Results/official/example2_helix/official_example2_pid_baseline/figures/altitude_tracking.svg"
+        ]
+      },
+      "missing_core_figures": [],
+      "replay_files": [
+        "Results/official/example2_helix/official_example2_pid_baseline/replay/official_example2_pid_baseline.json"
+      ],
+      "log_files": [
+        "Results/official/example2_helix/official_example2_pid_baseline/logs/sysplorer_example2_pid_baseline_full_20260509.jsonl"
+      ],
+      "report_figure_ready": true,
+      "review_notes": []
+    },
+    {
+      "claim_slot": "C0-baseline-figure8-example3",
+      "experiment_id": "official_example3_pid_baseline",
+      "claim_family": "official_baseline",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "experiment_root": "Results/official/example3_figure8/official_example3_pid_baseline",
+      "metrics_file": "Results/official/example3_figure8/official_example3_pid_baseline/metrics/official_example3_pid_baseline.json",
+      "metrics_exists": true,
+      "raw_file": "Results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv",
+      "raw_exists": true,
+      "figures_dir": "Results/official/example3_figure8/official_example3_pid_baseline/figures",
+      "figures_dir_exists": true,
+      "figure_count": 4,
+      "figure_files": [
+        "Results/official/example3_figure8/official_example3_pid_baseline/figures/altitude_tracking.svg",
+        "Results/official/example3_figure8/official_example3_pid_baseline/figures/metrics_summary.svg",
+        "Results/official/example3_figure8/official_example3_pid_baseline/figures/position_error.svg",
+        "Results/official/example3_figure8/official_example3_pid_baseline/figures/trajectory_xy.svg"
+      ],
+      "figure_manifest_files": [
+        "Results/official/example3_figure8/official_example3_pid_baseline/figures/figure_manifest.md"
+      ],
+      "core_figures": {
+        "trajectory_xy": [
+          "Results/official/example3_figure8/official_example3_pid_baseline/figures/trajectory_xy.svg"
+        ],
+        "position_error": [
+          "Results/official/example3_figure8/official_example3_pid_baseline/figures/position_error.svg"
+        ],
+        "metrics_summary": [
+          "Results/official/example3_figure8/official_example3_pid_baseline/figures/metrics_summary.svg"
+        ],
+        "altitude_tracking": [
+          "Results/official/example3_figure8/official_example3_pid_baseline/figures/altitude_tracking.svg"
+        ]
+      },
+      "missing_core_figures": [],
+      "replay_files": [
+        "Results/official/example3_figure8/official_example3_pid_baseline/replay/official_example3_pid_baseline.json"
+      ],
+      "log_files": [
+        "Results/official/example3_figure8/official_example3_pid_baseline/logs/sysplorer_example3_pid_baseline_full_20260509.jsonl"
+      ],
+      "report_figure_ready": true,
+      "review_notes": []
+    },
+    {
+      "claim_slot": "C1-optimized-step-example1",
+      "experiment_id": "official_example1_linear_mpc_sysblock",
+      "claim_family": "optimized_controller",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "experiment_root": "Results/official/example1_step/official_example1_linear_mpc_sysblock",
+      "metrics_file": "Results/official/example1_step/official_example1_linear_mpc_sysblock/metrics/official_example1_linear_mpc_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "Results/official/example1_step/official_example1_linear_mpc_sysblock/raw/official_example1_linear_mpc_sysblock.csv",
+      "raw_exists": true,
+      "figures_dir": "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures",
+      "figures_dir_exists": true,
+      "figure_count": 4,
+      "figure_files": [
+        "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures/official_example1_linear_mpc_sysblock_altitude_tracking.svg",
+        "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures/official_example1_linear_mpc_sysblock_metrics_summary.svg",
+        "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures/official_example1_linear_mpc_sysblock_position_error.svg",
+        "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures/official_example1_linear_mpc_sysblock_trajectory_xy.svg"
+      ],
+      "figure_manifest_files": [
+        "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures/official_example1_linear_mpc_sysblock_figure_manifest.md"
+      ],
+      "core_figures": {
+        "trajectory_xy": [
+          "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures/official_example1_linear_mpc_sysblock_trajectory_xy.svg"
+        ],
+        "position_error": [
+          "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures/official_example1_linear_mpc_sysblock_position_error.svg"
+        ],
+        "metrics_summary": [
+          "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures/official_example1_linear_mpc_sysblock_metrics_summary.svg"
+        ],
+        "altitude_tracking": [
+          "Results/official/example1_step/official_example1_linear_mpc_sysblock/figures/official_example1_linear_mpc_sysblock_altitude_tracking.svg"
+        ]
+      },
+      "missing_core_figures": [],
+      "replay_files": [
+        "Results/official/example1_step/official_example1_linear_mpc_sysblock/replay/official_example1_linear_mpc_sysblock.json"
+      ],
+      "log_files": [
+        "Results/official/example1_step/official_example1_linear_mpc_sysblock/logs/sysplorer_example1_linear_mpc_sysblock_full_20260512.jsonl"
+      ],
+      "report_figure_ready": true,
+      "review_notes": []
+    },
+    {
+      "claim_slot": "C1-optimized-helix-example2",
+      "experiment_id": "official_example2_linear_mpc_sysblock",
+      "claim_family": "optimized_controller",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "experiment_root": "Results/official/example2_helix/official_example2_linear_mpc_sysblock",
+      "metrics_file": "Results/official/example2_helix/official_example2_linear_mpc_sysblock/metrics/official_example2_linear_mpc_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "Results/official/example2_helix/official_example2_linear_mpc_sysblock/raw/official_example2_linear_mpc_sysblock.csv",
+      "raw_exists": true,
+      "figures_dir": "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures",
+      "figures_dir_exists": true,
+      "figure_count": 4,
+      "figure_files": [
+        "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures/official_example2_linear_mpc_sysblock_altitude_tracking.svg",
+        "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures/official_example2_linear_mpc_sysblock_metrics_summary.svg",
+        "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures/official_example2_linear_mpc_sysblock_position_error.svg",
+        "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures/official_example2_linear_mpc_sysblock_trajectory_xy.svg"
+      ],
+      "figure_manifest_files": [
+        "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures/official_example2_linear_mpc_sysblock_figure_manifest.md"
+      ],
+      "core_figures": {
+        "trajectory_xy": [
+          "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures/official_example2_linear_mpc_sysblock_trajectory_xy.svg"
+        ],
+        "position_error": [
+          "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures/official_example2_linear_mpc_sysblock_position_error.svg"
+        ],
+        "metrics_summary": [
+          "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures/official_example2_linear_mpc_sysblock_metrics_summary.svg"
+        ],
+        "altitude_tracking": [
+          "Results/official/example2_helix/official_example2_linear_mpc_sysblock/figures/official_example2_linear_mpc_sysblock_altitude_tracking.svg"
+        ]
+      },
+      "missing_core_figures": [],
+      "replay_files": [
+        "Results/official/example2_helix/official_example2_linear_mpc_sysblock/replay/official_example2_linear_mpc_sysblock.json"
+      ],
+      "log_files": [
+        "Results/official/example2_helix/official_example2_linear_mpc_sysblock/logs/sysplorer_example2_linear_mpc_sysblock_full_20260512.jsonl"
+      ],
+      "report_figure_ready": true,
+      "review_notes": []
+    },
+    {
+      "claim_slot": "C1-optimized-figure8-example3",
+      "experiment_id": "official_example3_linear_mpc_sysblock",
+      "claim_family": "optimized_controller",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "experiment_root": "Results/official/example3_figure8/official_example3_linear_mpc_sysblock",
+      "metrics_file": "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/metrics/official_example3_linear_mpc_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/raw/official_example3_linear_mpc_sysblock.csv",
+      "raw_exists": true,
+      "figures_dir": "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures",
+      "figures_dir_exists": true,
+      "figure_count": 4,
+      "figure_files": [
+        "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures/official_example3_linear_mpc_sysblock_altitude_tracking.svg",
+        "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures/official_example3_linear_mpc_sysblock_metrics_summary.svg",
+        "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures/official_example3_linear_mpc_sysblock_position_error.svg",
+        "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures/official_example3_linear_mpc_sysblock_trajectory_xy.svg"
+      ],
+      "figure_manifest_files": [
+        "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures/official_example3_linear_mpc_sysblock_figure_manifest.md"
+      ],
+      "core_figures": {
+        "trajectory_xy": [
+          "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures/official_example3_linear_mpc_sysblock_trajectory_xy.svg"
+        ],
+        "position_error": [
+          "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures/official_example3_linear_mpc_sysblock_position_error.svg"
+        ],
+        "metrics_summary": [
+          "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures/official_example3_linear_mpc_sysblock_metrics_summary.svg"
+        ],
+        "altitude_tracking": [
+          "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/figures/official_example3_linear_mpc_sysblock_altitude_tracking.svg"
+        ]
+      },
+      "missing_core_figures": [],
+      "replay_files": [
+        "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/replay/official_example3_linear_mpc_sysblock.json"
+      ],
+      "log_files": [
+        "Results/official/example3_figure8/official_example3_linear_mpc_sysblock/logs/sysplorer_example3_linear_mpc_sysblock_full_20260512.jsonl"
+      ],
+      "report_figure_ready": true,
+      "review_notes": []
+    },
+    {
+      "claim_slot": "C1-robustness-mass20",
+      "experiment_id": "robust_mass20_example1_linear_mpc_sysblock",
+      "claim_family": "robustness",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "experiment_root": "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock",
+      "metrics_file": "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/metrics/robust_mass20_example1_linear_mpc_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/raw/robust_mass20_example1_linear_mpc_sysblock.csv",
+      "raw_exists": true,
+      "figures_dir": "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures",
+      "figures_dir_exists": true,
+      "figure_count": 4,
+      "figure_files": [
+        "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures/robust_mass20_example1_linear_mpc_sysblock_altitude_tracking.svg",
+        "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures/robust_mass20_example1_linear_mpc_sysblock_metrics_summary.svg",
+        "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures/robust_mass20_example1_linear_mpc_sysblock_position_error.svg",
+        "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures/robust_mass20_example1_linear_mpc_sysblock_trajectory_xy.svg"
+      ],
+      "figure_manifest_files": [
+        "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures/robust_mass20_example1_linear_mpc_sysblock_figure_manifest.md"
+      ],
+      "core_figures": {
+        "trajectory_xy": [
+          "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures/robust_mass20_example1_linear_mpc_sysblock_trajectory_xy.svg"
+        ],
+        "position_error": [
+          "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures/robust_mass20_example1_linear_mpc_sysblock_position_error.svg"
+        ],
+        "metrics_summary": [
+          "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures/robust_mass20_example1_linear_mpc_sysblock_metrics_summary.svg"
+        ],
+        "altitude_tracking": [
+          "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/figures/robust_mass20_example1_linear_mpc_sysblock_altitude_tracking.svg"
+        ]
+      },
+      "missing_core_figures": [],
+      "replay_files": [
+        "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/replay/robust_mass20_example1_linear_mpc_sysblock.json"
+      ],
+      "log_files": [
+        "Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/logs/sysplorer_robust_mass20_example1_linear_mpc_sysblock_20260512.jsonl"
+      ],
+      "report_figure_ready": true,
+      "review_notes": []
+    },
+    {
+      "claim_slot": "C1-robustness-wind-gust",
+      "experiment_id": "robust_wind_gust_example1_linear_mpc_sysblock",
+      "claim_family": "robustness",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "experiment_root": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock",
+      "metrics_file": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/metrics/robust_wind_gust_example1_linear_mpc_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/raw/robust_wind_gust_example1_linear_mpc_sysblock.csv",
+      "raw_exists": true,
+      "figures_dir": "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures",
+      "figures_dir_exists": true,
+      "figure_count": 4,
+      "figure_files": [
+        "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures/robust_wind_gust_example1_linear_mpc_sysblock_altitude_tracking.svg",
+        "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures/robust_wind_gust_example1_linear_mpc_sysblock_metrics_summary.svg",
+        "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures/robust_wind_gust_example1_linear_mpc_sysblock_position_error.svg",
+        "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures/robust_wind_gust_example1_linear_mpc_sysblock_trajectory_xy.svg"
+      ],
+      "figure_manifest_files": [
+        "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures/robust_wind_gust_example1_linear_mpc_sysblock_figure_manifest.md"
+      ],
+      "core_figures": {
+        "trajectory_xy": [
+          "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures/robust_wind_gust_example1_linear_mpc_sysblock_trajectory_xy.svg"
+        ],
+        "position_error": [
+          "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures/robust_wind_gust_example1_linear_mpc_sysblock_position_error.svg"
+        ],
+        "metrics_summary": [
+          "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures/robust_wind_gust_example1_linear_mpc_sysblock_metrics_summary.svg"
+        ],
+        "altitude_tracking": [
+          "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/figures/robust_wind_gust_example1_linear_mpc_sysblock_altitude_tracking.svg"
+        ]
+      },
+      "missing_core_figures": [],
+      "replay_files": [
+        "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/replay/robust_wind_gust_example1_linear_mpc_sysblock.json"
+      ],
+      "log_files": [
+        "Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/logs/sysplorer_robust_wind_gust_example1_linear_mpc_sysblock_20260512.jsonl"
+      ],
+      "report_figure_ready": true,
+      "review_notes": []
+    },
+    {
+      "claim_slot": "C1-fault-tolerance-rotor1-loss-wind",
+      "experiment_id": "robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock",
+      "claim_family": "fault_tolerance",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "experiment_root": "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock",
+      "metrics_file": "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/metrics/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.csv",
+      "raw_exists": true,
+      "figures_dir": "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures",
+      "figures_dir_exists": true,
+      "figure_count": 4,
+      "figure_files": [
+        "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_altitude_tracking.svg",
+        "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_metrics_summary.svg",
+        "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_position_error.svg",
+        "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_trajectory_xy.svg"
+      ],
+      "figure_manifest_files": [
+        "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_figure_manifest.md"
+      ],
+      "core_figures": {
+        "trajectory_xy": [
+          "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_trajectory_xy.svg"
+        ],
+        "position_error": [
+          "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_position_error.svg"
+        ],
+        "metrics_summary": [
+          "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_metrics_summary.svg"
+        ],
+        "altitude_tracking": [
+          "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_altitude_tracking.svg"
+        ]
+      },
+      "missing_core_figures": [],
+      "replay_files": [
+        "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/replay/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.json"
+      ],
+      "log_files": [
+        "Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/logs/sysplorer_robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_20260513.jsonl"
+      ],
+      "report_figure_ready": true,
+      "review_notes": []
+    },
+    {
+      "claim_slot": "C1-safety-filter-return-land",
+      "experiment_id": "official_example1_qp_nmpc_safety_return_land_sysblock",
+      "claim_family": "safety_filter",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "experiment_root": "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock",
+      "metrics_file": "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/metrics/official_example1_qp_nmpc_safety_return_land_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/raw/official_example1_qp_nmpc_safety_return_land_sysblock.csv",
+      "raw_exists": true,
+      "figures_dir": "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures",
+      "figures_dir_exists": true,
+      "figure_count": 4,
+      "figure_files": [
+        "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures/official_example1_qp_nmpc_safety_return_land_sysblock_altitude_tracking.svg",
+        "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures/official_example1_qp_nmpc_safety_return_land_sysblock_metrics_summary.svg",
+        "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures/official_example1_qp_nmpc_safety_return_land_sysblock_position_error.svg",
+        "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures/official_example1_qp_nmpc_safety_return_land_sysblock_trajectory_xy.svg"
+      ],
+      "figure_manifest_files": [
+        "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures/official_example1_qp_nmpc_safety_return_land_sysblock_figure_manifest.md"
+      ],
+      "core_figures": {
+        "trajectory_xy": [
+          "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures/official_example1_qp_nmpc_safety_return_land_sysblock_trajectory_xy.svg"
+        ],
+        "position_error": [
+          "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures/official_example1_qp_nmpc_safety_return_land_sysblock_position_error.svg"
+        ],
+        "metrics_summary": [
+          "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures/official_example1_qp_nmpc_safety_return_land_sysblock_metrics_summary.svg"
+        ],
+        "altitude_tracking": [
+          "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/figures/official_example1_qp_nmpc_safety_return_land_sysblock_altitude_tracking.svg"
+        ]
+      },
+      "missing_core_figures": [],
+      "replay_files": [
+        "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/replay/official_example1_qp_nmpc_safety_return_land_sysblock.json"
+      ],
+      "log_files": [
+        "Results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/logs/sysplorer_example1_qp_nmpc_safety_return_land_sysblock_full_20260514.jsonl"
+      ],
+      "report_figure_ready": true,
+      "review_notes": []
+    },
+    {
+      "claim_slot": "C2-formation-triangle-figure8",
+      "experiment_id": "formation_triangle_figure8_linear_mpc_sysblock",
+      "claim_family": "multi_uav_formation",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "experiment_root": "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock",
+      "metrics_file": "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/metrics/formation_triangle_figure8_linear_mpc_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/raw/formation_triangle_figure8_linear_mpc_sysblock.csv",
+      "raw_exists": true,
+      "figures_dir": "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures",
+      "figures_dir_exists": true,
+      "figure_count": 4,
+      "figure_files": [
+        "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures/formation_triangle_figure8_linear_mpc_sysblock_altitude_tracking.svg",
+        "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures/formation_triangle_figure8_linear_mpc_sysblock_metrics_summary.svg",
+        "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures/formation_triangle_figure8_linear_mpc_sysblock_position_error.svg",
+        "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures/formation_triangle_figure8_linear_mpc_sysblock_trajectory_xy.svg"
+      ],
+      "figure_manifest_files": [
+        "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures/formation_triangle_figure8_linear_mpc_sysblock_figure_manifest.md"
+      ],
+      "core_figures": {
+        "trajectory_xy": [
+          "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures/formation_triangle_figure8_linear_mpc_sysblock_trajectory_xy.svg"
+        ],
+        "position_error": [
+          "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures/formation_triangle_figure8_linear_mpc_sysblock_position_error.svg"
+        ],
+        "metrics_summary": [
+          "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures/formation_triangle_figure8_linear_mpc_sysblock_metrics_summary.svg"
+        ],
+        "altitude_tracking": [
+          "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures/formation_triangle_figure8_linear_mpc_sysblock_altitude_tracking.svg"
+        ]
+      },
+      "missing_core_figures": [],
+      "replay_files": [
+        "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/replay/formation_triangle_figure8_linear_mpc_sysblock.json"
+      ],
+      "log_files": [
+        "Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/logs/sysplorer_formation_triangle_figure8_linear_mpc_sysblock_20260515.jsonl"
+      ],
+      "report_figure_ready": true,
+      "review_notes": []
+    },
+    {
+      "claim_slot": "C1-visual-helical-figure8",
+      "experiment_id": "official_example1_helical_figure8_trail_sysblock",
+      "claim_family": "visual_trajectory_review",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "experiment_root": "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock",
+      "metrics_file": "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/metrics/official_example1_helical_figure8_trail_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/raw/official_example1_helical_figure8_trail_sysblock.csv",
+      "raw_exists": true,
+      "figures_dir": "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures",
+      "figures_dir_exists": true,
+      "figure_count": 4,
+      "figure_files": [
+        "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures/official_example1_helical_figure8_trail_sysblock_altitude_tracking.svg",
+        "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures/official_example1_helical_figure8_trail_sysblock_metrics_summary.svg",
+        "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures/official_example1_helical_figure8_trail_sysblock_position_error.svg",
+        "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures/official_example1_helical_figure8_trail_sysblock_trajectory_xy.svg"
+      ],
+      "figure_manifest_files": [
+        "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures/official_example1_helical_figure8_trail_sysblock_figure_manifest.md"
+      ],
+      "core_figures": {
+        "trajectory_xy": [
+          "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures/official_example1_helical_figure8_trail_sysblock_trajectory_xy.svg"
+        ],
+        "position_error": [
+          "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures/official_example1_helical_figure8_trail_sysblock_position_error.svg"
+        ],
+        "metrics_summary": [
+          "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures/official_example1_helical_figure8_trail_sysblock_metrics_summary.svg"
+        ],
+        "altitude_tracking": [
+          "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures/official_example1_helical_figure8_trail_sysblock_altitude_tracking.svg"
+        ]
+      },
+      "missing_core_figures": [],
+      "replay_files": [
+        "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/replay/official_example1_helical_figure8_trail_sysblock.json"
+      ],
+      "log_files": [
+        "Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/logs/sysplorer_example1_helical_figure8_trail_sysblock_full_20260514.jsonl"
+      ],
+      "report_figure_ready": true,
+      "review_notes": []
+    },
+    {
+      "claim_slot": "C1-visual-planar-figure8",
+      "experiment_id": "official_example1_planar_figure8_trail_sysblock",
+      "claim_family": "visual_trajectory_review",
+      "quality_status": "pass",
+      "claim_ceiling": "candidate_report_evidence_only_not_final_pmo_acceptance",
+      "experiment_root": "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock",
+      "metrics_file": "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/metrics/official_example1_planar_figure8_trail_sysblock.json",
+      "metrics_exists": true,
+      "raw_file": "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/raw/official_example1_planar_figure8_trail_sysblock.csv",
+      "raw_exists": true,
+      "figures_dir": "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures",
+      "figures_dir_exists": true,
+      "figure_count": 4,
+      "figure_files": [
+        "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures/official_example1_planar_figure8_trail_sysblock_altitude_tracking.svg",
+        "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures/official_example1_planar_figure8_trail_sysblock_metrics_summary.svg",
+        "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures/official_example1_planar_figure8_trail_sysblock_position_error.svg",
+        "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures/official_example1_planar_figure8_trail_sysblock_trajectory_xy.svg"
+      ],
+      "figure_manifest_files": [
+        "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures/official_example1_planar_figure8_trail_sysblock_figure_manifest.md"
+      ],
+      "core_figures": {
+        "trajectory_xy": [
+          "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures/official_example1_planar_figure8_trail_sysblock_trajectory_xy.svg"
+        ],
+        "position_error": [
+          "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures/official_example1_planar_figure8_trail_sysblock_position_error.svg"
+        ],
+        "metrics_summary": [
+          "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures/official_example1_planar_figure8_trail_sysblock_metrics_summary.svg"
+        ],
+        "altitude_tracking": [
+          "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures/official_example1_planar_figure8_trail_sysblock_altitude_tracking.svg"
+        ]
+      },
+      "missing_core_figures": [],
+      "replay_files": [
+        "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/replay/official_example1_planar_figure8_trail_sysblock.json"
+      ],
+      "log_files": [
+        "Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/logs/sysplorer_example1_planar_figure8_trail_sysblock_full_20260514.jsonl"
+      ],
+      "report_figure_ready": true,
+      "review_notes": []
+    }
+  ],
+  "not_ready_rows": [],
+  "missing_replay_claim_slots": [],
+  "missing_log_claim_slots": []
+}

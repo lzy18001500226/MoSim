@@ -1,0 +1,546 @@
+{
+  "map_id": "final_submission_blocked_gate_triage_map_20260610",
+  "status": "blocked_gate_triage_map_not_execution",
+  "source_index": "Results/static_audits/final_submission_static_audit_index_20260610/final_submission_static_audit_index.json",
+  "source_dashboard": "Results/static_audits/final_submission_readiness_dashboard_20260610/final_submission_readiness_dashboard.json",
+  "source_action_map": "Results/static_audits/final_submission_reviewer_action_map_20260610/final_submission_reviewer_action_map.json",
+  "summary": {
+    "blocked_artifact_count": 17,
+    "blocker_class_count": 10,
+    "dashboard_blocker_count": 16,
+    "automated_execution_allowed": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "blocker_classes": [
+    "acceptance_prerequisites_blocked",
+    "aggregate_static_gate_blocked",
+    "environment_or_export_authorization",
+    "final_outputs_missing",
+    "human_execution_authorization",
+    "human_report_source_decision",
+    "human_review_decision_pending",
+    "human_storyboard_review",
+    "review_aid_not_execution",
+    "source_output_not_ready"
+  ],
+  "blocked_artifacts": [
+    {
+      "artifact_id": "report_source_edit_decision",
+      "path": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision_check.json",
+      "status": "ok=True",
+      "ready": false,
+      "role": "validates report-source edit decision before source edits",
+      "blocker_class": "human_report_source_decision",
+      "next_human_action": "Review and update the report source edit decision artifact, or keep edits blocked.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/check_report_source_edit_decision.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A1-approve-or-reject-report-source-edits",
+          "decision_owner": "user_or_PMO",
+          "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope"
+        }
+      ],
+      "dashboard_blockers": [],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "source_edit_readiness",
+      "path": "Results/static_audits/simulation_report_source_edit_readiness_20260610/simulation_report_source_edit_readiness_gate.json",
+      "status": "source_edit_application_blocked_pending_human_review",
+      "ready": false,
+      "role": "blocks applying report-source preview snippets until approved",
+      "blocker_class": "human_report_source_decision",
+      "next_human_action": "Approve, reject, or narrow the report-source preview before source edits are allowed.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/check_report_source_edit_decision.py",
+        "python Scripts/quality/build_simulation_report_source_edit_readiness_gate.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A1-approve-or-reject-report-source-edits",
+          "decision_owner": "user_or_PMO",
+          "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope"
+        }
+      ],
+      "dashboard_blockers": [],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "source_edit_application_plan",
+      "path": "Results/static_audits/simulation_report_source_edit_application_plan_20260610/simulation_report_source_edit_application_plan.json",
+      "status": "source_edit_application_plan_blocked_pending_human_review",
+      "ready": false,
+      "role": "turns approved report-source previews into non-applying application steps",
+      "blocker_class": "human_report_source_decision",
+      "next_human_action": "Regenerate the non-applying application plan only after the report-source decision changes.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/build_simulation_report_source_edit_application_plan.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A1-approve-or-reject-report-source-edits",
+          "decision_owner": "user_or_PMO",
+          "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope"
+        }
+      ],
+      "dashboard_blockers": [],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "source_edit_reviewer_summary",
+      "path": "Results/static_audits/simulation_report_source_edit_reviewer_summary_20260610/simulation_report_source_edit_reviewer_summary.json",
+      "status": "source_edit_reviewer_summary_not_execution",
+      "ready": false,
+      "role": "summarizes preview impact and A1 review questions without executing",
+      "blocker_class": "review_aid_not_execution",
+      "next_human_action": "Use the summary during A1 review; do not treat it as edit approval.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/build_simulation_report_source_edit_reviewer_summary.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A1-approve-or-reject-report-source-edits",
+          "decision_owner": "user_or_PMO",
+          "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope"
+        }
+      ],
+      "dashboard_blockers": [],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "source_edit_application_audit_checklist",
+      "path": "Results/static_audits/simulation_report_source_edit_application_audit_checklist_20260610/simulation_report_source_edit_application_audit_checklist.json",
+      "status": "source_edit_application_audit_checklist_not_execution",
+      "ready": false,
+      "role": "lists backup, diff, revert, and post-edit guard requirements before future source edits",
+      "blocker_class": "review_aid_not_execution",
+      "next_human_action": "Use the checklist immediately before any future authorized report-source edit.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/build_simulation_report_source_edit_application_audit_checklist.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A1-approve-or-reject-report-source-edits",
+          "decision_owner": "user_or_PMO",
+          "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope"
+        }
+      ],
+      "dashboard_blockers": [],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "source_output_readiness",
+      "path": "Results/static_audits/submission_source_output_readiness_20260610/submission_source_output_readiness.json",
+      "status": "static_source_output_readiness_not_final_submission",
+      "ready": false,
+      "role": "checks source docs/tooling before final PDF export",
+      "blocker_class": "source_output_not_ready",
+      "next_human_action": "Resolve report-source approval/application and final-output prerequisites before export.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/build_submission_source_output_readiness.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A1-approve-or-reject-report-source-edits",
+          "decision_owner": "user_or_PMO",
+          "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope"
+        },
+        {
+          "action_id": "A5-rerun-readiness-gates",
+          "decision_owner": "operator",
+          "decision_needed": "rerun readiness gates only after A1-A4 decisions or artifacts change"
+        }
+      ],
+      "dashboard_blockers": [
+        {
+          "gate_id": "source_output_readiness",
+          "blocker_id": "report_source_edit_not_approved",
+          "reason": "simulation report source edit readiness gate does not permit applying preview snippets",
+          "needed_action": "obtain explicit human/PMO approval before applying report-source preview edits"
+        },
+        {
+          "gate_id": "source_output_readiness",
+          "blocker_id": "report_source_edit_application_plan_not_ready",
+          "reason": "simulation report source edit application plan is not approved for application",
+          "needed_action": "approve or narrow the A1 report-source edit decision before source edit application planning can proceed"
+        },
+        {
+          "gate_id": "source_output_readiness",
+          "blocker_id": "report_source_edit_application_not_applied",
+          "reason": "no evidence shows the approved report-source application plan has been applied to Docs/simulation_report.md",
+          "needed_action": "apply approved report-source edits in a separate authorized step, then regenerate source-output readiness"
+        },
+        {
+          "gate_id": "source_output_readiness",
+          "blocker_id": "final_outputs_missing",
+          "reason": "final PDFs, demo video, or PMO final acceptance packet are missing",
+          "needed_action": "export reviewed PDFs, create reviewed demo video, then write PMO final acceptance packet"
+        }
+      ],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "pdf_export_plan",
+      "path": "Results/static_audits/pdf_export_dry_run_plan_20260610/pdf_export_dry_run_plan.json",
+      "status": "dry_run_pdf_export_plan_not_final_output",
+      "ready": false,
+      "role": "records future PDF commands without running them",
+      "blocker_class": "environment_or_export_authorization",
+      "next_human_action": "Provide an approved PDF engine and keep export blocked until source-output gates allow it.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/build_pdf_export_dry_run_plan.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A2-provide-pdf-engine",
+          "decision_owner": "local_environment_owner",
+          "decision_needed": "install or expose an approved Pandoc PDF engine, or keep final PDF export blocked"
+        },
+        {
+          "action_id": "A5-rerun-readiness-gates",
+          "decision_owner": "operator",
+          "decision_needed": "rerun readiness gates only after A1-A4 decisions or artifacts change"
+        }
+      ],
+      "dashboard_blockers": [
+        {
+          "gate_id": "pdf_export_plan",
+          "blocker_id": "pdf_engine_missing",
+          "reason": "no preferred Pandoc PDF engine is available on PATH",
+          "needed_action": "install or expose xelatex, lualatex, tectonic, wkhtmltopdf, or another approved engine"
+        },
+        {
+          "gate_id": "pdf_export_plan",
+          "blocker_id": "report_source_edit_not_approved",
+          "reason": "source-output readiness does not permit final PDF export yet",
+          "needed_action": "obtain explicit human/PMO approval for report-source edits and final PDF export"
+        },
+        {
+          "gate_id": "pdf_export_plan",
+          "blocker_id": "final_artifacts_missing",
+          "reason": "final artifact manifest still reports missing final outputs",
+          "needed_action": "after approved export and video creation, rerun final artifact manifest check"
+        }
+      ],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "demo_video_storyboard",
+      "path": "Results/static_audits/demo_video_storyboard_plan_20260610/demo_video_storyboard_plan.json",
+      "status": "storyboard_plan_not_demo_video_acceptance",
+      "ready": false,
+      "role": "maps evidence to demo scenes before video recording",
+      "blocker_class": "human_storyboard_review",
+      "next_human_action": "Review storyboard scenes, wording, and evidence boundaries before recording.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/build_demo_video_storyboard_plan.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A3-review-demo-storyboard",
+          "decision_owner": "user_or_PMO",
+          "decision_needed": "approve, reject, or revise storyboard scenes, wording, and evidence boundaries"
+        }
+      ],
+      "dashboard_blockers": [
+        {
+          "gate_id": "demo_video_storyboard",
+          "blocker_id": "demo_video_not_recorded",
+          "reason": "Results/submission/demo_video.mp4 is missing",
+          "needed_action": "record or render the reviewed storyboard only after approval"
+        },
+        {
+          "gate_id": "demo_video_storyboard",
+          "blocker_id": "manual_storyboard_review_required",
+          "reason": "storyboard content must be reviewed before recording",
+          "needed_action": "confirm scenes, wording, and evidence boundaries before producing video"
+        }
+      ],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "final_artifact_manifest",
+      "path": "Results/static_audits/final_submission_artifacts_20260610/final_submission_artifact_manifest_check.json",
+      "status": "final_artifacts_missing_not_final_submission",
+      "ready": false,
+      "role": "checks final PDFs, demo video, and acceptance packet presence",
+      "blocker_class": "final_outputs_missing",
+      "next_human_action": "Create reviewed final PDFs and demo video after approvals, then verify artifacts.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/check_final_submission_artifact_manifest.py --allow-missing"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A4-create-reviewed-final-artifacts",
+          "decision_owner": "packaging_or_manual_operator",
+          "decision_needed": "after approvals, create reviewed final PDFs and demo_video.mp4, then verify artifact presence"
+        }
+      ],
+      "dashboard_blockers": [],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "final_acceptance_prereq",
+      "path": "Results/static_audits/final_acceptance_packet_prereq_20260610/final_acceptance_packet_prereq_plan.json",
+      "status": "blocked_template_not_final_acceptance",
+      "ready": false,
+      "role": "blocks canonical final acceptance packet until prerequisites pass",
+      "blocker_class": "acceptance_prerequisites_blocked",
+      "next_human_action": "Complete source-output, PDF, video, and final artifact gates before acceptance.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/build_final_acceptance_packet_prereq_plan.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A4-create-reviewed-final-artifacts",
+          "decision_owner": "packaging_or_manual_operator",
+          "decision_needed": "after approvals, create reviewed final PDFs and demo_video.mp4, then verify artifact presence"
+        },
+        {
+          "action_id": "A5-rerun-readiness-gates",
+          "decision_owner": "operator",
+          "decision_needed": "rerun readiness gates only after A1-A4 decisions or artifacts change"
+        }
+      ],
+      "dashboard_blockers": [
+        {
+          "gate_id": "final_acceptance_prereq",
+          "blocker_id": "final_artifacts_not_ready",
+          "reason": "one or more final artifacts are missing or failing",
+          "needed_action": "create reviewed final PDFs and demo video, then rerun artifact manifest without --allow-missing"
+        },
+        {
+          "gate_id": "final_acceptance_prereq",
+          "blocker_id": "pdf_export_not_ready",
+          "reason": "PDF export dry-run plan does not permit final PDF export yet",
+          "needed_action": "satisfy PDF engine, report-source approval, and final export gates"
+        },
+        {
+          "gate_id": "final_acceptance_prereq",
+          "blocker_id": "demo_video_recording_not_approved",
+          "reason": "storyboard plan does not permit video recording yet",
+          "needed_action": "manually review storyboard and authorize recording or rendering"
+        },
+        {
+          "gate_id": "final_acceptance_prereq",
+          "blocker_id": "source_output_readiness_blocks_acceptance",
+          "reason": "source-output readiness does not permit writing final acceptance",
+          "needed_action": "complete final artifacts and source-output readiness gates first"
+        }
+      ],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "final_output_execution_decision",
+      "path": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision_check.json",
+      "status": "execution_decision_check_not_execution",
+      "ready": false,
+      "role": "records human/PMO execution decision without executing",
+      "blocker_class": "human_execution_authorization",
+      "next_human_action": "Explicitly authorize or keep blocked PDF export, video production, and final acceptance writing.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/build_final_output_execution_decision_template.py",
+        "python Scripts/quality/check_final_output_execution_decision.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A6-review-final-output-execution-decision",
+          "decision_owner": "user_or_PMO",
+          "decision_needed": "explicitly authorize or keep blocked PDF export, demo video recording, and final acceptance packet writing"
+        }
+      ],
+      "dashboard_blockers": [
+        {
+          "gate_id": "final_output_execution_decision",
+          "blocker_id": "authorizes_pdf_export",
+          "reason": "PDF export execution is not authorized",
+          "needed_action": "review final output execution decision template and satisfy upstream readiness gates"
+        },
+        {
+          "gate_id": "final_output_execution_decision",
+          "blocker_id": "authorizes_demo_video_recording",
+          "reason": "demo video recording/rendering is not authorized",
+          "needed_action": "review final output execution decision template and satisfy upstream readiness gates"
+        },
+        {
+          "gate_id": "final_output_execution_decision",
+          "blocker_id": "authorizes_final_acceptance_packet",
+          "reason": "canonical final acceptance packet writing is not authorized",
+          "needed_action": "review final output execution decision template and satisfy upstream readiness gates"
+        }
+      ],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "final_submission_dashboard",
+      "path": "Results/static_audits/final_submission_readiness_dashboard_20260610/final_submission_readiness_dashboard.json",
+      "status": "static_dashboard_not_final_submission_acceptance",
+      "ready": false,
+      "role": "aggregates static readiness gates",
+      "blocker_class": "aggregate_static_gate_blocked",
+      "next_human_action": "Regenerate the dashboard after upstream blocker sources change.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/build_final_submission_readiness_dashboard.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A5-rerun-readiness-gates",
+          "decision_owner": "operator",
+          "decision_needed": "rerun readiness gates only after A1-A4 decisions or artifacts change"
+        }
+      ],
+      "dashboard_blockers": [],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "final_submission_human_action_checklist",
+      "path": "Results/static_audits/final_submission_human_action_checklist_20260610/final_submission_human_action_checklist.json",
+      "status": "human_action_checklist_not_execution",
+      "ready": false,
+      "role": "groups human actions but does not execute them",
+      "blocker_class": "review_aid_not_execution",
+      "next_human_action": "Use the checklist to coordinate human actions; it does not approve execution.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/build_final_submission_human_action_checklist.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A5-rerun-readiness-gates",
+          "decision_owner": "operator",
+          "decision_needed": "rerun readiness gates only after A1-A4 decisions or artifacts change"
+        }
+      ],
+      "dashboard_blockers": [],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "final_submission_reviewer_action_map",
+      "path": "Results/static_audits/final_submission_reviewer_action_map_20260610/final_submission_reviewer_action_map.json",
+      "status": "reviewer_action_map_not_execution",
+      "ready": false,
+      "role": "maps human actions to reviewer decisions and evidence",
+      "blocker_class": "review_aid_not_execution",
+      "next_human_action": "Use the reviewer action map to locate decisions and evidence; it does not make decisions.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/build_final_submission_reviewer_action_map.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A5-rerun-readiness-gates",
+          "decision_owner": "operator",
+          "decision_needed": "rerun readiness gates only after A1-A4 decisions or artifacts change"
+        }
+      ],
+      "dashboard_blockers": [],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "final_submission_human_review_decision_packet",
+      "path": "Results/static_audits/final_submission_human_review_decision_packet_20260610/final_submission_human_review_decision_packet_check.json",
+      "status": "human_review_decision_packet_check_not_execution",
+      "ready": false,
+      "role": "validates pending A1/A3/A6 human review decisions",
+      "blocker_class": "human_review_decision_pending",
+      "next_human_action": "Review the A1/A3/A6 decision packet template and record explicit decisions if authorized.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/build_final_submission_human_review_decision_packet_template.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A6-review-final-output-execution-decision",
+          "decision_owner": "user_or_PMO",
+          "decision_needed": "explicitly authorize or keep blocked PDF export, demo video recording, and final acceptance packet writing"
+        }
+      ],
+      "dashboard_blockers": [],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "final_submission_human_review_guide",
+      "path": "Results/static_audits/final_submission_human_review_guide_20260610/final_submission_human_review_guide.json",
+      "status": "human_review_guide_not_execution",
+      "ready": false,
+      "role": "explains how to review A1/A3/A6 without executing",
+      "blocker_class": "review_aid_not_execution",
+      "next_human_action": "Use the guide to perform A1/A3/A6 review; it does not change readiness.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/build_final_submission_human_review_guide.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A6-review-final-output-execution-decision",
+          "decision_owner": "user_or_PMO",
+          "decision_needed": "explicitly authorize or keep blocked PDF export, demo video recording, and final acceptance packet writing"
+        }
+      ],
+      "dashboard_blockers": [],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "artifact_id": "final_submission_readiness_chain",
+      "path": "Results/static_audits/final_submission_readiness_chain_20260610/final_submission_readiness_chain_check.json",
+      "status": "static_chain_check_not_final_submission",
+      "ready": false,
+      "role": "checks static artifact chain integrity",
+      "blocker_class": "aggregate_static_gate_blocked",
+      "next_human_action": "Rerun the chain checker after dashboard/action-map/decision packet inputs change.",
+      "safe_rerun_commands": [
+        "python Scripts/quality/check_final_submission_readiness_chain.py"
+      ],
+      "linked_human_actions": [
+        {
+          "action_id": "A5-rerun-readiness-gates",
+          "decision_owner": "operator",
+          "decision_needed": "rerun readiness gates only after A1-A4 decisions or artifacts change"
+        }
+      ],
+      "dashboard_blockers": [],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    }
+  ],
+  "claim_boundary": [
+    "This triage map is a static review aid.",
+    "It does not execute safe rerun commands.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

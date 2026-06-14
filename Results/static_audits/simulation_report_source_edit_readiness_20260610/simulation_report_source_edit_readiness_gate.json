@@ -1,0 +1,119 @@
+{
+  "gate_id": "simulation_report_source_edit_readiness_20260610",
+  "status": "source_edit_application_blocked_pending_human_review",
+  "inputs": {
+    "simulation_report_patch_preview_check": "Results/static_audits/simulation_report_patch_preview_20260610/simulation_report_patch_preview_check.json",
+    "simulation_report_patch_preview": "Results/static_audits/simulation_report_patch_preview_20260610/simulation_report_patch_preview.json",
+    "final_packaging_gap_inventory": "Results/static_audits/final_packaging_gap_20260610/final_packaging_gap_inventory.json",
+    "final_report_outline_gap_inventory": "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json",
+    "final_report_unmapped_claim_rewrite_plan": "Results/static_audits/final_report_unmapped_claim_rewrite_20260610/final_report_unmapped_claim_rewrite_plan.json",
+    "report_source_edit_decision_template": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+    "report_source_edit_decision_check": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision_check.json"
+  },
+  "summary": {
+    "gate_count": 7,
+    "blocking_gate_count": 1,
+    "safe_to_apply_report_source_edits_now": false,
+    "decision": "pending_review",
+    "approved_preview_count": 0,
+    "decision_check_ok": true,
+    "decision_authorizes_application": false,
+    "edits_report_source": false,
+    "deletes_content": false,
+    "final_acceptance": false
+  },
+  "gates": [
+    {
+      "gate_id": "patch_preview_checker_ok",
+      "ok": true,
+      "evidence": "Results/static_audits/simulation_report_patch_preview_20260610/simulation_report_patch_preview_check.json",
+      "blocking_reason": "",
+      "needed_action": "fix patch preview anchors/non-applying boundaries"
+    },
+    {
+      "gate_id": "patch_preview_is_non_applying",
+      "ok": true,
+      "evidence": "Results/static_audits/simulation_report_patch_preview_20260610/simulation_report_patch_preview.json",
+      "blocking_reason": "",
+      "needed_action": "regenerate patch preview and keep applies_patch_now=false"
+    },
+    {
+      "gate_id": "human_pmo_apply_approval_present",
+      "ok": false,
+      "evidence": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision_check.json",
+      "blocking_reason": "report source edit application needs human/PMO approval and a valid decision check; current decision=pending_review",
+      "needed_action": "obtain explicit approval before applying preview snippets to Docs/simulation_report.md"
+    },
+    {
+      "gate_id": "report_source_edit_decision_check_ok",
+      "ok": true,
+      "evidence": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision_check.json",
+      "blocking_reason": "",
+      "needed_action": "fix report-source decision artifact before using it for source edits"
+    },
+    {
+      "gate_id": "final_packaging_still_not_ready_boundary",
+      "ok": true,
+      "evidence": "Results/static_audits/final_packaging_gap_20260610/final_packaging_gap_inventory.json",
+      "blocking_reason": "",
+      "needed_action": "keep final submission readiness blocked until final PDF/video/acceptance artifacts exist"
+    },
+    {
+      "gate_id": "outline_gap_requires_review_boundary",
+      "ok": true,
+      "evidence": "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json",
+      "blocking_reason": "",
+      "needed_action": "review human/live sections before final report freeze"
+    },
+    {
+      "gate_id": "rewrite_plan_is_draft_only",
+      "ok": true,
+      "evidence": "Results/static_audits/final_report_unmapped_claim_rewrite_20260610/final_report_unmapped_claim_rewrite_plan.json",
+      "blocking_reason": "",
+      "needed_action": "keep rewrite plan draft-only until accepted by report reviewer"
+    }
+  ],
+  "blocking_gates": [
+    {
+      "gate_id": "human_pmo_apply_approval_present",
+      "ok": false,
+      "evidence": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision_check.json",
+      "blocking_reason": "report source edit application needs human/PMO approval and a valid decision check; current decision=pending_review",
+      "needed_action": "obtain explicit approval before applying preview snippets to Docs/simulation_report.md"
+    }
+  ],
+  "decision_check": {
+    "ok": true,
+    "decision_path": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+    "patch_preview": "Results/static_audits/simulation_report_patch_preview_20260610/simulation_report_patch_preview.json",
+    "decision": "pending_review",
+    "valid_decisions": [
+      "pending_review",
+      "approved",
+      "rejected",
+      "narrowed"
+    ],
+    "approved_preview_count": 0,
+    "rejected_preview_count": 0,
+    "available_preview_count": 7,
+    "safe_to_apply_report_source_edits": false,
+    "authorizes_application": false,
+    "issues": [],
+    "warnings": [
+      "decision is pending_review and does not authorize report-source edits"
+    ],
+    "claim_boundary": [
+      "This checker validates a decision artifact only.",
+      "It does not edit Docs/simulation_report.md.",
+      "It does not approve pending_review decisions.",
+      "It does not export PDFs/video or write PMO final acceptance."
+    ]
+  },
+  "decision": "Do not apply preview snippets to Docs/simulation_report.md in this run. The preview is valid as a review artifact, but source-edit application still needs explicit human/PMO approval.",
+  "claim_boundary": [
+    "This gate does not edit Docs/simulation_report.md.",
+    "It does not authorize automatic patch application.",
+    "It does not generate final PDFs/video or PMO final acceptance.",
+    "It keeps final submission readiness blocked while final artifacts are missing."
+  ]
+}

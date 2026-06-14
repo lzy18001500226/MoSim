@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "manifest": "Results/static_audits/submission_evidence_manifest_20260610/candidate_submission_evidence_manifest.json",
+  "source_evidence_map": "Results/static_audits/mworks_control_evidence_map_20260610/evidence_map.json",
+  "row_count": 13,
+  "issues": [],
+  "warnings": []
+}

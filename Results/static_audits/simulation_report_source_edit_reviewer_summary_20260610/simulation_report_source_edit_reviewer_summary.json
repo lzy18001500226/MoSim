@@ -1,0 +1,266 @@
+{
+  "summary_id": "simulation_report_source_edit_reviewer_summary_20260610",
+  "status": "source_edit_reviewer_summary_not_execution",
+  "inputs": {
+    "simulation_report_patch_preview": "Results/static_audits/simulation_report_patch_preview_20260610/simulation_report_patch_preview.json",
+    "simulation_report_edit_sequence_plan": "Results/static_audits/simulation_report_edit_sequence_20260610/simulation_report_edit_sequence_plan.json",
+    "simulation_report_source_edit_application_plan": "Results/static_audits/simulation_report_source_edit_application_plan_20260610/simulation_report_source_edit_application_plan.json"
+  },
+  "summary": {
+    "preview_count": 7,
+    "missing_sequence_action_count": 0,
+    "high_impact_count": 2,
+    "candidate_insert_count": 3,
+    "manual_review_required_count": 7,
+    "automated_execution_allowed": false,
+    "edits_report_source": false,
+    "applies_report_source_edits_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "missing_sequence_actions": [],
+  "review_items": [
+    {
+      "preview_id": "preserve_final_acceptance_boundary_preview",
+      "source_action_id": "preserve_final_acceptance_boundary",
+      "sequence_order": 1,
+      "operation": "verify_keep_existing_text",
+      "target": "1. 报告范围",
+      "line_hint": 37,
+      "kind": "boundary_guard",
+      "claim_family": "",
+      "impact_level": "high",
+      "impact_class": "acceptance_boundary",
+      "decision_options": [
+        "pending_review",
+        "approved",
+        "rejected",
+        "narrowed",
+        "needs_revision"
+      ],
+      "recommended_default": "pending_review",
+      "planned_for_application": false,
+      "applies_now": false,
+      "evidence_inputs": [
+        "Results/static_audits/simulation_report_source_hygiene_20260610/simulation_report_source_hygiene_plan.json",
+        "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json"
+      ],
+      "safety_boundary": "Do not convert static candidate readiness into final acceptance.",
+      "review_questions": [
+        "Does this preview preserve the listed safety boundary?",
+        "Is the target section correct for this change?",
+        "Should this preview be approved, rejected, narrowed, or sent back for revision?",
+        "Should the existing not-final acceptance boundary remain unchanged near the report front matter?"
+      ]
+    },
+    {
+      "preview_id": "rewrite_formation_next_stage_boundary_preview",
+      "source_action_id": "rewrite_formation_next_stage_boundary",
+      "sequence_order": 2,
+      "operation": "replace_single_sentence_after_review",
+      "target": "12. 扩展场景状态",
+      "line_hint": 602,
+      "kind": "targeted_sentence_rewrite",
+      "claim_family": "multi_uav_formation",
+      "impact_level": "high",
+      "impact_class": "claim_boundary_update",
+      "decision_options": [
+        "pending_review",
+        "approved",
+        "rejected",
+        "narrowed",
+        "needs_revision"
+      ],
+      "recommended_default": "pending_review",
+      "planned_for_application": false,
+      "applies_now": false,
+      "evidence_inputs": [
+        "Results/static_audits/simulation_report_source_hygiene_20260610/simulation_report_source_hygiene_plan.json",
+        "Results/static_audits/final_report_unmapped_claim_rewrite_20260610/final_report_unmapped_claim_rewrite_plan.json"
+      ],
+      "safety_boundary": "Do not claim ROS2/PX4/QGC online formation or final formation acceptance.",
+      "review_questions": [
+        "Does this preview preserve the listed safety boundary?",
+        "Is the target section correct for this change?",
+        "Should this preview be approved, rejected, narrowed, or sent back for revision?",
+        "Does the rewrite separate available MWORKS/Sysplorer candidate evidence from unproven online formation claims?"
+      ]
+    },
+    {
+      "preview_id": "insert_visual_trajectory_review_candidate_subsection_preview",
+      "source_action_id": "insert_visual_trajectory_review_candidate_subsection",
+      "sequence_order": 3,
+      "operation": "insert_candidate_subsection_after_review",
+      "target": "11. 当前图表",
+      "line_hint": null,
+      "kind": "candidate_subsection_insert",
+      "claim_family": "visual_trajectory_review",
+      "impact_level": "medium",
+      "impact_class": "candidate_body_insert",
+      "decision_options": [
+        "pending_review",
+        "approved",
+        "rejected",
+        "narrowed",
+        "needs_revision"
+      ],
+      "recommended_default": "pending_review",
+      "planned_for_application": false,
+      "applies_now": false,
+      "evidence_inputs": [
+        "Results/static_audits/final_report_unmapped_claim_rewrite_20260610/final_report_unmapped_claim_rewrite_plan.json",
+        "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json"
+      ],
+      "safety_boundary": "不支撑 UE build/runtime/editor 成功、最终演示视频完成或最终视觉验收声明。",
+      "review_questions": [
+        "Does this preview preserve the listed safety boundary?",
+        "Is the target section correct for this change?",
+        "Should this preview be approved, rejected, narrowed, or sent back for revision?",
+        "Do the candidate metrics and figures support the proposed draft-only wording?"
+      ]
+    },
+    {
+      "preview_id": "insert_fault_tolerance_candidate_subsection_preview",
+      "source_action_id": "insert_fault_tolerance_candidate_subsection",
+      "sequence_order": 4,
+      "operation": "insert_candidate_subsection_after_review",
+      "target": "13. Linear MPC-style 外环闭环结果",
+      "line_hint": null,
+      "kind": "candidate_subsection_insert",
+      "claim_family": "fault_tolerance",
+      "impact_level": "medium",
+      "impact_class": "candidate_body_insert",
+      "decision_options": [
+        "pending_review",
+        "approved",
+        "rejected",
+        "narrowed",
+        "needs_revision"
+      ],
+      "recommended_default": "pending_review",
+      "planned_for_application": false,
+      "applies_now": false,
+      "evidence_inputs": [
+        "Results/static_audits/final_report_unmapped_claim_rewrite_20260610/final_report_unmapped_claim_rewrite_plan.json",
+        "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json"
+      ],
+      "safety_boundary": "不支撑瞬态故障切换、多旋翼同时故障、真实飞控容错或最终 PMO 验收声明。",
+      "review_questions": [
+        "Does this preview preserve the listed safety boundary?",
+        "Is the target section correct for this change?",
+        "Should this preview be approved, rejected, narrowed, or sent back for revision?",
+        "Do the candidate metrics and figures support the proposed draft-only wording?"
+      ]
+    },
+    {
+      "preview_id": "insert_multi_uav_formation_candidate_subsection_preview",
+      "source_action_id": "insert_multi_uav_formation_candidate_subsection",
+      "sequence_order": 5,
+      "operation": "insert_candidate_subsection_after_review",
+      "target": "13. Linear MPC-style 外环闭环结果",
+      "line_hint": null,
+      "kind": "candidate_subsection_insert",
+      "claim_family": "multi_uav_formation",
+      "impact_level": "medium",
+      "impact_class": "candidate_body_insert",
+      "decision_options": [
+        "pending_review",
+        "approved",
+        "rejected",
+        "narrowed",
+        "needs_revision"
+      ],
+      "recommended_default": "pending_review",
+      "planned_for_application": false,
+      "applies_now": false,
+      "evidence_inputs": [
+        "Results/static_audits/final_report_unmapped_claim_rewrite_20260610/final_report_unmapped_claim_rewrite_plan.json",
+        "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json"
+      ],
+      "safety_boundary": "不支撑 ROS2/PX4/QGC 在线编队、真实多机通信链路或最终编队验收声明。",
+      "review_questions": [
+        "Does this preview preserve the listed safety boundary?",
+        "Is the target section correct for this change?",
+        "Should this preview be approved, rejected, narrowed, or sent back for revision?",
+        "Do the candidate metrics and figures support the proposed draft-only wording?"
+      ]
+    },
+    {
+      "preview_id": "condense_smoke_and_legacy_sections_preview",
+      "source_action_id": "condense_smoke_and_legacy_sections",
+      "sequence_order": 6,
+      "operation": "manual_condense_no_delete",
+      "target": "5-9 legacy/smoke sections",
+      "line_hint": 3,
+      "kind": "condense_without_delete",
+      "claim_family": "",
+      "impact_level": "medium",
+      "impact_class": "source_hygiene_condense",
+      "decision_options": [
+        "pending_review",
+        "approved",
+        "rejected",
+        "narrowed",
+        "needs_revision"
+      ],
+      "recommended_default": "pending_review",
+      "planned_for_application": false,
+      "applies_now": false,
+      "evidence_inputs": [
+        "Results/static_audits/simulation_report_source_hygiene_20260610/simulation_report_source_hygiene_plan.json",
+        "Results/static_audits/final_report_outline_gap_20260610/final_report_outline_gap_inventory.json"
+      ],
+      "safety_boundary": "Do not delete provenance or use smoke/staged rows as full performance conclusions.",
+      "review_questions": [
+        "Does this preview preserve the listed safety boundary?",
+        "Is the target section correct for this change?",
+        "Should this preview be approved, rejected, narrowed, or sent back for revision?",
+        "Can the historical/smoke material be condensed without deleting provenance?"
+      ]
+    },
+    {
+      "preview_id": "renumber_l1_residual_subsection_preview",
+      "source_action_id": "renumber_l1_residual_subsection",
+      "sequence_order": 7,
+      "operation": "rename_heading_after_review",
+      "target": "9.4 L1-inspired 残差补偿控制器首轮消融",
+      "line_hint": 505,
+      "kind": "structure_cleanup",
+      "claim_family": "",
+      "impact_level": "low",
+      "impact_class": "navigation_cleanup",
+      "decision_options": [
+        "pending_review",
+        "approved",
+        "rejected",
+        "narrowed",
+        "needs_revision"
+      ],
+      "recommended_default": "pending_review",
+      "planned_for_application": false,
+      "applies_now": false,
+      "evidence_inputs": [
+        "Results/static_audits/simulation_report_source_hygiene_20260610/simulation_report_source_hygiene_plan.json"
+      ],
+      "safety_boundary": "Structure cleanup only; do not change technical claims.",
+      "review_questions": [
+        "Does this preview preserve the listed safety boundary?",
+        "Is the target section correct for this change?",
+        "Should this preview be approved, rejected, narrowed, or sent back for revision?"
+      ]
+    }
+  ],
+  "review_sequence": [
+    "Review high-impact boundary items before candidate inserts.",
+    "Approve, reject, narrow, or request revision for each preview id in the A1 decision artifact.",
+    "Regenerate the readiness gate and application plan after the A1 decision changes.",
+    "Apply approved report-source edits only in a separate explicitly authorized step."
+  ],
+  "claim_boundary": [
+    "This summary is a reviewer aid only.",
+    "It does not edit Docs/simulation_report.md.",
+    "It does not approve preview snippets.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs/video or write PMO final acceptance."
+  ]
+}

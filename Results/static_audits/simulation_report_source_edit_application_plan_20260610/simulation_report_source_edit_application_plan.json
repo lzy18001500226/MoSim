@@ -1,0 +1,120 @@
+{
+  "plan_id": "simulation_report_source_edit_application_plan_20260610",
+  "status": "source_edit_application_plan_blocked_pending_human_review",
+  "inputs": {
+    "simulation_report": "Docs/simulation_report.md",
+    "patch_preview": "Results/static_audits/simulation_report_patch_preview_20260610/simulation_report_patch_preview.json",
+    "report_source_edit_decision": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+    "report_source_edit_decision_check": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision_check.json",
+    "source_edit_readiness_gate": "Results/static_audits/simulation_report_source_edit_readiness_20260610/simulation_report_source_edit_readiness_gate.json"
+  },
+  "summary": {
+    "preview_count": 7,
+    "approved_preview_count": 0,
+    "rejected_preview_count": 0,
+    "planned_application_count": 0,
+    "decision": "pending_review",
+    "decision_authorizes_application": false,
+    "readiness_safe_to_apply": false,
+    "safe_to_apply_report_source_edits_now": false,
+    "edits_report_source": false,
+    "applies_report_source_edits_now": false,
+    "deletes_content": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "application_steps": [
+    {
+      "preview_id": "preserve_final_acceptance_boundary_preview",
+      "source_action_id": "preserve_final_acceptance_boundary",
+      "operation": "verify_keep_existing_text",
+      "target": "1. 报告范围",
+      "line_hint": 37,
+      "approved": false,
+      "rejected": false,
+      "planned_for_application": false,
+      "applies_now": false,
+      "safety_boundary": "Do not convert static candidate readiness into final acceptance."
+    },
+    {
+      "preview_id": "rewrite_formation_next_stage_boundary_preview",
+      "source_action_id": "rewrite_formation_next_stage_boundary",
+      "operation": "replace_single_sentence_after_review",
+      "target": "12. 扩展场景状态",
+      "line_hint": 602,
+      "approved": false,
+      "rejected": false,
+      "planned_for_application": false,
+      "applies_now": false,
+      "safety_boundary": "Do not claim ROS2/PX4/QGC online formation or final formation acceptance."
+    },
+    {
+      "preview_id": "insert_visual_trajectory_review_candidate_subsection_preview",
+      "source_action_id": "insert_visual_trajectory_review_candidate_subsection",
+      "operation": "insert_candidate_subsection_after_review",
+      "target": "11. 当前图表",
+      "line_hint": null,
+      "approved": false,
+      "rejected": false,
+      "planned_for_application": false,
+      "applies_now": false,
+      "safety_boundary": "不支撑 UE build/runtime/editor 成功、最终演示视频完成或最终视觉验收声明。"
+    },
+    {
+      "preview_id": "insert_fault_tolerance_candidate_subsection_preview",
+      "source_action_id": "insert_fault_tolerance_candidate_subsection",
+      "operation": "insert_candidate_subsection_after_review",
+      "target": "13. Linear MPC-style 外环闭环结果",
+      "line_hint": null,
+      "approved": false,
+      "rejected": false,
+      "planned_for_application": false,
+      "applies_now": false,
+      "safety_boundary": "不支撑瞬态故障切换、多旋翼同时故障、真实飞控容错或最终 PMO 验收声明。"
+    },
+    {
+      "preview_id": "insert_multi_uav_formation_candidate_subsection_preview",
+      "source_action_id": "insert_multi_uav_formation_candidate_subsection",
+      "operation": "insert_candidate_subsection_after_review",
+      "target": "13. Linear MPC-style 外环闭环结果",
+      "line_hint": null,
+      "approved": false,
+      "rejected": false,
+      "planned_for_application": false,
+      "applies_now": false,
+      "safety_boundary": "不支撑 ROS2/PX4/QGC 在线编队、真实多机通信链路或最终编队验收声明。"
+    },
+    {
+      "preview_id": "condense_smoke_and_legacy_sections_preview",
+      "source_action_id": "condense_smoke_and_legacy_sections",
+      "operation": "manual_condense_no_delete",
+      "target": "5-9 legacy/smoke sections",
+      "line_hint": 3,
+      "approved": false,
+      "rejected": false,
+      "planned_for_application": false,
+      "applies_now": false,
+      "safety_boundary": "Do not delete provenance or use smoke/staged rows as full performance conclusions."
+    },
+    {
+      "preview_id": "renumber_l1_residual_subsection_preview",
+      "source_action_id": "renumber_l1_residual_subsection",
+      "operation": "rename_heading_after_review",
+      "target": "9.4 L1-inspired 残差补偿控制器首轮消融",
+      "line_hint": 505,
+      "approved": false,
+      "rejected": false,
+      "planned_for_application": false,
+      "applies_now": false,
+      "safety_boundary": "Structure cleanup only; do not change technical claims."
+    }
+  ],
+  "blocked_reason": "A1 report-source edit decision is not approved or readiness gate is still blocked.",
+  "claim_boundary": [
+    "This plan is a non-applying source-edit application plan.",
+    "It does not edit Docs/simulation_report.md.",
+    "It does not delete content.",
+    "It does not run a patch command.",
+    "It does not export PDFs/video or write PMO final acceptance."
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "ok": true,
+  "check_id": "final_submission_answer_sheet_decision_consistency_20260610",
+  "status": "answer_sheet_decision_consistency_check_not_execution",
+  "sources": {
+    "answer_sheet": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_manual_review_answer_sheet_template.json",
+    "report_source_edit_decision": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+    "final_output_execution_decision": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json"
+  },
+  "summary": {
+    "review_action_count": 3,
+    "answer_field_count": 38,
+    "unfilled_placeholder_field_count": 38,
+    "copied_field_count": 0,
+    "issue_count": 0,
+    "warning_count": 0,
+    "report_source_decision": "pending_review",
+    "final_output_pending_action_count": 3,
+    "automated_execution_allowed": false,
+    "applies_decisions_now": false,
+    "edits_decision_templates_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "sections": [
+    {
+      "action_id": "A1-approve-or-reject-report-source-edits",
+      "field_count": 8,
+      "unfilled_placeholder_field_count": 8,
+      "copied_field_count": 0,
+      "decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+      "copies_answers_now": false,
+      "edits_decision_artifact_now": false,
+      "approves_or_executes_now": false
+    },
+    {
+      "action_id": "A3-review-demo-storyboard",
+      "field_count": 15,
+      "unfilled_placeholder_field_count": 15,
+      "copied_field_count": 0,
+      "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+      "copies_answers_now": false,
+      "edits_decision_artifact_now": false,
+      "approves_or_executes_now": false
+    },
+    {
+      "action_id": "A6-review-final-output-execution-decision",
+      "field_count": 15,
+      "unfilled_placeholder_field_count": 15,
+      "copied_field_count": 0,
+      "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+      "copies_answers_now": false,
+      "edits_decision_artifact_now": false,
+      "approves_or_executes_now": false
+    }
+  ],
+  "issues": [],
+  "warnings": [],
+  "claim_boundary": [
+    "This checker compares placeholders and current decision templates only.",
+    "It does not copy answer-sheet values.",
+    "It does not edit decision templates.",
+    "It does not approve decisions.",
+    "It does not run post-review checkers.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

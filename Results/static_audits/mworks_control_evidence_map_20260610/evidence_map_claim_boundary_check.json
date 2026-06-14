@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "evidence_map": "Results/static_audits/mworks_control_evidence_map_20260610/evidence_map.json",
+  "design_doc": "Docs/Design/08_赛题闭环实现证据矩阵.md",
+  "issues": [],
+  "warnings": [],
+  "row_counts": {
+    "total_rows": 176,
+    "metrics_only_rows_priority_empty": 95,
+    "formal_rows_priority_nonempty": 81,
+    "formal_pass_rows": 64,
+    "formal_needs_iteration_rows": 17,
+    "formal_visual_review_rows": 2
+  }
+}

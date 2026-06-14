@@ -1,0 +1,311 @@
+{
+  "ok": true,
+  "check_id": "final_submission_review_aid_freshness_20260610",
+  "status": "review_aid_freshness_check_not_execution",
+  "source_refresh_order": "Results/static_audits/final_submission_refresh_order_20260610/final_submission_refresh_order_check.json",
+  "summary": {
+    "review_node_count": 13,
+    "dependency_edge_count": 12,
+    "missing_output_count": 0,
+    "status_mismatch_count": 0,
+    "stale_dependency_count": 0,
+    "issue_count": 0,
+    "warning_count": 0,
+    "freshness_grace_seconds": 1.0,
+    "automated_execution_allowed": false,
+    "refreshes_artifacts_now": false,
+    "runs_commands_now": false,
+    "updates_static_audit_index": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "nodes": [
+    {
+      "node_id": "final_submission_blocked_gate_triage_map",
+      "command": "python Scripts/quality/build_final_submission_blocked_gate_triage_map.py",
+      "primary_output": "Results/static_audits/final_submission_blocked_gate_triage_map_20260610/final_submission_blocked_gate_triage_map.json",
+      "output_exists": true,
+      "output_mtime": "2026-06-11T04:25:02.925",
+      "output_mtime_epoch": 1781123102.9252436,
+      "expected_status": "blocked_gate_triage_map_not_execution",
+      "actual_status": "blocked_gate_triage_map_not_execution",
+      "status_matches": true,
+      "read_error": "",
+      "after": [
+        "final_submission_static_audit_index"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_human_decision_diff_template",
+      "command": "python Scripts/quality/build_final_submission_human_decision_diff_template.py",
+      "primary_output": "Results/static_audits/final_submission_human_decision_diff_template_20260610/final_submission_human_decision_diff_template.json",
+      "output_exists": true,
+      "output_mtime": "2026-06-11T04:25:02.861",
+      "output_mtime_epoch": 1781123102.8612409,
+      "expected_status": "human_decision_diff_template_not_execution",
+      "actual_status": "human_decision_diff_template_not_execution",
+      "status_matches": true,
+      "read_error": "",
+      "after": [
+        "final_submission_blocked_gate_triage_map"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_reviewer_quickstart",
+      "command": "python Scripts/quality/build_final_submission_reviewer_quickstart.py",
+      "primary_output": "Results/static_audits/final_submission_reviewer_quickstart_20260610/final_submission_reviewer_quickstart.json",
+      "output_exists": true,
+      "output_mtime": "2026-06-11T04:32:16.189",
+      "output_mtime_epoch": 1781123536.1897805,
+      "expected_status": "reviewer_quickstart_not_execution",
+      "actual_status": "reviewer_quickstart_not_execution",
+      "status_matches": true,
+      "read_error": "",
+      "after": [
+        "final_submission_human_decision_diff_template"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_review_progress_snapshot",
+      "command": "python Scripts/quality/build_final_submission_review_progress_snapshot.py",
+      "primary_output": "Results/static_audits/final_submission_review_progress_snapshot_20260610/final_submission_review_progress_snapshot.json",
+      "output_exists": true,
+      "output_mtime": "2026-06-11T04:40:46.492",
+      "output_mtime_epoch": 1781124046.492906,
+      "expected_status": "review_progress_snapshot_not_execution",
+      "actual_status": "review_progress_snapshot_not_execution",
+      "status_matches": true,
+      "read_error": "",
+      "after": [
+        "final_submission_reviewer_quickstart"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_post_review_rerun_matrix",
+      "command": "python Scripts/quality/build_final_submission_post_review_rerun_matrix.py",
+      "primary_output": "Results/static_audits/final_submission_post_review_rerun_matrix_20260610/final_submission_post_review_rerun_matrix.json",
+      "output_exists": true,
+      "output_mtime": "2026-06-11T04:48:19.102",
+      "output_mtime_epoch": 1781124499.1028428,
+      "expected_status": "post_review_rerun_matrix_not_execution",
+      "actual_status": "post_review_rerun_matrix_not_execution",
+      "status_matches": true,
+      "read_error": "",
+      "after": [
+        "final_submission_review_progress_snapshot"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_manual_review_answer_sheet",
+      "command": "python Scripts/quality/build_final_submission_manual_review_answer_sheet_template.py",
+      "primary_output": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_manual_review_answer_sheet_template.json",
+      "output_exists": true,
+      "output_mtime": "2026-06-11T04:53:32.634",
+      "output_mtime_epoch": 1781124812.634665,
+      "expected_status": "manual_review_answer_sheet_template_not_execution",
+      "actual_status": "manual_review_answer_sheet_template_not_execution",
+      "status_matches": true,
+      "read_error": "",
+      "after": [
+        "final_submission_post_review_rerun_matrix"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_answer_sheet_decision_consistency",
+      "command": "python Scripts/quality/check_final_submission_answer_sheet_decision_consistency.py",
+      "primary_output": "Results/static_audits/final_submission_manual_review_answer_sheet_20260610/final_submission_answer_sheet_decision_consistency_check.json",
+      "output_exists": true,
+      "output_mtime": "2026-06-11T04:58:21.065",
+      "output_mtime_epoch": 1781125101.065306,
+      "expected_status": "answer_sheet_decision_consistency_check_not_execution",
+      "actual_status": "answer_sheet_decision_consistency_check_not_execution",
+      "status_matches": true,
+      "read_error": "",
+      "after": [
+        "final_submission_manual_review_answer_sheet"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_review_artifact_bundle_index",
+      "command": "python Scripts/quality/build_final_submission_review_artifact_bundle_index.py",
+      "primary_output": "Results/static_audits/final_submission_review_artifact_bundle_20260610/final_submission_review_artifact_bundle_index.json",
+      "output_exists": true,
+      "output_mtime": "2026-06-11T05:04:07.466",
+      "output_mtime_epoch": 1781125447.4661515,
+      "expected_status": "review_artifact_bundle_index_not_execution",
+      "actual_status": "review_artifact_bundle_index_not_execution",
+      "status_matches": true,
+      "read_error": "",
+      "after": [
+        "final_submission_answer_sheet_decision_consistency"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_reviewer_handoff_note",
+      "command": "python Scripts/quality/build_final_submission_reviewer_handoff_note.py",
+      "primary_output": "Results/static_audits/final_submission_reviewer_handoff_note_20260610/final_submission_reviewer_handoff_note.json",
+      "output_exists": true,
+      "output_mtime": "2026-06-11T05:10:17.496",
+      "output_mtime_epoch": 1781125817.4969292,
+      "expected_status": "reviewer_handoff_note_not_execution",
+      "actual_status": "reviewer_handoff_note_not_execution",
+      "status_matches": true,
+      "read_error": "",
+      "after": [
+        "final_submission_review_artifact_bundle_index"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_manual_review_closure_checklist",
+      "command": "python Scripts/quality/build_final_submission_manual_review_closure_checklist.py",
+      "primary_output": "Results/static_audits/final_submission_manual_review_closure_checklist_20260610/final_submission_manual_review_closure_checklist.json",
+      "output_exists": true,
+      "output_mtime": "2026-06-11T05:15:09.536",
+      "output_mtime_epoch": 1781126109.5363624,
+      "expected_status": "manual_review_closure_checklist_not_execution",
+      "actual_status": "manual_review_closure_checklist_not_execution",
+      "status_matches": true,
+      "read_error": "",
+      "after": [
+        "final_submission_reviewer_handoff_note"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_post_review_state_transition_plan",
+      "command": "python Scripts/quality/build_final_submission_post_review_state_transition_plan.py",
+      "primary_output": "Results/static_audits/final_submission_post_review_state_transition_plan_20260610/final_submission_post_review_state_transition_plan.json",
+      "output_exists": true,
+      "output_mtime": "2026-06-11T05:18:59.562",
+      "output_mtime_epoch": 1781126339.5625975,
+      "expected_status": "post_review_state_transition_plan_not_execution",
+      "actual_status": "post_review_state_transition_plan_not_execution",
+      "status_matches": true,
+      "read_error": "",
+      "after": [
+        "final_submission_manual_review_closure_checklist"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_post_review_command_plan_coverage",
+      "command": "python Scripts/quality/check_final_submission_post_review_command_plan_coverage.py",
+      "primary_output": "Results/static_audits/final_submission_post_review_command_plan_coverage_20260610/final_submission_post_review_command_plan_coverage_check.json",
+      "output_exists": true,
+      "output_mtime": "2026-06-11T05:22:38.105",
+      "output_mtime_epoch": 1781126558.1056645,
+      "expected_status": "post_review_command_plan_coverage_check_not_execution",
+      "actual_status": "post_review_command_plan_coverage_check_not_execution",
+      "status_matches": true,
+      "read_error": "",
+      "after": [
+        "final_submission_post_review_state_transition_plan"
+      ],
+      "runs_now": false
+    },
+    {
+      "node_id": "final_submission_review_artifact_dependency_graph",
+      "command": "python Scripts/quality/build_final_submission_review_artifact_dependency_graph.py",
+      "primary_output": "Results/static_audits/final_submission_review_artifact_dependency_graph_20260610/final_submission_review_artifact_dependency_graph.json",
+      "output_exists": true,
+      "output_mtime": "2026-06-11T05:31:26.058",
+      "output_mtime_epoch": 1781127086.058508,
+      "expected_status": "review_artifact_dependency_graph_not_execution",
+      "actual_status": "review_artifact_dependency_graph_not_execution",
+      "status_matches": true,
+      "read_error": "",
+      "after": [
+        "final_submission_post_review_command_plan_coverage"
+      ],
+      "runs_now": false
+    }
+  ],
+  "edges": [
+    {
+      "from": "final_submission_blocked_gate_triage_map",
+      "to": "final_submission_human_decision_diff_template",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_human_decision_diff_template",
+      "to": "final_submission_reviewer_quickstart",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_reviewer_quickstart",
+      "to": "final_submission_review_progress_snapshot",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_review_progress_snapshot",
+      "to": "final_submission_post_review_rerun_matrix",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_post_review_rerun_matrix",
+      "to": "final_submission_manual_review_answer_sheet",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_manual_review_answer_sheet",
+      "to": "final_submission_answer_sheet_decision_consistency",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_answer_sheet_decision_consistency",
+      "to": "final_submission_review_artifact_bundle_index",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_review_artifact_bundle_index",
+      "to": "final_submission_reviewer_handoff_note",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_reviewer_handoff_note",
+      "to": "final_submission_manual_review_closure_checklist",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_manual_review_closure_checklist",
+      "to": "final_submission_post_review_state_transition_plan",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_post_review_state_transition_plan",
+      "to": "final_submission_post_review_command_plan_coverage",
+      "type": "after"
+    },
+    {
+      "from": "final_submission_post_review_command_plan_coverage",
+      "to": "final_submission_review_artifact_dependency_graph",
+      "type": "after"
+    }
+  ],
+  "stale_dependencies": [],
+  "missing_outputs": [],
+  "status_mismatches": [],
+  "issues": [],
+  "warnings": [],
+  "claim_boundary": [
+    "This checker reads downstream review-aid artifacts only.",
+    "It does not regenerate or refresh artifacts.",
+    "It does not run listed commands.",
+    "It does not update final_submission_static_audit_index.json.",
+    "It does not edit decision templates.",
+    "It does not approve decisions.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

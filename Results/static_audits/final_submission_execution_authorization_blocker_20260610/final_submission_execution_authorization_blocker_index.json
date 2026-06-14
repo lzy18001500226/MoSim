@@ -1,0 +1,725 @@
+{
+  "index_id": "final_submission_execution_authorization_blocker_index_20260610",
+  "status": "execution_authorization_blocker_index_not_execution",
+  "sources": {
+    "human_review_execution_gate_summary": "Results/static_audits/final_submission_human_review_execution_gate_20260610/final_submission_human_review_execution_gate_summary.json",
+    "reviewer_action_map": "Results/static_audits/final_submission_reviewer_action_map_20260610/final_submission_reviewer_action_map.json",
+    "reviewer_packet_index": "Results/static_audits/final_submission_reviewer_packet_index_20260610/final_submission_reviewer_packet_index.json",
+    "command_critical_path_index": "Results/static_audits/final_submission_post_review_command_critical_path_20260610/final_submission_post_review_command_critical_path_index.json"
+  },
+  "summary": {
+    "execution_target_count": 4,
+    "blocked_execution_target_count": 4,
+    "unique_reviewer_packet_action_count": 3,
+    "unique_no_packet_action_count": 3,
+    "target_action_reference_count": 16,
+    "target_without_no_packet_action_count": 1,
+    "issue_count": 0,
+    "automated_execution_allowed": false,
+    "answers_questions_now": false,
+    "fills_answers_now": false,
+    "copies_answers_now": false,
+    "edits_decision_artifacts_now": false,
+    "runs_commands_now": false,
+    "authorizes_execution_now": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "execution_target_authorization_blockers": [
+    {
+      "target_id": "report_source_edit",
+      "label": "Report-source edit application",
+      "ready_now": false,
+      "blocking_reason_count": 4,
+      "blocking_reasons": [
+        "review questions are not answered",
+        "decision artifacts are not edited",
+        "source edit readiness safe_to_apply remains false",
+        "source edit application plan is not applied"
+      ],
+      "required_action_ids": [
+        "A1-approve-or-reject-report-source-edits"
+      ],
+      "reviewer_packet_action_count": 1,
+      "no_packet_action_count": 0,
+      "reviewer_packet_actions": [
+        {
+          "action_id": "A1-approve-or-reject-report-source-edits",
+          "reviewer_packet_available": true,
+          "decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "decision": "pending_review",
+          "approved": false,
+          "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope",
+          "answer_field_count": 8,
+          "required_answer_field_count": 5,
+          "post_review_rerun_command_count": 18,
+          "action_specific_prefix_families": [
+            "report_source_review",
+            "source_output_readiness",
+            "pdf_export",
+            "final_acceptance_prereq"
+          ],
+          "shared_tail_families": [
+            "final_submission_dashboard",
+            "human_action_checklist",
+            "reviewer_action_map",
+            "human_review_decision_packet",
+            "human_review_guide",
+            "readiness_chain",
+            "refresh_order",
+            "static_audit_index",
+            "blocked_gate_triage",
+            "human_decision_diff",
+            "reviewer_quickstart",
+            "review_progress_snapshot"
+          ],
+          "execution_still_requires": [
+            "explicit approved or narrowed report-source decision",
+            "non-empty approved_preview_ids when edits are approved",
+            "a separate authorized report-source edit step before final source-output readiness can pass"
+          ],
+          "fills_answers_now": false,
+          "copies_answers_now": false,
+          "edits_decision_artifacts_now": false,
+          "runs_rerun_commands_now": false,
+          "approves_or_executes_now": false
+        }
+      ],
+      "no_packet_actions": [],
+      "future_command_families": [
+        "report_source_review",
+        "source_output_readiness",
+        "pdf_export",
+        "final_acceptance_prereq",
+        "final_submission_dashboard",
+        "human_action_checklist",
+        "reviewer_action_map",
+        "human_review_decision_packet",
+        "human_review_guide",
+        "readiness_chain",
+        "refresh_order",
+        "static_audit_index",
+        "blocked_gate_triage",
+        "human_decision_diff",
+        "reviewer_quickstart",
+        "review_progress_snapshot"
+      ],
+      "future_command_family_count": 16,
+      "requires_separate_authorization": true,
+      "authorizes_execution_now": false,
+      "executes_now": false
+    },
+    {
+      "target_id": "pdf_export",
+      "label": "Final PDF export",
+      "ready_now": false,
+      "blocking_reason_count": 4,
+      "blocking_reasons": [
+        "PDF engine is missing",
+        "report-source edit is not approved for export",
+        "final artifacts are not ready",
+        "final-output execution decision does not authorize PDF export"
+      ],
+      "required_action_ids": [
+        "A1-approve-or-reject-report-source-edits",
+        "A2-provide-pdf-engine",
+        "A4-create-reviewed-final-artifacts",
+        "A5-rerun-readiness-gates",
+        "A6-review-final-output-execution-decision"
+      ],
+      "reviewer_packet_action_count": 2,
+      "no_packet_action_count": 3,
+      "reviewer_packet_actions": [
+        {
+          "action_id": "A1-approve-or-reject-report-source-edits",
+          "reviewer_packet_available": true,
+          "decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "decision": "pending_review",
+          "approved": false,
+          "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope",
+          "answer_field_count": 8,
+          "required_answer_field_count": 5,
+          "post_review_rerun_command_count": 18,
+          "action_specific_prefix_families": [
+            "report_source_review",
+            "source_output_readiness",
+            "pdf_export",
+            "final_acceptance_prereq"
+          ],
+          "shared_tail_families": [
+            "final_submission_dashboard",
+            "human_action_checklist",
+            "reviewer_action_map",
+            "human_review_decision_packet",
+            "human_review_guide",
+            "readiness_chain",
+            "refresh_order",
+            "static_audit_index",
+            "blocked_gate_triage",
+            "human_decision_diff",
+            "reviewer_quickstart",
+            "review_progress_snapshot"
+          ],
+          "execution_still_requires": [
+            "explicit approved or narrowed report-source decision",
+            "non-empty approved_preview_ids when edits are approved",
+            "a separate authorized report-source edit step before final source-output readiness can pass"
+          ],
+          "fills_answers_now": false,
+          "copies_answers_now": false,
+          "edits_decision_artifacts_now": false,
+          "runs_rerun_commands_now": false,
+          "approves_or_executes_now": false
+        },
+        {
+          "action_id": "A6-review-final-output-execution-decision",
+          "reviewer_packet_available": true,
+          "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "decision": "pending_review",
+          "approved": false,
+          "decision_needed": "explicitly authorize or keep blocked PDF export, demo video recording, and final acceptance packet writing",
+          "answer_field_count": 15,
+          "required_answer_field_count": 12,
+          "post_review_rerun_command_count": 13,
+          "action_specific_prefix_families": [
+            "final_output_execution_decision"
+          ],
+          "shared_tail_families": [
+            "final_submission_dashboard",
+            "human_action_checklist",
+            "reviewer_action_map",
+            "human_review_decision_packet",
+            "human_review_guide",
+            "readiness_chain",
+            "refresh_order",
+            "static_audit_index",
+            "blocked_gate_triage",
+            "human_decision_diff",
+            "reviewer_quickstart",
+            "review_progress_snapshot"
+          ],
+          "execution_still_requires": [
+            "upstream source-output readiness true before PDF export",
+            "PDF engine available before PDF export",
+            "storyboard gate permits recording before demo video work",
+            "final acceptance prerequisite gate true before canonical PMO packet writing",
+            "a separate final-output execution authorization before any output generation"
+          ],
+          "fills_answers_now": false,
+          "copies_answers_now": false,
+          "edits_decision_artifacts_now": false,
+          "runs_rerun_commands_now": false,
+          "approves_or_executes_now": false
+        }
+      ],
+      "no_packet_actions": [
+        {
+          "action_id": "A2-provide-pdf-engine",
+          "reviewer_packet_available": false,
+          "reason": "no_current_reviewer_packet",
+          "decision_owner": "local_environment_owner",
+          "decision_needed": "install or expose an approved Pandoc PDF engine, or keep final PDF export blocked",
+          "decision_artifact": "",
+          "review_artifact_count": 2,
+          "rerun_after_decision_count": 2,
+          "rerun_after_decision_families": [
+            "pdf_export",
+            "final_submission_dashboard"
+          ],
+          "requires_separate_authorization": true,
+          "automated_execution_allowed": false,
+          "generates_final_outputs": false,
+          "final_acceptance": false
+        },
+        {
+          "action_id": "A4-create-reviewed-final-artifacts",
+          "reviewer_packet_available": false,
+          "reason": "no_current_reviewer_packet",
+          "decision_owner": "packaging_or_manual_operator",
+          "decision_needed": "after approvals, create reviewed final PDFs and demo_video.mp4, then verify artifact presence",
+          "decision_artifact": "",
+          "review_artifact_count": 3,
+          "rerun_after_decision_count": 3,
+          "rerun_after_decision_families": [
+            "final_artifact_manifest",
+            "final_acceptance_prereq",
+            "final_submission_dashboard"
+          ],
+          "requires_separate_authorization": true,
+          "automated_execution_allowed": false,
+          "generates_final_outputs": false,
+          "final_acceptance": false
+        },
+        {
+          "action_id": "A5-rerun-readiness-gates",
+          "reviewer_packet_available": false,
+          "reason": "no_current_reviewer_packet",
+          "decision_owner": "operator",
+          "decision_needed": "rerun readiness gates only after A1-A4 decisions or artifacts change",
+          "decision_artifact": "",
+          "review_artifact_count": 3,
+          "rerun_after_decision_count": 7,
+          "rerun_after_decision_families": [
+            "source_output_readiness",
+            "pdf_export",
+            "final_acceptance_prereq",
+            "final_submission_dashboard",
+            "human_action_checklist",
+            "readiness_chain",
+            "refresh_order"
+          ],
+          "requires_separate_authorization": true,
+          "automated_execution_allowed": false,
+          "generates_final_outputs": false,
+          "final_acceptance": false
+        }
+      ],
+      "future_command_families": [
+        "report_source_review",
+        "source_output_readiness",
+        "pdf_export",
+        "final_acceptance_prereq",
+        "final_submission_dashboard",
+        "human_action_checklist",
+        "reviewer_action_map",
+        "human_review_decision_packet",
+        "human_review_guide",
+        "readiness_chain",
+        "refresh_order",
+        "static_audit_index",
+        "blocked_gate_triage",
+        "human_decision_diff",
+        "reviewer_quickstart",
+        "review_progress_snapshot",
+        "final_artifact_manifest",
+        "final_output_execution_decision"
+      ],
+      "future_command_family_count": 18,
+      "requires_separate_authorization": true,
+      "authorizes_execution_now": false,
+      "executes_now": false
+    },
+    {
+      "target_id": "demo_video_recording",
+      "label": "Demo video recording/rendering",
+      "ready_now": false,
+      "blocking_reason_count": 3,
+      "blocking_reasons": [
+        "storyboard still requires manual review before recording",
+        "demo video artifact does not exist",
+        "final-output execution decision does not authorize demo video recording"
+      ],
+      "required_action_ids": [
+        "A3-review-demo-storyboard",
+        "A4-create-reviewed-final-artifacts",
+        "A5-rerun-readiness-gates",
+        "A6-review-final-output-execution-decision"
+      ],
+      "reviewer_packet_action_count": 2,
+      "no_packet_action_count": 2,
+      "reviewer_packet_actions": [
+        {
+          "action_id": "A3-review-demo-storyboard",
+          "reviewer_packet_available": true,
+          "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "decision": "pending_review",
+          "approved": false,
+          "decision_needed": "approve, reject, or revise storyboard scenes, wording, and evidence boundaries",
+          "answer_field_count": 15,
+          "required_answer_field_count": 12,
+          "post_review_rerun_command_count": 14,
+          "action_specific_prefix_families": [
+            "demo_video",
+            "final_output_execution_decision"
+          ],
+          "shared_tail_families": [
+            "final_submission_dashboard",
+            "human_action_checklist",
+            "reviewer_action_map",
+            "human_review_decision_packet",
+            "human_review_guide",
+            "readiness_chain",
+            "refresh_order",
+            "static_audit_index",
+            "blocked_gate_triage",
+            "human_decision_diff",
+            "reviewer_quickstart",
+            "review_progress_snapshot"
+          ],
+          "execution_still_requires": [
+            "storyboard review outcome recorded in a separate decision step",
+            "demo video recording remains blocked until final-output execution decision and upstream gates pass"
+          ],
+          "fills_answers_now": false,
+          "copies_answers_now": false,
+          "edits_decision_artifacts_now": false,
+          "runs_rerun_commands_now": false,
+          "approves_or_executes_now": false
+        },
+        {
+          "action_id": "A6-review-final-output-execution-decision",
+          "reviewer_packet_available": true,
+          "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "decision": "pending_review",
+          "approved": false,
+          "decision_needed": "explicitly authorize or keep blocked PDF export, demo video recording, and final acceptance packet writing",
+          "answer_field_count": 15,
+          "required_answer_field_count": 12,
+          "post_review_rerun_command_count": 13,
+          "action_specific_prefix_families": [
+            "final_output_execution_decision"
+          ],
+          "shared_tail_families": [
+            "final_submission_dashboard",
+            "human_action_checklist",
+            "reviewer_action_map",
+            "human_review_decision_packet",
+            "human_review_guide",
+            "readiness_chain",
+            "refresh_order",
+            "static_audit_index",
+            "blocked_gate_triage",
+            "human_decision_diff",
+            "reviewer_quickstart",
+            "review_progress_snapshot"
+          ],
+          "execution_still_requires": [
+            "upstream source-output readiness true before PDF export",
+            "PDF engine available before PDF export",
+            "storyboard gate permits recording before demo video work",
+            "final acceptance prerequisite gate true before canonical PMO packet writing",
+            "a separate final-output execution authorization before any output generation"
+          ],
+          "fills_answers_now": false,
+          "copies_answers_now": false,
+          "edits_decision_artifacts_now": false,
+          "runs_rerun_commands_now": false,
+          "approves_or_executes_now": false
+        }
+      ],
+      "no_packet_actions": [
+        {
+          "action_id": "A4-create-reviewed-final-artifacts",
+          "reviewer_packet_available": false,
+          "reason": "no_current_reviewer_packet",
+          "decision_owner": "packaging_or_manual_operator",
+          "decision_needed": "after approvals, create reviewed final PDFs and demo_video.mp4, then verify artifact presence",
+          "decision_artifact": "",
+          "review_artifact_count": 3,
+          "rerun_after_decision_count": 3,
+          "rerun_after_decision_families": [
+            "final_artifact_manifest",
+            "final_acceptance_prereq",
+            "final_submission_dashboard"
+          ],
+          "requires_separate_authorization": true,
+          "automated_execution_allowed": false,
+          "generates_final_outputs": false,
+          "final_acceptance": false
+        },
+        {
+          "action_id": "A5-rerun-readiness-gates",
+          "reviewer_packet_available": false,
+          "reason": "no_current_reviewer_packet",
+          "decision_owner": "operator",
+          "decision_needed": "rerun readiness gates only after A1-A4 decisions or artifacts change",
+          "decision_artifact": "",
+          "review_artifact_count": 3,
+          "rerun_after_decision_count": 7,
+          "rerun_after_decision_families": [
+            "source_output_readiness",
+            "pdf_export",
+            "final_acceptance_prereq",
+            "final_submission_dashboard",
+            "human_action_checklist",
+            "readiness_chain",
+            "refresh_order"
+          ],
+          "requires_separate_authorization": true,
+          "automated_execution_allowed": false,
+          "generates_final_outputs": false,
+          "final_acceptance": false
+        }
+      ],
+      "future_command_families": [
+        "demo_video",
+        "final_output_execution_decision",
+        "final_submission_dashboard",
+        "human_action_checklist",
+        "reviewer_action_map",
+        "human_review_decision_packet",
+        "human_review_guide",
+        "readiness_chain",
+        "refresh_order",
+        "static_audit_index",
+        "blocked_gate_triage",
+        "human_decision_diff",
+        "reviewer_quickstart",
+        "review_progress_snapshot",
+        "final_artifact_manifest",
+        "final_acceptance_prereq",
+        "source_output_readiness",
+        "pdf_export"
+      ],
+      "future_command_family_count": 18,
+      "requires_separate_authorization": true,
+      "authorizes_execution_now": false,
+      "executes_now": false
+    },
+    {
+      "target_id": "final_acceptance_packet",
+      "label": "Canonical PMO final acceptance packet",
+      "ready_now": false,
+      "blocking_reason_count": 5,
+      "blocking_reasons": [
+        "final artifacts are missing or failing",
+        "PDF export is not ready",
+        "demo video recording is not approved",
+        "source-output readiness blocks acceptance",
+        "final-output execution decision does not authorize final acceptance packet writing"
+      ],
+      "required_action_ids": [
+        "A1-approve-or-reject-report-source-edits",
+        "A2-provide-pdf-engine",
+        "A3-review-demo-storyboard",
+        "A4-create-reviewed-final-artifacts",
+        "A5-rerun-readiness-gates",
+        "A6-review-final-output-execution-decision"
+      ],
+      "reviewer_packet_action_count": 3,
+      "no_packet_action_count": 3,
+      "reviewer_packet_actions": [
+        {
+          "action_id": "A1-approve-or-reject-report-source-edits",
+          "reviewer_packet_available": true,
+          "decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "decision": "pending_review",
+          "approved": false,
+          "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope",
+          "answer_field_count": 8,
+          "required_answer_field_count": 5,
+          "post_review_rerun_command_count": 18,
+          "action_specific_prefix_families": [
+            "report_source_review",
+            "source_output_readiness",
+            "pdf_export",
+            "final_acceptance_prereq"
+          ],
+          "shared_tail_families": [
+            "final_submission_dashboard",
+            "human_action_checklist",
+            "reviewer_action_map",
+            "human_review_decision_packet",
+            "human_review_guide",
+            "readiness_chain",
+            "refresh_order",
+            "static_audit_index",
+            "blocked_gate_triage",
+            "human_decision_diff",
+            "reviewer_quickstart",
+            "review_progress_snapshot"
+          ],
+          "execution_still_requires": [
+            "explicit approved or narrowed report-source decision",
+            "non-empty approved_preview_ids when edits are approved",
+            "a separate authorized report-source edit step before final source-output readiness can pass"
+          ],
+          "fills_answers_now": false,
+          "copies_answers_now": false,
+          "edits_decision_artifacts_now": false,
+          "runs_rerun_commands_now": false,
+          "approves_or_executes_now": false
+        },
+        {
+          "action_id": "A3-review-demo-storyboard",
+          "reviewer_packet_available": true,
+          "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "decision": "pending_review",
+          "approved": false,
+          "decision_needed": "approve, reject, or revise storyboard scenes, wording, and evidence boundaries",
+          "answer_field_count": 15,
+          "required_answer_field_count": 12,
+          "post_review_rerun_command_count": 14,
+          "action_specific_prefix_families": [
+            "demo_video",
+            "final_output_execution_decision"
+          ],
+          "shared_tail_families": [
+            "final_submission_dashboard",
+            "human_action_checklist",
+            "reviewer_action_map",
+            "human_review_decision_packet",
+            "human_review_guide",
+            "readiness_chain",
+            "refresh_order",
+            "static_audit_index",
+            "blocked_gate_triage",
+            "human_decision_diff",
+            "reviewer_quickstart",
+            "review_progress_snapshot"
+          ],
+          "execution_still_requires": [
+            "storyboard review outcome recorded in a separate decision step",
+            "demo video recording remains blocked until final-output execution decision and upstream gates pass"
+          ],
+          "fills_answers_now": false,
+          "copies_answers_now": false,
+          "edits_decision_artifacts_now": false,
+          "runs_rerun_commands_now": false,
+          "approves_or_executes_now": false
+        },
+        {
+          "action_id": "A6-review-final-output-execution-decision",
+          "reviewer_packet_available": true,
+          "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "decision": "pending_review",
+          "approved": false,
+          "decision_needed": "explicitly authorize or keep blocked PDF export, demo video recording, and final acceptance packet writing",
+          "answer_field_count": 15,
+          "required_answer_field_count": 12,
+          "post_review_rerun_command_count": 13,
+          "action_specific_prefix_families": [
+            "final_output_execution_decision"
+          ],
+          "shared_tail_families": [
+            "final_submission_dashboard",
+            "human_action_checklist",
+            "reviewer_action_map",
+            "human_review_decision_packet",
+            "human_review_guide",
+            "readiness_chain",
+            "refresh_order",
+            "static_audit_index",
+            "blocked_gate_triage",
+            "human_decision_diff",
+            "reviewer_quickstart",
+            "review_progress_snapshot"
+          ],
+          "execution_still_requires": [
+            "upstream source-output readiness true before PDF export",
+            "PDF engine available before PDF export",
+            "storyboard gate permits recording before demo video work",
+            "final acceptance prerequisite gate true before canonical PMO packet writing",
+            "a separate final-output execution authorization before any output generation"
+          ],
+          "fills_answers_now": false,
+          "copies_answers_now": false,
+          "edits_decision_artifacts_now": false,
+          "runs_rerun_commands_now": false,
+          "approves_or_executes_now": false
+        }
+      ],
+      "no_packet_actions": [
+        {
+          "action_id": "A2-provide-pdf-engine",
+          "reviewer_packet_available": false,
+          "reason": "no_current_reviewer_packet",
+          "decision_owner": "local_environment_owner",
+          "decision_needed": "install or expose an approved Pandoc PDF engine, or keep final PDF export blocked",
+          "decision_artifact": "",
+          "review_artifact_count": 2,
+          "rerun_after_decision_count": 2,
+          "rerun_after_decision_families": [
+            "pdf_export",
+            "final_submission_dashboard"
+          ],
+          "requires_separate_authorization": true,
+          "automated_execution_allowed": false,
+          "generates_final_outputs": false,
+          "final_acceptance": false
+        },
+        {
+          "action_id": "A4-create-reviewed-final-artifacts",
+          "reviewer_packet_available": false,
+          "reason": "no_current_reviewer_packet",
+          "decision_owner": "packaging_or_manual_operator",
+          "decision_needed": "after approvals, create reviewed final PDFs and demo_video.mp4, then verify artifact presence",
+          "decision_artifact": "",
+          "review_artifact_count": 3,
+          "rerun_after_decision_count": 3,
+          "rerun_after_decision_families": [
+            "final_artifact_manifest",
+            "final_acceptance_prereq",
+            "final_submission_dashboard"
+          ],
+          "requires_separate_authorization": true,
+          "automated_execution_allowed": false,
+          "generates_final_outputs": false,
+          "final_acceptance": false
+        },
+        {
+          "action_id": "A5-rerun-readiness-gates",
+          "reviewer_packet_available": false,
+          "reason": "no_current_reviewer_packet",
+          "decision_owner": "operator",
+          "decision_needed": "rerun readiness gates only after A1-A4 decisions or artifacts change",
+          "decision_artifact": "",
+          "review_artifact_count": 3,
+          "rerun_after_decision_count": 7,
+          "rerun_after_decision_families": [
+            "source_output_readiness",
+            "pdf_export",
+            "final_acceptance_prereq",
+            "final_submission_dashboard",
+            "human_action_checklist",
+            "readiness_chain",
+            "refresh_order"
+          ],
+          "requires_separate_authorization": true,
+          "automated_execution_allowed": false,
+          "generates_final_outputs": false,
+          "final_acceptance": false
+        }
+      ],
+      "future_command_families": [
+        "report_source_review",
+        "source_output_readiness",
+        "pdf_export",
+        "final_acceptance_prereq",
+        "final_submission_dashboard",
+        "human_action_checklist",
+        "reviewer_action_map",
+        "human_review_decision_packet",
+        "human_review_guide",
+        "readiness_chain",
+        "refresh_order",
+        "static_audit_index",
+        "blocked_gate_triage",
+        "human_decision_diff",
+        "reviewer_quickstart",
+        "review_progress_snapshot",
+        "demo_video",
+        "final_output_execution_decision",
+        "final_artifact_manifest"
+      ],
+      "future_command_family_count": 19,
+      "requires_separate_authorization": true,
+      "authorizes_execution_now": false,
+      "executes_now": false
+    }
+  ],
+  "unique_reviewer_packet_actions": [
+    "A1-approve-or-reject-report-source-edits",
+    "A3-review-demo-storyboard",
+    "A6-review-final-output-execution-decision"
+  ],
+  "unique_no_packet_actions": [
+    "A2-provide-pdf-engine",
+    "A4-create-reviewed-final-artifacts",
+    "A5-rerun-readiness-gates"
+  ],
+  "issues": [],
+  "claim_boundary": [
+    "This authorization blocker index is a static review artifact only.",
+    "It maps blocked execution targets to human-review actions and future command families.",
+    "It does not create reviewer packets for actions that do not currently have one.",
+    "It does not answer reviewer questions.",
+    "It does not fill or copy answer-sheet values.",
+    "It does not edit decision artifacts.",
+    "It does not approve execution.",
+    "It does not run commands.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

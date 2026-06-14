@@ -1,0 +1,176 @@
+{
+  "snapshot_id": "final_submission_review_progress_snapshot_20260610",
+  "status": "review_progress_snapshot_not_execution",
+  "sources": {
+    "static_index": {
+      "source_id": "static_index",
+      "path": "Results/static_audits/final_submission_static_audit_index_20260610/final_submission_static_audit_index.json",
+      "status": "static_audit_index_not_final_submission",
+      "summary": {
+        "artifact_count": 18,
+        "missing_count": 0,
+        "unreadable_count": 0,
+        "ready_count": 1,
+        "blocked_count": 17,
+        "final_submission_ready": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "blocked_gate_triage_map": {
+      "source_id": "blocked_gate_triage_map",
+      "path": "Results/static_audits/final_submission_blocked_gate_triage_map_20260610/final_submission_blocked_gate_triage_map.json",
+      "status": "blocked_gate_triage_map_not_execution",
+      "summary": {
+        "blocked_artifact_count": 17,
+        "blocker_class_count": 10,
+        "dashboard_blocker_count": 16,
+        "automated_execution_allowed": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "human_decision_diff_template": {
+      "source_id": "human_decision_diff_template",
+      "path": "Results/static_audits/final_submission_human_decision_diff_template_20260610/final_submission_human_decision_diff_template.json",
+      "status": "human_decision_diff_template_not_execution",
+      "summary": {
+        "report_source_field_count": 8,
+        "final_output_action_count": 3,
+        "final_output_field_count": 15,
+        "applies_decisions_now": false,
+        "edits_decision_templates_now": false,
+        "automated_execution_allowed": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    },
+    "reviewer_quickstart": {
+      "source_id": "reviewer_quickstart",
+      "path": "Results/static_audits/final_submission_reviewer_quickstart_20260610/final_submission_reviewer_quickstart.json",
+      "status": "reviewer_quickstart_not_execution",
+      "summary": {
+        "review_action_count": 3,
+        "minimum_open_file_count": 10,
+        "missing_open_file_count": 0,
+        "automated_execution_allowed": false,
+        "generates_final_outputs": false,
+        "final_acceptance": false
+      }
+    }
+  },
+  "summary": {
+    "review_aid_count": 3,
+    "pending_review_action_count": 3,
+    "blocked_artifact_count": 17,
+    "blocker_class_count": 10,
+    "minimum_open_file_count": 10,
+    "missing_open_file_count": 0,
+    "automated_execution_allowed": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "review_aids": [
+    {
+      "aid_id": "blocked_gate_triage_map",
+      "path": "Results/static_audits/final_submission_blocked_gate_triage_map_20260610/final_submission_blocked_gate_triage_map.json",
+      "status": "blocked_gate_triage_map_not_execution",
+      "purpose": "groups blocked artifacts by blocker class and next human action",
+      "key_counts": {
+        "blocked_artifact_count": 17,
+        "blocker_class_count": 10,
+        "dashboard_blocker_count": 16
+      },
+      "next_use": "use before deciding which human review lane to clear first",
+      "approves_or_executes_now": false
+    },
+    {
+      "aid_id": "human_decision_diff_template",
+      "path": "Results/static_audits/final_submission_human_decision_diff_template_20260610/final_submission_human_decision_diff_template.json",
+      "status": "human_decision_diff_template_not_execution",
+      "purpose": "lists pending A1/A6 decision fields without editing templates",
+      "key_counts": {
+        "report_source_field_count": 8,
+        "final_output_action_count": 3,
+        "final_output_field_count": 15
+      },
+      "next_use": "use as the checklist for explicit user or PMO edits to decision templates",
+      "approves_or_executes_now": false
+    },
+    {
+      "aid_id": "reviewer_quickstart",
+      "path": "Results/static_audits/final_submission_reviewer_quickstart_20260610/final_submission_reviewer_quickstart.json",
+      "status": "reviewer_quickstart_not_execution",
+      "purpose": "orders the minimum files for A1/A3/A6 human review",
+      "key_counts": {
+        "review_action_count": 3,
+        "minimum_open_file_count": 10,
+        "missing_open_file_count": 0
+      },
+      "next_use": "open these files in order during human review",
+      "approves_or_executes_now": false
+    }
+  ],
+  "decision_groups": [
+    {
+      "decision_group_id": "A1-report-source-edit-decision",
+      "owner": "user_or_PMO",
+      "field_change_count": 8,
+      "required_checker_after_edit": "python Scripts/quality/check_report_source_edit_decision.py"
+    },
+    {
+      "decision_group_id": "A6-final-output-execution-decision",
+      "owner": "user_or_PMO",
+      "field_change_count": 15,
+      "required_checker_after_edit": "python Scripts/quality/check_final_output_execution_decision.py"
+    }
+  ],
+  "pending_review_actions": [
+    {
+      "action_id": "A1-approve-or-reject-report-source-edits",
+      "decision_owner": "user_or_PMO",
+      "current_decision": "pending_review",
+      "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope",
+      "decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+      "decision_diff_group": "A1-report-source-edit-decision",
+      "missing_open_files": [],
+      "approves_or_executes_now": false
+    },
+    {
+      "action_id": "A3-review-demo-storyboard",
+      "decision_owner": "user_or_PMO",
+      "current_decision": "pending_review",
+      "decision_needed": "approve, reject, or revise storyboard scenes, wording, and evidence boundaries",
+      "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+      "decision_diff_group": "A6-final-output-execution-decision",
+      "missing_open_files": [],
+      "approves_or_executes_now": false
+    },
+    {
+      "action_id": "A6-review-final-output-execution-decision",
+      "decision_owner": "user_or_PMO",
+      "current_decision": "pending_review",
+      "decision_needed": "explicitly authorize or keep blocked PDF export, demo video recording, and final acceptance packet writing",
+      "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+      "decision_diff_group": "A6-final-output-execution-decision",
+      "missing_open_files": [],
+      "approves_or_executes_now": false
+    }
+  ],
+  "missing_open_files": [],
+  "recommended_review_order": [
+    "A1-approve-or-reject-report-source-edits",
+    "A3-review-demo-storyboard",
+    "A6-review-final-output-execution-decision"
+  ],
+  "next_non_executing_step": "Human or PMO reviews A1, A3, and A6 using the quickstart and updates decision templates only in a separately authorized step.",
+  "claim_boundary": [
+    "This snapshot summarizes existing static review aids only.",
+    "It does not change gates, readiness, approval, or decision templates.",
+    "It does not apply report-source edits.",
+    "It does not execute post-review checkers.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}

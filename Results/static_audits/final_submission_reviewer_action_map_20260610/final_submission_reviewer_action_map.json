@@ -1,0 +1,239 @@
+{
+  "map_id": "final_submission_reviewer_action_map_20260610",
+  "status": "reviewer_action_map_not_execution",
+  "source_checklist": "Results/static_audits/final_submission_human_action_checklist_20260610/final_submission_human_action_checklist.json",
+  "summary": {
+    "action_count": 6,
+    "missing_review_artifact_count": 0,
+    "automated_execution_allowed": false,
+    "generates_final_outputs": false,
+    "final_acceptance": false
+  },
+  "actions": [
+    {
+      "action_id": "A1-approve-or-reject-report-source-edits",
+      "priority": 1,
+      "checklist_owner": "user_or_PMO",
+      "decision_owner": "user_or_PMO",
+      "decision_needed": "approve, reject, keep pending, or narrow the report-source edit preview scope",
+      "decision_artifact": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+      "source_blocker_count": 4,
+      "review_artifacts": [
+        {
+          "path": "Results/static_audits/simulation_report_patch_preview_20260610/simulation_report_patch_preview.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/simulation_report_source_edit_readiness_20260610/simulation_report_source_edit_readiness_gate.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/simulation_report_source_edit_application_plan_20260610/simulation_report_source_edit_application_plan.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision.template.json",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/report_source_edit_decision_template_20260610/report_source_edit_decision_check.json",
+          "exists": true,
+          "required": true
+        }
+      ],
+      "missing_review_artifacts": [],
+      "rerun_after_decision": [
+        "python Scripts/quality/check_report_source_edit_decision.py",
+        "python Scripts/quality/build_simulation_report_source_edit_readiness_gate.py",
+        "python Scripts/quality/build_simulation_report_source_edit_application_plan.py",
+        "python Scripts/quality/build_submission_source_output_readiness.py"
+      ],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "action_id": "A2-provide-pdf-engine",
+      "priority": 2,
+      "checklist_owner": "local_environment_owner",
+      "decision_owner": "local_environment_owner",
+      "decision_needed": "install or expose an approved Pandoc PDF engine, or keep final PDF export blocked",
+      "decision_artifact": "",
+      "source_blocker_count": 1,
+      "review_artifacts": [
+        {
+          "path": "Results/static_audits/pdf_export_dry_run_plan_20260610/pdf_export_dry_run_plan.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/submission_source_output_readiness_20260610/submission_source_output_readiness.md",
+          "exists": true,
+          "required": true
+        }
+      ],
+      "missing_review_artifacts": [],
+      "rerun_after_decision": [
+        "python Scripts/quality/build_pdf_export_dry_run_plan.py",
+        "python Scripts/quality/build_final_submission_readiness_dashboard.py"
+      ],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "action_id": "A3-review-demo-storyboard",
+      "priority": 3,
+      "checklist_owner": "user_or_PMO",
+      "decision_owner": "user_or_PMO",
+      "decision_needed": "approve, reject, or revise storyboard scenes, wording, and evidence boundaries",
+      "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+      "source_blocker_count": 2,
+      "review_artifacts": [
+        {
+          "path": "Results/static_audits/demo_video_storyboard_plan_20260610/demo_video_storyboard_plan.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "exists": true,
+          "required": true
+        }
+      ],
+      "missing_review_artifacts": [],
+      "rerun_after_decision": [
+        "python Scripts/quality/build_demo_video_storyboard_plan.py",
+        "python Scripts/quality/check_final_output_execution_decision.py",
+        "python Scripts/quality/build_final_submission_readiness_dashboard.py"
+      ],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "action_id": "A4-create-reviewed-final-artifacts",
+      "priority": 4,
+      "checklist_owner": "packaging_or_manual_operator",
+      "decision_owner": "packaging_or_manual_operator",
+      "decision_needed": "after approvals, create reviewed final PDFs and demo_video.mp4, then verify artifact presence",
+      "decision_artifact": "",
+      "source_blocker_count": 4,
+      "review_artifacts": [
+        {
+          "path": "Results/static_audits/final_submission_artifacts_20260610/final_submission_artifact_manifest_check.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/pdf_export_dry_run_plan_20260610/pdf_export_dry_run_plan.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/demo_video_storyboard_plan_20260610/demo_video_storyboard_plan.md",
+          "exists": true,
+          "required": true
+        }
+      ],
+      "missing_review_artifacts": [],
+      "rerun_after_decision": [
+        "python Scripts/quality/check_final_submission_artifact_manifest.py",
+        "python Scripts/quality/build_final_acceptance_packet_prereq_plan.py",
+        "python Scripts/quality/build_final_submission_readiness_dashboard.py"
+      ],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "action_id": "A5-rerun-readiness-gates",
+      "priority": 5,
+      "checklist_owner": "operator",
+      "decision_owner": "operator",
+      "decision_needed": "rerun readiness gates only after A1-A4 decisions or artifacts change",
+      "decision_artifact": "",
+      "source_blocker_count": 2,
+      "review_artifacts": [
+        {
+          "path": "Results/static_audits/final_submission_readiness_dashboard_20260610/final_submission_readiness_dashboard.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/final_submission_readiness_chain_20260610/final_submission_readiness_chain_check.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/final_submission_refresh_order_20260610/final_submission_refresh_order_check.md",
+          "exists": true,
+          "required": true
+        }
+      ],
+      "missing_review_artifacts": [],
+      "rerun_after_decision": [
+        "python Scripts/quality/build_submission_source_output_readiness.py",
+        "python Scripts/quality/build_pdf_export_dry_run_plan.py",
+        "python Scripts/quality/build_final_acceptance_packet_prereq_plan.py",
+        "python Scripts/quality/build_final_submission_readiness_dashboard.py",
+        "python Scripts/quality/build_final_submission_human_action_checklist.py",
+        "python Scripts/quality/check_final_submission_readiness_chain.py",
+        "python Scripts/quality/check_final_submission_refresh_order.py"
+      ],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    },
+    {
+      "action_id": "A6-review-final-output-execution-decision",
+      "priority": 6,
+      "checklist_owner": "user_or_PMO",
+      "decision_owner": "user_or_PMO",
+      "decision_needed": "explicitly authorize or keep blocked PDF export, demo video recording, and final acceptance packet writing",
+      "decision_artifact": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+      "source_blocker_count": 3,
+      "review_artifacts": [
+        {
+          "path": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision_template.md",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision.template.json",
+          "exists": true,
+          "required": true
+        },
+        {
+          "path": "Results/static_audits/final_output_execution_decision_20260610/final_output_execution_decision_check.json",
+          "exists": true,
+          "required": true
+        }
+      ],
+      "missing_review_artifacts": [],
+      "rerun_after_decision": [
+        "python Scripts/quality/check_final_output_execution_decision.py",
+        "python Scripts/quality/build_final_submission_readiness_dashboard.py",
+        "python Scripts/quality/build_final_submission_human_action_checklist.py"
+      ],
+      "automated_execution_allowed": false,
+      "generates_final_outputs": false,
+      "final_acceptance": false
+    }
+  ],
+  "human_review_decision_packet_template": "Results/static_audits/final_submission_human_review_decision_packet_20260610/final_submission_human_review_decision_packet.template.json",
+  "missing_review_artifacts": [],
+  "claim_boundary": [
+    "This map is a reviewer-facing static aid.",
+    "It does not approve decisions.",
+    "It does not install tools.",
+    "It does not apply report-source edits.",
+    "It does not export PDFs.",
+    "It does not record or render demo video.",
+    "It does not write PMO final acceptance."
+  ]
+}
