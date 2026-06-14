@@ -296,6 +296,7 @@ Scripts/UE5/assets/**/*.pyc
 /C:*/
 Results/diagnostics/
 Results/agent_runs/
+Results/external_learning/gazebosim_crawl_*/tmp_*/
 Results/unreal_scene_review/
 Results/unreal_scene_mapping/*probe*.json
 Results/unreal_scene_mapping/*object_bounds*.json

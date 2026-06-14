@@ -1,0 +1,9 @@
+References/Gazebo/docs/edifice/tutorials/sdf_worlds/entity_tree.png
+References/Gazebo/docs/edifice/tutorials/sdf_worlds/world_stats.png
+References/Gazebo/docs/edifice/tutorials/sensors/imu_msgs.png
+References/Gazebo/docs/edifice/tutorials/sensors/sensor_wall.png
+References/Gazebo/docs/edifice/tutorials/spawn_urdf/empty_world.png
+References/Gazebo/docs/edifice/tutorials/spawn_urdf/rrbot.gif
+References/Gazebo/docs/edifice/tutorials/spawn_urdf/urdf_spawned.png
+Results/external_learning/gazebosim_crawl_20260611/docs_edifice_03_remaining_media_paths_20260611.txt
+Results/external_learning/gazebosim_crawl_20260611/batch_docs_edifice_03_remaining_media_20260611.json

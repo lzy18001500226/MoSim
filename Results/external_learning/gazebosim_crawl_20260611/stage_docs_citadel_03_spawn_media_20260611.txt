@@ -1,0 +1,4 @@
+References/Gazebo/docs/citadel/tutorials/spawn_urdf/rrbot.gif
+References/Gazebo/docs/citadel/tutorials/spawn_urdf/urdf_spawned.png
+Results/external_learning/gazebosim_crawl_20260611/docs_citadel_03_spawn_media_paths_20260611.txt
+Results/external_learning/gazebosim_crawl_20260611/batch_docs_citadel_03_spawn_media_20260611.json

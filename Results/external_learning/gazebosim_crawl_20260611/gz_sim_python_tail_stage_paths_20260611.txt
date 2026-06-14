@@ -1,0 +1,10 @@
+References\Gazebo\gz-sim\python\test\link_test.sdf
+References\Gazebo\gz-sim\python\test\model_TEST.py
+References\Gazebo\gz-sim\python\test\model_test.sdf
+References\Gazebo\gz-sim\python\test\plugins\test_model_system.py
+References\Gazebo\gz-sim\python\test\sensor_TEST.py
+References\Gazebo\gz-sim\python\test\testFixture_TEST.py
+References\Gazebo\gz-sim\python\test\world_TEST.py
+References\Gazebo\gz-sim\python\test\world_test.sdf
+Results\external_learning\gazebosim_crawl_20260611\gz_sim_python_tail_paths_20260611.txt
+Results\external_learning\gazebosim_crawl_20260611\batch_gz_sim_python_tail_20260611.json

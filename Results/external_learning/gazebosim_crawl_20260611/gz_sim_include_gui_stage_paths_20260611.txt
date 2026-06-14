@@ -1,0 +1,5 @@
+References\Gazebo\gz-sim\include\gz\sim\gui\Gui.hh
+References\Gazebo\gz-sim\include\gz\sim\gui\GuiEvents.hh
+References\Gazebo\gz-sim\include\gz\sim\gui\GuiSystem.hh
+Results\external_learning\gazebosim_crawl_20260611\gz_sim_include_gui_paths_20260611.txt
+Results\external_learning\gazebosim_crawl_20260611\batch_gz_sim_include_gui_20260611.json
