@@ -1,0 +1,60 @@
+{
+  "schema": "mosim.mworks_codegen_runtime_schema.v1",
+  "model_name": "QuadrotorControllerBlocks.AWFF_FullControllerEquation_Sysblock",
+  "source_model_path": "Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo",
+  "sample_time_s": 0.01,
+  "input_global": "",
+  "output_global": "",
+  "input_fields": [
+    "x_error",
+    "y_error",
+    "z_error",
+    "z_ref_rate",
+    "roll_mea",
+    "pitch_mea",
+    "yaw_mea",
+    "yaw_ref"
+  ],
+  "output_fields": [
+    "y",
+    "y1",
+    "y2",
+    "y3"
+  ],
+  "input_sequence": [
+    {
+      "x_error": 0.0,
+      "y_error": 0.0,
+      "z_error": 0.0,
+      "z_ref_rate": 0.0,
+      "roll_mea": 0.0,
+      "pitch_mea": 0.0,
+      "yaw_mea": 0.0,
+      "yaw_ref": 0.0
+    },
+    {
+      "x_error": 0.05,
+      "y_error": -0.03,
+      "z_error": 0.1,
+      "z_ref_rate": 0.0,
+      "roll_mea": 0.01,
+      "pitch_mea": -0.01,
+      "yaw_mea": 0.02,
+      "yaw_ref": 0.0
+    },
+    {
+      "x_error": -0.04,
+      "y_error": 0.02,
+      "z_error": -0.05,
+      "z_ref_rate": -0.02,
+      "roll_mea": -0.015,
+      "pitch_mea": 0.012,
+      "yaw_mea": -0.01,
+      "yaw_ref": 0.03
+    }
+  ],
+  "notes": [
+    "input_global and output_global are intentionally blank until GenerateModelCode produces the actual generated C global names.",
+    "This schema is a runtime-harness contract, not generated-code evidence by itself."
+  ]
+}

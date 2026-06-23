@@ -1,0 +1,2770 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <world name="mosim_ue_factoryenvironmentcollect">
+    <physics name="default_physics" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <plugin filename="ignition-gazebo-physics-system" name="ignition::gazebo::systems::Physics" />
+    <plugin filename="ignition-gazebo-user-commands-system" name="ignition::gazebo::systems::UserCommands" />
+    <plugin filename="ignition-gazebo-scene-broadcaster-system" name="ignition::gazebo::systems::SceneBroadcaster" />
+    <plugin filename="ignition-gazebo-sensors-system" name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre</render_engine>
+    </plugin>
+    <plugin filename="ignition-gazebo-imu-system" name="ignition::gazebo::systems::Imu" />
+    <light name="sun" type="directional">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 30 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    <model name="ue_truth_ground">
+      <static>true</static>
+      <pose>0.75 0.75 -0.025 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>141 141 0.05</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>141 141 0.05</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.34 0.36 0.38 1</ambient>
+            <diffuse>0.34 0.36 0.38 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0000">
+      <static>true</static>
+      <pose>-64.875 -36 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>9.75 67.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>9.75 67.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0001">
+      <static>true</static>
+      <pose>-58.875 -29.625 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 54.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 54.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0002">
+      <static>true</static>
+      <pose>-0.375 -15.75 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 24 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 24 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0003">
+      <static>true</static>
+      <pose>-40.125 -9.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>6.75 35.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>6.75 35.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0004">
+      <static>true</static>
+      <pose>-24.375 -14.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 22.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 22.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0005">
+      <static>true</static>
+      <pose>-31.125 -22.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>11.25 3.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>11.25 3.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0006">
+      <static>true</static>
+      <pose>-12.75 -15 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>21 19.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>21 19.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0007">
+      <static>true</static>
+      <pose>60.75 -6.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>18 36.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>18 36.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0008">
+      <static>true</static>
+      <pose>-1.875 -13.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 20.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 20.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0009">
+      <static>true</static>
+      <pose>26.25 -22.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>51 2.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>51 2.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0010">
+      <static>true</static>
+      <pose>70.5 -6 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1.5 36 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1.5 36 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0011">
+      <static>true</static>
+      <pose>2.25 -21 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3 1.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3 1.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0012">
+      <static>true</static>
+      <pose>21.375 -21 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>24.75 1.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>24.75 1.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0013">
+      <static>true</static>
+      <pose>43.875 -10.125 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>15.75 23.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>15.75 23.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0014">
+      <static>true</static>
+      <pose>-33 -20.625 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>7.5 0.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>7.5 0.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0015">
+      <static>true</static>
+      <pose>-35.625 -19.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 0.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 0.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0016">
+      <static>true</static>
+      <pose>1.5 -19.5 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1.5 1.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1.5 1.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0017">
+      <static>true</static>
+      <pose>18 -9.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3 21.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3 21.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0018">
+      <static>true</static>
+      <pose>29.25 -9.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>9 21.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>9 21.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0019">
+      <static>true</static>
+      <pose>9.375 -9 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>14.25 21 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>14.25 21 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0020">
+      <static>true</static>
+      <pose>22.125 -9 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>5.25 21 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5.25 21 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0021">
+      <static>true</static>
+      <pose>34.875 -9 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 21 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 21 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0022">
+      <static>true</static>
+      <pose>1.125 -18 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 1.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 1.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0023">
+      <static>true</static>
+      <pose>-33.375 -16.125 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>6.75 3.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>6.75 3.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0024">
+      <static>true</static>
+      <pose>-27.75 -13.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>4.5 2.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>4.5 2.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0025">
+      <static>true</static>
+      <pose>1.125 -9.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 11.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 11.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0026">
+      <static>true</static>
+      <pose>-32.25 -7.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>4.5 12.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>4.5 12.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0027">
+      <static>true</static>
+      <pose>-28.125 -9 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 7.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 7.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0028">
+      <static>true</static>
+      <pose>-35.625 -6 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 9 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 9 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0029">
+      <static>true</static>
+      <pose>-29.625 -4.5 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 6 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 6 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0030">
+      <static>true</static>
+      <pose>-26.25 -6.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1.5 2.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1.5 2.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0031">
+      <static>true</static>
+      <pose>1.875 -5.625 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 3.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 3.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0032">
+      <static>true</static>
+      <pose>-28.875 -3.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 3.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 3.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0033">
+      <static>true</static>
+      <pose>-18.75 -4.125 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>9 2.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>9 2.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0034">
+      <static>true</static>
+      <pose>-7.875 -4.5 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>11.25 1.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>11.25 1.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0035">
+      <static>true</static>
+      <pose>-8.625 -3.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>5.25 0.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5.25 0.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0036">
+      <static>true</static>
+      <pose>-7.875 -1.5 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3.75 3 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3.75 3 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0037">
+      <static>true</static>
+      <pose>-65.625 3 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>8.25 10.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>8.25 10.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0038">
+      <static>true</static>
+      <pose>-44.25 3.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1.5 9.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1.5 9.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0039">
+      <static>true</static>
+      <pose>-36.375 -0.75 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 1.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 1.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0040">
+      <static>true</static>
+      <pose>-21.375 4.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>29.25 6.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>29.25 6.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0041">
+      <static>true</static>
+      <pose>35.625 12 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 21 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 21 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0042">
+      <static>true</static>
+      <pose>48.75 14.625 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>6 26.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>6 26.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0043">
+      <static>true</static>
+      <pose>-53.25 5.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>16.5 6 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>16.5 6 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0044">
+      <static>true</static>
+      <pose>-36.375 5.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 6 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 6 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0045">
+      <static>true</static>
+      <pose>37.125 3.75 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 3 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 3 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0046">
+      <static>true</static>
+      <pose>-4.125 6.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3.75 6.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3.75 6.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0047">
+      <static>true</static>
+      <pose>-1.125 7.125 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 3.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 3.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0048">
+      <static>true</static>
+      <pose>29.625 14.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>9.75 16.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>9.75 16.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0049">
+      <static>true</static>
+      <pose>37.875 14.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 16.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 16.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0050">
+      <static>true</static>
+      <pose>-6.375 8.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 3 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 3 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0051">
+      <static>true</static>
+      <pose>7.125 7.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>14.25 2.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>14.25 2.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0052">
+      <static>true</static>
+      <pose>21.375 7.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 2.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 2.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0053">
+      <static>true</static>
+      <pose>45.375 12 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 9 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 9 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0054">
+      <static>true</static>
+      <pose>-54 39.75 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>13.5 63 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>13.5 63 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0055">
+      <static>true</static>
+      <pose>-39.75 11.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>6 6 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>6 6 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0056">
+      <static>true</static>
+      <pose>-27.75 8.625 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3 0.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3 0.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0057">
+      <static>true</static>
+      <pose>-13.875 8.625 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>14.25 0.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>14.25 0.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0058">
+      <static>true</static>
+      <pose>-20.625 9.75 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>9.75 1.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>9.75 1.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0059">
+      <static>true</static>
+      <pose>-12.375 9.75 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>5.25 1.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5.25 1.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0060">
+      <static>true</static>
+      <pose>-7.5 9.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1.5 0.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1.5 0.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0061">
+      <static>true</static>
+      <pose>2.25 9.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>6 0.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>6 0.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0062">
+      <static>true</static>
+      <pose>-36.375 12.75 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 4.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 4.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0063">
+      <static>true</static>
+      <pose>-21.75 14.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>10.5 7.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>10.5 7.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0064">
+      <static>true</static>
+      <pose>15.75 14.625 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>9 5.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>9 5.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0065">
+      <static>true</static>
+      <pose>43.125 14.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3.75 4.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3.75 4.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0066">
+      <static>true</static>
+      <pose>62.25 19.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>16.5 15.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>16.5 15.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0067">
+      <static>true</static>
+      <pose>-39 42.75 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>4.5 57 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>4.5 57 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0068">
+      <static>true</static>
+      <pose>52.875 21.75 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 12 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 12 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0069">
+      <static>true</static>
+      <pose>70.875 21.75 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 12 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 12 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0070">
+      <static>true</static>
+      <pose>-21 19.5 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>9 3 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>9 3 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0071">
+      <static>true</static>
+      <pose>1.875 20.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>8.25 4.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>8.25 4.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0072">
+      <static>true</static>
+      <pose>-35.25 45.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3 51.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3 51.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0073">
+      <static>true</static>
+      <pose>-15.375 20.625 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 2.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 2.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0074">
+      <static>true</static>
+      <pose>-7.125 21 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>9.75 3 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>9.75 3 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0075">
+      <static>true</static>
+      <pose>9.75 21 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>7.5 3 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>7.5 3 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0076">
+      <static>true</static>
+      <pose>-27.375 21.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3.75 2.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3.75 2.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0077">
+      <static>true</static>
+      <pose>-12.375 21.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 2.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 2.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0078">
+      <static>true</static>
+      <pose>21.375 21.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 2.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 2.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0079">
+      <static>true</static>
+      <pose>-22.125 21.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>6.75 0.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>6.75 0.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0080">
+      <static>true</static>
+      <pose>-33 46.5 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1.5 49.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1.5 49.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0081">
+      <static>true</static>
+      <pose>-24 22.125 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3 0.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3 0.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0082">
+      <static>true</static>
+      <pose>-20.25 22.125 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3 0.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3 0.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0083">
+      <static>true</static>
+      <pose>25.875 25.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>39.75 3.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>39.75 3.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0084">
+      <static>true</static>
+      <pose>-31.875 48.375 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 45.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 45.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0085">
+      <static>true</static>
+      <pose>-8.625 27 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>5.25 1.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5.25 1.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0086">
+      <static>true</static>
+      <pose>32.25 28.125 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>9 0.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>9 0.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0087">
+      <static>true</static>
+      <pose>-28.5 47.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>6 36 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>6 36 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0088">
+      <static>true</static>
+      <pose>35.625 34.5 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 9 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 9 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0089">
+      <static>true</static>
+      <pose>-5.625 51 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>23.25 40.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>23.25 40.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0090">
+      <static>true</static>
+      <pose>18.375 34.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 8.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 8.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0091">
+      <static>true</static>
+      <pose>30.375 34.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 8.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 8.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0092">
+      <static>true</static>
+      <pose>39 34.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3 8.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3 8.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0093">
+      <static>true</static>
+      <pose>44.25 34.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3 8.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3 8.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0094">
+      <static>true</static>
+      <pose>63 34.875 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>16.5 8.25 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>16.5 8.25 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0095">
+      <static>true</static>
+      <pose>11.625 35.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>11.25 7.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>11.25 7.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0096">
+      <static>true</static>
+      <pose>28.875 35.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 7.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 7.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0097">
+      <static>true</static>
+      <pose>37.125 35.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 7.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 7.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0098">
+      <static>true</static>
+      <pose>49.875 35.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>8.25 7.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>8.25 7.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0099">
+      <static>true</static>
+      <pose>-42 51.75 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1.5 39 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1.5 39 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0100">
+      <static>true</static>
+      <pose>-21.375 51.75 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>8.25 39 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>8.25 39 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0101">
+      <static>true</static>
+      <pose>24 35.625 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>9 6.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>9 6.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0102">
+      <static>true</static>
+      <pose>33 35.625 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3 6.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3 6.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0103">
+      <static>true</static>
+      <pose>41.625 35.625 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>2.25 6.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>2.25 6.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0104">
+      <static>true</static>
+      <pose>54.375 35.625 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 6.75 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 6.75 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0105">
+      <static>true</static>
+      <pose>-62.625 52.5 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3.75 37.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3.75 37.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0106">
+      <static>true</static>
+      <pose>-45 52.5 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>4.5 37.5 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>4.5 37.5 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0107">
+      <static>true</static>
+      <pose>-67.125 53.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>5.25 36 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5.25 36 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0108">
+      <static>true</static>
+      <pose>8.25 56.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>4.5 30 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>4.5 30 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0109">
+      <static>true</static>
+      <pose>-31.125 68.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.75 6 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.75 6 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.58 0.42 0.25 1</ambient>
+            <diffuse>0.58 0.42 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_occ_0110">
+      <static>true</static>
+      <pose>-27 68.25 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>3 6 3</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>3 6 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.45 0.36 0.3 1</ambient>
+            <diffuse>0.45 0.36 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_truth_start_marker">
+      <static>true</static>
+      <pose>0 0 0.04 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.8 0.8 0.08</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.8 0.8 0.08</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.05 0.45 0.95 1</ambient>
+            <diffuse>0.05 0.45 0.95 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="ue_truth_goal_marker">
+      <static>true</static>
+      <pose>23.25 2.25 0.04 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.8 0.8 0.08</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.8 0.8 0.08</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.05 0.75 0.25 1</ambient>
+            <diffuse>0.05 0.75 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <include>
+      <uri>model://sunray150</uri>
+      <pose>0 0 1.9 0 0 0</pose>
+    </include>
+  </world>
+</sdf>

@@ -5,7 +5,8 @@ MWORKS/Sysplorer/Syslab remain the truth source for dynamics, control,
 planning, collision checks, event logs, and metrics.
 
 Current compact architecture boundary and Gate matrix entry:
-`Docs/Design/10_架构边界与当前状态ADR.md`.
+`Docs/Design/MoSim控制体系总览.md` and
+`Docs/Design/MoSim真机化收尾与C++化重构方案.md`.
 
 ## Current Policy
 

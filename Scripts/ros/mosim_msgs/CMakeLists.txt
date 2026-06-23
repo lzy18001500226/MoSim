@@ -7,6 +7,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/ControllerOutput.msg"
   "msg/PositionCommand.msg"
   "msg/PlannerSetpoint.msg"
   "msg/SetpointAdapterStatus.msg"

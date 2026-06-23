@@ -2,7 +2,7 @@
 <package format="3">
   <name>mosim_msgs</name>
   <version>0.1.0</version>
-  <description>MoSim ROS2 message contracts for planner setpoints and adapter status.</description>
+  <description>MoSim ROS2 message contracts for controller output, planner setpoints, and adapter status.</description>
   <maintainer email="devnull@example.com">MoSim</maintainer>
   <license>Proprietary</license>
 

@@ -1,0 +1,235 @@
+# Blender 5.0.0 MTL File: 'sunray150_dae_mid360_realistic_material_audit.blend'
+# www.blender.org
+
+newmtl MID360_Texture_Black_Base
+Ns 72.000000
+Ka 0.060000 0.065000 0.065000
+Kd 0.055000 0.060000 0.060000
+Ks 0.110000 0.110000 0.110000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl MID360_Texture_Black_M12_Connector
+Ns 80.000000
+Ka 0.045000 0.045000 0.043000
+Kd 0.035000 0.035000 0.033000
+Ks 0.080000 0.080000 0.080000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl MID360_Texture_Black_Mount_Inserts
+Ns 64.000000
+Ka 0.050000 0.050000 0.048000
+Kd 0.040000 0.040000 0.038000
+Ks 0.080000 0.080000 0.080000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl MID360_Texture_Dark_Blue_Mirror_Coated_Optical_Dome
+Ns 180.000000
+Ka 0.080000 0.140000 0.220000
+Kd 0.020000 0.170000 0.360000
+Ks 0.500000 0.650000 0.800000
+Ke 0.000000 0.000000 0.000000
+Ni 1.520000
+d 1.000000
+illum 3
+map_Ns Textures/mid360_blue_optical_window_roughness.png
+
+newmtl MID360_Texture_Satin_Black_Protection_Frame
+Ns 90.000000
+Ka 0.055000 0.060000 0.060000
+Kd 0.050000 0.055000 0.055000
+Ks 0.160000 0.160000 0.160000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Ns Textures/sunray150_black_rubber_roughness.png
+
+newmtl MID360_Texture_Satin_Silver_Grey_Coated_Metal_Housing
+Ns 120.000000
+Ka 0.310000 0.320000 0.320000
+Kd 0.520000 0.550000 0.540000
+Ks 0.380000 0.390000 0.390000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Ns Textures/mid360_silver_grey_aluminum_roughness.png
+
+newmtl Sunray150_Texture_Black_Heatshrink_Battery
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Textures/sunray150_battery_heatshrink_base.png
+map_Ns Textures/sunray150_battery_heatshrink_roughness.png
+
+newmtl Sunray150_Texture_Black_Motor_Bell
+Ka 0.820000 0.820000 0.820000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Textures/sunray150_dark_anodized_metal_base.png
+map_Ns Textures/sunray150_dark_anodized_metal_roughness.png
+
+newmtl Sunray150_Texture_CarbonFiber_Woven_Graphite
+Ka 1.000000 1.000000 1.000000
+Ks 0.120000 0.120000 0.120000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Textures/sunray150_carbon_fiber_base.png
+map_Ns Textures/sunray150_carbon_fiber_roughness.png
+
+newmtl Sunray150_Texture_Clear_Liuli_Glass_Prop_Guard
+Ns 893.024963
+Ka 0.520000 0.650000 0.660000
+Kd 0.420000 0.560000 0.580000
+Ks 0.080000 0.090000 0.090000
+Ke 0.000000 0.000000 0.000000
+Ni 1.470000
+d 1.000000
+illum 2
+
+newmtl Sunray150_Texture_Clear_Liuli_Glass_Propeller
+Ns 864.900024
+Ka 0.580000 0.700000 0.720000
+Kd 0.520000 0.660000 0.700000
+Ks 0.080000 0.090000 0.090000
+Ke 0.000000 0.000000 0.000000
+Ni 1.460000
+d 1.000000
+illum 2
+
+newmtl Sunray150_Texture_Copper_Motor_Windings
+Ka 0.950000 0.950000 0.950000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Textures/sunray150_dark_anodized_metal_base.png
+map_Ns Textures/sunray150_dark_anodized_metal_roughness.png
+
+newmtl Sunray150_Texture_Dark_Anodized_Aluminum
+Ka 0.720000 0.720000 0.720000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Textures/sunray150_dark_anodized_metal_base.png
+map_Ns Textures/sunray150_dark_anodized_metal_roughness.png
+
+newmtl Sunray150_Texture_Dark_Chromoly_Steel_Screws
+Ka 0.900000 0.900000 0.900000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Textures/sunray150_dark_anodized_metal_base.png
+map_Ns Textures/sunray150_dark_anodized_metal_roughness.png
+
+newmtl Sunray150_Texture_Gold_7075_Aluminum_Standoffs
+Ka 0.820000 0.820000 0.820000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Textures/sunray150_gold_anodized_aluminum_base.png
+map_Ns Textures/sunray150_gold_anodized_aluminum_roughness.png
+
+newmtl Sunray150_Texture_Matte_Black_Plastic
+Ns 14.400002
+Ka 1.000000 1.000000 1.000000
+Kd 0.014000 0.014000 0.013000
+Ks 0.060000 0.060000 0.060000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Sunray150_Texture_N150_Black_Cooling_Fan
+Ns 115.599983
+Ka 1.000000 1.000000 1.000000
+Kd 0.012000 0.012000 0.011000
+Ks 0.140000 0.140000 0.140000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Sunray150_Texture_N150_M2_Storage_Module
+Ns 336.400055
+Ka 0.080000 0.080000 0.080000
+Kd 0.075000 0.082000 0.078000
+Ks 0.180000 0.180000 0.180000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+
+newmtl Sunray150_Texture_PCB_Black_Soldermask
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Textures/sunray150_pcb_black_base.png
+map_Ns Textures/sunray150_pcb_black_roughness.png
+
+newmtl Sunray150_Texture_Rubber_Cable_Black
+Ka 1.000000 1.000000 1.000000
+Ks 0.220000 0.220000 0.220000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Textures/sunray150_black_rubber_base.png
+map_Ns Textures/sunray150_black_rubber_roughness.png
+
+newmtl Sunray150_Texture_TF_Mini_Black_Sensor
+Ns 230.400024
+Ka 1.000000 1.000000 1.000000
+Kd 0.018000 0.018000 0.017000
+Ks 0.220000 0.220000 0.220000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Sunray150_Texture_USB_Camera_Matte_Black_Housing
+Ka 1.000000 1.000000 1.000000
+Ks 0.080000 0.080000 0.080000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Textures/sunray150_camera_black_polymer_base.png
+map_Ns Textures/sunray150_camera_black_polymer_roughness.png
+
+newmtl Sunray150_Texture_USB_HDMI_Nickel_Shell
+Ka 0.720000 0.720000 0.720000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Textures/sunray150_dark_anodized_metal_base.png
+map_Ns Textures/sunray150_dark_anodized_metal_roughness.png

@@ -147,7 +147,7 @@ u1, u2, u3, u4
 ```
 
 Formation runs must preserve `uav_id` or separated `uav_<id>/` raw traces as
-defined in `Docs/Design/09_多机编队架构与数据设计.md`.
+defined in `Docs/Design/MoSim规划与编队控制接口规范.md`.
 
 Pass condition:
 

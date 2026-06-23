@@ -59,6 +59,12 @@ only remembered by PMO.
 
 ### ROS2 / RViz2 / FAST-LIO
 
+Current single-thread Sunray review is not this gate. For Sunray ROS1,
+Gazebo Classic, RViz, MID360, takeoff-hover-land, or figure-8 review, use
+`Docs/Workflows/sunray_ros1_current_runtime_lane.md` first. Do not route a
+blocked current Sunray ROS1 task into ROS2/PX4/x500 or downloaded FAST-LIO as
+an equivalent substitute.
+
 ROS2 runtime work must treat every live graph as a scarce, bounded probe. If
 the task says existing-evidence-only or no-rerun, the department must not
 launch ROS2; it closes from the existing evidence or returns a blocker.

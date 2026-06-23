@@ -2,7 +2,7 @@ model AWFF_PositionOuterLoop_Sysblock "MWORKS.Sysblock AWFF PID position outer-l
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
-  annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(x_error,y_error,z_error,z_ref_rate), Right(pitch_ref,roll_ref,thrust_ref)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
+  annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(x_error,y_error,z_error,z_ref_rate), Right(pitch_ref,roll_ref,thrust_ref)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0",CodeGeneration(Config = {"code_placement":{"mode":"Compact"},"code_replacement":{"standard_c_library":"C99"},"custom_code":{"code":{"function_declare":{"head":"","item_head":"","item_tail":"","tail":""},"function_define":{"head":"","item_head":"","item_tail":"","tail":""},"global_variable_declare":{"head":"","item_head":"","item_tail":"","tail":""},"global_variable_define":{"head":"","item_head":"","item_tail":"","tail":""},"include":{"head":"","item_head":"","item_tail":"","tail":""},"macro":{"head":"","item_head":"","item_tail":"","tail":""},"type":{"head":"","item_head":"","item_tail":"","tail":""}},"code_protection":{"integer_division_by_zero":false,"overflow":false}},"data_type":{"real_as_float":true},"experiment":{"task_and_sample":{"muti_task_mode":false,"whether_to_use_prefix":false}},"hardware_platform":{"largest_atomic_size":{"floating_point":"32","integer":"32"}},"identifier":{"max_length":32,"style":{"function":"camelCase","local_variable":"camelCase","macro":"camelCase","mem_var":"camelCase","type":"camelCase"}},"interface":{"function_name":{"initialize":"Init","step":"Step"}},"is_expand":{"is_expand":false},"optimization":{"array_loop_threshold":5,"logical_operator":"logical"}}, Sim_seting = {"sim_seting":{"output":"C:\\Users\\HP\\Desktop\\MoSim\\Results\\generated_mworks\\AWFF_PositionOuterLoop_Sysblock_20260620_070500"}})),
     Icon(coordinateSystem(preserveAspectRatio=false), graphics={
       Rectangle(extent={{-100,-100},{100,100}},lineColor={45,85,130},fillColor={238,246,255},fillPattern=FillPattern.Solid,radius=8),
       Text(extent={{-90,30},{90,-6}},textString="Position",lineColor={20,45,75}),
@@ -41,48 +41,48 @@ model AWFF_PositionOuterLoop_Sysblock "MWORKS.Sysblock AWFF PID position outer-l
   end ModelWorkspace;
 
 equation
-  connect(x_error, x_kp.u)
+  connect(x_error, x_kp.u) 
     annotation(Line(origin={-205,120},points={{-25,-10},{23,10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(x_error, x_kd.u)
+  connect(x_error, x_kd.u) 
     annotation(Line(origin={-205,100},points={{-25,10},{23,-10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(x_kp.y, x_sum.u1)
+  connect(x_kp.y, x_sum.u1) 
     annotation(Line(origin={-135,120},points={{-23,10},{23,-10}},color={0,0,0}));
-  connect(x_kd.y, x_sum.u2)
+  connect(x_kd.y, x_sum.u2) 
     annotation(Line(origin={-135,100},points={{-23,-10},{23,10}},color={0,0,0}));
-  connect(x_sum.y, x_scale.u)
+  connect(x_sum.y, x_scale.u) 
     annotation(Line(origin={-65,110},points={{-23,0},{23,0}},color={0,0,0}));
-  connect(x_scale.y, pitch_ref)
+  connect(x_scale.y, pitch_ref) 
     annotation(Line(origin={60,110},points={{-78,0},{80,0}},color={0,0,0}));
 
-  connect(y_error, y_kp.u)
+  connect(y_error, y_kp.u) 
     annotation(Line(origin={-205,50},points={{-25,-10},{23,10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(y_error, y_kd.u)
+  connect(y_error, y_kd.u) 
     annotation(Line(origin={-205,30},points={{-25,10},{23,-10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(y_kp.y, y_sum.u1)
+  connect(y_kp.y, y_sum.u1) 
     annotation(Line(origin={-135,50},points={{-23,10},{23,-10}},color={0,0,0}));
-  connect(y_kd.y, y_sum.u2)
+  connect(y_kd.y, y_sum.u2) 
     annotation(Line(origin={-135,30},points={{-23,-10},{23,10}},color={0,0,0}));
-  connect(y_sum.y, y_scale.u)
+  connect(y_sum.y, y_scale.u) 
     annotation(Line(origin={-65,40},points={{-23,0},{23,0}},color={0,0,0}));
-  connect(y_scale.y, roll_ref)
+  connect(y_scale.y, roll_ref) 
     annotation(Line(origin={60,40},points={{-78,0},{80,0}},color={0,0,0}));
 
-  connect(z_error, z_kp.u)
+  connect(z_error, z_kp.u) 
     annotation(Line(origin={-205,-30},points={{-25,-10},{23,10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(z_error, z_ki.u1)
+  connect(z_error, z_ki.u1) 
     annotation(Line(origin={-205,-50},points={{-25,10},{23,-10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(z_error, z_kd.u)
+  connect(z_error, z_kd.u) 
     annotation(Line(origin={-205,-70},points={{-25,30},{23,-30}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(z_ref_rate, z_ff.u)
+  connect(z_ref_rate, z_ff.u) 
     annotation(Line(origin={-205,-130},points={{-25,10},{23,-10}},color={0,0,0}));
-  connect(z_kp.y, z_sum.u1)
+  connect(z_kp.y, z_sum.u1) 
     annotation(Line(origin={-125,-35},points={{-33,15},{33,-18}},color={0,0,0}));
-  connect(z_ki.y, z_sum.u2)
+  connect(z_ki.y, z_sum.u2) 
     annotation(Line(origin={-125,-60},points={{-33,0},{33,0}},color={0,0,0}));
-  connect(z_kd.y, z_sum.u3)
+  connect(z_kd.y, z_sum.u3) 
     annotation(Line(origin={-125,-85},points={{-33,-15},{33,18}},color={0,0,0}));
-  connect(z_ff.y, z_sum.u4)
+  connect(z_ff.y, z_sum.u4) 
     annotation(Line(origin={-125,-110},points={{-33,-30},{33,45}},color={0,0,0}));
-  connect(z_sum.y, thrust_ref)
+  connect(z_sum.y, thrust_ref) 
     annotation(Line(origin={35,-60},points={{-103,0},{105,0}},color={0,0,0}));
 end AWFF_PositionOuterLoop_Sysblock;

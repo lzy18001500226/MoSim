@@ -23,6 +23,7 @@ def generate_launch_description():
             DeclareLaunchArgument("imu_topic", default_value="/mosim/forward/imu"),
             DeclareLaunchArgument("map_frame", default_value="ue_world"),
             DeclareLaunchArgument("base_frame", default_value="base"),
+            DeclareLaunchArgument("visualization_frame", default_value="base"),
             DeclareLaunchArgument("use_base_extrinsics", default_value="true"),
             DeclareLaunchArgument("lidar_frame", default_value="base/mid360_link"),
             DeclareLaunchArgument("imu_frame", default_value="base/forward_imu_optical_frame"),
@@ -57,7 +58,7 @@ def generate_launch_description():
                                 "' == 'true' else ''",
                             ]
                         ),
-                        "common.visualization_frame": LaunchConfiguration("base_frame"),
+                        "common.visualization_frame": LaunchConfiguration("visualization_frame"),
                         "gravity_alignment.enable_gravity_alignment": False,
                     },
                     LaunchConfiguration("config_path"),

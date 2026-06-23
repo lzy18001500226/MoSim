@@ -1,0 +1,1401 @@
+# 8. 项目组概述：MJX、MuJoCo Playground、dm_control 与 MuJoCo MPC
+
+这一组项目不能当成四个互相独立的仿真器。它们都建立在 MuJoCo 周围，但分别解决不同层的问题：
+
+```text
+MuJoCo
+    负责物理动力学
+
+MJX / MuJoCo Warp
+    负责把 MuJoCo 风格的物理扩展到 GPU 批量仿真
+
+dm_control
+    负责任务、环境、模型组合和强化学习接口
+
+MuJoCo Playground
+    负责现代 GPU 机器人学习、训练流程和 sim-to-real
+
+MuJoCo MPC
+    负责基于模型的在线预测控制与轨迹优化
+```
+
+对我们的四旋翼项目而言，这组生态的价值是：
+
+> **MuJoCo 解决“飞机怎么运动”，dm_control 解决“任务怎么组织”，Playground 解决“策略怎么批量训练”，MJX/Warp 解决“怎么并行加速”，MuJoCo MPC 解决“怎么用模型预测未来并实时选控制量”。**
+
+它们不应整体搬入主干，而应分别吸收对应层的设计。
+
+---
+
+# 8.1 MJX：MuJoCo 的 JAX/XLA 并行后端
+
+## 8.1.1 定位
+
+MJX，即 MuJoCo XLA，是 MuJoCo 在 JAX/XLA 计算体系上的重新实现。它允许 MuJoCo 风格的动力学运行在 JAX 支持的计算硬件上，包括 NVIDIA/AMD GPU、Apple Silicon 和 TPU。MJX 使用与 MuJoCo 相同或相近的动力学算法，但为了适配 JAX 的函数式、批处理和编译执行方式，部分 API 与传统 MuJoCo 有所不同。([MuJoCo Documentation][1])
+
+它的定位不是：
+
+```text
+让单个 MuJoCo 环境跑得更快
+```
+
+而主要是：
+
+```text
+一次并行运行大量环境
+支持 JIT 编译
+支持向量化
+接入 JAX 强化学习生态
+支持 GPU/TPU 批量训练
+```
+
+官方文档特别提醒：对于单个 `mjData` 场景，MJX-JAX 可能比高度优化的 CPU MuJoCo 慢很多；它的优势主要来自批量并行，而不是单实例延迟。([MuJoCo Documentation][2])
+
+这点非常重要。
+
+错误理解：
+
+```text
+MJX = GPU版 MuJoCo，所以任何任务都更快
+```
+
+正确理解：
+
+```text
+单环境、低延迟控制：
+    CPU MuJoCo 往往更合适
+
+数百/数千并行环境：
+    MJX 才可能体现优势
+```
+
+---
+
+## 8.1.2 核心设计理念
+
+| 设计原则        | 说明                                |
+| ----------- | --------------------------------- |
+| 函数式状态       | 模型和状态作为显式输入输出传递，尽量避免隐式可变全局状态      |
+| 批量优先        | 数据结构天然适合增加 batch 维度，同时仿真多个环境      |
+| JIT 编译      | 通过 JAX/XLA 将计算图编译到 CPU、GPU或TPU    |
+| 向量化         | 使用 `vmap` 等方式批量执行相同物理过程           |
+| 自动微分兼容      | 可利用 JAX 的自动微分生态，但并非所有物理操作都天然平滑    |
+| 与 MuJoCo 对齐 | 尽量沿用 MuJoCo 的模型和主要仿真接口            |
+| 静态结构优先      | 模型结构变化会触发重新编译，适合结构固定、状态和参数批量变化的任务 |
+
+---
+
+## 8.1.3 为什么 MJX 适合强化学习？
+
+强化学习训练不是只运行一架飞机一次，而是：
+
+```text
+环境 1：
+    无风
+
+环境 2：
+    侧风 2 m/s
+
+环境 3：
+    电机 1 效率 80%
+
+环境 4：
+    质量增加 10%
+
+……
+
+环境 2048：
+    随机初始状态
+```
+
+所有环境执行的是相同动力学方程，只是参数和状态不同。
+
+这非常适合 GPU：
+
+```text
+同一条计算指令
+        ↓
+处理大量环境中的不同数据
+```
+
+因此可以将状态组织成：
+
+```text
+qpos[environment, state_dimension]
+qvel[environment, velocity_dimension]
+ctrl[environment, action_dimension]
+```
+
+而不是一个一个调用仿真。
+
+---
+
+## 8.1.4 对四旋翼项目的用途
+
+MJX 最适合后续做：
+
+```text
+大规模悬停训练
+轨迹跟踪策略训练
+随机风场训练
+电机故障恢复策略
+质量/惯量域随机化
+传感器噪声鲁棒性
+控制器参数自动搜索
+多初始条件蒙特卡洛仿真
+```
+
+例如训练抗电机退化策略：
+
+```text
+每个环境随机生成：
+    η1, η2, η3, η4 ∈ [0.7, 1.0]
+
+策略输入：
+    位置误差
+    速度
+    姿态
+    角速度
+    电机状态
+
+策略输出：
+    推力/姿态目标
+    或四电机修正量
+```
+
+MJX 可以同时运行大量不同退化组合。
+
+---
+
+## 8.1.5 我们应该吸收什么？
+
+### 吸收一：Batch 维度是一级概念
+
+我们的核心状态接口未来不要只假设一架飞机：
+
+```text
+错误：
+    VehicleState state;
+
+更可扩展：
+    VehicleStateBatch states;
+```
+
+即使第一阶段只实现单机，也要避免设计成永远只能单实例。
+
+### 吸收二：纯函数式步进接口
+
+理想接口：
+
+```text
+next_state, observation = step(
+    model,
+    state,
+    action,
+    random_key
+)
+```
+
+这比大量隐式成员变量更利于：
+
+```text
+并行
+回放
+测试
+微分
+复制状态
+```
+
+### 吸收三：模型结构和运行参数区分
+
+需要区分：
+
+```text
+结构参数：
+    电机数量
+    刚体拓扑
+    传感器类型
+
+运行参数：
+    质量
+    风速
+    电机效率
+    噪声
+```
+
+结构参数改变通常会影响编译；运行参数更适合批量随机化。
+
+---
+
+## 8.1.6 不应该照搬什么？
+
+不要第一阶段就把整个平台改成 JAX。
+
+原因：
+
+```text
+ROS2 不以 JAX 为核心
+PX4 不以 JAX 为核心
+Gazebo 不以 JAX 为核心
+UE 不以 JAX 为核心
+实时部署仍需要 C++/PX4/ROS2
+```
+
+MJX 应作为**训练后端**，不是系统总线。
+
+---
+
+## 8.1.7 最终判断
+
+```text
+是否进入项目：
+    是
+
+进入哪一层：
+    GPU批量物理后端
+    强化学习训练后端
+
+是否第一阶段实现：
+    否
+
+主要用途：
+    大规模并行训练
+    域随机化
+    参数搜索
+    蒙特卡洛仿真
+
+不承担：
+    ROS2工程通信
+    PX4 SITL主链
+    MID360仿真
+    UE展示
+```
+
+---
+
+# 8.2 MuJoCo Playground：现代 GPU 机器人学习框架
+
+## 8.2.1 定位
+
+MuJoCo Playground 是 Google DeepMind 开源的 GPU 加速机器人学习与 sim-to-real 框架，建立在 MuJoCo MJX 之上，并已支持 MJX JAX 后端以及 MuJoCo Warp 后端。它提供经典控制、移动机器人和操作任务，并附带训练脚本、环境组织、视觉支持和 sim-to-real 工作流。([GitHub][3])
+
+它不是单纯物理引擎，而是：
+
+```text
+物理后端
+    +
+任务定义
+    +
+奖励函数
+    +
+域随机化
+    +
+训练算法接口
+    +
+评估与可视化
+```
+
+可以把它理解成：
+
+> **MuJoCo 是发动机，Playground 是训练场、教练、比赛规则和训练流程。**
+
+---
+
+## 8.2.2 核心设计理念
+
+| 设计原则           | 说明                                        |
+| -------------- | ----------------------------------------- |
+| GPU机器人学习优先     | 从一开始就面向大量并行环境                             |
+| 环境标准化          | 每个任务具有统一 reset、step、observation、reward 结构 |
+| 物理与任务分离        | 同一个机器人模型可以用于多个任务                          |
+| sim-to-real 导向 | 强调域随机化、策略部署和真实机器人迁移                       |
+| 后端可切换          | 支持 MJX JAX 和 MuJoCo Warp                  |
+| 训练脚本标准化        | 提供 PPO 等训练入口，减少每个项目重复搭训练框架                |
+| 视觉任务扩展         | 支持批量视觉渲染后端                                |
+| 模型资产复用         | 可使用 MuJoCo Menagerie 中的机器人模型              |
+
+官方仓库将它描述为 GPU 加速机器人学习和 sim-to-real 的综合环境套件，并提供 dm_control 经典环境、移动与操作环境、视觉环境以及 PPO 等训练入口。([GitHub][3])
+
+---
+
+## 8.2.3 Playground 解决了 MuJoCo 没解决的什么问题？
+
+MuJoCo 本身会告诉你：
+
+```text
+给定状态和控制量
+下一时刻状态是什么
+```
+
+但它不会自动告诉你：
+
+```text
+什么时候重置？
+观测给策略哪些量？
+奖励怎么算？
+任务成功条件是什么？
+哪些参数随机化？
+训练过程怎么组织？
+策略怎么保存？
+怎么评估？
+```
+
+Playground 把这些补齐。
+
+可以简化为：
+
+```text
+MuJoCo：
+    physics.step()
+
+Playground：
+    env.reset()
+    env.step(action)
+    reward()
+    terminate()
+    randomize()
+    train()
+    evaluate()
+```
+
+---
+
+## 8.2.4 四旋翼环境如何按 Playground 思想设计？
+
+我们可以定义任务族。
+
+### Hover
+
+```text
+目标：
+    在指定位置悬停
+
+观测：
+    位置误差
+    速度
+    姿态
+    角速度
+    上一时刻动作
+
+动作：
+    推力和姿态目标
+    或四个电机命令
+
+奖励：
+    位置误差惩罚
+    姿态误差惩罚
+    控制平滑惩罚
+    能耗惩罚
+```
+
+### TrajectoryTracking
+
+```text
+目标：
+    跟踪圆形、八字或样条轨迹
+
+额外观测：
+    未来参考轨迹点
+
+奖励：
+    轨迹误差
+    速度误差
+    控制平滑性
+```
+
+### WindRejection
+
+```text
+随机化：
+    风向
+    风速
+    阵风
+    空气阻力参数
+```
+
+### MotorFailure
+
+```text
+随机化：
+    故障电机
+    效率下降比例
+    故障发生时间
+
+奖励：
+    保持稳定
+    高度损失最小
+    偏航失控最小
+```
+
+### ObstacleAvoidance
+
+```text
+观测：
+    简化距离射线
+    深度图
+    局部占据栅格
+
+动作：
+    速度目标
+    加速度目标
+```
+
+注意：第一阶段不应让 RL 同时承担感知、规划、姿态控制和电机控制，否则难以定位问题。
+
+---
+
+## 8.2.5 域随机化设计
+
+Playground 最值得我们学习的是 sim-to-real 思想。
+
+对于云纵 Sunray-150，可以随机化：
+
+```text
+质量：
+    ±10%
+
+惯量：
+    ±10% 至 ±20%
+
+推力系数：
+    ±15%
+
+电机时间常数：
+    随机变化
+
+质心：
+    小范围偏移
+
+风扰：
+    方向、强度、阵风
+
+传感器：
+    偏置、噪声、延迟
+
+电池：
+    推力上限、响应变化
+
+地面：
+    摩擦、起飞面倾斜
+```
+
+这样训练出的策略不会只适用于“一架参数绝对正确的虚拟飞机”。
+
+---
+
+## 8.2.6 训练与验证分离
+
+应该建立两个环境配置：
+
+```text
+Training Environment：
+    大量随机化
+    简化观测
+    高速无渲染
+    多环境并行
+
+Evaluation Environment：
+    固定随机种子
+    详细日志
+    可视化
+    多种标准测试场景
+```
+
+然后再进入：
+
+```text
+Gazebo + PX4：
+    工程验证
+
+UE：
+    高真实感展示和视觉验证
+
+实机：
+    最终验证
+```
+
+---
+
+## 8.2.7 我们应该吸收什么？
+
+### 吸收一：统一环境注册机制
+
+```text
+register("SunrayHover")
+register("SunrayTrajectory")
+register("SunrayMotorFailure")
+register("SunrayObstacleAvoidance")
+```
+
+### 吸收二：任务配置与模型配置分离
+
+```text
+vehicle:
+    sunray150
+
+task:
+    hover
+
+randomization:
+    wind: true
+    mass: true
+```
+
+### 吸收三：训练、评估、回放独立
+
+```text
+train.py
+evaluate.py
+replay.py
+export_policy.py
+```
+
+### 吸收四：后端可切换
+
+同一任务接口未来可以运行在：
+
+```text
+MJX
+MuJoCo Warp
+CPU MuJoCo
+```
+
+甚至再映射到 Gazebo 验证。
+
+---
+
+## 8.2.8 不应该照搬什么？
+
+Playground 当前主要案例集中在地面机器人、足式机器人和操作任务；无人机环境仍需我们自己设计。官方仓库提供的环境类型不能直接变成 Sunray-150 仿真。([GitHub][3])
+
+不要认为：
+
+```text
+安装 Playground
+    =
+直接拥有无人机强化学习平台
+```
+
+实际仍要自己完成：
+
+```text
+四旋翼模型
+电机气动
+观测
+动作
+奖励
+随机化
+策略部署接口
+```
+
+---
+
+## 8.2.9 最终判断
+
+```text
+是否进入项目：
+    是
+
+进入哪一层：
+    RL环境组织参考
+    GPU训练框架参考
+    sim-to-real流程参考
+
+主要吸收：
+    环境注册
+    Physics/Task分离
+    域随机化
+    训练评估分离
+    后端切换
+    策略导出
+
+不直接复用：
+    现有机器人任务本身
+```
+
+---
+
+# 8.3 dm_control：物理任务环境的经典组织框架
+
+## 8.3.1 定位
+
+`dm_control` 是 Google DeepMind 基于 MuJoCo 构建的物理仿真与强化学习环境栈。它包含 MuJoCo Python 封装、经典控制任务套件、查看器、PyMJCF 模型组合工具以及 Composer 任务构建框架。([GitHub][4])
+
+它最值得我们研究的不是“里面有哪些现成任务”，而是：
+
+> **怎样把模型、物理、任务、观测、奖励、随机化和生命周期组织成可复用环境。**
+
+核心组件包括：
+
+```text
+dm_control.mujoco
+    MuJoCo Python封装
+
+dm_control.suite
+    标准连续控制任务
+
+dm_control.mjcf
+    程序化构造和修改MJCF
+
+dm_control.composer
+    组合复杂可复用任务
+
+dm_control.viewer
+    交互式查看器
+```
+
+这些均由官方仓库明确列出。([GitHub][4])
+
+---
+
+## 8.3.2 核心设计理念
+
+| 设计原则              | 说明                                            |
+| ----------------- | --------------------------------------------- |
+| Physics 与 Task 分离 | 物理模型负责运动，任务负责目标和奖励                            |
+| 模型程序化组合           | 使用 PyMJCF 在 Python 中创建、修改和拼接模型                |
+| 组件可复用             | 机器人、场景、传感器和任务部件可独立封装                          |
+| 生命周期明确            | initialize、reset、before_step、after_step 等阶段清晰 |
+| 观测声明式             | 任务显式定义策略可见的观测                                 |
+| 奖励任务化             | reward 属于任务，不属于物理模型                           |
+| 环境统一              | step/reset 返回统一时间步对象                          |
+| 研究可复现             | 标准任务和固定接口便于算法比较                               |
+
+---
+
+## 8.3.3 为什么 Physics 和 Task 必须分开？
+
+以同一架云纵无人机为例：
+
+```text
+Physics：
+    质量
+    惯量
+    电机
+    空气阻力
+    位置
+    速度
+    接触
+```
+
+它可以服务多个任务：
+
+```text
+Hover Task
+Trajectory Task
+Landing Task
+Motor Failure Task
+Obstacle Avoidance Task
+```
+
+如果把奖励和目标写进物理模型，就会出现：
+
+```text
+换任务
+    → 重写物理模型
+```
+
+合理设计是：
+
+```text
+SunrayPhysics
+    被多个 Task 复用
+```
+
+这也是我们后续多后端统一环境的基础。
+
+---
+
+## 8.3.4 PyMJCF 的价值
+
+MJCF 是 XML，手写小模型可以，但复杂模型组合会变得困难。
+
+PyMJCF 允许程序化操作：
+
+```text
+创建 body
+增加 sensor
+挂载 payload
+修改质量
+复制障碍物
+组合多个机器人
+```
+
+`dm_control` 官方将 `dm_control.mjcf` 定义为用于组合和修改 MuJoCo MJCF 模型的库。([GitHub][4])
+
+对我们而言，可以用于：
+
+```text
+基础 Sunray-150
+    +
+不同 MID360 安装位置
+    +
+不同相机
+    +
+不同负载
+    +
+可选保护罩
+```
+
+而不需要维护大量重复 XML。
+
+---
+
+## 8.3.5 Composer 的价值
+
+Composer 解决复杂任务组合。
+
+可以将环境拆成：
+
+```text
+Entity：
+    无人机
+    障碍物
+    起降平台
+
+Arena：
+    室内实验室
+    森林
+    城市峡谷
+
+Task：
+    悬停
+    穿门
+    着陆
+
+Observable：
+    状态
+    距离
+    传感器
+
+Variation：
+    参数随机化
+```
+
+然后组合：
+
+```text
+Sunray150
+    +
+IndoorArena
+    +
+DoorTraversalTask
+    +
+WindVariation
+```
+
+这是比“每个任务写一个完整新环境”更可维护的方式。
+
+---
+
+## 8.3.6 对我们的用途
+
+`dm_control` 很适合成为：
+
+```text
+CPU MuJoCo原型环境
+任务设计参考
+模型组合工具
+奖励和观测快速实验工具
+```
+
+初期可以先用它快速验证：
+
+```text
+动作空间是否合理
+奖励是否收敛
+任务终止条件是否正确
+传感器观测是否足够
+```
+
+然后再迁移到 MJX/Playground 做大规模训练。
+
+---
+
+## 8.3.7 dm_control 与 Playground 的区别
+
+| 维度   | dm_control           | MuJoCo Playground |
+| ---- | -------------------- | ----------------- |
+| 核心时代 | 经典 MuJoCo 控制/RL 基础设施 | 现代 GPU 机器人学习      |
+| 物理后端 | 传统 MuJoCo 为主         | MJX/Warp 批量后端     |
+| 重点   | 环境与任务组织              | GPU训练和sim-to-real |
+| 模型组合 | PyMJCF、Composer 强    | 更偏现成训练环境组织        |
+| 并行能力 | 不是核心卖点               | 核心能力              |
+| 适合我们 | 环境原型和架构学习            | 大规模训练             |
+
+因此不是二选一：
+
+```text
+dm_control：
+    学如何设计环境
+
+Playground：
+    学如何高效训练环境
+```
+
+---
+
+## 8.3.8 不应该照搬什么？
+
+`dm_control` 的环境接口不是 ROS2，也不是 Gazebo 工程接口。
+
+训练环境内部可以使用：
+
+```text
+env.step()
+env.reset()
+```
+
+但工程系统仍需要：
+
+```text
+ROS2 topic
+service
+action
+PX4
+Gazebo
+```
+
+不要让 `dm_env` 或 Composer 对象渗透到整个主干系统。
+
+---
+
+## 8.3.9 最终判断
+
+```text
+是否进入项目：
+    是
+
+进入哪一层：
+    RL任务建模参考
+    MJCF程序化组合工具
+    CPU环境原型
+
+主要吸收：
+    Physics/Task分离
+    Composer
+    PyMJCF
+    observation/reward设计
+    生命周期钩子
+
+不承担：
+    GPU大规模训练主后端
+    ROS2系统总线
+    PX4工程验证
+```
+
+---
+
+# 8.4 MuJoCo MPC：模型预测控制与实时行为生成
+
+## 8.4.1 定位
+
+MuJoCo MPC，简称 MJPC，是 Google DeepMind 开发的实时预测控制应用和软件框架。它允许用户在 MuJoCo 中定义复杂机器人任务，并使用多种 shooting-based planner 实时求解控制序列。官方仓库列出的主要规划器包括基于导数的 iLQG、Gradient Descent，以及无导数的 Predictive Sampling。([GitHub][5])
+
+它的核心不是训练神经网络，而是：
+
+> **利用已知动力学模型，在每个控制周期预测未来，并选择最优控制序列。**
+
+---
+
+## 8.4.2 MPC 的基本逻辑
+
+假设当前状态是：
+
+```text
+x0
+```
+
+我们尝试一组未来控制：
+
+```text
+u0, u1, u2, ..., uN
+```
+
+通过模型预测：
+
+```text
+x1, x2, x3, ..., xN
+```
+
+计算总代价：
+
+```text
+轨迹误差
++
+控制能量
++
+碰撞风险
++
+姿态偏差
++
+终点误差
+```
+
+选择代价最小的控制序列。
+
+但只执行第一个动作：
+
+```text
+执行 u0
+```
+
+下一周期重新测量状态，再求一次。
+
+这叫滚动时域：
+
+```text
+测量
+→ 预测
+→ 优化
+→ 执行第一步
+→ 再测量
+```
+
+---
+
+## 8.4.3 为什么 MuJoCo MPC 值得研究？
+
+因为 MuJoCo 本身已经提供：
+
+```text
+快速前向动力学
+状态复制
+模型查询
+接触预测
+```
+
+MPC 需要反复模拟未来，MuJoCo 正好适合。
+
+MJPC 官方支持：
+
+```text
+iLQG
+Gradient Descent
+Predictive Sampling
+```
+
+并提供交互式应用与软件框架，用于实时行为生成。([GitHub][5])
+
+---
+
+## 8.4.4 Predictive Sampling 的设计思想
+
+Predictive Sampling 可以直观理解成：
+
+```text
+围绕当前控制序列
+生成很多扰动后的候选序列
+        ↓
+用 MuJoCo 并行/快速预测
+        ↓
+计算各自代价
+        ↓
+选最好的序列
+```
+
+它不要求精确动力学导数，因此：
+
+```text
+实现更简单
+对非光滑接触更友好
+适合复杂模型
+容易并行
+```
+
+但采样数量大时计算量也会上升。
+
+---
+
+## 8.4.5 iLQG 的设计思想
+
+iLQG 使用动力学和代价的局部近似，反复进行：
+
+```text
+前向滚动
+    计算当前轨迹
+
+反向传播
+    计算局部最优反馈增益
+
+线搜索
+    更新控制序列
+```
+
+优点：
+
+```text
+收敛速度可能更快
+能得到局部反馈策略
+适合连续光滑系统
+```
+
+缺点：
+
+```text
+依赖模型线性化和代价近似
+初始轨迹差时可能陷入局部最优
+接触/离散事件会增加难度
+```
+
+---
+
+## 8.4.6 四旋翼可以用 MJPC 做什么？
+
+### 轨迹跟踪
+
+```text
+状态：
+    位置、速度、姿态、角速度
+
+控制：
+    总推力 + 三轴力矩
+    或四电机输入
+
+代价：
+    位置误差
+    速度误差
+    姿态误差
+    控制能耗
+```
+
+### 着陆
+
+```text
+代价：
+    接近着陆点
+    垂直速度小
+    姿态平稳
+    接触冲击小
+```
+
+### 电机退化控制
+
+模型中加入：
+
+```text
+T_i = η_i k_f ω_i²
+```
+
+MPC 根据剩余控制能力重新分配推力。
+
+### 动态避障
+
+代价中加入：
+
+```text
+距离障碍物过近的高惩罚
+```
+
+但要注意：MJPC 更像**局部预测控制器**，不是完整未知地图全局规划器。
+
+---
+
+## 8.4.7 MJPC 与 EGO-Planner 的区别
+
+```text
+EGO-Planner：
+    基于地图产生空间轨迹
+    解决从当前位置到目标的局部规划
+
+MJPC：
+    基于动力学预测未来状态
+    解决如何在有限时域内控制系统
+```
+
+合理组合是：
+
+```text
+EGO / 其他规划器
+    输出参考轨迹
+        ↓
+MPC
+    根据动力学约束跟踪参考轨迹
+        ↓
+PX4或电机
+```
+
+也就是说：
+
+```text
+规划器决定去哪
+MPC决定怎么动态可行地去
+```
+
+---
+
+## 8.4.8 MJPC 与 PX4 的关系
+
+第一阶段不要直接用 MJPC 替换 PX4 全部控制器。
+
+更合理有三种方式。
+
+### 方式一：外部轨迹控制器
+
+```text
+MJPC
+    输出位置/速度/加速度目标
+        ↓
+PX4 Offboard
+```
+
+### 方式二：外部姿态/推力控制器
+
+```text
+MJPC
+    输出姿态和推力
+        ↓
+PX4底层角速度/执行器层
+```
+
+### 方式三：独立研究后端
+
+```text
+MuJoCo + MJPC
+    验证控制思想
+
+Gazebo + PX4
+    工程复现
+```
+
+第一阶段建议方式三，之后再尝试方式一。
+
+---
+
+## 8.4.9 我们应该吸收什么？
+
+### 吸收一：Task = residual + cost
+
+不要把任务只写成一个总奖励。
+
+MPC 任务应拆成多个残差：
+
+```text
+position_residual
+velocity_residual
+attitude_residual
+control_residual
+obstacle_residual
+```
+
+再分别设置权重。
+
+### 吸收二：滚动时域
+
+规划和控制不必一次求完完整任务。
+
+```text
+只规划未来 1~3 秒
+不断重算
+```
+
+### 吸收三：规划器接口统一
+
+```text
+initialize(model)
+reset(state)
+set_goal(goal)
+plan(state)
+get_action()
+```
+
+### 吸收四：模型预测和实际执行分离
+
+预测模型可以是简化模型，实际执行可以在 Gazebo/PX4。
+
+---
+
+## 8.4.10 不应该照搬什么？
+
+MJPC 的官方案例主要面向通用机器人任务，并不自带完整四旋翼未知环境系统。([GitHub][5])
+
+它不会自动提供：
+
+```text
+MID360
+Fast-LIO
+局部地图
+PX4适配
+无人机空气动力
+ROS2任务管理
+```
+
+这些仍需自己做。
+
+---
+
+## 8.4.11 最终判断
+
+```text
+是否进入项目：
+    是，作为研究分支
+
+进入哪一层：
+    模型预测控制
+    轨迹优化
+    局部动态控制
+
+主要吸收：
+    residual/cost任务表达
+    rolling horizon
+    predictive sampling
+    iLQG
+    planner接口
+
+不承担：
+    全局地图规划
+    SLAM
+    PX4安全系统
+    主仿真世界
+```
+
+---
+
+# 8.5 四者之间的关系
+
+```text
+                    MuJoCo
+              基础动力学与模型
+                     │
+        ┌────────────┼─────────────┐
+        │            │             │
+       MJX       dm_control     MuJoCo MPC
+  GPU批量物理    任务环境组织     预测控制
+        │            │             │
+        └────── MuJoCo Playground ─┘
+             GPU训练与sim-to-real
+```
+
+更准确地说：
+
+```text
+MuJoCo：
+    物理内核
+
+MJX/Warp：
+    物理并行执行后端
+
+dm_control：
+    模型与任务组合框架
+
+Playground：
+    现代GPU训练与策略迁移框架
+
+MJPC：
+    不训练策略，在线用模型求控制
+```
+
+---
+
+# 8.6 对我们项目的推荐分工
+
+## 第一阶段
+
+```text
+CPU MuJoCo
+    建立 Sunray-150 简化模型
+
+dm_control 思想
+    设计 Hover / Tracking Task
+
+传统 PID
+    验证动力学正确
+```
+
+## 第二阶段
+
+```text
+MuJoCo Playground / MJX
+    批量训练高层或中层策略
+
+随机化：
+    风
+    质量
+    电机效率
+    传感器噪声
+```
+
+## 第三阶段
+
+```text
+Gazebo + PX4
+    验证训练策略
+
+UE
+    高真实感展示
+```
+
+## 第四阶段
+
+```text
+MJPC
+    做模型预测控制基准
+
+比较：
+    PID
+    MPC
+    RL
+```
+
+---
+
+# 8.7 最小任务清单
+
+```text
+1. 用 dm_control 风格定义 SunrayPhysics
+2. 定义 HoverTask
+3. 定义 TrajectoryTrackingTask
+4. 定义 observation/action/reward
+5. 用 CPU MuJoCo 验证 PID
+6. 将环境改造成 batch-friendly
+7. 接入 MJX 或 Playground
+8. 训练基础悬停策略
+9. 加入风扰域随机化
+10. 加入电机退化域随机化
+11. 将策略迁移到 Gazebo/PX4
+12. 建立 MJPC 轨迹跟踪基准
+13. 比较 PID、MPC、RL
+14. 写 MuJoCo-Ecosystem REVIEW.md
+```
+
+---
+
+# 8.8 最终判断
+
+```text
+MJX：
+    用于大规模并行物理
+
+Playground：
+    用于GPU训练和sim-to-real
+
+dm_control：
+    用于环境、任务和模型组合
+
+MuJoCo MPC：
+    用于在线模型预测控制
+```
+
+对我们最关键的吸收顺序是：
+
+```text
+先学 dm_control 的环境设计
+    ↓
+再用 MuJoCo 验证物理
+    ↓
+再用 MJX/Playground 做并行训练
+    ↓
+再用 MJPC 做模型预测控制对照
+    ↓
+最后进入 Gazebo/PX4/UE 验证
+```
+
+一句话：
+
+> **MuJoCo 生态不只是一个物理引擎，而是一条从模型、任务、批量训练到预测控制的完整研究链。我们应把它作为高速控制与强化学习分支，和 Gazebo/PX4 的工程主链并行，而不是互相替代。**
+
+[1]: https://mujoco.readthedocs.io/en/3.1.2/mjx.html?utm_source=chatgpt.com "MuJoCo XLA (MJX) - MuJoCo Documentation"
+[2]: https://mujoco.readthedocs.io/en/latest/mjx.html?utm_source=chatgpt.com "MuJoCo XLA (MJX) - MuJoCo Documentation"
+[3]: https://github.com/google-deepmind/mujoco_playground?utm_source=chatgpt.com "GitHub - google-deepmind/mujoco_playground: An open-source library for GPU-accelerated robot learning and sim-to-real transfer. · GitHub"
+[4]: https://github.com/google-deepmind/dm_control?utm_source=chatgpt.com "GitHub - google-deepmind/dm_control: Google DeepMind's software stack for physics-based simulation and Reinforcement Learning environments, using MuJoCo. · GitHub"
+[5]: https://github.com/google-deepmind/mujoco_mpc?utm_source=chatgpt.com "GitHub - google-deepmind/mujoco_mpc: Real-time behaviour synthesis with MuJoCo, using Predictive Control · GitHub"

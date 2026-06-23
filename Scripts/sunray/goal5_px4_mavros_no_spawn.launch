@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<launch>
+  <env name="PX4_SIM_MODEL" value="gazebo-classic_sunray"/>
+  <env name="PX4_SIM_SPEED_FACTOR" value="1.0"/>
+
+  <arg name="vehicle" default="sunray150_with_mid360"/>
+  <arg name="uav_id" default="1"/>
+  <arg name="ID" value="$(eval arg('uav_id') - 1)"/>
+  <arg name="interactive" default="true"/>
+  <arg unless="$(arg interactive)" name="px4_command_arg1" value=""/>
+  <arg if="$(arg interactive)" name="px4_command_arg1" value="-d"/>
+
+  <group ns="/uav$(arg uav_id)">
+    <node name="px4_sitl_$(arg uav_id)" pkg="px4" type="px4" output="screen"
+          args="$(find px4)/build/px4_sitl_default/etc -s etc/init.d-posix/rcS -i $(arg ID) -w sitl_$(arg vehicle)_$(arg ID) $(arg px4_command_arg1)"/>
+
+    <include file="$(find sunray_simulator)/launch_basic/sunray_mavros_sim.launch">
+      <arg name="ID" value="$(arg ID)"/>
+    </include>
+  </group>
+</launch>

@@ -1,0 +1,3418 @@
+
+# MoSim单机控制器实现规范
+
+> 文档编号：MoSim-CTRL-03
+> 文档名称：MoSim单机控制器实现规范
+> 适用项目：MoSim四旋翼多领域建模、控制与联合仿真平台
+> 当前版本：V0.1 Draft
+> 文档性质：单机控制器设计、实现与交付规范
+>
+> 依赖文档：
+>
+> * MoSim-CTRL-01《MoSim控制体系总览》
+> * MoSim-CTRL-02《MoSim统一控制接口规范》
+>
+> 关联文档：
+>
+> * MoSim-CTRL-04《MoSim控制增强与容错规范》
+> * MoSim-CTRL-05《MoSim规划与编队控制接口规范》
+> * MoSim-CTRL-06《MoSim控制器管理与配置规范》
+> * MoSim-CTRL-07《MoSim控制器代码生成与PX4部署规范》
+> * MoSim-CTRL-08《MoSim控制系统测试与评价规范》
+
+---
+
+# 0. 当前阶段控制器实现冻结
+
+当前第一阶段以 px4ctrl 为 Golden Vertical Slice，不批量实现所有控制器。
+
+px4ctrl 必须拆成两层：
+
+```text
+MWORKS负责的控制核心：
+位置误差
+速度误差
+积分或反馈项
+加速度前馈
+重力补偿
+期望合力
+期望姿态计算
+物理总推力计算
+
+ROS/PX4运行包装层负责：
+ROS订阅和发布
+Offboard状态机
+解锁和模式切换
+遥控器逻辑
+自动起降逻辑
+超时检测
+坐标转换
+消息时间同步
+MAVROS归一化推力
+日志和安全回退
+```
+
+禁止把整个 px4ctrl 塞进 MWORKS。MWORKS 只重建 `px4ctrl_core`。
+
+当前控制器释放顺序：
+
+```text
+1. px4ctrl Golden Slice完整贯通
+2. 官方PID单控制器替换
+3. SE3 Basic单控制器替换
+4. 根据结果逐个释放后续控制器
+```
+
+后续候选队列只作为 backlog，不承诺第一阶段全部完成：
+
+```text
+官方PID
+增强PID
+LQI
+SE3 Basic
+DFBC Basic
+LMPC Attitude-Thrust
+NMPC Attitude-Thrust
+```
+
+---
+
+# 1. 文档目的
+
+本文档规定MoSim单机位姿控制器的数学建模、软件结构、参数定义、状态管理、数值处理、实时执行、代码生成和交付要求。
+
+本文档主要回答：
+
+```text
+一个控制器必须实现哪些接口
+控制器数学模型采用什么坐标和符号
+不同控制器需要哪些状态和参考量
+控制器输出到哪一个控制层级
+PID、LQR、SE3、DFBC、MPC等怎样统一封装
+控制器内部状态怎样初始化和复位
+饱和、积分器和滤波器怎样处理
+MPC求解失败怎样报告
+MWORKS模型和C++代码怎样保持一致
+一个控制器做到什么程度才算完成
+```
+
+本文档只规定单架四旋翼的名义轨迹跟踪控制器。
+
+以下内容不在本文档中详细设计：
+
+```text
+INDI
+L1自适应
+AWFF
+故障诊断
+故障隔离
+故障感知控制分配
+编队控制
+多机规划
+Controller Manager
+```
+
+上述模块分别由04～06文档规定。
+
+---
+
+# 2. 适用范围
+
+本文档适用于以下单机控制器：
+
+```text
+原始PID
+增强串级PID
+增益调度PID
+模糊PID
+
+LQR
+LQI
+LQG
+H∞
+极点配置
+
+反馈线性化
+NDI
+Backstepping
+SMC
+Super-Twisting SMC
+
+SO(3)姿态控制
+SE(3)几何位姿控制
+DFBC微分平坦控制
+
+LMPC
+LTV-MPC
+NMPC
+Tube MPC
+自适应MPC
+随机MPC
+iLQR
+DDP
+MPPI
+```
+
+---
+
+# 3. 实现目标
+
+每个控制器必须达到以下目标。
+
+## 3.1 数学定义明确
+
+必须明确：
+
+```text
+系统状态
+控制输入
+参考输入
+控制误差
+控制律
+内部状态
+约束
+稳定性或设计依据
+```
+
+---
+
+## 3.2 工程边界明确
+
+必须声明：
+
+```text
+输出层级
+绕过PX4哪些控制环
+保留PX4哪些控制环
+是否包含姿态内环
+是否包含角速度内环
+是否包含控制分配
+```
+
+---
+
+## 3.3 平台无关
+
+控制器核心不得直接依赖：
+
+```text
+ROS
+MAVROS
+PX4 uORB
+Gazebo
+MWORKS运行环境
+操作系统线程
+文件系统
+```
+
+---
+
+## 3.4 可复位
+
+控制器必须能够：
+
+```text
+初始化
+激活
+失活
+复位
+重新加载参数
+清除内部状态
+从当前飞行状态重新接管
+```
+
+---
+
+## 3.5 可测试
+
+控制器必须能够在：
+
+```text
+单周期输入输出测试
+离线数据回放
+MWORKS闭环
+ROS + Gazebo
+PX4 SITL
+PX4板载
+```
+
+中复用同一算法核心。
+
+---
+
+# 4. 控制器实现边界
+
+单机控制器的标准边界为：
+
+```text
+当前状态
++
+轨迹参考
++
+飞行器模型
++
+运行约束
+        ↓
+单机控制器核心
+        ↓
+ControllerCommand
+```
+
+控制器核心不负责：
+
+```text
+任务规划
+地图管理
+解锁
+PX4飞行模式
+ROS通信
+uORB通信
+日志文件写入
+控制器选择
+最终控制权仲裁
+```
+
+---
+
+# 5. 标准四旋翼数学模型
+
+## 5.1 坐标定义
+
+MoSim控制器核心统一使用：
+
+```text
+世界坐标系：ENU
+机体坐标系：FLU
+```
+
+定义：
+
+[
+\mathbf e_3=
+\begin{bmatrix}
+0\0\1
+\end{bmatrix}
+]
+
+世界系Z轴向上。
+
+---
+
+## 5.2 状态变量
+
+标准刚体状态为：
+
+[
+\mathbf x=
+\left[
+\mathbf p,,
+\mathbf v,,
+R,,
+\boldsymbol\omega
+\right]
+]
+
+其中：
+
+```text
+p：世界系位置
+v：世界系速度
+R：机体系到世界系旋转矩阵
+ω：FLU机体系角速度
+```
+
+---
+
+## 5.3 平移动力学
+
+[
+\dot{\mathbf p}=\mathbf v
+]
+
+# [
+
+m\dot{\mathbf v}
+
+-mg\mathbf e_3
++
+R\mathbf f_B
++
+\mathbf f_{ext}
+]
+
+对于标准四旋翼：
+
+[
+\mathbf f_B=
+\begin{bmatrix}
+0\0\T
+\end{bmatrix}
+]
+
+其中：
+
+```text
+T ≥ 0
+方向为机体系+Z_FLU
+```
+
+---
+
+## 5.4 转动动力学
+
+# [
+
+J\dot{\boldsymbol\omega}
++
+\boldsymbol\omega\times J\boldsymbol\omega
+
+\boldsymbol\tau
++
+\boldsymbol\tau_{ext}
+]
+
+姿态运动学：
+
+[
+\dot R=R\hat{\boldsymbol\omega}
+]
+
+---
+
+## 5.5 执行器模型
+
+基础电机模型：
+
+# [
+
+\dot\omega_i
+
+\frac{1}{\tau_m}
+\left(
+\omega_{i,c}-\omega_i
+\right)
+]
+
+单电机推力：
+
+[
+f_i=k_f\omega_i^2
+]
+
+反扭矩：
+
+[
+m_i=s_i k_m\omega_i^2
+]
+
+其中：
+
+```text
+s_i = +1或-1
+```
+
+表示电机旋转方向。
+
+控制器是否直接使用电机模型，由其输出层级决定。
+
+---
+
+# 6. 参考轨迹定义
+
+标准轨迹参考为：
+
+[
+\mathcal R(t)=
+{
+\mathbf p_r,
+\mathbf v_r,
+\mathbf a_r,
+\mathbf j_r,
+\mathbf s_r,
+\psi_r,
+\dot\psi_r,
+\ddot\psi_r
+}
+]
+
+其中：
+
+```text
+p_r：参考位置
+v_r：参考速度
+a_r：参考运动学加速度，不包含重力
+j_r：参考jerk
+s_r：参考snap
+ψ_r：参考航向
+```
+
+---
+
+# 7. 状态误差定义
+
+## 7.1 位置误差
+
+统一定义：
+
+[
+\mathbf e_p=\mathbf p_r-\mathbf p
+]
+
+## 7.2 速度误差
+
+[
+\mathbf e_v=\mathbf v_r-\mathbf v
+]
+
+## 7.3 航向误差
+
+[
+e_\psi=
+wrap(\psi_r-\psi)
+]
+
+## 7.4 姿态误差
+
+几何控制推荐使用：
+
+[
+e_R=
+\frac{1}{2}
+\left(
+R_d^TR-R^TR_d
+\right)^\vee
+]
+
+不同控制器可以采用相反误差符号，但必须在算法文档中说明，且整个实现保持一致。
+
+---
+
+# 8. 重力补偿所有权
+
+参考加速度：
+
+[
+\mathbf a_r
+]
+
+不包含重力。
+
+如果控制器负责将加速度转换为推力，则控制器必须显式加入：
+
+[
+g\mathbf e_3
+]
+
+例如：
+
+# [
+
+\mathbf F_d
+
+m
+\left(
+\mathbf a_c+g\mathbf e_3
+\right)
+]
+
+如果控制器只输出位置或加速度参考给PX4原生控制器，则不得再次执行重力补偿。
+
+每个Controller Profile必须声明：
+
+```text
+gravity_compensation_owner
+```
+
+---
+
+# 9. 控制器标准组成
+
+每个控制器分为五部分：
+
+```text
+Controller Descriptor
+Controller Parameters
+Controller Context
+Controller Algorithm
+Controller Diagnostics
+```
+
+---
+
+# 10. Controller Descriptor
+
+Descriptor描述控制器固定能力。
+
+```cpp
+struct ControllerDescriptor {
+    uint16_t controller_id;
+
+    const char* name;
+    const char* version;
+
+    ControllerCategory category;
+    ControlOutputType output_type;
+
+    uint64_t required_state_mask;
+    uint64_t required_reference_mask;
+
+    bool supports_constraints;
+    bool supports_integral_action;
+    bool supports_reference_horizon;
+    bool supports_state_transfer;
+    bool supports_codegen;
+    bool supports_px4_onboard;
+
+    double nominal_rate_hz;
+    double maximum_rate_hz;
+};
+```
+
+---
+
+# 11. Controller Parameters
+
+参数结构只保存可配置数据。
+
+```cpp
+struct ExampleControllerParameters {
+    Vector3 position_gain;
+    Vector3 velocity_gain;
+    Vector3 integral_gain;
+
+    double maximum_integral;
+    double maximum_tilt_rad;
+    double minimum_thrust_N;
+    double maximum_thrust_N;
+
+    double nominal_period_s;
+};
+```
+
+参数结构不得保存：
+
+```text
+积分器当前值
+上一周期误差
+滤波器内部状态
+求解器当前解
+```
+
+这些属于Controller Context。
+
+---
+
+# 12. Controller Context
+
+Context保存控制器运行状态。
+
+```cpp
+struct ExampleControllerContext {
+    Vector3 position_integral;
+    Vector3 previous_error;
+
+    FilterState filter_state;
+    ObserverState observer_state;
+
+    TimeUs last_update_us;
+
+    bool initialized;
+};
+```
+
+要求：
+
+```text
+每个实例独立Context
+不得依赖共享全局变量
+支持多无人机
+支持影子控制器
+支持同一算法多实例
+```
+
+---
+
+# 13. Controller Diagnostics
+
+控制器必须输出：
+
+```text
+跟踪误差
+内部控制量
+饱和状态
+积分器状态
+模型参数
+执行时间
+求解器状态
+失败原因
+```
+
+诊断数据不得反向影响控制器，除非该反馈在算法中有明确定义。
+
+---
+
+# 14. 标准控制器API
+
+```cpp
+class IController {
+public:
+    virtual ~IController() = default;
+
+    virtual const ControllerDescriptor&
+    descriptor() const = 0;
+
+    virtual ControllerResult configure(
+        const ControllerConfiguration& configuration,
+        const VehicleModel& model,
+        const VehicleLimits& limits) = 0;
+
+    virtual ControllerResult reset(
+        const VehicleState& state,
+        const TrajectoryPoint& reference,
+        TimeUs reset_time_us) = 0;
+
+    virtual ControllerResult update(
+        const ControllerInput& input,
+        ControllerCommand& output,
+        ControllerStatus& status) = 0;
+
+    virtual void deactivate() = 0;
+};
+```
+
+---
+
+# 15. 单周期执行流程
+
+所有控制器统一按照以下步骤运行：
+
+```text
+输入时间检查
+      ↓
+状态有效性检查
+      ↓
+参考有效性检查
+      ↓
+参数与模型检查
+      ↓
+状态和参考预处理
+      ↓
+计算控制误差
+      ↓
+执行核心控制算法
+      ↓
+算法内部约束
+      ↓
+输出转换
+      ↓
+数值合法性检查
+      ↓
+填写状态与诊断信息
+```
+
+---
+
+# 16. 输入检查
+
+至少检查：
+
+```text
+dt是否有效
+状态时间是否过期
+参考时间是否过期
+位置是否有限
+速度是否有限
+四元数是否正常
+角速度是否有限
+飞行器质量是否大于零
+惯量矩阵是否正定
+```
+
+---
+
+# 17. 参考降阶规则
+
+若控制器需要：
+
+```text
+p、v、a、jerk、snap
+```
+
+但轨迹只提供：
+
+```text
+p、v、a
+```
+
+允许：
+
+```text
+关闭高阶前馈
+切换到低阶控制模式
+使用轨迹解析导数
+拒绝该Profile
+```
+
+不允许在控制周期中直接对带噪离散位置进行高阶差分得到jerk和snap。
+
+---
+
+# 18. 状态缺失规则
+
+控制器必须声明最小状态需求。
+
+例如：
+
+```text
+PID位置控制：
+position + velocity + attitude
+
+SE3：
+position + velocity + attitude + angular_velocity
+
+DFBC-Full：
+position + velocity + attitude + angular_velocity
+
+NMPC：
+完整预测模型所需状态
+```
+
+必需状态缺失时不得继续输出正常控制命令。
+
+---
+
+# 19. 参数验证
+
+控制器配置时必须验证：
+
+```text
+所有参数有限
+增益范围有效
+质量大于零
+惯量矩阵有效
+最小限制小于最大限制
+滤波频率低于Nyquist频率
+MPC预测时域合法
+最大求解时间小于控制周期
+```
+
+---
+
+# 20. 初始化规则
+
+初始化必须完成：
+
+```text
+复制参数
+复制飞行器模型
+清零或设置内部状态
+初始化滤波器
+初始化积分器
+初始化观测器
+初始化求解器
+设置上一周期时间
+```
+
+初始化不得产生控制命令。
+
+---
+
+# 21. Reset规则
+
+控制器在以下情况必须支持Reset：
+
+```text
+仿真重新开始
+时间回退
+飞行器重置
+控制器重新接管
+参数发生WARM或COLD更新
+状态估计器发生重置
+控制模式发生重大变化
+```
+
+---
+
+# 22. Reset初始化状态
+
+Reset应根据当前状态设置：
+
+```text
+积分器
+滤波器
+扰动估计
+推力估计
+MPC Warm Start
+上一周期误差
+```
+
+不得始终无条件将所有内部量置零。
+
+例如，飞行中接管时应尽量根据当前控制输出初始化，以避免命令突变。
+
+---
+
+# 23. Deactivate规则
+
+控制器失活时：
+
+```text
+停止更新可积累状态
+停止增加积分器
+保存必要诊断
+释放非实时资源
+保持Context可供快速恢复
+```
+
+是否完全清除状态由Controller Manager决定。
+
+---
+
+# 24. 数值精度
+
+控制器应支持：
+
+```text
+float64模型验证
+float32目标部署
+```
+
+所有正式板载控制器必须完成：
+
+```text
+float64与float32单周期一致性测试
+闭环性能差异测试
+数值范围测试
+```
+
+---
+
+# 25. 数值安全
+
+控制器内部必须防止：
+
+```text
+除零
+小向量归一化
+acos输入越界
+矩阵奇异
+四元数模长过小
+QP无解
+指数和三角函数溢出
+```
+
+例如：
+
+[
+\cos^{-1}(x)
+]
+
+调用前必须执行：
+
+[
+x\leftarrow clamp(x,-1,1)
+]
+
+---
+
+# 26. 实时性要求
+
+单周期函数内禁止：
+
+```text
+动态内存分配
+文件读写
+网络通信
+线程创建
+睡眠
+阻塞等待
+控制台大量输出
+非确定性资源访问
+```
+
+---
+
+# 27. 控制频率
+
+推荐默认值：
+
+| 控制器类型   |    推荐频率 |
+| ------------ | ----------: |
+| 位置PID/LQR  |  50～100 Hz |
+| SE3/DFBC外环 | 100～200 Hz |
+| 姿态控制     | 100～250 Hz |
+| 角速度控制   | 250～500 Hz |
+| LMPC         |  50～100 Hz |
+| NMPC         |  50～100 Hz |
+| 电机级控制   |  500 Hz以上 |
+
+实际频率由Deployment Profile决定。
+
+---
+
+# 28. 固定周期与变步长
+
+控制器应优先按照标称固定周期设计。
+
+运行时仍必须接受实际：
+
+[
+dt
+]
+
+并允许小范围抖动。
+
+若：
+
+```text
+dt < dt_min
+dt > dt_max
+```
+
+则：
+
+```text
+拒绝更新
+执行软复位
+或使用配置的安全处理
+```
+
+不得默默使用错误周期。
+
+---
+
+# 29. 公共控制模块
+
+以下功能应实现为公共库，而不是每个控制器各写一套：
+
+```text
+向量限幅
+倾角限幅
+推力限幅
+速率限幅
+Anti-Windup
+低通滤波器
+陷波器
+轨迹求值
+姿态转换
+SO3数学工具
+四元数工具
+矩阵离散化
+控制分配
+推力映射
+```
+
+---
+
+# 30. 输出约束所有权
+
+控制器内部负责：
+
+```text
+算法可行性约束
+积分器抗饱和
+优化问题约束
+控制律合理限幅
+```
+
+Controller Manager负责：
+
+```text
+最终软件安全限幅
+输出合法性
+控制层级一致性
+```
+
+PX4或执行器负责：
+
+```text
+最终硬件限制
+```
+
+---
+
+# 31. 控制器内部饱和顺序
+
+推荐顺序：
+
+```text
+误差处理
+↓
+未约束控制律
+↓
+几何或动力学约束
+↓
+控制器内部限幅
+↓
+Anti-Windup反馈
+↓
+输出命令
+```
+
+---
+
+# 32. Anti-Windup
+
+含积分器的控制器必须实现至少一种：
+
+```text
+积分器条件冻结
+积分器限幅
+Back-Calculation
+跟踪式Anti-Windup
+```
+
+不得只对最终输出限幅而让积分器持续增长。
+
+---
+
+# 33. 滤波器规范
+
+每个滤波器必须声明：
+
+```text
+输入物理量
+阶数
+截止频率
+采样频率
+离散化方法
+初始状态
+延迟
+```
+
+禁止在没有说明的情况下多级重复滤波同一信号。
+
+---
+
+# 34. 导数项规范
+
+PID微分项优先使用：
+
+```text
+测量值微分
+或经过滤波的角加速度
+```
+
+避免参考阶跃造成Derivative Kick。
+
+必须提供：
+
+```text
+微分滤波
+微分限幅
+状态无效处理
+```
+
+---
+
+# 35. 控制器参数组
+
+标准参数组：
+
+```text
+tracking
+attitude
+rate
+integral
+feedforward
+constraints
+filters
+model
+solver
+numerical
+diagnostics
+```
+
+---
+
+# 36. 控制器交付模板
+
+每个控制器目录必须包含：
+
+```text
+README.md
+controller_manifest.yaml
+parameter_manifest.yaml
+model/
+generated/
+src/
+include/
+config/
+tests/
+reference/
+licenses/
+```
+
+---
+
+# 37. README强制内容
+
+```text
+算法名称
+算法定位
+数学模型
+控制律
+输入状态
+参考输入
+输出层级
+参数列表
+内部状态
+运行频率
+约束
+初始化方法
+失败处理
+MWORKS支持
+ROS支持
+PX4支持
+测试结果
+论文与开源来源
+```
+
+---
+
+# 38. Controller Manifest
+
+```yaml
+controller:
+  id: 301
+  name: "se3_geometric"
+  version: "1.0.0"
+  category: "GEOMETRIC"
+
+interface:
+  required_state:
+    - position
+    - velocity
+    - attitude
+    - angular_velocity
+
+  required_reference:
+    - position
+    - velocity
+    - acceleration
+    - yaw
+
+  output_type: "WRENCH"
+
+runtime:
+  nominal_rate_hz: 200
+  supports_codegen: true
+  supports_px4_onboard: true
+  dynamic_memory: false
+```
+
+---
+
+# 39. 原始PID控制器
+
+## 39.1 定位
+
+原始PID必须完整保留赛题官方模型，不允许为获得更好成绩而修改后仍称为“原始PID”。
+
+用途：
+
+```text
+官方基线
+优化前对照
+接口验证
+控制器回退
+```
+
+---
+
+## 39.2 基线冻结
+
+必须保存：
+
+```text
+原始模型
+原始参数
+原始采样周期
+原始限幅
+原始测试结果
+原始版本哈希
+```
+
+---
+
+## 39.3 基线输出
+
+基线PID的输出层级必须按照官方模型实际结构记录，不得为了统一展示而隐瞒其内部控制层级。
+
+---
+
+# 40. 增强串级PID
+
+## 40.1 推荐结构
+
+```text
+位置P或PI
+      ↓
+速度设定值
+      ↓
+速度PID
+      ↓
+期望加速度
+      ↓
+姿态与推力生成
+      ↓
+姿态P
+      ↓
+角速度设定值
+      ↓
+角速度PID
+```
+
+---
+
+## 40.2 位置环
+
+推荐：
+
+# [
+
+\mathbf v_{sp}
+
+\mathbf v_r
++
+K_p^p
+(\mathbf p_r-\mathbf p)
+]
+
+可以加入位置积分，但默认不建议位置环和速度环同时设置过强积分。
+
+---
+
+## 40.3 速度环
+
+# [
+
+\mathbf a_c
+
+\mathbf a_r
++
+K_p^v\mathbf e_v
++
+K_i^v
+\int\mathbf e_vdt
++
+K_d^v\dot{\mathbf e}_v
+]
+
+---
+
+## 40.4 加速度到姿态
+
+[
+\mathbf F_d=
+m
+\left(
+\mathbf a_c+g\mathbf e_3
+\right)
+]
+
+由：
+
+# [
+
+\mathbf b_{3d}
+
+\frac{\mathbf F_d}{|\mathbf F_d|}
+]
+
+和期望航向构造姿态。
+
+---
+
+## 40.5 必须实现
+
+```text
+速度前馈
+加速度前馈
+积分限幅
+Anti-Windup
+微分滤波
+速度限幅
+加速度限幅
+倾角限幅
+推力限幅
+```
+
+---
+
+## 40.6 输出模式
+
+支持：
+
+```text
+ACCELERATION_YAW
+ATTITUDE_THRUST
+BODY_RATE_THRUST
+WRENCH
+```
+
+具体模式由Profile选择。
+
+---
+
+# 41. 增益调度PID
+
+## 41.1 调度变量
+
+允许使用：
+
+```text
+速度
+载荷质量
+电池电压
+高度
+空气密度
+飞行阶段
+故障程度
+```
+
+---
+
+## 41.2 插值
+
+推荐采用连续插值：
+
+# [
+
+K(\rho)
+
+\sum_i w_i(\rho)K_i
+]
+
+不得在临界点无平滑地切换增益。
+
+---
+
+## 41.3 调度限制
+
+必须限制：
+
+```text
+增益变化率
+参数范围
+调度变量有效性
+异常状态下的默认增益
+```
+
+---
+
+# 42. 模糊PID
+
+## 42.1 定位
+
+模糊PID用于在线调节：
+
+```text
+Kp
+Ki
+Kd
+```
+
+不是用模糊规则直接替代整个飞行控制链的默认方案。
+
+---
+
+## 42.2 必须记录
+
+```text
+输入变量
+隶属函数
+规则表
+输出缩放
+解模糊方法
+参数边界
+更新频率
+```
+
+---
+
+## 42.3 嵌入式要求
+
+板载实现应避免：
+
+```text
+运行时动态规则创建
+不确定尺寸矩阵
+未界定的规则数量
+```
+
+---
+
+# 43. 自动整定PID
+
+自动整定模块输出：
+
+```text
+候选参数集
+目标函数
+约束违反
+测试场景
+优化迭代信息
+```
+
+自动整定结果不能直接进入真机。
+
+必须经过标准测试和Profile审批。
+
+---
+
+# 44. LQR控制器
+
+## 44.1 模型
+
+围绕工作点建立：
+
+# [
+
+\delta\dot x
+
+A\delta x+B\delta u
+]
+
+或离散模型：
+
+# [
+
+\delta x_{k+1}
+
+A_d\delta x_k+B_d\delta u_k
+]
+
+---
+
+## 44.2 控制律
+
+[
+\delta u=-K\delta x
+]
+
+其中：
+
+[
+K=
+\operatorname{LQR}(A,B,Q,R)
+]
+
+---
+
+## 44.3 实现要求
+
+必须保存：
+
+```text
+线性化工作点
+状态顺序
+输入顺序
+A、B矩阵
+Q、R矩阵
+离散周期
+反馈增益K
+```
+
+---
+
+## 44.4 工作点有效性
+
+控制器必须声明：
+
+```text
+允许姿态范围
+允许速度范围
+允许轨迹加速度范围
+```
+
+超出线性化有效范围时应：
+
+```text
+切换增益
+切换LTV模型
+降级
+或报告模型失配
+```
+
+---
+
+# 45. LQI控制器
+
+扩展积分状态：
+
+[
+\dot x_I=e_y
+]
+
+增广系统：
+
+[
+x_a=
+\begin{bmatrix}
+x\x_I
+\end{bmatrix}
+]
+
+必须实现：
+
+```text
+积分器限幅
+积分器复位
+切换状态迁移
+输出饱和反馈
+```
+
+---
+
+# 46. LQG控制器
+
+LQG由：
+
+```text
+Kalman状态估计器
++
+LQR状态反馈
+```
+
+组成。
+
+必须明确：
+
+```text
+控制器使用外部PX4估计状态
+还是使用控制器内部状态估计器
+```
+
+不得同时运行两个估计器却不明确状态所有权。
+
+---
+
+# 47. H∞控制器
+
+必须记录：
+
+```text
+广义对象
+扰动输入
+性能输出
+权重函数
+设计γ值
+控制器阶数
+离散化方法
+```
+
+高阶控制器在板载部署前必须进行：
+
+```text
+模型降阶
+数值条件检查
+执行时间检查
+```
+
+---
+
+# 48. 极点配置控制器
+
+必须记录：
+
+```text
+目标闭环极点
+状态可控性
+采样周期
+离散极点
+控制增益
+```
+
+主要用于状态空间控制教学、对照和低阶子系统。
+
+---
+
+# 49. 反馈线性化控制器
+
+必须明确：
+
+```text
+被消除的非线性项
+剩余内部动力学
+相对阶
+奇异点
+模型误差影响
+```
+
+不得只给出最终公式而不分析逆模型奇异性。
+
+---
+
+# 50. NDI控制器
+
+NDI基本流程：
+
+```text
+期望状态导数
+↓
+虚拟控制量
+↓
+动力学逆
+↓
+实际推力和力矩
+```
+
+必须实现：
+
+```text
+模型参数检查
+逆模型奇异性检查
+输入限幅
+不可实现虚拟控制处理
+```
+
+---
+
+# 51. Backstepping控制器
+
+必须按递归步骤记录：
+
+```text
+误差变量
+虚拟控制量
+Lyapunov函数
+下一层误差
+最终控制输入
+```
+
+不得将多层公式压缩为无法追溯的单个代码块。
+
+---
+
+# 52. 经典SMC
+
+## 52.1 滑模面
+
+通用形式：
+
+[
+s=
+\dot e+\Lambda e
+]
+
+或高阶扩展形式。
+
+---
+
+## 52.2 控制律
+
+[
+u=u_{eq}+u_{sw}
+]
+
+# [
+
+u_{sw}
+
+-K\operatorname{sign}(s)
+]
+
+---
+
+## 52.3 必须实现
+
+```text
+边界层或连续近似
+控制输出限幅
+滑模面限幅
+采样噪声处理
+抖振统计
+```
+
+---
+
+# 53. 边界层SMC
+
+可以采用：
+
+[
+\operatorname{sat}
+\left(
+\frac{s}{\phi}
+\right)
+]
+
+替代：
+
+[
+\operatorname{sign}(s)
+]
+
+必须记录边界层宽度：
+
+[
+\phi
+]
+
+以及其对稳态误差和抖振的影响。
+
+---
+
+# 54. 终端滑模控制
+
+必须避免：
+
+```text
+分数幂在零附近数值异常
+负数非整数次幂
+奇异终端项
+```
+
+非奇异终端滑模优先于存在明显奇异点的实现。
+
+---
+
+# 55. Super-Twisting SMC
+
+典型结构：
+
+# [
+
+u_{sw}
+
+-k_1|s|^{1/2}\operatorname{sign}(s)+z
+]
+
+[
+\dot z=-k_2\operatorname{sign}(s)
+]
+
+必须实现：
+
+```text
+离散积分
+z限幅
+小s区域数值处理
+控制变化率限制
+噪声敏感性测试
+```
+
+---
+
+# 56. SO(3)姿态控制
+
+## 56.1 输入
+
+```text
+当前姿态R
+当前角速度ω
+期望姿态Rd
+期望角速度ωd
+期望角加速度ωdot_d
+```
+
+---
+
+## 56.2 姿态误差
+
+[
+e_R=
+\frac{1}{2}
+\left(
+R_d^TR-R^TR_d
+\right)^\vee
+]
+
+---
+
+## 56.3 角速度误差
+
+# [
+
+e_\omega
+
+\omega-R^TR_d\omega_d
+]
+
+具体符号由实现统一规定。
+
+---
+
+## 56.4 力矩控制
+
+基础形式：
+
+# [
+
+\tau
+
+-K_Re_R
+-K_\omega e_\omega
++
+\omega\times J\omega
++
+\tau_{ff}
+]
+
+---
+
+## 56.5 必须支持
+
+```text
+标准SO3
+Yaw解耦
+倾斜优先
+大姿态误差处理
+180度附近特殊处理
+```
+
+---
+
+# 57. SE(3)几何控制
+
+## 57.1 期望合力
+
+# [
+
+\mathbf F_d
+
+m
+\left[
+\mathbf a_r
++
+K_p(\mathbf p_r-\mathbf p)
++
+K_v(\mathbf v_r-\mathbf v)
++
+g\mathbf e_3
+\right]
+]
+
+---
+
+## 57.2 期望推力方向
+
+# [
+
+\mathbf b_{3d}
+
+\frac{\mathbf F_d}
+{|\mathbf F_d|}
+]
+
+---
+
+## 57.3 航向参考
+
+# [
+
+\mathbf b_{1c}
+
+\begin{bmatrix}
+\cos\psi_r
+\sin\psi_r
+0
+\end{bmatrix}
+]
+
+---
+
+## 57.4 期望姿态
+
+# [
+
+\mathbf b_{2d}
+
+\frac{
+\mathbf b_{3d}\times\mathbf b_{1c}
+}{
+|
+\mathbf b_{3d}\times\mathbf b_{1c}
+|
+}
+]
+
+# [
+
+\mathbf b_{1d}
+
+\mathbf b_{2d}\times\mathbf b_{3d}
+]
+
+[
+R_d=
+[
+\mathbf b_{1d},
+\mathbf b_{2d},
+\mathbf b_{3d}
+]
+]
+
+---
+
+## 57.5 总推力
+
+若使用当前姿态投影：
+
+[
+T=
+\mathbf F_d^T R\mathbf e_3
+]
+
+若输出期望合力和姿态，则推力语义必须在Profile中明确。
+
+---
+
+## 57.6 奇异情况
+
+当：
+
+[
+\mathbf b_{3d}
+\parallel
+\mathbf b_{1c}
+]
+
+时叉积接近零。
+
+必须提供：
+
+```text
+备用水平轴
+上一周期期望姿态
+航向退化策略
+```
+
+---
+
+## 57.7 输出模式
+
+支持：
+
+```text
+ATTITUDE_THRUST
+BODY_RATE_THRUST
+WRENCH
+```
+
+不同模式必须使用不同Descriptor，不得同一实例运行中任意改变输出语义。
+
+---
+
+# 58. DFBC控制器
+
+## 58.1 DFBC-Basic
+
+使用：
+
+```text
+位置
+速度
+加速度
+Yaw
+```
+
+输出：
+
+```text
+姿态
+总推力
+```
+
+---
+
+## 58.2 DFBC-Jerk
+
+额外使用：
+
+```text
+jerk
+yaw rate
+```
+
+计算：
+
+```text
+期望姿态变化率
+期望机体系角速度
+```
+
+输出：
+
+```text
+BODY_RATE_THRUST
+或WRENCH
+```
+
+---
+
+## 58.3 DFBC-Full
+
+额外使用：
+
+```text
+snap
+yaw acceleration
+```
+
+计算：
+
+```text
+期望角速度
+期望角加速度
+力矩前馈
+```
+
+---
+
+## 58.4 高阶轨迹有效性
+
+必须检查：
+
+```text
+jerk和snap是否由解析轨迹提供
+时间参数是否连续
+高阶导数是否有限
+重新规划拼接是否达到要求连续性
+```
+
+---
+
+## 58.5 气动模型
+
+若DFBC包含气动补偿，必须区分：
+
+```text
+纯DFBC核心
+DFBC + Drag Compensation Profile
+```
+
+气动补偿不得隐藏在无法关闭的控制律中。
+
+---
+
+# 59. 倾斜优先控制
+
+当姿态和推力受限时，优先级：
+
+```text
+推力方向
+Roll/Pitch
+总推力
+Yaw
+```
+
+必须记录：
+
+```text
+Yaw牺牲程度
+倾斜误差
+推力可达性
+恢复机制
+```
+
+---
+
+# 60. 线性MPC
+
+## 60.1 模型
+
+# [
+
+x_{k+1}
+
+Ax_k+Bu_k
+]
+
+或增量模型：
+
+# [
+
+\Delta x_{k+1}
+
+A\Delta x_k+B\Delta u_k
+]
+
+---
+
+## 60.2 目标函数
+
+[
+J=
+\sum_{k=0}^{N-1}
+\left[
+(x_k-x_{r,k})^TQ(x_k-x_{r,k})
++
+(u_k-u_{r,k})^TR(u_k-u_{r,k})
+\right]
++
+(x_N-x_{r,N})^TP(x_N-x_{r,N})
+]
+
+---
+
+## 60.3 约束
+
+至少支持：
+
+```text
+状态约束
+控制输入约束
+控制增量约束
+倾角约束
+推力约束
+角速度约束
+```
+
+---
+
+## 60.4 必须保存
+
+```text
+A、B、C、D矩阵
+采样周期
+预测时域
+控制时域
+Q、R、P
+约束
+求解器
+缩放矩阵
+```
+
+---
+
+## 60.5 线性化工作点
+
+若使用悬停线性模型，必须声明有效范围。
+
+高速或大姿态运行应使用：
+
+```text
+LTV-MPC
+多模型MPC
+增益调度MPC
+或NMPC
+```
+
+---
+
+# 61. LTV-MPC
+
+每周期或每个规划点更新：
+
+[
+A_k,B_k
+]
+
+必须记录：
+
+```text
+线性化方法
+更新频率
+矩阵计算时间
+模型冻结策略
+线性化失败处理
+```
+
+---
+
+# 62. 增量MPC
+
+以：
+
+[
+\Delta u_k=u_k-u_{k-1}
+]
+
+作为优化变量。
+
+优势包括控制变化率约束和稳态处理，但必须正确维护上一周期输入。
+
+Reset时必须根据当前实际控制量初始化：
+
+[
+u_{k-1}
+]
+
+---
+
+# 63. MPC软约束
+
+引入松弛变量：
+
+[
+\epsilon\ge0
+]
+
+目标函数加入：
+
+[
+\rho|\epsilon|
+]
+
+必须限制：
+
+```text
+最大松弛量
+松弛惩罚
+哪些约束允许放松
+哪些安全约束不可放松
+```
+
+---
+
+# 64. MPC求解器结果
+
+必须区分：
+
+```text
+OPTIMAL
+SUBOPTIMAL
+MAX_ITERATION
+TIMEOUT
+INFEASIBLE
+NUMERICAL_FAILURE
+```
+
+不得只返回成功或失败布尔值。
+
+---
+
+# 65. MPC Warm Start
+
+保存：
+
+```text
+上一周期状态序列
+上一周期控制序列
+对偶变量
+活跃约束
+```
+
+新周期将解序列前移，构造初始猜测。
+
+---
+
+# 66. MPC失败策略
+
+```text
+单次失败：
+使用上一可行解下一控制量
+
+连续失败：
+切换备用控制器
+
+解已过期：
+不得继续使用
+```
+
+---
+
+# 67. NMPC
+
+## 67.1 非线性模型
+
+[
+x_{k+1}=f_d(x_k,u_k,\theta)
+]
+
+其中：
+
+```text
+x：状态
+u：控制输入
+θ：模型参数
+```
+
+---
+
+## 67.2 状态表达
+
+支持：
+
+```text
+欧拉角
+四元数
+旋转矩阵局部参数
+误差状态
+```
+
+优先采用无欧拉角奇异性的表达。
+
+---
+
+## 67.3 输入层级
+
+NMPC可输出：
+
+```text
+ATTITUDE_THRUST
+BODY_RATE_THRUST
+WRENCH
+ROTOR_THRUST
+```
+
+每种输入层级对应不同的预测模型。
+
+不得将“姿态输入NMPC”和“单电机推力NMPC”视为同一个模型配置。
+
+---
+
+## 67.4 目标函数
+
+至少包含：
+
+```text
+位置误差
+速度误差
+姿态误差
+角速度误差
+控制输入
+控制变化率
+终端误差
+软约束
+```
+
+---
+
+## 67.5 NMPC约束
+
+可包含：
+
+```text
+位置边界
+速度
+加速度
+姿态
+倾角
+角速度
+总推力
+力矩
+单电机推力
+单电机变化率
+障碍物或安全约束
+```
+
+安全关键硬约束与性能软约束必须区分。
+
+---
+
+## 67.6 实时迭代
+
+必须明确：
+
+```text
+SQP
+SQP-RTI
+多重射击
+单重射击
+离散化积分器
+QP求解器
+最大迭代次数
+```
+
+---
+
+## 67.7 固定工作区
+
+板载NMPC必须采用：
+
+```text
+固定状态维度
+固定输入维度
+固定预测步数上限
+固定内存工作区
+固定最大迭代次数
+```
+
+---
+
+## 67.8 求解时间限制
+
+必须满足：
+
+[
+t_{solve,max}<T_s
+]
+
+并配置比控制周期更严格的内部截止时间，为适配和安全处理保留时间。
+
+---
+
+## 67.9 参数在线更新
+
+允许在线更新：
+
+```text
+质量
+惯量
+执行器效率
+阻力参数
+外部扰动估计
+```
+
+参数更新必须发生在求解周期边界。
+
+---
+
+# 68. Tube MPC
+
+Tube MPC必须明确：
+
+```text
+名义模型
+误差反馈控制器
+扰动集合
+鲁棒正不变集
+约束收缩
+终端集合
+```
+
+不得仅在普通MPC外加较大安全余量后称为Tube MPC。
+
+---
+
+# 69. Min-Max MPC
+
+必须定义：
+
+```text
+扰动集合
+最坏情况优化层级
+计算复杂度
+保守性
+实时实现方式
+```
+
+---
+
+# 70. 自适应MPC
+
+模型参数估计器与MPC必须通过显式接口连接。
+
+必须限制：
+
+```text
+参数变化范围
+参数变化率
+不可辨识状态
+估计置信度
+模型更新频率
+```
+
+---
+
+# 71. 随机MPC
+
+必须明确：
+
+```text
+随机变量
+概率分布
+机会约束概率
+场景样本数量
+置信度
+随机种子
+```
+
+---
+
+# 72. iLQR与DDP
+
+必须记录：
+
+```text
+非线性动力学
+局部二次模型
+前向滚动
+反向递推
+正则化
+线搜索
+收敛条件
+```
+
+其输出和失败状态仍必须符合统一Controller API。
+
+---
+
+# 73. MPPI
+
+必须明确：
+
+```text
+采样数量
+预测时域
+噪声分布
+温度参数
+代价函数
+随机种子
+计算后端
+```
+
+GPU版和CPU版应作为不同Deployment Profile。
+
+---
+
+# 74. 控制器能力矩阵
+
+| 控制器  | 最低参考      | 常用输出         | 约束处理   | 板载潜力   |
+| ------- | ------------- | ---------------- | ---------- | ---------- |
+| 原始PID | p、yaw        | 取决于原模型     | 限幅       | 高         |
+| 串级PID | p、v、a、yaw  | 姿态+推力        | 基础限幅   | 高         |
+| LQR/LQI | 状态参考      | 力/力矩或姿态    | 基础限幅   | 高         |
+| SMC     | 状态参考      | 力/力矩          | 基础限幅   | 高         |
+| SO3     | 姿态、角速度  | 力矩             | 基础限幅   | 高         |
+| SE3     | p、v、a、yaw  | 姿态/角速度/力矩 | 基础限幅   | 高         |
+| DFBC    | p、v、a、j、s | 角速度/力矩      | 基础限幅   | 高         |
+| LMPC    | 参考时域      | 多层级           | 显式约束   | 中高       |
+| NMPC    | 参考时域      | 多层级           | 非线性约束 | 取决于算力 |
+| MPPI    | 参考时域      | 多层级           | 代价约束   | 低至中     |
+
+---
+
+# 75. 输出层级选择原则
+
+## POSITION_SETPOINT
+
+适用于：
+
+```text
+仅做轨迹参考整形
+使用PX4全部控制环
+```
+
+不应将其称为完整外部位姿控制器。
+
+---
+
+## ACCELERATION_YAW
+
+适用于：
+
+```text
+位置和速度控制器
+由下游生成姿态和推力
+```
+
+---
+
+## ATTITUDE_THRUST
+
+适用于：
+
+```text
+px4ctrl式控制
+基础SE3
+基础DFBC
+外部位置速度控制
+```
+
+---
+
+## BODY_RATE_THRUST
+
+适用于：
+
+```text
+外部姿态控制
+DFBC-Jerk
+带角速度前馈的SE3
+部分NMPC
+```
+
+---
+
+## WRENCH
+
+适用于：
+
+```text
+完整刚体控制
+SO3内环
+NDI
+INDI
+力矩级NMPC
+```
+
+---
+
+## ROTOR_THRUST
+
+适用于：
+
+```text
+单电机NMPC
+故障容错
+自定义控制分配
+```
+
+---
+
+# 76. 控制器模式变体
+
+同一算法具有不同输出层级时，应作为：
+
+```text
+同一算法家族
++
+不同Controller Descriptor
+```
+
+例如：
+
+```text
+se3_attitude_thrust
+se3_bodyrate_thrust
+se3_wrench
+```
+
+它们可以共享数学库，但不能在运行中无声明地改变输出类型。
+
+---
+
+# 77. 模型参数所有权
+
+控制器不得硬编码：
+
+```text
+质量
+惯量
+重力
+臂长
+推力系数
+电机数量
+最大推力
+```
+
+这些参数由Vehicle Model或Vehicle Profile提供。
+
+---
+
+# 78. 在线模型变化
+
+控制器必须声明是否支持在线更新：
+
+```text
+质量
+惯量
+质心
+执行器效率
+阻力
+```
+
+不支持在线更新的控制器在模型变化后必须重新初始化。
+
+---
+
+# 79. 控制器内部日志
+
+高频诊断建议包含：
+
+```text
+位置误差
+速度误差
+姿态误差
+角速度误差
+未约束控制量
+约束后控制量
+积分器
+饱和状态
+期望推力方向
+求解器状态
+执行时间
+```
+
+---
+
+# 80. 调试与发布日志等级
+
+```text
+OFF
+ERROR
+NORMAL
+DEBUG
+TRACE
+```
+
+正式板载版本不得默认记录所有高维MPC预测变量。
+
+---
+
+# 81. 错误码
+
+建议分类：
+
+```text
+0x1xxx 输入错误
+0x2xxx 参数错误
+0x3xxx 模型错误
+0x4xxx 数值错误
+0x5xxx 约束错误
+0x6xxx 求解器错误
+0x7xxx 实时性错误
+0x8xxx 内部状态错误
+```
+
+---
+
+# 82. 单元测试要求
+
+每个控制器至少测试：
+
+```text
+初始化
+Reset
+零误差
+正负位置误差
+正负速度误差
+正负姿态误差
+正负角速度误差
+最大参考
+最大状态
+非法dt
+过期输入
+NaN输入
+参数边界
+输出饱和
+多实例
+长期运行
+```
+
+---
+
+# 83. 数学方向测试
+
+必须验证：
+
+```text
+目标在东侧时产生向东控制趋势
+目标在上方时增加推力
+正Roll误差产生正确恢复力矩
+正Yaw误差产生正确Yaw控制方向
+```
+
+该测试用于优先发现坐标系和符号错误。
+
+---
+
+# 84. 悬停平衡测试
+
+在：
+
+```text
+零位置误差
+零速度误差
+水平姿态
+零角速度
+无扰动
+```
+
+条件下应满足：
+
+[
+T\approx mg
+]
+
+或输出等效悬停控制量。
+
+---
+
+# 85. 对称性测试
+
+在对称机型和对称参数下：
+
+```text
++X误差
+-X误差
+```
+
+应产生方向相反、幅值近似一致的输出。
+
+---
+
+# 86. 能量和耗散检查
+
+对于具有Lyapunov设计的控制器，应在典型状态下检查：
+
+```text
+误差能量是否下降
+阻尼项方向是否正确
+控制输入是否产生负反馈
+```
+
+---
+
+# 87. MWORKS模型要求
+
+每个控制器模型应包含：
+
+```text
+算法核心子系统
+输入总线
+输出总线
+参数总线
+状态初始化
+限幅模块
+诊断输出
+测试Harness
+```
+
+---
+
+# 88. MWORKS模型层级
+
+推荐：
+
+```text
+ControllerTop
+├── InputValidation
+├── ReferenceProcessing
+├── StateProcessing
+├── ErrorCalculation
+├── CoreControlLaw
+├── ConstraintHandling
+├── OutputConversion
+└── Diagnostics
+```
+
+---
+
+# 89. Sysblock端口规则
+
+输入端口组：
+
+```text
+ReferenceBus
+StateBus
+ModelBus
+LimitsBus
+RuntimeBus
+```
+
+输出端口组：
+
+```text
+CommandBus
+StatusBus
+DiagnosticsBus
+```
+
+---
+
+# 90. 模型与代码一致性
+
+必须保存一组标准输入向量，使：
+
+```text
+MWORKS模型输出
+生成C代码输出
+离线C++包装输出
+```
+
+在规定误差内一致。
+
+---
+
+# 91. 生成代码规则
+
+控制器核心应满足：
+
+```text
+固定尺寸数组
+无动态内存
+无平台头文件
+无ROS类型
+无PX4类型
+无文件操作
+无异常依赖
+可重入
+可多实例
+```
+
+详细部署规则见07文档。
+
+---
+
+# 92. 手写控制器规则
+
+未通过MWORKS生成的手写控制器也必须：
+
+```text
+遵守同一Controller API
+遵守相同坐标和单位
+使用相同参数Manifest
+通过相同测试体系
+```
+
+不得给予手写控制器特殊接口。
+
+---
+
+# 93. 开源控制器接入规则
+
+接入开源控制器时，应先拆分：
+
+```text
+算法核心
+ROS包装
+参数加载
+日志
+仿真接口
+```
+
+只将算法核心适配到MoSim统一接口。
+
+禁止把整个开源ROS节点直接放进Controller Core目录。
+
+---
+
+# 94. 开源代码记录
+
+必须记录：
+
+```text
+项目名称
+仓库
+Commit
+许可证
+引用论文
+使用文件
+修改内容
+未采用部分
+```
+
+---
+
+# 95. 控制器开发流程
+
+```text
+明确控制层级
+↓
+建立数学模型
+↓
+确定输入输出
+↓
+编写Controller Descriptor
+↓
+定义参数和Context
+↓
+建立MWORKS模型或参考实现
+↓
+完成单周期测试
+↓
+完成模型闭环
+↓
+生成或编写平台无关代码
+↓
+完成一致性测试
+↓
+接入ROS + Gazebo
+↓
+接入PX4 SITL
+↓
+完成Test Harness
+↓
+批准控制器Profile
+```
+
+---
+
+# 96. 实现状态
+
+每个控制器具有状态：
+
+```text
+PLANNED
+MODELED
+SIMULATED
+CODE_GENERATED
+OFFLINE_VERIFIED
+ROS_INTEGRATED
+SITL_VERIFIED
+ONBOARD_VERIFIED
+HITL_VERIFIED
+FLIGHT_VERIFIED
+DEPRECATED
+```
+
+---
+
+# 97. 控制器完成等级
+
+## Level A：数学实现完成
+
+```text
+数学说明
+参数说明
+单周期实现
+单元测试
+```
+
+## Level B：MWORKS闭环完成
+
+```text
+标准轨迹
+名义模型
+基本鲁棒性
+```
+
+## Level C：生成代码完成
+
+```text
+C/C++代码
+一致性测试
+无动态内存
+```
+
+## Level D：ROS + Gazebo完成
+
+```text
+ROS适配
+Gazebo闭环
+日志
+```
+
+## Level E：PX4 SITL完成
+
+```text
+uORB或Offboard接入
+模式和安全状态
+控制器切换
+```
+
+## Level F：板载完成
+
+```text
+交叉编译
+实时性
+栈和内存
+```
+
+## Level G：真机完成
+
+```text
+低风险飞行
+标准轨迹
+安全接管
+```
+
+---
+
+# 98. 一个控制器的强制交付物
+
+```text
+数学设计文档
+MWORKS模型
+参数字典
+Controller Descriptor
+Controller Manifest
+Controller Context
+平台无关代码
+单元测试
+标准输入输出数据
+闭环测试配置
+测试报告
+ROS适配说明
+PX4部署说明
+来源与许可证
+```
+
+---
+
+# 99. 控制器参数命名
+
+完整内部参数名：
+
+```text
+controller.<name>.<group>.<parameter>
+```
+
+例如：
+
+```text
+controller.se3.position_gain.x
+controller.se3.attitude_gain.roll
+controller.nmpc.solver.max_iterations
+```
+
+PX4短参数映射由06和07文档定义。
+
+---
+
+# 100. 控制器目录
+
+```text
+MoSim/
+└── Controllers/
+    ├── classical/
+    │   ├── pid_baseline/
+    │   ├── pid_cascade/
+    │   ├── pid_gain_scheduled/
+    │   └── fuzzy_pid/
+    │
+    ├── linear/
+    │   ├── lqr/
+    │   ├── lqi/
+    │   ├── lqg/
+    │   └── hinfinity/
+    │
+    ├── nonlinear/
+    │   ├── feedback_linearization/
+    │   ├── ndi/
+    │   ├── backstepping/
+    │   ├── smc/
+    │   ├── super_twisting_smc/
+    │   ├── so3/
+    │   ├── se3/
+    │   └── dfbc/
+    │
+    ├── optimal/
+    │   ├── lmpc/
+    │   ├── ltv_mpc/
+    │   ├── nmpc/
+    │   ├── tube_mpc/
+    │   ├── adaptive_mpc/
+    │   ├── stochastic_mpc/
+    │   ├── ilqr/
+    │   └── mppi/
+    │
+    ├── common/
+    │   ├── math/
+    │   ├── filters/
+    │   ├── constraints/
+    │   ├── anti_windup/
+    │   ├── trajectory/
+    │   └── diagnostics/
+    │
+    └── tests/
+```
+
+---
+
+# 101. 单个控制器目录
+
+```text
+se3/
+├── README.md
+├── controller_manifest.yaml
+├── parameter_manifest.yaml
+├── model/
+│   └── mworks/
+├── include/
+├── src/
+├── generated/
+├── config/
+├── tests/
+│   ├── unit/
+│   ├── regression/
+│   └── reference_data/
+├── reference/
+│   ├── papers/
+│   └── notes/
+└── licenses/
+```
+
+---
+
+# 102. 现有模型迁移规则
+
+现有目录：
+
+```text
+pid
+enhanced_pid
+improved_pid
+linear_mpc_sysblock
+nmpc_indi_l1
+```
+
+应分别处理。
+
+## pid
+
+保留为冻结基线。
+
+## enhanced_pid和improved_pid
+
+分析每个改动后拆成：
+
+```text
+pid_cascade核心
+前馈模块
+Anti-Windup
+滤波器
+补偿模块
+参数Profile
+```
+
+## linear_mpc_sysblock
+
+拆出纯LMPC核心，不包含故障分配。
+
+## nmpc_indi_l1
+
+拆分为：
+
+```text
+纯NMPC
+INDI
+L1
+组合Profile
+```
+
+---
+
+# 103. 单机控制器V1.0范围
+
+V1.0至少完成：
+
+```text
+PX4原生基线适配
+px4ctrl核心复现
+官方PID
+增强串级PID
+LQI
+Super-Twisting SMC
+SE3
+DFBC-Basic
+DFBC-Jerk
+LMPC
+纯NMPC
+```
+
+---
+
+# 104. V1.0输出层级
+
+至少贯通：
+
+```text
+POSITION_SETPOINT
+ATTITUDE_THRUST
+BODY_RATE_THRUST
+WRENCH
+```
+
+单电机推力和电机转速接口可在故障控制和高级NMPC阶段完善。
+
+---
+
+# 105. V1.0统一测试轨迹
+
+```text
+悬停
+位置阶跃
+圆形
+8字
+螺旋
+Minimum-Jerk
+Minimum-Snap
+```
+
+---
+
+# 106. V1.0非理想测试
+
+```text
+质量偏差
+惯量偏差
+恒定风
+阶跃风
+状态噪声
+状态延迟
+执行器饱和
+```
+
+---
+
+# 107. 控制器实现禁止项
+
+禁止：
+
+```text
+控制器内部直接订阅ROS Topic
+控制器内部直接发布uORB
+控制器硬编码机型质量
+控制器硬编码电机顺序
+使用角度制和SI单位混合
+使用NaN隐式表示内部缺失字段
+控制器单周期动态申请内存
+控制器内部直接切换飞行模式
+每个组合复制一份控制器代码
+把INDI和L1永久写死在NMPC内部
+把推力归一化逻辑散落到各控制器
+```
+
+---
+
+# 108. 强制性规则
+
+1. 每个控制器必须具有明确的数学模型。
+2. 每个控制器必须声明输入状态、参考输入和输出层级。
+3. 所有控制器核心统一使用ENU、FLU和SI单位。
+4. 参考加速度统一不包含重力。
+5. 重力补偿必须具有唯一所有者。
+6. 控制器不得直接依赖ROS、PX4、Gazebo或MWORKS运行时类型。
+7. 参数和内部状态必须分离。
+8. 每个控制器必须具有独立Context并支持多实例。
+9. 控制器必须支持初始化、Reset、Update和Deactivate。
+10. 所有输入必须经过时间、数值和有效性检查。
+11. 所有输出必须经过非有限值检查和算法内部限幅。
+12. 含积分器的控制器必须实现Anti-Windup。
+13. 使用滤波器的控制器必须记录滤波参数和延迟。
+14. 使用模型逆的控制器必须处理奇异性和不可达控制量。
+15. 使用优化求解器的控制器必须报告详细求解状态。
+16. MPC和NMPC必须具有求解超时和上一可行解机制。
+17. 高阶DFBC不得从带噪位置直接高阶差分获得jerk和snap。
+18. 控制器不得隐藏增强模块。
+19. 同一算法不同输出层级必须使用不同Descriptor。
+20. 模型参数不得硬编码在控制器源码中。
+21. MWORKS模型、生成代码和手写包装必须进行一致性验证。
+22. 所有控制器必须使用统一Test Harness。
+23. 未完成ROS/Gazebo验证的控制器不得标记为工程完成。
+24. 未完成板载实时性测试的控制器不得标记为PX4板载支持。
+25. 开源实现必须记录许可证、Commit和修改内容。
+
+---
+
+# 109. 文档结论
+
+MoSim单机控制器不应被实现为彼此独立、接口不同的算法工程：
+
+```text
+PID使用一套消息
+SE3使用另一套消息
+MPC自己读取ROS
+NMPC自己发布PX4 Topic
+```
+
+正确结构是：
+
+```text
+统一轨迹参考
++
+统一飞行器状态
++
+统一模型和约束
+        ↓
+统一IController接口
+        ↓
+PID / LQR / SMC / SE3 / DFBC / MPC
+        ↓
+统一ControllerCommand
+        ↓
+增强模块、管理器和平台适配器
+```
+
+每个控制器必须同时具备：
+
+```text
+数学可解释
+接口统一
+状态可复位
+参数可管理
+实时可执行
+模型可生成代码
+结果可复现
+平台可迁移
+失败可检测
+性能可评价
+```
+
+最终使MoSim中的各类单机控制算法不只是“能够在MWORKS中跑起来”，而是成为可以在MWORKS、ROS 1、Gazebo、PX4 SITL和真实飞控板之间复用的标准控制组件。

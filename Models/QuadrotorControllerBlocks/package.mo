@@ -104,6 +104,10 @@ package QuadrotorControllerBlocks
       "AWFF PID 常量输入 SIL 演示入口"
       extends QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo_SIL_Constant;
     end PIDDemoSILConstant;
+    model PX4CTRLCoreAttitudeThrustEquationBridge
+      "px4ctrl ATTITUDE_THRUST Golden Slice G6 方程桥接入口"
+      extends QuadrotorControllerBlocks.PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock;
+    end PX4CTRLCoreAttitudeThrustEquationBridge;
     annotation(__MWORKS(version="26.3.0"));
   end DemosAndSIL;
 

@@ -1,0 +1,3460 @@
+# MoSim研发工作流与Agent任务编排规范
+
+> 文档编号：MoSim-WF-01
+> 文档名称：MoSim研发工作流与Agent任务编排规范
+> 适用项目：MoSim四旋翼控制、联合仿真与PX4部署平台
+> 当前版本：V0.1 Draft
+> 文档性质：研发阶段划分、任务依赖、Agent协作、质量门禁与交付规范
+>
+> 依赖文档：
+>
+> * MoSim-CTRL-01《MoSim控制体系总览》
+> * MoSim-CTRL-02《MoSim统一控制接口规范》
+> * MoSim-CTRL-03《MoSim单机控制器实现规范》
+> * MoSim-CTRL-04《MoSim控制增强与容错规范》
+> * MoSim-CTRL-05《MoSim规划与编队控制接口规范》
+> * MoSim-CTRL-06《MoSim控制器管理与配置规范》
+> * MoSim-CTRL-07《MoSim控制器代码生成与PX4部署规范》
+> * MoSim-CTRL-08《MoSim控制系统测试与评价规范》
+> * MoSim-CTRL-09《MoSim控制器调参与参数优化规范》
+
+---
+
+# 0. 当前主线冻结：px4ctrl Golden Slice 与大系统最小闭环
+
+当前 WF-01 执行主线优先采用以下阶段。本文后续较泛化的 P0-P14 工作流保留为长期路线，但当前执行、调度和验收必须先服从本节。
+
+```text
+P0  冻结PX4/MAVROS融合状态源
+        ↓
+P1  冻结ZJU上游px4ctrl版本
+        ↓
+P2  冻结Sunray px4ctrl工程版本
+        ↓
+P3  上游与Sunray版本差异审计
+        ↓
+P4  Sunray px4ctrl闭环跑通并调优
+        ├──────────────┐
+        ↓              ↓
+P5A 抽取core       P5B EGO单机官方链路
+        ↓              ↓
+P6  core离线对齐   EGO-Swarm S0/S1
+        ↓
+P7  MWORKS重建
+        ↓
+P8  MWORKS模型离线对齐
+        ↓
+P9  生成C代码
+        ↓
+P10 四方离线一致性
+        ↓
+P11 接回原ROS包装层
+        ↓
+P12 Gazebo闭环对齐
+        ↓
+P13 EGO使用MWORKS版px4ctrl_core
+        ↓
+P14 FAST-LIO独立定位评价
+        ↓
+P15 FAST-LIO经PX4融合后替换状态源
+        ↓
+P16 冻结ATTITUDE_THRUST模板V1
+        ↓
+P17 官方PID单控制器替换
+        ↓
+P18 SE3 Basic单控制器替换
+        ↓
+P19 根据结果逐个释放后续控制器
+```
+
+当前阶段硬规则：
+
+```text
+px4ctrl是第一阶段一切基准。
+第一阶段唯一实际输出层级是ATTITUDE_THRUST。
+控制输入使用PX4/MAVROS融合状态，Gazebo Truth只用于评价。
+Sunray/Gazebo是plant权威，MWORKS模型后续向它对齐。
+FAST-LIO不参与px4ctrl基准参数是否调好的初始验收。
+EGO/EGO-Swarm可以在px4ctrl稳定后并行推进官方链路基线，但不阻塞MWORKS重建。
+离线一致性未通过，不得进入Gazebo闭环。
+```
+
+当前对象级验收矩阵见本文附录A和附录B。
+
+## 0.1 术语冻结
+
+本文中“最小闭环”必须带限定语使用，禁止混用。
+
+```text
+控制器最小闭环：
+  仅指 px4ctrl Golden Slice。
+  覆盖 G-PX4CTRL-0 至 G-PX4CTRL-7。
+  目标是证明原始px4ctrl、抽取core、MWORKS模型、生成C代码和Gazebo回灌一致。
+
+大系统最小闭环：
+  指比赛展示所需的最小完整自主飞行系统。
+  覆盖 px4ctrl、EGO单机、EGO-Swarm 2/3机、FAST-LIO独立评价和MWORKS版px4ctrl接入。
+  目标是证明控制器、规划器、集群、定位/建图评价、PX4/MAVROS/Gazebo可以组成可复现工程闭环。
+```
+
+当前执行时，若未特别说明：
+
+```text
+G0-G7 = 控制器最小闭环门禁。
+6个Goal = 大系统最小闭环执行颗粒度。
+```
+
+## 0.2 当前6个Goal划分
+
+大系统最小闭环按以下6个Goal推进。每个Goal完成后必须产出独立证据，禁止用后续Goal掩盖前一Goal未通过的问题。
+
+| Goal | 名称 | 覆盖门禁/对象 | 完成定义 | 不属于本Goal |
+| --- | --- | --- | --- | --- |
+| Goal 1 | px4ctrl正式基础闭环 | G-PX4CTRL-0、G-PX4CTRL-1 | 原始px4ctrl使用正式 `/mavros/local_position/odom` 状态源完成起飞、悬停、降落、基础状态机和误差门禁 | 8字、螺旋、EGO、FAST-LIO、MWORKS代码生成 |
+| Goal 2 | px4ctrl轨迹与参数冻结 | G-PX4CTRL-2、G-PX4CTRL-3、G-PX4CTRL-4 | 原始px4ctrl完成8字、螺旋、阶跃/圆形、安全异常、参数调优和冻结 | core抽取、MWORKS重建、EGO/集群 |
+| Goal 3 | px4ctrl Golden Slice代码链 | G-PX4CTRL-5、G-PX4CTRL-6、G-PX4CTRL-7 | 抽取px4ctrl_core，完成原版/core/MWORKS模型/生成C代码离线一致性，并回灌Gazebo A/B对齐 | EGO-Swarm、自研编队、FAST-LIO状态源替换 |
+| Goal 4 | EGO单机最小闭环 | 附录B EGO单机工程接入 | EGO生成轨迹，经Trajectory Adapter、px4ctrl、MAVROS、PX4、Gazebo完成单机无碰撞目标点飞行 | 多机、自研编队、FAST-LIO替换控制状态源 |
+| Goal 5 | EGO-Swarm 2/3机官方链路基线 | 附录B EGO-S0/EGO-S1 | 2机、3机官方规划链路和MoSim工程接入基线可启动、Topic隔离、PX4/MAVROS/px4ctrl实例隔离、基础避碰正常 | 自研Leader-Follower、一致性控制、故障重构、异构控制器集群 |
+| Goal 6 | MWORKS版px4ctrl接入自主飞行链路 | Goal 3输出 + Goal 4链路 | MWORKS生成的px4ctrl_core替换原始core后，重新完成EGO单机闭环；再按结果决定是否扩展到EGO-Swarm | 批量铺开全部控制器、多机自研编队、UE真值地图导出 |
+
+Goal依赖关系：
+
+```text
+Goal 1
+  ↓
+Goal 2
+  ↓
+Goal 3
+  ├── Goal 4 可在原始px4ctrl稳定后并行预研/跑官方链路
+  ↓
+Goal 6
+
+Goal 5 可在 Goal 1/2 稳定后做官方基线，但不能替代 Goal 3 或 Goal 6。
+```
+
+当前第一执行目标固定为：
+
+```text
+Goal 1：px4ctrl正式基础闭环。
+```
+
+Goal 1未通过前，不得把 EGO、FAST-LIO、UE 或 MWORKS代码生成结果包装成大系统闭环完成。
+
+---
+
+# 1. 文档目的
+
+本文档将MoSim现有设计文档转化为可执行的研发工作流，规定：
+
+```text
+项目先做什么、后做什么
+哪些任务必须串行
+哪些任务可以并行
+每个Agent负责什么
+一个控制器如何拆成标准子任务
+什么时候允许进入下一阶段
+Gazebo与MWORKS应怎样交替推进
+单机与多机怎样衔接
+接口怎样冻结
+任务失败怎样回退
+主Agent怎样检查和合并子任务
+```
+
+本文档不重新定义控制算法、数据结构和评价指标。
+
+这些内容分别由CTRL-01～09规定。
+
+---
+
+# 2. 核心问题
+
+MoSim当前已具备较完整的设计体系，但仍面临以下工程问题：
+
+```text
+任务数量多
+控制器数量多
+依赖关系复杂
+部分控制器已有MWORKS模型
+部分控制器只有论文或开源实现
+部分控制器运行在ROS侧
+部分控制器需要进入PX4
+单机和多机系统共用部分基础设施
+多个Agent可能重复实现接口
+不同Agent可能修改同一公共文件
+控制器完成程度难以统一判断
+```
+
+本规范的目标是将上述工作转化为：
+
+```text
+明确阶段
+明确依赖
+明确责任
+明确输入
+明确输出
+明确验收
+明确停止条件
+```
+
+---
+
+# 3. 总体路线
+
+MoSim采用以下总体研发路线：
+
+```text
+环境和机型冻结
+        ↓
+PX4 Native基线
+        ↓
+px4ctrl原版复现与Sunray适配
+        ↓
+最小统一控制接口
+        ↓
+官方PID黄金纵向切片
+        ↓
+按输出层级批量完成单机控制器
+        ↓
+增强、控制分配与故障容错
+        ↓
+单机控制系统整合
+        ↓
+多机基础设施
+        ↓
+编队、规划、避碰与多机故障
+        ↓
+MWORKS完整展示与PX4板载部署
+        ↓
+前端、自动测试和最终答辩系统
+```
+
+---
+
+# 4. 关键路线修正
+
+不得采用：
+
+```text
+所有控制器先在Gazebo手写完成
+        ↓
+最后一次性迁移到MWORKS
+```
+
+原因是后期可能集中暴露：
+
+```text
+输入输出不兼容
+状态管理不兼容
+动态数组不可生成
+数据类型不兼容
+采样周期不一致
+参数结构不兼容
+代码不可重入
+PX4包装困难
+```
+
+应采用：
+
+```text
+先贯通一个完整纵向切片
+        ↓
+形成稳定模板
+        ↓
+后续控制器按模板批量复制
+```
+
+---
+
+# 5. Gazebo与MWORKS的关系
+
+Gazebo与MWORKS不是简单的先后关系。
+
+二者职责不同：
+
+## 5.1 Gazebo负责
+
+```text
+PX4完整飞控链验证
+ROS与MAVROS接口验证
+消息频率与延迟
+执行器和仿真插件
+控制器实际闭环表现
+多机实例
+传感器与规划器接入
+```
+
+## 5.2 MWORKS负责
+
+```text
+控制器模型设计
+算法结构表达
+模型级仿真
+参数扫描
+内部状态分析
+标准C代码生成
+模型与代码一致性验证
+国产平台展示
+```
+
+## 5.3 标准闭环
+
+```text
+MWORKS模型或参考实现
+        ↓
+统一Controller Core
+        ↓
+ROS 1 + Gazebo验证
+        ↓
+参数调优和问题发现
+        ↓
+MWORKS模型与参数修正
+        ↓
+重新生成代码
+        ↓
+回灌Gazebo验证
+```
+
+---
+
+# 6. 两类控制器采用不同起始路线
+
+## 6.1 已有MWORKS模型的控制器
+
+包括当前已有的：
+
+```text
+PID
+Enhanced PID
+Improved PID
+AWFF
+L1故障模块
+LMPC
+NMPC + INDI + L1
+```
+
+标准路线：
+
+```text
+现有模型审计
+→ 原子模块拆分
+→ 统一输入输出
+→ MWORKS模型验证
+→ 生成标准C代码
+→ Controller Core包装
+→ Gazebo接入
+→ Gazebo调参
+→ 参数回写MWORKS
+→ 模型—代码—Gazebo一致性验证
+```
+
+---
+
+## 6.2 尚无MWORKS模型的控制器
+
+例如：
+
+```text
+LQI
+Super-Twisting SMC
+SO(3)
+SE(3)
+DFBC
+Tube MPC
+```
+
+标准路线：
+
+```text
+论文和开源实现审计
+→ 平台无关参考实现
+→ 单元测试
+→ Gazebo安全闭环
+→ 确认算法和接口
+→ MWORKS模型复现
+→ 生成标准C代码
+→ 替换或对照参考实现
+→ 再次Gazebo验证
+```
+
+---
+
+# 7. 工作流基本原则
+
+## 7.1 基线先行
+
+不得在PX4 Native和px4ctrl链路不稳定时批量开发新控制器。
+
+## 7.2 接口最小化
+
+最初只实现能够支撑当前批次的最小接口。
+
+不得一次性实现全部未来功能。
+
+## 7.3 纵向切片优先
+
+必须先证明一套控制器能够贯通：
+
+```text
+MWORKS
+→ C代码
+→ Controller Core
+→ ROS
+→ Gazebo
+```
+
+## 7.4 公共基础设施单一所有者
+
+统一接口、消息和顶层构建文件只能由指定Agent修改。
+
+## 7.5 批次内复用
+
+同一输出层级的控制器共用适配器、日志和PX4下游链路。
+
+## 7.6 单机先行
+
+单机控制、接口和参数未稳定前，不开展正式编队算法开发。
+
+## 7.7 多机提前冒烟
+
+正式多机放在后面，但应提前验证双机命名空间和实例隔离。
+
+## 7.8 完成必须可复现
+
+Agent不得用截图或人工操作作为唯一交付。
+
+---
+
+# 8. 项目阶段总览
+
+| 阶段  | 名称                 | 核心结果                          |
+| --- | ------------------ | ----------------------------- |
+| P0  | 环境冻结               | 可重复启动的Sunray仿真基线              |
+| P1  | PX4 Native         | 官方控制链跑通并冻结                    |
+| P2  | px4ctrl            | 原版复现并完成Sunray适配               |
+| P3  | 最小统一接口             | px4ctrl通过统一接口运行               |
+| P4  | 黄金纵向切片             | 官方PID完成MWORKS—代码—Gazebo闭环     |
+| P5  | ATTITUDE_THRUST批次  | 第一批单机控制器完成                    |
+| P6  | BODY_RATE_THRUST批次 | 高阶姿态参考控制完成                    |
+| P7  | WRENCH批次           | 完整刚体控制完成                      |
+| P8  | 增强与容错              | INDI、L1、AWFF、FDI、分配完成         |
+| P9  | 单机系统整合             | Manager、Profile、切换和PX4 Module |
+| P10 | 多机基础设施             | 多PX4、多MAVROS和命名空间稳定           |
+| P11 | 编队与多机规划            | 编队、避碰、重构和多机故障                 |
+| P12 | MWORKS完整闭环         | 比赛要求的统一模型和展示                  |
+| P13 | 前端和自动化             | 一键切换、实验管理和可视化                 |
+| P14 | 最终验收               | 对比、报告、视频和答辩材料                 |
+
+---
+
+# 9. 阶段P0：环境与模型冻结
+
+## 9.1 目标
+
+建立所有后续任务共同使用的固定环境。
+
+## 9.2 任务
+
+```text
+冻结PX4 Commit
+冻结ROS 1发行版
+冻结Gazebo版本
+冻结MAVROS版本
+冻结Sunray模型
+冻结世界文件
+冻结启动参数
+冻结控制与状态频率
+冻结坐标系
+冻结状态源
+冻结仿真时间规则
+```
+
+## 9.3 交付物
+
+```text
+Config/environment/environment_manifest.yaml
+Config/vehicles/sunray_gazebo_v1.yaml
+Config/simulation/gazebo_baseline_v1.yaml
+Config/state_sources/state_source_baseline_v1.yaml
+
+Docs/environment_setup.md
+Docs/launch_commands.md
+Reports/topic_frequency_audit.md
+Reports/time_sync_audit.md
+```
+
+## 9.4 门禁G0
+
+必须满足：
+
+```text
+使用一条固定命令启动
+无人机模型正确出现
+PX4 SITL成功启动
+MAVROS成功连接
+状态Topic持续有效
+仿真重启后结果基本一致
+全部模块使用/clock
+```
+
+G0未通过，不得进入P1。
+
+---
+
+# 10. 阶段P1：PX4 Native基线
+
+## 10.1 目标
+
+把PX4原生控制器作为工程基线完整跑通。
+
+## 10.2 子任务
+
+```text
+P1-01 数据流审计
+P1-02 飞行模式和解锁流程
+P1-03 轨迹参考接入
+P1-04 PX4参数审计
+P1-05 Sunray参数调优
+P1-06 基础轨迹验证
+P1-07 启动和日志自动化
+```
+
+## 10.3 基础场景
+
+```text
+悬停
+X/Y/Z阶跃
+Yaw阶跃
+圆形
+8字
+螺旋
+```
+
+## 10.4 交付物
+
+```text
+Profiles/px4_native/
+Launch/px4_native/
+Parameters/px4_native/
+Reports/px4_native_dataflow.md
+Reports/px4_native_tuning.md
+Reports/px4_native_known_issues.md
+```
+
+## 10.5 门禁G1-A
+
+必须满足：
+
+```text
+一键启动
+稳定悬停
+完成基础轨迹
+参数持久化
+状态和控制输出可记录
+运行结果可重复
+```
+
+---
+
+# 11. 阶段P2：px4ctrl基线
+
+## 11.1 目标
+
+建立规划器或轨迹源到PX4姿态内环的外部控制基线。
+
+## 11.2 分成两个阶段
+
+### 原版复现
+
+```text
+保持原始代码逻辑
+保持原始消息和状态机
+确认原项目可以运行
+记录原始依赖和参数
+```
+
+### Sunray适配
+
+```text
+适配Topic
+适配状态消息
+适配轨迹消息
+适配坐标系
+适配推力映射
+适配控制频率
+适配机型参数
+```
+
+## 11.3 禁止事项
+
+原版复现阶段不得同时：
+
+```text
+重构全部代码
+替换全部消息
+加入MoSim Manager
+重写推力模型
+修改控制算法
+```
+
+必须先证明原始链路可运行。
+
+## 11.4 交付物
+
+```text
+References/px4ctrl_original/
+Controllers/baseline/px4ctrl/
+Adapters/px4ctrl_sunray/
+Profiles/px4ctrl/
+Reports/px4ctrl_original_reproduction.md
+Reports/px4ctrl_sunray_integration.md
+```
+
+## 11.5 门禁G1-B
+
+必须满足：
+
+```text
+PX4 Native和px4ctrl使用相同轨迹源
+px4ctrl稳定完成基础轨迹
+PX4内环参数固定
+推力模型明确
+输入输出和状态机有完整记录
+```
+
+---
+
+# 12. 阶段P3：最小统一接口
+
+## 12.1 目标
+
+建立第一版能够实际运行的统一控制接口。
+
+## 12.2 第一版只实现
+
+```text
+VehicleState
+TrajectoryPoint
+ControllerInput
+ControllerCommand
+ControllerStatus
+
+IController
+StateAdapter
+ReferenceAdapter
+CommandAdapter
+```
+
+## 12.3 第一版输出层级
+
+只要求：
+
+```text
+ATTITUDE_THRUST
+```
+
+## 12.4 暂不实现
+
+```text
+所有控制输出层级
+复杂控制器热切换
+完整Profile继承
+完整前端
+复杂故障管理
+全部自定义uORB
+```
+
+## 12.5 验证方法
+
+将px4ctrl核心包装为统一`IController`实现。
+
+要求：
+
+```text
+统一接口前后控制结果一致
+原有px4ctrl算法不被修改
+ROS专用代码与算法核心分离
+```
+
+## 12.6 门禁G2
+
+必须满足：
+
+```text
+px4ctrl通过统一Controller API运行
+ROS消息不进入Controller Core
+控制器可以独立单元测试
+适配器可以替换
+```
+
+---
+
+# 13. 阶段P4：官方PID黄金纵向切片
+
+## 13.1 目标
+
+用一个简单控制器验证全部技术链。
+
+## 13.2 推荐控制器
+
+```text
+赛题官方PID
+```
+
+备选：
+
+```text
+增强PID
+```
+
+## 13.3 完整链路
+
+```text
+官方MWORKS模型
+        ↓
+统一输入输出端口
+        ↓
+MWORKS模型闭环验证
+        ↓
+生成标准C代码
+        ↓
+生成代码归一化包装
+        ↓
+IController适配
+        ↓
+ROS Adapter
+        ↓
+PX4 + Gazebo
+        ↓
+参数调优
+        ↓
+参数同步回MWORKS
+        ↓
+模型、生成代码和Gazebo一致性
+```
+
+## 13.4 黄金切片必须解决
+
+```text
+模型端口模板
+参数数据字典模板
+代码生成配置
+生成文件目录
+生成代码禁止手改规则
+Context封装
+初始化和Reset
+float32/float64差异
+CMake接入
+ROS Adapter
+Gazebo启动
+一致性测试
+```
+
+## 13.5 门禁G3
+
+必须同时证明：
+
+```text
+MWORKS模型可运行
+生成代码可独立编译
+生成代码无动态内存
+Controller Core可运行
+ROS + Gazebo可闭环
+三种实现结果在误差范围内一致
+```
+
+G3未通过，禁止批量开发后续控制器。
+
+---
+
+# 14. 接口V1冻结
+
+黄金纵向切片通过后，冻结：
+
+```text
+Controller API V1
+Message Schema V1
+坐标系V1
+单位语义V1
+ATTITUDE_THRUST语义V1
+参数Manifest V1
+生成代码Wrapper V1
+```
+
+冻结后：
+
+```text
+普通控制器Agent不得自行修改公共接口
+```
+
+必须修改时，提交接口变更请求。
+
+---
+
+# 15. 控制器批次划分原则
+
+控制器按照输出层级分批，而不是只按算法名称分批。
+
+原因是同一输出层级可以复用：
+
+```text
+PX4下游控制环
+命令适配器
+限幅模块
+日志字段
+测试启动文件
+调参模板
+```
+
+---
+
+# 16. 批次A：ATTITUDE_THRUST
+
+## 16.1 建议控制器
+
+```text
+px4ctrl
+官方PID外环
+增强PID
+LQI外环
+SE3 Basic
+DFBC Basic
+LMPC Attitude-Thrust
+NMPC Attitude-Thrust
+```
+
+## 16.2 保留PX4模块
+
+```text
+PX4姿态控制
+PX4角速度控制
+PX4控制分配
+PX4执行器输出
+```
+
+## 16.3 批次目标
+
+建立MoSim最成熟、最稳定的外部控制器批次。
+
+## 16.4 公共组件
+
+```text
+AttitudeThrustCommandAdapter
+PX4内环Profile
+统一推力语义
+统一Yaw语义
+统一状态和参考输入
+```
+
+---
+
+# 17. 批次B：BODY_RATE_THRUST
+
+## 17.1 建议控制器
+
+```text
+SO3姿态外环
+SE3 Body-Rate
+DFBC-Jerk
+NMPC Body-Rate
+```
+
+## 17.2 保留PX4模块
+
+```text
+PX4角速度控制
+PX4控制分配
+PX4执行器输出
+```
+
+## 17.3 新增能力
+
+```text
+期望角速度
+角速度前馈
+Yaw Rate
+高阶轨迹参考
+```
+
+## 17.4 进入条件
+
+```text
+批次A稳定
+BODY_RATE_THRUST接口单元测试通过
+角速度坐标和符号验证完成
+```
+
+---
+
+# 18. 批次C：WRENCH
+
+## 18.1 建议控制器
+
+```text
+完整SO3
+完整SE3
+Backstepping
+SMC
+Super-Twisting SMC
+NDI
+INDI
+LMPC Wrench
+NMPC Wrench
+```
+
+## 18.2 保留PX4模块
+
+```text
+控制分配
+执行器输出
+```
+
+## 18.3 新增复杂度
+
+```text
+力矩坐标
+惯量矩阵
+陀螺项
+角加速度
+控制频率
+力矩限幅
+控制分配残差
+```
+
+---
+
+# 19. 批次D：ROTOR_THRUST与故障容错
+
+## 19.1 建议内容
+
+```text
+MoSim控制分配
+Fault-Aware QP
+执行器级INDI
+单电机推力NMPC
+电机效率下降
+电机完全失效
+Yaw降级控制
+安全降落
+```
+
+## 19.2 绕过PX4模块
+
+可能绕过：
+
+```text
+PX4原生控制分配
+```
+
+## 19.3 风险
+
+该批次拥有最高工程风险，必须最后完成。
+
+---
+
+# 20. 单个控制器标准任务链
+
+每个控制器拆分为八个标准任务。
+
+```text
+C1 算法审计
+C2 平台无关核心
+C3 Gazebo接入
+C4 安全初值与粗调
+C5 细调与验证
+C6 MWORKS模型或模型同步
+C7 生成代码回灌
+C8 冻结与登记
+```
+
+---
+
+# 21. C1：算法审计
+
+## 输入
+
+```text
+论文
+开源仓库
+已有MWORKS模型
+现有代码
+```
+
+## 输出
+
+```text
+algorithm_notes.md
+controller_manifest.yaml
+parameter_manifest.yaml
+source_inventory.md
+license_inventory.md
+```
+
+## 必须明确
+
+```text
+算法公式
+状态输入
+参考输入
+输出层级
+内部状态
+参数
+控制周期
+约束
+初始化
+失败条件
+开源来源
+```
+
+---
+
+# 22. C2：平台无关核心
+
+## 实现接口
+
+```text
+configure()
+reset()
+update()
+deactivate()
+```
+
+## 禁止依赖
+
+```text
+ROS
+MAVROS
+PX4 uORB
+Gazebo
+文件系统
+动态内存
+```
+
+## 验证
+
+```text
+单元测试
+控制方向测试
+悬停平衡测试
+参数边界测试
+NaN测试
+多实例测试
+```
+
+---
+
+# 23. C3：Gazebo接入
+
+只实现：
+
+```text
+状态适配
+参考适配
+命令适配
+启动文件
+参数加载
+日志
+```
+
+禁止：
+
+```text
+在Adapter中修改控制律
+在回调函数中偷偷增加补偿
+使用未记录的坐标转换
+```
+
+---
+
+# 24. C4：安全初值和粗调
+
+按照CTRL-09完成：
+
+```text
+INITIAL_SAFE
+COARSE_TUNED
+```
+
+必须先通过：
+
+```text
+悬停
+小阶跃
+低速圆形
+```
+
+---
+
+# 25. C5：细调和验证
+
+完成：
+
+```text
+FINE_TUNED
+VALIDATED
+```
+
+至少验证：
+
+```text
+悬停
+阶跃
+圆形
+低速8字
+螺旋
+未参与调参的验证轨迹
+参数±5%
+重复运行
+```
+
+---
+
+# 26. C6：MWORKS模型或模型同步
+
+## 已有模型
+
+执行：
+
+```text
+算法审计
+端口统一
+原子模块拆分
+参数整理
+状态和诊断补齐
+```
+
+## 新控制器
+
+执行：
+
+```text
+根据平台无关核心建立Sysblock模型
+保持数学结构一致
+建立参数数据字典
+建立Test Harness
+```
+
+---
+
+# 27. C7：生成代码回灌
+
+流程：
+
+```text
+MWORKS生成C代码
+        ↓
+Generated Code Normalizer
+        ↓
+Context和API包装
+        ↓
+编译测试
+        ↓
+替换Controller Core实现
+        ↓
+Gazebo重新运行
+```
+
+比较：
+
+```text
+参考实现
+MWORKS模型
+生成C代码
+```
+
+---
+
+# 28. C8：冻结与登记
+
+输出：
+
+```text
+FROZEN参数文件
+控制器版本
+模型版本
+生成代码哈希
+测试报告
+已知限制
+支持后端
+完成等级
+```
+
+在Controller Registry中登记。
+
+---
+
+# 29. 控制器完成定义
+
+一个控制器只有同时完成C1～C8，才能标记为：
+
+```text
+MOSIM_CONTROLLER_COMPLETE
+```
+
+仅在Gazebo中能飞，应标记：
+
+```text
+GAZEBO_VALIDATED
+```
+
+不得直接称为完整完成。
+
+---
+
+# 30. 控制器状态矩阵
+
+主Agent维护：
+
+| 控制器        | C1审计 | C2核心 | C3 Gazebo | C4粗调 | C5验证 | C6 MWORKS | C7代码回灌 | C8冻结 |
+| ---------- | ---: | ---: | --------: | ---: | ---: | --------: | -----: | ---: |
+| PX4 Native |    — |    — |        完成 |   完成 |   完成 |         — |      — |   完成 |
+| px4ctrl    |   完成 |   完成 |        完成 |   完成 |   完成 |        可选 |      — |   完成 |
+| 官方PID      |   完成 |   完成 |        完成 |   完成 |   完成 |        完成 |     完成 |   完成 |
+| SE3        |   完成 |   完成 |        完成 |  进行中 |  未开始 |       未开始 |    未开始 |  未开始 |
+
+不得只记录：
+
+```text
+TODO
+DONE
+```
+
+---
+
+# 31. 控制器优先顺序
+
+建议顺序：
+
+```text
+1. PX4 Native
+2. px4ctrl
+3. 官方PID
+4. 增强PID
+5. LQI
+6. SE3
+7. DFBC-Basic
+8. Super-Twisting SMC
+9. LMPC
+10. NMPC
+11. SO3
+12. DFBC-Jerk
+13. DFBC-Full
+14. DOB
+15. INDI
+16. L1
+17. AWFF
+18. 故障检测
+19. 故障感知控制分配
+20. Fault-Tolerant SE3
+21. Fault-Tolerant NMPC
+```
+
+---
+
+# 32. 批次推进规则
+
+同一批次中可以并行开发控制器核心。
+
+但是批次公共基础设施必须先完成。
+
+例如批次A：
+
+```text
+先完成ATTITUDE_THRUST Adapter
+        ↓
+再并行开发PID、LQI、SE3、DFBC、MPC
+```
+
+不得让每个Agent各写一套Adapter。
+
+---
+
+# 33. Agent角色划分
+
+MoSim建议设置以下Agent角色：
+
+```text
+主Agent
+环境与基线Agent
+接口Agent
+控制器算法Agent
+MWORKS Agent
+Gazebo集成Agent
+调参Agent
+PX4部署Agent
+测试与回归Agent
+多机Agent
+前端Agent
+文档与许可证Agent
+```
+
+---
+
+# 34. 主Agent职责
+
+主Agent是项目唯一总调度者。
+
+负责：
+
+```text
+维护任务DAG
+分配任务
+检查依赖
+冻结接口
+管理公共文件
+审查子Agent输出
+执行阶段门禁
+合并代码
+更新完成矩阵
+处理冲突
+决定回退
+```
+
+主Agent不得只根据子Agent文字声明判定完成。
+
+必须执行验证命令或检查测试产物。
+
+---
+
+# 35. 环境与基线Agent
+
+负责：
+
+```text
+P0环境冻结
+PX4 Native
+px4ctrl原版复现
+px4ctrl Sunray适配
+Topic和频率审计
+启动脚本
+```
+
+不得修改新控制器算法。
+
+---
+
+# 36. 接口Agent
+
+负责：
+
+```text
+Controller API
+公共数据结构
+坐标和单位
+时间语义
+控制输出语义
+公共Adapter接口
+消息版本
+```
+
+接口Agent拥有以下目录主要修改权：
+
+```text
+Interfaces/
+Msg/
+Adapters/common/
+Schemas/
+```
+
+---
+
+# 37. 控制器算法Agent
+
+按算法家族划分：
+
+```text
+PID与LQI Agent
+SE3与DFBC Agent
+SMC Agent
+LMPC Agent
+NMPC Agent
+INDI Agent
+L1 Agent
+AWFF Agent
+故障容错Agent
+```
+
+控制器Agent只修改：
+
+```text
+Controllers/<controller>/
+Profiles/<controller>/
+Tests/controllers/<controller>/
+```
+
+不得修改公共接口。
+
+---
+
+# 38. MWORKS Agent
+
+负责：
+
+```text
+Sysblock模型
+参数数据字典
+模型测试
+参数扫描脚本
+代码生成配置
+生成代码
+模型—代码一致性
+Generated Code Normalizer
+```
+
+MWORKS Agent不得自行改变统一控制接口。
+
+---
+
+# 39. Gazebo集成Agent
+
+负责：
+
+```text
+ROS节点
+MAVROS接口
+状态和命令Adapter
+launch文件
+Gazebo闭环
+日志
+```
+
+同一输出层级只维护一套公共接入组件。
+
+---
+
+# 40. 调参Agent
+
+负责CTRL-09规定的：
+
+```text
+参数空间
+安全初值
+Trial
+优化器
+指标
+收敛
+验证
+参数扰动
+冻结
+```
+
+控制器算法Agent不得自行宣布：
+
+```text
+参数已经最优
+```
+
+---
+
+# 41. PX4部署Agent
+
+负责：
+
+```text
+PX4外置Module
+uORB消息
+参数映射
+Kconfig
+CMake
+板级构建
+SITL Module
+内存与实时性
+```
+
+早期以外置Module为主，减少PX4主仓库侵入。
+
+---
+
+# 42. 测试与回归Agent
+
+负责：
+
+```text
+单元测试
+集成测试
+基线回归
+控制器回归
+接口兼容性
+生成代码一致性
+启动稳定性
+历史结果差异
+```
+
+不得修改算法来让测试通过。
+
+---
+
+# 43. 多机Agent
+
+负责：
+
+```text
+多PX4实例
+多MAVROS实例
+端口管理
+命名空间
+TF
+多机启动
+编队
+邻机通信
+多机规划
+```
+
+必须在单机接口V1冻结后开展正式工作。
+
+---
+
+# 44. 前端Agent
+
+负责：
+
+```text
+控制器选择
+轨迹选择
+场景选择
+参数展示
+状态展示
+日志和报告展示
+```
+
+前端Agent不得直接控制执行器，也不得绕过Controller Manager。
+
+---
+
+# 45. 文档与许可证Agent
+
+负责：
+
+```text
+README
+接口说明
+开源来源
+Commit记录
+许可证
+论文引用
+修改记录
+交付清单
+```
+
+---
+
+# 46. 公共目录所有权
+
+建议：
+
+| 目录                    | 主要所有者         |
+| --------------------- | ------------- |
+| `Interfaces/`         | 接口Agent       |
+| `Msg/`                | 接口Agent       |
+| `Controllers/<name>/` | 对应控制器Agent    |
+| `MWORKS/<name>/`      | MWORKS Agent  |
+| `Adapters/ros1/`      | Gazebo集成Agent |
+| `PX4/`                | PX4部署Agent    |
+| `Tuning/`             | 调参Agent       |
+| `Tests/regression/`   | 回归Agent       |
+| `Formation/`          | 多机Agent       |
+| `Frontend/`           | 前端Agent       |
+| `Docs/`               | 文档Agent与模块负责人 |
+
+---
+
+# 47. 禁止多Agent同时修改的文件
+
+以下文件应设置单一所有者：
+
+```text
+顶层CMakeLists.txt
+顶层package.xml
+统一消息定义
+Controller API
+Controller Registry
+参数Registry
+顶层launch入口
+PX4板级配置
+接口版本文件
+```
+
+其他Agent需要修改时必须提交变更请求。
+
+---
+
+# 48. 任务依赖DAG
+
+核心依赖：
+
+```text
+P0
+ └── P1 PX4 Native
+      └── P2 px4ctrl
+           └── P3最小接口
+                └── P4黄金纵向切片
+                     ├── P5批次A
+                     ├── 多机冒烟测试
+                     └── 调参工具V1
+                          ↓
+                     P6批次B
+                          ↓
+                     P7批次C
+                          ↓
+                     P8增强与容错
+                          ↓
+                     P9单机整合
+                          ↓
+                     P10多机基础设施
+                          ↓
+                     P11编队与规划
+```
+
+---
+
+# 49. 必须串行的任务
+
+以下任务必须串行完成：
+
+```text
+环境冻结
+→ PX4 Native
+→ px4ctrl
+→ 最小统一接口
+→ 黄金纵向切片
+→ 接口V1冻结
+```
+
+同一控制器内部：
+
+```text
+算法审计
+→ 核心实现
+→ Gazebo接入
+→ 调参
+→ MWORKS
+→ 代码回灌
+→ 冻结
+```
+
+---
+
+# 50. 可以并行的任务
+
+接口V1冻结后，可以并行：
+
+```text
+SE3核心
+DFBC核心
+SMC核心
+LMPC核心
+NMPC核心
+```
+
+也可以并行：
+
+```text
+调参工具开发
+MWORKS模型模板
+公共日志组件
+报告生成器
+双机冒烟基础设施
+```
+
+但必须保证公共接口不被各线程自行修改。
+
+---
+
+# 51. Agent任务规模
+
+单个任务应控制在：
+
+```text
+一个明确目标
+一个主要模块
+一个可独立验证的结果
+```
+
+不推荐任务：
+
+```text
+把全部控制器做完
+把多机系统做完
+把MWORKS全部接入
+```
+
+推荐任务：
+
+```text
+实现SE3平台无关核心并通过单元测试
+完成BODY_RATE_THRUST命令Adapter
+将官方PID生成代码包装成IController
+实现双PX4实例命名空间隔离
+```
+
+---
+
+# 52. 标准任务卡
+
+每个任务必须包含：
+
+```text
+Task ID
+任务名称
+任务目标
+背景
+依赖任务
+输入文件
+允许修改目录
+禁止修改目录
+冻结配置
+实施步骤
+输出文件
+验证命令
+完成标准
+失败条件
+上报内容
+```
+
+---
+
+# 53. 标准任务卡模板
+
+```yaml
+task:
+  id: "CTRL-A-SE3-C2"
+  title: "实现SE3平台无关核心"
+
+  objective:
+    "实现ATTITUDE_THRUST输出的SE3控制器核心，并通过单元测试。"
+
+  dependencies:
+    - "INTERFACE-V1-FROZEN"
+    - "PX4CTRL-BASELINE-PASSED"
+
+  allowed_paths:
+    - "Controllers/nonlinear/se3/"
+    - "Tests/controllers/se3/"
+
+  forbidden_paths:
+    - "Interfaces/"
+    - "Msg/"
+    - "PX4/"
+    - "VehicleProfiles/"
+
+  frozen_inputs:
+    vehicle_profile: "sunray_gazebo_v1"
+    interface_version: "1.0"
+    output_level: "ATTITUDE_THRUST"
+
+  outputs:
+    - "controller_manifest.yaml"
+    - "parameter_manifest.yaml"
+    - "include/"
+    - "src/"
+    - "tests/"
+
+  validation:
+    - "unit_test"
+    - "direction_test"
+    - "hover_equilibrium_test"
+    - "multi_instance_test"
+
+  completion:
+    - "所有测试通过"
+    - "无ROS/PX4依赖"
+    - "无动态内存"
+    - "无NaN输出"
+```
+
+---
+
+# 54. Agent执行协议
+
+每个Agent按照以下过程执行：
+
+```text
+读取任务卡
+↓
+检查依赖
+↓
+检查允许目录
+↓
+读取现有实现
+↓
+提出实施计划
+↓
+实现
+↓
+本地验证
+↓
+整理修改清单
+↓
+提交产物
+↓
+等待主Agent验收
+```
+
+---
+
+# 55. Agent开始前必须回答
+
+```text
+我负责什么
+我不负责什么
+依赖是否已满足
+我将修改哪些文件
+我将运行哪些验证
+我如何判断完成
+```
+
+依赖未满足时，Agent不得自行绕过。
+
+---
+
+# 56. Agent结束时必须提交
+
+```text
+任务结果
+修改文件列表
+新增文件列表
+删除文件列表
+启动或测试命令
+测试输出
+日志位置
+已知问题
+未完成项
+接口变更
+下一任务建议
+```
+
+---
+
+# 57. Agent禁止行为
+
+Agent不得：
+
+```text
+擅自修改公共接口
+擅自修改机型参数
+擅自降低轨迹速度
+擅自改变控制频率
+擅自切换状态源
+复制另一套公共Adapter
+把算法写进ROS回调
+删除失败日志
+用截图代替测试结果
+在生成代码中长期手改算法
+跨越阶段门禁
+```
+
+---
+
+# 58. 主Agent验收流程
+
+主Agent对每个子任务执行：
+
+```text
+检查依赖
+检查路径权限
+检查修改范围
+运行验证命令
+检查测试结果
+检查交付文件
+检查接口兼容性
+检查是否引入重复代码
+检查文档和许可证
+决定接受或退回
+```
+
+---
+
+# 59. 主Agent不得只看子Agent总结
+
+必须检查：
+
+```text
+真实代码
+真实测试
+真实日志
+真实启动命令
+真实参数文件
+```
+
+“已经完成”“运行正常”不能作为验收依据。
+
+---
+
+# 60. 接口变更流程
+
+需要修改统一接口时：
+
+```text
+提出Interface Change Request
+↓
+说明原因
+↓
+说明影响模块
+↓
+提供兼容方案
+↓
+接口Agent审核
+↓
+主Agent批准
+↓
+升级接口版本
+↓
+更新受影响模块
+```
+
+---
+
+# 61. 接口变更请求内容
+
+```text
+旧接口
+新接口
+修改原因
+影响控制器
+影响Adapter
+影响MWORKS模型
+影响生成代码
+迁移步骤
+兼容期
+```
+
+---
+
+# 62. 版本策略
+
+建议：
+
+```text
+接口：语义版本
+控制器：语义版本
+参数集：语义版本
+Vehicle Profile：语义版本
+生成代码：模型版本+生成哈希
+```
+
+---
+
+# 63. 分支和工作区建议
+
+每个任务使用独立分支或工作区：
+
+```text
+task/<task-id>
+```
+
+例如：
+
+```text
+task/CTRL-A-SE3-C2
+task/MWORKS-PID-CODEGEN
+task/MULTI-VEHICLE-SMOKE
+```
+
+禁止多个Agent在同一未隔离工作区并行修改。
+
+---
+
+# 64. 提交粒度
+
+一次提交应对应：
+
+```text
+一个任务卡
+或
+任务卡中的一个明确里程碑
+```
+
+禁止把：
+
+```text
+接口修改
+控制器实现
+参数调优
+前端修改
+```
+
+混在一个提交中。
+
+---
+
+# 65. 提交信息
+
+建议：
+
+```text
+[Task ID] 类型: 简要说明
+```
+
+例如：
+
+```text
+[CTRL-A-SE3-C2] feat: implement platform-independent SE3 core
+[MWORKS-PID-C7] test: add generated-code equivalence test
+```
+
+---
+
+# 66. 阶段门禁
+
+每个阶段必须有明确门禁。
+
+门禁状态：
+
+```text
+NOT_READY
+IN_REVIEW
+PASSED
+FAILED
+WAIVED
+```
+
+`WAIVED`必须记录原因和风险，不得默认使用。
+
+---
+
+# 67. 阶段报告
+
+每个阶段结束提交：
+
+```text
+阶段目标
+完成任务
+未完成任务
+关键结果
+测试结果
+已知问题
+风险
+接口变化
+参数变化
+下一阶段输入
+门禁结论
+```
+
+---
+
+# 68. 多机提前冒烟测试
+
+正式多机算法仍放在单机之后。
+
+但接口V1冻结后，应提前运行：
+
+```text
+双PX4 Native
+或
+双px4ctrl
+```
+
+只验证：
+
+```text
+PX4实例ID
+MAVROS端口
+命名空间
+Topic隔离
+TF隔离
+参数隔离
+控制器Context隔离
+日志目录隔离
+```
+
+不实现正式编队控制。
+
+---
+
+# 69. 双机冒烟门禁
+
+必须确认：
+
+```text
+uav0命令不会控制uav1
+uav1状态不会进入uav0控制器
+每架飞机使用独立参数
+每架飞机使用独立日志
+多个Controller Context互不共享
+```
+
+---
+
+# 70. 阶段P8：增强与故障容错
+
+推进顺序：
+
+```text
+基础DOB
+→ SE3 + DOB
+
+转动INDI
+→ DFBC + INDI
+
+L1
+→ SE3 + L1
+
+AWFF算法审计
+→ PID + AWFF
+
+执行器故障模型
+→ 残差
+→ 检测
+→ 隔离
+→ 程度估计
+→ Fault-Aware Allocation
+→ Fault-Tolerant Controller
+```
+
+不得一次性开发完整黑盒容错系统。
+
+---
+
+# 71. AWFF专项流程
+
+```text
+现有模型目录盘点
+↓
+逐端口和逐模块审计
+↓
+确定AWFF全称和算法含义
+↓
+拆分估计器、前馈、补偿器
+↓
+建立纯AWFF核心
+↓
+建立AWFF + PID Profile
+↓
+建立AWFF + INDI Profile
+↓
+建立AWFF故障补偿Profile
+```
+
+---
+
+# 72. 阶段P9：单机系统整合
+
+全部主要单机控制器完成后，再整合：
+
+```text
+Controller Registry
+Controller Manager
+Profile Resolver
+Parameter Server
+Health Monitor
+Switch Manager
+Fallback Manager
+Command Arbiter
+```
+
+---
+
+# 73. 单机整合顺序
+
+```text
+静态控制器注册
+↓
+YAML Profile选择
+↓
+单控制器启动
+↓
+影子控制器
+↓
+手动切换
+↓
+失败回退
+↓
+PX4内部Module
+↓
+板载参数
+```
+
+---
+
+# 74. 控制器切换首版范围
+
+首版只要求：
+
+```text
+相同输出层级切换
+PID → SE3
+SE3 → DFBC
+NMPC → SE3回退
+SE3 → 安全PID回退
+```
+
+不同输出层级无扰切换放在第二阶段。
+
+---
+
+# 75. 阶段P10：正式多机基础设施
+
+## 子阶段M0
+
+```text
+2机启动
+3机启动
+多PX4
+多MAVROS
+端口规划
+命名空间
+TF和坐标
+日志
+```
+
+## 子阶段M1
+
+多架飞机独立飞行，不协同。
+
+目的：
+
+```text
+验证多实例稳定
+验证计算资源
+验证参数隔离
+验证控制器独立运行
+```
+
+---
+
+# 76. 阶段P11：编队和多机规划
+
+推进顺序：
+
+```text
+Leader-Follower
+↓
+虚拟结构
+↓
+一致性控制
+↓
+队形切换
+↓
+成员加入退出
+↓
+EGO-Swarm
+↓
+多机避碰
+↓
+CBF安全过滤
+↓
+故障成员退出和队形重构
+```
+
+---
+
+# 77. 多机控制器选择
+
+初始编队建议使用稳定、计算量低的单机控制器：
+
+```text
+PX4 Native
+px4ctrl
+SE3
+```
+
+不应一开始使用：
+
+```text
+NMPC + INDI + L1 + 故障容错
+```
+
+否则无法区分多机问题和单机控制问题。
+
+---
+
+# 78. 规划器推进顺序
+
+```text
+静态预设轨迹
+↓
+单机EGO
+↓
+单机Fast-Planner
+↓
+单机SUPER
+↓
+EGO-Swarm
+↓
+多机动态避碰
+```
+
+规划器不得直接绕过Trajectory Server控制PX4。
+
+---
+
+# 79. FAST-LIO接入时机
+
+FAST-LIO不参与第一轮控制器调参。
+
+建议顺序：
+
+```text
+控制器使用Gazebo/PX4仿真状态全部完成
+↓
+冻结控制器参数
+↓
+接入FAST-LIO
+↓
+建立新的State Source Profile
+↓
+评估定位误差对控制效果的影响
+↓
+必要时小范围重新调参
+```
+
+---
+
+# 80. 阶段P12：MWORKS完整闭环
+
+比赛要求的MWORKS展示应包括：
+
+```text
+官方PID基线
+增强PID
+代表性几何控制
+代表性MPC
+代表性增强控制
+代表性故障容错
+编队控制
+参数扫描
+性能分析
+代码生成
+```
+
+不要求所有大型ROS规划器重写为MWORKS模型。
+
+---
+
+# 81. MWORKS代表性展示选择
+
+建议重点展示：
+
+```text
+官方PID
+增强PID
+SE3或DFBC
+LMPC
+NMPC + INDI + L1
+Fault-Tolerant SE3
+一致性或虚拟结构编队
+```
+
+大型地图和规划器通过联合仿真接口展示。
+
+---
+
+# 82. 阶段P13：前端开发
+
+## 早期前端
+
+只实现：
+
+```text
+启动
+停止
+选择控制器
+选择轨迹
+查看状态
+```
+
+## 中期前端
+
+增加：
+
+```text
+参数Profile
+控制器健康
+日志管理
+调参会话
+```
+
+## 最终前端
+
+增加：
+
+```text
+多机管理
+编队切换
+规划器切换
+故障注入
+实时曲线
+性能报告
+实验回放
+```
+
+---
+
+# 83. 前端开发门槛
+
+完整前端必须等待：
+
+```text
+Controller API稳定
+Profile Schema稳定
+服务接口稳定
+多机命名空间稳定
+```
+
+否则会产生大量返工。
+
+---
+
+# 84. 阶段P14：最终验收
+
+全部参数冻结后执行：
+
+```text
+正式统一测试
+控制器横向比较
+鲁棒性测试
+故障测试
+多机测试
+实时性测试
+PX4 SITL
+板载编译
+HITL
+真机
+```
+
+此阶段不再大范围调参。
+
+---
+
+# 85. 任务优先级
+
+```text
+P0：阻塞项目的基础任务
+P1：当前阶段主线任务
+P2：可并行但非阻塞任务
+P3：增强和展示任务
+P4：未来扩展
+```
+
+主Agent必须优先清除P0任务。
+
+---
+
+# 86. 风险等级
+
+```text
+R0：文档和静态配置
+R1：离线算法与单元测试
+R2：Gazebo仿真
+R3：PX4 SITL和控制链替换
+R4：HITL
+R5：真机
+```
+
+高风险任务必须依赖低风险任务通过。
+
+---
+
+# 87. 失败处理
+
+任务失败后不得立即重复同一路线。
+
+必须分类：
+
+```text
+环境失败
+接口失败
+算法失败
+参数失败
+实时性失败
+仿真失败
+依赖失败
+测试工具失败
+```
+
+---
+
+# 88. 失败任务报告
+
+```text
+失败阶段
+复现命令
+错误日志
+最后正常状态
+是否影响公共接口
+可能原因
+已排除原因
+建议下一步
+是否需要回退
+```
+
+---
+
+# 89. 回退原则
+
+出现以下情况应回退：
+
+```text
+接口变更导致多个控制器失效
+生成代码与模型差异无法解释
+新控制器导致公共Adapter复杂化
+控制器参数依赖未记录的机型修改
+多机修改破坏单机链路
+```
+
+回退到上一已通过门禁的版本。
+
+---
+
+# 90. 每日或每轮状态更新
+
+主Agent维护：
+
+```text
+当前阶段
+当前门禁
+进行中任务
+阻塞任务
+等待验收任务
+已完成任务
+接口变更
+风险
+下一步关键路径
+```
+
+---
+
+# 91. 主Agent工作流文件
+
+建议建立：
+
+```text
+Workflow/
+├── roadmap.yaml
+├── task_registry.yaml
+├── dependency_graph.yaml
+├── stage_gates.yaml
+├── ownership.yaml
+├── interface_changes/
+├── task_cards/
+├── reports/
+└── archive/
+```
+
+---
+
+# 92. `roadmap.yaml`
+
+记录：
+
+```text
+阶段
+开始条件
+任务列表
+结束条件
+下一阶段
+```
+
+---
+
+# 93. `task_registry.yaml`
+
+记录：
+
+```text
+Task ID
+负责人
+状态
+依赖
+优先级
+风险
+分支
+输出
+验收人
+```
+
+---
+
+# 94. `ownership.yaml`
+
+记录：
+
+```text
+目录
+主要负责人
+允许协作者
+禁止并行修改
+审核人
+```
+
+---
+
+# 95. `stage_gates.yaml`
+
+示例：
+
+```yaml
+gate:
+  id: "G3_GOLDEN_VERTICAL_SLICE"
+
+  required_tasks:
+    - "MWORKS_PID_MODEL"
+    - "MWORKS_PID_CODEGEN"
+    - "PID_CONTROLLER_WRAPPER"
+    - "PID_GAZEBO_INTEGRATION"
+    - "PID_EQUIVALENCE_TEST"
+
+  acceptance:
+    mworks_simulation: true
+    generated_code_build: true
+    gazebo_closed_loop: true
+    equivalence_passed: true
+
+  next_stage:
+    - "BATCH_A_CONTROLLERS"
+```
+
+---
+
+# 96. 首轮实际任务清单
+
+当前最先执行：
+
+```text
+WF-P0-01 环境Manifest
+WF-P0-02 启动命令整理
+WF-P0-03 Topic与频率审计
+WF-P0-04 时间同步审计
+
+BASE-PX4-01 PX4数据流
+BASE-PX4-02 PX4基础轨迹
+BASE-PX4-03 PX4参数冻结
+
+BASE-PX4CTRL-01 原版复现
+BASE-PX4CTRL-02 Sunray适配
+BASE-PX4CTRL-03 参数调优
+
+IF-V1-01 最小数据结构
+IF-V1-02 IController
+IF-V1-03 ATTITUDE_THRUST Adapter
+IF-V1-04 px4ctrl接口迁移
+
+GOLD-PID-01 MWORKS模型审计
+GOLD-PID-02 代码生成
+GOLD-PID-03 Controller包装
+GOLD-PID-04 Gazebo接入
+GOLD-PID-05 一致性测试
+```
+
+---
+
+# 97. 首轮不应同时启动的任务
+
+在G3之前不要正式启动：
+
+```text
+完整Controller Manager
+完整前端
+完整多机编队
+全部自定义uORB
+全部控制器自动调参
+所有控制器MWORKS复现
+```
+
+可以做调研或建立空骨架，但不能占用主线资源。
+
+---
+
+# 98. 第一批并行任务
+
+G3通过后可并行：
+
+```text
+SE3 C1/C2
+LQI C1/C2
+DFBC C1/C2
+SMC C1/C2
+LMPC C1/C2
+NMPC C1/C2
+
+调参工具V1
+MWORKS控制器模板
+双机冒烟测试
+公共报告工具
+```
+
+---
+
+# 99. 项目里程碑
+
+## M1：基线完成
+
+```text
+PX4 Native
+px4ctrl
+```
+
+## M2：统一接口完成
+
+```text
+px4ctrl通过Controller API运行
+```
+
+## M3：模型到仿真闭环完成
+
+```text
+官方PID黄金纵向切片
+```
+
+## M4：第一批单机控制器完成
+
+```text
+ATTITUDE_THRUST批次冻结
+```
+
+## M5：高级单机控制完成
+
+```text
+BODY_RATE和WRENCH批次
+```
+
+## M6：故障容错完成
+
+```text
+FDI + Fault-Aware Allocation + FTC
+```
+
+## M7：多机完成
+
+```text
+编队 + 多机规划 + 故障重构
+```
+
+## M8：比赛系统完成
+
+```text
+MWORKS + Gazebo + PX4 + 前端 + 报告
+```
+
+---
+
+# 100. 交付完成定义
+
+MoSim项目阶段完成不能只看功能数量。
+
+必须满足：
+
+```text
+代码可构建
+命令可复现
+接口有版本
+参数有版本
+模型有版本
+测试可运行
+日志可追溯
+失败可定位
+文档完整
+许可证明确
+```
+
+---
+
+# 101. 强制性规则
+
+1. PX4 Native未通过前，不批量开发新控制器。
+
+2. px4ctrl必须先原版复现，再做Sunray适配。
+
+3. 统一接口必须先以最小可运行版本实现。
+
+4. 黄金纵向切片未通过前，不批量推进控制器。
+
+5. 不得把所有Gazebo控制器完成后才统一迁移MWORKS。
+
+6. 已有MWORKS模型的控制器优先从模型生成代码进入Gazebo。
+
+7. 尚无MWORKS模型的控制器可以先做参考实现，但最终必须完成MWORKS复现或明确豁免。
+
+8. 控制器必须按照输出层级分批推进。
+
+9. 同一输出层级只能维护一套公共Adapter。
+
+10. 每个控制器必须完成C1～C8任务链。
+
+11. 控制器算法核心不得依赖ROS、PX4或Gazebo。
+
+12. 公共接口和公共消息只能由指定Agent修改。
+
+13. 多Agent不得同时修改同一公共文件。
+
+14. 接口冻结后，变更必须通过正式流程。
+
+15. Agent任务必须有明确允许和禁止修改目录。
+
+16. Agent不得自行改变机型、频率、状态源和轨迹。
+
+17. Agent不得用截图代替测试结果。
+
+18. 主Agent必须运行验证命令，不得仅接受文字总结。
+
+19. 多机正式开发应在单机稳定后进行。
+
+20. 接口V1冻结后应提前完成双机冒烟测试。
+
+21. 编队初期使用稳定的单机控制器，不使用最复杂组合。
+
+22. FAST-LIO在理想状态控制器完成后再接入。
+
+23. 完整前端在接口和Profile稳定后开发。
+
+24. 全部控制器参数冻结后才进行最终横向比较。
+
+25. 所有任务、版本、日志和结果必须可追溯。
+
+---
+
+# 102. 最终工作流
+
+MoSim最终采用：
+
+```text
+PX4 Native
+        ↓
+px4ctrl
+        ↓
+最小统一接口
+        ↓
+官方PID黄金纵向切片
+        ↓
+ATTITUDE_THRUST批次
+        ↓
+BODY_RATE_THRUST批次
+        ↓
+WRENCH批次
+        ↓
+增强与故障容错
+        ↓
+单机Controller Manager和PX4 Module
+        ↓
+多机基础设施
+        ↓
+编队、规划和避碰
+        ↓
+MWORKS完整展示
+        ↓
+前端和最终评价
+```
+
+每一个控制器内部采用：
+
+```text
+算法审计
+→ 平台无关核心
+→ Gazebo接入
+→ 安全调参
+→ 验证
+→ MWORKS模型
+→ 代码生成
+→ 回灌Gazebo
+→ 参数和版本冻结
+```
+
+每一个Agent采用：
+
+```text
+任务卡
+→ 依赖检查
+→ 限定目录
+→ 实现
+→ 本地验证
+→ 交付
+→ 主Agent复验
+→ 合并
+```
+
+---
+
+# 103. 文档结论
+
+MoSim当前已经不缺控制体系设计，真正需要的是：
+
+```text
+把设计变成任务
+把任务变成依赖图
+把依赖图变成阶段门禁
+把阶段门禁变成Agent可执行任务卡
+```
+
+项目不能采用：
+
+```text
+多人同时随意修改
+每个控制器各写一套接口
+全部Gazebo完成后再做MWORKS
+一个Agent承担整个控制器生命周期
+用“能飞”代表控制器完成
+```
+
+而应采用：
+
+```text
+基线先行
+最小接口
+黄金纵向切片
+按输出层级批量推进
+单机先行
+多机分阶段扩展
+模型—代码—仿真闭环
+主Agent统一调度和验收
+```
+
+由此，MoSim可以将大量控制器、MWORKS模型、ROS节点、PX4 Module、规划器和编队任务，转换为一套可并行、可验收、可回退、可持续扩展的工程研发流程。
+
+---
+
+# 附录A：px4ctrl Golden Slice执行与验收矩阵
+
+本附录只规定当前 px4ctrl Golden Slice 的对象级执行顺序和门禁。
+
+通用指标、公式和横向比较规则仍由 `MoSim控制系统测试与评价规范.md` 管理；调参方法、目标函数和参数冻结规则仍由 `MoSim控制器调参与参数优化规范.md` 管理。
+
+## A.1 三类验收边界
+
+必须区分以下三类验收，不得混用结论。
+
+| 类别 | 证明对象 | 是否涉及MWORKS | 是否涉及EGO/FAST-LIO |
+| --- | --- | --- | --- |
+| 原始px4ctrl运行验收 | Sunray/PX4/Gazebo + 原始px4ctrl 可以正确闭环运行 | 否 | 否 |
+| px4ctrl Golden Slice验收 | 原始px4ctrl、抽取core、MWORKS模型、MWORKS生成代码一致，并能回灌Gazebo | 是 | 否 |
+| 完整自主飞行闭环验收 | 状态估计、地图、EGO/EGO-Swarm、轨迹、MWORKS版px4ctrl_core、MAVROS、PX4、Gazebo形成闭环 | 是 | 是 |
+
+FAST-LIO 不属于初始 px4ctrl Golden Slice 的阻塞验收。FAST-LIO 属于后续状态源替换和完整工程验证。
+
+## A.2 G-PX4CTRL-0：接口和状态机验收
+
+目标：确认系统链路、状态源、命令流、Offboard和状态机正确。这一阶段不以轨迹误差为主要判据。
+
+| 编号 | 测试 | 必须检查 |
+| --- | --- | --- |
+| PXC-00 | PX4、MAVROS、px4ctrl正常启动 | 无启动错误，必要Topic出现 |
+| PXC-01 | 100 Hz控制循环稳定 | 控制周期无明显抖动和长期掉频 |
+| PXC-02 | `/mavros/local_position/odom`状态持续有效 | 位置、速度、姿态有效且时间戳更新 |
+| PXC-03 | `/mavros/imu/data`有效 | 姿态和角速度有效且坐标方向正确 |
+| PXC-04 | 轨迹参考进入px4ctrl | 参考未超时，时间戳单调 |
+| PXC-05 | 姿态加推力命令发布 | 命令频率稳定，无NaN/Inf |
+| PXC-06 | Offboard进入、退出、重新进入 | setpoint预发布、模式切换、退出行为正常 |
+| PXC-07 | 解锁、起飞、降落状态机 | 自动起降流程无错误跳转 |
+| PXC-08 | 仿真Reset | 积分器和内部状态正确复位 |
+| PXC-09 | 坐标方向和Yaw方向 | X/Y/Z/Yaw响应方向正确 |
+| PXC-10 | 推力映射和悬停推力 | 悬停推力方向正确，无明显过大或过小 |
+
+G0通过条件：
+
+```text
+无NaN或Inf
+无错误控制方向
+100 Hz控制循环稳定
+能够正常进入Offboard
+状态和参考未超时
+悬停推力方向正确
+重复启动结果一致
+```
+
+Offboard 验收必须显式测试设定值流中断后的退出或失效保护行为，不能只假设 PX4 机制存在。
+
+## A.3 G-PX4CTRL-1：基础闭环功能验收
+
+目标：证明原始 Sunray px4ctrl 能完成基本闭环控制和状态机任务。
+
+起飞-悬停-降落场景必须同时输出两个悬停窗口：`hover_before` 记录进入悬停后的完整收敛过程，用于诊断调参和报告分析；`steady_hover` 记录悬停末段稳态窗口，用于 G-PX4CTRL-1 的通过/阻塞门禁。当前 Goal 1 默认采用最后 2 秒作为稳态门禁窗口，阈值仍使用本文下方的悬停误差目标，不得只保留稳态结果而隐藏完整窗口指标。
+
+| 编号 | 仿真场景 | 主要检查 |
+| --- | --- | --- |
+| PXC-11 | 自动起飞-悬停-降落 | 完整状态机、落地后无异常滑移 |
+| PXC-12 | 30秒定点悬停 | 稳态误差、漂移、抖动 |
+| PXC-13 | X方向1 m阶跃 | 水平位置响应 |
+| PXC-14 | Y方向1 m阶跃 | 坐标和对称性 |
+| PXC-15 | Z方向1 m阶跃 | 高度环和推力映射 |
+| PXC-16 | Yaw 30度阶跃 | 小航向响应 |
+| PXC-17 | Yaw 90度阶跃 | 大航向响应 |
+| PXC-18 | 初始位置偏差恢复 | 收敛和过冲 |
+| PXC-19 | 初始Yaw偏差恢复 | 姿态恢复 |
+
+阶跃测试不能使用“最大误差小于5 cm”作为判据。阶跃发生瞬间误差本来就是设定阶跃量。
+
+阶跃主要评价：
+
+```text
+稳态误差
+超调量
+上升时间
+调节时间
+二次振荡
+```
+
+建议基础门槛：
+
+```text
+悬停三维RMSE <= 0.02 m：优秀
+悬停三维RMSE <= 0.05 m：通过
+悬停稳态偏差 <= 0.01 m：优秀
+阶跃稳态误差 <= 0.01 m：优秀
+阶跃超调 <= 5%：优秀
+无持续振荡
+无持续电机饱和
+```
+
+这些门槛是 MoSim 项目目标，不宣称为 px4ctrl 上游仓库官方指标。
+
+## A.4 G-PX4CTRL-2：标准轨迹跟踪验收
+
+目标：证明 px4ctrl 不只会悬停，也能持续跟踪平滑轨迹。
+
+| 编号 | 轨迹 | 目的 |
+| --- | --- | --- |
+| PXC-20 | 梯形速度直线 | 加速、匀速、减速 |
+| PXC-21 | 低速圆形 | 持续转弯和相位滞后 |
+| PXC-22 | 中速圆形 | 动态能力 |
+| PXC-23 | 椭圆 | X/Y轴不同动态 |
+| PXC-24 | 低速8字 | 方向反转 |
+| PXC-25 | 中速8字 | 标准展示轨迹 |
+| PXC-26 | 三维8字 | 三轴耦合 |
+| PXC-27 | 螺旋爬升 | 水平和高度耦合 |
+| PXC-28 | Minimum-Jerk | 平滑轨迹跟踪 |
+| PXC-29 | 多航点平滑轨迹 | 连续参考切换 |
+
+推荐轨迹目标：
+
+```text
+低速、无扰动、PX4/MAVROS融合状态：
+位置RMSE <= 0.02 m：优秀
+位置P95 <= 0.04 m：优秀
+最大位置误差 <= 0.05 m：优秀
+
+位置RMSE <= 0.05 m：通过
+位置P95 <= 0.08 m：通过
+最大位置误差 <= 0.15 m：通过
+```
+
+中速8字和三维轨迹可适当放宽，禁止强制所有场景最大误差均小于5 cm。
+
+## A.5 G-PX4CTRL-3：运行安全和异常处理验收
+
+目标：确认通信、状态和参考异常时不会产生危险控制。
+
+| 编号 | 异常场景 | 预期行为 |
+| --- | --- | --- |
+| PXC-30 | 参考停止发布 | 退出控制、安全悬停或降落 |
+| PXC-31 | 姿态推力命令停止发布 | PX4触发Offboard-loss行为 |
+| PXC-32 | 状态短时中断 | 拒绝使用过期状态 |
+| PXC-33 | 状态时间戳冻结 | 检测超时 |
+| PXC-34 | 控制节点重启 | 不产生突变危险命令 |
+| PXC-35 | Gazebo暂停后恢复 | dt不异常发散 |
+| PXC-36 | 仿真Reset | 控制器正确Reset |
+| PXC-37 | 轨迹参考突然取消 | 安全进入悬停或降落 |
+| PXC-38 | 推力达到上限 | 不发生积分器持续增长 |
+
+## A.6 G-PX4CTRL-4：调参与参数冻结验收
+
+G4 由 CTRL-09 管理方法和指标，WF-01只规定进入下一阶段前的对象级前置条件。
+
+参数状态顺序：
+
+```text
+INITIAL_SAFE
+→ COARSE_TUNED
+→ FINE_TUNED
+→ VALIDATED
+→ FROZEN
+```
+
+冻结前必须满足：
+
+```text
+完成悬停、阶跃、圆形、8字和螺旋
+使用至少一个未参与调参的验证轨迹
+最优参数重复运行至少3次
+主要参数 +/-5% 仍稳定
+没有长期饱和
+搜索进入平台期
+参数绑定 Sunray Gazebo Profile
+```
+
+完成 G0-G4 后，才可以声明：
+
+```text
+原始Sunray px4ctrl已完成运行验收并完成参数冻结。
+```
+
+不得声明：
+
+```text
+px4ctrl Golden Slice完成
+MWORKS生成代码闭环完成
+完整自主飞行闭环完成
+```
+
+## A.7 G-PX4CTRL-5：core抽取离线一致性
+
+目标：证明抽取 `px4ctrl_core` 没有改变原始控制逻辑。
+
+对比对象：
+
+```text
+原始px4ctrl包装层中的原控制逻辑
+vs
+抽取后的px4ctrl_core
+```
+
+输入至少包含：
+
+```text
+dt
+position
+velocity
+attitude
+angular_velocity
+reference_position
+reference_velocity
+reference_acceleration
+reference_yaw
+enable
+reset
+```
+
+输出比较：
+
+```text
+期望姿态 q_d
+物理总推力 T_d
+位置误差项
+速度误差项
+积分状态
+期望合力
+饱和标志
+状态码
+```
+
+必须覆盖：
+
+```text
+静态样本
+悬停回放
+阶跃回放
+圆形回放
+8字回放
+Reset和重新Enable
+```
+
+G5 未通过前，不得开始 MWORKS 重建。
+
+## A.8 G-PX4CTRL-6：MWORKS与生成代码离线一致性
+
+目标：证明 MWORKS 模型和生成代码等价于已抽取的 px4ctrl_core。
+
+四方比较：
+
+```text
+A. 原始px4ctrl
+B. 抽取后的C++ core
+C. MWORKS Sysblock模型
+D. MWORKS生成C代码
+```
+
+建议首版容差：
+
+| 输出 | MWORKS float64 | 生成代码float32 |
+| --- | ---: | ---: |
+| 姿态几何误差 | <= 1e-6 rad | <= 1e-4 rad |
+| 总推力差 | <= 1e-5 N | <= 1e-3 N |
+| 积分状态差 | <= 1e-6 | <= 1e-4 |
+| 状态码 | 完全一致 | 完全一致 |
+| 饱和标志 | 完全一致 | 完全一致 |
+
+四元数必须比较代表的姿态，不得直接要求每个元素相等。允许使用：
+
+```text
+几何姿态误差角
+或
+min(||q1 - q2||, ||q1 + q2||)
+```
+
+强制规则：
+
+```text
+离线一致性未通过
+→ 不允许进入Gazebo闭环
+```
+
+## A.9 G-PX4CTRL-7：Gazebo闭环A/B一致性
+
+目标：证明 MWORKS生成的 px4ctrl_core 接回同一 Sunray/ROS 包装层后，闭环性能与原版一致。
+
+固定条件：
+
+```text
+机型
+状态源
+轨迹
+PX4参数
+推力映射
+初始状态
+控制频率
+```
+
+分别运行：
+
+```text
+A：原始px4ctrl
+B：MWORKS生成的px4ctrl_core
+```
+
+必须重复运行：
+
+```text
+悬停
+X/Y/Z阶跃
+圆形
+低速8字
+中速8字
+螺旋
+```
+
+建议通过条件：
+
+```text
+两版都完成全部轨迹
+无新增坠机或失效保护
+RMSE相对差异 <= 5% 或绝对差异 <= 5 mm
+P95误差相对差异 <= 10%
+无新增持续饱和
+控制输出趋势一致
+```
+
+阶跃场景采用单独的 G7 A/B 比较窗口：
+
+```text
+X/Y/Z阶跃的完整阶跃窗口必须保留为 raw_full_step_diagnostic。
+由于阶跃参考在相位起点不连续，A/B一致性门禁使用跳变后稳态窗口。
+首版稳态窗口排除阶跃开始后的前2秒。
+比较 settled_window 的 XY/XYZ RMSE、P95、Max。
+比较 primary_axis_settled 的 RMSE、P95、Max。
+primary_axis_settled.final_abs_m 只作为诊断保留，不作为硬门禁。
+阶跃稳态窗口的 P95 允许相对差异 <= 10%，或绝对差异 <= 5 mm，
+用于避免厘米级小误差分母导致几毫米差异被误判为不一致。
+```
+
+通过 G5-G7 后，才能声明：
+
+```text
+px4ctrl Golden Slice完成。
+```
+
+## A.10 当前主线最小完成定义
+
+本节只给出验收里程碑和6个Goal之间的对应关系。`M1`、`M2`属于控制器最小闭环；`M3`以后才进入大系统最小闭环。
+
+| 里程碑 | 完成定义 |
+| --- | --- |
+| M1 | 原始px4ctrl完成G0-G4，对应Goal 1和Goal 2 |
+| M2 | px4ctrl Golden Slice完成G5-G7，对应Goal 3 |
+| M3 | EGO单机使用原始px4ctrl完成工程接入基线，对应Goal 4的第一阶段 |
+| M4 | MWORKS生成的px4ctrl_core接入EGO单机并闭环无碰撞，对应Goal 6 |
+| M5 | EGO-Swarm 2机、3机经过PX4/MAVROS/px4ctrl完整动力学闭环，对应Goal 5 |
+| M6 | FAST-LIO独立验收，并完成替换状态源后的px4ctrl闭环对比 |
+
+当前执行顺序采用Goal粒度：
+
+```text
+Goal 1：G0-G1，正式状态源基础闭环
+Goal 2：G2-G4，轨迹、安全、参数冻结
+Goal 3：G5-G7，core抽取、MWORKS重建、生成代码、Gazebo A/B
+Goal 4：EGO单机工程接入
+Goal 5：EGO-Swarm 2/3机官方链路基线
+Goal 6：MWORKS版px4ctrl接入EGO单机并视结果扩展
+```
+
+---
+
+# 附录B：EGO、EGO-Swarm与FAST-LIO阶段验收矩阵
+
+本附录规定自主飞行扩展链路的阶段验收边界。它不替代 px4ctrl Golden Slice，也不作为 G0-G7 的阻塞条件。
+
+## B.1 EGO单机闭环验收
+
+EGO 闭环证明：
+
+```text
+地图
+→ 规划轨迹
+→ Trajectory Server
+→ px4ctrl / MWORKS版px4ctrl_core
+→ MAVROS
+→ PX4
+→ Gazebo
+→ 状态反馈
+```
+
+必须做：
+
+| 编号 | 场景 |
+| --- | --- |
+| EGO-01 | 无障碍环境单目标点 |
+| EGO-02 | 单个障碍物绕行 |
+| EGO-03 | 多障碍物稀疏场景 |
+| EGO-04 | 狭窄但可通过通道 |
+| EGO-05 | 飞行中重新指定目标点 |
+| EGO-06 | 局部地图逐步出现障碍 |
+| EGO-07 | 规划轨迹更新时连续跟踪 |
+| EGO-08 | 不可达目标或规划失败 |
+| EGO-09 | 规划Topic短时中断 |
+| EGO-10 | 使用MWORKS版px4ctrl_core重复以上场景 |
+
+验收条件：
+
+```text
+地图更新正常
+规划器输出有效时间轨迹
+Trajectory Server以100 Hz求值
+px4ctrl未发生参考超时
+无碰撞
+目标到达
+无持续电机饱和
+规划失败时不发送危险轨迹
+```
+
+## B.2 EGO-Swarm第一阶段验收
+
+EGO-Swarm 第一阶段只验证官方规划链路和 MoSim 工程接入链路，不验证自研编队控制。
+
+### B.2.1 EGO-S0：官方Demo验收
+
+验收内容：
+
+```text
+2机官方仿真
+3机官方仿真
+目标点指令正常
+规划轨迹正常
+无规划器崩溃
+无碰撞
+```
+
+### B.2.2 EGO-S1：MoSim动力学闭环验收
+
+| 编号 | 场景 |
+| --- | --- |
+| SW-01 | 2机各自到达独立目标 |
+| SW-02 | 3机各自到达独立目标 |
+| SW-03 | 2机交叉换位 |
+| SW-04 | 3机交叉路径 |
+| SW-05 | 多机绕过同一障碍 |
+| SW-06 | 一架延迟启动 |
+| SW-07 | 一架规划短时中断 |
+| SW-08 | 多次重启和重复运行 |
+
+必须验证：
+
+```text
+PX4实例隔离
+MAVROS命名空间隔离
+px4ctrl实例隔离
+控制器Context隔离
+轨迹Topic隔离
+状态Topic隔离
+参数隔离
+日志隔离
+无碰撞
+所有无人机达到目标
+```
+
+当前不要求：
+
+```text
+MoSim自研Leader-Follower
+虚拟结构
+一致性控制
+固定队形保持
+任务分配
+CBF
+故障成员退出
+队形重构
+异构控制器集群
+```
+
+## B.3 FAST-LIO验收阶段
+
+FAST-LIO 不参与：
+
+```text
+原始px4ctrl是否调好
+px4ctrl Golden Slice是否一致
+```
+
+### B.3.1 LIO-1：独立定位与建图
+
+场景：
+
+```text
+静止初始化
+直线
+圆形
+8字
+高度变化
+快速转弯
+重复路线
+点云地图
+```
+
+评价：
+
+```text
+ATE
+RPE
+姿态误差
+速度误差
+更新频率
+延迟
+初始化时间
+丢帧率
+地图完整性
+```
+
+### B.3.2 LIO-2：px4ctrl闭环状态源替换
+
+固定：
+
+```text
+px4ctrl参数
+轨迹
+PX4参数
+控制频率
+机型
+```
+
+只替换状态源：
+
+```text
+PX4/MAVROS仿真融合状态
+vs
+FAST-LIO经PX4融合后的状态
+```
+
+重复：
+
+```text
+悬停
+圆形
+8字
+螺旋
+EGO单机避障
+```
+
+评价：
+
+```text
+控制RMSE增加量
+P95增加量
+控制输出抖动
+延迟影响
+轨迹完成率
+是否需要小范围重新调参
+```
+
+## B.4 文档职责分工
+
+| 文档 | 职责 |
+| --- | --- |
+| CTRL-08 | 通用场景定义、通用指标公式、通用失败判据、最终横向比较规则 |
+| CTRL-09 | px4ctrl调参方法、目标函数、搜索停止条件、参数冻结条件 |
+| WF-01附录A | px4ctrl Golden Slice执行与验收矩阵 |
+| WF-01附录B | EGO、EGO-Swarm、FAST-LIO阶段验收矩阵 |

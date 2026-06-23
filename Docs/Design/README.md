@@ -1,134 +1,150 @@
 # MoSim Design Source
 
-Status: rebuilt source set, 2026-06-11.
+Status: active architecture entry, 2026-06-23.
 
-This directory defines what MoSim is intended to be. It is not a transcript of
-current implementation status, not a packet ledger, and not an engineering task
-queue.
+This directory is the active design source for MoSim. The former numbered
+`01-10` design set has been migrated into the documents below and archived
+under `Docs/Design/旧架构/`.
 
-MoSim is a layered-authority UAV simulation and verification system for the A8
-quadrotor task. The system should let a user configure a scenario, run a
-reproducible UAV experiment, review dynamics/control/perception/planning
-evidence, and export report-ready results.
+Do not use the old numbered documents as active execution guidance. Use them
+only for historical trace-back when a current document explicitly points there.
 
-Current priority is competition closure first: implement the required A8
-functions, including official PID baseline analysis, optimized Sysblock
-controller integration, Syslab quantitative metrics, and multi-UAV formation
-verification. Broader MoSim platform work continues after the competition
-functional loop is complete.
+## Active Reading Order
 
-## Reading Order
+Read only the smallest set required for the task. For ordinary architecture or
+implementation work, start with Level 0 and then enter the relevant Level 1/2
+document.
+
+### Level 0: Entry And Scope
 
 | Order | Document | Purpose |
 |---:|---|---|
-| 1 | `01_系统目标与需求边界.md` | Product goal, users, scope, non-goals, phased capability map. |
-| 2 | `02_总体架构与权威边界.md` | RflySim-style four-layer architecture: Modeling/MIL-SIL, Flight Control, Runtime Plant/Sensors/HIL, Display/Scene/Review. |
-| 3 | `03_核心模块设计.md` | RunManager, adapters, plant, sensor, localization, planner, flight control, and evidence modules mapped to the four layers. |
-| 4 | `04_接口数据契约与时钟频率.md` | Typed data contracts, command/echo, clocks, frames, and rates. |
-| 5 | `05_场景传感器与UE_ROS2链路.md` | Scene, sensor oracle, robotics integration, FAST-LIO, local map, and planner observation boundary. |
-| 6 | `06_控制规划安全与评估目标.md` | Control, planning, safety, fault, formation, and metric goals. |
-| 7 | `07_验收Gate与交付物.md` | Competition gates, post-competition extension gates, evidence bundles, deliverables, and failure rules. |
-| 8 | `08_赛题闭环实现证据矩阵.md` | Current C0/C1/C2 implementation evidence matrix before post-competition platform expansion. |
-| 9 | `09_多机编队架构与数据设计.md` | Multi-UAV formation architecture, identity model, result layout, database policy, and phased implementation plan. |
-| 10 | `14_ROS2正式接入与控制器后端迁移设计.md` | Formal ROS2 integration route, controller ABI, generated C/C++ gate, and future Simulink replacement policy. |
+| 1 | `README.md` | Current design entry, document map, and evidence boundary. |
+| 2 | `赛题.md` | Competition scope, task boundary, and claim framing. |
+| 3 | `架构.md` | Current system architecture decision and execution order. |
+| 4 | `MoSim控制体系总览.md` | Formal control-system root and controller roadmap. |
 
-## Active Reference And ADR Files
+### Level 1: Interfaces And Runtime Boundaries
 
-These files remain active references until their still-valid semantics are fully
-absorbed or moved into an ADR folder:
-
-- `10_架构边界与当前状态ADR.md`
-- `11_RflySim式MoSim最小闭环架构审核.md`
-- `12_MoSimQuadrotorModel模型归档与迁移计划.md`
-- `13_RflySim四旋翼模型对标与MoSim优化路线.md`
-- `design_rebuild_audit_20260610.md`
-
-## Cache
-
-Pre-rebuild design inputs live under:
-
-```text
-Docs/Design/cache/pre_rebuild_20260610/
-```
-
-Cached files are not deleted. They are historical design inputs whose current
-semantics must be absorbed into this source set before the root design relies
-on the replacement.
-
-## Design Principle
-
-Design the whole system now, but keep the execution priority explicit:
-
-```text
-A8 competition functional closure
-  -> official PID baseline and limitation analysis
-  -> optimized MWORKS.Sysblock controller implementation
-  -> MWORKS-hosted Modeling / Flight-Control / Runtime-Plant integration
-  -> Syslab quantitative metrics
-  -> multi-UAV / formation verification
-  -> competition evidence bundle
-  -> post-competition MoSim platform expansion
-```
-
-Competition closure may host Modeling/MIL-SIL, Flight Control, and Runtime
-Plant/Sensors/HIL roles inside MWORKS for speed. That is an implementation
-slice, not a collapsed authority model. PX4/QGC, separated CopterSim-like
-Runtime Plant, HIL, real-sensor migration, and broader robotics-platform work
-are designed now but do not block the competition functional loop unless a
-later requirement explicitly makes them part of the competition claim.
-
-The design now treats ROS2 as the formal robotics integration layer for the
-complete system route, while keeping MWORKS as the current competition/modeling
-backend. The design reserves stable contracts for:
-
-- ROS2/RViz2/FAST-LIO robotics integration;
-- PX4 Offboard/SITL/HIL and QGC monitoring;
-- future real LiDAR/IMU/hardware-in-the-loop migration;
-- multiple localization, local-map, planner, and flight-control backends;
-- single-UAV and multi-UAV experiment identities.
-- multi-UAV formation contracts that keep per-UAV control, plant, traces, and
-  metrics separated before any database or platform browsing layer is added.
-
-No layer may bypass the typed contracts just because an early implementation is
-smaller.
-
-## Current Implementation Slice
-
-The current implementation slice is deliberately smaller than the long-term
-platform:
-
-```text
-MWORKS/Sysplorer/Sysblock/Syslab
-  -> controller design and review
-  -> Equation-backed executable controller where full graphical embedding is blocked
-  -> MWORKS-hosted Flight Control backend
-  -> MWORKS-hosted Runtime Plant backend
-  -> Syslab-compatible metrics and evidence
-```
-
-ROS2 is the intended complete-system robotics middleware route. PX4/QGC, HIL,
-and generated C/C++ remain backend-specific gates rather than automatic
-prerequisites for every current MWORKS model-optimization claim. A current
-competition or model-optimization claim should not wait for PX4 or generated
-C/C++ unless a task explicitly moves that backend into the claim scope. If a
-task claims perception, localization, local mapping, or planner handoff, it
-must follow the ROS2/FAST-LIO evidence gates in `05`, `07`, and `14`.
-
-Controller artifacts have different authority:
-
-| Artifact | Current role |
+| Document | Purpose |
 |---|---|
-| Graphical Sysblock controller | Structure/design/review evidence. It should expose the controller logic and remain behavior-equivalent to the executable controller. |
-| Equation controller | Current stable full-system execution backend when graphical Sysblock embedding fails in Sysplorer. It may carry formal simulation evidence after equivalence and run gates pass. |
-| Generated C/C++ controller | Future deployment/SIL/HIL/PX4-compatible backend. It is optional until generated-runtime authority is claimed. |
+| `MoSim统一控制接口规范.md` | State, reference, controller output, adapter, frame, and timing contracts. |
+| `MoSim_FASTLIO定位闭环与规划复现基础方案.md` | FAST-LIO localization, point-cloud/map validation, and planner rerun gates. |
+| `MoSim规划与编队控制接口规范.md` | EGO/EGO-Swarm/planner/formation interfaces and multi-UAV contracts. |
+| `MoSim真机化收尾与C++化重构方案.md` | Flight-like code responsibility, C++/generated-code boundary, and real-machine sensor assumptions. |
 
-Therefore the current route is not "replace graphics with Equation." The route
-is "keep graphical Sysblock for human/model-structure review, use Equation as
-the stable executable bridge, and preserve a C/C++-ready interface for later."
+### Level 2: Controller Implementation And Evidence
 
-## Current Evidence Matrix
+| Document | Purpose |
+|---|---|
+| `MoSim单机控制器实现规范.md` | Single-UAV controller-core implementation, including px4ctrl Golden Slice. |
+| `MoSim控制器代码生成与PX4部署规范.md` | MWORKS/Sysblock code generation and PX4/MAVROS deployment route. |
+| `MoSim控制器调参与参数优化规范.md` | Baseline tuning, error analysis, parameter profiles, and optimization workflow. |
+| `MoSim控制器管理与配置规范.md` | Controller profiles, configuration, switching policy, and management boundary. |
+| `MoSim控制系统测试与评价规范.md` | Offline consistency, Gazebo/RViz evidence gates, metrics, and acceptance rules. |
+| `MoSim控制增强与容错规范.md` | Safety, disturbance rejection, fault tolerance, and advanced-control backlog. |
 
-For implementation-state review, read `08_赛题闭环实现证据矩阵.md` after the
-timeless gate rules in `07_验收Gate与交付物.md`. The matrix records which
-competition claims are already evidence-backed, which remain partial or
-source-static, and which belong only to post-competition platform expansion.
+### Level 3: Execution Workflow
+
+| Document | Purpose |
+|---|---|
+| `MoSim研发工作流与Agent任务编排规范.md` | Agent execution workflow, task gates, and repeatable implementation order. |
+
+Reference-only documents:
+
+```text
+MoSim体系.md
+Docs/Design/旧架构/
+Docs/Design/cache/
+```
+
+These are not current execution sources unless a current document explicitly
+points to a section for trace-back.
+
+## Current Runtime Boundary
+
+Current executable review lane:
+
+```text
+Ubuntu-20.04 / ROS1 Noetic
+  -> References/Sunray assembled Sunray150 + MID360
+  -> Gazebo Classic
+  -> RViz trajectory/path and real MID360 point-cloud review
+```
+
+Current controller baseline:
+
+```text
+px4ctrl / ATTITUDE_THRUST / MAVROS-PX4 fused state
+```
+
+Current code-generation direction:
+
+```text
+MWORKS/Sysblock controller core
+  -> generated C/C++
+  -> IController wrapper
+  -> ATTITUDE_THRUST adapter
+  -> MAVROS/PX4
+  -> Gazebo/Sunray plant
+```
+
+Current implementation order:
+
+```text
+1. Minimal big-system loop:
+   Sunray/PX4/MAVROS/px4ctrl + Gazebo + RViz + MID360/FAST-LIO gates
+   + EGO/EGOv2/Diff-Planner + EGO-Swarm 2/3-machine smoke.
+
+2. Representative controller template:
+   px4ctrl baseline, official PID, and SE3 Basic only.
+
+3. MWORKS Golden Slice:
+   MWORKS model -> generated C/C++ -> offline equivalence -> Adapter
+   -> same Sunray/PX4/Gazebo closed loop.
+
+4. Batch controller expansion:
+   improved PID, LQI, DFBC, LMPC/NMPC, INDI, L1, safety, and fault-tolerance
+   controllers are released one at a time after the template is proven.
+```
+
+Historical/future routes such as ROS2 Humble, PX4-native `x500`, downloaded
+replacement FAST-LIO source, fake point clouds, and direct Python controller
+shortcuts are not current runtime evidence unless a later user/PMO decision
+explicitly reopens them.
+
+## Legacy Design Archive
+
+The old numbered design set is archived here:
+
+```text
+Docs/Design/旧架构/
+```
+
+Archived files:
+
+```text
+01_系统目标与需求边界.md
+02_总体架构与权威边界.md
+03_核心模块设计.md
+04_接口数据契约与时钟频率.md
+05_场景传感器与UE_ROS2链路.md
+06_控制规划安全与评估目标.md
+07_验收Gate与交付物.md
+08_赛题闭环实现证据矩阵.md
+09_多机编队架构与数据设计.md
+10_四旋翼模型与RuntimePlant设计.md
+```
+
+Historical cache and migration notes live under:
+
+```text
+Docs/Design/cache/
+```
+
+## Evidence Rule
+
+Design documents define architecture, interfaces, workflows, and gates. They do
+not prove runtime success by themselves. Runtime claims still require source,
+logs, metrics, screenshots, result bundles, or return packets under the
+corresponding workflow.

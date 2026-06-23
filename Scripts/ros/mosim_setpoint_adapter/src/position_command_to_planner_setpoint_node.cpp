@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cstdint>
+#include <cmath>
 #include <string>
 
 #include "mosim_msgs/msg/planner_setpoint.hpp"
@@ -14,6 +15,10 @@ class PositionCommandToPlannerSetpointNode final : public rclcpp::Node {
     expected_frame_ = declare_parameter<std::string>("expected_frame", "map");
     source_frame_alias_ = declare_parameter<std::string>("source_frame_alias", "world");
     planner_id_ = declare_parameter<std::string>("planner_id", "ego_position_cmd");
+    min_position_z_m_ = declare_parameter<double>("min_position_z_m", -1.0);
+    if (!std::isfinite(min_position_z_m_)) {
+      throw std::runtime_error("min_position_z_m must be finite");
+    }
 
     auto qos = rclcpp::QoS(rclcpp::KeepLast(16)).reliable();
     output_pub_ = create_publisher<mosim_msgs::msg::PlannerSetpoint>(output_topic_, qos);
@@ -43,7 +48,10 @@ class PositionCommandToPlannerSetpointNode final : public rclcpp::Node {
     setpoint.header.frame_id = expected_frame_;
     setpoint.sequence = next_sequence(command.trajectory_id);
     setpoint.frame_id = expected_frame_;
-    setpoint.position_m = {command.position.x, command.position.y, command.position.z};
+    const double position_z = min_position_z_m_ >= 0.0
+                                  ? std::max(command.position.z, min_position_z_m_)
+                                  : command.position.z;
+    setpoint.position_m = {command.position.x, command.position.y, position_z};
     setpoint.velocity_mps = {command.velocity.x, command.velocity.y, command.velocity.z};
     setpoint.acceleration_mps2 = {command.acceleration.x, command.acceleration.y, command.acceleration.z};
     setpoint.yaw_rad = command.yaw;
@@ -68,6 +76,7 @@ class PositionCommandToPlannerSetpointNode final : public rclcpp::Node {
   std::string expected_frame_;
   std::string source_frame_alias_;
   std::string planner_id_;
+  double min_position_z_m_{-1.0};
   std::uint32_t last_trajectory_id_{0};
   std::uint32_t last_sequence_{0};
   rclcpp::Subscription<mosim_msgs::msg::PositionCommand>::SharedPtr input_sub_;

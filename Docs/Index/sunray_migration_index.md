@@ -2,9 +2,26 @@
 
 > 目的：把 `References/Sunray` 中和本项目后续 Sysplorer 迁移有关的代码、模型、配置和风险集中到一个检索入口。本文只做索引和迁移判断，不把 ROS/Gazebo 代码等同于 MWORKS 证据。
 
-## 当前迁移方向
+## 当前运行与迁移边界
 
-本项目后续不再以 Gazebo 部署为主线，而是把 Sunray 的高价值模块迁移到 Sysplorer/MWORKS：
+当前运行验证基础仍是：
+
+```text
+Sunray ROS1 / Gazebo Classic / MID360 / FAST-LIO / PX4 / MAVROS / px4ctrl
+```
+
+FAST-LIO定位闭环、PX4 EKF融合、Gazebo-Z诊断策略、基础控制任务重跑、
+EGO/EGOv2/Diff-Planner/EGO-Swarm复现顺序，统一按：
+
+```text
+Docs/Design/MoSim_FASTLIO定位闭环与规划复现基础方案.md
+```
+
+执行。本文只做 Sunray、本地 Lab 源码、机体/传感器和迁移风险索引；
+不得用本文替代闭环执行方案，也不得把历史 ROS2/x500 或下载源码当成当前证据。
+
+后续 MWORKS/Sysplorer 迁移方向是把 Sunray 的高价值模块迁移到
+Sysplorer/MWORKS，而不是把 ROS/Gazebo 代码等同于 MWORKS 证据：
 
 1. 机体与传感器：以 `sunray150_with_mid360` 为当前主机体来源。
 2. 飞控与硬件背景：按雷迅 PX6C / CUAV V6X 级别飞控建模，图片素材位于 `References/CUAV/GPS.png`、`References/CUAV/V6X.png`。
@@ -25,6 +42,27 @@
 | 机体模型 | `References/Sunray/simulation/sunray_simulator/models/drone_models` | Sunray150/300 SDF、STL、传感器安装位 | 已采用 `sunray150_with_mid360`；大网格文件不要直接迁入 Git |
 | 风扰/传感器插件 | `References/Sunray/simulation/gazebo_plugin` | wind_zone、Livox、Realsense 插件 | 只抽取参数和模型假设，Sysplorer 内重建扰动模型 |
 
+## 本地 Lab 源码索引
+
+> 当前 FAST-LIO/EGO/规划源码优先从 `References/Lab/` 读取。不要因为运行线程缺上下文就重新从 GitHub 下载同名仓库；只有当本地目录缺关键源码或依赖时，才记录缺口并请求补源。
+
+| 本地目录 | 当前用途 | 备注 |
+|---|---|---|
+| `References/Lab/FAST_LIO` | ROS1 FAST-LIO 主候选源码；`launch/mapping_mid360.launch` 和 `config/mid360.yaml` 是 Mid360 入口 | 当前 Sunray ROS1/Gazebo Classic 链路应优先用这里，不用 `Results/external_downloads/fast_lio_main.zip` |
+| `References/Lab/livox_ros_driver2` | Livox ROS2 驱动参考 | ROS1 `FAST_LIO` 若需要 `livox_ros_driver/CustomMsg`，先核对本地是否已有 ROS1 驱动或生成头；不要直接混用 ROS2 包名 |
+| `References/Lab/FASTLIO2_ROS2` | ROS2 FAST-LIO2 参考实现 | 只在 ROS2/Humble 路线恢复时评估，不替代当前 ROS1 Sunray 链路 |
+| `References/Lab/FAST-LIVO2` | FAST-LIVO2 / Livox 相关头文件和视觉-惯导参考 | 可用于核对 Livox 消息/头文件，但不是当前最小 FAST-LIO 闭环入口 |
+| `References/Lab/ego-planner` | EGO-Planner 上游参考 | 用于理解单机局部规划、B-spline、rviz 配置 |
+| `References/Lab/ego-planner-swarm` | EGO-Planner-Swarm 上游参考 | 用于多机/集群规划设计，不进入当前单机闭环优先级 |
+| `References/Lab/EGO-Planner-v2` | EGO-Planner v2 参考 | 后续优化/对照用 |
+| `References/Lab/Fast-Planner` | Fast-Planner 规划栈 | A*/B-spline/plan_env/map_generator 参考 |
+| `References/Lab/GCOPTER` | GCOPTER 轨迹优化参考 | 后续轨迹优化对照 |
+| `References/Lab/SUPER` | SUPER/ROG-map/mission planner 参考 | 后续更高阶地图和任务规划对照 |
+| `References/Lab/Point-LIO-point-lio-with-grid-map` | Point-LIO + grid map 参考 | 点云定位/栅格地图对照 |
+| `References/Lab/far_planner-melodic-noetic`、`References/Lab/faster`、`References/Lab/Diffusion-Planner`、`References/Lab/Fast-Racing` | 其他规划/竞速/学习参考 | 调研和未来平台扩展，不作为当前最小闭环默认入口 |
+
+当前运行选择：Sunray ROS1 / Gazebo Classic 负责仿真和传感器，PX4/MAVROS/px4ctrl 是 Sunray 当前闭环的一部分，`References/Lab/FAST_LIO` 负责 FAST-LIO 源码候选，Sunray/EGO 现有 launch 和 `References/Lab/ego-planner*` 负责 EGO 行为对照。不得把历史 ROS2/PX4/x500 路线、外部下载 FAST-LIO、或脱离 Sunray 当前机体/传感器的 PX4 默认模型当成等价替代。`Results/external_downloads/` 下的 zip 只能作为历史下载缓存，不是首选源码。
+
 ## 已采用机体源
 
 | 项 | 路径 / 数值 |
@@ -33,7 +71,7 @@
 | 当前 MWORKS 建模质量 | `1.0 kg`，用于已完成单机控制器复测 |
 | 惯量 | `Ixx=0.0085, Iyy=0.0085, Izz=0.012` |
 | 旋翼位置 | `±0.065 m` |
-| Mid360 安装位置 | `{0.036, -0.0155, 0.075}` |
+| Mid360 安装位置 | 当前装配审计 pose 为 `{-0.000005, 0.032295, 0.050167, 0, 0, 4.712389}`；旧 Sunray SDF pose `{0.036, -0.0155, 0.075, 0, 0, 0}` 已废弃 |
 | 原始电机常数 | `8.54858e-06 N/(rad/s)^2` |
 | SDF 视觉减速 | `rotorVelocitySlowdownSim=10` |
 | MWORKS 折算升力系数 | `0.000854858` |
@@ -89,6 +127,10 @@ Source: [云纵产品中心 - Sunray150 无刷电机](https://www.yundrone.cn/pr
 Sources: [Livox Mid-360 中文产品页](https://www.livoxtech.com/cn/mid-360), [Livox Mid-360 User Manual PDF](https://www.sachtleben-technology.com/wp-content/uploads/2024/07/LivoxMid-360UserManual.pdf).
 
 迁移判断：硬件物理资料按官方 `10 Hz` 典型帧率记录；Sysplorer 中为匹配当前控制器与 raw 输出节拍，先抽象为 `20 Hz` 局部栅格/点云更新源，噪声采用距离随机误差和角度随机误差的一阶近似；不直接复现 Livox 非重复扫描细节，除非后续要做感知算法对比。
+
+2026-06-20 Sunray ROS1 运行链路修正：`sunray150_with_mid360` 机体已经包含用户审核过的 MID360 可视外形，不能再叠加云纵默认 `sensor_models/livox_mid360/meshes/test2.dae` 外壳。当前同步脚本 `Scripts/sunray/sync_assembled_model_into_sunray_ros1.py` 的规则是：删除默认 `livox_mid360` visual/collision mesh，保留 `liblivox_laser_simulation.so` 和 `libgazebo_ros_imu_sensor.so` 传感器插件，并把 `model://livox_mid360` 的 include pose 改到装配审计 pose `-0.000005 0.032295 0.050167 0 0 4.712389`。Livox ray sensor 局部 pose 保持 Sunray 插件原点 `0 0 0.1 0 0 0`，它不是默认外壳；它是射线发射原点偏置，和被删除的 `test2.dae` visual/collision mesh 分离。这样 Gazebo 中只显示装配好的雷达，但点云/IMU 仍由 Sunray Livox 插件发布。
+
+注意：机械装配 pose、Gazebo ray sensor 局部 pose、Livox 点云坐标原点、内置 IMU 位置、FAST-LIO `extrinsic_T` 不是同一个量。当前 Sunray ROS1 运行链路采用装配 mount pose 作为 `livox_mid360::base_link`，ray sensor 局部 pose 为 `0 0 0.1 0 0 0`。实测把 ray sensor 局部 pose 归零会导致 `/uav1/livox/lidar` 发布空 `PointCloud2`；恢复 `z=0.1` 后，在 `Results/sunray_ros1/sunray_mid360_delete_shell_nonempty_lidar_20260620_154218/` 的 headless 验证中，`/uav1/livox/lidar` 发布非空 `PointCloud2`，采样帧 `width=2326`。FAST-LIO 外参仍应按 `Docs/Index/project_work_memory_index.md#42-mid-360` 中的 Livox 官方 IMU/点云坐标关系单独配置，不得直接把机械 mount center 写成 FAST-LIO 外参。
 
 ### CUAV Pixhawk V6X / PX6C 级飞控
 
@@ -275,9 +317,9 @@ Sysplorer 迁移建议：
 | 优先级 | 任务 | 输出位置 |
 |---|---|---|
 | P0 | 维持单机控制器结果收尾和人工审核清单更新 | `Results/人工审核清单.csv`、`Docs/simulation_report.md` |
-| P1 | 建立 `PlannerCommand`、`GridMap`、`TrajectoryReference`、`FormationCommand` 标准接口 | `Docs/Design/04_接口数据契约与时钟频率.md`、`Docs/Index/variable_mapping.md`；旧细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/02_模型接口与运行流程.md` |
-| P1 | 从 EGO 抽取 A*/B-spline/minimum-snap 迁移设计 | `Docs/Design/06_控制规划安全与评估目标.md`；旧细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/05_路径规划与轨迹生成.md` |
-| P1 | 从 ORCA/formation_control 抽取多机避障和队形状态机 | `Docs/Design/06_控制规划安全与评估目标.md`；旧细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/06_多机编队控制.md` |
+| P1 | 建立 `PlannerCommand`、`GridMap`、`TrajectoryReference`、`FormationCommand` 标准接口 | `Docs/Design/MoSim统一控制接口规范.md`、`Docs/Design/MoSim规划与编队控制接口规范.md`、`Docs/Index/variable_mapping.md`；旧细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/02_模型接口与运行流程.md` |
+| P1 | 从 EGO 抽取 A*/B-spline/minimum-snap 迁移设计 | `Docs/Design/MoSim规划与编队控制接口规范.md`；旧细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/05_路径规划与轨迹生成.md` |
+| P1 | 从 ORCA/formation_control 抽取多机避障和队形状态机 | `Docs/Design/MoSim规划与编队控制接口规范.md`；旧细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/06_多机编队控制.md` |
 | P2 | 建立 Sysplorer 图形化单机避障规划模型 | `Models/QuadrotorPlanning*` |
 | P2 | 建立 Sysplorer 三机编队与 ORCA/CBF 安全层模型 | `Models/QuadrotorFormation*` |
-| P2 | 增加多机指标：队形 RMSE、最小机间距、避障约束违反数 | `Scripts/results/calc_metrics.py`、`Docs/Design/07_验收Gate与交付物.md`；旧指标细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/08_仿真指标与自动评估.md` |
+| P2 | 增加多机指标：队形 RMSE、最小机间距、避障约束违反数 | `Scripts/results/calc_metrics.py`、`Docs/Design/MoSim控制系统测试与评价规范.md`、`Docs/Design/MoSim规划与编队控制接口规范.md`；旧指标细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/08_仿真指标与自动评估.md` |

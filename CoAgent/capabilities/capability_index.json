@@ -279,11 +279,49 @@
       ]
     },
     {
+      "id": "sunray.ros1_runtime_review",
+      "display_name": "Current Sunray ROS1, Gazebo, RViz, and MID360 review",
+      "family": "sunray_ros1",
+      "use_when": [
+        "current single-thread Sunray150 takeoff hover land review is in scope",
+        "current Sunray150 figure-8 or Gazebo Classic visual review is in scope",
+        "current real MID360 PointCloud2 or RViz review is in scope"
+      ],
+      "owner_docs": [
+        "Docs/Workflows/sunray_ros1_current_runtime_lane.md",
+        "Docs/Index/sunray_migration_index.md"
+      ],
+      "existing_assets": [
+        "References/Sunray",
+        "References/Lab/FAST_LIO",
+        "Scripts/sunray/",
+        "Config/rviz/sunray_ros1_mid360_cloud_review.rviz",
+        "Config/rviz/sunray_ros1_trajectory_review.rviz"
+      ],
+      "stop_actions": [
+        "do_not_substitute_x500_px4_ros2_for_current_sunray_ros1_review",
+        "do_not_download_replacement_fast_lio_when_references_lab_fast_lio_exists",
+        "do_not_accept_empty_pointcloud2_as_mid360_evidence",
+        "do_not_report_headless_pass_as_gazebo_gui_visual_acceptance"
+      ],
+      "evidence_gates": [
+        "sunray_ros1_result_dir",
+        "nonempty_uav1_livox_lidar_pointcloud2_data",
+        "gazebo_or_rviz_review_manifest_when_visual_review_is_claimed",
+        "blocker_packet_when_current_lane_cannot_be_repaired_without_architecture_change"
+      ],
+      "health_or_checker": [
+        "Scripts/sunray/probe_sunray_ros1_topics.sh",
+        "Scripts/sunray/run_sunray_ros1_native_mission_gate.sh"
+      ]
+    },
+    {
       "id": "ros2.runtime_review",
-      "display_name": "ROS2, RViz, and FAST-LIO runtime review",
+      "display_name": "Historical or future ROS2, RViz2, and FAST-LIO runtime review",
       "family": "ros2",
       "use_when": [
-        "native robotics transport, localization, map, or planner review is explicitly authorized"
+        "future/reference native robotics transport, localization, map, or planner review is explicitly authorized",
+        "PMO or user explicitly reopens the ROS2/PX4 route"
       ],
       "owner_docs": [
         "Docs/Workflows/ros2_runtime_setup.md",
@@ -294,6 +332,7 @@
         "Scripts/UE5/check_ros_mapping_runtime_env.py"
       ],
       "stop_actions": [
+        "do_not_use_as_current_sunray_ros1_review_lane",
         "do_not_fake_pointcloud_map_tf_or_odom",
         "do_not_publish_setpoints_without_explicit_live_gate"
       ],

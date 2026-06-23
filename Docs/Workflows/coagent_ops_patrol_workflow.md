@@ -122,6 +122,35 @@ live_attach_blocked
 unknown_blocked
 ```
 
+When a patrol observes `login_or_license_blocked`,
+`authorization_blocked`, `gui_error_blocked`, `visible_unknown_blocked`,
+`live_attach_blocked`, or any ambiguous MWORKS/Sysplorer/Syslab main-window
+state, CoAgentOps must load
+`Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md` before sending the final
+blocker, email, or attempting bounded recovery. Use that skill's rules 12-21
+as the recovery SOP:
+
+- Engineering departments stop live MCP/model/GUI work and return a blocker;
+  they do not click login, activation, license, save, close, restart, or
+  error-report controls.
+- CoAgentOps/PMO may perform bounded official login/license recovery only when
+  the user/PMO has explicitly authorized it for the current incident.
+- Background screenshots do not prove activation, license, login, or
+  authorization success. Acceptance requires foreground or maximized evidence
+  of the target reusable MWORKS/Sysplorer/Syslab main window.
+- Use only the approved secure credential source named by the user/PMO. Never
+  write account names, passwords, tokens, or credential hints into project
+  docs, packets, logs, screenshot manifests, terminal output, emails, or
+  cross-thread chat.
+- If the approved secure credential source is missing, inaccessible, or
+  ambiguous, stop recovery and ask PMO/user to provide a safe credential route;
+  do not guess or search personal credential locations.
+- Stop without action on MFA/captcha, account/password error, abnormal
+  authorization, unknown modal/window, crash/error-report, save/overwrite
+  prompt, or any non-MWORKS credential surface.
+- After successful bounded recovery, keep the reusable target main window open
+  unless the current task explicitly authorizes closing a specific dialog.
+
 Free-text-only states such as `ok`, `normal`, `healthy`, `looks fine`,
 `still running`, and `probably blocked` are invalid.
 

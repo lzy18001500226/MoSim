@@ -34,6 +34,31 @@ def project_path(value: str | Path) -> Path:
     return checker.project_path(value)
 
 
+def display_path(path: Path) -> str:
+    return path.relative_to(ROOT).as_posix()
+
+
+def row_outputs(row: dict[str, Any]) -> dict[str, float]:
+    if isinstance(row.get("outputs"), dict):
+        return {str(key): float(value) for key, value in row["outputs"].items()}
+    if "output" in row:
+        return {"output": float(row["output"])}
+    raise KeyError(f"row has no output or outputs field: {row}")
+
+
+def align_output_aliases(
+    runtime_outputs: dict[str, float],
+    mworks_outputs: dict[str, float],
+) -> tuple[dict[str, float], dict[str, float]]:
+    if set(mworks_outputs) == {"output"} and len(runtime_outputs) == 1 and "output" not in runtime_outputs:
+        field = next(iter(runtime_outputs))
+        return runtime_outputs, {field: mworks_outputs["output"]}
+    if set(runtime_outputs) == {"output"} and len(mworks_outputs) == 1 and "output" not in mworks_outputs:
+        field = next(iter(mworks_outputs))
+        return {field: runtime_outputs["output"]}, mworks_outputs
+    return runtime_outputs, mworks_outputs
+
+
 def compare_rows(
     runtime_rows: list[dict[str, Any]],
     mworks_rows: list[dict[str, Any]],
@@ -43,23 +68,42 @@ def compare_rows(
     comparisons: list[dict[str, Any]] = []
     max_abs_error = 0.0
     for runtime_row, mworks_row in zip(runtime_rows, mworks_rows):
-        runtime_output = float(runtime_row["output"])
-        mworks_output = float(mworks_row["output"])
-        abs_error = abs(runtime_output - mworks_output)
-        max_abs_error = max(max_abs_error, abs_error)
+        runtime_outputs = row_outputs(runtime_row)
+        mworks_outputs = row_outputs(mworks_row)
+        runtime_outputs, mworks_outputs = align_output_aliases(runtime_outputs, mworks_outputs)
+        fields = list(runtime_outputs)
+        missing_runtime = [field for field in mworks_outputs if field not in runtime_outputs]
+        missing_mworks = [field for field in runtime_outputs if field not in mworks_outputs]
+        field_comparisons: dict[str, Any] = {}
+        row_pass = not missing_runtime and not missing_mworks
+        for field in fields:
+            if field not in mworks_outputs:
+                continue
+            runtime_output = runtime_outputs[field]
+            mworks_output = mworks_outputs[field]
+            abs_error = abs(runtime_output - mworks_output)
+            max_abs_error = max(max_abs_error, abs_error)
+            field_comparisons[field] = {
+                "runtime_output": runtime_output,
+                "mworks_output": mworks_output,
+                "abs_error": abs_error,
+                "pass": abs_error <= tolerance,
+            }
+            row_pass = row_pass and abs_error <= tolerance
         runtime_time = float(runtime_row["time_s"])
         mworks_time = float(mworks_row["time_s"])
         time_error = abs(runtime_time - mworks_time)
+        row_pass = row_pass and (not compare_time or time_error <= tolerance)
         comparisons.append(
             {
                 "index": int(runtime_row["index"]),
                 "runtime_time_s": runtime_time,
                 "mworks_time_s": mworks_time,
                 "time_error_s": time_error,
-                "runtime_output": runtime_output,
-                "mworks_output": mworks_output,
-                "abs_error": abs_error,
-                "pass": abs_error <= tolerance and (not compare_time or time_error <= tolerance),
+                "fields": field_comparisons,
+                "missing_runtime_outputs": missing_runtime,
+                "missing_mworks_outputs": missing_mworks,
+                "pass": row_pass,
             }
         )
     return {
@@ -73,7 +117,12 @@ def offline_zero_reference(times: list[float]) -> list[dict[str, Any]]:
     return [{"time_s": time_s, "output": 0.0, "source": "offline_zero_input_reference"} for time_s in times]
 
 
-def run_runtime(code_dir: Path, model_name: str, input_sequence: list[float]) -> dict[str, Any]:
+def run_runtime(
+    code_dir: Path,
+    model_name: str,
+    input_sequence: list[float],
+    runtime_schema: dict[str, Any] | None,
+) -> dict[str, Any]:
     checker = load_codegen_checker()
     summary = checker.summarize(
         code_dir,
@@ -81,10 +130,24 @@ def run_runtime(code_dir: Path, model_name: str, input_sequence: list[float]) ->
         do_compile=True,
         do_run_smoke=True,
         input_sequence=input_sequence,
+        runtime_schema=runtime_schema,
     )
     if not summary.get("ok"):
         raise RuntimeError(json.dumps(summary, ensure_ascii=False, indent=2))
     return summary
+
+
+def runtime_has_nonzero_input(runtime_rows: list[dict[str, Any]], tolerance: float = 0.0) -> bool:
+    for row in runtime_rows:
+        inputs = row.get("inputs")
+        if isinstance(inputs, dict):
+            for value in inputs.values():
+                try:
+                    if abs(float(value)) > tolerance:
+                        return True
+                except (TypeError, ValueError):
+                    continue
+    return False
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -93,13 +156,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--model-name", required=True)
     parser.add_argument("--input-sequence", default="0,0,0")
     parser.add_argument("--mworks-reference-json", default="")
+    parser.add_argument("--runtime-schema-json", default="")
     parser.add_argument("--tolerance", type=float, default=1e-12)
     parser.add_argument("--json-out", default="")
     args = parser.parse_args(argv)
 
     code_dir = project_path(args.code_dir)
     input_sequence = [float(item.strip()) for item in args.input_sequence.split(",") if item.strip()]
-    runtime = run_runtime(code_dir, args.model_name, input_sequence)
+    runtime_schema = None
+    if args.runtime_schema_json:
+        schema_path = project_path(args.runtime_schema_json)
+        runtime_schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    runtime = run_runtime(code_dir, args.model_name, input_sequence, runtime_schema)
     runtime_rows = runtime["runtime_smoke"]["rows"]
     times = [float(row["time_s"]) for row in runtime_rows]
 
@@ -107,9 +175,9 @@ def main(argv: list[str] | None = None) -> int:
         reference_path = project_path(args.mworks_reference_json)
         reference = json.loads(reference_path.read_text(encoding="utf-8"))
         mworks_rows = reference["rows"]
-        reference_source = str(reference_path.relative_to(ROOT))
+        reference_source = display_path(reference_path)
         reference_label = str(reference.get("source_label", "MWORKS_REFERENCE_JSON"))
-        gate_type = "nonzero_input_sil_smoke" if any(abs(value) > 0.0 for value in input_sequence) else "zero_input_sil_smoke"
+        gate_type = "nonzero_input_sil_smoke" if runtime_has_nonzero_input(runtime_rows) or any(abs(value) > 0.0 for value in input_sequence) else "zero_input_sil_smoke"
         limitations = [
             "This gate compares the generated C runtime against a MWORKS/Sysblock reference by output order.",
             "MWORKS reports the first Sysblock output at t=0 for this reference model; generated C harness records after Step(), so timestamps may be shifted by one sample.",
@@ -129,10 +197,11 @@ def main(argv: list[str] | None = None) -> int:
         "schema": "mosim.mworks_codegen_sil_equivalence.v1",
         "gate_type": gate_type,
         "model_name": args.model_name,
-        "code_dir": str(code_dir.relative_to(ROOT)),
+        "code_dir": display_path(code_dir),
         "source_label": f"{reference_label}_PLUS_GENERATED_C_RUNTIME",
         "mworks_reference_source": reference_source,
         "input_sequence": input_sequence,
+        "runtime_schema_source": display_path(project_path(args.runtime_schema_json)) if args.runtime_schema_json else None,
         "runtime_adapter_shape": runtime["runtime_adapter_shape"],
         "sample_time_s": runtime["sample_time_s"],
         "tolerance": args.tolerance,

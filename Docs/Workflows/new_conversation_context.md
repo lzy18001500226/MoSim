@@ -66,6 +66,16 @@ Current short rules:
 10. `019de24d-e993-72c0-a0b2-caf2ac8ac85e` is a refresh-only non-MoSim watch
     target after Codex App/PC restart. It is not a MoSim dispatchable route.
 
+Current execution selector:
+
+```text
+If Docs/Workflows/mainline_operations_board.md says temporary single-thread
+mode is active, do not dispatch visible departments and do not use the
+MWORKS/ROS2/UE route table as the next-action selector. Pick the current board
+lane, then load only that lane workflow. As of 2026-06-20 evening, that lane is
+Docs/Workflows/sunray_ros1_current_runtime_lane.md.
+```
+
 ## 1. Read Order For A Fresh Conversation
 
 Start with this short chain:
@@ -125,11 +135,26 @@ Current agent/runtime entry point:
 ```text
 primary Codex conversation/config/history: Windows-native Codex under C:\Users\HP\.codex
 project workspace: C:\Users\HP\Desktop\MoSim
-WSL runtime lane: ROS2, RViz2, FAST-LIO-family, rosbridge, Linux-native robotics tools
+current runtime lane: Ubuntu-20.04 / ROS1 Noetic / YunZong Sunray Gazebo Classic
+current review lane: Gazebo + RViz for real MID360 point cloud and trajectory/path
+future/reference lane only: Ubuntu-22.04 / ROS2 Humble / PX4-native generated-code work
 ```
 
-Do not move ROS2/FAST-LIO execution into Windows-native PowerShell unless a
-later workflow explicitly approves a Windows ROS route.
+Do not use the old Ubuntu-22.04 / ROS2 Humble / PX4 `x500_mid360` experiment
+route for current single-UAV Sunray review. That route was disabled by user
+request on 2026-06-20; its historical output is marked under
+`Results/px4_gazebo/DISABLED_OLD_ROS2_PX4_EXPERIMENTS.md`.
+
+Current Sunray ROS1 execution rules are concentrated in:
+
+```text
+Docs/Workflows/sunray_ros1_current_runtime_lane.md
+Docs/Index/sunray_migration_index.md
+```
+
+Read those before touching ROS/Gazebo/RViz/MID360/FAST-LIO work in the current
+single-thread lane. Do not start from `Docs/Workflows/ros2_runtime_setup.md`
+unless PMO/user explicitly reopens the ROS2/PX4 route.
 
 ## 3. Current Route And Dispatch State
 
@@ -290,12 +315,16 @@ Rules:
   `check_model`, `SimulateModel`, native result/`.msr`, metrics, screenshots,
   or wiring observations as applicable.
 
-## 7. Current UE / ROS2 / FAST-LIO Boundary
+## 7. Current Sunray / UE / ROS Boundary
 
 Rejected product routes:
 
 - keyboard/grid-cell pose movement;
 - fake/static point clouds;
+- empty `PointCloud2` topics as MID360 evidence;
+- downloaded replacement FAST-LIO source when `References/Lab/FAST_LIO` exists;
+- `x500_mid360`, `px4_mid360_obstacle_light`, or ROS2/PX4 external-vision
+  routes as current Sunray review evidence;
 - toy 2D grid maps as UAV local maps;
 - browser/HTML point-cloud review as active evidence;
 - hand-polishing RViz display parameters while the UAV/sensor stack is wrong.
@@ -305,15 +334,18 @@ Rejected product routes:
 - opening `.blend` through Windows file association, Ansys, or Visual Studio
   Blend routes after wrong-app dialogs.
 
-Current accepted direction:
+Current accepted executable direction:
 
 ```text
-MWORKS continuous truth/state
-  -> UE scene/sensor oracle
-  -> ROS2 LiDAR/IMU/TF
-  -> native FAST-LIO / RViz2 windows
-  -> truth-error and topic-rate evidence
+Ubuntu-20.04 / ROS1 Noetic
+  -> References/Sunray assembled Sunray150 + MID360
+  -> Gazebo Classic
+  -> RViz trajectory/path and real nonempty MID360 PointCloud2 review
 ```
+
+Future/reference architecture discussions may still mention UE, ROS2, PX4,
+FAST-LIO, and generated-code deployment, but the current visual-review task
+must not switch to those routes without an explicit PMO/user decision.
 
 UE vehicle visual state:
 
@@ -330,14 +362,12 @@ Factory Gate B / FAST-LIO state:
 - It does not prove final controller integration, planner performance, scene
   acceptance, product completion, or closed-loop runtime success.
 
-Before making UE/ROS2/FAST-LIO runtime claims, read only the relevant workflow:
+Before making current Sunray ROS1 runtime claims, read:
 
 ```text
-Docs/Workflows/unreal_renderer.md
-Docs/Workflows/ros2_runtime_setup.md
-Docs/Design/05_场景传感器与UE_ROS2链路.md
-Docs/Design/07_验收Gate与交付物.md
-Docs/Design/10_架构边界与当前状态ADR.md
+Docs/Workflows/sunray_ros1_current_runtime_lane.md
+Docs/Index/sunray_migration_index.md
+Scripts/sunray/
 ```
 
 Do not declare `planner_ready`, `closed_loop`, runtime success, controller
@@ -376,8 +406,10 @@ Recommended next work in a fresh conversation:
    chassis evidence gate before replacing the baseline.
 4. If working on UE vehicle visuals, keep geometry locked and review materials
    component by component.
-5. If working on FAST-LIO, start from latest same-source/body-frame evidence
-   and keep native RViz2/truth-error gates.
+5. If working on current Sunray ROS1/MID360/FAST-LIO, start from
+   `Docs/Workflows/sunray_ros1_current_runtime_lane.md` and
+   `References/Lab/FAST_LIO`; do not download a substitute or switch to ROS2
+   because a local probe is blocked.
 6. If a historical claim appears useful, route it through session-memory
    migration and current-file verification before promotion.
 

@@ -1,6 +1,13 @@
 # RflySim-like MoSim P0 10h Execution Plan
 
-Status: active execution plan, 2026-06-06 CST.
+Status: historical/superseded execution plan, 2026-06-23 CST.
+
+This file is retained for audit only. It must not be used as the current
+execution selector. Current Sunray ROS1/Gazebo/RViz work starts from
+`Docs/Workflows/sunray_ros1_current_runtime_lane.md`; current architecture and
+FAST-LIO state-source promotion rules start from
+`Docs/Design/MoSim_FASTLIO定位闭环与规划复现基础方案.md` and
+`Docs/Design/MoSim真机化收尾与C++化重构方案.md`.
 
 Origin PMO thread: `019e9868-83ea-70f0-92c5-a3a408bd78c6`.
 
@@ -22,9 +29,9 @@ depend on the review result.
 
 Architecture sources:
 
-- `Docs/Design/10_架构边界与当前状态ADR.md`
+- `Docs/Design/架构.md`
 - `Docs/Design/11_RflySim式MoSim最小闭环架构审核.md`
-- `Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md`
+- `Docs/Design/cache/pre_rebuild_20260610/09_UE_ROS_MWORKS无人机仿真架构重构.md`
 - `Docs/Workflows/unreal_renderer.md`
 - `Docs/Workflows/identify_quadrotor_parameters.md`
 

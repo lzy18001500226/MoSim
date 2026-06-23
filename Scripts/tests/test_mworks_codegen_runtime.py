@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import textwrap
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -85,6 +86,125 @@ def test_codegen_runtime_compile_gate() -> None:
     if not runtime_smoke["temp_dir_removed"]:
         raise AssertionError(payload)
     if [row["time_s"] for row in runtime_smoke["rows"]] != [0.01, 0.02, 0.03]:
+        raise AssertionError(payload)
+    if [row["input"] for row in runtime_smoke["rows"]] != [0.1, 0.2, -0.1]:
+        raise AssertionError(payload)
+    if [row["inputs"]["z_error"] for row in runtime_smoke["rows"]] != [0.1, 0.2, -0.1]:
+        raise AssertionError(payload)
+    if "thrust_cmd" not in runtime_smoke["rows"][0]["outputs"]:
+        raise AssertionError(payload)
+
+
+def test_codegen_runtime_multi_io_schema_harness(tmp_path: Path) -> None:
+    checker = load_checker()
+    code_dir = tmp_path / "MultiController"
+    code_dir.mkdir()
+    (code_dir / "mwb_types.h").write_text(
+        "typedef double MwbDouble;\ntypedef int MwbInt32;\ntypedef signed char MwbInt8;\n",
+        encoding="utf-8",
+    )
+    (code_dir / "mwb_runtime.h").write_text("", encoding="utf-8")
+    (code_dir / "MultiController.h").write_text(
+        textwrap.dedent(
+            """
+            #ifndef MULTI_CONTROLLER_H
+            #define MULTI_CONTROLLER_H
+            #include "mwb_types.h"
+            typedef struct multi_controllerTagEmd multi_controllerEmd;
+            struct multi_controllerTagEmd{
+              MwbDouble m_curTime;
+              MwbDouble m_startTime;
+              MwbDouble m_stepSize;
+              MwbInt32 m_timeTickCount;
+            };
+            extern struct multi_controllerExtU multi_controllerGbIn;
+            extern struct multi_controllerExtY multi_controllerGbOut;
+            extern multi_controllerEmd*const multi_controllerGbMd;
+            void Step(void);
+            void Init(void);
+            #endif
+            """
+        ).strip()
+        + "\n",
+        encoding="utf-8",
+    )
+    (code_dir / "MultiController_private.h").write_text(
+        textwrap.dedent(
+            """
+            #include "MultiController.h"
+            struct multi_controllerExtU
+            {
+              MwbDouble x_error;
+              MwbDouble y_error;
+              MwbDouble z_error;
+              MwbDouble z_ref_rate;
+            };
+            struct multi_controllerExtY
+            {
+              MwbDouble y;
+              MwbDouble y1;
+            };
+            """
+        ).strip()
+        + "\n",
+        encoding="utf-8",
+    )
+    (code_dir / "MultiController.c").write_text(
+        textwrap.dedent(
+            """
+            #include "MultiController.h"
+            #include "MultiController_private.h"
+            struct multi_controllerExtU multi_controllerGbIn;
+            struct multi_controllerExtY multi_controllerGbOut;
+            static struct multi_controllerTagEmd multi_controllerStMd;
+            multi_controllerEmd*const multi_controllerGbMd = &multi_controllerStMd;
+            void Step(void)
+            {
+              multi_controllerGbOut.y = multi_controllerGbIn.x_error + multi_controllerGbIn.z_error;
+              multi_controllerGbOut.y1 = multi_controllerGbIn.y_error - multi_controllerGbIn.z_ref_rate;
+              ++multi_controllerGbMd->m_timeTickCount;
+              multi_controllerGbMd->m_curTime = multi_controllerGbMd->m_startTime + (MwbDouble)multi_controllerGbMd->m_timeTickCount * multi_controllerGbMd->m_stepSize;
+            }
+            void Init(void)
+            {
+              multi_controllerGbMd->m_startTime = 0.0;
+              multi_controllerGbMd->m_curTime = 0.0;
+              multi_controllerGbMd->m_timeTickCount = 0;
+              multi_controllerGbMd->m_stepSize = 0.01;
+            }
+            """
+        ).strip()
+        + "\n",
+        encoding="utf-8",
+    )
+    (code_dir / "MultiController_data.c").write_text("", encoding="utf-8")
+    (code_dir / "mwb_main.c").write_text("", encoding="utf-8")
+    runtime_schema = {
+        "input_global": "multi_controllerGbIn",
+        "output_global": "multi_controllerGbOut",
+        "input_fields": ["x_error", "y_error", "z_error", "z_ref_rate"],
+        "output_fields": ["y", "y1"],
+        "input_sequence": [
+            {"x_error": 1.0, "y_error": 2.0, "z_error": 3.0, "z_ref_rate": 0.5},
+            {"x_error": -1.0, "y_error": 4.0, "z_error": 0.25, "z_ref_rate": 1.5},
+        ],
+    }
+    payload = checker.summarize(
+        code_dir,
+        "MultiController",
+        do_compile=True,
+        do_run_smoke=True,
+        input_sequence=[],
+        runtime_schema=runtime_schema,
+    )
+    if not payload["ok"]:
+        raise AssertionError(payload)
+    rows = payload["runtime_smoke"]["rows"]
+    if rows[0]["outputs"] != {"y": 4.0, "y1": 1.5}:
+        raise AssertionError(payload)
+    if rows[1]["outputs"] != {"y": -0.75, "y1": 2.5}:
+        raise AssertionError(payload)
+    if rows[0]["time_s"] != 0.01 or rows[1]["time_s"] != 0.02:
         raise AssertionError(payload)
 
 

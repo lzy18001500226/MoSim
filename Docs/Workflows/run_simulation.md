@@ -829,10 +829,14 @@ top-level variables, and probe raw CSV before claiming a state-machine result.
 If a nominal `event_code` variable stays constant while `flight_mode` changes,
 derive the event-log label from `flight_mode` and document that mapping.
 
-If Sysplorer/MWORKS suddenly reports unexplained license, activation, login, or
-bulk library load failures after previously passing, preserve current file
-changes, clean temporary files, stop the MCP sequence, and ask for manual
-login/activation review instead of repeatedly retrying.
+If Sysplorer/MWORKS suddenly reports unexplained license, activation, login,
+bulk library load failures, solver startup errors, or GUI/MCP errors after
+previously passing, do not start by retuning the model or controller. Preserve
+current file changes, clean temporary files, rerun the MWORKS GUI sentinel and
+target-window evidence capture, and classify the issue first. If the evidence
+shows login/license/activation/authorization or an unknown GUI blocker, stop
+the MCP sequence and route bounded login/activation review through
+PMO/CoAgentOps instead of repeatedly retrying the solver.
 
 If simulation fails:
 

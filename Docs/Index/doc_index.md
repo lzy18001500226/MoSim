@@ -9,6 +9,7 @@
 | Project overview | `README.md` | Repository entry point |
 | Agent rules | `AGENTS.md` | Codex/MCP usage, project conventions, implementation rules |
 | Design documents | `Docs/Design/README.md` | Current system-design source set, architecture, interfaces, gates, and cache/ADR routing |
+| CoSim future platform blueprint | `Docs/CoSim/README.md` | Future vehicle-family-first simulation platform research, reviewed backend decisions, shared core, and architecture drafts |
 | User manual | `Docs/user_manual.md` | Usage guide and reproducible command entry points |
 | Simulation report | `Docs/simulation_report.md` | Current evidence, metrics, figures, and experiment gaps |
 | API/tool index | `Docs/Index/api_index.md` | Available MCP tools, scripts, and API references |
@@ -17,8 +18,9 @@
 | Post-simulation task flow | `Docs/Workflows/post_simulation_task_flow.md` | Total queue after simulation: inventory, raw extraction, metrics, quality, figures, evidence, report, and UE transition |
 | Variable mapping | `Docs/Index/variable_mapping.md` | Standard raw CSV names vs Sysplorer result variables |
 | MathWorks to MWORKS migration | `Docs/Index/mathworks_to_mworks_migration.md` | How to translate MATLAB/Simulink skills into MWORKS workflows |
-| Sunray migration index | `Docs/Index/sunray_migration_index.md` | Sunray code/model/config index for Sysplorer migration |
+| Sunray migration index | `Docs/Index/sunray_migration_index.md` | Sunray code/model/config index for current ROS1/Gazebo review and Sysplorer migration |
 | PX4 reference index | `Docs/Index/px4_reference_index.md` | PX4 source map for flight modes, failsafe, setpoints, battery, ESC, and actuator interfaces |
+| FAST-LIO localization closed-loop foundation | `Docs/Design/MoSim_FASTLIO定位闭环与规划复现基础方案.md` | Sunray ROS1 FAST-LIO -> PX4 EKF -> MAVROS local position state-source plan and EGO/EGOv2/Diff-Planner rerun gates |
 
 ## Project-Local Skills
 
@@ -96,20 +98,31 @@
 | Topic | File |
 |---|---|
 | Design entrypoint | `Docs/Design/README.md` |
-| System goals and requirement boundary | `Docs/Design/01_系统目标与需求边界.md` |
-| Overall architecture and authority boundary | `Docs/Design/02_总体架构与权威边界.md` |
-| Core module design | `Docs/Design/03_核心模块设计.md` |
-| Interfaces, data contracts, clocks, and rates | `Docs/Design/04_接口数据契约与时钟频率.md` |
-| Scene, sensor, UE, ROS2, FAST-LIO, and local-map path | `Docs/Design/05_场景传感器与UE_ROS2链路.md` |
-| Control, planning, safety, fault, formation, and metrics goals | `Docs/Design/06_控制规划安全与评估目标.md` |
-| Acceptance gates and deliverables | `Docs/Design/07_验收Gate与交付物.md` |
-| Competition closure implementation evidence matrix | `Docs/Design/08_赛题闭环实现证据矩阵.md` |
-| ROS2 formal integration, controller ABI, codegen, and future Simulink backend | `Docs/Design/14_ROS2正式接入与控制器后端迁移设计.md` |
-| Active architecture ADR | `Docs/Design/10_架构边界与当前状态ADR.md` |
-| Active RflySim-like gap audit | `Docs/Design/11_RflySim式MoSim最小闭环架构审核.md` |
-| Active model migration plan | `Docs/Design/12_MoSimQuadrotorModel模型归档与迁移计划.md` |
+| Competition task scope | `Docs/Design/赛题.md` |
+| Control-system architecture root | `Docs/Design/MoSim控制体系总览.md` |
+| High-level architecture narrative | `Docs/Design/架构.md` |
+| Unified controller interface and ABI | `Docs/Design/MoSim统一控制接口规范.md` |
+| Single-UAV controller implementation | `Docs/Design/MoSim单机控制器实现规范.md` |
+| Code generation and PX4 deployment | `Docs/Design/MoSim控制器代码生成与PX4部署规范.md` |
+| Controller tuning and parameter optimization | `Docs/Design/MoSim控制器调参与参数优化规范.md` |
+| Controller management and configuration | `Docs/Design/MoSim控制器管理与配置规范.md` |
+| Controller testing and evaluation | `Docs/Design/MoSim控制系统测试与评价规范.md` |
+| Control enhancement and fault tolerance | `Docs/Design/MoSim控制增强与容错规范.md` |
+| Planning and formation interfaces | `Docs/Design/MoSim规划与编队控制接口规范.md` |
+| FAST-LIO localization and planner reproduction foundation | `Docs/Design/MoSim_FASTLIO定位闭环与规划复现基础方案.md` |
+| Flight-like closeout and C++ refactor | `Docs/Design/MoSim真机化收尾与C++化重构方案.md` |
+| Agent workflow and task orchestration | `Docs/Design/MoSim研发工作流与Agent任务编排规范.md` |
+| Legacy numbered design archive | `Docs/Design/旧架构/` |
+| CoSim future platform entrypoint | `Docs/CoSim/README.md` |
+| CoSim platform blueprint | `Docs/CoSim/00_platform/00_CoSim总体蓝图.md` |
+| CoSim shared core and data contracts | `Docs/CoSim/10_shared_core/01_共享内核与数据契约.md` |
+| CoSim vehicle family tree | `Docs/CoSim/20_vehicle_families/README.md` |
+| CoSim backend adapter matrix | `Docs/CoSim/30_backend_adapters/README.md` |
+| CoSim research decision index | `Docs/CoSim/research/README.md` |
+| CoSim raw research preservation manifest | `Docs/CoSim/cache/source_migration_manifest_20260614.md` |
 | Simulation model structure index | `Docs/Index/simulation_model_structure_index.md` |
-| Design rebuild audit | `Docs/Design/design_rebuild_audit_20260610.md` |
+| Cached absorbed/superseded design inputs | `Docs/Design/cache/absorbed_or_superseded_20260614/` |
+| Design rebuild audit | `Docs/Design/cache/design_rebuild_audit_20260610.md` |
 | Cached pre-rebuild design inputs | `Docs/Design/cache/pre_rebuild_20260610/README.md` |
 
 ## Maintenance Rules

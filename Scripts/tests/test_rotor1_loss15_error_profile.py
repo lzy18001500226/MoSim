@@ -33,7 +33,12 @@ class Rotor1Loss15ErrorProfileTest(unittest.TestCase):
         self.assertEqual(profile["scenario_count"], 2)
         self.assertTrue(all(item["quality_status"] == "needs_iteration" for item in profile["profiles"]))
         self.assertTrue(profile["comparison"]["available"])
-        self.assertGreater(profile["comparison"]["rmse_improvement_pct"], 0.0)
+        profiles_by_controller = {item["controller_id"]: item for item in profile["profiles"]}
+        pid_rmse = float(profiles_by_controller["pid_baseline"]["position_rmse_m"])
+        awff_rmse = float(profiles_by_controller["awff_sysblock"]["position_rmse_m"])
+        expected_improvement = (pid_rmse - awff_rmse) / pid_rmse * 100.0
+        self.assertAlmostEqual(profile["comparison"]["rmse_improvement_pct"], expected_improvement)
+        self.assertLess(profile["comparison"]["rmse_improvement_pct"], 0.0)
         self.assertIn("single_uav", profile["scope"])
         self.assertNotIn("formation", profile["scope"])
 

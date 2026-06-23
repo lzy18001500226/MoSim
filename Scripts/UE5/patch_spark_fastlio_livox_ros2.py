@@ -46,6 +46,11 @@ def write_if_changed(path: Path, text: str) -> bool:
     return True
 
 
+def remove_regex_block(text: str, pattern: str) -> str:
+    """Remove every previous copy of a generated patch block."""
+    return re.sub(pattern, "", text, flags=re.DOTALL)
+
+
 def patch_package_xml(path: Path) -> bool:
     text = path.read_text(encoding="utf-8")
     if "<depend>livox_ros_driver2</depend>" not in text:
@@ -105,6 +110,8 @@ def patch_preprocess_cpp(path: Path) -> bool:
     text = path.read_text(encoding="utf-8")
     if "#include <algorithm>" not in text:
         text = text.replace("#include \"preprocess.h\"\n", "#include \"preprocess.h\"\n\n#include <algorithm>\n#include <limits>\n")
+    if "#include <limits>" not in text:
+        text = text.replace("#include <algorithm>\n", "#include <algorithm>\n#include <limits>\n")
     text = text.replace("livox_ros_driver::CustomMsg", "livox_ros_driver2::msg::CustomMsg")
     text = text.replace("msg.points[i].offset_time /\n            static_cast<float>(1000000)", "msg.points[i].offset_time /\n            static_cast<float>(1000000)")
     text = text.replace("ROS_DEBUG(", "RCLCPP_DEBUG(rclcpp::get_logger(\"Preprocess\"), ")
@@ -112,10 +119,11 @@ def patch_preprocess_cpp(path: Path) -> bool:
         "  int plsize = msg.point_num;\n  //   cout<<\"plsie: \"<<plsize<<endl;",
         "  int plsize = static_cast<int>(std::min<size_t>(msg.point_num, msg.points.size()));\n  //   cout<<\"plsie: \"<<plsize<<endl;",
     )
-    text = text.replace(
-        "  //   cout<<\"plsie: \"<<plsize<<endl;\n\n  pl_corn.reserve(plsize);",
-        "  //   cout<<\"plsie: \"<<plsize<<endl;\n  RCLCPP_INFO(rclcpp::get_logger(\"Preprocess\"), \"Livox avia_handler entry: point_num=%u points_size=%zu plsize=%d\", msg.point_num, msg.points.size(), plsize);\n\n  pl_corn.reserve(plsize);",
-    )
+    if "Livox avia_handler entry:" not in text:
+        text = text.replace(
+            "  //   cout<<\"plsie: \"<<plsize<<endl;\n\n  pl_corn.reserve(plsize);",
+            "  //   cout<<\"plsie: \"<<plsize<<endl;\n  RCLCPP_INFO(rclcpp::get_logger(\"Preprocess\"), \"Livox avia_handler entry: point_num=%u points_size=%zu plsize=%d\", msg.point_num, msg.points.size(), plsize);\n\n  pl_corn.reserve(plsize);",
+        )
     text = text.replace(
         "  pl_corn.reserve(plsize);\n  pl_surf.reserve(plsize);",
         "  if (feature_enabled) {\n    pl_corn.reserve(plsize);\n    pl_surf.reserve(plsize);\n  }",
@@ -209,6 +217,9 @@ def patch_preprocess_cpp(path: Path) -> bool:
       point.y = src.y;
       point.z = src.z;
       point.intensity = src.reflectivity;
+      point.normal_x = 0.0;
+      point.normal_y = 0.0;
+      point.normal_z = 0.0;
       point.curvature = src.offset_time / static_cast<float>(1000000);
 
       const bool outside_blind =
@@ -225,16 +236,14 @@ def patch_preprocess_cpp(path: Path) -> bool:
     }"""
     if old_non_feature_loop in text:
         text = text.replace(old_non_feature_loop, new_non_feature_loop)
-    text = text.replace(
-        """  }
-}
-#endif
-
-void Preprocess::oust64_handler""",
-        """  }
+    text = remove_regex_block(
+        text,
+        r"\n  RCLCPP_INFO\(\n      rclcpp::get_logger\(\"Preprocess\"\),\n      \"Livox preprocess: points=%[du] valid=%u surf=%zu N_SCANS=%d filter=%d blind=%.3f first_offset=%u last_offset=%u\",.*?msg\.points\.empty\(\) \? 0u : msg\.points\.back\(\)\.offset_time\);\n",
+    )
+    summary_replacement = """  }
   RCLCPP_INFO(
       rclcpp::get_logger("Preprocess"),
-      "Livox preprocess: points=%d valid=%u surf=%zu N_SCANS=%d filter=%d blind=%.3f first_offset=%u last_offset=%u",
+      "Livox preprocess: points=%u valid=%u surf=%zu N_SCANS=%d filter=%d blind=%.3f first_offset=%u last_offset=%u",
       msg.point_num,
       valid_num,
       pl_surf.size(),
@@ -246,8 +255,24 @@ void Preprocess::oust64_handler""",
 }
 #endif
 
+void Preprocess::oust64_handler"""
+    summary_anchors = (
+        """  }
+}
+#endif
+
+void Preprocess::oust64_handler""",
+        """  }}
+#endif
+
 void Preprocess::oust64_handler""",
     )
+    for anchor in summary_anchors:
+        if anchor in text:
+            text = text.replace(anchor, summary_replacement, 1)
+            break
+    else:
+        raise SystemExit("failed to patch Livox preprocess summary block")
     return write_if_changed(path, text)
 
 
@@ -257,6 +282,10 @@ def patch_spark_cpp(path: Path) -> bool:
     text = text.replace("livoxLidarCallback", "livoxLiDARCallback")
     text = text.replace("!imu_buffer.empty()", "!imu_buffer_.empty()")
     text = text.replace("last_lidar_timestamp_.nanseconds()", "last_lidar_timestamp_.nanoseconds()")
+    text = remove_regex_block(
+        text,
+        r"\n  RCLCPP_INFO\(\n      this->get_logger\(\),\n      \"MoSim startup params: lidar_type=%d scan_line=%d blind=%.3f scan_rate=%d point_filter_pre=%d point_filter=%d base_frame='%s' map_frame='%s' lidar_frame='%s' imu_frame='%s'\",.*?point_filter_num_ = 1;\n  }\n",
+    )
     text = text.replace(
         """  main_loop_timer_ =
       create_wall_timer(std::chrono::milliseconds(1), std::bind(&SPARKFastLIO2::main, this));
@@ -414,7 +443,16 @@ def patch_spark_cpp(path: Path) -> bool:
       std::bind(&SPARKFastLIO2::standardLiDARCallback, this, std::placeholders::_1));
 #endif""",
     )
+    text = remove_regex_block(
+        text,
+        r"\n  RCLCPP_INFO_THROTTLE\(\n      this->get_logger\(\),\n      \*clock_,\n      2000,\n      \"Process LiDAR/IMU: input=%zu imu=%zu cloud_undistort=%zu point_filter=%d lidar_dt=%.6f\",.*?Measures\.lidar_end_time - Measures\.lidar_beg_time\);\n",
+    )
     text = text.replace(
+        "  imu_processor_->Process(Measures, kf_, cloud_undistort_);  feats_undistort_->reserve(cloud_undistort_->size() / point_filter_num_);",
+        "  imu_processor_->Process(Measures, kf_, cloud_undistort_);\n  feats_undistort_->reserve(cloud_undistort_->size() / point_filter_num_);",
+    )
+    text = replace_once(
+        text,
         """  imu_processor_->Process(Measures, kf_, cloud_undistort_);
   feats_undistort_->reserve(cloud_undistort_->size() / point_filter_num_);""",
         """  imu_processor_->Process(Measures, kf_, cloud_undistort_);
@@ -429,6 +467,7 @@ def patch_spark_cpp(path: Path) -> bool:
       point_filter_num_,
       Measures.lidar_end_time - Measures.lidar_beg_time);
   feats_undistort_->reserve(cloud_undistort_->size() / point_filter_num_);""",
+        "process LiDAR/IMU diagnostics block",
     )
     return write_if_changed(path, text)
 

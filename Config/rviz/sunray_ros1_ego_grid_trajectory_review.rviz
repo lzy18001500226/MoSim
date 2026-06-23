@@ -1,0 +1,119 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+  - Class: rviz/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.45
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.03
+        Value: Lines
+      Name: Ground Grid
+      Plane: XY
+      Plane Cell Count: 80
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Class: rviz/PointCloud2
+      Alpha: 0.85
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 2
+        Min Value: 0
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Name: EGO Inflated Occupancy Grid
+      Position Transformer: XYZ
+      Queue Size: 5
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.12
+      Style: Flat Squares
+      Topic: /drone_0_ego_planner_node/grid_map/occupancy_inflate
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 255; 50; 50
+      Enabled: true
+      Head Diameter: 0.18
+      Head Length: 0.12
+      Length: 0.2
+      Line Style: Lines
+      Line Width: 0.055
+      Name: UAV Truth Trajectory
+      Pose Color: 255; 50; 50
+      Pose Style: None
+      Topic: /mosim/goal4/truth_path
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 30; 220; 80
+      Enabled: true
+      Head Diameter: 0.18
+      Head Length: 0.12
+      Length: 0.2
+      Line Style: Lines
+      Line Width: 0.04
+      Name: EGO Position Command Path
+      Pose Color: 30; 220; 80
+      Pose Style: None
+      Topic: /mosim/goal4/position_cmd_path
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 255; 220; 0
+      Enabled: true
+      Head Diameter: 0.18
+      Head Length: 0.12
+      Length: 0.2
+      Line Style: Lines
+      Line Width: 0.035
+      Name: Mission Target Segment
+      Pose Color: 255; 220; 0
+      Pose Style: None
+      Topic: /mosim/goal4/target_path
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 38; 38; 38
+    Default Light: true
+    Fixed Frame: world
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+    - Class: rviz/SetGoal
+      Topic: /goal_1
+    - Class: rviz/PublishPoint
+      Topic: /clicked_point
+  Value: true
+  Views:
+    Current:
+      Class: rviz/TopDownOrtho
+      Name: Current View
+      Scale: 42
+      Target Frame: world
+      Value: TopDownOrtho (rviz)
+Window Geometry:
+  Height: 900
+  Width: 1120
+  X: 20
+  Y: 60

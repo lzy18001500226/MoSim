@@ -1,29 +1,55 @@
 # Single-Thread Long-Run Execution Queue, 2026-06-10
 
-Status: active temporary execution mode.
+Status: historical temporary execution mode. It is superseded for current
+2026-06-20 evening single-thread runtime review by
+`Docs/Workflows/sunray_ros1_current_runtime_lane.md`.
 
 Owner: current Codex conversation, acting as a single local executor while the
 CoAgent visible-thread operating architecture is being optimized.
 
-This queue is a temporary operating surface. It does not change durable PMO,
-CoAgentOps, or department ownership rules in `AGENTS.md`. When visible-thread
-dispatch becomes reliable again, move durable lessons into the relevant
-CoAgent operating workflow and retire this file.
+This queue is a temporary operating surface and a historical log. It does not
+change durable PMO, CoAgentOps, or department ownership rules in `AGENTS.md`.
+When visible-thread dispatch becomes reliable again, move durable lessons into
+the relevant CoAgent operating workflow and retire this file.
+
+Current executable lane override, 2026-06-20 evening:
+
+```text
+Use Docs/Workflows/sunray_ros1_current_runtime_lane.md for current work.
+Ubuntu-20.04 / ROS1 Noetic / References/Sunray / References/Lab/FAST_LIO
+Gazebo Classic + RViz review for assembled Sunray150 + real MID360 PointCloud2
+```
+
+Do not use the older PX4/Gazebo/ROS2 queue entries below as current work unless
+the user or PMO explicitly reopens that route. If the Sunray ROS1 lane is
+blocked, diagnose or return a blocker in that lane; do not make an equivalent
+substitution with x500, PX4, ROS2, a downloaded FAST-LIO replacement, or fake
+point-cloud evidence.
 
 ## Goal
 
 Keep MoSim moving for a 12h+ execution horizon without using visible
 department threads, forked conversations, or disposable sub-agents.
 
+Long-goal reminder:
+
+- Point cloud is the raw radar/LiDAR sensor output and is primarily the input
+  for localization and mapping.
+- Do not describe the point cloud itself as a planner artifact.
+- Keep the goal alive until single-UAV completion, then stop before multi-UAV
+  implementation.
+
 Current objective:
 
 ```text
-Advance the A8 quadrotor competition system evidence chain with local-only,
-verifiable work while visible CoAgent dispatch is paused: close the current
-MWORKS single-UAV simulation gate, enter the UE replay/render evidence gate,
-and preserve the next executable UE command-echo or visual-review hardening
-slice. Do not claim live/runtime success beyond the evidence bundle's declared
-role.
+Complete the current Sunray ROS1 review lane before any multi-UAV
+implementation or old-route continuation. The active evidence chain is:
+References/Sunray source -> assembled Sunray150 + MID360 Gazebo Classic model
+-> ROS1 Noetic Sunray control/runtime -> takeoff-hover-land and 8-shaped
+mission evidence -> RViz trajectory/path and real nonempty MID360 PointCloud2
+review. FAST-LIO work, if in scope, must start from References/Lab/FAST_LIO.
+Do not switch to ROS2/PX4/x500, downloaded FAST-LIO replacements, fake/static
+point clouds, or headless-only evidence as an equivalent substitute.
 ```
 
 ## Logical Sub-Agent Plan
@@ -36,8 +62,9 @@ or disjoint workers and must not become visible-department dispatch.
 | Logical role | Responsibility | Execution rule |
 |---|---|---|
 | Planner | Maintain the long goal, critical path, and next local queue item. | Runs inline in this conversation. |
-| Model Auditor | Inspect MWORKS/model/source artifacts statically and identify safe next gates. | No live MWORKS, Sysplorer, Syslab, MCP, `check_model`, or `SimulateModel` unless the user explicitly authorizes live work. |
-| ROS/UE Gate Auditor | Integrate ROS2 and UE source/static return evidence into the active board and design gates. | No ROS2/RViz/FAST-LIO, UE editor/build/runtime, sockets, setpoints, or live probes unless separately authorized. |
+| MWORKS Executor | Keep the single-UAV MWORKS control/model evidence chain current and runnable. | May run authorized single-UAV project-local MWORKS checks/simulations after fresh GUI/activation preflight; stops on login/license/authorization/unknown GUI blockers. |
+| Sunray ROS1/Gazebo Executor | Own WSL-side Sunray ROS1 Noetic, Gazebo Classic, RViz, MID360, and local FAST_LIO-source review gates. | May run bounded single-UAV ROS1/Sunray/Gazebo/RViz probes in this goal; no x500/PX4/ROS2 substitution, no downloaded FAST-LIO replacement while `References/Lab/FAST_LIO` exists, no fake/empty point cloud, and no GUI/RViz acceptance claim without visual evidence. |
+| UE Executor | Own single-UAV UE render/replay/truth/visual-review and command-echo evidence. | May run bounded UE build/runtime/replay or open review evidence when needed; final material/scene acceptance still needs explicit evidence and user/PMO acceptance. |
 | Docs Architect | Keep design docs aligned with the competition system and platform-extension boundary. | Prefer small targeted edits over broad rewrites. |
 | Checker | Run targeted JSON, Python, Markdown, and contract checks for touched artifacts. | No broad Git cleanup or unrelated test sweeps. |
 | Ops Scribe | Record current mode, blockers, and next queue items in board/workflow docs. | Do not change PMO product acceptance or final integration conclusions. |
@@ -51,9 +78,14 @@ or disjoint workers and must not become visible-department dispatch.
   opened directly for human review without waiting for a separate authorization
   turn. This does not authorize live UE/MWORKS/ROS2 actions, only opening and
   showing already-produced evidence.
-- No live MWORKS/Sysplorer/Syslab GUI/MCP/check_model/SimulateModel, ROS2/
-  RViz/FAST-LIO/planner/controller, UE editor/build/runtime, or setpoint
-  publication unless the user explicitly authorizes that live scope.
+- Current user direction authorizes pushing the Sunray ROS1 single-UAV review
+  lane. Live MWORKS, ROS2/PX4, UE build/runtime/replay, and old command-ack
+  probes are not part of the current lane unless separately reopened. Sunray
+  ROS1/Gazebo/RViz/MID360 probes must be single-UAV, bounded, project-local,
+  preflighted, and recorded under `Results/sunray_ros1/`.
+- Stop before multi-UAV implementation, broad/thread dispatch, destructive Git,
+  credential disclosure, unknown GUI actions, save/overwrite/restart/report
+  dialogs, unsafe setpoint publication, or any action outside the active slice.
 - Do not claim `planner_ready`, `closed_loop`, runtime success, controller
   performance, final scene/material acceptance, permanent activation, or live
   command ack from static evidence.
@@ -64,21 +96,26 @@ or disjoint workers and must not become visible-department dispatch.
 
 | Partition | Current local interpretation | Next local action |
 |---|---|---|
-| MWORKS | 032 was dispatched to R1 and had initial agent output, but no return/blocker packet is present as of the 2026-06-10 local sweep. Live no-start attach remains unproven. | Do only static/model/design audit or checker work until live MWORKS is explicitly reauthorized. |
-| ROS2 | 080 return completed a source/static repair surface and future single-probe gate. Current runtime grounding still remains `blocked_absent` because 079 is still the latest live evidence. | Integrate 080 as a future-gate readiness result; do not run a second live probe or planner/controller handoff. |
-| UE | 037 return completed source/static build-readiness classification. It means the next safe UE step can be a separately authorized build-only gate; it is not build success or runtime ack. | Integrate 037 as build-only-gate readiness; do not run UE build/editor/runtime from this mode. |
+| MWORKS | Current accepted single-UAV MWORKS evidence is enough to feed UE/Gazebo prep, but final report-grade single-UAV controller claims still require fresh gate-specific evidence if wording expands. | Keep MWORKS as the formal model/control evidence source; run only bounded single-UAV checks/simulations after fresh GUI/activation preflight. |
+| Sunray ROS1/Gazebo/RViz | Current review work is the ROS1 Noetic Sunray lane with assembled Sunray150, Gazebo Classic, RViz, and real MID360 PointCloud2. Historical Gazebo/ROS2/PX4 results are audit context only. | Start from `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; run or block takeoff-hover-land, 8-shaped mission, Gazebo animation, RViz trajectory/path, and MID360 nonempty point-cloud review in that lane. |
+| UE | UE replay/truth contracts and build/runtime ingest evidence exist, but close visual review and seven-artifact command echo are still not final. | Produce single-UAV visual-review hardening and command-echo evidence as needed for single-UAV closure. |
 
 ## 12h+ Local Queue
 
 | Order | Slice | Output target | Verification |
 |---|---|---|---|
-| 0 | Stabilize current mode and integrate 032/080/037 board state. | `Docs/Workflows/mainline_operations_board.md` | Markdown diff check and targeted evidence path existence. |
-| 1 | Audit current design docs against the competition requirements: improved position/attitude control, Sysblock integration, Syslab comparison hooks, robustness scenarios, and multi-UAV formation. | `Docs/Design/` update or gap report | Path-limited diff plus link consistency. |
-| 2 | Build a static MWORKS model/control evidence map: which project-owned models, wrappers, scripts, and scenario configs support the competition line. | `Results/static_audits/` or `Docs/Design/` evidence map | Read-only source scan; no live MWORKS. |
-| 3 | Integrate ROS2 080 and UE 037 future-gate boundaries into the design/evidence chain so static readiness cannot be overclaimed. | Design/workflow doc update | JSON parse for packets, checker if available. |
-| 4 | Harden one local checker or report script that prevents a known overclaim or stale-evidence mistake. | `Scripts/quality/` or `Scripts/tests/` | Focused test/compile only. |
-| 5 | Review CoAgent portable-core docs for what belongs in shared core, role views, capability router, and checker/schema instead of prose. | `CoAgent/docs/operating/` or audit note | No runtime/thread changes. |
-| 6 | Repeat with the next safest static engineering slice until live authorization or visible dispatch returns. | Queue update | Targeted checks before each checkpoint. |
+| 0 | Rebase the long-run goal to single-UAV full-stack completion and keep multi-UAV as future interface only. | This queue + `mainline_operations_board.md` | Markdown diff check and board consistency. |
+| 1 | Sunray ROS1 source/runtime preflight: confirm Ubuntu-20.04 ROS1 Noetic, `References/Sunray`, local `References/Lab/FAST_LIO` when in scope, Gazebo Classic launch, and project-local result directory. | `Results/sunray_ros1/<run>/` | Preflight log, source paths, ROS distro, launch path, no x500/PX4/ROS2 substitution. |
+| 2 | Takeoff-hover-land with assembled Sunray150 and durable metrics. | `Results/sunray_ros1/<takeoff_hover_land_run>/` | Gazebo truth/local pose, max height, hover error, XY drift, final height, landing slip, blocker if runtime fails. |
+| 3 | MID360 long-wait probe or same-run MID360 proof. | `Results/sunray_ros1/<mid360_probe_or_run>/` | `/uav1/livox/lidar` is `sensor_msgs/PointCloud2` with nonempty data and width*height > 0; `/uav1/livox/imu` present when in scope. |
+| 4 | 8-shaped mission review in Sunray ROS1. | `Results/sunray_ros1/<figure8_run>/` | Actual/reference trajectory in same frame, tracking/shape/landing metrics, no headless-only GUI acceptance claim. |
+| 5 | Gazebo Classic and RViz review package. | `Results/sunray_ros1/<review_run>/` | Gazebo animation evidence, RViz trajectory/path display, RViz MID360 point-cloud display, screenshot/review manifest or precise blocker. |
+| 6 | Report-ready single-UAV evidence consolidation for the current lane. | `Results/sunray_ros1/` + `Docs/Workflows/pre_submit_check.md` updates | Targeted checks, path existence, claim boundaries, no ROS2/PX4/x500 overclaim. |
+| 10 | Generated-controller integration decision: choose L1 PX4 Offboard first or L2 PX4 module/uORB first for AWFF/target controller after schema/SIL evidence. | `Docs/Workflows/mworks_codegen_controller_runtime.md` update + result manifest | Decision records selected PX4 inputs/outputs, timing, failover, stale-command, and evidence gates. |
+| 11 | PX4+Gazebo takeoff-hover-land with generated or adapter-wrapped target controller. | `Results/px4_gazebo/<takeoff_hover_land_run>/` | Same-run PX4 mode/arming/failsafe/log evidence, Gazebo truth, actuator response, stable takeoff/hover/land metrics. |
+| 12 | PX4+Gazebo figure-8 and static obstacle system-validation gate. | `Results/px4_gazebo/<figure8_obstacle_run>/` | Mission completion, minimum obstacle distance, local-map/planner input proof, planned-feasible-trajectory RMSE, actuator/tilt/velocity bounds, and no hidden truth shortcut. |
+| 12 | Report-ready non-UE single-UAV closure package: select MWORKS controller evidence plus Gazebo system-validation evidence and mark remaining gaps before multi-UAV. | `Results/gazebo_ros2/` bundle + board/queue update | Bundle checker, evidence paths exist, no UE/multi-UAV/PX4 overclaim. |
+| 13 | Multi-UAV interface preservation only: confirm no single-UAV changes break identity/layout contracts needed later. | `Docs/Design/MoSim规划与编队控制接口规范.md` or index note | Static review only; no multi-UAV implementation. |
 
 ### 2026-06-12 MWORKS Closeout And UE Replay/Render Entry
 
@@ -240,6 +277,99 @@ Current conclusion:
   nonzero bounds.
 - Final visual acceptance still needs close/zoomed after-stream Sunray150
   screenshots, preferably multiple angles or a short frame/sequence capture.
+
+### 2026-06-18 Single-UAV Gazebo/ROS2 Same-Run Review Baseline
+
+Continued the active long goal without visible-thread dispatch. The current
+correction is that raw point cloud is radar/LiDAR sensor output for
+localization and mapping input. Local occupancy voxels and local occupancy grid
+are downstream map products derived from point cloud plus pose/TF/local-map
+processing. Do not treat planner output as point cloud evidence.
+
+Sub-agent plan:
+
+| Role | Used | Scope |
+|---|---|---|
+| Main executor | yes | Critical path, Gazebo/ROS2 runs, evidence review, doc updates. |
+| Control tuning reviewer | logical only | Compared passed and failed runs; no visible thread dispatch. |
+| Sensor/map reviewer | logical only | Checked raw LiDAR, local voxel, and local grid artifacts; no visible thread dispatch. |
+| Docs/checker | logical only | Updated this queue and the PMO board with current claim boundaries. |
+
+Current clean review baseline:
+
+- `Results/gazebo_ros2/single_uav_48s_alt10_same_run_map_20260618_063729/RUNTIME_STATUS.json`
+- `Results/gazebo_ros2/single_uav_48s_alt10_same_run_map_20260618_063729/FIGURE8_STATIC_OBSTACLE_GATE.json`
+- `Results/gazebo_ros2/single_uav_48s_alt10_same_run_map_20260618_063729/map_review/GAZEBO_ROS2_MAP_REVIEW.json`
+- `Results/gazebo_ros2/single_uav_48s_alt10_same_run_map_20260618_063729/review/FIGURE8_REVIEW_MANIFEST.json`
+
+Evidence summary:
+
+- Runtime gate: passed.
+- Run duration: 47.944s.
+- Trajectory/reference: figure-8 with static obstacles, reference altitude
+  1.0m, obstacle radius 0.35m.
+- Tracking: `rmse_xy_m=0.857047`, `max_xy_error_m=1.200668`,
+  `max_z_error_m=0.600444`.
+- Obstacle clearance: `truth_min_clearance_m=0.374302`.
+- Raw LiDAR: PointCloud2 at 20000 points/frame, frame
+  `sunray150_assembled/base_link/mid360_lidar`, 5850 finite points in the
+  reviewed sample.
+- Local map: 518 finite occupied voxel points in `map`; 120x120 occupancy grid
+  with 448 occupied cells.
+- Review figures:
+  - `review/figure8_truth_reference_topdown.png`
+  - `review/figure8_altitude_time.png`
+  - `map_review/figures/gazebo_lidar_pointcloud_3d.png`
+  - `map_review/figures/gazebo_local_occupancy_voxels_3d.png`
+  - `map_review/figures/gazebo_local_occupancy_grid_2d.png`
+
+Negative tuning result:
+
+- `Results/gazebo_ros2/single_uav_alt_tune_hover05545_20260618_063149/BLOCKER.json`
+  failed after increasing hover command to 0.05545.
+- Failure was dominated by XY divergence, not a clean altitude improvement:
+  `rmse_xy_m=12.674327`, `max_xy_error_m=22.996596`, and
+  `truth_clearance_below_min`.
+- Do not continue with simple hover-command uplift as the default altitude fix.
+
+Control-tuned candidate:
+
+- `Results/gazebo_ros2/single_uav_alt_tune_ki00035_20260618_064357/RUNTIME_STATUS.json`
+  passed without same-run map review after raising only `ki_z` to `0.00035`.
+- `Results/gazebo_ros2/single_uav_48s_alt10_ki00035_same_run_map_20260618_064629/RUNTIME_STATUS.json`
+  passed with same-run map review using the same `ki_z=0.00035` override.
+- Same-run control metrics: `rmse_xy_m=0.854535`,
+  `max_xy_error_m=1.200862`, `max_z_error_m=0.580719`,
+  `truth_min_clearance_m=0.378079`.
+- Tracker final z error improved from about 0.236655m in the previous 48s
+  baseline to about 0.036655m in the `ki_z=0.00035` same-run candidate.
+- Same-run map evidence passed, but the reviewed LiDAR/local-map slice is
+  near-field: raw LiDAR has 2477 finite points in the reviewed sample, local
+  occupied voxels have 91 points, and the grid has 91 occupied cells. Keep this
+  as same-run chain evidence, not as the clearest human map-review image.
+
+Current conclusion:
+
+- The 48s 1.0m same-run baseline is the current clean executable review
+  baseline for single-UAV Gazebo/ROS2 figure-8, static-obstacle clearance, raw
+  LiDAR point cloud, and local occupancy map evidence.
+- The `ki_z=0.00035` same-run candidate is the current better control baseline
+  for altitude steady-state error, while the earlier 48s baseline remains the
+  clearer map-display baseline.
+- Both remain pre-acceptance and do not prove final controller-performance.
+- Current Gazebo LiDAR remains a `gpu_lidar` approximation of MID360-like
+  PointCloud2 output. It is valid as the current raw radar/sensor review
+  surface, but it is not a full Livox scan-mode plugin proof.
+
+Next executable actions:
+
+1. Use the 48s wider-view map baseline as the rollback point for map review,
+   and the `ki_z=0.00035` candidate as the current altitude-control candidate.
+2. Tune altitude by controller structure/gains or plant calibration, not by
+   simply raising hover command in isolation.
+3. Keep raw LiDAR, local voxel map, and local occupancy grid as separate review
+   artifacts in the next stable candidate.
+4. Do not enter multi-UAV implementation.
 
 Next local queue item:
 
@@ -4847,15 +4977,21 @@ Current conclusion:
   `model.live_load_strategy: minimal_dynamics_only`, which builds a temporary
   generated load tree under `Results/generated_mworks/minimal_dynamics_only/`
   rather than broad-loading the formal top-level package.
-- The current MWORKS GUI state remains blocked by an `升级模型` surface.
-  The latest current-turn sentinel records `status=incident_detected`,
+- At the time of this 2026-06-11 slice, the MWORKS GUI state was blocked by an
+  `升级模型` surface. That historical current-turn sentinel recorded
+  `status=incident_detected`,
   `error_kind=gui_blocked`,
   `license_state_hint=upgrade_model_surface_blocked`,
   `upgrade_model_window_count=1`, and
   `all_window_license_gate=blocked`.
-- No live retry was run after this sentinel. No `check_model`,
+- No live retry was run after that sentinel. No `check_model`,
   `SimulateModel`, result variable, screenshot/layout acceptance, controller
   performance, runtime success, mission success, or closed-loop claim was made.
+- Superseding evidence exists later: the 2026-06-12 closeout gate records a
+  clean preflight with no blocking MWORKS window, and the 2026-06-14 sentinel
+  records `status=clean` with `license_state_hint=no_mworks_window_observed`.
+  That current no-window state is not a reusable live-session proof; it means a
+  fresh preflight is required before any new live MWORKS work.
 
 Checks:
 
@@ -4870,9 +5006,9 @@ Checks:
 
 Next local queue item:
 
-- Do not run live MWORKS smoke while `升级模型` remains present. Continue with
-  source-level single-UAV preparation that directly supports the next live
-  gate, or wait for explicit PMO/user UI decision/recovery on the blocker.
+- Do not run live MWORKS smoke from the historical 2026-06-11 blocker state.
+  If a new live smoke is needed, first collect fresh clean MWORKS preflight
+  evidence and keep GUI result viewer/open flags disabled.
 
 ### 2026-06-11 Formal Dynamics Live-Smoke Readiness Guard
 
@@ -4908,8 +5044,13 @@ Current conclusion:
 - The formal Dynamics smoke execution surface is prepared and machine-checked:
   7 scenarios, unique output files, expected variable mappings, future batch
   command, `minimal_dynamics_only`, and no GUI result viewer/open flags.
-- The readiness status is `ready_but_blocked_by_gui`, because current live
-  preflight evidence still reports `upgrade_model_surface_blocked`.
+- The readiness status for this 2026-06-11 artifact is
+  `ready_but_blocked_by_gui`, because that artifact's live preflight evidence
+  reported `upgrade_model_surface_blocked`.
+- Later evidence supersedes this as a current-state claim: the 2026-06-12
+  closeout gate has clean preflight evidence, while the 2026-06-14 sentinel saw
+  no MWORKS window. Treat the live-smoke command as prepared but still requiring
+  fresh clean preflight immediately before execution.
 - No live simulation was run and no `check_model`, `SimulateModel`, result
   extraction, controller performance, mission success, or closed-loop claim was
   made.
@@ -5121,8 +5262,13 @@ Outputs:
 
 Current conclusion:
 
-- Current status is `blocked_needs_user_or_pmo_ui_decision`, because the latest
-  classifier still reports `upgrade_model_surface_blocked`.
+- This 2026-06-11 checklist status is
+  `blocked_needs_user_or_pmo_ui_decision`, because its paired classifier
+  reported `upgrade_model_surface_blocked`.
+- This is historical blocker evidence, not the current 2026-06-14 GUI state.
+  Current sentinel evidence is clean/no-window-observed, so the safe next gate
+  is a fresh bounded preflight before live MWORKS execution rather than a UI
+  recovery action for the old blocker.
 - The prepared future live command remains gated by fresh clean evidence,
   `--no-gui-result-viewer`, and `--no-gui-open`.
 - The checklist does not authorize automatic GUI click, close, restart, save,
@@ -5279,18 +5425,21 @@ Outputs:
 
 Current conclusion:
 
-- Plan status is `blocked_by_mworks_gui`.
-- Latest live gate remains `upgrade_model_surface_blocked` with one blocking
-  MWORKS window, so no live rerun was attempted.
+- This 2026-06-11 plan status was `blocked_by_mworks_gui`.
+- The paired live gate reported `upgrade_model_surface_blocked` with one
+  blocking MWORKS window, so no live rerun was attempted in that slice.
+- Later closeout evidence selected an accepted replacement candidate instead of
+  requiring the two historical failing plain PID/AWFF rows to pass.
 - The future live command is limited to:
   `Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml` and
   `Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml`.
-- Current historical metrics remain:
+- The historical two-scenario metrics in this older plan were:
   PID health `35.6257817116079`, AWFF health `36.043895052437605`; both are
   below the target `min_total_health_score=40.0`.
-- Do not tune controller parameters until a fresh clean-preflight rerun
-  refreshes these two metrics, unless the user explicitly accepts offline
-  source-only parameter work.
+- Current accepted single-rotor-loss evidence is the LinearMPC online
+  fault-allocation Sysblock candidate recorded by the 2026-06-12 pre-multi-UAV
+  closeout gate. Keep the plain PID/AWFF rows as negative comparison and repair
+  evidence; do not treat them as the current best candidate.
 
 Checks:
 
@@ -5335,14 +5484,18 @@ Outputs:
 Current conclusion:
 
 - Both current historical artifacts remain `quality_status=needs_iteration`.
-- AWFF Sysblock improves overall RMSE by `5.881%` over PID and improves
-  fault-window RMSE by `8.608%`, but health only rises from
-  `35.6257817116079` to `36.043895052437605`, still below the `40.0` gate.
-- The worst phase for both current artifacts is startup; the largest startup
-  error is vertical (`z`) tracking.
-- The next controller/model investigation should focus on startup tracking and
-  rotor-loss recovery/fault-window behavior, then rerun only the two
-  rotor1-loss scenarios after clean MWORKS preflight.
+- The current plain AWFF Sysblock artifact is a severe negative/iteration
+  case, not an improvement: overall RMSE improvement is
+  `-380160.329%` versus PID and health drops from `18.80013043497445` to
+  `0.0`.
+- PID's worst phase is startup with dominant vertical (`z`) tracking error;
+  AWFF Sysblock's worst phase is late tracking, with the failure already
+  growing through startup, pre-fault, fault-window, and recovery phases.
+- The next controller/model investigation should not promote plain AWFF as a
+  rotor-loss solution. Use the current accepted LinearMPC online
+  fault-allocation branch for downstream prep, and rerun the two plain
+  rotor1-loss scenarios only if report wording needs refreshed baseline
+  comparison after clean MWORKS preflight.
 
 Checks:
 
@@ -5387,12 +5540,12 @@ Current conclusion:
 
 - Matrix status is `ready_with_accepted_candidates`.
 - It covers `11` pure rotor1_loss15 single-UAV scenarios.
-- `4` scenarios are accepted historical candidates; `7` remain
+- `1` scenario is the current accepted candidate; `10` remain
   `needs_iteration_or_unverified`.
 - Best RMSE accepted candidate is
-  `Config/scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml`
-  with controller `l1_fault_allocation_sysblock`, RMSE
-  `0.2443402964122832`, and health `55.81662285060871`.
+  `Config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml`
+  with controller `linear_mpc_online_fault_allocation_sysblock`, RMSE
+  `0.1675687242474305`, and health `62.536015057605155`.
 - Plain PID/AWFF rows remain baseline/negative evidence and must not be
   promoted as passing robustness evidence.
 
@@ -5437,17 +5590,19 @@ Outputs:
 
 Current conclusion:
 
-- Gate status is `blocked_by_live_mworks_gate`.
-- Gate decision is `do_not_enter_multi_uav_yet`.
+- Current 2026-06-12 gate status is `single_uav_gate_ready_for_ue_prep`.
+- Gate decision is `prepare_ue_replay_inputs_directly_when_user_authorized`.
 - The single-UAV direction is not empty: 13-scenario batch has `11` accepted
-  rows, the rotor1-loss candidate matrix has `4` accepted historical
-  allocation/isolation candidates, and the best RMSE accepted candidate is
-  `l1_fault_allocation_sysblock`.
-- The blocker is the current live MWORKS gate:
-  `upgrade_model_surface_blocked`. No live rerun was attempted.
-- Before multi-UAV work: clear the GUI blocker, collect fresh clean preflight
-  evidence, rerun any selected single-UAV gates required for current wording or
-  controller selection, then PMO/report review decides transition language.
+  rows, the rotor1-loss candidate matrix has `1` current accepted
+  allocation/isolation candidate, and the best/current accepted candidate is
+  `linear_mpc_online_fault_allocation_sysblock`.
+- Plain PID and plain AWFF rotor1-loss rows remain `needs_iteration` evidence;
+  the gate keeps them visible as negative/baseline rows while allowing UE
+  replay/render input preparation from the accepted LinearMPC online
+  fault-allocation candidate.
+- Before multi-UAV work: do not treat this as final report acceptance or
+  formation readiness. Rerun the two plain PID/AWFF rotor1_loss15 rows only if
+  report wording needs refreshed baseline comparison.
 
 Checks:
 
@@ -5459,3 +5614,1184 @@ Next local queue item:
 - Pause at the pre-multi-UAV boundary unless the user clears/authorizes the
   MWORKS live gate. If continuing offline only, restrict work to source-level
   preparation for the selected single-UAV rerun and do not enter formation.
+
+### 2026-06-14 Gazebo ROS2 Sensor Local-Map Smoke Scaffold
+
+Completed the current project-owned Gazebo+ROS2 single-UAV sensor/local-map
+smoke scaffold up to the WSL dependency boundary. This slice did not install
+WSL/system packages, run Gazebo, start ROS2 nodes, open RViz, run FAST-LIO,
+publish setpoints, start UE, or claim planner/controller/closed-loop success.
+
+Logical sub-agent split used in this single thread:
+
+- Planner slice: keep the current goal before multi-UAV and split MWORKS,
+  UE, and ROS2/Gazebo evidence without visible-thread dispatch.
+- ROS2/Gazebo reviewer: read-only static audit of scenario, SDF, runner,
+  checker, local-map adapter, and current result files.
+- UE reviewer: read-only check that UE truth/mapping artifacts support the
+  Gazebo+ROS2 sensor/local-map lane but do not prove runtime success.
+- MWORKS reviewer: read-only check that the current accepted rotor1-loss
+  candidate can feed downstream prep but does not close the full batch.
+- Main executor: script/doc/test updates, WSL plan-only dependency probe, and
+  blocked preflight refresh.
+
+Outputs:
+
+- `Config/scenarios/system/sunray150_gazebo_ros2_smoke.yaml`
+- `Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh`
+- `Scripts/gazebo/check_gazebo_ros2_dependencies.sh`
+- `Scripts/gazebo/setup_gazebo_ros2_dependencies.sh`
+- `Scripts/ros/pointcloud_to_local_voxel_map_ros2.py`
+- `Scripts/quality/check_gazebo_ros2_smoke_contract.py`
+- `Scripts/quality/build_gazebo_ros2_runtime_status.py`
+- `Scripts/tests/test_gazebo_ros2_smoke_contract.py`
+- `Scripts/tests/test_pointcloud_to_local_voxel_map_core.py`
+- `Results/gazebo_ros2/dependency_check/DEPENDENCY_STATUS.json`
+- `Results/gazebo_ros2/dependency_check/DEPENDENCY_SETUP_PLAN.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/PREFLIGHT.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/TOPIC_CONTRACT.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/RUNTIME_STATUS.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/BLOCKER.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/README.md`
+- `Docs/Workflows/ros2_runtime_setup.md`
+- `Docs/Index/simulation_model_structure_index.md`
+- `Docs/Workflows/mainline_operations_board.md`
+
+Current conclusion:
+
+- Static contract status is passing for the Gazebo world/model/sensor fragment,
+  ROS2 topics, local PointCloud2-to-voxel/grid adapter, runner, dependency
+  checker, and runtime-status gate.
+- The scenario now declares `truth_pose` as
+  `optional_truth_topic_not_in_smoke_gate`, and the local-map adapter declares
+  `input_frame_policy=transform_input_frame_to_map_with_tf` with
+  `runtime_frame_gate=same_run_pointcloud2_header_frame_id_plus_tf_chain_to_map_required`.
+- The guarded setup script is plan-only by default. It may install
+  `gz-fortress`, `ros-humble-ros-gz-bridge`, and `ros-humble-ros-gz-sim` only
+  when both `EXECUTE=1` and `MOSIM_ALLOW_WSL_PACKAGE_INSTALL=1` are present.
+- Current runtime preflight remains blocked by
+  `missing_command:gz`, `missing_ros2_package:ros_gz_bridge`, and
+  `missing_ros2_executable:ros_gz_bridge/parameter_bridge`.
+- No Gazebo runtime, ROS2 topic sample, PointCloud2 evidence, local voxel/grid
+  runtime output, FAST-LIO localization, planner handoff, closed loop,
+  controller performance, or multi-UAV readiness is claimed.
+
+Checks:
+
+- `python -m pytest Scripts/tests/test_gazebo_ros2_smoke_contract.py Scripts/tests/test_pointcloud_to_local_voxel_map_core.py -q`
+- `python Scripts/quality/check_gazebo_ros2_smoke_contract.py`
+- `python -m py_compile Scripts/quality/check_gazebo_ros2_smoke_contract.py Scripts/quality/build_gazebo_ros2_runtime_status.py Scripts/ros/pointcloud_to_local_voxel_map_ros2.py`
+- `wsl bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash -n Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh && bash -n Scripts/gazebo/check_gazebo_ros2_dependencies.sh && bash -n Scripts/gazebo/setup_gazebo_ros2_dependencies.sh'`
+- `wsl bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/gazebo/setup_gazebo_ros2_dependencies.sh'`
+- `wsl bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/gazebo/check_gazebo_ros2_dependencies.sh'`
+- `wsl bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && DRY_RUN=1 bash Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh'`
+
+Next local queue item:
+
+- Continue UE truth/export/replay validation that can run without opening UE
+  editor/runtime. If moving the Gazebo lane forward, obtain an explicit WSL
+  package-install authorization, run the guarded setup, rerun dependency check,
+  then run the bounded Gazebo+ROS2 sensor/local-map smoke gate.
+
+### 2026-06-15 Gazebo ROS2 Sensor Local-Map Runtime Smoke Passed
+
+Completed the bounded Gazebo+ROS2 single-UAV sensor/local-map runtime smoke.
+This checkpoint supersedes the 2026-06-14 dependency-blocked smoke-scaffold
+status for the Gazebo sensor/local-map gate only.
+
+Logical sub-agent split used in this single thread:
+
+- Planner slice: keep the goal before multi-UAV and avoid claiming FAST-LIO,
+  planner, controller handoff, or closed-loop behavior from a smoke result.
+- ROS2/Gazebo runtime slice: run the bounded WSL smoke with Gazebo, ros_gz
+  bridge, actuator bridge, local-map adapter, topic samples, topic rates,
+  static TF, and TF-chain checks.
+- Checker slice: update the contract checker/tests so the Gazebo scan topic
+  and ROS2 `PointCloud2` topic are separated.
+- Boundary slice: record the YunZong/Sunray reference reuse boundary without
+  wholesale-copying its ROS1 launch/MAVROS/PX4/Gazebo Classic stack.
+
+Evidence:
+
+- `Results/gazebo_ros2/dependency_check/DEPENDENCY_STATUS.json`
+- `Results/gazebo_ros2/dependency_check/DEPENDENCY_SETUP_RESULT.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/RUNTIME_STATUS.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/RUN_MANIFEST.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/topic_mosim_gazebo_lidar_points_points_once.txt`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/topic_mosim_local_occupancy_voxels_once.txt`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/topic_tf_static_once.txt`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/README.md`
+
+Current conclusion:
+
+- Dependency status is `ready`; the selected Gazebo CLI is Fortress
+  `ign gazebo` and `ros_gz_bridge` is available from `/opt/ros/humble`.
+- Runtime status is `runtime_smoke_passed`.
+- LiDAR `PointCloud2` is `/mosim/gazebo/lidar_points/points`, frame
+  `sunray150/base_link/mid360_lidar`, with `11520` sampled points.
+- Local voxel output is `/mosim/local_occupancy_voxels`, frame `map`, with
+  `401` sampled points.
+- Local grid output is `/mosim/local_occupancy_grid`, frame `map`, size
+  `120x120`.
+- Static TF contains `map -> sunray150/base_link/mid360_lidar`.
+- Measured rates are approximately IMU `198.647Hz`, LiDAR `9.954Hz`, and
+  local voxels `4.557Hz`.
+- This does not prove FAST-LIO localization, planner handoff, controller
+  handoff, closed-loop behavior, controller performance, or multi-UAV
+  readiness.
+
+Checks:
+
+- `python Scripts/quality/check_gazebo_ros2_smoke_contract.py`
+- `python -m pytest Scripts/tests/test_gazebo_ros2_smoke_contract.py Scripts/tests/test_pointcloud_to_local_voxel_map_core.py Scripts/tests/test_controller_output_to_gazebo_actuators.py -q`
+- `wsl bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && LIBGL_ALWAYS_SOFTWARE=1 RUN_GAZEBO=1 RUN_ROS2_BRIDGE=1 RUN_ACTUATOR_BRIDGE=1 RUN_LOCAL_MAP=1 RUN_TOPIC_CHECK=1 RUN_RATE_CHECK=1 RUN_STATIC_TF=1 RUN_TF_CHECK=1 TIMEOUT_SECONDS=20 bash Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh'`
+
+Next local queue item:
+
+- Use the passed Gazebo+ROS2 smoke as the foundation for the next bounded
+  slice: either Sunray/YunZong-informed FAST-LIO/planner integration or
+  controller-output handoff into Gazebo actuators. Keep each as a separate gate.
+
+### 2026-06-15 Gazebo ROS2 Actuator Handoff Runtime Smoke Passed
+
+Completed the bounded Gazebo+ROS2 actuator-handoff gate as a separate runtime
+profile from the sensor/local-map smoke. This slice started Gazebo headless and
+`ros_gz_bridge`, generated one `ControllerOutput`-derived actuator payload,
+published a short bounded actuator command burst, and recorded both ROS2 and
+Gazebo actuator-topic echoes. It did not run FAST-LIO, RViz, planner, UE,
+MWORKS, setpoint publication, a flight-control state machine, or closed-loop
+control.
+
+Logical sub-agent split used in this single thread:
+
+- Planner slice: keep actuator handoff separate from sensor/local-map and from
+  future planner/controller gates.
+- ROS2/Gazebo runtime slice: publish one bounded normalized-motor-speed
+  payload and echo both ROS2 and Gazebo actuator topics.
+- Checker slice: extend the runtime status builder, scenario contract checker,
+  and tests so the actuator profile requires matching velocity arrays.
+- Boundary slice: preserve that topic handoff is not hover, flight,
+  controller performance, planner readiness, or closed-loop evidence.
+
+Evidence:
+
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_actuator_handoff/RUNTIME_STATUS.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_actuator_handoff/RUN_MANIFEST.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_actuator_handoff/controller_actuator_command.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_actuator_handoff/topic_sunray150_gazebo_command_motor_speed_once.txt`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_actuator_handoff/gz_topic_sunray150_gazebo_command_motor_speed_once.txt`
+
+Current conclusion:
+
+- `RUNTIME_STATUS.gate_profile` is `actuator_handoff`.
+- `RUNTIME_STATUS.gate_passed` is `true`.
+- Expected velocity is `[4000, 4000, 4000, 4000]`.
+- ROS2 actuator echo and Gazebo actuator echo both match the expected velocity
+  array.
+- The sensor/local-map gate remains separately passed under
+  `Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/`.
+- This proves bounded actuator-topic visibility only. It does not prove
+  flight, hover, authoritative command acknowledgement, closed-loop behavior,
+  controller performance, planner readiness, FAST-LIO localization, or
+  multi-UAV readiness.
+
+Checks:
+
+- `python Scripts/quality/check_gazebo_ros2_smoke_contract.py`
+- `python -m pytest Scripts/tests/test_gazebo_ros2_smoke_contract.py Scripts/tests/test_pointcloud_to_local_voxel_map_core.py Scripts/tests/test_controller_output_to_gazebo_actuators.py -q`
+- `wsl bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && LIBGL_ALWAYS_SOFTWARE=1 RESULT_DIR=Results/gazebo_ros2/sunray150_gazebo_ros2_actuator_handoff RUNTIME_GATE_PROFILE=actuator_handoff RUN_GAZEBO=1 RUN_ROS2_BRIDGE=1 RUN_ACTUATOR_BRIDGE=1 RUN_CONTROLLER_COMMAND=1 RUN_ACTUATOR_COMMAND_CHECK=1 RUN_LOCAL_MAP=0 RUN_TOPIC_CHECK=0 RUN_RATE_CHECK=0 RUN_STATIC_TF=0 RUN_TF_CHECK=0 TIMEOUT_SECONDS=20 bash Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh'`
+
+Next local queue item:
+
+- Move to the next bounded pre-multi-UAV ROS2/Gazebo slice: either a
+  Sunray/YunZong-informed FAST-LIO/planner integration probe, or a real
+  controller-node handoff gate. Keep setpoint publication, planner readiness,
+  and closed-loop claims out of scope until their own evidence gates exist.
+
+### 2026-06-15 Gazebo ROS2 ControllerOutput Node Handoff Passed
+
+Completed the stricter bounded `ControllerOutput` node handoff gate. This
+slice started Gazebo headless and `ros_gz_bridge`, published a short
+`mosim_msgs/msg/ControllerOutput` fixture on
+`/mosim/sunray150/controller_output`, consumed it through
+`Scripts/ros/controller_output_to_gazebo_actuators_node.py`, and recorded
+matching ROS2 and Gazebo actuator-topic echoes. It did not run FAST-LIO, RViz,
+planner, UE, MWORKS, setpoint publication, a flight-control state machine,
+stale-command watchdog, or closed-loop control.
+
+Logical sub-agent split used in this single thread:
+
+- Planner slice: require the MoSim-owned `ControllerOutput` ABI before any
+  upstream Gazebo/Sunray command path can be treated as reusable.
+- ROS2/Gazebo runtime slice: run one bounded fixture-to-node-to-actuator echo
+  path with normalized motor speed `[0.5, 0.5, 0.5, 0.5]`.
+- Checker slice: validate that the runtime status distinguishes
+  `actuator_handoff` from `controller_output_node_handoff`.
+- Boundary slice: record that YunZong/Sunray assets can accelerate model,
+  sensor, world, RViz, planner, and formation work, but command authority stays
+  behind MoSim adapters and gates.
+
+Evidence:
+
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_controller_output_node_handoff/RUNTIME_STATUS.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_controller_output_node_handoff/RUN_MANIFEST.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_controller_output_node_handoff/controller_output_adapter_node.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_controller_output_node_handoff/controller_output_fixture.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_controller_output_node_handoff/topic_mosim_sunray150_controller_output_once.txt`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_controller_output_node_handoff/topic_sunray150_gazebo_command_motor_speed_once.txt`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_controller_output_node_handoff/gz_topic_sunray150_gazebo_command_motor_speed_once.txt`
+
+Current conclusion:
+
+- `RUNTIME_STATUS.gate_profile` is `controller_output_node_handoff`.
+- `RUNTIME_STATUS.gate_passed` is `true`.
+- The fixture command is `[0.5, 0.5, 0.5, 0.5]` with command type
+  `normalized_motor_speed`.
+- The adapter node status is `published`.
+- The expected actuator velocity is `[4000, 4000, 4000, 4000]`.
+- ROS2 actuator echo and Gazebo actuator echo both match the expected velocity
+  array.
+- This proves bounded ROS2 message/node/topic handoff only. It does not prove
+  hover, flight, authoritative command acknowledgement, closed-loop behavior,
+  controller performance, planner readiness, FAST-LIO localization, or
+  multi-UAV readiness.
+
+Checks:
+
+- `python Scripts/quality/check_gazebo_ros2_smoke_contract.py`
+- `python -m pytest Scripts/tests/test_gazebo_ros2_smoke_contract.py Scripts/tests/test_controller_output_to_gazebo_actuators.py Scripts/tests/test_pointcloud_to_local_voxel_map_core.py -q`
+- `wsl bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && LIBGL_ALWAYS_SOFTWARE=1 RESULT_DIR=Results/gazebo_ros2/sunray150_gazebo_ros2_controller_output_node_handoff RUNTIME_GATE_PROFILE=controller_output_node_handoff RUN_GAZEBO=1 RUN_ROS2_BRIDGE=1 RUN_ACTUATOR_BRIDGE=1 RUN_CONTROLLER_OUTPUT_NODE=1 RUN_CONTROLLER_OUTPUT_FIXTURE=1 RUN_ACTUATOR_COMMAND_CHECK=1 RUN_CONTROLLER_COMMAND=0 RUN_LOCAL_MAP=0 RUN_TOPIC_CHECK=0 RUN_RATE_CHECK=0 RUN_STATIC_TF=0 RUN_TF_CHECK=0 BUILD_MOSIM_ROS2_MSGS=0 TIMEOUT_SECONDS=20 bash Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh'`
+
+Next local queue item:
+
+- Use the passed FAST-LIO/planner input-shape gate as the foundation for the
+  next bounded single-UAV runtime slice: first try a real ROS2-compatible
+  FAST-LIO localization gate if the local `spark_fast_lio` candidate can be
+  connected to the current Gazebo MID360/IMU topics; otherwise write the exact
+  blocker and move to planner handoff without setpoint publication. Keep
+  setpoint publication, planner readiness, and closed-loop claims out of scope
+  until their own evidence gates exist.
+
+### 2026-06-15 Gazebo ROS2 FAST-LIO/Planner Input Gate Passed
+
+Completed the bounded FAST-LIO/planner input-shape gate as a separate runtime
+profile from the sensor/local-map, actuator-handoff, and ControllerOutput-node
+handoff profiles. This slice started Gazebo headless, `ros_gz_bridge`, and the
+project-owned FAST-LIO/planner input adapter. It did not launch FAST-LIO,
+RViz, a planner, UE, MWORKS, setpoint publication, a flight-control state
+machine, or closed-loop control.
+
+Logical sub-agent split used in this single thread:
+
+- Planner slice: keep input-shape evidence separate from real localization,
+  planner readiness, command acknowledgement, and closed-loop claims.
+- ROS2/Gazebo runtime slice: bridge Gazebo MID360 LiDAR/IMU into MoSim and
+  Sunray-compatible FAST-LIO/planner input topics.
+- Checker slice: validate the scenario contract, runtime status builder, and
+  adapter Python syntax after the report-write throttling fix.
+- Boundary slice: record that this gate proves topic/frame/rate/input-shape
+  visibility only.
+
+Evidence:
+
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_fastlio_planner_input/RUNTIME_STATUS.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_fastlio_planner_input/RUN_MANIFEST.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_fastlio_planner_input/fastlio_planner_input_adapter.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_fastlio_planner_input/ros2_topic_list.txt`
+
+Current conclusion:
+
+- `RUNTIME_STATUS.gate_profile` is `fastlio_planner_input`.
+- `RUNTIME_STATUS.gate_passed` is `true`.
+- Gazebo LiDAR and IMU are present at `/mosim/gazebo/lidar_points/points` and
+  `/mosim/gazebo/imu`.
+- FAST-LIO-compatible outputs are present at `/mosim/fastlio/livox/lidar`,
+  `/mosim/fastlio/livox/imu`, `/uav1/livox/lidar`, and `/uav1/livox/imu`.
+- Planner-compatible input-shape outputs are present at `/uav1/global_points`,
+  `/mosim/planner/global_points`, `/uav1/sunray/gazebo_pose`, and
+  `/mosim/planner/odom`.
+- Point clouds are nonempty with `11520` points, the same-run TF chain
+  `map -> sunray150/base_link/mid360_lidar` is verified, and adapter TF lookup
+  failures are `0`.
+- FAST-LIO IMU republish rate is about `198.533Hz`, and FAST-LIO LiDAR
+  republish rate is about `9.931Hz`.
+- This proves bounded input-shape visibility only. It does not prove FAST-LIO
+  localization, planner readiness, planner output validity, setpoint
+  publication, command acknowledgement, closed-loop behavior, controller
+  performance, or multi-UAV readiness.
+
+Checks:
+
+- `python Scripts/quality/check_gazebo_ros2_smoke_contract.py`
+- `python -m pytest Scripts/tests/test_gazebo_ros2_smoke_contract.py -q`
+- `python -m py_compile Scripts/ros/gazebo_fastlio_planner_input_adapter.py Scripts/quality/build_gazebo_ros2_runtime_status.py Scripts/quality/check_gazebo_ros2_smoke_contract.py`
+- `wsl.exe bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim; RESULT_DIR=Results/gazebo_ros2/sunray150_gazebo_ros2_fastlio_planner_input RUNTIME_GATE_PROFILE=fastlio_planner_input RUN_GAZEBO=1 RUN_ROS2_BRIDGE=1 RUN_FASTLIO_PLANNER_INPUT_ADAPTER=1 RUN_TOPIC_CHECK=1 RUN_RATE_CHECK=1 RUN_STATIC_TF=1 RUN_TF_CHECK=1 bash Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh'`
+
+Fixes made during this slice:
+
+- `Scripts/ros/gazebo_fastlio_planner_input_adapter.py` now throttles report
+  JSON/trace writes to about once per second plus a final write, instead of
+  writing on every IMU callback.
+- `Config/gazebo/worlds/factory_minimal.sdf` and
+  `Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh` use the Fortress-friendly
+  Ogre render path for WSL headless Gazebo, avoiding the observed Ogre2 crash.
+
+Next local queue item:
+
+- Try one real ROS2-compatible FAST-LIO localization gate if the local
+  `spark_fast_lio` candidate can be connected to this Gazebo lane. If not,
+  write the exact blocker and move to planner handoff without setpoint
+  publication.
+
+### 2026-06-14 UE Truth Replay Aggregate Contract
+
+Completed the UE truth/export/replay file-level aggregate gate for the current
+single-UAV pre-multi-UAV line. This slice did not start UE, MWORKS, ROS2,
+Gazebo, RViz, FAST-LIO, sockets, GUI actions, setpoint publication, or WSL
+package installation.
+
+Logical sub-agent split used in this single thread:
+
+- Planner slice: keep the current goal before multi-UAV and connect MWORKS
+  accepted-run evidence to UE truth/replay and ROS2/Gazebo prep.
+- UE contract checker slice: validate Factory and Derelict scene truth,
+  occupancy, replay CSV, local known-map frames, local plan frames, LiDAR point
+  frames, FAST-LIO replay inputs, and runtime bundle claim boundaries.
+- Accepted-run handoff slice: validate the accepted MWORKS run replay bundle,
+  local UDP loopback, and bounded UE runtime-ingest summary without treating
+  those as command echo or controller-performance evidence.
+- Boundary slice: preserve that static/file readiness does not prove UE
+  runtime success, Gazebo runtime success, PointCloud2 runtime evidence,
+  FAST-LIO localization, planner readiness, closed loop, material acceptance,
+  or multi-UAV readiness.
+
+Outputs:
+
+- `Scripts/quality/check_ue_truth_replay_contract.py`
+- `Scripts/tests/test_ue_truth_replay_contract.py`
+- `Results/unreal_scene_mapping/UE_TRUTH_REPLAY_CONTRACT_CHECK.json`
+- `Results/unreal_scene_mapping/UE_TRUTH_REPLAY_CONTRACT_CHECK.md`
+- `Docs/Index/simulation_model_structure_index.md`
+- `Docs/Workflows/mainline_operations_board.md`
+- `Docs/Workflows/single_thread_longrun_execution_queue_20260610.md`
+
+Current conclusion:
+
+- The aggregate contract status is
+  `ue_truth_replay_static_ready_runtime_blocked_or_degraded`.
+- Factory scene truth/replay contract passes with `34` path cells and `1934`
+  merged LiDAR points; Derelict scene truth/replay contract passes with `45`
+  path cells and `2068` merged LiDAR points.
+- The accepted MWORKS run handoff remains
+  `accepted_mworks_run_replay_contract_ready` for
+  `linear_mpc_online_fault_allocation_sysblock`.
+- Runtime readiness is still `false`; the current UE/RViz runtime blocker is
+  `unreal_editor_listener_unavailable`.
+- This result is a file-level contract check. It does not prove runtime
+  success, live command echo acknowledgement, ROS2/Gazebo topic evidence,
+  controller performance from UE, final visual/material acceptance, or
+  multi-UAV readiness.
+
+Checks:
+
+- `python Scripts/tests/test_ue_truth_replay_contract.py`
+- `python -m pytest Scripts/tests/test_ue_truth_replay_contract.py -q`
+- `python Scripts/quality/check_ue_truth_replay_contract.py --output-json Results/unreal_scene_mapping/UE_TRUTH_REPLAY_CONTRACT_CHECK.json --output-md Results/unreal_scene_mapping/UE_TRUTH_REPLAY_CONTRACT_CHECK.md`
+- `python -m py_compile Scripts/quality/check_ue_truth_replay_contract.py Scripts/tests/test_ue_truth_replay_contract.py`
+
+Next local queue item:
+
+- For ROS2+Gazebo, keep the lane blocked until WSL has `gz` and
+  `ros_gz_bridge` through an explicitly authorized package-install action, then
+  rerun the bounded sensor/local-map smoke gate.
+- For UE, the next executable live slice remains close/zoomed Sunray150
+  visual-review evidence or a seven-artifact command-echo probe, but neither is
+  required to use the current file-level truth/replay contract as prep input.
+
+### 2026-06-14 UE Truth To Local Voxel Offline Fixture
+
+Completed an offline/core-only bridge from existing UE scene-truth LiDAR frames
+to the ROS2/Gazebo local voxel-map adapter logic. This slice did not start UE,
+MWORKS, ROS2, Gazebo, RViz, FAST-LIO, sockets, GUI actions, setpoint
+publication, or WSL package installation.
+
+Logical sub-agent split used in this single thread:
+
+- Planner slice: continue the single-UAV pre-multi-UAV goal without visible
+  department dispatch.
+- Data-shape slice: pair `lidar_point_frames.jsonl` with
+  `local_known_map_frames.jsonl` for Factory and Derelict.
+- Adapter-core slice: translate UE world points by local frame origin and
+  exercise `pointcloud_to_local_voxel_map_ros2.py` voxel/grid core.
+- Boundary slice: preserve that offline fixture success is not ROS2/Gazebo
+  runtime, TF, FAST-LIO, planner, controller, or multi-UAV evidence.
+
+Outputs:
+
+- `Scripts/quality/build_ue_truth_local_voxel_map_fixture.py`
+- `Scripts/tests/test_ue_truth_local_voxel_map_fixture.py`
+- `Results/gazebo_ros2/offline_ue_truth_local_voxel_map_fixture/UE_TRUTH_LOCAL_VOXEL_MAP_FIXTURE.json`
+- `Results/gazebo_ros2/offline_ue_truth_local_voxel_map_fixture/UE_TRUTH_LOCAL_VOXEL_MAP_FIXTURE.md`
+- `Results/gazebo_ros2/offline_ue_truth_local_voxel_map_fixture/factoryenvironmentcollect/local_voxel_map_fixture_frames.jsonl`
+- `Results/gazebo_ros2/offline_ue_truth_local_voxel_map_fixture/derelictcorridormegascans/local_voxel_map_fixture_frames.jsonl`
+- `Docs/Index/simulation_model_structure_index.md`
+- `Docs/Workflows/ros2_runtime_setup.md`
+- `Docs/Workflows/mainline_operations_board.md`
+
+Current conclusion:
+
+- Fixture status is `offline_ue_truth_local_voxel_fixture_ready`.
+- Factory produced `34` local frames, `5474` source points, and mean voxel
+  count `51.206`.
+- Derelict produced `45` local frames, `7761` source points, and mean voxel
+  count `67.956`.
+- The coordinate transform is explicit:
+  `point_local_m = point_ue_world_m - local_frame_origin_m`; no rotation, TF,
+  ROS2 message transport, Gazebo sensor, or planner state is implied.
+- This verifies a useful offline regression path for the local-map adapter
+  core, but the live ROS2+Gazebo gate remains blocked by missing `gz` and
+  `ros_gz_bridge`.
+
+Checks:
+
+- `python Scripts/quality/build_ue_truth_local_voxel_map_fixture.py`
+- `python -m pytest Scripts/tests/test_ue_truth_local_voxel_map_fixture.py -q`
+
+Next local queue item:
+
+- At this point the remaining Gazebo+ROS2 progression is an infrastructure
+  gate: authorize and run the guarded WSL package setup for `gz` and
+  `ros_gz_bridge`, then run the bounded sensor/local-map smoke gate.
+
+### 2026-06-15 Gazebo ROS2 FAST-LIO Truth And Hover-Hold Pre-Acceptance Passed
+
+Synchronized the current single-UAV runtime state after two additional
+bounded gates had passed: Spark FAST-LIO odometry versus same-run Gazebo truth
+and Gazebo truth-feedback hover-hold pre-acceptance. This slice updated the
+operating board, ROS2 runtime workflow, model-structure index, and this queue.
+It did not dispatch visible departments, start multi-UAV implementation, or
+claim final planner/closed-loop/controller-performance acceptance.
+
+Sub-agent plan:
+
+| Role | Used | Scope |
+|---|---|---|
+| Main executor | yes | Critical path, evidence verification, docs synchronization, targeted checks. |
+| Disposable explorer | unavailable | Attempted for sidecar ROS2/Gazebo next-gate review, but the tool returned `agent thread limit reached`. Work stayed local. |
+| Visible department threads | no | CoAgent visible dispatch remains paused by current user direction. |
+
+Evidence:
+
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_spark_fastlio_truth_eval/RUNTIME_STATUS.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_spark_fastlio_truth_eval/FASTLIO_TRUTH_ERROR_EVAL.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_spark_fastlio_truth_eval/fastlio_runtime/FASTLIO_RUNTIME_RECORDING.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_spark_fastlio_truth_eval/GAZEBO_TRUTH_POSE_RECORDING.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_hover_hold_closed_loop_pre_acceptance_005/RUNTIME_STATUS.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_hover_hold_closed_loop_pre_acceptance_005/RUN_MANIFEST.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_hover_hold_closed_loop_pre_acceptance_005/GAZEBO_HOVER_HOLD_CLOSED_LOOP_EVAL.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_hover_hold_closed_loop_pre_acceptance_005/hover_hold_controller.json`
+
+Current conclusion:
+
+- FAST-LIO truth-error gate status is `truth_error_passed`.
+- FAST-LIO truth-error matched `53` odometry/truth samples.
+- FAST-LIO direct RMSE is `0.042778m`; origin-aligned RMSE is `0.004144m`.
+- FAST-LIO warning `absolute_timestamp_overlap_missing` remains expected for
+  this bounded runner because the pass/fail gate uses relative-start alignment.
+- Hover-hold gate status is `runtime_smoke_passed`.
+- Hover-hold recorded `275` controller samples, `275` adapter publishes, and
+  `912` truth samples after synthetic-prefix filtering.
+- Hover-hold final z error is `0.353641m`; max z error is `0.705901m`; max XY
+  distance is `0m`; max tilt is `0rad`.
+- These results are single-UAV bounded runtime evidence only. They do not
+  prove planner readiness, trajectory tracking, final closed-loop acceptance,
+  competition controller performance, or multi-UAV readiness.
+
+Next local queue item:
+
+- Consolidate report-ready single-UAV evidence, then decide whether the next
+  executable slice is a guarded planner-output/setpoint gate or UE/RViz visual
+  mapping review. Do not publish unguarded setpoints and do not enter multi-UAV
+  implementation.
+
+### 2026-06-15 Single-UAV Evidence Bundle Ready
+
+Refreshed the sensor/local-map smoke into an immutable result directory and
+rebuilt the report-ready single-UAV evidence bundle. This removed the earlier
+status drift where the legacy `sunray150_gazebo_ros2_smoke` directory had a
+passing measured stdout log but its current `RUNTIME_STATUS.json` had later
+been overwritten by a dry-run/preflight artifact.
+
+Sub-agent plan:
+
+| Role | Used | Scope |
+|---|---|---|
+| Main executor | yes | Critical path, immutable runtime refresh, bundle update, tests, and docs synchronization. |
+| Disposable explorer | unavailable | Attempted for a read-only evidence-boundary review, but the native tool returned `agent thread limit reached`. Work stayed local. |
+| Visible department threads | no | CoAgent visible dispatch remains paused by current user direction. |
+
+Evidence:
+
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_sensor_local_map_refresh_20260615_001/RUNTIME_STATUS.json`
+- `Results/gazebo_ros2/sunray150_gazebo_ros2_sensor_local_map_refresh_20260615_001/RUN_MANIFEST.json`
+- `Results/gazebo_ros2/single_uav_evidence_bundle_20260615/SINGLE_UAV_EVIDENCE_BUNDLE.json`
+- `Results/gazebo_ros2/single_uav_evidence_bundle_20260615/README.md`
+- `Results/gazebo_ros2/single_uav_evidence_bundle_20260615/figures/`
+- `Scripts/quality/build_single_uav_evidence_bundle.py`
+- `Scripts/tests/test_single_uav_evidence_bundle.py`
+
+Current conclusion:
+
+- Bundle status is `single_uav_evidence_bundle_ready`.
+- `status_drift.drifted_gates=[]` and `status_drift.not_passed_gates=[]`.
+- The sensor/local-map gate now selects
+  `Results/gazebo_ros2/sunray150_gazebo_ros2_sensor_local_map_refresh_20260615_001/RUNTIME_STATUS.json`
+  as the current passed artifact.
+- Refreshed sensor/local-map evidence records LiDAR `11520` points, local
+  voxels `557` points, local grid `120x120`, TF
+  `map -> sunray150/base_link/mid360_lidar`, IMU about `191.742Hz`, LiDAR
+  about `9.568Hz`, and local voxels about `4.795Hz`.
+- This is a report/evidence index and bounded runtime refresh. It still does
+  not prove `planner_ready`, trajectory tracking, final `closed_loop`
+  acceptance, competition controller performance from UE/Gazebo, final
+  material acceptance, or multi-UAV readiness.
+
+Checks:
+
+- `python Scripts/quality/build_single_uav_evidence_bundle.py`
+- `python -m py_compile Scripts/quality/build_single_uav_evidence_bundle.py Scripts/tests/test_single_uav_evidence_bundle.py`
+- `python -m pytest Scripts/tests/test_single_uav_evidence_bundle.py -q`
+
+Next local queue item:
+
+- Continue single-UAV closure hardening with the smallest executable gap:
+  either guarded planner-output/setpoint preflight that cannot command the
+  plant, or UE close/zoomed Sunray150 visual-review evidence. Do not enter
+  multi-UAV implementation.
+
+### 2026-06-17 Single-UAV Competition Closure Execution Rebased
+
+Current user direction keeps visible-thread dispatch paused and asks this
+conversation to execute the non-UE, non-multi-UAV competition path directly:
+first preserve/verify MWORKS controller simulation evidence, then complete the
+single-UAV Gazebo/ROS2 deployment chain through figure-8 tracking and static
+obstacle avoidance evidence.
+
+Logical sub-agent plan stays inline in this single thread:
+
+| Role | Used | Scope |
+|---|---|---|
+| Planner | yes | Keep the long goal and next executable gate aligned with the user's competition scope. |
+| MWORKS sentinel | yes | Treat prior controller evidence as current input unless wording expands; if live MWORKS work is needed, stop on login/license/authorization/GUI-error and use bounded user-authorized recovery only after official-window evidence. Solver failures that present as activation/license problems are infrastructure blockers, not model-tuning tasks. |
+| Gazebo/ROS2 executor | yes | Repair current truth-pose capture, rerun sensor/local-map/truth gates, then advance to guarded figure-8 tracking and guarded static-obstacle avoidance. |
+| Checker | yes | Run targeted contract, compile, and runtime gate checks; do not substitute static tests for runtime evidence. |
+| Visible departments | no | CoAgent visible dispatch remains paused by current user direction. |
+
+Current executable state:
+
+- Design boundary is stable: MWORKS remains the competition controller/MIL-SIL
+  authority; Gazebo/ROS2 is the single-UAV system-validation surface for
+  sensors, point cloud, local voxel/grid map, planner handoff, and guarded
+  trajectory/avoidance gates; PX4 is not required for the current competition
+  slice; UE is postponed; multi-UAV implementation is out of scope.
+- The 2026-06-15 bundle remains useful evidence, but it does not close today's
+  figure-8 tracking or static-obstacle avoidance requirement.
+- The current 2026-06-17 truth-pose source is repaired for the light world. The
+  discovered `PosePublisher` model/link topic registers a Gazebo publisher but
+  does not emit samples in the current light world, while
+  `/world/sunray150_single_uav_competition_light/state` emits
+  `SerializedStepMap` state samples. The accepted recorder
+  `Scripts/gazebo/capture_gazebo_state_truth_topic.py` records the assembled
+  UAV body pose from that state topic by choosing the entity nearest the
+  accepted initial UAV pose `(0,0,1.2)`. Current evidence is
+  `Results/gazebo_ros2/sunray150_single_uav_competition_light_truth_state_probe_20260617_002/GAZEBO_TRUTH_POSE_RECORDING.json`,
+  with selected entity id `24` and `20` recorded samples. This is truth evidence
+  for same-run comparison, not a final plant closed-loop claim.
+- While `MulticopterMotorModel` remains disabled or replaced by truth/pose
+  feedback, results are scaffold/pre-acceptance. Do not label them final
+  Gazebo plant closed-loop, deployed controller performance, or competition
+  controller-performance evidence.
+
+Next local queue item:
+
+- The combined sensor/local-map/truth gate is currently blocked as an
+  aggregation/runtime-stability gate, not as missing sensor or truth evidence.
+  `_010` recorded truth, LiDAR, local voxel/grid, and TF samples but failed
+  LiDAR rate `4.582<5.0`. `_011` completed cleanly after runner hard-timeout
+  repair but failed LiDAR rate `3.313<5.0` and recorded only one useful truth
+  sample because delayed state-topic capture missed the earlier UAV body state.
+  Preserve `_011` as the current blocker and proceed only with explicit split
+  evidence: latest passed sensor/local-map gate plus independent truth-state
+  probe. The next executable work is to inspect or repair the guarded
+  figure-8/static-obstacle execution entry so it cannot overclaim same-run
+  closed-loop or controller performance while the aggregation gate is blocked.
+
+### 2026-06-18 Single-UAV Long Goal Continuation
+
+Current user correction: LiDAR point cloud is the raw sensor output and is
+primarily localization/mapping input. It must not be described as a planner
+or map artifact. The downstream local occupancy/grid/voxel map is derived
+from point cloud plus pose/TF/local-map processing.
+
+Current long goal remains:
+
+```text
+single-UAV Gazebo/ROS2 chain
+  -> stable bounded hover and basic flight
+  -> raw LiDAR point cloud evidence
+  -> localization/local-map evidence
+  -> trajectory/avoidance evidence
+  -> figure-8 and competition single-UAV scenario evidence
+  -> stop before multi-UAV implementation
+```
+
+Current freshest same-run regression, 2026-06-18:
+
+- `Results/gazebo_ros2/single_uav_goal_continue_same_run_20260618_075113/RUNTIME_STATUS.json` passed with `truth_samples=239`, `tracker_samples=834`, `adapter_published=874`, `rmse_xy_m=0.863938`, `max_xy_error_m=1.203297`, `max_z_error_m=0.591766`, and `truth_min_clearance_m=0.366812`.
+- Same-run map review passed with raw LiDAR `PointCloud2` at `20000` points/frame in frame `sunray150_assembled/base_link/mid360_lidar`, `2569` finite lidar points in the reviewed sample, `356` local occupancy voxels in `map`, and a `120x120` local occupancy grid with `131` occupied cells.
+- This run is the freshest same-run regression evidence for the current single-UAV goal, but it still does not prove final closed_loop acceptance, controller performance, or multi-UAV readiness.
+
+Current default-entry hover repair:
+
+- `Scripts/gazebo/run_sunray150_hover_hold_closed_loop.sh` now defaults to `Config/scenarios/system/sunray150_single_uav_competition_light.yaml`.
+- Verification: `Results/gazebo_ros2/hover_hold_default_entry_after_fix_20260618_080459/RUN_MANIFEST.json` passed with `scene_id=sunray150_single_uav_competition_light` and `vehicle_id=sunray150_assembled`.
+- Hover metrics: `truth_samples=82` after controller-window crop, `final_z_m=1.163734`, `final_abs_z_error_m=0.036266`, `max_abs_z_error_m=0.530641`, `max_xy_distance_m=0.076043`, `max_tilt_rad=0.001183`.
+- This is bounded hover pre-acceptance only and is useful as the clean default-entry regression for the single-UAV lane.
+
+Current pre-multi-UAV same-run review:
+
+- `Results/gazebo_ros2/single_uav_prenulti_same_run_review_20260618_081009/RUNTIME_STATUS.json` passed.
+- Flight metrics: `truth_samples=239`, `tracker_samples=834`, `adapter_published=874`, `rmse_xy_m=0.856613`, `max_xy_error_m=1.200777`, `max_z_error_m=0.582842`, `truth_min_clearance_m=0.376729`.
+- Raw LiDAR: `/mosim/gazebo/lidar_points/points`, frame `sunray150_assembled/base_link/mid360_lidar`, `20000` points/frame, `7631` finite points in the reviewed sample.
+- Local occupancy voxels: `643` finite points in `map`.
+- Local occupancy grid: `120x120` in `map` with `574` occupied cells.
+- This is the best current same-run review bundle for the pre-multi-UAV lane.
+
+Current FAST-LIO/planner-input recheck:
+
+- `Results/gazebo_ros2/fastlio_planner_input_competition_light_recheck_20260618_081645` contains active adapter evidence for the current competition-light scenario.
+- `RUNTIME_STATUS_REBUILT_AFTER_SPARSE_GRAPH_FIX.json` passes after reclassifying sparse ROS graph/empty echo samples as covered by adapter-report evidence when the same run records active counts, TF, source LiDAR, and IMU passthrough evidence.
+- `fastlio_planner_input_adapter.json`: `lidar_received=1323`, `fastlio_lidar_published=1323`, `spark_livox_custom_published=1323`, `planner_global_points_published=1323`, `mosim_planner_global_points_published=1323`, `planner_odom_published=1908`, `mosim_planner_odom_published=1908`, `tf_lookup_failures=0`, `frame_mismatch_count=0`, `review_accumulated_last_point_count=57180`.
+- `fastlio_imu_passthrough.json`: `imu_received=255685`, `fastlio_imu_published=255685`, `sunray_imu_published=255685`, `frame_mismatch_count=0`, `observed_input_average_hz=748.105`.
+- This remains input-surface evidence only, not final FAST-LIO localization success, planner readiness, setpoint authority, actuator command, final closed-loop success, or multi-UAV readiness.
+
+Current terminology correction:
+
+- LiDAR point cloud is the raw radar/sensor output, mainly for localization,
+  SLAM, and mapping inputs.
+- Local occupancy/grid/voxel maps are downstream products derived from point
+  cloud plus pose/TF/local-map processing.
+- Do not describe the point cloud itself as a planner artifact.
+
+Latest verified hover evidence:
+
+- `Results/gazebo_ros2/hover_hold_current_recheck_/GAZEBO_HOVER_HOLD_CLOSED_LOOP_EVAL.json`
+  passed with `final_z_m=0.968090`, `final_abs_z_error_m=0.231910`,
+  `max_xy_distance_m=0.079899`, `max_tilt_rad=0.001038`,
+  `controller_samples=218`, `adapter_published=258`, and
+  `truth_samples=76`.
+- `Results/gazebo_ros2/hover_hold_split_axis_30s_20260618_015039/GAZEBO_HOVER_HOLD_CLOSED_LOOP_EVAL.json`
+  passed with `final_z_m=0.963296`, `final_abs_z_error_m=0.236704`,
+  `max_xy_distance_m=0.082392`, and `max_tilt_rad=0.003862`.
+- `Results/gazebo_ros2/hover_hold_split_axis_12s_20260618_014824/GAZEBO_HOVER_HOLD_CLOSED_LOOP_EVAL.json`
+  passed with `final_z_m=0.968339`, `final_abs_z_error_m=0.231661`,
+  `max_xy_distance_m=0.080526`, and `max_tilt_rad=0.001128`.
+
+Claim boundary: these are bounded truth-feedback hover pre-acceptance gates.
+They prove the current assembled Gazebo plant can remain nearly level with
+small horizontal drift under the guarded controller path, but they do not prove
+competition controller performance, trajectory tracking, final closed-loop
+acceptance, or multi-UAV readiness.
+
+Latest sensor/local-map/truth evidence:
+
+- `Results/gazebo_ros2/sunray150_single_uav_competition_light_sensor_local_map_truth_20260618_header_rate_001/RUNTIME_STATUS.json`
+  passed with raw MID360-like LiDAR `PointCloud2` at `20000` points/frame,
+  frame `sunray150_assembled/base_link/mid360_lidar`, LiDAR header-stamp rate
+  about `10Hz`, local voxels `432` points in `map`, local grid `120x120` in
+  `map`, and same-run TF `map -> sunray150_assembled/base_link/mid360_lidar`.
+- Retained warning:
+  `topic_list_snapshot_empty_but_samples_or_rates_recorded`. This means the
+  `ros2 topic list` snapshot was empty, but direct samples/rate records proved
+  the required sensor/local-map topics. Do not treat it as topic absence.
+
+Latest figure-8/static-obstacle evidence:
+
+- `Results/gazebo_ros2/figure8_current_recheck_20260618_051818/BLOCKER.json`
+  failed because the reference trajectory clearance was below threshold
+  (`0.309794<0.350000`). This is a bad reference-path geometry blocker, not a
+  proof that the current safe controller chain cannot fly.
+- `Results/gazebo_ros2/figure8_current_recheck_safe_20260618_052106/FIGURE8_STATIC_OBSTACLE_GATE.json`
+  passed with 24s duration, period `40s`, `x_amp=0.6m`, `y_amp=0.6m`,
+  `y_offset=0.8m`, altitude `1.0m`, obstacle radius `0.35m`, independent
+  Gazebo truth samples `120`, tracker samples `401`, adapter publishes `441`,
+  `xy_rmse_m=0.698173`, `max_xy_error_m=0.927457`,
+  `max_z_error_m=0.608395`, reference clearance `0.372671m`, and truth
+  clearance `0.619878m`.
+- `Results/gazebo_ros2/figure8_headless_after_gui_blocker_20260618_053129/FIGURE8_STATIC_OBSTACLE_GATE.json`
+  repeated the same safe parameter set headlessly after a GUI blocker and
+  passed with independent Gazebo truth samples `119`, tracker samples `401`,
+  adapter publishes `441`, `xy_rmse_m=0.701829`,
+  `max_xy_error_m=0.926982`, `max_z_error_m=0.608634`, reference clearance
+  `0.372671m`, and truth clearance `0.620884m`.
+- `Results/gazebo_ros2/figure8_gui_review_safe_20260618_052911/BLOCKER.json`
+  is the current visual-review blocker. The same safe parameter set failed
+  under Gazebo GUI review with `max_z_error_m=0.983114`,
+  `truth_clearance_m=-0.049548`, and Gazebo GUI stderr contains an OGRE render
+  shutdown segmentation fault. Treat this as a GUI review/runtime-performance
+  blocker, not as superseding the passing headless control-chain evidence.
+
+Latest headless review artifact:
+
+- `Results/gazebo_ros2/figure8_headless_after_gui_blocker_20260618_053129/review/FIGURE8_REVIEW_MANIFEST.json`
+- `Results/gazebo_ros2/figure8_headless_after_gui_blocker_20260618_053129/review/figure8_truth_reference_topdown.png`
+- `Results/gazebo_ros2/figure8_headless_after_gui_blocker_20260618_053129/review/figure8_altitude_time.png`
+
+These are review aids built from the passing headless run only. They help
+human review of trajectory shape, obstacle clearance, and altitude, but they
+do not replace Gazebo GUI animation acceptance and do not prove final
+competition controller performance, final closed_loop acceptance, UE
+acceptance, or multi-UAV readiness.
+
+Latest full-window headless review artifact:
+
+- `Results/gazebo_ros2/figure8_full_window_headless_safe_20260618_2150/FIGURE8_STATIC_OBSTACLE_GATE.json`
+- `Results/gazebo_ros2/figure8_full_window_headless_safe_20260618_2150/review/FIGURE8_REVIEW_MANIFEST.json`
+- `Results/gazebo_ros2/figure8_full_window_headless_safe_20260618_2150/review/figure8_truth_reference_topdown.png`
+- `Results/gazebo_ros2/figure8_full_window_headless_safe_20260618_2150/review/figure8_altitude_time.png`
+
+This 48s headless full-window run passed after the evaluator cropped truth to
+both tracker and reference elapsed windows. Current gate metrics are:
+`truth_samples=239`, `tracker_samples=834`, `adapter_published=874`,
+`xy_rmse_m=0.858035`, `max_xy_error_m=1.200852`,
+`max_z_error_m=0.60843`, `max_reference_time_delta_s=0.045899`,
+`reference_min_clearance_m=0.37267`, and `truth_min_clearance_m=0.37024`.
+This is stronger than the 24s partial-window review, but remains
+pre-acceptance evidence rather than final controller-performance or GUI
+animation acceptance.
+
+Next executable work:
+
+1. Keep the current assembled Sunray150/light-world route.
+2. Separate visual review from the pass/fail flight gate. The headless
+   figure-8/static-obstacle chain is currently repeatably passing; the GUI
+   review path is unstable and should be treated as a review/performance
+   problem unless a future GUI run also passes.
+3. Next visual work should open a lighter/paused/slow-motion or replay-style
+   Gazebo review that shows upright aircraft attitude, complete assembled
+   geometry, visible propeller rotation, and obstacles without making the GUI
+   process the authority for controller acceptance.
+4. If GUI remains too slow or crashes, keep the blocker with screenshot/log
+   paths and continue with headless evidence only where it does not overclaim
+   visual acceptance.
+5. Do not enter multi-UAV implementation.
+
+### 2026-06-18 Same-Run Raw LiDAR / Local-Map Figure-8 Review
+
+Completed a same-run figure-8/static-obstacle gate that also captured live
+Gazebo raw LiDAR point cloud and downstream local occupancy evidence. This
+slice used the accepted assembled Sunray150/light-world route and kept the
+point cloud / occupancy-map distinction intact:
+
+- raw LiDAR is the sensor output for localization / mapping input
+- local occupancy voxels / grid are downstream products
+
+Outputs:
+
+- `Results/gazebo_ros2/figure8_full_window_same_run_map_review_20260618_001/RUNTIME_STATUS.json`
+- `Results/gazebo_ros2/figure8_full_window_same_run_map_review_20260618_001/FIGURE8_STATIC_OBSTACLE_GATE.json`
+- `Results/gazebo_ros2/figure8_full_window_same_run_map_review_20260618_001/map_review/GAZEBO_ROS2_MAP_REVIEW.json`
+- `Results/gazebo_ros2/figure8_full_window_same_run_map_review_20260618_001/map_review/figures/gazebo_lidar_pointcloud_3d.png`
+- `Results/gazebo_ros2/figure8_full_window_same_run_map_review_20260618_001/map_review/figures/gazebo_local_occupancy_voxels_3d.png`
+- `Results/gazebo_ros2/figure8_full_window_same_run_map_review_20260618_001/map_review/figures/gazebo_local_occupancy_grid_2d.png`
+
+Current conclusion:
+
+- The same-run map-review gate passed.
+- Raw LiDAR frame: `sunray150_assembled/base_link/mid360_lidar`.
+- Raw LiDAR preview contains `20000` points/frame, with `2639` finite points
+  in the rendered sample.
+- Local occupancy voxels: `130` points in `map`.
+- Local occupancy grid: `120x120` in `map`.
+- Figure-8 pre-acceptance metrics remain bounded but not final:
+  `truth_samples=237`, `tracker_samples=801`, `adapter_published=841`,
+  `xy_rmse_m=0.851403`, `max_xy_error_m=1.20125`,
+  `max_z_error_m=0.589446`, `truth_min_clearance_m=0.37766`.
+- This is valid evidence for the current single-UAV Gazebo lane only. It does
+  not prove planner_ready, final closed_loop acceptance, controller
+  performance, UE acceptance, or multi-UAV readiness.
+
+Next executable work:
+
+1. Keep the current assembled Sunray150/light-world route.
+2. Use the same-run raw LiDAR/local-map gate as the current sensor/map review
+   evidence instead of separate disconnected point-cloud and trajectory runs.
+3. Continue toward longer-window localization/planner evidence or a more
+   stable visual-review gate, but do not enter multi-UAV implementation.
+
+### 2026-06-18 Long-Goal Same-Run Single-UAV Gazebo/ROS2 Review
+
+Completed a longer same-run single-UAV Gazebo/ROS2 gate for the active
+"continue to pre-multi-UAV" goal. This run keeps the corrected boundary:
+
+- raw LiDAR point cloud is MID360 sensor output for localization / mapping
+  input
+- local occupancy voxels / grid are downstream map products from point cloud,
+  pose/TF, and local-map processing
+- the figure-8/static-obstacle flight gate is separate from both raw LiDAR and
+  downstream local-map evidence
+
+Outputs:
+
+- `Results/gazebo_ros2/single_uav_long_goal_same_run_20260618_062314/RUNTIME_STATUS.json`
+- `Results/gazebo_ros2/single_uav_long_goal_same_run_20260618_062314/FIGURE8_STATIC_OBSTACLE_GATE.json`
+- `Results/gazebo_ros2/single_uav_long_goal_same_run_20260618_062314/map_review/GAZEBO_ROS2_MAP_REVIEW.json`
+- `Results/gazebo_ros2/single_uav_long_goal_same_run_20260618_062314/map_review/figures/gazebo_lidar_pointcloud_3d.png`
+- `Results/gazebo_ros2/single_uav_long_goal_same_run_20260618_062314/map_review/figures/gazebo_local_occupancy_voxels_3d.png`
+- `Results/gazebo_ros2/single_uav_long_goal_same_run_20260618_062314/map_review/figures/gazebo_local_occupancy_grid_2d.png`
+- `Results/gazebo_ros2/single_uav_long_goal_same_run_20260618_062314/review/FIGURE8_REVIEW_MANIFEST.json`
+- `Results/gazebo_ros2/single_uav_long_goal_same_run_20260618_062314/review/figure8_truth_reference_topdown.png`
+- `Results/gazebo_ros2/single_uav_long_goal_same_run_20260618_062314/review/figure8_altitude_time.png`
+
+Current conclusion:
+
+- Runtime status is `runtime_gate_passed`.
+- Figure-8/static-obstacle gate status is `passed`.
+- The run duration is `59.216s` with `reference_samples=1200`,
+  `truth_samples=295`, `tracker_samples=1001`, and
+  `adapter_published=1041`.
+- Tracking metrics are `rmse_xy_m=1.965496`, `max_xy_error_m=3.96896`,
+  `max_z_error_m=0.683334`, reference clearance `0.403934m`, and truth
+  clearance `0.26493m`.
+- Raw LiDAR PointCloud2 is `20000` points/frame in frame
+  `sunray150_assembled/base_link/mid360_lidar`, with `3572` finite points in
+  the rendered review sample.
+- Local occupancy voxels are `110` finite points in `map`; the local occupancy
+  grid is `120x120` in `map` with `19` occupied cells in the sampled review.
+- The trajectory and altitude review plots are ready, but altitude remains
+  visibly below the 1.2m reference for much of the run. Treat this as
+  pre-acceptance evidence that still needs control-quality improvement before
+  final competition-performance claims.
+- This evidence does not prove `planner_ready`, final `closed_loop`,
+  competition controller performance, UE acceptance, Gazebo GUI animation
+  acceptance, or multi-UAV readiness.
+
+Next executable work:
+
+1. Keep the current assembled Sunray150/light-world route.
+2. Improve or separately gate altitude tracking before claiming controller
+   performance.
+3. Add or rerun a low-risk Gazebo animation review only as visual evidence:
+   accepted assembled vehicle, upright attitude, visible propeller rotation,
+   visible obstacle field, and no GUI crash. GUI success must not replace the
+   numeric flight gate.
+4. Continue toward localization/planner integration only after the raw LiDAR
+   and local-map evidence remains same-run with the flight or review window.
+5. Do not enter multi-UAV implementation.
+
+### 2026-06-18 Default Figure-8 Gate Rebased To Stable Candidate
+
+Promoted the currently validated single-UAV figure-8/static-obstacle
+development gate into `Config/scenarios/system/sunray150_single_uav_competition_light.yaml`.
+This does not mark final competition performance complete; it removes a stale
+default configuration that no longer matched the accepted development lane.
+
+Changed defaults:
+
+- `ki_z` for the Gazebo truth position/tracker/hover control chain is now
+  `3.5e-4`, matching the validated altitude-control candidate.
+- The figure-8/static-obstacle default gate is now the stable 48s, 1.0m
+  altitude, 0.6m x/y amplitude, `y_offset=0.8m`, period 40s lane.
+- The previous 24s, 1.2m, large-amplitude preset is retained only as historical
+  blocker context, not as the current default development gate.
+
+Verification:
+
+- Command: `bash Scripts/gazebo/run_sunray150_figure8_obstacle_gate.sh`
+  with no `TRACKER_KI_Z_OVERRIDE` or trajectory override environment variables.
+- Runtime status:
+  `Results/gazebo_ros2/sunray150_single_uav_figure8_static_obstacle_pre_acceptance/RUNTIME_STATUS.json`
+  is `runtime_gate_passed`.
+- Gate:
+  `Results/gazebo_ros2/sunray150_single_uav_figure8_static_obstacle_pre_acceptance/FIGURE8_STATIC_OBSTACLE_GATE.json`
+  is `passed`.
+- Metrics: `rmse_xy_m=0.860838`, `max_xy_error_m=1.200581`,
+  `max_z_error_m=0.594317`, `truth_min_clearance_m=0.365012`,
+  `truth_samples=239`, `tracker_samples=2039`,
+  `adapter_published=2199`.
+- Tracker final z error in the last sample is `0.03664m`, with
+  `xy_track` active for 830 samples and no blockers.
+
+Claim boundary:
+
+- This proves the current default single-UAV Gazebo/ROS2 development gate is
+  reproducible without transient overrides.
+- It remains a bounded pre-acceptance gate and does not prove final
+  closed-loop acceptance, final competition controller performance,
+  Gazebo GUI animation acceptance, UE acceptance, or multi-UAV readiness.
+
+### 2026-06-18 Default Gate Same-Run Map Review
+
+Ran the stable default single-UAV development gate again with same-run map
+review enabled so the flight gate, raw LiDAR point cloud, and local occupancy
+artifacts sit in one evidence bundle.
+
+Outputs:
+
+- `Results/gazebo_ros2/default_48s_same_run_current_recheck_20260618_072626/RUNTIME_STATUS.json`
+- `Results/gazebo_ros2/default_48s_same_run_current_recheck_20260618_072626/FIGURE8_STATIC_OBSTACLE_GATE.json`
+- `Results/gazebo_ros2/default_48s_same_run_current_recheck_20260618_072626/map_review/GAZEBO_ROS2_MAP_REVIEW.json`
+- `Results/gazebo_ros2/default_48s_same_run_current_recheck_20260618_072626/map_review/figures/gazebo_lidar_pointcloud_3d.png`
+- `Results/gazebo_ros2/default_48s_same_run_current_recheck_20260618_072626/map_review/figures/gazebo_local_occupancy_voxels_3d.png`
+- `Results/gazebo_ros2/default_48s_same_run_current_recheck_20260618_072626/map_review/figures/gazebo_local_occupancy_grid_2d.png`
+- `Results/gazebo_ros2/default_48s_same_run_current_recheck_20260618_072626/review/FIGURE8_REVIEW_MANIFEST.json`
+- `Results/gazebo_ros2/default_48s_same_run_current_recheck_20260618_072626/review/figure8_truth_reference_topdown_animation.gif`
+- `Results/gazebo_ros2/single_uav_evidence_bundle_20260618_current_recheck/SINGLE_UAV_EVIDENCE_BUNDLE.json`
+
+Current conclusion:
+
+- Runtime status is `runtime_gate_passed`.
+- Figure-8/static-obstacle gate status is `passed`.
+- Same-run map review status is `gazebo_ros2_map_review_ready`.
+- Raw LiDAR PointCloud2: 20000 points/frame, frame
+  `sunray150_assembled/base_link/mid360_lidar`, 6637 finite points in the
+  reviewed sample.
+- Local occupancy voxels: 1181 finite points in `map`.
+- Local occupancy grid: 120x120 in `map` with 1049 occupied cells.
+- Tracking metrics: `truth_samples=239`, `tracker_samples=834`,
+  `adapter_published=874`, `rmse_xy_m=0.860137`,
+  `max_xy_error_m=1.200738`, `max_z_error_m=0.585952`,
+  `truth_min_clearance_m=0.367781`.
+
+Claim boundary:
+
+- This is the current best same-run review baseline for the default
+  single-UAV development gate.
+- The evidence bundle now indexes the current same-run raw LiDAR, downstream
+  local occupancy map, figure-8/static-obstacle plots, and offline trajectory
+  GIF in one place.
+- The offline GIF is a trace/replay review artifact, not Gazebo GUI animation
+  acceptance and not final controller-performance proof.
+- The current audit entry should use `default_48s_same_run_current_recheck_20260618_072626`
+  as the latest review baseline.
+- It is still pre-acceptance evidence only and does not prove final
+  closed-loop acceptance, controller performance, UE acceptance, or
+  multi-UAV readiness.
+
+### 2026-06-18 Continuation Same-Run Regression
+
+Ran another stable default single-UAV Gazebo/ROS2 same-run gate after the
+point-cloud terminology correction. This run is fresh regression evidence for
+the active long goal; it is not the preferred human visual-density baseline.
+
+Outputs:
+
+- `Results/gazebo_ros2/single_uav_default_same_run_continuation_20260618_074243/RUNTIME_STATUS.json`
+- `Results/gazebo_ros2/single_uav_default_same_run_continuation_20260618_074243/FIGURE8_STATIC_OBSTACLE_GATE.json`
+- `Results/gazebo_ros2/single_uav_default_same_run_continuation_20260618_074243/map_review/GAZEBO_ROS2_MAP_REVIEW.json`
+- `Results/gazebo_ros2/single_uav_default_same_run_continuation_20260618_074243/SINGLE_UAV_CONTINUATION_SUMMARY.json`
+
+Current conclusion:
+
+- Runtime status is `runtime_gate_passed`.
+- Figure-8/static-obstacle gate status is `passed`.
+- Same-run map review status is `gazebo_ros2_map_review_ready`.
+- Tracking metrics: `truth_samples=236`, `tracker_samples=834`,
+  `adapter_published=874`, `rmse_xy_m=0.858562`,
+  `max_xy_error_m=1.200779`, `max_z_error_m=0.582854`,
+  `truth_min_clearance_m=0.378457`.
+- Raw LiDAR PointCloud2 remains `20000` points/frame in frame
+  `sunray150_assembled/base_link/mid360_lidar`; this review sample had only
+  `844` finite points.
+- Downstream local occupancy voxels had `142` finite points in `map`, and the
+  local occupancy grid had `142` occupied cells.
+
+Review guidance:
+
+- Use this run for fresh same-run regression evidence that the flight gate,
+  raw LiDAR topic, and downstream local-map topics still work in one run.
+- Do not use this run as the best visual-density audit because the reviewed
+  point sample was sparse. The better human review baseline remains
+  `Results/gazebo_ros2/default_48s_same_run_current_recheck_20260618_072626`.
+- This is still pre-acceptance evidence and does not prove final controller
+  performance, final Gazebo GUI animation acceptance, UE acceptance, or
+  multi-UAV readiness.
+
+### 2026-06-20 EGO Planner Output To PX4 Offboard Replay Pass
+
+Advanced the current single-thread long goal from ROS2-direct Gazebo actuator
+experiments to the PX4-native execution route. This slice did not dispatch
+visible departments and did not use the failed Python truth-feedback/direct
+Gazebo actuator route as acceptance evidence.
+
+Sub-agent plan used inline:
+
+- Planner role: keep the mainline on `MWORKS -> generated C/C++ -> PX4 ->
+  Gazebo`, and stop treating direct Gazebo motor writes as deployment.
+- ROS2/Gazebo/PX4 role: capture real EGO `PlannerSetpoint` output, then replay
+  that trace through the MoSim PX4 Offboard adapter into PX4 SITL/Gazebo.
+- Checker role: separate script/adapter defects from flight-control failures
+  and record claim boundaries.
+- Docs role: update this queue and the evidence matrix before continuing to
+  same-run EGO/PX4 work.
+
+Evidence:
+
+- EGO trace capture:
+  `Results/gazebo_ros2/night_long_ego_trace_capture_20260620_001/`
+- Captured command trace:
+  `Results/gazebo_ros2/night_long_ego_trace_capture_20260620_001/planner_setpoint.trace.jsonl`
+- Old direct-actuator evaluation from the capture run:
+  `Results/gazebo_ros2/night_long_ego_trace_capture_20260620_001/REAL_EGO_CLOSED_LOOP_GATE.json`
+- PX4-native replay pass:
+  `Results/px4_gazebo/night_long_ego_trace_px4_replay_20260620_003/PX4_OFFBOARD_REPLAY_TRACE_GATE.json`
+
+Result:
+
+```text
+input EGO PlannerSetpoint rows: 1471
+replayed PX4 setpoints:        1911
+PX4 local_position samples:    4891
+PX4 nav state:                 Offboard seen
+PX4 arming state:              Armed seen
+failsafe:                      false
+max altitude:                  1.264021 m
+final altitude:                0.009124 m
+trace-phase XY RMSE:           0.261423 m
+trace-phase max XY error:      1.050736 m
+trace-phase Z RMSE:            0.054420 m
+land-phase XY RMSE:            0.034679 m
+post-land XY span:             0.050282 m
+final position:                [6.976122, -0.023679, 0.009124] m
+```
+
+Interpretation:
+
+- The EGO output trace is not empty and is not the root cause of the old
+  failed EGO run. It progresses from near x=0 to x=6.98 at z=1.2.
+- PX4 Offboard can execute this recorded EGO trajectory and land without
+  direct Gazebo actuator writes.
+- The old route
+  `EGO -> Python truth-feedback tracker -> ControllerOutput -> Gazebo actuator`
+  remains diagnostic only and failed with excessive goal error/tilt. Do not
+  tune that route as the product mainline.
+
+Fixes made:
+
+- `Scripts/gazebo/run_real_ego_closed_loop_gate.sh` now records
+  `position_cmd.trace.jsonl`, `planner_setpoint.trace.jsonl`, and
+  `controller_output.trace.jsonl`.
+- `Scripts/px4/run_px4_offboard_replay_planner_setpoint_trace.sh` now coerces
+  `REPLAY_RATE_LIMIT_HZ` to a floating-point string so ROS2 parameter typing
+  does not reject integer values like `20`.
+- The replay publisher now writes JSON-serializable position/velocity arrays
+  instead of ROS2 array objects.
+
+Claim boundary:
+
+- This is PX4-native trace replay, not same-run EGO replanning.
+- It proves planner output can feed PX4 Offboard, but it does not yet prove
+  same-run EGO -> PX4, MWORKS generated-controller deployment, Sunray150 PX4
+  plant parity, full obstacle-map EGO mission completion, UE truth-map export,
+  final closed-loop acceptance, or multi-UAV readiness.
+
+Next executable work:
+
+1. Build a same-run EGO -> PlannerSetpoint -> PX4 Offboard gate that removes
+   the direct Gazebo actuator tracker from the execution path.
+2. Keep PX4 mode/arming/failsafe, local-position, setpoint trace, and landing
+   metrics as required evidence.
+3. Restore or validate the full obstacle map only after the PX4 execution path
+   is stable, then rerun EGO with point cloud/localization and occupancy-grid
+   planner evidence in the same review package.
+4. Continue MWORKS generated-code work separately: current AWFF generated C is
+   still compile/SIL/shadow evidence, not deployed runtime.
+5. Stop before multi-UAV implementation.
+
+### 2026-06-20 PX4-Native Continuation Baseline Verified
+
+Continued the night-long single-UAV goal by verifying the current formal
+PX4-native baseline and recording the next execution order. This slice did not
+dispatch visible departments and did not use the direct Gazebo actuator bridge
+as acceptance evidence.
+
+Current formal architecture remains:
+
+```text
+MWORKS/Sysblock
+  -> GenerateModelCode
+  -> generated C/C++ compile + SIL
+  -> PX4 Offboard or PX4 module/uORB adapter
+  -> PX4 SITL
+  -> Gazebo plant/sensors
+  -> FAST-LIO / EGO / RViz validation
+  -> UE truth-map export later
+```
+
+Fresh verified evidence:
+
+- PX4 takeoff-hover-land:
+  `Results/px4_gazebo/night_continuation_takeoff_hover_land_20260620_090113/PX4_OFFBOARD_TAKEOFF_HOVER_LAND.json`
+- PX4 8-shaped gate:
+  `Results/px4_gazebo/night_continuation_figure8_gate_20260620_090302/PX4_OFFBOARD_FIGURE8_GATE.json`
+- AWFF generated C shadow on the PX4 8-shaped trace:
+  `Results/px4_gazebo/night_continuation_figure8_gate_20260620_090302/mworks_awff_codegen_shadow/MWORKS_AWFF_CODEGEN_SHADOW_GATE.json`
+- Long-goal execution plan:
+  `Results/execution_plans/px4_native_single_uav_long_goal_20260620.md`
+
+Key metrics:
+
+```text
+takeoff-hover-land:
+  status: passed
+  hover_z_rmse_m: 0.063862638717662
+  hover_xy_max_m: 0.02814236598164959
+  hover_vxy_max_mps: 0.023381430549925926
+  post_land_xy_span_m: 0.028003553418840556
+  failsafe_seen: false
+
+figure-8:
+  status: passed
+  figure8_xy_rmse_m: 0.21595121228378883
+  figure8_xy_max_error_m: 0.5154432030370836
+  figure8_z_rmse_m: 0.00857960521091633
+  settle_before_xy_max_m: 0.036905088663138554
+  figure8_actual_span_x_m: 5.2433648109436035
+  figure8_actual_span_y_m: 2.9597991704940796
+  figure8_center_crossings_x: 3
+  post_land_xy_span_m: 0.06007403969858564
+  failsafe_seen: false
+
+AWFF generated C shadow:
+  status: passed_position_loop_shadow
+  matched_shadow_inputs: 928
+  compile_status: passed
+  root_outports_y/y1/y2/y3: not_l1_setpoint_ready
+  position_loop_pitch_roll_thrust: candidate_for_next_export_or_adapter_gate
+```
+
+Interpretation:
+
+- PX4 Offboard can now perform stable takeoff, hover, landing, and continuous
+  8-shaped flight with bounded drift and no failsafe.
+- This fixes the earlier visual/control confusion where direct Gazebo control
+  or wall-time references produced rough trajectories, drift, or wrong review
+  claims.
+- AWFF generated C is still compile/SIL/shadow evidence. It is not deployed
+  runtime until a formal PX4 adapter publishes or consumes the selected PX4
+  interface.
+- `position_outer_loop_to_px4_attitude_node` remains diagnostic-only because
+  the topic-fixed route diverged badly in XY. Do not tune it as the mainline.
+
+Next executable work:
+
+1. Run the targeted PX4 adapter, generated-runtime, and SIL checks again.
+2. Keep the current PX4 takeoff/8-shaped evidence as the stable baseline unless
+   the code or environment changes.
+3. Design and implement the next formal generated-code integration as either
+   L1 `TrajectorySetpoint` generation or L2 PX4 module/uORB replacement.
+4. Upgrade same-run EGO -> PX4 from deterministic fixture cloud to real Gazebo
+   LiDAR/FAST-LIO/local-map input, with PX4 as the only flight backend.
+5. Restore the full obstacle map only after the PX4 execution path remains
+   stable, then run EGO/path planning evidence.
+6. Stop before multi-UAV implementation.

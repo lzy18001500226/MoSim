@@ -140,38 +140,7 @@ public static class BackgroundWindowCapture {
 }
 "@
 
-$drawingAssemblies = @('System.Drawing')
-$drawingCommon = @(
-    (Join-Path $PSHOME 'System.Drawing.Common.dll'),
-    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\10.0.9\System.Drawing.Common.dll',
-    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\9.0.15\System.Drawing.Common.dll',
-    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.26\System.Drawing.Common.dll',
-    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\6.0.8\System.Drawing.Common.dll'
-) | Where-Object { Test-Path $_ } | Select-Object -First 1
-if ($drawingCommon) {
-    $drawingAssemblies += $drawingCommon
-}
-$gdiPlus = @(
-    (Join-Path $PSHOME 'System.Private.Windows.GdiPlus.dll'),
-    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\10.0.9\System.Private.Windows.GdiPlus.dll',
-    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\9.0.15\System.Private.Windows.GdiPlus.dll',
-    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.26\System.Private.Windows.GdiPlus.dll',
-    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\6.0.8\System.Private.Windows.GdiPlus.dll'
-) | Where-Object { Test-Path $_ } | Select-Object -First 1
-if ($gdiPlus) {
-    $drawingAssemblies += $gdiPlus
-}
-$windowsCore = @(
-    (Join-Path $PSHOME 'System.Private.Windows.Core.dll'),
-    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\10.0.9\System.Private.Windows.Core.dll',
-    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\9.0.15\System.Private.Windows.Core.dll',
-    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.26\System.Private.Windows.Core.dll',
-    'C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\6.0.8\System.Private.Windows.Core.dll'
-) | Where-Object { Test-Path $_ } | Select-Object -First 1
-if ($windowsCore) {
-    $drawingAssemblies += $windowsCore
-}
-Add-Type -TypeDefinition $code -ReferencedAssemblies $drawingAssemblies
+Add-Type -TypeDefinition $code -ReferencedAssemblies @('System.Drawing')
 $dpiAwareness = [BackgroundWindowCapture]::EnableDpiAwareness()
 
 $resolvedOut = (Resolve-Path $OutDir).Path

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<sdf version="1.7">
+  <model name="cylinder_20cm_green">
+    <static>true</static>
+    <link name="link">
+      <visual name="visual">
+        <geometry>
+          <cylinder>
+            <radius>0.2</radius>
+            <length>2</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.08 0.55 0.2 1</ambient>
+          <diffuse>0.08 0.55 0.2 1</diffuse>
+          <specular>0.08 0.08 0.08 1</specular>
+        </material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <cylinder>
+            <radius>0.2</radius>
+            <length>2</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>1</mass>
+        <inertia>
+          <ixx>0.3358</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.3358</iyy>
+          <iyz>0</iyz>
+          <izz>0.005</izz>
+        </inertia>
+      </inertial>
+    </link>
+  </model>
+</sdf>

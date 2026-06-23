@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -95,10 +96,112 @@ def test_nonzero_constant_mworks_reference_passes() -> None:
         raise AssertionError(payload)
 
 
+def test_multi_output_schema_reference_passes() -> None:
+    runtime_schema = ROOT / "Results" / "generated_mworks" / "AWFF_FullController_Sysblock_20260620_032747" / "runtime_schema.json"
+    runtime_smoke = ROOT / "Results" / "generated_mworks" / "AWFF_FullController_Sysblock_20260620_032747" / "runtime_schema_smoke_check.json"
+    smoke_payload = json.loads(runtime_smoke.read_text(encoding="utf-8"))
+    reference_rows = []
+    for row in smoke_payload["runtime_smoke"]["rows"]:
+        reference_rows.append(
+            {
+                "index": row["index"],
+                "time_s": row["time_s"] - 0.01,
+                "outputs": row["outputs"],
+            }
+        )
+    reference = {
+        "schema": "mosim.mworks_codegen_sil_reference.v1",
+        "model_name": "AWFF_FullController_Sysblock_SIL_SyntheticReference",
+        "source_label": "synthetic_test_reference",
+        "rows": reference_rows,
+    }
+    with tempfile.TemporaryDirectory(prefix="mosim_sil_multi_ref_", dir=ROOT / "Results" / "tmp") as temp_dir:
+        reference_path = Path(temp_dir) / "awff_multi_reference.json"
+        reference_path.write_text(json.dumps(reference), encoding="utf-8")
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "Scripts" / "mworks" / "check_codegen_sil_equivalence.py"),
+                "--code-dir",
+                "Results/generated_mworks/AWFF_FullController_Sysblock_20260620_032747/QuadrotorControllerBlocks.AWFF_FullController_Sysblock",
+                "--model-name",
+                "AWFF_FullController_Sysblock",
+                "--runtime-schema-json",
+                str(runtime_schema.relative_to(ROOT)),
+                "--mworks-reference-json",
+                str(reference_path.relative_to(ROOT)),
+                "--tolerance",
+                "1e-12",
+            ],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+    payload = json.loads(result.stdout)
+    if not payload["ok"]:
+        raise AssertionError(payload)
+    if payload["runtime_schema_source"] != runtime_schema.relative_to(ROOT).as_posix():
+        raise AssertionError(payload)
+    first = payload["comparison"]["comparisons"][0]
+    if sorted(first["fields"]) != ["y", "y1", "y2", "y3"]:
+        raise AssertionError(payload)
+    if payload["comparison"]["max_abs_error"] != 0.0:
+        raise AssertionError(payload)
+
+
+def test_awff_full_controller_real_constant_reference_passes() -> None:
+    runtime_schema = (
+        ROOT
+        / "Results"
+        / "generated_mworks"
+        / "AWFF_FullController_Sysblock_20260620_032747"
+        / "runtime_schema_constant_positive.json"
+    )
+    reference = (
+        ROOT
+        / "Results"
+        / "generated_mworks"
+        / "AWFF_FullController_Sysblock_20260620_032747"
+        / "mworks_awff_fullcontroller_constant_reference.json"
+    )
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "Scripts" / "mworks" / "check_codegen_sil_equivalence.py"),
+            "--code-dir",
+            "Results/generated_mworks/AWFF_FullController_Sysblock_20260620_032747/QuadrotorControllerBlocks.AWFF_FullController_Sysblock",
+            "--model-name",
+            "AWFF_FullController_Sysblock",
+            "--runtime-schema-json",
+            str(runtime_schema.relative_to(ROOT)),
+            "--mworks-reference-json",
+            str(reference.relative_to(ROOT)),
+            "--tolerance",
+            "1e-5",
+        ],
+        cwd=ROOT,
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+    payload = json.loads(result.stdout)
+    if payload["gate_type"] != "nonzero_input_sil_smoke":
+        raise AssertionError(payload)
+    if not payload["ok"]:
+        raise AssertionError(payload)
+    if payload["source_label"] != "MWORKS_MCP_SIMULATE_MODEL_PLUS_GENERATED_C_RUNTIME":
+        raise AssertionError(payload)
+    if payload["comparison"]["max_abs_error"] > 1e-5:
+        raise AssertionError(payload)
+
+
 def main() -> int:
     test_zero_input_sil_smoke_contract()
     test_nonzero_sequence_fails_zero_reference()
     test_nonzero_constant_mworks_reference_passes()
+    test_multi_output_schema_reference_passes()
+    test_awff_full_controller_real_constant_reference_passes()
     print("[OK] MWORKS codegen SIL smoke regression")
     return 0
 

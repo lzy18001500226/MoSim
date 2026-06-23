@@ -1,0 +1,131 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+  - Class: rviz/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Name: Grid
+      Plane: XY
+      Reference Frame: camera_init
+    - Class: rviz/PointCloud2
+      Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Class: rviz/PointCloud2
+      Color Transformer: AxisColor
+      Decay Time: 12
+      Enabled: true
+      Name: MID360 Raw Scan
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 1
+      Size (m): 0.006
+      Style: Points
+      Topic: /uav1/livox/lidar
+      Use Fixed Frame: true
+      Use rainbow: true
+    - Class: rviz/PointCloud2
+      Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 4
+        Min Value: 0
+        Value: true
+      Channel Name: rgb
+      Class: rviz/PointCloud2
+      Color Transformer: RGB8
+      Decay Time: 0
+      Enabled: false
+      Name: Review Accumulated Map Cloud
+      Position Transformer: XYZ
+      Queue Size: 20
+      Selectable: true
+      Size (Pixels): 1
+      Size (m): 0.006
+      Style: Points
+      Topic: /mosim/sunray/lidar_points_map_accumulated
+      Use Fixed Frame: true
+    - Class: rviz/PointCloud2
+      Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 4
+        Min Value: 0
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Name: FAST-LIO Cloud Registered
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 1
+      Size (m): 0.006
+      Style: Points
+      Topic: /cloud_registered
+      Use Fixed Frame: true
+    - Class: rviz/Path
+      Color: 0; 180; 255
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.035
+      Name: FAST-LIO Path
+      Topic: /path
+    - Class: rviz/Path
+      Color: 255; 0; 0
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.04
+      Name: Truth Path
+      Topic: /mosim/px4ctrl/truth_path
+    - Class: rviz/Path
+      Color: 0; 180; 0
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.035
+      Name: Reference Path
+      Topic: /mosim/px4ctrl/reference_path
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: camera_init
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 8
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0.8
+      Name: Current View
+      Pitch: 0.7
+      Target Frame: camera_init
+      Yaw: 0.785
+Window Geometry:
+  Height: 900
+  Width: 1200
+  X: 1240
+  Y: 40

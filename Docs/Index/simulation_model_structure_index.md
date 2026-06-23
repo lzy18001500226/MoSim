@@ -3,7 +3,7 @@
 > Maintained map for MoSim simulation models, scenario configs, runner scripts,
 > and result locations.
 
-Status: current structure snapshot, 2026-06-12 CST.
+Status: current structure snapshot, 2026-06-14 CST.
 
 This file answers two practical questions:
 
@@ -35,7 +35,10 @@ packet traffic unless they become a stable simulation evidence location.
 | `Models/QuadrotorExperiments/` | Legacy/current implementation and compatibility pool | Still contains many executable scenario implementations and migration sources. Do not treat every legacy entry as final accepted surface. |
 | `Models/QuadrotorControllerBlocks/` | Sysblock/controller block library | Controller source blocks used by closed-loop scenarios and formal controller wrappers. |
 | `Config/scenarios/` | Scenario YAML configs | Configs connect a named scenario to model class, controller choice, runner settings, and result paths. |
+| `Config/gazebo/` | Project-owned Gazebo validation scaffold | Single-UAV exported-controller validation world/model/sensor configs. Gazebo evidence is system-validation evidence, not MWORKS/Syslab competition metric evidence. |
 | `Scripts/mworks/` | MWORKS/Sysplorer runner, check, extraction, and validation scripts | Use these for repeatable checks before claiming simulation evidence. |
+| `Scripts/gazebo/` | Gazebo+ROS2 runner scripts | WSL-side bounded launch/preflight scripts for the single-UAV Gazebo validation lane. |
+| `Scripts/ros/` | ROS2 publishers, adapters, local-map scripts, and bridge helpers | Includes replay publishers, setpoint adapters, and the first PointCloud2-to-voxel/local-grid adapter. |
 | `Scripts/tests/` | Scripted regression and quality tests | Use for non-GUI validation and repeated evidence checks. |
 | `Results/` | Reproducible outputs, metrics, logs, figures, packets, screenshots, and evidence bundles | Stable result locations should be recorded here; scratch output should not become a claim source without review. |
 | `References/MWORKS/QuadrotorModel/` | Official/upstream MWORKS quadrotor baseline | Baseline/reference only. Do not silently modify as project-owned model work. |
@@ -125,7 +128,7 @@ Important subpackage roles:
 | `OfficialScenarios/` | Example1/2/3 official-route closed-loop scenario implementations with AWFF, INDI, L1, LinearMPC, and related variants. |
 | `RobustFaultScenarios/` | Mass perturbation, wind gust, rotor-loss, safety, and return/land robustness scenarios. |
 | `PlanningScenarios/` | Planning, navigation display, corridor/open-blocks, UE trace-table, and review/smoke entries. |
-| `FormationScenarios/` | Multi-UAV formation scenario implementations. Follow `Docs/Design/09_多机编队架构与数据设计.md` for identity, per-UAV result layout, and database boundaries before adding new formation entries. |
+| `FormationScenarios/` | Multi-UAV formation scenario implementations. Follow `Docs/Design/MoSim规划与编队控制接口规范.md` for identity, per-UAV result layout, and database boundaries before adding new formation entries. |
 | `SystemArchitecture/` | Complete system graphical Sysblock and system-level failure scenarios. |
 | `TraceIsolation/` | Diagnostic trace-isolation ladder; not a primary mission surface. |
 | `SupportModels/` | Support and smoke models for trace/MCP/reference behavior. |
@@ -229,7 +232,7 @@ outputs through tracking RMSE, controller-performance, or replay acceptance
 logic unless a later scenario explicitly adds the required trajectory columns
 and changes the profile.
 
-Current 2026-06-11 live blocker:
+Historical 2026-06-11 live blocker:
 
 ```text
 evidence:
@@ -246,6 +249,13 @@ classification:
 Do not run the live smoke batch while this blocker remains present. The
 `[教育版]` main-window title is not enough to override an active `升级模型`
 surface, and no automatic click/confirm/close/restart action is authorized.
+
+Superseding live-gate note: the 2026-06-12 closeout gate records clean
+preflight evidence, and the 2026-06-14 sentinel records `status=clean` with
+`license_state_hint=no_mworks_window_observed`. That current no-window state
+removes the old `升级模型` blocker as a current claim, but it is not proof of a
+loaded reusable MWORKS session. Before any new live MWORKS execution, collect a
+fresh bounded preflight and keep GUI result viewer/open flags disabled.
 
 Executable-preparation guard:
 
@@ -398,7 +408,7 @@ substitute for model files, simulation logs, metrics, figures, or screenshots.
 
 Formation result directories must keep per-UAV evidence inspectable by
 `uav_id`. New formation runs should follow the layout in
-`Docs/Design/09_多机编队架构与数据设计.md`:
+`Docs/Design/MoSim规划与编队控制接口规范.md`:
 
 ```text
 Results/formation/<scenario_id>/<run_id>/
@@ -447,8 +457,9 @@ What the folder tree does not show by itself:
 For those meanings, use this index plus:
 
 ```text
-Docs/Design/12_MoSimQuadrotorModel模型归档与迁移计划.md
-Docs/Design/13_RflySim四旋翼模型对标与MoSim优化路线.md
+Docs/Design/MoSim真机化收尾与C++化重构方案.md
+Docs/Design/cache/absorbed_or_superseded_20260614/12_MoSimQuadrotorModel模型归档与迁移计划.md
+Docs/Design/cache/absorbed_or_superseded_20260614/13_RflySim四旋翼模型对标与MoSim优化路线.md
 Docs/Index/project_work_memory_index.md
 Docs/Workflows/new_conversation_context.md
 ```
@@ -507,7 +518,392 @@ claim boundary:
   performance acceptance yet.
 ```
 
-## 11. Single-UAV Control Batch Before Formation
+## 11. Gazebo + ROS2 Single-UAV Validation Lane
+
+Current project-owned Gazebo+ROS2 smoke entry:
+
+```text
+Config/scenarios/system/sunray150_gazebo_ros2_smoke.yaml
+Config/gazebo/worlds/yunzong_planning_test_sunray150_assembled.sdf
+Config/gazebo/worlds/sunray150_takeoff_hover_land_plant_sanity.sdf
+Config/gazebo/models/sunray150_assembled/model.sdf
+Config/gazebo/models/sunray150_assembled/model.config
+Config/gazebo/models/sunray150_assembled/meshes/sunray150_with_mid360_textured.obj
+Config/gazebo/models/sunray150_assembled/meshes/sunray150_with_mid360_textured.mtl
+Config/gazebo/sensors/mid360_lidar_imu.sdf
+Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh
+Scripts/gazebo/run_sunray150_takeoff_hover_land_gate.sh
+Scripts/gazebo/run_sunray150_figure8_obstacle_gate.sh
+Scripts/gazebo/check_gazebo_ros2_dependencies.sh
+Scripts/gazebo/setup_gazebo_ros2_dependencies.sh
+Scripts/ros/pointcloud_to_local_voxel_map_ros2.py
+Scripts/ros/controller_output_to_gazebo_actuators.py
+Scripts/ros/controller_output_to_gazebo_actuators_node.py
+Scripts/ros/gazebo_fastlio_planner_input_adapter.py
+Scripts/ros/gazebo_truth_hover_hold_controller.py
+Scripts/ros/gazebo_truth_takeoff_hover_land_controller.py
+Scripts/ros/publish_controller_output_fixture.py
+Scripts/ros/mosim_msgs/msg/ControllerOutput.msg
+Scripts/quality/audit_gazebo_sunray150_parameters.py
+Scripts/quality/build_ue_truth_local_voxel_map_fixture.py
+Scripts/quality/check_gazebo_ros2_smoke_contract.py
+Scripts/quality/build_gazebo_ros2_runtime_status.py
+Scripts/quality/evaluate_fastlio_truth_error.py
+Scripts/quality/evaluate_gazebo_hover_hold_closed_loop.py
+Scripts/quality/evaluate_gazebo_takeoff_hover_land.py
+Scripts/quality/evaluate_figure8_obstacle_gate.py
+Scripts/quality/evaluate_uav_dynamic_quality.py
+Scripts/tests/test_gazebo_ros2_smoke_contract.py
+Scripts/tests/test_pointcloud_to_local_voxel_map_core.py
+Scripts/tests/test_ue_truth_local_voxel_map_fixture.py
+Scripts/tests/test_controller_output_to_gazebo_actuators.py
+Scripts/tests/test_fastlio_truth_error_eval.py
+Scripts/tests/test_gazebo_hover_hold_closed_loop.py
+```
+
+Role:
+
+```text
+YunZong Gazebo obstacle world + MoSim assembled Sunray150 visible model
+  -> Gazebo plant/world/sensors
+  -> ros_gz_bridge
+  -> ROS2 IMU + PointCloud2
+  -> pointcloud_to_local_voxel_map_ros2.py
+  -> /mosim/local_occupancy_voxels + /mosim/local_occupancy_grid
+  -> ControllerOutput -> actuator_msgs/Actuators -> ros_gz_bridge
+  -> FAST-LIO/planner input adapter for topic/frame/rate/input-shape gates
+  -> later RViz2/planner/local-map review
+  -> UE render/replay only for presentation
+```
+
+This lane has two distinct meanings and the distinction is mandatory:
+
+| Surface | Current role | Claim boundary |
+|---|---|---|
+| Gazebo truth-feedback / ROS2 ControllerOutput fixtures | Plant, actuator, trajectory, point-cloud, local-map, and GUI/RViz pre-acceptance | Useful for debugging and runtime review; not generated MWORKS/PX4 deployment. |
+| PX4-native generated-controller route | Formal external deployment validation target | Pending until generated C/C++, SIL, PX4 Offboard/uORB adapter, and same-run PX4+Gazebo gates pass. |
+
+This lane therefore does not replace MWORKS/Syslab competition control metrics.
+It also must not overclaim the Python/ROS2 fixture route as PX4 deployment.
+Current scenario claim boundary explicitly forbids final `planner_ready`,
+final `closed_loop`, generated-controller competition performance,
+`fast_lio_localization_success` as a controller authority, and
+`multi_uav_readiness` until the declared gates pass.
+The UE truth/local-voxel fixture is retained as offline adapter-core evidence
+only; it is not the main Gazebo world route and must not be used as a
+replacement for Gazebo/RViz point-cloud or local-map runtime evidence.
+
+Current 2026-06-20 accepted Gazebo pre-acceptance baselines:
+
+| Gate | Evidence | Current accepted metrics | Boundary |
+|---|---|---|---|
+| Takeoff-hover-land dynamic quality | `Results/gazebo_ros2/longrun_takeoff_hover_land_xy_tight_20260620_0304/UAV_DYNAMIC_QUALITY_EVAL.json` | settled-hover XY displacement `0.03177m`; settled-hover max Z error `0.067371m`; landed-settle XY slide `0.000002m`; landed yaw delta `0.0rad` | Gazebo plant/controller pre-acceptance only. |
+| Two-loop 8字/static-obstacle gate | `Results/gazebo_ros2/default_figure8_period32_same_run_map_20260620_0425/FIGURE8_STATIC_OBSTACLE_GATE.json` | figure-8 phase RMSE `0.096349m`; phase max XY error `0.215082m`; truth path-length ratio `1.150537`; center crossings `3`; truth clearance `0.459859m`; landing-window XY displacement `0` | Uses truth-feedback tracker; not generated MWORKS/PX4 deployment. |
+| Same-run LiDAR/local occupancy review | `Results/gazebo_ros2/default_figure8_period32_same_run_map_20260620_0425/map_review/GAZEBO_ROS2_MAP_REVIEW.json` | raw LiDAR `20000` points/frame, finite sample `5306`; local voxels `464`; local grid `120x120`, occupied `354` | Runtime point-cloud/map review only; not planner_ready or localization closure. |
+
+Formal generated-controller/PX4 artifacts:
+
+```text
+target model:
+  Models/QuadrotorControllerBlocks/AWFF_FullController_Sysblock.mo
+workflow:
+  Docs/Workflows/mworks_codegen_controller_runtime.md
+current passed codegen artifacts:
+  Results/generated_mworks/AWFF_FullController_Sysblock_20260620_032747/CODEGEN_MANIFEST.json
+  Results/generated_mworks/AWFF_FullController_Sysblock_20260620_032747/runtime_schema.json
+  Results/generated_mworks/AWFF_FullController_Sysblock_20260620_032747/runtime_schema_smoke_check.json
+  Results/generated_mworks/AWFF_FullController_Sysblock_20260620_032747/runtime_schema_constant_positive.json
+  Results/generated_mworks/AWFF_FullController_Sysblock_20260620_032747/mworks_awff_fullcontroller_constant_reference.json
+  Results/generated_mworks/AWFF_FullController_Sysblock_20260620_032747/sil_constant_input_check.json
+blocked equation bridge:
+  Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+  reason: unsupported der() in Sysblock code generation path
+missing before formal deployment claim:
+  AWFF time-varying SIL equivalence report
+  PX4+Gazebo baseline gate
+  L1 Offboard or L2 PX4 module/uORB adapter evidence
+  same-run PX4+Gazebo takeoff-hover-land and 8字/static-obstacle gates
+```
+
+Current assembled MID360 approximation:
+
+```text
+sensor config: Config/gazebo/models/sunray150_assembled/model.sdf
+sensor fragment: Config/gazebo/sensors/mid360_lidar_imu.sdf
+sensor type: Gazebo gpu_lidar, not Livox scan-mode plugin
+topic: /mosim/gazebo/lidar_points -> /mosim/gazebo/lidar_points/points
+rate: 10Hz
+shape: 500 x 40 = 20,000 points/frame
+horizontal FOV: 360 deg
+vertical FOV: approximately -7 deg to 52 deg
+scan range: 0.1 m to 40 m
+claim boundary: density/FOV/range transport review only; no non-repetitive
+Livox scan realism and no reflectivity-dependent range claim
+```
+
+Current plant parameter audit and plant-sanity gate:
+
+```text
+audit command:
+  python Scripts/quality/audit_gazebo_sunray150_parameters.py
+audit output:
+  Results/gazebo_ros2/sunray150_assembled_parameter_audit_20260618/gazebo_parameter_consistency_audit.json
+  Results/gazebo_ros2/sunray150_assembled_parameter_audit_20260618/GAZEBO_PARAMETER_CONSISTENCY_AUDIT.md
+audit summary:
+  row_count: 13
+  adopted reviewed-assembly geometry rows: 6
+  geometry_mismatches: []
+  held_for_review: base_link.mid360_lidar.pose
+  SDF total link mass: 0.69kg
+  theoretical normalized hover command: 0.0556055205
+
+accepted SDF geometry parameters:
+  rotor centers: match Results/unreal_scene_mapping/sunray150_dae_assembly_parameters_20260604.json:sdf_rotor_mapping
+  body collision pose: [0, 0.001574, 0.044965, 0, 0, 0]
+  body collision size: [0.211502, 0.214651, 0.16193]
+
+separate-source/runtime-validation rows:
+  base_link.mass
+  rotor_links.total_mass
+  base_link.inertia
+  MulticopterMotorModel rotor_set
+
+plant sanity command:
+  RESULT_DIR=Results/gazebo_ros2/sunray150_takeoff_hover_land_plant_sanity_20260618_004 bash Scripts/gazebo/run_sunray150_takeoff_hover_land_gate.sh
+plant sanity world:
+  Config/gazebo/worlds/sunray150_takeoff_hover_land_plant_sanity.sdf
+plant sanity output:
+  Results/gazebo_ros2/sunray150_takeoff_hover_land_plant_sanity_20260618_004/RUNTIME_STATUS.json
+  Results/gazebo_ros2/sunray150_takeoff_hover_land_plant_sanity_20260618_004/GAZEBO_TAKEOFF_HOVER_LAND_EVAL.json
+  Results/gazebo_ros2/sunray150_takeoff_hover_land_plant_sanity_20260618_004/RUN_MANIFEST.json
+plant sanity status: passed
+plant sanity metrics:
+  duration_s: 13.032
+  max_z_m: 0.836887
+  final_z_m: 0.048684
+  hover_mean_abs_z_error_m: 0.140992
+  hover_max_abs_z_error_m: 0.234829
+  max_xy_distance_m: 0.165252
+  max_tilt_rad: 0.004286
+claim boundary:
+  proves only bounded Gazebo plant sanity: simple-controller takeoff, hover,
+  and landing. Does not prove MWORKS controller deployment, competition
+  controller performance, planner_ready, final closed_loop acceptance, UE
+  acceptance, or multi-UAV readiness.
+```
+
+Static contract check:
+
+```text
+python Scripts/quality/check_gazebo_ros2_smoke_contract.py
+python -m pytest Scripts/tests/test_gazebo_ros2_smoke_contract.py -q
+python -m pytest Scripts/tests/test_pointcloud_to_local_voxel_map_core.py -q
+python Scripts/quality/build_ue_truth_local_voxel_map_fixture.py
+python -m pytest Scripts/tests/test_ue_truth_local_voxel_map_fixture.py -q
+python Scripts/ros/controller_output_to_gazebo_actuators.py --command 0.5 0.5 0.5 0.5
+python -m pytest Scripts/tests/test_controller_output_to_gazebo_actuators.py -q
+```
+
+Offline UE-truth local-map fixture:
+
+```text
+Results/gazebo_ros2/offline_ue_truth_local_voxel_map_fixture/UE_TRUTH_LOCAL_VOXEL_MAP_FIXTURE.json
+Results/gazebo_ros2/offline_ue_truth_local_voxel_map_fixture/UE_TRUTH_LOCAL_VOXEL_MAP_FIXTURE.md
+Results/gazebo_ros2/offline_ue_truth_local_voxel_map_fixture/factoryenvironmentcollect/local_voxel_map_fixture_frames.jsonl
+Results/gazebo_ros2/offline_ue_truth_local_voxel_map_fixture/derelictcorridormegascans/local_voxel_map_fixture_frames.jsonl
+```
+
+This fixture translates existing UE scene-truth LiDAR points into each local
+known-map frame by subtracting `local_known_map_frame.origin_m`, then exercises
+the `pointcloud_to_local_voxel_map_ros2.py` core voxel/grid logic. It is
+offline/core-only evidence. It does not prove ROS2 `PointCloud2`, Gazebo
+runtime, TF, RViz, FAST-LIO, planner handoff, closed-loop behavior, controller
+performance, or multi-UAV readiness.
+
+WSL-side runner:
+
+```bash
+bash Scripts/gazebo/check_gazebo_ros2_dependencies.sh
+DRY_RUN=1 bash Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh
+bash Scripts/gazebo/setup_gazebo_ros2_dependencies.sh
+RUN_GAZEBO=1 RUN_ROS2_BRIDGE=1 RUN_ACTUATOR_BRIDGE=1 RUN_LOCAL_MAP=1 RUN_TOPIC_CHECK=1 RUN_RATE_CHECK=1 RUN_STATIC_TF=1 RUN_TF_CHECK=1 TIMEOUT_SECONDS=20 bash Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh
+RESULT_DIR=Results/gazebo_ros2/sunray150_gazebo_ros2_actuator_handoff RUNTIME_GATE_PROFILE=actuator_handoff RUN_GAZEBO=1 RUN_ROS2_BRIDGE=1 RUN_ACTUATOR_BRIDGE=1 RUN_CONTROLLER_COMMAND=1 RUN_ACTUATOR_COMMAND_CHECK=1 RUN_LOCAL_MAP=0 RUN_TOPIC_CHECK=0 RUN_RATE_CHECK=0 RUN_STATIC_TF=0 RUN_TF_CHECK=0 TIMEOUT_SECONDS=20 bash Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh
+RESULT_DIR=Results/gazebo_ros2/sunray150_gazebo_ros2_controller_output_node_handoff RUNTIME_GATE_PROFILE=controller_output_node_handoff RUN_GAZEBO=1 RUN_ROS2_BRIDGE=1 RUN_ACTUATOR_BRIDGE=1 RUN_CONTROLLER_OUTPUT_NODE=1 RUN_CONTROLLER_OUTPUT_FIXTURE=1 RUN_ACTUATOR_COMMAND_CHECK=1 RUN_LOCAL_MAP=0 RUN_TOPIC_CHECK=0 RUN_RATE_CHECK=0 RUN_STATIC_TF=0 RUN_TF_CHECK=0 BUILD_MOSIM_ROS2_MSGS=0 TIMEOUT_SECONDS=20 bash Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh
+RESULT_DIR=Results/gazebo_ros2/sunray150_gazebo_ros2_fastlio_planner_input RUNTIME_GATE_PROFILE=fastlio_planner_input RUN_GAZEBO=1 RUN_ROS2_BRIDGE=1 RUN_FASTLIO_PLANNER_INPUT_ADAPTER=1 RUN_TOPIC_CHECK=1 RUN_RATE_CHECK=1 RUN_STATIC_TF=1 RUN_TF_CHECK=1 bash Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh
+RESULT_DIR=Results/gazebo_ros2/sunray150_gazebo_ros2_spark_fastlio_truth_eval RUNTIME_GATE_PROFILE=spark_fastlio_localization RUN_GAZEBO=1 RUN_ROS2_BRIDGE=1 RUN_FASTLIO_PLANNER_INPUT_ADAPTER=1 RUN_SPARK_FASTLIO=1 RUN_FASTLIO_TRUTH_EVAL=1 RUN_GAZEBO_TRUTH_POSE=1 RUN_TOPIC_CHECK=1 RUN_RATE_CHECK=0 RUN_STATIC_TF=1 RUN_TF_CHECK=1 TIMEOUT_SECONDS=20 bash Scripts/gazebo/run_sunray150_gazebo_ros2_smoke.sh
+bash Scripts/gazebo/run_sunray150_hover_hold_closed_loop.sh
+RESULT_DIR=Results/gazebo_ros2/gazebo_map_review_manual START_PAUSED=1 BACKGROUND=1 bash Scripts/gazebo/launch_gazebo_map_review.sh
+```
+
+Gazebo WSL GUI/runtime rules:
+
+- `Scripts/gazebo/setup_gazebo_wsl_env.sh` is the shared WSL Gazebo environment
+  wrapper. It defaults to WSLg NVIDIA D3D12 OpenGL and project-local
+  `Config/gazebo/models` lookup only.
+- `LIBGL_ALWAYS_SOFTWARE=1` is no longer the normal Gazebo GUI/runtime path.
+  Use `MOSIM_GAZEBO_SOFTWARE_RENDERING=1` only for bounded fallback
+  diagnostics.
+- Do not inherit global `GZ_SIM_RESOURCE_PATH` or `IGN_GAZEBO_RESOURCE_PATH`
+  unless a task explicitly sets `MOSIM_GAZEBO_INHERIT_RESOURCE_PATHS=1`.
+
+Current output:
+
+```text
+Results/gazebo_ros2/yunzong_planning_test_sunray150_assembled_sensor_local_map/RUNTIME_STATUS.json
+Results/gazebo_ros2/yunzong_planning_test_sunray150_assembled_sensor_local_map/RUN_MANIFEST.json
+Results/gazebo_ros2/yunzong_planning_test_sunray150_assembled_map_review/RUNTIME_STATUS.json
+Results/gazebo_ros2/yunzong_planning_test_sunray150_assembled_map_review/RUN_MANIFEST.json
+Results/gazebo_ros2/yunzong_planning_test_sunray150_assembled_map_review/map_review/GAZEBO_ROS2_MAP_REVIEW.json
+Results/gazebo_ros2/yunzong_planning_test_sunray150_assembled_map_review/map_review/figures/gazebo_lidar_pointcloud_3d.png
+Results/gazebo_ros2/yunzong_planning_test_sunray150_assembled_map_review/map_review/figures/gazebo_local_occupancy_voxels_3d.png
+Results/gazebo_ros2/yunzong_planning_test_sunray150_assembled_map_review/map_review/figures/gazebo_local_occupancy_grid_2d.png
+Results/gazebo_review/yunzong_assembled_gui_capture/gazebo_full_world_20260615_175647.png
+Results/gazebo_ros2/gazebo_map_review_20260615_gpu_path_003/launch_env.json
+Results/gazebo_ros2/gazebo_map_review_20260615_gpu_path_003/glx_renderer.txt
+Results/gazebo_ros2/gazebo_map_review_20260615_gpu_path_003/screenshots/gazebo_window_close_printwindow_1781531516.png
+Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/PREFLIGHT.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/TOPIC_CONTRACT.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/RUNTIME_STATUS.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_smoke/RUN_MANIFEST.json
+Results/gazebo_ros2/sunray150_single_uav_competition_light_sensor_local_map_truth_20260618_007/RUNTIME_STATUS.json
+Results/gazebo_ros2/sunray150_single_uav_competition_light_sensor_local_map_truth_20260618_007/RUN_MANIFEST.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_actuator_handoff/RUNTIME_STATUS.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_actuator_handoff/RUN_MANIFEST.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_controller_output_node_handoff/RUNTIME_STATUS.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_controller_output_node_handoff/RUN_MANIFEST.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_fastlio_planner_input/RUNTIME_STATUS.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_fastlio_planner_input/RUN_MANIFEST.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_fastlio_planner_input/fastlio_planner_input_adapter.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_spark_fastlio_truth_eval/RUNTIME_STATUS.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_spark_fastlio_truth_eval/RUN_MANIFEST.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_spark_fastlio_truth_eval/FASTLIO_TRUTH_ERROR_EVAL.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_spark_fastlio_truth_eval/fastlio_runtime/FASTLIO_RUNTIME_RECORDING.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_hover_hold_closed_loop_pre_acceptance_005/RUNTIME_STATUS.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_hover_hold_closed_loop_pre_acceptance_005/RUN_MANIFEST.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_hover_hold_closed_loop_pre_acceptance_005/GAZEBO_HOVER_HOLD_CLOSED_LOOP_EVAL.json
+Results/gazebo_ros2/sunray150_gazebo_ros2_hover_hold_closed_loop_pre_acceptance_005/hover_hold_controller.json
+Results/gazebo_ros2/dependency_check/DEPENDENCY_STATUS.json
+Results/gazebo_ros2/dependency_check/DEPENDENCY_SETUP_PLAN.json
+Results/gazebo_ros2/dependency_check/DEPENDENCY_SETUP_RESULT.json
+Results/gazebo_ros2/single_uav_evidence_bundle_20260618/SINGLE_UAV_EVIDENCE_BUNDLE.json
+Results/gazebo_ros2/single_uav_evidence_bundle_20260618/README.md
+Results/gazebo_ros2/single_uav_evidence_bundle_20260618/figures/
+```
+
+`BLOCKER.json` appears only for blocked or dry-run attempts in a result
+directory and is removed after a later successful gate in that directory.
+
+Current 2026-06-15 dependency and runtime status:
+
+```text
+DEPENDENCY_STATUS.status: ready
+gazebo_sim_cli_command: ign gazebo
+gazebo_cli_version: 6.16.0
+ros_gz_bridge_prefix: /opt/ros/humble
+RUNTIME_STATUS.status: runtime_smoke_passed
+RUN_MANIFEST.quality_status: runtime_smoke_passed
+assembled YunZong sensor/local-map evidence: Results/gazebo_ros2/yunzong_planning_test_sunray150_assembled_sensor_local_map/RUNTIME_STATUS.json
+assembled Gazebo GUI evidence: Results/gazebo_review/yunzong_assembled_gui_capture/gazebo_full_world_20260615_175647.png
+assembled vehicle_id: sunray150_assembled
+assembled LiDAR frame: sunray150_assembled/base_link/mid360_lidar
+assembled LiDAR sample_point_count: 11520
+assembled local voxels: /mosim/local_occupancy_voxels frame=map point_count=1213
+assembled local grid: /mosim/local_occupancy_grid frame=map size=120x120
+assembled static TF: map -> sunray150_assembled/base_link/mid360_lidar
+assembled measured rates: IMU about 200.451Hz, LiDAR about 9.991Hz, local voxels about 3.837Hz
+assembled map-review evidence: Results/gazebo_ros2/yunzong_planning_test_sunray150_assembled_map_review/map_review/GAZEBO_ROS2_MAP_REVIEW.json
+assembled map-review preview point cloud: 11520 raw points, 7469 finite points
+assembled map-review preview local voxels: 1222 finite occupied voxel points
+assembled map-review preview local grid: 120x120, occupied_count=402
+sensor/local-map immutable refresh: Results/gazebo_ros2/sunray150_single_uav_competition_light_sensor_local_map_truth_20260618_007/RUNTIME_STATUS.json
+LiDAR PointCloud2 topic: /mosim/gazebo/lidar_points/points
+LiDAR frame: sunray150/base_link/mid360_lidar
+LiDAR sample_point_count: 11520
+local voxels: /mosim/local_occupancy_voxels frame=map point_count=557 in the immutable refresh
+local grid: /mosim/local_occupancy_grid frame=map size=120x120
+static TF: map -> sunray150/base_link/mid360_lidar
+measured rates in the immutable refresh: IMU about 191.742Hz, LiDAR about 9.568Hz, local voxels about 4.795Hz
+actuator handoff: gate_profile=actuator_handoff, gate_passed=true
+actuator expected velocity: [4000, 4000, 4000, 4000]
+actuator ROS2 echo match: true
+actuator Gazebo echo match: true
+controller output node handoff: gate_profile=controller_output_node_handoff, gate_passed=true
+controller output topic: /mosim/sunray150/controller_output
+controller output command: [0.5, 0.5, 0.5, 0.5]
+controller output adapter node status: published
+controller output ROS2/Gazebo echo match: true
+FAST-LIO/planner input gate: gate_profile=fastlio_planner_input, gate_passed=true
+FAST-LIO outputs: /mosim/fastlio/livox/lidar, /mosim/fastlio/livox/imu
+Sunray-compatible outputs: /uav1/livox/lidar, /uav1/livox/imu
+planner input-shape outputs: /uav1/global_points, /mosim/planner/global_points, /uav1/sunray/gazebo_pose, /mosim/planner/odom
+FAST-LIO input rates: IMU about 198.533Hz, LiDAR about 9.931Hz
+adapter tf_lookup_failures: 0
+FAST-LIO truth-error: gate_passed=true, matched_count=53, direct RMSE=0.042778m, origin-aligned RMSE=0.004144m, origin-aligned p95=0.006891m
+FAST-LIO truth-error warning: absolute_timestamp_overlap_missing
+hover-hold pre-acceptance: gate_passed=true, controller_samples=275, adapter_published=275, truth_samples=912, duration=15.48s
+hover-hold altitude: final z error=0.353641m, max z error=0.705901m, min z=0.494099m, max z=1.002534m
+hover-hold horizontal/attitude: max XY=0m, max tilt=0rad
+single-UAV evidence bundle: status=single_uav_evidence_bundle_ready, drifted_gates=[], not_passed_gates=[]
+```
+
+These are bounded Gazebo+ROS2 validation results. The sensor/local-map profile
+proves the Gazebo process, ros_gz bridge, PointCloud2 sample, same-run static
+TF, local voxel output, local grid output, and measured topic rates for the
+current lane. The actuator-handoff profile proves only bounded
+ControllerOutput payload visibility on both the ROS2 actuator topic and the
+Gazebo transport actuator topic. The controller-output node handoff profile
+adds the ROS2 `mosim_msgs/msg/ControllerOutput` publisher-to-adapter-node path
+before that same actuator echo check. The FAST-LIO/planner input-shape profile
+adds bounded republishing of Gazebo MID360 LiDAR/IMU into MoSim and
+Sunray-compatible FAST-LIO/planner input topics. They do not prove FAST-LIO
+localization. The FAST-LIO truth-error profile adds estimator odometry versus
+same-run Gazebo pose truth quality evidence for a bounded stationary smoke; it
+does not prove planner handoff, setpoint publication, or flight authority. The
+hover-hold profile adds a bounded single-UAV Gazebo truth-feedback
+ControllerOutput-to-actuator loop pre-acceptance; it does not prove trajectory
+tracking, final closed-loop acceptance, competition controller performance,
+final command acknowledgement, or multi-UAV readiness.
+
+YunZong/Sunray reference boundary:
+
+```text
+References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/
+References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/sunray150_with_mid360.sdf
+References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/meshes/150.dae
+References/Sunray/simulation/sunray_simulator/models/sensor_models/livox_mid360/
+References/Sunray/simulation/sunray_simulator/models/sensor_models/livox_mid360/livox_mid360.sdf
+References/Sunray/simulation/sunray_simulator/models/sensor_models/livox_mid360/scan_mode/mid360.csv
+References/Sunray/simulation/sunray_simulator/worlds/
+References/Sunray/General_Module/sunray_planner_utils/
+References/Sunray/External_Module/ego-planner-swarm/
+References/Sunray/External_Module/FUEL/
+References/Sunray/sunray_formation/
+```
+
+These paths can guide Sunray150 geometry, MID360 scan conventions, Gazebo
+worlds, RViz layouts, EGO/FUEL parameters, formation patterns, and topic
+contracts. Many YunZong/Sunray Gazebo assets are directly reusable as reference
+structure, but they must enter through MoSim-owned adapter contracts. They are
+reference material for the MoSim Fortress/ROS2 lane, not a license to
+wholesale-copy the ROS1 launch/MAVROS/PX4/Gazebo Classic stack.
+
+Current reuse rule:
+
+```text
+directly reusable after local verification:
+  SDF/model/world/mesh/sensor fragments, scan patterns, RViz display layouts,
+  planner/formation parameters, topic naming references
+
+adapter-required before use:
+  command topics, setpoint topics, controller nodes, planner outputs,
+  FAST-LIO inputs/outputs, formation-control outputs
+
+not authority for current MoSim claims:
+  ROS1 launch stack, MAVROS/PX4 ownership, Gazebo Classic runtime status,
+  upstream demo success, controller acceptance, planner readiness, closed loop
+```
+
+## 12. Single-UAV Control Batch Before Formation
 
 The current pre-formation control batch is declared by:
 
@@ -602,17 +998,19 @@ Current profile summary:
 status: diagnostic_profile_ready
 source: existing historical raw/metrics artifacts only
 live_mworks_touched: false
-PID quality: needs_iteration, health=35.6257817116079
-AWFF Sysblock quality: needs_iteration, health=36.043895052437605
-AWFF vs PID RMSE improvement: 5.881%
-worst phase for both scenarios: startup
-fault-window AWFF RMSE improvement: 8.608%
+PID quality: needs_iteration, health=18.80013043497445
+AWFF Sysblock quality: needs_iteration, health=0.0
+AWFF vs PID RMSE improvement: -380160.329%
+PID worst phase: startup
+AWFF Sysblock worst phase: late_tracking
+fault-window AWFF RMSE improvement: -129053.802%
 ```
 
 This profile narrows the next single-UAV engineering focus to startup vertical
-tracking plus rotor-loss recovery/fault-window behavior. It is not a new live
-simulation and must not be used to claim controller improvement. Current live
-AWFF/L1 full-rerun evidence is preserved as `needs_iteration`, not hidden.
+tracking for the baseline and a severe plain AWFF Sysblock failure that grows
+through the fault-window, recovery, and late-tracking phases. It is not a new
+live simulation and must not be used to claim controller improvement. Current
+plain PID/AWFF/L1-style rows remain preserved as `needs_iteration`, not hidden.
 
 The broader pure rotor1_loss15 controller candidate matrix is:
 
@@ -715,6 +1113,8 @@ Scripts/UE5/build_mworks_accepted_run_ue_replay_input_bundle.py
 Scripts/tests/test_mworks_accepted_run_ue_replay_input_bundle.py
 Scripts/UE5/smoke_mworks_accepted_run_ue_state_stream_loopback.py
 Scripts/tests/test_mworks_accepted_run_ue_state_stream_loopback.py
+Scripts/quality/check_ue_truth_replay_contract.py
+Scripts/tests/test_ue_truth_replay_contract.py
 Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_replay_input_bundle.json
 Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_replay_input_bundle.md
 Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_state_stream_loopback.json
@@ -726,6 +1126,8 @@ Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocatio
 Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/ue_runtime_replay_probe_summary.json
 Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/screenshots/capture_manifest.json
 Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/screenshots_after_stream/capture_manifest.json
+Results/unreal_scene_mapping/UE_TRUTH_REPLAY_CONTRACT_CHECK.json
+Results/unreal_scene_mapping/UE_TRUTH_REPLAY_CONTRACT_CHECK.md
 ```
 
 Current UE input bundle, local state-stream loopback, build-only, and bounded
@@ -760,6 +1162,13 @@ runtime_replay_sunray_first_frame_applied: true
 runtime_replay_sunray_visible: true
 runtime_replay_sunray_hidden_in_game: false
 runtime_replay_sunray_bounds_nonzero: true
+ue_truth_replay_contract_status: ue_truth_replay_static_ready_runtime_blocked_or_degraded
+ue_truth_replay_contract_factory_path_cells: 34
+ue_truth_replay_contract_factory_lidar_points: 1934
+ue_truth_replay_contract_derelict_path_cells: 45
+ue_truth_replay_contract_derelict_lidar_points: 2068
+ue_truth_replay_runtime_ready: false
+ue_truth_replay_runtime_blocker: unreal_editor_listener_unavailable
 ```
 
 The bundle validates the replay input contract for
@@ -773,12 +1182,23 @@ command-echo acknowledgement, not final/manual visual acceptance, not
 ROS2/FAST-LIO evidence, not controller performance from UE, not final material
 acceptance, and not multi-UAV readiness.
 
-## 12. Formation Structure Entry Point
+`Scripts/quality/check_ue_truth_replay_contract.py` is the current aggregate
+file-level gate for UE truth/replay prep. It checks Factory and Derelict
+scene truth occupancy, render replay, local known-map frames, local plan frames,
+LiDAR point frames, FAST-LIO replay input handoff, MWORKS-vs-UE scene-truth
+collision, and the accepted MWORKS run's UE replay/loopback/runtime-ingest
+evidence. A pass
+means the file contract is ready for downstream UE/ROS2/Gazebo preparation; it
+does not start UE/MWORKS/ROS2/Gazebo/RViz/FAST-LIO and does not prove runtime
+success, `planner_ready`, `closed_loop`, controller performance from UE,
+material acceptance, or multi-UAV readiness.
+
+## 13. Formation Structure Entry Point
 
 The architecture entry point for future multi-UAV work is:
 
 ```text
-Docs/Design/09_多机编队架构与数据设计.md
+Docs/Design/MoSim规划与编队控制接口规范.md
 ```
 
 It defines these stable formation contracts:
@@ -792,7 +1212,7 @@ It defines these stable formation contracts:
 - no runtime database dependency for the first MWORKS-hosted formation route.
 
 Current accepted historical C2 evidence is recorded separately in
-`Docs/Design/08_赛题闭环实现证据矩阵.md`. That evidence does not remove the
+`Docs/Design/赛题.md`. That evidence does not remove the
 current engineering rule above: do not start new formation implementation work
 until the selected single-UAV and MWORKS live gates needed for the next claim
 are clean.

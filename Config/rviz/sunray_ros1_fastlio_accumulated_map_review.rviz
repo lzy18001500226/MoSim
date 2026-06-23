@@ -1,0 +1,230 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+  - Class: rviz/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Name: Grid
+      Plane: XY
+      Plane Cell Count: 80
+      Reference Frame: camera_init
+      Value: true
+    - Class: rviz/PointCloud2
+      Alpha: 0.65
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 3
+        Min Value: -1
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Name: FAST-LIO Obstacle Map Filtered Review
+      Position Transformer: XYZ
+      Queue Size: 3
+      Selectable: true
+      Size (Pixels): 2
+      Size (m): 0.01
+      Style: Points
+      Topic: /mosim/fastlio/laser_map_obstacles
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: rviz/PointCloud2
+      Alpha: 0.85
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 3
+        Min Value: -1
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Name: FAST-LIO Raw Accumulated Map
+      Position Transformer: XYZ
+      Queue Size: 3
+      Selectable: true
+      Size (Pixels): 2
+      Size (m): 0.01
+      Style: Points
+      Topic: /Laser_map
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: rviz/PointCloud2
+      Alpha: 0.28
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 3
+        Min Value: -1
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Color Transformer: FlatColor
+      Color: 255; 255; 255
+      Decay Time: 0
+      Enabled: false
+      Name: FAST-LIO Current Scan Diagnostic
+      Position Transformer: XYZ
+      Queue Size: 2
+      Selectable: true
+      Size (Pixels): 1
+      Size (m): 0.006
+      Style: Points
+      Topic: /cloud_registered
+      Use Fixed Frame: true
+      Value: false
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 0; 190; 255
+      Enabled: false
+      Head Diameter: 0.18
+      Head Length: 0.12
+      Length: 0.2
+      Line Style: Lines
+      Line Width: 0.045
+      Name: FAST-LIO Raw Trajectory Diagnostic
+      Pose Color: 0; 190; 255
+      Pose Style: None
+      Topic: /path
+      Value: false
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 255; 40; 40
+      Enabled: true
+      Head Diameter: 0.16
+      Head Length: 0.1
+      Length: 0.18
+      Line Style: Lines
+      Line Width: 0.055
+      Name: FAST-LIO Body Center Trajectory
+      Pose Color: 255; 40; 40
+      Pose Style: None
+      Topic: /mosim/fastlio/uav_path
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /mosim/fastlio/uav_axes
+      Name: FAST-LIO Body Center Axes
+      Namespaces:
+        body_x_forward: true
+        body_y_left: true
+        body_z_up: true
+      Queue Size: 10
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 255; 40; 40
+      Enabled: false
+      Head Diameter: 0.18
+      Head Length: 0.12
+      Length: 0.2
+      Line Style: Lines
+      Line Width: 0.05
+      Name: Control Truth Trajectory Diagnostic
+      Pose Color: 255; 40; 40
+      Pose Style: None
+      Topic: /mosim/px4ctrl/truth_path
+      Value: false
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 255; 90; 90
+      Enabled: false
+      Head Diameter: 0.18
+      Head Length: 0.12
+      Length: 0.2
+      Line Style: Lines
+      Line Width: 0.05
+      Name: Sunray Truth Trajectory Diagnostic
+      Pose Color: 255; 90; 90
+      Pose Style: None
+      Topic: /mosim/sunray/truth_path
+      Value: false
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 40; 230; 80
+      Enabled: false
+      Head Diameter: 0.18
+      Head Length: 0.12
+      Length: 0.2
+      Line Style: Lines
+      Line Width: 0.04
+      Name: Control Reference Trajectory Diagnostic
+      Pose Color: 40; 230; 80
+      Pose Style: None
+      Topic: /mosim/px4ctrl/reference_path
+      Value: false
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 80; 255; 120
+      Enabled: false
+      Head Diameter: 0.18
+      Head Length: 0.12
+      Length: 0.2
+      Line Style: Lines
+      Line Width: 0.04
+      Name: Sunray Reference Trajectory Diagnostic
+      Pose Color: 80; 255; 120
+      Pose Style: None
+      Topic: /mosim/sunray/reference_path
+      Value: false
+    - Class: rviz/Odometry
+      Angle Tolerance: 0.1
+      Class: rviz/Odometry
+      Color: 255; 220; 0
+      Enabled: false
+      Keep: 1
+      Length: 0.35
+      Name: FAST-LIO / Control Odometry Diagnostic
+      Position Tolerance: 0.1
+      Shape: Arrow
+      Topic: /mosim/fastlio/odom_aligned
+      Value: false
+  Enabled: true
+  Global Options:
+    Background Color: 42; 42; 42
+    Default Light: true
+    Fixed Frame: camera_init
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 7
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0.8
+      Name: Current View
+      Pitch: 0.75
+      Target Frame: camera_init
+      Yaw: 0.75
+Window Geometry:
+  Height: 900
+  Width: 1150
+  X: 1180
+  Y: 40

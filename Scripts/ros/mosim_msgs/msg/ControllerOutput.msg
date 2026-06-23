@@ -1,0 +1,11 @@
+std_msgs/Header header
+uint32 sequence
+string vehicle_id
+string command_type
+float64[] command
+string command_frame
+string mode
+string status
+string backend
+bool saturation
+string source_authority

@@ -1,0 +1,142 @@
+Panels: []
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.35
+      Cell Size: 1
+      Class: rviz_default_plugins/Grid
+      Color: 150; 150; 155
+      Enabled: true
+      Line Style:
+        Line Width: 0.03
+        Value: Lines
+      Name: Ground grid
+      Plane: XY
+      Plane Cell Count: 40
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Frame Timeout: 15
+      Marker Scale: 0.35
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: false
+      Update Interval: 0
+      Value: true
+    - Class: rviz_common/Group
+      Displays:
+        - Alpha: 0.45
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 3
+            Min Value: -1
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz_default_plugins/PointCloud2
+          Color: 255; 210; 40
+          Color Transformer: AxisColor
+          Decay Time: 1
+          Enabled: true
+          Invert Rainbow: false
+          Max Intensity: 3
+          Min Intensity: -0.5
+          Name: Local occupancy voxels
+          Position Transformer: XYZ
+          Queue Size: 20
+          Selectable: true
+          Size (Pixels): 2
+          Size (m): 0.12
+          Style: Boxes
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /mosim/local_occupancy_voxels
+          Use rainbow: true
+          Use Fixed Frame: true
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz_default_plugins/Path
+          Color: 255; 45; 45
+          Enabled: true
+          Head Diameter: 0.18
+          Head Length: 0.12
+          Length: 0.2
+          Line Style: Lines
+          Line Width: 0.045
+          Name: Gazebo actual UAV center path
+          Pose Color: 255; 45; 45
+          Pose Style: None
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /mosim/review/actual_path
+          Value: true
+        - Alpha: 0.9
+          Buffer Length: 1
+          Class: rviz_default_plugins/Path
+          Color: 40; 230; 90
+          Enabled: true
+          Head Diameter: 0.18
+          Head Length: 0.12
+          Length: 0.2
+          Line Style: Lines
+          Line Width: 0.035
+          Name: Figure-8 reference path
+          Pose Color: 40; 230; 90
+          Pose Style: None
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /mosim/review/reference_path
+          Value: true
+      Enabled: true
+      Name: Local map and trajectory review
+  Enabled: true
+  Global Options:
+    Background Color: 24; 24; 28
+    Default Light: true
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+      Hide Inactive Objects: true
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+    - Class: rviz_default_plugins/PublishPoint
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 15
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.06
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 1
+      Name: Current View
+      Pitch: 0.85
+      Target Frame: map
+      Value: Orbit (rviz2)
+      Yaw: 0.78
+    Saved: []
+Window Geometry:
+  Height: 900
+  Width: 1200
+  X: 1020
+  Y: 40

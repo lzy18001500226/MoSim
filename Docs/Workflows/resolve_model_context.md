@@ -45,7 +45,7 @@ Write findings to the smallest useful place:
 
 ```text
 Docs/Index/variable_mapping.md
-Docs/Design/02_模型接口与运行流程.md
+Docs/Design/MoSim统一控制接口规范.md
 Results/model_checks/{model_or_component}/logs/{experiment_id}_model_context.md
 commit message / task summary
 ```

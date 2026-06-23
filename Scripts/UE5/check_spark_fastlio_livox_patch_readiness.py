@@ -138,6 +138,20 @@ def check(candidate: Path) -> dict[str, Any]:
         "Mid360 evidence must go through a Livox-aware path, not only Ouster/Kimera/Velodyne PointCloud2 cases.",
         [rel(files["preprocess_cpp"])],
     )
+    add(
+        "mosim_startup_diagnostics_not_duplicated",
+        texts["spark_cpp"].count("MoSim startup params:") == 1,
+        "The generated startup diagnostics block must be idempotent; repeated patch runs must not duplicate it.",
+        [rel(files["spark_cpp"])],
+    )
+    add(
+        "mosim_runtime_diagnostics_not_duplicated",
+        texts["spark_cpp"].count("Process LiDAR/IMU:") == 1
+        and texts["preprocess_cpp"].count("Livox preprocess:") == 1
+        and texts["preprocess_cpp"].count("Livox avia_handler entry:") == 1,
+        "Generated runtime diagnostics must be inserted exactly once in the Livox preprocessing path.",
+        [rel(files["spark_cpp"]), rel(files["preprocess_cpp"])],
+    )
 
     blockers = [item["name"] for item in checks if not item["passed"]]
     return {

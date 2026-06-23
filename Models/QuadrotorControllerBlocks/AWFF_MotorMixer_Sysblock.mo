@@ -35,55 +35,55 @@ model AWFF_MotorMixer_Sysblock "MWORKS.Sysblock quadrotor motor mixer structure"
   end ModelWorkspace;
 
 equation
-  connect(roll_cmd, neg_roll.u)
+  connect(roll_cmd, neg_roll.u) 
     annotation(Line(origin={-180,35},points={{-50,15},{48,-15}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(pitch_cmd, neg_pitch.u)
+  connect(pitch_cmd, neg_pitch.u) 
     annotation(Line(origin={-180,-35},points={{-50,15},{48,-15}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(yaw_cmd, neg_yaw.u)
+  connect(yaw_cmd, neg_yaw.u) 
     annotation(Line(origin={-180,-105},points={{-50,15},{48,-15}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
 
-  connect(thrust_ref, motor1_sum.u1)
+  connect(thrust_ref, motor1_sum.u1) 
     annotation(Line(origin={-95,120},points={{-135,0},{133,0}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(roll_cmd, motor1_sum.u2)
+  connect(roll_cmd, motor1_sum.u2) 
     annotation(Line(origin={-95,80},points={{-135,-30},{95,-30},{95,30},{133,30}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(neg_pitch.y, motor1_sum.u3)
+  connect(neg_pitch.y, motor1_sum.u3) 
     annotation(Line(origin={-35,35},points={{-73,-85},{15,-85},{15,65},{73,65}},color={0,0,0}));
-  connect(neg_yaw.y, motor1_sum.u4)
+  connect(neg_yaw.y, motor1_sum.u4) 
     annotation(Line(origin={-35,0},points={{-73,-120},{35,-120},{35,90},{73,90}},color={0,0,0}));
 
-  connect(thrust_ref, motor2_sum.u1)
+  connect(thrust_ref, motor2_sum.u1) 
     annotation(Line(origin={-95,85},points={{-135,35},{80,35},{80,-35},{133,-35}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(neg_roll.y, motor2_sum.u2)
+  connect(neg_roll.y, motor2_sum.u2) 
     annotation(Line(origin={-35,30},points={{-73,-10},{35,-10},{35,0},{73,0}},color={0,0,0}));
-  connect(pitch_cmd, motor2_sum.u3)
+  connect(pitch_cmd, motor2_sum.u3) 
     annotation(Line(origin={-95,10},points={{-135,-30},{90,-30},{90,20},{133,20}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(neg_yaw.y, motor2_sum.u4)
+  connect(neg_yaw.y, motor2_sum.u4) 
     annotation(Line(origin={-35,-40},points={{-73,-80},{20,-80},{20,70},{73,70}},color={0,0,0}));
 
-  connect(thrust_ref, motor3_sum.u1)
+  connect(thrust_ref, motor3_sum.u1) 
     annotation(Line(origin={-95,45},points={{-135,75},{65,75},{65,-75},{133,-75}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(neg_roll.y, motor3_sum.u2)
+  connect(neg_roll.y, motor3_sum.u2) 
     annotation(Line(origin={-35,-10},points={{-73,30},{20,30},{20,-20},{73,-20}},color={0,0,0}));
-  connect(pitch_cmd, motor3_sum.u3)
+  connect(pitch_cmd, motor3_sum.u3) 
     annotation(Line(origin={-95,-30},points={{-135,10},{95,10},{95,-20},{133,-20}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(yaw_cmd, motor3_sum.u4)
+  connect(yaw_cmd, motor3_sum.u4) 
     annotation(Line(origin={-95,-65},points={{-135,-25},{90,-25},{90,35},{133,35}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
 
-  connect(thrust_ref, motor4_sum.u1)
+  connect(thrust_ref, motor4_sum.u1) 
     annotation(Line(origin={-95,0},points={{-135,120},{50,120},{50,-120},{133,-120}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(roll_cmd, motor4_sum.u2)
+  connect(roll_cmd, motor4_sum.u2) 
     annotation(Line(origin={-95,-35},points={{-135,85},{65,85},{65,-75},{133,-75}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(pitch_cmd, motor4_sum.u3)
+  connect(pitch_cmd, motor4_sum.u3) 
     annotation(Line(origin={-95,-70},points={{-135,50},{80,50},{80,-40},{133,-40}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(yaw_cmd, motor4_sum.u4)
+  connect(yaw_cmd, motor4_sum.u4) 
     annotation(Line(origin={-95,-105},points={{-135,15},{95,15},{95,15},{133,15}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
 
-  connect(motor1_sum.y, y)
+  connect(motor1_sum.y, y) 
     annotation(Line(origin={110,120},points={{-48,0},{50,0}},color={0,0,0}));
-  connect(motor2_sum.y, y1)
+  connect(motor2_sum.y, y1) 
     annotation(Line(origin={110,40},points={{-48,0},{50,0}},color={0,0,0}));
-  connect(motor3_sum.y, y2)
+  connect(motor3_sum.y, y2) 
     annotation(Line(origin={110,-40},points={{-48,0},{50,0}},color={0,0,0}));
-  connect(motor4_sum.y, y3)
+  connect(motor4_sum.y, y3) 
     annotation(Line(origin={110,-120},points={{-48,0},{50,0}},color={0,0,0}));
 end AWFF_MotorMixer_Sysblock;

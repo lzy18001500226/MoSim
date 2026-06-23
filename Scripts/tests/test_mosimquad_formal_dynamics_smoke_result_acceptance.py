@@ -25,12 +25,22 @@ def load_module():
 
 
 class FormalDynamicsSmokeResultAcceptanceTest(unittest.TestCase):
-    def test_current_workspace_is_pending_live_results(self) -> None:
+    def test_current_workspace_has_accepted_live_smoke_results(self) -> None:
         module = load_module()
         summary = module.build_summary(module.SCENARIO_DIR)
+        self.assertEqual(summary["status"], "passed")
+        self.assertEqual(summary["present_result_count"], 7)
+        self.assertEqual(summary["scenario_count"], 7)
+        self.assertEqual(summary["missing_result_count"], 0)
+        self.assertEqual(summary["findings"], [])
+
+    def test_empty_temp_scenario_dir_is_pending_live_results(self) -> None:
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            summary = module.build_summary(Path(tmp))
         self.assertEqual(summary["status"], "pending_live_results")
         self.assertEqual(summary["present_result_count"], 0)
-        self.assertEqual(summary["scenario_count"], 7)
+        self.assertEqual(summary["scenario_count"], 0)
         self.assertEqual(summary["findings"], [])
 
     def test_complete_temp_result_passes_without_tracking_claims(self) -> None:
@@ -56,7 +66,7 @@ class FormalDynamicsSmokeResultAcceptanceTest(unittest.TestCase):
             target.write_text(text, encoding="utf-8", newline="\n")
             headers = [
                 "time",
-                "dynamics_thrust_effectiveness",
+                "dynamics_rotor2_thrust_effectiveness",
                 "dynamics_minimum_thrust_effectiveness",
                 "total_thrust_loss",
                 "roll_moment_imbalance",

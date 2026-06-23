@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <model name="mid360_lidar_imu_sensor_block">
+    <link name="sensor_mount">
+      <sensor name="forward_imu" type="imu">
+        <topic>/mosim/gazebo/imu</topic>
+        <update_rate>200</update_rate>
+        <always_on>true</always_on>
+        <visualize>false</visualize>
+      </sensor>
+
+      <sensor name="mid360_lidar" type="gpu_lidar">
+        <pose>0.035 0 0.045 0 0 0</pose>
+        <topic>/mosim/gazebo/lidar_points</topic>
+        <update_rate>10</update_rate>
+        <always_on>true</always_on>
+        <visualize>false</visualize>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>500</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.1415926</min_angle>
+              <max_angle>3.1415926</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>40</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.122173</min_angle>
+              <max_angle>0.907571</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>0.1</min>
+            <max>40.0</max>
+            <resolution>0.02</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </lidar>
+      </sensor>
+    </link>
+  </model>
+</sdf>

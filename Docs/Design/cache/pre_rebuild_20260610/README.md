@@ -67,4 +67,4 @@ MoSim 无人机仿真系统详细设计文档.docx
 ```
 
 The active root design entrypoint is now `Docs/Design/README.md`. The rebuild
-audit remains at `Docs/Design/design_rebuild_audit_20260610.md`.
+audit is cached at `Docs/Design/cache/design_rebuild_audit_20260610.md`.

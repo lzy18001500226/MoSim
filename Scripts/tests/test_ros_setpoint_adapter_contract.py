@@ -99,6 +99,7 @@ def test_ros2_package_metadata_and_topics() -> None:
         "trajectory_flag",
         "yaw_dot",
         "source_frame_alias",
+        "min_position_z_m",
     ]:
         if text not in converter:
             raise AssertionError(text)

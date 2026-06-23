@@ -61,9 +61,11 @@ truth; MoSim cache paths are documented in
    chat reply or intermediate observation. Deleted WeChat gateway/message-path
    threads are historical only and must not be scanned, no-oped, recovered, or
    used unless the user explicitly restores a scoped WeChat diagnosis route.
-7. P0 progress means moving MWORKS R1/R2, ROS2 R1/R2, and UE R1/R2 gates
-   forward. Sunray/PBR remains frozen unless the user reopens it. Support lanes
-   cannot mask idle P0 engineering work.
+7. Current single-thread runtime review work is the Sunray ROS1 lane under
+   `Docs/Workflows/sunray_ros1_current_runtime_lane.md`. Do not use the old
+   ROS2/PX4/x500 route, downloaded replacement FAST-LIO source, fake point
+   clouds, or equivalent-substitute runtimes as current evidence. Support lanes
+   cannot mask the active engineering blocker.
 8. MWORKS activation/window patrol is owned by CoAgentOps. MWORKS engineering
    departments stop on observed login/license/authorization/GUI-error/unknown
    blocking states and return blockers instead of retrying solver/model work.
@@ -96,8 +98,13 @@ truth; MoSim cache paths are documented in
 
 ## 2. Current Visible Routes
 
-Canonical routing lives in `CoAgent/dispatch/department_threads.json`. Current
-named corrections:
+Canonical routing lives in `CoAgent/dispatch/department_threads.json`. This is
+a capability/ownership table, not the current execution selector. If the board
+declares single-thread mode or a narrower current lane, follow that board lane
+first and do not dispatch visible departments unless the user/PMO explicitly
+reopens dispatch.
+
+Current named corrections:
 
 | Route | Current Rule |
 |---|---|
@@ -132,6 +139,7 @@ publication.
 | CoAgentOps patrol, durable-start liveness, main-shell pending indicators, dead-thread recovery, bounded dispatch, R2/R3 failover, MWORKS window patrol | `CoAgent/docs/operating/coagent_ops_patrol_workflow.md`; MoSim adapter at `Docs/Workflows/coagent_ops_patrol_workflow.md` |
 | Cross-thread packets, dispatch ticket SLO, semantic boundary, local goal/sub-agent planning fields | `CoAgent/dispatch/communication_contract.md` |
 | MoSim visible-department domain gates for MWORKS/ROS2/UE/Sunray dispatch | `Docs/Workflows/mosim_visible_dispatch_adapter.md` |
+| Current Sunray ROS1/Gazebo/RViz single-thread runtime lane | `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; source index at `Docs/Index/sunray_migration_index.md` |
 | Current visible departments and owner boundaries | `CoAgent/docs/operating/org_operating_model.md`; MoSim adapter at `Docs/Workflows/org_operating_model.md` |
 | Historical/recovery delegated-task trace | `Docs/Workflows/agent_task_ledger.md` |
 | Session-memory promotion/rejection | `CoAgent/docs/operating/session_memory_migration.md`; MoSim cache paths in `Docs/Workflows/session_memory_migration.md` |
@@ -171,16 +179,20 @@ Core principles:
    and metrics as replaceable modules.
 3. Every claim needs evidence: source, simulation logs, result files, metrics,
    screenshots, figures, or packets.
-4. Prefer reproducible workflows and report-ready outputs.
-5. Do not guess APIs; consult docs, workflows, skills, or MCP documentation.
+4. Documentation fixes are not project completion unless the task is explicitly
+   docs-only; after correcting a workflow, return to the smallest executable
+   evidence gate that moves the current mainline forward.
+5. Prefer reproducible workflows and report-ready outputs.
+6. Do not guess APIs; consult docs, workflows, skills, or MCP documentation.
 
 ## 5. Domain Evidence Boundaries
 
 MWORKS/Sysplorer/Syslab is the formal simulation source. UE is the scene,
-visual, sensor, collision, and review surface. ROS2/RViz/FAST-LIO is the native
-robotics transport/localization/planner review surface. None of these layers
-may claim final closed-loop success without the evidence required by its
-current workflow and packet.
+visual, sensor, collision, and review surface. The current runtime review lane
+is ROS1/Sunray/Gazebo Classic/RViz. ROS2/RViz2/FAST-LIO is historical/future
+reference unless explicitly reopened. None of these layers may claim final
+closed-loop success without the evidence required by its current workflow and
+packet.
 
 Important MWORKS rules:
 
@@ -223,7 +235,8 @@ Use project-local MWORKS skills before generic upstream skills:
 | Syslab/MATLAB porting | `Docs/Skills/Mworks/mworks-syslab-porting/SKILL.md` |
 | Tests and review | `Docs/Skills/Mworks/mworks-test-quality/SKILL.md` |
 | Report figures/replay | `Docs/Skills/Mworks/mworks-report-visualization/SKILL.md` |
-| ROS2 runtime | `Docs/Workflows/ros2_runtime_setup.md` |
+| Current Sunray ROS1 runtime review | `Docs/Workflows/sunray_ros1_current_runtime_lane.md` |
+| Historical/future ROS2 runtime | `Docs/Workflows/ros2_runtime_setup.md` |
 | UE renderer/console | `Docs/Workflows/unreal_renderer.md` |
 | Parameter identification | `Docs/Workflows/identify_quadrotor_parameters.md` |
 
@@ -275,6 +288,12 @@ When uncertain:
 3. Prefer source/current evidence over inherited claims.
 4. Prefer modular, reversible changes over coupled rewrites.
 5. Prefer clear blockers over overclaiming completion.
+6. For runtime/integration failures, do not switch to a substitute mainline to
+   make progress look successful. First inspect local source and official
+   docs; if still unclear, search relevant blogs/community notes. If the issue
+   remains unresolved, the next step would change the agreed architecture, or
+   the fix requires a broad/high-risk runtime change, stop, report the blocker,
+   and ask the user before changing direction.
 
 The project is successful when it forms a reproducible loop:
 

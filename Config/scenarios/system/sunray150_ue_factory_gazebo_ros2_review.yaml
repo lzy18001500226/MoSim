@@ -1,0 +1,285 @@
+experiment_id: sunray150_ue_factory_gazebo_ros2_review
+scene_id: ue_factoryenvironmentcollect_collision
+map_id: ue_factoryenvironmentcollect_collision_truth_voxels
+vehicle_id: sunray150
+controller_id: no_controller_visual_sensor_review
+planner_id: local_voxel_map_review
+priority: P1-B
+evidence_level: gazebo_ros2_visual_sensor_review
+quality_profile: system_validation_review
+
+claim_boundary:
+  scope:
+    - ue_truth_collision_world_review
+    - point_cloud_review
+    - voxel_map_review
+  not_claimed:
+    - ue_material_or_mesh_fidelity
+    - competition_controller_performance
+    - mworks_syslab_metric_acceptance
+    - fast_lio_localization_success
+    - planner_ready
+    - closed_loop
+    - multi_uav_readiness
+
+gazebo:
+  backend: fortress_ignition6
+  world: Config/gazebo/worlds/ue_factoryenvironmentcollect_collision_world.sdf
+  model: Config/gazebo/models/sunray150/model.sdf
+  model_config: Config/gazebo/models/sunray150/model.config
+  sensor_fragment: Config/gazebo/sensors/mid360_lidar_imu.sdf
+  resource_paths:
+    - Config/gazebo/models
+  plant_truth_source: gazebo_plant
+  command_interface: mosim_controller_output_adapter
+  ue_truth_conversion:
+    source_scene_id: factoryenvironmentcollect
+    source_occupancy_grid: Results/unreal_scene_mapping/factoryenvironmentcollect/occupancy_grid.json
+    conversion_report: Results/gazebo_ros2/ue_truth_gazebo_worlds/factoryenvironmentcollect/factoryenvironmentcollect_gazebo_world_report.json
+    world_type: collision_equivalent_static_boxes
+    center_on_start: true
+    not_preserved:
+      - ue_materials
+      - ue_mesh_detail
+      - semantic_labels
+      - final_visual_quality
+  yunzong_reuse_boundary:
+    reusable:
+      - SDF/world/model assets
+      - Mid360 sensor geometry and scan pattern references
+      - planner and formation package references
+    not_reused_as_authority:
+      - ROS1/MAVROS/PX4 command ownership
+      - Gazebo Classic launch stack
+      - controller acceptance or setpoint authority
+
+ros2:
+  distro: humble
+  setup: /opt/ros/humble/setup.bash
+  bridge:
+    package: ros_gz_bridge
+    required_executable: parameter_bridge
+  required_commands:
+    - ros2
+    - colcon
+    - gz
+  topics:
+    truth_pose: /world/mosim_ue_factoryenvironmentcollect/dynamic_pose/info
+    controller_output: /mosim/sunray150/controller_output
+    actuator_command: /sunray150/gazebo/command/motor_speed
+    imu: /mosim/gazebo/imu
+    lidar_scan: /mosim/gazebo/lidar_points
+    lidar_points: /mosim/gazebo/lidar_points/points
+    tf: /tf
+    tf_static: /tf_static
+    local_occupancy_voxels: /mosim/local_occupancy_voxels
+    local_occupancy_grid: /mosim/local_occupancy_grid
+    fastlio_lidar: /mosim/fastlio/livox/lidar
+    fastlio_imu: /mosim/fastlio/livox/imu
+    spark_fastlio_livox: /mosim/spark_fastlio/livox/lidar
+    sunray_fastlio_lidar: /uav1/livox/lidar
+    sunray_fastlio_imu: /uav1/livox/imu
+    planner_global_points: /uav1/global_points
+    mosim_planner_global_points: /mosim/planner/global_points
+    planner_odom: /uav1/sunray/gazebo_pose
+    mosim_planner_odom: /mosim/planner/odom
+    planner_setpoint: /mosim/planner/setpoint
+    planner_setpoint_adapter_status: /mosim/planner/setpoint_adapter_status
+    reference_position_cmd: /position_cmd
+    mosim_planner_position_cmd: /mosim/planner/position_cmd
+    spark_fastlio_registered_cloud: /cloud_registered
+    spark_fastlio_odometry: /odometry
+    spark_fastlio_path: /path
+  topic_gates:
+    truth_pose: optional_truth_topic_not_in_smoke_gate
+  target_rates_hz:
+    imu: 200
+    lidar_points: 10
+    local_occupancy_voxels: 2
+    fastlio_lidar: 10
+    fastlio_imu: 200
+    spark_fastlio_livox: 10
+    planner_global_points: 2
+    mosim_planner_global_points: 2
+    planner_odom: 10
+    mosim_planner_odom: 10
+    spark_fastlio_registered_cloud: 1
+    spark_fastlio_odometry: 1
+    spark_fastlio_path: 1
+  rate_gate_min_fraction: 0.5
+  controller_adapter:
+    source_contract: ControllerOutput
+    ros_message: mosim_msgs/msg/ControllerOutput
+    message_package: Scripts/ros/mosim_msgs
+    adapter_script: Scripts/ros/controller_output_to_gazebo_actuators.py
+    node_script: Scripts/ros/controller_output_to_gazebo_actuators_node.py
+    fixture_publisher_script: Scripts/ros/publish_controller_output_fixture.py
+    input_topic: /mosim/sunray150/controller_output
+    ros_actuator_topic: /sunray150/gazebo/command/motor_speed
+    gz_actuator_topic: /sunray150/gazebo/command/motor_speed
+    ros_type: actuator_msgs/msg/Actuators
+    gz_type: gz.msgs.Actuators
+    command_field: velocity
+    actuator_count: 4
+    actuator_order: [rotor_0, rotor_1, rotor_2, rotor_3]
+    mworks_source_order: [Dronefixed1, Dronefixed2, Dronefixed3, Dronefixed4]
+    mworks_spin_command_sign: [1, 1, -1, -1]
+    gazebo_turning_direction: [ccw, ccw, cw, cw]
+    command_types_supported:
+      - motor_speed
+      - normalized_motor_speed
+      - mworks_signed_visual_motor_speed
+    signed_speed_policy: magnitude_after_spin_sign_validation
+    max_rot_velocity: 8000.0
+    normalized_max_rot_velocity: 8000.0
+    runtime_gate: bounded_ros2_gazebo_actuator_topic_handoff
+    node_runtime_gate: bounded_controller_output_node_to_gazebo_actuator_handoff
+    runtime_gate_claim: topic_visibility_only_no_flight_no_closed_loop
+    bounded_runtime_command:
+      command_type: normalized_motor_speed
+      command: [0.5, 0.5, 0.5, 0.5]
+      publish_rate_hz: 5
+      publish_times: 5
+      max_command_age_s: 2.0
+      stale_guard_age_s: 10.0
+      required_echoes:
+        - controller_output_topic
+        - ros2_actuator_topic
+        - gazebo_actuator_topic
+  command_acknowledgement_without_closed_loop:
+    required_positive_evidence:
+      - controller_output_fixture.json
+      - topic_mosim_sunray150_controller_output_once.txt
+      - controller_output_adapter_node.json
+      - topic_sunray150_gazebo_command_motor_speed_once.txt
+      - gz_topic_sunray150_gazebo_command_motor_speed_once.txt
+      - command_ack_guard_report.json
+    required_negative_evidence:
+      - stale_controller_output.json
+      - stale_controller_output_report.json
+    forbidden_topics:
+      - /mosim/planner/setpoint
+      - /mosim/planner/setpoint_adapter_status
+      - /position_cmd
+      - /mosim/planner/position_cmd
+    runtime_gate: bounded_command_acknowledgement_without_closed_loop
+    runtime_gate_claim: controller_output_receipt_conversion_actuator_echo_stale_rejection_only_no_hover_no_closed_loop
+    guard_report: command_ack_guard_report.json
+    max_command_age_s: 2.0
+    stale_guard_age_s: 10.0
+  local_map_adapter:
+    script: Scripts/ros/pointcloud_to_local_voxel_map_ros2.py
+    input_topic: /mosim/gazebo/lidar_points/points
+    gazebo_lidar_scan_topic: /mosim/gazebo/lidar_points
+    gazebo_lidar_pointcloud_topic: /mosim/gazebo/lidar_points/points
+    voxel_topic: /mosim/local_occupancy_voxels
+    grid_topic: /mosim/local_occupancy_grid
+    map_frame: map
+    sensor_frame: sunray150/base_link/mid360_lidar
+    frame_assumption: input_cloud_transformed_to_map_with_same_run_tf
+    input_frame_policy: transform_input_frame_to_map_with_tf
+    expected_input_frame: sunray150/base_link/mid360_lidar
+    tf_lookup_timeout_s: 0.2
+    local_map_center_source: tf_translation_in_map
+    runtime_frame_gate: same_run_pointcloud2_header_frame_id_plus_tf_chain_to_map_required
+    voxel_size_m: 0.2
+    local_radius_m: 12.0
+    z_bounds_m: [-1.0, 5.0]
+    representation: direct_occupied_voxels_plus_projected_2d_grid
+    claim_boundary: first_review_local_map_adapter_no_esdf_no_planner_ready
+  map_review_capture:
+    script: Scripts/ros/record_gazebo_ros2_map_review.py
+    output_dir: map_review
+    duration_seconds: 8
+    sources:
+      lidar_pointcloud: /mosim/gazebo/lidar_points/points
+      local_occupancy_voxels: /mosim/local_occupancy_voxels
+      local_occupancy_grid: /mosim/local_occupancy_grid
+    runtime_gate_claim: live_gazebo_ros2_pointcloud_voxel_grid_review_only_no_ue_truth_substitution
+    not_claimed:
+      - ue_truth_map_authority
+      - planner_ready
+      - setpoint_publication
+      - closed_loop
+      - controller_performance
+      - multi_uav_readiness
+  fastlio_planner_input_adapter:
+    script: Scripts/ros/gazebo_fastlio_planner_input_adapter.py
+    input_lidar_topic: /mosim/gazebo/lidar_points/points
+    input_imu_topic: /mosim/gazebo/imu
+    fastlio_lidar_topic: /mosim/fastlio/livox/lidar
+    fastlio_imu_topic: /mosim/fastlio/livox/imu
+    spark_livox_custom_topic: /mosim/spark_fastlio/livox/lidar
+    spark_livox_scan_lines: 4
+    spark_livox_scan_rate_hz: 10
+    spark_livox_line_policy: source_pointcloud_row_bucketed_to_scan_lines
+    spark_livox_offset_time_policy: retained_point_ordinal_spread_over_one_scan_period_nanoseconds
+    spark_livox_point_count_field: point_num
+    sunray_lidar_topic: /uav1/livox/lidar
+    sunray_imu_topic: /uav1/livox/imu
+    planner_global_points_topic: /uav1/global_points
+    mosim_planner_global_points_topic: /mosim/planner/global_points
+    planner_odom_topic: /uav1/sunray/gazebo_pose
+    mosim_planner_odom_topic: /mosim/planner/odom
+    map_frame: map
+    global_frame: map
+    sensor_frame: sunray150/base_link/mid360_lidar
+    imu_frame: sunray150/base_link/forward_imu
+    odom_child_frame: uav1/base_link
+    tf_lookup_timeout_s: 0.2
+    odom_rate_hz: 20
+    imu_output_policy: separate_high_rate_passthrough
+    compatible_reference_inputs:
+      fast_lio:
+        source_config: References/Sunray/simulation/sunray_simulator/launch_slam/mid360.yaml
+        lid_topic: /uav1/livox/lidar
+        imu_topic: /uav1/livox/imu
+      ego_planner:
+        source_launch: References/Sunray/simulation/sunray_simulator/launch_ego/sunray_sim_ego.launch
+        odom_topic: /uav1/sunray/gazebo_pose
+        local_pointcloud_topic: /uav1/livox/lidar
+        global_pointcloud_topic: /uav1/global_points
+    runtime_gate: bounded_fastlio_planner_input_surface_only
+    runtime_gate_claim: topic_frame_rate_input_shape_only_no_fastlio_no_planner_ready_no_setpoint
+    not_claimed:
+      - fast_lio_localization_success
+      - ego_planner_runtime_success
+      - planner_ready
+      - setpoint_publication
+      - command_acknowledgement
+      - closed_loop
+  fastlio_imu_passthrough:
+    script: Scripts/ros/gazebo_fastlio_imu_passthrough.py
+    input_imu_topic: /mosim/gazebo/imu
+    fastlio_imu_topic: /mosim/fastlio/livox/imu
+    sunray_imu_topic: /uav1/livox/imu
+    imu_frame: sunray150/base_link/forward_imu
+    runtime_gate: bounded_high_rate_imu_passthrough_for_fastlio_input
+    runtime_gate_claim: imu_topic_frame_rate_only_no_fastlio_no_planner_ready_no_setpoint
+    not_claimed:
+      - fast_lio_localization_success
+      - planner_ready
+      - setpoint_publication
+      - command_acknowledgement
+      - closed_loop
+  gazebo_truth_pose:
+    topic: /world/mosim_ue_factoryenvironmentcollect/dynamic_pose/info
+    model_name: sunray150
+    frame_id: world
+    recorder_script: Scripts/gazebo/record_gazebo_pose_truth.py
+    output_jsonl: gazebo_truth_pose.jsonl
+    summary_json: GAZEBO_TRUTH_POSE_RECORDING.json
+    source_kind: gazebo_transport_dynamic_pose_info
+    runtime_gate_claim: raw_gazebo_pose_truth_for_estimator_comparison_only
+
+ue:
+  role: source_truth_only_for_collision_world
+  replay_bundle: Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_replay_input_bundle.json
+
+outputs:
+  result_dir: Results/gazebo_ros2/sunray150_ue_factory_gazebo_ros2_review
+  run_manifest: Results/gazebo_ros2/sunray150_ue_factory_gazebo_ros2_review/RUN_MANIFEST.json
+  blocker: Results/gazebo_ros2/sunray150_ue_factory_gazebo_ros2_review/BLOCKER.json
+  preflight_json: Results/gazebo_ros2/sunray150_ue_factory_gazebo_ros2_review/PREFLIGHT.json
+  topic_contract_json: Results/gazebo_ros2/sunray150_ue_factory_gazebo_ros2_review/TOPIC_CONTRACT.json
+  runtime_status_json: Results/gazebo_ros2/sunray150_ue_factory_gazebo_ros2_review/RUNTIME_STATUS.json
