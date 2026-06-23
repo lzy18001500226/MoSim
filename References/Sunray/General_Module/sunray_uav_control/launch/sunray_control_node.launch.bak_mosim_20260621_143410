@@ -24,7 +24,6 @@
     <arg name="use_offset" default="false" />
     <arg name="quad_mass" default="1.0" />
     <arg name="hov_percent" default="0.37" />
-    <arg name="thrust_norm_compensation" default="false" />
     <arg name="pxy_int_max" default="10.0" />
     <arg name="pz_int_max" default="10.0" />
     <arg name="Kp_xy" default="3.0" />
@@ -74,7 +73,6 @@
         <!-- 姿态控制参数 -->
         <param name="ctrl_param/quad_mass" value="$(arg quad_mass)" />
         <param name="ctrl_param/hov_percent" value="$(arg hov_percent)" />
-        <param name="ctrl_param/thrust_norm_compensation" value="$(arg thrust_norm_compensation)" />
         <param name="ctrl_param/pxy_int_max" value="$(arg pxy_int_max)" />
         <param name="ctrl_param/pz_int_max" value="$(arg pz_int_max)" />
         <param name="ctrl_param/Kp_xy" value="$(arg Kp_xy)" />

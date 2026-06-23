@@ -17,7 +17,9 @@ int main(int argc, char **argv)
 
     ros::init(argc, argv, "uav_control_node");
     ros::NodeHandle nh("~");
-    ros::Rate rate(200.0);
+    double control_loop_hz = 200.0;
+    nh.param<double>("system_params/control_loop_hz", control_loop_hz, 200.0);
+    ros::Rate rate(control_loop_hz);
     bool flag_printf = false; // 是否打印状态
     nh.param<bool>("flag_printf", flag_printf, true);  
 

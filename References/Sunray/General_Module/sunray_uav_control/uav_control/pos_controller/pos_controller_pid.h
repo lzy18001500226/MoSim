@@ -179,8 +179,13 @@ Eigen::Vector4d PosControlPID::ctrl_update(float controller_hz)
     Eigen::Matrix3d wRb_odom = current_state.q.toRotationMatrix();
     // 第三列
     Eigen::Vector3d z_b_curr = wRb_odom.col(2);
-    // 机体系下的电机推力 相当于Rb * F_enu 惯性系到机体系
+    // 机体系下的电机推力。默认保留 Sunray 原始投影算法；可选补偿用于验证
+    // 水平机动倾斜时由推力投影造成的 Z 轴下沉峰值。
     double u1 = F_des.dot(z_b_curr);
+    if (ctrl_param.thrust_norm_compensation)
+    {
+        u1 = F_des.norm();
+    }
     // 悬停油门与电机参数有关系,也取决于质量
     double full_thrust = ctrl_param.quad_mass * ctrl_param.g(2) / ctrl_param.hov_percent;
 
@@ -214,6 +219,8 @@ void PosControlPID::init(ros::NodeHandle& nh)
     nh.param<double>("ctrl_param/quad_mass" , ctrl_param.quad_mass, 1.0f);
     // 【参数】悬停油门
     nh.param<double>("ctrl_param/hov_percent" , ctrl_param.hov_percent, 0.5f);
+    // 【参数】水平机动时是否按期望力模长补偿油门。默认关闭，保持 Sunray 原始行为。
+    nh.param<bool>("ctrl_param/thrust_norm_compensation" , ctrl_param.thrust_norm_compensation, false);
     // 【参数】位置环控制器XYZ积分上限
     nh.param<double>("ctrl_param/pxy_int_max"  , ctrl_param.int_max[0], 10.0f);
     nh.param<double>("ctrl_param/pxy_int_max"  , ctrl_param.int_max[1], 10.0f);
@@ -291,6 +298,7 @@ void PosControlPID::printf_param()
 
     Logger::print_color(int(LogColor::green), "ctrl_param.quad_mass: [", ctrl_param.quad_mass, "]");
     Logger::print_color(int(LogColor::green), "ctrl_param.hov_percent: [", ctrl_param.hov_percent, "]");
+    Logger::print_color(int(LogColor::green), "ctrl_param.thrust_norm_compensation: [", ctrl_param.thrust_norm_compensation, "]");
     Logger::print_color(int(LogColor::green), "pxy_int_max: [", ctrl_param.int_max[0], "]");
     Logger::print_color(int(LogColor::green), "pz_int_max: [", ctrl_param.int_max[2], "]");
 

@@ -20,7 +20,7 @@
         <pose>0 0.001574 0.044965 0 0 0</pose>
         <geometry>
           <box>
-            <size>0.211502 0.214651 0.16193</size>
+						<size>0.211502 0.214651 0.16193</size>
           </box>
         </geometry>
         <surface>
@@ -81,7 +81,7 @@
       </axis>
     </joint>
     <link name='rotor_0'>
-      <pose>0.053745 -0.05374 -0.014052 0 0 0</pose>
+			<pose>0.053745 -0.05374 -0.014052 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
         <mass>0.005</mass>
@@ -127,7 +127,7 @@
       </axis>
     </joint>
     <link name='rotor_1'>
-      <pose>-0.053761 0.05376 -0.014052 0 0 0</pose>
+			<pose>-0.053761 0.05376 -0.014052 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
         <mass>0.005</mass>
@@ -173,7 +173,7 @@
       </axis>
     </joint>
     <link name='rotor_2'>
-      <pose>0.053746 0.053759 -0.014052 0 0 0</pose>
+			<pose>0.053746 0.053759 -0.014052 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
         <mass>0.005</mass>
@@ -219,7 +219,7 @@
       </axis>
     </joint>
     <link name='rotor_3'>
-      <pose>-0.053761 -0.053739 -0.014052 0 0 0</pose>
+			<pose>-0.053761 -0.053739 -0.014052 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
         <mass>0.005</mass>
@@ -273,7 +273,7 @@
       <child>gps::link</child>
       <parent>base_link</parent>
     </joint>
-
+    
     <plugin name='rosbag' filename='libgazebo_multirotor_base_plugin.so'>
       <robotNamespace></robotNamespace>
       <linkName>base_link</linkName>
@@ -370,14 +370,13 @@
       <magSubTopic>/mag</magSubTopic>
       <baroSubTopic>/baro</baroSubTopic>
       <mavlink_addr>INADDR_ANY</mavlink_addr>
-      <mavlink_tcp_port>{{ mavlink_tcp_port }}</mavlink_tcp_port>
-      <mavlink_udp_port>{{ mavlink_udp_port }}</mavlink_udp_port>
-      <serialEnabled>{{ serial_enabled }}</serialEnabled>
-      <serialDevice>{{ serial_device }}</serialDevice>
-      <baudRate>{{ serial_baudrate }}</baudRate>
+      <mavlink_tcp_port>4560</mavlink_tcp_port>
+      <serialEnabled>false</serialEnabled>
+      <serialDevice>/dev/ttyACM0</serialDevice>
+      <baudRate>921600</baudRate>
       <qgc_addr>INADDR_ANY</qgc_addr>
       <qgc_udp_port>14550</qgc_udp_port>
-      <hil_mode>{{ hil_mode }}</hil_mode>
+      <hil_mode>false</hil_mode>
       <hil_state_level>false</hil_state_level>
       <enable_lockstep>true</enable_lockstep>
       <use_tcp>true</use_tcp>
@@ -443,22 +442,17 @@
       <rpyOffsets>0 0 0</rpyOffsets>
     </plugin>
 
+
     <include>
-      <uri>model://camera_front</uri>
+      <uri>model://camera_front</uri> 
       <pose>0 0.1032 0.0185 0 0 0</pose>
     </include>
-
-    <include>
-      <uri>model://camera_down</uri>
-      <pose>0 0.0145 -0.0263 0 1.5707963 3.14</pose>      <!--位置-->
-    </include>
-
-    <!-- 下视相机关节 -->
-    <joint name="Monocular_down_joint" type="fixed">
-      <child>camera_down::Monocular_down_link</child>      <!--子link-->
-      <parent>base_link</parent>      <!--父link-->
+    <!-- 前视相机关节 -->
+    <joint name="Monocular_front_joint" type="fixed">
+      <child>camera_front::Monocular_front_link</child>
+      <parent>base_link</parent>
       <axis>
-        <xyz>0 0 1</xyz>        <!--xyz标签定义轴的方向，是单位向量，默认值为0 0 1，参考系一般为joint参考系-->
+        <xyz>0 0 1</xyz>
         <limit>
           <upper>0</upper>
           <lower>0</lower>
@@ -466,12 +460,16 @@
       </axis>
     </joint>
 
-    <!-- 前视相机关节 -->
-    <joint name="Monocular_front_joint" type="fixed">
-      <child>camera_front::Monocular_front_link</child>
-      <parent>base_link</parent>
+    <include>
+      <uri>model://camera_down</uri>
+      <pose>0 0.0145 -0.0263 0 1.5707963 3.14</pose> <!--位置-->
+    </include>
+    <!-- 下视相机关节 -->
+    <joint name="Monocular_down_joint" type="fixed">
+      <child>camera_down::Monocular_down_link</child> <!--子link-->
+      <parent>base_link</parent><!--父link-->
       <axis>
-        <xyz>0 0 1</xyz>
+        <xyz>0 0 1</xyz><!--xyz标签定义轴的方向，是单位向量，默认值为0 0 1，参考系一般为joint参考系-->
         <limit>
           <upper>0</upper>
           <lower>0</lower>
@@ -493,10 +491,6 @@
         </limit>
       </axis>
     </joint>
-
-
-
-
 
 
   </model>

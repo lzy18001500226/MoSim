@@ -11,6 +11,7 @@ private:
     std::string node_name;  // 节点名称
     int uav_id;             // 【参数】无人机ID
     std::string uav_name;   // 【参数】无人机名称
+    double control_loop_hz = 200.0; // 【参数】控制节点主循环频率
 
     // 无人机飞行相关参数
     struct FlightParams

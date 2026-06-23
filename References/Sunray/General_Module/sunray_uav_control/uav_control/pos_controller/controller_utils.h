@@ -31,6 +31,7 @@ struct Ctrl_Param_PID
     double quad_mass;
     double tilt_angle_max;      //rad
     double hov_percent;
+    bool thrust_norm_compensation;
     Eigen::Vector3d g;
     Eigen::Vector3d int_max;
     Eigen::Matrix3d Kp;

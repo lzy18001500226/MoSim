@@ -4,12 +4,13 @@
     <arg name="gazebo_enable" default="true"/>
     <arg name="gui" default="true"/>
     <arg name="world" default="$(find sunray_simulator)/worlds/planning_test.world"/>
+    <arg name="use_sim_time" default="false"/>
     <!-- 启动 Gazebo -->
     <group if="$(arg gazebo_enable)">
         <include file="$(find gazebo_ros)/launch/empty_world.launch">
             <arg name="world_name" value="$(arg world)"/>
             <arg name="gui" value="$(arg gui)"/>
-			<arg name="use_sim_time" value="false"/>
+			<arg name="use_sim_time" value="$(arg use_sim_time)"/>
         </include>
     </group>
 

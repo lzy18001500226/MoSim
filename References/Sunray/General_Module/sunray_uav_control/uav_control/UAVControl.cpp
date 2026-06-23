@@ -14,6 +14,7 @@ void UAVControl::init(ros::NodeHandle &nh)
     node_name = ros::this_node::getName();
     nh.param<int>("uav_id", uav_id, 1);                 // 【参数】无人机编号
     nh.param<std::string>("uav_name", uav_name, "uav"); // 【参数】无人机名字前缀
+    nh.param<double>("system_params/control_loop_hz", control_loop_hz, 200.0);
     // 无人机名字 = 无人机名字前缀 + 无人机ID
     uav_name = "/" + uav_name + std::to_string(uav_id);
 
@@ -731,7 +732,7 @@ void UAVControl::pos_controller()
     // 设定当前值
     pos_controller_pid.set_current_state(px4_state);
     // 控制器更新
-    Eigen::Vector4d u_att = pos_controller_pid.ctrl_update(100.0);
+    Eigen::Vector4d u_att = pos_controller_pid.ctrl_update(control_loop_hz);
     send_attitude_setpoint(u_att);
 }
 

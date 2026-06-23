@@ -98,7 +98,7 @@ setpoint_attitude:
     listen: false # enable tf listener (disable topic subscribers)
     frame_id: "map"
     child_frame_id: "target_attitude"
-    rate_limit: 100.0
+    rate_limit: 50.0
 
 setpoint_raw:
   thrust_scaling: 1.0 # used in setpoint_raw attitude callback.
@@ -111,7 +111,7 @@ setpoint_position:
     listen: false # enable tf listener (disable topic subscribers)
     frame_id: "map"
     child_frame_id: "target_position"
-    rate_limit: 100.0
+    rate_limit: 50.0
   mav_frame: LOCAL_NED
 
 # setpoint_velocity
@@ -194,7 +194,7 @@ fake_gps:
     send: false # send TF?
     frame_id: "map" # TF frame_id
     child_frame_id: "fix" # TF child_frame_id
-    rate_limit: 100.0 # TF rate
+    rate_limit: 10.0 # TF rate
   gps_rate: 5.0 # GPS data publishing rate
 
 # landing_target
@@ -213,7 +213,7 @@ landing_target:
     listen: false
     frame_id: "landing_target"
     child_frame_id: "camera_center"
-    rate_limit: 100.0
+    rate_limit: 10.0
   target_size: { x: 0.3, y: 0.3 }
 
 # mocap_pose_estimate
@@ -250,7 +250,7 @@ vision_pose:
     listen: false # enable tf listener (disable topic subscribers)
     frame_id: "odom"
     child_frame_id: "vision_estimate"
-    rate_limit: 100.0
+    rate_limit: 10.0
 
 # vision_speed_estimate
 vision_speed:
