@@ -71,7 +71,9 @@ def test_patched_candidate_is_ready_for_build_gate() -> None:
     try:
         temp_root.mkdir(parents=True)
         md_path = temp_root / "SPARK_FASTLIO_LIVOX_PATCH_READINESS.md"
+        json_path = temp_root / "SPARK_FASTLIO_LIVOX_PATCH_READINESS.json"
         module.write_markdown(md_path, report)
+        module.write_json(json_path, report)
         text = md_path.read_text(encoding="utf-8")
         for phrase in (
             "ready_for_build_runtime_gate",
@@ -80,6 +82,8 @@ def test_patched_candidate_is_ready_for_build_gate() -> None:
         ):
             if phrase not in text:
                 raise AssertionError(text)
+        if b"\r\n" in md_path.read_bytes() or b"\r\n" in json_path.read_bytes():
+            raise AssertionError("readiness outputs must use LF line endings")
     finally:
         if temp_root.exists():
             shutil.rmtree(temp_root)

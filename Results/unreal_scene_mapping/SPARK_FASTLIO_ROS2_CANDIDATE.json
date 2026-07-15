@@ -1,7 +1,7 @@
 {
   "schema": "mosim.spark_fastlio_ros2_candidate.v1",
   "phase": "build",
-  "result": "building",
+  "result": "built",
   "repo_url": "https://github.com/MIT-SPARK/spark-fast-lio.git",
   "repo_ref": "main",
   "ros_setup": "/opt/ros/humble/setup.bash",
@@ -16,12 +16,12 @@
   "auto_apt_overlay": true,
   "overlay_used": true,
   "build_requested": true,
-  "clean_build": false,
+  "clean_build": true,
   "missing_ros2_packages": [],
   "manual_apt_packages": [],
   "ready_to_build": true,
   "runtime_claimable": false,
-  "note": "colcon build has started. If the process is interrupted, inspect Results/tmp/spark_fast_lio_ros2_ws/log/latest_build.",
+  "note": "colcon build completed. Runtime still needs live topic recording before FAST-LIO localization can be claimed.",
   "commands": {
     "dry_run": "DRY_RUN=1 Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh",
     "preflight": "Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh",

@@ -14,115 +14,115 @@
       "metrics_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_pid_baseline/metrics/robust_rotor1_loss15_example1_pid_baseline.json",
       "quality_status": "needs_iteration",
       "quality_pass": false,
-      "position_rmse_m": 0.3921196664904746,
-      "total_health_score": 35.6257817116079,
-      "steady_state_error_m": 0.28688403392258666,
+      "position_rmse_m": 1.3752511875197824,
+      "total_health_score": 18.80013043497445,
+      "steady_state_error_m": 1.024264769866438,
       "disturbance_recovery_time_s": null,
       "phase_profiles": [
         {
           "phase": "startup",
           "start_s": 0.0,
           "end_s": 5.0,
-          "row_count": 500,
-          "position_rmse_m": 0.7451895358152125,
+          "row_count": 2500,
+          "position_rmse_m": 2.6919925154884776,
           "axis_rmse_m": {
-            "x": 0.19335830099373097,
-            "y": 0.19335893029603549,
-            "z": 0.6932043968412798
+            "x": 0.6490581834088889,
+            "y": 0.6497583776126609,
+            "z": 2.5304863620889355
           },
           "dominant_axis": "z",
-          "max_position_error_m": 1.4019694591268086,
-          "max_error_time_s": 0.99,
+          "max_position_error_m": 4.375561002270331,
+          "max_error_time_s": 2.41,
           "max_axis_error_m": {
-            "x": 0.07769590182536483,
-            "y": -0.07768479124440315,
-            "z": -1.3976576062731434
+            "x": 0.45235246176364824,
+            "y": -0.4521305147767312,
+            "z": -4.328566660285254
           }
         },
         {
           "phase": "pre_fault",
           "start_s": 5.0,
           "end_s": 15.0,
-          "row_count": 1000,
-          "position_rmse_m": 0.29361459658887906,
+          "row_count": 5000,
+          "position_rmse_m": 1.2827280297875954,
           "axis_rmse_m": {
-            "x": 0.1926556083980378,
-            "y": 0.19265531342082845,
-            "z": 0.10944075152133435
+            "x": 0.7407212264365719,
+            "y": 0.7415017348001446,
+            "z": 0.7395258213189334
           },
-          "dominant_axis": "x",
-          "max_position_error_m": 0.3979775350348464,
-          "max_error_time_s": 5.33,
+          "dominant_axis": "y",
+          "max_position_error_m": 1.7397628661297084,
+          "max_error_time_s": 5.216,
           "max_axis_error_m": {
-            "x": 0.1767304919558312,
-            "y": -0.17673098428813327,
-            "z": 0.3097072985869236
+            "x": 0.7867072172328924,
+            "y": -0.7881888109470725,
+            "z": 1.3366469178565357
           }
         },
         {
           "phase": "fault_window",
           "start_s": 15.0,
           "end_s": 19.0,
-          "row_count": 400,
-          "position_rmse_m": 0.2798344557052102,
+          "row_count": 2000,
+          "position_rmse_m": 1.1707120107590268,
           "axis_rmse_m": {
-            "x": 0.19656526283845366,
-            "y": 0.1965652505905568,
-            "z": 0.03211732095540517
+            "x": 0.7633676541981306,
+            "y": 0.7641297483640618,
+            "z": 0.45159956191803674
           },
-          "dominant_axis": "x",
-          "max_position_error_m": 0.2828419058422375,
-          "max_error_time_s": 16.56,
+          "dominant_axis": "y",
+          "max_position_error_m": 1.3200805670649336,
+          "max_error_time_s": 15.502,
           "max_axis_error_m": {
-            "x": 0.19983265528511848,
-            "y": -0.19983261107223427,
-            "z": -0.011549075037478929
+            "x": 0.7282263313680093,
+            "y": -0.7288985211416873,
+            "z": -0.8252309129705626
           }
         },
         {
           "phase": "recovery",
           "start_s": 19.0,
           "end_s": 35.0,
-          "row_count": 1600,
-          "position_rmse_m": 0.3941928528278898,
+          "row_count": 8000,
+          "position_rmse_m": 1.1210640099054558,
           "axis_rmse_m": {
-            "x": 0.2829782409325136,
-            "y": 0.27442238393692847,
-            "z": 0.0019171785789709743
+            "x": 0.77558996855073,
+            "y": 0.8059740605505599,
+            "z": 0.0751699987256896
           },
-          "dominant_axis": "x",
-          "max_position_error_m": 0.9741875762341372,
-          "max_error_time_s": 31.02,
+          "dominant_axis": "y",
+          "max_position_error_m": 1.8078379237258486,
+          "max_error_time_s": 30.824,
           "max_axis_error_m": {
-            "x": 0.6883826923323877,
-            "y": -0.6892901489038672,
-            "z": -0.007056430417778259
+            "x": 1.277738578451654,
+            "y": -1.2786775033671183,
+            "z": -0.025415073884754946
           }
         },
         {
           "phase": "late_tracking",
           "start_s": 35.0,
           "end_s": 50.0,
-          "row_count": 1500,
-          "position_rmse_m": 0.28874111174800454,
+          "row_count": 7500,
+          "position_rmse_m": 1.0420639630338768,
           "axis_rmse_m": {
-            "x": 0.197524168491743,
-            "y": 0.2106057757360671,
-            "z": 0.0009163524041382953
+            "x": 0.7518869135495662,
+            "y": 0.7214030604178326,
+            "z": 0.011874203407446333
           },
-          "dominant_axis": "y",
-          "max_position_error_m": 0.37262801344047064,
-          "max_error_time_s": 43.84,
+          "dominant_axis": "x",
+          "max_position_error_m": 1.137096510951005,
+          "max_error_time_s": 43.936,
           "max_axis_error_m": {
-            "x": 0.1955664480670105,
-            "y": -0.3171832935025769,
-            "z": 0.00039889084100330763
+            "x": 0.7474630302470047,
+            "y": -0.8568308630123749,
+            "z": 0.011329864093760023
           }
         }
       ],
       "worst_phase": "startup",
-      "worst_phase_position_rmse_m": 0.7451895358152125,
-      "dominant_axis_overall": "y"
+      "worst_phase_position_rmse_m": 2.6919925154884776,
+      "dominant_axis_overall": "z"
     },
     {
       "scenario": "Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml",
@@ -132,156 +132,156 @@
       "metrics_file": "Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/metrics/robust_rotor1_loss15_example1_awff_sysblock.json",
       "quality_status": "needs_iteration",
       "quality_pass": false,
-      "position_rmse_m": 0.36905752375323286,
-      "total_health_score": 36.043895052437605,
-      "steady_state_error_m": 0.2654186987470864,
-      "disturbance_recovery_time_s": 13.759999999999998,
+      "position_rmse_m": 5229.534690333248,
+      "total_health_score": 0.0,
+      "steady_state_error_m": 9345.665753413587,
+      "disturbance_recovery_time_s": null,
       "phase_profiles": [
         {
           "phase": "startup",
           "start_s": 0.0,
           "end_s": 5.0,
-          "row_count": 500,
-          "position_rmse_m": 0.7178165039121472,
+          "row_count": 2500,
+          "position_rmse_m": 55.564139636576186,
           "axis_rmse_m": {
-            "x": 0.17537546230475973,
-            "y": 0.17537613443246075,
-            "z": 0.6736075949553841
+            "x": 37.44456240197219,
+            "y": 40.644503364249395,
+            "z": 5.770849707908456
           },
-          "dominant_axis": "z",
-          "max_position_error_m": 1.3293133598711917,
-          "max_error_time_s": 0.93,
+          "dominant_axis": "y",
+          "max_position_error_m": 126.4580794957444,
+          "max_error_time_s": 4.998,
           "max_axis_error_m": {
-            "x": 0.06404030391664287,
-            "y": -0.06402997682636256,
-            "z": -1.326225097890217
+            "x": 85.4555954209559,
+            "y": 92.67732108372677,
+            "z": -9.99506066743599
           }
         },
         {
           "phase": "pre_fault",
           "start_s": 5.0,
           "end_s": 15.0,
-          "row_count": 1000,
-          "position_rmse_m": 0.27831931107612445,
+          "row_count": 5000,
+          "position_rmse_m": 639.156426669516,
           "axis_rmse_m": {
-            "x": 0.17977581238862286,
-            "y": 0.17977489958978343,
-            "z": 0.11323992968640738
+            "x": 432.4245566111375,
+            "y": 470.51830684949925,
+            "z": 11.935807977931619
           },
-          "dominant_axis": "x",
-          "max_position_error_m": 0.42207699077085475,
-          "max_error_time_s": 5.32,
+          "dominant_axis": "y",
+          "max_position_error_m": 1167.1260905081322,
+          "max_error_time_s": 14.998000000000001,
           "max_axis_error_m": {
-            "x": 0.15900285045881338,
-            "y": -0.15900178165136147,
-            "z": 0.35719114366938776
+            "x": 788.9911468976667,
+            "y": 859.9135482357985,
+            "z": -14.999027382470961
           }
         },
         {
           "phase": "fault_window",
           "start_s": 15.0,
           "end_s": 19.0,
-          "row_count": 400,
-          "position_rmse_m": 0.2557460705358685,
+          "row_count": 2000,
+          "position_rmse_m": 1512.019073636932,
           "axis_rmse_m": {
-            "x": 0.1795594174376388,
-            "y": 0.17955925022079244,
-            "z": 0.03037999118071053
+            "x": 1021.2995114114467,
+            "y": 1114.8650216418675,
+            "z": 14.999018371378357
           },
-          "dominant_axis": "x",
-          "max_position_error_m": 0.2618316807309318,
-          "max_error_time_s": 16.3,
+          "dominant_axis": "y",
+          "max_position_error_m": 1854.4940881793962,
+          "max_error_time_s": 18.998,
           "max_axis_error_m": {
-            "x": 0.18440168221277095,
-            "y": -0.18440121667883985,
-            "z": -0.023410252430258183
+            "x": 1251.8750140757081,
+            "y": 1368.1126786122654,
+            "z": -14.999028156793392
           }
         },
         {
           "phase": "recovery",
           "start_s": 19.0,
           "end_s": 35.0,
-          "row_count": 1600,
-          "position_rmse_m": 0.36477759895698375,
+          "row_count": 8000,
+          "position_rmse_m": 3897.9359961811433,
           "axis_rmse_m": {
-            "x": 0.26311723323998043,
-            "y": 0.2526386808189694,
-            "z": 0.002390654096838478
+            "x": 2619.1210196575453,
+            "y": 2886.8469205914357,
+            "z": 14.999059452108936
           },
-          "dominant_axis": "x",
-          "max_position_error_m": 0.9390980744815353,
-          "max_error_time_s": 30.95,
+          "dominant_axis": "y",
+          "max_position_error_m": 5902.4526223761595,
+          "max_error_time_s": 34.998,
           "max_axis_error_m": {
-            "x": 0.6622147823197118,
-            "y": -0.66581243576691,
-            "z": -0.008400949370065192
+            "x": 3962.110672355725,
+            "y": 4374.974400499303,
+            "z": -14.999145836558212
           }
         },
         {
           "phase": "late_tracking",
           "start_s": 35.0,
           "end_s": 50.0,
-          "row_count": 1500,
-          "position_rmse_m": 0.26700169681457386,
+          "row_count": 7500,
+          "position_rmse_m": 8605.640699111018,
           "axis_rmse_m": {
-            "x": 0.18049429477242623,
-            "y": 0.1967497193801385,
-            "z": 0.0011240908783969777
+            "x": 5768.618005006044,
+            "y": 6385.912086888595,
+            "z": 14.999101513927753
           },
           "dominant_axis": "y",
-          "max_position_error_m": 0.3567439256214125,
-          "max_error_time_s": 40.96,
+          "max_position_error_m": 11238.400863002325,
+          "max_error_time_s": 49.998,
           "max_axis_error_m": {
-            "x": 0.1794960658884044,
-            "y": 0.3082686754765067,
-            "z": -0.0042207248573760126
+            "x": 7525.269853641555,
+            "y": 8346.960082575382,
+            "z": -14.998909899907797
           }
         }
       ],
-      "worst_phase": "startup",
-      "worst_phase_position_rmse_m": 0.7178165039121472,
-      "dominant_axis_overall": "z"
+      "worst_phase": "late_tracking",
+      "worst_phase_position_rmse_m": 8605.640699111018,
+      "dominant_axis_overall": "y"
     }
   ],
   "comparison": {
     "available": true,
-    "rmse_improvement_pct": 5.88140425183238,
-    "health_score_delta": 0.41811334082970575,
+    "rmse_improvement_pct": -380160.32900684356,
+    "health_score_delta": -18.80013043497445,
     "phase_deltas": [
       {
         "phase": "startup",
-        "pid_position_rmse_m": 0.7451895358152125,
-        "awff_position_rmse_m": 0.7178165039121472,
-        "awff_delta_rmse_m": -0.02737303190306528,
-        "awff_improvement_pct": 3.6732979446792817
+        "pid_position_rmse_m": 2.6919925154884776,
+        "awff_position_rmse_m": 55.564139636576186,
+        "awff_delta_rmse_m": 52.87214712108771,
+        "awff_improvement_pct": -1964.0525304912949
       },
       {
         "phase": "pre_fault",
-        "pid_position_rmse_m": 0.29361459658887906,
-        "awff_position_rmse_m": 0.27831931107612445,
-        "awff_delta_rmse_m": -0.015295285512754608,
-        "awff_improvement_pct": 5.209306924945274
+        "pid_position_rmse_m": 1.2827280297875954,
+        "awff_position_rmse_m": 639.156426669516,
+        "awff_delta_rmse_m": 637.8736986397284,
+        "awff_improvement_pct": -49727.898964315355
       },
       {
         "phase": "fault_window",
-        "pid_position_rmse_m": 0.2798344557052102,
-        "awff_position_rmse_m": 0.2557460705358685,
-        "awff_delta_rmse_m": -0.024088385169341697,
-        "awff_improvement_pct": 8.608084057639225
+        "pid_position_rmse_m": 1.1707120107590268,
+        "awff_position_rmse_m": 1512.019073636932,
+        "awff_delta_rmse_m": 1510.848361626173,
+        "awff_improvement_pct": -129053.80210856641
       },
       {
         "phase": "recovery",
-        "pid_position_rmse_m": 0.3941928528278898,
-        "awff_position_rmse_m": 0.36477759895698375,
-        "awff_delta_rmse_m": -0.029415253870906044,
-        "awff_improvement_pct": 7.462147946083935
+        "pid_position_rmse_m": 1.1210640099054558,
+        "awff_position_rmse_m": 3897.9359961811433,
+        "awff_delta_rmse_m": 3896.814932171238,
+        "awff_improvement_pct": -347599.68188612827
       },
       {
         "phase": "late_tracking",
-        "pid_position_rmse_m": 0.28874111174800454,
-        "awff_position_rmse_m": 0.26700169681457386,
-        "awff_delta_rmse_m": -0.02173941493343068,
-        "awff_improvement_pct": 7.529033465938685
+        "pid_position_rmse_m": 1.0420639630338768,
+        "awff_position_rmse_m": 8605.640699111018,
+        "awff_delta_rmse_m": 8604.598635147984,
+        "awff_improvement_pct": -825726.5331483549
       }
     ]
   },

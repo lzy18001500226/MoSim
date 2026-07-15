@@ -194,7 +194,20 @@ def write_markdown(path: Path, report: dict[str, Any]) -> None:
     for item in report["claim_boundary"]:
         lines.append(f"- {item}")
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+    path.write_text(
+        "\n".join(lines).rstrip() + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+
+def write_json(path: Path, report: dict[str, object]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
 
 
 def parse_args() -> argparse.Namespace:
@@ -213,10 +226,7 @@ def main() -> int:
     if args.write:
         output_root = project_path(args.output_root)
         output_root.mkdir(parents=True, exist_ok=True)
-        (output_root / "SPARK_FASTLIO_LIVOX_PATCH_READINESS.json").write_text(
-            json.dumps(report, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
+        write_json(output_root / "SPARK_FASTLIO_LIVOX_PATCH_READINESS.json", report)
         write_markdown(output_root / "SPARK_FASTLIO_LIVOX_PATCH_READINESS.md", report)
     print(json.dumps(report, ensure_ascii=False, indent=2))
     if args.strict and not report["ready"]:

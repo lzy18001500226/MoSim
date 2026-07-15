@@ -95,6 +95,23 @@
       "evidence": [
         "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/src/preprocess.cpp"
       ]
+    },
+    {
+      "name": "mosim_startup_diagnostics_not_duplicated",
+      "passed": true,
+      "why": "The generated startup diagnostics block must be idempotent; repeated patch runs must not duplicate it.",
+      "evidence": [
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/src/spark_fast_lio.cpp"
+      ]
+    },
+    {
+      "name": "mosim_runtime_diagnostics_not_duplicated",
+      "passed": true,
+      "why": "Generated runtime diagnostics must be inserted exactly once in the Livox preprocessing path.",
+      "evidence": [
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/src/spark_fast_lio.cpp",
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/src/preprocess.cpp"
+      ]
     }
   ],
   "decision": "ready_for_build_runtime_gate",

@@ -20,6 +20,8 @@
 | PASS | `livox_callback_uses_member_imu_buffer` | Livox callback must use the class member imu_buffer_, not an undeclared imu_buffer. |
 | PASS | `livox_callback_uses_nanoseconds` | rclcpp::Time exposes nanoseconds(); the typo nanseconds() blocks the CustomMsg path. |
 | PASS | `pointcloud2_path_not_used_as_mid360_claim` | Mid360 evidence must go through a Livox-aware path, not only Ouster/Kimera/Velodyne PointCloud2 cases. |
+| PASS | `mosim_startup_diagnostics_not_duplicated` | The generated startup diagnostics block must be idempotent; repeated patch runs must not duplicate it. |
+| PASS | `mosim_runtime_diagnostics_not_duplicated` | Generated runtime diagnostics must be inserted exactly once in the Livox preprocessing path. |
 
 ## Claim Boundary
 

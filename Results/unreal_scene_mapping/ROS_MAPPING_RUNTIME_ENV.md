@@ -1,6 +1,6 @@
-# ROS Mapping Runtime Environment
+# ROS FAST-LIO Platform Runtime Environment
 
-- ready_for_native_mapping_runtime: `true`
+- ready_for_native_fastlio_platform_runtime: `true`
 - blockers: none
 - degraded: `missing_ros1_commands:roscore,roslaunch,rostopic,rosnode,rosparam,rviz`, `missing_catkin_build_tool`, `fast_lio_ros1_package_not_visible:fast_lio`, `no_local_ros2_fastlio_family_source`
 - ros_generation: `ros2`
@@ -37,17 +37,17 @@ Recommended setup sequence:
 - Use Ubuntu 22.04 with ROS2 Humble as the primary runtime.
 - source /opt/ros/humble/setup.bash
 - Run Scripts/UE5/check_ros_mapping_runtime_env.py --write again.
-- Run DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene>.
-- Run RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene> for native RViz2 input/map review.
-- Run Scripts/UE5/run_fastlio_rviz_replay_ros2.sh <scene> for ROS2 input replay; keep START_FASTLIO=0 unless a real ROS2 FAST-LIO launch command is configured.
-- Run Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh <scene> to validate the package-style ROS2 launch path.
+- Run python3 Scripts/ros/publish_mworks_uav_state_ros2.py --dry-run with the Factory MWORKS raw CSV and Livox-like frames.
+- Run DRY_RUN=1 Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh for the Factory FAST-LIO headless gate.
+- Run Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect to validate the package-style ROS2 launch path.
 - Run Scripts/UE5/check_fastlio_ros2_topics.sh during the live ROS2 run.
 - Run Scripts/UE5/check_fastlio_family_compatibility.py --write after adding or changing FAST-LIO-family sources.
 - Treat local References/Lab/FAST_LIO as ROS1-only until a ROS2 FAST-LIO/FAST-LIO2 package is added or a containerized ROS1 bridge route is approved.
 
 Claim boundary:
-- This is only an environment preflight; it does not prove mapping runtime evidence.
+- This is only an environment preflight; it does not prove FAST-LIO runtime evidence.
 - Runtime evidence still requires live ROS topics, RViz visibility, recording, and FAST-LIO evaluation.
 - HTML is not an accepted active point-cloud/map review window.
+- Keyboard/mouse input is accepted only for UE/RViz view control; it must not drive UAV pose.
 - On Ubuntu 22.04, ROS2/RViz2 is the primary runtime. ROS1/Catkin FAST-LIO blockers are degraded compatibility blockers, not blockers for ROS2 replay input review.
 - Do not claim FAST-LIO localization until a real ROS2 FAST-LIO-family package publishes /cloud_registered and /Odometry, or an approved ROS1 bridge route records equivalent outputs.

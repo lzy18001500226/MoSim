@@ -6,28 +6,28 @@ Read-only diagnostic profile. It does not run MWORKS and does not modify control
 
 ## Scenario Profiles
 
-- `Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml`: controller=`pid_baseline`, quality=`needs_iteration`, rmse=`0.392120`, health=`35.625782`, worst_phase=`startup`, dominant_axis=`y`
-  - startup: rmse=`0.745190`, max_error=`1.401969` at `0.99s`, dominant_axis=`z`
-  - pre_fault: rmse=`0.293615`, max_error=`0.397978` at `5.33s`, dominant_axis=`x`
-  - fault_window: rmse=`0.279834`, max_error=`0.282842` at `16.56s`, dominant_axis=`x`
-  - recovery: rmse=`0.394193`, max_error=`0.974188` at `31.02s`, dominant_axis=`x`
-  - late_tracking: rmse=`0.288741`, max_error=`0.372628` at `43.84s`, dominant_axis=`y`
-- `Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml`: controller=`awff_sysblock`, quality=`needs_iteration`, rmse=`0.369058`, health=`36.043895`, worst_phase=`startup`, dominant_axis=`z`
-  - startup: rmse=`0.717817`, max_error=`1.329313` at `0.93s`, dominant_axis=`z`
-  - pre_fault: rmse=`0.278319`, max_error=`0.422077` at `5.32s`, dominant_axis=`x`
-  - fault_window: rmse=`0.255746`, max_error=`0.261832` at `16.30s`, dominant_axis=`x`
-  - recovery: rmse=`0.364778`, max_error=`0.939098` at `30.95s`, dominant_axis=`x`
-  - late_tracking: rmse=`0.267002`, max_error=`0.356744` at `40.96s`, dominant_axis=`y`
+- `Config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml`: controller=`pid_baseline`, quality=`needs_iteration`, rmse=`1.375251`, health=`18.800130`, worst_phase=`startup`, dominant_axis=`z`
+  - startup: rmse=`2.691993`, max_error=`4.375561` at `2.41s`, dominant_axis=`z`
+  - pre_fault: rmse=`1.282728`, max_error=`1.739763` at `5.22s`, dominant_axis=`y`
+  - fault_window: rmse=`1.170712`, max_error=`1.320081` at `15.50s`, dominant_axis=`y`
+  - recovery: rmse=`1.121064`, max_error=`1.807838` at `30.82s`, dominant_axis=`y`
+  - late_tracking: rmse=`1.042064`, max_error=`1.137097` at `43.94s`, dominant_axis=`x`
+- `Config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml`: controller=`awff_sysblock`, quality=`needs_iteration`, rmse=`5229.534690`, health=`0.000000`, worst_phase=`late_tracking`, dominant_axis=`y`
+  - startup: rmse=`55.564140`, max_error=`126.458079` at `5.00s`, dominant_axis=`y`
+  - pre_fault: rmse=`639.156427`, max_error=`1167.126091` at `15.00s`, dominant_axis=`y`
+  - fault_window: rmse=`1512.019074`, max_error=`1854.494088` at `19.00s`, dominant_axis=`y`
+  - recovery: rmse=`3897.935996`, max_error=`5902.452622` at `35.00s`, dominant_axis=`y`
+  - late_tracking: rmse=`8605.640699`, max_error=`11238.400863` at `50.00s`, dominant_axis=`y`
 
 ## AWFF vs PID
 
-- RMSE improvement: `5.881%`
-- Health score delta: `0.418113`
-- startup: delta_rmse=`-0.027373`, improvement=`3.673%`
-- pre_fault: delta_rmse=`-0.015295`, improvement=`5.209%`
-- fault_window: delta_rmse=`-0.024088`, improvement=`8.608%`
-- recovery: delta_rmse=`-0.029415`, improvement=`7.462%`
-- late_tracking: delta_rmse=`-0.021739`, improvement=`7.529%`
+- RMSE improvement: `-380160.329%`
+- Health score delta: `-18.800130`
+- startup: delta_rmse=`52.872147`, improvement=`-1964.053%`
+- pre_fault: delta_rmse=`637.873699`, improvement=`-49727.899%`
+- fault_window: delta_rmse=`1510.848362`, improvement=`-129053.802%`
+- recovery: delta_rmse=`3896.814932`, improvement=`-347599.682%`
+- late_tracking: delta_rmse=`8604.598635`, improvement=`-825726.533%`
 
 ## Next Engineering Focus
 

@@ -48,43 +48,43 @@
     "status": "diagnostic_profile_ready",
     "comparison": {
       "available": true,
-      "rmse_improvement_pct": 5.88140425183238,
-      "health_score_delta": 0.41811334082970575,
+      "rmse_improvement_pct": -380160.32900684356,
+      "health_score_delta": -18.80013043497445,
       "phase_deltas": [
         {
           "phase": "startup",
-          "pid_position_rmse_m": 0.7451895358152125,
-          "awff_position_rmse_m": 0.7178165039121472,
-          "awff_delta_rmse_m": -0.02737303190306528,
-          "awff_improvement_pct": 3.6732979446792817
+          "pid_position_rmse_m": 2.6919925154884776,
+          "awff_position_rmse_m": 55.564139636576186,
+          "awff_delta_rmse_m": 52.87214712108771,
+          "awff_improvement_pct": -1964.0525304912949
         },
         {
           "phase": "pre_fault",
-          "pid_position_rmse_m": 0.29361459658887906,
-          "awff_position_rmse_m": 0.27831931107612445,
-          "awff_delta_rmse_m": -0.015295285512754608,
-          "awff_improvement_pct": 5.209306924945274
+          "pid_position_rmse_m": 1.2827280297875954,
+          "awff_position_rmse_m": 639.156426669516,
+          "awff_delta_rmse_m": 637.8736986397284,
+          "awff_improvement_pct": -49727.898964315355
         },
         {
           "phase": "fault_window",
-          "pid_position_rmse_m": 0.2798344557052102,
-          "awff_position_rmse_m": 0.2557460705358685,
-          "awff_delta_rmse_m": -0.024088385169341697,
-          "awff_improvement_pct": 8.608084057639225
+          "pid_position_rmse_m": 1.1707120107590268,
+          "awff_position_rmse_m": 1512.019073636932,
+          "awff_delta_rmse_m": 1510.848361626173,
+          "awff_improvement_pct": -129053.80210856641
         },
         {
           "phase": "recovery",
-          "pid_position_rmse_m": 0.3941928528278898,
-          "awff_position_rmse_m": 0.36477759895698375,
-          "awff_delta_rmse_m": -0.029415253870906044,
-          "awff_improvement_pct": 7.462147946083935
+          "pid_position_rmse_m": 1.1210640099054558,
+          "awff_position_rmse_m": 3897.9359961811433,
+          "awff_delta_rmse_m": 3896.814932171238,
+          "awff_improvement_pct": -347599.68188612827
         },
         {
           "phase": "late_tracking",
-          "pid_position_rmse_m": 0.28874111174800454,
-          "awff_position_rmse_m": 0.26700169681457386,
-          "awff_delta_rmse_m": -0.02173941493343068,
-          "awff_improvement_pct": 7.529033465938685
+          "pid_position_rmse_m": 1.0420639630338768,
+          "awff_position_rmse_m": 8605.640699111018,
+          "awff_delta_rmse_m": 8604.598635147984,
+          "awff_improvement_pct": -825726.5331483549
         }
       ]
     },

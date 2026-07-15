@@ -1,6 +1,6 @@
 # SPARK FAST-LIO ROS2 Candidate
 
-- result: `building`
+- result: `built`
 - phase: `build`
 - repo: `https://github.com/MIT-SPARK/spark-fast-lio.git` @ `main`
 - package_dir: `Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio`
@@ -36,4 +36,4 @@
 
 ## Note
 
-colcon build has started. If the process is interrupted, inspect Results/tmp/spark_fast_lio_ros2_ws/log/latest_build.
+colcon build completed. Runtime still needs live topic recording before FAST-LIO localization can be claimed.
