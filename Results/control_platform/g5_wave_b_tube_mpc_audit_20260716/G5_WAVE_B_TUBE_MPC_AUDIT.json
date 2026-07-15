@@ -1,0 +1,35 @@
+{
+  "schema": "mosim.control_platform.g5_wave_b_candidate_audit.v1",
+  "candidate": "tube_mpc_j2dog",
+  "family": "tube_mpc",
+  "upstream_repo": "J2DOG/DA-TMPC-quadrotor",
+  "upstream_commit": "45cf558366d55cd6d603f151afce2e1982ba8290",
+  "license": "MIT",
+  "decision": "dropped_from_current_wave",
+  "reason_codes": [
+    "UNCONTROLLED_SOLVER_STACK",
+    "NO_FIXED_SIZE_STEP_CORE",
+    "LOCAL_DEPENDENCIES_ABSENT"
+  ],
+  "required_dependencies": ["CasADi", "IPOPT", "MPT3", "YALMIP"],
+  "local_dependency_probe": {
+    "casadi.Opti": false,
+    "Polyhedron": false,
+    "sdpvar": false,
+    "optimizer": false,
+    "matlab_release": "R2025b"
+  },
+  "runtime_started": false,
+  "shared_gazebo_px4_touched": false,
+  "allowed_reuse": [
+    "disturbance-bound experiment design",
+    "tube and invariant-set equations",
+    "LQR comparison methodology"
+  ],
+  "reopen_conditions": [
+    "approved solver dependency and distribution policy",
+    "isolated deterministic solver boundary",
+    "declared worst-case execution-time gate",
+    "typed command mapping compatible with the control platform"
+  ]
+}
