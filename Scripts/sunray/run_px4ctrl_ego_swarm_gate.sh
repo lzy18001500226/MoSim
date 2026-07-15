@@ -970,10 +970,13 @@ prepare_racer_fastlio_workspace() {
 }
 
 prepare_racer_planner_workspace() {
-  if [[ "${PLANNER_VARIANT}" != "racer" || "${RACER_UNREACHABLE_RECOVERY_ENABLE}" != "true" ]]; then
+  if [[ "${PLANNER_VARIANT}" != "racer" ]]; then
     return
   fi
   local source_root="${RACER_WS}/src/swarm_exploration"
+  local drone_state_msg="${source_root}/exploration_manager/msg/DroneState.msg"
+  local pair_opt_msg="${source_root}/exploration_manager/msg/PairOpt.msg"
+  local grid_ids_msg="${source_root}/exploration_manager/msg/GridIds.msg"
   local manager_cpp="${source_root}/exploration_manager/src/fast_exploration_manager.cpp"
   local manager_h="${source_root}/exploration_manager/include/exploration_manager/fast_exploration_manager.h"
   local fsm_cpp="${source_root}/exploration_manager/src/fast_exploration_fsm.cpp"
@@ -984,29 +987,39 @@ prepare_racer_planner_workspace() {
   local astar_cpp="${source_root}/path_searching/src/astar2.cpp"
   local astar_h="${source_root}/path_searching/include/path_searching/astar2.h"
   local executable="${RACER_WS}/devel/lib/exploration_manager/exploration_node"
-  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_unreachable_viewpoint_recovery.py" \
-    "${source_root}" > "${RESULT_DIR}/racer_unreachable_recovery_patch.log" 2>&1
-  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_astar_start_clearance.py" \
-    "${source_root}" > "${RESULT_DIR}/racer_astar_start_clearance_patch.log" 2>&1
-  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_degenerate_tour_recovery.py" \
-    "${source_root}" > "${RESULT_DIR}/racer_degenerate_tour_recovery_patch.log" 2>&1
-  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_plan_failure_retry.py" \
-    "${source_root}" > "${RESULT_DIR}/racer_plan_failure_retry_patch.log" 2>&1
-  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_pair_opt_attempt_backoff.py" \
-    "${source_root}" > "${RESULT_DIR}/racer_pair_opt_attempt_backoff_patch.log" 2>&1
-  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_hard_swarm_clearance.py" \
-    "${source_root}" > "${RESULT_DIR}/racer_hard_swarm_clearance_patch.log" 2>&1
+  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_grid_id_width.py" \
+    "${source_root}" > "${RESULT_DIR}/racer_grid_id_width_patch.log" 2>&1
+  if [[ "${RACER_UNREACHABLE_RECOVERY_ENABLE}" == "true" ]]; then
+    python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_unreachable_viewpoint_recovery.py" \
+      "${source_root}" > "${RESULT_DIR}/racer_unreachable_recovery_patch.log" 2>&1
+    python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_astar_start_clearance.py" \
+      "${source_root}" > "${RESULT_DIR}/racer_astar_start_clearance_patch.log" 2>&1
+    python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_degenerate_tour_recovery.py" \
+      "${source_root}" > "${RESULT_DIR}/racer_degenerate_tour_recovery_patch.log" 2>&1
+    python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_plan_failure_retry.py" \
+      "${source_root}" > "${RESULT_DIR}/racer_plan_failure_retry_patch.log" 2>&1
+    python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_pair_opt_attempt_backoff.py" \
+      "${source_root}" > "${RESULT_DIR}/racer_pair_opt_attempt_backoff_patch.log" 2>&1
+    python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_hard_swarm_clearance.py" \
+      "${source_root}" > "${RESULT_DIR}/racer_hard_swarm_clearance_patch.log" 2>&1
+  fi
   if [[ ! -x "${executable}" || "${manager_cpp}" -nt "${executable}" || "${manager_h}" -nt "${executable}" \
       || "${fsm_cpp}" -nt "${executable}" || "${fsm_h}" -nt "${executable}" \
       || "${expl_data_h}" -nt "${executable}" \
       || "${planner_cpp}" -nt "${executable}" || "${planner_h}" -nt "${executable}" \
-      || "${astar_cpp}" -nt "${executable}" || "${astar_h}" -nt "${executable}" ]]; then
+      || "${astar_cpp}" -nt "${executable}" || "${astar_h}" -nt "${executable}" \
+      || "${drone_state_msg}" -nt "${executable}" || "${pair_opt_msg}" -nt "${executable}" \
+      || "${grid_ids_msg}" -nt "${executable}" ]]; then
     (
       set +u
       source /opt/ros/noetic/setup.bash
       source "${SUNRAY_WS}/devel/setup.bash"
       set -u
-      if [[ -f "${RACER_WS}/build/Makefile" ]]; then
+      if [[ "${drone_state_msg}" -nt "${executable}" || "${pair_opt_msg}" -nt "${executable}" \
+          || "${grid_ids_msg}" -nt "${executable}" ]]; then
+        cd "${RACER_WS}"
+        catkin_make --only-pkg-with-deps exploration_manager
+      elif [[ -f "${RACER_WS}/build/Makefile" ]]; then
         cmake --build "${RACER_WS}/build" --target exploration_node -- -j2
       else
         cd "${RACER_WS}"

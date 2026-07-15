@@ -1,0 +1,149 @@
+diff --git a/plan_manage/include/plan_manage/plan_container.hpp b/plan_manage/include/plan_manage/plan_container.hpp
+--- a/plan_manage/include/plan_manage/plan_container.hpp
++++ b/plan_manage/include/plan_manage/plan_container.hpp
+@@ -115,6 +115,8 @@ struct PlanParameters {
+   /* planning algorithm parameters */
+   double max_vel_, max_acc_, max_jerk_;  // physical limits
+   double accept_vel_, accept_acc_;
++  bool enforce_dynamic_feasibility_;
++  int dynamic_feasibility_max_iterations_;
+ 
+   double max_yawdot_;
+   double local_traj_len_;  // local replanning trajectory length
+diff --git a/plan_manage/include/plan_manage/planner_manager.h b/plan_manage/include/plan_manage/planner_manager.h
+--- a/plan_manage/include/plan_manage/planner_manager.h
++++ b/plan_manage/include/plan_manage/planner_manager.h
+@@ -31,8 +31,8 @@ public:
+   bool kinodynamicReplan(const Eigen::Vector3d& start_pt, const Eigen::Vector3d& start_vel,
+                          const Eigen::Vector3d& start_acc, const Eigen::Vector3d& end_pt,
+                          const Eigen::Vector3d& end_vel, const double& time_lb = -1);
+-  void planExploreTraj(const vector<Eigen::Vector3d>& tour, const Eigen::Vector3d& cur_vel,
+-                       const Eigen::Vector3d& cur_acc, const double& time_lb = -1);
++  bool planExploreTraj(const vector<Eigen::Vector3d>& tour, const Eigen::Vector3d& cur_vel,
++                       const Eigen::Vector3d& cur_acc, const double& time_lb = -1);
+   bool planGlobalTraj(const Eigen::Vector3d& start_pos);
+   bool topoReplan(bool collide);
+ 
+@@ -61,6 +61,7 @@ private:
+   unique_ptr<KinodynamicAstar> kino_path_finder_;
+   vector<BsplineOptimizer::Ptr> bspline_optimizers_;
+ 
+   void updateTrajInfo();
++  bool enforceDynamicFeasibility(NonUniformBspline& trajectory, const char* source);
+ 
+   // topology guided optimization
+ 
+diff --git a/plan_manage/src/planner_manager.cpp b/plan_manage/src/planner_manager.cpp
+--- a/plan_manage/src/planner_manager.cpp
++++ b/plan_manage/src/planner_manager.cpp
+@@ -27,6 +27,8 @@ void FastPlannerManager::initPlanModules(ros::NodeHandle& nh) {
+   nh.param("manager/max_jerk", pp_.max_jerk_, -1.0);
+   nh.param("manager/accept_vel", pp_.accept_vel_, pp_.max_vel_ + 0.5);
+   nh.param("manager/accept_acc", pp_.accept_acc_, pp_.max_acc_ + 0.5);
++  nh.param("manager/enforce_dynamic_feasibility", pp_.enforce_dynamic_feasibility_, true);
++  nh.param("manager/dynamic_feasibility_max_iterations", pp_.dynamic_feasibility_max_iterations_, 8);
+   nh.param("manager/max_yawdot", pp_.max_yawdot_, -1.0);
+   nh.param("manager/dynamic_environment", pp_.dynamic_, -1);
+   nh.param("manager/clearance_threshold", pp_.clearance_, -1.0);
+@@ -181,8 +183,13 @@ bool FastPlannerManager::kinodynamicReplan(const Eigen::Vector3d& start_pt,
+   bspline_optimizers_[0]->setBoundaryStates(start, end);
+   if (time_lb > 0) bspline_optimizers_[0]->setTimeLowerBound(time_lb);
+ 
+   bspline_optimizers_[0]->optimize(ctrl_pts, ts, cost_function, 1, 1);
+-  local_data_.position_traj_.setUniformBspline(ctrl_pts, pp_.bspline_degree_, ts);
++  NonUniformBspline position_traj(ctrl_pts, pp_.bspline_degree_, ts);
++  if (!enforceDynamicFeasibility(position_traj, "kinodynamicReplan")) {
++    ROS_ERROR("[FUEL_DYN_FEAS] Rejecting infeasible kinodynamic trajectory");
++    return false;
++  }
++  local_data_.position_traj_ = position_traj;
+ 
+   vector<Eigen::Vector3d> start2, end2;
+   local_data_.position_traj_.getBoundaryStates(2, 0, start2, end2);
+@@ -263,9 +270,9 @@ bool FastPlannerManager::kinodynamicReplan(const Eigen::Vector3d& start_pt,
+   return true;
+ }
+ 
+-void FastPlannerManager::planExploreTraj(const vector<Eigen::Vector3d>& tour,
++bool FastPlannerManager::planExploreTraj(const vector<Eigen::Vector3d>& tour,
+     const Eigen::Vector3d& cur_vel, const Eigen::Vector3d& cur_acc, const double& time_lb) {
+-  if (tour.empty()) ROS_ERROR("Empty path to traj planner");
++  if (tour.empty()) { ROS_ERROR("Empty path to traj planner"); return false; }
+ 
+   // Generate traj through waypoints-based method
+   const int pt_num = tour.size();
+@@ -309,7 +316,50 @@ void FastPlannerManager::planExploreTraj(const vector<Eigen::Vector3d>& tour,
+   bspline_optimizers_[0]->setBoundaryStates(start, end);
+   if (time_lb > 0) bspline_optimizers_[0]->setTimeLowerBound(time_lb);
+ 
+   bspline_optimizers_[0]->optimize(ctrl_pts, dt, cost_func, 1, 1);
+-  local_data_.position_traj_.setUniformBspline(ctrl_pts, pp_.bspline_degree_, dt);
++  NonUniformBspline position_traj(ctrl_pts, pp_.bspline_degree_, dt);
++  if (!enforceDynamicFeasibility(position_traj, "planExploreTraj")) {
++    ROS_ERROR("[FUEL_DYN_FEAS] Rejecting infeasible exploration trajectory");
++    return false;
++  }
++  local_data_.position_traj_ = position_traj;
+ 
+   updateTrajInfo();
++  return true;
++}
++
++bool FastPlannerManager::enforceDynamicFeasibility(
++    NonUniformBspline& trajectory, const char* source) {
++  if (!pp_.enforce_dynamic_feasibility_) return true;
++  if (pp_.max_vel_ <= 0.0 || pp_.max_acc_ <= 0.0) {
++    ROS_ERROR("[FUEL_DYN_FEAS] Invalid limits: max_vel=%.3f max_acc=%.3f",
++        pp_.max_vel_, pp_.max_acc_);
++    return false;
++  }
++
++  trajectory.setPhysicalLimits(pp_.max_vel_, pp_.max_acc_);
++  const double duration_before = trajectory.getTimeSum();
++  const double ratio_before = trajectory.checkRatio();
++  if (!std::isfinite(ratio_before) || ratio_before <= 0.0) {
++    ROS_ERROR("[FUEL_DYN_FEAS] %s produced invalid ratio %.6f", source, ratio_before);
++    return false;
++  }
++
++  if (ratio_before > 1.0) trajectory.lengthenTime(ratio_before * 1.01);
++  bool feasible = trajectory.checkFeasibility(false);
++  int iterations = 0;
++  const int max_iterations = std::max(0, pp_.dynamic_feasibility_max_iterations_);
++  while (!feasible && iterations < max_iterations && ros::ok()) {
++    trajectory.reallocateTime(false);
++    feasible = trajectory.checkFeasibility(false);
++    ++iterations;
++  }
++
++  const double ratio_after = trajectory.checkRatio();
++  const double duration_after = trajectory.getTimeSum();
++  ROS_WARN("[FUEL_DYN_FEAS] source=%s feasible=%d ratio_before=%.6f "
++           "ratio_after=%.6f duration_before=%.6f duration_after=%.6f iterations=%d",
++      source, feasible, ratio_before, ratio_after, duration_before, duration_after, iterations);
++  if (!feasible) trajectory.checkFeasibility(true);
++  return feasible;
++}
+diff --git a/exploration_manager/src/fast_exploration_manager.cpp b/exploration_manager/src/fast_exploration_manager.cpp
+--- a/exploration_manager/src/fast_exploration_manager.cpp
++++ b/exploration_manager/src/fast_exploration_manager.cpp
+@@ -932,7 +932,8 @@ int FastExplorationManager::planExploreMotion(const Vector3d& pos, const Vector3d& vel,
+   if (len < radius_close) {
+     // Next viewpoint is very close, no need to search kinodynamic path, just use waypoints-based
+     // optimization
+-    planner_manager_->planExploreTraj(ed_->path_next_goal_, vel, acc, time_lb);
++    if (!planner_manager_->planExploreTraj(ed_->path_next_goal_, vel, acc, time_lb))
++      return FAIL;
+     ed_->next_goal_ = next_pos;
+ 
+   } else if (len > radius_far) {
+@@ -947,7 +948,8 @@ int FastExplorationManager::planExploreMotion(const Vector3d& pos, const Vector3d& vel,
+       truncated_path.push_back(cur_pt);
+     }
+     ed_->next_goal_ = truncated_path.back();
+-    planner_manager_->planExploreTraj(truncated_path, vel, acc, time_lb);
++    if (!planner_manager_->planExploreTraj(truncated_path, vel, acc, time_lb))
++      return FAIL;
+     // if (!planner_manager_->kinodynamicReplan(
+     //         pos, vel, acc, ed_->next_goal_, Vector3d(0, 0, 0), time_lb))
+     //   return FAIL;

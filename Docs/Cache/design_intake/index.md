@@ -29,7 +29,7 @@ Current notable intake notes:
 | Note | Topic | Status |
 |---|---|---|
 | `inbox/20260610_capability_resolution_context_gap.md` | Capability discovery, duplicate-skill prevention, `capability-runtime` gap analysis | cache_draft |
-| `inbox/20260610_agent_project_operating_layers_and_research_plan.md` | Agent-project operating layers, non-duplicative research goal, proposed subagent plan | cache_draft |
+| `inbox/20260610_agent_project_operating_layers_and_research_plan.md` | Agent-project operating layers, non-duplicative research goal, proposed subagent plan | promoted_to_canonical: `Docs/Workflows/agent_project_operating_layers.md` |
 
 Do not use this cache for current engineering truth, runtime success claims,
 MWORKS/ROS2/UE evidence, or visible-thread task results. Those belong in

@@ -30,3 +30,4 @@ References/Gazebo/**/*.tar binary
 *.dae binary
 *.DAE binary
 results/robustness/** text eol=lf
+Scripts/sunray/patches/*.patch text eol=lf -whitespace

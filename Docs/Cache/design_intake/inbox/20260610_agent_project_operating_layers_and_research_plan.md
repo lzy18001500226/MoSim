@@ -1,11 +1,11 @@
 # Agent Project Operating Layers And Research Plan
 
-Status: cache_draft
-Authority: none
+Status: promoted_to_canonical
+Authority: superseded by `Docs/Workflows/agent_project_operating_layers.md`
 Source: PMO discussion, local reference review, and initial official-doc calibration, 2026-06-10 CST
-Target canonical doc: TBD after research; likely split between `CoAgent/docs/operating/agent_os_operating_model.md`, `CoAgent/dispatch/communication_contract.md`, `Docs/Index/capability_index.md`, and future capability manifest/checkers
+Target canonical doc: `Docs/Workflows/agent_project_operating_layers.md`
 Promotion owner: PMO plus documentation-secretary/context-maintenance review
-Do not treat as workflow authority until promoted.
+Do not treat this cache draft as workflow authority; use the canonical workflow.
 
 ## 1. Current Thesis
 
