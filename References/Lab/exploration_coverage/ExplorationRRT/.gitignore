@@ -1,0 +1,4 @@
+docker/ignition_models
+docker/models
+controller/MAV/
+__pycache__/

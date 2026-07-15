@@ -1,0 +1,32 @@
+# ~/.tmuxinator/errt.yml 
+tmux_options: '-2'
+define: &takeoff "rosservice call /hummingbird/takeoff \"{}\" " 
+name: errt
+root: ~/
+windows:
+  - stage_main:
+      layout: even-horizontal 
+      panes:
+        - ufomap:
+          - sleep 2  
+          - mon launch errt server.launch 
+        - errt:
+          - sleep 8 
+          - mon launch errt errt.launch
+
+  - publishers:
+      # layout: main-vertical 
+      layout: tiled 
+      panes:
+        - rotors:
+          - sleep 1  
+          - roslaunch rotors_gazebo errt_mav.launch 
+        - takeoff:
+          - sleep 7
+          - *takeoff
+        - controller:  
+          - sleep 3
+          # - python3 errt_nmpc.py
+          - roslaunch mav_linear_mpc mav_linear_mpc_sim.launch mav_name:=hummingbird
+        - roscore: 
+          - roscore 
