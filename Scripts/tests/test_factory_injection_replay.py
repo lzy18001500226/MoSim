@@ -48,7 +48,8 @@ def test_apply_reject_and_restore(tmp_path: Path) -> None:
         restore,
     ]
     report = module.replay(commands, tmp_path)
-    assert report["status"] == "passed"
+    assert report["status"] == "offline_contract_passed_runtime_not_accepted"
+    assert report["actual_factory_injection_accepted"] is False
     assert report["command_count"] == 4
     assert report["rejected_count"] == 1
     assert report["final_state"]["wind_speed_mps"] == 5.5

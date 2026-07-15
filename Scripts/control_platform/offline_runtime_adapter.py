@@ -183,19 +183,29 @@ def main() -> int:
     platform = OfflineControlPlatform()
     responses = [dispatch(platform, json.loads(line)) for line in args.commands_jsonl.read_text(encoding="utf-8").splitlines() if line.strip()]
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text("\n".join(json.dumps(item, ensure_ascii=False) for item in responses) + "\n", encoding="utf-8")
+    args.output.write_text(
+        "\n".join(json.dumps(item, ensure_ascii=False) for item in responses) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    offline_contract_ok = all(item.get("accepted") or item.get("reason_code") == "snapshot_ready" for item in responses)
     summary = {
         "schema": "mosim.control_platform.offline_adapter.v1",
-        "status": "passed" if all(item.get("accepted") or item.get("reason_code") == "snapshot_ready" for item in responses) else "failed",
+        "status": "offline_contract_passed_runtime_not_accepted" if offline_contract_ok else "failed",
+        "actual_end_to_end_runtime_accepted": False,
         "response_count": len(responses),
         "accepted_count": sum(bool(item.get("accepted")) for item in responses),
         "runtime_started": False,
         "shared_gazebo_px4_touched": False,
         "claim_ceiling": "offline lifecycle, profile binding, and injection event semantics only; no MWORKS, Gazebo, PX4, MAVROS, or controller-performance acceptance",
     }
-    (args.output.parent / "G7_OFFLINE_ADAPTER_SUMMARY.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (args.output.parent / "G7_OFFLINE_ADAPTER_SUMMARY.json").write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
-    return 0 if summary["status"] == "passed" else 1
+    return 0 if offline_contract_ok else 1
 
 
 if __name__ == "__main__":

@@ -1,19 +1,20 @@
 {
   "schema": "mosim.control_platform.g5_wave_c_summary.v1",
-  "status": "passed_with_bounded_pending_items",
+  "status": "static_preparation_only_live_graphical_simulation_blocked",
+  "actual_graphical_simulation_accepted": false,
   "runtime_started": false,
   "shared_gazebo_px4_touched": false,
   "latest_mworks_blocker": "Results/control_platform/g5_mworks_transport_blocker_20260716/MWORKS_TRANSPORT_BLOCKER.json",
   "modules": {
     "pid_indi": {
-      "status": "passed",
+      "status": "static_gate_passed_runtime_not_accepted",
       "role": "augmentation",
       "current_static_gate": "Results/control_platform/g5_wave_c_indi_20260716/RUN_MANIFEST.json",
       "generated_c_equivalence": "Results/control_platform/g3_current_family_20260716/G3_SUMMARY.json",
       "claim_ceiling": "bounded translational acceleration-increment INDI augmentation; not full actuator-effectiveness or rotor-level INDI"
     },
     "dfbc_dob_eso": {
-      "status": "passed",
+      "status": "static_gate_passed_runtime_not_accepted",
       "role": "augmentation",
       "current_static_gate": "Results/control_platform/g5_wave_c_dob_eso_20260716/RUN_MANIFEST.json",
       "claim_ceiling": "bounded low-frequency acceleration-residual DOB/ESO subset; runtime paired A/B remains pending"

@@ -48,3 +48,16 @@ def test_offline_lifecycle_and_injection() -> None:
     stopped = platform.stop("stop-1")
     assert stopped["accepted"] is True
     assert stopped["runtime_started"] is False
+
+
+def test_cli_summary_does_not_claim_runtime_acceptance(tmp_path: Path, monkeypatch) -> None:
+    module = load_module()
+    commands = tmp_path / "commands.jsonl"
+    output = tmp_path / "responses.jsonl"
+    commands.write_text(json.dumps({"command": "snapshot", "request_id": "snapshot-1"}) + "\n", encoding="utf-8")
+    monkeypatch.setattr(sys, "argv", [str(MODULE_PATH), str(commands), "--output", str(output)])
+
+    assert module.main() == 0
+    summary = json.loads((tmp_path / "G7_OFFLINE_ADAPTER_SUMMARY.json").read_text(encoding="utf-8"))
+    assert summary["status"] == "offline_contract_passed_runtime_not_accepted"
+    assert summary["actual_end_to_end_runtime_accepted"] is False

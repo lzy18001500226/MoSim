@@ -1,6 +1,7 @@
 {
   "schema": "mosim.factory_injection_replay.v1",
-  "status": "passed",
+  "status": "offline_contract_passed_runtime_not_accepted",
+  "actual_factory_injection_accepted": false,
   "command_count": 4,
   "event_count": 8,
   "rejected_count": 0,

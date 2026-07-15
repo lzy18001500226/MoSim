@@ -1,6 +1,7 @@
 {
   "schema": "mosim.control_platform.offline_adapter.v1",
-  "status": "passed",
+  "status": "offline_contract_passed_runtime_not_accepted",
+  "actual_end_to_end_runtime_accepted": false,
   "response_count": 7,
   "accepted_count": 7,
   "runtime_started": false,

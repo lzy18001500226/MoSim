@@ -126,7 +126,8 @@ def replay(commands: Iterable[dict[str, Any]], output_dir: Path) -> dict[str, An
         writer.writerows(rows)
     report = {
         "schema": "mosim.factory_injection_replay.v1",
-        "status": "passed",
+        "status": "offline_contract_passed_runtime_not_accepted",
+        "actual_factory_injection_accepted": False,
         "command_count": command_count,
         "event_count": len(events),
         "rejected_count": sum(event["event_state"] == "rejected" for event in events),

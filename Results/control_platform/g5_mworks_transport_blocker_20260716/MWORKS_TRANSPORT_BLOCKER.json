@@ -1,20 +1,41 @@
 {
-  "schema": "mosim.control_platform.mworks_transport_blocker.v1",
+  "schema": "mosim.control_platform.mworks_transport_blocker.v2",
   "status": "blocked",
+  "failure_kind": "mworks_graphical_simulation_blocked",
+  "minimal_user_action": "处理 Sysplorer 登录/许可，并决定 UGV 自动恢复项是恢复还是丢弃；之后重启 Codex 任务以重建 MCP transport。",
+  "latest_snapshot": "Results/control_platform/g5_mworks_transport_blocker_20260716/MWORKS_TRANSPORT_BLOCKER.json",
   "observed_at": "2026-07-16",
-  "operation": "sysplorer.session_manager(action=probe)",
+  "operation": "sysplorer.session_manager(action=probe) plus process, port, and window evidence",
   "probe_scope": "bounded_read_only_no_start_no_recovery",
   "error": "Transport closed",
+  "actual_graphical_simulation_accepted": false,
+  "observations": {
+    "mworks_process": "mworks.exe pid 21136 is running and listens on 127.0.0.1:49152",
+    "acp_process": "sysplorer-acp-server.exe pid 61104 was launched with --port 1266 but has no listening socket",
+    "main_window": "Sysplorer [演示版], with Login visible",
+    "blocking_dialog": "Auto Recovery is visible for a non-MoSim C:/Users/HP/Desktop/UGV/... model backup",
+    "mcp_surface": "Sysplorer and Windows MCP calls both returned Transport closed in this Codex task"
+  },
+  "evidence": [
+    "Results/control_platform/mworks_transport_diagnostic_20260716/capture_manifest.json",
+    "Results/control_platform/mworks_transport_diagnostic_20260716/21136_0xFE02B0_Sysplorer _演示版_.png",
+    "Results/control_platform/mworks_transport_diagnostic_20260716/21136_0xF902CC_自动恢复.png"
+  ],
   "retry_policy": "no_additional_sysplorer_calls_in_the_same_turn",
   "blocked_claims": [
     "fresh MWORKS graphical model acceptance",
     "fresh MIL simulation evidence",
     "fresh MWORKS generated-C equivalence"
   ],
-  "unblocked_offline_work": [
+  "preparation_only_not_completion": [
     "typed C++ and C ABI static gates",
     "Capability Registry and ExperimentProfile validation",
     "offline Factory injection and lifecycle contract validation"
   ],
-  "next_gate": "On a later continuation, perform one bounded read-only session probe. Continue live model work only if the transport succeeds."
+  "forbidden_recovery_without_user_decision": [
+    "click Login or perform license recovery",
+    "choose Recover Selected or Discard All for the UGV backup",
+    "claim graphical, MIL, SIL, generated-C, or Factory runtime completion from offline evidence"
+  ],
+  "next_gate": "User resolves or explicitly authorizes the Sysplorer login/license state and decides how to handle the unrelated UGV auto-recovery item. Then restart/recreate the Codex MCP transport and rerun one smallest real graphical model check/simulate/plot gate."
 }
