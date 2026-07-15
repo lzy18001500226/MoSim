@@ -1,0 +1,16 @@
+{
+  "schema": "mosim.g10bde_min_enhancement_static_gate.v1",
+  "status": "passed",
+  "claim_boundary": "Static G10-B/D/E minimal enhancement gate only. It proves neutral hover behavior, bounded L1/AWFF compensation, acceleration safety filtering, and ATTITUDE_THRUST-level degraded thrust compensation. It does not prove Gazebo runtime improvement, MWORKS code generation, PX4-native deployment, motor-level control allocation, or autonomous fault recovery.",
+  "failure_count": 0,
+  "hover_max_thrust_error": 0,
+  "l1_compensation_x": 0.34999999999999998,
+  "l1_clamped_accel_x": 1.3500000000000001,
+  "awff_drag_accel_x": -0.40000000000000002,
+  "safety_passthrough_max_error": 0,
+  "safety_clamped_accel_x": 2,
+  "safety_rejected_accel_x": 8,
+  "fault_hover_thrust": 0.31310999999999994,
+  "fault_missing_authority": 0.125,
+  "fault_multiplier_delta": 0.064999999999999947
+}

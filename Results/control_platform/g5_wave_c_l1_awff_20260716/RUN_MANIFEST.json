@@ -1,0 +1,45 @@
+{
+  "schema": "mosim.g10bde_min_enhancement_static_gate_manifest.v1",
+  "status": "passed",
+  "goal": "G10-BDE",
+  "controller_profiles": [
+    "l1_awff",
+    "safety_filter",
+    "fault_allocation"
+  ],
+  "project_root": "C:\\Users\\HP\\Desktop\\MoSim",
+  "result_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\g5_wave_c_l1_awff_20260716",
+  "compile_command": [
+    "g++",
+    "-std=c++11",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-pedantic",
+    "/mnt/c/Users/HP/Desktop/MoSim/Scripts/sunray/px4ctrl_golden_slice/px4ctrl_core.cpp",
+    "/mnt/c/Users/HP/Desktop/MoSim/Scripts/sunray/px4ctrl_golden_slice/px4ctrl_g10bde_min_enhancement_gate.cpp",
+    "-I",
+    "/mnt/c/Users/HP/Desktop/MoSim/Scripts/sunray/px4ctrl_golden_slice",
+    "-o",
+    "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_wave_c_l1_awff_20260716/build/px4ctrl_g10bde_min_enhancement_gate"
+  ],
+  "claim_boundary": "Static G10-B/D/E minimal enhancement gate only. No ROS, Gazebo, PX4, MAVROS, RViz, MWORKS GUI, runtime fault injection, motor-level allocation, or PX4-native deployment is started.",
+  "compile_returncode": 0,
+  "run_returncode": 0,
+  "gate_result": {
+    "schema": "mosim.g10bde_min_enhancement_static_gate.v1",
+    "status": "passed",
+    "claim_boundary": "Static G10-B/D/E minimal enhancement gate only. It proves neutral hover behavior, bounded L1/AWFF compensation, acceleration safety filtering, and ATTITUDE_THRUST-level degraded thrust compensation. It does not prove Gazebo runtime improvement, MWORKS code generation, PX4-native deployment, motor-level control allocation, or autonomous fault recovery.",
+    "failure_count": 0,
+    "hover_max_thrust_error": 0,
+    "l1_compensation_x": 0.35,
+    "l1_clamped_accel_x": 1.35,
+    "awff_drag_accel_x": -0.4,
+    "safety_passthrough_max_error": 0,
+    "safety_clamped_accel_x": 2,
+    "safety_rejected_accel_x": 8,
+    "fault_hover_thrust": 0.31310999999999994,
+    "fault_missing_authority": 0.125,
+    "fault_multiplier_delta": 0.06499999999999995
+  }
+}

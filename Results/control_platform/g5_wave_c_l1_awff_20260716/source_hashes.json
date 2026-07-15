@@ -1,0 +1,9 @@
+{
+  "Scripts\\sunray\\px4ctrl_golden_slice\\px4ctrl_core.h": "3be10404c3ea20cacf4b83eb559af2d75727afa28a90583b2623668464aa1f05",
+  "Scripts\\sunray\\px4ctrl_golden_slice\\px4ctrl_core.cpp": "483dcd1a0794563bbdcf1ea936c7a1994275bee4f9ee974ecdcd2aa04df84066",
+  "Scripts\\sunray\\px4ctrl_golden_slice\\px4ctrl_g10bde_min_enhancement_gate.cpp": "5b9f9dd08fa29e14398b84159f6eea16e871dcde1a45a31930117b630967b56e",
+  "Scripts\\sunray\\px4ctrl_golden_slice\\run_px4ctrl_g10bde_min_enhancement_gate.py": "b512408d6e255279171af95e3f4c2b117c2b09e79bdd758732d4208c2b77144d",
+  "Scripts\\sunray\\run_px4ctrl_basic_gate.sh": "53b9be4fee081b95f3e04459eb4c284f0db91ef65ffd445487b5464236da30b4",
+  "Docs\\Design\\架构.md": "836869b4f638673515d87dc5021aeecddc29b96d3171a74e075e70d73c7a2787",
+  "Docs\\Design\\架构\\01_控制器平台\\控制增强与容错.md": "86451762af34107167e3c989fbd640b49b9e918049111036f5b1d40e8a0d32c4"
+}

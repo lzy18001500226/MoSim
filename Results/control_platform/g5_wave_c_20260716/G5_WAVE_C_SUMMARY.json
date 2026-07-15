@@ -3,6 +3,7 @@
   "status": "passed_with_bounded_pending_items",
   "runtime_started": false,
   "shared_gazebo_px4_touched": false,
+  "latest_mworks_blocker": "Results/control_platform/g5_mworks_transport_blocker_20260716/MWORKS_TRANSPORT_BLOCKER.json",
   "modules": {
     "pid_indi": {
       "status": "passed",
@@ -18,11 +19,15 @@
       "claim_ceiling": "bounded low-frequency acceleration-residual DOB/ESO subset; runtime paired A/B remains pending"
     },
     "l1_inspired_residual": {
-      "status": "mworks_evidence_only_platform_integration_pending",
-      "role": "augmentation_candidate",
+      "status": "typed_static_core_passed_runtime_promotion_pending",
+      "role": "augmentation",
       "model": "Models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo",
       "configuration": "Config/controllers/l1_residual_sysblock/default.yaml",
-      "claim_ceiling": "L1-inspired bounded low-pass residual compensation with historical MWORKS A/B evidence; not formal L1 adaptive control and not a selectable ROS1 module"
+      "typed_core": "Scripts/sunray/px4ctrl_golden_slice/px4ctrl_core.cpp::calculate_l1_awff_core",
+      "static_gate": "Results/control_platform/g5_wave_c_l1_awff_20260716/RUN_MANIFEST.json",
+      "registry_profile": "l1_awff_minimal_v1",
+      "selectable": false,
+      "claim_ceiling": "Typed C++ and C ABI bounded L1-inspired low-pass residual plus AWFF static evidence with historical MWORKS A/B evidence; not formal L1 adaptive control, fresh generated-C equivalence, or a selectable ROS1 module"
     },
     "adrc": {
       "status": "not_implemented",
@@ -32,7 +37,8 @@
   "pending": [
     "fresh MWORKS transport for graphical MIL/codegen work",
     "paired Factory runtime A/B for DOB/ESO",
-    "typed L1 augmentation extraction and generated-C equivalence",
+    "fresh MWORKS graphical MIL and generated-C equivalence for L1/AWFF",
+    "ROS1 ExperimentProfile plus paired Factory runtime A/B for L1/AWFF",
     "full ADRC only if it adds value beyond the existing ESO subset"
   ]
 }

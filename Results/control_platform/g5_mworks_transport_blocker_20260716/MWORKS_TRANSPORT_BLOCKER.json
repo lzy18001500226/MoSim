@@ -1,0 +1,20 @@
+{
+  "schema": "mosim.control_platform.mworks_transport_blocker.v1",
+  "status": "blocked",
+  "observed_at": "2026-07-16",
+  "operation": "sysplorer.session_manager(action=probe)",
+  "probe_scope": "bounded_read_only_no_start_no_recovery",
+  "error": "Transport closed",
+  "retry_policy": "no_additional_sysplorer_calls_in_the_same_turn",
+  "blocked_claims": [
+    "fresh MWORKS graphical model acceptance",
+    "fresh MIL simulation evidence",
+    "fresh MWORKS generated-C equivalence"
+  ],
+  "unblocked_offline_work": [
+    "typed C++ and C ABI static gates",
+    "Capability Registry and ExperimentProfile validation",
+    "offline Factory injection and lifecycle contract validation"
+  ],
+  "next_gate": "On a later continuation, perform one bounded read-only session probe. Continue live model work only if the transport succeeds."
+}

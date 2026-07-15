@@ -882,6 +882,30 @@
       ],
       "evidence_level": "E4"
     },
+    "l1_awff_minimal_v1": {
+      "augmentation_id": "l1_awff_minimal",
+      "implementation_status": "implemented",
+      "g10_task": "G10-B",
+      "module_family": "l1_awff",
+      "chain_position": "bounded_l1_inspired_residual_and_drag_feedforward_augmentation",
+      "implementation": "typed_cpp_core_and_c_abi_mworks_codegen_pending",
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/control_platform/g5_wave_c_l1_awff_20260716/RUN_MANIFEST.json",
+        "Results/control_platform/g3_current_family_20260716/G3_SUMMARY.json",
+        "Models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo"
+      ],
+      "acceptance_tiers": [
+        "REPORT",
+        "CANDIDATE"
+      ],
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "compatible_controller_profiles": [
+        "official_pid_attitude_thrust_v1"
+      ],
+      "evidence_level": "E2"
+    },
     "dfbc_dob_eso_disabled_v1": {
       "augmentation_id": "dfbc_dob_eso_disabled",
       "implementation_status": "implemented",
