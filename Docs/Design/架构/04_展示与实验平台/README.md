@@ -12,6 +12,7 @@ RViz/Gazebo/UE/Web/QGC只提供审核、操作和视频证据，不拥有控制�
 | `展示与实验平台接口.md` | 定义RViz/Gazebo/UE/Web/QGC职责、ExperimentProfile入口、多窗口布局、证据采集和禁止声明 |
 | `UE渲染镜像桥接方案.md` | 定义Gazebo/PX4/ROS1到UE的单向渲染镜像路线、桥接帧契约、坐标/时间边界和验收门禁 |
 | `Factory地图导入与全局态势视图.md` | 冻结Factory作为第一张正式UE地图，定义L2静态导入Gazebo、10Hz UE全局姿态轨迹和用户审核门禁 |
+| `RViz与UE低延迟嵌入接口.md` | 定义RViz/UE暖进程复用、attach/detach、嵌入模式、DisplayFrame延迟字段和回退路径 |
 
 ## 第一阶段显示基线
 

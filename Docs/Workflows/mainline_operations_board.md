@@ -27,6 +27,11 @@ Use it to separate work that can proceed without exclusive ROS/Gazebo/PX4
 resources from runtime gates that must wait for the current shared RACER task
 to release them.
 
+While RACER owns the shared runtime, execute the bounded non-Gazebo lane at
+`Docs/Workflows/non_gazebo_closeout_board_20260715.md`. This lane may complete
+source/offline, isolated MWORKS, and replay-only gates, but must not start or
+restart Gazebo, PX4, MAVROS, ROS master, FAST-LIO, or RACER.
+
 ## 2. Current Mode
 
 | Item | Current Rule |

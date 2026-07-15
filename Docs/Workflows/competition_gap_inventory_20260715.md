@@ -23,6 +23,11 @@ ROS1/Sunray/Gazebo 工程链路和部分历史轨迹/多机结果已经存在，
 G9 生成控制器真实回灌、三机编队/规划长任务。
 ```
 
+当前不占用共享运行资源的具体执行顺序见
+`Docs/Workflows/non_gazebo_closeout_board_20260715.md`。RViz/UE未来嵌入和暖启动
+接口见 `Docs/Design/架构/04_展示与实验平台/RViz与UE低延迟嵌入接口.md`；当前只做
+接口、mock和replay，不启动第二套Gazebo/PX4运行环境。
+
 ## 2. 官方赛题要求
 
 | 需求 | 当前状态 | 说明 |
