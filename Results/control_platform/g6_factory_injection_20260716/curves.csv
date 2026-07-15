@@ -1,0 +1,9 @@
+stamp_s,command_id,event_state,requested_value,applied_value,wind_speed_mps,wind_direction_deg,rotor_1_effectiveness,rotor_2_effectiveness,rotor_3_effectiveness,rotor_4_effectiveness,rotor_1_rpm,rotor_2_rpm,rotor_3_rpm,rotor_4_rpm,rotor_1_thrust_n,rotor_2_thrust_n,rotor_3_thrust_n,rotor_4_thrust_n,attitude_error_rad,control_output,safety_intervention
+0.0,wind-apply-001,accepted,6.0,,6.0,0.0,1.0,1.0,1.0,1.0,,,,,,,,,,,
+0.0,wind-apply-001,applied,6.0,6.0,6.0,0.0,1.0,1.0,1.0,1.0,,,,,,,,,,,
+1.0,wind-dir-001,accepted,45.0,,6.0,45.0,1.0,1.0,1.0,1.0,,,,,,,,,,,
+1.0,wind-dir-001,applied,45.0,45.0,6.0,45.0,1.0,1.0,1.0,1.0,,,,,,,,,,,
+2.0,motor-r3-001,accepted,0.65,,6.0,45.0,1.0,1.0,0.65,1.0,,,,,,,,,,,
+2.0,motor-r3-001,applied,0.65,0.65,6.0,45.0,1.0,1.0,0.65,1.0,,,,,,,,,,,
+3.0,motor-r3-restore-001,accepted,1.0,,6.0,45.0,1.0,1.0,1.0,1.0,,,,,,,,,,,
+3.0,motor-r3-restore-001,restored,1.0,1.0,6.0,45.0,1.0,1.0,1.0,1.0,,,,,,,,,,,

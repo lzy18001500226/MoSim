@@ -1,0 +1,41 @@
+{
+  "schema": "mosim.control_platform.frontend_handoff.v1",
+  "version": 1,
+  "scope": "pre_frontend_control_experiment_platform",
+  "authorities": {
+    "module_registry": "Config/control_platform/control_module_registry.json",
+    "profile_catalog": "Config/profiles/catalog.json",
+    "injection_contract": "Config/control_platform/factory_injection_contract.json"
+  },
+  "read_models": [
+    "available_modules", "module_claim_ceiling", "profile_compatibility",
+    "active_run", "lifecycle_state", "telemetry_channels", "event_timeline"
+  ],
+  "commands": [
+    "validate_experiment_profile", "start_run", "stop_run", "apply_injection", "restore_injection"
+  ],
+  "lifecycle_states": [
+    "idle", "validating", "ready", "starting", "running", "stopping",
+    "completed", "blocked", "failed"
+  ],
+  "required_command_response_fields": [
+    "request_id", "accepted", "reason_code", "run_id", "profile_hash", "timestamp"
+  ],
+  "telemetry_channels": [
+    "state", "reference", "command", "module_diagnostics", "injection_state",
+    "rotor_state", "attitude_error", "control_output", "safety_intervention"
+  ],
+  "embedding_boundary": {
+    "rviz": "external_native_window_or_low_latency_stream_adapter; frontend does not own robotics truth",
+    "unreal": "external_native_window_or_render_stream_adapter; frontend does not own physics or controller truth",
+    "qgc": "optional operator reference only; no direct source fork is required for the first frontend"
+  },
+  "safety_rules": [
+    "UI labels come from registry and profile metadata, not hard-coded controller lists",
+    "non-selectable modules remain visible only in research/status views",
+    "start_run is forbidden until profile validation returns accepted=true",
+    "all injection controls display requested and applied values separately",
+    "blocked and failed states preserve reason_code and evidence links"
+  ],
+  "claim_boundary": "This handoff freezes the frontend-facing contract only. It is not a frontend implementation or runtime acceptance result."
+}

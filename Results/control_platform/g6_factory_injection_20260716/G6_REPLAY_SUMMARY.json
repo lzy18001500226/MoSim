@@ -1,0 +1,20 @@
+{
+  "schema": "mosim.factory_injection_replay.v1",
+  "status": "passed",
+  "command_count": 4,
+  "event_count": 8,
+  "rejected_count": 0,
+  "final_state": {
+    "wind_speed_mps": 6.0,
+    "wind_direction_deg": 45.0,
+    "motor_effectiveness": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "runtime_started": false,
+  "shared_gazebo_px4_touched": false,
+  "claim_ceiling": "This contract and its replay reducer do not prove that Gazebo applied wind or motor effectiveness. Runtime acceptance requires backend events and same-run telemetry."
+}

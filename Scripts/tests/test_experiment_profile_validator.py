@@ -11,6 +11,7 @@ CHECKER = ROOT / "Scripts" / "quality" / "check_experiment_profile.py"
 CATALOG = ROOT / "Config" / "profiles" / "catalog.json"
 RUNTIME_LOG_EXPORTS = ROOT / "Config" / "profiles" / "runtime_log_exports.json"
 TRACKING_SOURCES = ROOT / "Config" / "profiles" / "tracking_sources.json"
+CONTROL_MODULE_REGISTRY = ROOT / "Config" / "control_platform" / "control_module_registry.json"
 VALID_PROFILE = ROOT / "Config" / "profiles" / "experiments" / "px4ctrl_takeoff_hover_land_v1.json"
 FASTLIO_EVAL_PROFILE = ROOT / "Config" / "profiles" / "experiments" / "fastlio_independent_eval_figure8_v1.json"
 FASTLIO_HYBRID_PROFILE = ROOT / "Config" / "profiles" / "experiments" / "fastlio_hybrid_z_figure8_v1.json"
@@ -67,6 +68,24 @@ def assert_rejected(completed: subprocess.CompletedProcess[str], code: str) -> N
     assert rejection["control_started"] is False
 
 
+def test_registry_non_selectable_controller_is_rejected(tmp_path: Path) -> None:
+    registry = load_json(CONTROL_MODULE_REGISTRY)
+    module = next(
+        item
+        for item in registry["modules"]
+        if item["profile_id"] == "px4ctrl_attitude_thrust_v1"
+    )
+    module["selectable"] = False
+    registry_path = tmp_path / "control_module_registry.json"
+    write_json(registry_path, registry)
+    completed = run_checker(
+        str(VALID_PROFILE),
+        "--control-module-registry",
+        str(registry_path),
+    )
+    assert_rejected(completed, "C-REG-03")
+
+
 def test_experiment_profile_validator_accepts_current_px4ctrl_profiles() -> None:
     completed = run_checker("--all")
     assert completed.returncode == 0, completed.stdout + completed.stderr
@@ -74,6 +93,7 @@ def test_experiment_profile_validator_accepts_current_px4ctrl_profiles() -> None
     assert report["ok"] is True
     assert report["runtime_log_exports"] == str(RUNTIME_LOG_EXPORTS)
     assert report["tracking_sources"] == str(TRACKING_SOURCES)
+    assert report["control_module_registry"] == str(CONTROL_MODULE_REGISTRY)
     assert report["checked_count"] >= 4
     results_by_id = {result["experiment_id"]: result for result in report["results"]}
     for result in report["results"]:

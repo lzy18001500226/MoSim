@@ -1,0 +1,19 @@
+{
+  "schema": "mosim.control_platform.wave_a_gate.v1",
+  "status": "passed",
+  "controllers": [
+    "lqr",
+    "lqi",
+    "so3_attitude",
+    "backstepping"
+  ],
+  "case_count": 5,
+  "scalar_comparison_count": 75,
+  "failure_count": 0,
+  "max_abs_diff": 1.1102230246251565e-16,
+  "tolerance": 1e-12,
+  "runtime_started": false,
+  "shared_gazebo_px4_touched": false,
+  "claim_ceiling": "Project-owned fixed-size C core matches an independent Python oracle offline; no fresh MWORKS, generated-C, or Gazebo/PX4 acceptance is claimed.",
+  "failures": []
+}

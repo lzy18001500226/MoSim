@@ -1,0 +1,25 @@
+{
+  "schema": "mosim.control_upstream_sources.v1",
+  "snapshot_date": "2026-07-16",
+  "selection_policy": "licensed deterministic mathematical core first; ROS wrappers and UI are reference-only",
+  "selected": [
+    {"id": "lqr_shengwen", "family": "linear_optimal", "repo": "shengwen-tw/quadrotor-lqr-simulator", "url": "https://github.com/shengwen-tw/quadrotor-lqr-simulator", "commit": "56709c38c135dff628f21e7d4266663fcbc826e6", "license": "MIT", "language": "MATLAB", "role": "primary_oracle", "wave": "A"},
+    {"id": "lqr_kourani", "family": "linear_optimal", "repo": "KouraniMEKA/Quadrotor-LQR", "url": "https://github.com/KouraniMEKA/Quadrotor-LQR", "commit": "67f1c9758f56b9623928d18495065163dfa44ffa", "license": "MIT", "language": "MATLAB", "role": "graphical_structure_oracle", "wave": "A"},
+    {"id": "so3_fdcl", "family": "geometric_attitude", "repo": "fdcl-gwu/uav_geometric_control", "url": "https://github.com/fdcl-gwu/uav_geometric_control", "commit": "f5fcb51c3b962152a4895a9d2e86e4a184655741", "license": "MIT", "language": "C++", "role": "primary_oracle", "wave": "A"},
+    {"id": "mavros_geometric_adapter", "family": "adapter_reference", "repo": "Jaeyoung-Lim/mavros_controllers", "url": "https://github.com/Jaeyoung-Lim/mavros_controllers", "commit": "8b3fff0327b56c415aa24708bea5f37d76307404", "license": "BSD-3-Clause", "language": "C++", "role": "adapter_reference", "wave": "A"},
+    {"id": "mav_control_lifecycle", "family": "lifecycle_reference", "repo": "ethz-asl/mav_control_rw", "url": "https://github.com/ethz-asl/mav_control_rw", "commit": "207058d78428b944fb8afe51cde06bf9629d8d7a", "license": "Apache-2.0", "language": "C/C++", "role": "architecture_reference", "wave": "A"},
+    {"id": "mrs_controller_plugins", "family": "plugin_reference", "repo": "ctu-mrs/mrs_uav_controllers", "url": "https://github.com/ctu-mrs/mrs_uav_controllers", "commit": "980f548a03575825fcb8ddc7629c29d65fde0d3d", "license": "BSD-3-Clause", "language": "C++", "role": "architecture_reference_ros2_only", "wave": "A"},
+    {"id": "backstepping_smc_sriram", "family": "backstepping", "repo": "sriramprasadkothapalli/Sliding-Mode-Control-based-on-Backstepping-Approach-for-an-UAV-Type-Quadrotor", "url": "https://github.com/sriramprasadkothapalli/Sliding-Mode-Control-based-on-Backstepping-Approach-for-an-UAV-Type-Quadrotor", "commit": "17611b1be22fb8600c410343e098e24ac585f668", "license": "MIT", "language": "MATLAB", "role": "formula_oracle", "wave": "A"},
+    {"id": "hinf_shengwen", "family": "h_infinity", "repo": "shengwen-tw/quadrotor-h-infty-ctrl-simulator", "url": "https://github.com/shengwen-tw/quadrotor-h-infty-ctrl-simulator", "commit": "fd51f68701ec1bd549b9796d8277db2c8fb89240", "license": "MIT", "language": "MATLAB", "role": "primary_oracle", "wave": "B"},
+    {"id": "tube_mpc_j2dog", "family": "tube_mpc", "repo": "J2DOG/DA-TMPC-quadrotor", "url": "https://github.com/J2DOG/DA-TMPC-quadrotor", "commit": "45cf558366d55cd6d603f151afce2e1982ba8290", "license": "MIT", "language": "MATLAB", "role": "solver_and_formula_oracle", "wave": "B"},
+    {"id": "indi_mahfoud", "family": "indi", "repo": "MahfoudHerraz/indi_quadrotor", "url": "https://github.com/MahfoudHerraz/indi_quadrotor", "commit": "213f8afb8b1ee9a3c2054c053e5744282714a88c", "license": "MIT", "language": "MATLAB", "role": "formula_oracle", "wave": "C"}
+  ],
+  "reference_only": [
+    {"repo": "uzh-rpg/rpg_quadrotor_control", "reason": "license_noassertion", "source_copy_allowed": false},
+    {"repo": "SihaoSun/INDI_Quadrotor_FTC", "reason": "no_explicit_license", "source_copy_allowed": false},
+    {"repo": "bhavanarao3/Sliding-mode-control-based-on-backstepping-approach-for-an-UAV", "reason": "no_explicit_license", "source_copy_allowed": false},
+    {"repo": "oussama-sadki/Adaptive-Integrator-Backstepping-control-of-altitude-attitude-for-UAV", "reason": "no_explicit_license", "source_copy_allowed": false},
+    {"repo": "iff-gsc/SE2A_GLA_INDI", "reason": "GPL-3.0_requires_separate_distribution_decision", "source_copy_allowed": false},
+    {"repo": "iff-gsc/FTC_Quadrotor_EuroGNC_2022", "reason": "GPL-2.0_requires_separate_distribution_decision", "source_copy_allowed": false}
+  ]
+}

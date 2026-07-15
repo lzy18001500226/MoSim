@@ -1,0 +1,9 @@
+{
+  "schema": "mosim.control_platform.offline_adapter.v1",
+  "status": "passed",
+  "response_count": 7,
+  "accepted_count": 7,
+  "runtime_started": false,
+  "shared_gazebo_px4_touched": false,
+  "claim_ceiling": "offline lifecycle, profile binding, and injection event semantics only; no MWORKS, Gazebo, PX4, MAVROS, or controller-performance acceptance"
+}

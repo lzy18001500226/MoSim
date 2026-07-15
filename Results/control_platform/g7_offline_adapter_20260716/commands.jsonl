@@ -1,0 +1,7 @@
+{"command":"validate_experiment_profile","request_id":"validate-1","profile_path":"Config/profiles/experiments/g9_official_pid_figure8_v1.json"}
+{"command":"start_run","request_id":"start-1","run_id":"offline-g7-contract","profile_hash":"181a41b9bf355cc7322c4db4e2dfe3321398d9c75e3d0c95415235ccea620da6"}
+{"command":"apply_injection","request_id":"inject-1","command_id":"inject-1","run_id":"offline-g7-contract","profile_hash":"181a41b9bf355cc7322c4db4e2dfe3321398d9c75e3d0c95415235ccea620da6","target":"wind_speed_mps","requested_at":1.0,"apply_mode":"set","value":6.0,"ramp_s":0.0,"duration_s":0.0,"restore_policy":"manual","source":"fixture"}
+{"command":"apply_injection","request_id":"inject-2","command_id":"inject-2","run_id":"offline-g7-contract","profile_hash":"181a41b9bf355cc7322c4db4e2dfe3321398d9c75e3d0c95415235ccea620da6","target":"motor_effectiveness","requested_at":2.0,"apply_mode":"set","value":0.65,"rotor_index":2,"ramp_s":0.0,"duration_s":0.0,"restore_policy":"manual","source":"fixture"}
+{"command":"restore_injection","request_id":"restore-1","command_id":"restore-1","run_id":"offline-g7-contract","profile_hash":"181a41b9bf355cc7322c4db4e2dfe3321398d9c75e3d0c95415235ccea620da6","target":"motor_effectiveness","requested_at":3.0,"apply_mode":"restore","value":0.0,"rotor_index":2,"ramp_s":0.0,"duration_s":0.0,"restore_policy":"manual","source":"fixture"}
+{"command":"snapshot","request_id":"snapshot-1"}
+{"command":"stop_run","request_id":"stop-1"}

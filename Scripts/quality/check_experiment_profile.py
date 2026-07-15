@@ -20,6 +20,7 @@ DEFAULT_CATALOG = ROOT / "Config" / "profiles" / "catalog.json"
 DEFAULT_EXPERIMENT_DIR = ROOT / "Config" / "profiles" / "experiments"
 DEFAULT_RUNTIME_LOG_EXPORTS = ROOT / "Config" / "profiles" / "runtime_log_exports.json"
 DEFAULT_TRACKING_SOURCES = ROOT / "Config" / "profiles" / "tracking_sources.json"
+DEFAULT_CONTROL_MODULE_REGISTRY = ROOT / "Config" / "control_platform" / "control_module_registry.json"
 ACTIVE_PROFILE_STATUSES = {"active", "implemented", "accepted"}
 BLOCKED_PROFILE_STATUSES = {"blocked", "archived"}
 
@@ -158,6 +159,19 @@ def build_rejection(profile: dict[str, Any], errors: list[dict[str, str]]) -> di
 
 def experiment_profile_status(profile: dict[str, Any]) -> str:
     return str(profile.get("profile_status", "active")).strip().lower()
+
+
+def registry_profiles(registry: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
+    if not isinstance(registry, dict):
+        return {}
+    modules = registry.get("modules")
+    if not isinstance(modules, list):
+        return {}
+    return {
+        str(module.get("profile_id")): module
+        for module in modules
+        if isinstance(module, dict) and module.get("profile_id")
+    }
 
 
 def build_launch_plan_skeleton(
@@ -355,6 +369,7 @@ def validate_experiment(
     catalog: dict[str, Any],
     tracking_sources: dict[str, Any],
     runtime_log_exports: dict[str, Any] | None = None,
+    control_module_registry: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     raw = load_json(path)
     profile = raw.get("experiment_profile") if isinstance(raw, dict) else None
@@ -446,7 +461,6 @@ def validate_experiment(
     evaluation = resolved["evaluation_profile"]
     evidence = resolved["evidence_profile"]
     localization_eval = resolved.get("localization_eval_profile")
-
     required_reference = set(controller.get("required_reference", []))
     provided_reference = set(trajectory.get("provides_reference", []))
     missing_reference = sorted(required_reference - provided_reference)
@@ -757,6 +771,28 @@ def validate_experiment(
     if not isinstance(forbidden_claims, list) or not forbidden_claims:
         add_warning(warnings, "CLAIM-01", "experiment profile should declare forbidden_claims")
 
+    registered_modules = registry_profiles(control_module_registry)
+    if control_module_registry is not None:
+        for slot, expected_kind in (
+            ("controller_profile", "nominal_controller"),
+            ("augmentation_profile", "augmentation"),
+        ):
+            profile_id = str(profile[slot])
+            if profile_id == "none":
+                continue
+            registered = registered_modules.get(profile_id)
+            if registered is None:
+                add_error(errors, "C-REG-01", f"{slot}={profile_id} is not registered in control_module_registry")
+                continue
+            if registered.get("kind") != expected_kind:
+                add_error(
+                    errors,
+                    "C-REG-02",
+                    f"{slot}={profile_id} has registry kind={registered.get('kind')}, expected {expected_kind}",
+                )
+            if registered.get("selectable") is not True:
+                add_error(errors, "C-REG-03", f"{slot}={profile_id} is not selectable in control_module_registry")
+
     experiment_hash = canonical_hash(profile)
 
     return {
@@ -825,6 +861,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--catalog", default=str(DEFAULT_CATALOG), help="Profile catalog JSON path")
     parser.add_argument("--runtime-log-exports", default=str(DEFAULT_RUNTIME_LOG_EXPORTS), help="RuntimeLogProfile registry JSON path")
     parser.add_argument("--tracking-sources", default=str(DEFAULT_TRACKING_SOURCES), help="TrackingSourceProfile registry JSON path")
+    parser.add_argument("--control-module-registry", default=str(DEFAULT_CONTROL_MODULE_REGISTRY), help="ControlModuleRegistry JSON path")
     parser.add_argument("--all", action="store_true", help="Validate all Config/profiles/experiments/*.json")
     parser.add_argument("--include-blocked", action="store_true", help="With --all, include profile_status=blocked/archived audit profiles")
     parser.add_argument("--report", help="Optional JSON validation report output path")
@@ -851,11 +888,24 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError as exc:
         print(str(exc), file=sys.stderr)
         return 2
+    try:
+        control_module_registry = load_json(Path(args.control_module_registry))
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
 
     results = []
     for path in paths:
         try:
-            results.append(validate_experiment(path, catalog, tracking_sources, runtime_log_exports))
+            results.append(
+                validate_experiment(
+                    path,
+                    catalog,
+                    tracking_sources,
+                    runtime_log_exports,
+                    control_module_registry,
+                )
+            )
         except ValueError as exc:
             results.append(
                 {
@@ -873,6 +923,7 @@ def main(argv: list[str] | None = None) -> int:
         "catalog": str(catalog_path),
         "runtime_log_exports": str(Path(args.runtime_log_exports)),
         "tracking_sources": str(Path(args.tracking_sources)),
+        "control_module_registry": str(Path(args.control_module_registry)),
         "checked_count": len(results),
         "results": results,
     }

@@ -1,0 +1,27 @@
+{
+  "schema": "mosim.factory_injection_contract.v1",
+  "version": 1,
+  "scene": "Factory",
+  "command_schema": "mosim.factory_injection_command.v1",
+  "required_command_fields": [
+    "command_id", "run_id", "profile_hash", "target", "requested_at",
+    "apply_mode", "value", "ramp_s", "duration_s", "restore_policy", "source"
+  ],
+  "targets": {
+    "wind_speed_mps": {"minimum": 0.0, "maximum": 20.0, "unit": "m/s"},
+    "wind_direction_deg": {"minimum": -180.0, "maximum": 180.0, "unit": "deg"},
+    "motor_effectiveness": {"minimum": 0.0, "maximum": 1.0, "unit": "ratio", "requires_rotor_index": true, "rotor_index_min": 1, "rotor_index_max": 4}
+  },
+  "apply_modes": ["set", "restore"],
+  "restore_policies": ["manual", "after_duration", "on_run_end"],
+  "event_states": ["accepted", "applied", "rejected", "restored"],
+  "curve_columns": [
+    "stamp_s", "command_id", "event_state", "requested_value", "applied_value",
+    "wind_speed_mps", "wind_direction_deg", "rotor_1_effectiveness",
+    "rotor_2_effectiveness", "rotor_3_effectiveness", "rotor_4_effectiveness",
+    "rotor_1_rpm", "rotor_2_rpm", "rotor_3_rpm", "rotor_4_rpm",
+    "rotor_1_thrust_n", "rotor_2_thrust_n", "rotor_3_thrust_n", "rotor_4_thrust_n",
+    "attitude_error_rad", "control_output", "safety_intervention"
+  ],
+  "runtime_boundary": "This contract and its replay reducer do not prove that Gazebo applied wind or motor effectiveness. Runtime acceptance requires backend events and same-run telemetry."
+}
