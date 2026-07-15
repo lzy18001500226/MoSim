@@ -323,6 +323,10 @@ References/**/node_modules/
 References/**/build/
 References/**/Build/
 References/**/BUILD/
+References/**/.catkin_tools/
+References/**/devel/
+References/**/install/
+References/**/log/
 References/**/dist/
 References/**/out/
 References/**/temp/
