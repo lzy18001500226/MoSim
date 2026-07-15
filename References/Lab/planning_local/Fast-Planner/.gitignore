@@ -1,3 +1,10 @@
 fast_planner/.vscode
 .vscode/
 .clang-format
+*~
+uav_simulator/so3_disturbance_generator/cfg/cpp/
+uav_simulator/so3_disturbance_generator/cfg/*.cfgc
+uav_simulator/so3_disturbance_generator/docs/
+uav_simulator/so3_disturbance_generator/include/so3_disturbance_generator/DisturbanceUIConfig.h
+uav_simulator/so3_disturbance_generator/mainpage.dox
+uav_simulator/so3_disturbance_generator/src/so3_disturbance_generator/
