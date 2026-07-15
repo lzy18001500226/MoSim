@@ -320,6 +320,7 @@ References/**/.git/
 References/**/.svn/
 References/**/.hg/
 References/**/node_modules/
+References/**/.vscode/
 References/**/build/
 References/**/Build/
 References/**/BUILD/
@@ -331,8 +332,7 @@ References/**/dist/
 References/**/out/
 References/**/temp/
 References/**/obj/
-References/**/bin/Debug/
-References/**/bin/Release/
+References/**/bin/
 References/**/Binaries/
 References/**/Intermediate/
 References/**/Saved/
@@ -357,10 +357,14 @@ References/**/.venv/
 References/**/venv/
 References/**/*~
 References/**/cfg/cpp/
+References/**/msg_gen/
+References/**/src/*/msg/
 References/**/src/*/cfg/
 References/**/docs/*Config*.dox
 References/**/docs/*Config*.wikidoc
+References/Lab/exploration_coverage/FALCON-ros1-noetic/**/src/*/__init__.py
 References/Lab/exploration_coverage/FALCON-ros1-noetic/uav_simulator/so3_disturbance_generator/include/so3_disturbance_generator/DisturbanceUIConfig.h
+References/**/*.cfgc
 References/**/*.pyc
 References/**/*.pch
 References/**/*.iobj
