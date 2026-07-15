@@ -1,14 +1,14 @@
 common:
-    lid_topic:  "/mosim/fastlio/livox/lidar"
+    lid_topic:  "/uav1/livox/lidar"
     imu_topic:  "/uav1/livox/imu"
     time_sync_en: false
     time_offset_lidar_to_imu: 0.0
 
 preprocess:
-    lidar_type: 1
+    lidar_type: 4
     scan_line: 4
-    scan_rate: 10
-    timestamp_unit: 2
+    scan_rate: 20
+    timestamp_unit: 1
     blind: 0.4
 
 mapping:
