@@ -379,3 +379,7 @@ References/**/*.whl
 # PX4 board dist folders contain source/config inputs, not generated outputs.
 !References/PX4/PX4/boards/**/dist/
 !References/PX4/PX4/boards/**/dist/**
+
+# FAST_LIO runtime outputs; keep analysis scripts and documentation tracked.
+References/UAVStacks/Prometheus/Modules/FAST_LIO/Log/*.txt
+References/UAVStacks/Prometheus/Modules/FAST_LIO/PCD/
