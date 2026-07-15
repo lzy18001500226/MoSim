@@ -145,7 +145,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     generation = ros_generation(ros_distro)
     ros_package_path = os.environ.get("ROS_PACKAGE_PATH")
     ros_master_uri = os.environ.get("ROS_MASTER_URI")
-    fast_lio_reference = ROOT / "References/Lab/FAST_LIO/package.xml"
+    fast_lio_reference = ROOT / "References/Lab/localization_slam/FAST_LIO/package.xml"
     project_rviz_pointcloud_config = ROOT / "Config/rviz/mosim_uav_fastlio_pointcloud.rviz"
     project_rviz2_pointcloud_config = ROOT / "Config/rviz2/mosim_uav_fastlio_pointcloud.rviz"
     bootstrap_script = ROOT / "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh"
@@ -285,7 +285,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "Run Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect to validate the package-style ROS2 launch path.",
             "Run Scripts/UE5/check_fastlio_ros2_topics.sh during the live ROS2 run.",
             "Run Scripts/UE5/check_fastlio_family_compatibility.py --write after adding or changing FAST-LIO-family sources.",
-            "Treat local References/Lab/FAST_LIO as ROS1-only until a ROS2 FAST-LIO/FAST-LIO2 package is added or a containerized ROS1 bridge route is approved.",
+            "Treat local References/Lab/localization_slam/FAST_LIO as ROS1-only until a ROS2 FAST-LIO/FAST-LIO2 package is added or a containerized ROS1 bridge route is approved.",
         ],
         "claim_boundary": [
             "This is only an environment preflight; it does not prove FAST-LIO runtime evidence.",

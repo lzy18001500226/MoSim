@@ -13,6 +13,30 @@ class APlayerController;
 class ASkyLight;
 class APostProcessVolume;
 
+struct FMoSimFactoryCalibrationSegment
+{
+    FVector StartUnrealCm = FVector::ZeroVector;
+    FVector EndUnrealCm = FVector::ZeroVector;
+    FColor Color = FColor::White;
+};
+
+struct FMoSimFactoryCalibrationMarker
+{
+    FString Label;
+    FVector UnrealCm = FVector::ZeroVector;
+    FColor Color = FColor::White;
+    float RadiusCm = 12.0f;
+    FVector BoxExtentCm = FVector::ZeroVector;
+    bool bDrawBox = false;
+};
+
+struct FMoSimFactoryOverlayPoint
+{
+    FVector UnrealCm = FVector::ZeroVector;
+    FColor Color = FColor::Cyan;
+    float Size = 6.0f;
+};
+
 UCLASS()
 class MOSIMSCENELIBRARY_API AMoSimSceneLibraryGameMode : public AGameModeBase
 {
@@ -32,6 +56,15 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Renderer")
     FVector PlaybackActorLocation = FVector(0.0, 0.0, 150.0);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Renderer")
+    int32 PlaybackActorCount = 1;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Renderer")
+    int32 PlaybackBaseUdpPort = 5005;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Renderer")
+    FVector PlaybackActorSpacing = FVector(0.0, 180.0, 0.0);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Renderer|Review")
     bool bSpawnDefaultReviewLighting = true;
@@ -57,6 +90,9 @@ public:
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Renderer")
     AQuadrotorMworksPlaybackActor* SpawnedPlaybackActor = nullptr;
 
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Renderer")
+    TArray<AQuadrotorMworksPlaybackActor*> SpawnedPlaybackActors;
+
 protected:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaSeconds) override;
@@ -66,6 +102,11 @@ private:
     void EnforceSceneReviewCamera(UWorld* World);
     AMworksReviewCameraPawn* FindOrSpawnReviewCamera(UWorld* World, const FActorSpawnParameters& SpawnParameters);
     void DisableImportedPawnInput(APawn* Pawn, APlayerController* PlayerController) const;
+    void LoadFactoryCalibrationFrame();
+    void LoadFactoryCalibrationMarkers();
+    void DrawFactoryCalibrationFrame(UWorld* World) const;
+    void LoadFactoryGazeboOverlay();
+    void DrawFactoryGazeboOverlay(UWorld* World) const;
 
     UPROPERTY()
     ADirectionalLight* SpawnedReviewSunLight = nullptr;
@@ -81,4 +122,15 @@ private:
 
     bool bSceneReviewModeActive = false;
     double LastReviewCameraPossessLogTimeSeconds = -1000.0;
+    bool bFactoryCalibrationFrameEnabled = false;
+    FString FactoryCalibrationCsvPath;
+    FString FactoryCalibrationMarkerCsvPath;
+    float FactoryCalibrationLineThickness = 6.0f;
+    float FactoryCalibrationDrawLifetimeSeconds = 0.5f;
+    TArray<FMoSimFactoryCalibrationSegment> FactoryCalibrationSegments;
+    TArray<FMoSimFactoryCalibrationMarker> FactoryCalibrationMarkers;
+    bool bFactoryGazeboOverlayEnabled = false;
+    FString FactoryGazeboOverlayCsvPath;
+    float FactoryGazeboOverlayZOffsetCm = 20.0f;
+    TArray<FMoSimFactoryOverlayPoint> FactoryGazeboOverlayPoints;
 };

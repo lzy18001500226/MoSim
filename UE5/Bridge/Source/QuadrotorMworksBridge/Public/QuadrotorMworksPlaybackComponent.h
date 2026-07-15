@@ -34,22 +34,22 @@ public:
     bool bInterpolateActorTransform = false;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback", meta = (ClampMin = "1.0"))
-    float NominalControlRateHz = 20.0f;
+    float NominalControlRateHz = 70.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback", meta = (ClampMin = "1.0"))
-    float MinimumDisplayRateHz = 60.0f;
+    float MinimumDisplayRateHz = 30.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback", meta = (ClampMin = "0.01"))
-    float MaxInterpolationDurationSeconds = 0.25f;
+    float MaxInterpolationDurationSeconds = 0.05f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback")
     bool bConvertMworksYToUnrealNegativeY = true;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback", meta = (ClampMin = "0"))
-    int32 MaxTrailPoints = 800;
+    int32 MaxTrailPoints = 2400;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback", meta = (ClampMin = "0.0"))
-    float TrailMinDistanceMeters = 0.05f;
+    float TrailMinDistanceMeters = 0.08f;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
     FQuadrotorMworksFrame LatestFrame;

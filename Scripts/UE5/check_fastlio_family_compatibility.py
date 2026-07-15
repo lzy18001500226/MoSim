@@ -21,9 +21,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT_ROOT = ROOT / "Results/unreal_scene_mapping"
 DEFAULT_CANDIDATES = (
-    ROOT / "References/Lab/FAST_LIO",
-    ROOT / "References/Lab/FAST-LIVO2",
-    ROOT / "References/Lab/Point-LIO-point-lio-with-grid-map",
+    ROOT / "References/Lab/localization_slam/FAST_LIO",
+    ROOT / "References/Lab/localization_slam/FAST-LIVO2",
+    ROOT / "References/Lab/localization_slam/Point-LIO-point-lio-with-grid-map",
 )
 TEXT_SUFFIXES = {
     ".cpp",

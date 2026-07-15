@@ -52,7 +52,7 @@ $Arguments = @(
     $Target,
     $Platform,
     $Configuration,
-    "-Project=`"$ProjectPath`"",
+    "-Project=$ProjectPath",
     "-WaitMutex",
     "-NoHotReloadFromIDE"
 )

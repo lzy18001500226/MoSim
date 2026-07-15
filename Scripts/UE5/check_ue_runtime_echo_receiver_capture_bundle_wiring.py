@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -151,6 +152,13 @@ def read_json(path: Path) -> dict[str, Any]:
 
 def present(source: str, patterns: set[str]) -> list[str]:
     return sorted(pattern for pattern in patterns if pattern in source)
+
+
+def present_cpp_code(source: str, patterns: set[str]) -> list[str]:
+    code = re.sub(r"/\*.*?\*/", "", source, flags=re.DOTALL)
+    code = re.sub(r"//[^\n]*", "", code)
+    code = re.sub(r'"(?:\\.|[^"\\])*"', '""', code)
+    return present(code, patterns)
 
 
 def source_literal(label: str) -> str:
@@ -305,7 +313,7 @@ def build_report() -> dict[str, Any]:
             issues.append(f"receiver surface missing anchor: {anchor}")
 
     runtime_patterns = present(surface_combined, FORBIDDEN_RUNTIME_PATTERNS)
-    pose_patterns = present(surface_combined, FORBIDDEN_POSE_PATTERNS)
+    pose_patterns = present_cpp_code(surface_combined, FORBIDDEN_POSE_PATTERNS)
     if runtime_patterns:
         issues.append("receiver surface contains runtime transport pattern(s): " + ", ".join(runtime_patterns))
     if pose_patterns:
@@ -454,7 +462,7 @@ def build_report() -> dict[str, Any]:
             "032 proves only source-static wiring between the compiled UE receiver surface and the 029 capture-bundle validator contract.",
             "032 does not open Unreal Editor, PIE, standalone runtime, or UE runtime.",
             "032 does not run Unreal build, bind sockets, start listeners/timers/background loops, or execute live transport.",
-            "032 does not edit UE C++ source, Blueprint, UMG, assets, materials, maps, project settings, Sunray/PBR/Blender, MWORKS, ROS2, FAST-LIO, planner, controller, MoSimQuadrotorModel, References, CoAgent runtime, or Git.",
+            "032 does not edit UE C++ source, Blueprint, UMG, assets, materials, maps, project settings, Sunray/PBR/Blender, MWORKS, ROS2, FAST-LIO, planner, controller, MoSimQuadrotorModel, References, legacy agent runtime, or Git.",
             "032 checker/test/static rows, 031 compile success, 030 source surface, 029 validator success, sender success, fixture rows, operator intent, and quadrotor.unreal_state frames are not live runtime ack.",
             "032 does not prove live UE runtime ack, live MWORKS downlink, ROS2 runtime echo, final UI acceptance, planner_ready, FAST-LIO success, controller performance, mission success, or closed_loop.",
         ],

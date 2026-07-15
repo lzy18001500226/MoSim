@@ -243,8 +243,9 @@ def main() -> int:
     ).read_text(encoding="utf-8")
     for token in [
         "bUseDaeDerivedVehicleVisual = true",
-        "/Game/Sunray150/sunray150_with_mid360_textured.sunray150_with_mid360_textured",
-        "sunray150_with_mid360_textured.fbx",
+        "/Game/Sunray150/sunray150_with_mid360_textured_body.sunray150_with_mid360_textured_body",
+        "sunray150_with_mid360_textured_body.fbx",
+        "bAnimateAcceptedPropellers = true",
     ]:
         if token not in playback_actor_header:
             print(f"[FAIL] playback actor header missing DAE-derived Sunray visual token: {token}")
@@ -253,6 +254,9 @@ def main() -> int:
         "LoadSunrayDaeDerivedVisualAsset",
         "MWORKS STL and MWORKS animation fallback are disabled",
         "BodyMesh->SetStaticMesh(DaeDerivedMesh)",
+        "LoadAcceptedPropellerAssets",
+        "UpdateAcceptedPropellers",
+        "AcceptedPropellerRotor0FrontRight",
     ]:
         if token not in playback_actor:
             print(f"[FAIL] playback actor missing DAE-derived runtime visual token: {token}")

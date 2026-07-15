@@ -3,11 +3,11 @@ set -euo pipefail
 
 # Bootstrap a project-local generated Catkin workspace for FAST-LIO replay.
 # This script does not install ROS packages. It only wires the local
-# References/Lab/FAST_LIO package into Results/tmp and builds it when ROS1 and
+# References/Lab/localization_slam/FAST_LIO package into Results/tmp and builds it when ROS1 and
 # Catkin are already available.
 
 PROJECT_ROOT="/mnt/c/Users/HP/Desktop/MoSim"
-FAST_LIO_SRC="${FAST_LIO_SRC:-${PROJECT_ROOT}/References/Lab/FAST_LIO}"
+FAST_LIO_SRC="${FAST_LIO_SRC:-${PROJECT_ROOT}/References/Lab/localization_slam/FAST_LIO}"
 CATKIN_WS="${CATKIN_WS:-${PROJECT_ROOT}/Results/tmp/fastlio_ros1_ws}"
 DRY_RUN="${DRY_RUN:-0}"
 BUILD="${BUILD:-1}"

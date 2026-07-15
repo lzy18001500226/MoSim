@@ -998,7 +998,7 @@ def write_fastlio_handoff(path: Path, profile: SceneProfile, outputs: dict[str, 
                 "occupancy_json",
             }
         },
-        "fast_lio_reference_repo": "References/Lab/FAST_LIO",
+        "fast_lio_reference_repo": "References/Lab/localization_slam/FAST_LIO",
         "integration_notes": [
             "FAST-LIO itself is ROS/Catkin based; this handoff currently provides deterministic offline point clouds and trajectory poses.",
             "The next runtime adapter should publish PointCloud2 plus IMU/odometry timestamps in the same frame or with a documented TF transform.",

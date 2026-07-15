@@ -179,7 +179,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     fastlio_ros2_topic_checker = ROOT / "Scripts/UE5/check_fastlio_ros2_topics.sh"
     mworks_uav_bridge = ROOT / "Scripts/ros/publish_mworks_uav_state_ros2.py"
     unreal_mcp_opener = ROOT / "Scripts/UE5/open_unreal_editor_mcp_listener.sh"
-    fast_lio_repo = ROOT / "References/Lab/FAST_LIO/package.xml"
+    fast_lio_repo = ROOT / "References/Lab/localization_slam/FAST_LIO/package.xml"
     ros_env = ros_mapping_runtime_env()
     scene_reports = [scene_status(output_root, scene.lower()) for scene in args.scene]
     runtime_blockers: list[str] = []

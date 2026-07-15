@@ -22,6 +22,7 @@ SOURCE_BLEND = (
     / "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_dae_mid360_realistic_material_audit.blend"
 )
 OUT_DIR = PROJECT_ROOT / "UE5/MoSimSceneLibrary/SourceAssets/Sunray150"
+ACCEPTED_PROPELLER_PREFIX = "TriBlade_flipped_around_screw_axis_rotor_"
 
 
 def mesh_summary() -> dict[str, object]:
@@ -56,7 +57,36 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Join visible mesh objects into one runtime mesh before export.",
     )
+    parser.add_argument(
+        "--exclude-accepted-propellers",
+        action="store_true",
+        help="Export the accepted assembly body without its four accepted propeller objects.",
+    )
     return parser.parse_args(args)
+
+
+def remove_accepted_propellers() -> dict[str, object]:
+    propellers = [
+        obj
+        for obj in bpy.context.scene.objects
+        if obj.type == "MESH" and obj.name.startswith(ACCEPTED_PROPELLER_PREFIX)
+    ]
+    if len(propellers) != 4:
+        raise RuntimeError(
+            f"Expected four accepted Sunray150 propeller objects, found {len(propellers)}: "
+            + ", ".join(sorted(obj.name for obj in propellers))
+        )
+    names = sorted(obj.name for obj in propellers)
+    for obj in propellers:
+        bpy.data.objects.remove(obj, do_unlink=True)
+    return {
+        "accepted_propellers_excluded": True,
+        "excluded_propeller_objects": names,
+        "propeller_source_boundary": (
+            "The body export excludes only the four propellers already present in the accepted audit blend; "
+            "the matching UE StaticMesh assets imported from that same accepted assembly remain the runtime propeller source."
+        ),
+    }
 
 
 def join_visible_meshes_for_runtime() -> dict[str, object]:
@@ -92,6 +122,10 @@ def main() -> None:
     out_glb = output_dir / f"{args.output_stem}.glb"
     out_manifest = output_dir / f"{args.output_stem}_export_manifest.json"
 
+    propeller_summary: dict[str, object] = {"accepted_propellers_excluded": False}
+    if args.exclude_accepted_propellers:
+        propeller_summary = remove_accepted_propellers()
+
     summary = mesh_summary()
     if summary["mesh_object_count"] == 0:
         raise RuntimeError("No mesh objects found in accepted Sunray150 audit Blender scene.")
@@ -124,6 +158,7 @@ def main() -> None:
         },
         "elapsed_sec": round(time.time() - start, 3),
         **summary,
+        **propeller_summary,
         **merge_summary,
         "claim_boundary": [
             "Exports the accepted Blender visual baseline for UE import.",

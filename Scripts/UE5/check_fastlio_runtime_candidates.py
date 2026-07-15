@@ -17,9 +17,9 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT_ROOT = ROOT / "Results" / "unreal_scene_mapping"
 DEFAULT_CANDIDATES = (
     ROOT / "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio",
-    ROOT / "References/Lab/FAST_LIO",
-    ROOT / "References/Lab/FAST-LIVO2",
-    ROOT / "References/Lab/Point-LIO-point-lio-with-grid-map",
+    ROOT / "References/Lab/localization_slam/FAST_LIO",
+    ROOT / "References/Lab/localization_slam/FAST-LIVO2",
+    ROOT / "References/Lab/localization_slam/Point-LIO-point-lio-with-grid-map",
     ROOT / "References/Sunray/simulation/gazebo_plugin/livox_laser_simulation",
     ROOT / "References/Sunray/General_Module/sunray_planner_utils",
     ROOT / "Scripts/ros/mosim_dense_lidar_cpp",

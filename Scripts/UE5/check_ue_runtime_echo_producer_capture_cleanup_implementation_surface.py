@@ -346,7 +346,7 @@ def build_report() -> dict[str, Any]:
             "036 proves only source/static implementation-surface materialization for future producer/capture/cleanup artifacts.",
             "036 does not open Unreal Editor, PIE, standalone runtime, game window, or UE runtime.",
             "036 does not run Unreal build, bind sockets, start listeners/timers/threads/background loops, or execute live transport.",
-            "036 does not edit Blueprint, UMG, Slate/Web UI, assets, materials, maps, project settings, Sunray/PBR/Blender, MWORKS, ROS2, FAST-LIO, planner, controller, MoSimQuadrotorModel, References, CoAgent runtime, Codex App private state, visible-thread lifecycle, or Git.",
+            "036 does not edit Blueprint, UMG, Slate/Web UI, assets, materials, maps, project settings, Sunray/PBR/Blender, MWORKS, ROS2, FAST-LIO, planner, controller, MoSimQuadrotorModel, References, legacy agent runtime, Codex App private state, visible-thread lifecycle, or Git.",
             "036 checker/test/static rows, source-static implementation methods, sender packet construction, fixture rows, operator intent, build success, and quadrotor.unreal_state frames are not live runtime ack.",
             "034 remains the latest bounded live preflight and records live_attempt_consumed=false and runtime_probe_executed=false.",
             "036 does not prove live UE runtime ack, live MWORKS downlink, ROS2 runtime echo, final UI acceptance, planner_ready, FAST-LIO success, controller performance, mission success, or closed_loop.",

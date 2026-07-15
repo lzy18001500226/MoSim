@@ -60,6 +60,10 @@ private:
     FSocket* Socket = nullptr;
     TSharedPtr<FUdpSocketReceiver> Receiver;
     bool bLoggedFirstFrame = false;
+    double ReceiveRateWindowStartSeconds = 0.0;
+    int32 ReceivedFramesInWindow = 0;
+    int32 SequenceGapsInWindow = 0;
+    int32 LastReceivedSequence = TNumericLimits<int32>::Min();
 
     mutable FCriticalSection FrameMutex;
     FQuadrotorMworksFrame LatestFrame;

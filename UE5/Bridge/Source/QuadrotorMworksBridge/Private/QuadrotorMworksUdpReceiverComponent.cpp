@@ -5,6 +5,7 @@
 #include "Async/Async.h"
 #include "Misc/FileHelper.h"
 #include "HAL/RunnableThread.h"
+#include "HAL/PlatformTime.h"
 #include "Interfaces/IPv4/IPv4Address.h"
 #include "Common/UdpSocketReceiver.h"
 #include "Json.h"
@@ -58,6 +59,10 @@ bool UQuadrotorMworksUdpReceiverComponent::StartReceiver()
 {
     StopReceiver();
     bLoggedFirstFrame = false;
+    ReceiveRateWindowStartSeconds = 0.0;
+    ReceivedFramesInWindow = 0;
+    SequenceGapsInWindow = 0;
+    LastReceivedSequence = TNumericLimits<int32>::Min();
 
     FIPv4Address Address;
     if (!FIPv4Address::Parse(ListenAddress, Address))
@@ -129,6 +134,33 @@ void UQuadrotorMworksUdpReceiverComponent::HandleDatagram(const FArrayReaderPtr&
         return;
     }
 
+    const double NowSeconds = FPlatformTime::Seconds();
+    if (ReceiveRateWindowStartSeconds <= 0.0)
+    {
+        ReceiveRateWindowStartSeconds = NowSeconds;
+    }
+    ++ReceivedFramesInWindow;
+    if (LastReceivedSequence != TNumericLimits<int32>::Min() && Frame.Sequence > LastReceivedSequence + 1)
+    {
+        SequenceGapsInWindow += Frame.Sequence - LastReceivedSequence - 1;
+    }
+    LastReceivedSequence = Frame.Sequence;
+    const double RateElapsedSeconds = NowSeconds - ReceiveRateWindowStartSeconds;
+    if (RateElapsedSeconds >= 5.0)
+    {
+        UE_LOG(
+            LogTemp,
+            Display,
+            TEXT("MoSim UE UDP receive rate=%.1fHz sequence_gaps=%d last_seq=%d bytes=%d"),
+            ReceivedFramesInWindow / RateElapsedSeconds,
+            SequenceGapsInWindow,
+            LastReceivedSequence,
+            Data->Num());
+        ReceiveRateWindowStartSeconds = NowSeconds;
+        ReceivedFramesInWindow = 0;
+        SequenceGapsInWindow = 0;
+    }
+
     if (!bLoggedFirstFrame)
     {
         bLoggedFirstFrame = true;
@@ -198,13 +230,64 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
 
     FString Type;
     Root->TryGetStringField(TEXT("type"), Type);
+    FString Schema;
+    Root->TryGetStringField(TEXT("schema"), Schema);
+
+    if (Schema.StartsWith(TEXT("mosim.ue_render_frame.")))
+    {
+        Root->TryGetStringField(TEXT("scene_id"), OutFrame.SceneId);
+        Root->TryGetStringField(TEXT("map_id"), OutFrame.MapId);
+        Root->TryGetStringField(TEXT("vehicle_id"), OutFrame.VehicleId);
+        OutFrame.CoordinatePolicy = TEXT("mworks_world_m_z_up");
+        OutFrame.Sequence = static_cast<int32>(Root->GetIntegerField(TEXT("sequence")));
+        OutFrame.TimeSeconds = Root->GetNumberField(TEXT("timestamp_ros_s"));
+        OutFrame.PositionMeters = ParseVector3(Root, TEXT("position_m"), FVector::ZeroVector);
+        OutFrame.RotationRadians = ParseVector3(Root, TEXT("rpy_rad_display_source"), FVector::ZeroVector);
+        OutFrame.ReferencePositionMeters = ParseVector3(Root, TEXT("reference_position_m"), OutFrame.PositionMeters);
+        OutFrame.Status.ControllerMode = Root->GetStringField(TEXT("controller_profile"));
+        OutFrame.Status.PlannerState = Root->GetStringField(TEXT("planner_profile"));
+        OutFrame.Status.SafetyState = TEXT("display_only");
+        OutFrame.Status.EvidenceLevel = TEXT("factory_l2_ue_render_frame_replay");
+        OutFrame.Status.Notes = TEXT("mosim.ue_render_frame.v1 display-only one-way replay");
+        OutFrame.Overlays.SceneLabel = OutFrame.SceneId;
+        OutFrame.Overlays.MapLabel = OutFrame.MapId;
+        OutFrame.bLocalPlanRenderOnly = true;
+        OutFrame.bLocalPlanEvidenceBacked = false;
+        OutFrame.bLocalPlanValid = false;
+        const TSharedPtr<FJsonObject>* LocalPlan = nullptr;
+        if (Root->TryGetObjectField(TEXT("local_plan"), LocalPlan) && LocalPlan && LocalPlan->IsValid())
+        {
+            (*LocalPlan)->TryGetStringField(TEXT("source"), OutFrame.LocalPlanSource);
+            (*LocalPlan)->TryGetBoolField(TEXT("render_only"), OutFrame.bLocalPlanRenderOnly);
+            (*LocalPlan)->TryGetBoolField(TEXT("evidence_backed"), OutFrame.bLocalPlanEvidenceBacked);
+            (*LocalPlan)->TryGetBoolField(TEXT("valid"), OutFrame.bLocalPlanValid);
+
+            const TArray<TSharedPtr<FJsonValue>>* Points = nullptr;
+            if ((*LocalPlan)->TryGetArrayField(TEXT("points_m"), Points) && Points)
+            {
+                OutFrame.LocalPlanPointsMeters.Reset();
+                for (const TSharedPtr<FJsonValue>& PointValue : *Points)
+                {
+                    const TArray<TSharedPtr<FJsonValue>>* PointArray = nullptr;
+                    if (PointValue.IsValid() && PointValue->TryGetArray(PointArray) && PointArray && PointArray->Num() >= 3)
+                    {
+                        OutFrame.LocalPlanPointsMeters.Add(FVector(
+                            (*PointArray)[0]->AsNumber(),
+                            (*PointArray)[1]->AsNumber(),
+                            (*PointArray)[2]->AsNumber()));
+                    }
+                }
+            }
+        }
+        OutFrame.bIsValid = true;
+        return true;
+    }
+
     if (Type != TEXT("frame"))
     {
         return false;
     }
 
-    FString Schema;
-    Root->TryGetStringField(TEXT("schema"), Schema);
     if (!Schema.StartsWith(TEXT("quadrotor.unreal_state.")))
     {
         return false;
@@ -219,6 +302,7 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
     const TSharedPtr<FJsonObject>* Uav = nullptr;
     if (Root->TryGetObjectField(TEXT("uav"), Uav) && Uav && Uav->IsValid())
     {
+        (*Uav)->TryGetStringField(TEXT("id"), OutFrame.VehicleId);
         OutFrame.PositionMeters = ParseVector3(*Uav, TEXT("position_m"), FVector::ZeroVector);
         OutFrame.RotationRadians = ParseVector3(*Uav, TEXT("rpy_rad"), FVector::ZeroVector);
 

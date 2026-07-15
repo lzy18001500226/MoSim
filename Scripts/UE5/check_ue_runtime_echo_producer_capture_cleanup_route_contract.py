@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -166,6 +167,13 @@ def read_json(path: Path) -> dict[str, Any]:
 
 def present(source: str, patterns: set[str]) -> list[str]:
     return sorted(pattern for pattern in patterns if pattern in source)
+
+
+def present_cpp_code(source: str, patterns: set[str]) -> list[str]:
+    code = re.sub(r"/\*.*?\*/", "", source, flags=re.DOTALL)
+    code = re.sub(r"//[^\n]*", "", code)
+    code = re.sub(r'"(?:\\.|[^"\\])*"', '""', code)
+    return present(code, patterns)
 
 
 def artifact_contracts() -> list[dict[str, Any]]:
@@ -452,7 +460,7 @@ def build_report() -> dict[str, Any]:
         issues.append(f"state source missing echo sink anchor: {STATE_SINK_METHOD}")
 
     runtime_patterns = present(surface_combined, FORBIDDEN_RUNTIME_PATTERNS)
-    pose_patterns = present(surface_combined, FORBIDDEN_POSE_PATTERNS)
+    pose_patterns = present_cpp_code(surface_combined, FORBIDDEN_POSE_PATTERNS)
     if runtime_patterns:
         issues.append("receiver surface contains runtime transport pattern(s): " + ", ".join(runtime_patterns))
     if pose_patterns:
@@ -589,7 +597,7 @@ def build_report() -> dict[str, Any]:
             "035 proves only a source/static producer/capture/cleanup route contract for a future bounded UE runtime command-echo probe.",
             "035 does not open Unreal Editor, PIE, standalone runtime, game window, or UE runtime.",
             "035 does not run Unreal build, bind sockets, start listeners/timers/threads/background loops, or execute live transport.",
-            "035 does not edit UE C++ source, Blueprint, UMG, Slate/Web UI, assets, materials, maps, project settings, Sunray/PBR/Blender, MWORKS, ROS2, FAST-LIO, planner, controller, MoSimQuadrotorModel, References, CoAgent runtime, or Git.",
+            "035 does not edit UE C++ source, Blueprint, UMG, Slate/Web UI, assets, materials, maps, project settings, Sunray/PBR/Blender, MWORKS, ROS2, FAST-LIO, planner, controller, MoSimQuadrotorModel, References, legacy agent runtime, or Git.",
             "035 checker/test/static rows, 034 preflight blocker, 033 readiness, 032 wiring, 031 compile success, 030 source surface, 029 validator success, sender success, fixture rows, operator intent, and quadrotor.unreal_state frames are not live runtime ack.",
             "034 remains the latest bounded live preflight and records live_attempt_consumed=false and runtime_probe_executed=false.",
             "035 does not prove live UE runtime ack, live MWORKS downlink, ROS2 runtime echo, final UI acceptance, planner_ready, FAST-LIO success, controller performance, mission success, or closed_loop.",

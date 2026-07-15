@@ -2,18 +2,23 @@
 
 #include "Components/LightComponent.h"
 #include "Components/SkyLightComponent.h"
+#include "DrawDebugHelpers.h"
 #include "Engine/DirectionalLight.h"
 #include "Engine/PostProcessVolume.h"
 #include "Engine/SkyLight.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Pawn.h"
+#include "HAL/PlatformFileManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/FileHelper.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
+#include "Misc/Paths.h"
 #include "MworksReviewCameraPawn.h"
 #include "QuadrotorMworksMapActor.h"
 #include "QuadrotorMworksPlaybackActor.h"
+#include "QuadrotorMworksUdpReceiverComponent.h"
 
 AMoSimSceneLibraryGameMode::AMoSimSceneLibraryGameMode()
 {
@@ -32,6 +37,27 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
         bSceneReviewOnly || bSimulationReview || FParse::Param(FCommandLine::Get(), TEXT("MoSimNoPreviewMap"));
     const bool bDisablePlayback =
         bSceneReviewOnly || FParse::Param(FCommandLine::Get(), TEXT("MoSimNoPlayback"));
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimPlaybackActorCount="), PlaybackActorCount);
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimPlaybackBaseUdpPort="), PlaybackBaseUdpPort);
+    bFactoryCalibrationFrameEnabled = FParse::Param(FCommandLine::Get(), TEXT("MoSimFactoryCalibrationFrame"));
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimFactoryCalibrationCsv="), FactoryCalibrationCsvPath);
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimFactoryCalibrationMarkerCsv="), FactoryCalibrationMarkerCsvPath);
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimFactoryCalibrationLineThickness="), FactoryCalibrationLineThickness);
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimFactoryCalibrationLifetime="), FactoryCalibrationDrawLifetimeSeconds);
+    FactoryCalibrationLineThickness = FMath::Max(1.0f, FactoryCalibrationLineThickness);
+    FactoryCalibrationDrawLifetimeSeconds = FMath::Max(0.05f, FactoryCalibrationDrawLifetimeSeconds);
+    if (bFactoryCalibrationFrameEnabled)
+    {
+        LoadFactoryCalibrationFrame();
+        LoadFactoryCalibrationMarkers();
+    }
+    bFactoryGazeboOverlayEnabled = FParse::Param(FCommandLine::Get(), TEXT("MoSimFactoryGazeboOverlay"));
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimFactoryGazeboOverlayCsv="), FactoryGazeboOverlayCsvPath);
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimFactoryGazeboOverlayZOffsetCm="), FactoryGazeboOverlayZOffsetCm);
+    if (bFactoryGazeboOverlayEnabled)
+    {
+        LoadFactoryGazeboOverlay();
+    }
 
     if (!bSpawnDefaultRendererActors)
     {
@@ -89,7 +115,9 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
 
         if (SpawnedMapActor)
         {
+#if WITH_EDITOR
             SpawnedMapActor->SetActorLabel(TEXT("MWORKS_Render_Map"));
+#endif
             SpawnedMapActor->RenderMapJson = DefaultRenderMapJson;
             SpawnedMapActor->LoadRenderMapSummary();
             UE_LOG(LogTemp, Display, TEXT("MWORKS renderer spawned map actor with map json: %s"), *DefaultRenderMapJson);
@@ -106,21 +134,45 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
     }
     else
     {
-        SpawnedPlaybackActor = World->SpawnActor<AQuadrotorMworksPlaybackActor>(
-            AQuadrotorMworksPlaybackActor::StaticClass(),
-            PlaybackActorLocation,
-            FRotator::ZeroRotator,
-            SpawnParameters);
+        const int32 ClampedPlaybackActorCount = FMath::Max(1, PlaybackActorCount);
+        SpawnedPlaybackActors.Reset();
+        for (int32 Index = 0; Index < ClampedPlaybackActorCount; ++Index)
+        {
+            AQuadrotorMworksPlaybackActor* PlaybackActor = World->SpawnActor<AQuadrotorMworksPlaybackActor>(
+                AQuadrotorMworksPlaybackActor::StaticClass(),
+                PlaybackActorLocation + PlaybackActorSpacing * Index,
+                FRotator::ZeroRotator,
+                SpawnParameters);
 
-        if (SpawnedPlaybackActor)
-        {
-            SpawnedPlaybackActor->SetActorLabel(TEXT("MWORKS_Quadrotor_Playback"));
-            SpawnedPlaybackActor->MapActor = SpawnedMapActor;
-            UE_LOG(LogTemp, Display, TEXT("MWORKS renderer spawned playback actor and linked map actor."));
-        }
-        else
-        {
-            UE_LOG(LogTemp, Error, TEXT("MWORKS renderer failed to spawn playback actor."));
+            if (PlaybackActor)
+            {
+#if WITH_EDITOR
+                PlaybackActor->SetActorLabel(FString::Printf(TEXT("MWORKS_Quadrotor_Playback_%d"), Index + 1));
+#endif
+                PlaybackActor->MapActor = SpawnedMapActor;
+                if (PlaybackActor->Receiver)
+                {
+                    PlaybackActor->Receiver->StopReceiver();
+                    PlaybackActor->Receiver->ListenPort = PlaybackBaseUdpPort + Index;
+                    PlaybackActor->Receiver->StartReceiver();
+                }
+                SpawnedPlaybackActors.Add(PlaybackActor);
+                if (Index == 0)
+                {
+                    SpawnedPlaybackActor = PlaybackActor;
+                }
+                UE_LOG(
+                    LogTemp,
+                    Display,
+                    TEXT("MWORKS renderer spawned playback actor %d/%d udp_port=%d and linked map actor."),
+                    Index + 1,
+                    ClampedPlaybackActorCount,
+                    PlaybackBaseUdpPort + Index);
+            }
+            else
+            {
+                UE_LOG(LogTemp, Error, TEXT("MWORKS renderer failed to spawn playback actor %d."), Index + 1);
+            }
         }
     }
 }
@@ -132,6 +184,294 @@ void AMoSimSceneLibraryGameMode::Tick(float DeltaSeconds)
     if (bSceneReviewModeActive)
     {
         EnforceSceneReviewCamera(GetWorld());
+    }
+    if (bFactoryCalibrationFrameEnabled)
+    {
+        DrawFactoryCalibrationFrame(GetWorld());
+    }
+    if (bFactoryGazeboOverlayEnabled)
+    {
+        DrawFactoryGazeboOverlay(GetWorld());
+    }
+}
+
+void AMoSimSceneLibraryGameMode::LoadFactoryCalibrationFrame()
+{
+    FactoryCalibrationSegments.Reset();
+    if (FactoryCalibrationCsvPath.IsEmpty())
+    {
+        FactoryCalibrationCsvPath = FPaths::ConvertRelativePathToFull(
+            FPaths::ProjectDir(),
+            TEXT("../../Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/factory_l2_calibration_segments.csv"));
+    }
+    else if (FPaths::IsRelative(FactoryCalibrationCsvPath))
+    {
+        FactoryCalibrationCsvPath = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir(), FactoryCalibrationCsvPath);
+    }
+
+    FString CsvText;
+    if (!FFileHelper::LoadFileToString(CsvText, *FactoryCalibrationCsvPath))
+    {
+        UE_LOG(LogTemp, Error, TEXT("MoSim Factory calibration CSV missing: %s"), *FactoryCalibrationCsvPath);
+        return;
+    }
+
+    TArray<FString> Lines;
+    CsvText.ParseIntoArrayLines(Lines, true);
+    for (int32 LineIndex = 1; LineIndex < Lines.Num(); ++LineIndex)
+    {
+        TArray<FString> Columns;
+        Lines[LineIndex].ParseIntoArray(Columns, TEXT(","), false);
+        if (Columns.Num() < 19)
+        {
+            continue;
+        }
+
+        FMoSimFactoryCalibrationSegment Segment;
+        Segment.StartUnrealCm = FVector(
+            FCString::Atof(*Columns[9]),
+            FCString::Atof(*Columns[10]),
+            FCString::Atof(*Columns[11]));
+        Segment.EndUnrealCm = FVector(
+            FCString::Atof(*Columns[12]),
+            FCString::Atof(*Columns[13]),
+            FCString::Atof(*Columns[14]));
+        const FLinearColor LinearColor(
+            FCString::Atof(*Columns[15]),
+            FCString::Atof(*Columns[16]),
+            FCString::Atof(*Columns[17]),
+            FCString::Atof(*Columns[18]));
+        Segment.Color = LinearColor.ToFColor(true);
+        FactoryCalibrationSegments.Add(Segment);
+    }
+
+    UE_LOG(
+        LogTemp,
+        Display,
+        TEXT("MoSim Factory calibration frame loaded: csv=%s segments=%d"),
+        *FactoryCalibrationCsvPath,
+        FactoryCalibrationSegments.Num());
+}
+
+void AMoSimSceneLibraryGameMode::LoadFactoryCalibrationMarkers()
+{
+    FactoryCalibrationMarkers.Reset();
+    if (FactoryCalibrationMarkerCsvPath.IsEmpty())
+    {
+        FactoryCalibrationMarkerCsvPath = FPaths::ConvertRelativePathToFull(
+            FPaths::ProjectDir(),
+            TEXT("../../Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/factory_l2_calibration_markers.csv"));
+    }
+    else if (FPaths::IsRelative(FactoryCalibrationMarkerCsvPath))
+    {
+        FactoryCalibrationMarkerCsvPath = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir(), FactoryCalibrationMarkerCsvPath);
+    }
+
+    FString CsvText;
+    if (!FFileHelper::LoadFileToString(CsvText, *FactoryCalibrationMarkerCsvPath))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("MoSim Factory calibration marker CSV missing: %s"), *FactoryCalibrationMarkerCsvPath);
+        return;
+    }
+
+    TArray<FString> Lines;
+    CsvText.ParseIntoArrayLines(Lines, true);
+    const bool bNewCalibrationMarkerFormat = Lines.Num() > 0 && Lines[0].Contains(TEXT("size_x_m"));
+    for (int32 LineIndex = 1; LineIndex < Lines.Num(); ++LineIndex)
+    {
+        TArray<FString> Columns;
+        Lines[LineIndex].ParseIntoArray(Columns, TEXT(","), false);
+        if (bNewCalibrationMarkerFormat)
+        {
+            if (Columns.Num() < 19)
+            {
+                continue;
+            }
+
+            FMoSimFactoryCalibrationMarker Marker;
+            Marker.Label = Columns[1];
+            Marker.UnrealCm = FVector(
+                FCString::Atof(*Columns[9]),
+                FCString::Atof(*Columns[10]),
+                FCString::Atof(*Columns[11]));
+            const FLinearColor LinearColor(
+                FCString::Atof(*Columns[15]),
+                FCString::Atof(*Columns[16]),
+                FCString::Atof(*Columns[17]),
+                FCString::Atof(*Columns[18]));
+            Marker.Color = LinearColor.ToFColor(true);
+            Marker.BoxExtentCm = FVector(
+                FMath::Max(2.0f, FCString::Atof(*Columns[12]) * 50.0f),
+                FMath::Max(2.0f, FCString::Atof(*Columns[13]) * 50.0f),
+                FMath::Max(2.0f, FCString::Atof(*Columns[14]) * 50.0f));
+            Marker.RadiusCm = Marker.BoxExtentCm.GetMax();
+            Marker.bDrawBox = true;
+            FactoryCalibrationMarkers.Add(Marker);
+        }
+        else
+        {
+            if (Columns.Num() < 12)
+            {
+                continue;
+            }
+
+            FMoSimFactoryCalibrationMarker Marker;
+            Marker.Label = Columns[0];
+            Marker.UnrealCm = FVector(
+                FCString::Atof(*Columns[4]),
+                FCString::Atof(*Columns[5]),
+                FCString::Atof(*Columns[6]));
+            const FLinearColor LinearColor(
+                FCString::Atof(*Columns[7]),
+                FCString::Atof(*Columns[8]),
+                FCString::Atof(*Columns[9]),
+                FCString::Atof(*Columns[10]));
+            Marker.Color = LinearColor.ToFColor(true);
+            Marker.RadiusCm = FMath::Max(2.0f, FCString::Atof(*Columns[11]));
+            FactoryCalibrationMarkers.Add(Marker);
+        }
+    }
+
+    UE_LOG(
+        LogTemp,
+        Display,
+        TEXT("MoSim Factory calibration markers loaded: csv=%s markers=%d"),
+        *FactoryCalibrationMarkerCsvPath,
+        FactoryCalibrationMarkers.Num());
+}
+
+void AMoSimSceneLibraryGameMode::DrawFactoryCalibrationFrame(UWorld* World) const
+{
+    if (!World)
+    {
+        return;
+    }
+
+    for (const FMoSimFactoryCalibrationSegment& Segment : FactoryCalibrationSegments)
+    {
+        DrawDebugLine(
+            World,
+            Segment.StartUnrealCm,
+            Segment.EndUnrealCm,
+            Segment.Color,
+            false,
+            FactoryCalibrationDrawLifetimeSeconds,
+            1,
+            FactoryCalibrationLineThickness);
+    }
+    for (const FMoSimFactoryCalibrationMarker& Marker : FactoryCalibrationMarkers)
+    {
+        if (Marker.bDrawBox)
+        {
+            DrawDebugBox(
+                World,
+                Marker.UnrealCm,
+                Marker.BoxExtentCm,
+                Marker.Color,
+                false,
+                FactoryCalibrationDrawLifetimeSeconds,
+                1,
+                FactoryCalibrationLineThickness);
+        }
+        else
+        {
+            DrawDebugSphere(World, Marker.UnrealCm, Marker.RadiusCm, 16, Marker.Color, false, 0.20f, 0, 2.0f);
+        }
+        DrawDebugLine(
+            World,
+            Marker.UnrealCm + FVector(0.0f, 0.0f, -30.0f),
+            Marker.UnrealCm + FVector(0.0f, 0.0f, 30.0f),
+            Marker.Color,
+            false,
+            FactoryCalibrationDrawLifetimeSeconds,
+            1,
+            FactoryCalibrationLineThickness);
+        if (!Marker.Label.IsEmpty())
+        {
+            DrawDebugString(
+                World,
+                Marker.UnrealCm + FVector(0.0f, 0.0f, Marker.RadiusCm + 35.0f),
+                Marker.Label,
+                nullptr,
+                Marker.Color,
+                FactoryCalibrationDrawLifetimeSeconds,
+                true,
+                1.1f);
+        }
+    }
+}
+
+void AMoSimSceneLibraryGameMode::LoadFactoryGazeboOverlay()
+{
+    FactoryGazeboOverlayPoints.Reset();
+    if (FactoryGazeboOverlayCsvPath.IsEmpty())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("MoSim Factory Gazebo overlay CSV path is empty."));
+        return;
+    }
+    if (FPaths::IsRelative(FactoryGazeboOverlayCsvPath))
+    {
+        FactoryGazeboOverlayCsvPath = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir(), FactoryGazeboOverlayCsvPath);
+    }
+
+    FString CsvText;
+    if (!FFileHelper::LoadFileToString(CsvText, *FactoryGazeboOverlayCsvPath))
+    {
+        UE_LOG(LogTemp, Error, TEXT("MoSim Factory Gazebo overlay CSV missing: %s"), *FactoryGazeboOverlayCsvPath);
+        return;
+    }
+
+    TArray<FString> Lines;
+    CsvText.ParseIntoArrayLines(Lines, true);
+    for (int32 LineIndex = 1; LineIndex < Lines.Num(); ++LineIndex)
+    {
+        TArray<FString> Columns;
+        Lines[LineIndex].ParseIntoArray(Columns, TEXT(","), false);
+        if (Columns.Num() < 13)
+        {
+            continue;
+        }
+
+        FMoSimFactoryOverlayPoint Point;
+        Point.UnrealCm = FVector(
+            FCString::Atof(*Columns[5]),
+            FCString::Atof(*Columns[6]),
+            FCString::Atof(*Columns[7]));
+        const FLinearColor LinearColor(
+            FCString::Atof(*Columns[8]),
+            FCString::Atof(*Columns[9]),
+            FCString::Atof(*Columns[10]),
+            FCString::Atof(*Columns[11]));
+        Point.Color = LinearColor.ToFColor(true);
+        Point.Size = FMath::Max(1.0f, FCString::Atof(*Columns[12]));
+        FactoryGazeboOverlayPoints.Add(Point);
+    }
+
+    UE_LOG(
+        LogTemp,
+        Display,
+        TEXT("MoSim Factory Gazebo overlay loaded: csv=%s points=%d"),
+        *FactoryGazeboOverlayCsvPath,
+        FactoryGazeboOverlayPoints.Num());
+}
+
+void AMoSimSceneLibraryGameMode::DrawFactoryGazeboOverlay(UWorld* World) const
+{
+    if (!World)
+    {
+        return;
+    }
+
+    for (const FMoSimFactoryOverlayPoint& Point : FactoryGazeboOverlayPoints)
+    {
+        DrawDebugPoint(
+            World,
+            Point.UnrealCm + FVector(0.0f, 0.0f, FactoryGazeboOverlayZOffsetCm),
+            Point.Size,
+            Point.Color,
+            false,
+            0.20f,
+            0);
     }
 }
 
@@ -150,7 +490,9 @@ void AMoSimSceneLibraryGameMode::SpawnDefaultReviewLighting(UWorld* World, const
 
     if (SpawnedReviewSunLight)
     {
+#if WITH_EDITOR
         SpawnedReviewSunLight->SetActorLabel(TEXT("MWORKS_Review_SunLight"));
+#endif
         if (ULightComponent* LightComponent = SpawnedReviewSunLight->GetLightComponent())
         {
             LightComponent->SetMobility(EComponentMobility::Movable);
@@ -168,7 +510,9 @@ void AMoSimSceneLibraryGameMode::SpawnDefaultReviewLighting(UWorld* World, const
 
     if (SpawnedReviewSkyLight)
     {
+#if WITH_EDITOR
         SpawnedReviewSkyLight->SetActorLabel(TEXT("MWORKS_Review_SkyLight"));
+#endif
         if (USkyLightComponent* SkyComponent = SpawnedReviewSkyLight->GetLightComponent())
         {
             SkyComponent->SetMobility(EComponentMobility::Movable);
@@ -194,7 +538,9 @@ void AMoSimSceneLibraryGameMode::SpawnDefaultReviewLighting(UWorld* World, const
 
         if (SpawnedReviewPostProcessVolume)
         {
+#if WITH_EDITOR
             SpawnedReviewPostProcessVolume->SetActorLabel(TEXT("MWORKS_Review_Daylight_PostProcess"));
+#endif
             SpawnedReviewPostProcessVolume->bUnbound = true;
             SpawnedReviewPostProcessVolume->BlendWeight = 1.0f;
             SpawnedReviewPostProcessVolume->Priority = 10000.0f;
@@ -250,7 +596,9 @@ AMworksReviewCameraPawn* AMoSimSceneLibraryGameMode::FindOrSpawnReviewCamera(
 
     if (ActiveReviewCameraPawn)
     {
+#if WITH_EDITOR
         ActiveReviewCameraPawn->SetActorLabel(TEXT("MWORKS_Review_Camera"));
+#endif
         UE_LOG(LogTemp, Display, TEXT("MWORKS scene-review spawned missing review camera pawn."));
     }
     else

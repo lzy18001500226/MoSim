@@ -536,8 +536,8 @@ def prepare_scene(scene_dir: Path) -> dict[str, Any]:
         "schema": "mosim.fastlio_adapter_manifest.v1",
         "scene_id": handoff["scene_id"],
         "status": status,
-        "fast_lio_reference_repo": "References/Lab/FAST_LIO",
-        "fast_lio_repo_exists": (ROOT / "References/Lab/FAST_LIO/package.xml").exists(),
+        "fast_lio_reference_repo": "References/Lab/localization_slam/FAST_LIO",
+        "fast_lio_repo_exists": (ROOT / "References/Lab/localization_slam/FAST_LIO/package.xml").exists(),
         "ros_environment": env,
         "generated_outputs": {
             "fastlio_replay_dataset_jsonl": rel(dataset_path),
@@ -620,8 +620,8 @@ def prepare_scene(scene_dir: Path) -> dict[str, Any]:
                 f"--output-md Results/unreal_scene_mapping/{handoff['scene_id']}/fastlio_runtime/FASTLIO_RUNTIME_EVALUATION.md "
                 "--fail-on-threshold"
             ),
-            "Optional ROS1 compatibility route for local References/Lab/FAST_LIO:",
-            "catkin_make  # from a ROS1 workspace containing References/Lab/FAST_LIO as package fast_lio",
+            "Optional ROS1 compatibility route for local References/Lab/localization_slam/FAST_LIO:",
+            "catkin_make  # from a ROS1 workspace containing References/Lab/localization_slam/FAST_LIO as package fast_lio",
             "source devel/setup.bash",
             "roslaunch fast_lio mapping_velodyne.launch rviz:=false",
             f"python3 Scripts/UE5/publish_fastlio_replay_ros1.py --dataset {rel(dataset_path)} --dry-run",
@@ -668,7 +668,7 @@ def write_status_markdown(path: Path, manifests: list[dict[str, Any]]) -> None:
     lines.extend([
         "",
         "Current primary runtime blocker if status is `blocked_missing_ros2_runtime`: source/install ROS2 Humble with RViz2 and colcon before running the publisher.",
-        "The local `References/Lab/FAST_LIO` package is ROS1/Catkin-oriented. Treat ROS1 blockers as compatibility blockers unless an approved ROS1 bridge route is being used.",
+        "The local `References/Lab/localization_slam/FAST_LIO` package is ROS1/Catkin-oriented. Treat ROS1 blockers as compatibility blockers unless an approved ROS1 bridge route is being used.",
         "Do not feed the planner global occupancy truth; FAST-LIO replay inputs come from per-frame LiDAR observations and synthetic IMU derived from the replay trajectory.",
         "Do not use browser HTML as the active point-cloud/map window; use RViz/RViz2 or an equivalent native robotics viewer.",
     ])

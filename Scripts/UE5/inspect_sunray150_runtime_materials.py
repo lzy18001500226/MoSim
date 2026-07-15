@@ -75,9 +75,21 @@ asset = unreal.load_asset(object_path)
 slots = []
 dependencies = []
 referencers = []
+bounds = {{}}
 ok = bool(asset)
 
 if ok:
+    get_bounds = getattr(asset, "get_bounds", None)
+    if callable(get_bounds):
+        try:
+            value = get_bounds()
+            bounds = {{
+                "origin": [value.origin.x, value.origin.y, value.origin.z],
+                "box_extent": [value.box_extent.x, value.box_extent.y, value.box_extent.z],
+                "sphere_radius": value.sphere_radius,
+            }}
+        except Exception as exc:
+            bounds = {{"error": str(exc)}}
     asset_registry = unreal.AssetRegistryHelpers.get_asset_registry()
     deps = asset_registry.get_dependencies(asset.get_package().get_name(), unreal.AssetRegistryDependencyOptions(True, True, True, True))
     refs = asset_registry.get_referencers(asset.get_package().get_name(), unreal.AssetRegistryDependencyOptions(True, True, True, True))
@@ -137,6 +149,7 @@ payload = {{
     "expected_material_count": len(expected_names),
     "expected_materials_first": expected_names[:40],
     "material_slot_count": len(slots),
+    "bounds": bounds,
     "slots": slots,
     "old_mosim_slot_count": sum(1 for item in slots if item["is_old_mosim_material"]),
     "expected_review_slot_count": sum(1 for item in slots if item["is_expected_review_material"]),

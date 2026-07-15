@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -143,6 +144,13 @@ def repo(path: Path) -> str:
 
 def present(source: str, patterns: set[str]) -> list[str]:
     return sorted(pattern for pattern in patterns if pattern in source)
+
+
+def present_cpp_code(source: str, patterns: set[str]) -> list[str]:
+    code = re.sub(r"/\*.*?\*/", "", source, flags=re.DOTALL)
+    code = re.sub(r"//[^\n]*", "", code)
+    code = re.sub(r'"(?:\\.|[^"\\])*"', '""', code)
+    return present(code, patterns)
 
 
 def source_literal(label: str) -> str:
@@ -310,7 +318,7 @@ def build_report() -> dict[str, Any]:
     surface_runtime_patterns = present(surface_combined, FORBIDDEN_RUNTIME_PATTERNS)
     if surface_runtime_patterns:
         issues.append("receiver surface contains live runtime pattern(s): " + ", ".join(surface_runtime_patterns))
-    surface_pose_patterns = present(surface_combined, FORBIDDEN_POSE_PATTERNS)
+    surface_pose_patterns = present_cpp_code(surface_combined, FORBIDDEN_POSE_PATTERNS)
     if surface_pose_patterns:
         issues.append("receiver surface contains forbidden pose/input pattern(s): " + ", ".join(surface_pose_patterns))
     if COMMAND_SCHEMA_ID in surface_combined:

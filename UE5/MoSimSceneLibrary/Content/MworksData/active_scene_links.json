@@ -52,6 +52,13 @@
     {
       "action": "junction_created",
       "kind": "content",
+      "name": "StarterContent",
+      "source": "References/UnrealScenes/FactoryEnvironmentCollect/Content/StarterContent",
+      "target": "UE5/MoSimSceneLibrary/Content/StarterContent"
+    },
+    {
+      "action": "junction_created",
+      "kind": "content",
       "name": "Textures",
       "source": "References/UnrealScenes/FactoryEnvironmentCollect/Content/Textures",
       "target": "UE5/MoSimSceneLibrary/Content/Textures"

@@ -355,7 +355,7 @@ def build_report() -> dict[str, Any]:
         "claim_boundary": [
             "037 proves only source/static UE build-readiness classification for the 036 runtime echo implementation surface.",
             "037 does not run Unreal build, Unreal Editor, PIE, standalone runtime, game window, sockets, listeners, timers, threads, background loops, accepted-state UI, or a live command-echo probe.",
-            "037 does not edit UE source, Blueprint, UMG, assets, materials, maps, scene registry, project settings, visual/PBR assets, MWORKS, ROS2, FAST-LIO, planner, controller, Sunray/PBR, Blender, References, CoAgent runtime, Git, Codex App private state, or visible-thread lifecycle.",
+            "037 does not edit UE source, Blueprint, UMG, assets, materials, maps, scene registry, project settings, visual/PBR assets, MWORKS, ROS2, FAST-LIO, planner, controller, Sunray/PBR, Blender, References, legacy agent runtime, Git, Codex App private state, or visible-thread lifecycle.",
             "037 build_only_gate_ready means the next safe UE step may be a separately authorized build-only gate; it is not build success.",
             "037 checker/test/static rows, 036 implementation methods, sender packet construction, fixture rows, operator intent, build success, and quadrotor.unreal_state frames are not live runtime ack.",
             "034 remains the latest bounded live preflight and records live_attempt_consumed=false and runtime_probe_executed=false.",

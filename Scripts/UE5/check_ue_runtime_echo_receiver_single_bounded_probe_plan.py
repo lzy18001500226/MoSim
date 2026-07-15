@@ -538,7 +538,7 @@ def build_report() -> dict[str, Any]:
             "033 proves only a source-static plan/readiness contract for one future bounded UE runtime command-echo probe.",
             "033 does not open Unreal Editor, PIE, standalone runtime, game window, or UE runtime.",
             "033 does not run Unreal build, bind sockets, start listeners/timers/threads/background loops, or execute live transport.",
-            "033 does not edit UE C++ source, Blueprint, UMG, Slate/Web UI, assets, materials, maps, project settings, Sunray/PBR/Blender, MWORKS, ROS2, FAST-LIO, planner, controller, MoSimQuadrotorModel, References, CoAgent runtime, or Git.",
+            "033 does not edit UE C++ source, Blueprint, UMG, Slate/Web UI, assets, materials, maps, project settings, Sunray/PBR/Blender, MWORKS, ROS2, FAST-LIO, planner, controller, MoSimQuadrotorModel, References, legacy agent runtime, or Git.",
             "033 checker/test/static rows, 032 wiring, 031 compile success, 030 source surface, 029 validator success, sender success, fixture rows, operator intent, and quadrotor.unreal_state frames are not live runtime ack.",
             "A later live probe requires a separate PMO task packet with explicit runtime authorization, one-attempt budget, timeout, cleanup, capture bundle, false-ack negative report, and no-pose-overwrite proof.",
             "033 does not prove live UE runtime ack, live MWORKS downlink, ROS2 runtime echo, final UI acceptance, planner_ready, FAST-LIO success, controller performance, mission success, or closed_loop.",

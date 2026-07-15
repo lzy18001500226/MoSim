@@ -91,7 +91,6 @@ void UQuadrotorMworksPlaybackComponent::ApplyFrame(const FQuadrotorMworksFrame& 
 
     const bool bNewInterpolationFrame =
         !bHasInterpolationTarget
-        || LastInterpolatedSequence != Frame.Sequence
         || !FMath::IsNearlyEqual(LastInterpolatedFrameTimeSeconds, Frame.TimeSeconds, 1.0e-6);
 
     if (!bApplyActorTransform || !bInterpolateActorTransform)
