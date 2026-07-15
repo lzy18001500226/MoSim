@@ -1,0 +1,46 @@
+#pragma once
+
+#include <assert.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <vulkan/vulkan_core.h>
+
+typedef struct gpu_pipeline_impl {
+	VkPipeline       pipeline;
+	VkPipelineLayout pipeline_layout;
+
+	VkDescriptorSet       descriptor_set;
+	VkDescriptorSetLayout descriptor_set_layout;
+} gpu_pipeline_impl_t;
+
+typedef struct {
+	char *source;
+	int   length;
+} gpu_shader_impl_t;
+
+typedef struct {
+	VkImage        image;
+	VkDeviceMemory mem;
+	VkImageView    view;
+} gpu_texture_impl_t;
+
+typedef struct {
+	VkBuffer       buf;
+	VkDeviceMemory mem;
+	VkBuffer       cpu_buf;
+	VkDeviceMemory cpu_mem;
+} gpu_buffer_impl_t;
+
+typedef struct {
+	VkAccelerationStructureKHR top_level_acceleration_structure;
+	VkAccelerationStructureKHR bottom_level_acceleration_structure[16];
+	uint64_t                   top_level_acceleration_structure_handle;
+	uint64_t                   bottom_level_acceleration_structure_handle[16];
+
+	VkBuffer       bottom_level_buffer[16];
+	VkDeviceMemory bottom_level_mem[16];
+	VkBuffer       top_level_buffer;
+	VkDeviceMemory top_level_mem;
+	VkBuffer       instances_buffer;
+	VkDeviceMemory instances_mem;
+} gpu_acceleration_structure_impl_t;
