@@ -1,0 +1,32 @@
+<launch>
+  <!-- All settings -->
+  <arg name="robot_name" default="smb"/>
+  <arg name="world_name" default="darpa_cave_01"/>
+  <arg name="robot_id1" default="R1"/>
+  <arg name="robot_id2" default="R2"/>
+  <arg name="robot_id1_int" default="1"/>
+  <arg name="robot_id2_int" default="2"/>
+  <arg name="gazebo_gui_en" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="rviz_en" default="true" />
+  <arg name="launch_prefix" default=""/> <!-- gdb -ex run //args -->
+  <param name="use_sim_time" value="$(arg use_sim_time)"/>
+
+
+  <!-- <arg name="world_file" default="$(find planner_gazebo_sim)/worlds/niosh_osrf.world"/> -->
+  <!-- <arg name="world_file" default="$(find planner_gazebo_sim)/worlds/darpa_cave_01.world"/> -->
+  <!-- <arg name="world_file" default="$(find planner_gazebo_sim)/worlds/pittsburgh_mine.world"/> -->
+  <arg name="world_file" default="$(find planner_gazebo_sim)/worlds/$(arg world_name).world"/>
+
+  <env name="GAZEBO_MODEL_PATH" value="${GAZEBO_MODEL_PATH}:$(find planner_gazebo_sim)/models:$(find subt_cave_sim)/models"/>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+		<arg name="world_name" value="$(arg world_file)"/>
+		<arg name="paused" value="false"/>
+		<arg name="use_sim_time" value="true"/>
+		<arg name="gui" value="$(arg gazebo_gui_en)"/>
+		<arg name="headless" value="false"/>
+		<arg name="debug" value="false"/>
+    <arg name="verbose" value="false"/>
+	</include>
+
+</launch>
