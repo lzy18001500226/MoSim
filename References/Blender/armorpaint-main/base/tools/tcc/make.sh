@@ -1,1 +1,0 @@
-./tcc -o myprog main.c -I'./' -I'./include' -B'./'
