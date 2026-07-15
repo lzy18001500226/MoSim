@@ -1,0 +1,8 @@
+<launch>
+  <node pkg="rviz" type="rviz" name="mggplanner_ui" output="screen" args="-d $(find mggplanner_ui)/config/mggplanner.rviz">
+    <param name="start_planner_service_name" value="/mggplanner_start"/>
+    <param name="stop_planner_service_name"  value="/mggplanner_stop"/>
+    <param name="homing_service_name"  value="/mggplanner_homing"/>
+    <param name="global_planner_service_name"  value="/mggplanner_global"/>
+  </node>
+</launch>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>mggplanner_ros</name>
+  <version>0.0.0</version>
+  <description>Dependencies for the mggplanner</description>
+  <maintainer email="vivekshankarv@gmail.com">Vivek Shankar Varadharajan</maintainer>
+  <license>None</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>catkin_simple</buildtool_depend>
+  <depend>mggplanner</depend>
+  <depend>planner_control_interface</depend>
+</package>

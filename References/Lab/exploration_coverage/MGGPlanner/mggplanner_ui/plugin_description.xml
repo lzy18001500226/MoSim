@@ -1,0 +1,9 @@
+<library path="lib/libmggplanner_ui">
+  <class name="mggplanner_ui/Mggplanner Control"
+         type="mggplanner_ui::mggplanner_panel"
+         base_class_type="rviz::Panel">
+    <description>
+      A panel widget for control of mggplanner.
+    </description>
+  </class>
+</library>
