@@ -1,0 +1,13 @@
+{
+  "schema": "mosim.control_platform.g5_wave_b_smc_gate.v1",
+  "status": "passed",
+  "controller": "smc_boundary_layer",
+  "case_count": 1,
+  "scalar_comparison_count": 9,
+  "failure_count": 0,
+  "max_abs_diff": 0.0,
+  "runtime_started": false,
+  "shared_gazebo_px4_touched": false,
+  "claim_ceiling": "Project-owned fixed-size boundary-layer SMC matches an independent Python oracle offline; no fresh MWORKS, generated-C, or Gazebo/PX4 acceptance is claimed.",
+  "failures": []
+}
