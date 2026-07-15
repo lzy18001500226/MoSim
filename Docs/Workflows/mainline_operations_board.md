@@ -21,6 +21,12 @@ legacy workflow bodies during routine startup.
 `Docs/Workflows/agent_task_ledger.md` is now a short redirect stub; the
 archived body is for explicit trace-back only.
 
+Current competition-to-evidence gap inventory:
+`Docs/Workflows/competition_gap_inventory_20260715.md`.
+Use it to separate work that can proceed without exclusive ROS/Gazebo/PX4
+resources from runtime gates that must wait for the current shared RACER task
+to release them.
+
 ## 2. Current Mode
 
 | Item | Current Rule |
