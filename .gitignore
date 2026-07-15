@@ -359,6 +359,7 @@ References/**/*~
 References/**/cfg/cpp/
 References/**/src/*/cfg/
 References/**/docs/*Config*.dox
+References/**/docs/*Config*.wikidoc
 References/Lab/exploration_coverage/FALCON-ros1-noetic/uav_simulator/so3_disturbance_generator/include/so3_disturbance_generator/DisturbanceUIConfig.h
 References/**/*.pyc
 References/**/*.pch
