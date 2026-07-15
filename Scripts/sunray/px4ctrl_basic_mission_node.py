@@ -73,6 +73,17 @@ class Px4ctrlBasicMission:
         self.tf_broadcaster = tf2_ros.TransformBroadcaster()
         self.disarm_attempts = 0
         self.disarm_success = False
+        self.pre_takeoff_state_gate: dict = {
+            "status": "pending",
+            "reason": None,
+            "required_stable_s": float(args.pre_takeoff_state_stable_s),
+            "timeout_s": float(args.pre_takeoff_state_timeout_s),
+            "max_abs_roll_pitch_deg": float(args.pre_takeoff_max_abs_roll_pitch_deg),
+            "stable_samples": 0,
+            "required_samples": max(1, int(args.pre_takeoff_state_stable_s * 20)),
+            "max_observed_abs_roll_pitch_deg": None,
+            "last_sample": None,
+        }
 
         rospy.Subscriber("/gazebo/model_states", ModelStates, self.on_model_states, queue_size=50)
         rospy.Subscriber(args.sunray_truth_topic, Odometry, self.on_sunray_truth, queue_size=100)
@@ -654,16 +665,38 @@ class Px4ctrlBasicMission:
 
     def wait_for_pre_takeoff_state_stable(self, duration_s: float) -> bool:
         if duration_s <= 0.0:
+            self.pre_takeoff_state_gate.update(
+                {
+                    "status": "passed",
+                    "reason": "disabled",
+                    "stable_samples": 0,
+                    "required_samples": 0,
+                }
+            )
             return True
         rate = rospy.Rate(20)
         stable_samples = 0
         required_samples = max(1, int(duration_s * 20))
-        while not rospy.is_shutdown():
+        timeout_s = max(0.0, float(self.args.pre_takeoff_state_timeout_s))
+        end = time.time() + timeout_s if timeout_s > 0.0 else None
+        max_attitude_deg = max(0.0, float(self.args.pre_takeoff_max_abs_roll_pitch_deg))
+        max_observed_attitude_deg = 0.0
+        while not rospy.is_shutdown() and (end is None or time.time() < end):
             if self.deadline_reached():
+                self.pre_takeoff_state_gate.update(
+                    {
+                        "status": "blocked",
+                        "reason": "wall_timeout",
+                        "stable_samples": stable_samples,
+                        "max_observed_abs_roll_pitch_deg": max_observed_attitude_deg,
+                    }
+                )
                 return False
             state_ok = self.last_state is not None and self.last_state.connected
             odom = self.last_control_odom if self.last_control_odom is not None else self.last_local
             odom_ok = False
+            attitude_ok = False
+            sample = None
             if odom is not None:
                 speed = math.sqrt(
                     odom["vx"] * odom["vx"]
@@ -671,13 +704,54 @@ class Px4ctrlBasicMission:
                     + odom["vz"] * odom["vz"]
                 )
                 odom_ok = speed <= self.args.static_odom_speed_max_mps
-            if state_ok and odom_ok:
+                abs_roll_pitch_deg = math.degrees(max(abs(odom["roll"]), abs(odom["pitch"])))
+                max_observed_attitude_deg = max(max_observed_attitude_deg, abs_roll_pitch_deg)
+                attitude_ok = max_attitude_deg <= 0.0 or abs_roll_pitch_deg <= max_attitude_deg
+                sample = {
+                    "t": odom.get("t"),
+                    "speed_mps": speed,
+                    "roll_deg": math.degrees(odom["roll"]),
+                    "pitch_deg": math.degrees(odom["pitch"]),
+                    "abs_roll_pitch_deg": abs_roll_pitch_deg,
+                    "state_connected": bool(state_ok),
+                    "speed_ok": bool(odom_ok),
+                    "attitude_ok": bool(attitude_ok),
+                }
+            if state_ok and odom_ok and attitude_ok:
                 stable_samples += 1
                 if stable_samples >= required_samples:
+                    self.pre_takeoff_state_gate.update(
+                        {
+                            "status": "passed",
+                            "reason": None,
+                            "stable_samples": stable_samples,
+                            "required_samples": required_samples,
+                            "max_observed_abs_roll_pitch_deg": max_observed_attitude_deg,
+                            "last_sample": sample,
+                        }
+                    )
                     return True
             else:
                 stable_samples = 0
+            self.pre_takeoff_state_gate.update(
+                {
+                    "stable_samples": stable_samples,
+                    "required_samples": required_samples,
+                    "max_observed_abs_roll_pitch_deg": max_observed_attitude_deg,
+                    "last_sample": sample,
+                }
+            )
             rate.sleep()
+        self.pre_takeoff_state_gate.update(
+            {
+                "status": "blocked",
+                "reason": "stability_timeout",
+                "stable_samples": stable_samples,
+                "required_samples": required_samples,
+                "max_observed_abs_roll_pitch_deg": max_observed_attitude_deg,
+            }
+        )
+        return False
 
     def takeoff_gate_sample(self) -> tuple[dict | None, float]:
         if (
@@ -850,12 +924,22 @@ class Px4ctrlBasicMission:
                 self.last_control_odom["y"],
                 self.last_control_odom["z"],
             )
-        if static_odom_ok:
-            self.phase = "pre_takeoff_state_stable"
-            static_odom_ok = self.wait_for_pre_takeoff_state_stable(self.args.pre_takeoff_state_stable_s)
+        if not static_odom_ok:
+            return self.metrics(
+                False,
+                False,
+                forced_reason="static_odom_not_ready_before_takeoff",
+            )
+        self.phase = "pre_takeoff_state_stable"
+        pre_takeoff_state_ok = self.wait_for_pre_takeoff_state_stable(self.args.pre_takeoff_state_stable_s)
+        if not pre_takeoff_state_ok:
+            return self.metrics(
+                False,
+                True,
+                forced_reason="pre_takeoff_state_not_stable",
+            )
         self.phase = "takeoff"
-        if static_odom_ok:
-            self.publish_takeoff_land(TakeoffLand.TAKEOFF, repeats=self.args.takeoff_cmd_repeats)
+        self.publish_takeoff_land(TakeoffLand.TAKEOFF, repeats=self.args.takeoff_cmd_repeats)
         takeoff_ok = self.wait_until_altitude(self.args.takeoff_timeout_s)
         if self.deadline_reached():
             return self.metrics(takeoff_ok, static_odom_ok, forced_reason="wall_timeout_during_takeoff")
@@ -1245,6 +1329,7 @@ class Px4ctrlBasicMission:
             "goal7_gate": gate if self.args.gate_mode == "g7" and self.args.mission in TRAJECTORY_MISSIONS else None,
             "step_gate": gate if self.args.mission in {"step_x", "step_y", "step_z"} else None,
             "static_odom_ready_before_takeoff": bool(static_odom_ok),
+            "pre_takeoff_state_gate": self.pre_takeoff_state_gate,
             "takeoff_reached_altitude": bool(takeoff_ok),
             "sample_counts": {
                 "truth": len(self.truth_rows),
@@ -1640,6 +1725,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--static-odom-speed-max-mps", type=float, default=0.08)
     parser.add_argument("--static-odom-hold-s", type=float, default=1.0)
     parser.add_argument("--pre-takeoff-state-stable-s", type=float, default=0.0)
+    parser.add_argument("--pre-takeoff-state-timeout-s", type=float, default=20.0)
+    parser.add_argument("--pre-takeoff-max-abs-roll-pitch-deg", type=float, default=0.0)
     parser.add_argument("--takeoff-cmd-repeats", type=int, default=20)
     parser.add_argument("--initial-hover-s", type=float, default=8.0)
     parser.add_argument("--hover-ramp-s", type=float, default=0.0)
