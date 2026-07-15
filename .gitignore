@@ -325,6 +325,7 @@ References/**/Build/
 References/**/BUILD/
 References/**/dist/
 References/**/out/
+References/**/temp/
 References/**/obj/
 References/**/bin/Debug/
 References/**/bin/Release/
@@ -354,6 +355,8 @@ References/**/*.pyc
 References/**/*.pch
 References/**/*.iobj
 References/**/*.ipdb
+References/**/*.bsc
+References/**/*.idb
 References/**/*.ilk
 References/**/*.pak
 References/**/*.umap_BuiltData.uasset
