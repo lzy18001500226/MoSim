@@ -1,1 +1,10 @@
 .vscode/
+**/msg_gen/
+**/srv_gen/
+**/cfg/cpp/
+**/*.cfgc
+src/utils/uav_simulator/Utils/multi_map_server/quadrotor_msgs/src/quadrotor_msgs/
+src/utils/uav_simulator/Utils/multi_map_server/src/multi_map_server/
+src/utils/uav_simulator/so3_disturbance_generator/docs/DisturbanceUIConfig*
+src/utils/uav_simulator/so3_disturbance_generator/include/so3_disturbance_generator/DisturbanceUIConfig.h
+src/utils/uav_simulator/so3_disturbance_generator/src/so3_disturbance_generator/
