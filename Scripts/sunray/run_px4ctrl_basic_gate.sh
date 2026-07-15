@@ -121,8 +121,7 @@ PX4CTRL_TRAJECTORY_DEFAULT_ARGS="${PX4CTRL_TRAJECTORY_DEFAULT_ARGS:---force-disa
 PX4CTRL_SKIP_MISSION="${PX4CTRL_SKIP_MISSION:-false}"
 PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE="${PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE:-true}"
 PX4CTRL_PARAM_SERVICE_READY_TIMEOUT_S="${PX4CTRL_PARAM_SERVICE_READY_TIMEOUT_S:-30}"
-PX4CTRL_PARAM_PULL_TIMEOUT_S="${PX4CTRL_PARAM_PULL_TIMEOUT_S:-30}"
-PX4CTRL_PARAM_GET_TIMEOUT_S="${PX4CTRL_PARAM_GET_TIMEOUT_S:-5}"
+PX4CTRL_PARAM_DUMP_TIMEOUT_S="${PX4CTRL_PARAM_DUMP_TIMEOUT_S:-45}"
 PX4CTRL_EKF2_EV_CTRL_OVERRIDE="${PX4CTRL_EKF2_EV_CTRL_OVERRIDE:-}"
 PX4CTRL_EKF2_HGT_REF_OVERRIDE="${PX4CTRL_EKF2_HGT_REF_OVERRIDE:-}"
 PX4CTRL_EXTRA_PARAM_OVERRIDES="${PX4CTRL_EXTRA_PARAM_OVERRIDES:-}"
@@ -811,40 +810,59 @@ if [[ "${TIME_TF_AUDIT_DURATION_S}" != "0" ]]; then
 fi
 
 PARAM_SNAPSHOT_PATH="${RESULT_DIR}/px4_param_snapshot_before_mission.txt"
-PARAM_PULL_PATH="${RESULT_DIR}/px4_param_pull_before_snapshot.txt"
+PARAM_DUMP_PATH="${RESULT_DIR}/px4_param_dump_before_mission.param"
+PARAM_PULL_PATH="${RESULT_DIR}/px4_param_dump_before_mission.log"
 if ! wait_for_rosservice /uav1/mavros/param/pull "${PX4CTRL_PARAM_SERVICE_READY_TIMEOUT_S}"; then
   echo "MAVROS parameter pull service did not become ready inside ${PX4CTRL_PARAM_SERVICE_READY_TIMEOUT_S}s" \
     > "${PARAM_PULL_PATH}"
   exit 6
 fi
-if ! timeout "${PX4CTRL_PARAM_PULL_TIMEOUT_S}s" \
-  rosservice call /uav1/mavros/param/pull "force_pull: true" \
+if ! timeout "${PX4CTRL_PARAM_DUMP_TIMEOUT_S}s" \
+  rosrun mavros mavparam -n /uav1/mavros -v dump -f -mp "${PARAM_DUMP_PATH}" \
   > "${PARAM_PULL_PATH}" 2>&1; then
-  echo "MAVROS parameter pull failed or timed out" >> "${PARAM_PULL_PATH}"
+  echo "MAVROS forced parameter dump failed or timed out" >> "${PARAM_PULL_PATH}"
   exit 6
 fi
-if ! grep -Eq 'success:[[:space:]]*True' "${PARAM_PULL_PATH}"; then
-  echo "MAVROS parameter pull returned success=false or no success acknowledgement" >> "${PARAM_PULL_PATH}"
+if [[ ! -s "${PARAM_DUMP_PATH}" ]] || ! grep -Eq 'Parameters received:[[:space:]]*[1-9][0-9]*' "${PARAM_PULL_PATH}"; then
+  echo "MAVROS forced parameter dump returned no usable parameter set" >> "${PARAM_PULL_PATH}"
   exit 6
 fi
 
-{
-  echo "PX4 PARAM SNAPSHOT"
-  echo "param_pull_evidence=${PARAM_PULL_PATH}"
-  for param in \
-    SYS_AUTOSTART SYS_AUTOCONFIG \
-    CAL_ACC0_ID CAL_ACC0_PRIO CAL_ACC0_ROT CAL_ACC0_XOFF CAL_ACC0_YOFF CAL_ACC0_ZOFF \
-    CAL_GYRO0_ID CAL_GYRO0_PRIO CAL_GYRO0_ROT CAL_GYRO0_XOFF CAL_GYRO0_YOFF CAL_GYRO0_ZOFF \
-    EKF2_IMU_CTRL EKF2_ACC_NOISE EKF2_ACC_B_NOISE EKF2_GYR_NOISE EKF2_GYR_B_NOISE EKF2_GYR_B_LIM \
-    EKF2_HGT_REF EKF2_AID_MASK EKF2_EV_CTRL EKF2_EV_POS_X EKF2_EV_POS_Y EKF2_EV_POS_Z \
-    EKF2_EV_DELAY EKF2_EV_NOISE EKF2_EV_NOISE_MD EKF2_EVP_NOISE EKF2_EVV_NOISE EKF2_EVA_NOISE EKF2_REQ_EPH EKF2_REQ_EPV \
-    MPC_THR_HOVER MPC_XY_P MPC_Z_P MPC_XY_VEL_P_ACC MPC_XY_VEL_I_ACC MPC_Z_VEL_P_ACC MPC_Z_VEL_I_ACC
-  do
-    printf "%s\n" "${param}"
-    timeout "${PX4CTRL_PARAM_GET_TIMEOUT_S}s" \
-      rosservice call /uav1/mavros/param/get "param_id: '${param}'" 2>&1 || true
-  done
-} > "${PARAM_SNAPSHOT_PATH}" 2>&1
+python3 - "${PARAM_DUMP_PATH}" "${PARAM_SNAPSHOT_PATH}" "${PARAM_PULL_PATH}" <<'PY'
+import csv
+import sys
+
+dump_path, snapshot_path, pull_path = sys.argv[1:]
+wanted = """
+SYS_AUTOSTART SYS_AUTOCONFIG
+CAL_ACC0_ID CAL_ACC0_PRIO CAL_ACC0_ROT CAL_ACC0_XOFF CAL_ACC0_YOFF CAL_ACC0_ZOFF
+CAL_GYRO0_ID CAL_GYRO0_PRIO CAL_GYRO0_ROT CAL_GYRO0_XOFF CAL_GYRO0_YOFF CAL_GYRO0_ZOFF
+EKF2_IMU_CTRL EKF2_ACC_NOISE EKF2_ACC_B_NOISE EKF2_GYR_NOISE EKF2_GYR_B_NOISE EKF2_GYR_B_LIM
+EKF2_HGT_REF EKF2_AID_MASK EKF2_EV_CTRL EKF2_EV_POS_X EKF2_EV_POS_Y EKF2_EV_POS_Z
+EKF2_EV_DELAY EKF2_EV_NOISE EKF2_EV_NOISE_MD EKF2_EVP_NOISE EKF2_EVV_NOISE EKF2_EVA_NOISE EKF2_REQ_EPH EKF2_REQ_EPV
+MPC_THR_HOVER MPC_XY_P MPC_Z_P MPC_XY_VEL_P_ACC MPC_XY_VEL_I_ACC MPC_Z_VEL_P_ACC MPC_Z_VEL_I_ACC
+""".split()
+
+params = {}
+with open(dump_path, newline="", encoding="utf-8") as handle:
+    for row in csv.reader(handle, skipinitialspace=True):
+        if not row or row[0].startswith("#") or len(row) != 2:
+            continue
+        params[row[0].strip()] = row[1].strip()
+
+critical = ("SYS_AUTOSTART", "CAL_ACC0_ID", "CAL_GYRO0_ID", "EKF2_IMU_CTRL")
+missing_critical = [name for name in critical if name not in params]
+with open(snapshot_path, "w", encoding="utf-8", newline="\n") as handle:
+    handle.write("PX4 PARAM SNAPSHOT\n")
+    handle.write(f"param_dump={dump_path}\n")
+    handle.write(f"param_pull_evidence={pull_path}\n")
+    handle.write(f"parameter_count={len(params)}\n")
+    for name in wanted:
+        handle.write(f"{name}={params.get(name, 'MISSING')}\n")
+
+if missing_critical:
+    raise SystemExit("missing critical PX4 parameters: " + ", ".join(missing_critical))
+PY
 
 if [[ "${PX4CTRL_START_EXTERNAL_FUSION}" == "true" ]]; then
   EXTERNAL_FUSION_SOURCE_EFFECTIVE=2
