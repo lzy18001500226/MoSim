@@ -1,0 +1,25 @@
+{
+  "schema": "mosim.control_platform.g1_g6_closeout_matrix.v1",
+  "audited_at": "2026-07-16",
+  "frontend_implementation_in_scope": false,
+  "overall_status": "blocked",
+  "goals": {
+    "G1": {"status": "accepted_design", "runtime_claim": false},
+    "G2": {"status": "passed_static", "active_experiment_profiles_checked": 21, "registry_error_count": 0, "runtime_claim": false},
+    "G3": {"status": "passed_static_scope", "c_abi_cases": 702, "generated_c_equivalence_cases": 450, "runtime_claim": false},
+    "G4": {"status": "partial", "licensed_selected_sources": 10, "reference_only_sources": 6, "explicitly_dropped_candidates": ["tube_mpc_j2dog"], "open_family_decisions": ["ndi_or_feedback_linearization", "complete_adrc", "bounded_learning_augmentation", "formation", "safety_and_allocation"]},
+    "G5": {"status": "blocked", "actual_graphical_simulation_accepted": false, "actual_mil_accepted": false, "fresh_generated_c_accepted": false, "factory_runtime_accepted": false, "blocker": "Sysplorer login/UGV auto-recovery UI plus MCP Transport closed"},
+    "G6": {"status": "offline_contract_passed_runtime_blocked", "actual_factory_injection_accepted": false, "blocker": "RACER retains shared runtime ownership; no same-run backend events and telemetry"}
+  },
+  "required_unlocks": [
+    "user resolves or authorizes Sysplorer login/license and chooses handling for unrelated UGV auto-recovery",
+    "Codex task restart restores Sysplorer MCP transport and read-only probe passes",
+    "mainline board explicitly releases shared ROS1/Gazebo/PX4/MAVROS resources"
+  ],
+  "forbidden_claims": [
+    "frontend-excluded full completion",
+    "all-controller closed-loop acceptance",
+    "fresh MWORKS graphical or MIL acceptance",
+    "Factory wind or motor-effectiveness injection acceptance"
+  ]
+}

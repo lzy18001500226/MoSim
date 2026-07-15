@@ -96,7 +96,7 @@
       "command_publish_rate_hz": 100,
       "trajectory_evaluation_rate_hz": 100,
       "planner_nominal_rate_hz": 20,
-      "command_interface": "BODYRATE_THRUST"
+      "command_interface": "BODY_RATE_THRUST"
     }
   },
   "trajectory_profiles": {
@@ -349,7 +349,7 @@
       "implementation_status": "implemented",
       "controller_family": "so3_geometric",
       "chain_position": "attitude_rate_inner_loop",
-      "output_interface": "BODYRATE_THRUST",
+      "output_interface": "BODY_RATE_THRUST",
       "rate_hz": 250,
       "required_state": ["attitude", "angular_velocity"],
       "required_reference": ["attitude", "body_rate", "collective_thrust"],
@@ -688,7 +688,7 @@
       "g9_task": "G9.5",
       "controller_family": "differential_flatness_high_order",
       "chain_position": "nominal_flatness_outer_loop_with_jerk_to_bodyrate_release_smoke",
-      "output_interface": "BODYRATE_THRUST",
+      "output_interface": "BODY_RATE_THRUST",
       "rate_hz": 100,
       "required_state": [
         "position",
@@ -793,7 +793,7 @@
       "g9_task": "G9.6",
       "controller_family": "differential_flatness_smooth_robust",
       "chain_position": "nominal_flatness_outer_loop_with_bounded_feedback_dob_and_jerk_to_bodyrate_release_smoke",
-      "output_interface": "BODYRATE_THRUST",
+      "output_interface": "BODY_RATE_THRUST",
       "rate_hz": 100,
       "required_state": [
         "position",
@@ -961,23 +961,65 @@
       "evidence_level": "E2"
     }
   },
+  "inner_controller_profiles": {
+    "px4_attitude_rate_inner_v1": {
+      "inner_controller_id": "px4_attitude_rate_inner",
+      "implementation_status": "accepted",
+      "module_family": "px4_multicopter_attitude_rate",
+      "backend_owned": true,
+      "backend_owner": "px4",
+      "input_interfaces": [
+        "ATTITUDE_THRUST",
+        "BODY_RATE_THRUST"
+      ],
+      "output_interface": "WRENCH"
+    }
+  },
+  "allocator_profiles": {
+    "px4_control_allocator_v1": {
+      "allocator_id": "px4_control_allocator",
+      "implementation_status": "accepted",
+      "module_family": "px4_control_allocation",
+      "backend_owned": true,
+      "backend_owner": "px4",
+      "input_interface": "WRENCH",
+      "output_interface": "ROTOR_COMMAND"
+    }
+  },
   "safety_profiles": {
     "basic_limiter_v1": {
+      "safety_id": "basic_limiter",
+      "implementation_status": "accepted",
+      "module_family": "bounded_envelope_limiter",
+      "supported_interfaces": [
+        "ATTITUDE_THRUST",
+        "BODY_RATE_THRUST"
+      ],
       "requires_geofence": false,
       "enforces_envelope": true
     }
   },
   "adapter_profiles": {
     "mavros_attitude_thrust_v1": {
+      "adapter_id": "mavros_attitude_thrust",
+      "implementation_status": "accepted",
+      "module_family": "mavros_setpoint_adapter",
       "input_interface": "ATTITUDE_THRUST",
       "output_backend": "mavros_setpoint_raw_attitude",
+      "backend_inner_profile": "px4_attitude_rate_inner_v1",
+      "backend_allocator_profile": "px4_control_allocator_v1",
       "thrust_input_unit": "N",
       "quaternion_order": "wxyz",
       "publishes_final_command": true
     },
     "mavros_bodyrate_thrust_v1": {
-      "input_interface": "BODYRATE_THRUST",
+      "adapter_id": "mavros_bodyrate_thrust",
+      "implementation_status": "accepted",
+      "module_family": "mavros_setpoint_adapter",
+      "input_interface": "BODY_RATE_THRUST",
       "output_backend": "mavros_setpoint_raw_attitude_body_rate",
+      "backend_inner_profile": "px4_attitude_rate_inner_v1",
+      "backend_allocator_profile": "px4_control_allocator_v1",
       "type_mask": "IGNORE_ATTITUDE",
       "body_rate_unit": "radps",
       "thrust_input_unit": "normalized_0_1",

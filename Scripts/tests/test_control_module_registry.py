@@ -62,3 +62,54 @@ def test_missing_command_variant_is_rejected() -> None:
     registry["command_variants"].remove("WRENCH")
     codes = {error["code"] for error in checker.validate(registry)}
     assert "CMR-CMD-01" in codes
+
+
+def test_backend_owned_chain_is_registered() -> None:
+    modules = {item["profile_id"]: item for item in load_registry()["modules"]}
+    adapter = modules["mavros_attitude_thrust_v1"]
+    inner = modules[adapter["backend_inner_profile"]]
+    allocator = modules[adapter["backend_allocator_profile"]]
+
+    assert inner["kind"] == "attitude_rate_inner"
+    assert inner["backend_owned"] is True
+    assert allocator["kind"] == "control_allocator"
+    assert allocator["backend_owned"] is True
+    assert inner["output_variant"] == allocator["input_variant"]
+
+
+def test_adapter_backend_chain_mismatch_is_rejected() -> None:
+    checker = load_checker()
+    registry = load_registry()
+    adapter = next(item for item in registry["modules"] if item["kind"] == "command_adapter")
+    adapter["backend_allocator_profile"] = "missing_allocator_v1"
+    codes = {error["code"] for error in checker.validate(registry)}
+    assert "CMR-DRIFT-09" in codes
+    assert "CMR-CHAIN-02" in codes
+
+
+def test_selectable_controller_requires_matching_adapter() -> None:
+    checker = load_checker()
+    registry = load_registry()
+    for module in registry["modules"]:
+        if module.get("kind") == "command_adapter" and module.get("input_variant") == "BODY_RATE_THRUST":
+            module["selectable"] = False
+    codes = {error["code"] for error in checker.validate(registry)}
+    assert "CMR-CHAIN-05" in codes
+
+
+def test_catalog_section_rejects_wrong_module_kind() -> None:
+    checker = load_checker()
+    registry = load_registry()
+    safety = next(item for item in registry["modules"] if item["kind"] == "safety_filter")
+    safety["kind"] = "command_adapter"
+    codes = {error["code"] for error in checker.validate(registry)}
+    assert "CMR-MODULE-08" in codes
+
+
+def test_selectable_controller_requires_matching_safety_filter() -> None:
+    checker = load_checker()
+    registry = load_registry()
+    safety = next(item for item in registry["modules"] if item["kind"] == "safety_filter")
+    safety["supported_variants"] = ["ATTITUDE_THRUST"]
+    codes = {error["code"] for error in checker.validate(registry)}
+    assert "CMR-CHAIN-06" in codes

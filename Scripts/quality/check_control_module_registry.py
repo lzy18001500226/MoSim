@@ -26,9 +26,32 @@ REQUIRED_SLOTS = {
     "control_allocator", "command_adapter",
 }
 ALLOWED_KINDS = REQUIRED_SLOTS
-ALLOWED_SECTIONS = {"controller_profiles", "augmentation_profiles"}
+ALLOWED_SECTIONS = {
+    "controller_profiles",
+    "augmentation_profiles",
+    "safety_profiles",
+    "inner_controller_profiles",
+    "allocator_profiles",
+    "adapter_profiles",
+}
 ACTIVE_STATUSES = {"active", "implemented", "accepted"}
 COMMAND_VARIANT_ALIASES = {"BODYRATE_THRUST": "BODY_RATE_THRUST"}
+SECTION_FAMILY_FIELDS = {
+    "controller_profiles": "controller_family",
+    "augmentation_profiles": "module_family",
+    "safety_profiles": "module_family",
+    "inner_controller_profiles": "module_family",
+    "allocator_profiles": "module_family",
+    "adapter_profiles": "module_family",
+}
+SECTION_ALLOWED_KINDS = {
+    "controller_profiles": {"nominal_controller", "attitude_rate_inner"},
+    "augmentation_profiles": {"augmentation"},
+    "safety_profiles": {"safety_filter"},
+    "inner_controller_profiles": {"attitude_rate_inner"},
+    "allocator_profiles": {"control_allocator"},
+    "adapter_profiles": {"command_adapter"},
+}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -43,6 +66,12 @@ def resolve(path_value: str) -> Path:
 def canonical_variant(value: Any) -> str:
     variant = str(value)
     return COMMAND_VARIANT_ALIASES.get(variant, variant)
+
+
+def canonical_variants(values: Any) -> list[str]:
+    if not isinstance(values, list):
+        return []
+    return [canonical_variant(value) for value in values]
 
 
 def validate(registry: dict[str, Any]) -> list[dict[str, str]]:
@@ -95,7 +124,6 @@ def validate(registry: dict[str, Any]) -> list[dict[str, str]]:
         section = str(module.get("catalog_section", ""))
         kind = str(module.get("kind", ""))
         status = str(module.get("status", ""))
-        variant = str(module.get("output_variant", ""))
 
         if not module_id or module_id in seen_ids:
             add("CMR-MODULE-03", f"{prefix} has missing or duplicate module_id: {module_id}")
@@ -108,8 +136,8 @@ def validate(registry: dict[str, Any]) -> list[dict[str, str]]:
             continue
         if kind not in ALLOWED_KINDS:
             add("CMR-MODULE-06", f"{module_id} has unsupported kind: {kind}")
-        if variant not in REQUIRED_VARIANTS:
-            add("CMR-MODULE-07", f"{module_id} has unsupported output_variant: {variant}")
+        elif kind not in SECTION_ALLOWED_KINDS[section]:
+            add("CMR-MODULE-08", f"{module_id} kind {kind} is invalid for {section}")
         if not str(module.get("claim_ceiling", "")).strip():
             add("CMR-CLAIM-01", f"{module_id} must declare claim_ceiling")
 
@@ -120,9 +148,7 @@ def validate(registry: dict[str, Any]) -> list[dict[str, str]]:
         catalog_status = str(entry.get("implementation_status", "accepted" if profile_id == "none" else ""))
         if status != catalog_status:
             add("CMR-DRIFT-01", f"{module_id} status {status} != catalog status {catalog_status}")
-        if canonical_variant(entry.get("output_interface", "")) != variant:
-            add("CMR-DRIFT-02", f"{module_id} output {variant} != catalog output {entry.get('output_interface')}")
-        family_field = "controller_family" if section == "controller_profiles" else "module_family"
+        family_field = SECTION_FAMILY_FIELDS[section]
         if str(entry.get(family_field, "")) != str(module.get("family", "")):
             add("CMR-DRIFT-03", f"{module_id} family does not match catalog")
         selectable = module.get("selectable")
@@ -131,10 +157,100 @@ def validate(registry: dict[str, Any]) -> list[dict[str, str]]:
         elif selectable and status not in ACTIVE_STATUSES:
             add("CMR-SELECT-02", f"{module_id} status {status} cannot be selectable")
 
-    catalog_profiles = set(catalog.get("controller_profiles", {}))
-    catalog_profiles.update(
-        profile_id for profile_id in catalog.get("augmentation_profiles", {}) if profile_id != "none"
-    )
+        if section in {"controller_profiles", "augmentation_profiles"}:
+            variant = canonical_variant(module.get("output_variant", ""))
+            if variant not in REQUIRED_VARIANTS:
+                add("CMR-MODULE-07", f"{module_id} has unsupported output_variant: {variant}")
+            if canonical_variant(entry.get("output_interface", "")) != variant:
+                add("CMR-DRIFT-02", f"{module_id} output {variant} != catalog output {entry.get('output_interface')}")
+        elif section == "safety_profiles":
+            variants = canonical_variants(module.get("supported_variants"))
+            catalog_variants = canonical_variants(entry.get("supported_interfaces"))
+            if not variants or not set(variants).issubset(REQUIRED_VARIANTS):
+                add("CMR-SAFETY-01", f"{module_id} must declare supported_variants")
+            if variants != catalog_variants:
+                add("CMR-DRIFT-04", f"{module_id} safety variants do not match catalog")
+        elif section == "inner_controller_profiles":
+            input_variants = canonical_variants(module.get("input_variants"))
+            output_variant = canonical_variant(module.get("output_variant", ""))
+            if not input_variants or not set(input_variants).issubset(REQUIRED_VARIANTS):
+                add("CMR-INNER-01", f"{module_id} must declare valid input_variants")
+            if input_variants != canonical_variants(entry.get("input_interfaces")):
+                add("CMR-DRIFT-05", f"{module_id} inner-controller inputs do not match catalog")
+            if output_variant != canonical_variant(entry.get("output_interface", "")):
+                add("CMR-DRIFT-02", f"{module_id} output does not match catalog")
+            if module.get("backend_owned") is not True or not str(module.get("backend_owner", "")):
+                add("CMR-BACKEND-01", f"{module_id} must explicitly declare backend ownership")
+        elif section == "allocator_profiles":
+            input_variant = canonical_variant(module.get("input_variant", ""))
+            output_variant = canonical_variant(module.get("output_variant", ""))
+            if input_variant != canonical_variant(entry.get("input_interface", "")):
+                add("CMR-DRIFT-06", f"{module_id} allocator input does not match catalog")
+            if output_variant != canonical_variant(entry.get("output_interface", "")):
+                add("CMR-DRIFT-02", f"{module_id} output does not match catalog")
+            if module.get("backend_owned") is not True or not str(module.get("backend_owner", "")):
+                add("CMR-BACKEND-01", f"{module_id} must explicitly declare backend ownership")
+        elif section == "adapter_profiles":
+            input_variant = canonical_variant(module.get("input_variant", ""))
+            if input_variant != canonical_variant(entry.get("input_interface", "")):
+                add("CMR-DRIFT-07", f"{module_id} adapter input does not match catalog")
+            if str(module.get("backend_output", "")) != str(entry.get("output_backend", "")):
+                add("CMR-DRIFT-08", f"{module_id} adapter backend output does not match catalog")
+            for field in ("backend_inner_profile", "backend_allocator_profile"):
+                if str(module.get(field, "")) != str(entry.get(field, "")):
+                    add("CMR-DRIFT-09", f"{module_id} {field} does not match catalog")
+
+    modules_by_profile = {
+        str(module.get("profile_id")): module
+        for module in modules
+        if isinstance(module, dict) and module.get("profile_id")
+    }
+    for module in modules:
+        if not isinstance(module, dict) or module.get("catalog_section") != "adapter_profiles":
+            continue
+        adapter_id = str(module.get("module_id", ""))
+        inner = modules_by_profile.get(str(module.get("backend_inner_profile", "")))
+        allocator = modules_by_profile.get(str(module.get("backend_allocator_profile", "")))
+        if not inner or inner.get("kind") != "attitude_rate_inner":
+            add("CMR-CHAIN-01", f"{adapter_id} does not bind a registered attitude/rate inner controller")
+            continue
+        if not allocator or allocator.get("kind") != "control_allocator":
+            add("CMR-CHAIN-02", f"{adapter_id} does not bind a registered control allocator")
+            continue
+        adapter_input = canonical_variant(module.get("input_variant", ""))
+        if adapter_input not in canonical_variants(inner.get("input_variants")):
+            add("CMR-CHAIN-03", f"{adapter_id} input is not accepted by its backend inner controller")
+        if canonical_variant(inner.get("output_variant", "")) != canonical_variant(allocator.get("input_variant", "")):
+            add("CMR-CHAIN-04", f"{adapter_id} backend inner output does not match allocator input")
+
+    selectable_adapters = [
+        module for module in modules
+        if isinstance(module, dict)
+        and module.get("kind") == "command_adapter"
+        and module.get("selectable") is True
+    ]
+    selectable_safety_filters = [
+        module for module in modules
+        if isinstance(module, dict)
+        and module.get("kind") == "safety_filter"
+        and module.get("selectable") is True
+    ]
+    for module in modules:
+        if not isinstance(module, dict) or module.get("kind") != "nominal_controller":
+            continue
+        if module.get("selectable") is not True:
+            continue
+        variant = canonical_variant(module.get("output_variant", ""))
+        if not any(canonical_variant(adapter.get("input_variant", "")) == variant for adapter in selectable_adapters):
+            add("CMR-CHAIN-05", f"{module.get('module_id')} has no selectable adapter for {variant}")
+        if not any(variant in canonical_variants(safety.get("supported_variants")) for safety in selectable_safety_filters):
+            add("CMR-CHAIN-06", f"{module.get('module_id')} has no selectable safety filter for {variant}")
+
+    catalog_profiles: set[str] = set()
+    for section in ALLOWED_SECTIONS:
+        catalog_profiles.update(
+            profile_id for profile_id in catalog.get(section, {}) if profile_id != "none"
+        )
     missing_profiles = sorted(catalog_profiles - seen_profiles)
     if missing_profiles:
         add("CMR-COVERAGE-01", f"catalog modules missing from registry: {missing_profiles}")

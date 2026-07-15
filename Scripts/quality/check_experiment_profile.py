@@ -776,6 +776,8 @@ def validate_experiment(
         for slot, expected_kind in (
             ("controller_profile", "nominal_controller"),
             ("augmentation_profile", "augmentation"),
+            ("safety_profile", "safety_filter"),
+            ("adapter_profile", "command_adapter"),
         ):
             profile_id = str(profile[slot])
             if profile_id == "none":

@@ -86,6 +86,42 @@ def test_registry_non_selectable_controller_is_rejected(tmp_path: Path) -> None:
     assert_rejected(completed, "C-REG-03")
 
 
+def test_registry_non_selectable_safety_is_rejected(tmp_path: Path) -> None:
+    registry = load_json(CONTROL_MODULE_REGISTRY)
+    module = next(
+        item
+        for item in registry["modules"]
+        if item["profile_id"] == "basic_limiter_v1"
+    )
+    module["selectable"] = False
+    registry_path = tmp_path / "control_module_registry.json"
+    write_json(registry_path, registry)
+    completed = run_checker(
+        str(VALID_PROFILE),
+        "--control-module-registry",
+        str(registry_path),
+    )
+    assert_rejected(completed, "C-REG-03")
+
+
+def test_registry_non_selectable_adapter_is_rejected(tmp_path: Path) -> None:
+    registry = load_json(CONTROL_MODULE_REGISTRY)
+    module = next(
+        item
+        for item in registry["modules"]
+        if item["profile_id"] == "mavros_attitude_thrust_v1"
+    )
+    module["selectable"] = False
+    registry_path = tmp_path / "control_module_registry.json"
+    write_json(registry_path, registry)
+    completed = run_checker(
+        str(VALID_PROFILE),
+        "--control-module-registry",
+        str(registry_path),
+    )
+    assert_rejected(completed, "C-REG-03")
+
+
 def test_experiment_profile_validator_accepts_current_px4ctrl_profiles() -> None:
     completed = run_checker("--all")
     assert completed.returncode == 0, completed.stdout + completed.stderr
