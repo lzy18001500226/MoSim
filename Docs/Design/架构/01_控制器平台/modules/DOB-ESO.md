@@ -25,5 +25,9 @@ It proves ablation wiring, compensation limiting, and repeated-stamp
 protection only. Runtime acceptance still requires paired Gazebo A/B evidence
 against `dfbc_dob_eso_disabled_v1`.
 
+The static core was revalidated for the unified control platform at
+`Results/control_platform/g5_wave_c_dob_eso_20260716/RUN_MANIFEST.json`.
+This remains a bounded DOB/ESO subset and must not be promoted to full ADRC.
+
 Forbidden claims: DOB/ESO is not a state-source replacement for PX4 EKF or
 FAST-LIO.

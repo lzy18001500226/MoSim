@@ -1,0 +1,11 @@
+{
+  "schema": "mosim.g9e_pid_indi_static_gate.v1",
+  "status": "passed",
+  "claim_boundary": "Static PID plus bounded INDI acceleration-increment ATTITUDE_THRUST backend gate only. No rotor-level, body-rate-level, actuator-effectiveness INDI, ROS, Gazebo, PX4, MAVROS, RViz, UE, or MWORKS runtime is executed.",
+  "failure_count": 0,
+  "hover_thrust_error": 0,
+  "hover_quat_error": 0,
+  "residual_x": 1,
+  "bounded_increment_x": 0.19999999999999996,
+  "saturated_thrust": 0.40000000000000002
+}

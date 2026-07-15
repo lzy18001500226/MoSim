@@ -1,0 +1,38 @@
+{
+  "schema": "mosim.control_platform.g5_wave_c_summary.v1",
+  "status": "passed_with_bounded_pending_items",
+  "runtime_started": false,
+  "shared_gazebo_px4_touched": false,
+  "modules": {
+    "pid_indi": {
+      "status": "passed",
+      "role": "augmentation",
+      "current_static_gate": "Results/control_platform/g5_wave_c_indi_20260716/RUN_MANIFEST.json",
+      "generated_c_equivalence": "Results/control_platform/g3_current_family_20260716/G3_SUMMARY.json",
+      "claim_ceiling": "bounded translational acceleration-increment INDI augmentation; not full actuator-effectiveness or rotor-level INDI"
+    },
+    "dfbc_dob_eso": {
+      "status": "passed",
+      "role": "augmentation",
+      "current_static_gate": "Results/control_platform/g5_wave_c_dob_eso_20260716/RUN_MANIFEST.json",
+      "claim_ceiling": "bounded low-frequency acceleration-residual DOB/ESO subset; runtime paired A/B remains pending"
+    },
+    "l1_inspired_residual": {
+      "status": "mworks_evidence_only_platform_integration_pending",
+      "role": "augmentation_candidate",
+      "model": "Models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo",
+      "configuration": "Config/controllers/l1_residual_sysblock/default.yaml",
+      "claim_ceiling": "L1-inspired bounded low-pass residual compensation with historical MWORKS A/B evidence; not formal L1 adaptive control and not a selectable ROS1 module"
+    },
+    "adrc": {
+      "status": "not_implemented",
+      "reason": "The existing DOB/ESO subset lacks the tracking differentiator and nonlinear state-error feedback required for a complete ADRC claim."
+    }
+  },
+  "pending": [
+    "fresh MWORKS transport for graphical MIL/codegen work",
+    "paired Factory runtime A/B for DOB/ESO",
+    "typed L1 augmentation extraction and generated-C equivalence",
+    "full ADRC only if it adds value beyond the existing ESO subset"
+  ]
+}

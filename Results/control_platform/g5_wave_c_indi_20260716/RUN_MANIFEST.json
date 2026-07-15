@@ -1,0 +1,38 @@
+{
+  "schema": "mosim.g9e_pid_indi_static_gate_manifest.v1",
+  "status": "passed",
+  "goal": "G9-E",
+  "controller_profile": "official_pid_attitude_thrust_v1",
+  "augmentation_profile": "pid_indi_v1",
+  "runtime_core_profile": "pid_indi",
+  "project_root": "C:\\Users\\HP\\Desktop\\MoSim",
+  "result_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\g5_wave_c_indi_20260716",
+  "compile_command": [
+    "g++",
+    "-std=c++11",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-pedantic",
+    "/mnt/c/Users/HP/Desktop/MoSim/Scripts/sunray/px4ctrl_golden_slice/px4ctrl_core.cpp",
+    "/mnt/c/Users/HP/Desktop/MoSim/Scripts/sunray/px4ctrl_golden_slice/px4ctrl_g9e_pid_indi_gate.cpp",
+    "-I",
+    "/mnt/c/Users/HP/Desktop/MoSim/Scripts/sunray/px4ctrl_golden_slice",
+    "-o",
+    "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_wave_c_indi_20260716/build/px4ctrl_g9e_pid_indi_gate"
+  ],
+  "claim_boundary": "Static PID plus bounded INDI acceleration-increment ATTITUDE_THRUST backend gate only. No body-rate/rotor-level INDI, runtime, or MWORKS GUI is started.",
+  "compile_returncode": 0,
+  "run_returncode": 0,
+  "gate_result": {
+    "schema": "mosim.g9e_pid_indi_static_gate.v1",
+    "status": "passed",
+    "claim_boundary": "Static PID plus bounded INDI acceleration-increment ATTITUDE_THRUST backend gate only. No rotor-level, body-rate-level, actuator-effectiveness INDI, ROS, Gazebo, PX4, MAVROS, RViz, UE, or MWORKS runtime is executed.",
+    "failure_count": 0,
+    "hover_thrust_error": 0,
+    "hover_quat_error": 0,
+    "residual_x": 1,
+    "bounded_increment_x": 0.19999999999999996,
+    "saturated_thrust": 0.4
+  }
+}

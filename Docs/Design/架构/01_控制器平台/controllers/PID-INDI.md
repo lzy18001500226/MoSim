@@ -30,6 +30,11 @@ Current gate: G9-E has a C++ `ATTITUDE_THRUST` backend under
 Gazebo task evidence, Diff-Planner single-UAV evidence, and Diff-Planner
 three-UAV evidence. Runtime evidence is not user-frozen yet.
 
+The fixed core was revalidated under the unified control-platform Wave C gate
+at `Results/control_platform/g5_wave_c_indi_20260716/RUN_MANIFEST.json`; the
+existing generated-C equivalence remains indexed by
+`Results/control_platform/g3_current_family_20260716/G3_SUMMARY.json`.
+
 Current runtime parameter override:
 
 ```text

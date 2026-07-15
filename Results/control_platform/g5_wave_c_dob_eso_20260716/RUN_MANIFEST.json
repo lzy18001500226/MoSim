@@ -1,0 +1,41 @@
+{
+  "schema": "mosim.g10a_dfbc_dob_eso_static_gate_manifest.v1",
+  "status": "passed",
+  "goal": "G10-A",
+  "controller_profile": "dfbc_smooth_robust_attitude_thrust_v1",
+  "augmentation_profile": "dfbc_dob_eso_v1",
+  "ablation_profile": "dfbc_dob_eso_disabled_v1",
+  "runtime_core_profile_enabled": "dfbc_smooth_robust_dob",
+  "runtime_core_profile_disabled": "dfbc_smooth_robust",
+  "project_root": "C:\\Users\\HP\\Desktop\\MoSim",
+  "result_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\g5_wave_c_dob_eso_20260716",
+  "compile_command": [
+    "g++",
+    "-std=c++11",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-pedantic",
+    "/mnt/c/Users/HP/Desktop/MoSim/Scripts/sunray/px4ctrl_golden_slice/px4ctrl_core.cpp",
+    "/mnt/c/Users/HP/Desktop/MoSim/Scripts/sunray/px4ctrl_golden_slice/px4ctrl_g10a_dfbc_dob_eso_gate.cpp",
+    "-I",
+    "/mnt/c/Users/HP/Desktop/MoSim/Scripts/sunray/px4ctrl_golden_slice",
+    "-o",
+    "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_wave_c_dob_eso_20260716/build/px4ctrl_g10a_dfbc_dob_eso_gate"
+  ],
+  "claim_boundary": "Static G10-A DOB/ESO augmentation gate only. No ROS, Gazebo, PX4, MAVROS, RViz, MWORKS GUI, runtime ablation, or PX4-native deployment is started.",
+  "compile_returncode": 0,
+  "run_returncode": 0,
+  "gate_result": {
+    "schema": "mosim.g10a_dfbc_dob_eso_static_gate.v1",
+    "status": "passed",
+    "claim_boundary": "Static G10-A DOB/ESO gate only. It proves the DFBC smooth bounded core has a separately ablatable low-frequency acceleration-residual disturbance observer, bounded compensation, and repeated-stamp protection. It does not prove ROS/Gazebo wind robustness, MWORKS code generation, PX4-native deployment, or runtime improvement without paired A/B metrics.",
+    "failure_count": 0,
+    "hover_thrust_error": 0,
+    "no_dob_accel_x": 1,
+    "dob_disturbance_x": -1,
+    "dob_compensated_accel_x": 2,
+    "dob_clamped_disturbance_x": -0.35,
+    "repeated_stamp_accel_x": 1
+  }
+}

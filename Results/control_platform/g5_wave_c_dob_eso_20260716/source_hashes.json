@@ -1,0 +1,12 @@
+{
+  "Scripts\\sunray\\px4ctrl_golden_slice\\px4ctrl_core.h": "3be10404c3ea20cacf4b83eb559af2d75727afa28a90583b2623668464aa1f05",
+  "Scripts\\sunray\\px4ctrl_golden_slice\\px4ctrl_core.cpp": "483dcd1a0794563bbdcf1ea936c7a1994275bee4f9ee974ecdcd2aa04df84066",
+  "Scripts\\sunray\\px4ctrl_golden_slice\\px4ctrl_g10a_dfbc_dob_eso_gate.cpp": "365e1aa9a1f24883b0482c5cb4b6741962956a54117f673609197399fd3f304c",
+  "Scripts\\sunray\\px4ctrl_golden_slice\\run_px4ctrl_g10a_dfbc_dob_eso_gate.py": "9e5864f4445256faed5e1ae106d5b14bf65287ba9b182efb966fbcae8fa02035",
+  "Config\\profiles\\catalog.json": "2c878505a7a655d1db99fa941ea8097f491e16b588c6090c88d5676f92ce7d21",
+  "Config\\profiles\\experiments\\g10a_dfbc_smooth_robust_no_dob_figure8_v1.json": "37a7feda794f230b9f073b551a6aca472f0934e13ca111f501f5c026d4d18736",
+  "Config\\profiles\\experiments\\g10a_dfbc_smooth_robust_dob_figure8_v1.json": "de679bb97cb8d7949076d350cfba7e90486a558c2d529ecb55986a6ba3a817c1",
+  "Docs\\Design\\架构.md": "836869b4f638673515d87dc5021aeecddc29b96d3171a74e075e70d73c7a2787",
+  "Docs\\Design\\架构\\01_控制器平台\\controllers\\DFBC.md": "a4c8e78692b250a6c6f1cd8c2170a917f070d3ac8f5c703260d08701a052b8ac",
+  "Docs\\Design\\架构\\01_控制器平台\\控制增强与容错.md": "86451762af34107167e3c989fbd640b49b9e918049111036f5b1d40e8a0d32c4"
+}
