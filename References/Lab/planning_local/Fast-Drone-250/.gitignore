@@ -1,0 +1,5 @@
+.vscode/
+*~
+src/utils/quadrotor_msgs/src/quadrotor_msgs/
+src/realflight_modules/VINS-Fusion/support_files/brief_k10L6.bin
+firmware/*.px4
