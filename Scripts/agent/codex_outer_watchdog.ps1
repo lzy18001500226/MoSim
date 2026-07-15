@@ -226,8 +226,8 @@ if ($Mode -eq 'MarkAlive') {
         source = $Source
         status = 'alive_marker_written'
         thread_id = '019e9bc1-ea9f-7102-b41a-4ef9b2308992'
-        department_name = 'MoSim CoAgentOps'
-        claim_boundary = 'This marker proves the detached automation job ran, not that the CoAgentOps visible thread accepted a turn.'
+        department_name = 'MoSim legacy ops patrol'
+        claim_boundary = 'This marker proves the detached automation job ran, not that the legacy ops patrol visible thread accepted a turn.'
     }
     Write-JsonFile -Path $HeartbeatPath -Payload $payload
     Write-JsonFile -Path (New-EvidencePath 'codex_outer_cron_mark_alive') -Payload $payload

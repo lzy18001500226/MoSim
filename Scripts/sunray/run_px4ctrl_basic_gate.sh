@@ -120,6 +120,9 @@ PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS="${PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS:---init
 PX4CTRL_TRAJECTORY_DEFAULT_ARGS="${PX4CTRL_TRAJECTORY_DEFAULT_ARGS:---force-disarm-after-land --force-disarm-timeout-s 18 --pre-takeoff-state-stable-s 3.0 --pre-takeoff-state-timeout-s 20 --pre-takeoff-max-abs-roll-pitch-deg 0.5}"
 PX4CTRL_SKIP_MISSION="${PX4CTRL_SKIP_MISSION:-false}"
 PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE="${PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE:-true}"
+PX4CTRL_PARAM_SERVICE_READY_TIMEOUT_S="${PX4CTRL_PARAM_SERVICE_READY_TIMEOUT_S:-30}"
+PX4CTRL_PARAM_PULL_TIMEOUT_S="${PX4CTRL_PARAM_PULL_TIMEOUT_S:-30}"
+PX4CTRL_PARAM_GET_TIMEOUT_S="${PX4CTRL_PARAM_GET_TIMEOUT_S:-5}"
 PX4CTRL_EKF2_EV_CTRL_OVERRIDE="${PX4CTRL_EKF2_EV_CTRL_OVERRIDE:-}"
 PX4CTRL_EKF2_HGT_REF_OVERRIDE="${PX4CTRL_EKF2_HGT_REF_OVERRIDE:-}"
 PX4CTRL_EXTRA_PARAM_OVERRIDES="${PX4CTRL_EXTRA_PARAM_OVERRIDES:-}"
@@ -632,6 +635,18 @@ then
   exit 4
 fi
 
+wait_for_rosservice() {
+  local service_name="$1"
+  local timeout_s="$2"
+  local deadline=$((SECONDS + timeout_s))
+  while ! rosservice info "${service_name}" >/dev/null 2>&1; do
+    if (( SECONDS >= deadline )); then
+      return 1
+    fi
+    sleep 0.5
+  done
+}
+
 configure_mavros_stream_rates() {
   local rate_hz="$1"
   if [[ "${rate_hz}" == "0" || "${rate_hz}" == "0.0" ]]; then
@@ -795,18 +810,41 @@ if [[ "${TIME_TF_AUDIT_DURATION_S}" != "0" ]]; then
   PIDS+=("$!")
 fi
 
+PARAM_SNAPSHOT_PATH="${RESULT_DIR}/px4_param_snapshot_before_mission.txt"
+PARAM_PULL_PATH="${RESULT_DIR}/px4_param_pull_before_snapshot.txt"
+if ! wait_for_rosservice /uav1/mavros/param/pull "${PX4CTRL_PARAM_SERVICE_READY_TIMEOUT_S}"; then
+  echo "MAVROS parameter pull service did not become ready inside ${PX4CTRL_PARAM_SERVICE_READY_TIMEOUT_S}s" \
+    > "${PARAM_PULL_PATH}"
+  exit 6
+fi
+if ! timeout "${PX4CTRL_PARAM_PULL_TIMEOUT_S}s" \
+  rosservice call /uav1/mavros/param/pull "force_pull: true" \
+  > "${PARAM_PULL_PATH}" 2>&1; then
+  echo "MAVROS parameter pull failed or timed out" >> "${PARAM_PULL_PATH}"
+  exit 6
+fi
+if ! grep -Eq 'success:[[:space:]]*True' "${PARAM_PULL_PATH}"; then
+  echo "MAVROS parameter pull returned success=false or no success acknowledgement" >> "${PARAM_PULL_PATH}"
+  exit 6
+fi
+
 {
   echo "PX4 PARAM SNAPSHOT"
+  echo "param_pull_evidence=${PARAM_PULL_PATH}"
   for param in \
+    SYS_AUTOSTART SYS_AUTOCONFIG \
+    CAL_ACC0_ID CAL_ACC0_PRIO CAL_ACC0_ROT CAL_ACC0_XOFF CAL_ACC0_YOFF CAL_ACC0_ZOFF \
+    CAL_GYRO0_ID CAL_GYRO0_PRIO CAL_GYRO0_ROT CAL_GYRO0_XOFF CAL_GYRO0_YOFF CAL_GYRO0_ZOFF \
+    EKF2_IMU_CTRL EKF2_ACC_NOISE EKF2_ACC_B_NOISE EKF2_GYR_NOISE EKF2_GYR_B_NOISE EKF2_GYR_B_LIM \
     EKF2_HGT_REF EKF2_AID_MASK EKF2_EV_CTRL EKF2_EV_POS_X EKF2_EV_POS_Y EKF2_EV_POS_Z \
     EKF2_EV_DELAY EKF2_EV_NOISE EKF2_EV_NOISE_MD EKF2_EVP_NOISE EKF2_EVV_NOISE EKF2_EVA_NOISE EKF2_REQ_EPH EKF2_REQ_EPV \
     MPC_THR_HOVER MPC_XY_P MPC_Z_P MPC_XY_VEL_P_ACC MPC_XY_VEL_I_ACC MPC_Z_VEL_P_ACC MPC_Z_VEL_I_ACC
   do
     printf "%s\n" "${param}"
-    timeout 5s rosservice call /uav1/mavros/param/get "param_id: '${param}'" 2>&1 || true
+    timeout "${PX4CTRL_PARAM_GET_TIMEOUT_S}s" \
+      rosservice call /uav1/mavros/param/get "param_id: '${param}'" 2>&1 || true
   done
-} > "${RESULT_DIR}/px4_param_snapshot_before_mission.txt" 2>&1 &
-PIDS+=("$!")
+} > "${PARAM_SNAPSHOT_PATH}" 2>&1
 
 if [[ "${PX4CTRL_START_EXTERNAL_FUSION}" == "true" ]]; then
   EXTERNAL_FUSION_SOURCE_EFFECTIVE=2

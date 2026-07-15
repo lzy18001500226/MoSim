@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -59,8 +60,16 @@ class Rotor1Loss15ErrorProfileTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             returncode = module.main(["--output-dir", tmp])
             self.assertEqual(returncode, 0)
-            self.assertTrue((Path(tmp) / "rotor1_loss15_error_profile.json").exists())
+            json_path = Path(tmp) / "rotor1_loss15_error_profile.json"
+            self.assertTrue(json_path.exists())
             self.assertTrue((Path(tmp) / "rotor1_loss15_error_profile.md").exists())
+            payload = json.loads(
+                json_path.read_text(encoding="utf-8"),
+                parse_constant=lambda value: self.fail(f"non-finite JSON value: {value}"),
+            )
+            self.assertTrue(
+                all(item["disturbance_recovery_time_s"] is None for item in payload["profiles"])
+            )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="gazebo_enable" default="true"/>
+  <arg name="gui" default="false"/>
+  <arg name="rviz_enable" default="false"/>
+  <arg name="world" default="$(find sunray_simulator)/worlds/planning_test.world"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="vehicle" default="sunray150_with_mid360"/>
+  <arg name="uav_init_x" default="0.0"/>
+  <arg name="uav_init_y" default="0.0"/>
+  <arg name="uav_init_z" default="0.2"/>
+  <arg name="uav_init_yaw" default="0.0"/>
+
+  <group if="$(arg gazebo_enable)">
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="world_name" value="$(arg world)"/>
+      <arg name="gui" value="$(arg gui)"/>
+      <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    </include>
+  </group>
+
+  <env name="PX4_SIM_MODEL" value="gazebo-classic_sunray"/>
+  <env name="PX4_SIM_SPEED_FACTOR" value="1.0"/>
+
+  <group ns="/uav1">
+    <arg name="mavlink_id" value="1"/>
+    <arg name="mavlink_udp_port" value="14560"/>
+    <arg name="mavlink_tcp_port" value="4560"/>
+    <arg name="mavlink_cam_udp_port" value="14530"/>
+    <arg name="gst_udp_port" value="5600"/>
+    <arg name="video_uri" value="5600"/>
+    <arg name="sdf_cmd" default="$(find sunray_simulator)/scripts/jinja_gen.py --stdout --mavlink_id=$(arg mavlink_id) --mavlink_udp_port=$(arg mavlink_udp_port) --mavlink_tcp_port=$(arg mavlink_tcp_port) --gst_udp_port=$(arg gst_udp_port) --video_uri=$(arg video_uri) --mavlink_cam_udp_port=$(arg mavlink_cam_udp_port) $(find sunray_simulator)/models/drone_models/$(arg vehicle)/$(arg vehicle).sdf.jinja $(find sunray_simulator)"/>
+    <param command="$(arg sdf_cmd)" name="sdf_$(arg vehicle)0"/>
+
+    <node name="px4_sitl_1" pkg="px4" type="px4" output="screen"
+      args="$(find px4)/build/px4_sitl_default/etc -s etc/init.d-posix/rcS -i 0 -w $(env MOSIM_PX4_WORK_DIR) -d"/>
+
+    <node name="$(arg vehicle)_1_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+      args="-sdf -param sdf_$(arg vehicle)0 -model uav1 -x $(arg uav_init_x) -y $(arg uav_init_y) -z $(arg uav_init_z) -Y $(arg uav_init_yaw)"/>
+
+    <include file="$(find sunray_simulator)/launch_basic/sunray_mavros_sim.launch">
+      <arg name="ID" value="0"/>
+    </include>
+  </group>
+</launch>

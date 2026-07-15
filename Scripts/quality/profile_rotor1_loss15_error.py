@@ -61,6 +61,13 @@ def finite_float(value: str) -> float:
     return number
 
 
+def optional_finite_number(value: Any) -> float | None:
+    if value is None:
+        return None
+    number = float(value)
+    return number if math.isfinite(number) else None
+
+
 def read_rows(path: Path) -> list[dict[str, float]]:
     rows: list[dict[str, float]] = []
     with path.open(encoding="utf-8-sig", newline="") as handle:
@@ -148,7 +155,9 @@ def scenario_profile(path_text: str) -> dict[str, Any]:
         "position_rmse_m": metrics.get("position_rmse_m"),
         "total_health_score": metrics.get("total_health_score"),
         "steady_state_error_m": metrics.get("steady_state_error_m"),
-        "disturbance_recovery_time_s": metrics.get("disturbance_recovery_time_s"),
+        "disturbance_recovery_time_s": optional_finite_number(
+            metrics.get("disturbance_recovery_time_s")
+        ),
         "phase_profiles": phases,
         "worst_phase": worst_phase["phase"],
         "worst_phase_position_rmse_m": worst_phase["position_rmse_m"],

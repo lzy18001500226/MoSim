@@ -19,7 +19,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-GATEWAY = ROOT / "CoAgent" / "gateway" / "cc_connect_weixin.py"
+GATEWAY = ROOT / "Scripts" / "agent" / "cc_connect_weixin.py"
 EMAIL_ALERT = ROOT / "Scripts" / "agent" / "send_gateway_email_alert.py"
 CC_BIN = ROOT / "Results" / "tmp" / "cc-connect-node" / "node_modules" / "cc-connect" / "bin" / "cc-connect"
 WSL_DATA_DIR = "/home/linux/.cache/mosim/coagent/cc-connect-weixin/data"
@@ -528,6 +528,13 @@ def make_canary_packet(path: Path) -> None:
 
 
 def send_canary(packet_path: Path, timeout: int) -> dict[str, object]:
+    if not GATEWAY.exists():
+        return {
+            "attempted": False,
+            "ok": False,
+            "reason": "legacy_gateway_script_not_present",
+            "path": str(GATEWAY),
+        }
     command = [
         sys.executable,
         str(GATEWAY),
