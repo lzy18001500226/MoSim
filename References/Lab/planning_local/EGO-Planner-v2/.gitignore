@@ -1,2 +1,3 @@
 *~
+.vscode/
 swarm-playground/*_ws/src/Utils/quadrotor_msgs/src/quadrotor_msgs/
