@@ -217,3 +217,82 @@ first_blocker
 Only after the matrix is complete may
 `Docs/Workflows/mainline_operations_board.md` and the permanent code-generation
 workflow state that the six-controller generated-runtime route is closed.
+
+## 9. Current Closeout Execution Plan
+
+The closeout is executed in six controlled phases. The active goal remains
+open until phase 5 has produced a complete matrix; documentation completion
+alone is not closure.
+
+1. **Freeze the acceptance plan.** Keep the six-controller order, generated-C
+   provenance contract, 0.5 deg pre-takeoff gate, bounded waits, and
+   fail-closed rules unchanged. Do not mix this work with FUEL, RACER, UE, or
+   deferred PX4-native branches.
+2. **Recover the shared official-PID baseline.** Validate the isolated PX4
+   work directory, parameter-dump timing, sensor selection, and runtime
+   provenance before repeating any mission. A diagnostic attempt that exits
+   before `px4ctrl` starts is a startup blocker, not a controller result.
+3. **Close `official_pid`.** Require generated-C provenance, takeoff-hover-land,
+   and representative trajectory evidence in that order. Preserve the first
+   failed gate and do not promote retries that change the declared baseline.
+4. **Close the remaining five profiles.** Run the same gates for
+   `se3_basic`, `dfbc_basic`, `smc_boundary_layer`, `pid_indi`, and `nmpc_outer`,
+   one controller at a time. A shared-baseline failure pauses comparison;
+   controller-local failures are recorded in that controller's row.
+5. **Complete the project matrix.** Add Diff single-UAV and Diff three-UAV
+   evidence only after the competition-minimum gates pass. Generate
+   `CONTROLLER_MATRIX.json` and `SUMMARY.md` with explicit `pass`, `blocked`,
+   or `not_run` values for every column.
+6. **Publish the closeout.** Update the mainline board and permanent codegen
+   workflow only from the matrix, run path-limited checks, stage only task-owned
+   paths, commit, push when available, and verify the upstream state.
+
+### 9.1 Current Evidence State
+
+- Generated-C offline equivalence: `450 cases / 0 failures`.
+- Static ROS/Sunray adapter: `450 cases / 0 failures`.
+- Runtime acknowledgement observed for `official_pid`:
+  `backend=mworks_generated_c`, `build_backend=g9_family`, and
+  `G9_Family_CFunction_Sysblock::Step`.
+- The strict `official_pid` retry reached the pre-takeoff gate but remained
+  blocked at the declared `0.5 deg` roll/pitch threshold. This is valid
+  fail-closed evidence and not a takeoff pass.
+- The latest sensor-bias calibration A/B did not produce a mission metrics
+  file or start `px4ctrl`; `mavros_state_first.txt` records that the ROS master
+  was not running yet. The PX4 log also contains a transient `no gyro
+  selected` warning, but the available evidence does not establish it as the
+  termination cause. Classify this attempt as
+  `ros_master_or_mavros_startup_blocked`, not as evidence that calibration
+  fixed or worsened flight behavior.
+
+The next permitted action is to validate the remaining PX4/Gazebo lifecycle
+and arming-health failure, then rerun the unchanged official-PID gate. Do not
+loosen the pre-takeoff threshold or proceed to other controllers until the
+shared baseline is either accepted or recorded as a confirmed blocker.
+
+### 9.2 Latest Calibration A/B Result
+
+The Ubuntu-20.04 rerun at
+`official_pid/takeoff_hover_land_retry5_calibration_ab/` established the
+following bounded facts:
+
+- ROS Noetic/Gazebo startup succeeded; the earlier Ubuntu-22.04
+  `setup.sh` failure was an invocation error and is not part of the controller
+  result.
+- All six `CAL_GYRO0_*OFF` and `CAL_ACC0_*OFF` overrides were accepted by
+  both MAVROS parameter service and `mavparam`; the 885-parameter snapshot
+  records the applied values.
+- `px4ctrl.log` contains the generated-runtime node startup and the
+  `official_pid` profile. PX4 reached `Ready for takeoff` and later logged
+  `Takeoff detected`.
+- The run did not produce `PX4CTRL_BASIC_MISSION_METRICS.json` before the
+  enclosing 300 s execution timeout. PX4 logged arming-health warnings, then
+  reached `Takeoff detected`; the enclosing timeout terminated the still-live
+  mission and its ROS/Gazebo processes, so this run cannot be classified as a
+  completed or failed flight gate.
+
+This is classified as `takeoff_hover_land_incomplete_outer_timeout`, not a
+pass and not evidence of full closed-loop success. The calibration override
+chain itself is now validated; the next retry must allow the mission's full
+bounded timeout and must be run only when no other Gazebo/ROS task is active,
+because the current cleanup path owns the shared ROS/Gazebo process names.
