@@ -1,0 +1,18 @@
+# Trajectory_generator action definition
+
+# Request
+builtin_interfaces/Time stamp      # Request timestamp
+as2_msgs/YawMode yaw               # Yaw goal mode
+as2_msgs/PoseStampedWithID[] path  # List of poses with ID in path, with each frame id and time stamp
+float32 max_speed                  # Maximum speed desired in path (m/s)
+bool start_on_paused               # If true, the trajectory generation will be generated and the behavior will be set in paused state
+bool follow_reference_mode         # If true, single-waypoint follow-reference: Keep tracking the waypoint, although the trajectory is finished
+
+---
+# Result
+bool trajectory_generator_success  # False if failed to follow the generated trajectory
+
+---
+# Feedback
+string next_waypoint_id            # Next waypoint id in path to follow
+uint16 remaining_waypoints         # Number of remaining waypoints to follow
