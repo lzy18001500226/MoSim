@@ -8,3 +8,8 @@ uav_simulator/so3_disturbance_generator/docs/
 uav_simulator/so3_disturbance_generator/include/so3_disturbance_generator/DisturbanceUIConfig.h
 uav_simulator/so3_disturbance_generator/mainpage.dox
 uav_simulator/so3_disturbance_generator/src/so3_disturbance_generator/
+uav_simulator/Utils/**/msg_gen/
+uav_simulator/Utils/**/bin/
+uav_simulator/Utils/multi_map_server/src/multi_map_server/
+uav_simulator/Utils/multi_map_server/quadrotor_msgs/src/quadrotor_msgs/
+uav_simulator/Utils/quadrotor_msgs/src/quadrotor_msgs/
