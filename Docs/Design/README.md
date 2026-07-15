@@ -1,10 +1,10 @@
 # MoSim Design Source
 
-Status: active architecture entry, 2026-06-23.
+Status: active architecture entry, 2026-06-24.
 
 This directory is the active design source for MoSim. The former numbered
 `01-10` design set has been migrated into the documents below and archived
-under `Docs/Design/旧架构/`.
+under `Docs/Cache/design/old_architecture/`.
 
 Do not use the old numbered documents as active execution guidance. Use them
 only for historical trace-back when a current document explicitly points there.
@@ -21,41 +21,47 @@ document.
 |---:|---|---|
 | 1 | `README.md` | Current design entry, document map, and evidence boundary. |
 | 2 | `赛题.md` | Competition scope, task boundary, and claim framing. |
-| 3 | `架构.md` | Current system architecture decision and execution order. |
-| 4 | `MoSim控制体系总览.md` | Formal control-system root and controller roadmap. |
+| 3 | `需求.md` | MoSim requirement catalog, priority, and acceptance scope. |
+| 4 | `架构.md` | Current system architecture decision and execution order. |
+| 5 | `架构/README.md` | Topic tree entry and domain routing. |
+| 6 | `架构/00_架构与任务/任务路线图.md` section 0 | Current 6-Goal route, post-Goal branches, and project-level capability table. Use this before selecting an implementation task. |
 
 ### Level 1: Interfaces And Runtime Boundaries
 
 | Document | Purpose |
 |---|---|
-| `MoSim统一控制接口规范.md` | State, reference, controller output, adapter, frame, and timing contracts. |
-| `MoSim_FASTLIO定位闭环与规划复现基础方案.md` | FAST-LIO localization, point-cloud/map validation, and planner rerun gates. |
-| `MoSim规划与编队控制接口规范.md` | EGO/EGO-Swarm/planner/formation interfaces and multi-UAV contracts. |
-| `MoSim真机化收尾与C++化重构方案.md` | Flight-like code responsibility, C++/generated-code boundary, and real-machine sensor assumptions. |
+| `架构/00_架构与任务/系统架构问题与决策矩阵.md` | Architecture risks, authority boundaries, remaining design decisions, and traceability matrices that must be frozen before broad implementation. |
+| `架构/00_架构与任务/系统集成接口与编排.md` | Cross-module frames, controller core ABI, profiles, orchestration, launch plans, and code-generation coupling boundaries. |
+| `架构/00_架构与任务/ExperimentProfile与兼容性矩阵.md` | ExperimentProfile schema, compatibility rejection/degradation matrix, Launch Plan contract, Run Manifest contract, and `Config/profiles/` validation entry. |
+| `架构/01_控制器平台/统一控制接口.md` | State, reference, controller output, adapter, frame, and timing contracts. |
+| `架构/02_感知定位与规划集群/FASTLIO定位闭环.md` | FAST-LIO localization, point-cloud/map validation, and planner rerun gates. |
+| `架构/02_感知定位与规划集群/规划与编队控制接口.md` | Diff-Planner current loop, EGO/EGO-Swarm references, planner/formation interfaces, and multi-UAV contracts. |
+| `架构/03_测试调参与证据/真机化与C++化.md` | Flight-like code responsibility, C++/generated-code boundary, and real-machine sensor assumptions. |
+| `架构/04_展示与实验平台/展示与实验平台接口.md` | RViz/Gazebo/UE/Web/QGC display boundary, ExperimentProfile UI entry, evidence capture, and multi-window review layout. |
 
 ### Level 2: Controller Implementation And Evidence
 
 | Document | Purpose |
 |---|---|
-| `MoSim单机控制器实现规范.md` | Single-UAV controller-core implementation, including px4ctrl Golden Slice. |
-| `MoSim控制器代码生成与PX4部署规范.md` | MWORKS/Sysblock code generation and PX4/MAVROS deployment route. |
-| `MoSim控制器调参与参数优化规范.md` | Baseline tuning, error analysis, parameter profiles, and optimization workflow. |
-| `MoSim控制器管理与配置规范.md` | Controller profiles, configuration, switching policy, and management boundary. |
-| `MoSim控制系统测试与评价规范.md` | Offline consistency, Gazebo/RViz evidence gates, metrics, and acceptance rules. |
-| `MoSim控制增强与容错规范.md` | Safety, disturbance rejection, fault tolerance, and advanced-control backlog. |
+| `架构/01_控制器平台/单机控制器实现.md` | Single-UAV controller-core implementation, including px4ctrl Golden Slice. |
+| `架构/01_控制器平台/代码生成与PX4部署.md` | MWORKS/Sysblock code generation and PX4/MAVROS deployment route. |
+| `架构/03_测试调参与证据/调参与参数优化.md` | Baseline tuning, error analysis, parameter profiles, and optimization workflow. |
+| `架构/01_控制器平台/控制器管理与配置.md` | Controller profiles, configuration, switching policy, and management boundary. |
+| `架构/03_测试调参与证据/测试与评价.md` | Offline consistency, Gazebo/RViz evidence gates, metrics, and acceptance rules. |
+| `架构/01_控制器平台/控制增强与容错.md` | Safety, disturbance rejection, fault tolerance, and advanced-control backlog. |
 
 ### Level 3: Execution Workflow
 
 | Document | Purpose |
 |---|---|
-| `MoSim研发工作流与Agent任务编排规范.md` | Agent execution workflow, task gates, and repeatable implementation order. |
+| `架构/00_架构与任务/任务路线图.md` | Current Goal route, acceptance gates, and repeatable implementation order. |
 
 Reference-only documents:
 
 ```text
-MoSim体系.md
-Docs/Design/旧架构/
-Docs/Design/cache/
+Docs/Cache/design/superseded/
+Docs/Cache/design/old_architecture/
+Docs/Cache/design/consolidation_plans/
 ```
 
 These are not current execution sources unless a current document explicitly
@@ -92,21 +98,79 @@ MWORKS/Sysblock controller core
 Current implementation order:
 
 ```text
-1. Minimal big-system loop:
-   Sunray/PX4/MAVROS/px4ctrl + Gazebo + RViz + MID360/FAST-LIO gates
-   + EGO/EGOv2/Diff-Planner + EGO-Swarm 2/3-machine smoke.
+Goal 1:
+  px4ctrl + PX4/MAVROS fused state + Gazebo/RViz baseline takeoff, hover, land.
 
-2. Representative controller template:
-   px4ctrl baseline, official PID, and SE3 Basic only.
+Goal 2:
+  Non-FAST-LIO single-UAV control baseline: step, figure-eight, spiral, circle,
+  safety abnormal cases and parameter freeze.
 
-3. MWORKS Golden Slice:
-   MWORKS model -> generated C/C++ -> offline equivalence -> Adapter
-   -> same Sunray/PX4/Gazebo closed loop.
+Goal 3:
+  FAST-LIO independent localization/mapping evaluation, Diff-Planner single-UAV
+  reproduction, and Diff-Planner swarm three-UAV engineering baseline.
+  The FAST-LIO independent, PX4-EKF-fused, and Hybrid-Z branches are represented
+  as ExperimentProfile configs before runtime claims are allowed.
 
-4. Batch controller expansion:
-   improved PID, LQI, DFBC, LMPC/NMPC, INDI, L1, safety, and fault-tolerance
-   controllers are released one at a time after the template is proven.
+Goal 4:
+  Representative controller template: px4ctrl, official PID, and SE3 Basic.
+
+Goal 5:
+  MWORKS px4ctrl Golden Slice: core extraction, offline equivalence, generated
+  C/C++, and Gazebo A/B back-integration.
+
+Goal 6:
+  MWORKS-generated controller core back into the Diff-Planner single-UAV chain,
+  then extend to Diff-Planner swarm only after the single-UAV gate passes.
+
+G8 frozen baseline:
+  G8_MWORKS_FULL_LOOP_BASELINE_20260629 is the current generated-core baseline
+  for px4ctrl, Diff-Planner single-UAV, and Diff-Planner three-UAV regression.
+
+G9-0:
+  ControllerProfile, ExperimentProfile, Launch Plan, Run Manifest, source-basis
+  gate, and static rejection checks for the controller-family expansion.
+
+G9-A/F:
+  official PID, SE3 Basic, DFBC, SMC, PID-INDI/INDI, and NMPC are released one
+  at a time through Docs/Workflows/add_controller.md. Planned controllers stay
+  under Config/profiles/candidates/ and must reject with C-CTRL-01 before
+  implementation evidence exists.
+
+Post-G9 controller route:
+  G9.5/G9.6 paper-grade high-performance and robust controller reproduction
+  -> G10 augmentation matrix and ablation
+  -> G11 all implemented/accepted controllers and augmentation combinations
+     through MWORKS/codegen, offline equivalence, ROS/Sunray reinjection, and
+     Gazebo regression.
+
+Post-G11 branches:
+  FAST-LIO through PX4 EKF state-source A/B as a separate localization branch,
+  PX4-native uORB deployment as a later gated route, and UE/QGC/frontend
+  display integration only after the controller/codegen loop is stable.
 ```
+
+Before starting a non-trivial task, identify its project-level capability block
+from `架构/00_架构与任务/任务路线图.md` section 0.3:
+
+```text
+S0 scope
+S1 runtime baseline
+S2 state source / sensing / localization
+S3 single-UAV control baseline
+S4 trajectory and mission reference
+S5 single-UAV planning and local map
+S6 multi-UAV / swarm baseline
+S7 MWORKS Golden Slice and code generation
+S8 controller family expansion
+S9 robustness / safety / fault tolerance
+S10 C++ / real-machine readiness
+S11 visualization / UE / frontend
+S12 automated evaluation / report / delivery
+```
+
+Do not infer the task order from the longest topic document. The current
+6-Goal route in `架构/00_架构与任务/任务路线图.md` is the execution selector;
+topic documents provide contracts and gates after the task block is chosen.
 
 Historical/future routes such as ROS2 Humble, PX4-native `x500`, downloaded
 replacement FAST-LIO source, fake point clouds, and direct Python controller
@@ -118,7 +182,7 @@ explicitly reopens them.
 The old numbered design set is archived here:
 
 ```text
-Docs/Design/旧架构/
+Docs/Cache/design/old_architecture/
 ```
 
 Archived files:
@@ -139,7 +203,7 @@ Archived files:
 Historical cache and migration notes live under:
 
 ```text
-Docs/Design/cache/
+Docs/Cache/design/consolidation_plans/
 ```
 
 ## Evidence Rule
