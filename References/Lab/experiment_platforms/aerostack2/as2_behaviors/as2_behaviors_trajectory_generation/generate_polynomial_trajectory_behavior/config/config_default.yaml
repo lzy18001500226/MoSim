@@ -1,0 +1,34 @@
+/**:
+  ros__parameters:
+    # Frame IDs.
+    desired_frame_id: "odom"  # Frame in which the trajectory is generated
+
+    # Sampling of the prediction horizon emitted by the wrapper on each
+    # control cycle.
+    sampling_n: 1                # Number of samples per cycle (>= 1)
+    sampling_dt: 0.01            # Time (s) between samples
+
+    # Active waypoint window fed to the plugin. The wrapper keeps the rest
+    # in a pending queue and feeds them incrementally via
+    # plugin->updateWaypoints() as the plugin consumes them. Plugins that
+    # do not override updateWaypoints() will regenerate per slide using
+    # the live vehicle pose+twist as boundary conditions.
+    path_length: 0               # 0 = full trajectory loaded up front
+
+    # Yaw computation thresholds (consumed by the plugin base class).
+    yaw_threshold: 0.1           # Min planar distance (m) to recompute yaw
+    yaw_speed_threshold: 0.0     # Max yaw rate (rad/s) for FACE_REFERENCE
+                                 # (0.0 disables the rate limit)
+
+    # Map↔odom drift watchdog.
+    frequency_update_frame: 0.0  # Hz (0 disables the watchdog)
+    transform_threshold: 1.0     # Translation drift (m) that triggers regen
+                                 # (0.0 disables the drift check)
+
+    # Debug topics — leave empty to disable each publisher.
+    debug:
+      path_topic: "debug/behaviors/trajectory_generation/trajectory/generated"
+      reference_setpoint: "debug/behaviors/trajectory_generation/reference/waypoint"
+      reference_end_waypoint: "debug/behaviors/trajectory_generation/reference/end_waypoint"
+      reference_waypoints: "debug/behaviors/trajectory_generation/trajectory/waypoints"
+      generation_time_topic: "debug/behaviors/trajectory_generation/generation_time"
