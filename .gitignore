@@ -391,6 +391,8 @@ References/**/*.rar
 References/**/*.tar
 References/**/*.tar.gz
 References/**/*.whl
+References/**/*.bag
+References/**/*.db3
 # Editor swap files are temporary artifacts and are never reference content.
 *.swp
 *.swo
