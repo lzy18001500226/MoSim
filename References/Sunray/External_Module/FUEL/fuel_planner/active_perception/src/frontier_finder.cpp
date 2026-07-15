@@ -15,9 +15,11 @@
 // #include <pcl/search/kdtree.h>
 // #include <pcl/features/normal_3d.h>
 // #include <pcl/segmentation/region_growing.h>
-#include <pcl/filters/voxel_grid.h>
-
 #include <Eigen/Eigenvalues>
+
+#include <cmath>
+#include <map>
+#include <tuple>
 
 namespace fast_planner {
 FrontierFinder::FrontierFinder(const EDTEnvironment::Ptr& edt, ros::NodeHandle& nh) {
@@ -756,21 +758,28 @@ int FrontierFinder::countVisibleCells(
 
 void FrontierFinder::downsample(
     const vector<Eigen::Vector3d>& cluster_in, vector<Eigen::Vector3d>& cluster_out) {
-  // downsamping cluster
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloudf(new pcl::PointCloud<pcl::PointXYZ>);
-  for (auto cell : cluster_in)
-    cloud->points.emplace_back(cell[0], cell[1], cell[2]);
-
   const double leaf_size = edt_env_->sdf_map_->getResolution() * down_sample_;
-  pcl::VoxelGrid<pcl::PointXYZ> sor;
-  sor.setInputCloud(cloud);
-  sor.setLeafSize(leaf_size, leaf_size, leaf_size);
-  sor.filter(*cloudf);
-
   cluster_out.clear();
-  for (auto pt : cloudf->points)
-    cluster_out.emplace_back(pt.x, pt.y, pt.z);
+  if (leaf_size <= 0.0) return;
+
+  using VoxelKey = std::tuple<long long, long long, long long>;
+  using VoxelAccumulator = std::pair<Eigen::Vector3d, size_t>;
+  std::map<VoxelKey, VoxelAccumulator> voxels;
+  for (const auto& cell : cluster_in) {
+    if (!cell.allFinite()) continue;
+    const VoxelKey key(
+        static_cast<long long>(std::floor(cell.x() / leaf_size)),
+        static_cast<long long>(std::floor(cell.y() / leaf_size)),
+        static_cast<long long>(std::floor(cell.z() / leaf_size)));
+    auto inserted = voxels.emplace(key, VoxelAccumulator(Eigen::Vector3d::Zero(), 0));
+    inserted.first->second.first += cell;
+    ++inserted.first->second.second;
+  }
+
+  cluster_out.reserve(voxels.size());
+  for (const auto& voxel : voxels) {
+    cluster_out.emplace_back(voxel.second.first / static_cast<double>(voxel.second.second));
+  }
 }
 
 void FrontierFinder::wrapYaw(double& yaw) {

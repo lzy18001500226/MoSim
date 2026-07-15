@@ -192,6 +192,7 @@ References/Sunray/**/__pycache__/
 References/Sunray/**/*.pyc
 References/Sunray/**/*~
 References/Sunray/**/*.swp
+References/Sunray/**/*.bak_mosim_*
 References/Sunray/**/build/
 References/Sunray/**/devel/
 References/Sunray/**/install/

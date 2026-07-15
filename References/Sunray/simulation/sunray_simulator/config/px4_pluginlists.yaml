@@ -27,7 +27,6 @@ plugin_blacklist:
   - mount_control
   - nav_controller_output
   - obstacle_distance
-  - odom
   - onboard_computer_status
   - play_tune
   - px4flow
@@ -55,6 +54,7 @@ plugin_whitelist: # 如果模块即被同时声明在plugin_blacklist和plugin_w
   - imu
   - local_position
   - manual_control
+  - odom
   - param
   - rc_io
   - setpoint_raw

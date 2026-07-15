@@ -47,6 +47,22 @@
       <velocity_decay/>
       <self_collide>0</self_collide>
     </link>
+    <include>
+      <uri>model://livox_mid360</uri>
+      <name>livox_mid360_{{mavlink_id}}</name>
+      <pose>-0.000005 0.032295 0.050167 0 0 4.712389</pose>
+    </include>
+    <joint name="mid360_joint" type="fixed">
+      <child>livox_mid360_{{mavlink_id}}::base_link</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <upper>0</upper>
+          <lower>0</lower>
+        </limit>
+      </axis>
+    </joint>
     <link name='imu_link'>
       <pose>0 0 0 0 0 0</pose>
       <inertial>
@@ -264,15 +280,6 @@
         <use_parent_model_frame>1</use_parent_model_frame>
       </axis>
     </joint>
-    <include>
-      <uri>model://gps</uri>
-      <pose>0.0 0 0 0 0 0</pose>
-      <name>gps</name>
-    </include>
-    <joint name='gps_joint' type='fixed'>
-      <child>gps::link</child>
-      <parent>base_link</parent>
-    </joint>
     
     <plugin name='rosbag' filename='libgazebo_multirotor_base_plugin.so'>
       <robotNamespace></robotNamespace>
@@ -470,21 +477,6 @@
       <parent>base_link</parent><!--父link-->
       <axis>
         <xyz>0 0 1</xyz><!--xyz标签定义轴的方向，是单位向量，默认值为0 0 1，参考系一般为joint参考系-->
-        <limit>
-          <upper>0</upper>
-          <lower>0</lower>
-        </limit>
-      </axis>
-    </joint>
-    <include>
-      <uri>model://livox_mid360</uri>
-      <pose>-0.000005 0.032295 0.050167 0 0 4.712389</pose>
-    </include>
-    <joint name="mid360_joint" type="fixed">
-      <child>livox_mid360::base_link</child>
-      <parent>base_link</parent>
-      <axis>
-        <xyz>0 0 1</xyz>
         <limit>
           <upper>0</upper>
           <lower>0</lower>
