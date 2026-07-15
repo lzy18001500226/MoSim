@@ -1,0 +1,10 @@
+<launch>
+
+    <node name="map_test" pkg="ato_test" type="map_test" output="screen">
+        <rosparam command="load" file="$(find block_map)/color/Paranoid.yaml" />
+        <rosparam command="load" file="$(find ato_test)/resource/map_test.yaml" />
+    </node>
+
+    <node name="rvizvisualisation" pkg="rviz" type="rviz" output="screen" args="-d $(find ato_test)/rviz/map_test.rviz" />
+
+</launch>

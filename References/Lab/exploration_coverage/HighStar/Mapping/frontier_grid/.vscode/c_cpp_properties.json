@@ -1,0 +1,52 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/charliedog/rosprojects/High_Mobility_m/devel/include/**",
+        "/home/charliedog/rosprojects/MultiRotors/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/charliedog/rosprojects/voxblox/devel/include/**",
+        "/home/charliedog/rosprojects/High_Mobility_m/src/high_mobility/Mapping/block_map/include/**",
+        "/home/charliedog/rosprojects/High_Mobility_m/src/high_mobility/data_statistics/include/**",
+        "/home/charliedog/rosprojects/voxblox/src/voxblox/eigen_checks/include/**",
+        "/home/charliedog/rosprojects/High_Mobility_m/src/high_mobility/Exploration/exp_yaw_plan/include/**",
+        "/home/charliedog/rosprojects/High_Mobility_m/src/high_mobility/Mapping/frontier_grid/include/**",
+        "/home/charliedog/rosprojects/High_Mobility_m/src/high_mobility/Trajectory/gcopter/include/**",
+        "/home/charliedog/rosprojects/High_Mobility_m/src/high_mobility/Tools/kdtree/include/**",
+        "/home/charliedog/rosprojects/High_Mobility_m/src/high_mobility/Mapping/lowres_map/include/**",
+        "/home/charliedog/rosprojects/MultiRotors/src/rotors_simulator/mav_comm/mav_msgs/include/**",
+        "/home/charliedog/rosprojects/MultiRotors/src/rotors_simulator/mav_comm/mav_planning_msgs/include/**",
+        "/home/charliedog/rosprojects/voxblox/src/voxblox/minkindr/minkindr/include/**",
+        "/home/charliedog/rosprojects/voxblox/src/voxblox/minkindr_ros/minkindr_conversions/include/**",
+        "/home/charliedog/rosprojects/High_Mobility_m/src/high_mobility/Exploration/mp_planner/include/**",
+        "/home/charliedog/rosprojects/MultiRotors/src/multisim/multisim_gazebo/include/**",
+        "/home/charliedog/rosprojects/High_Mobility_m/src/high_mobility/Exploration/murder/include/**",
+        "/home/charliedog/rosprojects/voxblox/src/voxblox/numpy_eigen/include/**",
+        "/home/charliedog/rosprojects/High_Mobility_m/src/high_mobility/Tools/QuickHull2d/include/**",
+        "/home/charliedog/rosprojects/MultiRotors/src/rotors_simulator/rotors_control/include/**",
+        "/home/charliedog/rosprojects/MultiRotors/src/rotors_simulator/rotors_gazebo_plugins/include/**",
+        "/home/charliedog/rosprojects/MultiRotors/src/rotors_simulator/rotors_hil_interface/include/**",
+        "/home/charliedog/rosprojects/MultiRotors/src/rotors_simulator/rotors_joy_interface/include/**",
+        "/home/charliedog/rosprojects/MultiRotors/src/multisim/communication/swarm_bridge/include/**",
+        "/home/charliedog/rosprojects/High_Mobility_m/src/high_mobility/Exploration/swarm_data/include/**",
+        "/home/charliedog/rosprojects/voxblox/src/voxblox_ground_truth/tsdf_to_pcdnormal/include/**",
+        "/home/charliedog/rosprojects/voxblox/src/voxblox/voxblox/include/**",
+        "/home/charliedog/rosprojects/voxblox/src/voxblox_ground_truth/gt_gen_plugin/include/**",
+        "/home/charliedog/rosprojects/voxblox/src/voxblox/voxblox_ros/include/**",
+        "/home/charliedog/rosprojects/voxblox/src/voxblox/voxblox_rviz_plugin/include/**",
+        "/home/charliedog/rosprojects/High_Mobility_m/src/high_mobility/Trajectory/yaw_planner/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

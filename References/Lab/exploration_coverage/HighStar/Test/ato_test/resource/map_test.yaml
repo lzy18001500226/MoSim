@@ -1,0 +1,65 @@
+block_map/minX: -20.5
+block_map/minY: -20.5
+block_map/minZ: -0.1
+block_map/maxX: 20.5
+block_map/maxY: 20.5
+block_map/maxZ: 28.0
+
+block_map/blockX: 10
+block_map/blockY: 10
+block_map/blockZ: 10
+block_map/resolution: 0.1
+block_map/sensor_max_range: 5.0
+block_map/FFD: false
+block_map/depth: true
+block_map/update_freq: 10.0
+block_map/show_freq: 10.0
+block_map/depth_step: 2
+block_map/CamtoBody_Quater_x: -0.5
+block_map/CamtoBody_Quater_y: 0.5
+block_map/CamtoBody_Quater_z: -0.5
+block_map/CamtoBody_Quater_w: 0.5
+block_map/CamtoBody_x: 0.0
+block_map/CamtoBody_y: 0.0
+block_map/CamtoBody_z: 0.0
+block_map/occ_max: 0.90
+block_map/occ_min: 0.20
+block_map/pro_hit_occ: 0.90
+block_map/pro_miss_free: 0.65
+block_map/statistic_v_: true
+# block_map/OccPath: /home/charliedog/rosprojects/High_Mobility_m/city.pcd
+block_map/OccPath: /home/charliedog/rosprojects/High_Mobility_m/indoor.pcd
+# block_map/OccPath: /home/charliedog/rosprojects/High_Mobility_m/maze3.pcd
+# block_map/OccPath: /home/charliedog/rosprojects/High_Mobility_m/power_plant.pcd
+# block_map/OccPath: /home/charliedog/rosprojects/High_Mobility_m/forest.pcd
+
+# Exp/minX: -20.0
+# Exp/minY: -20.0
+# Exp/minZ: 0.0
+# Exp/maxX: 20.0
+# Exp/maxY: 20.0
+# Exp/maxZ: 7.0
+Exp/minX: -10.0
+Exp/minY: -10.0
+Exp/minZ: 0.0
+Exp/maxX: 10.0
+Exp/maxY: 10.0
+Exp/maxZ: 5.0
+# Exp/minX: -20.0
+# Exp/minY: -20.0
+# Exp/minZ: 0.0
+# Exp/maxX: 20.0
+# Exp/maxY: 20.0
+# Exp/maxZ: 3.0
+# Exp/minX: -7.0
+# Exp/minY: -21.0
+# Exp/minZ: 0.0
+# Exp/maxX: 24.0
+# Exp/maxY: 10.0
+# Exp/maxZ: 26.0
+# Exp/minX: -18.0
+# Exp/minY: -18.0
+# Exp/minZ: 0.0
+# Exp/maxX: 18.0
+# Exp/maxY: 18.0
+# Exp/maxZ: 7.0

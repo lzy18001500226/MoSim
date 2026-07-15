@@ -1,0 +1,8 @@
+<launch>
+
+    <node name="hull_test" pkg="ato_test" type="hull_test" output="screen">
+    </node>
+
+    <node name="rvizvisualisation" pkg="rviz" type="rviz" output="screen" args="-d $(find ato_test)/rviz/hull_test.rviz" />
+
+</launch>

@@ -1,0 +1,8 @@
+<launch>
+
+    <node name="demo_quickhull" pkg="quick_hull2d" type="demo_quickhull" output="screen">
+    </node>
+
+    <node name="rvizvisualisation" pkg="rviz" type="rviz" output="screen" args="-d $(find quick_hull2d)/rviz/quickhull.rviz" />
+
+</launch>

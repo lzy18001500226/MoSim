@@ -1,0 +1,33 @@
+<launch>
+
+    <node name="vel_vis" pkg="ato_test" type="vel_vis" output="screen">
+        <rosparam command="load" file="$(find block_map)/color/Paranoid.yaml" />
+        <rosparam command="load" file="$(find block_map)/color/Burn.yaml" />
+        <!-- <rosparam command="load" file="$(find block_map)/color/Odessey_Oracle.yaml" /> -->
+        <rosparam command="load" file="$(find block_map)/color/Abbey_Road.yaml" />
+        <!-- <rosparam command="load" file="$(find block_map)/color/DrFeelgood.yaml" /> -->
+        <rosparam command="load" file="$(find ato_test)/resource/vel_vis.yaml" />
+        <remap from="/depth" to="/firefly/vi_sensor/camera_depth/depth/disparity"/>
+        <remap from="/odom" to="/firefly/ground_truth/odometry"/>
+        <remap from="/vi_odom" to="/firefly/vi_sensor/ground_truth/odometry"/>
+        <remap from="/block_map/caminfo" to="/firefly/vi_sensor/camera_depth/depth/camera_info"/>
+        <remap from="/odomshow" to="/odom_guide"/>
+        <!-- <arg name="VelMax" value="2.0" /> -->
+    </node>
+
+    <node name="odom_exc" pkg="ato_test" type="odom_exc" output="screen">
+        <rosparam command="load" file="$(find ato_test)/resource/vel_vis.yaml" />
+        <remap from="/odom" to="/odom_guide"/>
+    </node>
+    <include file="$(find murder)/launch/rotors_sim.launch">
+        <arg name="world" value="maze4" />
+        <arg name="gui" value="true" />
+        <arg name="waypoint_x" value="0.0" />
+        <arg name="waypoint_y" value="0.0" />
+        <arg name="waypoint_z" value="4.0" />
+        <arg name="odom_topic" value="/ground_truth/odometry" />
+    </include>
+    <node name="rvizvisualisation" pkg="rviz" type="rviz" output="screen" args="-d $(find ato_test)/rviz/traj_vel_vis.rviz" />
+
+</launch>
+<!-- rosbag play proposed_maze4_low_2025-01-08-15-54-08.bag /firefly/ground_truth/odometry:=/odom_guide -->
