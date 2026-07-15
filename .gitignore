@@ -355,6 +355,11 @@ References/**/.react-router/
 References/**/__pycache__/
 References/**/.venv/
 References/**/venv/
+References/**/*~
+References/**/cfg/cpp/
+References/**/src/*/cfg/
+References/**/docs/*Config*.dox
+References/Lab/exploration_coverage/FALCON-ros1-noetic/uav_simulator/so3_disturbance_generator/include/so3_disturbance_generator/DisturbanceUIConfig.h
 References/**/*.pyc
 References/**/*.pch
 References/**/*.iobj
