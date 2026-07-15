@@ -1,0 +1,16 @@
+log/**
+pkg/**
+.DS_Store
+lib/.DS_Store
+.*.swp
+coverage.data
+tags
+.bundle
+*.gem
+benchmark_profile*
+/nbproject/private/
+coverage/
+.coveralls.yml
+Gemfile*.lock
+.idea/
+.vscode/
