@@ -132,6 +132,9 @@ Run ID，不接受任意裸 shell 字符串。
 - 项目：[Foxglove](https://foxglove.dev/)，文档：[Foxglove Docs](https://docs.foxglove.dev/)
 - 定位：机器人多模态日志、3D、时间序列、回放和可编排面板；文档提供 ROS1、
   自定义数据、布局、扩展和嵌入能力。
+- GitHub 上的 [foxglove/studio](https://github.com/foxglove/studio) 已归档，不能按
+  当前活跃开源前端基座评估；可借鉴现行产品文档和数据/扩展接口，但不能假设完整
+  Studio 源码仍可直接二次开发。
 - 适合 MoSim：借鉴面板布局、时间轴、3D/曲线联动、日志回放和数据协议；可评估
   作为结果查看器或嵌入式可视化部件。
 - 不适合直接承担：实验启动权限、Gazebo故障注入、控制器参数晋级和 MWORKS
@@ -153,6 +156,59 @@ Run ID，不接受任意裸 shell 字符串。
 - 可借鉴：机器人描述、Gazebo运行、ROS控制节点、外部扰动命令和 RViz 启动组织。
 - 不应直接套用：它解决的是机器狗关节/机器人 ROS 仿真，不包含 MoSim 的 MWORKS
   控制器实验、四旋翼飞行任务和竞赛证据链。
+
+### GitHub广泛候选池
+
+以下 star 和活跃度为 2026-07-15 调研快照，只用于初筛，正式引入前必须重新检查
+许可证、依赖、构建链和最新提交。调研阶段多多益善；进入代码依赖时必须收敛。
+
+| 候选 | 快照 | 可借鉴/复用 | 当前判断 |
+| --- | --- | --- | --- |
+| [mavlink/qgroundcontrol](https://github.com/mavlink/qgroundcontrol) | 约4.8k star，C++/Qt/QML，活跃 | MAVLink、飞行仪表、任务、参数、地图、跨平台桌面框架 | A级参考；不直接作为主基座 |
+| [ArduPilot/MissionPlanner](https://github.com/ArduPilot/MissionPlanner) | 约2.3k，C#，活跃 | 飞行任务、参数、遥测、日志和地面站工作流 | A级功能参考；GPL边界需单独审查 |
+| [bluerobotics/cockpit](https://github.com/bluerobotics/cockpit) | 约187，Vue，活跃 | 可定制跨平台遥控载具地面站、可编排界面和视频/控件组织 | A级界面基座候选，需深入审计协议和许可证 |
+| [nasa/openmct](https://github.com/nasa/openmct) | 约13k，JavaScript，活跃 | 任务控制、遥测对象、时间轴、布局、历史/实时数据组织 | A级实验监控和遥测架构参考 |
+| [rerun-io/rerun](https://github.com/rerun-io/rerun) | 约11k，Rust，活跃 | 多模态机器人数据流、3D、时序、回放和嵌入式查看 | A级结果/回放组件候选 |
+| [PlotJuggler/PlotJuggler](https://github.com/PlotJuggler/PlotJuggler) | 约6k，C++/Qt，活跃 | ROS时序曲线、拖拽信号、数据转换和插件 | A级曲线分析参考或外部工具 |
+| [dheera/rosboard](https://github.com/dheera/rosboard) | 约1.1k，JavaScript，较活跃 | 机器人自带Web服务、ROS topic自动可视化、轻量远程面板 | A级轻量ROS仪表板参考 |
+| [RobotWebTools/roslibjs](https://github.com/RobotWebTools/roslibjs) | 约827，TypeScript，活跃 | 浏览器ROS客户端、topic/service/action接口 | A级Web前端通信组件 |
+| [RobotWebTools/rosbridge_suite](https://github.com/RobotWebTools/rosbridge_suite) | 约1.2k，Python，活跃 | ROS1/ROS2到WebSocket的标准桥接 | A级前端数据桥候选；只作受控接口，不暴露裸命令 |
+| [open-rmf/rmf-web](https://github.com/open-rmf/rmf-web) | 约132，TypeScript，活跃 | 多机器人任务、地图、设备状态和操作面板 | B级多机任务UI参考 |
+| [nasa/fprime](https://github.com/nasa/fprime) | 约11.6k，C++，活跃 | 飞行软件组件、命令/遥测字典、事件和地面数据系统思想 | B级命令遥测契约参考，不引入整个框架 |
+| [OpenC3/cosmos](https://github.com/OpenC3/cosmos) | 约233，Ruby，活跃 | 命令、遥测、脚本、告警和任务控制流程 | B级任务控制参考；许可证/产品边界先审查 |
+| [cruise-automation/webviz](https://github.com/cruise-automation/webviz) | 约2.3k，JavaScript，最后推送较早 | Web机器人可视化、面板和消息回放 | C级历史参考，不作为新基座 |
+| [CesiumGS/cesium](https://github.com/CesiumGS/cesium) | 约15.5k，JavaScript，活跃 | 大尺度三维地理场景、轨迹和地形 | B级室外/大地图增强，不用于当前室内RViz替代 |
+| [maplibre/maplibre-gl-js](https://github.com/maplibre/maplibre-gl-js) | 约11k，TypeScript，活跃 | 二维地图、轨迹、区域和任务标注 | B级地图组件候选 |
+| [legion1581/unitree_webrtc_connect](https://github.com/legion1581/unitree_webrtc_connect) | 约356，Python，活跃 | Unitree视频、遥控和WebRTC数据链 | B级机器狗远程交互参考，不直接接入四旋翼控制链 |
+| [abizovnuralem/go2_ros2_sdk](https://github.com/abizovnuralem/go2_ros2_sdk) | 约981，Python，活跃 | Go2 ROS2遥控、状态和传感器接口组织 | B级机器人操作参考；当前MoSim是ROS1路线 |
+| [Improbable-AI/walk-these-ways](https://github.com/Improbable-AI/walk-these-ways) | 约1.4k，Python | Unitree Go1强化学习训练、部署和命令接口 | B级学习算法实验工作流参考，不是主前端 |
+| [Ly0n/awesome-robotic-tooling](https://github.com/Ly0n/awesome-robotic-tooling) | 约3.9k，工具索引 | 继续发现机器人开发、可视化和运维工具 | 调研入口，不作为运行依赖 |
+
+### 候选收敛规则
+
+任何候选进入 MoSim 前，按以下顺序审查：
+
+```text
+功能命中率
+  -> Windows/WSL/ROS1兼容性
+  -> 可嵌入或可通过标准协议连接
+  -> 许可证与二次分发
+  -> 活跃维护和构建可复现
+  -> 是否能保持ExperimentProfile/Orchestrator边界
+  -> 最小PoC
+  -> 才允许成为项目依赖
+```
+
+当前优先做四个独立 PoC，而不是同时引入全部项目：
+
+```text
+P1 BlueRobotics Cockpit：评估可定制地面站壳和视频/控件布局
+P2 NASA Open MCT：评估任务时间轴、遥测对象和实时/历史数据
+P3 Rerun：评估轨迹、点云、事件和时序回放
+P4 roslibjs + rosbridge：评估Windows前端读取ROS1数据和调用受控service
+```
+
+QGroundControl、Mission Planner、PlotJuggler 作为交互和功能标杆；第一轮不 fork。
 
 ## 8. 当前推荐技术路线
 
