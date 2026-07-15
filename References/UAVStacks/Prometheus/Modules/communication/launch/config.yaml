@@ -1,0 +1,20 @@
+## 脚本启动参数
+load_functional_script:
+  btn1:
+    name: "轨迹控制"
+    cmd: "roslaunch prometheus_uav_control uav_command_pub.launch"
+    close_cmd: "rosnode kill /uav_command_pub"
+    mode: 2
+    node_name: "/uav_command_pub"  # 当mode为2时，在启动的时候会去检测是否存在该节点，不存在则启动，存在则会提示用户先关闭在启动
+    detection_cmd: ""  # 当mode为3时，在启动的时候会去运行该检测命令，存在则返回true，不存在返回false，且会提示用户先关闭在启动
+    flag: 1 # 启动位置
+  btn2:
+    name: "航点规划"
+    cmd: "roslaunch prometheus_demo waypoint_pos_control.launch"
+    close_cmd: "rosnode kill /waypoint_pos_control"
+    mode: 2
+    node_name: "/waypoint_pos_control"  # 当mode为2时，在启动的时候会去检测是否存在该节点，不存在则启动，存在则会提示用户先关闭在启动
+    detection_cmd: "echo true"  # 当mode为3时，在启动的时候会去运行该检测命令，存在则返回true，不存在返回false，且会提示用户先关闭在启动
+    flag: 2 # 启动位置
+
+rtsp_url: "rtsp://192.168.2.150/live/live"

@@ -1,0 +1,210 @@
+#include "ugv_basic_topic.hpp"
+
+UGVBasic::UGVBasic(ros::NodeHandle &nh, int id, Communication *communication)
+{
+    this->communication_ = communication;
+
+    this->robot_id = -id;
+    nh.param<std::string>("ground_station_ip", udp_ip, "127.0.0.1");
+    nh.param<std::string>("multicast_udp_ip", multicast_udp_ip, "224.0.0.88");
+    nh.param<int>("ugv_basic_hz", send_hz, 0);
+
+    // rviz显示数据相关，进行降频处理、数据压缩等
+    reduce_the_frequency_ = std::make_shared<ReduceTheFrequency>(nh, ReduceTheFrequencyType::ReduceTheFrequencyType_UGV, id);
+
+    this->ugv_cmd_pub_ = nh.advertise<prometheus_msgs::UGVCommand>("/ugv" + to_string(id) + "/prometheus/ugv_command", 1000);
+    this->ugv_state_sub_ = nh.subscribe("/ugv" + to_string(id) + "/prometheus/ugv_state", 10, &UGVBasic::stateCb, this);
+    this->text_info_sub_ = nh.subscribe("/ugv" + to_string(id) + "/prometheus/text_info", 10, &UGVBasic::textInfoCb, this);
+    // 【订阅】订阅自定义消息转发到其他设备(无人机、地面站等)
+    this->custom_data_segment_sub_ = nh.subscribe("/ugv" + std::to_string(id) + "/prometheus/set_customdatasegment", 10, &UGVBasic::customDataSegmentCb, this);
+    // 【发布】发布该ROS节点中，用于接收到其他设备(无人机、地面站等)发过来的自定义消息后转为ROS话题
+    this->custom_data_segment_pub_ = nh.advertise<prometheus_msgs::CustomDataSegment>("/ugv" + std::to_string(id) + "/prometheus/customdatasegment", 1);
+
+    if(send_hz > 0)
+    {
+        send_timer = nh.createTimer(ros::Duration(1.0/send_hz), &UGVBasic::send, this);
+    }
+}
+
+UGVBasic::~UGVBasic()
+{
+    if(send_timer.isValid()){
+        send_timer.stop();
+    }
+    reduce_the_frequency_.reset();
+}
+
+void UGVBasic::ugvCmdPub(struct UGVCommand ugv_command)
+{
+    prometheus_msgs::UGVCommand ugv_command_;
+    ugv_command_.header.stamp = ros::Time::now();
+    ugv_command_.Command_ID = ugv_command.Command_ID;
+    ugv_command_.Mode = ugv_command.Mode;
+    for (int i = 0; i < 2; i++)
+    {
+        ugv_command_.position_ref[i] = ugv_command.position_ref[i];
+        ugv_command_.linear_vel[i] = ugv_command.linear_vel[i];
+    }
+    ugv_command_.yaw_ref = ugv_command.yaw_ref;
+    ugv_command_.angular_vel = ugv_command.angular_vel;
+    this->ugv_cmd_pub_.publish(ugv_command_);
+}
+
+void UGVBasic::stateCb(const prometheus_msgs::UGVState::ConstPtr &msg)
+{
+    this->ugv_state_.ugv_id = msg->ugv_id;
+    this->ugv_state_.secs = msg->header.stamp.sec;
+    this->ugv_state_.nsecs = msg->header.stamp.nsec;
+    this->ugv_state_.battery = msg->battery;
+    for (int i = 0; i < 3; i++)
+    {
+        this->ugv_state_.position[i] = msg->position[i];
+        this->ugv_state_.velocity[i] = msg->velocity[i];
+        this->ugv_state_.attitude[i] = msg->attitude[i];
+    }
+    this->ugv_state_.attitude_q.x = msg->attitude_q.x;
+    this->ugv_state_.attitude_q.y = msg->attitude_q.y;
+    this->ugv_state_.attitude_q.z = msg->attitude_q.z;
+    this->ugv_state_.attitude_q.w = msg->attitude_q.w;
+
+    if(send_hz <= 0) this->communication_->sendMsgByUdp(this->communication_->encodeMsg(Send_Mode::UDP, ugv_state_, robot_id), multicast_udp_ip);
+    else ugv_state_ready = true;
+    setTimeStamp(msg->header.stamp.sec);
+}
+
+void UGVBasic::textInfoCb(const prometheus_msgs::TextInfo::ConstPtr &msg)
+{
+    this->text_info_.sec = msg->header.stamp.sec;
+    this->text_info_.MessageType = msg->MessageType;
+    this->text_info_.Message = msg->Message;
+
+    // 发送到地面站
+    this->communication_->sendMsgByUdp(this->communication_->encodeMsg(Send_Mode::UDP, this->text_info_, -std::abs(this->robot_id)), udp_ip);
+}
+
+void UGVBasic::customDataSegmentCb(const prometheus_msgs::CustomDataSegment::ConstPtr &msg)
+{
+    int size = msg->datas.size();
+    CustomDataSegment data;
+    for (int i = 0; i < size; i++)
+    {
+        prometheus_msgs::BasicDataTypeAndValue basic_data = msg->datas[i];
+        switch (basic_data.type)
+        {
+        case prometheus_msgs::BasicDataTypeAndValue::INTEGER:
+            data.setValue(basic_data.name, basic_data.integer_value);
+            break;
+        case prometheus_msgs::BasicDataTypeAndValue::BOOLEAN:
+            data.setValue(basic_data.name, basic_data.boolean_value);
+            break;
+        case prometheus_msgs::BasicDataTypeAndValue::FLOAT:
+            data.setValue(basic_data.name, basic_data.float_value);
+            break;
+        case prometheus_msgs::BasicDataTypeAndValue::DOUBLE:
+            data.setValue(basic_data.name, basic_data.double_value);
+            break;
+        case prometheus_msgs::BasicDataTypeAndValue::STRING:
+            data.setValue(basic_data.name, basic_data.string_value);
+            break;
+        default:
+            break;
+        }
+    }
+    custom_data_segment_.datas.clear();
+    custom_data_segment_ = data.getCustomDataSegment();
+
+    if (send_hz <= 0)
+        this->communication_->sendMsgByUdp(this->communication_->encodeMsg(Send_Mode::UDP, this->custom_data_segment_, this->robot_id), multicast_udp_ip);
+    else
+        custom_data_segment_ready = true;
+}
+
+void UGVBasic::customDataSegmentPub(struct CustomDataSegment_1 custom_data_segment)
+{
+    int size = custom_data_segment.datas.size();
+    prometheus_msgs::CustomDataSegment msg;
+    CustomDataSegment datas(custom_data_segment);
+    for (int i = 0; i < size; i++)
+    {
+        prometheus_msgs::BasicDataTypeAndValue data;
+
+        std::string name = custom_data_segment.datas[i].name;
+        uint8_t type = custom_data_segment.datas[i].type;
+
+        data.name = name;
+
+        int integer_value = std::numeric_limits<float>::quiet_NaN();
+        bool boolean_value = false;
+        float float_value = std::numeric_limits<float>::quiet_NaN();
+        double double_value = std::numeric_limits<float>::quiet_NaN();
+        std::string string_value = "";
+
+        switch (type)
+        {
+        case BasicDataTypeAndValue::Type::INTEGER:
+            data.type = prometheus_msgs::BasicDataTypeAndValue::INTEGER;
+            datas.getValue(name, integer_value);
+            break;
+        case BasicDataTypeAndValue::Type::BOOLEAN:
+            data.type = prometheus_msgs::BasicDataTypeAndValue::BOOLEAN;
+            datas.getValue(name, boolean_value);
+            break;
+        case BasicDataTypeAndValue::Type::FLOAT:
+            data.type = prometheus_msgs::BasicDataTypeAndValue::FLOAT;
+            datas.getValue(name, float_value);
+            break;
+        case BasicDataTypeAndValue::Type::DOUBLE:
+            data.type = prometheus_msgs::BasicDataTypeAndValue::DOUBLE;
+            datas.getValue(name, double_value);
+            break;
+        case BasicDataTypeAndValue::Type::STRING:
+            data.type = prometheus_msgs::BasicDataTypeAndValue::STRING;
+            datas.getValue(name, string_value);
+            break;
+        default:
+            break;
+        }
+        data.integer_value = integer_value;
+        data.boolean_value = boolean_value;
+        data.float_value = float_value;
+        data.double_value = double_value;
+        data.string_value = string_value;
+
+        msg.datas.push_back(data);
+    }
+    this->custom_data_segment_pub_.publish(msg);
+}
+
+void UGVBasic::setTimeStamp(uint time)
+{
+    this->time_stamp_ = time;
+}
+
+uint UGVBasic::getTimeStamp()
+{
+    return this->time_stamp_;
+}
+
+struct UGVState UGVBasic::getUGVState()
+{
+    return this->ugv_state_;
+}
+
+void UGVBasic::send(const ros::TimerEvent &time_event)
+{
+    if(ugv_state_ready)
+    {
+        this->communication_->sendMsgByUdp(this->communication_->encodeMsg(Send_Mode::UDP, ugv_state_, robot_id), multicast_udp_ip);
+        ugv_state_ready = false;
+    }
+}
+
+void UGVBasic::setGroundStationIP(std::string ip)
+{
+    if(this->multicast_udp_ip == this->udp_ip)
+    {
+        // 同步修改
+        this->multicast_udp_ip = ip;
+    }
+    this->udp_ip = ip;
+}

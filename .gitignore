@@ -359,6 +359,7 @@ References/**/*.pak
 References/**/*.umap_BuiltData.uasset
 References/**/*.exe
 References/**/*.dll
+References/**/*.so
 References/**/*.lib
 References/**/*.a
 References/**/*.jar
