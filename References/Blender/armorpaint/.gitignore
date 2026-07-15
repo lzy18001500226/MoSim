@@ -2,3 +2,5 @@
 .vscode
 *.DS_Store
 *.blend1
+/base/tools/bin/
+/base/tools/tcc/bin/
