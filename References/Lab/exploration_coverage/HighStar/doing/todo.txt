@@ -1,0 +1,33 @@
+1. yaw规划             X
+2. gain evaluation     *
+3. 路径规划		
+4. DTG删除             *
+
+
+2. replan的时间
+3. retrieve
+4. better yaw plan *
+5. LRM
+
+path_seg:3
+ 2.45 -0.35  1.05
+ 1.75 -1.05  0.35
+ 1.75 -0.35  1.05
+path_seg:2
+ 1.05 -0.35  1.05
+1.05 0.35 1.05
+
+ps:   1.29336 0.00230175    0.96274
+pe: 2.59928       -1 0.337556
+
+s1:23 s2:22
+idx1:0 idx2:25
+it_id:0  d:0
+s1:24 s2:22
+idx1:1 idx2:25
+it_id:1  d:0
+s1:25 s2:22
+idx1:2 idx2:25
+it_id:2  d:0
+best_it:2
+delet num:0
