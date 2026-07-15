@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Factory L2 scene-base entry.
+       Scope: launch Gazebo Classic with the user-accepted Factory static world
+       and the normal Sunray/PX4/MAVROS spawn chain. This file is an optional
+       entry for later spawn/free-space/sensor checks; it is not planner,
+       SLAM, controller, or closed-loop success evidence by itself. -->
+
+  <arg name="project_root" default="$(optenv PROJECT_ROOT /mnt/c/Users/HP/Desktop/MoSim)"/>
+  <arg name="uav_num" default="1"/>
+  <arg name="vehicle" default="sunray150_with_mid360"/>
+  <arg name="world" default="$(arg project_root)/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review/worlds/factoryenvironmentcollect_l2_static_review.sdf"/>
+  <arg name="factory_model_path" default="$(arg project_root)/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review/models"/>
+  <arg name="gui" default="false"/>
+  <arg name="debug" default="false"/>
+  <arg name="verbose" default="false"/>
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+
+  <!-- Conservative origin-adjacent starts for first free-space probes. Later
+       runtime tasks must validate these in Gazebo/RViz before using planner
+       evidence; planner prior-map access remains forbidden. -->
+  <arg name="uav1_init_x" default="0.0"/>
+  <arg name="uav1_init_y" default="-1.0"/>
+  <arg name="uav1_init_z" default="0.2"/>
+  <arg name="uav1_init_yaw" default="0.0"/>
+  <arg name="uav2_init_x" default="0.0"/>
+  <arg name="uav2_init_y" default="1.0"/>
+  <arg name="uav2_init_z" default="0.2"/>
+  <arg name="uav2_init_yaw" default="0.0"/>
+  <arg name="uav3_init_x" default="-1.5"/>
+  <arg name="uav3_init_y" default="0.0"/>
+  <arg name="uav3_init_z" default="0.2"/>
+  <arg name="uav3_init_yaw" default="0.0"/>
+
+  <env name="GAZEBO_MODEL_PATH" value="$(arg factory_model_path):$(arg project_root)/Config/gazebo/models:$(optenv GAZEBO_MODEL_PATH)"/>
+
+  <include file="$(arg project_root)/Scripts/sunray/goal5_swarm_px4_gazebo.launch">
+    <arg name="uav_num" value="$(arg uav_num)"/>
+    <arg name="vehicle" value="$(arg vehicle)"/>
+    <arg name="world" value="$(arg world)"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="debug" value="$(arg debug)"/>
+    <arg name="verbose" value="$(arg verbose)"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="uav1_init_x" value="$(arg uav1_init_x)"/>
+    <arg name="uav1_init_y" value="$(arg uav1_init_y)"/>
+    <arg name="uav1_init_z" value="$(arg uav1_init_z)"/>
+    <arg name="uav1_init_yaw" value="$(arg uav1_init_yaw)"/>
+    <arg name="uav2_init_x" value="$(arg uav2_init_x)"/>
+    <arg name="uav2_init_y" value="$(arg uav2_init_y)"/>
+    <arg name="uav2_init_z" value="$(arg uav2_init_z)"/>
+    <arg name="uav2_init_yaw" value="$(arg uav2_init_yaw)"/>
+    <arg name="uav3_init_x" value="$(arg uav3_init_x)"/>
+    <arg name="uav3_init_y" value="$(arg uav3_init_y)"/>
+    <arg name="uav3_init_z" value="$(arg uav3_init_z)"/>
+    <arg name="uav3_init_yaw" value="$(arg uav3_init_yaw)"/>
+  </include>
+</launch>

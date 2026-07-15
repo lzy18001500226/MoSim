@@ -53,7 +53,7 @@ def test_runtime_candidate_decision_contract() -> None:
     if not spark["support"]["livox_ros_driver2_custom_msg"]:
         raise AssertionError(spark)
 
-    fast_lio = by_path["References/Lab/FAST_LIO"]
+    fast_lio = by_path["References/Lab/localization_slam/FAST_LIO"]
     if fast_lio["role"] != "strong_ros1_mid360_reference":
         raise AssertionError(fast_lio)
     if not fast_lio["support"]["livox_ros_driver_custom_msg"]:

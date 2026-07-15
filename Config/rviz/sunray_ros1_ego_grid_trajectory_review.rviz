@@ -37,7 +37,7 @@ Visualization Manager:
       Selectable: true
       Size (Pixels): 3
       Size (m): 0.12
-      Style: Flat Squares
+      Style: Boxes
       Topic: /drone_0_ego_planner_node/grid_map/occupancy_inflate
       Use Fixed Frame: true
       Use rainbow: true
@@ -87,6 +87,12 @@ Visualization Manager:
       Pose Style: None
       Topic: /mosim/goal4/target_path
       Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /mosim/goal4/body_axes
+      Name: UAV Body Axes
+      Queue Size: 5
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 38; 38; 38
@@ -101,7 +107,7 @@ Visualization Manager:
     - Class: rviz/FocusCamera
     - Class: rviz/Measure
     - Class: rviz/SetGoal
-      Topic: /goal_1
+      Topic: /move_base_simple/goal
     - Class: rviz/PublishPoint
       Topic: /clicked_point
   Value: true

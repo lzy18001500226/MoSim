@@ -1,0 +1,139 @@
+<launch>
+  <arg name="depth_topic" default="/mosim/highstar/depth"/>
+  <arg name="pointcloud_topic" default="/uav1/livox/lidar"/>
+  <arg name="camera_info_topic" default="/mosim/highstar/camera_info"/>
+  <arg name="odom_topic" default="/uav1/mavros/local_position/odom"/>
+  <arg name="sensor_input" default="depth"/>
+  <arg name="frontier_sensor_type" default="Depth_Camera"/>
+  <arg name="map_min_x" default="-35.0"/>
+  <arg name="map_min_y" default="-45.0"/>
+  <arg name="map_min_z" default="-0.1"/>
+  <arg name="map_max_x" default="25.0"/>
+  <arg name="map_max_y" default="15.0"/>
+  <arg name="map_max_z" default="8.0"/>
+  <arg name="sensor_max_range" default="8.0"/>
+  <arg name="frontier_sample_max_range" default="3.0"/>
+  <arg name="frontier_grid_scale" default="2.0"/>
+  <arg name="frontier_viewpoint_thresh" default="0.8"/>
+  <arg name="frontier_viewpoint_z_gate_enable" default="false"/>
+  <arg name="frontier_viewpoint_min_z" default="0.0"/>
+  <arg name="frontier_viewpoint_max_z" default="8.0"/>
+  <arg name="frontier_vgain_thresh" default="0.5"/>
+  <arg name="frontier_observe_thresh" default="0.85"/>
+  <arg name="frontier_sample_hor_dir_num" default="15"/>
+  <arg name="frontier_sample_ver_dir_num" default="3"/>
+  <arg name="frontier_sample_dist_num" default="2"/>
+  <arg name="frontier_fov_hor_num" default="12"/>
+  <arg name="frontier_fov_ver_num" default="8"/>
+  <arg name="livox_ver_low" default="-0.174"/>
+  <arg name="livox_ver_up" default="1.308"/>
+  <arg name="lowres_localgraph_sizex" default="14.0"/>
+  <arg name="lowres_localgraph_sizey" default="14.0"/>
+  <arg name="lowres_localgraph_sizez" default="8.0"/>
+  <arg name="lowres_node_x" default="0.6"/>
+  <arg name="lowres_node_y" default="0.6"/>
+  <arg name="lowres_node_z" default="0.6"/>
+  <arg name="robot_size_x" default="0.5"/>
+  <arg name="robot_size_y" default="0.5"/>
+  <arg name="robot_size_z" default="0.5"/>
+  <arg name="cam_to_body_qx" default="-0.5"/>
+  <arg name="cam_to_body_qy" default="0.5"/>
+  <arg name="cam_to_body_qz" default="-0.5"/>
+  <arg name="cam_to_body_qw" default="0.5"/>
+  <arg name="cam_to_body_x" default="0.0"/>
+  <arg name="cam_to_body_y" default="0.0"/>
+  <arg name="cam_to_body_z" default="0.0"/>
+  <arg name="exp_use_near_gain" default="false"/>
+  <arg name="exp_use_cover_trajectory" default="true"/>
+  <arg name="exp_gain_factor" default="0.3"/>
+  <arg name="exp_lambda" default="0.6"/>
+  <arg name="opt_max_vel" default="4.0"/>
+  <arg name="opt_max_acc" default="6.0"/>
+  <arg name="opt_max_jer" default="25.0"/>
+  <arg name="opt_wei_cover" default="30000.0"/>
+  <arg name="opt_adopt_cover_thresh" default="0.90"/>
+  <arg name="show_frontier" default="false"/>
+  <arg name="takeoff_x" default="0.0"/>
+  <arg name="takeoff_y" default="0.0"/>
+  <arg name="takeoff_z" default="1.5"/>
+
+  <!--
+    HighStar dry-run only. This launch intentionally excludes RotorS and
+    traj_exc_node, so it cannot publish MAVROS raw setpoints.
+  -->
+  <node name="murder_demo" pkg="murder" type="murder_node" output="screen">
+    <rosparam command="load" file="$(find murder)/resource/high_mobility/murder_demo_city_mid.yaml"/>
+    <rosparam command="load" file="$(find block_map)/color/Paranoid.yaml"/>
+
+    <param name="Exp/minX" value="$(arg map_min_x)" type="double"/>
+    <param name="Exp/minY" value="$(arg map_min_y)" type="double"/>
+    <param name="Exp/minZ" value="$(arg map_min_z)" type="double"/>
+    <param name="Exp/maxX" value="$(arg map_max_x)" type="double"/>
+    <param name="Exp/maxY" value="$(arg map_max_y)" type="double"/>
+    <param name="Exp/maxZ" value="$(arg map_max_z)" type="double"/>
+    <param name="block_map/minX" value="$(arg map_min_x)" type="double"/>
+    <param name="block_map/minY" value="$(arg map_min_y)" type="double"/>
+    <param name="block_map/minZ" value="$(arg map_min_z)" type="double"/>
+    <param name="block_map/maxX" value="$(arg map_max_x)" type="double"/>
+    <param name="block_map/maxY" value="$(arg map_max_y)" type="double"/>
+    <param name="block_map/maxZ" value="$(arg map_max_z)" type="double"/>
+    <param name="block_map/sensor_max_range" value="$(arg sensor_max_range)" type="double"/>
+    <param name="block_map/depth" value="$(eval arg('sensor_input') != 'pointcloud')" type="bool"/>
+    <param name="block_map/CamtoBody_Quater_x" value="$(arg cam_to_body_qx)" type="double"/>
+    <param name="block_map/CamtoBody_Quater_y" value="$(arg cam_to_body_qy)" type="double"/>
+    <param name="block_map/CamtoBody_Quater_z" value="$(arg cam_to_body_qz)" type="double"/>
+    <param name="block_map/CamtoBody_Quater_w" value="$(arg cam_to_body_qw)" type="double"/>
+    <param name="block_map/CamtoBody_x" value="$(arg cam_to_body_x)" type="double"/>
+    <param name="block_map/CamtoBody_y" value="$(arg cam_to_body_y)" type="double"/>
+    <param name="block_map/CamtoBody_z" value="$(arg cam_to_body_z)" type="double"/>
+    <param name="Frontier/sample_max_range" value="$(arg frontier_sample_max_range)" type="double"/>
+    <param name="Frontier/grid_scale" value="$(arg frontier_grid_scale)" type="double"/>
+    <param name="Frontier/viewpoint_thresh" value="$(arg frontier_viewpoint_thresh)" type="double"/>
+    <param name="Frontier/viewpoint_z_gate_enable" value="$(arg frontier_viewpoint_z_gate_enable)" type="bool"/>
+    <param name="Frontier/viewpoint_min_z" value="$(arg frontier_viewpoint_min_z)" type="double"/>
+    <param name="Frontier/viewpoint_max_z" value="$(arg frontier_viewpoint_max_z)" type="double"/>
+    <param name="Frontier/vgain_thresh" value="$(arg frontier_vgain_thresh)" type="double"/>
+    <param name="Frontier/observe_thresh" value="$(arg frontier_observe_thresh)" type="double"/>
+    <param name="Frontier/sample_hor_dir_num" value="$(arg frontier_sample_hor_dir_num)" type="int"/>
+    <param name="Frontier/sample_ver_dir_num" value="$(arg frontier_sample_ver_dir_num)" type="int"/>
+    <param name="Frontier/sample_dist_num" value="$(arg frontier_sample_dist_num)" type="int"/>
+    <param name="Frontier/sensor_type" value="$(arg frontier_sensor_type)" type="str"/>
+    <param name="Frontier/FOV_hor_num" value="$(arg frontier_fov_hor_num)" type="int"/>
+    <param name="Frontier/FOV_ver_num" value="$(arg frontier_fov_ver_num)" type="int"/>
+    <param name="Frontier/livox_ver_low" value="$(arg livox_ver_low)" type="double"/>
+    <param name="Frontier/livox_ver_up" value="$(arg livox_ver_up)" type="double"/>
+    <param name="LowResMap/localgraph_sizex" value="$(arg lowres_localgraph_sizex)" type="double"/>
+    <param name="LowResMap/localgraph_sizey" value="$(arg lowres_localgraph_sizey)" type="double"/>
+    <param name="LowResMap/localgraph_sizez" value="$(arg lowres_localgraph_sizez)" type="double"/>
+    <param name="LowResMap/node_x" value="$(arg lowres_node_x)" type="double"/>
+    <param name="LowResMap/node_y" value="$(arg lowres_node_y)" type="double"/>
+    <param name="LowResMap/node_z" value="$(arg lowres_node_z)" type="double"/>
+    <param name="LowResMap/showmap" value="true" type="bool"/>
+    <param name="Frontier/show_frontier" value="$(arg show_frontier)" type="bool"/>
+    <param name="Exp/robot_sizeX" value="$(arg robot_size_x)" type="double"/>
+    <param name="Exp/robot_sizeY" value="$(arg robot_size_y)" type="double"/>
+    <param name="Exp/robot_sizeZ" value="$(arg robot_size_z)" type="double"/>
+    <rosparam param="block_map/colorR">[44, 71, 198, 234, 242, 180, 40]</rosparam>
+    <rosparam param="block_map/colorG">[21, 80, 66, 114, 177, 204, 144]</rosparam>
+    <rosparam param="block_map/colorB">[48, 147, 92, 130, 144, 232, 207]</rosparam>
+    <param name="Exp/takeoff_x" value="$(arg takeoff_x)" type="double"/>
+    <param name="Exp/takeoff_y" value="$(arg takeoff_y)" type="double"/>
+    <param name="Exp/takeoff_z" value="$(arg takeoff_z)" type="double"/>
+    <param name="Exp/UseNearGain" value="$(arg exp_use_near_gain)" type="bool"/>
+    <param name="Exp/UseCoverTrajectory" value="$(arg exp_use_cover_trajectory)" type="bool"/>
+    <param name="Exp/GainFactor" value="$(arg exp_gain_factor)" type="double"/>
+    <param name="Exp/lambda" value="$(arg exp_lambda)" type="double"/>
+    <param name="Exp/SensorInput" value="$(arg sensor_input)" type="str"/>
+    <param name="opt/MaxVel" value="$(arg opt_max_vel)" type="double"/>
+    <param name="opt/MaxAcc" value="$(arg opt_max_acc)" type="double"/>
+    <param name="opt/MaxJer" value="$(arg opt_max_jer)" type="double"/>
+    <param name="opt/WeiCover" value="$(arg opt_wei_cover)" type="double"/>
+    <param name="opt/AdoptCoverThresh" value="$(arg opt_adopt_cover_thresh)" type="double"/>
+
+    <remap from="/depth" to="$(arg depth_topic)"/>
+    <remap from="/pointcloud" to="$(arg pointcloud_topic)"/>
+    <remap from="/block_map/caminfo" to="$(arg camera_info_topic)"/>
+    <remap from="/odom" to="$(arg odom_topic)"/>
+    <remap from="/vi_odom" to="$(arg odom_topic)"/>
+  </node>
+</launch>

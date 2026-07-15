@@ -1,0 +1,38 @@
+{
+  "schema": "mosim.gazebo_scene_profile.v1",
+  "scene_profile_id": "factory_l2_static_sunray_scene_v1",
+  "status": "accepted_for_scene_base",
+  "accepted_at": "2026-07-01T00:00:00+08:00",
+  "map_name": "Factory",
+  "scene_id": "factoryenvironmentcollect",
+  "static_import_level": "L2",
+  "world_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review/worlds/factoryenvironmentcollect_l2_static_review.sdf",
+  "gazebo_model_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review/models",
+  "optional_sunray_launch": "Scripts/sunray/factory_l2_sunray_px4_gazebo.launch",
+  "default_vehicle": "sunray150_with_mid360",
+  "default_uav_num": 1,
+  "default_spawn_points": [
+    {"uav": 1, "x": 0.0, "y": -1.0, "z": 0.2, "yaw": 0.0},
+    {"uav": 2, "x": 0.0, "y": 1.0, "z": 0.2, "yaw": 0.0},
+    {"uav": 3, "x": -1.5, "y": 0.0, "z": 0.2, "yaw": 0.0}
+  ],
+  "review_evidence": {
+    "manifest": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review/MANIFEST.json",
+    "verification": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review/VERIFICATION.json",
+    "user_accepted_screenshot": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review/screenshots/factory_l2_user_accepted_20260701.png",
+    "user_accepted_screenshot_sha256": "d324a5686b07f671ed42a7db6b1a3fcdcb51f588d200ec2dcbed6511bf8a7b15"
+  },
+  "claim_boundary": [
+    "Accepted only as a Gazebo Classic static physical scene base.",
+    "Not ROS/PX4/MAVROS/RViz runtime success.",
+    "Not SLAM/localization/planner success.",
+    "Not controller performance evidence.",
+    "Planner prior-map access is forbidden; the world is a simulator scene and validation oracle only."
+  ],
+  "next_required_checks": [
+    "Run Sunray ROS1 preflight from Ubuntu-20.04.",
+    "Parse roslaunch files without starting runtime.",
+    "Run a bounded Gazebo spawn/free-space probe.",
+    "Then verify nonempty MID360 PointCloud2 and RViz trajectory/map evidence before planner claims."
+  ]
+}

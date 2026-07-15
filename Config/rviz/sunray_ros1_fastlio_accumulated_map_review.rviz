@@ -33,7 +33,7 @@ Visualization Manager:
       Queue Size: 3
       Selectable: true
       Size (Pixels): 2
-      Size (m): 0.01
+      Size (m): 0.02
       Style: Points
       Topic: /mosim/fastlio/laser_map_obstacles
       Use Fixed Frame: true
@@ -56,7 +56,7 @@ Visualization Manager:
       Queue Size: 3
       Selectable: true
       Size (Pixels): 2
-      Size (m): 0.01
+      Size (m): 0.02
       Style: Points
       Topic: /Laser_map
       Use Fixed Frame: true
@@ -80,7 +80,7 @@ Visualization Manager:
       Queue Size: 2
       Selectable: true
       Size (Pixels): 1
-      Size (m): 0.006
+      Size (m): 0.02
       Style: Points
       Topic: /cloud_registered
       Use Fixed Frame: true

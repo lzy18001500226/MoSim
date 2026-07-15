@@ -46,7 +46,7 @@
       <sensor name="mid360_lidar" type="gpu_lidar">
         <pose>0.035 0 0.045 0 0 0</pose>
         <topic>/mosim/gazebo/lidar_points</topic>
-        <update_rate>10</update_rate>
+        <update_rate>20</update_rate>
         <always_on>true</always_on>
         <visualize>false</visualize>
         <lidar>

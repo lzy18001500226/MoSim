@@ -1,0 +1,37 @@
+<launch>
+  <arg name="namespace" default="uav_frontier"/>
+  <arg name="rate" default="1"/>
+  <arg name="odometry" default="/uav1/mavros/local_position/odom"/>
+  <arg name="cloud_in" default="/uav1/livox_world"/>
+  <arg name="point_reached" default="/uav_frontier/exploration/point_reached"/>
+  <arg name="config_filename" default="$(env MOSIM_PROJECT_ROOT)/Config/planners/uav_frontier_factory_l2_indoor.yaml"/>
+
+  <!-- Declared for compatibility with the shared Goal4 runner. -->
+  <arg name="target_x" default="0.0"/>
+  <arg name="target_y" default="0.0"/>
+  <arg name="target_z" default="1.2"/>
+  <arg name="max_vel" default="0.6"/>
+  <arg name="max_acc" default="0.8"/>
+  <arg name="max_jer" default="4.0"/>
+  <arg name="planning_horizon" default="5.0"/>
+  <arg name="grid_resolution" default="0.5"/>
+  <arg name="obstacles_inflation" default="0.2"/>
+  <arg name="optimization_dist0" default="0.7"/>
+  <arg name="obstacle_clearance" default="0.2"/>
+  <arg name="obstacle_clearance_soft" default="0.2"/>
+  <arg name="virtual_ceil_height" default="1.6"/>
+  <arg name="visualization_truncate_height" default="1.6"/>
+  <arg name="global_pointcloud_topic" default="/uav1/livox_world"/>
+  <arg name="odom_topic" default="/uav1/mavros/local_position/odom"/>
+  <arg name="position_cmd_topic" default="/position_cmd"/>
+
+  <group ns="$(arg namespace)">
+    <node name="frontier_server_node" pkg="uav_frontier_exploration_3d" type="frontier_server_node" output="screen">
+      <param name="rate" value="$(arg rate)"/>
+      <param name="exploration_config_filename" value="$(arg config_filename)"/>
+      <remap from="cloud_in" to="$(arg cloud_in)"/>
+      <remap from="odometry" to="$(arg odometry)"/>
+      <remap from="point_reached" to="$(arg point_reached)"/>
+    </node>
+  </group>
+</launch>

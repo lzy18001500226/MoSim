@@ -15,6 +15,7 @@
   <arg name="map_size_x" default="40.0"/>
   <arg name="map_size_y" default="40.0"/>
   <arg name="map_size_z" default="2.5"/>
+  <arg name="flight_type" default="4"/>
 
   <include file="$(env PROJECT_ROOT)/Scripts/sunray/ego_single_px4ctrl_goal4.launch">
     <arg name="drone_id" value="0"/>
@@ -29,7 +30,9 @@
     <arg name="map_size_z" value="$(arg map_size_z)"/>
     <arg name="odom_topic" value="/uav1/mavros/local_position/odom"/>
     <arg name="global_pointcloud_topic" value="/uav1/livox_world"/>
-    <arg name="position_cmd_topic" value="/uav1/position_cmd"/>
+    <arg name="position_cmd_topic" value="/uav1/planner_position_cmd_raw"/>
+    <arg name="flight_type" value="$(arg flight_type)"/>
+    <arg name="goal_topic" value="/uav1/move_base_simple/goal"/>
   </include>
 
   <group if="$(eval int(arg('uav_num')) >= 2)">
@@ -46,7 +49,9 @@
       <arg name="map_size_z" value="$(arg map_size_z)"/>
       <arg name="odom_topic" value="/uav2/mavros/local_position/odom"/>
       <arg name="global_pointcloud_topic" value="/uav2/livox_world"/>
-      <arg name="position_cmd_topic" value="/uav2/position_cmd"/>
+      <arg name="position_cmd_topic" value="/uav2/planner_position_cmd_raw"/>
+      <arg name="flight_type" value="$(arg flight_type)"/>
+      <arg name="goal_topic" value="/uav2/move_base_simple/goal"/>
     </include>
   </group>
 
@@ -64,7 +69,9 @@
       <arg name="map_size_z" value="$(arg map_size_z)"/>
       <arg name="odom_topic" value="/uav3/mavros/local_position/odom"/>
       <arg name="global_pointcloud_topic" value="/uav3/livox_world"/>
-      <arg name="position_cmd_topic" value="/uav3/position_cmd"/>
+      <arg name="position_cmd_topic" value="/uav3/planner_position_cmd_raw"/>
+      <arg name="flight_type" value="$(arg flight_type)"/>
+      <arg name="goal_topic" value="/uav3/move_base_simple/goal"/>
     </include>
   </group>
 </launch>

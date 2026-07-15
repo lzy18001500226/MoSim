@@ -1,0 +1,36 @@
+<launch>
+  <arg name="uav_id"/>
+  <arg name="config_file" default="$(find fast_lio)/config/mosim_sunray_livox_custom.yaml"/>
+  <arg name="lidar_topic"/>
+  <arg name="imu_topic"/>
+  <arg name="cloud_registered_topic"/>
+  <arg name="cloud_registered_body_topic"/>
+  <arg name="laser_map_topic"/>
+  <arg name="odom_topic"/>
+  <arg name="path_topic"/>
+  <arg name="filter_size_surf" default="0.5"/>
+  <arg name="filter_size_map" default="0.5"/>
+
+  <group ns="uav$(arg uav_id)/mosim/fastlio">
+    <rosparam command="load" file="$(arg config_file)"/>
+    <param name="common/lid_topic" type="string" value="$(arg lidar_topic)"/>
+    <param name="common/imu_topic" type="string" value="$(arg imu_topic)"/>
+    <param name="feature_extract_enable" type="bool" value="false"/>
+    <param name="point_filter_num" type="int" value="1"/>
+    <param name="max_iteration" type="int" value="3"/>
+    <param name="filter_size_surf" type="double" value="$(arg filter_size_surf)"/>
+    <param name="filter_size_map" type="double" value="$(arg filter_size_map)"/>
+    <param name="cube_side_length" type="double" value="100"/>
+    <param name="runtime_pos_log_enable" type="bool" value="false"/>
+    <param name="publish/map_pub_en" type="bool" value="true"/>
+    <param name="publish/map_pub_period" type="double" value="1.0"/>
+
+    <node pkg="fast_lio" type="fastlio_mapping" name="laserMapping" output="screen">
+      <remap from="/cloud_registered" to="$(arg cloud_registered_topic)"/>
+      <remap from="/cloud_registered_body" to="$(arg cloud_registered_body_topic)"/>
+      <remap from="/Laser_map" to="$(arg laser_map_topic)"/>
+      <remap from="/Odometry" to="$(arg odom_topic)"/>
+      <remap from="/path" to="$(arg path_topic)"/>
+    </node>
+  </group>
+</launch>

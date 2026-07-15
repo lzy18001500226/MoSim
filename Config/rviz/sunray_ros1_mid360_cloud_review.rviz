@@ -32,7 +32,7 @@ Visualization Manager:
       Queue Size: 10
       Selectable: true
       Size (Pixels): 1
-      Size (m): 0.006
+      Size (m): 0.02
       Style: Points
       Topic: /uav1/livox/lidar
       Use Fixed Frame: true
@@ -54,7 +54,7 @@ Visualization Manager:
       Queue Size: 20
       Selectable: true
       Size (Pixels): 1
-      Size (m): 0.006
+      Size (m): 0.02
       Style: Points
       Topic: /mosim/sunray/lidar_points_map_accumulated
       Use Fixed Frame: true
@@ -76,7 +76,7 @@ Visualization Manager:
       Queue Size: 10
       Selectable: true
       Size (Pixels): 1
-      Size (m): 0.006
+      Size (m): 0.02
       Style: Points
       Topic: /cloud_registered
       Use Fixed Frame: true

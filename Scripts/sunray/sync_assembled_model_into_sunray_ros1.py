@@ -70,6 +70,7 @@ ASSEMBLED_MID360_INCLUDE_POSE = "-0.000005 0.032295 0.050167 0 0 4.712389"
 ASSEMBLED_MID360_RAY_SENSOR_POSE = "-0.000005 0.032295 0.150167 0 0 4.712389"
 SUNRAY_MID360_RAY_SENSOR_LOCAL_POSE = "0 0 0.1 0 0 0"
 SUNRAY_MID360_PLUGIN_DOWNSAMPLE = int(os.environ.get("SUNRAY_MID360_PLUGIN_DOWNSAMPLE", "1"))
+SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ = float(os.environ.get("SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ", "20.0"))
 SUNRAY_MID360_IMU_UPDATE_RATE_HZ = 200
 SUNRAY_FLIGHT_CONTROLLER_IMU_UPDATE_RATE_HZ = 400
 SUNRAY_GAZEBO_MAX_STEP_SIZE_S = os.environ.get("SUNRAY_GAZEBO_MAX_STEP_SIZE_S", "0.001")
@@ -112,7 +113,7 @@ MID360_INLINE_SENSORS = """      <sensor type="ray" name="laser_livox_{{{{mavlin
         <pose>{ray_sensor_pose}</pose>
         <visualize>false</visualize>
         <always_on>True</always_on>
-        <update_rate>10</update_rate>
+        <update_rate>{lidar_rate}</update_rate>
         <plugin name="gazebo_ros_laser_controller_{{{{mavlink_id}}}}" filename="{livox_plugin_filename}">
           <ray>
             <scan>
@@ -170,6 +171,7 @@ MID360_INLINE_SENSORS = """      <sensor type="ray" name="laser_livox_{{{{mavlin
       </sensor>""".format(
     ray_sensor_pose=ASSEMBLED_MID360_RAY_SENSOR_POSE,
     imu_sensor_pose=ASSEMBLED_MID360_INCLUDE_POSE,
+    lidar_rate=SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ,
     downsample=SUNRAY_MID360_PLUGIN_DOWNSAMPLE,
     livox_plugin_filename=SUNRAY_LIVOX_PLUGIN_FILENAME,
     mid360_csv_file_name=SUNRAY_MID360_CSV_FILE_NAME,
@@ -516,12 +518,29 @@ def delete_default_livox_sensor_shell(sensor_sdf_path: Path) -> dict[str, int]:
     replacements["assembled_mid360_ray_sensor_local_pose"] = count
 
     text, count = re.subn(
+        r"(<sensor type=\"ray\" name=\"laser_livox\">.*?<update_rate>)\s*[^<]+\s*(</update_rate>)",
+        rf"\g<1>{SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ:g}\2",
+        text,
+        count=1,
+        flags=re.DOTALL,
+    )
+    replacements["mid360_lidar_sensor_update_rate_hz"] = count
+
+    text, count = re.subn(
         r"<downsample>\s*\d+\s*</downsample>",
         f"<downsample>{SUNRAY_MID360_PLUGIN_DOWNSAMPLE}</downsample>",
         text,
         count=1,
     )
     replacements["mid360_plugin_downsample"] = count
+
+    text, count = re.subn(
+        r"<csv_file_name>\s*[^<]+\s*</csv_file_name>",
+        f"<csv_file_name>{SUNRAY_MID360_CSV_FILE_NAME}</csv_file_name>",
+        text,
+        count=1,
+    )
+    replacements["mid360_csv_file_name"] = count
 
     text, count = re.subn(
         r'(<plugin name="gazebo_ros_laser_controller" filename=")[^"]+(">)',
@@ -838,6 +857,7 @@ def main() -> int:
             "gazebo_max_step_size_s": float(SUNRAY_GAZEBO_MAX_STEP_SIZE_S),
             "flight_controller_imu_expected_hz": SUNRAY_FLIGHT_CONTROLLER_IMU_UPDATE_RATE_HZ,
             "flight_controller_imu_source": "gazebo_imu_plugin /imu updateRate is explicitly patched in the assembled Sunray150 SDF",
+            "mid360_lidar_update_rate_hz": SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ,
             "mid360_imu_update_rate_hz": SUNRAY_MID360_IMU_UPDATE_RATE_HZ,
         },
         "mid360_sensor_mode": SUNRAY_MID360_SENSOR_MODE,
@@ -853,8 +873,9 @@ def main() -> int:
             f"Sets mavlink_interface enable_lockstep to {SUNRAY_MAVLINK_ENABLE_LOCKSTEP}; default true preserves Sunray baseline, false is a bounded Goal5 diagnostic for multi-UAV MID360 plugin loading.",
             f"Sets mavlink_interface mode to {SUNRAY_MAVLINK_INTERFACE_MODE}; disabled is a bounded diagnostic only and is not a PX4 closed-loop evidence mode.",
             f"Uses the reviewed MoSim assembly pose for the MID360 mount: {ASSEMBLED_MID360_INCLUDE_POSE}.",
+            f"Sets the MID360 LiDAR Gazebo update rate to {SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ:g}Hz for the current FAST-LIO localization profile.",
             f"Sets the Livox plugin downsample to {SUNRAY_MID360_PLUGIN_DOWNSAMPLE} so the raw PointCloud2 density is not reduced before localization review.",
-            f"Sets the Livox internal IMU Gazebo update rate to {SUNRAY_MID360_IMU_UPDATE_RATE_HZ}Hz to match MID360 default timing before 20Hz LiDAR experiments.",
+            f"Sets the Livox internal IMU Gazebo update rate to {SUNRAY_MID360_IMU_UPDATE_RATE_HZ}Hz to support the current 20Hz LiDAR/FAST-LIO profile.",
             f"Sets Gazebo physics to {SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ}Hz and the PX4 flight-controller IMU /imu plugin updateRate to {SUNRAY_FLIGHT_CONTROLLER_IMU_UPDATE_RATE_HZ}Hz; /imu and /uav1/mavros/imu/data must still be verified by rostopic hz.",
             "Does not claim FAST-LIO success or flight-control performance.",
         ],

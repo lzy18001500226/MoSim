@@ -1,0 +1,217 @@
+<launch>
+  <arg name="uav_num" default="3"/>
+  <arg name="map_size_x" default="18.0"/>
+  <arg name="map_size_y" default="20.0"/>
+  <arg name="map_size_z" default="2.2"/>
+  <arg name="max_vel" default="0.8"/>
+  <arg name="max_acc" default="0.8"/>
+
+  <!-- D3 uses online Gazebo/Sunray/PX4/MAVROS state and MID360 world clouds.
+       The pair-opt/LKH-dependent branch stays disabled for the first MoSim
+       integration proof because D1 classified /usr/local/bin/LKH as missing. -->
+  <arg name="d3_min_unknown" default="500"/>
+  <arg name="d3_min_free" default="1200"/>
+  <arg name="d3_grid_size" default="4.0"/>
+  <arg name="d3_attempt_interval" default="0.4"/>
+  <arg name="d3_pair_opt_interval" default="2.0"/>
+  <arg name="d3_frontier_min_visib_num" default="10"/>
+  <arg name="d3_disable_pair_opt" default="true"/>
+  <arg name="d3_pair_opt_after_trigger_only" default="true"/>
+  <arg name="d3_round_robin_init" default="true"/>
+  <arg name="d3_ground_height" default="0.0"/>
+  <arg name="d3_box_min_x" default="-9.0"/>
+  <arg name="d3_box_min_y" default="-10.0"/>
+  <arg name="d3_box_min_z" default="0.90"/>
+  <arg name="d3_box_max_x" default="9.0"/>
+  <arg name="d3_box_max_y" default="10.0"/>
+  <arg name="d3_box_max_z" default="1.35"/>
+  <arg name="d3_virtual_ceil_height" default="1.30"/>
+  <arg name="d3_visualization_truncate_height" default="1.50"/>
+  <arg name="d3_visualization_truncate_low" default="0.50"/>
+  <arg name="d3_swarm_safe_dist" default="1.2"/>
+  <arg name="d3_astar_start_clearance_radius" default="0.0"/>
+  <arg name="d3_astar_max_search_time" default="0.001"/>
+  <arg name="uav1_odom_topic" default="/uav1/mavros/local_position/odom"/>
+  <arg name="uav2_odom_topic" default="/uav2/mavros/local_position/odom"/>
+  <arg name="uav3_odom_topic" default="/uav3/mavros/local_position/odom"/>
+  <arg name="uav1_pose_topic" default="/uav1/mavros/local_position/pose"/>
+  <arg name="uav2_pose_topic" default="/uav2/mavros/local_position/pose"/>
+  <arg name="uav3_pose_topic" default="/uav3/mavros/local_position/pose"/>
+  <arg name="uav1_cloud_topic" default="/uav1/livox_world"/>
+  <arg name="uav2_cloud_topic" default="/uav2/livox_world"/>
+  <arg name="uav3_cloud_topic" default="/uav3/livox_world"/>
+
+  <include file="$(find exploration_manager)/launch/single_drone_planner.xml">
+    <arg name="drone_id" value="1"/>
+    <arg name="drone_num" value="$(arg uav_num)"/>
+    <arg name="map_size_x" value="$(arg map_size_x)"/>
+    <arg name="map_size_y" value="$(arg map_size_y)"/>
+    <arg name="map_size_z" value="$(arg map_size_z)"/>
+    <arg name="odometry_topic" value="$(arg uav1_odom_topic)"/>
+    <arg name="sensor_pose_topic" value="$(arg uav1_pose_topic)"/>
+    <arg name="depth_topic" value="/uav1/mosim/racer_d3/depth_unused"/>
+    <arg name="cloud_topic" value="$(arg uav1_cloud_topic)"/>
+    <arg name="cx" value="324.0879821777344"/>
+    <arg name="cy" value="239.10362243652344"/>
+    <arg name="fx" value="385.69793701171875"/>
+    <arg name="fy" value="385.69793701171875"/>
+    <arg name="max_vel" value="$(arg max_vel)"/>
+    <arg name="max_acc" value="$(arg max_acc)"/>
+    <arg name="simulation" value="false"/>
+  </include>
+
+  <group ns="exploration_node_1">
+    <param name="partitioning/min_unknown" value="$(arg d3_min_unknown)" type="int"/>
+    <param name="partitioning/min_free" value="$(arg d3_min_free)" type="int"/>
+    <param name="partitioning/grid_size" value="$(arg d3_grid_size)" type="double"/>
+    <param name="fsm/attempt_interval" value="$(arg d3_attempt_interval)" type="double"/>
+    <param name="fsm/pair_opt_interval" value="$(arg d3_pair_opt_interval)" type="double"/>
+    <param name="fsm/mosim_d2_disable_pair_opt" value="$(arg d3_disable_pair_opt)" type="bool"/>
+    <param name="fsm/mosim_d3_pair_opt_after_trigger_only" value="$(arg d3_pair_opt_after_trigger_only)" type="bool"/>
+    <param name="frontier/min_visib_num" value="$(arg d3_frontier_min_visib_num)" type="int"/>
+    <param name="partitioning/mosim_d2_round_robin_init" value="$(arg d3_round_robin_init)" type="bool"/>
+    <param name="sdf_map/ground_height" value="$(arg d3_ground_height)" type="double"/>
+    <param name="sdf_map/box_min_x" value="$(arg d3_box_min_x)" type="double"/>
+    <param name="sdf_map/box_min_y" value="$(arg d3_box_min_y)" type="double"/>
+    <param name="sdf_map/box_min_z" value="$(arg d3_box_min_z)" type="double"/>
+    <param name="sdf_map/box_max_x" value="$(arg d3_box_max_x)" type="double"/>
+    <param name="sdf_map/box_max_y" value="$(arg d3_box_max_y)" type="double"/>
+    <param name="sdf_map/box_max_z" value="$(arg d3_box_max_z)" type="double"/>
+    <param name="sdf_map/virtual_ceil_height" value="$(arg d3_virtual_ceil_height)" type="double"/>
+    <param name="map_ros/visualization_truncate_height" value="$(arg d3_visualization_truncate_height)" type="double"/>
+    <param name="map_ros/visualization_truncate_low" value="$(arg d3_visualization_truncate_low)" type="double"/>
+    <param name="optimization/swarm_safe_dist" value="$(arg d3_swarm_safe_dist)" type="double"/>
+    <param name="astar/start_clearance_radius" value="$(arg d3_astar_start_clearance_radius)" type="double"/>
+    <param name="astar/max_search_time" value="$(arg d3_astar_max_search_time)" type="double"/>
+  </group>
+
+  <include file="$(find exploration_manager)/launch/single_drone_planner.xml">
+    <arg name="drone_id" value="2"/>
+    <arg name="drone_num" value="$(arg uav_num)"/>
+    <arg name="map_size_x" value="$(arg map_size_x)"/>
+    <arg name="map_size_y" value="$(arg map_size_y)"/>
+    <arg name="map_size_z" value="$(arg map_size_z)"/>
+    <arg name="odometry_topic" value="$(arg uav2_odom_topic)"/>
+    <arg name="sensor_pose_topic" value="$(arg uav2_pose_topic)"/>
+    <arg name="depth_topic" value="/uav2/mosim/racer_d3/depth_unused"/>
+    <arg name="cloud_topic" value="$(arg uav2_cloud_topic)"/>
+    <arg name="cx" value="324.0879821777344"/>
+    <arg name="cy" value="239.10362243652344"/>
+    <arg name="fx" value="385.69793701171875"/>
+    <arg name="fy" value="385.69793701171875"/>
+    <arg name="max_vel" value="$(arg max_vel)"/>
+    <arg name="max_acc" value="$(arg max_acc)"/>
+    <arg name="simulation" value="false"/>
+  </include>
+
+  <group ns="exploration_node_2">
+    <param name="partitioning/min_unknown" value="$(arg d3_min_unknown)" type="int"/>
+    <param name="partitioning/min_free" value="$(arg d3_min_free)" type="int"/>
+    <param name="partitioning/grid_size" value="$(arg d3_grid_size)" type="double"/>
+    <param name="fsm/attempt_interval" value="$(arg d3_attempt_interval)" type="double"/>
+    <param name="fsm/pair_opt_interval" value="$(arg d3_pair_opt_interval)" type="double"/>
+    <param name="fsm/mosim_d2_disable_pair_opt" value="$(arg d3_disable_pair_opt)" type="bool"/>
+    <param name="fsm/mosim_d3_pair_opt_after_trigger_only" value="$(arg d3_pair_opt_after_trigger_only)" type="bool"/>
+    <param name="frontier/min_visib_num" value="$(arg d3_frontier_min_visib_num)" type="int"/>
+    <param name="partitioning/mosim_d2_round_robin_init" value="$(arg d3_round_robin_init)" type="bool"/>
+    <param name="sdf_map/ground_height" value="$(arg d3_ground_height)" type="double"/>
+    <param name="sdf_map/box_min_x" value="$(arg d3_box_min_x)" type="double"/>
+    <param name="sdf_map/box_min_y" value="$(arg d3_box_min_y)" type="double"/>
+    <param name="sdf_map/box_min_z" value="$(arg d3_box_min_z)" type="double"/>
+    <param name="sdf_map/box_max_x" value="$(arg d3_box_max_x)" type="double"/>
+    <param name="sdf_map/box_max_y" value="$(arg d3_box_max_y)" type="double"/>
+    <param name="sdf_map/box_max_z" value="$(arg d3_box_max_z)" type="double"/>
+    <param name="sdf_map/virtual_ceil_height" value="$(arg d3_virtual_ceil_height)" type="double"/>
+    <param name="map_ros/visualization_truncate_height" value="$(arg d3_visualization_truncate_height)" type="double"/>
+    <param name="map_ros/visualization_truncate_low" value="$(arg d3_visualization_truncate_low)" type="double"/>
+    <param name="optimization/swarm_safe_dist" value="$(arg d3_swarm_safe_dist)" type="double"/>
+    <param name="astar/start_clearance_radius" value="$(arg d3_astar_start_clearance_radius)" type="double"/>
+    <param name="astar/max_search_time" value="$(arg d3_astar_max_search_time)" type="double"/>
+  </group>
+
+  <include file="$(find exploration_manager)/launch/single_drone_planner.xml">
+    <arg name="drone_id" value="3"/>
+    <arg name="drone_num" value="$(arg uav_num)"/>
+    <arg name="map_size_x" value="$(arg map_size_x)"/>
+    <arg name="map_size_y" value="$(arg map_size_y)"/>
+    <arg name="map_size_z" value="$(arg map_size_z)"/>
+    <arg name="odometry_topic" value="$(arg uav3_odom_topic)"/>
+    <arg name="sensor_pose_topic" value="$(arg uav3_pose_topic)"/>
+    <arg name="depth_topic" value="/uav3/mosim/racer_d3/depth_unused"/>
+    <arg name="cloud_topic" value="$(arg uav3_cloud_topic)"/>
+    <arg name="cx" value="324.0879821777344"/>
+    <arg name="cy" value="239.10362243652344"/>
+    <arg name="fx" value="385.69793701171875"/>
+    <arg name="fy" value="385.69793701171875"/>
+    <arg name="max_vel" value="$(arg max_vel)"/>
+    <arg name="max_acc" value="$(arg max_acc)"/>
+    <arg name="simulation" value="false"/>
+  </include>
+
+  <group ns="exploration_node_3">
+    <param name="partitioning/min_unknown" value="$(arg d3_min_unknown)" type="int"/>
+    <param name="partitioning/min_free" value="$(arg d3_min_free)" type="int"/>
+    <param name="partitioning/grid_size" value="$(arg d3_grid_size)" type="double"/>
+    <param name="fsm/attempt_interval" value="$(arg d3_attempt_interval)" type="double"/>
+    <param name="fsm/pair_opt_interval" value="$(arg d3_pair_opt_interval)" type="double"/>
+    <param name="fsm/mosim_d2_disable_pair_opt" value="$(arg d3_disable_pair_opt)" type="bool"/>
+    <param name="fsm/mosim_d3_pair_opt_after_trigger_only" value="$(arg d3_pair_opt_after_trigger_only)" type="bool"/>
+    <param name="frontier/min_visib_num" value="$(arg d3_frontier_min_visib_num)" type="int"/>
+    <param name="partitioning/mosim_d2_round_robin_init" value="$(arg d3_round_robin_init)" type="bool"/>
+    <param name="sdf_map/ground_height" value="$(arg d3_ground_height)" type="double"/>
+    <param name="sdf_map/box_min_x" value="$(arg d3_box_min_x)" type="double"/>
+    <param name="sdf_map/box_min_y" value="$(arg d3_box_min_y)" type="double"/>
+    <param name="sdf_map/box_min_z" value="$(arg d3_box_min_z)" type="double"/>
+    <param name="sdf_map/box_max_x" value="$(arg d3_box_max_x)" type="double"/>
+    <param name="sdf_map/box_max_y" value="$(arg d3_box_max_y)" type="double"/>
+    <param name="sdf_map/box_max_z" value="$(arg d3_box_max_z)" type="double"/>
+    <param name="sdf_map/virtual_ceil_height" value="$(arg d3_virtual_ceil_height)" type="double"/>
+    <param name="map_ros/visualization_truncate_height" value="$(arg d3_visualization_truncate_height)" type="double"/>
+    <param name="map_ros/visualization_truncate_low" value="$(arg d3_visualization_truncate_low)" type="double"/>
+    <param name="optimization/swarm_safe_dist" value="$(arg d3_swarm_safe_dist)" type="double"/>
+    <param name="astar/start_clearance_radius" value="$(arg d3_astar_start_clearance_radius)" type="double"/>
+    <param name="astar/max_search_time" value="$(arg d3_astar_max_search_time)" type="double"/>
+  </group>
+
+  <node pkg="plan_manage" name="traj_server_1" type="traj_server" output="screen">
+    <remap from="/odom_world" to="$(arg uav1_odom_topic)"/>
+    <remap from="/planning/bspline" to="/planning/bspline_1"/>
+    <remap from="/planning/replan" to="/planning/replan_1"/>
+    <remap from="/planning/new" to="/planning/new_1"/>
+    <remap from="/position_cmd" to="/uav1/planner_position_cmd_racer_raw"/>
+    <remap from="planning/position_cmd_vis" to="/uav1/mosim/racer_d3/position_cmd_vis"/>
+    <remap from="planning/travel_traj" to="/uav1/mosim/racer_d3/travel_traj"/>
+    <param name="traj_server/time_forward" value="1.5" type="double"/>
+    <param name="traj_server/pub_traj_id" value="4" type="int"/>
+    <param name="traj_server/drone_id" value="1" type="int"/>
+    <param name="traj_server/drone_num" value="$(arg uav_num)" type="int"/>
+  </node>
+
+  <node pkg="plan_manage" name="traj_server_2" type="traj_server" output="screen">
+    <remap from="/odom_world" to="$(arg uav2_odom_topic)"/>
+    <remap from="/planning/bspline" to="/planning/bspline_2"/>
+    <remap from="/planning/replan" to="/planning/replan_2"/>
+    <remap from="/planning/new" to="/planning/new_2"/>
+    <remap from="/position_cmd" to="/uav2/planner_position_cmd_racer_raw"/>
+    <remap from="planning/position_cmd_vis" to="/uav2/mosim/racer_d3/position_cmd_vis"/>
+    <remap from="planning/travel_traj" to="/uav2/mosim/racer_d3/travel_traj"/>
+    <param name="traj_server/time_forward" value="1.5" type="double"/>
+    <param name="traj_server/pub_traj_id" value="4" type="int"/>
+    <param name="traj_server/drone_id" value="2" type="int"/>
+    <param name="traj_server/drone_num" value="$(arg uav_num)" type="int"/>
+  </node>
+
+  <node pkg="plan_manage" name="traj_server_3" type="traj_server" output="screen">
+    <remap from="/odom_world" to="$(arg uav3_odom_topic)"/>
+    <remap from="/planning/bspline" to="/planning/bspline_3"/>
+    <remap from="/planning/replan" to="/planning/replan_3"/>
+    <remap from="/planning/new" to="/planning/new_3"/>
+    <remap from="/position_cmd" to="/uav3/planner_position_cmd_racer_raw"/>
+    <remap from="planning/position_cmd_vis" to="/uav3/mosim/racer_d3/position_cmd_vis"/>
+    <remap from="planning/travel_traj" to="/uav3/mosim/racer_d3/travel_traj"/>
+    <param name="traj_server/time_forward" value="1.5" type="double"/>
+    <param name="traj_server/pub_traj_id" value="4" type="int"/>
+    <param name="traj_server/drone_id" value="3" type="int"/>
+    <param name="traj_server/drone_num" value="$(arg uav_num)" type="int"/>
+  </node>
+</launch>

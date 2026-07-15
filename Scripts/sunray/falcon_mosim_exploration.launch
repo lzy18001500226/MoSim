@@ -1,0 +1,72 @@
+<launch>
+  <arg name="map_config" default="$(env MOSIM_ROOT)/Config/planners/falcon_factory_l2_map.yaml"/>
+  <arg name="odometry_topic" default="/odom_world"/>
+  <arg name="sensor_pose_topic" default="/transformer/sensor_pose_topic"/>
+  <arg name="depth_image_topic" default="/voxel_mapping/depth_image"/>
+  <arg name="pointcloud_topic" default="/voxel_mapping/pointcloud"/>
+  <arg name="target_x" default="0.0"/>
+  <arg name="target_y" default="0.0"/>
+  <arg name="target_z" default="1.2"/>
+  <arg name="max_vel" default="0.6"/>
+  <arg name="max_acc" default="1.0"/>
+  <arg name="max_jer" default="2.0"/>
+  <arg name="max_yaw_vel" default="$(optenv FALCON_MAX_YAW_VEL 0.78539816339)"/>
+  <arg name="max_yaw_acc" default="$(optenv FALCON_MAX_YAW_ACC 0.78539816339)"/>
+  <arg name="planning_horizon" default="7.5"/>
+  <arg name="grid_resolution" default="0.1"/>
+  <arg name="obstacles_inflation" default="0.25"/>
+  <arg name="optimization_dist0" default="0.5"/>
+  <arg name="obstacle_clearance" default="0.35"/>
+  <arg name="obstacle_clearance_soft" default="0.45"/>
+  <arg name="virtual_ceil_height" default="1.6"/>
+  <arg name="visualization_truncate_height" default="1.8"/>
+  <arg name="hgrid_cell_size_max" default="$(optenv FALCON_HGRID_CELL_SIZE_MAX 5.0)"/>
+  <arg name="hgrid_min_unknown_num_scale" default="$(optenv FALCON_HGRID_MIN_UNKNOWN_NUM_SCALE 0.1)"/>
+  <arg name="exploration_top_view_num" default="$(optenv FALCON_EXPLORATION_TOP_VIEW_NUM 15)"/>
+  <arg name="exploration_refined_num" default="$(optenv FALCON_EXPLORATION_REFINED_NUM 7)"/>
+  <arg name="odom_topic" default="/odom_world"/>
+  <arg name="global_pointcloud_topic" default="/voxel_mapping/pointcloud"/>
+  <arg name="position_cmd_topic" default="/falcon/position_cmd_raw"/>
+  <arg name="traj_init_dx" default="$(optenv FALCON_TRAJ_INIT_DX 0.0)"/>
+  <arg name="traj_init_dy" default="$(optenv FALCON_TRAJ_INIT_DY 0.0)"/>
+  <arg name="traj_init_dz" default="$(optenv FALCON_TRAJ_INIT_DZ 0.0)"/>
+  <arg name="fixed_viewpoint_z_enable" default="$(optenv FALCON_FIXED_VIEWPOINT_Z_ENABLE true)"/>
+  <arg name="fixed_viewpoint_z" default="$(optenv FALCON_FIXED_VIEWPOINT_Z 1.2)"/>
+  <arg name="viewpoint_min_z" default="$(optenv FALCON_VIEWPOINT_MIN_Z 0.9)"/>
+  <arg name="viewpoint_max_z" default="$(optenv FALCON_VIEWPOINT_MAX_Z 1.6)"/>
+
+  <rosparam command="load" file="$(find exploration_manager)/config/robot/uav_model_simulator.yaml"/>
+  <rosparam command="load" file="$(arg map_config)"/>
+  <rosparam command="load" file="$(find voxel_mapping)/config/voxel_mapping.yaml"/>
+  <rosparam command="load" file="$(find pathfinding)/config/astar.yaml"/>
+  <rosparam command="load" file="$(find fast_planner)/config/fast_planner.yaml"/>
+  <rosparam command="load" file="$(find exploration_preprocessing)/config/frontier_finder.yaml"/>
+  <rosparam command="load" file="$(find exploration_preprocessing)/config/hgrid.yaml"/>
+  <rosparam command="load" file="$(find exploration_utils)/config/perception_utils.yaml"/>
+  <rosparam command="load" file="$(find exploration_manager)/config/exploration_manager.yaml"/>
+
+  <param name="/hgrid/cell_size_max" value="$(arg hgrid_cell_size_max)"/>
+  <param name="/hgrid/min_unknown_num_scale" value="$(arg hgrid_min_unknown_num_scale)"/>
+  <param name="/exploration_manager/top_view_num" value="$(arg exploration_top_view_num)"/>
+  <param name="/exploration_manager/refined_num" value="$(arg exploration_refined_num)"/>
+  <param name="/uav_model/dynamics_parameters/max_linear_velocity" value="$(arg max_vel)"/>
+  <param name="/uav_model/dynamics_parameters/max_linear_acceleration" value="$(arg max_acc)"/>
+  <param name="/uav_model/dynamics_parameters/max_yaw_velocity" value="$(arg max_yaw_vel)"/>
+  <param name="/uav_model/dynamics_parameters/max_yaw_acceleration" value="$(arg max_yaw_acc)"/>
+  <param name="/traj_server/init_dx" value="$(arg traj_init_dx)"/>
+  <param name="/traj_server/init_dy" value="$(arg traj_init_dy)"/>
+  <param name="/traj_server/init_dz" value="$(arg traj_init_dz)"/>
+  <param name="/frontier_finder/mosim_fixed_viewpoint_z_enable" value="$(arg fixed_viewpoint_z_enable)"/>
+  <param name="/frontier_finder/mosim_fixed_viewpoint_z" value="$(arg fixed_viewpoint_z)"/>
+  <param name="/frontier_finder/mosim_viewpoint_min_z" value="$(arg viewpoint_min_z)"/>
+  <param name="/frontier_finder/mosim_viewpoint_max_z" value="$(arg viewpoint_max_z)"/>
+
+  <node pkg="exploration_manager" name="exploration_node" type="exploration_node" output="screen">
+    <remap from="/odom_world" to="$(arg odometry_topic)"/>
+    <remap from="/transformer/sensor_pose_topic" to="$(arg sensor_pose_topic)"/>
+    <remap from="/voxel_mapping/depth_image" to="$(arg depth_image_topic)"/>
+    <remap from="/voxel_mapping/pointcloud" to="$(arg pointcloud_topic)"/>
+  </node>
+
+  <node pkg="fast_planner" name="traj_server" type="traj_server" output="screen"/>
+</launch>

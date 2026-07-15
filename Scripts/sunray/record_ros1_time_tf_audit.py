@@ -7,6 +7,7 @@ import argparse
 import glob
 import json
 import re
+import signal
 import time
 from pathlib import Path
 from typing import Any
@@ -69,6 +70,10 @@ class TimeTfAudit:
         self.tf_count = 0
         self.tf_static_count = 0
         self.subscribers = []
+        self.stop_requested = False
+
+    def request_stop(self, _signum, _frame) -> None:
+        self.stop_requested = True
 
     def _record_header(self, topic: str, msg: Any) -> None:
         header = getattr(msg, "header", None)
@@ -95,6 +100,8 @@ class TimeTfAudit:
         self.tf_static_count += len(msg.transforms)
 
     def run(self) -> dict[str, Any]:
+        signal.signal(signal.SIGTERM, self.request_stop)
+        signal.signal(signal.SIGINT, self.request_stop)
         rospy.init_node("mosim_sunray_ros1_time_tf_audit", anonymous=True, disable_signals=True)
         self.subscribers.append(rospy.Subscriber("/clock", Clock, self._clock_cb, queue_size=200))
         self.subscribers.append(rospy.Subscriber("/tf", TFMessage, self._tf_cb, queue_size=500))
@@ -117,14 +124,16 @@ class TimeTfAudit:
             self.subscribers.append(rospy.Subscriber(topic, msg_type, lambda msg, t=topic: self._record_header(t, msg), queue_size=200))
 
         start_wall = time.time()
-        while not rospy.is_shutdown() and time.time() - start_wall < self.args.duration_s:
+        while not rospy.is_shutdown() and not self.stop_requested and time.time() - start_wall < self.args.duration_s:
             self.wall_times.append(time.time())
             now = rospy.Time.now().to_sec()
             if now > 0:
                 self.ros_now.append(now)
             time.sleep(max(self.args.sample_period_s, 0.005))
 
-        return self.summary(time.time() - start_wall)
+        summary = self.summary(time.time() - start_wall)
+        summary["interrupted"] = bool(self.stop_requested)
+        return summary
 
     def summary(self, duration_wall_s: float) -> dict[str, Any]:
         tf_child_stats = {

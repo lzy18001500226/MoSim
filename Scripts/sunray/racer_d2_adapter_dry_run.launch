@@ -1,0 +1,149 @@
+<launch>
+  <arg name="map_size_x" default="18.0"/>
+  <arg name="map_size_y" default="20.0"/>
+  <arg name="map_size_z" default="2.2"/>
+  <arg name="max_vel" default="1.2"/>
+  <arg name="max_acc" default="1.0"/>
+
+  <!-- RACER-D2 uses a compact synthetic map to prove MoSim namespace adapter
+       wiring. These dry-run thresholds intentionally follow the upstream
+       realworld profile rather than the larger simulator demo defaults. -->
+  <arg name="d2_min_unknown" default="500"/>
+  <arg name="d2_min_free" default="1200"/>
+  <arg name="d2_grid_size" default="4.0"/>
+  <arg name="d2_attempt_interval" default="0.4"/>
+  <arg name="d2_pair_opt_interval" default="2.0"/>
+  <arg name="d2_frontier_min_visib_num" default="10"/>
+
+  <include file="$(find exploration_manager)/launch/single_drone_planner.xml">
+    <arg name="drone_id" value="1"/>
+    <arg name="drone_num" value="3"/>
+    <arg name="map_size_x" value="$(arg map_size_x)"/>
+    <arg name="map_size_y" value="$(arg map_size_y)"/>
+    <arg name="map_size_z" value="$(arg map_size_z)"/>
+    <arg name="odometry_topic" value="/uav1/mosim/racer_d2/odom"/>
+    <arg name="sensor_pose_topic" value="/uav1/mosim/racer_d2/sensor_pose"/>
+    <arg name="depth_topic" value="/uav1/mosim/racer_d2/depth_unused"/>
+    <arg name="cloud_topic" value="/uav1/mosim/racer_d2/cloud"/>
+    <arg name="cx" value="324.0879821777344"/>
+    <arg name="cy" value="239.10362243652344"/>
+    <arg name="fx" value="385.69793701171875"/>
+    <arg name="fy" value="385.69793701171875"/>
+    <arg name="max_vel" value="$(arg max_vel)"/>
+    <arg name="max_acc" value="$(arg max_acc)"/>
+    <arg name="simulation" value="false"/>
+  </include>
+
+  <group ns="exploration_node_1">
+    <param name="partitioning/min_unknown" value="$(arg d2_min_unknown)" type="int"/>
+    <param name="partitioning/min_free" value="$(arg d2_min_free)" type="int"/>
+    <param name="partitioning/grid_size" value="$(arg d2_grid_size)" type="double"/>
+    <param name="fsm/attempt_interval" value="$(arg d2_attempt_interval)" type="double"/>
+    <param name="fsm/pair_opt_interval" value="$(arg d2_pair_opt_interval)" type="double"/>
+    <param name="fsm/mosim_d2_disable_pair_opt" value="true" type="bool"/>
+    <param name="frontier/min_visib_num" value="$(arg d2_frontier_min_visib_num)" type="int"/>
+    <param name="partitioning/mosim_d2_round_robin_init" value="true" type="bool"/>
+  </group>
+
+  <include file="$(find exploration_manager)/launch/single_drone_planner.xml">
+    <arg name="drone_id" value="2"/>
+    <arg name="drone_num" value="3"/>
+    <arg name="map_size_x" value="$(arg map_size_x)"/>
+    <arg name="map_size_y" value="$(arg map_size_y)"/>
+    <arg name="map_size_z" value="$(arg map_size_z)"/>
+    <arg name="odometry_topic" value="/uav2/mosim/racer_d2/odom"/>
+    <arg name="sensor_pose_topic" value="/uav2/mosim/racer_d2/sensor_pose"/>
+    <arg name="depth_topic" value="/uav2/mosim/racer_d2/depth_unused"/>
+    <arg name="cloud_topic" value="/uav2/mosim/racer_d2/cloud"/>
+    <arg name="cx" value="324.0879821777344"/>
+    <arg name="cy" value="239.10362243652344"/>
+    <arg name="fx" value="385.69793701171875"/>
+    <arg name="fy" value="385.69793701171875"/>
+    <arg name="max_vel" value="$(arg max_vel)"/>
+    <arg name="max_acc" value="$(arg max_acc)"/>
+    <arg name="simulation" value="false"/>
+  </include>
+
+  <group ns="exploration_node_2">
+    <param name="partitioning/min_unknown" value="$(arg d2_min_unknown)" type="int"/>
+    <param name="partitioning/min_free" value="$(arg d2_min_free)" type="int"/>
+    <param name="partitioning/grid_size" value="$(arg d2_grid_size)" type="double"/>
+    <param name="fsm/attempt_interval" value="$(arg d2_attempt_interval)" type="double"/>
+    <param name="fsm/pair_opt_interval" value="$(arg d2_pair_opt_interval)" type="double"/>
+    <param name="fsm/mosim_d2_disable_pair_opt" value="true" type="bool"/>
+    <param name="frontier/min_visib_num" value="$(arg d2_frontier_min_visib_num)" type="int"/>
+    <param name="partitioning/mosim_d2_round_robin_init" value="true" type="bool"/>
+  </group>
+
+  <include file="$(find exploration_manager)/launch/single_drone_planner.xml">
+    <arg name="drone_id" value="3"/>
+    <arg name="drone_num" value="3"/>
+    <arg name="map_size_x" value="$(arg map_size_x)"/>
+    <arg name="map_size_y" value="$(arg map_size_y)"/>
+    <arg name="map_size_z" value="$(arg map_size_z)"/>
+    <arg name="odometry_topic" value="/uav3/mosim/racer_d2/odom"/>
+    <arg name="sensor_pose_topic" value="/uav3/mosim/racer_d2/sensor_pose"/>
+    <arg name="depth_topic" value="/uav3/mosim/racer_d2/depth_unused"/>
+    <arg name="cloud_topic" value="/uav3/mosim/racer_d2/cloud"/>
+    <arg name="cx" value="324.0879821777344"/>
+    <arg name="cy" value="239.10362243652344"/>
+    <arg name="fx" value="385.69793701171875"/>
+    <arg name="fy" value="385.69793701171875"/>
+    <arg name="max_vel" value="$(arg max_vel)"/>
+    <arg name="max_acc" value="$(arg max_acc)"/>
+    <arg name="simulation" value="false"/>
+  </include>
+
+  <group ns="exploration_node_3">
+    <param name="partitioning/min_unknown" value="$(arg d2_min_unknown)" type="int"/>
+    <param name="partitioning/min_free" value="$(arg d2_min_free)" type="int"/>
+    <param name="partitioning/grid_size" value="$(arg d2_grid_size)" type="double"/>
+    <param name="fsm/attempt_interval" value="$(arg d2_attempt_interval)" type="double"/>
+    <param name="fsm/pair_opt_interval" value="$(arg d2_pair_opt_interval)" type="double"/>
+    <param name="fsm/mosim_d2_disable_pair_opt" value="true" type="bool"/>
+    <param name="frontier/min_visib_num" value="$(arg d2_frontier_min_visib_num)" type="int"/>
+    <param name="partitioning/mosim_d2_round_robin_init" value="true" type="bool"/>
+  </group>
+
+  <node pkg="plan_manage" name="traj_server_1" type="traj_server" output="screen">
+    <remap from="/odom_world" to="/uav1/mosim/racer_d2/odom"/>
+    <remap from="/planning/bspline" to="/planning/bspline_1"/>
+    <remap from="/planning/replan" to="/planning/replan_1"/>
+    <remap from="/planning/new" to="/planning/new_1"/>
+    <remap from="/position_cmd" to="/uav1/mosim/racer_d2/pos_cmd"/>
+    <remap from="planning/position_cmd_vis" to="/uav1/mosim/racer_d2/position_cmd_vis"/>
+    <remap from="planning/travel_traj" to="/uav1/mosim/racer_d2/travel_traj"/>
+    <param name="traj_server/time_forward" value="1.5" type="double"/>
+    <param name="traj_server/pub_traj_id" value="4" type="int"/>
+    <param name="traj_server/drone_id" value="1" type="int"/>
+    <param name="traj_server/drone_num" value="3" type="int"/>
+  </node>
+
+  <node pkg="plan_manage" name="traj_server_2" type="traj_server" output="screen">
+    <remap from="/odom_world" to="/uav2/mosim/racer_d2/odom"/>
+    <remap from="/planning/bspline" to="/planning/bspline_2"/>
+    <remap from="/planning/replan" to="/planning/replan_2"/>
+    <remap from="/planning/new" to="/planning/new_2"/>
+    <remap from="/position_cmd" to="/uav2/mosim/racer_d2/pos_cmd"/>
+    <remap from="planning/position_cmd_vis" to="/uav2/mosim/racer_d2/position_cmd_vis"/>
+    <remap from="planning/travel_traj" to="/uav2/mosim/racer_d2/travel_traj"/>
+    <param name="traj_server/time_forward" value="1.5" type="double"/>
+    <param name="traj_server/pub_traj_id" value="4" type="int"/>
+    <param name="traj_server/drone_id" value="2" type="int"/>
+    <param name="traj_server/drone_num" value="3" type="int"/>
+  </node>
+
+  <node pkg="plan_manage" name="traj_server_3" type="traj_server" output="screen">
+    <remap from="/odom_world" to="/uav3/mosim/racer_d2/odom"/>
+    <remap from="/planning/bspline" to="/planning/bspline_3"/>
+    <remap from="/planning/replan" to="/planning/replan_3"/>
+    <remap from="/planning/new" to="/planning/new_3"/>
+    <remap from="/position_cmd" to="/uav3/mosim/racer_d2/pos_cmd"/>
+    <remap from="planning/position_cmd_vis" to="/uav3/mosim/racer_d2/position_cmd_vis"/>
+    <remap from="planning/travel_traj" to="/uav3/mosim/racer_d2/travel_traj"/>
+    <param name="traj_server/time_forward" value="1.5" type="double"/>
+    <param name="traj_server/pub_traj_id" value="4" type="int"/>
+    <param name="traj_server/drone_id" value="3" type="int"/>
+    <param name="traj_server/drone_num" value="3" type="int"/>
+  </node>
+</launch>

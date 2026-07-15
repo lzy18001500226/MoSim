@@ -5,10 +5,10 @@ set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
 SUNRAY_WS="${SUNRAY_WS:-/opt/mosim_work/sunray_ws/Sunray}"
-EGOV2_SRC="${EGOV2_SRC:-${PROJECT_ROOT}/References/Lab/EGO-Planner-v2/swarm-playground/main_ws/src}"
+EGOV2_SRC="${EGOV2_SRC:-${PROJECT_ROOT}/References/Lab/planning_local/EGO-Planner-v2/swarm-playground/main_ws/src}"
 EGOV2_WS="${EGOV2_WS:-/opt/mosim_work/goal4_egov2_ws_px4msg}"
 PX4CTRL_WS="${PX4CTRL_WS:-${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws}"
-PX4CTRL_MSG_SRC="${PX4CTRL_MSG_SRC:-${PROJECT_ROOT}/References/Lab/Fast-Drone-250/src/utils/quadrotor_msgs}"
+PX4CTRL_MSG_SRC="${PX4CTRL_MSG_SRC:-${PROJECT_ROOT}/References/Lab/planning_local/Fast-Drone-250/src/utils/quadrotor_msgs}"
 LOG_PATH="${LOG_PATH:-${PROJECT_ROOT}/Results/sunray_ros1/goal4_egov2_overlay_build.log}"
 
 mkdir -p "$(dirname "${LOG_PATH}")"

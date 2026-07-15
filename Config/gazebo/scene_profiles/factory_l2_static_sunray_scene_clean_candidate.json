@@ -1,0 +1,94 @@
+{
+  "schema": "mosim.gazebo_scene_profile.v1",
+  "scene_profile_id": "factory_l2_static_sunray_scene_clean_candidate_v1",
+  "status": "coordinate_audit_passed_ue_visual_render_verified_user_acceptance_required",
+  "generated_at": "2026-07-02T18:10:00+08:00",
+  "map_name": "Factory",
+  "scene_id": "factoryenvironmentcollect",
+  "static_import_level": "L2",
+  "world_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
+  "gazebo_model_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+  "base_scene_profile": "Config/gazebo/scene_profiles/factory_l2_static_sunray_scene.json",
+  "default_vehicle": "sunray150_with_mid360",
+  "default_uav_num": 1,
+  "default_spawn_points": [
+    {"uav": 1, "x": 0.0, "y": 120.0, "z": 0.2, "yaw": 0.0},
+    {"uav": 2, "x": 0.0, "y": 122.0, "z": 0.2, "yaw": 0.0},
+    {"uav": 3, "x": -1.5, "y": 121.0, "z": 0.2, "yaw": 0.0}
+  ],
+  "coordinate_contract": {
+    "source_frame": "UE world / MWORKS world static scene truth",
+    "gazebo_frame": "Gazebo world, meters, z-up",
+    "unreal_units": "centimeters",
+    "gazebo_units": "meters",
+    "axis_policy": "gazebo_x=unreal_x/100, gazebo_y=-unreal_y/100, gazebo_z=unreal_z/100"
+  },
+  "clean_import": {
+    "filtered_mesh_objects": [
+      "SkySphereMesh"
+    ],
+    "reason": "SkySphereMesh is nonphysical display/background geometry. Keeping it in Gazebo STL polluted the physical world bounds to +/-16384 m.",
+    "conversion_manifest": "Results/unreal_scene_mapping/factory_l2_static_import/manifests/blender_chunked_stl_conversion_clean.json",
+    "coordinate_audit_passed": "Results/unreal_scene_mapping/factory_l2_coordinate_audit_20260702_104942/FACTORY_L2_COORDINATE_AUDIT.json",
+    "coordinate_audit_blocked_old_import": "Results/unreal_scene_mapping/factory_l2_coordinate_audit_20260702_104058/FACTORY_L2_COORDINATE_AUDIT.json",
+    "gazebo_review_manifest": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/MANIFEST.json",
+    "anchor_points_csv": "Results/unreal_scene_mapping/factory_l2_coordinate_audit_20260702_104942/factory_l2_anchor_points.csv"
+  },
+  "calibration_frame_review": {
+    "status": "visual_render_verified_waiting_user_acceptance",
+    "packet": "Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/FACTORY_L2_CALIBRATION_FRAME_CONTRACT.json",
+    "segments_csv": "Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/factory_l2_calibration_segments.csv",
+    "calibration_markers_csv": "Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/factory_l2_calibration_markers.csv",
+    "gazebo_calibration_world": "Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/worlds/factoryenvironmentcollect_l2_static_calibration_review.sdf",
+    "rviz_config": "Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/rviz/factory_l2_calibration_frames.rviz",
+    "ue_placement_script": "Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/ue/place_factory_l2_calibration_frames.py",
+    "rviz_marker_publisher": "Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/ros/publish_factory_l2_calibration_frames.py",
+    "marker_topic": "/mosim/factory_l2/calibration_frame_markers",
+    "origin_gazebo_m": [0.0, 120.0, 0.2],
+    "origin_unreal_cm": [0.0, -12000.0, 20.0],
+    "calibration_marker_count": 6,
+    "ue_visual_screenshot": "Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/ue_visual_render_verified_20260702.png",
+    "calibration_marker_policy": "primary acceptance uses project-owned asymmetric blocks, not Factory walls/doors/pillars",
+    "safe_anchor_basis": {
+      "collision_truth": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json",
+      "terrain_actor": "SM_FactoryFloorLarge114",
+      "old_origin_issue": "Old uav1 origin [0.0, -1.0, 0.2] overlaps low-altitude obstacle/proxy AABBs, so it is invalid as a Factory coordinate-review anchor.",
+      "new_anchor_min_low_altitude_solid_clearance_m": 106.907,
+      "uav2_min_low_altitude_solid_clearance_m": 108.907,
+      "uav3_min_low_altitude_solid_clearance_m": 107.907
+    },
+    "review_basis": "Primary F0.5 coordinate acceptance surface. Backend checks use Gazebo/RViz/log/contract data; the user visually accepts UE only, checking the audit frame, expected trajectory, and actual trajectory in the Factory scene."
+  },
+  "landmark_review": {
+    "status": "review_required",
+    "packet": "Results/unreal_scene_mapping/factory_l2_landmark_review_20260702_111256/FACTORY_L2_LANDMARK_REVIEW.json",
+    "anchor_csv": "Results/unreal_scene_mapping/factory_l2_landmark_review_20260702_111256/factory_l2_landmark_anchors.csv",
+    "gazebo_landmark_world": "Results/unreal_scene_mapping/factory_l2_landmark_review_20260702_111256/worlds/factoryenvironmentcollect_l2_static_landmark_review.sdf",
+    "rviz_config": "Results/unreal_scene_mapping/factory_l2_landmark_review_20260702_111256/rviz/factory_l2_coordinate_landmarks.rviz",
+    "marker_topic": "/mosim/factory_l2/anchor_markers",
+    "anchor_marker_publisher": "Scripts/sunray/publish_factory_l2_anchor_markers.py",
+    "review_basis": "Auxiliary context only. Named non-symmetric landmarks from UE collision truth can help scene interpretation, but the primary F0.5 coordinate gate is calibration_frame_review."
+  },
+  "review_evidence": {
+    "manifest": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/MANIFEST.json",
+    "sdf_check": "wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && GAZEBO_MODEL_PATH=\"$PWD/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models:$GAZEBO_MODEL_PATH\" gz sdf -v 1.6 -k \"Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf\"'",
+    "sdf_check_observed_output": "Check complete",
+    "user_visual_acceptance": "pending",
+    "ue_calibration_rig_render": "verified_segments_16_markers_6"
+  },
+  "claim_boundary": [
+    "Clean candidate only: source/static coordinate audit and SDF validation passed.",
+    "Not yet user visually accepted as the promoted Factory L2 scene base.",
+    "Not ROS/PX4/MAVROS/RViz runtime success.",
+    "Not SLAM/localization/planner success.",
+    "Not controller performance evidence.",
+    "Planner prior-map access is forbidden; the world is a simulator scene and validation oracle only."
+  ],
+  "next_required_checks": [
+    "Agent verifies Gazebo/RViz/log source data, frame IDs, units, trajectory source, and coordinate contract.",
+    "User visually reviews UE only and accepts or rejects the audit frame, expected trajectory, actual trajectory, direction, and gross position/scale mapping.",
+    "Agent verifies clean Gazebo scene geometry and flight free-space through manifests, static checks, and bounded source evidence; user-facing scene review happens in UE.",
+    "After acceptance, promote this clean world into the primary Factory scene profile and runtime launch entry.",
+    "Rerun the smallest Factory runtime gates needed to confirm spawn/sensor and planner behavior did not regress."
+  ]
+}

@@ -1,0 +1,156 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+  - Class: rviz/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.25
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.03
+        Value: Lines
+      Name: Factory World Grid
+      Plane: XY
+      Plane Cell Count: 200
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Alpha: 0.95
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 2
+        Min Value: 0
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Class: rviz/PointCloud2
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Name: Factory FUEL Accumulated World Cloud
+      Position Transformer: XYZ
+      Queue Size: 5
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.08
+      Style: Points
+      Topic: /mosim/goal4/livox_world_accumulated
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 0.25
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 2
+        Min Value: 0
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Class: rviz/PointCloud2
+      Color Transformer: AxisColor
+      Decay Time: 0.6
+      Enabled: false
+      Name: Factory FUEL Live World Cloud
+      Position Transformer: XYZ
+      Queue Size: 5
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.12
+      Style: Points
+      Topic: /uav1/livox_world
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: false
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 255; 50; 50
+      Enabled: true
+      Head Diameter: 0.18
+      Head Length: 0.12
+      Length: 0.2
+      Line Style: Billboards
+      Line Width: 0.12
+      Name: UAV Truth Trajectory
+      Pose Color: 255; 50; 50
+      Pose Style: None
+      Topic: /mosim/goal4/truth_path
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 30; 220; 80
+      Enabled: true
+      Head Diameter: 0.18
+      Head Length: 0.12
+      Length: 0.2
+      Line Style: Billboards
+      Line Width: 0.09
+      Name: FUEL Executed Command Path
+      Pose Color: 30; 220; 80
+      Pose Style: None
+      Topic: /mosim/goal4/position_cmd_path
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 255; 230; 40
+      Enabled: false
+      Head Diameter: 0.18
+      Head Length: 0.12
+      Length: 0.2
+      Line Style: Lines
+      Line Width: 0.035
+      Name: FUEL Raw Planner Command Path
+      Pose Color: 255; 230; 40
+      Pose Style: None
+      Topic: /mosim/goal4/planner_position_cmd_raw_path
+      Value: false
+    - Class: rviz/Marker
+      Enabled: false
+      Marker Topic: /planning/position_cmd_vis
+      Name: FUEL Position Command Marker
+      Queue Size: 10
+      Value: false
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /mosim/goal4/body_axes
+      Name: UAV Body Axes
+      Queue Size: 5
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 38; 38; 38
+    Default Light: true
+    Fixed Frame: world
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 24
+      Focal Point:
+        X: -10.3
+        Y: -18.4
+        Z: 1.5
+      Name: Current View
+      Pitch: 0.85
+      Target Frame: world
+      Value: Orbit (rviz)
+      Yaw: 0.78
+Window Geometry:
+  Height: 880
+  Width: 1120
+  X: 20
+  Y: 40

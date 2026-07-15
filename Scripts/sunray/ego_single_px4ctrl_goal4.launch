@@ -20,6 +20,8 @@
   <arg name="odom_topic" default="/uav1/mavros/local_position/odom"/>
   <arg name="global_pointcloud_topic" default="/uav1/livox_world"/>
   <arg name="position_cmd_topic" default="/position_cmd"/>
+  <arg name="flight_type" default="2"/>
+  <arg name="goal_topic" default="/goal_1"/>
 
   <node pkg="ego_planner" name="drone_$(arg drone_id)_ego_planner_node" type="ego_planner_node" output="screen">
     <remap from="~odom_world" to="$(arg odom_topic)"/>
@@ -31,9 +33,9 @@
     <remap from="~grid_map/cloud" to="$(arg global_pointcloud_topic)"/>
     <remap from="~grid_map/pose" to="/unused/camera_pose"/>
     <remap from="~grid_map/depth" to="/unused/depth"/>
-    <remap from="~move_base_simple/goal" to="/goal_1"/>
+    <remap from="~move_base_simple/goal" to="$(arg goal_topic)"/>
 
-    <param name="fsm/flight_type" value="2" type="int"/>
+    <param name="fsm/flight_type" value="$(arg flight_type)" type="int"/>
     <param name="fsm/thresh_replan_time" value="1.0" type="double"/>
     <param name="fsm/thresh_no_replan_meter" value="1.0" type="double"/>
     <param name="fsm/planning_horizon" value="$(arg planning_horizon)" type="double"/>

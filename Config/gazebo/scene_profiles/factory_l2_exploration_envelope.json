@@ -1,0 +1,164 @@
+{
+  "schema": "mosim.factory_l2_exploration_envelope.v1",
+  "status": "full_fixed_map_fuel_short_gate_passed_full_coverage_pending",
+  "generated_from": "Results/unreal_scene_mapping/factory_l2_flight_envelope_audit_20260703_014306/FACTORY_L2_FLIGHT_ENVELOPE_AUDIT.json",
+  "scene_profile": "Config/gazebo/scene_profiles/factory_l2_static_sunray_scene_clean_candidate.json",
+  "world_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
+  "gazebo_model_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+  "coordinate_contract": {
+    "frame": "Gazebo world / MWORKS world",
+    "units": "meters",
+    "axis_policy": "gazebo_x=unreal_x/100, gazebo_y=-unreal_y/100, gazebo_z=unreal_z/100",
+    "fuel_local_bridge_required": true
+  },
+  "spawn_points": [
+    {"uav": 1, "x": -10.575025, "y": -19.36313, "z": 0.2, "yaw": 0.0, "floor_actor": "SM_FactoryFloorLarge62"},
+    {"uav": 2, "x": -8.575025, "y": -19.36313, "z": 0.2, "yaw": 0.0, "floor_actor": "SM_FactoryFloorLarge62"},
+    {"uav": 3, "x": -10.575025, "y": -17.36313, "z": 0.2, "yaw": 0.0, "floor_actor": "SM_FactoryFloorLarge62"}
+  ],
+  "exploration_boundary": {
+    "basis": "user_accepted_wall_fence_collision_truth_aabb_centerline_indoor_candidate",
+    "source": "Results/unreal_scene_mapping/factory_l2_exploration_boundary_review_current/FACTORY_L2_EXPLORATION_BOUNDARY_REVIEW.json",
+    "selected_proxy_count": 1381,
+    "min_x_m": -98.40496,
+    "max_x_m": 77.25491,
+    "min_y_m": -51.36291,
+    "max_y_m": 12.63665,
+    "size_x_m": 175.65987,
+    "size_y_m": 63.99956,
+    "center_x_m": -10.575025,
+    "center_y_m": -19.36313,
+    "policy": "Use this indoor wall/fence boundary for the next Factory exploration gates. Do not command exploration outside it unless the user explicitly reopens outdoor/exterior exploration."
+  },
+  "z_policy": {
+    "initial_policy": "fixed_world_z_band",
+    "fixed_z_m": 1.2,
+    "min_cmd_z_m": 0.9,
+    "max_cmd_z_m": 1.6,
+    "pointcloud_min_world_z_m": 0.2,
+    "pointcloud_max_world_z_m": 4.0,
+    "reason": "The accepted low-floor component is near world z=0. Use a fixed altitude band for first Factory exploration so vertical excursions do not hide planner/control defects.",
+    "promotion_rule": "Only promote terrain-aware or free-Z exploration after a source audit shows material floor-height variation inside the selected runtime boundary and a bounded single-UAV gate passes."
+  },
+  "runtime_expansion_policy": {
+    "do_not_start_with_monolithic_fuel_grid": false,
+    "factory_l2_clean_scene_is_runtime_baseline": true,
+    "old_pillar_map_results_are_reference_only": true,
+    "full_map_definition": "Boundary-limited exploration inside the user-accepted indoor wall/fence envelope. Outdoor/exterior Factory space is out of scope until explicitly reopened.",
+    "gate_order": [
+      "capacity_smoke_with_review_accumulation",
+      "single_uav_fuel_full_fixed_map_short_gate",
+      "single_uav_fuel_full_fixed_map_long_coverage",
+      "three_uav_racer_boundary_exploration",
+      "diff_single_uav_factory_fixed_goal_regression",
+      "diff_three_uav_factory_fixed_goal_regression",
+      "rviz_ue_visual_audit_after_backend_pass"
+    ],
+    "z_failure_policy": "If runtime evidence shows terrain or floor-height variation invalidates the fixed z band, stop for a source-geometry height audit instead of widening z or allowing free-z exploration.",
+    "first_capacity_gate": {
+      "purpose": "Check whether accumulated point cloud and occupancy review can run without caps over a bounded duration.",
+      "review_only_unlimited_accumulation_allowed": true,
+      "planner_map_still_bounded": true
+    },
+    "single_uav_fuel": {
+      "role": "single-UAV autonomous exploration baseline",
+      "recommended_start_window_m": [175.65987, 63.99956, 3.0],
+      "recommended_resolution_m": 0.2,
+      "recommended_all_map_publish_period_s": 1.0,
+      "recommended_max_velocity_mps": 0.3,
+      "recommended_max_acceleration_mps2": 0.2,
+      "expand_after_pass": "The complete indoor fixed map passed the short gate. Extend execution duration only while planning time, CPU, safety, and coverage growth remain within gates; use rolling-window migration only after a demonstrated source-level expansion blocker."
+    },
+    "multi_uav_racer": {
+      "role": "multi-UAV autonomous exploration baseline",
+      "minimum_uav_count": 3,
+      "default_pair_optimization": "disabled unless explicitly reopened",
+      "expand_after_single_uav_pass": true
+    },
+    "fixed_goal_regression": {
+      "single_uav": "Diff-Planner Factory fixed-goal regression after exploration source gate is stable",
+      "multi_uav": "Diff-Planner three-UAV Factory fixed-goal regression after single fixed-goal pass"
+    }
+  },
+  "latest_runtime_evidence": {
+    "run": "Results/sunray_ros1/factory_l2_indoor_racer_single_wallcenter_20260703_125902",
+    "planner": "RACER single-UAV exploration_stream",
+    "status": "passed_local_smoke_only",
+    "exit_code": 0,
+    "boundary_check": "truth/odom/position_cmd/planner_position_cmd_raw XY samples stayed inside the wall-center indoor boundary",
+    "coverage_scope": "local around indoor center only; truth span about 8.3m x 5.9m and planner command span about 10.5m x 5.9m, not full 175.7m x 64.0m indoor boundary coverage",
+    "risk_notes": [
+      "exploration phase peak roll/pitch reached about 40deg in metrics and should be visually reviewed before longer runs",
+      "review accumulation quality gate skipped late landing samples because odom_z fell below 0.85m; this is expected during landing and not planner input"
+    ],
+    "next_step": "Do RViz/UE visual audit or design a bounded indoor coverage sweep before claiming full indoor exploration."
+  },
+  "latest_coverage_attempt": {
+    "run": "Results/sunray_ros1/factory_l2_indoor_racer_single_wallcenter_120s_20260703_131047",
+    "planner": "RACER single-UAV exploration_stream",
+    "status": "passed_local_coverage_attempt_full_indoor_pending",
+    "exit_code": 0,
+    "duration_s": 120,
+    "boundary_check": "truth/odom/position_cmd/planner_position_cmd_raw XY samples stayed inside the wall-center indoor boundary",
+    "coverage_scope": "truth span about 9.8m x 9.6m and planner command span about 9.9m x 12.4m, still far below the 175.7m x 64.0m indoor boundary",
+    "risk_notes": [
+      "exploration phase peak roll/pitch reached about 43deg in metrics",
+      "single center-start RACER does not naturally expand to full indoor coverage within this bounded run"
+    ],
+    "next_step": "Use tile/multi-start RACER or three-UAV RACER coverage over the accepted indoor boundary; do not claim full indoor coverage from this local run."
+  },
+  "latest_fuel_local_first_coverage": {
+    "run": "Results/sunray_ros1/factory_l2_fuel_5min_coverage_probe_20260704",
+    "planner": "FUEL single-UAV local-first exploration_stream",
+    "status": "passed_local_command_stream_full_indoor_coverage_blocked",
+    "duration_s": 300,
+    "bspline_count": 43,
+    "position_cmd_count": 9451,
+    "truth_span_m": {"x": 10.13, "y": 9.01},
+    "coverage_packet": "Results/sunray_ros1/factory_l2_fuel_5min_coverage_probe_20260704/coverage_packet/FACTORY_L2_INDOOR_COVERAGE_PACKET.json",
+    "sensor_footprint_coverage_ratio": 0.0444,
+    "decision": "Do not keep extending local-first FUEL duration as the main experiment. Reopen FUEL only through rolling-window or tile coverage strategy with merged coverage accounting.",
+    "tile_strategy_entry": "Scripts/sunray/start_factory_fuel_tile_coverage_probe.ps1",
+    "merged_coverage_acceptance_field": "acceptance.merged_sensor_footprint_coverage_ratio"
+  },
+  "latest_fuel_mid360_fixed_map_gate": {
+    "run": "Results/sunray_ros1/factory_l2_fuel_mid360_full176x64_res02_map1hz_v03_a02_30s_20260712",
+    "planner": "FUEL single-UAV unknown exploration with FAST-LIO MID360 frontend",
+    "status": "passed_full_fixed_map_short_gate_full_coverage_pending",
+    "duration_s": 30.002,
+    "map_size_m": [175.65987, 63.99956, 3.0],
+    "resolution_m": 0.2,
+    "all_map_publish_period_s": 1.0,
+    "max_velocity_mps": 0.3,
+    "max_acceleration_mps2": 0.2,
+    "bspline_count": 56,
+    "planner_position_cmd_count": 3777,
+    "planning_time_mean_s": 0.0296,
+    "planning_time_max_s": 0.081,
+    "sensor_footprint_coverage_ratio": 0.0355,
+    "safety_blockers": [],
+    "decision": "The complete fixed map and MID360 frontend are executable. The previous apparent stop was the bounded execute timeout, not FUEL FINISH. Run a bounded long-duration growth gate before any full-coverage claim or rolling-window redesign."
+  },
+  "latest_review_packet": {
+    "path": "Results/sunray_ros1/factory_l2_indoor_single_racer_baseline_review_20260703_132632/FACTORY_L2_INDOOR_SINGLE_RACER_BASELINE_REVIEW.json",
+    "status": "review_required_with_clear_coverage_blocker",
+    "baseline_decision": "accept_as_indoor_single_uav_local_autonomous_exploration_baseline",
+    "coverage_decision": "do_not_claim_full_indoor_coverage",
+    "blocker": "single_center_start_racer_does_not_expand_to_full_indoor_coverage"
+  },
+  "minimum_runtime_metrics": [
+    "all UAV truth/odom XY stay inside exploration_boundary with tolerance",
+    "truth and odom Z stay inside z_policy min/max with tolerance",
+    "no roll/pitch safety violation",
+    "planner publishes nonempty frontier/bspline/position_cmd evidence",
+    "accumulated point cloud and occupancy counts increase during exploration",
+    "runtime logs contain no fatal Gazebo/PX4/MAVROS/planner errors",
+    "RViz/UE review is opened only after backend metrics pass"
+  ],
+  "claim_boundary": [
+    "This file is a source/static envelope contract plus runtime expansion policy.",
+    "It is not runtime proof of full-map exploration.",
+    "It does not grant FUEL/RACER prior access to the static world mesh.",
+    "Gazebo/PX4/MAVROS/RViz/log metrics remain runtime authority; UE remains display/review."
+  ]
+}

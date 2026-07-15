@@ -94,7 +94,7 @@ def main() -> int:
         "compile_command": compile_cmd,
         "compile_returncode": compile_rc,
         "scope": {
-            "controller_under_test": "References/Lab/Fast-Drone-250/src/realflight_modules/px4ctrl",
+            "controller_under_test": "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl",
             "plant_or_runtime": "none; offline source/core consistency only",
             "mworks": "not started; G5 must pass before G6",
             "gazebo": "not started; G7 is gated by G6",

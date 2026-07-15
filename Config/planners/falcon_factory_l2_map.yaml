@@ -1,0 +1,45 @@
+map_config:
+  map_file: "factory_l2_runtime_obstacles_from_lidar"
+  map_dimension: 2
+
+  init_x: -10.575025
+  init_y: -19.36313
+  init_z: 1.2
+  init_yaw: 0.0
+
+  map_size:
+    map_min_x: -98.40496
+    map_min_y: -51.36291
+    map_min_z: 0.0
+    map_max_x: 77.25491
+    map_max_y: 12.63665
+    map_max_z: 4.0
+
+    box_min_x: -98.40496
+    box_min_y: -51.36291
+    box_min_z: 0.0
+    box_max_x: 77.25491
+    box_max_y: 12.63665
+    box_max_z: 1.6
+
+    vbox_min_x: -98.40496
+    vbox_min_y: -51.36291
+    vbox_min_z: 0.0
+    vbox_max_x: 77.25491
+    vbox_max_y: 12.63665
+    vbox_max_z: 4.0
+
+  scale: 1.0
+
+  # MoSim Factory L2 uses Gazebo/MWORKS world coordinates directly.
+  T_b_c:
+  - [ 0.0, 0.0, 1.0, 0.0]
+  - [-1.0, 0.0, 0.0, 0.0]
+  - [ 0.0,-1.0, 0.0, 0.0]
+  - [ 0.0, 0.0, 0.0, 1.0]
+
+  T_m_w:
+  - [ 1.0, 0.0, 0.0, 0.0]
+  - [ 0.0, 1.0, 0.0, 0.0]
+  - [ 0.0, 0.0, 1.0, 0.0]
+  - [ 0.0, 0.0, 0.0, 1.0]

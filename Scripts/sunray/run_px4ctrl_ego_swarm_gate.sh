@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run Goal5: EGO-Swarm 2/3 UAVs -> per-UAV original px4ctrl -> PX4/Gazebo.
+# Run Goal5: multi-UAV planner -> per-UAV selected px4ctrl core -> PX4/Gazebo.
 
 set -eo pipefail
 
@@ -8,30 +8,111 @@ SUNRAY_WS="${SUNRAY_WS:-/opt/mosim_work/sunray_ws/Sunray}"
 SUNRAY_PX4_DIR="${SUNRAY_PX4_DIR:-/opt/mosim_work/sunray_px4}"
 PX4CTRL_WS="${PX4CTRL_WS:-${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws}"
 GOAL4_EGO_WS="${GOAL4_EGO_WS:-/opt/mosim_work/goal4_ego_ws_px4msg}"
-LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-/opt/mosim_work/sunray_livox_plugin_ws}"
-UAV_NUM="${UAV_NUM:-2}"
-RUN_ID="${RUN_ID:-sunray_ros1_goal5_ego_swarm_${UAV_NUM}uav_$(date +%Y%m%d_%H%M%S)}"
+GOAL4_DIFF_PLANNER_WS="${GOAL4_DIFF_PLANNER_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/goal4_diff_planner_ws_px4msg}"
+RACER_WS="${RACER_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/racer_ws_d1_optimized_20260701_084307}"
+RACER_UNREACHABLE_RECOVERY_ENABLE="${RACER_UNREACHABLE_RECOVERY_ENABLE:-true}"
+SWARM_FORMATION_WS="${SWARM_FORMATION_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/swarm_formation_ws_d1_20260701_173306}"
+LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws}"
+FASTLIO_WS="${FASTLIO_WS:-/opt/mosim_work/sunray_ws/fastlio_ws}"
+FASTLIO_SRC="${FASTLIO_SRC:-${PROJECT_ROOT}/References/Lab/localization_slam/FAST_LIO}"
+LIVOX_COMPAT_SRC="${LIVOX_COMPAT_SRC:-${PROJECT_ROOT}/References/Lab/localization_slam/livox_ros_driver_compat}"
+UAV_NUM="${UAV_NUM:-3}"
+PLANNER_VARIANT="${PLANNER_VARIANT:-diff_planner}"
+RUN_ID="${RUN_ID:-sunray_ros1_goal5_${PLANNER_VARIANT}_${UAV_NUM}uav_$(date +%Y%m%d_%H%M%S)}"
 RESULT_DIR="${RESULT_DIR:-${PROJECT_ROOT}/Results/sunray_ros1/${RUN_ID}}"
 GUI="${GUI:-false}"
 WORLD_FILE="${WORLD_FILE:-${SUNRAY_WS}/simulation/sunray_simulator/worlds/planning_test.world}"
+SUNRAY_GAZEBO_LAUNCH_FILE="${SUNRAY_GAZEBO_LAUNCH_FILE:-}"
 USE_SIM_TIME="${USE_SIM_TIME:-true}"
 SUNRAY_GAZEBO_MAX_STEP_SIZE_S="${SUNRAY_GAZEBO_MAX_STEP_SIZE_S:-0.001}"
 SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ="${SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ:-1000}"
 SUNRAY_MID360_PLUGIN_DOWNSAMPLE="${SUNRAY_MID360_PLUGIN_DOWNSAMPLE:-4}"
 SUNRAY_LIVOX_PLUGIN_FILENAME="${SUNRAY_LIVOX_PLUGIN_FILENAME:-${LIVOX_PLUGIN_WS}/devel/lib/liblivox_laser_simulation.so}"
-SUNRAY_MID360_CSV_FILE_NAME="${SUNRAY_MID360_CSV_FILE_NAME:-mid360-real-centr.csv}"
 SUNRAY_MID360_GOAL5_CSV_STRIDE="${SUNRAY_MID360_GOAL5_CSV_STRIDE:-4}"
+SUNRAY_MID360_CSV_FILE_NAME="${SUNRAY_MID360_CSV_FILE_NAME:-mid360-real-centr-goal5-s${SUNRAY_MID360_GOAL5_CSV_STRIDE}.csv}"
+FACTORY_L2_MODEL_PATH="${FACTORY_L2_MODEL_PATH:-${PROJECT_ROOT}/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models}"
+FACTORY_L2_CONFIG_MODEL_PATH="${FACTORY_L2_CONFIG_MODEL_PATH:-${PROJECT_ROOT}/Config/gazebo/models}"
+GOAL5_FACTORY_MODEL_PATH_MODE="${GOAL5_FACTORY_MODEL_PATH_MODE:-auto}"
+PX4_ROS1_GUARD_UXRCE_DDS="${PX4_ROS1_GUARD_UXRCE_DDS:-true}"
 MAVROS_READY_TIMEOUT_S="${MAVROS_READY_TIMEOUT_S:-90}"
 ODOM_BRIDGE_READY_TIMEOUT_S="${ODOM_BRIDGE_READY_TIMEOUT_S:-25}"
 MAVROS_STREAM_RATE_HZ="${MAVROS_STREAM_RATE_HZ:-100}"
+MAVROS_SET_STREAM_GROUPS="${MAVROS_SET_STREAM_GROUPS:-raw_sensors position extra1 extra2}"
+MAVROS_SET_MESSAGE_INTERVALS="${MAVROS_SET_MESSAGE_INTERVALS:-true}"
+MAVROS_SET_MESSAGE_IDS="${MAVROS_SET_MESSAGE_IDS:-105:HIGHRES_IMU 30:ATTITUDE 31:ATTITUDE_QUATERNION 32:LOCAL_POSITION_NED}"
+PX4CTRL_SKIP_PARAM_SNAPSHOT="${PX4CTRL_SKIP_PARAM_SNAPSHOT:-false}"
 TOTAL_TIMEOUT_S="${TOTAL_TIMEOUT_S:-280}"
 VEHICLE="${VEHICLE:-sunray150_with_mid360}"
 SEQUENTIAL_SPAWN="${SEQUENTIAL_SPAWN:-false}"
-PRELOAD_GAZEBO_MODELS="${PRELOAD_GAZEBO_MODELS:-true}"
+STAGGERED_SPAWN="${STAGGERED_SPAWN:-false}"
+STAGGERED_SPAWN_INTERVAL_S="${STAGGERED_SPAWN_INTERVAL_S:-18}"
+PRELOAD_GAZEBO_MODELS="${PRELOAD_GAZEBO_MODELS:-false}"
 GOAL5_PRELOADED_INIT_Z="${GOAL5_PRELOADED_INIT_Z:-0.35}"
 SUNRAY_STRIP_PX4_MODEL_PATH="${SUNRAY_STRIP_PX4_MODEL_PATH:-true}"
 LIDAR_READY_TIMEOUT_S="${LIDAR_READY_TIMEOUT_S:-90}"
+GOAL5_STARTUP_ATTEMPTS="${GOAL5_STARTUP_ATTEMPTS:-2}"
+GOAL5_RETRY_EXIT_CODES="${GOAL5_RETRY_EXIT_CODES:-4 5 7}"
+GOAL5_ATTEMPT_CHILD="${GOAL5_ATTEMPT_CHILD:-false}"
+GOAL5_STARTUP_ATTEMPT_INDEX="${GOAL5_STARTUP_ATTEMPT_INDEX:-1}"
+GOAL5_STARTUP_ATTEMPT_MAX="${GOAL5_STARTUP_ATTEMPT_MAX:-${GOAL5_STARTUP_ATTEMPTS}}"
 SWARM_BASELINE_ONLY="${SWARM_BASELINE_ONLY:-false}"
+GOAL5_STARTUP_ONLY="${GOAL5_STARTUP_ONLY:-false}"
+POINTCLOUD_MIN_WORLD_Z_M_USER_SET="${POINTCLOUD_MIN_WORLD_Z_M+x}"
+POINTCLOUD_MAX_WORLD_Z_M_USER_SET="${POINTCLOUD_MAX_WORLD_Z_M+x}"
+POINTCLOUD_MAX_ABS_ODOM_XY_M_USER_SET="${POINTCLOUD_MAX_ABS_ODOM_XY_M+x}"
+RACER_FRAME_BRIDGE_ENABLED_USER_SET="${RACER_FRAME_BRIDGE_ENABLED+x}"
+RACER_FRAME_OFFSET_X_USER_SET="${RACER_FRAME_OFFSET_X+x}"
+RACER_FRAME_OFFSET_Y_USER_SET="${RACER_FRAME_OFFSET_Y+x}"
+RACER_FRAME_OFFSET_Z_USER_SET="${RACER_FRAME_OFFSET_Z+x}"
+POINTCLOUD_MIN_WORLD_Z_M="${POINTCLOUD_MIN_WORLD_Z_M:-0.50}"
+POINTCLOUD_MAX_WORLD_Z_M="${POINTCLOUD_MAX_WORLD_Z_M:-2.20}"
+POINTCLOUD_MAX_ABS_ODOM_XY_M="${POINTCLOUD_MAX_ABS_ODOM_XY_M:-50.0}"
+POINTCLOUD_MAX_SENSOR_RANGE_M="${POINTCLOUD_MAX_SENSOR_RANGE_M:-8.0}"
+POINTCLOUD_ROTATION_MODE="${POINTCLOUD_ROTATION_MODE:-full}"
+RACER_FRAME_BRIDGE_ENABLED="${RACER_FRAME_BRIDGE_ENABLED:-false}"
+RACER_FRAME_OFFSET_X="${RACER_FRAME_OFFSET_X:-0.0}"
+RACER_FRAME_OFFSET_Y="${RACER_FRAME_OFFSET_Y:-0.0}"
+RACER_FRAME_OFFSET_Z="${RACER_FRAME_OFFSET_Z:-0.0}"
+RACER_SENSOR_SOURCE="${RACER_SENSOR_SOURCE:-fastlio}"
+RACER_INPUT_GATE_ONLY="${RACER_INPUT_GATE_ONLY:-false}"
+RACER_FASTLIO_SCAN_RATE_HZ="${RACER_FASTLIO_SCAN_RATE_HZ:-20.0}"
+RACER_FASTLIO_FILTER_SIZE_SURF="${RACER_FASTLIO_FILTER_SIZE_SURF:-0.5}"
+RACER_FASTLIO_FILTER_SIZE_MAP="${RACER_FASTLIO_FILTER_SIZE_MAP:-0.5}"
+RACER_FASTLIO_POINT_TIME_MODE="${RACER_FASTLIO_POINT_TIME_MODE:-instantaneous}"
+RACER_FASTLIO_ALIGNMENT_Z_SOURCE="${RACER_FASTLIO_ALIGNMENT_Z_SOURCE:-truth}"
+RACER_FASTLIO_ALIGNMENT_REFERENCE="${RACER_FASTLIO_ALIGNMENT_REFERENCE:-config}"
+RACER_FASTLIO_MOUNT_XYZ="${RACER_FASTLIO_MOUNT_XYZ:--0.000005 0.032295 0.050167}"
+RACER_FASTLIO_MOUNT_RPY="${RACER_FASTLIO_MOUNT_RPY:-0 0 4.712389}"
+RACER_FASTLIO_READY_TIMEOUT_S="${RACER_FASTLIO_READY_TIMEOUT_S:-90}"
+RACER_FASTLIO_SYNC_SLOP_S="${RACER_FASTLIO_SYNC_SLOP_S:-0.10}"
+RACER_FASTLIO_MIN_SYNC_CALLBACKS="${RACER_FASTLIO_MIN_SYNC_CALLBACKS:-3}"
+RACER_FASTLIO_SELF_FILTER_RADIUS_XY_M="${RACER_FASTLIO_SELF_FILTER_RADIUS_XY_M:-0.35}"
+RACER_FASTLIO_SELF_FILTER_Z_MIN_M="${RACER_FASTLIO_SELF_FILTER_Z_MIN_M:--0.30}"
+RACER_FASTLIO_SELF_FILTER_Z_MAX_M="${RACER_FASTLIO_SELF_FILTER_Z_MAX_M:-0.30}"
+RACER_FASTLIO_PEER_FILTER_RADIUS_XY_M="${RACER_FASTLIO_PEER_FILTER_RADIUS_XY_M:-0.45}"
+RACER_FASTLIO_PEER_FILTER_Z_MIN_M="${RACER_FASTLIO_PEER_FILTER_Z_MIN_M:--0.30}"
+RACER_FASTLIO_PEER_FILTER_Z_MAX_M="${RACER_FASTLIO_PEER_FILTER_Z_MAX_M:-0.30}"
+RACER_FASTLIO_PEER_ODOM_MAX_AGE_S="${RACER_FASTLIO_PEER_ODOM_MAX_AGE_S:-0.50}"
+case "${RACER_SENSOR_SOURCE}" in
+  fastlio|raw_mavros)
+    ;;
+  *)
+    echo "Unsupported RACER_SENSOR_SOURCE=${RACER_SENSOR_SOURCE}; expected fastlio or raw_mavros" >&2
+    exit 2
+    ;;
+esac
+if [[ -z "${RACER_LOCAL_ODOM_TOPIC_TEMPLATE+x}" ]]; then
+  RACER_LOCAL_ODOM_TOPIC_TEMPLATE='/uav{uid}/mosim/racer/local_odom'
+fi
+if [[ -z "${RACER_LOCAL_POSE_TOPIC_TEMPLATE+x}" ]]; then
+  RACER_LOCAL_POSE_TOPIC_TEMPLATE='/uav{uid}/mosim/racer/local_pose'
+fi
+if [[ -z "${RACER_LOCAL_CLOUD_TOPIC_TEMPLATE+x}" ]]; then
+  RACER_LOCAL_CLOUD_TOPIC_TEMPLATE='/uav{uid}/mosim/racer/local_cloud'
+fi
+if [[ -z "${RACER_REFERENCE_ODOM_TOPIC_TEMPLATE+x}" ]]; then
+  RACER_REFERENCE_ODOM_TOPIC_TEMPLATE='/uav{uid}/mosim/racer/reference_odom'
+fi
 
 START1_X="${START1_X:-0.0}"
 START1_Y="${START1_Y:--1.0}"
@@ -39,35 +120,719 @@ START2_X="${START2_X:-0.0}"
 START2_Y="${START2_Y:-1.0}"
 START3_X="${START3_X:--1.5}"
 START3_Y="${START3_Y:-0.0}"
-TARGET1_X="${TARGET1_X:-4.0}"
+TARGET1_X="${TARGET1_X:-1.0}"
 TARGET1_Y="${TARGET1_Y:--1.0}"
 TARGET1_Z="${TARGET1_Z:-1.0}"
-TARGET2_X="${TARGET2_X:-4.0}"
+TARGET1_CHAIN_FILE="${TARGET1_CHAIN_FILE:-}"
+TARGET2_X="${TARGET2_X:-1.0}"
 TARGET2_Y="${TARGET2_Y:-1.0}"
 TARGET2_Z="${TARGET2_Z:-1.0}"
-TARGET3_X="${TARGET3_X:-4.0}"
+TARGET2_CHAIN_FILE="${TARGET2_CHAIN_FILE:-}"
+TARGET3_X="${TARGET3_X:-1.0}"
 TARGET3_Y="${TARGET3_Y:-0.0}"
-TARGET3_Z="${TARGET3_Z:-1.25}"
+TARGET3_Z="${TARGET3_Z:-1.0}"
+TARGET3_CHAIN_FILE="${TARGET3_CHAIN_FILE:-}"
+TARGET_CHAIN_MAX_GOALS="${TARGET_CHAIN_MAX_GOALS:-0}"
+TARGET_CHAIN_GOAL_TIMEOUT_S="${TARGET_CHAIN_GOAL_TIMEOUT_S:-90.0}"
 EGO_MAX_VEL="${EGO_MAX_VEL:-0.8}"
 EGO_MAX_ACC="${EGO_MAX_ACC:-0.8}"
+EGO_MAX_JERK="${EGO_MAX_JERK:-4.0}"
+EGO_PLANNING_HORIZON="${EGO_PLANNING_HORIZON:-5.0}"
+EGO_GRID_RESOLUTION="${EGO_GRID_RESOLUTION:-0.12}"
+EGO_OBSTACLES_INFLATION="${EGO_OBSTACLES_INFLATION:-0.20}"
+EGO_OBSTACLE_CLEARANCE="${EGO_OBSTACLE_CLEARANCE:-0.20}"
+EGO_OBSTACLE_CLEARANCE_SOFT="${EGO_OBSTACLE_CLEARANCE_SOFT:-0.40}"
+EGO_VIRTUAL_CEIL_HEIGHT="${EGO_VIRTUAL_CEIL_HEIGHT:-1.60}"
+EGO_VIRTUAL_GROUND_HEIGHT="${EGO_VIRTUAL_GROUND_HEIGHT:-0.05}"
+EGO_VISUALIZATION_TRUNCATE_HEIGHT="${EGO_VISUALIZATION_TRUNCATE_HEIGHT:-1.80}"
+EGO_ENABLE_VIRTUAL_WALL="${EGO_ENABLE_VIRTUAL_WALL:-true}"
+EGO_CLOUD_ENABLE_RAYCAST="${EGO_CLOUD_ENABLE_RAYCAST:-true}"
+EGO_GOAL5_FLIGHT_TYPE="${EGO_GOAL5_FLIGHT_TYPE:-4}"
+EGO_GOAL5_PLANNER_TARGET_MODE="${EGO_GOAL5_PLANNER_TARGET_MODE:-goal}"
+DIFF_GOAL5_FLIGHT_TYPE="${DIFF_GOAL5_FLIGHT_TYPE:-2}"
+DIFF_GOAL5_PLANNER_TARGET_MODE="${DIFF_GOAL5_PLANNER_TARGET_MODE:-trigger}"
+DIFF_GOAL5_GRID_INIT_X="${DIFF_GOAL5_GRID_INIT_X:-0.0}"
+DIFF_GOAL5_GRID_INIT_Y="${DIFF_GOAL5_GRID_INIT_Y:-0.0}"
+DIFF_GOAL5_GRID_INIT_Z="${DIFF_GOAL5_GRID_INIT_Z:-0.0}"
+DIFF_GOAL5_MAP_SIZE_X="${DIFF_GOAL5_MAP_SIZE_X:-40.0}"
+DIFF_GOAL5_MAP_SIZE_Y="${DIFF_GOAL5_MAP_SIZE_Y:-40.0}"
+DIFF_GOAL5_MAP_SIZE_Z="${DIFF_GOAL5_MAP_SIZE_Z:-2.5}"
+DIFF_GOAL5_LOCAL_UPDATE_RANGE_X="${DIFF_GOAL5_LOCAL_UPDATE_RANGE_X:-5.5}"
+DIFF_GOAL5_LOCAL_UPDATE_RANGE_Y="${DIFF_GOAL5_LOCAL_UPDATE_RANGE_Y:-5.5}"
+DIFF_GOAL5_LOCAL_UPDATE_RANGE_Z="${DIFF_GOAL5_LOCAL_UPDATE_RANGE_Z:-2.0}"
+RACER_D3_EXPLORATION_DURATION_S="${RACER_D3_EXPLORATION_DURATION_S:-30.0}"
+RACER_D3_EXPLORATION_MAX_TRAJECTORY_STALE_S="${RACER_D3_EXPLORATION_MAX_TRAJECTORY_STALE_S:-10.0}"
+GOAL_PUBLISH_STAGGER_S="${GOAL_PUBLISH_STAGGER_S:-$(if [[ "${PLANNER_VARIANT}" == "racer" && "${UAV_NUM}" -gt 1 ]]; then echo 3.0; else echo 0.0; fi)}"
+RACER_D3_MAP_SIZE_X="${RACER_D3_MAP_SIZE_X:-18.0}"
+RACER_D3_MAP_SIZE_Y="${RACER_D3_MAP_SIZE_Y:-20.0}"
+RACER_D3_MAP_SIZE_Z="${RACER_D3_MAP_SIZE_Z:-2.2}"
+RACER_D3_DISABLE_PAIR_OPT="${RACER_D3_DISABLE_PAIR_OPT:-true}"
+RACER_D3_ROUND_ROBIN_INIT="${RACER_D3_ROUND_ROBIN_INIT:-true}"
+RACER_D3_MIN_UNKNOWN="${RACER_D3_MIN_UNKNOWN:-500}"
+RACER_D3_MIN_FREE="${RACER_D3_MIN_FREE:-1200}"
+RACER_D3_GRID_SIZE="${RACER_D3_GRID_SIZE:-4.0}"
+RACER_D3_ATTEMPT_INTERVAL="${RACER_D3_ATTEMPT_INTERVAL:-0.4}"
+RACER_D3_PAIR_OPT_INTERVAL="${RACER_D3_PAIR_OPT_INTERVAL:-2.0}"
+RACER_D3_FRONTIER_MIN_VISIB_NUM="${RACER_D3_FRONTIER_MIN_VISIB_NUM:-10}"
+RACER_D3_PAIR_OPT_AFTER_TRIGGER_ONLY="${RACER_D3_PAIR_OPT_AFTER_TRIGGER_ONLY:-true}"
+RACER_D3_MIN_FRONTIER_COUNT="${RACER_D3_MIN_FRONTIER_COUNT:-0}"
+RACER_D3_MIN_TRAJECTORY_VIS_COUNT="${RACER_D3_MIN_TRAJECTORY_VIS_COUNT:-0}"
+RACER_D3_MIN_SWARM_TRAJ_COUNT="${RACER_D3_MIN_SWARM_TRAJ_COUNT:-1}"
+RACER_D3_GROUND_HEIGHT="${RACER_D3_GROUND_HEIGHT:-0.0}"
+RACER_D3_BOX_MIN_X="${RACER_D3_BOX_MIN_X:-$(awk -v size="${RACER_D3_MAP_SIZE_X}" 'BEGIN { printf "%.6f", -size / 2.0 }')}"
+RACER_D3_BOX_MIN_Y="${RACER_D3_BOX_MIN_Y:-$(awk -v size="${RACER_D3_MAP_SIZE_Y}" 'BEGIN { printf "%.6f", -size / 2.0 }')}"
+RACER_D3_BOX_MIN_Z="${RACER_D3_BOX_MIN_Z:-0.90}"
+RACER_D3_BOX_MAX_X="${RACER_D3_BOX_MAX_X:-$(awk -v size="${RACER_D3_MAP_SIZE_X}" 'BEGIN { printf "%.6f", size / 2.0 }')}"
+RACER_D3_BOX_MAX_Y="${RACER_D3_BOX_MAX_Y:-$(awk -v size="${RACER_D3_MAP_SIZE_Y}" 'BEGIN { printf "%.6f", size / 2.0 }')}"
+RACER_D3_BOX_MAX_Z="${RACER_D3_BOX_MAX_Z:-1.35}"
+RACER_D3_VIRTUAL_CEIL_HEIGHT="${RACER_D3_VIRTUAL_CEIL_HEIGHT:-1.30}"
+RACER_D3_VISUALIZATION_TRUNCATE_HEIGHT="${RACER_D3_VISUALIZATION_TRUNCATE_HEIGHT:-1.50}"
+RACER_D3_VISUALIZATION_TRUNCATE_LOW="${RACER_D3_VISUALIZATION_TRUNCATE_LOW:-0.50}"
+RACER_D3_SWARM_SAFE_DIST="${RACER_D3_SWARM_SAFE_DIST:-1.2}"
+RACER_D3_ASTAR_START_CLEARANCE_RADIUS="${RACER_D3_ASTAR_START_CLEARANCE_RADIUS:-0.0}"
+RACER_D3_ASTAR_MAX_SEARCH_TIME="${RACER_D3_ASTAR_MAX_SEARCH_TIME:-0.001}"
+SWARM_FORMATION_D3_CENTER_X="${SWARM_FORMATION_D3_CENTER_X:-1.4}"
+SWARM_FORMATION_D3_CENTER_Y="${SWARM_FORMATION_D3_CENTER_Y:-0.0}"
+SWARM_FORMATION_D3_CENTER_Z="${SWARM_FORMATION_D3_CENTER_Z:-1.0}"
+SWARM_FORMATION_D3_SWARM_SCALE="${SWARM_FORMATION_D3_SWARM_SCALE:-0.5}"
+SWARM_FORMATION_D3_RELATIVE_Z="${SWARM_FORMATION_D3_RELATIVE_Z:-0.0}"
+SWARM_FORMATION_D3_MAP_SIZE_X="${SWARM_FORMATION_D3_MAP_SIZE_X:-10.0}"
+SWARM_FORMATION_D3_MAP_SIZE_Y="${SWARM_FORMATION_D3_MAP_SIZE_Y:-8.0}"
+SWARM_FORMATION_D3_MAP_SIZE_Z="${SWARM_FORMATION_D3_MAP_SIZE_Z:-2.5}"
+SWARM_FORMATION_D3_RELAY_RETIME_FUTURE_S="${SWARM_FORMATION_D3_RELAY_RETIME_FUTURE_S:-0.05}"
+SWARM_FORMATION_D3_SWARM_TRAJ_TIME_TOLERANCE_S="${SWARM_FORMATION_D3_SWARM_TRAJ_TIME_TOLERANCE_S:-1.0}"
+EGO_GATE_PRE_TAKEOFF_SETTLE_S="${EGO_GATE_PRE_TAKEOFF_SETTLE_S:-2.0}"
+EGO_GATE_PRE_TAKEOFF_SETTLE_TIMEOUT_S="${EGO_GATE_PRE_TAKEOFF_SETTLE_TIMEOUT_S:-40.0}"
+EGO_GATE_PRE_TAKEOFF_ODOM_TIMEOUT_S="${EGO_GATE_PRE_TAKEOFF_ODOM_TIMEOUT_S:-0.35}"
+EGO_GATE_PRE_TAKEOFF_TRUTH_TIMEOUT_S="${EGO_GATE_PRE_TAKEOFF_TRUTH_TIMEOUT_S:-0.35}"
+EGO_GATE_PRE_TAKEOFF_MAX_SPEED_MPS="${EGO_GATE_PRE_TAKEOFF_MAX_SPEED_MPS:-0.10}"
+EGO_GATE_PRE_TAKEOFF_MAX_VZ_MPS="${EGO_GATE_PRE_TAKEOFF_MAX_VZ_MPS:-0.08}"
+EGO_GATE_PRE_TAKEOFF_MAX_ROLL_PITCH_DEG="${EGO_GATE_PRE_TAKEOFF_MAX_ROLL_PITCH_DEG:-8.0}"
+EGO_GATE_PRE_TAKEOFF_MIN_TARGET_ATTITUDE_COUNT="${EGO_GATE_PRE_TAKEOFF_MIN_TARGET_ATTITUDE_COUNT:-10}"
+EGO_GATE_PRE_TAKEOFF_MIN_DEBUG_COUNT="${EGO_GATE_PRE_TAKEOFF_MIN_DEBUG_COUNT:-0}"
+EGO_GATE_READY_TIMEOUT_S="${EGO_GATE_READY_TIMEOUT_S:-60.0}"
+EGO_GATE_TAKEOFF_HEIGHT="${EGO_GATE_TAKEOFF_HEIGHT:-1.0}"
+EGO_GATE_TAKEOFF_LAND_SPEED="${EGO_GATE_TAKEOFF_LAND_SPEED:-0.25}"
+EGO_GATE_TAKEOFF_TIMEOUT_S="${EGO_GATE_TAKEOFF_TIMEOUT_S:-90.0}"
+EGO_GATE_TAKEOFF_UAV_STAGGER_S="${EGO_GATE_TAKEOFF_UAV_STAGGER_S:-2.0}"
+EGO_GATE_TAKEOFF_RETRY_INTERVAL_S="${EGO_GATE_TAKEOFF_RETRY_INTERVAL_S:-8.0}"
+EGO_GATE_TAKEOFF_RETRY_REPEATS="${EGO_GATE_TAKEOFF_RETRY_REPEATS:-3}"
+EGO_GATE_TAKEOFF_RETRY_MAX="${EGO_GATE_TAKEOFF_RETRY_MAX:-2}"
+EGO_GATE_TAKEOFF_RISE_DETECT_M="${EGO_GATE_TAKEOFF_RISE_DETECT_M:-0.08}"
+EGO_GATE_EGO_TAKEOVER_TIMEOUT_S="${EGO_GATE_EGO_TAKEOVER_TIMEOUT_S:-45.0}"
+EGO_GATE_EXECUTE_TIMEOUT_S="${EGO_GATE_EXECUTE_TIMEOUT_S:-100.0}"
+EGO_GATE_LAND_TIMEOUT_S="${EGO_GATE_LAND_TIMEOUT_S:-30.0}"
+EGO_GATE_PRE_LAND_HOVER_S="${EGO_GATE_PRE_LAND_HOVER_S:-1.0}"
+EGO_GATE_PRE_LAND_NO_CMD_S="${EGO_GATE_PRE_LAND_NO_CMD_S:-0.8}"
+EGO_GATE_LANDED_Z_MAX="${EGO_GATE_LANDED_Z_MAX:-0.20}"
+EGO_GATE_PRE_STABLE_S="${EGO_GATE_PRE_STABLE_S:-3.0}"
+EGO_GATE_PRE_MAX_XY_ERROR_M="${EGO_GATE_PRE_MAX_XY_ERROR_M:-0.20}"
+EGO_GATE_PRE_MAX_Z_ERROR_M="${EGO_GATE_PRE_MAX_Z_ERROR_M:-0.10}"
+EGO_GATE_PRE_MAX_SPEED_MPS="${EGO_GATE_PRE_MAX_SPEED_MPS:-0.25}"
+EGO_GATE_PRE_MAX_VZ_MPS="${EGO_GATE_PRE_MAX_VZ_MPS:-0.18}"
+EGO_GATE_PRE_MAX_ROLL_PITCH_DEG="${EGO_GATE_PRE_MAX_ROLL_PITCH_DEG:-12.0}"
+EGO_GATE_PUBLISH_HOVER_DURING_TAKEOFF="${EGO_GATE_PUBLISH_HOVER_DURING_TAKEOFF:-false}"
+EGO_GATE_TARGET_HOLD_MAX_SPEED_MPS="${EGO_GATE_TARGET_HOLD_MAX_SPEED_MPS:-0.35}"
+EGO_GATE_TARGET_HOLD_MAX_VZ_MPS="${EGO_GATE_TARGET_HOLD_MAX_VZ_MPS:-0.20}"
+EGO_GATE_TARGET_STABLE_SKIP_RADIUS_M="${EGO_GATE_TARGET_STABLE_SKIP_RADIUS_M:-0.0}"
+EGO_GATE_TARGET_STABLE_SKIP_S="${EGO_GATE_TARGET_STABLE_SKIP_S:-2.0}"
+EGO_GATE_TARGET_STABLE_SKIP_MAX_SPEED_MPS="${EGO_GATE_TARGET_STABLE_SKIP_MAX_SPEED_MPS:-0.08}"
+EGO_GATE_TARGET_STABLE_SKIP_MAX_VZ_MPS="${EGO_GATE_TARGET_STABLE_SKIP_MAX_VZ_MPS:-0.08}"
+EGO_GATE_MIN_OCCUPANCY_COUNT="${EGO_GATE_MIN_OCCUPANCY_COUNT:-2}"
+EGO_GATE_MIN_OCCUPANCY_POINTS="${EGO_GATE_MIN_OCCUPANCY_POINTS:-1}"
+EGO_CMD_SAFETY_ENABLE="${EGO_CMD_SAFETY_ENABLE:-true}"
+EGO_CMD_SAFETY_MIN_Z="${EGO_CMD_SAFETY_MIN_Z:-0.85}"
+EGO_CMD_SAFETY_MAX_Z="${EGO_CMD_SAFETY_MAX_Z:-1.35}"
+EGO_CMD_SAFETY_INPUT_TIMEOUT_S="${EGO_CMD_SAFETY_INPUT_TIMEOUT_S:-0.30}"
+EGO_CMD_SAFETY_RATE_HZ="${EGO_CMD_SAFETY_RATE_HZ:-100.0}"
+EGO_CMD_SAFETY_JUMP_GUARD_ENABLE="${EGO_CMD_SAFETY_JUMP_GUARD_ENABLE:-true}"
+EGO_CMD_SAFETY_MAX_POSITION_JUMP_M="${EGO_CMD_SAFETY_MAX_POSITION_JUMP_M:-0.80}"
+EGO_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS="${EGO_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS:-0.0}"
+EGO_CMD_INVALID_Z_POLICY="${EGO_CMD_INVALID_Z_POLICY:-$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo clamp; else echo hold_last_safe; fi)}"
+EGO_CMD_SAFETY_SMOOTHING_ENABLE="${EGO_CMD_SAFETY_SMOOTHING_ENABLE:-$(if [[ "${PLANNER_VARIANT}" == "racer" || "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo true; else echo false; fi)}"
+EGO_CMD_SAFETY_SMOOTHING_MAX_SPEED_MPS="${EGO_CMD_SAFETY_SMOOTHING_MAX_SPEED_MPS:-$(if [[ "${PLANNER_VARIANT}" == "racer" || "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo 0.80; else echo 0.0; fi)}"
+EGO_CMD_SAFETY_SMOOTHING_MAX_STEP_M="${EGO_CMD_SAFETY_SMOOTHING_MAX_STEP_M:-0.0}"
+EGO_CMD_SAFETY_SMOOTHING_ZERO_DYNAMICS="${EGO_CMD_SAFETY_SMOOTHING_ZERO_DYNAMICS:-true}"
+EGO_CMD_SAFETY_ZERO_ALL_DYNAMICS="${EGO_CMD_SAFETY_ZERO_ALL_DYNAMICS:-$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo true; else echo false; fi)}"
+EGO_CMD_SAFETY_ODOM_TARGET_GUARD_ENABLE="${EGO_CMD_SAFETY_ODOM_TARGET_GUARD_ENABLE:-$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo true; else echo false; fi)}"
+EGO_CMD_SAFETY_MAX_TARGET_DISTANCE_FROM_ODOM_M="${EGO_CMD_SAFETY_MAX_TARGET_DISTANCE_FROM_ODOM_M:-$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo 1.05; else echo 0.0; fi)}"
+EGO_CMD_SAFETY_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M="${EGO_CMD_SAFETY_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M:-$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo 0.90; else echo 0.0; fi)}"
+EGO_CMD_SAFETY_ODOM_TIMEOUT_S="${EGO_CMD_SAFETY_ODOM_TIMEOUT_S:-0.30}"
+EGO_CMD_SAFETY_ODOM_DISTANCE_POLICY="${EGO_CMD_SAFETY_ODOM_DISTANCE_POLICY:-project_toward_raw}"
+EGO_CMD_SAFETY_ODOM_GUARD_ZERO_DYNAMICS="${EGO_CMD_SAFETY_ODOM_GUARD_ZERO_DYNAMICS:-true}"
 
 PX4CTRL_MASS="${PX4CTRL_MASS:-0.67}"
-PX4CTRL_HOVER_PERCENTAGE="${PX4CTRL_HOVER_PERCENTAGE:-0.37}"
-PX4CTRL_KP_XY="${PX4CTRL_KP_XY:-10.0}"
-PX4CTRL_KP_Z="${PX4CTRL_KP_Z:-3.0}"
-PX4CTRL_KV_XY="${PX4CTRL_KV_XY:-5.2}"
-PX4CTRL_KV_Z="${PX4CTRL_KV_Z:-3.0}"
+PX4CTRL_HOVER_PERCENTAGE="${PX4CTRL_HOVER_PERCENTAGE:-0.294}"
+PX4CTRL_THRUST_ESTIMATE_ENABLE="${PX4CTRL_THRUST_ESTIMATE_ENABLE:-false}"
+PX4CTRL_KP_XY="${PX4CTRL_KP_XY:-11}"
+PX4CTRL_KP_Z="${PX4CTRL_KP_Z:-4}"
+PX4CTRL_KV_XY="${PX4CTRL_KV_XY:-6.5}"
+PX4CTRL_KV_Z="${PX4CTRL_KV_Z:-4}"
+PX4CTRL_SMC_LAMBDA_XY="${PX4CTRL_SMC_LAMBDA_XY:-2.0}"
+PX4CTRL_SMC_LAMBDA_Z="${PX4CTRL_SMC_LAMBDA_Z:-2.0}"
+PX4CTRL_SMC_ETA_XY="${PX4CTRL_SMC_ETA_XY:-0.1}"
+PX4CTRL_SMC_ETA_Z="${PX4CTRL_SMC_ETA_Z:-0.05}"
+PX4CTRL_SMC_PHI_XY="${PX4CTRL_SMC_PHI_XY:-0.4}"
+PX4CTRL_SMC_PHI_Z="${PX4CTRL_SMC_PHI_Z:-0.35}"
+PX4CTRL_SMC_SURFACE_LIMIT_XY="${PX4CTRL_SMC_SURFACE_LIMIT_XY:-3.0}"
+PX4CTRL_SMC_SURFACE_LIMIT_Z="${PX4CTRL_SMC_SURFACE_LIMIT_Z:-2.5}"
+PX4CTRL_INDI_GAIN_XY="${PX4CTRL_INDI_GAIN_XY:-0.12}"
+PX4CTRL_INDI_GAIN_Z="${PX4CTRL_INDI_GAIN_Z:-0.08}"
+PX4CTRL_INDI_INCREMENT_LIMIT_XY="${PX4CTRL_INDI_INCREMENT_LIMIT_XY:-0.35}"
+PX4CTRL_INDI_INCREMENT_LIMIT_Z="${PX4CTRL_INDI_INCREMENT_LIMIT_Z:-0.20}"
+PX4CTRL_INDI_MEASURED_ACCEL_LIMIT_XY="${PX4CTRL_INDI_MEASURED_ACCEL_LIMIT_XY:-6.0}"
+PX4CTRL_INDI_MEASURED_ACCEL_LIMIT_Z="${PX4CTRL_INDI_MEASURED_ACCEL_LIMIT_Z:-4.0}"
+PX4CTRL_INDI_ACCEL_LPF_ALPHA="${PX4CTRL_INDI_ACCEL_LPF_ALPHA:-0.25}"
+PX4CTRL_NMPC_HORIZON_S="${PX4CTRL_NMPC_HORIZON_S:-0.25}"
+PX4CTRL_NMPC_POSITION_WEIGHT_XY="${PX4CTRL_NMPC_POSITION_WEIGHT_XY:-1.0}"
+PX4CTRL_NMPC_POSITION_WEIGHT_Z="${PX4CTRL_NMPC_POSITION_WEIGHT_Z:-1.0}"
+PX4CTRL_NMPC_VELOCITY_WEIGHT_XY="${PX4CTRL_NMPC_VELOCITY_WEIGHT_XY:-0.05}"
+PX4CTRL_NMPC_VELOCITY_WEIGHT_Z="${PX4CTRL_NMPC_VELOCITY_WEIGHT_Z:-0.05}"
+PX4CTRL_NMPC_CONTROL_WEIGHT_XY="${PX4CTRL_NMPC_CONTROL_WEIGHT_XY:-0.001}"
+PX4CTRL_NMPC_CONTROL_WEIGHT_Z="${PX4CTRL_NMPC_CONTROL_WEIGHT_Z:-0.001}"
+PX4CTRL_NMPC_ACCEL_LIMIT_XY="${PX4CTRL_NMPC_ACCEL_LIMIT_XY:-4.0}"
+PX4CTRL_NMPC_ACCEL_LIMIT_Z="${PX4CTRL_NMPC_ACCEL_LIMIT_Z:-2.5}"
+PX4CTRL_NMPC_INCREMENT_LIMIT_XY="${PX4CTRL_NMPC_INCREMENT_LIMIT_XY:-4.0}"
+PX4CTRL_NMPC_INCREMENT_LIMIT_Z="${PX4CTRL_NMPC_INCREMENT_LIMIT_Z:-2.5}"
 PX4CTRL_CTRL_FREQ_MAX="${PX4CTRL_CTRL_FREQ_MAX:-100.0}"
 PX4CTRL_USE_BODYRATE_CTRL="${PX4CTRL_USE_BODYRATE_CTRL:-false}"
+PX4CTRL_CORE_PROFILE="${PX4CTRL_CORE_PROFILE:-original}"
+PX4CTRL_ODOM_VELOCITY_FRAME="${PX4CTRL_ODOM_VELOCITY_FRAME:-body}"
+MAVROS_ODOM_BRIDGE_MODE="${MAVROS_ODOM_BRIDGE_MODE:-auto}"
 PX4CTRL_START_EXTERNAL_FUSION="${PX4CTRL_START_EXTERNAL_FUSION:-true}"
 PX4CTRL_EXTERNAL_FUSION_USE_VISION_POSE="${PX4CTRL_EXTERNAL_FUSION_USE_VISION_POSE:-true}"
+PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE="${PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE:-false}"
+PX4CTRL_EKF2_EV_CTRL_OVERRIDE="${PX4CTRL_EKF2_EV_CTRL_OVERRIDE:-}"
+PX4CTRL_EKF2_HGT_REF_OVERRIDE="${PX4CTRL_EKF2_HGT_REF_OVERRIDE:-}"
+PX4CTRL_EXTRA_PARAM_OVERRIDES="${PX4CTRL_EXTRA_PARAM_OVERRIDES:-}"
+case "${PX4CTRL_CORE_PROFILE}" in
+  original|mworks_generated|generated_c|mworks_generated_c|official_pid|se3_basic|dfbc_basic|smc_boundary_layer|pid_indi|nmpc_outer|dfbc_high_order|dfbc_jerk_snap|dfbc_smooth_robust|dfbc_smooth_robust_dob|dfbc_wind_robust|dfbc_smooth_robust_indi|l1_awff|l1_residual|awff_l1|safety_filter|fault_allocation)
+    ;;
+  *)
+    echo "Unsupported PX4CTRL_CORE_PROFILE=${PX4CTRL_CORE_PROFILE}" >&2
+    exit 2
+    ;;
+esac
 
-if [[ "${UAV_NUM}" != "2" && "${UAV_NUM}" != "3" ]]; then
+if [[ "${UAV_NUM}" == "1" && "${GOAL5_STARTUP_ONLY}" == "true" ]]; then
+  :
+elif [[ "${UAV_NUM}" != "2" && "${UAV_NUM}" != "3" ]]; then
   echo "UAV_NUM must be 2 or 3, got ${UAV_NUM}" >&2
   exit 2
 fi
 
+case "${PLANNER_VARIANT}" in
+  ego_v1|ego1|v1)
+    PLANNER_VARIANT="ego_v1"
+    PLANNER_WS="${GOAL4_EGO_WS}"
+    PLANNER_SWARM_LAUNCH="${PROJECT_ROOT}/Scripts/sunray/ego_swarm_px4ctrl_goal5.launch"
+    PLANNER_NAME="multi-UAV EGO-style planner/traj_server engineering baseline"
+    PLANNER_BSPLINE_TOPIC_TEMPLATE="/drone_{drone_id}_planning/bspline"
+    PLANNER_POLYTRAJ_TOPIC_TEMPLATE=""
+    PLANNER_GOAL_TOPIC_TEMPLATE="/uav{uid}/move_base_simple/goal"
+    PLANNER_FLIGHT_TYPE="${EGO_GOAL5_FLIGHT_TYPE}"
+    PLANNER_TARGET_MODE="${EGO_GOAL5_PLANNER_TARGET_MODE}"
+    PLANNER_REQUIRED_PACKAGES=(ego_planner)
+    ;;
+  diff|diff_planner|diff-planner)
+    PLANNER_VARIANT="diff_planner"
+    PLANNER_WS="${GOAL4_DIFF_PLANNER_WS}"
+    PLANNER_SWARM_LAUNCH="${PROJECT_ROOT}/Scripts/sunray/diff_swarm_px4ctrl_goal5.launch"
+    PLANNER_NAME="Diff-Planner multi-UAV planner/traj_server engineering baseline"
+    PLANNER_BSPLINE_TOPIC_TEMPLATE=""
+    PLANNER_POLYTRAJ_TOPIC_TEMPLATE="/drone_{drone_id}_planning/trajectory"
+    PLANNER_GOAL_TOPIC_TEMPLATE="/uav{uid}/goal_with_id"
+    PLANNER_FLIGHT_TYPE="${DIFF_GOAL5_FLIGHT_TYPE}"
+    PLANNER_TARGET_MODE="${DIFF_GOAL5_PLANNER_TARGET_MODE}"
+    PLANNER_REQUIRED_PACKAGES=(diff_planner multipoint)
+    ;;
+  racer|racer_d3|racer-d3)
+    PLANNER_VARIANT="racer"
+    PLANNER_WS="${RACER_WS}"
+    PLANNER_SWARM_LAUNCH="${PROJECT_ROOT}/Scripts/sunray/racer_swarm_px4ctrl_d3.launch"
+    PLANNER_NAME="RACER three-UAV autonomous exploration planner/traj_server"
+    PLANNER_BSPLINE_TOPIC_TEMPLATE="/planning/bspline_{uid}"
+    PLANNER_POLYTRAJ_TOPIC_TEMPLATE=""
+    PLANNER_GOAL_TOPIC_TEMPLATE="/move_base_simple/goal"
+    PLANNER_FLIGHT_TYPE=0
+    PLANNER_TARGET_MODE="goal"
+    PLANNER_REQUIRED_PACKAGES=(exploration_manager plan_manage bspline lkh_mtsp_solver)
+    ;;
+  swarm_formation|swarm-formation|formation)
+    PLANNER_VARIANT="swarm_formation"
+    PLANNER_WS="${SWARM_FORMATION_WS}"
+    PLANNER_SWARM_LAUNCH="${PROJECT_ROOT}/Scripts/sunray/swarm_formation_swarm_px4ctrl_d3.launch"
+    PLANNER_NAME="Swarm-Formation three-UAV known-target formation planner/traj_server"
+    PLANNER_BSPLINE_TOPIC_TEMPLATE=""
+    PLANNER_POLYTRAJ_TOPIC_TEMPLATE="/drone_{drone_id}_planning/trajectory"
+    PLANNER_GOAL_TOPIC_TEMPLATE="/move_base_simple/goal"
+    PLANNER_FLIGHT_TYPE=3
+    PLANNER_TARGET_MODE="formation_center"
+    PLANNER_REQUIRED_PACKAGES=(ego_planner traj_utils)
+    TARGET1_X="${SWARM_FORMATION_D3_CENTER_X}"
+    TARGET1_Y="${SWARM_FORMATION_D3_CENTER_Y}"
+    TARGET1_Z="$(python3 - "${SWARM_FORMATION_D3_CENTER_Z}" "${SWARM_FORMATION_D3_SWARM_SCALE}" "${SWARM_FORMATION_D3_RELATIVE_Z}" <<'PY'
+import sys
+print(float(sys.argv[1]) + float(sys.argv[2]) * float(sys.argv[3]))
+PY
+)"
+    TARGET2_X="$(python3 - "${SWARM_FORMATION_D3_CENTER_X}" "${SWARM_FORMATION_D3_SWARM_SCALE}" <<'PY'
+import sys
+print(float(sys.argv[1]) + float(sys.argv[2]) * 1.7321)
+PY
+)"
+    TARGET2_Y="$(python3 - "${SWARM_FORMATION_D3_CENTER_Y}" "${SWARM_FORMATION_D3_SWARM_SCALE}" <<'PY'
+import sys
+print(float(sys.argv[1]) - float(sys.argv[2]))
+PY
+)"
+    TARGET2_Z="${TARGET1_Z}"
+    TARGET3_X="${SWARM_FORMATION_D3_CENTER_X}"
+    TARGET3_Y="$(python3 - "${SWARM_FORMATION_D3_CENTER_Y}" "${SWARM_FORMATION_D3_SWARM_SCALE}" <<'PY'
+import sys
+print(float(sys.argv[1]) - 2.0 * float(sys.argv[2]))
+PY
+)"
+    TARGET3_Z="${TARGET1_Z}"
+    ;;
+  *)
+    echo "Unsupported PLANNER_VARIANT=${PLANNER_VARIANT}; expected ego_v1, diff_planner, racer, or swarm_formation" >&2
+    exit 2
+    ;;
+esac
+
+FACTORY_L2_MODEL_PATH_ACTIVE=false
+if [[ "${GOAL5_FACTORY_MODEL_PATH_MODE}" == "true" || ( "${GOAL5_FACTORY_MODEL_PATH_MODE}" == "auto" && "${WORLD_FILE}" == *"factory_l2_static_import"* ) ]]; then
+  FACTORY_L2_MODEL_PATH_ACTIVE=true
+fi
+if [[ "${FACTORY_L2_MODEL_PATH_ACTIVE}" == "true" ]]; then
+  if [[ -z "${POINTCLOUD_MIN_WORLD_Z_M_USER_SET}" ]]; then
+    POINTCLOUD_MIN_WORLD_Z_M="-0.20"
+  fi
+  if [[ -z "${POINTCLOUD_MAX_WORLD_Z_M_USER_SET}" ]]; then
+    POINTCLOUD_MAX_WORLD_Z_M="4.00"
+  fi
+  if [[ -z "${POINTCLOUD_MAX_ABS_ODOM_XY_M_USER_SET}" ]]; then
+    POINTCLOUD_MAX_ABS_ODOM_XY_M="700.0"
+  fi
+  if [[ "${PLANNER_VARIANT}" == "racer" ]]; then
+    if [[ -z "${RACER_FRAME_BRIDGE_ENABLED_USER_SET}" ]]; then
+      RACER_FRAME_BRIDGE_ENABLED="true"
+    fi
+    if [[ -z "${RACER_FRAME_OFFSET_X_USER_SET}" ]]; then
+      RACER_FRAME_OFFSET_X="${START1_X}"
+    fi
+    if [[ -z "${RACER_FRAME_OFFSET_Y_USER_SET}" ]]; then
+      RACER_FRAME_OFFSET_Y="${START1_Y}"
+    fi
+    if [[ -z "${RACER_FRAME_OFFSET_Z_USER_SET}" ]]; then
+      RACER_FRAME_OFFSET_Z="0.0"
+    fi
+  fi
+fi
+RACER_D3_ALLOW_PAIR_OPT_FACTORY="${RACER_D3_ALLOW_PAIR_OPT_FACTORY:-false}"
+RACER_D3_PAIR_OPT_FACTORY_POLICY="not_applicable"
+if [[ "${PLANNER_VARIANT}" == "racer" ]]; then
+  RACER_D3_PAIR_OPT_FACTORY_POLICY="unchanged"
+  if [[ "${FACTORY_L2_MODEL_PATH_ACTIVE}" == "true" && "${RACER_D3_DISABLE_PAIR_OPT}" != "true" && "${RACER_D3_ALLOW_PAIR_OPT_FACTORY}" != "true" ]]; then
+    RACER_D3_PAIR_OPT_FACTORY_POLICY="forced_disabled_for_factory_from_${RACER_D3_DISABLE_PAIR_OPT}"
+    RACER_D3_DISABLE_PAIR_OPT="true"
+  fi
+fi
+
+if [[ -z "${EGO_GATE_BLOCK_ON_RAW_CMD_DISCONTINUITY+x}" ]]; then
+  if [[ "${PLANNER_VARIANT}" == "racer" || "${PLANNER_VARIANT}" == "swarm_formation" ]]; then
+    EGO_GATE_BLOCK_ON_RAW_CMD_DISCONTINUITY=false
+  else
+    EGO_GATE_BLOCK_ON_RAW_CMD_DISCONTINUITY=true
+  fi
+fi
+
 mkdir -p "${RESULT_DIR}"
+
+write_run_inputs_manifest() {
+  local launch_args_json
+  launch_args_json="$(
+    python3 - "$@" <<'PY'
+import json
+import sys
+print(json.dumps(sys.argv[1:], ensure_ascii=False))
+PY
+  )"
+  cat > "${RESULT_DIR}/RUN_INPUTS.json" <<EOF
+{
+  "schema": "mosim.sunray_ros1.goal5_run_inputs.v1",
+  "run_id": "${RUN_ID}",
+  "result_dir": "${RESULT_DIR}",
+  "planner_variant": "${PLANNER_VARIANT}",
+  "planner_workspace": "${PLANNER_WS}",
+  "planner_launch": "${PLANNER_SWARM_LAUNCH}",
+  "planner_launch_args": ${launch_args_json},
+  "world_file": "${WORLD_FILE}",
+  "factory_l2_model_path_active": ${FACTORY_L2_MODEL_PATH_ACTIVE},
+  "factory_l2_model_path_mode": "${GOAL5_FACTORY_MODEL_PATH_MODE}",
+  "factory_l2_model_path": "${FACTORY_L2_MODEL_PATH}",
+  "factory_l2_config_model_path": "${FACTORY_L2_CONFIG_MODEL_PATH}",
+  "racer_d3_constraints": {
+    "disable_pair_opt": "${RACER_D3_DISABLE_PAIR_OPT}",
+    "allow_pair_opt_factory": "${RACER_D3_ALLOW_PAIR_OPT_FACTORY}",
+    "pair_opt_factory_policy": "${RACER_D3_PAIR_OPT_FACTORY_POLICY}",
+    "pair_opt_after_trigger_only": "${RACER_D3_PAIR_OPT_AFTER_TRIGGER_ONLY}",
+    "round_robin_init": "${RACER_D3_ROUND_ROBIN_INIT}",
+    "map_size_x": ${RACER_D3_MAP_SIZE_X},
+    "map_size_y": ${RACER_D3_MAP_SIZE_Y},
+    "map_size_z": ${RACER_D3_MAP_SIZE_Z},
+    "box_min_x": ${RACER_D3_BOX_MIN_X},
+    "box_min_y": ${RACER_D3_BOX_MIN_Y},
+    "box_max_x": ${RACER_D3_BOX_MAX_X},
+    "box_max_y": ${RACER_D3_BOX_MAX_Y},
+    "min_unknown": ${RACER_D3_MIN_UNKNOWN},
+    "min_free": ${RACER_D3_MIN_FREE},
+    "grid_size": ${RACER_D3_GRID_SIZE},
+    "attempt_interval": ${RACER_D3_ATTEMPT_INTERVAL},
+    "pair_opt_interval": ${RACER_D3_PAIR_OPT_INTERVAL},
+    "frontier_min_visib_num": ${RACER_D3_FRONTIER_MIN_VISIB_NUM},
+    "ground_height": ${RACER_D3_GROUND_HEIGHT},
+    "box_min_z": ${RACER_D3_BOX_MIN_Z},
+    "box_max_z": ${RACER_D3_BOX_MAX_Z},
+    "virtual_ceil_height": ${RACER_D3_VIRTUAL_CEIL_HEIGHT},
+    "visualization_truncate_height": ${RACER_D3_VISUALIZATION_TRUNCATE_HEIGHT},
+    "visualization_truncate_low": ${RACER_D3_VISUALIZATION_TRUNCATE_LOW},
+    "swarm_safe_dist": ${RACER_D3_SWARM_SAFE_DIST},
+    "astar_start_clearance_radius": ${RACER_D3_ASTAR_START_CLEARANCE_RADIUS},
+    "astar_max_search_time_s": ${RACER_D3_ASTAR_MAX_SEARCH_TIME}
+  },
+  "racer_frame_bridge": {
+    "enabled": "${RACER_FRAME_BRIDGE_ENABLED}",
+    "offset_xyz": [${RACER_FRAME_OFFSET_X}, ${RACER_FRAME_OFFSET_Y}, ${RACER_FRAME_OFFSET_Z}],
+    "local_odom_topic_template": "${RACER_LOCAL_ODOM_TOPIC_TEMPLATE}",
+    "local_pose_topic_template": "${RACER_LOCAL_POSE_TOPIC_TEMPLATE}",
+    "local_cloud_topic_template": "${RACER_LOCAL_CLOUD_TOPIC_TEMPLATE}",
+    "claim_boundary": "Factory RACER may consume local-frame planner topics while Gazebo/PX4/MAVROS remain in world-frame coordinates."
+  },
+  "racer_sensor_frontend": {
+    "source": "${RACER_SENSOR_SOURCE}",
+    "input_gate_only": "${RACER_INPUT_GATE_ONLY}",
+    "fastlio_scan_rate_hz": ${RACER_FASTLIO_SCAN_RATE_HZ},
+    "fastlio_filter_size_surf": ${RACER_FASTLIO_FILTER_SIZE_SURF},
+    "fastlio_filter_size_map": ${RACER_FASTLIO_FILTER_SIZE_MAP},
+    "fastlio_alignment_z_source": "${RACER_FASTLIO_ALIGNMENT_Z_SOURCE}",
+    "claim_boundary": "fastlio uses one MID360/IMU to FAST-LIO aligned cloud/odom/pose chain per UAV; raw_mavros is an explicit legacy diagnostic fallback."
+  },
+  "mission_gate": {
+    "total_timeout_s": ${TOTAL_TIMEOUT_S},
+    "goal_publish_stagger_s": ${GOAL_PUBLISH_STAGGER_S},
+    "ego_takeover_timeout_s": ${EGO_GATE_EGO_TAKEOVER_TIMEOUT_S},
+    "exploration_duration_s": ${RACER_D3_EXPLORATION_DURATION_S},
+    "exploration_time_basis": "ros_simulation_time",
+    "exploration_max_trajectory_stale_s": ${RACER_D3_EXPLORATION_MAX_TRAJECTORY_STALE_S},
+    "startup_attempt": ${GOAL5_STARTUP_ATTEMPT_INDEX},
+    "startup_attempt_max": ${GOAL5_STARTUP_ATTEMPT_MAX}
+  }
+}
+EOF
+}
+
+write_startup_run_inputs_manifest() {
+  cat > "${RESULT_DIR}/RUN_INPUTS.json" <<EOF
+{
+  "schema": "mosim.sunray_ros1.goal5_run_inputs.v1",
+  "phase": "pre_planner_startup",
+  "run_id": "${RUN_ID}",
+  "result_dir": "${RESULT_DIR}",
+  "planner_variant": "${PLANNER_VARIANT}",
+  "uav_num": ${UAV_NUM},
+  "planner_workspace": "${PLANNER_WS}",
+  "planner_launch": "${PLANNER_SWARM_LAUNCH}",
+  "planner_launch_args": null,
+  "world_file": "${WORLD_FILE}",
+  "gazebo_launch_file": "${GOAL5_GAZEBO_LAUNCH:-}",
+  "goal5_world_file": "${GOAL5_WORLD_FILE:-}",
+  "factory_l2_model_path_active": ${FACTORY_L2_MODEL_PATH_ACTIVE},
+  "factory_l2_model_path_mode": "${GOAL5_FACTORY_MODEL_PATH_MODE}",
+  "factory_l2_model_path": "${FACTORY_L2_MODEL_PATH}",
+  "factory_l2_config_model_path": "${FACTORY_L2_CONFIG_MODEL_PATH}",
+  "racer_d3_constraints": {
+    "disable_pair_opt": "${RACER_D3_DISABLE_PAIR_OPT}",
+    "allow_pair_opt_factory": "${RACER_D3_ALLOW_PAIR_OPT_FACTORY}",
+    "pair_opt_factory_policy": "${RACER_D3_PAIR_OPT_FACTORY_POLICY}",
+    "pair_opt_after_trigger_only": "${RACER_D3_PAIR_OPT_AFTER_TRIGGER_ONLY}"
+  },
+  "startup_timeouts": {
+    "mavros_ready_timeout_s": ${MAVROS_READY_TIMEOUT_S},
+    "odom_bridge_ready_timeout_s": ${ODOM_BRIDGE_READY_TIMEOUT_S},
+    "lidar_ready_timeout_s": ${LIDAR_READY_TIMEOUT_S},
+    "ego_takeover_timeout_s": ${EGO_GATE_EGO_TAKEOVER_TIMEOUT_S},
+    "total_timeout_s": ${TOTAL_TIMEOUT_S}
+  },
+  "claim_boundary": "Pre-planner startup manifest. If the run reaches planner launch, this file is overwritten with full planner launch arguments."
+}
+EOF
+}
+
+is_retryable_startup_exit() {
+  local code="$1"
+  local retry_code
+  for retry_code in ${GOAL5_RETRY_EXIT_CODES}; do
+    if [[ "${code}" == "${retry_code}" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+topic_for_uid() {
+  local template="$1"
+  local uid="$2"
+  local drone_id=$((uid - 1))
+  local topic="${template//\{uid\}/${uid}}"
+  topic="${topic//\{drone_id\}/${drone_id}}"
+  printf '%s' "${topic}"
+}
+
+start_xy_for_uid() {
+  local uid="$1"
+  case "${uid}" in
+    1) printf '%s %s' "${START1_X}" "${START1_Y}" ;;
+    2) printf '%s %s' "${START2_X}" "${START2_Y}" ;;
+    3) printf '%s %s' "${START3_X}" "${START3_Y}" ;;
+    *) echo "unsupported uav id ${uid}" >&2; return 1 ;;
+  esac
+}
+
+write_startup_attempt_summary() {
+  local attempt="$1"
+  local exit_code="$2"
+  local summary_jsonl="${RESULT_DIR}/STARTUP_ATTEMPT_SUMMARY.jsonl"
+  python3 - "${RESULT_DIR}" "${summary_jsonl}" "${attempt}" "${exit_code}" "${GOAL5_STARTUP_ATTEMPTS}" "${GOAL5_RETRY_EXIT_CODES}" <<'PY'
+import glob
+import json
+import os
+import sys
+import time
+
+result_dir, summary_jsonl, attempt, exit_code, max_attempts, retry_codes = sys.argv[1:7]
+attempt = int(attempt)
+exit_code = int(exit_code)
+retryable_codes = {int(x) for x in retry_codes.split() if x.strip()}
+
+def load_json(path):
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as exc:
+        return {"missing_or_invalid": True, "error": str(exc)}
+
+def topic_probe(prefix, uid):
+    path = os.path.join(result_dir, f"uav{uid}_{prefix}.txt")
+    data = load_json(path)
+    return {
+        "path": path,
+        "exists": os.path.exists(path),
+        "received": bool(data.get("received") or data.get("connected")),
+        "data": data,
+    }
+
+gazebo_log = os.path.join(result_dir, "sunray_goal5_swarm_gazebo.log")
+marker_count = 0
+marker_lines = []
+if os.path.exists(gazebo_log):
+    with open(gazebo_log, "r", encoding="utf-8", errors="replace") as f:
+        for line in f:
+            if "MoSimLivoxLoadEnter" in line:
+                marker_count += 1
+                if len(marker_lines) < 20:
+                    marker_lines.append(line.strip())
+
+mission_metrics = load_json(os.path.join(result_dir, "EGO_SWARM_METRICS.json"))
+manifest = load_json(os.path.join(result_dir, "RUN_MANIFEST.json"))
+summary = {
+    "schema": "mosim.sunray_ros1.goal5_startup_attempt.v1",
+    "attempt": attempt,
+    "max_attempts": int(max_attempts),
+    "result_dir": result_dir,
+    "exit_code": exit_code,
+    "retryable_startup_exit": exit_code in retryable_codes,
+    "wall_time": time.time(),
+    "topics": {
+        f"uav{uid}": {
+            "mavros_state": topic_probe("mavros_state_first", uid),
+            "odom": topic_probe("odom_first", uid),
+            "raw_lidar": topic_probe("raw_lidar_first", uid),
+        }
+        for uid in (1, 2, 3)
+    },
+    "gazebo_livox_marker_count": marker_count,
+    "gazebo_livox_marker_lines_head": marker_lines,
+    "mission_status": mission_metrics.get("status"),
+    "mission_blockers": mission_metrics.get("blockers"),
+    "manifest_mission_exit_code": manifest.get("mission_exit_code"),
+}
+with open(summary_jsonl, "a", encoding="utf-8") as f:
+    json.dump(summary, f, ensure_ascii=False)
+    f.write("\n")
+
+json_path = os.path.join(result_dir, "STARTUP_ATTEMPT_SUMMARY.json")
+items = []
+if os.path.exists(summary_jsonl):
+    with open(summary_jsonl, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                items.append(json.loads(line))
+with open(json_path, "w", encoding="utf-8") as f:
+    json.dump(
+        {
+            "schema": "mosim.sunray_ros1.goal5_startup_retry_summary.v1",
+            "result_dir": result_dir,
+            "attempts": items,
+        },
+        f,
+        indent=2,
+        ensure_ascii=False,
+    )
+    f.write("\n")
+PY
+}
+
+archive_failed_startup_attempt() {
+  local attempt="$1"
+  local attempt_dir="${RESULT_DIR}/startup_attempt_${attempt}"
+  mkdir -p "${attempt_dir}"
+  shopt -s nullglob dotglob
+  local path base
+  for path in "${RESULT_DIR}"/* "${RESULT_DIR}"/.[!.]* "${RESULT_DIR}"/..?*; do
+    base="$(basename "${path}")"
+    case "${base}" in
+      STARTUP_ATTEMPT_SUMMARY.json|STARTUP_ATTEMPT_SUMMARY.jsonl|startup_attempt_*)
+        continue
+        ;;
+    esac
+    mv "${path}" "${attempt_dir}/" 2>/dev/null || true
+  done
+  shopt -u nullglob dotglob
+}
+
+cleanup_goal5_runtime_for_retry() {
+  python3 - <<'PY'
+import os
+import signal
+import time
+
+PATTERNS = [
+    "roslaunch gazebo_ros empty_world.launch",
+    "roslaunch sunray_simulator sunray_px4_basic.launch",
+    "goal5_swarm_px4_gazebo.launch",
+    "factory_l2_sunray_px4_gazebo.launch",
+    "ego_swarm_px4ctrl_goal5.launch",
+    "diff_swarm_px4ctrl_goal5.launch",
+    "racer_swarm_px4ctrl_d3.launch",
+    "swarm_formation_swarm_px4ctrl_d3.launch",
+    "px4ctrl_swarm_mosim.launch",
+    "px4ctrl_ego_swarm_mission_node.py",
+    "px4ctrl_swarm_basic_mission_node.py",
+    "mosim_px4ctrl_ego_swarm_mission",
+    "goal4_position_cmd_safety_adapter.py",
+    "mosim_goal4_position_cmd_safety_adapter",
+    "goal4_pointcloud_to_world_node.py",
+    "mosim_goal4_pointcloud_to_world",
+    "mavros_pose_velocity_to_odom_bridge.py",
+    "mosim_mavros_pose_velocity_to_odom_bridge",
+    "external_fusion_node",
+    "px4ctrl_node",
+    "drone_1_ego_planner_node",
+    "drone_2_ego_planner_node",
+    "drone_3_ego_planner_node",
+    "drone_1_traj_server",
+    "drone_2_traj_server",
+    "drone_3_traj_server",
+    "gzserver",
+    "gzclient",
+    "mavros_node",
+    "px4_sitl_default/bin/px4",
+    "rosmaster --core -p 11311",
+    "rosout",
+]
+
+def select_processes():
+    current = {os.getpid(), os.getppid()}
+    selected = []
+    for entry in os.listdir("/proc"):
+        if not entry.isdigit():
+            continue
+        pid = int(entry)
+        if pid in current:
+            continue
+        try:
+            raw = (
+                open(f"/proc/{pid}/cmdline", "rb")
+                .read()
+                .replace(b"\0", b" ")
+                .decode("utf-8", "ignore")
+            )
+        except OSError:
+            continue
+        if raw and any(pattern in raw for pattern in PATTERNS):
+            selected.append((pid, raw[:260]))
+    return selected
+
+for sig, label, delay_s in (
+    (signal.SIGTERM, "SIGTERM", 3.0),
+    (signal.SIGKILL, "SIGKILL", 1.0),
+):
+    selected = select_processes()
+    print(f"retry_cleanup_{label}_selected={len(selected)}")
+    for pid, cmd in selected:
+        print(f"{pid} {cmd}")
+        try:
+            os.kill(pid, sig)
+        except OSError as exc:
+            print(f"retry_cleanup_kill_error {pid} {exc}")
+    time.sleep(delay_s)
+
+remaining = select_processes()
+print(f"retry_cleanup_remaining={len(remaining)}")
+for pid, cmd in remaining:
+    print(f"{pid} {cmd}")
+raise SystemExit(1 if remaining else 0)
+PY
+}
+
+if [[ "${GOAL5_ATTEMPT_CHILD}" != "true" && "${GOAL5_STARTUP_ATTEMPTS}" =~ ^[0-9]+$ && "${GOAL5_STARTUP_ATTEMPTS}" -gt 1 ]]; then
+  SCRIPT_SELF="$(readlink -f "${BASH_SOURCE[0]}")"
+  rm -f "${RESULT_DIR}/STARTUP_ATTEMPT_SUMMARY.json" "${RESULT_DIR}/STARTUP_ATTEMPT_SUMMARY.jsonl"
+  attempt_rc=1
+  for attempt in $(seq 1 "${GOAL5_STARTUP_ATTEMPTS}"); do
+    echo "Goal5 startup attempt ${attempt}/${GOAL5_STARTUP_ATTEMPTS} -> ${RESULT_DIR}"
+    set +e
+    GOAL5_ATTEMPT_CHILD=true \
+      GOAL5_STARTUP_ATTEMPTS=1 \
+      GOAL5_STARTUP_ATTEMPT_INDEX="${attempt}" \
+      GOAL5_STARTUP_ATTEMPT_MAX="${GOAL5_STARTUP_ATTEMPTS}" \
+      RUN_ID="${RUN_ID}" \
+      RESULT_DIR="${RESULT_DIR}" \
+      bash "${SCRIPT_SELF}"
+    attempt_rc=$?
+    set -e
+    write_startup_attempt_summary "${attempt}" "${attempt_rc}" || true
+    if [[ "${attempt_rc}" == "0" ]]; then
+      echo "${RESULT_DIR}"
+      exit 0
+    fi
+    if ! is_retryable_startup_exit "${attempt_rc}" || [[ "${attempt}" -ge "${GOAL5_STARTUP_ATTEMPTS}" ]]; then
+      echo "Goal5 attempt ${attempt} failed with exit ${attempt_rc}; not retrying." >&2
+      exit "${attempt_rc}"
+    fi
+    echo "Goal5 startup attempt ${attempt} failed with retryable exit ${attempt_rc}; archiving and retrying." >&2
+    cleanup_goal5_runtime_for_retry > "${RESULT_DIR}/startup_attempt_${attempt}_retry_cleanup.log" 2>&1 || {
+      echo "Goal5 attempt ${attempt} retry cleanup still has remaining processes; not retrying." >&2
+      exit 6
+    }
+    archive_failed_startup_attempt "${attempt}"
+    sleep 4
+  done
+  exit "${attempt_rc}"
+fi
 
 PIDS=()
 cleanup() {
@@ -83,17 +848,35 @@ cleanup() {
     kill -9 "${pid}" >/dev/null 2>&1 || true
   done
   pkill -f "mosim_px4ctrl_ego_swarm_mission" >/dev/null 2>&1 || true
+  pkill -f "fuel_position_cmd_compat_bridge.py" >/dev/null 2>&1 || true
+  pkill -f "mosim_legacy_position_cmd_compat_bridge" >/dev/null 2>&1 || true
+  pkill -f "mosim_goal4_position_cmd_safety_adapter" >/dev/null 2>&1 || true
+  pkill -f "goal4_position_cmd_safety_adapter.py" >/dev/null 2>&1 || true
   pkill -f "mosim_goal4_pointcloud_to_world" >/dev/null 2>&1 || true
+  pkill -f "mosim_racer_fastlio_" >/dev/null 2>&1 || true
+  pkill -f "mosim_racer_frontend_diag_" >/dev/null 2>&1 || true
+  pkill -f "fastlio_racer_instance.launch" >/dev/null 2>&1 || true
+  pkill -x fastlio_mapping >/dev/null 2>&1 || true
+  pkill -f "fastlio_odom_alignment_adapter.py" >/dev/null 2>&1 || true
+  pkill -f "pointcloud2_to_livox_custom_msg.py" >/dev/null 2>&1 || true
   pkill -f "mosim_mavros_pose_velocity_to_odom_bridge" >/dev/null 2>&1 || true
   pkill -f "drone_[0-9]_ego_planner_node" >/dev/null 2>&1 || true
   pkill -f "drone_[0-9]_traj_server" >/dev/null 2>&1 || true
+  pkill -f "[e]xploration_manager/exploration_node" >/dev/null 2>&1 || true
+  pkill -f "[l]kh_mtsp_solver/mtsp_node" >/dev/null 2>&1 || true
+  pkill -f "[l]kh_mtsp_solver_lkh3" >/dev/null 2>&1 || true
+  pkill -f "[l]kh_tsp_solver/tsp_node" >/dev/null 2>&1 || true
+  pkill -f "[p]lan_manage/traj_server" >/dev/null 2>&1 || true
   pkill -f "px4ctrl_node" >/dev/null 2>&1 || true
   pkill -f "external_fusion_node" >/dev/null 2>&1 || true
   pkill -f "roslaunch .*goal5_swarm_px4_gazebo" >/dev/null 2>&1 || true
+  pkill -f "roslaunch .*factory_l2_sunray_px4_gazebo" >/dev/null 2>&1 || true
   pkill -f "roslaunch .*ego_swarm_px4ctrl_goal5" >/dev/null 2>&1 || true
+  pkill -f "roslaunch .*diff_swarm_px4ctrl_goal5" >/dev/null 2>&1 || true
   pkill -f "gzserver" >/dev/null 2>&1 || true
   pkill -f "gzclient" >/dev/null 2>&1 || true
   pkill -f "mavros_node" >/dev/null 2>&1 || true
+  pkill -f "px4_ros1_runtime_overlay_.*px4" >/dev/null 2>&1 || true
   pkill -f "/opt/mosim_work/sunray_px4.*/px4" >/dev/null 2>&1 || true
   pkill -f "rosmaster" >/dev/null 2>&1 || true
   pkill -f "rosout" >/dev/null 2>&1 || true
@@ -112,11 +895,20 @@ source_env() {
   if [[ -f "${LIVOX_PLUGIN_WS}/devel/setup.bash" ]]; then
     source "${LIVOX_PLUGIN_WS}/devel/setup.bash"
   fi
-  source "${GOAL4_EGO_WS}/devel/setup.bash"
+  source "${PLANNER_WS}/devel/setup.bash"
   set -u
 
   local sunray_models="${SUNRAY_WS}/simulation/sunray_simulator/models"
   local px4_gazebo_models="${SUNRAY_PX4_DIR}/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models"
+  local factory_model_prefix=""
+  if [[ "${GOAL5_FACTORY_MODEL_PATH_MODE}" == "true" || ( "${GOAL5_FACTORY_MODEL_PATH_MODE}" == "auto" && "${WORLD_FILE}" == *"factory_l2_static_import"* ) ]]; then
+    if [[ -d "${FACTORY_L2_MODEL_PATH}" ]]; then
+      factory_model_prefix="${factory_model_prefix}:${FACTORY_L2_MODEL_PATH}"
+    fi
+    if [[ -d "${FACTORY_L2_CONFIG_MODEL_PATH}" ]]; then
+      factory_model_prefix="${factory_model_prefix}:${FACTORY_L2_CONFIG_MODEL_PATH}"
+    fi
+  fi
   if [[ "${SUNRAY_STRIP_PX4_MODEL_PATH}" == "true" ]]; then
     GAZEBO_MODEL_PATH="$(
       python3 - "${GAZEBO_MODEL_PATH:-}" "${px4_gazebo_models}" <<'PY'
@@ -127,42 +919,328 @@ PY
     )"
   fi
   export PROJECT_ROOT
-  export CMAKE_PREFIX_PATH="${GOAL4_EGO_WS}/devel:${LIVOX_PLUGIN_WS}/devel:${PX4CTRL_WS}/devel:${SUNRAY_WS}/devel:/opt/ros/noetic:${CMAKE_PREFIX_PATH:-}"
-  export ROS_PACKAGE_PATH="${GOAL4_EGO_WS}/src:${PX4CTRL_WS}/src:${SUNRAY_PX4_DIR}:${SUNRAY_WS}:/opt/ros/noetic/share:${ROS_PACKAGE_PATH:-}"
-  export PYTHONPATH="${GOAL4_EGO_WS}/devel/lib/python3/dist-packages:${PX4CTRL_WS}/devel/lib/python3/dist-packages:${SUNRAY_WS}/devel/lib/python3/dist-packages:${PYTHONPATH:-}"
-  export GAZEBO_MODEL_PATH="${sunray_models}/scence_models:${sunray_models}/drone_models:${sunray_models}/sensor_models:${sunray_models}/fake_models:${sunray_models}/ugv_models:${sunray_models}/aws_models:${sunray_models}/aws_vins_models:${GAZEBO_MODEL_PATH:-}"
+  export CMAKE_PREFIX_PATH="${PX4CTRL_WS}/devel:${PLANNER_WS}/devel:${LIVOX_PLUGIN_WS}/devel:${SUNRAY_WS}/devel:/opt/ros/noetic:${CMAKE_PREFIX_PATH:-}"
+  export ROS_PACKAGE_PATH="${PX4CTRL_WS}/src:${PLANNER_WS}/src:${PX4_ROS1_OVERLAY_PKG:+${PX4_ROS1_OVERLAY_PKG}:}${SUNRAY_PX4_DIR}:${SUNRAY_WS}:/opt/ros/noetic/share:${ROS_PACKAGE_PATH:-}"
+  export PYTHONPATH="${PX4CTRL_WS}/devel/lib/python3/dist-packages:${PLANNER_WS}/devel/lib/python3/dist-packages:${SUNRAY_WS}/devel/lib/python3/dist-packages:${PYTHONPATH:-}"
+  export GAZEBO_MODEL_PATH="${factory_model_prefix#:}${factory_model_prefix:+:}${sunray_models}/scence_models:${sunray_models}/drone_models:${sunray_models}/sensor_models:${sunray_models}/fake_models:${sunray_models}/ugv_models:${sunray_models}/aws_models:${sunray_models}/aws_vins_models:${GAZEBO_MODEL_PATH:-}"
   export GAZEBO_RESOURCE_PATH="${SUNRAY_WS}/simulation/sunray_simulator:${GAZEBO_RESOURCE_PATH:-}"
   export GAZEBO_PLUGIN_PATH="${LIVOX_PLUGIN_WS}/devel/lib:${SUNRAY_WS}/devel/lib:${GAZEBO_PLUGIN_PATH:-}"
-  export LD_LIBRARY_PATH="${GOAL4_EGO_WS}/devel/lib:${LIVOX_PLUGIN_WS}/devel/lib:${PX4CTRL_WS}/devel/lib:${SUNRAY_WS}/devel/lib:/opt/ros/noetic/lib:${LD_LIBRARY_PATH:-}"
+  if [[ "${PLANNER_VARIANT}" == "racer" ]]; then
+    export LD_LIBRARY_PATH="${PLANNER_WS}/devel/lib:${PX4CTRL_WS}/devel/lib:${LIVOX_PLUGIN_WS}/devel/lib:${SUNRAY_WS}/devel/lib:/opt/ros/noetic/lib:${LD_LIBRARY_PATH:-}"
+  else
+    export LD_LIBRARY_PATH="${PX4CTRL_WS}/devel/lib:${PLANNER_WS}/devel/lib:${LIVOX_PLUGIN_WS}/devel/lib:${SUNRAY_WS}/devel/lib:/opt/ros/noetic/lib:${LD_LIBRARY_PATH:-}"
+  fi
+}
+
+prepare_racer_fastlio_workspace() {
+  if [[ "${PLANNER_VARIANT}" != "racer" || "${RACER_SENSOR_SOURCE}" != "fastlio" ]]; then
+    return
+  fi
+  if [[ ! -f "${FASTLIO_SRC}/package.xml" || ! -f "${LIVOX_COMPAT_SRC}/package.xml" ]]; then
+    echo "RACER FAST-LIO source missing: ${FASTLIO_SRC} or ${LIVOX_COMPAT_SRC}" >&2
+    exit 8
+  fi
+
+  mkdir -p "${FASTLIO_WS}/src"
+  ln -sfn "${FASTLIO_SRC}" "${FASTLIO_WS}/src/FAST_LIO"
+  ln -sfn "${LIVOX_COMPAT_SRC}" "${FASTLIO_WS}/src/livox_ros_driver_compat"
+  (
+    set +u
+    source /opt/ros/noetic/setup.bash
+    source "${SUNRAY_WS}/devel/setup.bash"
+    set -u
+    cd "${FASTLIO_WS}"
+    catkin_make --only-pkg-with-deps livox_ros_driver fast_lio
+  ) > "${RESULT_DIR}/racer_fastlio_build.log" 2>&1
+
+  # The FAST-LIO workspace was built against the Sunray underlay only. Sourcing
+  # its setup file here would replace the already-active px4ctrl/RACER overlay
+  # chain, so extend the four runtime search paths explicitly instead.
+  export CMAKE_PREFIX_PATH="${FASTLIO_WS}/devel:${CMAKE_PREFIX_PATH:-}"
+  export ROS_PACKAGE_PATH="${FASTLIO_WS}/src:${ROS_PACKAGE_PATH:-}"
+  export PYTHONPATH="${FASTLIO_WS}/devel/lib/python3/dist-packages:${PYTHONPATH:-}"
+  export LD_LIBRARY_PATH="${FASTLIO_WS}/devel/lib:${LD_LIBRARY_PATH:-}"
+  rospack profile > "${RESULT_DIR}/racer_fastlio_rospack_profile.log" 2>&1 || true
+  if ! rospack find fast_lio >/dev/null 2>&1 \
+    || ! rospack find livox_ros_driver >/dev/null 2>&1 \
+    || ! rosmsg show livox_ros_driver/CustomMsg >/dev/null 2>&1; then
+    echo "RACER FAST-LIO package/CustomMsg gate failed" >&2
+    exit 8
+  fi
+}
+
+prepare_racer_planner_workspace() {
+  if [[ "${PLANNER_VARIANT}" != "racer" || "${RACER_UNREACHABLE_RECOVERY_ENABLE}" != "true" ]]; then
+    return
+  fi
+  local source_root="${RACER_WS}/src/swarm_exploration"
+  local manager_cpp="${source_root}/exploration_manager/src/fast_exploration_manager.cpp"
+  local manager_h="${source_root}/exploration_manager/include/exploration_manager/fast_exploration_manager.h"
+  local fsm_cpp="${source_root}/exploration_manager/src/fast_exploration_fsm.cpp"
+  local fsm_h="${source_root}/exploration_manager/include/exploration_manager/fast_exploration_fsm.h"
+  local expl_data_h="${source_root}/exploration_manager/include/exploration_manager/expl_data.h"
+  local planner_cpp="${source_root}/plan_manage/src/planner_manager.cpp"
+  local planner_h="${source_root}/plan_manage/include/plan_manage/planner_manager.h"
+  local astar_cpp="${source_root}/path_searching/src/astar2.cpp"
+  local astar_h="${source_root}/path_searching/include/path_searching/astar2.h"
+  local executable="${RACER_WS}/devel/lib/exploration_manager/exploration_node"
+  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_unreachable_viewpoint_recovery.py" \
+    "${source_root}" > "${RESULT_DIR}/racer_unreachable_recovery_patch.log" 2>&1
+  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_astar_start_clearance.py" \
+    "${source_root}" > "${RESULT_DIR}/racer_astar_start_clearance_patch.log" 2>&1
+  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_degenerate_tour_recovery.py" \
+    "${source_root}" > "${RESULT_DIR}/racer_degenerate_tour_recovery_patch.log" 2>&1
+  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_plan_failure_retry.py" \
+    "${source_root}" > "${RESULT_DIR}/racer_plan_failure_retry_patch.log" 2>&1
+  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_pair_opt_attempt_backoff.py" \
+    "${source_root}" > "${RESULT_DIR}/racer_pair_opt_attempt_backoff_patch.log" 2>&1
+  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_racer_hard_swarm_clearance.py" \
+    "${source_root}" > "${RESULT_DIR}/racer_hard_swarm_clearance_patch.log" 2>&1
+  if [[ ! -x "${executable}" || "${manager_cpp}" -nt "${executable}" || "${manager_h}" -nt "${executable}" \
+      || "${fsm_cpp}" -nt "${executable}" || "${fsm_h}" -nt "${executable}" \
+      || "${expl_data_h}" -nt "${executable}" \
+      || "${planner_cpp}" -nt "${executable}" || "${planner_h}" -nt "${executable}" \
+      || "${astar_cpp}" -nt "${executable}" || "${astar_h}" -nt "${executable}" ]]; then
+    (
+      set +u
+      source /opt/ros/noetic/setup.bash
+      source "${SUNRAY_WS}/devel/setup.bash"
+      set -u
+      if [[ -f "${RACER_WS}/build/Makefile" ]]; then
+        cmake --build "${RACER_WS}/build" --target exploration_node -- -j2
+      else
+        cd "${RACER_WS}"
+        catkin_make --only-pkg-with-deps exploration_manager
+      fi
+    ) > "${RESULT_DIR}/racer_unreachable_recovery_build.log" 2>&1
+  else
+    echo "RACER exploration_node already matches patched source" \
+      > "${RESULT_DIR}/racer_unreachable_recovery_build.log"
+  fi
+}
+
+start_racer_fastlio_frontend() {
+  local uid="$1"
+  local raw_lidar="/uav${uid}/livox/lidar"
+  local raw_imu="/uav${uid}/livox/imu"
+  local custom_lidar="/uav${uid}/mosim/fastlio/livox/lidar"
+  local raw_cloud="/uav${uid}/mosim/fastlio/cloud_registered_raw"
+  local raw_cloud_body="/uav${uid}/mosim/fastlio/cloud_registered_body_raw"
+  local raw_laser_map="/uav${uid}/mosim/fastlio/laser_map_raw"
+  local raw_odom="/uav${uid}/mosim/fastlio/odom_raw"
+  local raw_path="/uav${uid}/mosim/fastlio/path_raw"
+  local local_odom
+  local aligned_odom
+  local aligned_pose
+  local aligned_cloud
+  local start_x
+  local start_y
+  local alignment_origin_x
+  local alignment_origin_y
+  local peer_uid
+  local peer_odom_args=()
+  local_odom="$(topic_for_uid "${RACER_REFERENCE_ODOM_TOPIC_TEMPLATE}" "${uid}")"
+  aligned_odom="$(topic_for_uid "${RACER_LOCAL_ODOM_TOPIC_TEMPLATE}" "${uid}")"
+  aligned_pose="$(topic_for_uid "${RACER_LOCAL_POSE_TOPIC_TEMPLATE}" "${uid}")"
+  aligned_cloud="$(topic_for_uid "${RACER_LOCAL_CLOUD_TOPIC_TEMPLATE}" "${uid}")"
+  read -r start_x start_y <<< "$(start_xy_for_uid "${uid}")"
+  alignment_origin_x="$(python3 - "${start_x}" "${START1_X}" <<'PY'
+import sys
+print(float(sys.argv[1]) - float(sys.argv[2]))
+PY
+)"
+  alignment_origin_y="$(python3 - "${start_y}" "${START1_Y}" <<'PY'
+import sys
+print(float(sys.argv[1]) - float(sys.argv[2]))
+PY
+)"
+  for peer_uid in $(seq 1 "${UAV_NUM}"); do
+    if [[ "${peer_uid}" != "${uid}" ]]; then
+      peer_odom_args+=(
+        --cloud-peer-odom-topic "$(topic_for_uid "${RACER_LOCAL_ODOM_TOPIC_TEMPLATE}" "${peer_uid}")"
+      )
+    fi
+  done
+
+  python3 "${PROJECT_ROOT}/Scripts/sunray/pointcloud2_to_livox_custom_msg.py" \
+    __name:="mosim_racer_fastlio_custom_uav${uid}" \
+    --input-topic "${raw_lidar}" \
+    --output-topic "${custom_lidar}" \
+    --imu-topic "${raw_imu}" \
+    --stamp-source imu \
+    --frame-id "uav${uid}/base_link" \
+    --scan-rate-hz "${RACER_FASTLIO_SCAN_RATE_HZ}" \
+    --scan-lines 4 \
+    --stride 1 \
+    --points-per-scan-hint 20000 \
+    --point-time-mode "${RACER_FASTLIO_POINT_TIME_MODE}" \
+    > "${RESULT_DIR}/uav${uid}_racer_fastlio_custom.log" 2>&1 &
+  PIDS+=("$!")
+
+  roslaunch "${PROJECT_ROOT}/Scripts/sunray/fastlio_racer_instance.launch" \
+    uav_id:="${uid}" \
+    lidar_topic:="${custom_lidar}" \
+    imu_topic:="${raw_imu}" \
+    cloud_registered_topic:="${raw_cloud}" \
+    cloud_registered_body_topic:="${raw_cloud_body}" \
+    laser_map_topic:="${raw_laser_map}" \
+    odom_topic:="${raw_odom}" \
+    path_topic:="${raw_path}" \
+    filter_size_surf:="${RACER_FASTLIO_FILTER_SIZE_SURF}" \
+    filter_size_map:="${RACER_FASTLIO_FILTER_SIZE_MAP}" \
+    > "${RESULT_DIR}/uav${uid}_racer_fastlio_mapping.log" 2>&1 &
+  PIDS+=("$!")
+
+  python3 "${PROJECT_ROOT}/Scripts/sunray/fastlio_odom_alignment_adapter.py" \
+    --node-name "mosim_racer_fastlio_alignment_uav${uid}" \
+    --fastlio-topic "${raw_odom}" \
+    --local-topic "${local_odom}" \
+    --output-topic "${aligned_odom}" \
+    --path-topic "/uav${uid}/mosim/racer/fastlio_path_aligned" \
+    --delay-topic "/uav${uid}/mosim/racer/fastlio_delay" \
+    --cloud-input-topic "${raw_cloud}" \
+    --cloud-output-topic "${aligned_cloud}" \
+    --cloud-diagnostics-path "${RESULT_DIR}/uav${uid}_racer_fastlio_cloud_alignment.json" \
+    --cloud-self-filter-radius-xy-m "${RACER_FASTLIO_SELF_FILTER_RADIUS_XY_M}" \
+    --cloud-self-filter-z-min-m "${RACER_FASTLIO_SELF_FILTER_Z_MIN_M}" \
+    --cloud-self-filter-z-max-m "${RACER_FASTLIO_SELF_FILTER_Z_MAX_M}" \
+    "${peer_odom_args[@]}" \
+    --cloud-peer-odom-max-age-s "${RACER_FASTLIO_PEER_ODOM_MAX_AGE_S}" \
+    --cloud-peer-filter-radius-xy-m "${RACER_FASTLIO_PEER_FILTER_RADIUS_XY_M}" \
+    --cloud-peer-filter-z-min-m "${RACER_FASTLIO_PEER_FILTER_Z_MIN_M}" \
+    --cloud-peer-filter-z-max-m "${RACER_FASTLIO_PEER_FILTER_Z_MAX_M}" \
+    --dynamic-diagnostics-csv "${RESULT_DIR}/uav${uid}_racer_fastlio_dynamic_alignment.csv" \
+    --dynamic-diagnostics-json "${RESULT_DIR}/uav${uid}_racer_fastlio_dynamic_alignment.json" \
+    --truth-topic "/uav${uid}/sunray/gazebo_pose" \
+    --alignment-reference "${RACER_FASTLIO_ALIGNMENT_REFERENCE}" \
+    --alignment-origin-xyz "${alignment_origin_x} ${alignment_origin_y} 0.0" \
+    --z-source "${RACER_FASTLIO_ALIGNMENT_Z_SOURCE}" \
+    --output-frame world \
+    --child-frame "uav${uid}/racer_fastlio_base_link" \
+    --stamp-source measurement \
+    --input-pose-frame livox \
+    --mount-xyz "${RACER_FASTLIO_MOUNT_XYZ}" \
+    --mount-rpy "${RACER_FASTLIO_MOUNT_RPY}" \
+    > "${RESULT_DIR}/uav${uid}_racer_fastlio_alignment.log" 2>&1 &
+  PIDS+=("$!")
+
+  python3 "${PROJECT_ROOT}/Scripts/sunray/odom_to_pose_stamped.py" \
+    __name:="mosim_racer_fastlio_pose_uav${uid}" \
+    _input_topic:="${aligned_odom}" \
+    _output_topic:="${aligned_pose}" \
+    > "${RESULT_DIR}/uav${uid}_racer_fastlio_pose.log" 2>&1 &
+  PIDS+=("$!")
+
+  python3 "${PROJECT_ROOT}/Scripts/sunray/fuel_cloud_pose_frontend_diagnostic.py" \
+    __name:="mosim_racer_frontend_diag_uav${uid}" \
+    _cloud_topic:="${aligned_cloud}" \
+    _pose_topic:="${aligned_pose}" \
+    _slop_s:="${RACER_FASTLIO_SYNC_SLOP_S}" \
+    _output_path:="${RESULT_DIR}/uav${uid}_racer_frontend_sync.json" \
+    > "${RESULT_DIR}/uav${uid}_racer_frontend_sync.log" 2>&1 &
+  PIDS+=("$!")
 }
 
 wait_topic_sample() {
   local topic="$1"
   local output="$2"
   local timeout_s="$3"
-  local deadline=$((SECONDS + timeout_s))
-  while (( SECONDS < deadline )); do
-    if timeout 3s rostopic echo -n 1 "${topic}" > "${output}" 2>/dev/null; then
-      return 0
-    fi
-    sleep 1
-  done
-  return 1
+  python3 - "${topic}" "${output}" "${timeout_s}" <<'PY'
+import json
+import os
+import sys
+import time
+
+import rospy
+from rospy.msg import AnyMsg
+
+topic = sys.argv[1]
+output = sys.argv[2]
+timeout_s = float(sys.argv[3])
+deadline = time.time() + timeout_s
+attempts = 0
+rospy.init_node(f"mosim_wait_topic_sample_{os.getpid()}", anonymous=True, disable_signals=True)
+while time.time() < deadline and not rospy.is_shutdown():
+    attempts += 1
+    try:
+        msg = rospy.wait_for_message(topic, AnyMsg, timeout=min(4.0, max(0.1, deadline - time.time())))
+    except rospy.ROSException:
+        continue
+    payload = {
+        "topic": topic,
+        "attempts": attempts,
+        "received": True,
+        "wall_time": time.time(),
+        "raw_bytes": len(msg._buff),
+    }
+    with open(output, "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+    os._exit(0)
+
+payload = {
+    "topic": topic,
+    "attempts": attempts,
+    "received": False,
+    "wall_time": time.time(),
+    "error": "no_sample_before_timeout",
+}
+with open(output, "w", encoding="utf-8") as f:
+    json.dump(payload, f, indent=2, ensure_ascii=False)
+    f.write("\n")
+os._exit(1)
+PY
 }
 
 wait_mavros_connected() {
   local uid="$1"
   local output="${RESULT_DIR}/uav${uid}_mavros_state_first.txt"
-  local deadline=$((SECONDS + MAVROS_READY_TIMEOUT_S))
-  while (( SECONDS < deadline )); do
-    if timeout 3s rostopic echo -n 1 "/uav${uid}/mavros/state" > "${output}" 2>/dev/null; then
-      if grep -q "connected: True" "${output}"; then
-        return 0
-      fi
-    fi
-    sleep 1
-  done
-  return 1
+  python3 - "${uid}" "${output}" "${MAVROS_READY_TIMEOUT_S}" <<'PY'
+import json
+import os
+import sys
+import time
+
+import rospy
+from mavros_msgs.msg import State
+
+uid = sys.argv[1]
+output = sys.argv[2]
+timeout_s = float(sys.argv[3])
+topic = f"/uav{uid}/mavros/state"
+deadline = time.time() + timeout_s
+attempts = 0
+last_state = None
+rospy.init_node(f"mosim_wait_mavros_state_uav{uid}_{os.getpid()}", anonymous=True, disable_signals=True)
+while time.time() < deadline and not rospy.is_shutdown():
+    attempts += 1
+    try:
+        msg = rospy.wait_for_message(topic, State, timeout=min(4.0, max(0.1, deadline - time.time())))
+    except rospy.ROSException:
+        continue
+    last_state = {
+        "topic": topic,
+        "attempts": attempts,
+        "connected": bool(msg.connected),
+        "armed": bool(msg.armed),
+        "guided": bool(msg.guided),
+        "manual_input": bool(msg.manual_input),
+        "mode": msg.mode,
+        "system_status": int(msg.system_status),
+    }
+    with open(output, "w", encoding="utf-8") as f:
+        json.dump(last_state, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+    if msg.connected:
+        os._exit(0)
+
+if last_state is None:
+    last_state = {"topic": topic, "attempts": attempts, "connected": False, "error": "no_state_sample_before_timeout"}
+with open(output, "w", encoding="utf-8") as f:
+    json.dump(last_state, f, indent=2, ensure_ascii=False)
+    f.write("\n")
+os._exit(1)
+PY
 }
 
 request_stream_rate() {
@@ -172,20 +1250,154 @@ request_stream_rate() {
   fi
   {
     echo "MAVROS_STREAM_RATE_HZ=${MAVROS_STREAM_RATE_HZ}"
-    timeout 8s rosservice call "/uav${uid}/mavros/set_stream_rate" "stream_id: 6
+    echo "MAVROS_SET_STREAM_GROUPS=${MAVROS_SET_STREAM_GROUPS}"
+    for group in ${MAVROS_SET_STREAM_GROUPS}; do
+      case "${group}" in
+        raw_sensors) stream_id=1 ;;
+        position) stream_id=6 ;;
+        extra1) stream_id=10 ;;
+        extra2) stream_id=11 ;;
+        *) echo "skip_unknown_stream_group ${group}"; continue ;;
+      esac
+      echo "set_stream_rate ${group}(${stream_id}) ${MAVROS_STREAM_RATE_HZ}Hz"
+      timeout 8s rosservice call "/uav${uid}/mavros/set_stream_rate" "stream_id: ${stream_id}
 message_rate: ${MAVROS_STREAM_RATE_HZ}
 on_off: true" || true
-    timeout 8s rosservice call "/uav${uid}/mavros/cmd/command" "broadcast: false
+    done
+    if [[ "${MAVROS_SET_MESSAGE_INTERVALS}" == "true" ]]; then
+      local interval_us
+      interval_us="$(python3 - <<PY
+rate = float("${MAVROS_STREAM_RATE_HZ}")
+print(int(round(1000000.0 / rate)))
+PY
+)"
+      echo "MAVROS_SET_MESSAGE_IDS=${MAVROS_SET_MESSAGE_IDS}"
+      for spec in ${MAVROS_SET_MESSAGE_IDS}; do
+        local msg_id msg_name
+        msg_id="${spec%%:*}"
+        msg_name="${spec#*:}"
+        echo "set_message_interval ${msg_name}(${msg_id}) ${interval_us}us"
+        timeout 8s rosservice call "/uav${uid}/mavros/cmd/command" "broadcast: false
 command: 511
 confirmation: 0
-param1: 32
-param2: $((1000000 / MAVROS_STREAM_RATE_HZ))
+param1: ${msg_id}
+param2: ${interval_us}
 param3: 0
 param4: 0
 param5: 0
 param6: 0
 param7: 0" || true
+      done
+    fi
   } > "${RESULT_DIR}/uav${uid}_mavros_stream_rate_request.txt" 2>&1
+}
+
+apply_px4_int_param_override() {
+  local uid="$1"
+  local param_id="$2"
+  local value="$3"
+  if [[ -z "${value}" ]]; then
+    return 0
+  fi
+  {
+    echo "PARAM_OVERRIDE ${param_id}=${value}"
+    if [[ "${PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE}" == "true" ]]; then
+      echo "PARAM_PULL_BEFORE_OVERRIDE"
+      timeout 15s rosservice call "/uav${uid}/mavros/param/pull" "force_pull: true" || true
+    fi
+    echo "PARAM_SET_SERVICE ${param_id}=${value}"
+    timeout 8s rosservice call "/uav${uid}/mavros/param/set" "param_id: '${param_id}'
+value:
+  integer: ${value}
+  real: 0.0" || true
+    echo "PARAM_SET_MAVPARAM ${param_id}=${value}"
+    timeout 12s rosrun mavros mavparam -n "/uav${uid}/mavros" set "${param_id}" "${value}" || true
+    echo "PARAM_VERIFY_SERVICE ${param_id}"
+    timeout 5s rosservice call "/uav${uid}/mavros/param/get" "param_id: '${param_id}'" || true
+    echo "PARAM_VERIFY_MAVPARAM ${param_id}"
+    timeout 8s rosrun mavros mavparam -n "/uav${uid}/mavros" get "${param_id}" || true
+  } >> "${RESULT_DIR}/uav${uid}_px4_param_overrides.txt" 2>&1
+}
+
+apply_px4_param_override() {
+  local uid="$1"
+  local param_id="$2"
+  local value="$3"
+  if [[ -z "${param_id}" || -z "${value}" ]]; then
+    return 0
+  fi
+  local integer_value="0"
+  local real_value="0.0"
+  if [[ "${value}" =~ ^-?[0-9]+$ ]]; then
+    integer_value="${value}"
+  else
+    real_value="${value}"
+  fi
+  {
+    echo "PARAM_OVERRIDE ${param_id}=${value}"
+    if [[ "${PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE}" == "true" ]]; then
+      echo "PARAM_PULL_BEFORE_OVERRIDE"
+      timeout 15s rosservice call "/uav${uid}/mavros/param/pull" "force_pull: true" || true
+    fi
+    echo "PARAM_SET_SERVICE ${param_id}=${value}"
+    timeout 8s rosservice call "/uav${uid}/mavros/param/set" "param_id: '${param_id}'
+value:
+  integer: ${integer_value}
+  real: ${real_value}" || true
+    echo "PARAM_SET_MAVPARAM ${param_id}=${value}"
+    timeout 12s rosrun mavros mavparam -n "/uav${uid}/mavros" set "${param_id}" "${value}" || true
+    echo "PARAM_VERIFY_SERVICE ${param_id}"
+    timeout 5s rosservice call "/uav${uid}/mavros/param/get" "param_id: '${param_id}'" || true
+    echo "PARAM_VERIFY_MAVPARAM ${param_id}"
+    timeout 8s rosrun mavros mavparam -n "/uav${uid}/mavros" get "${param_id}" || true
+  } >> "${RESULT_DIR}/uav${uid}_px4_param_overrides.txt" 2>&1
+}
+
+apply_px4_param_overrides_for_uav() {
+  local uid="$1"
+  {
+    echo "PX4CTRL_START_EXTERNAL_FUSION=${PX4CTRL_START_EXTERNAL_FUSION}"
+    echo "PX4CTRL_EXTERNAL_FUSION_USE_VISION_POSE=${PX4CTRL_EXTERNAL_FUSION_USE_VISION_POSE}"
+    echo "PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE=${PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE}"
+    echo "PX4CTRL_EKF2_EV_CTRL_OVERRIDE=${PX4CTRL_EKF2_EV_CTRL_OVERRIDE:-none}"
+    echo "PX4CTRL_EKF2_HGT_REF_OVERRIDE=${PX4CTRL_EKF2_HGT_REF_OVERRIDE:-none}"
+    echo "PX4CTRL_EXTRA_PARAM_OVERRIDES=${PX4CTRL_EXTRA_PARAM_OVERRIDES:-none}"
+  } > "${RESULT_DIR}/uav${uid}_px4_param_overrides.txt"
+  apply_px4_int_param_override "${uid}" EKF2_EV_CTRL "${PX4CTRL_EKF2_EV_CTRL_OVERRIDE}" || true
+  apply_px4_int_param_override "${uid}" EKF2_HGT_REF "${PX4CTRL_EKF2_HGT_REF_OVERRIDE}" || true
+  if [[ -n "${PX4CTRL_EXTRA_PARAM_OVERRIDES}" ]]; then
+    for param_pair in ${PX4CTRL_EXTRA_PARAM_OVERRIDES//,/ }; do
+      if [[ "${param_pair}" != *=* ]]; then
+        echo "Skipping malformed PX4CTRL_EXTRA_PARAM_OVERRIDES item: ${param_pair}" >> "${RESULT_DIR}/uav${uid}_px4_param_overrides.txt"
+        continue
+      fi
+      apply_px4_param_override "${uid}" "${param_pair%%=*}" "${param_pair#*=}" || true
+    done
+  fi
+}
+
+snapshot_px4_params_for_uav() {
+  local uid="$1"
+  if [[ "${PX4CTRL_SKIP_PARAM_SNAPSHOT}" == "true" ]]; then
+    {
+      echo "PX4 PARAM SNAPSHOT uav${uid}"
+      echo "skipped=true"
+      echo "reason=PX4CTRL_SKIP_PARAM_SNAPSHOT"
+    } > "${RESULT_DIR}/uav${uid}_px4_param_snapshot_before_mission.txt"
+    return 0
+  fi
+  {
+    echo "PX4 PARAM SNAPSHOT uav${uid}"
+    for param in \
+      EKF2_HGT_REF EKF2_AID_MASK EKF2_EV_CTRL EKF2_EV_POS_X EKF2_EV_POS_Y EKF2_EV_POS_Z \
+      EKF2_EV_DELAY EKF2_EV_NOISE EKF2_EV_NOISE_MD EKF2_EVP_NOISE EKF2_EVV_NOISE EKF2_EVA_NOISE EKF2_REQ_EPH EKF2_REQ_EPV \
+      MPC_THR_HOVER MPC_XY_P MPC_Z_P MPC_XY_VEL_P_ACC MPC_XY_VEL_I_ACC MPC_Z_VEL_P_ACC MPC_Z_VEL_I_ACC
+    do
+      printf "%s\n" "${param}"
+      timeout 5s rosservice call "/uav${uid}/mavros/param/get" "param_id: '${param}'" 2>&1 || true
+    done
+  } > "${RESULT_DIR}/uav${uid}_px4_param_snapshot_before_mission.txt" 2>&1 &
+  PIDS+=("$!")
 }
 
 prepare_goal5_mid360_csv() {
@@ -202,7 +1414,77 @@ prepare_goal5_mid360_csv() {
   awk -F',' -v stride="${SUNRAY_MID360_GOAL5_CSV_STRIDE}" 'NR == 1 || ((NR - 2) % stride == 0)' "${source_csv}" > "${target_csv}"
 }
 
+prepare_px4_ros1_runtime_overlay() {
+  PX4_ROS1_OVERLAY_PKG=""
+  if [[ "${PX4_ROS1_GUARD_UXRCE_DDS}" != "true" ]]; then
+    return 0
+  fi
+
+  local original_px4_etc="${SUNRAY_PX4_DIR}/build/px4_sitl_default/etc"
+  local original_px4_bin="${SUNRAY_PX4_DIR}/build/px4_sitl_default/bin"
+  local original_package="${SUNRAY_PX4_DIR}/package.xml"
+  local overlay_root="${RESULT_DIR}/px4_ros1_runtime_overlay_attempt_${GOAL5_STARTUP_ATTEMPT_INDEX}_$$"
+  local overlay_pkg="${overlay_root}/px4"
+  local overlay_build="${overlay_pkg}/build/px4_sitl_default"
+  local overlay_etc="${overlay_build}/etc"
+  local overlay_rcs="${overlay_etc}/init.d-posix/rcS"
+
+  if [[ ! -d "${original_px4_etc}" || ! -d "${original_px4_bin}" || ! -f "${original_package}" ]]; then
+    echo "PX4 ROS1 runtime overlay inputs missing under ${SUNRAY_PX4_DIR}" >&2
+    exit 2
+  fi
+
+  mkdir -p "${overlay_build}"
+  cp "${original_package}" "${overlay_pkg}/package.xml"
+  cp -a "${original_px4_etc}" "${overlay_etc}"
+  ln -s "${original_px4_bin}" "${overlay_build}/bin"
+
+  python3 - "${overlay_rcs}" <<'PY'
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+old = "uxrce_dds_client start -t udp -h 127.0.0.1 -p $uxrce_dds_port $uxrce_dds_ns"
+new = """if ! uxrce_dds_client start -t udp -h 127.0.0.1 -p $uxrce_dds_port $uxrce_dds_ns
+then
+\techo "WARN [init] uxrce_dds_client start failed, continuing for MoSim ROS1/MAVROS gate"
+fi"""
+if old not in text:
+    raise SystemExit(f"uxrce_dds_client start line not found in {path}")
+path.write_text(text.replace(old, new, 1), encoding="utf-8")
+PY
+
+  PX4_ROS1_OVERLAY_PKG="${overlay_pkg}"
+  export PX4_ROS1_OVERLAY_PKG
+  {
+    echo "PX4_ROS1_GUARD_UXRCE_DDS=true"
+    echo "overlay_pkg=${overlay_pkg}"
+    echo "original_px4_etc=${original_px4_etc}"
+    echo "patched_rcS=${overlay_rcs}"
+    grep -n "uxrce_dds_client start" "${overlay_rcs}" || true
+    grep -n "continuing for MoSim ROS1/MAVROS gate" "${overlay_rcs}" || true
+  } > "${RESULT_DIR}/px4_ros1_runtime_overlay.txt"
+}
+
 start_gazebo_world() {
+  if ! timeout 2s rosparam get /run_id >/dev/null 2>&1; then
+    roscore > "${RESULT_DIR}/roscore.log" 2>&1 &
+    PIDS+=("$!")
+    echo "${PIDS[-1]}" > "${RESULT_DIR}/roscore.pid"
+    for _ in $(seq 1 40); do
+      if timeout 2s rosparam get /run_id > "${RESULT_DIR}/roscore_run_id.txt" 2>/dev/null; then
+        break
+      fi
+      sleep 0.5
+    done
+  else
+    timeout 2s rosparam get /run_id > "${RESULT_DIR}/roscore_run_id.txt" 2>/dev/null || true
+  fi
+  if ! timeout 2s rosparam get /run_id >/dev/null 2>&1; then
+    echo "ROS master did not expose /run_id before Gazebo start" >&2
+    exit 4
+  fi
   roslaunch gazebo_ros empty_world.launch \
     gui:="${GUI}" world_name:="${WORLD_FILE}" debug:=false verbose:=false paused:=false use_sim_time:="${USE_SIM_TIME}" \
     > "${RESULT_DIR}/sunray_goal5_gazebo_world.log" 2>&1 &
@@ -252,19 +1534,59 @@ write_px4ctrl_launch() {
     <param name="mass" value="${PX4CTRL_MASS}" />
     <param name="ctrl_freq_max" value="${PX4CTRL_CTRL_FREQ_MAX}" />
     <param name="use_bodyrate_ctrl" value="${PX4CTRL_USE_BODYRATE_CTRL}" />
-    <param name="mosim_generated_core_mode" value="original" />
+    <param name="odom_velocity_frame" value="${PX4CTRL_ODOM_VELOCITY_FRAME}" />
+    <param name="mosim_generated_core_mode" value="${PX4CTRL_CORE_PROFILE}" />
     <param name="auto_takeoff_land/enable" value="true" />
     <param name="auto_takeoff_land/enable_auto_arm" value="true" />
     <param name="auto_takeoff_land/no_RC" value="true" />
-    <param name="auto_takeoff_land/takeoff_height" value="1.0" />
-    <param name="auto_takeoff_land/takeoff_land_speed" value="0.25" />
+    <param name="auto_takeoff_land/takeoff_height" value="${EGO_GATE_TAKEOFF_HEIGHT}" />
+    <param name="auto_takeoff_land/takeoff_land_speed" value="${EGO_GATE_TAKEOFF_LAND_SPEED}" />
     <param name="thrust_model/hover_percentage" value="${PX4CTRL_HOVER_PERCENTAGE}" />
+    <param name="thrust_model/estimate_enable" value="${PX4CTRL_THRUST_ESTIMATE_ENABLE}" />
     <param name="gain/Kp0" value="${PX4CTRL_KP_XY}" />
     <param name="gain/Kp1" value="${PX4CTRL_KP_XY}" />
     <param name="gain/Kp2" value="${PX4CTRL_KP_Z}" />
     <param name="gain/Kv0" value="${PX4CTRL_KV_XY}" />
     <param name="gain/Kv1" value="${PX4CTRL_KV_XY}" />
     <param name="gain/Kv2" value="${PX4CTRL_KV_Z}" />
+    <param name="smc/lambda_x" value="${PX4CTRL_SMC_LAMBDA_XY}" />
+    <param name="smc/lambda_y" value="${PX4CTRL_SMC_LAMBDA_XY}" />
+    <param name="smc/lambda_z" value="${PX4CTRL_SMC_LAMBDA_Z}" />
+    <param name="smc/eta_x" value="${PX4CTRL_SMC_ETA_XY}" />
+    <param name="smc/eta_y" value="${PX4CTRL_SMC_ETA_XY}" />
+    <param name="smc/eta_z" value="${PX4CTRL_SMC_ETA_Z}" />
+    <param name="smc/phi_x" value="${PX4CTRL_SMC_PHI_XY}" />
+    <param name="smc/phi_y" value="${PX4CTRL_SMC_PHI_XY}" />
+    <param name="smc/phi_z" value="${PX4CTRL_SMC_PHI_Z}" />
+    <param name="smc/surface_limit_x" value="${PX4CTRL_SMC_SURFACE_LIMIT_XY}" />
+    <param name="smc/surface_limit_y" value="${PX4CTRL_SMC_SURFACE_LIMIT_XY}" />
+    <param name="smc/surface_limit_z" value="${PX4CTRL_SMC_SURFACE_LIMIT_Z}" />
+    <param name="indi/gain_x" value="${PX4CTRL_INDI_GAIN_XY}" />
+    <param name="indi/gain_y" value="${PX4CTRL_INDI_GAIN_XY}" />
+    <param name="indi/gain_z" value="${PX4CTRL_INDI_GAIN_Z}" />
+    <param name="indi/increment_limit_x" value="${PX4CTRL_INDI_INCREMENT_LIMIT_XY}" />
+    <param name="indi/increment_limit_y" value="${PX4CTRL_INDI_INCREMENT_LIMIT_XY}" />
+    <param name="indi/increment_limit_z" value="${PX4CTRL_INDI_INCREMENT_LIMIT_Z}" />
+    <param name="indi/measured_accel_limit_x" value="${PX4CTRL_INDI_MEASURED_ACCEL_LIMIT_XY}" />
+    <param name="indi/measured_accel_limit_y" value="${PX4CTRL_INDI_MEASURED_ACCEL_LIMIT_XY}" />
+    <param name="indi/measured_accel_limit_z" value="${PX4CTRL_INDI_MEASURED_ACCEL_LIMIT_Z}" />
+    <param name="indi/accel_lpf_alpha" value="${PX4CTRL_INDI_ACCEL_LPF_ALPHA}" />
+    <param name="nmpc/horizon_s" value="${PX4CTRL_NMPC_HORIZON_S}" />
+    <param name="nmpc/position_weight_x" value="${PX4CTRL_NMPC_POSITION_WEIGHT_XY}" />
+    <param name="nmpc/position_weight_y" value="${PX4CTRL_NMPC_POSITION_WEIGHT_XY}" />
+    <param name="nmpc/position_weight_z" value="${PX4CTRL_NMPC_POSITION_WEIGHT_Z}" />
+    <param name="nmpc/velocity_weight_x" value="${PX4CTRL_NMPC_VELOCITY_WEIGHT_XY}" />
+    <param name="nmpc/velocity_weight_y" value="${PX4CTRL_NMPC_VELOCITY_WEIGHT_XY}" />
+    <param name="nmpc/velocity_weight_z" value="${PX4CTRL_NMPC_VELOCITY_WEIGHT_Z}" />
+    <param name="nmpc/control_weight_x" value="${PX4CTRL_NMPC_CONTROL_WEIGHT_XY}" />
+    <param name="nmpc/control_weight_y" value="${PX4CTRL_NMPC_CONTROL_WEIGHT_XY}" />
+    <param name="nmpc/control_weight_z" value="${PX4CTRL_NMPC_CONTROL_WEIGHT_Z}" />
+    <param name="nmpc/accel_limit_x" value="${PX4CTRL_NMPC_ACCEL_LIMIT_XY}" />
+    <param name="nmpc/accel_limit_y" value="${PX4CTRL_NMPC_ACCEL_LIMIT_XY}" />
+    <param name="nmpc/accel_limit_z" value="${PX4CTRL_NMPC_ACCEL_LIMIT_Z}" />
+    <param name="nmpc/increment_limit_x" value="${PX4CTRL_NMPC_INCREMENT_LIMIT_XY}" />
+    <param name="nmpc/increment_limit_y" value="${PX4CTRL_NMPC_INCREMENT_LIMIT_XY}" />
+    <param name="nmpc/increment_limit_z" value="${PX4CTRL_NMPC_INCREMENT_LIMIT_Z}" />
   </node>
 EOF
     done
@@ -277,8 +1599,8 @@ if [[ ! -d "${PX4CTRL_WS}/devel" ]]; then
   echo "PX4CTRL_WS devel missing: ${PX4CTRL_WS}/devel" >&2
   exit 2
 fi
-if [[ ! -d "${GOAL4_EGO_WS}/devel" ]]; then
-  echo "GOAL4_EGO_WS devel missing: ${GOAL4_EGO_WS}/devel; run Scripts/sunray/setup_goal4_ego_overlay.sh" >&2
+if [[ ! -d "${PLANNER_WS}/devel" ]]; then
+  echo "Planner workspace devel missing: ${PLANNER_WS}/devel; run the matching Goal4 planner overlay setup first" >&2
   exit 2
 fi
 if [[ ! -f "${LIVOX_PLUGIN_WS}/devel/lib/liblivox_laser_simulation.so" || ! -f "${LIVOX_PLUGIN_WS}/.mosim_multiuav_livox_patch_v1" ]]; then
@@ -290,10 +1612,13 @@ if [[ ! -f "${LIVOX_PLUGIN_WS}/devel/lib/liblivox_laser_simulation.so" || ! -f "
     > "${RESULT_DIR}/sunray_livox_plugin_setup_stdout.txt" 2>&1
 fi
 prepare_goal5_mid360_csv
+prepare_px4_ros1_runtime_overlay
 
 cleanup
 sleep 3
 source_env
+prepare_racer_planner_workspace
+prepare_racer_fastlio_workspace
 
 {
   echo "ROS_ENV_SNAPSHOT"
@@ -301,17 +1626,43 @@ source_env
   echo "SUNRAY_STRIP_PX4_MODEL_PATH=${SUNRAY_STRIP_PX4_MODEL_PATH}"
   echo "SUNRAY_PX4_DIR=${SUNRAY_PX4_DIR}"
   echo "PX4_GAZEBO_MODEL_PATH=${SUNRAY_PX4_DIR}/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models"
+  echo "FACTORY_L2_MODEL_PATH=${FACTORY_L2_MODEL_PATH}"
+  echo "FACTORY_L2_CONFIG_MODEL_PATH=${FACTORY_L2_CONFIG_MODEL_PATH}"
+  echo "GOAL5_FACTORY_MODEL_PATH_MODE=${GOAL5_FACTORY_MODEL_PATH_MODE}"
+  echo "FACTORY_L2_MODEL_PATH_ACTIVE=${FACTORY_L2_MODEL_PATH_ACTIVE}"
+  echo "PLANNER_VARIANT=${PLANNER_VARIANT}"
+  echo "RACER_UNREACHABLE_RECOVERY_ENABLE=${RACER_UNREACHABLE_RECOVERY_ENABLE}"
+  echo "RACER_D3_DISABLE_PAIR_OPT=${RACER_D3_DISABLE_PAIR_OPT}"
+  echo "RACER_D3_ALLOW_PAIR_OPT_FACTORY=${RACER_D3_ALLOW_PAIR_OPT_FACTORY}"
+  echo "RACER_D3_PAIR_OPT_FACTORY_POLICY=${RACER_D3_PAIR_OPT_FACTORY_POLICY}"
+  echo "RACER_D3_PAIR_OPT_AFTER_TRIGGER_ONLY=${RACER_D3_PAIR_OPT_AFTER_TRIGGER_ONLY}"
+  echo "RACER_D3_BOX_MIN_Z=${RACER_D3_BOX_MIN_Z}"
+  echo "RACER_D3_BOX_MAX_Z=${RACER_D3_BOX_MAX_Z}"
+  echo "RACER_D3_VIRTUAL_CEIL_HEIGHT=${RACER_D3_VIRTUAL_CEIL_HEIGHT}"
+  echo "RACER_D3_ASTAR_START_CLEARANCE_RADIUS=${RACER_D3_ASTAR_START_CLEARANCE_RADIUS}"
+  echo "RACER_D3_ASTAR_MAX_SEARCH_TIME=${RACER_D3_ASTAR_MAX_SEARCH_TIME}"
+  echo "PX4_ROS1_GUARD_UXRCE_DDS=${PX4_ROS1_GUARD_UXRCE_DDS}"
+  echo "PX4_ROS1_OVERLAY_PKG=${PX4_ROS1_OVERLAY_PKG:-}"
+  if [[ -n "${PX4_ROS1_OVERLAY_PKG:-}" ]]; then
+    echo "ROSPACK_PX4=$(rospack find px4 2>/dev/null || true)"
+  fi
   if [[ "${GAZEBO_MODEL_PATH:-}" == *"${SUNRAY_PX4_DIR}/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models"* ]]; then
     echo "PX4_MODEL_PATH_PRESENT=true"
   else
     echo "PX4_MODEL_PATH_PRESENT=false"
   fi
   rospack profile || true
-  for pkg in px4ctrl quadrotor_msgs ego_planner traj_utils plan_env sunray_msgs sunray_uav_control; do
+  REQUIRED_PACKAGES=(px4ctrl quadrotor_msgs traj_utils plan_env sunray_msgs sunray_uav_control)
+  REQUIRED_PACKAGES+=("${PLANNER_REQUIRED_PACKAGES[@]}")
+  for pkg in "${REQUIRED_PACKAGES[@]}"; do
     echo "rospack find ${pkg}"
     rospack find "${pkg}"
   done
-  python3 -c "import sunray_msgs.msg, quadrotor_msgs.msg, traj_utils.msg; print('python message imports ok')"
+  if [[ "${PLANNER_VARIANT}" == "racer" ]]; then
+    python3 -c "import sunray_msgs.msg, quadrotor_msgs.msg, bspline.msg; print('python message imports ok')"
+  else
+    python3 -c "import sunray_msgs.msg, quadrotor_msgs.msg, traj_utils.msg; print('python message imports ok')"
+  fi
 } > "${RESULT_DIR}/ros_env_snapshot.txt" 2>&1 || {
   echo "ROS environment missing required Goal5 packages; see ${RESULT_DIR}/ros_env_snapshot.txt" >&2
   exit 6
@@ -334,39 +1685,112 @@ rm -f /tmp/px4-sock-* 2>/dev/null || true
 if [[ "${SEQUENTIAL_SPAWN}" == "true" ]]; then
   start_gazebo_world
   start_uav_instance 1 "${START1_X}" "${START1_Y}" "0.2" "0.0"
-  if ! wait_mavros_connected 1; then
-    echo "MAVROS did not connect for uav1" >&2
-    exit 4
-  fi
-  request_stream_rate 1
-  if ! wait_topic_sample "/uav1/livox/lidar" "${RESULT_DIR}/uav1_raw_lidar_first.txt" 35; then
-    echo "No raw MID360 point cloud on /uav1/livox/lidar" >&2
-    exit 7
+    if ! wait_mavros_connected 1; then
+      echo "MAVROS did not connect for uav1" >&2
+      exit 4
+    fi
+    request_stream_rate 1
+    apply_px4_param_overrides_for_uav 1
+    snapshot_px4_params_for_uav 1
+    if ! wait_topic_sample "/uav1/livox/lidar" "${RESULT_DIR}/uav1_raw_lidar_first.txt" "${LIDAR_READY_TIMEOUT_S}"; then
+      echo "No raw MID360 point cloud on /uav1/livox/lidar" >&2
+      exit 7
   fi
 
   start_uav_instance 2 "${START2_X}" "${START2_Y}" "0.2" "0.0"
-  if ! wait_mavros_connected 2; then
-    echo "MAVROS did not connect for uav2" >&2
-    exit 4
-  fi
-  request_stream_rate 2
-  if ! wait_topic_sample "/uav2/livox/lidar" "${RESULT_DIR}/uav2_raw_lidar_first.txt" 35; then
-    echo "No raw MID360 point cloud on /uav2/livox/lidar" >&2
+    if ! wait_mavros_connected 2; then
+      echo "MAVROS did not connect for uav2" >&2
+      exit 4
+    fi
+    request_stream_rate 2
+    apply_px4_param_overrides_for_uav 2
+    snapshot_px4_params_for_uav 2
+    if ! wait_topic_sample "/uav2/livox/lidar" "${RESULT_DIR}/uav2_raw_lidar_first.txt" "${LIDAR_READY_TIMEOUT_S}"; then
+      echo "No raw MID360 point cloud on /uav2/livox/lidar" >&2
     exit 7
   fi
 
   if [[ "${UAV_NUM}" == "3" ]]; then
     start_uav_instance 3 "${START3_X}" "${START3_Y}" "0.2" "0.0"
-    if ! wait_mavros_connected 3; then
-      echo "MAVROS did not connect for uav3" >&2
-      exit 4
-    fi
-    request_stream_rate 3
-    if ! wait_topic_sample "/uav3/livox/lidar" "${RESULT_DIR}/uav3_raw_lidar_first.txt" 35; then
-      echo "No raw MID360 point cloud on /uav3/livox/lidar" >&2
+      if ! wait_mavros_connected 3; then
+        echo "MAVROS did not connect for uav3" >&2
+        exit 4
+      fi
+      request_stream_rate 3
+      apply_px4_param_overrides_for_uav 3
+      snapshot_px4_params_for_uav 3
+      if ! wait_topic_sample "/uav3/livox/lidar" "${RESULT_DIR}/uav3_raw_lidar_first.txt" "${LIDAR_READY_TIMEOUT_S}"; then
+        echo "No raw MID360 point cloud on /uav3/livox/lidar" >&2
       exit 7
     fi
   fi
+elif [[ "${STAGGERED_SPAWN}" == "true" ]]; then
+  start_gazebo_world
+  for uid in $(seq 1 "${UAV_NUM}"); do
+    case "${uid}" in
+      1)
+        spawn_x="${START1_X}"
+        spawn_y="${START1_Y}"
+        ;;
+      2)
+        spawn_x="${START2_X}"
+        spawn_y="${START2_Y}"
+        ;;
+      3)
+        spawn_x="${START3_X}"
+        spawn_y="${START3_Y}"
+        ;;
+      *)
+        echo "Unsupported UAV id for staggered spawn: ${uid}" >&2
+        exit 2
+        ;;
+    esac
+    start_uav_instance "${uid}" "${spawn_x}" "${spawn_y}" "0.2" "0.0"
+    if [[ "${uid}" -lt "${UAV_NUM}" ]]; then
+      sleep "${STAGGERED_SPAWN_INTERVAL_S}"
+    fi
+  done
+
+  MAVROS_WAIT_PIDS=()
+  for uid in $(seq 1 "${UAV_NUM}"); do
+    (
+      if ! wait_mavros_connected "${uid}"; then
+        echo "MAVROS did not connect for uav${uid}" >&2
+        exit 4
+      fi
+    ) &
+    MAVROS_WAIT_PIDS+=("$!")
+  done
+  MAVROS_WAIT_RC=0
+  for pid in "${MAVROS_WAIT_PIDS[@]}"; do
+    if ! wait "${pid}"; then
+      MAVROS_WAIT_RC=4
+    fi
+  done
+  if [[ "${MAVROS_WAIT_RC}" != "0" ]]; then
+    exit "${MAVROS_WAIT_RC}"
+  fi
+
+  MAVROS_CONFIG_PIDS=()
+  for uid in $(seq 1 "${UAV_NUM}"); do
+    (
+      request_stream_rate "${uid}"
+      apply_px4_param_overrides_for_uav "${uid}"
+    ) &
+    MAVROS_CONFIG_PIDS+=("$!")
+  done
+  MAVROS_CONFIG_RC=0
+  for pid in "${MAVROS_CONFIG_PIDS[@]}"; do
+    if ! wait "${pid}"; then
+      MAVROS_CONFIG_RC=4
+    fi
+  done
+  if [[ "${MAVROS_CONFIG_RC}" != "0" ]]; then
+    exit "${MAVROS_CONFIG_RC}"
+  fi
+  for uid in $(seq 1 "${UAV_NUM}"); do
+    snapshot_px4_params_for_uav "${uid}"
+  done
 else
   if [[ "${PRELOAD_GAZEBO_MODELS}" == "true" ]]; then
     PRELOADED_WORLD_FILE="${RESULT_DIR}/goal5_preloaded_${UAV_NUM}uav.world"
@@ -383,9 +1807,11 @@ else
     GOAL5_GAZEBO_LAUNCH="${PROJECT_ROOT}/Scripts/sunray/goal5_swarm_px4_preloaded_gazebo.launch"
     GOAL5_WORLD_FILE="${PRELOADED_WORLD_FILE}"
   else
-    GOAL5_GAZEBO_LAUNCH="${PROJECT_ROOT}/Scripts/sunray/goal5_swarm_px4_gazebo.launch"
+    GOAL5_GAZEBO_LAUNCH="${SUNRAY_GAZEBO_LAUNCH_FILE:-${PROJECT_ROOT}/Scripts/sunray/goal5_swarm_px4_gazebo.launch}"
     GOAL5_WORLD_FILE="${WORLD_FILE}"
   fi
+
+  write_startup_run_inputs_manifest
 
   roslaunch "${GOAL5_GAZEBO_LAUNCH}" \
     uav_num:="${UAV_NUM}" vehicle:="${VEHICLE}" gui:="${GUI}" world:="${GOAL5_WORLD_FILE}" use_sim_time:="${USE_SIM_TIME}" \
@@ -396,16 +1822,49 @@ else
   PIDS+=("$!")
   echo "${PIDS[-1]}" > "${RESULT_DIR}/sunray_goal5_swarm_gazebo.pid"
 
+  MAVROS_WAIT_PIDS=()
   for uid in $(seq 1 "${UAV_NUM}"); do
-    if ! wait_mavros_connected "${uid}"; then
-      echo "MAVROS did not connect for uav${uid}" >&2
-      exit 4
+    (
+      if ! wait_mavros_connected "${uid}"; then
+        echo "MAVROS did not connect for uav${uid}" >&2
+        exit 4
+      fi
+    ) &
+    MAVROS_WAIT_PIDS+=("$!")
+  done
+  MAVROS_WAIT_RC=0
+  for pid in "${MAVROS_WAIT_PIDS[@]}"; do
+    if ! wait "${pid}"; then
+      MAVROS_WAIT_RC=4
     fi
-    request_stream_rate "${uid}"
+  done
+  if [[ "${MAVROS_WAIT_RC}" != "0" ]]; then
+    exit "${MAVROS_WAIT_RC}"
+  fi
+
+  MAVROS_CONFIG_PIDS=()
+  for uid in $(seq 1 "${UAV_NUM}"); do
+    (
+      request_stream_rate "${uid}"
+      apply_px4_param_overrides_for_uav "${uid}"
+    ) &
+    MAVROS_CONFIG_PIDS+=("$!")
+  done
+  MAVROS_CONFIG_RC=0
+  for pid in "${MAVROS_CONFIG_PIDS[@]}"; do
+    if ! wait "${pid}"; then
+      MAVROS_CONFIG_RC=4
+    fi
+  done
+  if [[ "${MAVROS_CONFIG_RC}" != "0" ]]; then
+    exit "${MAVROS_CONFIG_RC}"
+  fi
+  for uid in $(seq 1 "${UAV_NUM}"); do
+    snapshot_px4_params_for_uav "${uid}"
   done
 fi
 
-if [[ "${PX4CTRL_START_EXTERNAL_FUSION}" == "true" ]]; then
+if [[ "${PX4CTRL_START_EXTERNAL_FUSION}" == "true" && "${RACER_INPUT_GATE_ONLY}" != "true" ]]; then
   for uid in $(seq 1 "${UAV_NUM}"); do
     rosrun sunray_uav_control external_fusion_node \
       __name:="external_fusion_uav${uid}" \
@@ -419,6 +1878,18 @@ if [[ "${PX4CTRL_START_EXTERNAL_FUSION}" == "true" ]]; then
 fi
 
 for uid in $(seq 1 "${UAV_NUM}"); do
+  if [[ "${MAVROS_ODOM_BRIDGE_MODE}" == "native" ]]; then
+    echo "MAVROS_ODOM_BRIDGE_MODE=native; using existing /uav${uid}/mavros/local_position/odom" \
+      > "${RESULT_DIR}/uav${uid}_odom_bridge.log"
+    continue
+  fi
+  if [[ "${MAVROS_ODOM_BRIDGE_MODE}" == "auto" ]]; then
+    if wait_topic_sample "/uav${uid}/mavros/local_position/odom" "${RESULT_DIR}/uav${uid}_native_odom_probe.txt" 5; then
+      echo "MAVROS_ODOM_BRIDGE_MODE=auto; native /uav${uid}/mavros/local_position/odom is present, bridge not started" \
+        > "${RESULT_DIR}/uav${uid}_odom_bridge.log"
+      continue
+    fi
+  fi
   python3 "${PROJECT_ROOT}/Scripts/sunray/mavros_pose_velocity_to_odom_bridge.py" \
     --pose-topic "/uav${uid}/mavros/local_position/pose" \
     --velocity-topic "/uav${uid}/mavros/local_position/velocity_local" \
@@ -443,23 +1914,244 @@ for uid in $(seq 1 "${UAV_NUM}"); do
       exit 7
     fi
   fi
+  if [[ "${PLANNER_VARIANT}" == "racer" && "${RACER_SENSOR_SOURCE}" == "fastlio" ]]; then
+    if ! wait_topic_sample "/uav${uid}/livox/imu" "${RESULT_DIR}/uav${uid}_raw_imu_first.txt" "${LIDAR_READY_TIMEOUT_S}"; then
+      echo "No MID360 IMU on /uav${uid}/livox/imu" >&2
+      exit 7
+    fi
+  fi
 done
 
-PX4CTRL_LAUNCH="$(write_px4ctrl_launch)"
-roslaunch "${PX4CTRL_LAUNCH}" > "${RESULT_DIR}/px4ctrl_swarm.log" 2>&1 &
-PIDS+=("$!")
-sleep 5
+if [[ "${GOAL5_STARTUP_ONLY}" == "true" ]]; then
+  cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
+{
+  "schema": "mosim.sunray_ros1.goal5_swarm_startup_manifest.v1",
+  "status": "passed",
+  "result_dir": "${RESULT_DIR}",
+  "uav_num": ${UAV_NUM},
+  "startup_only": true,
+  "vehicle": "${VEHICLE}",
+  "world_file": "${WORLD_FILE}",
+  "gazebo_launch_file": "${GOAL5_GAZEBO_LAUNCH:-}",
+  "spawn_mode": "sequential=${SEQUENTIAL_SPAWN},staggered=${STAGGERED_SPAWN},preload=${PRELOAD_GAZEBO_MODELS}",
+  "topics": {
+    "mavros_state": ["/uav1/mavros/state", "/uav2/mavros/state", "/uav3/mavros/state"],
+    "odom": ["/uav1/mavros/local_position/odom", "/uav2/mavros/local_position/odom", "/uav3/mavros/local_position/odom"],
+    "raw_lidar": ["/uav1/livox/lidar", "/uav2/livox/lidar", "/uav3/livox/lidar"]
+  },
+  "claim_boundary": "Startup-only gate: Gazebo/PX4/MAVROS/odom/raw MID360 reached first-sample readiness. No px4ctrl, planner, mission, coverage, or RViz success is claimed."
+}
+EOF
+  echo "${RESULT_DIR}"
+  exit 0
+fi
 
-for uid in $(seq 1 "${UAV_NUM}"); do
-  python3 "${PROJECT_ROOT}/Scripts/sunray/goal4_pointcloud_to_world_node.py" \
-    _input_point_topic:="/uav${uid}/livox/lidar" \
-    _output_point_topic:="/uav${uid}/livox_world" \
-    _odom_topic:="/uav${uid}/mavros/local_position/odom" \
-    _frame_id:=world \
-    > "${RESULT_DIR}/uav${uid}_pointcloud_to_world.log" 2>&1 &
+if [[ "${RACER_INPUT_GATE_ONLY}" != "true" ]]; then
+  PX4CTRL_LAUNCH="$(write_px4ctrl_launch)"
+  roslaunch "${PX4CTRL_LAUNCH}" > "${RESULT_DIR}/px4ctrl_swarm.log" 2>&1 &
   PIDS+=("$!")
-done
-sleep 2
+  sleep 5
+else
+  echo "RACER input-only gate: px4ctrl not started" > "${RESULT_DIR}/px4ctrl_swarm.log"
+fi
+
+if [[ "${PLANNER_VARIANT}" != "racer" || "${RACER_SENSOR_SOURCE}" == "raw_mavros" ]]; then
+  for uid in $(seq 1 "${UAV_NUM}"); do
+    python3 "${PROJECT_ROOT}/Scripts/sunray/goal4_pointcloud_to_world_node.py" \
+      _input_point_topic:="/uav${uid}/livox/lidar" \
+      _output_point_topic:="/uav${uid}/livox_world" \
+      _odom_topic:="/uav${uid}/mavros/local_position/odom" \
+      _frame_id:=world \
+      _rotation_mode:="${POINTCLOUD_ROTATION_MODE}" \
+      _min_world_z_m:="${POINTCLOUD_MIN_WORLD_Z_M}" \
+      _max_world_z_m:="${POINTCLOUD_MAX_WORLD_Z_M}" \
+      _max_sensor_range_m:="${POINTCLOUD_MAX_SENSOR_RANGE_M}" \
+      _max_abs_odom_xy_m:="${POINTCLOUD_MAX_ABS_ODOM_XY_M}" \
+      > "${RESULT_DIR}/uav${uid}_pointcloud_to_world.log" 2>&1 &
+    PIDS+=("$!")
+  done
+  sleep 2
+fi
+
+if [[ "${PLANNER_VARIANT}" == "racer" && ( "${RACER_FRAME_BRIDGE_ENABLED}" == "true" || "${RACER_SENSOR_SOURCE}" == "fastlio" ) ]]; then
+  for uid in $(seq 1 "${UAV_NUM}"); do
+    read -r start_x start_y <<< "$(start_xy_for_uid "${uid}")"
+    offset_x="$(python3 - "${START1_X}" "${start_x}" <<'PY'
+import sys
+print(float(sys.argv[1]) - float(sys.argv[2]))
+PY
+)"
+    offset_y="$(python3 - "${START1_Y}" "${start_y}" <<'PY'
+import sys
+print(float(sys.argv[1]) - float(sys.argv[2]))
+PY
+)"
+    if [[ "${RACER_SENSOR_SOURCE}" == "fastlio" ]]; then
+      racer_odom_output="$(topic_for_uid "${RACER_REFERENCE_ODOM_TOPIC_TEMPLATE}" "${uid}")"
+    else
+      racer_odom_output="$(topic_for_uid "${RACER_LOCAL_ODOM_TOPIC_TEMPLATE}" "${uid}")"
+    fi
+    python3 "${PROJECT_ROOT}/Scripts/ros/ros1_coordinate_offset_bridge.py" \
+      _message_type:=odom \
+      _direction:=world_to_local \
+      _input_topic:="/uav${uid}/mavros/local_position/odom" \
+      _output_topic:="${racer_odom_output}" \
+      _offset_x:="${offset_x}" \
+      _offset_y:="${offset_y}" \
+      _offset_z:=0.0 \
+      _output_frame_id:=world \
+      _diagnostics_path:="${RESULT_DIR}/uav${uid}_racer_local_odom_bridge.json" \
+      > "${RESULT_DIR}/uav${uid}_racer_local_odom_bridge.log" 2>&1 &
+    PIDS+=("$!")
+
+    if [[ "${RACER_SENSOR_SOURCE}" == "fastlio" ]]; then
+      start_racer_fastlio_frontend "${uid}"
+    else
+      python3 "${PROJECT_ROOT}/Scripts/ros/ros1_coordinate_offset_bridge.py" \
+        _message_type:=pose \
+        _direction:=world_to_local \
+        _input_topic:="/uav${uid}/mavros/local_position/pose" \
+        _output_topic:="$(topic_for_uid "${RACER_LOCAL_POSE_TOPIC_TEMPLATE}" "${uid}")" \
+        _offset_x:="${offset_x}" \
+        _offset_y:="${offset_y}" \
+        _offset_z:=0.0 \
+        _output_frame_id:=world \
+        _diagnostics_path:="${RESULT_DIR}/uav${uid}_racer_local_pose_bridge.json" \
+        > "${RESULT_DIR}/uav${uid}_racer_local_pose_bridge.log" 2>&1 &
+      PIDS+=("$!")
+
+      python3 "${PROJECT_ROOT}/Scripts/ros/ros1_coordinate_offset_bridge.py" \
+        _message_type:=cloud \
+        _direction:=world_to_local \
+        _input_topic:="/uav${uid}/livox_world" \
+        _output_topic:="$(topic_for_uid "${RACER_LOCAL_CLOUD_TOPIC_TEMPLATE}" "${uid}")" \
+        _offset_x:="${offset_x}" \
+        _offset_y:="${offset_y}" \
+        _offset_z:=0.0 \
+        _output_frame_id:=world \
+        _diagnostics_path:="${RESULT_DIR}/uav${uid}_racer_local_cloud_bridge.json" \
+        > "${RESULT_DIR}/uav${uid}_racer_local_cloud_bridge.log" 2>&1 &
+      PIDS+=("$!")
+    fi
+  done
+  sleep 2
+fi
+
+if [[ "${PLANNER_VARIANT}" == "racer" && "${RACER_SENSOR_SOURCE}" == "fastlio" ]]; then
+  fastlio_diag_deadline=$((SECONDS + RACER_FASTLIO_READY_TIMEOUT_S))
+  while (( SECONDS < fastlio_diag_deadline )); do
+    ready_count=0
+    for uid in $(seq 1 "${UAV_NUM}"); do
+      if python3 - "${RESULT_DIR}/uav${uid}_racer_frontend_sync.json" "${RACER_FASTLIO_MIN_SYNC_CALLBACKS}" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+minimum = int(sys.argv[2])
+if not path.exists():
+    raise SystemExit(1)
+data = json.loads(path.read_text(encoding="utf-8"))
+raise SystemExit(0 if int(data.get("synchronized_callbacks", 0)) >= minimum else 1)
+PY
+      then
+        ready_count=$((ready_count + 1))
+      fi
+    done
+    if [[ "${ready_count}" -eq "${UAV_NUM}" ]]; then
+      break
+    fi
+    sleep 2
+  done
+  if ! python3 - "${RESULT_DIR}" "${UAV_NUM}" "${RACER_FASTLIO_MIN_SYNC_CALLBACKS}" "${RACER_FASTLIO_ALIGNMENT_Z_SOURCE}" \
+    "${START1_X}" "${START1_Y}" "${START2_X}" "${START2_Y}" "${START3_X}" "${START3_Y}" <<'PY'
+import json
+import math
+import sys
+from pathlib import Path
+
+result_dir = Path(sys.argv[1])
+uav_num = int(sys.argv[2])
+min_sync = int(sys.argv[3])
+hybrid_z_source = sys.argv[4]
+starts = [(float(sys.argv[i]), float(sys.argv[i + 1])) for i in range(5, 11, 2)]
+expected_local_xy = [(x - starts[0][0], y - starts[0][1]) for x, y in starts]
+vehicles = []
+failures = []
+for uid in range(1, uav_num + 1):
+    path = result_dir / f"uav{uid}_racer_frontend_sync.json"
+    if not path.exists():
+        failures.append(f"uav{uid}:missing_sync_diagnostic")
+        vehicles.append({"uav_id": uid, "diagnostic": str(path), "status": "missing"})
+        continue
+    data = json.loads(path.read_text(encoding="utf-8"))
+    sync_count = int(data.get("synchronized_callbacks", 0))
+    last = data.get("last_sync") or {}
+    point_count = int(last.get("cloud_point_count", 0) or 0)
+    cloud_frame = str(last.get("cloud_frame", ""))
+    pose_frame = str(last.get("pose_frame", ""))
+    camera_position = last.get("camera_position") or []
+    status = "passed"
+    if sync_count < min_sync:
+        failures.append(f"uav{uid}:sync_count={sync_count}")
+        status = "failed"
+    if point_count <= 0:
+        failures.append(f"uav{uid}:empty_cloud")
+        status = "failed"
+    if cloud_frame != "world" or pose_frame != "world":
+        failures.append(f"uav{uid}:frames={cloud_frame}/{pose_frame}")
+        status = "failed"
+    if len(camera_position) < 2:
+        failures.append(f"uav{uid}:missing_camera_position")
+        status = "failed"
+    else:
+        expected_x, expected_y = expected_local_xy[uid - 1]
+        initial_xy_error = math.hypot(
+            float(camera_position[0]) - expected_x,
+            float(camera_position[1]) - expected_y,
+        )
+        data["expected_initial_local_xy"] = [expected_x, expected_y]
+        data["initial_local_xy_error_m"] = initial_xy_error
+        if initial_xy_error > 0.5:
+            failures.append(f"uav{uid}:initial_local_xy_error={initial_xy_error:.3f}")
+            status = "failed"
+    vehicles.append({"uav_id": uid, "status": status, **data})
+
+packet = {
+    "schema": "mosim.racer_fastlio_input_gate.v1",
+    "status": "passed" if not failures else "failed",
+    "sensor_source": "MID360+FAST-LIO",
+    "hybrid_z_source": hybrid_z_source,
+    "vehicles": vehicles,
+    "failures": failures,
+    "claim_boundary": "This proves per-UAV MID360/IMU to FAST-LIO aligned cloud/pose synchronization only; it does not prove RACER planning, flight, coverage, or safety.",
+}
+(result_dir / "RACER_FASTLIO_INPUT_GATE.json").write_text(
+    json.dumps(packet, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+)
+raise SystemExit(0 if not failures else 1)
+PY
+  then
+    echo "RACER FAST-LIO input gate failed" >&2
+    exit 8
+  fi
+
+  if [[ "${RACER_INPUT_GATE_ONLY}" == "true" ]]; then
+    cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
+{
+  "schema": "mosim.sunray_ros1.racer_fastlio_input_only_manifest.v1",
+  "status": "passed",
+  "result_dir": "${RESULT_DIR}",
+  "uav_num": ${UAV_NUM},
+  "sensor_source": "MID360+FAST-LIO",
+  "input_gate": "RACER_FASTLIO_INPUT_GATE.json",
+  "claim_boundary": "Input-only gate passed. RACER planner, autonomous exploration, coverage, collision avoidance, and mission success are not claimed."
+}
+EOF
+    echo "${RESULT_DIR}"
+    exit 0
+  fi
+fi
 
 if [[ "${SWARM_BASELINE_ONLY}" == "true" ]]; then
   set +e
@@ -479,28 +2171,85 @@ if [[ "${SWARM_BASELINE_ONLY}" == "true" ]]; then
   "result_dir": "${RESULT_DIR}",
   "uav_num": ${UAV_NUM},
   "baseline_only": true,
-  "controller": "original Fast-Drone-250 px4ctrl, one instance per UAV",
+  "controller": "Fast-Drone-250 px4ctrl, one instance per UAV",
+  "controller_core_profile": "${PX4CTRL_CORE_PROFILE}",
   "planner": "not launched; this gate isolates multi-UAV PX4/Gazebo/px4ctrl before EGO-Swarm",
-  "spawn_mode": "${SEQUENTIAL_SPAWN}",
+  "spawn_mode": "sequential=${SEQUENTIAL_SPAWN},staggered=${STAGGERED_SPAWN},preload=${PRELOAD_GAZEBO_MODELS}",
   "world_file": "${WORLD_FILE}",
+  "gazebo_launch_file": "${GOAL5_GAZEBO_LAUNCH:-}",
   "use_sim_time": "${USE_SIM_TIME}",
+  "mavros_stream_rate": {
+    "rate_hz": ${MAVROS_STREAM_RATE_HZ},
+    "stream_groups": "${MAVROS_SET_STREAM_GROUPS}",
+    "set_message_intervals": "${MAVROS_SET_MESSAGE_INTERVALS}",
+    "message_ids": "${MAVROS_SET_MESSAGE_IDS}"
+  },
+  "px4_external_vision": {
+    "start_external_fusion": "${PX4CTRL_START_EXTERNAL_FUSION}",
+    "use_vision_pose": "${PX4CTRL_EXTERNAL_FUSION_USE_VISION_POSE}",
+    "ekf2_ev_ctrl_override": "${PX4CTRL_EKF2_EV_CTRL_OVERRIDE:-}",
+    "ekf2_hgt_ref_override": "${PX4CTRL_EKF2_HGT_REF_OVERRIDE:-}",
+    "extra_param_overrides": "$(printf '%s' "${PX4CTRL_EXTRA_PARAM_OVERRIDES}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read())[1:-1])')"
+  },
   "topics": {
     "raw_lidar": ["/uav1/livox/lidar", "/uav2/livox/lidar", "/uav3/livox/lidar"],
     "world_cloud": ["/uav1/livox_world", "/uav2/livox_world", "/uav3/livox_world"],
     "target_attitude": ["/uav1/mavros/setpoint_raw/target_attitude", "/uav2/mavros/setpoint_raw/target_attitude", "/uav3/mavros/setpoint_raw/target_attitude"]
   },
+  "pointcloud_to_world": {
+    "rotation_mode": "${POINTCLOUD_ROTATION_MODE}",
+    "min_world_z_m": ${POINTCLOUD_MIN_WORLD_Z_M},
+    "max_world_z_m": ${POINTCLOUD_MAX_WORLD_Z_M},
+    "max_sensor_range_m": ${POINTCLOUD_MAX_SENSOR_RANGE_M},
+    "max_abs_odom_xy_m": ${POINTCLOUD_MAX_ABS_ODOM_XY_M}
+  },
   "px4ctrl": {
+    "core_profile": "${PX4CTRL_CORE_PROFILE}",
     "mass": ${PX4CTRL_MASS},
     "hover_percentage": ${PX4CTRL_HOVER_PERCENTAGE},
+    "thrust_estimate_enable": "${PX4CTRL_THRUST_ESTIMATE_ENABLE}",
     "Kp_xy": ${PX4CTRL_KP_XY},
     "Kp_z": ${PX4CTRL_KP_Z},
     "Kv_xy": ${PX4CTRL_KV_XY},
     "Kv_z": ${PX4CTRL_KV_Z},
     "ctrl_freq_max": ${PX4CTRL_CTRL_FREQ_MAX},
-    "use_bodyrate_ctrl": ${PX4CTRL_USE_BODYRATE_CTRL}
+    "use_bodyrate_ctrl": ${PX4CTRL_USE_BODYRATE_CTRL},
+    "odom_velocity_frame": "${PX4CTRL_ODOM_VELOCITY_FRAME}",
+    "smc": {
+      "lambda_xy": ${PX4CTRL_SMC_LAMBDA_XY},
+      "lambda_z": ${PX4CTRL_SMC_LAMBDA_Z},
+      "eta_xy": ${PX4CTRL_SMC_ETA_XY},
+      "eta_z": ${PX4CTRL_SMC_ETA_Z},
+      "phi_xy": ${PX4CTRL_SMC_PHI_XY},
+      "phi_z": ${PX4CTRL_SMC_PHI_Z},
+      "surface_limit_xy": ${PX4CTRL_SMC_SURFACE_LIMIT_XY},
+      "surface_limit_z": ${PX4CTRL_SMC_SURFACE_LIMIT_Z}
+    },
+    "indi": {
+      "gain_xy": ${PX4CTRL_INDI_GAIN_XY},
+      "gain_z": ${PX4CTRL_INDI_GAIN_Z},
+      "increment_limit_xy": ${PX4CTRL_INDI_INCREMENT_LIMIT_XY},
+      "increment_limit_z": ${PX4CTRL_INDI_INCREMENT_LIMIT_Z},
+      "measured_accel_limit_xy": ${PX4CTRL_INDI_MEASURED_ACCEL_LIMIT_XY},
+      "measured_accel_limit_z": ${PX4CTRL_INDI_MEASURED_ACCEL_LIMIT_Z},
+      "accel_lpf_alpha": ${PX4CTRL_INDI_ACCEL_LPF_ALPHA}
+    },
+    "nmpc": {
+      "horizon_s": ${PX4CTRL_NMPC_HORIZON_S},
+      "position_weight_xy": ${PX4CTRL_NMPC_POSITION_WEIGHT_XY},
+      "position_weight_z": ${PX4CTRL_NMPC_POSITION_WEIGHT_Z},
+      "velocity_weight_xy": ${PX4CTRL_NMPC_VELOCITY_WEIGHT_XY},
+      "velocity_weight_z": ${PX4CTRL_NMPC_VELOCITY_WEIGHT_Z},
+      "control_weight_xy": ${PX4CTRL_NMPC_CONTROL_WEIGHT_XY},
+      "control_weight_z": ${PX4CTRL_NMPC_CONTROL_WEIGHT_Z},
+      "accel_limit_xy": ${PX4CTRL_NMPC_ACCEL_LIMIT_XY},
+      "accel_limit_z": ${PX4CTRL_NMPC_ACCEL_LIMIT_Z},
+      "increment_limit_xy": ${PX4CTRL_NMPC_INCREMENT_LIMIT_XY},
+      "increment_limit_z": ${PX4CTRL_NMPC_INCREMENT_LIMIT_Z}
+    }
   },
   "mission_exit_code": ${MISSION_EXIT_CODE},
-  "claim_boundary": "Multi-UAV original px4ctrl/PX4/Gazebo takeoff-hover-land baseline only; no EGO-Swarm planning success claim."
+  "claim_boundary": "Multi-UAV px4ctrl/PX4/Gazebo takeoff-hover-land baseline only; PX4CTRL_CORE_PROFILE selects original, MWORKS generated, or G9/G10 ATTITUDE_THRUST generated-family controller backend; no EGO-Swarm planning success claim."
 }
 EOF
 
@@ -508,18 +2257,171 @@ EOF
   exit "${MISSION_EXIT_CODE}"
 fi
 
-roslaunch "${PROJECT_ROOT}/Scripts/sunray/ego_swarm_px4ctrl_goal5.launch" \
-  uav_num:="${UAV_NUM}" \
-  target1_x:="${TARGET1_X}" target1_y:="${TARGET1_Y}" target1_z:="${TARGET1_Z}" \
-  target2_x:="${TARGET2_X}" target2_y:="${TARGET2_Y}" target2_z:="${TARGET2_Z}" \
-  target3_x:="${TARGET3_X}" target3_y:="${TARGET3_Y}" target3_z:="${TARGET3_Z}" \
-  max_vel:="${EGO_MAX_VEL}" max_acc:="${EGO_MAX_ACC}" \
-  > "${RESULT_DIR}/ego_swarm_px4ctrl_goal5.log" 2>&1 &
+if [[ "${EGO_CMD_SAFETY_ENABLE}" == "true" ]]; then
+  for uid in $(seq 1 "${UAV_NUM}"); do
+    python3 "${PROJECT_ROOT}/Scripts/sunray/goal4_position_cmd_safety_adapter.py" \
+      __name:="mosim_goal5_position_cmd_safety_adapter_uav${uid}" \
+      _input_topic:="/uav${uid}/planner_position_cmd_raw" \
+      _output_topic:="/uav${uid}/position_cmd" \
+      _rate_hz:="${EGO_CMD_SAFETY_RATE_HZ}" \
+      _min_z:="${EGO_CMD_SAFETY_MIN_Z}" \
+      _max_z:="${EGO_CMD_SAFETY_MAX_Z}" \
+      _input_timeout_s:="${EGO_CMD_SAFETY_INPUT_TIMEOUT_S}" \
+      _invalid_z_policy:="${EGO_CMD_INVALID_Z_POLICY}" \
+      _jump_guard_enabled:="${EGO_CMD_SAFETY_JUMP_GUARD_ENABLE}" \
+      _max_position_jump_m:="${EGO_CMD_SAFETY_MAX_POSITION_JUMP_M}" \
+      _max_position_jump_speed_mps:="${EGO_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS}" \
+      _smoothing_enabled:="${EGO_CMD_SAFETY_SMOOTHING_ENABLE}" \
+      _smoothing_max_speed_mps:="${EGO_CMD_SAFETY_SMOOTHING_MAX_SPEED_MPS}" \
+      _smoothing_max_step_m:="${EGO_CMD_SAFETY_SMOOTHING_MAX_STEP_M}" \
+      _smoothing_zero_dynamics:="${EGO_CMD_SAFETY_SMOOTHING_ZERO_DYNAMICS}" \
+      _zero_all_dynamics:="${EGO_CMD_SAFETY_ZERO_ALL_DYNAMICS}" \
+      _odom_target_guard_enabled:="${EGO_CMD_SAFETY_ODOM_TARGET_GUARD_ENABLE}" \
+      _odom_topic:="/uav${uid}/mavros/local_position/odom" \
+      _odom_timeout_s:="${EGO_CMD_SAFETY_ODOM_TIMEOUT_S}" \
+      _max_target_distance_from_odom_m:="${EGO_CMD_SAFETY_MAX_TARGET_DISTANCE_FROM_ODOM_M}" \
+      _max_xy_target_distance_from_odom_m:="${EGO_CMD_SAFETY_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M}" \
+      _odom_distance_policy:="${EGO_CMD_SAFETY_ODOM_DISTANCE_POLICY}" \
+      _odom_guard_zero_dynamics:="${EGO_CMD_SAFETY_ODOM_GUARD_ZERO_DYNAMICS}" \
+      _enable_topic:="/uav${uid}/mosim/position_cmd_adapter_enable" \
+      _initial_enabled:=false \
+      _diagnostics_path:="${RESULT_DIR}/uav${uid}_position_cmd_safety_adapter.json" \
+      > "${RESULT_DIR}/uav${uid}_position_cmd_safety_adapter.log" 2>&1 &
+    PIDS+=("$!")
+  done
+  sleep 1
+fi
+
+if [[ "${PLANNER_VARIANT}" == "racer" ]]; then
+  for uid in $(seq 1 "${UAV_NUM}"); do
+    python3 "${PROJECT_ROOT}/Scripts/sunray/fuel_position_cmd_compat_bridge.py" \
+      _input_topic:="/uav${uid}/planner_position_cmd_racer_raw" \
+      _output_topic:="/uav${uid}/planner_position_cmd_raw" \
+      _gate_bspline_topic:="/planning/bspline_${uid}" \
+      _forward_before_first_bspline:=false \
+      _output_offset_x:="$(if [[ "${RACER_FRAME_BRIDGE_ENABLED}" == "true" ]]; then echo "${RACER_FRAME_OFFSET_X}"; else echo 0.0; fi)" \
+      _output_offset_y:="$(if [[ "${RACER_FRAME_BRIDGE_ENABLED}" == "true" ]]; then echo "${RACER_FRAME_OFFSET_Y}"; else echo 0.0; fi)" \
+      _output_offset_z:="$(if [[ "${RACER_FRAME_BRIDGE_ENABLED}" == "true" ]]; then echo "${RACER_FRAME_OFFSET_Z}"; else echo 0.0; fi)" \
+      _diagnostics_path:="${RESULT_DIR}/uav${uid}_racer_position_cmd_compat_bridge.json" \
+      > "${RESULT_DIR}/uav${uid}_racer_position_cmd_compat_bridge.log" 2>&1 &
+    PIDS+=("$!")
+  done
+  sleep 1
+fi
+if [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then
+  for uid in $(seq 1 "${UAV_NUM}"); do
+    python3 "${PROJECT_ROOT}/Scripts/sunray/fuel_position_cmd_compat_bridge.py" \
+      _input_topic:="/uav${uid}/planner_position_cmd_swarm_raw" \
+      _output_topic:="/uav${uid}/planner_position_cmd_raw" \
+      _gate_bspline_topic:="/drone_$((uid - 1))_planning/trajectory" \
+      _forward_before_first_bspline:=false \
+      _diagnostics_path:="${RESULT_DIR}/uav${uid}_swarm_formation_position_cmd_compat_bridge.json" \
+      > "${RESULT_DIR}/uav${uid}_swarm_formation_position_cmd_compat_bridge.log" 2>&1 &
+    PIDS+=("$!")
+  done
+  sleep 1
+fi
+
+if [[ "${PLANNER_VARIANT}" == "diff_planner" ]]; then
+  rosrun topic_tools relay /broadcast_traj_from_planner /broadcast_traj_to_planner \
+    > "${RESULT_DIR}/planner_broadcast_traj_relay.log" 2>&1 &
+  PIDS+=("$!")
+  sleep 1
+fi
+if [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then
+  python3 "${PROJECT_ROOT}/Scripts/sunray/swarm_formation_broadcast_relay.py" \
+    _input_topic:="/broadcast_traj_from_planner" \
+    _output_topic:="/broadcast_traj_to_planner" \
+    _retime_future_s:="${SWARM_FORMATION_D3_RELAY_RETIME_FUTURE_S}" \
+    _diagnostics_path:="${RESULT_DIR}/planner_broadcast_traj_relay.json" \
+    > "${RESULT_DIR}/planner_broadcast_traj_relay.log" 2>&1 &
+  PIDS+=("$!")
+  sleep 1
+fi
+
+PLANNER_SWARM_LAUNCH_ARGS=(uav_num:="${UAV_NUM}")
+if [[ "${PLANNER_VARIANT}" == "racer" ]]; then
+  PLANNER_SWARM_LAUNCH_ARGS+=(
+    max_vel:="${EGO_MAX_VEL}" max_acc:="${EGO_MAX_ACC}"
+    map_size_x:="${RACER_D3_MAP_SIZE_X}" map_size_y:="${RACER_D3_MAP_SIZE_Y}" map_size_z:="${RACER_D3_MAP_SIZE_Z}"
+    d3_min_unknown:="${RACER_D3_MIN_UNKNOWN}" d3_min_free:="${RACER_D3_MIN_FREE}"
+    d3_grid_size:="${RACER_D3_GRID_SIZE}" d3_attempt_interval:="${RACER_D3_ATTEMPT_INTERVAL}"
+    d3_pair_opt_interval:="${RACER_D3_PAIR_OPT_INTERVAL}"
+    d3_frontier_min_visib_num:="${RACER_D3_FRONTIER_MIN_VISIB_NUM}"
+    d3_disable_pair_opt:="${RACER_D3_DISABLE_PAIR_OPT}"
+    d3_pair_opt_after_trigger_only:="${RACER_D3_PAIR_OPT_AFTER_TRIGGER_ONLY}"
+    d3_round_robin_init:="${RACER_D3_ROUND_ROBIN_INIT}"
+    d3_ground_height:="${RACER_D3_GROUND_HEIGHT}"
+    d3_box_min_x:="${RACER_D3_BOX_MIN_X}"
+    d3_box_min_y:="${RACER_D3_BOX_MIN_Y}"
+    d3_box_min_z:="${RACER_D3_BOX_MIN_Z}"
+    d3_box_max_x:="${RACER_D3_BOX_MAX_X}"
+    d3_box_max_y:="${RACER_D3_BOX_MAX_Y}"
+    d3_box_max_z:="${RACER_D3_BOX_MAX_Z}"
+    d3_virtual_ceil_height:="${RACER_D3_VIRTUAL_CEIL_HEIGHT}"
+    d3_visualization_truncate_height:="${RACER_D3_VISUALIZATION_TRUNCATE_HEIGHT}"
+    d3_visualization_truncate_low:="${RACER_D3_VISUALIZATION_TRUNCATE_LOW}"
+    d3_swarm_safe_dist:="${RACER_D3_SWARM_SAFE_DIST}"
+    d3_astar_start_clearance_radius:="${RACER_D3_ASTAR_START_CLEARANCE_RADIUS}"
+    d3_astar_max_search_time:="${RACER_D3_ASTAR_MAX_SEARCH_TIME}"
+  )
+  if [[ "${RACER_FRAME_BRIDGE_ENABLED}" == "true" || "${RACER_SENSOR_SOURCE}" == "fastlio" ]]; then
+    PLANNER_SWARM_LAUNCH_ARGS+=(
+      uav1_odom_topic:="$(topic_for_uid "${RACER_LOCAL_ODOM_TOPIC_TEMPLATE}" 1)"
+      uav2_odom_topic:="$(topic_for_uid "${RACER_LOCAL_ODOM_TOPIC_TEMPLATE}" 2)"
+      uav3_odom_topic:="$(topic_for_uid "${RACER_LOCAL_ODOM_TOPIC_TEMPLATE}" 3)"
+      uav1_pose_topic:="$(topic_for_uid "${RACER_LOCAL_POSE_TOPIC_TEMPLATE}" 1)"
+      uav2_pose_topic:="$(topic_for_uid "${RACER_LOCAL_POSE_TOPIC_TEMPLATE}" 2)"
+      uav3_pose_topic:="$(topic_for_uid "${RACER_LOCAL_POSE_TOPIC_TEMPLATE}" 3)"
+      uav1_cloud_topic:="$(topic_for_uid "${RACER_LOCAL_CLOUD_TOPIC_TEMPLATE}" 1)"
+      uav2_cloud_topic:="$(topic_for_uid "${RACER_LOCAL_CLOUD_TOPIC_TEMPLATE}" 2)"
+      uav3_cloud_topic:="$(topic_for_uid "${RACER_LOCAL_CLOUD_TOPIC_TEMPLATE}" 3)"
+    )
+  fi
+elif [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then
+  PLANNER_SWARM_LAUNCH_ARGS+=(
+    max_vel:="${EGO_MAX_VEL}" max_acc:="${EGO_MAX_ACC}" planning_horizon:="${EGO_PLANNING_HORIZON}"
+    map_size_x:="${SWARM_FORMATION_D3_MAP_SIZE_X}" map_size_y:="${SWARM_FORMATION_D3_MAP_SIZE_Y}" map_size_z:="${SWARM_FORMATION_D3_MAP_SIZE_Z}"
+    flight_type:="${PLANNER_FLIGHT_TYPE}"
+    swarm_scale:="${SWARM_FORMATION_D3_SWARM_SCALE}"
+    relative_z:="${SWARM_FORMATION_D3_RELATIVE_Z}"
+    center_z:="${SWARM_FORMATION_D3_CENTER_Z}"
+    swarm_traj_time_tolerance_s:="${SWARM_FORMATION_D3_SWARM_TRAJ_TIME_TOLERANCE_S}"
+  )
+else
+  PLANNER_SWARM_LAUNCH_ARGS+=(
+    target1_x:="${TARGET1_X}" target1_y:="${TARGET1_Y}" target1_z:="${TARGET1_Z}"
+    target2_x:="${TARGET2_X}" target2_y:="${TARGET2_Y}" target2_z:="${TARGET2_Z}"
+    target3_x:="${TARGET3_X}" target3_y:="${TARGET3_Y}" target3_z:="${TARGET3_Z}"
+    max_vel:="${EGO_MAX_VEL}" max_acc:="${EGO_MAX_ACC}" planning_horizon:="${EGO_PLANNING_HORIZON}"
+    grid_init_x:="${DIFF_GOAL5_GRID_INIT_X}" grid_init_y:="${DIFF_GOAL5_GRID_INIT_Y}" grid_init_z:="${DIFF_GOAL5_GRID_INIT_Z}"
+    map_size_x:="${DIFF_GOAL5_MAP_SIZE_X}" map_size_y:="${DIFF_GOAL5_MAP_SIZE_Y}" map_size_z:="${DIFF_GOAL5_MAP_SIZE_Z}"
+    local_update_range_x:="${DIFF_GOAL5_LOCAL_UPDATE_RANGE_X}" local_update_range_y:="${DIFF_GOAL5_LOCAL_UPDATE_RANGE_Y}" local_update_range_z:="${DIFF_GOAL5_LOCAL_UPDATE_RANGE_Z}"
+    flight_type:="${PLANNER_FLIGHT_TYPE}"
+  )
+fi
+if [[ "${PLANNER_VARIANT}" == "diff_planner" ]]; then
+  PLANNER_SWARM_LAUNCH_ARGS+=(
+    max_jer:="${EGO_MAX_JERK}"
+    grid_resolution:="${EGO_GRID_RESOLUTION}" obstacles_inflation:="${EGO_OBSTACLES_INFLATION}"
+    obstacle_clearance:="${EGO_OBSTACLE_CLEARANCE}" obstacle_clearance_soft:="${EGO_OBSTACLE_CLEARANCE_SOFT}"
+    virtual_ceil_height:="${EGO_VIRTUAL_CEIL_HEIGHT}" virtual_ground_height:="${EGO_VIRTUAL_GROUND_HEIGHT}"
+    visualization_truncate_height:="${EGO_VISUALIZATION_TRUNCATE_HEIGHT}"
+    enable_virtual_wall:="${EGO_ENABLE_VIRTUAL_WALL}" cloud_enable_raycast:="${EGO_CLOUD_ENABLE_RAYCAST}"
+    use_multipoint:=false
+  )
+fi
+
+write_run_inputs_manifest "${PLANNER_SWARM_LAUNCH_ARGS[@]}"
+
+roslaunch "${PLANNER_SWARM_LAUNCH}" \
+  "${PLANNER_SWARM_LAUNCH_ARGS[@]}" \
+  > "${RESULT_DIR}/planner_swarm_px4ctrl_goal5.log" 2>&1 &
 PIDS+=("$!")
 sleep 4
 
 set +e
-timeout "${TOTAL_TIMEOUT_S}s" python3 "${PROJECT_ROOT}/Scripts/sunray/px4ctrl_ego_swarm_mission_node.py" \
+timeout --kill-after=15s "${TOTAL_TIMEOUT_S}s" python3 "${PROJECT_ROOT}/Scripts/sunray/px4ctrl_ego_swarm_mission_node.py" \
   --result-dir "${RESULT_DIR}" \
   --uav-num "${UAV_NUM}" \
   --start1-x "${START1_X}" --start1-y "${START1_Y}" \
@@ -528,43 +2430,359 @@ timeout "${TOTAL_TIMEOUT_S}s" python3 "${PROJECT_ROOT}/Scripts/sunray/px4ctrl_eg
   --target1-x "${TARGET1_X}" --target1-y "${TARGET1_Y}" --target1-z "${TARGET1_Z}" \
   --target2-x "${TARGET2_X}" --target2-y "${TARGET2_Y}" --target2-z "${TARGET2_Z}" \
   --target3-x "${TARGET3_X}" --target3-y "${TARGET3_Y}" --target3-z "${TARGET3_Z}" \
+  --target1-chain-file "${TARGET1_CHAIN_FILE}" \
+  --target2-chain-file "${TARGET2_CHAIN_FILE}" \
+  --target3-chain-file "${TARGET3_CHAIN_FILE}" \
+  --target-chain-max-goals "${TARGET_CHAIN_MAX_GOALS}" \
+  --target-chain-goal-timeout-s "${TARGET_CHAIN_GOAL_TIMEOUT_S}" \
+  --takeoff-height "${EGO_GATE_TAKEOFF_HEIGHT}" \
+  --planner-target-mode "${PLANNER_TARGET_MODE}" \
+  --goal-topic-template "${PLANNER_GOAL_TOPIC_TEMPLATE}" \
+  --goal-publish-stagger-s "${GOAL_PUBLISH_STAGGER_S}" \
+  --formation-center-x "${SWARM_FORMATION_D3_CENTER_X}" \
+  --formation-center-y "${SWARM_FORMATION_D3_CENTER_Y}" \
+  --formation-center-z "${SWARM_FORMATION_D3_CENTER_Z}" \
+  --raw-position-cmd-topic-template "/uav{uid}/planner_position_cmd_raw" \
+  --adapted-position-cmd-topic-template "/uav{uid}/position_cmd" \
+  --world-cloud-topic-template "$(if [[ "${PLANNER_VARIANT}" == "racer" && "${RACER_SENSOR_SOURCE}" == "fastlio" ]]; then echo "${RACER_LOCAL_CLOUD_TOPIC_TEMPLATE}"; else echo '/uav{uid}/livox_world'; fi)" \
+  --cmd-adapter-enable-topic-template "/uav{uid}/mosim/position_cmd_adapter_enable" \
+  --bspline-topic-template "${PLANNER_BSPLINE_TOPIC_TEMPLATE}" \
+  --bspline-msg-package "$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo bspline; else echo traj_utils; fi)" \
+  --polytraj-topic-template "${PLANNER_POLYTRAJ_TOPIC_TEMPLATE}" \
+  --occupancy-topic-template "$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo '/sdf_map/occupancy_all_{uid}'; elif [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo '/drone_{drone_id}/ego_planner_node/grid_map/occupancy_inflate'; else echo '/drone_{drone_id}_ego_planner_node/grid_map/occupancy_inflate'; fi)" \
+  --frontier-topic-template "$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo '/planning_vis/frontier_{uid}'; else echo ''; fi)" \
+  --trajectory-vis-topic-template "$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo '/planning_vis/trajectory_{uid}'; else echo ''; fi)" \
+  --swarm-traj-topic "$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo '/planning/swarm_traj'; else echo ''; fi)" \
+  --mission-completion-mode "$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo exploration; else echo target; fi)" \
+  --exploration-duration-s "${RACER_D3_EXPLORATION_DURATION_S}" \
+  --exploration-max-trajectory-stale-s "${RACER_D3_EXPLORATION_MAX_TRAJECTORY_STALE_S}" \
+  --min-frontier-count "$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo "${RACER_D3_MIN_FRONTIER_COUNT}"; else echo 0; fi)" \
+  --min-trajectory-vis-count "$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo "${RACER_D3_MIN_TRAJECTORY_VIS_COUNT}"; else echo 0; fi)" \
+  --min-swarm-traj-count "$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo "${RACER_D3_MIN_SWARM_TRAJ_COUNT}"; else echo 0; fi)" \
+  --cmd-safety-diagnostics-template "${RESULT_DIR}/uav{uid}_position_cmd_safety_adapter.json" \
+  --min-raw-planner-z-warn-m "${EGO_CMD_SAFETY_MIN_Z}" \
+  --min-adapted-cmd-z-m "${EGO_CMD_SAFETY_MIN_Z}" \
+  --max-position-cmd-jump-m "${EGO_CMD_SAFETY_MAX_POSITION_JUMP_M}" \
+  --max-position-cmd-speed-mps "${EGO_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS}" \
+  $(if [[ "${EGO_GATE_BLOCK_ON_RAW_CMD_DISCONTINUITY}" == "true" ]]; then echo "--block-on-raw-position-cmd-discontinuity"; fi) \
+  --ready-timeout-s "${EGO_GATE_READY_TIMEOUT_S}" \
+  --takeoff-timeout-s "${EGO_GATE_TAKEOFF_TIMEOUT_S}" \
+  --ego-takeover-timeout-s "${EGO_GATE_EGO_TAKEOVER_TIMEOUT_S}" \
+  --execute-timeout-s "${EGO_GATE_EXECUTE_TIMEOUT_S}" \
+  --land-timeout-s "${EGO_GATE_LAND_TIMEOUT_S}" \
+  --pre-land-hover-s "${EGO_GATE_PRE_LAND_HOVER_S}" \
+  --pre-land-no-cmd-s "${EGO_GATE_PRE_LAND_NO_CMD_S}" \
+  --landed-z-max "${EGO_GATE_LANDED_Z_MAX}" \
+  --pre-takeoff-settle-s "${EGO_GATE_PRE_TAKEOFF_SETTLE_S}" \
+  --pre-takeoff-settle-timeout-s "${EGO_GATE_PRE_TAKEOFF_SETTLE_TIMEOUT_S}" \
+  --pre-takeoff-odom-timeout-s "${EGO_GATE_PRE_TAKEOFF_ODOM_TIMEOUT_S}" \
+  --pre-takeoff-truth-timeout-s "${EGO_GATE_PRE_TAKEOFF_TRUTH_TIMEOUT_S}" \
+  --pre-takeoff-max-speed-mps "${EGO_GATE_PRE_TAKEOFF_MAX_SPEED_MPS}" \
+  --pre-takeoff-max-vz-mps "${EGO_GATE_PRE_TAKEOFF_MAX_VZ_MPS}" \
+  --pre-takeoff-max-roll-pitch-deg "${EGO_GATE_PRE_TAKEOFF_MAX_ROLL_PITCH_DEG}" \
+  --pre-takeoff-min-target-attitude-count "${EGO_GATE_PRE_TAKEOFF_MIN_TARGET_ATTITUDE_COUNT}" \
+  --pre-takeoff-min-debug-count "${EGO_GATE_PRE_TAKEOFF_MIN_DEBUG_COUNT}" \
+  --takeoff-uav-stagger-s "${EGO_GATE_TAKEOFF_UAV_STAGGER_S}" \
+  --takeoff-retry-interval-s "${EGO_GATE_TAKEOFF_RETRY_INTERVAL_S}" \
+  --takeoff-retry-repeats "${EGO_GATE_TAKEOFF_RETRY_REPEATS}" \
+  --takeoff-retry-max "${EGO_GATE_TAKEOFF_RETRY_MAX}" \
+  --takeoff-rise-detect-m "${EGO_GATE_TAKEOFF_RISE_DETECT_M}" \
+  --pre-planner-stable-s "${EGO_GATE_PRE_STABLE_S}" \
+  --pre-planner-max-xy-error-m "${EGO_GATE_PRE_MAX_XY_ERROR_M}" \
+  --pre-planner-max-z-error-m "${EGO_GATE_PRE_MAX_Z_ERROR_M}" \
+  --pre-planner-max-speed-mps "${EGO_GATE_PRE_MAX_SPEED_MPS}" \
+  --pre-planner-max-vz-mps "${EGO_GATE_PRE_MAX_VZ_MPS}" \
+  --pre-planner-max-roll-pitch-deg "${EGO_GATE_PRE_MAX_ROLL_PITCH_DEG}" \
+  --target-hold-max-speed-mps "${EGO_GATE_TARGET_HOLD_MAX_SPEED_MPS}" \
+  --target-hold-max-vz-mps "${EGO_GATE_TARGET_HOLD_MAX_VZ_MPS}" \
+  --target-stable-skip-radius-m "${EGO_GATE_TARGET_STABLE_SKIP_RADIUS_M}" \
+  --target-stable-skip-s "${EGO_GATE_TARGET_STABLE_SKIP_S}" \
+  --target-stable-skip-max-speed-mps "${EGO_GATE_TARGET_STABLE_SKIP_MAX_SPEED_MPS}" \
+  --target-stable-skip-max-vz-mps "${EGO_GATE_TARGET_STABLE_SKIP_MAX_VZ_MPS}" \
+  --min-occupancy-count "${EGO_GATE_MIN_OCCUPANCY_COUNT}" \
+  --min-occupancy-points "${EGO_GATE_MIN_OCCUPANCY_POINTS}" \
+  $(if [[ "${EGO_GATE_PUBLISH_HOVER_DURING_TAKEOFF}" == "true" ]]; then echo "--publish-hover-during-takeoff"; fi) \
   > "${RESULT_DIR}/px4ctrl_ego_swarm_mission.log" 2>&1
 MISSION_EXIT_CODE=$?
 set -e
 
+SEMANTIC_BLOCKER_MAX_ARGS=()
+if [[ "${PLANNER_VARIANT}" == "racer" ]]; then
+  RACER_SEMANTIC_BLOCKER_MAX_ROS_TIME="$(
+    python3 - "${RESULT_DIR}" <<'PY'
+import csv
+import sys
+from pathlib import Path
+
+result_dir = Path(sys.argv[1])
+done_times = []
+for name in ("inter_uav_separation.csv", "uav1_truth.csv", "uav1_odom.csv"):
+    path = result_dir / name
+    if not path.exists():
+        continue
+    with path.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            if str(row.get("phase") or "") != "ego_execute":
+                continue
+            try:
+                done_times.append(float(row.get("t", "")))
+            except (TypeError, ValueError):
+                pass
+if done_times:
+    print(f"{max(done_times):.3f}")
+PY
+  )"
+  if [[ -n "${RACER_SEMANTIC_BLOCKER_MAX_ROS_TIME}" ]]; then
+    SEMANTIC_BLOCKER_MAX_ARGS=(--semantic-blocker-max-ros-time "${RACER_SEMANTIC_BLOCKER_MAX_ROS_TIME}")
+  fi
+fi
+
+PLANNER_LOG_AUDIT_EXIT_CODE=0
+python3 "${PROJECT_ROOT}/Scripts/sunray/audit_roslaunch_runtime_log.py" \
+  --log "${RESULT_DIR}/planner_swarm_px4ctrl_goal5.log" \
+  --output "${RESULT_DIR}/planner_runtime_log_audit.json" \
+  --metrics-json "${RESULT_DIR}/EGO_SWARM_METRICS.json" \
+  --blocker-prefix "${PLANNER_VARIANT}" \
+  --planner-semantic-profile "$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo racer; else echo none; fi)" \
+  --missing-is-blocker \
+  "${SEMANTIC_BLOCKER_MAX_ARGS[@]}" \
+  > "${RESULT_DIR}/planner_runtime_log_audit.log" 2>&1 || PLANNER_LOG_AUDIT_EXIT_CODE=$?
+if [[ "${PLANNER_LOG_AUDIT_EXIT_CODE}" != "0" && "${MISSION_EXIT_CODE}" == "0" ]]; then
+  MISSION_EXIT_CODE=14
+fi
+
 cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
 {
-  "schema": "mosim.sunray_ros1.goal5_ego_swarm_manifest.v1",
+  "schema": "mosim.sunray_ros1.goal5_planner_swarm_manifest.v1",
   "result_dir": "${RESULT_DIR}",
   "uav_num": ${UAV_NUM},
   "baseline_only": false,
-  "controller": "original Fast-Drone-250 px4ctrl, one instance per UAV",
-  "planner": "EGO-Swarm official planner/traj_server, per-UAV command isolation",
-  "spawn_mode": "${SEQUENTIAL_SPAWN}",
+  "controller": "Fast-Drone-250 px4ctrl, one instance per UAV",
+  "controller_core_profile": "${PX4CTRL_CORE_PROFILE}",
+  "planner": "${PLANNER_NAME}",
+  "planner_variant": "${PLANNER_VARIANT}",
+  "planner_workspace": "${PLANNER_WS}",
+  "planner_launch": "${PLANNER_SWARM_LAUNCH}",
+  "planner_target_mode": "${PLANNER_TARGET_MODE}",
+  "planner_flight_type": ${PLANNER_FLIGHT_TYPE},
+  "swarm_formation_d3_constraints": {
+    "enabled": $(if [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo true; else echo false; fi),
+    "formation_center": {
+      "x": ${SWARM_FORMATION_D3_CENTER_X},
+      "y": ${SWARM_FORMATION_D3_CENTER_Y},
+      "z": ${SWARM_FORMATION_D3_CENTER_Z},
+      "upstream_note": "MoSim D3 patches Swarm-Formation formationWaypointCallback to consume the published formation-center goal z instead of the upstream demo's hard-coded 0.5m center height."
+    },
+    "swarm_scale": ${SWARM_FORMATION_D3_SWARM_SCALE},
+    "relative_z": ${SWARM_FORMATION_D3_RELATIVE_Z},
+    "expanded_targets": {
+      "uav1": [${TARGET1_X}, ${TARGET1_Y}, ${TARGET1_Z}],
+      "uav2": [${TARGET2_X}, ${TARGET2_Y}, ${TARGET2_Z}],
+      "uav3": [${TARGET3_X}, ${TARGET3_Y}, ${TARGET3_Z}]
+    },
+    "broadcast_relay": {
+      "mode": "single_ros_master_retime",
+      "input": "/broadcast_traj_from_planner",
+      "output": "/broadcast_traj_to_planner",
+      "retime_future_s": ${SWARM_FORMATION_D3_RELAY_RETIME_FUTURE_S},
+      "receiver_time_tolerance_s": ${SWARM_FORMATION_D3_SWARM_TRAJ_TIME_TOLERANCE_S},
+      "diagnostics": "${RESULT_DIR}/planner_broadcast_traj_relay.json"
+    },
+    "claim_boundary": "SF-D3 uses upstream formation-center planning semantics on the existing Sunray/PX4/MAVROS/px4ctrl chain; the relay replaces upstream multi-machine UDP transport only for same-master trajectory sharing."
+  },
+  "racer_d3_constraints": {
+    "map_size_x": ${RACER_D3_MAP_SIZE_X},
+    "map_size_y": ${RACER_D3_MAP_SIZE_Y},
+    "map_size_z": ${RACER_D3_MAP_SIZE_Z},
+    "box_min_x": ${RACER_D3_BOX_MIN_X},
+    "box_min_y": ${RACER_D3_BOX_MIN_Y},
+    "box_max_x": ${RACER_D3_BOX_MAX_X},
+    "box_max_y": ${RACER_D3_BOX_MAX_Y},
+    "ground_height": ${RACER_D3_GROUND_HEIGHT},
+    "box_min_z": ${RACER_D3_BOX_MIN_Z},
+    "box_max_z": ${RACER_D3_BOX_MAX_Z},
+    "virtual_ceil_height": ${RACER_D3_VIRTUAL_CEIL_HEIGHT},
+    "visualization_truncate_height": ${RACER_D3_VISUALIZATION_TRUNCATE_HEIGHT},
+    "visualization_truncate_low": ${RACER_D3_VISUALIZATION_TRUNCATE_LOW},
+    "swarm_safe_dist": ${RACER_D3_SWARM_SAFE_DIST},
+    "astar_start_clearance_radius": ${RACER_D3_ASTAR_START_CLEARANCE_RADIUS},
+    "astar_max_search_time_s": ${RACER_D3_ASTAR_MAX_SEARCH_TIME},
+    "disable_pair_opt": "${RACER_D3_DISABLE_PAIR_OPT}",
+    "pair_opt_after_trigger_only": "${RACER_D3_PAIR_OPT_AFTER_TRIGGER_ONLY}",
+    "round_robin_init": "${RACER_D3_ROUND_ROBIN_INIT}",
+    "min_unknown": ${RACER_D3_MIN_UNKNOWN},
+    "min_free": ${RACER_D3_MIN_FREE},
+    "grid_size": ${RACER_D3_GRID_SIZE},
+    "attempt_interval": ${RACER_D3_ATTEMPT_INTERVAL},
+    "pair_opt_interval": ${RACER_D3_PAIR_OPT_INTERVAL},
+    "frontier_min_visib_num": ${RACER_D3_FRONTIER_MIN_VISIB_NUM}
+  },
+  "racer_frame_bridge": {
+    "enabled": "${RACER_FRAME_BRIDGE_ENABLED}",
+    "offset_xyz": [${RACER_FRAME_OFFSET_X}, ${RACER_FRAME_OFFSET_Y}, ${RACER_FRAME_OFFSET_Z}],
+    "local_odom_topics": ["$(topic_for_uid "${RACER_LOCAL_ODOM_TOPIC_TEMPLATE}" 1)", "$(topic_for_uid "${RACER_LOCAL_ODOM_TOPIC_TEMPLATE}" 2)", "$(topic_for_uid "${RACER_LOCAL_ODOM_TOPIC_TEMPLATE}" 3)"],
+    "local_pose_topics": ["$(topic_for_uid "${RACER_LOCAL_POSE_TOPIC_TEMPLATE}" 1)", "$(topic_for_uid "${RACER_LOCAL_POSE_TOPIC_TEMPLATE}" 2)", "$(topic_for_uid "${RACER_LOCAL_POSE_TOPIC_TEMPLATE}" 3)"],
+    "local_cloud_topics": ["$(topic_for_uid "${RACER_LOCAL_CLOUD_TOPIC_TEMPLATE}" 1)", "$(topic_for_uid "${RACER_LOCAL_CLOUD_TOPIC_TEMPLATE}" 2)", "$(topic_for_uid "${RACER_LOCAL_CLOUD_TOPIC_TEMPLATE}" 3)"],
+    "claim_boundary": "RACER planner can run in a local frame for large Factory coordinates; px4ctrl/PX4/MAVROS remain in world-frame runtime coordinates."
+  },
+  "spawn_mode": "sequential=${SEQUENTIAL_SPAWN},staggered=${STAGGERED_SPAWN},preload=${PRELOAD_GAZEBO_MODELS}",
   "world_file": "${WORLD_FILE}",
   "use_sim_time": "${USE_SIM_TIME}",
+  "mavros_stream_rate": {
+    "rate_hz": ${MAVROS_STREAM_RATE_HZ},
+    "stream_groups": "${MAVROS_SET_STREAM_GROUPS}",
+    "set_message_intervals": "${MAVROS_SET_MESSAGE_INTERVALS}",
+    "message_ids": "${MAVROS_SET_MESSAGE_IDS}"
+  },
+  "px4_external_vision": {
+    "start_external_fusion": "${PX4CTRL_START_EXTERNAL_FUSION}",
+    "use_vision_pose": "${PX4CTRL_EXTERNAL_FUSION_USE_VISION_POSE}",
+    "ekf2_ev_ctrl_override": "${PX4CTRL_EKF2_EV_CTRL_OVERRIDE:-}",
+    "ekf2_hgt_ref_override": "${PX4CTRL_EKF2_HGT_REF_OVERRIDE:-}",
+    "extra_param_overrides": "$(printf '%s' "${PX4CTRL_EXTRA_PARAM_OVERRIDES}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read())[1:-1])')"
+  },
   "lidar_ready_timeout_s": ${LIDAR_READY_TIMEOUT_S},
   "mid360_plugin_downsample": ${SUNRAY_MID360_PLUGIN_DOWNSAMPLE},
   "mid360_csv_file_name": "${SUNRAY_MID360_CSV_FILE_NAME}",
   "mid360_goal5_csv_stride": ${SUNRAY_MID360_GOAL5_CSV_STRIDE},
   "topics": {
     "position_cmd": ["/uav1/position_cmd", "/uav2/position_cmd", "/uav3/position_cmd"],
+    "planner_position_cmd_raw": ["/uav1/planner_position_cmd_raw", "/uav2/planner_position_cmd_raw", "/uav3/planner_position_cmd_raw"],
+    "planner_position_cmd_racer_raw": ["/uav1/planner_position_cmd_racer_raw", "/uav2/planner_position_cmd_racer_raw", "/uav3/planner_position_cmd_racer_raw"],
+    "planner_position_cmd_swarm_raw": ["/uav1/planner_position_cmd_swarm_raw", "/uav2/planner_position_cmd_swarm_raw", "/uav3/planner_position_cmd_swarm_raw"],
+    "goal_template": "${PLANNER_GOAL_TOPIC_TEMPLATE}",
+    "goal": ["$(printf '%s' "${PLANNER_GOAL_TOPIC_TEMPLATE}" | sed 's/{uid}/1/g; s/{drone_id}/0/g')", "$(printf '%s' "${PLANNER_GOAL_TOPIC_TEMPLATE}" | sed 's/{uid}/2/g; s/{drone_id}/1/g')", "$(printf '%s' "${PLANNER_GOAL_TOPIC_TEMPLATE}" | sed 's/{uid}/3/g; s/{drone_id}/2/g')"],
     "bspline": ["/drone_0_planning/bspline", "/drone_1_planning/bspline", "/drone_2_planning/bspline"],
+    "polytraj": ["/drone_0_planning/trajectory", "/drone_1_planning/trajectory", "/drone_2_planning/trajectory"],
+    "broadcast_traj_from_planner": "/broadcast_traj_from_planner",
+    "broadcast_traj_to_planner": "/broadcast_traj_to_planner",
     "raw_lidar": ["/uav1/livox/lidar", "/uav2/livox/lidar", "/uav3/livox/lidar"],
     "world_cloud": ["/uav1/livox_world", "/uav2/livox_world", "/uav3/livox_world"]
   },
+  "position_cmd_safety_adapter": {
+    "enabled": ${EGO_CMD_SAFETY_ENABLE},
+    "input_topics": ["/uav1/planner_position_cmd_raw", "/uav2/planner_position_cmd_raw", "/uav3/planner_position_cmd_raw"],
+    "output_topics": ["/uav1/position_cmd", "/uav2/position_cmd", "/uav3/position_cmd"],
+    "min_z": ${EGO_CMD_SAFETY_MIN_Z},
+    "max_z": ${EGO_CMD_SAFETY_MAX_Z},
+    "input_timeout_s": ${EGO_CMD_SAFETY_INPUT_TIMEOUT_S},
+    "rate_hz": ${EGO_CMD_SAFETY_RATE_HZ},
+    "invalid_z_policy": "${EGO_CMD_INVALID_Z_POLICY}",
+    "jump_guard_enabled": ${EGO_CMD_SAFETY_JUMP_GUARD_ENABLE},
+    "max_position_jump_m": ${EGO_CMD_SAFETY_MAX_POSITION_JUMP_M},
+    "max_position_jump_speed_mps": ${EGO_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS},
+    "smoothing_enabled": ${EGO_CMD_SAFETY_SMOOTHING_ENABLE},
+    "smoothing_max_speed_mps": ${EGO_CMD_SAFETY_SMOOTHING_MAX_SPEED_MPS},
+    "smoothing_max_step_m": ${EGO_CMD_SAFETY_SMOOTHING_MAX_STEP_M},
+    "smoothing_zero_dynamics": ${EGO_CMD_SAFETY_SMOOTHING_ZERO_DYNAMICS},
+    "zero_all_dynamics": ${EGO_CMD_SAFETY_ZERO_ALL_DYNAMICS},
+    "odom_target_guard_enabled": ${EGO_CMD_SAFETY_ODOM_TARGET_GUARD_ENABLE},
+    "odom_topics": ["/uav1/mavros/local_position/odom", "/uav2/mavros/local_position/odom", "/uav3/mavros/local_position/odom"],
+    "odom_timeout_s": ${EGO_CMD_SAFETY_ODOM_TIMEOUT_S},
+    "max_target_distance_from_odom_m": ${EGO_CMD_SAFETY_MAX_TARGET_DISTANCE_FROM_ODOM_M},
+    "max_xy_target_distance_from_odom_m": ${EGO_CMD_SAFETY_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M},
+    "odom_distance_policy": "${EGO_CMD_SAFETY_ODOM_DISTANCE_POLICY}",
+    "odom_guard_zero_dynamics": ${EGO_CMD_SAFETY_ODOM_GUARD_ZERO_DYNAMICS}
+  },
+  "legacy_position_cmd_compat_bridge": {
+    "enabled": $(if [[ "${PLANNER_VARIANT}" == "racer" || "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo true; else echo false; fi),
+    "input_topics": $(if [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo '["/uav1/planner_position_cmd_swarm_raw", "/uav2/planner_position_cmd_swarm_raw", "/uav3/planner_position_cmd_swarm_raw"]'; else echo '["/uav1/planner_position_cmd_racer_raw", "/uav2/planner_position_cmd_racer_raw", "/uav3/planner_position_cmd_racer_raw"]'; fi),
+    "output_topics": ["/uav1/planner_position_cmd_raw", "/uav2/planner_position_cmd_raw", "/uav3/planner_position_cmd_raw"],
+    "gate_bspline_topics": $(if [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo '["/drone_0_planning/trajectory", "/drone_1_planning/trajectory", "/drone_2_planning/trajectory"]'; else echo '["/planning/bspline_1", "/planning/bspline_2", "/planning/bspline_3"]'; fi),
+    "diagnostics": $(if [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo "[\"${RESULT_DIR}/uav1_swarm_formation_position_cmd_compat_bridge.json\", \"${RESULT_DIR}/uav2_swarm_formation_position_cmd_compat_bridge.json\", \"${RESULT_DIR}/uav3_swarm_formation_position_cmd_compat_bridge.json\"]"; else echo "[\"${RESULT_DIR}/uav1_racer_position_cmd_compat_bridge.json\", \"${RESULT_DIR}/uav2_racer_position_cmd_compat_bridge.json\", \"${RESULT_DIR}/uav3_racer_position_cmd_compat_bridge.json\"]"; fi),
+    "claim_boundary": "RACER/FUEL/Swarm-Formation older quadrotor_msgs/PositionCommand wire format is decoded from AnyMsg and republished as the px4ctrl overlay PositionCommand before the standard safety adapter."
+  },
+  "pointcloud_to_world": {
+    "rotation_mode": "${POINTCLOUD_ROTATION_MODE}",
+    "min_world_z_m": ${POINTCLOUD_MIN_WORLD_Z_M},
+    "max_world_z_m": ${POINTCLOUD_MAX_WORLD_Z_M},
+    "max_sensor_range_m": ${POINTCLOUD_MAX_SENSOR_RANGE_M},
+    "max_abs_odom_xy_m": ${POINTCLOUD_MAX_ABS_ODOM_XY_M}
+  },
   "px4ctrl": {
+    "core_profile": "${PX4CTRL_CORE_PROFILE}",
     "mass": ${PX4CTRL_MASS},
     "hover_percentage": ${PX4CTRL_HOVER_PERCENTAGE},
+    "thrust_estimate_enable": "${PX4CTRL_THRUST_ESTIMATE_ENABLE}",
     "Kp_xy": ${PX4CTRL_KP_XY},
     "Kp_z": ${PX4CTRL_KP_Z},
     "Kv_xy": ${PX4CTRL_KV_XY},
     "Kv_z": ${PX4CTRL_KV_Z},
     "ctrl_freq_max": ${PX4CTRL_CTRL_FREQ_MAX},
-    "use_bodyrate_ctrl": ${PX4CTRL_USE_BODYRATE_CTRL}
+    "use_bodyrate_ctrl": ${PX4CTRL_USE_BODYRATE_CTRL},
+    "odom_velocity_frame": "${PX4CTRL_ODOM_VELOCITY_FRAME}",
+    "indi": {
+      "gain_xy": ${PX4CTRL_INDI_GAIN_XY},
+      "gain_z": ${PX4CTRL_INDI_GAIN_Z},
+      "increment_limit_xy": ${PX4CTRL_INDI_INCREMENT_LIMIT_XY},
+      "increment_limit_z": ${PX4CTRL_INDI_INCREMENT_LIMIT_Z},
+      "measured_accel_limit_xy": ${PX4CTRL_INDI_MEASURED_ACCEL_LIMIT_XY},
+      "measured_accel_limit_z": ${PX4CTRL_INDI_MEASURED_ACCEL_LIMIT_Z},
+      "accel_lpf_alpha": ${PX4CTRL_INDI_ACCEL_LPF_ALPHA}
+    },
+    "nmpc": {
+      "horizon_s": ${PX4CTRL_NMPC_HORIZON_S},
+      "position_weight_xy": ${PX4CTRL_NMPC_POSITION_WEIGHT_XY},
+      "position_weight_z": ${PX4CTRL_NMPC_POSITION_WEIGHT_Z},
+      "velocity_weight_xy": ${PX4CTRL_NMPC_VELOCITY_WEIGHT_XY},
+      "velocity_weight_z": ${PX4CTRL_NMPC_VELOCITY_WEIGHT_Z},
+      "control_weight_xy": ${PX4CTRL_NMPC_CONTROL_WEIGHT_XY},
+      "control_weight_z": ${PX4CTRL_NMPC_CONTROL_WEIGHT_Z},
+      "accel_limit_xy": ${PX4CTRL_NMPC_ACCEL_LIMIT_XY},
+      "accel_limit_z": ${PX4CTRL_NMPC_ACCEL_LIMIT_Z},
+      "increment_limit_xy": ${PX4CTRL_NMPC_INCREMENT_LIMIT_XY},
+      "increment_limit_z": ${PX4CTRL_NMPC_INCREMENT_LIMIT_Z}
+    }
+  },
+  "mission_gate": {
+    "ready_timeout_s": ${EGO_GATE_READY_TIMEOUT_S},
+    "goal_publish_stagger_s": ${GOAL_PUBLISH_STAGGER_S},
+    "takeoff_height_m": ${EGO_GATE_TAKEOFF_HEIGHT},
+    "takeoff_timeout_s": ${EGO_GATE_TAKEOFF_TIMEOUT_S},
+    "takeoff_uav_stagger_s": ${EGO_GATE_TAKEOFF_UAV_STAGGER_S},
+    "takeoff_retry_interval_s": ${EGO_GATE_TAKEOFF_RETRY_INTERVAL_S},
+    "takeoff_retry_repeats": ${EGO_GATE_TAKEOFF_RETRY_REPEATS},
+    "takeoff_retry_max": ${EGO_GATE_TAKEOFF_RETRY_MAX},
+    "takeoff_rise_detect_m": ${EGO_GATE_TAKEOFF_RISE_DETECT_M},
+    "ego_takeover_timeout_s": ${EGO_GATE_EGO_TAKEOVER_TIMEOUT_S},
+    "execute_timeout_s": ${EGO_GATE_EXECUTE_TIMEOUT_S},
+    "land_timeout_s": ${EGO_GATE_LAND_TIMEOUT_S},
+    "pre_land_hover_s": ${EGO_GATE_PRE_LAND_HOVER_S},
+    "pre_land_no_cmd_s": ${EGO_GATE_PRE_LAND_NO_CMD_S},
+    "landed_z_max": ${EGO_GATE_LANDED_Z_MAX},
+    "pre_takeoff_settle_s": ${EGO_GATE_PRE_TAKEOFF_SETTLE_S},
+    "pre_takeoff_settle_timeout_s": ${EGO_GATE_PRE_TAKEOFF_SETTLE_TIMEOUT_S},
+    "pre_takeoff_odom_timeout_s": ${EGO_GATE_PRE_TAKEOFF_ODOM_TIMEOUT_S},
+    "pre_takeoff_truth_timeout_s": ${EGO_GATE_PRE_TAKEOFF_TRUTH_TIMEOUT_S},
+    "pre_takeoff_max_speed_mps": ${EGO_GATE_PRE_TAKEOFF_MAX_SPEED_MPS},
+    "pre_takeoff_max_vz_mps": ${EGO_GATE_PRE_TAKEOFF_MAX_VZ_MPS},
+    "pre_takeoff_max_roll_pitch_deg": ${EGO_GATE_PRE_TAKEOFF_MAX_ROLL_PITCH_DEG},
+    "pre_takeoff_min_target_attitude_count": ${EGO_GATE_PRE_TAKEOFF_MIN_TARGET_ATTITUDE_COUNT},
+    "pre_takeoff_min_debug_count": ${EGO_GATE_PRE_TAKEOFF_MIN_DEBUG_COUNT},
+    "pre_planner_stable_s": ${EGO_GATE_PRE_STABLE_S},
+    "pre_planner_max_xy_error_m": ${EGO_GATE_PRE_MAX_XY_ERROR_M},
+    "pre_planner_max_z_error_m": ${EGO_GATE_PRE_MAX_Z_ERROR_M},
+    "pre_planner_max_speed_mps": ${EGO_GATE_PRE_MAX_SPEED_MPS},
+    "pre_planner_max_vz_mps": ${EGO_GATE_PRE_MAX_VZ_MPS},
+    "pre_planner_max_roll_pitch_deg": ${EGO_GATE_PRE_MAX_ROLL_PITCH_DEG},
+    "publish_hover_during_takeoff": ${EGO_GATE_PUBLISH_HOVER_DURING_TAKEOFF},
+    "block_on_raw_position_cmd_discontinuity": ${EGO_GATE_BLOCK_ON_RAW_CMD_DISCONTINUITY},
+    "raw_position_cmd_discontinuity_policy": "$(if [[ "${EGO_GATE_BLOCK_ON_RAW_CMD_DISCONTINUITY}" == "true" ]]; then echo 'hard_blocker'; else echo 'warning_only_with_adapted_position_cmd_hard_gate'; fi)",
+    "target_hold_max_speed_mps": ${EGO_GATE_TARGET_HOLD_MAX_SPEED_MPS},
+    "target_hold_max_vz_mps": ${EGO_GATE_TARGET_HOLD_MAX_VZ_MPS},
+    "target_stable_skip_radius_m": ${EGO_GATE_TARGET_STABLE_SKIP_RADIUS_M},
+    "target_stable_skip_s": ${EGO_GATE_TARGET_STABLE_SKIP_S},
+    "target_stable_skip_max_speed_mps": ${EGO_GATE_TARGET_STABLE_SKIP_MAX_SPEED_MPS},
+    "target_stable_skip_max_vz_mps": ${EGO_GATE_TARGET_STABLE_SKIP_MAX_VZ_MPS},
+    "min_occupancy_count": ${EGO_GATE_MIN_OCCUPANCY_COUNT},
+    "min_occupancy_points": ${EGO_GATE_MIN_OCCUPANCY_POINTS}
+  },
+  "planner_runtime_log_audit": {
+    "path": "${RESULT_DIR}/planner_runtime_log_audit.json",
+    "exit_code": ${PLANNER_LOG_AUDIT_EXIT_CODE}
   },
   "mission_exit_code": ${MISSION_EXIT_CODE},
-  "claim_boundary": "Goal5 EGO-Swarm official planning baseline through original px4ctrl/MAVROS/PX4/Gazebo; no fake_drone and no ROS2/x500."
+  "claim_boundary": "Goal5 ${PLANNER_VARIANT} multi-UAV planner engineering baseline through px4ctrl/MAVROS/PX4/Gazebo; PX4CTRL_CORE_PROFILE selects original, MWORKS generated, or G9/G10 ATTITUDE_THRUST generated-family controller backend; no fake_drone and no ROS2/x500. Diff-Planner swarm avoidance requires trajectory broadcast evidence and inter-UAV separation metrics."
 }
 EOF
 

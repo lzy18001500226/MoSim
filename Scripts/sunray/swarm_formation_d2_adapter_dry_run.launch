@@ -1,0 +1,222 @@
+<launch>
+  <arg name="map_size_x" default="10.0"/>
+  <arg name="map_size_y" default="8.0"/>
+  <arg name="map_size_z" default="3.0"/>
+  <arg name="max_vel" default="1.0"/>
+  <arg name="max_acc" default="2.0"/>
+  <arg name="planning_horizon" default="4.0"/>
+  <arg name="flight_type" default="3"/>
+
+  <group ns="drone_0">
+    <node pkg="ego_planner" name="ego_planner_node" type="ego_planner_node" output="screen">
+      <remap from="~odom_world" to="/drone_0_visual_slam/odom"/>
+      <remap from="~planning/trajectory" to="/drone_0_planning/trajectory"/>
+      <remap from="~planning/start" to="/drone_0_planning/start"/>
+      <remap from="~planning/finish" to="/drone_0_planning/finish"/>
+      <remap from="~planning/data_display" to="/drone_0_planning/data_display"/>
+      <remap from="~planning/broadcast_traj_send" to="/broadcast_traj_from_planner"/>
+      <remap from="~planning/broadcast_traj_recv" to="/broadcast_traj_to_planner"/>
+      <remap from="~grid_map/odom" to="/drone_0_visual_slam/odom"/>
+      <remap from="~grid_map/cloud" to="/drone_0_pcl_render_node/cloud"/>
+      <rosparam file="$(find ego_planner)/config/normal_hexagon.yaml"/>
+      <param name="fsm/flight_type" value="$(arg flight_type)" type="int"/>
+      <param name="fsm/thresh_replan_time" value="1.0" type="double"/>
+      <param name="fsm/thresh_no_replan_meter" value="1.0" type="double"/>
+      <param name="fsm/planning_horizon" value="$(arg planning_horizon)" type="double"/>
+      <param name="fsm/planning_horizen_time" value="3" type="double"/>
+      <param name="fsm/emergency_time" value="1.0" type="double"/>
+      <param name="fsm/realworld_experiment" value="false"/>
+      <param name="fsm/fail_safe" value="true"/>
+      <param name="fsm/replan_trajectory_time" value="0.1" type="double"/>
+      <param name="fsm/result_file" value="/tmp/mosim_swarm_formation_d2_drone0.txt"/>
+      <param name="fsm/waypoint_num" value="1" type="int"/>
+      <param name="fsm/waypoint0_x" value="2.0" type="double"/>
+      <param name="fsm/waypoint0_y" value="0.0" type="double"/>
+      <param name="fsm/waypoint0_z" value="1.0" type="double"/>
+      <param name="grid_map/resolution" value="0.1"/>
+      <param name="grid_map/map_size_x" value="$(arg map_size_x)"/>
+      <param name="grid_map/map_size_y" value="$(arg map_size_y)"/>
+      <param name="grid_map/map_size_z" value="$(arg map_size_z)"/>
+      <param name="grid_map/local_update_range_x" value="4.5"/>
+      <param name="grid_map/local_update_range_y" value="4.5"/>
+      <param name="grid_map/local_update_range_z" value="3.0"/>
+      <param name="grid_map/obstacles_inflation" value="0.1"/>
+      <param name="grid_map/p_hit" value="0.65"/>
+      <param name="grid_map/p_miss" value="0.35"/>
+      <param name="grid_map/p_min" value="0.12"/>
+      <param name="grid_map/p_max" value="0.90"/>
+      <param name="grid_map/p_occ" value="0.80"/>
+      <param name="grid_map/min_ray_length" value="0.1"/>
+      <param name="grid_map/max_ray_length" value="4.5"/>
+      <param name="grid_map/virtual_ceil_height" value="3.0"/>
+      <param name="grid_map/visualization_truncate_height" value="2.8"/>
+      <param name="grid_map/show_occ_time" value="false"/>
+      <param name="grid_map/pose_type" value="1"/>
+      <param name="grid_map/frame_id" value="world"/>
+      <param name="grid_map/local_bound_inflate" value="0.0"/>
+      <param name="grid_map/show_esdf_time" value="false"/>
+      <param name="grid_map/esdf_slice_height" value="0.3"/>
+      <param name="manager/max_vel" value="$(arg max_vel)" type="double"/>
+      <param name="manager/max_acc" value="$(arg max_acc)" type="double"/>
+      <param name="manager/control_points_distance" value="0.4" type="double"/>
+      <param name="manager/polyTraj_piece_length" value="2.0" type="double"/>
+      <param name="manager/feasibility_tolerance" value="0.05" type="double"/>
+      <param name="manager/planning_horizon" value="$(arg planning_horizon)" type="double"/>
+      <param name="manager/use_distinctive_trajs" value="false" type="bool"/>
+      <param name="manager/drone_id" value="0" type="int"/>
+      <param name="optimization/constrain_points_perPiece" value="3" type="int"/>
+      <param name="optimization/max_vel" value="$(arg max_vel)" type="double"/>
+      <param name="optimization/max_acc" value="$(arg max_acc)" type="double"/>
+      <param name="optimization/record_opt" value="false" type="bool"/>
+    </node>
+    <node pkg="ego_planner" name="traj_server" type="traj_server" output="screen">
+      <remap from="~planning/trajectory" to="/drone_0_planning/trajectory"/>
+      <remap from="~planning/start" to="/drone_0_planning/start"/>
+      <remap from="~planning/finish" to="/drone_0_planning/finish"/>
+      <remap from="/position_cmd" to="/drone_0_planning/pos_cmd"/>
+      <param name="traj_server/time_forward" value="1.0" type="double"/>
+    </node>
+  </group>
+
+  <group ns="drone_1">
+    <node pkg="ego_planner" name="ego_planner_node" type="ego_planner_node" output="screen">
+      <remap from="~odom_world" to="/drone_1_visual_slam/odom"/>
+      <remap from="~planning/trajectory" to="/drone_1_planning/trajectory"/>
+      <remap from="~planning/start" to="/drone_1_planning/start"/>
+      <remap from="~planning/finish" to="/drone_1_planning/finish"/>
+      <remap from="~planning/data_display" to="/drone_1_planning/data_display"/>
+      <remap from="~planning/broadcast_traj_send" to="/broadcast_traj_from_planner"/>
+      <remap from="~planning/broadcast_traj_recv" to="/broadcast_traj_to_planner"/>
+      <remap from="~grid_map/odom" to="/drone_1_visual_slam/odom"/>
+      <remap from="~grid_map/cloud" to="/drone_1_pcl_render_node/cloud"/>
+      <rosparam file="$(find ego_planner)/config/normal_hexagon.yaml"/>
+      <param name="fsm/flight_type" value="$(arg flight_type)" type="int"/>
+      <param name="fsm/thresh_replan_time" value="1.0" type="double"/>
+      <param name="fsm/thresh_no_replan_meter" value="1.0" type="double"/>
+      <param name="fsm/planning_horizon" value="$(arg planning_horizon)" type="double"/>
+      <param name="fsm/planning_horizen_time" value="3" type="double"/>
+      <param name="fsm/emergency_time" value="1.0" type="double"/>
+      <param name="fsm/realworld_experiment" value="false"/>
+      <param name="fsm/fail_safe" value="true"/>
+      <param name="fsm/replan_trajectory_time" value="0.1" type="double"/>
+      <param name="fsm/result_file" value="/tmp/mosim_swarm_formation_d2_drone1.txt"/>
+      <param name="fsm/waypoint_num" value="1" type="int"/>
+      <param name="fsm/waypoint0_x" value="2.0" type="double"/>
+      <param name="fsm/waypoint0_y" value="-1.0" type="double"/>
+      <param name="fsm/waypoint0_z" value="1.0" type="double"/>
+      <param name="grid_map/resolution" value="0.1"/>
+      <param name="grid_map/map_size_x" value="$(arg map_size_x)"/>
+      <param name="grid_map/map_size_y" value="$(arg map_size_y)"/>
+      <param name="grid_map/map_size_z" value="$(arg map_size_z)"/>
+      <param name="grid_map/local_update_range_x" value="4.5"/>
+      <param name="grid_map/local_update_range_y" value="4.5"/>
+      <param name="grid_map/local_update_range_z" value="3.0"/>
+      <param name="grid_map/obstacles_inflation" value="0.1"/>
+      <param name="grid_map/p_hit" value="0.65"/>
+      <param name="grid_map/p_miss" value="0.35"/>
+      <param name="grid_map/p_min" value="0.12"/>
+      <param name="grid_map/p_max" value="0.90"/>
+      <param name="grid_map/p_occ" value="0.80"/>
+      <param name="grid_map/min_ray_length" value="0.1"/>
+      <param name="grid_map/max_ray_length" value="4.5"/>
+      <param name="grid_map/virtual_ceil_height" value="3.0"/>
+      <param name="grid_map/visualization_truncate_height" value="2.8"/>
+      <param name="grid_map/show_occ_time" value="false"/>
+      <param name="grid_map/pose_type" value="1"/>
+      <param name="grid_map/frame_id" value="world"/>
+      <param name="grid_map/local_bound_inflate" value="0.0"/>
+      <param name="grid_map/show_esdf_time" value="false"/>
+      <param name="grid_map/esdf_slice_height" value="0.3"/>
+      <param name="manager/max_vel" value="$(arg max_vel)" type="double"/>
+      <param name="manager/max_acc" value="$(arg max_acc)" type="double"/>
+      <param name="manager/control_points_distance" value="0.4" type="double"/>
+      <param name="manager/polyTraj_piece_length" value="2.0" type="double"/>
+      <param name="manager/feasibility_tolerance" value="0.05" type="double"/>
+      <param name="manager/planning_horizon" value="$(arg planning_horizon)" type="double"/>
+      <param name="manager/use_distinctive_trajs" value="false" type="bool"/>
+      <param name="manager/drone_id" value="1" type="int"/>
+      <param name="optimization/constrain_points_perPiece" value="3" type="int"/>
+      <param name="optimization/max_vel" value="$(arg max_vel)" type="double"/>
+      <param name="optimization/max_acc" value="$(arg max_acc)" type="double"/>
+      <param name="optimization/record_opt" value="false" type="bool"/>
+    </node>
+    <node pkg="ego_planner" name="traj_server" type="traj_server" output="screen">
+      <remap from="~planning/trajectory" to="/drone_1_planning/trajectory"/>
+      <remap from="~planning/start" to="/drone_1_planning/start"/>
+      <remap from="~planning/finish" to="/drone_1_planning/finish"/>
+      <remap from="/position_cmd" to="/drone_1_planning/pos_cmd"/>
+      <param name="traj_server/time_forward" value="1.0" type="double"/>
+    </node>
+  </group>
+
+  <group ns="drone_2">
+    <node pkg="ego_planner" name="ego_planner_node" type="ego_planner_node" output="screen">
+      <remap from="~odom_world" to="/drone_2_visual_slam/odom"/>
+      <remap from="~planning/trajectory" to="/drone_2_planning/trajectory"/>
+      <remap from="~planning/start" to="/drone_2_planning/start"/>
+      <remap from="~planning/finish" to="/drone_2_planning/finish"/>
+      <remap from="~planning/data_display" to="/drone_2_planning/data_display"/>
+      <remap from="~planning/broadcast_traj_send" to="/broadcast_traj_from_planner"/>
+      <remap from="~planning/broadcast_traj_recv" to="/broadcast_traj_to_planner"/>
+      <remap from="~grid_map/odom" to="/drone_2_visual_slam/odom"/>
+      <remap from="~grid_map/cloud" to="/drone_2_pcl_render_node/cloud"/>
+      <rosparam file="$(find ego_planner)/config/normal_hexagon.yaml"/>
+      <param name="fsm/flight_type" value="$(arg flight_type)" type="int"/>
+      <param name="fsm/thresh_replan_time" value="1.0" type="double"/>
+      <param name="fsm/thresh_no_replan_meter" value="1.0" type="double"/>
+      <param name="fsm/planning_horizon" value="$(arg planning_horizon)" type="double"/>
+      <param name="fsm/planning_horizen_time" value="3" type="double"/>
+      <param name="fsm/emergency_time" value="1.0" type="double"/>
+      <param name="fsm/realworld_experiment" value="false"/>
+      <param name="fsm/fail_safe" value="true"/>
+      <param name="fsm/replan_trajectory_time" value="0.1" type="double"/>
+      <param name="fsm/result_file" value="/tmp/mosim_swarm_formation_d2_drone2.txt"/>
+      <param name="fsm/waypoint_num" value="1" type="int"/>
+      <param name="fsm/waypoint0_x" value="2.0" type="double"/>
+      <param name="fsm/waypoint0_y" value="-2.0" type="double"/>
+      <param name="fsm/waypoint0_z" value="1.0" type="double"/>
+      <param name="grid_map/resolution" value="0.1"/>
+      <param name="grid_map/map_size_x" value="$(arg map_size_x)"/>
+      <param name="grid_map/map_size_y" value="$(arg map_size_y)"/>
+      <param name="grid_map/map_size_z" value="$(arg map_size_z)"/>
+      <param name="grid_map/local_update_range_x" value="4.5"/>
+      <param name="grid_map/local_update_range_y" value="4.5"/>
+      <param name="grid_map/local_update_range_z" value="3.0"/>
+      <param name="grid_map/obstacles_inflation" value="0.1"/>
+      <param name="grid_map/p_hit" value="0.65"/>
+      <param name="grid_map/p_miss" value="0.35"/>
+      <param name="grid_map/p_min" value="0.12"/>
+      <param name="grid_map/p_max" value="0.90"/>
+      <param name="grid_map/p_occ" value="0.80"/>
+      <param name="grid_map/min_ray_length" value="0.1"/>
+      <param name="grid_map/max_ray_length" value="4.5"/>
+      <param name="grid_map/virtual_ceil_height" value="3.0"/>
+      <param name="grid_map/visualization_truncate_height" value="2.8"/>
+      <param name="grid_map/show_occ_time" value="false"/>
+      <param name="grid_map/pose_type" value="1"/>
+      <param name="grid_map/frame_id" value="world"/>
+      <param name="grid_map/local_bound_inflate" value="0.0"/>
+      <param name="grid_map/show_esdf_time" value="false"/>
+      <param name="grid_map/esdf_slice_height" value="0.3"/>
+      <param name="manager/max_vel" value="$(arg max_vel)" type="double"/>
+      <param name="manager/max_acc" value="$(arg max_acc)" type="double"/>
+      <param name="manager/control_points_distance" value="0.4" type="double"/>
+      <param name="manager/polyTraj_piece_length" value="2.0" type="double"/>
+      <param name="manager/feasibility_tolerance" value="0.05" type="double"/>
+      <param name="manager/planning_horizon" value="$(arg planning_horizon)" type="double"/>
+      <param name="manager/use_distinctive_trajs" value="false" type="bool"/>
+      <param name="manager/drone_id" value="2" type="int"/>
+      <param name="optimization/constrain_points_perPiece" value="3" type="int"/>
+      <param name="optimization/max_vel" value="$(arg max_vel)" type="double"/>
+      <param name="optimization/max_acc" value="$(arg max_acc)" type="double"/>
+      <param name="optimization/record_opt" value="false" type="bool"/>
+    </node>
+    <node pkg="ego_planner" name="traj_server" type="traj_server" output="screen">
+      <remap from="~planning/trajectory" to="/drone_2_planning/trajectory"/>
+      <remap from="~planning/start" to="/drone_2_planning/start"/>
+      <remap from="~planning/finish" to="/drone_2_planning/finish"/>
+      <remap from="/position_cmd" to="/drone_2_planning/pos_cmd"/>
+      <param name="traj_server/time_forward" value="1.0" type="double"/>
+    </node>
+  </group>
+</launch>

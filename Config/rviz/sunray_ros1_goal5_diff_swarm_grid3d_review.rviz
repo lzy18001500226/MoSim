@@ -1,0 +1,194 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+  - Class: rviz/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.45
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.03
+        Value: Lines
+      Name: World Grid
+      Plane: XY
+      Plane Cell Count: 80
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Alpha: 0.48
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 2
+        Min Value: 0
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Class: rviz/PointCloud2
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Name: UAV1 Accumulated Voxel Map
+      Position Transformer: XYZ
+      Queue Size: 5
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.20
+      Style: Boxes
+      Topic: /mosim/goal5/uav1/occupancy_accumulated
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 0.48
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 2
+        Min Value: 0
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Class: rviz/PointCloud2
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Name: UAV2 Accumulated Voxel Map
+      Position Transformer: XYZ
+      Queue Size: 5
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.20
+      Style: Boxes
+      Topic: /mosim/goal5/uav2/occupancy_accumulated
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 0.48
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 2
+        Min Value: 0
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Class: rviz/PointCloud2
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Name: UAV3 Accumulated Voxel Map
+      Position Transformer: XYZ
+      Queue Size: 5
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.20
+      Style: Boxes
+      Topic: /mosim/goal5/uav3/occupancy_accumulated
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 255; 50; 50
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.055
+      Name: UAV1 Truth Path
+      Pose Style: None
+      Topic: /mosim/goal5/uav1/truth_path
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 50; 180; 255
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.055
+      Name: UAV2 Truth Path
+      Pose Style: None
+      Topic: /mosim/goal5/uav2/truth_path
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 255; 170; 0
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.055
+      Name: UAV3 Truth Path
+      Pose Style: None
+      Topic: /mosim/goal5/uav3/truth_path
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 30; 220; 80
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.04
+      Name: UAV1 Position Command
+      Pose Style: None
+      Topic: /mosim/goal5/uav1/position_cmd_path
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 90; 255; 255
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.04
+      Name: UAV2 Position Command
+      Pose Style: None
+      Topic: /mosim/goal5/uav2/position_cmd_path
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 255; 220; 80
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.04
+      Name: UAV3 Position Command
+      Pose Style: None
+      Topic: /mosim/goal5/uav3/position_cmd_path
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /mosim/goal5/body_axes
+      Name: UAV Body Axes
+      Queue Size: 5
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 38; 38; 38
+    Default Light: true
+    Fixed Frame: world
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 16
+      Focal Point:
+        X: 2
+        Y: 0
+        Z: 1
+      Name: Current View
+      Pitch: 0.68
+      Target Frame: world
+      Value: Orbit (rviz)
+      Yaw: 0.78
+Window Geometry:
+  Height: 880
+  Width: 1120
+  X: 1160
+  Y: 40

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -58,25 +59,55 @@ def test_agents_records_mapping_window_rule() -> None:
 
 
 def test_preview_dry_run_contract_when_powershell_available() -> None:
-    if shutil.which("powershell.exe") is None:
+    if os.name == "nt":
+        powershell = shutil.which("powershell") or shutil.which("powershell.exe")
+        if powershell is None:
+            return
+        result = subprocess.run(
+            [
+                powershell,
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "Scripts/UE5/open_native_pointcloud_preview.ps1",
+                "-SceneId",
+                "factoryenvironmentcollect",
+                "-ProjectRoot",
+                str(ROOT),
+                "-MaxFrames",
+                "2",
+                "-MaxPointsPerFrame",
+                "20",
+                "-DryRun",
+            ],
+            cwd=ROOT,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=20,
+        )
+    elif shutil.which("powershell.exe") is None:
         return
-    result = subprocess.run(
-        [
-            "bash",
-            "Scripts/UE5/open_native_pointcloud_preview.sh",
-            "factoryenvironmentcollect",
-        ],
-        cwd=ROOT,
-        env={
-            **__import__("os").environ,
-            "DRY_RUN": "1",
-            "MAX_FRAMES": "2",
-            "MAX_POINTS_PER_FRAME": "20",
-        },
-        check=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
+    else:
+        result = subprocess.run(
+            [
+                "bash",
+                "Scripts/UE5/open_native_pointcloud_preview.sh",
+                "factoryenvironmentcollect",
+            ],
+            cwd=ROOT,
+            env={
+                **os.environ,
+                "DRY_RUN": "1",
+                "MAX_FRAMES": "2",
+                "MAX_POINTS_PER_FRAME": "20",
+            },
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=20,
+        )
     stdout = result.stdout.decode("utf-8", errors="replace")
     payload = json.loads(stdout)
     if payload.get("schema") != "mosim.native_pointcloud_preview_dryrun.v1":

@@ -34,7 +34,7 @@ def main() -> int:
     external_position = root / "References/Sunray/General_Module/sunray_uav_control/externalFusion/ExternalPosition.h"
     uav_control = root / "References/Sunray/General_Module/sunray_uav_control/uav_control/UAVControl.cpp"
     mission = root / "Scripts/sunray/sunray_ros1_mission_node.py"
-    fastlio_config = root / "References/Lab/FAST_LIO/config/mosim_sunray_livox_custom.yaml"
+    fastlio_config = root / "References/Lab/localization_slam/FAST_LIO/config/mosim_sunray_livox_custom.yaml"
 
     paths = {
         "sunray_model": sunray_model,

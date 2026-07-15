@@ -9,6 +9,7 @@ SUNRAY_PX4_DIR="${SUNRAY_PX4_DIR:-/opt/mosim_work/sunray_px4}"
 FASTLIO="${FASTLIO:-false}"
 FASTLIO_WS="${FASTLIO_WS:-/tmp/mosim_sunray_build_20260620_fastlio_3/Sunray}"
 FASTLIO_MODE="${FASTLIO_MODE:-pointcloud2}"
+FASTLIO_SCAN_RATE_HZ="${FASTLIO_SCAN_RATE_HZ:-20.0}"
 EXTERNAL_FUSION_SOURCE="${EXTERNAL_FUSION_SOURCE:-2}"
 EXTERNAL_FUSION_POSITION_TOPIC="${EXTERNAL_FUSION_POSITION_TOPIC:-/uav1/mavros/local_position/pose}"
 EXTERNAL_FUSION_USE_VISION_POSE="${EXTERNAL_FUSION_USE_VISION_POSE:-true}"
@@ -333,7 +334,7 @@ if [[ "${FASTLIO}" == "true" ]]; then
       --imu-topic /uav1/livox/imu \
       --stamp-source imu \
       --frame-id uav1/base_link \
-      --scan-rate-hz 10 \
+      --scan-rate-hz "${FASTLIO_SCAN_RATE_HZ}" \
       --scan-lines 4 \
       --blind 0.4 \
       > "${RESULT_DIR}/pointcloud2_to_livox_custom.log" 2>&1 &
@@ -507,6 +508,7 @@ cat > "${RESULT_DIR}/SESSION.json" <<EOF
   "fastlio": "${FASTLIO}",
   "fastlio_ws": "${FASTLIO_WS}",
   "fastlio_mode": "${FASTLIO_MODE}",
+  "fastlio_scan_rate_hz": ${FASTLIO_SCAN_RATE_HZ},
   "vehicle": "sunray150_with_mid360",
   "control_backend": "Sunray native control node -> PX4 SITL -> Gazebo Classic",
   "external_fusion": {

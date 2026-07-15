@@ -40,6 +40,7 @@ class Px4ctrlBasicMission:
         self.control_odom_rows: list[dict] = []
         self.ref_rows: list[dict] = []
         self.debug_rows: list[dict] = []
+        self.att_raw_rows: list[dict] = []
         self.att_target_rows: list[dict] = []
         self.state_rows: list[dict] = []
         self.home: tuple[float, float, float] | None = None
@@ -56,6 +57,7 @@ class Px4ctrlBasicMission:
             "local": -1e9,
             "control_odom": -1e9,
             "debug": -1e9,
+            "att_raw": -1e9,
             "att_target": -1e9,
             "state": -1e9,
         }
@@ -77,6 +79,7 @@ class Px4ctrlBasicMission:
         rospy.Subscriber("/uav1/mavros/local_position/odom", Odometry, self.on_local_odom, queue_size=100)
         rospy.Subscriber(args.control_odom_topic, Odometry, self.on_control_odom, queue_size=100)
         rospy.Subscriber("/uav1/mavros/state", State, self.on_state, queue_size=20)
+        rospy.Subscriber("/uav1/mavros/setpoint_raw/attitude", AttitudeTarget, self.on_att_raw, queue_size=100)
         rospy.Subscriber("/uav1/mavros/setpoint_raw/target_attitude", AttitudeTarget, self.on_att_target, queue_size=100)
         rospy.Subscriber("/debugPx4ctrl", Px4ctrlDebug, self.on_debug, queue_size=100)
         rospy.Subscriber("/uav1/mavros/imu/data", Imu, self.on_imu, queue_size=20)
@@ -150,7 +153,8 @@ class Px4ctrlBasicMission:
             "yaw": yaw,
         }
         self.last_truth = row
-        self.publish_truth_tf(pose)
+        if self.args.publish_truth_tf:
+            self.publish_truth_tf(pose)
         self.publish_truth_axes(pose)
         if self.should_record("truth", t, self.args.record_truth_hz):
             self.truth_rows.append(row)
@@ -213,26 +217,33 @@ class Px4ctrlBasicMission:
             "yaw": yaw,
         }
 
-    def on_att_target(self, msg: AttitudeTarget) -> None:
+    def attitude_row(self, msg: AttitudeTarget, t: float) -> dict:
         q = msg.orientation
         roll, pitch, yaw = self.rpy_from_quat(q.x, q.y, q.z, q.w)
+        return {
+            "t": t,
+            "phase": self.phase,
+            "type_mask": int(msg.type_mask),
+            "roll": roll,
+            "pitch": pitch,
+            "yaw": yaw,
+            "body_rate_x": float(msg.body_rate.x),
+            "body_rate_y": float(msg.body_rate.y),
+            "body_rate_z": float(msg.body_rate.z),
+            "thrust": float(msg.thrust),
+        }
+
+    def on_att_raw(self, msg: AttitudeTarget) -> None:
+        t = self.now()
+        if not self.should_record("att_raw", t, self.args.record_attitude_hz):
+            return
+        self.att_raw_rows.append(self.attitude_row(msg, t))
+
+    def on_att_target(self, msg: AttitudeTarget) -> None:
         t = self.now()
         if not self.should_record("att_target", t, self.args.record_attitude_hz):
             return
-        self.att_target_rows.append(
-            {
-                "t": t,
-                "phase": self.phase,
-                "type_mask": int(msg.type_mask),
-                "roll": roll,
-                "pitch": pitch,
-                "yaw": yaw,
-                "body_rate_x": float(msg.body_rate.x),
-                "body_rate_y": float(msg.body_rate.y),
-                "body_rate_z": float(msg.body_rate.z),
-                "thrust": float(msg.thrust),
-            }
-        )
+        self.att_target_rows.append(self.attitude_row(msg, t))
 
     def on_debug(self, msg: Px4ctrlDebug) -> None:
         t = self.now()
@@ -344,7 +355,10 @@ class Px4ctrlBasicMission:
             marker.color.a = color[3]
             marker.lifetime = rospy.Duration(self.args.body_axis_lifetime_s)
             markers.markers.append(marker)
-        self.truth_axes_pub.publish(markers)
+        try:
+            self.truth_axes_pub.publish(markers)
+        except rospy.ROSException:
+            pass
 
     def publish_takeoff_land(self, cmd: int, repeats: int = 8) -> None:
         msg = TakeoffLand()
@@ -363,21 +377,31 @@ class Px4ctrlBasicMission:
         rate = rospy.Rate(10)
         while not rospy.is_shutdown() and time.time() < end:
             if self.last_state is not None and not self.last_state.armed:
+                self.disarm_success = True
                 return
             rate.sleep()
 
         if not self.args.force_disarm_after_land:
             return
-        final_z_rel = self.final_z_rel_m()
-        if final_z_rel is None or final_z_rel > self.args.force_disarm_max_z_rel_m:
+
+        end = time.time() + self.args.force_disarm_timeout_s
+        while not rospy.is_shutdown() and time.time() < end:
+            if self.last_state is not None and not self.last_state.armed:
+                self.disarm_success = True
+                return
+            final_z_rel = self.final_z_rel_m()
+            if final_z_rel is not None and final_z_rel <= self.args.force_disarm_max_z_rel_m:
+                break
+            rate.sleep()
+        else:
             return
+
         try:
             rospy.wait_for_service("/uav1/mavros/cmd/arming", timeout=3.0)
             arm_srv = rospy.ServiceProxy("/uav1/mavros/cmd/arming", CommandBool)
         except Exception:
             return
 
-        end = time.time() + self.args.force_disarm_timeout_s
         while not rospy.is_shutdown() and time.time() < end:
             if self.last_state is not None and not self.last_state.armed:
                 self.disarm_success = True
@@ -387,12 +411,28 @@ class Px4ctrlBasicMission:
                 response = arm_srv(False)
                 if bool(response.success):
                     self.disarm_success = True
+                    return
             except Exception:
                 pass
             rospy.sleep(1.0)
 
+    def final_disarmed_ok(self) -> bool:
+        return bool(self.disarm_success) or (self.last_state is not None and not self.last_state.armed)
+
+    def wait_for_final_disarm_state(self, timeout_s: float) -> None:
+        if timeout_s <= 0.0:
+            return
+        end = time.time() + timeout_s
+        rate = rospy.Rate(10)
+        while not rospy.is_shutdown() and time.time() < end:
+            if self.final_disarmed_ok():
+                self.disarm_success = True
+                return
+            rate.sleep()
+
     def make_position_cmd(self, x: float, y: float, z: float, vx: float, vy: float, vz: float,
-                          ax: float, ay: float, az: float, yaw: float, yaw_rate: float = 0.0) -> PositionCommand:
+                          ax: float, ay: float, az: float, yaw: float, yaw_rate: float = 0.0,
+                          jx: float = 0.0, jy: float = 0.0, jz: float = 0.0) -> PositionCommand:
         msg = PositionCommand()
         msg.header.stamp = rospy.Time.now()
         msg.header.frame_id = self.args.path_frame
@@ -405,15 +445,15 @@ class Px4ctrlBasicMission:
         msg.acceleration.x = ax
         msg.acceleration.y = ay
         msg.acceleration.z = az
-        msg.jerk.x = 0.0
-        msg.jerk.y = 0.0
-        msg.jerk.z = 0.0
+        msg.jerk.x = jx
+        msg.jerk.y = jy
+        msg.jerk.z = jz
         msg.yaw = yaw
         msg.yaw_dot = yaw_rate
         msg.trajectory_flag = PositionCommand.TRAJECTORY_STATUS_READY
         return msg
 
-    def reference_at(self, mission_t: float) -> tuple[float, float, float, float, float, float, float, float, float, float]:
+    def reference_at(self, mission_t: float) -> tuple[float, float, float, float, float, float, float, float, float, float, float, float, float, float]:
         if self.args.reference_frame_source == "control_odom" and self.control_home is not None:
             base_x, base_y, base_z = self.control_home
         elif self.home is None:
@@ -425,13 +465,35 @@ class Px4ctrlBasicMission:
             w = 2.0 * math.pi / self.args.figure8_period_s
             a = self.args.figure8_x_amp_m
             b = self.args.figure8_y_amp_m
-            x = base_x + a * math.sin(w * mission_t)
-            y = base_y + b * math.sin(2.0 * w * mission_t)
-            vx = a * w * math.cos(w * mission_t)
-            vy = 2.0 * b * w * math.cos(2.0 * w * mission_t)
-            ax = -a * w * w * math.sin(w * mission_t)
-            ay = -4.0 * b * w * w * math.sin(2.0 * w * mission_t)
-            return x, y, z0, vx, vy, 0.0, ax, ay, 0.0, 0.0
+            x_raw = a * math.sin(w * mission_t)
+            y_raw = b * math.sin(2.0 * w * mission_t)
+            vx_raw = a * w * math.cos(w * mission_t)
+            vy_raw = 2.0 * b * w * math.cos(2.0 * w * mission_t)
+            ax_raw = -a * w * w * math.sin(w * mission_t)
+            ay_raw = -4.0 * b * w * w * math.sin(2.0 * w * mission_t)
+            jx_raw = -a * w * w * w * math.cos(w * mission_t)
+            jy_raw = -8.0 * b * w * w * w * math.cos(2.0 * w * mission_t)
+            ramp_s = max(0.0, self.args.figure8_ramp_s)
+            if ramp_s > 1e-6 and mission_t < ramp_s:
+                u = min(1.0, max(0.0, mission_t / ramp_s))
+                scale = u * u * (3.0 - 2.0 * u)
+                dscale = 6.0 * u * (1.0 - u) / ramp_s
+                ddscale = 6.0 * (1.0 - 2.0 * u) / (ramp_s * ramp_s)
+                dddscale = -12.0 / (ramp_s * ramp_s * ramp_s)
+            else:
+                scale = 1.0
+                dscale = 0.0
+                ddscale = 0.0
+                dddscale = 0.0
+            x = base_x + scale * x_raw
+            y = base_y + scale * y_raw
+            vx = dscale * x_raw + scale * vx_raw
+            vy = dscale * y_raw + scale * vy_raw
+            ax = ddscale * x_raw + 2.0 * dscale * vx_raw + scale * ax_raw
+            ay = ddscale * y_raw + 2.0 * dscale * vy_raw + scale * ay_raw
+            jx = dddscale * x_raw + 3.0 * ddscale * vx_raw + 3.0 * dscale * ax_raw + scale * jx_raw
+            jy = dddscale * y_raw + 3.0 * ddscale * vy_raw + 3.0 * dscale * ay_raw + scale * jy_raw
+            return x, y, z0, vx, vy, 0.0, ax, ay, 0.0, jx, jy, 0.0, 0.0, 0.0
         if self.args.mission == "spiral":
             w = 2.0 * math.pi / self.args.spiral_period_s
             r = self.args.spiral_radius_m
@@ -442,7 +504,9 @@ class Px4ctrlBasicMission:
             vy = r * w * math.cos(w * mission_t)
             ax = -r * w * w * math.cos(w * mission_t)
             ay = -r * w * w * math.sin(w * mission_t)
-            return x, y, z, vx, vy, vz, ax, ay, az, 0.0
+            jx = r * w * w * w * math.sin(w * mission_t)
+            jy = -r * w * w * w * math.cos(w * mission_t)
+            return x, y, z, vx, vy, vz, ax, ay, az, jx, jy, 0.0, 0.0, 0.0
         if self.args.mission == "circle":
             w = 2.0 * math.pi / self.args.circle_period_s
             r = self.args.circle_radius_m
@@ -452,17 +516,41 @@ class Px4ctrlBasicMission:
             vy = r * w * math.sin(w * mission_t)
             ax = -r * w * w * math.sin(w * mission_t)
             ay = r * w * w * math.cos(w * mission_t)
-            return x, y, z0, vx, vy, 0.0, ax, ay, 0.0, 0.0
+            jx = -r * w * w * w * math.cos(w * mission_t)
+            jy = -r * w * w * w * math.sin(w * mission_t)
+            return x, y, z0, vx, vy, 0.0, ax, ay, 0.0, jx, jy, 0.0, 0.0, 0.0
         if self.args.mission in {"step_x", "step_y", "step_z"}:
             x, y, z = base_x, base_y, z0
+            ratio = 1.0
+            dratio_dt = 0.0
+            d2ratio_dt2 = 0.0
+            if self.args.step_profile == "smoothstep":
+                transition_s = max(1e-6, self.args.step_transition_s)
+                u = min(1.0, max(0.0, mission_t / transition_s))
+                ratio = u * u * (3.0 - 2.0 * u)
+                if 0.0 < u < 1.0:
+                    du_dt = 1.0 / transition_s
+                    dratio_dt = 6.0 * u * (1.0 - u) * du_dt
+                    d2ratio_dt2 = 6.0 * (1.0 - 2.0 * u) * du_dt * du_dt
             if self.args.mission == "step_x":
-                x += self.args.step_amplitude_m
+                amp = self.args.step_amplitude_m
+                x += amp * ratio
+                vx = amp * dratio_dt
+                ax = amp * d2ratio_dt2
+                return x, y, z, vx, 0.0, 0.0, ax, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
             elif self.args.mission == "step_y":
-                y += self.args.step_amplitude_m
+                amp = self.args.step_amplitude_m
+                y += amp * ratio
+                vy = amp * dratio_dt
+                ay = amp * d2ratio_dt2
+                return x, y, z, 0.0, vy, 0.0, 0.0, ay, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
             else:
-                z += self.args.step_z_amplitude_m
-            return x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
-        return base_x, base_y, z0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+                amp = self.args.step_z_amplitude_m
+                z += amp * ratio
+                vz = amp * dratio_dt
+                az = amp * d2ratio_dt2
+                return x, y, z, 0.0, 0.0, vz, 0.0, 0.0, az, 0.0, 0.0, 0.0, 0.0, 0.0
+        return base_x, base_y, z0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
 
     def trajectory_duration_s(self) -> float:
         if self.args.mission == "figure8":
@@ -487,14 +575,14 @@ class Px4ctrlBasicMission:
         d2s_dt2 = 6.0 * (1.0 - 2.0 * ratio) / (duration * duration)
         return z0 + climb * smooth, climb * ds_dt, climb * d2s_dt2
 
-    def hover_reference(self) -> tuple[float, float, float, float, float, float, float, float, float, float]:
+    def hover_reference(self) -> tuple[float, float, float, float, float, float, float, float, float, float, float, float, float, float]:
         if self.args.reference_frame_source == "control_odom" and self.control_home is not None:
             base_x, base_y, base_z = self.control_home
         elif self.home is None:
             base_x, base_y, base_z = 0.0, 0.0, 0.0
         else:
             base_x, base_y, base_z = self.home
-        return base_x, base_y, base_z + self.args.altitude_m, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+        return base_x, base_y, base_z + self.args.altitude_m, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
 
     def eval_position_from_command(self, x: float, y: float, z: float) -> tuple[float, float, float]:
         if self.args.reference_frame_source != "control_odom" or self.control_home is None or self.home is None:
@@ -564,6 +652,33 @@ class Px4ctrlBasicMission:
             rate.sleep()
         return False
 
+    def wait_for_pre_takeoff_state_stable(self, duration_s: float) -> bool:
+        if duration_s <= 0.0:
+            return True
+        rate = rospy.Rate(20)
+        stable_samples = 0
+        required_samples = max(1, int(duration_s * 20))
+        while not rospy.is_shutdown():
+            if self.deadline_reached():
+                return False
+            state_ok = self.last_state is not None and self.last_state.connected
+            odom = self.last_control_odom if self.last_control_odom is not None else self.last_local
+            odom_ok = False
+            if odom is not None:
+                speed = math.sqrt(
+                    odom["vx"] * odom["vx"]
+                    + odom["vy"] * odom["vy"]
+                    + odom["vz"] * odom["vz"]
+                )
+                odom_ok = speed <= self.args.static_odom_speed_max_mps
+            if state_ok and odom_ok:
+                stable_samples += 1
+                if stable_samples >= required_samples:
+                    return True
+            else:
+                stable_samples = 0
+            rate.sleep()
+
     def takeoff_gate_sample(self) -> tuple[dict | None, float]:
         if (
             self.args.reference_frame_source == "control_odom"
@@ -605,13 +720,19 @@ class Px4ctrlBasicMission:
             mission_t = self.now() - t0
             if mission_t > duration_s:
                 break
-            x, y, z, vx, vy, vz, ax, ay, az, yaw = self.reference_at(mission_t)
+            x, y, z, vx, vy, vz, ax, ay, az, jx, jy, jz, yaw, yaw_rate = self.reference_at(mission_t)
             cmd_t = min(duration_s, max(0.0, mission_t + self.args.trajectory_time_lead_s))
-            cmd_x, cmd_y, cmd_z, cmd_vx, cmd_vy, cmd_vz, cmd_ax, cmd_ay, cmd_az, cmd_yaw = self.reference_at(cmd_t)
+            cmd_x, cmd_y, cmd_z, cmd_vx, cmd_vy, cmd_vz, cmd_ax, cmd_ay, cmd_az, cmd_jx, cmd_jy, cmd_jz, cmd_yaw, cmd_yaw_rate = self.reference_at(cmd_t)
             biased_cmd_x = cmd_x + self.args.command_x_bias_m
             biased_cmd_y = cmd_y + self.args.command_y_bias_m
             biased_cmd_z = cmd_z + self.args.command_z_bias_m
-            msg = self.make_position_cmd(biased_cmd_x, biased_cmd_y, biased_cmd_z, cmd_vx, cmd_vy, cmd_vz, cmd_ax, cmd_ay, cmd_az, cmd_yaw)
+            msg = self.make_position_cmd(
+                biased_cmd_x, biased_cmd_y, biased_cmd_z,
+                cmd_vx, cmd_vy, cmd_vz,
+                cmd_ax, cmd_ay, cmd_az,
+                cmd_yaw, cmd_yaw_rate,
+                cmd_jx, cmd_jy, cmd_jz,
+            )
             self.cmd_pub.publish(msg)
             eval_x, eval_y, eval_z = self.eval_position_from_command(x, y, z)
             self.ref_rows.append(
@@ -630,14 +751,22 @@ class Px4ctrlBasicMission:
                     "ax": ax,
                     "ay": ay,
                     "az": az,
+                    "jx": jx,
+                    "jy": jy,
+                    "jz": jz,
                     "yaw": yaw,
+                    "yaw_rate": yaw_rate,
                     "cmd_vx": cmd_vx,
                     "cmd_vy": cmd_vy,
                     "cmd_vz": cmd_vz,
                     "cmd_ax": cmd_ax,
                     "cmd_ay": cmd_ay,
                     "cmd_az": cmd_az,
+                    "cmd_jx": cmd_jx,
+                    "cmd_jy": cmd_jy,
+                    "cmd_jz": cmd_jz,
                     "cmd_yaw": cmd_yaw,
+                    "cmd_yaw_rate": cmd_yaw_rate,
                     "trajectory_time_lead_s": self.args.trajectory_time_lead_s,
                 }
             )
@@ -650,7 +779,7 @@ class Px4ctrlBasicMission:
         rate = rospy.Rate(self.args.command_rate_hz)
         start_t = self.now()
         end_t = start_t + duration_s
-        x, y, z, vx, vy, vz, ax, ay, az, yaw = self.hover_reference()
+        x, y, z, vx, vy, vz, ax, ay, az, jx, jy, jz, yaw, yaw_rate = self.hover_reference()
         biased_x = x + self.args.command_x_bias_m
         biased_y = y + self.args.command_y_bias_m
         ramp_start_z = z
@@ -669,7 +798,7 @@ class Px4ctrlBasicMission:
             else:
                 cmd_z_unbiased = z
             biased_z = cmd_z_unbiased + self.args.command_z_bias_m
-            msg = self.make_position_cmd(biased_x, biased_y, biased_z, vx, vy, vz, ax, ay, az, yaw)
+            msg = self.make_position_cmd(biased_x, biased_y, biased_z, vx, vy, vz, ax, ay, az, yaw, yaw_rate, jx, jy, jz)
             self.cmd_pub.publish(msg)
             eval_x, eval_y, eval_z = self.eval_position_from_command(x, y, cmd_z_unbiased)
             self.ref_rows.append(
@@ -688,14 +817,22 @@ class Px4ctrlBasicMission:
                     "ax": ax,
                     "ay": ay,
                     "az": az,
+                    "jx": jx,
+                    "jy": jy,
+                    "jz": jz,
                     "yaw": yaw,
+                    "yaw_rate": yaw_rate,
                     "cmd_vx": vx,
                     "cmd_vy": vy,
                     "cmd_vz": vz,
                     "cmd_ax": ax,
                     "cmd_ay": ay,
                     "cmd_az": az,
+                    "cmd_jx": jx,
+                    "cmd_jy": jy,
+                    "cmd_jz": jz,
                     "cmd_yaw": yaw,
+                    "cmd_yaw_rate": yaw_rate,
                     "trajectory_time_lead_s": 0.0,
                 }
             )
@@ -713,6 +850,9 @@ class Px4ctrlBasicMission:
                 self.last_control_odom["y"],
                 self.last_control_odom["z"],
             )
+        if static_odom_ok:
+            self.phase = "pre_takeoff_state_stable"
+            static_odom_ok = self.wait_for_pre_takeoff_state_stable(self.args.pre_takeoff_state_stable_s)
         self.phase = "takeoff"
         if static_odom_ok:
             self.publish_takeoff_land(TakeoffLand.TAKEOFF, repeats=self.args.takeoff_cmd_repeats)
@@ -732,7 +872,10 @@ class Px4ctrlBasicMission:
             self.phase = self.args.mission
             self.publish_cmd_for_duration(self.trajectory_duration_s())
             self.phase = "hover_after"
-            rospy.sleep(self.args.post_hold_s)
+            if self.args.hover_hold_command_mode == "position_cmd":
+                self.publish_hold_cmd_for_duration(self.args.post_hold_s)
+            else:
+                rospy.sleep(self.args.post_hold_s)
             if self.deadline_reached():
                 return self.metrics(takeoff_ok, static_odom_ok, forced_reason="wall_timeout_during_trajectory")
 
@@ -741,6 +884,7 @@ class Px4ctrlBasicMission:
         self.publish_takeoff_land(TakeoffLand.LAND)
         self.wait_land_and_optionally_disarm()
         self.phase = "done"
+        self.wait_for_final_disarm_state(self.args.final_state_settle_s)
         return self.metrics(takeoff_ok, static_odom_ok)
 
     @staticmethod
@@ -811,6 +955,7 @@ class Px4ctrlBasicMission:
 
     def metrics(self, takeoff_ok: bool, static_odom_ok: bool, forced_reason: str | None = None) -> dict:
         errors = []
+        command_errors = []
         for ref in self.ref_rows:
             truth_source_rows = self.sunray_truth_rows if self.args.metric_truth_source == "sunray_gazebo_pose" else self.truth_rows
             actual = self.nearest_row(truth_source_rows, ref["t"], 0.08)
@@ -820,6 +965,21 @@ class Px4ctrlBasicMission:
             ey = actual["y"] - ref["y"]
             ez = actual["z"] - ref["z"]
             errors.append({"t": ref["t"], "phase": ref["phase"], "ex": ex, "ey": ey, "ez": ez, "xy": math.hypot(ex, ey), "xyz": math.sqrt(ex * ex + ey * ey + ez * ez)})
+            if all(k in ref for k in ("cmd_x", "cmd_y", "cmd_z")):
+                cex = actual["x"] - ref["cmd_x"]
+                cey = actual["y"] - ref["cmd_y"]
+                cez = actual["z"] - ref["cmd_z"]
+                command_errors.append(
+                    {
+                        "t": ref["t"],
+                        "phase": ref["phase"],
+                        "ex": cex,
+                        "ey": cey,
+                        "ez": cez,
+                        "xy": math.hypot(cex, cey),
+                        "xyz": math.sqrt(cex * cex + cey * cey + cez * cez),
+                    }
+                )
 
         def rmse(values: list[float]) -> float | None:
             return math.sqrt(sum(v * v for v in values) / len(values)) if values else None
@@ -864,6 +1024,18 @@ class Px4ctrlBasicMission:
                 "final_abs_m": values[-1] if values else None,
             }
 
+        def command_bias_metrics(rows: list[dict]) -> dict:
+            out: dict = {"matched_samples": len(rows)}
+            for axis in ("x", "y", "z"):
+                cmd_key = f"cmd_{axis}"
+                values = [r[cmd_key] - r[axis] for r in rows if axis in r and cmd_key in r]
+                out[axis] = {
+                    "mean_m": statistics.fmean(values) if values else None,
+                    "min_m": min(values) if values else None,
+                    "max_m": max(values) if values else None,
+                }
+            return out
+
         def step_response_metrics(rows: list[dict]) -> dict | None:
             if self.args.mission not in {"step_x", "step_y", "step_z"}:
                 return None
@@ -891,6 +1063,118 @@ class Px4ctrlBasicMission:
                 "primary_axis_settled": axis_metrics(settled_rows, primary_axis),
                 "cross_axis_settled": {axis: axis_metrics(settled_rows, axis) for axis in cross_axes},
                 "settled_sample_count": len(settled_rows),
+            }
+
+        def step_gate(step: dict | None, steady: dict) -> dict:
+            blockers: list[str] = []
+            if forced_reason:
+                blockers.append(forced_reason)
+            if self.args.mission not in {"step_x", "step_y", "step_z"}:
+                blockers.append(f"step_gate_requires_step_mission:{self.args.mission}")
+            if self.args.require_position_cmd_hold and self.args.hover_hold_command_mode != "position_cmd":
+                blockers.append(f"step_gate_requires_position_cmd_hold:not_{self.args.hover_hold_command_mode}")
+            if self.args.require_position_cmd_hold and len([r for r in self.ref_rows if r.get("phase") == "hover_before"]) < self.args.min_hold_reference_samples:
+                blockers.append("hold_reference_samples_too_low")
+            if self.args.require_mavros_local_control_odom and self.args.control_odom_topic != "/uav1/mavros/local_position/odom":
+                blockers.append(f"formal_control_odom_topic_mismatch:{self.args.control_odom_topic}")
+            if not static_odom_ok:
+                blockers.append("static_odom_not_ready_before_takeoff")
+            if not takeoff_ok:
+                blockers.append("takeoff_not_reached_altitude")
+            if not isinstance(step, dict):
+                blockers.append("missing_step_response")
+            elif step.get("status") != "passed":
+                blockers.append(f"step_response_blocked:{step.get('reason')}")
+            else:
+                settled = step.get("settled_window", {})
+                primary = step.get("primary_axis_settled", {})
+                if int(step.get("settled_sample_count", 0) or 0) < self.args.min_trajectory_samples:
+                    blockers.append(f"step_settled_samples_too_low:{step.get('settled_sample_count')}")
+                if not self.metric_leq(primary.get("rmse_m"), self.args.max_trajectory_xyz_rmse_m):
+                    blockers.append(f"step_primary_rmse_above_max:{primary.get('rmse_m')}")
+                if not self.metric_leq(primary.get("p95_m"), self.args.max_trajectory_xyz_p95_m):
+                    blockers.append(f"step_primary_p95_above_max:{primary.get('p95_m')}")
+                if not self.metric_leq(primary.get("max_m"), self.args.max_trajectory_xyz_max_m):
+                    blockers.append(f"step_primary_max_above_max:{primary.get('max_m')}")
+                if not self.metric_leq(settled.get("xyz_rmse_m"), self.args.max_trajectory_xyz_rmse_m):
+                    blockers.append(f"step_settled_xyz_rmse_above_max:{settled.get('xyz_rmse_m')}")
+                if not self.metric_leq(settled.get("xyz_p95_m"), self.args.max_trajectory_xyz_p95_m):
+                    blockers.append(f"step_settled_xyz_p95_above_max:{settled.get('xyz_p95_m')}")
+                if not self.metric_leq(settled.get("xyz_max_m"), self.args.max_trajectory_xyz_max_m):
+                    blockers.append(f"step_settled_xyz_max_above_max:{settled.get('xyz_max_m')}")
+
+            if not self.metric_leq(steady.get("xy_rmse_m"), self.args.max_hover_xy_rmse_m):
+                blockers.append(f"steady_hover_xy_rmse_above_max:{steady.get('xy_rmse_m')}")
+            if not self.metric_leq(steady.get("xy_max_m"), self.args.max_hover_xy_max_m):
+                blockers.append(f"steady_hover_xy_max_above_max:{steady.get('xy_max_m')}")
+            if not self.metric_leq(steady.get("z_abs_rmse_m"), self.args.max_hover_z_rmse_m):
+                blockers.append(f"steady_hover_z_rmse_above_max:{steady.get('z_abs_rmse_m')}")
+            if not self.metric_leq(steady.get("z_abs_max_m"), self.args.max_hover_z_max_m):
+                blockers.append(f"steady_hover_z_max_above_max:{steady.get('z_abs_max_m')}")
+
+            if self.args.require_landed_disarmed:
+                if not self.final_disarmed_ok() and self.last_state is None:
+                    blockers.append("missing_final_mavros_state")
+                elif not self.final_disarmed_ok():
+                    blockers.append("final_state_still_armed")
+                if self.last_sunray_truth is None:
+                    blockers.append("missing_final_truth")
+                elif self.home is not None:
+                    final_z_rel = self.last_sunray_truth["z"] - self.home[2]
+                    if final_z_rel > self.args.max_final_z_rel_m:
+                        blockers.append(f"final_z_rel_above_max:{final_z_rel}")
+
+            gate_phases = {"hover_before", self.args.mission, "hover_after"}
+            gate_truth_rows = [r for r in self.sunray_truth_rows if r.get("phase") in gate_phases]
+            gate_local_rows = [r for r in self.local_rows if r.get("phase") in gate_phases]
+            delta_error = self.truth_local_delta_error_metrics(gate_truth_rows, gate_local_rows)
+            full_delta_error = self.truth_local_delta_error_metrics(self.sunray_truth_rows, self.local_rows)
+            if self.args.require_truth_local_alignment:
+                matched = int(delta_error.get("matched_samples", 0) or 0)
+                if matched < self.args.min_alignment_samples:
+                    blockers.append(f"truth_local_alignment_samples_too_low:{matched}")
+                for axis, limit in (
+                    ("x", self.args.max_truth_local_delta_xy_error_m),
+                    ("y", self.args.max_truth_local_delta_xy_error_m),
+                    ("z", self.args.max_truth_local_delta_z_error_m),
+                ):
+                    axis_payload = delta_error.get(axis)
+                    max_abs = axis_payload.get("max_abs_m") if isinstance(axis_payload, dict) else None
+                    if not self.metric_leq(max_abs, limit):
+                        blockers.append(f"truth_local_delta_error_bad_{axis}:{max_abs}")
+
+            return {
+                "schema": "mosim.sunray_ros1.px4ctrl_step_gate.v1",
+                "status": "passed" if not blockers else "blocked",
+                "reason": None if not blockers else ";".join(blockers),
+                "blockers": blockers,
+                "scope": "G9 / step response gate / formal mavros local step tracking",
+                "mission": self.args.mission,
+                "formal_state_source": "/uav1/mavros/local_position/odom",
+                "hover_hold_command_mode": self.args.hover_hold_command_mode,
+                "reference_frame_source": self.args.reference_frame_source,
+                "gate_metric_window": f"step_settled_after_{self.args.step_settling_exclusion_s:g}s",
+                "truth_for_evaluation_only": self.args.metric_truth_source,
+                "thresholds": {
+                    "max_step_primary_rmse_m": self.args.max_trajectory_xyz_rmse_m,
+                    "max_step_primary_p95_m": self.args.max_trajectory_xyz_p95_m,
+                    "max_step_primary_max_m": self.args.max_trajectory_xyz_max_m,
+                    "max_step_settled_xyz_rmse_m": self.args.max_trajectory_xyz_rmse_m,
+                    "max_step_settled_xyz_p95_m": self.args.max_trajectory_xyz_p95_m,
+                    "max_step_settled_xyz_max_m": self.args.max_trajectory_xyz_max_m,
+                    "min_step_settled_samples": self.args.min_trajectory_samples,
+                    "max_hover_xy_rmse_m": self.args.max_hover_xy_rmse_m,
+                    "max_hover_xy_max_m": self.args.max_hover_xy_max_m,
+                    "max_hover_z_rmse_m": self.args.max_hover_z_rmse_m,
+                    "max_hover_z_max_m": self.args.max_hover_z_max_m,
+                    "max_final_z_rel_m": self.args.max_final_z_rel_m,
+                    "max_truth_local_delta_xy_error_m": self.args.max_truth_local_delta_xy_error_m,
+                    "max_truth_local_delta_z_error_m": self.args.max_truth_local_delta_z_error_m,
+                },
+                "step_response_preview": step,
+                "steady_hover_preview": steady,
+                "delta_error_preview": delta_error,
+                "full_delta_error_preview_diagnostic_only": full_delta_error,
             }
 
         hover_source_rows = self.sunray_truth_rows if self.args.metric_truth_source == "sunray_gazebo_pose" else self.truth_rows
@@ -934,11 +1218,18 @@ class Px4ctrlBasicMission:
             "z_abs_max_m": max(steady_hover_z) if steady_hover_z else None,
         }
         trajectory_errors = [e for e in errors if e["phase"] == self.args.mission] if self.args.mission in TRAJECTORY_MISSIONS else []
+        trajectory_command_errors = [e for e in command_errors if e["phase"] == self.args.mission] if self.args.mission in TRAJECTORY_MISSIONS else []
+        trajectory_reference_rows = [r for r in self.ref_rows if r["phase"] == self.args.mission] if self.args.mission in TRAJECTORY_MISSIONS else []
         trajectory_metrics = tracking_metrics(trajectory_errors)
+        trajectory_command_metrics = tracking_metrics(trajectory_command_errors)
         step_metrics = step_response_metrics(trajectory_errors)
+        step_command_metrics = step_response_metrics(trajectory_command_errors)
         all_reference_metrics = tracking_metrics(errors)
+        all_command_metrics = tracking_metrics(command_errors)
         if self.args.mission == "takeoff_hover_land":
             gate = self.goal1_gate(takeoff_ok, static_odom_ok, forced_reason, steady_hover_metrics)
+        elif self.args.mission in {"step_x", "step_y", "step_z"}:
+            gate = step_gate(step_metrics, steady_hover_metrics)
         elif self.args.gate_mode == "g7":
             gate = self.g7_gate(takeoff_ok, static_odom_ok, forced_reason, trajectory_metrics, steady_hover_metrics)
         else:
@@ -952,6 +1243,7 @@ class Px4ctrlBasicMission:
             "goal1_gate": gate if self.args.mission == "takeoff_hover_land" else None,
             "goal2_gate": gate if self.args.gate_mode != "g7" and self.args.mission in {"figure8", "spiral"} else None,
             "goal7_gate": gate if self.args.gate_mode == "g7" and self.args.mission in TRAJECTORY_MISSIONS else None,
+            "step_gate": gate if self.args.mission in {"step_x", "step_y", "step_z"} else None,
             "static_odom_ready_before_takeoff": bool(static_odom_ok),
             "takeoff_reached_altitude": bool(takeoff_ok),
             "sample_counts": {
@@ -967,8 +1259,16 @@ class Px4ctrlBasicMission:
             "hover_before": hover_metrics,
             "steady_hover": steady_hover_metrics,
             "trajectory": trajectory_metrics,
+            "trajectory_command_tracking_diagnostic": trajectory_command_metrics,
             "step_response": step_metrics,
+            "step_command_response_diagnostic": step_command_metrics,
             "all_reference_tracking": all_reference_metrics,
+            "all_command_tracking_diagnostic": all_command_metrics,
+            "command_bias_diagnostic": {
+                "note": "cmd_* includes mission command bias and trajectory lead. Gate metrics remain reference-based.",
+                "all_reference_rows": command_bias_metrics(self.ref_rows),
+                "trajectory_rows": command_bias_metrics(trajectory_reference_rows),
+            },
             "metric_truth_source": self.args.metric_truth_source,
             "truth_local_alignment": self.truth_local_alignment_metrics(),
             "sunray_truth_local_alignment": self.truth_local_alignment_metrics_for(self.sunray_truth_rows, self.local_rows),
@@ -997,6 +1297,10 @@ class Px4ctrlBasicMission:
             writer = csv.DictWriter(f, fieldnames=["t", "phase", "ex", "ey", "ez", "xy", "xyz"])
             writer.writeheader()
             writer.writerows(errors)
+        with (self.result_dir / "trajectory_command_errors.csv").open("w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=["t", "phase", "ex", "ey", "ez", "xy", "xyz"])
+            writer.writeheader()
+            writer.writerows(command_errors)
         return result
 
     @staticmethod
@@ -1070,10 +1374,10 @@ class Px4ctrlBasicMission:
             blockers.append(f"hover_z_max_above_max:{hover_metrics.get('z_abs_max_m')}")
 
         if self.args.require_landed_disarmed:
-            if self.last_state is None:
+            if not self.final_disarmed_ok() and self.last_state is None:
                 blockers.append("missing_final_mavros_state")
             else:
-                if self.last_state.armed:
+                if not self.final_disarmed_ok():
                     blockers.append("final_state_still_armed")
             if self.last_sunray_truth is None:
                 blockers.append("missing_final_truth")
@@ -1164,9 +1468,9 @@ class Px4ctrlBasicMission:
             blockers.append(f"trajectory_xyz_max_above_max:{trajectory_metrics.get('xyz_max_m')}")
 
         if self.args.require_landed_disarmed:
-            if self.last_state is None:
+            if not self.final_disarmed_ok() and self.last_state is None:
                 blockers.append("missing_final_mavros_state")
-            elif self.last_state.armed:
+            elif not self.final_disarmed_ok():
                 blockers.append("final_state_still_armed")
             if self.last_sunray_truth is None:
                 blockers.append("missing_final_truth")
@@ -1247,9 +1551,9 @@ class Px4ctrlBasicMission:
             blockers.append(f"trajectory_samples_too_low:{trajectory_metrics.get('matched_samples')}")
 
         if self.args.require_landed_disarmed:
-            if self.last_state is None:
+            if not self.final_disarmed_ok() and self.last_state is None:
                 blockers.append("missing_final_mavros_state")
-            elif self.last_state.armed:
+            elif not self.final_disarmed_ok():
                 blockers.append("final_state_still_armed")
             if self.last_sunray_truth is None:
                 blockers.append("missing_final_truth")
@@ -1288,6 +1592,7 @@ class Px4ctrlBasicMission:
             ("control_odom.csv", self.control_odom_rows),
             ("reference.csv", self.ref_rows),
             ("debug_px4ctrl.csv", self.debug_rows),
+            ("raw_attitude.csv", self.att_raw_rows),
             ("target_attitude.csv", self.att_target_rows),
             ("mavros_state.csv", self.state_rows),
         ]:
@@ -1317,6 +1622,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--reference-frame-source", choices=["control_odom", "truth"], default="control_odom")
     parser.add_argument("--path-frame", default="map")
     parser.add_argument("--truth-child-frame", default="uav1/base_link")
+    parser.add_argument(
+        "--publish-truth-tf",
+        action="store_true",
+        help=(
+            "Publish Gazebo truth as a TF transform. Disabled by default because "
+            "Sunray external_fusion already publishes world->uav1/base_link."
+        ),
+    )
     parser.add_argument("--altitude-m", type=float, default=1.0)
     parser.add_argument("--takeoff-altitude-m", type=float, default=0.0)
     parser.add_argument("--takeoff-reached-ratio", type=float, default=0.98)
@@ -1326,6 +1639,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--static-odom-timeout-s", type=float, default=60.0)
     parser.add_argument("--static-odom-speed-max-mps", type=float, default=0.08)
     parser.add_argument("--static-odom-hold-s", type=float, default=1.0)
+    parser.add_argument("--pre-takeoff-state-stable-s", type=float, default=0.0)
     parser.add_argument("--takeoff-cmd-repeats", type=int, default=20)
     parser.add_argument("--initial-hover-s", type=float, default=8.0)
     parser.add_argument("--hover-ramp-s", type=float, default=0.0)
@@ -1336,6 +1650,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--force-disarm-after-land", action="store_true")
     parser.add_argument("--force-disarm-timeout-s", type=float, default=8.0)
     parser.add_argument("--force-disarm-max-z-rel-m", type=float, default=0.18)
+    parser.add_argument("--final-state-settle-s", type=float, default=4.0)
     parser.add_argument("--command-rate-hz", type=float, default=50.0)
     parser.add_argument("--command-x-bias-m", type=float, default=0.0)
     parser.add_argument("--command-y-bias-m", type=float, default=0.0)
@@ -1345,6 +1660,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--figure8-cycles", type=float, default=2.0)
     parser.add_argument("--figure8-x-amp-m", type=float, default=0.6)
     parser.add_argument("--figure8-y-amp-m", type=float, default=0.35)
+    parser.add_argument("--figure8-ramp-s", type=float, default=0.0)
     parser.add_argument("--spiral-period-s", type=float, default=16.0)
     parser.add_argument("--spiral-duration-s", type=float, default=36.0)
     parser.add_argument("--spiral-radius-m", type=float, default=0.45)
@@ -1356,6 +1672,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--step-duration-s", type=float, default=18.0)
     parser.add_argument("--step-amplitude-m", type=float, default=0.30)
     parser.add_argument("--step-z-amplitude-m", type=float, default=0.20)
+    parser.add_argument("--step-profile", choices=["instant", "smoothstep"], default="instant")
+    parser.add_argument("--step-transition-s", type=float, default=3.0)
     parser.add_argument("--step-settling-exclusion-s", type=float, default=2.0)
     parser.add_argument("--trajectory-time-lead-s", type=float, default=0.0)
     parser.add_argument("--max-path-points", type=int, default=5000)

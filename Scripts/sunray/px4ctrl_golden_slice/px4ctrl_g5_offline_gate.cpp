@@ -78,7 +78,7 @@ double quat_angle_error_rad(const Quat &a_raw, const Quat &b_raw)
     return 2.0 * std::acos(dot);
 }
 
-// Direct, ROS-free transcription of References/Lab/Fast-Drone-250/
+// Direct, ROS-free transcription of References/Lab/planning_local/Fast-Drone-250/
 // src/realflight_modules/px4ctrl/src/controller.cpp::LinearControl::calculateControl.
 ControllerOutput upstream_reference_calculate(
     const CoreParams &params,

@@ -12,14 +12,47 @@
   <arg name="obstacle_clearance" default="0.20"/>
   <arg name="obstacle_clearance_soft" default="0.40"/>
   <arg name="virtual_ceil_height" default="1.6"/>
-  <arg name="virtual_ground_height" default="0.75"/>
+  <arg name="virtual_ground_height" default="0.05"/>
   <arg name="visualization_truncate_height" default="1.5"/>
+  <arg name="enable_virtual_wall" default="true"/>
+  <arg name="cloud_enable_raycast" default="true"/>
+  <arg name="grid_init_x" default="0.0"/>
+  <arg name="grid_init_y" default="0.0"/>
+  <arg name="grid_init_z" default="0.0"/>
   <arg name="map_size_x" default="40.0"/>
   <arg name="map_size_y" default="40.0"/>
   <arg name="map_size_z" default="2.5"/>
+  <arg name="local_update_range_x" default="5.5"/>
+  <arg name="local_update_range_y" default="5.5"/>
+  <arg name="local_update_range_z" default="2.0"/>
   <arg name="odom_topic" default="/uav1/mavros/local_position/odom"/>
   <arg name="global_pointcloud_topic" default="/uav1/livox_world"/>
   <arg name="position_cmd_topic" default="/position_cmd"/>
+  <arg name="goal_topic" default="/goal_with_id"/>
+  <arg name="multipoint_yaml" default="$(optenv PROJECT_ROOT /mnt/c/Users/HP/Desktop/MoSim)/Config/planners/diff_planner_goal4_points.yaml"/>
+  <arg name="multipoint_next_distance" default="0.35"/>
+  <arg name="multipoint_flight_type" default="1"/>
+  <arg name="multipoint_start_plan" default="1"/>
+  <arg name="multipoint_back_plan" default="0"/>
+  <arg name="multipoint_auto_planning" default="0"/>
+  <arg name="multipoint_auto_landing" default="0"/>
+  <arg name="use_multipoint" default="true"/>
+  <arg name="flight_type" default="1"/>
+
+  <node pkg="multipoint" name="multipointplan" type="multipointplan" output="screen" if="$(arg use_multipoint)">
+    <remap from="odom_topic" to="$(arg odom_topic)"/>
+    <remap from="/goal" to="$(arg goal_topic)"/>
+    <remap from="/px4ctrl/state" to="/unused/px4ctrl_state"/>
+    <remap from="/mavros/rc/in" to="/unused/mavros_rc_in"/>
+    <remap from="/px4ctrl/takeoff_land" to="/unused/px4ctrl_takeoff_land"/>
+    <param name="yaml_path" value="$(arg multipoint_yaml)"/>
+    <param name="next_distance" value="$(arg multipoint_next_distance)"/>
+    <param name="fligt_type" value="$(arg multipoint_flight_type)"/>
+    <param name="start_plan" value="$(arg multipoint_start_plan)"/>
+    <param name="back_plan" value="$(arg multipoint_back_plan)"/>
+    <param name="auto_planning" value="$(arg multipoint_auto_planning)"/>
+    <param name="auto_landing" value="$(arg multipoint_auto_landing)"/>
+  </node>
 
   <node pkg="diff_planner" name="drone_$(arg drone_id)_ego_planner_node" type="diff_planner_node" output="screen">
     <remap from="~odom_world" to="$(arg odom_topic)"/>
@@ -29,13 +62,13 @@
     <remap from="~planning/broadcast_traj_send" to="/broadcast_traj_from_planner"/>
     <remap from="~planning/broadcast_traj_recv" to="/broadcast_traj_to_planner"/>
     <remap from="~planning/heartbeat" to="/drone_$(arg drone_id)_traj_server/heartbeat"/>
-    <remap from="/goal" to="/goal_with_id"/>
+    <remap from="/goal" to="$(arg goal_topic)"/>
     <remap from="~grid_map/odom" to="$(arg odom_topic)"/>
     <remap from="~grid_map/cloud" to="$(arg global_pointcloud_topic)"/>
     <remap from="~grid_map/pose" to="/unused/camera_pose"/>
     <remap from="~grid_map/depth" to="/unused/depth"/>
 
-    <param name="fsm/flight_type" value="1" type="int"/>
+    <param name="fsm/flight_type" value="$(arg flight_type)" type="int"/>
     <param name="fsm/thresh_replan_time" value="1.0" type="double"/>
     <param name="fsm/planning_horizon" value="$(arg planning_horizon)" type="double"/>
     <param name="fsm/emergency_time" value="0.8" type="double"/>
@@ -51,11 +84,14 @@
     <param name="grid_map/pose_type" value="2" type="int"/>
     <param name="grid_map/frame_id" value="world"/>
     <param name="grid_map/resolution" value="$(arg grid_resolution)" type="double"/>
-    <param name="grid_map/local_update_range_x" value="5.5" type="double"/>
-    <param name="grid_map/local_update_range_y" value="5.5" type="double"/>
-    <param name="grid_map/local_update_range_z" value="2.0" type="double"/>
+    <param name="grid_map/map_size_x" value="$(arg map_size_x)" type="double"/>
+    <param name="grid_map/map_size_y" value="$(arg map_size_y)" type="double"/>
+    <param name="grid_map/map_size_z" value="$(arg map_size_z)" type="double"/>
+    <param name="grid_map/local_update_range_x" value="$(arg local_update_range_x)" type="double"/>
+    <param name="grid_map/local_update_range_y" value="$(arg local_update_range_y)" type="double"/>
+    <param name="grid_map/local_update_range_z" value="$(arg local_update_range_z)" type="double"/>
     <param name="grid_map/obstacles_inflation" value="$(arg obstacles_inflation)" type="double"/>
-    <param name="grid_map/enable_virtual_wall" value="true" type="bool"/>
+    <param name="grid_map/enable_virtual_wall" value="$(arg enable_virtual_wall)" type="bool"/>
     <param name="grid_map/virtual_ceil" value="$(arg virtual_ceil_height)" type="double"/>
     <param name="grid_map/virtual_ground" value="$(arg virtual_ground_height)" type="double"/>
     <param name="grid_map/ground_height" value="-0.01" type="double"/>
@@ -80,15 +116,15 @@
     <param name="grid_map/lidar_p_min" value="0.12" type="double"/>
     <param name="grid_map/lidar_p_max" value="0.98" type="double"/>
     <param name="grid_map/lidar_p_occ" value="0.85" type="double"/>
-    <param name="grid_map/cloud_enable_raycast" value="true" type="bool"/>
+    <param name="grid_map/cloud_enable_raycast" value="$(arg cloud_enable_raycast)" type="bool"/>
     <param name="grid_map/fading_time" value="-1.0" type="double"/>
     <param name="grid_map/min_ray_length" value="0.1" type="double"/>
     <param name="grid_map/max_ray_length" value="4.5" type="double"/>
     <param name="grid_map/visualization_truncate_height" value="$(arg visualization_truncate_height)" type="double"/>
     <param name="grid_map/show_occ_time" value="false" type="bool"/>
-    <param name="grid_map/init_x" value="0.0" type="double"/>
-    <param name="grid_map/init_y" value="0.0" type="double"/>
-    <param name="grid_map/init_z" value="1.0" type="double"/>
+    <param name="grid_map/init_x" value="$(arg grid_init_x)" type="double"/>
+    <param name="grid_map/init_y" value="$(arg grid_init_y)" type="double"/>
+    <param name="grid_map/init_z" value="$(arg grid_init_z)" type="double"/>
 
     <param name="manager/max_vel" value="$(arg max_vel)" type="double"/>
     <param name="manager/max_acc" value="$(arg max_acc)" type="double"/>

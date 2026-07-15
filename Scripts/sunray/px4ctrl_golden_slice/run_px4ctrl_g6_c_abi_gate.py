@@ -31,7 +31,7 @@ def windows_path_to_wsl(path: Path) -> str:
 
 def run_wsl(command: list[str], cwd: Path, stdout: Path, stderr: Path) -> int:
     shell_command = " ".join(shlex.quote(item) for item in command)
-    wrapped = ["wsl", "bash", "-lc", f"cd {shlex.quote(windows_path_to_wsl(cwd))} && {shell_command}"]
+    wrapped = ["wsl", "-d", "Ubuntu-20.04", "bash", "-lc", f"cd {shlex.quote(windows_path_to_wsl(cwd))} && {shell_command}"]
     with stdout.open("w", encoding="utf-8", newline="\n") as out, stderr.open("w", encoding="utf-8", newline="\n") as err:
         proc = subprocess.run(wrapped, cwd=str(cwd), stdout=out, stderr=err, text=True)
     return proc.returncode

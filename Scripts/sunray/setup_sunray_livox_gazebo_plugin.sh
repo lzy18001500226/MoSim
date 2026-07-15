@@ -3,10 +3,10 @@
 
 set -euo pipefail
 
-SUNRAY_WS="${SUNRAY_WS:-/opt/mosim_work/sunray_ws/Sunray}"
-LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-/opt/mosim_work/sunray_livox_plugin_ws}"
-LOG_PATH="${LOG_PATH:-/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/sunray_livox_plugin_build.log}"
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
+SUNRAY_WS="${SUNRAY_WS:-${PROJECT_ROOT}/References/Sunray}"
+LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws}"
+LOG_PATH="${LOG_PATH:-${PROJECT_ROOT}/Results/sunray_ros1/sunray_livox_plugin_build.log}"
 PATCH_STAMP="${LIVOX_PLUGIN_WS}/.mosim_multiuav_livox_patch_v1"
 
 SRC_PKG="${SUNRAY_WS}/simulation/gazebo_plugin/livox_laser_simulation"
@@ -18,16 +18,7 @@ if [[ ! -d "${SRC_PKG}" ]]; then
 fi
 
 mkdir -p "$(dirname "${LOG_PATH}")"
-if [[ ! -d "${LIVOX_PLUGIN_WS}" ]]; then
-  if [[ -w "$(dirname "${LIVOX_PLUGIN_WS}")" ]]; then
-    mkdir -p "${LIVOX_PLUGIN_WS}/src"
-  else
-    echo "1" | sudo -S mkdir -p "${LIVOX_PLUGIN_WS}/src"
-    echo "1" | sudo -S chown -R "$(id -u):$(id -g)" "${LIVOX_PLUGIN_WS}"
-  fi
-else
-  mkdir -p "${LIVOX_PLUGIN_WS}/src"
-fi
+mkdir -p "${LIVOX_PLUGIN_WS}/src"
 mkdir -p "${DST_PKG}"
 cp -a "${SRC_PKG}/." "${DST_PKG}/"
 

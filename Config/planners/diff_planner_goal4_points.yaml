@@ -1,0 +1,29 @@
+# MoSim Goal4 Diff-Planner multipoint mission.
+#
+# Used by Scripts/sunray/diff_planner_single_px4ctrl_goal4.launch.
+# A single PoseStamped on /move_base_simple/goal starts the sequence; the
+# multipoint node then publishes each waypoint to /goal for Diff-Planner.
+
+# Mode 1: x y z
+test1:
+  - [2.0, 0.0, 1.0]
+  - [3.0, 0.5, 1.0]
+  - [4.0, 1.0, 1.0]
+
+# Mode 2: x y z hold_time_s
+test2:
+  - [2.0, 0.0, 1.0, 1.0]
+  - [4.0, 1.0, 1.0, 1.0]
+
+# Mode 3: x y z yaw_rad
+test3:
+  - [2.0, 0.0, 1.0, 0.0]
+  - [4.0, 1.0, 1.0, 0.0]
+
+# Mode 4: x y z yaw_rad hold_time_s
+test4:
+  - [2.0, 0.0, 1.0, 0.0, 1.0]
+  - [4.0, 1.0, 1.0, 0.0, 1.0]
+
+test_back:
+  - [0.0, 0.0, 1.0]

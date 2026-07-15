@@ -85,7 +85,16 @@ class Bridge:
             if x * x + y * y + z * z < self.args.blind * self.args.blind:
                 continue
             pt = CustomPoint()
-            pt.offset_time = int((kept % max(self.args.points_per_scan_hint, 1)) * self.period_ns / max(self.args.points_per_scan_hint, 1))
+            if self.args.point_time_mode == "synthetic_scan":
+                pt.offset_time = int(
+                    (kept % max(self.args.points_per_scan_hint, 1))
+                    * self.period_ns
+                    / max(self.args.points_per_scan_hint, 1)
+                )
+            else:
+                # Gazebo's ray plugin publishes one completed PointCloud2 frame;
+                # it does not expose the acquisition time of each point.
+                pt.offset_time = 0
             pt.x = float(x)
             pt.y = float(y)
             pt.z = float(z)
@@ -126,6 +135,15 @@ def main() -> int:
     parser.add_argument("--stride", type=int, default=1)
     parser.add_argument("--max-points", type=int, default=0)
     parser.add_argument("--points-per-scan-hint", type=int, default=20000)
+    parser.add_argument(
+        "--point-time-mode",
+        choices=("instantaneous", "synthetic_scan"),
+        default="instantaneous",
+        help=(
+            "Use zero per-point offsets for Gazebo frame clouds. synthetic_scan is a "
+            "diagnostic compatibility mode and assumes PointCloud2 iteration order is time order."
+        ),
+    )
     parser.add_argument("--reflectivity", type=int, default=100)
     parser.add_argument("--lidar-id", type=int, default=1)
     args = parser.parse_args(rospy.myargv()[1:])
@@ -133,9 +151,10 @@ def main() -> int:
     rospy.init_node("mosim_pointcloud2_to_livox_custom_msg", anonymous=False)
     Bridge(args)
     rospy.loginfo(
-        "bridging %s -> %s as livox_ros_driver/CustomMsg",
+        "bridging %s -> %s as livox_ros_driver/CustomMsg point_time_mode=%s",
         args.input_topic,
         args.output_topic,
+        args.point_time_mode,
     )
     rospy.spin()
     return 0

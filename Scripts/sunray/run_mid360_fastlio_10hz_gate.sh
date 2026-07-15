@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run the current Sunray ROS1 MID360 -> FAST-LIO 10Hz localization/map gate.
+# Run the current Sunray ROS1 MID360 -> FAST-LIO localization/map gate.
 #
 # This gate is intentionally localization-only. It does not feed FAST-LIO
 # odometry into PX4/MAVROS or any controller.
@@ -9,8 +9,8 @@ set -eo pipefail
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
 SUNRAY_WS="${SUNRAY_WS:-/opt/mosim_work/sunray_ws/Sunray}"
 SUNRAY_PX4_DIR="${SUNRAY_PX4_DIR:-/opt/mosim_work/sunray_px4}"
-FASTLIO_SRC="${FASTLIO_SRC:-${PROJECT_ROOT}/References/Lab/FAST_LIO}"
-LIVOX_COMPAT_SRC="${LIVOX_COMPAT_SRC:-${PROJECT_ROOT}/References/Lab/livox_ros_driver_compat}"
+FASTLIO_SRC="${FASTLIO_SRC:-${PROJECT_ROOT}/References/Lab/localization_slam/FAST_LIO}"
+LIVOX_COMPAT_SRC="${LIVOX_COMPAT_SRC:-${PROJECT_ROOT}/References/Lab/localization_slam/livox_ros_driver_compat}"
 FASTLIO_WS="${FASTLIO_WS:-/opt/mosim_work/sunray_ws/fastlio_ws}"
 RUN_ID="${RUN_ID:-sunray_mid360_fastlio_10hz_$(date +%Y%m%d_%H%M%S)}"
 RESULT_DIR="${RESULT_DIR:-${PROJECT_ROOT}/Results/sunray_ros1/${RUN_ID}}"
@@ -25,7 +25,7 @@ STATIC_INIT_HOLD_S="${STATIC_INIT_HOLD_S:-10}"
 CONTINUITY_DURATION_S="${CONTINUITY_DURATION_S:-90}"
 TIME_TF_AUDIT_DURATION_S="${TIME_TF_AUDIT_DURATION_S:-90}"
 RVIZ_CONFIG="${RVIZ_CONFIG:-${PROJECT_ROOT}/Config/rviz/sunray_ros1_fastlio_accumulated_map_review.rviz}"
-SCAN_RATE_HZ="${SCAN_RATE_HZ:-10.0}"
+SCAN_RATE_HZ="${SCAN_RATE_HZ:-${FASTLIO_SCAN_RATE_HZ:-20.0}}"
 FASTLIO_REVIEW_FILTER_MIN_Z="${FASTLIO_REVIEW_FILTER_MIN_Z:-0.05}"
 FASTLIO_MODE="${FASTLIO_MODE:-livox_custom}"
 FASTLIO_AXES_MARKER_TOPIC="${FASTLIO_AXES_MARKER_TOPIC:-/mosim/fastlio/uav_axes}"
@@ -290,7 +290,7 @@ fi
 
 cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
 {
-  "schema": "mosim.sunray_ros1.mid360_fastlio_10hz_gate_manifest.v1",
+  "schema": "mosim.sunray_ros1.mid360_fastlio_gate_manifest.v2",
   "status": "review_running",
   "result_dir": "${RESULT_DIR}",
   "scope": "Sunray ROS1 MID360 raw PointCloud2 plus MID360 IMU bridged to local FAST-LIO; localization/map review only; no controller state-source switch",
@@ -312,7 +312,7 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "fastlio_odometry": "/Odometry",
     "fastlio_path": "/path"
   },
-  "claim_boundary": "Does not claim FAST-LIO-backed control, EGO readiness, 20Hz, or final closed-loop performance."
+  "claim_boundary": "Does not claim FAST-LIO-backed control, EGO readiness, or final closed-loop performance; reported scan_rate_hz must be verified by topic-rate artifacts."
 }
 EOF
 

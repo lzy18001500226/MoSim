@@ -137,16 +137,18 @@ def main() -> int:
     require("center_m" in asset_builder_text and "radius_m" in asset_builder_text, "Supplemental geometry manifest must disclose meter-scale dimensions")
     bridge_header = (ROOT / "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackActor.h").read_text(encoding="utf-8")
     bridge_source = (ROOT / "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackActor.cpp").read_text(encoding="utf-8")
-    dae_fbx = ROOT / "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured.fbx"
-    dae_glb = ROOT / "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured.glb"
+    dae_fbx = ROOT / "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured_body.fbx"
+    dae_glb = ROOT / "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/sunray150_with_mid360_textured_body.glb"
     require(dae_fbx.exists() and dae_glb.exists(), "Reviewed DAE-derived Sunray FBX/GLB source assets must exist before runtime import")
-    imported_uasset = ROOT / "UE5/MoSimSceneLibrary/Content/Sunray150/sunray150_with_mid360_textured.uasset"
+    imported_uasset = ROOT / "UE5/MoSimSceneLibrary/Content/Sunray150/sunray150_with_mid360_textured_body.uasset"
     require(
         imported_uasset.exists() or "DAE-derived visual asset missing" in bridge_source,
         "Bridge must either find the imported UE StaticMesh or explicitly report the missing DAE-derived asset instead of using a fallback")
     require("bUseDaeDerivedVehicleVisual = true" in bridge_header, "Sunray runtime visual must default to the reviewed DAE-derived asset")
-    require("/Game/Sunray150/sunray150_with_mid360_textured.sunray150_with_mid360_textured" in bridge_header, "Sunray runtime visual must point to the imported DAE-derived UE StaticMesh")
-    require("sunray150_with_mid360_textured.fbx" in bridge_header, "Sunray runtime visual must disclose the reviewed FBX/GLB source when the UE asset is missing")
+    require("/Game/Sunray150/sunray150_with_mid360_textured_body.sunray150_with_mid360_textured_body" in bridge_header, "Sunray runtime body must use the accepted assembly export with the four accepted propellers excluded")
+    require("sunray150_with_mid360_textured_body.fbx" in bridge_header, "Sunray runtime body must disclose the accepted body FBX source when the UE asset is missing")
+    require("LoadAcceptedPropellerAssets" in bridge_source and "UpdateAcceptedPropellers" in bridge_source, "Sunray runtime must animate the four propellers already imported from the accepted assembly")
+    require("FVector(5.3745f, 5.3740f, -1.4052f)" in bridge_source, "Accepted propeller pivots must mirror Blender Y into UE coordinates")
     require("sunray150_mid360_body.stl" not in bridge_header and "sunray150_mid360_propeller.stl" not in bridge_header, "Sunray runtime visual must not depend on MWORKS STL assets")
     review_camera_header = (ROOT / "UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.h").read_text(encoding="utf-8")
     review_camera_source = (ROOT / "UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.cpp").read_text(encoding="utf-8")

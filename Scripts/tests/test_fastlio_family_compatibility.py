@@ -38,7 +38,7 @@ def test_fastlio_family_report_contract() -> None:
         raise AssertionError(report)
 
     by_path = {item["path"]: item for item in report["candidates"]}
-    fast_lio = by_path["References/Lab/FAST_LIO"]
+    fast_lio = by_path["References/Lab/localization_slam/FAST_LIO"]
     if fast_lio["verdict"] != "ros1_catkin_only":
         raise AssertionError(fast_lio)
     for marker in ("has_catkin", "has_ros1_launch_xml"):

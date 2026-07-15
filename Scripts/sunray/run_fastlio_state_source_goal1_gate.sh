@@ -26,6 +26,7 @@ FASTLIO_READY_TIMEOUT_S="${FASTLIO_READY_TIMEOUT_S:-120}"
 ALIGNMENT_READY_TIMEOUT_S="${ALIGNMENT_READY_TIMEOUT_S:-30}"
 GOAL1_RECORD_DURATION_S="${GOAL1_RECORD_DURATION_S:-25}"
 FASTLIO_MODE="${FASTLIO_MODE:-livox_custom}"
+FASTLIO_SCAN_RATE_HZ="${FASTLIO_SCAN_RATE_HZ:-20.0}"
 FASTLIO_ALIGNMENT_STAMP_SOURCE="${FASTLIO_ALIGNMENT_STAMP_SOURCE:-measurement}"
 FASTLIO_MOUNT_XYZ="${FASTLIO_MOUNT_XYZ:--0.000005 0.032295 0.050167}"
 FASTLIO_MOUNT_RPY="${FASTLIO_MOUNT_RPY:-0 0 4.712389}"
@@ -123,6 +124,7 @@ source_env
   echo "USE_SIM_TIME=${USE_SIM_TIME}"
   echo "WORLD_FILE=${WORLD_FILE}"
   echo "FASTLIO_MODE=${FASTLIO_MODE}"
+  echo "FASTLIO_SCAN_RATE_HZ=${FASTLIO_SCAN_RATE_HZ}"
   echo "FASTLIO_ALIGNMENT_STAMP_SOURCE=${FASTLIO_ALIGNMENT_STAMP_SOURCE}"
   echo "No arming, no setpoint publication, no px4ctrl mission."
 } > "${RESULT_DIR}/run_command_context.txt"
@@ -203,7 +205,7 @@ if [[ "${FASTLIO_MODE}" == "livox_custom" ]]; then
     --imu-topic /uav1/livox/imu \
     --stamp-source imu \
     --frame-id uav1/base_link \
-    --scan-rate-hz 10 \
+    --scan-rate-hz "${FASTLIO_SCAN_RATE_HZ}" \
     --scan-lines 4 \
     --stride 1 \
     --points-per-scan-hint 20000 \
@@ -300,6 +302,7 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
   "controller_state_source": "/uav1/mavros/local_position/odom",
   "fastlio_mode": "${FASTLIO_MODE}",
   "fastlio_launch": "${FASTLIO_LAUNCH}",
+  "fastlio_scan_rate_hz": ${FASTLIO_SCAN_RATE_HZ},
   "fastlio_livox_custom_topic": "/mosim/fastlio/livox/lidar",
   "fastlio_raw_odom": "/Odometry",
   "fastlio_aligned_odom_candidate": "/mosim/fastlio/odom_aligned",

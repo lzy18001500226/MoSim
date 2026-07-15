@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import signal
 import time
 from pathlib import Path
 
@@ -23,9 +24,12 @@ class ControlDiagnostics:
         self.args = args
         self.out_dir = Path(args.out_dir)
         self.out_dir.mkdir(parents=True, exist_ok=True)
+        self.rows_path = self.out_dir / "control_diagnostics_samples.jsonl"
+        self.rows_file = self.rows_path.open("w", encoding="utf-8", buffering=1)
         self.start_wall = time.time()
         self.last_truth_pose: dict | None = None
         self.last_local_pose: dict | None = None
+        self.last_local_odom: dict | None = None
         self.last_gazebo_pose: dict | None = None
         self.last_vision_pose: dict | None = None
         self.last_state: dict | None = None
@@ -43,6 +47,7 @@ class ControlDiagnostics:
             "gazebo_pose": 0,
             "vision_pose": 0,
             "local_pose": 0,
+            "local_odom": 0,
             "local_velocity": 0,
             "uav_state": 0,
             "setpoint_raw_local": 0,
@@ -55,11 +60,13 @@ class ControlDiagnostics:
             "samples": 0,
         }
         self.rows: list[dict] = []
+        self.stop_requested = False
 
         rospy.Subscriber("/gazebo/model_states", ModelStates, self.on_model_states, queue_size=100)
         rospy.Subscriber(f"{args.uav_ns}/sunray/gazebo_pose", Odometry, self.on_gazebo_pose, queue_size=100)
         rospy.Subscriber(f"{args.uav_ns}/mavros/vision_pose/pose", PoseStamped, self.on_vision_pose, queue_size=100)
         rospy.Subscriber(f"{args.uav_ns}/mavros/local_position/pose", PoseStamped, self.on_local_pose, queue_size=100)
+        rospy.Subscriber(f"{args.uav_ns}/mavros/local_position/odom", Odometry, self.on_local_odom, queue_size=100)
         rospy.Subscriber(
             f"{args.uav_ns}/mavros/local_position/velocity_local",
             TwistStamped,
@@ -87,6 +94,11 @@ class ControlDiagnostics:
         if stamp > 0:
             return float(stamp)
         return time.time() - self.start_wall
+
+    def message_time(self, msg) -> tuple[float, float, float]:
+        receipt_t = self.now()
+        stamp = float(msg.header.stamp.to_sec())
+        return receipt_t, stamp, receipt_t - stamp if stamp > 0 else math.nan
 
     @staticmethod
     def yaw_from_quat(x: float, y: float, z: float, w: float) -> float:
@@ -142,11 +154,14 @@ class ControlDiagnostics:
         self.counts["truth"] += 1
 
     def on_local_pose(self, msg: PoseStamped) -> None:
+        receipt_t, stamp, age_s = self.message_time(msg)
         p = msg.pose.position
         q = msg.pose.orientation
         roll, pitch, yaw = self.rpy_from_quat(q.x, q.y, q.z, q.w)
         self.last_local_pose = {
-            "t": self.now(),
+            "t": receipt_t,
+            "stamp": stamp,
+            "age_s": age_s,
             "x": float(p.x),
             "y": float(p.y),
             "z": float(p.z),
@@ -176,11 +191,14 @@ class ControlDiagnostics:
         self.counts["gazebo_pose"] += 1
 
     def on_vision_pose(self, msg: PoseStamped) -> None:
+        receipt_t, stamp, age_s = self.message_time(msg)
         p = msg.pose.position
         q = msg.pose.orientation
         roll, pitch, yaw = self.rpy_from_quat(q.x, q.y, q.z, q.w)
         self.last_vision_pose = {
-            "t": self.now(),
+            "t": receipt_t,
+            "stamp": stamp,
+            "age_s": age_s,
             "x": float(p.x),
             "y": float(p.y),
             "z": float(p.z),
@@ -191,8 +209,16 @@ class ControlDiagnostics:
         self.counts["vision_pose"] += 1
 
     def on_local_velocity(self, msg: TwistStamped) -> None:
+        receipt_t, stamp, age_s = self.message_time(msg)
         v = msg.twist.linear
-        self.last_velocity = {"t": self.now(), "vx": float(v.x), "vy": float(v.y), "vz": float(v.z)}
+        self.last_velocity = {
+            "t": receipt_t,
+            "stamp": stamp,
+            "age_s": age_s,
+            "vx": float(v.x),
+            "vy": float(v.y),
+            "vz": float(v.z),
+        }
         self.counts["local_velocity"] += 1
 
     def on_uav_state(self, msg: UAVState) -> None:
@@ -256,12 +282,15 @@ class ControlDiagnostics:
         self.counts["extended_state"] += 1
 
     def odom_dict(self, msg: Odometry) -> dict:
+        receipt_t, stamp, age_s = self.message_time(msg)
         p = msg.pose.pose.position
         q = msg.pose.pose.orientation
         v = msg.twist.twist.linear
         roll, pitch, yaw = self.rpy_from_quat(q.x, q.y, q.z, q.w)
         return {
-            "t": self.now(),
+            "t": receipt_t,
+            "stamp": stamp,
+            "age_s": age_s,
             "frame_id": msg.header.frame_id,
             "child_frame_id": msg.child_frame_id,
             "x": float(p.x),
@@ -279,6 +308,10 @@ class ControlDiagnostics:
         self.last_fastlio_odom = self.odom_dict(msg)
         self.counts["fastlio_odom"] += 1
 
+    def on_local_odom(self, msg: Odometry) -> None:
+        self.last_local_odom = self.odom_dict(msg)
+        self.counts["local_odom"] += 1
+
     def on_fastlio_aligned_odom(self, msg: Odometry) -> None:
         self.last_fastlio_aligned_odom = self.odom_dict(msg)
         self.counts["fastlio_aligned_odom"] += 1
@@ -290,6 +323,7 @@ class ControlDiagnostics:
             "gazebo_pose": self.last_gazebo_pose,
             "vision_pose": self.last_vision_pose,
             "local_pose": self.last_local_pose,
+            "local_odom": self.last_local_odom,
             "local_velocity": self.last_velocity,
             "uav_state": self.last_state,
             "setpoint_raw_local": self.last_sp_local,
@@ -357,6 +391,8 @@ class ControlDiagnostics:
                 "z": self.last_gazebo_pose["z"] - self.last_fastlio_odom["z"],
             }
         self.rows.append(row)
+        self.rows_file.write(json.dumps(row, ensure_ascii=False) + "\n")
+        self.rows_file.flush()
         self.counts["samples"] += 1
 
     @staticmethod
@@ -502,24 +538,30 @@ class ControlDiagnostics:
             "last_row": self.rows[-1] if self.rows else None,
         }
 
-    def run(self) -> None:
-        rate = rospy.Rate(self.args.sample_rate_hz)
-        deadline = time.time() + self.args.duration_s
-        while not rospy.is_shutdown() and time.time() < deadline:
-            self.snapshot()
-            rate.sleep()
-        rows_path = self.out_dir / "control_diagnostics_samples.jsonl"
-        rows_path.write_text(
-            "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in self.rows),
-            encoding="utf-8",
-        )
+    def request_stop(self, _signum, _frame) -> None:
+        self.stop_requested = True
+
+    def write_outputs(self) -> None:
+        self.rows_file.flush()
+        self.rows_file.close()
         summary = self.summarize()
-        summary["samples_jsonl"] = str(rows_path)
+        summary["samples_jsonl"] = str(self.rows_path)
+        summary["interrupted"] = bool(self.stop_requested)
         (self.out_dir / "control_diagnostics_summary.json").write_text(
             json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
         print(json.dumps(summary, ensure_ascii=False, indent=2))
+
+    def run(self) -> None:
+        signal.signal(signal.SIGTERM, self.request_stop)
+        signal.signal(signal.SIGINT, self.request_stop)
+        rate = rospy.Rate(self.args.sample_rate_hz)
+        deadline = time.time() + self.args.duration_s
+        while not rospy.is_shutdown() and not self.stop_requested and time.time() < deadline:
+            self.snapshot()
+            rate.sleep()
+        self.write_outputs()
 
 
 def main() -> int:

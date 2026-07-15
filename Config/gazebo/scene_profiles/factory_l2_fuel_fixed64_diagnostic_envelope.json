@@ -1,0 +1,29 @@
+{
+  "schema": "mosim.factory_l2_exploration_envelope.v1",
+  "status": "diagnostic_fixed64",
+  "generated_from": "Config/gazebo/scene_profiles/factory_l2_exploration_envelope.json",
+  "scene_profile": "Config/gazebo/scene_profiles/factory_l2_static_sunray_scene_clean_candidate.json",
+  "world_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
+  "gazebo_model_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+  "exploration_boundary": {
+    "basis": "64x64m_centered_FUEL_diagnostic_region",
+    "min_x_m": -42.575025,
+    "max_x_m": 21.424975,
+    "min_y_m": -51.36291,
+    "max_y_m": 12.63665,
+    "size_x_m": 64.0,
+    "size_y_m": 63.99956,
+    "center_x_m": -10.575025,
+    "center_y_m": -19.36313,
+    "policy": "Article-scale FUEL/MID360 diagnostic only; this does not replace the complete Factory indoor envelope."
+  },
+  "z_policy": {
+    "fixed_z_m": 1.2,
+    "min_cmd_z_m": 0.9,
+    "max_cmd_z_m": 1.6
+  },
+  "claim_boundary": [
+    "This profile exists to diagnose corrected FUEL coverage growth at approximately article scale.",
+    "Passing this envelope does not prove full 175.66x64m Factory indoor coverage."
+  ]
+}

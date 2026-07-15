@@ -222,6 +222,45 @@ class SwarmBasicMission:
             return None
         return math.sqrt(sum(v * v for v in values) / len(values))
 
+    @staticmethod
+    def pose_delta(a: dict | None, b: dict | None) -> dict | None:
+        if not a or not b:
+            return None
+        dx = float(a["x"] - b["x"])
+        dy = float(a["y"] - b["y"])
+        dz = float(a["z"] - b["z"])
+        return {
+            "dx_m": dx,
+            "dy_m": dy,
+            "dz_m": dz,
+            "dxy_m": math.hypot(dx, dy),
+            "dxyz_m": math.sqrt(dx * dx + dy * dy + dz * dz),
+        }
+
+    def frame_alignment_summary(self, uav: Uav) -> dict:
+        home_delta = None
+        if uav.home_truth_xy is not None and uav.home_odom_xy is not None:
+            dx = uav.home_odom_xy[0] - uav.home_truth_xy[0]
+            dy = uav.home_odom_xy[1] - uav.home_truth_xy[1]
+            home_delta = {
+                "odom_minus_truth_dx_m": dx,
+                "odom_minus_truth_dy_m": dy,
+                "odom_minus_truth_dxy_m": math.hypot(dx, dy),
+            }
+        return {
+            "home_truth_xy": None if uav.home_truth_xy is None else {"x": uav.home_truth_xy[0], "y": uav.home_truth_xy[1]},
+            "home_odom_xy": None if uav.home_odom_xy is None else {"x": uav.home_odom_xy[0], "y": uav.home_odom_xy[1]},
+            "home_odom_minus_truth": home_delta,
+            "final_odom_minus_truth": self.pose_delta(uav.odom, uav.truth),
+            "note": (
+                "px4ctrl commands are generated in the MAVROS/PX4 local frame. "
+                "Gazebo truth is evaluation-only; a large home odom-vs-truth "
+                "offset means world-frame planner/evaluation targets must not "
+                "be mixed with local-frame controller setpoints without a "
+                "documented transform or PX4 EKF external-position alignment."
+            ),
+        }
+
     def run(self) -> int:
         rate = rospy.Rate(self.args.command_hz)
         ready_deadline = time.time() + self.args.ready_timeout_s
@@ -343,6 +382,7 @@ class SwarmBasicMission:
                 "start_xy": {"x": uav.start_xy[0], "y": uav.start_xy[1]},
                 "home_truth_xy": None if uav.home_truth_xy is None else {"x": uav.home_truth_xy[0], "y": uav.home_truth_xy[1]},
                 "home_odom_xy": None if uav.home_odom_xy is None else {"x": uav.home_odom_xy[0], "y": uav.home_odom_xy[1]},
+                "frame_alignment": self.frame_alignment_summary(uav),
                 "final_truth": uav.truth,
                 "final_odom": uav.odom,
                 "final_state": None if uav.state is None else {"connected": uav.state.connected, "armed": uav.state.armed, "mode": uav.state.mode},

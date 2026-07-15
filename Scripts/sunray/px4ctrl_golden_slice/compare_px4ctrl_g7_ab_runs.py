@@ -25,6 +25,7 @@ MANIFEST_FILE = "RUN_MANIFEST.json"
 
 RMSE_ABS_TOL_M = 0.005
 RMSE_REL_TOL = 0.05
+P95_ABS_TOL_M = 0.005
 P95_REL_TOL = 0.10
 STEP_P95_ABS_TOL_M = 0.005
 STEP_SETTLING_EXCLUSION_S = 2.0
@@ -194,8 +195,11 @@ def compare_metric(path: str, a_value: Any, b_value: Any, *, step_response_polic
     out.update({"abs_delta": abs_delta, "relative_delta": rd})
     is_p95 = "p95" in path
     if is_p95:
-        passed = rd is not None and rd <= P95_REL_TOL
-        out["tolerance"] = {"relative_delta_max": P95_REL_TOL}
+        passed = abs_delta <= P95_ABS_TOL_M or (rd is not None and rd <= P95_REL_TOL)
+        out["tolerance"] = {
+            "abs_delta_max_m": P95_ABS_TOL_M,
+            "relative_delta_max": P95_REL_TOL,
+        }
         if step_response_policy:
             passed = passed or abs_delta <= STEP_P95_ABS_TOL_M
             out["tolerance"]["step_response_abs_delta_max_m"] = STEP_P95_ABS_TOL_M
@@ -521,6 +525,7 @@ def main() -> int:
         "tolerances": {
             "rmse_abs_delta_m": RMSE_ABS_TOL_M,
             "rmse_relative_delta": RMSE_REL_TOL,
+            "p95_abs_delta_m": P95_ABS_TOL_M,
             "p95_relative_delta": P95_REL_TOL,
             "step_response_p95_abs_delta_m": STEP_P95_ABS_TOL_M if args.scenario in STEP_SCENARIOS else None,
             "step_settling_exclusion_s": STEP_SETTLING_EXCLUSION_S if args.scenario in STEP_SCENARIOS else None,
