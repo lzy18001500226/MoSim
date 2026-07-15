@@ -360,6 +360,7 @@ References/**/*.dll
 References/**/*.lib
 References/**/*.pdb
 References/**/*.obj
+!References/Control/Quadrotor_SE3_Control/**/*.obj
 References/**/*.zip
 References/**/*.7z
 References/**/*.rar
