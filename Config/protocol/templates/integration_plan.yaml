@@ -1,0 +1,16 @@
+template_type: integration_plan
+template_version: 1
+task_id: MOSIM-AGENT-TASK-YYYYMMDD-001
+team_id: TEAM-YYYYMMDD-001
+integration_owner: DevOps
+accepted_slices: []
+rejected_slices: []
+merge_order: []
+conflict_policy: ""
+checks_required: []
+artifact_manifest: []
+rollback_plan: ""
+final_review_owner: Verification
+closeout_owner: PMO
+can_merge: false
+can_close_task: false

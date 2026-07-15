@@ -1,0 +1,52 @@
+# MoSim Agent Protocol capability template.
+# This defines what an agent lane can safely do. It is separate from the
+# current conversation/task state.
+
+capability_id: ""
+display_name: ""
+host_agent_id: ""
+capability_departments: []
+
+supported_task_classes:
+  - ""
+
+allowed_skills: []
+required_hooks: []
+allowed_tools: []
+blocked_tools: []
+
+tool_risk_policy:
+  default_risk: "low" # low | medium | high | blocked
+  requires_safety_review:
+    - external_path
+    - credentials_or_auth
+    - destructive_action
+    - launcher_or_gui_automation
+    - large_file_or_lfs_risk
+  requires_verification_review:
+    - simulation_claim
+    - benchmark_claim
+    - generated_truth_asset
+
+context_policy:
+  max_preferred_chars: 8000
+  max_warning_chars: 14000
+  raw_transcript_allowed: false
+  memory_is_authority: false
+
+output_contracts:
+  - checkpoint_packet
+  - result_packet
+
+forbidden_actions:
+  - change_canonical_task_goal
+  - create_durable_conversation_without_dispatch
+  - bypass_review_gate
+
+promotion_or_demotion_metrics:
+  activation_count: 0
+  handoff_count: 0
+  failed_handoff_count: 0
+  accepted_result_count: 0
+  review_escape_count: 0
+  rework_count: 0

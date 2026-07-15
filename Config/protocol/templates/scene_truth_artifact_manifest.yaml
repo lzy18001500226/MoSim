@@ -1,0 +1,65 @@
+# MoSim Agent Protocol scene truth artifact manifest template.
+# Use for exported map-truth products consumed by planning/navigation.
+
+template_type: scene_truth_artifact_manifest
+template_version: 1
+task_id: ""
+scene_id: ""
+created_by: ""
+created_at: ""
+
+source:
+  scene_source_record: ""
+  capability_card: ""
+  ue_project_path: ""
+  map_name: ""
+  engine_version: ""
+
+artifacts:
+  - artifact_id: ""
+    artifact_type: collision_mesh
+    # collision_mesh | navmesh | occupancy_grid | sdf | semantic_map |
+    # path_feasibility | coordinate_calibration | other
+    path: ""
+    format: ""
+    coordinate_frame: ""
+    unit_scale: ""
+    generated_by: ""
+    generation_command_or_tool: ""
+    validation:
+      status: unknown
+      checks: []
+      known_exclusions: []
+      residual_risks: []
+
+planning_readiness:
+  ready_for_planning: false
+  required_consumers: []
+  missing_artifacts: []
+  blocking_risks: []
+
+manual_visual_review:
+  required: true
+  status: pending
+  reviewer: ""
+  evidence_paths: []
+
+git_policy:
+  track_in_git: false
+  use_lfs: false
+  ignored_local_review_asset: true
+  large_file_risk: false
+  retention: project_local
+
+review:
+  review_status: needs_review
+  acceptance_state: unknown
+  source_label: design_only
+  # MWORKS_MCP | MWORKS_GUI | offline_script | manual_review | design_only |
+  # UE_MCP | UE_GUI
+  rejection_rules:
+    - artifact_path_missing
+    - coordinate_frame_missing
+    - planning_claim_without_truth_artifact
+    - visual_review_substituted_for_planning_truth
+  residual_risks: []

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -28,7 +29,7 @@ def repo_path(value: Any) -> Path:
 def rel(path: Path) -> str:
     try:
         return path.resolve().relative_to(ROOT).as_posix()
-    except ValueError:
+    except (OSError, RuntimeError, ValueError):
         return path.as_posix()
 
 
@@ -59,7 +60,11 @@ def as_int(value: Any, default: int = -1) -> int:
 def path_exists(value: Any) -> bool:
     if value in {None, ""}:
         return False
-    return repo_path(value).exists()
+    path = repo_path(value)
+    try:
+        return path.exists() or os.path.lexists(path)
+    except OSError:
+        return os.path.lexists(path)
 
 
 def require_path(report: dict[str, Any], label: str, value: Any, *, required: bool = True) -> None:
@@ -1307,7 +1312,7 @@ def audit_bundle(manifest_path: Path) -> dict[str, Any]:
         require_path(report, "ros2.b1_032.evidence_dir", b1_032.get("evidence_dir"))
         require_path(report, "ros2.b1_032.summary", b1_032.get("summary"))
         prior_dispatch = as_mapping(b1_032.get("prior_dispatch_surface_blockers"))
-        require_path(report, "ros2.b1_032.prior_dispatch.coagentops_blocker_packet", prior_dispatch.get("coagentops_blocker_packet"))
+        require_path(report, "ros2.b1_032.prior_dispatch.legacy ops patrol_blocker_packet", prior_dispatch.get("legacy ops patrol_blocker_packet"))
         require_path(report, "ros2.b1_032.prior_dispatch.pmo_dispatch_blocker_packet", prior_dispatch.get("pmo_dispatch_blocker_packet"))
         observed = as_mapping(b1_032.get("observed"))
         forbidden_topics = as_mapping(b1_032.get("forbidden_topics_present"))

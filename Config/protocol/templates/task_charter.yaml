@@ -1,0 +1,44 @@
+template_type: task_charter
+template_version: 1
+task_id: MOSIM-AGENT-TASK-YYYYMMDD-001
+parent_goal: ""
+canonical_task_goal: ""
+state: planned
+task_class: long_running_task
+accountable_owner: PMO
+integration_owner: DevOps
+request_source:
+  conversation: ""
+  timestamp: ""
+non_goals: []
+definition_of_done: []
+acceptance:
+  required_evidence: []
+  review_owner: Verification
+  human_review_required: false
+appetite:
+  max_elapsed: ""
+  max_checkpoints: 0
+  max_retries_per_blocker: 1
+circuit_breaker:
+  stop_when: []
+  escalate_when: []
+topology:
+  selected: single_scoped_conversation
+  reason: ""
+  scoped_conversations: []
+context_pack:
+  path: ""
+  freshness_requirement: ""
+worktree:
+  mode: shared_workspace
+  path: ""
+communication:
+  packet_log: ""
+  peer_direct_allowed: false
+blockers:
+  known: []
+  human_intervention_policy: project_packet
+result_contract:
+  result_packet_path: ""
+  closeout_summary_required: true

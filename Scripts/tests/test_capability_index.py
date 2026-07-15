@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CHECKER = ROOT / "Scripts" / "quality" / "check_capability_index.py"
-INDEX = ROOT / "CoAgent" / "capabilities" / "capability_index.json"
+INDEX = ROOT / "Config" / "capabilities" / "capability_index.json"
 
 
 def load_checker():

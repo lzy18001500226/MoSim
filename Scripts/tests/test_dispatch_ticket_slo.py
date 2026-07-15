@@ -88,7 +88,7 @@ def test_source_static_dispatch_ticket_passes() -> None:
 
 def test_visible_thread_dispatch_ticket_template_passes() -> None:
     checker = load_checker()
-    template = ROOT / "CoAgent" / "protocol" / "templates" / "visible_thread_dispatch_ticket.json"
+    template = ROOT / "Config" / "protocol" / "templates" / "visible_thread_dispatch_ticket.json"
     ticket = checker._load_json(template)
     assert checker.validate(ticket, now=at("2026-06-09T10:06:00+08:00")) == []
 

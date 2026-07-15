@@ -1,0 +1,26 @@
+template_type: blocker_notification
+template_version: 1
+notification_id: BLOCKER-YYYYMMDD-001
+task_id: MOSIM-AGENT-TASK-YYYYMMDD-001
+parent_goal: ""
+owner_conversation: ""
+state: blocked
+severity: medium
+class: input_required
+dedupe_key: ""
+blocked_surface: ""
+human_action_required: ""
+why_now: ""
+evidence_paths: []
+resume_packet_path: ""
+retry_policy:
+  max_retries_before_human: 1
+  next_recheck_command: ""
+  expected_success_signal: ""
+expires_or_recheck_after: ""
+safe_to_continue_without_user: false
+notification_level: project_packet
+email:
+  requested: false
+  approved_sender_exists: false
+  redaction_checked: false

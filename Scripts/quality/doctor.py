@@ -75,19 +75,30 @@ def git_lfs() -> dict:
     }
 
 
-def ledger() -> dict:
-    path = ROOT / "Docs" / "Workflows" / "agent_task_ledger.md"
-    if not path.exists():
-        return {"ok": False, "message": "missing Docs/Workflows/agent_task_ledger.md"}
-    text = path.read_text(encoding="utf-8", errors="replace")
-    running = [line for line in text.splitlines() if "| running |" in line]
-    blocked = [line for line in text.splitlines() if "| blocked |" in line]
+def operating_docs() -> dict:
+    required = [
+        "AGENTS.md",
+        "Docs/Workflows/new_conversation_context.md",
+        "Docs/Workflows/mainline_operations_board.md",
+        "Docs/Workflows/single_thread_operating_model.md",
+        "Docs/Workflows/sunray_ros1_current_runtime_lane.md",
+    ]
+    missing = [item for item in required if not (ROOT / item).exists()]
+    legacy_stub = ROOT / "Docs" / "Workflows" / "agent_task_ledger.md"
+    legacy_note = ""
+    if legacy_stub.exists():
+        text = legacy_stub.read_text(encoding="utf-8", errors="replace")
+        if "legacy" in text.lower() or "Archived legacy workflow" in text:
+            legacy_note = "agent_task_ledger.md exists as legacy trace-back stub"
+        else:
+            legacy_note = "agent_task_ledger.md exists but is not marked as a legacy stub"
+    else:
+        legacy_note = "agent_task_ledger.md absent; current single-thread docs do not require it"
     return {
-        "ok": not blocked,
-        "running_count": len(running),
-        "blocked_count": len(blocked),
-        "running": running,
-        "blocked": blocked,
+        "ok": not missing,
+        "required": required,
+        "missing": missing,
+        "legacy_ledger_note": legacy_note,
     }
 
 
@@ -124,12 +135,20 @@ def mcp_config_hint() -> dict:
     required_wrappers = [
         "Scripts/mworks/sysplorer_mcp_wsl_bridge.sh",
         "Scripts/mworks/sysplorer_mcp_wsl_entry.py",
-        "Scripts/UE5/unreal_mcp_wsl_wrapper.sh",
+    ]
+    optional_support_tools = [
+        "Scripts/UE5/probe_unreal_mcp_listener.py",
+        "Scripts/UE5/open_unreal_editor_mcp_listener.sh",
     ]
     return {
         "ok": all((ROOT / item).exists() for item in required_wrappers),
         "wrappers": [path_exists(item) for item in required_wrappers],
-        "note": "Use Codex /mcp for live server health; this doctor avoids external config reads.",
+        "optional_support_tools": [path_exists(item) for item in optional_support_tools],
+        "note": (
+            "Use Codex /mcp for live server health; this doctor avoids external "
+            "config reads. UE tools are support-lane helpers, not current "
+            "single-thread runtime requirements."
+        ),
     }
 
 
@@ -139,13 +158,13 @@ def collect(limit_mb: int, full_git: bool, max_large_scan_files: int) -> dict:
         "project_root": {"ok": ROOT.exists(), "path": str(ROOT)},
         "git": git_status(full_git),
         "git_lfs": git_lfs(),
-        "agent_ledger": ledger(),
+        "operating_docs": operating_docs(),
         "large_tracked_files": large_tracked_files(limit_mb, scan_limit),
         "mcp_wrappers": mcp_config_hint(),
         "key_workflows": {
             "ok": all((ROOT / p).exists() for p in [
-                "Docs/Workflows/agent_task_ledger.md",
-                "Docs/Workflows/agent_orchestration.md",
+                "Docs/Workflows/single_thread_operating_model.md",
+                "Docs/Workflows/mainline_operations_board.md",
                 "Docs/Workflows/audit_external_repo.md",
                 "Docs/Workflows/unreal_renderer.md",
             ]),
@@ -176,8 +195,10 @@ def main() -> int:
                 continue
             status = "ok" if value.get("ok") else "check"
             print(f"{status:5} {name}")
-            if name == "agent_ledger":
-                print(f"      running={value.get('running_count')} blocked={value.get('blocked_count')}")
+            if name == "operating_docs" and value.get("missing"):
+                print(f"      missing={', '.join(value.get('missing', []))}")
+            if name == "operating_docs" and value.get("legacy_ledger_note"):
+                print(f"      {value.get('legacy_ledger_note')}")
             if name == "large_tracked_files" and value.get("offenders"):
                 for item in value["offenders"][:10]:
                     print(f"      {item['size_mb']} MB {item['path']}")

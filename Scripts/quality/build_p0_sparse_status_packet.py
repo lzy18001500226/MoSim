@@ -153,7 +153,7 @@ def build_packet(gap: dict[str, Any]) -> dict[str, Any]:
             "send_attempted": False,
             "packet_shape": "blocker_notification/manual_review_required",
             "reason": "Ops restored the local API socket; previous business send reached the Weixin layer and returned ret=-2, so do not retry until the user sends one normal message in the gateway chat.",
-            "minimal_user_action_if_needed": "Send one normal text message to the MoSim WeChat gateway chat, then PMO may retry once through CoAgent/gateway/cc_connect_weixin.py.",
+            "minimal_user_action_if_needed": "Send one normal text message to the MoSim WeChat gateway chat, then PMO may retry once through the project gateway script if that legacy route is explicitly restored.",
             "ops_incident": "WEIXIN-GATEWAY-INCIDENT-B0-MANIFEST-20260606-0459",
         },
         "evidence_refs": {

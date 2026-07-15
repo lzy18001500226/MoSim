@@ -27,13 +27,27 @@ def test_current_p0_run_bundle_is_recoverable_but_not_closed_loop() -> None:
         cwd=ROOT,
         text=True,
         encoding="utf-8",
+        errors="replace",
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         check=False,
     )
-    assert completed.returncode == 0, completed.stdout + completed.stderr
+    assert completed.returncode == 1, completed.stdout + completed.stderr
     report = json.loads(REPORT.read_text(encoding="utf-8"))
-    assert report["ok"] is True
+    assert report["ok"] is False
+    expected_missing = {
+        "mworks.pitch_decoupling_probe.model[0]",
+        "mworks.yaw_rate_decoupling_probe.model[0]",
+        "mworks.rate_feedback_isolation_probe.model[0]",
+        "mworks.sensor_bus_reconnect_probe.model[0]",
+        "mworks.position_bridge_probe.model[0]",
+        "mworks.attitude_feedback_bridge_probe.model[0]",
+        "ros2.b1_032.prior_dispatch.legacy ops patrol_blocker_packet",
+    }
+    assert {
+        issue.removeprefix("missing required path: ").split("=", 1)[0]
+        for issue in report["issues"]
+    } == expected_missing
     assert not any("ROS2 032 must preserve odometry_count=0" in item for item in report["issues"])
     assert not any("ROS2 032 must preserve cloud_registered_count=0" in item for item in report["issues"])
     assert not any("ROS2 032 must preserve livox_probe_count=0" in item for item in report["issues"])
@@ -124,29 +138,30 @@ def test_current_p0_run_bundle_is_recoverable_but_not_closed_loop() -> None:
     assert required["mworks.pitch_decoupling_probe.probe_json"] is True
     assert required["mworks.pitch_decoupling_probe.probe_summary_csv"] is True
     assert required["mworks.pitch_decoupling_probe.mcp_log"] is True
-    assert required["mworks.pitch_decoupling_probe.model[0]"] is True
+    assert required["mworks.pitch_decoupling_probe.model[0]"] is False
     assert required["mworks.yaw_rate_decoupling_probe.return_packet"] is True
     assert required["mworks.yaw_rate_decoupling_probe.probe_json"] is True
     assert required["mworks.yaw_rate_decoupling_probe.probe_summary_csv"] is True
     assert required["mworks.yaw_rate_decoupling_probe.mcp_log"] is True
     assert required["mworks.yaw_rate_decoupling_probe.unknowns_risks_next_validation"] is True
-    assert required["mworks.yaw_rate_decoupling_probe.model[0]"] is True
+    assert required["mworks.yaw_rate_decoupling_probe.model[0]"] is False
     assert required["mworks.rate_feedback_isolation_probe.return_packet"] is True
     assert required["mworks.rate_feedback_isolation_probe.probe_json"] is True
     assert required["mworks.rate_feedback_isolation_probe.probe_summary_csv"] is True
     assert required["mworks.rate_feedback_isolation_probe.mcp_log"] is True
     assert required["mworks.rate_feedback_isolation_probe.unknowns_risks_next_validation"] is True
-    assert required["mworks.rate_feedback_isolation_probe.model[0]"] is True
+    assert required["mworks.rate_feedback_isolation_probe.model[0]"] is False
     assert required["mworks.sensor_bus_reconnect_probe.blocker_packet"] is True
     assert required["mworks.sensor_bus_reconnect_probe.probe_json"] is True
     assert required["mworks.sensor_bus_reconnect_probe.probe_summary_csv"] is True
     assert required["mworks.sensor_bus_reconnect_probe.mcp_log"] is True
-    assert required["mworks.sensor_bus_reconnect_probe.model[0]"] is True
+    assert required["mworks.sensor_bus_reconnect_probe.model[0]"] is False
     assert required["mworks.position_bridge_probe.return_packet"] is True
     assert required["mworks.position_bridge_probe.probe_json"] is True
     assert required["mworks.position_bridge_probe.alias_samples_csv"] is True
     assert required["mworks.position_bridge_probe.mcp_log"] is True
-    assert required["mworks.position_bridge_probe.model[0]"] is True
+    assert required["mworks.position_bridge_probe.model[0]"] is False
+    assert required["mworks.attitude_feedback_bridge_probe.model[0]"] is False
     assert required["mworks.actuator_to_wrench_bridge_smoke.return_packet"] is True
     assert required["mworks.actuator_to_wrench_bridge_smoke.evidence_dir"] is True
     assert required["mworks.external_frame_boundary_smoke.return_packet"] is True
@@ -238,7 +253,7 @@ def test_current_p0_run_bundle_is_recoverable_but_not_closed_loop() -> None:
     assert required["ros2.b1_032.blocker_packet"] is True
     assert required["ros2.b1_032.evidence_dir"] is True
     assert required["ros2.b1_032.summary"] is True
-    assert required["ros2.b1_032.prior_dispatch.coagentops_blocker_packet"] is True
+    assert required["ros2.b1_032.prior_dispatch.legacy ops patrol_blocker_packet"] is False
     assert required["ros2.b1_032.prior_dispatch.pmo_dispatch_blocker_packet"] is True
     assert required["planner.setpoint_trace"] is True
     assert required["ue.command_echo_log"] is True

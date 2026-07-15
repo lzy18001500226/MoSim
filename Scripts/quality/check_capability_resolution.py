@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate CoAgent capability_resolution blocks.
+"""Validate MoSim capability_resolution blocks.
 
 The capability index is a router, not an authority grant. This checker ensures
 packets that select or create reusable tools/skills/scripts first resolve
@@ -31,7 +31,6 @@ REQUIRED_TOP_FIELDS = [
 
 REQUIRED_SEARCH_ASSETS = [
     "Docs/Index/capability_index.md",
-    "CoAgent/skills/",
     "Docs/Skills/",
     "Scripts/",
 ]

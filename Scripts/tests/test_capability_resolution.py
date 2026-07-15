@@ -28,12 +28,11 @@ def valid_resolution() -> dict:
         "matched_capability_ids": ["desktop.window.capture_evidence"],
         "matched_capabilities": ["Desktop window screenshot evidence"],
         "existing_assets_to_reuse": [
-            "CoAgent/skills/window-capture-evidence/SKILL.md",
+            "Docs/Skills/Desktop/window-capture-evidence/SKILL.md",
             "Docs/Index/api_index.md#12-desktop-window-screenshot-and-action-helpers",
         ],
         "searched_existing_assets": [
             "Docs/Index/capability_index.md",
-            "CoAgent/skills/",
             "Docs/Skills/",
             "Scripts/",
         ],
@@ -58,10 +57,10 @@ def run_checker(path: Path, *args: str) -> subprocess.CompletedProcess[str]:
 
 
 def test_template_and_visible_thread_packet_pass_strict() -> None:
-    template_result = run_checker(ROOT / "CoAgent/protocol/templates/capability_resolution.json")
+    template_result = run_checker(ROOT / "Config/protocol/templates/capability_resolution.json")
     assert template_result.returncode == 0, template_result.stdout + template_result.stderr
 
-    packet_result = run_checker(ROOT / "CoAgent/protocol/templates/visible_thread_dispatch_packet.json", "--strict")
+    packet_result = run_checker(ROOT / "Config/protocol/templates/visible_thread_dispatch_packet.json", "--strict")
     assert packet_result.returncode == 0, packet_result.stdout + packet_result.stderr
     report = json.loads(packet_result.stdout)
     assert report["ok"] is True
@@ -82,7 +81,7 @@ def test_rejects_new_skill_without_existing_asset_search(tmp_path: Path) -> None
     resolution["existing_assets_to_reuse"] = []
     resolution["matched_capability_ids"] = []
     resolution["matched_capabilities"] = []
-    resolution["create_new_assets"] = ["CoAgent/skills/new-window-capture/SKILL.md"]
+    resolution["create_new_assets"] = ["Docs/Skills/Desktop/new-window-capture/SKILL.md"]
     resolution["reason_existing_assets_insufficient"] = ""
     resolution["do_not_recreate"] = []
 

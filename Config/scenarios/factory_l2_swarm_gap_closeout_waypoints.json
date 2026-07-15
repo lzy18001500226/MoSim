@@ -1,0 +1,24 @@
+{
+  "schema": "mosim.factory_l2_clearance_route_waypoints.v1",
+  "status": "selected_from_clearance_audited_route",
+  "boundary": {
+    "min_x_m": -98.40496,
+    "max_x_m": 77.25491,
+    "min_y_m": -51.36291,
+    "max_y_m": 12.63665,
+    "center_x_m": -10.575025,
+    "center_y_m": -19.36313
+  },
+  "waypoint_count": 6,
+  "first_waypoint": [-36.40496, -43.36291, 4.0],
+  "last_waypoint": [-90.40496, -25.36291, 4.0],
+  "waypoints": [
+    [-36.40496, -43.36291, 4.0],
+    [-13.90496, -43.36291, 4.0],
+    [-90.40496, -25.36291, 4.0],
+    [-36.40496, -35.86291, 4.0],
+    [-13.90496, -43.36291, 4.0],
+    [-90.40496, -25.36291, 4.0]
+  ],
+  "claim_boundary": "Four coverage-gap targets selected from indices 855, 896, 631, and 850 of the clearance-audited Factory L2 support route. Repeated targets keep inactive UAVs at their prior accepted goals during round two."
+}

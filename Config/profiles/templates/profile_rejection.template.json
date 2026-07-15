@@ -1,0 +1,12 @@
+{
+  "profile_rejection": {
+    "planned_run_id": "<planned_run_id>",
+    "experiment_profile_id": "<experiment_profile_id>",
+    "rejected_stage": "compatibility_check",
+    "rejected_profile": "<profile_id>",
+    "reason_code": "<stable_reason_code>",
+    "human_reason": "<short_reason>",
+    "safe_alternative_profile": "<optional_profile_id>",
+    "control_started": false
+  }
+}

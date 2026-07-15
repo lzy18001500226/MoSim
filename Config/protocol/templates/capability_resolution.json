@@ -1,0 +1,21 @@
+{
+  "template_type": "capability_resolution",
+  "template_version": 1,
+  "required": true,
+  "capability_index_consulted": true,
+  "consulted_index_path": "Docs/Index/capability_index.md",
+  "matched_capability_ids": [],
+  "matched_capabilities": [],
+  "existing_assets_to_reuse": [],
+  "searched_existing_assets": [
+    "Docs/Index/capability_index.md",
+    "Docs/Skills/",
+    "Docs/Skills/",
+    "Scripts/"
+  ],
+  "create_new_assets": [],
+  "reason_existing_assets_insufficient": "",
+  "do_not_recreate": [],
+  "unresolved_capabilities": [],
+  "notes": "Capability resolution prevents duplicate planning. It is not an authorization mechanism."
+}

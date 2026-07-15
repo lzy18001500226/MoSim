@@ -29,7 +29,7 @@ CORE_PATHS = {
     "design_docs": "Docs/Design",
     "workflow_docs": "Docs/Workflows",
     "capability_index": "Docs/Index/capability_index.md",
-    "machine_capability_index": "CoAgent/capabilities/capability_index.json",
+    "machine_capability_index": "Config/capabilities/capability_index.json",
     "models": "Models",
     "controller_config": "Config/controllers",
     "scenario_config": "Config/scenarios",

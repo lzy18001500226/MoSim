@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate that CoAgent reference index covers the current References tree."""
+"""Validate that the MoSim reference index covers the current References tree."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 REFERENCES = ROOT / "References"
-INDEX = ROOT / "CoAgent" / "docs" / "research" / "REFERENCE_PROJECT_INDEX.md"
+INDEX = ROOT / "Docs" / "Index" / "reference_project_index.md"
 FAMILIES_WITH_CHILD_PROJECTS = {
     "Agent",
     "AirSim",

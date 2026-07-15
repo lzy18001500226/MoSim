@@ -1,0 +1,74 @@
+template_type: visible_thread_dispatch_packet
+template_version: 2
+request_id: PMO-REQUEST-YYYYMMDD-001
+dispatch_nonce: replace-with-unique-dispatch-nonce
+task_id: PMO-TASK-YYYYMMDD-001
+origin_thread: MoSim｜主线 PMO
+origin_thread_id: 019e9868-83ea-70f0-92c5-a3a408bd78c6
+target_thread: ""
+target_thread_id: ""
+responsible_department: ""
+task_class: complicated_task
+objective: ""
+read_scope: []
+write_scope: []
+allowed_actions: []
+forbidden_actions: []
+native_surface_gate:
+  selected_native_surface:
+    - visible_thread
+    - agent_packet_glue
+  surface_selection_reason: ""
+  capability_index_consulted: Docs/Index/capability_index.md
+  selected_capabilities:
+    - Codex visible thread dispatch
+    - Review / evidence gate
+  rejected_capabilities:
+    Disposable subagent: Disposable context is insufficient for this reusable department assignment.
+    Automation / recurring patrol: A recurring patrol is not the primary execution surface for this task.
+  rejected_surfaces: {}
+  worktree_required: false
+  worktree_decision: ""
+semantic_boundary:
+  decision_scope: visible_thread
+  state_class: routable
+  evidence_minimum: []
+  allowed_actions: []
+  forbidden_actions: []
+  stop_triggers: []
+  next_owner: PMO
+department_local_goal_required: true
+subagent_plan_required: true
+required_planning_fields:
+  - department_local_goal
+  - critical_path_steps
+  - parallelizable_slices
+  - subagent_plan
+  - subagent_plan_reason
+  - subagents_used
+  - verification_gates
+  - manual_review_or_blocker_triggers
+durable_start_requirement:
+  required: true
+  exempt_when: Exact no-op probes that explicitly forbid file writes.
+  first_artifact_due_minutes: 5
+  artifact_path_or_class: Results/runtime_leases/replace-with-active-visible-thread-id/PMO-REQUEST-YYYYMMDD-001.json
+  artifact_type: runtime_lease
+  nonce: replace-with-unique-dispatch-nonce
+  minimum_content:
+    - request_id
+    - target_thread_id
+    - nonce
+    - started_at
+    - last_checkpoint_at
+    - current_phase
+    - next_checkpoint_due_at
+  completion_claim_allowed: false
+expected_engineering_outputs: []
+dispatch_ticket_path: Results/agent_packets/dispatch_tickets/PMO-REQUEST-YYYYMMDD-001.json
+acceptance: ""
+definition_of_done: ""
+stop_condition: ""
+checkpoint_plan: ""
+expected_return_path: Results/agent_packets/returns/PMO-REQUEST-YYYYMMDD-001.json
+blocker_return_path: Results/agent_packets/blockers/PMO-REQUEST-YYYYMMDD-001.json

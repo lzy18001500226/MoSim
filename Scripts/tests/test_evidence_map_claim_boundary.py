@@ -63,7 +63,7 @@ def test_current_evidence_map_and_design_doc_pass() -> None:
     checker = load_checker()
     report = checker.validate(
         ROOT / "Results/static_audits/mworks_control_evidence_map_20260610/evidence_map.json",
-        ROOT / "Docs/Design/08_赛题闭环实现证据矩阵.md",
+        ROOT / "Docs/Cache/design/old_architecture/08_赛题闭环实现证据矩阵.md",
     )
     assert report["ok"], report
     assert report["row_counts"]["formal_pass_rows"] == 64

@@ -210,8 +210,8 @@ def main() -> int:
     )
     parser.add_argument(
         "--design-doc",
-        default="Docs/Design/08_赛题闭环实现证据矩阵.md",
-        help="Optional design/evidence document to validate",
+        default="Docs/Cache/design/old_architecture/08_赛题闭环实现证据矩阵.md",
+        help="Optional historical/static evidence document to validate",
     )
     parser.add_argument("--output-json", help="Optional path for validation report")
     args = parser.parse_args()

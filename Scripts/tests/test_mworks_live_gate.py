@@ -71,13 +71,13 @@ def test_live_task_requires_explicit_sentinel_and_screenshot_gate(tmp_path: Path
     assert report["ok"] is True
 
 
-def test_live_task_accepts_coagentops_patrol_gate(tmp_path: Path) -> None:
+def test_live_task_accepts_legacy_ops_patrol_gate(tmp_path: Path) -> None:
     packet = {
         "request_id": "MWORKS-LIVE-PATROL-GATE-SMOKE",
         "mworks_live_gate": {
             "live_mworks_touched": True,
             "mworks_window_policy": "reuse_existing_session_default_no_new_window",
-            "activation_patrol_owner": "CoAgentOps",
+            "activation_patrol_owner": "legacy ops patrol",
             "recent_patrol_required": True,
             "max_patrol_age_minutes": 30,
             "required_return_fields": [
@@ -396,13 +396,13 @@ def test_live_return_accepts_phase_screenshots_and_observations(tmp_path: Path) 
     assert report["ok"] is True
 
 
-def test_live_return_accepts_coagentops_patrol_reference_and_phase_evidence(tmp_path: Path) -> None:
+def test_live_return_accepts_legacy_ops_patrol_reference_and_phase_evidence(tmp_path: Path) -> None:
     packet = {
         "request_id": "MWORKS-LIVE-RETURN-PATROL-REFERENCE",
         "status": "completed",
         "live_mworks_touched": True,
         "mworks_activation_patrol_reference": {
-            "owner": "CoAgentOps",
+            "owner": "legacy ops patrol",
             "cadence": "30min",
             "evidence": "latest maximized-window patrol packet",
             "license_state": "license_api_recorded_education_version_only",

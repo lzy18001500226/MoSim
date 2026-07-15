@@ -291,7 +291,7 @@ def write_markdown(path: Path, check: dict[str, Any]) -> None:
         "",
         "- Static source/package surface only.",
         "- No live MWORKS load, `check_model`, `SimulateModel`, result variable, or graphical acceptance is claimed.",
-        "- No mapper/wrapper equation, numerical parameter, spin sign, rotor center, solver, controller, ROS2, UE, Sunray/PBR, Blender, References, official QuadrotorModel, or CoAgent runtime file was changed.",
+        "- No mapper/wrapper equation, numerical parameter, spin sign, rotor center, solver, controller, ROS2, UE, Sunray/PBR, Blender, References, official QuadrotorModel, or legacy agent runtime file was changed.",
     ]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 

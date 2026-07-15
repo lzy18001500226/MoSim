@@ -1,0 +1,42 @@
+# MoSim Agent Protocol artifact manifest template.
+# Use for evidence outputs that must survive beyond chat messages.
+
+artifact_id: ""
+task_id: ""
+created_by: ""
+created_at: ""
+
+artifact_type: "document"
+# document | result_packet | checkpoint_packet | log | figure | metrics |
+# simulation_result | scene_truth | screenshot | diff | binary_asset |
+# release_package | other
+
+paths:
+  primary: ""
+  related: []
+
+provenance:
+  source: ""
+  commands_run: []
+  input_artifacts: []
+  generated_by_tool: ""
+  source_label: ""
+
+review:
+  status: "needs_review"
+  reviewer: ""
+  claims_supported: []
+  known_exclusions: []
+  residual_risks: []
+
+lifecycle:
+  git_tracked: false
+  ignored_local_review_asset: false
+  retention: "project"
+  close_condition: ""
+
+security:
+  contains_secret: false
+  contains_personal_data: false
+  external_license_risk: false
+  large_file_risk: false

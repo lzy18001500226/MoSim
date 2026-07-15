@@ -114,7 +114,7 @@ def build_manifest(scenario_check_path: Path) -> dict[str, Any]:
         "dry_run_batch_command": dry_run_command,
         "preconditions_for_future_live_run": [
             "User or PMO explicitly authorizes live MWORKS/Sysplorer/Syslab execution.",
-            "CoAgentOps/PMO or the live task provides a current non-blocking MWORKS activation/window preflight.",
+            "PMO, legacy ops patrol, or the live task provides a current non-blocking MWORKS activation/window preflight.",
             "Stop before execution on demo, login, activation, authorization, GUI error-report, mixed license, visible unknown, unavailable, or unknown state.",
             "The runner must consume model.live_load_strategy=minimal_dynamics_only, or the task must use an explicitly reviewed native MCP minimal-loading sequence.",
             "All formal check_model targets in the 024 live-gate plan pass before treating SimulateModel outputs as evidence.",

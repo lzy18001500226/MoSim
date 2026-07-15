@@ -1,0 +1,29 @@
+template_type: shared_task_board
+template_version: 1
+board_id: BOARD-YYYYMMDD-001
+team_id: TEAM-YYYYMMDD-001
+task_id: MOSIM-AGENT-TASK-YYYYMMDD-001
+canonical_task_goal: ""
+current_phase: planned
+critical_path_owner: DispatchCenter
+team_wip_limit: 3
+members:
+  - conversation_id: ""
+    owner: ""
+    slice_goal: ""
+    state: planned
+    context_pack_path: ""
+    worktree_binding: ""
+    dependencies: []
+    next_checkpoint_due: ""
+    close_condition: ""
+open_blockers: []
+review_gates: []
+integration_queue: []
+accepted_artifacts: []
+context_deltas_pending: []
+last_dispatch_decision:
+  decision: ""
+  reason: ""
+  by: DispatchCenter
+  at: ""

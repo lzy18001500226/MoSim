@@ -1,0 +1,85 @@
+{
+  "run_manifest": {
+    "run_id": "<run_id>",
+    "experiment_profile_id": "<experiment_profile_id>",
+    "experiment_profile_hash": "<sha256>",
+    "launch_plan_hash": "<sha256>",
+    "profile_hashes": {
+      "scenario_profile": "<sha256>",
+      "plant_profile": "<sha256>",
+      "sensor_profile": "<sha256>",
+      "state_source_profile": "<sha256>",
+      "height_source_profile": "<sha256>",
+      "truth_profile": "<sha256>",
+      "frequency_profile": "<sha256>",
+      "trajectory_profile": "<sha256>",
+      "planner_profile": "<sha256>",
+      "controller_profile": "<sha256>",
+      "augmentation_profile": "<sha256>",
+      "safety_profile": "<sha256>",
+      "adapter_profile": "<sha256>",
+      "fault_profile": "<sha256>",
+      "disturbance_profile": "<sha256>",
+      "display_profile": "<sha256>",
+      "evaluation_profile": "<sha256>",
+      "runtime_profile": "<sha256>",
+      "evidence_profile": "<sha256>"
+    },
+    "source_state": {
+      "git_commit": "<commit-or-dirty>",
+      "source_hashes": "<source_hashes.json>"
+    },
+    "runtime": {
+      "runtime_profile": "<runtime_profile>",
+      "os": "<os>",
+      "ros": "<ros>",
+      "gazebo": "<gazebo>"
+    },
+    "runtime_bindings": "Config/profiles/runtime_bindings.json",
+    "metrics_schema": "Config/profiles/metrics_schema.json",
+    "state_and_truth": {
+      "state_source_profile": "<state_source_profile>",
+      "height_source_profile": "<height_source_profile>",
+      "truth_profile": "<truth_profile>",
+      "leaderboard_group": "<leaderboard_group>"
+    },
+    "evaluation": {
+      "evaluation_profile": "<evaluation_profile>",
+      "required_metrics": [
+        "<metric_name>"
+      ]
+    },
+    "trajectory_contract": {
+      "trajectory_profile": "<trajectory_profile>",
+      "reference_rate_hz": 100,
+      "duration_s": 0,
+      "continuity_required": {
+        "position": true,
+        "velocity": true,
+        "acceleration": true
+      },
+      "constraints": {
+        "max_velocity_mps": 0,
+        "max_acceleration_mps2": 0,
+        "max_yaw_rate_radps": 0
+      }
+    },
+    "evidence": {
+      "required_artifacts": [
+        "RUN_MANIFEST.json",
+        "metrics.json",
+        "tracking.csv",
+        "review.md"
+      ],
+      "result_root": "Results/runs/<run_id>",
+      "launch_plan": "LaunchPlan.json",
+      "run_manifest": "RUN_MANIFEST.json",
+      "metrics": "metrics.json",
+      "tracking_log": "tracking.csv",
+      "screenshots": "screenshots/",
+      "logs": "logs/",
+      "review": "review.md"
+    },
+    "forbidden_claims": []
+  }
+}

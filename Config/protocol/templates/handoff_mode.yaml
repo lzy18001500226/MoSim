@@ -1,0 +1,47 @@
+# MoSim Agent Protocol handoff mode template.
+# Use when Dispatch routes work between agents or task-scoped conversations.
+
+handoff_id: ""
+task_id: ""
+canonical_task_goal: ""
+
+mode: "department_lane"
+# direct_main | department_lane | manager_calls_subagents |
+# handoff_to_scoped_conversation | task_team_parallel_slices |
+# review_board | arena_comparison | incident_response
+
+from_owner: ""
+to_owner: ""
+authority_transfer: "none"
+# none | scoped_execution | review_gate | integration | incident_command
+
+input_filter:
+  include:
+    - task_charter
+    - current_state
+    - relevant_decisions
+    - evidence_paths
+    - write_scope
+    - forbidden_actions
+  exclude:
+    - raw_full_transcript
+    - unrelated_tasks
+    - secrets_or_private_session_data
+
+context_pack_path: ""
+expected_result_packet_path: ""
+review_gate: ""
+return_path: "Dispatch"
+
+cancellation_or_resume_rule:
+  cancel_when: []
+  resume_packet_path: ""
+  stale_context_requires_refresh: true
+
+acceptance:
+  evidence_required: []
+  reviewer: ""
+  terminal_states:
+    - accepted
+    - rejected
+    - needs_review

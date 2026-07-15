@@ -1,0 +1,35 @@
+{
+  "experiment_profile": {
+    "id": "fastlio_independent_eval_figure8_v1",
+    "version": 1,
+    "description": "Figure-eight run where px4ctrl keeps PX4/MAVROS fused control state and FAST-LIO is evaluated in parallel only",
+    "goal": "Goal 2",
+    "scenario_profile": "sunray150_obstacle_figure8_v1",
+    "plant_profile": "sunray150_gazebo_v1",
+    "sensor_profile": "mid360_imu_height_camera_v1",
+    "state_source_profile": "px4_mavros_fused_v1",
+    "localization_eval_profile": "fastlio_eval_only_v1",
+    "height_source_profile": "px4_or_gazebo_rangefinder_proxy_v1",
+    "truth_profile": "gazebo_truth_eval_only_v1",
+    "frequency_profile": "attitude_thrust_100hz_v1",
+    "trajectory_profile": "figure8_v1",
+    "planner_profile": "none",
+    "controller_profile": "px4ctrl_attitude_thrust_v1",
+    "augmentation_profile": "none",
+    "safety_profile": "basic_limiter_v1",
+    "adapter_profile": "mavros_attitude_thrust_v1",
+    "fault_profile": "none",
+    "disturbance_profile": "none",
+    "display_profile": "rviz_fastlio_map_v1",
+    "evaluation_profile": "fastlio_independent_metrics_v1",
+    "runtime_profile": "sunray_ros1_gazebo_classic_v1",
+    "runtime_export_profile": "sunray_fastlio_eval_runtime_export_v1",
+    "evidence_profile": "standard_fastlio_eval_packet_v1",
+    "forbidden_claims": [
+      "FAST-LIO controller state source",
+      "FAST-LIO closed-loop localization",
+      "EGO planner readiness",
+      "MWORKS generated controller"
+    ]
+  }
+}

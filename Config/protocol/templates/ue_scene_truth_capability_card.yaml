@@ -1,0 +1,80 @@
+# MoSim Agent Protocol UE scene truth capability card template.
+# Use before claiming a map is planning/navigation ready.
+
+template_type: ue_scene_truth_capability_card
+template_version: 1
+task_id: ""
+scene_id: ""
+created_by: ""
+created_at: ""
+
+scene_source:
+  source_type: unknown
+  # local_ue_project | local_vault_asset | fab_account_visible |
+  # unsupported_engine_version | plugin_only | manual_import_required |
+  # reject_or_defer | unknown
+  source_path: ""
+  engine_version: ""
+  plugin_requirements: []
+  import_route: ""
+  provenance_evidence: []
+
+ue_mcp_capability:
+  can_launch_or_connect: unknown
+  can_open_project: unknown
+  can_open_map: unknown
+  can_inspect_level_actors: unknown
+  can_modify_without_saving: unknown
+  can_export_collision_truth: unknown
+  can_export_navmesh_truth: unknown
+  can_export_occupancy_or_sdf: unknown
+  bounded_timeout_seconds: 60
+  probe_logs: []
+  known_limitations: []
+  fallback_route: ""
+
+truth_artifacts:
+  collision_mesh:
+    path: ""
+    coordinate_frame: ""
+    unit_scale: ""
+    validation_status: unknown
+  navmesh:
+    path: ""
+    coordinate_frame: ""
+    unit_scale: ""
+    validation_status: unknown
+  occupancy_or_sdf:
+    path: ""
+    coordinate_frame: ""
+    resolution: ""
+    validation_status: unknown
+  semantic_map:
+    path: ""
+    validation_status: unknown
+
+planning_contract:
+  consumer_algorithms: []
+  world_frame: ""
+  robot_frame: ""
+  obstacle_definition: ""
+  traversability_definition: ""
+  known_exclusions: []
+
+manual_review:
+  required: true
+  reviewer: ""
+  review_question: ""
+  decision: pending
+  evidence_paths: []
+
+review:
+  review_status: needs_review
+  acceptance_state: unknown
+  rejection_rules:
+    - rendering_screenshot_used_as_truth
+    - missing_coordinate_frame
+    - missing_collision_or_navmesh_for_planning_claim
+    - unsupported_engine_version_without_fallback
+    - fab_manual_import_required_but_not_recorded
+  residual_risks: []

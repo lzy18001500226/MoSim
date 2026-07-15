@@ -25,7 +25,7 @@ ALLOWED_SURFACES = {
     "codex_exec",
     "automation_thread_wakeup",
     "wechat_gateway",
-    "coagent_packet_glue",
+    "agent_packet_glue",
     "local_pmo",
 }
 
@@ -34,7 +34,7 @@ RETURN_PATH_SURFACES = {
     "subagent",
     "codex_exec",
     "automation_thread_wakeup",
-    "coagent_packet_glue",
+    "agent_packet_glue",
 }
 
 SEMANTIC_BOUNDARY_REQUIRED_FIELDS = [

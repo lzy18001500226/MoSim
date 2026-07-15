@@ -1,0 +1,53 @@
+# MoSim Agent Protocol conversation state template.
+# This records current state for one visible conversation or task-scoped
+# conversation. It is separate from the capability template.
+
+conversation_id: ""
+conversation_label: ""
+agent_id: ""
+agent_type: ""
+capability_template_id: ""
+
+current_assignment:
+  task_id: ""
+  canonical_task_goal: ""
+  conversation_objective: ""
+  state: "available"
+  # available | assigned | working | checkpointed | waiting_for_packet |
+  # input_required | auth_required | approval_required | review_required |
+  # blocked | completed
+
+context:
+  context_pack_path: ""
+  context_version: ""
+  last_context_delta_path: ""
+  stale: false
+  stale_reason: ""
+
+worktree:
+  kind: "none"
+  path: ""
+  branch_or_base: ""
+  merge_owner: ""
+  close_condition: ""
+
+packets:
+  last_dispatch_packet: ""
+  last_checkpoint_packet: ""
+  expected_result_packet: ""
+  last_result_packet: ""
+  pending_review_packet: ""
+
+blocked_or_interrupt:
+  blocker_type: ""
+  blocker_packet_path: ""
+  resume_packet_path: ""
+  human_action_required: ""
+
+metrics:
+  activation_count: 0
+  handoff_count: 0
+  failed_handoff_count: 0
+  average_context_chars: 0
+  blocked_time_seconds: 0
+  rework_count: 0

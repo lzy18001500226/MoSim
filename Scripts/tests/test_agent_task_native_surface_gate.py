@@ -76,7 +76,7 @@ def test_native_surface_gate_accepts_visible_thread_packet(tmp_path: Path) -> No
         "semantic_boundary": semantic_boundary(),
         "durable_start_requirement": runtime_lease_requirement(),
         "native_surface_gate": {
-            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "selected_native_surface": ["visible_thread", "agent_packet_glue"],
             "surface_selection_reason": "Durable UE department context is needed; packet files are the return channel.",
             "worktree_required": False,
             "worktree_decision": "Read-only planning task; no code or asset writes are allowed.",
@@ -94,7 +94,7 @@ def test_native_surface_gate_accepts_visible_thread_packet(tmp_path: Path) -> No
     report = json.loads(completed.stdout)
     assert report["ok"] is True
     assert report["fail_count"] == 0
-    assert report["selected_native_surfaces"] == ["coagent_packet_glue", "visible_thread"]
+    assert report["selected_native_surfaces"] == ["agent_packet_glue", "visible_thread"]
 
 
 def test_native_surface_gate_strict_requires_capability_resolution(tmp_path: Path) -> None:
@@ -112,7 +112,7 @@ def test_native_surface_gate_strict_requires_capability_resolution(tmp_path: Pat
             nonce="native-surface-gate-missing-capability-nonce",
         ),
         "native_surface_gate": {
-            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "selected_native_surface": ["visible_thread", "agent_packet_glue"],
             "surface_selection_reason": "Durable UE department context is needed; packet files are the return channel.",
             "worktree_required": False,
             "worktree_decision": "Read-only planning task; no code or asset writes are allowed.",
@@ -154,7 +154,7 @@ def test_native_surface_gate_rejects_runtime_lease_nonce_mismatch(tmp_path: Path
             nonce="stale-nonce",
         ),
         "native_surface_gate": {
-            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "selected_native_surface": ["visible_thread", "agent_packet_glue"],
             "surface_selection_reason": "Durable UE department context is needed; packet files are the return channel.",
             "worktree_required": False,
             "worktree_decision": "Read-only planning task; no code or asset writes are allowed.",
@@ -186,7 +186,7 @@ def test_native_surface_gate_accepts_idle_needs_dispatch_readiness(tmp_path: Pat
             nonce="idle-needs-dispatch-smoke-nonce",
         ),
         "native_surface_gate": {
-            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "selected_native_surface": ["visible_thread", "agent_packet_glue"],
             "surface_selection_reason": "Bounded dispatch is allowed only after queue readiness is separated from thread state.",
             "worktree_required": False,
             "worktree_decision": "No worktree needed for a visible-thread task packet.",
@@ -211,7 +211,7 @@ def test_native_surface_gate_rejects_visible_thread_packet_without_durable_start
         "blocker_return_path": "Results/agent_packets/blockers/VISIBLE-MISSING-DURABLE-START.json",
         "semantic_boundary": semantic_boundary(),
         "native_surface_gate": {
-            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "selected_native_surface": ["visible_thread", "agent_packet_glue"],
             "surface_selection_reason": "Durable UE department context is needed.",
             "worktree_required": False,
             "worktree_decision": "No worktree needed.",
@@ -240,7 +240,7 @@ def test_native_surface_gate_accepts_exact_no_write_probe_exemption(tmp_path: Pa
             "exempt_when": "Exact no-op probe explicitly forbids file writes.",
         },
         "native_surface_gate": {
-            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "selected_native_surface": ["visible_thread", "agent_packet_glue"],
             "surface_selection_reason": "No-op probe only validates whether a new turn can start.",
             "worktree_required": False,
             "worktree_decision": "No file writes are allowed by the probe.",
@@ -273,7 +273,7 @@ def test_native_surface_gate_rejects_runtime_lease_minimum_content_gaps(tmp_path
             "minimum_content": ["request_id", "target_thread_id"],
         },
         "native_surface_gate": {
-            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "selected_native_surface": ["visible_thread", "agent_packet_glue"],
             "surface_selection_reason": "Durable UE department context is needed.",
             "worktree_required": False,
             "worktree_decision": "No worktree needed.",
@@ -334,7 +334,7 @@ def test_native_surface_gate_rejects_mworks_department_packet_without_mworks_gat
             nonce="mworks-missing-live-gate-nonce",
         ),
         "native_surface_gate": {
-            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "selected_native_surface": ["visible_thread", "agent_packet_glue"],
             "surface_selection_reason": "Durable MWORKS department context is needed.",
             "worktree_required": False,
             "worktree_decision": "No source writes are expected.",
@@ -376,7 +376,7 @@ def test_native_surface_gate_accepts_mworks_department_packet_with_mworks_gate(t
             nonce="mworks-with-live-gate-nonce",
         ),
         "native_surface_gate": {
-            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "selected_native_surface": ["visible_thread", "agent_packet_glue"],
             "surface_selection_reason": "Durable MWORKS department context is needed.",
             "worktree_required": False,
             "worktree_decision": "No source writes are expected.",
@@ -434,7 +434,7 @@ def test_native_surface_gate_rejects_missing_semantic_boundary(tmp_path: Path) -
         "expected_return_path": "Results/agent_packets/returns/MISSING-SEMANTIC-BOUNDARY.json",
         "blocker_return_path": "Results/agent_packets/blockers/MISSING-SEMANTIC-BOUNDARY.json",
         "native_surface_gate": {
-            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "selected_native_surface": ["visible_thread", "agent_packet_glue"],
             "surface_selection_reason": "Durable UE department context is needed.",
             "worktree_required": False,
             "worktree_decision": "No worktree needed.",
@@ -459,7 +459,7 @@ def test_native_surface_gate_rejects_free_text_state_class(tmp_path: Path) -> No
         "blocker_return_path": "Results/agent_packets/blockers/BAD-STATE-CLASS.json",
         "semantic_boundary": semantic_boundary("healthy"),
         "native_surface_gate": {
-            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "selected_native_surface": ["visible_thread", "agent_packet_glue"],
             "surface_selection_reason": "Durable UE department context is needed.",
             "worktree_required": False,
             "worktree_decision": "No worktree needed.",
@@ -484,7 +484,7 @@ def test_native_surface_gate_rejects_old_dispatch_needed_state_class(tmp_path: P
         "blocker_return_path": "Results/agent_packets/blockers/OLD-DISPATCH-NEEDED-STATE.json",
         "semantic_boundary": semantic_boundary("dispatch_needed"),
         "native_surface_gate": {
-            "selected_native_surface": ["visible_thread", "coagent_packet_glue"],
+            "selected_native_surface": ["visible_thread", "agent_packet_glue"],
             "surface_selection_reason": "Regression guard for separating queue state from visible-thread state.",
             "worktree_required": False,
             "worktree_decision": "No worktree needed.",
@@ -501,7 +501,7 @@ def test_native_surface_gate_rejects_old_dispatch_needed_state_class(tmp_path: P
 
 
 def test_visible_thread_dispatch_json_template_passes_strict_gate() -> None:
-    template = ROOT / "CoAgent" / "protocol" / "templates" / "visible_thread_dispatch_packet.json"
+    template = ROOT / "Config" / "protocol" / "templates" / "visible_thread_dispatch_packet.json"
     completed = subprocess.run(
         [sys.executable, str(CHECKER), str(template), "--strict"],
         cwd=ROOT,

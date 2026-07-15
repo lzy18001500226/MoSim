@@ -1,0 +1,35 @@
+{
+  "experiment_profile": {
+    "id": "g9_pid_indi_figure8_v1",
+    "version": 1,
+    "description": "G9-E PID plus bounded INDI augmentation figure-eight tracking profile; implementation/static evidence is available and runtime acceptance is pending",
+    "goal": "G9-E",
+    "scenario_profile": "sunray150_obstacle_figure8_v1",
+    "plant_profile": "sunray150_gazebo_v1",
+    "sensor_profile": "mid360_imu_height_camera_v1",
+    "state_source_profile": "px4_mavros_fused_v1",
+    "height_source_profile": "px4_or_gazebo_rangefinder_proxy_v1",
+    "truth_profile": "gazebo_truth_eval_only_v1",
+    "frequency_profile": "attitude_thrust_100hz_v1",
+    "trajectory_profile": "figure8_v1",
+    "planner_profile": "none",
+    "controller_profile": "official_pid_attitude_thrust_v1",
+    "augmentation_profile": "pid_indi_v1",
+    "safety_profile": "basic_limiter_v1",
+    "adapter_profile": "mavros_attitude_thrust_v1",
+    "fault_profile": "none",
+    "disturbance_profile": "none",
+    "display_profile": "rviz_gazebo_v1",
+    "evaluation_profile": "tracking_metrics_v1",
+    "runtime_profile": "sunray_ros1_gazebo_classic_v1",
+    "runtime_export_profile": "sunray_px4ctrl_runtime_export_v1",
+    "evidence_profile": "standard_g9_controller_run_packet_v1",
+    "forbidden_claims": [
+      "G9-E accepted",
+      "INDI independent nominal controller",
+      "body-rate or rotor-level INDI implemented",
+      "MWORKS generated controller accepted",
+      "PX4-native uORB deployment"
+    ]
+  }
+}

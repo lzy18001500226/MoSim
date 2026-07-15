@@ -1,0 +1,47 @@
+# MoSim Agent Protocol workflow graph template.
+# Use to describe one task team's deterministic/agent/review/tool flow before
+# runtime automation is attempted.
+
+workflow_id: ""
+task_id: ""
+canonical_task_goal: ""
+created_by: ""
+created_at: ""
+
+nodes:
+  - node_id: ""
+    node_type: "agent"
+    # deterministic | agent | tool | review | artifact | human_interrupt | merge
+    owner: ""
+    objective: ""
+    input_packets: []
+    output_packets: []
+    state: "pending"
+    # pending | running | blocked | review_required | completed | cancelled
+
+edges:
+  - from: ""
+    to: ""
+    edge_type: "depends_on"
+    # depends_on | handoff | parallel_join | review_gate | resume_after
+    condition: ""
+
+interrupts:
+  - interrupt_id: ""
+    node_id: ""
+    interrupt_type: ""
+    blocker_packet_path: ""
+    resume_packet_path: ""
+
+artifacts: []
+
+review:
+  required_review_nodes: []
+  final_review_owner: ""
+  acceptance_state: "needs_review"
+
+close_condition:
+  - all_required_nodes_terminal
+  - required_artifacts_manifested
+  - final_review_recorded
+  - integration_owner_named

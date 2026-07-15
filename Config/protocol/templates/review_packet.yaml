@@ -1,0 +1,27 @@
+template_type: review_packet
+template_version: 1
+review_id: REVIEW-YYYYMMDD-001
+task_id: MOSIM-AGENT-TASK-YYYYMMDD-001
+review_type: acceptance
+review_owner: Verification
+submitted_by: ""
+summary: ""
+evidence_paths: []
+claims_checked: []
+risks: []
+unknowns: []
+decision: needs_review
+decision_options:
+  - accepted
+  - accepted_with_concerns
+  - needs_rework
+  - rejected
+  - superseded
+required_rework: []
+integration_permission:
+  can_merge: false
+  can_close_task: false
+knowledge_promotion:
+  promote_to_docs: []
+  promote_to_skills: []
+  promote_to_hooks: []

@@ -1,0 +1,45 @@
+{
+  "launch_plan": {
+    "run_id": "<run_id>",
+    "experiment_profile_id": "<experiment_profile_id>",
+    "experiment_profile_hash": "<sha256>",
+    "goal": "<Goal 1|Goal 2|...>",
+    "steps": [
+      {
+        "id": "gazebo",
+        "template": "sunray_gazebo.launch",
+        "profile": "<plant_profile>",
+        "expected_backend": "<plant_backend>"
+      },
+      {
+        "id": "mavros",
+        "template": "mavros_px4.launch",
+        "profile": "px4_mavros_v1",
+        "expected_state_topic": "<state_topic>"
+      },
+      {
+        "id": "trajectory",
+        "template": "trajectory_server.launch",
+        "profile": "<trajectory_profile>"
+      },
+      {
+        "id": "controller",
+        "template": "controller_host.launch",
+        "profile": "<controller_profile>",
+        "output_interface": "<control_output_interface>"
+      },
+      {
+        "id": "adapter",
+        "template": "mavros_command_adapter.launch",
+        "profile": "<adapter_profile>",
+        "output_backend": "<adapter_backend>"
+      },
+      {
+        "id": "display",
+        "template": "rviz_review.launch",
+        "profile": "<display_profile>"
+      }
+    ],
+    "forbidden_claims": []
+  }
+}

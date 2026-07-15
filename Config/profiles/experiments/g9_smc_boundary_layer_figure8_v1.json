@@ -1,0 +1,37 @@
+{
+  "experiment_profile": {
+    "id": "g9_smc_boundary_layer_figure8_v1",
+    "version": 1,
+    "description": "G9-D SMC boundary-layer figure-eight tracking profile; C++ ATTITUDE_THRUST backend has source-audit and static interface gate path; runtime acceptance pending",
+    "goal": "G9-D",
+    "scenario_profile": "sunray150_obstacle_figure8_v1",
+    "plant_profile": "sunray150_gazebo_v1",
+    "sensor_profile": "mid360_imu_height_camera_v1",
+    "state_source_profile": "px4_mavros_fused_v1",
+    "height_source_profile": "px4_or_gazebo_rangefinder_proxy_v1",
+    "truth_profile": "gazebo_truth_eval_only_v1",
+    "frequency_profile": "attitude_thrust_100hz_v1",
+    "trajectory_profile": "figure8_v1",
+    "planner_profile": "none",
+    "controller_profile": "smc_boundary_layer_attitude_thrust_v1",
+    "augmentation_profile": "none",
+    "safety_profile": "basic_limiter_v1",
+    "adapter_profile": "mavros_attitude_thrust_v1",
+    "fault_profile": "none",
+    "disturbance_profile": "none",
+    "display_profile": "rviz_gazebo_v1",
+    "evaluation_profile": "tracking_metrics_v1",
+    "runtime_profile": "sunray_ros1_gazebo_classic_v1",
+    "runtime_export_profile": "sunray_px4ctrl_runtime_export_v1",
+    "evidence_profile": "standard_g9_controller_run_packet_v1",
+    "forbidden_claims": [
+      "G9-D accepted",
+      "terminal SMC implemented",
+      "super-twisting SMC implemented",
+      "attitude-loop or torque-level SMC implemented",
+      "chattering eliminated for all operating conditions",
+      "MWORKS generated controller accepted",
+      "PX4-native uORB deployment"
+    ]
+  }
+}

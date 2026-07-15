@@ -149,7 +149,7 @@ BREACH_ACTIONS = {
     "wait_for_checkpoint",
     "dispatch_surface_failure_suspected",
     "agent_output_missing_or_stuck_in_progress",
-    "route_to_coagentops",
+    "route_to_legacy ops patrol",
     "return_initial_blocker",
     "checkpoint_overdue",
     "expected_packet_overdue",
@@ -160,7 +160,7 @@ BREACH_ACTIONS = {
 ESCALATION_ACTIONS = {
     "dispatch_surface_failure_suspected",
     "agent_output_missing_or_stuck_in_progress",
-    "route_to_coagentops",
+    "route_to_legacy ops patrol",
     "return_initial_blocker",
     "checkpoint_overdue",
     "expected_packet_overdue",
@@ -558,7 +558,7 @@ def validate(ticket: dict[str, Any], *, now: datetime | None = None) -> list[str
     if observed_state == "completed_without_expected_packet" and breach_action not in {
         "expected_packet_overdue",
         "return_initial_blocker",
-        "route_to_coagentops",
+        "route_to_legacy ops patrol",
     }:
         errors.append("completed_without_expected_packet must escalate through breach_action")
 

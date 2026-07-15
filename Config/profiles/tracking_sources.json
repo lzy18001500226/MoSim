@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "px4ctrl_reference_state_csv_v1": {
+      "description": "Legacy alias for px4ctrl PX4/MAVROS fused reference and state exports. Prefer px4_mavros_fused_reference_state_csv_v1 in new profiles.",
+      "compatible_experiment_ids": [
+        "px4ctrl_takeoff_hover_land_v1",
+        "px4ctrl_figure8_baseline_v1",
+        "px4ctrl_spiral_baseline_v1",
+        "px4ctrl_step_baseline_v1",
+        "g9_official_pid_figure8_v1",
+        "g9_se3_basic_figure8_v1",
+        "g9_se3_basic_figure8_candidate_v1",
+        "g9_dfbc_basic_figure8_v1",
+        "g9_dfbc_basic_figure8_candidate_v1",
+        "g9_smc_boundary_layer_figure8_v1",
+        "g9_smc_boundary_layer_figure8_candidate_v1",
+        "g9_pid_indi_figure8_v1",
+        "g9_pid_indi_figure8_candidate_v1",
+        "g10c_official_pid_no_indi_figure8_v1",
+        "g10c_official_pid_indi_figure8_v1",
+        "g10a_dfbc_smooth_robust_no_dob_figure8_v1",
+        "g10a_dfbc_smooth_robust_dob_figure8_v1",
+        "g10c_dfbc_smooth_robust_no_indi_figure8_v1",
+        "g10c_dfbc_smooth_robust_indi_figure8_v1",
+        "g9_nmpc_outer_figure8_v1",
+        "g9_nmpc_outer_figure8_candidate_v1",
+        "g95_dfbc_high_order_takeoff_hover_land_v1",
+        "g95_dfbc_high_order_figure8_v1",
+        "g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1",
+        "g95_dfbc_high_order_bodyrate_figure8_v1",
+        "g96_dfbc_smooth_robust_takeoff_hover_land_v1",
+        "g96_dfbc_smooth_robust_figure8_v1",
+        "g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1",
+        "g96_dfbc_smooth_robust_bodyrate_figure8_v1"
+      ],
+      "state_source_profile": "px4_mavros_fused_v1",
+      "height_source_profile": "px4_or_gazebo_rangefinder_proxy_v1",
+      "leaderboard_group": "px4_mavros_fused",
+      "control_state_tracking": true,
+      "localization_eval_profile": null,
+      "z_source": "px4_or_rangefinder_proxy",
+      "reference": {
+        "time": "stamp",
+        "x": "ref_x",
+        "y": "ref_y",
+        "z": "ref_z",
+        "phase": {
+          "source": "reference",
+          "column": "phase",
+          "default": "unknown"
+        }
+      },
+      "state": {
+        "time": "stamp",
+        "x": "x",
+        "y": "y",
+        "z": "z",
+        "saturated": {
+          "source": "state",
+          "column": "saturated",
+          "default": "0"
+        }
+      },
+      "alignment": {
+        "mode": "nearest",
+        "max_time_delta_s": 0.05
+      }
+    },
+    "px4_mavros_fused_reference_state_csv_v1": {
+      "description": "CSV pair contract for PX4/MAVROS fused controller-state baseline runs.",
+      "compatible_experiment_ids": [
+        "px4ctrl_takeoff_hover_land_v1",
+        "px4ctrl_figure8_baseline_v1",
+        "px4ctrl_spiral_baseline_v1",
+        "px4ctrl_step_baseline_v1",
+        "g9_official_pid_figure8_v1",
+        "g9_se3_basic_figure8_v1",
+        "g9_se3_basic_figure8_candidate_v1",
+        "g9_dfbc_basic_figure8_v1",
+        "g9_dfbc_basic_figure8_candidate_v1",
+        "g9_smc_boundary_layer_figure8_v1",
+        "g9_smc_boundary_layer_figure8_candidate_v1",
+        "g9_pid_indi_figure8_v1",
+        "g9_pid_indi_figure8_candidate_v1",
+        "g10c_official_pid_no_indi_figure8_v1",
+        "g10c_official_pid_indi_figure8_v1",
+        "g10a_dfbc_smooth_robust_no_dob_figure8_v1",
+        "g10a_dfbc_smooth_robust_dob_figure8_v1",
+        "g10c_dfbc_smooth_robust_no_indi_figure8_v1",
+        "g10c_dfbc_smooth_robust_indi_figure8_v1",
+        "g9_nmpc_outer_figure8_v1",
+        "g9_nmpc_outer_figure8_candidate_v1",
+        "g95_dfbc_high_order_takeoff_hover_land_v1",
+        "g95_dfbc_high_order_figure8_v1",
+        "g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1",
+        "g95_dfbc_high_order_bodyrate_figure8_v1",
+        "g96_dfbc_smooth_robust_takeoff_hover_land_v1",
+        "g96_dfbc_smooth_robust_figure8_v1",
+        "g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1",
+        "g96_dfbc_smooth_robust_bodyrate_figure8_v1"
+      ],
+      "state_source_profile": "px4_mavros_fused_v1",
+      "height_source_profile": "px4_or_gazebo_rangefinder_proxy_v1",
+      "leaderboard_group": "px4_mavros_fused",
+      "control_state_tracking": true,
+      "localization_eval_profile": null,
+      "z_source": "px4_or_rangefinder_proxy",
+      "reference": {
+        "time": "stamp",
+        "x": "ref_x",
+        "y": "ref_y",
+        "z": "ref_z",
+        "phase": {
+          "source": "reference",
+          "column": "phase",
+          "default": "unknown"
+        }
+      },
+      "state": {
+        "time": "stamp",
+        "x": "x",
+        "y": "y",
+        "z": "z",
+        "saturated": {
+          "source": "state",
+          "column": "saturated",
+          "default": "0"
+        }
+      },
+      "alignment": {
+        "mode": "nearest",
+        "max_time_delta_s": 0.05
+      }
+    },
+    "fastlio_eval_reference_state_csv_v1": {
+      "description": "CSV pair contract for FAST-LIO evaluation-only runs; px4ctrl control state remains PX4/MAVROS fused.",
+      "compatible_experiment_ids": [
+        "fastlio_independent_eval_figure8_v1"
+      ],
+      "state_source_profile": "px4_mavros_fused_v1",
+      "height_source_profile": "px4_or_gazebo_rangefinder_proxy_v1",
+      "leaderboard_group": "fastlio_eval_only",
+      "control_state_tracking": false,
+      "localization_eval_profile": "fastlio_eval_only_v1",
+      "z_source": "px4_or_rangefinder_proxy_for_control_fastlio_parallel_eval",
+      "reference": {
+        "time": "stamp",
+        "x": "ref_x",
+        "y": "ref_y",
+        "z": "ref_z",
+        "phase": {
+          "source": "reference",
+          "column": "phase",
+          "default": "unknown"
+        }
+      },
+      "state": {
+        "time": "stamp",
+        "x": "x",
+        "y": "y",
+        "z": "z",
+        "saturated": {
+          "source": "state",
+          "column": "saturated",
+          "default": "0"
+        }
+      },
+      "alignment": {
+        "mode": "nearest",
+        "max_time_delta_s": 0.05
+      }
+    },
+    "fastlio_px4_ekf_fused_reference_state_csv_v1": {
+      "description": "CSV pair contract for FAST-LIO odometry fused through PX4 EKF and exposed to px4ctrl through MAVROS local state.",
+      "compatible_experiment_ids": [
+        "fastlio_px4_ekf_ab_figure8_v1"
+      ],
+      "state_source_profile": "fastlio_px4_ekf_fused_v1",
+      "height_source_profile": "fastlio_height_v1",
+      "leaderboard_group": "fastlio_px4_ekf_fused",
+      "control_state_tracking": true,
+      "localization_eval_profile": null,
+      "z_source": "fastlio_via_px4_ekf",
+      "reference": {
+        "time": "stamp",
+        "x": "ref_x",
+        "y": "ref_y",
+        "z": "ref_z",
+        "phase": {
+          "source": "reference",
+          "column": "phase",
+          "default": "unknown"
+        }
+      },
+      "state": {
+        "time": "stamp",
+        "x": "x",
+        "y": "y",
+        "z": "z",
+        "saturated": {
+          "source": "state",
+          "column": "saturated",
+          "default": "0"
+        }
+      },
+      "alignment": {
+        "mode": "nearest",
+        "max_time_delta_s": 0.05
+      }
+    },
+    "fastlio_xy_yaw_gazebo_z_reference_state_csv_v1": {
+      "description": "CSV pair contract for hybrid FAST-LIO XY/Yaw plus Gazebo rangefinder-surrogate Z runs.",
+      "compatible_experiment_ids": [
+        "fastlio_hybrid_z_figure8_v1"
+      ],
+      "state_source_profile": "fastlio_xy_yaw_gazebo_z_v1",
+      "height_source_profile": "hybrid_gazebo_z_surrogate_v1",
+      "leaderboard_group": "hybrid_z_surrogate",
+      "control_state_tracking": true,
+      "localization_eval_profile": null,
+      "z_source": "gazebo_rangefinder_surrogate",
+      "reference": {
+        "time": "stamp",
+        "x": "ref_x",
+        "y": "ref_y",
+        "z": "ref_z",
+        "phase": {
+          "source": "reference",
+          "column": "phase",
+          "default": "unknown"
+        }
+      },
+      "state": {
+        "time": "stamp",
+        "x": "x",
+        "y": "y",
+        "z": "z",
+        "saturated": {
+          "source": "state",
+          "column": "saturated",
+          "default": "0"
+        }
+      },
+      "alignment": {
+        "mode": "nearest",
+        "max_time_delta_s": 0.05
+      }
+    }
+  }
+}

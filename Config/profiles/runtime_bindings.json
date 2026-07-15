@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "binding_catalog_id": "mosim_runtime_bindings_v1",
+  "description": "Static runtime path bindings for ExperimentProfile dry-run preflight. These bindings prove source presence only; they do not prove runtime success.",
+  "template_bindings": {
+    "sunray_gazebo.launch": {
+      "purpose": "Sunray150 Gazebo Classic plant startup",
+      "required_paths": [
+        "References/Sunray/simulation/sunray_simulator/launch_uav_demo/sunray_sim_1uav.launch"
+      ]
+    },
+    "mavros_px4.launch": {
+      "purpose": "PX4 SITL MAVROS bridge startup",
+      "required_paths": [
+        "References/Sunray/simulation/sunray_simulator/launch_basic/sunray_mavros_sim.launch"
+      ]
+    },
+    "fastlio_review_or_ekf_bridge.launch": {
+      "purpose": "FAST-LIO review or PX4 EKF bridge branch",
+      "required_paths": [
+        "References/Lab/localization_slam/FAST_LIO/launch/mapping_mosim_sunray_pointcloud2.launch",
+        "References/Lab/localization_slam/FAST_LIO/config/mosim_sunray_pointcloud2.yaml",
+        "References/Lab/localization_slam/FAST_LIO/rviz_cfg/loam_livox.rviz"
+      ]
+    },
+    "planner_adapter.launch": {
+      "purpose": "Planner adapter branch placeholder",
+      "required_paths": [
+        "References/Sunray/General_Module/sunray_planner_utils/launch/positionCmd2sunray.launch"
+      ]
+    },
+    "trajectory_server.launch": {
+      "purpose": "Analytic or file-backed trajectory reference source",
+      "required_paths": [
+        "Scripts/sunray/px4ctrl_basic_mission_node.py",
+        "Scripts/sunray/px4ctrl_path_hold_from_csv.py"
+      ]
+    },
+    "controller_host.launch": {
+      "purpose": "px4ctrl controller wrapper and current Sunray gate runner",
+      "required_paths": [
+        "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl",
+        "Scripts/sunray/run_px4ctrl_basic_gate.sh"
+      ]
+    },
+    "mavros_command_adapter.launch": {
+      "purpose": "MAVROS ATTITUDE_THRUST command adapter path",
+      "required_paths": [
+        "References/Sunray/General_Module/sunray_uav_control/uav_control/UAVControl.cpp",
+        "References/Sunray/General_Module/sunray_uav_control/launch/sunray_control_node.launch"
+      ]
+    },
+    "rviz_review.launch": {
+      "purpose": "RViz/Gazebo review surface",
+      "required_paths": [
+        "References/Sunray/General_Module/sunray_planner_utils/launch/rviz_sunray.launch",
+        "References/Sunray/General_Module/sunray_planner_utils/config/sunray.rviz"
+      ]
+    }
+  }
+}

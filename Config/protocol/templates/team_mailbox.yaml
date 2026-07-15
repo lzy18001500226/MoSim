@@ -1,0 +1,26 @@
+template_type: team_mailbox
+template_version: 1
+mailbox_id: MAILBOX-YYYYMMDD-001
+team_id: TEAM-YYYYMMDD-001
+task_id: MOSIM-AGENT-TASK-YYYYMMDD-001
+messages:
+  - message_id: MSG-YYYYMMDD-001
+    from_owner: ""
+    to_owner: ""
+    message_type: context_refresh
+    # allowed: context_refresh, interface_change, dependency_ready, blocker,
+    # review_request, integration_request, human_action_request,
+    # decision_required
+    task_id: MOSIM-AGENT-TASK-YYYYMMDD-001
+    related_slice: ""
+    requires_response: false
+    dedupe_key: ""
+    payload_path: ""
+    created_at: ""
+    expires_at_or_close_condition: ""
+    state: open
+forbidden_message_types:
+  - raw_chat_forward
+  - unscoped_instruction
+  - silent_goal_change
+  - unreviewed_merge_request

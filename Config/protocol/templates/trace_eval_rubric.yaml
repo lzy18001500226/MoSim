@@ -1,0 +1,55 @@
+# MoSim Agent Protocol trace and evaluation rubric template.
+# Use to evaluate the multi-agent process, not only the final answer.
+
+trace_eval_id: ""
+task_id: ""
+evaluated_by: ""
+evaluated_at: ""
+
+scope:
+  conversations: []
+  task_team_id: ""
+  artifacts: []
+
+scores:
+  scope_discipline:
+    score: null
+    evidence: ""
+  context_economy:
+    score: null
+    evidence: ""
+  handoff_clarity:
+    score: null
+    evidence: ""
+  tool_economy:
+    score: null
+    evidence: ""
+  evidence_quality:
+    score: null
+    evidence: ""
+  review_readiness:
+    score: null
+    evidence: ""
+  recovery_readiness:
+    score: null
+    evidence: ""
+  policy_compliance:
+    score: null
+    evidence: ""
+  user_intervention_quality:
+    score: null
+    evidence: ""
+
+scale:
+  min: 0
+  max: 5
+  passing_threshold: 4
+
+findings: []
+required_followups: []
+promotion_candidates:
+  docs: []
+  skills: []
+  hooks: []
+  tests: []
+  runtime_backlog: []

@@ -1,0 +1,1292 @@
+{
+  "schema_version": 1,
+  "profile_catalog_id": "mosim_profile_catalog_v1",
+  "scenario_profiles": {
+    "sunray150_empty_lab_v1": {
+      "vehicle_count": 1,
+      "map_type": "empty_or_sparse",
+      "has_geofence": true
+    },
+    "sunray150_obstacle_figure8_v1": {
+      "vehicle_count": 1,
+      "map_type": "simple_obstacles",
+      "has_geofence": true
+    }
+  },
+  "plant_profiles": {
+    "sunray150_gazebo_v1": {
+      "plant_backend": "sunray_gazebo_classic",
+      "authority": "runtime_plant"
+    }
+  },
+  "sensor_profiles": {
+    "mid360_imu_height_camera_v1": {
+      "lidar": "mid360",
+      "imu": "px4_and_livox_sources_declared",
+      "height": "gazebo_rangefinder_surrogate_allowed",
+      "camera": "optional"
+    }
+  },
+  "state_source_profiles": {
+    "px4_mavros_fused_v1": {
+      "group": "A",
+      "allowed_for_control": true,
+      "debug_only": false,
+      "pose_velocity_topic": "/uav1/mavros/local_position/odom",
+      "angular_velocity_topic": "/uav1/mavros/imu/data",
+      "system_status_topic": "/uav1/sunray/uav_state",
+      "frame_semantics": "ENU_local_to_base_link"
+    },
+    "gazebo_truth_debug_state_v1": {
+      "group": "B",
+      "allowed_for_control": true,
+      "debug_only": true,
+      "frame_semantics": "ENU_truth_debug"
+    },
+    "fastlio_eval_only_v1": {
+      "group": "C",
+      "allowed_for_control": false,
+      "debug_only": false,
+      "frame_semantics": "FAST_LIO_map_to_lidar_or_body"
+    },
+    "fastlio_px4_ekf_fused_v1": {
+      "group": "D",
+      "allowed_for_control": true,
+      "debug_only": false,
+      "requires_px4_ekf_external_odometry": true,
+      "frame_semantics": "PX4_EKF_local"
+    },
+    "fastlio_xy_yaw_gazebo_z_v1": {
+      "group": "E",
+      "allowed_for_control": true,
+      "debug_only": false,
+      "requires_hybrid_height": true,
+      "frame_semantics": "hybrid_fastlio_xy_yaw_gazebo_z"
+    }
+  },
+  "height_source_profiles": {
+    "px4_or_gazebo_rangefinder_proxy_v1": {
+      "height_group": "rangefinder_proxy",
+      "surrogate": true
+    },
+    "fastlio_height_v1": {
+      "height_group": "fastlio",
+      "surrogate": false
+    },
+    "hybrid_gazebo_z_surrogate_v1": {
+      "height_group": "hybrid_z",
+      "surrogate": true
+    }
+  },
+  "truth_profiles": {
+    "gazebo_truth_eval_only_v1": {
+      "control_input_allowed": false,
+      "truth_backend": "gazebo"
+    }
+  },
+  "frequency_profiles": {
+    "attitude_thrust_100hz_v1": {
+      "controller_rate_hz": 100,
+      "command_publish_rate_hz": 100,
+      "trajectory_evaluation_rate_hz": 100,
+      "planner_nominal_rate_hz": 20
+    },
+    "bodyrate_thrust_100hz_v1": {
+      "controller_rate_hz": 100,
+      "command_publish_rate_hz": 100,
+      "trajectory_evaluation_rate_hz": 100,
+      "planner_nominal_rate_hz": 20,
+      "command_interface": "BODYRATE_THRUST"
+    }
+  },
+  "trajectory_profiles": {
+    "takeoff_hover_land_v1": {
+      "source_type": "state_machine_analytic",
+      "provides_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "jerk",
+        "yaw_rate",
+        "yaw"
+      ],
+      "reference_rate_hz": 100,
+      "duration_s": 20.0,
+      "continuity_required": {
+        "position": true,
+        "velocity": true,
+        "acceleration": true
+      },
+      "constraints": {
+        "max_velocity_mps": 1.0,
+        "max_acceleration_mps2": 2.0,
+        "max_yaw_rate_radps": 0.8
+      },
+      "required_for_goal": "Goal 1"
+    },
+    "figure8_v1": {
+      "source_type": "analytic",
+      "provides_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "jerk",
+        "yaw_rate",
+        "yaw"
+      ],
+      "reference_rate_hz": 100,
+      "duration_s": 30.0,
+      "continuity_required": {
+        "position": true,
+        "velocity": true,
+        "acceleration": true
+      },
+      "constraints": {
+        "max_velocity_mps": 2.0,
+        "max_acceleration_mps2": 3.0,
+        "max_yaw_rate_radps": 1.0
+      },
+      "required_for_goal": "Goal 2"
+    },
+    "spiral_climb_v1": {
+      "source_type": "analytic",
+      "provides_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "jerk",
+        "yaw_rate",
+        "yaw"
+      ],
+      "reference_rate_hz": 100,
+      "duration_s": 35.0,
+      "continuity_required": {
+        "position": true,
+        "velocity": true,
+        "acceleration": true
+      },
+      "constraints": {
+        "max_velocity_mps": 1.5,
+        "max_acceleration_mps2": 2.5,
+        "max_yaw_rate_radps": 0.8
+      },
+      "required_for_goal": "Goal 2"
+    },
+    "step_xyz_yaw_v1": {
+      "source_type": "analytic_step",
+      "provides_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "yaw"
+      ],
+      "reference_rate_hz": 100,
+      "duration_s": 25.0,
+      "continuity_required": {
+        "position": false,
+        "velocity": false,
+        "acceleration": false
+      },
+      "discontinuity_expected": true,
+      "constraints": {
+        "max_velocity_mps": 1.2,
+        "max_acceleration_mps2": 2.5,
+        "max_yaw_rate_radps": 0.8
+      },
+      "required_for_goal": "Goal 2"
+    }
+  },
+  "planner_profiles": {
+    "none": {
+      "planner_id": "none",
+      "owns_mavros_control": false
+    }
+  },
+  "controller_profiles": {
+    "px4ctrl_attitude_thrust_v1": {
+      "controller_id": "px4ctrl",
+      "implementation": "cpp",
+      "implementation_status": "accepted",
+      "g9_task": "baseline",
+      "controller_family": "px4ctrl",
+      "chain_position": "nominal_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": [
+        "position",
+        "velocity",
+        "attitude",
+        "angular_velocity"
+      ],
+      "required_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "yaw"
+      ],
+      "optional_reference": [
+        "yaw_rate"
+      ],
+      "compatible_adapters": [
+        "mavros_attitude_thrust_v1"
+      ],
+      "compatible_safety": [
+        "basic_limiter_v1"
+      ],
+      "compatible_augmentations": [
+        "none"
+      ],
+      "source_basis_required": false,
+      "acceptance_tiers": [
+        "PASS",
+        "REPORT",
+        "CANDIDATE"
+      ],
+      "evidence_level": "E4"
+    },
+    "official_pid_attitude_thrust_v1": {
+      "controller_id": "official_pid",
+      "implementation": "cpp_attitude_thrust_backend_mworks_codegen_pending",
+      "implementation_status": "implemented",
+      "g9_task": "G9-A",
+      "controller_family": "pid",
+      "chain_position": "nominal_position_velocity_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": [
+        "position",
+        "velocity",
+        "attitude",
+        "angular_velocity"
+      ],
+      "required_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "yaw"
+      ],
+      "optional_reference": [
+        "yaw_rate"
+      ],
+      "compatible_adapters": [
+        "mavros_attitude_thrust_v1"
+      ],
+      "compatible_safety": [
+        "basic_limiter_v1"
+      ],
+      "compatible_augmentations": [
+        "none",
+        "pid_indi_v1"
+      ],
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/official_pid_attitude_thrust_v1/source_audit/controller_source_audit.json",
+        "Results/g9/official_pid_attitude_thrust_v1/g9a_static_gate_20260629_131642/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9a_official_pid_takeoff_hover_land_20260629_133037/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9a_official_pid_figure8_disarm_20260629_134038/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9a_official_pid_spiral_hover20_disarm_20260629_134810/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9a_official_pid_step_x_g7_20260629_135217/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9a_official_pid_step_y_g7_20260629_135514/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9a_official_pid_step_z_g7_20260629_135813/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9a_official_pid_diff_single_auto123_20260629_140509/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9a_official_pid_diff_swarm_3uav_20260629_140943/RUN_MANIFEST.json"
+      ],
+      "mworks_codegen_route": "official_pid_model_to_generated_c_to_icontroller",
+      "acceptance_tiers": [
+        "PASS",
+        "REPORT",
+        "CANDIDATE"
+      ],
+      "evidence_level": "E4"
+    },
+    "se3_basic_attitude_thrust_v1": {
+      "controller_id": "se3_basic",
+      "implementation": "cpp_attitude_thrust_backend_mworks_codegen_pending",
+      "implementation_status": "implemented",
+      "g9_task": "G9-B",
+      "controller_family": "se3_geometric",
+      "chain_position": "nominal_geometric_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": [
+        "position",
+        "velocity",
+        "attitude",
+        "angular_velocity"
+      ],
+      "required_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "yaw"
+      ],
+      "optional_reference": [
+        "yaw_rate"
+      ],
+      "compatible_adapters": [
+        "mavros_attitude_thrust_v1"
+      ],
+      "compatible_safety": [
+        "basic_limiter_v1"
+      ],
+      "compatible_augmentations": [
+        "none"
+      ],
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/se3_basic_attitude_thrust_v1/source_audit/controller_source_audit.json",
+        "Results/g9/se3_basic_attitude_thrust_v1/g9b_static_gate_20260629_142902/RUN_MANIFEST.json",
+        "Results/g9/se3_basic_attitude_thrust_v1/g9b_static_gate_20260629_153356/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9b_se3_basic_takeoff_hover_land_kpz5_20260629_144656/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9b_se3_basic_figure8_disarm_kpxy12_kpz5_20260629_150206/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9b_se3_basic_spiral_disarm_kpxy12_kpz5_20260629_150549/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9b_se3_basic_step_x_g7_kpxy12_kpz5_20260629_151214/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9b_se3_basic_step_y_g7_kpxy12_kpz5_20260629_151509/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9b_se3_basic_step_z_g7_kpxy12_kpz5_20260629_151806/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9b_se3_basic_diff_single_auto123_kpxy12_kpz5_20260629_152133/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9b_se3_basic_diff_swarm_3uav_kpxy12_kpz5_20260629_152421/RUN_MANIFEST.json"
+      ],
+      "mworks_codegen_route": "se3_basic_model_to_generated_c_to_icontroller",
+      "acceptance_tiers": [
+        "PASS",
+        "REPORT",
+        "CANDIDATE"
+      ],
+      "evidence_level": "E4"
+    },
+    "dfbc_basic_attitude_thrust_v1": {
+      "controller_id": "dfbc_basic",
+      "implementation": "cpp_attitude_thrust_backend_mworks_codegen_pending",
+      "implementation_status": "implemented",
+      "g9_task": "G9-C",
+      "controller_family": "differential_flatness",
+      "chain_position": "nominal_flatness_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": [
+        "position",
+        "velocity",
+        "attitude",
+        "angular_velocity"
+      ],
+      "required_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "yaw"
+      ],
+      "optional_reference": [
+        "yaw_rate",
+        "jerk",
+        "snap"
+      ],
+      "compatible_adapters": [
+        "mavros_attitude_thrust_v1"
+      ],
+      "compatible_safety": [
+        "basic_limiter_v1"
+      ],
+      "compatible_augmentations": [
+        "none"
+      ],
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/dfbc_basic_attitude_thrust_v1/source_audit/controller_source_audit.json",
+        "Results/g9/dfbc_basic_attitude_thrust_v1/g9c_static_gate_20260629_154935/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9c_dfbc_basic_takeoff_hover_land_kpxy12_kpz5_20260629_155515/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9c_dfbc_basic_figure8_disarm_kpxy12_kpz5_20260629_155844/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9c_dfbc_basic_spiral_disarm_kpxy12_kpz5_20260629_160231/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9c_dfbc_basic_step_x_g7_kpxy12_kpz5_20260629_160549/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9c_dfbc_basic_step_y_g7_kpxy12_kpz5_20260629_160850/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9c_dfbc_basic_step_z_g7_kpxy12_kpz5_20260629_161142/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9c_dfbc_basic_diff_single_auto123_kpxy12_kpz5_20260629_162158/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9c_dfbc_basic_diff_swarm_3uav_kpxy12_kpz5_20260629_162547/RUN_MANIFEST.json"
+      ],
+      "mworks_codegen_route": "dfbc_basic_model_to_generated_c_to_icontroller",
+      "acceptance_tiers": [
+        "PASS",
+        "REPORT",
+        "CANDIDATE"
+      ],
+      "evidence_level": "E4"
+    },
+    "smc_boundary_layer_attitude_thrust_v1": {
+      "controller_id": "smc_boundary_layer",
+      "implementation": "cpp_attitude_thrust_backend_mworks_codegen_pending",
+      "implementation_status": "implemented",
+      "g9_task": "G9-D",
+      "controller_family": "sliding_mode",
+      "chain_position": "nominal_robust_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": [
+        "position",
+        "velocity",
+        "attitude",
+        "angular_velocity"
+      ],
+      "required_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "yaw"
+      ],
+      "optional_reference": [
+        "yaw_rate"
+      ],
+      "compatible_adapters": [
+        "mavros_attitude_thrust_v1"
+      ],
+      "compatible_safety": [
+        "basic_limiter_v1"
+      ],
+      "compatible_augmentations": [
+        "none"
+      ],
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/smc_boundary_layer_attitude_thrust_v1/source_audit/controller_source_audit.json",
+        "Results/g9/smc_boundary_layer_attitude_thrust_v1/g9d_static_gate_20260629_182921/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9d_smc_boundary_takeoff_hover_land_eta010_z005_20260629_182522/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9d_smc_boundary_figure8_serial_20260629_183551/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9d_smc_boundary_spiral_serial_20260629_183932/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9d_smc_boundary_step_x_g7_20260629_184307/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9d_smc_boundary_step_y_g7_20260629_184607/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9d_smc_boundary_step_z_g7_20260629_184920/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9d_smc_boundary_diff_single_auto123_20260629_185211/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9d_smc_boundary_diff_swarm_3uav_rerun_20260629_190503/RUN_MANIFEST.json"
+      ],
+      "mworks_codegen_route": "smc_boundary_layer_model_to_generated_c_to_icontroller",
+      "acceptance_tiers": [
+        "PASS",
+        "REPORT",
+        "CANDIDATE"
+      ],
+      "evidence_level": "E4"
+    },
+    "nmpc_outer_attitude_thrust_v1": {
+      "controller_id": "nmpc_outer",
+      "implementation": "cpp_attitude_thrust_backend_mworks_codegen_pending",
+      "implementation_status": "implemented",
+      "g9_task": "G9-F",
+      "controller_family": "nonlinear_mpc",
+      "chain_position": "nominal_optimization_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": [
+        "position",
+        "velocity",
+        "attitude",
+        "angular_velocity"
+      ],
+      "required_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "yaw"
+      ],
+      "optional_reference": [
+        "yaw_rate",
+        "jerk",
+        "snap"
+      ],
+      "compatible_adapters": [
+        "mavros_attitude_thrust_v1"
+      ],
+      "compatible_safety": [
+        "basic_limiter_v1"
+      ],
+      "compatible_augmentations": [
+        "none"
+      ],
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/nmpc_outer_attitude_thrust_v1/source_audit/controller_source_audit.json",
+        "Results/g9/nmpc_outer_attitude_thrust_v1/g9f_static_gate_20260629_193901/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9f_nmpc_outer_takeoff_hover_land_20260629_205737/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9f_nmpc_outer_figure8_pw2_cw0002_20260629_211913/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9f_nmpc_outer_spiral_pw2_cw0002_20260629_212404/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9f_nmpc_outer_step_x_pw2_cw0002_20260629_212747/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9f_nmpc_outer_step_y_pw2_cw0002_20260629_213054/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9f_nmpc_outer_step_z_pw2_cw0002_gatefix_20260629_213934/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9f_nmpc_outer_diff_single_auto123_pw2_cw0002_20260629_214328/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9f_nmpc_outer_diff_swarm_3uav_pw2_cw0002_20260629_214624/RUN_MANIFEST.json"
+      ],
+      "mworks_codegen_route": "nmpc_outer_model_or_cfunction_to_generated_c_to_icontroller",
+      "acceptance_tiers": [
+        "PASS",
+        "REPORT",
+        "CANDIDATE"
+      ],
+      "evidence_level": "E4"
+    },
+    "dfbc_high_order_attitude_thrust_v1": {
+      "controller_id": "dfbc_high_order",
+      "implementation": "cpp_attitude_thrust_backend_mworks_codegen_pending",
+      "implementation_status": "implemented",
+      "g9_task": "G9.5",
+      "controller_family": "differential_flatness_high_order",
+      "chain_position": "nominal_flatness_outer_loop_with_high_order_diagnostics",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": [
+        "position",
+        "velocity",
+        "attitude",
+        "angular_velocity"
+      ],
+      "required_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "yaw"
+      ],
+      "optional_reference": [
+        "yaw_rate",
+        "yaw_acceleration",
+        "jerk",
+        "snap"
+      ],
+      "compatible_adapters": [
+        "mavros_attitude_thrust_v1"
+      ],
+      "compatible_safety": [
+        "basic_limiter_v1"
+      ],
+      "compatible_augmentations": [
+        "none"
+      ],
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/dfbc_high_order_attitude_thrust_v1/source_audit/controller_source_audit.json",
+        "Results/g9/dfbc_high_order_attitude_thrust_v1/g95_static_gate_20260630_082713/RUN_MANIFEST.json"
+      ],
+      "mworks_codegen_route": "dfbc_high_order_model_to_generated_c_to_icontroller",
+      "acceptance_tiers": [
+        "PASS",
+        "REPORT",
+        "CANDIDATE"
+      ],
+      "evidence_level": "E2"
+    },
+    "dfbc_high_order_bodyrate_thrust_v1": {
+      "controller_id": "dfbc_high_order",
+      "implementation": "cpp_bodyrate_thrust_backend_mworks_codegen_pending",
+      "implementation_status": "implemented",
+      "g9_task": "G9.5",
+      "controller_family": "differential_flatness_high_order",
+      "chain_position": "nominal_flatness_outer_loop_with_jerk_to_bodyrate_release_smoke",
+      "output_interface": "BODYRATE_THRUST",
+      "rate_hz": 100,
+      "required_state": [
+        "position",
+        "velocity",
+        "attitude",
+        "angular_velocity"
+      ],
+      "required_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "jerk",
+        "yaw",
+        "yaw_rate"
+      ],
+      "optional_reference": [
+        "yaw_acceleration",
+        "snap"
+      ],
+      "compatible_adapters": [
+        "mavros_bodyrate_thrust_v1"
+      ],
+      "compatible_safety": [
+        "basic_limiter_v1"
+      ],
+      "compatible_augmentations": [
+        "none"
+      ],
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/dfbc_high_order_attitude_thrust_v1/source_audit/controller_source_audit.json",
+        "Results/g9/dfbc_high_order_attitude_thrust_v1/g95_static_gate_20260630_082713/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g95_g96_controller_ab_20260630_085100/g9_5_dfbc_high_order_figure8_20260630_085100/RUN_MANIFEST.json"
+      ],
+      "mworks_codegen_route": "dfbc_high_order_model_to_generated_c_to_icontroller_bodyrate_release_pending",
+      "acceptance_tiers": [
+        "PASS",
+        "REPORT",
+        "CANDIDATE"
+      ],
+      "evidence_level": "E2"
+    },
+    "dfbc_smooth_robust_attitude_thrust_v1": {
+      "controller_id": "dfbc_smooth_robust",
+      "implementation": "cpp_attitude_thrust_backend_mworks_codegen_pending",
+      "implementation_status": "implemented",
+      "g9_task": "G9.6",
+      "controller_family": "differential_flatness_smooth_robust",
+      "chain_position": "nominal_flatness_outer_loop_with_bounded_feedback_and_dob",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": [
+        "position",
+        "velocity",
+        "attitude",
+        "angular_velocity"
+      ],
+      "required_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "yaw"
+      ],
+      "optional_reference": [
+        "yaw_rate",
+        "yaw_acceleration",
+        "jerk",
+        "snap"
+      ],
+      "compatible_adapters": [
+        "mavros_attitude_thrust_v1"
+      ],
+      "compatible_safety": [
+        "basic_limiter_v1"
+      ],
+      "compatible_augmentations": [
+        "none",
+        "dfbc_dob_eso_disabled_v1",
+        "dfbc_dob_eso_v1",
+        "pid_indi_v1"
+      ],
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/source_audit/controller_source_audit.json",
+        "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/g96_static_gate_20260630_082713/RUN_MANIFEST.json",
+        "Results/g10/dfbc_dob_eso_v1/g10a_static_gate_20260630_143601/RUN_MANIFEST.json"
+      ],
+      "mworks_codegen_route": "dfbc_smooth_robust_model_to_generated_c_to_icontroller",
+      "acceptance_tiers": [
+        "PASS",
+        "REPORT",
+        "CANDIDATE"
+      ],
+      "evidence_level": "E2"
+    },
+    "dfbc_smooth_robust_bodyrate_thrust_v1": {
+      "controller_id": "dfbc_smooth_robust",
+      "implementation": "cpp_bodyrate_thrust_backend_mworks_codegen_pending",
+      "implementation_status": "blocked",
+      "blocked_reason": "G9.6 BODYRATE_THRUST release-smoke failed takeoff-hover-land attribution; retain only as explicit interface-debug/audit profile.",
+      "blocked_evidence": "Results/sunray_ros1/g96_bodyrate_failure_attribution_20260630_103317/G96_BODYRATE_ATTRIBUTION.json",
+      "g9_task": "G9.6",
+      "controller_family": "differential_flatness_smooth_robust",
+      "chain_position": "nominal_flatness_outer_loop_with_bounded_feedback_dob_and_jerk_to_bodyrate_release_smoke",
+      "output_interface": "BODYRATE_THRUST",
+      "rate_hz": 100,
+      "required_state": [
+        "position",
+        "velocity",
+        "attitude",
+        "angular_velocity"
+      ],
+      "required_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "jerk",
+        "yaw",
+        "yaw_rate"
+      ],
+      "optional_reference": [
+        "yaw_acceleration",
+        "snap"
+      ],
+      "compatible_adapters": [
+        "mavros_bodyrate_thrust_v1"
+      ],
+      "compatible_safety": [
+        "basic_limiter_v1"
+      ],
+      "compatible_augmentations": [
+        "none"
+      ],
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/source_audit/controller_source_audit.json",
+        "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/g96_static_gate_20260630_082713/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g95_g96_controller_ab_20260630_085100/g9_6_dfbc_smooth_robust_takeoff_hover_land_20260630_085100/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g95_g96_controller_ab_20260630_085100/g9_6_dfbc_smooth_robust_figure8_20260630_085100/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g96_bodyrate_failure_attribution_20260630_103317/G96_BODYRATE_ATTRIBUTION.json"
+      ],
+      "mworks_codegen_route": "dfbc_smooth_robust_model_to_generated_c_to_icontroller_bodyrate_release_pending",
+      "acceptance_tiers": [
+        "FAILED",
+        "BLOCKED",
+        "INTERFACE_DEBUG_ONLY"
+      ],
+      "evidence_level": "E2"
+    }
+  },
+  "augmentation_profiles": {
+    "none": {
+      "augmentation_id": "none"
+    },
+    "pid_indi_v1": {
+      "augmentation_id": "pid_indi",
+      "implementation_status": "implemented",
+      "g9_task": "G9-E",
+      "g10_task": "G10-C",
+      "module_family": "indi",
+      "chain_position": "bounded_incremental_dynamic_inversion_augmentation",
+      "runtime_core_profile_override": "pid_indi",
+      "runtime_core_profile_overrides_by_controller": {
+        "official_pid_attitude_thrust_v1": "pid_indi",
+        "dfbc_smooth_robust_attitude_thrust_v1": "dfbc_smooth_robust_indi"
+      },
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/pid_indi_v1/source_audit/controller_source_audit.json",
+        "Results/g9/pid_indi_v1/g9e_static_gate_20260629_193806/RUN_MANIFEST.json",
+        "Results/g9/pid_indi_v1/g9e_static_gate_recheck_20260629_194535/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9e_pid_indi_takeoff_hover_land_20260629_194818/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9e_pid_indi_figure8_disarm_20260629_195644/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9e_pid_indi_spiral_tunez_disarm_20260629_200342/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9e_pid_indi_step_x_stepgate_gainz006_20260629_202648/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9e_pid_indi_step_y_stepgate_gainz006_20260629_202324/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9e_pid_indi_step_z_stepgate_gainz006_retry_20260629_203358/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9e_pid_indi_diff_single_auto123_gainz006_20260629_203850/RUN_MANIFEST.json",
+        "Results/sunray_ros1/g9e_pid_indi_diff_swarm_3uav_gainz006_retry_20260629_204715/RUN_MANIFEST.json"
+      ],
+      "acceptance_tiers": [
+        "PASS",
+        "REPORT",
+        "CANDIDATE"
+      ],
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "compatible_controller_profiles": [
+        "official_pid_attitude_thrust_v1",
+        "dfbc_smooth_robust_attitude_thrust_v1"
+      ],
+      "evidence_level": "E4"
+    },
+    "dfbc_dob_eso_disabled_v1": {
+      "augmentation_id": "dfbc_dob_eso_disabled",
+      "implementation_status": "implemented",
+      "g10_task": "G10-A",
+      "module_family": "dob_eso",
+      "chain_position": "ablation_only_zero_gain_disturbance_observer_on_dfbc_smooth_robust_core",
+      "runtime_core_profile_override": "dfbc_smooth_robust",
+      "runtime_parameter_overrides": {
+        "PX4CTRL_DFBC_ROBUST_DISTURBANCE_OBSERVER_GAIN_XY": 0.0,
+        "PX4CTRL_DFBC_ROBUST_DISTURBANCE_OBSERVER_GAIN_Z": 0.0,
+        "PX4CTRL_DFBC_ROBUST_DISTURBANCE_COMPENSATION_LIMIT_XY": 0.0,
+        "PX4CTRL_DFBC_ROBUST_DISTURBANCE_COMPENSATION_LIMIT_Z": 0.0
+      },
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/source_audit/controller_source_audit.json",
+        "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/g96_static_gate_20260630_082713/RUN_MANIFEST.json",
+        "Results/g10/dfbc_dob_eso_v1/g10a_static_gate_20260630_143601/RUN_MANIFEST.json"
+      ],
+      "acceptance_tiers": [
+        "ABLATION",
+        "REPORT"
+      ],
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "compatible_controller_profiles": [
+        "dfbc_smooth_robust_attitude_thrust_v1"
+      ],
+      "evidence_level": "E2"
+    },
+    "dfbc_dob_eso_v1": {
+      "augmentation_id": "dfbc_dob_eso",
+      "implementation_status": "implemented",
+      "g10_task": "G10-A",
+      "module_family": "dob_eso",
+      "chain_position": "low_frequency_acceleration_residual_disturbance_observer_and_bounded_compensation_inside_dfbc_smooth_robust_outer_loop",
+      "runtime_core_profile_override": "dfbc_smooth_robust_dob",
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/source_audit/controller_source_audit.json",
+        "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/g96_static_gate_20260630_082713/RUN_MANIFEST.json"
+      ],
+      "acceptance_tiers": [
+        "PASS",
+        "REPORT",
+        "CANDIDATE"
+      ],
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "compatible_controller_profiles": [
+        "dfbc_smooth_robust_attitude_thrust_v1"
+      ],
+      "evidence_level": "E2"
+    }
+  },
+  "safety_profiles": {
+    "basic_limiter_v1": {
+      "requires_geofence": false,
+      "enforces_envelope": true
+    }
+  },
+  "adapter_profiles": {
+    "mavros_attitude_thrust_v1": {
+      "input_interface": "ATTITUDE_THRUST",
+      "output_backend": "mavros_setpoint_raw_attitude",
+      "thrust_input_unit": "N",
+      "quaternion_order": "wxyz",
+      "publishes_final_command": true
+    },
+    "mavros_bodyrate_thrust_v1": {
+      "input_interface": "BODYRATE_THRUST",
+      "output_backend": "mavros_setpoint_raw_attitude_body_rate",
+      "type_mask": "IGNORE_ATTITUDE",
+      "body_rate_unit": "radps",
+      "thrust_input_unit": "normalized_0_1",
+      "publishes_final_command": true
+    }
+  },
+  "fault_profiles": {
+    "none": {
+      "fault_id": "none"
+    }
+  },
+  "disturbance_profiles": {
+    "none": {
+      "disturbance_id": "none"
+    }
+  },
+  "display_profiles": {
+    "rviz_gazebo_v1": {
+      "display_backend": [
+        "rviz",
+        "gazebo_gui"
+      ],
+      "requires_ue_bridge": false
+    },
+    "rviz_fastlio_map_v1": {
+      "display_backend": [
+        "rviz",
+        "gazebo_gui"
+      ],
+      "requires_ue_bridge": false,
+      "required_layers": [
+        "fastlio_registered_cloud",
+        "uav_body_axes",
+        "trajectory"
+      ]
+    }
+  },
+  "evaluation_profiles": {
+    "tracking_metrics_v1": {
+      "leaderboard_group": "px4_mavros_fused",
+      "metrics": [
+        "rmse",
+        "max_error",
+        "steady_state_error",
+        "overshoot",
+        "settling_time",
+        "saturation_ratio"
+      ],
+      "requires_truth": true
+    },
+    "fastlio_independent_metrics_v1": {
+      "leaderboard_group": "fastlio_eval_only",
+      "metrics": [
+        "ate",
+        "rpe",
+        "pose_error",
+        "velocity_error",
+        "delay",
+        "drop_rate",
+        "map_completeness"
+      ],
+      "requires_truth": true
+    },
+    "fastlio_px4_ekf_ab_metrics_v1": {
+      "leaderboard_group": "fastlio_px4_ekf_fused",
+      "metrics": [
+        "rmse",
+        "max_error",
+        "steady_state_error",
+        "overshoot",
+        "settling_time",
+        "saturation_ratio",
+        "state_source_delta"
+      ],
+      "requires_truth": true
+    },
+    "hybrid_z_tracking_metrics_v1": {
+      "leaderboard_group": "hybrid_z_surrogate",
+      "metrics": [
+        "rmse",
+        "max_error",
+        "steady_state_error",
+        "overshoot",
+        "settling_time",
+        "xy_error",
+        "z_error"
+      ],
+      "requires_truth": true
+    }
+  },
+  "runtime_profiles": {
+    "sunray_ros1_gazebo_classic_v1": {
+      "os": "ubuntu-20.04",
+      "ros": "noetic",
+      "gazebo": "classic",
+      "ue_bridge": false,
+      "multi_uav_namespace_isolation": false
+    }
+  },
+  "runtime_export_profiles": {
+    "sunray_px4ctrl_runtime_export_v1": {
+      "description": "Post-run export contract for Sunray ROS1 px4ctrl single-UAV runs.",
+      "runtime_profile": "sunray_ros1_gazebo_classic_v1",
+      "runtime_log_profile": "px4ctrl_runtime_log_export_v1",
+      "tracking_source_profile": "px4_mavros_fused_reference_state_csv_v1",
+      "required_artifact_slots": [
+        "reference_csv",
+        "state_csv",
+        "rviz_screenshot",
+        "ros_log"
+      ],
+      "exported_artifacts": {
+        "reference_csv": {
+          "role": "trajectory_reference",
+          "destination": "raw/reference.csv",
+          "producer": "trajectory_server_or_mission_node",
+          "command_template": "export trajectory reference samples at 100 Hz to <reference.csv>",
+          "required_columns": [
+            "stamp",
+            "phase",
+            "ref_x",
+            "ref_y",
+            "ref_z"
+          ]
+        },
+        "state_csv": {
+          "role": "controller_state_or_truth",
+          "destination": "raw/state.csv",
+          "producer": "ros_topic_export",
+          "command_template": "export /uav1/mavros/local_position/odom or declared truth/state source to <state.csv>",
+          "required_columns": [
+            "stamp",
+            "x",
+            "y",
+            "z",
+            "saturated"
+          ]
+        },
+        "rviz_screenshot": {
+          "role": "rviz_pointcloud_trajectory_review",
+          "destination": "screenshots/rviz_review.png",
+          "producer": "operator_or_capture_script",
+          "command_template": "capture RViz review window after point cloud, UAV axes, and trajectory are visible"
+        },
+        "ros_log": {
+          "role": "runtime_log",
+          "destination": "logs/ros_runtime.log",
+          "producer": "roslaunch_or_gate_script",
+          "command_template": "save terminal or roslaunch log to <ros.log>"
+        }
+      },
+      "required_topics": [
+        "/uav1/mavros/local_position/odom",
+        "/uav1/mavros/imu/data",
+        "/tf",
+        "/tf_static"
+      ],
+      "review_requirements": [
+        "RViz fixed frame is declared and stable",
+        "UAV body axes are visible at the aircraft center",
+        "trajectory line is visible and belongs to the same run_id",
+        "point cloud or map layer is nonempty when the display profile requires it"
+      ]
+    },
+    "sunray_fastlio_eval_runtime_export_v1": {
+      "description": "Post-run export contract for Sunray ROS1 px4ctrl runs with FAST-LIO evaluated in parallel only.",
+      "runtime_profile": "sunray_ros1_gazebo_classic_v1",
+      "runtime_log_profile": "fastlio_eval_runtime_log_export_v1",
+      "tracking_source_profile": "fastlio_eval_reference_state_csv_v1",
+      "required_artifact_slots": [
+        "reference_csv",
+        "state_csv",
+        "localization_csv",
+        "map_summary_json",
+        "rviz_screenshot",
+        "ros_log"
+      ],
+      "exported_artifacts": {
+        "reference_csv": {
+          "role": "trajectory_reference",
+          "destination": "raw/reference.csv",
+          "producer": "trajectory_server_or_mission_node",
+          "command_template": "export trajectory reference samples at 100 Hz to <reference.csv>",
+          "required_columns": [
+            "stamp",
+            "phase",
+            "ref_x",
+            "ref_y",
+            "ref_z"
+          ]
+        },
+        "state_csv": {
+          "role": "fastlio_eval_or_control_state_export",
+          "destination": "raw/state.csv",
+          "producer": "ros_topic_export",
+          "command_template": "export the declared FAST-LIO evaluation or control-state comparison stream to <state.csv>",
+          "required_columns": [
+            "stamp",
+            "x",
+            "y",
+            "z",
+            "saturated"
+          ]
+        },
+        "localization_csv": {
+          "role": "fastlio_estimate_vs_gazebo_truth",
+          "destination": "raw/localization.csv",
+          "producer": "fastlio_truth_alignment_export",
+          "command_template": "export time-aligned FAST-LIO estimate and Gazebo truth samples to <localization.csv>",
+          "required_columns": [
+            "stamp",
+            "seq",
+            "estimate_x",
+            "estimate_y",
+            "estimate_z",
+            "truth_x",
+            "truth_y",
+            "truth_z",
+            "estimate_vx",
+            "estimate_vy",
+            "estimate_vz",
+            "truth_vx",
+            "truth_vy",
+            "truth_vz",
+            "estimate_yaw_rad",
+            "truth_yaw_rad",
+            "delay_s"
+          ]
+        },
+        "map_summary_json": {
+          "role": "fastlio_map_coverage_summary",
+          "destination": "raw/map_summary.json",
+          "producer": "fastlio_map_review_or_coverage_tool",
+          "command_template": "save FAST-LIO map completeness summary JSON to <map_summary.json>"
+        },
+        "rviz_screenshot": {
+          "role": "rviz_pointcloud_trajectory_review",
+          "destination": "screenshots/rviz_review.png",
+          "producer": "operator_or_capture_script",
+          "command_template": "capture RViz review window after point cloud, UAV axes, and trajectory are visible"
+        },
+        "ros_log": {
+          "role": "runtime_log",
+          "destination": "logs/ros_runtime.log",
+          "producer": "roslaunch_or_gate_script",
+          "command_template": "save terminal or roslaunch log to <ros.log>"
+        }
+      },
+      "required_topics": [
+        "/uav1/mavros/local_position/odom",
+        "/uav1/mavros/imu/data",
+        "/tf",
+        "/tf_static"
+      ],
+      "review_requirements": [
+        "RViz fixed frame is declared and stable",
+        "UAV body axes are visible at the aircraft center",
+        "trajectory line is visible and belongs to the same run_id",
+        "FAST-LIO map or point cloud layer is nonempty",
+        "FAST-LIO is recorded as evaluation-only and not as controller state"
+      ]
+    },
+    "sunray_fastlio_px4_ekf_runtime_export_v1": {
+      "description": "Post-run export contract for Sunray ROS1 px4ctrl runs using FAST-LIO fused through PX4 EKF.",
+      "runtime_profile": "sunray_ros1_gazebo_classic_v1",
+      "runtime_log_profile": "fastlio_px4_ekf_runtime_log_export_v1",
+      "tracking_source_profile": "fastlio_px4_ekf_fused_reference_state_csv_v1",
+      "required_artifact_slots": [
+        "reference_csv",
+        "state_csv",
+        "rviz_screenshot",
+        "ros_log"
+      ],
+      "exported_artifacts": {
+        "reference_csv": {
+          "role": "trajectory_reference",
+          "destination": "raw/reference.csv",
+          "producer": "trajectory_server_or_mission_node",
+          "command_template": "export trajectory reference samples at 100 Hz to <reference.csv>",
+          "required_columns": [
+            "stamp",
+            "phase",
+            "ref_x",
+            "ref_y",
+            "ref_z"
+          ]
+        },
+        "state_csv": {
+          "role": "fastlio_px4_ekf_fused_state",
+          "destination": "raw/state.csv",
+          "producer": "ros_topic_export",
+          "command_template": "export PX4/MAVROS local state after FAST-LIO external odometry fusion to <state.csv>",
+          "required_columns": [
+            "stamp",
+            "x",
+            "y",
+            "z",
+            "saturated"
+          ]
+        },
+        "rviz_screenshot": {
+          "role": "rviz_pointcloud_trajectory_review",
+          "destination": "screenshots/rviz_review.png",
+          "producer": "operator_or_capture_script",
+          "command_template": "capture RViz review window after point cloud, UAV axes, and trajectory are visible"
+        },
+        "ros_log": {
+          "role": "runtime_log",
+          "destination": "logs/ros_runtime.log",
+          "producer": "roslaunch_or_gate_script",
+          "command_template": "save terminal or roslaunch log to <ros.log>"
+        }
+      },
+      "required_topics": [
+        "/uav1/mavros/local_position/odom",
+        "/uav1/mavros/imu/data",
+        "/tf",
+        "/tf_static"
+      ],
+      "review_requirements": [
+        "RViz fixed frame is declared and stable",
+        "UAV body axes are visible at the aircraft center",
+        "trajectory line is visible and belongs to the same run_id",
+        "FAST-LIO map or point cloud layer is nonempty",
+        "PX4/MAVROS local state is the exported fused state after FAST-LIO EKF fusion"
+      ]
+    },
+    "sunray_fastlio_hybrid_z_runtime_export_v1": {
+      "description": "Post-run export contract for Sunray ROS1 px4ctrl runs using FAST-LIO XY/Yaw and Gazebo rangefinder-surrogate Z.",
+      "runtime_profile": "sunray_ros1_gazebo_classic_v1",
+      "runtime_log_profile": "fastlio_hybrid_z_runtime_log_export_v1",
+      "tracking_source_profile": "fastlio_xy_yaw_gazebo_z_reference_state_csv_v1",
+      "required_artifact_slots": [
+        "reference_csv",
+        "state_csv",
+        "rviz_screenshot",
+        "ros_log"
+      ],
+      "exported_artifacts": {
+        "reference_csv": {
+          "role": "trajectory_reference",
+          "destination": "raw/reference.csv",
+          "producer": "trajectory_server_or_mission_node",
+          "command_template": "export trajectory reference samples at 100 Hz to <reference.csv>",
+          "required_columns": [
+            "stamp",
+            "phase",
+            "ref_x",
+            "ref_y",
+            "ref_z"
+          ]
+        },
+        "state_csv": {
+          "role": "fastlio_xy_yaw_gazebo_z_state",
+          "destination": "raw/state.csv",
+          "producer": "ros_topic_export",
+          "command_template": "export hybrid FAST-LIO XY/Yaw plus Gazebo Z state stream to <state.csv>",
+          "required_columns": [
+            "stamp",
+            "x",
+            "y",
+            "z",
+            "saturated"
+          ]
+        },
+        "rviz_screenshot": {
+          "role": "rviz_pointcloud_trajectory_review",
+          "destination": "screenshots/rviz_review.png",
+          "producer": "operator_or_capture_script",
+          "command_template": "capture RViz review window after point cloud, UAV axes, and trajectory are visible"
+        },
+        "ros_log": {
+          "role": "runtime_log",
+          "destination": "logs/ros_runtime.log",
+          "producer": "roslaunch_or_gate_script",
+          "command_template": "save terminal or roslaunch log to <ros.log>"
+        }
+      },
+      "required_topics": [
+        "/uav1/mavros/local_position/odom",
+        "/uav1/mavros/imu/data",
+        "/tf",
+        "/tf_static"
+      ],
+      "review_requirements": [
+        "RViz fixed frame is declared and stable",
+        "UAV body axes are visible at the aircraft center",
+        "trajectory line is visible and belongs to the same run_id",
+        "FAST-LIO map or point cloud layer is nonempty",
+        "Z state source is explicitly the Gazebo rangefinder surrogate"
+      ]
+    }
+  },
+  "evidence_profiles": {
+    "standard_g10_augmentation_run_packet_v1": {
+      "required_artifacts": [
+        "RUN_MANIFEST.json",
+        "runtime_export_manifest.json",
+        "runtime_log_manifest.json",
+        "controller_source_audit.json",
+        "controller_profile_snapshot.json",
+        "augmentation_profile_snapshot.json",
+        "ablation_pair_manifest.json",
+        "metrics.json",
+        "threshold_report.json",
+        "tracking.csv",
+        "review.md"
+      ]
+    },
+    "standard_g9_controller_run_packet_v1": {
+      "required_artifacts": [
+        "RUN_MANIFEST.json",
+        "runtime_export_manifest.json",
+        "runtime_log_manifest.json",
+        "controller_source_audit.json",
+        "controller_profile_snapshot.json",
+        "metrics.json",
+        "threshold_report.json",
+        "tracking.csv",
+        "review.md"
+      ]
+    },
+    "standard_fastlio_eval_packet_v1": {
+      "required_artifacts": [
+        "RUN_MANIFEST.json",
+        "runtime_export_manifest.json",
+        "runtime_log_manifest.json",
+        "metrics.json",
+        "threshold_report.json",
+        "tracking.csv",
+        "raw/localization.csv",
+        "raw/map_summary.json",
+        "review.md"
+      ]
+    },
+    "standard_run_packet_v1": {
+      "required_artifacts": [
+        "RUN_MANIFEST.json",
+        "runtime_export_manifest.json",
+        "runtime_log_manifest.json",
+        "metrics.json",
+        "threshold_report.json",
+        "tracking.csv",
+        "review.md"
+      ]
+    }
+  }
+}

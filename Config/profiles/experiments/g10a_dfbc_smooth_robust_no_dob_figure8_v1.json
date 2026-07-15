@@ -1,0 +1,35 @@
+{
+  "experiment_profile": {
+    "id": "g10a_dfbc_smooth_robust_no_dob_figure8_v1",
+    "version": 1,
+    "description": "G10-A DOB/ESO ablation A profile: DFBC smooth bounded controller with disturbance observer explicitly disabled on figure-eight tracking",
+    "goal": "G10-A",
+    "scenario_profile": "sunray150_obstacle_figure8_v1",
+    "plant_profile": "sunray150_gazebo_v1",
+    "sensor_profile": "mid360_imu_height_camera_v1",
+    "state_source_profile": "px4_mavros_fused_v1",
+    "height_source_profile": "px4_or_gazebo_rangefinder_proxy_v1",
+    "truth_profile": "gazebo_truth_eval_only_v1",
+    "frequency_profile": "attitude_thrust_100hz_v1",
+    "trajectory_profile": "figure8_v1",
+    "planner_profile": "none",
+    "controller_profile": "dfbc_smooth_robust_attitude_thrust_v1",
+    "augmentation_profile": "dfbc_dob_eso_disabled_v1",
+    "safety_profile": "basic_limiter_v1",
+    "adapter_profile": "mavros_attitude_thrust_v1",
+    "fault_profile": "none",
+    "disturbance_profile": "none",
+    "display_profile": "rviz_gazebo_v1",
+    "evaluation_profile": "tracking_metrics_v1",
+    "runtime_profile": "sunray_ros1_gazebo_classic_v1",
+    "runtime_export_profile": "sunray_px4ctrl_runtime_export_v1",
+    "evidence_profile": "standard_g10_augmentation_run_packet_v1",
+    "forbidden_claims": [
+      "G10-A accepted",
+      "DOB/ESO improvement proven without paired enabled run",
+      "unknown-wind robustness accepted",
+      "MWORKS generated controller accepted",
+      "PX4-native uORB deployment"
+    ]
+  }
+}

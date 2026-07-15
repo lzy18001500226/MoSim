@@ -49,7 +49,7 @@ def write_json(path: str | Path | None, payload: dict[str, Any]) -> None:
     output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def compact_xyzi_by_z(source: Any, min_z: float, max_points: int) -> tuple[Any, dict[str, Any]]:
+def compact_xyzi_by_z(source: Any, min_z: float, max_z: float, max_points: int) -> tuple[Any, dict[str, Any]]:
     from sensor_msgs.msg import PointCloud2, PointField
     from std_msgs.msg import Header
 
@@ -59,14 +59,17 @@ def compact_xyzi_by_z(source: Any, min_z: float, max_points: int) -> tuple[Any, 
     intensity_offset = offsets.get("intensity")
     endian = ">" if source.is_bigendian else "<"
     source_count = int(source.width) * int(source.height)
-    total = min(source_count, int(max_points))
+    sample_stride = max(1, math.ceil(source_count / int(max_points))) if source_count > 0 else 1
     point_step = int(source.point_step)
     data = bytes(source.data)
 
     retained: list[tuple[float, float, float, float]] = []
+    sampled_count = 0
     finite_count = 0
     dropped_below_min_z = 0
-    for index in range(total):
+    dropped_above_max_z = 0
+    for index in range(0, source_count, sample_stride):
+        sampled_count += 1
         base = index * point_step
         try:
             x = struct.unpack_from(endian + "f", data, base + offsets["x"])[0]
@@ -84,6 +87,9 @@ def compact_xyzi_by_z(source: Any, min_z: float, max_points: int) -> tuple[Any, 
         finite_count += 1
         if z < min_z:
             dropped_below_min_z += 1
+            continue
+        if z > max_z:
+            dropped_above_max_z += 1
             continue
         if not math.isfinite(intensity):
             intensity = z
@@ -111,11 +117,14 @@ def compact_xyzi_by_z(source: Any, min_z: float, max_points: int) -> tuple[Any, 
     output.data = bytes(packed)
     stats = {
         "source_point_count": source_count,
-        "sampled_point_count": total,
+        "sampled_point_count": sampled_count,
+        "sample_stride": sample_stride,
         "finite_point_count": finite_count,
         "retained_point_count": len(retained),
         "dropped_below_min_z": dropped_below_min_z,
+        "dropped_above_max_z": dropped_above_max_z,
         "min_z": min_z,
+        "max_z": max_z,
         "source_frame_id": str(source.header.frame_id),
     }
     return output, stats
@@ -126,6 +135,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--input-topic", default="/grid_map/occupancy_inflate")
     parser.add_argument("--output-topic", default="/mosim/review/occupancy_inflate_above_floor")
     parser.add_argument("--min-z", type=float, default=0.95)
+    parser.add_argument("--max-z", type=float, default=float("inf"))
     parser.add_argument("--max-points", type=int, default=250000)
     parser.add_argument("--output-json", type=Path)
     parser.add_argument("--dry-run", action="store_true")
@@ -143,6 +153,7 @@ def main(argv: list[str]) -> int:
             "input_topic": args.input_topic,
             "output_topic": args.output_topic,
             "min_z": args.min_z,
+            "max_z": args.max_z,
             "scope": "review_only_not_planner_input",
         }
         write_json(args.output_json, payload)
@@ -179,7 +190,7 @@ def main(argv: list[str]) -> int:
 
         def handle_cloud(self, msg: Any) -> None:
             self.counts["received"] += 1
-            output, stats = compact_xyzi_by_z(msg, args.min_z, args.max_points)
+            output, stats = compact_xyzi_by_z(msg, args.min_z, args.max_z, args.max_points)
             self.last_stats = stats
             self.pub.publish(output)
             self.counts["published"] += 1
@@ -193,6 +204,7 @@ def main(argv: list[str]) -> int:
                 "input_topic": args.input_topic,
                 "output_topic": args.output_topic,
                 "min_z": args.min_z,
+                "max_z": args.max_z,
                 "scope": "review_only_not_planner_input",
                 "uptime_s": round(time.time() - self.started_at, 3),
                 "counts": self.counts,
@@ -242,6 +254,7 @@ def run_ros1_filter(args: argparse.Namespace, stop_requested: dict[str, bool]) -
             "input_topic": args.input_topic,
             "output_topic": args.output_topic,
             "min_z": args.min_z,
+            "max_z": args.max_z,
             "scope": "review_only_not_planner_input",
             "uptime_s": round(time.time() - started_at, 3),
             "counts": counts,
@@ -252,7 +265,7 @@ def run_ros1_filter(args: argparse.Namespace, stop_requested: dict[str, bool]) -
     def handle_cloud(msg: Any) -> None:
         nonlocal last_stats
         counts["received"] += 1
-        output, stats = compact_xyzi_by_z(msg, args.min_z, args.max_points)
+        output, stats = compact_xyzi_by_z(msg, args.min_z, args.max_z, args.max_points)
         last_stats = stats
         pub.publish(output)
         counts["published"] += 1

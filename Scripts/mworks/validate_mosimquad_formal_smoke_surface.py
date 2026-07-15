@@ -590,7 +590,7 @@ def build_future_surface(matrix: list[dict[str, Any]]) -> dict[str, Any]:
         "request_id": REQUEST_ID,
         "status": "prepared_static_only",
         "preconditions": [
-            "CoAgentOps/PMO must provide a reusable existing MWORKS/Sysplorer attach route before live work.",
+            "legacy ops patrol or PMO must provide a reusable existing MWORKS/Sysplorer attach route before live work.",
             "Stop on demo, login, activation, authorization, GUI error-report, mixed license, visible unknown, unavailable, or unknown GUI/API state.",
             "Use targeted model_manager(load_file, force_reload=true) followed by check_model(model_names=[...]); avoid check_model(reload_mo_path=...).",
             "Do not call ClearAll or ChangeDirectory.",

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the machine-readable CoAgent capability index.
+"""Validate the machine-readable MoSim capability index.
 
 The capability index is a router, not an authority grant. This checker keeps
 the JSON companion aligned with the human Markdown index and makes sure each
@@ -17,7 +17,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_INDEX = ROOT / "CoAgent" / "capabilities" / "capability_index.json"
+DEFAULT_INDEX = ROOT / "Config" / "capabilities" / "capability_index.json"
 MARKDOWN_INDEX = ROOT / "Docs" / "Index" / "capability_index.md"
 
 REQUIRED_TOP_FIELDS = [
@@ -262,7 +262,7 @@ def validate_index(index: dict[str, Any], *, markdown_path: Path = MARKDOWN_INDE
     if missing_from_json:
         findings.append({
             "severity": "error",
-            "field": "CoAgent/capabilities/capability_index.json",
+            "field": "Config/capabilities/capability_index.json",
             "reason": "markdown_ids_missing_from_json",
             "message": "Markdown ids missing from JSON index: " + ", ".join(missing_from_json),
         })

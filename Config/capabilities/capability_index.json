@@ -1,0 +1,533 @@
+{
+  "schema_version": 1,
+  "status": "single_thread_machine_readable_index",
+  "updated_at": "2026-06-25",
+  "purpose": "Machine-readable companion to Docs/Index/capability_index.md. It routes agents to existing surfaces, skills, scripts, workflows, and checkers. It does not grant authority.",
+  "authority_model": "router_not_authority",
+  "consultation_order": [
+    "shared_core_rule",
+    "role_view_and_authority",
+    "current_user_instruction_and_local_goal_scope",
+    "capability_index_row",
+    "owning_workflow_skill_or_checker",
+    "evidence_or_blocker"
+  ],
+  "capabilities": [
+    {
+      "id": "codex.visible_thread.dispatch",
+      "display_name": "Codex visible thread dispatch",
+      "family": "codex_threading",
+      "use_when": [
+        "explicit legacy cleanup, audit, or historical packet review is requested",
+        "current single-thread MoSim work must not select this as the execution route"
+      ],
+      "owner_docs": [
+        "Config/protocol/communication_contract.md",
+        "Docs/Workflows/coagent_ops_patrol_workflow.md",
+        "Docs/Workflows/mosim_visible_dispatch_adapter.md"
+      ],
+      "existing_assets": [
+        "Config/protocol/templates/visible_thread_dispatch_packet.json",
+        "Config/protocol/templates/visible_thread_dispatch_ticket.json"
+      ],
+      "stop_actions": [
+        "do_not_treat_native_send_success_as_task_success",
+        "do_not_remote_steer_new_work_while_critical_task_runs_without_authority",
+        "do_not_use_for_current_single_thread_engineering_work"
+      ],
+      "evidence_gates": [
+        "dispatch_ticket",
+        "native_send_readback",
+        "runtime_lease_or_first_durable_artifact",
+        "return_or_blocker_packet"
+      ],
+      "health_or_checker": [
+        "Scripts/quality/check_dispatch_ticket_slo.py",
+        "Scripts/quality/check_agent_task_native_surface_gate.py"
+      ],
+      "status": "legacy_reference"
+    },
+    {
+      "id": "codex.thread_lifecycle",
+      "display_name": "Codex App thread lifecycle",
+      "family": "codex_threading",
+      "use_when": [
+        "explicit legacy cleanup, audit, or historical packet review is requested",
+        "current single-thread MoSim work must not select this as the execution route"
+      ],
+      "owner_docs": [
+        "AGENTS.md",
+        "Docs/Workflows/agent_orchestration.md"
+      ],
+      "existing_assets": [
+        "Config/legacy/department_threads.json"
+      ],
+      "stop_actions": [
+        "do_not_create_fork_archive_or_rename_visible_threads_without_pmo_or_user_approval",
+        "do_not_use_for_current_single_thread_engineering_work"
+      ],
+      "evidence_gates": [
+        "thread_registry_entry",
+        "explicit_lifecycle_authority",
+        "post_action_readback"
+      ],
+      "health_or_checker": [
+        "Config/legacy/department_threads.json"
+      ],
+      "status": "legacy_reference"
+    },
+    {
+      "id": "automation.recurring_patrol",
+      "display_name": "Automation and recurring patrol",
+      "family": "automation",
+      "use_when": [
+        "explicit legacy cleanup, audit, or historical packet review is requested",
+        "current single-thread MoSim work must not select this as the execution route"
+      ],
+      "owner_docs": [
+        "Docs/Workflows/coagent_ops_patrol_workflow.md"
+      ],
+      "existing_assets": [
+        "Docs/Workflows/mainline_operations_board.md",
+        "Results/agent_packets/"
+      ],
+      "stop_actions": [
+        "do_not_rely_on_target_thread_automation_to_interrupt_a_busy_or_wedged_target",
+        "do_not_silently_rewrite_pmo_policy",
+        "do_not_use_for_current_single_thread_engineering_work"
+      ],
+      "evidence_gates": [
+        "patrol_packet_or_board_update",
+        "dispatch_ticket_slo_when_dispatching",
+        "clear_notify_or_dont_notify_decision"
+      ],
+      "health_or_checker": [
+        "Scripts/quality/check_dispatch_ticket_slo.py"
+      ],
+      "status": "legacy_reference"
+    },
+    {
+      "id": "hooks.preflight",
+      "display_name": "Native hooks and preflight",
+      "family": "safety_enforcement",
+      "use_when": [
+        "a hard safety boundary needs executable enforcement",
+        "path, secret, destructive command, broad Git, packet, schema, or runtime gate needs checking"
+      ],
+      "owner_docs": [
+        "Scripts/hooks/README.md",
+        "Docs/Workflows/tooling_assets_governance.md"
+      ],
+      "existing_assets": [
+        "Scripts/hooks/preflight.py",
+        "Scripts/hooks/codex_native_hook.py",
+        "Scripts/quality/"
+      ],
+      "stop_actions": [
+        "do_not_move_enforceable_safety_rules_into_prose_only"
+      ],
+      "evidence_gates": [
+        "hook_result",
+        "quality_script_report",
+        "targeted_test_result"
+      ],
+      "health_or_checker": [
+        "Scripts/hooks/preflight.py",
+        "Scripts/quality/"
+      ]
+    },
+    {
+      "id": "mworks.sysplorer_mcp",
+      "display_name": "MWORKS and Sysplorer MCP",
+      "family": "mworks",
+      "use_when": [
+        "formal model operation is authorized",
+        "model check, simulation, Sysblock wiring, or result evidence is required"
+      ],
+      "owner_docs": [
+        "Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md",
+        "Docs/Skills/Mworks/mworks-simulation-evidence/SKILL.md",
+        "Docs/Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md"
+      ],
+      "existing_assets": [
+        "Docs/Skills/Mworks/"
+      ],
+      "stop_actions": [
+        "stop_on_login_license_authorization_or_gui_error",
+        "do_not_use_live_mworks_without_current_live_gate"
+      ],
+      "evidence_gates": [
+        "mworks_live_gate",
+        "model_check_or_simulation_result",
+        "source_label_and_result_evidence"
+      ],
+      "health_or_checker": [
+        "Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md"
+      ]
+    },
+    {
+      "id": "mworks.window_review",
+      "display_name": "MWORKS window review and screenshot evidence",
+      "family": "mworks",
+      "use_when": [
+        "MWORKS activation, login, license, layout, or result-window evidence is needed",
+        "the task has explicit user authorization for any foreground/login/action step",
+        "ordinary screenshots should use non-disruptive background capture where possible"
+      ],
+      "owner_docs": [
+        "Docs/Skills/Desktop/window-capture-evidence/SKILL.md",
+        "Docs/Skills/Desktop/window-ui-action-control/SKILL.md",
+        "Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md"
+      ],
+      "existing_assets": [
+        "Docs/Skills/Desktop/window-capture-evidence/SKILL.md",
+        "Docs/Skills/Desktop/window-ui-action-control/SKILL.md"
+      ],
+      "stop_actions": [
+        "do_not_infer_click_or_login_authority_from_screenshot_capability",
+        "stop_on_ambiguous_window_or_hidden_login_license_blocker",
+        "do_not_maximize_except_for_activation_login_license_authorization_evidence"
+      ],
+      "evidence_gates": [
+        "foreground_or_maximized_target_main_window_evidence_when_hidden_ui_blocker_possible",
+        "screenshot_path",
+        "window_metadata"
+      ],
+      "health_or_checker": [
+        "Docs/Skills/Desktop/window-capture-evidence/SKILL.md"
+      ]
+    },
+    {
+      "id": "desktop.window.capture_evidence",
+      "display_name": "Desktop window screenshot evidence",
+      "family": "desktop_window",
+      "use_when": [
+        "background screenshot evidence is needed",
+        "foreground or maximized review evidence is explicitly required",
+        "blank or minimized-window capture triage is needed"
+      ],
+      "owner_docs": [
+        "Docs/Skills/Desktop/window-capture-evidence/SKILL.md",
+        "Docs/Index/api_index.md"
+      ],
+      "existing_assets": [
+        "Docs/Skills/Desktop/window-capture-evidence/SKILL.md"
+      ],
+      "stop_actions": [
+        "screenshot_permission_does_not_authorize_clicks",
+        "do_not_login_save_restart_send_approve_close_archive_or_lifecycle_act"
+      ],
+      "evidence_gates": [
+        "screenshot_path_or_skipped_minimized_manifest",
+        "window_metadata",
+        "blank_or_ambiguous_retry_note"
+      ],
+      "health_or_checker": [
+        "Docs/Skills/Desktop/window-capture-evidence/SKILL.md"
+      ]
+    },
+    {
+      "id": "desktop.window.ui_action_control",
+      "display_name": "Desktop window UI action control",
+      "family": "desktop_window",
+      "use_when": [
+        "background click or control invocation is explicitly authorized",
+        "foreground click then minimize is explicitly authorized",
+        "safe low-risk UI operation or dry-run action planning is required"
+      ],
+      "owner_docs": [
+        "Docs/Skills/Desktop/window-ui-action-control/SKILL.md",
+        "Docs/Index/api_index.md"
+      ],
+      "existing_assets": [
+        "Docs/Skills/Desktop/window-ui-action-control/SKILL.md"
+      ],
+      "stop_actions": [
+        "do_not_infer_permission_from_capability",
+        "stop_on_ambiguous_target_blank_or_loading_ui_or_workflow_ban"
+      ],
+      "evidence_gates": [
+        "pre_action_target_proof",
+        "post_action_readback",
+        "action_evidence_or_blocker"
+      ],
+      "health_or_checker": [
+        "Docs/Skills/Desktop/window-ui-action-control/SKILL.md"
+      ]
+    },
+    {
+      "id": "ue.runtime_or_source",
+      "display_name": "Unreal Editor runtime or source checks",
+      "family": "unreal",
+      "use_when": [
+        "explicit S11 UE/frontend display or scene work is needed",
+        "UE command echo, reversible actor probe, or source-static UE check is explicitly scoped"
+      ],
+      "owner_docs": [
+        "Docs/Workflows/unreal_renderer.md",
+        "Docs/Skills/Unreal/mosim-unreal/SKILL.md"
+      ],
+      "existing_assets": [
+        "Docs/Skills/Unreal/mosim-unreal/SKILL.md",
+        "Scripts/UE5/"
+      ],
+      "stop_actions": [
+        "do_not_claim_current_ros1_gazebo_px4_control_loop_success_from_ue_screenshot_or_source_only",
+        "do_not_claim_runtime_ack_planner_truth_or_final_scene_acceptance_from_source_or_screenshot_only"
+      ],
+      "evidence_gates": [
+        "capture_bundle",
+        "validator_output",
+        "reversible_probe_evidence_when_live_scope_is_authorized"
+      ],
+      "health_or_checker": [
+        "Scripts/UE5/probe_unreal_mcp_listener.py",
+        "Scripts/UE5/probe_unreal_editor_mcp_tools.py"
+      ]
+    },
+    {
+      "id": "sunray.ros1_runtime_review",
+      "display_name": "Current Sunray ROS1, Gazebo, PX4, MAVROS, RViz, and MID360 review",
+      "family": "sunray_ros1",
+      "use_when": [
+        "current P0 ROS1 Sunray/Gazebo/PX4/MAVROS/px4ctrl minimum big system is in scope",
+        "current Sunray150 takeoff hover land, figure-8, trajectory, or Gazebo Classic review is in scope",
+        "current real MID360 PointCloud2, trajectory, map, frame, or RViz review is in scope"
+      ],
+      "owner_docs": [
+        "Docs/Design/架构.md",
+        "Docs/Workflows/sunray_ros1_current_runtime_lane.md",
+        "Docs/Workflows/sunray_ros1_execution_checklist.md",
+        "Docs/Index/sunray_migration_index.md"
+      ],
+      "existing_assets": [
+        "References/Sunray",
+        "References/Lab/localization_slam/FAST_LIO",
+        "Scripts/sunray/",
+        "Config/rviz/sunray_ros1_mid360_cloud_review.rviz",
+        "Config/rviz/sunray_ros1_trajectory_review.rviz"
+      ],
+      "stop_actions": [
+        "do_not_substitute_x500_px4_ros2_for_current_sunray_ros1_review",
+        "do_not_download_replacement_fast_lio_when_references_lab_fast_lio_exists",
+        "do_not_accept_empty_pointcloud2_as_mid360_evidence",
+        "do_not_report_headless_pass_as_gazebo_gui_visual_acceptance",
+        "do_not_use_ue_screenshot_as_current_control_loop_proof"
+      ],
+      "evidence_gates": [
+        "sunray_ros1_result_dir",
+        "nonempty_uav1_livox_lidar_pointcloud2_data",
+        "px4_mavros_px4ctrl_log_or_metrics",
+        "gazebo_or_rviz_review_manifest_when_visual_review_is_claimed",
+        "blocker_packet_when_current_lane_cannot_be_repaired_without_architecture_change"
+      ],
+      "health_or_checker": [
+        "Scripts/sunray/probe_sunray_ros1_topics.sh",
+        "Scripts/sunray/run_sunray_ros1_native_mission_gate.sh"
+      ]
+    },
+    {
+      "id": "ros2.runtime_review",
+      "display_name": "Historical or future ROS2, RViz2, and FAST-LIO runtime review",
+      "family": "ros2",
+      "use_when": [
+        "future/reference native robotics transport, localization, map, or planner review is explicitly authorized",
+        "PMO or user explicitly reopens the ROS2/PX4 route"
+      ],
+      "owner_docs": [
+        "Docs/Workflows/ros2_runtime_setup.md"
+      ],
+      "existing_assets": [
+        "Scripts/UE5/check_ros_mapping_runtime_env.py"
+      ],
+      "stop_actions": [
+        "do_not_use_as_current_sunray_ros1_review_lane",
+        "do_not_fake_pointcloud_map_tf_or_odom",
+        "do_not_publish_setpoints_without_explicit_live_gate"
+      ],
+      "evidence_gates": [
+        "ros2_evidence_bundle",
+        "tf_map_pointcloud_checks",
+        "blocker_packet_when_runtime_grounding_absent"
+      ],
+      "health_or_checker": [
+        "Scripts/UE5/check_ros_mapping_runtime_env.py"
+      ]
+    },
+    {
+      "id": "git.devops",
+      "display_name": "Git and DevOps",
+      "family": "devops",
+      "use_when": [
+        "review, commit, push, reference drain, or repository hygiene is explicitly in scope"
+      ],
+      "owner_docs": [
+        "AGENTS.md",
+        "Docs/Workflows/documentation_governance.md"
+      ],
+      "existing_assets": [
+        "AGENTS.md",
+        "Docs/Workflows/documentation_governance.md"
+      ],
+      "stop_actions": [
+        "no_broad_staging",
+        "no_force_push_reset_clean_or_hidden_ignore_backlog_without_approval"
+      ],
+      "evidence_gates": [
+        "path_limited_diff_or_status",
+        "diff_whitespace_check",
+        "explicit_staged_file_review"
+      ],
+      "health_or_checker": [
+        "git diff --check"
+      ]
+    },
+    {
+      "id": "github.issue_pr",
+      "display_name": "GitHub issue and PR",
+      "family": "devops",
+      "use_when": [
+        "GitHub issue, PR, or comment work is explicitly requested"
+      ],
+      "owner_docs": [
+        "Docs/Index/capability_index.md"
+      ],
+      "existing_assets": [
+        "Docs/Index/capability_index.md"
+      ],
+      "stop_actions": [
+        "do_not_publish_external_issue_or_pr_without_user_approval_when_content_is_uncertain_or_private"
+      ],
+      "evidence_gates": [
+        "source_links",
+        "draft_issue_or_pr_text",
+        "user_confirmation_when_needed"
+      ],
+      "health_or_checker": [
+        "GitHub skill or gh CLI when configured"
+      ]
+    },
+    {
+      "id": "browser.web_research",
+      "display_name": "Browser and web research",
+      "family": "research",
+      "use_when": [
+        "current external facts, official docs, or local web UI testing are needed"
+      ],
+      "owner_docs": [
+        "Docs/Index/capability_index.md"
+      ],
+      "existing_assets": [
+        "Docs/Index/capability_index.md"
+      ],
+      "stop_actions": [
+        "use_primary_sources_for_technical_claims",
+        "do_not_rely_on_stale_memory_for_unstable_facts"
+      ],
+      "evidence_gates": [
+        "source_links",
+        "local_browser_screenshot_or_test_output_when_testing_ui"
+      ],
+      "health_or_checker": [
+        "web search",
+        "Browser plugin when local UI testing is needed"
+      ]
+    },
+    {
+      "id": "docs.secretary",
+      "display_name": "Documentation secretary",
+      "family": "documentation",
+      "use_when": [
+        "context consistency, deduplication, candidate promotion, file organization, or index repair is needed"
+      ],
+      "owner_docs": [
+        "Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md",
+        "Docs/Workflows/documentation_governance.md",
+        "Docs/Workflows/session_memory_migration.md"
+      ],
+      "existing_assets": [
+        "Docs/Index/",
+        "Docs/Cache/design_intake/"
+      ],
+      "stop_actions": [
+        "does_not_define_pmo_runtime_authority",
+        "does_not_accept_engineering_results",
+        "does_not_silently_rewrite_policy"
+      ],
+      "evidence_gates": [
+        "reviewable_patch",
+        "index_update",
+        "explicit_cache_or_promotion_status"
+      ],
+      "health_or_checker": [
+        "Docs/Index/workflow_index.md"
+      ]
+    },
+    {
+      "id": "capability.cards",
+      "display_name": "Capability cards and resolution",
+      "family": "capability_governance",
+      "use_when": [
+        "tool health, route ownership, fallback, claim ceiling, or duplicate-asset prevention must be recorded",
+        "a task may create a new skill, workflow, script, checker, MCP adapter, hook, or plugin route"
+      ],
+      "owner_docs": [
+        "Docs/Workflows/tooling_assets_governance.md",
+        "Docs/Index/capability_index.md"
+      ],
+      "existing_assets": [
+        "Config/capabilities/capability_index.json",
+        "Config/protocol/templates/capability_template.yaml",
+        "Config/protocol/templates/capability_resolution.json"
+      ],
+      "stop_actions": [
+        "do_not_infer_permission_from_capability_resolution",
+        "do_not_treat_legacy_protocol_templates_as_current_execution_routes",
+        "do_not_create_duplicate_tool_assets_before_checking_existing_routes"
+      ],
+      "evidence_gates": [
+        "capability_index_checker_pass",
+        "capability_resolution_checker_pass_when_used",
+        "explicit_legacy_packet_scope_when_protocol_templates_are_used"
+      ],
+      "health_or_checker": [
+        "Scripts/quality/check_capability_index.py",
+        "Scripts/quality/check_capability_resolution.py"
+      ],
+      "notes": "Capability resolution is current routing metadata; Config/protocol templates are legacy/design material unless packet work is explicitly reopened."
+    },
+    {
+      "id": "review.evidence_gate",
+      "display_name": "Review and evidence gate",
+      "family": "review",
+      "use_when": [
+        "acceptance, blocker classification, or claim-boundary review is needed"
+      ],
+      "owner_docs": [
+        "Docs/Workflows/agent_project_operating_layers.md",
+        "Config/profiles/README.md",
+        "Docs/Workflows/pre_submit_check.md"
+      ],
+      "existing_assets": [
+        "Scripts/quality/check_run_evidence.py",
+        "Scripts/quality/check_department_packet_contract.py"
+      ],
+      "stop_actions": [
+        "chat_summary_alone_is_not_acceptance_evidence"
+      ],
+      "evidence_gates": [
+        "results_runs_manifest",
+        "run_evidence_gate",
+        "result_packet",
+        "review_package",
+        "screenshot_log_metric_or_manifest_evidence"
+      ],
+      "health_or_checker": [
+        "Scripts/quality/check_run_evidence.py",
+        "Scripts/quality/check_department_packet_contract.py",
+        "Scripts/quality/check_candidate_submission_manifest.py",
+        "Scripts/quality/check_evidence_map_claim_boundary.py"
+      ]
+    }
+  ]
+}

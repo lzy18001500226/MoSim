@@ -311,7 +311,7 @@ def _has_patrol_reference(packet: dict[str, Any]) -> bool:
 
 def _gate_uses_patrol(gate: dict[str, Any]) -> bool:
     owner = str(gate.get("activation_patrol_owner", "")).casefold()
-    return "coagentops" in owner or "coagent" in owner or gate.get("recent_patrol_required") is not None
+    return "legacy ops patrol" in owner or "ops patrol" in owner or gate.get("recent_patrol_required") is not None
 
 
 def _add(findings: list[dict[str, str]], field: str, reason: str, message: str) -> None:
@@ -374,12 +374,12 @@ def _check_task(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
         for field in sorted(REQUIRED_PATROL_TASK_FIELDS):
             if field not in gate:
                 _add(findings, f"mworks_live_gate.{field}", "missing_required_patrol_gate_field", field)
-        if not _contains_snippet(gate.get("activation_patrol_owner"), "CoAgentOps"):
+        if not _contains_snippet(gate.get("activation_patrol_owner"), "legacy ops patrol"):
             _add(
                 findings,
                 "mworks_live_gate.activation_patrol_owner",
-                "activation_patrol_owner_not_coagentops",
-                "MWORKS activation patrol owner must be CoAgentOps for department dispatches.",
+                "activation_patrol_owner_not_legacy_ops_patrol",
+                "MWORKS activation patrol owner must be legacy ops patrol for department dispatches.",
             )
     elif legacy_sentinel_mode:
         for bool_field in ["activation_sentinel_required", "background_screenshot_required"]:
@@ -404,7 +404,7 @@ def _check_task(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
             findings,
             "mworks_live_gate.activation_patrol_owner",
             "missing_patrol_or_sentinel_gate",
-            "MWORKS department tasks must either reference CoAgentOps activation patrol or explicitly use current-turn sentinel mode.",
+            "MWORKS department tasks must either reference legacy ops patrol activation patrol or explicitly use current-turn sentinel mode.",
         )
 
     required_return_names = set(REQUIRED_RETURN_FIELDS)
@@ -489,7 +489,7 @@ def _check_return(packet: dict[str, Any], *, expect: str) -> dict[str, Any]:
             findings,
             "mworks_activation_patrol_reference",
             "department_return_missing_patrol_or_window_evidence",
-            "MWORKS department return/blocker packets must reference the latest CoAgentOps patrol or include current-turn sentinel/window evidence.",
+            "MWORKS department return/blocker packets must reference the latest legacy ops patrol or include current-turn sentinel/window evidence.",
         )
 
     if expect == "static" and not evidence_touched and not has_sentinel:

@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MoSimAgentResultPacket",
+  "type": "object",
+  "required": [
+    "task_id",
+    "status",
+    "canonical_status",
+    "task_class",
+    "summary"
+  ],
+  "properties": {
+    "task_id": { "type": "string", "minLength": 1 },
+    "task_class": { "$ref": "#/$defs/task_class" },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "ready",
+        "working",
+        "input_required",
+        "auth_required",
+        "review_required",
+        "blocked",
+        "failed",
+        "completed",
+        "canceled",
+        "rejected",
+        "superseded",
+        "queued",
+        "claimed",
+        "running",
+        "done",
+        "done_with_concerns",
+        "cancelled"
+      ]
+    },
+    "canonical_status": { "$ref": "#/$defs/canonical_status" },
+    "summary": { "type": "string", "minLength": 1 },
+    "project_goal": { "type": "string" },
+    "phase_objective": { "type": "string" },
+    "canonical_task_goal": { "type": "string" },
+    "conversation_objective": { "type": "string" },
+    "owner": { "type": "string" },
+    "role": { "type": "string" },
+    "read_scope": { "type": "array", "items": { "type": "string" } },
+    "write_scope": { "type": "array", "items": { "type": "string" } },
+    "files_changed": { "type": "array", "items": { "type": "string" } },
+    "commands_run": { "type": "array", "items": { "type": "string" } },
+    "evidence": { "type": "array", "items": { "type": "string" } },
+    "department_local_goal": { "type": "string" },
+    "critical_path_steps": { "type": "array", "items": { "type": "string" } },
+    "parallelizable_slices": { "type": "array", "items": { "type": "string" } },
+    "subagent_plan": {
+      "type": "string",
+      "enum": ["", "used", "available_but_not_useful", "unavailable", "unsafe"]
+    },
+    "subagent_plan_reason": { "type": "string" },
+    "subagents_used": { "type": "array", "items": true },
+    "verification_gates": { "type": "array", "items": { "type": "string" } },
+    "manual_review_or_blocker_triggers": { "type": "array", "items": { "type": "string" } },
+    "expected_engineering_outputs": { "type": "array", "items": { "type": "string" } },
+    "actual_engineering_outputs": { "type": "array", "items": { "type": "string" } },
+    "claim_boundary": { "type": "array", "items": { "type": "string" } },
+    "semantic_boundary": { "$ref": "#/$defs/semantic_boundary" },
+    "native_surface_gate": { "$ref": "#/$defs/native_surface_gate" },
+    "expected_return_path": { "type": "string" },
+    "blocker_return_path": { "type": "string" },
+    "thread_execution_surface_restored": { "type": "boolean" },
+    "business_task_or_patrol_completed": { "type": "boolean" },
+    "domain_preflight_before": { "type": "object", "additionalProperties": true },
+    "phase_checkpoints": { "type": "array", "items": true },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "blockers": { "type": "array", "items": { "type": "string" } },
+    "review_status": {
+      "type": "string",
+      "enum": ["not_required", "pending", "accepted", "needs_review", "rejected"]
+    },
+    "acceptance_state": {
+      "type": "string",
+      "enum": ["met", "partially_met", "not_met", "unknown"]
+    },
+    "checkpoint": { "type": "string" },
+    "continue_or_stop": {
+      "type": "string",
+      "enum": ["continue", "stop", "ask_user", "escalate", "review"]
+    },
+    "escalation": { "type": "string" },
+    "residual_risk": { "type": "array", "items": { "type": "string" } },
+    "known_exclusions": { "type": "array", "items": { "type": "string" } },
+    "next_recommended_action": { "type": "string" },
+    "worktree_path": { "type": "string" },
+    "branch_or_base": { "type": "string" },
+    "merge_owner": { "type": "string" },
+    "close_condition": { "type": "string" },
+    "git_status": { "type": "string" },
+    "review_owner": { "type": "string" },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["event_type", "actor", "summary", "timestamp"],
+        "properties": {
+          "event_type": { "type": "string" },
+          "actor": { "type": "string" },
+          "summary": { "type": "string" },
+          "timestamp": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "$defs": {
+    "canonical_status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "ready",
+        "working",
+        "input_required",
+        "auth_required",
+        "review_required",
+        "blocked",
+        "failed",
+        "completed",
+        "canceled",
+        "rejected",
+        "superseded"
+      ]
+    },
+    "task_class": {
+      "type": "string",
+      "enum": [
+        "simple_message",
+        "clear_task",
+        "complicated_task",
+        "complex_task",
+        "chaotic_incident",
+        "disordered_task",
+        "long_running_task"
+      ]
+    },
+    "native_surface_gate": {
+      "type": "object",
+      "properties": {
+        "selected_native_surface": {
+          "oneOf": [
+            { "type": "string", "minLength": 1 },
+            { "type": "array", "items": { "type": "string", "minLength": 1 } }
+          ]
+        },
+        "surface_selection_reason": { "type": "string", "minLength": 1 },
+        "rejected_surfaces": { "type": "object", "additionalProperties": true },
+        "worktree_required": { "type": "boolean" },
+        "worktree_decision": { "type": "string", "minLength": 1 },
+        "expected_return_path": { "type": "string", "minLength": 1 },
+        "blocker_return_path": { "type": "string", "minLength": 1 },
+        "target_thread": { "type": "string", "minLength": 1 },
+        "target_thread_id": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "semantic_boundary": {
+      "type": "object",
+      "required": [
+        "decision_scope",
+        "state_class",
+        "evidence_minimum",
+        "allowed_actions",
+        "forbidden_actions",
+        "stop_triggers",
+        "next_owner"
+      ],
+      "properties": {
+        "decision_scope": {
+          "type": "string",
+          "enum": [
+            "visible_thread",
+            "mworks_window_patrol",
+            "mworks_live_task",
+            "ros2_runtime",
+            "ue_runtime",
+            "asset_review",
+            "other"
+          ]
+        },
+        "state_class": { "type": "string", "minLength": 1 },
+        "evidence_minimum": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "allowed_actions": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "forbidden_actions": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "stop_triggers": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "next_owner": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

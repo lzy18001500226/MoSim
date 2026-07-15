@@ -507,7 +507,7 @@ def build_runner_plan(
             "expected_result_variables": rel(DEFAULT_INPUT_DIR / "expected_result_variables.json"),
         },
         "future_preflight_boundary": [
-            "A future live task must consume current CoAgentOps/PMO reusable-window patrol or run its own allowed preflight if the task packet requires it.",
+            "A future live task must consume current legacy ops patrol or PMO reusable-window patrol or run its own allowed preflight if the task packet requires it.",
             "Stop before load/check/simulate on demo, login, activation, authorization, GUI error-report, mixed license, visible unknown, unavailable, or unknown state.",
             "Do not open, close, restart, maximize, screenshot, log into, or operate MWORKS from this static runner.",
         ],

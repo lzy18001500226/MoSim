@@ -553,13 +553,13 @@ def build_gap_matrix(manifest: dict[str, Any], audit: dict[str, Any], manifest_p
                         str(b1["no_goal_odom_tf_rviz_preflight_032"].get("evidence_dir", ""))
                     ),
                     "prior_dispatch_surface_blockers": {
-                        "coagentops_blocker": packet_state(
+                        "legacy ops patrol_blocker": packet_state(
                             str(
                                 as_mapping(
                                     b1["no_goal_odom_tf_rviz_preflight_032"].get(
                                         "prior_dispatch_surface_blockers"
                                     )
-                                ).get("coagentops_blocker_packet", "")
+                                ).get("legacy ops patrol_blocker_packet", "")
                             )
                         ),
                         "pmo_dispatch_blocker": packet_state(

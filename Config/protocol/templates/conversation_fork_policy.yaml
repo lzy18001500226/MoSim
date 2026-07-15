@@ -1,0 +1,16 @@
+template_type: conversation_fork_policy
+template_version: 1
+edge_id: EDGE-YYYYMMDD-001
+task_id: MOSIM-AGENT-TASK-YYYYMMDD-001
+team_id: TEAM-YYYYMMDD-001
+source_conversation_id: ""
+target_conversation_id: ""
+operation: start
+# start | fork | ephemeral_fork | detached_review | rollback | compact
+reason: ""
+input_context_pack: ""
+slice_goal: ""
+authority_boundary: ""
+close_condition: ""
+manual_creation_required: true
+automatic_creation_approved: false

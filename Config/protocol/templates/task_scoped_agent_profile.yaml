@@ -1,0 +1,64 @@
+# agent task-scoped agent profile template.
+# Use for one visible conversation under one canonical task or task-team slice.
+
+task_agent_id: ""
+conversation_label: "MoSim｜专项｜"
+agent_type: "task_scoped"
+
+parent_task_id: ""
+parent_agent: ""
+canonical_task_goal: ""
+slice_name: ""
+slice_objective: ""
+
+read_scope:
+  - "/mnt/c/Users/HP/Desktop/MoSim"
+write_scope: []
+context_pack_path: ""
+worktree_binding:
+  kind: "none" # none | task | review | integration | ephemeral
+  path: ""
+  branch_or_base: ""
+  merge_owner: ""
+  close_owner: ""
+
+dependencies:
+  upstream_packets: []
+  downstream_reviewers: []
+
+checkpoint_plan:
+  cadence: "at meaningful progress, blocker, appetite risk, or before irreversible action"
+  checkpoint_packet_path: ""
+
+result_contract:
+  result_packet_path: ""
+  required_evidence: []
+  required_files_changed_summary: true
+  required_commands_run_summary: true
+  required_risks_and_exclusions: true
+
+review_gate:
+  owner: ""
+  required_before_close: true
+  accepted_review_states:
+    - accepted
+    - accepted_with_waiver
+    - rejected
+    - needs_review
+
+local_stop_condition: ""
+
+forbidden_actions:
+  - redefine_canonical_task_goal
+  - create_child_durable_conversation
+  - own_final_user_acceptance
+  - own_git_release
+  - keep_reusable_lessons_only_in_chat
+  - touch_external_paths_without_explicit_user_request
+
+close_condition:
+  - result_packet_imported
+  - review_state_recorded
+  - knowledge_delta_promoted_or_declined
+  - worktree_merged_discarded_or_owned
+  - conversation_edge_closed

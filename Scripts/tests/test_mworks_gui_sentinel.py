@@ -149,7 +149,7 @@ def test_window_manager_cleanup_without_authorization_does_not_close(tmp_path: P
         ],
         "Cleanup",
         "-AuthorizedRequestId",
-        "COAGENTOPS-TEST",
+        "legacy ops patrol-TEST",
     )
     assert payload["action_count"] == 1
     action = payload["actions"][0]
@@ -203,11 +203,11 @@ def test_window_manager_authorized_close_only_for_expected_safe_error(tmp_path: 
         ],
         "CloseSafeErrors",
         "-AuthorizedRequestId",
-        "COAGENTOPS-MWORKS-WINDOW-MANAGEMENT-AUTH-GATE-REPAIR-20260608-006",
+        "legacy ops patrol-MWORKS-WINDOW-MANAGEMENT-AUTH-GATE-REPAIR-20260608-006",
         "-ExpectedHwnd",
         "601",
         "-IncidentPacketPath",
-        "Results/agent_packets/blockers/COAGENTOPS-TEST.json",
+        "Results/agent_packets/blockers/legacy ops patrol-TEST.json",
     )
     close_actions = [action for action in payload["actions"] if action["action"] == "close_safe_error"]
     assert len(close_actions) == 2

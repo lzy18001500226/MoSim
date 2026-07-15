@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "metrics_schema_id": "mosim_metrics_schema_v1",
+  "description": "Metric definitions used by ExperimentProfile preflight. This file defines names and evidence expectations only; it does not contain measured values.",
+  "metric_definitions": {
+    "rmse": {
+      "unit": "m",
+      "source": "tracking.csv + truth_profile",
+      "scope": "3D tracking error unless evaluation profile narrows the axis"
+    },
+    "max_error": {
+      "unit": "m",
+      "source": "tracking.csv + truth_profile",
+      "scope": "reported with phase/window labels; steady max must be separated from transient max"
+    },
+    "steady_state_error": {
+      "unit": "m",
+      "source": "tracking.csv steady window",
+      "scope": "hover or terminal hold windows"
+    },
+    "overshoot": {
+      "unit": "m or percent",
+      "source": "reference step/phase markers + tracking.csv",
+      "scope": "axis-specific when used for height or step response"
+    },
+    "settling_time": {
+      "unit": "s",
+      "source": "reference step/phase markers + tracking.csv",
+      "scope": "time to enter and remain inside declared tolerance"
+    },
+    "saturation_ratio": {
+      "unit": "ratio",
+      "source": "controller diagnostics or command log",
+      "scope": "fraction of samples touching declared limiter"
+    },
+    "ate": {
+      "unit": "m",
+      "source": "FAST-LIO odometry + truth_profile",
+      "scope": "absolute trajectory error for localization evaluation"
+    },
+    "rpe": {
+      "unit": "m/rad",
+      "source": "FAST-LIO odometry + truth_profile",
+      "scope": "relative pose error over declared interval"
+    },
+    "pose_error": {
+      "unit": "m/rad",
+      "source": "localization estimate + truth_profile",
+      "scope": "position and attitude error"
+    },
+    "velocity_error": {
+      "unit": "m/s",
+      "source": "state estimate + truth_profile",
+      "scope": "linear velocity error"
+    },
+    "delay": {
+      "unit": "s",
+      "source": "message stamps and receive stamps",
+      "scope": "localization or state-source latency"
+    },
+    "drop_rate": {
+      "unit": "ratio",
+      "source": "topic statistics or log sequence gaps",
+      "scope": "sensor/localization message loss"
+    },
+    "map_completeness": {
+      "unit": "ratio",
+      "source": "registered cloud/map coverage against scenario truth or review mask",
+      "scope": "FAST-LIO mapping review"
+    },
+    "state_source_delta": {
+      "unit": "m/rad",
+      "source": "baseline state source vs replacement state source",
+      "scope": "A/B state-source comparison"
+    },
+    "xy_error": {
+      "unit": "m",
+      "source": "tracking.csv + truth_profile",
+      "scope": "horizontal tracking error"
+    },
+    "z_error": {
+      "unit": "m",
+      "source": "tracking.csv + truth_profile",
+      "scope": "height tracking error"
+    }
+  },
+  "threshold_profiles": {
+    "tracking_metrics_v1": {
+      "description": "PX4/MAVROS fused px4ctrl baseline acceptance thresholds. Target RMSE is 2 cm; maximum tracking error allowance is 5 cm.",
+      "thresholds": {
+        "rmse": {"max": 0.02, "unit": "m", "severity": "target"},
+        "max_error": {"max": 0.05, "unit": "m", "severity": "limit"},
+        "steady_state_error": {"max": 0.02, "unit": "m", "severity": "target"},
+        "overshoot": {"max": 0.05, "unit": "m", "severity": "limit"},
+        "settling_time": {"max": 5.0, "unit": "s", "severity": "target"},
+        "saturation_ratio": {"max": 0.05, "unit": "ratio", "severity": "limit"}
+      }
+    },
+    "fastlio_px4_ekf_ab_metrics_v1": {
+      "description": "FAST-LIO through PX4 EKF closed-loop A/B threshold profile. This is separated from the PX4/MAVROS fused baseline leaderboard.",
+      "thresholds": {
+        "rmse": {"max": 0.05, "unit": "m", "severity": "limit"},
+        "max_error": {"max": 0.10, "unit": "m", "severity": "limit"},
+        "steady_state_error": {"max": 0.05, "unit": "m", "severity": "limit"},
+        "overshoot": {"max": 0.10, "unit": "m", "severity": "limit"},
+        "settling_time": {"max": 8.0, "unit": "s", "severity": "limit"},
+        "saturation_ratio": {"max": 0.10, "unit": "ratio", "severity": "limit"},
+        "state_source_delta": {"max": 0.05, "unit": "m/rad", "severity": "limit"}
+      }
+    },
+    "hybrid_z_tracking_metrics_v1": {
+      "description": "Hybrid-Z FAST-LIO XY/Yaw plus height surrogate threshold profile.",
+      "thresholds": {
+        "rmse": {"max": 0.05, "unit": "m", "severity": "limit"},
+        "max_error": {"max": 0.10, "unit": "m", "severity": "limit"},
+        "steady_state_error": {"max": 0.05, "unit": "m", "severity": "limit"},
+        "overshoot": {"max": 0.10, "unit": "m", "severity": "limit"},
+        "settling_time": {"max": 8.0, "unit": "s", "severity": "limit"},
+        "xy_error": {"max": 0.05, "unit": "m", "severity": "limit"},
+        "z_error": {"max": 0.05, "unit": "m", "severity": "limit"}
+      }
+    },
+    "fastlio_independent_metrics_v1": {
+      "description": "FAST-LIO independent localization evaluation thresholds. This profile is not a controller closed-loop acceptance gate.",
+      "thresholds": {
+        "ate": {"max": 0.10, "unit": "m", "severity": "limit"},
+        "rpe": {"max": 0.10, "unit": "m/rad", "severity": "limit"},
+        "pose_error": {"max": 0.10, "unit": "m/rad", "severity": "limit"},
+        "velocity_error": {"max": 0.20, "unit": "m/s", "severity": "limit"},
+        "delay": {"max": 0.10, "unit": "s", "severity": "limit"},
+        "drop_rate": {"max": 0.05, "unit": "ratio", "severity": "limit"},
+        "map_completeness": {"min": 0.80, "unit": "ratio", "severity": "limit"}
+      }
+    }
+  }
+}
