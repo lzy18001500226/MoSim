@@ -1,0 +1,1011 @@
+Panels:
+  - Class: rviz/Displays
+    Help Height: 78
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /goal1
+      Splitter Ratio: 0.4909090995788574
+    Tree Height: 918
+  - Class: rviz/Selection
+    Name: Selection
+  - Class: rviz/Tool Properties
+    Expanded:
+      - /2D Pose Estimate1
+      - /2D Nav Goal1
+      - /Publish Point1
+    Name: Tool Properties
+    Splitter Ratio: 0.5886790156364441
+  - Class: rviz/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+  - Class: rviz/Time
+    Experimental: false
+    Name: Time
+    SyncMode: 0
+    SyncSource: ""
+Preferences:
+  PromptSaveOnExit: true
+Toolbars:
+  toolButtonStyle: 2
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Class: rviz/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+      Marker Alpha: 1
+      Marker Scale: 3
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        {}
+      Update Interval: 0
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: trajectories_found
+      Name: AllTrajs
+      Namespaces:
+        traj0: true
+        traj1: true
+        traj10: true
+        traj100: true
+        traj101: true
+        traj102: true
+        traj103: true
+        traj104: true
+        traj105: true
+        traj106: true
+        traj107: true
+        traj108: true
+        traj109: true
+        traj11: true
+        traj110: true
+        traj111: true
+        traj112: true
+        traj113: true
+        traj114: true
+        traj115: true
+        traj116: true
+        traj117: true
+        traj118: true
+        traj119: true
+        traj12: true
+        traj120: true
+        traj121: true
+        traj122: true
+        traj123: true
+        traj124: true
+        traj125: true
+        traj126: true
+        traj127: true
+        traj128: true
+        traj129: true
+        traj13: true
+        traj130: true
+        traj131: true
+        traj132: true
+        traj133: true
+        traj134: true
+        traj135: true
+        traj136: true
+        traj137: true
+        traj138: true
+        traj139: true
+        traj14: true
+        traj140: true
+        traj141: true
+        traj142: true
+        traj143: true
+        traj144: true
+        traj145: true
+        traj146: true
+        traj147: true
+        traj148: true
+        traj149: true
+        traj15: true
+        traj150: true
+        traj151: true
+        traj152: true
+        traj153: true
+        traj154: true
+        traj155: true
+        traj156: true
+        traj157: true
+        traj158: true
+        traj159: true
+        traj16: true
+        traj160: true
+        traj161: true
+        traj162: true
+        traj163: true
+        traj164: true
+        traj165: true
+        traj166: true
+        traj167: true
+        traj168: true
+        traj169: true
+        traj17: true
+        traj170: true
+        traj171: true
+        traj172: true
+        traj173: true
+        traj174: true
+        traj175: true
+        traj176: true
+        traj177: true
+        traj178: true
+        traj179: true
+        traj18: true
+        traj180: true
+        traj181: true
+        traj182: true
+        traj183: true
+        traj184: true
+        traj185: true
+        traj186: true
+        traj187: true
+        traj188: true
+        traj189: true
+        traj19: true
+        traj190: true
+        traj191: true
+        traj192: true
+        traj193: true
+        traj194: true
+        traj195: true
+        traj196: true
+        traj197: true
+        traj198: true
+        traj199: true
+        traj2: true
+        traj20: true
+        traj200: true
+        traj201: true
+        traj202: true
+        traj203: true
+        traj204: true
+        traj205: true
+        traj206: true
+        traj207: true
+        traj208: true
+        traj209: true
+        traj21: true
+        traj210: true
+        traj211: true
+        traj212: true
+        traj213: true
+        traj214: true
+        traj215: true
+        traj216: true
+        traj217: true
+        traj218: true
+        traj219: true
+        traj22: true
+        traj220: true
+        traj221: true
+        traj222: true
+        traj223: true
+        traj224: true
+        traj225: true
+        traj226: true
+        traj227: true
+        traj228: true
+        traj229: true
+        traj23: true
+        traj230: true
+        traj231: true
+        traj232: true
+        traj233: true
+        traj234: true
+        traj235: true
+        traj236: true
+        traj237: true
+        traj238: true
+        traj239: true
+        traj24: true
+        traj240: true
+        traj241: true
+        traj242: true
+        traj243: true
+        traj244: true
+        traj245: true
+        traj246: true
+        traj247: true
+        traj248: true
+        traj249: true
+        traj25: true
+        traj250: true
+        traj251: true
+        traj252: true
+        traj253: true
+        traj254: true
+        traj255: true
+        traj256: true
+        traj257: true
+        traj258: true
+        traj259: true
+        traj26: true
+        traj260: true
+        traj261: true
+        traj262: true
+        traj263: true
+        traj264: true
+        traj265: true
+        traj266: true
+        traj267: true
+        traj268: true
+        traj269: true
+        traj27: true
+        traj270: true
+        traj271: true
+        traj272: true
+        traj273: true
+        traj274: true
+        traj275: true
+        traj276: true
+        traj277: true
+        traj278: true
+        traj279: true
+        traj28: true
+        traj280: true
+        traj281: true
+        traj282: true
+        traj283: true
+        traj284: true
+        traj285: true
+        traj286: true
+        traj287: true
+        traj288: true
+        traj289: true
+        traj29: true
+        traj290: true
+        traj291: true
+        traj292: true
+        traj293: true
+        traj294: true
+        traj295: true
+        traj296: true
+        traj297: true
+        traj298: true
+        traj299: true
+        traj3: true
+        traj30: true
+        traj300: true
+        traj301: true
+        traj302: true
+        traj303: true
+        traj304: true
+        traj305: true
+        traj306: true
+        traj307: true
+        traj308: true
+        traj309: true
+        traj31: true
+        traj310: true
+        traj311: true
+        traj312: true
+        traj313: true
+        traj314: true
+        traj315: true
+        traj316: true
+        traj317: true
+        traj318: true
+        traj319: true
+        traj32: true
+        traj320: true
+        traj321: true
+        traj322: true
+        traj323: true
+        traj324: true
+        traj325: true
+        traj326: true
+        traj327: true
+        traj328: true
+        traj329: true
+        traj33: true
+        traj330: true
+        traj331: true
+        traj332: true
+        traj333: true
+        traj334: true
+        traj335: true
+        traj336: true
+        traj337: true
+        traj338: true
+        traj339: true
+        traj34: true
+        traj340: true
+        traj341: true
+        traj342: true
+        traj343: true
+        traj344: true
+        traj345: true
+        traj346: true
+        traj347: true
+        traj348: true
+        traj349: true
+        traj35: true
+        traj350: true
+        traj351: true
+        traj352: true
+        traj353: true
+        traj354: true
+        traj355: true
+        traj356: true
+        traj357: true
+        traj358: true
+        traj359: true
+        traj36: true
+        traj360: true
+        traj361: true
+        traj362: true
+        traj363: true
+        traj364: true
+        traj365: true
+        traj366: true
+        traj367: true
+        traj368: true
+        traj369: true
+        traj37: true
+        traj370: true
+        traj371: true
+        traj372: true
+        traj373: true
+        traj374: true
+        traj375: true
+        traj376: true
+        traj377: true
+        traj378: true
+        traj379: true
+        traj38: true
+        traj380: true
+        traj381: true
+        traj382: true
+        traj383: true
+        traj384: true
+        traj385: true
+        traj386: true
+        traj387: true
+        traj388: true
+        traj389: true
+        traj39: true
+        traj390: true
+        traj391: true
+        traj392: true
+        traj393: true
+        traj394: true
+        traj395: true
+        traj396: true
+        traj397: true
+        traj398: true
+        traj399: true
+        traj4: true
+        traj40: true
+        traj400: true
+        traj401: true
+        traj402: true
+        traj403: true
+        traj404: true
+        traj405: true
+        traj406: true
+        traj407: true
+        traj408: true
+        traj409: true
+        traj41: true
+        traj410: true
+        traj411: true
+        traj412: true
+        traj413: true
+        traj414: true
+        traj415: true
+        traj416: true
+        traj417: true
+        traj418: true
+        traj419: true
+        traj42: true
+        traj420: true
+        traj421: true
+        traj422: true
+        traj423: true
+        traj424: true
+        traj425: true
+        traj426: true
+        traj427: true
+        traj428: true
+        traj429: true
+        traj43: true
+        traj430: true
+        traj431: true
+        traj432: true
+        traj433: true
+        traj434: true
+        traj435: true
+        traj436: true
+        traj437: true
+        traj438: true
+        traj439: true
+        traj44: true
+        traj440: true
+        traj441: true
+        traj442: true
+        traj443: true
+        traj444: true
+        traj445: true
+        traj446: true
+        traj447: true
+        traj448: true
+        traj449: true
+        traj45: true
+        traj450: true
+        traj451: true
+        traj452: true
+        traj453: true
+        traj454: true
+        traj455: true
+        traj456: true
+        traj457: true
+        traj458: true
+        traj459: true
+        traj46: true
+        traj460: true
+        traj461: true
+        traj462: true
+        traj463: true
+        traj464: true
+        traj465: true
+        traj466: true
+        traj467: true
+        traj468: true
+        traj469: true
+        traj47: true
+        traj470: true
+        traj471: true
+        traj472: true
+        traj473: true
+        traj474: true
+        traj475: true
+        traj476: true
+        traj477: true
+        traj478: true
+        traj479: true
+        traj48: true
+        traj480: true
+        traj481: true
+        traj482: true
+        traj483: true
+        traj484: true
+        traj485: true
+        traj486: true
+        traj487: true
+        traj488: true
+        traj489: true
+        traj49: true
+        traj490: true
+        traj491: true
+        traj492: true
+        traj493: true
+        traj494: true
+        traj495: true
+        traj496: true
+        traj497: true
+        traj498: true
+        traj499: true
+        traj5: true
+        traj50: true
+        traj500: true
+        traj501: true
+        traj502: true
+        traj503: true
+        traj504: true
+        traj505: true
+        traj506: true
+        traj507: true
+        traj508: true
+        traj509: true
+        traj51: true
+        traj510: true
+        traj511: true
+        traj512: true
+        traj513: true
+        traj514: true
+        traj515: true
+        traj516: true
+        traj517: true
+        traj518: true
+        traj519: true
+        traj52: true
+        traj520: true
+        traj521: true
+        traj522: true
+        traj523: true
+        traj524: true
+        traj525: true
+        traj526: true
+        traj527: true
+        traj528: true
+        traj529: true
+        traj53: true
+        traj530: true
+        traj531: true
+        traj532: true
+        traj533: true
+        traj534: true
+        traj535: true
+        traj536: true
+        traj537: true
+        traj538: true
+        traj539: true
+        traj54: true
+        traj540: true
+        traj541: true
+        traj542: true
+        traj543: true
+        traj544: true
+        traj545: true
+        traj546: true
+        traj547: true
+        traj548: true
+        traj549: true
+        traj55: true
+        traj550: true
+        traj551: true
+        traj552: true
+        traj553: true
+        traj554: true
+        traj555: true
+        traj556: true
+        traj557: true
+        traj558: true
+        traj559: true
+        traj56: true
+        traj560: true
+        traj561: true
+        traj562: true
+        traj563: true
+        traj564: true
+        traj565: true
+        traj566: true
+        traj567: true
+        traj568: true
+        traj569: true
+        traj57: true
+        traj570: true
+        traj571: true
+        traj572: true
+        traj573: true
+        traj574: true
+        traj575: true
+        traj576: true
+        traj577: true
+        traj578: true
+        traj579: true
+        traj58: true
+        traj580: true
+        traj581: true
+        traj582: true
+        traj583: true
+        traj584: true
+        traj585: true
+        traj586: true
+        traj587: true
+        traj588: true
+        traj589: true
+        traj59: true
+        traj590: true
+        traj591: true
+        traj592: true
+        traj593: true
+        traj594: true
+        traj595: true
+        traj596: true
+        traj597: true
+        traj598: true
+        traj599: true
+        traj6: true
+        traj60: true
+        traj600: true
+        traj601: true
+        traj602: true
+        traj603: true
+        traj604: true
+        traj605: true
+        traj606: true
+        traj607: true
+        traj608: true
+        traj609: true
+        traj61: true
+        traj610: true
+        traj611: true
+        traj612: true
+        traj613: true
+        traj614: true
+        traj615: true
+        traj616: true
+        traj617: true
+        traj618: true
+        traj619: true
+        traj62: true
+        traj620: true
+        traj621: true
+        traj63: true
+        traj64: true
+        traj65: true
+        traj66: true
+        traj67: true
+        traj68: true
+        traj69: true
+        traj7: true
+        traj70: true
+        traj71: true
+        traj72: true
+        traj73: true
+        traj74: true
+        traj75: true
+        traj76: true
+        traj77: true
+        traj78: true
+        traj79: true
+        traj8: true
+        traj80: true
+        traj81: true
+        traj82: true
+        traj83: true
+        traj84: true
+        traj85: true
+        traj86: true
+        traj87: true
+        traj88: true
+        traj89: true
+        traj9: true
+        traj90: true
+        traj91: true
+        traj92: true
+        traj93: true
+        traj94: true
+        traj95: true
+        traj96: true
+        traj97: true
+        traj98: true
+        traj99: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: best_trajectory_found
+      Name: BestTraj
+      Namespaces:
+        traj622: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/Marker
+      Enabled: false
+      Marker Topic: /convex_hulls
+      Name: ConvexHulls
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: false
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: traj_obstacle_colored_int_0
+      Name: MarkerArray0
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: traj_obstacle_colored_int_1
+      Name: MarkerArray1
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: traj_obstacle_colored_int_2
+      Name: MarkerArray2
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: traj_obstacle_colored_int_3
+      Name: MarkerArray3
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: traj_obstacle_colored_int_4
+      Name: MarkerArray4
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: traj_obstacle_colored_int_5
+      Name: MarkerArray5
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: traj_obstacle_colored_int_6
+      Name: MarkerArray6
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: best_trajectory_found_int_0
+      Name: BestTraj0
+      Namespaces:
+        traj622: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: best_trajectory_found_int_1
+      Name: BestTraj1
+      Namespaces:
+        traj622: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: best_trajectory_found_int_2
+      Name: BestTraj2
+      Namespaces:
+        traj622: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: best_trajectory_found_int_3
+      Name: BestTraj3
+      Namespaces:
+        traj622: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: best_trajectory_found_int_4
+      Name: BestTraj4
+      Namespaces:
+        traj622: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: best_trajectory_found_int_5
+      Name: BestTraj5
+      Namespaces:
+        traj622: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: best_trajectory_found_int_6
+      Name: BestTraj6
+      Namespaces:
+        traj622: true
+      Queue Size: 100
+      Value: true
+    - Alpha: 0.05000000074505806
+      BoundColor: 0; 0; 0
+      Class: decomp_rviz_plugins/PolyhedronArray
+      Enabled: true
+      MeshColor: 46; 52; 54
+      Name: Obstacles0
+      Queue Size: 10
+      Scale: 0.009999999776482582
+      State: Both
+      Topic: poly_jps_int_0
+      Unreliable: false
+      Value: true
+      VsColor: 239; 41; 41
+      VsScale: 1
+    - Alpha: 0.05000000074505806
+      BoundColor: 0; 0; 0
+      Class: decomp_rviz_plugins/PolyhedronArray
+      Enabled: true
+      MeshColor: 46; 52; 54
+      Name: Obstacles1
+      Queue Size: 10
+      Scale: 0.009999999776482582
+      State: Both
+      Topic: poly_jps_int_1
+      Unreliable: false
+      Value: true
+      VsColor: 239; 41; 41
+      VsScale: 1
+    - Alpha: 0.05000000074505806
+      BoundColor: 0; 0; 0
+      Class: decomp_rviz_plugins/PolyhedronArray
+      Enabled: true
+      MeshColor: 46; 52; 54
+      Name: Obstacles2
+      Queue Size: 10
+      Scale: 0.009999999776482582
+      State: Both
+      Topic: poly_jps_int_2
+      Unreliable: false
+      Value: true
+      VsColor: 239; 41; 41
+      VsScale: 1
+    - Alpha: 0.05000000074505806
+      BoundColor: 0; 0; 0
+      Class: decomp_rviz_plugins/PolyhedronArray
+      Enabled: true
+      MeshColor: 46; 52; 54
+      Name: Obstacles3
+      Queue Size: 10
+      Scale: 0.009999999776482582
+      State: Both
+      Topic: poly_jps_int_3
+      Unreliable: false
+      Value: true
+      VsColor: 239; 41; 41
+      VsScale: 1
+    - Alpha: 0.05000000074505806
+      BoundColor: 0; 0; 0
+      Class: decomp_rviz_plugins/PolyhedronArray
+      Enabled: true
+      MeshColor: 46; 52; 54
+      Name: Obstacles4
+      Queue Size: 10
+      Scale: 0.009999999776482582
+      State: Both
+      Topic: poly_jps_int_4
+      Unreliable: false
+      Value: true
+      VsColor: 239; 41; 41
+      VsScale: 1
+    - Alpha: 0.05000000074505806
+      BoundColor: 0; 0; 0
+      Class: decomp_rviz_plugins/PolyhedronArray
+      Enabled: true
+      MeshColor: 46; 52; 54
+      Name: Obstacles5
+      Queue Size: 10
+      Scale: 0.009999999776482582
+      State: Both
+      Topic: poly_jps_int_5
+      Unreliable: false
+      Value: true
+      VsColor: 239; 41; 41
+      VsScale: 1
+    - Alpha: 0.05000000074505806
+      BoundColor: 0; 0; 0
+      Class: decomp_rviz_plugins/PolyhedronArray
+      Enabled: true
+      MeshColor: 46; 52; 54
+      Name: Obstacles6
+      Queue Size: 10
+      Scale: 0.009999999776482582
+      State: Both
+      Topic: poly_jps_int_6
+      Unreliable: false
+      Value: true
+      VsColor: 239; 41; 41
+      VsScale: 1
+    - Alpha: 1
+      Class: rviz/PointStamped
+      Color: 204; 41; 204
+      Enabled: true
+      History Length: 1
+      Name: goal
+      Queue Size: 10
+      Radius: 0.20000000298023224
+      Topic: /oct_goal
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Class: rviz/PointStamped
+      Color: 237; 212; 0
+      Enabled: true
+      History Length: 1
+      Name: PointStamped
+      Queue Size: 10
+      Radius: 0.10000000149011612
+      Topic: /oct_initial
+      Unreliable: false
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 238; 238; 236
+    Default Light: true
+    Fixed Frame: world
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+      Hide Inactive Objects: true
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+    - Class: rviz/SetInitialPose
+      Theta std deviation: 0.2617993950843811
+      Topic: /initialpose
+      X std deviation: 0.5
+      Y std deviation: 0.5
+    - Class: rviz/SetGoal
+      Topic: /move_base_simple/goal
+    - Class: rviz/PublishPoint
+      Single click: true
+      Topic: /clicked_point
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 12.462751388549805
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Field of View: 0.7853981852531433
+      Focal Point:
+        X: -0.5112427473068237
+        Y: -0.04878632724285126
+        Z: 0.826960027217865
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.7697969675064087
+      Target Frame: <Fixed Frame>
+      Yaw: 0.8131442070007324
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 1376
+  Hide Left Dock: false
+  Hide Right Dock: false
+  QMainWindow State: 000000ff00000000fd0000000400000000000001e6000004c2fc0200000008fb0000001200530065006c0065006300740069006f006e010000003d0000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c00610079007301000000de00000421000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f000004c2fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d000004c2000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000009bd0000003efc0100000002fb0000000800540069006d00650100000000000009bd000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000006bc000004c200000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Selection:
+    collapsed: false
+  Time:
+    collapsed: false
+  Tool Properties:
+    collapsed: false
+  Views:
+    collapsed: false
+  Width: 2493
+  X: 927
+  Y: 1149
