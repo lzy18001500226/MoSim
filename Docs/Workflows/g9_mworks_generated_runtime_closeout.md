@@ -257,18 +257,24 @@ alone is not closure.
 - The strict `official_pid` retry reached the pre-takeoff gate but remained
   blocked at the declared `0.5 deg` roll/pitch threshold. This is valid
   fail-closed evidence and not a takeoff pass.
-- The latest sensor-bias calibration A/B did not produce a mission metrics
-  file or start `px4ctrl`; `mavros_state_first.txt` records that the ROS master
-  was not running yet. The PX4 log also contains a transient `no gyro
-  selected` warning, but the available evidence does not establish it as the
-  termination cause. Classify this attempt as
+- The earlier calibration-A/B attempt, `retry4`, did not produce a mission
+  metrics file or start `px4ctrl`; `mavros_state_first.txt` records that the
+  ROS master was not running yet. The PX4 log also contains a transient `no
+  gyro selected` warning, but the available evidence does not establish it as
+  the termination cause. Classify `retry4` as
   `ros_master_or_mavros_startup_blocked`, not as evidence that calibration
   fixed or worsened flight behavior.
+- The latest calibration-A/B attempt, `retry5`, started the Ubuntu-20.04
+  ROS/Gazebo/PX4/MAVROS stack, applied and read back all six sensor-bias
+  overrides, and reached `Takeoff detected`, but its enclosing 300 s timeout
+  stopped the still-live mission before metrics were written. Classify it as
+  `takeoff_hover_land_incomplete_outer_timeout`; it is neither a pass nor a
+  confirmed failed-flight result.
 
-The next permitted action is to validate the remaining PX4/Gazebo lifecycle
-and arming-health failure, then rerun the unchanged official-PID gate. Do not
-loosen the pre-takeoff threshold or proceed to other controllers until the
-shared baseline is either accepted or recorded as a confirmed blocker.
+The next permitted action is to rerun the unchanged official-PID gate with the
+full mission bounded timeout, after the shared ROS/Gazebo environment is idle.
+Do not loosen the pre-takeoff threshold or proceed to other controllers until
+the shared baseline is either accepted or recorded as a confirmed blocker.
 
 ### 9.2 Latest Calibration A/B Result
 
