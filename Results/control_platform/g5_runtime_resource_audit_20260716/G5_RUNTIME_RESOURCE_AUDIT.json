@@ -1,0 +1,30 @@
+{
+  "schema": "mosim.control_platform.g5_runtime_resource_audit.v1",
+  "observed_at": "2026-07-16T02:34:22+08:00",
+  "probe_type": "read_only",
+  "ubuntu_distro": "Ubuntu-20.04",
+  "observations": {
+    "ros_master_reachable": false,
+    "gazebo_process_present": false,
+    "px4_process_present": false,
+    "mavros_process_present": false,
+    "racer_process_present": false,
+    "port_9090_listener_present": true,
+    "residual_result_monitors": [1415, 1416, 1418]
+  },
+  "workflow_authority": "Docs/Workflows/mainline_operations_board.md",
+  "workflow_state": {
+    "shared_runtime_owner": "RACER current task",
+    "allowed_lane": "Docs/Workflows/non_gazebo_closeout_board_20260715.md",
+    "known_blocker": "Results/sunray_ros1/factory_l2_racer_host_resource_blocker_20260716/",
+    "blocker_class": "host_cpu_saturation"
+  },
+  "decision": "factory_runtime_pending_do_not_start",
+  "reason": "Process absence is not resource ownership release. The current board explicitly reserves shared ROS/Gazebo/PX4/MAVROS resources for RACER and directs other work to the non-Gazebo lane.",
+  "mutation_performed": false,
+  "required_reopen_evidence": [
+    "mainline board releases RACER ownership",
+    "fresh resource probe shows no conflicting runtime",
+    "target controller has a compatible adapter and allocator chain"
+  ]
+}
