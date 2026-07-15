@@ -373,6 +373,8 @@ References/**/*.rar
 References/**/*.tar
 References/**/*.tar.gz
 References/**/*.whl
+# Editor swap files are temporary artifacts and are never reference content.
+*.swp
 # PX4 board dist folders contain source/config inputs, not generated outputs.
 !References/PX4/PX4/boards/**/dist/
 !References/PX4/PX4/boards/**/dist/**
