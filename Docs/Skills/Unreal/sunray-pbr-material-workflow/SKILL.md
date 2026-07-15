@@ -112,7 +112,7 @@ Use existing material/tool libraries before hand-making fake colors.
 |---|---|
 | `Docs/Skills/Blender-MCP` | Poly Haven search/download/apply path for CC0 PBR textures and HDRI lighting. Its node path handles albedo, roughness, metallic, normal, displacement, AO, and ARM maps. |
 | `References/Blender/material` | Material Maker: procedural graph source for repeatable carbon, plastic, rubber, PCB, cable, metal, glass, lens, and heat-shrink materials. |
-| `References/Blender/armorpaint-main` | ArmorPaint: hand retouching and component-specific 3D PBR painting after UV unwrap when generic/procedural textures still look wrong. |
+| `References/Blender/armorpaint` | ArmorPaint: hand retouching and component-specific 3D PBR painting after UV unwrap when generic/procedural textures still look wrong. |
 | `References/Blender/xatlas` | UV atlas generation for STL/DAE pieces without usable UVs before painting or baking. |
 | `References/Blender/blender` | Assembly, material slots, node hookup, preview rendering, export staging. |
 
@@ -140,7 +140,7 @@ repositories just because a component looks grey. Use this order instead:
 
 1. Reuse local project assets and tools first:
    `UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/`,
-   `References/Blender/material`, `References/Blender/armorpaint-main`,
+   `References/Blender/material`, `References/Blender/armorpaint`,
    `References/Blender/xatlas`, and `Docs/Skills/Blender-MCP`.
 2. Use CC0 PBR libraries for generic material families only: carbon weave,
    rubber, black plastic, brushed/nickel metal, rough metal, glass/lens,

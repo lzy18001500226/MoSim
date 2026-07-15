@@ -25,8 +25,8 @@ modelica-library-workflow
 
 ```text
 activation sentinel / maximized target-window screenshot for live GUI/MCP work
-  -> engineering departments stop and return blocker on demo/login/license/error-report state
-  -> PMO/CoAgentOps may perform bounded official login recovery when authorized
+  -> current active thread stops and returns blocker on demo/login/license/error-report state
+  -> bounded official login recovery only when user-authorized
 session_manager
   -> model_manager
   -> get_components / lookup_component / get_component_ports / get_model_text
@@ -83,9 +83,9 @@ model file diff with documented replacement location
 6. If a library component meaning is unclear, call `get_lib_model_document`.
 7. For Sysblock topology, prefer official API/`ConnectPort` workflow in `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`; do not rely on hand-written `.mo` text as the verification source.
 8. Do not call `ClearAll`, `ChangeDirectory`, or broad workspace reset APIs for context resolution.
-9. For MWORKS/Sysplorer/Syslab department context tasks, reference the latest CoAgentOps 10-minute activation/window patrol when available. Return packets should include `mworks_activation_patrol_reference`, `mworks_activation_patrol_age_minutes` when known, `will_not_click_activation_login=true` for engineering departments, and `live_mworks_touched`; do not turn a context task into repeated activation probing.
-10. If no recent patrol exists and the context task needs live MCP/GUI work, run at most one bounded sentinel/API check or return a blocker. If current-turn sentinel/capture evidence is collected, inspect the JSON/capture/window-title evidence and classify `activation_state_observation` and `license_state`.
-11. If the patrol or current task evidence sees demo edition, login/activation prompt, authorization failure, GUI error-report dialog, mixed blocking license state, visible unknown blocking state, unavailable tooling, or unknown blocking evidence, engineering departments stop live context probing and return a `status=blocked` `license_or_login` or GUI blocker. Hidden Qt/browser-proxy/helper windows with no license/error text are risk evidence, not standalone blockers. Do not open a new MWORKS window or click login/activation controls from an engineering task. PMO/CoAgentOps may perform bounded official login recovery only when authorized by the user, using a secure credential source and redacting credentials from all docs/logs/packets/screenshot manifests/email/terminal output.
+9. For live MWORKS/Sysplorer/Syslab context tasks, reuse current activation/window evidence when available. Return packets should include `mworks_activation_reference` when known, `will_not_click_activation_login=true`, and `live_mworks_touched`; do not turn a context task into repeated activation probing.
+10. If no current activation/window evidence exists and the context task needs live MCP/GUI work, run at most one bounded sentinel/API check or return a blocker. If current-turn sentinel/capture evidence is collected, inspect the JSON/capture/window-title evidence and classify `activation_state_observation` and `license_state`.
+11. If current evidence sees demo edition, login/activation prompt, authorization failure, GUI error-report dialog, mixed blocking license state, visible unknown blocking state, unavailable tooling, or unknown blocking evidence, stop live context probing and return a `status=blocked` `license_or_login` or GUI blocker. Hidden Qt/browser-proxy/helper windows with no license/error text are risk evidence, not standalone blockers. Do not open a new MWORKS window or click login/activation controls unless the user has explicitly authorized bounded official recovery with a secure credential source and credential redaction.
 12. If context probing becomes live MWORKS graphical review, capture enough phase/foreground evidence to prove the reviewed wiring/layout state and return `mworks_phase_screenshots` plus `mworks_phase_observations`. If activation/license/login/authorization/GUI-error evidence appears mid-task, stop and return a P0 MWORKS infrastructure blocker.
 
 ## Failure Handling
@@ -96,4 +96,4 @@ model file diff with documented replacement location
 | port mismatch | stop, document expected vs actual ports, do not patch blindly |
 | model check fails | save error log, inspect model text, search docs |
 | GUI opens | continue using minimal MCP calls; do not close reusable MWORKS windows |
-| demo edition / activation lost / login prompt | engineering department stops live probing and returns blocker; PMO/CoAgentOps may perform bounded official login recovery under user authorization |
+| demo edition / activation lost / login prompt | stop live probing and return blocker; bounded official login recovery is allowed only under explicit user authorization |

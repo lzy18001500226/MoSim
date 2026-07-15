@@ -1,11 +1,20 @@
 # Agent Reference Classification
 
-> Status: active routing index. `Docs/Skills/Agent` has been merged into
-> `References/Agent`; do not recreate a separate Agent skills tree.
+> Status: reference classification index, not a current MoSim execution route.
+> The retired Agent skills tree formerly under Docs/Skills/Agent has been
+> merged into `References/Agent`; do not recreate a separate Agent skills tree.
+
+Current MoSim engineering work is single-thread and starts from `AGENTS.md`,
+`Docs/Workflows/new_conversation_context.md`, and
+`Docs/Workflows/mainline_operations_board.md`. Use this file only when a task
+explicitly asks for agent-development reference reuse, durable-agent research,
+legacy agent-runtime cleanup, or future UI/workflow inspiration. It must not be
+used to route current ROS1/Sunray/MWORKS engineering work.
 
 ## Principle
 
-Classify by what each upstream project can contribute to CoAgent:
+Classify by what each upstream project can contribute to future or legacy
+agent-runtime work:
 
 - reusable runtime/control-plane code,
 - UI or product surface we can adapt,
@@ -15,9 +24,10 @@ Classify by what each upstream project can contribute to CoAgent:
 - SDK/model plumbing,
 - low-priority or unrelated reference material.
 
-Default to reuse-first engineering. Before hand-writing CoAgent UI,
-orchestration, workflow, memory, security, skill, hook, or SDK plumbing, check
-the matching P0/P1 upstream category here and record one of these decisions:
+Default to reuse-first engineering for explicitly scoped agent-development
+work. Before hand-writing durable-agent UI, orchestration, workflow, memory,
+security, skill, hook, or SDK plumbing, check the matching P0/P1 upstream
+category here and record one of these decisions:
 
 - `reuse`: copy or vendor a component after license/security review;
 - `port`: reimplement the pattern using our stack and APIs;
@@ -25,7 +35,7 @@ the matching P0/P1 upstream category here and record one of these decisions:
 - `reject`: not compatible with our safety, license, or runtime boundary.
 
 For MCP/tooling questions, local mirrors are the first lookup surface. Check
-`CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md` and the relevant local
+`Docs/Index/reference_project_index.md` and the relevant local
 `References/Agent/Gateway`, `References/Agent/Memory`,
 `References/Agent/Security`, or `References/Agent/Skills` category before web
 search, online MCP registry browsing, or asking the user to download a project.
@@ -54,7 +64,7 @@ References/Agent/
   ReviewLater/
 Docs/Index/agent_project_classification.md
   <capability classification, reuse priority, and move plan>
-CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md
+Docs/Index/reference_project_index.md
   <stable master coverage index for all References/>
 ```
 
@@ -90,7 +100,7 @@ plugin MCP under `Skills`, and MoSim Unreal/Epic MCPs stay under
 
 ### P0: Migration Candidates
 
-Study first when implementing CoAgent. These are not just reading references;
+Study first when implementing legacy agent runtime. These are not just reading references;
 they are candidates for direct adaptation.
 
 | Project | Category | Reuse Target |
@@ -198,12 +208,12 @@ execution semantics.
 
 External communication gateways, IM/chat adapters, notification bridges, and
 human-intervention channels. Gateway projects are not the task source of truth.
-They receive CoAgent blocker, review, and result packets and deliver concise
+They receive legacy agent runtime blocker, review, and result packets and deliver concise
 messages to the user or operators.
 
 | Project | Notes |
 |---|---|
-| `cc-connect` | Multi-channel bridge for WeChat personal account, WeCom, Feishu, DingTalk, Telegram, Slack, Discord, QQ, hooks, Web UI, Management API, and Bridge WebSocket protocol. First candidate for CoAgent human-intervention notification experiments. |
+| `cc-connect` | Multi-channel bridge for WeChat personal account, WeCom, Feishu, DingTalk, Telegram, Slack, Discord, QQ, hooks, Web UI, Management API, and Bridge WebSocket protocol. First candidate for legacy agent runtime human-intervention notification experiments. |
 | `github-mcp-server` | Official GitHub MCP server reference for issues, PRs, code search, code scanning, and remote workflow toolset design. |
 | `playwright-mcp` | Browser automation and screenshot MCP reference. Prefer Codex Browser/headless Chrome for browser targets and Windows MCP/Win32/UI Automation for desktop GUI targets. Do not route MoSim desktop GUI work through Computer Use. |
 | `playwright-mcp-upstream-snapshot-20260606` | Duplicate upstream snapshot retained for dedupe review; primary route remains `playwright-mcp`. |
@@ -213,7 +223,7 @@ messages to the user or operators.
 ### Frameworks
 
 General agent frameworks. Prefer learning patterns over importing them as the
-core CoAgent runtime.
+core legacy agent runtime.
 
 | Project | Notes |
 |---|---|
@@ -348,7 +358,7 @@ Official SDKs, model APIs, tokenizers, and model/tool references.
 
 ### Domain
 
-Useful product/domain examples, but not first-line CoAgent infrastructure.
+Useful product/domain examples, but not first-line legacy agent runtime infrastructure.
 
 | Project | Notes |
 |---|---|
@@ -363,9 +373,9 @@ Do not start with these unless a task directly touches them.
 
 | Project | Reason |
 |---|---|
-| `ChatGPT-Exporter-main` | Chat export utility; not first-line CoAgent/MCP infrastructure |
-| `coding-interview-university` | General CS material, not CoAgent-specific |
-| `Pearl` | RL library; not central to coding/department CoAgent |
+| `ChatGPT-Exporter-main` | Chat export utility; not first-line agent-runtime/MCP infrastructure |
+| `coding-interview-university` | General CS material, not agent-runtime-specific |
+| `Pearl` | RL library; not central to coding/department legacy agent runtime |
 
 ## Physical Folder Plan
 
@@ -405,14 +415,14 @@ Before any physical move:
 
 ```bash
 python3 Scripts/reference/check_reference_index.py --json --strict
-rg "References/Agent/<project>" Docs CoAgent Scripts AGENTS.md PROGRESS.md
+rg "References/Agent/<project>" Docs Scripts AGENTS.md PROGRESS.md
 ```
 
 After each move, update:
 
-- `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md`,
+- `Docs/Index/reference_project_index.md`,
 - this file,
-- any `CoAgent/learning/audits/*` path references,
+- any archived legacy learning-audit path references,
 - scripts or docs discovered by `rg`.
 
 ## 2026-05-31 High-Star Import Batch

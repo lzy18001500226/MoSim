@@ -35,7 +35,7 @@ Do not describe a parameter set as Sunray150 identified truth until the matching
 ULog files, identification config, output YAML, and MWORKS verification result
 are all saved in the project evidence bundle.
 
-Architecture boundary: `Docs/Design/MoSim控制体系总览.md` is the
+Architecture boundary: `Docs/Design/架构/01_控制器平台/控制体系总览.md` is the
 current compact entry for deciding whether a value is geometry, Gazebo plugin
 seed, MWORKS dynamics, sensor extrinsic, or visual-only data. Parameters may
 enter a formal model/report only when their source label and acceptance gate are
@@ -103,7 +103,7 @@ Results/identification/sunray150/<date_or_run_id>/
 
 ## 3. Auxiliary Line: ETH data-driven-dynamics
 
-The local reference `References/Data/data-driven-dynamics/` is an auxiliary
+The local reference `References/Log/data-driven-dynamics/` is an auxiliary
 route for parameter structure, ULog topic expectations, and cross-checking. Do
 not modify the reference repository.
 
@@ -111,9 +111,9 @@ Useful reference files:
 
 | File | Use |
 |---|---|
-| `References/Data/data-driven-dynamics/README.md` | Pipeline concept, `estimate-model`, `predict-model`, and result YAML behavior |
-| `References/Data/data-driven-dynamics/Tools/parametric_model/configs/quadrotor_model.yaml` | Required ULog topics, rotor layout, optimizer bounds, sample parameter names |
-| `References/Data/data-driven-dynamics/resources/quadrotor_model.csv` | Example flattened CSV column names |
+| `References/Log/data-driven-dynamics/README.md` | Pipeline concept, `estimate-model`, `predict-model`, and result YAML behavior |
+| `References/Log/data-driven-dynamics/Tools/parametric_model/configs/quadrotor_model.yaml` | Required ULog topics, rotor layout, optimizer bounds, sample parameter names |
+| `References/Log/data-driven-dynamics/resources/quadrotor_model.csv` | Example flattened CSV column names |
 
 Reference command shape from the README:
 
@@ -197,7 +197,8 @@ Save identified parameters in a project-owned YAML file with provenance and
 units. Example:
 
 ```yaml
-vehicle_profile: sunray150_mid360
+plant_profile: sunray150
+sensor_profile: mid360
 source: PX4_ULog_sysid
 tool:
   name: arpl_sysid_tools
@@ -389,7 +390,7 @@ identification.
 Code-first open-source route priority:
 
 1. Use `pyulog` to inspect topic availability and export aligned CSV.
-2. Use `References/Data/data-driven-dynamics` for ULog-to-parametric-model
+2. Use `References/Log/data-driven-dynamics` for ULog-to-parametric-model
    structure, topic names, and held-out prediction workflow.
 3. Use ARPL `data-driven-system-identification` / `sysid.tools` style
    angular/translational
@@ -405,20 +406,20 @@ code that can be cloned, run, inspected, and adapted to Sunray150 logs.
 
 ### 8.2 Local Code Audit: Required Logs
 
-The local code in `References/Data/` shows that the first useful data package
+The local code in `References/Log/` shows that the first useful data package
 can be collected by normal RC/manual operation. The special requirement is not
 a special flight computer or lab rig; it is enabling the right PX4 log topics
 and flying maneuvers that excite throttle, roll, pitch, yaw, and translation.
 
 | Local repository | What it can provide | Required log data | Verdict for Sunray150 |
 |---|---|---|---|
-| `References/Data/data-driven-system-identification` | Main route for inertia, thrust curve, yaw torque ratio, and motor first-order delay | `actuator_motors` or `actuator_motors_mux` `control[0..3]`, `vehicle_acceleration.xyz`, `vehicle_angular_velocity.xyz`, `vehicle_angular_velocity.xyz_derivative` when available; high-rate/system-ID logging recommended | Best route if PX4 can log high-rate actuator plus IMU-derived acceleration/rate data. Needs deliberate RC excitation, not just smooth autonomous flight. |
-| `References/Data/data-driven-dynamics` | Parametric multirotor force/moment model, fit-quality report, held-out prediction workflow | `actuator_outputs.output[0..3]`, `vehicle_local_position.vx/vy/vz`, `vehicle_attitude.q[0..3]`, `vehicle_angular_velocity.xyz`, `sensor_combined.accelerometer_m_s2/gyro_rad`, `vehicle_land_detected.landed` | Good auxiliary route and topic-completeness checker. Its sample vehicle parameters are not Sunray150 truth. |
-| `References/Data/airo_control_interface` | Offboard/MAVROS control-interface calibration: hover thrust and first-order inner-loop time constants (`tau_phi`, `tau_theta`, `tau_psi`) | MAVROS target attitude, local position pose, and local velocity topics from its auto system-identification launch workflow | Useful for MPC/control-interface calibration if we later run ROS/offboard tests. It is not a full physical mass/inertia estimator. |
-| `References/Data/px4_pid_tuner` | Rate-loop transfer behavior and PID sanity check | `actuator_controls_0.control[0..2]` and attitude/rate response (`rollspeed`, `pitchspeed`, `yawspeed` or equivalent modern PX4 topics) | Useful for controller tuning evidence only; do not use as physical mass/inertia truth. |
-| `References/Data/px4tools` | ULog/Pandas analysis, noise analysis, simple system-ID/control-design utilities | Standard ULog with attitude, rate, actuator, sensor, battery topics | Useful for topic audit, noise, delay, and sanity plots. |
-| `References/Data/esc_test` | Motor/prop/ESC bench characterization: thrust-vs-RPM and torque-vs-thrust | Bench data with RPM, thrust, torque, voltage/current | Optional. Use only if a thrust stand or ESC/RPM bench log is available. |
-| `References/Data/pyulog` | ULog parser and CSV exporter | Any PX4 `.ulg` | First-pass topic audit tool before running estimators. |
+| `References/Log/data-driven-system-identification` | Main route for inertia, thrust curve, yaw torque ratio, and motor first-order delay | `actuator_motors` or `actuator_motors_mux` `control[0..3]`, `vehicle_acceleration.xyz`, `vehicle_angular_velocity.xyz`, `vehicle_angular_velocity.xyz_derivative` when available; high-rate/system-ID logging recommended | Best route if PX4 can log high-rate actuator plus IMU-derived acceleration/rate data. Needs deliberate RC excitation, not just smooth autonomous flight. |
+| `References/Log/data-driven-dynamics` | Parametric multirotor force/moment model, fit-quality report, held-out prediction workflow | `actuator_outputs.output[0..3]`, `vehicle_local_position.vx/vy/vz`, `vehicle_attitude.q[0..3]`, `vehicle_angular_velocity.xyz`, `sensor_combined.accelerometer_m_s2/gyro_rad`, `vehicle_land_detected.landed` | Good auxiliary route and topic-completeness checker. Its sample vehicle parameters are not Sunray150 truth. |
+| `References/Log/airo_control_interface` | Offboard/MAVROS control-interface calibration: hover thrust and first-order inner-loop time constants (`tau_phi`, `tau_theta`, `tau_psi`) | MAVROS target attitude, local position pose, and local velocity topics from its auto system-identification launch workflow | Useful for MPC/control-interface calibration if we later run ROS/offboard tests. It is not a full physical mass/inertia estimator. |
+| `References/Log/px4_pid_tuner` | Rate-loop transfer behavior and PID sanity check | `actuator_controls_0.control[0..2]` and attitude/rate response (`rollspeed`, `pitchspeed`, `yawspeed` or equivalent modern PX4 topics) | Useful for controller tuning evidence only; do not use as physical mass/inertia truth. |
+| `References/Log/px4tools` | ULog/Pandas analysis, noise analysis, simple system-ID/control-design utilities | Standard ULog with attitude, rate, actuator, sensor, battery topics | Useful for topic audit, noise, delay, and sanity plots. |
+| `References/Log/esc_test` | Motor/prop/ESC bench characterization: thrust-vs-RPM and torque-vs-thrust | Bench data with RPM, thrust, torque, voltage/current | Optional. Use only if a thrust stand or ESC/RPM bench log is available. |
+| `References/Log/pyulog` | ULog parser and CSV exporter | Any PX4 `.ulg` | First-pass topic audit tool before running estimators. |
 
 Minimal RC-collected ULog package:
 
@@ -604,7 +605,7 @@ Why it matches this project:
 Local auxiliary method:
 
 ```text
-References/Data/data-driven-dynamics/
+References/Log/data-driven-dynamics/
 ```
 
 Use it for ULog parsing, topic completeness checks, dataframe structure,
@@ -694,7 +695,7 @@ Current priority order for Sunray150:
 
 Current audit result: no YunZong/Sunray real ULog files are present in the
 repository. The only usable local ULog-like material is reference/sample data
-under `References/Data`, so all current MWORKS model values remain
+under `References/Log`, so all current MWORKS model values remain
 `source=SDF_migration` until vendor/user logs are provided and the pipeline
 passes held-out validation.
 
@@ -963,7 +964,7 @@ be done in bounded batches. Each batch needs:
    canonical;
 3. source labels for geometry, mass, inertia, thrust, yaw moment, motor lag,
    drag, and controller parameters;
-4. latest CoAgentOps MWORKS activation/window patrol reference, or one bounded
-   current-turn check only when no recent patrol exists and live work needs it;
+4. current MWORKS activation/window evidence or a user-authorized bounded
+   recovery reference when live work needs it;
 5. `check_model` and, where relevant, hover/yaw/step or scenario simulation
    evidence before the old alias is retired.

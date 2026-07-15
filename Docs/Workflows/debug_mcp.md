@@ -227,10 +227,11 @@ Expected follow-up log after reload:
 
 ### 4.2 WeChat Notification Adapter Packet Shape
 
-Use the narrow project adapter for MoSim WeChat notifications:
+This is a retired WeChat notification adapter note. Current MoSim completion
+notifications use sparse Chinese email through `Scripts/agent/send_gateway_email_alert.py`.
 
 ```powershell
-python CoAgent\gateway\cc_connect_weixin.py notify --send --packet <packet.json>
+retired gateway notify command, kept only as historical context
 ```
 
 Do not use `--stdin`; the adapter requires a packet file. Do not invent a new
@@ -1383,7 +1384,22 @@ server can start without ROS installed, but robot operations require a reachable
 rosbridge websocket, normally `127.0.0.1:9090` or a robot IP on port `9090`.
 The project-local checkout is version-agnostic: its README advertises both ROS
 and ROS2 support. The active ROS generation is determined by the ROS runtime
-behind rosbridge. For this WSL project host, use ROS2 Humble.
+behind rosbridge.
+
+Current MoSim P0 does **not** use ROS-MCP as the Sunray/PX4/Gazebo/RViz runtime
+entry and does **not** use ROS2 Humble as active evidence. Current live Sunray
+work must enter through the ROS1 lane:
+
+```text
+wsl -d Ubuntu-20.04
+  -> ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS / RViz
+  -> Docs/Workflows/sunray_ros1_current_runtime_lane.md
+  -> Docs/Workflows/sunray_ros1_execution_checklist.md
+```
+
+Use the ROS2 Humble wrapper details below only for explicit ROS-MCP/ROS2
+diagnosis or future/historical ROS2 work after `Docs/Workflows/ros2_runtime_setup.md`
+is explicitly reopened. They cannot be cited as current MoSim P0 runtime proof.
 
 Install or repair the source checkout runtime:
 
@@ -1626,13 +1642,13 @@ On 2026-05-29 this created:
 thread_id: 019e73e5-d97d-75a3-ba72-b52e19d755b3
 title: MoSim｜可见对话测试
 reply: MoSim visible thread ok
-backup after sync: C:\Users\HP\.codex\backups\coagent-session-restore-20260529-213048
+backup after sync: C:\Users\HP\.codex\backups\legacy-agent-session-restore-20260529-213048
 ```
 
 Then run:
 
 ```bash
-python3 CoAgent/dispatch/codex_session_repair.py sync-visible \
+retired session repair helper sync-visible \
   --thread-id <thread-id> \
   --thread-name '<short title>' \
   --preview '<short preview>' \
@@ -1649,8 +1665,10 @@ working directory.
 If the App receives real-time updates from the active WSL conversation, treat
 that as an App convenience layer, not as the durable task ledger. Important
 instructions, user corrections, manual-review results, and task status changes
-must still be recorded in `PROGRESS.md`, `Docs/Workflows/agent_task_ledger.md`,
-or a TaskSecretary intake file.
+must still be recorded in the current active surfaces such as `PROGRESS.md`,
+`Docs/Workflows/mainline_operations_board.md`, or a reviewed intake file.
+`Docs/Workflows/agent_task_ledger.md` is legacy trace-back only and is not a
+current task-state owner.
 
 ### 6.1 Full WSL To Windows Chat History Migration
 
@@ -1767,7 +1785,7 @@ sending a WeChat message.
 The API socket check must be a real Unix socket `connect()` to:
 
 ```text
-/home/linux/.cache/mosim/coagent/cc-connect-weixin/data/run/api.sock
+/home/linux/.cache/mosim/legacy-agent-runtime/cc-connect-weixin/data/run/api.sock
 ```
 
 Do not use `cc-connect sessions list --data-dir ...` as proof that the internal
@@ -1958,12 +1976,12 @@ Without credentials:
 Adapter default route correction, 2026-06-06 CST:
 
 ```text
-CoAgent/gateway/cc_connect_weixin.py now uses a platform-aware default data-dir.
+The retired WeChat gateway adapter used a platform-aware default data-dir.
 Windows resolves the default to:
-\\wsl.localhost\Ubuntu-22.04\home\linux\.cache\mosim\coagent\cc-connect-weixin\data
+\\wsl.localhost\Ubuntu-22.04\home\linux\.cache\mosim\legacy-agent-runtime\cc-connect-weixin\data
 
 Linux/WSL resolves the default to:
-/home/linux/.cache/mosim/coagent/cc-connect-weixin/data
+/home/linux/.cache/mosim/legacy-agent-runtime/cc-connect-weixin/data
 ```
 
 This keeps other Codex conversations from failing with
@@ -1977,7 +1995,7 @@ Cross-thread notification guarantee:
    and send them only through:
 
    ```cmd
-   python CoAgent\gateway\cc_connect_weixin.py notify --packet <packet.json> --send
+   retired gateway notify command, kept only as historical context
    ```
 
 2. Other conversations should treat send failure as a reportable gateway issue,
@@ -2044,7 +2062,7 @@ First failure:
   directly.
 
 Fix:
-  CoAgent/gateway/cc_connect_weixin.py now bridges Windows sends through
+  the retired gateway adapter bridged Windows sends through
   wsl.exe -d Ubuntu-22.04 -- /mnt/c/.../cc-connect.
   Scripts/agent/check_weixin_gateway_health.py now passes the WSL-backed
   data-dir explicitly for canary sends.
@@ -2111,7 +2129,7 @@ Incident:
   PMO completion packet
   Results/coagent_gateway/packets/rfly_mosim_b0_manifest_integrated_20260606.json
   failed with:
-  dial unix /home/linux/.cache/mosim/coagent/cc-connect-weixin/data/run/api.sock:
+  dial unix /home/linux/.cache/mosim/legacy-agent-runtime/cc-connect-weixin/data/run/api.sock:
   connect: connection refused
 
 Recovery packet:
@@ -2125,7 +2143,7 @@ Root cause:
 
 Fix:
   Scripts/agent/check_weixin_gateway_health.py and
-  CoAgent/gateway/cc_connect_weixin.py now probe the Unix socket directly.
+  the retired gateway adapter probed the Unix socket directly.
 
 Evidence after fix:
   Results/coagent_gateway/health/weixin_gateway_health_20260606_050445.json

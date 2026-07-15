@@ -37,8 +37,8 @@ packet traffic unless they become a stable simulation evidence location.
 | `Config/scenarios/` | Scenario YAML configs | Configs connect a named scenario to model class, controller choice, runner settings, and result paths. |
 | `Config/gazebo/` | Project-owned Gazebo validation scaffold | Single-UAV exported-controller validation world/model/sensor configs. Gazebo evidence is system-validation evidence, not MWORKS/Syslab competition metric evidence. |
 | `Scripts/mworks/` | MWORKS/Sysplorer runner, check, extraction, and validation scripts | Use these for repeatable checks before claiming simulation evidence. |
-| `Scripts/gazebo/` | Gazebo+ROS2 runner scripts | WSL-side bounded launch/preflight scripts for the single-UAV Gazebo validation lane. |
-| `Scripts/ros/` | ROS2 publishers, adapters, local-map scripts, and bridge helpers | Includes replay publishers, setpoint adapters, and the first PointCloud2-to-voxel/local-grid adapter. |
+| `Scripts/gazebo/` | Gazebo runner scripts | WSL-side bounded launch/preflight scripts for the current single-UAV Gazebo validation lane. |
+| `Scripts/ros/` | ROS/bridge/local-map scripts and helpers | Includes replay publishers, setpoint adapters, and the first PointCloud2-to-voxel/local-grid adapter. ROS2-specific material is historical unless the route is explicitly reopened. |
 | `Scripts/tests/` | Scripted regression and quality tests | Use for non-GUI validation and repeated evidence checks. |
 | `Results/` | Reproducible outputs, metrics, logs, figures, packets, screenshots, and evidence bundles | Stable result locations should be recorded here; scratch output should not become a claim source without review. |
 | `References/MWORKS/QuadrotorModel/` | Official/upstream MWORKS quadrotor baseline | Baseline/reference only. Do not silently modify as project-owned model work. |
@@ -128,7 +128,7 @@ Important subpackage roles:
 | `OfficialScenarios/` | Example1/2/3 official-route closed-loop scenario implementations with AWFF, INDI, L1, LinearMPC, and related variants. |
 | `RobustFaultScenarios/` | Mass perturbation, wind gust, rotor-loss, safety, and return/land robustness scenarios. |
 | `PlanningScenarios/` | Planning, navigation display, corridor/open-blocks, UE trace-table, and review/smoke entries. |
-| `FormationScenarios/` | Multi-UAV formation scenario implementations. Follow `Docs/Design/MoSim规划与编队控制接口规范.md` for identity, per-UAV result layout, and database boundaries before adding new formation entries. |
+| `FormationScenarios/` | Multi-UAV formation scenario implementations. Follow `Docs/Design/架构/02_感知定位与规划集群/规划与编队控制接口.md` for identity, per-UAV result layout, and database boundaries before adding new formation entries. |
 | `SystemArchitecture/` | Complete system graphical Sysblock and system-level failure scenarios. |
 | `TraceIsolation/` | Diagnostic trace-isolation ladder; not a primary mission surface. |
 | `SupportModels/` | Support and smoke models for trace/MCP/reference behavior. |
@@ -408,7 +408,7 @@ substitute for model files, simulation logs, metrics, figures, or screenshots.
 
 Formation result directories must keep per-UAV evidence inspectable by
 `uav_id`. New formation runs should follow the layout in
-`Docs/Design/MoSim规划与编队控制接口规范.md`:
+`Docs/Design/架构/02_感知定位与规划集群/规划与编队控制接口.md`:
 
 ```text
 Results/formation/<scenario_id>/<run_id>/
@@ -457,9 +457,9 @@ What the folder tree does not show by itself:
 For those meanings, use this index plus:
 
 ```text
-Docs/Design/MoSim真机化收尾与C++化重构方案.md
-Docs/Design/cache/absorbed_or_superseded_20260614/12_MoSimQuadrotorModel模型归档与迁移计划.md
-Docs/Design/cache/absorbed_or_superseded_20260614/13_RflySim四旋翼模型对标与MoSim优化路线.md
+Docs/Design/架构/03_测试调参与证据/真机化与C++化.md
+Docs/Cache/design/historical_snapshots/absorbed_or_superseded_20260614/12_MoSimQuadrotorModel模型归档与迁移计划.md
+Docs/Cache/design/historical_snapshots/absorbed_or_superseded_20260614/13_RflySim四旋翼模型对标与MoSim优化路线.md
 Docs/Index/project_work_memory_index.md
 Docs/Workflows/new_conversation_context.md
 ```
@@ -518,9 +518,14 @@ claim boundary:
   performance acceptance yet.
 ```
 
-## 11. Gazebo + ROS2 Single-UAV Validation Lane
+## 11. Gazebo + ROS2 Single-UAV Validation Lane (historical / bounded)
 
-Current project-owned Gazebo+ROS2 smoke entry:
+This section is retained as historical / bounded validation material. The
+current executable review lane is Sunray ROS1 / Gazebo Classic / PX4 / MAVROS /
+px4ctrl / RViz; use this section only when a task explicitly reopens the
+ROS2/Gazebo validation branch.
+
+Historical project-owned Gazebo+ROS2 smoke entry:
 
 ```text
 Config/scenarios/system/sunray150_gazebo_ros2_smoke.yaml
@@ -1198,7 +1203,7 @@ material acceptance, or multi-UAV readiness.
 The architecture entry point for future multi-UAV work is:
 
 ```text
-Docs/Design/MoSim规划与编队控制接口规范.md
+Docs/Design/架构/02_感知定位与规划集群/规划与编队控制接口.md
 ```
 
 It defines these stable formation contracts:

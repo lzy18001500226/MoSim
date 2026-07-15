@@ -2,6 +2,13 @@
 
 Date: 2026-05-26
 
+Status: historical/reference research. This file explains why Codex App/WSL/
+VSCode session stores and visible-thread mechanics should not be treated as
+durable project truth. It is not the current MoSim operating model after the
+2026-06-24 single-thread reset. For current execution, start from
+`Docs/Workflows/single_thread_operating_model.md`,
+`Docs/Workflows/mainline_operations_board.md`, and the task-specific workflow.
+
 Purpose: clarify how to use Codex App, VSCode Codex, WSL, sessions, MCP, skills,
 and automations in MoSim without losing task state or creating conflicting
 chat/session stores.
@@ -78,8 +85,9 @@ The reliable state source must be project files, especially:
 
 - `PROGRESS.md`
 - `AGENTS.md`
-- `Docs/Workflows/agent_task_ledger.md`
-- TaskSecretary intake files under `Results/tmp/task_intake/`
+- `Docs/Workflows/mainline_operations_board.md`
+- `Docs/Workflows/single_thread_operating_model.md`
+- task-specific workflow, skill, design, result, and cache files
 
 Chat history is useful review context, but it must not be the only place where
 task state, decisions, blockers, or manual review results exist.
@@ -98,44 +106,42 @@ Current policy after the 2026-06-05 Windows-native migration:
 - Session transfer: controlled one-way recovery only, not department creation.
 - Disallowed: live bidirectional writes to the same session from App and WSL.
 
-Current Codex native capability adoption after the 2026-06-06 hook audit:
+Historical Codex native capability observations after the 2026-06-06 hook audit:
 
 | Surface | MoSim Decision |
 | --- | --- |
-| Native hooks | Use global `C:\Users\HP\.codex\hooks.json` with project-scoped adapter `CoAgent/hooks/codex_native_hook.py` for hard lifecycle guardrails. Trust with `/hooks` when Codex asks. |
+| Native hooks | Use global `C:\Users\HP\.codex\hooks.json` with project-scoped adapter `Scripts/hooks/codex_native_hook.py` for hard lifecycle guardrails. Trust with `/hooks` when Codex asks. |
 | Native plugins/skills | Use installed skills/plugins on demand; do not copy plugin caches into the repo or load every skill at startup. |
 | MCP/app connectors | Use the native MCP/app surface for live tools and private/authorized data. Keep Sysplorer/Syslab/Unreal/ROS/Windows desktop boundaries in project workflows. |
 | Browser / Windows MCP | Use native Browser for web/local UI targets and Windows MCP plus Win32/UI Automation scripts for MoSim desktop GUI review. Computer Use is deprecated for MoSim desktop GUI monitoring and recovery; do not use it for MWORKS/Sysplorer/Syslab. |
-| Goals | Use for long-running task persistence when the current Codex surface supports it, but keep durable state in project ledgers and packets. |
-| Multi-agent/thread tools | PMO may use visible threads for reusable departments and sub-agents for bounded slices. Do not assume App cross-thread send is synchronous RPC. |
-| Automations / thread wakeups | Use for recurring checks only after current behavior is verified. Automation output must become a task packet, ledger row, or evidence file. |
+| Goals | Use for long-running task persistence when the current Codex surface supports it, but keep durable state in project files. |
+| Multi-agent/thread tools | Legacy/reference only for current MoSim. Do not assume App cross-thread send is synchronous RPC. |
+| Automations / thread wakeups | Legacy/reference only unless explicitly configured for a scoped reminder or audit. Automation output must become project evidence before it is trusted. |
 | Workspace dependencies | Use when document/sheet/slide/runtime dependencies are needed instead of guessing local bundled paths. |
 | Native notify | Useful local completion/blocker signal. For MoSim long tasks, sparse email is the default user-facing intervention channel; WeChat is diagnostic or explicitly requested only. |
 
 2026-06-08 native tool-surface correction: a conversation that was created or
 migrated from the WSL/VSCode/CLI side may be visible in Codex App but still not
 expose Codex App native thread-management or automation tools in that
-conversation. In the current project, App-native visible threads are the
-correct execution surface for `create_thread`, `read_thread`,
+conversation. In the historical multi-thread model, App-native visible threads
+were the intended surface for `create_thread`, `read_thread`,
 `send_message_to_thread`, `set_thread_title`, `set_thread_archived`, and
-`automation_update` work. If a migrated or WSL-origin conversation cannot see
-those tools after `tool_search`, it must not edit Codex private state or click
-through the UI as a substitute. It should write the intended operation as a
-request/blocker packet and ask an App-native operations thread, currently
-`MoSim｜CoAgent运维平台` (`019e9bc1-ea9f-7102-b41a-4ef9b2308992`), to perform the
-native-thread or automation task.
+`automation_update` work. In current single-thread MoSim work, these tools are
+not a normal execution route. If a migrated or WSL-origin conversation cannot
+see those tools after `tool_search`, it must not edit Codex private state or
+click through the UI as a substitute.
 
-Adoption priority for MoSim:
+Historical adoption priority for MoSim:
 
 | Priority | Surface | Operating Rule |
 | --- | --- | --- |
-| P0 | Worktrees | Use isolated worktrees for visible threads that write code/assets when practical. This is the first-line protection against multi-thread file and Git-index contention. |
-| P0 | Visible threads | Use for reusable durable departments. Current PMO owner is `019e9868-83ea-70f0-92c5-a3a408bd78c6`. |
+| P0 | Worktrees | Historical note for visible threads that wrote code/assets. Current single-thread work still uses path-limited Git hygiene, not multi-thread worktree routing by default. |
+| P0 | Visible threads | Legacy/reference only after the 2026-06-24 single-thread reset. |
 | P0 | Goals | Use for long-running PMO or department tasks, not for every small implementation step. |
 | P0 | Skills/plugins | Load on demand. They are context reducers, not hard constraints. |
 | P0 | MCP/apps | Use native live tool surfaces for Sysplorer/Syslab/Unreal/Blender/ROS2/Windows desktop work before inventing ad-hoc automation. |
 | P0 | Browser / Windows MCP | Use Browser for browser/local UI review and Windows MCP/Win32 scripts for desktop GUI screenshot and manual-review support. Do not use Computer Use for MoSim desktop GUI incidents, especially MWORKS/Sysplorer/Syslab. |
-| P1 | App automations/thread wakeups | Use for recurring checks after local behavior is verified. Every output must become a packet, ledger row, or evidence file. |
+| P1 | App automations/thread wakeups | Legacy/reference only unless explicitly configured for a scoped reminder or audit. Every output must become project evidence before it is trusted. |
 | P1 | `codex review` | Use as a bounded review gate. It does not replace owner-thread integration or targeted tests. |
 | P1 | `codex exec` | Use for one-shot background audits, packet generation, and narrow department prompts. |
 | P1 | Workspace dependencies | Use for docs/sheets/slides/report assets and bundled runtimes. |
@@ -143,10 +149,9 @@ Adoption priority for MoSim:
 | P2 | App server / remote control | Not a dependency until separately validated. |
 | P2 | Experimental memory/chronicle/artifact surfaces | Auxiliary only; do not store project truth there. |
 
-PMO adoption rule: the PMO main thread is accountable for making these native
-surfaces part of ordinary MoSim operation. A department may recommend a native
-surface, but PMO decides the routing and records the result in project docs or
-task packets.
+Current adoption rule: the active thread may use native surfaces only when the
+current task and owning workflow authorize them. This research page does not
+grant authority.
 
 Hook behavior verified on 2026-06-06:
 
@@ -200,11 +205,9 @@ command with backup and a single explicit direction.
 ## Department Thread Layout
 
 Historical note: the table immediately below records the 2026-05-26 seven-thread
-department experiment. It is not the current operating model. Current active
-thread routing starts at "Current visible thread registry" below. In the current
-model, PMO dispatches directly to a smaller set of durable specialty threads;
-testing, security, MCP/skills maintenance, and documentation review are gates or
-task responsibilities unless PMO explicitly creates a scoped visible thread.
+department experiment. It is not the current operating model. The later
+historical visible-thread registry is kept below for audit only; current MoSim
+execution is single-thread and uses project files as durable state.
 
 Historical seven-thread layout:
 
@@ -270,10 +273,10 @@ Operational result on 2026-05-26:
    and report partial state instead of waiting.
 ```
 
-Current visible thread registry, refreshed from the Windows Codex App thread
+Historical visible thread registry, refreshed from the Windows Codex App thread
 surface on 2026-06-08 CST after a Codex App / VSCode history-title drift. Use
-the titles in `CoAgent/dispatch/department_threads.json` for active routing;
-stable `thread_id` and registry `status` remain authoritative. Titles ending
+`Config/legacy/department_threads.json` only for historical routing and audit;
+it is not a current dispatch allowlist. Titles ending
 in `-历史` or `-旧` are display hygiene for restored archived/legacy threads and
 do not make those threads dispatchable:
 
@@ -285,13 +288,13 @@ do not make those threads dispatchable:
 | `MoSim｜UE实验控制台与场景交互部-R2` | `019eab9f-b0ef-7433-893d-3235ea9f3c7e` | Auxiliary UE source/static review, implementation-surface backup, UI/command/echo contract review, source-only fixture/checker work, and bounded parallel support thread |
 | `MoSim｜Sunray150资产与PBR审核部` | `019e9b25-066e-7372-8152-209c2b1322a4` | Durable Sunray150 visual asset, DAE/FBX/GLB, material/PBR, and manual visual-review thread |
 | `MoSim｜MWORKS动力学与控制验证部-R1` | `019e9be5-334b-76b1-93f9-8b02caebf376` | Durable MWORKS mainline dynamics/control/model-integration evidence thread |
-| `MoSim｜MWORKS动力学与控制验证部-R2` | `019e9999-b0d3-7682-bccd-faef08fcf1df` | Durable MWORKS auxiliary model organization, graphical interface, connection/layout/readability, and model-hygiene thread. This ID had old dispatch/UI-submit incidents, but the user later restored it as the current R2 auxiliary route. |
+| `MoSim｜MWORKS动力学与控制验证部-R2` | `019e9999-b0d3-7682-bccd-faef08fcf1df` | Historical MWORKS auxiliary model organization, graphical interface, connection/layout/readability, and model-hygiene thread. This ID had old dispatch/UI-submit incidents; do not use as current route unless the user explicitly reopens legacy visible-thread operation. |
 | `MoSim｜ROS2感知定位与规划运行部-R1` | `019e9c72-ee74-79d1-b9fe-621d3c6fc99e` | Durable ROS2/RViz2/FAST-LIO/local-map/planner runtime integration thread; historical/default registry route after deleted old ROS2 thread `019e9917-6181-7ec2-b3d6-4b624d6d3348`. It is not the current Sunray ROS1 execution selector; check the PMO board before using it. |
-| `MoSim｜ROS2感知定位与规划运行部-R2` | `019e9b85-d4d8-7bf3-8afd-a65697cd3889` | Non-historical visible ROS2 department thread. Do not label it `-历史`; production dispatch still follows registry status or explicit user/PMO routing confirmation. |
+| `MoSim｜ROS2感知定位与规划运行部-R2` | `019e9b85-d4d8-7bf3-8afd-a65697cd3889` | Historical visible ROS2 department thread. Do not use for current Sunray ROS1 execution; only explicit legacy audit or user-approved route reopening may consult it. |
 | `MoSim｜微信网关运维部-R3-已删除` | `019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c` | Archived by the user on 2026-06-07 after MoSim moved to email-only notifications, then deleted by the user on 2026-06-08; not visible, not `active_visible`, no scheduled health checks, no routine no-op/canary/diagnosis/recovery dispatch unless explicitly restored with a new scoped route |
 | `MoSim｜Codex 环境迁移部-旧` | `019e8181-6653-73b3-9685-f5bc9a24b947` | Historical Windows-native Codex environment migration, bridge-residue audit, config/MCP launcher cleanup, and related one-time environment repair history; user restored it only to repair its title and will re-archive |
 | `MoSim｜开源项目探针` | `019e9be3-94de-7dc3-b067-92a78b678287` | App-native inventory owner for relevant open-source projects and local reference-project update candidates |
-| `MoSim｜CoAgent运维平台` | `019e9bc1-ea9f-7102-b41a-4ef9b2308992` | Codex App native CoAgent/meta operations thread; coordinates recurring CoAgent/meta tasks, thread-registry hygiene, and native capability adoption checklists |
+| `MoSim｜legacy agent runtime运维平台` | `019e9bc1-ea9f-7102-b41a-4ef9b2308992` | Codex App native legacy/meta operations thread; coordinates recurring legacy/meta tasks, thread-registry hygiene, and native capability adoption checklists |
 | `MoSim｜开源项目学习部` | `019e9be4-56d0-7981-b71c-a5ded1c7ec76` | App-native learning owner for crawled projects/vendor articles and adopt/adapt/reference-only/reject proposals |
 | `MoSim｜Codex 上下文维护部` | `019eab73-c5bc-7740-a6d1-5e0541bdb0c5` | App-native documentation secretary/context-maintenance route for scheduled context-memory/index updates, documentation consistency review, and cache-first migration drafts. Legacy internal key: `CodexContextMaintenanceAgent`; former titles include `MoSim｜文档秘书部` and R-suffixed context-maintenance titles. |
 | `MoSim｜WechatCodex-已删除` | `019e8358-86b4-7070-8fd6-a2b4f4d2af97` | Historical WeChat-side message path deleted by the user on 2026-06-08; inactive for MoSim notifications, not visible, not a routing/no-op/recovery target unless the user explicitly restores WeChat diagnosis with a new scoped route |
@@ -307,7 +310,7 @@ to a raw old chat, screenshot, or backup as the routine recovery path.
 Historical deleted or absent thread note:
 
 ```text
-019e74d1-72fa-7d33-8783-90584035ae92: old MoSim｜CoAgent运维平台. Created through
+019e74d1-72fa-7d33-8783-90584035ae92: old MoSim｜legacy agent runtime运维平台. Created through
   an older WSL/non-App-native conversation path; deleted by user on 2026-06-06.
   Do not dispatch native thread or automation tasks there; recover history from
   project docs and result/blocker packets.
@@ -346,21 +349,21 @@ Historical deleted or absent thread note:
 ```
 
 The user reported deleting these threads. This list is historical evidence, not
-a current blacklist that must be maintained forever. Current dispatch uses the
-allowlist in `CoAgent/dispatch/department_threads.json`; if one of these old IDs
-is absent from the current visible scan, treat it as gone and remove it from
-dispatchable registry rather than trying to resume, restore, archive, or route
+a current blacklist that must be maintained forever. Legacy dispatch used the
+allowlist in `Config/legacy/department_threads.json`; if one of these old IDs
+is absent from a scoped historical visible scan, treat it as gone and remove it
+from historical routing rather than trying to resume, restore, archive, or route
 work to it. Future context-memory and documentation-secretary work routes to
 `MoSim｜Codex 上下文维护部`
 (`019eab73-c5bc-7740-a6d1-5e0541bdb0c5`). Durable documentation updates are no
 longer centralized in a secretary thread; each responsible thread must update
 the relevant project docs before returning completion.
 
-Legacy CoAgent bootstrap conversations may still be visible in the Windows
+Legacy legacy agent runtime bootstrap conversations may still be visible in the Windows
 Codex state DB, including old `MoSim｜工具链 MCP`, `MoSim｜验证评测`, and
 `MoSim｜安全合规` entries. Do not treat these titles as active departments merely
 because a stale row exists. MCP/skills/workflow upkeep is owned by the thread
-doing the work, or by `MoSim｜CoAgent运维平台` for recurring meta-maintenance.
+doing the work, or by `MoSim｜legacy agent runtime运维平台` for recurring meta-maintenance.
 Security is enforced through `AGENTS.md`, prompts, path boundaries, harnesses,
 preflight checks, and review gates; it is not an always-on visible department.
 Validation/testing is an on-demand isolated gate unless PMO explicitly creates
@@ -408,19 +411,20 @@ Do not create persistent App conversations for every role such as
 `McpSkillsMaintainer` or `UEScenePipeline`. Treat those as roles inside a
 department unless the user explicitly approves a split.
 
-Dedicated task conversations are allowed when:
+In the historical multi-thread model, dedicated task conversations were allowed
+when:
 
 ```text
 the task spans many turns or manual reviews
 the task has a parent department and task_id
 the task has a clear stop condition and result-packet format
-PMO or CoAgent ops records it in a recoverable ledger/status packet
+PMO or legacy ops records it in a recoverable ledger/status packet
 ```
 
-The current default is PMO direct dispatch to visible durable threads. CoAgent
-ops may maintain meta-task ledgers, recurring checklists, crawler cadence, and
-context-update schedules. There is no mandatory dispatch-center hop for normal
-MoSim engineering work.
+The current default after the 2026-06-24 reset is single active Codex-thread
+execution. Historical PMO direct dispatch to visible durable threads and legacy
+agent runtime meta-task ledgers are not active MoSim workflow unless the user
+explicitly reopens them.
 
 ## App Automations Policy
 
@@ -428,19 +432,19 @@ Codex App automations are useful as a front-end trigger/reminder layer, but
 must not replace MoSim-owned task records. Verify behavior against the current
 installed App before relying on a new automation.
 
-Current App-native CoAgent operations re-adoption baseline on 2026-06-06:
+Historical App-native legacy operations re-adoption baseline on 2026-06-06:
 
-- Use `MoSim｜CoAgent运维平台`
-  (`019e9bc1-ea9f-7102-b41a-4ef9b2308992`) as the current baseline thread for
+- At that time, `MoSim｜legacy agent runtime运维平台`
+  (`019e9bc1-ea9f-7102-b41a-4ef9b2308992`) was used as the baseline thread for
   native thread and automation capability adoption.
-- The old `MoSim｜CoAgent运维平台`
+- The old `MoSim｜legacy agent runtime运维平台`
   (`019e74d1-72fa-7d33-8783-90584035ae92`) was deleted by the user and is a
   deleted historical thread only. Do not read, recover, dispatch to, or depend
   on it for current capability conclusions.
-- Current CoAgent operations tool surface exposes `automation_update` and native thread tools.
+- The historical legacy operations tool surface exposed `automation_update` and native thread tools.
   A read-only thread probe confirmed the gateway and open-source probe
   departments by title, and confirmed the context-maintenance department by ID.
-  The context-maintenance thread currently shows `cwd=C:\mnt\c\Users\HP\Desktop\MoSim`,
+   The context-maintenance thread then showed `cwd=C:\mnt\c\Users\HP\Desktop\MoSim`,
   so heartbeat or automation delivery to it needs a target-thread cwd/visibility
   validation before it is treated as operational.
 - No App automation was created in the re-adoption audit because duplicate
@@ -453,7 +457,7 @@ Planned recurring automation candidates:
 
 | Automation | Owner | Purpose |
 | --- | --- | --- |
-| Workflow/skills improvement | Responsible task thread or `MoSim｜CoAgent运维平台` | Inspect recent incidents and update workflows/skills when they become reusable rules |
+| Workflow/skills improvement | Responsible task thread or `MoSim｜legacy agent runtime运维平台` | Inspect recent incidents and update workflows/skills when they become reusable rules |
 | External-repo inventory update | `MoSim｜开源项目探针` | Crawl or inventory relevant open-source projects and produce manifests |
 | External-learning review | `MoSim｜开源项目学习` | Study crawled projects/vendor articles and return adopt/reject proposals |
 | Context-memory drift check | `MoSim｜Codex 上下文维护部` | Update new-conversation context, memory index, and recovery notes; `MoSim｜文档秘书部` and R-suffixed context-maintenance titles are alias/history only |
@@ -466,13 +470,13 @@ Do not treat an App automation notification as completed work.
 Preferred automation candidates now that native surfaces are available:
 
 ```text
-1. PMO/CoAgentOps heartbeat: do not wake the archived WeChat gateway route.
+1. PMO or legacy ops patrol heartbeat: do not wake the archived WeChat gateway route.
    Use email-only notifications and check only active-visible departments plus
    explicit recovery validation targets.
 2. Context recovery drift: wake `MoSim｜Codex 上下文维护部`, compare the current
    thread registry and startup docs, then return a packet.
 3. Hook/preflight health: run hook smoke tests and `codex doctor`; if hook trust
-   or feature availability changed, update `CoAgent/hooks/README.md`.
+   or feature availability changed, update `Scripts/hooks/README.md`.
 4. Reference-project inventory: wake `MoSim｜开源项目探针` after crawl batches.
 5. External-learning review: wake `MoSim｜开源项目学习` for adopt/adapt/reject
    proposals, not for implementation.
@@ -480,7 +484,7 @@ Preferred automation candidates now that native surfaces are available:
 
 Do not create a standing `Toolchain MCP`, security, or documentation-secretary
 department just to own these checks. The responsible task thread updates the
-relevant docs; `MoSim｜CoAgent运维平台` owns recurring meta-maintenance.
+relevant docs; `MoSim｜legacy agent runtime运维平台` owns recurring meta-maintenance.
 
 ## Open Questions
 

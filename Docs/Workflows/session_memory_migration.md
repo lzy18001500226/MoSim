@@ -1,9 +1,8 @@
 # Session Memory Migration Workflow
 
-> MoSim compatibility entrypoint. The portable CoAgent OS source of truth is
-> `CoAgent/docs/operating/session_memory_migration.md`; keep reusable
-> cache-first anti-pollution rules there first, then mirror only MoSim cache
-> paths and host-project promotion targets here.
+> Current MoSim workflow for promoting old conversation memory into project
+> documents without polluting active context. legacy agent-era variants are
+> legacy/reference only.
 
 > Purpose: migrate important context from long Codex conversations into MoSim
 > project documents without letting stale or wrong historical conclusions pollute
@@ -119,10 +118,12 @@ Round 3 is complete only when:
 - `git diff --check` passes for the changed docs;
 - the cache item records where it was promoted.
 
-For long migrations, also record round checkpoints in
-`Docs/Workflows/agent_task_ledger.md` or an event log under
+For long migrations, also record round checkpoints in a task-local cache note
+under `Docs/Cache/session_memory_migration/` or an event log under
 `Results/agent_runs/<run_id>/events.jsonl`, using the existing
 `round_started`, `round_learned`, and `round_doc_patched` event vocabulary.
+`Docs/Workflows/agent_task_ledger.md` is legacy trace-back only and is not the
+normal surface for new migration state.
 
 ## Promotion Rules
 
@@ -131,7 +132,7 @@ Promote to formal docs only when the target is the right owner:
 | Item Type | Formal Target |
 |---|---|
 | Current operating rule | `AGENTS.md` or the relevant `Docs/Workflows/*.md` |
-| Active task state | `Docs/Workflows/agent_task_ledger.md` or `PROGRESS.md` |
+| Active task state | `Docs/Workflows/mainline_operations_board.md`, `PROGRESS.md`, or a task-local `Docs/Cache/session_memory_migration/*.md` note |
 | Algorithm/system architecture | `Docs/Design/*.md` |
 | Simulation evidence | `Results/...` manifest plus report/workflow reference |
 | MWORKS/Sysplorer procedure | `Docs/Workflows/*.md` or `Docs/Skills/Mworks/*/SKILL.md` |
@@ -164,7 +165,8 @@ The long-session migration is complete only when:
    as `rejected`, `superseded`, or `needs_user_review`.
 3. The cache has a promoted-target map showing which formal docs received each
    stable item.
-4. `Docs/Index/workflow_index.md`, `PROGRESS.md`, and
-   `Docs/Workflows/agent_task_ledger.md` point to the migration state.
+4. `Docs/Index/workflow_index.md`, `PROGRESS.md`, and the relevant
+   `Docs/Cache/session_memory_migration/` index or note point to the migration
+   state.
 5. A new Codex conversation can recover project direction from repository docs
    plus the cache without reading the old chat transcript.

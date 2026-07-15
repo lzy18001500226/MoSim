@@ -6,8 +6,8 @@ This file is retained for audit only. It must not be used as the current
 execution selector. Current Sunray ROS1/Gazebo/RViz work starts from
 `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; current architecture and
 FAST-LIO state-source promotion rules start from
-`Docs/Design/MoSim_FASTLIO定位闭环与规划复现基础方案.md` and
-`Docs/Design/MoSim真机化收尾与C++化重构方案.md`.
+`Docs/Design/架构/02_感知定位与规划集群/FASTLIO定位闭环.md` and
+`Docs/Design/架构/03_测试调参与证据/真机化与C++化.md`.
 
 Origin PMO thread: `019e9868-83ea-70f0-92c5-a3a408bd78c6`.
 
@@ -30,8 +30,8 @@ depend on the review result.
 Architecture sources:
 
 - `Docs/Design/架构.md`
-- `Docs/Design/11_RflySim式MoSim最小闭环架构审核.md`
-- `Docs/Design/cache/pre_rebuild_20260610/09_UE_ROS_MWORKS无人机仿真架构重构.md`
+- `Docs/Cache/design/historical_snapshots/absorbed_or_superseded_20260614/11_RflySim式MoSim最小闭环架构审核.md`
+- `Docs/Cache/design/historical_snapshots/pre_rebuild_20260610/09_UE_ROS_MWORKS无人机仿真架构重构.md`
 - `Docs/Workflows/unreal_renderer.md`
 - `Docs/Workflows/identify_quadrotor_parameters.md`
 
@@ -97,18 +97,20 @@ If review is needed:
 Do not wait idly for review unless the next action would change product
 direction or destroy/overwrite user work.
 
-## 4.1 Department Communication Contract
+## 4.1 Historical Department Communication Contract
 
-PMO dispatches only to existing canonical visible department threads unless the
-user explicitly approves a new thread. Department threads must return durable
+This subsection documents the superseded department-thread contract used by
+the original 2026-06-06 plan. It is not active project workflow. Current MoSim
+work uses one active Codex thread, and durable state lives in current docs,
+scripts, models, results, and review packets.
+
+In that historical workflow, department threads were expected to return durable
 packets under `Results/agent_packets/returns/` or
-`Results/agent_packets/blockers/`; chat replies, email, and WeChat messages are
-notifications only and are not evidence. Current routine user notification is
-sparse Chinese email; WeChat is used only for explicit restored gateway
-diagnosis or a user-requested WeChat retry.
+`Results/agent_packets/blockers/`; chat replies, email, and WeChat messages
+were notifications only and were not evidence.
 
-Department threads must also plan locally. For every non-trivial task packet,
-the target department should derive and report:
+Historical target departments also planned locally. For every non-trivial task
+packet, the target department was expected to derive and report:
 
 ```text
 department_local_goal
@@ -121,46 +123,42 @@ verification_gates
 manual_review_or_blocker_triggers
 ```
 
-`subagent_plan` is the required scheduling decision and must be one of `used`,
-`available_but_not_useful`, `unavailable`, or `unsafe`. This is not a
-requirement to use at least one sub-agent. `subagents_used=[]` is acceptable
-when the department runtime has no sub-agent surface, no independent slice
-exists, or serial execution is safer. If a department uses disposable
-sub-agents, they must be bounded, task-local, evidence-returning helpers; they
-must not become hidden durable departments or create/fork/rename/archive
-visible threads.
+`subagent_plan` was the required historical scheduling decision and had to be
+one of `used`, `available_but_not_useful`, `unavailable`, or `unsafe`. This was
+not a requirement to use at least one sub-agent. `subagents_used=[]` was
+acceptable when the department runtime had no sub-agent surface, no independent
+slice existed, or serial execution was safer. Disposable sub-agents, when used,
+had to be bounded, task-local, evidence-returning helpers; they were not hidden
+durable departments and could not create/fork/rename/archive visible threads.
 
-Every department task must also declare task-specific infrastructure preflight
-and expected engineering outputs. If the preflight fails, the department stops
-and returns a blocker instead of continuing domain retries. JSON packets,
-ledger rows, and progress notes are control-plane evidence; they do not count
-as the engineering deliverable unless the task is explicitly diagnostic,
-rule-sync, preflight-drill, dispatch-surface diagnostic, or static inventory.
-PMO rejects completed returns that lack domain artifacts, omit the local
-plan/sub-agent decision, or turn a real blocker into completed metadata.
+Historical department tasks also declared task-specific infrastructure
+preflight and expected engineering outputs. If the preflight failed, the
+department stopped and returned a blocker instead of continuing domain retries.
+JSON packets, ledger rows, and progress notes were control-plane evidence; they
+did not count as the engineering deliverable unless the task was explicitly
+diagnostic, rule-sync, preflight-drill, dispatch-surface diagnostic, or static
+inventory.
 
 Historical department-thread snapshot for this P0 run:
 
 This table is retained as execution-plan history only. For new dispatch,
-always use `CoAgent/dispatch/department_threads.json`,
-`Docs/Workflows/mainline_operations_board.md`, and
-`Docs/Workflows/org_operating_model.md` as the current routing sources.
-Do not route new work from this table when a thread title, id, or status has
-changed.
+do not use this table or the old department-thread registry. Current work is a
+single active Codex thread and starts from
+`Docs/Workflows/mainline_operations_board.md` plus the relevant topic workflow.
+Do not route new work from this table.
 
 | Department | Thread id | Current dispatch rule |
 |---|---|---|
-| ROS2 Perception, Localization, And Planning Runtime R1 | `019e9c72-ee74-79d1-b9fe-621d3c6fc99e` | Current production ROS2 route. Finish/integrate current 049 callback first-N instrumentation before planner/TF/RViz readiness gates. |
+| ROS2 Perception, Localization, And Planning Runtime R1 | `019e9c72-ee74-79d1-b9fe-621d3c6fc99e` | Historical ROS2 route snapshot only. Do not use as current Sunray ROS1 execution or dispatch selector. |
 | ROS2 old R2 diagnostic sample | `019e9b85-d4d8-7bf3-8afd-a65697cd3889` | Not production routing. Use only after bounded no-op/dispatch-surface diagnosis and explicit PMO restoration. |
 | MWORKS Dynamics And Control Verification R1 | `019e9be5-334b-76b1-93f9-8b02caebf376` | Primary MWORKS dynamics/control/model-integration evidence route. Every business task must include the MWORKS live gate and expected engineering outputs. |
 | MWORKS Graphical Model Audit R2 | `019e9999-b0d3-7682-bccd-faef08fcf1df` | Auxiliary route for model organization, graphical simulation interface completeness, connection/layout/readability, and diagram hygiene. Also requires the MWORKS live gate before static or live business work. |
-| UE Experiment Console Integration | see current registry | Use current UE R1/R2/R3 rows from the registry for UE operator console, command/echo, fault/wind/controller/planner switching, and manual-review UI tasks. |
-| Sunray150 DAE/PBR Asset Optimization | see current registry | Frozen unless the user reopens Sunray/PBR; use current registry only after explicit reopen. |
+| UE Experiment Console Integration | historical registry snapshot | Historical UE operator-console route only. Do not use as current dispatch selector. |
+| Sunray150 DAE/PBR Asset Optimization | historical registry snapshot | Historical Sunray/PBR route only; frozen unless the user explicitly reopens it. |
 
-Only PMO thread `019e9868-83ea-70f0-92c5-a3a408bd78c6` may create, fork,
-rename, or archive visible department threads. Other departments may request a
-new role through a blocker packet, but must not create or delegate thread
-creation.
+In the historical workflow, only PMO thread `019e9868-83ea-70f0-92c5-a3a408bd78c6`
+could create, fork, rename, or archive visible department threads. Current
+MoSim does not create or use visible department threads for normal execution.
 
 Archived/superseded threads must not be used for dispatch:
 
@@ -213,7 +211,7 @@ do not block, the first MWORKS inspection.
 
 Sidecar returns:
 
-- ROS2-FASTLIO sidecar reports Factory FAST-LIO Gate B is current-pass for
+- ROS2-FASTLIO sidecar reported Factory FAST-LIO Gate B as then-current-pass for
   manual UE/RViz review readiness, with LiDAR about `9.887Hz`, IMU about
   `198.857Hz`, `/Odometry=80`, `/path=8`, `/cloud_registered=80`, position
   RMSE `0.39454m`, max error `0.611542m`, and yaw RMSE `0.017802rad`.
@@ -390,10 +388,11 @@ topics, and reject/stale status strings. It does not replace a WSL ROS2
 `colcon build` or runtime topic smoke. Run those only in the ROS2 lane after
 the local contract remains stable.
 
-## 10. Visible Department Dispatch Checkpoint, 2026-06-06
+## 10. Historical Visible Department Dispatch Checkpoint, 2026-06-06
 
-PMO verified that visible department dispatch is working again through
-Codex App `send_message_to_thread`, without hidden background CLI dispatch:
+Historical PMO verified that visible department dispatch was working again
+through Codex App `send_message_to_thread`, without hidden background CLI
+dispatch:
 
 ```text
 UE target:     MoSim｜UE实验控制台与场景交互部-R1
@@ -404,8 +403,9 @@ Sunray thread id: 019e9b25-066e-7372-8152-209c2b1322a4
 
 Both target task packets were corrected before dispatch so their historical
 `target_thread` and `target_thread_id` matched the then-canonical threads.
-For new dispatch, use `CoAgent/dispatch/department_threads.json`; Sunray/PBR
-remains frozen unless the user explicitly reopens it.
+Do not use this checkpoint or `Config/legacy/department_threads.json` for
+current work dispatch; current execution is single-thread unless the user
+explicitly reopens the old architecture.
 
 Returned packets:
 

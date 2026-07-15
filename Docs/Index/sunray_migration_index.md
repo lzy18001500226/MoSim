@@ -14,7 +14,7 @@ FAST-LIO定位闭环、PX4 EKF融合、Gazebo-Z诊断策略、基础控制任务
 EGO/EGOv2/Diff-Planner/EGO-Swarm复现顺序，统一按：
 
 ```text
-Docs/Design/MoSim_FASTLIO定位闭环与规划复现基础方案.md
+Docs/Design/架构/02_感知定位与规划集群/FASTLIO定位闭环.md
 ```
 
 执行。本文只做 Sunray、本地 Lab 源码、机体/传感器和迁移风险索引；
@@ -48,20 +48,20 @@ Sysplorer/MWORKS，而不是把 ROS/Gazebo 代码等同于 MWORKS 证据：
 
 | 本地目录 | 当前用途 | 备注 |
 |---|---|---|
-| `References/Lab/FAST_LIO` | ROS1 FAST-LIO 主候选源码；`launch/mapping_mid360.launch` 和 `config/mid360.yaml` 是 Mid360 入口 | 当前 Sunray ROS1/Gazebo Classic 链路应优先用这里，不用 `Results/external_downloads/fast_lio_main.zip` |
-| `References/Lab/livox_ros_driver2` | Livox ROS2 驱动参考 | ROS1 `FAST_LIO` 若需要 `livox_ros_driver/CustomMsg`，先核对本地是否已有 ROS1 驱动或生成头；不要直接混用 ROS2 包名 |
-| `References/Lab/FASTLIO2_ROS2` | ROS2 FAST-LIO2 参考实现 | 只在 ROS2/Humble 路线恢复时评估，不替代当前 ROS1 Sunray 链路 |
-| `References/Lab/FAST-LIVO2` | FAST-LIVO2 / Livox 相关头文件和视觉-惯导参考 | 可用于核对 Livox 消息/头文件，但不是当前最小 FAST-LIO 闭环入口 |
-| `References/Lab/ego-planner` | EGO-Planner 上游参考 | 用于理解单机局部规划、B-spline、rviz 配置 |
-| `References/Lab/ego-planner-swarm` | EGO-Planner-Swarm 上游参考 | 用于多机/集群规划设计，不进入当前单机闭环优先级 |
-| `References/Lab/EGO-Planner-v2` | EGO-Planner v2 参考 | 后续优化/对照用 |
-| `References/Lab/Fast-Planner` | Fast-Planner 规划栈 | A*/B-spline/plan_env/map_generator 参考 |
-| `References/Lab/GCOPTER` | GCOPTER 轨迹优化参考 | 后续轨迹优化对照 |
-| `References/Lab/SUPER` | SUPER/ROG-map/mission planner 参考 | 后续更高阶地图和任务规划对照 |
-| `References/Lab/Point-LIO-point-lio-with-grid-map` | Point-LIO + grid map 参考 | 点云定位/栅格地图对照 |
-| `References/Lab/far_planner-melodic-noetic`、`References/Lab/faster`、`References/Lab/Diffusion-Planner`、`References/Lab/Fast-Racing` | 其他规划/竞速/学习参考 | 调研和未来平台扩展，不作为当前最小闭环默认入口 |
+| `References/Lab/localization_slam/FAST_LIO` | ROS1 FAST-LIO 主候选源码；`launch/mapping_mid360.launch` 和 `config/mid360.yaml` 是 Mid360 入口 | 当前 Sunray ROS1/Gazebo Classic 链路应优先用这里，不用 `Results/external_downloads/fast_lio_main.zip` |
+| `References/Lab/localization_slam/livox_ros_driver2` | Livox ROS2 驱动参考 | ROS1 `FAST_LIO` 若需要 `livox_ros_driver/CustomMsg`，先核对本地是否已有 ROS1 驱动或生成头；不要直接混用 ROS2 包名 |
+| `References/Lab/localization_slam/FASTLIO2_ROS2` | ROS2 FAST-LIO2 参考实现 | 只在 ROS2/Humble 路线恢复时评估，不替代当前 ROS1 Sunray 链路 |
+| `References/Lab/localization_slam/FAST-LIVO2` | FAST-LIVO2 / Livox 相关头文件和视觉-惯导参考 | 可用于核对 Livox 消息/头文件，但不是当前最小 FAST-LIO 闭环入口 |
+| `References/Lab/planning_local/ego-planner` | EGO-Planner 上游参考 | 用于理解单机局部规划、B-spline、rviz 配置 |
+| `References/Lab/swarm_coordination/ego-planner-swarm` | EGO-Planner-Swarm 上游参考 | 用于多机/集群规划设计，不进入当前单机闭环优先级 |
+| `References/Lab/planning_local/EGO-Planner-v2` | EGO-Planner v2 参考 | 后续优化/对照用 |
+| `References/Lab/planning_local/Fast-Planner` | Fast-Planner 规划栈 | A*/B-spline/plan_env/map_generator 参考 |
+| `References/Lab/planning_local/GCOPTER` | GCOPTER 轨迹优化参考 | 后续轨迹优化对照 |
+| `References/Lab/planning_local/SUPER` | SUPER/ROG-map/mission planner 参考 | 后续更高阶地图和任务规划对照 |
+| `References/Lab/localization_slam/Point-LIO-point-lio-with-grid-map` | Point-LIO + grid map 参考 | 点云定位/栅格地图对照 |
+| `References/Lab/planning_local/far_planner-melodic-noetic`、`References/Lab/planning_local/faster`、`References/Lab/Diffusion-Planner`、`References/Lab/planning_local/Fast-Racing` | 其他规划/竞速/学习参考 | 调研和未来平台扩展，不作为当前最小闭环默认入口 |
 
-当前运行选择：Sunray ROS1 / Gazebo Classic 负责仿真和传感器，PX4/MAVROS/px4ctrl 是 Sunray 当前闭环的一部分，`References/Lab/FAST_LIO` 负责 FAST-LIO 源码候选，Sunray/EGO 现有 launch 和 `References/Lab/ego-planner*` 负责 EGO 行为对照。不得把历史 ROS2/PX4/x500 路线、外部下载 FAST-LIO、或脱离 Sunray 当前机体/传感器的 PX4 默认模型当成等价替代。`Results/external_downloads/` 下的 zip 只能作为历史下载缓存，不是首选源码。
+当前运行选择：Sunray ROS1 / Gazebo Classic 负责仿真和传感器，PX4/MAVROS/px4ctrl 是 Sunray 当前闭环的一部分，`References/Lab/localization_slam/FAST_LIO` 负责 FAST-LIO 源码候选，Sunray/EGO 现有 launch 和 `References/Lab/planning_local/ego-planner*` 负责 EGO 行为对照。不得把历史 ROS2/PX4/x500 路线、外部下载 FAST-LIO、或脱离 Sunray 当前机体/传感器的 PX4 默认模型当成等价替代。`Results/external_downloads/` 下的 zip 只能作为历史下载缓存，不是首选源码。
 
 ## 已采用机体源
 
@@ -317,9 +317,9 @@ Sysplorer 迁移建议：
 | 优先级 | 任务 | 输出位置 |
 |---|---|---|
 | P0 | 维持单机控制器结果收尾和人工审核清单更新 | `Results/人工审核清单.csv`、`Docs/simulation_report.md` |
-| P1 | 建立 `PlannerCommand`、`GridMap`、`TrajectoryReference`、`FormationCommand` 标准接口 | `Docs/Design/MoSim统一控制接口规范.md`、`Docs/Design/MoSim规划与编队控制接口规范.md`、`Docs/Index/variable_mapping.md`；旧细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/02_模型接口与运行流程.md` |
-| P1 | 从 EGO 抽取 A*/B-spline/minimum-snap 迁移设计 | `Docs/Design/MoSim规划与编队控制接口规范.md`；旧细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/05_路径规划与轨迹生成.md` |
-| P1 | 从 ORCA/formation_control 抽取多机避障和队形状态机 | `Docs/Design/MoSim规划与编队控制接口规范.md`；旧细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/06_多机编队控制.md` |
+| P1 | 建立 `PlannerCommand`、`GridMap`、`TrajectoryReference`、`FormationCommand` 标准接口 | `Docs/Design/架构/01_控制器平台/统一控制接口.md`、`Docs/Design/架构/02_感知定位与规划集群/规划与编队控制接口.md`、`Docs/Index/variable_mapping.md`；旧细节缓存于 `Docs/Cache/design/historical_snapshots/pre_rebuild_20260610/02_模型接口与运行流程.md` |
+| P1 | 从 EGO 抽取 A*/B-spline/minimum-snap 迁移设计 | `Docs/Design/架构/02_感知定位与规划集群/规划与编队控制接口.md`；旧细节缓存于 `Docs/Cache/design/historical_snapshots/pre_rebuild_20260610/05_路径规划与轨迹生成.md` |
+| P1 | 从 ORCA/formation_control 抽取多机避障和队形状态机 | `Docs/Design/架构/02_感知定位与规划集群/规划与编队控制接口.md`；旧细节缓存于 `Docs/Cache/design/historical_snapshots/pre_rebuild_20260610/06_多机编队控制.md` |
 | P2 | 建立 Sysplorer 图形化单机避障规划模型 | `Models/QuadrotorPlanning*` |
 | P2 | 建立 Sysplorer 三机编队与 ORCA/CBF 安全层模型 | `Models/QuadrotorFormation*` |
-| P2 | 增加多机指标：队形 RMSE、最小机间距、避障约束违反数 | `Scripts/results/calc_metrics.py`、`Docs/Design/MoSim控制系统测试与评价规范.md`、`Docs/Design/MoSim规划与编队控制接口规范.md`；旧指标细节缓存于 `Docs/Design/cache/pre_rebuild_20260610/08_仿真指标与自动评估.md` |
+| P2 | 增加多机指标：队形 RMSE、最小机间距、避障约束违反数 | `Scripts/results/calc_metrics.py`、`Docs/Design/架构/03_测试调参与证据/测试与评价.md`、`Docs/Design/架构/02_感知定位与规划集群/规划与编队控制接口.md`；旧指标细节缓存于 `Docs/Cache/design/historical_snapshots/pre_rebuild_20260610/08_仿真指标与自动评估.md` |

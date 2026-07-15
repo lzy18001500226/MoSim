@@ -15,7 +15,7 @@ check upstream -> write update candidates -> review -> promote snapshot -> commi
 ```
 
 The check phase is read-only against `References/`. The promotion phase is a
-separate PMO-approved write task.
+separate user-approved or current-goal-approved write task.
 
 This workflow is for source snapshots and manifests. It is not an adoption
 decision, not a runtime validation, and not a claim that upstream behavior is
@@ -25,15 +25,16 @@ accepted into MoSim.
 
 | Action | Owner | Rule |
 |---|---|---|
-| Create or refresh manifest metadata | Open-source probe / scoped crawler | Allowed when scoped by PMO or CoAgentOps. |
-| Check upstream HEADs | Open-source probe / scoped crawler | Allowed as local freshness work; write only candidate reports. |
-| Decide whether an update is worth study | PMO | PMO routes to learning, ROS2, MWORKS, UE, or DevOps. |
-| Evaluate adopt/adapt/reference-only/reject | Open-source learning | Learning returns a proposal, not a direct route change. |
-| Promote new source snapshot into `References/` | DevOps or explicitly assigned task thread | Requires PMO-approved write scope and large-file/Git hygiene gates. |
-| Change MoSim technical route | PMO | Never implied by a reference update. |
+| Create or refresh manifest metadata | Current active thread / scoped crawler | Allowed when the current task explicitly scopes the reference family. |
+| Check upstream HEADs | Current active thread / scoped crawler | Allowed as local freshness work; write only candidate reports. |
+| Decide whether an update is worth study | Current active thread with user review when needed | Route deeper learning to the relevant current workflow. |
+| Evaluate adopt/adapt/reference-only/reject | Current active thread / scoped research pass | Returns a proposal, not a direct route change. |
+| Promote new source snapshot into `References/` | Current active thread under explicit write scope | Requires approved write scope and large-file/Git hygiene gates. |
+| Change MoSim technical route | User/current active thread | Never implied by a reference update. |
 
-Standing probe threads must not auto-update `References/`. They produce
-inventory, manifests, and update candidates only.
+Reference freshness checks must not auto-update `References/`. They produce
+inventory, manifests, and update candidates only unless the current task
+explicitly approves promotion.
 
 ## 3. Directory Layout
 
@@ -154,8 +155,9 @@ blocked
 unreviewed
 ```
 
-Probe output should normally use `reference-only` or `unreviewed`. Only the
-learning owner or PMO may upgrade adoption status.
+Probe output should normally use `reference-only` or `unreviewed`. Only a
+current active-thread adoption review, with user review when the route changes,
+may upgrade adoption status.
 
 ## 5. Intake Filter
 
@@ -294,8 +296,8 @@ variants
 
 ROS2 crawl output must not say that these repositories are adopted MoSim
 runtime dependencies. The default status is `reference-only` or `unreviewed`;
-PMO routes any deeper learning to the ROS2 owner or open-source learning
-department.
+The current active thread routes any deeper learning to the relevant current
+workflow.
 
 ## 6. Freshness Check
 
@@ -369,11 +371,11 @@ risk_level: low | medium | high | blocked
 ```
 
 Do not use candidate reports as accepted technical evidence. They are routing
-inputs for PMO and learning departments.
+inputs for the current active thread and focused research passes.
 
 ## 8. Scoped Temporary Clone
 
-When PMO authorizes deeper candidate inspection, clone into `Results/`, not
+When the current task authorizes deeper candidate inspection, clone into `Results/`, not
 directly into `References/`:
 
 ```powershell
@@ -393,7 +395,7 @@ snapshots, not nested upstream repositories.
 Promotion means replacing or adding `References/<Family>/<repo>/` with a
 cleaned source snapshot and updating the manifest `pinned_sha`.
 
-Promotion requires an explicit PMO/task packet write scope naming:
+Promotion requires an explicit user/current-task write scope naming:
 
 ```text
 References/Gazebo/<repo>/
@@ -403,7 +405,7 @@ Results/external_learning/<source_family>_update_YYYYMMDD/
 
 Promotion steps:
 
-1. Confirm PMO-approved repo list and write scope.
+1. Confirm approved repo list and write scope.
 2. Clone to a temporary directory under `Results/external_learning/.../temp/`.
 3. Remove upstream `.git/`.
 4. Remove generated/build/cache/dependency outputs.
@@ -472,15 +474,15 @@ Recommended cadence for known local reference families:
 
 | Family | Cadence | Owner |
 |---|---|---|
-| `References/Gazebo/` | Weekly or before ROS2/Gazebo integration work | Open-source probe |
-| `References/ROS2/` | Weekly or before ROS2/RViz/FAST-LIO/planner integration work | Open-source probe / ROS2 owner |
-| `References/PX4/` | Before PX4/MAVROS bridge work | Open-source probe / ROS2 owner |
-| `References/Sunray/` | Before Sunray structural comparison tasks | Open-source probe / learning |
-| `References/Lab/` | Before planner/perception route decisions | Open-source probe / learning |
-| `References/Agent/` | Before CoAgent architecture or tooling changes | CoAgentOps / open-source probe |
+| `References/Gazebo/` | Weekly or before ROS/Gazebo integration work | Current active thread / scoped reference audit |
+| `References/ROS2/` | Only when ROS2 lane is explicitly reopened | Current active thread / scoped reference audit |
+| `References/PX4/` | Before PX4/MAVROS bridge work | Current active thread / scoped reference audit |
+| `References/Sunray/` | Before Sunray structural comparison tasks | Current active thread / scoped reference audit |
+| `References/Lab/` | Before planner/perception route decisions | Current active thread / scoped reference audit |
+| `References/Agent/` | Before legacy agent architecture or tooling cleanup | Current active thread / scoped reference audit |
 
 Recurring checks should write candidate reports only. Promotion remains a
-separate PMO-approved task.
+separate approved task.
 
 ## 12. Blocker Conditions
 
@@ -494,12 +496,12 @@ single file >= 100 MiB
 large generated/dependency tree dominates the snapshot
 submodule required for meaningful source but not authorized
 Git index/staging becomes too large or slow for a bounded batch
-task would modify References without PMO-approved promotion scope
+task would modify References without approved promotion scope
 task would require adoption or technical-route decision
 ```
 
 Do not delete local snapshots just because upstream is unavailable. Mark the
-manifest entry as `repo_unavailable` or `blocked` and let PMO decide.
+manifest entry as `repo_unavailable` or `blocked` and ask for a route decision.
 
 ## 13. Completion Evidence
 
@@ -533,6 +535,6 @@ Always include the claim boundary:
 
 ```text
 These are external source snapshots or update candidates.
-They are not adopted MoSim technical truth unless PMO/learning documents a
+They are not adopted MoSim technical truth unless the current active thread documents a
 separate adopt/adapt decision with evidence.
 ```

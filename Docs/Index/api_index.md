@@ -2,10 +2,12 @@
 
 > Quick lookup for MCP tools, project scripts, and common API-related questions.
 
-For deciding which native Codex surface, plugin, MCP, skill, script, visible
-thread, subagent, automation, review route, or checker to use for a task, start
-from `Docs/Index/capability_index.md`. This file keeps concrete API/tool
-sequences and examples.
+For deciding which native Codex surface, plugin, MCP, skill, script, review
+route, or checker to use for a task, start from
+`Docs/Index/capability_index.md`. Legacy visible-thread, subagent, and
+automation routes are indexed there only for explicit cleanup or audit, not
+ordinary single-thread execution. This file keeps concrete API/tool sequences
+and examples.
 
 ---
 
@@ -223,6 +225,18 @@ python3 Scripts/UE5/check_epic_library_inventory.py --json
 Current renderer engine association is UE `5.5`. UE 4.27 local scene projects
 use `UE4Editor.exe` / `UE4Editor-Cmd.exe`, not the UE5 executable names.
 
+For UE-derived static scene import into Gazebo Classic, do not improvise the
+tool sequence from MCP tool names alone. Load:
+
+```text
+Docs/Skills/Unreal/ue-gazebo-static-scene-import/SKILL.md
+Docs/Workflows/ue_to_gazebo_static_scene_import.md
+```
+
+That route covers source-scene confirmation, UE export, Blender/Gazebo
+conversion, `gz sdf -k` validation, user review evidence, scene profile
+promotion, and claim boundaries.
+
 Before write operations, prove an editor-side listener and map source first.
 Avoid switching back to broad generic scene-generation tools to bypass
 import/editability/truth acceptance gates.
@@ -418,8 +432,10 @@ Current project rule:
 1. Prefer official MWORKS.Sysblock GUI/API generated models for new block diagrams.
 2. Use `call_code(mode="run_script")` / ModelingPy with `NewModel(..., "Sysblock")`, `AddComponent`, `ConnectPort`, and `SetModelParamValue` for scripted topology.
 3. Treat hand-written Sysblock `.mo` only as a diagnostic sketch or metadata/display repair input. It is not accepted as graphical Sysblock evidence until Sysplorer opens it with visible blocks/wires and `check_model` passes.
-4. Store successful check/simulation evidence under `Results/{group}/{scene}/{experiment}/logs/`.
-5. Store failed check diagnostics under `Results/{group}/{scene}/{experiment}/logs/` or a preserved MCP log.
+4. Store successful check/simulation evidence under a run-specific logs
+   directory shaped like `Results/{group}/{scene}/{experiment}/logs/`.
+5. Store failed check diagnostics under the same run-specific logs directory
+   or a preserved MCP log.
 
 ---
 
@@ -472,13 +488,13 @@ Docs/Workflows/debug_mcp.md#11-blender-mcp
 For reusable desktop-window observation, load:
 
 ```text
-CoAgent/skills/window-capture-evidence/SKILL.md
+Docs/Skills/Desktop/window-capture-evidence/SKILL.md
 ```
 
 For explicitly authorized desktop-window actions, load:
 
 ```text
-CoAgent/skills/window-ui-action-control/SKILL.md
+Docs/Skills/Desktop/window-ui-action-control/SKILL.md
 ```
 
 Observation and action are separate capabilities. Screenshot permission does

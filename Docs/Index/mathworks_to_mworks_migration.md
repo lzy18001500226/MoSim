@@ -12,11 +12,11 @@
 | Simulink agentic toolkit | `Docs/Skills/Matlab/simulink-agentic-toolkit/` | Model interaction workflow ideas |
 | Simulink skills | `Docs/Skills/Simulink/skills/` | Model context resolution, command-line debugging, profiler analysis ideas |
 | Simulink project structure | `Docs/Skills/Simulink/Project-File-Structure-for-Simulink/` | Model/data/doc/test separation pattern |
-| MWORKS comparison package | `References/MWORKS高校星火计划资料包/MWORKS与MATLAB功能对照/` | Official MATLAB-to-MWORKS differences and function mapping |
+| MWORKS comparison package | `References/MWORKS/MWORKS高校星火计划资料包/MWORKS与MATLAB功能对照/` | Official MATLAB-to-MWORKS differences and function mapping |
 
 ## Converted MWORKS Comparison References
 
-The folder `References/MWORKS高校星火计划资料包/MWORKS与MATLAB功能对照` has been converted into project-local references:
+The folder `References/MWORKS/MWORKS高校星火计划资料包/MWORKS与MATLAB功能对照` has been converted into project-local references:
 
 ```text
 Docs/MworksDocs/converted/matlab_compat/

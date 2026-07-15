@@ -21,22 +21,21 @@ source label
 
 Do not let replay or offline animation replace real simulation evidence.
 
-If the work is owned by a MWORKS/Sysplorer/Syslab department, reference the
-latest CoAgentOps 10-minute activation/window patrol when available. Return or
-blocker packets should include `mworks_activation_patrol_reference`,
-`mworks_activation_patrol_age_minutes` when known,
-`will_not_click_activation_login=true` for engineering departments,
-`bounded_login_recovery_authorized_for_pmo_or_coagentops` when applicable, and
+If the work needs live MWORKS/Sysplorer/Syslab GUI/result-viewer evidence, reuse
+current activation/window evidence when available. Return or blocker packets
+should include `mworks_activation_reference` when known,
+`will_not_click_activation_login=true`,
+`bounded_login_recovery_user_authorized` when applicable, and
 `live_mworks_touched`. Do not turn report/visualization work into repeated
 activation probing or accept sentinel JSON as the report artifact.
 
-If no recent patrol exists and the work needs live MWORKS GUI/result-viewer
+If no current activation/window evidence exists and the work needs live MWORKS GUI/result-viewer
 evidence, run at most one bounded current-turn sentinel/API check or return a
-blocker. If the patrol or current task evidence shows demo, login, activation,
+blocker. If current evidence shows demo, login, activation,
 authorization, mixed blocking state, unavailable tooling, unknown blocking
-state, or GUI error-report state, engineering departments stop MWORKS/report
-evidence work and return a `status=blocked` blocker. PMO/CoAgentOps may perform
-bounded official login recovery only when user-authorized, with
+state, or GUI error-report state, stop MWORKS/report evidence work and return a
+`status=blocked` blocker. Bounded official login recovery is allowed only when
+explicitly user-authorized, with
 foreground/maximized target-window evidence, credential redaction, and the
 MoSim stop conditions. For live report/result-viewer/plot/animation work,
 ordinary phase screenshots use DPI-aware background capture with

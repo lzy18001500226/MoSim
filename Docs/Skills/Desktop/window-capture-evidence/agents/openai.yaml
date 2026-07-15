@@ -1,0 +1,4 @@
+interface:
+  display_name: "Window Capture Evidence"
+  short_description: "Capture window evidence safely"
+  default_prompt: "Use this skill to capture desktop window screenshot evidence without performing UI actions."

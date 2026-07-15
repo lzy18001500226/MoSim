@@ -46,7 +46,7 @@ Do not call Sysplorer `ClearAll`, `ChangeDirectory`, or broad workspace-reset AP
 ## 3. Build Sequence
 
 1. Resolve the controller interface and replacement location.
-2. For live Sysplorer/Syslab/MWORKS work, run `Scripts/agent/check_mworks_gui_sentinel.py` and, when available, `Scripts/tools/capture_window_background.ps1` before any MCP/model/GUI operation. Engineering departments stop on demo, unactivated, login/activation, authorization, GUI error-report, mixed, visible unknown window, unavailable tooling, or unknown sentinel state. PMO/CoAgentOps may perform bounded official login recovery only when user-authorized, with credential redaction and foreground/maximized target-window evidence. Hidden Qt/browser-proxy/helper windows with no license/error text are risk evidence, not standalone blockers.
+2. For live Sysplorer/Syslab/MWORKS work, run `Scripts/agent/check_mworks_gui_sentinel.py` and, when available, `Scripts/tools/capture_window_background.ps1` before any MCP/model/GUI operation. The current active thread stops on demo, unactivated, login/activation, authorization, GUI error-report, mixed, visible unknown window, unavailable tooling, or unknown sentinel state and returns a blocker. Bounded official login recovery is allowed only when the user explicitly authorizes it, with credential redaction and foreground/maximized target-window evidence. Hidden Qt/browser-proxy/helper windows with no license/error text are risk evidence, not standalone blockers.
 3. Confirm the modeling path: Sysblock diagram, Modelica wrapper, or hybrid.
 4. Query concrete library blocks and ports when uncertain.
 5. Build the smallest runnable graphical chain.
@@ -72,8 +72,8 @@ For targeted work, a narrower MCP check is acceptable if it records:
 activation_sentinel_before
 background_screenshot_before
 license_state
-will_not_click_activation_login=true for engineering departments
-bounded_login_recovery_authorized_for_pmo_or_coagentops when applicable
+will_not_click_activation_login=true for normal engineering work
+bounded_login_recovery_user_authorized_when_applicable
 live_mworks_touched
 mworks_phase_screenshots and mworks_phase_observations when live_mworks_touched=true
 screenshot_manifest for formal live simulation bundles

@@ -11,7 +11,7 @@
 | Design documents | `Docs/Design/README.md` | Current system-design source set, architecture, interfaces, gates, and cache/ADR routing |
 | CoSim future platform blueprint | `Docs/CoSim/README.md` | Future vehicle-family-first simulation platform research, reviewed backend decisions, shared core, and architecture drafts |
 | User manual | `Docs/user_manual.md` | Usage guide and reproducible command entry points |
-| Simulation report | `Docs/simulation_report.md` | Current evidence, metrics, figures, and experiment gaps |
+| Simulation report | `Docs/simulation_report.md` | Report/evidence narrative, metrics, figures, and experiment gaps; re-read current result files before making present-tense claims |
 | API/tool index | `Docs/Index/api_index.md` | Available MCP tools, scripts, and API references |
 | Workflow index | `Docs/Index/workflow_index.md` | Repeatable development workflows |
 | Simulation model structure index | `Docs/Index/simulation_model_structure_index.md` | Maintained map of model packages, scenario configs, runner scripts, and result locations |
@@ -20,7 +20,7 @@
 | MathWorks to MWORKS migration | `Docs/Index/mathworks_to_mworks_migration.md` | How to translate MATLAB/Simulink skills into MWORKS workflows |
 | Sunray migration index | `Docs/Index/sunray_migration_index.md` | Sunray code/model/config index for current ROS1/Gazebo review and Sysplorer migration |
 | PX4 reference index | `Docs/Index/px4_reference_index.md` | PX4 source map for flight modes, failsafe, setpoints, battery, ESC, and actuator interfaces |
-| FAST-LIO localization closed-loop foundation | `Docs/Design/MoSim_FASTLIO定位闭环与规划复现基础方案.md` | Sunray ROS1 FAST-LIO -> PX4 EKF -> MAVROS local position state-source plan and EGO/EGOv2/Diff-Planner rerun gates |
+| FAST-LIO localization closed-loop foundation | `Docs/Design/架构/02_感知定位与规划集群/FASTLIO定位闭环.md` | Sunray ROS1 FAST-LIO -> PX4 EKF -> MAVROS local position state-source plan and EGO/EGOv2/Diff-Planner rerun gates |
 
 ## Project-Local Skills
 
@@ -90,7 +90,7 @@
 | Sunray Sysplorer migration index | `Docs/Index/sunray_migration_index.md` |
 | Sunray source tree | `References/Sunray/` |
 | PX4 source reference index | `Docs/Index/px4_reference_index.md` |
-| PX4 source tree | `References/PX4/` |
+| PX4 source family | `References/PX4/`; PX4-Autopilot tree: `References/PX4/PX4/` |
 | CUAV/PX6C/V6X/Mid360/ORIN visual references | Source images: `References/CUAV/`; normalized model icons: `References/MWORKS/QuadrotorModel/Resources/Images/` |
 
 ## Design Docs
@@ -99,31 +99,31 @@
 |---|---|
 | Design entrypoint | `Docs/Design/README.md` |
 | Competition task scope | `Docs/Design/赛题.md` |
-| Control-system architecture root | `Docs/Design/MoSim控制体系总览.md` |
+| Control-system architecture root | `Docs/Design/架构/01_控制器平台/控制体系总览.md` |
 | High-level architecture narrative | `Docs/Design/架构.md` |
-| Unified controller interface and ABI | `Docs/Design/MoSim统一控制接口规范.md` |
-| Single-UAV controller implementation | `Docs/Design/MoSim单机控制器实现规范.md` |
-| Code generation and PX4 deployment | `Docs/Design/MoSim控制器代码生成与PX4部署规范.md` |
-| Controller tuning and parameter optimization | `Docs/Design/MoSim控制器调参与参数优化规范.md` |
-| Controller management and configuration | `Docs/Design/MoSim控制器管理与配置规范.md` |
-| Controller testing and evaluation | `Docs/Design/MoSim控制系统测试与评价规范.md` |
-| Control enhancement and fault tolerance | `Docs/Design/MoSim控制增强与容错规范.md` |
-| Planning and formation interfaces | `Docs/Design/MoSim规划与编队控制接口规范.md` |
-| FAST-LIO localization and planner reproduction foundation | `Docs/Design/MoSim_FASTLIO定位闭环与规划复现基础方案.md` |
-| Flight-like closeout and C++ refactor | `Docs/Design/MoSim真机化收尾与C++化重构方案.md` |
-| Agent workflow and task orchestration | `Docs/Design/MoSim研发工作流与Agent任务编排规范.md` |
-| Legacy numbered design archive | `Docs/Design/旧架构/` |
+| Unified controller interface and ABI | `Docs/Design/架构/01_控制器平台/统一控制接口.md` |
+| Single-UAV controller implementation | `Docs/Design/架构/01_控制器平台/单机控制器实现.md` |
+| Code generation and PX4 deployment | `Docs/Design/架构/01_控制器平台/代码生成与PX4部署.md` |
+| Controller tuning and parameter optimization | `Docs/Design/架构/03_测试调参与证据/调参与参数优化.md` |
+| Controller management and configuration | `Docs/Design/架构/01_控制器平台/控制器管理与配置.md` |
+| Controller testing and evaluation | `Docs/Design/架构/03_测试调参与证据/测试与评价.md` |
+| Control enhancement and fault tolerance | `Docs/Design/架构/01_控制器平台/控制增强与容错.md` |
+| Planning and formation interfaces | `Docs/Design/架构/02_感知定位与规划集群/规划与编队控制接口.md` |
+| FAST-LIO localization and planner reproduction foundation | `Docs/Design/架构/02_感知定位与规划集群/FASTLIO定位闭环.md` |
+| Flight-like closeout and C++ refactor | `Docs/Design/架构/03_测试调参与证据/真机化与C++化.md` |
+| Agent workflow and task orchestration | `Docs/Design/架构/00_架构与任务/任务路线图.md` |
+| Legacy numbered design archive | `Docs/Cache/design/old_architecture/` |
 | CoSim future platform entrypoint | `Docs/CoSim/README.md` |
 | CoSim platform blueprint | `Docs/CoSim/00_platform/00_CoSim总体蓝图.md` |
 | CoSim shared core and data contracts | `Docs/CoSim/10_shared_core/01_共享内核与数据契约.md` |
 | CoSim vehicle family tree | `Docs/CoSim/20_vehicle_families/README.md` |
 | CoSim backend adapter matrix | `Docs/CoSim/30_backend_adapters/README.md` |
 | CoSim research decision index | `Docs/CoSim/research/README.md` |
-| CoSim raw research preservation manifest | `Docs/CoSim/cache/source_migration_manifest_20260614.md` |
+| CoSim raw research preservation manifest | `Docs/Cache/cosim/source_migration_manifest_20260614.md` |
 | Simulation model structure index | `Docs/Index/simulation_model_structure_index.md` |
-| Cached absorbed/superseded design inputs | `Docs/Design/cache/absorbed_or_superseded_20260614/` |
-| Design rebuild audit | `Docs/Design/cache/design_rebuild_audit_20260610.md` |
-| Cached pre-rebuild design inputs | `Docs/Design/cache/pre_rebuild_20260610/README.md` |
+| Cached absorbed/superseded design inputs | `Docs/Cache/design/historical_snapshots/absorbed_or_superseded_20260614/` |
+| Design rebuild audit | `Docs/Cache/design/rebuild_audits/design_rebuild_audit_20260610.md` |
+| Cached pre-rebuild design inputs | `Docs/Cache/design/historical_snapshots/pre_rebuild_20260610/README.md` |
 
 ## Maintenance Rules
 

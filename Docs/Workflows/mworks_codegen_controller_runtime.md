@@ -3,27 +3,191 @@
 Date: 2026-06-02
 
 Purpose: verify and reuse MWORKS/Sysplorer/Sysblock controller code generation
-for the MoSim PX4-native controller deployment path.
+for the MoSim controller deployment path: first through the current
+ROS1/Sunray/MAVROS regression lane, and later through the gated PX4-native
+deployment branch.
 
-2026-06-20 architecture correction: the formal target is not a standalone
-ROS2 controller that writes Gazebo motor topics. The formal target follows the
-normal PX4/Gazebo/Simulink-style flow: MWORKS generates controller C/C++, the
-generated code is wrapped for PX4 Offboard or PX4 module/uORB integration, PX4
-owns flight mode, estimator, failsafe, control allocation, and actuator
-pipeline, and Gazebo remains the plant/sensor simulator.
+Current-mainline boundary: this workflow is retained for MWORKS
+code-generation, generated-runtime promotion, and later PX4-native deployment
+design. The execution selector is
+`Docs/Workflows/mainline_operations_board.md`. The current active runtime
+evidence lane remains ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS /
+px4ctrl / RViz. The G9 family has passed `GenerateModelCode`, generated-C
+offline equivalence, and static ROS/Sunray adapter gates. Its six-controller
+generated-runtime route is being revalidated under
+`Docs/Workflows/g9_mworks_generated_runtime_closeout.md` because older runtime
+manifests identify controller profiles but do not uniquely prove the compiled
+generated-C backend and executable identity. G10-B/D/E L1/AWFF, safety filter, and
+fault allocation have also passed state-isolated MWORKS/codegen promotion and
+the reversible ROS/Sunray runtime reinjection gates through Diff single-UAV and
+Diff three-UAV. PX4-native uORB/module deployment is a later gated route and
+must not displace the current
+Sunray/ROS1/MAVROS regression lane. ROS2, x500, and direct Gazebo motor-control
+fixture routes remain historical or diagnostic unless explicitly reopened by
+the user.
+
+2026-06-30 G9 family static/codegen status:
+
+```text
+MWORKS GenerateModelCode:
+  Results/g9/controller_family_attitude_thrust_v1/g9_family_mworks_codegen_20260630_work
+  status: passed
+
+generated-C offline equivalence:
+  Results/g9/controller_family_attitude_thrust_v1/g9_family_generated_c_gate_20260630_195728/RUN_MANIFEST.json
+  status: passed
+  controllers: official_pid, se3_basic, dfbc_basic, smc_boundary_layer, pid_indi, nmpc_outer
+  cases: 450
+  tolerance: 1e-12
+
+static ROS/Sunray adapter shape:
+  Results/g9/controller_family_attitude_thrust_v1/g9_family_ros_sunray_adapter_gate_20260630_200721/RUN_MANIFEST.json
+  status: passed
+  controllers: official_pid, se3_basic, dfbc_basic, smc_boundary_layer, pid_indi, nmpc_outer
+  cases: 450
+  attitude_target_type_mask: 7
+```
+
+These gates are still static/offline evidence. They prove generated source,
+same-input numerical equivalence, finite/unit attitude target, bounded
+normalized thrust, and the px4ctrl/MAVROS attitude-plus-thrust command shape.
+They did not by themselves prove ROS node replacement, PX4 Offboard behavior,
+Gazebo motion, Diff-Planner compatibility, or flight metrics. The current board
+records later reversible Sunray/ROS wrapper and Gazebo/Diff runs for the named
+profiles. Those runs remain regression evidence, but they are not final
+generated-runtime closure until the provenance contract in the G9 closeout
+workflow passes. Future uses of this workflow should apply the same evidence
+chain and provenance contract to every selected controller or enhancement.
+
+2026-07-01 G10-B/D/E state-isolated static/codegen status:
+
+```text
+review packet:
+  Results/g10/min_enhancements_v1/g10bde_mworks_codegen_stateiso_20260701_work/SUMMARY.md
+
+MWORKS GenerateModelCode:
+  Results/g10/min_enhancements_v1/g10bde_mworks_codegen_stateiso_20260701_work/generate_model_code_result.json
+  status: passed
+  model: G10_BDE_Family_CFunction_Sysblock_StateIso
+  state_isolation_present: true
+  codegen precision intent: real_as_float=false, DoublePrecision=true
+
+generated-C offline equivalence:
+  Results/g10/min_enhancements_v1/g10bde_mworks_codegen_stateiso_20260701_work/g10_bde_family_generated_c_gate_strict/RUN_MANIFEST.json
+  status: passed
+  controllers: G9-A..F plus accepted G10-B/D/E ids 7..9
+  cases: 702
+  failures: 0
+  tolerance: 1e-12
+  max_normalized_thrust_abs_diff: 1.1102230246251565e-16
+  max_desired_acc_abs_diff: 3.552713678800501e-15
+
+static ROS/Sunray adapter shape:
+  Results/g10/min_enhancements_v1/g10bde_mworks_codegen_stateiso_20260701_work/g10_bde_family_ros_sunray_adapter_gate_strict/RUN_MANIFEST.json
+  status: passed
+  cases: 702
+  failures: 0
+  nonfinite_command_count: 0
+  thrust_range_failure_count: 0
+  attitude_target_type_mask: 7
+```
+
+The state-isolation fix is important: the generated Sysblock CFunction scalar
+entry keeps a separate controller state slot per controller id. Earlier
+single-static-state wrappers could contaminate one controller's internal state
+with another controller's test case and create false numerical failures in
+G10-B/D/E special cases. This fix proves offline codegen equivalence and
+static adapter shape. The runtime ROS/Sunray replacement and Diff-Planner
+compatibility claims are now covered by the G10-B/D/E runtime evidence below.
+It still does not prove PX4-native deployment, full nonlinear online NMPC,
+G10-C translational INDI, or final competition performance improvement.
+
+2026-07-01 G10-B/D/E ROS/Sunray runtime reinjection closeout:
+
+```text
+Diff single-UAV:
+  l1_awff:
+    Results/sunray_ros1/g10_bde_l1_awff_diff_single_20260701_024916
+    status: passed
+    mission_exit_code: 0
+    execute_target_error_m: 0.027689
+    z_audit: passed
+    waypoint_audit: passed
+  safety_filter:
+    Results/sunray_ros1/g10_bde_safety_filter_diff_single_20260701_025540
+    status: passed
+    mission_exit_code: 0
+    execute_target_error_m: 0.015052
+    z_audit: passed
+    waypoint_audit: passed
+  fault_allocation:
+    Results/sunray_ros1/g10_bde_fault_allocation_diff_single_20260701_030032
+    status: passed
+    mission_exit_code: 0
+    execute_target_error_m: 0.034522
+    z_audit: passed
+    waypoint_audit: passed
+
+Diff three-UAV:
+  transition guard:
+    EGO_CMD_SAFETY_MAX_POSITION_JUMP_M=0.80
+    reason: accepted hover-hold -> planner-takeover transition envelope for
+            Goal5; not controller tuning.
+  l1_awff:
+    Results/sunray_ros1/g10_bde_l1_awff_diff_swarm_3uav_jump08_20260701_031015
+    status: passed
+    mission_exit_code: 0
+    min_inter_uav_distance_m: 0.977825
+  safety_filter:
+    Results/sunray_ros1/g10_bde_safety_filter_diff_swarm_3uav_jump08_20260701_031532
+    status: passed
+    mission_exit_code: 0
+    min_inter_uav_distance_m: 0.971109
+  fault_allocation:
+    Results/sunray_ros1/g10_bde_fault_allocation_diff_swarm_3uav_jump08_20260701_032031
+    status: passed
+    mission_exit_code: 0
+    min_inter_uav_distance_m: 0.977347
+
+negative/intermediate run:
+  Results/sunray_ros1/g10_bde_l1_awff_diff_swarm_3uav_20260701_030404
+  exit: 14
+  blocker: uav1_position_cmd_discontinuous
+  classification: guard false block on hover-hold -> planner takeover; all
+                  UAVs reached and min inter-UAV distance was 0.992265 m.
+```
+
+Claim boundary: this closes the accepted G10-B/D/E minimal enhancement route
+through the current ROS1/Sunray/Gazebo/PX4/MAVROS/px4ctrl/Diff gates. It does
+not make G10-C `ATTITUDE_THRUST` translational INDI acceptable, does not promote
+G10-A DOB/ESO beyond its static/profile evidence, and does not claim PX4-native
+uORB/module deployment.
+
+2026-06-20 architecture correction for the deferred PX4-native branch: the
+formal PX4-native target is not a standalone ROS2 controller that writes Gazebo
+motor topics. That branch follows the normal PX4/Gazebo/Simulink-style flow:
+MWORKS generates controller C/C++, the generated code is wrapped for PX4
+Offboard or PX4 module/uORB integration, PX4 owns flight mode, estimator,
+failsafe, control allocation, and actuator pipeline, and Gazebo remains the
+plant/sensor simulator. This branch is not the current execution surface.
+Current work follows the mainline board; use this workflow only when a
+board-selected controller or enhancement needs generated-code promotion through
+ROS1/Sunray/MAVROS reinjection and Gazebo regression.
 
 The old `ControllerOutput -> Gazebo actuator` path is retained only as a
 fixture for plant, mixer, and bridge debugging. It is not the formal
 deployment route.
 
-2026-06-20 runtime correction: EGO / FAST-LIO / RViz evidence must follow the
-same boundary. EGO may publish a planned trajectory or `PositionCommand`, but a
-competition-style closed-loop run is accepted only when that command is
-consumed by a real flight-control backend, currently PX4 Offboard or a later
-generated-code PX4/uORB adapter. A run where EGO output is converted into a
-project Python truth-feedback controller and then directly writes Gazebo motor
-topics is diagnostic/pre-acceptance only, even if RViz shows point cloud,
-occupancy grid, and a planned path. The next EGO gate therefore has to prove:
+2026-06-20 runtime correction for the deferred PX4-native branch: EGO /
+FAST-LIO / RViz evidence must follow the same boundary. EGO may publish a
+planned trajectory or `PositionCommand`, but a PX4-native competition-style
+closed-loop run is accepted only when that command is consumed by a real
+flight-control backend, either PX4 Offboard or a later generated-code PX4/uORB
+adapter. A run where EGO output is converted into a project Python
+truth-feedback controller and then directly writes Gazebo motor topics is
+diagnostic/pre-acceptance only, even if RViz shows point cloud, occupancy grid,
+and a planned path. The next gate in that deferred branch therefore has to
+prove:
 
 ```text
 Gazebo sensors / FAST-LIO or truth odom for planner input
@@ -366,7 +530,7 @@ reimplementations. Those artifacts remain useful, but only as reference or
 debug evidence until the target controller's own generated C/C++ path passes
 compile, SIL, PX4 adapter, and PX4+Gazebo gates.
 
-PX4-native deployment levels:
+PX4-native deployment levels for the later gated branch:
 
 | Level | Generated-code host | PX4 role | Current use |
 |---|---|---|---|
@@ -374,8 +538,12 @@ PX4-native deployment levels:
 | L2 | PX4 module/uORB adapter | Replaces a PX4 control level such as position or attitude/rate controller | Formal competition/innovation route |
 | L3 | PX4 low-level actuator/motor integration | Generated code outputs actuator-level commands | Later high-risk research, not the first route |
 
-Current priority is L1 or L2. Do not start from L3 unless the user explicitly
-chooses direct actuator-level replacement after L1/L2 evidence exists.
+When the later PX4-native branch is explicitly opened, its priority is L1 or
+L2. Do not start from L3 unless the user explicitly chooses direct
+actuator-level replacement after L1/L2 evidence exists. This does not override
+the current board-selected path; do not repeat an already closed G9
+generated-family reinjection gate just because this workflow describes that
+evidence chain.
 
 ### 5.1 Deprecated Fixture Routes
 
@@ -421,9 +589,10 @@ blockers:
 claim: interface bridge passed far enough to drive actuator commands; closed-loop flight did not pass
 ```
 
-### 5.2 PX4-Native Route
+### 5.2 Deferred PX4-Native Route
 
-The next valid controller-deployment route is PX4-native:
+Inside the deferred PX4-native deployment branch, the valid controller route
+is:
 
 ```text
 Gazebo sensors / PX4 state estimate
@@ -434,8 +603,9 @@ Gazebo sensors / PX4 state estimate
   -> same-run PX4+Gazebo response gate
 ```
 
-The current first target is L1 Offboard because it gets generated C/C++ into a
-PX4-controlled flight loop without replacing PX4 inner loops first:
+The first target inside that branch is L1 Offboard because it gets generated
+C/C++ into a PX4-controlled flight loop without replacing PX4 inner loops
+first:
 
 ```text
 MWORKS Sysblock
@@ -551,10 +721,13 @@ Decision:
 This shortcut is demoted to diagnostic-only.
 Do not tune it as the main night-long execution path.
 Do not use it as proof that the MWORKS generated controller is deployed.
-The accepted executable mainline is still PX4-native trajectory setpoint
-control for baseline plant/flight evidence, plus generated MWORKS C/C++ SIL
-and shadow evidence until a designed L1 trajectory-setpoint or L2 uORB module
-adapter exists.
+In the historical 2026-06-20 PX4-native branch, the accepted diagnostic
+continuation was PX4 trajectory setpoint control for baseline plant/flight
+evidence, plus generated MWORKS C/C++ SIL and shadow evidence until a designed
+L1 trajectory-setpoint or L2 uORB module adapter existed. Current work is
+selected by the mainline board; MWORKS/codegen, offline equivalence,
+ROS1/Sunray/MAVROS reinjection, and Gazebo regression apply to the
+board-selected controller or enhancement promotion step.
 ```
 
 Reasoning:
@@ -613,9 +786,11 @@ signals through a same-run takeoff-hover-land loop. It is not generated
 C/C++ deployment, not SIL equivalence, and not the final competition controller
 runtime.
 
-Do not continue the mainline from this gate. If a later task needs a visual
-plant sanity check, use this route only after labeling it as fixture evidence
-and then return to the PX4-native gates below.
+Do not continue the current mainline from this gate. If a later task needs a
+visual plant sanity check, use this route only after labeling it as fixture
+evidence and then return to the board-selected ROS1/Sunray reinjection or
+enhancement validation gate, or to the deferred PX4-native gates only when that
+branch is explicitly opened.
 
 The `gazebo_ref_adapter` boundary is intentional. The AWFF equation model
 produces MWORKS-plant-oriented references and internal control axes; the
@@ -797,15 +972,21 @@ Generated C/C++ adapter
 UE / MoSimSceneLibrary
   -> rendering, camera, collision and sensor oracle
 
-ROS2 / RViz2
+Current ROS1 Sunray lane
+  -> Gazebo Classic, PX4, MAVROS, px4ctrl-compatible controller wrapper,
+     FAST-LIO/local map/planner review, RViz evidence
+
+Historical/future ROS2 / RViz2 lane
   -> LiDAR/IMU/TF, FAST-LIO, local 3D map, planner, Offboard setpoint bridge,
-     review
+     review, only when explicitly reopened
 ```
 
 Do not resume hand-built point-cloud/grid demos or ROS2-direct-to-Gazebo motor
-control as the product route. The next implementation path is PX4+Gazebo
-baseline, generated-controller SIL, and generated-code integration into PX4
-Offboard or PX4 module/uORB surfaces.
+control as the product route. The current implementation path is whatever the
+mainline board selects: at present, bounded L1/AWFF, safety-filter, and
+fault-allocation enhancement reopening through minimal Gazebo evidence,
+followed by MWORKS/codegen promotion only for accepted enhancements. PX4
+Offboard or PX4 module/uORB integration is a later gated branch.
 
 ## 8. 2026-06-02 Source Check
 
@@ -831,6 +1012,8 @@ External and local checks support this route:
   `https://microsoft.github.io/AirSim/airsim_ros_pkgs/`.
 
 MoSim decision: copy the architecture pattern, not the solver. MWORKS owns
-solver, controller design, truth, metrics, and code generation. UE owns
-rendering and scene/sensor oracle. ROS2 owns middleware, FAST-LIO, 3D map,
-planner state, and RViz2 review.
+controller design, MIL/SIL, metrics, and code generation. Current runtime
+plant/control evidence is ROS1/Sunray/Gazebo Classic/PX4/MAVROS/px4ctrl with
+RViz review. UE owns rendering and optional scene/sensor oracle work only
+after the control/codegen lane is stable. ROS2/RViz2 remains historical or
+future reference unless explicitly reopened.

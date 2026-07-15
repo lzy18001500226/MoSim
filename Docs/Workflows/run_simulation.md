@@ -83,7 +83,7 @@ Use Sysplorer MCP tools in this order:
 ```text
 activation sentinel / maximized target-window screenshot
   -> if clean, continue
-  -> if login/license blocks live work, route bounded recovery to PMO/CoAgentOps
+  -> if login/license blocks live work, stop and return a blocker unless user-authorized bounded recovery is active
   -> stop on authorization error, GUI error-report, visible unknown, unavailable, or unsafe recovery state
 session_manager
   → load_library
@@ -304,10 +304,10 @@ powershell -NoProfile -ExecutionPolicy Bypass `
 ```
 
 If the sentinel or screenshot shows a login/license/activation prompt, the
-engineering department stops model/check/simulation work and returns a
-`license_or_login` blocker to PMO/CoAgentOps. PMO/CoAgentOps may recover the
-official MWORKS/Sysplorer/Syslab login only under the bounded recovery rules
-below; ordinary MWORKS R1/R2/R3 tasks must not type credentials or click login.
+current active thread stops model/check/simulation work and returns a
+`license_or_login` blocker. Bounded official MWORKS/Sysplorer/Syslab login
+recovery is allowed only under the user-authorized recovery rules below;
+normal engineering work must not type credentials or click login.
 
 Bounded login recovery is allowed only for MWORKS/Sysplorer/Syslab activation
 or account prompts that block live simulation:
@@ -343,8 +343,8 @@ gui_sentinel_before
 background_screenshot_before
 activation_state_observation
 license_state
-will_not_click_activation_login=true for engineering departments
-bounded_login_recovery_authorized_for_pmo_or_coagentops
+will_not_click_activation_login=true for normal engineering work
+bounded_login_recovery_user_authorized_when_applicable
 mworks_window_evidence_touched=true
 live_mworks_touched
 mworks_phase_screenshots when live_mworks_touched=true
@@ -390,12 +390,12 @@ authorization issue, GUI error-report dialog, or demo/mixed license state, stop
 live work and route the incident through the bounded recovery/blocker path
 instead of continuing solver/model trials.
 
-Run the packet through the department gate before accepting it:
+Run the packet through the live-gate checker before accepting it:
 
 ```powershell
 python Scripts\quality\check_mworks_live_gate.py `
   Results\agent_packets\returns\<request_id>.json `
-  --kind return --expect department
+  --kind return
 ```
 
 Older MWORKS business packets that predate this field set remain historical
@@ -835,8 +835,8 @@ previously passing, do not start by retuning the model or controller. Preserve
 current file changes, clean temporary files, rerun the MWORKS GUI sentinel and
 target-window evidence capture, and classify the issue first. If the evidence
 shows login/license/activation/authorization or an unknown GUI blocker, stop
-the MCP sequence and route bounded login/activation review through
-PMO/CoAgentOps instead of repeatedly retrying the solver.
+the MCP sequence and return a blocker unless the user explicitly authorizes
+bounded login/activation recovery. Do not repeatedly retry the solver.
 
 If simulation fails:
 

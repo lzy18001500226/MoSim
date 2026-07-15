@@ -41,7 +41,7 @@ simulation evidence bundle unless the official model is run through MWORKS.
 ## Procedure
 
 1. Resolve model context with `Docs/Workflows/resolve_model_context.md` if the target component or interface is unclear.
-2. For live MWORKS/Sysplorer/Syslab work, run `Scripts/agent/check_mworks_gui_sentinel.py` and, when available, `Scripts/tools/capture_window_background.ps1` before any MCP/model/GUI operation. Engineering departments stop and return a blocker on demo, unactivated, login/activation, authorization, GUI error-report, mixed, visible unknown window, unavailable tooling, or unknown sentinel state. PMO/CoAgentOps may perform bounded official MWORKS login recovery only when authorized by the user, using a secure credential source and redacting credentials from all docs, logs, packets, screenshot manifests, email, and terminal output. Hidden Qt/browser-proxy/helper windows with no license/error text are risk evidence, not standalone blockers.
+2. For live MWORKS/Sysplorer/Syslab work, run `Scripts/agent/check_mworks_gui_sentinel.py` and, when available, `Scripts/tools/capture_window_background.ps1` before any MCP/model/GUI operation. The current active thread stops and returns a blocker on demo, unactivated, login/activation, authorization, GUI error-report, mixed, visible unknown window, unavailable tooling, or unknown sentinel state. Bounded official MWORKS login recovery is allowed only when the user explicitly authorizes it, using a secure credential source and redacting credentials from all docs, logs, packets, screenshot manifests, email, and terminal output. Hidden Qt/browser-proxy/helper windows with no license/error text are risk evidence, not standalone blockers.
 3. Run `check_model`.
 4. Run the smallest simulation that validates the claim.
 5. Read required variables through `result_manager`.
@@ -97,8 +97,8 @@ pass/fail summary
 activation_sentinel_before for live work
 background_screenshot_before for live work
 license_state for live work
-will_not_click_activation_login=true for engineering departments
-bounded_login_recovery_authorized_for_pmo_or_coagentops when applicable
+will_not_click_activation_login=true for normal engineering work
+bounded_login_recovery_user_authorized_when_applicable
 live_mworks_touched
 screenshot_manifest for live work
 ```
@@ -128,6 +128,6 @@ same scenario until the result passes or the limitation is documented.
 | result variable missing | inspect available variables and update `Docs/Index/variable_mapping.md` |
 | simulation unstable | save as failed evidence and compare against baseline |
 | MCP error | save JSONL/log output and reduce to smoke case only after license/GUI sentinel is clean |
-| demo edition / activation lost / login prompt | engineering department returns `license_or_login` blocker; PMO/CoAgentOps may perform bounded official login recovery with foreground evidence, credential redaction, and stop on MFA/captcha/unknown/authorization/error states |
+| demo edition / activation lost / login prompt | current active thread returns `license_or_login` blocker; bounded official login recovery requires explicit user authorization, foreground evidence, credential redaction, and stop on MFA/captcha/unknown/authorization/error states |
 | GUI error-report dialog | stop live work and return GUI blocker; do not click restart/send-report/close |
 | generated artifact too large | keep summary/metrics; ignore or relocate raw bulky output |

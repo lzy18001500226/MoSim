@@ -4,7 +4,17 @@
 > exists to prevent fallback to old ROS2/PX4/x500 or downloaded substitute
 > stacks when the active task is Sunray ROS1/Gazebo/RViz review.
 
-Status: active current lane, 2026-06-23 CST.
+Status: active current lane, 2026-07-01 CST.
+
+Context-budget rule: this file is the authority boundary and decision log for
+the current lane, not the step-by-step execution script. For ordinary runtime
+work, read Sections 1-2, then use
+`Docs/Workflows/sunray_ros1_execution_checklist.md`; search this file for a
+specific blocker, parameter, FAST-LIO, or RViz question instead of reading the
+whole body.
+
+For the short step-by-step execution entry, use
+`Docs/Workflows/sunray_ros1_execution_checklist.md` after this lane boundary.
 
 ## 1. Active Lane
 
@@ -22,8 +32,8 @@ Current source roots:
 
 ```text
 References/Sunray
-References/Lab/FAST_LIO
-References/Lab/ego-planner*
+References/Lab/localization_slam/FAST_LIO
+References/Lab/planning_local/ego-planner*
 Scripts/sunray/
 Config/rviz/sunray_ros1_*.rviz
 Results/sunray_ros1/
@@ -31,8 +41,30 @@ Results/sunray_ros1/
 
 Do not use the old Ubuntu-22.04 / ROS2 Humble / PX4 `x500_mid360` experiment
 route for this lane. Do not use `Results/external_downloads/fast_lio_main.zip`
-or a fresh online clone as the first source when `References/Lab/FAST_LIO`
+or a fresh online clone as the first source when `References/Lab/localization_slam/FAST_LIO`
 exists.
+
+Runtime entry decision, frozen after the 2026-06-27 WSL-distro incident:
+
+```text
+Windows command entry:
+  wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/check_sunray_ros1_runtime_preflight.sh'
+
+Forbidden for current P0 live runtime:
+  bare/default wsl
+  Ubuntu-22.04
+  Ignition/Gazebo Sim route
+  ROS2/Humble/x500 route
+```
+
+If a live run fails before Gazebo Classic, MAVROS, or RViz evidence appears,
+classify the blocker from the preflight first. Missing Noetic/Gazebo Classic is
+a wrong-runtime-entry failure, not a controller, planner, Livox, or RViz
+configuration failure. Missing Livox plugin source under `/opt` is not a reason
+to download or rewrite the plugin when the repo-local source exists at
+`References/Sunray/simulation/gazebo_plugin/livox_laser_simulation`; use the
+project-local overlay
+`Results/sunray_ros1/workspaces/sunray_livox_plugin_ws`.
 
 ## 2. Stop Rules
 
@@ -55,7 +87,7 @@ x500_mid360
 px4_mid360_obstacle_light
 Ubuntu-22.04 / ROS2 Humble as the active review route
 ROS2/PX4 FAST-LIO external-vision route
-downloaded FAST-LIO replacing References/Lab/FAST_LIO
+downloaded FAST-LIO replacing References/Lab/localization_slam/FAST_LIO
 fake/static point cloud
 empty PointCloud2 topic
 headless numeric pass as Gazebo GUI/RViz visual acceptance
@@ -118,6 +150,57 @@ semantics:
    return a blocker and ask the user if the fix would change architecture.
 ```
 
+Live wait budget, frozen 2026-06-30: do not run ordinary Sunray/Gazebo/PX4/
+MAVROS/RViz commands as one long blocking wait. Default live probes should wait
+about 1-2 minutes. A single blocking wait must not exceed 5 minutes unless the
+user explicitly authorizes a longer unattended run for that incident. If a
+mission batch or controller A/B gate needs more time, split it into one
+controller/one mission cases, or start a background run and poll logs/results in
+short intervals. When a gate cannot produce useful evidence inside that budget,
+stop, preserve the partial logs/result directory, and report the blocker or next
+narrow probe instead of silently waiting.
+
+For point-cloud, frame-transform, and occupancy-map bugs, use mature robotics
+building blocks before changing project-owned scripts. First check whether the
+current task can use ROS tf/tf2 transforms, PCL filters, OctoMap-style
+occupancy tooling, or the upstream EGO/Diff `plan_env/grid_map` path directly.
+Project Python nodes under `Scripts/sunray/` and `Scripts/ros/` should be
+treated as compatibility and diagnostics glue, not as a replacement for those
+libraries. If a project-owned node remains in the runtime path, the run notes
+must record:
+
+```text
+source topic and frame_id
+target topic and frame_id
+the exact transform chain, including whether full quaternion attitude is used
+the mount/extrinsic convention and whether it is applied once or twice
+the filtering gates before planner input
+the upstream library/example that was checked before keeping custom code
+```
+
+Do not tune controllers, planner cost weights, point-size display settings, or
+voxel density to hide a frame-transform or occupancy-input defect.
+
+Current external references for this class of issue:
+
+- ROS `tf2_sensor_msgs` exists specifically to transform sensor messages,
+  notably `PointCloud2`.
+- `pcl_ros::transformPointCloud` is the ROS/PCL C++ path for transforming
+  `sensor_msgs::PointCloud2` into a target TF frame.
+- OctoMap is a mature C++ 3D occupancy mapping library; use it as the reference
+  semantics for probabilistic occupancy mapping even when the current planner
+  keeps its own local grid.
+- EGO/Diff `plan_env/grid_map` already consumes a world-frame
+  `sensor_msgs::PointCloud2` and performs raycast/local occupancy updates. The
+  MoSim adapter should prepare correct world-frame cloud input; it should not
+  become a replacement mapping stack.
+- Sunray already has a local C++ reference implementation at
+  `References/Sunray/General_Module/sunray_planner_utils/src/point_cloud_transform.cpp`.
+  It converts a local PointCloud2 into a world-frame cloud using
+  `pcl_ros::transformPointCloud` and the full odometry pose. Treat that as the
+  first implementation to reuse, port, or match before maintaining a MoSim
+  Python point-cloud transform node.
+
 Example: a MID360 PointCloud2 topic that appears only for a few seconds in RViz
 is not automatically a hardware or LiDAR-data failure. First check
 PointCloud2 nonempty data and then RViz display settings such as decay time,
@@ -133,7 +216,7 @@ Current default visual review split, 2026-06-22:
 
 FAST-LIO/PX4 EKF定位闭环、Gazebo-Z诊断策略、planner重跑顺序和
 EGO/EGOv2/Diff-Planner既有复现边界，先按
-`Docs/Design/MoSim_FASTLIO定位闭环与规划复现基础方案.md`
+`Docs/Design/架构/02_感知定位与规划集群/FASTLIO定位闭环.md`
 执行。该文档是当前所有 8字、螺旋、阶跃、EGO、EGO-Swarm 重跑的定位
 基础，不得把旧的 Gazebo/PX4 辅助定位 planner 结果称为 FAST-LIO 定位
 闭环结果。2026-06-22 FAST-LIO direct-control blocker 后，任何把
@@ -172,7 +255,7 @@ FAST-LIO direct localization mode:
     /uav1/livox/lidar
     /uav1/livox/imu
   FAST-LIO launch:
-    References/Lab/FAST_LIO/launch/mapping_mosim_sunray_livox_custom.launch
+    References/Lab/localization_slam/FAST_LIO/launch/mapping_mosim_sunray_livox_custom.launch
     through Scripts/sunray/pointcloud2_to_livox_custom_msg.py
   fallback:
     mapping_mosim_sunray_pointcloud2.launch is smoke/diagnostic fallback
@@ -183,28 +266,38 @@ FAST-LIO direct localization mode:
     with current ROS time is legacy/smoke-only unless a timing audit explicitly
     asks for it.
   frequency:
-    keep current default MID360/FAST-LIO 10Hz settings unless a separate
-    timing review explicitly reopens the 20Hz change.
-  PX4 EKF external-vision parameters for the accepted Goal1 gate:
-    EKF2_EV_CTRL=11
+    current mainline is the 20Hz MID360/FAST-LIO profile: Gazebo MID360 LiDAR
+    update_rate, Livox CustomMsg bridge scan-rate, and FAST-LIO scan_rate must
+    move together. The controller/command/MAVROS control side remains frozen
+    at 100Hz. The current MAVROS request must include raw_sensors, position,
+    extra1, extra2 and explicit message intervals for HIGHRES_IMU, ATTITUDE,
+    ATTITUDE_QUATERNION, and LOCAL_POSITION_NED; requesting only
+    LOCAL_POSITION_NED can leave `/uav1/mavros/imu/data` near 50Hz.
+  PX4 EKF external-vision parameters for the current 20Hz attribution baseline:
+    EKF2_EV_CTRL=15
     EKF2_HGT_REF=3
     EKF2_EV_DELAY=0
     EKF2_EV_NOISE_MD=1
     EKF2_EVP_NOISE=0.03
     EKF2_EVA_NOISE=0.03
-    Do not use EV_CTRL=15 as the default for this lane: in the 2026-06-23 A/B
-    run it improved Z slightly but worsened XY, and this chain publishes
-    vision_pose pose rather than a velocity-bearing MAVLink odometry stream.
+    Earlier 10Hz notes treated EV_CTRL=11 as an accepted gate. The 2026-06-26
+    20Hz refined evidence supersedes that for the current attribution pass:
+    EV_CTRL=11 was re-tested with the 20Hz chain and remained flyable, but did
+    not outperform EV_CTRL=15 on the combined hover/fusion metrics. Keep
+    EV_CTRL=15 as the current retained baseline while attribution continues.
+    Do not freeze a new EV_CTRL value until the full error-attribution and
+    controller-baseline optimization report accepts it.
   px4ctrl thrust mapping for the accepted Goal1 gate:
     thrust_model/estimate_enable=false
     thrust_model/hover_percentage=0.30
     The upstream online thrust estimator stays available, but the current
     Sunray/Gazebo baseline freezes it because online adaptation was observed
     to move the normalized thrust away from a reproducible hover mapping.
-  current takeoff-hover-land command trim:
-    --command-x-bias-m -0.025
-    --command-y-bias-m -0.004
-    --command-z-bias-m -0.092
+  current 20Hz retained command trim:
+    --command-x-bias-m -0.006
+    --command-y-bias-m 0.012
+    --command-z-bias-m -0.042
+    --trajectory-time-lead-s 0.18
     Treat this as a Sunray/Gazebo/EKF baseline trim, not as part of the
     px4ctrl algorithm core or a MWORKS controller port.
   boundary:
@@ -235,6 +328,25 @@ FAST-LIO localization/map standalone review:
     /cloud_registered -> current registered scan, not the accumulated map
     /uav1/livox/lidar -> raw MID360 scan
 
+Current RViz point-cloud display rule:
+  all Sunray ROS1 FAST-LIO/Livox point-cloud review displays must default to
+  `Size (m): 0.02`. Do not shrink review points to 0.006 or 0.01 to make a
+  sparse map look acceptable; if the map looks too sparse, fix the upstream
+  point-cloud density, FAST-LIO map publication, or filter route instead.
+  Exception: Goal4/Diff-Planner planner-input accumulated-cloud review is
+  frozen at `POINTCLOUD_REVIEW_VOXEL_SIZE_M=0.08` and RViz `Size (m): 0.08`
+  for the mouse-goal/grid-map review lane. This exception applies to
+  `/mosim/goal4/livox_world_accumulated`, not to the general FAST-LIO
+  `/Laser_map` review rule.
+  Goal4/Diff-Planner world-cloud generation must apply the ground gate before
+  publishing `/uav1/livox_world`: `POINTCLOUD_MIN_WORLD_Z_M=0.50` is the
+  default `min_world_z`. Lower near-ground returns are considered floor clutter
+  for the planner-input cloud and are rejected before both planner consumption
+  and accumulated RViz review. Vehicle low-height or excessive roll/pitch
+  states are diagnostic warnings, not a default reason to freeze accumulated
+  cloud publication; if a crash contaminates the cloud, keep it visible and
+  tag it in `pointcloud_to_world_history.jsonl`.
+
 EGO/grid planning or obstacle-avoidance review only:
   config: Config/rviz/sunray_ros1_ego_grid_trajectory_review.rviz
   fixed frame: world
@@ -243,6 +355,156 @@ EGO/grid planning or obstacle-avoidance review only:
     /mosim/goal4/truth_path
     /mosim/goal4/position_cmd_path
     /mosim/goal4/target_path
+
+Diff-Planner grid review:
+  config: Config/rviz/sunray_ros1_goal4_diff_grid3d_review.rviz
+  fixed frame: world
+  show by default:
+    /drone_0_ego_planner_node/grid_map/occupancy
+    /mosim/goal4/truth_path
+    /mosim/goal4/position_cmd_path
+    /mosim/goal4/target_path
+    /mosim/goal4/body_axes
+  forbidden by default:
+    /uav1/livox_world
+    /Laser_map
+    /cloud_registered
+    /mosim/fastlio/laser_map_obstacles
+
+Diff-Planner point-cloud review:
+  config: Config/rviz/sunray_ros1_goal4_diff_pointcloud_review.rviz
+  fixed frame: world
+  show by default:
+    /mosim/goal4/livox_world_accumulated
+    /mosim/fastlio/uav_path
+    /mosim/fastlio/uav_axes
+  diagnostic only, disabled by default:
+    /Laser_map
+    /cloud_registered
+
+Factory FUEL exploration review:
+  entry: Scripts/sunray/start_factory_fuel_single_exploration_review.ps1
+  point-cloud config:
+    Config/rviz/sunray_ros1_factory_fuel_pointcloud_review.rviz
+  3D occupancy config:
+    Config/rviz/sunray_ros1_factory_fuel_grid3d_review.rviz
+  fixed frame: world
+  display contract:
+    /mosim/goal4/livox_world_accumulated -> accumulated planner-input cloud,
+      fixed at 0.08 m review voxel/point size; point-cloud window only
+    /mosim/goal4/livox_world_accumulated
+      -> /mosim/goal4/occupancy_object_review -> review-only continuous 3D
+      obstacle surface, fixed at 0.20 m and Z=0.20..4.00 m. The review node
+      applies one bounded 26-neighbor closing pass and removes connected
+      components smaller than 8 voxels. It joins one-voxel scan gaps and
+      removes isolated cubes without changing FUEL, Diff-Planner, or controller
+      inputs; grid window primary display only.
+    /mosim/fuel/occupancy_all_global
+      -> /mosim/goal4/occupancy_accumulated -> non-inflated 3D occupancy
+      boxes, fixed at 0.20 m to match the FUEL map resolution. This is the
+      planner-height occupancy slice (normally about Z=0.9..1.6 m), retained
+      as a disabled diagnostic layer rather than the full-height map review.
+      Do not claim it represents the complete obstacle height.
+    /mosim/goal4/truth_path -> actual vehicle path
+    /mosim/goal4/position_cmd_path -> executed command path
+    /mosim/fuel/planning_vis/trajectory_world -> current cyan B-spline;
+      grid window only
+    /mosim/goal4/body_axes -> current UAV body axes
+  Both windows show the complete accumulated actual path at 0.12 m, the
+  executed command path at 0.09 m, and the current body axes. The Factory FUEL
+  review entry enlarges body axes to 1.00 m length with a 0.060 m shaft,
+  0.16 m head diameter, and 0.24 m head length. Only the 3D occupancy window
+  adds the current cyan FUEL B-spline (approximately 0.08 m).
+  Factory FUEL review uses a 120 s wall-clock takeoff gate because the clean
+  factory scene can run below real time while PX4/MAVROS/FAST-LIO settle. A
+  review run may enable `-RecordRosbag`; the entry records the control, pose,
+  sensor, map, path, and dynamic-planning topics to
+  `factory_fuel_review.bag` and stops the bag after `EGO_SINGLE_METRICS.json`
+  is written. CSV/JSON evidence remains authoritative for metrics.
+  Default review intentionally hides frontier, viewpoint/tour, coverage
+  overlay, and the local B-spline from the point-cloud window. These remain
+  diagnostic topics, but they must not obscure the accumulated cloud or the
+  non-inflated 3D occupancy acceptance surface. Native FUEL markers are
+  local-planning coordinates; the review entry must translate the dynamic
+  trajectory to Factory `world` through the marker coordinate bridge.
+  Suppress the ROS1 end-of-life popup with `DISABLE_ROS1_EOL_WARNINGS=1` so
+  both RViz windows are immediately reviewable. A visual pass does not
+  override a controller, takeoff, hover, localization, planner-freshness, or
+  flight-safety blocker.
+
+Diff-Planner interactive goal review:
+  update goals from RViz `2D Nav Goal` only, which publishes
+  `/move_base_simple/goal` and is converted to `/goal_with_id` at the frozen
+  flight height. Default manual review must publish the clicked final target
+  directly: `DIFF_CLICK_MAX_GOAL_DISTANCE_XY=0` disables adapter-side staged
+  goal splitting and distance clamping. Long-range target feasibility is a
+  planner-map/replanning property, not a UI adapter step-size property. Do not
+  enable adapter-side static A* routing during normal review:
+  `DIFF_CLICK_STATIC_PATH_GUARD=false` is the frozen default. The adapter may
+  reject a final target inside known static obstacle inflation, but it must not
+  replace Diff-Planner by publishing intermediate static waypoints just because
+  the start-to-final straight line crosses an obstacle. If that case fails, fix
+  Diff-Planner map, horizon, local-target, or replanning parameters.
+  For insufficient local view coverage, the accepted mitigation is a
+  mission-level in-place yaw scan before releasing the queued interactive goal,
+  and again after each reached goal before accepting the next one. This scan is
+  a map warm-up command at fixed XYZ, not a planner or a goal-segmentation
+  layer. The default review entry keeps the safety adapter from immediately
+  overwriting the scanned yaw after the scan; planner command forwarding
+  re-enables the normal command path when a target is actually released.
+  Do not
+  use RViz `Publish Point` as a normal target input: it can only hit rendered
+  geometry/point-cloud surfaces, so it tends to place goals inside obstacle
+  points and triggers planner collision-goal correction.
+  `/clicked_point` is diagnostic-only unless a run explicitly enables it.
+
+The EGO/Diff occupancy topic is transported as `sensor_msgs/PointCloud2`
+voxel centers, but RViz must display it as occupancy boxes (`Style: Boxes`) in
+the grid review window. Do not mix raw/current LiDAR, FAST-LIO accumulated
+map, or filtered obstacle point-cloud overlays into the grid review window.
+If the occupancy view does not match the Gazebo obstacle layout, debug the
+planner input cloud, frame transform, ground/self filtering, local-map
+window, and inflation radius before calling the RViz grid display acceptable.
+For Diff-Planner review, `/Laser_map` is a FAST-LIO internal accumulated map
+diagnostic and must not be the default point-cloud review surface; the default
+cloud review is `/mosim/goal4/livox_world_accumulated`, accumulated from the
+same world-frame `/uav1/livox_world` topic that the planner consumes.
+
+Current Goal4/Diff point-cloud suspicion, 2026-06-27:
+
+```text
+symptom:
+  After the first/second RViz goal, side clutter appears in the accumulated
+  world cloud and small scattered occupancy voxels appear near the ground.
+
+current custom transform path:
+  /uav1/livox/lidar
+    -> Scripts/sunray/goal4_pointcloud_to_world_node.py
+    -> /uav1/livox_world
+    -> Diff-Planner ~grid_map/cloud
+    -> /drone_0_ego_planner_node/grid_map/occupancy
+
+root-cause candidate:
+  POINTCLOUD_ROTATION_MODE=yaw_only ignores roll and pitch while the aircraft
+  moves during planning. A moving LiDAR cloud must be transformed with the
+  full body attitude unless a source-backed diagnostic proves the input cloud
+  is already leveled in world/map frame. ROS tf2/PCL practice is full rigid
+  transform semantics: translation plus quaternion/rotation matrix. Sunray's
+  own `point_cloud_transform.cpp` follows that full-pose/PCL path; the current
+  MoSim default must be treated as a diagnostic shortcut, not as the accepted
+  planner-input transform.
+
+next validation:
+  First compare the MoSim Python node against Sunray's C++/PCL transform
+  semantics with the same odom and cloud. Then compare yaw_only and
+  full-quaternion world-cloud transforms with all other parameters fixed. If
+  full attitude fixes the side/ground scatter, freeze
+  `POINTCLOUD_ROTATION_MODE=full` or replace the Python node with the
+  Sunray/PCL transform path for Goal4/Diff planner-input cloud, and keep
+  yaw_only as diagnostic-only. If not, audit Livox header frame,
+  `base_link -> livox_mid360::base_link` mount application, duplicate
+  extrinsic application, and cloud/odom timestamp skew before changing planner
+  or controller parameters.
 ```
 
 Do not use RViz `Decay Time` on `/cloud_registered` as proof of a FAST-LIO
@@ -250,7 +512,7 @@ accumulated map. In the local FAST-LIO source, `/cloud_registered` is the
 current undistorted scan transformed to `camera_init`. The live accumulated
 review map is `/Laser_map`, enabled through `publish/map_pub_en` and throttled
 through `publish/map_pub_period` in
-`References/Lab/FAST_LIO/launch/mapping_mosim_sunray_livox_custom.launch`.
+`References/Lab/localization_slam/FAST_LIO/launch/mapping_mosim_sunray_livox_custom.launch`.
 
 Current MID360 model rule, 2026-06-22:
 
@@ -286,11 +548,13 @@ back by about 2s every few dozen seconds; TF then logged `Detected jump back in
 time ... Clearing TF buffer`, causing RViz point-cloud/path flashes. The
 bounded `USE_SIM_TIME=true` rerun passed takeoff-hover-land and produced
 monotonic `/clock`, `/uav1/livox/lidar`, `/cloud_registered`, `/Odometry`,
-and `/uav1/livox/imu` header times, with no TF jump-back log hits. Keep MID360
-and FAST-LIO at the matched 10Hz setting unless a separate load/timing review
-approves a 20Hz sensor experiment. `simulator_mavlink poll timeout` may still
-appear as a Gazebo/PX4 realtime scheduling warning; do not classify it as the
-RViz TF-clear root cause unless paired with new timing evidence.
+and `/uav1/livox/imu` header times, with no TF jump-back log hits. The 10Hz
+MID360/FAST-LIO setting is now a historical comparison profile; the current
+mainline timing profile is 20Hz for raw LiDAR, Livox CustomMsg bridge,
+FAST-LIO `/Odometry`, aligned odom, and external vision input where the stack
+can sustain it. `simulator_mavlink poll timeout` may still appear as a
+Gazebo/PX4 realtime scheduling warning; do not classify it as the RViz TF-clear
+root cause unless paired with new timing evidence.
 
 Use `Scripts/sunray/record_ros1_time_tf_audit.py` when this symptom returns.
 The audit records `/use_sim_time`, `/clock` monotonicity, `rospy.Time.now()`,
@@ -326,15 +590,49 @@ MID360/FAST-LIO kept out of the controller loop unless explicitly in scope
 
 The 0.001s max step is a smaller physics step than the requested 0.0025s
 400Hz configuration; it is the current stable tuning lane, not a shortcut to
-lower fidelity. The latest stable frequency/hover audit is:
+lower fidelity. Historical 2026-06-21 frequency/hover audit:
 
 ```text
 Results/sunray_ros1/sunray_ros1_pid_hover_freqaudit_1000phys_200ctrl_20260621_062308/
-MAVROS IMU output observed around 50Hz; 400Hz flight-controller IMU output is
-not yet runtime-proven in this lane.
+MAVROS IMU output observed around 50Hz under the old local-position-only
+request; 400Hz flight-controller IMU output is not yet runtime-proven in this
+lane.
 ```
 
-Current MAVROS/PX4 local-position frequency diagnosis, 2026-06-21:
+2026-06-26 current frequency closure supersedes the old local-position-only
+diagnosis for the active runner:
+
+```text
+Results/sunray_ros1/sunray_ros1_fastlio20_mavros_imu100_audit_20260626_104800/
+scope:
+  no-flight frequency audit
+  PX4CTRL_ENABLE_FASTLIO_EKF_FUSION=true
+  PX4CTRL_SKIP_MISSION=true
+  FASTLIO_SCAN_RATE_HZ=20.0
+  MAVROS_STREAM_RATE_HZ=100
+  MAVROS_SET_STREAM_GROUPS=raw_sensors position extra1 extra2
+  MAVROS_SET_MESSAGE_IDS=105:HIGHRES_IMU 30:ATTITUDE
+                         31:ATTITUDE_QUATERNION 32:LOCAL_POSITION_NED
+
+measured header rates:
+  /uav1/livox/lidar                 20.000Hz
+  /mosim/fastlio/livox/lidar         20.000Hz
+  /Odometry                          20.000Hz
+  /cloud_registered                  20.000Hz
+  /mosim/fastlio/odom_aligned        20.000Hz
+  /uav1/mavros/vision_pose/pose      20.025Hz
+  /uav1/livox/imu                   200.000Hz
+  /uav1/mavros/local_position/odom  100.011Hz
+  /uav1/mavros/local_position/pose  100.011Hz
+  /uav1/mavros/imu/data             100.011Hz
+  /uav1/mavros/setpoint_raw/attitude 100.012Hz
+
+gate:
+  GOAL3_FASTLIO_EKF_FUSION_AUDIT.json status=passed
+  time_tf_audit: no TF jump-back, no timesync jump, no IMU/LiDAR sync warning
+```
+
+Historical MAVROS/PX4 local-position frequency diagnosis, 2026-06-21:
 
 ```text
 accepted hover baseline:
@@ -397,7 +695,8 @@ LOCAL_POSITION_NED 100Hz hover-only variant A:
            steady_hover_xy_above_max:0.052
 ```
 
-Conclusion: 100Hz is fixed as the current mainline frequency for this lane, but
+Historical conclusion at that time: 100Hz was fixed as the current mainline
+frequency for this lane, but
 the 100Hz result must be judged through a hover-only gate before it is allowed
 to feed 8字, spiral, FAST-LIO, or planner work. The 100Hz same-PID/
 bias-calibrated recheck is better than the 125Hz isolated test overall and is
@@ -408,7 +707,7 @@ about 0.0195m to about 0.0280m in the cleaner bias-calibrated recheck, and up
 to about 0.0483m in the later hover-only variant A, under the old all-axis
 hover-bias calibration and short simulated hover window.
 
-The likely cause is mixed-rate state assembly, not the 100Hz target itself:
+The likely cause was mixed-rate state assembly, not the 100Hz target itself:
 `/uav1/mavros/local_position/pose` and velocity were raised to 100Hz/125Hz, but
 `/uav1/mavros/imu/data` stayed near 50Hz. Variant A proves that the 100Hz
 pose/velocity target can be reached, but it also records velocity receive gaps
@@ -425,7 +724,7 @@ cleanly, while 100Hz does. The current frequency work is therefore a 100Hz
 hover-only alignment pass, not a broader FAST-LIO, UE, MWORKS, or trajectory-
 control task.
 
-100Hz hover-only alignment plan:
+Historical 100Hz hover-only alignment plan:
 
 ```text
 scope:
@@ -495,11 +794,12 @@ accepted 100Hz hover-only baseline:
   /uav1/mavros/local_position/pose observed near 100Hz
   /uav1/mavros/imu/data still observed near 50Hz, with some audit gaps/spikes
 
-current accepted rule:
+current accepted rule after the 2026-06-26 frequency closure:
   keep 100Hz as the lane frequency
-  do not prefer the IMU-aligned 100Hz candidate for the current trajectory
-  baseline unless a new hover-only gate beats the Z-only local-position
-  baseline; the 2026-06-21 afternoon spiral check made hover and spiral worse
+  request raw_sensors, position, extra1, extra2 and explicit message intervals
+  for HIGHRES_IMU, ATTITUDE, ATTITUDE_QUATERNION, and LOCAL_POSITION_NED
+  do not return to local-position-only MAVLink rate requests because they leave
+  MAVROS IMU near 50Hz
   keep Sunray custom CTRL_XyzPos/CTRL_Traj as the hover baseline command path
   keep Z-only hover-bias calibration with max step 0.02m for the 100Hz hover
   baseline
@@ -673,9 +973,13 @@ remain empty even though raw `/uav1/livox/lidar` is nonempty.
 Before claiming runtime progress, record:
 
 ```text
+explicit Windows/WSL entry command using wsl -d Ubuntu-20.04
+SUNRAY_ROS1_PREFLIGHT=PASS from Scripts/sunray/check_sunray_ros1_runtime_preflight.sh
 ROS_DISTRO=noetic
+Gazebo Classic version from gzserver --version
 Sunray source path under References/Sunray
-FAST-LIO source path under References/Lab/FAST_LIO when FAST-LIO is in scope
+FAST-LIO source path under References/Lab/localization_slam/FAST_LIO when FAST-LIO is in scope
+Livox plugin overlay path under Results/sunray_ros1/workspaces when MID360/Livox is in scope
 Gazebo Classic launch path
 result directory under Results/sunray_ros1/
 ```
@@ -703,9 +1007,13 @@ FAST-LIO localization evidence additionally requires:
 FAST-LIO log has no sustained IMU/LiDAR time-sync errors
 ```
 
-Known current timing issue: the Livox plugin may publish only after a long
-Gazebo startup delay. Short probes around 30-40 seconds can falsely report
-missing MID360. Use the bounded long-wait probe before changing architecture:
+Known current timing issue: the Livox plugin may publish only after a Gazebo
+startup delay. Short probes around 30-40 seconds can falsely report missing
+MID360. For new runs, follow the live wait budget above: use about 1-2 minutes
+normally and 5 minutes as the maximum single blocking wait. The historical
+bounded long-wait probe below is retained as evidence and as a special
+diagnostic entry only; do not rerun a 10-minute wait without explicit user
+authorization:
 
 ```bash
 bash Scripts/sunray/probe_sunray_ros1_topics.sh
@@ -946,6 +1254,32 @@ review manifest or screenshots/logs pointing to the exact run
 
 Headless gate output does not equal Gazebo GUI animation acceptance.
 
+For Goal4 / Diff-Planner interactive review, separate the live planner cloud
+from the clean RViz accumulation:
+
+```text
+/uav1/livox_world
+  -> live planner input and raw failure evidence
+
+/mosim/goal4/livox_world_accumulated
+/mosim/goal4/occupancy_accumulated
+/mosim/goal4/occupancy_object_review
+  -> review-only clean accumulated displays
+  -> may skip frames using MAVROS odom quality gates
+  -> must report accepted/skipped counts and last skip reason in result JSON
+```
+
+This separation is required because the project-local world-cloud transform
+projects each raw scan with one odometry pose selected by timestamp. This is
+good enough for the live local planner input only if the selected odometry
+stamp is close to the cloud stamp; it is still not a full LiDAR-IMU deskewed
+mapping pipeline. During yaw scans, takeoff, aggressive attitude, or motion
+transients, a frame can be visually distorted even when the final hover cloud
+is geometrically correct. The transform node must keep an odometry buffer and
+select the odometry sample nearest to the cloud header stamp. The clean
+accumulated review map may then reject residual transient frames; the live
+cloud and transform diagnostics remain the authority for root-cause debugging.
+
 ## 5. MID360 Structure Boundary
 
 Do not collapse these into one value:
@@ -1073,19 +1407,20 @@ Flight-controller/body IMU: PX4 `gazebo_imu_plugin` publishes `/imu` on every
 Gazebo world update. This plugin does not support a separate `pubRate` or
 `imuRate` SDF field, so any 400Hz flight-controller IMU claim requires `/imu`
 and `/uav1/mavros/imu/data` `rostopic hz` evidence from the same run.
-LiDAR ray sensor update_rate: 10Hz unless a separate 20Hz experiment is active.
+LiDAR ray sensor update_rate: 20Hz in the current mainline FAST-LIO profile.
 MID360 internal IMU update_rate: 200Hz in both sensor <update_rate> and
 gazebo_ros_imu_sensor <updateRateHZ>.
-FAST-LIO scan_rate: 10Hz unless the LiDAR source and bridge are also moved to
-20Hz in the same experiment.
+FAST-LIO scan_rate: 20Hz, and it must stay matched with the Gazebo LiDAR source
+and Livox CustomMsg bridge scan-rate.
 ```
 
-Rationale: MID360's internal IMU should not be left at the old 100Hz Gazebo
-seed when reviewing 20Hz LiDAR/FAST-LIO. A 20Hz LiDAR scan has a 50ms period;
-with only about 80-100Hz effective IMU updates, FAST-LIO receives too few IMU
-samples per scan for stable initialization and scan undistortion. Before
-promoting any 20Hz LiDAR setting, prove `/uav1/livox/imu`, raw LiDAR, bridge,
-`/cloud_registered`, `/Odometry`, and `/path` rates in the same run.
+Rationale: a higher-rate FAST-LIO chain is useful only when the LiDAR frame
+rate, per-point timing in the Livox CustomMsg bridge, FAST-LIO `scan_rate`, and
+MID360 IMU timing are consistent. A 20Hz LiDAR scan has a 50ms period; the
+current MID360 IMU stays at 200Hz for FAST-LIO IMU preintegration and scan
+undistortion. Promotion requires same-run evidence for `/uav1/livox/imu`, raw
+LiDAR, bridge, `/cloud_registered`, `/Odometry`, `/path`,
+`/mosim/fastlio/odom_aligned`, and MAVROS local-position/control-side rates.
 
 Current coordinate-frame split:
 

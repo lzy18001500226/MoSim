@@ -6,6 +6,11 @@
 
 ```text
 References/PX4/
+  family root containing PX4-Autopilot, MAVLink, MAVROS, px4_msgs,
+  px4_ros_com, and QGroundControl references
+
+References/PX4/PX4/
+  PX4-Autopilot source tree
 ```
 
 Current repository check:
@@ -21,32 +26,32 @@ The PX4 tree is used as an engineering reference for flight-mode logic, failsafe
 
 | PX4 area | Local path | Use in this project |
 |---|---|---|
-| Commander | `References/PX4/src/modules/commander/` | arming, navigation state, health checks, mode transitions |
-| Failsafe | `References/PX4/src/modules/commander/failsafe/` | failsafe flag handling and degraded-action selection |
-| Health and arming checks | `References/PX4/src/modules/commander/HealthAndArmingChecks/` | battery, estimator, ESC, GNSS, offboard, mission, wind checks |
-| Flight mode manager | `References/PX4/src/modules/flight_mode_manager/` | mapping navigation state to flight task / setpoint generator |
-| Multicopter position control | `References/PX4/src/modules/mc_pos_control/` | trajectory setpoint consumption, takeoff, position-control limits |
-| Control allocator | `References/PX4/src/modules/control_allocator/` | actuator allocation and saturation diagnostics |
-| Battery status | `References/PX4/src/modules/battery_status/` | voltage, remaining capacity, warning levels |
-| ESC battery / actuator simulation | `References/PX4/src/modules/esc_battery/`, `References/PX4/src/modules/simulation/` | electric power and actuator-health abstraction ideas |
-| EKF2 | `References/PX4/src/modules/ekf2/` | future estimator interface reference; do not port full EKF initially |
+| Commander | `References/PX4/PX4/src/modules/commander/` | arming, navigation state, health checks, mode transitions |
+| Failsafe | `References/PX4/PX4/src/modules/commander/failsafe/` | failsafe flag handling and degraded-action selection |
+| Health and arming checks | `References/PX4/PX4/src/modules/commander/HealthAndArmingChecks/` | battery, estimator, ESC, GNSS, offboard, mission, wind checks |
+| Flight mode manager | `References/PX4/PX4/src/modules/flight_mode_manager/` | mapping navigation state to flight task / setpoint generator |
+| Multicopter position control | `References/PX4/PX4/src/modules/mc_pos_control/` | trajectory setpoint consumption, takeoff, position-control limits |
+| Control allocator | `References/PX4/PX4/src/modules/control_allocator/` | actuator allocation and saturation diagnostics |
+| Battery status | `References/PX4/PX4/src/modules/battery_status/` | voltage, remaining capacity, warning levels |
+| ESC battery / actuator simulation | `References/PX4/PX4/src/modules/esc_battery/`, `References/PX4/PX4/src/modules/simulation/` | electric power and actuator-health abstraction ideas |
+| EKF2 | `References/PX4/PX4/src/modules/ekf2/` | future estimator interface reference; do not port full EKF initially |
 
 ## 3. Key Message Interfaces
 
 | PX4 message | Local path | Project mapping |
 |---|---|---|
-| `VehicleStatus` | `References/PX4/msg/versioned/VehicleStatus.msg` | `flight_mode`, `arming_state`, `failsafe`, `nav_state` |
-| `FailsafeFlags` | `References/PX4/msg/FailsafeFlags.msg` | `safety_status`, `health_status`, mode-degradation triggers |
-| `VehicleControlMode` | `References/PX4/msg/versioned/VehicleControlMode.msg` | control mode enable flags |
-| `TrajectorySetpoint` | `References/PX4/msg/versioned/TrajectorySetpoint.msg` | planner/controller setpoint: position, velocity, acceleration, yaw, yawspeed |
-| `OffboardControlMode` | `References/PX4/msg/OffboardControlMode.msg` | GUI/offboard selector for position/velocity/acceleration/attitude/direct actuator modes |
-| `VehicleLocalPosition` | `References/PX4/msg/versioned/VehicleLocalPosition.msg` | `estimated_state` position/velocity source |
-| `VehicleOdometry` | `References/PX4/msg/versioned/VehicleOdometry.msg` | future estimator state bus |
-| `VehicleAttitude` | `References/PX4/msg/versioned/VehicleAttitude.msg` | attitude estimator output |
-| `ActuatorMotors` | `References/PX4/msg/versioned/ActuatorMotors.msg` | normalized motor command and saturation interface |
-| `BatteryStatus` | `References/PX4/msg/versioned/BatteryStatus.msg` | battery voltage, warning, remaining capacity, power scale |
-| `HomePosition` | `References/PX4/msg/versioned/HomePosition.msg` | return-to-home / land target reference |
-| `PositionSetpointTriplet` | `References/PX4/msg/PositionSetpointTriplet.msg` | previous/current/next setpoint pattern for mission-style navigation |
+| `VehicleStatus` | `References/PX4/PX4/msg/versioned/VehicleStatus.msg` | `flight_mode`, `arming_state`, `failsafe`, `nav_state` |
+| `FailsafeFlags` | `References/PX4/PX4/msg/FailsafeFlags.msg` | `safety_status`, `health_status`, mode-degradation triggers |
+| `VehicleControlMode` | `References/PX4/PX4/msg/versioned/VehicleControlMode.msg` | control mode enable flags |
+| `TrajectorySetpoint` | `References/PX4/PX4/msg/versioned/TrajectorySetpoint.msg` | planner/controller setpoint: position, velocity, acceleration, yaw, yawspeed |
+| `OffboardControlMode` | `References/PX4/PX4/msg/OffboardControlMode.msg` | GUI/offboard selector for position/velocity/acceleration/attitude/direct actuator modes |
+| `VehicleLocalPosition` | `References/PX4/PX4/msg/versioned/VehicleLocalPosition.msg` | `estimated_state` position/velocity source |
+| `VehicleOdometry` | `References/PX4/PX4/msg/versioned/VehicleOdometry.msg` | future estimator state bus |
+| `VehicleAttitude` | `References/PX4/PX4/msg/versioned/VehicleAttitude.msg` | attitude estimator output |
+| `ActuatorMotors` | `References/PX4/PX4/msg/versioned/ActuatorMotors.msg` | normalized motor command and saturation interface |
+| `BatteryStatus` | `References/PX4/PX4/msg/versioned/BatteryStatus.msg` | battery voltage, warning, remaining capacity, power scale |
+| `HomePosition` | `References/PX4/PX4/msg/versioned/HomePosition.msg` | return-to-home / land target reference |
+| `PositionSetpointTriplet` | `References/PX4/PX4/msg/PositionSetpointTriplet.msg` | previous/current/next setpoint pattern for mission-style navigation |
 
 ## 4. PX4 Navigation State Subset For This Project
 
@@ -93,7 +98,7 @@ Use a compact subset in MWORKS instead of importing the full PX4 state space.
 
 ## 7. Implementation Priority
 
-1. Freeze a PX4-like status/control contract in `Docs/Design/MoSim控制体系总览.md` and `Docs/Design/MoSim统一控制接口规范.md`.
+1. Freeze a PX4-like status/control contract in `Docs/Design/架构/01_控制器平台/控制体系总览.md` and `Docs/Design/架构/01_控制器平台/统一控制接口.md`.
 2. Add formal `battery_warning`, `home_position_valid`, `offboard_heartbeat_ok`, `mission_feasible`, and `geofence_ok` signals.
 3. Extend `SystemSupervisorModule` from GPS dropout only to multi-trigger failsafe.
 4. Add scenarios for battery low, offboard loss, planner failure, and geofence breach.

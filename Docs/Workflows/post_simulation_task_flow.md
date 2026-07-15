@@ -147,7 +147,7 @@ u1, u2, u3, u4
 ```
 
 Formation runs must preserve `uav_id` or separated `uav_<id>/` raw traces as
-defined in `Docs/Design/MoSim规划与编队控制接口规范.md`.
+defined in `Docs/Design/架构/02_感知定位与规划集群/规划与编队控制接口.md`.
 
 Pass condition:
 
@@ -433,7 +433,7 @@ Slice 9: report completion, blocker, or review-needed state
 Sub-agent planning decision:
 
 ```text
-default: no visible department dispatch while CoAgent architecture is under maintenance
+default: no visible department dispatch while legacy agent architecture is under maintenance
 disposable subagents: optional only for read-only review or disjoint static checks
 parent responsibility: integrate every returned finding and preserve final authority
 ```
@@ -445,7 +445,7 @@ goal:
   finish the single-UAV MWORKS model/control simulation evidence loop before UE
 
 subagent_plan:
-  visible_subthreads: disabled while CoAgent architecture is under maintenance
+  visible_subthreads: disabled while legacy agent architecture is under maintenance
   internal_roles:
     - model_iteration: inspect and patch the smallest model/controller surface
     - simulation_evidence: run check_model/SimulateModel-backed scenarios
@@ -472,7 +472,14 @@ When the post-simulation task reaches completion, blocker, or review-needed
 state, send one short Chinese email through:
 
 ```bash
-python Scripts/agent/send_gateway_email_alert.py --subject "<subject>" --body "<body>"
+python Scripts/agent/send_gateway_email_alert.py \
+  --subject "<short Chinese subject>" \
+  --body "<short Chinese body with evidence path / blocker / review request>" \
+  --cooldown-key "<task-or-gate-id>-<yyyymmdd-hhmm>" \
+  --cooldown-minutes 0
 ```
 
-Do not email every intermediate observation.
+Use a task/gate-specific cooldown key. Keep the default cooldown only for
+repeated health incidents of the same kind; for distinct small-task terminal
+notices, disable cooldown so separate completions are not suppressed. Do not
+email every intermediate observation.

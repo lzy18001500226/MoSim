@@ -1,5 +1,11 @@
 # CoAgent Docs
 
+Legacy note, 2026-06-24: MoSim has moved back to single-thread execution.
+This tree is historical CoAgent / AgentOS reference material, not active
+startup or operating instructions. Do not add new long-form operating/design
+policy here unless the user explicitly asks for legacy CoAgent cleanup or
+audit.
+
 This folder is the human-readable CoAgent map. Runtime code lives in sibling
 module folders such as `runtime/`, `dispatch/`, `context/`, and `transport/`.
 
