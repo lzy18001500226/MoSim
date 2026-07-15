@@ -1,0 +1,17 @@
+{
+  "schema": "mosim.control_platform.g5_wave_b_hinf_gate.v1",
+  "status": "passed",
+  "controller": "hinf_hover_wrench",
+  "upstream_commit": "fd51f68701ec1bd549b9796d8277db2c8fb89240",
+  "gamma": 10.325638319230702,
+  "riccati_residual": 7.755190829463689e-08,
+  "max_closed_loop_real_eigenvalue": -1.599961629061049,
+  "case_count": 4,
+  "scalar_comparison_count": 32,
+  "failure_count": 0,
+  "runtime_started": false,
+  "shared_gazebo_px4_touched": false,
+  "selectable": false,
+  "claim_ceiling": "Licensed upstream synthesis reproduced at one frozen hover operating point; no nonlinear, MWORKS, generated-C, allocator, adapter, or runtime acceptance.",
+  "failures": []
+}

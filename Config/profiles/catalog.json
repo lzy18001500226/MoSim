@@ -387,6 +387,30 @@
       "acceptance_tiers": ["CANDIDATE"],
       "evidence_level": "E2"
     },
+    "hinf_hover_wrench_v1": {
+      "controller_id": "hinf_hover_wrench",
+      "implementation": "project_owned_fixed_gain_c_from_licensed_matlab_synthesis",
+      "implementation_status": "implemented",
+      "controller_family": "h_infinity",
+      "chain_position": "nominal_frozen_hover_full_state_feedback",
+      "output_interface": "WRENCH",
+      "rate_hz": 100,
+      "required_state": ["attitude_euler", "angular_velocity", "body_velocity", "position"],
+      "required_reference": ["attitude_euler", "angular_velocity", "body_velocity", "position"],
+      "compatible_adapters": [],
+      "compatible_safety": [],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": [
+        "Config/control_platform/upstream_sources.json",
+        "Config/control_platform/hinf_hover_frozen_gain.json",
+        "Scripts/control_platform/synthesize_wave_b_hinf_gain.m",
+        "Scripts/control_platform/wave_b_hinf_core.c",
+        "Results/control_platform/g5_wave_b_hinf_20260716/G5_WAVE_B_HINF_GATE.json"
+      ],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E2"
+    },
     "se3_basic_attitude_thrust_v1": {
       "controller_id": "se3_basic",
       "implementation": "cpp_attitude_thrust_backend_mworks_codegen_pending",

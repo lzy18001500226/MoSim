@@ -1,0 +1,24 @@
+{
+  "schema": "mosim.control_platform.hinf_frozen_gain.v1",
+  "upstream_repo": "shengwen-tw/quadrotor-h-infty-ctrl-simulator",
+  "upstream_commit": "fd51f68701ec1bd549b9796d8277db2c8fb89240",
+  "license": "MIT",
+  "operating_point": "hover_zero_euler_zero_body_velocity",
+  "state_order": ["roll", "pitch", "yaw", "p", "q", "r", "u", "v", "w", "x", "y", "z"],
+  "command_order": ["collective_force_ned", "tau_x", "tau_y", "tau_z"],
+  "gamma": 10.325638319230702,
+  "gamma_lower_bound": 5.395127122831411,
+  "riccati_residual": 7.755190829463689e-8,
+  "max_closed_loop_real_eigenvalue": -1.599961629061049,
+  "mass_kg": 1.0,
+  "gravity_mps2": 9.8,
+  "force_limits_n": [0.0, 25.0],
+  "torque_limit_nm": 8.0,
+  "gain": [
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 102.07465646871916, 0.0, 0.0, 160.7556564350713],
+    [-521.4516779287975, 0.0, 0.0, -10.806018318480602, 0.0, 0.0, 0.0, -437.5189132603606, 0.0, 0.0, -1050.0326682458417, 0.0],
+    [0.0, -521.451677928797, 0.0, 0.0, -10.806018318480536, 0.0, 437.51891326036105, 0.0, 0.0, 1050.0326682458376, 0.0, 0.0],
+    [0.0, 0.0, -125.5903565899079, 0.0, 0.0, -25.26141057148942, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  ],
+  "claim_ceiling": "Licensed upstream synthesis reproduced at one frozen hover operating point; no nonlinear, MWORKS, generated-C, allocator, adapter, or runtime acceptance."
+}
