@@ -38,7 +38,7 @@ UE5/MoSimSceneLibrary/Plugins/
 UE5/MoSimSceneLibrary/Collections/
 UE5/MoSimSceneLibrary/Developers/
 UE5/MoSimSceneLibrary/.vs/
-*.sln
+UE5/MoSimSceneLibrary/*.sln
 *.suo
 *.opensdf
 *.VC.db
