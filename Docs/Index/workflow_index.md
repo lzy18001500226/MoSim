@@ -23,6 +23,7 @@
 | Design Factory L2 static import to Gazebo and UE Global Overview attitude trails | `Docs/Design/架构/04_展示与实验平台/Factory地图导入与全局态势视图.md`, `Docs/Workflows/ue_to_gazebo_static_scene_import.md`, `Docs/Design/架构/04_展示与实验平台/UE渲染镜像桥接方案.md`, `Docs/Workflows/unreal_renderer.md`; Factory L2 is Scene Base only and still needs Data Bridge for runtime display |
 | UE/RViz mapping-window research and evidence boundary | `Docs/Workflows/unreal_mapping_window_research.md` |
 | Current architecture and execution order | `Docs/Design/架构.md`, `Docs/Design/需求.md`, `Docs/Design/赛题.md`, `Docs/Design/架构/00_架构与任务/任务路线图.md` |
+| Design MoSim experiment frontend and end-to-end tuning/fault loop | `Docs/Design/架构/00_架构与任务/MoSim实验前端与闭环架构.md`, `Docs/Design/架构/00_架构与任务/系统集成接口与编排.md` |
 | Turn accepted requirements and architecture into executable agent work layers 3-6 | `Docs/Workflows/agent_project_operating_layers.md` |
 | Execute current Sunray ROS1/Gazebo/RViz lane and source boundaries | `Docs/Workflows/sunray_ros1_current_runtime_lane.md`, `Docs/Workflows/sunray_ros1_execution_checklist.md`, `Docs/Index/sunray_migration_index.md`, `References/Sunray`, `References/Lab/localization_slam/FAST_LIO` |
 | Close out Sunray/PX4/Gazebo baseline toward flight-like deployment | `Docs/Design/架构/03_测试调参与证据/真机化与C++化.md`, `Docs/Design/架构/02_感知定位与规划集群/FASTLIO定位闭环.md`, `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; classify runtime code as T0/T1/T2/T3 before promoting Python nodes as deployable |
