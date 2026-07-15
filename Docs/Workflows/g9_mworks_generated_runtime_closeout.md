@@ -250,6 +250,10 @@ alone is not closure.
 ### 9.1 Current Evidence State
 
 - Generated-C offline equivalence: `450 cases / 0 failures`.
+- The 2026-07-15 revalidation is recorded at
+  `Results/g9/controller_family_attitude_thrust_v1/g9_family_generated_c_gate_20260715_192943/`;
+  its manifest reports six controller IDs, `450` cases, `0` failures, and
+  generated-source hashes.
 - Static ROS/Sunray adapter: `450 cases / 0 failures`.
 - Runtime acknowledgement observed for `official_pid`:
   `backend=mworks_generated_c`, `build_backend=g9_family`, and
