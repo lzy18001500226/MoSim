@@ -1,6 +1,7 @@
 # CoSim Rebuild Plan 2026-06-14
 
-Status: active rebuild plan.
+Status: archived/reference rebuild plan. This file is not a current MoSim
+execution route unless the user explicitly reopens CoSim architecture work.
 
 ## 1. Goal
 

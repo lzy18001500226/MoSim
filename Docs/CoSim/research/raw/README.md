@@ -6,7 +6,7 @@ This directory contains the original `Docs/CoSim` long-form research files.
 They were moved here without editing. The SHA256 preservation list is in:
 
 ```text
-Docs/CoSim/cache/source_migration_manifest_20260614.md
+Docs/Cache/cosim/source_migration_manifest_20260614.md
 ```
 
 Do not delete or rewrite these raw notes during architecture edits. If a raw

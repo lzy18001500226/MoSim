@@ -10,7 +10,7 @@ not by simulator names.
 
 | Order | Path | Purpose |
 |---:|---|---|
-| 1 | `cache/cosim_rebuild_plan_20260614.md` | Rebuild goal, captured user requirements, and preservation rules. |
+| 1 | `../Cache/cosim/cosim_rebuild_plan_20260614.md` | Rebuild goal, captured user requirements, and preservation rules. |
 | 2 | `research/README.md` | Short, template-based research conclusions and backend decisions. |
 | 3 | `00_platform/00_CoSim总体蓝图.md` | Product-level blueprint and authority tree. |
 | 4 | `10_shared_core/01_共享内核与数据契约.md` | Shared kernel, contracts, clock, logs, replay, and evidence. |

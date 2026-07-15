@@ -8,7 +8,7 @@ Source raw notes:
 - `research/raw/Planner.md`
 - `research/raw/MAV层.md`
 - `research/raw/Prometheus.md`
-- `Docs/Design/MoSim_FASTLIO定位闭环与规划复现基础方案.md`
+- `Docs/Design/架构/02_感知定位与规划集群/FASTLIO定位闭环.md`
 
 External sources:
 

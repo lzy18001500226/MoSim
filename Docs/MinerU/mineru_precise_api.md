@@ -10,7 +10,7 @@ MinerU 精准解析 API 用于将复杂 PDF、图片、Doc/Docx、Ppt/PPTx 和 H
 - 多栏布局、扫描件、水印干扰；
 - 需要保留层级结构的官方手册、培训材料和报告素材。
 
-本项目已用 MinerU 精准解析完成 `Docs/Mworks/converted/` 中的 P0/P1/P2 重点资料转换；后续仅在新增资料或发现解析质量问题时增量重转。
+本项目已用 MinerU 精准解析完成 `Docs/MworksDocs/converted/` 中的 P0/P1/P2 重点资料转换；后续仅在新增资料或发现解析质量问题时增量重转。
 
 ## 2. Token 放置
 
@@ -279,15 +279,15 @@ print(res.json())
 推荐流程：
 
 ```text
-1. 从 Docs/Mworks/converted/转换索引.md 选择要重转的 PDF。
+1. 从 Docs/MworksDocs/converted/转换索引.md 选择要重转的 PDF。
 2. 从原始资料包复制 PDF 到临时目录，使用英文短文件名。
 3. 通过 /api/v4/file-urls/batch 申请上传链接。
 4. PUT 上传文件。
 5. 轮询 /api/v4/extract-Results/batch/{batch_id}。
 6. 下载 full_zip_url。
-7. 解压 full.md 到 Docs/Mworks/converted/<topic>/。
+7. 解压 full.md 到 Docs/MworksDocs/converted/<topic>/。
 8. 保留源路径、模型版本、页数、转换日期和 Review status。
-9. 更新 Docs/Mworks/converted/转换索引.md 和 Docs/Index/doc_index.md。
+9. 更新 Docs/MworksDocs/converted/转换索引.md 和 Docs/Index/doc_index.md。
 ```
 
 建议优先重转：

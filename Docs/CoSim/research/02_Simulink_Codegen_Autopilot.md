@@ -7,7 +7,7 @@ Source raw notes:
 - `research/raw/PX4-Autopilot.md`
 - `research/raw/MAV层.md`
 - `Docs/Design/README.md`
-- `Docs/Design/MoSim统一控制接口规范.md`
+- `Docs/Design/架构/01_控制器平台/统一控制接口.md`
 
 External sources:
 
