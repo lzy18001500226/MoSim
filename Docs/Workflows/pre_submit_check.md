@@ -119,6 +119,38 @@ no copied OAuth/provider configs, private `.env`, token, or key files are tracke
 external skill/runtime repositories remain reference material unless explicitly promoted
 ```
 
+### Per-Task Git Closeout Gate
+
+Every task that changes project files must close its own Git slice before it
+reports `complete`. A large unrelated worktree, a pending `References/` import,
+or another task's dirty paths does not waive this gate.
+
+Required closeout sequence:
+
+1. Inspect tracked and untracked changes only under the task-owned paths.
+2. Run targeted tests plus credential-like-content and oversized-file checks
+   for those paths.
+3. Stage only the exact reviewed task paths and inspect the staged file list.
+4. Run the staged whitespace/error check, then create a scoped commit.
+5. Push the current branch and verify that it is synchronized with upstream.
+
+Closeout rules:
+
+1. `complete` requires either no task-owned diff or a reviewed commit that has
+   been pushed and verified against its upstream.
+2. Normal source, scripts, configs, models, and documentation are committed in
+   their own scoped batch even when `References/` contains thousands of pending
+   files.
+3. Do not stage unrelated pre-existing changes. If task-owned edits overlap an
+   unreviewed existing change and cannot be separated safely, return a blocker.
+4. A local commit with an authentication, remote rejection, or network failure
+   is not pushed completion. Preserve the commit and report the exact blocker.
+5. Reference crawls and directory migrations use repo-sized drain batches. Pair
+   an intentional old-path deletion with its corresponding new-path addition
+   in the same reviewed migration commit whenever practical.
+6. Broad staging, destructive cleanup, history rewriting, and forced remote
+   updates are not shortcuts for this gate.
+
 ### Reference / Large-File / Secret Check
 
 Before staging or packaging, inspect newly added reference trees and generated

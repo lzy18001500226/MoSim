@@ -4,9 +4,8 @@
 > quadrotor attitude and position-control project.
 
 This file is the compact project constitution. Keep durable hard boundaries
-here. Put executable procedures, packet schemas, patrol logic, MWORKS window
-classification, dispatch SLOs, and domain-specific workflows in the linked
-documents below.
+here. Put executable procedures, MWORKS window rules, runtime checks, and
+domain-specific workflows in the linked documents below.
 
 ## 0. Start Here
 
@@ -16,17 +15,17 @@ For every new or resumed MoSim conversation:
 1. AGENTS.md
 2. Docs/Workflows/new_conversation_context.md
 3. Docs/Workflows/mainline_operations_board.md
-4. CoAgent/dispatch/department_threads.json
+4. Docs/Workflows/single_thread_operating_model.md when operating mode is unclear
 5. Topic-specific workflow / skill / design docs only as needed
 ```
 
 Use `PROGRESS.md` only for newest active entries, not as a full transcript.
-Read `Docs/Workflows/agent_task_ledger.md` only when the board or a packet
-requires trace-back evidence.
+Read `Docs/Workflows/agent_task_ledger.md` only for legacy trace-back during
+old multi-thread cleanup or historical packet audit.
 
 Do not load raw Codex session JSONL files or old chat dumps as routine context.
 Historical chat claims must go through
-`CoAgent/docs/operating/session_memory_migration.md` before becoming project
+`Docs/Workflows/session_memory_migration.md` before becoming project
 truth; MoSim cache paths are documented in
 `Docs/Workflows/session_memory_migration.md`.
 
@@ -37,118 +36,91 @@ truth; MoSim cache paths are documented in
    means do not read or modify sibling personal directories, token files,
    browser profiles, SSH folders, other drives, `/home/linux`, or WSL/user
    home paths unless the approved infrastructure task names that path and why.
-2. PMO owns product priority, scope, acceptance/rejection, final integration,
-   visible-thread lifecycle decisions, manual/GUI action decisions, and restart
-   decisions.
-3. CoAgentOps may patrol, recover, and perform bounded pre-authorized P0
-   dispatch only under `CoAgent/docs/operating/coagent_ops_patrol_workflow.md`.
-   CoAgentOps does not gain product authority.
-4. Cross-thread work must use `status=active_visible` routes from
-   `CoAgent/dispatch/department_threads.json`, carry `native_surface_gate`,
-   `semantic_boundary`, `expected_return_path`, and `blocker_return_path`, and
-   return durable packets under `Results/agent_packets/`.
-5. Non-trivial visible-department dispatch packets must require a local goal,
-   critical-path split, parallelizable-slice review, verification gates, and a
-   `subagent_plan` decision. A department must record whether disposable
-   sub-agents were `used`, `available_but_not_useful`, `unavailable`, or
-   `unsafe`. This is a planning requirement, not a requirement to spawn a
-   sub-agent. They must also declare a first durable-start artifact unless the
-   task is an exact no-write probe.
-6. Sparse Chinese email is the default human notification channel. When a
-   project conversation reaches a completion, blocker, or review-required
-   terminal state, send one short Chinese email through
-   `Scripts/agent/send_gateway_email_alert.py`; do not email every ordinary
-   chat reply or intermediate observation. Deleted WeChat gateway/message-path
-   threads are historical only and must not be scanned, no-oped, recovered, or
-   used unless the user explicitly restores a scoped WeChat diagnosis route.
-7. Current single-thread runtime review work is the Sunray ROS1 lane under
-   `Docs/Workflows/sunray_ros1_current_runtime_lane.md`. Do not use the old
-   ROS2/PX4/x500 route, downloaded replacement FAST-LIO source, fake point
-   clouds, or equivalent-substitute runtimes as current evidence. Support lanes
-   cannot mask the active engineering blocker.
-8. MWORKS activation/window patrol is owned by CoAgentOps. MWORKS engineering
-   departments stop on observed login/license/authorization/GUI-error/unknown
-   blocking states and return blockers instead of retrying solver/model work.
-   PMO/CoAgentOps may perform bounded MWORKS/Sysplorer/Syslab login recovery
-   only when the user has explicitly authorized it and the workflow's credential
+2. MoSim currently runs as a single active Codex-thread project. Do not use
+   visible-thread dispatch, R1/R2/R3 department routing, legacy ops patrol bounded
+   dispatch, or dispatch-ticket SLOs as active project workflow.
+3. The active thread owns product priority, scope, integration, manual/GUI
+   action decisions, restart decisions, and blocker escalation to the user.
+4. Non-trivial work should record a local goal, inspect the smallest relevant
+   context, run targeted checks, and keep evidence in normal project paths.
+   This is local planning only, not a multi-agent dispatch requirement.
+5. Former AgentOS / visible-thread material is legacy reference only
+   unless the current task explicitly asks for cleanup, audit, or historical
+   review. Cleanup notes live in
+   `Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md`.
+6. Sparse Chinese email is the default human notification channel. When any
+   named small task, goal, gate, or project conversation reaches a completion,
+   blocker, or review-required terminal state, send one short Chinese email
+   through `Scripts/agent/send_gateway_email_alert.py`. Do not email every
+   ordinary chat reply, status update, or intermediate observation. Use a
+   task-specific cooldown key, and disable cooldown for explicit terminal
+   notices when needed so separate small tasks are not suppressed. Deleted
+   WeChat gateway/message-path threads are historical only and must not be
+   scanned, no-oped, recovered, or used unless the user explicitly restores a
+   scoped WeChat diagnosis route.
+7. Current single-thread P0 is the ROS1/Sunray/Gazebo/PX4/MAVROS/px4ctrl
+   minimum big-system loop declared by
+   `Docs/Workflows/mainline_operations_board.md` and
+   `Docs/Design/架构.md`. RViz point-cloud/trajectory review is the current
+   visual evidence surface. UE/frontend work is an S11 display and experiment
+   platform enhancement, not the current control-loop authority. Do not use the
+   old ROS2/PX4/x500 route, downloaded replacement FAST-LIO source, fake point
+   clouds, or equivalent-substitute runtimes as current evidence. Support
+   lanes cannot mask the active engineering blocker.
+8. MWORKS login/license/authorization/GUI-error/unknown blocking states must
+   stop solver/model work and become clear blockers. Bounded login recovery is
+   allowed only when the user explicitly authorizes it and credential
    redaction, screenshot, and stop-condition rules are satisfied.
-9. CoAgentOps heartbeat must not click through every visible thread as the
-   default liveness check. Use durable-start artifacts, native read/send state,
-   expected packets, and main-shell approval/review/provider indicators first.
-   Desktop window observation and desktop window action are separate skills:
+9. Desktop window observation and desktop window action are separate skills:
    screenshot/capture ability does not imply click/action authority.
-10. For normal MoSim mainline, visible-department, automation, and disposable
-    sub-agent dispatches, request `gpt-5.5` and `thinking=high` when the native
-    tool accepts those settings. Do not wake healthy threads only to change
-    settings.
-11. Do not re-create deleted PMO heartbeat, detached CoAgentOps cron, Windows
-    watchdog, or replacement visible threads without explicit user/PMO
-    approval.
-12. Temporary broad `.gitignore` rules for reference imports are only a drain
+10. For normal MoSim mainline work, request `gpt-5.5` and `thinking=high` when
+    the native tool accepts those settings.
+11. Live/runtime waits must follow the bounded wait policy in the current
+    runtime workflow or execution checklist. Do not let a live probe become an
+    unbounded blocking loop without explicit user authorization and durable
+    partial evidence.
+12. Do not re-create deleted PMO heartbeat, detached legacy ops patrol cron, Windows
+    watchdog, replacement visible threads, or other multi-thread automation
+    without explicit user approval.
+13. Temporary broad `.gitignore` rules for reference imports are only a drain
     queue. Durable ignores must be class/exact-risk decisions, not a hidden
     backlog of ordinary source, docs, scripts, configs, or small assets.
-13. CoAgent runtime, transport, automation, schema, tool/MCP surface, permanent
-    department design changes, and reusable agent-OS workflow changes remain
-    gated by `CoAgent/STATUS.md`,
-    `CoAgent/docs/operating/agent_os_operating_model.md`, and
-    `CoAgent/docs/operating/agent_orchestration.md`; do not infer approval from
-    this compact entry file. CoAgent implementation work still starts from
-    `COAGENT-IMPL-01` and must remain gated by the CoAgent status and decision
-    records.
+14. Do not delete or move executable legacy runtime, hook, checker, protocol,
+    skill, or automation code until a separate dependency audit proves it is
+    unused or updates all references. The current cleanup target is active
+    documentation and startup context first.
+15. A task is not complete while task-owned changes remain uncommitted or
+    unpushed. Before reporting terminal success, inspect only the task paths,
+    run the relevant checks, stage exact paths, commit, push, and verify the
+    upstream state. A noisy unrelated worktree or a large `References/` backlog
+    is not a reason to defer normal source, script, config, model, or document
+    changes. If ownership is unclear, checks fail, or publication is blocked,
+    report a Git blocker instead of claiming completion. Never sweep unrelated
+    user changes into the task commit to satisfy this gate.
 
-## 2. Current Visible Routes
+## 2. Current Operating Mode
 
-Canonical routing lives in `CoAgent/dispatch/department_threads.json`. This is
-a capability/ownership table, not the current execution selector. If the board
-declares single-thread mode or a narrower current lane, follow that board lane
-first and do not dispatch visible departments unless the user/PMO explicitly
-reopens dispatch.
-
-Current named corrections:
-
-| Route | Current Rule |
-|---|---|
-| `MoSim｜主线 PMO` (`019e9868-83ea-70f0-92c5-a3a408bd78c6`) | Main user-facing PMO, dispatch, acceptance, and final integration. |
-| `MoSim｜CoAgent运维平台` (`019e9bc1-ea9f-7102-b41a-4ef9b2308992`) | 10-minute patrol, bounded ops recovery, registry hygiene, dispatch SLO audit. |
-| `MoSim｜Codex 上下文维护部` (`019eab73-c5bc-7740-a6d1-5e0541bdb0c5`) | Documentation-secretary/context-maintenance route. `MoSim｜文档秘书部`, R-suffixed context titles, and `MoSim｜知识秘书` are alias/history only. |
-| MWORKS R1/R2/R3 | R1 owns primary dynamics/control/model evidence. R2 owns static/model organization, graphical review, checker/review, and safe failover. R3 is reserve only after PMO proposes/approves it because R2 failover still leaves P0 idle/blocked. |
-| ROS2 R1/R2/R3 | R1 owns live ROS2/RViz/FAST-LIO/planner integration. R2 owns static/diagnostic/checker/review failover only. R3 is reserve only after PMO proposal/approval. |
-| UE R1/R2/R3 | R1 owns primary UE console/runtime/editor/build work when authorized. R2 owns source-static, command/echo contract, checker/review, and safe failover. R3 is reserve only after PMO proposal/approval. |
-| `019de24d-e993-72c0-a0b2-caf2ac8ac85e` | Refresh-only non-MoSim watch target after Codex App/PC restart. It is not a MoSim dispatchable department. |
-
-R2 failover is limited by default to:
-
-```text
-source_static
-diagnostic_only
-packet_contract_fix
-rule_sync_only
-checker/review
-```
-
-R2 failover must not run MWORKS live work, ROS2 live work, UE runtime/build/
-editor work, GUI clicks, login/authorization/save/restart actions, or setpoint
-publication.
+Current MoSim work is single-thread execution. The active thread follows
+`Docs/Workflows/mainline_operations_board.md` and the relevant domain workflow.
+Legacy multi-thread routes, department ids, patrol automation, dispatch
+packets, R1/R2/R3 failover, and task ledgers are not current operating
+surfaces.
 
 ## 3. Operating Documents
 
 | Need | Source Of Truth |
 |---|---|
 | Current PMO board and next action | `Docs/Workflows/mainline_operations_board.md` |
-| Portable CoAgent agent-OS overview | `CoAgent/docs/operating/agent_os_operating_model.md` |
-| CoAgentOps patrol, durable-start liveness, main-shell pending indicators, dead-thread recovery, bounded dispatch, R2/R3 failover, MWORKS window patrol | `CoAgent/docs/operating/coagent_ops_patrol_workflow.md`; MoSim adapter at `Docs/Workflows/coagent_ops_patrol_workflow.md` |
-| Cross-thread packets, dispatch ticket SLO, semantic boundary, local goal/sub-agent planning fields | `CoAgent/dispatch/communication_contract.md` |
-| MoSim visible-department domain gates for MWORKS/ROS2/UE/Sunray dispatch | `Docs/Workflows/mosim_visible_dispatch_adapter.md` |
-| Current Sunray ROS1/Gazebo/RViz single-thread runtime lane | `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; source index at `Docs/Index/sunray_migration_index.md` |
-| Current visible departments and owner boundaries | `CoAgent/docs/operating/org_operating_model.md`; MoSim adapter at `Docs/Workflows/org_operating_model.md` |
-| Historical/recovery delegated-task trace | `Docs/Workflows/agent_task_ledger.md` |
-| Session-memory promotion/rejection | `CoAgent/docs/operating/session_memory_migration.md`; MoSim cache paths in `Docs/Workflows/session_memory_migration.md` |
+| Current single-thread operating model | `Docs/Workflows/single_thread_operating_model.md` |
+| Current ROS1 Sunray/Gazebo/PX4/MAVROS/px4ctrl minimum big-system loop | `Docs/Design/架构.md`; `Docs/Workflows/mainline_operations_board.md`; `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; execution checklist at `Docs/Workflows/sunray_ros1_execution_checklist.md`; source index at `Docs/Index/sunray_migration_index.md` |
+| Legacy AgentOS / multi-thread cleanup review | `Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md` |
+| Document placement, migration, and archive rules | `Docs/Workflows/documentation_governance.md` |
+| Session-memory promotion/rejection | `Docs/Workflows/session_memory_migration.md` |
 | Workflow index | `Docs/Index/workflow_index.md` |
-| Project memory index | `Docs/Index/project_work_memory_index.md` |
+| Historical/recovery project memory index | `Docs/Index/project_work_memory_index.md` |
 | API/MCP index | `Docs/Index/api_index.md` |
-| CoAgent runtime/task graph/timeout/prompt sanity | `CoAgent/docs/operating/agent_orchestration.md` |
-| MCP/tooling/native hook governance, entry-document slimming, and immediate doc updates | `CoAgent/docs/operating/tooling_assets_governance.md`; MoSim adapter at `Docs/Workflows/tooling_assets_governance.md` |
-| Desktop window screenshot evidence and explicitly authorized UI actions | `CoAgent/skills/window-capture-evidence/SKILL.md`; `CoAgent/skills/window-ui-action-control/SKILL.md` |
+| MCP/tooling/native hook governance | `Docs/Workflows/tooling_assets_governance.md`; hook code remains at current executable paths until audited |
+| Desktop window screenshot evidence and explicitly authorized UI actions | `Docs/Skills/Desktop/window-capture-evidence/SKILL.md`; `Docs/Skills/Desktop/window-ui-action-control/SKILL.md` |
 | Final competition packaging checklist | `Docs/Workflows/pre_submit_check.md` |
 
 ## 4. Project Direction
@@ -187,37 +159,46 @@ Core principles:
 
 ## 5. Domain Evidence Boundaries
 
-MWORKS/Sysplorer/Syslab is the formal simulation source. UE is the scene,
-visual, sensor, collision, and review surface. The current runtime review lane
-is ROS1/Sunray/Gazebo Classic/RViz. ROS2/RViz2/FAST-LIO is historical/future
-reference unless explicitly reopened. None of these layers may claim final
-closed-loop success without the evidence required by its current workflow and
-packet.
+MWORKS/Sysplorer/Syslab is the formal controller/model evidence source.
+Current runtime plant, sensor, and flight-control evidence comes from
+Ubuntu-20.04 / ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS / px4ctrl.
+RViz is the current point-cloud, trajectory, map, and frame review surface.
+UE/frontend work is a display, experiment-platform, video, and review
+enhancement layer; it does not replace Gazebo/PX4/MAVROS/RViz/log evidence and
+does not own controller, localization, or planner success. ROS2/RViz2/PX4 x500
+routes are historical/future reference unless explicitly reopened. None of
+these layers may claim final closed-loop success without the evidence required
+by its current workflow.
 
 Important MWORKS rules:
 
 - Use MCP first for model-level operations when live MWORKS work is authorized.
-- Reference the latest CoAgentOps activation/window patrol when live MWORKS
-  work is planned.
+- Check current MWORKS activation/window evidence before live MWORKS work.
 - Activation/login/license/authorization acceptance needs foreground or
   maximized target-main-window evidence when a hidden UI blocker is possible.
 - Ordinary live-simulation phase screenshots use the DPI-aware background
   capture route. If the target is minimized, restore it only enough to paint,
   capture, validate size/content, and minimize after; do not maximize except
   for activation/login/license/authorization evidence.
-- Ordinary graphical/layout/result-window review routes to MWORKS R2 and uses
-  DPI-aware screenshot evidence plus written observations.
+- Ordinary graphical/layout/result-window review uses DPI-aware screenshot
+  evidence plus written observations in the current single active thread unless
+  the user explicitly reopens multi-thread review.
 - Do not close or restart reusable Sysplorer/Syslab/MWORKS windows unless the
   user/PMO explicitly authorizes it or a documented blocker requires it.
 
-Important ROS2/UE rules:
+Important ROS/Sunray/UE rules:
 
 - Do not claim `planner_ready`, `closed_loop`, runtime success, controller
   performance, or final material/scene acceptance without the declared evidence
   gate.
+- Unreal Mapping Window Rule: active point-cloud/map review belongs to
+  RViz/RViz2 or an equivalent native robotics viewer, with current P0 using
+  ROS1 RViz. Browser HTML is not an accepted active point-cloud/map review surface.
+  Global UE collision/occupancy truth is a validation oracle only.
 - Do not publish setpoints, run extra live probes, open foreground RViz/manual
-  review, or start UE editor/build/runtime work unless the task packet
-  explicitly authorizes that live scope.
+  review, or start UE editor/build/runtime work unless the current user
+  instruction, local goal, and owning workflow explicitly authorize that live
+  scope.
 - Use local references first for matching UE/UAV simulation behavior patterns
   before online research.
 
@@ -235,9 +216,9 @@ Use project-local MWORKS skills before generic upstream skills:
 | Syslab/MATLAB porting | `Docs/Skills/Mworks/mworks-syslab-porting/SKILL.md` |
 | Tests and review | `Docs/Skills/Mworks/mworks-test-quality/SKILL.md` |
 | Report figures/replay | `Docs/Skills/Mworks/mworks-report-visualization/SKILL.md` |
-| Current Sunray ROS1 runtime review | `Docs/Workflows/sunray_ros1_current_runtime_lane.md` |
+| Current Sunray ROS1 / Gazebo / RViz runtime review | `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; `Docs/Workflows/sunray_ros1_execution_checklist.md` |
+| UE/frontend visualization enhancement, S11 display, and review media | `Docs/Workflows/unreal_renderer.md` |
 | Historical/future ROS2 runtime | `Docs/Workflows/ros2_runtime_setup.md` |
-| UE renderer/console | `Docs/Workflows/unreal_renderer.md` |
 | Parameter identification | `Docs/Workflows/identify_quadrotor_parameters.md` |
 
 Use only the workflow/skill needed for the current task. Do not bulk-load large
@@ -264,18 +245,21 @@ Rules:
 4. Keep `AGENTS.md` small. If a rule becomes executable or detailed, move it
    to a workflow, skill, checker, packet template, or index and leave only a
    pointer here.
+5. The per-task Git closeout gate in `Docs/Workflows/pre_submit_check.md` is
+   mandatory for every task that changes project files.
 
 ## 8. Directory Map
 
 | Directory | Purpose |
 |---|---|
 | `Docs/Design/` | Algorithm, architecture, scope, and evidence design. |
-| `Docs/Workflows/` | Repeatable procedures and CoAgent/PMO operating mechanics. |
+| `Docs/Workflows/` | Repeatable procedures, current single-thread operating rules, and domain workflows. |
+| `Docs/Cache/` | Review caches, migration notes, archived workflow bodies, and non-startup historical material. |
 | `Docs/Skills/` | Project-local and reference skills. |
 | `Docs/Index/` | Documentation, API, memory, and workflow indexes. |
 | `Models/` | Project-owned MWORKS/Sysplorer models. |
 | `References/` | Official/reference projects and upstream examples. |
-| `Config/scenarios/` | Scenario and experiment configuration. |
+| `Config/` | Machine-readable project config: scenarios, ExperimentProfiles, capability index, and legacy/design protocol snapshots. |
 | `Scripts/` | Automation, quality checks, evidence scripts, and tests. |
 | `Results/` | Reproducible outputs, packets, metrics, logs, figures, and review assets. |
 

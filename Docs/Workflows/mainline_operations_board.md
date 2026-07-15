@@ -1,254 +1,806 @@
 # Mainline Operations Board
 
-> PMO-facing short board for current MoSim operations. Keep this file concise:
-> it is not a history ledger, not a packet archive, and not a replacement for
-> `CoAgent/docs/operating/coagent_ops_patrol_workflow.md`.
+> PMO-facing short board for current MoSim work. This is not a history ledger,
+> not a packet archive, and not a legacy dispatch surface.
 
-Status: temporary single-thread execution mode is active while the CoAgent
-visible-thread architecture is being optimized. Do not dispatch to visible
-department threads from this mode. Current 2026-06-20 evening override:
-single-thread execution for Sunray takeoff-hover-land, 8字, Gazebo Classic
-animation, RViz trajectory/path, and MID360 point-cloud review must use
-`Docs/Workflows/sunray_ros1_current_runtime_lane.md`: Ubuntu-20.04 / ROS1
-Noetic / `References/Sunray` / `References/Lab/FAST_LIO`. Do not use old
-ROS2/PX4/x500, downloaded FAST-LIO replacements, empty point-cloud topics, or
-equivalent-substitute runtimes as current review evidence. Historical ROS2/PX4
-/Gazebo evidence below remains audit context only unless PMO/user explicitly
-reopens that route.
+Status: single-thread execution mode is active, 2026-07-01 CST.
 
-Historical single-thread context is quarantined in Section 8. It is retained
-for audit only and must not be read as the next-action queue during startup.
-During normal startup, stop after the P0 partition board unless the current
-task explicitly asks for historical ROS2/PX4 trace-back.
-The old `Docs/Workflows/single_thread_longrun_execution_queue_20260610.md`
-file is historical/context only; its former PX4/Gazebo/ROS2 queue must not
-steer current execution.
+## 1. Startup Loop
 
-## 1. PMO Startup Loop
-
-Every PMO turn starts here after `AGENTS.md` and
+Every ordinary MoSim turn starts here after `AGENTS.md` and
 `Docs/Workflows/new_conversation_context.md`:
 
-1. Read this board first.
-2. Check only the return/blocker packets named in this board.
-3. If a state is unclear, trace back through
-   `Docs/Workflows/agent_task_ledger.md` and the referenced packets.
-4. Decide one next PMO action per P0 partition before support-lane work.
-5. Update this board when a return/blocker changes PMO dispatch decisions.
+1. Read this board.
+2. Pick one next action from the current P0 lane.
+3. Load only the topic workflow/skill needed for that action.
+4. Run the smallest useful check before broad changes.
+5. Update this board only when the current operating state changes.
 
-Routine startup does not ingest the full ledger. The ledger is recovery and
-audit context.
+Do not read retired agent-OS internals, retired dispatch internals, or archived
+legacy workflow bodies during routine startup.
+`Docs/Workflows/agent_task_ledger.md` is now a short redirect stub; the
+archived body is for explicit trace-back only.
 
-## 2. Ownership Boundaries
+## 2. Current Mode
 
-| Owner | Owns | Does Not Own |
-|---|---|---|
-| PMO | Mainline operating architecture, P0 priority, dispatch, acceptance, integration, thread lifecycle decisions, manual/GUI decisions, restart/recovery decisions | Long worker execution when a visible department owns the task |
-| CoAgentOps | 10-minute patrol, recovery execution, bounded dispatch under `coagent_ops_patrol_workflow.md`, state reporting, thread-registry hygiene | Product priority, engineering acceptance, broad automation/thread lifecycle changes, final integration |
-| 文档秘书部 | Context maintenance, documentation consistency review, cache-first migration, periodic cleanup, compact recovery notes | Defining PMO runtime rules, choosing P0 priority, accepting engineering results, recovering dead threads |
-| Current single-thread executor | Temporary local-only PMO/docs/static/checker execution while visible dispatch is paused by user direction. It may complete explicitly authorized local simulation/UE evidence slices and must record goal/sub-agent planning locally. | Visible-thread dispatch, product acceptance, final integration claims, or durable role-policy changes |
+| Item | Current Rule |
+|---|---|
+| Execution model | One active Codex thread executes MoSim work. |
+| Former multi-thread system | Legacy/reference only. No R1/R2/R3 routing, visible-thread dispatch, patrol-owner workflow, or dispatch SLO loop. |
+| Current operating rule | `Docs/Workflows/single_thread_operating_model.md` |
+| Legacy cleanup review | `Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md` |
 
-`CoAgent/docs/operating/coagent_ops_patrol_workflow.md` is the primary
-CoAgentOps patrol/recovery source. The MoSim compatibility adapter at
-`Docs/Workflows/coagent_ops_patrol_workflow.md` remains valid for host-specific
-board paths, thread ids, MWORKS/ROS2/UE details, and no-loss migration review.
+## 3. P0 Partition Board
 
-## 3. State Enums
-
-Use these board states only:
+Use these states only:
 
 ```text
 running
-waiting_return
-dispatch_needed
-blocked_open_dependency
+waiting_evidence
+blocked
 manual_decision_needed
-recovery_pending
 ready_to_integrate
 frozen_by_user
 support_only
 done_no_action
+legacy_reference
 ```
 
-Do not write vague states such as `healthy`, `normal`, `looks fine`, or
-`probably blocked`.
-
-## 4. Dispatch SLO Watchlist
-
-Active dispatch monitoring rows use exactly these columns. The detailed
-dispatch ticket JSON stores target thread, task type, expected paths,
-checkpoint due, observations, and validation evidence.
-
-| sent_at | first_readback_due | expected_packet_due | last_observed_turn | breach_action | owner |
-|---|---|---|---|---|---|
-| 2026-06-09T21:38:17+08:00 | 2026-06-09T21:38:47+08:00 | 2026-06-09T22:38:17+08:00 | 019eac9a-f76d-7390-bb38-20b56bb723e1 status=inProgress agent_output_seen; no 032 return/blocker found in 2026-06-10 local sweep | breached_stale_no_terminal_packet | PMO / single-thread executor |
-
-## 5. P0 Partition Board
-
-| Partition | Current State | Waiting Returns | Blockers | Human Decisions | Integrable Results | Next PMO Action | Forbidden Actions |
-|---|---|---|---|---|---|---|---|
-| MWORKS | ready_to_integrate | none for current single-thread MWORKS smoke/closeout slice | 032 remains historical visible-thread terminal-packet debt, but it no longer blocks the current UE source-static/loopback path | User/PMO still decides any new live MWORKS GUI/layout/result-window review or report-final wording | 7/7 formal Dynamics smoke scenarios accepted as `dynamics_smoke_only`; single-UAV gate is `single_uav_gate_ready_for_ue_prep`; LinearMPC online fault-allocation rotor1-loss candidate remains the accepted current MWORKS_MCP run; its raw/metrics/replay artifacts now feed a passed UE replay input bundle and local UDP loopback smoke | Treat current MWORKS slice as closed for UE prep; do not start formation yet | No duplicate 031/032, no login click, no activation/license overclaim, no controller-performance claim from diagnostics smoke, no final report acceptance by implication |
-| Sunray ROS1 | running | none yet for the current Sunray ROS1 review lane; latest timing proof is `Results/sunray_ros1/sunray_ros1_topic_probe_longwait_20260620_181942/` | Current blockers must stay in this lane. If takeoff-hover-land, 8字, Gazebo animation, RViz trajectory/path, or MID360 PointCloud2 fails, return a Sunray ROS1 blocker instead of switching to ROS2/PX4/x500 or downloaded FAST-LIO. | PMO/user decides any architecture change away from ROS1/Sunray or any acceptance of headless output as visual review evidence. | Long-wait probe observed `/uav1/livox/lidar` as nonempty `PointCloud2` and `/uav1/livox/imu`; this is timing/source proof only, not mission completion. | Start from `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; next actions are source/runtime preflight, takeoff-hover-land, MID360 nonempty proof, 8字 mission, and Gazebo/RViz review package under `Results/sunray_ros1/`. | No ROS2/PX4/x500 substitution, no `Results/external_downloads/fast_lio_main.zip` as first source while `References/Lab/FAST_LIO` exists, no fake/static/empty point cloud, no headless pass as GUI/RViz acceptance, no planner_ready/final_closed_loop/controller-performance claim. |
-| UE | running | none for current UE replay and command-echo hardening slices | 034 remains latest historical live preflight; no live seven-artifact command-echo capture bundle exists yet; current opened review screenshots do not show Sunray150 clearly by eye; UE/RViz runtime readiness still reports `unreal_editor_listener_unavailable` | PMO/user product acceptance is still needed for final/manual visual acceptance and material acceptance, but opening existing review materials no longer waits for separate authorization | 037 classifies the 036 runtime-echo implementation surface as `build_only_gate_ready`; accepted MWORKS run has `ue_replay_input_bundle.json` plus passed local `ue_state_stream_loopback.json`; build-only gate passed at `Results/ue_build/20260612_102452_mosim_scene_library_editor_build/build_manifest.json`; bounded runtime replay ingest probe passed at `Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_runtime_probe_20260612_1105/ue_runtime_replay_probe_summary.json`; current UE truth/replay aggregate contract passed at `Results/unreal_scene_mapping/UE_TRUTH_REPLAY_CONTRACT_CHECK.json` for Factory and Derelict scenes; current command-echo hardening evidence is under `Results/unreal_experiment_console/command_echo_evidence_hardening_20260612_001/`; current visual-review planning packet is `Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_review_path_20260612_001/current_review_packet.json` | Treat UE truth/replay file contract as ready for downstream prep; continue with the next executable UE path: either produce close/zoomed after-stream Sunray150 visual-review evidence, or run one bounded command-echo live probe that produces the seven required artifacts and then validate it | No duplicate 036/037, no authoritative UE command echo ack from static/checker/build/sender/UDP/state-frame evidence, no final/manual visual acceptance from far scene screenshots, no MWORKS downlink, ROS2 runtime echo, Gazebo runtime success, PointCloud2 runtime evidence, planner_ready, controller-performance-from-UE, material acceptance, multi-UAV readiness, or closed_loop claim |
-| Git | running | DevOps closeout remains active by ledger | Large-tree ignore/drain queue still active; broad Git porcelain can be slow/noisy | PMO decides specific next path-limited batch when Git work becomes priority | Prior pushed slices are historical evidence; current staged runtime outputs are not this board's completion evidence | Keep Git work path-limited and do not let support work mask P0 engineering blockers | No `git add -A`, no force push/reset/clean, no broad cleanup, no hidden `.gitignore` backlog |
-| Ops | recovery_pending | Post-PC-restart sweep blocker is available at `PMO-POST-PC-RESTART-P0-DISPATCH-SURFACE-SWEEP-20260609-001`; CoAgentOps is currently ACK-capable | MWORKS R1, ROS2 R1, and UE failed current post-PC-restart send attempts; 文档秘书部 also remains support-lane recovery debt | No restart now. User-facing notice was sent by sparse email at 2026-06-09T15:17:03+08:00 | CoAgentOps and MWORKS R2 returned exact post-PC-restart ACKs; CoAgentOps 029/079/036 blocker is validated; R2 030 delivery completed and return passed validation | Keep recovery evidence current; use R2 only for bounded static MWORKS work until primary P0 threads are superseded restored | No WeChat health checks, no archived gateway no-op, no replacement thread without explicit approval, no Codex restart from this sweep, no treating probe ACK as business/runtime success |
-
-## 8. Historical Quarantine: ROS2/PX4/Gazebo Audit Context
-
-Do not read this section during normal startup. It exists only for trace-back
-after the current Sunray ROS1 lane workflow or a packet explicitly asks for old
-ROS2/PX4/Gazebo evidence.
-
-2026-06-18 historical single-thread Gazebo/ROS2 increment retained for audit
-only. It must not steer current Sunray ROS1 review work unless PMO/user
-explicitly reopens the ROS2/PX4 route:
+Current Factory L2 gate state:
 
 ```text
-latest plant parameter audit: Results/gazebo_ros2/sunray150_assembled_parameter_audit_20260618/GAZEBO_PARAMETER_CONSISTENCY_AUDIT.md. The audit has 13 rows, adopts 6 reviewed assembly geometry rows, keeps MID360 pose as held_for_review, keeps mass/inertia/motor plugin constants under separate-source/runtime validation, and records no reviewed-geometry mismatches. Current SDF total link mass is 0.69kg and the theoretical normalized hover command is 0.0556055205.
-current accepted Gazebo plant parameter correction: Config/gazebo/models/sunray150_assembled/model.sdf now uses the reviewed assembly rotor centers and the reviewed body collision envelope pose [0, 0.001574, 0.044965, 0, 0, 0] with size [0.211502, 0.214651, 0.16193]. Do not replace dynamics constants from the assembly JSON.
-latest takeoff-hover-land plant sanity pass: Results/gazebo_ros2/sunray150_takeoff_hover_land_plant_sanity_20260618_004/RUNTIME_STATUS.json passed. It uses a simple truth-feedback staged controller against Config/gazebo/worlds/sunray150_takeoff_hover_land_plant_sanity.sdf and proves only that the accepted Gazebo plant can take off, hover near 0.6m, and land under a bounded simple controller. Metrics: duration 13.032s, max z 0.836887m, final z 0.048684m, hover mean abs z error 0.140992m, hover max abs z error 0.234829m, max XY 0.165252m, max tilt 0.004286rad.
-plant sanity claim boundary: this does not prove MWORKS controller deployment, competition controller performance, planner_ready, final closed_loop acceptance, UE acceptance, or multi-UAV readiness.
-scope: non-UE, non-multi-UAV competition closure
-truth source status: accepted for light-world same-run comparison
-vehicle: model://sunray150_assembled
-truth topic: /world/sunray150_single_uav_competition_light/state
-truth entity: selected assembled UAV body entity id 24 near initial pose (0,0,1.2)
-truth evidence: Results/gazebo_ros2/sunray150_single_uav_competition_light_truth_state_probe_20260617_002/GAZEBO_TRUTH_POSE_RECORDING.json
-current sensor/local-map/truth aggregation: Results/gazebo_ros2/sunray150_single_uav_competition_light_sensor_local_map_truth_20260618_header_rate_001/RUNTIME_STATUS.json passed. It records raw MID360-like LiDAR PointCloud2 at 20000 points/frame, frame sunray150_assembled/base_link/mid360_lidar, LiDAR header-stamp rate about 10Hz, local voxels 432 points in map, local grid 120x120 in map, and TF map -> sunray150_assembled/base_link/mid360_lidar. Warning retained: topic_list_snapshot_empty_but_samples_or_rates_recorded, because the ros2 topic-list snapshot was empty while samples/rates were recorded.
-default competition development gate: the light-world 48s figure-8/static-obstacle default now matches the stable validated configuration instead of the earlier 24s/1.2m aggressive preset. The current default scenario is the 48s, 1.0m reference-altitude, 0.6m amplitude, y_offset 0.8m single-UAV development gate; it passed again without `TRACKER_KI_Z_OVERRIDE` and remains pre-acceptance only.
-latest same-run default gate with map review: Results/gazebo_ros2/default_48s_same_run_current_recheck_20260618_072626/RUNTIME_STATUS.json passed. It records the same stable 48s default gate and a same-run map review with raw LiDAR PointCloud2 at 20000 points/frame in frame sunray150_assembled/base_link/mid360_lidar, 6637 finite lidar points in the reviewed sample, 1181 local occupancy voxels in map, and a 120x120 local occupancy grid with 1049 occupied cells. Tracking metrics: truth_samples=239, tracker_samples=834, adapter_published=874, rmse_xy_m=0.860137, max_xy_error_m=1.200738, max_z_error_m=0.585952, truth_min_clearance_m=0.367781. This is the current best same-run review baseline for the default single-UAV development gate.
-latest continuation regression: Results/gazebo_ros2/single_uav_goal_continue_same_run_20260618_075113/RUNTIME_STATUS.json passed. It records the stable default 48s single-UAV figure-8/static-obstacle gate plus same-run raw LiDAR and downstream local-map review. Tracking metrics: truth_samples=239, tracker_samples=834, adapter_published=874, rmse_xy_m=0.863938, max_xy_error_m=1.203297, max_z_error_m=0.591766, truth_min_clearance_m=0.366812. Map review passed with raw LiDAR PointCloud2 at 20000 points/frame in frame sunray150_assembled/base_link/mid360_lidar, 2569 finite lidar points in the reviewed sample, 356 local occupancy voxels in map, and a 120x120 local occupancy grid with 131 occupied cells. Use this as the freshest same-run regression evidence for the current single-UAV goal; the preferred visual-density baseline remains default_48s_same_run_current_recheck_20260618_072626.
-latest default hover entry repair and pass: Scripts/gazebo/run_sunray150_hover_hold_closed_loop.sh now defaults to Config/scenarios/system/sunray150_single_uav_competition_light.yaml instead of the older smoke scenario. Verification: Results/gazebo_ros2/hover_hold_default_entry_after_fix_20260618_080459/RUN_MANIFEST.json passed with scene_id sunray150_single_uav_competition_light and vehicle_id sunray150_assembled. Hover metrics: controller_samples=218, adapter_published=258, truth_samples=82 after controller-window crop, final_z_m=1.163734, final_abs_z_error_m=0.036266, max_abs_z_error_m=0.530641, max_xy_distance_m=0.076043, max_tilt_rad=0.001183. This is bounded hover pre-acceptance only.
-latest pre-multi-UAV same-run review: Results/gazebo_ros2/single_uav_prenulti_same_run_review_20260618_081009/RUNTIME_STATUS.json passed. It combines the current 48s single-UAV figure-8/static-obstacle gate with same-run raw LiDAR and downstream local-map review. Flight metrics: truth_samples=239, tracker_samples=834, adapter_published=874, rmse_xy_m=0.856613, max_xy_error_m=1.200777, max_z_error_m=0.582842, truth_min_clearance_m=0.376729. Raw LiDAR is /mosim/gazebo/lidar_points/points in frame sunray150_assembled/base_link/mid360_lidar with 20000 points/frame and 7631 finite points in the reviewed sample. Downstream local occupancy voxels are 643 finite points in map, and the 120x120 local occupancy grid has 574 occupied cells. Review figures are under Results/gazebo_ros2/single_uav_prenulti_same_run_review_20260618_081009/map_review/figures/.
-latest FAST-LIO/planner input surface recheck: Results/gazebo_ros2/fastlio_planner_input_competition_light_recheck_20260618_081645 now has a sparse-graph 补判定 pass at RUNTIME_STATUS_REBUILT_AFTER_SPARSE_GRAPH_FIX.json. The original ROS graph snapshot/echo samples were sparse, but adapter report evidence, TF, source LiDAR sample, and IMU passthrough evidence prove the bounded input surface. fastlio_planner_input_adapter.json records lidar_received=1323, fastlio_lidar_published=1323, spark_livox_custom_published=1323, planner_global_points_published=1323, mosim_planner_global_points_published=1323, planner_odom_published=1908, mosim_planner_odom_published=1908, tf_lookup_failures=0, frame_mismatch_count=0, and review_accumulated_last_point_count=57180. fastlio_imu_passthrough.json records imu_received=255685, fastlio_imu_published=255685, sunray_imu_published=255685, frame_mismatch_count=0, observed_input_average_hz=748.105. This remains FAST-LIO/planner input-surface evidence only: no FAST-LIO localization success, planner_ready, setpoint, command authority, actuator command, final closed_loop, or multi-UAV readiness.
-latest hover regression pass: Results/gazebo_ros2/hover_hold_current_recheck_/GAZEBO_HOVER_HOLD_CLOSED_LOOP_EVAL.json. This current hover recheck passed with final z 0.968090m, final abs z error 0.231910m, max XY distance 0.079899m, max tilt 0.001038rad, controller samples=218, adapter publishes=258, and truth samples=76. It proves only bounded hover pre-acceptance, not trajectory completion or final closed-loop acceptance.
-previous 30s hover regression pass: Results/gazebo_ros2/hover_hold_split_axis_30s_20260618_015039/GAZEBO_HOVER_HOLD_CLOSED_LOOP_EVAL.json. This 30s hover gate passed with final z 0.963296m, final abs z error 0.236704m, max XY distance 0.082392m, and max tilt 0.003862rad.
-previous short hover confirmation: Results/gazebo_ros2/hover_hold_split_axis_12s_20260618_014824/GAZEBO_HOVER_HOLD_CLOSED_LOOP_EVAL.json. This 12s hover gate passed with final z 0.968339m, final abs z error 0.231661m, max XY distance 0.080526m, and max tilt 0.001128rad.
-previous hover regression pass: Results/gazebo_ros2/sunray150_single_uav_hover_regression_after_figure8_20260617_001/GAZEBO_HOVER_HOLD_CLOSED_LOOP_EVAL.json
-latest full-window figure-8/static-obstacle pre-acceptance pass: Results/gazebo_ros2/figure8_full_window_headless_safe_20260618_2150/FIGURE8_STATIC_OBSTACLE_GATE.json
-full-window figure-8 notes: 48s real Gazebo/ROS2 headless run, period 40s, x_amp=0.6m, y_amp=0.6m, y_offset=0.8m, altitude=1.0m, obstacle radius=0.35m, split-axis horizontal control signs roll=-1 and pitch=+1. Gate passed with independent Gazebo truth samples=239 after tracker/reference-window cropping, tracker samples=834, adapter publishes=874, XY RMSE=0.858035m, max XY error=1.200852m, max Z error=0.60843m, max reference time delta=0.045899s, reference clearance=0.37267m, and truth obstacle clearance=0.37024m. This is complete-window pre-acceptance and review evidence, not final controller-performance proof.
-latest full-window review artifact: `Results/gazebo_ros2/figure8_full_window_headless_safe_20260618_2150/review/FIGURE8_REVIEW_MANIFEST.json` plus `figure8_truth_reference_topdown.png` and `figure8_altitude_time.png`.
-previous figure-8/static-obstacle pre-acceptance pass: Results/gazebo_ros2/figure8_headless_after_gui_blocker_20260618_053129/FIGURE8_STATIC_OBSTACLE_GATE.json
-figure-8 gate notes: current safe 24s headless real Gazebo/ROS2 run, period 40s, x_amp=0.6m, y_amp=0.6m, y_offset=0.8m, altitude=1.0m, obstacle radius=0.35m, split-axis horizontal control signs roll=-1 and pitch=+1, PositionCommand -> PlannerSetpoint -> ControllerOutput -> Gazebo actuator plant. Gate passed with independent Gazebo truth samples=119, tracker samples=401, adapter publishes=441, XY RMSE=0.701829m, max XY error=0.926982m, max Z error=0.608634m, reference clearance=0.372671m, and truth obstacle clearance=0.620884m.
-previous safe figure-8/static-obstacle pass: Results/gazebo_ros2/figure8_current_recheck_safe_20260618_052106/FIGURE8_STATIC_OBSTACLE_GATE.json. It passed with XY RMSE=0.698173m, max XY error=0.927457m, max Z error=0.608395m, reference clearance=0.372671m, and truth obstacle clearance=0.619878m.
-latest GUI review blocker: Results/gazebo_ros2/figure8_gui_review_safe_20260618_052911/BLOCKER.json. The same safe parameter set failed when run with Gazebo GUI review: max Z error 0.983114m exceeded 0.85m, truth clearance -0.049548m was below 0m, and Gazebo GUI stderr contains an OGRE render shutdown segmentation fault. Treat this as a visual-review/runtime-performance blocker, not as superseding the passing headless control-chain evidence.
-latest figure-8 blocker: Results/gazebo_ros2/figure8_current_recheck_20260618_051818/BLOCKER.json failed because the reference trajectory clearance was below the declared minimum (0.309794<0.350000), not because the current safe trajectory failed.
-previous figure-8/static-obstacle pass: Results/gazebo_ros2/sunray150_single_uav_figure8_split_axis_sign_60s_gate_20260617_001/FIGURE8_STATIC_OBSTACLE_GATE.json. This 60s long-window run used 0.18m x/y amplitude and passed with XY RMSE=0.224955m, max XY error=0.414160m, max Z error=0.533687m, and truth obstacle clearance=0.398927m.
-historical long-window figure-8 blocker: Results/gazebo_ros2/sunray150_single_uav_figure8_long_window_probe_20260617_001/BLOCKER.json
-historical blocker notes: earlier 60s Gazebo/ROS2 run failed because the truth-feedback position controller used one global XY sign, stayed mostly in takeoff_altitude_hold, ended near z=0.106m, and failed xy RMSE, max XY, max Z, and obstacle-clearance thresholds. Current split-axis 60s gate supersedes it for the active pre-acceptance lane.
-late visual recheck blocker: user-observed Gazebo animation showed falling-leaf/self-rotation style behavior, so all previous "full simulation OK" wording is invalid until revalidated from real Gazebo animation.
-latest plant-stability regression pass: Results/gazebo_ros2/hover_hold_12s_plant_recheck_after_sdf_fix_1781710139/GAZEBO_HOVER_HOLD_CLOSED_LOOP_EVAL.json. This 12s hover gate passed with max tilt 0.003094rad and max XY 0.381683m; it proves only bounded hover pre-acceptance, not trajectory completion.
-latest root-cause correction: pitch horizontal control sign was wrong for the accepted `model://sunray150_assembled` Gazebo plant. A 12s override test with `pitch_control_sign=+1` passed at Results/gazebo_ros2/figure8_12s_hover0558_pitchpos_recheck_1781710894/FIGURE8_STATIC_OBSTACLE_GATE.json.
-latest default short-gate pass after YAML/runner update: Results/gazebo_ros2/figure8_12s_yaml_defaults_recheck_1781711062/FIGURE8_STATIC_OBSTACLE_GATE.json. It passed with XY RMSE=0.258130m, max XY error=0.392050m, max Z error=0.613725m, and truth obstacle clearance=0.517515m. The tracker used roll_control_sign=-1 and pitch_control_sign=+1. This is a short 12s, small-amplitude pre-acceptance regression only.
-latest same-run figure-8 + raw LiDAR/local-map evidence: Results/gazebo_ros2/figure8_full_window_same_run_map_review_20260618_001/RUNTIME_STATUS.json passed. It records a 47.968s figure-8/static-obstacle pre-acceptance run and a same-run map review at Results/gazebo_ros2/figure8_full_window_same_run_map_review_20260618_001/map_review/GAZEBO_ROS2_MAP_REVIEW.json. Raw LiDAR PointCloud2 is 20000 points/frame in frame sunray150_assembled/base_link/mid360_lidar; local occupancy voxels are 130 points in map; local occupancy grid is 120x120 in map. Tracking metrics: truth_samples=237, tracker_samples=801, adapter_published=841, xy_rmse_m=0.851403, max_xy_error_m=1.20125, max_z_error_m=0.589446, truth_min_clearance_m=0.37766.
-latest control-tuned same-run figure-8 + raw LiDAR/local-map candidate: Results/gazebo_ros2/single_uav_48s_alt10_ki00035_same_run_map_20260618_064629/RUNTIME_STATUS.json passed. It uses `TRACKER_KI_Z_OVERRIDE=0.00035`, keeps hover command at the baseline value, and records a 48.004s figure-8/static-obstacle pre-acceptance run at 1.0m reference altitude. The altitude steady-state error improved materially: final tracker z error is about 0.036655m, while XY/clearance still pass. Tracking metrics: truth_samples=235, tracker_samples=834, adapter_published=874, rmse_xy_m=0.854535, max_xy_error_m=1.200862, max_z_error_m=0.580719, truth_min_clearance_m=0.378079. Same-run map review passed with raw LiDAR PointCloud2 at 20000 points/frame in frame sunray150_assembled/base_link/mid360_lidar, 2477 finite points in the reviewed sample, 91 finite local occupancy voxels in map, and a 120x120 local occupancy grid with 91 occupied cells. Because this map review captured a near-field slice, keep the wider-view map figures from the previous 48s baseline as better human map-review illustrations.
-latest wider-view same-run figure-8 + raw LiDAR/local-map review baseline: Results/gazebo_ros2/single_uav_48s_alt10_same_run_map_20260618_063729/RUNTIME_STATUS.json passed. It records a 47.944s figure-8/static-obstacle pre-acceptance run at 1.0m reference altitude and a same-run map review at Results/gazebo_ros2/single_uav_48s_alt10_same_run_map_20260618_063729/map_review/GAZEBO_ROS2_MAP_REVIEW.json. Raw LiDAR PointCloud2 is 20000 points/frame in frame sunray150_assembled/base_link/mid360_lidar with 5850 finite points in the reviewed sample; local occupancy voxels are 518 finite points in map; local occupancy grid is 120x120 in map with 448 occupied cells. Tracking metrics: truth_samples=239, tracker_samples=834, adapter_published=874, rmse_xy_m=0.857047, max_xy_error_m=1.200668, max_z_error_m=0.600444, truth_min_clearance_m=0.374302. Review figures are under Results/gazebo_ros2/single_uav_48s_alt10_same_run_map_20260618_063729/review/ and Results/gazebo_ros2/single_uav_48s_alt10_same_run_map_20260618_063729/map_review/figures/.
-previous long-goal same-run figure-8 + raw LiDAR/local-map evidence: Results/gazebo_ros2/single_uav_long_goal_same_run_20260618_062314/RUNTIME_STATUS.json passed. It records a 59.216s figure-8/static-obstacle pre-acceptance run and a same-run map review at Results/gazebo_ros2/single_uav_long_goal_same_run_20260618_062314/map_review/GAZEBO_ROS2_MAP_REVIEW.json. Raw LiDAR PointCloud2 is 20000 points/frame in frame sunray150_assembled/base_link/mid360_lidar; local occupancy voxels are 110 points in map; local occupancy grid is 120x120 in map. Tracking metrics: truth_samples=295, tracker_samples=1001, adapter_published=1041, rmse_xy_m=1.965496, max_xy_error_m=3.96896, max_z_error_m=0.683334, truth_min_clearance_m=0.26493. This run remains useful as a longer-window pass, but the 48s 1.0m same-run baseline above is the current cleaner review baseline.
-failed altitude-hover tuning note: Results/gazebo_ros2/single_uav_alt_tune_hover05545_20260618_063149/BLOCKER.json failed after increasing hover command to 0.05545. Failure was dominated by XY divergence (rmse_xy_m=12.674327, max_xy_error_m=22.996596) and obstacle clearance breach, so simple hover-command uplift is not the next tuning route.
-failed old-default gate note: Results/gazebo_ros2/sunray150_single_uav_figure8_static_obstacle_pre_acceptance/BLOCKER.json is retained as the historical blocker for the old aggressive default preset. It failed with `xy_rmse_m=19.539031`, `max_xy_error_m=26.862408`, and `max_z_error_m=1.182180` before the scenario default was rebased to the current stable development gate.
-current review gate: do not package current evidence as full competition completion or final controller-performance proof. The active review requirement remains complete Gazebo simulation animation using the accepted `model://sunray150_assembled`, light competition world, visible rotating propellers, stable attitude, and figure-8/static-obstacle control chain. The figure-8 evaluator now includes hard shape checks for XY span, path-length ratio, lobe coverage, and center crossings, because the previous numeric-only gate could pass a visually invalid small/partial loop.
-headless review artifact: `Results/gazebo_ros2/figure8_headless_after_gui_blocker_20260618_053129/review/FIGURE8_REVIEW_MANIFEST.json` plus `figure8_truth_reference_topdown.png` and `figure8_altitude_time.png`. These are review aids built from the passing 24s headless run only; they do not replace GUI animation acceptance.
-claim boundary: LiDAR point cloud is raw radar/sensor output for localization/mapping input; local occupancy voxels/grid are downstream map products derived from point cloud plus pose/TF/local-map processing. Current Gazebo LiDAR remains a gpu_lidar approximation of MID360-like output, not a full Livox scan-mode plugin. Truth-feedback position controller evidence remains pre-acceptance; do not claim planner_ready, final closed_loop, competition controller performance, UE acceptance, or multi-UAV readiness.
-latest single-UAV review package: Results/gazebo_ros2/single_uav_goal_review_20260618_153349/SINGLE_UAV_REVIEW_INDEX.md. The old `single_uav_goal_figure8_same_run_20260618_153005` completion claim remains withdrawn because shape re-evaluation fails (`truth_path_length_ratio=0.596884<0.8`, `center_crossings_x=1<2`). The corrected default Gazebo/ROS2 run is Results/gazebo_ros2/single_uav_final_shape_default_map_review_20260618_163650/RUNTIME_STATUS.json: it passes the stricter shape gate and same-run map review with duration 124.96s, XY RMSE 0.719315m, max XY error 1.089462m, max Z error 0.573923m, truth clearance 0.507697m, span x 1.200476m, span y 1.309029m, path-length ratio 1.20432, and center crossings x 2. Current status is `review_required_after_shape_fix`: do not claim final Gazebo GUI animation acceptance until the corrected run is visually reviewed in Gazebo.
-current truth-synced single-UAV Gazebo baseline: Results/gazebo_ros2/single_uav_figure8_truthsynced_config_gate_20260619_015624/RUNTIME_STATUS.json passed. The runner now advances the figure-8 reference from Gazebo truth time instead of wall time, preventing WSL/Gazebo slowdowns from feeding late-mission setpoints to a newly taking-off vehicle. The active scenario default is 60s total, 20Hz reference, 24s figure-8 period, 0.6m x/y amplitude, y_offset=1.0m, altitude=1.0m, takeoff/hold/figure8/post-hold/land/final-hold phases, and same-run raw LiDAR/local voxel/local grid review. Metrics: XY RMSE 0.041045m, max XY error 0.218811m, figure-8 phase max XY error 0.224344m, max Z error 0.447848m, truth clearance 0.502827m, truth span x 1.22932m, truth span y 0.65144m, path-length ratio 1.078463, center crossings x 3, final z 0.035999m, landing-window XY displacement 0.000138m. Same-run map review passed with raw LiDAR 20000 points/frame, 5157 finite points in the reviewed sample, local occupancy voxels 486 finite points in map, and 120x120 local occupancy grid with 361 occupied cells. This supersedes the older wall-clock reference attempts for current single-UAV Gazebo figure-8 evidence, but it remains truth-feedback pre-acceptance rather than final MWORKS controller-performance proof, planner_ready, final closed_loop acceptance, UE acceptance, FAST-LIO localization acceptance, or multi-UAV readiness.
-latest pre-multi-UAV Gazebo/ROS2 runtime closeout, 2026-06-19: single-UAV runtime evidence has advanced from scaffolding to real Gazebo/ROS2 gates. FAST-LIO source-runtime localization passed at `Results/gazebo_ros2/single_uav_spark_fastlio_localization_gate_20260619_024023/RUNTIME_STATUS.json`: Gazebo raw LiDAR is 20000 PointCloud2 points/frame, Spark Livox input records `point_num=5376`, `/cloud_registered` is frame `map` with 33 recorded frames, `/odometry` has 1911 records, `/path` has 3 records, and truth-error evaluation at `FASTLIO_TRUTH_ERROR_EVAL.json` passes with origin-aligned RMSE `0.007244m`; direct RMSE `1.035199m` is retained as map-origin offset diagnosis. Plant sanity passed at `Results/gazebo_ros2/single_uav_takeoff_hover_land_gate_20260619_024335/GAZEBO_TAKEOFF_HOVER_LAND_EVAL.json`: max z `0.845334m`, final z `0.106126m`, hover max abs z error `0.261879m`, max XY `0.207448m`, and max tilt `0.003432rad`. The freshest full 8字/static-obstacle gate passed at `Results/gazebo_ros2/single_uav_figure8_obstacle_gate_20260619_025019/FIGURE8_STATIC_OBSTACLE_GATE.json`: duration `59.94s`, XY RMSE `0.034684m`, figure-8 phase XY RMSE `0.051321m`, truth clearance `0.501935m`, path-length ratio `1.077358`, center crossings `3`, final z `0.035999m`, and landing-window XY displacement `0.000036m`; same-run map review used raw LiDAR 20000 points/frame, 5158 finite points, 501 local occupancy voxels, and 120x120 local grid with 363 occupied cells. Real EGO bspline/local-map gate passed at `Results/gazebo_ros2/single_uav_real_ego_bspline_gate_20260619_025648/REAL_EGO_BSPLINE_GATE.json`: planner cloud recorder finite points `4187`, `/grid_map/occupancy_inflate` width `8280`, occupancy inflate recorder finite points `8237`, `/planning/bspline` sampled, `final_plan_success_true=true`, raw Gazebo LiDAR rate about `9.95Hz`, planner cloud rate about `3.38Hz`, and EGO occupancy/inflate rate about `9.94Hz`. Remaining blockers are bounded and explicit: `single_uav_hover_hold_gate_20260619_024608` failed only by a narrow evaluation-window edge (`1.053042>1.050000`, `0.146958<0.150000`); `single_uav_mworks_replay_gate_20260619_024817` proves ControllerOutput replay transport but the selected old MWORKS CSV does not produce useful Gazebo z response (`0.004302<0.020000`). Current status is `review_required`: tomorrow's audit should open Gazebo animation plus two RViz review surfaces for FAST-LIO/trajectory and EGO occupancy/bspline. Do not claim final MWORKS-controller deployment, final competition controller performance, final closed_loop, UE acceptance, or multi-UAV readiness from these gates.
-latest formal MWORKS/AWFF-to-PX4/Gazebo deployment correction, 2026-06-20: the active priority is no longer point-cloud/EGO exploration, Python behavior-equivalent runtime work, or ROS2-direct-to-Gazebo motor control. The formal target follows the normal PX4/Gazebo/Simulink-style flow: `MWORKS Sysblock -> GenerateModelCode -> generated C/C++ -> SIL -> PX4 Offboard adapter or PX4 module/uORB adapter -> PX4 SITL -> Gazebo plant/sensors`. The previous route `Gazebo truth pose -> AWFF_FullControllerEquation behavior-equivalent Python wrapper -> gazebo_ref_adapter -> mosim_msgs/ControllerOutput -> controller_output_to_gazebo_actuators_node.py -> Gazebo sunray150_assembled motor plugins` remains useful only as temporary bridge/reference evidence. A fresh 13s rerun passed at `Results/gazebo_ros2/mworks_awff_formal_deploy_gate_rerun_20260619_001/GAZEBO_TAKEOFF_HOVER_LAND_EVAL.json` with max z `0.656293m`, final z `0.032899m`, settled hover max z error `0.164013m`, max XY `0.328021m`, and max airborne tilt `0.068927rad`. The AWFF GUI long-hover review run passed at `Results/gazebo_ros2/mworks_awff_takeoff_hover_land_animation_review_long_hover_20260619_live_001/GAZEBO_TAKEOFF_HOVER_LAND_EVAL.json` with duration `69.02s`, max XY `0.201183m`, max airborne tilt `0.02211rad`, final z `0.035997m`, adapter publishes `1144`, and camera-follow request `published` at `gazebo_camera_follow_request.json`. Gazebo still reports an OGRE shutdown segmentation fault on teardown; record that as GUI teardown/rendering risk, not as a control failure. This Python bridge is not generated C/C++ deployment, not PX4 integration, not full SIL equivalence, and not final competition controller performance. Formal codegen target correction: `AWFF_FullControllerEquation_Sysblock` is blocked for Sysblock code generation because `CheckModel` reports unsupported `der()` use; the active generated-code target is `QuadrotorControllerBlocks.AWFF_FullController_Sysblock`. Gates A/B/C and the first Gate D SIL slice now have evidence under `Results/generated_mworks/AWFF_FullController_Sysblock_20260620_032747/`: generated code, WSL gcc C99 compile, 8-input/4-output `runtime_schema.json`, runtime schema smoke, real MWORKS nonzero constant-input reference, and `sil_constant_input_check.json` with max_abs_error about `1.23e-8` under tolerance `1e-5`. Fresh PX4-native continuation evidence is now the stable single-UAV baseline: `Results/px4_gazebo/night_continuation_takeoff_hover_land_20260620_090113/PX4_OFFBOARD_TAKEOFF_HOVER_LAND.json` passed with hover z RMSE `0.063863m`, hover XY max `0.028142m`, hover vxy max `0.023381m/s`, post-land XY span `0.028004m`, and no failsafe; `Results/px4_gazebo/night_continuation_figure8_gate_20260620_090302/PX4_OFFBOARD_FIGURE8_GATE.json` passed with figure-8 XY RMSE `0.215951m`, max XY error `0.515443m`, z RMSE `0.008580m`, actual span `5.243365m x 2.959799m`, center crossings `3`, post-land XY span `0.060074m`, and no failsafe. The matching generated AWFF C shadow gate at `Results/px4_gazebo/night_continuation_figure8_gate_20260620_090302/mworks_awff_codegen_shadow/MWORKS_AWFF_CODEGEN_SHADOW_GATE.json` passed as `passed_position_loop_shadow`, with `928` matched shadow inputs and `position_loop_pitch_roll_thrust` marked candidate-ready; root outputs `y/y1/y2/y3` remain not L1 setpoint-ready. The next work is `targeted checks -> formal L1 TrajectorySetpoint or L2 PX4 module/uORB adapter design/implementation -> real Gazebo LiDAR/FAST-LIO/local-map EGO-to-PX4 upgrade -> full obstacle-map EGO validation -> UE truth-map export later`; do not revert to old MWORKS CSV replay, truth-feedback-only claims, EGO/FAST-LIO-only demos, ROS2-direct actuator control, rejected PX4 attitude shortcut tuning, or static visual evidence as the main proof route.
+2026-07-15 RACER three-UAV MID360/FAST-LIO input is accepted, but the current
+multi-UAV exploration gate is blocked. The input evidence is at:
+  Results/sunray_ros1/factory_l2_racer_fastlio_factory_box_stagger3_smoke30_r28_20260715/RACER_FASTLIO_INPUT_GATE.json
+It proves one independent MID360 -> FAST-LIO -> local_cloud/local_pose chain
+per UAV, synchronized `world` frames, valid timestamps, non-empty clouds, and
+Hybrid-Z truth height. It does not prove planner or coverage success.
+
+The latest bounded RACER runtime evidence is:
+  Results/sunray_ros1/factory_l2_racer_fastlio_factory_box_stagger3_smoke30_r28_20260715/
+All three UAVs reached planner takeover and the 30 s exploration stream was
+fresh, but the run is not accepted as a multi-UAV gate: the runtime audit found
+four collision replans and one `No path to next viewpoint`; the minimum
+inter-UAV distance was 1.476731 m against the 1.5 m safety threshold. The
+3-second goal-publication stagger therefore did not close the initial
+multi-UAV allocation/hold problem. Do not proceed to 120 s or 300 s, and do
+not attribute this blocker to MID360, FAST-LIO, or px4ctrl. The next action is
+a bounded planner-side investigation of stationary-UAV reservation semantics,
+initial viewpoint assignment, and no-path fallback. Preserve the 1.5 m safety
+threshold and the accepted FAST-LIO input chain.
+
+2026-07-13 FUEL + px4ctrl approximately-2-m/s long-run tracking is accepted.
+The final correction retained native FUEL trajectories, px4ctrl `l1_awff`,
+FAST-LIO at 20 Hz, and control at 100 Hz. FAST-LIO pose, body-frame velocity,
+covariance, and original measurement time enter PX4 through one MAVROS
+`ODOMETRY` message. FAST-LIO internal surf/map leaves use the upstream MID360
+`0.5 m` baseline and declared EV velocity standard deviation is `0.35 m/s`.
+
+The final precursor failure `r63` was classified as physical obstacle contact:
+the vehicle stopped translating while sustained pitch demand increased, and
+EV innovation rejection/resets followed afterward. The Factory wrapper had
+used only `0.099 m` obstacle inflation on a `0.2 m` grid. Restoring the existing
+Sunray FUEL simulation baseline of `0.35 m` supplied a two-voxel clearance
+margin. This was a planner-map/vehicle-envelope fix, not controller gain
+tuning, command smoothing, odometry projection, or planner substitution.
+
+The unchanged `45 s -> 120 s -> 300 s` sequence passed at:
+  Results/sunray_ros1/factory_l2_fuel_mavlink_odom_gate45_r64_20260713/
+  Results/sunray_ros1/factory_l2_fuel_mavlink_odom_gate120_r65_20260713/
+  Results/sunray_ros1/factory_l2_fuel_mavlink_odom_gate300_r66_20260713/
+The 300 s gate reports `status=passed`, 1.965 m/s truth peak, 21.77 deg peak
+roll/pitch, 281 B-splines, FAST-LIO 6689/6689 at 19.972 Hz with zero drops,
+zero PCL overflow, EV position/velocity/height fusion above 99.95%, and no
+post-fusion estimator reset.
+
+Claim boundary: the long-duration tracking/estimator-continuity blocker is
+closed. A separate native-FUEL 600 s fixed-64 coverage run is now recorded at:
+  Results/sunray_ros1/factory_l2_fuel_mavlink_odom_gate600_r67_20260713/
+Its backend, FAST-LIO odometry, and PX4 EV-fusion gates passed, but the formal
+coverage packet reports 655/1024 sensor-footprint cells (`63.9648%`) against
+the `80%` threshold. Coverage stayed at `45.3125%` from 150 s through 420 s,
+then resumed; the final 150 s added `15.2343` percentage points. Native FUEL
+therefore did not permanently deadlock, but it is too inefficient to pass the
+fixed-64 mission gate and must not be reported as full-map autonomous
+exploration. Next coverage work is a separate A/B of the existing
+coverage-expansion/global-selector mechanism, not controller, localization,
+or obstacle-clearance retuning.
+F1-F8 passed in Factory L2. Latest accepted F5b RACER three-UAV exploration
+run is
+Results/sunray_ros1/factory_l2_racer_swarm_l1_awff_pairguard10_20260702_044053/
+with EGO_SWARM_METRICS.json status=passed, blockers=[], min inter-UAV
+distance=1.7804230644583365 m, and runtime_log_audit.status=passed.
+F6 MWORKS/codegen Factory regression packet is
+Results/sunray_ros1/factory_l2_f6_mworks_codegen_regression_20260702_044942/
+with F6_MWORKS_CODEGEN_FACTORY_REGRESSION.json status=passed.
+F7 UE one-way render mirror passed at
+Results/unreal_scene_mapping/factory_l2_ue_render_mirror_20260702_045816/
+with F7_UE_RENDER_MIRROR.json status=passed.
+F8 full-system review packet passed at
+Results/unreal_scene_mapping/factory_l2_full_system_review_20260702_0528/
+with F8_FACTORY_FULL_SYSTEM_REVIEW.json status=passed.
+2026-07-02 coordinate cleanup found that the original static Gazebo conversion
+included UE `SkySphereMesh`, which polluted global mesh bounds to +/-16384 m.
+The old F1-F8 evidence remains historical runtime evidence for the old static
+base, but it is not proof of the cleaned global coordinate contract.
+Clean candidate:
+Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/
+Clean audit:
+Results/unreal_scene_mapping/factory_l2_coordinate_audit_20260702_104942/
+Landmark review:
+Results/unreal_scene_mapping/factory_l2_landmark_review_20260702_111256/
+Calibration-rig review:
+Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/
+Clean candidate is now the active runtime validation scene for F5c/F5d.
+UE static calibration entry has rendered the current rig with log-confirmed
+segments=16 and markers=6; screenshot evidence is
+Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/ue_visual_render_verified_20260702.png.
+Next Factory mainline is F5c/F5d clean-Factory exploration and regression:
+use the clean Factory scene plus
+`Config/gazebo/scene_profiles/factory_l2_exploration_envelope.json`. F5c
+single-UAV FUEL now has local center-window evidence but not full-map coverage:
+`Results/sunray_ros1/factory_l2_f5c_fuel_tile_summary_20260703/FACTORY_L2_FUEL_TILE_SUMMARY.json`
+summarizes one passed center 80 m window and two blocked offset windows. Treat
+FUEL as a local single-UAV exploration baseline only. FUEL suitability for
+Factory L2 full-map autonomous exploration is now classified as
+`not_suitable_as_factory_full_map_primary` at
+`Results/sunray_ros1/factory_l2_fuel_suitability_decision_20260703/`; do not
+spend runtime on monolithic all-map FUEL unless a later task explicitly reopens
+FUEL coverage design with new promotion criteria.
+Clean-Factory RACER three-UAV exploration backend smoke passed at
+`Results/sunray_ros1/factory_l2_f5c3_racer_swarm_clean_staggered_range35_fix_20260703_0605/`
+with status=passed, blockers=[], mission_exit_code=0,
+min_inter_uav_distance_m=1.5189747530148507, and
+runtime_log_audit.status=passed. Clean-Factory RACER single-UAV exploration
+smoke passed at
+`Results/sunray_ros1/factory_l2_racer_single_rawdiag_smoke_20260703_120555/`
+with status=passed, blockers=[], raw_lidar=617, world_cloud=582,
+frontier=883, trajectory_vis=46, bspline=23, planner_position_cmd=1891,
+position_cmd=920, landed_by_truth=true, and flight_safety_violation=null.
+Clean-Factory fixed-goal regression also
+passed for Diff single-UAV at
+`Results/sunray_ros1/factory_l2_clean_diff_single_directgoal_allowocc_/`
+with execute_target_error_m=0.02571499206213704 and for Diff three-UAV at
+`Results/sunray_ros1/factory_l2_clean_diff_swarm_3uav_direct_20260703_0707/`
+with min_inter_uav_distance_m=1.645142134136173.
+The user accepted narrowing the next runtime scope to the indoor wall/fence
+Factory envelope, not the giant exterior floor. Wall-center indoor boundary is
+recorded in `Config/gazebo/scene_profiles/factory_l2_exploration_envelope.json`
+with x=[-98.40496,77.25491], y=[-51.36291,12.63665]. First indoor RACER
+single-UAV run passed at
+`Results/sunray_ros1/factory_l2_indoor_racer_single_wallcenter_20260703_125902/`
+with `EGO_SINGLE_METRICS.json status=passed`, exit_code=0, raw_lidar=767,
+world_cloud=767, frontier=1614, trajectory_vis=94, bspline=47,
+planner_position_cmd=2665, position_cmd=2020, and no XY boundary escape in
+truth/odom/command samples. This is local smoke evidence only: truth span was
+about 8.3m x 5.9m and planner command span about 10.5m x 5.9m inside a
+175.7m x 64.0m indoor boundary. A follow-up 120 s center-start RACER attempt
+passed at
+`Results/sunray_ros1/factory_l2_indoor_racer_single_wallcenter_120s_20260703_131047/`
+with status=passed, exit_code=0, frontier=2227, bspline=96,
+planner_position_cmd=4689, position_cmd=3988, and no XY boundary escape, but
+coverage only grew to about 9.8m x 9.6m truth span and about 9.9m x 12.4m
+planner-command span. Do not claim quantitative full-boundary coverage yet.
+Formal review packet:
+`Results/sunray_ros1/factory_l2_indoor_single_racer_baseline_review_20260703_132632/FACTORY_L2_INDOOR_SINGLE_RACER_BASELINE_REVIEW.json`
+with status=`review_required_with_clear_coverage_blocker`,
+baseline_decision=`accept_as_indoor_single_uav_local_autonomous_exploration_baseline`,
+and blocker=`single_center_start_racer_does_not_expand_to_full_indoor_coverage`.
+Follow-up quantitative coverage checks show the current local RACER route is
+not enough for full indoor coverage: single-UAV 120 s coverage packet
+`Results/sunray_ros1/factory_l2_indoor_coverage_single120_offline_20260703/`
+reports sensor_footprint_coverage_ratio `0.0433`, and three-UAV 60 s packet
+`Results/sunray_ros1/factory_l2_indoor_coverage_swarm60_offline_20260703/`
+reports `0.0327`, both below the `0.80` threshold. FALCON current rebuilt
+workspace runtime now has refreshed Factory evidence: short runtime
+command-stream gate passed at
+`Results/sunray_ros1/factory_l2_indoor_falcon_single_f3_20260704_094745/`, but
+the 60 s Factory indoor coverage gate is blocked at
+`Results/sunray_ros1/factory_l2_indoor_falcon_single_coverage_20260704_102358/`
+with `EGO_SINGLE_METRICS.json status=blocked`, blocker=`landed_by_truth_false`,
+and coverage packet
+`coverage_packet/FACTORY_L2_INDOOR_COVERAGE_PACKET.json` reporting
+`sensor_footprint_coverage_ratio=0.0238` against the `0.80` threshold. Current
+decision: FALCON can produce a real MoSim command stream but must not remain
+the blind-tuning route for Factory indoor single-UAV full coverage.
+The current candidate audit is
+`Results/sunray_ros1/factory_l2_indoor_exploration_candidate_audit_20260703_234347/FACTORY_L2_INDOOR_EXPLORATION_CANDIDATE_AUDIT.json`.
+Follow-up single-UAV unknown-exploration coverage stop packet is
+`Results/sunray_ros1/factory_l2_indoor_single_exploration_blocker_20260704_114652/`
+with status=`blocked`, stop reason
+`single_uav_unknown_exploration_does_not_expand_to_factory_full_indoor_coverage`.
+It compares FUEL center-fair coverage (`0.0192`), FALCON restored-candidate
+coverage (`0.0217`), and FALCON HGrid=40 coverage (`0.0224` with
+HGrid/SOP/raw-command risks). Follow-up local-first FUEL command-stream smoke
+`Results/sunray_ros1/factory_l2_fuel_bspline_walltime_fix_smoke_20260704/`
+passed after fixing the FUEL bspline message type and wall-time command
+continuity gate: `EGO_SINGLE_METRICS.json status=passed`, blockers `[]`,
+bspline `11`, position_cmd `2288`, and bounded 70 s exploration stream. Current
+decision: keep FUEL/FALCON as local single-UAV exploration baselines only; do
+not claim Factory full indoor coverage from this smoke. Further FUEL work must
+change coverage strategy, tiling, or route policy, not repeat blind global
+parameter tuning. A 5 min local-first FUEL run at
+`Results/sunray_ros1/factory_l2_fuel_5min_coverage_probe_20260704/` also
+passed as a command-stream/local exploration run (`bspline=43`,
+`/position_cmd=9451`), but its coverage packet still reports about `0.0444`
+sensor-footprint coverage over the indoor boundary. This confirms the current
+blocker is expansion strategy, not basic FUEL startup. The reusable tile
+strategy entry is `Scripts/sunray/start_factory_fuel_tile_coverage_probe.ps1`;
+merged multi-run coverage must be judged by
+`acceptance.merged_sensor_footprint_coverage_ratio` from
+`Scripts/sunray/build_factory_l2_indoor_coverage_packet.py`, not by the best
+single run.
+Latest FUEL rolling review is
+`Results/sunray_ros1/factory_l2_fuel_rolling_coverage_review_20260704/`.
+Cleanup-hardened 2-window FUEL rolling passed backend gates and improved merged
+coverage from `0.0234` to `0.0430`, but 32 m local window and 1.2 m/s speed
+checks stayed around `0.0245` and `0.0249`. Current decision: FUEL can remain a
+local baseline, and the reopened route is now an explicit coverage-supervisor
+experiment, not blind single-window tuning. Next step is a small 4-8 window
+strip/lawnmower batch over the accepted indoor boundary; promote only if merged
+coverage grows cleanly per eligible window and safety/log gates stay clean. If
+that fails, stop and classify FUEL as local-only for Factory full coverage
+unless a stronger same-flight supervisor is explicitly designed. The rolling
+wrapper now has explicit `CoveragePattern=forward_strip|lawnmower`; dry-run
+plans are
+`Results/sunray_ros1/factory_l2_fuel_rolling_8win_dryrun_forward_20260704/`
+and
+`Results/sunray_ros1/factory_l2_fuel_rolling_8win_dryrun_lawnmower_20260704/`.
+Follow-up win03 runtime extension blocked before planner takeover at
+`Results/sunray_ros1/factory_l2_fuel_rolling_forward_win03_20260704_win03/`
+with `pre_diff_hover_not_stable`; source-truth audit at
+`Results/sunray_ros1/factory_l2_fuel_rolling_coverage_review_20260704/START_CLEARANCE_AUDIT.md`
+shows the raw +X center-line enters low-altitude obstacle/proxy AABBs. Do not
+continue the raw forward sequence; the next supervisor step must add
+start/window-center clearance filtering before runtime.
+The clearance-filtered yaw=0 lawnmower probe then generated safe candidate
+windows at
+`Results/sunray_ros1/factory_l2_fuel_clearance_filtered_tiles_lawnmower5_margin08_window16_spawnpoint_yaw0_20260704/`
+and the bounded 4-window runtime batch passed all backend gates at
+`Results/sunray_ros1/factory_l2_fuel_spawnfiltered_yaw0_4win_20260704/`.
+Its merged coverage packet reports eligible_run_count=4,
+excluded_run_count=0, outside_boundary_rows=0 for every eligible run, and
+merged_sensor_footprint_coverage_ratio=`0.1048` against the `0.80` threshold.
+Current interpretation: clearance filtering fixed unsafe tile selection and
+proves serial FUEL local-window coverage can be made stable, but the coverage
+rate is still too low for a Factory full-indoor autonomous exploration claim.
+Do not blindly scale this into dozens of reset-and-respawn windows as if it
+were one continuous unknown-environment exploration run. The next meaningful
+engineering choice is either a same-flight global/frontier supervisor that
+keeps one vehicle moving and expanding coverage, or a scripted coverage route
+classified honestly as map-building support rather than autonomous FUEL.
+The active follow-up is the same-flight Diff-Planner clearance-route support
+route:
+`Scripts/sunray/generate_factory_l2_clearance_route_waypoints.py` plus
+`Scripts/sunray/start_factory_diff_lawnmower_coverage_probe.ps1`. The old
+straight lawnmower full route is superseded because a live attempt placed
+targets through Factory obstacle space and stalled at `WAIT_TARGET`.
+Clearance-route bounded smokes now pass backend metrics:
+`Results/sunray_ros1/factory_l2_diff_clearance_route_10target_smoke4_20260705_current/`
+and
+`Results/sunray_ros1/factory_l2_diff_clearance_route_g3c06_30target_probe_20260705_current/`
+both have `EGO_SINGLE_METRICS.json status=passed`, blockers `[]`, nonempty
+planner commands, world cloud, occupancy, and landed_by_truth=true. They remain
+coverage-blocked because they intentionally cover only 10-30 targets. Current
+full-route dry-runs are:
+`Results/sunray_ros1/factory_l2_diff_clearance_route_g3c06_nn_full_dryrun_20260705_current/`
+with 282 waypoints, about 1338.2 m path length, about 27.9 min at 0.8 m/s,
+planned coverage proxy `0.8008`; and
+`Results/sunray_ros1/factory_l2_diff_clearance_route_nn_full_nocenter_dryrun_20260705_current/`
+with 432 waypoints, about 1617.4 m path length, about 33.7 min at 0.8 m/s,
+planned coverage proxy `0.8132`. The first center-start 0.8/0.8 full attempt
+is blocked at
+`Results/sunray_ros1/factory_l2_diff_clearance_route_full_g3c06_20260705_041100/`
+by roll/pitch safety after only 6 forwarded goals. Follow-up short probes show
+that safe source-truth start `(-72.404960, 1.637090)` plus 0.4/0.4 dynamics
+passes backend safety for a 30-target sample at
+`Results/sunray_ros1/factory_l2_diff_clearance_route_g3c06_start_safe1_30target_v04a04_probe_20260705_current/`
+with 10 forwarded goals, no metrics blockers, roll/pitch peak about 15 deg,
+and no planner emergency. Next action is a long/background clearance-route
+full pass via `启动Factory单机同飞行覆盖建图.cmd`, accepting full coverage only
+if `FACTORY_L2_INDOOR_COVERAGE_PACKET.json` passes with sensor-footprint
+coverage `>=0.80` and backend metrics pass.
+The first safe-start full multipoint pass
+`Results/sunray_ros1/factory_l2_diff_clearance_route_full_g3c06_safe1_v04a04_20260705_053718/`
+is blocked after 11 forwarded goals by roll/pitch safety and altitude loss;
+the command stream stayed bounded, so the current interpretation is tracking
+stability through long chained turns, not static Factory coordinate failure.
+The active execution entry has therefore moved to supervised same-flight
+interactive-goal coverage:
+`Scripts/sunray/start_factory_diff_interactive_coverage_probe.ps1`. It keeps
+the same UAV, same Factory world, same generated clearance route, and waits
+for stable arrival before publishing the next target. Dry-run
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_dryrun_current/`
+generates 280 goals with planned sensor-footprint proxy `0.8033`. Short probe
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_3goal_v035a035_probe_current/`
+was externally stopped at the 5 min outer window, but partial evidence
+`DIFF_INTERACTIVE_COVERAGE_GOAL_CHAIN_PROBE.partial.json` shows the first two
+goals passed with no blockers before the third goal window; this is a runtime
+duration/startup-cost finding, not yet a coverage or safety failure. Future
+bounded probes must use partial goal-chain evidence, and full coverage should
+run as a long/background task rather than a 5 min foreground check.
+Follow-up source-truth connectivity analysis showed that the old z=1.2 m
+policy splits the Factory indoor route into multiple disconnected low-altitude
+components, so it is not suitable for same-flight full coverage. The promoted
+support route is high-layer scripted map building at z=3.0 m with
+`nearest_neighbor_transit`, 4.0 m clearance grid/segment limit, 0.25 m
+source-truth clearance, flight-obstacle band [2.5, 3.5] m, command/planner Z
+band [2.4, 3.6] m, and virtual ceiling 3.8 m. Dry-run
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_z3_g4_transit_dryrun_current/`
+generates 576 waypoints, planned sensor-footprint proxy `0.8700`, no static
+segment longer than 4.0 m, and no failed transit segment. Bounded runtime probe
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_z3_g4_20goal_probe_current/`
+passed the first 20 interactive goals with `DIFF_INTERACTIVE_COVERAGE_GOAL_CHAIN_PROBE.json`
+status `passed`, blockers `[]`, and terminal goal errors around 0.17-0.23 m
+XY with z near 3.0 m. The wrapper status classification was corrected so a
+passed finite goal-chain probe is not misreported as backend failure when the
+runner exits with the finite-goal count.
+Full background run
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_full_z3_g4_transit_current/`
+terminated as blocked at goal 37:
+`goal_37:accepted_goal_stable_hold_not_reached`; the planner log showed Diff
+modified an in-collision final goal to a nearby reachable point, while the
+strict supervisor still waited for the original target. Follow-up 45-goal probe
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_z3_g4_skip_45goal_probe_current/`
+proved the new explicit runtime-skipped-goal policy can continue past this
+case, but then exposed a narrow raw-command Z audit gate at goal 38. The audit
+gate is now decoupled from command clamping (`CommandAuditMaxZ`, root script
+uses 3.75 m while command clamp stays 3.60 m). A later 45-goal probe
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_z3_g4_skip_auditz_45goal_probe_current/`
+then exposed a Diff local-map failure at goal 29 with `Start point outside the
+map region` after repeated collision replans. The Diff launch and runner now
+parameterize `grid_map/local_update_range_*`, and the Factory coverage wrapper
+uses a 10 m XY / 3 m Z local update range for the next validation. Current
+validation run:
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_z3_g4_local10_45goal_probe_current/`.
+Follow-up route-generation and source-truth connectivity checks supersede the
+z=3/g4 route for full indoor coverage. The z=3 flight band remains useful
+diagnostic evidence, but the start-connected component cannot cleanly satisfy
+the full indoor `0.80` coverage threshold because Factory obstacles split the
+reachable high-clearance route. The promoted same-flight support route is now
+z=4.0 m with flight-obstacle band [3.5, 4.5] m, command clamp [3.60, 4.40] m,
+virtual ceiling 4.50 m, transit grid 1.5 m, and max segment 3.0 m. Dry-run
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_segmentclear_z4_g6_t15_seg3_min1_dryrun/`
+generates 895 waypoints, planned sensor-footprint proxy `0.8235`, and
+`segment_clearance_audit.blocked_segment_count=0`. Runtime small gates passed:
+20-goal probe
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_z4_seg3_min1_20goal_probe_20260706_0135/`
+and 60-goal probe
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_z4_seg3_min1_60goal_probe_20260706_0153/`
+both have `DIFF_INTERACTIVE_COVERAGE_GOAL_CHAIN_PROBE.json status=passed`,
+`EGO_SINGLE_METRICS.json status=passed`, and no backend blockers. Their
+coverage packets remain partial by design: about `0.0678` after 20 goals and
+`0.1701` after 60 goals. Next action is the full same-flight background run via
+`启动Factory单机同飞行覆盖建图.cmd`, accepting completion only if the final
+goal-chain probe, `EGO_SINGLE_METRICS.json`, and
+`coverage_packet/FACTORY_L2_INDOOR_COVERAGE_PACKET.json` pass with merged
+sensor-footprint coverage `>=0.80`.
+First z=4 full run
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_full_z4_seg3_min1_20260706_022858/`
+is blocked, not accepted: `DIFF_INTERACTIVE_COVERAGE_GOAL_CHAIN_PROBE.json`
+reports `completed_goal_count=447/895` and blocker
+`goal_447/route_672:accepted_goal_stable_hold_not_reached`. The terminal target
+was near `(32.59504, -32.86291, 4.0)`, while truth/odom ended about 3.10 m away
+with roll/pitch around 29.5 deg and near-zero speed. Because
+`EGO_SINGLE_METRICS.json` was not produced, the coverage packet excludes this
+run from merged coverage. Do not rerun the exact same full configuration as-is.
+Follow-up no-soft/no-rejoin run
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_full_z4_nosoft_norejoin_20260706_082641/`
+is also blocked, not accepted: it completed `91/895`, then stopped at
+`goal_91/route_91:accepted_goal_stable_hold_not_reached`. This second blocker
+is different from route_672: the terminal truth/odom was safe and stable,
+about 2.37 m from the accepted goal, with z error about 0.04 m, speed about
+0.02 m/s, and roll/pitch about 0.21 deg. The active entry
+`启动Factory单机同飞行覆盖建图.cmd` now uses
+`factory_l2_diff_interactive_coverage_full_z4_continuous_rejoin_*`: no
+coverage-soft waypoint pass, runtime skipped goals allowed up to 3.0 m XY when
+speed/Z/attitude gates are satisfied, and route rejoin enabled for stable
+accepted-goal failures with a 7.0 m local horizon.
+
+Next action is a clean-start continuous-rejoin full run from the validated
+safe start, not a mid-route respawn corridor. Mid-route respawn diagnostics are
+invalid if PX4 arming or pre-diff stability fails. Startup failures before
+goal-chain evidence, such as MID360 absence, Gazebo/PX4 heartbeat loss,
+MAVROS disconnection, or `/clock` loss, must be classified as runtime startup
+blockers before changing route/planner parameters.
+Latest invalid launch:
+`Results/sunray_ros1/factory_l2_diff_interactive_coverage_full_z4_continuous_rejoin_20260706_101908/`
+blocked at `goal_1/route_1:pre_goal_stability_timeout` while the vehicle was
+still climbing near z=1.17 m and `interactive_goal_ready=false`; this is a
+pre-goal/takeoff timing blocker from a non-clean launch path, not evidence
+against the continuous-rejoin route.
+
+2026-07-06 correction: the FUEL same-flight route was reopened and tested
+before promoting a support fallback. Diff interactive coverage is retained
+only as a known-scene support/fallback route after FUEL is proven blocked with
+same-flight evidence. The FUEL diagnostic entry is
+`Scripts/sunray/start_factory_fuel_same_flight_coverage_probe.ps1`, with
+`Scripts/sunray/factory_l2_same_flight_coverage_supervisor.py` supervising one
+PX4/MAVROS/px4ctrl/FUEL runtime. Acceptance for pure FUEL would require one
+UAV, no reset-and-respawn tiling, continuous movement/command stream, coverage
+growth, passed backend metrics, and
+`coverage_packet/FACTORY_L2_INDOOR_COVERAGE_PACKET.json` with merged
+sensor-footprint coverage `>=0.80`. The supervisor may retrigger FUEL and
+classify stalls, but must not bypass FUEL by publishing direct position
+commands.
+Conservative same-flight short gate
+`Results/sunray_ros1/factory_l2_fuel_same_flight_shortgate_v035_20260706_104809/`
+passed backend metrics with blockers `[]`, bspline `82`, position_cmd `7160`,
+supervisor trigger events `6`, no flight safety violation, and continuous
+motion about `29.0 m` over 240 s. The coverage packet remains blocked only
+because the short gate reached merged sensor-footprint coverage about `0.0600`,
+below the full-boundary `0.80` threshold. Use the conservative long-run
+parameters from this gate (`0.35 m/s`, `0.35 m/s^2`, command smoothing max step
+`0.02 m`) instead of the earlier 0.8 m/s attempt that failed roll/pitch safety.
+Long diagnostic run
+`Results/sunray_ros1/factory_l2_fuel_same_flight_full_v035_takeoff120_20260706_110303/`
+was manually stopped after about `1420.3 s` because it reached only `0.0803`
+diagnostic supervisor sensor-footprint coverage. It had nonempty FUEL evidence
+(`bspline=140`, `position_cmd=13909`, `trigger_events=35`) and no boundary
+escape in the supervisor summary, so the blocker is not startup or basic
+command streaming. Current decision: the FUEL retrigger-only same-flight
+strategy is insufficient for Factory full-indoor coverage. Do not keep rerunning
+that route. The root entry `启动Factory单机同飞行覆盖建图.cmd` is promoted to a
+same-flight target-chain coverage support route through
+`Scripts/sunray/start_factory_diff_interactive_coverage_probe.ps1`. This is a
+known-scene map-building support route, not pure FUEL autonomous exploration.
+The wrapper now separates initial takeoff/pre-goal stability height from the
+high-clearance coverage target height so the first z=4 target can be published
+after low-height startup stabilization. Dry-run
+`Results/sunray_ros1/factory_l2_same_flight_target_chain_dryrun_g55_20260706_114552/`
+generates `596` targets with planned sensor-footprint coverage `0.8146`, so
+the entry has enough planned coverage margin for the `0.80` threshold before
+runtime validation.
+Terminal same-flight target-chain coverage run passed at
+`Results/sunray_ros1/factory_l2_same_flight_target_chain_full_g55_stop086_ekf15_20260707_005121/`:
+background exit code `0`, `DIFF_INTERACTIVE_COVERAGE_GOAL_CHAIN_PROBE.json`
+status `passed` with `616 / 616` completed goals, `EGO_SINGLE_METRICS.json`
+status `passed` with blockers `[]`, and
+`coverage_packet/FACTORY_L2_INDOOR_COVERAGE_PACKET.json` status `passed` with
+merged sensor-footprint coverage `0.8050` against the `0.8000` threshold. This
+remains a Diff-Planner known-scene target-chain map-building support route, not
+proof that pure FUEL unknown autonomous exploration solved full Factory
+coverage.
+
+Factory L2 multi-UAV known-scene coverage passed on the same
+ROS1/Sunray/Gazebo/PX4/MAVROS/px4ctrl/Diff-Planner evidence surface. The
+terminal merged packet is
+`Results/sunray_ros1/factory_l2_diff_swarm_merge_gap_closeout_20260711_current/FACTORY_L2_INDOOR_COVERAGE_PACKET.json`:
+status `passed`, `17` eligible runs, `0` excluded runs, blockers `[]`, and
+merged sensor-footprint coverage `2255 / 2816 = 0.80078125` against the
+`0.8000` threshold. The final three-UAV gap-closeout run is
+`Results/sunray_ros1/factory_l2_swarm_gap_closeout_partition_route_20260711_current/`;
+both target-chain rounds and `EGO_SWARM_METRICS.json` passed, runtime-log audit
+passed, minimum inter-UAV distance was `22.50498 m`, and final target errors
+were about `0.0972 / 0.0135 / 0.0169 m`. This remains known-scene scripted
+coverage assembled only from independently passed runs; it is not FUEL/RACER
+unknown autonomous exploration. Use `启动Factory多机已知覆盖建图审核.cmd` for a
+fresh RViz review run. UE remains the separate S11 display entry
+`启动Diff工厂UE实时审核.cmd` and does not replace this backend evidence.
 ```
 
-Historical override note, 2026-06-20 evening: after the old ROS2/PX4/x500 route was
-incorrectly used as an equivalent substitute, the current executable review
-lane is narrowed to `Docs/Workflows/sunray_ros1_current_runtime_lane.md`.
-Single-thread execution for Sunray takeoff-hover-land, 8字, Gazebo Classic
-animation, RViz trajectory/path, and MID360 point-cloud review must use
-Ubuntu-20.04 / ROS1 Noetic / `References/Sunray` / `References/Lab/FAST_LIO`
-as documented there. Historical ROS2/PX4/Gazebo evidence in this board remains
-audit context only unless PMO/user explicitly reopens that route.
+| Partition | State | Current Evidence / Context | Next Action | Forbidden Actions |
+|---|---|---|---|---|
+| ROS1 Sunray/Gazebo/PX4/MAVROS/px4ctrl minimum big system | ready_to_integrate | Single-UAV Diff baseline is frozen as `DIFF_SINGLE_GOAL4_BASELINE_20260629` at `Results/sunray_ros1/review_diff_interactive_guard_20260629_002228`. Diff-Planner three-UAV scripted-target baseline is frozen as `DIFF_SWARM_GOAL5_BASELINE_20260629` at `Results/sunray_ros1/sunray_ros1_goal5_diff_planner_3uav_20260629_023923` with `status=passed`, target errors 0.0057/0.0215/0.0315 m, and minimum inter-UAV distance 0.9800 m. The standard Goal5 script defaults now match that frozen conservative target set: uav1 `(1.0,-1.0,1.0)`, uav2 `(1.0,1.0,1.0)`, uav3 `(2.0,0.0,1.0)`. Live Windows entry remains `wsl -d Ubuntu-20.04`, then `Scripts/sunray/check_sunray_ros1_runtime_preflight.sh`; bare/default `wsl` is not a valid P0 runtime entry. | Keep this lane as the frozen runtime plant/planner evidence baseline for MWORKS-generated controller regression. Only rerun Diff/Sunray when a generated controller or a scoped regression needs A/B evidence. | No ROS2/PX4 x500 substitution, no downloaded FAST-LIO replacement while local source exists, no fake/static/empty point cloud, no headless-only GUI/RViz acceptance, no UE screenshot as control-loop proof, no final closed-loop success claim from screenshot-only proof. Do not retune px4ctrl or planner parameters while entering MWORKS unless a regression gate proves the runtime baseline changed. |
+| MWORKS / controller evidence | active_closeout | G8 MWORKS full-loop closeout remains frozen as `G8_MWORKS_FULL_LOOP_BASELINE_20260629` at `Results/sunray_ros1/g8_mworks_full_loop_closeout_20260629_115603`. G9 `GenerateModelCode`, generated-C offline equivalence (450 cases / 0 failures), and static ROS/Sunray adapter (450 cases / 0 failures) are accepted at `Results/g9/controller_family_attitude_thrust_v1/g9_family_mworks_codegen_20260630_work`, `Results/g9/controller_family_attitude_thrust_v1/g9_family_generated_c_gate_20260630_195728/RUN_MANIFEST.json`, and `Results/g9/controller_family_attitude_thrust_v1/g9_family_ros_sunray_adapter_gate_20260630_200721/RUN_MANIFEST.json`. Existing G9 Gazebo/Diff runs identify named profiles but do not uniquely record the `g9_family` build definition, generated source hash, executable hash, and runtime-loaded symbol; they are regression evidence, not final six-controller generated-runtime closure. The active acceptance plan is `Docs/Workflows/g9_mworks_generated_runtime_closeout.md`. Scoped G9.5/G9.6 remains frozen at `Results/sunray_ros1/g95_g96_closeout_20260630_120157/SUMMARY.md`. G10 conclusions are unchanged and outside this closeout. | Implement fail-closed G9 build/load provenance, validate it first on `official_pid`, then run the five remaining controllers through takeoff-hover-land and representative trajectory gates; add Diff single/three-UAV per the declared full-project closure level. | No profile-only generated-runtime acceptance, no fallback to the equivalent C++ core, no controller/plant/planner retuning during provenance validation, no FUEL/RACER/UE/G10 changes, no login/authorization click without explicit user authorization, and no PX4-native/uORB or full nonlinear online NMPC claim. |
+| UE / frontend visualization | support_only | UE/frontend is S11 display, experiment-platform, video, and review enhancement. It is not the current plant/control/localization authority. Factory L2 Gazebo-only static map review is user-accepted at `Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review/`; the project screenshot is `Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review/screenshots/factory_l2_user_accepted_20260701.png`, and the optional Sunray scene-base entry is `Scripts/sunray/factory_l2_sunray_px4_gazebo.launch` with scene profile `Config/gazebo/scene_profiles/factory_l2_static_sunray_scene.json`. FS0-F8 passed on that historical static base. A later coordinate cleanup found the original conversion included nonphysical `SkySphereMesh`; clean candidate evidence is `Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/`, `Results/unreal_scene_mapping/factory_l2_coordinate_audit_20260702_104942/FACTORY_L2_COORDINATE_AUDIT.json`, primary calibration rig `Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/FACTORY_L2_CALIBRATION_FRAME_CONTRACT.json`, auxiliary `Results/unreal_scene_mapping/factory_l2_landmark_review_20260702_111256/FACTORY_L2_LANDMARK_REVIEW.json`, and `Config/gazebo/scene_profiles/factory_l2_static_sunray_scene_clean_candidate.json` with status `coordinate_audit_passed_ue_visual_render_verified_user_acceptance_required`. The current UE static entry rendered the rig with log-confirmed `segments=16` and `markers=6`, but this still does not replace runtime gates until backend Gazebo/RViz/log source checks and UE-only user visual acceptance pass. | Next action is backend Gazebo/RViz/log source verification plus UE-only calibration-rig visual acceptance, then promote the clean scene profile and rerun the smallest Factory runtime regression gates. UI/QGC/UE integrated operator interface planning starts only after that cleanup is accepted or explicitly deferred by the user. | No SLAM/exploration coverage overclaim, no UE screenshot as controller/planner/runtime authority, no UE-to-Gazebo/PX4/MAVROS/planner/controller feedback path, no final UI completion claim from F8, and no claim that old F1-F8 proves the clean global coordinate contract. |
+| Exploration / swarm planning | ready_to_integrate | Source-first exploration/planning lane is open after G10. The current clean-Factory envelope is `Config/gazebo/scene_profiles/factory_l2_exploration_envelope.json`, narrowed to the indoor wall/fence boundary. Fixed-64 FUEL passed at `82.32%`; the full-Factory r100 closeout at `Results/sunray_ros1/factory_l2_fuel_unreachable_recovery_r100_900s_20260715/` reached `77.77%` diagnostic coverage but remained blocked by command discontinuity and a `115.043 s` stale trajectory interval. Its airborne unreachable-candidate recovery worked three times, so that mechanism is accepted for RACER porting, while further single-UAV FUEL parameter tuning is stopped. The Diff target-chain support route remains accepted as known-scene coverage, not unknown exploration. Swarm-Formation remains formation/known-target evidence only. | Start a bounded RACER three-UAV migration: reuse MID360/frame/Hybrid-Z, unreachable-candidate recovery, freshness, emergency telemetry, and coverage contracts; pass static/smoke, 120 s, then 300 s gates before any long run. If RACER repeats disconnected free-space failure without measurable gain, stop and switch to explicitly classified known-map partitioned coverage. | No more blind FUEL parameter tuning or unchanged long runs; no fake maps/static point-cloud substitutes; no UE evidence replacing Gazebo/PX4/RViz/log proof; no full-map autonomous-coverage claim from blocked diagnostic coverage; no packaging known-map partitioned coverage as unknown exploration; no direct MAVROS/PX4 command authority from exploration planners. |
 
-Historical authorization note, 2026-06-17: this applied to the then-active
-Gazebo/ROS2 single-thread goal. It is not permission to leave the current
-Sunray ROS1 lane.
+| Docs / architecture cleanup | support_only | Useful current material has MoSim-owned paths for hooks, ExperimentProfiles, capability index, desktop skills, and reference index. Legacy protocol templates remain review/design material unless explicitly reopened. Remaining work is cleanup, not the product P0. | Fix only stale pointers or rules that block the current ROS1/Sunray/Gazebo/RViz evidence loop. | No broad deletion of legacy runtime wrappers, old tests, gateway scripts, or protocol templates before a dependency audit proves they are unused; do not let docs cleanup displace the runtime review loop. |
+| Git / repository hygiene | support_only | Large-tree cleanup remains separate from engineering progress. | Use path-limited Git commands only when asked or when finishing a scoped change. | No `git add -A`, force push, reset, clean, or broad cleanup without explicit approval. |
 
-2026-06-15 historical single-thread Gazebo/ROS2 increment:
+Git closeout override, 2026-07-15 CST: every scoped task that changes project
+files must close its own reviewed paths with a commit, remote publication, and
+upstream synchronization check before reporting completion. This mandatory
+terminal gate supersedes the older support-only wording in the table above.
+Pending reference-import debt does not defer normal source, script, config,
+model, or documentation commits. Unrelated existing changes must remain out of
+the scoped task commit.
+
+2026-07-08 exploration update: HighStar has been ingested at
+`References/Lab/exploration_coverage/HighStar` and its minimal ROS1 Noetic
+core build passed in `Results/build/highstar_overlay_ws_20260708_try1`
+(`murder_node` and `traj_exc_node` produced). The review packet is
+`Results/sunray_ros1/factory_l2_unknown_exploration_highstar_fuel_review_20260708/SUMMARY.md`.
+HighStar is a source-backed UAV exploration fallback, but it is not a direct
+replacement for FUEL because its default contract is depth image + camera info
++ odometry and modified RotorS, while MoSim uses MID360 point cloud +
+PX4/MAVROS/px4ctrl. Next exploration work must be a bounded adapter spike or
+FUEL source-level frontier/FOV/FINISH correction, not another blind long FUEL
+run.
+
+2026-07-12 FUEL source diagnosis update: the MID360 frontend is now explicitly
+FAST-LIO `/cloud_registered` + `/Odometry`, synchronized in `camera_init`,
+while px4ctrl remains on PX4-EKF/MAVROS odometry. ASan identified an Eigen
+temporary-expression lifetime bug and missing recursive frontier-split progress
+guard in `FrontierFinder`; both are repaired while retaining upstream PCL
+VoxelGrid. Release evidence at
+`Results/sunray_ros1/factory_l2_fuel_fastlio_release_pcl_e10_20260712/`
+passed 80 s with 9 B-splines, 8041 planner commands, no process death, and no
+runtime blockers. Its full-indoor coverage packet is still blocked at `0.037642`
+sensor-footprint coverage versus `0.80`. Treat this as a repaired local FUEL
+baseline, not full-Factory unknown exploration completion. The next aligned
+pure-FUEL action is a source-designed global frontier/window migration gate;
+do not return to depth-camera assumptions or blind frontier parameter tuning.
+parameter run.
+Follow-up HighStar MoSim dry-run adapter spike passed at
+`Results/sunray_ros1/highstar_mosim_dry_run_probe_20260708_seed3/` with
+`HIGHSTAR_MOSIM_DRY_RUN_PROBE.json status=passed_nonempty_swarmtraj`. The
+accepted source compatibility fix is a 3x3x3 low-resolution free bubble around
+the current robot cell after HighStar `LowResMap::PruneBlock()`, because the
+MoSim MID360 pseudo-depth adapter can otherwise leave the robot's immediate
+start neighborhood disconnected from the low-resolution graph.
+Follow-up Factory closed-loop HighStar spike found and fixed the first runtime
+integration blocker: `Frontier/viewpoint_z_gate_enable=true` must not be used
+during HighStar offline gain-ray initialization, because it can trigger
+`InitGainRays0` around `f_center=(0,0,0)`. Current best HighStar run is
+`Results/sunray_ros1/highstar_livox_fixedzyaw_ultrasafe_20260708_205448/`:
+native MID360 pointcloud/Livox mode, fixed z/yaw, odom seed, and conservative
+smoothing produced `planner_position_cmd=1958` with no exploration roll/pitch
+safety blocker and continuous published commands. It is still blocked by
+generic EGO/FUEL occupancy accounting and landing timeout, so HighStar is now
+a bounded closed-loop spike candidate, not a full Factory unknown-coverage
+solution. Next exploration action: add HighStar-specific map/trajectory/coverage
+metrics for `/block_map/cloud`, `/Frontier/grid`, and
+`/highstar/position_cmd_preview`, then run a 2-5 minute Livox fixed-z/yaw
+coverage probe.
+
+2026-07-09 FUEL mainline recheck returned a clear blocker packet at
+`Results/sunray_ros1/factory_l2_fuel_same_flight_coverage_blocker_20260709/`.
+The same-flight FUEL comparison confirms that startup, command streaming, and
+candidate generation are alive, but full Factory indoor coverage is still not
+solved: best 60 s coverage is `9.13%`, the 5 min reference is `17.65%`, and
+the forced Y-axis contrast drops to `5.29%`, all below the `80%` acceptance
+threshold. Do not continue blind long FUEL parameter runs. FUEL remains a local
+unknown-exploration baseline unless a source-level frontier/viewpoint/FOV or
+coverage-ranking change first shows improved short-run coverage growth.
+
+2026-07-12 FUEL diagnosis narrowed the remaining frontend/configuration gap.
+FAST-LIO `/cloud_registered` plus `/Odometry` synchronization and two frontier
+memory defects are repaired, but the accepted E10 run still used the upstream
+depth-camera horizontal FOV (`omni_horizontal=false`) and a project-selected
+fixed `16 m x 16 m x 3 m` SDF map. Upstream FUEL is not inherently limited to
+that window; its examples use larger fixed global maps. Next action is a
+bounded 40 m then 80 m fixed-map A/B with MID360 horizontal omnidirectional
+visibility, map-origin/bounds and memory audit, and E10's other parameters held
+constant. Do not implement rolling-window migration before this A/B result.
+
+The first 40 m/0.1 m omnidirectional A/B generated one B-spline but saturated
+`exploration_node` at about 95% CPU; one planning cycle took 2.597 s and the
+run was stopped at the five-minute wall limit. Evidence is under
+`Results/sunray_ros1/factory_l2_fuel_mid360_fixed40_ab_20260712/`. Do not run
+80 m/0.1 m. Next action: 40 m/0.2 m with other E10 variables fixed.
+
+2026-07-12 FUEL MID360 fixed-map A/B closeout: the previous next action is
+complete. A `0.2 m` grid plus 1 Hz complete occupancy review publication
+removed the map-display contention while preserving planner/map update rates.
+The 80 m run at
+`Results/sunray_ros1/factory_l2_fuel_mid360_fixed80_res02_map1hz_v05_20260712/`
+passed with 54 B-splines; mean planning time was about 0.024 s and planner CPU
+fell to roughly 10-14%. The later `new_frontiers=0` lines occurred after the
+configured execute interval, while 28 visitable frontiers remained, so they are
+not evidence that FUEL stopped autonomously.
+
+The complete `175.66 x 64.00 x 3 m` Factory indoor fixed map is now executable.
+The accepted short baseline is `0.2 m`, omnidirectional MID360 perception,
+1 Hz all-map review publication, `0.3 m/s` max velocity, and `0.2 m/s^2` max
+acceleration. Runtime evidence at
+`Results/sunray_ros1/factory_l2_fuel_mid360_full176x64_res02_map1hz_v03_a02_30s_20260712/`
+passed 30.002 s with 56 B-splines, 3777 planner commands, no safety blocker,
+and planning mean/max about 0.030/0.081 s. Its full-indoor sensor-footprint
+proxy is 0.0355, so full coverage remains open. Next action: a bounded
+long-duration coverage-growth run using this exact baseline, followed by a
+coverage packet; do not return to rolling-window design unless that run proves
+a real source-level expansion blocker.
+
+The first 120 s growth attempt exposed a harness defect before it could test
+planner completion: exit code 124 occurred at simulation time about 97.5 s
+while FUEL still had 12 frontiers and continued publishing trajectories. The
+old wall timeout `execute_s + 180` assumed real-time factor 1.0, but the full
+Factory map currently runs near 0.2-0.3. The Factory wrapper now defaults to
+`execute_s / 0.20 + 180` wall seconds. Re-run the 120 s gate; do not classify
+the timed-out attempt as FUEL coverage stagnation or FINISH.
+
+The timeout-corrected retry then exposed a control-interface safety issue:
+the px4ctrl-facing reference advanced over 3 m ahead of odometry while dynamic
+feed-forward was zeroed, leading to about 0.83 m/s actual speed and truth roll
+above 45 degrees. This is independent of MID360/frontier processing. The
+Factory FUEL wrapper now enables the existing odometry-relative target guard
+and limits the executed XY reference to 0.6 m from MAVROS odometry while
+retaining the unmodified raw FUEL command stream as planner evidence. Re-run
+the 120 s growth gate with both timeout and tracking-lag fixes active.
+
+2026-07-12 FUEL spatial/dynamics follow-up: raw FAST-LIO `camera_init` odom and
+cloud were not rigidly aligned to Factory/MAVROS local. One initialized
+transform now aligns both inputs before FUEL. A later safety failure was caused
+by retaining raw B-spline velocity/acceleration while smoothing position; the
+adapter now derives velocity from final published position and zeros
+acceleration/jerk. The 30 s Factory regression at
+`Results/sunray_ros1/factory_l2_fuel_mid360_spatial_dynamics_v2_retry_30s_20260712/`
+passed with no blocker, landed by truth, published 1048/1048 aligned clouds,
+bounded final command speed to 0.300000 m/s, and reduced exploration truth
+roll/pitch peak from about 68.96 deg to 20.35 deg. Coverage remains blocked at
+0.01953125 because truth expanded only about 0.64 x 1.12 m despite continued
+B-splines/frontiers. Next action: run the aligned, dynamics-consistent baseline
+long enough to measure progression and compare raw/aligned/executed paths; do
+not reopen depth-camera FOV, timestamp, or basic lidar-plumbing diagnosis.
+
+2026-07-12 FUEL moving-frame and speed A/B follow-up: the FUEL-specific
+FAST-LIO adapter was bypassing the MID360 mount yaw by treating `/Odometry` as
+`base`; this rotated moving displacement by about 90 degrees. It now converts
+from the configured Livox mount frame, and the Gazebo PointCloud2 bridge uses
+instantaneous point timing. Corrected 0.3 m/s evidence at
+`Results/sunray_ros1/factory_l2_fuel_fastlio_framefix_60s_20260712/` passed and
+reached coverage `0.040838`. Disabling local refinement did not improve it.
+The 1.0 m/s, 0.8 m/s^2 run at
+`Results/sunray_ros1/factory_l2_fuel_fastlio_framefix_v10_retry_60s_20260712/`
+passed without a safety violation and increased 60 s coverage to `0.089134`,
+but its 120 s continuation was blocked near simulation time 116 s after actual
+speed reached about 2.01 m/s and MAVROS roll/pitch exceeded 45 degrees. It is
+therefore stress evidence, not the default. The long-safe run at
+`Results/sunray_ros1/factory_l2_fuel_fastlio_framefix_v06_120s_20260712/`
+passed 120.017 s with 123 B-splines, no safety violation, coverage `0.064986`,
+and timestamp-matched FAST-LIO/MAVROS XY residual about 0.047 m mean / 0.082 m
+max. The Factory FUEL wrapper now defaults to `0.6 m/s`, `0.5 m/s^2`, and
+`0.6 m/s` command smoothing. This proves continued two-minute expansion but
+not full indoor coverage because `0.064986 < 0.80`; the next acceptance task is
+a substantially longer run using this exact frontend and motion baseline, not
+another depth-camera, FOV, local-refine, or blind frontier-parameter experiment.
+
+2026-07-10 Factory known-scene single-UAV fast speed sweep is recorded at
+`Results/sunray_ros1/factory_l2_fast_speed_sweep_20260710/SUMMARY.md`.
+Short 9-goal Diff-Planner target-chain probes passed at target speeds `1.0`,
+`1.5`, and `2.0 m/s`; measured peak speeds were `1.028`, `1.508`, and
+`1.894 m/s`, with max roll/pitch `23.20`, `21.86`, and `29.71 deg`.
+Current decision: use `1.5 m/s` as the next Factory known-scene single-UAV
+review/video default; keep `2.0 m/s` as stress mode until a longer route proves
+the attitude peaks are acceptable. Point-cloud accumulation works after
+review-only gate widening, but accumulated occupancy/grid-map display remains
+a separate blocker because the speed sweep published `0` occupancy accumulated
+voxels.
+
+2026-07-14 FUEL 2 m/s collision investigation is closed as
+`safety_fix_passed_coverage_still_blocked`. The failed r69 run showed that an
+accepted FUEL B-spline could enter inflated occupancy while the normal replan
+path kept executing the old trajectory. Raising inflation to `1.0 m` prevented
+all trajectory generation and is rejected as a fix. The project wrapper now
+post-validates optimized B-splines at `0.02 s`, rejects occupied candidates,
+and includes a speed-dependent emergency hold path. The 120 s r71 and 300 s
+r72 gates both passed without a flight safety violation; r72 sustained a true
+peak speed of `1.9115 m/s`, FAST-LIO near `20 Hz`, and `99.9701%` PX4 external
+vision fusion. Full coverage is not repaired: the fixed 64 x 64 m packet is
+`36.04%` sensor-footprint and `8.20%` path coverage, versus r68's `58.01%` and
+`12.79%`. r72 issued `752` hard candidate rejections and coverage nearly
+plateaued after 120 s despite continued B-spline publication. The evidence and
+decision are at
+`Results/sunray_ros1/factory_l2_fuel_near_escape_gate300_r72_hardcollision_20260714/SUMMARY.md`.
+Do not repeat blind long runs or increase inflation. Continuing native FUEL
+requires a bounded source-level collision-recovery design that selects a
+different safe tour/frontier after candidate rejection; otherwise stop this
+lane and discuss the accepted fallback classification.
+
+2026-07-14 FUEL coverage closeout supersedes the earlier r72 blocker. The
+fixed `64 x 64 m` run at
+`Results/sunray_ros1/factory_l2_fuel_frame_unified_selector_r83_300s_20260714_060951/`
+passed with `82.32%` sensor-footprint coverage against the declared `80%`
+threshold; path coverage was `16.89%`, and backend metrics passed.
+
+The complete `175.65987 x 63.99956 m` Factory route then exposed a different
+handoff-budget issue: full-map planning could exceed the fixed-64 `0.5 s`
+prediction, so valid trajectories were discarded and `r90` reached a
+`31.505 s` trajectory gap. The full-map wrapper now uses a scoped `3.0 s`
+future handoff horizon without changing fixed-64 behavior or relaxing the
+`10 s` freshness, collision, controller, localization, or flight-safety gates.
+The 120/300/600 s regressions all passed. Final evidence is
+`Results/sunray_ros1/factory_l2_fuel_full176x64_replan3_r93_600s_20260714/`:
+`65.59%` sensor coverage, `12.46%` path coverage, 165 trajectories, `6.618 s`
+maximum trajectory gap, `1.939 m/s` peak speed, `29.06 deg` peak roll/pitch,
+and no safety violation. PX4 EV position/velocity/height fusion was
+`99.984%/99.953%/99.984%` with no data-stop or post-fusion reset.
+
+Current decision: the fixed-64 acceptance goal is complete, and safe/fresh
+full-dimension Factory exploration has bounded 600 s evidence. Do not claim
+`80%` full-map coverage from the observed `65.59%`; opening that separate
+threshold requires an explicit longer-duration or coverage-completion task.
+
+2026-07-14 full-map 900 s follow-up is recorded at
+`Results/sunray_ros1/factory_l2_fuel_full176x64_replan3_r94_900s_20260714/`.
+Its diagnostic sensor-footprint coverage reached `81.29%`, but the backend is
+blocked by `position_cmd_discontinuous` and `planner_trajectory_stale`.
+The final trajectory gap was `31.579 s`; FUEL retained 28 frontiers but
+repeatedly selected an unreachable viewpoint and returned
+`No path to next viewpoint`. Do not count the diagnostic coverage as accepted
+coverage and do not repeat a longer unchanged run. The next FUEL gate is a
+bounded source-level unreachable-frontier fallback plus PVA-handoff continuity
+repair, followed by short/300 s regressions before another 900 s attempt.
+
+2026-07-15 FUEL full-map closeout: the unreachable-candidate patch passed a
+300 s regression and was exercised successfully three times in airborne
+exploration during
+`Results/sunray_ros1/factory_l2_fuel_unreachable_recovery_r100_900s_20260715/`.
+The 900 s run still blocked: diagnostic coverage was `77.77%`, the final
+trajectory stale interval was `115.043 s`, and an emergency odometry hold
+created a `0.560 m` command transition because command-to-odom separation had
+reached `0.589 m`. Auto-2D scoring produced no repeatable coverage benefit and
+is rejected. Stop further FUEL parameter tuning. The next exploration action
+is a bounded RACER multi-UAV port/gate carrying forward MID360/frame/Hybrid-Z,
+candidate recovery, freshness, emergency telemetry, and coverage evidence;
+fall back to declared known-map partitioned coverage if RACER repeats the
+disconnected free-space failure.
+
+2026-07-14 FUEL visualization review update: native frontier clusters,
+global/local viewpoints and tours, and the current B-spline are enabled in the
+current FUEL release and translated from local planning coordinates into the
+Factory `world` frame. The reusable entry is
+`Scripts/sunray/start_factory_fuel_single_exploration_review.ps1`; it opens the
+separate point-cloud and non-inflated 3D-occupancy RViz configs and adds the
+review-only explored/remaining sensor-footprint overlay. Live evidence is at
+`Results/sunray_ros1/factory_l2_fuel_single_exploration_review_20260714_122142/`.
+The visualization topics, coordinate bridge, 0.08 m cloud display, 0.20 m
+occupancy display, and both RViz windows passed review. This run itself retained
+the existing `pre_diff_hover_not_stable` blocker, so it is visualization
+evidence only and does not supersede the accepted r93 control/runtime packet.
+
+The later full-record review exposed a height-semantic mismatch in that display:
+FUEL `/sdf_map/occupancy_all` contains only the configured flight band
+(`z=0.9..1.6 m`), while the accumulated world cloud covers `z=0.2..4.0 m`.
+The wrapper now builds the review-only 0.20 m boxes from the same
+`/uav1/livox_world` source, z bounds, and motion/attitude quality gate as the
+0.08 m point-cloud view. FUEL's internal occupancy remains planner input and is
+not presented as a full-height review map. This visualization correction does
+not change planner behavior or promote the interrupted full-record run.
+
+The same run also exposed a separate state-source regression: the review wrapper
+had silently selected `FUEL_FASTLIO_ALIGNMENT_Z_SOURCE=fastlio`, while the
+declared FZ-1 profile is FAST-LIO XY/Yaw plus the explicit Gazebo rangefinder
+surrogate Z. The aligned FUEL Z fell to about `0.45..0.56 m` while MAVROS/truth
+remained about `0.89..0.92 m`, below the FUEL `box_min_z=0.9 m`; frontier search
+then reported `clusters=0` and retained trajectory 197. The wrapper now makes
+`FUEL_FASTLIO_ALIGNMENT_Z_SOURCE=truth` explicit and records the selected value
+in `RUN_MANIFEST.json`. This is an explicit simulation-only Hybrid-Z profile,
+not a claim of full FAST-LIO XYZ localization.
+
+The interrupted review bag also exceeded 12 GB and reported repeated rosbag
+buffer drops because it duplicated raw MID360, per-frame world cloud, and both
+accumulated review maps. The wrapper now records a bounded review-replay topic
+set by default; raw sensor topics require the explicit
+`-RecordRawSensorTopics` switch and a no-buffer-drop check.
+
+## 4. Current High-Value Workflow Chain
 
 ```text
-gate: bounded_ego_style_planner_output_without_actuation
-status: passed
-runtime evidence: Results/gazebo_ros2/sunray150_gazebo_ros2_ego_style_planner_output_without_actuation_20260615_005/RUNTIME_STATUS.json
-planner gate evidence: Results/gazebo_ros2/sunray150_gazebo_ros2_ego_style_planner_output_without_actuation_20260615_005/EGO_STYLE_PLANNER_OUTPUT_GATE.json
-same-run inputs: /mosim/planner/odom, /mosim/planner/global_points
-published outputs: /position_cmd, /mosim/planner/position_cmd, /mosim/planner/setpoint, /mosim/planner/setpoint_adapter_status
-counts: odom=2128, global_points=1713, position_cmd=900, mosim_position_cmd=900
-measured command rate: about 4.999Hz
-cloud frame: map
-cloud shape: width=360, height=32
-cloud finite bounds: x=[-8.132, 8.016], y=[-9.013, 8.083], z=[0.948, 2.905]
-forbidden controller/actuator topics: absent
+AGENTS.md
+  -> Docs/Workflows/new_conversation_context.md
+  -> Docs/Workflows/mainline_operations_board.md
+  -> Docs/Workflows/single_thread_operating_model.md when operating mode is unclear
+  -> Docs/Design/架构.md when system architecture or current route is unclear
+  -> Docs/Workflows/agent_project_operating_layers.md when turning accepted architecture into execution/tool/guard/evidence gates
+  -> Docs/Workflows/sunray_ros1_current_runtime_lane.md for current ROS1/Sunray/Gazebo/RViz work
+  -> Docs/Workflows/sunray_ros1_execution_checklist.md for current execution steps
+  -> Docs/Workflows/unreal_renderer.md only for explicit UE/frontend enhancement work
+  -> topic-specific workflow / skill / source files
 ```
 
-This gate proved only a same-run planner output and setpoint-surface
-publication path in the old route. It did not prove `planner_ready`,
-trajectory tracking, controller output, actuator command, final closed-loop
-acceptance, competition controller performance, or multi-UAV readiness. Do not
-continue from this historical "next slice" while the current board selects
-Sunray ROS1.
+## 5. Legacy Quarantine
 
-### Paused UE Execution Pointer
-
-This pointer is not the current Sunray ROS1 execution lane. Use it only if the
-PMO/user explicitly reopens UE visual-review or command-echo work.
-
-Current UE next-slice plan:
+These are legacy/reference after the single-thread reset. Their full bodies
+are archived under `Docs/Cache/agent_legacy/legacy_workflows_20260624/`; the
+`Docs/Workflows/` files are only redirect stubs:
 
 ```text
-Results/ue_replay_input/20260612_rotor1_loss15_linear_mpc_online_fault_allocation/ue_review_path_20260612_001/next_execution_plan.json
+Docs/Workflows/agent_orchestration.md
+Docs/Workflows/agent_task_ledger.md
+Docs/Workflows/coagent_meta_maintenance.md
+Docs/Workflows/coagent_ops_efficiency_audit_20260609.md
+Docs/Workflows/coagent_ops_patrol_workflow.md
+Docs/Workflows/mosim_visible_dispatch_adapter.md
+Docs/Workflows/org_operating_model.md
+Docs/Workflows/single_thread_longrun_execution_queue_20260610.md
 ```
 
-The preferred next executable slice is UE visual-review hardening with the
-Factory follow-camera route, because the existing screenshot proves a nonblank
-Factory scene but not a human-visible Sunray150 body. Command-echo live probe
-remains the second slice unless PMO/user explicitly prioritizes it first; it
-must produce the seven required artifacts and pass the existing validator.
+Some executable legacy runtime/gateway files may still be referenced by old
+tests or cache material; do not delete them without a separate dependency
+audit.
 
-## 6. Support Lanes
-
-| Lane | State | Rule |
-|---|---|---|
-| Sunray/PBR | frozen_by_user | Do not dispatch material/PBR/DAE visual changes unless the user explicitly reopens the lane. |
-| Open-source probe/learning | support_only | Use only for a concrete source-first question; it cannot substitute for idle P0 engineering dispatch. |
-| 文档秘书部 | support_only | Use for consistency review, context maintenance, and cleanup; it does not define PMO runtime rules. |
-| DH TDMS goal thread | support_only | Refresh-only watch target `019de24d-e993-72c0-a0b2-caf2ac8ac85e` after Codex App/PC restart so its active goal can resume; not a MoSim dispatchable department. |
-
-## 7. Current Board Maintenance Rules
-
-- PMO updates this board when accepting a return, recording a blocker, changing
-  the next dispatch, or after a CoAgentOps patrol changes a P0 state.
-- CoAgentOps must directly dispatch routable idle P0 work when every
-  bounded-dispatch gate in `coagent_ops_patrol_workflow.md` is satisfied. If
-  any gate is missing, it reports `dispatch_needed` with the missing
-  precondition. PMO decides acceptance, priority changes, narrowing,
-  supersede, and any dispatch that needs product/user judgment.
-- CoAgentOps may update only the fixed operating areas needed for patrol:
-  P0 partition state, Dispatch SLO watchlist, Ops/recovery state, and Support
-  lane state. It must not change product priority, accept/reject conclusions,
-  or final integration judgments.
-- Historical detail belongs in `Docs/Workflows/agent_task_ledger.md` and
-  `Results/agent_packets/`, not in this board.
-- Packet paths remain the durable evidence; this board is the short operating
-  index that points to them.
-- Dispatch SLO details belong in
-  `Results/agent_packets/dispatch_tickets/<request_id>.json`. This board only
-  displays `sent_at`, `first_readback_due`, `expected_packet_due`,
-  `last_observed_turn`, `breach_action`, and `owner` for active dispatch
-  monitoring.
-- The dispatcher that sends a visible-thread task owns the dispatch ticket
-  until terminal closure. A row with a visible turn stuck in progress/thinking
-  but no agent output, checkpoint, final response, expected packet, blocker,
-  approval/provider surface, or context-compression surface is not healthy
-  progress and must breach through the ticket workflow.
-- This board and the return packet
-  `Results/agent_packets/returns/PMO-MAINLINE-OPERATIONS-BOARD-ARCHITECTURE-20260608-001.json`
-  are the durable evidence for the PMO operating-architecture update.
-- Current Git lock or staged `References/` warnings are unrelated Git/reference
-  intake blockers. They do not block this control-plane board/packet delivery
-  unless the exact board or packet paths are locked, staged-conflicted, or fail
-  their targeted checks.
+Do not read these bodies during ordinary startup. Use them only for explicit
+legacy cleanup, audit, or historical trace-back.
