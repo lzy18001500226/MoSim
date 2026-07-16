@@ -1,0 +1,20 @@
+{
+  "schema": "mosim.pid_mworks_mil_metrics.v1",
+  "algorithm_id": "fuzzy_pid",
+  "model_name": "MoSim_PID_FUZZY_PID_MIL",
+  "source": "MWORKS_MCP",
+  "timestamp": "2026-07-16T05:35:05.443310+00:00",
+  "sample_count": 21,
+  "time_start": 0.0,
+  "time_end": 0.2,
+  "command_start": 0.5382774015685173,
+  "command_end": 0.6095724216438178,
+  "command_min": 0.5382774015685173,
+  "command_max": 0.6095724216438178,
+  "saturated_sample_count": 0,
+  "status_codes": [
+    0
+  ],
+  "finite_values": true,
+  "raw_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\fuzzy_pid.csv"
+}

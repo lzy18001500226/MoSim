@@ -1,0 +1,27 @@
+{
+  "schema": "mosim.mworks.screenshot_manifest.v1",
+  "source": "MWORKS_GUI_AND_EXPORT_DIAGRAM",
+  "screenshots": [
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\screenshots\\activation\\40544_0x11409CE_G9_Family_CFunction_Sysblock - Sysplorer _\u6559\u80b2\u7248_.png",
+      "role": "task_local_license_sufficiency_reference",
+      "bytes": 160562,
+      "sha256": "d15e5a8ce08dc0cdee723e06ab74996245457b43436b162fd09c96d671c0d7cc",
+      "observation": "Foreground Sysplorer education-edition main window; no login, license, authorization, crash, or unknown blocking dialog is visible. One CFunction include warning is visible and is unrelated to licensing."
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\screenshots\\check_sim\\40544_0x11409CE_MoSim_PID_FEEDFORWARD_PROFILE_MIL - Sysplorer _\u6559\u80b2\u7248_.png",
+      "role": "mil_check_and_simulation",
+      "bytes": 111826,
+      "sha256": "ebfc5f7fa196f978efb0222b45a639811ef490e53d7f9339da2ab2658fbe5c3a",
+      "observation": "Sysplorer reports simulation finished at 0.2 s with 20 grid points; no login, license, authorization, or error-report dialog is visible."
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\screenshots\\graphical\\MoSim_PID_Unified_Graphical_Sysblock.png",
+      "role": "graphical_sysblock_topology",
+      "bytes": 84600,
+      "sha256": "20e610df9132d4db2be36032bce48c2e2567797e4d7323f84f9b8a5642930abd",
+      "observation": "Exported 51-block PID topology visibly includes gain scheduling, fuzzy/neural residual paths, discrete derivative, bounded integral recurrence, tracking anti-windup, feedforward, cascade, saturation, enable, and mode selection. No disconnected block is visible; dense central routing remains a readability limitation."
+    }
+  ]
+}

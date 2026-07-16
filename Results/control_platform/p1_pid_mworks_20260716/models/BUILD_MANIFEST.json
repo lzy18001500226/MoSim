@@ -1,0 +1,36 @@
+{
+  "schema": "mosim.pid_unified_mworks_build.v1",
+  "bridge_model": "MoSim_PID_Unified_CFunction_Sysblock",
+  "bridge_path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\models\\MoSim_PID_Unified_CFunction_Sysblock.mo",
+  "fixtures": {
+    "cascade_pid": "MoSim_PID_CASCADE_PID_MIL",
+    "gain_scheduled_pid": "MoSim_PID_GAIN_SCHEDULED_PID_MIL",
+    "fuzzy_pid": "MoSim_PID_FUZZY_PID_MIL",
+    "neural_pid": "MoSim_PID_NEURAL_PID_MIL",
+    "anti_windup": "MoSim_PID_ANTI_WINDUP_MIL",
+    "feedforward_profile": "MoSim_PID_FEEDFORWARD_PROFILE_MIL"
+  },
+  "inputs": [
+    "controller_id",
+    "setpoint",
+    "measurement",
+    "inner_measurement",
+    "feedforward",
+    "schedule",
+    "fuzzy_error",
+    "neural_residual",
+    "dt",
+    "enable",
+    "reset"
+  ],
+  "outputs": [
+    "command",
+    "outer_command",
+    "unsaturated_command",
+    "integral",
+    "scheduled_gain",
+    "saturated",
+    "status_code"
+  ],
+  "claim_boundary": "Generated CFunction equation bridge and fixed-input MIL fixtures only; live load/check/simulate and graphical counterparts are separate gates."
+}

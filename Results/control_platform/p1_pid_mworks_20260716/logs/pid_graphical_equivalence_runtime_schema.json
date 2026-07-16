@@ -1,0 +1,19 @@
+{
+  "input_global": "asysblockGbIn",
+  "output_global": "l_sysblockGbOut",
+  "input_fields": ["setpoint", "measurement", "inner_measurement", "feedforward", "schedule", "fuzzy_error", "neural_residual", "cascade_mode", "enable"],
+  "output_fields": ["command", "outer_command", "unsaturated_command", "integral_state", "scheduled_gain"],
+  "input_sequence": [
+    {"setpoint": 0.5, "measurement": 0.1, "inner_measurement": 0.05, "feedforward": 0.3, "schedule": 0.0, "fuzzy_error": 0.0, "neural_residual": 0.0, "cascade_mode": 0.0, "enable": 1.0},
+    {"setpoint": 0.5, "measurement": 0.1, "inner_measurement": 0.05, "feedforward": 0.3, "schedule": 0.0, "fuzzy_error": 0.0, "neural_residual": 0.0, "cascade_mode": 0.0, "enable": 1.0},
+    {"setpoint": 0.5, "measurement": 0.1, "inner_measurement": 0.05, "feedforward": 0.3, "schedule": 0.0, "fuzzy_error": 0.0, "neural_residual": 0.0, "cascade_mode": 0.0, "enable": 1.0},
+    {"setpoint": 0.5, "measurement": 0.1, "inner_measurement": 0.05, "feedforward": 0.3, "schedule": 0.0, "fuzzy_error": 0.0, "neural_residual": 0.0, "cascade_mode": 0.0, "enable": 1.0},
+    {"setpoint": 0.5, "measurement": 0.1, "inner_measurement": 0.05, "feedforward": 0.3, "schedule": 0.0, "fuzzy_error": 0.0, "neural_residual": 0.0, "cascade_mode": 0.0, "enable": 1.0},
+    {"setpoint": 0.5, "measurement": 0.1, "inner_measurement": 0.05, "feedforward": 0.3, "schedule": 0.0, "fuzzy_error": 0.0, "neural_residual": 0.0, "cascade_mode": 0.0, "enable": 1.0},
+    {"setpoint": 0.5, "measurement": 0.1, "inner_measurement": 0.05, "feedforward": 0.3, "schedule": 0.0, "fuzzy_error": 0.0, "neural_residual": 0.0, "cascade_mode": 0.0, "enable": 1.0},
+    {"setpoint": 0.5, "measurement": 0.1, "inner_measurement": 0.05, "feedforward": 0.3, "schedule": 0.0, "fuzzy_error": 0.0, "neural_residual": 0.0, "cascade_mode": 0.0, "enable": 1.0},
+    {"setpoint": 0.5, "measurement": 0.1, "inner_measurement": 0.05, "feedforward": 0.3, "schedule": 0.0, "fuzzy_error": 0.0, "neural_residual": 0.0, "cascade_mode": 0.0, "enable": 1.0},
+    {"setpoint": 0.5, "measurement": 0.1, "inner_measurement": 0.05, "feedforward": 0.3, "schedule": 0.0, "fuzzy_error": 0.0, "neural_residual": 0.0, "cascade_mode": 0.0, "enable": 1.0},
+    {"setpoint": 0.5, "measurement": 0.1, "inner_measurement": 0.05, "feedforward": 0.3, "schedule": 0.0, "fuzzy_error": 0.0, "neural_residual": 0.0, "cascade_mode": 0.0, "enable": 1.0}
+  ]
+}

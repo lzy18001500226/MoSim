@@ -1,0 +1,20 @@
+{
+  "schema": "mosim.pid_mworks_mil_metrics.v1",
+  "algorithm_id": "feedforward_profile",
+  "model_name": "MoSim_PID_FEEDFORWARD_PROFILE_MIL",
+  "source": "MWORKS_MCP",
+  "timestamp": "2026-07-16T05:35:13.360743+00:00",
+  "sample_count": 21,
+  "time_start": 0.0,
+  "time_end": 0.2,
+  "command_start": 0.6332,
+  "command_end": 0.6972,
+  "command_min": 0.6332,
+  "command_max": 0.6972,
+  "saturated_sample_count": 0,
+  "status_codes": [
+    0
+  ],
+  "finite_values": true,
+  "raw_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\feedforward_profile.csv"
+}

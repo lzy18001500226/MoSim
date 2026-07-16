@@ -1,0 +1,287 @@
+{
+  "schema": "mosim.pid_graphical_sysblock_build.v1",
+  "source": "MWORKS_MCP",
+  "model_name": "MoSim_PID_Unified_Graphical_Sysblock",
+  "model_path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\models\\graphical\\MoSim_PID_Unified_Graphical_Sysblock.mo",
+  "diagram_path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\screenshots\\graphical\\MoSim_PID_Unified_Graphical_Sysblock.png",
+  "model_saved": true,
+  "diagram_exported": true,
+  "check_model": true,
+  "connection_count": 57,
+  "line_annotation_count": 57,
+  "components": [
+    "setpoint",
+    "measurement",
+    "inner_measurement",
+    "feedforward",
+    "schedule",
+    "fuzzy_error",
+    "neural_residual",
+    "cascade_mode",
+    "enable",
+    "command",
+    "outer_command",
+    "unsaturated_command",
+    "integral_state",
+    "scheduled_gain",
+    "gain_bias",
+    "schedule_gain",
+    "fuzzy_gain",
+    "neural_limit",
+    "neural_gain",
+    "gain_sum_schedule",
+    "gain_sum_fuzzy",
+    "gain_sum",
+    "gain_limit",
+    "error_sum",
+    "effective_error",
+    "kp_gain",
+    "ki_drive",
+    "derivative",
+    "kd_gain",
+    "integrator_drive",
+    "integral_dt",
+    "integral_update",
+    "integral_limit",
+    "integrator",
+    "ki_gain",
+    "feedforward_gain",
+    "pid_sum_pi",
+    "pid_sum_pid",
+    "pid_sum",
+    "output_limit",
+    "saturation_error",
+    "anti_windup_gain",
+    "outer_error",
+    "outer_gain",
+    "outer_limit",
+    "inner_error",
+    "inner_gain",
+    "inner_limit",
+    "cascade_switch",
+    "zero_source",
+    "enable_switch"
+  ],
+  "component_ports": {
+    "setpoint": [],
+    "measurement": [],
+    "inner_measurement": [],
+    "feedforward": [],
+    "schedule": [],
+    "fuzzy_error": [],
+    "neural_residual": [],
+    "cascade_mode": [],
+    "enable": [],
+    "command": [],
+    "outer_command": [],
+    "unsaturated_command": [],
+    "integral_state": [],
+    "scheduled_gain": [],
+    "gain_bias": [
+      "gain_bias.y"
+    ],
+    "schedule_gain": [
+      "schedule_gain.u",
+      "schedule_gain.y"
+    ],
+    "fuzzy_gain": [
+      "fuzzy_gain.u",
+      "fuzzy_gain.y"
+    ],
+    "neural_limit": [
+      "neural_limit.u",
+      "neural_limit.y"
+    ],
+    "neural_gain": [
+      "neural_gain.u",
+      "neural_gain.y"
+    ],
+    "gain_sum_schedule": [
+      "gain_sum_schedule.u1",
+      "gain_sum_schedule.u2",
+      "gain_sum_schedule.y"
+    ],
+    "gain_sum_fuzzy": [
+      "gain_sum_fuzzy.u1",
+      "gain_sum_fuzzy.u2",
+      "gain_sum_fuzzy.y"
+    ],
+    "gain_sum": [
+      "gain_sum.u1",
+      "gain_sum.u2",
+      "gain_sum.y"
+    ],
+    "gain_limit": [
+      "gain_limit.u",
+      "gain_limit.y"
+    ],
+    "error_sum": [
+      "error_sum.u1",
+      "error_sum.u2",
+      "error_sum.y"
+    ],
+    "effective_error": [
+      "effective_error.u1",
+      "effective_error.u2",
+      "effective_error.y"
+    ],
+    "kp_gain": [
+      "kp_gain.u",
+      "kp_gain.y"
+    ],
+    "ki_drive": [
+      "ki_drive.u",
+      "ki_drive.y"
+    ],
+    "derivative": [
+      "derivative.u",
+      "derivative.y"
+    ],
+    "kd_gain": [
+      "kd_gain.u",
+      "kd_gain.y"
+    ],
+    "integrator_drive": [
+      "integrator_drive.u1",
+      "integrator_drive.u2",
+      "integrator_drive.y"
+    ],
+    "integral_dt": [
+      "integral_dt.u",
+      "integral_dt.y"
+    ],
+    "integral_update": [
+      "integral_update.u1",
+      "integral_update.u2",
+      "integral_update.y"
+    ],
+    "integral_limit": [
+      "integral_limit.u",
+      "integral_limit.y"
+    ],
+    "integrator": [
+      "integrator.u1",
+      "integrator.y"
+    ],
+    "ki_gain": [
+      "ki_gain.u",
+      "ki_gain.y"
+    ],
+    "feedforward_gain": [
+      "feedforward_gain.u",
+      "feedforward_gain.y"
+    ],
+    "pid_sum_pi": [
+      "pid_sum_pi.u1",
+      "pid_sum_pi.u2",
+      "pid_sum_pi.y"
+    ],
+    "pid_sum_pid": [
+      "pid_sum_pid.u1",
+      "pid_sum_pid.u2",
+      "pid_sum_pid.y"
+    ],
+    "pid_sum": [
+      "pid_sum.u1",
+      "pid_sum.u2",
+      "pid_sum.y"
+    ],
+    "output_limit": [
+      "output_limit.u",
+      "output_limit.y"
+    ],
+    "saturation_error": [
+      "saturation_error.u1",
+      "saturation_error.u2",
+      "saturation_error.y"
+    ],
+    "anti_windup_gain": [
+      "anti_windup_gain.u",
+      "anti_windup_gain.y"
+    ],
+    "outer_error": [
+      "outer_error.u1",
+      "outer_error.u2",
+      "outer_error.y"
+    ],
+    "outer_gain": [
+      "outer_gain.u",
+      "outer_gain.y"
+    ],
+    "outer_limit": [
+      "outer_limit.u",
+      "outer_limit.y"
+    ],
+    "inner_error": [
+      "inner_error.u1",
+      "inner_error.u2",
+      "inner_error.y"
+    ],
+    "inner_gain": [
+      "inner_gain.u",
+      "inner_gain.y"
+    ],
+    "inner_limit": [
+      "inner_limit.u",
+      "inner_limit.y"
+    ],
+    "cascade_switch": [
+      "cascade_switch.y",
+      "cascade_switch.u1",
+      "cascade_switch.u2",
+      "cascade_switch.u3"
+    ],
+    "zero_source": [
+      "zero_source.y"
+    ],
+    "enable_switch": [
+      "enable_switch.y",
+      "enable_switch.u1",
+      "enable_switch.u2",
+      "enable_switch.u3"
+    ]
+  },
+  "required_behavior_blocks": {
+    "gain_schedule": [
+      "schedule_gain",
+      "gain_sum_schedule",
+      "gain_sum_fuzzy",
+      "gain_sum",
+      "gain_limit"
+    ],
+    "fuzzy_residual": [
+      "fuzzy_gain"
+    ],
+    "neural_residual": [
+      "neural_limit",
+      "neural_gain"
+    ],
+    "integral_limit": [
+      "integral_dt",
+      "integral_update",
+      "integral_limit",
+      "integrator"
+    ],
+    "anti_windup": [
+      "saturation_error",
+      "anti_windup_gain",
+      "integrator_drive"
+    ],
+    "feedforward": [
+      "feedforward_gain"
+    ],
+    "cascade": [
+      "outer_error",
+      "outer_limit",
+      "inner_error",
+      "inner_limit"
+    ],
+    "mode_enable": [
+      "cascade_switch",
+      "enable_switch"
+    ]
+  },
+  "structure_ok": true,
+  "behavior_equivalence_ok": false,
+  "claim_boundary": "Built with official Sysplorer graphical APIs. structure_ok covers component, wiring, exported-diagram, and CheckModel gates only. Behavior remains open until equation-bridge comparison passes."
+}

@@ -1,0 +1,68 @@
+{
+  "input_global": "asysblockGbIn",
+  "output_global": "l_sysblockGbOut",
+  "input_fields": [
+    "setpoint",
+    "measurement",
+    "inner_measurement",
+    "feedforward",
+    "schedule",
+    "fuzzy_error",
+    "neural_residual",
+    "cascade_mode",
+    "enable"
+  ],
+  "output_fields": [
+    "command",
+    "outer_command",
+    "unsaturated_command",
+    "integral_state",
+    "scheduled_gain"
+  ],
+  "input_sequence": [
+    {
+      "setpoint": 0.4,
+      "measurement": 0.1,
+      "inner_measurement": 0.0,
+      "feedforward": 0.2,
+      "schedule": 0.25,
+      "fuzzy_error": 0.3,
+      "neural_residual": 0.1,
+      "cascade_mode": 0.0,
+      "enable": 1.0
+    },
+    {
+      "setpoint": 0.5,
+      "measurement": 0.15,
+      "inner_measurement": 0.0,
+      "feedforward": 0.2,
+      "schedule": 0.25,
+      "fuzzy_error": 0.3,
+      "neural_residual": 0.1,
+      "cascade_mode": 0.0,
+      "enable": 1.0
+    },
+    {
+      "setpoint": 0.55,
+      "measurement": 0.2,
+      "inner_measurement": 0.0,
+      "feedforward": 0.1,
+      "schedule": 0.1,
+      "fuzzy_error": 0.1,
+      "neural_residual": 0.0,
+      "cascade_mode": 1.0,
+      "enable": 1.0
+    },
+    {
+      "setpoint": 0.0,
+      "measurement": 0.0,
+      "inner_measurement": 0.0,
+      "feedforward": 0.0,
+      "schedule": 0.0,
+      "fuzzy_error": 0.0,
+      "neural_residual": 0.0,
+      "cascade_mode": 0.0,
+      "enable": 0.0
+    }
+  ]
+}

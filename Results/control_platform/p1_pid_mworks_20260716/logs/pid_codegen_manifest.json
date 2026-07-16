@@ -1,0 +1,81 @@
+{
+  "schema": "mosim.mworks.codegen.v1",
+  "source": "MWORKS_MCP",
+  "model_name": "MoSim_PID_Unified_Graphical_Sysblock",
+  "check_model": true,
+  "output_root": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\generated_c",
+  "generated_code_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\generated_c\\MoSim_PID_Unified_Graphical_Sysblock-3",
+  "real_as_float": false,
+  "set_options_result": true,
+  "generate_result": true,
+  "generated_files": [
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\generated_c\\MoSim_PID_Unified_Graphical_Sysblock-3\\ExternalCResource.json",
+      "relative_path": "ExternalCResource.json",
+      "bytes": 122,
+      "sha256": "449013d35720e489e35ded33fb9be9678388c140d2f8c17593375abd1811dfbb"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\generated_c\\MoSim_PID_Unified_Graphical_Sysblock-3\\ExternalResources.xml",
+      "relative_path": "ExternalResources.xml",
+      "bytes": 308,
+      "sha256": "53106cd288611dab590b41c765ad77dbbaf8485f83b0b758d3a59135371e9908"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\generated_c\\MoSim_PID_Unified_Graphical_Sysblock-3\\MoSim_PID_Unified_Graphical_Sysblock.c",
+      "relative_path": "MoSim_PID_Unified_Graphical_Sysblock.c",
+      "bytes": 6593,
+      "sha256": "521bc35775dbfcdd549d0bbbcaa76633f9dc4173eee855343dac28d2c216aafe"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\generated_c\\MoSim_PID_Unified_Graphical_Sysblock-3\\MoSim_PID_Unified_Graphical_Sysblock.h",
+      "relative_path": "MoSim_PID_Unified_Graphical_Sysblock.h",
+      "bytes": 1558,
+      "sha256": "f5710b0d4b1ad4e2c182d4c4e947f348b6fe4be713c27bc97fe24730e3ba1453"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\generated_c\\MoSim_PID_Unified_Graphical_Sysblock-3\\MoSim_PID_Unified_Graphical_Sysblock_data.c",
+      "relative_path": "MoSim_PID_Unified_Graphical_Sysblock_data.c",
+      "bytes": 847,
+      "sha256": "8ca164ba27f86529d2b8803b9195e5c5a93f1c6535123621cce8b7483822396b"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\generated_c\\MoSim_PID_Unified_Graphical_Sysblock-3\\MoSim_PID_Unified_Graphical_Sysblock_extern_include.h",
+      "relative_path": "MoSim_PID_Unified_Graphical_Sysblock_extern_include.h",
+      "bytes": 899,
+      "sha256": "76846495898f65bb8be26b8defdd644c614467dc9276c98b1f012f608bda78ad"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\generated_c\\MoSim_PID_Unified_Graphical_Sysblock-3\\MoSim_PID_Unified_Graphical_Sysblock_private.h",
+      "relative_path": "MoSim_PID_Unified_Graphical_Sysblock_private.h",
+      "bytes": 4293,
+      "sha256": "a9fbe95a1d8279bac68ab1e36a2437f01e615c7e52c95734da6488dc029721a1"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\generated_c\\MoSim_PID_Unified_Graphical_Sysblock-3\\motrace.json",
+      "relative_path": "motrace.json",
+      "bytes": 267874,
+      "sha256": "bb648f8004a63f8e567f65ff1cdd6f1ff401e63cce94a3b359dff69de793ed37"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\generated_c\\MoSim_PID_Unified_Graphical_Sysblock-3\\mwb_main.c",
+      "relative_path": "mwb_main.c",
+      "bytes": 2043,
+      "sha256": "a1b941ddf749a5405006bf0def4e276356cf7d7a8024dddc098e8397b8a667d5"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\generated_c\\MoSim_PID_Unified_Graphical_Sysblock-3\\mwb_runtime.h",
+      "relative_path": "mwb_runtime.h",
+      "bytes": 842,
+      "sha256": "96016f11666ea8e0796db35a8aedfa34776ba97b95330ad72a3808ac1b9ae125"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\generated_c\\MoSim_PID_Unified_Graphical_Sysblock-3\\mwb_types.h",
+      "relative_path": "mwb_types.h",
+      "bytes": 1874,
+      "sha256": "c87f70ab41b37a14d09dba2d37a23963f3be65c1d7ad4500d82f98456a19cb61"
+    }
+  ],
+  "generated_file_count": 11,
+  "claim_boundary": "Official MWORKS code generation evidence only. Compilation and runtime/SIL acceptance are separate gates."
+}

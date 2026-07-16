@@ -1,0 +1,529 @@
+{
+  "schema": "mosim.mworks_codegen_runtime_check.v1",
+  "model_name": "MoSim_PID_Unified_Graphical_Sysblock",
+  "code_dir": "Results\\control_platform\\p1_pid_mworks_20260716\\generated_c\\MoSim_PID_Unified_Graphical_Sysblock-3",
+  "missing_required_files": [],
+  "files": [
+    "ExternalCResource.json",
+    "ExternalResources.xml",
+    "MoSim_PID_Unified_Graphical_Sysblock.c",
+    "MoSim_PID_Unified_Graphical_Sysblock.h",
+    "MoSim_PID_Unified_Graphical_Sysblock_data.c",
+    "MoSim_PID_Unified_Graphical_Sysblock_extern_include.h",
+    "MoSim_PID_Unified_Graphical_Sysblock_private.h",
+    "motrace.json",
+    "mwb_main.c",
+    "mwb_runtime.h",
+    "mwb_types.h"
+  ],
+  "source_label": "MWORKS_GENERATED_CODE",
+  "functions": [
+    "Step",
+    "Init"
+  ],
+  "has_init": true,
+  "has_step": true,
+  "input_globals": {
+    "asysblockGbIn": {
+      "struct": "asysblockExtU",
+      "fields": [
+        "setpoint",
+        "measurement",
+        "inner_measurement",
+        "feedforward",
+        "schedule",
+        "fuzzy_error",
+        "neural_residual",
+        "cascade_mode",
+        "enable"
+      ]
+    }
+  },
+  "output_globals": {
+    "l_sysblockGbOut": {
+      "struct": "asysblockExtY",
+      "fields": [
+        "command",
+        "outer_command",
+        "unsaturated_command",
+        "integral_state",
+        "scheduled_gain"
+      ]
+    }
+  },
+  "model_data_global": "sysblockGbMd",
+  "sample_time_s": 0.02,
+  "external_c_sources": [],
+  "runtime_adapter_shape": "global_struct_input_output_init_step",
+  "sil_gate_required": true,
+  "compile": {
+    "available": true,
+    "ok": true,
+    "compiler": {
+      "kind": "wsl",
+      "path": "/usr/bin/gcc",
+      "available": true
+    },
+    "returncode": 0,
+    "command": [
+      "gcc",
+      "-std=c99",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-c",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p1_pid_mworks_20260716/generated_c/MoSim_PID_Unified_Graphical_Sysblock-3/MoSim_PID_Unified_Graphical_Sysblock.c",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p1_pid_mworks_20260716/generated_c/MoSim_PID_Unified_Graphical_Sysblock-3/MoSim_PID_Unified_Graphical_Sysblock_data.c",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p1_pid_mworks_20260716/generated_c/MoSim_PID_Unified_Graphical_Sysblock-3/mwb_main.c",
+      "-I",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p1_pid_mworks_20260716/generated_c/MoSim_PID_Unified_Graphical_Sysblock-3"
+    ],
+    "stdout": "",
+    "stderr": "",
+    "object_dir_removed": true
+  },
+  "runtime_smoke": {
+    "available": true,
+    "ok": true,
+    "phase": "run",
+    "compiler": {
+      "kind": "wsl",
+      "path": "/usr/bin/gcc",
+      "available": true
+    },
+    "build_command": [
+      "gcc",
+      "-std=c99",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/tmp/mworks_codegen_run_mi3hm5fc/mosim_codegen_harness.c",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p1_pid_mworks_20260716/generated_c/MoSim_PID_Unified_Graphical_Sysblock-3/MoSim_PID_Unified_Graphical_Sysblock.c",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p1_pid_mworks_20260716/generated_c/MoSim_PID_Unified_Graphical_Sysblock-3/MoSim_PID_Unified_Graphical_Sysblock_data.c",
+      "-I",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p1_pid_mworks_20260716/generated_c/MoSim_PID_Unified_Graphical_Sysblock-3",
+      "-lm",
+      "-o",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/tmp/mworks_codegen_run_mi3hm5fc/mosim_codegen_harness"
+    ],
+    "run_command": [
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/tmp/mworks_codegen_run_mi3hm5fc/mosim_codegen_harness"
+    ],
+    "returncode": 0,
+    "stdout": "0,0.5,0.10000000000000001,0.050000000000000003,0.29999999999999999,0,0,0,0,1,1,0.47999999999999998,2.6299999999999999,0,1,0\n1,0.5,0.10000000000000001,0.050000000000000003,0.29999999999999999,0,0,0,0,1,0.62596799999999997,0.47999999999999998,0.62596799999999997,-0.0050400000000000002,1,0\n2,0.5,0.10000000000000001,0.050000000000000003,0.29999999999999999,0,0,0,0,1,0.63236799999999993,0.47999999999999998,0.63236799999999993,0.00296,1,0\n3,0.5,0.10000000000000001,0.050000000000000003,0.29999999999999999,0,0,0,0,1,0.638768,0.47999999999999998,0.638768,0.010960000000000001,1,0\n4,0.5,0.10000000000000001,0.050000000000000003,0.29999999999999999,0,0,0,0,1,0.64516799999999996,0.47999999999999998,0.64516799999999996,0.018960000000000001,1,0\n5,0.5,0.10000000000000001,0.050000000000000003,0.29999999999999999,0,0,0,0,1,0.65156800000000004,0.47999999999999998,0.65156800000000004,0.026960000000000001,1,0\n6,0.5,0.10000000000000001,0.050000000000000003,0.29999999999999999,0,0,0,0,1,0.657968,0.47999999999999998,0.657968,0.034960000000000005,1,0\n7,0.5,0.10000000000000001,0.050000000000000003,0.29999999999999999,0,0,0,0,1,0.66436799999999996,0.47999999999999998,0.66436799999999996,0.042960000000000005,1,0\n8,0.5,0.10000000000000001,0.050000000000000003,0.29999999999999999,0,0,0,0,1,0.67076800000000003,0.47999999999999998,0.67076800000000003,0.050960000000000005,1,0\n9,0.5,0.10000000000000001,0.050000000000000003,0.29999999999999999,0,0,0,0,1,0.67716799999999999,0.47999999999999998,0.67716799999999999,0.058960000000000005,1,0\n10,0.5,0.10000000000000001,0.050000000000000003,0.29999999999999999,0,0,0,0,1,0.68356800000000006,0.47999999999999998,0.68356800000000006,0.066960000000000006,1,0\n",
+    "stderr": "",
+    "input_global": "asysblockGbIn",
+    "input_fields": [
+      "setpoint",
+      "measurement",
+      "inner_measurement",
+      "feedforward",
+      "schedule",
+      "fuzzy_error",
+      "neural_residual",
+      "cascade_mode",
+      "enable"
+    ],
+    "output_global": "l_sysblockGbOut",
+    "output_fields": [
+      "command",
+      "outer_command",
+      "unsaturated_command",
+      "integral_state",
+      "scheduled_gain"
+    ],
+    "input_sequence": [
+      {
+        "setpoint": 0.5,
+        "measurement": 0.1,
+        "inner_measurement": 0.05,
+        "feedforward": 0.3,
+        "schedule": 0.0,
+        "fuzzy_error": 0.0,
+        "neural_residual": 0.0,
+        "cascade_mode": 0.0,
+        "enable": 1.0
+      },
+      {
+        "setpoint": 0.5,
+        "measurement": 0.1,
+        "inner_measurement": 0.05,
+        "feedforward": 0.3,
+        "schedule": 0.0,
+        "fuzzy_error": 0.0,
+        "neural_residual": 0.0,
+        "cascade_mode": 0.0,
+        "enable": 1.0
+      },
+      {
+        "setpoint": 0.5,
+        "measurement": 0.1,
+        "inner_measurement": 0.05,
+        "feedforward": 0.3,
+        "schedule": 0.0,
+        "fuzzy_error": 0.0,
+        "neural_residual": 0.0,
+        "cascade_mode": 0.0,
+        "enable": 1.0
+      },
+      {
+        "setpoint": 0.5,
+        "measurement": 0.1,
+        "inner_measurement": 0.05,
+        "feedforward": 0.3,
+        "schedule": 0.0,
+        "fuzzy_error": 0.0,
+        "neural_residual": 0.0,
+        "cascade_mode": 0.0,
+        "enable": 1.0
+      },
+      {
+        "setpoint": 0.5,
+        "measurement": 0.1,
+        "inner_measurement": 0.05,
+        "feedforward": 0.3,
+        "schedule": 0.0,
+        "fuzzy_error": 0.0,
+        "neural_residual": 0.0,
+        "cascade_mode": 0.0,
+        "enable": 1.0
+      },
+      {
+        "setpoint": 0.5,
+        "measurement": 0.1,
+        "inner_measurement": 0.05,
+        "feedforward": 0.3,
+        "schedule": 0.0,
+        "fuzzy_error": 0.0,
+        "neural_residual": 0.0,
+        "cascade_mode": 0.0,
+        "enable": 1.0
+      },
+      {
+        "setpoint": 0.5,
+        "measurement": 0.1,
+        "inner_measurement": 0.05,
+        "feedforward": 0.3,
+        "schedule": 0.0,
+        "fuzzy_error": 0.0,
+        "neural_residual": 0.0,
+        "cascade_mode": 0.0,
+        "enable": 1.0
+      },
+      {
+        "setpoint": 0.5,
+        "measurement": 0.1,
+        "inner_measurement": 0.05,
+        "feedforward": 0.3,
+        "schedule": 0.0,
+        "fuzzy_error": 0.0,
+        "neural_residual": 0.0,
+        "cascade_mode": 0.0,
+        "enable": 1.0
+      },
+      {
+        "setpoint": 0.5,
+        "measurement": 0.1,
+        "inner_measurement": 0.05,
+        "feedforward": 0.3,
+        "schedule": 0.0,
+        "fuzzy_error": 0.0,
+        "neural_residual": 0.0,
+        "cascade_mode": 0.0,
+        "enable": 1.0
+      },
+      {
+        "setpoint": 0.5,
+        "measurement": 0.1,
+        "inner_measurement": 0.05,
+        "feedforward": 0.3,
+        "schedule": 0.0,
+        "fuzzy_error": 0.0,
+        "neural_residual": 0.0,
+        "cascade_mode": 0.0,
+        "enable": 1.0
+      },
+      {
+        "setpoint": 0.5,
+        "measurement": 0.1,
+        "inner_measurement": 0.05,
+        "feedforward": 0.3,
+        "schedule": 0.0,
+        "fuzzy_error": 0.0,
+        "neural_residual": 0.0,
+        "cascade_mode": 0.0,
+        "enable": 1.0
+      }
+    ],
+    "rows": [
+      {
+        "index": 0,
+        "inputs": {
+          "setpoint": 0.5,
+          "measurement": 0.1,
+          "inner_measurement": 0.05,
+          "feedforward": 0.3,
+          "schedule": 0.0,
+          "fuzzy_error": 0.0,
+          "neural_residual": 0.0,
+          "cascade_mode": 0.0,
+          "enable": 1.0
+        },
+        "outputs": {
+          "command": 1.0,
+          "outer_command": 0.48,
+          "unsaturated_command": 2.63,
+          "integral_state": 0.0,
+          "scheduled_gain": 1.0
+        },
+        "input": null,
+        "output": null,
+        "time_s": 0.0
+      },
+      {
+        "index": 1,
+        "inputs": {
+          "setpoint": 0.5,
+          "measurement": 0.1,
+          "inner_measurement": 0.05,
+          "feedforward": 0.3,
+          "schedule": 0.0,
+          "fuzzy_error": 0.0,
+          "neural_residual": 0.0,
+          "cascade_mode": 0.0,
+          "enable": 1.0
+        },
+        "outputs": {
+          "command": 0.625968,
+          "outer_command": 0.48,
+          "unsaturated_command": 0.625968,
+          "integral_state": -0.00504,
+          "scheduled_gain": 1.0
+        },
+        "input": null,
+        "output": null,
+        "time_s": 0.0
+      },
+      {
+        "index": 2,
+        "inputs": {
+          "setpoint": 0.5,
+          "measurement": 0.1,
+          "inner_measurement": 0.05,
+          "feedforward": 0.3,
+          "schedule": 0.0,
+          "fuzzy_error": 0.0,
+          "neural_residual": 0.0,
+          "cascade_mode": 0.0,
+          "enable": 1.0
+        },
+        "outputs": {
+          "command": 0.6323679999999999,
+          "outer_command": 0.48,
+          "unsaturated_command": 0.6323679999999999,
+          "integral_state": 0.00296,
+          "scheduled_gain": 1.0
+        },
+        "input": null,
+        "output": null,
+        "time_s": 0.0
+      },
+      {
+        "index": 3,
+        "inputs": {
+          "setpoint": 0.5,
+          "measurement": 0.1,
+          "inner_measurement": 0.05,
+          "feedforward": 0.3,
+          "schedule": 0.0,
+          "fuzzy_error": 0.0,
+          "neural_residual": 0.0,
+          "cascade_mode": 0.0,
+          "enable": 1.0
+        },
+        "outputs": {
+          "command": 0.638768,
+          "outer_command": 0.48,
+          "unsaturated_command": 0.638768,
+          "integral_state": 0.010960000000000001,
+          "scheduled_gain": 1.0
+        },
+        "input": null,
+        "output": null,
+        "time_s": 0.0
+      },
+      {
+        "index": 4,
+        "inputs": {
+          "setpoint": 0.5,
+          "measurement": 0.1,
+          "inner_measurement": 0.05,
+          "feedforward": 0.3,
+          "schedule": 0.0,
+          "fuzzy_error": 0.0,
+          "neural_residual": 0.0,
+          "cascade_mode": 0.0,
+          "enable": 1.0
+        },
+        "outputs": {
+          "command": 0.645168,
+          "outer_command": 0.48,
+          "unsaturated_command": 0.645168,
+          "integral_state": 0.01896,
+          "scheduled_gain": 1.0
+        },
+        "input": null,
+        "output": null,
+        "time_s": 0.0
+      },
+      {
+        "index": 5,
+        "inputs": {
+          "setpoint": 0.5,
+          "measurement": 0.1,
+          "inner_measurement": 0.05,
+          "feedforward": 0.3,
+          "schedule": 0.0,
+          "fuzzy_error": 0.0,
+          "neural_residual": 0.0,
+          "cascade_mode": 0.0,
+          "enable": 1.0
+        },
+        "outputs": {
+          "command": 0.651568,
+          "outer_command": 0.48,
+          "unsaturated_command": 0.651568,
+          "integral_state": 0.02696,
+          "scheduled_gain": 1.0
+        },
+        "input": null,
+        "output": null,
+        "time_s": 0.0
+      },
+      {
+        "index": 6,
+        "inputs": {
+          "setpoint": 0.5,
+          "measurement": 0.1,
+          "inner_measurement": 0.05,
+          "feedforward": 0.3,
+          "schedule": 0.0,
+          "fuzzy_error": 0.0,
+          "neural_residual": 0.0,
+          "cascade_mode": 0.0,
+          "enable": 1.0
+        },
+        "outputs": {
+          "command": 0.657968,
+          "outer_command": 0.48,
+          "unsaturated_command": 0.657968,
+          "integral_state": 0.034960000000000005,
+          "scheduled_gain": 1.0
+        },
+        "input": null,
+        "output": null,
+        "time_s": 0.0
+      },
+      {
+        "index": 7,
+        "inputs": {
+          "setpoint": 0.5,
+          "measurement": 0.1,
+          "inner_measurement": 0.05,
+          "feedforward": 0.3,
+          "schedule": 0.0,
+          "fuzzy_error": 0.0,
+          "neural_residual": 0.0,
+          "cascade_mode": 0.0,
+          "enable": 1.0
+        },
+        "outputs": {
+          "command": 0.664368,
+          "outer_command": 0.48,
+          "unsaturated_command": 0.664368,
+          "integral_state": 0.042960000000000005,
+          "scheduled_gain": 1.0
+        },
+        "input": null,
+        "output": null,
+        "time_s": 0.0
+      },
+      {
+        "index": 8,
+        "inputs": {
+          "setpoint": 0.5,
+          "measurement": 0.1,
+          "inner_measurement": 0.05,
+          "feedforward": 0.3,
+          "schedule": 0.0,
+          "fuzzy_error": 0.0,
+          "neural_residual": 0.0,
+          "cascade_mode": 0.0,
+          "enable": 1.0
+        },
+        "outputs": {
+          "command": 0.670768,
+          "outer_command": 0.48,
+          "unsaturated_command": 0.670768,
+          "integral_state": 0.050960000000000005,
+          "scheduled_gain": 1.0
+        },
+        "input": null,
+        "output": null,
+        "time_s": 0.0
+      },
+      {
+        "index": 9,
+        "inputs": {
+          "setpoint": 0.5,
+          "measurement": 0.1,
+          "inner_measurement": 0.05,
+          "feedforward": 0.3,
+          "schedule": 0.0,
+          "fuzzy_error": 0.0,
+          "neural_residual": 0.0,
+          "cascade_mode": 0.0,
+          "enable": 1.0
+        },
+        "outputs": {
+          "command": 0.677168,
+          "outer_command": 0.48,
+          "unsaturated_command": 0.677168,
+          "integral_state": 0.058960000000000005,
+          "scheduled_gain": 1.0
+        },
+        "input": null,
+        "output": null,
+        "time_s": 0.0
+      },
+      {
+        "index": 10,
+        "inputs": {
+          "setpoint": 0.5,
+          "measurement": 0.1,
+          "inner_measurement": 0.05,
+          "feedforward": 0.3,
+          "schedule": 0.0,
+          "fuzzy_error": 0.0,
+          "neural_residual": 0.0,
+          "cascade_mode": 0.0,
+          "enable": 1.0
+        },
+        "outputs": {
+          "command": 0.6835680000000001,
+          "outer_command": 0.48,
+          "unsaturated_command": 0.6835680000000001,
+          "integral_state": 0.06696,
+          "scheduled_gain": 1.0
+        },
+        "input": null,
+        "output": null,
+        "time_s": 0.0
+      }
+    ],
+    "temp_dir_removed": true
+  },
+  "ok": true,
+  "expected_sample_time_s": 0.02,
+  "sample_time_ok": true
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "mosim.pid_graphical_fixture.v1",
+  "source": "MWORKS_MCP",
+  "controller": "MoSim_PID_Unified_Graphical_Sysblock",
+  "fixture": "MoSim_PID_Unified_Graphical_Fixture",
+  "fixture_path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\models\\graphical\\MoSim_PID_Unified_Graphical_Fixture.mo",
+  "inputs": {
+    "setpoint": 0.5,
+    "measurement": 0.1,
+    "inner_measurement": 0.05,
+    "feedforward": 0.3,
+    "schedule": 0.0,
+    "fuzzy_error": 0.0,
+    "neural_residual": 0.0,
+    "cascade_mode": 0.0,
+    "enable": 1.0
+  },
+  "outputs": [
+    "command",
+    "outer_command",
+    "unsaturated_command",
+    "integral_state",
+    "scheduled_gain"
+  ],
+  "saved": true,
+  "check_model": true,
+  "simulate_model": true,
+  "sample_count": 11,
+  "time_start": 0.0,
+  "time_end": 0.2,
+  "raw_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\graphical_pid_fixture.csv",
+  "claim_boundary": "Real fixed-input MWORKS simulation of the graphical PID model. Six-variant CFunction equivalence remains a separate gate."
+}

@@ -1,0 +1,96 @@
+{
+  "schema": "mosim.pid_mworks_mil_evidence.v1",
+  "source": "MWORKS_MCP",
+  "started_at": "2026-07-16T05:34:57.459447+00:00",
+  "live_mworks_touched": true,
+  "will_not_click_activation_login": true,
+  "activation_reference": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\screenshots\\activation\\40544_0x11409CE_G9_Family_CFunction_Sysblock - Sysplorer _\u6559\u80b2\u7248_.png",
+  "claim_boundary": "Fixed-input scalar MIL evidence for the six unified PID variants. It does not establish ATTITUDE_THRUST, graphical equivalence, SIL, Gazebo/PX4/MAVROS, trained neural-network, or complete fuzzy-rule acceptance.",
+  "fixtures": {
+    "cascade_pid": {
+      "model_name": "MoSim_PID_CASCADE_PID_MIL",
+      "model_path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\models\\MoSim_PID_CASCADE_PID_MIL.mo",
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "status_codes": [
+        0
+      ],
+      "raw_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\cascade_pid.csv",
+      "raw_csv_sha256": "f5a18bf1346a74bccb6b6ebcf88b779256a76fe21f1e83b97663222a103e18a6",
+      "metrics": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\metrics\\cascade_pid.json",
+      "metrics_sha256": "0779cb03d2fdd9184f17d489cda4db2a13e5d0e3d8116e3fca8fa1947896d1fd"
+    },
+    "gain_scheduled_pid": {
+      "model_name": "MoSim_PID_GAIN_SCHEDULED_PID_MIL",
+      "model_path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\models\\MoSim_PID_GAIN_SCHEDULED_PID_MIL.mo",
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "status_codes": [
+        0
+      ],
+      "raw_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\gain_scheduled_pid.csv",
+      "raw_csv_sha256": "ee661c9ac5a2b005848c42e4038de3ace5b3fa08a26cbb274e0a6346e457404d",
+      "metrics": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\metrics\\gain_scheduled_pid.json",
+      "metrics_sha256": "15414fe87719244257f8a9bec77b86aaa15a2c2317ce36e89a0da8c862734529"
+    },
+    "fuzzy_pid": {
+      "model_name": "MoSim_PID_FUZZY_PID_MIL",
+      "model_path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\models\\MoSim_PID_FUZZY_PID_MIL.mo",
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "status_codes": [
+        0
+      ],
+      "raw_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\fuzzy_pid.csv",
+      "raw_csv_sha256": "f44a6535db9de4651724c599508b732b7ca51d7c4d079f14d48b3ce1b86e9c87",
+      "metrics": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\metrics\\fuzzy_pid.json",
+      "metrics_sha256": "709b08ee11e45129c96290ffbbafae9a86c36aac481786810b10ad3fa0615cf2"
+    },
+    "neural_pid": {
+      "model_name": "MoSim_PID_NEURAL_PID_MIL",
+      "model_path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\models\\MoSim_PID_NEURAL_PID_MIL.mo",
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "status_codes": [
+        0
+      ],
+      "raw_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\neural_pid.csv",
+      "raw_csv_sha256": "2e039d50897a9ed097a1e58ea0582a23413dac5ac26dadf2611c2288a7af1e3e",
+      "metrics": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\metrics\\neural_pid.json",
+      "metrics_sha256": "ecc8c6ddf82ba625199ed61c9ea7d3811df2b157c97913fe01957e218d09f967"
+    },
+    "anti_windup": {
+      "model_name": "MoSim_PID_ANTI_WINDUP_MIL",
+      "model_path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\models\\MoSim_PID_ANTI_WINDUP_MIL.mo",
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "status_codes": [
+        0
+      ],
+      "raw_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\anti_windup.csv",
+      "raw_csv_sha256": "ada38006d383b5f1d7d563d47bf99b2598dad758d86696796666ebf96e9f6621",
+      "metrics": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\metrics\\anti_windup.json",
+      "metrics_sha256": "bf01fb104823afe67d18b2b8e820ff232860692cff99ad0faf9fc8baa575a4e9"
+    },
+    "feedforward_profile": {
+      "model_name": "MoSim_PID_FEEDFORWARD_PROFILE_MIL",
+      "model_path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\models\\MoSim_PID_FEEDFORWARD_PROFILE_MIL.mo",
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "status_codes": [
+        0
+      ],
+      "raw_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\feedforward_profile.csv",
+      "raw_csv_sha256": "41735693e58970474ea620d48e65b582b21f7260f2914ff1f093002de008c3da",
+      "metrics": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\metrics\\feedforward_profile.json",
+      "metrics_sha256": "21a6c11febd287c0b51dc0068bfad9731df1cb5821794ff5e53b4bd91d16e1a5"
+    }
+  },
+  "completed_at": "2026-07-16T05:35:13.361776+00:00"
+}

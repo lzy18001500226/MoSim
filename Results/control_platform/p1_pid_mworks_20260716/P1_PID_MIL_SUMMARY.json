@@ -1,0 +1,46 @@
+{
+  "schema": "mosim.control_platform.pid_p1_summary.v1",
+  "phase": "P1_PID_FAMILY",
+  "status": "partial",
+  "algorithm_ids": [
+    "anti_windup",
+    "cascade_pid",
+    "feedforward_profile",
+    "fuzzy_pid",
+    "gain_scheduled_pid",
+    "neural_pid"
+  ],
+  "registry_status": "interface_ready",
+  "selectable": false,
+  "gates": {
+    "source_core_compile_and_golden_vector": true,
+    "registry_interface_ready_nonselectable": true,
+    "six_variant_mworks_mil": true,
+    "graphical_structure_check": true,
+    "graphical_fixed_fixture_mworks_mil": true,
+    "official_mworks_generated_c": true,
+    "generated_c_compile": true,
+    "generated_c_runtime_smoke": true,
+    "fixed_fixture_graphical_codegen_equivalence": true,
+    "six_variant_graphical_equivalence": false,
+    "full_attitude_thrust_contract": false,
+    "gazebo_px4_mavros_closed_loop": false
+  },
+  "completed_gate_count": 9,
+  "total_gate_count": 12,
+  "evidence": {
+    "mil": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\mcp_evidence.json",
+    "graphical_structure": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\pid_graphical_build_manifest.json",
+    "graphical_fixture": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\pid_graphical_fixture_manifest.json",
+    "codegen": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\pid_codegen_manifest.json",
+    "runtime": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\pid_codegen_runtime_check.json",
+    "equivalence": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\pid_graphical_codegen_equivalence.json",
+    "screenshots": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\screenshot_manifest.json"
+  },
+  "open_gates": [
+    "six_variant_graphical_equivalence",
+    "full_attitude_thrust_contract",
+    "gazebo_px4_mavros_closed_loop"
+  ],
+  "claim_boundary": "P1 has real scalar MIL, graphical topology, official generated C, compiled runtime smoke, and fixed-fixture graphical/codegen equivalence. It is not selectable and does not yet prove six-variant graphical parity, ATTITUDE_THRUST, or Gazebo closed loop."
+}

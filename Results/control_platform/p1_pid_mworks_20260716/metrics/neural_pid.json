@@ -1,0 +1,20 @@
+{
+  "schema": "mosim.pid_mworks_mil_metrics.v1",
+  "algorithm_id": "neural_pid",
+  "model_name": "MoSim_PID_NEURAL_PID_MIL",
+  "source": "MWORKS_MCP",
+  "timestamp": "2026-07-16T05:35:08.016056+00:00",
+  "sample_count": 21,
+  "time_start": 0.0,
+  "time_end": 0.2,
+  "command_start": 0.49286399999999997,
+  "command_end": 0.558144,
+  "command_min": 0.49286399999999997,
+  "command_max": 0.558144,
+  "saturated_sample_count": 0,
+  "status_codes": [
+    0
+  ],
+  "finite_values": true,
+  "raw_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\neural_pid.csv"
+}

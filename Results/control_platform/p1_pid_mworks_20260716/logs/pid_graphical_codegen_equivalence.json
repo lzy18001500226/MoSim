@@ -1,0 +1,28 @@
+{
+  "schema": "mosim.pid_graphical_codegen_equivalence.v1",
+  "source_pair": [
+    "MWORKS_MCP",
+    "MWORKS_GENERATED_CODE"
+  ],
+  "mworks_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\graphical_pid_fixture.csv",
+  "codegen_runtime_json": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\pid_graphical_equivalence_codegen.json",
+  "sample_count": 11,
+  "outputs": [
+    "command",
+    "outer_command",
+    "unsaturated_command",
+    "integral_state",
+    "scheduled_gain"
+  ],
+  "tolerance": 1e-09,
+  "max_abs_error": {
+    "command": 0.0,
+    "outer_command": 0.0,
+    "unsaturated_command": 0.0,
+    "integral_state": 0.0,
+    "scheduled_gain": 0.0
+  },
+  "behavior_equivalence_ok": true,
+  "claim_boundary": "Equivalence covers this fixed-input graphical fixture only; six PID variants remain separately gated.",
+  "ok": true
+}

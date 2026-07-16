@@ -1,0 +1,47 @@
+model MoSim_PID_CASCADE_PID_MIL
+  extends ModelWorkspace;
+  import SysplorerEmbeddedCoder.Types.*;
+  import BaseWorkspace.*;
+  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.2,StoreEventValue=0),Diagram(coordinateSystem(extent={{-260,-180},{260,180}},grid={2,2})));
+  MoSim_PID_Unified_CFunction_Sysblock controller annotation(Placement(transformation(origin={{0,0}},extent={{-24,-24},{24,24}})));
+  SysplorerEmbeddedCoder.Sources.Constant controller_id_source(k=1.0) annotation(Placement(transformation(origin={{-210,130}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant setpoint_source(k=0.5) annotation(Placement(transformation(origin={{-210,106}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant measurement_source(k=0.1) annotation(Placement(transformation(origin={{-210,82}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant inner_measurement_source(k=0.05) annotation(Placement(transformation(origin={{-210,58}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant feedforward_source(k=0.3) annotation(Placement(transformation(origin={{-210,34}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant schedule_source(k=0.5) annotation(Placement(transformation(origin={{-210,10}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant fuzzy_error_source(k=0.4) annotation(Placement(transformation(origin={{-210,-14}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant neural_residual_source(k=0.1) annotation(Placement(transformation(origin={{-210,-38}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant dt_source(k=0.01) annotation(Placement(transformation(origin={{-210,-62}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant enable_source(k=1.0) annotation(Placement(transformation(origin={{-210,-86}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant reset_source(k=0.0) annotation(Placement(transformation(origin={{-210,-110}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Port.Outport command annotation(Placement(transformation(origin={{210,90}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Port.Outport outer_command annotation(Placement(transformation(origin={{210,62}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Port.Outport unsaturated_command annotation(Placement(transformation(origin={{210,34}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Port.Outport integral annotation(Placement(transformation(origin={{210,6}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Port.Outport scheduled_gain annotation(Placement(transformation(origin={{210,-22}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Port.Outport saturated annotation(Placement(transformation(origin={{210,-50}},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Port.Outport status_code annotation(Placement(transformation(origin={{210,-78}},extent={{-8,-8},{8,8}})));
+  model ModelWorkspace
+    annotation(__MWORKS(hide=true,BlockSystem(blockKind=BlockKind.modelWorkspace)));
+  end ModelWorkspace;
+equation
+  connect(controller_id_source.y, controller.controller_id_in);
+  connect(setpoint_source.y, controller.setpoint_in);
+  connect(measurement_source.y, controller.measurement_in);
+  connect(inner_measurement_source.y, controller.inner_measurement_in);
+  connect(feedforward_source.y, controller.feedforward_in);
+  connect(schedule_source.y, controller.schedule_in);
+  connect(fuzzy_error_source.y, controller.fuzzy_error_in);
+  connect(neural_residual_source.y, controller.neural_residual_in);
+  connect(dt_source.y, controller.dt_in);
+  connect(enable_source.y, controller.enable_in);
+  connect(reset_source.y, controller.reset_in);
+  connect(controller.command_out, command);
+  connect(controller.outer_command_out, outer_command);
+  connect(controller.unsaturated_command_out, unsaturated_command);
+  connect(controller.integral_out, integral);
+  connect(controller.scheduled_gain_out, scheduled_gain);
+  connect(controller.saturated_out, saturated);
+  connect(controller.status_code_out, status_code);
+end MoSim_PID_CASCADE_PID_MIL;
