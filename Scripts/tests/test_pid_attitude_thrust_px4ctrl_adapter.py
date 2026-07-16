@@ -5,6 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PX4CTRL = ROOT / "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl"
+BASIC_GATE = ROOT / "Scripts/sunray/run_px4ctrl_basic_gate.sh"
 
 
 def test_cmake_declares_independent_pid_generated_backend() -> None:
@@ -43,6 +44,19 @@ def test_adapter_maps_six_profiles_and_bounds_optional_inputs() -> None:
     assert "clamp_double(position_error(0), -1.0, 1.0)" in text
     assert "neural_residual_x_in = 0.0" in text
     assert "neural_residual_source=zero_untrained" in text
+
+
+def test_basic_runtime_gate_accepts_six_pid_profiles() -> None:
+    text = BASIC_GATE.read_text(encoding="utf-8")
+    for profile in (
+        "cascade_pid",
+        "gain_scheduled_pid",
+        "fuzzy_pid",
+        "neural_pid",
+        "anti_windup",
+        "feedforward_profile",
+    ):
+        assert profile in text
 
 
 def test_adapter_fails_closed_on_generated_status_or_profile_mismatch() -> None:

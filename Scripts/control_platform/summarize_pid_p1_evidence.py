@@ -13,11 +13,20 @@ RESULT_DIR = ROOT / "Results/control_platform/p1_pid_mworks_20260716"
 LOG_DIR = RESULT_DIR / "logs"
 ATTITUDE_THRUST_GATE = (
     ROOT
-    / "Results/control_platform/p1_pid_attitude_thrust_20260716/PID_ATTITUDE_THRUST_GATE.json"
+    / "Results/control_platform/p1_pid_attitude_thrust_ff05_20260716/PID_ATTITUDE_THRUST_GATE.json"
 )
 ATTITUDE_THRUST_MWORKS_DIR = (
-    ROOT / "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716"
+    ROOT / "Results/control_platform/p1_pid_attitude_thrust_mworks_ff05_20260716"
 )
+RUNTIME_PROFILES = {
+    "cascade_pid": "p1_pid_cascade_runtime_r4_hover0291_20260716",
+    "gain_scheduled_pid": "p1_pid_gain_scheduled_runtime_r1_hover0291_20260716",
+    "fuzzy_pid": "p1_pid_fuzzy_runtime_r1_hover0291_20260716",
+    "neural_pid": "p1_pid_neural_runtime_r1_hover0291_20260716",
+    "anti_windup": "p1_pid_anti_windup_runtime_r4_xbias012_hover0291_20260716",
+    "feedforward_profile": "p1_pid_feedforward_runtime_r6_ff05_hover0291_20260716",
+}
+RUNTIME_ROOT = ROOT / "Results/sunray_ros1"
 
 
 def load(name: str) -> dict:
@@ -37,6 +46,64 @@ def file_record(path: Path, role: str, observation: str) -> dict:
         "bytes": len(data),
         "sha256": hashlib.sha256(data).hexdigest(),
         "observation": observation,
+    }
+
+
+def assess_runtime_profile(profile: str, result_dir: Path) -> dict:
+    paths = {
+        "metrics": result_dir / "PX4CTRL_BASIC_MISSION_METRICS.json",
+        "manifest": result_dir / "RUN_MANIFEST.json",
+        "provenance": result_dir / "PID_GENERATED_RUNTIME_PROVENANCE.json",
+    }
+    missing = [name for name, path in paths.items() if not path.is_file()]
+    errors = [f"missing_{name}" for name in missing]
+    payloads: dict[str, dict] = {}
+    for name, path in paths.items():
+        if path.is_file():
+            try:
+                payloads[name] = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError) as exc:
+                errors.append(f"invalid_{name}:{exc}")
+
+    metrics = payloads.get("metrics", {})
+    manifest = payloads.get("manifest", {})
+    provenance = payloads.get("provenance", {})
+    if metrics and metrics.get("status") != "passed":
+        errors.append(f"mission_status:{metrics.get('status')}")
+    if manifest:
+        if manifest.get("mission") != "takeoff_hover_land":
+            errors.append(f"mission_type:{manifest.get('mission')}")
+        if manifest.get("controller_core_profile") != profile:
+            errors.append(f"manifest_profile:{manifest.get('controller_core_profile')}")
+        if manifest.get("diagnostics", {}).get("mission_exit_code") != 0:
+            errors.append(
+                f"mission_exit_code:{manifest.get('diagnostics', {}).get('mission_exit_code')}"
+            )
+    if provenance:
+        if provenance.get("status") != "passed":
+            errors.append(f"provenance_status:{provenance.get('status')}")
+        if provenance.get("controller_name") != profile:
+            errors.append(f"provenance_profile:{provenance.get('controller_name')}")
+        if provenance.get("provenance_level") != "runtime_acknowledged":
+            errors.append(f"provenance_level:{provenance.get('provenance_level')}")
+        if provenance.get("errors"):
+            errors.append("provenance_errors_present")
+
+    steady = metrics.get("steady_hover", {})
+    return {
+        "status": "passed" if not errors else "blocked",
+        "errors": errors,
+        "result_dir": str(result_dir),
+        "metrics": str(paths["metrics"]),
+        "manifest": str(paths["manifest"]),
+        "provenance": str(paths["provenance"]),
+        "steady_hover": {
+            "xy_rmse_m": steady.get("xy_rmse_m"),
+            "xy_max_m": steady.get("xy_max_m"),
+            "z_abs_rmse_m": steady.get("z_abs_rmse_m"),
+            "z_abs_max_m": steady.get("z_abs_max_m"),
+        },
+        "neural_residual_source": provenance.get("neural_residual_source"),
     }
 
 
@@ -99,6 +166,14 @@ def main() -> int:
     write_json_lf(screenshot_path, screenshots)
 
     fixture_ids = sorted(mil["fixtures"])
+    runtime_profiles = {
+        profile: assess_runtime_profile(profile, RUNTIME_ROOT / directory)
+        for profile, directory in RUNTIME_PROFILES.items()
+    }
+    runtime_gate_passed = (
+        sorted(runtime_profiles) == fixture_ids
+        and all(item["status"] == "passed" for item in runtime_profiles.values())
+    )
     gates = {
         "source_core_compile_and_golden_vector": True,
         "registry_interface_ready_nonselectable": True,
@@ -139,15 +214,16 @@ def main() -> int:
                 for row in attitude_thrust_sil["comparison"]["comparisons"]
             ) == 2520
         ),
-        "gazebo_px4_mavros_closed_loop": False,
+        "gazebo_px4_mavros_closed_loop": runtime_gate_passed,
     }
+    all_gates_passed = all(gates.values())
     summary = {
         "schema": "mosim.control_platform.pid_p1_summary.v1",
         "phase": "P1_PID_FAMILY",
-        "status": "partial",
+        "status": "passed" if all_gates_passed else "partial",
         "algorithm_ids": fixture_ids,
-        "registry_status": "interface_ready",
-        "selectable": False,
+        "registry_status": "runtime_accepted" if runtime_gate_passed else "interface_ready",
+        "selectable": runtime_gate_passed,
         "gates": gates,
         "completed_gate_count": sum(gates.values()),
         "total_gate_count": len(gates),
@@ -166,9 +242,14 @@ def main() -> int:
             "attitude_thrust_codegen": str(ATTITUDE_THRUST_MWORKS_DIR / "sil/codegen_runtime_check_v2.json"),
             "attitude_thrust_sil": str(ATTITUDE_THRUST_MWORKS_DIR / "sil/sil_equivalence_126_rows_v2.json"),
             "screenshots": str(screenshot_path),
+            "gazebo_px4_mavros_runtime_profiles": runtime_profiles,
         },
         "open_gates": [name for name, passed in gates.items() if not passed],
-        "claim_boundary": "P1 has real scalar MIL, six behavior-equivalent fixed-input graphical variants, a fixed-size six-algorithm ATTITUDE_THRUST contract, live full-contract MWORKS MIL, official generated C, and 126-row/20-output SIL equivalence. It is not selectable and does not yet prove the Gazebo/PX4/MAVROS closed loop.",
+        "claim_boundary": (
+            "P1 has real scalar MIL, six behavior-equivalent fixed-input graphical variants, a fixed-size six-algorithm ATTITUDE_THRUST contract, live full-contract MWORKS MIL, official generated C, 126-row/20-output SIL equivalence, and six independently acknowledged Gazebo/PX4/MAVROS takeoff-hover-land gates. The neural PID runtime uses the declared zero_untrained bounded residual source; it does not claim a trained neural policy."
+            if runtime_gate_passed
+            else "P1 has real scalar MIL, six behavior-equivalent fixed-input graphical variants, a fixed-size six-algorithm ATTITUDE_THRUST contract, live full-contract MWORKS MIL, official generated C, and 126-row/20-output SIL equivalence. It is not selectable until all six declared Gazebo/PX4/MAVROS runtime profiles pass with runtime-acknowledged provenance."
+        ),
     }
     output = RESULT_DIR / "P1_PID_MIL_SUMMARY.json"
     write_json_lf(output, summary)

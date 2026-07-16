@@ -13,6 +13,7 @@ import hashlib
 import importlib.util
 import json
 import math
+import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -21,7 +22,10 @@ import mworks.sysplorer as ModelingPy
 
 
 ROOT = Path(r"C:\Users\HP\Desktop\MoSim")
-RESULT_DIR = ROOT / "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716"
+RESULT_DIR = ROOT / os.environ.get(
+    "MOSIM_PID_ATTITUDE_THRUST_RESULT_DIR",
+    "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716",
+)
 MODEL_DIR = RESULT_DIR / "models"
 RAW_DIR = RESULT_DIR / "raw"
 SIL_DIR = RESULT_DIR / "sil"

@@ -1,7 +1,7 @@
 {
   "schema": "mosim.control_platform.pid_p1_summary.v1",
   "phase": "P1_PID_FAMILY",
-  "status": "partial",
+  "status": "passed",
   "algorithm_ids": [
     "anti_windup",
     "cascade_pid",
@@ -10,8 +10,8 @@
     "gain_scheduled_pid",
     "neural_pid"
   ],
-  "registry_status": "interface_ready",
-  "selectable": false,
+  "registry_status": "runtime_accepted",
+  "selectable": true,
   "gates": {
     "source_core_compile_and_golden_vector": true,
     "registry_interface_ready_nonselectable": true,
@@ -25,9 +25,9 @@
     "six_variant_graphical_equivalence": true,
     "full_attitude_thrust_contract": true,
     "full_attitude_thrust_mworks_codegen_sil": true,
-    "gazebo_px4_mavros_closed_loop": false
+    "gazebo_px4_mavros_closed_loop": true
   },
-  "completed_gate_count": 12,
+  "completed_gate_count": 13,
   "total_gate_count": 13,
   "evidence": {
     "mil": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\mcp_evidence.json",
@@ -38,15 +38,105 @@
     "equivalence": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\pid_graphical_codegen_equivalence.json",
     "variant_graphical_mil": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\pid_graphical_variant_mil.json",
     "six_variant_graphical_equivalence": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\pid_six_variant_graphical_equivalence.json",
-    "attitude_thrust_contract": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_20260716\\PID_ATTITUDE_THRUST_GATE.json",
-    "attitude_thrust_mworks": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_20260716\\MWORKS_ATTITUDE_THRUST_MANIFEST.json",
-    "attitude_thrust_generate": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_20260716\\generate_model_code_result_v2.json",
-    "attitude_thrust_codegen": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_20260716\\sil\\codegen_runtime_check_v2.json",
-    "attitude_thrust_sil": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_20260716\\sil\\sil_equivalence_126_rows_v2.json",
-    "screenshots": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\screenshot_manifest.json"
+    "attitude_thrust_contract": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_ff05_20260716\\PID_ATTITUDE_THRUST_GATE.json",
+    "attitude_thrust_mworks": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_ff05_20260716\\MWORKS_ATTITUDE_THRUST_MANIFEST.json",
+    "attitude_thrust_generate": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_ff05_20260716\\generate_model_code_result_v2.json",
+    "attitude_thrust_codegen": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_ff05_20260716\\sil\\codegen_runtime_check_v2.json",
+    "attitude_thrust_sil": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_ff05_20260716\\sil\\sil_equivalence_126_rows_v2.json",
+    "screenshots": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\screenshot_manifest.json",
+    "gazebo_px4_mavros_runtime_profiles": {
+      "cascade_pid": {
+        "status": "passed",
+        "errors": [],
+        "result_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_cascade_runtime_r4_hover0291_20260716",
+        "metrics": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_cascade_runtime_r4_hover0291_20260716\\PX4CTRL_BASIC_MISSION_METRICS.json",
+        "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_cascade_runtime_r4_hover0291_20260716\\RUN_MANIFEST.json",
+        "provenance": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_cascade_runtime_r4_hover0291_20260716\\PID_GENERATED_RUNTIME_PROVENANCE.json",
+        "steady_hover": {
+          "xy_rmse_m": 0.00920388164203624,
+          "xy_max_m": 0.013971723723445907,
+          "z_abs_rmse_m": 0.017624696389858776,
+          "z_abs_max_m": 0.03508705781557242
+        },
+        "neural_residual_source": "zero_untrained"
+      },
+      "gain_scheduled_pid": {
+        "status": "passed",
+        "errors": [],
+        "result_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_gain_scheduled_runtime_r1_hover0291_20260716",
+        "metrics": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_gain_scheduled_runtime_r1_hover0291_20260716\\PX4CTRL_BASIC_MISSION_METRICS.json",
+        "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_gain_scheduled_runtime_r1_hover0291_20260716\\RUN_MANIFEST.json",
+        "provenance": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_gain_scheduled_runtime_r1_hover0291_20260716\\PID_GENERATED_RUNTIME_PROVENANCE.json",
+        "steady_hover": {
+          "xy_rmse_m": 0.007562154916665358,
+          "xy_max_m": 0.012884583408336495,
+          "z_abs_rmse_m": 0.014173736048012428,
+          "z_abs_max_m": 0.02053684890700369
+        },
+        "neural_residual_source": "zero_untrained"
+      },
+      "fuzzy_pid": {
+        "status": "passed",
+        "errors": [],
+        "result_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_fuzzy_runtime_r1_hover0291_20260716",
+        "metrics": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_fuzzy_runtime_r1_hover0291_20260716\\PX4CTRL_BASIC_MISSION_METRICS.json",
+        "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_fuzzy_runtime_r1_hover0291_20260716\\RUN_MANIFEST.json",
+        "provenance": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_fuzzy_runtime_r1_hover0291_20260716\\PID_GENERATED_RUNTIME_PROVENANCE.json",
+        "steady_hover": {
+          "xy_rmse_m": 0.014190240859973736,
+          "xy_max_m": 0.017325913936341284,
+          "z_abs_rmse_m": 0.016755241252079098,
+          "z_abs_max_m": 0.03320571695830132
+        },
+        "neural_residual_source": "zero_untrained"
+      },
+      "neural_pid": {
+        "status": "passed",
+        "errors": [],
+        "result_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_neural_runtime_r1_hover0291_20260716",
+        "metrics": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_neural_runtime_r1_hover0291_20260716\\PX4CTRL_BASIC_MISSION_METRICS.json",
+        "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_neural_runtime_r1_hover0291_20260716\\RUN_MANIFEST.json",
+        "provenance": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_neural_runtime_r1_hover0291_20260716\\PID_GENERATED_RUNTIME_PROVENANCE.json",
+        "steady_hover": {
+          "xy_rmse_m": 0.013619956852240522,
+          "xy_max_m": 0.018149362126781435,
+          "z_abs_rmse_m": 0.016783892783290233,
+          "z_abs_max_m": 0.03311388058943643
+        },
+        "neural_residual_source": "zero_untrained"
+      },
+      "anti_windup": {
+        "status": "passed",
+        "errors": [],
+        "result_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_anti_windup_runtime_r4_xbias012_hover0291_20260716",
+        "metrics": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_anti_windup_runtime_r4_xbias012_hover0291_20260716\\PX4CTRL_BASIC_MISSION_METRICS.json",
+        "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_anti_windup_runtime_r4_xbias012_hover0291_20260716\\RUN_MANIFEST.json",
+        "provenance": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_anti_windup_runtime_r4_xbias012_hover0291_20260716\\PID_GENERATED_RUNTIME_PROVENANCE.json",
+        "steady_hover": {
+          "xy_rmse_m": 0.014941094339178205,
+          "xy_max_m": 0.024476238654927006,
+          "z_abs_rmse_m": 0.012563740001250146,
+          "z_abs_max_m": 0.020440081174186053
+        },
+        "neural_residual_source": "zero_untrained"
+      },
+      "feedforward_profile": {
+        "status": "passed",
+        "errors": [],
+        "result_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_feedforward_runtime_r6_ff05_hover0291_20260716",
+        "metrics": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_feedforward_runtime_r6_ff05_hover0291_20260716\\PX4CTRL_BASIC_MISSION_METRICS.json",
+        "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_feedforward_runtime_r6_ff05_hover0291_20260716\\RUN_MANIFEST.json",
+        "provenance": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\sunray_ros1\\p1_pid_feedforward_runtime_r6_ff05_hover0291_20260716\\PID_GENERATED_RUNTIME_PROVENANCE.json",
+        "steady_hover": {
+          "xy_rmse_m": 0.009213526662312416,
+          "xy_max_m": 0.015319094344000068,
+          "z_abs_rmse_m": 0.014233421644086397,
+          "z_abs_max_m": 0.022042062667167794
+        },
+        "neural_residual_source": "zero_untrained"
+      }
+    }
   },
-  "open_gates": [
-    "gazebo_px4_mavros_closed_loop"
-  ],
-  "claim_boundary": "P1 has real scalar MIL, six behavior-equivalent fixed-input graphical variants, a fixed-size six-algorithm ATTITUDE_THRUST contract, live full-contract MWORKS MIL, official generated C, and 126-row/20-output SIL equivalence. It is not selectable and does not yet prove the Gazebo/PX4/MAVROS closed loop."
+  "open_gates": [],
+  "claim_boundary": "P1 has real scalar MIL, six behavior-equivalent fixed-input graphical variants, a fixed-size six-algorithm ATTITUDE_THRUST contract, live full-contract MWORKS MIL, official generated C, 126-row/20-output SIL equivalence, and six independently acknowledged Gazebo/PX4/MAVROS takeoff-hover-land gates. The neural PID runtime uses the declared zero_untrained bounded residual source; it does not claim a trained neural policy."
 }

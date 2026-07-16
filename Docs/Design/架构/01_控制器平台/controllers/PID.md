@@ -43,3 +43,26 @@ Diff three-UAV: Results/sunray_ros1/g9a_official_pid_diff_swarm_3uav_20260629_14
 
 Forbidden claims: PID variants are separate profiles; improved PID, fuzzy PID
 and gain-scheduled PID cannot inherit baseline PID evidence automatically.
+
+## P1 extended PID family closeout
+
+The six extended PID profiles are runtime accepted through the same fixed-size
+`ATTITUDE_THRUST` contract. Each profile has independent MWORKS MIL, official
+generated C, SIL equivalence, generated-backend provenance, and a real
+Gazebo/PX4/MAVROS `takeoff_hover_land` run. The P1 summary reports `13/13`
+gates passed and `selectable=true`:
+
+```text
+summary: Results/control_platform/p1_pid_mworks_20260716/P1_PID_MIL_SUMMARY.json
+cascade_pid: Results/sunray_ros1/p1_pid_cascade_runtime_r4_hover0291_20260716
+gain_scheduled_pid: Results/sunray_ros1/p1_pid_gain_scheduled_runtime_r1_hover0291_20260716
+fuzzy_pid: Results/sunray_ros1/p1_pid_fuzzy_runtime_r1_hover0291_20260716
+neural_pid: Results/sunray_ros1/p1_pid_neural_runtime_r1_hover0291_20260716
+anti_windup: Results/sunray_ros1/p1_pid_anti_windup_runtime_r4_xbias012_hover0291_20260716
+feedforward_profile: Results/sunray_ros1/p1_pid_feedforward_runtime_r6_ff05_hover0291_20260716
+```
+
+This closes the declared takeoff-hover-land release gate for the six profiles;
+it does not replace trajectory, disturbance, or fault-campaign evidence. The
+Neural PID run uses the declared bounded `zero_untrained` residual source and
+must not be described as a trained neural controller.

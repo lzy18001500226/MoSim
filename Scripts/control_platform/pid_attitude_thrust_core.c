@@ -166,7 +166,7 @@ void mosim_pid_attitude_thrust_default_params(
             params->velocity[axis].anti_windup_gain = 1.0;
         }
     } else if (algorithm_id == MOSIM_PID_FEEDFORWARD_PROFILE) {
-        for (axis = 0; axis < 3; ++axis) params->velocity[axis].feedforward_gain = 1.0;
+        for (axis = 0; axis < 3; ++axis) params->velocity[axis].feedforward_gain = 0.5;
     }
     params->mass_kg = 1.0;
     params->gravity_mps2 = 9.80665;
