@@ -14,6 +14,9 @@ def test_summary_preserves_unaccepted_claim_boundaries() -> None:
     assert 'attitude_thrust["lifecycle_fail_closed"]' in text
     assert 'attitude_thrust_mworks["sample_count"] == 126' in text
     assert 'attitude_thrust_mworks["output_count"] == 20' in text
+    assert "len(generated_input_fields) == 41" in text
+    assert "physical_parameter_inputs.issubset(generated_input_fields)" in text
+    assert "== 2520" in text
     assert 'attitude_thrust_sil["comparison"]["pass"]' in text
     assert '"gazebo_px4_mavros_closed_loop": False' in text
 
@@ -30,8 +33,9 @@ def test_summary_indexes_required_evidence() -> None:
         "pid_six_variant_graphical_equivalence.json",
         "PID_ATTITUDE_THRUST_GATE.json",
         "MWORKS_ATTITUDE_THRUST_MANIFEST.json",
-        "codegen_runtime_check.json",
-        "sil_equivalence_126_rows.json",
+        "generate_model_code_result_v2.json",
+        "codegen_runtime_check_v2.json",
+        "sil_equivalence_126_rows_v2.json",
         "screenshot_manifest.json",
     ):
         assert name in text

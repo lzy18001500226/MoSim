@@ -25,7 +25,7 @@ RESULT_DIR = ROOT / "Results/control_platform/p1_pid_attitude_thrust_mworks_2026
 MODEL_DIR = RESULT_DIR / "models"
 RAW_DIR = RESULT_DIR / "raw"
 SIL_DIR = RESULT_DIR / "sil"
-CODEGEN_ROOT = RESULT_DIR / "generated_c"
+CODEGEN_ROOT = RESULT_DIR / "generated_c_v2"
 BRIDGE_NAME = "MoSim_PID_AttitudeThrust_CFunction_Sysblock"
 
 
@@ -60,6 +60,13 @@ def write_json_lf(path: Path, payload: dict) -> None:
         stream.write(json.dumps(payload, indent=2) + "\n")
 
 
+def normalize_codegen_archive(code_dir: Path) -> None:
+    for path in sorted(item for item in code_dir.rglob("*") if item.is_file()):
+        text = path.read_text(encoding="utf-8", errors="strict")
+        normalized = "\n".join(line.rstrip(" \t") for line in text.splitlines()) + "\n"
+        path.write_text(normalized, encoding="utf-8", newline="\n")
+
+
 def generated_globals(code_dir: Path) -> tuple[str, str]:
     header = (code_dir / f"{BRIDGE_NAME}.h").read_text(encoding="utf-8", errors="replace")
     names = re.findall(r"^extern\s+struct\s+\w+\s+(\w+)\s*;", header, re.MULTILINE)
@@ -74,6 +81,7 @@ def main() -> dict:
         directory.mkdir(parents=True, exist_ok=True)
 
     code_dir = CODEGEN_ROOT / BRIDGE_NAME
+    normalize_codegen_archive(code_dir)
     input_global, output_global = generated_globals(code_dir)
     all_rows = []
     input_sequence = []
@@ -83,7 +91,7 @@ def main() -> dict:
         model_name = f"MoSim_PID_{algorithm_name.upper()}_ATTITUDE_THRUST_MIL"
         model_path = MODEL_DIR / f"{model_name}.mo"
         if not ModelingPy.ClassExist(model_name):
-            ModelingPy.OpenModel(str(model_path))
+            ModelingPy.OpenModelFile(str(model_path))
 
         check_result = ModelingPy.CheckModel(model_name)
         if not check_ok(check_result):

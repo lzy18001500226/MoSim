@@ -17,7 +17,9 @@ def test_builder_declares_complete_typed_contract() -> None:
     for name in (
         "position_x", "velocity_x", "attitude_w", "angular_velocity_x",
         "reference_position_x", "reference_velocity_x", "reference_acceleration_x",
-        "reference_yaw", "schedule_x", "fuzzy_error_x", "neural_residual_x",
+        "reference_yaw", "mass_kg", "gravity_mps2", "max_tilt_rad",
+        "min_collective_thrust_n", "max_collective_thrust_n",
+        "schedule_x", "fuzzy_error_x", "neural_residual_x",
         "enable", "reset",
     ):
         assert name in MODULE.INPUTS
@@ -35,6 +37,11 @@ def test_embedded_bridge_uses_project_core_without_backend_dependencies() -> Non
     assert "mosim_pid_attitude_thrust_step" in text
     assert "static MosimPidAttitudeThrustState states[7]" in text
     assert "attitude_clamp_value" in text
+    assert "params.mass_kg = mass_kg" in text
+    assert "params.gravity_mps2 = gravity_mps2" in text
+    assert "params.max_tilt_rad = max_tilt_rad" in text
+    assert "params.min_collective_thrust_n = min_collective_thrust_n" in text
+    assert "params.max_collective_thrust_n = max_collective_thrust_n" in text
     for forbidden in ('#include "pid_unified_core.h"', '#include "pid_attitude_thrust_core.h"', "mavros", "ros::", "uORB"):
         assert forbidden not in text
 
@@ -42,3 +49,4 @@ def test_embedded_bridge_uses_project_core_without_backend_dependencies() -> Non
 def test_builder_normalizes_generated_model_text() -> None:
     source = SCRIPT.read_text(encoding="utf-8")
     assert 'line.rstrip() for line in bridge.splitlines()' in source
+    assert 'codegen_dir = result_dir / "generated_c_v2"' in source

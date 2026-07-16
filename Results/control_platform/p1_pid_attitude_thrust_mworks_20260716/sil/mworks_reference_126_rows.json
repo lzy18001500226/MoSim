@@ -1,7 +1,7 @@
 {
   "schema": "mosim.pid_attitude_thrust_mworks_reference.v1",
   "source_label": "MWORKS_MCP_LIVE",
-  "created_at": "2026-07-16T07:35:16.826346+00:00",
+  "created_at": "2026-07-16T08:00:37.537951+00:00",
   "model_count": 6,
   "sample_count": 126,
   "output_count": 20,

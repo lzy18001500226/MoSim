@@ -20,6 +20,8 @@ INPUTS = [
     "reference_velocity_x", "reference_velocity_y", "reference_velocity_z",
     "reference_acceleration_x", "reference_acceleration_y", "reference_acceleration_z",
     "reference_yaw",
+    "mass_kg", "gravity_mps2", "max_tilt_rad",
+    "min_collective_thrust_n", "max_collective_thrust_n",
     "schedule_x", "schedule_y", "schedule_z",
     "fuzzy_error_x", "fuzzy_error_y", "fuzzy_error_z",
     "neural_residual_x", "neural_residual_y", "neural_residual_z",
@@ -52,6 +54,8 @@ BASE_INPUTS = {
     "reference_velocity_x": 0.2, "reference_velocity_y": -0.1, "reference_velocity_z": 0.0,
     "reference_acceleration_x": 0.6, "reference_acceleration_y": -0.3, "reference_acceleration_z": 0.2,
     "reference_yaw": 0.3,
+    "mass_kg": 1.0, "gravity_mps2": 9.80665, "max_tilt_rad": 0.5235987755982988,
+    "min_collective_thrust_n": 0.0, "max_collective_thrust_n": 19.6133,
     "schedule_x": 0.5, "schedule_y": 0.4, "schedule_z": 0.3,
     "fuzzy_error_x": 0.4, "fuzzy_error_y": -0.3, "fuzzy_error_z": 0.2,
     "neural_residual_x": 0.1, "neural_residual_y": -0.2, "neural_residual_z": 0.3,
@@ -120,6 +124,11 @@ void MosimPidAttitudeThrustStepScalar(
     input.enable = enable != 0.0;
     input.reset = reset != 0.0;
     mosim_pid_attitude_thrust_default_params(id, &params);
+    params.mass_kg = mass_kg;
+    params.gravity_mps2 = gravity_mps2;
+    params.max_tilt_rad = max_tilt_rad;
+    params.min_collective_thrust_n = min_collective_thrust_n;
+    params.max_collective_thrust_n = max_collective_thrust_n;
     if (id < 1 || id > 6 || mosim_pid_attitude_thrust_step(&params, &states[id], &input, &output) != 0) {{
         memset(&output, 0, sizeof(output));
         output.desired_attitude_enu_flu_wxyz.w = 1.0;
@@ -190,7 +199,7 @@ def main() -> int:
     args = parser.parse_args()
     result_dir = (ROOT / args.result_dir).resolve()
     model_dir = result_dir / "models"
-    codegen_dir = result_dir / "generated_c"
+    codegen_dir = result_dir / "generated_c_v2"
     model_dir.mkdir(parents=True, exist_ok=True)
     codegen_dir.mkdir(parents=True, exist_ok=True)
     builder = load_generic_builder()

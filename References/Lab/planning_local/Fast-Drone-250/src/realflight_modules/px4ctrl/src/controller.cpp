@@ -7,6 +7,8 @@ extern "C" {
 #include "G9_Family_CFunction_Sysblock_private.h"
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_G10_BDE_FAMILY)
 #include "G10_BDE_Family_CFunction_Sysblock_StateIso_private.h"
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
+#include "MoSim_PID_AttitudeThrust_CFunction_Sysblock_private.h"
 #else
 #include "PX4CTRL_Core_CFunction_Sysblock_private.h"
 #endif
@@ -25,6 +27,37 @@ constexpr int kG9NmpcOuter = 6;
 constexpr int kG10L1Awff = 7;
 constexpr int kG10SafetyFilter = 8;
 constexpr int kG10FaultAllocation = 9;
+
+constexpr int kPidCascade = 1;
+constexpr int kPidGainScheduled = 2;
+constexpr int kPidFuzzy = 3;
+constexpr int kPidNeural = 4;
+constexpr int kPidAntiWindup = 5;
+constexpr int kPidFeedforwardProfile = 6;
+
+int pid_controller_id_from_mode(const std::string &core_mode)
+{
+  if (core_mode == "gain_scheduled_pid") return kPidGainScheduled;
+  if (core_mode == "fuzzy_pid") return kPidFuzzy;
+  if (core_mode == "neural_pid") return kPidNeural;
+  if (core_mode == "anti_windup") return kPidAntiWindup;
+  if (core_mode == "feedforward_profile") return kPidFeedforwardProfile;
+  return kPidCascade;
+}
+
+const char *pid_controller_name_from_id(const int controller_id)
+{
+  switch (controller_id)
+  {
+    case kPidCascade: return "cascade_pid";
+    case kPidGainScheduled: return "gain_scheduled_pid";
+    case kPidFuzzy: return "fuzzy_pid";
+    case kPidNeural: return "neural_pid";
+    case kPidAntiWindup: return "anti_windup";
+    case kPidFeedforwardProfile: return "feedforward_profile";
+    default: return "unknown";
+  }
+}
 
 int g9_controller_id_from_mode(const std::string &core_mode)
 {
@@ -65,6 +98,7 @@ int g9_controller_id_from_mode(const std::string &core_mode)
   return kG9OfficialPid;
 }
 
+#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_G9_FAMILY)
 const char *g9_controller_name_from_id(const int controller_id)
 {
   switch (controller_id)
@@ -78,6 +112,7 @@ const char *g9_controller_name_from_id(const int controller_id)
     default: return "unknown";
   }
 }
+#endif
 
 double clamp_double(double value, double lo, double hi)
 {
@@ -136,11 +171,16 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
   use_safety_filter_core_ = (core_mode == "safety_filter");
   use_fault_allocation_core_ = (core_mode == "fault_allocation");
   generated_family_controller_id_ = g9_controller_id_from_mode(core_mode);
+#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
+  generated_family_controller_id_ = pid_controller_id_from_mode(core_mode);
+#endif
   ros::param::param<int>("~mosim_generated_family_controller_id",
                          generated_family_controller_id_,
                          generated_family_controller_id_);
 #if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_G10_BDE_FAMILY)
   const int max_generated_family_controller_id = kG10FaultAllocation;
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
+  const int max_generated_family_controller_id = kPidFeedforwardProfile;
 #else
   const int max_generated_family_controller_id = kG9NmpcOuter;
 #endif
@@ -161,6 +201,14 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
                                use_l1_awff_core_ ||
                                use_safety_filter_core_ ||
                                use_fault_allocation_core_;
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
+  use_mosim_generated_core_ = use_mosim_generated_core_ ||
+                               core_mode == "cascade_pid" ||
+                               core_mode == "gain_scheduled_pid" ||
+                               core_mode == "fuzzy_pid" ||
+                               core_mode == "neural_pid" ||
+                               core_mode == "anti_windup" ||
+                               core_mode == "feedforward_profile";
 #endif
   ros::param::param<double>("~smc/lambda_x", smc_lambda_[0], 2.0);
   ros::param::param<double>("~smc/lambda_y", smc_lambda_[1], 2.0);
@@ -254,6 +302,18 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
                     << " runtime_loaded_symbol=G9_Family_CFunction_Sysblock::Step"
                     << " controller_id=" << generated_family_controller_id_
                     << " controller_name=" << g9_controller_name_from_id(generated_family_controller_id_));
+  }
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
+  if (use_mosim_generated_core_)
+  {
+    ROS_INFO_STREAM("[mosim_generated_runtime] backend=mworks_generated_c"
+                    << " build_backend=pid_attitude_thrust"
+                    << " build_backend_definition=MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST"
+                    << " generated_model_name=MoSim_PID_AttitudeThrust_CFunction_Sysblock"
+                    << " runtime_loaded_symbol=MoSim_PID_AttitudeThrust_CFunction_Sysblock::Step"
+                    << " controller_id=" << generated_family_controller_id_
+                    << " controller_name=" << pid_controller_name_from_id(generated_family_controller_id_)
+                    << " neural_residual_source=zero_untrained");
   }
 #endif
   ROS_INFO_STREAM("[px4ctrl] mosim_generated_core_mode=" << core_mode
@@ -1424,11 +1484,92 @@ LinearControl::calculateGeneratedCoreControl(const Desired_State_t &des,
     const Imu_Data_t &imu,
     Controller_Output_t &u)
 {
+#if !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
   const double effective_hover_percentage = param_.gra / thr2acc_;
+#endif
   const double dt = 0.01;
   const bool reset_this_cycle = generated_core_reset_pending_;
 
-#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_G9_FAMILY)
+#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
+  const Eigen::Vector3d position_error = des.p - odom.p;
+  const double full_collective_thrust_n = std::max(param_.mass * thr2acc_, 1.0e-6);
+  unction_sysblockGbIn.algorithm_id_in = static_cast<double>(generated_family_controller_id_);
+  unction_sysblockGbIn.dt_in = dt;
+  unction_sysblockGbIn.position_x_in = odom.p(0);
+  unction_sysblockGbIn.position_y_in = odom.p(1);
+  unction_sysblockGbIn.position_z_in = odom.p(2);
+  unction_sysblockGbIn.velocity_x_in = odom.v(0);
+  unction_sysblockGbIn.velocity_y_in = odom.v(1);
+  unction_sysblockGbIn.velocity_z_in = odom.v(2);
+  unction_sysblockGbIn.attitude_w_in = odom.q.w();
+  unction_sysblockGbIn.attitude_x_in = odom.q.x();
+  unction_sysblockGbIn.attitude_y_in = odom.q.y();
+  unction_sysblockGbIn.attitude_z_in = odom.q.z();
+  unction_sysblockGbIn.angular_velocity_x_in = imu.w(0);
+  unction_sysblockGbIn.angular_velocity_y_in = imu.w(1);
+  unction_sysblockGbIn.angular_velocity_z_in = imu.w(2);
+  unction_sysblockGbIn.reference_position_x_in = des.p(0);
+  unction_sysblockGbIn.reference_position_y_in = des.p(1);
+  unction_sysblockGbIn.reference_position_z_in = des.p(2);
+  unction_sysblockGbIn.reference_velocity_x_in = des.v(0);
+  unction_sysblockGbIn.reference_velocity_y_in = des.v(1);
+  unction_sysblockGbIn.reference_velocity_z_in = des.v(2);
+  unction_sysblockGbIn.reference_acceleration_x_in = des.a(0);
+  unction_sysblockGbIn.reference_acceleration_y_in = des.a(1);
+  unction_sysblockGbIn.reference_acceleration_z_in = des.a(2);
+  unction_sysblockGbIn.reference_yaw_in = des.yaw;
+  unction_sysblockGbIn.mass_kg_in = param_.mass;
+  unction_sysblockGbIn.gravity_mps2_in = param_.gra;
+  unction_sysblockGbIn.max_tilt_rad_in = param_.max_angle > 0.0 ? param_.max_angle : M_PI / 2.0 - 1.0e-6;
+  unction_sysblockGbIn.min_collective_thrust_n_in = 0.0;
+  unction_sysblockGbIn.max_collective_thrust_n_in = full_collective_thrust_n;
+  unction_sysblockGbIn.schedule_x_in = clamp_double(std::abs(position_error(0)), 0.0, 1.0);
+  unction_sysblockGbIn.schedule_y_in = clamp_double(std::abs(position_error(1)), 0.0, 1.0);
+  unction_sysblockGbIn.schedule_z_in = clamp_double(std::abs(position_error(2)), 0.0, 1.0);
+  unction_sysblockGbIn.fuzzy_error_x_in = clamp_double(position_error(0), -1.0, 1.0);
+  unction_sysblockGbIn.fuzzy_error_y_in = clamp_double(position_error(1), -1.0, 1.0);
+  unction_sysblockGbIn.fuzzy_error_z_in = clamp_double(position_error(2), -1.0, 1.0);
+  unction_sysblockGbIn.neural_residual_x_in = 0.0;
+  unction_sysblockGbIn.neural_residual_y_in = 0.0;
+  unction_sysblockGbIn.neural_residual_z_in = 0.0;
+  unction_sysblockGbIn.enable_in = 1.0;
+  unction_sysblockGbIn.reset_in = reset_this_cycle ? 1.0 : 0.0;
+
+  Step();
+  generated_core_reset_pending_ = false;
+
+  const bool generated_output_valid =
+      function_sysblockGbOut.status_code_out == 0.0 &&
+      static_cast<int>(function_sysblockGbOut.algorithm_id_out_out) == generated_family_controller_id_ &&
+      std::isfinite(function_sysblockGbOut.desired_collective_thrust_n_out);
+  if (!generated_output_valid)
+  {
+    ROS_ERROR_THROTTLE(1.0, "PID ATTITUDE_THRUST generated backend returned invalid status or profile id");
+    u.q = imu.q;
+    u.bodyrates = Eigen::Vector3d::Zero();
+    u.thrust = 0.0;
+  }
+  else
+  {
+    u.q = Eigen::Quaterniond(
+        function_sysblockGbOut.desired_attitude_w_out,
+        function_sysblockGbOut.desired_attitude_x_out,
+        function_sysblockGbOut.desired_attitude_y_out,
+        function_sysblockGbOut.desired_attitude_z_out);
+    u.q.normalize();
+    u.bodyrates = bodyrateAttitudeFeedback(u.q, imu.q, Eigen::Vector3d::Zero());
+    u.thrust = clamp_double(
+        function_sysblockGbOut.desired_collective_thrust_n_out / full_collective_thrust_n,
+        0.0, 1.0);
+  }
+
+  debug_msg_.des_v_x = des.v(0);
+  debug_msg_.des_v_y = des.v(1);
+  debug_msg_.des_v_z = des.v(2);
+  debug_msg_.des_a_x = function_sysblockGbOut.desired_acceleration_x_out;
+  debug_msg_.des_a_y = function_sysblockGbOut.desired_acceleration_y_out;
+  debug_msg_.des_a_z = function_sysblockGbOut.desired_acceleration_z_out;
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_G9_FAMILY)
   GbIn.controller_id_in = static_cast<double>(generated_family_controller_id_);
   GbIn.dt_in = dt;
   GbIn.position_x_in = odom.p(0);

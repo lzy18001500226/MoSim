@@ -8,21 +8,21 @@
   "output_count": 20,
   "reference_json": "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/sil/mworks_reference_126_rows.json",
   "runtime_schema_json": "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/sil/runtime_schema_126_rows.json",
-  "generated_code_dir": "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/generated_c/MoSim_PID_AttitudeThrust_CFunction_Sysblock",
+  "generated_code_dir": "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/generated_c_v2/MoSim_PID_AttitudeThrust_CFunction_Sysblock",
   "generated_code_archive_normalization": "LF line endings and trailing horizontal whitespace removed after GenerateModelCode for Git hygiene; executable tokens are unchanged.",
   "generated_source_hashes": {
-    "extern_inc/momodel_extern_ince1.c": "2ce4b74966443176aa8d64e154fa7ed72687e8dfa8e87a0a5a136e0f2521adbc",
-    "ExternalCResource.json": "449013d35720e489e35ded33fb9be9678388c140d2f8c17593375abd1811dfbb",
+    "extern_inc/momodel_extern_ince1.c": "e12e031fea469c102af9a9cdbae0358f632a6512c407d63ea4b2a903cd07b5cc",
+    "ExternalCResource.json": "2d9bb999386e9f4069e283bd62cad1171007527b3ad67eb9b7c8ae9ba4185996",
     "ExternalResources.xml": "53106cd288611dab590b41c765ad77dbbaf8485f83b0b758d3a59135371e9908",
-    "MoSim_PID_AttitudeThrust_CFunction_Sysblock.c": "f62a1f7945a7cd12999372c8bca88fd5b7612955817bd7c4fb400a9ec79cd135",
-    "MoSim_PID_AttitudeThrust_CFunction_Sysblock.h": "3939bdf6d868f047732d7f246cb6ff3c5189858985d191a01c5cb7364507bcfd",
-    "MoSim_PID_AttitudeThrust_CFunction_Sysblock_data.c": "9997aeee3a44354d6f45b738b9a2d1fec9cfdac535a86661926044e71cb8394e",
-    "MoSim_PID_AttitudeThrust_CFunction_Sysblock_extern_include.h": "a6e093e6b9e38ec50bf31d14eca4d40a6ea57da474be4185577e186a7407c895",
-    "MoSim_PID_AttitudeThrust_CFunction_Sysblock_private.h": "21d775c7a2bae8db7798c0552a43c09dd1a3ad06f20b45364c4a9032fdd08394",
-    "motrace.json": "c351ea666f9b4183dc0a950e9c54316e672703b276d688daf19219c4351b5b79",
-    "mwb_main.c": "41aa83c3f395731fe32fb53cb96f0af95e69bd983c59668896d4db2234ba23fb",
-    "mwb_runtime.h": "fe2fd7b1bf399e8dfd63529ba664620b6956dac45b24dd805b92793e8309e98c",
-    "mwb_types.h": "4148e6f5e298b6baf80dc375100fdb2c34a077274fce682ea949e987d7f9cb02"
+    "MoSim_PID_AttitudeThrust_CFunction_Sysblock_data.c": "93fcd2819f6482049025460b2e1628b2b6c27157d83f80c60940491904183859",
+    "MoSim_PID_AttitudeThrust_CFunction_Sysblock_extern_include.h": "888ee8e02536dc724572c5e87511beca09e79c49755ead3dff707f19d479e575",
+    "MoSim_PID_AttitudeThrust_CFunction_Sysblock_private.h": "32dcd2b5a01e1f052d1af51f8e00e7d5c62d72e184bdafbddd5b75eb257bf2c6",
+    "MoSim_PID_AttitudeThrust_CFunction_Sysblock.c": "7d6b3e85d9e99a20bc7d60dfb3168df0c83330e8475445b5d817c952ff4a8f39",
+    "MoSim_PID_AttitudeThrust_CFunction_Sysblock.h": "6c935ef99a5a4fc704973d69b5c3212ec9b691138b5a274569da24b80850c50b",
+    "motrace.json": "ad17bee9ab5c1c2bdad6b97415b7a11a10a1d8af9d4938d3e0a2996bdd3357e2",
+    "mwb_main.c": "a358d9377e0426b6f1e5ef5b372bb0d1662ee58ee0741e12c36537408ac5b222",
+    "mwb_runtime.h": "a673ad72a6709e151157574c5a29b7257ee505a18bc5fd515b30089e1d9aa3c4",
+    "mwb_types.h": "0962ab38eff7d22e749de72ddd174889199bf211707583577985ce866e39f717"
   },
   "fixtures": {
     "cascade_pid": {

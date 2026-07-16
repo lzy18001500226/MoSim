@@ -40,8 +40,9 @@
     "six_variant_graphical_equivalence": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\pid_six_variant_graphical_equivalence.json",
     "attitude_thrust_contract": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_20260716\\PID_ATTITUDE_THRUST_GATE.json",
     "attitude_thrust_mworks": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_20260716\\MWORKS_ATTITUDE_THRUST_MANIFEST.json",
-    "attitude_thrust_codegen": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_20260716\\sil\\codegen_runtime_check.json",
-    "attitude_thrust_sil": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_20260716\\sil\\sil_equivalence_126_rows.json",
+    "attitude_thrust_generate": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_20260716\\generate_model_code_result_v2.json",
+    "attitude_thrust_codegen": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_20260716\\sil\\codegen_runtime_check_v2.json",
+    "attitude_thrust_sil": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_20260716\\sil\\sil_equivalence_126_rows_v2.json",
     "screenshots": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\screenshot_manifest.json"
   },
   "open_gates": [

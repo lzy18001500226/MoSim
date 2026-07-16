@@ -25,7 +25,7 @@ catkin_package(
 
 set(MOSIM_PROJECT_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../../../../..")
 set(MOSIM_PX4CTRL_GENERATED_BACKEND "legacy_px4ctrl"
-  CACHE STRING "MoSim generated controller backend: legacy_px4ctrl, g9_family, or g10_bde_family")
+  CACHE STRING "MoSim generated controller backend: legacy_px4ctrl, g9_family, g10_bde_family, or pid_attitude_thrust")
 set(MOSIM_PX4CTRL_GENERATED_DIR
   "${MOSIM_PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_mworks_goal5_m4a_cfunction_20260629_092411/px4ctrl_core_cfunction_codegen_strict/PX4CTRL_Core_CFunction_Sysblock"
   CACHE PATH "Accepted MoSim MWORKS CFunction generated px4ctrl_core directory")
@@ -35,6 +35,9 @@ set(MOSIM_PX4CTRL_G9_FAMILY_GENERATED_DIR
 set(MOSIM_PX4CTRL_G10_BDE_FAMILY_GENERATED_DIR
   "${MOSIM_PROJECT_ROOT}/Results/g10/min_enhancements_v1/g10bde_mworks_codegen_stateiso_20260701_work/g10_bde_family_cfunction_codegen_strict/G10_BDE_Family_CFunction_Sysblock_StateIso"
   CACHE PATH "Accepted MoSim MWORKS CFunction generated G10-B/D/E controller-family directory")
+set(MOSIM_PX4CTRL_PID_ATTITUDE_THRUST_GENERATED_DIR
+  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/generated_c_v2/MoSim_PID_AttitudeThrust_CFunction_Sysblock"
+  CACHE PATH "Accepted MoSim MWORKS CFunction generated PID ATTITUDE_THRUST directory")
 set(MOSIM_PX4CTRL_GOLDEN_SLICE_DIR
   "${MOSIM_PROJECT_ROOT}/Scripts/sunray/px4ctrl_golden_slice"
   CACHE PATH "MoSim platform-independent px4ctrl/G9 controller core directory")
@@ -51,8 +54,12 @@ elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "g10_bde_family")
   set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_G10_BDE_FAMILY_GENERATED_DIR}")
   set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "G10_BDE_Family_CFunction_Sysblock_StateIso")
   add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_G10_BDE_FAMILY=1)
+elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "pid_attitude_thrust")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_PID_ATTITUDE_THRUST_GENERATED_DIR}")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "MoSim_PID_AttitudeThrust_CFunction_Sysblock")
+  add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST=1)
 else()
-  message(FATAL_ERROR "Unsupported MOSIM_PX4CTRL_GENERATED_BACKEND=${MOSIM_PX4CTRL_GENERATED_BACKEND}; expected legacy_px4ctrl, g9_family, or g10_bde_family")
+  message(FATAL_ERROR "Unsupported MOSIM_PX4CTRL_GENERATED_BACKEND=${MOSIM_PX4CTRL_GENERATED_BACKEND}; expected legacy_px4ctrl, g9_family, g10_bde_family, or pid_attitude_thrust")
 endif()
 
 message(STATUS "MoSim px4ctrl generated backend: ${MOSIM_PX4CTRL_GENERATED_BACKEND}")

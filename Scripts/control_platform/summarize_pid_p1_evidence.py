@@ -53,12 +53,23 @@ def main() -> int:
     attitude_thrust_mworks = json.loads(
         (ATTITUDE_THRUST_MWORKS_DIR / "MWORKS_ATTITUDE_THRUST_MANIFEST.json").read_text(encoding="utf-8")
     )
+    attitude_thrust_generate = json.loads(
+        (ATTITUDE_THRUST_MWORKS_DIR / "generate_model_code_result_v2.json").read_text(encoding="utf-8")
+    )
     attitude_thrust_codegen = json.loads(
-        (ATTITUDE_THRUST_MWORKS_DIR / "sil/codegen_runtime_check.json").read_text(encoding="utf-8")
+        (ATTITUDE_THRUST_MWORKS_DIR / "sil/codegen_runtime_check_v2.json").read_text(encoding="utf-8")
     )
     attitude_thrust_sil = json.loads(
-        (ATTITUDE_THRUST_MWORKS_DIR / "sil/sil_equivalence_126_rows.json").read_text(encoding="utf-8")
+        (ATTITUDE_THRUST_MWORKS_DIR / "sil/sil_equivalence_126_rows_v2.json").read_text(encoding="utf-8")
     )
+    generated_input_fields = next(iter(attitude_thrust_codegen["input_globals"].values()))["fields"]
+    physical_parameter_inputs = {
+        "mass_kg_in",
+        "gravity_mps2_in",
+        "max_tilt_rad_in",
+        "min_collective_thrust_n_in",
+        "max_collective_thrust_n_in",
+    }
 
     activation = next((RESULT_DIR / "screenshots/activation").glob("*.png"))
     check_sim = next((RESULT_DIR / "screenshots/check_sim").glob("*.png"))
@@ -113,12 +124,20 @@ def main() -> int:
             and attitude_thrust_mworks["fixture_count"] == 6
             and attitude_thrust_mworks["sample_count"] == 126
             and attitude_thrust_mworks["output_count"] == 20
+            and attitude_thrust_generate["result"] is True
+            and attitude_thrust_generate["output_root"].endswith("generated_c_v2")
             and attitude_thrust_codegen["ok"]
+            and len(generated_input_fields) == 41
+            and physical_parameter_inputs.issubset(generated_input_fields)
             and attitude_thrust_codegen["compile"]["ok"]
             and attitude_thrust_codegen["runtime_smoke"]["ok"]
             and attitude_thrust_sil["ok"]
             and attitude_thrust_sil["comparison"]["pass"]
             and len(attitude_thrust_sil["comparison"]["comparisons"]) == 126
+            and sum(
+                len(row["fields"])
+                for row in attitude_thrust_sil["comparison"]["comparisons"]
+            ) == 2520
         ),
         "gazebo_px4_mavros_closed_loop": False,
     }
@@ -143,8 +162,9 @@ def main() -> int:
             "six_variant_graphical_equivalence": str(LOG_DIR / "pid_six_variant_graphical_equivalence.json"),
             "attitude_thrust_contract": str(ATTITUDE_THRUST_GATE),
             "attitude_thrust_mworks": str(ATTITUDE_THRUST_MWORKS_DIR / "MWORKS_ATTITUDE_THRUST_MANIFEST.json"),
-            "attitude_thrust_codegen": str(ATTITUDE_THRUST_MWORKS_DIR / "sil/codegen_runtime_check.json"),
-            "attitude_thrust_sil": str(ATTITUDE_THRUST_MWORKS_DIR / "sil/sil_equivalence_126_rows.json"),
+            "attitude_thrust_generate": str(ATTITUDE_THRUST_MWORKS_DIR / "generate_model_code_result_v2.json"),
+            "attitude_thrust_codegen": str(ATTITUDE_THRUST_MWORKS_DIR / "sil/codegen_runtime_check_v2.json"),
+            "attitude_thrust_sil": str(ATTITUDE_THRUST_MWORKS_DIR / "sil/sil_equivalence_126_rows_v2.json"),
             "screenshots": str(screenshot_path),
         },
         "open_gates": [name for name, passed in gates.items() if not passed],
