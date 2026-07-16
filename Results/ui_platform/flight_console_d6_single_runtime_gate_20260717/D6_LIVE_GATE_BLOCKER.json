@@ -1,0 +1,14 @@
+{
+  "schema": "mosim.ui_platform.d6_live_gate.v1",
+  "status": "blocked_shared_runtime_busy",
+  "attempted_run_id": "run-20260717-055004-819a3654",
+  "experiment_profile_id": "cascade_pid_figure8_generated_c_v1",
+  "profile_hash": "2ecbb98a086e0438a0be132e255c587d48b6e624dfd1cd61f95e8d91d0ba4a41",
+  "runtime_exit_code": 11,
+  "blocking_run_id": "p8_formation_mode1_gazebo_r5_20260717",
+  "runtime_lock": "Results/sunray_ros1/.sunray_ros1_runtime.lock",
+  "source_test_count": 31,
+  "source_tests_passed": true,
+  "controller_or_flight_started": false,
+  "claim_boundary": "The D6 run was rejected by the shared Sunray ROS1 runtime lock before Gazebo, PX4, MAVROS, controller, injection, or display validation. This is not controller or closed-loop evidence."
+}
