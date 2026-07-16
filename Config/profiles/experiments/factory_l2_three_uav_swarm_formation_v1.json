@@ -1,0 +1,37 @@
+{
+  "experiment_profile": {
+    "id": "factory_l2_three_uav_swarm_formation_v1",
+    "version": 1,
+    "description": "Accepted Factory L2 three-UAV Swarm-Formation obstacle-crossing profile",
+    "goal": "D7",
+    "scenario_profile": "factory_l2_three_uav_obstacle_crossing_v1",
+    "scenario_path": "Config/scenarios/formation/factory_l2_three_uav_obstacle_crossing.json",
+    "vehicle_count": 3,
+    "plant_profile": "sunray150_gazebo_v1",
+    "sensor_profile": "mid360_imu_height_camera_v1",
+    "state_source_profile": "gazebo_truth_debug_state_v1",
+    "height_source_profile": "hybrid_gazebo_z_surrogate_v1",
+    "truth_profile": "gazebo_truth_eval_only_v1",
+    "frequency_profile": "attitude_thrust_100hz_v1",
+    "trajectory_profile": "factory_l2_three_uav_obstacle_crossing_v1",
+    "planner_profile": "swarm_formation",
+    "controller_profile": "px4ctrl_attitude_thrust_v1",
+    "augmentation_profile": "none",
+    "safety_profile": "basic_limiter_v1",
+    "adapter_profile": "mavros_attitude_thrust_v1",
+    "fault_profile": "none",
+    "disturbance_profile": "none",
+    "display_profile": "rviz_unreal_factory_three_uav_v1",
+    "evaluation_profile": "formation_tracking_and_separation_v1",
+    "runtime_profile": "sunray_ros1_factory_swarm_formation_v1",
+    "runtime_export_profile": "sunray_px4ctrl_runtime_export_v1",
+    "evidence_profile": "standard_run_packet_v1",
+    "accepted_runtime_evidence": "Results/sunray_ros1/factory_l2_swarm_formation_obstacle_runtime_r34_20260716",
+    "forbidden_claims": [
+      "unknown-environment autonomous exploration",
+      "RACER multi-UAV coverage",
+      "4-9 UAV scale acceptance",
+      "MWORKS generated controller"
+    ]
+  }
+}

@@ -245,8 +245,16 @@ D3c已增加项目内JSON文件队列的长驻服务。两个GUI写入
 ### D4 Model Studio MVP
 
 - 原生Syslab APP使用Registry驱动下拉框；
-- 完成一个控制器的MIL/SIL/codegen；
-- 可提交和读取同一`run_id`。
+- 可提交Profile并读取同一`run_id`；
+- 可请求打开模型上下文并在结果尚未产生时明确返回不可用；
+- MWORKS MIL/SIL/codegen的真实执行归入D6纵向闭环，不由轻量APP重复实现。
+
+当前实施状态（2026-07-17）：D4已通过。Syslab原生APP版本`0.2.0`已从干净目录
+打包，Registry/Profile Catalog级联选择、单机与三机`px4ctrl`Profile、4至9机及未验收
+控制器拒绝均已验证。三机请求得到稳定`run_id`与Profile hash，模型上下文请求被接受，
+无结果时返回`result_packet_not_available`。证据位于
+`Results/ui_platform/model_studio_d4_gate_20260717/`。该结论仅覆盖APP、Orchestrator
+prepare/context/result边界，不证明Gazebo运行或控制性能。
 
 ### D5 Flight Console MVP
 

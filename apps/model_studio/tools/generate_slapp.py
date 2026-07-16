@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 import textwrap
 from pathlib import Path
 
@@ -14,6 +16,8 @@ NATIVE_DIR = ROOT / "native_app"
 NATIVE_SOURCE = NATIVE_DIR / "app.jl"
 OUTPUT = NATIVE_DIR / "MoSimModelStudioApp.slapp"
 FIGURE_ID = "mosim-model-studio-figure"
+PROJECT_ROOT = ROOT.parents[1]
+CATALOG_EXPORTER = PROJECT_ROOT / "Scripts" / "ui" / "export_model_studio_catalog.py"
 
 
 def callback_body(source: str) -> str:
@@ -24,42 +28,93 @@ def function_block(source: str) -> str:
     return textwrap.indent(textwrap.dedent(source).strip(), "        ")
 
 
-def request_callback_body(action: str, success_prefix: str) -> str:
+def load_catalog() -> dict:
+    completed = subprocess.run(
+        [sys.executable, str(CATALOG_EXPORTER), "--format", "json"],
+        cwd=PROJECT_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    return json.loads(completed.stdout)
+
+
+def julia_string(value: object) -> str:
+    return json.dumps(str(value), ensure_ascii=False)
+
+
+def profile_bindings(catalog: dict) -> str:
+    rows = []
+    for profile in catalog["profiles"]:
+        rows.append(
+            "    "
+            + julia_string(profile["profile_id"])
+            + " => ("
+            + ", ".join(
+                [
+                    julia_string(profile["profile_path"]),
+                    julia_string(profile["controller_id"]),
+                    julia_string(profile["vehicle_count"]),
+                    "true" if profile["enabled"] else "false",
+                    julia_string(profile["reason_code"]),
+                    "true" if profile["runtime_ready"] else "false",
+                ]
+            )
+            + "),"
+        )
+    return "Dict(\n" + "\n".join(rows) + "\n)"
+
+
+def request_callback_body(action: str, catalog: dict) -> str:
+    bindings = profile_bindings(catalog)
     template = r'''
-    controller = app.ControllerDropDown.Value
-    vehicle_count = app.VehicleDropDown.Value
-    accepted = ["px4ctrl", "cascade_pid", "gain_scheduled_pid", "fuzzy_pid", "neural_pid"]
-    if !(controller in accepted)
-        app.StatusLabel.Text = "Request blocked. The selected controller has no accepted runtime gate."
-        return
-    end
-    if vehicle_count != "3"
-        app.StatusLabel.Text = "Request blocked. UAV counts 4-9 require an individual scale gate."
-        return
-    end
     action = "__ACTION__"
-    project_root = normpath(joinpath(@__DIR__, "..", "..", ".."))
-    request_dir = joinpath(project_root, "Results", "ui_platform", "model_studio_requests")
-    mkpath(request_dir)
-    stamp = Dates.format(now(), "yyyymmdd_HHMMSS_sss")
-    created_at = Dates.format(now(), "yyyy-mm-ddTHH:MM:SS.sss")
-    request_path = joinpath(request_dir, stamp * "_" * action * ".json")
-    payload = """{
-      \"schema\": \"mosim.model_studio.request.v1\",
-      \"action\": \"$action\",
-      \"controller_id\": \"$controller\",
-      \"vehicle_count\": 3,
-      \"wind_speed_mps\": $(app.WindField.Value),
-      \"created_at_local\": \"$created_at\",
-      \"status\": \"requested\"
-    }
-    """
-    open(request_path, "w") do io
-        write(io, payload)
+    project_root = get(ENV, "MOSIM_PROJECT_ROOT", __PROJECT_ROOT__)
+    client = joinpath(project_root, "Scripts", "ui", "orchestrator_client.py")
+    try
+    profile_value = app.ProfileDropDown.Value
+    controller_value = app.ControllerDropDown.Value
+    vehicle_value = app.VehicleDropDown.Value
+    if occursin("[disabled:", profile_value) || occursin("[disabled:", controller_value) || occursin("[disabled:", vehicle_value)
+        app.StatusLabel.Text = "false\tselection_gate_rejected"
+        return
     end
-    app.StatusLabel.Text = "__SUCCESS__:\n" * request_path
+    profile = String(split(profile_value, " [disabled:"; limit=2)[1])
+    controller = String(split(controller_value, " [disabled:"; limit=2)[1])
+    vehicle = String(split(vehicle_value, " [disabled:"; limit=2)[1])
+    bindings = __BINDINGS__
+    if action == "prepare_run"
+        if !haskey(bindings, profile)
+            app.StatusLabel.Text = "false\tprofile_not_found"
+            return
+        end
+        profile_path, expected_controller, expected_vehicle, enabled, reason, runtime_ready = bindings[profile]
+        if !enabled || controller != expected_controller || vehicle != expected_vehicle
+            app.StatusLabel.Text = "false\tprofile_selection_mismatch"
+            return
+        end
+        args = [
+            "python", client, "prepare_run",
+            "--profile-path", profile_path,
+            "--controller-id", controller,
+            "--vehicle-count", vehicle,
+            "--wind-speed-mps", string(app.WindField.Value),
+            "--format", "tsv",
+        ]
+    else
+        args = ["python", client, action, "--format", "tsv"]
+    end
+    app.StatusLabel.Text = String(strip(read(ignorestatus(Cmd(args)), String)))
+    catch err
+        app.StatusLabel.Text = "false\tcallback_exception\t" * sprint(showerror, err)
+    end
     '''
-    source = template.replace("__ACTION__", action).replace("__SUCCESS__", success_prefix)
+    source = (
+        template.replace("__ACTION__", action)
+        .replace("__BINDINGS__", bindings)
+        .replace("__PROJECT_ROOT__", julia_string(PROJECT_ROOT))
+    )
     return callback_body(source)
 
 
@@ -211,27 +266,51 @@ def axes() -> dict:
 
 
 def build_project() -> dict:
-    accepted = ["px4ctrl", "cascade_pid", "gain_scheduled_pid", "fuzzy_pid", "neural_pid"]
-    controllers = accepted + [
-        "pid_indi [disabled: runtime evidence pending]",
-        "nmpc_outer [disabled: runtime evidence pending]",
+    catalog = load_catalog()
+    profiles = [
+        profile["profile_id"]
+        if profile["enabled"]
+        else f'{profile["profile_id"]} [disabled: {profile["reason_code"]}]'
+        for profile in catalog["profiles"]
     ]
-    vehicles = ["3"] + [f"{count} [disabled: scale gate pending]" for count in range(4, 10)]
+    controllers = [
+        controller["controller_id"]
+        if controller["enabled"]
+        else f'{controller["controller_id"]} [disabled: {controller["reason_code"]}]'
+        for controller in catalog["controllers"]
+    ]
+    vehicles = [
+        str(vehicle["vehicle_count"])
+        if vehicle["enabled"]
+        else f'{vehicle["vehicle_count"]} [disabled: {vehicle["reason_code"]}]'
+        for vehicle in catalog["vehicles"]
+    ]
+    preferred_profile = next(
+        (
+            profile["profile_id"]
+            for profile in catalog["profiles"]
+            if profile["profile_id"] == "px4ctrl_figure8_baseline_v1" and profile["enabled"]
+        ),
+        next(profile["profile_id"] for profile in catalog["profiles"] if profile["enabled"]),
+    )
+    selected = next(profile for profile in catalog["profiles"] if profile["profile_id"] == preferred_profile)
     source = SOURCE.read_text(encoding="utf-8")
     children = [
         label("title-label", "TitleLabel", "MoSim Model Studio", [30, 24, 920, 36], fontSize=22, fontWeight="bold"),
-        dropdown("controller-dropdown", "ControllerDropDown", "Controller", controllers, "px4ctrl", "ControllerChanged", [30, 90, 410, 32]),
-        dropdown("vehicle-dropdown", "VehicleDropDown", "UAV count", vehicles, "3", "VehicleChanged", [30, 145, 410, 32]),
-        numeric_field("wind-field", "WindField", "Wind speed (m/s)", [30, 200, 410, 32]),
-        button("preview-button", "PreviewButton", "Preview", "PreviewPressed", [30, 270, 190, 36]),
-        button("submit-button", "SubmitButton", "Prepare run", "SubmitPressed", [250, 270, 190, 36]),
-        button("model-button", "SysplorerButton", "Open model", "SysplorerPressed", [30, 326, 190, 36]),
-        button("result-button", "ResultButton", "Open result", "ResultPressed", [250, 326, 190, 36]),
+        dropdown("profile-dropdown", "ProfileDropDown", "Experiment profile", profiles, preferred_profile, "ProfileChanged", [30, 82, 410, 32]),
+        dropdown("controller-dropdown", "ControllerDropDown", "Controller", controllers, selected["controller_id"], "ControllerChanged", [30, 130, 410, 32]),
+        dropdown("vehicle-dropdown", "VehicleDropDown", "UAV count", vehicles, str(selected["vehicle_count"]), "VehicleChanged", [30, 178, 410, 32]),
+        numeric_field("wind-field", "WindField", "Wind speed (m/s)", [30, 226, 410, 32]),
+        button("refresh-button", "RefreshButton", "Refresh capability", "RefreshPressed", [30, 282, 190, 36]),
+        button("preview-button", "PreviewButton", "Preview", "PreviewPressed", [250, 282, 190, 36]),
+        button("submit-button", "SubmitButton", "Prepare run", "SubmitPressed", [30, 334, 190, 36]),
+        button("model-button", "SysplorerButton", "Open model", "SysplorerPressed", [250, 334, 190, 36]),
+        button("result-button", "ResultButton", "Open result", "ResultPressed", [30, 386, 190, 36]),
         label(
             "status-label",
             "StatusLabel",
             "Ready. Disabled options remain visible and are rejected by the capability gate.",
-            [30, 405, 410, 165],
+            [30, 442, 410, 128],
             verticalAlignment="top",
             wordWrap=True,
         ),
@@ -239,16 +318,31 @@ def build_project() -> dict:
     ]
     callbacks = [
         {
+            "name": "ProfileChanged",
+            "code": callback_body(
+                f"""
+                selected = split(app.ProfileDropDown.Value, " [disabled:"; limit=2)[1]
+                bindings = {profile_bindings(catalog)}
+                if !haskey(bindings, selected)
+                    app.StatusLabel.Text = "Profile not found in current catalog."
+                    return
+                end
+                profile_path, controller, vehicle, enabled, reason, runtime_ready = bindings[selected]
+                clean(item) = String(split(item, " [disabled:"; limit=2)[1])
+                controller_option = findfirst(item -> clean(item) == controller, app.ControllerDropDown.Items)
+                vehicle_option = findfirst(item -> clean(item) == vehicle, app.VehicleDropDown.Items)
+                controller_option !== nothing && (app.ControllerDropDown.Value = app.ControllerDropDown.Items[controller_option])
+                vehicle_option !== nothing && (app.VehicleDropDown.Value = app.VehicleDropDown.Items[vehicle_option])
+                app.StatusLabel.Text = enabled ? "Profile accepted; " * (runtime_ready ? "runtime ready" : "runtime gate pending") : "Profile unavailable: " * reason
+                """
+            ),
+        },
+        {
             "name": "ControllerChanged",
             "code": callback_body(
                 """
                 selected = app.ControllerDropDown.Value
-                accepted = ["px4ctrl", "cascade_pid", "gain_scheduled_pid", "fuzzy_pid", "neural_pid"]
-                if selected in accepted
-                    app.StatusLabel.Text = "Controller accepted: " * selected
-                else
-                    app.StatusLabel.Text = "Controller unavailable. Select an accepted controller before creating a request."
-                end
+                app.StatusLabel.Text = occursin("[disabled:", selected) ? "Controller unavailable." : "Controller selected: " * selected
                 """
             ),
         },
@@ -257,11 +351,15 @@ def build_project() -> dict:
             "code": callback_body(
                 """
                 selected = app.VehicleDropDown.Value
-                if selected == "3"
-                    app.StatusLabel.Text = "Three-UAV profile is available."
-                else
-                    app.StatusLabel.Text = "UAV count unavailable. Select 3 before creating a request."
-                end
+                app.StatusLabel.Text = occursin("[disabled:", selected) ? "UAV count unavailable." : "UAV count selected: " * selected
+                """
+            ),
+        },
+        {
+            "name": "RefreshPressed",
+            "code": callback_body(
+                """
+                app.StatusLabel.Text = "Capability catalog is frozen into this APP package. Rebuild the APP to refresh it."
                 """
             ),
         },
@@ -282,15 +380,15 @@ def build_project() -> dict:
         },
         {
             "name": "SubmitPressed",
-            "code": request_callback_body("prepare_run", "Orchestrator request created"),
+            "code": request_callback_body("prepare_run", catalog),
         },
         {
             "name": "SysplorerPressed",
-            "code": request_callback_body("open_model_context", "Sysplorer request created"),
+            "code": request_callback_body("open_model_context", catalog),
         },
         {
             "name": "ResultPressed",
-            "code": request_callback_body("open_result_viewer", "Result-viewer request created"),
+            "code": request_callback_body("get_result_packet", catalog),
         },
     ]
     return {
@@ -329,8 +427,12 @@ def build_project() -> dict:
 
 def main() -> None:
     NATIVE_DIR.mkdir(parents=True, exist_ok=True)
-    NATIVE_SOURCE.write_text(SOURCE.read_text(encoding="utf-8"), encoding="utf-8")
-    OUTPUT.write_text(json.dumps(build_project(), ensure_ascii=False, indent=4) + "\n", encoding="utf-8")
+    NATIVE_SOURCE.write_text(SOURCE.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
+    OUTPUT.write_text(
+        json.dumps(build_project(), ensure_ascii=False, indent=4) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
     print(OUTPUT)
 
 

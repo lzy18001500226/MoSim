@@ -156,11 +156,20 @@ class MoSimOrchestrator:
             )
 
         scenario_id = experiment.get("scenario_profile", "")
-        catalog = _read_json(self.profile_catalog_path)
-        scenario = catalog.get("scenario_profiles", {}).get(scenario_id)
-        if not isinstance(scenario, dict):
-            return self._response(request_id, False, "scenario_profile_not_registered", scenario_profile=scenario_id)
-        declared_vehicle_count = scenario.get("vehicle_count")
+        scenario_path_value = experiment.get("scenario_path")
+        declared_vehicle_count = experiment.get("vehicle_count")
+        if scenario_path_value is not None:
+            scenario_path = _resolve_project_path(str(scenario_path_value))
+            if scenario_path is None or not scenario_path.is_file():
+                return self._response(request_id, False, "scenario_path_invalid", scenario_path=scenario_path_value)
+            if not isinstance(declared_vehicle_count, int):
+                return self._response(request_id, False, "profile_vehicle_count_missing")
+        else:
+            catalog = _read_json(self.profile_catalog_path)
+            scenario = catalog.get("scenario_profiles", {}).get(scenario_id)
+            if not isinstance(scenario, dict):
+                return self._response(request_id, False, "scenario_profile_not_registered", scenario_profile=scenario_id)
+            declared_vehicle_count = scenario.get("vehicle_count")
         if declared_vehicle_count != vehicle_count:
             return self._response(
                 request_id,

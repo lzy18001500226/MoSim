@@ -23,6 +23,7 @@ class FakeRuntimeBackend:
 
 
 PROFILE = "Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json"
+THREE_UAV_PROFILE = "Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json"
 
 
 def test_capability_gates_reject_unaccepted_controller_and_scale(tmp_path: Path) -> None:
@@ -51,6 +52,11 @@ def test_profile_must_match_controller_and_vehicle_count(tmp_path: Path) -> None
     )
     assert vehicle_count["accepted"] is False
     assert vehicle_count["reason_code"] == "profile_vehicle_count_mismatch"
+
+    accepted_three = orchestrator.validate_experiment_profile(
+        request_id="three-uav", profile_path=THREE_UAV_PROFILE, controller_id="px4ctrl", vehicle_count=3
+    )
+    assert accepted_three["accepted"] is True
 
 
 def test_unconfigured_backend_cannot_claim_runtime_start(tmp_path: Path) -> None:

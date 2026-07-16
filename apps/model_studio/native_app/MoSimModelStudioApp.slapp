@@ -2,12 +2,20 @@
     "name": "MoSimModelStudioApp",
     "callbackFunctions": [
         {
+            "name": "ProfileChanged",
+            "code": "            selected = split(app.ProfileDropDown.Value, \" [disabled:\"; limit=2)[1]\n                            bindings = Dict(\n                \"factory_l2_three_uav_swarm_formation_v1\" => (\"Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json\", \"px4ctrl\", \"3\", true, \"enabled\", false),\n                \"fastlio_hybrid_z_figure8_v1\" => (\"Config/profiles/experiments/fastlio_hybrid_z_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_independent_eval_figure8_v1\" => (\"Config/profiles/experiments/fastlio_independent_eval_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_px4_ekf_ab_figure8_v1\" => (\"Config/profiles/experiments/fastlio_px4_ekf_ab_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"g10a_dfbc_smooth_robust_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10a_dfbc_smooth_robust_no_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_no_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_no_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_no_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_figure8_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_figure8_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_takeoff_hover_land_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_figure8_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_dfbc_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_dfbc_basic_figure8_v1.json\", \"dfbc_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_nmpc_outer_figure8_v1\" => (\"Config/profiles/experiments/g9_nmpc_outer_figure8_v1.json\", \"nmpc_outer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_official_pid_figure8_v1\" => (\"Config/profiles/experiments/g9_official_pid_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g9_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_se3_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_se3_basic_figure8_v1.json\", \"se3_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_smc_boundary_layer_figure8_v1\" => (\"Config/profiles/experiments/g9_smc_boundary_layer_figure8_v1.json\", \"smc_boundary_layer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"px4ctrl_figure8_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", true),\n                \"px4ctrl_spiral_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_spiral_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_step_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_step_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/px4ctrl_takeoff_hover_land_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n            )\n                            if !haskey(bindings, selected)\n                                app.StatusLabel.Text = \"Profile not found in current catalog.\"\n                                return\n                            end\n                            profile_path, controller, vehicle, enabled, reason, runtime_ready = bindings[selected]\n                            clean(item) = String(split(item, \" [disabled:\"; limit=2)[1])\n                            controller_option = findfirst(item -> clean(item) == controller, app.ControllerDropDown.Items)\n                            vehicle_option = findfirst(item -> clean(item) == vehicle, app.VehicleDropDown.Items)\n                            controller_option !== nothing && (app.ControllerDropDown.Value = app.ControllerDropDown.Items[controller_option])\n                            vehicle_option !== nothing && (app.VehicleDropDown.Value = app.VehicleDropDown.Items[vehicle_option])\n                            app.StatusLabel.Text = enabled ? \"Profile accepted; \" * (runtime_ready ? \"runtime ready\" : \"runtime gate pending\") : \"Profile unavailable: \" * reason"
+        },
+        {
             "name": "ControllerChanged",
-            "code": "            selected = app.ControllerDropDown.Value\n            accepted = [\"px4ctrl\", \"cascade_pid\", \"gain_scheduled_pid\", \"fuzzy_pid\", \"neural_pid\"]\n            if selected in accepted\n                app.StatusLabel.Text = \"Controller accepted: \" * selected\n            else\n                app.StatusLabel.Text = \"Controller unavailable. Select an accepted controller before creating a request.\"\n            end"
+            "code": "            selected = app.ControllerDropDown.Value\n            app.StatusLabel.Text = occursin(\"[disabled:\", selected) ? \"Controller unavailable.\" : \"Controller selected: \" * selected"
         },
         {
             "name": "VehicleChanged",
-            "code": "            selected = app.VehicleDropDown.Value\n            if selected == \"3\"\n                app.StatusLabel.Text = \"Three-UAV profile is available.\"\n            else\n                app.StatusLabel.Text = \"UAV count unavailable. Select 3 before creating a request.\"\n            end"
+            "code": "            selected = app.VehicleDropDown.Value\n            app.StatusLabel.Text = occursin(\"[disabled:\", selected) ? \"UAV count unavailable.\" : \"UAV count selected: \" * selected"
+        },
+        {
+            "name": "RefreshPressed",
+            "code": "            app.StatusLabel.Text = \"Capability catalog is frozen into this APP package. Rebuild the APP to refresh it.\""
         },
         {
             "name": "PreviewPressed",
@@ -15,15 +23,15 @@
         },
         {
             "name": "SubmitPressed",
-            "code": "            controller = app.ControllerDropDown.Value\n            vehicle_count = app.VehicleDropDown.Value\n            accepted = [\"px4ctrl\", \"cascade_pid\", \"gain_scheduled_pid\", \"fuzzy_pid\", \"neural_pid\"]\n            if !(controller in accepted)\n                app.StatusLabel.Text = \"Request blocked. The selected controller has no accepted runtime gate.\"\n                return\n            end\n            if vehicle_count != \"3\"\n                app.StatusLabel.Text = \"Request blocked. UAV counts 4-9 require an individual scale gate.\"\n                return\n            end\n            action = \"prepare_run\"\n            project_root = normpath(joinpath(@__DIR__, \"..\", \"..\", \"..\"))\n            request_dir = joinpath(project_root, \"Results\", \"ui_platform\", \"model_studio_requests\")\n            mkpath(request_dir)\n            stamp = Dates.format(now(), \"yyyymmdd_HHMMSS_sss\")\n            created_at = Dates.format(now(), \"yyyy-mm-ddTHH:MM:SS.sss\")\n            request_path = joinpath(request_dir, stamp * \"_\" * action * \".json\")\n            payload = \"\"\"{\n              \\\"schema\\\": \\\"mosim.model_studio.request.v1\\\",\n              \\\"action\\\": \\\"$action\\\",\n              \\\"controller_id\\\": \\\"$controller\\\",\n              \\\"vehicle_count\\\": 3,\n              \\\"wind_speed_mps\\\": $(app.WindField.Value),\n              \\\"created_at_local\\\": \\\"$created_at\\\",\n              \\\"status\\\": \\\"requested\\\"\n            }\n            \"\"\"\n            open(request_path, \"w\") do io\n                write(io, payload)\n            end\n            app.StatusLabel.Text = \"Orchestrator request created:\\n\" * request_path"
+            "code": "            action = \"prepare_run\"\n                project_root = get(ENV, \"MOSIM_PROJECT_ROOT\", \"C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\")\n                client = joinpath(project_root, \"Scripts\", \"ui\", \"orchestrator_client.py\")\n                try\n                profile_value = app.ProfileDropDown.Value\n                controller_value = app.ControllerDropDown.Value\n                vehicle_value = app.VehicleDropDown.Value\n                if occursin(\"[disabled:\", profile_value) || occursin(\"[disabled:\", controller_value) || occursin(\"[disabled:\", vehicle_value)\n                    app.StatusLabel.Text = \"false\\tselection_gate_rejected\"\n                    return\n                end\n                profile = String(split(profile_value, \" [disabled:\"; limit=2)[1])\n                controller = String(split(controller_value, \" [disabled:\"; limit=2)[1])\n                vehicle = String(split(vehicle_value, \" [disabled:\"; limit=2)[1])\n                bindings = Dict(\n                \"factory_l2_three_uav_swarm_formation_v1\" => (\"Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json\", \"px4ctrl\", \"3\", true, \"enabled\", false),\n                \"fastlio_hybrid_z_figure8_v1\" => (\"Config/profiles/experiments/fastlio_hybrid_z_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_independent_eval_figure8_v1\" => (\"Config/profiles/experiments/fastlio_independent_eval_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_px4_ekf_ab_figure8_v1\" => (\"Config/profiles/experiments/fastlio_px4_ekf_ab_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"g10a_dfbc_smooth_robust_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10a_dfbc_smooth_robust_no_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_no_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_no_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_no_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_figure8_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_figure8_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_takeoff_hover_land_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_figure8_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_dfbc_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_dfbc_basic_figure8_v1.json\", \"dfbc_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_nmpc_outer_figure8_v1\" => (\"Config/profiles/experiments/g9_nmpc_outer_figure8_v1.json\", \"nmpc_outer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_official_pid_figure8_v1\" => (\"Config/profiles/experiments/g9_official_pid_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g9_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_se3_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_se3_basic_figure8_v1.json\", \"se3_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_smc_boundary_layer_figure8_v1\" => (\"Config/profiles/experiments/g9_smc_boundary_layer_figure8_v1.json\", \"smc_boundary_layer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"px4ctrl_figure8_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", true),\n                \"px4ctrl_spiral_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_spiral_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_step_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_step_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/px4ctrl_takeoff_hover_land_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n            )\n                if action == \"prepare_run\"\n                    if !haskey(bindings, profile)\n                        app.StatusLabel.Text = \"false\\tprofile_not_found\"\n                        return\n                    end\n                    profile_path, expected_controller, expected_vehicle, enabled, reason, runtime_ready = bindings[profile]\n                    if !enabled || controller != expected_controller || vehicle != expected_vehicle\n                        app.StatusLabel.Text = \"false\\tprofile_selection_mismatch\"\n                        return\n                    end\n                    args = [\n                        \"python\", client, \"prepare_run\",\n                        \"--profile-path\", profile_path,\n                        \"--controller-id\", controller,\n                        \"--vehicle-count\", vehicle,\n                        \"--wind-speed-mps\", string(app.WindField.Value),\n                        \"--format\", \"tsv\",\n                    ]\n                else\n                    args = [\"python\", client, action, \"--format\", \"tsv\"]\n                end\n                app.StatusLabel.Text = String(strip(read(ignorestatus(Cmd(args)), String)))\n                catch err\n                    app.StatusLabel.Text = \"false\\tcallback_exception\\t\" * sprint(showerror, err)\n                end"
         },
         {
             "name": "SysplorerPressed",
-            "code": "            controller = app.ControllerDropDown.Value\n            vehicle_count = app.VehicleDropDown.Value\n            accepted = [\"px4ctrl\", \"cascade_pid\", \"gain_scheduled_pid\", \"fuzzy_pid\", \"neural_pid\"]\n            if !(controller in accepted)\n                app.StatusLabel.Text = \"Request blocked. The selected controller has no accepted runtime gate.\"\n                return\n            end\n            if vehicle_count != \"3\"\n                app.StatusLabel.Text = \"Request blocked. UAV counts 4-9 require an individual scale gate.\"\n                return\n            end\n            action = \"open_model_context\"\n            project_root = normpath(joinpath(@__DIR__, \"..\", \"..\", \"..\"))\n            request_dir = joinpath(project_root, \"Results\", \"ui_platform\", \"model_studio_requests\")\n            mkpath(request_dir)\n            stamp = Dates.format(now(), \"yyyymmdd_HHMMSS_sss\")\n            created_at = Dates.format(now(), \"yyyy-mm-ddTHH:MM:SS.sss\")\n            request_path = joinpath(request_dir, stamp * \"_\" * action * \".json\")\n            payload = \"\"\"{\n              \\\"schema\\\": \\\"mosim.model_studio.request.v1\\\",\n              \\\"action\\\": \\\"$action\\\",\n              \\\"controller_id\\\": \\\"$controller\\\",\n              \\\"vehicle_count\\\": 3,\n              \\\"wind_speed_mps\\\": $(app.WindField.Value),\n              \\\"created_at_local\\\": \\\"$created_at\\\",\n              \\\"status\\\": \\\"requested\\\"\n            }\n            \"\"\"\n            open(request_path, \"w\") do io\n                write(io, payload)\n            end\n            app.StatusLabel.Text = \"Sysplorer request created:\\n\" * request_path"
+            "code": "            action = \"open_model_context\"\n                project_root = get(ENV, \"MOSIM_PROJECT_ROOT\", \"C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\")\n                client = joinpath(project_root, \"Scripts\", \"ui\", \"orchestrator_client.py\")\n                try\n                profile_value = app.ProfileDropDown.Value\n                controller_value = app.ControllerDropDown.Value\n                vehicle_value = app.VehicleDropDown.Value\n                if occursin(\"[disabled:\", profile_value) || occursin(\"[disabled:\", controller_value) || occursin(\"[disabled:\", vehicle_value)\n                    app.StatusLabel.Text = \"false\\tselection_gate_rejected\"\n                    return\n                end\n                profile = String(split(profile_value, \" [disabled:\"; limit=2)[1])\n                controller = String(split(controller_value, \" [disabled:\"; limit=2)[1])\n                vehicle = String(split(vehicle_value, \" [disabled:\"; limit=2)[1])\n                bindings = Dict(\n                \"factory_l2_three_uav_swarm_formation_v1\" => (\"Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json\", \"px4ctrl\", \"3\", true, \"enabled\", false),\n                \"fastlio_hybrid_z_figure8_v1\" => (\"Config/profiles/experiments/fastlio_hybrid_z_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_independent_eval_figure8_v1\" => (\"Config/profiles/experiments/fastlio_independent_eval_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_px4_ekf_ab_figure8_v1\" => (\"Config/profiles/experiments/fastlio_px4_ekf_ab_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"g10a_dfbc_smooth_robust_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10a_dfbc_smooth_robust_no_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_no_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_no_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_no_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_figure8_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_figure8_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_takeoff_hover_land_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_figure8_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_dfbc_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_dfbc_basic_figure8_v1.json\", \"dfbc_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_nmpc_outer_figure8_v1\" => (\"Config/profiles/experiments/g9_nmpc_outer_figure8_v1.json\", \"nmpc_outer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_official_pid_figure8_v1\" => (\"Config/profiles/experiments/g9_official_pid_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g9_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_se3_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_se3_basic_figure8_v1.json\", \"se3_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_smc_boundary_layer_figure8_v1\" => (\"Config/profiles/experiments/g9_smc_boundary_layer_figure8_v1.json\", \"smc_boundary_layer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"px4ctrl_figure8_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", true),\n                \"px4ctrl_spiral_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_spiral_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_step_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_step_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/px4ctrl_takeoff_hover_land_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n            )\n                if action == \"prepare_run\"\n                    if !haskey(bindings, profile)\n                        app.StatusLabel.Text = \"false\\tprofile_not_found\"\n                        return\n                    end\n                    profile_path, expected_controller, expected_vehicle, enabled, reason, runtime_ready = bindings[profile]\n                    if !enabled || controller != expected_controller || vehicle != expected_vehicle\n                        app.StatusLabel.Text = \"false\\tprofile_selection_mismatch\"\n                        return\n                    end\n                    args = [\n                        \"python\", client, \"prepare_run\",\n                        \"--profile-path\", profile_path,\n                        \"--controller-id\", controller,\n                        \"--vehicle-count\", vehicle,\n                        \"--wind-speed-mps\", string(app.WindField.Value),\n                        \"--format\", \"tsv\",\n                    ]\n                else\n                    args = [\"python\", client, action, \"--format\", \"tsv\"]\n                end\n                app.StatusLabel.Text = String(strip(read(ignorestatus(Cmd(args)), String)))\n                catch err\n                    app.StatusLabel.Text = \"false\\tcallback_exception\\t\" * sprint(showerror, err)\n                end"
         },
         {
             "name": "ResultPressed",
-            "code": "            controller = app.ControllerDropDown.Value\n            vehicle_count = app.VehicleDropDown.Value\n            accepted = [\"px4ctrl\", \"cascade_pid\", \"gain_scheduled_pid\", \"fuzzy_pid\", \"neural_pid\"]\n            if !(controller in accepted)\n                app.StatusLabel.Text = \"Request blocked. The selected controller has no accepted runtime gate.\"\n                return\n            end\n            if vehicle_count != \"3\"\n                app.StatusLabel.Text = \"Request blocked. UAV counts 4-9 require an individual scale gate.\"\n                return\n            end\n            action = \"open_result_viewer\"\n            project_root = normpath(joinpath(@__DIR__, \"..\", \"..\", \"..\"))\n            request_dir = joinpath(project_root, \"Results\", \"ui_platform\", \"model_studio_requests\")\n            mkpath(request_dir)\n            stamp = Dates.format(now(), \"yyyymmdd_HHMMSS_sss\")\n            created_at = Dates.format(now(), \"yyyy-mm-ddTHH:MM:SS.sss\")\n            request_path = joinpath(request_dir, stamp * \"_\" * action * \".json\")\n            payload = \"\"\"{\n              \\\"schema\\\": \\\"mosim.model_studio.request.v1\\\",\n              \\\"action\\\": \\\"$action\\\",\n              \\\"controller_id\\\": \\\"$controller\\\",\n              \\\"vehicle_count\\\": 3,\n              \\\"wind_speed_mps\\\": $(app.WindField.Value),\n              \\\"created_at_local\\\": \\\"$created_at\\\",\n              \\\"status\\\": \\\"requested\\\"\n            }\n            \"\"\"\n            open(request_path, \"w\") do io\n                write(io, payload)\n            end\n            app.StatusLabel.Text = \"Result-viewer request created:\\n\" * request_path"
+            "code": "            action = \"get_result_packet\"\n                project_root = get(ENV, \"MOSIM_PROJECT_ROOT\", \"C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\")\n                client = joinpath(project_root, \"Scripts\", \"ui\", \"orchestrator_client.py\")\n                try\n                profile_value = app.ProfileDropDown.Value\n                controller_value = app.ControllerDropDown.Value\n                vehicle_value = app.VehicleDropDown.Value\n                if occursin(\"[disabled:\", profile_value) || occursin(\"[disabled:\", controller_value) || occursin(\"[disabled:\", vehicle_value)\n                    app.StatusLabel.Text = \"false\\tselection_gate_rejected\"\n                    return\n                end\n                profile = String(split(profile_value, \" [disabled:\"; limit=2)[1])\n                controller = String(split(controller_value, \" [disabled:\"; limit=2)[1])\n                vehicle = String(split(vehicle_value, \" [disabled:\"; limit=2)[1])\n                bindings = Dict(\n                \"factory_l2_three_uav_swarm_formation_v1\" => (\"Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json\", \"px4ctrl\", \"3\", true, \"enabled\", false),\n                \"fastlio_hybrid_z_figure8_v1\" => (\"Config/profiles/experiments/fastlio_hybrid_z_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_independent_eval_figure8_v1\" => (\"Config/profiles/experiments/fastlio_independent_eval_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_px4_ekf_ab_figure8_v1\" => (\"Config/profiles/experiments/fastlio_px4_ekf_ab_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"g10a_dfbc_smooth_robust_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10a_dfbc_smooth_robust_no_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_no_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_no_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_no_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_figure8_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_figure8_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_takeoff_hover_land_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_figure8_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_dfbc_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_dfbc_basic_figure8_v1.json\", \"dfbc_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_nmpc_outer_figure8_v1\" => (\"Config/profiles/experiments/g9_nmpc_outer_figure8_v1.json\", \"nmpc_outer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_official_pid_figure8_v1\" => (\"Config/profiles/experiments/g9_official_pid_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g9_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_se3_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_se3_basic_figure8_v1.json\", \"se3_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_smc_boundary_layer_figure8_v1\" => (\"Config/profiles/experiments/g9_smc_boundary_layer_figure8_v1.json\", \"smc_boundary_layer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"px4ctrl_figure8_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", true),\n                \"px4ctrl_spiral_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_spiral_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_step_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_step_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/px4ctrl_takeoff_hover_land_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n            )\n                if action == \"prepare_run\"\n                    if !haskey(bindings, profile)\n                        app.StatusLabel.Text = \"false\\tprofile_not_found\"\n                        return\n                    end\n                    profile_path, expected_controller, expected_vehicle, enabled, reason, runtime_ready = bindings[profile]\n                    if !enabled || controller != expected_controller || vehicle != expected_vehicle\n                        app.StatusLabel.Text = \"false\\tprofile_selection_mismatch\"\n                        return\n                    end\n                    args = [\n                        \"python\", client, \"prepare_run\",\n                        \"--profile-path\", profile_path,\n                        \"--controller-id\", controller,\n                        \"--vehicle-count\", vehicle,\n                        \"--wind-speed-mps\", string(app.WindField.Value),\n                        \"--format\", \"tsv\",\n                    ]\n                else\n                    args = [\"python\", client, action, \"--format\", \"tsv\"]\n                end\n                app.StatusLabel.Text = String(strip(read(ignorestatus(Cmd(args)), String)))\n                catch err\n                    app.StatusLabel.Text = \"false\\tcallback_exception\\t\" * sprint(showerror, err)\n                end"
         }
     ],
     "customPrivateFunctions": [],
@@ -97,24 +105,160 @@
                 "backgroundColor": []
             },
             {
+                "id": "profile-dropdown",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        30,
+                        82,
+                        410,
+                        32
+                    ],
+                    "label": "Experiment profile",
+                    "items": [
+                        "factory_l2_three_uav_swarm_formation_v1",
+                        "fastlio_hybrid_z_figure8_v1",
+                        "fastlio_independent_eval_figure8_v1",
+                        "fastlio_px4_ekf_ab_figure8_v1",
+                        "g10a_dfbc_smooth_robust_dob_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g10a_dfbc_smooth_robust_no_dob_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g10c_dfbc_smooth_robust_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g10c_dfbc_smooth_robust_no_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g10c_official_pid_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g10c_official_pid_no_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g95_dfbc_high_order_bodyrate_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
+                        "g95_dfbc_high_order_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g95_dfbc_high_order_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
+                        "g96_dfbc_smooth_robust_bodyrate_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
+                        "g96_dfbc_smooth_robust_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g96_dfbc_smooth_robust_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
+                        "g9_dfbc_basic_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g9_nmpc_outer_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g9_official_pid_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g9_pid_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g9_se3_basic_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "g9_smc_boundary_layer_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                        "px4ctrl_figure8_baseline_v1",
+                        "px4ctrl_spiral_baseline_v1",
+                        "px4ctrl_step_baseline_v1",
+                        "px4ctrl_takeoff_hover_land_v1"
+                    ],
+                    "value": "px4ctrl_figure8_baseline_v1",
+                    "valueChangedFcn": "ProfileChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "ProfileChanged"
+                },
+                "type": "dropdown",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    30,
+                    82,
+                    410,
+                    32
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ProfileDropDown",
+                "label": "Experiment profile",
+                "value": "px4ctrl_figure8_baseline_v1",
+                "items": [
+                    "factory_l2_three_uav_swarm_formation_v1",
+                    "fastlio_hybrid_z_figure8_v1",
+                    "fastlio_independent_eval_figure8_v1",
+                    "fastlio_px4_ekf_ab_figure8_v1",
+                    "g10a_dfbc_smooth_robust_dob_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g10a_dfbc_smooth_robust_no_dob_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g10c_dfbc_smooth_robust_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g10c_dfbc_smooth_robust_no_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g10c_official_pid_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g10c_official_pid_no_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g95_dfbc_high_order_bodyrate_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
+                    "g95_dfbc_high_order_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g95_dfbc_high_order_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
+                    "g96_dfbc_smooth_robust_bodyrate_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
+                    "g96_dfbc_smooth_robust_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g96_dfbc_smooth_robust_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
+                    "g9_dfbc_basic_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g9_nmpc_outer_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g9_official_pid_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g9_pid_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g9_se3_basic_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "g9_smc_boundary_layer_figure8_v1 [disabled: controller_runtime_gate_pending]",
+                    "px4ctrl_figure8_baseline_v1",
+                    "px4ctrl_spiral_baseline_v1",
+                    "px4ctrl_step_baseline_v1",
+                    "px4ctrl_takeoff_hover_land_v1"
+                ],
+                "itemsData": [],
+                "placeholder": "",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    1,
+                    1,
+                    1
+                ],
+                "editable": false,
+                "valueChangedFcn": "ProfileChanged"
+            },
+            {
                 "id": "controller-dropdown",
                 "pid": "mosim-model-studio-figure",
                 "state": {
                     "position": [
                         30,
-                        90,
+                        130,
                         410,
                         32
                     ],
                     "label": "Controller",
                     "items": [
                         "px4ctrl",
+                        "official_pid [disabled: runtime_evidence_pending]",
                         "cascade_pid",
                         "gain_scheduled_pid",
                         "fuzzy_pid",
                         "neural_pid",
-                        "pid_indi [disabled: runtime evidence pending]",
-                        "nmpc_outer [disabled: runtime evidence pending]"
+                        "lqr_baseline [disabled: runtime_evidence_pending]",
+                        "lqi_baseline [disabled: runtime_evidence_pending]",
+                        "lqg [disabled: runtime_evidence_pending]",
+                        "mu_synthesis [disabled: runtime_evidence_pending]",
+                        "feedback_linearization [disabled: runtime_evidence_pending]",
+                        "passivity_based_control [disabled: runtime_evidence_pending]",
+                        "adaptive_backstepping [disabled: runtime_evidence_pending]",
+                        "backstepping_baseline [disabled: runtime_evidence_pending]",
+                        "se3_basic [disabled: runtime_evidence_pending]",
+                        "dfbc_basic [disabled: runtime_evidence_pending]",
+                        "smc_boundary_layer [disabled: runtime_evidence_pending]",
+                        "integral_smc [disabled: runtime_evidence_pending]",
+                        "terminal_smc [disabled: runtime_evidence_pending]",
+                        "nonsingular_terminal_smc [disabled: runtime_evidence_pending]",
+                        "super_twisting_smc [disabled: runtime_evidence_pending]",
+                        "adaptive_smc [disabled: runtime_evidence_pending]",
+                        "fuzzy_smc [disabled: runtime_evidence_pending]",
+                        "neural_smc [disabled: runtime_evidence_pending]",
+                        "hinf_hover_wrench [disabled: runtime_evidence_pending]",
+                        "nmpc_outer [disabled: runtime_evidence_pending]",
+                        "dfbc_high_order_attitude [disabled: runtime_evidence_pending]",
+                        "dfbc_high_order_bodyrate [disabled: runtime_evidence_pending]",
+                        "dfbc_smooth_robust_attitude [disabled: runtime_evidence_pending]",
+                        "dfbc_smooth_robust_bodyrate [disabled: runtime_evidence_pending]"
                     ],
                     "value": "px4ctrl",
                     "valueChangedFcn": "ControllerChanged"
@@ -129,7 +273,7 @@
                 "contextMenu": [],
                 "position": [
                     30,
-                    90,
+                    130,
                     410,
                     32
                 ],
@@ -141,12 +285,35 @@
                 "value": "px4ctrl",
                 "items": [
                     "px4ctrl",
+                    "official_pid [disabled: runtime_evidence_pending]",
                     "cascade_pid",
                     "gain_scheduled_pid",
                     "fuzzy_pid",
                     "neural_pid",
-                    "pid_indi [disabled: runtime evidence pending]",
-                    "nmpc_outer [disabled: runtime evidence pending]"
+                    "lqr_baseline [disabled: runtime_evidence_pending]",
+                    "lqi_baseline [disabled: runtime_evidence_pending]",
+                    "lqg [disabled: runtime_evidence_pending]",
+                    "mu_synthesis [disabled: runtime_evidence_pending]",
+                    "feedback_linearization [disabled: runtime_evidence_pending]",
+                    "passivity_based_control [disabled: runtime_evidence_pending]",
+                    "adaptive_backstepping [disabled: runtime_evidence_pending]",
+                    "backstepping_baseline [disabled: runtime_evidence_pending]",
+                    "se3_basic [disabled: runtime_evidence_pending]",
+                    "dfbc_basic [disabled: runtime_evidence_pending]",
+                    "smc_boundary_layer [disabled: runtime_evidence_pending]",
+                    "integral_smc [disabled: runtime_evidence_pending]",
+                    "terminal_smc [disabled: runtime_evidence_pending]",
+                    "nonsingular_terminal_smc [disabled: runtime_evidence_pending]",
+                    "super_twisting_smc [disabled: runtime_evidence_pending]",
+                    "adaptive_smc [disabled: runtime_evidence_pending]",
+                    "fuzzy_smc [disabled: runtime_evidence_pending]",
+                    "neural_smc [disabled: runtime_evidence_pending]",
+                    "hinf_hover_wrench [disabled: runtime_evidence_pending]",
+                    "nmpc_outer [disabled: runtime_evidence_pending]",
+                    "dfbc_high_order_attitude [disabled: runtime_evidence_pending]",
+                    "dfbc_high_order_bodyrate [disabled: runtime_evidence_pending]",
+                    "dfbc_smooth_robust_attitude [disabled: runtime_evidence_pending]",
+                    "dfbc_smooth_robust_bodyrate [disabled: runtime_evidence_pending]"
                 ],
                 "itemsData": [],
                 "placeholder": "",
@@ -173,21 +340,23 @@
                 "state": {
                     "position": [
                         30,
-                        145,
+                        178,
                         410,
                         32
                     ],
                     "label": "UAV count",
                     "items": [
+                        "1",
+                        "2 [disabled: scale_gate_pending]",
                         "3",
-                        "4 [disabled: scale gate pending]",
-                        "5 [disabled: scale gate pending]",
-                        "6 [disabled: scale gate pending]",
-                        "7 [disabled: scale gate pending]",
-                        "8 [disabled: scale gate pending]",
-                        "9 [disabled: scale gate pending]"
+                        "4 [disabled: scale_gate_pending]",
+                        "5 [disabled: scale_gate_pending]",
+                        "6 [disabled: scale_gate_pending]",
+                        "7 [disabled: scale_gate_pending]",
+                        "8 [disabled: scale_gate_pending]",
+                        "9 [disabled: scale_gate_pending]"
                     ],
-                    "value": "3",
+                    "value": "1",
                     "valueChangedFcn": "VehicleChanged"
                 },
                 "callbackFcns": {
@@ -200,7 +369,7 @@
                 "contextMenu": [],
                 "position": [
                     30,
-                    145,
+                    178,
                     410,
                     32
                 ],
@@ -209,15 +378,17 @@
                 "tag": "",
                 "variableName": "VehicleDropDown",
                 "label": "UAV count",
-                "value": "3",
+                "value": "1",
                 "items": [
+                    "1",
+                    "2 [disabled: scale_gate_pending]",
                     "3",
-                    "4 [disabled: scale gate pending]",
-                    "5 [disabled: scale gate pending]",
-                    "6 [disabled: scale gate pending]",
-                    "7 [disabled: scale gate pending]",
-                    "8 [disabled: scale gate pending]",
-                    "9 [disabled: scale gate pending]"
+                    "4 [disabled: scale_gate_pending]",
+                    "5 [disabled: scale_gate_pending]",
+                    "6 [disabled: scale_gate_pending]",
+                    "7 [disabled: scale_gate_pending]",
+                    "8 [disabled: scale_gate_pending]",
+                    "9 [disabled: scale_gate_pending]"
                 ],
                 "itemsData": [],
                 "placeholder": "",
@@ -244,7 +415,7 @@
                 "state": {
                     "position": [
                         30,
-                        200,
+                        226,
                         410,
                         32
                     ],
@@ -259,7 +430,7 @@
                 "contextMenu": [],
                 "position": [
                     30,
-                    200,
+                    226,
                     410,
                     32
                 ],
@@ -293,12 +464,65 @@
                 "valueChangedFcn": ""
             },
             {
-                "id": "preview-button",
+                "id": "refresh-button",
                 "pid": "mosim-model-studio-figure",
                 "state": {
                     "position": [
                         30,
-                        270,
+                        282,
+                        190,
+                        36
+                    ],
+                    "text": "Refresh capability",
+                    "buttonPushedFcn": "RefreshPressed"
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "RefreshPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    30,
+                    282,
+                    190,
+                    36
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "RefreshButton",
+                "text": "Refresh capability",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "RefreshPressed"
+            },
+            {
+                "id": "preview-button",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        250,
+                        282,
                         190,
                         36
                     ],
@@ -314,8 +538,8 @@
                 "tooltip": "",
                 "contextMenu": [],
                 "position": [
-                    30,
-                    270,
+                    250,
+                    282,
                     190,
                     36
                 ],
@@ -350,8 +574,8 @@
                 "pid": "mosim-model-studio-figure",
                 "state": {
                     "position": [
-                        250,
-                        270,
+                        30,
+                        334,
                         190,
                         36
                     ],
@@ -367,8 +591,8 @@
                 "tooltip": "",
                 "contextMenu": [],
                 "position": [
-                    250,
-                    270,
+                    30,
+                    334,
                     190,
                     36
                 ],
@@ -403,8 +627,8 @@
                 "pid": "mosim-model-studio-figure",
                 "state": {
                     "position": [
-                        30,
-                        326,
+                        250,
+                        334,
                         190,
                         36
                     ],
@@ -420,8 +644,8 @@
                 "tooltip": "",
                 "contextMenu": [],
                 "position": [
-                    30,
-                    326,
+                    250,
+                    334,
                     190,
                     36
                 ],
@@ -456,8 +680,8 @@
                 "pid": "mosim-model-studio-figure",
                 "state": {
                     "position": [
-                        250,
-                        326,
+                        30,
+                        386,
                         190,
                         36
                     ],
@@ -473,8 +697,8 @@
                 "tooltip": "",
                 "contextMenu": [],
                 "position": [
-                    250,
-                    326,
+                    30,
+                    386,
                     190,
                     36
                 ],
@@ -510,9 +734,9 @@
                 "state": {
                     "position": [
                         30,
-                        405,
+                        442,
                         410,
-                        165
+                        128
                     ],
                     "wordWrap": true,
                     "text": "Ready. Disabled options remain visible and are rejected by the capability gate."
@@ -525,9 +749,9 @@
                 "contextMenu": [],
                 "position": [
                     30,
-                    405,
+                    442,
                     410,
-                    165
+                    128
                 ],
                 "interruptible": false,
                 "busyAction": "queue",
@@ -608,5 +832,5 @@
         "icon": "",
         "startupFcn": ""
     },
-    "code": "module MoSimModelStudio\n\nusing Dates\nusing ObjectOriented\nusing TyAppDesigner\nusing TyPlot\n\nconst ACCEPTED_CONTROLLERS = [\n    \"px4ctrl\",\n    \"cascade_pid\",\n    \"gain_scheduled_pid\",\n    \"fuzzy_pid\",\n    \"neural_pid\",\n]\n\nconst CONTROLLER_OPTIONS = [\n    ACCEPTED_CONTROLLERS...,\n    \"pid_indi [disabled: runtime evidence pending]\",\n    \"nmpc_outer [disabled: runtime evidence pending]\",\n]\n\nconst UAV_OPTIONS = [\n    \"3\",\n    \"4 [disabled: scale gate pending]\",\n    \"5 [disabled: scale gate pending]\",\n    \"6 [disabled: scale gate pending]\",\n    \"7 [disabled: scale gate pending]\",\n    \"8 [disabled: scale gate pending]\",\n    \"9 [disabled: scale gate pending]\",\n]\n\n@oodef mutable struct App\n    UIFigure::TyAppDesigner.Figure = TyAppDesigner.create_figure()\n    TitleLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n    ControllerDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    VehicleDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    WindField::TyAppDesigner.NumericEditField = TyAppDesigner.create_numericeditfield()\n    PreviewButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    SubmitButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    SysplorerButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    ResultButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    UIAxes::TyAppDesigner.UIAxes = TyAppDesigner.create_uiaxes()\n    StatusLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n\n    Appname::Module = @__MODULE__\n    Appfile::String = @__FILE__\n    ProjectRoot::String = normpath(joinpath(@__DIR__, \"..\", \"..\", \"..\"))\n    function ControllerChanged(app, event)\n        selected = app.ControllerDropDown.Value\n        if selected in ACCEPTED_CONTROLLERS\n            app.StatusLabel.Text = \"Controller accepted: \" * selected\n        else\n            app.StatusLabel.Text = \"Controller unavailable. Select an accepted controller before creating a request.\"\n        end\n    end\n\n    function VehicleChanged(app, event)\n        selected = app.VehicleDropDown.Value\n        if selected == \"3\"\n            app.StatusLabel.Text = \"Three-UAV profile is available.\"\n        else\n            app.StatusLabel.Text = \"UAV count unavailable. Select 3 before creating a request.\"\n        end\n    end\n\n    function PreviewPressed(app, event)\n        wind = app.WindField.Value\n        t = collect(0.0:0.1:10.0)\n        response = @. exp(-0.15 * t) * sin(1.8 * t) + 0.02 * wind\n        TyAppDesigner.plot(app.UIAxes, t, response)\n        TyAppDesigner.title(app.UIAxes, \"Bounded preview\")\n        TyAppDesigner.xlabel(app.UIAxes, \"Time (s)\")\n        TyAppDesigner.ylabel(app.UIAxes, \"Normalized response\")\n        app.StatusLabel.Text = \"Preview updated. This is a UI capability plot, not controller evidence.\"\n    end\n\n    function create_request(app, action)\n        controller = app.ControllerDropDown.Value\n        vehicle_count = app.VehicleDropDown.Value\n        if !(controller in ACCEPTED_CONTROLLERS)\n            app.StatusLabel.Text = \"Request blocked. The selected controller has no accepted runtime gate.\"\n            return nothing\n        end\n        if vehicle_count != \"3\"\n            app.StatusLabel.Text = \"Request blocked. UAV counts 4-9 require an individual scale gate.\"\n            return nothing\n        end\n        request_dir = joinpath(app.ProjectRoot, \"Results\", \"ui_platform\", \"model_studio_requests\")\n        mkpath(request_dir)\n        stamp = Dates.format(now(), \"yyyymmdd_HHMMSS_sss\")\n        created_at = Dates.format(now(), \"yyyy-mm-ddTHH:MM:SS.sss\")\n        request_path = joinpath(request_dir, stamp * \"_\" * action * \".json\")\n        payload = \"\"\"{\n  \\\"schema\\\": \\\"mosim.model_studio.request.v1\\\",\n  \\\"action\\\": \\\"$action\\\",\n  \\\"controller_id\\\": \\\"$controller\\\",\n  \\\"vehicle_count\\\": 3,\n  \\\"wind_speed_mps\\\": $(app.WindField.Value),\n  \\\"created_at_local\\\": \\\"$created_at\\\",\n  \\\"status\\\": \\\"requested\\\"\n}\n\"\"\"\n        open(request_path, \"w\") do io\n            write(io, payload)\n        end\n        return request_path\n    end\n\n    function SubmitPressed(app, event)\n        path = app.create_request(\"prepare_run\")\n        path === nothing && return\n        app.StatusLabel.Text = \"Orchestrator request created:\\n\" * path\n    end\n\n    function SysplorerPressed(app, event)\n        path = app.create_request(\"open_model_context\")\n        path === nothing && return\n        app.StatusLabel.Text = \"Sysplorer request created:\\n\" * path\n    end\n\n    function ResultPressed(app, event)\n        path = app.create_request(\"open_result_viewer\")\n        path === nothing && return\n        app.StatusLabel.Text = \"Result-viewer request created:\\n\" * path\n    end\n\n    function createComponents(app)\n        app.UIFigure = TyAppDesigner.uifigure(Visible=false)\n        app.UIFigure.Position = [100, 100, 980, 620]\n        app.UIFigure.Name = \"MoSim Model Studio\"\n\n        app.TitleLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.TitleLabel.Position = [30, 24, 920, 36]\n        app.TitleLabel.Text = \"MoSim Model Studio\"\n        app.TitleLabel.FontSize = 22\n        app.TitleLabel.FontWeight = \"bold\"\n        app.TitleLabel.HorizontalAlignment = \"left\"\n\n        app.ControllerDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.ControllerDropDown.Position = [30, 90, 410, 32]\n        app.ControllerDropDown.Label = \"Controller\"\n        app.ControllerDropDown.Items = CONTROLLER_OPTIONS\n        app.ControllerDropDown.Value = \"px4ctrl\"\n        app.ControllerDropDown.ValueChangedFcn = \"ControllerChanged\"\n\n        app.VehicleDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.VehicleDropDown.Position = [30, 145, 410, 32]\n        app.VehicleDropDown.Label = \"UAV count\"\n        app.VehicleDropDown.Items = UAV_OPTIONS\n        app.VehicleDropDown.Value = \"3\"\n        app.VehicleDropDown.ValueChangedFcn = \"VehicleChanged\"\n\n        app.WindField = TyAppDesigner.uinumericeditfield(app.UIFigure)\n        app.WindField.Position = [30, 200, 410, 32]\n        app.WindField.Label = \"Wind speed (m/s)\"\n        app.WindField.Value = 0.0\n        app.WindField.Limits = [0.0, 20.0]\n\n        app.PreviewButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.PreviewButton.Position = [30, 270, 190, 36]\n        app.PreviewButton.Text = \"Preview\"\n        app.PreviewButton.ButtonPushedFcn = \"PreviewPressed\"\n\n        app.SubmitButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.SubmitButton.Position = [250, 270, 190, 36]\n        app.SubmitButton.Text = \"Prepare run\"\n        app.SubmitButton.ButtonPushedFcn = \"SubmitPressed\"\n\n        app.SysplorerButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.SysplorerButton.Position = [30, 326, 190, 36]\n        app.SysplorerButton.Text = \"Open model\"\n        app.SysplorerButton.ButtonPushedFcn = \"SysplorerPressed\"\n\n        app.ResultButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.ResultButton.Position = [250, 326, 190, 36]\n        app.ResultButton.Text = \"Open result\"\n        app.ResultButton.ButtonPushedFcn = \"ResultPressed\"\n\n        app.StatusLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.StatusLabel.Position = [30, 405, 410, 165]\n        app.StatusLabel.Text = \"Ready. Disabled options remain visible and are rejected by the capability gate.\"\n        app.StatusLabel.HorizontalAlignment = \"left\"\n        app.StatusLabel.VerticalAlignment = \"top\"\n        app.StatusLabel.WordWrap = true\n\n        app.UIAxes = TyAppDesigner.uiaxes(app.UIFigure)\n        app.UIAxes.Position = [485, 90, 455, 480]\n\n        app.UIFigure.Visible = true\n    end\n\n    function initApp(app)\n        app.createComponents()\n        TyAppDesigner.registerApp(app, app.UIFigure)\n        return app\n    end\n\n    function delete(app)\n        TyAppDesigner.delete(app, app.UIFigure)\n    end\nend\n\nInstance = App().initApp()\n\nend\n"
+    "code": "module MoSimModelStudio\n\nusing Dates\nusing ObjectOriented\nusing TyAppDesigner\nusing TyPlot\n\nfunction discover_project_root()\n    candidates = String[]\n    haskey(ENV, \"MOSIM_PROJECT_ROOT\") && push!(candidates, ENV[\"MOSIM_PROJECT_ROOT\"])\n    push!(candidates, normpath(joinpath(@__DIR__, \"..\", \"..\", \"..\")))\n    push!(candidates, pwd())\n    for initial in candidates\n        candidate = abspath(initial)\n        while true\n            isfile(joinpath(candidate, \"AGENTS.md\")) && return candidate\n            parent = dirname(candidate)\n            parent == candidate && break\n            candidate = parent\n        end\n    end\n    error(\"MoSim project root not found. Set MOSIM_PROJECT_ROOT before starting the APP.\")\nend\n\n@oodef mutable struct App\n    UIFigure::TyAppDesigner.Figure = TyAppDesigner.create_figure()\n    TitleLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n    ProfileDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    ControllerDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    VehicleDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    WindField::TyAppDesigner.NumericEditField = TyAppDesigner.create_numericeditfield()\n    RefreshButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    PreviewButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    SubmitButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    SysplorerButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    ResultButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    UIAxes::TyAppDesigner.UIAxes = TyAppDesigner.create_uiaxes()\n    StatusLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n\n    Appname::Module = @__MODULE__\n    Appfile::String = @__FILE__\n    ProjectRoot::String = discover_project_root()\n\n    function catalog_rows(app)\n        exporter = joinpath(app.ProjectRoot, \"Scripts\", \"ui\", \"export_model_studio_catalog.py\")\n        output = read(Cmd([\"python\", exporter, \"--format\", \"tsv\"]), String)\n        return [split(line, '\\t') for line in split(chomp(output), '\\n') if !isempty(line)]\n    end\n\n    function clean_option(app, value)\n        return String(split(value, \" [disabled:\"; limit=2)[1])\n    end\n\n    function refresh_catalog(app)\n        rows = app.catalog_rows()\n        profiles = String[]\n        controllers = String[]\n        vehicles = String[]\n        for fields in rows\n            if fields[1] == \"PROFILE\"\n                push!(profiles, fields[6] == \"true\" ? fields[2] : fields[2] * \" [disabled: \" * fields[7] * \"]\")\n            elseif fields[1] == \"CONTROLLER\"\n                push!(controllers, fields[5] == \"true\" ? fields[2] : fields[2] * \" [disabled: \" * fields[6] * \"]\")\n            elseif fields[1] == \"VEHICLE\"\n                push!(vehicles, fields[3] == \"true\" ? fields[2] : fields[2] * \" [disabled: \" * fields[4] * \"]\")\n            end\n        end\n        app.ProfileDropDown.Items = profiles\n        app.ControllerDropDown.Items = controllers\n        app.VehicleDropDown.Items = vehicles\n        enabled_profiles = filter(item -> !occursin(\"[disabled:\", item), profiles)\n        if !isempty(enabled_profiles)\n            app.ProfileDropDown.Value = enabled_profiles[1]\n            app.ProfileChanged(nothing)\n        end\n        app.StatusLabel.Text = \"Registry and Profile catalog refreshed.\"\n    end\n\n    function RefreshPressed(app, event)\n        try\n            app.refresh_catalog()\n        catch err\n            app.StatusLabel.Text = \"Catalog refresh failed: \" * sprint(showerror, err)\n        end\n    end\n\n    function ProfileChanged(app, event)\n        selected = app.clean_option(app.ProfileDropDown.Value)\n        for fields in app.catalog_rows()\n            if fields[1] == \"PROFILE\" && fields[2] == selected\n                controller_option = findfirst(item -> app.clean_option(item) == fields[4], app.ControllerDropDown.Items)\n                vehicle_option = findfirst(item -> app.clean_option(item) == fields[5], app.VehicleDropDown.Items)\n                controller_option !== nothing && (app.ControllerDropDown.Value = app.ControllerDropDown.Items[controller_option])\n                vehicle_option !== nothing && (app.VehicleDropDown.Value = app.VehicleDropDown.Items[vehicle_option])\n                runtime = fields[8] == \"true\" ? \"runtime ready\" : \"runtime gate pending\"\n                app.StatusLabel.Text = fields[6] == \"true\" ? \"Profile accepted; \" * runtime : \"Profile unavailable: \" * fields[7]\n                return\n            end\n        end\n        app.StatusLabel.Text = \"Profile not found in current catalog.\"\n    end\n\n    function ControllerChanged(app, event)\n        selected = app.ControllerDropDown.Value\n        app.StatusLabel.Text = occursin(\"[disabled:\", selected) ? \"Controller unavailable.\" : \"Controller selected: \" * selected\n    end\n\n    function VehicleChanged(app, event)\n        selected = app.VehicleDropDown.Value\n        app.StatusLabel.Text = occursin(\"[disabled:\", selected) ? \"UAV count unavailable.\" : \"UAV count selected: \" * selected\n    end\n\n    function PreviewPressed(app, event)\n        wind = app.WindField.Value\n        t = collect(0.0:0.1:10.0)\n        response = @. exp(-0.15 * t) * sin(1.8 * t) + 0.02 * wind\n        TyAppDesigner.plot(app.UIAxes, t, response)\n        TyAppDesigner.title(app.UIAxes, \"Bounded preview\")\n        TyAppDesigner.xlabel(app.UIAxes, \"Time (s)\")\n        TyAppDesigner.ylabel(app.UIAxes, \"Normalized response\")\n        app.StatusLabel.Text = \"Preview updated. This is a UI capability plot, not controller evidence.\"\n    end\n\n    function create_request(app, action)\n        profile = app.clean_option(app.ProfileDropDown.Value)\n        controller = app.clean_option(app.ControllerDropDown.Value)\n        vehicle = app.clean_option(app.VehicleDropDown.Value)\n        if occursin(\"[disabled:\", app.ProfileDropDown.Value) || occursin(\"[disabled:\", app.ControllerDropDown.Value) || occursin(\"[disabled:\", app.VehicleDropDown.Value)\n            return \"false\\tselection_gate_rejected\"\n        end\n        client = joinpath(app.ProjectRoot, \"Scripts\", \"ui\", \"orchestrator_client.py\")\n        if action == \"prepare_run\"\n            profile_path = \"\"\n            for fields in app.catalog_rows()\n                if fields[1] == \"PROFILE\" && fields[2] == profile\n                    profile_path = fields[3]\n                    if fields[4] != controller || fields[5] != vehicle\n                        return \"false\\tprofile_selection_mismatch\"\n                    end\n                end\n            end\n            isempty(profile_path) && return \"false\\tprofile_not_found\"\n            args = [\n                \"python\", client, \"prepare_run\",\n                \"--profile-path\", profile_path,\n                \"--controller-id\", controller,\n                \"--vehicle-count\", vehicle,\n                \"--wind-speed-mps\", string(app.WindField.Value),\n                \"--format\", \"tsv\",\n            ]\n            return String(strip(read(ignorestatus(Cmd(args)), String)))\n        end\n        return String(strip(read(ignorestatus(Cmd([\"python\", client, action, \"--format\", \"tsv\"])), String)))\n    end\n\n    function SubmitPressed(app, event)\n        app.StatusLabel.Text = app.create_request(\"prepare_run\")\n    end\n\n    function SysplorerPressed(app, event)\n        app.StatusLabel.Text = app.create_request(\"open_model_context\")\n    end\n\n    function ResultPressed(app, event)\n        app.StatusLabel.Text = app.create_request(\"get_result_packet\")\n    end\n\n    function createComponents(app)\n        app.UIFigure = TyAppDesigner.uifigure(Visible=false)\n        app.UIFigure.Position = [100, 100, 980, 620]\n        app.UIFigure.Name = \"MoSim Model Studio\"\n\n        app.TitleLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.TitleLabel.Position = [30, 24, 920, 36]\n        app.TitleLabel.Text = \"MoSim Model Studio\"\n        app.TitleLabel.FontSize = 22\n        app.TitleLabel.FontWeight = \"bold\"\n        app.TitleLabel.HorizontalAlignment = \"left\"\n\n        app.ProfileDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.ProfileDropDown.Position = [30, 82, 410, 32]\n        app.ProfileDropDown.Label = \"Experiment profile\"\n        app.ProfileDropDown.Items = [\"Loading catalog...\"]\n        app.ProfileDropDown.Value = \"Loading catalog...\"\n        app.ProfileDropDown.ValueChangedFcn = \"ProfileChanged\"\n\n        app.ControllerDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.ControllerDropDown.Position = [30, 130, 410, 32]\n        app.ControllerDropDown.Label = \"Controller\"\n        app.ControllerDropDown.Items = [\"Loading catalog...\"]\n        app.ControllerDropDown.Value = \"Loading catalog...\"\n        app.ControllerDropDown.ValueChangedFcn = \"ControllerChanged\"\n\n        app.VehicleDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.VehicleDropDown.Position = [30, 178, 410, 32]\n        app.VehicleDropDown.Label = \"UAV count\"\n        app.VehicleDropDown.Items = [\"Loading catalog...\"]\n        app.VehicleDropDown.Value = \"Loading catalog...\"\n        app.VehicleDropDown.ValueChangedFcn = \"VehicleChanged\"\n\n        app.WindField = TyAppDesigner.uinumericeditfield(app.UIFigure)\n        app.WindField.Position = [30, 226, 410, 32]\n        app.WindField.Label = \"Wind speed (m/s)\"\n        app.WindField.Value = 0.0\n        app.WindField.Limits = [0.0, 20.0]\n\n        app.PreviewButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.RefreshButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.RefreshButton.Position = [30, 282, 190, 36]\n        app.RefreshButton.Text = \"Refresh capability\"\n        app.RefreshButton.ButtonPushedFcn = \"RefreshPressed\"\n\n        app.PreviewButton.Position = [250, 282, 190, 36]\n        app.PreviewButton.Text = \"Preview\"\n        app.PreviewButton.ButtonPushedFcn = \"PreviewPressed\"\n\n        app.SubmitButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.SubmitButton.Position = [30, 334, 190, 36]\n        app.SubmitButton.Text = \"Prepare run\"\n        app.SubmitButton.ButtonPushedFcn = \"SubmitPressed\"\n\n        app.SysplorerButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.SysplorerButton.Position = [250, 334, 190, 36]\n        app.SysplorerButton.Text = \"Open model\"\n        app.SysplorerButton.ButtonPushedFcn = \"SysplorerPressed\"\n\n        app.ResultButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.ResultButton.Position = [30, 386, 190, 36]\n        app.ResultButton.Text = \"Open result\"\n        app.ResultButton.ButtonPushedFcn = \"ResultPressed\"\n\n        app.StatusLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.StatusLabel.Position = [30, 442, 410, 128]\n        app.StatusLabel.Text = \"Ready. Disabled options remain visible and are rejected by the capability gate.\"\n        app.StatusLabel.HorizontalAlignment = \"left\"\n        app.StatusLabel.VerticalAlignment = \"top\"\n        app.StatusLabel.WordWrap = true\n\n        app.UIAxes = TyAppDesigner.uiaxes(app.UIFigure)\n        app.UIAxes.Position = [485, 90, 455, 480]\n\n        app.refresh_catalog()\n        app.UIFigure.Visible = true\n    end\n\n    function initApp(app)\n        app.createComponents()\n        TyAppDesigner.registerApp(app, app.UIFigure)\n        return app\n    end\n\n    function delete(app)\n        TyAppDesigner.delete(app, app.UIFigure)\n    end\nend\n\nInstance = App().initApp()\n\nend\n"
 }

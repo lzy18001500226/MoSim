@@ -1,0 +1,60 @@
+{
+  "schema": "mosim.model_studio.d4_gate.v1",
+  "gate_id": "model_studio_syslab_orchestrator_mvp_d4",
+  "status": "pass",
+  "evaluated_at_local": "2026-07-17T04:47:09+08:00",
+  "environment": {
+    "syslab_version": "26.3.1.7499",
+    "julia_version": "1.10.10+4",
+    "ty_app_designer_version": "1.0.9",
+    "ty_app_bundler_version": "1.0.6"
+  },
+  "checks": {
+    "native_app_version_0_2_0": true,
+    "registry_profile_catalog_driven_selection": true,
+    "three_uav_px4ctrl_profile_prepared": true,
+    "model_context_request_accepted": true,
+    "missing_result_packet_reported_without_false_success": true,
+    "four_to_nine_uav_rejected": true,
+    "unaccepted_controller_rejected": true,
+    "clean_install_package_created": true,
+    "targeted_tests_passed": true
+  },
+  "test_evidence": {
+    "command": "python -m pytest Scripts/tests/test_model_studio_catalog.py Scripts/tests/test_orchestrator_client.py Scripts/tests/test_orchestrator_core.py Scripts/tests/test_orchestrator_service.py -q",
+    "passed": 11
+  },
+  "run_evidence": {
+    "profile_id": "factory_l2_three_uav_swarm_formation_v1",
+    "controller_id": "px4ctrl",
+    "vehicle_count": 3,
+    "request_id": "req-d69ee49337b94a1cb97edae54d5a8bfa",
+    "run_id": "run-20260717-043043-92b4b031",
+    "profile_hash": "1ab843fd75297f13a1935db9c79021413ac951a0656d6df8b96b32e237c52783",
+    "prepare_reason_code": "run_prepared",
+    "model_context_reason_code": "model_context_requested",
+    "result_reason_code": "result_packet_not_available"
+  },
+  "package": {
+    "path": "apps/model_studio/dist/MoSim Model Studio.slappinstall",
+    "version": "0.2.0",
+    "size_bytes": 58332,
+    "sha256": "C97E9C5441E3677684A6AA37A57E310A11120A6001C006B631AA97D9D7068119",
+    "entries": [
+      "app.jl",
+      "app.jl.enc",
+      "app.slapp",
+      "MoSimModelStudioApp.slapp"
+    ],
+    "contains_temporary_d4_variants": false
+  },
+  "visual_evidence": {
+    "three_uav_prepared": "Results/ui_platform/model_studio_d4_gate_20260717/model_studio_three_uav_prepared.jpg",
+    "disabled_controller": "Results/ui_platform/model_studio_d4_gate_20260717/model_studio_disabled_controller.jpg"
+  },
+  "evidence_boundaries": [
+    "This gate proves the native Syslab APP, clean package, capability gating, persistent Orchestrator run preparation, model-context request, and unavailable-result handling.",
+    "It does not prove MWORKS simulation or code generation, Gazebo/PX4/MAVROS runtime, RViz/UE attachment, or flight performance.",
+    "Vehicle counts 4-9 and controllers without accepted runtime evidence remain visible but rejected."
+  ]
+}

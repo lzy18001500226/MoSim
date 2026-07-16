@@ -8,17 +8,19 @@ result summaries, and submission to the MoSim Orchestrator. It does not replace
 Sysplorer graphical modeling, the native MWORKS result viewer, or runtime flight
 control.
 
-## Current D1 proof
+## Current D4 proof
 
-The first capability proof includes:
+The current MVP includes:
 
-- native `TyAppDesigner` window and callbacks;
-- controller and UAV-count dropdowns;
-- visible unavailable options with hard request rejection;
+- native `TyAppDesigner` window and callbacks packaged as version `0.2.0`;
+- Registry/Profile Catalog driven profile, controller, and UAV-count dropdowns;
+- visible unavailable options with hard rejection by both the APP and Orchestrator;
 - numeric parameter input;
 - native plot area;
-- local, auditable Orchestrator request creation;
-- dedicated buttons reserved for Sysplorer and result-viewer requests.
+- persistent Orchestrator request/response integration;
+- preparation of one- and three-UAV `px4ctrl` runs with a stable `run_id` and
+  profile hash;
+- bounded model-context and result-packet requests.
 
 Run the source inside Syslab:
 
@@ -26,7 +28,8 @@ Run the source inside Syslab:
 include(raw"C:\Users\HP\Desktop\MoSim\apps\model_studio\src\app.jl")
 ```
 
-The D1 native APP Designer gate passed on 2026-07-17. The installable artifact is:
+The D4 native APP/Orchestrator gate passed on 2026-07-17. The installable
+artifact is:
 
 ```text
 apps/model_studio/dist/MoSim Model Studio.slappinstall
@@ -35,9 +38,10 @@ apps/model_studio/dist/MoSim Model Studio.slappinstall
 Machine-readable evidence is stored at:
 
 ```text
-Results/ui_platform/model_studio_d1_gate_20260717/GATE.json
+Results/ui_platform/model_studio_d4_gate_20260717/GATE.json
 ```
 
-This gate proves the native APP, capability rejection, request creation, and
-packaging path. Orchestrator request consumption and runtime integration remain
-D3-D7 work.
+This gate proves the native APP, clean packaging, capability rejection, run
+preparation, model-context request, and correct unavailable-result boundary. It
+does not prove MWORKS simulation/codegen, Gazebo/PX4/MAVROS runtime, RViz/UE
+attachment, or flight performance; those remain D6-D7 integration gates.
