@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:include schemaLocation="JSBSimCommon.xsd"/>
+
+  <!-- The systems definition -->
+  <xs:element name="system" type="fcs-model">
+    <xs:annotation><xs:documentation>
+      The system definition can be present any number of times in an aircraft
+      definition. This section is used to define an arbitrary system, such as
+      navigation, guidance, or control avionics, electrical systems, etc. The
+      system, autopilot, and flight_control sections of a configuration file are
+      all built the same way, using channel elements that contain strings of
+      component definitions.
+    </xs:documentation></xs:annotation>
+  </xs:element>
+</xs:schema>
