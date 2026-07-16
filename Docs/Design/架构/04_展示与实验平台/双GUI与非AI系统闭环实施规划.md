@@ -236,6 +236,12 @@ D3b源码切片已增加`runtime_backend_catalog.json`、固定WSL launcher和st
 首先进入`starting`，不会把“进程存在”冒充`running`。该切片仍需由长驻Orchestrator服务
 持有进程，并在共享runtime释放后补MAVROS readiness、停止cleanup和残留实测。
 
+D3c已增加项目内JSON文件队列的长驻服务。两个GUI写入
+`Results/ui_platform/orchestrator_requests/`，服务以同一个Orchestrator/backend实例串行处理，
+原子写入`orchestrator_responses/`，从而保留run、进程和显示会话所有权。服务限制请求大小、
+拒绝符号链接、非对象JSON、未知动作和参数不匹配；同名请求已有响应时不重复执行。
+当前Model Studio D1请求格式尚未携带完整Profile和request id，必须在D4升级后才能接入。
+
 ### D4 Model Studio MVP
 
 - 原生Syslab APP使用Registry驱动下拉框；

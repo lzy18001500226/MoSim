@@ -1,0 +1,16 @@
+{
+  "schema": "mosim.orchestrator.service_source_gate.v1",
+  "status": "passed",
+  "checks": {
+    "persistent_orchestrator_instance": true,
+    "run_state_preserved_across_requests": true,
+    "atomic_project_local_responses": true,
+    "duplicate_request_not_reexecuted": true,
+    "unsupported_action_rejected": true,
+    "malformed_request_rejected": true
+  },
+  "targeted_test_count": 11,
+  "shared_gazebo_px4_touched": false,
+  "actual_end_to_end_runtime_accepted": false,
+  "claim_ceiling": "Persistent project-local request service source and offline tests only; live runtime service acceptance remains pending."
+}
