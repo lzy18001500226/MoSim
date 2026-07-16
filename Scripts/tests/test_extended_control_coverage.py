@@ -23,8 +23,8 @@ def test_coverage_report_tracks_every_required_algorithm() -> None:
     report = checker_module().build_report(scope, registry)
     assert report["algorithm_count"] == 58
     assert report["registered_count"] == 6
-    assert report["status_counts"] == {"interface_ready": 6, "unregistered": 52}
-    assert report["selectable_count"] == 0
+    assert report["status_counts"] == {"accepted": 6, "unregistered": 52}
+    assert report["selectable_count"] == 6
     assert report["complete"] is False
     assert len({item["algorithm_id"] for item in report["algorithms"]}) == 58
 

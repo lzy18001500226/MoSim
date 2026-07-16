@@ -302,7 +302,7 @@
     "cascade_pid_attitude_thrust_v1": {
       "controller_id": "cascade_pid",
       "implementation": "project_owned_pid_unified_core",
-      "implementation_status": "interface_ready",
+      "implementation_status": "accepted",
       "controller_family": "pid",
       "chain_position": "nominal_cascaded_position_velocity_outer_loop",
       "output_interface": "ATTITUDE_THRUST",
@@ -313,14 +313,14 @@
       "compatible_safety": ["basic_limiter_v1"],
       "compatible_augmentations": ["none", "anti_windup_v1", "feedforward_profile_v1"],
       "source_basis_required": true,
-      "source_basis": ["Scripts/control_platform/pid_unified_core.[ch]"],
-      "acceptance_tiers": ["CANDIDATE"],
-      "evidence_level": "E1"
+      "source_basis": ["Scripts/control_platform/pid_unified_core.[ch]", "Results/control_platform/p1_pid_mworks_20260716/P1_PID_MIL_SUMMARY.json"],
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
+      "evidence_level": "E5"
     },
     "gain_scheduled_pid_attitude_thrust_v1": {
       "controller_id": "gain_scheduled_pid",
       "implementation": "project_owned_pid_unified_core",
-      "implementation_status": "interface_ready",
+      "implementation_status": "accepted",
       "controller_family": "pid",
       "chain_position": "nominal_scheduled_position_velocity_outer_loop",
       "output_interface": "ATTITUDE_THRUST",
@@ -331,14 +331,14 @@
       "compatible_safety": ["basic_limiter_v1"],
       "compatible_augmentations": ["none", "anti_windup_v1", "feedforward_profile_v1"],
       "source_basis_required": true,
-      "source_basis": ["Scripts/control_platform/pid_unified_core.[ch]"],
-      "acceptance_tiers": ["CANDIDATE"],
-      "evidence_level": "E1"
+      "source_basis": ["Scripts/control_platform/pid_unified_core.[ch]", "Results/control_platform/p1_pid_mworks_20260716/P1_PID_MIL_SUMMARY.json"],
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
+      "evidence_level": "E5"
     },
     "fuzzy_pid_attitude_thrust_v1": {
       "controller_id": "fuzzy_pid",
       "implementation": "project_owned_bounded_fuzzy_schedule_in_pid_unified_core",
-      "implementation_status": "interface_ready",
+      "implementation_status": "accepted",
       "controller_family": "pid",
       "chain_position": "nominal_bounded_fuzzy_scheduled_outer_loop",
       "output_interface": "ATTITUDE_THRUST",
@@ -349,14 +349,14 @@
       "compatible_safety": ["basic_limiter_v1"],
       "compatible_augmentations": ["none", "anti_windup_v1", "feedforward_profile_v1"],
       "source_basis_required": true,
-      "source_basis": ["Scripts/control_platform/pid_unified_core.[ch]"],
-      "acceptance_tiers": ["CANDIDATE"],
-      "evidence_level": "E1"
+      "source_basis": ["Scripts/control_platform/pid_unified_core.[ch]", "Results/control_platform/p1_pid_mworks_20260716/P1_PID_MIL_SUMMARY.json"],
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
+      "evidence_level": "E5"
     },
     "neural_pid_attitude_thrust_v1": {
       "controller_id": "neural_pid",
       "implementation": "project_owned_bounded_residual_interface_in_pid_unified_core",
-      "implementation_status": "interface_ready",
+      "implementation_status": "accepted",
       "controller_family": "pid",
       "chain_position": "nominal_pid_with_bounded_learning_residual",
       "output_interface": "ATTITUDE_THRUST",
@@ -367,9 +367,9 @@
       "compatible_safety": ["basic_limiter_v1"],
       "compatible_augmentations": ["none", "anti_windup_v1", "feedforward_profile_v1"],
       "source_basis_required": true,
-      "source_basis": ["Scripts/control_platform/pid_unified_core.[ch]"],
-      "acceptance_tiers": ["CANDIDATE"],
-      "evidence_level": "E1"
+      "source_basis": ["Scripts/control_platform/pid_unified_core.[ch]", "Results/control_platform/p1_pid_mworks_20260716/P1_PID_MIL_SUMMARY.json"],
+      "acceptance_tiers": ["REPORT", "CANDIDATE"],
+      "evidence_level": "E5"
     },
     "lqr_baseline_attitude_thrust_v1": {
       "controller_id": "lqr_baseline",
@@ -957,30 +957,30 @@
     "anti_windup_v1": {
       "augmentation_id": "anti_windup",
       "implementation": "project_owned_pid_unified_core",
-      "implementation_status": "interface_ready",
+      "implementation_status": "accepted",
       "module_family": "pid_shared",
       "chain_position": "integrator_tracking_feedback",
       "output_interface": "ATTITUDE_THRUST",
       "rate_hz": 100,
       "compatible_controller_profiles": ["cascade_pid_attitude_thrust_v1", "gain_scheduled_pid_attitude_thrust_v1", "fuzzy_pid_attitude_thrust_v1", "neural_pid_attitude_thrust_v1"],
       "source_basis_required": true,
-      "source_basis": ["Scripts/control_platform/pid_unified_core.[ch]"],
-      "acceptance_tiers": ["CANDIDATE"],
-      "evidence_level": "E1"
+      "source_basis": ["Scripts/control_platform/pid_unified_core.[ch]", "Results/control_platform/p1_pid_mworks_20260716/P1_PID_MIL_SUMMARY.json"],
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
+      "evidence_level": "E5"
     },
     "feedforward_profile_v1": {
       "augmentation_id": "feedforward_profile",
       "implementation": "project_owned_pid_unified_core",
-      "implementation_status": "interface_ready",
+      "implementation_status": "accepted",
       "module_family": "pid_shared",
       "chain_position": "reference_feedforward_compensation",
       "output_interface": "ATTITUDE_THRUST",
       "rate_hz": 100,
       "compatible_controller_profiles": ["cascade_pid_attitude_thrust_v1", "gain_scheduled_pid_attitude_thrust_v1", "fuzzy_pid_attitude_thrust_v1", "neural_pid_attitude_thrust_v1"],
       "source_basis_required": true,
-      "source_basis": ["Scripts/control_platform/pid_unified_core.[ch]"],
-      "acceptance_tiers": ["CANDIDATE"],
-      "evidence_level": "E1"
+      "source_basis": ["Scripts/control_platform/pid_unified_core.[ch]", "Results/control_platform/p1_pid_mworks_20260716/P1_PID_MIL_SUMMARY.json"],
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
+      "evidence_level": "E5"
     },
     "l1_awff_minimal_v1": {
       "augmentation_id": "l1_awff_minimal",
