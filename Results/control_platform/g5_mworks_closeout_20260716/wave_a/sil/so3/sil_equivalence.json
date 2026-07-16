@@ -1,0 +1,432 @@
+{
+  "schema": "mosim.mworks_codegen_sil_equivalence.v1",
+  "gate_type": "nonzero_input_sil_smoke",
+  "model_name": "MoSim_WaveA_CFunction_Sysblock",
+  "code_dir": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/codegen/MoSim_WaveA_CFunction_Sysblock",
+  "source_label": "MWORKS_MCP_SIMULATE_MODEL_PLUS_GENERATED_C_RUNTIME",
+  "mworks_reference_source": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/so3/mworks_reference.json",
+  "input_sequence": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "runtime_schema_source": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/so3/runtime_schema.json",
+  "runtime_adapter_shape": "global_struct_input_output_init_step",
+  "sample_time_s": 0.01,
+  "tolerance": 1e-12,
+  "comparison": {
+    "comparisons": [
+      {
+        "index": 0,
+        "runtime_time_s": 0.0,
+        "mworks_time_s": 0.0,
+        "time_error_s": 0.0,
+        "fields": {
+          "desired_attitude_w_out": {
+            "runtime_output": 0.9950041652780085,
+            "mworks_output": 0.9950041652780086,
+            "abs_error": 1.1102230246251565e-16,
+            "pass": true
+          },
+          "desired_attitude_x_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_attitude_y_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_attitude_z_out": {
+            "runtime_output": 0.09983341664700085,
+            "mworks_output": 0.09983341664700086,
+            "abs_error": 1.3877787807814457e-17,
+            "pass": true
+          },
+          "desired_body_rate_x_out": {
+            "runtime_output": 0.1,
+            "mworks_output": 0.1,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_body_rate_y_out": {
+            "runtime_output": -0.2,
+            "mworks_output": -0.2,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_body_rate_z_out": {
+            "runtime_output": 0.40940029992920307,
+            "mworks_output": 0.4094002999292031,
+            "abs_error": 5.551115123125783e-17,
+            "pass": true
+          },
+          "desired_acceleration_x_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_acceleration_y_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_acceleration_z_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "normalized_thrust_out": {
+            "runtime_output": 0.3702254035942735,
+            "mworks_output": 0.37022540359427347,
+            "abs_error": 5.551115123125783e-17,
+            "pass": true
+          },
+          "commanded_collective_thrust_n_out": {
+            "runtime_output": 6.57,
+            "mworks_output": 6.57,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "command_variant_out": {
+            "runtime_output": 2.0,
+            "mworks_output": 2.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "saturated_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "status_code_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          }
+        },
+        "missing_runtime_outputs": [],
+        "missing_mworks_outputs": [],
+        "pass": true
+      },
+      {
+        "index": 1,
+        "runtime_time_s": 0.0,
+        "mworks_time_s": 0.01,
+        "time_error_s": 0.01,
+        "fields": {
+          "desired_attitude_w_out": {
+            "runtime_output": 0.9950041652780085,
+            "mworks_output": 0.9950041652780086,
+            "abs_error": 1.1102230246251565e-16,
+            "pass": true
+          },
+          "desired_attitude_x_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_attitude_y_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_attitude_z_out": {
+            "runtime_output": 0.09983341664700085,
+            "mworks_output": 0.09983341664700086,
+            "abs_error": 1.3877787807814457e-17,
+            "pass": true
+          },
+          "desired_body_rate_x_out": {
+            "runtime_output": 0.1,
+            "mworks_output": 0.1,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_body_rate_y_out": {
+            "runtime_output": -0.2,
+            "mworks_output": -0.2,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_body_rate_z_out": {
+            "runtime_output": 0.40940029992920307,
+            "mworks_output": 0.4094002999292031,
+            "abs_error": 5.551115123125783e-17,
+            "pass": true
+          },
+          "desired_acceleration_x_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_acceleration_y_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_acceleration_z_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "normalized_thrust_out": {
+            "runtime_output": 0.3702254035942735,
+            "mworks_output": 0.37022540359427347,
+            "abs_error": 5.551115123125783e-17,
+            "pass": true
+          },
+          "commanded_collective_thrust_n_out": {
+            "runtime_output": 6.57,
+            "mworks_output": 6.57,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "command_variant_out": {
+            "runtime_output": 2.0,
+            "mworks_output": 2.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "saturated_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "status_code_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          }
+        },
+        "missing_runtime_outputs": [],
+        "missing_mworks_outputs": [],
+        "pass": true
+      },
+      {
+        "index": 2,
+        "runtime_time_s": 0.0,
+        "mworks_time_s": 0.02,
+        "time_error_s": 0.02,
+        "fields": {
+          "desired_attitude_w_out": {
+            "runtime_output": 0.9950041652780085,
+            "mworks_output": 0.9950041652780086,
+            "abs_error": 1.1102230246251565e-16,
+            "pass": true
+          },
+          "desired_attitude_x_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_attitude_y_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_attitude_z_out": {
+            "runtime_output": 0.09983341664700085,
+            "mworks_output": 0.09983341664700086,
+            "abs_error": 1.3877787807814457e-17,
+            "pass": true
+          },
+          "desired_body_rate_x_out": {
+            "runtime_output": 0.1,
+            "mworks_output": 0.1,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_body_rate_y_out": {
+            "runtime_output": -0.2,
+            "mworks_output": -0.2,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_body_rate_z_out": {
+            "runtime_output": 0.40940029992920307,
+            "mworks_output": 0.4094002999292031,
+            "abs_error": 5.551115123125783e-17,
+            "pass": true
+          },
+          "desired_acceleration_x_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_acceleration_y_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_acceleration_z_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "normalized_thrust_out": {
+            "runtime_output": 0.3702254035942735,
+            "mworks_output": 0.37022540359427347,
+            "abs_error": 5.551115123125783e-17,
+            "pass": true
+          },
+          "commanded_collective_thrust_n_out": {
+            "runtime_output": 6.57,
+            "mworks_output": 6.57,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "command_variant_out": {
+            "runtime_output": 2.0,
+            "mworks_output": 2.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "saturated_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "status_code_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          }
+        },
+        "missing_runtime_outputs": [],
+        "missing_mworks_outputs": [],
+        "pass": true
+      },
+      {
+        "index": 3,
+        "runtime_time_s": 0.0,
+        "mworks_time_s": 0.03,
+        "time_error_s": 0.03,
+        "fields": {
+          "desired_attitude_w_out": {
+            "runtime_output": 0.9950041652780085,
+            "mworks_output": 0.9950041652780086,
+            "abs_error": 1.1102230246251565e-16,
+            "pass": true
+          },
+          "desired_attitude_x_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_attitude_y_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_attitude_z_out": {
+            "runtime_output": 0.09983341664700085,
+            "mworks_output": 0.09983341664700086,
+            "abs_error": 1.3877787807814457e-17,
+            "pass": true
+          },
+          "desired_body_rate_x_out": {
+            "runtime_output": 0.1,
+            "mworks_output": 0.1,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_body_rate_y_out": {
+            "runtime_output": -0.2,
+            "mworks_output": -0.2,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_body_rate_z_out": {
+            "runtime_output": 0.40940029992920307,
+            "mworks_output": 0.4094002999292031,
+            "abs_error": 5.551115123125783e-17,
+            "pass": true
+          },
+          "desired_acceleration_x_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_acceleration_y_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "desired_acceleration_z_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "normalized_thrust_out": {
+            "runtime_output": 0.3702254035942735,
+            "mworks_output": 0.37022540359427347,
+            "abs_error": 5.551115123125783e-17,
+            "pass": true
+          },
+          "commanded_collective_thrust_n_out": {
+            "runtime_output": 6.57,
+            "mworks_output": 6.57,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "command_variant_out": {
+            "runtime_output": 2.0,
+            "mworks_output": 2.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "saturated_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          },
+          "status_code_out": {
+            "runtime_output": 0.0,
+            "mworks_output": 0.0,
+            "abs_error": 0.0,
+            "pass": true
+          }
+        },
+        "missing_runtime_outputs": [],
+        "missing_mworks_outputs": [],
+        "pass": true
+      }
+    ],
+    "max_abs_error": 1.1102230246251565e-16,
+    "pass": true
+  },
+  "ok": true,
+  "limitations": [
+    "This gate compares the generated C runtime against a MWORKS/Sysblock reference by output order.",
+    "MWORKS reports the first Sysblock output at t=0 for this reference model; generated C harness records after Step(), so timestamps may be shifted by one sample."
+  ]
+}

@@ -100,6 +100,13 @@ def find_sample_time(source_text: str) -> float | None:
     return float(match.group(1))
 
 
+def find_external_c_sources(code_dir: Path) -> list[str]:
+    external_dir = code_dir / "extern_inc"
+    if not external_dir.is_dir():
+        return []
+    return sorted(path.relative_to(code_dir).as_posix() for path in external_dir.rglob("*.c"))
+
+
 def windows_path_to_wsl(path: Path) -> str:
     resolved = path.resolve()
     drive = resolved.drive.rstrip(":").lower()
@@ -275,6 +282,7 @@ def run_harness(
     model_name: str,
     model_data_global: str,
     schema: dict[str, Any],
+    external_sources: list[str],
 ) -> dict[str, Any]:
     compiler = available_compiler()
     if not compiler["available"]:
@@ -335,6 +343,7 @@ int main(void)
             compiler_path(harness, compiler),
             compiler_path(code_dir / f"{model_name}.c", compiler),
             compiler_path(code_dir / f"{model_name}_data.c", compiler),
+            *[compiler_path(code_dir / source, compiler) for source in external_sources],
             "-I",
             compiler_path(code_dir, compiler),
             "-lm",
@@ -461,6 +470,7 @@ def summarize(
         if struct_name.endswith("ExtY")
     }
     sample_time = find_sample_time(source_text)
+    external_sources = find_external_c_sources(code_dir)
 
     payload.update(
         {
@@ -471,6 +481,7 @@ def summarize(
             "output_globals": output_globals,
             "model_data_global": model_data_global,
             "sample_time_s": sample_time,
+            "external_c_sources": external_sources,
             "runtime_adapter_shape": "global_struct_input_output_init_step",
             "sil_gate_required": True,
         }
@@ -478,7 +489,10 @@ def summarize(
 
     compile_payload: dict[str, Any] | None = None
     if do_compile:
-        compile_payload = compile_sources(code_dir, [source.name, data_source.name, main_source.name])
+        compile_payload = compile_sources(
+            code_dir,
+            [source.name, data_source.name, main_source.name, *external_sources],
+        )
         payload["compile"] = compile_payload
 
     run_payload: dict[str, Any] | None = None
@@ -493,7 +507,13 @@ def summarize(
                 "reason": "generated model data global not found",
             }
         else:
-            run_payload = run_harness(code_dir, model_name, model_data_global, schema)
+            run_payload = run_harness(
+                code_dir,
+                model_name,
+                model_data_global,
+                schema,
+                external_sources,
+            )
         payload["runtime_smoke"] = run_payload
 
     payload["ok"] = bool(

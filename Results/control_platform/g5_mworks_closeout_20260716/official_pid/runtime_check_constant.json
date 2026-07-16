@@ -1,0 +1,179 @@
+{
+  "schema": "mosim.mworks_codegen_runtime_check.v1",
+  "model_name": "AWFF_PID_Sysblock_Demo",
+  "code_dir": "Results\\control_platform\\g5_mworks_closeout_20260716\\official_pid\\codegen\\QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo",
+  "missing_required_files": [],
+  "files": [
+    "AWFF_PID_Sysblock_Demo.c",
+    "AWFF_PID_Sysblock_Demo.h",
+    "AWFF_PID_Sysblock_Demo_data.c",
+    "AWFF_PID_Sysblock_Demo_extern_include.h",
+    "AWFF_PID_Sysblock_Demo_private.h",
+    "ExternalCResource.json",
+    "ExternalResources.xml",
+    "motrace.json",
+    "mwb_main.c",
+    "mwb_runtime.h",
+    "mwb_types.h"
+  ],
+  "source_label": "MWORKS_GENERATED_CODE",
+  "functions": [
+    "Step",
+    "Init"
+  ],
+  "has_init": true,
+  "has_step": true,
+  "input_globals": {
+    "awff_pid_sysblock_demoGbIn": {
+      "struct": "awff_pid_sysblock_demoExtU",
+      "fields": [
+        "z_error"
+      ]
+    }
+  },
+  "output_globals": {
+    "awff_pid_sysblock_demoGbOut": {
+      "struct": "awff_pid_sysblock_demoExtY",
+      "fields": [
+        "thrust_cmd"
+      ]
+    }
+  },
+  "model_data_global": "awff_pid_sysblock_demoGbMd",
+  "sample_time_s": 0.01,
+  "runtime_adapter_shape": "global_struct_input_output_init_step",
+  "sil_gate_required": true,
+  "compile": {
+    "available": true,
+    "ok": true,
+    "compiler": {
+      "kind": "wsl",
+      "path": "/usr/bin/gcc",
+      "available": true
+    },
+    "returncode": 0,
+    "command": [
+      "gcc",
+      "-std=c99",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-c",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/official_pid/codegen/QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo/AWFF_PID_Sysblock_Demo.c",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/official_pid/codegen/QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo/AWFF_PID_Sysblock_Demo_data.c",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/official_pid/codegen/QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo/mwb_main.c",
+      "-I",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/official_pid/codegen/QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo"
+    ],
+    "stdout": "",
+    "stderr": "",
+    "object_dir_removed": true
+  },
+  "runtime_smoke": {
+    "available": true,
+    "ok": true,
+    "phase": "run",
+    "compiler": {
+      "kind": "wsl",
+      "path": "/usr/bin/gcc",
+      "available": true
+    },
+    "build_command": [
+      "gcc",
+      "-std=c99",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/tmp/mworks_codegen_run_k1adj96u/mosim_codegen_harness.c",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/official_pid/codegen/QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo/AWFF_PID_Sysblock_Demo.c",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/official_pid/codegen/QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo/AWFF_PID_Sysblock_Demo_data.c",
+      "-I",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/official_pid/codegen/QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo",
+      "-lm",
+      "-o",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/tmp/mworks_codegen_run_k1adj96u/mosim_codegen_harness"
+    ],
+    "run_command": [
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/tmp/mworks_codegen_run_k1adj96u/mosim_codegen_harness"
+    ],
+    "returncode": 0,
+    "stdout": "0,0.10000000000000001,40.835000893473641,0.01\n1,0.10000000000000001,0.84099999926984315,0.02\n2,0.10000000000000001,0.84699999913573276,0.029999999999999999\n3,0.10000000000000001,0.85299999900162227,0.040000000000000001\n",
+    "stderr": "",
+    "input_global": "awff_pid_sysblock_demoGbIn",
+    "input_fields": [
+      "z_error"
+    ],
+    "output_global": "awff_pid_sysblock_demoGbOut",
+    "output_fields": [
+      "thrust_cmd"
+    ],
+    "input_sequence": [
+      {
+        "z_error": 0.1
+      },
+      {
+        "z_error": 0.1
+      },
+      {
+        "z_error": 0.1
+      },
+      {
+        "z_error": 0.1
+      }
+    ],
+    "rows": [
+      {
+        "index": 0,
+        "inputs": {
+          "z_error": 0.1
+        },
+        "outputs": {
+          "thrust_cmd": 40.83500089347364
+        },
+        "input": 0.1,
+        "output": 40.83500089347364,
+        "time_s": 0.01
+      },
+      {
+        "index": 1,
+        "inputs": {
+          "z_error": 0.1
+        },
+        "outputs": {
+          "thrust_cmd": 0.8409999992698431
+        },
+        "input": 0.1,
+        "output": 0.8409999992698431,
+        "time_s": 0.02
+      },
+      {
+        "index": 2,
+        "inputs": {
+          "z_error": 0.1
+        },
+        "outputs": {
+          "thrust_cmd": 0.8469999991357328
+        },
+        "input": 0.1,
+        "output": 0.8469999991357328,
+        "time_s": 0.03
+      },
+      {
+        "index": 3,
+        "inputs": {
+          "z_error": 0.1
+        },
+        "outputs": {
+          "thrust_cmd": 0.8529999990016223
+        },
+        "input": 0.1,
+        "output": 0.8529999990016223,
+        "time_s": 0.04
+      }
+    ],
+    "temp_dir_removed": true
+  },
+  "ok": true,
+  "expected_sample_time_s": 0.01,
+  "sample_time_ok": true
+}

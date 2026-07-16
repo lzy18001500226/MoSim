@@ -1,0 +1,31 @@
+{
+  "schema": "mosim.mworks_reference.v1",
+  "source_label": "MWORKS_MCP",
+  "model_name": "QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo_SIL_Constant",
+  "rows": [
+    {
+      "time_s": 0.0,
+      "outputs": {
+        "thrust_cmd": 40.834999999999994
+      }
+    },
+    {
+      "time_s": 0.01,
+      "outputs": {
+        "thrust_cmd": 0.8410000000000001
+      }
+    },
+    {
+      "time_s": 0.02,
+      "outputs": {
+        "thrust_cmd": 0.8470000000000001
+      }
+    },
+    {
+      "time_s": 0.03,
+      "outputs": {
+        "thrust_cmd": 0.8530000000000001
+      }
+    }
+  ]
+}

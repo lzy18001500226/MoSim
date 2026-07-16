@@ -12,6 +12,17 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SOURCES = ROOT / "Config" / "control_platform" / "upstream_sources.json"
 APPROVED_LICENSES = {"MIT", "BSD-3-Clause", "Apache-2.0"}
+ALLOWED_DECISIONS = {"selected", "dropped", "deferred_with_reason", "deferred_external_gate"}
+REQUIRED_FAMILY_DECISIONS = {
+    "nonlinear_ndi_feedback_linearization",
+    "complete_adrc",
+    "bounded_learning_augmentation",
+    "formation_reference_generation",
+    "basic_safety_filter",
+    "px4_backend_control_allocation",
+    "advanced_cbf_reference_governor",
+    "fault_aware_allocation",
+}
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 
 
@@ -58,6 +69,30 @@ def validate(data: dict[str, Any]) -> list[dict[str, str]]:
             add("CUS-REF-02", f"reference-only source {item.get('repo')} must forbid source copying")
         if not str(item.get("reason", "")):
             add("CUS-REF-03", f"reference-only source {item.get('repo')} must declare a reason")
+
+    decisions = data.get("family_decisions")
+    if not isinstance(decisions, list):
+        add("CUS-DECISION-01", "family_decisions must be a list")
+        return errors
+    decision_ids: set[str] = set()
+    for index, item in enumerate(decisions):
+        if not isinstance(item, dict):
+            add("CUS-DECISION-02", f"family_decisions[{index}] must be an object")
+            continue
+        family_id = str(item.get("family_id", ""))
+        if not family_id or family_id in decision_ids:
+            add("CUS-DECISION-03", f"missing or duplicate family decision: {family_id}")
+        decision_ids.add(family_id)
+        decision = item.get("decision")
+        if decision not in ALLOWED_DECISIONS:
+            add("CUS-DECISION-04", f"{family_id} has unsupported decision: {decision}")
+        if decision == "selected" and not str(item.get("implementation", "")):
+            add("CUS-DECISION-05", f"selected family {family_id} must name its implementation")
+        if decision != "selected" and not str(item.get("reason", "")):
+            add("CUS-DECISION-06", f"non-selected family {family_id} must declare a reason")
+    missing = sorted(REQUIRED_FAMILY_DECISIONS - decision_ids)
+    if missing:
+        add("CUS-DECISION-07", f"missing required family decisions: {', '.join(missing)}")
     return errors
 
 

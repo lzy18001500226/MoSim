@@ -1,0 +1,97 @@
+{
+  "schema": "mosim.mworks_codegen_sil_equivalence.v1",
+  "gate_type": "nonzero_input_sil_smoke",
+  "model_name": "AWFF_PID_Sysblock_Demo",
+  "code_dir": "Results/control_platform/g5_mworks_closeout_20260716/official_pid/codegen/QuadrotorControllerBlocks.AWFF_PID_Sysblock_Demo",
+  "source_label": "MWORKS_MCP_PLUS_GENERATED_C_RUNTIME",
+  "mworks_reference_source": "Results/control_platform/g5_mworks_closeout_20260716/official_pid/mworks_reference.json",
+  "input_sequence": [
+    0.1,
+    0.1,
+    0.1,
+    0.1
+  ],
+  "runtime_schema_source": null,
+  "runtime_adapter_shape": "global_struct_input_output_init_step",
+  "sample_time_s": 0.01,
+  "tolerance": 1e-06,
+  "comparison": {
+    "comparisons": [
+      {
+        "index": 0,
+        "runtime_time_s": 0.01,
+        "mworks_time_s": 0.0,
+        "time_error_s": 0.01,
+        "fields": {
+          "thrust_cmd": {
+            "runtime_output": 40.83500089347364,
+            "mworks_output": 40.834999999999994,
+            "abs_error": 8.934736470678217e-07,
+            "pass": true
+          }
+        },
+        "missing_runtime_outputs": [],
+        "missing_mworks_outputs": [],
+        "pass": true
+      },
+      {
+        "index": 1,
+        "runtime_time_s": 0.02,
+        "mworks_time_s": 0.01,
+        "time_error_s": 0.01,
+        "fields": {
+          "thrust_cmd": {
+            "runtime_output": 0.8409999992698431,
+            "mworks_output": 0.8410000000000001,
+            "abs_error": 7.301569349138504e-10,
+            "pass": true
+          }
+        },
+        "missing_runtime_outputs": [],
+        "missing_mworks_outputs": [],
+        "pass": true
+      },
+      {
+        "index": 2,
+        "runtime_time_s": 0.03,
+        "mworks_time_s": 0.02,
+        "time_error_s": 0.009999999999999998,
+        "fields": {
+          "thrust_cmd": {
+            "runtime_output": 0.8469999991357328,
+            "mworks_output": 0.8470000000000001,
+            "abs_error": 8.642673243741683e-10,
+            "pass": true
+          }
+        },
+        "missing_runtime_outputs": [],
+        "missing_mworks_outputs": [],
+        "pass": true
+      },
+      {
+        "index": 3,
+        "runtime_time_s": 0.04,
+        "mworks_time_s": 0.03,
+        "time_error_s": 0.010000000000000002,
+        "fields": {
+          "thrust_cmd": {
+            "runtime_output": 0.8529999990016223,
+            "mworks_output": 0.8530000000000001,
+            "abs_error": 9.983778248567887e-10,
+            "pass": true
+          }
+        },
+        "missing_runtime_outputs": [],
+        "missing_mworks_outputs": [],
+        "pass": true
+      }
+    ],
+    "max_abs_error": 8.934736470678217e-07,
+    "pass": true
+  },
+  "ok": true,
+  "limitations": [
+    "This gate compares the generated C runtime against a MWORKS/Sysblock reference by output order.",
+    "MWORKS reports the first Sysblock output at t=0 for this reference model; generated C harness records after Step(), so timestamps may be shifted by one sample."
+  ]
+}

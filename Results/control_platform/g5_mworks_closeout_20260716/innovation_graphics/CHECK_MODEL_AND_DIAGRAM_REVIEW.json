@@ -1,0 +1,17 @@
+{
+  "schema": "mosim.mworks_graphical_review.v1",
+  "status": "passed",
+  "check_model_count": 5,
+  "models": [
+    "QuadrotorControllerBlocks.AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock",
+    "QuadrotorControllerBlocks.AWFF_InnovationGraphicalControllers.AWFF_INDIControllerGraphical_Sysblock",
+    "QuadrotorControllerBlocks.AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock",
+    "QuadrotorControllerBlocks.AWFF_InnovationGraphicalControllers.AWFF_L1FaultAllocationControllerGraphical_Sysblock",
+    "QuadrotorControllerBlocks.AWFF_InnovationGraphicalControllers.AWFF_L1OnlineFaultAllocationControllerGraphical_Sysblock"
+  ],
+  "observations": [
+    "Top-level signal paths, named controller stages, motor mixer and output wiring are visible.",
+    "These diagrams provide readable structure; numerical execution and code-generation claims come from separate MIL/CFunction evidence.",
+    "No login, license or authorization blocker appeared during the checks."
+  ]
+}

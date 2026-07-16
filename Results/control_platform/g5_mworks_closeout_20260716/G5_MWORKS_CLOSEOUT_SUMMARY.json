@@ -1,0 +1,58 @@
+{
+  "schema": "mosim.control_platform.g5_mworks_closeout.v1",
+  "audited_at": "2026-07-16",
+  "status": "accepted_non_gazebo_scope_with_explicit_deferrals",
+  "live_mworks_touched": true,
+  "shared_gazebo_px4_touched": false,
+  "session": {"driver_ready": true, "dedicated_sysplorer_port": 49153},
+  "accepted": {
+    "official_pid": {
+      "graphical_check": "passed",
+      "mil": "passed",
+      "generate_model_code": "passed",
+      "generated_c_compile_and_smoke": "passed",
+      "sil_max_abs_error": 8.934736470678217e-07,
+      "evidence": "Results/control_platform/g5_mworks_closeout_20260716/official_pid"
+    },
+    "wave_a": {
+      "controllers": ["lqr_baseline", "lqi_baseline", "so3_attitude", "backstepping_baseline"],
+      "check_model_count": 5,
+      "mil_count": 4,
+      "generate_model_code": "passed",
+      "generated_c_compile_and_smoke": "passed_for_all_four_controller_ids",
+      "sil_fields_per_sample": 15,
+      "sil_samples_per_controller": 4,
+      "sil_max_abs_error_by_controller": {
+        "lqr_baseline": 2.6645352591003757e-15,
+        "lqi_baseline": 2.6645352591003757e-15,
+        "so3_attitude": 1.1102230246251565e-16,
+        "backstepping_baseline": 0.0
+      },
+      "graphical_boundary": "The generated CFunction model has real ports and wires but is an equation bridge; readable algorithm structure remains represented by separate graphical assets, not by the dense CFunction diagram.",
+      "evidence": "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+    },
+    "existing_g9_family": {
+      "controllers": ["official_pid", "se3_basic", "dfbc_basic", "smc_boundary_layer", "pid_indi", "nmpc_outer"],
+      "fresh_check_model": "passed",
+      "mworks_generate_model_code_record": "Results/g9/controller_family_attitude_thrust_v1/g9_family_mworks_codegen_20260630_work/generate_model_code_result.json",
+      "fresh_offline_generated_c_revalidation": "Results/control_platform/g3_current_family_20260716/G3_SUMMARY.json",
+      "generated_c_cases": 450,
+      "generated_c_failures": 0,
+      "max_abs_diff": 3.552713678800501e-15,
+      "boundary": "Existing generated-C provenance was revalidated; this is not a fresh per-controller MIL performance matrix."
+    },
+    "innovation_graphics": {
+      "check_model_count": 5,
+      "models": ["l1_residual", "indi", "linear_mpc", "fault_allocation", "online_fault_allocation"],
+      "diagram_evidence": "Results/control_platform/g5_mworks_closeout_20260716/innovation_graphics"
+    }
+  },
+  "deferred": {
+    "hinf_hover_wrench": "nonselectable until a WRENCH allocator/adapter and dedicated benchmark exist",
+    "complete_adrc": "existing implementation is only a bounded DOB/ESO subset",
+    "learning_augmentation": "requires frozen dataset/model hash and deterministic safety/fallback benchmark",
+    "formation_runtime": "requires released shared multi-UAV Gazebo resources",
+    "fault_aware_allocation_runtime": "requires actuator-level authority and same-run telemetry"
+  },
+  "claim_boundary": "G5 is closed for the accepted non-Gazebo controller/code-generation scope. It does not claim every registered module has a fresh per-controller MIL performance matrix, and it does not claim Gazebo/PX4 runtime acceptance."
+}

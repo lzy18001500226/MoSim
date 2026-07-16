@@ -1,27 +1,20 @@
 {
   "schema": "mosim.control_platform.g5_wave_a_summary.v1",
-  "status": "partial_blocked",
+  "status": "passed_non_gazebo_scope",
   "controllers": {
-    "lqr_baseline": {"source_core": "passed", "profile_registry": "passed", "c_oracle_equivalence": "passed", "mworks_mil": "blocked", "generated_c_equivalence": "blocked", "factory_runtime": "pending_shared_resource"},
-    "lqi_baseline": {"source_core": "passed", "profile_registry": "passed", "c_oracle_equivalence": "passed", "mworks_mil": "blocked", "generated_c_equivalence": "blocked", "factory_runtime": "pending_shared_resource"},
-    "so3_attitude": {"source_core": "passed", "profile_registry": "passed_nonselectable_inner_loop", "c_oracle_equivalence": "passed", "mworks_mil": "blocked", "generated_c_equivalence": "blocked", "factory_runtime": "pending_shared_resource"},
-    "backstepping_baseline": {"source_core": "passed_nonadaptive", "profile_registry": "passed", "c_oracle_equivalence": "passed", "mworks_mil": "blocked", "generated_c_equivalence": "blocked", "factory_runtime": "pending_shared_resource"}
+    "lqr_baseline": {"source_core": "passed", "profile_registry": "passed", "c_oracle_equivalence": "passed", "mworks_mil": "passed", "generated_c_equivalence": "passed", "factory_runtime": "deferred_external_gate"},
+    "lqi_baseline": {"source_core": "passed", "profile_registry": "passed", "c_oracle_equivalence": "passed", "mworks_mil": "passed", "generated_c_equivalence": "passed", "factory_runtime": "deferred_external_gate"},
+    "so3_attitude": {"source_core": "passed", "profile_registry": "passed_nonselectable_inner_loop", "c_oracle_equivalence": "passed", "mworks_mil": "passed", "generated_c_equivalence": "passed", "factory_runtime": "deferred_external_gate"},
+    "backstepping_baseline": {"source_core": "passed_nonadaptive", "profile_registry": "passed", "c_oracle_equivalence": "passed", "mworks_mil": "passed", "generated_c_equivalence": "passed", "factory_runtime": "deferred_external_gate"}
   },
   "offline_gate": "G5_WAVE_A_GATE.json",
   "offline_gate_result": {"case_count": 5, "scalar_comparison_count": 75, "failure_count": 0, "max_abs_diff": 1.1102230246251565e-16},
-  "mworks_blocker": {
-    "stage": "activation_window_read_only_probe",
-    "tool": "mcp__sysplorer__session_manager(action=probe|version)",
-    "error": "Transport closed for both read-only probe and non-connecting version query",
-    "attempt_count": 2,
-    "live_mworks_touched": false,
-    "will_not_click_activation_login": true,
-    "minimal_recovery": "Restore the Sysplorer MCP transport, then rerun one read-only probe before model generation/check_model/MIL/codegen."
-  },
+  "mworks_closeout": "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+  "mworks_gate": {"driver_ready": true, "check_model_count": 5, "mil_count": 4, "generate_model_code": "passed", "sil_status": "passed"},
   "upstream_cache_observation": {
     "lqr_shengwen": "incomplete_git_directory_without_HEAD",
     "so3_fdcl": "clone_failed_connection_reset_and_directory_absent",
     "decision": "Do not block the project-owned implementation on full repository clones; pinned commits and licenses remain the source audit anchors."
   },
-  "claim_ceiling": "Wave A has project-owned fixed-size C implementations and offline oracle equivalence. Fresh MWORKS graphical/MIL/generated-C and Factory runtime acceptance remain open."
+  "claim_ceiling": "Wave A has real MWORKS equation-bridge checks, four fixed-input MIL runs, generated-C compile/runtime smoke and 15-field SIL equivalence. The dense CFunction diagram is not a readable algorithm-structure substitute, and Factory runtime remains deferred."
 }

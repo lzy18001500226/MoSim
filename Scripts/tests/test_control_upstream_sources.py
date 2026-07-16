@@ -38,3 +38,17 @@ def test_reference_only_source_cannot_be_copied() -> None:
     data["reference_only"][0]["source_copy_allowed"] = True
     codes = {item["code"] for item in checker_module().validate(data)}
     assert "CUS-REF-02" in codes
+
+
+def test_required_family_decision_cannot_be_omitted() -> None:
+    data = source_data()
+    data["family_decisions"] = data["family_decisions"][1:]
+    codes = {item["code"] for item in checker_module().validate(data)}
+    assert "CUS-DECISION-07" in codes
+
+
+def test_deferred_family_requires_reason() -> None:
+    data = source_data()
+    data["family_decisions"][0].pop("reason")
+    codes = {item["code"] for item in checker_module().validate(data)}
+    assert "CUS-DECISION-06" in codes

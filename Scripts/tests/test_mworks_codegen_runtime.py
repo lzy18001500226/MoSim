@@ -149,18 +149,25 @@ def test_codegen_runtime_multi_io_schema_harness(tmp_path: Path) -> None:
         + "\n",
         encoding="utf-8",
     )
+    external_dir = code_dir / "extern_inc"
+    external_dir.mkdir()
+    (external_dir / "external_controller.c").write_text(
+        "double external_sum(double lhs, double rhs) { return lhs + rhs; }\n",
+        encoding="utf-8",
+    )
     (code_dir / "MultiController.c").write_text(
         textwrap.dedent(
             """
             #include "MultiController.h"
             #include "MultiController_private.h"
+            double external_sum(double lhs, double rhs);
             struct multi_controllerExtU multi_controllerGbIn;
             struct multi_controllerExtY multi_controllerGbOut;
             static struct multi_controllerTagEmd multi_controllerStMd;
             multi_controllerEmd*const multi_controllerGbMd = &multi_controllerStMd;
             void Step(void)
             {
-              multi_controllerGbOut.y = multi_controllerGbIn.x_error + multi_controllerGbIn.z_error;
+              multi_controllerGbOut.y = external_sum(multi_controllerGbIn.x_error, multi_controllerGbIn.z_error);
               multi_controllerGbOut.y1 = multi_controllerGbIn.y_error - multi_controllerGbIn.z_ref_rate;
               ++multi_controllerGbMd->m_timeTickCount;
               multi_controllerGbMd->m_curTime = multi_controllerGbMd->m_startTime + (MwbDouble)multi_controllerGbMd->m_timeTickCount * multi_controllerGbMd->m_stepSize;
@@ -198,6 +205,8 @@ def test_codegen_runtime_multi_io_schema_harness(tmp_path: Path) -> None:
         runtime_schema=runtime_schema,
     )
     if not payload["ok"]:
+        raise AssertionError(payload)
+    if payload["external_c_sources"] != ["extern_inc/external_controller.c"]:
         raise AssertionError(payload)
     rows = payload["runtime_smoke"]["rows"]
     if rows[0]["outputs"] != {"y": 4.0, "y1": 1.5}:

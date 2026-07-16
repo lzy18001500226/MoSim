@@ -21,5 +21,15 @@
     {"repo": "oussama-sadki/Adaptive-Integrator-Backstepping-control-of-altitude-attitude-for-UAV", "reason": "no_explicit_license", "source_copy_allowed": false},
     {"repo": "iff-gsc/SE2A_GLA_INDI", "reason": "GPL-3.0_requires_separate_distribution_decision", "source_copy_allowed": false},
     {"repo": "iff-gsc/FTC_Quadrotor_EuroGNC_2022", "reason": "GPL-2.0_requires_separate_distribution_decision", "source_copy_allowed": false}
+  ],
+  "family_decisions": [
+    {"family_id": "nonlinear_ndi_feedback_linearization", "decision": "deferred_with_reason", "reason": "Backstepping and differential-flatness families already cover the bounded nonlinear baseline; no additional licensed fixed-size oracle has enough independent report value for this closeout.", "reopen_gate": "licensed deterministic core plus a declared experiment that distinguishes it from existing nonlinear controllers"},
+    {"family_id": "complete_adrc", "decision": "deferred_with_reason", "reason": "The accepted scope contains a bounded DOB/ESO subset; adding tracking differentiator and nonlinear state-error feedback would duplicate the current disturbance-observer objective without fresh evidence value.", "reopen_gate": "an ADRC-specific benchmark and fixed-size implementation that demonstrates value beyond DOB/ESO"},
+    {"family_id": "bounded_learning_augmentation", "decision": "deferred_with_reason", "reason": "Only the typed inference, artifact-version, bounds, reset and fallback contracts are in scope before a dataset and independent safety benchmark exist.", "reopen_gate": "frozen dataset and model hash, deterministic fixed-size inference, fallback tests and a non-Gazebo MIL benchmark"},
+    {"family_id": "formation_reference_generation", "decision": "deferred_external_gate", "reason": "The interface is frozen, but meaningful acceptance requires the shared multi-UAV runtime that is excluded from this non-Gazebo closeout.", "reopen_gate": "shared ROS1/Gazebo/PX4/MAVROS resources released and a same-run multi-UAV evidence profile approved"},
+    {"family_id": "basic_safety_filter", "decision": "selected", "implementation": "basic_limiter", "evidence": "Config/control_platform/control_module_registry.json"},
+    {"family_id": "px4_backend_control_allocation", "decision": "selected", "implementation": "px4_control_allocator", "evidence": "Config/control_platform/control_module_registry.json"},
+    {"family_id": "advanced_cbf_reference_governor", "decision": "deferred_with_reason", "reason": "The mandatory bounded limiter closes the current command envelope; obstacle-aware CBF or reference-governor acceptance requires a dedicated constraint benchmark.", "reopen_gate": "fixed-size filter, infeasibility fallback and dedicated MIL constraint-violation benchmark"},
+    {"family_id": "fault_aware_allocation", "decision": "deferred_external_gate", "reason": "Motor-level reconstruction requires WRENCH or ROTOR command authority and same-run actuator telemetry, which are outside the non-Gazebo closeout.", "reopen_gate": "released actuator-level backend and same-run motor-effectiveness event plus telemetry evidence"}
   ]
 }

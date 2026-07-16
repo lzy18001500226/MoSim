@@ -1,0 +1,120 @@
+{
+  "schema": "mosim.mworks_codegen_runtime_check.v1",
+  "model_name": "MoSim_WaveA_CFunction_Sysblock",
+  "code_dir": "Results\\control_platform\\g5_mworks_closeout_20260716\\wave_a\\codegen\\MoSim_WaveA_CFunction_Sysblock",
+  "missing_required_files": [],
+  "files": [
+    "ExternalCResource.json",
+    "ExternalResources.xml",
+    "MoSim_WaveA_CFunction_Sysblock.c",
+    "MoSim_WaveA_CFunction_Sysblock.h",
+    "MoSim_WaveA_CFunction_Sysblock_data.c",
+    "MoSim_WaveA_CFunction_Sysblock_extern_include.h",
+    "MoSim_WaveA_CFunction_Sysblock_private.h",
+    "motrace.json",
+    "mwb_main.c",
+    "mwb_runtime.h",
+    "mwb_types.h"
+  ],
+  "source_label": "MWORKS_GENERATED_CODE",
+  "functions": [
+    "Step",
+    "Init"
+  ],
+  "has_init": true,
+  "has_step": true,
+  "input_globals": {
+    "ockGbIn": {
+      "struct": "ockExtU",
+      "fields": [
+        "controller_id_in",
+        "dt_in",
+        "position_x_in",
+        "position_y_in",
+        "position_z_in",
+        "velocity_x_in",
+        "velocity_y_in",
+        "velocity_z_in",
+        "attitude_w_in",
+        "attitude_x_in",
+        "attitude_y_in",
+        "attitude_z_in",
+        "reference_position_x_in",
+        "reference_position_y_in",
+        "reference_position_z_in",
+        "reference_velocity_x_in",
+        "reference_velocity_y_in",
+        "reference_velocity_z_in",
+        "reference_acceleration_x_in",
+        "reference_acceleration_y_in",
+        "reference_acceleration_z_in",
+        "reference_attitude_w_in",
+        "reference_attitude_x_in",
+        "reference_attitude_y_in",
+        "reference_attitude_z_in",
+        "reference_body_rate_x_in",
+        "reference_body_rate_y_in",
+        "reference_body_rate_z_in",
+        "reference_yaw_in",
+        "collective_thrust_n_in",
+        "enable_in",
+        "reset_in"
+      ]
+    }
+  },
+  "output_globals": {
+    "lockGbOut": {
+      "struct": "ockExtY",
+      "fields": [
+        "desired_attitude_w_out",
+        "desired_attitude_x_out",
+        "desired_attitude_y_out",
+        "desired_attitude_z_out",
+        "desired_body_rate_x_out",
+        "desired_body_rate_y_out",
+        "desired_body_rate_z_out",
+        "desired_acceleration_x_out",
+        "desired_acceleration_y_out",
+        "desired_acceleration_z_out",
+        "normalized_thrust_out",
+        "commanded_collective_thrust_n_out",
+        "command_variant_out",
+        "saturated_out",
+        "status_code_out"
+      ]
+    }
+  },
+  "model_data_global": "ckGbMd",
+  "sample_time_s": 0.01,
+  "runtime_adapter_shape": "global_struct_input_output_init_step",
+  "sil_gate_required": true,
+  "compile": {
+    "available": true,
+    "ok": true,
+    "compiler": {
+      "kind": "wsl",
+      "path": "/usr/bin/gcc",
+      "available": true
+    },
+    "returncode": 0,
+    "command": [
+      "gcc",
+      "-std=c99",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-c",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/wave_a/codegen/MoSim_WaveA_CFunction_Sysblock/MoSim_WaveA_CFunction_Sysblock.c",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/wave_a/codegen/MoSim_WaveA_CFunction_Sysblock/MoSim_WaveA_CFunction_Sysblock_data.c",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/wave_a/codegen/MoSim_WaveA_CFunction_Sysblock/mwb_main.c",
+      "-I",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/wave_a/codegen/MoSim_WaveA_CFunction_Sysblock"
+    ],
+    "stdout": "",
+    "stderr": "",
+    "object_dir_removed": true
+  },
+  "ok": true,
+  "expected_sample_time_s": 0.01,
+  "sample_time_ok": true
+}
