@@ -1,0 +1,36 @@
+{
+  "schema": "mosim.flight_console.qgc_d2_preflight.v1",
+  "status": "blocked",
+  "blocker": "windows_cpp_toolchain_missing",
+  "evaluated_at_local": "2026-07-17T03:05:00+08:00",
+  "upstream": {
+    "repository": "https://github.com/mavlink/QGroundControl",
+    "release": "v5.0.8",
+    "commit": "e0816c957602789200ae5ba0af45217f0f2f1db4",
+    "source_archive_sha256": "74C7B9A183BBCBB0AB3DC97E4F88B80A10B0AB1B41847CDBF61B54F02FC5A5AC"
+  },
+  "submodules": [
+    {
+      "path": "src/FirmwarePlugin/APM/ArduPilot-Parameter-Repository",
+      "commit": "a458e8e86a8ffa3b7f52f4601adcdaaff0db5f42",
+      "source_archive_sha256": "041D6B0C16750C91CFDBFB65FD29AF29BF98ABECBC7BE0397B77BA5E0F0AF468"
+    }
+  ],
+  "vendor_copy": {
+    "path": "apps/flight_console/vendor/qgroundcontrol",
+    "file_count": 2638,
+    "size_bytes": 325541370,
+    "largest_file_bytes": 20656379,
+    "nested_git_metadata": false
+  },
+  "toolchain": {
+    "cmake_version": "4.3.2",
+    "required_qt_version": "6.8.3",
+    "detected_qt_version": "5.15.2",
+    "ninja_available": false,
+    "visual_studio_2022_cpp_tools_available": false,
+    "windows_sdk_available": false,
+    "gstreamer_available": false
+  },
+  "evidence_boundary": "Source provenance and the project-owned vendor copy are established. The unmodified Windows build and launch gate has not run and D2 is not complete."
+}

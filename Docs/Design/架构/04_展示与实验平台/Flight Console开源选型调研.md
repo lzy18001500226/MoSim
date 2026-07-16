@@ -1,5 +1,5 @@
 # Flight Console开源选型调研
-> 状态：D2选型输入，2026-07-17。
+> 状态：D2来源与产品副本已冻结，Windows构建门禁阻断，2026-07-17。
 >
 > 本文记录MoSim Flight Console的本地源码审计和GitHub候选比较。当前结论冻结
 > 主底座方向，但在Windows独立构建和最小源码复制门禁通过前，不声明D2完成。
@@ -133,11 +133,25 @@ apps/flight_console/
 
 ## 6. D2剩余验收
 
-当前已经完成候选调研和主底座选择。D2仍需：
+当前已完成：
 
-- 检查Windows Qt/CMake/Ninja/GStreamer构建环境；
-- 确认本地QGC快照版本和完整性；
-- 建立项目自有最小源码副本；
+- 主底座冻结为官方稳定版QGroundControl `v5.0.8`；
+- release commit冻结为`e0816c957602789200ae5ba0af45217f0f2f1db4`；
+- 唯一子模块冻结为`a458e8e86a8ffa3b7f52f4601adcdaaff0db5f42`；
+- 官方归档、许可证、项目自有完整源码副本和2638文件SHA256清单已形成；
+- `References/PX4/qgroundcontrol/`保持未修改，产品源码位于
+  `apps/flight_console/vendor/qgroundcontrol/`。
+
+当前机器门禁见
+`Results/ui_platform/qgc_d2_gate_20260717/PREFLIGHT.json`。本机只有Qt 5.15.2，
+缺少Qt 6.8.3、Ninja、Visual Studio 2022 C++ Build Tools和Windows SDK。安装MSVC和
+Windows SDK属于仓库外基础设施变更，未经明确授权不静默执行。
+
+D2仍需：
+
 - 原样构建并启动QGC基线；
 - 证明Custom Build页面可独立加载；
-- 输出许可证、清单、构建日志和截图证据。
+- 输出构建日志和截图证据。
+
+在这两项通过前，D2保持`blocked`，不能把来源冻结和源码复制声明为可运行Flight
+Console。GStreamer可在首个无视频基线中关闭，但后续UE/视频流接入必须单独补门禁。
