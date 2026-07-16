@@ -11,10 +11,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 RESULT_DIR = ROOT / "Results/control_platform/p1_pid_mworks_20260716"
 LOG_DIR = RESULT_DIR / "logs"
+ATTITUDE_THRUST_GATE = (
+    ROOT
+    / "Results/control_platform/p1_pid_attitude_thrust_20260716/PID_ATTITUDE_THRUST_GATE.json"
+)
 
 
 def load(name: str) -> dict:
     return json.loads((LOG_DIR / name).read_text(encoding="utf-8"))
+
+
+def write_json_lf(path: Path, payload: dict) -> None:
+    with path.open("w", encoding="utf-8", newline="\n") as stream:
+        stream.write(json.dumps(payload, indent=2) + "\n")
 
 
 def file_record(path: Path, role: str, observation: str) -> dict:
@@ -37,6 +46,7 @@ def main() -> int:
     equivalence = load("pid_graphical_codegen_equivalence.json")
     variant_mil = load("pid_graphical_variant_mil.json")
     variant_equivalence = load("pid_six_variant_graphical_equivalence.json")
+    attitude_thrust = json.loads(ATTITUDE_THRUST_GATE.read_text(encoding="utf-8"))
 
     activation = next((RESULT_DIR / "screenshots/activation").glob("*.png"))
     check_sim = next((RESULT_DIR / "screenshots/check_sim").glob("*.png"))
@@ -63,7 +73,7 @@ def main() -> int:
         ],
     }
     screenshot_path = LOG_DIR / "screenshot_manifest.json"
-    screenshot_path.write_text(json.dumps(screenshots, indent=2) + "\n", encoding="utf-8")
+    write_json_lf(screenshot_path, screenshots)
 
     fixture_ids = sorted(mil["fixtures"])
     gates = {
@@ -80,7 +90,13 @@ def main() -> int:
             variant_mil["six_variant_graphical_mil_ok"]
             and variant_equivalence["six_variant_graphical_equivalence"]
         ),
-        "full_attitude_thrust_contract": False,
+        "full_attitude_thrust_contract": bool(
+            attitude_thrust["status"] == "passed"
+            and attitude_thrust["case_count"] == 12
+            and attitude_thrust["lifecycle_fail_closed"]
+            and attitude_thrust["frame_contract"]["thrust_unit"] == "N"
+        ),
+        "full_attitude_thrust_mworks_codegen_sil": False,
         "gazebo_px4_mavros_closed_loop": False,
     }
     summary = {
@@ -102,13 +118,14 @@ def main() -> int:
             "equivalence": str(LOG_DIR / "pid_graphical_codegen_equivalence.json"),
             "variant_graphical_mil": str(LOG_DIR / "pid_graphical_variant_mil.json"),
             "six_variant_graphical_equivalence": str(LOG_DIR / "pid_six_variant_graphical_equivalence.json"),
+            "attitude_thrust_contract": str(ATTITUDE_THRUST_GATE),
             "screenshots": str(screenshot_path),
         },
         "open_gates": [name for name, passed in gates.items() if not passed],
-        "claim_boundary": "P1 has real scalar MIL, six behavior-equivalent fixed-input graphical variants, official generated C, and compiled runtime smoke. It is not selectable and does not yet prove the full ATTITUDE_THRUST contract or Gazebo/PX4/MAVROS closed loop.",
+        "claim_boundary": "P1 has real scalar MIL, six behavior-equivalent fixed-input graphical variants, official generated C, and a fixed-size six-algorithm ATTITUDE_THRUST C contract. It is not selectable and does not yet prove full-contract MWORKS generated-C/SIL or Gazebo/PX4/MAVROS closed loop.",
     }
     output = RESULT_DIR / "P1_PID_MIL_SUMMARY.json"
-    output.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+    write_json_lf(output, summary)
     print(json.dumps(summary, indent=2))
     return 0
 

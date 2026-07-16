@@ -11,7 +11,8 @@ def test_summary_preserves_unaccepted_claim_boundaries() -> None:
     text = SCRIPT.read_text(encoding="utf-8")
     assert '"selectable": False' in text
     assert 'variant_equivalence["six_variant_graphical_equivalence"]' in text
-    assert '"full_attitude_thrust_contract": False' in text
+    assert 'attitude_thrust["lifecycle_fail_closed"]' in text
+    assert '"full_attitude_thrust_mworks_codegen_sil": False' in text
     assert '"gazebo_px4_mavros_closed_loop": False' in text
 
 
@@ -25,6 +26,13 @@ def test_summary_indexes_required_evidence() -> None:
         "pid_graphical_codegen_equivalence.json",
         "pid_graphical_variant_mil.json",
         "pid_six_variant_graphical_equivalence.json",
+        "PID_ATTITUDE_THRUST_GATE.json",
         "screenshot_manifest.json",
     ):
         assert name in text
+
+
+def test_summary_writes_reproducible_lf_json() -> None:
+    text = SCRIPT.read_text(encoding="utf-8")
+    assert 'newline="\\n"' in text
+    assert "write_json_lf(output, summary)" in text

@@ -1,0 +1,28 @@
+{
+  "schema": "mosim.pid_attitude_thrust_gate.v1",
+  "status": "passed",
+  "algorithms": [
+    "cascade_pid",
+    "gain_scheduled_pid",
+    "fuzzy_pid",
+    "neural_pid",
+    "anti_windup",
+    "feedforward_profile"
+  ],
+  "case_count": 12,
+  "hover_max_collective_thrust_error_n": 0.0,
+  "max_quaternion_norm_error": 0.0,
+  "distinct_dynamic_signature_count": 5,
+  "lifecycle_fail_closed": true,
+  "failure_count": 0,
+  "failures": [],
+  "frame_contract": {
+    "world": "ENU",
+    "body": "FLU",
+    "quaternion_order": "wxyz",
+    "thrust_unit": "N"
+  },
+  "runtime_started": false,
+  "shared_gazebo_px4_touched": false,
+  "claim_ceiling": "Fixed-size project C core compile/runtime golden evidence for six ATTITUDE_THRUST contracts; no MWORKS full-contract codegen or Gazebo/PX4/MAVROS runtime is claimed."
+}
