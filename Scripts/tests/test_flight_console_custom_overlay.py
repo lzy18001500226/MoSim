@@ -29,6 +29,7 @@ def test_custom_overlay_uses_supported_qgc_extension_points() -> None:
     assert "Cascade PID / MWORKS generated C" in qml
     assert "mosimOrchestrator.attachDisplays()" in qml
     assert "mosimOrchestrator.detachDisplays()" in qml
+    assert "injectionVehicle.currentIndex = 0" in qml
 
 
 def test_materializer_keeps_source_and_target_separate(tmp_path: Path) -> None:

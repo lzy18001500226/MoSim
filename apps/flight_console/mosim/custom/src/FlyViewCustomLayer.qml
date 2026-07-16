@@ -117,6 +117,7 @@ Item {
                             onActivated: {
                                 controllerBox.currentIndex = profiles[currentIndex].controller === "cascade_pid" ? 1 : 0
                                 vehicleBox.currentIndex = profiles[currentIndex].count === 3 ? 1 : 0
+                                injectionVehicle.currentIndex = 0
                             }
                         }
                         QGCLabel { text: "Controller" }
