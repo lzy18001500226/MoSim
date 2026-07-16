@@ -24,6 +24,7 @@ public:
     virtual void PawnClientRestart() override;
     void ApplyReviewInputMode(class APlayerController* PlayerController);
     void SetFollowTarget(AActor* NewFollowTarget);
+    void SetFollowTargets(const TArray<AActor*>& NewFollowTargets);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera")
     FVector InitialCameraLocation = FVector(-3600.0, -2800.0, 1450.0);
@@ -107,6 +108,8 @@ private:
     void ApplyReviewInput(float DeltaSeconds);
     void ApplyFollowTarget(float DeltaSeconds);
     void ApplyFollowOrbitInput(float DeltaSeconds);
+    void CycleFollowView();
+    bool ResolveFollowPose(FVector& TargetLocation, FRotator& TargetRotation, FString& TargetLabel) const;
     float AxisFromKeys(class APlayerController* PlayerController, const FKey& PositiveKey, const FKey& NegativeKey) const;
     bool ComputeCollisionConstrainedDelta(const FVector& DesiredDelta, FVector& SafeDelta, FHitResult& BlockingHit);
     void MoveForward(float Value);
@@ -133,4 +136,9 @@ private:
 
     UPROPERTY()
     TObjectPtr<AActor> FollowTarget = nullptr;
+
+    UPROPERTY()
+    TArray<TObjectPtr<AActor>> FollowTargets;
+
+    int32 FollowViewIndex = 0;
 };

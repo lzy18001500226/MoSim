@@ -71,7 +71,7 @@ void AMworksReviewCameraPawn::BeginPlay()
     UE_LOG(
         LogTemp,
         Display,
-        TEXT("MWORKS review camera active at location=(%.1f, %.1f, %.1f) rotation=(pitch=%.1f, yaw=%.1f, roll=%.1f) head_light=%s. Controls: hold RMB+mouse look, WASD move, Q/E down/up, arrows look, Shift fast, Ctrl slow."),
+        TEXT("MWORKS review camera active at location=(%.1f, %.1f, %.1f) rotation=(pitch=%.1f, yaw=%.1f, roll=%.1f) head_light=%s. Controls: hold RMB+mouse look, WASD move, Z/E down/up, arrows look/orbit, Q cycle formation/UAV views, Shift fast, Ctrl slow."),
         InitialCameraLocation.X,
         InitialCameraLocation.Y,
         InitialCameraLocation.Z,
@@ -112,7 +112,7 @@ void AMworksReviewCameraPawn::PawnClientRestart()
 void AMworksReviewCameraPawn::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-    if (bFollowTarget && FollowTarget)
+    if (bFollowTarget && (FollowTarget || FollowTargets.Num() > 0))
     {
         ApplyFollowTarget(DeltaSeconds);
     }
@@ -134,6 +134,7 @@ void AMworksReviewCameraPawn::SetupPlayerInputComponent(UInputComponent* PlayerI
     PlayerInputComponent->BindAxis(TEXT("MworksReviewLookUp"), this, &AMworksReviewCameraPawn::LookUpKeyboard);
     PlayerInputComponent->BindAxis(TEXT("Turn"), this, &AMworksReviewCameraPawn::MouseTurn);
     PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AMworksReviewCameraPawn::MouseLookUp);
+    PlayerInputComponent->BindAction(TEXT("MworksReviewCycleTarget"), IE_Pressed, this, &AMworksReviewCameraPawn::CycleFollowView);
 
     UE_LOG(LogTemp, Display, TEXT("MWORKS review camera input bindings installed."));
 }
@@ -373,21 +374,127 @@ bool AMworksReviewCameraPawn::ComputeCollisionConstrainedDelta(const FVector& De
 void AMworksReviewCameraPawn::SetFollowTarget(AActor* NewFollowTarget)
 {
     FollowTarget = NewFollowTarget;
+    FollowTargets.Reset();
+    FollowViewIndex = 0;
     bFollowTarget = FollowTarget != nullptr;
     LastFollowLogTimeSeconds = -1000.0;
 }
 
+void AMworksReviewCameraPawn::SetFollowTargets(const TArray<AActor*>& NewFollowTargets)
+{
+    TArray<AActor*> ValidTargets;
+    for (AActor* Target : NewFollowTargets)
+    {
+        if (IsValid(Target))
+        {
+            ValidTargets.Add(Target);
+        }
+    }
+
+    bool bTargetsChanged = ValidTargets.Num() != FollowTargets.Num();
+    if (!bTargetsChanged)
+    {
+        for (int32 Index = 0; Index < ValidTargets.Num(); ++Index)
+        {
+            if (FollowTargets[Index] != ValidTargets[Index])
+            {
+                bTargetsChanged = true;
+                break;
+            }
+        }
+    }
+
+    if (bTargetsChanged)
+    {
+        FollowTargets.Reset(ValidTargets.Num());
+        for (AActor* Target : ValidTargets)
+        {
+            FollowTargets.Add(Target);
+        }
+        FollowViewIndex = 0;
+        LastFollowLogTimeSeconds = -1000.0;
+    }
+
+    FollowTarget = nullptr;
+    bFollowTarget = FollowTargets.Num() > 0;
+}
+
+void AMworksReviewCameraPawn::CycleFollowView()
+{
+    if (FollowTargets.Num() <= 1)
+    {
+        return;
+    }
+
+    FollowViewIndex = (FollowViewIndex + 1) % (FollowTargets.Num() + 1);
+    LastFollowLogTimeSeconds = -1000.0;
+    const FString ViewLabel = FollowViewIndex == 0
+        ? TEXT("formation_overview")
+        : FollowTargets[FollowViewIndex - 1]->GetName();
+    UE_LOG(LogTemp, Display, TEXT("MWORKS review camera switched follow view=%s index=%d"), *ViewLabel, FollowViewIndex);
+}
+
+bool AMworksReviewCameraPawn::ResolveFollowPose(FVector& TargetLocation, FRotator& TargetRotation, FString& TargetLabel) const
+{
+    if (FollowTargets.Num() > 0)
+    {
+        if (FollowViewIndex > 0 && FollowViewIndex <= FollowTargets.Num() && IsValid(FollowTargets[FollowViewIndex - 1]))
+        {
+            const AActor* SelectedTarget = FollowTargets[FollowViewIndex - 1];
+            TargetLocation = SelectedTarget->GetActorLocation();
+            TargetRotation = SelectedTarget->GetActorRotation();
+            TargetLabel = SelectedTarget->GetName();
+            return true;
+        }
+
+        FVector LocationSum = FVector::ZeroVector;
+        FVector ForwardSum = FVector::ZeroVector;
+        int32 ValidCount = 0;
+        for (const TObjectPtr<AActor>& Target : FollowTargets)
+        {
+            if (!IsValid(Target))
+            {
+                continue;
+            }
+            LocationSum += Target->GetActorLocation();
+            ForwardSum += Target->GetActorForwardVector().GetSafeNormal2D();
+            ++ValidCount;
+        }
+        if (ValidCount == 0)
+        {
+            return false;
+        }
+
+        TargetLocation = LocationSum / static_cast<float>(ValidCount);
+        const float FallbackYaw = IsValid(FollowTargets[0]) ? FollowTargets[0]->GetActorRotation().Yaw : 0.0f;
+        const float MeanYaw = ForwardSum.IsNearlyZero() ? FallbackYaw : ForwardSum.Rotation().Yaw;
+        TargetRotation = FRotator(0.0f, MeanYaw, 0.0f);
+        TargetLabel = FString::Printf(TEXT("formation_overview_%d_uavs"), ValidCount);
+        return true;
+    }
+
+    if (IsValid(FollowTarget))
+    {
+        TargetLocation = FollowTarget->GetActorLocation();
+        TargetRotation = FollowTarget->GetActorRotation();
+        TargetLabel = FollowTarget->GetName();
+        return true;
+    }
+    return false;
+}
+
 void AMworksReviewCameraPawn::ApplyFollowTarget(float DeltaSeconds)
 {
-    if (!FollowTarget)
+    FVector TargetLocation = FVector::ZeroVector;
+    FRotator TargetRotation = FRotator::ZeroRotator;
+    FString TargetLabel;
+    if (!ResolveFollowPose(TargetLocation, TargetRotation, TargetLabel))
     {
         return;
     }
 
     ApplyFollowOrbitInput(DeltaSeconds);
 
-    const FVector TargetLocation = FollowTarget->GetActorLocation();
-    const FRotator TargetRotation = FollowTarget->GetActorRotation();
     const FRotator FollowYawRotation(0.0f, TargetRotation.Yaw, 0.0f);
     const FVector DesiredLocation = TargetLocation + FollowYawRotation.RotateVector(FollowOffsetCm);
     const FRotator DesiredRotation = (TargetLocation - DesiredLocation).Rotation();
@@ -411,7 +518,7 @@ void AMworksReviewCameraPawn::ApplyFollowTarget(float DeltaSeconds)
                 LogTemp,
                 Display,
                 TEXT("MWORKS review camera following playback target=%s target_location=%s target_yaw=%.2f offset=%s camera_location=%s camera_rotation=%s"),
-                *FollowTarget->GetName(),
+                *TargetLabel,
                 *TargetLocation.ToCompactString(),
                 TargetRotation.Yaw,
                 *FollowOffsetCm.ToCompactString(),

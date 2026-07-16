@@ -662,7 +662,16 @@ void AMoSimSceneLibraryGameMode::EnforceSceneReviewCamera(UWorld* World)
     ReviewPawn->ApplyReviewInputMode(PlayerController);
     if (FParse::Param(FCommandLine::Get(), TEXT("MoSimFollowPlaybackCamera")))
     {
-        ReviewPawn->SetFollowTarget(SpawnedPlaybackActor);
+        TArray<AActor*> FollowActors;
+        FollowActors.Reserve(SpawnedPlaybackActors.Num());
+        for (AQuadrotorMworksPlaybackActor* PlaybackActor : SpawnedPlaybackActors)
+        {
+            if (IsValid(PlaybackActor))
+            {
+                FollowActors.Add(PlaybackActor);
+            }
+        }
+        ReviewPawn->SetFollowTargets(FollowActors);
     }
 
     const double NowSeconds = World->GetTimeSeconds();

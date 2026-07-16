@@ -45,6 +45,40 @@ prefer measured relative angular velocity from `/gazebo/link_states`; when
 that source is temporarily unavailable, MAVROS armed state may drive an
 explicitly labeled visual-only spool fallback. Neither the 100 Hz mirror nor
 rotor animation is actuator, controller, or flight-performance evidence.
+
+### Factory Three-UAV Swarm-Formation Review
+
+Use the project-owned launcher for the Factory L2 three-UAV review:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File `
+  Scripts\sunray\start_factory_l2_swarm_formation_review.ps1 `
+  -NoRviz
+```
+
+The launcher reuses the accepted Swarm-Formation backend gate, waits for all
+three Gazebo-truth topics and MAVROS connections, then requires every UAV to
+be armed with a fresh local pose above `0.8 m` before UE starts. The airborne
+check is implemented by `Scripts/sunray/wait_for_swarm_airborne.py`; do not
+replace it with nested PowerShell/Bash/AWK text parsing.
+
+The UE review contract is:
+
+```text
+uav1/uav2/uav3 Gazebo truth -> UDP 5005/5006/5007 at 100 Hz target
+default view              -> three-UAV geometric-centroid orbit
+camera offset             -> 231.25 cm rear + 95 cm up = approximately 2.5 m
+Q                         -> centroid overview -> uav1 -> uav2 -> uav3
+arrow keys                -> orbit while preserving camera-target radius
+render cap                -> 30 FPS, BelowNormal process priority
+trajectory overlay        -> hidden in UE; ROS/Gazebo/RViz remain evidence authority
+```
+
+The review camera consumes the newest mirrored poses directly and adds no
+second location or rotation interpolation layer. A UE first frame or screenshot
+alone is not a Swarm-Formation acceptance result; retain the ROS/Gazebo/PX4/
+MAVROS gate evidence and the three live-mirror logs with the review run.
+
 For the repeatable UE-to-Gazebo static import procedure, use
 `Docs/Workflows/ue_to_gazebo_static_scene_import.md` or the lightweight skill
 entry `Docs/Skills/Unreal/ue-gazebo-static-scene-import/SKILL.md`.
