@@ -69,7 +69,11 @@ namespace ego_planner
       Eigen::MatrixXd ctl_points;
 
       // traj = ploy_traj_opt_->astarWithMinTraj(headState, tailState, simple_path, ctl_points);
-      ploy_traj_opt_->astarWithMinTraj(headState, tailState, simple_path, ctl_points, initMJO);
+      if (!ploy_traj_opt_->astarWithMinTraj(headState, tailState, simple_path, ctl_points, initMJO))
+      {
+        ROS_WARN("A star initialization is not safe for trajectory optimization");
+        return false;
+      }
       traj = initMJO.getTraj();
 
       // show the init simple_path

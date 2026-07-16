@@ -206,6 +206,10 @@ SWARM_FORMATION_D3_CENTER_X="${SWARM_FORMATION_D3_CENTER_X:-1.4}"
 SWARM_FORMATION_D3_CENTER_Y="${SWARM_FORMATION_D3_CENTER_Y:-0.0}"
 SWARM_FORMATION_D3_CENTER_Z="${SWARM_FORMATION_D3_CENTER_Z:-1.0}"
 SWARM_FORMATION_D3_SWARM_SCALE="${SWARM_FORMATION_D3_SWARM_SCALE:-0.5}"
+SWARM_FORMATION_D3_SWARM_CLEARANCE="${SWARM_FORMATION_D3_SWARM_CLEARANCE:-1.0}"
+SWARM_FORMATION_D3_MIN_TRAJ_Z="${SWARM_FORMATION_D3_MIN_TRAJ_Z:--1000000000.0}"
+SWARM_FORMATION_D3_MAX_TRAJ_Z="${SWARM_FORMATION_D3_MAX_TRAJ_Z:-1000000000.0}"
+SWARM_FORMATION_D3_WEIGHT_HEIGHT="${SWARM_FORMATION_D3_WEIGHT_HEIGHT:-0.0}"
 SWARM_FORMATION_D3_RELATIVE_Z="${SWARM_FORMATION_D3_RELATIVE_Z:-0.0}"
 SWARM_FORMATION_D3_MAP_SIZE_X="${SWARM_FORMATION_D3_MAP_SIZE_X:-10.0}"
 SWARM_FORMATION_D3_MAP_SIZE_Y="${SWARM_FORMATION_D3_MAP_SIZE_Y:-8.0}"
@@ -215,6 +219,7 @@ SWARM_FORMATION_D3_OBSTACLES_INFLATION="${SWARM_FORMATION_D3_OBSTACLES_INFLATION
 SWARM_FORMATION_D3_LOCAL_UPDATE_RANGE_XY="${SWARM_FORMATION_D3_LOCAL_UPDATE_RANGE_XY:-4.5}"
 SWARM_FORMATION_D3_RELAY_RETIME_FUTURE_S="${SWARM_FORMATION_D3_RELAY_RETIME_FUTURE_S:-0.05}"
 SWARM_FORMATION_D3_SWARM_TRAJ_TIME_TOLERANCE_S="${SWARM_FORMATION_D3_SWARM_TRAJ_TIME_TOLERANCE_S:-1.0}"
+SWARM_FORMATION_D3_LEADER_FOLLOWER_COMMANDS="${SWARM_FORMATION_D3_LEADER_FOLLOWER_COMMANDS:-false}"
 EGO_GATE_PRE_TAKEOFF_SETTLE_S="${EGO_GATE_PRE_TAKEOFF_SETTLE_S:-2.0}"
 EGO_GATE_PRE_TAKEOFF_SETTLE_TIMEOUT_S="${EGO_GATE_PRE_TAKEOFF_SETTLE_TIMEOUT_S:-40.0}"
 EGO_GATE_PRE_TAKEOFF_ODOM_TIMEOUT_S="${EGO_GATE_PRE_TAKEOFF_ODOM_TIMEOUT_S:-0.35}"
@@ -266,7 +271,7 @@ EGO_CMD_SAFETY_RATE_HZ="${EGO_CMD_SAFETY_RATE_HZ:-100.0}"
 EGO_CMD_SAFETY_JUMP_GUARD_ENABLE="${EGO_CMD_SAFETY_JUMP_GUARD_ENABLE:-true}"
 EGO_CMD_SAFETY_MAX_POSITION_JUMP_M="${EGO_CMD_SAFETY_MAX_POSITION_JUMP_M:-0.80}"
 EGO_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS="${EGO_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS:-0.0}"
-EGO_CMD_INVALID_Z_POLICY="${EGO_CMD_INVALID_Z_POLICY:-$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo clamp; else echo hold_last_safe; fi)}"
+EGO_CMD_INVALID_Z_POLICY="${EGO_CMD_INVALID_Z_POLICY:-$(if [[ "${PLANNER_VARIANT}" == "racer" || "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo clamp; else echo hold_last_safe; fi)}"
 EGO_CMD_SAFETY_SMOOTHING_ENABLE="${EGO_CMD_SAFETY_SMOOTHING_ENABLE:-$(if [[ "${PLANNER_VARIANT}" == "racer" || "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo true; else echo false; fi)}"
 EGO_CMD_SAFETY_SMOOTHING_MAX_SPEED_MPS="${EGO_CMD_SAFETY_SMOOTHING_MAX_SPEED_MPS:-$(if [[ "${PLANNER_VARIANT}" == "racer" || "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo 0.80; else echo 0.0; fi)}"
 EGO_CMD_SAFETY_SMOOTHING_MAX_STEP_M="${EGO_CMD_SAFETY_SMOOTHING_MAX_STEP_M:-0.0}"
@@ -278,6 +283,7 @@ EGO_CMD_SAFETY_MAX_VELOCITY_MPS="${EGO_CMD_SAFETY_MAX_VELOCITY_MPS:-0}"
 EGO_CMD_SAFETY_MAX_ACCELERATION_MPS2="${EGO_CMD_SAFETY_MAX_ACCELERATION_MPS2:-0}"
 EGO_CMD_SAFETY_MAX_LATERAL_ACCELERATION_MPS2="${EGO_CMD_SAFETY_MAX_LATERAL_ACCELERATION_MPS2:-0}"
 EGO_CMD_SAFETY_MAX_JERK_MPS3="${EGO_CMD_SAFETY_MAX_JERK_MPS3:-0}"
+EGO_CMD_SAFETY_FIXED_YAW="${EGO_CMD_SAFETY_FIXED_YAW:-$(if [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo 0.0; else echo ''; fi)}"
 if [[ -z "${EGO_GATE_INTER_UAV_EMERGENCY_HOLD_ENABLE+x}" ]]; then
   EGO_GATE_INTER_UAV_EMERGENCY_HOLD_ENABLE="$(if [[ "${PLANNER_VARIANT}" == "racer" || "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo true; else echo false; fi)"
 fi
@@ -482,6 +488,10 @@ mkdir -p "${RESULT_DIR}"
 ROS_LOG_DIR="${ROS_LOG_DIR:-${RESULT_DIR}/ros_logs}"
 mkdir -p "${ROS_LOG_DIR}"
 export ROS_LOG_DIR
+
+source "${PROJECT_ROOT}/Scripts/sunray/sunray_ros1_runtime_lock.sh"
+sunray_ros1_runtime_lock_acquire
+trap sunray_ros1_runtime_lock_release EXIT
 
 write_run_inputs_manifest() {
   local launch_args_json
@@ -870,7 +880,7 @@ if [[ "${GOAL5_ATTEMPT_CHILD}" != "true" && "${GOAL5_STARTUP_ATTEMPTS}" =~ ^[0-9
 fi
 
 PIDS=()
-cleanup() {
+cleanup_runtime() {
   set +e
   if [[ "${KEEP_ALIVE:-false}" == "true" ]]; then
     return
@@ -917,6 +927,11 @@ cleanup() {
   pkill -f "/opt/mosim_work/sunray_px4.*/px4" >/dev/null 2>&1 || true
   pkill -f "rosmaster" >/dev/null 2>&1 || true
   pkill -f "rosout" >/dev/null 2>&1 || true
+}
+
+cleanup() {
+  cleanup_runtime
+  sunray_ros1_runtime_lock_release
 }
 trap cleanup EXIT
 
@@ -1067,6 +1082,72 @@ prepare_racer_planner_workspace() {
     echo "RACER exploration_node already matches patched source" \
       > "${RESULT_DIR}/racer_unreachable_recovery_build.log"
   fi
+}
+
+prepare_swarm_formation_workspace() {
+  if [[ "${PLANNER_VARIANT}" != "swarm_formation" ]]; then
+    return
+  fi
+
+  local fsm_source="${SWARM_FORMATION_WS}/src/planner/plan_manage/src/ego_replan_fsm.cpp"
+  local executable="${SWARM_FORMATION_WS}/devel/lib/ego_planner/ego_planner_node"
+  local patch_log="${RESULT_DIR}/swarm_formation_collision_replan_patch.json"
+  local build_log="${RESULT_DIR}/swarm_formation_collision_replan_build.log"
+  local source_rel
+  local rebuild_required=0
+  local runtime_sources=()
+
+  for source_rel in \
+    planner/plan_manage/src/ego_replan_fsm.cpp \
+    planner/plan_manage/src/planner_manager.cpp \
+    planner/path_searching/src/dyn_a_star.cpp \
+    planner/traj_opt/src/poly_traj_optimizer.cpp \
+    planner/traj_opt/include/optimizer/poly_traj_optimizer.h; do
+    local audited_source="${PROJECT_ROOT}/References/Lab/swarm_coordination/Swarm-Formation/src/${source_rel}"
+    local runtime_source="${SWARM_FORMATION_WS}/src/${source_rel}"
+    if [[ ! -f "${audited_source}" || ! -f "${runtime_source}" ]]; then
+      echo "Swarm-Formation audited/runtime source missing: ${source_rel}" >&2
+      exit 8
+    fi
+    runtime_sources+=("${runtime_source}")
+    if ! cmp -s "${audited_source}" "${runtime_source}"; then
+      cp "${audited_source}" "${runtime_source}"
+      rebuild_required=1
+    fi
+  done
+
+  if [[ ! -f "${fsm_source}" ]]; then
+    echo "Swarm-Formation FSM source missing: ${fsm_source}" >&2
+    exit 8
+  fi
+
+  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_swarm_formation_collision_replan.py" \
+    "${fsm_source}" > "${patch_log}"
+
+  if [[ ! -x "${executable}" || "${fsm_source}" -nt "${executable}" ]]; then
+    rebuild_required=1
+  fi
+
+  if (( rebuild_required )); then
+    (
+      set +u
+      source /opt/ros/noetic/setup.bash
+      source "${SUNRAY_WS}/devel/setup.bash"
+      set -u
+      cmake --build "${SWARM_FORMATION_WS}/build" --target ego_planner_node -- -j2
+    ) > "${build_log}" 2>&1
+  else
+    echo "Swarm-Formation ego_planner_node already matches patched source" > "${build_log}"
+  fi
+
+  for runtime_source in "${runtime_sources[@]}"; do
+    if [[ ! -x "${executable}" || "${runtime_source}" -nt "${executable}" ]]; then
+      echo "Swarm-Formation executable is stale after rebuild: ${runtime_source} -> ${executable}" >&2
+      exit 8
+    fi
+  done
+  stat -c 'source_mtime=%y source_size=%s source=%n' "${fsm_source}" >> "${build_log}"
+  stat -c 'binary_mtime=%y binary_size=%s binary=%n' "${executable}" >> "${build_log}"
 }
 
 start_racer_fastlio_frontend() {
@@ -1670,11 +1751,12 @@ fi
 prepare_goal5_mid360_csv
 prepare_px4_ros1_runtime_overlay
 
-cleanup
+cleanup_runtime
 sleep 3
 source_env
 prepare_racer_planner_workspace
 prepare_racer_fastlio_workspace
+prepare_swarm_formation_workspace
 
 {
   echo "ROS_ENV_SNAPSHOT"
@@ -2457,6 +2539,7 @@ if [[ "${EGO_CMD_SAFETY_ENABLE}" == "true" ]]; then
       _max_acceleration_mps2:="${EGO_CMD_SAFETY_MAX_ACCELERATION_MPS2}" \
       _max_lateral_acceleration_mps2:="${EGO_CMD_SAFETY_MAX_LATERAL_ACCELERATION_MPS2}" \
       _max_jerk_mps3:="${EGO_CMD_SAFETY_MAX_JERK_MPS3}" \
+      _fixed_yaw:="${EGO_CMD_SAFETY_FIXED_YAW}" \
       _odom_target_guard_enabled:="${EGO_CMD_SAFETY_ODOM_TARGET_GUARD_ENABLE}" \
       _odom_topic:="/uav${uid}/mavros/local_position/odom" \
       _odom_timeout_s:="${EGO_CMD_SAFETY_ODOM_TIMEOUT_S}" \
@@ -2491,11 +2574,36 @@ if [[ "${PLANNER_VARIANT}" == "racer" ]]; then
 fi
 if [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then
   for uid in $(seq 1 "${UAV_NUM}"); do
+    bridge_input_topic="/uav${uid}/planner_position_cmd_swarm_raw"
+    bridge_gate_topic="/drone_$((uid - 1))_planning/trajectory"
+    bridge_offset_x=0.0
+    bridge_offset_y=0.0
+    if [[ "${SWARM_FORMATION_D3_LEADER_FOLLOWER_COMMANDS}" == "true" ]]; then
+      bridge_input_topic="/uav1/planner_position_cmd_swarm_raw"
+      bridge_gate_topic="/drone_0_planning/trajectory"
+      read -r bridge_offset_x bridge_offset_y < <(python3 - "${uid}" \
+        "${START1_X}" "${START1_Y}" "${START2_X}" "${START2_Y}" "${START3_X}" "${START3_Y}" <<'PY'
+import sys
+
+uid = int(sys.argv[1])
+starts = {
+    1: (float(sys.argv[2]), float(sys.argv[3])),
+    2: (float(sys.argv[4]), float(sys.argv[5])),
+    3: (float(sys.argv[6]), float(sys.argv[7])),
+}
+x0, y0 = starts[1]
+x, y = starts[uid]
+print(x - x0, y - y0)
+PY
+      )
+    fi
     python3 "${PROJECT_ROOT}/Scripts/sunray/fuel_position_cmd_compat_bridge.py" \
-      _input_topic:="/uav${uid}/planner_position_cmd_swarm_raw" \
+      _input_topic:="${bridge_input_topic}" \
       _output_topic:="/uav${uid}/planner_position_cmd_raw" \
-      _gate_bspline_topic:="/drone_$((uid - 1))_planning/trajectory" \
+      _gate_bspline_topic:="${bridge_gate_topic}" \
       _forward_before_first_bspline:=false \
+      _output_offset_x:="${bridge_offset_x}" \
+      _output_offset_y:="${bridge_offset_y}" \
       _diagnostics_path:="${RESULT_DIR}/uav${uid}_swarm_formation_position_cmd_compat_bridge.json" \
       > "${RESULT_DIR}/uav${uid}_swarm_formation_position_cmd_compat_bridge.log" 2>&1 &
     PIDS+=("$!")
@@ -2563,12 +2671,15 @@ if [[ "${PLANNER_VARIANT}" == "racer" ]]; then
 elif [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then
   PLANNER_SWARM_LAUNCH_ARGS+=(
     max_vel:="${EGO_MAX_VEL}" max_acc:="${EGO_MAX_ACC}" planning_horizon:="${EGO_PLANNING_HORIZON}"
+    min_traj_z:="${SWARM_FORMATION_D3_MIN_TRAJ_Z}" max_traj_z:="${SWARM_FORMATION_D3_MAX_TRAJ_Z}"
+    weight_height:="${SWARM_FORMATION_D3_WEIGHT_HEIGHT}"
     map_size_x:="${SWARM_FORMATION_D3_MAP_SIZE_X}" map_size_y:="${SWARM_FORMATION_D3_MAP_SIZE_Y}" map_size_z:="${SWARM_FORMATION_D3_MAP_SIZE_Z}"
     grid_resolution:="${SWARM_FORMATION_D3_GRID_RESOLUTION}"
     obstacles_inflation:="${SWARM_FORMATION_D3_OBSTACLES_INFLATION}"
     local_update_range_xy:="${SWARM_FORMATION_D3_LOCAL_UPDATE_RANGE_XY}"
     flight_type:="${PLANNER_FLIGHT_TYPE}"
     swarm_scale:="${SWARM_FORMATION_D3_SWARM_SCALE}"
+    swarm_clearance:="${SWARM_FORMATION_D3_SWARM_CLEARANCE}"
     relative_z:="${SWARM_FORMATION_D3_RELATIVE_Z}"
     center_z:="${SWARM_FORMATION_D3_CENTER_Z}"
     swarm_traj_time_tolerance_s:="${SWARM_FORMATION_D3_SWARM_TRAJ_TIME_TOLERANCE_S}"
@@ -2768,6 +2879,7 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
       "upstream_note": "MoSim D3 patches Swarm-Formation formationWaypointCallback to consume the published formation-center goal z instead of the upstream demo's hard-coded 0.5m center height."
     },
     "swarm_scale": ${SWARM_FORMATION_D3_SWARM_SCALE},
+    "swarm_clearance_m": ${SWARM_FORMATION_D3_SWARM_CLEARANCE},
     "relative_z": ${SWARM_FORMATION_D3_RELATIVE_Z},
     "expanded_targets": {
       "uav1": [${TARGET1_X}, ${TARGET1_Y}, ${TARGET1_Z}],
@@ -2877,6 +2989,7 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "max_acceleration_mps2": ${EGO_CMD_SAFETY_MAX_ACCELERATION_MPS2},
     "max_lateral_acceleration_mps2": ${EGO_CMD_SAFETY_MAX_LATERAL_ACCELERATION_MPS2},
     "max_jerk_mps3": ${EGO_CMD_SAFETY_MAX_JERK_MPS3},
+    "fixed_yaw_rad": $(if [[ -n "${EGO_CMD_SAFETY_FIXED_YAW}" ]]; then echo "${EGO_CMD_SAFETY_FIXED_YAW}"; else echo null; fi),
     "odom_target_guard_enabled": ${EGO_CMD_SAFETY_ODOM_TARGET_GUARD_ENABLE},
     "odom_topics": ["/uav1/mavros/local_position/odom", "/uav2/mavros/local_position/odom", "/uav3/mavros/local_position/odom"],
     "odom_timeout_s": ${EGO_CMD_SAFETY_ODOM_TIMEOUT_S},
@@ -2891,7 +3004,8 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "output_topics": ["/uav1/planner_position_cmd_raw", "/uav2/planner_position_cmd_raw", "/uav3/planner_position_cmd_raw"],
     "gate_bspline_topics": $(if [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo '["/drone_0_planning/trajectory", "/drone_1_planning/trajectory", "/drone_2_planning/trajectory"]'; else echo '["/planning/bspline_1", "/planning/bspline_2", "/planning/bspline_3"]'; fi),
     "diagnostics": $(if [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo "[\"${RESULT_DIR}/uav1_swarm_formation_position_cmd_compat_bridge.json\", \"${RESULT_DIR}/uav2_swarm_formation_position_cmd_compat_bridge.json\", \"${RESULT_DIR}/uav3_swarm_formation_position_cmd_compat_bridge.json\"]"; else echo "[\"${RESULT_DIR}/uav1_racer_position_cmd_compat_bridge.json\", \"${RESULT_DIR}/uav2_racer_position_cmd_compat_bridge.json\", \"${RESULT_DIR}/uav3_racer_position_cmd_compat_bridge.json\"]"; fi),
-    "claim_boundary": "RACER/FUEL/Swarm-Formation older quadrotor_msgs/PositionCommand wire format is decoded from AnyMsg and republished as the px4ctrl overlay PositionCommand before the standard safety adapter."
+    "leader_follower_commands": ${SWARM_FORMATION_D3_LEADER_FOLLOWER_COMMANDS},
+    "claim_boundary": "RACER/FUEL/Swarm-Formation older quadrotor_msgs/PositionCommand wire format is decoded from AnyMsg and republished as the px4ctrl overlay PositionCommand before the standard safety adapter. In explicit leader-follower mode, UAV2/UAV3 execute UAV1's live planner command with their spawn-relative XY offsets."
   },
   "pointcloud_to_world": {
     "rotation_mode": "${POINTCLOUD_ROTATION_MODE}",

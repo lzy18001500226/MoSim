@@ -144,25 +144,29 @@ failed before planner takeover (`uav1 raw_count=0`). This satisfies the stop
 condition: do not resume RACER parameter tuning. The active fallback is the
 declared known-target Swarm-Formation three-UAV obstacle-crossing gate.
 
-Swarm-Formation r6-r10 isolated the current formation blocker. The source now
-uses a real three-UAV triangular formation, waits for peer trajectories, filters
-only the near-body occupancy neighborhood, audits all three member corridors,
-and uses the 1.5 m nominal-spacing Factory obstacle scenario while preserving
-the 1.0 m physical safety gate. The strongest complete run is
-`Results/sunray_ros1/factory_l2_swarm_formation_obstacle_runtime_r10_20260716/`.
-All three planners produced commands and minimum separation remained 1.3227 m
-with zero emergency holds, but the mission did not reach the target: formation
-RMSE was 3.7901 m and peak error was 8.7465 m. UAV1-UAV2 stayed comparatively
-coherent (0.2485 m pair RMSE), while UAV3 separated from both by more than 8.6 m.
-The runtime log showed that collision recovery called
-`planFromLocalTraj(true, false)`, disabling formation optimization on every
-subsequent replan. That branch now preserves the formation request and the
-existing optimizer performs the peer-readiness fallback. The fix builds and its
-targeted tests pass, but it is not runtime-accepted: the bounded r11 smoke did
-not reach trajectory execution within the five-minute wall window and was
-terminated and cleaned. The next runtime action is one normal bounded r11 gate,
-not another parameter sweep; accept only the existing formation, target, safety,
-attitude, and obstacle-crossing thresholds.
+The Factory L2 Swarm-Formation known-target obstacle-crossing gate is accepted
+at:
+`Results/sunray_ros1/factory_l2_swarm_formation_obstacle_runtime_r34_20260716/`.
+The accepted run uses the real three-UAV triangular formation, leader-follower
+command synchronization, planner limits of 0.8 m/s and 0.8 m/s^2, executed
+reference limits of 0.6 m/s and 0.4 m/s^2, and an optimizer height band of
+0.90-1.60 m. The height term prevents obstacle-avoidance optimization from
+pushing trajectories below the valid Factory flight volume. The runtime also
+retains dynamic A* storage, explicit invalid endpoint/A* failure rejection,
+formation optimization during collision replans, planar XY formation cost, and
+map-bound rejection.
+
+r34 reports backend and formation tracking `status=passed`, no blockers,
+formation RMSE 0.01825 m, peak formation error 0.06600 m, minimum inter-UAV
+distance 1.43939 m, zero emergency holds, and per-UAV truth roll/pitch peaks of
+10.80/10.77/11.18 deg. All three UAVs completed takeoff, obstacle crossing,
+target hold, landing, and disarming. This closes SF-D3 without relaxing the
+1.0 m separation or 45 deg attitude gates. The dedicated review entry is
+`Scripts/sunray/start_factory_l2_swarm_formation_review.ps1`; it opens RViz only
+after the accepted runtime gate exists and the live review topics are ready.
+Its 1200 s total wall-clock budget compensates for the lower realtime factor
+with two RViz windows; simulation-time mission limits and all flight, separation,
+attitude, and tracking acceptance thresholds remain identical to r34.
 
 2026-07-13 FUEL + px4ctrl approximately-2-m/s long-run tracking is accepted.
 The final correction retained native FUEL trajectories, px4ctrl `l1_awff`,

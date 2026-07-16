@@ -8,7 +8,12 @@
   <arg name="planning_horizon" default="4.0"/>
   <arg name="flight_type" default="3"/>
   <arg name="swarm_scale" default="0.5"/>
+  <arg name="swarm_clearance" default="1.0"/>
   <arg name="formation_type" default="2"/>
+  <arg name="planar_formation" default="true"/>
+  <arg name="min_traj_z" default="-1000000000.0"/>
+  <arg name="max_traj_z" default="1000000000.0"/>
+  <arg name="weight_height" default="0.0"/>
   <arg name="relative_z" default="1.0"/>
   <arg name="center_z" default="1.0"/>
   <arg name="swarm_traj_time_tolerance_s" default="1.0"/>
@@ -31,6 +36,11 @@
       <param name="global_goal/swarm_scale" value="$(arg swarm_scale)" type="double"/>
       <param name="optimization/formation_type" value="$(arg formation_type)" type="int"/>
       <param name="optimization/formation_scale" value="$(arg swarm_scale)" type="double"/>
+      <param name="optimization/planar_formation" value="$(arg planar_formation)" type="bool"/>
+      <param name="optimization/swarm_clearance" value="$(arg swarm_clearance)" type="double"/>
+      <param name="optimization/min_traj_z" value="$(arg min_traj_z)" type="double"/>
+      <param name="optimization/max_traj_z" value="$(arg max_traj_z)" type="double"/>
+      <param name="optimization/weight_height" value="$(arg weight_height)" type="double"/>
       <param name="global_goal/relative_pos_0/z" value="$(arg relative_z)" type="double"/>
       <param name="global_goal/use_msg_z" value="true" type="bool"/>
       <param name="global_goal/center_z" value="$(arg center_z)" type="double"/>
@@ -105,6 +115,11 @@
       <param name="global_goal/swarm_scale" value="$(arg swarm_scale)" type="double"/>
       <param name="optimization/formation_type" value="$(arg formation_type)" type="int"/>
       <param name="optimization/formation_scale" value="$(arg swarm_scale)" type="double"/>
+      <param name="optimization/planar_formation" value="$(arg planar_formation)" type="bool"/>
+      <param name="optimization/swarm_clearance" value="$(arg swarm_clearance)" type="double"/>
+      <param name="optimization/min_traj_z" value="$(arg min_traj_z)" type="double"/>
+      <param name="optimization/max_traj_z" value="$(arg max_traj_z)" type="double"/>
+      <param name="optimization/weight_height" value="$(arg weight_height)" type="double"/>
       <param name="global_goal/relative_pos_1/z" value="$(arg relative_z)" type="double"/>
       <param name="global_goal/use_msg_z" value="true" type="bool"/>
       <param name="global_goal/center_z" value="$(arg center_z)" type="double"/>
@@ -179,6 +194,11 @@
       <param name="global_goal/swarm_scale" value="$(arg swarm_scale)" type="double"/>
       <param name="optimization/formation_type" value="$(arg formation_type)" type="int"/>
       <param name="optimization/formation_scale" value="$(arg swarm_scale)" type="double"/>
+      <param name="optimization/planar_formation" value="$(arg planar_formation)" type="bool"/>
+      <param name="optimization/swarm_clearance" value="$(arg swarm_clearance)" type="double"/>
+      <param name="optimization/min_traj_z" value="$(arg min_traj_z)" type="double"/>
+      <param name="optimization/max_traj_z" value="$(arg max_traj_z)" type="double"/>
+      <param name="optimization/weight_height" value="$(arg weight_height)" type="double"/>
       <param name="global_goal/relative_pos_2/z" value="$(arg relative_z)" type="double"/>
       <param name="global_goal/use_msg_z" value="true" type="bool"/>
       <param name="global_goal/center_z" value="$(arg center_z)" type="double"/>

@@ -125,6 +125,12 @@ namespace ego_planner
 
     for (int i=0; i<i_end; i++){
       Eigen::Vector3d pos = traj.getPos(t);
+      if (!grid_map_->isInMap(pos)){
+        ROS_WARN("optimized trajectory left map: drone=%d t=%.3f/%.3f pos=(%.3f, %.3f, %.3f)",
+                 drone_id_, t, T_end, pos.x(), pos.y(), pos.z());
+        occ = true;
+        break;
+      }
       // The live MID360 occupancy can contain returns from the vehicle body at
       // the current pose. Gazebo's pre-takeoff clearance gate is authoritative
       // for this start neighborhood; collision checking remains strict after
@@ -171,7 +177,6 @@ namespace ego_planner
     opt->addPVAGradCost2CT(gradT, obs_swarm_feas_qvar_costs, opt->cps_num_prePiece_); // Time int cost
 
     opt->jerkOpt_.getGrad2TP(gradT, gradP);
-
 
     opt->VirtualTGradCost(T, t, gradT, gradt, time_cost);
 
@@ -292,6 +297,18 @@ namespace ego_planner
           jerkOpt_.get_gdC().block<6, 3>(i * 6, 0) += omg * step * gradViolaPc;
           gdT(i) += omg * (costp / K + step * gradViolaPt);
           costs(0) += omg * step * costp;
+        }
+        // Keep the optimized polynomial inside the executable flight-height
+        // band. A* grid bounds alone do not provide a gradient, so obstacle
+        // pressure near the start can otherwise push the trajectory below the
+        // map before the post-optimization collision check rejects it.
+        if (heightGradCostP(pos, gradp, costp))
+        {
+          gradViolaPc = beta0 * gradp.transpose();
+          gradViolaPt = alpha * gradp.transpose() * vel;
+          jerkOpt_.get_gdC().block<6, 3>(i * 6, 0) += omg * step * gradViolaPc;
+          gdT(i) += omg * (costp / K + step * gradViolaPt);
+          costs(3) += omg * step * costp;
         }
         // swarm
         double gradt, grad_prev_t;
@@ -450,6 +467,15 @@ namespace ego_planner
       swarm_graph_vel[id] = swarm_v;
     }
 
+    if (planar_formation_)
+    {
+      for (int id = 0; id < formation_size_; ++id)
+      {
+        swarm_graph_pos[id].z() = 0.0;
+        swarm_graph_vel[id].z() = 0.0;
+      }
+    }
+
     swarm_graph_->updateGraph(swarm_graph_pos);
 
     // calculate the swarm graph cost and gradp
@@ -505,6 +531,36 @@ namespace ego_planner
     }
 
     return ret;
+  }
+
+  bool PolyTrajOptimizer::heightGradCostP(const Eigen::Vector3d &p,
+                                           Eigen::Vector3d &gradp,
+                                           double &costp)
+  {
+    if (wei_height_ <= 0.0)
+      return false;
+
+    double violation = 0.0;
+    double direction = 0.0;
+    if (p.z() < min_traj_z_)
+    {
+      violation = min_traj_z_ - p.z();
+      direction = -1.0;
+    }
+    else if (p.z() > max_traj_z_)
+    {
+      violation = p.z() - max_traj_z_;
+      direction = 1.0;
+    }
+    else
+    {
+      return false;
+    }
+
+    costp = wei_height_ * violation * violation * violation;
+    gradp.setZero();
+    gradp.z() = direction * 3.0 * wei_height_ * violation * violation;
+    return true;
   }
 
   bool PolyTrajOptimizer::swarmGradCostP(const int i_dp,
@@ -638,7 +694,7 @@ namespace ego_planner
     return;
   }
 
-  void PolyTrajOptimizer::astarWithMinTraj(const Eigen::MatrixXd &iniState,
+  bool PolyTrajOptimizer::astarWithMinTraj(const Eigen::MatrixXd &iniState,
                                            const Eigen::MatrixXd &finState,
                                            vector<Eigen::Vector3d> &simple_path,
                                            Eigen::MatrixXd &ctl_points,
@@ -649,6 +705,12 @@ namespace ego_planner
 
     /* astar search and get the simple path*/
     simple_path = a_star_->astarSearchAndGetSimplePath(grid_map_->getResolution(), start_pos, end_pos);
+
+    if (simple_path.size() <= 2)
+    {
+      ROS_WARN("Rejecting A star initialization with %zu points before trajectory optimization", simple_path.size());
+      return false;
+    }
 
     /* generate minimum snap trajectory based on the simple_path waypoints*/
     int piece_num = simple_path.size() - 1;
@@ -692,6 +754,7 @@ namespace ego_planner
     traj = frontendMJ.getTraj();
 
     ctl_points = frontendMJ.getInitConstrainPoints(cps_num_prePiece_);
+    return true;
   }
 
   bool PolyTrajOptimizer::getFormationPos(vector<Eigen::Vector3d> &swarm_graph_pos, Eigen::Vector3d pos)
@@ -763,13 +826,23 @@ namespace ego_planner
     nh.param("optimization/weight_sqrvariance", wei_sqrvar_, -1.0);
     nh.param("optimization/weight_time", wei_time_, -1.0);
     nh.param("optimization/weight_formation", wei_formation_, -1.0);
+    nh.param("optimization/weight_height", wei_height_, 0.0);
 
     nh.param("optimization/obstacle_clearance", obs_clearance_, -1.0);
     nh.param("optimization/swarm_clearance", swarm_clearance_, -1.0);
     nh.param("optimization/formation_type", formation_type_, -1);
     nh.param("optimization/formation_scale", formation_scale_, 1.0);
+    nh.param("optimization/planar_formation", planar_formation_, false);
     nh.param("optimization/max_vel", max_vel_, -1.0);
     nh.param("optimization/max_acc", max_acc_, -1.0);
+    nh.param("optimization/min_traj_z", min_traj_z_, -1.0e9);
+    nh.param("optimization/max_traj_z", max_traj_z_, 1.0e9);
+    if (min_traj_z_ > max_traj_z_)
+    {
+      ROS_ERROR("optimization/min_traj_z %.3f exceeds max_traj_z %.3f; disabling height cost",
+                min_traj_z_, max_traj_z_);
+      wei_height_ = 0.0;
+    }
 
     // set the formation type
     swarm_graph_.reset(new SwarmGraph);
@@ -781,7 +854,14 @@ namespace ego_planner
     grid_map_ = map;
 
     a_star_.reset(new AStar);
-    a_star_->initGridMap(grid_map_, Eigen::Vector3i(800, 200, 40));
+    Eigen::Vector3d map_origin, map_size;
+    grid_map_->getRegion(map_origin, map_size);
+    const double resolution = grid_map_->getResolution();
+    const Eigen::Vector3i pool_size =
+        (map_size / resolution).array().ceil().cast<int>().matrix() + Eigen::Vector3i::Constant(4);
+    ROS_INFO("A star pool derived from map: size=%d %d %d, resolution=%.3f",
+             pool_size(0), pool_size(1), pool_size(2), resolution);
+    a_star_->initGridMap(grid_map_, pool_size);
   }
 
   void PolyTrajOptimizer::setControlPoints(const Eigen::MatrixXd &points)

@@ -1,5 +1,7 @@
 param(
     [string]$RunId = ("factory_l2_swarm_formation_obstacle_" + (Get-Date -Format "yyyyMMdd_HHmmss")),
+    [int]$TotalTimeoutS = 600,
+    [switch]$KeepAlive,
     [switch]$DryRun
 )
 
@@ -21,6 +23,7 @@ $environment = @(
     "RESULT_DIR=$ResultDirWsl",
     "PLANNER_VARIANT=swarm_formation",
     "UAV_NUM=3",
+    "KEEP_ALIVE=$($KeepAlive.IsPresent.ToString().ToLowerInvariant())",
     "WORLD_FILE=$RootWsl/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
     "FACTORY_L2_MODEL_PATH=$RootWsl/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
     "SUNRAY_GAZEBO_LAUNCH_FILE=$RootWsl/Scripts/sunray/factory_l2_sunray_px4_gazebo.launch",
@@ -43,6 +46,10 @@ $environment = @(
     "SWARM_FORMATION_D3_GRID_RESOLUTION=0.20",
     "SWARM_FORMATION_D3_OBSTACLES_INFLATION=0.20",
     "SWARM_FORMATION_D3_LOCAL_UPDATE_RANGE_XY=8.0",
+    "SWARM_FORMATION_D3_LEADER_FOLLOWER_COMMANDS=true",
+    "SWARM_FORMATION_D3_MIN_TRAJ_Z=0.90",
+    "SWARM_FORMATION_D3_MAX_TRAJ_Z=1.60",
+    "SWARM_FORMATION_D3_WEIGHT_HEIGHT=50000.0",
     "EGO_MAX_VEL=0.8",
     "EGO_MAX_ACC=0.8",
     "EGO_PLANNING_HORIZON=8.0",
@@ -56,12 +63,13 @@ $environment = @(
     "EGO_CMD_SAFETY_MIN_Z=0.90",
     "EGO_CMD_SAFETY_MAX_Z=1.60",
     "EGO_CMD_SAFETY_MOTION_TIME_BASIS=ros_sim_time",
+    "EGO_CMD_SAFETY_SMOOTHING_MAX_SPEED_MPS=0.6",
     "EGO_CMD_SAFETY_RECOMPUTE_VELOCITY_FROM_POSITION=true",
-    "EGO_CMD_SAFETY_MAX_VELOCITY_MPS=1.0",
-    "EGO_CMD_SAFETY_MAX_ACCELERATION_MPS2=1.2",
-    "EGO_CMD_SAFETY_MAX_LATERAL_ACCELERATION_MPS2=1.2",
-    "EGO_CMD_SAFETY_MAX_JERK_MPS3=6.0",
-    "TOTAL_TIMEOUT_S=600"
+    "EGO_CMD_SAFETY_MAX_VELOCITY_MPS=0.6",
+    "EGO_CMD_SAFETY_MAX_ACCELERATION_MPS2=0.4",
+    "EGO_CMD_SAFETY_MAX_LATERAL_ACCELERATION_MPS2=0.4",
+    "EGO_CMD_SAFETY_MAX_JERK_MPS3=2.0",
+    "TOTAL_TIMEOUT_S=$TotalTimeoutS"
 )
 
 $command = "cd $RootWsl && env " + ($environment -join " ") + " bash Scripts/sunray/run_px4ctrl_ego_swarm_gate.sh"

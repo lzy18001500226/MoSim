@@ -198,7 +198,7 @@ namespace ego_planner
     {
       bool success;
       if (flag_relan_astar_)
-        success = planFromLocalTraj(true, false);
+        success = planFromLocalTraj(true, true);
       else
         success = planFromLocalTraj(false, true);
 

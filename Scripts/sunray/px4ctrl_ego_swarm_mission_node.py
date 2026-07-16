@@ -1378,6 +1378,19 @@ class EgoSwarmMission:
                     goal_republish_count += 1
                     round_item["goal_republish_count"] = goal_republish_count
                 self.publish_paths()
+                emergency_event = self.inter_uav_emergency_snapshot()
+                if emergency_event is not None:
+                    self.inter_uav_emergency_events.append(emergency_event)
+                    blockers = ["inter_uav_emergency_hold"]
+                    round_item["status"] = "blocked"
+                    round_item["blockers"] = blockers
+                    round_item["emergency_event"] = emergency_event
+                    report["status"] = "blocked"
+                    report["blockers"] = blockers
+                    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+                    self.planner_command_quiesce("inter_uav_emergency_hold")
+                    self.run_landing(rate)
+                    return False, blockers
                 safety_blockers = self.execute_safety_blockers()
                 if safety_blockers:
                     round_item["status"] = "blocked"
@@ -1586,6 +1599,16 @@ class EgoSwarmMission:
 
         while not rospy.is_shutdown() and time.time() - execute_start < self.args.execute_timeout_s:
             self.publish_paths()
+            emergency_event = self.inter_uav_emergency_snapshot()
+            if emergency_event is not None:
+                self.inter_uav_emergency_events.append(emergency_event)
+                self.planner_command_quiesce("inter_uav_emergency_hold")
+                self.run_landing(rate)
+                self.phase = "done"
+                blockers = ["inter_uav_emergency_hold"]
+                blockers.extend(b for b in self.acceptance_blockers() if b not in blockers)
+                self.write_outputs("blocked", blockers)
+                return 14
             all_reached = True
             for uav in self.uavs.values():
                 if not self.update_target_hold(uav):

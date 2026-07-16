@@ -76,14 +76,17 @@ namespace ego_planner
     double wei_sqrvar_;                      // squared variance weight
     double wei_time_;                        // time weight
     double wei_formation_;                   // swarm formation simllarity
+    double wei_height_;                      // flight-height bound weight
     
     double obs_clearance_;                   // safe distance between uav and obstacles
     double swarm_clearance_;                 // safe distance between uav and uav
     double max_vel_, max_acc_;               // dynamic limits
+    double min_traj_z_, max_traj_z_;         // optional flight-height bounds
     
     int    formation_type_;
     int    formation_size_;
     double formation_scale_ = 1.0;
+    bool   planar_formation_ = false;
     bool   use_formation_ = true;
     bool   is_other_assigning_ = false;
 
@@ -114,7 +117,7 @@ namespace ego_planner
                             const Eigen::MatrixXd &initInnerPts, const Eigen::VectorXd &initT,
                             Eigen::MatrixXd &optimal_points, const bool use_formation);
                                             
-    void astarWithMinTraj( const Eigen::MatrixXd &iniState, 
+    bool astarWithMinTraj( const Eigen::MatrixXd &iniState,
                            const Eigen::MatrixXd &finState,
                            std::vector<Eigen::Vector3d> &simple_path,
                            Eigen::MatrixXd &ctl_points,
@@ -150,9 +153,13 @@ namespace ego_planner
     void addPVAGradCost2CT(EIGENVEC &gdT, Eigen::VectorXd &costs, const int &K);
 
     bool obstacleGradCostP(const int i_dp,
-                              const Eigen::Vector3d &p,
-                              Eigen::Vector3d &gradp,
-                              double &costp);
+                               const Eigen::Vector3d &p,
+                               Eigen::Vector3d &gradp,
+                               double &costp);
+
+    bool heightGradCostP(const Eigen::Vector3d &p,
+                         Eigen::Vector3d &gradp,
+                         double &costp);
     
     bool swarmGradCostP(const int i_dp,
                         const double t,

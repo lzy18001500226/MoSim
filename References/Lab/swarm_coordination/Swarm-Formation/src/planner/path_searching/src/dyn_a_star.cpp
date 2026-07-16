@@ -90,6 +90,17 @@ vector<GridNodePtr> AStar::retrievePath(GridNodePtr current)
 
 bool AStar::ConvertToIndexAndAdjustStartEndPoints(Vector3d start_pt, Vector3d end_pt, Vector3i &start_idx, Vector3i &end_idx)
 {
+    if (!start_pt.allFinite() || !end_pt.allFinite())
+    {
+        ROS_WARN("Rejecting non-finite A star endpoint");
+        return false;
+    }
+    if (!grid_map_->isInMap(start_pt) || !grid_map_->isInMap(end_pt))
+    {
+        ROS_WARN("Rejecting A star endpoint outside the configured map: start=(%.3f %.3f %.3f), end=(%.3f %.3f %.3f)",
+                 start_pt(0), start_pt(1), start_pt(2), end_pt(0), end_pt(1), end_pt(2));
+        return false;
+    }
     if (!Coord2Index(start_pt, start_idx) || !Coord2Index(end_pt, end_idx))
         return false;
 
@@ -120,7 +131,8 @@ bool AStar::ConvertToIndexAndAdjustStartEndPoints(Vector3d start_pt, Vector3d en
 
 bool AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d end_pt, bool use_esdf_check)
 {
-    ros::Time time_1 = ros::Time::now();
+    const ros::WallTime time_1 = ros::WallTime::now();
+    gridPath_.clear();
     ++rounds_;
     
     step_size_ = step_size;
@@ -170,7 +182,7 @@ bool AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d end_
 
         if (current->index(0) == endPtr->index(0) && current->index(1) == endPtr->index(1) && current->index(2) == endPtr->index(2))
         {
-            ros::Time time_2 = ros::Time::now();
+            const ros::WallTime time_2 = ros::WallTime::now();
             printf("\033[34mA star iter:%d, time:%.3f\033[0m\n",num_iter, (time_2 - time_1).toSec()*1000);
             // if((time_2 - time_1).toSec() > 0.1)
             //     ROS_WARN("Time consume in A star path finding is %f", (time_2 - time_1).toSec() );
@@ -215,6 +227,27 @@ bool AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d end_
                         if (checkOccupancy(Index2Coord(neighborPtr->index)))
                             continue;
                     }
+
+                    const Vector3d current_coord = Index2Coord(current->index);
+                    const Vector3d neighbor_coord = Index2Coord(neighborPtr->index);
+                    const int edge_samples = std::max(
+                        1, static_cast<int>(ceil((neighbor_coord - current_coord).norm() /
+                                                 (0.5 * step_size_))));
+                    bool edge_blocked = false;
+                    for (int sample = 1; sample <= edge_samples; ++sample)
+                    {
+                        const double alpha = static_cast<double>(sample) / edge_samples;
+                        const Vector3d edge_pt = (1.0 - alpha) * current_coord + alpha * neighbor_coord;
+                        const bool occupied = use_esdf_check ? checkOccupancy_esdf(edge_pt)
+                                                             : checkOccupancy(edge_pt);
+                        if (occupied)
+                        {
+                            edge_blocked = true;
+                            break;
+                        }
+                    }
+                    if (edge_blocked)
+                        continue;
                     
                     double static_cost = sqrt(dx * dx + dy * dy + dz * dz);
                     tentative_gScore = current->gScore + static_cost;
@@ -235,7 +268,7 @@ bool AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d end_
                         neighborPtr->fScore = tentative_gScore + getHeu(neighborPtr, endPtr);
                     }
                 }
-        ros::Time time_2 = ros::Time::now();
+        const ros::WallTime time_2 = ros::WallTime::now();
         if ((time_2 - time_1).toSec() > 0.2)
         {
             ROS_WARN("Failed in A star path searching !!! 0.2 seconds time limit exceeded.");
@@ -243,7 +276,7 @@ bool AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d end_
         }
     }
 
-    ros::Time time_2 = ros::Time::now();
+    const ros::WallTime time_2 = ros::WallTime::now();
 
     if ((time_2 - time_1).toSec() > 0.1)
         ROS_WARN("Time consume in A star path finding is %.3fs, iter=%d", (time_2 - time_1).toSec(), num_iter);
@@ -264,15 +297,21 @@ vector<Vector3d> AStar::getPath()
 
 vector<Vector3d> AStar::astarSearchAndGetSimplePath(const double step_size, Vector3d start_pt, Vector3d end_pt){
     // call astar search and get the path
-    AstarSearch(step_size, start_pt, end_pt, true);
+    bool search_success = AstarSearch(step_size, start_pt, end_pt, true);
+    bool use_esdf_path = true;
     vector<Vector3d> path = getPath();
     bool is_show_debug = false;
 
     // I don't know why, but only try A* again
-    if ((path[0]-start_pt).norm() > 0.5){
+    if (!search_success || path.empty() || (path[0]-start_pt).norm() > 0.5){
         ROS_WARN("I don't know why, but only try A* again");
-        AstarSearch(step_size, start_pt, end_pt, false);
+        search_success = AstarSearch(step_size, start_pt, end_pt, false);
+        use_esdf_path = false;
         path = getPath();
+    }
+    if (!search_success || path.empty()){
+        ROS_WARN("A star did not produce a valid path");
+        return {};
     }
     
     // generate the simple path
@@ -287,17 +326,21 @@ vector<Vector3d> AStar::astarSearchAndGetSimplePath(const double step_size, Vect
     Vector3d cut_start = path[0];
     simple_path.push_back(cut_start);
     
+    const ros::WallTime simplify_start = ros::WallTime::now();
     bool finish = false;
     while (!finish) {
+        bool advanced = false;
         for (int i = end_idx; i < size; i++){
             bool is_safe = true;
             Vector3d check_pt = path[i];
-            int check_num = ceil((check_pt - cut_start).norm() / 0.01);
+            int check_num = std::max(1, static_cast<int>(ceil((check_pt - cut_start).norm() / 0.01)));
             // check collision
             for (int j=0; j<=check_num; j++){
                 double alpha = double(1.0 / check_num) * j;
                 Vector3d check_safe_pt = (1 - alpha) * cut_start + alpha * check_pt;
-                if (checkOccupancy_esdf(check_safe_pt)){
+                const bool occupied = use_esdf_path ? checkOccupancy_esdf(check_safe_pt)
+                                                    : checkOccupancy(check_safe_pt);
+                if (occupied){
                     is_safe = false;
                     break;
                 }
@@ -312,10 +355,24 @@ vector<Vector3d> AStar::astarSearchAndGetSimplePath(const double step_size, Vect
                 continue;
             }
             else{
+                if (i == end_idx){
+                    ROS_WARN("A star path simplification cannot advance from index %d", end_idx);
+                    return {};
+                }
                 end_idx = i;
                 cut_start = path[end_idx-1];
                 simple_path.push_back(cut_start);
+                advanced = true;
+                break;
             }
+        }
+        if (!finish && !advanced){
+            ROS_WARN("A star path simplification stopped without progress");
+            return {};
+        }
+        if ((ros::WallTime::now() - simplify_start).toSec() > 0.2){
+            ROS_WARN("A star path simplification exceeded 0.2 seconds wall time");
+            return {};
         }
     }
 
