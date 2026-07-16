@@ -148,7 +148,7 @@ end
                 "--wind-speed-mps", string(app.WindField.Value),
                 "--format", "tsv",
             ]
-            return String(strip(read(ignorestatus(Cmd(args)), String)))
+            return String(strip(read(ignorestatus(Cmd(String.(args))), String)))
         end
         return String(strip(read(ignorestatus(Cmd(["python", client, action, "--format", "tsv"])), String)))
     end

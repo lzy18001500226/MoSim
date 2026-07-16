@@ -16,6 +16,9 @@ MWORKS.Syslab 2026a具备用户自定义原生APP能力。Model Studio冻结采�
 - 官方支持窗口、下拉框、控件禁用、数值输入、按钮回调、启动回调、坐标区和曲线；
 - APP可打包为`.slappinstall`并安装到Syslab“我的APP”。
 - D1机器门禁：`Results/ui_platform/model_studio_d1_gate_20260717/GATE.json`；
+- 原生运行与正式Orchestrator回调证据：
+  `Results/ui_platform/model_studio_native_review_20260717/model_studio_after_clean_f5/`和
+  `Results/ui_platform/model_studio_native_review_20260717/model_studio_prepare_run/`；
 - 安装包：`apps/model_studio/dist/MoSim Model Studio.slappinstall`。
 
 本机还提供Python/C++ `SyslabAppSdk`和曲线拟合示例，但该路线仅保留为外部扩展参考，
@@ -45,8 +48,8 @@ Model Studio原生APP负责：
 | 曲线 | `uiaxes`, `plot`, `title`, `xlabel`, `ylabel` | 源码已实现 |
 | 回调 | 组件回调和`startupFcn` | 源码已实现 |
 | APP分发 | `.slappinstall` | 已打包通过 |
-| Orchestrator接入 | APP回调写入本地请求；后续升级为正式IPC | 骨架已实现 |
-| Sysplorer/结果查看器 | 通过Orchestrator请求，不在APP内直启底层命令 | 待D3联调 |
+| Orchestrator接入 | APP回调通过固定客户端提交正式请求并读取响应 | 原生运行门禁已通过 |
+| Sysplorer/结果查看器 | 通过Orchestrator请求，不在APP内直启底层命令 | D4边界已联调 |
 
 ## 4. D1最小验收
 
@@ -65,6 +68,15 @@ D1只有完成以下同一轮证据后才通过：
 上述七项已在同一D1门禁中完成。三机`px4ctrl`请求成功生成，选择5机和
 `nmpc_outer`时请求均被拒绝且请求文件数量不增加；安装包已由APP设计工具生成。
 
+2026-07-17补充原生运行复核：Syslab编辑器必须在干净Julia REPL中首次加载
+`apps/model_studio/native_app/app.jl`，同一REPL重复定义`@oodef App`会触发
+`invalid redefinition of const MoSimModelStudio.App`，不能归类为APP源码或授权失败。
+清理旧REPL后，原生窗口正常加载Registry/Profile Catalog。点击`Prepare run`返回
+`true / run_prepared`，正式Orchestrator生成
+`run-20260717-071006-ec0378d8`和请求
+`req-ab01df125aa94e64a54be0c43ec1388c`。回调参数在进入Julia `Cmd`前统一执行
+`String.(args)`，避免下拉框值使参数向量推导为`Vector{AbstractString}`。
+
 ## 5. APP设计器兼容性结论
 
 当前APP设计工具能保留组件回调引用，但导入`.slapp`后不会可靠地把
@@ -80,6 +92,6 @@ D1采用以下兼容策略：
 
 ## 6. 证据边界
 
-D1证明Syslab原生APP技术路线可行，且首版控制器/车辆数量门禁可以在界面执行。它不证明
-Orchestrator已消费请求，不证明MWORKS/codegen、Gazebo、PX4、MAVROS、RViz或UE闭环成功，
-也不证明4至9机可运行。
+D1证明Syslab原生APP技术路线可行，首版控制器/车辆数量门禁可以在界面执行，且正式
+Orchestrator能够消费`prepare_run`并返回同一`run_id`。它不证明MWORKS/codegen、Gazebo、
+PX4、MAVROS、RViz或UE闭环成功，也不证明4至9机可运行。

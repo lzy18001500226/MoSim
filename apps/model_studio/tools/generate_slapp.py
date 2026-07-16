@@ -105,7 +105,7 @@ def request_callback_body(action: str, catalog: dict) -> str:
     else
         args = ["python", client, action, "--format", "tsv"]
     end
-    app.StatusLabel.Text = String(strip(read(ignorestatus(Cmd(args)), String)))
+    app.StatusLabel.Text = String(strip(read(ignorestatus(Cmd(String.(args))), String)))
     catch err
         app.StatusLabel.Text = "false\tcallback_exception\t" * sprint(showerror, err)
     end

@@ -256,6 +256,15 @@ D3c已增加项目内JSON文件队列的长驻服务。两个GUI写入
 `Results/ui_platform/model_studio_d4_gate_20260717/`。该结论仅覆盖APP、Orchestrator
 prepare/context/result边界，不证明Gazebo运行或控制性能。
 
+原生GUI复核进一步在干净Syslab Julia REPL中启动当前
+`apps/model_studio/native_app/app.jl`。窗口、Registry/Profile目录和单机选择正常显示，
+`Prepare run`通过正式文件队列返回`true / run_prepared`，生成
+`run-20260717-071006-ec0378d8`。复核同时修复了Julia `Cmd`不接受
+`Vector{AbstractString}`的真实回调错误，所有动态参数在构造命令前转为`String`。
+截图证据位于`Results/ui_platform/model_studio_native_review_20260717/`。同一REPL重复执行
+含`@oodef App`的文件会产生常量重定义，运行流程必须使用干净REPL首次加载，不能以连续
+F5替代重启。
+
 ### D5 Flight Console MVP
 
 - 复用上游飞控能力并接入MoSim专属页面；

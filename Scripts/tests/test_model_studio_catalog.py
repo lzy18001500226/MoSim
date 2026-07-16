@@ -21,5 +21,6 @@ def test_generated_app_normalizes_julia_ui_strings_and_preserves_disabled_labels
     callbacks = {callback["name"]: callback["code"] for callback in project["callbackFunctions"]}
     assert 'profile = String(split(profile_value' in callbacks["SubmitPressed"]
     assert 'app.StatusLabel.Text = String(strip(read(' in callbacks["SubmitPressed"]
+    assert "Cmd(String.(args))" in callbacks["SubmitPressed"]
     assert "controller_option = findfirst" in callbacks["ProfileChanged"]
     assert "app.ControllerDropDown.Items[controller_option]" in callbacks["ProfileChanged"]
