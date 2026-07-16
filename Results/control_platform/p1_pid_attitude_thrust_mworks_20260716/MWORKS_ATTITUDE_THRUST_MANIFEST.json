@@ -1,0 +1,83 @@
+{
+  "schema": "mosim.pid_attitude_thrust_mworks_evidence.v1",
+  "ok": true,
+  "source": "MWORKS_MCP_LIVE",
+  "bridge_model": "MoSim_PID_AttitudeThrust_CFunction_Sysblock",
+  "fixture_count": 6,
+  "sample_count": 126,
+  "output_count": 20,
+  "reference_json": "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/sil/mworks_reference_126_rows.json",
+  "runtime_schema_json": "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/sil/runtime_schema_126_rows.json",
+  "generated_code_dir": "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/generated_c/MoSim_PID_AttitudeThrust_CFunction_Sysblock",
+  "generated_code_archive_normalization": "LF line endings and trailing horizontal whitespace removed after GenerateModelCode for Git hygiene; executable tokens are unchanged.",
+  "generated_source_hashes": {
+    "extern_inc/momodel_extern_ince1.c": "2ce4b74966443176aa8d64e154fa7ed72687e8dfa8e87a0a5a136e0f2521adbc",
+    "ExternalCResource.json": "449013d35720e489e35ded33fb9be9678388c140d2f8c17593375abd1811dfbb",
+    "ExternalResources.xml": "53106cd288611dab590b41c765ad77dbbaf8485f83b0b758d3a59135371e9908",
+    "MoSim_PID_AttitudeThrust_CFunction_Sysblock.c": "f62a1f7945a7cd12999372c8bca88fd5b7612955817bd7c4fb400a9ec79cd135",
+    "MoSim_PID_AttitudeThrust_CFunction_Sysblock.h": "3939bdf6d868f047732d7f246cb6ff3c5189858985d191a01c5cb7364507bcfd",
+    "MoSim_PID_AttitudeThrust_CFunction_Sysblock_data.c": "9997aeee3a44354d6f45b738b9a2d1fec9cfdac535a86661926044e71cb8394e",
+    "MoSim_PID_AttitudeThrust_CFunction_Sysblock_extern_include.h": "a6e093e6b9e38ec50bf31d14eca4d40a6ea57da474be4185577e186a7407c895",
+    "MoSim_PID_AttitudeThrust_CFunction_Sysblock_private.h": "21d775c7a2bae8db7798c0552a43c09dd1a3ad06f20b45364c4a9032fdd08394",
+    "motrace.json": "c351ea666f9b4183dc0a950e9c54316e672703b276d688daf19219c4351b5b79",
+    "mwb_main.c": "41aa83c3f395731fe32fb53cb96f0af95e69bd983c59668896d4db2234ba23fb",
+    "mwb_runtime.h": "fe2fd7b1bf399e8dfd63529ba664620b6956dac45b24dd805b92793e8309e98c",
+    "mwb_types.h": "4148e6f5e298b6baf80dc375100fdb2c34a077274fce682ea949e987d7f9cb02"
+  },
+  "fixtures": {
+    "cascade_pid": {
+      "algorithm_id": 1,
+      "model_name": "MoSim_PID_CASCADE_PID_ATTITUDE_THRUST_MIL",
+      "check_model": "True",
+      "simulate_model": "True",
+      "sample_count": 21,
+      "raw_csv": "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/raw/cascade_pid_attitude_thrust.csv",
+      "raw_csv_sha256": "a07506403da6cbfe21dc25b195952fa209d35c64af2dfd55cb11711b3d48eb97"
+    },
+    "gain_scheduled_pid": {
+      "algorithm_id": 2,
+      "model_name": "MoSim_PID_GAIN_SCHEDULED_PID_ATTITUDE_THRUST_MIL",
+      "check_model": "True",
+      "simulate_model": "True",
+      "sample_count": 21,
+      "raw_csv": "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/raw/gain_scheduled_pid_attitude_thrust.csv",
+      "raw_csv_sha256": "460f7aac464455c321cca1e9228e4b762e30e574f7edfcb81fbcc4f2652a0d9e"
+    },
+    "fuzzy_pid": {
+      "algorithm_id": 3,
+      "model_name": "MoSim_PID_FUZZY_PID_ATTITUDE_THRUST_MIL",
+      "check_model": "True",
+      "simulate_model": "True",
+      "sample_count": 21,
+      "raw_csv": "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/raw/fuzzy_pid_attitude_thrust.csv",
+      "raw_csv_sha256": "e5f03d31faa796a56f86dea589721e59053e03232f37f093b0fec10df27243f9"
+    },
+    "neural_pid": {
+      "algorithm_id": 4,
+      "model_name": "MoSim_PID_NEURAL_PID_ATTITUDE_THRUST_MIL",
+      "check_model": "True",
+      "simulate_model": "True",
+      "sample_count": 21,
+      "raw_csv": "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/raw/neural_pid_attitude_thrust.csv",
+      "raw_csv_sha256": "9ec0a14a1f4b5fd803d77f79a63da9bfa6994b50e6850196242e2fcfc62ef732"
+    },
+    "anti_windup": {
+      "algorithm_id": 5,
+      "model_name": "MoSim_PID_ANTI_WINDUP_ATTITUDE_THRUST_MIL",
+      "check_model": "True",
+      "simulate_model": "True",
+      "sample_count": 21,
+      "raw_csv": "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/raw/anti_windup_attitude_thrust.csv",
+      "raw_csv_sha256": "a216029551cbb573d0c0e1e4ee2ca908e90253ff71b88e680f13608a2562d998"
+    },
+    "feedforward_profile": {
+      "algorithm_id": 6,
+      "model_name": "MoSim_PID_FEEDFORWARD_PROFILE_ATTITUDE_THRUST_MIL",
+      "check_model": "True",
+      "simulate_model": "True",
+      "sample_count": 21,
+      "raw_csv": "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/raw/feedforward_profile_attitude_thrust.csv",
+      "raw_csv_sha256": "5b3740d4bdd523e3747348b5ac8ae8f1fa4878ab7f95af0472d11479e8f60d31"
+    }
+  }
+}

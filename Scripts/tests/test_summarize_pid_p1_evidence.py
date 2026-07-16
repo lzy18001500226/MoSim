@@ -12,7 +12,9 @@ def test_summary_preserves_unaccepted_claim_boundaries() -> None:
     assert '"selectable": False' in text
     assert 'variant_equivalence["six_variant_graphical_equivalence"]' in text
     assert 'attitude_thrust["lifecycle_fail_closed"]' in text
-    assert '"full_attitude_thrust_mworks_codegen_sil": False' in text
+    assert 'attitude_thrust_mworks["sample_count"] == 126' in text
+    assert 'attitude_thrust_mworks["output_count"] == 20' in text
+    assert 'attitude_thrust_sil["comparison"]["pass"]' in text
     assert '"gazebo_px4_mavros_closed_loop": False' in text
 
 
@@ -27,6 +29,9 @@ def test_summary_indexes_required_evidence() -> None:
         "pid_graphical_variant_mil.json",
         "pid_six_variant_graphical_equivalence.json",
         "PID_ATTITUDE_THRUST_GATE.json",
+        "MWORKS_ATTITUDE_THRUST_MANIFEST.json",
+        "codegen_runtime_check.json",
+        "sil_equivalence_126_rows.json",
         "screenshot_manifest.json",
     ):
         assert name in text

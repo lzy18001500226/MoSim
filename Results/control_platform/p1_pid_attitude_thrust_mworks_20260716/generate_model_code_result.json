@@ -1,0 +1,9 @@
+{
+  "schema": "mosim.mworks.generate_model_code.v1",
+  "source": "MWORKS_MCP_LIVE",
+  "model_name": "MoSim_PID_AttitudeThrust_CFunction_Sysblock",
+  "api": "GenerateModelCode",
+  "result": true,
+  "raw": "True",
+  "created_at": "2026-07-16T07:29:38.079667+00:00"
+}

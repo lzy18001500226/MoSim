@@ -24,10 +24,10 @@
     "fixed_fixture_graphical_codegen_equivalence": true,
     "six_variant_graphical_equivalence": true,
     "full_attitude_thrust_contract": true,
-    "full_attitude_thrust_mworks_codegen_sil": false,
+    "full_attitude_thrust_mworks_codegen_sil": true,
     "gazebo_px4_mavros_closed_loop": false
   },
-  "completed_gate_count": 11,
+  "completed_gate_count": 12,
   "total_gate_count": 13,
   "evidence": {
     "mil": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\mcp_evidence.json",
@@ -39,11 +39,13 @@
     "variant_graphical_mil": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\pid_graphical_variant_mil.json",
     "six_variant_graphical_equivalence": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\pid_six_variant_graphical_equivalence.json",
     "attitude_thrust_contract": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_20260716\\PID_ATTITUDE_THRUST_GATE.json",
+    "attitude_thrust_mworks": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_20260716\\MWORKS_ATTITUDE_THRUST_MANIFEST.json",
+    "attitude_thrust_codegen": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_20260716\\sil\\codegen_runtime_check.json",
+    "attitude_thrust_sil": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_attitude_thrust_mworks_20260716\\sil\\sil_equivalence_126_rows.json",
     "screenshots": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\logs\\screenshot_manifest.json"
   },
   "open_gates": [
-    "full_attitude_thrust_mworks_codegen_sil",
     "gazebo_px4_mavros_closed_loop"
   ],
-  "claim_boundary": "P1 has real scalar MIL, six behavior-equivalent fixed-input graphical variants, official generated C, and a fixed-size six-algorithm ATTITUDE_THRUST C contract. It is not selectable and does not yet prove full-contract MWORKS generated-C/SIL or Gazebo/PX4/MAVROS closed loop."
+  "claim_boundary": "P1 has real scalar MIL, six behavior-equivalent fixed-input graphical variants, a fixed-size six-algorithm ATTITUDE_THRUST contract, live full-contract MWORKS MIL, official generated C, and 126-row/20-output SIL equivalence. It is not selectable and does not yet prove the Gazebo/PX4/MAVROS closed loop."
 }

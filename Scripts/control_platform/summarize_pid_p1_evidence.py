@@ -15,6 +15,9 @@ ATTITUDE_THRUST_GATE = (
     ROOT
     / "Results/control_platform/p1_pid_attitude_thrust_20260716/PID_ATTITUDE_THRUST_GATE.json"
 )
+ATTITUDE_THRUST_MWORKS_DIR = (
+    ROOT / "Results/control_platform/p1_pid_attitude_thrust_mworks_20260716"
+)
 
 
 def load(name: str) -> dict:
@@ -47,6 +50,15 @@ def main() -> int:
     variant_mil = load("pid_graphical_variant_mil.json")
     variant_equivalence = load("pid_six_variant_graphical_equivalence.json")
     attitude_thrust = json.loads(ATTITUDE_THRUST_GATE.read_text(encoding="utf-8"))
+    attitude_thrust_mworks = json.loads(
+        (ATTITUDE_THRUST_MWORKS_DIR / "MWORKS_ATTITUDE_THRUST_MANIFEST.json").read_text(encoding="utf-8")
+    )
+    attitude_thrust_codegen = json.loads(
+        (ATTITUDE_THRUST_MWORKS_DIR / "sil/codegen_runtime_check.json").read_text(encoding="utf-8")
+    )
+    attitude_thrust_sil = json.loads(
+        (ATTITUDE_THRUST_MWORKS_DIR / "sil/sil_equivalence_126_rows.json").read_text(encoding="utf-8")
+    )
 
     activation = next((RESULT_DIR / "screenshots/activation").glob("*.png"))
     check_sim = next((RESULT_DIR / "screenshots/check_sim").glob("*.png"))
@@ -96,7 +108,18 @@ def main() -> int:
             and attitude_thrust["lifecycle_fail_closed"]
             and attitude_thrust["frame_contract"]["thrust_unit"] == "N"
         ),
-        "full_attitude_thrust_mworks_codegen_sil": False,
+        "full_attitude_thrust_mworks_codegen_sil": bool(
+            attitude_thrust_mworks["ok"]
+            and attitude_thrust_mworks["fixture_count"] == 6
+            and attitude_thrust_mworks["sample_count"] == 126
+            and attitude_thrust_mworks["output_count"] == 20
+            and attitude_thrust_codegen["ok"]
+            and attitude_thrust_codegen["compile"]["ok"]
+            and attitude_thrust_codegen["runtime_smoke"]["ok"]
+            and attitude_thrust_sil["ok"]
+            and attitude_thrust_sil["comparison"]["pass"]
+            and len(attitude_thrust_sil["comparison"]["comparisons"]) == 126
+        ),
         "gazebo_px4_mavros_closed_loop": False,
     }
     summary = {
@@ -119,10 +142,13 @@ def main() -> int:
             "variant_graphical_mil": str(LOG_DIR / "pid_graphical_variant_mil.json"),
             "six_variant_graphical_equivalence": str(LOG_DIR / "pid_six_variant_graphical_equivalence.json"),
             "attitude_thrust_contract": str(ATTITUDE_THRUST_GATE),
+            "attitude_thrust_mworks": str(ATTITUDE_THRUST_MWORKS_DIR / "MWORKS_ATTITUDE_THRUST_MANIFEST.json"),
+            "attitude_thrust_codegen": str(ATTITUDE_THRUST_MWORKS_DIR / "sil/codegen_runtime_check.json"),
+            "attitude_thrust_sil": str(ATTITUDE_THRUST_MWORKS_DIR / "sil/sil_equivalence_126_rows.json"),
             "screenshots": str(screenshot_path),
         },
         "open_gates": [name for name, passed in gates.items() if not passed],
-        "claim_boundary": "P1 has real scalar MIL, six behavior-equivalent fixed-input graphical variants, official generated C, and a fixed-size six-algorithm ATTITUDE_THRUST C contract. It is not selectable and does not yet prove full-contract MWORKS generated-C/SIL or Gazebo/PX4/MAVROS closed loop.",
+        "claim_boundary": "P1 has real scalar MIL, six behavior-equivalent fixed-input graphical variants, a fixed-size six-algorithm ATTITUDE_THRUST contract, live full-contract MWORKS MIL, official generated C, and 126-row/20-output SIL equivalence. It is not selectable and does not yet prove the Gazebo/PX4/MAVROS closed loop.",
     }
     output = RESULT_DIR / "P1_PID_MIL_SUMMARY.json"
     write_json_lf(output, summary)
