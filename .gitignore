@@ -312,6 +312,7 @@ Results/px4_gazebo/mid360_lidar_topic_probe_20260620_164302/gz_lidar_once.txt
 # Local UE MCP test config contains a generated SecurityToken value; keep out
 # of Git unless a redacted fixture is intentionally authored.
 Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Config/DefaultEngine.ini
+References/Simulation/aviation/jsbsim-master/UnrealEngine/Config/DefaultEngine.ini
 
 # Final reference-wide class guard. This sits after project unignore rules so
 # ordinary project whitelists cannot accidentally reopen archives, dependency
