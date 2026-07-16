@@ -29,6 +29,7 @@
   <arg name="d3_visualization_truncate_height" default="1.50"/>
   <arg name="d3_visualization_truncate_low" default="0.50"/>
   <arg name="d3_swarm_safe_dist" default="1.2"/>
+  <arg name="d3_obstacles_inflation" default="0.199"/>
   <arg name="d3_astar_start_clearance_radius" default="0.0"/>
   <arg name="d3_astar_max_search_time" default="0.001"/>
   <arg name="uav1_odom_topic" default="/uav1/mavros/local_position/odom"/>
@@ -81,6 +82,7 @@
     <param name="map_ros/visualization_truncate_height" value="$(arg d3_visualization_truncate_height)" type="double"/>
     <param name="map_ros/visualization_truncate_low" value="$(arg d3_visualization_truncate_low)" type="double"/>
     <param name="optimization/swarm_safe_dist" value="$(arg d3_swarm_safe_dist)" type="double"/>
+    <param name="sdf_map/obstacles_inflation" value="$(arg d3_obstacles_inflation)" type="double"/>
     <param name="astar/start_clearance_radius" value="$(arg d3_astar_start_clearance_radius)" type="double"/>
     <param name="astar/max_search_time" value="$(arg d3_astar_max_search_time)" type="double"/>
   </group>
@@ -125,6 +127,7 @@
     <param name="map_ros/visualization_truncate_height" value="$(arg d3_visualization_truncate_height)" type="double"/>
     <param name="map_ros/visualization_truncate_low" value="$(arg d3_visualization_truncate_low)" type="double"/>
     <param name="optimization/swarm_safe_dist" value="$(arg d3_swarm_safe_dist)" type="double"/>
+    <param name="sdf_map/obstacles_inflation" value="$(arg d3_obstacles_inflation)" type="double"/>
     <param name="astar/start_clearance_radius" value="$(arg d3_astar_start_clearance_radius)" type="double"/>
     <param name="astar/max_search_time" value="$(arg d3_astar_max_search_time)" type="double"/>
   </group>
@@ -169,6 +172,7 @@
     <param name="map_ros/visualization_truncate_height" value="$(arg d3_visualization_truncate_height)" type="double"/>
     <param name="map_ros/visualization_truncate_low" value="$(arg d3_visualization_truncate_low)" type="double"/>
     <param name="optimization/swarm_safe_dist" value="$(arg d3_swarm_safe_dist)" type="double"/>
+    <param name="sdf_map/obstacles_inflation" value="$(arg d3_obstacles_inflation)" type="double"/>
     <param name="astar/start_clearance_radius" value="$(arg d3_astar_start_clearance_radius)" type="double"/>
     <param name="astar/max_search_time" value="$(arg d3_astar_max_search_time)" type="double"/>
   </group>

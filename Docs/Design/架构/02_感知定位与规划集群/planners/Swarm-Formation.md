@@ -100,21 +100,27 @@ SF-D3 three-UAV Gazebo proof:
   per-UAV trajectory servers and current controller baseline
   current status: blocked
   latest evidence:
-    Results/sunray_ros1/swarm_formation_d4_blocker_20260701_2310/
+    Results/sunray_ros1/factory_l2_swarm_formation_obstacle_runtime_r10_20260716/
   current interpretation:
-    Swarm-Formation is closed for the current pass as blocked, not accepted as
-    a Gazebo/PX4/MAVROS formation-flight baseline. When all three MID360 topics
-    start, the planner/adapter/broadcast chain is live, but execution violates
-    the inter-UAV distance and execute attitude/Z gates. The latest safer
-    shifted-geometry run with SEQUENTIAL_SPAWN=true never reaches mission
-    because uav2 /livox/lidar does not publish a first frame in either startup
-    attempt.
+    Swarm-Formation is not accepted as a Gazebo/PX4/MAVROS formation-flight
+    baseline. In r10 all three planners produced commands, minimum inter-UAV
+    distance was 1.3227 m, and no emergency hold fired. The mission still failed:
+    formation RMSE was 3.7901 m and peak error was 8.7465 m because UAV3 did not
+    follow UAV1/UAV2 through the obstacle corridor.
   latest source fix:
     The one-segment MinJerk initialization boundary in
     `poly_traj_optimizer.cpp` now inserts the midpoint into `simple_path`
     before setting `piece_num=2` and clamps segment durations to at least
     0.10 s. This prevents the previous simple_path[2]/Eigen assertion crash,
-    but does not by itself prove SF-D3 success.
+    but does not by itself prove SF-D3 success. The Factory pass also adds the
+    three-UAV triangle definition, peer-readiness gating, near-body occupancy
+    filtering, and member-corridor scenario audit. r10 exposed a separate source
+    defect: collision recovery called `planFromLocalTraj(true, false)` and
+    disabled formation optimization after the first trajectory. It now calls
+    `planFromLocalTraj(true, true)`; the optimizer retains its peer-readiness
+    fallback. The corrected source builds and targeted tests pass. A five-minute
+    r11 smoke was stopped before trajectory execution, so runtime acceptance is
+    still pending and must not be inferred from the source/build result.
 
 SF-D4 expanded formation proof:
   current status: blocked/frozen for this pass
@@ -155,10 +161,12 @@ SF-D2:
   formation-flight proof.
 
 SF-D3:
-  Results/sunray_ros1/swarm_formation_d4_blocker_20260701_2310/
+  Results/sunray_ros1/factory_l2_swarm_formation_obstacle_runtime_r10_20260716/
   status=blocked.
-  The SF-D4 blocker packet freezes the current SF-D3 evidence. The strongest
-  mission-level run is
+  Historical July 1 evidence remains below. The current Factory mission-level
+  run is r10: backend status=blocked, minimum inter-UAV distance=1.3227 m,
+  emergency holds=0, formation RMSE=3.7901 m, and formation peak error=8.7465 m.
+  The current source fix is build/test evidence only. The earlier strongest run was
   Results/sunray_ros1/sunray_ros1_goal5_swarm_formation_3uav_20260701_codex_sf_d3_scale100/:
   planner_runtime_log_audit.status=passed, fatal_event_count=0,
   planner_broadcast_traj_relay.per_drone={0:2,1:4,2:4}, but

@@ -1,0 +1,33 @@
+--- a/exploration_manager/include/exploration_manager/fast_exploration_fsm.h
++++ b/exploration_manager/include/exploration_manager/fast_exploration_fsm.h
+@@ -42,7 +42,8 @@ private:
+   shared_ptr<FSMData> fd_;
+   EXPL_STATE state_;
+ 
+   bool classic_;
++  bool visualization_enabled_;
+   ros::Time replan_start_time_;
+ 
+   /* ROS utils */
+--- a/exploration_manager/src/fast_exploration_fsm.cpp
++++ b/exploration_manager/src/fast_exploration_fsm.cpp
+@@ -20,7 +20,8 @@ void FastExplorationFSM::init(ros::NodeHandle& nh) {
+   nh.param("fsm/thresh_replan1", fp_->replan_thresh1_, -1.0);
+   nh.param("fsm/thresh_replan2", fp_->replan_thresh2_, -1.0);
+   nh.param("fsm/thresh_replan3", fp_->replan_thresh3_, -1.0);
+   nh.param("fsm/replan_time", fp_->replan_time_, -1.0);
++  nh.param("fsm/visualization_enabled", visualization_enabled_, false);
+ 
+   /* Initialize main modules */
+   expl_manager_.reset(new FastExplorationManager);
+@@ -133,8 +134,8 @@ void FastExplorationFSM::FSMCallback(const ros::TimerEvent& e) {
+         fd_->static_state_ = false;
+         transitState(EXEC_TRAJ, "FSM");
+ 
+-        // Diagnostic mode: avoid detached reads racing planner-owned containers.
+-        visualize();
++        // Detached visualization races planner-owned containers during replanning.
++        if (visualization_enabled_) visualize();
+       }
+       break;
+     }

@@ -65,7 +65,8 @@ namespace ego_planner
     enum FORMATION_TYPE
     {
       NONE_FORMATION        = 0,
-      REGULAR_HEXAGON       = 1
+      REGULAR_HEXAGON       = 1,
+      THREE_UAV_TRIANGLE    = 2
     };
 
     /* optimization parameters */
@@ -82,6 +83,7 @@ namespace ego_planner
     
     int    formation_type_;
     int    formation_size_;
+    double formation_scale_ = 1.0;
     bool   use_formation_ = true;
     bool   is_other_assigning_ = false;
 
@@ -220,6 +222,19 @@ namespace ego_planner
 
           formation_size_ = swarm_des.size();
           // construct the desired swarm graph
+          swarm_graph_->setDesiredForm(swarm_des);
+          break;
+        }
+
+        case FORMATION_TYPE::THREE_UAV_TRIANGLE :
+        {
+          swarm_des.emplace_back(0, 0, 0);
+          swarm_des.emplace_back(1.7321, -1, 0);
+          swarm_des.emplace_back(0, -2, 0);
+          for (auto &point : swarm_des)
+            point *= formation_scale_;
+
+          formation_size_ = swarm_des.size();
           swarm_graph_->setDesiredForm(swarm_des);
           break;
         }

@@ -60,25 +60,109 @@ legacy_reference
 Current Factory L2 gate state:
 
 ```text
-2026-07-15 RACER three-UAV MID360/FAST-LIO input is accepted, but the current
-multi-UAV exploration gate is blocked. The input evidence is at:
-  Results/sunray_ros1/factory_l2_racer_fastlio_factory_box_stagger3_smoke30_r28_20260715/RACER_FASTLIO_INPUT_GATE.json
-It proves one independent MID360 -> FAST-LIO -> local_cloud/local_pose chain
-per UAV, synchronized `world` frames, valid timestamps, non-empty clouds, and
-Hybrid-Z truth height. It does not prove planner or coverage success.
+2026-07-16 RACER three-UAV MID360/FAST-LIO input and the 120 s runtime gate are
+accepted. Each UAV uses an independent live chain:
+  MID360 -> FAST-LIO -> /uavN/mosim/racer/local_cloud -> RACER /map_ros/cloud
+The synchronized `world` cloud/pose samples are non-empty, have zero measured
+timestamp delta, retain the Hybrid-Z truth-height contract, and do not use the
+default depth-camera input. The current input evidence is:
+  Results/sunray_ros1/factory_l2_racer_fastlio_grid8_spacing3_infl035_nativeff_slew2_odom060_gate120_r55_20260715/RACER_FASTLIO_INPUT_GATE.json
 
-The latest bounded RACER runtime evidence is:
-  Results/sunray_ros1/factory_l2_racer_fastlio_factory_box_stagger3_smoke30_r28_20260715/
-All three UAVs reached planner takeover and the 30 s exploration stream was
-fresh, but the run is not accepted as a multi-UAV gate: the runtime audit found
-four collision replans and one `No path to next viewpoint`; the minimum
-inter-UAV distance was 1.476731 m against the 1.5 m safety threshold. The
-3-second goal-publication stagger therefore did not close the initial
-multi-UAV allocation/hold problem. Do not proceed to 120 s or 300 s, and do
-not attribute this blocker to MID360, FAST-LIO, or px4ctrl. The next action is
-a bounded planner-side investigation of stationary-UAV reservation semantics,
-initial viewpoint assignment, and no-path fallback. Preserve the 1.5 m safety
-threshold and the accepted FAST-LIO input chain.
+The migration also widens RACER/FAME grid identifiers from `int8[]` to
+`int32[]`, ports unreachable-viewpoint recovery and trajectory-freshness
+telemetry, and records pair-optimization ownership changes. The first accepted
+30 s smoke was r46. r47 exposed a 3.30 m adapted-command jump; the command slew
+guard removed that discontinuity. r49 then exposed obstacle-contact-like
+attitude growth with the old 0.199 m inflation. Factory RACER now uses the
+accepted Sunray clearance baseline `obstacles_inflation=0.35 m`, and home
+odometry is latched only after pre-takeoff settling. r52 passed the resulting
+30 s smoke.
+
+r53 completed 120 s but exceeded the 45 deg attitude gate because a px4ctrl
+reference could remain 0.90 m ahead of odometry. The Factory wrapper now
+limits the executed reference to 0.60 m XY / 0.75 m 3D without changing raw
+RACER trajectories. r54 passed 30 s, and the accepted 120 s r55 evidence is:
+  Results/sunray_ros1/factory_l2_racer_fastlio_grid8_spacing3_infl035_nativeff_slew2_odom060_gate120_r55_20260715/
+It reports backend `status=passed`, 120.019 s fresh exploration, minimum
+inter-UAV distance 2.268 m, truth attitude peaks 41.94/34.42/42.83 deg, and
+19.42% full-indoor sensor-footprint coverage.
+
+The 300 s r56 run completed at:
+  Results/sunray_ros1/factory_l2_racer_fastlio_grid8_spacing3_infl035_nativeff_slew2_odom060_gate300_r56_20260716/
+Its MID360/FAST-LIO input gate and trajectory-freshness evidence passed, minimum
+inter-UAV distance remained 2.724 m, and diagnostic coverage reached 31.07%.
+The backend is blocked because UAV2/UAV3 exceeded the 45 deg attitude gate;
+UAV3 reached 59.58 deg and 3.75 m/s near simulation time 102.378 s after a
+high-speed reverse-direction replan. The px4ctrl desired acceleration reached
+17.38 m/s^2 in X and 6.59 m/s^2 in Y. This is a planner-command PVA continuity
+failure after the existing static 0.60 m XY odometry-window guard, not a radar,
+FAST-LIO, freshness, or inter-UAV collision failure. Do not relax the attitude
+gate to accept r56.
+
+A bounded PVA-regeneration A/B now limits the executed command to 2.0 m/s
+velocity, 1.2 m/s^2 acceleration/lateral acceleration, and 6.0 m/s^3 jerk.
+Attempts r60-r63 did not enter RACER because an unrelated host scan saturated
+CPU while Gazebo loaded the 0.735 GB clean Factory STL set; they remain startup
+blockers only. The scan was stopped with user authorization and has not
+reappeared.
+
+The r56 full-command offline replay now passes the corrected jerk-aware braking
+implementation: three-UAV maxima are 1.88-1.90 m/s velocity, 1.20 m/s^2
+acceleration, and 6.00 m/s^3 jerk. The report is
+  Results/sunray_ros1/factory_l2_racer_fastlio_grid8_spacing3_infl035_nativeff_slew2_odom060_gate300_r56_20260716/RACER_COMMAND_DYNAMICS_REPLAY_PVA_A12_J6.json
+This replay is preflight evidence only. r65-r67 then exposed wrapper timeout,
+ROS-master readiness, and mission-process cleanup defects; they are not RACER
+coverage results. r68 proved that the live PVA regeneration removed the r56
+command-dynamics failure, but it also exposed a real safety regression: raw
+RACER commands retained 3.162 m separation while independently retimed PVA
+commands fell to 0.929 m and Gazebo truth reached 0.466 m. The former generic
+0.45 m acceptance threshold was also inconsistent with RACER's configured
+swarm clearance.
+
+The runtime now inherits a RACER-specific separation gate, monitors pairwise
+MAVROS/FAST-LIO odometry with closing-speed and braking-distance prediction,
+and on a predicted violation disables all PVA adapters, commands a team hover,
+lands, and records `inter_uav_emergency_hold`. Gazebo truth remains
+evaluation-only. With 3.0 m initial spacing, 2.5 m RACER planning clearance,
+and a 1.5 m physical acceptance threshold, r69 passed the replacement 30 s
+smoke:
+  Results/sunray_ros1/factory_l2_racer_fastlio_infl035_pvaregen_v3_a12_j6_spacing3_safedist25_pairhold_smoke30_r69_20260716/
+It reports 30.01 s fresh exploration, 2.993 m minimum separation, zero
+emergency holds, truth attitude peaks 39.00/42.92/44.87 deg, passed runtime-log
+and MID360/FAST-LIO input gates, and 6.108% diagnostic sensor-footprint
+coverage. The next gate is the identical 120 s configuration; 300 s remains
+closed until 120 s passes.
+
+The later bounded coverage-improvement pass is closed without a promotable
+gain. The common-frame 120 s baseline at
+`Results/sunray_ros1/factory_l2_racer_fastlio_commonframe_simtime_gate120_r91_20260716/`
+retained 3.1805 m minimum separation and zero emergency holds, but reached only
+17.152% on the declared 2 m grid / 8 m sensor-radius metric. The pair-optimization
+smoke at
+`Results/sunray_ros1/factory_l2_racer_fastlio_commonframe_pair_opt_smoke30_r92_20260716/`
+failed before planner takeover (`uav1 raw_count=0`). This satisfies the stop
+condition: do not resume RACER parameter tuning. The active fallback is the
+declared known-target Swarm-Formation three-UAV obstacle-crossing gate.
+
+Swarm-Formation r6-r10 isolated the current formation blocker. The source now
+uses a real three-UAV triangular formation, waits for peer trajectories, filters
+only the near-body occupancy neighborhood, audits all three member corridors,
+and uses the 1.5 m nominal-spacing Factory obstacle scenario while preserving
+the 1.0 m physical safety gate. The strongest complete run is
+`Results/sunray_ros1/factory_l2_swarm_formation_obstacle_runtime_r10_20260716/`.
+All three planners produced commands and minimum separation remained 1.3227 m
+with zero emergency holds, but the mission did not reach the target: formation
+RMSE was 3.7901 m and peak error was 8.7465 m. UAV1-UAV2 stayed comparatively
+coherent (0.2485 m pair RMSE), while UAV3 separated from both by more than 8.6 m.
+The runtime log showed that collision recovery called
+`planFromLocalTraj(true, false)`, disabling formation optimization on every
+subsequent replan. That branch now preserves the formation request and the
+existing optimizer performs the peer-readiness fallback. The fix builds and its
+targeted tests pass, but it is not runtime-accepted: the bounded r11 smoke did
+not reach trajectory execution within the five-minute wall window and was
+terminated and cleaned. The next runtime action is one normal bounded r11 gate,
+not another parameter sweep; accept only the existing formation, target, safety,
+attitude, and obstacle-crossing thresholds.
 
 2026-07-13 FUEL + px4ctrl approximately-2-m/s long-run tracking is accepted.
 The final correction retained native FUEL trajectories, px4ctrl `l1_awff`,
@@ -495,7 +579,7 @@ fresh RViz review run. UE remains the separate S11 display entry
 | ROS1 Sunray/Gazebo/PX4/MAVROS/px4ctrl minimum big system | ready_to_integrate | Single-UAV Diff baseline is frozen as `DIFF_SINGLE_GOAL4_BASELINE_20260629` at `Results/sunray_ros1/review_diff_interactive_guard_20260629_002228`. Diff-Planner three-UAV scripted-target baseline is frozen as `DIFF_SWARM_GOAL5_BASELINE_20260629` at `Results/sunray_ros1/sunray_ros1_goal5_diff_planner_3uav_20260629_023923` with `status=passed`, target errors 0.0057/0.0215/0.0315 m, and minimum inter-UAV distance 0.9800 m. The standard Goal5 script defaults now match that frozen conservative target set: uav1 `(1.0,-1.0,1.0)`, uav2 `(1.0,1.0,1.0)`, uav3 `(2.0,0.0,1.0)`. Live Windows entry remains `wsl -d Ubuntu-20.04`, then `Scripts/sunray/check_sunray_ros1_runtime_preflight.sh`; bare/default `wsl` is not a valid P0 runtime entry. | Keep this lane as the frozen runtime plant/planner evidence baseline for MWORKS-generated controller regression. Only rerun Diff/Sunray when a generated controller or a scoped regression needs A/B evidence. | No ROS2/PX4 x500 substitution, no downloaded FAST-LIO replacement while local source exists, no fake/static/empty point cloud, no headless-only GUI/RViz acceptance, no UE screenshot as control-loop proof, no final closed-loop success claim from screenshot-only proof. Do not retune px4ctrl or planner parameters while entering MWORKS unless a regression gate proves the runtime baseline changed. |
 | MWORKS / controller evidence | active_closeout | G8 MWORKS full-loop closeout remains frozen as `G8_MWORKS_FULL_LOOP_BASELINE_20260629` at `Results/sunray_ros1/g8_mworks_full_loop_closeout_20260629_115603`. G9 `GenerateModelCode`, generated-C offline equivalence (450 cases / 0 failures), and static ROS/Sunray adapter (450 cases / 0 failures) are accepted at `Results/g9/controller_family_attitude_thrust_v1/g9_family_mworks_codegen_20260630_work`, `Results/g9/controller_family_attitude_thrust_v1/g9_family_generated_c_gate_20260630_195728/RUN_MANIFEST.json`, and `Results/g9/controller_family_attitude_thrust_v1/g9_family_ros_sunray_adapter_gate_20260630_200721/RUN_MANIFEST.json`. Existing G9 Gazebo/Diff runs identify named profiles but do not uniquely record the `g9_family` build definition, generated source hash, executable hash, and runtime-loaded symbol; they are regression evidence, not final six-controller generated-runtime closure. The active acceptance plan is `Docs/Workflows/g9_mworks_generated_runtime_closeout.md`. Scoped G9.5/G9.6 remains frozen at `Results/sunray_ros1/g95_g96_closeout_20260630_120157/SUMMARY.md`. G10 conclusions are unchanged and outside this closeout. | Implement fail-closed G9 build/load provenance, validate it first on `official_pid`, then run the five remaining controllers through takeoff-hover-land and representative trajectory gates; add Diff single/three-UAV per the declared full-project closure level. | No profile-only generated-runtime acceptance, no fallback to the equivalent C++ core, no controller/plant/planner retuning during provenance validation, no FUEL/RACER/UE/G10 changes, no login/authorization click without explicit user authorization, and no PX4-native/uORB or full nonlinear online NMPC claim. |
 | UE / frontend visualization | support_only | UE/frontend is S11 display, experiment-platform, video, and review enhancement. It is not the current plant/control/localization authority. Factory L2 Gazebo-only static map review is user-accepted at `Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review/`; the project screenshot is `Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review/screenshots/factory_l2_user_accepted_20260701.png`, and the optional Sunray scene-base entry is `Scripts/sunray/factory_l2_sunray_px4_gazebo.launch` with scene profile `Config/gazebo/scene_profiles/factory_l2_static_sunray_scene.json`. FS0-F8 passed on that historical static base. A later coordinate cleanup found the original conversion included nonphysical `SkySphereMesh`; clean candidate evidence is `Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/`, `Results/unreal_scene_mapping/factory_l2_coordinate_audit_20260702_104942/FACTORY_L2_COORDINATE_AUDIT.json`, primary calibration rig `Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/FACTORY_L2_CALIBRATION_FRAME_CONTRACT.json`, auxiliary `Results/unreal_scene_mapping/factory_l2_landmark_review_20260702_111256/FACTORY_L2_LANDMARK_REVIEW.json`, and `Config/gazebo/scene_profiles/factory_l2_static_sunray_scene_clean_candidate.json` with status `coordinate_audit_passed_ue_visual_render_verified_user_acceptance_required`. The current UE static entry rendered the rig with log-confirmed `segments=16` and `markers=6`, but this still does not replace runtime gates until backend Gazebo/RViz/log source checks and UE-only user visual acceptance pass. | Next action is backend Gazebo/RViz/log source verification plus UE-only calibration-rig visual acceptance, then promote the clean scene profile and rerun the smallest Factory runtime regression gates. UI/QGC/UE integrated operator interface planning starts only after that cleanup is accepted or explicitly deferred by the user. | No SLAM/exploration coverage overclaim, no UE screenshot as controller/planner/runtime authority, no UE-to-Gazebo/PX4/MAVROS/planner/controller feedback path, no final UI completion claim from F8, and no claim that old F1-F8 proves the clean global coordinate contract. |
-| Exploration / swarm planning | ready_to_integrate | Source-first exploration/planning lane is open after G10. The current clean-Factory envelope is `Config/gazebo/scene_profiles/factory_l2_exploration_envelope.json`, narrowed to the indoor wall/fence boundary. Fixed-64 FUEL passed at `82.32%`; the full-Factory r100 closeout at `Results/sunray_ros1/factory_l2_fuel_unreachable_recovery_r100_900s_20260715/` reached `77.77%` diagnostic coverage but remained blocked by command discontinuity and a `115.043 s` stale trajectory interval. Its airborne unreachable-candidate recovery worked three times, so that mechanism is accepted for RACER porting, while further single-UAV FUEL parameter tuning is stopped. The Diff target-chain support route remains accepted as known-scene coverage, not unknown exploration. Swarm-Formation remains formation/known-target evidence only. | Start a bounded RACER three-UAV migration: reuse MID360/frame/Hybrid-Z, unreachable-candidate recovery, freshness, emergency telemetry, and coverage contracts; pass static/smoke, 120 s, then 300 s gates before any long run. If RACER repeats disconnected free-space failure without measurable gain, stop and switch to explicitly classified known-map partitioned coverage. | No more blind FUEL parameter tuning or unchanged long runs; no fake maps/static point-cloud substitutes; no UE evidence replacing Gazebo/PX4/RViz/log proof; no full-map autonomous-coverage claim from blocked diagnostic coverage; no packaging known-map partitioned coverage as unknown exploration; no direct MAVROS/PX4 command authority from exploration planners. |
+| Exploration / swarm planning | waiting_evidence | Fixed-64 FUEL passed at `82.32%`; full-Factory FUEL tuning is frozen. The final bounded RACER common-frame baseline r91 reached `17.152%` in 120 s and the pair-opt r92 smoke failed planner takeover, so RACER coverage tuning is closed. The active fallback is Swarm-Formation known-target three-UAV obstacle crossing. r10 kept 1.3227 m minimum separation with zero emergency holds but failed formation tracking (`3.7901 m` RMSE, `8.7465 m` peak) because collision replans explicitly disabled formation optimization. That source branch is corrected and builds/tests pass; no runtime-pass claim exists because the five-minute r11 smoke did not reach trajectory execution. | Run one normal bounded r11 formation obstacle gate with the corrected collision-replan branch. Accept only if backend target hold, formation RMSE <=0.35 m, peak <=0.80 m, minimum separation >=1.0 m, attitude <=45 deg, zero emergency holds, and the static three-member obstacle-crossing contract all pass. If it repeats the r10 UAV3 desynchronization, freeze Swarm-Formation as a named blocker instead of tuning controller/localization or safety thresholds. | Do not restart FUEL/RACER parameter tuning, substitute depth/fake/static clouds, package known-target formation as autonomous exploration, relax safety/formation thresholds, or use UE as planner/controller evidence. |
 
 | Docs / architecture cleanup | support_only | Useful current material has MoSim-owned paths for hooks, ExperimentProfiles, capability index, desktop skills, and reference index. Legacy protocol templates remain review/design material unless explicitly reopened. Remaining work is cleanup, not the product P0. | Fix only stale pointers or rules that block the current ROS1/Sunray/Gazebo/RViz evidence loop. | No broad deletion of legacy runtime wrappers, old tests, gateway scripts, or protocol templates before a dependency audit proves they are unused; do not let docs cleanup displace the runtime review loop. |
 | Git / repository hygiene | support_only | Large-tree cleanup remains separate from engineering progress. | Use path-limited Git commands only when asked or when finishing a scoped change. | No `git add -A`, force push, reset, clean, or broad cleanup without explicit approval. |

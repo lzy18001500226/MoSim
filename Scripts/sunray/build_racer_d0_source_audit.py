@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Build the RACER-D0 source/interface/dependency audit package.
+"""Build a RACER/FAME source/interface/dependency audit package.
 
 This is a read-only source audit. It does not start ROS, Gazebo, PX4, MAVROS,
-RViz, RACER, FUEL, or any GUI process.
+RViz, RACER, FAME, FUEL, or any GUI process.
 """
 
 from __future__ import annotations
@@ -141,6 +141,16 @@ def collect_package_names(source: Path) -> list[str]:
     return sorted(names)
 
 
+def detect_variant(source: Path, requested: str) -> str:
+    if requested != "auto":
+        return requested
+    fame_fsm = source / "swarm_exploration/exploration_manager/src/fame_exploration_fsm.cpp"
+    readme = read_text(source / "README.md").lower()
+    if fame_fsm.is_file() or "planner_type:=fame" in readme:
+        return "fame"
+    return "racer"
+
+
 def collect_dependency_hints(source: Path) -> dict[str, Any]:
     readme = source / "README.md"
     bspline_cmake = source / "swarm_exploration/bspline_opt/CMakeLists.txt"
@@ -161,14 +171,15 @@ def collect_dependency_hints(source: Path) -> dict[str, Any]:
     return hints
 
 
-def collect_interface(source: Path) -> dict[str, Any]:
+def collect_interface(source: Path, variant: str) -> dict[str, Any]:
     launch_root = source / "swarm_exploration/exploration_manager/launch"
     swarm_launch = launch_root / "swarm_exploration.launch"
     single_exploration = launch_root / "single_drone_exploration.xml"
     single_planner = launch_root / "single_drone_planner.xml"
     tsp_server = launch_root / "tsp_server.launch"
     traj_server = source / "swarm_exploration/plan_manage/src/traj_server.cpp"
-    fsm = source / "swarm_exploration/exploration_manager/src/fast_exploration_fsm.cpp"
+    racer_fsm = source / "swarm_exploration/exploration_manager/src/fast_exploration_fsm.cpp"
+    fame_fsm = source / "swarm_exploration/exploration_manager/src/fame_exploration_fsm.cpp"
     map_ros = source / "swarm_exploration/plan_env/src/map_ros.cpp"
     multi_map = source / "swarm_exploration/plan_env/src/multi_map_manager.cpp"
     return {
@@ -212,13 +223,23 @@ def collect_interface(source: Path) -> dict[str, Any]:
                 "params": extract_params(tsp_server, ("exploration/",)),
             },
         },
+        "planner_variant": variant,
         "code_topics": {
-            "fast_exploration_fsm": {
-                "path": rel(fsm),
-                "timers": line_hits(fsm, r"createTimer", 20),
-                "pub_sub": line_hits(fsm, r"subscribe\(|advertise<", 40),
-                "trigger": line_hits(fsm, r"/move_base_simple/goal|triggerCallback|WAIT_TRIGGER", 20),
-                "odom_fields": line_hits(fsm, r"odom_pos_|odom_vel_|odom_orient_|odom_yaw_", 25),
+            "racer_exploration_fsm": {
+                "path": rel(racer_fsm),
+                "timers": line_hits(racer_fsm, r"createTimer", 20),
+                "pub_sub": line_hits(racer_fsm, r"subscribe\(|advertise<", 40),
+                "trigger": line_hits(racer_fsm, r"/move_base_simple/goal|triggerCallback|WAIT_TRIGGER", 20),
+                "odom_fields": line_hits(racer_fsm, r"odom_pos_|odom_vel_|odom_orient_|odom_yaw_", 25),
+            },
+            "fame_exploration_fsm": {
+                "path": rel(fame_fsm),
+                "present": fame_fsm.is_file(),
+                "timers": line_hits(fame_fsm, r"createTimer", 20),
+                "pub_sub": line_hits(fame_fsm, r"subscribe\(|advertise<", 50),
+                "trigger": line_hits(fame_fsm, r"/move_base_simple/goal|triggerCallback|WAIT_TRIGGER", 20),
+                "odom_fields": line_hits(fame_fsm, r"odom_pos_|odom_vel_|odom_orient_|odom_yaw_", 25),
+                "communication_range": line_hits(fame_fsm, r"communication_range_|pair_opt_interval_", 15),
             },
             "map_ros": {
                 "path": rel(map_ros),
@@ -256,69 +277,93 @@ def collect_messages(source: Path) -> dict[str, list[str]]:
     return {rel(path): parse_msg(path) for path in message_paths}
 
 
-def derive_findings(source: Path, interface: dict[str, Any], deps: dict[str, Any]) -> list[dict[str, str]]:
+def derive_findings(
+    source: Path, interface: dict[str, Any], deps: dict[str, Any], variant: str
+) -> list[dict[str, str]]:
+    label = variant.upper()
+    prefix = f"{label}_D0"
+    swarm_args = interface["launch_files"]["swarm_exploration"]["args"]
+    has_planner_switch = "planner_type" in swarm_args
+    launch_evidence = (
+        "The upstream launch selects a PCD model and simulator nodes; it is not a live Sunray/MID360 input proof."
+        if variant == "fame"
+        else "swarm_exploration.launch starts map_generator map_pub with pillar.pcd and simulator_light.xml can start upstream simulator nodes."
+    )
     findings = [
         {
-            "id": "RACER_D0_001",
+            "id": f"{prefix}_001",
             "severity": "info",
-            "claim": "RACER upstream is ROS Melodic/Noetic compatible and is a valid local source candidate for the current Ubuntu-20.04/ROS1 lane.",
-            "evidence": "README reports Ubuntu 18.04/20.04 and ROS Melodic/Noetic support.",
+            "claim": f"{label} source is ROS Noetic compatible and is a valid local source candidate for the current Ubuntu-20.04/ROS1 lane.",
+            "evidence": "README reports Ubuntu 20.04/ROS Noetic support." if variant == "fame" else "README reports Ubuntu 18.04/20.04 and ROS Melodic/Noetic support.",
         },
         {
-            "id": "RACER_D0_002",
+            "id": f"{prefix}_002",
             "severity": "risk",
             "claim": "Default launch is an upstream PCD/render demo, not MoSim Gazebo proof.",
-            "evidence": "swarm_exploration.launch starts map_generator map_pub with pillar.pcd and simulator_light.xml can start upstream simulator nodes.",
+            "evidence": launch_evidence,
         },
         {
-            "id": "RACER_D0_003",
+            "id": f"{prefix}_003",
             "severity": "risk",
             "claim": "D1 build must patch or inject NLopt paths because bspline_opt hard-codes /usr/local include/libnlopt.so.",
             "evidence": "bspline_opt/CMakeLists.txt sets NLOPT_INCLUDE_DIR and NLOPT_LIBRARY under /usr/local.",
         },
         {
-            "id": "RACER_D0_004",
+            "id": f"{prefix}_004",
             "severity": "risk",
             "claim": "D1 build requires LKH/TSP services and probably both lkh_tsp_solver and lkh_mtsp_solver resources for each drone.",
             "evidence": "tsp_server.launch starts tsp_node and mtsp_node for drone ids 1-3; exploration_manager reads exploration/tsp_dir and mtsp_dir.",
         },
         {
-            "id": "RACER_D0_005",
+            "id": f"{prefix}_005",
             "severity": "info",
-            "claim": "RACER already exposes per-UAV B-spline and pos_cmd topics through drone_id remaps.",
+            "claim": f"{label} exposes per-UAV B-spline and pos_cmd topics through drone_id remaps.",
             "evidence": "single_drone_planner.xml remaps /planning/bspline, /planning/replan, /planning/new, /position_cmd and visualization/map topics to suffixed per-drone names.",
         },
         {
-            "id": "RACER_D0_006",
+            "id": f"{prefix}_006",
             "severity": "requirement",
-            "claim": "MoSim D2 must bridge sensor pose plus either cloud or depth; cloud alone is not enough because RACER synchronizes /map_ros/cloud with /map_ros/pose.",
+            "claim": f"MoSim D2 must bridge sensor pose plus either cloud or depth; cloud alone is not enough because {label} synchronizes /map_ros/cloud with /map_ros/pose.",
             "evidence": "MapROS creates message_filters synchronizers for depth+pose and cloud+pose.",
         },
         {
-            "id": "RACER_D0_007",
+            "id": f"{prefix}_007",
             "severity": "requirement",
-            "claim": "MoSim D2 must keep RACER away from direct MAVROS/PX4 publication; use RACER B-spline/pos_cmd as planner outputs only.",
+            "claim": f"MoSim D2 must keep {label} away from direct MAVROS/PX4 publication; use B-spline/pos_cmd as planner outputs only.",
             "evidence": "traj_server publishes quadrotor_msgs/PositionCommand; any MAVROS bridge must remain MoSim-owned and reversible.",
         },
         {
-            "id": "RACER_D0_008",
+            "id": f"{prefix}_008",
             "severity": "requirement",
             "claim": "Three-UAV target should override upstream drone_num=5 and launch only uav1/uav2/uav3 for the first MoSim gate.",
             "evidence": "swarm_exploration.launch has drone_num=5 while active MoSim requirement is uav1/uav2/uav3.",
         },
         {
-            "id": "RACER_D0_009",
+            "id": f"{prefix}_009",
             "severity": "risk",
-            "claim": "RACER uses shared non-namespaced swarm/map channels by design; adapter dry-run must prove self-message filtering and per-drone output isolation.",
+            "claim": f"{label} uses shared non-namespaced swarm/map channels by design; adapter dry-run must prove self-message filtering and per-drone output isolation.",
             "evidence": "single_drone_planner.xml remaps send/recv topics to shared /swarm_expl/* and /multi_map_manager/* topics.",
         },
         {
-            "id": "RACER_D0_010",
+            "id": f"{prefix}_010",
             "severity": "risk",
             "claim": "The upstream local_sensing package currently disables CUDA but still uses a PCD renderer; MoSim proof should prefer online Sunray/Gazebo sensor topics or a clearly marked sensor renderer boundary.",
             "evidence": "local_sensing/CMakeLists.txt has ENABLE_CUDA false and builds pcl_render_node from pointcloud_render_node.cpp.",
         },
     ]
+    if variant == "fame":
+        findings.append(
+            {
+                "id": f"{prefix}_011",
+                "severity": "info" if has_planner_switch else "risk",
+                "claim": "FAME and RACER are selectable planner variants in the same upstream family launch.",
+                "evidence": (
+                    f"swarm_exploration.launch declares planner_type={swarm_args.get('planner_type')}."
+                    if has_planner_switch
+                    else "No planner_type launch argument was found; variant selection requires source-level confirmation."
+                ),
+            }
+        )
     return findings
 
 
@@ -328,7 +373,7 @@ def build_summary(audit: dict[str, Any]) -> str:
     risks = [f for f in findings if f["severity"] == "risk"]
     requirements = [f for f in findings if f["severity"] == "requirement"]
     lines = [
-        "# RACER-D0 Source Audit",
+        f"# {audit['family_label']}-D0 Source Audit",
         "",
         f"Status: `{audit['status']}`",
         f"Generated: `{audit['generated_at']}`",
@@ -336,12 +381,12 @@ def build_summary(audit: dict[str, Any]) -> str:
         "",
         "## Conclusion",
         "",
-        "RACER is a viable local source candidate for three-UAV autonomous exploration,",
-        "but D0 only proves source/interface readiness. It does not prove a RACER",
+        f"{audit['family_label']} is a viable local source candidate for three-UAV autonomous exploration,",
+        f"but D0 only proves source/interface readiness. It does not prove a {audit['family_label']}",
         "build, upstream smoke, MoSim adapter dry-run, or Gazebo multi-UAV closed loop.",
         "",
-        "The next gate is RACER-D1 only after NLopt/LKH/package dependency handling is",
-        "made explicit, followed by RACER-D2 namespace adapter dry-run.",
+        f"The next gate is {audit['family_label']}-D1 only after NLopt/LKH/package dependency handling is",
+        f"made explicit, followed by {audit['family_label']}-D2 namespace adapter dry-run.",
         "",
         "## Key Findings",
         "",
@@ -371,13 +416,13 @@ def build_summary(audit: dict[str, Any]) -> str:
             "",
             "## Evidence Files",
             "",
-            f"- `{evidence_dir}/RACER_D0_SOURCE_AUDIT.json`",
+            f"- `{evidence_dir}/{audit['artifact_name']}`",
             f"- `{evidence_dir}/SUMMARY.md`",
             "",
             "## Claim Boundary",
             "",
             "This package is source/static evidence only. It does not start or validate",
-            "ROS, Gazebo, PX4, MAVROS, RViz, RACER runtime, or multi-UAV exploration.",
+            f"ROS, Gazebo, PX4, MAVROS, RViz, {audit['family_label']} runtime, or multi-UAV exploration.",
         ]
     )
     return "\n".join(lines) + "\n"
@@ -386,6 +431,12 @@ def build_summary(audit: dict[str, Any]) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", default=str(DEFAULT_SOURCE), help="RACER source root")
+    parser.add_argument(
+        "--variant",
+        choices=("auto", "racer", "fame"),
+        default="auto",
+        help="planner family represented by the source tree",
+    )
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT), help="directory for audit output")
     parser.add_argument("--stamp", default=None, help="optional output timestamp")
     args = parser.parse_args()
@@ -393,23 +444,29 @@ def main() -> int:
     source = repo_path(args.source)
     output_root = repo_path(args.output_root)
     if not source.is_dir():
-        raise SystemExit(f"missing RACER source root: {source}")
+        raise SystemExit(f"missing RACER/FAME source root: {source}")
+    variant = detect_variant(source, args.variant)
+    family_label = variant.upper()
+    artifact_name = f"{family_label}_D0_SOURCE_AUDIT.json"
     stamp = args.stamp or datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_dir = output_root / f"racer_d0_source_audit_{stamp}"
+    out_dir = output_root / f"{variant}_d0_source_audit_{stamp}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    interface = collect_interface(source)
+    interface = collect_interface(source, variant)
     deps = collect_dependency_hints(source)
     audit: dict[str, Any] = {
         "status": "review_ready",
-        "gate": "RACER-D0",
+        "gate": f"{family_label}-D0",
+        "planner_variant": variant,
+        "family_label": family_label,
+        "artifact_name": artifact_name,
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "source_root": rel(source),
         "evidence_dir": rel(out_dir),
         "claim_boundary": [
             "source/interface/dependency audit only",
             "no ROS/Gazebo/PX4/MAVROS/RViz runtime started",
-            "no build, smoke, adapter dry-run, or multi-UAV exploration success claimed",
+            f"no {family_label} build, smoke, adapter dry-run, or multi-UAV exploration success claimed",
         ],
         "source_inventory": {
             "launch_files": collect_files(source, "*.launch") + collect_files(source, "*.xml"),
@@ -422,8 +479,8 @@ def main() -> int:
         "interface": interface,
         "messages": collect_messages(source),
     }
-    audit["findings"] = derive_findings(source, interface, deps)
-    audit_path = out_dir / "RACER_D0_SOURCE_AUDIT.json"
+    audit["findings"] = derive_findings(source, interface, deps, variant)
+    audit_path = out_dir / artifact_name
     audit_path.write_text(json.dumps(audit, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     summary = build_summary(audit)
     (out_dir / "SUMMARY.md").write_text(summary, encoding="utf-8")

@@ -1,0 +1,44 @@
+--- a/exploration_manager/src/fast_exploration_manager.cpp
++++ b/exploration_manager/src/fast_exploration_manager.cpp
+@@ -918,6 +918,7 @@
+     ROS_ERROR("Empty destination.");
+ 
+   std::cout << "Next view: " << next_pos.transpose() << ", " << next_yaw << std::endl;
++  stage("before_trajectory_generation");
+ 
+   // Plan trajectory (position and yaw) to the next viewpoint
+   t1 = ros::Time::now();
+@@ -953,6 +954,7 @@
+     // optimization
+     if (!planner_manager_->planExploreTraj(ed_->path_next_goal_, vel, acc, time_lb))
+       return FAIL;
++    stage("after_waypoint_trajectory");
+     ed_->next_goal_ = next_pos;
+ 
+   } else if (len > radius_far) {
+@@ -969,6 +971,7 @@
+     ed_->next_goal_ = truncated_path.back();
+     if (!planner_manager_->planExploreTraj(truncated_path, vel, acc, time_lb))
+       return FAIL;
++    stage("after_truncated_trajectory");
+     // if (!planner_manager_->kinodynamicReplan(
+     //         pos, vel, acc, ed_->next_goal_, Vector3d(0, 0, 0), time_lb))
+     //   return FAIL;
+@@ -980,7 +983,8 @@
+ 
+     if (!planner_manager_->kinodynamicReplan(
+             pos, vel, acc, ed_->next_goal_, Vector3d(0, 0, 0), time_lb))
+-      return FAIL;
++        return FAIL;
++    stage("after_kinodynamic_replan");
+   }
+ 
+   if (ep_->coverage_expansion_enable_ && ed_->coverage_span_initialized_) {
+@@ -1000,6 +1004,7 @@
+     ROS_ERROR("Lower bound not satified!");
+ 
+   planner_manager_->planYawExplore(yaw, next_yaw, true, ep_->relax_time_);
++  stage("after_yaw_plan");
+ 
+   double traj_plan_time = (ros::Time::now() - t1).toSec();
+   t1 = ros::Time::now();

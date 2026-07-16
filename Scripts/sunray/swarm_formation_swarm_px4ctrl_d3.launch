@@ -8,9 +8,13 @@
   <arg name="planning_horizon" default="4.0"/>
   <arg name="flight_type" default="3"/>
   <arg name="swarm_scale" default="0.5"/>
+  <arg name="formation_type" default="2"/>
   <arg name="relative_z" default="1.0"/>
   <arg name="center_z" default="1.0"/>
   <arg name="swarm_traj_time_tolerance_s" default="1.0"/>
+  <arg name="grid_resolution" default="0.12"/>
+  <arg name="obstacles_inflation" default="0.10"/>
+  <arg name="local_update_range_xy" default="4.5"/>
 
   <group ns="drone_0">
     <node pkg="ego_planner" name="ego_planner_node" type="ego_planner_node" output="screen">
@@ -25,6 +29,8 @@
       <remap from="~grid_map/cloud" to="/uav1/livox_world"/>
       <rosparam file="$(find ego_planner)/config/normal_hexagon.yaml"/>
       <param name="global_goal/swarm_scale" value="$(arg swarm_scale)" type="double"/>
+      <param name="optimization/formation_type" value="$(arg formation_type)" type="int"/>
+      <param name="optimization/formation_scale" value="$(arg swarm_scale)" type="double"/>
       <param name="global_goal/relative_pos_0/z" value="$(arg relative_z)" type="double"/>
       <param name="global_goal/use_msg_z" value="true" type="bool"/>
       <param name="global_goal/center_z" value="$(arg center_z)" type="double"/>
@@ -39,14 +45,14 @@
       <param name="fsm/replan_trajectory_time" value="0.1" type="double"/>
       <param name="fsm/swarm_traj_time_tolerance_s" value="$(arg swarm_traj_time_tolerance_s)" type="double"/>
       <param name="fsm/result_file" value="/tmp/mosim_swarm_formation_d3_drone0.txt"/>
-      <param name="grid_map/resolution" value="0.12"/>
+      <param name="grid_map/resolution" value="$(arg grid_resolution)"/>
       <param name="grid_map/map_size_x" value="$(arg map_size_x)"/>
       <param name="grid_map/map_size_y" value="$(arg map_size_y)"/>
       <param name="grid_map/map_size_z" value="$(arg map_size_z)"/>
-      <param name="grid_map/local_update_range_x" value="4.5"/>
-      <param name="grid_map/local_update_range_y" value="4.5"/>
+      <param name="grid_map/local_update_range_x" value="$(arg local_update_range_xy)"/>
+      <param name="grid_map/local_update_range_y" value="$(arg local_update_range_xy)"/>
       <param name="grid_map/local_update_range_z" value="2.5"/>
-      <param name="grid_map/obstacles_inflation" value="0.1"/>
+      <param name="grid_map/obstacles_inflation" value="$(arg obstacles_inflation)"/>
       <param name="grid_map/p_hit" value="0.65"/>
       <param name="grid_map/p_miss" value="0.35"/>
       <param name="grid_map/p_min" value="0.12"/>
@@ -97,6 +103,8 @@
       <remap from="~grid_map/cloud" to="/uav2/livox_world"/>
       <rosparam file="$(find ego_planner)/config/normal_hexagon.yaml"/>
       <param name="global_goal/swarm_scale" value="$(arg swarm_scale)" type="double"/>
+      <param name="optimization/formation_type" value="$(arg formation_type)" type="int"/>
+      <param name="optimization/formation_scale" value="$(arg swarm_scale)" type="double"/>
       <param name="global_goal/relative_pos_1/z" value="$(arg relative_z)" type="double"/>
       <param name="global_goal/use_msg_z" value="true" type="bool"/>
       <param name="global_goal/center_z" value="$(arg center_z)" type="double"/>
@@ -111,14 +119,14 @@
       <param name="fsm/replan_trajectory_time" value="0.1" type="double"/>
       <param name="fsm/swarm_traj_time_tolerance_s" value="$(arg swarm_traj_time_tolerance_s)" type="double"/>
       <param name="fsm/result_file" value="/tmp/mosim_swarm_formation_d3_drone1.txt"/>
-      <param name="grid_map/resolution" value="0.12"/>
+      <param name="grid_map/resolution" value="$(arg grid_resolution)"/>
       <param name="grid_map/map_size_x" value="$(arg map_size_x)"/>
       <param name="grid_map/map_size_y" value="$(arg map_size_y)"/>
       <param name="grid_map/map_size_z" value="$(arg map_size_z)"/>
-      <param name="grid_map/local_update_range_x" value="4.5"/>
-      <param name="grid_map/local_update_range_y" value="4.5"/>
+      <param name="grid_map/local_update_range_x" value="$(arg local_update_range_xy)"/>
+      <param name="grid_map/local_update_range_y" value="$(arg local_update_range_xy)"/>
       <param name="grid_map/local_update_range_z" value="2.5"/>
-      <param name="grid_map/obstacles_inflation" value="0.1"/>
+      <param name="grid_map/obstacles_inflation" value="$(arg obstacles_inflation)"/>
       <param name="grid_map/p_hit" value="0.65"/>
       <param name="grid_map/p_miss" value="0.35"/>
       <param name="grid_map/p_min" value="0.12"/>
@@ -169,6 +177,8 @@
       <remap from="~grid_map/cloud" to="/uav3/livox_world"/>
       <rosparam file="$(find ego_planner)/config/normal_hexagon.yaml"/>
       <param name="global_goal/swarm_scale" value="$(arg swarm_scale)" type="double"/>
+      <param name="optimization/formation_type" value="$(arg formation_type)" type="int"/>
+      <param name="optimization/formation_scale" value="$(arg swarm_scale)" type="double"/>
       <param name="global_goal/relative_pos_2/z" value="$(arg relative_z)" type="double"/>
       <param name="global_goal/use_msg_z" value="true" type="bool"/>
       <param name="global_goal/center_z" value="$(arg center_z)" type="double"/>
@@ -183,14 +193,14 @@
       <param name="fsm/replan_trajectory_time" value="0.1" type="double"/>
       <param name="fsm/swarm_traj_time_tolerance_s" value="$(arg swarm_traj_time_tolerance_s)" type="double"/>
       <param name="fsm/result_file" value="/tmp/mosim_swarm_formation_d3_drone2.txt"/>
-      <param name="grid_map/resolution" value="0.12"/>
+      <param name="grid_map/resolution" value="$(arg grid_resolution)"/>
       <param name="grid_map/map_size_x" value="$(arg map_size_x)"/>
       <param name="grid_map/map_size_y" value="$(arg map_size_y)"/>
       <param name="grid_map/map_size_z" value="$(arg map_size_z)"/>
-      <param name="grid_map/local_update_range_x" value="4.5"/>
-      <param name="grid_map/local_update_range_y" value="4.5"/>
+      <param name="grid_map/local_update_range_x" value="$(arg local_update_range_xy)"/>
+      <param name="grid_map/local_update_range_y" value="$(arg local_update_range_xy)"/>
       <param name="grid_map/local_update_range_z" value="2.5"/>
-      <param name="grid_map/obstacles_inflation" value="0.1"/>
+      <param name="grid_map/obstacles_inflation" value="$(arg obstacles_inflation)"/>
       <param name="grid_map/p_hit" value="0.65"/>
       <param name="grid_map/p_miss" value="0.35"/>
       <param name="grid_map/p_min" value="0.12"/>

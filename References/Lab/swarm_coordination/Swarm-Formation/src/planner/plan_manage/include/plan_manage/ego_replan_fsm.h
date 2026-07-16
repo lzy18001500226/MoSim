@@ -73,6 +73,8 @@ namespace ego_planner
     Eigen::Vector3d swarm_central_pos_;
     double swarm_relative_pts_[50][3];
     double swarm_scale_;
+    bool swarm_center_use_msg_z_;
+    double swarm_center_z_;
     double swarm_traj_time_tolerance_s_;
 
     /* planning data */

@@ -1,0 +1,78 @@
+{
+  "schema": "mosim.factory_l2_three_uav_formation_obstacle_crossing.v1",
+  "status": "static_scenario_ready_runtime_pending",
+  "world": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
+  "formation": {
+    "type": "three_uav_equilateral_subset_of_normal_hexagon",
+    "scale": 0.75,
+    "expected_min_pair_distance_m": 1.5,
+    "start_center_xy_m": [
+      -12.575025,
+      -19.36313
+    ],
+    "preferred_single_uav_center_xy_m": [
+      -10.575025,
+      -19.36313
+    ],
+    "runtime_proven_start_center_xy_m": [
+      -12.575025,
+      -19.36313
+    ],
+    "start_center_shift_from_preferred_m": 2.0,
+    "start_positions_xy_m": {
+      "1": [
+        -12.575025,
+        -19.36313
+      ],
+      "2": [
+        -11.27595,
+        -20.11313
+      ],
+      "3": [
+        -12.575025,
+        -20.86313
+      ]
+    },
+    "target_center_xy_m": [
+      -16.679266719908025,
+      -8.0868185505691
+    ],
+    "target_positions_xy_m": {
+      "1": [
+        -16.679266719908025,
+        -8.0868185505691
+      ],
+      "2": [
+        -15.380191719908025,
+        -8.8368185505691
+      ],
+      "3": [
+        -16.679266719908025,
+        -9.5868185505691
+      ]
+    },
+    "z_m": 1.2
+  },
+  "obstacle_crossing_contract": {
+    "direct_center_segment_blocked": true,
+    "clearance_margin_m": 1.0,
+    "intersecting_proxy_count": 1,
+    "intersecting_proxies": [
+      "SM_CargoCart_back"
+    ],
+    "maximum_hit_planar_span_m": 8.67849,
+    "member_intersecting_proxies": {
+      "1": [
+        "SM_CargoCart_back"
+      ],
+      "2": [
+        "SM_CargoCart_back"
+      ],
+      "3": []
+    },
+    "endpoint_formation_positions_clear": true,
+    "runtime_requirement": "all UAVs must reach the translated formation through live MID360 occupancy while preserving the formation-error and safety gates"
+  },
+  "source_truth": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json",
+  "claim_boundary": "Static UE collision proxies select candidate endpoints only; Gazebo pre-takeoff truth pose and the PX4/MAVROS/px4ctrl runtime gates remain authoritative for vehicle-footprint clearance."
+}

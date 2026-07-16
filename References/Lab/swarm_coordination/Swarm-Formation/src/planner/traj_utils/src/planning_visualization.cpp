@@ -212,6 +212,15 @@ namespace ego_planner
       
       break;
     }
+
+    case FORMATION_TYPE::THREE_UAV_TRIANGLE:
+    {
+      formation_size_ = 3;
+      line_size_ = 3;
+      line_begin_ = {0, 0, 1};
+      line_end_ = {1, 2, 2};
+      break;
+    }
     
     default:
       break;

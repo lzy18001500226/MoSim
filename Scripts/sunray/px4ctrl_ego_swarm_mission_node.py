@@ -21,6 +21,8 @@ from quadrotor_msgs.msg import PositionCommand, Px4ctrlDebug, TakeoffLand
 from sensor_msgs.msg import PointCloud2
 from std_msgs.msg import Bool, Header
 
+from trajectory_dynamics import inter_uav_braking_guard
+
 
 def wall_sleep(duration_s: float) -> None:
     """Sleep on wall time so mission deadlines are not stretched by /use_sim_time."""
@@ -75,6 +77,7 @@ class UavRuntime:
     cmd_safety_diagnostics_path: Path | None
     home_odom_xy: tuple[float, float] | None = None
     home_odom_z: float | None = None
+    home_truth_z: float | None = None
     state: State | None = None
     truth: dict | None = None
     odom: dict | None = None
@@ -136,6 +139,10 @@ class EgoSwarmMission:
         self.min_inter_uav_pair: tuple[int, int] | None = None
         self.separation_rows: list[dict] = []
         self.last_sep_record_t = -1e9
+        self.inter_uav_emergency_events: list[dict] = []
+        self.landing_summary: dict | None = None
+        self.command_quiesce_summaries: list[dict] = []
+        self.takeoff_timing_summary: dict | None = None
         self.target_chains: dict[int, list[tuple[float, float, float]]] = {}
         self.target_chain_report: dict | None = None
         self.trigger_pub = rospy.Publisher("/traj_start_trigger", PoseStamped, queue_size=3)
@@ -812,12 +819,34 @@ class EgoSwarmMission:
             self.publish_hover_cmds(current_pose=True)
             self.publish_paths()
             rate.sleep()
-        # px4ctrl only accepts AUTO_LAND from AUTO_HOVER. Stop command streaming
-        # briefly so the controller FSM can leave command-control mode.
-        stop_start = time.time()
-        while not rospy.is_shutdown() and time.time() - stop_start < self.args.pre_land_no_cmd_s:
+        # px4ctrl's command timeout uses ROS time. Waiting on wall time here can
+        # publish LAND too early whenever Gazebo runs below real time.
+        stop_start_sim = self.now()
+        stop_start_wall = time.monotonic()
+        exit_reason = "ros_shutdown"
+        while not rospy.is_shutdown():
+            sim_elapsed_s = max(0.0, self.now() - stop_start_sim)
+            wall_elapsed_s = max(0.0, time.monotonic() - stop_start_wall)
+            if sim_elapsed_s >= self.args.pre_land_no_cmd_s:
+                exit_reason = "simulation_quiet_period_completed"
+                break
+            if wall_elapsed_s >= self.args.pre_land_no_cmd_wall_timeout_s:
+                exit_reason = "wall_time_hard_timeout"
+                break
             self.publish_paths()
             rate.sleep()
+        self.command_quiesce_summaries.append(
+            {
+                "reason": reason,
+                "completed": exit_reason == "simulation_quiet_period_completed",
+                "exit_reason": exit_reason,
+                "time_basis": "ros_simulation_time_with_wall_hard_limit",
+                "simulation_target_s": self.args.pre_land_no_cmd_s,
+                "wall_hard_timeout_s": self.args.pre_land_no_cmd_wall_timeout_s,
+                "simulation_elapsed_s": max(0.0, self.now() - stop_start_sim),
+                "wall_elapsed_s": max(0.0, time.monotonic() - stop_start_wall),
+            }
+        )
 
     def publish_trigger(self) -> None:
         for uav in self.uavs.values():
@@ -1127,6 +1156,123 @@ class EgoSwarmMission:
                     blockers.append(prefix + f"execute_{source}_roll_pitch_above_gate")
         return list(dict.fromkeys(blockers))
 
+    def inter_uav_emergency_snapshot(self) -> dict | None:
+        if not self.args.inter_uav_emergency_hold_enabled:
+            return None
+        now_t = self.now()
+        candidates: list[dict] = []
+        ids = sorted(self.uavs)
+        for index, uid_a in enumerate(ids):
+            odom_a = self.uavs[uid_a].odom
+            if odom_a is None or now_t - float(odom_a["t"]) > self.args.inter_uav_emergency_odom_timeout_s:
+                continue
+            for uid_b in ids[index + 1 :]:
+                odom_b = self.uavs[uid_b].odom
+                if odom_b is None or now_t - float(odom_b["t"]) > self.args.inter_uav_emergency_odom_timeout_s:
+                    continue
+                guard = inter_uav_braking_guard(
+                    (odom_a["x"], odom_a["y"], odom_a["z"]),
+                    (odom_a["vx"], odom_a["vy"], odom_a["vz"]),
+                    (odom_b["x"], odom_b["y"], odom_b["z"]),
+                    (odom_b["vx"], odom_b["vy"], odom_b["vz"]),
+                    self.args.min_inter_uav_distance,
+                    self.args.inter_uav_emergency_deceleration_mps2,
+                    self.args.inter_uav_emergency_margin_m,
+                )
+                if guard["triggered"]:
+                    candidates.append(
+                        {
+                            "t": now_t,
+                            "wall_elapsed_s": time.time() - self.start_wall,
+                            "phase": self.phase,
+                            "source": "mavros_fastlio_odom",
+                            "pair": [uid_a, uid_b],
+                            **guard,
+                        }
+                    )
+        if not candidates:
+            return None
+        return min(candidates, key=lambda item: item["distance_m"] - item["trigger_distance_m"])
+
+    def landing_uav_snapshot(self, uav: UavRuntime) -> dict:
+        truth_z = None if uav.truth is None else float(uav.truth["z"])
+        odom_z = None if uav.odom is None else float(uav.odom["z"])
+        armed = None if uav.state is None else bool(uav.state.armed)
+        truth_gate_z = (
+            self.args.landed_z_max
+            if uav.home_truth_z is None
+            else uav.home_truth_z + self.args.landed_z_tolerance_m
+        )
+        odom_gate_z = (
+            self.args.landed_z_max
+            if uav.home_odom_z is None
+            else uav.home_odom_z + self.args.landed_z_tolerance_m
+        )
+        truth_below_gate = truth_z is not None and truth_z <= truth_gate_z
+        odom_below_gate = odom_z is not None and odom_z <= odom_gate_z
+        disarmed = armed is False
+        return {
+            "truth_z_m": truth_z,
+            "odom_z_m": odom_z,
+            "armed": armed,
+            "home_truth_z_m": uav.home_truth_z,
+            "home_odom_z_m": uav.home_odom_z,
+            "truth_gate_z_m": truth_gate_z,
+            "odom_gate_z_m": odom_gate_z,
+            "truth_below_gate": truth_below_gate,
+            "odom_below_gate": odom_below_gate,
+            "disarmed": disarmed,
+            "landed": truth_below_gate and odom_below_gate and disarmed,
+        }
+
+    def run_landing(self, rate: WallRate) -> dict:
+        self.phase = "land"
+        self.publish_takeoff_land(TakeoffLand.LAND, self.args.land_cmd_repeats)
+        start_sim_t = self.now()
+        start_wall_t = time.monotonic()
+        exit_reason = "ros_shutdown"
+        per_uav: dict[str, dict] = {}
+        while not rospy.is_shutdown():
+            self.publish_paths()
+            per_uav = {
+                str(uid): self.landing_uav_snapshot(uav)
+                for uid, uav in self.uavs.items()
+            }
+            if per_uav and all(item["landed"] for item in per_uav.values()):
+                exit_reason = "all_uavs_landed_and_disarmed"
+                break
+            sim_elapsed_s = max(0.0, self.now() - start_sim_t)
+            wall_elapsed_s = max(0.0, time.monotonic() - start_wall_t)
+            if sim_elapsed_s >= self.args.land_timeout_s:
+                exit_reason = "simulation_time_timeout"
+                break
+            if wall_elapsed_s >= self.args.land_wall_timeout_s:
+                exit_reason = "wall_time_hard_timeout"
+                break
+            rate.sleep()
+
+        per_uav = {
+            str(uid): self.landing_uav_snapshot(uav)
+            for uid, uav in self.uavs.items()
+        }
+        self.landing_summary = {
+            "completed": bool(per_uav) and all(item["landed"] for item in per_uav.values()),
+            "exit_reason": exit_reason,
+            "time_basis": "ros_simulation_time_with_wall_hard_limit",
+            "simulation_timeout_s": self.args.land_timeout_s,
+            "wall_hard_timeout_s": self.args.land_wall_timeout_s,
+            "simulation_elapsed_s": max(0.0, self.now() - start_sim_t),
+            "wall_elapsed_s": max(0.0, time.monotonic() - start_wall_t),
+            "landed_z_absolute_fallback_m": self.args.landed_z_max,
+            "landed_z_tolerance_above_home_m": self.args.landed_z_tolerance_m,
+            "landed_height_semantics": (
+                "Each UAV must return to its own pre-takeoff truth and odom ground height "
+                "plus tolerance, then disarm. The absolute threshold is fallback-only."
+            ),
+            "per_uav": per_uav,
+        }
+        return self.landing_summary
+
     def update_target_hold(self, uav: UavRuntime) -> bool:
         if not uav.odom:
             return False
@@ -1291,26 +1437,39 @@ class EgoSwarmMission:
         if not self.all_ready():
             self.write_outputs("blocked", ["ready_timeout"])
             return 10
-        for uav in self.uavs.values():
-            if uav.odom:
-                uav.home_odom_xy = (float(uav.odom["x"]), float(uav.odom["y"]))
-                uav.home_odom_z = float(uav.odom["z"])
         self.set_cmd_adapters_enabled(False)
         if not self.wait_pre_takeoff_settle(rate):
             self.write_outputs("blocked", ["pre_takeoff_settle_timeout"])
             return 10
+        # Latch home only after the odometry stream has settled. With staggered
+        # three-UAV startup, the first ready sample can contain a transient Z.
+        for uav in self.uavs.values():
+            if uav.odom:
+                uav.home_odom_xy = (float(uav.odom["x"]), float(uav.odom["y"]))
+                uav.home_odom_z = float(uav.odom["z"])
+                uav.home_truth_z = None if uav.truth is None else float(uav.truth["z"])
 
         self.phase = "takeoff"
         self.publish_takeoff_sequence(rate)
-        takeoff_start = time.time()
-        last_retry_wall = {uid: takeoff_start for uid in self.uavs}
+        takeoff_start_sim = self.now()
+        takeoff_start_wall = time.monotonic()
+        last_retry_wall = {uid: time.time() for uid in self.uavs}
         retry_count = {uid: 0 for uid in self.uavs}
         hover_reached_time: float | None = None
         stable_reached_time: float | None = None
         hover_height_satisfied = False
         stable_satisfied = False
         required_stable_s = max(self.args.pre_ego_hover_s, self.args.pre_planner_stable_s)
-        while not rospy.is_shutdown() and time.time() - takeoff_start < self.args.takeoff_timeout_s:
+        takeoff_exit_reason = "ros_shutdown"
+        while not rospy.is_shutdown():
+            takeoff_sim_elapsed_s = max(0.0, self.now() - takeoff_start_sim)
+            takeoff_wall_elapsed_s = max(0.0, time.monotonic() - takeoff_start_wall)
+            if takeoff_sim_elapsed_s >= self.args.takeoff_timeout_s:
+                takeoff_exit_reason = "simulation_time_timeout"
+                break
+            if takeoff_wall_elapsed_s >= self.args.takeoff_wall_timeout_s:
+                takeoff_exit_reason = "wall_time_hard_timeout"
+                break
             self.maybe_retry_takeoff_commands(last_retry_wall, retry_count)
             if self.args.publish_hover_during_takeoff:
                 airborne_uavs = [
@@ -1331,14 +1490,24 @@ class EgoSwarmMission:
             gate_snapshots = [self.pre_planner_stability_snapshot(uav) for uav in self.uavs.values()]
             if all(snapshot["ok"] for snapshot in gate_snapshots):
                 if stable_reached_time is None:
-                    stable_reached_time = time.time()
-                if time.time() - stable_reached_time >= required_stable_s:
+                    stable_reached_time = self.now()
+                if self.now() - stable_reached_time >= required_stable_s:
                     stable_satisfied = True
+                    takeoff_exit_reason = "height_and_stability_reached"
                     break
             else:
                 stable_reached_time = None
                 stable_satisfied = False
             rate.sleep()
+        self.takeoff_timing_summary = {
+            "completed": hover_height_satisfied and stable_satisfied,
+            "exit_reason": takeoff_exit_reason,
+            "time_basis": "ros_simulation_time_with_wall_hard_limit",
+            "simulation_timeout_s": self.args.takeoff_timeout_s,
+            "wall_hard_timeout_s": self.args.takeoff_wall_timeout_s,
+            "simulation_elapsed_s": max(0.0, self.now() - takeoff_start_sim),
+            "wall_elapsed_s": max(0.0, time.monotonic() - takeoff_start_wall),
+        }
         if not hover_height_satisfied:
             self.write_outputs("blocked", self.takeoff_blockers())
             return 11
@@ -1369,25 +1538,27 @@ class EgoSwarmMission:
         execute_start = time.time()
         if self.args.mission_completion_mode == "exploration":
             self.exploration_started_t = self.now()
+            emergency_event = None
             while (
                 not rospy.is_shutdown()
                 and self.now() - self.exploration_started_t < self.args.exploration_duration_s
             ):
                 self.publish_paths()
-                rate.sleep()
-            self.exploration_ended_t = self.now()
-            self.planner_command_quiesce("pre_land_hover")
-            self.phase = "land"
-            self.publish_takeoff_land(TakeoffLand.LAND, self.args.land_cmd_repeats)
-            land_start = time.time()
-            while not rospy.is_shutdown() and time.time() - land_start < self.args.land_timeout_s:
-                self.publish_paths()
-                if all(uav.truth and uav.truth["z"] < self.args.landed_z_max for uav in self.uavs.values()):
+                emergency_event = self.inter_uav_emergency_snapshot()
+                if emergency_event is not None:
+                    self.inter_uav_emergency_events.append(emergency_event)
                     break
                 rate.sleep()
+            self.exploration_ended_t = self.now()
+            self.planner_command_quiesce(
+                "inter_uav_emergency_hold" if emergency_event is not None else "pre_land_hover"
+            )
+            self.run_landing(rate)
 
             self.phase = "done"
             blockers = self.acceptance_blockers()
+            if emergency_event is not None and "inter_uav_emergency_hold" not in blockers:
+                blockers.insert(0, "inter_uav_emergency_hold")
             if blockers:
                 self.write_outputs("blocked", blockers)
                 return 14
@@ -1403,14 +1574,7 @@ class EgoSwarmMission:
                 return 13
 
             self.planner_command_quiesce("pre_land_hover")
-            self.phase = "land"
-            self.publish_takeoff_land(TakeoffLand.LAND, self.args.land_cmd_repeats)
-            land_start = time.time()
-            while not rospy.is_shutdown() and time.time() - land_start < self.args.land_timeout_s:
-                self.publish_paths()
-                if all(uav.truth and uav.truth["z"] < self.args.landed_z_max for uav in self.uavs.values()):
-                    break
-                rate.sleep()
+            self.run_landing(rate)
 
             self.phase = "done"
             blockers = self.acceptance_blockers()
@@ -1436,14 +1600,7 @@ class EgoSwarmMission:
             return 13
 
         self.planner_command_quiesce("pre_land_hover")
-        self.phase = "land"
-        self.publish_takeoff_land(TakeoffLand.LAND, self.args.land_cmd_repeats)
-        land_start = time.time()
-        while not rospy.is_shutdown() and time.time() - land_start < self.args.land_timeout_s:
-            self.publish_paths()
-            if all(uav.truth and uav.truth["z"] < self.args.landed_z_max for uav in self.uavs.values()):
-                break
-            rate.sleep()
+        self.run_landing(rate)
 
         self.phase = "done"
         blockers = self.acceptance_blockers()
@@ -1455,11 +1612,22 @@ class EgoSwarmMission:
 
     def acceptance_blockers(self) -> list[str]:
         blockers: list[str] = []
+        if self.inter_uav_emergency_events:
+            blockers.append("inter_uav_emergency_hold")
         if self.min_inter_uav_distance < self.args.min_inter_uav_distance:
             blockers.append("inter_uav_distance_below_gate")
         team_trajectory_freshness = self.exploration_team_trajectory_freshness_summary()
         if team_trajectory_freshness and not team_trajectory_freshness["passed"]:
             blockers.append("swarm_planner_trajectory_stale")
+        if self.landing_summary is not None:
+            for uid_text, landing in self.landing_summary["per_uav"].items():
+                prefix = f"uav{uid_text}_"
+                if not landing["truth_below_gate"] or not landing["odom_below_gate"]:
+                    blockers.append(prefix + "landing_not_completed")
+                if not landing["disarmed"]:
+                    blockers.append(prefix + "still_armed_after_land")
+        if self.command_quiesce_summaries and not self.command_quiesce_summaries[-1]["completed"]:
+            blockers.append("pre_land_command_quiesce_timeout")
         for uid, uav in self.uavs.items():
             prefix = f"uav{uid}_"
             if uav.raw_lidar_count < self.args.min_raw_lidar_count:
@@ -1691,6 +1859,7 @@ class EgoSwarmMission:
                 "target_hold": uav.target_hold_metrics,
                 "home_odom_xy": None if uav.home_odom_xy is None else {"x": uav.home_odom_xy[0], "y": uav.home_odom_xy[1]},
                 "home_odom_z": uav.home_odom_z,
+                "home_truth_z": uav.home_truth_z,
                 "takeoff_hover_z": self.takeoff_hover_z(uav),
                 "frame_alignment": self.frame_alignment_summary(uav),
                 "planner_command_audit": {
@@ -1813,8 +1982,21 @@ class EgoSwarmMission:
             "per_uav": per_uav,
             "target_chain": self.target_chain_report,
             "pre_takeoff_settle": self.pre_takeoff_settle_summary,
+            "takeoff_timing": self.takeoff_timing_summary,
             "min_inter_uav_distance_m": None if math.isinf(self.min_inter_uav_distance) else self.min_inter_uav_distance,
             "min_inter_uav_pair": self.min_inter_uav_pair,
+            "inter_uav_emergency_hold": {
+                "enabled": self.args.inter_uav_emergency_hold_enabled,
+                "source": "mavros_fastlio_odom",
+                "min_distance_m": self.args.min_inter_uav_distance,
+                "deceleration_mps2": self.args.inter_uav_emergency_deceleration_mps2,
+                "margin_m": self.args.inter_uav_emergency_margin_m,
+                "odom_timeout_s": self.args.inter_uav_emergency_odom_timeout_s,
+                "trigger_count": len(self.inter_uav_emergency_events),
+                "events": self.inter_uav_emergency_events,
+            },
+            "pre_land_command_quiesce": self.command_quiesce_summaries,
+            "landing": self.landing_summary,
             "claim_boundary": (
                 "Goal5 multi-UAV planner engineering gate through px4ctrl/MAVROS/PX4/Gazebo. "
                 "mission_completion_mode=target requires scripted target hold. "
@@ -1896,11 +2078,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--yaw", type=float, default=0.0)
     parser.add_argument("--ready-timeout-s", type=float, default=60.0)
     parser.add_argument("--takeoff-timeout-s", type=float, default=45.0)
+    parser.add_argument("--takeoff-wall-timeout-s", type=float, default=300.0)
     parser.add_argument("--ego-takeover-timeout-s", type=float, default=45.0)
     parser.add_argument("--execute-timeout-s", type=float, default=100.0)
     parser.add_argument("--land-timeout-s", type=float, default=30.0)
     parser.add_argument("--pre-land-hover-s", type=float, default=1.0)
     parser.add_argument("--pre-land-no-cmd-s", type=float, default=0.8)
+    parser.add_argument("--pre-land-no-cmd-wall-timeout-s", type=float, default=30.0)
     parser.add_argument("--mission-completion-mode", choices=["target", "exploration"], default="target")
     parser.add_argument("--exploration-duration-s", type=float, default=30.0)
     parser.add_argument("--exploration-max-trajectory-stale-s", type=float, default=10.0)
@@ -1939,7 +2123,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--takeoff-z-tol", type=float, default=0.15)
     parser.add_argument("--target-reached-radius", type=float, default=0.45)
     parser.add_argument("--landed-z-max", type=float, default=0.20)
+    parser.add_argument("--landed-z-tolerance-m", type=float, default=0.08)
+    parser.add_argument("--land-wall-timeout-s", type=float, default=300.0)
     parser.add_argument("--min-inter-uav-distance", type=float, default=0.45)
+    parser.add_argument("--inter-uav-emergency-hold-enabled", action="store_true")
+    parser.add_argument("--inter-uav-emergency-deceleration-mps2", type=float, default=1.2)
+    parser.add_argument("--inter-uav-emergency-margin-m", type=float, default=0.2)
+    parser.add_argument("--inter-uav-emergency-odom-timeout-s", type=float, default=0.3)
     parser.add_argument("--min-raw-lidar-count", type=int, default=5)
     parser.add_argument("--min-raw-lidar-points", type=int, default=1)
     parser.add_argument("--world-cloud-topic-template", default="/uav{uid}/livox_world")

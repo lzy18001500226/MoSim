@@ -28,6 +28,12 @@ namespace ego_planner
     int restart_nums = 0, rebound_times = 0;
     bool flag_force_return, flag_still_occ;
     bool use_formation_temp = use_formation_;
+    const size_t received_traj_count = swarm_trajs_ == nullptr ? 0 : swarm_trajs_->size();
+    const bool formation_ready = use_formation && formation_size_ > 0 &&
+        (received_traj_count >= static_cast<size_t>(formation_size_) ||
+         (drone_id_ == formation_size_ - 1 &&
+          received_traj_count >= static_cast<size_t>(formation_size_ - 1)));
+    use_formation_ = formation_ready;
 
     double q[variable_num_];
     memcpy(q, initInnerPts.data(), initInnerPts.size() * sizeof(q[0]));
@@ -41,7 +47,7 @@ namespace ego_planner
     lbfgs_params.min_step = 1e-32;
 
     /* trick : for real-time optimization */
-    if (use_formation)
+    if (formation_ready)
     {
       // consider formation
       // so we use less iterations for real time optimization
@@ -52,7 +58,6 @@ namespace ego_planner
       // do not consider formation
       // so we use more iterations for more precise optimization results
       lbfgs_params.max_iterations = 60; // 200
-      use_formation_ = false;
     }
 
     iter_num_ = 0;
@@ -83,8 +88,10 @@ namespace ego_planner
     double time_ms = (t2 - t1).toSec() * 1000;
     double total_time_ms = (t2 - t0).toSec() * 1000;
 
-    printf("\033[32miter=%d, use_formation=%d, time(ms)=%5.3f, \n\033[0m", iter_num_, use_formation, time_ms);
-    // ROS_WARN("The optimization result is : %s", lbfgs::lbfgs_strerror(result));
+    ROS_INFO("trajectory optimization: drone=%d iter=%d formation_requested=%d formation_ready=%d "
+             "formation_size=%d received_trajs=%zu result=%s occupied=%d time_ms=%.3f",
+             drone_id_, iter_num_, use_formation, formation_ready, formation_size_,
+             received_traj_count, lbfgs::lbfgs_strerror(result), occ, time_ms);
     optimal_points = cps_.points;
 
     showFormationInformation(false, start_pos);
@@ -113,11 +120,22 @@ namespace ego_planner
     double dt = 0.01;
     int i_end = floor(T_end/dt);
     double t = 0.0;
+    const Eigen::Vector3d start_pos = traj.getPos(0.0);
     collision_check_time_end_ = T_end;
 
     for (int i=0; i<i_end; i++){
       Eigen::Vector3d pos = traj.getPos(t);
+      // The live MID360 occupancy can contain returns from the vehicle body at
+      // the current pose. Gazebo's pre-takeoff clearance gate is authoritative
+      // for this start neighborhood; collision checking remains strict after
+      // the trajectory leaves it.
+      if ((pos - start_pos).norm() < obs_clearance_){
+        t += dt;
+        continue;
+      }
       if(grid_map_->getInflateOccupancy(pos) == 1){
+        ROS_WARN("optimized trajectory collision: drone=%d t=%.3f/%.3f pos=(%.3f, %.3f, %.3f)",
+                 drone_id_, t, T_end, pos.x(), pos.y(), pos.z());
         occ = true;
         break;
       }
@@ -749,6 +767,7 @@ namespace ego_planner
     nh.param("optimization/obstacle_clearance", obs_clearance_, -1.0);
     nh.param("optimization/swarm_clearance", swarm_clearance_, -1.0);
     nh.param("optimization/formation_type", formation_type_, -1);
+    nh.param("optimization/formation_scale", formation_scale_, 1.0);
     nh.param("optimization/max_vel", max_vel_, -1.0);
     nh.param("optimization/max_acc", max_acc_, -1.0);
 

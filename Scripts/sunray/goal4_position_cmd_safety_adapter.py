@@ -20,7 +20,7 @@ from nav_msgs.msg import Odometry
 from quadrotor_msgs.msg import PositionCommand
 from std_msgs.msg import Bool
 
-from trajectory_dynamics import constrain_kinematic_step
+from trajectory_dynamics import constrain_kinematic_step, enforce_position_z_bounds
 
 
 class PositionCmdSafetyAdapter:
@@ -141,6 +141,7 @@ class PositionCmdSafetyAdapter:
         self.max_published_lateral_acceleration_mps2 = 0.0
         self.max_published_jerk_mps3 = 0.0
         self.last_dynamics_limit: dict | None = None
+        self.post_dynamics_z_clamp_count = 0
 
         self.pub = rospy.Publisher(self.output_topic, PositionCommand, queue_size=20)
         rospy.Subscriber(self.input_topic, PositionCommand, self.on_raw, queue_size=50)
@@ -252,7 +253,7 @@ class PositionCmdSafetyAdapter:
         self.enabled = bool(msg.data)
         self.enable_update_count += 1
         self.last_enable_wall = time.time()
-        if self.enabled:
+        if self.enabled and not was_enabled:
             # A new planner takeover can begin far from the previous held command.
             # Reset baselines so stale pre-takeover or mission-tail commands do
             # not poison the next trajectory stream.
@@ -704,6 +705,23 @@ class PositionCmdSafetyAdapter:
         if self.should_reject_jump(msg, now_wall, now_motion):
             return self.hold_last_safe_msg(now_wall, "jump", now_motion)
         msg = self.make_dynamics_consistent_with_position(msg, now_motion)
+        bounded = enforce_position_z_bounds(
+            (msg.position.x, msg.position.y, msg.position.z),
+            (msg.velocity.x, msg.velocity.y, msg.velocity.z),
+            (msg.acceleration.x, msg.acceleration.y, msg.acceleration.z),
+            (msg.jerk.x, msg.jerk.y, msg.jerk.z),
+            self.min_z,
+            self.max_z,
+        )
+        for field, values in (
+            (msg.position, bounded["position"]),
+            (msg.velocity, bounded["velocity"]),
+            (msg.acceleration, bounded["acceleration"]),
+            (msg.jerk, bounded["jerk"]),
+        ):
+            field.x, field.y, field.z = values
+        if bounded["corrected"]:
+            self.post_dynamics_z_clamp_count += 1
         if self.zero_all_dynamics:
             self.zero_dynamic_terms(msg)
         self.update_published_jump_stats(msg, now_motion)
@@ -757,6 +775,7 @@ class PositionCmdSafetyAdapter:
             "max_published_lateral_acceleration_mps2": self.max_published_lateral_acceleration_mps2,
             "max_published_jerk_mps3": self.max_published_jerk_mps3,
             "last_dynamics_limit": self.last_dynamics_limit,
+            "post_dynamics_z_clamp_count": self.post_dynamics_z_clamp_count,
             "zero_all_dynamics": self.zero_all_dynamics,
             "odom_target_guard_enabled": self.odom_target_guard_enabled,
             "odom_topic": self.odom_topic,

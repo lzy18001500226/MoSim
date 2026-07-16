@@ -32,6 +32,16 @@ class FrontendDiagnostic:
         self.dt_abs_sum = 0.0
         self.dt_abs_max = 0.0
         self.last_sync = {}
+        self.cloud_first_stamp = None
+        self.cloud_last_stamp = None
+        self.cloud_nonmonotonic_stamps = 0
+        self.pose_first_stamp = None
+        self.pose_last_stamp = None
+        self.pose_nonmonotonic_stamps = 0
+        self.sync_min_stamp = None
+        self.sync_max_stamp = None
+        self.sync_previous_callback_stamp = None
+        self.sync_callback_reorders = 0
 
         rospy.Subscriber(self.cloud_topic, PointCloud2, self.on_cloud, queue_size=20)
         rospy.Subscriber(self.pose_topic, PoseStamped, self.on_pose, queue_size=50)
@@ -46,13 +56,31 @@ class FrontendDiagnostic:
         self.sync = sync
         self.timer = rospy.Timer(rospy.Duration(self.write_period_s), self.on_timer)
 
-    def on_cloud(self, _msg: PointCloud2) -> None:
+    @staticmethod
+    def simulation_rate(count: int, first_stamp, last_stamp):
+        if count < 2 or first_stamp is None or last_stamp is None or last_stamp <= first_stamp:
+            return None
+        return (count - 1) / (last_stamp - first_stamp)
+
+    def on_cloud(self, msg: PointCloud2) -> None:
+        stamp = msg.header.stamp.to_sec()
         with self.lock:
             self.cloud_count += 1
+            if self.cloud_first_stamp is None:
+                self.cloud_first_stamp = stamp
+            if self.cloud_last_stamp is not None and stamp <= self.cloud_last_stamp:
+                self.cloud_nonmonotonic_stamps += 1
+            self.cloud_last_stamp = stamp
 
-    def on_pose(self, _msg: PoseStamped) -> None:
+    def on_pose(self, msg: PoseStamped) -> None:
+        stamp = msg.header.stamp.to_sec()
         with self.lock:
             self.pose_count += 1
+            if self.pose_first_stamp is None:
+                self.pose_first_stamp = stamp
+            if self.pose_last_stamp is not None and stamp <= self.pose_last_stamp:
+                self.pose_nonmonotonic_stamps += 1
+            self.pose_last_stamp = stamp
 
     def on_sync(self, cloud: PointCloud2, pose: PoseStamped) -> None:
         cloud_stamp = cloud.header.stamp.to_sec()
@@ -75,6 +103,15 @@ class FrontendDiagnostic:
             bounds = {"sampled_points": sampled, "min": min_xyz, "max": max_xyz}
         with self.lock:
             self.sync_count += 1
+            if self.sync_previous_callback_stamp is not None and cloud_stamp <= self.sync_previous_callback_stamp:
+                self.sync_callback_reorders += 1
+            self.sync_previous_callback_stamp = cloud_stamp
+            self.sync_min_stamp = (
+                cloud_stamp if self.sync_min_stamp is None else min(self.sync_min_stamp, cloud_stamp)
+            )
+            self.sync_max_stamp = (
+                cloud_stamp if self.sync_max_stamp is None else max(self.sync_max_stamp, cloud_stamp)
+            )
             self.dt_abs_sum += dt
             self.dt_abs_max = max(self.dt_abs_max, dt)
             self.last_sync = {
@@ -105,6 +142,32 @@ class FrontendDiagnostic:
                 "cloud_hz_wall": self.cloud_count / elapsed,
                 "pose_hz_wall": self.pose_count / elapsed,
                 "sync_hz_wall": self.sync_count / elapsed,
+                "cloud_hz_sim": self.simulation_rate(
+                    self.cloud_count, self.cloud_first_stamp, self.cloud_last_stamp
+                ),
+                "pose_hz_sim": self.simulation_rate(
+                    self.pose_count, self.pose_first_stamp, self.pose_last_stamp
+                ),
+                "sync_hz_sim": self.simulation_rate(
+                    self.sync_count, self.sync_min_stamp, self.sync_max_stamp
+                ),
+                "cloud_stamp_span_s": (
+                    None
+                    if self.cloud_first_stamp is None or self.cloud_last_stamp is None
+                    else self.cloud_last_stamp - self.cloud_first_stamp
+                ),
+                "pose_stamp_span_s": (
+                    None
+                    if self.pose_first_stamp is None or self.pose_last_stamp is None
+                    else self.pose_last_stamp - self.pose_first_stamp
+                ),
+                "cloud_nonmonotonic_stamps": self.cloud_nonmonotonic_stamps,
+                "pose_nonmonotonic_stamps": self.pose_nonmonotonic_stamps,
+                # ApproximateTimeSynchronizer may emit a valid older pair after a newer
+                # pair when the delayed counterpart arrives within the configured slop.
+                "sync_callback_reorders": self.sync_callback_reorders,
+                "sync_nonmonotonic_stamps": self.sync_callback_reorders,
+                "sync_order_semantics": "callback_reorder_only; source monotonicity is reported separately",
                 "sync_to_cloud_ratio": sync_ratio,
                 "mean_abs_stamp_delta_s": self.dt_abs_sum / self.sync_count if self.sync_count else None,
                 "max_abs_stamp_delta_s": self.dt_abs_max if self.sync_count else None,

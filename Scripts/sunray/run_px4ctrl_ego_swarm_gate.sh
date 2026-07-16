@@ -85,7 +85,10 @@ RACER_FASTLIO_MOUNT_XYZ="${RACER_FASTLIO_MOUNT_XYZ:--0.000005 0.032295 0.050167}
 RACER_FASTLIO_MOUNT_RPY="${RACER_FASTLIO_MOUNT_RPY:-0 0 4.712389}"
 RACER_FASTLIO_READY_TIMEOUT_S="${RACER_FASTLIO_READY_TIMEOUT_S:-90}"
 RACER_FASTLIO_SYNC_SLOP_S="${RACER_FASTLIO_SYNC_SLOP_S:-0.10}"
-RACER_FASTLIO_MIN_SYNC_CALLBACKS="${RACER_FASTLIO_MIN_SYNC_CALLBACKS:-3}"
+RACER_FASTLIO_MIN_SYNC_CALLBACKS="${RACER_FASTLIO_MIN_SYNC_CALLBACKS:-20}"
+RACER_FASTLIO_MIN_SIM_RATE_HZ="${RACER_FASTLIO_MIN_SIM_RATE_HZ:-15.0}"
+RACER_FASTLIO_MAX_DYNAMIC_XY_RESIDUAL_M="${RACER_FASTLIO_MAX_DYNAMIC_XY_RESIDUAL_M:-1.5}"
+RACER_FASTLIO_MAX_DYNAMIC_STAMP_DELTA_S="${RACER_FASTLIO_MAX_DYNAMIC_STAMP_DELTA_S:-0.11}"
 RACER_FASTLIO_SELF_FILTER_RADIUS_XY_M="${RACER_FASTLIO_SELF_FILTER_RADIUS_XY_M:-0.35}"
 RACER_FASTLIO_SELF_FILTER_Z_MIN_M="${RACER_FASTLIO_SELF_FILTER_Z_MIN_M:--0.30}"
 RACER_FASTLIO_SELF_FILTER_Z_MAX_M="${RACER_FASTLIO_SELF_FILTER_Z_MAX_M:-0.30}"
@@ -189,8 +192,16 @@ RACER_D3_VIRTUAL_CEIL_HEIGHT="${RACER_D3_VIRTUAL_CEIL_HEIGHT:-1.30}"
 RACER_D3_VISUALIZATION_TRUNCATE_HEIGHT="${RACER_D3_VISUALIZATION_TRUNCATE_HEIGHT:-1.50}"
 RACER_D3_VISUALIZATION_TRUNCATE_LOW="${RACER_D3_VISUALIZATION_TRUNCATE_LOW:-0.50}"
 RACER_D3_SWARM_SAFE_DIST="${RACER_D3_SWARM_SAFE_DIST:-1.2}"
+RACER_D3_OBSTACLES_INFLATION="${RACER_D3_OBSTACLES_INFLATION:-0.199}"
 RACER_D3_ASTAR_START_CLEARANCE_RADIUS="${RACER_D3_ASTAR_START_CLEARANCE_RADIUS:-0.0}"
 RACER_D3_ASTAR_MAX_SEARCH_TIME="${RACER_D3_ASTAR_MAX_SEARCH_TIME:-0.001}"
+if [[ -z "${EGO_GATE_MIN_INTER_UAV_DISTANCE:-}" ]]; then
+  if [[ "${PLANNER_VARIANT}" == "racer" ]]; then
+    EGO_GATE_MIN_INTER_UAV_DISTANCE="${RACER_D3_SWARM_SAFE_DIST}"
+  else
+    EGO_GATE_MIN_INTER_UAV_DISTANCE="0.45"
+  fi
+fi
 SWARM_FORMATION_D3_CENTER_X="${SWARM_FORMATION_D3_CENTER_X:-1.4}"
 SWARM_FORMATION_D3_CENTER_Y="${SWARM_FORMATION_D3_CENTER_Y:-0.0}"
 SWARM_FORMATION_D3_CENTER_Z="${SWARM_FORMATION_D3_CENTER_Z:-1.0}"
@@ -199,6 +210,9 @@ SWARM_FORMATION_D3_RELATIVE_Z="${SWARM_FORMATION_D3_RELATIVE_Z:-0.0}"
 SWARM_FORMATION_D3_MAP_SIZE_X="${SWARM_FORMATION_D3_MAP_SIZE_X:-10.0}"
 SWARM_FORMATION_D3_MAP_SIZE_Y="${SWARM_FORMATION_D3_MAP_SIZE_Y:-8.0}"
 SWARM_FORMATION_D3_MAP_SIZE_Z="${SWARM_FORMATION_D3_MAP_SIZE_Z:-2.5}"
+SWARM_FORMATION_D3_GRID_RESOLUTION="${SWARM_FORMATION_D3_GRID_RESOLUTION:-0.12}"
+SWARM_FORMATION_D3_OBSTACLES_INFLATION="${SWARM_FORMATION_D3_OBSTACLES_INFLATION:-0.10}"
+SWARM_FORMATION_D3_LOCAL_UPDATE_RANGE_XY="${SWARM_FORMATION_D3_LOCAL_UPDATE_RANGE_XY:-4.5}"
 SWARM_FORMATION_D3_RELAY_RETIME_FUTURE_S="${SWARM_FORMATION_D3_RELAY_RETIME_FUTURE_S:-0.05}"
 SWARM_FORMATION_D3_SWARM_TRAJ_TIME_TOLERANCE_S="${SWARM_FORMATION_D3_SWARM_TRAJ_TIME_TOLERANCE_S:-1.0}"
 EGO_GATE_PRE_TAKEOFF_SETTLE_S="${EGO_GATE_PRE_TAKEOFF_SETTLE_S:-2.0}"
@@ -214,6 +228,7 @@ EGO_GATE_READY_TIMEOUT_S="${EGO_GATE_READY_TIMEOUT_S:-60.0}"
 EGO_GATE_TAKEOFF_HEIGHT="${EGO_GATE_TAKEOFF_HEIGHT:-1.0}"
 EGO_GATE_TAKEOFF_LAND_SPEED="${EGO_GATE_TAKEOFF_LAND_SPEED:-0.25}"
 EGO_GATE_TAKEOFF_TIMEOUT_S="${EGO_GATE_TAKEOFF_TIMEOUT_S:-90.0}"
+EGO_GATE_TAKEOFF_WALL_TIMEOUT_S="${EGO_GATE_TAKEOFF_WALL_TIMEOUT_S:-300.0}"
 EGO_GATE_TAKEOFF_UAV_STAGGER_S="${EGO_GATE_TAKEOFF_UAV_STAGGER_S:-2.0}"
 EGO_GATE_TAKEOFF_RETRY_INTERVAL_S="${EGO_GATE_TAKEOFF_RETRY_INTERVAL_S:-8.0}"
 EGO_GATE_TAKEOFF_RETRY_REPEATS="${EGO_GATE_TAKEOFF_RETRY_REPEATS:-3}"
@@ -222,9 +237,12 @@ EGO_GATE_TAKEOFF_RISE_DETECT_M="${EGO_GATE_TAKEOFF_RISE_DETECT_M:-0.08}"
 EGO_GATE_EGO_TAKEOVER_TIMEOUT_S="${EGO_GATE_EGO_TAKEOVER_TIMEOUT_S:-45.0}"
 EGO_GATE_EXECUTE_TIMEOUT_S="${EGO_GATE_EXECUTE_TIMEOUT_S:-100.0}"
 EGO_GATE_LAND_TIMEOUT_S="${EGO_GATE_LAND_TIMEOUT_S:-30.0}"
+EGO_GATE_LAND_WALL_TIMEOUT_S="${EGO_GATE_LAND_WALL_TIMEOUT_S:-300.0}"
 EGO_GATE_PRE_LAND_HOVER_S="${EGO_GATE_PRE_LAND_HOVER_S:-1.0}"
 EGO_GATE_PRE_LAND_NO_CMD_S="${EGO_GATE_PRE_LAND_NO_CMD_S:-0.8}"
+EGO_GATE_PRE_LAND_NO_CMD_WALL_TIMEOUT_S="${EGO_GATE_PRE_LAND_NO_CMD_WALL_TIMEOUT_S:-30.0}"
 EGO_GATE_LANDED_Z_MAX="${EGO_GATE_LANDED_Z_MAX:-0.20}"
+EGO_GATE_LANDED_Z_TOLERANCE_M="${EGO_GATE_LANDED_Z_TOLERANCE_M:-0.08}"
 EGO_GATE_PRE_STABLE_S="${EGO_GATE_PRE_STABLE_S:-3.0}"
 EGO_GATE_PRE_MAX_XY_ERROR_M="${EGO_GATE_PRE_MAX_XY_ERROR_M:-0.20}"
 EGO_GATE_PRE_MAX_Z_ERROR_M="${EGO_GATE_PRE_MAX_Z_ERROR_M:-0.10}"
@@ -253,7 +271,19 @@ EGO_CMD_SAFETY_SMOOTHING_ENABLE="${EGO_CMD_SAFETY_SMOOTHING_ENABLE:-$(if [[ "${P
 EGO_CMD_SAFETY_SMOOTHING_MAX_SPEED_MPS="${EGO_CMD_SAFETY_SMOOTHING_MAX_SPEED_MPS:-$(if [[ "${PLANNER_VARIANT}" == "racer" || "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo 0.80; else echo 0.0; fi)}"
 EGO_CMD_SAFETY_SMOOTHING_MAX_STEP_M="${EGO_CMD_SAFETY_SMOOTHING_MAX_STEP_M:-0.0}"
 EGO_CMD_SAFETY_SMOOTHING_ZERO_DYNAMICS="${EGO_CMD_SAFETY_SMOOTHING_ZERO_DYNAMICS:-true}"
+EGO_CMD_SAFETY_MOTION_TIME_BASIS="${EGO_CMD_SAFETY_MOTION_TIME_BASIS:-wall}"
 EGO_CMD_SAFETY_ZERO_ALL_DYNAMICS="${EGO_CMD_SAFETY_ZERO_ALL_DYNAMICS:-$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo true; else echo false; fi)}"
+EGO_CMD_SAFETY_RECOMPUTE_VELOCITY_FROM_POSITION="${EGO_CMD_SAFETY_RECOMPUTE_VELOCITY_FROM_POSITION:-false}"
+EGO_CMD_SAFETY_MAX_VELOCITY_MPS="${EGO_CMD_SAFETY_MAX_VELOCITY_MPS:-0}"
+EGO_CMD_SAFETY_MAX_ACCELERATION_MPS2="${EGO_CMD_SAFETY_MAX_ACCELERATION_MPS2:-0}"
+EGO_CMD_SAFETY_MAX_LATERAL_ACCELERATION_MPS2="${EGO_CMD_SAFETY_MAX_LATERAL_ACCELERATION_MPS2:-0}"
+EGO_CMD_SAFETY_MAX_JERK_MPS3="${EGO_CMD_SAFETY_MAX_JERK_MPS3:-0}"
+if [[ -z "${EGO_GATE_INTER_UAV_EMERGENCY_HOLD_ENABLE+x}" ]]; then
+  EGO_GATE_INTER_UAV_EMERGENCY_HOLD_ENABLE="$(if [[ "${PLANNER_VARIANT}" == "racer" || "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo true; else echo false; fi)"
+fi
+EGO_GATE_INTER_UAV_EMERGENCY_DECELERATION_MPS2="${EGO_GATE_INTER_UAV_EMERGENCY_DECELERATION_MPS2:-1.2}"
+EGO_GATE_INTER_UAV_EMERGENCY_MARGIN_M="${EGO_GATE_INTER_UAV_EMERGENCY_MARGIN_M:-0.2}"
+EGO_GATE_INTER_UAV_EMERGENCY_ODOM_TIMEOUT_S="${EGO_GATE_INTER_UAV_EMERGENCY_ODOM_TIMEOUT_S:-0.3}"
 EGO_CMD_SAFETY_ODOM_TARGET_GUARD_ENABLE="${EGO_CMD_SAFETY_ODOM_TARGET_GUARD_ENABLE:-$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo true; else echo false; fi)}"
 EGO_CMD_SAFETY_MAX_TARGET_DISTANCE_FROM_ODOM_M="${EGO_CMD_SAFETY_MAX_TARGET_DISTANCE_FROM_ODOM_M:-$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo 1.05; else echo 0.0; fi)}"
 EGO_CMD_SAFETY_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M="${EGO_CMD_SAFETY_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M:-$(if [[ "${PLANNER_VARIANT}" == "racer" ]]; then echo 0.90; else echo 0.0; fi)}"
@@ -449,6 +479,9 @@ if [[ -z "${EGO_GATE_BLOCK_ON_RAW_CMD_DISCONTINUITY+x}" ]]; then
 fi
 
 mkdir -p "${RESULT_DIR}"
+ROS_LOG_DIR="${ROS_LOG_DIR:-${RESULT_DIR}/ros_logs}"
+mkdir -p "${ROS_LOG_DIR}"
+export ROS_LOG_DIR
 
 write_run_inputs_manifest() {
   local launch_args_json
@@ -499,6 +532,8 @@ PY
     "visualization_truncate_height": ${RACER_D3_VISUALIZATION_TRUNCATE_HEIGHT},
     "visualization_truncate_low": ${RACER_D3_VISUALIZATION_TRUNCATE_LOW},
     "swarm_safe_dist": ${RACER_D3_SWARM_SAFE_DIST},
+    "min_inter_uav_distance_gate_m": ${EGO_GATE_MIN_INTER_UAV_DISTANCE},
+    "obstacles_inflation_m": ${RACER_D3_OBSTACLES_INFLATION},
     "astar_start_clearance_radius": ${RACER_D3_ASTAR_START_CLEARANCE_RADIUS},
     "astar_max_search_time_s": ${RACER_D3_ASTAR_MAX_SEARCH_TIME}
   },
@@ -847,7 +882,9 @@ cleanup() {
   for pid in "${PIDS[@]:-}"; do
     kill -9 "${pid}" >/dev/null 2>&1 || true
   done
+  pkill -f "[p]x4ctrl_ego_swarm_mission_node.py" >/dev/null 2>&1 || true
   pkill -f "mosim_px4ctrl_ego_swarm_mission" >/dev/null 2>&1 || true
+  pkill -f "mosim_wait_mavros_connected_${RUN_ID}_uav" >/dev/null 2>&1 || true
   pkill -f "fuel_position_cmd_compat_bridge.py" >/dev/null 2>&1 || true
   pkill -f "mosim_legacy_position_cmd_compat_bridge" >/dev/null 2>&1 || true
   pkill -f "mosim_goal4_position_cmd_safety_adapter" >/dev/null 2>&1 || true
@@ -1208,7 +1245,7 @@ PY
 wait_mavros_connected() {
   local uid="$1"
   local output="${RESULT_DIR}/uav${uid}_mavros_state_first.txt"
-  python3 - "${uid}" "${output}" "${MAVROS_READY_TIMEOUT_S}" <<'PY'
+  python3 - "mosim_wait_mavros_connected_${RUN_ID}_uav${uid}" "${uid}" "${output}" "${MAVROS_READY_TIMEOUT_S}" <<'PY'
 import json
 import os
 import sys
@@ -1217,20 +1254,18 @@ import time
 import rospy
 from mavros_msgs.msg import State
 
-uid = sys.argv[1]
-output = sys.argv[2]
-timeout_s = float(sys.argv[3])
+uid = sys.argv[2]
+output = sys.argv[3]
+timeout_s = float(sys.argv[4])
 topic = f"/uav{uid}/mavros/state"
 deadline = time.time() + timeout_s
 attempts = 0
 last_state = None
 rospy.init_node(f"mosim_wait_mavros_state_uav{uid}_{os.getpid()}", anonymous=True, disable_signals=True)
-while time.time() < deadline and not rospy.is_shutdown():
+
+def state_callback(msg):
+    global attempts, last_state
     attempts += 1
-    try:
-        msg = rospy.wait_for_message(topic, State, timeout=min(4.0, max(0.1, deadline - time.time())))
-    except rospy.ROSException:
-        continue
     last_state = {
         "topic": topic,
         "attempts": attempts,
@@ -1241,11 +1276,16 @@ while time.time() < deadline and not rospy.is_shutdown():
         "mode": msg.mode,
         "system_status": int(msg.system_status),
     }
-    with open(output, "w", encoding="utf-8") as f:
-        json.dump(last_state, f, indent=2, ensure_ascii=False)
-        f.write("\n")
-    if msg.connected:
+
+subscriber = rospy.Subscriber(topic, State, state_callback, queue_size=1)
+rate = rospy.Rate(20)
+while time.time() < deadline and not rospy.is_shutdown():
+    if last_state is not None and last_state["connected"]:
+        with open(output, "w", encoding="utf-8") as f:
+            json.dump(last_state, f, indent=2, ensure_ascii=False)
+            f.write("\n")
         os._exit(0)
+    rate.sleep()
 
 if last_state is None:
     last_state = {"topic": topic, "attempts": attempts, "connected": False, "error": "no_state_sample_before_timeout"}
@@ -1481,20 +1521,23 @@ PY
 }
 
 start_gazebo_world() {
+  local ros_master_ready=false
   if ! timeout 2s rosparam get /run_id >/dev/null 2>&1; then
     roscore > "${RESULT_DIR}/roscore.log" 2>&1 &
     PIDS+=("$!")
     echo "${PIDS[-1]}" > "${RESULT_DIR}/roscore.pid"
     for _ in $(seq 1 40); do
       if timeout 2s rosparam get /run_id > "${RESULT_DIR}/roscore_run_id.txt" 2>/dev/null; then
+        ros_master_ready=true
         break
       fi
       sleep 0.5
     done
   else
     timeout 2s rosparam get /run_id > "${RESULT_DIR}/roscore_run_id.txt" 2>/dev/null || true
+    ros_master_ready=true
   fi
-  if ! timeout 2s rosparam get /run_id >/dev/null 2>&1; then
+  if [[ "${ros_master_ready}" != "true" ]]; then
     echo "ROS master did not expose /run_id before Gazebo start" >&2
     exit 4
   fi
@@ -1989,6 +2032,8 @@ fi
 if [[ "${PLANNER_VARIANT}" == "racer" && ( "${RACER_FRAME_BRIDGE_ENABLED}" == "true" || "${RACER_SENSOR_SOURCE}" == "fastlio" ) ]]; then
   for uid in $(seq 1 "${UAV_NUM}"); do
     read -r start_x start_y <<< "$(start_xy_for_uid "${uid}")"
+    # MAVROS local odometry starts near zero for each PX4 instance. Shift each
+    # stream by its known spawn delta so all UAVs share UAV1's planner origin.
     offset_x="$(python3 - "${START1_X}" "${start_x}" <<'PY'
 import sys
 print(float(sys.argv[1]) - float(sys.argv[2]))
@@ -2001,8 +2046,20 @@ PY
 )"
     if [[ "${RACER_SENSOR_SOURCE}" == "fastlio" ]]; then
       racer_odom_output="$(topic_for_uid "${RACER_REFERENCE_ODOM_TOPIC_TEMPLATE}" "${uid}")"
+      target_origin_x="$(python3 - "${start_x}" "${START1_X}" <<'PY'
+import sys
+print(float(sys.argv[1]) - float(sys.argv[2]))
+PY
+)"
+      target_origin_y="$(python3 - "${start_y}" "${START1_Y}" <<'PY'
+import sys
+print(float(sys.argv[1]) - float(sys.argv[2]))
+PY
+)"
     else
       racer_odom_output="$(topic_for_uid "${RACER_LOCAL_ODOM_TOPIC_TEMPLATE}" "${uid}")"
+      target_origin_x=0.0
+      target_origin_y=0.0
     fi
     python3 "${PROJECT_ROOT}/Scripts/ros/ros1_coordinate_offset_bridge.py" \
       _message_type:=odom \
@@ -2013,6 +2070,11 @@ PY
       _offset_y:="${offset_y}" \
       _offset_z:=0.0 \
       _output_frame_id:=world \
+      _latch_input_origin:="$(if [[ "${RACER_SENSOR_SOURCE}" == "fastlio" ]]; then echo true; else echo false; fi)" \
+      _origin_latch_samples:="$(if [[ "${RACER_SENSOR_SOURCE}" == "fastlio" ]]; then echo 20; else echo 1; fi)" \
+      _target_origin_x:="${target_origin_x}" \
+      _target_origin_y:="${target_origin_y}" \
+      _target_origin_z:=0.0 \
       _diagnostics_path:="${RESULT_DIR}/uav${uid}_racer_local_odom_bridge.json" \
       > "${RESULT_DIR}/uav${uid}_racer_local_odom_bridge.log" 2>&1 &
     PIDS+=("$!")
@@ -2077,17 +2139,36 @@ PY
     sleep 2
   done
   if ! python3 - "${RESULT_DIR}" "${UAV_NUM}" "${RACER_FASTLIO_MIN_SYNC_CALLBACKS}" "${RACER_FASTLIO_ALIGNMENT_Z_SOURCE}" \
-    "${START1_X}" "${START1_Y}" "${START2_X}" "${START2_Y}" "${START3_X}" "${START3_Y}" <<'PY'
+    "${START1_X}" "${START1_Y}" "${START2_X}" "${START2_Y}" "${START3_X}" "${START3_Y}" \
+    "${RACER_FASTLIO_MIN_SIM_RATE_HZ}" "${RACER_FASTLIO_MAX_DYNAMIC_XY_RESIDUAL_M}" \
+    "${RACER_FASTLIO_MAX_DYNAMIC_STAMP_DELTA_S}" <<'PY'
 import json
 import math
 import sys
+import time
 from pathlib import Path
+
+
+def read_live_json(path: Path, attempts: int = 20, delay_s: float = 0.05):
+    """Read diagnostics that may be between truncate and rewrite operations."""
+    for _ in range(attempts):
+        try:
+            text = path.read_text(encoding="utf-8")
+            if text.strip():
+                return json.loads(text)
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
+        time.sleep(delay_s)
+    return {}
 
 result_dir = Path(sys.argv[1])
 uav_num = int(sys.argv[2])
 min_sync = int(sys.argv[3])
 hybrid_z_source = sys.argv[4]
 starts = [(float(sys.argv[i]), float(sys.argv[i + 1])) for i in range(5, 11, 2)]
+min_sim_rate_hz = float(sys.argv[11])
+max_dynamic_xy_residual_m = float(sys.argv[12])
+max_dynamic_stamp_delta_s = float(sys.argv[13])
 expected_local_xy = [(x - starts[0][0], y - starts[0][1]) for x, y in starts]
 vehicles = []
 failures = []
@@ -2097,7 +2178,15 @@ for uid in range(1, uav_num + 1):
         failures.append(f"uav{uid}:missing_sync_diagnostic")
         vehicles.append({"uav_id": uid, "diagnostic": str(path), "status": "missing"})
         continue
-    data = json.loads(path.read_text(encoding="utf-8"))
+    data = read_live_json(path)
+    if not data:
+        failures.append(f"uav{uid}:unreadable_sync_diagnostic")
+        vehicles.append({"uav_id": uid, "diagnostic": str(path), "status": "unreadable"})
+        continue
+    dynamic_path = result_dir / f"uav{uid}_racer_fastlio_dynamic_alignment.json"
+    cloud_path = result_dir / f"uav{uid}_racer_fastlio_cloud_alignment.json"
+    dynamic = read_live_json(dynamic_path)
+    cloud = read_live_json(cloud_path)
     sync_count = int(data.get("synchronized_callbacks", 0))
     last = data.get("last_sync") or {}
     point_count = int(last.get("cloud_point_count", 0) or 0)
@@ -2128,6 +2217,74 @@ for uid in range(1, uav_num + 1):
         if initial_xy_error > 0.5:
             failures.append(f"uav{uid}:initial_local_xy_error={initial_xy_error:.3f}")
             status = "failed"
+    for stream in ("cloud", "pose"):
+        sim_rate = data.get(f"{stream}_hz_sim")
+        if sim_rate is None or float(sim_rate) < min_sim_rate_hz:
+            failures.append(f"uav{uid}:{stream}_sim_rate={sim_rate}")
+            status = "failed"
+        if int(data.get(f"{stream}_nonmonotonic_stamps", 0)) != 0:
+            failures.append(f"uav{uid}:{stream}_stamp_nonmonotonic")
+            status = "failed"
+    max_pair_delta = data.get("max_abs_stamp_delta_s")
+    if max_pair_delta is None or float(max_pair_delta) > max_dynamic_stamp_delta_s:
+        failures.append(f"uav{uid}:cloud_pose_max_stamp_delta={max_pair_delta}")
+        status = "failed"
+    if not dynamic:
+        failures.append(f"uav{uid}:missing_dynamic_alignment")
+        status = "failed"
+    else:
+        residual = dynamic.get("max_xy_residual_m")
+        if residual is None or float(residual) > max_dynamic_xy_residual_m:
+            failures.append(f"uav{uid}:dynamic_xy_residual={residual}")
+            status = "failed"
+        if dynamic.get("output_frame") != "world":
+            failures.append(f"uav{uid}:dynamic_output_frame={dynamic.get('output_frame')}")
+            status = "failed"
+        if dynamic.get("child_frame") != f"uav{uid}/racer_fastlio_base_link":
+            failures.append(f"uav{uid}:dynamic_child_frame={dynamic.get('child_frame')}")
+            status = "failed"
+        expected_origin = [expected_local_xy[uid - 1][0], expected_local_xy[uid - 1][1], 0.0]
+        origin = dynamic.get("alignment_origin_xyz") or []
+        if len(origin) != 3 or math.dist([float(v) for v in origin], expected_origin) > 1e-6:
+            failures.append(f"uav{uid}:alignment_origin={origin}")
+            status = "failed"
+        initial_reference = dynamic.get("initial_reference_xyz") or []
+        if len(initial_reference) < 2 or math.hypot(
+            float(initial_reference[0]) - expected_origin[0],
+            float(initial_reference[1]) - expected_origin[1],
+        ) > 0.5:
+            failures.append(f"uav{uid}:reference_initial_xy={initial_reference[:2]}")
+            status = "failed"
+        if dynamic.get("comparison_mode") != "first_sample_relative_motion":
+            failures.append(f"uav{uid}:dynamic_comparison_mode={dynamic.get('comparison_mode')}")
+            status = "failed"
+    if not cloud:
+        failures.append(f"uav{uid}:missing_cloud_alignment")
+        status = "failed"
+    else:
+        if int(cloud.get("cloud_published", 0)) <= 0 or int(cloud.get("cloud_finite_output_total", 0)) <= 0:
+            failures.append(f"uav{uid}:cloud_not_updating")
+            status = "failed"
+        if int(cloud.get("cloud_dropped_before_alignment", 0)) != 0:
+            failures.append(f"uav{uid}:cloud_dropped_before_alignment")
+            status = "failed"
+        if cloud.get("z_source") != hybrid_z_source:
+            failures.append(f"uav{uid}:cloud_z_source={cloud.get('z_source')}")
+            status = "failed"
+        peer_topics = set((cloud.get("cloud_peer_filter") or {}).get("odom_topics") or [])
+        expected_peers = {
+            f"/uav{peer}/mosim/racer/local_odom"
+            for peer in range(1, uav_num + 1)
+            if peer != uid
+        }
+        if peer_topics != expected_peers:
+            failures.append(f"uav{uid}:peer_odom_topics={sorted(peer_topics)}")
+            status = "failed"
+    if abs(float(last.get("cloud_stamp", 0.0)) - float(last.get("pose_stamp", 0.0))) > max_dynamic_stamp_delta_s:
+        failures.append(f"uav{uid}:cloud_pose_stamp_delta")
+        status = "failed"
+    data["dynamic_alignment"] = dynamic
+    data["cloud_alignment"] = cloud
     vehicles.append({"uav_id": uid, "status": status, **data})
 
 packet = {
@@ -2135,6 +2292,11 @@ packet = {
     "status": "passed" if not failures else "failed",
     "sensor_source": "MID360+FAST-LIO",
     "hybrid_z_source": hybrid_z_source,
+    "minimum_simulation_rate_hz": min_sim_rate_hz,
+    "maximum_dynamic_xy_residual_m": max_dynamic_xy_residual_m,
+    "maximum_cloud_pose_stamp_delta_s": max_dynamic_stamp_delta_s,
+    "map_update_scope": "continuous aligned PointCloud2 input update; RACER occupancy/frontier update is gated by the runtime smoke",
+    "cross_uav_communication_scope": "per-UAV peer odometry contract here; /planning/swarm_traj runtime counts are gated by the runtime smoke",
     "vehicles": vehicles,
     "failures": failures,
     "claim_boundary": "This proves per-UAV MID360/IMU to FAST-LIO aligned cloud/pose synchronization only; it does not prove RACER planning, flight, coverage, or safety.",
@@ -2288,7 +2450,13 @@ if [[ "${EGO_CMD_SAFETY_ENABLE}" == "true" ]]; then
       _smoothing_max_speed_mps:="${EGO_CMD_SAFETY_SMOOTHING_MAX_SPEED_MPS}" \
       _smoothing_max_step_m:="${EGO_CMD_SAFETY_SMOOTHING_MAX_STEP_M}" \
       _smoothing_zero_dynamics:="${EGO_CMD_SAFETY_SMOOTHING_ZERO_DYNAMICS}" \
+      _motion_time_basis:="${EGO_CMD_SAFETY_MOTION_TIME_BASIS}" \
       _zero_all_dynamics:="${EGO_CMD_SAFETY_ZERO_ALL_DYNAMICS}" \
+      _recompute_velocity_from_position:="${EGO_CMD_SAFETY_RECOMPUTE_VELOCITY_FROM_POSITION}" \
+      _max_velocity_mps:="${EGO_CMD_SAFETY_MAX_VELOCITY_MPS}" \
+      _max_acceleration_mps2:="${EGO_CMD_SAFETY_MAX_ACCELERATION_MPS2}" \
+      _max_lateral_acceleration_mps2:="${EGO_CMD_SAFETY_MAX_LATERAL_ACCELERATION_MPS2}" \
+      _max_jerk_mps3:="${EGO_CMD_SAFETY_MAX_JERK_MPS3}" \
       _odom_target_guard_enabled:="${EGO_CMD_SAFETY_ODOM_TARGET_GUARD_ENABLE}" \
       _odom_topic:="/uav${uid}/mavros/local_position/odom" \
       _odom_timeout_s:="${EGO_CMD_SAFETY_ODOM_TIMEOUT_S}" \
@@ -2375,6 +2543,7 @@ if [[ "${PLANNER_VARIANT}" == "racer" ]]; then
     d3_visualization_truncate_height:="${RACER_D3_VISUALIZATION_TRUNCATE_HEIGHT}"
     d3_visualization_truncate_low:="${RACER_D3_VISUALIZATION_TRUNCATE_LOW}"
     d3_swarm_safe_dist:="${RACER_D3_SWARM_SAFE_DIST}"
+    d3_obstacles_inflation:="${RACER_D3_OBSTACLES_INFLATION}"
     d3_astar_start_clearance_radius:="${RACER_D3_ASTAR_START_CLEARANCE_RADIUS}"
     d3_astar_max_search_time:="${RACER_D3_ASTAR_MAX_SEARCH_TIME}"
   )
@@ -2395,6 +2564,9 @@ elif [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then
   PLANNER_SWARM_LAUNCH_ARGS+=(
     max_vel:="${EGO_MAX_VEL}" max_acc:="${EGO_MAX_ACC}" planning_horizon:="${EGO_PLANNING_HORIZON}"
     map_size_x:="${SWARM_FORMATION_D3_MAP_SIZE_X}" map_size_y:="${SWARM_FORMATION_D3_MAP_SIZE_Y}" map_size_z:="${SWARM_FORMATION_D3_MAP_SIZE_Z}"
+    grid_resolution:="${SWARM_FORMATION_D3_GRID_RESOLUTION}"
+    obstacles_inflation:="${SWARM_FORMATION_D3_OBSTACLES_INFLATION}"
+    local_update_range_xy:="${SWARM_FORMATION_D3_LOCAL_UPDATE_RANGE_XY}"
     flight_type:="${PLANNER_FLIGHT_TYPE}"
     swarm_scale:="${SWARM_FORMATION_D3_SWARM_SCALE}"
     relative_z:="${SWARM_FORMATION_D3_RELATIVE_Z}"
@@ -2477,15 +2649,24 @@ timeout --kill-after=15s "${TOTAL_TIMEOUT_S}s" python3 "${PROJECT_ROOT}/Scripts/
   --min-adapted-cmd-z-m "${EGO_CMD_SAFETY_MIN_Z}" \
   --max-position-cmd-jump-m "${EGO_CMD_SAFETY_MAX_POSITION_JUMP_M}" \
   --max-position-cmd-speed-mps "${EGO_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS}" \
+  --min-inter-uav-distance "${EGO_GATE_MIN_INTER_UAV_DISTANCE}" \
+  $(if [[ "${EGO_GATE_INTER_UAV_EMERGENCY_HOLD_ENABLE}" == "true" ]]; then echo "--inter-uav-emergency-hold-enabled"; fi) \
+  --inter-uav-emergency-deceleration-mps2 "${EGO_GATE_INTER_UAV_EMERGENCY_DECELERATION_MPS2}" \
+  --inter-uav-emergency-margin-m "${EGO_GATE_INTER_UAV_EMERGENCY_MARGIN_M}" \
+  --inter-uav-emergency-odom-timeout-s "${EGO_GATE_INTER_UAV_EMERGENCY_ODOM_TIMEOUT_S}" \
   $(if [[ "${EGO_GATE_BLOCK_ON_RAW_CMD_DISCONTINUITY}" == "true" ]]; then echo "--block-on-raw-position-cmd-discontinuity"; fi) \
   --ready-timeout-s "${EGO_GATE_READY_TIMEOUT_S}" \
   --takeoff-timeout-s "${EGO_GATE_TAKEOFF_TIMEOUT_S}" \
+  --takeoff-wall-timeout-s "${EGO_GATE_TAKEOFF_WALL_TIMEOUT_S}" \
   --ego-takeover-timeout-s "${EGO_GATE_EGO_TAKEOVER_TIMEOUT_S}" \
   --execute-timeout-s "${EGO_GATE_EXECUTE_TIMEOUT_S}" \
   --land-timeout-s "${EGO_GATE_LAND_TIMEOUT_S}" \
+  --land-wall-timeout-s "${EGO_GATE_LAND_WALL_TIMEOUT_S}" \
   --pre-land-hover-s "${EGO_GATE_PRE_LAND_HOVER_S}" \
   --pre-land-no-cmd-s "${EGO_GATE_PRE_LAND_NO_CMD_S}" \
+  --pre-land-no-cmd-wall-timeout-s "${EGO_GATE_PRE_LAND_NO_CMD_WALL_TIMEOUT_S}" \
   --landed-z-max "${EGO_GATE_LANDED_Z_MAX}" \
+  --landed-z-tolerance-m "${EGO_GATE_LANDED_Z_TOLERANCE_M}" \
   --pre-takeoff-settle-s "${EGO_GATE_PRE_TAKEOFF_SETTLE_S}" \
   --pre-takeoff-settle-timeout-s "${EGO_GATE_PRE_TAKEOFF_SETTLE_TIMEOUT_S}" \
   --pre-takeoff-odom-timeout-s "${EGO_GATE_PRE_TAKEOFF_ODOM_TIMEOUT_S}" \
@@ -2618,6 +2799,7 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "visualization_truncate_height": ${RACER_D3_VISUALIZATION_TRUNCATE_HEIGHT},
     "visualization_truncate_low": ${RACER_D3_VISUALIZATION_TRUNCATE_LOW},
     "swarm_safe_dist": ${RACER_D3_SWARM_SAFE_DIST},
+    "obstacles_inflation_m": ${RACER_D3_OBSTACLES_INFLATION},
     "astar_start_clearance_radius": ${RACER_D3_ASTAR_START_CLEARANCE_RADIUS},
     "astar_max_search_time_s": ${RACER_D3_ASTAR_MAX_SEARCH_TIME},
     "disable_pair_opt": "${RACER_D3_DISABLE_PAIR_OPT}",
@@ -2688,7 +2870,13 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "smoothing_max_speed_mps": ${EGO_CMD_SAFETY_SMOOTHING_MAX_SPEED_MPS},
     "smoothing_max_step_m": ${EGO_CMD_SAFETY_SMOOTHING_MAX_STEP_M},
     "smoothing_zero_dynamics": ${EGO_CMD_SAFETY_SMOOTHING_ZERO_DYNAMICS},
+    "motion_time_basis": "${EGO_CMD_SAFETY_MOTION_TIME_BASIS}",
     "zero_all_dynamics": ${EGO_CMD_SAFETY_ZERO_ALL_DYNAMICS},
+    "recompute_velocity_from_position": ${EGO_CMD_SAFETY_RECOMPUTE_VELOCITY_FROM_POSITION},
+    "max_velocity_mps": ${EGO_CMD_SAFETY_MAX_VELOCITY_MPS},
+    "max_acceleration_mps2": ${EGO_CMD_SAFETY_MAX_ACCELERATION_MPS2},
+    "max_lateral_acceleration_mps2": ${EGO_CMD_SAFETY_MAX_LATERAL_ACCELERATION_MPS2},
+    "max_jerk_mps3": ${EGO_CMD_SAFETY_MAX_JERK_MPS3},
     "odom_target_guard_enabled": ${EGO_CMD_SAFETY_ODOM_TARGET_GUARD_ENABLE},
     "odom_topics": ["/uav1/mavros/local_position/odom", "/uav2/mavros/local_position/odom", "/uav3/mavros/local_position/odom"],
     "odom_timeout_s": ${EGO_CMD_SAFETY_ODOM_TIMEOUT_S},
@@ -2752,6 +2940,7 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "goal_publish_stagger_s": ${GOAL_PUBLISH_STAGGER_S},
     "takeoff_height_m": ${EGO_GATE_TAKEOFF_HEIGHT},
     "takeoff_timeout_s": ${EGO_GATE_TAKEOFF_TIMEOUT_S},
+    "takeoff_wall_timeout_s": ${EGO_GATE_TAKEOFF_WALL_TIMEOUT_S},
     "takeoff_uav_stagger_s": ${EGO_GATE_TAKEOFF_UAV_STAGGER_S},
     "takeoff_retry_interval_s": ${EGO_GATE_TAKEOFF_RETRY_INTERVAL_S},
     "takeoff_retry_repeats": ${EGO_GATE_TAKEOFF_RETRY_REPEATS},
@@ -2760,9 +2949,12 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "ego_takeover_timeout_s": ${EGO_GATE_EGO_TAKEOVER_TIMEOUT_S},
     "execute_timeout_s": ${EGO_GATE_EXECUTE_TIMEOUT_S},
     "land_timeout_s": ${EGO_GATE_LAND_TIMEOUT_S},
+    "land_wall_timeout_s": ${EGO_GATE_LAND_WALL_TIMEOUT_S},
     "pre_land_hover_s": ${EGO_GATE_PRE_LAND_HOVER_S},
     "pre_land_no_cmd_s": ${EGO_GATE_PRE_LAND_NO_CMD_S},
+    "pre_land_no_cmd_wall_timeout_s": ${EGO_GATE_PRE_LAND_NO_CMD_WALL_TIMEOUT_S},
     "landed_z_max": ${EGO_GATE_LANDED_Z_MAX},
+    "landed_z_tolerance_m": ${EGO_GATE_LANDED_Z_TOLERANCE_M},
     "pre_takeoff_settle_s": ${EGO_GATE_PRE_TAKEOFF_SETTLE_S},
     "pre_takeoff_settle_timeout_s": ${EGO_GATE_PRE_TAKEOFF_SETTLE_TIMEOUT_S},
     "pre_takeoff_odom_timeout_s": ${EGO_GATE_PRE_TAKEOFF_ODOM_TIMEOUT_S},

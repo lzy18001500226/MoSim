@@ -7,7 +7,11 @@ from pathlib import Path
 SUNRAY_DIR = Path(__file__).resolve().parents[1] / "sunray"
 sys.path.insert(0, str(SUNRAY_DIR))
 
-from trajectory_dynamics import constrain_kinematic_step
+from trajectory_dynamics import (
+    constrain_kinematic_step,
+    enforce_position_z_bounds,
+    inter_uav_braking_guard,
+)
 
 
 class TrajectoryDynamicsTests(unittest.TestCase):
@@ -19,6 +23,33 @@ class TrajectoryDynamicsTests(unittest.TestCase):
         self.assertLessEqual(math.dist(result["acceleration"], (0, 0, 0)), 0.8 + 1e-9)
         self.assertLessEqual(math.dist(result["jerk"], (0, 0, 0)), 2.0 + 1e-9)
         self.assertAlmostEqual(result["position"][0], result["velocity"][0] * 0.1)
+
+    def test_pair_guard_triggers_before_a_fast_closing_pair_reaches_minimum(self):
+        result = inter_uav_braking_guard(
+            (0, 0, 1),
+            (1, 0, 0),
+            (3, 0, 1),
+            (-1, 0, 0),
+            min_distance_m=1.5,
+            deceleration_mps2=1.2,
+            margin_m=0.2,
+        )
+        self.assertTrue(result["triggered"])
+        self.assertAlmostEqual(result["closing_speed_mps"], 2.0)
+        self.assertGreater(result["trigger_distance_m"], 3.0)
+
+    def test_pair_guard_does_not_trigger_for_separating_pair(self):
+        result = inter_uav_braking_guard(
+            (0, 0, 1),
+            (-1, 0, 0),
+            (3, 0, 1),
+            (1, 0, 0),
+            min_distance_m=1.5,
+            deceleration_mps2=1.2,
+            margin_m=0.2,
+        )
+        self.assertFalse(result["triggered"])
+        self.assertEqual(result["closing_speed_mps"], 0.0)
 
     def test_direction_reversal_cannot_flip_velocity_in_one_step(self):
         result = self.step((0, 0, 1.2), (0.6, 0, 0), (0, 0, 0), (-10, 0, 1.2))
@@ -35,6 +66,29 @@ class TrajectoryDynamicsTests(unittest.TestCase):
             velocity = result["velocity"]
             acceleration = result["acceleration"]
             self.assertLessEqual(math.dist(velocity, (0, 0, 0)), 0.6 + 1e-8)
+
+    def test_speed_braking_margin_preserves_jerk_limit(self):
+        position = (0.0, 0.0, 1.2)
+        velocity = (0.0, 0.0, 0.0)
+        acceleration = (0.0, 0.0, 0.0)
+        for _ in range(500):
+            result = constrain_kinematic_step(
+                position,
+                velocity,
+                acceleration,
+                (100.0, 0.0, 1.2),
+                0.02,
+                2.0,
+                1.2,
+                1.2,
+                6.0,
+            )
+            position = result["position"]
+            velocity = result["velocity"]
+            acceleration = result["acceleration"]
+            self.assertLessEqual(norm := math.dist(velocity, (0, 0, 0)), 2.0 + 1e-8)
+            self.assertGreaterEqual(norm, 0.0)
+            self.assertLessEqual(math.dist(result["jerk"], (0, 0, 0)), 6.0 + 1e-8)
 
     def test_ninety_degree_turn_has_bounded_lateral_acceleration(self):
         result = self.step((0, 0, 1.2), (0.6, 0, 0), (0, 0, 0), (0, 10, 1.2))
@@ -53,6 +107,21 @@ class TrajectoryDynamicsTests(unittest.TestCase):
     def test_non_finite_input_is_rejected(self):
         with self.assertRaises(ValueError):
             self.step((0, 0, 1.2), (0, 0, 0), (0, 0, 0), (float("nan"), 0, 1.2))
+
+    def test_final_altitude_gate_corrects_integrated_overshoot(self):
+        result = enforce_position_z_bounds(
+            (1.0, 2.0, 1.42),
+            (0.2, 0.3, 0.7),
+            (0.1, 0.2, 1.1),
+            (0.0, 0.0, 3.0),
+            0.9,
+            1.35,
+        )
+        self.assertTrue(result["corrected"])
+        self.assertEqual(result["position"], (1.0, 2.0, 1.35))
+        self.assertEqual(result["velocity"][2], 0.0)
+        self.assertEqual(result["acceleration"][2], 0.0)
+        self.assertEqual(result["jerk"][2], 0.0)
 
 
 if __name__ == "__main__":

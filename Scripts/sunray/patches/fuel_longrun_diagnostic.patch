@@ -1,0 +1,49 @@
+diff --git a/exploration_manager/src/fast_exploration_fsm.cpp b/exploration_manager/src/fast_exploration_fsm.cpp
+--- a/exploration_manager/src/fast_exploration_fsm.cpp
++++ b/exploration_manager/src/fast_exploration_fsm.cpp
+@@ -1,3 +1,5 @@
++#include <chrono>
+@@ -135,2 +137,3 @@
+-        thread vis_thread(&FastExplorationFSM::visualize, this);
+-        vis_thread.detach();
++        // Synchronous diagnostic path: detached visualization raced planner-owned containers.
++        visualize();
+@@ -168,6 +171,11 @@
+ int FastExplorationFSM::callExplorationPlanner() {
++  const auto wall_start = std::chrono::steady_clock::now();
++  ROS_WARN("[FUEL_STAGE] call_enter");
+   const ros::Time time_r = replan_start_time_;
+ 
++  ROS_WARN("[FUEL_STAGE] before_active_copy");
+   const LocalTrajData active_traj = planner_manager_->local_data_;
++  ROS_WARN("[FUEL_STAGE] after_active_copy");
+   int res = expl_manager_->planExploreMotion(fd_->start_pt_, fd_->start_vel_, fd_->start_acc_,
+                                              fd_->start_yaw_);
++  ROS_WARN("[FUEL_STAGE] plan_return res=%d wall_s=%.3f", res,
++           std::chrono::duration<double>(std::chrono::steady_clock::now() - wall_start).count());
+diff --git a/exploration_manager/src/fast_exploration_manager.cpp b/exploration_manager/src/fast_exploration_manager.cpp
+--- a/exploration_manager/src/fast_exploration_manager.cpp
++++ b/exploration_manager/src/fast_exploration_manager.cpp
+@@ -1,3 +1,5 @@
++#include <chrono>
+@@ -146,1 +148,2 @@
+ int FastExplorationManager::planExploreMotion(
+     const Vector3d& pos, const Vector3d& vel, const Vector3d& acc, const Vector3d& yaw) {
++  const auto stage_wall = std::chrono::steady_clock::now();
++  auto stage = [&](const char* name) {
++    ROS_WARN("[FUEL_STAGE] %s wall_s=%.3f", name,
++             std::chrono::duration<double>(std::chrono::steady_clock::now() - stage_wall).count());
++  };
+   ros::Time t1 = ros::Time::now();
+@@ -152,1 +155,2 @@
+   frontier_finder_->searchFrontiers();
++  stage("after_search_frontiers");
+@@ -199,1 +203,2 @@
+   frontier_finder_->computeFrontiersToVisit();
++  stage("after_compute_frontiers");
+@@ -297,1 +302,2 @@
+     findGlobalTour(pos, vel, yaw, indices);
++    stage("after_global_tour");
+@@
+       refineLocalTour(pos, vel, yaw, ed_->n_points_, n_yaws, ed_->refined_points_, refined_yaws);
++      stage("after_local_refine");

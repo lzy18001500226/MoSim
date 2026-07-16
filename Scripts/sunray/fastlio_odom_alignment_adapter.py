@@ -89,6 +89,9 @@ class FastlioOdomAlignmentAdapter:
         self.dynamic_jump_max = 0.0
         self.dynamic_prev_aligned: Optional[Tuple[float, float, float]] = None
         self.dynamic_prev_local: Optional[Tuple[float, float, float]] = None
+        self.dynamic_aligned_base: Optional[Tuple[float, float, float]] = None
+        self.dynamic_local_base: Optional[Tuple[float, float, float]] = None
+        self.dynamic_summary_last_write_wall = 0.0
         if args.dynamic_diagnostics_csv:
             csv_path = Path(args.dynamic_diagnostics_csv)
             csv_path.parent.mkdir(parents=True, exist_ok=True)
@@ -509,7 +512,16 @@ class FastlioOdomAlignmentAdapter:
         aligned_pos = self.pos(aligned)
         local_pos = self.pos(local)
         truth_pos = self.pos(self.truth_odom) if self.truth_odom is not None else (math.nan,) * 3
-        residual = math.hypot(aligned_pos[0] - local_pos[0], aligned_pos[1] - local_pos[1])
+        if self.dynamic_aligned_base is None:
+            self.dynamic_aligned_base = aligned_pos
+        if self.dynamic_local_base is None:
+            self.dynamic_local_base = local_pos
+        aligned_delta = tuple(a - b for a, b in zip(aligned_pos, self.dynamic_aligned_base))
+        local_delta = tuple(a - b for a, b in zip(local_pos, self.dynamic_local_base))
+        residual = math.hypot(
+            aligned_delta[0] - local_delta[0],
+            aligned_delta[1] - local_delta[1],
+        )
         aligned_step = (
             math.dist(aligned_pos, self.dynamic_prev_aligned)
             if self.dynamic_prev_aligned is not None
@@ -536,6 +548,10 @@ class FastlioOdomAlignmentAdapter:
         self.dynamic_jump_max = max(self.dynamic_jump_max, aligned_step)
         self.dynamic_prev_aligned = aligned_pos
         self.dynamic_prev_local = local_pos
+        now_wall = time.time()
+        if now_wall - self.dynamic_summary_last_write_wall >= 1.0:
+            self.write_dynamic_summary()
+            self.dynamic_summary_last_write_wall = now_wall
 
     def write_dynamic_summary(self) -> None:
         if not self.args.dynamic_diagnostics_json:
@@ -548,11 +564,30 @@ class FastlioOdomAlignmentAdapter:
             ),
             "max_xy_residual_m": self.dynamic_xy_residual_max if self.dynamic_rows else None,
             "max_aligned_step_m": self.dynamic_jump_max if self.dynamic_rows else None,
+            "comparison_mode": "first_sample_relative_motion",
+            "initial_aligned_xyz": list(self.dynamic_aligned_base) if self.dynamic_aligned_base else None,
+            "initial_reference_xyz": list(self.dynamic_local_base) if self.dynamic_local_base else None,
+            "initial_reference_minus_aligned_xyz": (
+                [
+                    self.dynamic_local_base[i] - self.dynamic_aligned_base[i]
+                    for i in range(3)
+                ]
+                if self.dynamic_aligned_base and self.dynamic_local_base
+                else None
+            ),
+            "alignment_reference": self.args.alignment_reference,
+            "alignment_origin_xyz": list(self.args.alignment_origin_xyz),
+            "reference_odom_topic": self.args.local_topic,
+            "aligned_odom_topic": self.args.output_topic,
+            "output_frame": self.args.output_frame,
+            "child_frame": self.args.child_frame,
             "csv": self.args.dynamic_diagnostics_csv or None,
         }
         path = Path(self.args.dynamic_diagnostics_json)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        tmp = path.with_suffix(path.suffix + ".tmp")
+        tmp.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+        tmp.replace(path)
 
     def truth_delta_z(self) -> float:
         if self.local_base0 is None or self.truth_odom is None or self.truth_base0_z is None:

@@ -57,6 +57,8 @@ namespace ego_planner
     }
 
     nh.param("global_goal/swarm_scale", swarm_scale_, 1.0);
+    nh.param("global_goal/use_msg_z", swarm_center_use_msg_z_, false);
+    nh.param("global_goal/center_z", swarm_center_z_, 0.5);
     nh.param("fsm/swarm_traj_time_tolerance_s", swarm_traj_time_tolerance_s_, 0.25);
 
     /* initialize main modules */
@@ -352,8 +354,9 @@ namespace ego_planner
     {
       /* Handle the collided case immediately */
       ROS_INFO("Try to replan a safe trajectory");
-      if (planFromLocalTraj(true, false)) // Make a chance
-      // if (planFromLocalTraj(false, true))
+      // Collision recovery must preserve the formation objective. The
+      // optimizer itself falls back until enough peer trajectories arrive.
+      if (planFromLocalTraj(true, true))
       {
         ROS_INFO("Plan success when detect collision.");
         changeFSMExecState(EXEC_TRAJ, "SAFETY");
@@ -641,7 +644,7 @@ namespace ego_planner
     bool success = false;
     swarm_central_pos_(0) = msg->pose.position.x;
     swarm_central_pos_(1) = msg->pose.position.y;
-    swarm_central_pos_(2) = 0.5;
+    swarm_central_pos_(2) = swarm_center_use_msg_z_ ? msg->pose.position.z : swarm_center_z_;
 
     int id = planner_manager_->pp_.drone_id;
 
