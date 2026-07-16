@@ -266,8 +266,9 @@ prepare/context/result边界，不证明Gazebo运行或控制性能。
 `v5.0.8`官方custom-build扩展点，在`apps/flight_console/mosim/custom/`实现Run、
 Telemetry、Injection、Displays和Evidence界面，并通过固定Orchestrator客户端提交请求。
 生成overlay不计入冻结上游SHA清单，2638个上游文件仍通过校验。CMake已识别
-`Enabling custom build`，随后因本机缺Ninja和C/C++工具链停止；Qt 6.8.3、VS2022
-Build Tools、Windows SDK和GStreamer也尚未安装。证据位于
+`Enabling custom build`。后续只读复核确认本机已有VS2022 Community、MSVC 14.44和
+Windows SDK 10.0.26100；当前实际缺口是Ninja、Qt 6.8.3及所需模块、GStreamer。
+项目已提供只读工具链门禁和固定构建入口，二者均不自行安装系统依赖。证据位于
 `Results/ui_platform/flight_console_d5_source_gate_20260717/`。D5在完成原生构建、启动和
 GUI人工审核前保持`source_ready_build_blocked`，不得声称MVP运行通过。
 
@@ -276,6 +277,14 @@ GUI人工审核前保持`source_ready_build_blocked`，不得声称MVP运行通�
 推荐首条链：Factory L2、单机、已验收MWORKS generated-C控制器、PX4融合状态、
 起飞/悬停/8字/降落、风扰与单电机效能实验。必须完成模型到代码、运行、指标、
 回到模型上下文的同一run证据。
+
+当前实施状态（2026-07-17）：首条generated-C启动链的源码与Profile门禁已接通。
+新增`cascade_pid_figure8_generated_c_v1`，只允许已验收`cascade_pid`控制器和单机，
+并映射到白名单operation `cascade_pid_figure8_single`；operation复用真实Sunray
+`run_px4ctrl_basic_gate.sh figure8`，以`PX4CTRL_CORE_PROFILE=cascade_pid`选择现有
+MWORKS generated-C后端。Profile Validator和Orchestrator定向测试通过。该门禁不证明
+本轮Gazebo飞行、实时注入、指标回传或D6闭环完成；原生Flight Console构建和同一run
+Gazebo证据仍是进入D6运行验收的必要条件。
 
 ### D7 三机完整纵向闭环
 

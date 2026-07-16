@@ -24,6 +24,14 @@ case "${OPERATION_ID}" in
     export KEEP_ALIVE="false"
     exec bash "${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_basic_gate.sh" figure8
     ;;
+  cascade_pid_figure8_single)
+    export RUN_ID="${RUN_ID}"
+    export RESULT_DIR="${ORCHESTRATOR_RUN_DIR}/runtime"
+    export PX4CTRL_CORE_PROFILE="cascade_pid"
+    export GUI="false"
+    export KEEP_ALIVE="false"
+    exec bash "${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_basic_gate.sh" figure8
+    ;;
   *)
     echo "operation is not allowlisted: ${OPERATION_ID}" >&2
     exit 2

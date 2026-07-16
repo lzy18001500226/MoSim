@@ -1,0 +1,51 @@
+{
+  "schema": "mosim.flight_console.windows_toolchain_preflight.v1",
+  "status": "blocked",
+  "required": {
+    "qt_version": "6.8.3",
+    "qt_kit": "msvc2022_64",
+    "qt_modules": [
+      "Qt6Charts",
+      "Qt6Location",
+      "Qt6Positioning",
+      "Qt6TextToSpeech",
+      "Qt6Core5Compat",
+      "Qt6Multimedia",
+      "Qt6SerialPort",
+      "Qt6ShaderTools",
+      "Qt6Bluetooth",
+      "Qt6Quick3D",
+      "Qt6Sensors"
+    ],
+    "visual_studio": "Visual Studio 2022 C++ Build Tools with Windows 10/11 SDK",
+    "gstreamer": "1.22.12 runtime and development packages"
+  },
+  "detected": {
+    "cmake": "D:\\Program Files\\Dev\\CMake\\bin\\cmake.EXE",
+    "ninja": null,
+    "visual_studio_installation": "D:\\Program Files\\Microsoft Visual Studio\\2022\\Community",
+    "windows_sdk": true,
+    "qt_root": null,
+    "gstreamer_root": null
+  },
+  "missing_qt_modules": [
+    "Qt6Charts",
+    "Qt6Location",
+    "Qt6Positioning",
+    "Qt6TextToSpeech",
+    "Qt6Core5Compat",
+    "Qt6Multimedia",
+    "Qt6SerialPort",
+    "Qt6ShaderTools",
+    "Qt6Bluetooth",
+    "Qt6Quick3D",
+    "Qt6Sensors"
+  ],
+  "blockers": [
+    "ninja",
+    "qt_root",
+    "gstreamer_root",
+    "qt_modules"
+  ],
+  "mutated_system": false
+}

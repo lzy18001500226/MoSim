@@ -49,7 +49,25 @@ The D5 source gate is recorded at:
 Results/ui_platform/flight_console_d5_source_gate_20260717/GATE.json
 ```
 
-The source/contract gate is not a Windows executable gate. Native configure is
-currently blocked by missing Qt 6.8.3, Ninja, Visual Studio 2022 C++ Build
-Tools, Windows SDK, and GStreamer. Installing these system dependencies requires
-explicit infrastructure authorization.
+The source/contract gate is not a Windows executable gate. The latest read-only
+preflight found the existing VS2022 Community, MSVC, and Windows SDK 10.0.26100
+toolchain. Native configure remains blocked by missing Qt 6.8.3, Ninja, and
+GStreamer. Installing those system dependencies requires explicit
+infrastructure authorization.
+
+Run the read-only preflight at any time:
+
+```powershell
+python Scripts/ui/check_qgc_windows_toolchain.py `
+  --output Results/ui_platform/flight_console_windows_toolchain_preflight.json
+```
+
+After the named dependencies have been installed, configure and build through
+the fixed project entrypoint:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File Scripts/ui/build_flight_console.ps1
+```
+
+The build entrypoint verifies the frozen upstream manifest and regenerates the
+custom overlay before CMake. It never installs system software.

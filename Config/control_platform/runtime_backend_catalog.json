@@ -14,6 +14,18 @@
       "project_script": "Scripts/sunray/run_px4ctrl_basic_gate.sh",
       "result_gate": "runtime/RUN_MANIFEST.json",
       "status": "source_ready_live_gate_pending"
+    },
+    {
+      "runtime_profile_id": "sunray_ros1_cascade_pid_generated_figure8_single_v1",
+      "experiment_profile_ids": ["cascade_pid_figure8_generated_c_v1"],
+      "controller_ids": ["cascade_pid"],
+      "vehicle_counts": [1],
+      "launcher": "wsl_project_script",
+      "wsl_distribution": "Ubuntu-20.04",
+      "operation_id": "cascade_pid_figure8_single",
+      "project_script": "Scripts/sunray/run_px4ctrl_basic_gate.sh",
+      "result_gate": "runtime/RUN_MANIFEST.json",
+      "status": "source_ready_live_gate_pending"
     }
   ]
 }

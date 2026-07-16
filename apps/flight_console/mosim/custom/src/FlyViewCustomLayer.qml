@@ -16,6 +16,7 @@ Item {
 
     readonly property var profiles: [
         { label: "Single UAV / Figure 8", path: "Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json", controller: "px4ctrl", count: 1, enabled: true },
+        { label: "Single UAV / Cascade PID generated C / Figure 8", path: "Config/profiles/experiments/cascade_pid_figure8_generated_c_v1.json", controller: "cascade_pid", count: 1, enabled: true },
         { label: "Factory L2 / Three UAV", path: "Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json", controller: "px4ctrl", count: 3, enabled: true }
     ]
     readonly property var vehicleCounts: [
@@ -30,6 +31,7 @@ Item {
     ]
     readonly property var controllers: [
         { label: "px4ctrl", value: "px4ctrl", enabled: true },
+        { label: "Cascade PID / MWORKS generated C", value: "cascade_pid", enabled: true },
         { label: "PID / runtime gate pending", value: "official_pid", enabled: false },
         { label: "INDI / runtime gate pending", value: "indi", enabled: false },
         { label: "NMPC / runtime gate pending", value: "nmpc_outer", enabled: false }
@@ -113,7 +115,7 @@ Item {
                             model: profiles
                             textRole: "label"
                             onActivated: {
-                                controllerBox.currentIndex = 0
+                                controllerBox.currentIndex = profiles[currentIndex].controller === "cascade_pid" ? 1 : 0
                                 vehicleBox.currentIndex = profiles[currentIndex].count === 3 ? 1 : 0
                             }
                         }

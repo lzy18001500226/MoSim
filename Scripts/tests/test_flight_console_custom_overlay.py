@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 
 from Scripts.ui import orchestrator_client
+from Scripts.ui.check_qgc_windows_toolchain import QT_KIT, QT_MODULES, QT_VERSION, inspect
 from Scripts.ui.materialize_qgc_custom_overlay import materialize
 from Scripts.ui.generate_qgc_vendor_manifest import render
 
@@ -24,6 +25,8 @@ def test_custom_overlay_uses_supported_qgc_extension_points() -> None:
     assert "4 (scale gate pending)" in qml and "9 (scale gate pending)" in qml
     assert "RViz point cloud" in qml and "Unreal" in qml
     assert "Apply wind" in qml and "Apply motor" in qml
+    assert "cascade_pid_figure8_generated_c_v1.json" in qml
+    assert "Cascade PID / MWORKS generated C" in qml
 
 
 def test_materializer_keeps_source_and_target_separate(tmp_path: Path) -> None:
@@ -70,3 +73,23 @@ def test_client_builds_audited_injection_payload(tmp_path: Path, monkeypatch) ->
     assert payload["command"]["target"] == "motor_effectiveness"
     assert payload["command"]["rotor_index"] == 2
     assert payload["command"]["source"] == "flight_console"
+
+
+def test_windows_toolchain_preflight_is_read_only_and_version_pinned(monkeypatch) -> None:
+    monkeypatch.setenv("PATH", "")
+    report = inspect(qt_dir="Z:/missing-qt")
+    assert report["status"] == "blocked"
+    assert report["required"]["qt_version"] == QT_VERSION == "6.8.3"
+    assert report["required"]["qt_kit"] == QT_KIT == "msvc2022_64"
+    assert set(report["missing_qt_modules"]) == set(QT_MODULES)
+    assert report["mutated_system"] is False
+
+
+def test_windows_build_entrypoint_never_installs_dependencies() -> None:
+    script = (ROOT / "Scripts" / "ui" / "build_flight_console.ps1").read_text(encoding="utf-8")
+    lowered = script.lower()
+    assert "winget install" not in lowered
+    assert "choco install" not in lowered
+    assert "materialize_qgc_custom_overlay.py" in script
+    assert "generate_qgc_vendor_manifest.py" in script
+    assert 'Ninja Multi-Config' in script

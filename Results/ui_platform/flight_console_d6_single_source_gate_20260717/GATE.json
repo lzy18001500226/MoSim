@@ -1,0 +1,20 @@
+{
+  "schema": "mosim.flight_console.d6_single_source_gate.v1",
+  "status": "source_ready_live_gate_pending",
+  "profile": "Config/profiles/experiments/cascade_pid_figure8_generated_c_v1.json",
+  "controller_id": "cascade_pid",
+  "controller_evidence": "Results/control_platform/p1_pid_mworks_20260716/P1_PID_MIL_SUMMARY.json",
+  "runtime_operation": "cascade_pid_figure8_single",
+  "runtime_wrapper": "Scripts/sunray/run_px4ctrl_basic_gate.sh",
+  "runtime_core_profile": "cascade_pid",
+  "checks": {
+    "experiment_profile_validator": "passed",
+    "orchestrator_and_console_targeted_tests": 20,
+    "runtime_wrapper_bash_syntax": "passed",
+    "native_flight_console_build": "blocked_missing_ninja_qt_gstreamer"
+  },
+  "evidence_boundaries": [
+    "This gate proves an allowlisted single-UAV generated-C profile and launch route through the shared Orchestrator.",
+    "It does not prove a same-run Gazebo flight, live injection, telemetry, metrics, result return, or D6 completion."
+  ]
+}

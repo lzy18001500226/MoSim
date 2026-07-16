@@ -57,6 +57,21 @@ def test_catalog_backend_rejects_unlisted_profile_and_invalid_run_id() -> None:
     assert invalid["reason_code"] == "invalid_run_id"
 
 
+def test_catalog_backend_selects_generated_cascade_pid_operation(tmp_path: Path, monkeypatch) -> None:
+    calls = []
+    backend = CatalogRuntimeBackend(process_factory=lambda command, **kwargs: calls.append(command) or FakeProcess())
+    monkeypatch.setattr("src.orchestration.runtime_backend.DEFAULT_RUN_ROOT", tmp_path)
+    result = backend.start(
+        manifest(
+            experiment_profile_id="cascade_pid_figure8_generated_c_v1",
+            controller_id="cascade_pid",
+        )
+    )
+    assert result["accepted"] is True
+    assert calls[0][-2:] == ["cascade_pid_figure8_single", "run-20260717-test"]
+    backend._close_logs("run-20260717-test")
+
+
 def test_stop_uses_fixed_helper_and_owned_process(tmp_path: Path, monkeypatch) -> None:
     process = FakeProcess()
     stop_calls = []

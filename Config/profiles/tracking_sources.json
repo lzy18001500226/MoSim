@@ -72,6 +72,7 @@
       "compatible_experiment_ids": [
         "px4ctrl_takeoff_hover_land_v1",
         "px4ctrl_figure8_baseline_v1",
+        "cascade_pid_figure8_generated_c_v1",
         "px4ctrl_spiral_baseline_v1",
         "px4ctrl_step_baseline_v1",
         "g9_official_pid_figure8_v1",
