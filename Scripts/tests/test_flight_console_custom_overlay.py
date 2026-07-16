@@ -66,6 +66,7 @@ def test_client_builds_audited_injection_payload(tmp_path: Path, monkeypatch) ->
         target="motor_effectiveness",
         value=0.6,
         rotor_index=2,
+        vehicle_id="uav2",
         ramp_s=0.2,
         duration_s=3.0,
         display=[],
@@ -75,6 +76,7 @@ def test_client_builds_audited_injection_payload(tmp_path: Path, monkeypatch) ->
     assert payload["run_id"] == "run-test"
     assert payload["command"]["target"] == "motor_effectiveness"
     assert payload["command"]["rotor_index"] == 2
+    assert payload["command"]["vehicle_id"] == "uav2"
     assert payload["command"]["source"] == "flight_console"
 
 
@@ -82,7 +84,7 @@ def test_client_builds_display_attach_without_shell_arguments() -> None:
     args = argparse.Namespace(
         action="attach_display", session_id="display-1234567890", run_id=None,
         profile_path=None, controller_id=None, vehicle_count=None, wind_speed_mps=0.0,
-        target=None, value=None, rotor_index=None, ramp_s=0.0, duration_s=0.0, display=[],
+        target=None, value=None, rotor_index=None, vehicle_id=None, ramp_s=0.0, duration_s=0.0, display=[],
     )
     assert orchestrator_client.build_payload(args) == {
         "schema": "mosim.orchestrator.request.v1",

@@ -7,6 +7,11 @@
     "command_id", "run_id", "profile_hash", "target", "requested_at",
     "apply_mode", "value", "ramp_s", "duration_s", "restore_policy", "source"
   ],
+  "vehicle_targeting": {
+    "field": "vehicle_id",
+    "single_uav_default": "uav1",
+    "multi_uav_policy": "required_and_must_be_within_manifest_vehicle_count"
+  },
   "targets": {
     "wind_speed_mps": {"minimum": 0.0, "maximum": 20.0, "unit": "m/s"},
     "wind_direction_deg": {"minimum": -180.0, "maximum": 180.0, "unit": "deg"},

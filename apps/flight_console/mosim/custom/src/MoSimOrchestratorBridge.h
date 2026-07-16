@@ -39,9 +39,9 @@ public:
     Q_INVOKABLE void refreshTelemetry();
     Q_INVOKABLE void openModelContext();
     Q_INVOKABLE void getResultPacket();
-    Q_INVOKABLE void applyWind(double value);
-    Q_INVOKABLE void applyMotorEffectiveness(int rotorIndex, double value);
-    Q_INVOKABLE void restoreInjection(const QString &target, int rotorIndex = 0);
+    Q_INVOKABLE void applyWind(const QString &vehicleId, double value);
+    Q_INVOKABLE void applyMotorEffectiveness(const QString &vehicleId, int rotorIndex, double value);
+    Q_INVOKABLE void restoreInjection(const QString &vehicleId, const QString &target, int rotorIndex = 0);
     Q_INVOKABLE void prepareDisplays(const QStringList &displays);
     Q_INVOKABLE void attachDisplays();
     Q_INVOKABLE void detachDisplays();

@@ -189,10 +189,21 @@ Item {
                     ColumnLayout {
                         width: parent.width
                         spacing: 10
+                        QGCLabel { text: "Target UAV" }
+                        ComboBox {
+                            id: injectionVehicle
+                            Layout.fillWidth: true
+                            model: ["uav1", "uav2", "uav3"]
+                            delegate: ItemDelegate {
+                                width: injectionVehicle.width
+                                text: modelData
+                                enabled: index < profiles[profileBox.currentIndex].count
+                            }
+                        }
                         QGCLabel { text: "Wind speed (m/s)" }
                         Slider { id: windSlider; Layout.fillWidth: true; from: 0; to: 20; stepSize: 0.5 }
                         QGCLabel { text: windSlider.value.toFixed(1) }
-                        QGCButton { text: "Apply wind"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.applyWind(windSlider.value) }
+                        QGCButton { text: "Apply wind"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.applyWind(injectionVehicle.currentText, windSlider.value) }
                         QGCLabel { text: "Motor effectiveness" }
                         RowLayout {
                             Layout.fillWidth: true
@@ -200,11 +211,11 @@ Item {
                             Slider { id: motorSlider; Layout.fillWidth: true; from: 0; to: 1; value: 1; stepSize: 0.05 }
                             QGCLabel { text: motorSlider.value.toFixed(2) }
                         }
-                        QGCButton { text: "Apply motor"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.applyMotorEffectiveness(rotorIndex.value, motorSlider.value) }
+                        QGCButton { text: "Apply motor"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.applyMotorEffectiveness(injectionVehicle.currentText, rotorIndex.value, motorSlider.value) }
                         RowLayout {
                             Layout.fillWidth: true
-                            QGCButton { text: "Restore wind"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.restoreInjection("wind_speed_mps") }
-                            QGCButton { text: "Restore motor"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.restoreInjection("motor_effectiveness", rotorIndex.value) }
+                            QGCButton { text: "Restore wind"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.restoreInjection(injectionVehicle.currentText, "wind_speed_mps") }
+                            QGCButton { text: "Restore motor"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.restoreInjection(injectionVehicle.currentText, "motor_effectiveness", rotorIndex.value) }
                         }
                     }
                 }

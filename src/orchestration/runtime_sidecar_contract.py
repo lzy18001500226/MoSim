@@ -11,12 +11,20 @@ from typing import Any
 COMMAND_ID_PATTERN = re.compile(r"^inj-[A-Za-z0-9][A-Za-z0-9._-]{0,95}$")
 
 
-def resolve_gazebo_body_name(configured: str, model_names: list[str]) -> str | None:
-    """Resolve the single-UAV Gazebo body without assuming the SDF asset name."""
+VEHICLE_ID_PATTERN = re.compile(r"^uav([1-9])$")
+
+
+def resolve_gazebo_body_name(
+    configured: str,
+    model_names: list[str],
+    vehicle_id: str = "uav1",
+) -> str | None:
+    """Resolve one Gazebo vehicle body without assuming the SDF asset name."""
     explicit = configured.strip()
     if explicit:
         return explicit
-    for candidate in ("uav1", "sunray150"):
+    candidates = (vehicle_id, "sunray150") if vehicle_id == "uav1" else (vehicle_id,)
+    for candidate in candidates:
         model = next((name for name in model_names if candidate in name.lower()), None)
         if model:
             return f"{model}::base_link"
@@ -46,6 +54,13 @@ def validate_command(
         raise ValueError("injection_run_id_mismatch")
     if command.get("profile_hash") != manifest.get("experiment_profile_hash"):
         raise ValueError("injection_profile_hash_mismatch")
+    vehicle_count = manifest.get("vehicle_count", 1)
+    if not isinstance(vehicle_count, int) or vehicle_count < 1 or vehicle_count > 9:
+        raise ValueError("injection_vehicle_count_invalid")
+    vehicle_id = command.get("vehicle_id", "uav1" if vehicle_count == 1 else None)
+    match = VEHICLE_ID_PATTERN.fullmatch(vehicle_id) if isinstance(vehicle_id, str) else None
+    if match is None or int(match.group(1)) > vehicle_count:
+        raise ValueError("injection_vehicle_id_invalid")
     if command.get("apply_mode") not in contract.get("apply_modes", []):
         raise ValueError("injection_apply_mode_invalid")
     if command.get("restore_policy") not in contract.get("restore_policies", []):
@@ -69,7 +84,7 @@ def validate_command(
         raise ValueError("injection_value_out_of_range")
 
     normalized = dict(command)
-    normalized.update(value=value, ramp_s=ramp_s, duration_s=duration_s)
+    normalized.update(value=value, ramp_s=ramp_s, duration_s=duration_s, vehicle_id=vehicle_id)
     if target_contract.get("requires_rotor_index"):
         rotor_index = command.get("rotor_index")
         if not isinstance(rotor_index, int) or not (

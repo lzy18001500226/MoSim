@@ -317,11 +317,28 @@ Factory world却仍沿用Sunray默认planning launch。修复口径是使用Pyth
 写入API，并同时冻结Factory world与项目内`factory_l2_sunray_px4_gazebo.launch`；本次
 退出码4发生在MAVROS连接前，不构成控制器跟踪或注入结论。
 
+D6第三次live尝试`run-20260717-060951-d59bbeb1`在已确认共享进程释放后发起，但P8
+`p8_formation_mode2_gazebo_r1_20260717`几乎同时取得共享runtime。wrapper的关键进程门禁
+检测到`gzserver/rosmaster/PX4/MAVROS/sunray_gate`后以退出码11拒绝，未启动第二套ROS master。
+run-local证据位于
+`Results/ui_platform/orchestrator_runs/run-20260717-060951-d59bbeb1/`。该次仍只证明并发保护，
+D6 live验收继续等待共享runtime自然释放后重跑。
+
 ### D7 三机完整纵向闭环
 
 - 车辆数选择为3；
 - 三机启动、状态、轨迹、注入、RViz/UE和证据统一显示；
 - 不把三机到达目标冒充编队算法通过。
+
+当前源码门禁（2026-07-17）：Orchestrator已白名单化
+`factory_l2_three_uav_swarm_formation_v1`，固定调用现有
+`run_px4ctrl_ego_swarm_gate.sh`的Factory L2三机Swarm-Formation入口。sidecar按
+`uav1/uav2/uav3`独立订阅MAVROS状态、里程计、px4ctrl目标姿态、位置指令和执行器插件遥测，
+readiness要求三机全部满足；`telemetry.json`按`vehicles[]`输出逐机状态。风扰与电机效能
+命令在三机运行时必须携带合法`vehicle_id`，Gazebo wrench body和执行器command topic均只
+指向所选飞机，ACK也回写`vehicle_id`。Flight Console注入页已增加目标飞机选择，4至9机
+仍保持禁用。定向源码回归35项通过；尚未完成三机同一run启动、逐机注入ACK、RViz/UE绑定
+和人工审核，因此D7状态是`source_ready_live_gate_pending`，不得声明三机GUI闭环完成。
 
 ### D8 3至9机编队扩展
 

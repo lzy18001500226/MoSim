@@ -109,6 +109,8 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         }
         if args.rotor_index is not None:
             command["rotor_index"] = args.rotor_index
+        if args.vehicle_id is not None:
+            command["vehicle_id"] = args.vehicle_id
         payload["command"] = command
     elif args.action == "prepare_display_session":
         payload["displays"] = args.display
@@ -144,6 +146,7 @@ def main() -> int:
     parser.add_argument("--target", choices=("wind_speed_mps", "wind_direction_deg", "motor_effectiveness"))
     parser.add_argument("--value", type=float)
     parser.add_argument("--rotor-index", type=int, choices=range(1, 5))
+    parser.add_argument("--vehicle-id", choices=tuple(f"uav{index}" for index in range(1, 10)))
     parser.add_argument("--ramp-s", type=float, default=0.0)
     parser.add_argument("--duration-s", type=float, default=0.0)
     parser.add_argument(

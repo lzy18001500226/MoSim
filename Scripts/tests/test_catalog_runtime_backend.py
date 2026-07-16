@@ -74,6 +74,23 @@ def test_catalog_backend_selects_generated_cascade_pid_operation(tmp_path: Path,
     backend._close_logs("run-20260717-test")
 
 
+def test_catalog_backend_selects_three_uav_swarm_formation_operation(tmp_path: Path) -> None:
+    calls = []
+    backend = CatalogRuntimeBackend(
+        process_factory=lambda command, **kwargs: calls.append(command) or FakeProcess(), run_root=tmp_path
+    )
+    result = backend.start(
+        manifest(
+            experiment_profile_id="factory_l2_three_uav_swarm_formation_v1",
+            controller_id="px4ctrl",
+            vehicle_count=3,
+        )
+    )
+    assert result["accepted"] is True
+    assert calls[0][-2:] == ["factory_l2_three_uav_swarm_formation", "run-20260717-test"]
+    backend._close_logs("run-20260717-test")
+
+
 def test_stop_uses_fixed_helper_and_owned_process(tmp_path: Path, monkeypatch) -> None:
     process = FakeProcess()
     stop_calls = []

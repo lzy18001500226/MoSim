@@ -96,24 +96,27 @@ void MoSimOrchestratorBridge::refreshTelemetry() { invokeRunAction(QStringLitera
 void MoSimOrchestratorBridge::openModelContext() { invokeRunAction(QStringLiteral("open_model_context")); }
 void MoSimOrchestratorBridge::getResultPacket() { invokeRunAction(QStringLiteral("get_result_packet")); }
 
-void MoSimOrchestratorBridge::applyWind(double value)
+void MoSimOrchestratorBridge::applyWind(const QString &vehicleId, double value)
 {
     invokeRunAction(QStringLiteral("apply_injection"),
                     {QStringLiteral("--target"), QStringLiteral("wind_speed_mps"),
+                     QStringLiteral("--vehicle-id"), vehicleId,
                      QStringLiteral("--value"), QString::number(value)});
 }
 
-void MoSimOrchestratorBridge::applyMotorEffectiveness(int rotorIndex, double value)
+void MoSimOrchestratorBridge::applyMotorEffectiveness(const QString &vehicleId, int rotorIndex, double value)
 {
     invokeRunAction(QStringLiteral("apply_injection"),
                     {QStringLiteral("--target"), QStringLiteral("motor_effectiveness"),
+                     QStringLiteral("--vehicle-id"), vehicleId,
                      QStringLiteral("--rotor-index"), QString::number(rotorIndex),
                      QStringLiteral("--value"), QString::number(value)});
 }
 
-void MoSimOrchestratorBridge::restoreInjection(const QString &target, int rotorIndex)
+void MoSimOrchestratorBridge::restoreInjection(const QString &vehicleId, const QString &target, int rotorIndex)
 {
-    QStringList extra{QStringLiteral("--target"), target, QStringLiteral("--value"), QStringLiteral("0")};
+    QStringList extra{QStringLiteral("--target"), target, QStringLiteral("--vehicle-id"), vehicleId,
+                      QStringLiteral("--value"), QStringLiteral("0")};
     if (rotorIndex > 0) {
         extra << QStringLiteral("--rotor-index") << QString::number(rotorIndex);
     }

@@ -44,6 +44,7 @@ assert_no_conflicting_runtime() {
 }
 
 start_sidecar() {
+  local vehicle_count="${1:-1}"
   set +u
   source /opt/ros/noetic/setup.bash
   [[ -f /opt/mosim_work/sunray_ws/Sunray/devel/setup.bash ]] && source /opt/mosim_work/sunray_ws/Sunray/devel/setup.bash
@@ -54,6 +55,7 @@ start_sidecar() {
     --run-dir "${ORCHESTRATOR_RUN_DIR}" \
     --manifest "${ORCHESTRATOR_RUN_DIR}/RUN_MANIFEST.json" \
     --contract "${PROJECT_ROOT}/Config/control_platform/factory_injection_contract.json" \
+    --vehicle-count "${vehicle_count}" \
     --body-name "uav1::base_link" \
     > "${ORCHESTRATOR_RUN_DIR}/runtime_sidecar.log" 2>&1 &
   SIDECAR_PID="$!"
@@ -84,8 +86,57 @@ run_basic_gate() {
   export MOSIM_ENABLE_FTC_ACTUATOR_PLUGIN="true"
   export GAZEBO_PLUGIN_PATH="${plugin_ws}/devel/lib:${GAZEBO_PLUGIN_PATH:-}"
   export LD_LIBRARY_PATH="${plugin_ws}/devel/lib:${LD_LIBRARY_PATH:-}"
-  start_sidecar
+  start_sidecar 1
   bash "${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_basic_gate.sh" figure8 &
+  RUNTIME_CHILD_PID="$!"
+  set +e
+  wait "${RUNTIME_CHILD_PID}"
+  local exit_code="$?"
+  set -e
+  RUNTIME_CHILD_PID=""
+  return "${exit_code}"
+}
+
+run_swarm_formation_gate() {
+  assert_no_conflicting_runtime
+  local plugin_ws="${PROJECT_ROOT}/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2"
+  local plugin_library="${plugin_ws}/devel/lib/libmosim_gazebo_ftc_actuator_plugin.so"
+  if [[ ! -f "${plugin_library}" ]]; then
+    FTC_PLUGIN_WS="${plugin_ws}" bash "${PROJECT_ROOT}/Scripts/sunray/build_p7_ftc_actuator_plugin.sh" \
+      > "${ORCHESTRATOR_RUN_DIR}/ftc_plugin_build.log" 2>&1
+  fi
+  local factory_root="${PROJECT_ROOT}/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean"
+  export RUN_ID="${RUN_ID}"
+  export RESULT_DIR="${ORCHESTRATOR_RUN_DIR}/runtime"
+  export PLANNER_VARIANT="swarm_formation"
+  export UAV_NUM="3"
+  export GUI="false"
+  export KEEP_ALIVE="false"
+  export WORLD_FILE="${factory_root}/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+  export GAZEBO_MODEL_PATH="${factory_root}/models:${GAZEBO_MODEL_PATH:-}"
+  export MOSIM_ENABLE_FTC_ACTUATOR_PLUGIN="true"
+  export GAZEBO_PLUGIN_PATH="${plugin_ws}/devel/lib:${GAZEBO_PLUGIN_PATH:-}"
+  export LD_LIBRARY_PATH="${plugin_ws}/devel/lib:${LD_LIBRARY_PATH:-}"
+  export TOTAL_TIMEOUT_S="600"
+  export EGO_GATE_EGO_TAKEOVER_TIMEOUT_S="120"
+  export EGO_GATE_EXECUTE_TIMEOUT_S="420"
+  export SWARM_FORMATION_D3_CENTER_X="-16.679266719908025"
+  export SWARM_FORMATION_D3_CENTER_Y="-8.0868185505691"
+  export SWARM_FORMATION_D3_CENTER_Z="1.2"
+  export SWARM_FORMATION_D3_SWARM_SCALE="0.75"
+  export SWARM_FORMATION_D3_SWARM_CLEARANCE="1.0"
+  export SWARM_FORMATION_D3_MIN_TRAJ_Z="0.90"
+  export SWARM_FORMATION_D3_MAX_TRAJ_Z="1.60"
+  export SWARM_FORMATION_D3_WEIGHT_HEIGHT="50000.0"
+  export SWARM_FORMATION_D3_MAP_SIZE_X="64.0"
+  export SWARM_FORMATION_D3_MAP_SIZE_Y="64.0"
+  export SWARM_FORMATION_D3_MAP_SIZE_Z="3.0"
+  export SWARM_FORMATION_D3_GRID_RESOLUTION="0.20"
+  export SWARM_FORMATION_D3_OBSTACLES_INFLATION="0.20"
+  export SWARM_FORMATION_D3_LOCAL_UPDATE_RANGE_XY="8.0"
+  export SWARM_FORMATION_D3_LEADER_FOLLOWER_COMMANDS="true"
+  start_sidecar 3
+  bash "${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_ego_swarm_gate.sh" &
   RUNTIME_CHILD_PID="$!"
   set +e
   wait "${RUNTIME_CHILD_PID}"
@@ -101,6 +152,9 @@ case "${OPERATION_ID}" in
     ;;
   cascade_pid_figure8_single)
     run_basic_gate cascade_pid
+    ;;
+  factory_l2_three_uav_swarm_formation)
+    run_swarm_formation_gate
     ;;
   *)
     echo "operation is not allowlisted: ${OPERATION_ID}" >&2
