@@ -1,0 +1,4 @@
+# Ignore everything in this directory
+*
+# Keep only this ignore policy file; archived environments stay local.
+!.gitignore
