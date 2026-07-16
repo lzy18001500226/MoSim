@@ -1,0 +1,45 @@
+{
+  "schema": "mosim.model_studio.d1_gate.v1",
+  "gate_id": "model_studio_syslab_native_app_d1",
+  "status": "pass",
+  "evaluated_at_local": "2026-07-17T02:49:45+08:00",
+  "environment": {
+    "syslab_version": "26.3.1.7499",
+    "julia_version": "1.10.10+4",
+    "ty_app_designer_version": "1.0.9",
+    "ty_app_bundler_version": "1.0.6"
+  },
+  "checks": {
+    "native_window_controls_and_status_visible": true,
+    "native_plot_preview_rendered": true,
+    "accepted_three_uav_request_created": true,
+    "four_to_nine_uav_request_rejected": true,
+    "unaccepted_controller_request_rejected": true,
+    "rejected_requests_did_not_increase_request_count": true,
+    "app_closed_without_closing_existing_sysplorer_sessions": true,
+    "slappinstall_package_created": true
+  },
+  "request_evidence": {
+    "count_before_final_accepted_request": 2,
+    "count_after_final_accepted_request": 3,
+    "accepted_request": "Results/ui_platform/model_studio_requests/20260717_024450_927_prepare_run.json",
+    "accepted_controller_id": "px4ctrl",
+    "accepted_vehicle_count": 3,
+    "rejected_vehicle_count_observed": 5,
+    "rejected_controller_id_observed": "nmpc_outer"
+  },
+  "package": {
+    "path": "apps/model_studio/dist/MoSim Model Studio.slappinstall",
+    "size_bytes": 21439
+  },
+  "visual_evidence": {
+    "screenshot": "Results/ui_platform/model_studio_d1_gate_20260717/screenshots/33284_0x381C82_MoSim Model Studio.png",
+    "capture_manifest": "Results/ui_platform/model_studio_d1_gate_20260717/screenshots/capture_manifest.json"
+  },
+  "implementation_note": "TyAppDesigner import did not reliably materialize custom private functions or properties in generated app.jl. Request gating and JSON emission are therefore inlined in generated callbacks; structured source retains create_request for D3 IPC work.",
+  "evidence_boundaries": [
+    "This gate proves the native Syslab APP capability, request gating, local request creation, and packaging only.",
+    "It does not prove Orchestrator request consumption, MWORKS/codegen execution, Gazebo/PX4/MAVROS runtime, RViz/UE display attachment, or flight performance.",
+    "Vehicle counts 4-9 and controllers without accepted runtime evidence remain disabled."
+  ]
+}

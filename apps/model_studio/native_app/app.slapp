@@ -1,0 +1,613 @@
+{
+    "name": "MoSimModelStudioApp",
+    "startUpFunctions": [],
+    "callbackFunctions": [
+        {
+            "name": "ControllerChanged",
+            "code": "            selected = app.ControllerDropDown.Value\n            accepted = [\"px4ctrl\", \"cascade_pid\", \"gain_scheduled_pid\", \"fuzzy_pid\", \"neural_pid\"]\n            if selected in accepted\n                app.LastController = selected\n                app.StatusLabel.Text = \"Controller accepted: \" * selected\n            else\n                app.StatusLabel.Text = \"Controller unavailable. Select an accepted controller before creating a request.\"\n            end"
+        },
+        {
+            "name": "VehicleChanged",
+            "code": "            selected = app.VehicleDropDown.Value\n            if selected == \"3\"\n                app.LastVehicleCount = selected\n                app.StatusLabel.Text = \"Three-UAV profile is available.\"\n            else\n                app.StatusLabel.Text = \"UAV count unavailable. Select 3 before creating a request.\"\n            end"
+        },
+        {
+            "name": "PreviewPressed",
+            "code": "            wind = app.WindField.Value\n            t = collect(0.0:0.1:10.0)\n            response = @. exp(-0.15 * t) * sin(1.8 * t) + 0.02 * wind\n            TyAppDesigner.plot(app.UIAxes, t, response)\n            TyAppDesigner.title(app.UIAxes, \"Bounded preview\")\n            TyAppDesigner.xlabel(app.UIAxes, \"Time (s)\")\n            TyAppDesigner.ylabel(app.UIAxes, \"Normalized response\")\n            app.StatusLabel.Text = \"Preview updated. This is a UI capability plot, not controller evidence.\""
+        },
+        {
+            "name": "SubmitPressed",
+            "code": "            app.request_gate_open() || return\n            path = app.write_request(\"prepare_run\")\n            app.StatusLabel.Text = \"Orchestrator request created:\\n\" * path"
+        },
+        {
+            "name": "SysplorerPressed",
+            "code": "            app.request_gate_open() || return\n            path = app.write_request(\"open_model_context\")\n            app.StatusLabel.Text = \"Sysplorer request created:\\n\" * path"
+        },
+        {
+            "name": "ResultPressed",
+            "code": "            app.request_gate_open() || return\n            path = app.write_request(\"open_result_viewer\")\n            app.StatusLabel.Text = \"Result-viewer request created:\\n\" * path"
+        }
+    ],
+    "customPrivateFunctions": [],
+    "customPublicFunctions": [],
+    "customPrivateProperties": [],
+    "customPublicProperties": [],
+    "userLoadedModule": "    using Dates\n    using TyPlot",
+    "figure": {
+        "id": "mosim-model-studio-figure",
+        "state": {},
+        "callbackFcns": {},
+        "type": "figure",
+        "position": [
+            100,
+            100,
+            980,
+            620
+        ],
+        "name": "MoSim Model Studio",
+        "color": [
+            0.94,
+            0.94,
+            0.94
+        ],
+        "tag": "",
+        "children": [
+            {
+                "id": "title-label",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        30,
+                        24,
+                        920,
+                        36
+                    ],
+                    "fontSize": 22,
+                    "fontWeight": "bold",
+                    "text": "MoSim Model Studio"
+                },
+                "callbackFcns": {},
+                "type": "label",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    30,
+                    24,
+                    920,
+                    36
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "TitleLabel",
+                "text": "MoSim Model Studio",
+                "interpreter": "none",
+                "horizontalAlignment": "left",
+                "verticalAlignment": "center",
+                "wordWrap": false,
+                "fontName": "Helvetica",
+                "fontSize": 22,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": []
+            },
+            {
+                "id": "controller-dropdown",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        30,
+                        90,
+                        410,
+                        32
+                    ],
+                    "label": "Controller",
+                    "items": [
+                        "px4ctrl",
+                        "cascade_pid",
+                        "gain_scheduled_pid",
+                        "fuzzy_pid",
+                        "neural_pid",
+                        "pid_indi [disabled: runtime evidence pending]",
+                        "nmpc_outer [disabled: runtime evidence pending]"
+                    ],
+                    "value": "px4ctrl",
+                    "valueChangedFcn": "ControllerChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "ControllerChanged"
+                },
+                "type": "dropdown",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    30,
+                    90,
+                    410,
+                    32
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ControllerDropDown",
+                "label": "Controller",
+                "value": "px4ctrl",
+                "items": [
+                    "px4ctrl",
+                    "cascade_pid",
+                    "gain_scheduled_pid",
+                    "fuzzy_pid",
+                    "neural_pid",
+                    "pid_indi [disabled: runtime evidence pending]",
+                    "nmpc_outer [disabled: runtime evidence pending]"
+                ],
+                "itemsData": [],
+                "placeholder": "",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    1,
+                    1,
+                    1
+                ],
+                "editable": false,
+                "valueChangedFcn": "ControllerChanged"
+            },
+            {
+                "id": "vehicle-dropdown",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        30,
+                        145,
+                        410,
+                        32
+                    ],
+                    "label": "UAV count",
+                    "items": [
+                        "3",
+                        "4 [disabled: scale gate pending]",
+                        "5 [disabled: scale gate pending]",
+                        "6 [disabled: scale gate pending]",
+                        "7 [disabled: scale gate pending]",
+                        "8 [disabled: scale gate pending]",
+                        "9 [disabled: scale gate pending]"
+                    ],
+                    "value": "3",
+                    "valueChangedFcn": "VehicleChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "VehicleChanged"
+                },
+                "type": "dropdown",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    30,
+                    145,
+                    410,
+                    32
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "VehicleDropDown",
+                "label": "UAV count",
+                "value": "3",
+                "items": [
+                    "3",
+                    "4 [disabled: scale gate pending]",
+                    "5 [disabled: scale gate pending]",
+                    "6 [disabled: scale gate pending]",
+                    "7 [disabled: scale gate pending]",
+                    "8 [disabled: scale gate pending]",
+                    "9 [disabled: scale gate pending]"
+                ],
+                "itemsData": [],
+                "placeholder": "",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    1,
+                    1,
+                    1
+                ],
+                "editable": false,
+                "valueChangedFcn": "VehicleChanged"
+            },
+            {
+                "id": "wind-field",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        30,
+                        200,
+                        410,
+                        32
+                    ],
+                    "label": "Wind speed (m/s)",
+                    "value": 0
+                },
+                "callbackFcns": {},
+                "type": "numericeditfield",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    30,
+                    200,
+                    410,
+                    32
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "WindField",
+                "label": "Wind speed (m/s)",
+                "value": 0,
+                "limits": [
+                    0,
+                    20
+                ],
+                "placeholder": "",
+                "horizontalAlignment": "right",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    1,
+                    1,
+                    1
+                ],
+                "editable": true,
+                "valueChangedFcn": ""
+            },
+            {
+                "id": "preview-button",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        30,
+                        270,
+                        190,
+                        36
+                    ],
+                    "text": "Preview",
+                    "buttonPushedFcn": "PreviewPressed"
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "PreviewPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    30,
+                    270,
+                    190,
+                    36
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "PreviewButton",
+                "text": "Preview",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "PreviewPressed"
+            },
+            {
+                "id": "submit-button",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        250,
+                        270,
+                        190,
+                        36
+                    ],
+                    "text": "Prepare run",
+                    "buttonPushedFcn": "SubmitPressed"
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "SubmitPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    250,
+                    270,
+                    190,
+                    36
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "SubmitButton",
+                "text": "Prepare run",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "SubmitPressed"
+            },
+            {
+                "id": "model-button",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        30,
+                        326,
+                        190,
+                        36
+                    ],
+                    "text": "Open model",
+                    "buttonPushedFcn": "SysplorerPressed"
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "SysplorerPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    30,
+                    326,
+                    190,
+                    36
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "SysplorerButton",
+                "text": "Open model",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "SysplorerPressed"
+            },
+            {
+                "id": "result-button",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        250,
+                        326,
+                        190,
+                        36
+                    ],
+                    "text": "Open result",
+                    "buttonPushedFcn": "ResultPressed"
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "ResultPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    250,
+                    326,
+                    190,
+                    36
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ResultButton",
+                "text": "Open result",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "ResultPressed"
+            },
+            {
+                "id": "status-label",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        30,
+                        405,
+                        410,
+                        165
+                    ],
+                    "wordWrap": true,
+                    "text": "Ready. Disabled options remain visible and are rejected by the capability gate."
+                },
+                "callbackFcns": {},
+                "type": "label",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    30,
+                    405,
+                    410,
+                    165
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "StatusLabel",
+                "text": "Ready. Disabled options remain visible and are rejected by the capability gate.",
+                "interpreter": "none",
+                "horizontalAlignment": "left",
+                "verticalAlignment": "top",
+                "wordWrap": true,
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": []
+            },
+            {
+                "id": "preview-axes",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        485,
+                        90,
+                        455,
+                        480
+                    ]
+                },
+                "callbackFcns": {},
+                "type": "uiaxes",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    485,
+                    90,
+                    455,
+                    480
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "UIAxes",
+                "title": "Preview",
+                "data": [],
+                "xLabel": "Time (s)",
+                "yLabel": "Normalized response",
+                "legend": false,
+                "grid": false,
+                "hold": false,
+                "xLim": [
+                    0,
+                    1
+                ],
+                "xLimMode": "auto",
+                "yLim": [
+                    0,
+                    1
+                ],
+                "yLimMode": "auto",
+                "buttonDownFcn": ""
+            }
+        ],
+        "visible": true,
+        "variableName": "UIFigure"
+    },
+    "info": {
+        "name": "MoSim Model Studio",
+        "version": "0.1.0",
+        "author": "MoSim",
+        "description": "Native experiment selection and audited orchestration request surface.",
+        "icon": "",
+        "startupFcn": "",
+        "type": "app"
+    },
+    "code": "module MoSimModelStudioApp\n    # Default loaded module\n    using TyAppDesigner\n    using ObjectOriented\n\n    # User loaded module and file\n    using Dates\n    using TyPlot\n\n    @oodef mutable struct App\n\n        # Properties that correspond to app components\n        UIFigure::TyAppDesigner.Figure = TyAppDesigner.create_figure()\n        TitleLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n        ControllerDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n        VehicleDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n        WindField::TyAppDesigner.NumericEditField = TyAppDesigner.create_numericeditfield()\n        PreviewButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n        SubmitButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n        SysplorerButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n        ResultButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n        StatusLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n        UIAxes::TyAppDesigner.UIAxes = TyAppDesigner.create_uiaxes()\n\n        # Appinfo\n        Appname::Module = @__MODULE__\n        Appfile::String = @__FILE__\n        Environment::String = \"designer\"\n\n        # Code that executes after component creation\n\n        # User custom functions\n\n\n        # User custom properties\n\n\n        # Callbacks that handle component events\n\n        # ControllerChanged function:ControllerDropDown\n        function ControllerChanged(app,event)\n            selected = app.ControllerDropDown.Value\n            accepted = [\"px4ctrl\", \"cascade_pid\", \"gain_scheduled_pid\", \"fuzzy_pid\", \"neural_pid\"]\n            if selected in accepted\n                app.LastController = selected\n                app.StatusLabel.Text = \"Controller accepted: \" * selected\n            else\n                app.StatusLabel.Text = \"Controller unavailable. Select an accepted controller before creating a request.\"\n            end\n        end\n\n        # VehicleChanged function:VehicleDropDown\n        function VehicleChanged(app,event)\n            selected = app.VehicleDropDown.Value\n            if selected == \"3\"\n                app.LastVehicleCount = selected\n                app.StatusLabel.Text = \"Three-UAV profile is available.\"\n            else\n                app.StatusLabel.Text = \"UAV count unavailable. Select 3 before creating a request.\"\n            end\n        end\n\n        # PreviewPressed function:PreviewButton\n        function PreviewPressed(app,event)\n            wind = app.WindField.Value\n            t = collect(0.0:0.1:10.0)\n            response = @. exp(-0.15 * t) * sin(1.8 * t) + 0.02 * wind\n            TyAppDesigner.plot(app.UIAxes, t, response)\n            TyAppDesigner.title(app.UIAxes, \"Bounded preview\")\n            TyAppDesigner.xlabel(app.UIAxes, \"Time (s)\")\n            TyAppDesigner.ylabel(app.UIAxes, \"Normalized response\")\n            app.StatusLabel.Text = \"Preview updated. This is a UI capability plot, not controller evidence.\"\n        end\n\n        # SubmitPressed function:SubmitButton\n        function SubmitPressed(app,event)\n            app.request_gate_open() || return\n            path = app.write_request(\"prepare_run\")\n            app.StatusLabel.Text = \"Orchestrator request created:\\n\" * path\n        end\n\n        # SysplorerPressed function:SysplorerButton\n        function SysplorerPressed(app,event)\n            app.request_gate_open() || return\n            path = app.write_request(\"open_model_context\")\n            app.StatusLabel.Text = \"Sysplorer request created:\\n\" * path\n        end\n\n        # ResultPressed function:ResultButton\n        function ResultPressed(app,event)\n            app.request_gate_open() || return\n            path = app.write_request(\"open_result_viewer\")\n            app.StatusLabel.Text = \"Result-viewer request created:\\n\" * path\n        end\n\n        # Create UIFigure and components\n        function createComponents(app)\n            # Create UIFigure\n            app.UIFigure = TyAppDesigner.uifigure(Visible=false)\n            app.UIFigure.Position = [100,100,980,620]\n            app.UIFigure.Name = raw\"MoSim Model Studio\"\n\n            # Create TitleLabel\n            app.TitleLabel = TyAppDesigner.uilabel(app.UIFigure)\n            app.TitleLabel.Position = [30,24,920,36]\n            app.TitleLabel.FontSize = 22\n            app.TitleLabel.FontWeight = raw\"bold\"\n            app.TitleLabel.Text = raw\"MoSim Model Studio\"\n\n            # Create ControllerDropDown\n            app.ControllerDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n            app.ControllerDropDown.Position = [30,90,410,32]\n            app.ControllerDropDown.Label = raw\"Controller\"\n            app.ControllerDropDown.Items = [raw\"px4ctrl\",raw\"cascade_pid\",raw\"gain_scheduled_pid\",raw\"fuzzy_pid\",raw\"neural_pid\",raw\"pid_indi [disabled: runtime evidence pending]\",raw\"nmpc_outer [disabled: runtime evidence pending]\"]\n            app.ControllerDropDown.Value = raw\"px4ctrl\"\n            app.ControllerDropDown.ValueChangedFcn = raw\"ControllerChanged\"\n\n            # Create VehicleDropDown\n            app.VehicleDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n            app.VehicleDropDown.Position = [30,145,410,32]\n            app.VehicleDropDown.Label = raw\"UAV count\"\n            app.VehicleDropDown.Items = [raw\"3\",raw\"4 [disabled: scale gate pending]\",raw\"5 [disabled: scale gate pending]\",raw\"6 [disabled: scale gate pending]\",raw\"7 [disabled: scale gate pending]\",raw\"8 [disabled: scale gate pending]\",raw\"9 [disabled: scale gate pending]\"]\n            app.VehicleDropDown.Value = raw\"3\"\n            app.VehicleDropDown.ValueChangedFcn = raw\"VehicleChanged\"\n\n            # Create WindField\n            app.WindField = TyAppDesigner.uinumericeditfield(app.UIFigure)\n            app.WindField.Position = [30,200,410,32]\n            app.WindField.Limits = [0,20]\n            app.WindField.Label = raw\"Wind speed (m/s)\"\n            app.WindField.Value = 0\n\n            # Create PreviewButton\n            app.PreviewButton = TyAppDesigner.uibutton(app.UIFigure)\n            app.PreviewButton.Position = [30,270,190,36]\n            app.PreviewButton.Text = raw\"Preview\"\n            app.PreviewButton.ButtonPushedFcn = raw\"PreviewPressed\"\n\n            # Create SubmitButton\n            app.SubmitButton = TyAppDesigner.uibutton(app.UIFigure)\n            app.SubmitButton.Position = [250,270,190,36]\n            app.SubmitButton.Text = raw\"Prepare run\"\n            app.SubmitButton.ButtonPushedFcn = raw\"SubmitPressed\"\n\n            # Create SysplorerButton\n            app.SysplorerButton = TyAppDesigner.uibutton(app.UIFigure)\n            app.SysplorerButton.Position = [30,326,190,36]\n            app.SysplorerButton.Text = raw\"Open model\"\n            app.SysplorerButton.ButtonPushedFcn = raw\"SysplorerPressed\"\n\n            # Create ResultButton\n            app.ResultButton = TyAppDesigner.uibutton(app.UIFigure)\n            app.ResultButton.Position = [250,326,190,36]\n            app.ResultButton.Text = raw\"Open result\"\n            app.ResultButton.ButtonPushedFcn = raw\"ResultPressed\"\n\n            # Create StatusLabel\n            app.StatusLabel = TyAppDesigner.uilabel(app.UIFigure)\n            app.StatusLabel.Position = [30,405,410,165]\n            app.StatusLabel.WordWrap = true\n            app.StatusLabel.Text = raw\"Ready. Disabled options remain visible and are rejected by the capability gate.\"\n\n            # Create UIAxes\n            app.UIAxes = TyAppDesigner.uiaxes(app.UIFigure)\n            app.UIAxes.Position = [485,90,455,480]\n\n            # Show the figure after all components are created\n            app.UIFigure.Visible= true\n        end\n\n        # App creation\n        function initApp(app)\n            # Create UIFigure and components\n            app.createComponents()\n\n            # Register the app with App Designer\n            TyAppDesigner.registerApp(app, app.UIFigure)\n\n            return app\n        end\n\n        # App deletion\n        function delete(app)\n            # Delete UIFigure when app is deleted\n            TyAppDesigner.delete(app, app.UIFigure)\n        end\n    end\n\n    # Create an APP instance\n    Instance = App().initApp()\nend"
+}

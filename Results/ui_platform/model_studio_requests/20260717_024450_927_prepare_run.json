@@ -1,0 +1,9 @@
+{
+  "schema": "mosim.model_studio.request.v1",
+  "action": "prepare_run",
+  "controller_id": "px4ctrl",
+  "vehicle_count": 3,
+  "wind_speed_mps": 0,
+  "created_at_local": "2026-07-17T02:44:50.927",
+  "status": "requested"
+}
