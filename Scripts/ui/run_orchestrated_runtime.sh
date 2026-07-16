@@ -17,6 +17,7 @@ printf '%s\n' "$$" > "${ORCHESTRATOR_RUN_DIR}/runtime_linux_pid.txt"
 
 SIDECAR_PID=""
 RUNTIME_CHILD_PID=""
+source "${PROJECT_ROOT}/Scripts/sunray/sunray_ros1_runtime_lock.sh"
 cleanup() {
   set +e
   if [[ -n "${SIDECAR_PID}" ]]; then
@@ -27,6 +28,7 @@ cleanup() {
   fi
   wait "${SIDECAR_PID}" >/dev/null 2>&1 || true
   wait "${RUNTIME_CHILD_PID}" >/dev/null 2>&1 || true
+  sunray_ros1_runtime_lock_release
 }
 trap cleanup EXIT TERM INT
 
@@ -64,6 +66,7 @@ start_sidecar() {
 
 run_basic_gate() {
   local controller_profile="$1"
+  sunray_ros1_runtime_lock_acquire
   assert_no_conflicting_runtime
   local plugin_ws="${PROJECT_ROOT}/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2"
   local plugin_library="${plugin_ws}/devel/lib/libmosim_gazebo_ftc_actuator_plugin.so"
@@ -98,6 +101,7 @@ run_basic_gate() {
 }
 
 run_swarm_formation_gate() {
+  sunray_ros1_runtime_lock_acquire
   assert_no_conflicting_runtime
   local plugin_ws="${PROJECT_ROOT}/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2"
   local plugin_library="${plugin_ws}/devel/lib/libmosim_gazebo_ftc_actuator_plugin.so"

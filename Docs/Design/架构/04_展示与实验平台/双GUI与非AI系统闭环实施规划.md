@@ -324,6 +324,13 @@ run-local证据位于
 `Results/ui_platform/orchestrator_runs/run-20260717-060951-d59bbeb1/`。该次仍只证明并发保护，
 D6 live验收继续等待共享runtime自然释放后重跑。
 
+D6第四次live尝试`run-20260717-061615-1289d12e`又与P8
+`p8_formation_mode3_gazebo_r1_20260717`在检查后、底层gate启动前发生竞争，并被进程门禁
+以退出码11安全拒绝。这证明单独的“先检查进程再启动”存在TOCTOU窗口。Orchestrator wrapper
+现先原子获取项目共享runtime lock，再检查关键进程；底层basic/swarm gate通过继承同一nonce
+安全进入，父wrapper在cleanup时统一释放。P8运行期间的只读锁探针能够返回其真实`run_id`
+与owner PID，且不会启动sidecar或ROS进程。后续D6/D7 live必须使用该原子预留路径。
+
 ### D7 三机完整纵向闭环
 
 - 车辆数选择为3；

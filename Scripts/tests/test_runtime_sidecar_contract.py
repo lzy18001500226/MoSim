@@ -77,6 +77,9 @@ def test_runtime_wrapper_starts_sidecar_and_reuses_ftc_plugin() -> None:
     assert "assert_no_conflicting_runtime" in wrapper
     assert wrapper.index("assert_no_conflicting_runtime\n  local plugin_ws") < wrapper.index("start_sidecar 1\n")
     assert "Sunray ROS1 runtime process conflict" in wrapper
+    assert 'source "${PROJECT_ROOT}/Scripts/sunray/sunray_ros1_runtime_lock.sh"' in wrapper
+    assert "sunray_ros1_runtime_lock_acquire\n  assert_no_conflicting_runtime" in wrapper
+    assert "sunray_ros1_runtime_lock_release" in wrapper
     assert "start_sidecar 3" in wrapper
     assert "factory_l2_three_uav_swarm_formation" in wrapper
     assert 'PLANNER_VARIANT="swarm_formation"' in wrapper
