@@ -361,6 +361,17 @@ class MoSimOrchestrator:
         session = self.display_sessions.get(session_id)
         if session is None:
             return self._response(request_id, False, "display_session_not_found")
+        attach = getattr(self.backend, "attach_display", None)
+        if callable(attach):
+            result = attach(session)
+            if not result.get("accepted"):
+                session["state"] = "blocked"
+                session["backend_result"] = result
+                return self._response(
+                    request_id, False, result.get("reason_code", "display_attach_failed"),
+                    run_id=session["run_id"], session=session,
+                )
+            session["backend_result"] = result
         session["state"] = "attached"
         return self._response(request_id, True, "display_attached", run_id=session["run_id"], session=session)
 
@@ -368,6 +379,15 @@ class MoSimOrchestrator:
         session = self.display_sessions.get(session_id)
         if session is None:
             return self._response(request_id, False, "display_session_not_found")
+        detach = getattr(self.backend, "detach_display", None)
+        if callable(detach):
+            result = detach(session)
+            if not result.get("accepted"):
+                return self._response(
+                    request_id, False, result.get("reason_code", "display_detach_failed"),
+                    run_id=session["run_id"], session=session,
+                )
+            session["backend_result"] = result
         session["state"] = "detached"
         return self._response(request_id, True, "display_detached", run_id=session["run_id"], session=session)
 

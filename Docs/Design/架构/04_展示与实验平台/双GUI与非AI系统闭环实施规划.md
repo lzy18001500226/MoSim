@@ -286,6 +286,22 @@ MWORKS generated-C后端。Profile Validator和Orchestrator定向测试通过。
 本轮Gazebo飞行、实时注入、指标回传或D6闭环完成；原生Flight Console构建和同一run
 Gazebo证据仍是进入D6运行验收的必要条件。
 
+D6运行编排切片已进一步接入run-local sidecar。backend只有在sidecar同时观察到
+MAVROS connected、新鲜里程计、控制器指令和现有P7执行器插件遥测后，才把生命周期从
+`starting`提升为`running`；sidecar持续写`RUNTIME_STATUS.json`和`telemetry.json`。
+风速通过Gazebo ROS官方`/gazebo/apply_body_wrench`持续施加等效气动力，电机效能复用
+P7的`mosim_gazebo_ftc_actuator_plugin`，两类注入均使用run-local命令和ACK区分请求值与
+实际施加值。显示会话也已拆成`prepare`与`attach/detach`，后者只调用固定RViz/UE启动器，
+显示失败不改变runtime状态。D6场景现由
+`Config/scenarios/ui/factory_l2_single_figure8.json`显式冻结Factory world、模型路径、起点和
+局部8字范围，不再沿用旧柱状地图口径。当前定向源码测试通过，但共享ROS/Gazebo/PX4
+运行时正被P8三机任务占用，因此本轮尚未执行同一run飞行、注入和显示人工验收，D6仍为
+`source_ready_live_gate_blocked`。
+
+Factory单机运行时的Gazebo模型名是`uav1`，风扰必须明确施加到`uav1::base_link`；sidecar
+仅在未显式配置时才按`uav1`、`sunray150`顺序从`/gazebo/model_states`回退解析。D6 live
+gate必须保存`apply_body_wrench`成功ACK及注入前后遥测，不能用命令投递成功替代物理施加成功。
+
 ### D7 三机完整纵向闭环
 
 - 车辆数选择为3；

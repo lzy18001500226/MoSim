@@ -1,0 +1,23 @@
+{
+  "schema": "mosim.ui_platform.scenario.v1",
+  "id": "factory_l2_single_figure8_v1",
+  "scene": "Factory L2",
+  "vehicle_count": 1,
+  "world_file": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
+  "model_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+  "spawn": {
+    "x_m": -10.575025,
+    "y_m": -19.36313,
+    "z_m": 0.2,
+    "yaw_rad": 0.0
+  },
+  "trajectory": {
+    "type": "figure8",
+    "x_amplitude_m": 0.6,
+    "y_amplitude_m": 0.35,
+    "period_s": 24.0,
+    "cycles": 2.0,
+    "reference_frame": "local_spawn_enu"
+  },
+  "claim_boundary": "This scenario freezes the D6 Factory L2 single-UAV runtime inputs. It does not prove collision clearance, controller tracking, injection application, or visual acceptance."
+}

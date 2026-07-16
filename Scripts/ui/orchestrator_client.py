@@ -80,6 +80,12 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         return payload
 
     active = _active_run()
+    if args.action in {"attach_display", "detach_display"}:
+        if not args.session_id:
+            raise ValueError(f"{args.action} requires a display session")
+        payload["session_id"] = args.session_id
+        return payload
+
     run_id = args.run_id or active.get("run_id")
     if not run_id:
         raise ValueError(f"{args.action} requires an active run")
@@ -121,6 +127,8 @@ def main() -> int:
             "apply_injection",
             "restore_injection",
             "prepare_display_session",
+            "attach_display",
+            "detach_display",
             "get_run_state",
             "get_telemetry",
             "open_model_context",
@@ -132,6 +140,7 @@ def main() -> int:
     parser.add_argument("--vehicle-count", type=int)
     parser.add_argument("--wind-speed-mps", type=float, default=0.0)
     parser.add_argument("--run-id")
+    parser.add_argument("--session-id")
     parser.add_argument("--target", choices=("wind_speed_mps", "wind_direction_deg", "motor_effectiveness"))
     parser.add_argument("--value", type=float)
     parser.add_argument("--rotor-index", type=int, choices=range(1, 5))

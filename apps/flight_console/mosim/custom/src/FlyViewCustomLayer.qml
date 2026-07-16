@@ -230,6 +230,21 @@ Item {
                                 mosimOrchestrator.prepareDisplays(selected)
                             }
                         }
+                        RowLayout {
+                            Layout.fillWidth: true
+                            QGCButton {
+                                text: "Attach"
+                                Layout.fillWidth: true
+                                enabled: !mosimOrchestrator.busy && mosimOrchestrator.displaySessionId.length > 0
+                                onClicked: mosimOrchestrator.attachDisplays()
+                            }
+                            QGCButton {
+                                text: "Detach"
+                                Layout.fillWidth: true
+                                enabled: !mosimOrchestrator.busy && mosimOrchestrator.displaySessionId.length > 0
+                                onClicked: mosimOrchestrator.detachDisplays()
+                            }
+                        }
                     }
                 }
 

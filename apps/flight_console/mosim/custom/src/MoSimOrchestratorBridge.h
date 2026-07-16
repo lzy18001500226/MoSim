@@ -14,6 +14,7 @@ class MoSimOrchestratorBridge final : public QObject
     Q_PROPERTY(QString runId READ runId NOTIFY responseChanged)
     Q_PROPERTY(QString profileHash READ profileHash NOTIFY responseChanged)
     Q_PROPERTY(QString lifecycleState READ lifecycleState NOTIFY responseChanged)
+    Q_PROPERTY(QString displaySessionId READ displaySessionId NOTIFY responseChanged)
     Q_PROPERTY(QString lastResponse READ lastResponse NOTIFY responseChanged)
 
 public:
@@ -26,6 +27,7 @@ public:
     QString runId() const { return _runId; }
     QString profileHash() const { return _profileHash; }
     QString lifecycleState() const { return _lifecycleState; }
+    QString displaySessionId() const { return _displaySessionId; }
     QString lastResponse() const { return _lastResponse; }
 
     Q_INVOKABLE void prepareRun(const QString &profilePath, const QString &controllerId, int vehicleCount,
@@ -41,6 +43,8 @@ public:
     Q_INVOKABLE void applyMotorEffectiveness(int rotorIndex, double value);
     Q_INVOKABLE void restoreInjection(const QString &target, int rotorIndex = 0);
     Q_INVOKABLE void prepareDisplays(const QStringList &displays);
+    Q_INVOKABLE void attachDisplays();
+    Q_INVOKABLE void detachDisplays();
 
 signals:
     void busyChanged();
@@ -62,5 +66,6 @@ private:
     QString _runId;
     QString _profileHash;
     QString _lifecycleState = QStringLiteral("unknown");
+    QString _displaySessionId;
     QString _lastResponse;
 };

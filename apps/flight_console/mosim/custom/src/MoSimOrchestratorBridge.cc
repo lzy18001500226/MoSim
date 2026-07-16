@@ -129,6 +129,24 @@ void MoSimOrchestratorBridge::prepareDisplays(const QStringList &displays)
     invokeRunAction(QStringLiteral("prepare_display_session"), extra);
 }
 
+void MoSimOrchestratorBridge::attachDisplays()
+{
+    if (_displaySessionId.isEmpty()) {
+        finishWithError(QStringLiteral("display_session_missing"));
+        return;
+    }
+    invoke({QStringLiteral("attach_display"), QStringLiteral("--session-id"), _displaySessionId});
+}
+
+void MoSimOrchestratorBridge::detachDisplays()
+{
+    if (_displaySessionId.isEmpty()) {
+        finishWithError(QStringLiteral("display_session_missing"));
+        return;
+    }
+    invoke({QStringLiteral("detach_display"), QStringLiteral("--session-id"), _displaySessionId});
+}
+
 void MoSimOrchestratorBridge::finishWithError(const QString &reason, const QString &detail)
 {
     _timeout.stop();
@@ -160,6 +178,10 @@ void MoSimOrchestratorBridge::processFinished(int exitCode, QProcess::ExitStatus
     const QJsonObject manifest = response.value(QStringLiteral("manifest")).toObject();
     if (!manifest.isEmpty()) {
         _lifecycleState = manifest.value(QStringLiteral("lifecycle_state")).toString(_lifecycleState);
+    }
+    const QJsonObject session = response.value(QStringLiteral("session")).toObject();
+    if (!session.isEmpty()) {
+        _displaySessionId = session.value(QStringLiteral("session_id")).toString(_displaySessionId);
     }
     _statusText = (_accepted ? QStringLiteral("Accepted: ") : QStringLiteral("Rejected: ")) + _reasonCode;
     _lastResponse = QString::fromUtf8(document.toJson(QJsonDocument::Indented));

@@ -27,6 +27,8 @@ def test_custom_overlay_uses_supported_qgc_extension_points() -> None:
     assert "Apply wind" in qml and "Apply motor" in qml
     assert "cascade_pid_figure8_generated_c_v1.json" in qml
     assert "Cascade PID / MWORKS generated C" in qml
+    assert "mosimOrchestrator.attachDisplays()" in qml
+    assert "mosimOrchestrator.detachDisplays()" in qml
 
 
 def test_materializer_keeps_source_and_target_separate(tmp_path: Path) -> None:
@@ -67,12 +69,26 @@ def test_client_builds_audited_injection_payload(tmp_path: Path, monkeypatch) ->
         ramp_s=0.2,
         duration_s=3.0,
         display=[],
+        session_id=None,
     )
     payload = orchestrator_client.build_payload(args)
     assert payload["run_id"] == "run-test"
     assert payload["command"]["target"] == "motor_effectiveness"
     assert payload["command"]["rotor_index"] == 2
     assert payload["command"]["source"] == "flight_console"
+
+
+def test_client_builds_display_attach_without_shell_arguments() -> None:
+    args = argparse.Namespace(
+        action="attach_display", session_id="display-1234567890", run_id=None,
+        profile_path=None, controller_id=None, vehicle_count=None, wind_speed_mps=0.0,
+        target=None, value=None, rotor_index=None, ramp_s=0.0, duration_s=0.0, display=[],
+    )
+    assert orchestrator_client.build_payload(args) == {
+        "schema": "mosim.orchestrator.request.v1",
+        "action": "attach_display",
+        "session_id": "display-1234567890",
+    }
 
 
 def test_windows_toolchain_preflight_is_read_only_and_version_pinned(monkeypatch) -> None:
