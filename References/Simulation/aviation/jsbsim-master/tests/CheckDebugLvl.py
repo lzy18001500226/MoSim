@@ -1,0 +1,95 @@
+# CheckDebugLvl.py
+#
+# Regression tests for the global variable `debug_lvl`
+#
+# Copyright (c) 2015-2026 Bertrand Coconnier
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, see <http://www.gnu.org/licenses/>
+#
+
+import os
+
+import pandas as pd
+from JSBSim_utils import (ExecuteUntil, FindDifferences, JSBSimTestCase,
+                          RunTest, isDataMatching)
+from jsbsim import (DefaultLogger, FGJSBBase, FGLogger, LogLevel, get_logger,
+                    set_logger)
+
+
+class DebugLog(FGLogger):
+    def __init__(self):
+        self.buffer = ""
+    def file_location(self, filename: str, line: int) -> None:
+        if self.log_level == LogLevel.DEBUG:
+            self.buffer += f"\nIn file {filename}: line {line}"
+    def message(self, message: str) -> None:
+        if self.log_level == LogLevel.DEBUG:
+            self.buffer += message
+
+class TestDebugLvl(JSBSimTestCase):
+    def __init__(self, methodName):
+        self._default_logger = get_logger()
+        self.assertIsInstance(self._default_logger, DefaultLogger)
+        super().__init__(methodName, quiet=False)
+        self.assertEqual(FGJSBBase().debug_lvl, 1)  # Check default value of debug_lvl
+
+    def setUp(self, *_):
+        super().setUp('check_cases', 'orbit')
+
+    def tearDown(self):
+        set_logger(self._default_logger)
+        os.environ.pop('JSBSIM_DEBUG', None)
+        super().tearDown()
+
+    def test_env_variable(self):
+        """Regression test to check that the results are independent of the environment
+           variable JSBSIM_DEBUG setting."""
+        fdm = self.create_fdm()
+        fdm.load_script(self.sandbox.path_to_jsbsim_file('scripts', 'ball_orbit.xml'))
+        fdm.run_ic()
+
+        ExecuteUntil(fdm, 1000.)
+
+        ref = pd.read_csv('BallOut.csv', index_col=0)
+
+        os.environ["JSBSIM_DEBUG"] = str(0)
+        fdm = self.create_fdm()
+        fdm.load_script(self.sandbox.path_to_jsbsim_file('scripts', 'ball_orbit.xml'))
+        fdm.run_ic()
+
+        ExecuteUntil(fdm, 1000.)
+
+        current = pd.read_csv('BallOut.csv', index_col=0)
+
+        # Check the data are matching i.e. the time steps are the same between
+        # the two data sets and that the output data are also the same.
+        self.assertTrue(isDataMatching(ref, current))
+
+        # Find all the data that are differing by more than 1E-8 between the
+        # two data sets.
+        diff = FindDifferences(ref, current, 1E-8)
+        self.longMessage = True
+        self.assertEqual(len(diff), 0, msg='\n'+diff.to_string())
+
+    def test_no_debug_lvl(self):
+        """Regression test to check that FGFDMExec does not modify debug_lvl."""
+        FGJSBBase().debug_lvl = 0
+        logger = DebugLog()
+        set_logger(logger)
+        self.create_fdm()
+        self.assertEqual(logger.buffer, "")
+        self.assertEqual(FGJSBBase().debug_lvl, 0)
+
+
+RunTest(TestDebugLvl)
