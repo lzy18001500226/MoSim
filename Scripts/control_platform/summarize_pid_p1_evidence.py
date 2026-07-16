@@ -35,6 +35,8 @@ def main() -> int:
     codegen = load("pid_codegen_manifest.json")
     runtime = load("pid_codegen_runtime_check.json")
     equivalence = load("pid_graphical_codegen_equivalence.json")
+    variant_mil = load("pid_graphical_variant_mil.json")
+    variant_equivalence = load("pid_six_variant_graphical_equivalence.json")
 
     activation = next((RESULT_DIR / "screenshots/activation").glob("*.png"))
     check_sim = next((RESULT_DIR / "screenshots/check_sim").glob("*.png"))
@@ -74,7 +76,10 @@ def main() -> int:
         "generated_c_compile": bool(runtime["compile"]["ok"]),
         "generated_c_runtime_smoke": bool(runtime["runtime_smoke"]["ok"]),
         "fixed_fixture_graphical_codegen_equivalence": bool(equivalence["behavior_equivalence_ok"]),
-        "six_variant_graphical_equivalence": False,
+        "six_variant_graphical_equivalence": bool(
+            variant_mil["six_variant_graphical_mil_ok"]
+            and variant_equivalence["six_variant_graphical_equivalence"]
+        ),
         "full_attitude_thrust_contract": False,
         "gazebo_px4_mavros_closed_loop": False,
     }
@@ -95,10 +100,12 @@ def main() -> int:
             "codegen": str(LOG_DIR / "pid_codegen_manifest.json"),
             "runtime": str(LOG_DIR / "pid_codegen_runtime_check.json"),
             "equivalence": str(LOG_DIR / "pid_graphical_codegen_equivalence.json"),
+            "variant_graphical_mil": str(LOG_DIR / "pid_graphical_variant_mil.json"),
+            "six_variant_graphical_equivalence": str(LOG_DIR / "pid_six_variant_graphical_equivalence.json"),
             "screenshots": str(screenshot_path),
         },
         "open_gates": [name for name, passed in gates.items() if not passed],
-        "claim_boundary": "P1 has real scalar MIL, graphical topology, official generated C, compiled runtime smoke, and fixed-fixture graphical/codegen equivalence. It is not selectable and does not yet prove six-variant graphical parity, ATTITUDE_THRUST, or Gazebo closed loop.",
+        "claim_boundary": "P1 has real scalar MIL, six behavior-equivalent fixed-input graphical variants, official generated C, and compiled runtime smoke. It is not selectable and does not yet prove the full ATTITUDE_THRUST contract or Gazebo/PX4/MAVROS closed loop.",
     }
     output = RESULT_DIR / "P1_PID_MIL_SUMMARY.json"
     output.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")

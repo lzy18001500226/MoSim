@@ -10,7 +10,7 @@ SCRIPT = ROOT / "Scripts/control_platform/summarize_pid_p1_evidence.py"
 def test_summary_preserves_unaccepted_claim_boundaries() -> None:
     text = SCRIPT.read_text(encoding="utf-8")
     assert '"selectable": False' in text
-    assert '"six_variant_graphical_equivalence": False' in text
+    assert 'variant_equivalence["six_variant_graphical_equivalence"]' in text
     assert '"full_attitude_thrust_contract": False' in text
     assert '"gazebo_px4_mavros_closed_loop": False' in text
 
@@ -23,6 +23,8 @@ def test_summary_indexes_required_evidence() -> None:
         "pid_codegen_manifest.json",
         "pid_codegen_runtime_check.json",
         "pid_graphical_codegen_equivalence.json",
+        "pid_graphical_variant_mil.json",
+        "pid_six_variant_graphical_equivalence.json",
         "screenshot_manifest.json",
     ):
         assert name in text

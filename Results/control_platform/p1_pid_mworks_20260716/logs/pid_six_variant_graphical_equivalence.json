@@ -1,0 +1,102 @@
+{
+  "schema": "mosim.pid_six_variant_graphical_equivalence.v1",
+  "source_pair": [
+    "MWORKS_CFUNCTION_MIL",
+    "MWORKS_GRAPHICAL_MIL"
+  ],
+  "tolerance": 1e-09,
+  "variants": {
+    "cascade_pid": {
+      "reference_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\cascade_pid.csv",
+      "graphical_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\graphical_variants\\cascade_pid.csv",
+      "sample_count": 21,
+      "sample_count_ok": true,
+      "max_abs_time_error": 0.0,
+      "max_abs_error": {
+        "command": 0.0,
+        "outer_command": 0.0,
+        "unsaturated_command": 0.0,
+        "integral": 0.0,
+        "scheduled_gain": 0.0
+      },
+      "behavior_equivalence_ok": true
+    },
+    "gain_scheduled_pid": {
+      "reference_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\gain_scheduled_pid.csv",
+      "graphical_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\graphical_variants\\gain_scheduled_pid.csv",
+      "sample_count": 21,
+      "sample_count_ok": true,
+      "max_abs_time_error": 0.0,
+      "max_abs_error": {
+        "command": 0.0,
+        "outer_command": 0.0,
+        "unsaturated_command": 0.0,
+        "integral": 0.0,
+        "scheduled_gain": 0.0
+      },
+      "behavior_equivalence_ok": true
+    },
+    "fuzzy_pid": {
+      "reference_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\fuzzy_pid.csv",
+      "graphical_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\graphical_variants\\fuzzy_pid.csv",
+      "sample_count": 21,
+      "sample_count_ok": true,
+      "max_abs_time_error": 0.0,
+      "max_abs_error": {
+        "command": 0.0,
+        "outer_command": 0.0,
+        "unsaturated_command": 0.0,
+        "integral": 0.0,
+        "scheduled_gain": 0.0
+      },
+      "behavior_equivalence_ok": true
+    },
+    "neural_pid": {
+      "reference_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\neural_pid.csv",
+      "graphical_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\graphical_variants\\neural_pid.csv",
+      "sample_count": 21,
+      "sample_count_ok": true,
+      "max_abs_time_error": 0.0,
+      "max_abs_error": {
+        "command": 1.1102230246251565e-16,
+        "outer_command": 0.0,
+        "unsaturated_command": 1.1102230246251565e-16,
+        "integral": 0.0,
+        "scheduled_gain": 0.0
+      },
+      "behavior_equivalence_ok": true
+    },
+    "anti_windup": {
+      "reference_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\anti_windup.csv",
+      "graphical_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\graphical_variants\\anti_windup.csv",
+      "sample_count": 21,
+      "sample_count_ok": true,
+      "max_abs_time_error": 0.0,
+      "max_abs_error": {
+        "command": 0.0,
+        "outer_command": 0.0,
+        "unsaturated_command": 0.0,
+        "integral": 0.0,
+        "scheduled_gain": 0.0
+      },
+      "behavior_equivalence_ok": true
+    },
+    "feedforward_profile": {
+      "reference_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\feedforward_profile.csv",
+      "graphical_csv": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p1_pid_mworks_20260716\\raw\\graphical_variants\\feedforward_profile.csv",
+      "sample_count": 21,
+      "sample_count_ok": true,
+      "max_abs_time_error": 0.0,
+      "max_abs_error": {
+        "command": 1.1102230246251565e-16,
+        "outer_command": 0.0,
+        "unsaturated_command": 1.1102230246251565e-16,
+        "integral": 0.0,
+        "scheduled_gain": 0.0
+      },
+      "behavior_equivalence_ok": true
+    }
+  },
+  "six_variant_graphical_equivalence": true,
+  "claim_boundary": "Equivalence covers the six configured 21-sample fixed-input MIL trajectories only; dynamic reset/enable, ATTITUDE_THRUST, and Gazebo/PX4/MAVROS remain open."
+}
