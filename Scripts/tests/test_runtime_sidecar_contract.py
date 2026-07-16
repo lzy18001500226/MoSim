@@ -61,6 +61,7 @@ def test_runtime_wrapper_starts_sidecar_and_reuses_ftc_plugin() -> None:
     assert "build_p7_ftc_actuator_plugin.sh" in wrapper
     assert 'MOSIM_ENABLE_FTC_ACTUATOR_PLUGIN="true"' in wrapper
     assert "factoryenvironmentcollect_l2_static_review_clean.sdf" in wrapper
+    assert "factory_l2_sunray_px4_gazebo.launch" in wrapper
     assert '--body-name "uav1::base_link"' in wrapper
     assert "assert_no_conflicting_runtime" in wrapper
     assert wrapper.index("assert_no_conflicting_runtime\n  local plugin_ws") < wrapper.index("start_sidecar\n")
@@ -79,3 +80,9 @@ def test_gazebo_body_resolution_keeps_sunray_fallback() -> None:
     assert resolve_gazebo_body_name("", ["ground_plane", "sunray150_with_mid360"]) == (
         "sunray150_with_mid360::base_link"
     )
+
+
+def test_atomic_json_transport_uses_python38_compatible_file_api() -> None:
+    contract_source = Path("src/orchestration/runtime_sidecar_contract.py").read_text(encoding="utf-8")
+    assert '.open("w", encoding="utf-8", newline="\\n")' in contract_source
+    assert "write_text(json.dumps" not in contract_source

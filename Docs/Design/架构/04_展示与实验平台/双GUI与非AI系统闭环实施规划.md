@@ -311,6 +311,12 @@ P8的`p8_formation_mode1_gazebo_r5_20260717`已取得Sunray ROS1运行权，D6 w
 存活但锁文件已消失。Orchestrator wrapper因此在底层gate和sidecar启动前增加关键进程
 冲突门禁；只有锁与关键进程均释放时才允许新run进入D6/D7 live gate。
 
+D6第二次live尝试`run-20260717-055731-c936a31f`进入真实启动后暴露两个集成缺口：sidecar
+使用了Ubuntu 20.04 Python 3.8不支持的`Path.write_text(newline=...)`，且wrapper只设置
+Factory world却仍沿用Sunray默认planning launch。修复口径是使用Python 3.8兼容的文件
+写入API，并同时冻结Factory world与项目内`factory_l2_sunray_px4_gazebo.launch`；本次
+退出码4发生在MAVROS连接前，不构成控制器跟踪或注入结论。
+
 ### D7 三机完整纵向闭环
 
 - 车辆数选择为3；

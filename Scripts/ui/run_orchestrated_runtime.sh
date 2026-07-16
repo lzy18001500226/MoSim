@@ -76,6 +76,7 @@ run_basic_gate() {
   export GUI="false"
   export KEEP_ALIVE="false"
   export WORLD_FILE="${factory_root}/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+  export SUNRAY_GAZEBO_LAUNCH_FILE="${PROJECT_ROOT}/Scripts/sunray/factory_l2_sunray_px4_gazebo.launch"
   export GAZEBO_MODEL_PATH="${factory_root}/models:${GAZEBO_MODEL_PATH:-}"
   export SUNRAY_UAV_INIT_X="-10.575025"
   export SUNRAY_UAV_INIT_Y="-19.36313"
