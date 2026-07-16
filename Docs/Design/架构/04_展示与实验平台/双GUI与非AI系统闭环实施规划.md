@@ -307,6 +307,10 @@ P8的`p8_formation_mode1_gazebo_r5_20260717`已取得Sunray ROS1运行权，D6 w
 结束。证据位于`Results/ui_platform/flight_console_d6_single_runtime_gate_20260717/`。该结果
 仅证明并发保护有效，不是控制器、注入、遥测或闭环失败；必须等待P8自然释放后新建run重测。
 
+共享运行锁不能作为唯一冲突真值：P8 r5运行期间曾出现Gazebo、PX4、MAVROS与px4ctrl仍
+存活但锁文件已消失。Orchestrator wrapper因此在底层gate和sidecar启动前增加关键进程
+冲突门禁；只有锁与关键进程均释放时才允许新run进入D6/D7 live gate。
+
 ### D7 三机完整纵向闭环
 
 - 车辆数选择为3；

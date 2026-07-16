@@ -30,6 +30,19 @@ cleanup() {
 }
 trap cleanup EXIT TERM INT
 
+assert_no_conflicting_runtime() {
+  local conflicts=()
+  pgrep -x gzserver >/dev/null 2>&1 && conflicts+=("gzserver")
+  pgrep -f '[r]osmaster --core' >/dev/null 2>&1 && conflicts+=("rosmaster")
+  pgrep -f '/bin/[p]x4 ' >/dev/null 2>&1 && conflicts+=("px4")
+  pgrep -f '[m]avros/mavros_node' >/dev/null 2>&1 && conflicts+=("mavros")
+  pgrep -f '[r]un_px4ctrl_(basic|ego_swarm)_gate\.sh' >/dev/null 2>&1 && conflicts+=("sunray_gate")
+  if (( ${#conflicts[@]} > 0 )); then
+    printf 'Sunray ROS1 runtime process conflict: %s\n' "$(IFS=,; echo "${conflicts[*]}")" >&2
+    return 11
+  fi
+}
+
 start_sidecar() {
   set +u
   source /opt/ros/noetic/setup.bash
@@ -49,6 +62,7 @@ start_sidecar() {
 
 run_basic_gate() {
   local controller_profile="$1"
+  assert_no_conflicting_runtime
   local plugin_ws="${PROJECT_ROOT}/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2"
   local plugin_library="${plugin_ws}/devel/lib/libmosim_gazebo_ftc_actuator_plugin.so"
   if [[ ! -f "${plugin_library}" ]]; then

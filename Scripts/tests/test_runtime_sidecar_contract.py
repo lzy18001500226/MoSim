@@ -62,6 +62,9 @@ def test_runtime_wrapper_starts_sidecar_and_reuses_ftc_plugin() -> None:
     assert 'MOSIM_ENABLE_FTC_ACTUATOR_PLUGIN="true"' in wrapper
     assert "factoryenvironmentcollect_l2_static_review_clean.sdf" in wrapper
     assert '--body-name "uav1::base_link"' in wrapper
+    assert "assert_no_conflicting_runtime" in wrapper
+    assert wrapper.index("assert_no_conflicting_runtime\n  local plugin_ws") < wrapper.index("start_sidecar\n")
+    assert "Sunray ROS1 runtime process conflict" in wrapper
 
 
 def test_gazebo_body_resolution_prefers_explicit_factory_vehicle() -> None:
