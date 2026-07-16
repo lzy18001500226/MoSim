@@ -302,6 +302,11 @@ Factory单机运行时的Gazebo模型名是`uav1`，风扰必须明确施加到`
 仅在未显式配置时才按`uav1`、`sunray150`顺序从`/gazebo/model_states`回退解析。D6 live
 gate必须保存`apply_body_wrench`成功ACK及注入前后遥测，不能用命令投递成功替代物理施加成功。
 
+首次有界live尝试`run-20260717-055004-819a3654`在启动ROS/Gazebo前由共享运行锁拒绝：
+P8的`p8_formation_mode1_gazebo_r5_20260717`已取得Sunray ROS1运行权，D6 wrapper以退出码11
+结束。证据位于`Results/ui_platform/flight_console_d6_single_runtime_gate_20260717/`。该结果
+仅证明并发保护有效，不是控制器、注入、遥测或闭环失败；必须等待P8自然释放后新建run重测。
+
 ### D7 三机完整纵向闭环
 
 - 车辆数选择为3；
