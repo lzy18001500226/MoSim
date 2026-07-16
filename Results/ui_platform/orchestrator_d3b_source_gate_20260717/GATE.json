@@ -1,0 +1,9 @@
+{
+  "schema": "mosim.orchestrator.runtime_backend_source_gate.v1",
+  "status": "passed",
+  "errors": [],
+  "runtime_profile_count": 1,
+  "shared_gazebo_px4_touched": false,
+  "actual_end_to_end_runtime_accepted": false,
+  "claim_ceiling": "Runtime catalog and fixed project launcher source only; live startup, readiness, stop, and residue gates remain pending."
+}

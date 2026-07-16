@@ -1,0 +1,19 @@
+{
+  "schema": "mosim.orchestrator.runtime_backend_catalog.v1",
+  "version": 1,
+  "claim_boundary": "Only project-owned, reviewed runtime wrappers may appear here. Entries authorize process launch but do not imply runtime acceptance.",
+  "runtime_profiles": [
+    {
+      "runtime_profile_id": "sunray_ros1_px4ctrl_figure8_single_v1",
+      "experiment_profile_ids": ["px4ctrl_figure8_baseline_v1"],
+      "controller_ids": ["px4ctrl"],
+      "vehicle_counts": [1],
+      "launcher": "wsl_project_script",
+      "wsl_distribution": "Ubuntu-20.04",
+      "operation_id": "px4ctrl_figure8_single",
+      "project_script": "Scripts/sunray/run_px4ctrl_basic_gate.sh",
+      "result_gate": "runtime/RUN_MANIFEST.json",
+      "status": "source_ready_live_gate_pending"
+    }
+  ]
+}

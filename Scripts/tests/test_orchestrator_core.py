@@ -77,7 +77,9 @@ def test_full_offline_contract_with_explicit_test_backend(tmp_path: Path) -> Non
         parameter_set={"wind_speed_mps": 2.0},
     )
     run_id = prepared["run_id"]
-    assert orchestrator.start_run(request_id="start", run_id=run_id)["accepted"] is True
+    started = orchestrator.start_run(request_id="start", run_id=run_id)
+    assert started["accepted"] is True
+    assert started["profile_hash"] == prepared["profile_hash"]
 
     injection = orchestrator.apply_injection(
         request_id="inject", run_id=run_id, command={"target": "wind_speed_mps", "value": 3.0}

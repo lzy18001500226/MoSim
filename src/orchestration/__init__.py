@@ -1,5 +1,6 @@
 """MoSim GUI-independent experiment orchestration."""
 
 from .core import ORCHESTRATOR_COMMANDS, MoSimOrchestrator, RuntimeBackend
+from .runtime_backend import CatalogRuntimeBackend
 
-__all__ = ["MoSimOrchestrator", "ORCHESTRATOR_COMMANDS", "RuntimeBackend"]
+__all__ = ["CatalogRuntimeBackend", "MoSimOrchestrator", "ORCHESTRATOR_COMMANDS", "RuntimeBackend"]

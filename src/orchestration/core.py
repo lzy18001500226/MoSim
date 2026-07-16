@@ -90,13 +90,17 @@ class MoSimOrchestrator:
     display_sessions: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def _response(self, request_id: str, accepted: bool, reason_code: str, **extra: Any) -> dict[str, Any]:
+        run_id = extra.pop("run_id", self.active_run_id)
+        profile_hash = extra.pop("profile_hash", "")
+        if not profile_hash and run_id:
+            profile_hash = self.manifests.get(run_id, {}).get("experiment_profile_hash", "")
         response = {
             "schema": "mosim.orchestrator.response.v1",
             "request_id": request_id or f"req-{uuid.uuid4().hex}",
             "accepted": accepted,
             "reason_code": reason_code,
-            "run_id": extra.pop("run_id", self.active_run_id),
-            "profile_hash": extra.pop("profile_hash", ""),
+            "run_id": run_id,
+            "profile_hash": profile_hash,
             "timestamp": time.time(),
         }
         response.update(extra)
@@ -173,6 +177,7 @@ class MoSimOrchestrator:
             "profile_valid",
             profile_path=str(path.relative_to(PROJECT_ROOT)),
             profile_hash=profile_hash,
+            experiment_profile_id=experiment.get("id", ""),
             controller_id=controller_id,
             controller_profile_id=module.get("profile_id", ""),
             vehicle_count=vehicle_count,
@@ -205,6 +210,7 @@ class MoSimOrchestrator:
             "runtime_started": False,
             "runtime_backend": getattr(self.backend, "backend_id", "unconfigured"),
             "profile_path": validation["profile_path"],
+            "experiment_profile_id": validation["experiment_profile_id"],
             "experiment_profile_hash": validation["profile_hash"],
             "controller_id": controller_id,
             "controller_profile_id": validation["controller_profile_id"],
@@ -259,17 +265,21 @@ class MoSimOrchestrator:
             self._event(manifest, "runtime_start_rejected", backend_result=result)
             self._save(manifest)
             return self._response(request_id, False, result.get("reason_code", "runtime_start_failed"), run_id=run_id)
-        manifest["lifecycle_state"] = "running"
+        lifecycle_state = result.get("lifecycle_state", "running")
+        if lifecycle_state not in {"starting", "running"}:
+            lifecycle_state = "starting"
+        manifest["lifecycle_state"] = lifecycle_state
         manifest["runtime_started"] = True
         self._event(manifest, "runtime_started", backend_result=result)
         self._save(manifest)
-        return self._response(request_id, True, "run_started", run_id=run_id, backend_result=result)
+        reason_code = "run_started" if lifecycle_state == "running" else "run_starting"
+        return self._response(request_id, True, reason_code, run_id=run_id, backend_result=result)
 
     def stop_run(self, *, request_id: str, run_id: str) -> dict[str, Any]:
         manifest = self._get_manifest(run_id)
         if manifest is None:
             return self._response(request_id, False, "run_not_found", run_id=run_id)
-        if manifest["lifecycle_state"] != "running" or self.backend is None:
+        if manifest["lifecycle_state"] not in {"starting", "running"} or self.backend is None:
             return self._response(request_id, False, "run_not_active", run_id=run_id)
         result = self.backend.stop(manifest)
         if not result.get("accepted"):
@@ -284,7 +294,7 @@ class MoSimOrchestrator:
         manifest = self._get_manifest(run_id)
         if manifest is None:
             return self._response(request_id, False, "run_not_found", run_id=run_id)
-        if manifest["lifecycle_state"] == "running":
+        if manifest["lifecycle_state"] in {"starting", "running"}:
             return self._response(request_id, False, "stop_required_before_reset", run_id=run_id)
         if self.backend is not None:
             result = self.backend.reset(manifest)
@@ -373,6 +383,16 @@ class MoSimOrchestrator:
         manifest = self._get_manifest(run_id)
         if manifest is None:
             return self._response(request_id, False, "run_not_found", run_id=run_id)
+        poll = getattr(self.backend, "poll", None)
+        if manifest["lifecycle_state"] in {"starting", "running"} and callable(poll):
+            backend_state = poll(manifest)
+            next_state = backend_state.get("lifecycle_state")
+            if next_state in {"running", "completed", "blocked", "failed"}:
+                manifest["lifecycle_state"] = next_state
+                if next_state in {"completed", "blocked", "failed"}:
+                    manifest["runtime_started"] = False
+                self._event(manifest, "runtime_state_changed", backend_result=backend_state)
+                self._save(manifest)
         return self._response(request_id, True, "run_state_ready", run_id=run_id, manifest=manifest)
 
     def get_telemetry(self, *, request_id: str, run_id: str) -> dict[str, Any]:

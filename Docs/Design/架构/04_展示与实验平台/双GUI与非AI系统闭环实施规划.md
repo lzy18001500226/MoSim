@@ -230,6 +230,12 @@ GUI进程、显示进程和控制进程必须解耦；任何GUI或显示故障�
 Gazebo/PX4，也不构成D3真实runtime验收。D3仍需绑定声明式、白名单化的项目运行脚本，
 完成一次已验收控制器的真实启动、停止、残留检查和同一`run_id`证据后才能关闭。
 
+D3b源码切片已增加`runtime_backend_catalog.json`、固定WSL launcher和stop helper。
+当前只允许`px4ctrl_figure8_baseline_v1 + px4ctrl + 1 UAV`映射到项目已有
+`run_px4ctrl_basic_gate.sh`；catalog不接受任意`command`或`arguments`。backend创建进程后
+首先进入`starting`，不会把“进程存在”冒充`running`。该切片仍需由长驻Orchestrator服务
+持有进程，并在共享runtime释放后补MAVROS readiness、停止cleanup和残留实测。
+
 ### D4 Model Studio MVP
 
 - 原生Syslab APP使用Registry驱动下拉框；
