@@ -1,0 +1,102 @@
+{
+  "schema": "mosim.ui_platform.orchestrator_d3a_gate.v1",
+  "status": "passed",
+  "checks": {
+    "valid_single_profile": true,
+    "controller_profile_mismatch_rejected": true,
+    "three_uav_profile_mismatch_rejected": true,
+    "four_to_nine_scale_gate_closed": true,
+    "run_prepared_as_ready": true,
+    "unconfigured_backend_cannot_start": true,
+    "all_responses_match_required_shape": true,
+    "runtime_not_started": true
+  },
+  "responses": [
+    {
+      "schema": "mosim.orchestrator.response.v1",
+      "request_id": "valid-single",
+      "accepted": true,
+      "reason_code": "profile_valid",
+      "run_id": "",
+      "profile_hash": "60d90979164626311a914fa53f052684ae27404752dd808fe1afa80061ecb0a3",
+      "timestamp": 1784229541.8156788,
+      "profile_path": "Config\\profiles\\experiments\\px4ctrl_figure8_baseline_v1.json",
+      "controller_id": "px4ctrl",
+      "controller_profile_id": "px4ctrl_attitude_thrust_v1",
+      "vehicle_count": 1
+    },
+    {
+      "schema": "mosim.orchestrator.response.v1",
+      "request_id": "wrong-controller",
+      "accepted": false,
+      "reason_code": "profile_controller_mismatch",
+      "run_id": "",
+      "profile_hash": "",
+      "timestamp": 1784229541.816747,
+      "selected_controller_profile": "cascade_pid_attitude_thrust_v1",
+      "profile_controller_profile": "px4ctrl_attitude_thrust_v1"
+    },
+    {
+      "schema": "mosim.orchestrator.response.v1",
+      "request_id": "wrong-profile-scale",
+      "accepted": false,
+      "reason_code": "profile_vehicle_count_mismatch",
+      "run_id": "",
+      "profile_hash": "",
+      "timestamp": 1784229541.8184652,
+      "profile_vehicle_count": 1,
+      "selected_vehicle_count": 3
+    },
+    {
+      "schema": "mosim.orchestrator.response.v1",
+      "request_id": "closed-scale",
+      "accepted": false,
+      "reason_code": "vehicle_scale_gate_pending",
+      "run_id": "",
+      "profile_hash": "",
+      "timestamp": 1784229541.8194501,
+      "vehicle_count": 5
+    },
+    {
+      "schema": "mosim.orchestrator.response.v1",
+      "request_id": "prepare",
+      "accepted": true,
+      "reason_code": "run_prepared",
+      "run_id": "run-20260717-031901-a43c7d0a",
+      "profile_hash": "",
+      "timestamp": 1784229541.8237834,
+      "manifest": {
+        "schema": "mosim.orchestrator.run_manifest.v1",
+        "run_id": "run-20260717-031901-a43c7d0a",
+        "lifecycle_state": "ready",
+        "runtime_started": false,
+        "runtime_backend": "unconfigured",
+        "profile_path": "Config\\profiles\\experiments\\px4ctrl_figure8_baseline_v1.json",
+        "experiment_profile_hash": "60d90979164626311a914fa53f052684ae27404752dd808fe1afa80061ecb0a3",
+        "controller_id": "px4ctrl",
+        "controller_profile_id": "px4ctrl_attitude_thrust_v1",
+        "parameter_set": {},
+        "parameter_set_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "vehicle_count": 1,
+        "created_at": 1784229541.8209255,
+        "updated_at": 1784229541.8209298,
+        "display_sessions": [],
+        "injections": [],
+        "events": [],
+        "evidence_paths": {}
+      }
+    },
+    {
+      "schema": "mosim.orchestrator.response.v1",
+      "request_id": "start",
+      "accepted": false,
+      "reason_code": "runtime_backend_unconfigured",
+      "run_id": "run-20260717-031901-a43c7d0a",
+      "profile_hash": "",
+      "timestamp": 1784229541.8237946
+    }
+  ],
+  "shared_gazebo_px4_touched": false,
+  "actual_end_to_end_runtime_accepted": false,
+  "claim_ceiling": "Offline Orchestrator API, profile/controller/vehicle gates, lifecycle persistence, and explicit runtime-backend rejection only. This is not D3 live-runtime acceptance."
+}

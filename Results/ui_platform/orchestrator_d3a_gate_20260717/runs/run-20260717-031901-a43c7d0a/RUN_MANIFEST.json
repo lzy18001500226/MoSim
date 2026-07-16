@@ -1,0 +1,20 @@
+{
+  "schema": "mosim.orchestrator.run_manifest.v1",
+  "run_id": "run-20260717-031901-a43c7d0a",
+  "lifecycle_state": "ready",
+  "runtime_started": false,
+  "runtime_backend": "unconfigured",
+  "profile_path": "Config\\profiles\\experiments\\px4ctrl_figure8_baseline_v1.json",
+  "experiment_profile_hash": "60d90979164626311a914fa53f052684ae27404752dd808fe1afa80061ecb0a3",
+  "controller_id": "px4ctrl",
+  "controller_profile_id": "px4ctrl_attitude_thrust_v1",
+  "parameter_set": {},
+  "parameter_set_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "vehicle_count": 1,
+  "created_at": 1784229541.8209255,
+  "updated_at": 1784229541.8209298,
+  "display_sessions": [],
+  "injections": [],
+  "events": [],
+  "evidence_paths": {}
+}

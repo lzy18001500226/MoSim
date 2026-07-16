@@ -223,6 +223,13 @@ GUI进程、显示进程和控制进程必须解耦；任何GUI或显示故障�
 - 一个已验收控制器可通过同一API进入真实runtime；
 - 失败、停止和残留检查可复现。
 
+当前实施状态（2026-07-17）：D3a离线契约已通过，证据位于
+`Results/ui_platform/orchestrator_d3a_gate_20260717/`。该切片统一使用`ready`生命周期，
+校验Profile与控制器/车辆数一致性，限制CLI命令白名单和项目内证据路径，并确保未配置
+真实backend时`start_run`明确返回`runtime_backend_unconfigured`。它没有启动共享
+Gazebo/PX4，也不构成D3真实runtime验收。D3仍需绑定声明式、白名单化的项目运行脚本，
+完成一次已验收控制器的真实启动、停止、残留检查和同一`run_id`证据后才能关闭。
+
 ### D4 Model Studio MVP
 
 - 原生Syslab APP使用Registry驱动下拉框；
