@@ -262,6 +262,15 @@ prepare/context/result边界，不证明Gazebo运行或控制性能。
 - 完成运行控制、遥测、注入、证据和三机禁用/启用逻辑；
 - RViz/UE至少达到受控外部窗口，不能只提供文档或假视图。
 
+当前实施状态（2026-07-17）：D5a源码门禁已通过。MoSim已使用QGroundControl
+`v5.0.8`官方custom-build扩展点，在`apps/flight_console/mosim/custom/`实现Run、
+Telemetry、Injection、Displays和Evidence界面，并通过固定Orchestrator客户端提交请求。
+生成overlay不计入冻结上游SHA清单，2638个上游文件仍通过校验。CMake已识别
+`Enabling custom build`，随后因本机缺Ninja和C/C++工具链停止；Qt 6.8.3、VS2022
+Build Tools、Windows SDK和GStreamer也尚未安装。证据位于
+`Results/ui_platform/flight_console_d5_source_gate_20260717/`。D5在完成原生构建、启动和
+GUI人工审核前保持`source_ready_build_blocked`，不得声称MVP运行通过。
+
 ### D6 单机完整纵向闭环
 
 推荐首条链：Factory L2、单机、已验收MWORKS generated-C控制器、PX4融合状态、

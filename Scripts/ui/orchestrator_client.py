@@ -57,23 +57,18 @@ def submit(payload: dict[str, Any], *, timeout_s: float) -> dict[str, Any]:
     }
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("action", choices=("prepare_run", "open_model_context", "get_result_packet"))
-    parser.add_argument("--profile-path")
-    parser.add_argument("--controller-id")
-    parser.add_argument("--vehicle-count", type=int)
-    parser.add_argument("--wind-speed-mps", type=float, default=0.0)
-    parser.add_argument("--run-id")
-    parser.add_argument("--timeout-s", type=float, default=5.0)
-    parser.add_argument("--format", choices=("json", "tsv"), default="tsv")
-    args = parser.parse_args()
-    if not 0.0 <= args.timeout_s <= 5.0:
-        parser.error("--timeout-s must be between 0 and 5 seconds")
+def _active_run() -> dict[str, str]:
+    if not ACTIVE_RUN.is_file():
+        return {}
+    value = json.loads(ACTIVE_RUN.read_text(encoding="utf-8"))
+    return value if isinstance(value, dict) else {}
+
+
+def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     payload: dict[str, Any] = {"schema": "mosim.orchestrator.request.v1", "action": args.action}
     if args.action == "prepare_run":
         if not args.profile_path or not args.controller_id or args.vehicle_count is None:
-            parser.error("prepare_run requires profile, controller, and vehicle count")
+            raise ValueError("prepare_run requires profile, controller, and vehicle count")
         payload.update(
             {
                 "profile_path": args.profile_path,
@@ -82,13 +77,81 @@ def main() -> int:
                 "parameter_set": {"wind_speed_mps": args.wind_speed_mps},
             }
         )
-    else:
-        run_id = args.run_id
-        if not run_id and ACTIVE_RUN.is_file():
-            run_id = json.loads(ACTIVE_RUN.read_text(encoding="utf-8")).get("run_id")
-        if not run_id:
-            parser.error(f"{args.action} requires an active run")
-        payload["run_id"] = run_id
+        return payload
+
+    active = _active_run()
+    run_id = args.run_id or active.get("run_id")
+    if not run_id:
+        raise ValueError(f"{args.action} requires an active run")
+    payload["run_id"] = run_id
+
+    if args.action in {"apply_injection", "restore_injection"}:
+        if not args.target or args.value is None:
+            raise ValueError(f"{args.action} requires target and value")
+        command: dict[str, Any] = {
+            "command_id": f"inj-{uuid.uuid4().hex}",
+            "run_id": run_id,
+            "profile_hash": active.get("profile_hash", ""),
+            "target": args.target,
+            "requested_at": time.time(),
+            "apply_mode": "restore" if args.action == "restore_injection" else "set",
+            "value": args.value,
+            "ramp_s": args.ramp_s,
+            "duration_s": args.duration_s,
+            "restore_policy": "manual",
+            "source": "flight_console",
+        }
+        if args.rotor_index is not None:
+            command["rotor_index"] = args.rotor_index
+        payload["command"] = command
+    elif args.action == "prepare_display_session":
+        payload["displays"] = args.display
+    return payload
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "action",
+        choices=(
+            "prepare_run",
+            "start_run",
+            "stop_run",
+            "reset_run",
+            "apply_injection",
+            "restore_injection",
+            "prepare_display_session",
+            "get_run_state",
+            "get_telemetry",
+            "open_model_context",
+            "get_result_packet",
+        ),
+    )
+    parser.add_argument("--profile-path")
+    parser.add_argument("--controller-id")
+    parser.add_argument("--vehicle-count", type=int)
+    parser.add_argument("--wind-speed-mps", type=float, default=0.0)
+    parser.add_argument("--run-id")
+    parser.add_argument("--target", choices=("wind_speed_mps", "wind_direction_deg", "motor_effectiveness"))
+    parser.add_argument("--value", type=float)
+    parser.add_argument("--rotor-index", type=int, choices=range(1, 5))
+    parser.add_argument("--ramp-s", type=float, default=0.0)
+    parser.add_argument("--duration-s", type=float, default=0.0)
+    parser.add_argument(
+        "--display",
+        action="append",
+        default=[],
+        choices=("rviz_pointcloud", "rviz_gridmap", "unreal", "mworks_result"),
+    )
+    parser.add_argument("--timeout-s", type=float, default=5.0)
+    parser.add_argument("--format", choices=("json", "tsv"), default="tsv")
+    args = parser.parse_args()
+    if not 0.0 <= args.timeout_s <= 5.0:
+        parser.error("--timeout-s must be between 0 and 5 seconds")
+    try:
+        payload = build_payload(args)
+    except ValueError as exc:
+        parser.error(str(exc))
     response = submit(payload, timeout_s=args.timeout_s)
     if args.format == "json":
         print(json.dumps(response, ensure_ascii=False, indent=2))

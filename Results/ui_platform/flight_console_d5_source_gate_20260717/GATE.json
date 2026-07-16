@@ -1,0 +1,41 @@
+{
+  "schema": "mosim.flight_console.d5_source_gate.v1",
+  "gate_id": "qgroundcontrol_custom_source_d5a",
+  "status": "source_ready_build_blocked",
+  "evaluated_at_local": "2026-07-17T05:05:00+08:00",
+  "upstream": {
+    "project": "QGroundControl",
+    "release": "v5.0.8",
+    "commit": "e0816c957602789200ae5ba0af45217f0f2f1db4",
+    "vendor_file_count": 2638,
+    "vendor_manifest_verified": true
+  },
+  "source_checks": {
+    "official_custom_build_extension_used": true,
+    "project_owned_source_separate_from_vendor": true,
+    "generated_overlay_materialized": true,
+    "fixed_orchestrator_client_bridge": true,
+    "run_telemetry_injection_displays_evidence_surfaces": true,
+    "four_to_nine_uav_visible_disabled": true,
+    "unaccepted_controllers_visible_disabled": true,
+    "targeted_tests_passed": 8
+  },
+  "configure_probe": {
+    "command": "cmake -S . -B ../../build/qgc-d5 -G Ninja Multi-Config",
+    "custom_build_detected": true,
+    "status": "blocked",
+    "blockers": [
+      "Ninja Multi-Config build program not found",
+      "C compiler not configured",
+      "C++ compiler not configured",
+      "Qt 6.8.3 not installed",
+      "Visual Studio 2022 C++ Build Tools and Windows SDK not installed",
+      "GStreamer runtime and development packages not installed"
+    ]
+  },
+  "evidence_boundaries": [
+    "This gate proves the MoSim-owned QGroundControl custom source, overlay contract, upstream integrity, and Orchestrator request surface.",
+    "It does not prove that the Windows Flight Console builds, starts, renders, attaches RViz/UE, or controls a runtime.",
+    "System dependency installation is outside the repository and requires explicit user authorization."
+  ]
+}

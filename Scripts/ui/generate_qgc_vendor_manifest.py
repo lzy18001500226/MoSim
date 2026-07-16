@@ -15,6 +15,9 @@ DEFAULT_MANIFEST = DEFAULT_VENDOR.parent / "qgroundcontrol.SHA256SUMS"
 
 def iter_files(root: Path):
     for path in sorted(root.rglob("*"), key=lambda item: item.as_posix().lower()):
+        relative = path.relative_to(root)
+        if relative.parts and relative.parts[0] == "custom":
+            continue
         if path.is_file() and ".git" not in path.parts:
             yield path
 
