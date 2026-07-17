@@ -14,6 +14,7 @@ RViz/Gazebo/UE/Web/QGC只提供审核、操作和视频证据，不拥有控制�
 | `Factory地图导入与全局态势视图.md` | 冻结Factory作为第一张正式UE地图，定义L2静态导入Gazebo、10Hz UE全局姿态轨迹和用户审核门禁 |
 | `RViz与UE低延迟嵌入接口.md` | 定义RViz/UE暖进程复用、attach/detach、嵌入模式、DisplayFrame延迟字段和回退路径 |
 | `双GUI与非AI系统闭环实施规划.md` | 冻结Syslab原生Model Studio、开源底座Flight Console、Orchestrator、动态禁用、单机/三机闭环和3至9机扩展长期Goal |
+| `../00_架构与任务/任务算法与场景地图注册接口.md` | 定义Flight Console消费的任务算法注册、场景地图包、Factory二维地图、地图切换和未知地图隔离契约 |
 | `Flight Console开源选型调研.md` | 比较QGC、XTDrone、Prometheus、MRS、Aerostack2、PlotJuggler与RViz，冻结QGC主底座和XTDrone RViz参考路线 |
 | `Model Studio Syslab原生APP能力门禁.md` | 确认TyAppDesigner原生APP路线、能力边界、单项禁用限制和D1运行/打包验收条件 |
 

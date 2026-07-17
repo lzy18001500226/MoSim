@@ -8,6 +8,7 @@
 | `任务路线图.md` | S0-S12能力块、Goal顺序、验收矩阵和Agent任务选择 |
 | `系统集成接口与编排.md` | Frame、Profile、Manifest、Orchestrator、Launch Plan和兼容性检查 |
 | `ExperimentProfile与兼容性矩阵.md` | ExperimentProfile schema、Profile Validator、兼容性拒绝/降级矩阵、Launch Plan和Run Manifest契约；当前配置入口为 `Config/profiles/` |
+| `任务算法与场景地图注册接口.md` | MissionAlgorithmRegistry、SceneMapRegistry、算法/地图切换、未知地图隔离和QGC离线二维地图扩展契约 |
 | `系统架构问题与决策矩阵.md` | 架构风险、冻结决策和专题落地追踪 |
 | `MoSim实验前端与闭环架构.md` | MWORKS图形化实验母体、MoSim前端、调参/故障注入闭环及现成地面站组件取舍 |
 

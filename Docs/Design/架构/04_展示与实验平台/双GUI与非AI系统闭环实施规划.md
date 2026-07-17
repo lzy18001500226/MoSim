@@ -4,6 +4,8 @@
 >
 > 本文冻结MoSim Model Studio、MoSim Flight Console和Orchestrator的产品边界、
 > 实施顺序与验收门禁。当前Goal不实现AI助手，只预留上下文和受控操作接口。
+> 任务算法、地图注册、QGC二维地图和地图切换的权威接口见
+> `Docs/Design/架构/00_架构与任务/任务算法与场景地图注册接口.md`。
 
 ## 1. 冻结决策
 
@@ -268,6 +270,21 @@ UE是主展示视图；点云RViz和三维栅格RViz通过独立按钮受控打�
 
 Flight Console可以选择已经发布且通过当前runtime门禁的Profile，但不能编辑原子模块、
 底层参数或生成新的控制组合。需要修改组合时必须返回Model Studio。
+
+### 4.5 二维任务地图与场景切换
+
+保留QGC二维地图能力，但使用项目自有`MoSimMapView`和离线地图Provider，不依赖在线地图。
+中央区域支持`UE 3D`、`2D Mission Map`和`UE + 2D split view`。地图、任务算法和图层完全
+由SceneMapRegistry、MissionAlgorithmRegistry和当前ExperimentProfile驱动。
+
+第一张二维地图为Factory L2，显示静态结构、任务边界、出生点、目标、逐机位置、实际/
+规划轨迹，以及算法实际提供的frontier、coverage、assignment和formation图层。后续城市
+地图通过新增注册项、资产包和坐标合同扩展，不修改页面结构。
+
+QGC完整静态底图是`operator_display_map`，未知探索算法只能读取`live_occupancy_map`。
+界面显示先验不代表算法获得先验；该隔离必须由Profile Validator和Run Manifest证明。
+地图切换只允许在run开始前进行，并必须同时切换Gazebo world、UE level、QGC底图、坐标
+变换、出生点、任务边界、高度带和Geofence。
 
 ## 5. 动态禁用规则
 
