@@ -1,0 +1,276 @@
+{
+  "schema": "mosim.sunray_ros1_control_diagnostics.v1",
+  "status": "recorded",
+  "duration_s": 75.0,
+  "uav_ns": "/uav1",
+  "truth_model_name": "uav1",
+  "counts": {
+    "truth": 68053,
+    "gazebo_pose": 22682,
+    "vision_pose": 6004,
+    "local_pose": 3402,
+    "local_odom": 3401,
+    "local_velocity": 3401,
+    "uav_state": 0,
+    "setpoint_raw_local": 0,
+    "target_local": 250,
+    "imu": 3401,
+    "altitude": 0,
+    "extended_state": 340,
+    "fastlio_odom": 0,
+    "fastlio_aligned_odom": 0,
+    "samples": 1305
+  },
+  "hover_like_samples": 0,
+  "hover_like_truth_target_xy_rmse_m": null,
+  "hover_like_truth_target_xy_max_m": null,
+  "hover_like_local_target_xy_rmse_m": null,
+  "hover_like_truth_target_z_rmse_m": null,
+  "hover_like_truth_target_z_mean_abs_m": null,
+  "hover_like_truth_target_z_max_abs_m": null,
+  "hover_like_local_target_z_rmse_m": null,
+  "hover_like_truth_local_z_rmse_m": null,
+  "gazebo_vision_z_rmse_m": 0.0005768686495858698,
+  "gazebo_vision_z_max_abs_m": 0.0042634147474778505,
+  "gazebo_local_z_rmse_m": 0.03911581268736402,
+  "gazebo_local_z_max_abs_m": 0.14312953736138156,
+  "vision_local_z_rmse_m": 0.014296910624108445,
+  "vision_local_z_max_abs_m": 0.14312953874468803,
+  "gazebo_fastlio_aligned_xyz_rmse_m": null,
+  "gazebo_fastlio_aligned_xyz_max_m": null,
+  "gazebo_fastlio_aligned_xy_rmse_m": null,
+  "gazebo_fastlio_aligned_xy_max_m": null,
+  "gazebo_fastlio_aligned_z_rmse_m": null,
+  "gazebo_fastlio_aligned_z_max_abs_m": null,
+  "gazebo_fastlio_aligned_z_first_offset_m": null,
+  "gazebo_fastlio_aligned_z_delta_rmse_m": null,
+  "gazebo_fastlio_aligned_z_delta_max_abs_m": null,
+  "gazebo_fastlio_aligned_metric_note": "xyz/z are absolute and offset-sensitive; xy and z_delta separate horizontal error from initial-frame height offset.",
+  "gazebo_fastlio_raw_xyz_rmse_m": null,
+  "gazebo_fastlio_raw_xyz_max_m": null,
+  "first_row": {
+    "t": 15.568,
+    "truth": {
+      "t": 15.568,
+      "x": -2.6047243278714534e-11,
+      "y": -1.564085991471906e-08,
+      "z": 0.035008143147559144,
+      "vx": -7.633384560616969e-08,
+      "vy": -1.437394753030138e-09,
+      "vz": 7.124805395995748e-08,
+      "roll": 4.350700588279298e-07,
+      "pitch": -7.727759980398438e-10,
+      "yaw": 5.579971465156035e-13
+    },
+    "gazebo_pose": {
+      "t": 15.567,
+      "x": -2.4052784789510266e-11,
+      "y": -1.5638875528608773e-08,
+      "z": 0.03500814301560797,
+      "vx": -7.633385922641236e-08,
+      "vy": -1.4373922860256135e-09,
+      "vz": 7.124805964117687e-08,
+      "roll": 4.350148636489286e-07,
+      "pitch": -7.173721314763185e-10,
+      "yaw": 5.581199744383449e-13
+    },
+    "vision_pose": null,
+    "local_pose": {
+      "t": 15.565,
+      "stamp": 15.566,
+      "age_s": -0.0010000000000012221,
+      "x": -0.003030788153409958,
+      "y": -0.01404842920601368,
+      "z": -0.0369701124727726,
+      "roll": -0.00021951488843380534,
+      "pitch": 0.002685378761774742,
+      "yaw": 0.04391110222743665
+    },
+    "local_odom": {
+      "t": 15.565,
+      "stamp": 15.566,
+      "age_s": -0.0010000000000012221,
+      "frame_id": "map",
+      "child_frame_id": "base_link",
+      "x": -0.003030788153409958,
+      "y": -0.01404842920601368,
+      "z": -0.0369701124727726,
+      "vx": -0.0014522400205420388,
+      "vy": -0.009643987059737052,
+      "vz": -0.08456151751681022,
+      "roll": -0.00021951488843380534,
+      "pitch": 0.002685378761774742,
+      "yaw": 0.04391110222743665
+    },
+    "local_velocity": {
+      "t": 15.566,
+      "stamp": 15.566,
+      "age_s": 0.0,
+      "vx": -0.0012535329442471266,
+      "vy": -0.009726951830089092,
+      "vz": -0.08455519378185272
+    },
+    "uav_state": null,
+    "setpoint_raw_local": null,
+    "target_local": null,
+    "imu": {
+      "t": 15.566,
+      "roll": -0.0002265560190105613,
+      "pitch": 0.002664603718416963,
+      "yaw": 0.043992881095397465
+    },
+    "altitude": null,
+    "extended_state": null,
+    "fastlio_odom": null,
+    "fastlio_aligned_odom": null,
+    "truth_minus_local": {
+      "x": 0.0030307881273627145,
+      "y": 0.014048413565153765,
+      "z": 0.07197825562033175
+    },
+    "gazebo_minus_local": {
+      "x": 0.003030788129357173,
+      "y": 0.014048413567138152,
+      "z": 0.07197825548838058
+    }
+  },
+  "last_row": {
+    "t": 83.519,
+    "truth": {
+      "t": 83.518,
+      "x": -0.012013177043937248,
+      "y": 0.00942084786279943,
+      "z": 0.035998432410312343,
+      "vx": -7.76280234273866e-09,
+      "vy": -1.0219160012626219e-08,
+      "vz": -1.1951187896341864e-07,
+      "roll": -1.440680482054964e-06,
+      "pitch": 9.817922658563092e-06,
+      "yaw": 0.0034859581899602974
+    },
+    "gazebo_pose": {
+      "t": 83.516,
+      "x": -0.012013177029568944,
+      "y": 0.009420847884250924,
+      "z": 0.03599843264458546,
+      "vx": -5.634870897492277e-09,
+      "vy": -1.152296450239114e-08,
+      "vz": -1.1899369742567056e-07,
+      "roll": -1.4412746759295098e-06,
+      "pitch": 9.81832378926423e-06,
+      "yaw": 0.003485958189947875
+    },
+    "vision_pose": {
+      "t": 83.512,
+      "stamp": 83.512,
+      "age_s": 0.0,
+      "x": -0.012013177387416363,
+      "y": 0.0094208475202322,
+      "z": 0.03599843382835388,
+      "roll": -1.4440507965946287e-06,
+      "pitch": 9.819588200464784e-06,
+      "yaw": 0.003485958189890901
+    },
+    "local_pose": {
+      "t": 83.506,
+      "stamp": 83.506,
+      "age_s": 0.0,
+      "x": -0.013425878249108791,
+      "y": 0.019814444705843925,
+      "z": 0.015775837004184723,
+      "roll": 0.0060954456347941536,
+      "pitch": 0.0023802417075474585,
+      "yaw": 0.00041692392410760433
+    },
+    "local_odom": {
+      "t": 83.506,
+      "stamp": 83.506,
+      "age_s": 0.0,
+      "frame_id": "map",
+      "child_frame_id": "base_link",
+      "x": -0.013425878249108791,
+      "y": 0.019814444705843925,
+      "z": 0.015775837004184723,
+      "vx": -0.008851076089608181,
+      "vy": 0.007483807635565215,
+      "vz": -0.016616958966961592,
+      "roll": 0.0060954456347941536,
+      "pitch": 0.0023802417075474585,
+      "yaw": 0.00041692392410760433
+    },
+    "local_velocity": {
+      "t": 83.506,
+      "stamp": 83.506,
+      "age_s": 0.0,
+      "vx": -0.008893655613064766,
+      "vy": 0.007581248413771391,
+      "vz": -0.016549918800592422
+    },
+    "uav_state": null,
+    "setpoint_raw_local": null,
+    "target_local": {
+      "t": 40.527,
+      "frame": 1,
+      "type_mask": 63,
+      "x": NaN,
+      "y": NaN,
+      "z": NaN,
+      "vx": NaN,
+      "vy": NaN,
+      "vz": NaN,
+      "afx": 0.0,
+      "afy": 0.0,
+      "afz": -100.0,
+      "yaw": -0.0013398368610069156,
+      "yaw_rate": -0.0
+    },
+    "imu": {
+      "t": 83.506,
+      "roll": 0.006153974748494624,
+      "pitch": 0.0023223121873369532,
+      "yaw": 0.00040307537967040576
+    },
+    "altitude": null,
+    "extended_state": {
+      "t": 83.426,
+      "vtol_state": 0,
+      "landed_state": 2
+    },
+    "fastlio_odom": null,
+    "fastlio_aligned_odom": null,
+    "truth_minus_target": {
+      "x": NaN,
+      "y": NaN,
+      "z": NaN
+    },
+    "truth_target_xy_error": NaN,
+    "local_minus_target": {
+      "x": NaN,
+      "y": NaN,
+      "z": NaN
+    },
+    "local_target_xy_error": NaN,
+    "truth_minus_local": {
+      "x": 0.0014127012051715435,
+      "y": -0.010393596843044495,
+      "z": 0.02022259540612762
+    },
+    "gazebo_minus_vision": {
+      "x": 3.5784741836408784e-10,
+      "y": 3.640187231507275e-10,
+      "z": -1.1837684235627144e-09
+    },
+    "gazebo_minus_local": {
+      "x": 0.001412701219539847,
+      "y": -0.010393596821593002,
+      "z": 0.020222595640400735
+    },
+    "vision_minus_local": {
+      "x": 0.0014127008616924286,
+      "y": -0.010393597185611725,
+      "z": 0.02022259682416916
+    }
+  },
+  "samples_jsonl": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p4_mpc_runtime_20260716/linear_mpc/control_diagnostics_samples.jsonl",
+  "interrupted": false
+}

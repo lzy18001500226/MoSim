@@ -1,0 +1,75 @@
+{
+  "schema": "mosim.control_platform.p4_mpc_gate.v1",
+  "status": "passed",
+  "controllers": [
+    "linear_mpc",
+    "robust_mpc",
+    "adaptive_mpc",
+    "tube_mpc",
+    "explicit_gain_scheduled_mpc",
+    "ilqr",
+    "mppi"
+  ],
+  "case_count": 7,
+  "lifecycle_case_count": 6,
+  "lifecycle_checks": {
+    "disabled": {
+      "passed": true,
+      "return_code": 0,
+      "status_code": 1,
+      "value": 0.0
+    },
+    "invalid_input": {
+      "passed": true,
+      "return_code": -3,
+      "status_code": -3,
+      "value": 0.0
+    },
+    "unknown_controller": {
+      "passed": true,
+      "return_code": -2,
+      "status_code": -2,
+      "value": 0.0
+    },
+    "invalid_params": {
+      "passed": true,
+      "return_code": -5,
+      "status_code": -5,
+      "value": 0.0
+    },
+    "adaptive_continuity": {
+      "passed": true,
+      "return_code": 0,
+      "status_code": 0,
+      "value": 1.0
+    },
+    "deterministic_reset": {
+      "passed": true,
+      "return_code": 0,
+      "status_code": 0,
+      "value": 1.0
+    }
+  },
+  "maximum_abs_difference": 4.440892098500626e-16,
+  "failure_count": 0,
+  "failures": [],
+  "command_contract": "ATTITUDE_THRUST",
+  "runtime_started": false,
+  "fixed_budget": {
+    "ilqr_iterations": 5,
+    "mppi_samples": 7
+  },
+  "external_gate_decisions": {
+    "learning_mpc": {
+      "decision": "deferred",
+      "selectable": false,
+      "reason": "No frozen learned dynamics or terminal-cost artifact, dataset hash, or independent safety benchmark exists."
+    },
+    "distributed_mpc": {
+      "decision": "deferred_external_gate",
+      "selectable": false,
+      "reason": "Meaningful acceptance requires synchronized multi-UAV state exchange and the shared formation runtime."
+    }
+  },
+  "claim_ceiling": "Seven fixed-size deterministic MPC-family cores pass independent numerical and lifecycle checks. MWORKS, generated C/SIL, timing, and Gazebo runtime remain pending."
+}

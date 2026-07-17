@@ -1,0 +1,30 @@
+{
+  "schema": "mosim.mpc_generated_runtime_provenance.v1",
+  "status": "passed",
+  "backend": "mpc_attitude_thrust",
+  "controller_id": 7,
+  "controller_name": "mppi",
+  "generated_model_name": "MoSim_P4_Mpc_CFunction_Sysblock",
+  "generated_code_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p4_mpc_mworks_20260716/generated_c_lifecycle_fixed/MoSim_P4_Mpc_CFunction_Sysblock",
+  "generated_code_sha256": "ed2ef9d9e1e818da77dcd16a5c262b79fb7e123d9d43ac104de203909e54dfa9",
+  "generated_file_sha256": {
+    "MoSim_P4_Mpc_CFunction_Sysblock.c": "2f5d2cf62beaa88aacbba28a0550d3af9ed7f0924b8fbf7eda8fc5096fd281db",
+    "MoSim_P4_Mpc_CFunction_Sysblock.h": "13045a4493d4a64b9aadeef6252ffee36732d589f1011307f8591de3c947ba3f",
+    "MoSim_P4_Mpc_CFunction_Sysblock_data.c": "42efeda3d1ba5a33549b918fc8c2ed15092f87f8f910c66d6bdbf0d3b4d44300",
+    "MoSim_P4_Mpc_CFunction_Sysblock_private.h": "1e7b6d9ee5bf34b2818307f5b6b624e27508ad61209c0804afef11192142becb",
+    "extern_inc/momodel_extern_ince1.c": "619977aa5b75d6878597f680c357b03bfbc2583103e6d13b6788b718e822ec04"
+  },
+  "build_manifest": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p4_mpc_mworks_20260716/BUILD_MANIFEST.json",
+  "sil_report": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p4_mpc_mworks_20260716/sil/P4_GENERATED_SIL_EQUIVALENCE.json",
+  "runtime_loaded_symbol": null,
+  "provenance_level": "build_only",
+  "build_backend_definition": "MOSIM_PX4CTRL_GENERATED_BACKEND_MPC_ATTITUDE_THRUST",
+  "cmake_backend": "mpc_attitude_thrust",
+  "cmake_generated_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p4_mpc_mworks_20260716/generated_c_lifecycle_fixed/MoSim_P4_Mpc_CFunction_Sysblock",
+  "px4ctrl_executable_path": "/mnt/c/Users/HP/Desktop/MoSim/References/Lab/planning_local/Fast-Drone-250/devel/lib/px4ctrl/px4ctrl_node",
+  "px4ctrl_executable_sha256": "d513aff5a4a40b9e7480068e83bdbfb421d4b3646a84b215608a2560e5fb314a",
+  "binary_generated_symbol_present": true,
+  "runtime_ack": null,
+  "runtime_log": null,
+  "errors": []
+}

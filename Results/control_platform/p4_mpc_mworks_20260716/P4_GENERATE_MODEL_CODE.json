@@ -1,0 +1,79 @@
+{
+  "schema": "mosim.control_platform.p4_generate_model_code.v1",
+  "status": "passed",
+  "api": "GenerateModelCode",
+  "model_name": "MoSim_P4_Mpc_CFunction_Sysblock",
+  "model_path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\models\\MoSim_P4_Mpc_CFunction_Sysblock.mo",
+  "output_directory": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\generated_c_lifecycle_fixed",
+  "check_model": true,
+  "set_model_code_generation_options": true,
+  "generate_model_code": true,
+  "generated_files": [
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\generated_c_lifecycle_fixed\\MoSim_P4_Mpc_CFunction_Sysblock\\ExternalCResource.json",
+      "size": 122,
+      "sha256": "449013d35720e489e35ded33fb9be9678388c140d2f8c17593375abd1811dfbb"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\generated_c_lifecycle_fixed\\MoSim_P4_Mpc_CFunction_Sysblock\\ExternalResources.xml",
+      "size": 308,
+      "sha256": "53106cd288611dab590b41c765ad77dbbaf8485f83b0b758d3a59135371e9908"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\generated_c_lifecycle_fixed\\MoSim_P4_Mpc_CFunction_Sysblock\\MoSim_P4_Mpc_CFunction_Sysblock.c",
+      "size": 3433,
+      "sha256": "2f5d2cf62beaa88aacbba28a0550d3af9ed7f0924b8fbf7eda8fc5096fd281db"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\generated_c_lifecycle_fixed\\MoSim_P4_Mpc_CFunction_Sysblock\\MoSim_P4_Mpc_CFunction_Sysblock.h",
+      "size": 1410,
+      "sha256": "13045a4493d4a64b9aadeef6252ffee36732d589f1011307f8591de3c947ba3f"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\generated_c_lifecycle_fixed\\MoSim_P4_Mpc_CFunction_Sysblock\\MoSim_P4_Mpc_CFunction_Sysblock_data.c",
+      "size": 832,
+      "sha256": "42efeda3d1ba5a33549b918fc8c2ed15092f87f8f910c66d6bdbf0d3b4d44300"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\generated_c_lifecycle_fixed\\MoSim_P4_Mpc_CFunction_Sysblock\\MoSim_P4_Mpc_CFunction_Sysblock_extern_include.h",
+      "size": 879,
+      "sha256": "1be06c1209915e63fefc13800e694a89ec494c3fb77ddca9e6b5cdb535b46f1d"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\generated_c_lifecycle_fixed\\MoSim_P4_Mpc_CFunction_Sysblock\\MoSim_P4_Mpc_CFunction_Sysblock_private.h",
+      "size": 3280,
+      "sha256": "1e7b6d9ee5bf34b2818307f5b6b624e27508ad61209c0804afef11192142becb"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\generated_c_lifecycle_fixed\\MoSim_P4_Mpc_CFunction_Sysblock\\motrace.json",
+      "size": 64314,
+      "sha256": "df651d64d000d23d6c924d2ff1cbbb47574d0b8a90ec2b0ac7183225290218ab"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\generated_c_lifecycle_fixed\\MoSim_P4_Mpc_CFunction_Sysblock\\mwb_main.c",
+      "size": 2037,
+      "sha256": "3c69bde72876df814638cb9b29bea1a88f191f1d4bb65bf81e92f39d4cff5fcc"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\generated_c_lifecycle_fixed\\MoSim_P4_Mpc_CFunction_Sysblock\\mwb_runtime.h",
+      "size": 842,
+      "sha256": "684919e2d2e91a4eeda16c2d96fe90c172a091b3adf6321c923c6c792576949f"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\generated_c_lifecycle_fixed\\MoSim_P4_Mpc_CFunction_Sysblock\\mwb_types.h",
+      "size": 1874,
+      "sha256": "b42b8062d79a807c90b8ccadbaff7a4b923f5549e2655b24621d896211e26821"
+    },
+    {
+      "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p4_mpc_mworks_20260716\\generated_c_lifecycle_fixed\\MoSim_P4_Mpc_CFunction_Sysblock\\extern_inc\\momodel_extern_ince1.c",
+      "size": 20874,
+      "sha256": "619977aa5b75d6878597f680c357b03bfbc2583103e6d13b6788b718e822ec04"
+    }
+  ],
+  "warnings": [
+    "CodeDesign.NamingRules is readonly and was not changed.",
+    "CodePlatform.DataBits is readonly and was not changed."
+  ],
+  "supersedes_output_directory": "Results/control_platform/p4_mpc_mworks_20260716/generated_c",
+  "claim_ceiling": "Official MWORKS GenerateModelCode completed for the lifecycle-fixed bridge. Generated C passed the separate P4 SIL equivalence gate; native graphical Sysblock, px4ctrl integration, timing, and Gazebo runtime remain separate gates."
+}

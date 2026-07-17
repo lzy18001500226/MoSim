@@ -1,0 +1,202 @@
+#!/usr/bin/env python3
+"""Compare official MWORKS-generated P4 C with the project MPC core."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import shlex
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[2]
+SOURCE_DIR = ROOT / "Scripts/control_platform"
+MODEL = "MoSim_P4_Mpc_CFunction_Sysblock"
+CONTROLLERS = [
+    "linear_mpc", "robust_mpc", "adaptive_mpc", "tube_mpc",
+    "explicit_gain_scheduled_mpc", "ilqr", "mppi",
+]
+INPUT_VALUES = {
+    "dt": 0.01,
+    "position_x": 0.2, "position_y": -0.1, "position_z": 0.7,
+    "velocity_x": -0.3, "velocity_y": 0.2, "velocity_z": -0.1,
+    "reference_position_x": 1.0, "reference_position_y": 0.5,
+    "reference_position_z": 1.2, "reference_velocity_x": 0.1,
+    "reference_velocity_y": -0.2, "reference_velocity_z": 0.0,
+    "reference_acceleration_x": 0.05, "reference_acceleration_y": -0.04,
+    "reference_acceleration_z": 0.02, "reference_yaw": 0.3,
+    "mass_kg": 0.67, "gravity_mps2": 9.80665, "hover_percentage": 0.291,
+    "max_tilt_rad": 0.5235987755982988,
+    "min_collective_thrust_n": 0.0, "max_collective_thrust_n": 16.0,
+    "enable": 1.0, "reset": 0.0,
+}
+OUTPUT_FIELDS = [
+    "desired_attitude_w", "desired_attitude_x", "desired_attitude_y", "desired_attitude_z",
+    "normalized_thrust", "collective_thrust_n",
+    "desired_acceleration_x", "desired_acceleration_y", "desired_acceleration_z",
+    "unconstrained_acceleration_x", "unconstrained_acceleration_y",
+    "unconstrained_acceleration_z", "auxiliary_x", "auxiliary_y", "auxiliary_z",
+    "solver_cost", "solver_iterations", "saturated", "status_code",
+]
+
+
+def wsl_path(path: Path) -> str:
+    resolved = path.resolve()
+    return f"/mnt/{resolved.drive[0].lower()}/{resolved.relative_to(resolved.anchor).as_posix()}"
+
+
+def run_wsl(command: list[str], timeout: int = 60) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["wsl", "-d", "Ubuntu-20.04", "bash", "-lc",
+         " ".join(shlex.quote(part) for part in command)],
+        capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=timeout,
+    )
+
+
+def source_harness() -> str:
+    output_args = ",\n        ".join([
+        "output.desired_attitude_wxyz[0]", "output.desired_attitude_wxyz[1]",
+        "output.desired_attitude_wxyz[2]", "output.desired_attitude_wxyz[3]",
+        "output.normalized_thrust", "output.collective_thrust_n",
+        "output.desired_acceleration[0]", "output.desired_acceleration[1]",
+        "output.desired_acceleration[2]", "output.unconstrained_acceleration[0]",
+        "output.unconstrained_acceleration[1]", "output.unconstrained_acceleration[2]",
+        "output.auxiliary[0]", "output.auxiliary[1]", "output.auxiliary[2]",
+        "output.solver_cost", "(double)output.solver_iterations",
+        "(double)output.saturated", "(double)output.status_code",
+    ])
+    return f'''#include <stdio.h>
+#include "mpc_attitude_thrust_core.h"
+static void print_case(int id) {{
+    int step;
+    MosimMpcParams p; MosimMpcState s; MosimMpcOutput output;
+    MosimMpcInput in = {{0.01, {{0.2,-0.1,0.7}}, {{-0.3,0.2,-0.1}},
+        {{1.0,0.5,1.2}}, {{0.1,-0.2,0.0}}, {{0.05,-0.04,0.02}}, 0.3, 1, 0}};
+    mosim_mpc_default_params(&p); mosim_mpc_reset(&s);
+    p.mass_kg = 0.67; p.gravity_mps2 = 9.80665; p.hover_percentage = 0.291;
+    p.max_tilt_rad = 0.5235987755982988;
+    p.min_collective_thrust_n = 0.0; p.max_collective_thrust_n = 16.0;
+    for (step=0; step<3; ++step) (void)mosim_mpc_step(id, &p, &s, &in, &output);
+    printf("%d," "%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,"
+           "%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g\\n",
+           id, {output_args});
+}}
+int main(void) {{ int id; for (id=1; id<=7; ++id) print_case(id); return 0; }}
+'''
+
+
+def generated_harness(public_header: str) -> str:
+    globals_found = re.findall(r"extern struct\s+\w+\s+(\w+);", public_header)
+    if len(globals_found) < 2:
+        raise RuntimeError("cannot resolve generated input/output globals")
+    input_global, output_global = globals_found[:2]
+    assignments = [f"    {input_global}.controller_id_in = (double)id;"]
+    assignments.extend(
+        f"    {input_global}.{name}_in = {value:.17g};" for name, value in INPUT_VALUES.items()
+    )
+    output_args = ",\n        ".join(f"{output_global}.{name}_out" for name in OUTPUT_FIELDS)
+    return f'''#include <stdio.h>
+#include "{MODEL}.h"
+#include "{MODEL}_private.h"
+static void print_case(int id) {{
+    int step;
+{chr(10).join(assignments)}
+    Init();
+    for (step=0; step<3; ++step) Step();
+    printf("%d," "%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,"
+           "%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g\\n",
+           id, {output_args});
+}}
+int main(void) {{ int id; for (id=1; id<=7; ++id) print_case(id); return 0; }}
+'''
+
+
+def parse_rows(stdout: str) -> dict[int, list[float]]:
+    rows = {}
+    for line in stdout.splitlines():
+        if line.strip():
+            values = [float(item) for item in line.split(",")]
+            rows[int(values[0])] = values[1:]
+    return rows
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--generated-dir", type=Path,
+        default=ROOT / f"Results/control_platform/p4_mpc_mworks_20260716/generated_c_lifecycle_fixed/{MODEL}",
+    )
+    parser.add_argument(
+        "--result-dir", type=Path,
+        default=ROOT / "Results/control_platform/p4_mpc_mworks_20260716/sil",
+    )
+    args = parser.parse_args()
+    generated_dir, result_dir = args.generated_dir.resolve(), args.result_dir.resolve()
+    result_dir.mkdir(parents=True, exist_ok=True)
+    source_path = result_dir / "source_sil_harness.c"
+    generated_path = result_dir / "generated_sil_harness.c"
+    source_path.write_text(source_harness(), encoding="utf-8", newline="\n")
+    public_header = (generated_dir / f"{MODEL}.h").read_text(encoding="utf-8")
+    generated_path.write_text(generated_harness(public_header), encoding="utf-8", newline="\n")
+    source_exe, generated_exe = result_dir / "source_gate", result_dir / "generated_gate"
+    source_compile = run_wsl([
+        "gcc", "-std=c99", "-O2", "-Wall", "-Wextra", "-pedantic",
+        wsl_path(SOURCE_DIR / "mpc_attitude_thrust_core.c"), wsl_path(source_path),
+        "-I", wsl_path(SOURCE_DIR), "-lm", "-o", wsl_path(source_exe),
+    ])
+    generated_compile = run_wsl([
+        "gcc", "-std=c99", "-O2", "-Wall", "-Wextra", "-pedantic",
+        wsl_path(generated_dir / f"{MODEL}.c"), wsl_path(generated_dir / f"{MODEL}_data.c"),
+        wsl_path(generated_dir / "extern_inc/momodel_extern_ince1.c"), wsl_path(generated_path),
+        "-I", wsl_path(generated_dir), "-I", wsl_path(generated_dir / "extern_inc"),
+        "-lm", "-o", wsl_path(generated_exe),
+    ])
+    (result_dir / "source_compile.stderr.txt").write_text(source_compile.stderr, encoding="utf-8")
+    (result_dir / "generated_compile.stderr.txt").write_text(generated_compile.stderr, encoding="utf-8")
+    if source_compile.returncode or generated_compile.returncode:
+        report = {
+            "schema": "mosim.control_platform.p4_generated_sil.v1", "status": "blocked",
+            "stage": "compile", "source_return_code": source_compile.returncode,
+            "generated_return_code": generated_compile.returncode,
+        }
+    else:
+        source_run, generated_run = run_wsl([wsl_path(source_exe)]), run_wsl([wsl_path(generated_exe)])
+        source_rows, generated_rows = parse_rows(source_run.stdout), parse_rows(generated_run.stdout)
+        failures, maximum, tolerance = [], 0.0, 1.0e-12
+        for controller_id in range(1, 8):
+            expected, actual = source_rows.get(controller_id), generated_rows.get(controller_id)
+            if expected is None or actual is None or len(expected) != len(actual):
+                failures.append({"controller_id": controller_id, "reason": "missing_or_mismatched_row"})
+                continue
+            for index, (left, right) in enumerate(zip(expected, actual, strict=True)):
+                difference = abs(left - right)
+                maximum = max(maximum, difference)
+                if difference > tolerance:
+                    failures.append({
+                        "controller_id": controller_id, "column": index,
+                        "expected": left, "actual": right, "difference": difference,
+                    })
+        report = {
+            "schema": "mosim.control_platform.p4_generated_sil.v1",
+            "status": "passed" if not failures and source_run.returncode == generated_run.returncode == 0 else "failed",
+            "controllers": CONTROLLERS, "controller_count": len(generated_rows),
+            "steps_per_controller": 3,
+            "compared_columns_per_controller": len(next(iter(generated_rows.values()), [])),
+            "output_fields": OUTPUT_FIELDS, "max_abs_difference": maximum,
+            "tolerance": tolerance, "official_codegen": "MWORKS GenerateModelCode",
+            "failure_count": len(failures), "failures": failures[:30],
+            "claim_ceiling": "Official MWORKS-generated C is numerically equivalent to the project core for seven deterministic MPC cases over three stateful steps; graphical Sysblock equivalence, timing, px4ctrl integration, and Gazebo runtime remain separate gates.",
+        }
+    source_exe.unlink(missing_ok=True)
+    generated_exe.unlink(missing_ok=True)
+    (result_dir / "P4_GENERATED_SIL_EQUIVALENCE.json").write_text(
+        json.dumps(report, indent=2) + "\n", encoding="utf-8",
+    )
+    print(json.dumps(report, indent=2))
+    return 0 if report["status"] == "passed" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

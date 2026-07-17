@@ -1,0 +1,43 @@
+{
+  "schema": "mosim.control_platform.p4_generated_sil.v1",
+  "status": "passed",
+  "controllers": [
+    "linear_mpc",
+    "robust_mpc",
+    "adaptive_mpc",
+    "tube_mpc",
+    "explicit_gain_scheduled_mpc",
+    "ilqr",
+    "mppi"
+  ],
+  "controller_count": 7,
+  "steps_per_controller": 3,
+  "compared_columns_per_controller": 19,
+  "output_fields": [
+    "desired_attitude_w",
+    "desired_attitude_x",
+    "desired_attitude_y",
+    "desired_attitude_z",
+    "normalized_thrust",
+    "collective_thrust_n",
+    "desired_acceleration_x",
+    "desired_acceleration_y",
+    "desired_acceleration_z",
+    "unconstrained_acceleration_x",
+    "unconstrained_acceleration_y",
+    "unconstrained_acceleration_z",
+    "auxiliary_x",
+    "auxiliary_y",
+    "auxiliary_z",
+    "solver_cost",
+    "solver_iterations",
+    "saturated",
+    "status_code"
+  ],
+  "max_abs_difference": 0.0,
+  "tolerance": 1e-12,
+  "official_codegen": "MWORKS GenerateModelCode",
+  "failure_count": 0,
+  "failures": [],
+  "claim_ceiling": "Official MWORKS-generated C is numerically equivalent to the project core for seven deterministic MPC cases over three stateful steps; graphical Sysblock equivalence, timing, px4ctrl integration, and Gazebo runtime remain separate gates."
+}
