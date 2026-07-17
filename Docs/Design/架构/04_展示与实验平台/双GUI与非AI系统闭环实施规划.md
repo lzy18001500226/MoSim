@@ -271,11 +271,11 @@ Flight Console默认直接进入MoSim工作区，传统QGC Fly/Plan页面放入�
 演示主流程。最终布局冻结为：
 
 ```text
-顶部: run_id | Profile | Gazebo/PX4/MAVROS/定位/控制器状态 | 录制 | 急停
-左侧: 运行准备 | 启动/停止/复位 | 解锁/起飞/任务/降落 | Profile摘要
+顶部: run_id | Profile | Gazebo/PX4/MAVROS/定位/控制器状态 | UE录制状态 | 急停
+左侧: 运行准备 | 准备/停止/复位仿真环境 | QGC原生解锁/起飞/任务/降落 | Profile摘要
 中央: UE主视图 | 自由/环绕/跟随视角 | 距离调节 | 飞机切换
 右侧: 遥测 | 扰动注入 | 故障注入 | 安全/Failsafe | ACK
-底部: 事件时间线 | 告警 | 指标摘要 | 截图/录像 | 证据目录
+底部: 事件时间线 | 告警 | 指标摘要 | 截图 | 开始/停止UE录制 | 证据目录
 ```
 
 右侧工作区可以切换：
@@ -299,9 +299,14 @@ Live Inspector / Operation Center
   -> 可选参数与实时曲线、UE/Gazebo/MWORKS延迟、长操作阶段、取消、恢复和日志
 ```
 
-UE是主展示视图；点云RViz和三维栅格RViz通过独立按钮受控打开，不常驻挤占中央区域。
+UE是主展示视图；UE视频默认不录制，由显式录制按钮开始和停止。点云RViz和三维栅格RViz
+通过独立按钮受控打开，并提供只清理MoSim所有会话的`关闭全部RViz`，不常驻挤占中央区域。
 无人机生成前保持自由视角，生成后默认环绕跟随。视角模式、目标飞机和环绕距离是三个
 独立设置。UE/RViz失败只改变显示健康状态，不能中断控制和日志。
+
+QGC原生Fly/Mission按钮继续负责解锁、起飞和任务开始/暂停；MoSim不重复实现第二套飞行
+操作。平台新增的是后台`准备仿真环境`操作，在Operation Center确认runtime达到`ready`后，
+用户继续使用QGC原生飞行流程。
 
 Flight Console可以选择已经发布且通过当前runtime门禁的Profile，但不能编辑原子模块、
 底层参数或生成新的控制组合。需要修改组合时必须返回Model Studio。
@@ -700,12 +705,16 @@ MissionAlgorithmRegistry。训练进程存在不等于策略可用于飞行。
 
 1. Flight Console点击“环境预检”，检查WSL/ROS1、Factory、Gazebo、PX4、MAVROS、状态源、
    控制器、规划器、端口、共享锁和残留进程；
-2. 预检通过后点击“启动仿真”，Orchestrator按Launch Plan依次启动真实runtime、显示会话和证据记录；
-3. 状态门禁全部就绪后，用户依次点击“解锁”“起飞”“开始任务”；
+2. 预检通过后点击“准备仿真环境”，Orchestrator按Launch Plan依次启动真实runtime和显示会话；
+3. 状态门禁全部就绪后，用户复用QGC原生Fly/Mission操作执行“解锁”“起飞”“开始任务”；
 4. UE中央视图显示Factory和实际飞机状态，Flight Console显示遥测、控制误差和安全状态；
-5. 需要工程审核时点击“点云RViz”或“栅格RViz”，关闭显示不影响飞行；
+5. 需要工程审核时点击“点云RViz”或“栅格RViz”；审核结束可点击`关闭全部RViz`，不影响飞行；
 6. 用户可对指定飞机施加风扰、电机效能或故障，界面同时显示请求值、实际值和ACK；
 7. 安全操作只通过“悬停”“返航”“降落”“急停”等受控动作进入Orchestrator。
+
+UE视频默认关闭，仅在演示或取证时点击`开始UE录制`，结束时显式停止并等待flush。ROS、UE和
+RViz基础设施失败最多自动重试一次；codegen、调参和任务执行失败不自动重跑；airborne后
+禁止自动重启任务或runtime，只允许悬停、降落或安全停止。
 
 ### 7.4 结束、证据回传和再次优化
 
