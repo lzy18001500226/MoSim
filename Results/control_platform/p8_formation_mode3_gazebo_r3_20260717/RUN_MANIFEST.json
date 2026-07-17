@@ -1,0 +1,85 @@
+{
+  "schema": "mosim.sunray_ros1.goal5_swarm_baseline_manifest.v1",
+  "result_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p8_formation_mode3_gazebo_r3_20260717",
+  "uav_num": 3,
+  "baseline_only": true,
+  "controller": "Fast-Drone-250 px4ctrl, one instance per UAV",
+  "controller_core_profile": "original",
+  "planner": "not launched; this gate isolates multi-UAV PX4/Gazebo/px4ctrl before EGO-Swarm",
+  "spawn_mode": "sequential=false,staggered=true,preload=false",
+  "world_file": "/mnt/c/Users/HP/Desktop/MoSim/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
+  "gazebo_launch_file": "",
+  "use_sim_time": "true",
+  "mavros_stream_rate": {
+    "rate_hz": 100,
+    "stream_groups": "raw_sensors position extra1 extra2",
+    "set_message_intervals": "true",
+    "message_ids": "105:HIGHRES_IMU 30:ATTITUDE 31:ATTITUDE_QUATERNION 32:LOCAL_POSITION_NED"
+  },
+  "px4_external_vision": {
+    "start_external_fusion": "true",
+    "use_vision_pose": "true",
+    "ekf2_ev_ctrl_override": "",
+    "ekf2_hgt_ref_override": "",
+    "extra_param_overrides": ""
+  },
+  "topics": {
+    "raw_lidar": ["/uav1/livox/lidar", "/uav2/livox/lidar", "/uav3/livox/lidar"],
+    "world_cloud": ["/uav1/livox_world", "/uav2/livox_world", "/uav3/livox_world"],
+    "target_attitude": ["/uav1/mavros/setpoint_raw/target_attitude", "/uav2/mavros/setpoint_raw/target_attitude", "/uav3/mavros/setpoint_raw/target_attitude"]
+  },
+  "pointcloud_to_world": {
+    "rotation_mode": "full",
+    "min_world_z_m": -0.20,
+    "max_world_z_m": 4.00,
+    "max_sensor_range_m": 8.0,
+    "max_abs_odom_xy_m": 700.0
+  },
+  "px4ctrl": {
+    "core_profile": "original",
+    "mass": 0.67,
+    "hover_percentage": 0.294,
+    "thrust_estimate_enable": "false",
+    "Kp_xy": 11,
+    "Kp_z": 4,
+    "Kv_xy": 6.5,
+    "Kv_z": 4,
+    "ctrl_freq_max": 100.0,
+    "use_bodyrate_ctrl": false,
+    "odom_velocity_frame": "body",
+    "smc": {
+      "lambda_xy": 2.0,
+      "lambda_z": 2.0,
+      "eta_xy": 0.1,
+      "eta_z": 0.05,
+      "phi_xy": 0.4,
+      "phi_z": 0.35,
+      "surface_limit_xy": 3.0,
+      "surface_limit_z": 2.5
+    },
+    "indi": {
+      "gain_xy": 0.12,
+      "gain_z": 0.08,
+      "increment_limit_xy": 0.35,
+      "increment_limit_z": 0.20,
+      "measured_accel_limit_xy": 6.0,
+      "measured_accel_limit_z": 4.0,
+      "accel_lpf_alpha": 0.25
+    },
+    "nmpc": {
+      "horizon_s": 0.25,
+      "position_weight_xy": 1.0,
+      "position_weight_z": 1.0,
+      "velocity_weight_xy": 0.05,
+      "velocity_weight_z": 0.05,
+      "control_weight_xy": 0.001,
+      "control_weight_z": 0.001,
+      "accel_limit_xy": 4.0,
+      "accel_limit_z": 2.5,
+      "increment_limit_xy": 4.0,
+      "increment_limit_z": 2.5
+    }
+  },
+  "mission_exit_code": 0,
+  "claim_boundary": "Multi-UAV px4ctrl/PX4/Gazebo takeoff-hover-land baseline only; PX4CTRL_CORE_PROFILE selects original, MWORKS generated, or G9/G10 ATTITUDE_THRUST generated-family controller backend; no EGO-Swarm planning success claim."
+}

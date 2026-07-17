@@ -1,0 +1,6 @@
+{
+  "status": "already_patched",
+  "source": "/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/workspaces/swarm_formation_ws_d1_20260701_173306/src/planner/plan_manage/src/ego_replan_fsm.cpp",
+  "replacements": 0,
+  "formation_preserving_calls": 2
+}

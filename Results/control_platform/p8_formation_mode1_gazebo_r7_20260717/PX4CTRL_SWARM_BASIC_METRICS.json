@@ -1,0 +1,307 @@
+{
+  "schema": "mosim.control_platform.p8_generated_formation_gazebo.v1",
+  "status": "passed",
+  "blockers": [],
+  "uav_num": 3,
+  "per_uav": {
+    "1": {
+      "start_xy": {
+        "x": -12.575025,
+        "y": -19.36313
+      },
+      "home_truth_xy": {
+        "x": -12.57642350018402,
+        "y": -19.343380394531973
+      },
+      "home_truth_z": 0.2557349155022484,
+      "home_odom_xy": {
+        "x": -12.575695037841797,
+        "y": -19.348833084106445
+      },
+      "home_odom_z": 0.2532913386821747,
+      "takeoff_target_odom_z": 1.2532913386821747,
+      "frame_alignment": {
+        "home_truth_xy": {
+          "x": -12.57642350018402,
+          "y": -19.343380394531973
+        },
+        "home_odom_xy": {
+          "x": -12.575695037841797,
+          "y": -19.348833084106445
+        },
+        "home_odom_minus_truth": {
+          "odom_minus_truth_dx_m": 0.0007284623422236791,
+          "odom_minus_truth_dy_m": -0.005452689574472203,
+          "odom_minus_truth_dxy_m": 0.005501134517496901
+        },
+        "final_odom_minus_truth": {
+          "dx_m": 0.007343144653566114,
+          "dy_m": 0.005830634502608234,
+          "dz_m": -0.1197919431951075,
+          "dxy_m": 0.009376463731396938,
+          "dxyz_m": 0.12015834439008413
+        },
+        "note": "px4ctrl commands are generated in the MAVROS/PX4 local frame. Gazebo truth is evaluation-only; a large home odom-vs-truth offset means world-frame planner/evaluation targets must not be mixed with local-frame controller setpoints without a documented transform or PX4 EKF external-position alignment."
+      },
+      "final_truth": {
+        "t": 32.505,
+        "phase": "land",
+        "x": -12.574147076843508,
+        "y": -19.335437644390304,
+        "z": 0.2725844714667826,
+        "vx": -0.02839890373367977,
+        "vy": -0.020726221017267156,
+        "vz": -0.03245195488032089,
+        "roll": 0.013323693693828794,
+        "pitch": -0.004465419711948241,
+        "yaw": 0.0003093722639944843
+      },
+      "final_odom": {
+        "t": 32.494,
+        "phase": "land",
+        "x": -12.566803932189941,
+        "y": -19.329607009887695,
+        "z": 0.1527925282716751,
+        "vx": -0.008577653545676708,
+        "vy": -0.013757365608082283,
+        "vz": -0.23541881837423073,
+        "roll": 0.011537051831911232,
+        "pitch": -0.0037562574129340587,
+        "yaw": 2.30924472034522e-05
+      },
+      "final_state": {
+        "connected": false,
+        "armed": false,
+        "mode": ""
+      },
+      "hover_metrics": {
+        "sample_count": 251,
+        "xy_rmse_m": 0.00708795748199196,
+        "xy_max_m": 0.013339541991747776,
+        "z_abs_rmse_m": 0.02521353331438293,
+        "z_abs_max_m": 0.03103044629096985
+      },
+      "counts": {
+        "truth_rows": 783,
+        "odom_rows": 669,
+        "target_attitude": 268,
+        "debug_px4ctrl": 2444,
+        "raw_lidar": 534
+      },
+      "last_point_counts": {
+        "raw_lidar": 4617
+      }
+    },
+    "2": {
+      "start_xy": {
+        "x": -11.27595,
+        "y": -20.11313
+      },
+      "home_truth_xy": {
+        "x": -11.316647808915603,
+        "y": -20.11095083867977
+      },
+      "home_truth_z": 0.2557097409508772,
+      "home_odom_xy": {
+        "x": -11.31533145904541,
+        "y": -20.116840362548828
+      },
+      "home_odom_z": 0.24838992953300476,
+      "takeoff_target_odom_z": 1.2483899295330048,
+      "frame_alignment": {
+        "home_truth_xy": {
+          "x": -11.316647808915603,
+          "y": -20.11095083867977
+        },
+        "home_odom_xy": {
+          "x": -11.31533145904541,
+          "y": -20.116840362548828
+        },
+        "home_odom_minus_truth": {
+          "odom_minus_truth_dx_m": 0.001316349870192468,
+          "odom_minus_truth_dy_m": -0.005889523869058166,
+          "odom_minus_truth_dxy_m": 0.006034837892185804
+        },
+        "final_odom_minus_truth": {
+          "dx_m": 0.013589890964015083,
+          "dy_m": -0.006938500654843693,
+          "dz_m": -0.09142389136551865,
+          "dxy_m": 0.015258700067538032,
+          "dxyz_m": 0.0926884881749899
+        },
+        "note": "px4ctrl commands are generated in the MAVROS/PX4 local frame. Gazebo truth is evaluation-only; a large home odom-vs-truth offset means world-frame planner/evaluation targets must not be mixed with local-frame controller setpoints without a documented transform or PX4 EKF external-position alignment."
+      },
+      "final_truth": {
+        "t": 32.505,
+        "phase": "land",
+        "x": -11.306269677646144,
+        "y": -20.098204092728945,
+        "z": 0.2564698382019902,
+        "vx": -0.0006638601186061963,
+        "vy": -1.11682153619037e-07,
+        "vz": 0.0019068485031927766,
+        "roll": 6.193872246093619e-07,
+        "pitch": -0.006922644655416309,
+        "yaw": -0.0001166544542555582
+      },
+      "final_odom": {
+        "t": 32.498,
+        "phase": "land",
+        "x": -11.292679786682129,
+        "y": -20.10514259338379,
+        "z": 0.16504594683647156,
+        "vx": 0.043696980048778596,
+        "vy": -0.032468415265897534,
+        "vz": -0.15832473637398575,
+        "roll": -0.00013504872424542193,
+        "pitch": -0.007760773171807139,
+        "yaw": -0.0003022612042785828
+      },
+      "final_state": {
+        "connected": false,
+        "armed": false,
+        "mode": ""
+      },
+      "hover_metrics": {
+        "sample_count": 251,
+        "xy_rmse_m": 0.006127468424997345,
+        "xy_max_m": 0.011422102684848895,
+        "z_abs_rmse_m": 0.024219924738893964,
+        "z_abs_max_m": 0.03022637963294983
+      },
+      "counts": {
+        "truth_rows": 783,
+        "odom_rows": 669,
+        "target_attitude": 267,
+        "debug_px4ctrl": 2434,
+        "raw_lidar": 534
+      },
+      "last_point_counts": {
+        "raw_lidar": 4623
+      }
+    },
+    "3": {
+      "start_xy": {
+        "x": -12.575025,
+        "y": -20.86313
+      },
+      "home_truth_xy": {
+        "x": -12.575000066684522,
+        "y": -20.8630998203872
+      },
+      "home_truth_z": 0.25474004771642655,
+      "home_odom_xy": {
+        "x": -12.5755033493042,
+        "y": -20.872920989990234
+      },
+      "home_odom_z": 0.24892748892307281,
+      "takeoff_target_odom_z": 1.2489274889230728,
+      "frame_alignment": {
+        "home_truth_xy": {
+          "x": -12.575000066684522,
+          "y": -20.8630998203872
+        },
+        "home_odom_xy": {
+          "x": -12.5755033493042,
+          "y": -20.872920989990234
+        },
+        "home_odom_minus_truth": {
+          "odom_minus_truth_dx_m": -0.0005032826196771367,
+          "odom_minus_truth_dy_m": -0.00982116960303614,
+          "odom_minus_truth_dxy_m": 0.009834056424836604
+        },
+        "final_odom_minus_truth": {
+          "dx_m": 0.006751963004292705,
+          "dy_m": -0.004703595501016622,
+          "dz_m": -0.12324985188140253,
+          "dxy_m": 0.008228779681612649,
+          "dxyz_m": 0.12352424378977668
+        },
+        "note": "px4ctrl commands are generated in the MAVROS/PX4 local frame. Gazebo truth is evaluation-only; a large home odom-vs-truth offset means world-frame planner/evaluation targets must not be mixed with local-frame controller setpoints without a documented transform or PX4 EKF external-position alignment."
+      },
+      "final_truth": {
+        "t": 32.505,
+        "phase": "land",
+        "x": -12.579696604117574,
+        "y": -20.839536593097616,
+        "z": 0.26402302902831415,
+        "vx": -0.03008946659585004,
+        "vy": -0.022854821976079177,
+        "vz": 0.002936692833093772,
+        "roll": 0.015203137392260426,
+        "pitch": -0.014007085941457347,
+        "yaw": 0.0004869630552717985
+      },
+      "final_odom": {
+        "t": 32.498,
+        "phase": "land",
+        "x": -12.572944641113281,
+        "y": -20.844240188598633,
+        "z": 0.14077317714691162,
+        "vx": -0.007984697209542695,
+        "vy": -0.024677953558587165,
+        "vz": -0.2607996835663739,
+        "roll": 0.013706305168105365,
+        "pitch": -0.00968304163987195,
+        "yaw": 0.0003582413910469964
+      },
+      "final_state": {
+        "connected": false,
+        "armed": false,
+        "mode": ""
+      },
+      "hover_metrics": {
+        "sample_count": 251,
+        "xy_rmse_m": 0.010835340351247622,
+        "xy_max_m": 0.016113435905250356,
+        "z_abs_rmse_m": 0.040148256570438745,
+        "z_abs_max_m": 0.046863704919815063
+      },
+      "counts": {
+        "truth_rows": 783,
+        "odom_rows": 669,
+        "target_attitude": 267,
+        "debug_px4ctrl": 2429,
+        "raw_lidar": 535
+      },
+      "last_point_counts": {
+        "raw_lidar": 4597
+      }
+    }
+  },
+  "min_inter_uav_distance_m": 1.4656382577865157,
+  "min_inter_uav_pair": [
+    2,
+    3
+  ],
+  "claim_boundary": "One P8 mode drives three real Sunray/PX4/MAVROS/px4ctrl vehicles in Gazebo through official MWORKS-generated C; Gazebo truth is evaluation-only.",
+  "formation_mode_id": 1,
+  "formation_mode": "leader_follower",
+  "official_generated_library": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p8_formation_generated_runtime_20260717/libmosim_p8_formation_generated.so",
+  "generated_step_count": 500,
+  "generated_velocity_feedforward_scale": 0.0,
+  "generated_position_rate_limit_mps": 0.35,
+  "velocity_interface_contract": "Generated positions are authoritative references. Core velocity outputs are bounded correction commands, not trajectory derivatives, so px4ctrl feedforward is disabled by default to avoid duplicating its position feedback.",
+  "position_interface_contract": "Raw generated formation references are Euclidean-rate-limited before px4ctrl; tracking metrics use the applied command while raw formation errors remain in each tracking CSV.",
+  "cbf_runtime_injection": {
+    "target_pair_distance_m": 0.85,
+    "timeout_s": 5.0,
+    "injection_steps": 0,
+    "generated_c_event_observed": false
+  },
+  "takeoff_request_count": 53,
+  "takeoff_requests_by_uav": {
+    "1": 33,
+    "2": 12,
+    "3": 8
+  },
+  "takeoff_strategy": "sequential_first_unarmed",
+  "land_request_count": 33,
+  "land_requests_by_uav": {
+    "1": 11,
+    "2": 11,
+    "3": 11
+  },
+  "land_strategy": "bounded_retry_while_armed",
+  "frame_contract": "common_xy = start_xy + odom_xy - home_odom_xy; controller_xy = home_odom_xy + common_xy - start_xy"
+}

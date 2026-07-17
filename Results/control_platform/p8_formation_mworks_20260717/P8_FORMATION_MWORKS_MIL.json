@@ -1,0 +1,39 @@
+{
+  "schema": "mosim.control_platform.p8_formation_mworks_mil.v1",
+  "status": "passed",
+  "tool": "MWORKS Sysplorer 2026a",
+  "sample_time_s": 0.02,
+  "check_model": {
+    "status": "passed",
+    "model_count": 10,
+    "bridge_count": 1,
+    "fixture_count": 9
+  },
+  "simulation": {
+    "status": "passed",
+    "mode_count": 9,
+    "modes": [
+      {"mode_id": 1, "mode": "leader_follower", "active_agents": 3, "failed_mask": 0, "safety_corrections": 0, "status_code": 1},
+      {"mode_id": 2, "mode": "virtual_structure", "active_agents": 3, "failed_mask": 0, "safety_corrections": 0, "status_code": 1},
+      {"mode_id": 3, "mode": "consensus", "active_agents": 3, "failed_mask": 0, "safety_corrections": 0, "status_code": 1},
+      {"mode_id": 4, "mode": "containment", "active_agents": 3, "failed_mask": 0, "safety_corrections": 0, "status_code": 1},
+      {"mode_id": 5, "mode": "formation_tracking", "active_agents": 3, "failed_mask": 0, "safety_corrections": 0, "status_code": 1},
+      {"mode_id": 6, "mode": "formation_reconfiguration", "active_agents": 3, "failed_mask": 0, "safety_corrections": 0, "status_code": 1},
+      {"mode_id": 7, "mode": "fault_tolerant_formation", "active_agents": 2, "failed_mask": 2, "safety_corrections": 0, "status_code": 1},
+      {"mode_id": 8, "mode": "formation_cbf", "active_agents": 3, "failed_mask": 0, "safety_corrections": 3, "status_code": 1},
+      {"mode_id": 9, "mode": "distributed_mpc_formation", "active_agents": 3, "failed_mask": 0, "safety_corrections": 0, "status_code": 1}
+    ]
+  },
+  "official_codegen": {
+    "api": "GenerateModelCode",
+    "status": "passed",
+    "sil_evidence": "sil/P8_GENERATED_SIL_EQUIVALENCE.json",
+    "max_abs_difference": 0.0
+  },
+  "screenshots": {
+    "diagram": "screenshots/MoSim_P8_FORMATION_CBF_MIL_diagram.png",
+    "result_viewer": "screenshots/live_phase/45064_0xFD0DF8_MoSim_P8_FORMATION_CBF_MIL - 结果查看器.png",
+    "capture_manifest": "screenshots/live_phase/capture_manifest.json"
+  },
+  "claim_ceiling": "Real Sysplorer check and MIL plus official generated-C SIL are accepted for nine fixed-size three-UAV formation-reference modes. Gazebo multi-UAV closed-loop acceptance remains separate."
+}

@@ -1,0 +1,109 @@
+{
+  "schema": "mosim.control_platform.p8_formation_source_gate.v1",
+  "status": "passed",
+  "mode_count": 9,
+  "distinct_signature_count": 9,
+  "failures": [],
+  "rows": [
+    {
+      "mode": "1",
+      "status": "1",
+      "active": "3",
+      "failed_mask": "0",
+      "safety_corrections": "0",
+      "min_distance": "0.250000000",
+      "rmse": "1.419661188",
+      "signature": "2.799038106",
+      "desired_follower_distance": "1.500000000"
+    },
+    {
+      "mode": "2",
+      "status": "1",
+      "active": "3",
+      "failed_mask": "0",
+      "safety_corrections": "0",
+      "min_distance": "0.250000000",
+      "rmse": "1.581627679",
+      "signature": "3.106965595",
+      "desired_follower_distance": "1.500000000"
+    },
+    {
+      "mode": "3",
+      "status": "1",
+      "active": "3",
+      "failed_mask": "0",
+      "safety_corrections": "0",
+      "min_distance": "0.250000000",
+      "rmse": "1.826597142",
+      "signature": "3.866538106",
+      "desired_follower_distance": "1.500000000"
+    },
+    {
+      "mode": "4",
+      "status": "1",
+      "active": "3",
+      "failed_mask": "0",
+      "safety_corrections": "0",
+      "min_distance": "0.250000000",
+      "rmse": "1.196406657",
+      "signature": "2.250000000",
+      "desired_follower_distance": "1.500000000"
+    },
+    {
+      "mode": "5",
+      "status": "1",
+      "active": "3",
+      "failed_mask": "0",
+      "safety_corrections": "0",
+      "min_distance": "0.250000000",
+      "rmse": "1.485559157",
+      "signature": "2.921538106",
+      "desired_follower_distance": "1.500000000"
+    },
+    {
+      "mode": "6",
+      "status": "1",
+      "active": "3",
+      "failed_mask": "0",
+      "safety_corrections": "0",
+      "min_distance": "0.250000000",
+      "rmse": "1.331579540",
+      "signature": "2.869374769",
+      "desired_follower_distance": "0.975000000"
+    },
+    {
+      "mode": "7",
+      "status": "1",
+      "active": "2",
+      "failed_mask": "2",
+      "safety_corrections": "0",
+      "min_distance": "0.250000000",
+      "rmse": "0.941629793",
+      "signature": "-0.350000000",
+      "desired_follower_distance": "1.874166481"
+    },
+    {
+      "mode": "8",
+      "status": "1",
+      "active": "3",
+      "failed_mask": "0",
+      "safety_corrections": "3",
+      "min_distance": "0.250000000",
+      "rmse": "1.450869126",
+      "signature": "2.499038106",
+      "desired_follower_distance": "1.502017927"
+    },
+    {
+      "mode": "9",
+      "status": "1",
+      "active": "3",
+      "failed_mask": "0",
+      "safety_corrections": "0",
+      "min_distance": "0.250000000",
+      "rmse": "0.277128129",
+      "signature": "0.196242285",
+      "desired_follower_distance": "0.332382013"
+    }
+  ],
+  "claim_ceiling": "Deterministic fixed-size three-UAV formation reference and diagnostics only; MWORKS generated C and Gazebo runtime are separate gates."
+}
