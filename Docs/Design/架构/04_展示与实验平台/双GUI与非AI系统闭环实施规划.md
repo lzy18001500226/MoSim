@@ -290,6 +290,13 @@ Algorithm Lab
 Learning Training
   -> Isaac后端、训练场景、速度范围、环境数、步数、seed、随机化、导出格式
   -> 生成配置、开始训练、训练曲线、导出、注册、Gazebo验证、经典规划器对比
+
+Auto Tuning
+  -> 参数空间、约束、调参/验证场景、目标、优化器、预算、并行数和seed
+  -> 预检、开始/暂停/恢复、排行榜、Top-K验证、接受参数集和回滚
+
+Live Inspector / Operation Center
+  -> 可选参数与实时曲线、UE/Gazebo/MWORKS延迟、长操作阶段、取消、恢复和日志
 ```
 
 UE是主展示视图；点云RViz和三维栅格RViz通过独立按钮受控打开，不常驻挤占中央区域。
@@ -398,6 +405,24 @@ analyze_result
 权限检查、幂等、ACK、日志和证据关联。Agent只能填表和提交相同Action，不能绕过禁用状态、
 直接启动训练进程、发布轨迹或调用ROS/PX4危险命令。
 
+自动调参与操作中心扩展Action：
+
+```text
+create_tuning_study
+validate_tuning_study
+start_tuning
+pause_tuning
+resume_tuning
+stop_tuning
+validate_top_candidates
+promote_parameter_set
+get_operation_progress
+cancel_operation
+retry_failed_stage
+subscribe_signals
+get_latency_health
+```
+
 ```text
 validate_experiment_profile
 prepare_run
@@ -491,6 +516,16 @@ MAVROS单独连接推进到`airborne`。
 Flight Console默认只显示一个随状态变化的主操作按钮，并保留独立的悬停、降落和急停。
 工程模式可以显示完整状态转换，但不能获得普通模式没有的飞行权限。
 
+#### 6.1.1 长操作进度与按钮防重
+
+所有预计超过2秒的操作必须先返回`operation_id`，再通过OperationProgress持续报告
+`stage_id`、真实百分比或indeterminate、elapsed、ETA/timeout budget、heartbeat、cancel mode、
+逐机/逐子系统状态、reason code和日志。进度只能由阶段ACK推进，不能按墙钟时间伪造。
+
+首次点击后按钮立即进入pending并锁定；网络重试或重复点击复用同一`request_id`并返回同一
+operation。请求超时后先查询operation，不能盲目重启。启动、停止、清理、codegen、训练、
+调参和结果分析都遵循该规则；airborne后的取消转换为受控悬停/降落而不是杀进程。
+
 ### 6.2 运行权威、重连与幂等
 
 Orchestrator是`run_id`、Profile、进程、注入、显示会话和结果包的唯一所有者。两个GUI都是
@@ -545,6 +580,10 @@ evaluation_allowed
 Flight Console可以降采样显示，但结果包必须保留评价所需的原始时间戳数据。多机遥测按
 `vehicle_id`隔离，并同时提供团队级最小间距、编队误差、通信新鲜度和安全状态。字段过期时
 显示`stale`，不得保持最后一个正常值而继续显示绿色健康状态。
+
+通用信号查看、MWORKS实时分析镜像、自动调参、OperationProgress和分段延迟合同见
+`参数信号自动调参与运行可观测性详细设计.md`。Flight Console显示的是低延迟运行视图，
+MWORKS是可降采样分析镜像；两者订阅同一Signal Registry且都不进入控制链。
 
 ### 6.4 注入事务与物理ACK
 
@@ -885,6 +924,14 @@ readiness要求三机全部满足；`telemetry.json`按`vehicles[]`输出逐机�
 
 按4、5、6、7、8、9逐级验收，不一次性解除全部禁用。每级至少验证启动资源、
 通信命名空间、最小间距、编队误差、障碍穿越、安全介入、运行稳定性和显示性能。
+
+### D9 参数、信号、延迟与操作中心
+
+- 实现Flight Console Live Inspector和MWORKS Live Analysis Mirror；
+- 实现真实阶段进度、加载动画、防重复点击、取消、恢复和停止清理；
+- 显示Gazebo/Bridge/UE分段延迟、P50/P95、频率、丢包、插值缓冲和clock状态；
+- 将现有调参规范接入Model Studio Auto Tuning，完成MIL/SIL搜索和Gazebo Top-K验证；
+- 详细Schema、UI和完成定义见`参数信号自动调参与运行可观测性详细设计.md`。
 
 ## 9. AI助手产品设计与权限边界
 

@@ -218,6 +218,11 @@ YOPO训练表单至少包含：算法、训练Backend、Factory/随机障碍场�
 时，控件保持可见但禁用，并显示`disabled_reason`、缺失依赖和解锁动作。界面不得用静态
 训练曲线、示例策略或伪ACK替代真实后端。
 
+右侧同时提供`Live Inspector`入口，底部提供全局`Operation Center`。前者复用QGC Fact System、
+MAVLink Inspector和图表基础能力，并接入ROS、控制器、规划器、安全与故障信号；后者显示
+Gazebo/PX4/UE/RViz、codegen、训练和自动调参的真实阶段。完整合同见
+`参数信号自动调参与运行可观测性详细设计.md`。
+
 ## 5. 二维地图工具与任务语义
 
 ### 5.1 工具栏
