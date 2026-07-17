@@ -1,0 +1,56 @@
+{
+  "schema": "mosim.control_platform.p9_learning_runtime_closeout.v1",
+  "status": "closed_with_performance_blocker",
+  "execution_status": "passed",
+  "acceptance_status": "blocked",
+  "artifact_sha256": "4d480c6ad4738da75b4f7bfdf824658b7878ea511a52935ed2be4fff0d043e45",
+  "matrix": "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_GAZEBO_AB_MATRIX.json",
+  "routes": {
+    "trained_neural_residual": {
+      "implementation_status": "implemented",
+      "selectable": false,
+      "runtime_provenance": "passed_in_all_three_conditions",
+      "landing_disarm": "passed_in_all_three_conditions",
+      "nominal_repeatability": {
+        "r3_single_case_status": "passed",
+        "r3_steady_hover_z_rmse_m": 0.013912928454054289,
+        "r4_matrix_status": "blocked",
+        "r4_steady_hover_z_rmse_m": 0.023688417726852564
+      },
+      "xyz_rmse_change_vs_cascade_fraction": {
+        "nominal": -0.13041725367551424,
+        "wind": 0.09809061250664866,
+        "parameter_mismatch": -0.29534081903755793
+      },
+      "conclusion": "Report-worthy wind A/B improvement, but no stable nominal or parameter-mismatch superiority and no strict matrix acceptance."
+    },
+    "rl_gain_scheduler": {
+      "implementation_status": "implemented",
+      "selectable": false,
+      "runtime_provenance": "passed_in_all_three_conditions",
+      "landing_disarm": "passed_in_all_three_conditions",
+      "nominal_repeatability": {
+        "r3_single_case_status": "blocked",
+        "r3_steady_hover_z_rmse_m": 0.022063045349914403,
+        "r4_matrix_status": "blocked",
+        "r4_steady_hover_z_rmse_m": 0.020065558933988627
+      },
+      "xyz_rmse_change_vs_cascade_fraction": {
+        "nominal": -0.05381767222610385,
+        "wind": 0.08801092283926681,
+        "parameter_mismatch": -0.19579555943503507
+      },
+      "conclusion": "Report-worthy wind A/B improvement, but the strict nominal gate missed by 0.0000656 m in the full matrix and parameter-mismatch performance did not beat Cascade."
+    }
+  },
+  "shared_runtime": {
+    "preflight": "passed",
+    "lock_released": true,
+    "profiles": ["cascade_pid", "trained_neural_residual", "rl_gain_scheduler"],
+    "conditions": ["nominal", "wind", "parameter_mismatch"],
+    "all_case_execution_count": 9,
+    "all_learning_provenance_checks_passed": true,
+    "all_landing_disarm_checks_passed": true
+  },
+  "claim_boundary": "Both frozen learning routes complete source, fallback, MWORKS MIL, official code generation, generated-C SIL, px4ctrl runtime acknowledgement, physical wind injection, and 3x3 Gazebo/PX4/MAVROS execution. Neither route is selectable because the strict runtime acceptance matrix is blocked."
+}

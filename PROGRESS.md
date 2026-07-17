@@ -8,6 +8,14 @@
 
 ## 2026-07-14 CST - Current Active Context
 
+2026-07-17 P9 learning-control closeout: bounded Neural Residual and RL Gain
+Scheduler have complete frozen-artifact -> fixed-size C -> MWORKS MIL -> official
+codegen -> 19-column SIL -> px4ctrl -> Gazebo/PX4/MAVROS 3x3 evidence at
+`Results/control_platform/p9_learning_gazebo_r4_20260717/`. Execution and
+provenance passed, but strict performance acceptance is blocked; both profiles
+remain `implemented/selectable=false`. Wind XYZ RMSE improved 9.81% and 8.80%
+versus Cascade, while nominal/parameter-mismatch superiority was not stable.
+
 - Operating mode: single active Codex thread. Legacy visible-thread dispatch,
   R1/R2/R3 department routing, CoAgentOps patrol dispatch, dispatch-ticket SLOs,
   and dead-thread automation are not current project workflow.

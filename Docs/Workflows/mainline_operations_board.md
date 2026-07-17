@@ -52,6 +52,18 @@ injection ACK, telemetry, metrics, display binding, and result return. D7 is the
 equivalent three-UAV run; only after both pass may 4-9 UAV formation gates be
 opened one count at a time. AI remains interface-only in this goal.
 
+2026-07-17 P9 learning-control closeout: frozen bounded Neural Residual and RL
+Gain Scheduler now complete training-artifact freeze, fallback, fixed-size C,
+real Sysplorer MWORKS MIL, official code generation, zero-difference 19-column
+SIL, px4ctrl runtime acknowledgement, and a ROS1 Gazebo/PX4/MAVROS 3x3 A/B at
+`Results/control_platform/p9_learning_gazebo_r4_20260717/`. Matrix execution
+passed, all learning runtime provenance checks passed, and all nine cases
+landed/disarmed. Strict performance acceptance is blocked. Wind XYZ RMSE
+improved 9.81%/8.80% versus Cascade for Neural/RL, while nominal and parameter
+mismatch did not show stable superiority. Both remain
+`implemented/selectable=false`; use them as report-ready experimental routes,
+not accepted default controllers.
+
 ## 2. Current Mode
 
 | Item | Current Rule |

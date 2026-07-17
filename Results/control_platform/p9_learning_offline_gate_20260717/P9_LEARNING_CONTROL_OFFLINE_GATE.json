@@ -1,0 +1,55 @@
+{
+  "schema": "mosim.learning_control.offline_gate.v1",
+  "status": "passed",
+  "artifact": "Config/control_platform/learning_control_artifact.json",
+  "artifact_hash_gate": {
+    "status": "passed",
+    "declared_sha256": "4d480c6ad4738da75b4f7bfdf824658b7878ea511a52935ed2be4fff0d043e45",
+    "computed_sha256": "4d480c6ad4738da75b4f7bfdf824658b7878ea511a52935ed2be4fff0d043e45"
+  },
+  "compiled_c_equivalence": {
+    "status": "passed",
+    "compiled_with": "Ubuntu-20.04 gcc -std=c99 -O2",
+    "observation_count": 64,
+    "scalar_comparisons": 384,
+    "max_abs_error": 2.7755575615628914e-16
+  },
+  "fallback_gate": {
+    "status": "passed",
+    "cases": {
+      "disabled": {
+        "status_code": 1,
+        "fallback_active": true,
+        "values": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "nonfinite": {
+        "status_code": 2,
+        "fallback_active": true,
+        "values": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "neural_residual_ab": {
+    "status": "passed",
+    "baseline_rmse_mps2": 0.24264702639688865,
+    "learned_rmse_mps2": 0.12837816274535346,
+    "rmse_improvement_fraction": 0.47092628889104904
+  },
+  "rl_gain_scheduler_ab": {
+    "status": "passed",
+    "baseline_mean_cost": 499.11127328076583,
+    "learned_mean_cost": 488.7692293732583,
+    "rmse_improvement_fraction": 0.020720918282464362,
+    "cost_improvement_fraction": 0.020720918282464362
+  },
+  "gazebo_runtime_status": "pending_shared_runtime_release",
+  "claim_boundary": "Trained frozen policies, compiled C equivalence, fallback, and held-out offline A/B only; no Gazebo/PX4 claim."
+}

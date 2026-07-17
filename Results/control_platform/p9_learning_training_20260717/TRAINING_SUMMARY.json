@@ -1,0 +1,83 @@
+{
+  "schema": "mosim.learning_control_artifact.v1",
+  "status": "trained",
+  "dataset": {
+    "manifest": {
+      "schema": "mosim.learning_dataset.v1",
+      "kind": "domain_randomized_quadrotor_outer_loop_residual",
+      "seed": 20260717,
+      "sample_count": 16000,
+      "observation_fields": [
+        "position_error_x",
+        "position_error_y",
+        "position_error_z",
+        "velocity_error_x",
+        "velocity_error_y",
+        "velocity_error_z",
+        "reference_acceleration_x",
+        "reference_acceleration_y",
+        "reference_acceleration_z",
+        "velocity_x",
+        "velocity_y",
+        "velocity_z"
+      ],
+      "target_fields": [
+        "residual_acceleration_x",
+        "residual_acceleration_y",
+        "residual_acceleration_z"
+      ],
+      "residual_limit_mps2": 0.6,
+      "runtime_log_validation_sources": [
+        "Results/sunray_ros1/p1_pid_cascade_runtime_r4_hover0291_20260716",
+        "Results/sunray_ros1/p1_pid_neural_runtime_r1_hover0291_20260716",
+        "Results/sunray_ros1/p1_pid_feedforward_runtime_r6_ff05_hover0291_20260716"
+      ],
+      "claim_boundary": "Synthetic domain-randomized outer-loop identification data; listed runtime logs ground feature ranges but are not relabeled as training truth."
+    },
+    "manifest_sha256": "171a91c6fecf6326a7d07d3f25b56ca0c6ab912b3aae12a682d35b5ec8a24fbd",
+    "train_seed": 20260717,
+    "evaluation_seed": 20260718
+  },
+  "observation": {
+    "size": 12,
+    "scale": [
+      2.5,
+      2.5,
+      2.5,
+      3.0,
+      3.0,
+      3.0,
+      3.0,
+      3.0,
+      3.0,
+      3.0,
+      3.0,
+      3.0
+    ]
+  },
+  "fallback": {
+    "controller": "cascade_pid",
+    "conditions": [
+      "disabled",
+      "nonfinite_input",
+      "artifact_mismatch",
+      "output_out_of_bounds"
+    ]
+  },
+  "claim_boundary": "Frozen deterministic inference artifacts for bounded outer-loop augmentation; Gazebo/PX4 acceptance is a separate gate.",
+  "artifact_sha256": "4d480c6ad4738da75b4f7bfdf824658b7878ea511a52935ed2be4fff0d043e45",
+  "neural_residual_metrics": {
+    "evaluation_samples": 4000,
+    "baseline_zero_residual_rmse_mps2": 0.24264702639688865,
+    "model_rmse_mps2": 0.12837816274535346,
+    "rmse_improvement_fraction": 0.47092628889104904,
+    "iterations": 156,
+    "loss": 0.008274532932823101
+  },
+  "rl_gain_scheduler_metrics": {
+    "episodes": 40,
+    "baseline_mean_cost": 499.11127328076583,
+    "learned_mean_cost": 488.7692293732583,
+    "cost_improvement_fraction": 0.020720918282464362
+  }
+}

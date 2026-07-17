@@ -9,6 +9,10 @@ extern "C" {
 #include "G10_BDE_Family_CFunction_Sysblock_StateIso_private.h"
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
 #include "MoSim_PID_AttitudeThrust_CFunction_Sysblock_private.h"
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LEARNING_ATTITUDE_THRUST)
+#include "MoSim_P9_Learning_AttitudeThrust_CFunction_Sysblock_private.h"
+#define MOSIM_LEARNING_GB_IN hrust_cfunction_sysblockGbIn
+#define MOSIM_LEARNING_GB_OUT thrust_cfunction_sysblockGbOut
 #else
 #include "PX4CTRL_Core_CFunction_Sysblock_private.h"
 #endif
@@ -55,6 +59,24 @@ const char *pid_controller_name_from_id(const int controller_id)
     case kPidNeural: return "neural_pid";
     case kPidAntiWindup: return "anti_windup";
     case kPidFeedforwardProfile: return "feedforward_profile";
+    default: return "unknown";
+  }
+}
+
+constexpr int kLearningNeuralResidual = 1;
+constexpr int kLearningRlGainScheduler = 2;
+
+int learning_controller_id_from_mode(const std::string &core_mode)
+{
+  return core_mode == "rl_gain_scheduler" ? kLearningRlGainScheduler : kLearningNeuralResidual;
+}
+
+const char *learning_controller_name_from_id(const int controller_id)
+{
+  switch (controller_id)
+  {
+    case kLearningNeuralResidual: return "trained_neural_residual";
+    case kLearningRlGainScheduler: return "rl_gain_scheduler";
     default: return "unknown";
   }
 }
@@ -173,6 +195,8 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
   generated_family_controller_id_ = g9_controller_id_from_mode(core_mode);
 #if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
   generated_family_controller_id_ = pid_controller_id_from_mode(core_mode);
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LEARNING_ATTITUDE_THRUST)
+  generated_family_controller_id_ = learning_controller_id_from_mode(core_mode);
 #endif
   ros::param::param<int>("~mosim_generated_family_controller_id",
                          generated_family_controller_id_,
@@ -181,6 +205,8 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
   const int max_generated_family_controller_id = kG10FaultAllocation;
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
   const int max_generated_family_controller_id = kPidFeedforwardProfile;
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LEARNING_ATTITUDE_THRUST)
+  const int max_generated_family_controller_id = kLearningRlGainScheduler;
 #else
   const int max_generated_family_controller_id = kG9NmpcOuter;
 #endif
@@ -209,6 +235,10 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
                                core_mode == "neural_pid" ||
                                core_mode == "anti_windup" ||
                                core_mode == "feedforward_profile";
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LEARNING_ATTITUDE_THRUST)
+  use_mosim_generated_core_ = use_mosim_generated_core_ ||
+                               core_mode == "trained_neural_residual" ||
+                               core_mode == "rl_gain_scheduler";
 #endif
   ros::param::param<double>("~smc/lambda_x", smc_lambda_[0], 2.0);
   ros::param::param<double>("~smc/lambda_y", smc_lambda_[1], 2.0);
@@ -314,6 +344,18 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
                     << " controller_id=" << generated_family_controller_id_
                     << " controller_name=" << pid_controller_name_from_id(generated_family_controller_id_)
                     << " neural_residual_source=zero_untrained");
+  }
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LEARNING_ATTITUDE_THRUST)
+  if (use_mosim_generated_core_)
+  {
+    ROS_INFO_STREAM("[mosim_generated_runtime] backend=mworks_generated_c"
+                    << " build_backend=learning_attitude_thrust"
+                    << " build_backend_definition=MOSIM_PX4CTRL_GENERATED_BACKEND_LEARNING_ATTITUDE_THRUST"
+                    << " generated_model_name=MoSim_P9_Learning_AttitudeThrust_CFunction_Sysblock"
+                    << " runtime_loaded_symbol=MoSim_P9_Learning_AttitudeThrust_CFunction_Sysblock::Step"
+                    << " controller_id=" << generated_family_controller_id_
+                    << " controller_name=" << learning_controller_name_from_id(generated_family_controller_id_)
+                    << " learning_artifact_sha256=4d480c6ad4738da75b4f7bfdf824658b7878ea511a52935ed2be4fff0d043e45");
   }
 #endif
   ROS_INFO_STREAM("[px4ctrl] mosim_generated_core_mode=" << core_mode
@@ -1484,13 +1526,86 @@ LinearControl::calculateGeneratedCoreControl(const Desired_State_t &des,
     const Imu_Data_t &imu,
     Controller_Output_t &u)
 {
-#if !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
+#if !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST) && \
+    !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LEARNING_ATTITUDE_THRUST)
   const double effective_hover_percentage = param_.gra / thr2acc_;
 #endif
   const double dt = 0.01;
   const bool reset_this_cycle = generated_core_reset_pending_;
 
-#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
+#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LEARNING_ATTITUDE_THRUST)
+  const double effective_hover_percentage = param_.gra / thr2acc_;
+  const double full_collective_thrust_n = std::max(param_.mass * thr2acc_, 1.0e-6);
+  MOSIM_LEARNING_GB_IN.mode_in = static_cast<double>(generated_family_controller_id_);
+  MOSIM_LEARNING_GB_IN.dt_in = dt;
+  MOSIM_LEARNING_GB_IN.position_x_in = odom.p(0);
+  MOSIM_LEARNING_GB_IN.position_y_in = odom.p(1);
+  MOSIM_LEARNING_GB_IN.position_z_in = odom.p(2);
+  MOSIM_LEARNING_GB_IN.velocity_x_in = odom.v(0);
+  MOSIM_LEARNING_GB_IN.velocity_y_in = odom.v(1);
+  MOSIM_LEARNING_GB_IN.velocity_z_in = odom.v(2);
+  MOSIM_LEARNING_GB_IN.attitude_w_in = odom.q.w();
+  MOSIM_LEARNING_GB_IN.attitude_x_in = odom.q.x();
+  MOSIM_LEARNING_GB_IN.attitude_y_in = odom.q.y();
+  MOSIM_LEARNING_GB_IN.attitude_z_in = odom.q.z();
+  MOSIM_LEARNING_GB_IN.angular_velocity_x_in = imu.w(0);
+  MOSIM_LEARNING_GB_IN.angular_velocity_y_in = imu.w(1);
+  MOSIM_LEARNING_GB_IN.angular_velocity_z_in = imu.w(2);
+  MOSIM_LEARNING_GB_IN.reference_position_x_in = des.p(0);
+  MOSIM_LEARNING_GB_IN.reference_position_y_in = des.p(1);
+  MOSIM_LEARNING_GB_IN.reference_position_z_in = des.p(2);
+  MOSIM_LEARNING_GB_IN.reference_velocity_x_in = des.v(0);
+  MOSIM_LEARNING_GB_IN.reference_velocity_y_in = des.v(1);
+  MOSIM_LEARNING_GB_IN.reference_velocity_z_in = des.v(2);
+  MOSIM_LEARNING_GB_IN.reference_acceleration_x_in = des.a(0);
+  MOSIM_LEARNING_GB_IN.reference_acceleration_y_in = des.a(1);
+  MOSIM_LEARNING_GB_IN.reference_acceleration_z_in = des.a(2);
+  MOSIM_LEARNING_GB_IN.reference_yaw_in = des.yaw;
+  MOSIM_LEARNING_GB_IN.mass_kg_in = param_.mass;
+  MOSIM_LEARNING_GB_IN.gravity_mps2_in = param_.gra;
+  MOSIM_LEARNING_GB_IN.hover_percentage_in = effective_hover_percentage;
+  MOSIM_LEARNING_GB_IN.max_tilt_rad_in =
+      param_.max_angle > 0.0 ? param_.max_angle : M_PI / 2.0 - 1.0e-6;
+  MOSIM_LEARNING_GB_IN.min_collective_thrust_n_in = 0.0;
+  MOSIM_LEARNING_GB_IN.max_collective_thrust_n_in = full_collective_thrust_n;
+  MOSIM_LEARNING_GB_IN.enable_in = 1.0;
+  MOSIM_LEARNING_GB_IN.learning_enable_in = 1.0;
+  MOSIM_LEARNING_GB_IN.reset_in = reset_this_cycle ? 1.0 : 0.0;
+  Step();
+  generated_core_reset_pending_ = false;
+  const bool generated_output_valid =
+      MOSIM_LEARNING_GB_OUT.status_code_out == 0.0 &&
+      MOSIM_LEARNING_GB_OUT.fallback_active_out == 0.0 &&
+      std::isfinite(MOSIM_LEARNING_GB_OUT.normalized_thrust_out) &&
+      std::isfinite(MOSIM_LEARNING_GB_OUT.desired_attitude_w_out) &&
+      std::isfinite(MOSIM_LEARNING_GB_OUT.desired_attitude_x_out) &&
+      std::isfinite(MOSIM_LEARNING_GB_OUT.desired_attitude_y_out) &&
+      std::isfinite(MOSIM_LEARNING_GB_OUT.desired_attitude_z_out);
+  if (!generated_output_valid)
+  {
+    ROS_ERROR_THROTTLE(1.0, "Learning ATTITUDE_THRUST generated backend returned invalid output");
+    u.q = imu.q;
+    u.bodyrates = Eigen::Vector3d::Zero();
+    u.thrust = 0.0;
+  }
+  else
+  {
+    u.q = Eigen::Quaterniond(
+        MOSIM_LEARNING_GB_OUT.desired_attitude_w_out,
+        MOSIM_LEARNING_GB_OUT.desired_attitude_x_out,
+        MOSIM_LEARNING_GB_OUT.desired_attitude_y_out,
+        MOSIM_LEARNING_GB_OUT.desired_attitude_z_out);
+    u.q.normalize();
+    u.bodyrates = bodyrateAttitudeFeedback(u.q, imu.q, Eigen::Vector3d::Zero());
+    u.thrust = clamp_double(MOSIM_LEARNING_GB_OUT.normalized_thrust_out, 0.0, 1.0);
+  }
+  debug_msg_.des_v_x = des.v(0);
+  debug_msg_.des_v_y = des.v(1);
+  debug_msg_.des_v_z = des.v(2);
+  debug_msg_.des_a_x = MOSIM_LEARNING_GB_OUT.desired_acceleration_x_out;
+  debug_msg_.des_a_y = MOSIM_LEARNING_GB_OUT.desired_acceleration_y_out;
+  debug_msg_.des_a_z = MOSIM_LEARNING_GB_OUT.desired_acceleration_z_out;
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
   const Eigen::Vector3d position_error = des.p - odom.p;
   const double full_collective_thrust_n = std::max(param_.mass * thr2acc_, 1.0e-6);
   unction_sysblockGbIn.algorithm_id_in = static_cast<double>(generated_family_controller_id_);

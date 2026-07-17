@@ -1,0 +1,10 @@
+profile,condition,mission_status,steady_hover_xy_rmse_m,steady_hover_z_rmse_m,all_reference_xyz_rmse_m,xyz_rmse_change_vs_cascade_fraction,runtime_provenance,wind_injection,landing_disarm
+cascade_pid,nominal,blocked,0.0103837302,0.0224054033,0.0272361676,,baseline_not_applicable,not_applicable,true
+cascade_pid,wind,blocked,0.2352426126,0.0249185830,0.2649845520,,baseline_not_applicable,passed,true
+cascade_pid,parameter_mismatch,blocked,0.0089737707,0.0201656970,0.0254408611,,baseline_not_applicable,not_applicable,true
+trained_neural_residual,nominal,blocked,0.0098782242,0.0236884177,0.0307882338,-0.1304172537,passed,not_applicable,true
+trained_neural_residual,wind,blocked,0.2082210534,0.0260940817,0.2389920550,0.0980906125,passed,passed,true
+trained_neural_residual,parameter_mismatch,blocked,0.0090075380,0.0392423909,0.0329545859,-0.2953408190,passed,not_applicable,true
+rl_gain_scheduler,nominal,blocked,0.0132406939,0.0200655589,0.0287019547,-0.0538176722,passed,not_applicable,true
+rl_gain_scheduler,wind,blocked,0.2075656185,0.0302437575,0.2416630171,0.0880109228,passed,passed,true
+rl_gain_scheduler,parameter_mismatch,blocked,0.0087152435,0.0229073911,0.0304220688,-0.1957955594,passed,not_applicable,true

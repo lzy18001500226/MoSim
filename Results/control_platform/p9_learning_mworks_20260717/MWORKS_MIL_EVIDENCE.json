@@ -1,0 +1,51 @@
+{
+  "schema": "mosim.control_platform.p9_mworks_mil.v1",
+  "status": "passed",
+  "source": "MWORKS_MCP",
+  "artifact_sha256": "4d480c6ad4738da75b4f7bfdf824658b7878ea511a52935ed2be4fff0d043e45",
+  "models": {
+    "bridge": {
+      "name": "MoSim_P9_Learning_AttitudeThrust_CFunction_Sysblock",
+      "check_model": "passed"
+    },
+    "trained_neural_residual": {
+      "name": "MoSim_P9_TRAINED_NEURAL_RESIDUAL_MIL",
+      "check_model": "passed",
+      "simulate_model": "passed",
+      "terminal_collective_thrust_n": 7.724513,
+      "terminal_normalized_thrust": 0.345639,
+      "terminal_desired_acceleration_mps2": [2.7120949013, 0.4959993824, 11.1946069753],
+      "terminal_learning_action_mps2": [0.0979733058, 0.0068081858, 0.0694309781],
+      "fallback_active": 0,
+      "status_code": 0
+    },
+    "rl_gain_scheduler": {
+      "name": "MoSim_P9_RL_GAIN_SCHEDULER_MIL",
+      "check_model": "passed",
+      "simulate_model": "passed",
+      "terminal_collective_thrust_n": 7.663889,
+      "terminal_normalized_thrust": 0.342926,
+      "terminal_desired_acceleration_mps2": [2.6141215955, 0.4891911966, 11.1251759972],
+      "terminal_learning_action": [0.0, 0.0, 0.0],
+      "terminal_scheduled_gain": [1.0, 1.0, 1.0],
+      "fallback_active": 0,
+      "status_code": 0,
+      "note": "Zero gain enhancement is a valid bounded policy action for this fixed MIL input."
+    }
+  },
+  "runtime_physics_inputs": [
+    "mass_kg",
+    "gravity_mps2",
+    "hover_percentage",
+    "max_tilt_rad",
+    "min_collective_thrust_n",
+    "max_collective_thrust_n"
+  ],
+  "runtime_command_output": "normalized_thrust",
+  "screenshot_evidence": {
+    "manifest": "Results/control_platform/p9_learning_mworks_20260717/screenshots/capture_manifest.json",
+    "main_window": "Results/control_platform/p9_learning_mworks_20260717/screenshots/69844_0xF219B0_MoSim_P9_RL_GAIN_SCHEDULER_MIL - Sysplorer _教育版_.png",
+    "review": "RL MIL main window visible; official code generation completed; no visible login, license, authorization, or GUI error blocker."
+  },
+  "claim_boundary": "Real MWORKS model check and time-stepped MIL evidence for two frozen learning routes; no Gazebo or PX4 runtime claim."
+}

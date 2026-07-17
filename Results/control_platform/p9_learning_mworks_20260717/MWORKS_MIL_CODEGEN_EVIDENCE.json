@@ -1,0 +1,36 @@
+{
+  "schema": "mosim.control_platform.p9_mil_codegen_closeout.v1",
+  "status": "passed",
+  "artifact_sha256": "4d480c6ad4738da75b4f7bfdf824658b7878ea511a52935ed2be4fff0d043e45",
+  "routes": ["trained_neural_residual", "rl_gain_scheduler"],
+  "gates": {
+    "training_and_held_out_offline_ab": "Results/control_platform/p9_learning_training_20260717/TRAINING_SUMMARY.json",
+    "compiled_fixed_size_c_and_fallback": "Results/control_platform/p9_learning_offline_gate_20260717/P9_LEARNING_CONTROL_OFFLINE_GATE.json",
+    "mworks_mil": "Results/control_platform/p9_learning_mworks_20260717/MWORKS_MIL_EVIDENCE.json",
+    "official_codegen": "Results/control_platform/p9_learning_mworks_20260717/generate_model_code_result.json",
+    "generated_c_sil": "Results/control_platform/p9_learning_mworks_20260717/sil/P9_GENERATED_SIL_EQUIVALENCE.json"
+  },
+  "interface": {
+    "runtime_physics_inputs": [
+      "mass_kg",
+      "gravity_mps2",
+      "hover_percentage",
+      "max_tilt_rad",
+      "min_collective_thrust_n",
+      "max_collective_thrust_n"
+    ],
+    "runtime_command_output": "normalized_thrust"
+  },
+  "generated_c": {
+    "sha256": "75e82d0cc051ee050058caf914c736f9b69e8d8040638aceff42b17827ca7d5c",
+    "sil_compared_columns_per_route": 19,
+    "sil_max_abs_difference": 0.0
+  },
+  "px4ctrl_backend": {
+    "binary_sha256": "733e7da1245971eae1b34f0a546a2d57d41f66cb27764225e8e32098bb98751f",
+    "build_provenance": "Results/control_platform/p9_learning_mworks_20260717/P9_LEARNING_BACKEND_BUILD_PROVENANCE.json"
+  },
+  "screenshot_manifest": "Results/control_platform/p9_learning_mworks_20260717/screenshots/capture_manifest.json",
+  "runtime_status": "pending_factory_gazebo_px4_mavros_ab",
+  "claim_boundary": "Training, frozen artifact, fallback, held-out offline A/B, real MWORKS MIL, official generated C, and SIL are closed. Factory Gazebo/PX4/MAVROS A/B remains a separate acceptance gate."
+}

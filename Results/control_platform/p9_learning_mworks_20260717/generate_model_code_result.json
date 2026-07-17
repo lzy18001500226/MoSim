@@ -1,0 +1,29 @@
+{
+  "schema": "mosim.control_platform.p9_mworks_codegen.v1",
+  "status": "passed",
+  "source": "MWORKS_MCP",
+  "operation": "GenerateModelCode",
+  "model": "MoSim_P9_Learning_AttitudeThrust_CFunction_Sysblock",
+  "precision": "double",
+  "generated_directory": "Results/control_platform/p9_learning_mworks_20260717/generated_c/MoSim_P9_Learning_AttitudeThrust_CFunction_Sysblock",
+  "required_outputs": [
+    "MoSim_P9_Learning_AttitudeThrust_CFunction_Sysblock.c",
+    "MoSim_P9_Learning_AttitudeThrust_CFunction_Sysblock.h",
+    "MoSim_P9_Learning_AttitudeThrust_CFunction_Sysblock_data.c",
+    "MoSim_P9_Learning_AttitudeThrust_CFunction_Sysblock_private.h",
+    "motrace.json"
+  ],
+  "generated_code_sha256": "75e82d0cc051ee050058caf914c736f9b69e8d8040638aceff42b17827ca7d5c",
+  "interface": {
+    "runtime_physics_inputs": [
+      "mass_kg",
+      "gravity_mps2",
+      "hover_percentage",
+      "max_tilt_rad",
+      "min_collective_thrust_n",
+      "max_collective_thrust_n"
+    ],
+    "runtime_command_output": "normalized_thrust"
+  },
+  "claim_boundary": "Official MWORKS code generation completed; numerical equivalence is established separately by the generated-C SIL gate."
+}
