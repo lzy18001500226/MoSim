@@ -23,14 +23,32 @@ archived body is for explicit trace-back only.
 
 Current competition-to-evidence gap inventory:
 `Docs/Workflows/competition_gap_inventory_20260715.md`.
-Use it to separate work that can proceed without exclusive ROS/Gazebo/PX4
-resources from runtime gates that must wait for the current shared RACER task
-to release them.
+Use it to distinguish accepted evidence, bounded runtime retries, evidence-ladder
+work, and explicit terminal blockers. The former RACER-ownership split at
+`Docs/Workflows/non_gazebo_closeout_board_20260715.md` is historical planning
+context only; it is not the current execution board.
 
-While RACER owns the shared runtime, execute the bounded non-Gazebo lane at
-`Docs/Workflows/non_gazebo_closeout_board_20260715.md`. This lane may complete
-source/offline, isolated MWORKS, and replay-only gates, but must not start or
-restart Gazebo, PX4, MAVROS, ROS master, FAST-LIO, or RACER.
+2026-07-18 final non-frontend closeout goal: finish the competition engineering,
+evidence, report assets, user manual, demo manifest, reproducibility package and
+submission QA without developing Flight Console, Model Studio, QGC, UE or
+RViz-embedding frontend features. Do not resume FUEL/RACER coverage tuning.
+Current execution order is:
+
+```text
+C1  Freeze and verify the 67-row controller authority.
+C2  Run bounded high-value controller gaps and preserve every failed result.
+C3  Build one official-PID versus recommended-controller A/B matrix for
+    hover, step, figure-eight, spiral, wind, parameter mismatch and motor fault.
+C4  Consolidate safety, FTC, formation and learning-control evidence.
+C5  Generate the final requirement-evidence index, figures, analysis, manual,
+    demo manifest and reproducible submission package.
+C6  Run final QA, license/secret/large-file checks, exact Git publication and
+    upstream verification.
+```
+
+C1 is verified. The authoritative 67-row matrix remains `closed_with_blockers`
+with `accepted=27`, `executed_blocked=21`, and `not_run=19`; generator reruns
+and canonical coverage audit produce no drift. C2 is the active gate.
 
 2026-07-17 control-platform closeout update: P5 enhancement, P6 safety, and P7
 fault-tolerant control are closed at their declared evidence tiers. P7 has six
@@ -41,16 +59,10 @@ generated actuator takeover, and completes landing/disarm at
 `Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/`. This does not
 claim complete rotor outage or multi-fault Gazebo recovery.
 
-2026-07-17 dual-GUI update: the active long goal now includes the non-AI experiment
-platform. MWORKS.Syslab-native Model Studio D4 and QGroundControl-v5.0.8-based
-Flight Console D5 have passed their native GUI gates. D5 Release completed
-325/325, all five MoSim pages were visibly reviewed at 2560x1440 with 125% DPI,
-and the reusable launcher is `Scripts/ui/run_flight_console.ps1`. This is not a
-Gazebo/MAVLink/visualization closed-loop claim. The next executable gate is D6:
-one Factory L2 generated-C single-UAV run with runtime readiness, wind and motor
-injection ACK, telemetry, metrics, display binding, and result return. D7 is the
-equivalent three-UAV run; only after both pass may 4-9 UAV formation gates be
-opened one count at a time. AI remains interface-only in this goal.
+2026-07-17 dual-GUI work is retained as completed/supporting historical evidence,
+but D4-D7 and further Flight Console, Model Studio, QGC, UE or embedding work are
+outside the active non-frontend goal. Frontend display binding must not block
+controller, safety, FTC, formation, report or submission closeout.
 
 2026-07-17 P9 learning-control closeout: frozen bounded Neural Residual and RL
 Gain Scheduler now complete training-artifact freeze, fallback, fixed-size C,

@@ -6,7 +6,17 @@
 > multi-thread or packet trace-back, use `Docs/Workflows/agent_task_ledger.md`
 > only when explicitly auditing legacy material.
 
-## 2026-07-14 CST - Current Active Context
+## 2026-07-18 CST - Current Active Context
+
+Active long goal: finish all competition engineering except frontend. P2-P8
+implementation/evidence batches are committed and pushed through
+`842b2ff793`. The 67-row authority at
+`Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json`
+is generator-stable at `accepted=27`, `executed_blocked=21`, `not_run=19`, and
+canonical coverage is 22/22 with zero findings. Current work is bounded
+not-run triage, the official-PID versus recommended-controller seven-scenario
+A/B, then final evidence/report/manual/demo/submission packaging. Frontend,
+UE/RViz embedding and further FUEL/RACER coverage tuning are excluded.
 
 2026-07-17 P9 learning-control closeout: bounded Neural Residual and RL Gain
 Scheduler have complete frozen-artifact -> fixed-size C -> MWORKS MIL -> official
