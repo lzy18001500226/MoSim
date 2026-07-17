@@ -45,13 +45,20 @@ RViz/UE/MWORKS结果查看器
 
 ## 3. Model Studio范围
 
-### 3.1 第一版页面
+### 3.1 最终页面结构
 
-Model Studio不显示庞大模型树，采用级联下拉框和少量标签页：
+Model Studio不显示庞大模型树，采用“推荐Profile + 高级组合器”和少量标签页。所有算法
+必须先按控制链角色分类，不能把名义控制器、增强、安全、故障和编队算法塞进同一个
+“控制器”下拉框：
 
 ```text
-场景 -> 任务/轨迹 -> 控制器族 -> 控制器 -> 增强层 -> 安全层
-     -> 状态源 -> 参数预设 -> 车辆数量
+基础实验:
+  场景 -> 任务/轨迹 -> 规划器 -> 状态源 -> 车辆数量 -> 参数预设
+
+控制链:
+  编队层 -> Reference Governor -> 名义控制器 -> 有序增强链
+         -> 姿态/角速度内环 -> Safety Filter -> Fault Manager
+         -> Control Allocator -> Command Adapter
 
 标签页:
   实验配置
@@ -61,7 +68,126 @@ Model Studio不显示庞大模型树，采用级联下拉框和少量标签页�
   运行回传
 ```
 
-### 3.2 必须实现
+### 3.2 普通模式与高级模式
+
+普通模式是默认入口，只显示已经冻结和验收的组合Profile，例如：
+
+```text
+官方PID基线
+增强Cascade PID
+PID + INDI
+NMPC + INDI + L1 + Safety Filter
+故障容错控制
+三机Leader-Follower + Formation CBF
+```
+
+选择Profile后必须显示不可编辑的控制链摘要、证据等级、支持场景、支持车辆数和运行后端。
+普通模式不要求用户理解模型文件名，也不能静默替换用户选中的模块。
+
+高级模式面向算法开发和消融实验，按插槽逐层选择原子模块。每次选择后立即运行兼容性
+解析，并显示以下三种结果：
+
+```text
+compatible                 可保存并继续模型检查
+compatible_but_gate_pending 可保存研究配置，但不能进入更高证据层
+incompatible               拒绝组合，并指出冲突插槽和原因
+```
+
+高级模式生成的组合也必须先保存为版本化Profile并计算hash，不能从GUI直接临时拼接后绕过
+MIL/SIL/codegen或runtime门禁。
+
+### 3.3 控制链插槽与算法归属
+
+Model Studio和Flight Console使用同一套组合语义。场景、任务、轨迹、规划器、状态源和
+车辆数来自ExperimentProfile/Profile Catalog；从`formation_controller`到`command_adapter`
+的控制插槽以`Config/control_platform/control_module_registry.json`为权威。界面分类至少覆盖：
+
+| 插槽 | 代表算法或模块 | 组合规则 |
+| --- | --- | --- |
+| ExperimentProfile `reference_trajectory` | 阶跃、悬停、8字、螺旋、轨迹回放、Diff-Planner、FUEL/RACER等规划输出 | 恰好一个参考来源；规划器不直接输出电机命令 |
+| `formation_controller` | Leader-Follower、Virtual Structure、Consensus、Containment、Formation Tracking、Formation Reconfiguration、Fault-Tolerant Formation、Formation CBF、Distributed MPC | 单机为空；多机最多一个，输出每架飞机的名义参考 |
+| `reference_governor` | Reference Governor、Geofence参考整形、动力学/速度/加速度约束 | 零或一个，位于名义控制器之前 |
+| `nominal_controller` | 增益调度/Fuzzy/Neural/Cascade PID，LQG、mu-Synthesis、Feedback Linearization、Passivity-Based、Adaptive Backstepping，Integral/Terminal/Non-singular Terminal/Super-Twisting/Adaptive/Fuzzy/Neural SMC，Linear/Robust/Adaptive/Tube/Learning/Explicit-Gain-Scheduled MPC、iLQR/MPPI、NMPC Outer | 恰好一个；同一时刻只能有一个最终名义控制生产者 |
+| `augmentation` | Anti-windup、Feedforward Profile、L1、AWFF、完整ADRC、标准化INDI、参数调度、Fuzzy/ANFIS、RBF/NN、ILC、RL增益调度与受限残差 | 零到多个，必须声明执行顺序、作用接口、限幅和reset语义 |
+| `attitude_rate_inner` | PX4姿态/角速度内环、PID、SO3、INDI内环 | 恰好一个；允许由backend拥有，但必须在Profile中显式声明 |
+| `safety_filter` | Safety Filter、CBF、命令限幅、状态有效性门禁 | 恰好一个，包括显式`pass_through`；拥有发布前最终否决权 |
+| `fault_manager` | FDI、Passive FTC、Active FTC、单电机安全降落、多故障估计与重构、Failsafe状态机、Return-and-Land、Emergency Stop | 零或一个管理器，可触发降级、切换、悬停或降落 |
+| `control_allocator` | PX4默认分配、故障感知分配、伪逆/WLS/QP重构 | `WRENCH`或`ROTOR_COMMAND`链路必须显式选择；与名义控制器解耦 |
+| `command_adapter` | ATTITUDE_THRUST、BODY_RATE_THRUST、WRENCH、ROTOR_COMMAND到PX4/MAVROS的适配 | 恰好一个，负责坐标、单位、推力语义和消息边界 |
+
+`INDI`、`CBF`和`Distributed MPC`等名称可能出现在不同论文层级。注册时必须用`kind`和
+`stage`确定实际插槽，UI按机器字段显示，不按算法名称猜测。Neural PID、Neural-SMC、
+RBF/NN和RL调度属于受控算法模块，不等于第9节的AI助手。
+
+### 3.4 控制链可视化与参数交互
+
+选中Profile后，Model Studio在配置区固定显示从左到右的控制链，不显示自由连线画布：
+
+```text
+[任务/规划]
+  -> [编队/单机直通]
+  -> [Reference Governor]
+  -> [Nominal Controller]
+  -> [Augmentation 1] -> [Augmentation 2]
+  -> [Attitude Inner]
+  -> [Safety]
+  -> [Fault Manager / Allocator]
+  -> [PX4 Adapter]
+```
+
+每个块显示状态徽标：`accepted`、`implemented`、`runtime_pending`、`blocked`或`research`。
+点击块只打开受控参数摘要、证据、模型入口和禁用原因；详细连线和完整调参仍打开Sysplorer/
+Syslab原生工具。增强链支持受控排序，但任何顺序变化都会产生新的Profile和hash。
+
+### 3.5 Profile到图形化模型和运行后端的映射
+
+不得为每种组合复制一套完整无人机模型。采用统一顶层实验Harness和可替换插槽：
+
+```text
+QuadrotorExperimentHarness
+  Scenario
+  TrajectoryOrPlanner
+  FormationController
+  ReferenceGovernor
+  NominalController
+  AugmentationChain
+  AttitudeRateInner
+  SafetyFilter
+  FaultManager
+  ControlAllocator
+  PlantAndSensors
+```
+
+原子模块统一使用`StateFrame`、`ReferenceFrame`、`CommandFrame`、`ModuleDiagnostics`、
+`LifecycleContext`和`ParameterSet`。完整组合只存在于Profile，不复制算法源码。
+
+点击“打开图形化模型”时，Profile Resolver必须：
+
+1. 验证插槽数量、输入输出variant、坐标、单位、状态源和车辆数；
+2. 解析每个模块对应的Sysblock/Modelica模型、生成代码core和runtime backend；
+3. 打开与当前Profile一致的顶层Harness和参数集；
+4. 记录模型hash、参数hash、生成代码hash和证据等级；
+5. 任一映射缺失时停止，不允许用相似模型或默认控制器替换。
+
+### 3.6 控制器切换边界
+
+默认切换发生在实验开始前：选择或生成新Profile，重新执行模型检查、MIL/SIL、codegen和
+对应runtime门禁，然后创建新run。Flight Console不得提供“任意算法立即热切换”。
+
+飞行中切换只由Controller Manager按已验收切换图执行，至少经过：目标Profile校验、参数
+加载、状态初始化、影子运行、输出合法性检查、状态迁移、安全点或渐变接管。以下情况必须
+拒绝热切换并要求悬停/降落后新建run：
+
+- 输出variant或控制层级不同且没有专用迁移器；
+- 积分器、观测器、优化器或神经网络状态无法确定初始化；
+- 当前姿态、速度、定位或执行器状态超出切换安全包络；
+- 目标Profile缺少对应场景和车辆数的runtime证据；
+- 切换会产生两个最终命令生产者，或绕过Safety/Fault Manager。
+
+所有切换、拒绝、回退和降级事件必须写入同一`run_id`时间线。代表性自动降级链可以是
+`NMPC -> SE3 -> safe PID -> hover -> land`，但只有每一条边通过验证后才能启用。
+
+### 3.7 必须实现
 
 - 从Registry和Profile Catalog读取可选项，不硬编码算法列表；
 - 按兼容性和证据等级过滤、禁用或拒绝组合；
@@ -73,7 +199,7 @@ Model Studio不显示庞大模型树，采用级联下拉框和少量标签页�
 - 向Orchestrator提交实验并接收运行结果；
 - 从失败run打开对应模型、参数、异常时间段和证据目录。
 
-### 3.3 明确不做
+### 3.8 明确不做
 
 - 不重做Sysplorer图形化模型编辑器；
 - 不在APP内实现复杂模型拖拽连线；
@@ -122,6 +248,26 @@ apps/flight_console/mosim/
 - RViz与UE的准备、绑定、布局、健康、截图和录制；
 - 运行事件时间线、指标摘要和证据目录；
 - 返回Model Studio并打开对应run。
+
+### 4.4 最终主工作区
+
+Flight Console默认直接进入MoSim工作区，传统QGC Fly/Plan页面放入高级入口，不作为比赛
+演示主流程。最终布局冻结为：
+
+```text
+顶部: run_id | Profile | Gazebo/PX4/MAVROS/定位/控制器状态 | 录制 | 急停
+左侧: 运行准备 | 启动/停止/复位 | 解锁/起飞/任务/降落 | Profile摘要
+中央: UE主视图 | 自由/环绕/跟随视角 | 距离调节 | 飞机切换
+右侧: 遥测 | 扰动注入 | 故障注入 | 安全/Failsafe | ACK
+底部: 事件时间线 | 告警 | 指标摘要 | 截图/录像 | 证据目录
+```
+
+UE是主展示视图；点云RViz和三维栅格RViz通过独立按钮受控打开，不常驻挤占中央区域。
+无人机生成前保持自由视角，生成后默认环绕跟随。视角模式、目标飞机和环绕距离是三个
+独立设置。UE/RViz失败只改变显示健康状态，不能中断控制和日志。
+
+Flight Console可以选择已经发布且通过当前runtime门禁的Profile，但不能编辑原子模块、
+底层参数或生成新的控制组合。需要修改组合时必须返回Model Studio。
 
 ## 5. 动态禁用规则
 
@@ -191,7 +337,48 @@ evidence paths
 
 GUI进程、显示进程和控制进程必须解耦；任何GUI或显示故障不得阻塞控制和日志。
 
-## 7. 实施阶段与验收
+## 7. 最终用户端到端操作流程
+
+### 7.1 模型设计、MIL和SIL
+
+1. 启动MoSim Model Studio并选择“新建实验”或已验收推荐Profile；
+2. 选择场景、任务/轨迹、状态源、车辆数、控制链和参数预设；
+3. 查看控制链摘要和兼容性结果，点击“打开图形化模型”；
+4. 在Sysplorer中检查顶层Harness和模块连线，点击“模型检查”；
+5. 点击“运行MIL”，在MWORKS结果/动画查看器审核轨迹、姿态、控制量和指标；
+6. 点击“运行SIL”和“MIL/SIL对比”；失败时返回模型和参数，不进入代码生成。
+
+### 7.2 代码生成与Profile发布
+
+1. 点击“生成代码”，执行固定尺寸C/C++生成、编译、ABI和离线等价性门禁；
+2. 页面分别显示MIL、SIL、codegen和目标runtime门禁状态；
+3. 通过后点击“发布运行配置”，冻结ExperimentProfile、ParameterSet和全部hash；
+4. 点击“进入飞行仿真”，将同一Profile提交给Orchestrator并打开Flight Console；
+5. 两个GUI共享同一Profile和run上下文，不要求用户重复选择。
+
+### 7.3 Gazebo/PX4运行与UE/RViz审核
+
+1. Flight Console点击“环境预检”，检查WSL/ROS1、Factory、Gazebo、PX4、MAVROS、状态源、
+   控制器、规划器、端口、共享锁和残留进程；
+2. 预检通过后点击“启动仿真”，Orchestrator按Launch Plan依次启动真实runtime、显示会话和证据记录；
+3. 状态门禁全部就绪后，用户依次点击“解锁”“起飞”“开始任务”；
+4. UE中央视图显示Factory和实际飞机状态，Flight Console显示遥测、控制误差和安全状态；
+5. 需要工程审核时点击“点云RViz”或“栅格RViz”，关闭显示不影响飞行；
+6. 用户可对指定飞机施加风扰、电机效能或故障，界面同时显示请求值、实际值和ACK；
+7. 安全操作只通过“悬停”“返航”“降落”“急停”等受控动作进入Orchestrator。
+
+### 7.4 结束、证据回传和再次优化
+
+1. 任务结束后点击“降落”和“结束实验”；
+2. Orchestrator停止记录、提取日志、计算指标、保存截图/视频并检查残留；
+3. Flight Console显示结果摘要、告警、证据目录和“返回MWORKS分析”；
+4. Model Studio按同一`run_id`并列显示MIL、SIL、generated-C和Gazebo/PX4结果；
+5. 效果不满足指标时打开对应模型、参数和失败时间段，产生新版本Profile后重复流程。
+
+已验收Profile的普通演示可以从Flight Console直接开始“环境预检”，不强制每次重跑MIL/SIL；
+新增控制器、修改控制组合、参数或生成代码时必须从Model Studio完整进入。
+
+## 8. 实施阶段与验收
 
 ### D0 文档与现状冻结
 
@@ -370,7 +557,33 @@ readiness要求三机全部满足；`telemetry.json`按`vehicles[]`输出逐机�
 按4、5、6、7、8、9逐级验收，不一次性解除全部禁用。每级至少验证启动资源、
 通信命名空间、最小间距、编队误差、障碍穿越、安全介入、运行稳定性和显示性能。
 
-## 8. AI预留但不实现
+## 9. AI助手产品设计与权限边界
+
+### 9.1 单一助手、双入口
+
+AI助手不是第三个独立GUI。Model Studio和Flight Console右上角显示同一个助手入口，打开
+一致的侧边栏并共享当前Profile、run和证据上下文，但根据运行阶段使用不同权限：
+
+```text
+Model Studio:
+  解释模型与控制链
+  分析MIL/SIL/Gazebo差异
+  定位失败时间段
+  对比控制器和参数
+  形成参数/Profile修改建议
+
+Flight Console:
+  汇总遥测、告警和安全介入
+  解释扰动/故障响应
+  建议打开相关RViz或证据
+  建议悬停、返航、降落或结束实验
+  生成本次实验摘要
+```
+
+Neural PID、Neural-SMC、RBF/NN和RL调度是控制算法模块，进入Registry、模型、codegen和
+runtime证据链；AI助手是人机协作和实验分析层，两者不得混报。
+
+### 9.2 上下文、建议、确认和审计
 
 预留只读上下文：当前Profile、模型、参数、run、指标、事件和证据。预留受控建议对象：
 
@@ -385,7 +598,23 @@ execution_audit
 
 当前Goal不接入模型服务、不实现聊天窗口、不允许AI直接修改模型或启动飞行。
 
-## 9. 产品目录
+后续实现也必须遵循：
+
+```text
+只读上下文
+  -> 结构化分析
+  -> proposed_parameter_patch / proposed_experiment_profile / proposed_safe_action
+  -> 人工确认
+  -> Orchestrator重新校验
+  -> 受控执行
+  -> execution_audit
+```
+
+AI永远不能直接发布setpoint、控制电机、绕过Profile Validator、解除Safety/Failsafe、修改
+已发布Profile或在飞行中任意切换控制器。紧急状态下AI只能提示，既有确定性Failsafe仍是
+安全权威。
+
+## 10. 产品目录
 
 ```text
 apps/
@@ -407,7 +636,7 @@ Results/ui_platform/     PoC、测试、截图、延迟和验收包
 在目录迁移完成前，现有`Scripts/control_platform/`可作为兼容入口，但新产品GUI代码
 不得继续散落到根目录CMD或`References/`。
 
-## 10. 完成定义
+## 11. 完成定义
 
 本Goal只有同时满足以下条件才可关闭：
 
