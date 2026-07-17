@@ -47,6 +47,7 @@ assert_no_conflicting_runtime() {
 
 start_sidecar() {
   local vehicle_count="${1:-1}"
+  local ready_timeout_s="${ORCHESTRATOR_RUNTIME_READY_TIMEOUT_S:-90}"
   set +u
   source /opt/ros/noetic/setup.bash
   [[ -f /opt/mosim_work/sunray_ws/Sunray/devel/setup.bash ]] && source /opt/mosim_work/sunray_ws/Sunray/devel/setup.bash
@@ -59,6 +60,7 @@ start_sidecar() {
     --contract "${PROJECT_ROOT}/Config/control_platform/factory_injection_contract.json" \
     --vehicle-count "${vehicle_count}" \
     --body-name "uav1::base_link" \
+    --ready-timeout-s "${ready_timeout_s}" \
     > "${ORCHESTRATOR_RUN_DIR}/runtime_sidecar.log" 2>&1 &
   SIDECAR_PID="$!"
   printf '%s\n' "${SIDECAR_PID}" > "${ORCHESTRATOR_RUN_DIR}/runtime_sidecar_pid.txt"
@@ -80,12 +82,18 @@ run_basic_gate() {
   export PX4CTRL_CORE_PROFILE="${controller_profile}"
   export GUI="false"
   export KEEP_ALIVE="false"
+  export REVIEW_START_FASTLIO="true"
+  export REVIEW_START_OCCUPANCY_NODE="true"
   export WORLD_FILE="${factory_root}/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
   export SUNRAY_GAZEBO_LAUNCH_FILE="${PROJECT_ROOT}/Scripts/sunray/factory_l2_sunray_px4_gazebo.launch"
   export GAZEBO_MODEL_PATH="${factory_root}/models:${GAZEBO_MODEL_PATH:-}"
   export SUNRAY_UAV_INIT_X="-10.575025"
   export SUNRAY_UAV_INIT_Y="-19.36313"
   export SUNRAY_UAV_INIT_Z="0.2"
+  export MAVROS_READY_TIMEOUT_S="${MAVROS_READY_TIMEOUT_S:-180}"
+  export ORCHESTRATOR_RUNTIME_READY_TIMEOUT_S="${ORCHESTRATOR_RUNTIME_READY_TIMEOUT_S:-210}"
+  export TOTAL_TIMEOUT_S="${TOTAL_TIMEOUT_S:-540}"
+  export PX4CTRL_MISSION_EXTRA_ARGS="${PX4CTRL_MISSION_EXTRA_ARGS:---force-disarm-after-land --force-disarm-timeout-s 30 --pre-takeoff-state-stable-s 3.0 --pre-takeoff-state-timeout-s 30 --pre-takeoff-max-abs-roll-pitch-deg 0.5 --takeoff-timeout-s 90 --wall-timeout-s 480}"
   export MOSIM_ENABLE_FTC_ACTUATOR_PLUGIN="true"
   export GAZEBO_PLUGIN_PATH="${plugin_ws}/devel/lib:${GAZEBO_PLUGIN_PATH:-}"
   export LD_LIBRARY_PATH="${plugin_ws}/devel/lib:${LD_LIBRARY_PATH:-}"

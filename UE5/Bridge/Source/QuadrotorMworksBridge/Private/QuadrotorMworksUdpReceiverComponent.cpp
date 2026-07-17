@@ -63,6 +63,9 @@ bool UQuadrotorMworksUdpReceiverComponent::StartReceiver()
     ReceivedFramesInWindow = 0;
     SequenceGapsInWindow = 0;
     LastReceivedSequence = TNumericLimits<int32>::Min();
+    ActiveStreamId.Reset();
+    LastAcceptedFrameSeconds = 0.0;
+    LastRejectedFrameLogSeconds = 0.0;
 
     FIPv4Address Address;
     if (!FIPv4Address::Parse(ListenAddress, Address))
@@ -135,6 +138,39 @@ void UQuadrotorMworksUdpReceiverComponent::HandleDatagram(const FArrayReaderPtr&
     }
 
     const double NowSeconds = FPlatformTime::Seconds();
+    if (!Frame.StreamId.IsEmpty())
+    {
+        if (ActiveStreamId.IsEmpty())
+        {
+            ActiveStreamId = Frame.StreamId;
+            LastReceivedSequence = TNumericLimits<int32>::Min();
+        }
+        else if (Frame.StreamId != ActiveStreamId)
+        {
+            if (NowSeconds - LastAcceptedFrameSeconds <= StreamTakeoverTimeoutSeconds)
+            {
+                if (NowSeconds - LastRejectedFrameLogSeconds >= 5.0)
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("MoSim UE rejected competing UDP stream=%s active=%s"), *Frame.StreamId, *ActiveStreamId);
+                    LastRejectedFrameLogSeconds = NowSeconds;
+                }
+                return;
+            }
+            UE_LOG(LogTemp, Display, TEXT("MoSim UE UDP stream takeover old=%s new=%s"), *ActiveStreamId, *Frame.StreamId);
+            ActiveStreamId = Frame.StreamId;
+            LastReceivedSequence = TNumericLimits<int32>::Min();
+        }
+        if (LastReceivedSequence != TNumericLimits<int32>::Min() && Frame.Sequence <= LastReceivedSequence)
+        {
+            if (NowSeconds - LastRejectedFrameLogSeconds >= 5.0)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("MoSim UE rejected non-monotonic UDP frame stream=%s seq=%d last_seq=%d"), *ActiveStreamId, Frame.Sequence, LastReceivedSequence);
+                LastRejectedFrameLogSeconds = NowSeconds;
+            }
+            return;
+        }
+    }
+    LastAcceptedFrameSeconds = NowSeconds;
     if (ReceiveRateWindowStartSeconds <= 0.0)
     {
         ReceiveRateWindowStartSeconds = NowSeconds;
@@ -238,6 +274,7 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
         Root->TryGetStringField(TEXT("scene_id"), OutFrame.SceneId);
         Root->TryGetStringField(TEXT("map_id"), OutFrame.MapId);
         Root->TryGetStringField(TEXT("vehicle_id"), OutFrame.VehicleId);
+        Root->TryGetStringField(TEXT("stream_id"), OutFrame.StreamId);
         OutFrame.CoordinatePolicy = TEXT("mworks_world_m_z_up");
         OutFrame.Sequence = static_cast<int32>(Root->GetIntegerField(TEXT("sequence")));
         OutFrame.TimeSeconds = Root->GetNumberField(TEXT("timestamp_ros_s"));
@@ -296,6 +333,7 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
     Root->TryGetStringField(TEXT("scene_id"), OutFrame.SceneId);
     Root->TryGetStringField(TEXT("map_id"), OutFrame.MapId);
     Root->TryGetStringField(TEXT("coordinate_policy"), OutFrame.CoordinatePolicy);
+    Root->TryGetStringField(TEXT("stream_id"), OutFrame.StreamId);
     OutFrame.Sequence = static_cast<int32>(Root->GetIntegerField(TEXT("seq")));
     OutFrame.TimeSeconds = Root->GetNumberField(TEXT("t"));
 

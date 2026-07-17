@@ -104,7 +104,7 @@ Visualization Manager:
       Alpha: 1
       Buffer Length: 1
       Color: 255; 40; 40
-      Enabled: true
+      Enabled: false
       Head Diameter: 0.16
       Head Length: 0.1
       Length: 0.18
@@ -114,7 +114,7 @@ Visualization Manager:
       Pose Color: 255; 40; 40
       Pose Style: None
       Topic: /mosim/fastlio/uav_path
-      Value: true
+      Value: false
     - Class: rviz/MarkerArray
       Enabled: true
       Marker Topic: /mosim/fastlio/uav_axes
@@ -129,7 +129,7 @@ Visualization Manager:
       Alpha: 1
       Buffer Length: 1
       Color: 255; 40; 40
-      Enabled: false
+      Enabled: true
       Head Diameter: 0.18
       Head Length: 0.12
       Length: 0.2
@@ -139,7 +139,7 @@ Visualization Manager:
       Pose Color: 255; 40; 40
       Pose Style: None
       Topic: /mosim/px4ctrl/truth_path
-      Value: false
+      Value: true
     - Class: rviz/Path
       Alpha: 1
       Buffer Length: 1
@@ -159,7 +159,7 @@ Visualization Manager:
       Alpha: 1
       Buffer Length: 1
       Color: 40; 230; 80
-      Enabled: false
+      Enabled: true
       Head Diameter: 0.18
       Head Length: 0.12
       Length: 0.2
@@ -169,7 +169,7 @@ Visualization Manager:
       Pose Color: 40; 230; 80
       Pose Style: None
       Topic: /mosim/px4ctrl/reference_path
-      Value: false
+      Value: true
     - Class: rviz/Path
       Alpha: 1
       Buffer Length: 1

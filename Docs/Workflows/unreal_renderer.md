@@ -46,6 +46,16 @@ that source is temporarily unavailable, MAVROS armed state may drive an
 explicitly labeled visual-only spool fallback. Neither the 100 Hz mirror nor
 rotor animation is actuator, controller, or flight-performance evidence.
 
+Each UE UDP destination port has exactly one project-owned live-mirror owner.
+The launcher removes a stale MoSim bridge on that same port before takeover,
+the streamer holds a non-blocking port lease, and each packet carries a
+display-session `stream_id`. The UE receiver rejects a competing stream and
+non-monotonic sequence numbers while the active stream remains fresh. If ROS1
+odometry is older than `0.5 s`, the bridge pauses transmission instead of
+repeating a frozen pose indefinitely. Display detach must stop the bridge by
+its session owner id; killing a Windows `wsl.exe` host alone is not sufficient
+evidence that the Linux sender exited.
+
 ### Factory Three-UAV Swarm-Formation Review
 
 Use the project-owned launcher for the Factory L2 three-UAV review:

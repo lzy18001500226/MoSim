@@ -135,6 +135,9 @@ struct FQuadrotorMworksFrame
     FString VehicleId;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
+    FString StreamId;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
     FString CoordinatePolicy = TEXT("mworks_world_m_z_up");
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")

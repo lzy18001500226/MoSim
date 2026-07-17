@@ -33,6 +33,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS UDP")
     bool bAutoStart = true;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS UDP")
+    double StreamTakeoverTimeoutSeconds = 1.0;
+
     UPROPERTY(BlueprintAssignable, Category = "MWORKS UDP")
     FQuadrotorMworksFrameReceived OnFrameReceived;
 
@@ -64,6 +67,9 @@ private:
     int32 ReceivedFramesInWindow = 0;
     int32 SequenceGapsInWindow = 0;
     int32 LastReceivedSequence = TNumericLimits<int32>::Min();
+    FString ActiveStreamId;
+    double LastAcceptedFrameSeconds = 0.0;
+    double LastRejectedFrameLogSeconds = 0.0;
 
     mutable FCriticalSection FrameMutex;
     FQuadrotorMworksFrame LatestFrame;

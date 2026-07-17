@@ -7,6 +7,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 $Root = "C:\Users\HP\Desktop\MoSim"
+$RootWsl = "/mnt/c/Users/HP/Desktop/MoSim"
+$DisplayHelper = "$RootWsl/Scripts/ui/launch_ros1_display.sh"
 if ($RunId -notmatch '^run-[A-Za-z0-9][A-Za-z0-9._-]{0,95}$') { throw "invalid run id" }
 if ($SessionId -notmatch '^display-[A-Za-z0-9]{10}$') { throw "invalid display session id" }
 $RunDir = Join-Path $Root "Results\ui_platform\orchestrator_runs\$RunId"
@@ -15,8 +17,24 @@ $ProcessFile = Join-Path $SessionDir "DISPLAY_PROCESSES.json"
 $StatusFile = Join-Path $SessionDir "DISPLAY_STATUS.json"
 New-Item -ItemType Directory -Force -Path $SessionDir | Out-Null
 
+$PlannerProfile = "unknown"
+$ManifestFile = Join-Path $RunDir "RUN_MANIFEST.json"
+if (Test-Path -LiteralPath $ManifestFile) {
+    $manifest = Get-Content -Raw -LiteralPath $ManifestFile | ConvertFrom-Json
+    if ($manifest.profile_path) {
+        $profileFile = Join-Path $Root ([string]$manifest.profile_path)
+        if (Test-Path -LiteralPath $profileFile) {
+            $profile = Get-Content -Raw -LiteralPath $profileFile | ConvertFrom-Json
+            if ($profile.experiment_profile.planner_profile) {
+                $PlannerProfile = [string]$profile.experiment_profile.planner_profile
+            }
+        }
+    }
+}
+
 if ($Detach) {
     $stopped = @()
+    & wsl.exe -d Ubuntu-20.04 -- bash $DisplayHelper "unreal_bridge_stop" $SessionId 2>$null
     if (Test-Path -LiteralPath $ProcessFile) {
         $records = @(Get-Content -Raw -LiteralPath $ProcessFile | ConvertFrom-Json)
         foreach ($record in $records) {
@@ -47,27 +65,45 @@ foreach ($item in $Display) {
 $records = @()
 $results = @()
 function Start-TrackedProcess {
-    param([string]$Kind, [string]$Executable, [string[]]$Arguments, [string]$LogName)
+    param(
+        [string]$Kind,
+        [string]$Executable,
+        [string[]]$Arguments,
+        [string]$LogName,
+        [string]$ReadinessPath = ""
+    )
     try {
         $stdout = Join-Path $SessionDir ($LogName + ".stdout.log")
         $stderr = Join-Path $SessionDir ($LogName + ".stderr.log")
         $process = Start-Process -FilePath $Executable -ArgumentList $Arguments -PassThru `
             -RedirectStandardOutput $stdout -RedirectStandardError $stderr
         $script:records += [pscustomobject]@{ kind = $Kind; pid = $process.Id; executable = $Executable }
-        $script:results += [pscustomobject]@{ display = $Kind; state = "launch_requested"; process_id = $process.Id }
+        $script:results += [pscustomobject]@{
+            display = $Kind
+            state = "launch_requested"
+            process_id = $process.Id
+            readiness_path = $ReadinessPath
+        }
     } catch {
         $script:results += [pscustomobject]@{ display = $Kind; state = "blocked"; reason = $_.Exception.Message }
     }
 }
 
-$RootWsl = "/mnt/c/Users/HP/Desktop/MoSim"
 if ($Display -contains "rviz_pointcloud") {
-    $command = "source /opt/ros/noetic/setup.bash && rviz -d '$RootWsl/Config/rviz/sunray_ros1_mid360_cloud_review.rviz'"
-    Start-TrackedProcess "rviz_pointcloud" "wsl.exe" @("-d", "Ubuntu-20.04", "--", "bash", "-lc", $command) "rviz_pointcloud"
+    $readiness = Join-Path $SessionDir "rviz_pointcloud.readiness.json"
+    $readinessWsl = "$RootWsl/Results/ui_platform/orchestrator_runs/$RunId/displays/$SessionId/rviz_pointcloud.readiness.json"
+    Start-TrackedProcess "rviz_pointcloud" "wsl.exe" @(
+        "-d", "Ubuntu-20.04", "--", "bash", $DisplayHelper,
+        "rviz_pointcloud", $PlannerProfile, $readinessWsl
+    ) "rviz_pointcloud" $readiness
 }
 if ($Display -contains "rviz_gridmap") {
-    $command = "source /opt/ros/noetic/setup.bash && rviz -d '$RootWsl/Config/rviz/sunray_ros1_ego_grid_trajectory_review.rviz'"
-    Start-TrackedProcess "rviz_gridmap" "wsl.exe" @("-d", "Ubuntu-20.04", "--", "bash", "-lc", $command) "rviz_gridmap"
+    $readiness = Join-Path $SessionDir "rviz_gridmap.readiness.json"
+    $readinessWsl = "$RootWsl/Results/ui_platform/orchestrator_runs/$RunId/displays/$SessionId/rviz_gridmap.readiness.json"
+    Start-TrackedProcess "rviz_gridmap" "wsl.exe" @(
+        "-d", "Ubuntu-20.04", "--", "bash", $DisplayHelper,
+        "rviz_gridmap", $PlannerProfile, $readinessWsl
+    ) "rviz_gridmap" $readiness
 }
 if ($Display -contains "unreal") {
     $route = & wsl.exe -d Ubuntu-20.04 -- ip route show default
@@ -76,8 +112,9 @@ if ($Display -contains "unreal") {
         $results += [pscustomobject]@{ display = "unreal"; state = "blocked"; reason = "windows_host_address_unavailable" }
     } else {
         $hostAddress = $match.Groups[1].Value
-        $bridge = "cd '$RootWsl' && source /opt/ros/noetic/setup.bash && python3 -u Scripts/UE5/stream_ros1_state_to_ue_udp.py --odom-topic /uav1/sunray/gazebo_pose --position-cmd-topic /position_cmd --link-states-topic /gazebo/link_states --mavros-state-topic /uav1/mavros/state --host '$hostAddress' --port 5005 --rate-hz 100 --vehicle-id uav1 --scene-id factory --map-id local_factoryenvironmentcollect --controller-profile orchestrated --planner-profile none"
-        Start-TrackedProcess "unreal_bridge" "wsl.exe" @("-d", "Ubuntu-20.04", "--", "bash", "-lc", $bridge) "unreal_bridge"
+        Start-TrackedProcess "unreal_bridge" "wsl.exe" @(
+            "-d", "Ubuntu-20.04", "--", "bash", $DisplayHelper, "unreal_bridge", $hostAddress, $SessionId
+        ) "unreal_bridge"
         $editor = "D:\Program Files\Epic Games\UE_5.5\Engine\Binaries\Win64\UnrealEditor.exe"
         $project = Join-Path $Root "UE5\MoSimSceneLibrary\MoSimSceneLibrary.uproject"
         if ((Test-Path -LiteralPath $editor) -and (Test-Path -LiteralPath $project)) {
@@ -104,15 +141,52 @@ if ($Display -contains "mworks_result") {
     }
 }
 
+if (@($results | Where-Object state -eq "launch_requested").Count -gt 0) {
+    $deadline = [DateTime]::UtcNow.AddSeconds(70)
+    do {
+        $pendingReadiness = @($results | Where-Object {
+            $_.state -eq "launch_requested" -and $_.readiness_path -and
+            -not (Test-Path -LiteralPath $_.readiness_path)
+        })
+        if ($pendingReadiness.Count -eq 0) { break }
+        Start-Sleep -Milliseconds 500
+    } while ([DateTime]::UtcNow -lt $deadline)
+
+    foreach ($result in @($results | Where-Object state -eq "launch_requested")) {
+        $process = Get-Process -Id ([int]$result.process_id) -ErrorAction SilentlyContinue
+        if ($result.readiness_path -and (Test-Path -LiteralPath $result.readiness_path)) {
+            $readiness = Get-Content -Raw -LiteralPath $result.readiness_path | ConvertFrom-Json
+            if ($readiness.status -eq "ready") {
+                $result.state = "ready"
+                $result | Add-Member -NotePropertyName fixed_frame -NotePropertyValue $readiness.fixed_frame -Force
+                $result | Add-Member -NotePropertyName rviz_config -NotePropertyValue $readiness.rviz_config -Force
+                $result | Add-Member -NotePropertyName required_topics -NotePropertyValue $readiness.required_topics -Force
+            } else {
+                $result.state = "blocked"
+                $result | Add-Member -NotePropertyName reason -NotePropertyValue $readiness.reason_code -Force
+            }
+        } elseif ($result.readiness_path) {
+            $result.state = "blocked"
+            $result | Add-Member -NotePropertyName reason -NotePropertyValue "display_readiness_timeout" -Force
+        } elseif ($null -eq $process) {
+            $result.state = "blocked"
+            $result | Add-Member -NotePropertyName reason -NotePropertyValue "process_exited_during_startup" -Force
+        } else {
+            $result.state = "running"
+        }
+    }
+}
+
 @($records) | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $ProcessFile -Encoding utf8
-$state = if (@($results | Where-Object state -eq "launch_requested").Count -gt 0) { "attached" } else { "blocked" }
+$state = if (@($results | Where-Object { $_.state -in @("ready", "running") }).Count -gt 0) { "attached" } else { "blocked" }
 [pscustomobject]@{
     schema = "mosim.display_session.status.v1"
     run_id = $RunId
     session_id = $SessionId
     state = $state
+    planner_profile = $PlannerProfile
     displays = $results
     updated_at = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() / 1000.0
-    claim_boundary = "Process launch evidence only; RViz and UE visual correctness require same-run review."
+    claim_boundary = "RViz ready means same-run topic samples and fixed-frame agreement passed; visual correctness still requires manual review."
 } | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $StatusFile -Encoding utf8
 exit 0

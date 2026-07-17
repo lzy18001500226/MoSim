@@ -12,12 +12,37 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
+from pathlib import Path
 import socket
 import sys
 import threading
 import time
 from collections import deque
 from typing import Any
+
+
+class UdpPortLease:
+    """Prevent two project bridge processes from sending to one UE UDP port."""
+
+    def __init__(self, lease_dir: str, host: str, port: int, owner_id: str) -> None:
+        import fcntl
+
+        safe_host = "".join(ch if ch.isalnum() or ch in ".-_" else "_" for ch in host)
+        path = Path(lease_dir) / f"{safe_host}_{port}.lock"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        self.handle = path.open("a+", encoding="utf-8")
+        try:
+            fcntl.flock(self.handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            self.handle.seek(0)
+            current = self.handle.read().strip() or "unknown owner"
+            self.handle.close()
+            raise RuntimeError(f"UE UDP bridge lease busy for {host}:{port}: {current}") from exc
+        self.handle.seek(0)
+        self.handle.truncate()
+        json.dump({"pid": os.getpid(), "owner_id": owner_id, "host": host, "port": port}, self.handle)
+        self.handle.flush()
 
 
 def quat_to_rpy(x: float, y: float, z: float, w: float) -> list[float]:
@@ -59,9 +84,11 @@ class Ros1ToUeStreamer:
 
         self.rospy = rospy
         self.args = args
+        self.port_lease = UdpPortLease(args.lease_dir, args.host, args.port, args.stream_id)
         self.sequence = 0
         self.lock = threading.Lock()
         self.latest_state: dict[str, Any] | None = None
+        self.latest_state_monotonic = 0.0
         self.latest_cmd: dict[str, Any] | None = None
         self.latest_motors: list[float] | None = None
         self.latest_motors_monotonic = 0.0
@@ -100,6 +127,7 @@ class Ros1ToUeStreamer:
                 "velocity": finite_vector(velocity),
                 "stamp": msg.header.stamp.to_sec() if msg.header.stamp else self.rospy.Time.now().to_sec(),
             }
+            self.latest_state_monotonic = time.monotonic()
             self.source_updates_since_report += 1
             if not self.actual_trail or self.distance(self.actual_trail[-1], position) >= self.args.trail_min_distance_m:
                 self.actual_trail.append(finite_vector(position))
@@ -177,6 +205,8 @@ class Ros1ToUeStreamer:
         with self.lock:
             if self.latest_state is None:
                 return None
+            if time.monotonic() - self.latest_state_monotonic > self.args.source_timeout_s:
+                return None
             state = dict(self.latest_state)
             cmd = dict(self.latest_cmd) if self.latest_cmd is not None else None
             cmd_trail = list(self.cmd_trail) if self.args.include_local_plan else []
@@ -190,6 +220,7 @@ class Ros1ToUeStreamer:
             "type": "frame",
             "scene_id": self.args.scene_id,
             "map_id": self.args.map_id,
+            "stream_id": self.args.stream_id,
             "seq": self.sequence,
             "t": state["stamp"],
             "units": {"position": "m", "angle": "rad", "time": "s"},
@@ -288,11 +319,16 @@ class Ros1ToUeStreamer:
             frame = self.make_frame()
             if frame is None:
                 if not wait_logged:
-                    self.rospy.logwarn("Waiting for first odom sample on %s", self.args.odom_topic)
+                    self.rospy.logwarn(
+                        "Waiting for a fresh odom sample on %s; UE transmission is paused when source age exceeds %.3fs",
+                        self.args.odom_topic,
+                        self.args.source_timeout_s,
+                    )
                     wait_logged = True
                 time.sleep(period_s)
                 next_send_monotonic = time.monotonic()
                 continue
+            wait_logged = False
             data, original_plan_points, sent_plan_points = self.encode_frame(frame)
             if sent_plan_points != original_plan_points:
                 self.rospy.logwarn_throttle(
@@ -353,6 +389,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=5005)
     parser.add_argument("--rate-hz", type=float, default=100.0)
+    parser.add_argument("--source-timeout-s", type=float, default=0.5)
+    parser.add_argument("--stream-id", default="")
+    parser.add_argument("--lease-dir", default="/tmp/mosim_ue_udp_bridge")
     parser.add_argument("--max-datagram-bytes", type=int, default=60000)
     parser.add_argument("--motor-timeout-s", type=float, default=0.5)
     parser.add_argument("--armed-visual-motor-command", type=float, default=0.65)
@@ -378,8 +417,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         parser.error("--rotor-link-names must contain exactly four comma-separated link names")
     if args.rate_hz <= 0.0:
         parser.error("--rate-hz must be positive")
+    if args.source_timeout_s <= 0.0:
+        parser.error("--source-timeout-s must be positive")
     if args.max_datagram_bytes < 1024 or args.max_datagram_bytes > 65507:
         parser.error("--max-datagram-bytes must be between 1024 and 65507")
+    if not args.stream_id:
+        args.stream_id = f"{args.vehicle_id}-{os.getpid()}-{time.time_ns()}"
     return args
 
 

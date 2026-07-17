@@ -1,0 +1,111 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+  - Class: rviz/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.25
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.03
+        Value: Lines
+      Name: Local Metric Grid
+      Plane: XY
+      Plane Cell Count: 80
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Alpha: 0.78
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 4
+        Min Value: 0
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Class: rviz/PointCloud2
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Name: FAST-LIO Continuous 3D Occupancy Review
+      Position Transformer: XYZ
+      Queue Size: 5
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.20
+      Style: Boxes
+      Topic: /mosim/fastlio/occupancy_object_review
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 255; 40; 40
+      Enabled: true
+      Head Diameter: 0.18
+      Head Length: 0.12
+      Length: 0.2
+      Line Style: Billboards
+      Line Width: 0.10
+      Name: UAV Truth Trajectory
+      Pose Color: 255; 40; 40
+      Pose Style: None
+      Topic: /mosim/px4ctrl/truth_path
+      Value: true
+    - Class: rviz/Path
+      Alpha: 1
+      Buffer Length: 1
+      Color: 40; 230; 80
+      Enabled: true
+      Head Diameter: 0.18
+      Head Length: 0.12
+      Length: 0.2
+      Line Style: Billboards
+      Line Width: 0.08
+      Name: Controller Reference Trajectory
+      Pose Color: 40; 230; 80
+      Pose Style: None
+      Topic: /mosim/px4ctrl/reference_path
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /mosim/fastlio/uav_axes
+      Name: UAV Body Axes
+      Queue Size: 10
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 38; 38; 38
+    Default Light: true
+    Fixed Frame: camera_init
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 30
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 1.0
+      Name: Current View
+      Pitch: 0.78
+      Target Frame: camera_init
+      Yaw: 0.78
+Window Geometry:
+  Height: 900
+  Width: 1150
+  X: 1180
+  Y: 40

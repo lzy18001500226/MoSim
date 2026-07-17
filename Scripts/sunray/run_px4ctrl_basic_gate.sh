@@ -141,6 +141,10 @@ NO_FLIGHT_DIAGNOSTIC_HOLD_S="${NO_FLIGHT_DIAGNOSTIC_HOLD_S:-auto}"
 REVIEW_OPEN_RVIZ="${REVIEW_OPEN_RVIZ:-false}"
 REVIEW_START_CLOUD_NODE="${REVIEW_START_CLOUD_NODE:-false}"
 REVIEW_START_FASTLIO="${REVIEW_START_FASTLIO:-${REVIEW_OPEN_RVIZ}}"
+REVIEW_START_OCCUPANCY_NODE="${REVIEW_START_OCCUPANCY_NODE:-false}"
+REVIEW_OCCUPANCY_INPUT_TOPIC="${REVIEW_OCCUPANCY_INPUT_TOPIC:-/mosim/fastlio/laser_map_obstacles}"
+REVIEW_OCCUPANCY_OUTPUT_TOPIC="${REVIEW_OCCUPANCY_OUTPUT_TOPIC:-/mosim/fastlio/occupancy_object_review}"
+REVIEW_OCCUPANCY_VOXEL_SIZE_M="${REVIEW_OCCUPANCY_VOXEL_SIZE_M:-0.20}"
 REVIEW_START_FASTLIO_ALIGNMENT="${REVIEW_START_FASTLIO_ALIGNMENT:-false}"
 FASTLIO_WS="${FASTLIO_WS:-/opt/mosim_work/sunray_ws/fastlio_ws}"
 FASTLIO_MODE="${FASTLIO_MODE:-livox_custom}"
@@ -905,6 +909,25 @@ if [[ "${REVIEW_START_FASTLIO}" == "true" ]]; then
   start_fastlio_stack
 fi
 
+if [[ "${REVIEW_START_OCCUPANCY_NODE}" == "true" ]]; then
+  if [[ "${REVIEW_START_FASTLIO}" != "true" ]]; then
+    echo "REVIEW_START_OCCUPANCY_NODE=true requires REVIEW_START_FASTLIO=true" >&2
+    exit 8
+  fi
+  python3 "${PROJECT_ROOT}/Scripts/ros/continuous_occupancy_review.py" \
+    --input-topic "${REVIEW_OCCUPANCY_INPUT_TOPIC}" \
+    --output-topic "${REVIEW_OCCUPANCY_OUTPUT_TOPIC}" \
+    --frame-id camera_init \
+    --voxel-size-m "${REVIEW_OCCUPANCY_VOXEL_SIZE_M}" \
+    --min-z 0.05 \
+    --max-z 4.0 \
+    --closing-iterations 1 \
+    --min-component-voxels 8 \
+    --output-json "${RESULT_DIR}/fastlio_occupancy_object_review.json" \
+    > "${RESULT_DIR}/fastlio_occupancy_object_review.log" 2>&1 &
+  PIDS+=("$!")
+fi
+
 if [[ "${REVIEW_START_FASTLIO_ALIGNMENT}" == "true" ]]; then
   start_mavros_local_odom_bridge
   start_fastlio_alignment_adapter
@@ -1288,6 +1311,10 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "mission_exit_code": ${MISSION_EXIT_CODE},
     "mavros_odom_bridge_mode": "${MAVROS_ODOM_BRIDGE_MODE}",
     "review_start_fastlio": "${REVIEW_START_FASTLIO}",
+    "review_start_occupancy_node": "${REVIEW_START_OCCUPANCY_NODE}",
+    "review_occupancy_input_topic": "${REVIEW_OCCUPANCY_INPUT_TOPIC}",
+    "review_occupancy_output_topic": "${REVIEW_OCCUPANCY_OUTPUT_TOPIC}",
+    "review_occupancy_voxel_size_m": ${REVIEW_OCCUPANCY_VOXEL_SIZE_M},
     "fastlio_ws": "${FASTLIO_WS}",
     "fastlio_mode": "${FASTLIO_MODE}",
     "fastlio_scan_rate_hz": ${FASTLIO_SCAN_RATE_HZ},
