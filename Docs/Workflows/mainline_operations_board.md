@@ -32,6 +32,26 @@ While RACER owns the shared runtime, execute the bounded non-Gazebo lane at
 source/offline, isolated MWORKS, and replay-only gates, but must not start or
 restart Gazebo, PX4, MAVROS, ROS master, FAST-LIO, or RACER.
 
+2026-07-17 control-platform closeout update: P5 enhancement, P6 safety, and P7
+fault-tolerant control are closed at their declared evidence tiers. P7 has six
+fixed-size FDI/FTC modes with real Sysplorer MWORKS MIL, official generated C,
+and zero-difference SIL. Its accepted same-run Gazebo gate physically reduces
+rotor-1 effectiveness to 0.65, observes the generated isolation mask, applies
+generated actuator takeover, and completes landing/disarm at
+`Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/`. This does not
+claim complete rotor outage or multi-fault Gazebo recovery.
+
+2026-07-17 dual-GUI update: the active long goal now includes the non-AI experiment
+platform. MWORKS.Syslab-native Model Studio D4 and QGroundControl-v5.0.8-based
+Flight Console D5 have passed their native GUI gates. D5 Release completed
+325/325, all five MoSim pages were visibly reviewed at 2560x1440 with 125% DPI,
+and the reusable launcher is `Scripts/ui/run_flight_console.ps1`. This is not a
+Gazebo/MAVLink/visualization closed-loop claim. The next executable gate is D6:
+one Factory L2 generated-C single-UAV run with runtime readiness, wind and motor
+injection ACK, telemetry, metrics, display binding, and result return. D7 is the
+equivalent three-UAV run; only after both pass may 4-9 UAV formation gates be
+opened one count at a time. AI remains interface-only in this goal.
+
 ## 2. Current Mode
 
 | Item | Current Rule |

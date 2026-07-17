@@ -12,6 +12,8 @@ from pathlib import Path
 from typing import Any
 
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_TOOL_ROOT = PROJECT_ROOT / ".tools" / "flight-console"
 QT_VERSION = "6.8.3"
 QT_KIT = "msvc2022_64"
 QT_MODULES = (
@@ -33,17 +35,34 @@ def _first_existing(paths: list[Path]) -> Path | None:
     return next((path.resolve() for path in paths if path.is_file()), None)
 
 
-def _qt_root(explicit: str | None) -> Path | None:
+def _qt_root(explicit: str | None, tool_root: Path) -> Path | None:
+    if explicit:
+        path = Path(explicit)
+        candidate = path.parents[2] if path.name == "Qt6" and len(path.parents) >= 3 else path
+        return candidate.resolve() if (candidate / "bin" / "qtpaths6.exe").is_file() else None
     candidates: list[Path] = []
-    for value in (explicit, os.environ.get("QTDIR"), os.environ.get("Qt6_DIR")):
+    for value in (os.environ.get("QTDIR"), os.environ.get("Qt6_DIR")):
         if value:
             path = Path(value)
             candidates.append(path.parents[2] if path.name == "Qt6" and len(path.parents) >= 3 else path)
-    candidates.extend((Path("C:/Qt") / QT_VERSION / QT_KIT, Path.home() / "Qt" / QT_VERSION / QT_KIT))
+    candidates.extend(
+        (
+            tool_root / "qt" / QT_VERSION / QT_KIT,
+            Path("C:/Qt") / QT_VERSION / QT_KIT,
+            Path.home() / "Qt" / QT_VERSION / QT_KIT,
+        )
+    )
     return next((path.resolve() for path in candidates if (path / "bin" / "qtpaths6.exe").is_file()), None)
 
 
-def inspect(*, qt_dir: str | None = None) -> dict[str, Any]:
+def inspect(
+    *,
+    qt_dir: str | None = None,
+    ninja_path: str | None = None,
+    gstreamer_dir: str | None = None,
+    tool_root: str | Path | None = None,
+) -> dict[str, Any]:
+    private_root = Path(tool_root).resolve() if tool_root else DEFAULT_TOOL_ROOT.resolve()
     program_files_x86 = Path(os.environ.get("ProgramFiles(x86)", "C:/Program Files (x86)"))
     vswhere = _first_existing(
         [
@@ -75,7 +94,7 @@ def inspect(*, qt_dir: str | None = None) -> dict[str, Any]:
             if sdk_query.stdout.strip():
                 windows_sdk = True
                 break
-    qt_root = _qt_root(qt_dir)
+    qt_root = _qt_root(qt_dir, private_root)
     missing_modules: list[str] = []
     if qt_root:
         cmake_root = qt_root / "lib" / "cmake"
@@ -86,8 +105,11 @@ def inspect(*, qt_dir: str | None = None) -> dict[str, Any]:
     gstreamer_candidates = [
         Path(value)
         for value in (
+            gstreamer_dir,
             os.environ.get("GSTREAMER_1_0_ROOT_MSVC_X86_64"),
             os.environ.get("GSTREAMER_ROOT_X86_64"),
+            private_root / "gstreamer" / "gstreamer" / "1.0" / "msvc_x86_64",
+            private_root / "gstreamer" / "1.0" / "msvc_x86_64",
             "C:/gstreamer/1.0/msvc_x86_64",
         )
         if value
@@ -96,9 +118,20 @@ def inspect(*, qt_dir: str | None = None) -> dict[str, Any]:
         (path.resolve() for path in gstreamer_candidates if (path / "bin/gst-launch-1.0.exe").is_file()), None
     )
 
+    ninja_candidates = [
+        Path(value)
+        for value in (
+            ninja_path,
+            private_root / "python" / "Scripts" / "ninja.exe",
+            shutil.which("ninja"),
+        )
+        if value
+    ]
+    ninja = next((path.resolve() for path in ninja_candidates if path.is_file()), None)
+
     checks = {
         "cmake": shutil.which("cmake"),
-        "ninja": shutil.which("ninja"),
+        "ninja": str(ninja) if ninja else None,
         "visual_studio_installation": vs_installation,
         "windows_sdk": windows_sdk or None,
         "qt_root": str(qt_root) if qt_root else None,
@@ -118,6 +151,7 @@ def inspect(*, qt_dir: str | None = None) -> dict[str, Any]:
             "gstreamer": "1.22.12 runtime and development packages",
         },
         "detected": checks,
+        "private_tool_root": str(private_root),
         "missing_qt_modules": missing_modules,
         "blockers": blockers,
         "mutated_system": False,
@@ -127,9 +161,17 @@ def inspect(*, qt_dir: str | None = None) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--qt-dir")
+    parser.add_argument("--ninja-path")
+    parser.add_argument("--gstreamer-dir")
+    parser.add_argument("--tool-root")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    report = inspect(qt_dir=args.qt_dir)
+    report = inspect(
+        qt_dir=args.qt_dir,
+        ninja_path=args.ninja_path,
+        gstreamer_dir=args.gstreamer_dir,
+        tool_root=args.tool_root,
+    )
     rendered = json.dumps(report, indent=2) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

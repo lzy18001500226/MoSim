@@ -271,15 +271,24 @@ F5替代重启。
 - 完成运行控制、遥测、注入、证据和三机禁用/启用逻辑；
 - RViz/UE至少达到受控外部窗口，不能只提供文档或假视图。
 
-当前实施状态（2026-07-17）：D5a源码门禁已通过。MoSim已使用QGroundControl
+当前实施状态（2026-07-17）：D5原生构建与GUI门禁已通过。MoSim已使用QGroundControl
 `v5.0.8`官方custom-build扩展点，在`apps/flight_console/mosim/custom/`实现Run、
 Telemetry、Injection、Displays和Evidence界面，并通过固定Orchestrator客户端提交请求。
 生成overlay不计入冻结上游SHA清单，2638个上游文件仍通过校验。CMake已识别
-`Enabling custom build`。后续只读复核确认本机已有VS2022 Community、MSVC 14.44和
-Windows SDK 10.0.26100；当前实际缺口是Ninja、Qt 6.8.3及所需模块、GStreamer。
-项目已提供只读工具链门禁和固定构建入口，二者均不自行安装系统依赖。证据位于
-`Results/ui_platform/flight_console_d5_source_gate_20260717/`。D5在完成原生构建、启动和
-GUI人工审核前保持`source_ready_build_blocked`，不得声称MVP运行通过。
+`Enabling custom build`。项目私有`.tools/flight-console/`已冻结Qt 6.8.3、Ninja 1.13.0、
+GStreamer 1.22.12和兼容QGC v5.0.8的PX4-GPSDrivers提交
+`8fdef3bc0cb7820119abdb7320ad3992af2e440f`，未污染系统PATH。VS2022 Community、
+MSVC 14.44和Windows SDK 10.0.26100参与真实Release构建，最终完成325/325并生成
+`build/flight-console-qgc/Release/MoSimFlightConsole.exe`。一键入口
+`Scripts/ui/run_flight_console.ps1`从预检清单注入项目私有运行依赖并复用已有实例。
+
+原生窗口首次启动后完成Windows位置/防火墙和QGC公制/多旋翼初始化门禁；Run、Telemetry、
+Inject、Displays、Evidence五页均在2560x1440、125% DPI下完成可见性复核，没有重叠或截断。
+Windows位置权限按当前仿真定位边界拒绝，Flight Console联网按MAVLink/Orchestrator需求允许。
+构建与源码回归10项通过，证据位于
+`Results/ui_platform/flight_console_native_review_20260717/`。D5状态提升为
+`native_review_passed`。该结论不证明MAVLink已连接、Gazebo飞行、实时注入、RViz/UE绑定或
+D6同一run闭环；这些仍必须在D6运行验收中单独证明。
 
 ### D6 单机完整纵向闭环
 

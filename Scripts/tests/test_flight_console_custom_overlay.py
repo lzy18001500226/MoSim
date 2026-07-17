@@ -30,6 +30,10 @@ def test_custom_overlay_uses_supported_qgc_extension_points() -> None:
     assert "mosimOrchestrator.attachDisplays()" in qml
     assert "mosimOrchestrator.detachDisplays()" in qml
     assert "injectionVehicle.currentIndex = 0" in qml
+    overrides = (CUSTOM / "cmake" / "CustomOverrides.cmake").read_text(encoding="utf-8")
+    assert 'QGC_APP_NAME "MoSimFlightConsole"' in overrides
+    assert "CPM_px4-gpsdrivers_SOURCE" in overrides
+    assert "8fdef3bc0cb7820119abdb7320ad3992af2e440f" in overrides
 
 
 def test_materializer_keeps_source_and_target_separate(tmp_path: Path) -> None:
@@ -112,3 +116,44 @@ def test_windows_build_entrypoint_never_installs_dependencies() -> None:
     assert "materialize_qgc_custom_overlay.py" in script
     assert "generate_qgc_vendor_manifest.py" in script
     assert 'Ninja Multi-Config' in script
+    assert "cmake --fresh" in script
+    tick = chr(96)
+    assert script.index(f'set {tick}"PATH=') < script.index(f'call {tick}"$VsDevCmd')
+
+
+def test_windows_run_entrypoint_uses_private_runtime_and_reuses_existing_instance() -> None:
+    script = (ROOT / "Scripts" / "ui" / "run_flight_console.ps1").read_text(encoding="utf-8")
+    assert "flight_console_windows_toolchain_preflight.json" in script
+    assert 'Get-Process -Name "MoSimFlightConsole"' in script
+    assert "detected.qt_root" in script
+    assert "detected.gstreamer_root" in script
+    assert "Start-Process" in script
+    assert "build/flight-console-qgc/Release/MoSimFlightConsole.exe" in script
+
+
+def test_private_toolchain_layout_is_supported(tmp_path: Path, monkeypatch) -> None:
+    tool_root = tmp_path / "tools"
+    ninja = tool_root / "python" / "Scripts" / "ninja.exe"
+    qt = tool_root / "qt" / QT_VERSION / QT_KIT
+    gst = tool_root / "gstreamer" / "gstreamer" / "1.0" / "msvc_x86_64"
+    for file in (ninja, qt / "bin" / "qtpaths6.exe", gst / "bin" / "gst-launch-1.0.exe"):
+        file.parent.mkdir(parents=True, exist_ok=True)
+        file.write_bytes(b"")
+    for module in QT_MODULES:
+        (qt / "lib" / "cmake" / module).mkdir(parents=True)
+    monkeypatch.setenv("PATH", "")
+    report = inspect(tool_root=tool_root)
+    assert report["detected"]["ninja"] == str(ninja.resolve())
+    assert report["detected"]["qt_root"] == str(qt.resolve())
+    assert report["detected"]["gstreamer_root"] == str(gst.resolve())
+
+
+def test_private_installer_stays_inside_repository_and_uses_admin_extract() -> None:
+    script = (ROOT / "Scripts" / "ui" / "install_flight_console_toolchain.ps1").read_text(encoding="utf-8")
+    assert ".tools/flight-console" in script
+    assert "ToolRoot must stay inside the MoSim repository" in script
+    assert '"aqtinstall==3.3.0"' in script
+    assert '"ninja==1.13.0"' in script
+    assert "1437DC5D2FE7F3C6F9F24396DBAEB55C79A4F9E0F95D8EF559AD14ADB0237FAF" in script
+    assert '"/a ' in script
+    assert "-Verb RunAs" not in script

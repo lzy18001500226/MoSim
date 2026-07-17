@@ -287,6 +287,8 @@ References/PX4/PX4/Tools/test_keys/
 References/PX4/qgroundcontrol/deploy/android/android_release.keystore
 References/PX4/PX4/boards/**/extras/*.bin
 MoSim.code-workspace
+# Project-local third-party toolchains are reproducible downloads, not source.
+/.tools/
 # Source assets are project inputs and should be admitted in reviewed small
 # batches. Keep Blender backup files local-only.
 UE5/MoSimSceneLibrary/SourceAssets/**/*.blend1
