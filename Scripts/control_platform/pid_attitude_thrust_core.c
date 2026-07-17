@@ -227,13 +227,6 @@ int mosim_pid_attitude_thrust_step(
 {
     MosimPidAttitudeThrustState working_state;
     MosimPidVec3 acceleration = {0.0, 0.0, 0.0};
-    MosimPidVec3 b1d;
-    MosimPidVec3 b2;
-    MosimPidVec3 b1;
-    MosimPidVec3 b3;
-    double horizontal;
-    double horizontal_limit;
-    double thrust;
     size_t axis;
     if (output == NULL || state == NULL) return -1;
     memset(output, 0, sizeof(*output));
@@ -292,30 +285,54 @@ int mosim_pid_attitude_thrust_step(
     }
 
     acceleration.z += params->gravity_mps2;
-    horizontal = hypot(acceleration.x, acceleration.y);
-    horizontal_limit = fmax(acceleration.z, 0.0) * tan(params->max_tilt_rad);
+    if (mosim_pid_attitude_thrust_apply_acceleration(
+            params, input->reference_yaw_enu_rad, acceleration, output) != 0) return -1;
+    output->status_code = 0;
+    *state = working_state;
+    return 0;
+}
+
+int mosim_pid_attitude_thrust_apply_acceleration(
+    const MosimPidAttitudeThrustParams *params,
+    double reference_yaw_enu_rad,
+    MosimPidVec3 desired_acceleration_enu_mps2,
+    MosimPidAttitudeThrustOutput *output)
+{
+    MosimPidVec3 b1d;
+    MosimPidVec3 b2;
+    MosimPidVec3 b1;
+    MosimPidVec3 b3;
+    double horizontal;
+    double horizontal_limit;
+    double thrust;
+    if (params == NULL || output == NULL || !finite_vec3(desired_acceleration_enu_mps2) ||
+        !isfinite(reference_yaw_enu_rad) || !isfinite(params->mass_kg) ||
+        params->mass_kg <= 0.0 || !isfinite(params->max_tilt_rad) ||
+        params->max_tilt_rad < 0.0 || params->max_tilt_rad >= 1.57079632679489661923 ||
+        !isfinite(params->min_collective_thrust_n) ||
+        !isfinite(params->max_collective_thrust_n) ||
+        params->min_collective_thrust_n > params->max_collective_thrust_n) return -1;
+    horizontal = hypot(desired_acceleration_enu_mps2.x, desired_acceleration_enu_mps2.y);
+    horizontal_limit = fmax(desired_acceleration_enu_mps2.z, 0.0) * tan(params->max_tilt_rad);
     if (horizontal > horizontal_limit && horizontal > 1.0e-12) {
         const double scale = horizontal_limit / horizontal;
-        acceleration.x *= scale;
-        acceleration.y *= scale;
+        desired_acceleration_enu_mps2.x *= scale;
+        desired_acceleration_enu_mps2.y *= scale;
         output->saturated = 1;
     }
-    b3 = normalize_vec3(acceleration, vec3(0.0, 0.0, 1.0));
-    b1d = vec3(cos(input->reference_yaw_enu_rad),
-               sin(input->reference_yaw_enu_rad), 0.0);
+    b3 = normalize_vec3(desired_acceleration_enu_mps2, vec3(0.0, 0.0, 1.0));
+    b1d = vec3(cos(reference_yaw_enu_rad), sin(reference_yaw_enu_rad), 0.0);
     b2 = cross(b3, b1d);
     if (norm(b2) <= 1.0e-9) b2 = cross(b3, vec3(0.0, 1.0, 0.0));
     b2 = normalize_vec3(b2, vec3(0.0, 1.0, 0.0));
     b1 = normalize_vec3(cross(b2, b3), b1d);
     output->desired_attitude_enu_flu_wxyz = quat_from_columns(b1, b2, b3);
-    thrust = params->mass_kg * norm(acceleration);
+    thrust = params->mass_kg * norm(desired_acceleration_enu_mps2);
     output->desired_collective_thrust_n = clamp_value(
         thrust, params->min_collective_thrust_n,
         params->max_collective_thrust_n);
     if (fabs(output->desired_collective_thrust_n - thrust) > 1.0e-12)
         output->saturated = 1;
-    output->desired_acceleration_enu_mps2 = acceleration;
-    output->status_code = 0;
-    *state = working_state;
+    output->desired_acceleration_enu_mps2 = desired_acceleration_enu_mps2;
     return 0;
 }

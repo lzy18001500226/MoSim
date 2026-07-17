@@ -84,6 +84,11 @@ int mosim_pid_attitude_thrust_step(
     MosimPidAttitudeThrustState *state,
     const MosimPidAttitudeThrustInput *input,
     MosimPidAttitudeThrustOutput *output);
+int mosim_pid_attitude_thrust_apply_acceleration(
+    const MosimPidAttitudeThrustParams *params,
+    double reference_yaw_enu_rad,
+    MosimPidVec3 desired_acceleration_enu_mps2,
+    MosimPidAttitudeThrustOutput *output);
 
 #ifdef __cplusplus
 }
