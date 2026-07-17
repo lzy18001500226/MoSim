@@ -228,6 +228,11 @@ QuadrotorExperimentHarness
 评价字段至少包括：许可证、维护状态、stars/社区、Windows支持、MAVLink/PX4复用、
 Qt/QML扩展性、RViz/UE接入方式、多机支持、打包难度和上游同步成本。
 
+第一版选型已经冻结：Flight Console必须在主窗口内真正嵌入UE，不能把受控外部UE窗口
+作为正式产品形态。实现先采用Qt容器接管Windows原生UE渲染窗口；若实测存在不可接受的
+闪烁、焦点、DPI或缩放问题，再升级为GPU共享纹理。Pixel Streaming/WebRTC不作为本机
+默认路线，受控外部窗口仅保留为调试和显示故障降级路径。
+
 ### 4.2 源码边界
 
 ```text
@@ -288,8 +293,12 @@ Flight Console可以选择已经发布且通过当前runtime门禁的Profile，�
 二维地图同时是正式任务编辑面：默认作为右上角`mini_monitor`监视，点击后进入
 `expanded_plan`或`expanded_monitor`。放大模式提供目标点、航点、探索/覆盖区域、Geofence、
 禁飞区、起飞/降落/返航点、编队中心路线、测距、图层、校验和发布工具。所有编辑先形成
-`MissionDraft`，经Profile Validator和Orchestrator后才进入Planner Adapter；QML不得直接
-发布ROS/MAVROS setpoint或任意MAVLink控制命令。详细行为和验收见
+`MissionDraft`，经Profile Validator和Orchestrator后才进入任务Adapter。普通航点、围栏和
+Rally Point继续复用QGC原生Mission数据、交互、MAVLink上传下载和ACK能力，由
+`PX4MissionAdapter`在Orchestrator授权后执行；FUEL、覆盖、RACER和编队任务分别进入对应
+Planner/Formation Adapter。Orchestrator不重写QGC任务系统或规划算法，只统一任务所有权、
+校验、适配、幂等提交和证据。QML不得绕过该流程直接发布ROS/MAVROS setpoint或任意
+MAVLink控制命令。详细行为和验收见
 `Flight Console与二维任务地图详细设计.md`。
 
 QGC完整静态底图是`operator_display_map`，未知探索算法只能读取`live_occupancy_map`。
@@ -548,10 +557,17 @@ UE或RViz启动失败时，Flight Console必须显示具体失败原因并允许
 
 ### 6.7 部署拓扑与传感器扩展边界
 
-第一版部署拓扑是Windows上的Model Studio、Flight Console和UE，加WSL Ubuntu-20.04中的
-ROS1/Gazebo/PX4/MAVROS。Orchestrator接口不得假定所有进程永久位于同一主机；运行描述中
+第一版只保证当前比赛电脑的一键预检、启动、停止、重连和残留清理。部署拓扑是Windows上的
+Model Studio、Flight Console、Orchestrator和嵌入式UE，加WSL Ubuntu-20.04中的
+ROS1/Gazebo/PX4/MAVROS；本阶段不承担跨机器通用安装器、自动迁移或远程部署验收。
+Orchestrator接口不得假定所有进程永久位于同一主机；运行描述中
 预留`host_id`、`clock_domain`、`transport`、`endpoint`和`latency_budget_ms`，为后续独立UE
 渲染机、远程Gazebo、HIL和真机保留兼容路径。
+
+第一版正式进程间通信冻结为仅绑定`127.0.0.1`的本机Loopback控制API：低频、有副作用的
+控制请求使用HTTP/JSON请求响应，实时遥测和状态事件使用版本化WebSocket，UE位姿/渲染更新
+使用带`run_id`、时间戳和序号的独立单向低延迟流，结果与证据继续落文件。这里的HTTP是
+Windows/WSL及不同语言进程之间的本机IPC实现，不代表网页、浏览器、云服务或外网依赖。
 
 `SensorProfile`继续作为可扩展注册接口，至少能描述MID360、IMU、GPS、定高、RGB/Depth
 Camera和真机USB Camera的频率、噪声、延迟、外参、frame与来源。当前Goal不实现视觉闭环，
@@ -673,6 +689,8 @@ D3c已增加项目内JSON文件队列的长驻服务。两个GUI写入
 `Results/ui_platform/orchestrator_requests/`，服务以同一个Orchestrator/backend实例串行处理，
 原子写入`orchestrator_responses/`，从而保留run、进程和显示会话所有权。服务限制请求大小、
 拒绝符号链接、非对象JSON、未知动作和参数不匹配；同名请求已有响应时不重复执行。
+该文件队列是D3契约验证、恢复和诊断通道，不是最终实时主链。正式GUI接入按6.7节迁移到
+本机Loopback HTTP控制API和WebSocket遥测；迁移完成前不得用文件轮询延迟声明实时闭环通过。
 当前Model Studio D1请求格式尚未携带完整Profile和request id，必须在D4升级后才能接入。
 
 ### D4 Model Studio MVP

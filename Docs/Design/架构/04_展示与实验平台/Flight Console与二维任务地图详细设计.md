@@ -10,16 +10,20 @@
 
 1. MoSim Flight Console继续基于官方QGroundControl `v5.0.8` Custom Build二次开发，
    不另起一套通用地面站，也不直接修改`References/`或冻结的vendor上游源码。
-2. UE是默认三维主视图；二维地图不是装饰性缩略图，而是任务规划、空间约束配置和
+2. UE必须真正嵌入Flight Console主窗口并作为默认三维主视图；受控外部UE窗口只用于
+   调试和显示故障降级。二维地图不是装饰性缩略图，而是任务规划、空间约束配置和
    二维态势显示的正式操作面。
 3. 二维地图默认以右上角小地图显示，点击后展开为完整任务地图；编辑完成后收回，
    不与UE长期争夺中央区域。
 4. Factory使用项目自有离线米制地图，不依赖高德、Google、Bing或其他在线地图服务。
    后续室外地图可以增加地理配准离线Provider，但不能改变任务接口。
-5. 地图编辑只生成结构化`MissionDraft`。所有任务必须经坐标、边界、能力、安全、
-   Profile和运行状态校验，再由Orchestrator提交给Planner Adapter；QML不得直接发布
-   ROS/MAVROS setpoint或任意MAVLink控制命令。
-6. MWORKS不进入Gazebo快速控制回路。主闭环是MWORKS模型/MIL/SIL/codegen，生成控制核心
+5. 优先复用QGC原生Mission、GeoFence、Rally Point编辑器、数据模型和MAVLink事务。
+   `MissionDraft`是MoSim统一任务信封，不是重新实现一套QGC Mission系统。
+6. 所有任务必须经坐标、边界、能力、安全、Profile和运行状态校验，再由Orchestrator
+   选择任务Adapter。普通航点/围栏进入`PX4MissionAdapter`并复用QGC/MAVLink原生上传、下载
+   和ACK；探索、覆盖与编队进入对应Planner/Formation Adapter。Orchestrator不重写规划器。
+7. QML不得绕过Orchestrator直接发布ROS/MAVROS setpoint或任意MAVLink控制命令。
+8. MWORKS不进入Gazebo快速控制回路。主闭环是MWORKS模型/MIL/SIL/codegen，生成控制核心
    进入PX4/Gazebo/Sunray运行时，运行结果回流MWORKS分析和迭代。
 
 ## 2. 系统叙事与报告口径
@@ -308,7 +312,12 @@ revision: integer
   -> 生成新revision和hash
   -> 人工确认摘要
   -> Orchestrator幂等提交
-  -> Planner Adapter结构化ACK
+  -> 按mission_kind选择任务Adapter
+     waypoint/geofence/rally -> PX4MissionAdapter -> QGC/MAVLink原生事务
+     exploration            -> ExplorationPlannerAdapter
+     known_coverage         -> CoveragePlannerAdapter
+     formation              -> FormationAdapter
+  -> Adapter结构化ACK
 ```
 
 确认摘要至少显示：地图、任务类型、车辆、目标/区域、总距离或面积、高度范围、Geofence、
@@ -401,6 +410,18 @@ Gazebo/PX4/MAVROS状态
 
 ## 9. QGC复用与项目自有模块
 
+### 9.0 复用原则与任务权威
+
+QGC原生能力是第一选择。MoSim不重写航点列表、地图拖拽、Mission Item序列化、围栏、
+Rally Point、MAVLink任务协议或逐项ACK。`MissionDraft`只在原生任务数据外增加地图/坐标合同、
+ExperimentProfile、任务算法、车辆范围、安全约束、revision和证据字段。
+
+Orchestrator是任务执行所有权的唯一协调者，但不是航迹规划器或MAVLink替代实现。它负责
+校验当前run只存在一个任务authority，选择并授权Adapter，记录提交与ACK，并阻止QGC原生
+Mission、ROS Planner和Formation Controller同时向同一车辆争夺控制。普通PX4任务仍走
+QGC/MAVLink原生链；只有PX4无法表达的探索、覆盖和编队语义才由项目Adapter接入既有开源
+算法。任何项目Adapter都应保持薄层兼容，不得复制上游规划器核心。
+
 ### 9.1 优先复用
 
 ```text
@@ -428,6 +449,10 @@ apps/flight_console/mosim/custom/
   mission/
     MissionDraftModel
     MissionDraftValidatorClient
+    PX4MissionAdapter
+    ExplorationPlannerAdapter
+    CoveragePlannerAdapter
+    FormationAdapter
   scene/
     SceneMapRegistryClient
     LocalMetricMapProvider

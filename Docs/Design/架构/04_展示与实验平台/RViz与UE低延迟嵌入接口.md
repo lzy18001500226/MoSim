@@ -60,8 +60,11 @@ ready_detached -> shutdown -> cold
 
 ## 4. Orchestrator接口
 
-未来前端只依赖以下语义接口；具体 IPC 可以是本机 HTTP/gRPC/WebSocket，第一版
-不冻结传输框架。
+未来前端只依赖以下语义接口。第一版正式IPC冻结为仅绑定`127.0.0.1`的本机Loopback通道：
+低频控制请求使用HTTP/JSON请求响应，实时遥测与状态事件使用版本化WebSocket，UE位姿/
+渲染更新使用带`run_id`、时间戳和序号的独立单向低延迟流，证据和大体积结果继续落文件。
+HTTP在这里是Windows、WSL和不同语言进程间的IPC协议，不代表网页、浏览器或外网服务。
+现有JSON文件队列只保留为契约测试、恢复和诊断回退，不作为实时显示主链。
 
 | 接口 | 用途 | 关键返回 |
 | --- | --- | --- |
@@ -120,17 +123,19 @@ R4 Windows宿主强行重挂WSL窗口句柄，只作实验，不作为正式基�
 
 ### 6.2 UE
 
-优先级：
+第一版产品要求UE真正嵌入Flight Console主窗口。实现优先级：
 
 ```text
-U1 Windows原生渲染窗口句柄或共享纹理接入
-U2 UE Pixel Streaming/WebRTC嵌入
-U3 受控外部UE窗口
+U1 Qt容器接管Windows原生UE渲染窗口
+U2 GPU共享纹理接入
+U3 UE Pixel Streaming/WebRTC嵌入
+U4 受控外部UE窗口，仅调试和故障降级
 ```
 
-窗口句柄/共享纹理理论上延迟最低，但耦合较强；Pixel Streaming 更容易嵌入 Web
-或 Qt WebEngine，但增加编码/解码延迟。两条路线必须通过同一延迟基准测试后选择，
-不能仅凭主观判断冻结。
+U1必须通过窗口生命周期、DPI、缩放、焦点、输入、闪烁和重连门禁。若U1无法达到稳定
+验收，转U2共享纹理；不能退回外部窗口并声称正式嵌入完成。Pixel Streaming更容易嵌入
+Qt WebEngine，但增加编码/解码延迟，不作为当前比赛电脑默认路线。U4不满足正式产品验收，
+但必须保留，确保嵌入层失败不会阻断Gazebo/PX4运行与证据保存。
 
 ## 7. DisplayFrame数据契约
 
