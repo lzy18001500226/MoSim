@@ -1,0 +1,30 @@
+{
+  "schema": "mosim.control_platform.p6_safety_mworks_mil.v1",
+  "status": "passed",
+  "sysplorer_port": 49153,
+  "check_model": {
+    "status": "passed",
+    "model_count": 8,
+    "models": [
+      "MoSim_P6_SafetySupervisor_CFunction_Sysblock",
+      "MoSim_P6_SAFETY_FILTER_MIL",
+      "MoSim_P6_CBF_MIL",
+      "MoSim_P6_REFERENCE_GOVERNOR_MIL",
+      "MoSim_P6_GEOFENCE_MIL",
+      "MoSim_P6_EMERGENCY_STOP_MIL",
+      "MoSim_P6_RETURN_AND_LAND_MIL",
+      "MoSim_P6_FAILSAFE_STATE_MACHINE_MIL"
+    ]
+  },
+  "rows": [
+    {"mode": "safety_filter", "expected_action": 1, "action": 1, "state": 0, "active_constraints": 7, "safe_thrust": 1.0, "safe_reference_x": 12.0},
+    {"mode": "cbf", "expected_action": 1, "action": 1, "state": 0, "active_constraints": 31, "safe_thrust": 1.0, "safe_reference_x": 7.6},
+    {"mode": "reference_governor", "expected_action": 1, "action": 1, "state": 0, "active_constraints": 7, "safe_thrust": 1.0, "safe_reference_x": 0.015},
+    {"mode": "geofence", "expected_action": 1, "action": 1, "state": 0, "active_constraints": 23, "safe_thrust": 1.0, "safe_reference_x": 7.6},
+    {"mode": "emergency_stop", "expected_action": 5, "action": 5, "state": 4, "active_constraints": 135, "safe_thrust": 0.0, "safe_reference_x": 12.0},
+    {"mode": "return_and_land", "expected_action": 3, "action": 3, "state": 2, "active_constraints": 7, "safe_thrust": 1.0, "safe_reference_x": 0.0},
+    {"mode": "failsafe_state_machine", "expected_action": 2, "action": 2, "state": 1, "active_constraints": 39, "safe_thrust": 1.0, "safe_reference_x": 0.0}
+  ],
+  "action_encoding": {"pass": 0, "modify": 1, "hold": 2, "return": 3, "land": 4, "stop": 5},
+  "claim_ceiling": "Official Sysplorer CheckModel and MIL event-fixture evidence only. Generated-code SIL and ROS1 Gazebo event evidence are separate gates."
+}

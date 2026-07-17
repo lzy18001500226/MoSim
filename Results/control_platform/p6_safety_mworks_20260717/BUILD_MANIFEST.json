@@ -1,0 +1,88 @@
+{
+  "schema": "mosim.p6_safety_mworks_build.v1",
+  "bridge_model": "MoSim_P6_SafetySupervisor_CFunction_Sysblock",
+  "bridge_path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p6_safety_mworks_20260717\\models\\MoSim_P6_SafetySupervisor_CFunction_Sysblock.mo",
+  "fixtures": {
+    "safety_filter": "MoSim_P6_SAFETY_FILTER_MIL",
+    "cbf": "MoSim_P6_CBF_MIL",
+    "reference_governor": "MoSim_P6_REFERENCE_GOVERNOR_MIL",
+    "geofence": "MoSim_P6_GEOFENCE_MIL",
+    "emergency_stop": "MoSim_P6_EMERGENCY_STOP_MIL",
+    "return_and_land": "MoSim_P6_RETURN_AND_LAND_MIL",
+    "failsafe_state_machine": "MoSim_P6_FAILSAFE_STATE_MACHINE_MIL"
+  },
+  "scenario_overrides": {
+    "safety_filter": {},
+    "cbf": {
+      "obstacle_distance": 0.4
+    },
+    "reference_governor": {},
+    "geofence": {},
+    "emergency_stop": {
+      "emergency_request": 1.0
+    },
+    "return_and_land": {
+      "return_request": 1.0
+    },
+    "failsafe_state_machine": {
+      "command_age_s": 1.0
+    }
+  },
+  "expected_actions": {
+    "safety_filter": 1,
+    "cbf": 1,
+    "reference_governor": 1,
+    "geofence": 1,
+    "emergency_stop": 5,
+    "return_and_land": 3,
+    "failsafe_state_machine": 2
+  },
+  "inputs": [
+    "mode_id",
+    "dt",
+    "position_x",
+    "position_y",
+    "position_z",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z",
+    "candidate_acceleration_x",
+    "candidate_acceleration_y",
+    "candidate_acceleration_z",
+    "candidate_thrust",
+    "candidate_tilt_rad",
+    "reference_position_x",
+    "reference_position_y",
+    "reference_position_z",
+    "home_position_x",
+    "home_position_y",
+    "home_position_z",
+    "obstacle_distance",
+    "command_age_s",
+    "state_valid",
+    "offboard_valid",
+    "emergency_request",
+    "return_request",
+    "land_request",
+    "enable",
+    "reset"
+  ],
+  "outputs": [
+    "safe_acceleration_x",
+    "safe_acceleration_y",
+    "safe_acceleration_z",
+    "safe_thrust",
+    "safe_reference_x",
+    "safe_reference_y",
+    "safe_reference_z",
+    "action",
+    "state",
+    "active_constraints",
+    "modified",
+    "status_code"
+  ],
+  "sample_time_s": 0.01,
+  "stop_time_s": 0.2,
+  "fixed_size": true,
+  "claim_boundary": "Fixed-size SafetySupervisor bridge and seven trigger fixtures only. Live CheckModel/MIL, official codegen/SIL and event-driven Gazebo acceptance are separate gates."
+}

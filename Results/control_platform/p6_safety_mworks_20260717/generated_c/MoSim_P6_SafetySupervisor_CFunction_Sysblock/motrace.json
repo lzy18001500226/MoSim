@@ -1,0 +1,1623 @@
+{
+    "id": "MoSim_P6_SafetySupervisor_CFunction_Sysblock",
+    "entities": [
+        {
+            "id": "-cFunction",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 27,
+                            "begin column": 1,
+                            "end row": 34,
+                            "end column": 37
+                        },
+                        {
+                            "begin row": 34,
+                            "begin column": 69,
+                            "end row": 34,
+                            "end column": 71
+                        },
+                        {
+                            "begin row": 34,
+                            "begin column": 98,
+                            "end row": 34,
+                            "end column": 100
+                        },
+                        {
+                            "begin row": 34,
+                            "begin column": 135,
+                            "end row": 35,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 35,
+                            "begin column": 38,
+                            "end row": 35,
+                            "end column": 40
+                        },
+                        {
+                            "begin row": 35,
+                            "begin column": 75,
+                            "end row": 35,
+                            "end column": 77
+                        },
+                        {
+                            "begin row": 35,
+                            "begin column": 112,
+                            "end row": 35,
+                            "end column": 114
+                        },
+                        {
+                            "begin row": 35,
+                            "begin column": 149,
+                            "end row": 36,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 36,
+                            "begin column": 38,
+                            "end row": 36,
+                            "end column": 40
+                        },
+                        {
+                            "begin row": 36,
+                            "begin column": 89,
+                            "end row": 36,
+                            "end column": 91
+                        },
+                        {
+                            "begin row": 36,
+                            "begin column": 140,
+                            "end row": 37,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 37,
+                            "begin column": 52,
+                            "end row": 37,
+                            "end column": 54
+                        },
+                        {
+                            "begin row": 37,
+                            "begin column": 95,
+                            "end row": 37,
+                            "end column": 97
+                        },
+                        {
+                            "begin row": 37,
+                            "begin column": 140,
+                            "end row": 38,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 38,
+                            "begin column": 48,
+                            "end row": 38,
+                            "end column": 50
+                        },
+                        {
+                            "begin row": 38,
+                            "begin column": 95,
+                            "end row": 38,
+                            "end column": 97
+                        },
+                        {
+                            "begin row": 38,
+                            "begin column": 142,
+                            "end row": 39,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 39,
+                            "begin column": 43,
+                            "end row": 39,
+                            "end column": 45
+                        },
+                        {
+                            "begin row": 39,
+                            "begin column": 85,
+                            "end row": 39,
+                            "end column": 87
+                        },
+                        {
+                            "begin row": 39,
+                            "begin column": 127,
+                            "end row": 39,
+                            "end column": 129
+                        },
+                        {
+                            "begin row": 39,
+                            "begin column": 171,
+                            "end row": 40,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 40,
+                            "begin column": 41,
+                            "end row": 40,
+                            "end column": 43
+                        },
+                        {
+                            "begin row": 40,
+                            "begin column": 79,
+                            "end row": 40,
+                            "end column": 81
+                        },
+                        {
+                            "begin row": 40,
+                            "begin column": 120,
+                            "end row": 40,
+                            "end column": 122
+                        },
+                        {
+                            "begin row": 40,
+                            "begin column": 164,
+                            "end row": 41,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 41,
+                            "begin column": 42,
+                            "end row": 41,
+                            "end column": 44
+                        },
+                        {
+                            "begin row": 41,
+                            "begin column": 81,
+                            "end row": 41,
+                            "end column": 83
+                        },
+                        {
+                            "begin row": 41,
+                            "begin column": 114,
+                            "end row": 41,
+                            "end column": 116
+                        },
+                        {
+                            "begin row": 41,
+                            "begin column": 146,
+                            "end row": 42,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 42,
+                            "begin column": 52,
+                            "end row": 42,
+                            "end column": 57
+                        },
+                        {
+                            "begin row": 42,
+                            "begin column": 104,
+                            "end row": 42,
+                            "end column": 109
+                        },
+                        {
+                            "begin row": 42,
+                            "begin column": 156,
+                            "end row": 43,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 43,
+                            "begin column": 44,
+                            "end row": 43,
+                            "end column": 49
+                        },
+                        {
+                            "begin row": 43,
+                            "begin column": 93,
+                            "end row": 43,
+                            "end column": 98
+                        },
+                        {
+                            "begin row": 43,
+                            "begin column": 142,
+                            "end row": 44,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 44,
+                            "begin column": 49,
+                            "end row": 44,
+                            "end column": 54
+                        },
+                        {
+                            "begin row": 44,
+                            "begin column": 88,
+                            "end row": 44,
+                            "end column": 93
+                        },
+                        {
+                            "begin row": 44,
+                            "begin column": 126,
+                            "end row": 44,
+                            "end column": 131
+                        },
+                        {
+                            "begin row": 44,
+                            "begin column": 177,
+                            "end row": 45,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 45,
+                            "begin column": 41,
+                            "end row": 45,
+                            "end column": 46
+                        },
+                        {
+                            "begin row": 45,
+                            "begin column": 85,
+                            "end row": 46,
+                            "end column": 4
+                        }
+                    ]
+                }
+            ],
+            "entities": [
+                {
+                    "id": "cFunction-mode_id",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 34,
+                                    "begin column": 37,
+                                    "end row": 34,
+                                    "end column": 69
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-dt",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 34,
+                                    "begin column": 71,
+                                    "end row": 34,
+                                    "end column": 98
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-position_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 34,
+                                    "begin column": 100,
+                                    "end row": 34,
+                                    "end column": 135
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-position_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 35,
+                                    "begin column": 3,
+                                    "end row": 35,
+                                    "end column": 38
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-position_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 35,
+                                    "begin column": 40,
+                                    "end row": 35,
+                                    "end column": 75
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-velocity_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 35,
+                                    "begin column": 77,
+                                    "end row": 35,
+                                    "end column": 112
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-velocity_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 35,
+                                    "begin column": 114,
+                                    "end row": 35,
+                                    "end column": 149
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-velocity_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 36,
+                                    "begin column": 3,
+                                    "end row": 36,
+                                    "end column": 38
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-candidate_acceleration_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 36,
+                                    "begin column": 40,
+                                    "end row": 36,
+                                    "end column": 89
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-candidate_acceleration_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 36,
+                                    "begin column": 91,
+                                    "end row": 36,
+                                    "end column": 140
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-candidate_acceleration_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 37,
+                                    "begin column": 3,
+                                    "end row": 37,
+                                    "end column": 52
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-candidate_thrust",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 37,
+                                    "begin column": 54,
+                                    "end row": 37,
+                                    "end column": 95
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-candidate_tilt_rad",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 37,
+                                    "begin column": 97,
+                                    "end row": 37,
+                                    "end column": 140
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_position_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 38,
+                                    "begin column": 3,
+                                    "end row": 38,
+                                    "end column": 48
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_position_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 38,
+                                    "begin column": 50,
+                                    "end row": 38,
+                                    "end column": 95
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_position_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 38,
+                                    "begin column": 97,
+                                    "end row": 38,
+                                    "end column": 142
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-home_position_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 39,
+                                    "begin column": 3,
+                                    "end row": 39,
+                                    "end column": 43
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-home_position_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 39,
+                                    "begin column": 45,
+                                    "end row": 39,
+                                    "end column": 85
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-home_position_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 39,
+                                    "begin column": 87,
+                                    "end row": 39,
+                                    "end column": 127
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-obstacle_distance",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 39,
+                                    "begin column": 129,
+                                    "end row": 39,
+                                    "end column": 171
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-command_age_s",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 40,
+                                    "begin column": 3,
+                                    "end row": 40,
+                                    "end column": 41
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-state_valid",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 40,
+                                    "begin column": 43,
+                                    "end row": 40,
+                                    "end column": 79
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-offboard_valid",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 40,
+                                    "begin column": 81,
+                                    "end row": 40,
+                                    "end column": 120
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-emergency_request",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 40,
+                                    "begin column": 122,
+                                    "end row": 40,
+                                    "end column": 164
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-return_request",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 41,
+                                    "begin column": 3,
+                                    "end row": 41,
+                                    "end column": 42
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-land_request",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 41,
+                                    "begin column": 44,
+                                    "end row": 41,
+                                    "end column": 81
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-enable",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 41,
+                                    "begin column": 83,
+                                    "end row": 41,
+                                    "end column": 114
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reset",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 41,
+                                    "begin column": 116,
+                                    "end row": 41,
+                                    "end column": 146
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-safe_acceleration_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 42,
+                                    "begin column": 5,
+                                    "end row": 42,
+                                    "end column": 52
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-safe_acceleration_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 42,
+                                    "begin column": 57,
+                                    "end row": 42,
+                                    "end column": 104
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-safe_acceleration_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 42,
+                                    "begin column": 109,
+                                    "end row": 42,
+                                    "end column": 156
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-safe_thrust",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 43,
+                                    "begin column": 5,
+                                    "end row": 43,
+                                    "end column": 44
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-safe_reference_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 43,
+                                    "begin column": 49,
+                                    "end row": 43,
+                                    "end column": 93
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-safe_reference_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 43,
+                                    "begin column": 98,
+                                    "end row": 43,
+                                    "end column": 142
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-safe_reference_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 44,
+                                    "begin column": 5,
+                                    "end row": 44,
+                                    "end column": 49
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-action",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 44,
+                                    "begin column": 54,
+                                    "end row": 44,
+                                    "end column": 88
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-state",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 44,
+                                    "begin column": 93,
+                                    "end row": 44,
+                                    "end column": 126
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-active_constraints",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 44,
+                                    "begin column": 131,
+                                    "end row": 44,
+                                    "end column": 177
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-modified",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 45,
+                                    "begin column": 5,
+                                    "end row": 45,
+                                    "end column": 41
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-status_code",
+                    "codes": [
+                        {
+                            "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 45,
+                                    "begin column": 46,
+                                    "end row": 45,
+                                    "end column": 85
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                }
+            ]
+        },
+        {
+            "id": "-mode_id_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 34,
+                            "begin column": 37,
+                            "end row": 34,
+                            "end column": 69
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-dt_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 34,
+                            "begin column": 71,
+                            "end row": 34,
+                            "end column": 98
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-position_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 34,
+                            "begin column": 100,
+                            "end row": 34,
+                            "end column": 135
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-position_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 35,
+                            "begin column": 3,
+                            "end row": 35,
+                            "end column": 38
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-position_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 35,
+                            "begin column": 40,
+                            "end row": 35,
+                            "end column": 75
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-velocity_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 35,
+                            "begin column": 77,
+                            "end row": 35,
+                            "end column": 112
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-velocity_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 35,
+                            "begin column": 114,
+                            "end row": 35,
+                            "end column": 149
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-velocity_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 36,
+                            "begin column": 3,
+                            "end row": 36,
+                            "end column": 38
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-candidate_acceleration_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 36,
+                            "begin column": 40,
+                            "end row": 36,
+                            "end column": 89
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-candidate_acceleration_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 36,
+                            "begin column": 91,
+                            "end row": 36,
+                            "end column": 140
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-candidate_acceleration_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 37,
+                            "begin column": 3,
+                            "end row": 37,
+                            "end column": 52
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-candidate_thrust_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 37,
+                            "begin column": 54,
+                            "end row": 37,
+                            "end column": 95
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-candidate_tilt_rad_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 37,
+                            "begin column": 97,
+                            "end row": 37,
+                            "end column": 140
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_position_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 38,
+                            "begin column": 3,
+                            "end row": 38,
+                            "end column": 48
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_position_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 38,
+                            "begin column": 50,
+                            "end row": 38,
+                            "end column": 95
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_position_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 38,
+                            "begin column": 97,
+                            "end row": 38,
+                            "end column": 142
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-home_position_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 39,
+                            "begin column": 3,
+                            "end row": 39,
+                            "end column": 43
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-home_position_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 39,
+                            "begin column": 45,
+                            "end row": 39,
+                            "end column": 85
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-home_position_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 39,
+                            "begin column": 87,
+                            "end row": 39,
+                            "end column": 127
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-obstacle_distance_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 39,
+                            "begin column": 129,
+                            "end row": 39,
+                            "end column": 171
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-command_age_s_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 40,
+                            "begin column": 3,
+                            "end row": 40,
+                            "end column": 41
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-state_valid_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 40,
+                            "begin column": 43,
+                            "end row": 40,
+                            "end column": 79
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-offboard_valid_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 40,
+                            "begin column": 81,
+                            "end row": 40,
+                            "end column": 120
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-emergency_request_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 40,
+                            "begin column": 122,
+                            "end row": 40,
+                            "end column": 164
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-return_request_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 41,
+                            "begin column": 3,
+                            "end row": 41,
+                            "end column": 42
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-land_request_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 41,
+                            "begin column": 44,
+                            "end row": 41,
+                            "end column": 81
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-enable_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 41,
+                            "begin column": 83,
+                            "end row": 41,
+                            "end column": 114
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reset_in",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 41,
+                            "begin column": 116,
+                            "end row": 41,
+                            "end column": 146
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-safe_acceleration_x_out",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 42,
+                            "begin column": 5,
+                            "end row": 42,
+                            "end column": 52
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-safe_acceleration_y_out",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 42,
+                            "begin column": 57,
+                            "end row": 42,
+                            "end column": 104
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-safe_acceleration_z_out",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 42,
+                            "begin column": 109,
+                            "end row": 42,
+                            "end column": 156
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-safe_thrust_out",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 43,
+                            "begin column": 5,
+                            "end row": 43,
+                            "end column": 44
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-safe_reference_x_out",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 43,
+                            "begin column": 49,
+                            "end row": 43,
+                            "end column": 93
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-safe_reference_y_out",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 43,
+                            "begin column": 98,
+                            "end row": 43,
+                            "end column": 142
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-safe_reference_z_out",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 44,
+                            "begin column": 5,
+                            "end row": 44,
+                            "end column": 49
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-action_out",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 44,
+                            "begin column": 54,
+                            "end row": 44,
+                            "end column": 88
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-state_out",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 44,
+                            "begin column": 93,
+                            "end row": 44,
+                            "end column": 126
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-active_constraints_out",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 44,
+                            "begin column": 131,
+                            "end row": 44,
+                            "end column": 177
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-modified_out",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 45,
+                            "begin column": 5,
+                            "end row": 45,
+                            "end column": 41
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-status_code_out",
+            "codes": [
+                {
+                    "file": "MoSim_P6_SafetySupervisor_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 45,
+                            "begin column": 46,
+                            "end row": 45,
+                            "end column": 85
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        }
+    ]
+}

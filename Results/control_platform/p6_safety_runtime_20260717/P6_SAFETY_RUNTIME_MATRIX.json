@@ -1,0 +1,94 @@
+{
+  "schema": "mosim.p6_safety_runtime_matrix.v1",
+  "status": "passed",
+  "claim_boundary": "Generated SafetySupervisor code was loaded and the expected event was acknowledged in the ROS1 Gazebo/PX4/MAVROS/px4ctrl runtime. This matrix does not claim ordinary takeoff-hover-land success for deliberate STOP, HOLD, or RETURN scenarios.",
+  "mode_count": 7,
+  "expected_mode_count": 7,
+  "modes": [
+    {
+      "mode": "safety_filter",
+      "status": "passed",
+      "expected_action": 1,
+      "event_state": 0,
+      "active_constraints": 1,
+      "safe_thrust": 0.297621,
+      "runtime_loaded_symbol": "MoSim_P6_SafetySupervisor_CFunction_Sysblock::Step",
+      "binary_generated_symbol_present": true,
+      "event_acknowledged": true,
+      "provenance_path": "Results\\control_platform\\p6_safety_runtime_20260717\\safety_filter\\SAFETY_GENERATED_RUNTIME_PROVENANCE.json"
+    },
+    {
+      "mode": "cbf",
+      "status": "passed",
+      "expected_action": 1,
+      "event_state": 0,
+      "active_constraints": 24,
+      "safe_thrust": 0.295075,
+      "runtime_loaded_symbol": "MoSim_P6_SafetySupervisor_CFunction_Sysblock::Step",
+      "binary_generated_symbol_present": true,
+      "event_acknowledged": true,
+      "provenance_path": "Results\\control_platform\\p6_safety_runtime_20260717\\cbf\\SAFETY_GENERATED_RUNTIME_PROVENANCE.json"
+    },
+    {
+      "mode": "reference_governor",
+      "status": "passed",
+      "expected_action": 1,
+      "event_state": 0,
+      "active_constraints": 0,
+      "safe_thrust": 0.295112,
+      "runtime_loaded_symbol": "MoSim_P6_SafetySupervisor_CFunction_Sysblock::Step",
+      "binary_generated_symbol_present": true,
+      "event_acknowledged": true,
+      "provenance_path": "Results\\control_platform\\p6_safety_runtime_20260717\\reference_governor\\SAFETY_GENERATED_RUNTIME_PROVENANCE.json"
+    },
+    {
+      "mode": "geofence",
+      "status": "passed",
+      "expected_action": 1,
+      "event_state": 0,
+      "active_constraints": 16,
+      "safe_thrust": 0.297545,
+      "runtime_loaded_symbol": "MoSim_P6_SafetySupervisor_CFunction_Sysblock::Step",
+      "binary_generated_symbol_present": true,
+      "event_acknowledged": true,
+      "provenance_path": "Results\\control_platform\\p6_safety_runtime_20260717\\geofence\\SAFETY_GENERATED_RUNTIME_PROVENANCE.json"
+    },
+    {
+      "mode": "emergency_stop",
+      "status": "passed",
+      "expected_action": 5,
+      "event_state": 4,
+      "active_constraints": 128,
+      "safe_thrust": 0.0,
+      "runtime_loaded_symbol": "MoSim_P6_SafetySupervisor_CFunction_Sysblock::Step",
+      "binary_generated_symbol_present": true,
+      "event_acknowledged": true,
+      "provenance_path": "Results\\control_platform\\p6_safety_runtime_20260717\\emergency_stop\\SAFETY_GENERATED_RUNTIME_PROVENANCE.json"
+    },
+    {
+      "mode": "return_and_land",
+      "status": "passed",
+      "expected_action": 3,
+      "event_state": 2,
+      "active_constraints": 0,
+      "safe_thrust": 0.29494,
+      "runtime_loaded_symbol": "MoSim_P6_SafetySupervisor_CFunction_Sysblock::Step",
+      "binary_generated_symbol_present": true,
+      "event_acknowledged": true,
+      "provenance_path": "Results\\control_platform\\p6_safety_runtime_20260717\\return_and_land\\SAFETY_GENERATED_RUNTIME_PROVENANCE.json"
+    },
+    {
+      "mode": "failsafe_state_machine",
+      "status": "passed",
+      "expected_action": 2,
+      "event_state": 1,
+      "active_constraints": 32,
+      "safe_thrust": 0.294652,
+      "runtime_loaded_symbol": "MoSim_P6_SafetySupervisor_CFunction_Sysblock::Step",
+      "binary_generated_symbol_present": true,
+      "event_acknowledged": true,
+      "provenance_path": "Results\\control_platform\\p6_safety_runtime_20260717\\failsafe_state_machine\\SAFETY_GENERATED_RUNTIME_PROVENANCE.json"
+    }
+  ],
+  "errors": []
+}

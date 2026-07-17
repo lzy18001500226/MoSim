@@ -1,0 +1,98 @@
+{
+  "schema": "mosim.control_platform.p6_safety_source_gate.v1",
+  "status": "passed",
+  "modes": [
+    "safety_filter",
+    "cbf",
+    "reference_governor",
+    "geofence",
+    "emergency_stop",
+    "return_and_land",
+    "failsafe_state_machine"
+  ],
+  "mode_count": 7,
+  "fixed_size": true,
+  "dynamic_allocation": false,
+  "rows": [
+    {
+      "mode_id": 1,
+      "mode": "safety_filter",
+      "return_code": 0,
+      "status_code": 1,
+      "action": 1,
+      "active_constraints": 7,
+      "safe_acceleration_x": 4.0625,
+      "safe_thrust": 1.0,
+      "safe_reference_x": 12.0
+    },
+    {
+      "mode_id": 2,
+      "mode": "cbf",
+      "return_code": 0,
+      "status_code": 1,
+      "action": 1,
+      "active_constraints": 31,
+      "safe_acceleration_x": -0.8,
+      "safe_thrust": 1.0,
+      "safe_reference_x": 7.6
+    },
+    {
+      "mode_id": 3,
+      "mode": "reference_governor",
+      "return_code": 0,
+      "status_code": 1,
+      "action": 1,
+      "active_constraints": 7,
+      "safe_acceleration_x": 4.0625,
+      "safe_thrust": 1.0,
+      "safe_reference_x": 0.015
+    },
+    {
+      "mode_id": 4,
+      "mode": "geofence",
+      "return_code": 0,
+      "status_code": 1,
+      "action": 1,
+      "active_constraints": 23,
+      "safe_acceleration_x": 4.0625,
+      "safe_thrust": 1.0,
+      "safe_reference_x": 7.6
+    },
+    {
+      "mode_id": 5,
+      "mode": "emergency_stop",
+      "return_code": 0,
+      "status_code": 1,
+      "action": 5,
+      "active_constraints": 135,
+      "safe_acceleration_x": 0.0,
+      "safe_thrust": 0.0,
+      "safe_reference_x": 12.0
+    },
+    {
+      "mode_id": 6,
+      "mode": "return_and_land",
+      "return_code": 0,
+      "status_code": 1,
+      "action": 3,
+      "active_constraints": 7,
+      "safe_acceleration_x": 4.0625,
+      "safe_thrust": 1.0,
+      "safe_reference_x": 0.0
+    },
+    {
+      "mode_id": 7,
+      "mode": "failsafe_state_machine",
+      "return_code": 0,
+      "status_code": 1,
+      "action": 2,
+      "active_constraints": 39,
+      "safe_acceleration_x": 4.0625,
+      "safe_thrust": 1.0,
+      "safe_reference_x": 0.0
+    }
+  ],
+  "compile_stderr": "",
+  "run_stderr": "",
+  "claim_ceiling": "Deterministic source-level SafetySupervisor scenarios only; MWORKS, generated C and event-driven Gazebo gates remain separate."
+}

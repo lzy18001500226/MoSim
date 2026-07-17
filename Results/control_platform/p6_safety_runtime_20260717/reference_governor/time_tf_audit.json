@@ -1,0 +1,137 @@
+{
+  "schema": "mosim.sunray_ros1_time_tf_audit.v1",
+  "duration_requested_s": 20.0,
+  "duration_wall_s": 20.043729782104492,
+  "use_sim_time": true,
+  "wall_time_stats": {
+    "count": 399,
+    "first": 1784230851.2054586,
+    "last": 1784230871.1989248,
+    "elapsed_s": 19.99346613883972,
+    "avg_hz": 19.906503316442812,
+    "min_delta_s": 0.05006718635559082,
+    "max_delta_s": 0.05081987380981445,
+    "max_positive_gap_s": 0.05081987380981445,
+    "backward_count": 0,
+    "backward_examples": []
+  },
+  "rospy_time_now_stats": {
+    "count": 399,
+    "first": 11.948,
+    "last": 30.633,
+    "elapsed_s": 18.685,
+    "avg_hz": 21.300508429221303,
+    "min_delta_s": 0.038000000000000256,
+    "max_delta_s": 0.05000000000000071,
+    "max_positive_gap_s": 0.05000000000000071,
+    "backward_count": 0,
+    "backward_examples": []
+  },
+  "clock_topic_stats": {
+    "count": 18749,
+    "first": 11.931000000000001,
+    "last": 30.681,
+    "elapsed_s": 18.75,
+    "avg_hz": 999.8933333333333,
+    "min_delta_s": 0.0009999999999976694,
+    "max_delta_s": 0.0030000000000001137,
+    "max_positive_gap_s": 0.0030000000000001137,
+    "backward_count": 0,
+    "backward_examples": []
+  },
+  "header_topics": {
+    "/uav1/livox/imu": {
+      "stamp_stats": {
+        "count": 3747,
+        "first": 11.945,
+        "last": 30.675,
+        "elapsed_s": 18.73,
+        "avg_hz": 200.0,
+        "min_delta_s": 0.004999999999999005,
+        "max_delta_s": 0.005000000000002558,
+        "max_positive_gap_s": 0.005000000000002558,
+        "backward_count": 0,
+        "backward_examples": []
+      },
+      "unique_frames": [
+        "livox_mid360_1::base_link"
+      ]
+    },
+    "/uav1/livox/lidar": {
+      "stamp_stats": {
+        "count": 375,
+        "first": 11.942,
+        "last": 30.642,
+        "elapsed_s": 18.7,
+        "avg_hz": 20.0,
+        "min_delta_s": 0.045999999999999375,
+        "max_delta_s": 0.05500000000000327,
+        "max_positive_gap_s": 0.05500000000000327,
+        "backward_count": 0,
+        "backward_examples": []
+      },
+      "unique_frames": [
+        "uav1/base_link"
+      ]
+    },
+    "/uav1/mavros/local_position/pose": {
+      "stamp_stats": {
+        "count": 937,
+        "first": 11.951,
+        "last": 30.671,
+        "elapsed_s": 18.72,
+        "avg_hz": 50.0,
+        "min_delta_s": 0.01899999999999835,
+        "max_delta_s": 0.021000000000000796,
+        "max_positive_gap_s": 0.021000000000000796,
+        "backward_count": 0,
+        "backward_examples": []
+      },
+      "unique_frames": [
+        "map"
+      ]
+    }
+  },
+  "tf": {
+    "transform_count": 97,
+    "static_transform_count": 3,
+    "child_frame_count": 1,
+    "children_with_backward_time": {}
+  },
+  "log_scan": {
+    "files_scanned": [
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/assembled_model_sync.log",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/external_fusion.log",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/odom_bridge.log",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/px4_param_dump_before_mission.log",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/px4ctrl.log",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/sunray_gazebo.log",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/control_diagnostics_stdout.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/external_fusion_process.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/mavros_state_first.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/mavros_stream_rate_request.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/native_odom_probe.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/odom_first.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/px4_param_overrides.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/px4_param_snapshot_before_mission.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/ros_env_snapshot.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/time_tf_audit_stdout.txt"
+    ],
+    "counts": {
+      "tf_jump_back": 0,
+      "timesync_time_jump": 0,
+      "simulator_mavlink_poll_timeout": 2,
+      "imu_lidar_not_synced": 0
+    },
+    "examples": {
+      "tf_jump_back": [],
+      "timesync_time_jump": [],
+      "simulator_mavlink_poll_timeout": [
+        "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/sunray_gazebo.log: ERROR [simulator_mavlink] poll timeout 0, 25",
+        "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p6_safety_runtime_20260717/reference_governor/sunray_gazebo.log: ERROR [simulator_mavlink] poll timeout 0, 25"
+      ],
+      "imu_lidar_not_synced": []
+    }
+  },
+  "interrupted": false
+}

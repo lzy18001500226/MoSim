@@ -1,0 +1,887 @@
+{
+  "schema": "mosim.sunray_ros1_system_frequency_audit.v1",
+  "duration_requested_s": 10.0,
+  "duration_wall_s": 10.011746406555176,
+  "use_sim_time": true,
+  "topics": {
+    "/clock": {
+      "topic": "/clock",
+      "type": "rosgraph_msgs/Clock",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 9568,
+        "elapsed_s": 10.223400115966797,
+        "avg_hz": 935.7943435137946,
+        "gap_s": {
+          "count": 9567,
+          "min": 6.008148193359375e-05,
+          "p50": 0.0010042190551757812,
+          "p95": 0.0011332035064697266,
+          "max": 0.0063571929931640625
+        },
+        "positive_gap_s": {
+          "count": 9567,
+          "min": 6.008148193359375e-05,
+          "p50": 0.0010042190551757812,
+          "p95": 0.0011332035064697266,
+          "max": 0.0063571929931640625
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "header_rate": {
+        "count": 9568,
+        "elapsed_s": 9.566999999999997,
+        "avg_hz": 1000.0000000000003,
+        "gap_s": {
+          "count": 9567,
+          "min": 0.0009999999999976694,
+          "p50": 0.0010000000000012221,
+          "p95": 0.0010000000000012221,
+          "max": 0.0010000000000012221
+        },
+        "positive_gap_s": {
+          "count": 9567,
+          "min": 0.0009999999999976694,
+          "p50": 0.0010000000000012221,
+          "p95": 0.0010000000000012221,
+          "max": 0.0010000000000012221
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "unique_frames": []
+    },
+    "/tf": {
+      "topic": "/tf",
+      "type": "tf2_msgs/TFMessage",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 85,
+        "elapsed_s": 8.981833934783936,
+        "avg_hz": 9.352210318061362,
+        "gap_s": {
+          "count": 84,
+          "min": 0.09582924842834473,
+          "p50": 0.10676908493041992,
+          "p95": 0.11151242256164551,
+          "max": 0.11676287651062012
+        },
+        "positive_gap_s": {
+          "count": 84,
+          "min": 0.09582924842834473,
+          "p50": 0.10676908493041992,
+          "p95": 0.11151242256164551,
+          "max": 0.11676287651062012
+        },
+        "gaps_gt_0p1s": 83,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/imu": {
+      "topic": "/imu",
+      "type": null,
+      "present_at_start": false,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/uav1/mavros/imu/data": {
+      "topic": "/uav1/mavros/imu/data",
+      "type": "sensor_msgs/Imu",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 476,
+        "elapsed_s": 10.150127410888672,
+        "avg_hz": 46.79744211786327,
+        "gap_s": {
+          "count": 475,
+          "min": 0.019316911697387695,
+          "p50": 0.020400047302246094,
+          "p95": 0.02387833595275879,
+          "max": 0.02620410919189453
+        },
+        "positive_gap_s": {
+          "count": 475,
+          "min": 0.019316911697387695,
+          "p50": 0.020400047302246094,
+          "p95": 0.02387833595275879,
+          "max": 0.02620410919189453
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "header_rate": {
+        "count": 476,
+        "elapsed_s": 9.5,
+        "avg_hz": 50.0,
+        "gap_s": {
+          "count": 475,
+          "min": 0.019000000000001904,
+          "p50": 0.019999999999999574,
+          "p95": 0.020000000000003126,
+          "max": 0.020999999999997243
+        },
+        "positive_gap_s": {
+          "count": 475,
+          "min": 0.019000000000001904,
+          "p50": 0.019999999999999574,
+          "p95": 0.020000000000003126,
+          "max": 0.020999999999997243
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "unique_frames": [
+        "base_link"
+      ]
+    },
+    "/uav1/mavros/local_position/pose": {
+      "topic": "/uav1/mavros/local_position/pose",
+      "type": "geometry_msgs/PoseStamped",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 476,
+        "elapsed_s": 10.150112628936768,
+        "avg_hz": 46.7975102705591,
+        "gap_s": {
+          "count": 475,
+          "min": 0.019354820251464844,
+          "p50": 0.02027273178100586,
+          "p95": 0.02383565902709961,
+          "max": 0.025600433349609375
+        },
+        "positive_gap_s": {
+          "count": 475,
+          "min": 0.019354820251464844,
+          "p50": 0.02027273178100586,
+          "p95": 0.02383565902709961,
+          "max": 0.025600433349609375
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "header_rate": {
+        "count": 476,
+        "elapsed_s": 9.5,
+        "avg_hz": 50.0,
+        "gap_s": {
+          "count": 475,
+          "min": 0.01899999999999835,
+          "p50": 0.019999999999999574,
+          "p95": 0.020000000000003126,
+          "max": 0.021000000000000796
+        },
+        "positive_gap_s": {
+          "count": 475,
+          "min": 0.01899999999999835,
+          "p50": 0.019999999999999574,
+          "p95": 0.020000000000003126,
+          "max": 0.021000000000000796
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "unique_frames": [
+        "map"
+      ]
+    },
+    "/uav1/mavros/local_position/velocity_local": {
+      "topic": "/uav1/mavros/local_position/velocity_local",
+      "type": "geometry_msgs/TwistStamped",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 476,
+        "elapsed_s": 10.150057554244995,
+        "avg_hz": 46.79776419606051,
+        "gap_s": {
+          "count": 475,
+          "min": 0.01946711540222168,
+          "p50": 0.020293235778808594,
+          "p95": 0.023832082748413086,
+          "max": 0.025478839874267578
+        },
+        "positive_gap_s": {
+          "count": 475,
+          "min": 0.01946711540222168,
+          "p50": 0.020293235778808594,
+          "p95": 0.023832082748413086,
+          "max": 0.025478839874267578
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "header_rate": {
+        "count": 476,
+        "elapsed_s": 9.5,
+        "avg_hz": 50.0,
+        "gap_s": {
+          "count": 475,
+          "min": 0.01899999999999835,
+          "p50": 0.019999999999999574,
+          "p95": 0.020000000000003126,
+          "max": 0.021000000000000796
+        },
+        "positive_gap_s": {
+          "count": 475,
+          "min": 0.01899999999999835,
+          "p50": 0.019999999999999574,
+          "p95": 0.020000000000003126,
+          "max": 0.021000000000000796
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "unique_frames": [
+        "base_link"
+      ]
+    },
+    "/uav1/mavros/local_position/odom": {
+      "topic": "/uav1/mavros/local_position/odom",
+      "type": "nav_msgs/Odometry",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 475,
+        "elapsed_s": 10.129502773284912,
+        "avg_hz": 46.79400466231235,
+        "gap_s": {
+          "count": 474,
+          "min": 0.019040584564208984,
+          "p50": 0.02031540870666504,
+          "p95": 0.023841381072998047,
+          "max": 0.0250704288482666
+        },
+        "positive_gap_s": {
+          "count": 474,
+          "min": 0.019040584564208984,
+          "p50": 0.02031540870666504,
+          "p95": 0.023841381072998047,
+          "max": 0.0250704288482666
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "header_rate": {
+        "count": 475,
+        "elapsed_s": 9.48,
+        "avg_hz": 50.0,
+        "gap_s": {
+          "count": 474,
+          "min": 0.01899999999999835,
+          "p50": 0.019999999999999574,
+          "p95": 0.020000000000003126,
+          "max": 0.021000000000000796
+        },
+        "positive_gap_s": {
+          "count": 474,
+          "min": 0.01899999999999835,
+          "p50": 0.019999999999999574,
+          "p95": 0.020000000000003126,
+          "max": 0.021000000000000796
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "unique_frames": [
+        "map"
+      ]
+    },
+    "/uav1/mavros/vision_pose/pose": {
+      "topic": "/uav1/mavros/vision_pose/pose",
+      "type": "geometry_msgs/PoseStamped",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 848,
+        "elapsed_s": 9.1118323802948,
+        "avg_hz": 92.95605588967129,
+        "gap_s": {
+          "count": 847,
+          "min": 0.004384517669677734,
+          "p50": 0.010236024856567383,
+          "p95": 0.017268657684326172,
+          "max": 0.04194927215576172
+        },
+        "positive_gap_s": {
+          "count": 847,
+          "min": 0.004384517669677734,
+          "p50": 0.010236024856567383,
+          "p95": 0.017268657684326172,
+          "max": 0.04194927215576172
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "header_rate": {
+        "count": 848,
+        "elapsed_s": 8.524000000000001,
+        "avg_hz": 99.36649460347253,
+        "gap_s": {
+          "count": 847,
+          "min": 0.004999999999999005,
+          "p50": 0.010000000000001563,
+          "p95": 0.015000000000000568,
+          "max": 0.03900000000000148
+        },
+        "positive_gap_s": {
+          "count": 847,
+          "min": 0.004999999999999005,
+          "p50": 0.010000000000001563,
+          "p95": 0.015000000000000568,
+          "max": 0.03900000000000148
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "unique_frames": []
+    },
+    "/uav1/mavros/setpoint_raw/attitude": {
+      "topic": "/uav1/mavros/setpoint_raw/attitude",
+      "type": "mavros_msgs/AttitudeTarget",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/uav1/mavros/setpoint_raw/local": {
+      "topic": "/uav1/mavros/setpoint_raw/local",
+      "type": "mavros_msgs/PositionTarget",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/uav1/mavros/setpoint_raw/target_attitude": {
+      "topic": "/uav1/mavros/setpoint_raw/target_attitude",
+      "type": "mavros_msgs/AttitudeTarget",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 95,
+        "elapsed_s": 10.044172525405884,
+        "avg_hz": 9.358660433423955,
+        "gap_s": {
+          "count": 94,
+          "min": 0.10472297668457031,
+          "p50": 0.10681843757629395,
+          "p95": 0.10826396942138672,
+          "max": 0.11038064956665039
+        },
+        "positive_gap_s": {
+          "count": 94,
+          "min": 0.10472297668457031,
+          "p50": 0.10681843757629395,
+          "p95": 0.10826396942138672,
+          "max": 0.11038064956665039
+        },
+        "gaps_gt_0p1s": 94,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "header_rate": {
+        "count": 95,
+        "elapsed_s": 9.399999999999999,
+        "avg_hz": 10.000000000000002,
+        "gap_s": {
+          "count": 94,
+          "min": 0.09999999999999787,
+          "p50": 0.10000000000000142,
+          "p95": 0.10000000000000142,
+          "max": 0.10000000000000142
+        },
+        "positive_gap_s": {
+          "count": 94,
+          "min": 0.09999999999999787,
+          "p50": 0.10000000000000142,
+          "p95": 0.10000000000000142,
+          "max": 0.10000000000000142
+        },
+        "gaps_gt_0p1s": 56,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "unique_frames": []
+    },
+    "/uav1/mavros/setpoint_raw/target_local": {
+      "topic": "/uav1/mavros/setpoint_raw/target_local",
+      "type": "mavros_msgs/PositionTarget",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 95,
+        "elapsed_s": 10.044225215911865,
+        "avg_hz": 9.358611339288474,
+        "gap_s": {
+          "count": 94,
+          "min": 0.1047208309173584,
+          "p50": 0.1067197322845459,
+          "p95": 0.10830187797546387,
+          "max": 0.11036396026611328
+        },
+        "positive_gap_s": {
+          "count": 94,
+          "min": 0.1047208309173584,
+          "p50": 0.1067197322845459,
+          "p95": 0.10830187797546387,
+          "max": 0.11036396026611328
+        },
+        "gaps_gt_0p1s": 94,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "header_rate": {
+        "count": 95,
+        "elapsed_s": 9.399999999999999,
+        "avg_hz": 10.000000000000002,
+        "gap_s": {
+          "count": 94,
+          "min": 0.09999999999999787,
+          "p50": 0.10000000000000142,
+          "p95": 0.10000000000000142,
+          "max": 0.10000000000000142
+        },
+        "positive_gap_s": {
+          "count": 94,
+          "min": 0.09999999999999787,
+          "p50": 0.10000000000000142,
+          "p95": 0.10000000000000142,
+          "max": 0.10000000000000142
+        },
+        "gaps_gt_0p1s": 56,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "unique_frames": []
+    },
+    "/uav1/sunray/uav_state": {
+      "topic": "/uav1/sunray/uav_state",
+      "type": "sunray_msgs/UAVState",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/uav1/sunray/px4_state": {
+      "topic": "/uav1/sunray/px4_state",
+      "type": "sunray_msgs/PX4State",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 849,
+        "elapsed_s": 9.120770692825317,
+        "avg_hz": 92.97459924818232,
+        "gap_s": {
+          "count": 848,
+          "min": 0.0010306835174560547,
+          "p50": 0.010225772857666016,
+          "p95": 0.017284393310546875,
+          "max": 0.04193115234375
+        },
+        "positive_gap_s": {
+          "count": 848,
+          "min": 0.0010306835174560547,
+          "p50": 0.010225772857666016,
+          "p95": 0.017284393310546875,
+          "max": 0.04193115234375
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "header_rate": {
+        "count": 849,
+        "elapsed_s": 8.529,
+        "avg_hz": 99.42548950638997,
+        "gap_s": {
+          "count": 848,
+          "min": 0.0,
+          "p50": 0.010000000000001563,
+          "p95": 0.015000000000000568,
+          "max": 0.03900000000000148
+        },
+        "positive_gap_s": {
+          "count": 847,
+          "min": 0.004999999999999005,
+          "p50": 0.010000000000001563,
+          "p95": 0.015000000000000568,
+          "max": 0.03900000000000148
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "unique_frames": []
+    },
+    "/uav1/sunray/uav_control_cmd": {
+      "topic": "/uav1/sunray/uav_control_cmd",
+      "type": null,
+      "present_at_start": false,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/uav1/livox/lidar": {
+      "topic": "/uav1/livox/lidar",
+      "type": "sensor_msgs/PointCloud2",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 189,
+        "elapsed_s": 10.04301905632019,
+        "avg_hz": 18.719470603980323,
+        "gap_s": {
+          "count": 188,
+          "min": 0.04804539680480957,
+          "p50": 0.0533292293548584,
+          "p95": 0.05486774444580078,
+          "max": 0.06006622314453125
+        },
+        "positive_gap_s": {
+          "count": 188,
+          "min": 0.04804539680480957,
+          "p50": 0.0533292293548584,
+          "p95": 0.05486774444580078,
+          "max": 0.06006622314453125
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "header_rate": {
+        "count": 189,
+        "elapsed_s": 9.400000000000002,
+        "avg_hz": 19.999999999999996,
+        "gap_s": {
+          "count": 188,
+          "min": 0.045000000000001705,
+          "p50": 0.05000000000000071,
+          "p95": 0.05099999999999838,
+          "max": 0.05600000000000094
+        },
+        "positive_gap_s": {
+          "count": 188,
+          "min": 0.045000000000001705,
+          "p50": 0.05000000000000071,
+          "p95": 0.05099999999999838,
+          "max": 0.05600000000000094
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "unique_frames": [
+        "uav1/base_link"
+      ],
+      "width_min_max_last": [
+        2022,
+        2065,
+        2049
+      ],
+      "height_min_max_last": [
+        1,
+        1,
+        1
+      ]
+    },
+    "/uav1/livox/imu": {
+      "topic": "/uav1/livox/imu",
+      "type": "sensor_msgs/Imu",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 1883,
+        "elapsed_s": 10.056904792785645,
+        "avg_hz": 187.1351115255719,
+        "gap_s": {
+          "count": 1882,
+          "min": 0.0039272308349609375,
+          "p50": 0.005027294158935547,
+          "p95": 0.008179187774658203,
+          "max": 0.010572671890258789
+        },
+        "positive_gap_s": {
+          "count": 1882,
+          "min": 0.0039272308349609375,
+          "p50": 0.005027294158935547,
+          "p95": 0.008179187774658203,
+          "max": 0.010572671890258789
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "header_rate": {
+        "count": 1883,
+        "elapsed_s": 9.41,
+        "avg_hz": 200.0,
+        "gap_s": {
+          "count": 1882,
+          "min": 0.004999999999999005,
+          "p50": 0.004999999999999005,
+          "p95": 0.005000000000002558,
+          "max": 0.005000000000002558
+        },
+        "positive_gap_s": {
+          "count": 1882,
+          "min": 0.004999999999999005,
+          "p50": 0.004999999999999005,
+          "p95": 0.005000000000002558,
+          "max": 0.005000000000002558
+        },
+        "gaps_gt_0p1s": 0,
+        "gaps_gt_0p5s": 0,
+        "gaps_gt_1s": 0,
+        "backward_count": 0
+      },
+      "unique_frames": [
+        "livox_mid360_1::base_link"
+      ]
+    },
+    "/mosim/fastlio/livox/lidar": {
+      "topic": "/mosim/fastlio/livox/lidar",
+      "type": "livox_ros_driver/CustomMsg",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/cloud_registered": {
+      "topic": "/cloud_registered",
+      "type": "sensor_msgs/PointCloud2",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/cloud_registered_body": {
+      "topic": "/cloud_registered_body",
+      "type": null,
+      "present_at_start": false,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/Odometry": {
+      "topic": "/Odometry",
+      "type": "nav_msgs/Odometry",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/path": {
+      "topic": "/path",
+      "type": "nav_msgs/Path",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/Laser_map": {
+      "topic": "/Laser_map",
+      "type": null,
+      "present_at_start": false,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/mosim/fastlio/odom_aligned": {
+      "topic": "/mosim/fastlio/odom_aligned",
+      "type": "nav_msgs/Odometry",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/mosim/fastlio/odom_aligned_path": {
+      "topic": "/mosim/fastlio/odom_aligned_path",
+      "type": null,
+      "present_at_start": false,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/mosim/fastlio/uav_axes": {
+      "topic": "/mosim/fastlio/uav_axes",
+      "type": null,
+      "present_at_start": false,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/mosim/fastlio/uav_path": {
+      "topic": "/mosim/fastlio/uav_path",
+      "type": null,
+      "present_at_start": false,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/mosim/sunray/truth_path": {
+      "topic": "/mosim/sunray/truth_path",
+      "type": "nav_msgs/Path",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/mosim/sunray/reference_path": {
+      "topic": "/mosim/sunray/reference_path",
+      "type": "nav_msgs/Path",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    },
+    "/mosim/sunray/lidar_points_map_accumulated": {
+      "topic": "/mosim/sunray/lidar_points_map_accumulated",
+      "type": "sensor_msgs/PointCloud2",
+      "present_at_start": true,
+      "wall_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "header_rate": {
+        "count": 0,
+        "avg_hz": null
+      },
+      "unique_frames": []
+    }
+  }
+}
