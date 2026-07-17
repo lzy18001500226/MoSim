@@ -1,0 +1,4 @@
+/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p2_linear_robust_mworks_20260716/generated_c/MoSim_P2_LinearRobust_CFunction_Sysblock/extern_inc/momodel_extern_ince1.c: In function ‘command_from_acceleration’:
+/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p2_linear_robust_mworks_20260716/generated_c/MoSim_P2_LinearRobust_CFunction_Sysblock/extern_inc/momodel_extern_ince1.c:215:30: warning: pointers to arrays with different qualifiers are incompatible in ISO C [-Wpedantic]
+  215 |     quaternion_from_rotation(rotation, output->desired_attitude_wxyz);
+      |                              ^~~~~~~~

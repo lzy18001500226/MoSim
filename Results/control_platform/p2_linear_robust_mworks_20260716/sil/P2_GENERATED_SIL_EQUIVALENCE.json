@@ -1,0 +1,18 @@
+{
+  "schema": "mosim.control_platform.p2_generated_sil.v1",
+  "status": "passed",
+  "controllers": [
+    "lqg",
+    "feedback_linearization",
+    "passivity_based_control",
+    "adaptive_backstepping"
+  ],
+  "controller_count": 4,
+  "compared_columns_per_controller": 22,
+  "max_abs_difference": 0.0,
+  "tolerance": 1e-12,
+  "official_codegen": "MWORKS GenerateModelCode",
+  "failure_count": 0,
+  "failures": [],
+  "claim_ceiling": "Official MWORKS-generated C is numerically equivalent to the project source core for four deterministic controller cases; Gazebo runtime and graphical Sysblock equivalence remain separate gates."
+}

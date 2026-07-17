@@ -32,6 +32,7 @@ References/Gazebo/**/*.tar binary
 results/robustness/** text eol=lf
 Scripts/sunray/patches/*.patch text eol=lf -whitespace
 Results/control_platform/classic_controller_closeout_20260717/** -whitespace
+Results/control_platform/p2_linear_robust_mworks_20260716/** -whitespace
 Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json -whitespace
 Results/control_platform/p2_mu_syslab_capability_20260716/SYSLAB_MU_CAPABILITY_AUDIT.json -whitespace
 Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json -whitespace

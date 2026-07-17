@@ -1,0 +1,30 @@
+{
+  "schema": "mosim.linear_robust_generated_runtime_provenance.v1",
+  "status": "passed",
+  "backend": "linear_robust_attitude_thrust",
+  "controller_id": 1,
+  "controller_name": "lqg",
+  "generated_model_name": "MoSim_P2_LinearRobust_CFunction_Sysblock",
+  "generated_code_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p2_linear_robust_mworks_20260716/generated_c/MoSim_P2_LinearRobust_CFunction_Sysblock",
+  "generated_code_sha256": "c1cf480663090c4ac9603c4d7986d13ec21453d5bb3534366d648abc9f2db77d",
+  "generated_file_sha256": {
+    "MoSim_P2_LinearRobust_CFunction_Sysblock.c": "bbbffa0a4286f3da57b65934457a210dc276387bc777adc08a755eacf613710c",
+    "MoSim_P2_LinearRobust_CFunction_Sysblock.h": "25fd7f31a835274a16a04f8a8994d4d6043ac1ebf44b377f7fdbe0bea574a5a9",
+    "MoSim_P2_LinearRobust_CFunction_Sysblock_data.c": "dffbcbd0bf2189037d1854a39c7b3e35319f426b41a5c974d05a983fae2c01e2",
+    "MoSim_P2_LinearRobust_CFunction_Sysblock_private.h": "2bc2ce46acac5851d38e64f6231bb153d26ccd2a6361f2c60ca1c6a89c892858",
+    "extern_inc/momodel_extern_ince1.c": "bcfde643b940e58306c992b03bea8c5912a7cd60d9436c0f678d58f4e76ad354"
+  },
+  "build_manifest": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p2_linear_robust_mworks_20260716/BUILD_MANIFEST.json",
+  "sil_report": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p2_linear_robust_mworks_20260716/sil/P2_GENERATED_SIL_EQUIVALENCE.json",
+  "runtime_loaded_symbol": null,
+  "provenance_level": "build_only",
+  "build_backend_definition": "MOSIM_PX4CTRL_GENERATED_BACKEND_LINEAR_ROBUST_ATTITUDE_THRUST",
+  "cmake_backend": "linear_robust_attitude_thrust",
+  "cmake_generated_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p2_linear_robust_mworks_20260716/generated_c/MoSim_P2_LinearRobust_CFunction_Sysblock",
+  "px4ctrl_executable_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p2_linear_robust_px4ctrl_build_20260716/catkin_ws/devel/lib/px4ctrl/px4ctrl_node",
+  "px4ctrl_executable_sha256": "99699d85236476b5eb60bb9480bcc76fd71e3bd6ee1155f4ad07a9d05fc04ee3",
+  "binary_generated_symbol_present": true,
+  "runtime_ack": null,
+  "runtime_log": null,
+  "errors": []
+}
