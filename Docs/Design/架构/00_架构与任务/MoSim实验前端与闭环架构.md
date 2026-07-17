@@ -1,10 +1,14 @@
 # MoSim实验前端与闭环架构
 
-> 状态：架构决策草案，2026-07-15。
+> 状态：早期架构草案，产品选型已被2026-07-17双GUI冻结设计取代。
 >
 > 本文冻结 MoSim 的产品化方向：MWORKS 保持图形化建模与实验母体的地位，
 > 新建 MoSim Frontend 负责把实验配置、运行、故障注入、结果回流和调参串成
 > 一条可操作的闭环。本文不替代 MWORKS 模型规范、ROS1运行规范或具体控制器规范。
+> 当前权威产品边界见
+> `Docs/Design/架构/04_展示与实验平台/双GUI与非AI系统闭环实施规划.md`，Flight Console和
+> 二维任务地图见
+> `Docs/Design/架构/04_展示与实验平台/Flight Console与二维任务地图详细设计.md`。
 
 ## 1. 目标
 
@@ -124,8 +128,9 @@ Run ID，不接受任意裸 shell 字符串。
 - 适合 MoSim：作为 QGC 状态/飞控操作参考，或后期作为外部飞控面板。
 - 不适合直接承担：MWORKS 实验配置、故障 Profile、批量调参、Run lineage 和
   报告证据管理。
-- 决策：第一阶段不 fork QGC 作为 MoSim 主界面；先通过 MAVLink/QGC 保留飞控
-  操作能力，避免把实验平台绑定到大型地面站代码库。
+- 当前决策：该早期判断已被后续D2/D5证据取代。Flight Console采用官方QGC `v5.0.8`
+  Custom Build产品副本，Model Studio仍为独立MWORKS.Syslab原生APP；QGC不承担MWORKS
+  模型编辑、控制器组合或高频控制回路。
 
 ### Foxglove
 
@@ -164,7 +169,7 @@ Run ID，不接受任意裸 shell 字符串。
 
 | 候选 | 快照 | 可借鉴/复用 | 当前判断 |
 | --- | --- | --- | --- |
-| [mavlink/qgroundcontrol](https://github.com/mavlink/qgroundcontrol) | 约4.8k star，C++/Qt/QML，活跃 | MAVLink、飞行仪表、任务、参数、地图、跨平台桌面框架 | A级参考；不直接作为主基座 |
+| [mavlink/qgroundcontrol](https://github.com/mavlink/qgroundcontrol) | 约4.8k star，C++/Qt/QML，活跃 | MAVLink、飞行仪表、任务、参数、地图、跨平台桌面框架 | 已升级为Flight Console主底座；采用QGC 5.0.8 Custom Build边界，详细决策见后续设计文档 |
 | [ArduPilot/MissionPlanner](https://github.com/ArduPilot/MissionPlanner) | 约2.3k，C#，活跃 | 飞行任务、参数、遥测、日志和地面站工作流 | A级功能参考；GPL边界需单独审查 |
 | [bluerobotics/cockpit](https://github.com/bluerobotics/cockpit) | 约187，Vue，活跃 | 可定制跨平台遥控载具地面站、可编排界面和视频/控件组织 | A级界面基座候选，需深入审计协议和许可证 |
 | [nasa/openmct](https://github.com/nasa/openmct) | 约13k，JavaScript，活跃 | 任务控制、遥测对象、时间轴、布局、历史/实时数据组织 | A级实验监控和遥测架构参考 |
@@ -208,16 +213,21 @@ P3 Rerun：评估轨迹、点云、事件和时序回放
 P4 roslibjs + rosbridge：评估Windows前端读取ROS1数据和调用受控service
 ```
 
-QGroundControl、Mission Planner、PlotJuggler 作为交互和功能标杆；第一轮不 fork。
+历史第一轮仅把QGroundControl、Mission Planner、PlotJuggler作为交互和功能标杆，未
+fork产品源码；该阶段结论已经结束。当前Flight Console按后续冻结设计使用QGC 5.0.8
+Custom Build产品副本，Mission Planner和PlotJuggler仍只作功能参考。
 
-## 8. 当前推荐技术路线
+## 8. 后续冻结路线
 
 ```text
-MoSim Frontend：Qt/QML桌面工作台
+MoSim Model Studio：MWORKS.Syslab原生APP
+MoSim Flight Console：QGC 5.0.8 Custom Build / Qt/QML
 Orchestrator：本地服务/API，统一管理Profile、Launch Plan和Run Manifest
 MWORKS：图形化模型、快速仿真、调参和结果分析
 ROS1/Gazebo/PX4：当前工程运行后端
-RViz/UE/QGC：通过标准接口或受控子窗口接入
+UE：Flight Console中央三维主视图
+QGC二维任务地图：任务规划、边界配置和二维态势
+RViz：按需打开的点云和三维栅格工程审核
 ```
 
 先做统一工作台和窗口编排，再做真正的进程内嵌入。Windows 前端直接嵌入 WSL

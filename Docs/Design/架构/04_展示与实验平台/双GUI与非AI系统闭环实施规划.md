@@ -5,7 +5,9 @@
 > 本文冻结MoSim Model Studio、MoSim Flight Console和Orchestrator的产品边界、
 > 实施顺序与验收门禁。当前Goal不实现AI助手，只预留上下文和受控操作接口。
 > 任务算法、地图注册、QGC二维地图和地图切换的权威接口见
-> `Docs/Design/架构/00_架构与任务/任务算法与场景地图注册接口.md`。
+> `Docs/Design/架构/00_架构与任务/任务算法与场景地图注册接口.md`；Flight Console
+> 布局、QGC复用审计、二维任务编辑和坐标/发布合同见
+> `Docs/Design/架构/04_展示与实验平台/Flight Console与二维任务地图详细设计.md`。
 
 ## 1. 冻结决策
 
@@ -21,6 +23,8 @@
    证据和窗口/流会话管理，不重复实现其核心渲染能力。
 6. AI助手是后续亮点，不进入本Goal的完成标准。当前只冻结AI上下文、建议、确认和
    审计接口，禁止AI直接拥有飞行控制权。
+7. MWORKS不进入Gazebo快速控制回路。主线是模型/MIL/SIL/codegen、生成控制核心进入
+   PX4/Gazebo/Sunray运行时、结果回流MWORKS分析；在线UDP联合仿真只保留为后续可选研究。
 
 ## 2. 产品组成
 
@@ -280,6 +284,13 @@ Flight Console可以选择已经发布且通过当前runtime门禁的Profile，�
 第一张二维地图为Factory L2，显示静态结构、任务边界、出生点、目标、逐机位置、实际/
 规划轨迹，以及算法实际提供的frontier、coverage、assignment和formation图层。后续城市
 地图通过新增注册项、资产包和坐标合同扩展，不修改页面结构。
+
+二维地图同时是正式任务编辑面：默认作为右上角`mini_monitor`监视，点击后进入
+`expanded_plan`或`expanded_monitor`。放大模式提供目标点、航点、探索/覆盖区域、Geofence、
+禁飞区、起飞/降落/返航点、编队中心路线、测距、图层、校验和发布工具。所有编辑先形成
+`MissionDraft`，经Profile Validator和Orchestrator后才进入Planner Adapter；QML不得直接
+发布ROS/MAVROS setpoint或任意MAVLink控制命令。详细行为和验收见
+`Flight Console与二维任务地图详细设计.md`。
 
 QGC完整静态底图是`operator_display_map`，未知探索算法只能读取`live_occupancy_map`。
 界面显示先验不代表算法获得先验；该隔离必须由Profile Validator和Run Manifest证明。

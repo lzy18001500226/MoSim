@@ -1,8 +1,9 @@
 # Flight Console开源选型调研
-> 状态：D2来源与产品副本已冻结，Windows构建门禁阻断，2026-07-17。
+> 状态：D2选型和D5原生GUI门禁已通过，2026-07-17。
 >
-> 本文记录MoSim Flight Console的本地源码审计和GitHub候选比较。当前结论冻结
-> 主底座方向，但在Windows独立构建和最小源码复制门禁通过前，不声明D2完成。
+> 本文记录MoSim Flight Console的本地源码审计和GitHub候选比较。当前产品行为、
+> QGC复用点、二维任务地图和实现门禁以`双GUI与非AI系统闭环实施规划.md`和
+> `Flight Console与二维任务地图详细设计.md`为准。
 
 ## 1. 需求摘要
 
@@ -131,7 +132,7 @@ apps/flight_console/
 如果裁剪导致QGC无法基线构建，回退到完整源码副本，不允许用无法复现的本机安装包
 替代源码门禁。
 
-## 6. D2剩余验收
+## 6. D2与D5验收结果
 
 当前已完成：
 
@@ -142,16 +143,22 @@ apps/flight_console/
 - `References/PX4/qgroundcontrol/`保持未修改，产品源码位于
   `apps/flight_console/vendor/qgroundcontrol/`。
 
-当前机器门禁见
-`Results/ui_platform/qgc_d2_gate_20260717/PREFLIGHT.json`。本机只有Qt 5.15.2，
-缺少Qt 6.8.3、Ninja、Visual Studio 2022 C++ Build Tools和Windows SDK。安装MSVC和
-Windows SDK属于仓库外基础设施变更，未经明确授权不静默执行。
+早期工具链阻断记录保留在
+`Results/ui_platform/qgc_d2_gate_20260717/PREFLIGHT.json`，但不再代表当前状态。项目已在
+`.tools/flight-console/`冻结Qt 6.8.3、Ninja 1.13.0、GStreamer 1.22.12和兼容的
+PX4-GPSDrivers，并使用VS2022 Community、MSVC 14.44和Windows SDK 10.0.26100完成
+325/325 Release构建，产物为：
 
-D2仍需：
+```text
+build/flight-console-qgc/Release/MoSimFlightConsole.exe
+```
 
-- 原样构建并启动QGC基线；
-- 证明Custom Build页面可独立加载；
-- 输出构建日志和截图证据。
+Run、Telemetry、Injection、Displays和Evidence五页已在2560x1440、125% DPI下完成原生
+可见性复核。证据位于：
 
-在这两项通过前，D2保持`blocked`，不能把来源冻结和源码复制声明为可运行Flight
-Console。GStreamer可在首个无视频基线中关闭，但后续UE/视频流接入必须单独补门禁。
+```text
+Results/ui_platform/flight_console_native_review_20260717/
+```
+
+因此D2选型/来源门禁和D5原生GUI门禁均已通过。该结论不证明MAVLink连接、Gazebo飞行、
+实时注入、UE/RViz绑定或二维任务地图完成；这些能力仍分别由D6/D7和Q1-Q5 runtime门禁证明。

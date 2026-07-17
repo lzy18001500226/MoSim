@@ -25,7 +25,7 @@
 | Current architecture and execution order | `Docs/Design/架构.md`, `Docs/Design/需求.md`, `Docs/Design/赛题.md`, `Docs/Design/架构/00_架构与任务/任务路线图.md` |
 | Design MoSim experiment frontend and end-to-end tuning/fault loop | `Docs/Design/架构/00_架构与任务/MoSim实验前端与闭环架构.md`, `Docs/Design/架构/00_架构与任务/系统集成接口与编排.md` |
 | Design low-latency RViz/UE embedding and warm display sessions | `Docs/Design/架构/04_展示与实验平台/RViz与UE低延迟嵌入接口.md`, `Docs/Design/架构/04_展示与实验平台/展示与实验平台接口.md` |
-| Implement the two-GUI non-AI system loop and later 3-9 UAV scaling | `Docs/Design/架构/04_展示与实验平台/双GUI与非AI系统闭环实施规划.md`; Model Studio is a lightweight native Syslab APP, Flight Console uses an audited open-source base copied outside `References/`, and AI is interface-only in this goal |
+| Implement the two-GUI non-AI system loop and later 3-9 UAV scaling | `Docs/Design/架构/04_展示与实验平台/双GUI与非AI系统闭环实施规划.md`; detailed QGC reuse, UE-centered workspace, Factory mini/expanded mission map, waypoint/boundary/fleet editing, and map command authority are frozen in `Docs/Design/架构/04_展示与实验平台/Flight Console与二维任务地图详细设计.md`; Model Studio is a lightweight native Syslab APP and AI is interface-only in this goal |
 | Close source/MWORKS/replay work while RACER owns Gazebo/PX4 resources | `Docs/Workflows/non_gazebo_closeout_board_20260715.md`, `Docs/Workflows/competition_gap_inventory_20260715.md` |
 | Turn accepted requirements and architecture into executable agent work layers 3-6 | `Docs/Workflows/agent_project_operating_layers.md` |
 | Execute current Sunray ROS1/Gazebo/RViz lane and source boundaries | `Docs/Workflows/sunray_ros1_current_runtime_lane.md`, `Docs/Workflows/sunray_ros1_execution_checklist.md`, `Docs/Index/sunray_migration_index.md`, `References/Sunray`, `References/Lab/localization_slam/FAST_LIO` |
