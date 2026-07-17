@@ -275,10 +275,9 @@ alone is not closure.
   `takeoff_hover_land_incomplete_outer_timeout`; it is neither a pass nor a
   confirmed failed-flight result.
 
-The next permitted action is to rerun the unchanged official-PID gate with the
-full mission bounded timeout, after the shared ROS/Gazebo environment is idle.
-Do not loosen the pre-takeoff threshold or proceed to other controllers until
-the shared baseline is either accepted or recorded as a confirmed blocker.
+The unchanged official-PID gate has now completed and recorded a confirmed
+shared-baseline blocker. Do not loosen the threshold or proceed to the other
+five G9 controllers under this closeout.
 
 ### 9.2 Latest Calibration A/B Result
 
@@ -303,6 +302,28 @@ following bounded facts:
 
 This is classified as `takeoff_hover_land_incomplete_outer_timeout`, not a
 pass and not evidence of full closed-loop success. The calibration override
-chain itself is now validated; the next retry must allow the mission's full
-bounded timeout and must be run only when no other Gazebo/ROS task is active,
-because the current cleanup path owns the shared ROS/Gazebo process names.
+chain itself was validated. At that point, the next retry was required to use
+the mission's full bounded timeout and an idle shared Gazebo/ROS runtime; that
+retry is now recorded in Section 9.3.
+
+### 9.3 Terminal Official-PID Result
+
+The 2026-07-17 run at
+`Results/control_platform/controller_family_final_acceptance_20260717/g9_core/official_pid/takeoff_hover_land_retry2/`
+supersedes the incomplete retry as the current official-PID acceptance result:
+
+- G9 backend build and runtime provenance passed. The runtime selected
+  `g9_family`, loaded `G9_Family_CFunction_Sysblock::Step`, and matched
+  controller ID 1 / `official_pid`.
+- The six accepted sensor-bias overrides were written, read back, and captured
+  in the same-run 884-parameter snapshot.
+- The 0.5 degree pre-takeoff gate passed with maximum observed roll/pitch
+  `0.266111 deg`; takeoff, landing, and disarm all completed.
+- The strict mission gate blocked because steady-hover XY RMSE was
+  `0.0238733059 m`, above the unchanged `0.020 m` limit. Steady-hover Z RMSE
+  was `0.0193321723 m`.
+
+This is `executed_blocked`, not a runtime/provenance failure and not an
+accepted flight. Per the frozen stop rule, no figure-eight or remaining G9
+controller run follows. The project-wide terminal matrix is
+`Results/control_platform/controller_family_final_acceptance_20260717/CONTROLLER_FAMILY_FINAL_MATRIX.json`.

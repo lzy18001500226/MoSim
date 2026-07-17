@@ -1,0 +1,37 @@
+{
+  "schema": "mosim.g9_mworks_generated_runtime_provenance.v1",
+  "status": "passed",
+  "backend": "mworks_generated_c",
+  "controller_id": 1,
+  "controller_name": "official_pid",
+  "generated_model_name": "G9_Family_CFunction_Sysblock",
+  "generated_code_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/g9/controller_family_attitude_thrust_v1/g9_family_mworks_codegen_20260630_work/g9_family_cfunction_codegen_strict/G9_Family_CFunction_Sysblock",
+  "generated_code_sha256": "9c2d7406fc71edad2d9d234032fe17078bddfc32dff06dd81546075ae4c25e3a",
+  "generated_file_sha256": {
+    "G9_Family_CFunction_Sysblock.c": "08d8756f0ddef983b779097a0deffc5d6e6aa0f74d43bde8b0eb79ad2bafacce",
+    "G9_Family_CFunction_Sysblock.h": "7e05d1127df5474ce87d5859852c8c93d7d5ad677eb875761bc033bcfc7829c1",
+    "G9_Family_CFunction_Sysblock_data.c": "983f3187d1db168200acf3fa3da6a21df3d1fae4854c11fa42e958ea710ff3af",
+    "G9_Family_CFunction_Sysblock_private.h": "a33e335656a844f9e7d9f94953d329560bdd5d9e5cce252e050bcc2f89434e8d",
+    "extern_inc/momodel_extern_ince1.c": "7d71744bbef3f0bd56d51a439a9d47af055664d85e698bb036315be9be24e6b4"
+  },
+  "codegen_manifest": "/mnt/c/Users/HP/Desktop/MoSim/Results/g9/controller_family_attitude_thrust_v1/g9_family_mworks_codegen_20260630_work/generate_model_code_result.json",
+  "runtime_loaded_symbol": "G9_Family_CFunction_Sysblock::Step",
+  "build_backend_definition": "MOSIM_PX4CTRL_GENERATED_BACKEND_G9_FAMILY",
+  "cmake_backend": "g9_family",
+  "cmake_g9_generated_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/g9/controller_family_attitude_thrust_v1/g9_family_mworks_codegen_20260630_work/g9_family_cfunction_codegen_strict/G9_Family_CFunction_Sysblock",
+  "px4ctrl_executable_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib/px4ctrl/px4ctrl_node",
+  "px4ctrl_executable_sha256": "c2fb66d2262022146740285f1f2665b3ff0f30f0a448d867caabacc349a26e2e",
+  "build_timestamp_utc": "2026-07-17T10:26:03.380091+00:00",
+  "binary_generated_symbol_present": true,
+  "runtime_ack": "[mosim_generated_runtime] backend=mworks_generated_c build_backend=g9_family build_backend_definition=MOSIM_PX4CTRL_GENERATED_BACKEND_G9_FAMILY generated_model_name=G9_Family_CFunction_Sysblock runtime_loaded_symbol=G9_Family_CFunction_Sysblock::Step controller_id=1 controller_name=official_pid",
+  "runtime_log": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/controller_family_final_acceptance_20260717/g9_core/official_pid/takeoff_hover_land_retry2/px4ctrl.log",
+  "source_commit_or_tree_identity": {
+    "git_head": "6d2249cae1f7d7b31e98212f40d8fed6aef7dc5d",
+    "file_sha256": {
+      "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl/CMakeLists.txt": "3b17319a6cdcf9f6f9881fa7f16d58fdd179c2d4ac5d1a02ef64a4ef4fb6429b",
+      "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl/src/controller.cpp": "58d2039af43744b48fac9032327481b709956984481fc366f0cc1aab25b01807",
+      "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl/src/controller.h": "14aa5a0eac68d16b5c608dc1872de365feff08e670565b7c082210f13ac2da5b"
+    }
+  },
+  "errors": []
+}

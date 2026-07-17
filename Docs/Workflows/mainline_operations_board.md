@@ -64,6 +64,19 @@ mismatch did not show stable superiority. Both remain
 `implemented/selectable=false`; use them as report-ready experimental routes,
 not accepted default controllers.
 
+2026-07-17 controller-family Gazebo final acceptance: the terminal audit is
+`closed_with_blockers` at
+`Results/control_platform/controller_family_final_acceptance_20260717/` with
+48 rows: 27 accepted, 16 executed-blocked, and 5 not-run; no row remains
+provenance-missing. The G9 `official_pid` same-run generated-C provenance,
+0.5-degree pre-takeoff gate, takeoff, and landing/disarm passed, but steady
+hover XY RMSE was `0.023873 m` against the unchanged `0.020 m` limit. This is a
+shared baseline blocker, so the other five G9 profiles and figure-eight gates
+were not run. The `tube_mpc` provenance retry also remained blocked at Z RMSE
+`0.021296 m > 0.020 m`; do not combine its earlier metric-only pass with this
+provenance run. The matrix, CSV, summary, and three comparison figures are the
+authority; do not claim complete G9 controller-family Gazebo acceptance.
+
 ## 2. Current Mode
 
 | Item | Current Rule |
