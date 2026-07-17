@@ -20,6 +20,7 @@ BASE_MATRIX = (
 )
 REGISTRY = ROOT / "Config/control_platform/control_module_registry.json"
 DEFAULT_OUTPUT = ROOT / "Results/control_platform/classic_controller_closeout_20260717"
+WAVE_A_ROOT = ROOT / "Results/control_platform/wave_a_generated_gazebo_20260718"
 SOURCE_GATE = "source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json"
 MWORKS_MIL = "mworks/MWORKS_MIL_MANIFEST.json"
 MWORKS_CODEGEN = "mworks/MWORKS_CODEGEN_MANIFEST.json"
@@ -38,6 +39,21 @@ PASSED_MWORKS_SIL = {
     "lqi_baseline",
     "so3_attitude",
     "backstepping_baseline",
+}
+WAVE_A_RUNTIME_CASES = {
+    "lqr_baseline": ("lqr_baseline/takeoff_hover_land_retry3_px4_startup", "file_backend"),
+    "lqi_baseline": (
+        "lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120",
+        "ram_dataman",
+    ),
+    "so3_attitude": (
+        "so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120",
+        "ram_dataman",
+    ),
+    "backstepping_baseline": (
+        "backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120",
+        "ram_dataman",
+    ),
 }
 BLOCKED_IMPLEMENTATIONS = {"mu_synthesis", "neural_smc"}
 
@@ -174,9 +190,77 @@ def classic_addition_row(
     }
 
 
-def canonical_row(item: Any, module: dict[str, Any] | None) -> dict[str, Any]:
+def wave_a_runtime_row(
+    item: Any,
+    module: dict[str, Any] | None,
+    wave_a_root: Path,
+) -> dict[str, Any] | None:
+    relative_dir, startup_backend = WAVE_A_RUNTIME_CASES[item.module_id]
+    runtime_dir = wave_a_root / relative_dir
+    metrics_path = runtime_dir / "PX4CTRL_BASIC_MISSION_METRICS.json"
+    provenance_path = runtime_dir / "WAVE_A_GENERATED_RUNTIME_PROVENANCE.json"
+    metrics = optional_json(metrics_path)
+    provenance = optional_json(provenance_path)
+    if metrics is None or provenance is None:
+        return None
+
+    metrics_status = str(metrics.get("status"))
+    provenance_status = str(provenance.get("status"))
+    passed = metrics_status == "passed" and provenance_status == "passed"
+    status = "accepted" if passed else "executed_blocked"
+    blocker = None
+    if not passed:
+        blocker = str(
+            metrics.get("reason")
+            or ";".join(str(value) for value in provenance.get("errors", []))
+            or "runtime acceptance or generated-C provenance gate blocked"
+        )
+
+    paths = [metrics_path, provenance_path]
+    startup_manifest_path = runtime_dir / "PX4_RAM_DATAMAN_RCS.json"
+    if startup_manifest_path.is_file():
+        paths.append(startup_manifest_path)
+    steady_hover = metrics.get("steady_hover") or {}
+    pre_takeoff = metrics.get("pre_takeoff_state_gate") or {}
+    landing = metrics.get("landing_disarm") or {}
+    return {
+        "cohort": "P10_CLASSIC_RECONCILIATION",
+        "controller": item.module_id,
+        "contract": "canonical_controller_evidence_ladder",
+        "status": status,
+        "implementation_state": str((module or {}).get("status", "not_implemented")),
+        "mworks_codegen_state": "passed",
+        "generated_sil_state": "passed",
+        "selectable": passed,
+        "mission_status": metrics_status,
+        "provenance_status": provenance_status,
+        "px4_startup_backend": startup_backend,
+        "pre_takeoff_status": pre_takeoff.get("status"),
+        "takeoff_reached": metrics.get("takeoff_reached_altitude"),
+        "landing_disarm": landing.get("success"),
+        "hover_xy_rmse_m": steady_hover.get("xy_rmse_m"),
+        "hover_z_rmse_m": steady_hover.get("z_abs_rmse_m"),
+        "trajectory_status": "not_run",
+        "first_blocker": blocker,
+        "evidence_paths": [relative_evidence(path) for path in paths],
+        "claim_ceiling": (
+            "generated_c_gazebo_takeoff_hover_land_accepted"
+            if passed
+            else "generated_c_gazebo_executed_hover_acceptance_blocked"
+        ),
+    }
+
+
+def canonical_row(
+    item: Any,
+    module: dict[str, Any] | None,
+    wave_a_root: Path,
+) -> dict[str, Any]:
     module_id = item.module_id
     if module_id in PASSED_MWORKS_SIL:
+        runtime_row = wave_a_runtime_row(item, module, wave_a_root)
+        if runtime_row is not None:
+            return runtime_row
         codegen_state = "passed"
         sil_state = "passed"
         blocker = "Gazebo controller-specific gate not run"
@@ -231,6 +315,7 @@ def build_payload(
     base: dict[str, Any],
     registry: dict[str, Any],
     evidence_root: Path = DEFAULT_OUTPUT,
+    wave_a_root: Path = WAVE_A_ROOT,
 ) -> dict[str, Any]:
     rows = [dict(row) for row in base.get("rows", [])]
     existing = {str(row.get("controller", "")) for row in rows}
@@ -248,7 +333,13 @@ def build_payload(
                     )
                 )
             else:
-                rows.append(canonical_row(item, modules.get(item.module_id)))
+                rows.append(
+                    canonical_row(
+                        item,
+                        modules.get(item.module_id),
+                        wave_a_root,
+                    )
+                )
             existing.add(item.module_id)
 
     counts: dict[str, int] = {}

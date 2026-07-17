@@ -1,0 +1,413 @@
+{
+  "schema": "mosim.classic_controller_coverage_audit.v1",
+  "status": "passed",
+  "counts": {
+    "canonical": 22,
+    "registered": 22,
+    "in_final_matrix": 22,
+    "new_additions_registered": 5,
+    "findings": 0
+  },
+  "coverage": [
+    {
+      "module_id": "lqr_baseline",
+      "family": "linear_optimal",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "mworks_mil_generated_c_sil_and_gazebo_executed_hover_acceptance_blocked",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/lqr/sil_equivalence.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqr_baseline/takeoff_hover_land_retry3_px4_startup/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/lqr/sil_equivalence.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqr_baseline/takeoff_hover_land_retry3_px4_startup/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ]
+    },
+    {
+      "module_id": "lqi_baseline",
+      "family": "linear_optimal_integral",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "mworks_mil_generated_c_sil_and_gazebo_executed_hover_acceptance_blocked",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/lqi/sil_equivalence.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/lqi/sil_equivalence.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ]
+    },
+    {
+      "module_id": "lqg",
+      "family": "linear_quadratic_gaussian",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "fixed_size_c_estimator_and_command_contract_only_mworks_codegen_sil_and_runtime_pending",
+      "declared_evidence_paths": [
+        "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"
+      ]
+    },
+    {
+      "module_id": "hinf_hover_wrench",
+      "family": "h_infinity",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "licensed_hover_synthesis_and_project_c_oracle_only_no_allocator_adapter_or_runtime",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_wave_b_hinf_20260716/G5_WAVE_B_HINF_GATE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_wave_b_hinf_20260716/G5_WAVE_B_HINF_GATE.json"
+      ]
+    },
+    {
+      "module_id": "mu_synthesis",
+      "family": "mu_synthesis",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "blocked",
+      "selectable": false,
+      "claim_ceiling": "syslab_constant_matrix_mu_analysis_available_but_dynamic_musyn_controller_synthesis_unavailable",
+      "declared_evidence_paths": [
+        "Results/control_platform/p2_mu_syslab_capability_20260716/SYSLAB_MU_CAPABILITY_AUDIT.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/p2_mu_syslab_capability_20260716/SYSLAB_MU_CAPABILITY_AUDIT.json"
+      ]
+    },
+    {
+      "module_id": "so3_attitude",
+      "family": "so3_geometric",
+      "expected_kind": "attitude_rate_inner",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "mworks_mil_generated_c_sil_body_rate_gazebo_executed_hover_acceptance_blocked",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/so3/sil_equivalence.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/so3/sil_equivalence.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ]
+    },
+    {
+      "module_id": "backstepping_baseline",
+      "family": "backstepping",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "mworks_mil_generated_c_sil_nonadaptive_baseline_gazebo_executed_hover_acceptance_blocked",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/backstepping/sil_equivalence.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/backstepping/sil_equivalence.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ]
+    },
+    {
+      "module_id": "feedback_linearization",
+      "family": "feedback_linearization",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "fixed_size_c_translational_feedback_linearization_contract_only_mworks_codegen_sil_and_runtime_pending",
+      "declared_evidence_paths": [
+        "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"
+      ]
+    },
+    {
+      "module_id": "adaptive_backstepping",
+      "family": "adaptive_backstepping",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "fixed_size_c_bounded_adaptive_state_contract_only_mworks_codegen_sil_and_runtime_pending",
+      "declared_evidence_paths": [
+        "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"
+      ]
+    },
+    {
+      "module_id": "dfbc_high_order_attitude",
+      "family": "differential_flatness_high_order",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": true,
+      "claim_ceiling": "offline_and_limited_runtime_evidence",
+      "declared_evidence_paths": [
+        "Results/g9/dfbc_high_order_attitude_thrust_v1/source_audit/controller_source_audit.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/g9/dfbc_high_order_attitude_thrust_v1/source_audit/controller_source_audit.json"
+      ]
+    },
+    {
+      "module_id": "dfbc_high_order_bodyrate",
+      "family": "differential_flatness_high_order",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": true,
+      "claim_ceiling": "release_smoke_only",
+      "declared_evidence_paths": [
+        "Results/g9/dfbc_high_order_attitude_thrust_v1/g95_static_gate_20260630_082713/RUN_MANIFEST.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/g9/dfbc_high_order_attitude_thrust_v1/g95_static_gate_20260630_082713/RUN_MANIFEST.json"
+      ]
+    },
+    {
+      "module_id": "dfbc_smooth_robust_attitude",
+      "family": "differential_flatness_smooth_robust",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": true,
+      "claim_ceiling": "offline_and_limited_runtime_evidence",
+      "declared_evidence_paths": [
+        "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/source_audit/controller_source_audit.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/source_audit/controller_source_audit.json"
+      ]
+    },
+    {
+      "module_id": "dfbc_smooth_robust_bodyrate",
+      "family": "differential_flatness_smooth_robust",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "blocked",
+      "selectable": false,
+      "claim_ceiling": "interface_debug_only",
+      "declared_evidence_paths": [],
+      "existing_evidence_paths": []
+    },
+    {
+      "module_id": "l1_awff_minimal",
+      "family": "l1_awff",
+      "expected_kind": "augmentation",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "typed_cpp_and_c_abi_bounded_l1_inspired_residual_plus_drag_feedforward_static_evidence_only_not_formal_l1_or_runtime_selectable",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_wave_c_l1_awff_20260716/RUN_MANIFEST.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_wave_c_l1_awff_20260716/RUN_MANIFEST.json"
+      ]
+    },
+    {
+      "module_id": "dfbc_dob_eso_disabled",
+      "family": "dob_eso",
+      "expected_kind": "augmentation",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": true,
+      "claim_ceiling": "ablation_only",
+      "declared_evidence_paths": [
+        "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/g96_static_gate_20260630_082713/RUN_MANIFEST.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/g96_static_gate_20260630_082713/RUN_MANIFEST.json"
+      ]
+    },
+    {
+      "module_id": "dfbc_dob_eso",
+      "family": "dob_eso",
+      "expected_kind": "augmentation",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": true,
+      "claim_ceiling": "bounded_dob_eso_subset_static_evidence_runtime_ab_pending_not_full_adrc",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_wave_c_dob_eso_20260716/RUN_MANIFEST.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_wave_c_dob_eso_20260716/RUN_MANIFEST.json"
+      ]
+    },
+    {
+      "module_id": "neural_smc",
+      "family": "sliding_mode_neural",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "blocked",
+      "selectable": false,
+      "claim_ceiling": "interface_only_no_frozen_training_dataset_or_model_artifact",
+      "declared_evidence_paths": [
+        "Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"
+      ]
+    },
+    {
+      "module_id": "pole_placement_luenberger",
+      "family": "pole_placement_observer",
+      "expected_kind": "nominal_controller",
+      "new_addition": true,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "generated_c_runtime_ack_takeoff_and_landing_passed_hover_z_acceptance_blocked",
+      "declared_evidence_paths": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/pole_placement_luenberger/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/pole_placement_luenberger/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/pole_placement_luenberger/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/pole_placement_luenberger/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ]
+    },
+    {
+      "module_id": "mrac",
+      "family": "model_reference_adaptive_control",
+      "expected_kind": "nominal_controller",
+      "new_addition": true,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "generated_c_hover_accepted_figure8_executed_but_rmse_and_p95_acceptance_blocked",
+      "declared_evidence_paths": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac_figure8/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac_figure8/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac_figure8/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac_figure8/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ]
+    },
+    {
+      "module_id": "ndi",
+      "family": "nonlinear_dynamic_inversion",
+      "expected_kind": "nominal_controller",
+      "new_addition": true,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "generated_c_hover_accepted_figure8_executed_but_hover_xy_and_trajectory_rmse_acceptance_blocked",
+      "declared_evidence_paths": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi_figure8/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi_figure8/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi_figure8/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi_figure8/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ]
+    },
+    {
+      "module_id": "fopid",
+      "family": "fractional_order_pid",
+      "expected_kind": "nominal_controller",
+      "new_addition": true,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "generated_c_runtime_ack_takeoff_and_landing_passed_hover_z_acceptance_blocked",
+      "declared_evidence_paths": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ]
+    },
+    {
+      "module_id": "h2_state_feedback",
+      "family": "h2_optimal",
+      "expected_kind": "nominal_controller",
+      "new_addition": true,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "h2_synthesis_generated_c_runtime_ack_takeoff_and_landing_passed_hover_z_rmse_acceptance_blocked",
+      "declared_evidence_paths": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ]
+    }
+  ],
+  "findings": [],
+  "claim_boundary": "Coverage audit only; no implementation, MWORKS, generated-C, SIL or Gazebo acceptance claim."
+}

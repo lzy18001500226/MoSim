@@ -17,7 +17,7 @@ sys.modules[SPEC.name] = MODULE
 SPEC.loader.exec_module(MODULE)
 
 
-def test_appends_every_missing_canonical_row_without_replacing_base() -> None:
+def test_appends_every_missing_canonical_row_without_replacing_base(tmp_path: Path) -> None:
     base = {"rows": [{"controller": "lqg", "status": "accepted"}]}
     registry = {
         "modules": [
@@ -29,7 +29,7 @@ def test_appends_every_missing_canonical_row_without_replacing_base() -> None:
             }
         ]
     }
-    payload = MODULE.build_payload(base, registry)
+    payload = MODULE.build_payload(base, registry, wave_a_root=tmp_path)
     ids = [row["controller"] for row in payload["rows"]]
     assert ids[0] == "lqg"
     assert len(ids) == len(MODULE.CANONICAL_CONTROLLERS)
@@ -47,6 +47,40 @@ def test_blocked_algorithm_identity_stays_blocked() -> None:
     assert mu["implementation_state"] == "blocked"
     assert mu["status"] == "not_run"
     assert "musyn" in mu["first_blocker"]
+
+
+def test_wave_a_runtime_evidence_replaces_not_run_without_promoting_failure(
+    tmp_path: Path,
+) -> None:
+    runtime = tmp_path / "lqr_baseline/takeoff_hover_land_retry3_px4_startup"
+    write_json(
+        runtime / "PX4CTRL_BASIC_MISSION_METRICS.json",
+        {
+            "status": "blocked",
+            "reason": "hover_z_rmse_above_max:0.9",
+            "pre_takeoff_state_gate": {"status": "passed"},
+            "takeoff_reached_altitude": False,
+            "landing_disarm": {"success": True},
+            "steady_hover": {"xy_rmse_m": 0.08, "z_abs_rmse_m": 0.9},
+        },
+    )
+    write_json(
+        runtime / "WAVE_A_GENERATED_RUNTIME_PROVENANCE.json",
+        {"status": "passed", "errors": []},
+    )
+    registry = {"modules": [{"module_id": "lqr_baseline", "status": "implemented"}]}
+    payload = MODULE.build_payload(
+        {"rows": []}, registry, wave_a_root=tmp_path
+    )
+    lqr = next(row for row in payload["rows"] if row["controller"] == "lqr_baseline")
+    assert lqr["status"] == "executed_blocked"
+    assert lqr["mission_status"] == "blocked"
+    assert lqr["provenance_status"] == "passed"
+    assert lqr["px4_startup_backend"] == "file_backend"
+    assert lqr["hover_z_rmse_m"] == 0.9
+    assert lqr["trajectory_status"] == "not_run"
+    assert lqr["selectable"] is False
+    assert "hover_z_rmse_above_max" in lqr["first_blocker"]
 
 
 def write_json(path: Path, payload: dict) -> None:

@@ -1,0 +1,10 @@
+{
+  "schema": "mosim.px4.ram_dataman_rcs.v1",
+  "status": "passed",
+  "source": "/opt/mosim_work/sunray_px4/build/px4_sitl_default/etc/init.d-posix/rcS",
+  "source_sha256": "635e529967f3bdc8763c46a797e38f3f0cc0db2001733c262400eaf18c58f0e2",
+  "output": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/px4_work/mosim_rcS_ram_dataman",
+  "output_sha256": "22f819abb04706eecff5a3ec161aeb12699c877f1ac2b29e40e5f0bb91841d5c",
+  "dataman_backend": "ram",
+  "sys_dm_backend": 1
+}

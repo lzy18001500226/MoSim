@@ -9,6 +9,10 @@ extern "C" {
 #include "G10_BDE_Family_CFunction_Sysblock_StateIso_private.h"
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
 #include "MoSim_PID_AttitudeThrust_CFunction_Sysblock_private.h"
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST)
+#include "MoSim_WaveA_CFunction_Sysblock_private.h"
+#define MOSIM_ATTITUDE_THRUST_GB_IN ockGbIn
+#define MOSIM_ATTITUDE_THRUST_GB_OUT lockGbOut
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LINEAR_ROBUST_ATTITUDE_THRUST)
 #include "MoSim_P2_LinearRobust_CFunction_Sysblock_private.h"
 #define MOSIM_ATTITUDE_THRUST_GB_IN tion_sysblockGbIn
@@ -62,6 +66,31 @@ constexpr int kPidFuzzy = 3;
 constexpr int kPidNeural = 4;
 constexpr int kPidAntiWindup = 5;
 constexpr int kPidFeedforwardProfile = 6;
+
+constexpr int kWaveALqr = 1;
+constexpr int kWaveALqi = 2;
+constexpr int kWaveASo3 = 3;
+constexpr int kWaveABackstepping = 4;
+
+int wave_a_controller_id_from_mode(const std::string &core_mode)
+{
+  if (core_mode == "lqi_baseline") return kWaveALqi;
+  if (core_mode == "so3_attitude") return kWaveASo3;
+  if (core_mode == "backstepping_baseline") return kWaveABackstepping;
+  return kWaveALqr;
+}
+
+const char *wave_a_controller_name_from_id(const int controller_id)
+{
+  switch (controller_id)
+  {
+    case kWaveALqr: return "lqr_baseline";
+    case kWaveALqi: return "lqi_baseline";
+    case kWaveASo3: return "so3_attitude";
+    case kWaveABackstepping: return "backstepping_baseline";
+    default: return "unknown";
+  }
+}
 
 constexpr int kLinearRobustLqg = 1;
 constexpr int kLinearRobustFeedbackLinearization = 2;
@@ -390,6 +419,8 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
   generated_family_controller_id_ = g9_controller_id_from_mode(core_mode);
 #if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
   generated_family_controller_id_ = pid_controller_id_from_mode(core_mode);
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST)
+  generated_family_controller_id_ = wave_a_controller_id_from_mode(core_mode);
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LINEAR_ROBUST_ATTITUDE_THRUST)
   generated_family_controller_id_ = linear_robust_controller_id_from_mode(core_mode);
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_CLASSIC_CONTROLLER_ATTITUDE_THRUST)
@@ -412,6 +443,8 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
   const int max_generated_family_controller_id = kG10FaultAllocation;
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST)
   const int max_generated_family_controller_id = kPidFeedforwardProfile;
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST)
+  const int max_generated_family_controller_id = kWaveABackstepping;
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LINEAR_ROBUST_ATTITUDE_THRUST)
   const int max_generated_family_controller_id = kLinearRobustAdaptiveBackstepping;
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_CLASSIC_CONTROLLER_ATTITUDE_THRUST)
@@ -454,6 +487,12 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
                                core_mode == "neural_pid" ||
                                core_mode == "anti_windup" ||
                                core_mode == "feedforward_profile";
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST)
+  use_mosim_generated_core_ = use_mosim_generated_core_ ||
+                               core_mode == "lqr_baseline" ||
+                               core_mode == "lqi_baseline" ||
+                               core_mode == "so3_attitude" ||
+                               core_mode == "backstepping_baseline";
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LINEAR_ROBUST_ATTITUDE_THRUST)
   use_mosim_generated_core_ = use_mosim_generated_core_ ||
                                core_mode == "lqg" ||
@@ -610,6 +649,18 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
                     << " controller_id=" << generated_family_controller_id_
                     << " controller_name=" << pid_controller_name_from_id(generated_family_controller_id_)
                     << " neural_residual_source=zero_untrained");
+  }
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST)
+  if (use_mosim_generated_core_)
+  {
+    ROS_INFO_STREAM("[mosim_generated_runtime] backend=mworks_generated_c"
+                    << " build_backend=wave_a_attitude_thrust"
+                    << " build_backend_definition=MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST"
+                    << " generated_model_name=MoSim_WaveA_CFunction_Sysblock"
+                    << " generated_source_sha256=ec7dc5730b02bb4701c9f30ef78177b851a2ee8bc080575d8aedb5239fc492b7"
+                    << " runtime_loaded_symbol=MoSim_WaveA_CFunction_Sysblock::Step"
+                    << " controller_id=" << generated_family_controller_id_
+                    << " controller_name=" << wave_a_controller_name_from_id(generated_family_controller_id_));
   }
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LINEAR_ROBUST_ATTITUDE_THRUST)
   if (use_mosim_generated_core_)
@@ -1968,6 +2019,7 @@ LinearControl::calculateGeneratedCoreControl(const Desired_State_t &des,
   return debug;
 #else
 #if !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST) && \
+    !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST) && \
     !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LINEAR_ROBUST_ATTITUDE_THRUST) && \
     !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_CLASSIC_CONTROLLER_ATTITUDE_THRUST) && \
     !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_SLIDING_MODE_ATTITUDE_THRUST) && \
@@ -1979,7 +2031,8 @@ LinearControl::calculateGeneratedCoreControl(const Desired_State_t &des,
   const double dt = 0.01;
   const bool reset_this_cycle = generated_core_reset_pending_;
 
-#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LINEAR_ROBUST_ATTITUDE_THRUST) || \
+#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST) || \
+    defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LINEAR_ROBUST_ATTITUDE_THRUST) || \
     defined(MOSIM_PX4CTRL_GENERATED_BACKEND_CLASSIC_CONTROLLER_ATTITUDE_THRUST) || \
     defined(MOSIM_PX4CTRL_GENERATED_BACKEND_SLIDING_MODE_ATTITUDE_THRUST) || \
     defined(MOSIM_PX4CTRL_GENERATED_BACKEND_MPC_ATTITUDE_THRUST) || \
@@ -1994,6 +2047,12 @@ LinearControl::calculateGeneratedCoreControl(const Desired_State_t &des,
   MOSIM_ATTITUDE_THRUST_GB_IN.velocity_x_in = odom.v(0);
   MOSIM_ATTITUDE_THRUST_GB_IN.velocity_y_in = odom.v(1);
   MOSIM_ATTITUDE_THRUST_GB_IN.velocity_z_in = odom.v(2);
+#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST)
+  MOSIM_ATTITUDE_THRUST_GB_IN.attitude_w_in = imu.q.w();
+  MOSIM_ATTITUDE_THRUST_GB_IN.attitude_x_in = imu.q.x();
+  MOSIM_ATTITUDE_THRUST_GB_IN.attitude_y_in = imu.q.y();
+  MOSIM_ATTITUDE_THRUST_GB_IN.attitude_z_in = imu.q.z();
+#endif
 #if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_ENHANCEMENT_ATTITUDE_THRUST)
   if (!enhancement_acceleration_initialized_ || reset_this_cycle)
   {
@@ -2023,11 +2082,46 @@ LinearControl::calculateGeneratedCoreControl(const Desired_State_t &des,
   MOSIM_ATTITUDE_THRUST_GB_IN.reference_acceleration_y_in = des.a(1);
   MOSIM_ATTITUDE_THRUST_GB_IN.reference_acceleration_z_in = des.a(2);
   MOSIM_ATTITUDE_THRUST_GB_IN.reference_yaw_in = des.yaw;
+#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST)
+  const Eigen::Vector3d wave_a_kp(
+      param_.gain.Kp0, param_.gain.Kp1, param_.gain.Kp2);
+  const Eigen::Vector3d wave_a_kv(
+      param_.gain.Kv0, param_.gain.Kv1, param_.gain.Kv2);
+  Eigen::Vector3d wave_a_outer_acceleration = des.a;
+  wave_a_outer_acceleration += wave_a_kv.asDiagonal() * (des.v - odom.v);
+  wave_a_outer_acceleration += wave_a_kp.asDiagonal() * (des.p - odom.p);
+  wave_a_outer_acceleration += Eigen::Vector3d(0.0, 0.0, param_.gra);
+  const double wave_a_reference_thrust = computeDesiredCollectiveThrustSignal(
+      wave_a_outer_acceleration);
+  const double wave_a_yaw_odom = fromQuaternion2yaw(odom.q);
+  const double wave_a_roll = (wave_a_outer_acceleration(0) * std::sin(wave_a_yaw_odom) -
+                              wave_a_outer_acceleration(1) * std::cos(wave_a_yaw_odom)) /
+                             param_.gra;
+  const double wave_a_pitch = (wave_a_outer_acceleration(0) * std::cos(wave_a_yaw_odom) +
+                               wave_a_outer_acceleration(1) * std::sin(wave_a_yaw_odom)) /
+                              param_.gra;
+  const Eigen::Quaterniond wave_a_reference_world =
+      Eigen::AngleAxisd(des.yaw, Eigen::Vector3d::UnitZ()) *
+      Eigen::AngleAxisd(wave_a_pitch, Eigen::Vector3d::UnitY()) *
+      Eigen::AngleAxisd(wave_a_roll, Eigen::Vector3d::UnitX());
+  const Eigen::Quaterniond wave_a_reference_attitude =
+      (imu.q * odom.q.inverse() * wave_a_reference_world).normalized();
+  MOSIM_ATTITUDE_THRUST_GB_IN.reference_attitude_w_in = wave_a_reference_attitude.w();
+  MOSIM_ATTITUDE_THRUST_GB_IN.reference_attitude_x_in = wave_a_reference_attitude.x();
+  MOSIM_ATTITUDE_THRUST_GB_IN.reference_attitude_y_in = wave_a_reference_attitude.y();
+  MOSIM_ATTITUDE_THRUST_GB_IN.reference_attitude_z_in = wave_a_reference_attitude.z();
+  MOSIM_ATTITUDE_THRUST_GB_IN.reference_body_rate_x_in = 0.0;
+  MOSIM_ATTITUDE_THRUST_GB_IN.reference_body_rate_y_in = 0.0;
+  MOSIM_ATTITUDE_THRUST_GB_IN.reference_body_rate_z_in = 0.0;
+  MOSIM_ATTITUDE_THRUST_GB_IN.collective_thrust_n_in =
+      wave_a_reference_thrust * full_collective_thrust_n;
+#endif
 #if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_ENHANCEMENT_ATTITUDE_THRUST)
   MOSIM_ATTITUDE_THRUST_GB_IN.trajectory_phase_bin_in = 0.0;
   MOSIM_ATTITUDE_THRUST_GB_IN.repeat_complete_in = 0.0;
 #endif
-#if !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_CLASSIC_CONTROLLER_ATTITUDE_THRUST)
+#if !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_CLASSIC_CONTROLLER_ATTITUDE_THRUST) && \
+    !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST)
   MOSIM_ATTITUDE_THRUST_GB_IN.mass_kg_in = param_.mass;
   MOSIM_ATTITUDE_THRUST_GB_IN.gravity_mps2_in = param_.gra;
   MOSIM_ATTITUDE_THRUST_GB_IN.hover_percentage_in = effective_hover_percentage;
@@ -2056,6 +2150,8 @@ LinearControl::calculateGeneratedCoreControl(const Desired_State_t &des,
   {
 #if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_LINEAR_ROBUST_ATTITUDE_THRUST)
     ROS_ERROR_THROTTLE(1.0, "Linear/robust ATTITUDE_THRUST generated backend returned invalid output");
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST)
+    ROS_ERROR_THROTTLE(1.0, "Wave A generated backend returned invalid output");
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_CLASSIC_CONTROLLER_ATTITUDE_THRUST)
     ROS_ERROR_THROTTLE(1.0, "Classic-controller ATTITUDE_THRUST generated backend returned invalid output");
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_SLIDING_MODE_ATTITUDE_THRUST)
@@ -2077,7 +2173,21 @@ LinearControl::calculateGeneratedCoreControl(const Desired_State_t &des,
         MOSIM_ATTITUDE_THRUST_GB_OUT.desired_attitude_y_out,
         MOSIM_ATTITUDE_THRUST_GB_OUT.desired_attitude_z_out);
     u.q.normalize();
+#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST)
+    if (generated_family_controller_id_ == kWaveASo3)
+    {
+      u.bodyrates = Eigen::Vector3d(
+          MOSIM_ATTITUDE_THRUST_GB_OUT.desired_body_rate_x_out,
+          MOSIM_ATTITUDE_THRUST_GB_OUT.desired_body_rate_y_out,
+          MOSIM_ATTITUDE_THRUST_GB_OUT.desired_body_rate_z_out);
+    }
+    else
+    {
+      u.bodyrates = bodyrateAttitudeFeedback(u.q, imu.q, Eigen::Vector3d::Zero());
+    }
+#else
     u.bodyrates = bodyrateAttitudeFeedback(u.q, imu.q, Eigen::Vector3d::Zero());
+#endif
     u.thrust = clamp_double(MOSIM_ATTITUDE_THRUST_GB_OUT.normalized_thrust_out, 0.0, 1.0);
   }
 

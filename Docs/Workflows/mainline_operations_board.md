@@ -46,9 +46,10 @@ C6  Run final QA, license/secret/large-file checks, exact Git publication and
     upstream verification.
 ```
 
-C1 is verified. The authoritative 67-row matrix remains `closed_with_blockers`
-with `accepted=27`, `executed_blocked=21`, and `not_run=19`; generator reruns
-and canonical coverage audit produce no drift. C2 is the active gate.
+C1 is verified. After the bounded Wave A generated-C Gazebo pass, the
+authoritative 67-row matrix remains `closed_with_blockers` with `accepted=27`,
+`executed_blocked=25`, and `not_run=15`; generator reruns and canonical coverage
+audit remain stable at 22/22 with zero findings. C2 is the active gate.
 
 2026-07-17 control-platform closeout update: P5 enhancement, P6 safety, and P7
 fault-tolerant control are closed at their declared evidence tiers. P7 has six
@@ -89,6 +90,17 @@ were not run. The `tube_mpc` provenance retry also remained blocked at Z RMSE
 provenance run. The matrix, CSV, summary, and three comparison figures are the
 authority; do not claim complete G9 controller-family Gazebo acceptance.
 
+2026-07-18 Wave A generated-C Gazebo reconciliation: LQR, LQI, SO(3), and
+Backstepping now have controller-specific px4ctrl builds, same-run generated-C
+provenance, pre-takeoff checks, and bounded takeoff-hover-land executions at
+`Results/control_platform/wave_a_generated_gazebo_20260718/`. All four landed
+and disarmed, and SO(3) reached the takeoff altitude, but none passed the
+unchanged hover/runtime acceptance gate. Their matrix rows are therefore
+`executed_blocked`, not accepted. LQR retains its original file-backed PX4
+startup evidence; LQI, SO(3), and Backstepping use the versioned PX4 RAM-dataman
+startup manifest. Do not fabricate a RAM-dataman manifest for the earlier LQR
+run or reinterpret local-Z drift as controller acceptance.
+
 2026-07-17 classic-controller extension: the bounded Pole Placement +
 Luenberger, MRAC, NDI, FOPID and H2 state-feedback extension is
 `closed_with_blockers` at
@@ -99,8 +111,9 @@ difference `0.0`), real px4ctrl build, same-run generated-C provenance,
 takeoff and landing/disarm. MRAC and NDI pass the unchanged hover gate; Pole
 Placement, FOPID and H2 are blocked by unchanged Z hover limits. Fresh MRAC and
 NDI figure-eight runs also remain blocked by unchanged trajectory/steady-hover
-limits. The 67-row matrix contains 27 accepted, 21 executed-blocked and 19
-not-run rows, while canonical coverage is 22/22 with zero audit findings. All
+limits. After Wave A reconciliation, the 67-row matrix contains 27 accepted,
+25 executed-blocked and 15 not-run rows, while canonical coverage is 22/22 with
+zero audit findings. All
 five additions remain `implemented/selectable=false`; no trajectory or hover
 failure may be promoted without a new versioned profile and independent run.
 

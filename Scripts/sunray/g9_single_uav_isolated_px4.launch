@@ -33,7 +33,7 @@
     <param command="$(arg sdf_cmd)" name="sdf_$(arg vehicle)0"/>
 
     <node name="px4_sitl_1" pkg="px4" type="px4" output="screen"
-      args="$(find px4)/build/px4_sitl_default/etc -s etc/init.d-posix/rcS -i 0 -w $(env MOSIM_PX4_WORK_DIR) -d"/>
+      args="$(find px4)/build/px4_sitl_default/etc -s $(optenv MOSIM_PX4_STARTUP_SCRIPT etc/init.d-posix/rcS) -i 0 -w $(env MOSIM_PX4_WORK_DIR) -d"/>
 
     <node name="$(arg vehicle)_1_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
       args="-sdf -param sdf_$(arg vehicle)0 -model uav1 -x $(arg uav_init_x) -y $(arg uav_init_y) -z $(arg uav_init_z) -Y $(arg uav_init_yaw)"/>

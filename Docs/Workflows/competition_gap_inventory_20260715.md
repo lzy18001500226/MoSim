@@ -9,10 +9,11 @@
 ## 1. 当前结论
 
 当前不能宣称赛题全部完成，但控制平台已经从“多数仅有源码/离线证据”
-推进到统一 67 行矩阵：27 项 accepted、21 项 executed-blocked、19 项
+推进到统一 67 行矩阵：27 项 accepted、25 项 executed-blocked、15 项
 not-run。P2-P8 的新增实现、生成代码和运行证据均已提交并推送；P9 的
 Neural Residual 与 RL Gain Scheduler 已完成 3x3 真实运行，但严格性能门禁
-未通过。剩余主线不再受 RACER 任务占用，重点是高价值控制器补跑、统一
+未通过。LQR、LQI、SO(3) 与 Backstepping 已完成 generated-C Gazebo 有界
+执行并保留为 executed-blocked。剩余主线不再受 RACER 任务占用，重点是高价值控制器补跑、统一
 A/B、最终需求证据矩阵和提交包，而不是继续扩展前端或自主探索。
 
 ## 2. 官方赛题要求
@@ -21,7 +22,7 @@ A/B、最终需求证据矩阵和提交包，而不是继续扩展前端或自�
 | --- | --- | --- |
 | MWORKS 四旋翼控制系统建模 | `measured_partial` | 多族控制器已有真实图形 MIL、官方代码生成和 SIL；仍需最终索引与少量证据阶梯补齐。 |
 | 原始 PID 与优化控制器对比 | `measured_partial` | 67 行控制器矩阵已形成；仍缺统一七场景 A/B 和最终推荐结论。 |
-| 起飞、悬停、降落 | `measured_partial` | 27 行已 accepted，21 行真实执行后阻塞，19 行待补跑或终态分类。 |
+| 起飞、悬停、降落 | `measured_partial` | 27 行已 accepted，25 行真实执行后阻塞，15 行待补跑或终态分类。 |
 | 阶跃、8 字、螺旋等典型任务 | `measured_partial` | 部分代表控制器已有轨迹结果；最终七场景矩阵仍未闭合。 |
 | RMSE、最大误差、稳态误差、超调、调节时间 | `implemented/measured_partial` | 计算链与多批结果存在；需生成最终跨场景对比表和报告图。 |
 | 参数摄动、风扰或外部扰动鲁棒性 | `measured_partial` | P9 已有 nominal/wind/parameter-mismatch 3x3；最终推荐控制器统一 A/B 仍待完成。 |
@@ -42,10 +43,10 @@ A/B、最终需求证据矩阵和提交包，而不是继续扩展前端或自�
 
 ## 4. 当前收口队列
 
-1. 对 19 个 not-run 行做终态分诊：优先 G9 五类、LQR、LQI、SO(3)、
-   Backstepping；随后审计 DFBC、L1/AWFF 和 DOB/ESO；对缺动态 `musyn` 的
+1. 对 15 个 not-run 行做终态分诊：优先 G9 五类；随后审计 DFBC、
+   L1/AWFF 和 DOB/ESO；对缺动态 `musyn` 的
    mu-Synthesis、无冻结数据/模型的 Neural-SMC 保持明确 blocker。
-2. 对 21 个 executed-blocked 行只做有报告价值且能保持同一门限的有界重试；
+2. 对 25 个 executed-blocked 行只做有报告价值且能保持同一门限的有界重试；
    不通过调低门限、拼接不同 run 来源或覆盖失败结果提高通过数。
 3. 选择官方 PID 和最终推荐控制器，完成悬停、阶跃、8 字、螺旋、风扰、
    参数摄动、电机效率故障的同配置 A/B、指标、图和 Manifest。

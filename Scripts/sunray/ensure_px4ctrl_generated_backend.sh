@@ -7,7 +7,7 @@ BACKEND="${1:-}"
 RESULT_DIR="${RESULT_DIR:-${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_backend_ensure}"
 
 case "${BACKEND}" in
-  legacy_px4ctrl|g9_family|g10_bde_family|pid_attitude_thrust|linear_robust_attitude_thrust|classic_controller_attitude_thrust|sliding_mode_attitude_thrust|mpc_attitude_thrust|enhancement_attitude_thrust|learning_attitude_thrust|safety_supervisor)
+  legacy_px4ctrl|g9_family|g10_bde_family|pid_attitude_thrust|wave_a_attitude_thrust|linear_robust_attitude_thrust|classic_controller_attitude_thrust|sliding_mode_attitude_thrust|mpc_attitude_thrust|enhancement_attitude_thrust|learning_attitude_thrust|safety_supervisor)
     ;;
   *)
     echo "unsupported px4ctrl generated backend: ${BACKEND:-missing}" >&2
@@ -37,6 +37,11 @@ fi
 if [[ "${BACKEND}" == "classic_controller_attitude_thrust" ]]; then
   fingerprint_inputs+=(
     "${PROJECT_ROOT}/Results/control_platform/classic_controller_closeout_20260717/mworks/codegen/MoSim_Classic_CFunction_Sysblock"
+  )
+fi
+if [[ "${BACKEND}" == "wave_a_attitude_thrust" ]]; then
+  fingerprint_inputs+=(
+    "${PROJECT_ROOT}/Results/control_platform/g5_mworks_closeout_20260716/wave_a/codegen/MoSim_WaveA_CFunction_Sysblock"
   )
 fi
 source_fingerprint="$({

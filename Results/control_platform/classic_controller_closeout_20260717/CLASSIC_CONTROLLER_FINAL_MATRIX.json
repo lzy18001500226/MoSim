@@ -5,8 +5,8 @@
   "claim_boundary": "Complete row visibility is not controller acceptance. Each row retains its own implementation, MWORKS, generated-C, SIL and Gazebo evidence ceiling.",
   "counts": {
     "accepted": 27,
-    "executed_blocked": 21,
-    "not_run": 19
+    "executed_blocked": 25,
+    "not_run": 15
   },
   "rows": [
     {
@@ -1143,47 +1143,52 @@
       "cohort": "P10_CLASSIC_RECONCILIATION",
       "controller": "lqr_baseline",
       "contract": "canonical_controller_evidence_ladder",
-      "status": "not_run",
+      "status": "executed_blocked",
       "implementation_state": "implemented",
       "mworks_codegen_state": "passed",
       "generated_sil_state": "passed",
       "selectable": false,
-      "mission_status": null,
-      "provenance_status": null,
-      "pre_takeoff_status": null,
-      "takeoff_reached": null,
-      "landing_disarm": null,
-      "hover_xy_rmse_m": null,
-      "hover_z_rmse_m": null,
+      "mission_status": "blocked",
+      "provenance_status": "passed",
+      "px4_startup_backend": "file_backend",
+      "pre_takeoff_status": "passed",
+      "takeoff_reached": false,
+      "landing_disarm": true,
+      "hover_xy_rmse_m": 0.08034602062328605,
+      "hover_z_rmse_m": 0.959879602086737,
       "trajectory_status": "not_run",
-      "first_blocker": "Gazebo controller-specific gate not run",
+      "first_blocker": "takeoff_not_reached_altitude;hover_xy_rmse_above_max:0.08034602062328605;hover_xy_max_above_max:0.10970478441153539;hover_z_rmse_above_max:0.959879602086737;hover_z_max_above_max:1.003739873058633;truth_local_delta_error_bad_z:7.626872301120312",
       "evidence_paths": [
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/lqr/sil_equivalence.json"
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqr_baseline/takeoff_hover_land_retry3_px4_startup/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqr_baseline/takeoff_hover_land_retry3_px4_startup/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json"
       ],
-      "claim_ceiling": "mworks_mil_and_generated_c_sil_passed_factory_runtime_deferred"
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked"
     },
     {
       "cohort": "P10_CLASSIC_RECONCILIATION",
       "controller": "lqi_baseline",
       "contract": "canonical_controller_evidence_ladder",
-      "status": "not_run",
+      "status": "executed_blocked",
       "implementation_state": "implemented",
       "mworks_codegen_state": "passed",
       "generated_sil_state": "passed",
       "selectable": false,
-      "mission_status": null,
-      "provenance_status": null,
-      "pre_takeoff_status": null,
-      "takeoff_reached": null,
-      "landing_disarm": null,
-      "hover_xy_rmse_m": null,
-      "hover_z_rmse_m": null,
+      "mission_status": "blocked",
+      "provenance_status": "passed",
+      "px4_startup_backend": "ram_dataman",
+      "pre_takeoff_status": "passed",
+      "takeoff_reached": false,
+      "landing_disarm": true,
+      "hover_xy_rmse_m": 0.017279439234033005,
+      "hover_z_rmse_m": 0.9036430955712215,
       "trajectory_status": "not_run",
-      "first_blocker": "Gazebo controller-specific gate not run",
+      "first_blocker": "takeoff_not_reached_altitude;hover_z_rmse_above_max:0.9036430955712215;hover_z_max_above_max:0.9158721317054683;truth_local_delta_error_bad_z:6.656069827984391",
       "evidence_paths": [
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/lqi/sil_equivalence.json"
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json"
       ],
-      "claim_ceiling": "mworks_mil_and_generated_c_sil_passed_factory_runtime_deferred"
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked"
     },
     {
       "cohort": "P10_CLASSIC_RECONCILIATION",
@@ -1235,47 +1240,53 @@
       "cohort": "P10_CLASSIC_RECONCILIATION",
       "controller": "so3_attitude",
       "contract": "canonical_controller_evidence_ladder",
-      "status": "not_run",
+      "status": "executed_blocked",
       "implementation_state": "implemented",
       "mworks_codegen_state": "passed",
       "generated_sil_state": "passed",
       "selectable": false,
-      "mission_status": null,
-      "provenance_status": null,
-      "pre_takeoff_status": null,
-      "takeoff_reached": null,
-      "landing_disarm": null,
-      "hover_xy_rmse_m": null,
-      "hover_z_rmse_m": null,
+      "mission_status": "blocked",
+      "provenance_status": "passed",
+      "px4_startup_backend": "ram_dataman",
+      "pre_takeoff_status": "passed",
+      "takeoff_reached": true,
+      "landing_disarm": true,
+      "hover_xy_rmse_m": 0.04083779904344386,
+      "hover_z_rmse_m": 0.48095127557588563,
       "trajectory_status": "not_run",
-      "first_blocker": "Gazebo controller-specific gate not run",
+      "first_blocker": "hover_xy_rmse_above_max:0.04083779904344386;hover_xy_max_above_max:0.05997756805147423;hover_z_rmse_above_max:0.48095127557588563;hover_z_max_above_max:0.5150218145887941;truth_local_delta_error_bad_y:0.23807639186766805;truth_local_delta_error_bad_z:6.92057000192375",
       "evidence_paths": [
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/so3/sil_equivalence.json"
+        "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json"
       ],
-      "claim_ceiling": "mworks_mil_and_generated_c_sil_passed_not_nominal_outer_selectable_factory_runtime_deferred"
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked"
     },
     {
       "cohort": "P10_CLASSIC_RECONCILIATION",
       "controller": "backstepping_baseline",
       "contract": "canonical_controller_evidence_ladder",
-      "status": "not_run",
+      "status": "executed_blocked",
       "implementation_state": "implemented",
       "mworks_codegen_state": "passed",
       "generated_sil_state": "passed",
       "selectable": false,
-      "mission_status": null,
-      "provenance_status": null,
-      "pre_takeoff_status": null,
-      "takeoff_reached": null,
-      "landing_disarm": null,
-      "hover_xy_rmse_m": null,
-      "hover_z_rmse_m": null,
+      "mission_status": "blocked",
+      "provenance_status": "passed",
+      "px4_startup_backend": "ram_dataman",
+      "pre_takeoff_status": "passed",
+      "takeoff_reached": false,
+      "landing_disarm": true,
+      "hover_xy_rmse_m": 0.037253418577168254,
+      "hover_z_rmse_m": 0.7578290628291051,
       "trajectory_status": "not_run",
-      "first_blocker": "Gazebo controller-specific gate not run",
+      "first_blocker": "takeoff_not_reached_altitude;hover_xy_rmse_above_max:0.037253418577168254;hover_xy_max_above_max:0.05502251134614933;hover_z_rmse_above_max:0.7578290628291051;hover_z_max_above_max:0.7736349914784704;truth_local_delta_error_bad_z:6.094002934124275",
       "evidence_paths": [
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/backstepping/sil_equivalence.json"
+        "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json"
       ],
-      "claim_ceiling": "mworks_mil_and_generated_c_sil_passed_nonadaptive_baseline_factory_runtime_deferred"
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked"
     },
     {
       "cohort": "P10_CLASSIC_RECONCILIATION",

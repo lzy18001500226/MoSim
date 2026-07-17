@@ -1,0 +1,12 @@
+{
+  "schema": "mosim.px4ctrl.generated_backend_ensure.v1",
+  "status": "passed",
+  "action": "reused",
+  "backend": "wave_a_attitude_thrust",
+  "build_definition": "MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST",
+  "workspace": "/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws",
+  "binary": "/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib/px4ctrl/px4ctrl_node",
+  "binary_sha256": "f93b86fbe8d81c555bbcbb84fc9cf2576558da593b92a490a7d39087a45ea412",
+  "completed_at": 1784320279.8336585,
+  "claim_boundary": "Build selection evidence only; runtime acknowledgement is required separately."
+}

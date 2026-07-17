@@ -1,0 +1,37 @@
+{
+  "schema": "mosim.wave_a.generated_runtime_provenance.v1",
+  "status": "passed",
+  "backend": "wave_a_attitude_thrust",
+  "controller_id": 4,
+  "controller_name": "backstepping_baseline",
+  "generated_model_name": "MoSim_WaveA_CFunction_Sysblock",
+  "generated_code_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/wave_a/codegen/MoSim_WaveA_CFunction_Sysblock",
+  "generated_code_sha256": "ec7dc5730b02bb4701c9f30ef78177b851a2ee8bc080575d8aedb5239fc492b7",
+  "generated_file_sha256": {
+    "MoSim_WaveA_CFunction_Sysblock.c": "6a85bdae1bac304945281a7b4fec8bdc990fe409b73a57a912223e3df7dff608",
+    "MoSim_WaveA_CFunction_Sysblock.h": "6a3cf1e428adba90bde4a2cb45d2f5440e3364c1784fc143031637c122083141",
+    "MoSim_WaveA_CFunction_Sysblock_data.c": "eda242547b619a7927a70a6878a200217c727d67e128055890e0a1d90c0eedea",
+    "MoSim_WaveA_CFunction_Sysblock_private.h": "aaf5293102b65fd1e5f9d4743c654347fe1691bf80a3e420c69c4cfd512f9eef",
+    "extern_inc/momodel_extern_ince1.c": "c63c163ffa2347aa2331cd7268e54bb0ad3da3c1c429b2ebc513f470be780820"
+  },
+  "build_manifest": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/BUILD_MANIFEST.json",
+  "sil_reports": {
+    "lqr_baseline": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/lqr/sil_equivalence.json",
+    "lqi_baseline": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/lqi/sil_equivalence.json",
+    "so3_attitude": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/so3/sil_equivalence.json",
+    "backstepping_baseline": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/backstepping/sil_equivalence.json"
+  },
+  "px4_startup_manifest": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json",
+  "px4_dataman_backend": "ram",
+  "build_backend_definition": "MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST",
+  "cmake_backend": "wave_a_attitude_thrust",
+  "cmake_generated_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/g5_mworks_closeout_20260716/wave_a/codegen/MoSim_WaveA_CFunction_Sysblock",
+  "px4ctrl_executable_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib/px4ctrl/px4ctrl_node",
+  "px4ctrl_executable_sha256": "f93b86fbe8d81c555bbcbb84fc9cf2576558da593b92a490a7d39087a45ea412",
+  "binary_generated_symbol_present": true,
+  "runtime_loaded_symbol": "MoSim_WaveA_CFunction_Sysblock::Step",
+  "provenance_level": "runtime_acknowledged",
+  "runtime_ack": "[mosim_generated_runtime] backend=mworks_generated_c build_backend=wave_a_attitude_thrust build_backend_definition=MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST generated_model_name=MoSim_WaveA_CFunction_Sysblock generated_source_sha256=ec7dc5730b02bb4701c9f30ef78177b851a2ee8bc080575d8aedb5239fc492b7 runtime_loaded_symbol=MoSim_WaveA_CFunction_Sysblock::Step controller_id=4 controller_name=backstepping_baseline",
+  "runtime_log": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/px4ctrl.log",
+  "errors": []
+}

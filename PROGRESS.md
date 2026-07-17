@@ -10,9 +10,11 @@
 
 Active long goal: finish all competition engineering except frontend. P2-P8
 implementation/evidence batches are committed and pushed through
-`842b2ff793`. The 67-row authority at
+`842b2ff793`. The Wave A LQR/LQI/SO(3)/Backstepping generated-C Gazebo
+reconciliation has been executed and is pending exact-path publication. The
+67-row authority at
 `Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json`
-is generator-stable at `accepted=27`, `executed_blocked=21`, `not_run=19`, and
+is generator-stable at `accepted=27`, `executed_blocked=25`, `not_run=15`, and
 canonical coverage is 22/22 with zero findings. Current work is bounded
 not-run triage, the official-PID versus recommended-controller seven-scenario
 A/B, then final evidence/report/manual/demo/submission packaging. Frontend,
@@ -42,17 +44,10 @@ versus Cascade, while nominal/parameter-mismatch superiority was not stable.
   on the mainline board. Do not infer next work from old Goal or G9 wording in
   historical notes.
 - Current next-work principle:
-  follow the mainline board. Native FUEL passed the 600 s backend, FAST-LIO,
-  PX4 EV-fusion, and safety gates but reached only `63.9648%` of the fixed
-  `64 x 64 m` sensor-footprint coverage gate. The next coverage task is a
-  bounded A/B of the existing coverage-expansion/global-selector mechanism,
-  not controller, localization, or obstacle-clearance retuning. Diff-Planner,
-  FUEL, and RACER remain the usable planning baselines for later
-  controller/MWORKS/codegen regression.
-  Swarm-Formation is frozen as blocked for this pass at
-  `Results/sunray_ros1/swarm_formation_d4_blocker_20260701_2310` and should
-  only be reopened for repeatable three-UAV MID360 startup, frame-aligned
-  preloaded spawn, or Swarm-Formation geometry/adapter safety repair.
+  follow the mainline board. Finish the remaining 15 `not_run` row triage,
+  preserve bounded blockers, then complete the official-PID versus recommended
+  controller seven-scenario A/B and final packaging. FUEL/RACER coverage tuning
+  and frontend work remain excluded from this goal.
 
 ## How To Update This File
 
