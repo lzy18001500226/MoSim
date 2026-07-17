@@ -110,6 +110,7 @@ PX4CTRL_ODOM_VELOCITY_FRAME="${PX4CTRL_ODOM_VELOCITY_FRAME:-body}"
 PX4CTRL_TAKEOFF_HEIGHT="${PX4CTRL_TAKEOFF_HEIGHT:-1.0}"
 PX4CTRL_TAKEOFF_LAND_SPEED="${PX4CTRL_TAKEOFF_LAND_SPEED:-0.12}"
 PX4CTRL_CORE_PROFILE="${PX4CTRL_CORE_PROFILE:-original}"
+PX4CTRL_SAFETY_TEST_EVENT="${PX4CTRL_SAFETY_TEST_EVENT:-false}"
 PX4CTRL_START_EXTERNAL_FUSION="${PX4CTRL_START_EXTERNAL_FUSION:-true}"
 PX4CTRL_EXTERNAL_FUSION_USE_VISION_POSE="${PX4CTRL_EXTERNAL_FUSION_USE_VISION_POSE:-true}"
 PX4CTRL_ENABLE_FASTLIO_EKF_FUSION="${PX4CTRL_ENABLE_FASTLIO_EKF_FUSION:-false}"
@@ -199,7 +200,7 @@ REVIEW_TRAJECTORY_RVIZ_CONFIG="${REVIEW_TRAJECTORY_RVIZ_CONFIG:-${PROJECT_ROOT}/
 REVIEW_CLOUD_RVIZ_CONFIG="${REVIEW_CLOUD_RVIZ_CONFIG:-${PROJECT_ROOT}/Config/rviz/sunray_ros1_fastlio_accumulated_map_review.rviz}"
 
 case "${PX4CTRL_CORE_PROFILE}" in
-  original|mworks_generated|generated_c|mworks_generated_c|official_pid|cascade_pid|gain_scheduled_pid|fuzzy_pid|neural_pid|anti_windup|feedforward_profile|se3_basic|dfbc_basic|smc_boundary_layer|pid_indi|nmpc_outer|dfbc_high_order|dfbc_jerk_snap|dfbc_smooth_robust|dfbc_smooth_robust_dob|dfbc_wind_robust|dfbc_smooth_robust_indi|l1_awff|l1_residual|awff_l1|safety_filter|fault_allocation)
+  original|mworks_generated|generated_c|mworks_generated_c|official_pid|cascade_pid|gain_scheduled_pid|fuzzy_pid|neural_pid|anti_windup|feedforward_profile|lqg|feedback_linearization|passivity_based_control|adaptive_backstepping|pole_placement_luenberger|mrac|ndi|fopid|h2_state_feedback|integral_smc|terminal_smc|nonsingular_terminal_smc|super_twisting_smc|adaptive_smc|fuzzy_smc|linear_mpc|robust_mpc|adaptive_mpc|tube_mpc|explicit_gain_scheduled_mpc|ilqr|mppi|l1_adaptive|awff|complete_adrc|standardized_indi|parameter_scheduling|ilc|trained_neural_residual|rl_gain_scheduler|se3_basic|dfbc_basic|smc_boundary_layer|pid_indi|nmpc_outer|dfbc_high_order|dfbc_jerk_snap|dfbc_smooth_robust|dfbc_smooth_robust_dob|dfbc_wind_robust|dfbc_smooth_robust_indi|l1_awff|l1_residual|awff_l1|safety_filter|cbf|reference_governor|geofence|emergency_stop|return_and_land|failsafe_state_machine|fault_allocation)
     ;;
   *)
     echo "Unsupported PX4CTRL_CORE_PROFILE=${PX4CTRL_CORE_PROFILE}" >&2
@@ -233,6 +234,10 @@ case "${PX4CTRL_ODOM_SOURCE}" in
 esac
 
 mkdir -p "${RESULT_DIR}"
+
+source "${PROJECT_ROOT}/Scripts/sunray/sunray_ros1_runtime_lock.sh"
+sunray_ros1_runtime_lock_acquire
+trap sunray_ros1_runtime_lock_release EXIT
 
 if [[ "${SUNRAY_LIVOX_PLUGIN_FILENAME}" == */* && ! -f "${SUNRAY_LIVOX_PLUGIN_FILENAME}" ]]; then
   echo "Livox plugin overlay missing: ${SUNRAY_LIVOX_PLUGIN_FILENAME}; run check_sunray_ros1_runtime_preflight.sh --build-livox first" >&2
@@ -280,6 +285,7 @@ cleanup() {
   pkill -f "/opt/mosim_work/sunray_px4.*/px4" >/dev/null 2>&1 || true
   pkill -f "rosmaster" >/dev/null 2>&1 || true
   pkill -f "rosout" >/dev/null 2>&1 || true
+  sunray_ros1_runtime_lock_release
 }
 trap cleanup EXIT
 
@@ -1019,6 +1025,7 @@ cat > "${PX4CTRL_LAUNCH}" <<EOF
     <param name="fault_allocation/thrust_comp_limit" value="${PX4CTRL_FAULT_ALLOCATION_THRUST_COMP_LIMIT}" />
     <param name="odom_velocity_frame" value="${PX4CTRL_ODOM_VELOCITY_FRAME}" />
     <param name="mosim_generated_core_mode" value="${PX4CTRL_CORE_PROFILE}" />
+    <param name="mosim_safety_test_event" value="${PX4CTRL_SAFETY_TEST_EVENT}" />
     <param name="auto_takeoff_land/enable" value="true" />
     <param name="auto_takeoff_land/enable_auto_arm" value="true" />
     <param name="auto_takeoff_land/no_RC" value="true" />
@@ -1077,7 +1084,7 @@ cat > "${PX4CTRL_LAUNCH}" <<EOF
 </launch>
 EOF
 
-roslaunch "${PX4CTRL_LAUNCH}" > "${RESULT_DIR}/px4ctrl.log" 2>&1 &
+stdbuf -oL -eL roslaunch "${PX4CTRL_LAUNCH}" > "${RESULT_DIR}/px4ctrl.log" 2>&1 &
 PIDS+=("$!")
 sleep 5
 
@@ -1260,6 +1267,7 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "takeoff_hover_default_args": "$(printf '%s' "${PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read())[1:-1])')",
     "trajectory_default_args": "$(printf '%s' "${PX4CTRL_TRAJECTORY_DEFAULT_ARGS}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read())[1:-1])')",
     "core_profile": "${PX4CTRL_CORE_PROFILE}",
+    "safety_test_event": "${PX4CTRL_SAFETY_TEST_EVENT}",
     "smc": {
       "lambda_xy": ${PX4CTRL_SMC_LAMBDA_XY},
       "lambda_z": ${PX4CTRL_SMC_LAMBDA_Z},

@@ -1,0 +1,23 @@
+{
+  "schema": "mosim.classic_controller.generated_sil.v1",
+  "status": "passed",
+  "controllers": [
+    "pole_placement_luenberger",
+    "mrac",
+    "ndi",
+    "fopid",
+    "h2_state_feedback"
+  ],
+  "controller_count": 5,
+  "samples_per_controller": 4,
+  "compared_output_count": 35,
+  "total_scalar_comparisons": 700,
+  "max_abs_difference": 0.0,
+  "tolerance": 1e-12,
+  "input_global": "blockGbIn",
+  "output_global": "sblockGbOut",
+  "official_codegen": "MWORKS GenerateModelCode",
+  "failure_count": 0,
+  "failures": [],
+  "claim_ceiling": "Official generated C is sample-wise equivalent to project source for five stateful fixed-input cases; px4ctrl and Gazebo remain separate gates."
+}

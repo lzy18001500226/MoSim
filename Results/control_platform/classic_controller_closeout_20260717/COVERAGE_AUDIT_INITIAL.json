@@ -1,0 +1,437 @@
+{
+  "schema": "mosim.classic_controller_coverage_audit.v1",
+  "status": "blocked",
+  "counts": {
+    "canonical": 22,
+    "registered": 17,
+    "in_final_matrix": 3,
+    "new_additions_registered": 0,
+    "findings": 28
+  },
+  "coverage": [
+    {
+      "module_id": "lqr_baseline",
+      "family": "linear_optimal",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "implemented",
+      "selectable": true,
+      "claim_ceiling": "mworks_mil_and_generated_c_sil_passed_factory_runtime_deferred",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/lqr/sil_equivalence.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/lqr/sil_equivalence.json"
+      ]
+    },
+    {
+      "module_id": "lqi_baseline",
+      "family": "linear_optimal_integral",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "implemented",
+      "selectable": true,
+      "claim_ceiling": "mworks_mil_and_generated_c_sil_passed_factory_runtime_deferred",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/lqi/sil_equivalence.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/lqi/sil_equivalence.json"
+      ]
+    },
+    {
+      "module_id": "lqg",
+      "family": "linear_quadratic_gaussian",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "fixed_size_c_estimator_and_command_contract_only_mworks_codegen_sil_and_runtime_pending",
+      "declared_evidence_paths": [
+        "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"
+      ]
+    },
+    {
+      "module_id": "hinf_hover_wrench",
+      "family": "h_infinity",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "licensed_hover_synthesis_and_project_c_oracle_only_no_allocator_adapter_or_runtime",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_wave_b_hinf_20260716/G5_WAVE_B_HINF_GATE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_wave_b_hinf_20260716/G5_WAVE_B_HINF_GATE.json"
+      ]
+    },
+    {
+      "module_id": "mu_synthesis",
+      "family": "mu_synthesis",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "blocked",
+      "selectable": false,
+      "claim_ceiling": "syslab_constant_matrix_mu_analysis_available_but_dynamic_musyn_controller_synthesis_unavailable",
+      "declared_evidence_paths": [
+        "Results/control_platform/p2_mu_syslab_capability_20260716/SYSLAB_MU_CAPABILITY_AUDIT.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/p2_mu_syslab_capability_20260716/SYSLAB_MU_CAPABILITY_AUDIT.json"
+      ]
+    },
+    {
+      "module_id": "so3_attitude",
+      "family": "so3_geometric",
+      "expected_kind": "attitude_rate_inner",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "mworks_mil_and_generated_c_sil_passed_not_nominal_outer_selectable_factory_runtime_deferred",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/so3/sil_equivalence.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/so3/sil_equivalence.json"
+      ]
+    },
+    {
+      "module_id": "backstepping_baseline",
+      "family": "backstepping",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "implemented",
+      "selectable": true,
+      "claim_ceiling": "mworks_mil_and_generated_c_sil_passed_nonadaptive_baseline_factory_runtime_deferred",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/backstepping/sil_equivalence.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/sil/backstepping/sil_equivalence.json"
+      ]
+    },
+    {
+      "module_id": "feedback_linearization",
+      "family": "feedback_linearization",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "fixed_size_c_translational_feedback_linearization_contract_only_mworks_codegen_sil_and_runtime_pending",
+      "declared_evidence_paths": [
+        "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"
+      ]
+    },
+    {
+      "module_id": "adaptive_backstepping",
+      "family": "adaptive_backstepping",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": true,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "fixed_size_c_bounded_adaptive_state_contract_only_mworks_codegen_sil_and_runtime_pending",
+      "declared_evidence_paths": [
+        "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"
+      ]
+    },
+    {
+      "module_id": "dfbc_high_order_attitude",
+      "family": "differential_flatness_high_order",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "implemented",
+      "selectable": true,
+      "claim_ceiling": "offline_and_limited_runtime_evidence",
+      "declared_evidence_paths": [],
+      "existing_evidence_paths": []
+    },
+    {
+      "module_id": "dfbc_high_order_bodyrate",
+      "family": "differential_flatness_high_order",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "implemented",
+      "selectable": true,
+      "claim_ceiling": "release_smoke_only",
+      "declared_evidence_paths": [],
+      "existing_evidence_paths": []
+    },
+    {
+      "module_id": "dfbc_smooth_robust_attitude",
+      "family": "differential_flatness_smooth_robust",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "implemented",
+      "selectable": true,
+      "claim_ceiling": "offline_and_limited_runtime_evidence",
+      "declared_evidence_paths": [],
+      "existing_evidence_paths": []
+    },
+    {
+      "module_id": "dfbc_smooth_robust_bodyrate",
+      "family": "differential_flatness_smooth_robust",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "blocked",
+      "selectable": false,
+      "claim_ceiling": "interface_debug_only",
+      "declared_evidence_paths": [],
+      "existing_evidence_paths": []
+    },
+    {
+      "module_id": "l1_awff_minimal",
+      "family": "l1_awff",
+      "expected_kind": "augmentation",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "implemented",
+      "selectable": false,
+      "claim_ceiling": "typed_cpp_and_c_abi_bounded_l1_inspired_residual_plus_drag_feedforward_static_evidence_only_not_formal_l1_or_runtime_selectable",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_wave_c_l1_awff_20260716/RUN_MANIFEST.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_wave_c_l1_awff_20260716/RUN_MANIFEST.json"
+      ]
+    },
+    {
+      "module_id": "dfbc_dob_eso_disabled",
+      "family": "dob_eso",
+      "expected_kind": "augmentation",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "implemented",
+      "selectable": true,
+      "claim_ceiling": "ablation_only",
+      "declared_evidence_paths": [],
+      "existing_evidence_paths": []
+    },
+    {
+      "module_id": "dfbc_dob_eso",
+      "family": "dob_eso",
+      "expected_kind": "augmentation",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "implemented",
+      "selectable": true,
+      "claim_ceiling": "bounded_dob_eso_subset_static_evidence_runtime_ab_pending_not_full_adrc",
+      "declared_evidence_paths": [
+        "Results/control_platform/g5_wave_c_dob_eso_20260716/RUN_MANIFEST.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/g5_wave_c_dob_eso_20260716/RUN_MANIFEST.json"
+      ]
+    },
+    {
+      "module_id": "neural_smc",
+      "family": "sliding_mode_neural",
+      "expected_kind": "nominal_controller",
+      "new_addition": false,
+      "registered": true,
+      "in_final_matrix": false,
+      "status": "blocked",
+      "selectable": false,
+      "claim_ceiling": "interface_only_no_frozen_training_dataset_or_model_artifact",
+      "declared_evidence_paths": [
+        "Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"
+      ],
+      "existing_evidence_paths": [
+        "Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"
+      ]
+    },
+    {
+      "module_id": "pole_placement_luenberger",
+      "family": "pole_placement_observer",
+      "expected_kind": "nominal_controller",
+      "new_addition": true,
+      "registered": false,
+      "in_final_matrix": false
+    },
+    {
+      "module_id": "mrac",
+      "family": "model_reference_adaptive_control",
+      "expected_kind": "nominal_controller",
+      "new_addition": true,
+      "registered": false,
+      "in_final_matrix": false
+    },
+    {
+      "module_id": "ndi",
+      "family": "nonlinear_dynamic_inversion",
+      "expected_kind": "nominal_controller",
+      "new_addition": true,
+      "registered": false,
+      "in_final_matrix": false
+    },
+    {
+      "module_id": "fopid",
+      "family": "fractional_order_pid",
+      "expected_kind": "nominal_controller",
+      "new_addition": true,
+      "registered": false,
+      "in_final_matrix": false
+    },
+    {
+      "module_id": "h2_state_feedback",
+      "family": "h2_optimal",
+      "expected_kind": "nominal_controller",
+      "new_addition": true,
+      "registered": false,
+      "in_final_matrix": false
+    }
+  ],
+  "findings": [
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "lqr_baseline"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "lqi_baseline"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "hinf_hover_wrench"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "mu_synthesis"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "so3_attitude"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "backstepping_baseline"
+    },
+    {
+      "code": "missing_declared_evidence",
+      "module_id": "dfbc_high_order_attitude"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "dfbc_high_order_attitude"
+    },
+    {
+      "code": "missing_declared_evidence",
+      "module_id": "dfbc_high_order_bodyrate"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "dfbc_high_order_bodyrate"
+    },
+    {
+      "code": "missing_declared_evidence",
+      "module_id": "dfbc_smooth_robust_attitude"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "dfbc_smooth_robust_attitude"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "dfbc_smooth_robust_bodyrate"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "l1_awff_minimal"
+    },
+    {
+      "code": "missing_declared_evidence",
+      "module_id": "dfbc_dob_eso_disabled"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "dfbc_dob_eso_disabled"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "dfbc_dob_eso"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "neural_smc"
+    },
+    {
+      "code": "missing_registry",
+      "module_id": "pole_placement_luenberger"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "pole_placement_luenberger"
+    },
+    {
+      "code": "missing_registry",
+      "module_id": "mrac"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "mrac"
+    },
+    {
+      "code": "missing_registry",
+      "module_id": "ndi"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "ndi"
+    },
+    {
+      "code": "missing_registry",
+      "module_id": "fopid"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "fopid"
+    },
+    {
+      "code": "missing_registry",
+      "module_id": "h2_state_feedback"
+    },
+    {
+      "code": "missing_final_matrix_row",
+      "module_id": "h2_state_feedback"
+    }
+  ],
+  "claim_boundary": "Coverage audit only; no implementation, MWORKS, generated-C, SIL or Gazebo acceptance claim."
+}

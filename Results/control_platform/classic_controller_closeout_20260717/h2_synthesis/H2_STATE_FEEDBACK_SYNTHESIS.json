@@ -1,0 +1,361 @@
+{
+  "schema": "mosim.classic_controller.h2_state_feedback_synthesis.v1",
+  "status": "passed",
+  "method": "continuous_time_full_state_H2_via_CARE",
+  "interpretation": "For z=[Q^(1/2)x;R^(1/2)u] and full-state feedback, the H2-optimal gain is the CARE state-feedback gain.",
+  "axes": {
+    "x": {
+      "generalized_plant": {
+        "A": [
+          [
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "B1": [
+          [
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0
+          ]
+        ],
+        "B2": [
+          [
+            0.0
+          ],
+          [
+            1.0
+          ]
+        ],
+        "C1": [
+          [
+            7.3999999999999995,
+            0.0
+          ],
+          [
+            0.0,
+            3.034798181098704
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "D12": [
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            1.0
+          ]
+        ],
+        "state": [
+          "position_error",
+          "velocity_error"
+        ],
+        "control": "virtual_acceleration_correction",
+        "disturbance": [
+          "position_state_disturbance",
+          "velocity_state_disturbance"
+        ],
+        "performance_output": [
+          "weighted_position_error",
+          "weighted_velocity_error",
+          "weighted_control"
+        ]
+      },
+      "Q": [
+        [
+          54.76,
+          0.0
+        ],
+        [
+          0.0,
+          9.21
+        ]
+      ],
+      "R": [
+        [
+          1.0
+        ]
+      ],
+      "care_solution": [
+        [
+          36.25999999999999,
+          7.400000000000002
+        ],
+        [
+          7.400000000000002,
+          4.9
+        ]
+      ],
+      "synthesized_gain": [
+        7.400000000000002,
+        4.9
+      ],
+      "frozen_gain": [
+        7.4,
+        4.9
+      ],
+      "gain_max_abs_difference": 1.7763568394002505e-15,
+      "care_residual_max_abs": 3.552713678800501e-14,
+      "closed_loop_eigenvalues": [
+        {
+          "real": -2.4500000000000006,
+          "imag": 1.1821590417536894
+        },
+        {
+          "real": -2.4500000000000006,
+          "imag": -1.1821590417536894
+        }
+      ],
+      "stable": true
+    },
+    "y": {
+      "generalized_plant": {
+        "A": [
+          [
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "B1": [
+          [
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0
+          ]
+        ],
+        "B2": [
+          [
+            0.0
+          ],
+          [
+            1.0
+          ]
+        ],
+        "C1": [
+          [
+            7.3999999999999995,
+            0.0
+          ],
+          [
+            0.0,
+            3.034798181098704
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "D12": [
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            1.0
+          ]
+        ],
+        "state": [
+          "position_error",
+          "velocity_error"
+        ],
+        "control": "virtual_acceleration_correction",
+        "disturbance": [
+          "position_state_disturbance",
+          "velocity_state_disturbance"
+        ],
+        "performance_output": [
+          "weighted_position_error",
+          "weighted_velocity_error",
+          "weighted_control"
+        ]
+      },
+      "Q": [
+        [
+          54.76,
+          0.0
+        ],
+        [
+          0.0,
+          9.21
+        ]
+      ],
+      "R": [
+        [
+          1.0
+        ]
+      ],
+      "care_solution": [
+        [
+          36.25999999999999,
+          7.400000000000002
+        ],
+        [
+          7.400000000000002,
+          4.9
+        ]
+      ],
+      "synthesized_gain": [
+        7.400000000000002,
+        4.9
+      ],
+      "frozen_gain": [
+        7.4,
+        4.9
+      ],
+      "gain_max_abs_difference": 1.7763568394002505e-15,
+      "care_residual_max_abs": 3.552713678800501e-14,
+      "closed_loop_eigenvalues": [
+        {
+          "real": -2.4500000000000006,
+          "imag": 1.1821590417536894
+        },
+        {
+          "real": -2.4500000000000006,
+          "imag": -1.1821590417536894
+        }
+      ],
+      "stable": true
+    },
+    "z": {
+      "generalized_plant": {
+        "A": [
+          [
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "B1": [
+          [
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0
+          ]
+        ],
+        "B2": [
+          [
+            0.0
+          ],
+          [
+            1.0
+          ]
+        ],
+        "C1": [
+          [
+            5.3,
+            0.0
+          ],
+          [
+            0.0,
+            2.6532998322843198
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "D12": [
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            1.0
+          ]
+        ],
+        "state": [
+          "position_error",
+          "velocity_error"
+        ],
+        "control": "virtual_acceleration_correction",
+        "disturbance": [
+          "position_state_disturbance",
+          "velocity_state_disturbance"
+        ],
+        "performance_output": [
+          "weighted_position_error",
+          "weighted_velocity_error",
+          "weighted_control"
+        ]
+      },
+      "Q": [
+        [
+          28.09,
+          0.0
+        ],
+        [
+          0.0,
+          7.04
+        ]
+      ],
+      "R": [
+        [
+          1.0
+        ]
+      ],
+      "care_solution": [
+        [
+          22.260000000000005,
+          5.299999999999999
+        ],
+        [
+          5.299999999999999,
+          4.199999999999999
+        ]
+      ],
+      "synthesized_gain": [
+        5.299999999999999,
+        4.199999999999999
+      ],
+      "frozen_gain": [
+        5.3,
+        4.2
+      ],
+      "gain_max_abs_difference": 8.881784197001252e-16,
+      "care_residual_max_abs": 1.4210854715202004e-14,
+      "closed_loop_eigenvalues": [
+        {
+          "real": -2.0999999999999996,
+          "imag": 0.9433981132056601
+        },
+        {
+          "real": -2.0999999999999996,
+          "imag": -0.9433981132056601
+        }
+      ],
+      "stable": true
+    }
+  },
+  "tolerance": 1e-10,
+  "claim_boundary": "Reproducible generalized-plant synthesis and frozen-gain provenance only; not MWORKS, SIL, Gazebo, or performance acceptance."
+}

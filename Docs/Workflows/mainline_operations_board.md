@@ -77,6 +77,21 @@ were not run. The `tube_mpc` provenance retry also remained blocked at Z RMSE
 provenance run. The matrix, CSV, summary, and three comparison figures are the
 authority; do not claim complete G9 controller-family Gazebo acceptance.
 
+2026-07-17 classic-controller extension: the bounded Pole Placement +
+Luenberger, MRAC, NDI, FOPID and H2 state-feedback extension is
+`closed_with_blockers` at
+`Results/control_platform/classic_controller_closeout_20260717/`. All five pass
+source/lifecycle, real graphical Sysblock MIL (5/5), official MWORKS
+`GenerateModelCode` (12 files), generated-C SIL (700/700 comparisons, maximum
+difference `0.0`), real px4ctrl build, same-run generated-C provenance,
+takeoff and landing/disarm. MRAC and NDI pass the unchanged hover gate; Pole
+Placement, FOPID and H2 are blocked by unchanged Z hover limits. Fresh MRAC and
+NDI figure-eight runs also remain blocked by unchanged trajectory/steady-hover
+limits. The 67-row matrix contains 27 accepted, 21 executed-blocked and 19
+not-run rows, while canonical coverage is 22/22 with zero audit findings. All
+five additions remain `implemented/selectable=false`; no trajectory or hover
+failure may be promoted without a new versioned profile and independent run.
+
 ## 2. Current Mode
 
 | Item | Current Rule |

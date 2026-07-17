@@ -11,6 +11,18 @@
       "vehicle_count": 1,
       "map_type": "simple_obstacles",
       "has_geofence": true
+    },
+    "factory_l2_single_figure8_v1": {
+      "vehicle_count": 1,
+      "map_type": "factory_known_obstacles",
+      "has_geofence": true,
+      "scenario_path": "Config/scenarios/ui/factory_l2_single_figure8.json"
+    },
+    "factory_l2_three_uav_obstacle_crossing_v1": {
+      "vehicle_count": 3,
+      "map_type": "factory_known_obstacles",
+      "has_geofence": true,
+      "scenario_path": "Config/scenarios/formation/factory_l2_three_uav_obstacle_crossing.json"
     }
   },
   "plant_profiles": {
@@ -194,13 +206,38 @@
         "max_yaw_rate_radps": 0.8
       },
       "required_for_goal": "Goal 2"
+    },
+    "factory_l2_three_uav_obstacle_crossing_v1": {
+      "source_type": "multi_uav_formation_reference",
+      "provides_reference": ["position", "velocity", "acceleration", "yaw"],
+      "reference_rate_hz": 100,
+      "duration_s": 420.0,
+      "continuity_required": {"position": true, "velocity": true, "acceleration": true},
+      "constraints": {"max_velocity_mps": 0.8, "max_acceleration_mps2": 0.8, "max_yaw_rate_radps": 0.8, "minimum_separation_m": 1.0}
     }
   },
   "planner_profiles": {
     "none": {
       "planner_id": "none",
       "owns_mavros_control": false
+    },
+    "swarm_formation": {
+      "planner_id": "swarm_formation",
+      "owns_mavros_control": false,
+      "produces_multi_uav_reference": true,
+      "implementation_status": "accepted"
     }
+  },
+  "formation_profiles": {
+    "leader_follower_v1": {"formation_id": "leader_follower", "mode_id": 1, "implementation_status": "accepted", "evidence_level": "E5"},
+    "virtual_structure_v1": {"formation_id": "virtual_structure", "mode_id": 2, "implementation_status": "implemented", "evidence_level": "E2"},
+    "consensus_v1": {"formation_id": "consensus", "mode_id": 3, "implementation_status": "implemented", "evidence_level": "E2"},
+    "containment_v1": {"formation_id": "containment", "mode_id": 4, "implementation_status": "implemented", "evidence_level": "E2"},
+    "formation_tracking_v1": {"formation_id": "formation_tracking", "mode_id": 5, "implementation_status": "implemented", "evidence_level": "E2"},
+    "formation_reconfiguration_v1": {"formation_id": "formation_reconfiguration", "mode_id": 6, "implementation_status": "implemented", "evidence_level": "E2"},
+    "fault_tolerant_formation_v1": {"formation_id": "fault_tolerant_formation", "mode_id": 7, "implementation_status": "implemented", "evidence_level": "E2"},
+    "formation_cbf_v1": {"formation_id": "formation_cbf", "mode_id": 8, "implementation_status": "implemented", "evidence_level": "E2"},
+    "distributed_mpc_formation_v1": {"formation_id": "distributed_mpc_formation", "mode_id": 9, "implementation_status": "implemented", "evidence_level": "E2"}
   },
   "controller_profiles": {
     "px4ctrl_attitude_thrust_v1": {
@@ -472,6 +509,189 @@
       "acceptance_tiers": ["CANDIDATE"],
       "evidence_level": "E2"
     },
+    "lqg_attitude_thrust_v1": {
+      "controller_id": "lqg",
+      "implementation": "project_owned_linear_robust_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "linear_quadratic_gaussian",
+      "chain_position": "nominal_estimator_based_position_velocity_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/linear_robust_attitude_thrust_core.[ch]", "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E2"
+    },
+    "mu_synthesis_attitude_thrust_v1": {
+      "controller_id": "mu_synthesis",
+      "implementation": "deferred_missing_dynamic_mu_synthesis_tool",
+      "implementation_status": "blocked",
+      "controller_family": "mu_synthesis",
+      "chain_position": "nominal_robust_position_velocity_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Results/control_platform/p2_mu_syslab_capability_20260716/SYSLAB_MU_CAPABILITY_AUDIT.json"],
+      "decision": "deferred",
+      "decision_reason": "Syslab supports cmsclsyn and mussv but not dynamic musyn; MATLAB Robust Control Toolbox is unlicensed.",
+      "acceptance_tiers": [],
+      "evidence_level": "E1"
+    },
+    "feedback_linearization_attitude_thrust_v1": {
+      "controller_id": "feedback_linearization",
+      "implementation": "project_owned_linear_robust_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "feedback_linearization",
+      "chain_position": "nominal_nonlinear_position_velocity_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/linear_robust_attitude_thrust_core.[ch]", "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E2"
+    },
+    "passivity_based_control_attitude_thrust_v1": {
+      "controller_id": "passivity_based_control",
+      "implementation": "project_owned_linear_robust_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "passivity_based_control",
+      "chain_position": "nominal_energy_shaping_position_velocity_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/linear_robust_attitude_thrust_core.[ch]", "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E2"
+    },
+    "adaptive_backstepping_attitude_thrust_v1": {
+      "controller_id": "adaptive_backstepping",
+      "implementation": "project_owned_linear_robust_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "adaptive_backstepping",
+      "chain_position": "nominal_adaptive_position_velocity_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/linear_robust_attitude_thrust_core.[ch]", "Results/control_platform/p2_linear_robust_source_20260716/P2_LINEAR_ROBUST_SOURCE_GATE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E2"
+    },
+    "pole_placement_luenberger_attitude_thrust_v1": {
+      "controller_id": "pole_placement_luenberger",
+      "implementation": "project_owned_classic_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "pole_placement_observer",
+      "chain_position": "nominal_observer_based_position_velocity_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/classic_controller_core.[ch]", "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/pole_placement_luenberger/PX4CTRL_BASIC_MISSION_METRICS.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/pole_placement_luenberger/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E4"
+    },
+    "mrac_attitude_thrust_v1": {
+      "controller_id": "mrac",
+      "implementation": "project_owned_classic_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "model_reference_adaptive_control",
+      "chain_position": "nominal_adaptive_position_velocity_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/classic_controller_core.[ch]", "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac/PX4CTRL_BASIC_MISSION_METRICS.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac_figure8/PX4CTRL_BASIC_MISSION_METRICS.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac_figure8/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E4"
+    },
+    "ndi_attitude_thrust_v1": {
+      "controller_id": "ndi",
+      "implementation": "project_owned_classic_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "nonlinear_dynamic_inversion",
+      "chain_position": "nominal_model_inversion_position_velocity_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/classic_controller_core.[ch]", "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi/PX4CTRL_BASIC_MISSION_METRICS.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi_figure8/PX4CTRL_BASIC_MISSION_METRICS.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi_figure8/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E4"
+    },
+    "fopid_attitude_thrust_v1": {
+      "controller_id": "fopid",
+      "implementation": "project_owned_classic_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "fractional_order_pid",
+      "chain_position": "nominal_fractional_position_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "fractional_approximation": "fixed_memory_grunwald_letnikov_16_samples",
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/classic_controller_core.[ch]", "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/PX4CTRL_BASIC_MISSION_METRICS.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E4"
+    },
+    "h2_state_feedback_attitude_thrust_v1": {
+      "controller_id": "h2_state_feedback",
+      "implementation": "project_owned_classic_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "h2_optimal",
+      "chain_position": "nominal_h2_position_velocity_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/classic_controller_core.[ch]", "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json", "Results/control_platform/classic_controller_closeout_20260717/h2_synthesis/H2_STATE_FEEDBACK_SYNTHESIS.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json", "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/PX4CTRL_BASIC_MISSION_METRICS.json", "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E4"
+    },
     "so3_attitude_body_rate_thrust_v1": {
       "controller_id": "so3_attitude",
       "implementation": "project_owned_fixed_size_c",
@@ -704,6 +924,135 @@
         "CANDIDATE"
       ],
       "evidence_level": "E4"
+    },
+    "integral_smc_attitude_thrust_v1": {
+      "controller_id": "integral_smc",
+      "implementation": "project_owned_sliding_mode_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "sliding_mode_integral",
+      "chain_position": "nominal_robust_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/sliding_mode_attitude_thrust_core.[ch]", "Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E2"
+    },
+    "terminal_smc_attitude_thrust_v1": {
+      "controller_id": "terminal_smc",
+      "implementation": "project_owned_sliding_mode_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "sliding_mode_terminal",
+      "chain_position": "nominal_robust_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/sliding_mode_attitude_thrust_core.[ch]", "Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E2"
+    },
+    "nonsingular_terminal_smc_attitude_thrust_v1": {
+      "controller_id": "nonsingular_terminal_smc",
+      "implementation": "project_owned_sliding_mode_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "sliding_mode_nonsingular_terminal",
+      "chain_position": "nominal_robust_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/sliding_mode_attitude_thrust_core.[ch]", "Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E2"
+    },
+    "super_twisting_smc_attitude_thrust_v1": {
+      "controller_id": "super_twisting_smc",
+      "implementation": "project_owned_sliding_mode_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "sliding_mode_super_twisting",
+      "chain_position": "nominal_robust_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/sliding_mode_attitude_thrust_core.[ch]", "Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E2"
+    },
+    "adaptive_smc_attitude_thrust_v1": {
+      "controller_id": "adaptive_smc",
+      "implementation": "project_owned_sliding_mode_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "sliding_mode_adaptive",
+      "chain_position": "nominal_robust_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/sliding_mode_attitude_thrust_core.[ch]", "Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E2"
+    },
+    "fuzzy_smc_attitude_thrust_v1": {
+      "controller_id": "fuzzy_smc",
+      "implementation": "project_owned_sliding_mode_fixed_size_c",
+      "implementation_status": "implemented",
+      "controller_family": "sliding_mode_fuzzy",
+      "chain_position": "nominal_robust_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/sliding_mode_attitude_thrust_core.[ch]", "Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"],
+      "acceptance_tiers": ["CANDIDATE"],
+      "evidence_level": "E2"
+    },
+    "neural_smc_attitude_thrust_v1": {
+      "controller_id": "neural_smc",
+      "implementation": "deferred_missing_frozen_model_artifact",
+      "implementation_status": "blocked",
+      "controller_family": "sliding_mode_neural",
+      "chain_position": "nominal_robust_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "required_state": ["position", "velocity", "attitude"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": ["Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"],
+      "decision": "deferred",
+      "decision_reason": "No frozen training dataset, model artifact hash, or independently validated bounded inference weights exist.",
+      "reopen_gate": "Frozen dataset and model hash, deterministic fixed-size inference, fallback tests, and an independent safety benchmark.",
+      "acceptance_tiers": [],
+      "evidence_level": "E1"
     },
     "nmpc_outer_attitude_thrust_v1": {
       "controller_id": "nmpc_outer",
@@ -1063,6 +1412,84 @@
       ],
       "evidence_level": "E2"
     },
+    "l1_adaptive_v1": {
+      "augmentation_id": "l1_adaptive",
+      "implementation_status": "accepted",
+      "module_family": "l1_adaptive",
+      "chain_position": "bounded_adaptive_disturbance_compensation",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "compatible_controller_profiles": ["official_pid_attitude_thrust_v1"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/enhancement_attitude_thrust_core.[ch]", "Results/control_platform/p5_enhancement_mworks_20260717/sil/P5_GENERATED_SIL_EQUIVALENCE.json", "Results/control_platform/p5_enhancement_runtime_20260717/l1_adaptive_retry1/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"],
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
+      "evidence_level": "E5"
+    },
+    "awff_v1": {
+      "augmentation_id": "awff",
+      "implementation_status": "accepted",
+      "module_family": "adaptive_wind_feedforward",
+      "chain_position": "bounded_disturbance_feedforward_compensation",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "compatible_controller_profiles": ["official_pid_attitude_thrust_v1"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/enhancement_attitude_thrust_core.[ch]", "Results/control_platform/p5_enhancement_runtime_20260717/awff/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"],
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
+      "evidence_level": "E5"
+    },
+    "complete_adrc_v1": {
+      "augmentation_id": "complete_adrc",
+      "implementation_status": "accepted",
+      "module_family": "active_disturbance_rejection_control",
+      "chain_position": "extended_state_observer_and_bounded_compensation",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "compatible_controller_profiles": ["official_pid_attitude_thrust_v1"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/enhancement_attitude_thrust_core.[ch]", "Results/control_platform/p5_enhancement_runtime_20260717/complete_adrc/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"],
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
+      "evidence_level": "E5"
+    },
+    "standardized_indi_v1": {
+      "augmentation_id": "standardized_indi",
+      "implementation_status": "accepted",
+      "module_family": "incremental_nonlinear_dynamic_inversion",
+      "chain_position": "bounded_incremental_control_augmentation",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "compatible_controller_profiles": ["official_pid_attitude_thrust_v1"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/enhancement_attitude_thrust_core.[ch]", "Results/control_platform/p5_enhancement_runtime_20260717/standardized_indi/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"],
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
+      "evidence_level": "E5"
+    },
+    "parameter_scheduling_v1": {
+      "augmentation_id": "parameter_scheduling",
+      "implementation_status": "accepted",
+      "module_family": "bounded_parameter_scheduling",
+      "chain_position": "deterministic_parameter_schedule",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "compatible_controller_profiles": ["official_pid_attitude_thrust_v1"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/enhancement_attitude_thrust_core.[ch]", "Results/control_platform/p5_enhancement_runtime_20260717/parameter_scheduling/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"],
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
+      "evidence_level": "E5"
+    },
+    "ilc_v1": {
+      "augmentation_id": "ilc",
+      "implementation_status": "accepted",
+      "module_family": "iterative_learning_control",
+      "chain_position": "bounded_repeat_indexed_learning_augmentation",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 100,
+      "compatible_controller_profiles": ["official_pid_attitude_thrust_v1"],
+      "source_basis_required": true,
+      "source_basis": ["Scripts/control_platform/enhancement_attitude_thrust_core.[ch]", "Results/control_platform/p5_enhancement_runtime_20260717/ilc/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"],
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
+      "evidence_level": "E5"
+    },
     "dfbc_dob_eso_disabled_v1": {
       "augmentation_id": "dfbc_dob_eso_disabled",
       "implementation_status": "implemented",
@@ -1154,6 +1581,62 @@
       ],
       "requires_geofence": false,
       "enforces_envelope": true
+    },
+    "safety_filter_v1": {
+      "safety_id": "safety_filter",
+      "implementation_status": "accepted",
+      "module_family": "analytical_safety_filter",
+      "supported_interfaces": ["ATTITUDE_THRUST"],
+      "runtime_profile": "safety_filter",
+      "evidence_level": "E5"
+    },
+    "cbf_v1": {
+      "safety_id": "cbf",
+      "implementation_status": "accepted",
+      "module_family": "analytical_control_barrier_filter",
+      "supported_interfaces": ["ATTITUDE_THRUST"],
+      "runtime_profile": "cbf",
+      "evidence_level": "E5"
+    },
+    "reference_governor_v1": {
+      "safety_id": "reference_governor",
+      "implementation_status": "accepted",
+      "module_family": "bounded_reference_governor",
+      "supported_interfaces": ["ATTITUDE_THRUST"],
+      "runtime_profile": "reference_governor",
+      "evidence_level": "E5"
+    },
+    "geofence_v1": {
+      "safety_id": "geofence",
+      "implementation_status": "accepted",
+      "module_family": "geofence_supervisor",
+      "supported_interfaces": ["ATTITUDE_THRUST"],
+      "runtime_profile": "geofence",
+      "evidence_level": "E5"
+    },
+    "emergency_stop_v1": {
+      "safety_id": "emergency_stop",
+      "implementation_status": "accepted",
+      "module_family": "emergency_stop_supervisor",
+      "supported_interfaces": ["ATTITUDE_THRUST"],
+      "runtime_profile": "emergency_stop",
+      "evidence_level": "E5"
+    },
+    "return_and_land_v1": {
+      "safety_id": "return_and_land",
+      "implementation_status": "accepted",
+      "module_family": "return_and_land_supervisor",
+      "supported_interfaces": ["ATTITUDE_THRUST"],
+      "runtime_profile": "return_and_land",
+      "evidence_level": "E5"
+    },
+    "failsafe_state_machine_v1": {
+      "safety_id": "failsafe_state_machine",
+      "implementation_status": "accepted",
+      "module_family": "failsafe_state_machine",
+      "supported_interfaces": ["ATTITUDE_THRUST"],
+      "runtime_profile": "failsafe_state_machine",
+      "evidence_level": "E5"
     }
   },
   "adapter_profiles": {
@@ -1186,6 +1669,51 @@
   "fault_profiles": {
     "none": {
       "fault_id": "none"
+    },
+    "fdi_rotor_effectiveness_v1": {
+      "fault_id": "rotor_effectiveness_loss",
+      "management_mode": "fdi",
+      "implementation_status": "accepted",
+      "source_basis": ["Scripts/control_platform/fault_tolerant_control_core.[ch]"],
+      "evidence_level": "E5"
+    },
+    "passive_ftc_rotor_effectiveness_v1": {
+      "fault_id": "rotor_effectiveness_loss",
+      "management_mode": "passive_ftc",
+      "implementation_status": "accepted",
+      "source_basis": ["Scripts/control_platform/fault_tolerant_control_core.[ch]"],
+      "evidence_level": "E5"
+    },
+    "active_ftc_rotor_effectiveness_v1": {
+      "fault_id": "rotor_effectiveness_loss",
+      "management_mode": "active_ftc",
+      "implementation_status": "accepted",
+      "source_basis": ["Scripts/control_platform/fault_tolerant_control_core.[ch]"],
+      "evidence_level": "E5"
+    },
+    "fault_aware_control_allocation_rotor1_loss35_v1": {
+      "fault_id": "rotor_effectiveness_loss",
+      "rotor_index": 1,
+      "effectiveness": 0.65,
+      "management_mode": "fault_aware_control_allocation",
+      "implementation_status": "accepted",
+      "source_basis": ["Scripts/control_platform/fault_tolerant_control_core.[ch]"],
+      "runtime_evidence": "Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_RUNTIME_CLOSEOUT.json",
+      "evidence_level": "E5"
+    },
+    "single_motor_fault_safe_land_v1": {
+      "fault_id": "single_motor_effectiveness_loss",
+      "management_mode": "single_motor_safe_landing",
+      "implementation_status": "accepted",
+      "source_basis": ["Scripts/control_platform/fault_tolerant_control_core.[ch]"],
+      "evidence_level": "E5"
+    },
+    "multiple_fault_estimation_reconstruction_v1": {
+      "fault_id": "multiple_motor_effectiveness_loss",
+      "management_mode": "multi_fault_estimation_reconfiguration",
+      "implementation_status": "accepted",
+      "source_basis": ["Scripts/control_platform/fault_tolerant_control_core.[ch]"],
+      "evidence_level": "E5"
     }
   },
   "disturbance_profiles": {
@@ -1201,6 +1729,11 @@
       ],
       "requires_ue_bridge": false
     },
+    "factory_l2_rviz_ue_v1": {
+      "display_backend": ["rviz", "gazebo_gui", "unreal_optional"],
+      "requires_ue_bridge": true,
+      "required_layers": ["mid360_cloud", "actual_trajectory", "uav_body_axes"]
+    },
     "rviz_fastlio_map_v1": {
       "display_backend": [
         "rviz",
@@ -1212,6 +1745,11 @@
         "uav_body_axes",
         "trajectory"
       ]
+    },
+    "rviz_unreal_factory_three_uav_v1": {
+      "display_backend": ["rviz", "gazebo_gui", "unreal_optional"],
+      "requires_ue_bridge": false,
+      "required_layers": ["three_uav_axes", "formation_trajectory"]
     }
   },
   "evaluation_profiles": {
@@ -1265,6 +1803,11 @@
         "z_error"
       ],
       "requires_truth": true
+    },
+    "formation_tracking_and_separation_v1": {
+      "leaderboard_group": "px4_mavros_fused",
+      "metrics": ["formation_rmse", "formation_peak_error", "minimum_inter_uav_distance", "maximum_roll_pitch", "landing_and_disarm"],
+      "requires_truth": true
     }
   },
   "runtime_profiles": {
@@ -1272,8 +1815,15 @@
       "os": "ubuntu-20.04",
       "ros": "noetic",
       "gazebo": "classic",
+      "ue_bridge": true,
+      "multi_uav_namespace_isolation": true
+    },
+    "sunray_ros1_factory_swarm_formation_v1": {
+      "os": "ubuntu-20.04",
+      "ros": "noetic",
+      "gazebo": "classic",
       "ue_bridge": false,
-      "multi_uav_namespace_isolation": false
+      "multi_uav_namespace_isolation": true
     }
   },
   "runtime_export_profiles": {

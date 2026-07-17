@@ -1,0 +1,37 @@
+{
+  "schema": "mosim.g95_dfbc_high_order_static_gate_manifest.v1",
+  "status": "passed",
+  "goal": "G9.5",
+  "controller_profile": "dfbc_high_order_attitude_thrust_v1",
+  "runtime_core_profile": "dfbc_high_order",
+  "project_root": "C:\\Users\\HP\\Desktop\\MoSim",
+  "result_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\g9\\dfbc_high_order_attitude_thrust_v1\\g95_static_gate_20260630_082713",
+  "compile_command": [
+    "g++",
+    "-std=c++11",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-pedantic",
+    "/mnt/c/Users/HP/Desktop/MoSim/Scripts/sunray/px4ctrl_golden_slice/px4ctrl_core.cpp",
+    "/mnt/c/Users/HP/Desktop/MoSim/Scripts/sunray/px4ctrl_golden_slice/px4ctrl_g95_dfbc_high_order_gate.cpp",
+    "-I",
+    "/mnt/c/Users/HP/Desktop/MoSim/Scripts/sunray/px4ctrl_golden_slice",
+    "-o",
+    "/mnt/c/Users/HP/Desktop/MoSim/Results/g9/dfbc_high_order_attitude_thrust_v1/g95_static_gate_20260630_082713/build/px4ctrl_g95_dfbc_high_order_gate"
+  ],
+  "claim_boundary": "Static high-order DFBC core gate only. No ROS, Gazebo, PX4, MAVROS, RViz, MWORKS GUI, body-rate publish switch, or PX4-native deployment is started.",
+  "compile_returncode": 0,
+  "run_returncode": 0,
+  "gate_result": {
+    "schema": "mosim.g95_dfbc_high_order_static_gate.v1",
+    "status": "passed",
+    "claim_boundary": "Static high-order DFBC core gate only. It proves p/v/a/jerk/snap/yaw-rate inputs can produce attitude/thrust plus body-rate/body-acceleration feedforward. It does not switch PX4/MAVROS to body-rate control, run ROS/Gazebo, or prove MWORKS/PX4-native deployment.",
+    "failure_count": 0,
+    "hover_thrust_error": 0,
+    "jerk_body_rate_x": -0.10204081632653059,
+    "snap_body_accel_x": -0.20408163265306117,
+    "yaw_rate_body_rate_z": 0.29999999999999993,
+    "body_rate_limit_y": 2
+  }
+}

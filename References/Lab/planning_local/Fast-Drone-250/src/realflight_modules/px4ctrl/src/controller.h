@@ -92,6 +92,9 @@ private:
   bool use_fault_allocation_core_;
   bool generated_core_reset_pending_;
   int generated_family_controller_id_;
+  bool enhancement_acceleration_initialized_;
+  Eigen::Vector3d enhancement_previous_velocity_;
+  Eigen::Vector3d enhancement_measured_acceleration_;
   mosim_px4ctrl::CoreState official_pid_core_state_;
   mosim_px4ctrl::CoreState se3_basic_core_state_;
   mosim_px4ctrl::CoreState dfbc_basic_core_state_;

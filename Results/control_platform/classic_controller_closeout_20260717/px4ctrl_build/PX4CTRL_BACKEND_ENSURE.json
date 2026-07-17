@@ -1,0 +1,12 @@
+{
+  "schema": "mosim.px4ctrl.generated_backend_ensure.v1",
+  "status": "passed",
+  "action": "built",
+  "backend": "classic_controller_attitude_thrust",
+  "build_definition": "MOSIM_PX4CTRL_GENERATED_BACKEND_CLASSIC_CONTROLLER_ATTITUDE_THRUST",
+  "workspace": "/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws",
+  "binary": "/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib/px4ctrl/px4ctrl_node",
+  "binary_sha256": "4c9bb00dc6e124550f60cb56726bd3eef1d7ce2ccd79cab1f980e1c263f666ac",
+  "completed_at": 1784292424.3508577,
+  "claim_boundary": "Build selection evidence only; runtime acknowledgement is required separately."
+}

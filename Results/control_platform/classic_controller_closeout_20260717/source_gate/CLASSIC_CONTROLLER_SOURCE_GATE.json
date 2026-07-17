@@ -1,0 +1,29 @@
+{
+  "schema": "mosim.classic_controller_source_gate.v1",
+  "status": "passed",
+  "controllers": [
+    "pole_placement_luenberger",
+    "mrac",
+    "ndi",
+    "fopid",
+    "h2_state_feedback"
+  ],
+  "controller_count": 5,
+  "algorithm_identity_checks": {
+    "pole_placement_luenberger_observer_state": true,
+    "mrac_reference_model_projection_adaptation": true,
+    "ndi_translational_model_inversion": true,
+    "fopid_grunwald_letnikov_fixed_memory": true,
+    "h2_frozen_state_feedback_gain": true
+  },
+  "lifecycle_checks": [
+    "disabled",
+    "unknown_controller",
+    "invalid_input",
+    "invalid_params"
+  ],
+  "command_contract": "ATTITUDE_THRUST",
+  "mworks_touched": false,
+  "gazebo_started": false,
+  "claim_ceiling": "Five fixed-size project C cores pass algorithm-identity and lifecycle gates; MWORKS graphical MIL, official code generation, SIL and Gazebo remain separate."
+}

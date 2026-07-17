@@ -1,0 +1,30 @@
+{
+  "schema": "mosim.classic_controller.generated_runtime_provenance.v1",
+  "status": "passed",
+  "backend": "classic_controller_attitude_thrust",
+  "controller_id": 2,
+  "controller_name": "mrac",
+  "generated_model_name": "MoSim_Classic_CFunction_Sysblock",
+  "generated_code_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/classic_controller_closeout_20260717/mworks/codegen/MoSim_Classic_CFunction_Sysblock",
+  "generated_code_sha256": "0f44c05a4d36ed4a2040989ff48a47b9b1033f24ced152da1c5eb38428da7772",
+  "generated_file_sha256": {
+    "MoSim_Classic_CFunction_Sysblock.c": "74398066cee0128fc356121149e4f450c5be794112996d9921848c9449d168c6",
+    "MoSim_Classic_CFunction_Sysblock.h": "7ca3979346946a7e2e73b5738393f8251490b5873499d8077dbf15b4815a3ca6",
+    "MoSim_Classic_CFunction_Sysblock_data.c": "6a7598388c8837e80d4b6894a595e8bab2f5a29a5f74acafc57363199abd36b4",
+    "MoSim_Classic_CFunction_Sysblock_private.h": "3e0ef3c80866f819062b82192580e718cd2338f38b5d61d6c2b8917bfc9ee490",
+    "extern_inc/momodel_extern_ince1.c": "9a2007c99eddfd42d0729925c2ed282123dfa8f6f3ba8196146f50fb58bc564e"
+  },
+  "codegen_manifest": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
+  "sil_report": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+  "build_backend_definition": "MOSIM_PX4CTRL_GENERATED_BACKEND_CLASSIC_CONTROLLER_ATTITUDE_THRUST",
+  "cmake_backend": "classic_controller_attitude_thrust",
+  "cmake_generated_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/classic_controller_closeout_20260717/mworks/codegen/MoSim_Classic_CFunction_Sysblock",
+  "px4ctrl_executable_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib/px4ctrl/px4ctrl_node",
+  "px4ctrl_executable_sha256": "4c9bb00dc6e124550f60cb56726bd3eef1d7ce2ccd79cab1f980e1c263f666ac",
+  "binary_generated_symbol_present": true,
+  "runtime_loaded_symbol": "MoSim_Classic_CFunction_Sysblock::Step",
+  "provenance_level": "runtime_acknowledged",
+  "runtime_ack": "[mosim_generated_runtime] backend=mworks_generated_c build_backend=classic_controller_attitude_thrust build_backend_definition=MOSIM_PX4CTRL_GENERATED_BACKEND_CLASSIC_CONTROLLER_ATTITUDE_THRUST generated_model_name=MoSim_Classic_CFunction_Sysblock generated_source_sha256=0f44c05a4d36ed4a2040989ff48a47b9b1033f24ced152da1c5eb38428da7772 runtime_loaded_symbol=MoSim_Classic_CFunction_Sysblock::Step controller_id=2 controller_name=mrac",
+  "runtime_log": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac/px4ctrl.log",
+  "errors": []
+}

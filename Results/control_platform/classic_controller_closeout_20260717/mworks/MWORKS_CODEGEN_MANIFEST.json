@@ -1,0 +1,190 @@
+{
+  "schema": "mosim.classic_controller.mworks_codegen_manifest.v1",
+  "status": "passed",
+  "created_at": "2026-07-17T12:29:46.337682+00:00",
+  "source": "MWORKS_MCP_LIVE",
+  "official_api": "ModelingPy.GenerateModelCode",
+  "model_name": "MoSim_Classic_CFunction_Sysblock",
+  "model_path": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_CFunction_Sysblock.mo",
+  "model_sha256": "6085059940a2bcef494aeca2a5c7d04ac0005db0a27d2215bb05e276f22a1ea5",
+  "codegen_options": {
+    "CodeCustom.CodeToProtect": {
+      "integer_division_by_zero": false,
+      "overflow": false
+    },
+    "CodeCustom.DataType": {
+      "real_as_float": false
+    },
+    "CodeCustom.Expand": {
+      "is_expand": false
+    },
+    "CodeCustom.InsertSectionFunctionDeclare": {
+      "head": "",
+      "item_head": "",
+      "item_tail": "",
+      "tail": ""
+    },
+    "CodeCustom.InsertSectionFunctionDefine": {
+      "head": "",
+      "item_head": "",
+      "item_tail": "",
+      "tail": ""
+    },
+    "CodeCustom.InsertSectionGlobalVariableDeclare": {
+      "head": "",
+      "item_head": "",
+      "item_tail": "",
+      "tail": ""
+    },
+    "CodeCustom.InsertSectionGlobalVariableDefine": {
+      "head": "",
+      "item_head": "",
+      "item_tail": "",
+      "tail": ""
+    },
+    "CodeCustom.InsertSectionInclude": {
+      "head": "",
+      "item_head": "",
+      "item_tail": "",
+      "tail": ""
+    },
+    "CodeCustom.InsertSectionMacro": {
+      "head": "",
+      "item_head": "",
+      "item_tail": "",
+      "tail": ""
+    },
+    "CodeCustom.InsertSectionType": {
+      "head": "",
+      "item_head": "",
+      "item_tail": "",
+      "tail": ""
+    },
+    "CodeDesign.FileOrganization": {
+      "mode": "Compact"
+    },
+    "CodeDesign.LogicalOperator": {
+      "logical_operator": "logical"
+    },
+    "CodeDesign.NamingConventions": {
+      "max_length": 32
+    },
+    "CodeDesign.NamingRules": {
+      "function": "",
+      "local_variable": "",
+      "macro": "",
+      "mem_var": "",
+      "type": ""
+    },
+    "CodeDesign.NamingStyle": {
+      "function": "camelCase",
+      "local_variable": "camelCase",
+      "macro": "camelCase",
+      "mem_var": "camelCase",
+      "type": "camelCase"
+    },
+    "CodeOptimization.Array": {
+      "array_loop_threshold": 5
+    },
+    "CodeOptimization.ModeEnterFunctionChoice": {
+      "muti_task_mode": false,
+      "whether_to_use_prefix": false
+    },
+    "CodeOptimization.ModeEnterFunctionName": {
+      "initialize": "Init",
+      "step": "Step"
+    },
+    "CodePlatform.AtomicLength": {
+      "floating_point": "64",
+      "integer": "32"
+    },
+    "CodePlatform.DataBits": {
+      "char": 0,
+      "double": 0,
+      "float": 0,
+      "int": 0,
+      "long": 0,
+      "long_long": 0,
+      "pointer": 0,
+      "ptrdiff_t": 0,
+      "szie_t": 0
+    },
+    "CodePlatform.OutPath": {
+      "output": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\classic_controller_closeout_20260717\\mworks\\codegen"
+    },
+    "CodeReplaceAll.DataType": {
+      "bool": "",
+      "char": "",
+      "double": "",
+      "float": "",
+      "int16": "",
+      "int32": "",
+      "int64": "",
+      "int8": "",
+      "isTypeReplacement": false,
+      "uint": "",
+      "uint16": "",
+      "uint32": "",
+      "uint64": "",
+      "uint8": ""
+    },
+    "CodeReplaceAll.LibFunctionReplacement": {
+      "standard_c_library": "C99"
+    }
+  },
+  "generated_code_dir": "Results/control_platform/classic_controller_closeout_20260717/mworks/codegen/MoSim_Classic_CFunction_Sysblock",
+  "generated_file_count": 12,
+  "generated_files": {
+    "extern_inc/momodel_extern_ince1.c": {
+      "bytes": 23499,
+      "sha256": "9a2007c99eddfd42d0729925c2ed282123dfa8f6f3ba8196146f50fb58bc564e"
+    },
+    "ExternalCResource.json": {
+      "bytes": 123,
+      "sha256": "2d9bb999386e9f4069e283bd62cad1171007527b3ad67eb9b7c8ae9ba4185996"
+    },
+    "ExternalResources.xml": {
+      "bytes": 308,
+      "sha256": "53106cd288611dab590b41c765ad77dbbaf8485f83b0b758d3a59135371e9908"
+    },
+    "MoSim_Classic_CFunction_Sysblock.c": {
+      "bytes": 4117,
+      "sha256": "74398066cee0128fc356121149e4f450c5be794112996d9921848c9449d168c6"
+    },
+    "MoSim_Classic_CFunction_Sysblock.h": {
+      "bytes": 1377,
+      "sha256": "7ca3979346946a7e2e73b5738393f8251490b5873499d8077dbf15b4815a3ca6"
+    },
+    "MoSim_Classic_CFunction_Sysblock_data.c": {
+      "bytes": 814,
+      "sha256": "6a7598388c8837e80d4b6894a595e8bab2f5a29a5f74acafc57363199abd36b4"
+    },
+    "MoSim_Classic_CFunction_Sysblock_extern_include.h": {
+      "bytes": 861,
+      "sha256": "1dc0b0b2b477eec7ec0ac2b3ff164d882762f1b90e40b30762c4cf070b643668"
+    },
+    "MoSim_Classic_CFunction_Sysblock_private.h": {
+      "bytes": 3503,
+      "sha256": "3e0ef3c80866f819062b82192580e718cd2338f38b5d61d6c2b8917bfc9ee490"
+    },
+    "motrace.json": {
+      "bytes": 78876,
+      "sha256": "f21c79caa29e1398cc46b0a58c654ba2773565aa90201d44fef24b230783d9f6"
+    },
+    "mwb_main.c": {
+      "bytes": 1988,
+      "sha256": "06a95c54b996f3f3bd61b653bea34e3c68b3064a76e15a432ef836f959a9590e"
+    },
+    "mwb_runtime.h": {
+      "bytes": 825,
+      "sha256": "81cb535958506d8a3b334f00b2175784f368efd33ccdcc06f52cfc70aa720be2"
+    },
+    "mwb_types.h": {
+      "bytes": 1857,
+      "sha256": "a99447436d5d4c16a74b82994f93d2bacc8abbbd8410ae061456df4a9fa3e824"
+    }
+  },
+  "missing_required_files": [],
+  "archive_normalization": "LF line endings and trailing horizontal whitespace removed after GenerateModelCode; executable tokens are unchanged.",
+  "claim_ceiling": "Official MWORKS-generated C archive only; generated-C SIL and external runtime remain separate gates."
+}

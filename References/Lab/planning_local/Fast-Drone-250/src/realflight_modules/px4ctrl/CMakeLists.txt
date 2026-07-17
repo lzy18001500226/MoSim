@@ -27,7 +27,7 @@ get_filename_component(MOSIM_PX4CTRL_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}" REAL
 get_filename_component(MOSIM_PROJECT_ROOT
   "${MOSIM_PX4CTRL_SOURCE_DIR}/../../../../../../.." ABSOLUTE)
 set(MOSIM_PX4CTRL_GENERATED_BACKEND "legacy_px4ctrl"
-  CACHE STRING "MoSim generated controller backend: legacy_px4ctrl, g9_family, g10_bde_family, pid_attitude_thrust, or learning_attitude_thrust")
+  CACHE STRING "MoSim generated controller backend: legacy_px4ctrl, g9_family, g10_bde_family, pid_attitude_thrust, linear_robust_attitude_thrust, classic_controller_attitude_thrust, sliding_mode_attitude_thrust, mpc_attitude_thrust, enhancement_attitude_thrust, learning_attitude_thrust, or safety_supervisor")
 set(MOSIM_PX4CTRL_GENERATED_DIR
   "${MOSIM_PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_mworks_goal5_m4a_cfunction_20260629_092411/px4ctrl_core_cfunction_codegen_strict/PX4CTRL_Core_CFunction_Sysblock"
   CACHE PATH "Accepted MoSim MWORKS CFunction generated px4ctrl_core directory")
@@ -40,9 +40,27 @@ set(MOSIM_PX4CTRL_G10_BDE_FAMILY_GENERATED_DIR
 set(MOSIM_PX4CTRL_PID_ATTITUDE_THRUST_GENERATED_DIR
   "${MOSIM_PROJECT_ROOT}/Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/generated_c_v2/MoSim_PID_AttitudeThrust_CFunction_Sysblock"
   CACHE PATH "Accepted MoSim MWORKS CFunction generated PID ATTITUDE_THRUST directory")
+set(MOSIM_PX4CTRL_LINEAR_ROBUST_ATTITUDE_THRUST_GENERATED_DIR
+  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p2_linear_robust_mworks_20260716/generated_c/MoSim_P2_LinearRobust_CFunction_Sysblock"
+  CACHE PATH "Accepted MoSim MWORKS CFunction generated linear/robust ATTITUDE_THRUST directory")
+set(MOSIM_PX4CTRL_CLASSIC_CONTROLLER_ATTITUDE_THRUST_GENERATED_DIR
+  "${MOSIM_PROJECT_ROOT}/Results/control_platform/classic_controller_closeout_20260717/mworks/codegen/MoSim_Classic_CFunction_Sysblock"
+  CACHE PATH "Accepted MoSim MWORKS CFunction generated classic-controller ATTITUDE_THRUST directory")
+set(MOSIM_PX4CTRL_SLIDING_MODE_ATTITUDE_THRUST_GENERATED_DIR
+  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p3_sliding_mode_mworks_20260716/generated_c/MoSim_P3_SlidingMode_CFunction_Sysblock"
+  CACHE PATH "Accepted MoSim MWORKS CFunction generated sliding-mode ATTITUDE_THRUST directory")
+set(MOSIM_PX4CTRL_MPC_ATTITUDE_THRUST_GENERATED_DIR
+  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p4_mpc_mworks_20260716/generated_c_lifecycle_fixed/MoSim_P4_Mpc_CFunction_Sysblock"
+  CACHE PATH "Accepted MoSim MWORKS CFunction generated MPC ATTITUDE_THRUST directory")
+set(MOSIM_PX4CTRL_ENHANCEMENT_ATTITUDE_THRUST_GENERATED_DIR
+  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p5_enhancement_mworks_20260717/generated_c/MoSim_P5_Enhancement_CFunction_Sysblock"
+  CACHE PATH "Accepted MoSim MWORKS CFunction generated enhancement ATTITUDE_THRUST directory")
 set(MOSIM_PX4CTRL_LEARNING_ATTITUDE_THRUST_GENERATED_DIR
   "${MOSIM_PROJECT_ROOT}/Results/control_platform/p9_learning_mworks_20260717/generated_c/MoSim_P9_Learning_AttitudeThrust_CFunction_Sysblock"
   CACHE PATH "Accepted MoSim MWORKS CFunction generated learning ATTITUDE_THRUST directory")
+set(MOSIM_PX4CTRL_SAFETY_SUPERVISOR_GENERATED_DIR
+  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p6_safety_mworks_20260717/generated_c/MoSim_P6_SafetySupervisor_CFunction_Sysblock"
+  CACHE PATH "Accepted MoSim MWORKS CFunction generated SafetySupervisor directory")
 set(MOSIM_PX4CTRL_GOLDEN_SLICE_DIR
   "${MOSIM_PROJECT_ROOT}/Scripts/sunray/px4ctrl_golden_slice"
   CACHE PATH "MoSim platform-independent px4ctrl/G9 controller core directory")
@@ -63,12 +81,36 @@ elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "pid_attitude_thrust")
   set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_PID_ATTITUDE_THRUST_GENERATED_DIR}")
   set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "MoSim_PID_AttitudeThrust_CFunction_Sysblock")
   add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST=1)
+elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "linear_robust_attitude_thrust")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_LINEAR_ROBUST_ATTITUDE_THRUST_GENERATED_DIR}")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "MoSim_P2_LinearRobust_CFunction_Sysblock")
+  add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_LINEAR_ROBUST_ATTITUDE_THRUST=1)
+elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "classic_controller_attitude_thrust")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_CLASSIC_CONTROLLER_ATTITUDE_THRUST_GENERATED_DIR}")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "MoSim_Classic_CFunction_Sysblock")
+  add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_CLASSIC_CONTROLLER_ATTITUDE_THRUST=1)
+elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "sliding_mode_attitude_thrust")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_SLIDING_MODE_ATTITUDE_THRUST_GENERATED_DIR}")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "MoSim_P3_SlidingMode_CFunction_Sysblock")
+  add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_SLIDING_MODE_ATTITUDE_THRUST=1)
+elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "mpc_attitude_thrust")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_MPC_ATTITUDE_THRUST_GENERATED_DIR}")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "MoSim_P4_Mpc_CFunction_Sysblock")
+  add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_MPC_ATTITUDE_THRUST=1)
+elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "enhancement_attitude_thrust")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_ENHANCEMENT_ATTITUDE_THRUST_GENERATED_DIR}")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "MoSim_P5_Enhancement_CFunction_Sysblock")
+  add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_ENHANCEMENT_ATTITUDE_THRUST=1)
 elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "learning_attitude_thrust")
   set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_LEARNING_ATTITUDE_THRUST_GENERATED_DIR}")
   set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "MoSim_P9_Learning_AttitudeThrust_CFunction_Sysblock")
   add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_LEARNING_ATTITUDE_THRUST=1)
+elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "safety_supervisor")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_SAFETY_SUPERVISOR_GENERATED_DIR}")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "MoSim_P6_SafetySupervisor_CFunction_Sysblock")
+  add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_SAFETY_SUPERVISOR=1)
 else()
-  message(FATAL_ERROR "Unsupported MOSIM_PX4CTRL_GENERATED_BACKEND=${MOSIM_PX4CTRL_GENERATED_BACKEND}; expected legacy_px4ctrl, g9_family, g10_bde_family, pid_attitude_thrust, or learning_attitude_thrust")
+  message(FATAL_ERROR "Unsupported MOSIM_PX4CTRL_GENERATED_BACKEND=${MOSIM_PX4CTRL_GENERATED_BACKEND}; expected legacy_px4ctrl, g9_family, g10_bde_family, pid_attitude_thrust, linear_robust_attitude_thrust, classic_controller_attitude_thrust, sliding_mode_attitude_thrust, mpc_attitude_thrust, enhancement_attitude_thrust, learning_attitude_thrust, or safety_supervisor")
 endif()
 
 message(STATUS "MoSim px4ctrl generated backend: ${MOSIM_PX4CTRL_GENERATED_BACKEND}")

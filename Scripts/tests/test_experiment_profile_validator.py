@@ -438,6 +438,8 @@ def test_validator_rejects_gazebo_truth_debug_state_in_formal_leaderboard(tmp_pa
 
 def test_validator_rejects_swarm_without_namespace_isolation(tmp_path: Path) -> None:
     catalog_path, profile_path, catalog, profile = base_case(tmp_path)
+    runtime_id = profile["experiment_profile"]["runtime_profile"]
+    catalog["runtime_profiles"][runtime_id]["multi_uav_namespace_isolation"] = False
     catalog["scenario_profiles"]["swarm_two_uav_v1"] = {
         **catalog["scenario_profiles"]["sunray150_empty_lab_v1"],
         "vehicle_count": 2,
@@ -451,6 +453,8 @@ def test_validator_rejects_swarm_without_namespace_isolation(tmp_path: Path) -> 
 
 def test_validator_rejects_ue_display_without_runtime_bridge(tmp_path: Path) -> None:
     catalog_path, profile_path, catalog, profile = base_case(tmp_path)
+    runtime_id = profile["experiment_profile"]["runtime_profile"]
+    catalog["runtime_profiles"][runtime_id]["ue_bridge"] = False
     catalog["display_profiles"]["ue_required_v1"] = {
         "display_backend": ["ue"],
         "requires_ue_bridge": True,

@@ -1,0 +1,24 @@
+{
+  "schema": "mosim.control_platform.syslab_mu_capability_audit.v1",
+  "status": "passed_capability_audit",
+  "launcher": "C:\\Users\\Public\\TongYuan\\julia-1.10.10\\bin\\julia-ty.bat",
+  "process_return_code": 0,
+  "symbols": {
+    "musyn": false,
+    "MuSynthesis": false,
+    "cmsclsyn": true,
+    "mussv": true
+  },
+  "cmsclsyn_example": {
+    "bound": 2.7809847614735137,
+    "q_size": [
+      2,
+      2
+    ]
+  },
+  "constant_matrix_mu_available": true,
+  "dynamic_mu_controller_synthesis_available": false,
+  "decision": "deferred",
+  "decision_reason": "Syslab executes cmsclsyn/mussv for constant-matrix mu analysis, but exposes no musyn or MuSynthesis dynamic controller synthesis entrypoint. MATLAB Robust Control Toolbox is not licensed on this machine.",
+  "claim_ceiling": "tool_capability_audit_only_not_a_mu_synthesis_controller"
+}

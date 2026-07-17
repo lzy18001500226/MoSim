@@ -1,0 +1,43 @@
+{
+  "schema": "mosim.classic_controller.mworks_mil_manifest.v1",
+  "status": "passed",
+  "created_at": "2026-07-17T12:22:46.725060+00:00",
+  "source": "MWORKS_MCP_LIVE",
+  "live_mworks_touched": true,
+  "will_not_click_activation_login": true,
+  "bridge_model": "MoSim_Classic_CFunction_Sysblock",
+  "fixture_count": 5,
+  "fixtures": {
+    "pole_placement_luenberger": {
+      "status": "passed",
+      "model_name": "MoSim_Classic_POLE_PLACEMENT_LUENBERGER_MIL",
+      "metrics": "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/pole_placement_luenberger_mil_metrics.json",
+      "raw_csv": "Results/control_platform/classic_controller_closeout_20260717/mworks/raw/pole_placement_luenberger_mil.csv"
+    },
+    "mrac": {
+      "status": "passed",
+      "model_name": "MoSim_Classic_MRAC_MIL",
+      "metrics": "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/mrac_mil_metrics.json",
+      "raw_csv": "Results/control_platform/classic_controller_closeout_20260717/mworks/raw/mrac_mil.csv"
+    },
+    "ndi": {
+      "status": "passed",
+      "model_name": "MoSim_Classic_NDI_MIL",
+      "metrics": "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/ndi_mil_metrics.json",
+      "raw_csv": "Results/control_platform/classic_controller_closeout_20260717/mworks/raw/ndi_mil.csv"
+    },
+    "fopid": {
+      "status": "passed",
+      "model_name": "MoSim_Classic_FOPID_MIL",
+      "metrics": "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/fopid_mil_metrics.json",
+      "raw_csv": "Results/control_platform/classic_controller_closeout_20260717/mworks/raw/fopid_mil.csv"
+    },
+    "h2_state_feedback": {
+      "status": "passed",
+      "model_name": "MoSim_Classic_H2_STATE_FEEDBACK_MIL",
+      "metrics": "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/h2_state_feedback_mil_metrics.json",
+      "raw_csv": "Results/control_platform/classic_controller_closeout_20260717/mworks/raw/h2_state_feedback_mil.csv"
+    }
+  },
+  "claim_ceiling": "Real fixed-input graphical Sysblock MIL behavior only; official codegen, SIL, px4ctrl and Gazebo remain separate gates."
+}

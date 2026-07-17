@@ -1,0 +1,63 @@
+{
+  "schema": "mosim.control_platform.p2_linear_robust_gate.v1",
+  "status": "passed",
+  "controllers": [
+    "lqg",
+    "feedback_linearization",
+    "passivity_based_control",
+    "adaptive_backstepping"
+  ],
+  "case_count": 4,
+  "lifecycle_case_count": 7,
+  "lifecycle_checks": {
+    "disabled": {
+      "passed": true,
+      "return_code": 0,
+      "status_code": 1,
+      "value": 0.0
+    },
+    "invalid_input": {
+      "passed": true,
+      "return_code": -3,
+      "status_code": -3,
+      "value": 0.0
+    },
+    "unknown_controller": {
+      "passed": true,
+      "return_code": -2,
+      "status_code": -2,
+      "value": 0.0
+    },
+    "invalid_params": {
+      "passed": true,
+      "return_code": -5,
+      "status_code": -5,
+      "value": 0.0
+    },
+    "tilt_limit": {
+      "passed": true,
+      "return_code": 0,
+      "status_code": 0,
+      "value": 0.5235987755982988
+    },
+    "adaptive_continuity": {
+      "passed": true,
+      "return_code": 0,
+      "status_code": 0,
+      "value": 0.0048
+    },
+    "deterministic_reset": {
+      "passed": true,
+      "return_code": 0,
+      "status_code": 0,
+      "value": 0.0024
+    }
+  },
+  "failure_count": 0,
+  "max_abs_difference": 1.7763568394002505e-15,
+  "tolerance": 1e-10,
+  "command_contract": "ATTITUDE_THRUST",
+  "runtime_started": false,
+  "claim_ceiling": "Fixed-size project C cores pass independent state, force, attitude, estimator, adaptive-state, and storage-function checks; MWORKS, generated C/SIL, and Gazebo runtime remain pending.",
+  "failures": []
+}

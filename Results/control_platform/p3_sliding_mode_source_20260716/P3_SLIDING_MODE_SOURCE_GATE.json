@@ -1,0 +1,64 @@
+{
+  "schema": "mosim.control_platform.p3_sliding_mode_gate.v1",
+  "status": "passed",
+  "controllers": [
+    "integral_smc",
+    "terminal_smc",
+    "nonsingular_terminal_smc",
+    "super_twisting_smc",
+    "adaptive_smc",
+    "fuzzy_smc"
+  ],
+  "case_count": 6,
+  "lifecycle_case_count": 6,
+  "lifecycle_checks": {
+    "disabled": {
+      "passed": true,
+      "return_code": 0,
+      "status_code": 1,
+      "value": 0.0
+    },
+    "invalid_input": {
+      "passed": true,
+      "return_code": -3,
+      "status_code": -3,
+      "value": 0.0
+    },
+    "unknown_controller": {
+      "passed": true,
+      "return_code": -2,
+      "status_code": -2,
+      "value": 0.0
+    },
+    "invalid_params": {
+      "passed": true,
+      "return_code": -5,
+      "status_code": -5,
+      "value": 0.0
+    },
+    "super_twisting_continuity": {
+      "passed": true,
+      "return_code": 0,
+      "status_code": 0,
+      "value": 0.048
+    },
+    "deterministic_reset": {
+      "passed": true,
+      "return_code": 0,
+      "status_code": 0,
+      "value": 0.024
+    }
+  },
+  "neural_smc": {
+    "decision": "deferred",
+    "selectable": false,
+    "reason": "No frozen training dataset, model artifact hash, or independently validated bounded inference weights exist.",
+    "reopen_gate": "Frozen dataset and model hash, deterministic fixed-size inference, fallback tests, and an independent safety benchmark."
+  },
+  "failure_count": 0,
+  "max_abs_difference": 1.7763568394002505e-15,
+  "command_contract": "ATTITUDE_THRUST",
+  "runtime_started": false,
+  "claim_ceiling": "Six fixed-size sliding-mode variants pass independent numerical and lifecycle checks. MWORKS, generated C/SIL, and Gazebo runtime remain pending; Neural-SMC is explicitly deferred rather than represented by an untrained zero residual.",
+  "failures": []
+}

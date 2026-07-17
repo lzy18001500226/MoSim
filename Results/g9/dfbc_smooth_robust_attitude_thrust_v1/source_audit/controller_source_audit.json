@@ -1,0 +1,112 @@
+{
+  "schema": "mosim.g9_controller_source_audit.v1",
+  "controller_id": "dfbc_smooth_robust",
+  "profile_id": "dfbc_smooth_robust_attitude_thrust_v1",
+  "g9_task": "G9.6",
+  "controller_family": "differential_flatness_smooth_robust",
+  "role": "paper_reproduction_candidate_nominal_controller_with_robust_terms",
+  "control_chain_position": "nominal_flatness_outer_loop_with_bounded_feedback_and_dob",
+  "required_state": [
+    "position",
+    "velocity",
+    "attitude",
+    "angular_velocity"
+  ],
+  "required_reference": [
+    "position",
+    "velocity",
+    "acceleration",
+    "yaw"
+  ],
+  "optional_reference": [
+    "yaw_rate",
+    "yaw_acceleration",
+    "jerk",
+    "snap"
+  ],
+  "output_interface": "ATTITUDE_THRUST",
+  "px4_inner_loop_reuse": true,
+  "mworks_codegen_route": "dfbc_smooth_robust_model_to_generated_c_to_icontroller",
+  "ros_sunray_adapter_route": "PX4CTRL_CORE_PROFILE=dfbc_smooth_robust through Fast-Drone-250 px4ctrl LinearControl wrapper and MAVROS setpoint_raw/attitude",
+  "first_experiment_profile_id": "pending_g96_dfbc_smooth_robust_gazebo_ab_profiles",
+  "first_evidence_directory": "Results/g9/dfbc_smooth_robust_attitude_thrust_v1",
+  "implementation_files": [
+    "Scripts/sunray/px4ctrl_golden_slice/px4ctrl_core.h",
+    "Scripts/sunray/px4ctrl_golden_slice/px4ctrl_core.cpp",
+    "Scripts/sunray/px4ctrl_golden_slice/px4ctrl_g96_dfbc_smooth_robust_gate.cpp",
+    "Scripts/sunray/px4ctrl_golden_slice/run_px4ctrl_g96_dfbc_smooth_robust_gate.py",
+    "References/Lab/Fast-Drone-250/src/realflight_modules/px4ctrl/src/controller.h",
+    "References/Lab/Fast-Drone-250/src/realflight_modules/px4ctrl/src/controller.cpp",
+    "References/Lab/Fast-Drone-250/src/realflight_modules/px4ctrl/src/input.h",
+    "References/Lab/Fast-Drone-250/src/realflight_modules/px4ctrl/src/input.cpp",
+    "Scripts/sunray/run_px4ctrl_basic_gate.sh",
+    "Scripts/sunray/run_px4ctrl_ego_single_gate.sh",
+    "Scripts/sunray/run_px4ctrl_ego_swarm_gate.sh"
+  ],
+  "source_references": [
+    {
+      "path": "Docs/Paper/Quadrotor Trajectory Tracking Under Unknown Wind Disturbances via Differential Flatness and Smooth Bounded Robust Control.pdf",
+      "extracted_text_path": "Results/paper_text_extracts/Quadrotor_Trajectory_Tracking_Under_Unknown_Wind_Disturbances_via_Differential_Flatness_and_Smooth_Bounded_Robust_Contro.txt",
+      "evidence": "Paper combines differential-flatness feedforward, smooth bounded feedback, and disturbance-observer compensation for wind/uncertainty robustness; runtime wind and no-wind A/B are required before claiming benefit."
+    },
+    {
+      "path": "References/Log/airo_control_interface/airo_control/src/controller/slidingmode.cpp",
+      "evidence": "Open-source PX4/MAVROS outer-loop controller uses tanh boundary-layer feedback in an attitude-target output path; this is an engineering reference for bounded robust terms, not a substitute for the selected paper."
+    },
+    {
+      "path": "References/Log/airo_control_interface/README.md",
+      "evidence": "The airo_control_interface project documents PX4-based Gazebo/real-world outer-loop MPC, backstepping, and SMC controllers with MAVROS and QGC."
+    },
+    {
+      "path": "References/Lab/Diff-Planner/src/diff_planner/plan_manage/src/traj_server.cpp",
+      "evidence": "Diff-Planner publishes p/v/a/jerk/yaw/yaw_dot references for later planner-route validation."
+    },
+    {
+      "path": "References/Lab/Fast-Drone-250/src/realflight_modules/px4ctrl/src/controller.cpp",
+      "evidence": "LinearControl supports PX4CTRL_CORE_PROFILE=dfbc_smooth_robust and maps the smooth robust core to the MAVROS ATTITUDE_THRUST path while logging disturbance estimates in debug fields."
+    }
+  ],
+  "implemented_control_law": [
+    "Compute smooth bounded feedback using tanh on a position/velocity tracking combination.",
+    "Estimate equivalent disturbance from measured acceleration residual derived from velocity samples and previous command acceleration.",
+    "Clamp disturbance compensation per axis before subtracting it from the bounded-feedback model acceleration.",
+    "Project compensated acceleration plus gravity to desired attitude and collective thrust.",
+    "Preserve high-order desired_body_rate and desired_body_acceleration diagnostic fields when jerk/snap references exist."
+  ],
+  "current_limitations": [
+    "The current disturbance observer is an acceleration-residual engineering approximation, not a verified one-to-one transcription of the paper's observer equations.",
+    "Wind disturbance is not yet injected in the Gazebo A/B matrix for this controller.",
+    "Current runtime output is still ATTITUDE_THRUST; no body-rate, torque, or rotor-level robust control path has been released.",
+    "The public author-code route for this exact paper was not confirmed; local PDF formulas are the primary source and open-source SMC/DOB code is only engineering context."
+  ],
+  "first_static_evidence": [
+    "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/g96_static_gate_20260629_232311/RUN_MANIFEST.json",
+    "Results/g9/dfbc_smooth_robust_attitude_thrust_v1/g96_static_gate_20260629_232311/gate_result.json"
+  ],
+  "first_runtime_ab_required": [
+    "takeoff-hover-land without wind",
+    "figure8 without wind",
+    "spiral without wind",
+    "step_x/step_y/step_z without wind",
+    "wind-disturbed hover",
+    "wind-disturbed figure8",
+    "mass or thrust-loss proxy ablation",
+    "Diff-Planner single-UAV after basic trajectory gates pass"
+  ],
+  "known_failure_modes": [
+    "Acceleration residuals can be noisy when odometry velocity rate or timestamps are degraded.",
+    "Observer reset/sign mistakes can overcompensate and increase tracking error.",
+    "Smooth bounded feedback may under-drive aggressive tracking if bounds are too conservative.",
+    "Runtime improvement may only appear under wind/disturbance profiles and may not improve nominal no-wind figure8."
+  ],
+  "forbidden_claims": [
+    "paper reproduced",
+    "author code ported",
+    "wind RMSE reduction reproduced",
+    "real-flight 0.057 m RMSE reproduced",
+    "full disturbance observer proven",
+    "Gazebo robust improvement proven",
+    "MWORKS generated controller accepted",
+    "PX4-native uORB deployment"
+  ]
+}

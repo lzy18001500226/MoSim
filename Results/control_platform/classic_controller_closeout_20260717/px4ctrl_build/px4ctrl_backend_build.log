@@ -1,0 +1,401 @@
+-- Using CATKIN_DEVEL_PREFIX: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel
+-- Using CMAKE_PREFIX_PATH: /opt/ros/noetic
+-- This workspace overlays: /opt/ros/noetic
+-- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.10", minimum required is "3") 
+-- Using PYTHON_EXECUTABLE: /usr/bin/python3
+-- Using Debian Python package layout
+-- Using empy: /usr/lib/python3/dist-packages/em.py
+-- Using CATKIN_ENABLE_TESTING: ON
+-- Call enable_testing()
+-- Using CATKIN_TEST_RESULTS_DIR: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/build/test_results
+-- Forcing gtest/gmock from source, though one was otherwise available.
+-- Found gtest sources under '/usr/src/googletest': gtests will be built
+-- Found gmock sources under '/usr/src/googletest': gmock will be built
+-- Found PythonInterp: /usr/bin/python3 (found version "3.8.10") 
+-- Using Python nosetests: /usr/bin/nosetests3
+-- catkin 0.8.12
+-- BUILD_SHARED_LIBS is on
+-- BUILD_SHARED_LIBS is on
+-- Using CATKIN_WHITELIST_PACKAGES: cmake_utils;px4ctrl;quadrotor_msgs;uav_utils
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- ~~  traversing 4 packages in topological order:
+-- ~~  - cmake_utils
+-- ~~  - quadrotor_msgs
+-- ~~  - uav_utils
+-- ~~  - px4ctrl
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- +++ processing catkin package: 'cmake_utils'
+-- ==> add_subdirectory(cmake_utils)
+-- +++ processing catkin package: 'quadrotor_msgs'
+-- ==> add_subdirectory(quadrotor_msgs)
+-- Using these message generators: gencpp;geneus;genlisp;gennodejs;genpy
+-- quadrotor_msgs: 24 messages, 0 services
+-- +++ processing catkin package: 'uav_utils'
+-- ==> add_subdirectory(uav_utils)
+-- +++ processing catkin package: 'px4ctrl'
+-- ==> add_subdirectory(px4ctrl)
+-- Using these message generators: gencpp;geneus;genlisp;gennodejs;genpy
+-- MoSim px4ctrl generated backend: classic_controller_attitude_thrust
+-- MoSim px4ctrl generated dir: /mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/classic_controller_closeout_20260717/mworks/codegen/MoSim_Classic_CFunction_Sysblock
+-- Installing devel-space wrapper /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/thrust_calibrate_scrips/thrust_calibrate.py to /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib/px4ctrl
+-- Configuring done
+CMake Warning (dev) at px4ctrl/CMakeLists.txt:152 (add_dependencies):
+  Policy CMP0046 is not set: Error on non-existent dependency in
+  add_dependencies.  Run "cmake --help-policy CMP0046" for policy details.
+  Use the cmake_policy command to set the policy and suppress this warning.
+
+  The dependency target "quadrotor_msgs" of target "px4ctrl_node" does not
+  exist.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Generating done
+-- Build files have been written to: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/build
+-- Using CATKIN_DEVEL_PREFIX: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel
+-- Using CMAKE_PREFIX_PATH: /opt/ros/noetic
+-- This workspace overlays: /opt/ros/noetic
+-- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.10", minimum required is "3") 
+-- Using PYTHON_EXECUTABLE: /usr/bin/python3
+-- Using Debian Python package layout
+-- Using empy: /usr/lib/python3/dist-packages/em.py
+-- Using CATKIN_ENABLE_TESTING: ON
+-- Call enable_testing()
+-- Using CATKIN_TEST_RESULTS_DIR: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/build/test_results
+-- Forcing gtest/gmock from source, though one was otherwise available.
+-- Found gtest sources under '/usr/src/googletest': gtests will be built
+-- Found gmock sources under '/usr/src/googletest': gmock will be built
+-- Found PythonInterp: /usr/bin/python3 (found version "3.8.10") 
+-- Using Python nosetests: /usr/bin/nosetests3
+-- catkin 0.8.12
+-- BUILD_SHARED_LIBS is on
+-- BUILD_SHARED_LIBS is on
+-- Using CATKIN_WHITELIST_PACKAGES: cmake_utils;px4ctrl;quadrotor_msgs;uav_utils
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- ~~  traversing 4 packages in topological order:
+-- ~~  - cmake_utils
+-- ~~  - quadrotor_msgs
+-- ~~  - uav_utils
+-- ~~  - px4ctrl
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- +++ processing catkin package: 'cmake_utils'
+-- ==> add_subdirectory(cmake_utils)
+-- +++ processing catkin package: 'quadrotor_msgs'
+-- ==> add_subdirectory(quadrotor_msgs)
+-- Using these message generators: gencpp;geneus;genlisp;gennodejs;genpy
+-- quadrotor_msgs: 24 messages, 0 services
+-- +++ processing catkin package: 'uav_utils'
+-- ==> add_subdirectory(uav_utils)
+-- +++ processing catkin package: 'px4ctrl'
+-- ==> add_subdirectory(px4ctrl)
+-- Using these message generators: gencpp;geneus;genlisp;gennodejs;genpy
+-- Using CATKIN_DEVEL_PREFIX: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel
+-- Using CMAKE_PREFIX_PATH: /opt/ros/noetic
+-- This workspace overlays: /opt/ros/noetic
+-- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.10", minimum required is "3") 
+-- Using PYTHON_EXECUTABLE: /usr/bin/python3
+-- Using Debian Python package layout
+-- Using empy: /usr/lib/python3/dist-packages/em.py
+-- Using CATKIN_ENABLE_TESTING: ON
+-- Call enable_testing()
+-- Using CATKIN_TEST_RESULTS_DIR: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/build/test_results
+-- MoSim px4ctrl generated backend: classic_controller_attitude_thrust
+-- MoSim px4ctrl generated dir: /mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/classic_controller_closeout_20260717/mworks/codegen/MoSim_Classic_CFunction_Sysblock
+-- Installing devel-space wrapper /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/thrust_calibrate_scrips/thrust_calibrate.py to /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib/px4ctrl
+-- Configuring done
+CMake Warning (dev) at px4ctrl/CMakeLists.txt:152 (add_dependencies):
+  Policy CMP0046 is not set: Error on non-existent dependency in
+  add_dependencies.  Run "cmake --help-policy CMP0046" for policy details.
+  Use the cmake_policy command to set the policy and suppress this warning.
+
+  The dependency target "quadrotor_msgs" of target "px4ctrl_node" does not
+  exist.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Forcing gtest/gmock from source, though one was otherwise available.
+-- Found gtest sources under '/usr/src/googletest': gtests will be built
+-- Found gmock sources under '/usr/src/googletest': gmock will be built
+-- Found PythonInterp: /usr/bin/python3 (found version "3.8.10") 
+-- Using Python nosetests: /usr/bin/nosetests3
+-- catkin 0.8.12
+-- BUILD_SHARED_LIBS is on
+-- BUILD_SHARED_LIBS is on
+-- Using CATKIN_WHITELIST_PACKAGES: cmake_utils;px4ctrl;quadrotor_msgs;uav_utils
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- ~~  traversing 4 packages in topological order:
+-- ~~  - cmake_utils
+-- ~~  - quadrotor_msgs
+-- ~~  - uav_utils
+-- ~~  - px4ctrl
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- +++ processing catkin package: 'cmake_utils'
+-- ==> add_subdirectory(cmake_utils)
+-- +++ processing catkin package: 'quadrotor_msgs'
+-- ==> add_subdirectory(quadrotor_msgs)
+-- Using these message generators: gencpp;geneus;genlisp;gennodejs;genpy
+-- quadrotor_msgs: 24 messages, 0 services
+-- Generating done
+-- +++ processing catkin package: 'uav_utils'
+-- ==> add_subdirectory(uav_utils)
+-- Build files have been written to: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/build
+make[1]: Warning: File 'CMakeFiles/Makefile2' has modification time 0.54 s in the future
+[  0%] Built target geometry_msgs_generate_messages_nodejs
+[  0%] Built target geometry_msgs_generate_messages_cpp
+[  0%] Built target nav_msgs_generate_messages_nodejs
+[  0%] Built target nav_msgs_generate_messages_cpp
+[  0%] Built target geometry_msgs_generate_messages_py
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Replan
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_PositionCommand
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Odometry
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_ReplanCheck
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Serial
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_StatusData
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_SwarmOdometry
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Corrections
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_SwarmCommand
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_OutputData
+[  0%] Built target nav_msgs_generate_messages_lisp
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_TakeoffLand
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Px4ctrlDebug
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_SpatialTemporalTrajectory
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_SO3Command
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_TrajectoryMatrix
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_PPROutputData
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_TRPYCommand
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_OptimalTimeAllocator
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_PolynomialTrajectory
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_AuxCommand
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Gains
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_SwarmInfo
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_GoalSet
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Bspline
+[  0%] Built target nav_msgs_generate_messages_py
+[  0%] Built target geometry_msgs_generate_messages_lisp
+[  0%] Built target geometry_msgs_generate_messages_eus
+[  0%] Built target nav_msgs_generate_messages_eus
+[ 69%] Built target quadrotor_msgs_generate_messages_nodejs
+[ 70%] Built target quadrotor_msgs_generate_messages_cpp
+[ 71%] Built target quadrotor_msgs_generate_messages_py
+[ 71%] Built target quadrotor_msgs_generate_messages_lisp
+[ 90%] Built target quadrotor_msgs_generate_messages_eus
+[ 90%] Built target quadrotor_msgs_generate_messages
+[ 91%] Built target encode_msgs
+[ 92%] Built target decode_msgs
+-- +++ processing catkin package: 'px4ctrl'
+-- ==> add_subdirectory(px4ctrl)
+-- Using these message generators: gencpp;geneus;genlisp;gennodejs;genpy
+-- MoSim px4ctrl generated backend: classic_controller_attitude_thrust
+-- MoSim px4ctrl generated dir: /mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/classic_controller_closeout_20260717/mworks/codegen/MoSim_Classic_CFunction_Sysblock
+-- Installing devel-space wrapper /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/thrust_calibrate_scrips/thrust_calibrate.py to /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib/px4ctrl
+-- Configuring done
+CMake Warning (dev) at px4ctrl/CMakeLists.txt:152 (add_dependencies):
+  Policy CMP0046 is not set: Error on non-existent dependency in
+  add_dependencies.  Run "cmake --help-policy CMP0046" for policy details.
+  Use the cmake_policy command to set the policy and suppress this warning.
+
+  The dependency target "quadrotor_msgs" of target "px4ctrl_node" does not
+  exist.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+Scanning dependencies of target px4ctrl_node
+[ 92%] Building CXX object px4ctrl/CMakeFiles/px4ctrl_node.dir/src/px4ctrl_node.cpp.o
+[ 93%] Building CXX object px4ctrl/CMakeFiles/px4ctrl_node.dir/src/PX4CtrlFSM.cpp.o
+[ 94%] Building CXX object px4ctrl/CMakeFiles/px4ctrl_node.dir/src/PX4CtrlParam.cpp.o
+[ 94%] Building CXX object px4ctrl/CMakeFiles/px4ctrl_node.dir/src/controller.cpp.o
+[ 95%] Building CXX object px4ctrl/CMakeFiles/px4ctrl_node.dir/src/input.cpp.o
+[ 96%] Building CXX object px4ctrl/CMakeFiles/px4ctrl_node.dir/mnt/c/Users/HP/Desktop/MoSim/Scripts/sunray/px4ctrl_golden_slice/px4ctrl_core.cpp.o
+[ 97%] Building C object px4ctrl/CMakeFiles/px4ctrl_node.dir/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/classic_controller_closeout_20260717/mworks/codegen/MoSim_Classic_CFunction_Sysblock/MoSim_Classic_CFunction_Sysblock.c.o
+[ 97%] Building C object px4ctrl/CMakeFiles/px4ctrl_node.dir/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/classic_controller_closeout_20260717/mworks/codegen/MoSim_Classic_CFunction_Sysblock/MoSim_Classic_CFunction_Sysblock_data.c.o
+[ 98%] Building C object px4ctrl/CMakeFiles/px4ctrl_node.dir/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/classic_controller_closeout_20260717/mworks/codegen/MoSim_Classic_CFunction_Sysblock/extern_inc/momodel_extern_ince1.c.o
+-- Generating done
+-- Build files have been written to: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/build
+[  0%] Built target geometry_msgs_generate_messages_cpp
+[  0%] Built target geometry_msgs_generate_messages_nodejs
+[  0%] Built target nav_msgs_generate_messages_cpp
+[  0%] Built target nav_msgs_generate_messages_nodejs
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_SpatialTemporalTrajectory
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_SO3Command
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_GoalSet
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Replan
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_TrajectoryMatrix
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Gains
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Serial
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_PolynomialTrajectory
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_ReplanCheck
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_OptimalTimeAllocator
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_AuxCommand
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Odometry
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Bspline
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_SwarmInfo
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_OutputData
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_SwarmOdometry
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Corrections
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_SwarmCommand
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_Px4ctrlDebug
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_PositionCommand
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_StatusData
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_TRPYCommand
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_TakeoffLand
+[  0%] Built target geometry_msgs_generate_messages_py
+[  0%] Built target nav_msgs_generate_messages_py
+[  0%] Built target nav_msgs_generate_messages_lisp
+[  0%] Built target geometry_msgs_generate_messages_lisp
+[  0%] Built target _quadrotor_msgs_generate_messages_check_deps_PPROutputData
+[  0%] Built target nav_msgs_generate_messages_eus
+[  0%] Built target geometry_msgs_generate_messages_eus
+[ 51%] Built target quadrotor_msgs_generate_messages_cpp
+[ 75%] Built target quadrotor_msgs_generate_messages_nodejs
+[ 75%] Built target quadrotor_msgs_generate_messages_lisp
+[ 77%] Built target quadrotor_msgs_generate_messages_py
+[ 90%] Built target quadrotor_msgs_generate_messages_eus
+[ 92%] Built target quadrotor_msgs_generate_messages
+[ 92%] Built target encode_msgs
+[ 92%] Built target decode_msgs
+[ 92%] Building CXX object px4ctrl/CMakeFiles/px4ctrl_node.dir/src/px4ctrl_node.cpp.o
+[ 93%] Building CXX object px4ctrl/CMakeFiles/px4ctrl_node.dir/src/PX4CtrlFSM.cpp.o
+[ 94%] Building CXX object px4ctrl/CMakeFiles/px4ctrl_node.dir/src/PX4CtrlParam.cpp.o
+[ 94%] Building CXX object px4ctrl/CMakeFiles/px4ctrl_node.dir/src/controller.cpp.o
+[ 95%] Building CXX object px4ctrl/CMakeFiles/px4ctrl_node.dir/src/input.cpp.o
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp: In member function ‘quadrotor_msgs::Px4ctrlDebug LinearControl::calculateOriginalControl(const Desired_State_t&, const Odom_Data_t&, const Imu_Data_t&, Controller_Output_t&)’:
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:794:25: warning: unused variable ‘yaw’ [-Wunused-variable]
+  794 |       double roll,pitch,yaw,yaw_imu;
+      |                         ^~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:794:29: warning: variable ‘yaw_imu’ set but not used [-Wunused-but-set-variable]
+  794 |       double roll,pitch,yaw,yaw_imu;
+      |                             ^~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp: In member function ‘quadrotor_msgs::Px4ctrlDebug LinearControl::calculateGeneratedCoreControl(const Desired_State_t&, const Odom_Data_t&, const Imu_Data_t&, Controller_Output_t&)’:
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:1987:16: warning: unused variable ‘effective_hover_percentage’ [-Wunused-variable]
+ 1987 |   const double effective_hover_percentage = param_.gra / thr2acc_;
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:1988:16: warning: unused variable ‘full_collective_thrust_n’ [-Wunused-variable]
+ 1988 |   const double full_collective_thrust_n = std::max(param_.mass * thr2acc_, 1.0e-6);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp: At global scope:
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:262:13: warning: ‘const char* {anonymous}::pid_controller_name_from_id(int)’ defined but not used [-Wunused-function]
+  262 | const char *pid_controller_name_from_id(const int controller_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:252:5: warning: ‘int {anonymous}::pid_controller_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+  252 | int pid_controller_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:244:13: warning: ‘const char* {anonymous}::safety_mode_name_from_id(int)’ defined but not used [-Wunused-function]
+  244 | const char *safety_mode_name_from_id(const int mode_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:233:5: warning: ‘int {anonymous}::safety_mode_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+  233 | int safety_mode_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:223:13: warning: ‘const char* {anonymous}::learning_controller_name_from_id(int)’ defined but not used [-Wunused-function]
+  223 | const char *learning_controller_name_from_id(const int controller_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:218:5: warning: ‘int {anonymous}::learning_controller_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+  218 | int learning_controller_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:201:13: warning: ‘const char* {anonymous}::enhancement_controller_name_from_id(int)’ defined but not used [-Wunused-function]
+  201 | const char *enhancement_controller_name_from_id(const int controller_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:191:5: warning: ‘int {anonymous}::enhancement_controller_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+  191 | int enhancement_controller_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:169:13: warning: ‘const char* {anonymous}::mpc_controller_name_from_id(int)’ defined but not used [-Wunused-function]
+  169 | const char *mpc_controller_name_from_id(const int controller_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:158:5: warning: ‘int {anonymous}::mpc_controller_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+  158 | int mpc_controller_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:136:13: warning: ‘const char* {anonymous}::sliding_mode_controller_name_from_id(int)’ defined but not used [-Wunused-function]
+  136 | const char *sliding_mode_controller_name_from_id(const int controller_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:126:5: warning: ‘int {anonymous}::sliding_mode_controller_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+  126 | int sliding_mode_controller_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:107:13: warning: ‘const char* {anonymous}::linear_robust_controller_name_from_id(int)’ defined but not used [-Wunused-function]
+  107 | const char *linear_robust_controller_name_from_id(const int controller_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:99:5: warning: ‘int {anonymous}::linear_robust_controller_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+   99 | int linear_robust_controller_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp: In member function ‘quadrotor_msgs::Px4ctrlDebug LinearControl::calculateOriginalControl(const Desired_State_t&, const Odom_Data_t&, const Imu_Data_t&, Controller_Output_t&)’:
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:794:25: warning: unused variable ‘yaw’ [-Wunused-variable]
+  794 |       double roll,pitch,yaw,yaw_imu;
+      |                         ^~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:794:29: warning: variable ‘yaw_imu’ set but not used [-Wunused-but-set-variable]
+  794 |       double roll,pitch,yaw,yaw_imu;
+      |                             ^~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp: In member function ‘quadrotor_msgs::Px4ctrlDebug LinearControl::calculateGeneratedCoreControl(const Desired_State_t&, const Odom_Data_t&, const Imu_Data_t&, Controller_Output_t&)’:
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:1987:16: warning: unused variable ‘effective_hover_percentage’ [-Wunused-variable]
+ 1987 |   const double effective_hover_percentage = param_.gra / thr2acc_;
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:1988:16: warning: unused variable ‘full_collective_thrust_n’ [-Wunused-variable]
+ 1988 |   const double full_collective_thrust_n = std::max(param_.mass * thr2acc_, 1.0e-6);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp: At global scope:
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:262:13: warning: ‘const char* {anonymous}::pid_controller_name_from_id(int)’ defined but not used [-Wunused-function]
+  262 | const char *pid_controller_name_from_id(const int controller_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:252:5: warning: ‘int {anonymous}::pid_controller_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+  252 | int pid_controller_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:244:13: warning: ‘const char* {anonymous}::safety_mode_name_from_id(int)’ defined but not used [-Wunused-function]
+  244 | const char *safety_mode_name_from_id(const int mode_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:233:5: warning: ‘int {anonymous}::safety_mode_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+  233 | int safety_mode_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:223:13: warning: ‘const char* {anonymous}::learning_controller_name_from_id(int)’ defined but not used [-Wunused-function]
+  223 | const char *learning_controller_name_from_id(const int controller_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:218:5: warning: ‘int {anonymous}::learning_controller_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+  218 | int learning_controller_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:201:13: warning: ‘const char* {anonymous}::enhancement_controller_name_from_id(int)’ defined but not used [-Wunused-function]
+  201 | const char *enhancement_controller_name_from_id(const int controller_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:191:5: warning: ‘int {anonymous}::enhancement_controller_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+  191 | int enhancement_controller_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:169:13: warning: ‘const char* {anonymous}::mpc_controller_name_from_id(int)’ defined but not used [-Wunused-function]
+  169 | const char *mpc_controller_name_from_id(const int controller_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:158:5: warning: ‘int {anonymous}::mpc_controller_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+  158 | int mpc_controller_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:136:13: warning: ‘const char* {anonymous}::sliding_mode_controller_name_from_id(int)’ defined but not used [-Wunused-function]
+  136 | const char *sliding_mode_controller_name_from_id(const int controller_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:126:5: warning: ‘int {anonymous}::sliding_mode_controller_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+  126 | int sliding_mode_controller_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:107:13: warning: ‘const char* {anonymous}::linear_robust_controller_name_from_id(int)’ defined but not used [-Wunused-function]
+  107 | const char *linear_robust_controller_name_from_id(const int controller_id)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl/src/controller.cpp:99:5: warning: ‘int {anonymous}::linear_robust_controller_id_from_mode(const string&)’ defined but not used [-Wunused-function]
+   99 | int linear_robust_controller_id_from_mode(const std::string &core_mode)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ 96%] Linking CXX executable /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib/px4ctrl/px4ctrl_node
+CMakeFiles/px4ctrl_node.dir/src/PX4CtrlFSM.cpp.o: file not recognized: file format not recognized
+collect2: error: ld returned 1 exit status
+make[2]: *** [px4ctrl/CMakeFiles/px4ctrl_node.dir/build.make:241: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib/px4ctrl/px4ctrl_node] Error 1
+make[1]: *** [CMakeFiles/Makefile2:2926: px4ctrl/CMakeFiles/px4ctrl_node.dir/all] Error 2
+make: *** [Makefile:141: all] Error 2
+Base path: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws
+Source space: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src
+Build space: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/build
+Devel space: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel
+Install space: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/install
+####
+#### Running command: "cmake /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src -DMOSIM_PX4CTRL_GENERATED_BACKEND=classic_controller_attitude_thrust -DCMAKE_BUILD_TYPE=Release -DCATKIN_DEVEL_PREFIX=/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/install -G Unix Makefiles" in "/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/build"
+####
+####
+#### Running command: "make -j28 -l28" in "/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/build"
+####
+Invoking "make -j28 -l28" failed
+[ 96%] Linking CXX executable /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib/px4ctrl/px4ctrl_node
+[100%] Built target px4ctrl_node
+Base path: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws
+Source space: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src
+Build space: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/build
+Devel space: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel
+Install space: /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/install
+####
+#### Running command: "cmake /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src -DMOSIM_PX4CTRL_GENERATED_BACKEND=classic_controller_attitude_thrust -DCMAKE_BUILD_TYPE=Release -DCATKIN_DEVEL_PREFIX=/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/install -G Unix Makefiles" in "/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/build"
+####
+####
+#### Running command: "make -j28 -l28" in "/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/build"
+####

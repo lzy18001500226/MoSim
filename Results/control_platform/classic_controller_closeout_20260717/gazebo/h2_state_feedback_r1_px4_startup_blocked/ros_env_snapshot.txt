@@ -1,0 +1,48 @@
+ROS_ENV_SNAPSHOT
+SUNRAY_GAZEBO_LAUNCH_FILE=/opt/mosim_work/sunray_ws/Sunray/simulation/sunray_simulator/launch_uav_demo/sunray_sim_uav_planning.launch
+LIVOX_PLUGIN_WS=/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws
+SUNRAY_STRIP_PX4_MODEL_PATH=true
+SUNRAY_MID360_PLUGIN_DOWNSAMPLE=4
+SUNRAY_LIVOX_PLUGIN_FILENAME=/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws/devel/lib/liblivox_laser_simulation.so
+ROS_PACKAGE_PATH=/opt/mosim_work/sunray_ws/fastlio_ws/src:/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src:/opt/mosim_work/sunray_px4:/opt/mosim_work/sunray_ws/Sunray:/opt/ros/noetic/share:/opt/mosim_work/sunray_ws/fastlio_ws/src:/opt/mosim_work/sunray_ws/Sunray/General_Module/sunray_uav_control:/opt/mosim_work/sunray_ws/Sunray/General_Module/sunray_common/sunray_msgs:/opt/mosim_work/sunray_ws/Sunray/simulation/sunray_simulator:/opt/ros/noetic/share
+GAZEBO_PLUGIN_PATH=/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws/devel/lib:/opt/mosim_work/sunray_ws/Sunray/devel/lib:/mnt/c/Users/HP/Desktop/MoSim/References/Sunray/devel/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins::/opt/mosim_work/sunray_px4/build/px4_sitl_default/build_gazebo-classic
+CMAKE_PREFIX_PATH=/opt/mosim_work/sunray_ws/fastlio_ws/devel:/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel:/mnt/c/Users/HP/Desktop/MoSim/References/Sunray/devel:/opt/mosim_work/sunray_ws/fastlio_ws/devel:/opt/mosim_work/sunray_ws/Sunray/devel:/opt/ros/noetic
+GAZEBO_RESOURCE_PATH=/opt/mosim_work/sunray_ws/Sunray/simulation/sunray_simulator:/usr/share/gazebo-11:
+PYTHONPATH=/opt/mosim_work/sunray_ws/fastlio_ws/devel/lib/python3/dist-packages:/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib/python3/dist-packages:/opt/mosim_work/sunray_ws/Sunray/devel/lib/python3/dist-packages:/mnt/c/Users/HP/Desktop/MoSim/References/Sunray/devel/lib/python3/dist-packages:/opt/mosim_work/sunray_ws/fastlio_ws/devel/lib/python3/dist-packages:/opt/mosim_work/sunray_ws/Sunray/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages
+LD_LIBRARY_PATH=/opt/mosim_work/sunray_ws/fastlio_ws/devel/lib:/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib:/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws/devel/lib:/opt/mosim_work/sunray_ws/Sunray/devel/lib:/mnt/c/Users/HP/Desktop/MoSim/References/Sunray/devel/lib:/opt/ros/noetic/lib:/opt/mosim_work/sunray_ws/fastlio_ws/devel/lib:/opt/mosim_work/sunray_ws/Sunray/devel/lib:/opt/ros/noetic/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/mosim_work/sunray_px4/build/px4_sitl_default/build_gazebo-classic
+GAZEBO_MODEL_PATH=/mnt/c/Users/HP/Desktop/MoSim/Config/gazebo/models:/opt/mosim_work/sunray_ws/Sunray/simulation/sunray_simulator/models/scence_models:/opt/mosim_work/sunray_ws/Sunray/simulation/sunray_simulator/models/drone_models:/opt/mosim_work/sunray_ws/Sunray/simulation/sunray_simulator/models/sensor_models:/opt/mosim_work/sunray_ws/Sunray/simulation/sunray_simulator/models/fake_models:/opt/mosim_work/sunray_ws/Sunray/simulation/sunray_simulator/models/ugv_models:/opt/mosim_work/sunray_ws/Sunray/simulation/sunray_simulator/models/aws_models:/opt/mosim_work/sunray_ws/Sunray/simulation/sunray_simulator/models/aws_vins_models:/usr/share/gazebo-11/models
+Full tree crawl took 1.425271 seconds.
+Directories marked with (*) contain no manifest.  You may
+want to delete these directories.
+To get just of list of directories without manifests,
+re-run the profile with --zombie-only
+-------------------------------------------------------------
+0.533482   /mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src
+0.268450   /opt/ros/noetic/share
+0.199132   /opt/mosim_work/sunray_ws/Sunray
+0.126904   /opt/mosim_work/sunray_ws/fastlio_ws/src
+0.099432   /opt/mosim_work/sunray_ws/Sunray/External_Module
+0.028649   /opt/mosim_work/sunray_ws/Sunray/External_Module/FUEL
+0.027628   /opt/mosim_work/sunray_ws/Sunray/External_Module/ego-planner-swarm
+0.026113   /opt/mosim_work/sunray_ws/Sunray/External_Module/ego-planner-swarm/src
+0.023444 * /opt/mosim_work/sunray_ws/Sunray/devel
+0.019402   /opt/mosim_work/sunray_ws/Sunray/simulation
+0.015855   /opt/mosim_work/sunray_ws/Sunray/External_Module/FUEL/uav_simulator
+0.015723   /opt/mosim_work/sunray_ws/Sunray/General_Module
+0.015441   /opt/mosim_work/sunray_ws/Sunray/External_Module/ego-planner-swarm/src/uav_simulator
+0.013953 * /opt/mosim_work/sunray_ws/Sunray/devel/share
+0.011938   /opt/mosim_work/sunray_ws/Sunray/External_Module/VINS-Fusion
+0.011029   /opt/mosim_work/sunray_ws/Sunray/External_Module/FUEL/fuel_planner
+0.009540   /opt/mosim_work/sunray_ws/Sunray/External_Module/sunray_detection
+0.009343   /opt/mosim_work/sunray_ws/Sunray/External_Module/ego-planner-swarm/src/planner
+0.008810   /opt/mosim_work/sunray_ws/Sunray/External_Module/ego-planner-swarm/src/uav_simulator/Utils
+0.008505 * /opt/mosim_work/sunray_ws/Sunray/buildscripts
+rospack find px4ctrl
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/px4ctrl
+rospack find quadrotor_msgs
+/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/src/quadrotor_msgs
+rospack find sunray_msgs
+/opt/mosim_work/sunray_ws/Sunray/General_Module/sunray_common/sunray_msgs
+rospack find sunray_uav_control
+/opt/mosim_work/sunray_ws/Sunray/General_Module/sunray_uav_control
+python message imports ok

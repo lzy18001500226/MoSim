@@ -1,0 +1,127 @@
+{
+  "schema": "mosim.g9_controller_source_audit.v1",
+  "controller_id": "dfbc_high_order",
+  "profile_id": "dfbc_high_order_attitude_thrust_v1",
+  "g9_task": "G9.5",
+  "controller_family": "differential_flatness_high_order",
+  "role": "paper_reproduction_candidate_nominal_controller",
+  "control_chain_position": "nominal_flatness_outer_loop_with_high_order_diagnostics",
+  "required_state": [
+    "position",
+    "velocity",
+    "attitude",
+    "angular_velocity"
+  ],
+  "required_reference": [
+    "position",
+    "velocity",
+    "acceleration",
+    "yaw"
+  ],
+  "optional_reference": [
+    "yaw_rate",
+    "yaw_acceleration",
+    "jerk",
+    "snap"
+  ],
+  "output_interface": "ATTITUDE_THRUST",
+  "px4_inner_loop_reuse": true,
+  "mworks_codegen_route": "dfbc_high_order_model_to_generated_c_to_icontroller",
+  "ros_sunray_adapter_route": "PX4CTRL_CORE_PROFILE=dfbc_high_order through Fast-Drone-250 px4ctrl LinearControl wrapper and MAVROS setpoint_raw/attitude",
+  "first_experiment_profile_id": "pending_g95_dfbc_high_order_gazebo_ab_profiles",
+  "first_evidence_directory": "Results/g9/dfbc_high_order_attitude_thrust_v1",
+  "implementation_files": [
+    "Scripts/sunray/px4ctrl_golden_slice/px4ctrl_core.h",
+    "Scripts/sunray/px4ctrl_golden_slice/px4ctrl_core.cpp",
+    "Scripts/sunray/px4ctrl_golden_slice/px4ctrl_g95_dfbc_high_order_gate.cpp",
+    "Scripts/sunray/px4ctrl_golden_slice/run_px4ctrl_g95_dfbc_high_order_gate.py",
+    "References/Lab/Fast-Drone-250/src/realflight_modules/px4ctrl/src/controller.h",
+    "References/Lab/Fast-Drone-250/src/realflight_modules/px4ctrl/src/controller.cpp",
+    "References/Lab/Fast-Drone-250/src/realflight_modules/px4ctrl/src/input.h",
+    "References/Lab/Fast-Drone-250/src/realflight_modules/px4ctrl/src/input.cpp",
+    "Scripts/sunray/run_px4ctrl_basic_gate.sh",
+    "Scripts/sunray/run_px4ctrl_ego_single_gate.sh",
+    "Scripts/sunray/run_px4ctrl_ego_swarm_gate.sh"
+  ],
+  "source_references": [
+    {
+      "path": "Docs/Paper/A Comparative Study of Nonlinear MPC and Differential-Flatness-Based Control for Quadrotor Agile Flight.pdf",
+      "extracted_text_path": "Results/paper_text_extracts/A_Comparative_Study_of_Nonlinear_MPC_and_Differential-Flatness-Based_Control_for_Quadrotor_Agile_Flight.txt",
+      "evidence": "Paper motivates comparing NMPC and differential-flatness control for agile flight, with INDI inner loop and drag-model improvements. It requires Gazebo/runtime A/B before any performance claim."
+    },
+    {
+      "url": "https://github.com/uzh-rpg/agilicious",
+      "evidence": "Public UZH/RPG control stack route for the first paper family; use as upstream implementation reference before hand-writing deeper NMPC/DFBC/INDI changes."
+    },
+    {
+      "url": "https://github.com/uzh-rpg/rpg_quadrotor_control",
+      "evidence": "Author-group quadrotor control reference linked to the Agilicious/RPG ecosystem; useful for geometric/flatness controller semantics and control-chain comparison."
+    },
+    {
+      "url": "https://github.com/uzh-rpg/rpg_mpc",
+      "evidence": "Author-group MPC reference linked to the Agilicious/RPG ecosystem; use for later NMPC-side reproduction rather than inventing a solver route from memory."
+    },
+    {
+      "path": "References/Lab/Diff-Planner/src/diff_planner/plan_manage/src/traj_server.cpp",
+      "evidence": "Diff-Planner publishes PositionCommand with jerk and yaw_dot; current MoSim wrapper can read jerk but not snap from this message path."
+    },
+    {
+      "path": "References/Lab/Fast-Drone-250/src/realflight_modules/px4ctrl/src/input.cpp",
+      "evidence": "Command_Data_t reads position, velocity, acceleration, jerk, yaw and yaw_rate from quadrotor_msgs/PositionCommand."
+    },
+    {
+      "path": "References/Lab/Fast-Drone-250/src/realflight_modules/px4ctrl/src/controller.cpp",
+      "evidence": "LinearControl supports PX4CTRL_CORE_PROFILE=dfbc_high_order and maps core desired attitude/thrust to the MAVROS ATTITUDE_THRUST path while exposing desired_body_rate in debug fields."
+    },
+    {
+      "path": "References/Lab/Fast-Drone-250/src/planner/plan_manage/src/traj_server.cpp",
+      "evidence": "Fast-Drone trajectory server publishes p/v/a/yaw/yaw_dot; it is a conservative reference for the first runtime route."
+    },
+    {
+      "path": "References/Lab/EGO-Planner-v2/swarm-playground/tracking_ws/src/planner/plan_manage/src/traj_server.cpp",
+      "evidence": "EGO-Planner-v2 tracking route publishes p/v/a/yaw/yaw_dot; high-order snap availability is not assumed."
+    }
+  ],
+  "implemented_control_law": [
+    "Compute flat-output feedback acceleration from p/v/a/yaw using the same ATTITUDE_THRUST projection path as DFBC Basic.",
+    "Compute desired_body_rate diagnostic/feedforward from reference jerk and yaw_rate.",
+    "Compute desired_body_acceleration diagnostic/feedforward from reference snap and yaw_acceleration when provided by the caller.",
+    "Clamp high-order body-rate and body-acceleration diagnostics using profile parameters."
+  ],
+  "current_limitations": [
+    "Current runtime output remains MAVROS ATTITUDE_THRUST, so desired_body_rate and desired_body_acceleration are not yet a separate BODY_RATE_THRUST or torque-level command path.",
+    "Diff-Planner and the current px4ctrl Command_Data_t path provide jerk and yaw_rate but not an explicit snap field; snap is zero unless a future trajectory/source path adds it.",
+    "This is a paper-route engineering candidate, not a validated reproduction of the paper's agile-flight metrics.",
+    "The paper's INDI inner-loop and aerodynamic-drag-model improvements are separate G10/G11 candidates unless explicitly integrated and measured."
+  ],
+  "first_static_evidence": [
+    "Results/g9/dfbc_high_order_attitude_thrust_v1/g95_static_gate_20260629_232311/RUN_MANIFEST.json",
+    "Results/g9/dfbc_high_order_attitude_thrust_v1/g95_static_gate_20260629_232311/gate_result.json"
+  ],
+  "first_runtime_ab_required": [
+    "takeoff-hover-land",
+    "figure8",
+    "spiral",
+    "step_x",
+    "step_y",
+    "step_z",
+    "Diff-Planner single-UAV",
+    "Diff-Planner three-UAV only after single-UAV passes"
+  ],
+  "known_failure_modes": [
+    "No measured improvement is expected if the high-order fields are only diagnostics and the actual command remains attitude/thrust.",
+    "Nonzero jerk from planner may increase attitude transients if the attitude loop cannot track the implied body-rate dynamics.",
+    "Snap-dependent angular acceleration is unavailable in the current PositionCommand route.",
+    "Aggressive trajectories can saturate tilt or thrust before any high-order benefit appears."
+  ],
+  "forbidden_claims": [
+    "paper reproduced",
+    "Agilicious/rpg controller faithfully ported",
+    "20 m/s agile tracking demonstrated",
+    "INDI inner loop or drag model implemented",
+    "BODY_RATE_THRUST or torque-level DFBC released",
+    "Gazebo performance improved",
+    "MWORKS generated controller accepted",
+    "PX4-native uORB deployment"
+  ]
+}
