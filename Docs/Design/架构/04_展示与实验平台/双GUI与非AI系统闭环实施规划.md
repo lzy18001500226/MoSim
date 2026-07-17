@@ -354,6 +354,198 @@ evidence paths
 
 GUI进程、显示进程和控制进程必须解耦；任何GUI或显示故障不得阻塞控制和日志。
 
+### 6.1 统一运行状态机与操作权限
+
+Model Studio、Flight Console、Orchestrator和runtime backend必须共享同一个权威运行状态，
+GUI不得根据进程存在、窗口可见或单个topic非空自行推断飞行状态。第一版状态机冻结为：
+
+```text
+draft
+  -> validated
+  -> prepared
+  -> starting
+  -> ready
+  -> armed
+  -> airborne
+  -> mission_running
+  -> holding
+  -> landing
+  -> completed
+
+任一运行态
+  -> degraded
+  -> failed
+  -> emergency
+```
+
+状态转换由Orchestrator根据结构化ACK和runtime readiness推进。每次转换至少记录
+`run_id`、旧状态、新状态、原因、来源、时间戳和相关证据。超时、非法转换或状态源过期
+必须拒绝操作，不得通过GUI本地改状态掩盖。
+
+这里的状态是面向用户和任务的`run_state`，不能替代各子系统自己的生命周期。现有
+runtime backend、任务算法和显示会话继续保留各自状态，并由Orchestrator归并：
+
+| 子系统状态 | 含义 | 对`run_state`的影响 |
+| --- | --- | --- |
+| backend `starting` | ROS/Gazebo/PX4/MAVROS正在启动 | `run_state=starting` |
+| backend `running` | 后端进程和基础readiness通过 | 只允许推进到`ready`，不等于已解锁或已起飞 |
+| planner `ready/running/degraded` | 规划输入输出合同状态 | 决定任务能否开始或是否进入`holding/degraded` |
+| display `healthy/degraded/detached` | UE/RViz/录像状态 | 默认不改变飞行状态，只改变显示证据等级 |
+| PX4 armed/landed与高度门禁 | 真实飞行阶段 | 推进`armed/airborne/landing/completed` |
+
+禁止把backend `running`直接显示成“任务运行中”，也禁止用UE飞机可见、Gazebo模型存在或
+MAVROS单独连接推进到`airborne`。
+
+| 状态 | 主操作 | 必须禁用的操作 |
+| --- | --- | --- |
+| `draft/validated` | 编辑或校验Profile | 解锁、起飞、任务、注入 |
+| `prepared/starting` | 取消启动、查看预检 | 解锁、起飞、任务、注入 |
+| `ready` | 解锁、停止、复位 | 开始任务、飞行中切换控制器 |
+| `armed` | 起飞、降落、急停 | 修改地图、车辆数、控制链 |
+| `airborne/holding` | 开始/恢复任务、悬停、降落、受控注入 | 复位、切换地图、任意热切换 |
+| `mission_running` | 暂停/悬停、降落、受控注入、急停 | 修改Profile、状态源或车辆数 |
+| `landing` | 急停、查看状态 | 新任务、普通注入、复位 |
+| `completed/failed` | 生成结果、打开证据、基于原Profile新建run | 复用旧run重新飞行 |
+| `emergency` | 确定性Failsafe拥有控制权 | 所有非安全操作 |
+
+Flight Console默认只显示一个随状态变化的主操作按钮，并保留独立的悬停、降落和急停。
+工程模式可以显示完整状态转换，但不能获得普通模式没有的飞行权限。
+
+### 6.2 运行权威、重连与幂等
+
+Orchestrator是`run_id`、Profile、进程、注入、显示会话和结果包的唯一所有者。两个GUI都是
+可重启客户端：GUI退出不得终止runtime，GUI重启后必须通过`run_id`重新附着并读取当前状态，
+不得创建同名第二个run或重复发送上一次成功请求。
+
+所有有副作用请求必须携带：
+
+```text
+request_id
+run_id
+expected_run_state
+profile_hash
+client_timestamp
+action
+payload
+```
+
+Orchestrator必须对同一`request_id`返回相同结果，对过期`expected_run_state`返回冲突，且在
+重启后能从run manifest和runtime探针恢复为`attached`、`degraded`或`orphaned`。不能确认
+所有权时停止写操作，只允许只读诊断和人工选择接管或清理。
+
+### 6.3 实时遥测数据合同
+
+界面字段不能只写“姿态”“误差”或“控制量”。每个遥测字段必须在机器可读字典中声明：
+
+```text
+signal_id
+vehicle_id
+source_topic_or_artifact
+source_layer
+frame_id
+unit
+source_timestamp
+receive_timestamp
+sample_rate_hz
+display_rate_hz
+freshness_limit_ms
+validity / quality_flags
+evaluation_allowed
+```
+
+至少区分四类数据：
+
+| 类别 | 示例 | GUI规则 |
+| --- | --- | --- |
+| 控制输入状态 | PX4融合位置、速度、姿态、角速度 | 明确显示控制器实际使用的来源 |
+| 参考和命令 | 规划轨迹、位置指令、姿态推力、执行器命令 | 保留原始参考与安全/故障层修改后命令 |
+| 评价truth | Gazebo位置、姿态、碰撞、物理施加值 | 标记`evaluation_only`，不得冒充控制输入 |
+| 显示状态 | UE镜像帧、RViz显示健康、视频帧率 | 不进入控制性能指标 |
+
+Flight Console可以降采样显示，但结果包必须保留评价所需的原始时间戳数据。多机遥测按
+`vehicle_id`隔离，并同时提供团队级最小间距、编队误差、通信新鲜度和安全状态。字段过期时
+显示`stale`，不得保持最后一个正常值而继续显示绿色健康状态。
+
+### 6.4 注入事务与物理ACK
+
+风扰、电机效能、传感器退化和其他故障统一建模为`InjectionTransaction`，而不是GUI滑块
+直接写topic。每个事务至少声明：
+
+```text
+injection_id
+run_id
+vehicle_ids
+kind
+target
+waveform: step | ramp | pulse | profile
+requested_value
+unit
+start_condition
+duration
+ramp_time
+composition_rule
+safety_limit
+restore_policy
+```
+
+事务状态为：
+
+```text
+requested -> validated -> scheduled -> applied -> verified
+          -> restoring -> restored
+          -> rejected / partial / failed
+```
+
+`request accepted`只说明Orchestrator接收请求，不能显示为故障已经生效。`applied/verified`
+必须来自Gazebo插件、wrench service、PX4参数回读或等价物理执行端ACK，并记录实际施加值、
+目标对象和生效时间。多个注入只有在Profile声明`composition_rule`时才能叠加；进入
+`landing/emergency/failed`后按`restore_policy`自动撤销非安全必需注入。Safety/Failsafe
+始终可以否决注入，但必须保留拒绝原因和事件证据。
+
+### 6.5 Profile版本、发布与证据失效
+
+ExperimentProfile、ParameterSet、地图、控制器模型、生成代码和runtime adapter均采用不可变
+发布版本。已发布Profile不得原地修改；任何参数、模块顺序、地图、状态源、车辆数或生成代码
+变化都必须创建新版本和新hash。
+
+Model Studio至少提供：
+
+- 从已发布Profile复制为草稿；
+- 查看字段级diff和依赖hash变化；
+- 回滚为历史版本的新副本；
+- 显示旧证据因何失效；
+- 拒绝使用已不存在、hash不匹配或证据层级不足的依赖。
+
+失效规则至少覆盖：控制器源码或参数变化使其MIL/SIL/codegen证据失效；生成代码或adapter
+变化使runtime证据失效；地图坐标合同、碰撞资产或车辆数变化使场景运行证据失效；纯显示
+布局变化不得无理由使控制性能证据失效。
+
+### 6.6 显示降级与会话恢复
+
+UE、RViz、MWORKS结果查看器和录像器均是可选显示/证据消费者。显示会话状态与runtime状态
+分离：
+
+```text
+unprepared -> prepared -> attached -> healthy
+                         -> degraded -> detached
+```
+
+UE或RViz启动失败时，Flight Console必须显示具体失败原因并允许runtime继续；显示重连消费
+最新状态或同一run回放，不向ROS/Gazebo反压。录像失败只降低媒体证据等级，不改变飞行结果。
+但当前Profile若把某显示证据声明为人工验收硬门禁，则run结束后状态为`review_required`，
+不能静默升级为accepted。
+
+### 6.7 部署拓扑与传感器扩展边界
+
+第一版部署拓扑是Windows上的Model Studio、Flight Console和UE，加WSL Ubuntu-20.04中的
+ROS1/Gazebo/PX4/MAVROS。Orchestrator接口不得假定所有进程永久位于同一主机；运行描述中
+预留`host_id`、`clock_domain`、`transport`、`endpoint`和`latency_budget_ms`，为后续独立UE
+渲染机、远程Gazebo、HIL和真机保留兼容路径。
+
+`SensorProfile`继续作为可扩展注册接口，至少能描述MID360、IMU、GPS、定高、RGB/Depth
+Camera和真机USB Camera的频率、噪声、延迟、外参、frame与来源。当前Goal不实现视觉闭环，
+但GUI、Profile和数据合同不得把传感器集合硬编码为MID360-only。
+
 ## 7. 最终用户端到端操作流程
 
 ### 7.1 模型设计、MIL和SIL
@@ -395,11 +587,37 @@ GUI进程、显示进程和控制进程必须解耦；任何GUI或显示故障�
 已验收Profile的普通演示可以从Flight Console直接开始“环境预检”，不强制每次重跑MIL/SIL；
 新增控制器、修改控制组合、参数或生成代码时必须从Model Studio完整进入。
 
+### 7.5 基线对比与比赛展示
+
+Model Studio必须提供固定的实验对比入口，而不是要求用户手工打开多份结果。对比组只允许
+选择场景、任务、车辆数、状态源、扰动/故障和评价Profile一致的run；不一致字段必须显式
+标出，默认不得计算控制器优劣结论。
+
+第一版标准对比为：
+
+```text
+官方PID或冻结基线
+  vs
+选定改进控制器/增强链
+
+相同ScenarioProfile
+相同Reference/MissionProfile
+相同Disturbance/FaultProfile与随机种子
+相同EvaluationProfile
+```
+
+标准指标至少包括XYZ和姿态RMSE、峰值误差、稳态误差、超调、调节时间、控制能量、任务
+完成率、安全介入次数、故障检测/恢复时间。每个指标可追溯到原始信号、计算版本和run证据；
+界面动画和UE视频只作为并列展示，不参与数值排名。比较结果可以生成比赛图表和摘要，但
+不得自动改写控制器状态或把单场最好结果升级为普遍结论。
+
 ## 8. 实施阶段与验收
 
 ### D0 文档与现状冻结
 
 - 本文、功能矩阵、数据契约和目录边界完成；
+- 统一运行状态机、按钮权限、幂等重连、遥测字典、注入事务和证据失效规则完成；
+- 基线对比指标、显示降级和第一版部署拓扑完成；
 - 明确哪些现有控制器用于第一条纵向闭环；
 - 不修改并行控制器任务文件。
 
@@ -665,3 +883,5 @@ Results/ui_platform/     PoC、测试、截图、延迟和验收包
 6. 控制器和3至9机禁用逻辑由机器状态驱动；
 7. 3至9机编队完成逐级可行性研究和有界运行验证；
 8. 所有任务自有改动完成测试、精确提交、推送和上游验证。
+9. 两个GUI遵循同一运行状态机、遥测字典、注入事务和幂等恢复合同；
+10. Model Studio能对满足同场景约束的基线与改进run生成可追溯指标对比。
