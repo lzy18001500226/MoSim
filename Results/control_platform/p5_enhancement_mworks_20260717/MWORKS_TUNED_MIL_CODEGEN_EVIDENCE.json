@@ -1,0 +1,56 @@
+{
+  "schema": "mosim.control_platform.p5_tuned_mworks_mil.v1",
+  "status": "passed",
+  "source": "MWORKS_MCP_LIVE",
+  "created_at": "2026-07-17T01:03:23.273255+00:00",
+  "bridge_model": "MoSim_P5_Enhancement_CFunction_Sysblock",
+  "bridge_check_model": true,
+  "fixtures": {
+    "MoSim_P5_L1_ADAPTIVE_MIL": {
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "feature": "observer_state_x",
+      "feature_value_at_end": -2.4301310167952974
+    },
+    "MoSim_P5_AWFF_MIL": {
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "feature": "compensation_x",
+      "feature_value_at_end": 1.5
+    },
+    "MoSim_P5_COMPLETE_ADRC_MIL": {
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "feature": "observer_state_x",
+      "feature_value_at_end": -3.8975125307248235
+    },
+    "MoSim_P5_STANDARDIZED_INDI_MIL": {
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "feature": "compensation_x",
+      "feature_value_at_end": 0.35
+    },
+    "MoSim_P5_PARAMETER_SCHEDULING_MIL": {
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "feature": "effective_gain_scale",
+      "feature_value_at_end": 1.35
+    },
+    "MoSim_P5_ILC_MIL": {
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "feature": "compensation_x",
+      "feature_value_at_end": 1.2209858524848942
+    }
+  },
+  "generate_model_code": true,
+  "generated_code_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p5_enhancement_mworks_20260717\\generated_c\\MoSim_P5_Enhancement_CFunction_Sysblock",
+  "live_mworks_touched": true,
+  "claim_boundary": "Tuned fixed-size model CheckModel, MIL, and official GenerateModelCode evidence; SIL and Gazebo runtime are separate gates."
+}

@@ -1,0 +1,20 @@
+{
+  "schema": "mosim.control_platform.p5_generated_sil.v1",
+  "status": "passed",
+  "controllers": [
+    "l1_adaptive",
+    "awff",
+    "complete_adrc",
+    "standardized_indi",
+    "parameter_scheduling",
+    "ilc"
+  ],
+  "controller_count": 6,
+  "compared_columns_per_controller": 22,
+  "max_abs_difference": 0.0,
+  "tolerance": 1e-12,
+  "official_codegen": "MWORKS GenerateModelCode",
+  "failure_count": 0,
+  "failures": [],
+  "claim_ceiling": "Official MWORKS-generated C is numerically equivalent to the project source for six fixed-size enhancement cases; Gazebo runtime remains a separate gate."
+}

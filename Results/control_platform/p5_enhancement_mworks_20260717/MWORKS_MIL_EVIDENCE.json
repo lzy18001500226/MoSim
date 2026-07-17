@@ -1,0 +1,33 @@
+{
+  "schema": "mosim.control_platform.p5_enhancement_mworks_mil.v1",
+  "status": "passed",
+  "source": "MWORKS_MCP_LIVE",
+  "session_port": 49153,
+  "check_model": {
+    "status": "passed",
+    "count": 7,
+    "models": [
+      "MoSim_P5_Enhancement_CFunction_Sysblock",
+      "MoSim_P5_L1_ADAPTIVE_MIL",
+      "MoSim_P5_AWFF_MIL",
+      "MoSim_P5_COMPLETE_ADRC_MIL",
+      "MoSim_P5_STANDARDIZED_INDI_MIL",
+      "MoSim_P5_PARAMETER_SCHEDULING_MIL",
+      "MoSim_P5_ILC_MIL"
+    ]
+  },
+  "mil": {
+    "status": "passed",
+    "count": 6,
+    "feature_values_at_end": {
+      "l1_adaptive.observer_state_x": -1.5779958030202195,
+      "awff.compensation_x": 1.5,
+      "complete_adrc.observer_state_x": -5.62740046961434,
+      "standardized_indi.compensation_x": 0.35,
+      "parameter_scheduling.effective_gain_scale": 1.35,
+      "ilc.compensation_x": 1.2209858524848942
+    }
+  },
+  "normalized_thrust_at_end": 0.4060596300551886,
+  "claim_boundary": "Live MWORKS CheckModel and MIL evidence. Distinct feature outputs prove each selected branch executed; generated-C SIL and Gazebo runtime are separate gates."
+}

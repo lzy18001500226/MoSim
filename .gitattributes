@@ -39,5 +39,8 @@ Results/control_platform/p3_sliding_mode_mworks_20260716/** -whitespace
 Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json -whitespace
 Results/control_platform/p4_mpc_mworks_20260716/** -whitespace
 Results/control_platform/p4_mpc_source_20260716/P4_MPC_SOURCE_GATE.json -whitespace
+Results/control_platform/p5_enhancement_mworks_20260717/** -whitespace
+Results/control_platform/p5_enhancement_source_20260717/P5_ENHANCEMENT_SOURCE_GATE.json -whitespace
+Results/control_platform/p5_enhancement_source_20260717/gate.stdout.txt -whitespace
 Results/g9/dfbc_high_order_attitude_thrust_v1/g95_static_gate_20260630_082713/RUN_MANIFEST.json -whitespace
 Results/g9/dfbc_smooth_robust_attitude_thrust_v1/g96_static_gate_20260630_082713/RUN_MANIFEST.json -whitespace

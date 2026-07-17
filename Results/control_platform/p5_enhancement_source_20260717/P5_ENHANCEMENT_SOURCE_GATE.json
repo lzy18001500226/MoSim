@@ -1,0 +1,34 @@
+{
+  "schema": "mosim.control_platform.p5_enhancement_gate.v1",
+  "status": "passed",
+  "controllers": [
+    "l1_adaptive",
+    "awff",
+    "complete_adrc",
+    "standardized_indi",
+    "parameter_scheduling",
+    "ilc"
+  ],
+  "controller_count": 6,
+  "failure_count": 0,
+  "fixed_size_state": {
+    "ilc_phase_bins": 64,
+    "axes": 3
+  },
+  "runtime_started": false,
+  "external_gate_decisions": {
+    "fuzzy_anfis_compensation": {
+      "decision": "deferred",
+      "reason": "No frozen ANFIS premise/consequent artifact, dataset hash, or held-out benchmark exists."
+    },
+    "rbf_nn_disturbance_compensation": {
+      "decision": "deferred",
+      "reason": "No frozen RBF centers, widths, weights, dataset hash, or held-out disturbance benchmark exists."
+    },
+    "rl_gain_scheduling_residual_policy": {
+      "decision": "deferred",
+      "reason": "No frozen policy artifact, training manifest, safety envelope, or independent fallback benchmark exists."
+    }
+  },
+  "claim_ceiling": "Six deterministic fixed-size enhancement cores pass source and lifecycle checks. MWORKS MIL, generated C/SIL, and Gazebo runtime remain pending."
+}

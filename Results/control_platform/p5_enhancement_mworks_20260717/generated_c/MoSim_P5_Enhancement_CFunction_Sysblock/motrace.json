@@ -1,0 +1,2103 @@
+{
+    "id": "MoSim_P5_Enhancement_CFunction_Sysblock",
+    "entities": [
+        {
+            "id": "-cFunction",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 27,
+                            "begin column": 1,
+                            "end row": 35,
+                            "end column": 32
+                        },
+                        {
+                            "begin row": 35,
+                            "begin column": 65,
+                            "end row": 35,
+                            "end column": 67
+                        },
+                        {
+                            "begin row": 35,
+                            "begin column": 89,
+                            "end row": 35,
+                            "end column": 91
+                        },
+                        {
+                            "begin row": 35,
+                            "begin column": 121,
+                            "end row": 35,
+                            "end column": 123
+                        },
+                        {
+                            "begin row": 35,
+                            "begin column": 153,
+                            "end row": 36,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 36,
+                            "begin column": 33,
+                            "end row": 36,
+                            "end column": 35
+                        },
+                        {
+                            "begin row": 36,
+                            "begin column": 65,
+                            "end row": 36,
+                            "end column": 67
+                        },
+                        {
+                            "begin row": 36,
+                            "begin column": 97,
+                            "end row": 36,
+                            "end column": 99
+                        },
+                        {
+                            "begin row": 36,
+                            "begin column": 129,
+                            "end row": 36,
+                            "end column": 131
+                        },
+                        {
+                            "begin row": 36,
+                            "begin column": 174,
+                            "end row": 37,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 37,
+                            "begin column": 46,
+                            "end row": 37,
+                            "end column": 48
+                        },
+                        {
+                            "begin row": 37,
+                            "begin column": 91,
+                            "end row": 37,
+                            "end column": 93
+                        },
+                        {
+                            "begin row": 37,
+                            "begin column": 133,
+                            "end row": 38,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 38,
+                            "begin column": 43,
+                            "end row": 38,
+                            "end column": 45
+                        },
+                        {
+                            "begin row": 38,
+                            "begin column": 85,
+                            "end row": 38,
+                            "end column": 87
+                        },
+                        {
+                            "begin row": 38,
+                            "begin column": 127,
+                            "end row": 38,
+                            "end column": 129
+                        },
+                        {
+                            "begin row": 38,
+                            "begin column": 169,
+                            "end row": 39,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 39,
+                            "begin column": 43,
+                            "end row": 39,
+                            "end column": 45
+                        },
+                        {
+                            "begin row": 39,
+                            "begin column": 89,
+                            "end row": 39,
+                            "end column": 91
+                        },
+                        {
+                            "begin row": 39,
+                            "begin column": 135,
+                            "end row": 40,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 40,
+                            "begin column": 47,
+                            "end row": 40,
+                            "end column": 49
+                        },
+                        {
+                            "begin row": 40,
+                            "begin column": 82,
+                            "end row": 40,
+                            "end column": 84
+                        },
+                        {
+                            "begin row": 40,
+                            "begin column": 124,
+                            "end row": 40,
+                            "end column": 126
+                        },
+                        {
+                            "begin row": 40,
+                            "begin column": 161,
+                            "end row": 41,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 41,
+                            "begin column": 30,
+                            "end row": 41,
+                            "end column": 32
+                        },
+                        {
+                            "begin row": 41,
+                            "begin column": 64,
+                            "end row": 41,
+                            "end column": 66
+                        },
+                        {
+                            "begin row": 41,
+                            "begin column": 102,
+                            "end row": 41,
+                            "end column": 104
+                        },
+                        {
+                            "begin row": 41,
+                            "begin column": 136,
+                            "end row": 42,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 42,
+                            "begin column": 46,
+                            "end row": 42,
+                            "end column": 48
+                        },
+                        {
+                            "begin row": 42,
+                            "begin column": 91,
+                            "end row": 42,
+                            "end column": 93
+                        },
+                        {
+                            "begin row": 42,
+                            "begin column": 119,
+                            "end row": 42,
+                            "end column": 121
+                        },
+                        {
+                            "begin row": 42,
+                            "begin column": 146,
+                            "end row": 43,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 43,
+                            "begin column": 46,
+                            "end row": 43,
+                            "end column": 51
+                        },
+                        {
+                            "begin row": 43,
+                            "begin column": 92,
+                            "end row": 43,
+                            "end column": 97
+                        },
+                        {
+                            "begin row": 43,
+                            "begin column": 138,
+                            "end row": 44,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 44,
+                            "begin column": 46,
+                            "end row": 44,
+                            "end column": 51
+                        },
+                        {
+                            "begin row": 44,
+                            "begin column": 91,
+                            "end row": 44,
+                            "end column": 96
+                        },
+                        {
+                            "begin row": 44,
+                            "begin column": 138,
+                            "end row": 45,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 45,
+                            "begin column": 50,
+                            "end row": 45,
+                            "end column": 55
+                        },
+                        {
+                            "begin row": 45,
+                            "begin column": 100,
+                            "end row": 45,
+                            "end column": 105
+                        },
+                        {
+                            "begin row": 45,
+                            "begin column": 150,
+                            "end row": 46,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 46,
+                            "begin column": 50,
+                            "end row": 46,
+                            "end column": 55
+                        },
+                        {
+                            "begin row": 46,
+                            "begin column": 100,
+                            "end row": 46,
+                            "end column": 105
+                        },
+                        {
+                            "begin row": 46,
+                            "begin column": 150,
+                            "end row": 47,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 47,
+                            "begin column": 42,
+                            "end row": 47,
+                            "end column": 47
+                        },
+                        {
+                            "begin row": 47,
+                            "begin column": 84,
+                            "end row": 47,
+                            "end column": 89
+                        },
+                        {
+                            "begin row": 47,
+                            "begin column": 126,
+                            "end row": 47,
+                            "end column": 131
+                        },
+                        {
+                            "begin row": 47,
+                            "begin column": 170,
+                            "end row": 48,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 48,
+                            "begin column": 44,
+                            "end row": 48,
+                            "end column": 49
+                        },
+                        {
+                            "begin row": 48,
+                            "begin column": 88,
+                            "end row": 48,
+                            "end column": 93
+                        },
+                        {
+                            "begin row": 48,
+                            "begin column": 136,
+                            "end row": 49,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 49,
+                            "begin column": 37,
+                            "end row": 49,
+                            "end column": 42
+                        },
+                        {
+                            "begin row": 49,
+                            "begin column": 76,
+                            "end row": 50,
+                            "end column": 4
+                        }
+                    ]
+                }
+            ],
+            "entities": [
+                {
+                    "id": "cFunction-controller_id",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 35,
+                                    "begin column": 32,
+                                    "end row": 35,
+                                    "end column": 65
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-dt",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 35,
+                                    "begin column": 67,
+                                    "end row": 35,
+                                    "end column": 89
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-position_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 35,
+                                    "begin column": 91,
+                                    "end row": 35,
+                                    "end column": 121
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-position_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 35,
+                                    "begin column": 123,
+                                    "end row": 35,
+                                    "end column": 153
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-position_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 36,
+                                    "begin column": 3,
+                                    "end row": 36,
+                                    "end column": 33
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-velocity_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 36,
+                                    "begin column": 35,
+                                    "end row": 36,
+                                    "end column": 65
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-velocity_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 36,
+                                    "begin column": 67,
+                                    "end row": 36,
+                                    "end column": 97
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-velocity_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 36,
+                                    "begin column": 99,
+                                    "end row": 36,
+                                    "end column": 129
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-measured_acceleration_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 36,
+                                    "begin column": 131,
+                                    "end row": 36,
+                                    "end column": 174
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-measured_acceleration_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 37,
+                                    "begin column": 3,
+                                    "end row": 37,
+                                    "end column": 46
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-measured_acceleration_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 37,
+                                    "begin column": 48,
+                                    "end row": 37,
+                                    "end column": 91
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_position_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 37,
+                                    "begin column": 93,
+                                    "end row": 37,
+                                    "end column": 133
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_position_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 38,
+                                    "begin column": 3,
+                                    "end row": 38,
+                                    "end column": 43
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_position_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 38,
+                                    "begin column": 45,
+                                    "end row": 38,
+                                    "end column": 85
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_velocity_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 38,
+                                    "begin column": 87,
+                                    "end row": 38,
+                                    "end column": 127
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_velocity_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 38,
+                                    "begin column": 129,
+                                    "end row": 38,
+                                    "end column": 169
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_velocity_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 39,
+                                    "begin column": 3,
+                                    "end row": 39,
+                                    "end column": 43
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_acceleration_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 39,
+                                    "begin column": 45,
+                                    "end row": 39,
+                                    "end column": 89
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_acceleration_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 39,
+                                    "begin column": 91,
+                                    "end row": 39,
+                                    "end column": 135
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_acceleration_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 40,
+                                    "begin column": 3,
+                                    "end row": 40,
+                                    "end column": 47
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_yaw",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 40,
+                                    "begin column": 49,
+                                    "end row": 40,
+                                    "end column": 82
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-trajectory_phase_bin",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 40,
+                                    "begin column": 84,
+                                    "end row": 40,
+                                    "end column": 124
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-repeat_complete",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 40,
+                                    "begin column": 126,
+                                    "end row": 40,
+                                    "end column": 161
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-mass_kg",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 41,
+                                    "begin column": 3,
+                                    "end row": 41,
+                                    "end column": 30
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-gravity_mps2",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 41,
+                                    "begin column": 32,
+                                    "end row": 41,
+                                    "end column": 64
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-hover_percentage",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 41,
+                                    "begin column": 66,
+                                    "end row": 41,
+                                    "end column": 102
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-max_tilt_rad",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 41,
+                                    "begin column": 104,
+                                    "end row": 41,
+                                    "end column": 136
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-min_collective_thrust_n",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 42,
+                                    "begin column": 3,
+                                    "end row": 42,
+                                    "end column": 46
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-max_collective_thrust_n",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 42,
+                                    "begin column": 48,
+                                    "end row": 42,
+                                    "end column": 91
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-enable",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 42,
+                                    "begin column": 93,
+                                    "end row": 42,
+                                    "end column": 119
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reset",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 42,
+                                    "begin column": 121,
+                                    "end row": 42,
+                                    "end column": 146
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_attitude_w",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 43,
+                                    "begin column": 5,
+                                    "end row": 43,
+                                    "end column": 46
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_attitude_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 43,
+                                    "begin column": 51,
+                                    "end row": 43,
+                                    "end column": 92
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_attitude_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 43,
+                                    "begin column": 97,
+                                    "end row": 43,
+                                    "end column": 138
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_attitude_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 44,
+                                    "begin column": 5,
+                                    "end row": 44,
+                                    "end column": 46
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-normalized_thrust",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 44,
+                                    "begin column": 51,
+                                    "end row": 44,
+                                    "end column": 91
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-collective_thrust_n",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 44,
+                                    "begin column": 96,
+                                    "end row": 44,
+                                    "end column": 138
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_acceleration_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 45,
+                                    "begin column": 5,
+                                    "end row": 45,
+                                    "end column": 50
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_acceleration_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 45,
+                                    "begin column": 55,
+                                    "end row": 45,
+                                    "end column": 100
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_acceleration_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 45,
+                                    "begin column": 105,
+                                    "end row": 45,
+                                    "end column": 150
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-nominal_acceleration_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 46,
+                                    "begin column": 5,
+                                    "end row": 46,
+                                    "end column": 50
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-nominal_acceleration_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 46,
+                                    "begin column": 55,
+                                    "end row": 46,
+                                    "end column": 100
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-nominal_acceleration_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 46,
+                                    "begin column": 105,
+                                    "end row": 46,
+                                    "end column": 150
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-compensation_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 47,
+                                    "begin column": 5,
+                                    "end row": 47,
+                                    "end column": 42
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-compensation_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 47,
+                                    "begin column": 47,
+                                    "end row": 47,
+                                    "end column": 84
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-compensation_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 47,
+                                    "begin column": 89,
+                                    "end row": 47,
+                                    "end column": 126
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-observer_state_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 47,
+                                    "begin column": 131,
+                                    "end row": 47,
+                                    "end column": 170
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-observer_state_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 48,
+                                    "begin column": 5,
+                                    "end row": 48,
+                                    "end column": 44
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-observer_state_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 48,
+                                    "begin column": 49,
+                                    "end row": 48,
+                                    "end column": 88
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-effective_gain_scale",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 48,
+                                    "begin column": 93,
+                                    "end row": 48,
+                                    "end column": 136
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-saturated",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 49,
+                                    "begin column": 5,
+                                    "end row": 49,
+                                    "end column": 37
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-status_code",
+                    "codes": [
+                        {
+                            "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 49,
+                                    "begin column": 42,
+                                    "end row": 49,
+                                    "end column": 76
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                }
+            ]
+        },
+        {
+            "id": "-controller_id_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 35,
+                            "begin column": 32,
+                            "end row": 35,
+                            "end column": 65
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-dt_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 35,
+                            "begin column": 67,
+                            "end row": 35,
+                            "end column": 89
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-position_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 35,
+                            "begin column": 91,
+                            "end row": 35,
+                            "end column": 121
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-position_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 35,
+                            "begin column": 123,
+                            "end row": 35,
+                            "end column": 153
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-position_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 36,
+                            "begin column": 3,
+                            "end row": 36,
+                            "end column": 33
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-velocity_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 36,
+                            "begin column": 35,
+                            "end row": 36,
+                            "end column": 65
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-velocity_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 36,
+                            "begin column": 67,
+                            "end row": 36,
+                            "end column": 97
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-velocity_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 36,
+                            "begin column": 99,
+                            "end row": 36,
+                            "end column": 129
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-measured_acceleration_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 36,
+                            "begin column": 131,
+                            "end row": 36,
+                            "end column": 174
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-measured_acceleration_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 37,
+                            "begin column": 3,
+                            "end row": 37,
+                            "end column": 46
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-measured_acceleration_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 37,
+                            "begin column": 48,
+                            "end row": 37,
+                            "end column": 91
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_position_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 37,
+                            "begin column": 93,
+                            "end row": 37,
+                            "end column": 133
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_position_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 38,
+                            "begin column": 3,
+                            "end row": 38,
+                            "end column": 43
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_position_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 38,
+                            "begin column": 45,
+                            "end row": 38,
+                            "end column": 85
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_velocity_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 38,
+                            "begin column": 87,
+                            "end row": 38,
+                            "end column": 127
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_velocity_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 38,
+                            "begin column": 129,
+                            "end row": 38,
+                            "end column": 169
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_velocity_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 39,
+                            "begin column": 3,
+                            "end row": 39,
+                            "end column": 43
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_acceleration_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 39,
+                            "begin column": 45,
+                            "end row": 39,
+                            "end column": 89
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_acceleration_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 39,
+                            "begin column": 91,
+                            "end row": 39,
+                            "end column": 135
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_acceleration_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 40,
+                            "begin column": 3,
+                            "end row": 40,
+                            "end column": 47
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_yaw_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 40,
+                            "begin column": 49,
+                            "end row": 40,
+                            "end column": 82
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-trajectory_phase_bin_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 40,
+                            "begin column": 84,
+                            "end row": 40,
+                            "end column": 124
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-repeat_complete_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 40,
+                            "begin column": 126,
+                            "end row": 40,
+                            "end column": 161
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-mass_kg_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 41,
+                            "begin column": 3,
+                            "end row": 41,
+                            "end column": 30
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-gravity_mps2_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 41,
+                            "begin column": 32,
+                            "end row": 41,
+                            "end column": 64
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-hover_percentage_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 41,
+                            "begin column": 66,
+                            "end row": 41,
+                            "end column": 102
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-max_tilt_rad_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 41,
+                            "begin column": 104,
+                            "end row": 41,
+                            "end column": 136
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-min_collective_thrust_n_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 42,
+                            "begin column": 3,
+                            "end row": 42,
+                            "end column": 46
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-max_collective_thrust_n_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 42,
+                            "begin column": 48,
+                            "end row": 42,
+                            "end column": 91
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-enable_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 42,
+                            "begin column": 93,
+                            "end row": 42,
+                            "end column": 119
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reset_in",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 42,
+                            "begin column": 121,
+                            "end row": 42,
+                            "end column": 146
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_attitude_w_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 43,
+                            "begin column": 5,
+                            "end row": 43,
+                            "end column": 46
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_attitude_x_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 43,
+                            "begin column": 51,
+                            "end row": 43,
+                            "end column": 92
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_attitude_y_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 43,
+                            "begin column": 97,
+                            "end row": 43,
+                            "end column": 138
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_attitude_z_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 44,
+                            "begin column": 5,
+                            "end row": 44,
+                            "end column": 46
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-normalized_thrust_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 44,
+                            "begin column": 51,
+                            "end row": 44,
+                            "end column": 91
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-collective_thrust_n_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 44,
+                            "begin column": 96,
+                            "end row": 44,
+                            "end column": 138
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_acceleration_x_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 45,
+                            "begin column": 5,
+                            "end row": 45,
+                            "end column": 50
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_acceleration_y_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 45,
+                            "begin column": 55,
+                            "end row": 45,
+                            "end column": 100
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_acceleration_z_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 45,
+                            "begin column": 105,
+                            "end row": 45,
+                            "end column": 150
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-nominal_acceleration_x_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 46,
+                            "begin column": 5,
+                            "end row": 46,
+                            "end column": 50
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-nominal_acceleration_y_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 46,
+                            "begin column": 55,
+                            "end row": 46,
+                            "end column": 100
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-nominal_acceleration_z_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 46,
+                            "begin column": 105,
+                            "end row": 46,
+                            "end column": 150
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-compensation_x_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 47,
+                            "begin column": 5,
+                            "end row": 47,
+                            "end column": 42
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-compensation_y_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 47,
+                            "begin column": 47,
+                            "end row": 47,
+                            "end column": 84
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-compensation_z_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 47,
+                            "begin column": 89,
+                            "end row": 47,
+                            "end column": 126
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-observer_state_x_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 47,
+                            "begin column": 131,
+                            "end row": 47,
+                            "end column": 170
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-observer_state_y_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 48,
+                            "begin column": 5,
+                            "end row": 48,
+                            "end column": 44
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-observer_state_z_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 48,
+                            "begin column": 49,
+                            "end row": 48,
+                            "end column": 88
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-effective_gain_scale_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 48,
+                            "begin column": 93,
+                            "end row": 48,
+                            "end column": 136
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-saturated_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 49,
+                            "begin column": 5,
+                            "end row": 49,
+                            "end column": 37
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-status_code_out",
+            "codes": [
+                {
+                    "file": "MoSim_P5_Enhancement_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 49,
+                            "begin column": 42,
+                            "end row": 49,
+                            "end column": 76
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        }
+    ]
+}

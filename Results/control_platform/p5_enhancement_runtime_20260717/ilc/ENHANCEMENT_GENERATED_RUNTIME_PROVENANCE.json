@@ -1,0 +1,30 @@
+{
+  "schema": "mosim.enhancement_generated_runtime_provenance.v1",
+  "status": "passed",
+  "backend": "enhancement_attitude_thrust",
+  "controller_id": 6,
+  "controller_name": "ilc",
+  "generated_model_name": "MoSim_P5_Enhancement_CFunction_Sysblock",
+  "generated_code_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p5_enhancement_mworks_20260717/generated_c/MoSim_P5_Enhancement_CFunction_Sysblock",
+  "generated_code_sha256": "086d5b72f456247e8ea3b455547ffbb922e8f18603b74e680d3ee197b51fa388",
+  "generated_file_sha256": {
+    "MoSim_P5_Enhancement_CFunction_Sysblock.c": "d516c48808d626f740ecec46b59249e0431cccc49d66b803aef7aba90ce47c05",
+    "MoSim_P5_Enhancement_CFunction_Sysblock.h": "a3f90d28ae4f8075ca4fea25b4fb316336d35e1ed7e3f3b2335269dd8674fc16",
+    "MoSim_P5_Enhancement_CFunction_Sysblock_data.c": "eb28c0fae59fe04fdaa13cc1ae9df930e0b741074cd84ad71192ee3271175d17",
+    "MoSim_P5_Enhancement_CFunction_Sysblock_private.h": "d25849126623ad74a14d4c327ad3be7246328d11d357c384f6b7986e422f5a48",
+    "extern_inc/momodel_extern_ince1.c": "05445726144e7585e7832e51c4b388bd58f6d8c7f4d687e20ccc8977abd401a8"
+  },
+  "build_manifest": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p5_enhancement_mworks_20260717/BUILD_MANIFEST.json",
+  "sil_report": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p5_enhancement_mworks_20260717/sil/P5_GENERATED_SIL_EQUIVALENCE.json",
+  "runtime_loaded_symbol": "MoSim_P5_Enhancement_CFunction_Sysblock::Step",
+  "provenance_level": "runtime_acknowledged",
+  "build_backend_definition": "MOSIM_PX4CTRL_GENERATED_BACKEND_ENHANCEMENT_ATTITUDE_THRUST",
+  "cmake_backend": "enhancement_attitude_thrust",
+  "cmake_generated_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p5_enhancement_mworks_20260717/generated_c/MoSim_P5_Enhancement_CFunction_Sysblock",
+  "px4ctrl_executable_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/lib/px4ctrl/px4ctrl_node",
+  "px4ctrl_executable_sha256": "a6afdc0f8b1434670231adf5e1b2ba319c2dd68e248e7e21cd8f2dcc25b4ea2f",
+  "binary_generated_symbol_present": true,
+  "runtime_ack": "[mosim_generated_runtime] backend=mworks_generated_c build_backend=enhancement_attitude_thrust build_backend_definition=MOSIM_PX4CTRL_GENERATED_BACKEND_ENHANCEMENT_ATTITUDE_THRUST generated_model_name=MoSim_P5_Enhancement_CFunction_Sysblock runtime_loaded_symbol=MoSim_P5_Enhancement_CFunction_Sysblock::Step controller_id=6 controller_name=ilc",
+  "runtime_log": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p5_enhancement_runtime_20260717/ilc/px4ctrl.log",
+  "errors": []
+}

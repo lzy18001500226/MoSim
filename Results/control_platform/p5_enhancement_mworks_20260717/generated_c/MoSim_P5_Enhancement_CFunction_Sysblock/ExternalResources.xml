@@ -1,0 +1,11 @@
+<ExternalResources>
+    <BasePaths>
+        <BasePath name="&gt;root&lt;"></BasePath>
+    </BasePaths>
+    <IncludeDirectory>
+        <Path>C:/Users/HP/Documents/MWORKS</Path>
+    </IncludeDirectory>
+    <SearchPaths>
+        <Path>C:/Users/HP/Documents/MWORKS</Path>
+    </SearchPaths>
+</ExternalResources>
