@@ -260,6 +260,11 @@ apps/flight_console/mosim/
 - 运行事件时间线、指标摘要和证据目录；
 - 返回Model Studio并打开对应run。
 
+首版工作区同时预留“快速实验”和“算法与训练”入口。快速实验隐藏ROS topic、launch和终端
+细节，只暴露地图、任务、车辆、算法、控制链、扰动、故障和运行按钮；算法与训练入口由
+注册表驱动，展示经典规划器、学习规划器、训练后端、传感器Profile和策略产物。未通过门禁
+的YOPO、Isaac训练和深度相机控件保持`visible_disabled`，而不是从界面删除。
+
 ### 4.4 最终主工作区
 
 Flight Console默认直接进入MoSim工作区，传统QGC Fly/Plan页面放入高级入口，不作为比赛
@@ -271,6 +276,20 @@ Flight Console默认直接进入MoSim工作区，传统QGC Fly/Plan页面放入�
 中央: UE主视图 | 自由/环绕/跟随视角 | 距离调节 | 飞机切换
 右侧: 遥测 | 扰动注入 | 故障注入 | 安全/Failsafe | ACK
 底部: 事件时间线 | 告警 | 指标摘要 | 截图/录像 | 证据目录
+```
+
+右侧工作区可以切换：
+
+```text
+Quick Experiment
+  -> Profile摘要、运行控制、注入、安全动作、结果入口
+
+Algorithm Lab
+  -> 任务算法、传感器路线、参数集、对照算法、运行证据
+
+Learning Training
+  -> Isaac后端、训练场景、速度范围、环境数、步数、seed、随机化、导出格式
+  -> 生成配置、开始训练、训练曲线、导出、注册、Gazebo验证、经典规划器对比
 ```
 
 UE是主展示视图；点云RViz和三维栅格RViz通过独立按钮受控打开，不常驻挤占中央区域。
@@ -334,9 +353,50 @@ blocked/planned/audit_only
 
 车辆数量改变必须生成新的Scenario/Profile/hash，不得在运行中无审计热增减。
 
+### 5.3 学习规划器、训练后端与传感器
+
+```text
+YOPO + Isaac Sim/Isaac Lab + sunray150_depth_camera_v1
+  -> visible_disabled(training_backend_or_sensor_gate_pending)
+
+FUEL + fuel_mid360_fastlio_v1
+  -> 按当前证据状态决定enabled或visible_disabled
+
+FUEL + fuel_upstream_depth_camera_v1
+  -> visible_disabled(depth_camera_runtime_gate_pending)
+```
+
+禁用控件必须显示算法仍缺少的传感器、训练后端、策略产物、运行Adapter或Gazebo证据，以及
+解锁所需的具体门禁。MID360不得冒充深度相机；未来LiDAR range-image YOPO必须注册为新的
+传感器/算法Profile，不能复用深度相机Profile的证据。
+
 ## 6. Orchestrator最低职责
 
 现有离线适配器只作为契约基线。真实Orchestrator必须实现：
+
+### 6.0 统一Action API
+
+Flight Console按钮、Model Studio按钮和MoSim Agent不得各自维护一套脚本入口。三者只能提交
+同一类结构化Action对象：
+
+```text
+prepare_experiment
+train_policy
+export_policy
+register_policy
+run_mil
+generate_code
+start_gazebo
+start_mission
+apply_injection
+stop_run
+analyze_result
+```
+
+每个Action至少包含`action_type`、`request_id`、`profile_id/hash`、`expected_run_state`、
+`parameters`、`confirmation_policy`和`requested_by`。Orchestrator统一执行Profile Validator、
+权限检查、幂等、ACK、日志和证据关联。Agent只能填表和提交相同Action，不能绕过禁用状态、
+直接启动训练进程、发布轨迹或调用ROS/PX4危险命令。
 
 ```text
 validate_experiment_profile
@@ -572,6 +632,11 @@ Windows/WSL及不同语言进程之间的本机IPC实现，不代表网页、浏
 `SensorProfile`继续作为可扩展注册接口，至少能描述MID360、IMU、GPS、定高、RGB/Depth
 Camera和真机USB Camera的频率、噪声、延迟、外参、frame与来源。当前Goal不实现视觉闭环，
 但GUI、Profile和数据合同不得把传感器集合硬编码为MID360-only。
+
+训练后端同样作为可发现的本地或远端Backend接入。`train_policy`只引用
+`TrainingBackendRegistry`和冻结训练Profile；`export_policy`生成受控Policy Artifact；
+`register_policy`完成hash、Schema、归一化、延迟预算和回退规划器校验后，策略才能进入
+MissionAlgorithmRegistry。训练进程存在不等于策略可用于飞行。
 
 ## 7. 最终用户端到端操作流程
 
@@ -846,6 +911,10 @@ Flight Console:
 
 Neural PID、Neural-SMC、RBF/NN和RL调度是控制算法模块，进入Registry、模型、codegen和
 runtime证据链；AI助手是人机协作和实验分析层，两者不得混报。
+
+助手与GUI共用第6.0节Action API。自然语言“训练YOPO并在Gazebo验证20个seed”必须先转换为
+可见的训练Profile、策略导出Profile和验证矩阵；用户确认后依次提交`train_policy`、
+`export_policy`、`register_policy`和`start_gazebo`，不能在对话层拼接隐式命令。
 
 ### 9.2 上下文、建议、确认和审计
 

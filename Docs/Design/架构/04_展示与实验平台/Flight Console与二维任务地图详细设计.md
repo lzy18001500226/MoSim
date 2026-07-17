@@ -195,6 +195,29 @@ QGC退出不得导致控制链断开。
 中央显示模式保留`UE 3D`、`2D Mission Map`和`UE + 2D split view`。小地图展开默认覆盖
 中央区域而不是弹出第二个无管理窗口；需要对照时再使用split view。
 
+### 4.3 快速实验、算法实验与学习训练
+
+Flight Console右侧工作区提供三个由注册表驱动的模式：
+
+| 模式 | 面向对象 | 核心操作 |
+| --- | --- | --- |
+| Quick Experiment | 普通演示与重复实验 | 选择已发布Profile，准备、启动、注入、停止、分析 |
+| Algorithm Lab | 规划/控制算法对比 | 选择任务算法、传感器路线、参数集、对照算法和验证矩阵 |
+| Learning Training | 学习规划器开发 | 生成训练配置、启动Isaac训练、查看曲线、导出并注册策略、运行Gazebo验证 |
+
+YOPO训练表单至少包含：算法、训练Backend、Factory/随机障碍场景、前向深度相机Profile、
+速度范围、并行环境数量、训练步数、seed、Domain Randomization和PyTorch/ONNX/TensorRT导出
+格式。对应按钮固定为：
+
+```text
+生成训练配置 | 开始Isaac训练 | 打开训练曲线
+导出ONNX/TensorRT | 注册策略 | 运行Gazebo验证 | 对比经典规划器
+```
+
+按钮只生成统一Action对象，不直接启动进程。YOPO、Isaac或深度相机尚未满足当前Profile门禁
+时，控件保持可见但禁用，并显示`disabled_reason`、缺失依赖和解锁动作。界面不得用静态
+训练曲线、示例策略或伪ACK替代真实后端。
+
 ## 5. 二维地图工具与任务语义
 
 ### 5.1 工具栏
@@ -250,6 +273,9 @@ Geofence
 
 - 用户绘制`mission_area`、高度范围、起点和结束条件；
 - FUEL等算法只读取实时占据地图和允许边界；
+- FUEL分别提供`fuel_mid360_fastlio_v1`工程路线和
+  `fuel_upstream_depth_camera_v1`上游深度相机复现路线；
+- 两条路线的传感器、参数、地图前端和证据完全隔离，不允许自动互相替代；
 - 地图显示frontier、候选收益、当前B样条、已探索/未知区域和覆盖率定义；
 - 算法停止、无frontier或输入过期必须显示原因，不能只让飞机图标停住。
 
@@ -271,6 +297,14 @@ Geofence
 - 地图编辑的是编队中心/Leader路线、队形类型、间距和朝向规则；
 - 同时显示中心参考、slot、成员实际位置和编队误差；
 - 单机目标线不能冒充编队轨迹，三机同时到达也不能冒充编队保持通过。
+
+#### 学习局部规划
+
+- YOPO读取前向深度图、状态和目标方向，通过Runtime Adapter输出候选轨迹与评分；
+- 界面显示选中轨迹、工程模式下的候选轨迹、置信/评分、推理延迟、策略版本/hash和回退状态；
+- YOPO提议必须经过Trajectory Validator和Trajectory Server，不能直接发布电机命令；
+- 深度相机失效、输入过期、推理超时或轨迹校验失败时，显示具体原因并执行Profile声明的
+  经典规划器回退或安全悬停，不静默沿用过期轨迹。
 
 ## 6. 草稿、校验与发布
 
@@ -400,6 +434,7 @@ Gazebo/PX4/MAVROS状态
 | 实际轨迹 | 开 | 连续实线，可选全量或尾迹长度 |
 | 当前规划轨迹 | 开 | 与实际轨迹不同颜色/线型，显示有效期 |
 | 候选轨迹 | 关 | 仅工程模式或算法声明时开启 |
+| 学习规划诊断 | 按算法 | 推理延迟、评分/置信、artifact hash、输入新鲜度和fallback |
 | Frontier/Coverage | 按能力 | 统一图例、定义和统计边界 |
 | Assignment/Formation | 按任务 | owner颜色、slot和连接关系 |
 | 点云/占据投影 | 关 | 只作二维摘要，不替代RViz三维审核 |
@@ -477,6 +512,10 @@ apps/flight_console/mosim/custom/
 - QGC退出或重启：runtime不受影响，重启后按`run_id`重新附着；
 - Orchestrator不可达：界面只读，不缓存危险命令等待恢复后自动发送；
 - 未知探索缺少frontier/coverage：显示`not_available`，不得生成示意数据。
+- 训练Backend不可达：训练按钮禁用，已注册经典规划与飞行功能不受影响；
+- 深度相机Profile未通过：YOPO和FUEL深度路线禁用，MID360路线不自动替代其输入合同；
+- 策略Schema/hash/归一化不匹配：禁止加载，显示期望值与实际值；
+- 推理超时或候选轨迹无一通过校验：执行声明的回退规划器或安全悬停并记录结构化事件。
 
 ## 11. 实施阶段
 
@@ -516,6 +555,13 @@ apps/flight_console/mosim/custom/
 - 新增城市或园区资产包和坐标合同；
 - 不修改`MoSimMapView`核心页面完成地图切换；
 - 室外地图再决定是否启用GeoTIFF/离线瓦片和ENU/WGS84转换。
+
+### Q6 学习规划工作区与YOPO门禁
+
+- 接入TrainingBackendRegistry、PolicyArtifactRegistry和学习规划器能力过滤；
+- 先保持YOPO、Isaac和前向深度相机控件`visible_disabled`，验证原因与解锁动作显示；
+- 深度相机、训练、导出、注册、推理Adapter和Gazebo验证逐门通过后再开放按钮；
+- 验证YOPO当前/候选轨迹、延迟、artifact hash和fallback图层，不允许策略绕过轨迹校验器。
 
 ## 12. 完成定义
 
