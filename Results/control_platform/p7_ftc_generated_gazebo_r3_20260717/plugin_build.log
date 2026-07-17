@@ -1,0 +1,13 @@
+[100%] Built target mosim_gazebo_ftc_actuator_plugin
+Base path: /mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2
+Source space: /mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2/src
+Build space: /mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2/build
+Devel space: /mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2/devel
+Install space: /mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2/install
+####
+#### Running command: "make cmake_check_build_system" in "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2/build"
+####
+####
+#### Running command: "make -j28 -l28" in "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2/build"
+####
+/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2/devel/lib/libmosim_gazebo_ftc_actuator_plugin.so

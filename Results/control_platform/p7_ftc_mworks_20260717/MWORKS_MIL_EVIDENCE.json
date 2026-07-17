@@ -1,0 +1,36 @@
+{
+  "schema": "mosim.p7_ftc_mworks_mil_evidence.v1",
+  "status": "passed",
+  "source": "MWORKS_MCP_LIVE",
+  "live_mworks_touched": true,
+  "sysplorer_port": 49153,
+  "check_model": {
+    "bridge": true,
+    "fixture_count": 6,
+    "all_passed": true
+  },
+  "fixtures": [
+    {"mode": "fdi", "action": 1, "isolated_mask": 1, "fault_count": 1, "eta_hat": [0.563977255124845, 1.0, 1.0, 1.0]},
+    {"mode": "passive_ftc", "action": 2, "isolated_mask": 1, "fault_count": 1, "eta_hat": [0.7577651417360249, 1.0, 1.0, 1.0]},
+    {"mode": "active_ftc", "action": 2, "isolated_mask": 2, "fault_count": 1, "eta_hat": [1.0, 0.563977255124845, 1.0, 1.0]},
+    {"mode": "fault_aware_control_allocation", "action": 2, "isolated_mask": 4, "fault_count": 1, "eta_hat": [1.0, 1.0, 0.563977255124845, 1.0]},
+    {"mode": "single_motor_safe_landing", "action": 3, "isolated_mask": 8, "fault_count": 1, "eta_hat": [1.0, 1.0, 1.0, 0.25]},
+    {"mode": "multi_fault_estimation_reconfiguration", "action": 2, "isolated_mask": 5, "fault_count": 2, "eta_hat": [0.563977255124845, 1.0, 0.61242422677764, 1.0]}
+  ],
+  "official_codegen": "Results/control_platform/p7_ftc_mworks_20260717/generate_model_code_result.json",
+  "sil_equivalence": "Results/control_platform/p7_ftc_mworks_20260717/sil/P7_GENERATED_SIL_EQUIVALENCE.json",
+  "graphical_reuse_basis": [
+    "Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+    "Config/controllers/l1_multi_fault_isolation_sysblock/default.yaml"
+  ],
+  "mworks_phase_screenshots": [
+    "Results/control_platform/p7_ftc_mworks_20260717/screenshots/check_simulate/45064_0xC0E78_MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL - Sysplorer _教育版_.png",
+    "Results/control_platform/p7_ftc_mworks_20260717/screenshots/result_plot/45064_0xFD0DF8_MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL - 结果查看器.png"
+  ],
+  "mworks_phase_observations": [
+    "Sysplorer simulation log shows the 0.25 s Euler fixture completed with 25 fixed 0.01 s steps and no model error.",
+    "The result plot shows eta_hat_1 and eta_hat_3 decreasing before fault_count and action switch to 2 after the persistence threshold.",
+    "No login, license, authorization, crash-report, or unknown blocking dialog was observed in the target Sysplorer window."
+  ],
+  "claim_ceiling": "Real Sysplorer MIL plus official generated-C SIL equivalence for deterministic fixtures. This is not yet Gazebo motor-effectiveness injection, PX4 actuator reconstruction, or flight recovery evidence."
+}

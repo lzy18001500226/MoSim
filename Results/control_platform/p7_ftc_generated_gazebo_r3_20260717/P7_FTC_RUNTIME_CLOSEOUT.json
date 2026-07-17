@@ -1,0 +1,9 @@
+{
+  "schema": "mosim.p7.ftc_runtime_closeout.v1",
+  "status": "passed",
+  "basic_gate_exit_code": 0,
+  "coordinator_exit_code": 0,
+  "generated_gate": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_GENERATED_GAZEBO_GATE.json",
+  "basic_gate_result_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/basic_gate",
+  "claim_boundary": "Same-run Gazebo physical motor-effectiveness injection, official MWORKS-generated FTC detection/isolation and L3 actuator takeover through a bounded companion plugin."
+}

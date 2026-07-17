@@ -1,0 +1,86 @@
+{
+  "schema": "mosim.p7_ftc_mworks_build.v1",
+  "bridge_model": "MoSim_P7_FaultTolerantControl_CFunction_Sysblock",
+  "bridge_path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p7_ftc_mworks_20260717\\models\\MoSim_P7_FaultTolerantControl_CFunction_Sysblock.mo",
+  "fixtures": {
+    "fdi": "MoSim_P7_FDI_MIL",
+    "passive_ftc": "MoSim_P7_PASSIVE_FTC_MIL",
+    "active_ftc": "MoSim_P7_ACTIVE_FTC_MIL",
+    "fault_aware_control_allocation": "MoSim_P7_FAULT_AWARE_CONTROL_ALLOCATION_MIL",
+    "single_motor_safe_landing": "MoSim_P7_SINGLE_MOTOR_SAFE_LANDING_MIL",
+    "multi_fault_estimation_reconfiguration": "MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL"
+  },
+  "scenario_overrides": {
+    "fdi": {
+      "response_1": 0.3135
+    },
+    "passive_ftc": {
+      "response_1": 0.4275
+    },
+    "active_ftc": {
+      "response_2": 0.33
+    },
+    "fault_aware_control_allocation": {
+      "response_3": 0.352
+    },
+    "single_motor_safe_landing": {
+      "response_4": 0.118
+    },
+    "multi_fault_estimation_reconfiguration": {
+      "response_1": 0.3135,
+      "response_3": 0.384
+    }
+  },
+  "expected_actions": {
+    "fdi": 1,
+    "passive_ftc": 2,
+    "active_ftc": 2,
+    "fault_aware_control_allocation": 2,
+    "single_motor_safe_landing": 3,
+    "multi_fault_estimation_reconfiguration": 2
+  },
+  "inputs": [
+    "mode_id",
+    "dt",
+    "desired_thrust",
+    "desired_roll",
+    "desired_pitch",
+    "desired_yaw",
+    "response_1",
+    "response_2",
+    "response_3",
+    "response_4",
+    "airborne",
+    "altitude",
+    "enable",
+    "reset"
+  ],
+  "outputs": [
+    "motor_command_1",
+    "motor_command_2",
+    "motor_command_3",
+    "motor_command_4",
+    "eta_hat_1",
+    "eta_hat_2",
+    "eta_hat_3",
+    "eta_hat_4",
+    "achieved_thrust",
+    "achieved_roll",
+    "achieved_pitch",
+    "achieved_yaw",
+    "residual_norm",
+    "isolated_mask",
+    "fault_count",
+    "action",
+    "allocation_saturated",
+    "status_code"
+  ],
+  "sample_time_s": 0.01,
+  "stop_time_s": 0.25,
+  "fixed_size": true,
+  "reuse_basis": [
+    "Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+    "Config/controllers/l1_multi_fault_isolation_sysblock/default.yaml"
+  ],
+  "claim_boundary": "Equation-bridge plus six persistent fault fixtures. Live CheckModel/MIL, official codegen/SIL and Gazebo actuator evidence are separate gates."
+}

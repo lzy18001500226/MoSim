@@ -1,0 +1,4 @@
+GAZEBO_PLUGIN_PATH /usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2/devel/lib::/opt/mosim_work/sunray_px4/build/px4_sitl_default/build_gazebo-classic
+GAZEBO_MODEL_PATH /usr/share/gazebo-11/models::/opt/mosim_work/sunray_px4/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models
+LD_LIBRARY_PATH /opt/ros/noetic/lib:/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2/devel/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2/devel/lib:/opt/mosim_work/sunray_px4/build/px4_sitl_default/build_gazebo-classic
+/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/basic_gate

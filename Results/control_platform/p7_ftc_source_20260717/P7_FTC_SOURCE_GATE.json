@@ -1,0 +1,90 @@
+{
+  "schema": "mosim.control_platform.p7_ftc_source_gate.v1",
+  "status": "passed",
+  "modes": [
+    "fdi",
+    "passive_ftc",
+    "active_ftc",
+    "fault_aware_control_allocation",
+    "single_motor_safe_landing",
+    "multi_fault_estimation_reconfiguration"
+  ],
+  "mode_count": 6,
+  "fixed_size": true,
+  "dynamic_allocation": false,
+  "rows": [
+    {
+      "mode_id": 1,
+      "mode": "fdi",
+      "action": 1,
+      "isolated_mask": 1,
+      "fault_count": 1,
+      "eta_hat_1": 0.550010324,
+      "eta_hat_2": 1.0,
+      "motor_command_1": 0.57,
+      "achieved_total_thrust": 2.4
+    },
+    {
+      "mode_id": 2,
+      "mode": "passive_ftc",
+      "action": 2,
+      "isolated_mask": 1,
+      "fault_count": 1,
+      "eta_hat_1": 0.750005736,
+      "eta_hat_2": 1.0,
+      "motor_command_1": 0.670588235,
+      "achieved_total_thrust": 2.4
+    },
+    {
+      "mode_id": 3,
+      "mode": "active_ftc",
+      "action": 2,
+      "isolated_mask": 2,
+      "fault_count": 1,
+      "eta_hat_1": 1.0,
+      "eta_hat_2": 0.550010324,
+      "motor_command_1": 0.57,
+      "achieved_total_thrust": 2.350010324
+    },
+    {
+      "mode_id": 4,
+      "mode": "fault_aware_control_allocation",
+      "action": 2,
+      "isolated_mask": 4,
+      "fault_count": 1,
+      "eta_hat_1": 1.0,
+      "eta_hat_2": 1.0,
+      "motor_command_1": 0.57,
+      "achieved_total_thrust": 2.310010324
+    },
+    {
+      "mode_id": 5,
+      "mode": "single_motor_safe_landing",
+      "action": 3,
+      "isolated_mask": 8,
+      "fault_count": 1,
+      "eta_hat_1": 1.0,
+      "eta_hat_2": 1.0,
+      "motor_command_1": 0.105,
+      "achieved_total_thrust": 0.42
+    },
+    {
+      "mode_id": 6,
+      "mode": "multi_fault_estimation_reconfiguration",
+      "action": 2,
+      "isolated_mask": 5,
+      "fault_count": 2,
+      "eta_hat_1": 0.550010324,
+      "eta_hat_2": 1.0,
+      "motor_command_1": 1.0,
+      "achieved_total_thrust": 2.340019501
+    }
+  ],
+  "compile_stderr": "",
+  "run_stderr": "",
+  "reuse_basis": [
+    "Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+    "Config/controllers/l1_multi_fault_isolation_sysblock/default.yaml"
+  ],
+  "claim_ceiling": "Deterministic source scenarios prove the unified FDI/isolation/reallocation contract only; MWORKS generated-C and Gazebo actuator evidence remain separate gates."
+}

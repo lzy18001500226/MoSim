@@ -1,0 +1,20 @@
+{
+  "schema": "mosim.mworks_screenshot_manifest.v1",
+  "source": "MWORKS_GUI_BACKGROUND_CAPTURE",
+  "captures": [
+    {
+      "phase": "check_and_simulate",
+      "path": "Results/control_platform/p7_ftc_mworks_20260717/screenshots/check_simulate/45064_0xC0E78_MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL - Sysplorer _教育版_.png",
+      "width": 2578,
+      "height": 1398,
+      "nonblank": true
+    },
+    {
+      "phase": "result_plot",
+      "path": "Results/control_platform/p7_ftc_mworks_20260717/screenshots/result_plot/45064_0xFD0DF8_MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL - 结果查看器.png",
+      "width": 1708,
+      "height": 921,
+      "nonblank": true
+    }
+  ]
+}
