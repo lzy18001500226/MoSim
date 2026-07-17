@@ -1,0 +1,4 @@
+/mnt/c/Users/HP/Desktop/MoSim/Scripts/control_platform/sliding_mode_attitude_thrust_core.c: In function ‘command_from_acceleration’:
+/mnt/c/Users/HP/Desktop/MoSim/Scripts/control_platform/sliding_mode_attitude_thrust_core.c:158:30: warning: pointers to arrays with different qualifiers are incompatible in ISO C [-Wpedantic]
+  158 |     quaternion_from_rotation(rotation, output->desired_attitude_wxyz);
+      |                              ^~~~~~~~

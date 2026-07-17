@@ -1,0 +1,271 @@
+{
+  "schema": "mosim.sunray_ros1_control_diagnostics.v1",
+  "status": "recorded",
+  "duration_s": 75.0,
+  "uav_ns": "/uav1",
+  "truth_model_name": "uav1",
+  "counts": {
+    "truth": 65826,
+    "gazebo_pose": 21943,
+    "vision_pose": 5605,
+    "local_pose": 3291,
+    "local_odom": 3291,
+    "local_velocity": 3291,
+    "uav_state": 0,
+    "setpoint_raw_local": 0,
+    "target_local": 240,
+    "imu": 3290,
+    "altitude": 0,
+    "extended_state": 329,
+    "fastlio_odom": 0,
+    "fastlio_aligned_odom": 0,
+    "samples": 1295
+  },
+  "hover_like_samples": 0,
+  "hover_like_truth_target_xy_rmse_m": null,
+  "hover_like_truth_target_xy_max_m": null,
+  "hover_like_local_target_xy_rmse_m": null,
+  "hover_like_truth_target_z_rmse_m": null,
+  "hover_like_truth_target_z_mean_abs_m": null,
+  "hover_like_truth_target_z_max_abs_m": null,
+  "hover_like_local_target_z_rmse_m": null,
+  "hover_like_truth_local_z_rmse_m": null,
+  "gazebo_vision_z_rmse_m": 0.0010089253844924595,
+  "gazebo_vision_z_max_abs_m": 0.007854711643335871,
+  "gazebo_local_z_rmse_m": 0.038682810044059615,
+  "gazebo_local_z_max_abs_m": 0.14108523869297696,
+  "vision_local_z_rmse_m": 0.012148564885963723,
+  "vision_local_z_max_abs_m": 0.14108524098992348,
+  "gazebo_fastlio_aligned_xyz_rmse_m": null,
+  "gazebo_fastlio_aligned_xyz_max_m": null,
+  "gazebo_fastlio_aligned_xy_rmse_m": null,
+  "gazebo_fastlio_aligned_xy_max_m": null,
+  "gazebo_fastlio_aligned_z_rmse_m": null,
+  "gazebo_fastlio_aligned_z_max_abs_m": null,
+  "gazebo_fastlio_aligned_z_first_offset_m": null,
+  "gazebo_fastlio_aligned_z_delta_rmse_m": null,
+  "gazebo_fastlio_aligned_z_delta_max_abs_m": null,
+  "gazebo_fastlio_aligned_metric_note": "xyz/z are absolute and offset-sensitive; xy and z_delta separate horizontal error from initial-frame height offset.",
+  "gazebo_fastlio_raw_xyz_rmse_m": null,
+  "gazebo_fastlio_raw_xyz_max_m": null,
+  "first_row": {
+    "t": 15.134,
+    "truth": {
+      "t": 15.133,
+      "x": -4.986130561251018e-13,
+      "y": -1.5389702665399902e-08,
+      "z": 0.03500812633831626,
+      "vx": -7.629292929873031e-08,
+      "vy": -1.4450601094843253e-09,
+      "vz": 7.12316795165313e-08,
+      "roll": 4.280841187473941e-07,
+      "pitch": -6.196973443897985e-11,
+      "yaw": 6.077593103027415e-13
+    },
+    "gazebo_pose": {
+      "t": 15.131,
+      "x": 3.502602254046996e-13,
+      "y": -1.5387907790394384e-08,
+      "z": 0.03500812620593005,
+      "vx": 7.433941667346665e-08,
+      "vy": -5.465876089737911e-10,
+      "vz": 6.077340559640376e-08,
+      "roll": 4.2803418741525287e-07,
+      "pitch": -3.838161778720283e-11,
+      "yaw": 6.082675444515625e-13
+    },
+    "vision_pose": null,
+    "local_pose": {
+      "t": 15.131,
+      "stamp": 15.132,
+      "age_s": -0.0009999999999994458,
+      "x": -0.0006331269978545606,
+      "y": -0.012683868408203125,
+      "z": -0.03454246371984482,
+      "roll": 0.0007332237389574512,
+      "pitch": 0.000911543190559555,
+      "yaw": 0.05188151451300905
+    },
+    "local_odom": {
+      "t": 15.131,
+      "stamp": 15.132,
+      "age_s": -0.0009999999999994458,
+      "frame_id": "map",
+      "child_frame_id": "base_link",
+      "x": -0.0006331269978545606,
+      "y": -0.012683868408203125,
+      "z": -0.03454246371984482,
+      "vx": -0.00321484025734068,
+      "vy": -0.018740668255931663,
+      "vz": -0.08093872260459502,
+      "roll": 0.0007332237389574512,
+      "pitch": 0.000911543190559555,
+      "yaw": 0.05188151451300905
+    },
+    "local_velocity": {
+      "t": 15.131,
+      "stamp": 15.132,
+      "age_s": -0.0009999999999994458,
+      "vx": -0.0023154253140091896,
+      "vy": -0.018826723098754883,
+      "vz": -0.08094947785139084
+    },
+    "uav_state": null,
+    "setpoint_raw_local": null,
+    "target_local": null,
+    "imu": null,
+    "altitude": null,
+    "extended_state": null,
+    "fastlio_odom": null,
+    "fastlio_aligned_odom": null,
+    "truth_minus_local": {
+      "x": 0.0006331269973559475,
+      "y": 0.01268385301850046,
+      "z": 0.06955059005816108
+    },
+    "gazebo_minus_local": {
+      "x": 0.0006331269982048208,
+      "y": 0.012683853020295335,
+      "z": 0.06955058992577487
+    }
+  },
+  "last_row": {
+    "t": 80.882,
+    "truth": {
+      "t": 80.875,
+      "x": 0.044647889534464504,
+      "y": 0.05816104943385762,
+      "z": 0.03599706112581848,
+      "vx": 1.032190058978301e-08,
+      "vy": -1.4278823200405146e-08,
+      "vz": -7.414964335838991e-08,
+      "roll": -5.663947167825244e-07,
+      "pitch": -1.2216218289432867e-05,
+      "yaw": 0.04458314074323164
+    },
+    "gazebo_pose": {
+      "t": 80.88,
+      "x": 0.04464788955905105,
+      "y": 0.05816104936949912,
+      "z": 0.03599706081514066,
+      "vx": 3.885779905483842e-09,
+      "vy": -1.719608636469415e-08,
+      "vz": -7.945522513977399e-08,
+      "roll": -5.645788243704446e-07,
+      "pitch": -1.2215615770382467e-05,
+      "yaw": 0.0445831407432052
+    },
+    "vision_pose": {
+      "t": 80.873,
+      "stamp": 80.872,
+      "age_s": 0.0010000000000047748,
+      "x": 0.04464789107441902,
+      "y": 0.05816105008125305,
+      "z": 0.03599706292152405,
+      "roll": -5.681878027503964e-07,
+      "pitch": -1.221769919898034e-05,
+      "yaw": 0.044583140743261314
+    },
+    "local_pose": {
+      "t": 80.872,
+      "stamp": 80.872,
+      "age_s": 0.0,
+      "x": 0.04063193127512932,
+      "y": 0.05567505583167076,
+      "z": 0.018938453868031502,
+      "roll": 0.006680586621090856,
+      "pitch": -0.0005481617779093732,
+      "yaw": 0.0423164943080881
+    },
+    "local_odom": {
+      "t": 80.872,
+      "stamp": 80.872,
+      "age_s": 0.0,
+      "frame_id": "map",
+      "child_frame_id": "base_link",
+      "x": 0.04063193127512932,
+      "y": 0.05567505583167076,
+      "z": 0.018938453868031502,
+      "vx": -0.0024569591337539514,
+      "vy": -0.009753808552924454,
+      "vz": -0.024509950879577937,
+      "roll": 0.006680586621090856,
+      "pitch": -0.0005481617779093732,
+      "yaw": 0.0423164943080881
+    },
+    "local_velocity": {
+      "t": 80.874,
+      "stamp": 80.872,
+      "age_s": 0.001999999999995339,
+      "vx": -0.0020356127060949802,
+      "vy": -0.009684635326266289,
+      "vz": -0.024575907737016678
+    },
+    "uav_state": null,
+    "setpoint_raw_local": null,
+    "target_local": {
+      "t": 39.053,
+      "frame": 1,
+      "type_mask": 63,
+      "x": NaN,
+      "y": NaN,
+      "z": NaN,
+      "vx": NaN,
+      "vy": NaN,
+      "vz": NaN,
+      "afx": 0.0,
+      "afy": 0.0,
+      "afz": -100.0,
+      "yaw": -4.784663542523049e-05,
+      "yaw_rate": -0.0
+    },
+    "imu": {
+      "t": 80.873,
+      "roll": 0.006761717380485263,
+      "pitch": -0.0005198863460542868,
+      "yaw": 0.04220232828524729
+    },
+    "altitude": null,
+    "extended_state": {
+      "t": 80.748,
+      "vtol_state": 0,
+      "landed_state": 2
+    },
+    "fastlio_odom": null,
+    "fastlio_aligned_odom": null,
+    "truth_minus_target": {
+      "x": NaN,
+      "y": NaN,
+      "z": NaN
+    },
+    "truth_target_xy_error": NaN,
+    "local_minus_target": {
+      "x": NaN,
+      "y": NaN,
+      "z": NaN
+    },
+    "local_target_xy_error": NaN,
+    "truth_minus_local": {
+      "x": 0.004015958259335185,
+      "y": 0.0024859936021868617,
+      "z": 0.017058607257786976
+    },
+    "gazebo_minus_vision": {
+      "x": -1.515367969995296e-09,
+      "y": -7.11753933568815e-10,
+      "z": -2.1063833871570736e-09
+    },
+    "gazebo_minus_local": {
+      "x": 0.004015958283921733,
+      "y": 0.002485993537828357,
+      "z": 0.01705860694710916
+    },
+    "vision_minus_local": {
+      "x": 0.004015959799289703,
+      "y": 0.0024859942495822906,
+      "z": 0.017058609053492546
+    }
+  },
+  "samples_jsonl": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/integral_smc/control_diagnostics_samples.jsonl",
+  "interrupted": false
+}

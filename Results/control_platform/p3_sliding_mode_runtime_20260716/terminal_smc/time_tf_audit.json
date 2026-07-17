@@ -1,0 +1,155 @@
+{
+  "schema": "mosim.sunray_ros1_time_tf_audit.v1",
+  "duration_requested_s": 75.0,
+  "duration_wall_s": 75.04062342643738,
+  "use_sim_time": true,
+  "wall_time_stats": {
+    "count": 1578,
+    "first": 1784224033.5760055,
+    "last": 1784224108.566511,
+    "elapsed_s": 74.99050545692444,
+    "avg_hz": 21.029328851581752,
+    "min_delta_s": -2.0633461475372314,
+    "max_delta_s": 0.05155348777770996,
+    "max_positive_gap_s": 0.05155348777770996,
+    "backward_count": 2,
+    "backward_examples": [
+      {
+        "index": 512,
+        "previous": 1784224059.2314975,
+        "current": 1784224057.1681514,
+        "delta_s": -2.0633461475372314
+      },
+      {
+        "index": 1159,
+        "previous": 1784224089.6081367,
+        "current": 1784224087.577533,
+        "delta_s": -2.0306036472320557
+      }
+    ]
+  },
+  "rospy_time_now_stats": {
+    "count": 1578,
+    "first": 13.517,
+    "last": 79.453,
+    "elapsed_s": 65.936,
+    "avg_hz": 23.917131764134915,
+    "min_delta_s": 0.0,
+    "max_delta_s": 0.05099999999999483,
+    "max_positive_gap_s": 0.05099999999999483,
+    "backward_count": 0,
+    "backward_examples": []
+  },
+  "clock_topic_stats": {
+    "count": 65984,
+    "first": 13.486,
+    "last": 79.522,
+    "elapsed_s": 66.036,
+    "avg_hz": 999.1974074747108,
+    "min_delta_s": 0.000999999999990564,
+    "max_delta_s": 0.007000000000005002,
+    "max_positive_gap_s": 0.007000000000005002,
+    "backward_count": 0,
+    "backward_examples": []
+  },
+  "header_topics": {
+    "/uav1/livox/imu": {
+      "stamp_stats": {
+        "count": 13197,
+        "first": 13.514,
+        "last": 79.494,
+        "elapsed_s": 65.98,
+        "avg_hz": 200.0,
+        "min_delta_s": 0.0049999999999954525,
+        "max_delta_s": 0.005000000000009663,
+        "max_positive_gap_s": 0.005000000000009663,
+        "backward_count": 0,
+        "backward_examples": []
+      },
+      "unique_frames": [
+        "livox_mid360_1::base_link"
+      ]
+    },
+    "/uav1/livox/lidar": {
+      "stamp_stats": {
+        "count": 1320,
+        "first": 13.531,
+        "last": 79.481,
+        "elapsed_s": 65.94999999999999,
+        "avg_hz": 20.000000000000004,
+        "min_delta_s": 0.045999999999999375,
+        "max_delta_s": 0.054999999999999716,
+        "max_positive_gap_s": 0.054999999999999716,
+        "backward_count": 0,
+        "backward_examples": []
+      },
+      "unique_frames": [
+        "uav1/base_link"
+      ]
+    },
+    "/uav1/mavros/local_position/pose": {
+      "stamp_stats": {
+        "count": 3300,
+        "first": 13.516,
+        "last": 79.496,
+        "elapsed_s": 65.97999999999999,
+        "avg_hz": 50.00000000000001,
+        "min_delta_s": 0.017000000000003013,
+        "max_delta_s": 0.022999999999996135,
+        "max_positive_gap_s": 0.022999999999996135,
+        "backward_count": 0,
+        "backward_examples": []
+      },
+      "unique_frames": [
+        "map"
+      ]
+    }
+  },
+  "tf": {
+    "transform_count": 566,
+    "static_transform_count": 3,
+    "child_frame_count": 1,
+    "children_with_backward_time": {}
+  },
+  "log_scan": {
+    "files_scanned": [
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/assembled_model_sync.log",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/external_fusion.log",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/odom_bridge.log",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/px4_param_dump_before_mission.log",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/px4ctrl.log",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/px4ctrl_basic_mission.log",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/sunray_gazebo.log",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/control_diagnostics_stdout.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/external_fusion_process.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/mavros_state_first.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/mavros_stream_rate_request.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/native_odom_probe.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/odom_first.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/px4_param_overrides.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/px4_param_snapshot_before_mission.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/ros_env_snapshot.txt",
+      "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/time_tf_audit_stdout.txt"
+    ],
+    "counts": {
+      "tf_jump_back": 0,
+      "timesync_time_jump": 0,
+      "simulator_mavlink_poll_timeout": 6,
+      "imu_lidar_not_synced": 0
+    },
+    "examples": {
+      "tf_jump_back": [],
+      "timesync_time_jump": [],
+      "simulator_mavlink_poll_timeout": [
+        "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/sunray_gazebo.log: ERROR [simulator_mavlink] poll timeout 0, 25",
+        "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/sunray_gazebo.log: ERROR [simulator_mavlink] poll timeout 0, 25",
+        "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/sunray_gazebo.log: ERROR [simulator_mavlink] poll timeout 0, 25",
+        "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/sunray_gazebo.log: ERROR [simulator_mavlink] poll timeout 0, 25",
+        "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/sunray_gazebo.log: ERROR [simulator_mavlink] poll timeout 0, 25",
+        "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/sunray_gazebo.log: ERROR [simulator_mavlink] poll timeout 0, 25"
+      ],
+      "imu_lidar_not_synced": []
+    }
+  },
+  "interrupted": false
+}

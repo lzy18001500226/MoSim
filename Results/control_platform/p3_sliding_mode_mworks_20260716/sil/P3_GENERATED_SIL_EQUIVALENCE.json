@@ -1,0 +1,20 @@
+{
+  "schema": "mosim.control_platform.p3_generated_sil.v1",
+  "status": "passed",
+  "controllers": [
+    "integral_smc",
+    "terminal_smc",
+    "nonsingular_terminal_smc",
+    "super_twisting_smc",
+    "adaptive_smc",
+    "fuzzy_smc"
+  ],
+  "controller_count": 6,
+  "compared_columns_per_controller": 20,
+  "max_abs_difference": 0.0,
+  "tolerance": 1e-12,
+  "official_codegen": "MWORKS GenerateModelCode",
+  "failure_count": 0,
+  "failures": [],
+  "claim_ceiling": "Official MWORKS-generated C is numerically equivalent to the project core for six deterministic sliding-mode cases; graphical Sysblock equivalence and Gazebo runtime remain separate gates."
+}

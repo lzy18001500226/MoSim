@@ -1,0 +1,30 @@
+{
+  "schema": "mosim.sliding_mode_generated_runtime_provenance.v1",
+  "status": "passed",
+  "backend": "sliding_mode_attitude_thrust",
+  "controller_id": 1,
+  "controller_name": "integral_smc",
+  "generated_model_name": "MoSim_P3_SlidingMode_CFunction_Sysblock",
+  "generated_code_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_mworks_20260716/generated_c/MoSim_P3_SlidingMode_CFunction_Sysblock",
+  "generated_code_sha256": "67873a607822b9620b9a3c419856c7e1a7e03e95294b73c2672452304bdee2e5",
+  "generated_file_sha256": {
+    "MoSim_P3_SlidingMode_CFunction_Sysblock.c": "55ce6961d146c9690f4ece2c9c500a07a4a8a09db10531950817eaa1d1f7cc7c",
+    "MoSim_P3_SlidingMode_CFunction_Sysblock.h": "4c787b83a8f21f246fbcd7ac697a9e326c3ad3e7b37da8ad4cda4d75b7e635a6",
+    "MoSim_P3_SlidingMode_CFunction_Sysblock_data.c": "6086b97be60af47833be3642f194bc852ea89b9d02deb87570a065b0b039b372",
+    "MoSim_P3_SlidingMode_CFunction_Sysblock_private.h": "6c022549d59be78c038c3a74e4d7e5a65fed48b5bcf66a47fd66d0a04265c794",
+    "extern_inc/momodel_extern_ince1.c": "ba16f9a23698f4d1aecaf6f09d8198cb3c74e5086e549e867305447cafdf6276"
+  },
+  "build_manifest": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_mworks_20260716/BUILD_MANIFEST.json",
+  "sil_report": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_mworks_20260716/sil/P3_GENERATED_SIL_EQUIVALENCE.json",
+  "runtime_loaded_symbol": null,
+  "provenance_level": "build_only",
+  "build_backend_definition": "MOSIM_PX4CTRL_GENERATED_BACKEND_SLIDING_MODE_ATTITUDE_THRUST",
+  "cmake_backend": "sliding_mode_attitude_thrust",
+  "cmake_generated_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_mworks_20260716/generated_c/MoSim_P3_SlidingMode_CFunction_Sysblock",
+  "px4ctrl_executable_path": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/p3_sliding_mode_px4ctrl_build_20260716/catkin_ws/devel/lib/px4ctrl/px4ctrl_node",
+  "px4ctrl_executable_sha256": "87b251bfdb69479ab90c52d2fedb04b7e7f2104d95c370d00e2657b21b015801",
+  "binary_generated_symbol_present": true,
+  "runtime_ack": null,
+  "runtime_log": null,
+  "errors": []
+}

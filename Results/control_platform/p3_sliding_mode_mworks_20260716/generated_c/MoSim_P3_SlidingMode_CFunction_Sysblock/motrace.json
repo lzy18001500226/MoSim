@@ -1,0 +1,1863 @@
+{
+    "id": "MoSim_P3_SlidingMode_CFunction_Sysblock",
+    "entities": [
+        {
+            "id": "-cFunction",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 27,
+                            "begin column": 1,
+                            "end row": 34,
+                            "end column": 32
+                        },
+                        {
+                            "begin row": 34,
+                            "begin column": 65,
+                            "end row": 34,
+                            "end column": 67
+                        },
+                        {
+                            "begin row": 34,
+                            "begin column": 89,
+                            "end row": 34,
+                            "end column": 91
+                        },
+                        {
+                            "begin row": 34,
+                            "begin column": 121,
+                            "end row": 34,
+                            "end column": 123
+                        },
+                        {
+                            "begin row": 34,
+                            "begin column": 153,
+                            "end row": 35,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 35,
+                            "begin column": 33,
+                            "end row": 35,
+                            "end column": 35
+                        },
+                        {
+                            "begin row": 35,
+                            "begin column": 65,
+                            "end row": 35,
+                            "end column": 67
+                        },
+                        {
+                            "begin row": 35,
+                            "begin column": 97,
+                            "end row": 35,
+                            "end column": 99
+                        },
+                        {
+                            "begin row": 35,
+                            "begin column": 129,
+                            "end row": 35,
+                            "end column": 131
+                        },
+                        {
+                            "begin row": 35,
+                            "begin column": 171,
+                            "end row": 36,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 36,
+                            "begin column": 43,
+                            "end row": 36,
+                            "end column": 45
+                        },
+                        {
+                            "begin row": 36,
+                            "begin column": 85,
+                            "end row": 36,
+                            "end column": 87
+                        },
+                        {
+                            "begin row": 36,
+                            "begin column": 127,
+                            "end row": 36,
+                            "end column": 129
+                        },
+                        {
+                            "begin row": 36,
+                            "begin column": 169,
+                            "end row": 37,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 37,
+                            "begin column": 43,
+                            "end row": 37,
+                            "end column": 45
+                        },
+                        {
+                            "begin row": 37,
+                            "begin column": 89,
+                            "end row": 37,
+                            "end column": 91
+                        },
+                        {
+                            "begin row": 37,
+                            "begin column": 135,
+                            "end row": 38,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 38,
+                            "begin column": 47,
+                            "end row": 38,
+                            "end column": 49
+                        },
+                        {
+                            "begin row": 38,
+                            "begin column": 82,
+                            "end row": 38,
+                            "end column": 84
+                        },
+                        {
+                            "begin row": 38,
+                            "begin column": 111,
+                            "end row": 38,
+                            "end column": 113
+                        },
+                        {
+                            "begin row": 38,
+                            "begin column": 145,
+                            "end row": 39,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 39,
+                            "begin column": 39,
+                            "end row": 39,
+                            "end column": 41
+                        },
+                        {
+                            "begin row": 39,
+                            "begin column": 73,
+                            "end row": 39,
+                            "end column": 75
+                        },
+                        {
+                            "begin row": 39,
+                            "begin column": 118,
+                            "end row": 39,
+                            "end column": 120
+                        },
+                        {
+                            "begin row": 39,
+                            "begin column": 163,
+                            "end row": 40,
+                            "end column": 3
+                        },
+                        {
+                            "begin row": 40,
+                            "begin column": 29,
+                            "end row": 40,
+                            "end column": 31
+                        },
+                        {
+                            "begin row": 40,
+                            "begin column": 56,
+                            "end row": 40,
+                            "end column": 60
+                        },
+                        {
+                            "begin row": 40,
+                            "begin column": 101,
+                            "end row": 40,
+                            "end column": 106
+                        },
+                        {
+                            "begin row": 40,
+                            "begin column": 147,
+                            "end row": 41,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 41,
+                            "begin column": 46,
+                            "end row": 41,
+                            "end column": 51
+                        },
+                        {
+                            "begin row": 41,
+                            "begin column": 92,
+                            "end row": 41,
+                            "end column": 97
+                        },
+                        {
+                            "begin row": 41,
+                            "begin column": 137,
+                            "end row": 42,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 42,
+                            "begin column": 47,
+                            "end row": 42,
+                            "end column": 52
+                        },
+                        {
+                            "begin row": 42,
+                            "begin column": 97,
+                            "end row": 42,
+                            "end column": 102
+                        },
+                        {
+                            "begin row": 42,
+                            "begin column": 147,
+                            "end row": 43,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 43,
+                            "begin column": 50,
+                            "end row": 43,
+                            "end column": 55
+                        },
+                        {
+                            "begin row": 43,
+                            "begin column": 95,
+                            "end row": 43,
+                            "end column": 100
+                        },
+                        {
+                            "begin row": 43,
+                            "begin column": 140,
+                            "end row": 44,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 44,
+                            "begin column": 45,
+                            "end row": 44,
+                            "end column": 50
+                        },
+                        {
+                            "begin row": 44,
+                            "begin column": 90,
+                            "end row": 44,
+                            "end column": 95
+                        },
+                        {
+                            "begin row": 44,
+                            "begin column": 135,
+                            "end row": 45,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 45,
+                            "begin column": 45,
+                            "end row": 45,
+                            "end column": 50
+                        },
+                        {
+                            "begin row": 45,
+                            "begin column": 98,
+                            "end row": 45,
+                            "end column": 103
+                        },
+                        {
+                            "begin row": 45,
+                            "begin column": 151,
+                            "end row": 46,
+                            "end column": 5
+                        },
+                        {
+                            "begin row": 46,
+                            "begin column": 53,
+                            "end row": 46,
+                            "end column": 58
+                        },
+                        {
+                            "begin row": 46,
+                            "begin column": 90,
+                            "end row": 46,
+                            "end column": 95
+                        },
+                        {
+                            "begin row": 46,
+                            "begin column": 129,
+                            "end row": 47,
+                            "end column": 4
+                        }
+                    ]
+                }
+            ],
+            "entities": [
+                {
+                    "id": "cFunction-controller_id",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 34,
+                                    "begin column": 32,
+                                    "end row": 34,
+                                    "end column": 65
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-dt",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 34,
+                                    "begin column": 67,
+                                    "end row": 34,
+                                    "end column": 89
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-position_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 34,
+                                    "begin column": 91,
+                                    "end row": 34,
+                                    "end column": 121
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-position_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 34,
+                                    "begin column": 123,
+                                    "end row": 34,
+                                    "end column": 153
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-position_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 35,
+                                    "begin column": 3,
+                                    "end row": 35,
+                                    "end column": 33
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-velocity_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 35,
+                                    "begin column": 35,
+                                    "end row": 35,
+                                    "end column": 65
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-velocity_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 35,
+                                    "begin column": 67,
+                                    "end row": 35,
+                                    "end column": 97
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-velocity_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 35,
+                                    "begin column": 99,
+                                    "end row": 35,
+                                    "end column": 129
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_position_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 35,
+                                    "begin column": 131,
+                                    "end row": 35,
+                                    "end column": 171
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_position_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 36,
+                                    "begin column": 3,
+                                    "end row": 36,
+                                    "end column": 43
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_position_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 36,
+                                    "begin column": 45,
+                                    "end row": 36,
+                                    "end column": 85
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_velocity_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 36,
+                                    "begin column": 87,
+                                    "end row": 36,
+                                    "end column": 127
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_velocity_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 36,
+                                    "begin column": 129,
+                                    "end row": 36,
+                                    "end column": 169
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_velocity_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 37,
+                                    "begin column": 3,
+                                    "end row": 37,
+                                    "end column": 43
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_acceleration_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 37,
+                                    "begin column": 45,
+                                    "end row": 37,
+                                    "end column": 89
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_acceleration_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 37,
+                                    "begin column": 91,
+                                    "end row": 37,
+                                    "end column": 135
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_acceleration_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 38,
+                                    "begin column": 3,
+                                    "end row": 38,
+                                    "end column": 47
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reference_yaw",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 38,
+                                    "begin column": 49,
+                                    "end row": 38,
+                                    "end column": 82
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-mass_kg",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 38,
+                                    "begin column": 84,
+                                    "end row": 38,
+                                    "end column": 111
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-gravity_mps2",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 38,
+                                    "begin column": 113,
+                                    "end row": 38,
+                                    "end column": 145
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-hover_percentage",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 39,
+                                    "begin column": 3,
+                                    "end row": 39,
+                                    "end column": 39
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-max_tilt_rad",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 39,
+                                    "begin column": 41,
+                                    "end row": 39,
+                                    "end column": 73
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-min_collective_thrust_n",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 39,
+                                    "begin column": 75,
+                                    "end row": 39,
+                                    "end column": 118
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-max_collective_thrust_n",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 39,
+                                    "begin column": 120,
+                                    "end row": 39,
+                                    "end column": 163
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-enable",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 40,
+                                    "begin column": 3,
+                                    "end row": 40,
+                                    "end column": 29
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-reset",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 40,
+                                    "begin column": 31,
+                                    "end row": 40,
+                                    "end column": 56
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_attitude_w",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 40,
+                                    "begin column": 60,
+                                    "end row": 40,
+                                    "end column": 101
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_attitude_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 40,
+                                    "begin column": 106,
+                                    "end row": 40,
+                                    "end column": 147
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_attitude_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 41,
+                                    "begin column": 5,
+                                    "end row": 41,
+                                    "end column": 46
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_attitude_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 41,
+                                    "begin column": 51,
+                                    "end row": 41,
+                                    "end column": 92
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-normalized_thrust",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 41,
+                                    "begin column": 97,
+                                    "end row": 41,
+                                    "end column": 137
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-collective_thrust_n",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 42,
+                                    "begin column": 5,
+                                    "end row": 42,
+                                    "end column": 47
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_acceleration_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 42,
+                                    "begin column": 52,
+                                    "end row": 42,
+                                    "end column": 97
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_acceleration_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 42,
+                                    "begin column": 102,
+                                    "end row": 42,
+                                    "end column": 147
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-desired_acceleration_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 43,
+                                    "begin column": 5,
+                                    "end row": 43,
+                                    "end column": 50
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-sliding_surface_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 43,
+                                    "begin column": 55,
+                                    "end row": 43,
+                                    "end column": 95
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-sliding_surface_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 43,
+                                    "begin column": 100,
+                                    "end row": 43,
+                                    "end column": 140
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-sliding_surface_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 44,
+                                    "begin column": 5,
+                                    "end row": 44,
+                                    "end column": 45
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-auxiliary_state_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 44,
+                                    "begin column": 50,
+                                    "end row": 44,
+                                    "end column": 90
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-auxiliary_state_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 44,
+                                    "begin column": 95,
+                                    "end row": 44,
+                                    "end column": 135
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-auxiliary_state_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 45,
+                                    "begin column": 5,
+                                    "end row": 45,
+                                    "end column": 45
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-effective_reaching_gain_x",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 45,
+                                    "begin column": 50,
+                                    "end row": 45,
+                                    "end column": 98
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-effective_reaching_gain_y",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 45,
+                                    "begin column": 103,
+                                    "end row": 45,
+                                    "end column": 151
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-effective_reaching_gain_z",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 46,
+                                    "begin column": 5,
+                                    "end row": 46,
+                                    "end column": 53
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-saturated",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 46,
+                                    "begin column": 58,
+                                    "end row": 46,
+                                    "end column": 90
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                },
+                {
+                    "id": "cFunction-status_code",
+                    "codes": [
+                        {
+                            "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                            "positions": [
+                                {
+                                    "begin row": 46,
+                                    "begin column": 95,
+                                    "end row": 46,
+                                    "end column": 129
+                                }
+                            ]
+                        }
+                    ],
+                    "entities": []
+                }
+            ]
+        },
+        {
+            "id": "-controller_id_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 34,
+                            "begin column": 32,
+                            "end row": 34,
+                            "end column": 65
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-dt_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 34,
+                            "begin column": 67,
+                            "end row": 34,
+                            "end column": 89
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-position_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 34,
+                            "begin column": 91,
+                            "end row": 34,
+                            "end column": 121
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-position_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 34,
+                            "begin column": 123,
+                            "end row": 34,
+                            "end column": 153
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-position_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 35,
+                            "begin column": 3,
+                            "end row": 35,
+                            "end column": 33
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-velocity_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 35,
+                            "begin column": 35,
+                            "end row": 35,
+                            "end column": 65
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-velocity_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 35,
+                            "begin column": 67,
+                            "end row": 35,
+                            "end column": 97
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-velocity_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 35,
+                            "begin column": 99,
+                            "end row": 35,
+                            "end column": 129
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_position_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 35,
+                            "begin column": 131,
+                            "end row": 35,
+                            "end column": 171
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_position_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 36,
+                            "begin column": 3,
+                            "end row": 36,
+                            "end column": 43
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_position_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 36,
+                            "begin column": 45,
+                            "end row": 36,
+                            "end column": 85
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_velocity_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 36,
+                            "begin column": 87,
+                            "end row": 36,
+                            "end column": 127
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_velocity_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 36,
+                            "begin column": 129,
+                            "end row": 36,
+                            "end column": 169
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_velocity_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 37,
+                            "begin column": 3,
+                            "end row": 37,
+                            "end column": 43
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_acceleration_x_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 37,
+                            "begin column": 45,
+                            "end row": 37,
+                            "end column": 89
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_acceleration_y_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 37,
+                            "begin column": 91,
+                            "end row": 37,
+                            "end column": 135
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_acceleration_z_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 38,
+                            "begin column": 3,
+                            "end row": 38,
+                            "end column": 47
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reference_yaw_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 38,
+                            "begin column": 49,
+                            "end row": 38,
+                            "end column": 82
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-mass_kg_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 38,
+                            "begin column": 84,
+                            "end row": 38,
+                            "end column": 111
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-gravity_mps2_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 38,
+                            "begin column": 113,
+                            "end row": 38,
+                            "end column": 145
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-hover_percentage_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 39,
+                            "begin column": 3,
+                            "end row": 39,
+                            "end column": 39
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-max_tilt_rad_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 39,
+                            "begin column": 41,
+                            "end row": 39,
+                            "end column": 73
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-min_collective_thrust_n_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 39,
+                            "begin column": 75,
+                            "end row": 39,
+                            "end column": 118
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-max_collective_thrust_n_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 39,
+                            "begin column": 120,
+                            "end row": 39,
+                            "end column": 163
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-enable_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 40,
+                            "begin column": 3,
+                            "end row": 40,
+                            "end column": 29
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-reset_in",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 40,
+                            "begin column": 31,
+                            "end row": 40,
+                            "end column": 56
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_attitude_w_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 40,
+                            "begin column": 60,
+                            "end row": 40,
+                            "end column": 101
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_attitude_x_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 40,
+                            "begin column": 106,
+                            "end row": 40,
+                            "end column": 147
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_attitude_y_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 41,
+                            "begin column": 5,
+                            "end row": 41,
+                            "end column": 46
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_attitude_z_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 41,
+                            "begin column": 51,
+                            "end row": 41,
+                            "end column": 92
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-normalized_thrust_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 41,
+                            "begin column": 97,
+                            "end row": 41,
+                            "end column": 137
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-collective_thrust_n_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 42,
+                            "begin column": 5,
+                            "end row": 42,
+                            "end column": 47
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_acceleration_x_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 42,
+                            "begin column": 52,
+                            "end row": 42,
+                            "end column": 97
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_acceleration_y_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 42,
+                            "begin column": 102,
+                            "end row": 42,
+                            "end column": 147
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-desired_acceleration_z_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 43,
+                            "begin column": 5,
+                            "end row": 43,
+                            "end column": 50
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-sliding_surface_x_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 43,
+                            "begin column": 55,
+                            "end row": 43,
+                            "end column": 95
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-sliding_surface_y_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 43,
+                            "begin column": 100,
+                            "end row": 43,
+                            "end column": 140
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-sliding_surface_z_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 44,
+                            "begin column": 5,
+                            "end row": 44,
+                            "end column": 45
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-auxiliary_state_x_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 44,
+                            "begin column": 50,
+                            "end row": 44,
+                            "end column": 90
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-auxiliary_state_y_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 44,
+                            "begin column": 95,
+                            "end row": 44,
+                            "end column": 135
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-auxiliary_state_z_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 45,
+                            "begin column": 5,
+                            "end row": 45,
+                            "end column": 45
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-effective_reaching_gain_x_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 45,
+                            "begin column": 50,
+                            "end row": 45,
+                            "end column": 98
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-effective_reaching_gain_y_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 45,
+                            "begin column": 103,
+                            "end row": 45,
+                            "end column": 151
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-effective_reaching_gain_z_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 46,
+                            "begin column": 5,
+                            "end row": 46,
+                            "end column": 53
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-saturated_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 46,
+                            "begin column": 58,
+                            "end row": 46,
+                            "end column": 90
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        },
+        {
+            "id": "-status_code_out",
+            "codes": [
+                {
+                    "file": "MoSim_P3_SlidingMode_CFunction_Sysblock.c",
+                    "positions": [
+                        {
+                            "begin row": 46,
+                            "begin column": 95,
+                            "end row": 46,
+                            "end column": 129
+                        }
+                    ]
+                }
+            ],
+            "entities": []
+        }
+    ]
+}

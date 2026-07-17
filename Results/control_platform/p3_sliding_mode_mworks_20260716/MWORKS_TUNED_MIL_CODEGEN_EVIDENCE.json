@@ -1,0 +1,56 @@
+{
+  "schema": "mosim.control_platform.p3_tuned_mworks_mil.v1",
+  "status": "passed",
+  "source": "MWORKS_MCP_LIVE",
+  "created_at": "2026-07-17T01:02:48.748676+00:00",
+  "bridge_model": "MoSim_P3_SlidingMode_CFunction_Sysblock",
+  "bridge_check_model": true,
+  "fixtures": {
+    "MoSim_P3_INTEGRAL_SMC_MIL": {
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "feature": "auxiliary_state_x",
+      "feature_value_at_end": 0.1680000000000001
+    },
+    "MoSim_P3_TERMINAL_SMC_MIL": {
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "feature": "sliding_surface_x",
+      "feature_value_at_end": 3.6722085842034335
+    },
+    "MoSim_P3_NONSINGULAR_TERMINAL_SMC_MIL": {
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "feature": "sliding_surface_x",
+      "feature_value_at_end": 3.671554175279993
+    },
+    "MoSim_P3_SUPER_TWISTING_SMC_MIL": {
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "feature": "auxiliary_state_x",
+      "feature_value_at_end": 0.25200000000000006
+    },
+    "MoSim_P3_ADAPTIVE_SMC_MIL": {
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "feature": "effective_reaching_gain_x",
+      "feature_value_at_end": 0.1084000000000001
+    },
+    "MoSim_P3_FUZZY_SMC_MIL": {
+      "check_model": true,
+      "simulate_model": true,
+      "sample_count": 21,
+      "feature": "effective_reaching_gain_x",
+      "feature_value_at_end": 0.12
+    }
+  },
+  "generate_model_code": true,
+  "generated_code_dir": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p3_sliding_mode_mworks_20260716\\generated_c\\MoSim_P3_SlidingMode_CFunction_Sysblock",
+  "live_mworks_touched": true,
+  "claim_boundary": "Tuned fixed-size model CheckModel, MIL, and official GenerateModelCode evidence; SIL and Gazebo runtime are separate gates."
+}
