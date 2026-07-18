@@ -1,0 +1,15 @@
+{
+  "schema": "mosim.offline_profile_request.v1",
+  "profile_id": "p2_wrench_boundary_fixture_v1",
+  "profile_kind": "platform_fixture",
+  "vehicle_count": 1,
+  "controller_id": "offline_wrench_fixture",
+  "output_variant": "WRENCH",
+  "scenario_id": "climb",
+  "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+  "gust_force": [0.0, 0.0, 0.0],
+  "extra_variables": {
+    "position_error_norm": "position_error_norm"
+  },
+  "claim_boundary": "P2 offline Runner boundary fixture only; not a competition controller, code-generation, online, PX4, Gazebo, ROS1, or flight profile."
+}

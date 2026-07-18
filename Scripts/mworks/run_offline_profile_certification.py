@@ -191,6 +191,7 @@ def csv_summary(path: Path) -> dict[str, Any]:
     if len(rows) <= 10:
         raise ValueError("raw_result_has_too_few_rows")
     last = rows[-1]
+    rotor_speed_text = last.get("rotor_speed_1", "").strip()
     summary = {
         "row_count": len(rows),
         "end_time_s": float(last["time"]),
@@ -198,7 +199,7 @@ def csv_summary(path: Path) -> dict[str, Any]:
         "position_ref_end_m": [float(last["x_ref"]), float(last["y_ref"]), float(last["z_ref"])],
         "position_error_norm_end_m": float(last["position_error_norm"]),
         "attitude_end_rad": [float(last["roll"]), float(last["pitch"]), float(last["yaw"])],
-        "rotor_speed_1_end_rad_s": float(last["rotor_speed_1"]),
+        "rotor_speed_1_end_rad_s": float(rotor_speed_text) if rotor_speed_text else None,
         **({"formation_error_end_m": float(last["formation_error_m"])} if "formation_error_m" in last else {}),
         **({"min_inter_uav_distance_end_m": float(last["min_inter_uav_distance_m"])} if "min_inter_uav_distance_m" in last else {}),
     }

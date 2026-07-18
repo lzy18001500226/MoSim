@@ -44,6 +44,9 @@ Scripts/quality/check_offline_runner_interface_contract.py
 Scripts/quality/check_offline_batch_a_adapter_backlog.py
 Scripts/mworks/generate_offline_profile_wrapper.py
 Scripts/mworks/run_offline_profile_certification.py
+Models/MoSimQuadrotorModel/ExperimentRunner/Adapters/OfflineAttitudeThrustController.mo
+Models/MoSimQuadrotorModel/ExperimentRunner/Adapters/OfflineAttitudeRateAllocator.mo
+Results/control_platform/offline_expansion_goal_20260719/requests/*.json
 Scripts/tests/test_offline_expansion_inventory.py
 Scripts/tests/test_offline_composition_catalog.py
 Scripts/tests/test_offline_profile_wrapper.py
@@ -243,6 +246,31 @@ task. Their exact SHA-256 values are recorded in the checkpoint and those files
 must not be staged by this Goal. P2 remains active until the four native output
 boundaries have same-version simulation/result evidence and the dependency
 state is reproducible from a committed revision.
+
+P2 live checkpoint 2 closes the `ATTITUDE_THRUST` platform fixture's numeric
+gate. The first current run exposed an unstable placeholder inner loop. The
+Goal retained the blocked runs, aligned the offline position/attitude cascade
+and rotor mixer with the accepted official baseline's sign and scale
+conventions, added bounded position PD, altitude PID, attitude PD, and command
+limits, and used 5-second tuning gates before rerunning the full 50-second
+certification. The accepted v6 run ended within 0.008 m of the reference, kept
+maximum tilt below 0.12 rad, produced a current `Result.msr`, passed strict
+metrics, and opened the native result, plot, model, and animation windows.
+
+The canonical checkpoint record is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P2_ATTITUDE_THRUST_LIVE_ACCEPTANCE.json
+```
+
+The certification session's final `shutdown` request timed out after evidence
+capture. `RemoveAnimations` and `RemovePlots` succeeded before the evidence
+windows were opened, but the post-run cleanup retry and read-only probe then
+also timed out. Therefore the control/result acceptance is retained while
+window/session cleanup remains an explicit blocker; no reusable main window
+was force-closed. P2 still requires current `BODY_RATE_THRUST` and `WRENCH`
+same-run evidence, plus a healthy cleanup path, before the platform-core phase
+can close.
 
 P2 static checkpoint 5 records an exact 16-row Batch A Adapter implementation
 queue at `Config/control_platform/offline_batch_a_adapter_backlog.json`. Every

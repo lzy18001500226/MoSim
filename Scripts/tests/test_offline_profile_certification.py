@@ -73,6 +73,15 @@ def test_csv_summary_exposes_terminal_state_for_bounded_gate(tmp_path: Path) -> 
     assert summary["position_error_norm_end_m"] == 0
 
 
+def test_csv_summary_allows_blank_optional_rotor_speed(tmp_path: Path) -> None:
+    raw = tmp_path / "result.csv"
+    header = "time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4,position_error_norm,rotor_speed_1\n"
+    rows = [f"{index},0,0,1,0,0,1,0,0,0,1,-1,1,-1,0,\n" for index in range(11)]
+    raw.write_text(header + "".join(rows), encoding="utf-8")
+    summary = certification.csv_summary(raw)
+    assert summary["rotor_speed_1_end_rad_s"] is None
+
+
 def test_csv_summary_aggregates_three_uav_gate_values(tmp_path: Path) -> None:
     raw = tmp_path / "result.csv"
     header = (

@@ -1,0 +1,66 @@
+{
+  "schema": "mosim.model_studio.offline_boundary_live_acceptance.v1",
+  "recorded_at": "2026-07-19T04:12:26+08:00",
+  "phase": "P2_attitude_thrust_boundary_fixture",
+  "status": "accepted_with_session_cleanup_blocker",
+  "profile_id": "p2_attitude_thrust_boundary_fixture_v1",
+  "run_id": "goal-p2-attitude-thrust-fixture-20260719-v6",
+  "output_variant": "ATTITUDE_THRUST",
+  "evidence_progression": [
+    {"run_id": "goal-p2-attitude-thrust-fixture-20260719-v1", "result": "blocked_unstable_placeholder_and_optional_export_bug"},
+    {"run_id": "goal-p2-attitude-thrust-fixture-20260719-v2", "result": "blocked_mcp_health_timeout_before_model_load"},
+    {"run_id": "goal-p2-attitude-thrust-fixture-20260719-v3", "result": "blocked_modelica_block_array_reference_compile_error"},
+    {"run_id": "goal-p2-attitude-thrust-fixture-20260719-v4", "result": "blocked_roll_feedback_sign_instability"},
+    {"run_id": "goal-p2-attitude-thrust-fixture-20260719-v5", "result": "bounded_control_passed_but_optional_blank_column_invalidated_metrics"},
+    {"run_id": "goal-p2-attitude-thrust-fixture-20260719-v6", "result": "accepted"}
+  ],
+  "acceptance": {
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "raw_result_valid": true,
+    "native_result_present": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "bounded_closed_loop": true
+  },
+  "run_summary": {
+    "duration_s": 50.0,
+    "sample_count": 5001,
+    "position_error_norm_end_m": 0.007032777487663131,
+    "position_rmse_m": 0.5111680419980466,
+    "steady_state_error_m": 0.0993845465796838,
+    "max_position_error_m": 1.0800853209139871,
+    "settling_time_s": 2.85,
+    "max_tilt_rad": 0.11928774174376283,
+    "nan_count": 0
+  },
+  "session_cleanup": {
+    "remove_animations_before_window_evidence": true,
+    "remove_plots_before_window_evidence": true,
+    "shutdown_recorded": false,
+    "post_run_cleanup_retry": "timeout",
+    "post_run_probe": "timeout",
+    "status": "blocked_no_force_close"
+  },
+  "artifacts": {
+    "request": "Results/control_platform/offline_expansion_goal_20260719/requests/p2_attitude_thrust_fixture.json",
+    "certification": "Results/mworks_generated_profiles/goal-p2-attitude-thrust-fixture-20260719-v6/CERTIFICATION.json",
+    "raw_csv": "Results/mworks_generated_profiles/goal-p2-attitude-thrust-fixture-20260719-v6/raw/result.csv",
+    "metrics_json": "Results/mworks_generated_profiles/goal-p2-attitude-thrust-fixture-20260719-v6/metrics/metrics.json",
+    "native_result": "Results/native_result_cache/goal-p2-attitude-thrust-fixture-20260719-v6/MoSimGenerated_goal_p2_attitude_thrust_fixture_20260719_v6/Result.msr",
+    "raw_csv_sha256": "1ae2aae9333890bd9c5f2a2d4b62efb64a50f56ef8bb9f56dfa936249bd4c5a2",
+    "native_result_sha256": "184ce362645a946d83d34db5b10eab65bf321c0bcf6ac47a8b2659c9bf8f1bff"
+  },
+  "source_snapshot": {
+    "attitude_thrust_controller_sha256": "310f99e2b91936027b954bc197460b08fa7cbb22f62362df53b9478a71f9f834",
+    "attitude_rate_allocator_sha256": "d43d6f32d2a3d4404773288be791c574bf02832f64482123c32bfcf28884f54e",
+    "attitude_thrust_runner_sha256": "12563931a772f3da98eccae649a162ebf6d2a07360607e717a25e3b7e097797e",
+    "certification_script_sha256": "d2628e00adc6de7bed6d339eb99b66a58d0c3c33a2d785a0fe3df66c962a392f"
+  },
+  "animation_acceptance_rule": "CreateAnimation succeeds and the native animation window opens; playback is not required.",
+  "claim_boundary": "Real offline MWORKS ATTITUDE_THRUST platform-fixture evidence only. The fixture is not a competition controller and this is not code-generation, PX4, Gazebo, ROS1, mworks_live, or flight evidence.",
+  "next_gate": "Recover bounded session cleanup, then certify BODY_RATE_THRUST and WRENCH without weakening the same-run numeric and result gates."
+}
