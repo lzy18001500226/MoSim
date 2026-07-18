@@ -361,4 +361,14 @@ Results/control_platform/offline_expansion_goal_20260719/P2_WRENCH_LIVE_BLOCKER.
 
 The WRENCH candidate is therefore source/static-only at this checkpoint. It
 must resume from a healthy probe, a single-Runner model check, and a five-second
-numeric gate before the full certification. P2 and the long Goal remain active.
+numeric gate before the full certification. P2 and the long Goal remained
+active at that checkpoint.
+
+Blocked audit checkpoint: the same primary MCP/Sysplorer read-only probe
+timeout then repeated in a third consecutive Goal turn. The final attempt was
+terminated after 30 seconds with no `health`, `ensure`, restart, force restart,
+GUI action, or model operation. Because live WRENCH work cannot proceed without
+bypassing the declared healthy-probe gate, the long Goal transitions to
+`blocked` at this checkpoint. Resume requires an independently restored call
+surface and a fresh successful read-only probe; no accepted earlier boundary is
+revoked, and WRENCH remains `not_evaluated` rather than failed.

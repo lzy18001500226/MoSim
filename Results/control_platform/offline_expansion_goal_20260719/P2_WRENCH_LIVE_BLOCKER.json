@@ -25,6 +25,21 @@
     "result": "no_response_terminated_by_bounded_wait",
     "wait_seconds_approx": 30
   },
+  "repeat_observations": [
+    {
+      "recorded_at": "2026-07-19T04:47:45.5739351+08:00",
+      "operation": "session_manager_probe",
+      "result": "no_response_terminated_by_bounded_wait",
+      "wait_seconds_approx": 30,
+      "recovery_attempted": false
+    }
+  ],
+  "goal_blocked_audit": {
+    "same_condition": "primary_mcp_sysplorer_read_only_probe_timeout",
+    "consecutive_goal_turns": 3,
+    "meaningful_live_progress_without_external_recovery": false,
+    "goal_status_transition": "blocked"
+  },
   "actions_not_taken": [
     "session_ensure",
     "session_restart",
@@ -41,5 +56,5 @@
     "wrench_runner_sha256": "2ad8b5b47ac7111fab1f26ffd09afc15cfff2e385c6844c8b568a1e8c0dbf6bb"
   },
   "claim_ceiling": "The WRENCH candidate passes source-level interface and test gates only. No current MWORKS model check, simulation, Result.msr, metric, plot, or native animation evidence exists for this source snapshot.",
-  "next_live_action": "After a fresh healthy read-only probe, reload the existing packages, check only WrenchRunner, then run a five-second bounded simulation before the full fifty-second certification."
+  "next_live_action": "After the user or an independently authorized infrastructure action restores the Sysplorer MCP call surface, resume the Goal, require a fresh healthy read-only probe, reload the existing packages, check only WrenchRunner, then run a five-second bounded simulation before the full fifty-second certification."
 }
