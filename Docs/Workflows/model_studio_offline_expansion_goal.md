@@ -303,3 +303,39 @@ MWORKS model-quality result, `Result.msr`, metrics, plot, or native animation
 evidence. Resume only after an independently healthy read-only probe, then
 check this Runner alone and use a five-second bounded simulation before the
 full 50-second certification. P2 and the long Goal remain active.
+
+P2 live checkpoint 4 supersedes that blocker for the recorded current
+worktree. A fresh read-only probe returned healthy, the four existing packages
+were loaded without source mutation, and `BodyRateThrustRunner` passed its
+single-model `CheckModel`. A dedicated five-second Wrapper then completed 501
+finite samples with 0.0047 m terminal error, less than 0.00031 rad maximum
+absolute attitude, and no unstable flip.
+
+The unchanged 50-second certification subsequently passed all frozen platform
+gates: 5001 samples, current `Result.msr`, strict metrics, result/plot/model
+windows, the native animation window, bounded closed-loop checks, and
+task-owned session shutdown. Terminal position error was below 0.003 m and
+maximum tilt was below 0.14 rad. The 33 reported constraint samples are retained
+as startup altitude samples below the shared 0.10 m minimum-altitude metric;
+there were zero tilt violations. This fixture is not promoted as a competition
+controller performance result.
+
+The certification subprocess recorded a successful shutdown of its dedicated
+task-owned session. A subsequent read-only probe against the separate primary
+MCP session did not return within 30 seconds and was terminated without
+recovery or window action. This does not invalidate the completed same-run
+artifacts or dedicated shutdown, but it restores the healthy-probe hard gate
+before any `WRENCH` live work begins.
+
+The canonical checkpoint record is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P2_BODY_RATE_THRUST_LIVE_ACCEPTANCE.json
+```
+
+The loaded `QuadrotorControllerBlocks/package.mo` and `package.order` still
+contain concurrent uncommitted changes owned by another task, so their exact
+hashes are recorded and this remains current-worktree evidence rather than a
+frozen-source certification. P2 remains active: `WRENCH` still needs the same
+current model/check/simulation/result/animation proof, and all four boundary
+fixtures need a final cleanup-health reconciliation before phase closure.

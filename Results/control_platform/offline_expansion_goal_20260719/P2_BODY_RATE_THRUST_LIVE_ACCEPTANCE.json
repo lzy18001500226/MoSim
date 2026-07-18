@@ -1,0 +1,80 @@
+{
+  "schema": "mosim.model_studio.offline_boundary_live_acceptance.v1",
+  "recorded_at": "2026-07-19T04:34:08.5682639+08:00",
+  "phase": "P2_body_rate_thrust_boundary_fixture",
+  "status": "accepted_current_worktree",
+  "supersedes": "Results/control_platform/offline_expansion_goal_20260719/P2_BODY_RATE_THRUST_LIVE_BLOCKER.json",
+  "profile_id": "p2_body_rate_thrust_boundary_fixture_v1",
+  "run_id": "goal-p2-body-rate-thrust-fixture-20260719-v1",
+  "output_variant": "BODY_RATE_THRUST",
+  "smoke_gate": {
+    "run_id": "goal-p2-body-rate-thrust-smoke-20260719-v1",
+    "duration_s": 5.0,
+    "sample_count": 501,
+    "position_error_norm_end_m": 0.004637776048225451,
+    "max_position_error_m": 0.7916153991792554,
+    "max_attitude_abs_rad": 0.0003070143502194132,
+    "nonfinite_count": 0,
+    "result": "passed"
+  },
+  "acceptance": {
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "raw_result_valid": true,
+    "native_result_present": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "bounded_closed_loop": true,
+    "task_owned_session_cleanup": true
+  },
+  "run_summary": {
+    "duration_s": 50.0,
+    "sample_count": 5001,
+    "position_error_norm_end_m": 0.002629642895709662,
+    "position_rmse_m": 0.5175468164526861,
+    "steady_state_error_m": 0.12989421608864243,
+    "max_position_error_m": 1.176917798588951,
+    "settling_time_s": 2.85,
+    "max_tilt_rad": 0.13830425788808398,
+    "nan_count": 0,
+    "constraint_violation_count": 33,
+    "altitude_violation_count": 33,
+    "tilt_violation_count": 0
+  },
+  "metric_observation": "All 33 constraint counts are startup samples below the shared 0.10 m minimum-altitude metric; tilt violations are zero. The platform fixture is accepted by the frozen bounded-loop gate, but these counts remain visible and are not reclassified as zero.",
+  "session_cleanup": {
+    "shutdown_recorded": true,
+    "task_owned_session_status": "passed",
+    "post_certification_read_only_probe": "timeout_after_30_seconds",
+    "post_certification_probe_scope": "existing primary MCP session, separate from the certification subprocess dedicated session",
+    "status": "accepted_with_next_batch_probe_gate"
+  },
+  "artifacts": {
+    "request": "Results/control_platform/offline_expansion_goal_20260719/requests/p2_body_rate_thrust_fixture.json",
+    "certification": "Results/mworks_generated_profiles/goal-p2-body-rate-thrust-fixture-20260719-v1/CERTIFICATION.json",
+    "raw_csv": "Results/mworks_generated_profiles/goal-p2-body-rate-thrust-fixture-20260719-v1/raw/result.csv",
+    "metrics_json": "Results/mworks_generated_profiles/goal-p2-body-rate-thrust-fixture-20260719-v1/metrics/metrics.json",
+    "mcp_log": "Results/mworks_generated_profiles/goal-p2-body-rate-thrust-fixture-20260719-v1/logs/mcp.jsonl",
+    "native_result": "Results/native_result_cache/goal-p2-body-rate-thrust-fixture-20260719-v1/MoSimGenerated_goal_p2_body_rate_thrust_fixture_20260719_v1/Result.msr",
+    "certification_sha256": "b870097967583f8bd8cbef0471079d61ee1a9366fd1eae317f7ce27df9313c18",
+    "raw_csv_sha256": "5001961028a9da28d6679ec51c53db2905ecb502fcf6dba021c1e537353b2b3b",
+    "metrics_json_sha256": "bcb2a609d86adbf79beb26a3f1fe80399496d7afd360ca26fe643a66268c6a6f",
+    "mcp_log_sha256": "63a52ecd848ecd6712666b0dd93b8d88a7f36a8b6ae62437d265210b3065dfae",
+    "native_result_sha256": "ab0d8cee29d81579bfcbb638b118e2f0fbfba5115446334c10035a1682a874de"
+  },
+  "source_snapshot": {
+    "body_rate_thrust_controller_sha256": "9f038546499960a3cc7976224d1c7665012574fe0294c7d9be619ce01e226300",
+    "body_rate_allocator_sha256": "e4a660fe273cce5cb9af6cff9d0611de32023e6c1c15b778dbd0e55796a1c9c3",
+    "body_rate_thrust_runner_sha256": "66cf459490dd05e7b92e4bd0280c791a14fcc3c58a6488bb1afdd344bd3f6dd2",
+    "certification_script_sha256": "d2628e00adc6de7bed6d339eb99b66a58d0c3c33a2d785a0fe3df66c962a392f",
+    "controller_blocks_package_sha256": "e9e18a4f08412e96de329d61ee0daf754441cce9dec845669d8b8f24bd87aa1e",
+    "controller_blocks_package_order_sha256": "78d03b8f2d41a3e3ff3f2bafa5b04c8f3e1de63ddebbbbbd24fb197d564fa7d1",
+    "dependency_state": "current_worktree_uncommitted_by_other_task"
+  },
+  "animation_acceptance_rule": "CreateAnimation succeeds and the native animation window opens; playback is not required.",
+  "claim_boundary": "Real offline MWORKS BODY_RATE_THRUST platform-fixture evidence for the recorded current worktree only. It is not a competition-controller performance acceptance, frozen-source certification, code-generation evidence, PX4, Gazebo, ROS1, mworks_live, or flight evidence.",
+  "next_gate": "Obtain a fresh healthy read-only probe before WRENCH, certify that boundary with the same gates, then verify cleanup health across all four boundary fixtures."
+}
