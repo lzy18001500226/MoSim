@@ -1,6 +1,6 @@
 # MoSim Flight Console与二维任务地图详细设计
 
-> 状态：产品与接口冻结设计，2026-07-17。
+> 状态：产品与接口冻结设计，2026-07-18。
 >
 > 本文细化`双GUI与非AI系统闭环实施规划.md`中的Flight Console，并定义
 > `MoSimMapView`的产品行为、任务编辑、坐标合同和QGroundControl复用边界。
@@ -171,7 +171,8 @@ QGC退出不得导致控制链断开。
 
 右上角
   Factory二维任务小地图
-  -> 飞机、朝向、目标、边界、实际/当前规划轨迹
+  -> 飞机位置、机头方向、飞行状态、关键航点、实际轨迹、未来预期轨迹
+  -> 不承担FUEL/Diff边界编辑或frontier等工程诊断图层
   -> 点击展开完整任务地图
 
 右侧
@@ -194,14 +195,38 @@ QGC原生Fly/Mission操作继续拥有解锁、起飞和开始/暂停任务语�
 
 | 状态 | 用途 | 交互 |
 | --- | --- | --- |
-| `mini_monitor` | 右上角态势监视 | 选择飞机、全机适配、跟随、点击展开；禁止复杂编辑 |
+| `mini_monitor` | 右上角实时飞行态势 | 显示飞机位置/方向/状态、关键航点、实际轨迹和未来预期轨迹；选择飞机、全机适配、跟随、点击展开；禁止边界和规划参数编辑 |
 | `expanded_plan` | 运行前任务与边界编辑 | 完整工具栏、图层、任务列表、属性编辑、校验和发布 |
 | `expanded_monitor` | 飞行中二维监控 | 查看实时状态、规划、轨迹、告警；高风险编辑默认锁定 |
 
 中央显示模式保留`UE 3D`、`2D Mission Map`和`UE + 2D split view`。小地图展开默认覆盖
 中央区域而不是弹出第二个无管理窗口；需要对照时再使用split view。
 
-### 4.3 快速实验、算法实验与学习训练
+`mini_monitor`不是缩小版工程诊断地图。它默认只提供驾驶员需要的飞行态势，不显示FUEL
+全部frontier候选、覆盖栅格、Diff内部优化节点或其他高密度调试对象。FUEL、Diff等算法的
+边界、起点、目标、参数和诊断图层统一进入`expanded_plan`；运行后如需复核，再由
+`expanded_monitor`按图层开关显示。
+
+### 4.3 地图轨迹术语与断连行为
+
+Flight Console只向普通操作员暴露两类轨迹：
+
+| 名称 | 含义 | 默认显示 |
+| --- | --- | --- |
+| `actual_trajectory` | 飞机已经真实走过的历史路径 | 开 |
+| `expected_future_trajectory` | 当前任务或规划器从当前位置开始、尚未执行的未来路径及关键航点 | 开 |
+
+界面不再把`reference trajectory`、`planner trajectory`、`current plan`等相近术语同时暴露给
+普通模式。算法内部仍可保留原始字段，但必须由Adapter转换成上述两类显示语义。两条轨迹
+需要视觉可区分，以便判断未来路径和已经走过的路径，但不把它包装成控制器参考/实际误差
+对比工具；详细跟踪误差属于Telemetry、RViz或MWORKS结果查看器。
+
+飞机位置必须来自当前run的新鲜Gazebo/ROS状态，并同时携带`run_id`、`vehicle_id`、
+`frame_id`和时间戳。Gazebo/ROS连接不存在、位置超过新鲜度门限、run不一致或坐标合同不
+匹配时，小地图和Plan View都隐藏飞机、实际轨迹和未来预期轨迹，并显示`未连接`或具体
+失效原因。不得保留最后位置、继续外推或用UE窗口仍在运行来冒充实时飞行状态。
+
+### 4.4 快速实验、算法实验与学习训练
 
 Flight Console右侧工作区提供三个由注册表驱动的模式：
 
@@ -402,10 +427,62 @@ scene_map.json
   Gazebo/UE/QGC资产、出生点、任务区域、高度带、geofence和全部hash
 ```
 
+### 7.2 Factory L2底图工具选型
+
+2026-07-18对现成UE制图工具进行一次有界调研，结论如下：
+
+| 方案 | 能力 | 结论 |
+|---|---|---|
+| `Minimap Capture Pro` | UE 5.4/5.5 Windows编辑器插件；按关卡Capture Volume生成128至8192方形纹理；支持直接材质、高度和多层制图合成 | **拒绝**。Fab标准许可从19.99美元起；用户于2026-07-18明确要求不购买 |
+| UE `World Partition Minimap Builder` | 官方生成World Partition编辑器导航缩略图 | 不作为主线。它服务World Partition编辑窗口，不等价于可发布的QGC任务地图资产，且当前Factory关卡未证明采用World Partition |
+| UE `SceneCapture2D + Render Target` | UE 5.5官方内置正交场景捕获，可离线得到彩色Render Target | **未来可选增强**。它不是现成地图生成器，当前不为美化底图新建捕获框架 |
+| Fab `Ako Minimap System` | 免费、UE 5.2至5.7；基于Spline绘制赛道、标记和跟踪，明确不使用SceneCapture | **拒绝**。不能从Factory关卡生成底图；QGC也已有运行态标记层 |
+| `UE4_Minimap` | GPLv3、Blueprint纹理Widget，支持POI、跟踪和缩放 | **拒绝**。依赖预制底图、面向UE4且不负责关卡捕获 |
+| `Metis-Map-System` | 未完成的UE5地图Widget原型 | **拒绝**。主要地图功能仍在待办，且仓库未提供明确LICENSE |
+
+调研来源：
+
+- Epic `World Partition in Unreal Engine`：`https://dev.epicgames.com/documentation/en-us/unreal-engine/world-partition-in-unreal-engine`
+- Epic `Scene Capture 2D`：`https://dev.epicgames.com/documentation/en-us/unreal-engine/1.7---scene-capture-2d?application_version=4.27`
+- `Minimap Capture Pro`文档：`https://github.com/Palax/MinimapCapturePro_Docs`
+- Fab `Ako Minimap System`：`https://www.fab.com/listings/bfb0cced-ffcf-4254-bf52-379e90951995`
+- `UE4_Minimap`纹理Widget参考：`https://github.com/DamirPorobic/UE4_Minimap`
+- `Metis-Map-System`：`https://github.com/jamesmckibbin/Metis-Map-System`
+
+没有找到免费、开源且能直接把当前Factory关卡生成高质量可发布底图的成熟工具，候选核验
+到此停止。当前主线继续使用`Scripts/ui/build_factory_l2_2d_map.py`对已接受的Factory L2
+STL做水平截面，先生成完整范围、坐标正确且可稳定复现的操作员底图；不把它扩展为通用
+游戏地图渲染器。`SceneCapture2D + Render Target`只保留为未来视觉美化选项，不阻塞QGC
+接入。若未来采用其他出图Adapter，不得改变`world_to_pixel.json`、`structure.geojson`、
+`scene_map.json`的坐标合同和图层接口。
+
+Factory完整底图范围与任务范围必须分离：
+
+```text
+完整低地面地图边界（底图范围）
+  x: [-608.09999, 587.89997] m
+  y: [-284.65, 246.35] m
+  size: 1195.99996 m x 531.0 m
+
+室内wall/fence边界（FUEL/当前任务叠层）
+  x: [-98.40496, 77.25491] m
+  y: [-51.36291, 12.63665] m
+  size: 175.65987 m x 63.99956 m
+```
+
+右上角小地图和Plan View都显示完整Factory底图；当前室内范围只能作为任务边界叠层，不能
+用于裁剪底图。`Scripts/ui/build_factory_l2_2d_map.py`及当前
+`apps/flight_console/mosim/custom/maps/factory_l2/v1/`必须生成`1196 x 531 m`完整底图，
+室内`175.66 x 64 m`范围只作为任务边界叠加；生成后仍需通过视觉与坐标门禁才能接入QGC。
+
+碰撞truth中的组件AABB只能用于语义和校准，不能直接作为底图几何：Spline Blueprint等
+Actor的世界AABB会覆盖整段运动范围并生成错误的大实心块。无论底图由插件还是官方捕获
+生成，结构/碰撞真值、底图像素和坐标合同仍须分别保存，不能用视觉纹理反推碰撞边界。
+
 视觉风格可以像游戏小地图，但几何不可为美观随意变形。墙体、门和禁飞区需要高对比；
 非任务装饰降低对比，避免与实时轨迹和告警争夺视觉层级。
 
-### 7.2 坐标转换
+### 7.3 坐标转换
 
 ```text
 Gazebo/PX4/MAVROS状态
@@ -423,7 +500,7 @@ Gazebo/PX4/MAVROS状态
 不得在QML内散落`x/y`交换、符号翻转、固定offset或角度补偿。所有转换由版本化Adapter完成，
 并与Gazebo-to-UE变换共同写入SceneMapRegistry。
 
-### 7.3 最小校准门禁
+### 7.4 最小校准门禁
 
 - 三个非共线标定点在Gazebo、UE和二维地图中一一对应；
 - 四角边界和至少一个内部地标对应；
@@ -433,20 +510,41 @@ Gazebo/PX4/MAVROS状态
 - QGC、UE、Gazebo使用同一`map_id/version/calibration_hash`；
 - 地图超界、hash不一致或frame未知时禁止发布任务。
 
+### 7.5 Plan地图与Fly小地图职责
+
+`Plan View`保留QGC原生航点、围栏、Survey、Mission Item和MAVLink上传/ACK能力，是任务
+编辑面。`Fly View`右上角地图采用游戏小地图形态，默认只显示Factory底图、飞机位置与
+朝向、飞行状态、关键航点、实际轨迹、未来预期轨迹和必要告警；点击后展开为只读态势图，
+不复制航点或边界编辑工具。FUEL探索边界、Diff规划边界、起点/目标、Geofence、禁飞区和
+规划器参数统一在`Plan View`配置。两者必须加载同一个`scene_map.json`和坐标合同，不能各自
+维护地图图片、offset或轴向变换。
+
+Fly小地图与Plan地图必须共用同一个`MoSimMapViewport`交互核心：
+
+- 鼠标滚轮以当前指针位置为中心缩放，不得固定放大左上角；
+- 左键拖动平移，`+/-`作为备用缩放入口；
+- 限制最小/最大缩放并提供适配全图、跟随选中飞机和返回全机视图；
+- 缩放、平移、全图适配不能改变world/pixel坐标合同；
+- 小地图点击展开时保留中心与缩放上下文，返回后恢复小地图默认态势视角；
+- QML上层、UE原生子窗口或QGC默认`FlightMap`不得吞掉地图滚轮和拖动事件。
+
+在项目内权威PX4/QGC全局经纬度原点尚未确认前，地图允许静态显示和world/pixel审核，
+但必须禁用MAVLink任务发布。不得用PX4常见SITL默认经纬度代替当前运行链证据。
+
 ## 8. 图层和视觉规则
 
 | 图层 | 默认 | 视觉规则 |
 | --- | --- | --- |
 | Factory静态结构 | 开 | 中性低饱和底图，不与实时状态竞争 |
-| Mission area | 开 | 半透明边界和轻填充 |
-| Geofence | 开 | 明确实线；越界风险时高亮 |
-| Keep-out | 开 | 红色斜纹或半透明填充 |
+| Mission area | Plan View开；小地图关 | 半透明边界和轻填充 |
+| Geofence | Plan View开；小地图仅告警时显示 | 明确实线；越界风险时高亮 |
+| Keep-out | Plan View开；小地图关 | 红色斜纹或半透明填充 |
 | 逐机位置/朝向 | 开 | 稳定颜色、编号、机头箭头、高度标签 |
 | 实际轨迹 | 开 | 连续实线，可选全量或尾迹长度 |
-| 当前规划轨迹 | 开 | 与实际轨迹不同颜色/线型，显示有效期 |
+| 未来预期轨迹/关键航点 | 开 | 只显示尚未执行的有效路径段；与实际轨迹可辨识并显示有效期 |
 | 候选轨迹 | 关 | 仅工程模式或算法声明时开启 |
 | 学习规划诊断 | 按算法 | 推理延迟、评分/置信、artifact hash、输入新鲜度和fallback |
-| Frontier/Coverage | 按能力 | 统一图例、定义和统计边界 |
+| Frontier/Coverage | Plan View按能力；小地图关 | 统一图例、定义和统计边界 |
 | Assignment/Formation | 按任务 | owner颜色、slot和连接关系 |
 | 点云/占据投影 | 关 | 只作二维摘要，不替代RViz三维审核 |
 | 告警/故障 | 事件触发 | 不闪烁整屏；定位到飞机和时间线 |
@@ -516,7 +614,8 @@ apps/flight_console/mosim/custom/
 
 - 二维地图加载失败：UE和runtime可以继续，任务编辑禁用，只允许打开已发布任务摘要；
 - UE失败：二维地图与runtime继续，标记display degraded；
-- 遥测过期：飞机标记变为stale并停止外推，不保持绿色最后值；
+- Gazebo/ROS未连接、遥测过期、run不一致或frame/hash不匹配：隐藏飞机标记、实际轨迹和
+  未来预期轨迹，显示明确失效原因；不得显示旧位置或继续外推；
 - 坐标hash不一致：隐藏位置可能造成误导，禁止任务发布并显示具体版本；
 - Planner未ready：草稿可以保存，发布或开始任务禁用；
 - 部分多机ACK：显示逐机结果，团队动作整体不标记成功；
@@ -544,19 +643,22 @@ apps/flight_console/mosim/custom/
 ### Q1 Factory静态任务地图
 
 - 从已验收Factory资产生成栅格、矢量和变换；
-- 在独立地图fixture验证缩放、平移、图层和坐标往返；
+- 抽出Fly小地图和Plan地图共用的`MoSimMapViewport`，在独立fixture验证鼠标中心滚轮缩放、
+  平移、全图适配、图层和坐标往返；
 - 三点、边界、比例尺、机头和hash门禁通过。
 
 ### Q2 只读运行态小地图
 
-- 接入单机位置、朝向、高度、实际轨迹和目标；
+- 接入单机位置、朝向、飞行状态、高度、实际轨迹、未来预期轨迹和关键航点；
 - 实现右上角mini、点击展开、跟随选中、全机适配；
-- 再接入三机隔离、stale和逐机颜色；
+- 断开Gazebo/ROS、超时、run不一致或坐标合同不匹配时隐藏全部动态对象；
+- 再接入三机隔离、失效隐藏和逐机颜色；
 - 只读通过后才开放任务编辑。
 
 ### Q3 单机任务编辑
 
-- 目标点、航点、任务区域、Geofence、禁飞区、高度带和返航点；
+- 目标点、航点、FUEL/Diff任务边界、Geofence、禁飞区、高度带和返航点；
+- 第一版提供矩形和多边形边界，FUEL与Diff配置分别保存并由当前Planner Adapter消费；
 - MissionDraft、撤销/重做、校验摘要和Orchestrator幂等提交；
 - 同一Factory依次验证Waypoint、Diff、FUEL和known coverage合同。
 
@@ -579,13 +681,64 @@ apps/flight_console/mosim/custom/
 - 深度相机、训练、导出、注册、推理Adapter和Gazebo验证逐门通过后再开放按钮；
 - 验证YOPO当前/候选轨迹、延迟、artifact hash和fallback图层，不允许策略绕过轨迹校验器。
 
-## 12. 完成定义
+### 11.1 2026-07-18实施工作量基线
+
+以下是基于当前约671行Flight定制QML、约1070行Plan定制QML、现有UE输入Pawn、
+`WindowContainer`嵌入和Orchestrator骨架的有效工程工时估算。它包括定向自动测试和一次
+人工审核，不把只画按钮或只显示静态示意图算作完成。
+
+| 工作包 | 有效工时 | 验收边界 |
+| --- | ---: | --- |
+| UE嵌入方向键焦点和鼠标拖动环绕 | 5至10小时 | 嵌入前后`M/N`、方向键、鼠标环绕一致，且不抢QGC设置/飞行操作输入 |
+| 小地图层级、尺寸、滚轮缩放和平移 | 4至8小时 | 小地图不挤占UE/原生面板，滚轮以指针为中心缩放 |
+| Plan地图滚轮缩放、平移和共享视口 | 3至6小时 | 与小地图复用同一变换，不出现默认在线底图事件层干扰 |
+| 飞机位置、方向、状态和失效隐藏 | 4至8小时 | 只显示当前run的新鲜状态；断连后按门限隐藏 |
+| 实际轨迹、未来预期轨迹和关键航点 | 6至12小时 | 坐标一致、语义明确、无历史run残留 |
+| Plan View矩形/多边形边界编辑 | 8至14小时 | 可绘制、修改、删除、校验、保存和恢复 |
+| FUEL/Diff配置、任务序列化和Adapter接入 | 16至32小时 | 不是静态画框；边界和目标真正进入对应运行链并返回未来轨迹/状态 |
+| 生命周期、取消/失败、回归和人工审核 | 10至18小时 | 无重复启动、旧会话、假ACK或断连残影 |
+
+预计里程碑：
+
+```text
+FC-Q1  当前UE输入、布局和双地图缩放修复       1至2个工作日
+FC-Q2  实时飞机状态、实际/未来轨迹完成         累计3至5个工作日
+FC-Q3  Plan View边界与FUEL/Diff真实闭环        累计7至12个工作日
+```
+
+上述时间不包含重新解决FUEL或Diff算法本身的规划失败、控制器失稳、Gazebo性能或地图坐标
+错误。若运行适配时暴露这些后端问题，必须单独形成blocker，不得通过前端模拟状态缩短工期。
+
+## 12. UE原生子窗口与QGC浮层规则
+
+第一版使用`WindowContainer`接管UE的Windows原生窗口。QGC设置抽屉、指示器抽屉或关键
+消息弹窗出现时，UE容器必须暂时隐藏并把输入与Z序完全让给QGC；浮层关闭后再恢复同一个
+UE会话，不能启动第二个UE进程。该规则防止UE覆盖QGC原生解锁、起飞、任务和设置界面。
+
+键盘视角命令由Flight Console主窗口转发。鼠标拖动环绕只有在真实native子窗口输入测试
+通过后才能验收；若QML事件层无法稳定接收输入，使用Qt事件过滤/native mouse capture，
+不得通过提高QML `z`值绕过原生子窗口边界。
+
+输入焦点合同固定为：
+
+- 用户点击UE区域后，仅该区域获得相机输入焦点；`M/N`调整环绕距离，方向键调整环绕方向，
+  按住鼠标拖动调整环绕视角；
+- `Esc`或点击QGC面板释放UE鼠标捕获并把输入交还QGC；
+- UE嵌入和受控外部窗口使用同一套相机语义，不能出现嵌入后只有`M/N`有效的半连接状态；
+- 地图区域获得焦点时，滚轮只缩放地图，不能改变UE相机距离；
+- 不允许全局事件过滤器吞掉QGC原生解锁、起飞、任务、设置和紧急操作。
+
+Display session必须按`run_id`恢复且attach/detach幂等。重复Prepare/Attach不能留下多个
+UE bridge或UE进程，GUI重启不得终止runtime。stale session的detach失败必须保留明确
+reason code和残留PID证据，不能静默创建新session掩盖问题。
+
+## 13. 完成定义
 
 只有以下条件全部满足，才能宣称Flight Console二维任务地图完成：
 
 1. Factory底图来自受控几何和校准，不是任意截图；
 2. 单机和三机位置、朝向、轨迹与Gazebo/UE使用同一坐标合同；
-3. mini、expanded plan和expanded monitor三态行为通过；
+3. mini、expanded plan和expanded monitor三态行为通过，Fly小地图不承担FUEL/Diff边界编辑；
 4. 航点、任务区域、Geofence、禁飞区、高度和返航点可编辑、校验和持久化；
 5. 地图操作生成结构化任务并由Orchestrator提交，不存在QML裸setpoint路径；
 6. 未知探索无法读取完整operator display map；
@@ -597,3 +750,5 @@ apps/flight_console/mosim/custom/
 12. QGC原生飞行控制得到复用，MoSim后台准备与QGC解锁/起飞/任务语义没有重复；
 13. UE录制默认关闭且可显式开始/停止，全部MoSim RViz会话可一键关闭并完成残留检查；
 14. 文档、源码、测试、证据、提交和推送满足项目closeout门禁。
+15. UE嵌入前后相机输入语义一致，双地图滚轮缩放和平移通过，断连后不显示飞机或旧轨迹；
+16. 实际轨迹和未来预期轨迹来自当前run真实数据，不使用静态示意线或历史run残留。
