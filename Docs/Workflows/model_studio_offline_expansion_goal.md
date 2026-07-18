@@ -34,9 +34,17 @@ Until shared-file ownership is clear, this Goal owns only:
 ```text
 Docs/Workflows/model_studio_offline_expansion_goal.md
 Config/control_platform/offline_expansion_inventory.json
+Config/control_platform/offline_composition_catalog.json
+Config/control_platform/offline_runner_interface_contract_v1.json
 Scripts/quality/build_offline_expansion_inventory.py
 Scripts/quality/check_offline_expansion_inventory.py
+Scripts/quality/check_offline_composition_catalog.py
+Scripts/quality/check_offline_runner_interface_contract.py
+Scripts/mworks/generate_offline_profile_wrapper.py
 Scripts/tests/test_offline_expansion_inventory.py
+Scripts/tests/test_offline_composition_catalog.py
+Scripts/tests/test_offline_profile_wrapper.py
+Scripts/tests/test_offline_runner_interface_contract.py
 ```
 
 Do not overwrite concurrent work in the realtime MWORKS lane, QGC, UE,
@@ -166,3 +174,17 @@ The first current-turn Sysplorer `session_manager(probe)` did not return within
 the bounded wait and was terminated without start, reconnect, click, or model
 mutation. Therefore live four-Runner `check_model` and simulation remain blocked
 at this checkpoint; static contracts do not supersede that blocker.
+
+P2 static checkpoint 3 freezes candidate frame, solver-time, lifecycle, numeric
+validity, and module-diagnostics semantics in the same Runner contract. These
+fields are deliberately marked unbound: no `.mo` ports were changed, and the
+contract checker rejects attempts to promote frame, fixed-step, realtime-rate,
+lifecycle, diagnostics, or invalid-number handling from configuration alone.
+This preserves a consistent future code-generation/online interface without
+claiming either capability now.
+
+A second bounded read-only Sysplorer `session_manager(probe)` also produced no
+response within 30 seconds and was terminated. No start, reconnect, click,
+model mutation, or window action was attempted. This is the second observed
+live blocker occurrence for the active Goal; P2 live model checks and
+simulations remain blocked while static fail-closed contract work can continue.

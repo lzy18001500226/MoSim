@@ -33,3 +33,31 @@ def test_lifecycle_ports_cannot_be_promoted_by_config_only() -> None:
     changed["lifecycle_contract"]["current_model_ports_implemented"] = True
     errors = checker.validate(changed)
     assert "lifecycle_ports_must_remain_blocked_until_model_evidence" in errors
+
+
+def test_frame_contract_cannot_be_promoted_by_config_only() -> None:
+    changed = copy.deepcopy(contract())
+    changed["frame_contract"]["binding_state"] = "verified"
+    errors = checker.validate(changed)
+    assert "frame_contract_must_remain_unbound_until_model_evidence" in errors
+
+
+def test_solver_annotation_cannot_be_claimed_as_realtime_rate() -> None:
+    changed = copy.deepcopy(contract())
+    changed["time_contract"]["realtime_rate_claim_allowed"] = True
+    errors = checker.validate(changed)
+    assert "realtime_rate_claim_must_remain_blocked" in errors
+
+
+def test_diagnostics_outputs_cannot_be_promoted_by_config_only() -> None:
+    changed = copy.deepcopy(contract())
+    changed["diagnostics_contract"]["current_model_outputs_implemented"] = True
+    errors = checker.validate(changed)
+    assert "diagnostics_outputs_must_remain_blocked_until_model_evidence" in errors
+
+
+def test_invalid_numeric_policy_must_fail_closed() -> None:
+    changed = copy.deepcopy(contract())
+    changed["diagnostics_contract"]["invalid_numeric_policy"] = "continue"
+    errors = checker.validate(changed)
+    assert "invalid_numeric_policy_must_fail_closed" in errors

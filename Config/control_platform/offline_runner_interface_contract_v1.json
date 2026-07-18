@@ -79,6 +79,37 @@
     {"name": "rotor_command", "dimension": 4},
     {"name": "position_error_norm", "dimension": 1}
   ],
+  "frame_contract": {
+    "candidate_contract_id": "mosim_offline_runner_frame_candidate_v1",
+    "binding_state": "not_bound_to_model_ports",
+    "current_attitude_representation": "roll_pitch_yaw_rad",
+    "current_position_frame": "unverified_model_world_frame",
+    "current_body_frame": "unverified_model_body_frame",
+    "promotion_requirements": [
+      "bind_world_and_body_axes_to_model_ports_or_parameters",
+      "define_euler_rotation_order_and_singularity_behavior",
+      "add_round_trip_frame_fixtures",
+      "bind_frame_contract_id_to_profile_and_run_manifest"
+    ],
+    "online_alignment_rule": "An offline Adapter must perform an explicit audited conversion before using mosim_enu_flu_quaternion_xyzw_v1. Matching names alone are not frame evidence."
+  },
+  "time_contract": {
+    "candidate_contract_id": "mosim_offline_runner_time_candidate_v1",
+    "binding_state": "solver_annotation_only",
+    "time_authority": "mworks_offline_solver_time",
+    "experiment_algorithm": "Dassl",
+    "experiment_start_time_s": 0.0,
+    "experiment_stop_time_s": 50.0,
+    "result_interval_s": 0.01,
+    "fixed_step_claim_allowed": false,
+    "realtime_rate_claim_allowed": false,
+    "promotion_requirements": [
+      "bind_sample_or_solver_time_to_result_manifest",
+      "define_discrete_controller_dt_semantics",
+      "test_reset_and_repeated_run_determinism",
+      "record_actual_solver_statistics"
+    ]
+  },
   "lifecycle_contract": {
     "required_future_fields": [
       "dt",
@@ -90,7 +121,40 @@
       "random_seed"
     ],
     "current_model_ports_implemented": false,
+    "candidate_schema": {
+      "dt": "positive_finite_seconds",
+      "reset": "boolean_edge_or_explicit_event_semantics_to_be_frozen",
+      "enable": "boolean_with_disabled_output_policy_to_be_frozen",
+      "run_id": "nonempty_immutable_run_identity",
+      "profile_hash": "immutable_profile_content_hash",
+      "parameter_version": "immutable_parameter_set_identity",
+      "random_seed": "explicit_integer_for_stochastic_modules"
+    },
     "promotion_rule": "Do not mark codegen_interface_ready or online_interface_ready until lifecycle fields and invalid/stale/NaN/fallback behavior are implemented and tested without regressing certified offline Profiles."
+  },
+  "diagnostics_contract": {
+    "candidate_contract_id": "mosim_offline_module_diagnostics_candidate_v1",
+    "binding_state": "not_bound_to_model_outputs",
+    "required_future_fields": [
+      "module_status",
+      "input_valid",
+      "output_valid",
+      "finite_check_passed",
+      "saturation_mask",
+      "fallback_active",
+      "reason_code"
+    ],
+    "module_status_values": [
+      "disabled",
+      "initializing",
+      "active",
+      "degraded",
+      "fallback",
+      "failed"
+    ],
+    "invalid_numeric_policy": "fail_closed_and_record_reason_code",
+    "current_model_outputs_implemented": false,
+    "promotion_rule": "APP and evidence tooling must not infer accepted, fallback, or failure state from a completed solver call alone."
   },
   "known_gaps": [
     "coordinate_frame_contract_not_bound_to_model_ports",
@@ -98,6 +162,7 @@
     "lifecycle_context_not_bound_to_model_ports",
     "invalid_stale_nan_inf_rejection_not_implemented_at_runner_boundary",
     "fallback_diagnostics_not_exposed",
+    "time_and_solver_statistics_not_bound_to_run_manifest",
     "four_boundary_live_check_model_and_simulation_blocked_by_sysplorer_probe_timeout"
   ],
   "online_alignment": {
