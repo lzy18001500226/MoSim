@@ -280,3 +280,26 @@ including `neural_pid` as `zero_untrained`, `ilc` as lifecycle-dependent, and
 `px4ctrl` as an external runtime implementation that still needs a separately
 defined claim-bounded offline equivalent. Source availability is not counted
 as current shared-Runner certification.
+
+P2 live checkpoint 3 prepares the `BODY_RATE_THRUST` candidate without
+promoting it to live evidence. The candidate reuses the stable bounded
+position-PD and altitude-PID outer loop, converts desired attitude to bounded
+body-rate references, estimates measured rates from plant attitude, and closes
+the offline rate loop through the dedicated allocator. The four-boundary
+interface checker passed, the targeted certification tests passed `9/9`, and
+the three-file diff passed Git whitespace checks.
+
+The required read-only Sysplorer `session_manager(probe)` then returned no
+response for approximately 60 seconds and was terminated. No `ensure`, restart,
+force restart, GUI action, model load, `CheckModel`, or simulation was attempted.
+The exact blocker record is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P2_BODY_RATE_THRUST_LIVE_BLOCKER.json
+```
+
+Therefore the current candidate remains source/static-only. It has no current
+MWORKS model-quality result, `Result.msr`, metrics, plot, or native animation
+evidence. Resume only after an independently healthy read-only probe, then
+check this Runner alone and use a five-second bounded simulation before the
+full 50-second certification. P2 and the long Goal remain active.

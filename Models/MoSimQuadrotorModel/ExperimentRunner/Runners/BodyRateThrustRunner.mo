@@ -18,6 +18,7 @@ equation
   connect(plant.position, controller.position_mea);
   connect(plant.attitude, controller.attitude_mea);
   connect(controller.body_rate_ref, offline_rate_allocator.body_rate_ref);
+  connect(plant.attitude, offline_rate_allocator.attitude_mea);
   connect(controller.collective_thrust_delta, offline_rate_allocator.collective_thrust_delta);
   connect(offline_rate_allocator.rotor_command, plant.rotor_command);
   position_ref = reference.position_command;

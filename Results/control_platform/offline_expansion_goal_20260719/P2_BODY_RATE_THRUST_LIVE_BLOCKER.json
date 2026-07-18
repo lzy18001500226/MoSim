@@ -1,0 +1,40 @@
+{
+  "schema": "mosim.model_studio.offline_boundary_live_blocker.v1",
+  "recorded_at": "2026-07-19T04:25:23.1682326+08:00",
+  "phase": "P2_body_rate_thrust_boundary_fixture",
+  "status": "blocked_mcp_sysplorer_probe_timeout",
+  "output_variant": "BODY_RATE_THRUST",
+  "static_checkpoint": {
+    "runner_interface_contract": "passed",
+    "runner_boundary_count": 4,
+    "offline_profile_certification_tests": "9_passed",
+    "git_diff_check": "passed",
+    "model_check": "not_evaluated",
+    "simulation": "not_run",
+    "native_result": "not_produced",
+    "animation_window": "not_opened"
+  },
+  "operation": {
+    "name": "session_manager_probe",
+    "mode": "read_only",
+    "result": "no_response_terminated_by_bounded_wait",
+    "wait_seconds_approx": 60
+  },
+  "actions_not_taken": [
+    "session_ensure",
+    "session_restart",
+    "session_force_restart",
+    "sysplorer_click",
+    "model_load",
+    "check_model",
+    "simulation",
+    "result_or_animation_claim"
+  ],
+  "source_snapshot": {
+    "body_rate_thrust_controller_sha256": "9f038546499960a3cc7976224d1c7665012574fe0294c7d9be619ce01e226300",
+    "body_rate_allocator_sha256": "e4a660fe273cce5cb9af6cff9d0611de32023e6c1c15b778dbd0e55796a1c9c3",
+    "body_rate_thrust_runner_sha256": "66cf459490dd05e7b92e4bd0280c791a14fcc3c58a6488bb1afdd344bd3f6dd2"
+  },
+  "claim_ceiling": "The BODY_RATE_THRUST candidate passes source-level interface and certification-script tests only. No current MWORKS model check, simulation, Result.msr, metric, plot, or native animation evidence exists for this source snapshot.",
+  "next_live_action": "After an independently healthy read-only Sysplorer probe, load the existing packages, check only BodyRateThrustRunner, then run a five-second bounded simulation before the full fifty-second certification."
+}
