@@ -118,13 +118,13 @@ model FormationTriangleFigure8LinearMPCSysblockClosedLoop
   Modelica.Blocks.Math.Gain follower2_motor3_delta_scale(k = motor_command_scale);
   Modelica.Blocks.Math.Gain follower2_motor4_delta_scale(k = motor_command_scale);
 
-  AWFF_LinearMPCOuterLoopControllerEquation_Sysblock controller3_2(
+  QuadrotorControllerBlocks.AWFF_LinearMPCOuterLoopControllerEquation_Sysblock controller3_2(
     mpc_acc_limit_xy = 2.7,
     mpc_terminal_gain_xy = 0.12);
-  AWFF_LinearMPCOuterLoopControllerEquation_Sysblock follower1Controller(
+  QuadrotorControllerBlocks.AWFF_LinearMPCOuterLoopControllerEquation_Sysblock follower1Controller(
     mpc_acc_limit_xy = 2.7,
     mpc_terminal_gain_xy = 0.12);
-  AWFF_LinearMPCOuterLoopControllerEquation_Sysblock follower2Controller(
+  QuadrotorControllerBlocks.AWFF_LinearMPCOuterLoopControllerEquation_Sysblock follower2Controller(
     mpc_acc_limit_xy = 2.7,
     mpc_terminal_gain_xy = 0.12);
 

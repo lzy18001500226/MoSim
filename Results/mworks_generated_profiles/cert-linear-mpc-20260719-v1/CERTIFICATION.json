@@ -1,0 +1,68 @@
+{
+  "schema": "mosim.offline_profile_certification.v1",
+  "generated_at": "2026-07-19T02:43:01+08:00",
+  "run_id": "cert-linear-mpc-20260719-v1",
+  "profile_id": "offline_linear_mpc_climb_v1",
+  "profile_kind": "certified",
+  "controller_id": "linear_mpc",
+  "scenario_id": "climb",
+  "output_variant": "ROTOR_COMMAND",
+  "status": "accepted",
+  "acceptance": {
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "raw_result_valid": true,
+    "native_result_present": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "bounded_closed_loop": true
+  },
+  "animation_acceptance_rule": "CreateAnimation succeeds and the native animation window opens; playback is not required.",
+  "session_cleanup": {
+    "policy": "Certification runs request GUI reset and dedicated-session shutdown after evidence capture.",
+    "shutdown_recorded": false
+  },
+  "raw_summary": {
+    "row_count": 5001,
+    "end_time_s": 50.0,
+    "position_end_m": [
+      10.000470958391151,
+      9.999898237748054,
+      14.999998923144098
+    ],
+    "position_ref_end_m": [
+      10.0,
+      10.0,
+      15.0
+    ],
+    "position_error_norm_end_m": 0.0004818283114715843,
+    "attitude_end_rad": [
+      0.00012690933099626357,
+      -6.856653738386955e-07,
+      -3.899917909567794e-05
+    ],
+    "rotor_speed_1_end_rad_s": 54.103074408033834
+  },
+  "selected_metrics": {
+    "position_rmse_m": 0.1348754073452907,
+    "steady_state_error_m": 0.07092407813061392,
+    "max_position_error_m": 0.5988514564808483,
+    "settling_time_s": 0.54,
+    "max_tilt_rad": 0.2793684506664596,
+    "constraint_violation_count": 18
+  },
+  "artifacts": {
+    "model_source": "Results/mworks_generated_profiles/cert-linear-mpc-20260719-v1/GeneratedProfile.mo",
+    "model_source_sha256": "e008414d0dcf2b445faa48d9ca011b3cbc0140644d968f9508bdbf7279f14e3b",
+    "raw_csv": "Results/mworks_generated_profiles/cert-linear-mpc-20260719-v1/raw/result.csv",
+    "raw_csv_sha256": "4397f8361691f0b58ac602aab70f56696b4e98aaf0196c2fc63f3ae18d597692",
+    "metrics_json": "Results/mworks_generated_profiles/cert-linear-mpc-20260719-v1/metrics/metrics.json",
+    "mcp_log": "Results/mworks_generated_profiles/cert-linear-mpc-20260719-v1/logs/mcp.jsonl",
+    "native_result": "Results/mworks_generated_profiles/cert-linear-mpc-20260719-v1/native_result/MoSimGenerated_cert_linear_mpc_20260719_v1/Result.msr",
+    "native_result_sha256": "aa6c8a5bf4c3b2df113a2f0625f257fed8980f09272b08886ce76579ef9efbb8"
+  },
+  "claim_boundary": "Real offline MWORKS model/check/simulation/result/animation evidence only. It is not PX4, Gazebo, ROS1, mworks_live, or flight evidence."
+}

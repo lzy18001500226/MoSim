@@ -2,6 +2,8 @@ module MoSimModelStudio
 
 using ObjectOriented
 using TyAppDesigner
+include(joinpath(@__DIR__, "live_cosim_backend.jl"))
+using .LiveCosimBackend
 
 const ACTIVE_COLOR = [0.08, 0.36, 0.43]
 const INACTIVE_COLOR = [0.88, 0.91, 0.92]
@@ -9,6 +11,36 @@ const SECTION_COLOR = [0.12, 0.25, 0.32]
 const READY_COLOR = [0.86, 0.95, 0.89]
 const WAIT_COLOR = [0.98, 0.93, 0.80]
 const MUTED_COLOR = [0.93, 0.94, 0.94]
+
+const OFFLINE_PROFILE_ORDER = [
+    "Official PID 爬升 [已认证]",
+    "改进 PID 爬升 [已认证]",
+    "AWFF 爬升 [已认证]",
+    "PID-INDI 爬升 [已认证]",
+    "Linear MPC 爬升 [已认证]",
+    "L1/AWFF 爬升 [已认证]",
+    "L1/AWFF 风扰 [已认证]",
+    "故障补偿：电机 1 效率 85% [已认证]",
+    "三机 Linear MPC 三角编队 8 字 [已认证]",
+    "Custom：改进 PID + 轻风扰 [已验证]",
+    "Custom：故障补偿 + 轻风扰 [已验证]",
+    "QP/NMPC Safety [当前禁用]",
+]
+
+const OFFLINE_PROFILES = Dict(
+    "Official PID 爬升 [已认证]" => (profile="offline_official_pid_climb_v1", mission="爬升", controller="Official PID", augmentation="无", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-official-pid-20260719-v2", available=true),
+    "改进 PID 爬升 [已认证]" => (profile="offline_improved_pid_climb_v1", mission="爬升", controller="改进 PID", augmentation="无", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-improved-pid-20260719-v1", available=true),
+    "AWFF 爬升 [已认证]" => (profile="offline_awff_climb_v1", mission="爬升", controller="AWFF", augmentation="AWFF", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-awff-20260719-v1", available=true),
+    "PID-INDI 爬升 [已认证]" => (profile="offline_pid_indi_climb_v1", mission="爬升", controller="PID-INDI", augmentation="INDI", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-pid-indi-20260719-v1", available=true),
+    "Linear MPC 爬升 [已认证]" => (profile="offline_linear_mpc_climb_v1", mission="爬升", controller="Linear MPC", augmentation="无", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-linear-mpc-20260719-v1", available=true),
+    "L1/AWFF 爬升 [已认证]" => (profile="offline_l1_awff_climb_v1", mission="爬升", controller="L1/AWFF", augmentation="L1", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-l1-awff-climb-20260719-v1", available=true),
+    "L1/AWFF 风扰 [已认证]" => (profile="offline_l1_awff_wind_v1", mission="爬升 + 风扰", controller="L1/AWFF", augmentation="L1", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-l1-awff-wind-20260719-v1", available=true),
+    "故障补偿：电机 1 效率 85% [已认证]" => (profile="offline_fault_comp_rotor1_85_v1", mission="爬升 + 电机效率下降", controller="故障补偿", augmentation="故障重构", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-fault-comp-rotor1-85-20260719-v1", available=true),
+    "三机 Linear MPC 三角编队 8 字 [已认证]" => (profile="offline_three_uav_linear_mpc_figure8_v1", mission="三机三角编队 8 字", controller="Linear MPC", augmentation="Leader-Follower", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-three-uav-linear-mpc-figure8-20260719-v2", available=true),
+    "Custom：改进 PID + 轻风扰 [已验证]" => (profile="custom_improved_pid_mild_wind_v1", mission="爬升 + 轻风扰", controller="改进 PID", augmentation="无", safety="基础限幅", evidence="Results/mworks_generated_profiles/custom-improved-pid-mild-wind-20260719-v1", available=true),
+    "Custom：故障补偿 + 轻风扰 [已验证]" => (profile="custom_fault_comp_mixed_v1", mission="爬升 + 轻风扰 + 电机效率下降", controller="故障补偿", augmentation="故障重构", safety="基础限幅", evidence="Results/mworks_generated_profiles/custom-fault-comp-mixed-20260719-v1", available=true),
+    "QP/NMPC Safety [当前禁用]" => (profile="offline_qp_nmpc_safety_climb_v1", mission="爬升", controller="Linear MPC", augmentation="无", safety="QP/NMPC Safety", evidence="当前共用 Runner 与独立模型均数值失稳", available=false),
+)
 
 @oodef mutable struct App
     UIFigure::TyAppDesigner.Figure = TyAppDesigner.create_figure()
@@ -36,6 +68,13 @@ const MUTED_COLOR = [0.93, 0.94, 0.94]
     ChainLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
     ContractLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
     TimingLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
+    TargetHostField::TyAppDesigner.EditField = TyAppDesigner.create_editfield()
+    Rt1PortField::TyAppDesigner.NumericEditField = TyAppDesigner.create_numericeditfield()
+    RosMasterField::TyAppDesigner.EditField = TyAppDesigner.create_editfield()
+    LocalIpField::TyAppDesigner.EditField = TyAppDesigner.create_editfield()
+    TargetRateDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
+    TestConnectionButton::TyAppDesigner.Button = TyAppDesigner.create_button()
+    ConnectionStatusLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
 
     WindSlider::TyAppDesigner.Slider = TyAppDesigner.create_slider()
     Motor1Slider::TyAppDesigner.Slider = TyAppDesigner.create_slider()
@@ -62,6 +101,40 @@ const MUTED_COLOR = [0.93, 0.94, 0.94]
     Appfile::String = @__FILE__
     CurrentMode::String = "live"
 
+    function refresh_live_capability(app, action="status")
+        response = LiveCosimBackend.request(
+            app.Appfile,
+            action,
+            app.ProfileDropDown.Value;
+            host=app.TargetHostField.Value,
+            port=round(Int, app.Rt1PortField.Value),
+            ros_master_uri=app.RosMasterField.Value,
+            local_advertised_ip=app.LocalIpField.Value,
+            rate_hz=parse(Int, app.TargetRateDropDown.Value),
+        )
+        accepted = get(response, "accepted", "false") == "true"
+        reason = get(response, "reason_code", "live_backend_unknown")
+        rate = get(response, "output_rate_hz", "")
+        latency = get(response, "latency_p99_ms", "")
+        metrics = isempty(rate) ? "" : "\n实测输出 " * rate * " Hz  |  P99 " * latency * " ms"
+        app.CapabilityLabel.Text = accepted ?
+            "实时能力门禁\nRT0 已通过；Profile 已发布，可请求 prepare。" * metrics :
+            "实时能力门禁\n200 Hz 为待验证目标，50 Hz 为已测基线；当前原因：" * reason * metrics
+        app.CapabilityLabel.BackgroundColor = accepted ? READY_COLOR : WAIT_COLOR
+        app.PrepareButton.Enable = accepted
+        app.QgcButton.Enable = false
+        return response
+    end
+
+    function set_connection_controls(app, enabled)
+        app.TargetHostField.Enable = enabled
+        app.Rt1PortField.Enable = enabled
+        app.RosMasterField.Enable = enabled
+        app.LocalIpField.Enable = enabled
+        app.TargetRateDropDown.Enable = enabled
+        app.TestConnectionButton.Enable = enabled
+    end
+
     function set_button_state(app, button, active)
         button.BackgroundColor = active ? ACTIVE_COLOR : INACTIVE_COLOR
         button.FontColor = active ? [1.0, 1.0, 1.0] : [0.20, 0.25, 0.28]
@@ -69,6 +142,35 @@ const MUTED_COLOR = [0.93, 0.94, 0.94]
     end
 
     function refresh_summary(app)
+        if app.CurrentMode == "offline" && haskey(OFFLINE_PROFILES, app.ProfileDropDown.Value)
+            item = OFFLINE_PROFILES[app.ProfileDropDown.Value]
+            app.MissionDropDown.Items = [item.mission]
+            app.MissionDropDown.Value = item.mission
+            app.PositionDropDown.Items = [item.controller]
+            app.PositionDropDown.Value = item.controller
+            app.AttitudeDropDown.Items = ["模型内部姿态环与控制分配 [冻结]"]
+            app.AttitudeDropDown.Value = "模型内部姿态环与控制分配 [冻结]"
+            app.AugmentationDropDown.Items = [item.augmentation]
+            app.AugmentationDropDown.Value = item.augmentation
+            app.SafetyDropDown.Items = [item.safety]
+            app.SafetyDropDown.Value = item.safety
+            app.OutputDropDown.Items = ["ROTOR_COMMAND [离线]"]
+            app.OutputDropDown.Value = "ROTOR_COMMAND [离线]"
+            app.MilButton.Enable = item.available
+            app.ResultButton.Enable = item.available
+            app.CodegenButton.Enable = item.available && !occursin("Custom", app.ProfileDropDown.Value)
+            app.CapabilityLabel.Text = item.available ?
+                "离线证据已通过\nResult.msr、指标、曲线与原生动画窗口均已验收。" :
+                "当前禁用\n共用 Runner 与既有独立模型均数值失稳；不得用窗口打开替代控制质量。"
+            app.CapabilityLabel.BackgroundColor = item.available ? READY_COLOR : WAIT_COLOR
+            app.ProfileSummaryLabel.Text =
+                "实验 Profile\n" * item.profile *
+                "\n\n任务：" * item.mission *
+                "\n控制器：" * item.controller *
+                "\n增强：" * item.augmentation *
+                "\n证据：" * item.evidence
+            return
+        end
         app.ProfileSummaryLabel.Text =
             "实验 Profile\n" * app.ProfileDropDown.Value *
             "\n\n任务：" * app.MissionDropDown.Value *
@@ -78,24 +180,28 @@ const MUTED_COLOR = [0.93, 0.94, 0.94]
 
     function set_mode(app, mode)
         app.CurrentMode = mode
+        live_reason = ""
         app.set_button_state(app.OfflineModeButton, mode == "offline")
         app.set_button_state(app.LiveModeButton, mode == "live")
         app.set_button_state(app.DeployModeButton, mode == "deploy")
+        app.MissionDropDown.Enable = true
+        app.PositionDropDown.Enable = true
+        app.AttitudeDropDown.Enable = true
+        app.AugmentationDropDown.Enable = true
+        app.SafetyDropDown.Enable = true
+        app.OutputDropDown.Enable = true
 
         if mode == "offline"
+            app.set_connection_controls(false)
             app.ModeStatusLabel.Text = "离线建模验证  |  Model Studio 拥有模型检查、MIL、代码生成和结果操作权"
-            app.ProfileDropDown.Items = ["控制器组合实验", "官方整机基线", "图形化 Sysblock 审核"]
-            app.ProfileDropDown.Value = "控制器组合实验"
-            app.MissionDropDown.Items = ["起飞-悬停-降落", "阶梯高度指令", "八字轨迹"]
-            app.PositionDropDown.Items = ["PX4CTRL 官方位置外环 PID", "改进 PID", "Linear MPC", "NMPC"]
-            app.AttitudeDropDown.Items = ["PID", "INDI", "SMC", "Backstepping"]
-            app.AttitudeDropDown.Value = "PID"
-            app.AttitudeDropDown.Enable = true
-            app.OutputDropDown.Items = ["模型内部控制量", "ATTITUDE_THRUST", "BODY_RATE_THRUST", "WRENCH"]
-            app.OutputDropDown.Value = "模型内部控制量"
-            app.OutputDropDown.Enable = true
-            app.CapabilityLabel.Text = "离线能力\n可组合完整控制链；每个组合仍需分别通过图形模型、MIL、结果和代码生成门禁。"
-            app.CapabilityLabel.BackgroundColor = READY_COLOR
+            app.ProfileDropDown.Items = OFFLINE_PROFILE_ORDER
+            app.ProfileDropDown.Value = OFFLINE_PROFILE_ORDER[1]
+            app.MissionDropDown.Enable = false
+            app.PositionDropDown.Enable = false
+            app.AttitudeDropDown.Enable = false
+            app.AugmentationDropDown.Enable = false
+            app.SafetyDropDown.Enable = false
+            app.OutputDropDown.Enable = false
             app.ValidateButton.Enable = true
             app.PublishButton.Enable = true
             app.PrepareButton.Enable = false
@@ -106,7 +212,8 @@ const MUTED_COLOR = [0.93, 0.94, 0.94]
             app.CodegenButton.Enable = true
             app.ResultButton.Enable = true
         elseif mode == "live"
-            app.ModeStatusLabel.Text = "实时联合仿真  |  RT0 能力待验证，MWORKS Live 当前可见禁用"
+            app.set_connection_controls(true)
+            app.ModeStatusLabel.Text = "实时联合仿真  |  50 Hz 已通过，200 Hz 能力待验证"
             app.ProfileDropDown.Items = ["official_pid_attitude_thrust_v1 [候选]", "official_pid + awff_v1 [候选]"]
             app.ProfileDropDown.Value = "official_pid_attitude_thrust_v1 [候选]"
             app.MissionDropDown.Items = ["起飞-悬停-降落"]
@@ -119,7 +226,7 @@ const MUTED_COLOR = [0.93, 0.94, 0.94]
             app.OutputDropDown.Items = ["ATTITUDE_THRUST [锁定]"]
             app.OutputDropDown.Value = "ATTITUDE_THRUST [锁定]"
             app.OutputDropDown.Enable = false
-            app.CapabilityLabel.Text = "实时能力门禁\n候选 100 Hz / 10 ms；RT0 前不可准备飞行，不得把候选参数写成已验证能力。"
+            app.CapabilityLabel.Text = "实时能力门禁\n目标扫描 50 / 100 / 200 Hz；只有同频 RT0 通过后才能发布对应 Profile。"
             app.CapabilityLabel.BackgroundColor = WAIT_COLOR
             app.ValidateButton.Enable = true
             app.PublishButton.Enable = true
@@ -130,7 +237,10 @@ const MUTED_COLOR = [0.93, 0.94, 0.94]
             app.MilButton.Enable = false
             app.CodegenButton.Enable = false
             app.ResultButton.Enable = true
+            live_response = app.refresh_live_capability()
+            live_reason = get(live_response, "reason_code", "unknown")
         else
+            app.set_connection_controls(false)
             app.ModeStatusLabel.Text = "生成代码部署  |  Model Studio 发布并准备，QGC 执行飞行"
             app.ProfileDropDown.Items = ["已发布 generated-C Profile", "实验控制器 Profile [未通过门禁]"]
             app.ProfileDropDown.Value = "已发布 generated-C Profile"
@@ -156,7 +266,9 @@ const MUTED_COLOR = [0.93, 0.94, 0.94]
             app.ResultButton.Enable = true
         end
         app.refresh_summary()
-        app.StatusLabel.Text = "界面审核模式：已切换到“" * app.ModeStatusLabel.Text * "”。未调用任何运行时。"
+        app.StatusLabel.Text = mode == "live" ?
+            "已读取 MWORKS Live 能力门禁：" * live_reason :
+            "界面审核模式：已切换到“" * app.ModeStatusLabel.Text * "”。未调用任何运行时。"
     end
 
     function OfflineModePressed(app, event)
@@ -174,6 +286,38 @@ const MUTED_COLOR = [0.93, 0.94, 0.94]
     function SelectionChanged(app, event)
         app.refresh_summary()
         app.StatusLabel.Text = "配置已修改，尚未校验或发布。"
+    end
+
+    function ConnectionChanged(app, event)
+        app.ConnectionStatusLabel.Text = "连接配置已修改，尚未测试；prepare 将保持阻断。"
+        app.ConnectionStatusLabel.BackgroundColor = WAIT_COLOR
+        app.PrepareButton.Enable = false
+    end
+
+    function TestConnectionPressed(app, event)
+        app.TestConnectionButton.Enable = false
+        app.ConnectionStatusLabel.Text = "正在测试地址、ROS Master 与 RT1 双向握手..."
+        response = LiveCosimBackend.request(
+            app.Appfile,
+            "connection-test",
+            app.ProfileDropDown.Value;
+            host=app.TargetHostField.Value,
+            port=round(Int, app.Rt1PortField.Value),
+            ros_master_uri=app.RosMasterField.Value,
+            local_advertised_ip=app.LocalIpField.Value,
+            rate_hz=parse(Int, app.TargetRateDropDown.Value),
+        )
+        connected = get(response, "connection_ok", "false") == "true"
+        reason = get(response, "reason_code", "connection_preflight_failed")
+        rtt = get(response, "rtt_p95_ms", "")
+        wire = get(response, "wire_bytes_per_s", "")
+        detail = isempty(rtt) ? "" : "  |  RTT P95 " * rtt * " ms"
+        detail *= isempty(wire) ? "" : "  |  wire " * wire * " B/s"
+        app.ConnectionStatusLabel.Text = connected ? "双向连接通过" * detail : "连接阻断：" * reason
+        app.ConnectionStatusLabel.BackgroundColor = connected ? READY_COLOR : WAIT_COLOR
+        app.TestConnectionButton.Enable = true
+        app.PrepareButton.Enable = connected && parse(Int, app.TargetRateDropDown.Value) == 50
+        app.StatusLabel.Text = "连接预检：" * reason * detail
     end
 
     function InjectionChanged(app, event)
@@ -207,9 +351,23 @@ const MUTED_COLOR = [0.93, 0.94, 0.94]
         app.StatusLabel.Text = "界面审核模式：已触发“" * action * "”界面状态，未连接 MWORKS、QGC 或 Orchestrator。"
     end
 
-    function ValidatePressed(app, event); app.ReviewAction("校验配置"); end
+    function ValidatePressed(app, event)
+        if app.CurrentMode == "live"
+            response = app.refresh_live_capability("validate")
+            app.StatusLabel.Text = "MWORKS Live Profile 校验结果：" * get(response, "reason_code", "unknown")
+        else
+            app.ReviewAction("校验配置")
+        end
+    end
     function PublishPressed(app, event); app.ReviewAction("发布 Profile"); end
-    function PreparePressed(app, event); app.ReviewAction("准备运行"); end
+    function PreparePressed(app, event)
+        if app.CurrentMode == "live"
+            response = app.refresh_live_capability("prepare")
+            app.StatusLabel.Text = "MWORKS Live prepare：" * get(response, "reason_code", "unknown")
+        else
+            app.ReviewAction("准备运行")
+        end
+    end
     function QgcPressed(app, event); app.ReviewAction("进入 QGC"); end
     function SafeStopPressed(app, event); app.ReviewAction("请求安全停止"); end
     function OpenModelPressed(app, event); app.ReviewAction("打开模型"); end
@@ -314,23 +472,61 @@ const MUTED_COLOR = [0.93, 0.94, 0.94]
         app.CapabilityLabel.VerticalAlignment = "top"
         app.CapabilityLabel.WordWrap = true
 
+        app.TargetHostField = TyAppDesigner.uieditfield(app.UIFigure)
+        app.TargetHostField.Position = [468, 192, 220, 32]
+        app.TargetHostField.Label = "目标 MWORKS / ROS 主机"
+        app.TargetHostField.Value = "127.0.0.1"
+        app.TargetHostField.ValueChangedFcn = "ConnectionChanged"
+
+        app.Rt1PortField = TyAppDesigner.uinumericeditfield(app.UIFigure)
+        app.Rt1PortField.Position = [704, 192, 100, 32]
+        app.Rt1PortField.Label = "RT1 UDP 端口"
+        app.Rt1PortField.Value = 49020
+        app.Rt1PortField.Limits = [1, 65535]
+        app.Rt1PortField.ValueChangedFcn = "ConnectionChanged"
+
+        app.TargetRateDropDown = TyAppDesigner.uidropdown(app.UIFigure)
+        app.configure_dropdown(app.TargetRateDropDown, "目标频率", [820, 192, 118, 32], ["50", "100", "200"], "200")
+        app.TargetRateDropDown.ValueChangedFcn = "ConnectionChanged"
+
+        app.RosMasterField = TyAppDesigner.uieditfield(app.UIFigure)
+        app.RosMasterField.Position = [468, 240, 300, 32]
+        app.RosMasterField.Label = "ROS Master URI"
+        app.RosMasterField.Value = "http://127.0.0.1:11311"
+        app.RosMasterField.ValueChangedFcn = "ConnectionChanged"
+
+        app.LocalIpField = TyAppDesigner.uieditfield(app.UIFigure)
+        app.LocalIpField.Position = [784, 240, 154, 32]
+        app.LocalIpField.Label = "本机广播 IP"
+        app.LocalIpField.Value = "auto"
+        app.LocalIpField.ValueChangedFcn = "ConnectionChanged"
+
+        app.TestConnectionButton = TyAppDesigner.uibutton(app.UIFigure)
+        app.configure_action(app.TestConnectionButton, "测试连接", "TestConnectionPressed", [468, 290, 132, 36])
+
+        app.ConnectionStatusLabel = TyAppDesigner.uilabel(app.UIFigure)
+        app.ConnectionStatusLabel.Position = [612, 286, 326, 48]
+        app.ConnectionStatusLabel.Text = "尚未测试双向连接；200 Hz 为待验证目标。"
+        app.ConnectionStatusLabel.WordWrap = true
+        app.ConnectionStatusLabel.BackgroundColor = WAIT_COLOR
+
         app.ChainLabel = TyAppDesigner.uilabel(app.UIFigure)
-        app.ChainLabel.Position = [468, 192, 470, 190]
+        app.ChainLabel.Position = [468, 346, 470, 100]
         app.ChainLabel.Text = "控制链\n\n任务 / 参考 -> 位置外环 -> 期望姿态与总推力\n-> PX4 内置姿态 / 角速度环 -> 控制分配 -> 四电机\n\nATTITUDE_THRUST v1 中，自研姿态内环不可在线选择。"
         app.ChainLabel.VerticalAlignment = "top"
         app.ChainLabel.WordWrap = true
         app.ChainLabel.BackgroundColor = [0.89, 0.94, 0.96]
 
         app.ContractLabel = TyAppDesigner.uilabel(app.UIFigure)
-        app.ContractLabel.Position = [468, 394, 470, 144]
+        app.ContractLabel.Position = [468, 458, 470, 96]
         app.ContractLabel.Text = "三方职责\n\nModel Studio：配置、校验、发布、MIL / codegen、prepare\nQGC：连接、解锁、起飞、任务、降落、安全停止\nOrchestrator：唯一状态机、命令裁决和 RunManifest"
         app.ContractLabel.VerticalAlignment = "top"
         app.ContractLabel.WordWrap = true
         app.ContractLabel.BackgroundColor = [0.94, 0.95, 0.95]
 
         app.TimingLabel = TyAppDesigner.uilabel(app.UIFigure)
-        app.TimingLabel.Position = [468, 550, 470, 180]
-        app.TimingLabel.Text = "候选实时合同（未验证）\n\nframe: mosim_enu_flu_quaternion_xyzw_v1\nrate: 100 Hz  |  deadline: 10 ms\ncommand age: 50 ms  |  failsafe escalation: 100 ms\n\nRT0 未通过，MWORKS Live 保持禁用。"
+        app.TimingLabel.Position = [468, 566, 470, 164]
+        app.TimingLabel.Text = "实时与可观测性\n\n已通过基线：50 Hz  |  目标扫描：50 / 100 / 200 Hz\n每条链路记录 rate / latency / jitter / loss / bandwidth\nGazebo 记录 RTF；UE 记录 FPS 与 Game / Draw / GPU。\n\n200 Hz 未通过 RT0 前禁止 prepare。"
         app.TimingLabel.VerticalAlignment = "top"
         app.TimingLabel.WordWrap = true
         app.TimingLabel.BackgroundColor = WAIT_COLOR
@@ -391,7 +587,7 @@ const MUTED_COLOR = [0.93, 0.94, 0.94]
 
         app.set_mode("live")
         app.InjectionChanged(nothing)
-        app.StatusLabel.Text = "界面审核版已就绪。所有按钮仅演示状态，不连接 MWORKS、Gazebo、QGC 或 Orchestrator。"
+        app.StatusLabel.Text = "Model Studio 已就绪。测试连接会执行 ROS Master 与 RT1 双向预检；飞行操作仍由 QGC 和 Orchestrator 负责。"
         app.UIFigure.Visible = true
     end
 

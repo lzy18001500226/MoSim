@@ -1,0 +1,27 @@
+{
+  "schema": "mosim.offline_custom_profile_request.v1",
+  "profile_id": "custom_improved_pid_mild_wind_v1",
+  "profile_kind": "custom",
+  "controller_id": "improved_pid",
+  "output_variant": "ROTOR_COMMAND",
+  "scenario_id": "climb_mild_wind",
+  "rotor_effectiveness": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "gust_force": [
+    0.5,
+    0.0,
+    0.0
+  ],
+  "run_id": "custom-improved-pid-mild-wind-20260719-v1",
+  "runner_model": "MoSimQuadrotorModel.ExperimentRunner.Runners.RotorCommandRunner",
+  "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.ImprovedPIDRotorAdapter",
+  "generated_model_name": "MoSimGenerated_custom_improved_pid_mild_wind_20260719_v1",
+  "wrapper_path": "Results/mworks_generated_profiles/custom-improved-pid-mild-wind-20260719-v1/GeneratedProfile.mo",
+  "wrapper_sha256": "bff0ec1ed3a41b25313eda167d8787ee3125db368d7d16260ed403bebf9498df",
+  "certification_state": "generated_unchecked",
+  "claim_boundary": "Generated and compatibility-checked only; MWORKS check, simulation, Result.msr and animation remain pending."
+}

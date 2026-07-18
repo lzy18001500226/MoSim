@@ -1,0 +1,68 @@
+{
+  "schema": "mosim.offline_profile_certification.v1",
+  "generated_at": "2026-07-19T02:43:01+08:00",
+  "run_id": "cert-l1-awff-climb-20260719-v1",
+  "profile_id": "offline_l1_awff_climb_v1",
+  "profile_kind": "certified",
+  "controller_id": "l1_awff",
+  "scenario_id": "climb",
+  "output_variant": "ROTOR_COMMAND",
+  "status": "accepted",
+  "acceptance": {
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "raw_result_valid": true,
+    "native_result_present": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "bounded_closed_loop": true
+  },
+  "animation_acceptance_rule": "CreateAnimation succeeds and the native animation window opens; playback is not required.",
+  "session_cleanup": {
+    "policy": "Certification runs request GUI reset and dedicated-session shutdown after evidence capture.",
+    "shutdown_recorded": true
+  },
+  "raw_summary": {
+    "row_count": 5001,
+    "end_time_s": 50.0,
+    "position_end_m": [
+      10.000488051125377,
+      9.999984199805745,
+      14.999998976945207
+    ],
+    "position_ref_end_m": [
+      10.0,
+      10.0,
+      15.0
+    ],
+    "position_error_norm_end_m": 0.000488307888284654,
+    "attitude_end_rad": [
+      0.00016368981832506755,
+      -6.554639015748453e-07,
+      -3.204576783061251e-05
+    ],
+    "rotor_speed_1_end_rad_s": 54.10330129525104
+  },
+  "selected_metrics": {
+    "position_rmse_m": 0.13799719005389158,
+    "steady_state_error_m": 0.07356076353266786,
+    "max_position_error_m": 0.6106055370911377,
+    "settling_time_s": 0.54,
+    "max_tilt_rad": 0.26875913283184233,
+    "constraint_violation_count": 18
+  },
+  "artifacts": {
+    "model_source": "Results/mworks_generated_profiles/cert-l1-awff-climb-20260719-v1/GeneratedProfile.mo",
+    "model_source_sha256": "e54e8f05416bd72b626a00b121ab55c05636b20ac4e560d10fa7164c0ef596f8",
+    "raw_csv": "Results/mworks_generated_profiles/cert-l1-awff-climb-20260719-v1/raw/result.csv",
+    "raw_csv_sha256": "c0916e619ce9a70bfa20b279dc965812336e61b13a96271681a5bd949bc991b3",
+    "metrics_json": "Results/mworks_generated_profiles/cert-l1-awff-climb-20260719-v1/metrics/metrics.json",
+    "mcp_log": "Results/mworks_generated_profiles/cert-l1-awff-climb-20260719-v1/logs/mcp.jsonl",
+    "native_result": "Results/mworks_generated_profiles/cert-l1-awff-climb-20260719-v1/native_result/MoSimGenerated_cert_l1_awff_climb_20260719_v1/Result.msr",
+    "native_result_sha256": "11251da9c818b65ed6ba8d1b355c05241460345e24cee0b6084629ceb1961b48"
+  },
+  "claim_boundary": "Real offline MWORKS model/check/simulation/result/animation evidence only. It is not PX4, Gazebo, ROS1, mworks_live, or flight evidence."
+}

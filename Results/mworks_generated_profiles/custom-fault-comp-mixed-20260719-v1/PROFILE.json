@@ -1,0 +1,27 @@
+{
+  "schema": "mosim.offline_custom_profile_request.v1",
+  "profile_id": "custom_fault_comp_mixed_v1",
+  "profile_kind": "custom",
+  "controller_id": "fault_compensation",
+  "output_variant": "ROTOR_COMMAND",
+  "scenario_id": "climb_rotor1_loss10_mild_wind",
+  "rotor_effectiveness": [
+    0.9,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "gust_force": [
+    0.4,
+    0.0,
+    0.0
+  ],
+  "run_id": "custom-fault-comp-mixed-20260719-v1",
+  "runner_model": "MoSimQuadrotorModel.ExperimentRunner.Runners.RotorCommandRunner",
+  "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.FaultCompensationRotorAdapter",
+  "generated_model_name": "MoSimGenerated_custom_fault_comp_mixed_20260719_v1",
+  "wrapper_path": "Results/mworks_generated_profiles/custom-fault-comp-mixed-20260719-v1/GeneratedProfile.mo",
+  "wrapper_sha256": "3d805fa2a4c480cc48547396bce82d337a43841e36a86380f0b0514ac7fa3568",
+  "certification_state": "generated_unchecked",
+  "claim_boundary": "Generated and compatibility-checked only; MWORKS check, simulation, Result.msr and animation remain pending."
+}

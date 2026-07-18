@@ -1,0 +1,151 @@
+{
+  "schema": "mosim.offline_composition_catalog.v1",
+  "version": 1,
+  "claim_boundary": "Offline MWORKS composition only. No entry is PX4, Gazebo, ROS1, mworks_live, or flight evidence.",
+  "generated_wrapper_root": "Results/mworks_generated_profiles",
+  "shared_plant_model": "MoSimQuadrotorModel.ExperimentRunner.Plant.SingleUavPlantAnimation",
+  "execution_policy": {
+    "composition_fallback_order": [
+      "shared_plant_shared_runner_thin_wrapper",
+      "shared_plant_dedicated_runner_thin_wrapper",
+      "dedicated_full_model"
+    ],
+    "dedicated_full_model_requires": "A current short MWORKS numeric gate must prove that both shared-runner routes are structurally or numerically incompatible.",
+    "app_exposes_catalog_entry_not_backend_model_name": true,
+    "close_run_windows_after_evidence_capture": true,
+    "shutdown_dedicated_session_after_run": true
+  },
+  "result_contract": {
+    "native_result_name": "Result.msr",
+    "required_variables": [
+      "position_ref[1]",
+      "position_ref[2]",
+      "position_ref[3]",
+      "position[1]",
+      "position[2]",
+      "position[3]",
+      "attitude[1]",
+      "attitude[2]",
+      "attitude[3]",
+      "position_error_norm"
+    ],
+    "animation_owner": "shared_plant_native_multibody_animation"
+  },
+  "runners": {
+    "ATTITUDE_THRUST": {
+      "model": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+      "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
+    },
+    "BODY_RATE_THRUST": {
+      "model": "MoSimQuadrotorModel.ExperimentRunner.Runners.BodyRateThrustRunner",
+      "offline_inner_owner": "mworks_offline_body_rate_inner_and_allocator_v1"
+    },
+    "WRENCH": {
+      "model": "MoSimQuadrotorModel.ExperimentRunner.Runners.WrenchRunner",
+      "offline_inner_owner": "mworks_offline_control_allocator_v1"
+    },
+    "ROTOR_COMMAND": {
+      "model": "MoSimQuadrotorModel.ExperimentRunner.Runners.RotorCommandRunner",
+      "offline_inner_owner": "controller_owned_rotor_command"
+    }
+  },
+  "modules": {
+    "offline_attitude_thrust_fixture": {
+      "output_variant": "ATTITUDE_THRUST",
+      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.OfflineAttitudeThrustController",
+      "status": "fixture"
+    },
+    "offline_body_rate_thrust_fixture": {
+      "output_variant": "BODY_RATE_THRUST",
+      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.OfflineBodyRateThrustController",
+      "status": "fixture"
+    },
+    "offline_wrench_fixture": {
+      "output_variant": "WRENCH",
+      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.OfflineWrenchController",
+      "status": "fixture"
+    },
+    "official_pid": {
+      "output_variant": "ROTOR_COMMAND",
+      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.OfficialPIDRotorAdapter",
+      "status": "available"
+    },
+    "improved_pid": {
+      "output_variant": "ROTOR_COMMAND",
+      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.ImprovedPIDRotorAdapter",
+      "status": "available"
+    },
+    "awff": {
+      "output_variant": "ROTOR_COMMAND",
+      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.AWFFRotorAdapter",
+      "status": "available"
+    },
+    "pid_indi": {
+      "output_variant": "ROTOR_COMMAND",
+      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.INDIRotorAdapter",
+      "status": "available"
+    },
+    "linear_mpc": {
+      "output_variant": "ROTOR_COMMAND",
+      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.LinearMPCRotorAdapter",
+      "status": "available"
+    },
+    "l1_awff": {
+      "output_variant": "ROTOR_COMMAND",
+      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.L1RotorAdapter",
+      "status": "available"
+    },
+    "qp_nmpc_safety": {
+      "output_variant": "ROTOR_COMMAND",
+      "nominal_controller_id": "linear_mpc",
+      "composition_kind": "safety_projection",
+      "status": "blocked_current_run",
+      "disabled_reason": "Current shared-runner and dedicated-model MWORKS runs are numerically unstable; keep visible but disabled until a versioned implementation passes the short numeric gate.",
+      "known_backend_models": [
+        "QuadrotorControllerBlocks.AWFF_QPNMPCSafetyController_Sysblock",
+        "QuadrotorExperiments.RobustFaultScenarios.Example1QPNMPCSafetySysblockClosedLoop"
+      ]
+    },
+    "fault_compensation": {
+      "output_variant": "ROTOR_COMMAND",
+      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.FaultCompensationRotorAdapter",
+      "status": "available"
+    }
+  },
+  "certified_profiles": [
+    {"profile_id": "offline_official_pid_climb_v1", "vehicle_count": 1, "controller_id": "official_pid", "output_variant": "ROTOR_COMMAND", "scenario_id": "climb", "rotor_effectiveness": [1, 1, 1, 1], "gust_force": [0, 0, 0], "certification_state": "accepted", "certification_run_id": "cert-official-pid-20260719-v2", "certification_record": "Results/mworks_generated_profiles/cert-official-pid-20260719-v2/CERTIFICATION.json"},
+    {"profile_id": "offline_improved_pid_climb_v1", "vehicle_count": 1, "controller_id": "improved_pid", "output_variant": "ROTOR_COMMAND", "scenario_id": "climb", "rotor_effectiveness": [1, 1, 1, 1], "gust_force": [0, 0, 0], "certification_state": "accepted", "certification_run_id": "cert-improved-pid-20260719-v1", "certification_record": "Results/mworks_generated_profiles/cert-improved-pid-20260719-v1/CERTIFICATION.json"},
+    {"profile_id": "offline_awff_climb_v1", "vehicle_count": 1, "controller_id": "awff", "output_variant": "ROTOR_COMMAND", "scenario_id": "climb", "rotor_effectiveness": [1, 1, 1, 1], "gust_force": [0, 0, 0], "certification_state": "accepted", "certification_run_id": "cert-awff-20260719-v1", "certification_record": "Results/mworks_generated_profiles/cert-awff-20260719-v1/CERTIFICATION.json"},
+    {"profile_id": "offline_pid_indi_climb_v1", "vehicle_count": 1, "controller_id": "pid_indi", "output_variant": "ROTOR_COMMAND", "scenario_id": "climb", "rotor_effectiveness": [1, 1, 1, 1], "gust_force": [0, 0, 0], "certification_state": "accepted", "certification_run_id": "cert-pid-indi-20260719-v1", "certification_record": "Results/mworks_generated_profiles/cert-pid-indi-20260719-v1/CERTIFICATION.json"},
+    {"profile_id": "offline_linear_mpc_climb_v1", "vehicle_count": 1, "controller_id": "linear_mpc", "output_variant": "ROTOR_COMMAND", "scenario_id": "climb", "rotor_effectiveness": [1, 1, 1, 1], "gust_force": [0, 0, 0], "certification_state": "accepted", "certification_run_id": "cert-linear-mpc-20260719-v1", "certification_record": "Results/mworks_generated_profiles/cert-linear-mpc-20260719-v1/CERTIFICATION.json"},
+    {"profile_id": "offline_l1_awff_climb_v1", "vehicle_count": 1, "controller_id": "l1_awff", "output_variant": "ROTOR_COMMAND", "scenario_id": "climb", "rotor_effectiveness": [1, 1, 1, 1], "gust_force": [0, 0, 0], "certification_state": "accepted", "certification_run_id": "cert-l1-awff-climb-20260719-v1", "certification_record": "Results/mworks_generated_profiles/cert-l1-awff-climb-20260719-v1/CERTIFICATION.json"},
+    {"profile_id": "offline_l1_awff_wind_v1", "vehicle_count": 1, "controller_id": "l1_awff", "output_variant": "ROTOR_COMMAND", "scenario_id": "climb_wind", "rotor_effectiveness": [1, 1, 1, 1], "gust_force": [1.5, 0, 0], "certification_state": "accepted", "certification_run_id": "cert-l1-awff-wind-20260719-v1", "certification_record": "Results/mworks_generated_profiles/cert-l1-awff-wind-20260719-v1/CERTIFICATION.json"},
+    {"profile_id": "offline_fault_comp_rotor1_85_v1", "vehicle_count": 1, "controller_id": "fault_compensation", "output_variant": "ROTOR_COMMAND", "scenario_id": "climb_rotor1_loss15", "rotor_effectiveness": [0.85, 1, 1, 1], "gust_force": [0, 0, 0], "certification_state": "accepted", "certification_run_id": "cert-fault-comp-rotor1-85-20260719-v1", "certification_record": "Results/mworks_generated_profiles/cert-fault-comp-rotor1-85-20260719-v1/CERTIFICATION.json"},
+    {"profile_id": "offline_three_uav_linear_mpc_figure8_v1", "vehicle_count": 3, "controller_id": "linear_mpc", "output_variant": "ROTOR_COMMAND", "scenario_id": "formation_triangle_figure8", "execution_kind": "direct_model", "direct_model": "QuadrotorExperiments.FormationScenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop", "direct_model_file": "Models/QuadrotorExperiments/FormationScenarios/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo", "stop_time_s": 80, "certification_state": "accepted", "certification_run_id": "cert-three-uav-linear-mpc-figure8-20260719-v2", "certification_record": "Results/mworks_generated_profiles/cert-three-uav-linear-mpc-figure8-20260719-v2/CERTIFICATION.json"}
+  ],
+  "custom_profile_proofs": [
+    {
+      "profile_id": "custom_improved_pid_mild_wind_v1",
+      "run_id": "custom-improved-pid-mild-wind-20260719-v1",
+      "status": "accepted",
+      "certification_record": "Results/mworks_generated_profiles/custom-improved-pid-mild-wind-20260719-v1/CERTIFICATION.json"
+    },
+    {
+      "profile_id": "custom_fault_comp_mixed_v1",
+      "run_id": "custom-fault-comp-mixed-20260719-v1",
+      "status": "accepted",
+      "certification_record": "Results/mworks_generated_profiles/custom-fault-comp-mixed-20260719-v1/CERTIFICATION.json"
+    }
+  ],
+  "disabled_profiles": [
+    {
+      "profile_id": "offline_qp_nmpc_safety_climb_v1",
+      "vehicle_count": 1,
+      "controller_id": "qp_nmpc_safety",
+      "output_variant": "ROTOR_COMMAND",
+      "scenario_id": "climb",
+      "certification_state": "blocked_current_run",
+      "disabled_reason": "The current run diverged in both the shared Plant/Runner route and the existing dedicated experiment model."
+    }
+  ]
+}

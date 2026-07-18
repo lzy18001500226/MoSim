@@ -1,0 +1,68 @@
+{
+  "schema": "mosim.offline_profile_certification.v1",
+  "generated_at": "2026-07-19T02:43:01+08:00",
+  "run_id": "cert-pid-indi-20260719-v1",
+  "profile_id": "offline_pid_indi_climb_v1",
+  "profile_kind": "certified",
+  "controller_id": "pid_indi",
+  "scenario_id": "climb",
+  "output_variant": "ROTOR_COMMAND",
+  "status": "accepted",
+  "acceptance": {
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "raw_result_valid": true,
+    "native_result_present": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "bounded_closed_loop": true
+  },
+  "animation_acceptance_rule": "CreateAnimation succeeds and the native animation window opens; playback is not required.",
+  "session_cleanup": {
+    "policy": "Certification runs request GUI reset and dedicated-session shutdown after evidence capture.",
+    "shutdown_recorded": false
+  },
+  "raw_summary": {
+    "row_count": 5001,
+    "end_time_s": 50.0,
+    "position_end_m": [
+      10.000480774635045,
+      10.000009615765967,
+      14.999998994225189
+    ],
+    "position_ref_end_m": [
+      10.0,
+      10.0,
+      15.0
+    ],
+    "position_error_norm_end_m": 0.00048087183764617254,
+    "attitude_end_rad": [
+      0.00017233047457353495,
+      -4.706119027292032e-07,
+      -3.809253320332619e-05
+    ],
+    "rotor_speed_1_end_rad_s": 54.10349415336893
+  },
+  "selected_metrics": {
+    "position_rmse_m": 0.13796108420151607,
+    "steady_state_error_m": 0.07375263326940072,
+    "max_position_error_m": 0.6101387604392822,
+    "settling_time_s": 0.54,
+    "max_tilt_rad": 0.2718036894533488,
+    "constraint_violation_count": 18
+  },
+  "artifacts": {
+    "model_source": "Results/mworks_generated_profiles/cert-pid-indi-20260719-v1/GeneratedProfile.mo",
+    "model_source_sha256": "ff838ca888d51e5e9a666d06cb0bced86905393ab04b11d85f9dfae59898f6a6",
+    "raw_csv": "Results/mworks_generated_profiles/cert-pid-indi-20260719-v1/raw/result.csv",
+    "raw_csv_sha256": "768c9c069564168d03786154562d4b73fd12afb0db61c4d4341de487440c6571",
+    "metrics_json": "Results/mworks_generated_profiles/cert-pid-indi-20260719-v1/metrics/metrics.json",
+    "mcp_log": "Results/mworks_generated_profiles/cert-pid-indi-20260719-v1/logs/mcp.jsonl",
+    "native_result": "Results/mworks_generated_profiles/cert-pid-indi-20260719-v1/native_result/MoSimGenerated_cert_pid_indi_20260719_v1/Result.msr",
+    "native_result_sha256": "0102c657586f305009710192ab35dcceac8877761937ec69af7f249bb0f5a899"
+  },
+  "claim_boundary": "Real offline MWORKS model/check/simulation/result/animation evidence only. It is not PX4, Gazebo, ROS1, mworks_live, or flight evidence."
+}

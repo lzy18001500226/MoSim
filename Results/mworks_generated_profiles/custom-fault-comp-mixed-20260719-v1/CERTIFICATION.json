@@ -1,0 +1,68 @@
+{
+  "schema": "mosim.offline_profile_certification.v1",
+  "generated_at": "2026-07-19T02:43:02+08:00",
+  "run_id": "custom-fault-comp-mixed-20260719-v1",
+  "profile_id": "custom_fault_comp_mixed_v1",
+  "profile_kind": "custom",
+  "controller_id": "fault_compensation",
+  "scenario_id": "climb_rotor1_loss10_mild_wind",
+  "output_variant": "ROTOR_COMMAND",
+  "status": "accepted",
+  "acceptance": {
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "raw_result_valid": true,
+    "native_result_present": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "bounded_closed_loop": true
+  },
+  "animation_acceptance_rule": "CreateAnimation succeeds and the native animation window opens; playback is not required.",
+  "session_cleanup": {
+    "policy": "Certification runs request GUI reset and dedicated-session shutdown after evidence capture.",
+    "shutdown_recorded": true
+  },
+  "raw_summary": {
+    "row_count": 5001,
+    "end_time_s": 50.0,
+    "position_end_m": [
+      10.105847779671599,
+      9.891754726608252,
+      15.000000866789463
+    ],
+    "position_ref_end_m": [
+      10.0,
+      10.0,
+      15.0
+    ],
+    "position_error_norm_end_m": 0.15139614154202571,
+    "attitude_end_rad": [
+      0.00022448040320975477,
+      1.4708299618612975e-06,
+      -0.004199243565039799
+    ],
+    "rotor_speed_1_end_rad_s": 56.2650608920062
+  },
+  "selected_metrics": {
+    "position_rmse_m": 0.245702023286342,
+    "steady_state_error_m": 0.1877360441565703,
+    "max_position_error_m": 0.8393191045624275,
+    "settling_time_s": 32.74,
+    "max_tilt_rad": 0.23161901748800445,
+    "constraint_violation_count": 18
+  },
+  "artifacts": {
+    "model_source": "Results/mworks_generated_profiles/custom-fault-comp-mixed-20260719-v1/GeneratedProfile.mo",
+    "model_source_sha256": "3d805fa2a4c480cc48547396bce82d337a43841e36a86380f0b0514ac7fa3568",
+    "raw_csv": "Results/mworks_generated_profiles/custom-fault-comp-mixed-20260719-v1/raw/result.csv",
+    "raw_csv_sha256": "b453a10ce750755d11ff96ab2ea326ad8cfafc6b91bf257851aed4cd5aea01a7",
+    "metrics_json": "Results/mworks_generated_profiles/custom-fault-comp-mixed-20260719-v1/metrics/metrics.json",
+    "mcp_log": "Results/mworks_generated_profiles/custom-fault-comp-mixed-20260719-v1/logs/mcp.jsonl",
+    "native_result": "Results/mworks_generated_profiles/custom-fault-comp-mixed-20260719-v1/native_result/MoSimGenerated_custom_fault_comp_mixed_20260719_v1/Result.msr",
+    "native_result_sha256": "4b1ac33ffac14bdd741c3d70258374255a28a1c30e11cc8da73418c55f92dd36"
+  },
+  "claim_boundary": "Real offline MWORKS model/check/simulation/result/animation evidence only. It is not PX4, Gazebo, ROS1, mworks_live, or flight evidence."
+}

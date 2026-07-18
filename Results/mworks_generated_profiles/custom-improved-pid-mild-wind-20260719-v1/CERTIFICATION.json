@@ -1,0 +1,68 @@
+{
+  "schema": "mosim.offline_profile_certification.v1",
+  "generated_at": "2026-07-19T02:43:02+08:00",
+  "run_id": "custom-improved-pid-mild-wind-20260719-v1",
+  "profile_id": "custom_improved_pid_mild_wind_v1",
+  "profile_kind": "custom",
+  "controller_id": "improved_pid",
+  "scenario_id": "climb_mild_wind",
+  "output_variant": "ROTOR_COMMAND",
+  "status": "accepted",
+  "acceptance": {
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "raw_result_valid": true,
+    "native_result_present": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "bounded_closed_loop": true
+  },
+  "animation_acceptance_rule": "CreateAnimation succeeds and the native animation window opens; playback is not required.",
+  "session_cleanup": {
+    "policy": "Certification runs request GUI reset and dedicated-session shutdown after evidence capture.",
+    "shutdown_recorded": true
+  },
+  "raw_summary": {
+    "row_count": 5001,
+    "end_time_s": 50.0,
+    "position_end_m": [
+      10.000571998493639,
+      9.995475977771266,
+      15.000001244270994
+    ],
+    "position_ref_end_m": [
+      10.0,
+      10.0,
+      15.0
+    ],
+    "position_error_norm_end_m": 0.004560039577790758,
+    "attitude_end_rad": [
+      6.059687879491391e-05,
+      3.6105037654990345e-06,
+      5.440230983840286e-07
+    ],
+    "rotor_speed_1_end_rad_s": 54.104340612628114
+  },
+  "selected_metrics": {
+    "position_rmse_m": 0.2025467974291693,
+    "steady_state_error_m": 0.10845909143009982,
+    "max_position_error_m": 0.7295974778237272,
+    "settling_time_s": 0.73,
+    "max_tilt_rad": 0.20377861211499146,
+    "constraint_violation_count": 17
+  },
+  "artifacts": {
+    "model_source": "Results/mworks_generated_profiles/custom-improved-pid-mild-wind-20260719-v1/GeneratedProfile.mo",
+    "model_source_sha256": "bff0ec1ed3a41b25313eda167d8787ee3125db368d7d16260ed403bebf9498df",
+    "raw_csv": "Results/mworks_generated_profiles/custom-improved-pid-mild-wind-20260719-v1/raw/result.csv",
+    "raw_csv_sha256": "45210b97a116e0284f57601b73f6f19a28386ecdae3e85563ba4829d9d846eb1",
+    "metrics_json": "Results/mworks_generated_profiles/custom-improved-pid-mild-wind-20260719-v1/metrics/metrics.json",
+    "mcp_log": "Results/mworks_generated_profiles/custom-improved-pid-mild-wind-20260719-v1/logs/mcp.jsonl",
+    "native_result": "Results/native_result_cache/custom-improved-pid-mild-wind-20260719-v1/MoSimGenerated_custom_improved_pid_mild_wind_20260719_v1/Result.msr",
+    "native_result_sha256": "dc85f1d5164ced5c709dd4654ee0b1f924f9d2152d4cbb97415be93275e04cff"
+  },
+  "claim_boundary": "Real offline MWORKS model/check/simulation/result/animation evidence only. It is not PX4, Gazebo, ROS1, mworks_live, or flight evidence."
+}

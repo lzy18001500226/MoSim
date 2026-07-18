@@ -1,0 +1,72 @@
+{
+  "schema": "mosim.offline_profile_certification.v1",
+  "generated_at": "2026-07-19T02:43:02+08:00",
+  "run_id": "cert-three-uav-linear-mpc-figure8-20260719-v2",
+  "profile_id": "offline_three_uav_linear_mpc_figure8_v1",
+  "profile_kind": "certified",
+  "controller_id": "linear_mpc",
+  "scenario_id": "formation_triangle_figure8",
+  "output_variant": "ROTOR_COMMAND",
+  "status": "accepted",
+  "acceptance": {
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "raw_result_valid": true,
+    "native_result_present": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "bounded_closed_loop": true
+  },
+  "animation_acceptance_rule": "CreateAnimation succeeds and the native animation window opens; playback is not required.",
+  "session_cleanup": {
+    "policy": "Certification runs request GUI reset and dedicated-session shutdown after evidence capture.",
+    "shutdown_recorded": true
+  },
+  "raw_summary": {
+    "row_count": 4001,
+    "end_time_s": 80.0,
+    "position_end_m": [
+      -2.374811100769702,
+      -1.4797593461261727,
+      0.9999990808413078
+    ],
+    "position_ref_end_m": [
+      -2.370809138015498,
+      -1.469463130731182,
+      1.0
+    ],
+    "position_error_norm_end_m": 2.3420975881365883e-10,
+    "attitude_end_rad": [
+      -0.00237892166228405,
+      0.0009553951914074851,
+      1.577477608142118e-06
+    ],
+    "rotor_speed_1_end_rad_s": 54.10404379519919,
+    "formation_error_end_m": 2.3420975881365883e-10,
+    "min_inter_uav_distance_end_m": 1.280624847303557,
+    "max_formation_error_m": 4.113102670136469e-10,
+    "min_inter_uav_distance_m": 1.2806248470016286
+  },
+  "selected_metrics": {
+    "position_rmse_m": 0.02117919285287649,
+    "steady_state_error_m": 0.010544020803986306,
+    "max_position_error_m": 0.14380785551069927,
+    "settling_time_s": 1.36,
+    "max_tilt_rad": 0.07348285563460609,
+    "constraint_violation_count": 0
+  },
+  "artifacts": {
+    "model_source": "Models/QuadrotorExperiments/FormationScenarios/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo",
+    "model_source_sha256": "08a59e6ddb48c2860ac817824f75b0b3b7688c70eab540bd32dc3b58ca37ec89",
+    "raw_csv": "Results/mworks_generated_profiles/cert-three-uav-linear-mpc-figure8-20260719-v2/raw/result.csv",
+    "raw_csv_sha256": "4258944454cbbc02d4be4f3b60698ffd098620c1e448282e384dace0bac6c171",
+    "metrics_json": "Results/mworks_generated_profiles/cert-three-uav-linear-mpc-figure8-20260719-v2/metrics/metrics.json",
+    "mcp_log": "Results/mworks_generated_profiles/cert-three-uav-linear-mpc-figure8-20260719-v2/logs/mcp.jsonl",
+    "native_result": "Results/native_result_cache/cert-three-uav-linear-mpc-figure8-20260719-v2/FormationTriangleFigure8LinearMPCSysblockClosedLoop/Result.msr",
+    "native_result_sha256": "b8d0fe4283a6b51ede97a20abdc52a1f1c465d9a64aef889f1cd9f1f95abb3ec"
+  },
+  "claim_boundary": "Real offline MWORKS model/check/simulation/result/animation evidence only. It is not PX4, Gazebo, ROS1, mworks_live, or flight evidence."
+}

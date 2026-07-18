@@ -6,7 +6,26 @@
 > multi-thread or packet trace-back, use `Docs/Workflows/agent_task_ledger.md`
 > only when explicitly auditing legacy material.
 
-## 2026-07-18 CST - Current Active Context
+## 2026-07-19 CST - Current Active Context
+
+The user explicitly reopened the bounded Model Studio offline-composition goal
+after the earlier non-frontend closeout freeze. The current offline MWORKS
+platform now has a shared single-UAV Plant/Animation, four explicit output
+boundary Runners, thin generated Wrappers, compatibility checks, 8 accepted
+single-UAV Certified Profiles, 1 accepted three-UAV Certified Profile, and 2
+accepted Custom Profile end-to-end proofs. The composition fallback order is
+shared Runner, dedicated Runner with shared Plant/Animation, then a dedicated
+full model only after a current short numeric gate proves the shared routes
+incompatible. QP/NMPC Safety remains visible but disabled because both shared
+and existing dedicated-model runs diverged; an opened animation window is not
+control-quality evidence. Certification runs reset GUI windows and shut down
+their dedicated Sysplorer session after evidence capture.
+
+This goal is offline MWORKS and Model Studio evidence only. It does not change
+the ROS1/Gazebo/PX4/MAVROS runtime authority, mworks_live RT0-RT5 contracts, or
+QGC flight ownership described by the mainline board.
+
+## 2026-07-18 CST - Prior Active Context
 
 Latest C3 status: the official-PID versus gain-scheduled-PID seven-scenario
 A/B has 14 generated-C/provenance-complete run directories and is frozen at
