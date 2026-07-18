@@ -1,0 +1,45 @@
+{
+  "schema": "mosim.model_studio.offline_expansion_live_blocker.v1",
+  "recorded_at": "2026-07-19T03:23:51.9469766+08:00",
+  "phase": "P2_four_boundary_runner_live_check",
+  "status": "blocked_mcp_sysplorer_call_surface_unresponsive",
+  "operations": [
+    {
+      "operation": "session_manager_probe",
+      "attempt": 3,
+      "result": "returned",
+      "find_sysplorer_ports": [49152],
+      "cached_driver_present": false,
+      "note": "The response included prior MCP startup metadata for dedicated port 49164. This Goal did not call ensure, restart, or force_restart."
+    },
+    {
+      "operation": "check_model",
+      "models": [
+        "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "MoSimQuadrotorModel.ExperimentRunner.Runners.BodyRateThrustRunner",
+        "MoSimQuadrotorModel.ExperimentRunner.Runners.WrenchRunner",
+        "MoSimQuadrotorModel.ExperimentRunner.Runners.RotorCommandRunner"
+      ],
+      "result": "no_response_terminated_by_bounded_wait",
+      "wait_seconds_approx": 100,
+      "model_quality_result": "not_evaluated"
+    },
+    {
+      "operation": "session_manager_probe_after_check_timeout",
+      "result": "no_response_terminated_by_bounded_wait",
+      "wait_seconds_approx": 30
+    }
+  ],
+  "actions_not_taken": [
+    "session_ensure",
+    "session_restart",
+    "session_force_restart",
+    "sysplorer_click",
+    "model_reload",
+    "model_mutation",
+    "simulation",
+    "result_or_animation_claim"
+  ],
+  "claim_ceiling": "The current MCP/Sysplorer call surface became unresponsive during check_model. No Runner passed or failed model check, and no simulation, Result.msr, metric, or animation evidence was produced.",
+  "next_live_action": "After the Sysplorer/MCP call surface is independently healthy, check one Runner at a time with a bounded wait before attempting a batch."
+}

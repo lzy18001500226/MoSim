@@ -198,3 +198,20 @@ blocks reuse as native-boundary code-generation or online evidence. Unresolved
 legacy aliases must keep their native boundary null and remain disabled for
 code-generation/online reuse until a source/model audit proves an exact
 registry mapping.
+
+The third bounded read-only probe returned once and exposed a visible
+Sysplorer port, so the Goal attempted the smallest authorized live gate: one
+batch `check_model` call covering the four existing Runners without reload or
+model mutation. That call returned nothing within approximately 100 seconds
+and was terminated. A follow-up read-only probe then also returned nothing
+within 30 seconds. The live blocker record is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P2_LIVE_BLOCKER.json
+```
+
+This is an MCP/Sysplorer call-surface blocker, not a model-check failure. All
+four Runner model-quality results remain `not_evaluated`; no simulation,
+`Result.msr`, metric, or animation claim was made. Do not restart Sysplorer or
+advance to simulation without a fresh healthy probe and a successful bounded
+single-Runner check.
