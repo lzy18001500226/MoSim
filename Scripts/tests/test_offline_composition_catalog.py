@@ -39,3 +39,27 @@ def test_unresolved_alias_requires_a_blocker() -> None:
     changed["modules"]["linear_mpc"].pop("mapping_blocker")
     errors = checker.validate_module_mappings(changed, inventory)
     assert "unresolved_mapping_blocker_missing:linear_mpc" in errors
+
+
+def test_resolved_native_boundary_must_match_frozen_inventory() -> None:
+    catalog, inventory = authority()
+    changed = copy.deepcopy(catalog)
+    changed["modules"]["official_pid"]["native_output_variant"] = "ROTOR_COMMAND"
+    errors = checker.validate_module_mappings(changed, inventory)
+    assert "resolved_native_output_variant_mismatch:official_pid" in errors
+
+
+def test_cross_boundary_mapping_must_be_explicit_and_offline_only() -> None:
+    catalog, inventory = authority()
+    changed = copy.deepcopy(catalog)
+    changed["modules"]["awff"].pop("boundary_conversion_state")
+    errors = checker.validate_module_mappings(changed, inventory)
+    assert "cross_boundary_conversion_not_declared:awff" in errors
+
+
+def test_unresolved_alias_cannot_guess_native_boundary() -> None:
+    catalog, inventory = authority()
+    changed = copy.deepcopy(catalog)
+    changed["modules"]["l1_awff"]["native_output_variant"] = "ATTITUDE_THRUST"
+    errors = checker.validate_module_mappings(changed, inventory)
+    assert "unresolved_native_output_variant_must_be_null:l1_awff" in errors

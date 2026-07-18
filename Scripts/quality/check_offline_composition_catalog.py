@@ -15,13 +15,21 @@ MAPPING_STATES = {"RESOLVED_REGISTRY_MAPPING", "UNRESOLVED_LEGACY_ALIAS", "NOT_A
 
 
 def validate_module_mappings(catalog: dict, inventory: dict) -> list[str]:
-    registry_ids = {module["module_id"] for module in inventory["modules"]}
+    registry = {module["module_id"]: module for module in inventory["modules"]}
+    registry_ids = set(registry)
     errors: list[str] = []
     for module_id, module in catalog.get("modules", {}).items():
         mapping_state = module.get("mapping_state")
         mapped_ids = module.get("registry_module_ids")
         if module.get("entry_kind") not in {"boundary_fixture", "legacy_bundle", "layered_adapter"}:
             errors.append(f"invalid_entry_kind:{module_id}")
+        adapter_output = module.get("adapter_output_variant")
+        if adapter_output not in ALLOWED_VARIANTS or module.get("output_variant") != adapter_output:
+            errors.append(f"adapter_output_variant_mismatch:{module_id}")
+        if not module.get("offline_inner_owner"):
+            errors.append(f"offline_inner_owner_missing:{module_id}")
+        if not module.get("codegen_online_reuse_state"):
+            errors.append(f"codegen_online_reuse_state_missing:{module_id}")
         if mapping_state not in MAPPING_STATES:
             errors.append(f"invalid_mapping_state:{module_id}")
         if not isinstance(mapped_ids, list) or len(mapped_ids) != len(set(mapped_ids)):
@@ -43,10 +51,26 @@ def validate_module_mappings(catalog: dict, inventory: dict) -> list[str]:
                 composition_ids.update(composition.get("augmentations", []))
                 if composition_ids != set(mapped_ids):
                     errors.append(f"resolved_mapping_ids_mismatch:{module_id}")
+                if not unknown:
+                    native_variants = {registry[mapped_id]["native_output_boundary"] for mapped_id in mapped_ids}
+                    if len(native_variants) != 1 or module.get("native_output_variant") not in native_variants:
+                        errors.append(f"resolved_native_output_variant_mismatch:{module_id}")
+                if module.get("native_output_variant") != adapter_output:
+                    if module.get("boundary_conversion_state") != "explicit_legacy_bundle_offline_only":
+                        errors.append(f"cross_boundary_conversion_not_declared:{module_id}")
+                    if not str(module.get("codegen_online_reuse_state", "")).startswith("blocked_"):
+                        errors.append(f"cross_boundary_online_reuse_not_blocked:{module_id}")
         elif mapping_state == "UNRESOLVED_LEGACY_ALIAS" and not module.get("mapping_blocker"):
             errors.append(f"unresolved_mapping_blocker_missing:{module_id}")
+        elif mapping_state == "UNRESOLVED_LEGACY_ALIAS":
+            if module.get("native_output_variant") is not None:
+                errors.append(f"unresolved_native_output_variant_must_be_null:{module_id}")
+            if not str(module.get("codegen_online_reuse_state", "")).startswith("blocked_"):
+                errors.append(f"unresolved_online_reuse_not_blocked:{module_id}")
         elif mapping_state == "NOT_APPLICABLE" and module.get("entry_kind") != "boundary_fixture":
             errors.append(f"not_applicable_mapping_not_fixture:{module_id}")
+        elif mapping_state == "NOT_APPLICABLE" and module.get("native_output_variant") != adapter_output:
+            errors.append(f"fixture_boundary_mismatch:{module_id}")
     return errors
 
 

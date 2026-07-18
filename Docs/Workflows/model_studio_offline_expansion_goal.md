@@ -188,3 +188,13 @@ response within 30 seconds and was terminated. No start, reconnect, click,
 model mutation, or window action was attempted. This is the second observed
 live blocker occurrence for the active Goal; P2 live model checks and
 simulations remain blocked while static fail-closed contract work can continue.
+
+P2 static checkpoint 4 makes every current compatibility entry declare the
+three-part Adapter chain: native registry boundary, Adapter output boundary,
+and offline inner-loop owner. The three resolved registry compositions all
+declare an offline-only legacy bundle conversion from `ATTITUDE_THRUST` to
+`ROTOR_COMMAND`; this preserves their accepted offline Profiles but explicitly
+blocks reuse as native-boundary code-generation or online evidence. Unresolved
+legacy aliases must keep their native boundary null and remain disabled for
+code-generation/online reuse until a source/model audit proves an exact
+registry mapping.
