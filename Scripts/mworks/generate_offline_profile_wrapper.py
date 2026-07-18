@@ -53,6 +53,40 @@ def certified_request(catalog: dict[str, Any], profile_id: str, run_id: str) -> 
     raise ValueError("certified_profile_not_found")
 
 
+COMPOSITION_FIELDS = (
+    "formation_controller",
+    "nominal_controller",
+    "augmentations",
+    "safety_filter",
+    "fault_manager",
+)
+
+
+def normalize_composition(module: dict[str, Any], request: dict[str, Any]) -> tuple[str, dict[str, Any] | None]:
+    declared = module.get("layered_composition")
+    requested = request.get("composition")
+    if requested is None:
+        return "legacy_bundle_v1", declared
+    if module.get("mapping_state") != "RESOLVED_REGISTRY_MAPPING" or not isinstance(declared, dict):
+        raise ValueError("layered_composition_mapping_unresolved")
+    if not isinstance(requested, dict) or set(requested) != set(COMPOSITION_FIELDS):
+        raise ValueError("invalid_layered_composition_shape")
+    normalized = {field: requested[field] for field in COMPOSITION_FIELDS}
+    augmentations = normalized["augmentations"]
+    if not isinstance(augmentations, list) or any(not isinstance(item, str) or not item for item in augmentations):
+        raise ValueError("invalid_augmentations")
+    if len(augmentations) != len(set(augmentations)):
+        raise ValueError("duplicate_augmentation")
+    for field in ("formation_controller", "safety_filter", "fault_manager"):
+        if normalized[field] is not None and not isinstance(normalized[field], str):
+            raise ValueError(f"invalid_{field}")
+    if not isinstance(normalized["nominal_controller"], str) or not normalized["nominal_controller"]:
+        raise ValueError("invalid_nominal_controller")
+    if normalized != declared:
+        raise ValueError("composition_not_implemented_by_adapter")
+    return "layered_exact_v2", normalized
+
+
 def validate_request(catalog: dict[str, Any], request: dict[str, Any]) -> dict[str, Any]:
     run_id = str(request.get("run_id", ""))
     if not RUN_ID_PATTERN.fullmatch(run_id):
@@ -68,6 +102,7 @@ def validate_request(catalog: dict[str, Any], request: dict[str, Any]) -> dict[s
     if not default_runner:
         raise ValueError("runner_not_found")
     runner_model = module.get("runner_model", default_runner["model"])
+    composition_mode, composition = normalize_composition(module, request)
     rotor_effectiveness = finite_vector(request.get("rotor_effectiveness", [1, 1, 1, 1]), 4, "rotor_effectiveness")
     if any(value < 0 or value > 1 for value in rotor_effectiveness):
         raise ValueError("rotor_effectiveness_out_of_range")
@@ -84,6 +119,8 @@ def validate_request(catalog: dict[str, Any], request: dict[str, Any]) -> dict[s
         "output_variant": output_variant,
         "runner_model": runner_model,
         "adapter_model": module["adapter_model"],
+        "composition_mode": composition_mode,
+        "composition": composition,
         "rotor_effectiveness": rotor_effectiveness,
         "gust_force": gust_force,
         "generated_model_name": model_name,

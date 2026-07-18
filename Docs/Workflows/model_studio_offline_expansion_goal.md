@@ -133,3 +133,23 @@ Scripts/quality/check_offline_expansion_inventory.py
 The first live MWORKS expansion must not begin until P1 is committed and
 pushed, Batch A's exact write set is confirmed free, and the project-local
 MWORKS operation/evidence skills have been loaded.
+
+P2 static checkpoint 1 adds a versioned layered-composition contract while
+preserving the competition baseline's legacy single-module requests. Existing
+Adapters are now classified as boundary fixtures or legacy bundles. Only the
+three currently provable registry mappings are exposed as exact layered
+requests:
+
+```text
+official_pid
+official_pid + awff
+official_pid + pid_indi
+```
+
+The tuned `improved_pid`, historical `linear_mpc`, bundled `l1_awff`, blocked
+`qp_nmpc_safety`, and bundled `fault_compensation` entries remain explicit
+unresolved aliases. They can rerun their accepted legacy Profiles but cannot
+claim arbitrary layered composition until source/model audits and new Adapters
+close those mappings. P2 remains active: shared layer interfaces, compatibility
+matrix expansion, Adapter fixtures, and full four-boundary regression are not
+yet complete.

@@ -31,6 +31,28 @@
     ],
     "animation_owner": "shared_plant_native_multibody_animation"
   },
+  "composition_contract": {
+    "schema": "mosim.offline_layered_composition.v2",
+    "legacy_single_module_request_supported": true,
+    "layered_request_policy": "A layered request is accepted only when it exactly matches a resolved registry mapping backed by the selected Adapter. Extra or reordered layers fail closed until a new Adapter and compatibility entry are added.",
+    "slots": {
+      "formation_controller": {"type": ["string", "null"], "maximum": 1},
+      "nominal_controller": {"type": "string", "required": true},
+      "augmentations": {"type": "array", "ordered": true, "unique": true},
+      "safety_filter": {"type": ["string", "null"], "maximum": 1},
+      "fault_manager": {"type": ["string", "null"], "maximum": 1}
+    },
+    "adapter_chain_fields": [
+      "native_output_variant",
+      "adapter_output_variant",
+      "offline_inner_owner"
+    ],
+    "mapping_states": [
+      "RESOLVED_REGISTRY_MAPPING",
+      "UNRESOLVED_LEGACY_ALIAS",
+      "NOT_APPLICABLE"
+    ]
+  },
   "runners": {
     "ATTITUDE_THRUST": {
       "model": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
@@ -53,53 +75,108 @@
     "offline_attitude_thrust_fixture": {
       "output_variant": "ATTITUDE_THRUST",
       "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.OfflineAttitudeThrustController",
-      "status": "fixture"
+      "status": "fixture",
+      "entry_kind": "boundary_fixture",
+      "mapping_state": "NOT_APPLICABLE",
+      "registry_module_ids": []
     },
     "offline_body_rate_thrust_fixture": {
       "output_variant": "BODY_RATE_THRUST",
       "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.OfflineBodyRateThrustController",
-      "status": "fixture"
+      "status": "fixture",
+      "entry_kind": "boundary_fixture",
+      "mapping_state": "NOT_APPLICABLE",
+      "registry_module_ids": []
     },
     "offline_wrench_fixture": {
       "output_variant": "WRENCH",
       "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.OfflineWrenchController",
-      "status": "fixture"
+      "status": "fixture",
+      "entry_kind": "boundary_fixture",
+      "mapping_state": "NOT_APPLICABLE",
+      "registry_module_ids": []
     },
     "official_pid": {
       "output_variant": "ROTOR_COMMAND",
       "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.OfficialPIDRotorAdapter",
-      "status": "available"
+      "status": "available",
+      "entry_kind": "legacy_bundle",
+      "mapping_state": "RESOLVED_REGISTRY_MAPPING",
+      "registry_module_ids": ["official_pid"],
+      "layered_composition": {
+        "formation_controller": null,
+        "nominal_controller": "official_pid",
+        "augmentations": [],
+        "safety_filter": null,
+        "fault_manager": null
+      }
     },
     "improved_pid": {
       "output_variant": "ROTOR_COMMAND",
       "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.ImprovedPIDRotorAdapter",
-      "status": "available"
+      "status": "available",
+      "entry_kind": "legacy_bundle",
+      "mapping_state": "UNRESOLVED_LEGACY_ALIAS",
+      "registry_module_ids": [],
+      "mapping_blocker": "The tuned ImprovedPIDRotorAdapter does not identify one exact baseline registry module and must not be relabeled without a source/model audit."
     },
     "awff": {
       "output_variant": "ROTOR_COMMAND",
       "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.AWFFRotorAdapter",
-      "status": "available"
+      "status": "available",
+      "entry_kind": "legacy_bundle",
+      "mapping_state": "RESOLVED_REGISTRY_MAPPING",
+      "registry_module_ids": ["official_pid", "awff"],
+      "layered_composition": {
+        "formation_controller": null,
+        "nominal_controller": "official_pid",
+        "augmentations": ["awff"],
+        "safety_filter": null,
+        "fault_manager": null
+      }
     },
     "pid_indi": {
       "output_variant": "ROTOR_COMMAND",
       "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.INDIRotorAdapter",
-      "status": "available"
+      "status": "available",
+      "entry_kind": "legacy_bundle",
+      "mapping_state": "RESOLVED_REGISTRY_MAPPING",
+      "registry_module_ids": ["official_pid", "pid_indi"],
+      "layered_composition": {
+        "formation_controller": null,
+        "nominal_controller": "official_pid",
+        "augmentations": ["pid_indi"],
+        "safety_filter": null,
+        "fault_manager": null
+      }
     },
     "linear_mpc": {
       "output_variant": "ROTOR_COMMAND",
       "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.LinearMPCRotorAdapter",
-      "status": "available"
+      "status": "available",
+      "entry_kind": "legacy_bundle",
+      "mapping_state": "UNRESOLVED_LEGACY_ALIAS",
+      "registry_module_ids": [],
+      "mapping_blocker": "The current LinearMPCRotorAdapter predates the registry and cannot be equated to nmpc_outer without a model-equation audit."
     },
     "l1_awff": {
       "output_variant": "ROTOR_COMMAND",
       "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.L1RotorAdapter",
-      "status": "available"
+      "status": "available",
+      "entry_kind": "legacy_bundle",
+      "mapping_state": "UNRESOLVED_LEGACY_ALIAS",
+      "registry_module_ids": [],
+      "mapping_blocker": "The current L1RotorAdapter is a bundled residual controller; its exact l1_awff_minimal/l1_adaptive/awff registry composition is not yet proven."
     },
     "qp_nmpc_safety": {
       "output_variant": "ROTOR_COMMAND",
       "nominal_controller_id": "linear_mpc",
       "composition_kind": "safety_projection",
       "status": "blocked_current_run",
+      "entry_kind": "legacy_bundle",
+      "mapping_state": "UNRESOLVED_LEGACY_ALIAS",
+      "registry_module_ids": [],
+      "mapping_blocker": "The QP/NMPC safety bundle is numerically blocked and has no accepted one-to-one registry mapping.",
       "disabled_reason": "Current shared-runner and dedicated-model MWORKS runs are numerically unstable; keep visible but disabled until a versioned implementation passes the short numeric gate.",
       "known_backend_models": [
         "QuadrotorControllerBlocks.AWFF_QPNMPCSafetyController_Sysblock",
@@ -109,7 +186,11 @@
     "fault_compensation": {
       "output_variant": "ROTOR_COMMAND",
       "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.FaultCompensationRotorAdapter",
-      "status": "available"
+      "status": "available",
+      "entry_kind": "legacy_bundle",
+      "mapping_state": "UNRESOLVED_LEGACY_ALIAS",
+      "registry_module_ids": [],
+      "mapping_blocker": "The current fault-compensation bundle does not expose separable FDI, FTC, allocator, and safe-land slots."
     }
   },
   "certified_profiles": [

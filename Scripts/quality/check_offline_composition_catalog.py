@@ -9,12 +9,51 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG_PATH = ROOT / "Config" / "control_platform" / "offline_composition_catalog.json"
+INVENTORY_PATH = ROOT / "Config" / "control_platform" / "offline_expansion_inventory.json"
 ALLOWED_VARIANTS = {"ATTITUDE_THRUST", "BODY_RATE_THRUST", "WRENCH", "ROTOR_COMMAND"}
+MAPPING_STATES = {"RESOLVED_REGISTRY_MAPPING", "UNRESOLVED_LEGACY_ALIAS", "NOT_APPLICABLE"}
+
+
+def validate_module_mappings(catalog: dict, inventory: dict) -> list[str]:
+    registry_ids = {module["module_id"] for module in inventory["modules"]}
+    errors: list[str] = []
+    for module_id, module in catalog.get("modules", {}).items():
+        mapping_state = module.get("mapping_state")
+        mapped_ids = module.get("registry_module_ids")
+        if module.get("entry_kind") not in {"boundary_fixture", "legacy_bundle", "layered_adapter"}:
+            errors.append(f"invalid_entry_kind:{module_id}")
+        if mapping_state not in MAPPING_STATES:
+            errors.append(f"invalid_mapping_state:{module_id}")
+        if not isinstance(mapped_ids, list) or len(mapped_ids) != len(set(mapped_ids)):
+            errors.append(f"invalid_registry_module_ids:{module_id}")
+            continue
+        unknown = sorted(set(mapped_ids) - registry_ids)
+        if unknown:
+            errors.append(f"unknown_registry_module_ids:{module_id}:{unknown}")
+        if mapping_state == "RESOLVED_REGISTRY_MAPPING":
+            composition = module.get("layered_composition")
+            if not mapped_ids or not isinstance(composition, dict):
+                errors.append(f"resolved_mapping_incomplete:{module_id}")
+            else:
+                composition_ids = {
+                    value
+                    for key, value in composition.items()
+                    if key != "augmentations" and isinstance(value, str)
+                }
+                composition_ids.update(composition.get("augmentations", []))
+                if composition_ids != set(mapped_ids):
+                    errors.append(f"resolved_mapping_ids_mismatch:{module_id}")
+        elif mapping_state == "UNRESOLVED_LEGACY_ALIAS" and not module.get("mapping_blocker"):
+            errors.append(f"unresolved_mapping_blocker_missing:{module_id}")
+        elif mapping_state == "NOT_APPLICABLE" and module.get("entry_kind") != "boundary_fixture":
+            errors.append(f"not_applicable_mapping_not_fixture:{module_id}")
+    return errors
 
 
 def main() -> int:
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8-sig"))
-    errors: list[str] = []
+    inventory = json.loads(INVENTORY_PATH.read_text(encoding="utf-8-sig"))
+    errors = validate_module_mappings(catalog, inventory)
     if set(catalog.get("runners", {})) != ALLOWED_VARIANTS:
         errors.append("four_explicit_runners_required")
     modules = catalog.get("modules", {})
