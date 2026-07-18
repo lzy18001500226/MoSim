@@ -36,6 +36,7 @@ document.
 | `架构/00_架构与任务/ExperimentProfile与兼容性矩阵.md` | ExperimentProfile schema, compatibility rejection/degradation matrix, Launch Plan contract, Run Manifest contract, and `Config/profiles/` validation entry. |
 | `架构/00_架构与任务/任务算法与场景地图注册接口.md` | MissionAlgorithmRegistry, SceneMapRegistry, planner/exploration/formation adapters, map switching, and the offline QGC 2D map contract. |
 | `架构/04_展示与实验平台/Flight Console与二维任务地图详细设计.md` | QGC 5.0.8 reuse audit, UE-centered Flight Console layout, Factory mini/expanded mission map, waypoint/boundary/fleet editing, coordinate and command-authority contracts. |
+| `架构/04_展示与实验平台/MWORKS实时联合仿真与双GUI接口设计.md` | MWORKS Live experimental controller backend, dual-GUI operation flow, real-time I/O, fallback, and RT0-RT5 validation gates. |
 | `MoSim大系统介绍.md` | Shareable product introduction covering the dual GUI, Agent-driven simulation, model-to-runtime loop, controller library, planning, formation, safety, and evidence workflow. |
 | `架构/01_控制器平台/统一控制接口.md` | State, reference, controller output, adapter, frame, and timing contracts. |
 | `架构/02_感知定位与规划集群/FASTLIO定位闭环.md` | FAST-LIO localization, point-cloud/map validation, and planner rerun gates. |

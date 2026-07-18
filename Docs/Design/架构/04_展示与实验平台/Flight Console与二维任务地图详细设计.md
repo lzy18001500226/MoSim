@@ -23,8 +23,9 @@
    选择任务Adapter。普通航点/围栏进入`PX4MissionAdapter`并复用QGC/MAVLink原生上传、下载
    和ACK；探索、覆盖与编队进入对应Planner/Formation Adapter。Orchestrator不重写规划器。
 7. QML不得绕过Orchestrator直接发布ROS/MAVROS setpoint或任意MAVLink控制命令。
-8. MWORKS不进入Gazebo快速控制回路。主闭环是MWORKS模型/MIL/SIL/codegen，生成控制核心
-   进入PX4/Gazebo/Sunray运行时，运行结果回流MWORKS分析和迭代。
+8. generated-C进入PX4/Gazebo/Sunray仍是默认部署主线；`MWORKS Live`作为显式实验后端，
+   只有通过实时频率、延迟、影子模式、悬停和断连回退门禁后才能开放。Flight Console只
+   选择和监控后端，不承载高频控制数据，详细合同见`MWORKS实时联合仿真与双GUI接口设计.md`。
 
 ## 2. 系统叙事与报告口径
 
@@ -52,8 +53,10 @@ MWORKS结果回传
   -> 参数与控制律下一轮迭代
 ```
 
-不把“MWORKS在线UDP发送控制量”作为主线。在线联合仿真只保留为后续可选研究项，
-且最多承担低频高层参考，不得形成MWORKS和PX4两个最终控制权威。
+generated-C仍是正式部署和比赛演示主线。MWORKS实时联合仿真作为独立、待验证的实验路径，
+可在第一版以“期望姿态 + 总推力”闭合单机控制回路，但必须由独立Adapter保证坐标、单位、
+数据新鲜度、限幅和唯一命令权威。MWORKS断连后只允许按已验收合同切换到本地px4ctrl悬停，
+不得形成MWORKS和px4ctrl两个并发发布者。
 
 ### 2.2 参数证据口径
 
