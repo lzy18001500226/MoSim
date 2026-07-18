@@ -2,7 +2,7 @@
 
 Status: `closed_with_blockers`.
 
-Rows: `67`. `accepted=27`, `executed_blocked=25`, `not_run=15`.
+Rows: `67`. `accepted=27`, `executed_blocked=33`, `not_run=7`.
 
 Complete row visibility is not acceptance. See each row's blocker and claim ceiling.
 

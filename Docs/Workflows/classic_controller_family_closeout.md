@@ -1,6 +1,6 @@
 # Classic Controller Family Closeout
 
-Status: closed with blockers, 2026-07-17 CST.
+Status: closed with blockers, 2026-07-18 CST.
 
 ## 1. Scope
 
@@ -46,8 +46,8 @@ Current executable state, 2026-07-17 CST:
   retained valid runtime provenance and landed/disarmed, but MRAC exceeded the
   XYZ RMSE/P95 limits and NDI exceeded the pre-trajectory hover XY RMSE and
   trajectory XYZ RMSE limits;
-- the final 67-row authority is `closed_with_blockers`: 27 accepted, 21
-  executed-blocked and 19 not-run. All five additions remain
+- the final 67-row authority is `closed_with_blockers`: 27 accepted, 33
+  executed-blocked and 7 not-run. All five additions remain
   `implemented/selectable=false`; runtime selection exists for evidence and
   diagnosis, but no failed final row is promoted to a selectable accepted
   controller.

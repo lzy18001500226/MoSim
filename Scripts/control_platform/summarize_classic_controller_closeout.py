@@ -21,6 +21,8 @@ BASE_MATRIX = (
 REGISTRY = ROOT / "Config/control_platform/control_module_registry.json"
 DEFAULT_OUTPUT = ROOT / "Results/control_platform/classic_controller_closeout_20260717"
 WAVE_A_ROOT = ROOT / "Results/control_platform/wave_a_generated_gazebo_20260718"
+P10_MWORKS_ROOT = ROOT / "Results/control_platform/p10_mworks_gap_closeout_20260718"
+P10_GAZEBO_ROOT = ROOT / "Results/control_platform/p10_generated_gazebo_20260718"
 SOURCE_GATE = "source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json"
 MWORKS_MIL = "mworks/MWORKS_MIL_MANIFEST.json"
 MWORKS_CODEGEN = "mworks/MWORKS_CODEGEN_MANIFEST.json"
@@ -56,6 +58,16 @@ WAVE_A_RUNTIME_CASES = {
     ),
 }
 BLOCKED_IMPLEMENTATIONS = {"mu_synthesis", "neural_smc"}
+P10_GAZEBO_PROFILES = {
+    "hinf_hover_wrench",
+    "dfbc_high_order_attitude",
+    "dfbc_high_order_bodyrate",
+    "dfbc_smooth_robust_attitude",
+    "dfbc_smooth_robust_bodyrate",
+    "dfbc_dob_eso_disabled",
+    "dfbc_dob_eso",
+    "l1_awff_minimal",
+}
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -84,6 +96,107 @@ def optional_json(path: Path) -> dict[str, Any] | None:
     if not path.is_file():
         return None
     return read_json(path)
+
+
+def p10_mworks_closeout(controller: str) -> tuple[Path, dict[str, Any]] | None:
+    """Locate the authoritative current P10 MWORKS closeout for one row."""
+    if controller == "hinf_hover_wrench":
+        path = P10_MWORKS_ROOT / "hinf_hover_wrench/P10_HINF_MWORKS_MANIFEST.json"
+    elif controller == "l1_awff_minimal":
+        path = P10_MWORKS_ROOT / "l1_awff_minimal/P10_L1_AWFF_MWORKS_CLOSEOUT.json"
+    elif controller.startswith("dfbc_"):
+        path = P10_MWORKS_ROOT / "dfbc_family/closeout" / f"{controller}_closeout.json"
+    else:
+        return None
+    payload = optional_json(path)
+    return (path, payload) if payload is not None else None
+
+
+def p10_gazebo_evidence(controller: str) -> dict[str, Any]:
+    runtime_dir = P10_GAZEBO_ROOT / controller / "takeoff_hover_land"
+    metrics_path = runtime_dir / "PX4CTRL_BASIC_MISSION_METRICS.json"
+    provenance_path = runtime_dir / "P10_GENERATED_RUNTIME_PROVENANCE.json"
+    metrics = optional_json(metrics_path)
+    provenance = optional_json(provenance_path)
+    return {
+        "runtime_dir": runtime_dir,
+        "metrics_path": metrics_path,
+        "provenance_path": provenance_path,
+        "metrics": metrics,
+        "provenance": provenance,
+    }
+
+
+def p10_row(row: dict[str, Any]) -> dict[str, Any]:
+    """Reconcile a P10 row from current MWORKS and generated-C Gazebo evidence."""
+    controller = str(row.get("controller", ""))
+    closeout = p10_mworks_closeout(controller)
+    if closeout is None:
+        return row
+    mworks_path, mworks = closeout
+    if str(mworks.get("status")) != "passed":
+        row["mworks_codegen_state"] = "blocked"
+        row["generated_sil_state"] = "blocked"
+        row["status"] = "not_run"
+        row["selectable"] = False
+        row["first_blocker"] = "P10 MWORKS closeout is not passed"
+        row["evidence_paths"] = [relative_evidence(mworks_path)]
+        return row
+
+    sil = mworks.get("generated_c_sil") or {}
+    row["mworks_codegen_state"] = "passed"
+    row["generated_sil_state"] = "passed" if str(sil.get("status", "passed")) == "passed" else str(sil.get("status"))
+    row["evidence_paths"] = [relative_evidence(mworks_path)]
+    graphical_review = mworks.get("graphical_review")
+    if graphical_review:
+        review_path = ROOT / str(graphical_review)
+        if review_path.is_file():
+            row["evidence_paths"].append(relative_evidence(review_path))
+
+    runtime = p10_gazebo_evidence(controller)
+    metrics = runtime["metrics"]
+    provenance = runtime["provenance"]
+    for path in (runtime["metrics_path"], runtime["provenance_path"]):
+        if path.is_file():
+            row["evidence_paths"].append(relative_evidence(path))
+
+    if metrics is None or provenance is None:
+        row.update(
+            {
+                "status": "not_run",
+                "selectable": False,
+                "mission_status": metrics.get("status") if metrics else None,
+                "provenance_status": provenance.get("status") if provenance else None,
+                "first_blocker": "generated-C Gazebo takeoff-hover-land profile not run",
+                "claim_ceiling": "mworks_graphical_codegen_and_generated_c_sil_only",
+            }
+        )
+        return row
+
+    steady_hover = metrics.get("steady_hover") or {}
+    landing = metrics.get("landing_disarm") or {}
+    pre_takeoff = metrics.get("pre_takeoff_state_gate") or {}
+    runtime_passed = str(metrics.get("status")) == "passed" and str(provenance.get("status")) == "passed"
+    row.update(
+        {
+            "status": "accepted" if runtime_passed else "executed_blocked",
+            "selectable": runtime_passed,
+            "mission_status": metrics.get("status"),
+            "provenance_status": provenance.get("status"),
+            "pre_takeoff_status": pre_takeoff.get("status"),
+            "takeoff_reached": metrics.get("takeoff_reached_altitude"),
+            "landing_disarm": landing.get("success"),
+            "hover_xy_rmse_m": steady_hover.get("xy_rmse_m"),
+            "hover_z_rmse_m": steady_hover.get("z_abs_rmse_m"),
+            "first_blocker": None if runtime_passed else str(metrics.get("reason") or ";".join(provenance.get("errors", []))),
+            "claim_ceiling": (
+                "generated_c_gazebo_takeoff_hover_land_accepted"
+                if runtime_passed
+                else "generated_c_gazebo_executed_hover_acceptance_blocked"
+            ),
+        }
+    )
+    return row
 
 
 def classic_addition_row(
@@ -317,7 +430,7 @@ def build_payload(
     evidence_root: Path = DEFAULT_OUTPUT,
     wave_a_root: Path = WAVE_A_ROOT,
 ) -> dict[str, Any]:
-    rows = [dict(row) for row in base.get("rows", [])]
+    rows = [p10_row(dict(row)) for row in base.get("rows", [])]
     existing = {str(row.get("controller", "")) for row in rows}
     modules = {
         str(module.get("module_id", "")): module
@@ -341,6 +454,10 @@ def build_payload(
                     )
                 )
             existing.add(item.module_id)
+
+    # The base matrix may already contain stale rows from a previous closeout;
+    # reconcile both pre-existing and newly appended P10 rows uniformly.
+    rows = [p10_row(dict(row)) for row in rows]
 
     counts: dict[str, int] = {}
     for row in rows:
