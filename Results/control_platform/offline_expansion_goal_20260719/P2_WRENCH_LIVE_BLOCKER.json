@@ -1,0 +1,45 @@
+{
+  "schema": "mosim.model_studio.offline_boundary_live_blocker.v1",
+  "recorded_at": "2026-07-19T04:43:28.6562500+08:00",
+  "phase": "P2_wrench_boundary_fixture",
+  "status": "blocked_mcp_sysplorer_probe_timeout",
+  "output_variant": "WRENCH",
+  "static_checkpoint": {
+    "runner_interface_contract": "passed",
+    "runner_boundary_count": 4,
+    "targeted_tests": "26_passed",
+    "git_diff_check": "passed",
+    "model_check": "not_evaluated",
+    "simulation": "not_run",
+    "native_result": "not_produced",
+    "animation_window": "not_opened"
+  },
+  "candidate_design": {
+    "controller": "Position PD, altitude PID, attitude-to-rate cascade and rate damping folded into the legacy-scaled body-force/body-torque boundary.",
+    "allocator": "Dedicated legacy-scaled WRENCH-to-four-rotor mixer using the accepted BODY_RATE_THRUST sign and scale convention.",
+    "physical_unit_claim": "not_made"
+  },
+  "operation": {
+    "name": "session_manager_probe",
+    "mode": "read_only",
+    "result": "no_response_terminated_by_bounded_wait",
+    "wait_seconds_approx": 30
+  },
+  "actions_not_taken": [
+    "session_ensure",
+    "session_restart",
+    "session_force_restart",
+    "sysplorer_click",
+    "model_load",
+    "check_model",
+    "simulation",
+    "result_or_animation_claim"
+  ],
+  "source_snapshot": {
+    "wrench_controller_sha256": "b62bc8d8a86a28f22c2ee35829174efcff192876948013a645243d84905277ae",
+    "wrench_allocator_sha256": "3b22cf9cd6ac844c136cfa481f5a0a16753a872bad55cf30aa6fa429b6199572",
+    "wrench_runner_sha256": "2ad8b5b47ac7111fab1f26ffd09afc15cfff2e385c6844c8b568a1e8c0dbf6bb"
+  },
+  "claim_ceiling": "The WRENCH candidate passes source-level interface and test gates only. No current MWORKS model check, simulation, Result.msr, metric, plot, or native animation evidence exists for this source snapshot.",
+  "next_live_action": "After a fresh healthy read-only probe, reload the existing packages, check only WrenchRunner, then run a five-second bounded simulation before the full fifty-second certification."
+}

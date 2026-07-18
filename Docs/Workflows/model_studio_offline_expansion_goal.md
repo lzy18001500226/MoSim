@@ -339,3 +339,26 @@ hashes are recorded and this remains current-worktree evidence rather than a
 frozen-source certification. P2 remains active: `WRENCH` still needs the same
 current model/check/simulation/result/animation proof, and all four boundary
 fixtures need a final cleanup-health reconciliation before phase closure.
+
+P2 static checkpoint 6 prepares the `WRENCH` fixture as a separate boundary
+rather than wiring another Runner through an implicit conversion. The
+Controller folds the already accepted position-PD, altitude-PID,
+attitude-to-rate cascade, and rate damping into the declared legacy-scaled
+`body_force/body_torque` outputs. The dedicated Allocator applies the accepted
+four-rotor sign and scale convention. This does not claim verified newtons or
+newton-meters; the existing interface contract keeps physical-unit mapping
+explicitly unverified.
+
+The four-boundary checker passed and the targeted offline Runner/Profile tests
+passed `26/26`. The required fresh read-only Sysplorer probe then returned no
+response within 30 seconds and was terminated. No recovery, reload,
+`CheckModel`, simulation, window, or result operation followed. The checkpoint
+record is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P2_WRENCH_LIVE_BLOCKER.json
+```
+
+The WRENCH candidate is therefore source/static-only at this checkpoint. It
+must resume from a healthy probe, a single-Runner model check, and a five-second
+numeric gate before the full certification. P2 and the long Goal remain active.
