@@ -1,0 +1,262 @@
+{
+  "schema": "mosim.non_frontend_report_source.v1",
+  "date": "2026-07-18",
+  "status": "report_source_not_final_report_acceptance",
+  "claim_boundary": [
+    "Tables are generated from current authority JSON only.",
+    "Rows retain accepted, executed_blocked and not_run status.",
+    "A/B is an observed same-run comparison and does not establish general superiority.",
+    "This source does not render figures, record video, or approve final submission wording."
+  ],
+  "sources": {
+    "controller": "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json",
+    "ab": "Results/control_platform/final_controller_ab_20260718/FINAL_CONTROLLER_SEVEN_SCENARIO_AB.json",
+    "safety": "Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json",
+    "ftc": "Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_RUNTIME_CLOSEOUT.json",
+    "formation": "Results/control_platform/p8_formation_mode1_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json",
+    "learning": "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
+  },
+  "controller_summary": {
+    "counts": {
+      "accepted": 27,
+      "executed_blocked": 25,
+      "not_run": 15
+    },
+    "by_cohort": {
+      "G9_CORE_COMPARISON": {
+        "executed_blocked": 1,
+        "not_run": 5
+      },
+      "P10_CLASSIC_RECONCILIATION": {
+        "executed_blocked": 4,
+        "not_run": 10
+      },
+      "P11_CLASSIC_ADDITIONS": {
+        "executed_blocked": 5
+      },
+      "P1_PID": {
+        "accepted": 6
+      },
+      "P2_LINEAR_ROBUST": {
+        "executed_blocked": 4
+      },
+      "P3_SLIDING_MODE": {
+        "accepted": 1,
+        "executed_blocked": 5
+      },
+      "P4_MPC": {
+        "accepted": 6,
+        "executed_blocked": 1
+      },
+      "P5_ENHANCEMENT": {
+        "accepted": 3,
+        "executed_blocked": 3
+      },
+      "P6_SAFETY": {
+        "accepted": 1
+      },
+      "P7_FTC": {
+        "accepted": 1
+      },
+      "P8_FORMATION": {
+        "accepted": 9
+      },
+      "P9_LEARNING": {
+        "executed_blocked": 2
+      }
+    }
+  },
+  "final_ab_summary": {
+    "counts": {
+      "accepted": 1,
+      "executed_blocked": 11,
+      "not_run": 2
+    },
+    "scenarios": [
+      "figure8",
+      "hover",
+      "motor_efficiency_fault",
+      "parameter_mismatch",
+      "spiral",
+      "step",
+      "wind"
+    ],
+    "rows": [
+      {
+        "profile": "official_pid",
+        "scenario": "hover",
+        "status": "executed_blocked",
+        "primary_rmse_m": 0.031203254464950998,
+        "hover_xy_rmse_m": 0.029876911296298433,
+        "hover_z_rmse_m": 0.012704251540832729,
+        "injection_status": "not_applicable",
+        "landing_disarm": true,
+        "mission_reason": "hover_xy_rmse_above_max:0.029876911296298433",
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/official_pid_hover"
+      },
+      {
+        "profile": "official_pid",
+        "scenario": "step",
+        "status": "accepted",
+        "primary_rmse_m": 0.06333609238399877,
+        "hover_xy_rmse_m": 0.01648096528079377,
+        "hover_z_rmse_m": 0.017848528743299397,
+        "injection_status": "not_applicable",
+        "landing_disarm": true,
+        "mission_reason": null,
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/official_pid_step"
+      },
+      {
+        "profile": "official_pid",
+        "scenario": "figure8",
+        "status": "executed_blocked",
+        "primary_rmse_m": 0.05573648730301019,
+        "hover_xy_rmse_m": 0.018022191747627807,
+        "hover_z_rmse_m": 0.017157562673927138,
+        "injection_status": "not_applicable",
+        "landing_disarm": true,
+        "mission_reason": "trajectory_xyz_rmse_above_max:0.05573648730301019",
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/official_pid_figure8"
+      },
+      {
+        "profile": "official_pid",
+        "scenario": "spiral",
+        "status": "executed_blocked",
+        "primary_rmse_m": 0.05088783673802406,
+        "hover_xy_rmse_m": 0.022686059229917108,
+        "hover_z_rmse_m": 0.029393586011077145,
+        "injection_status": "not_applicable",
+        "landing_disarm": true,
+        "mission_reason": "steady_hover_xy_rmse_above_max:0.022686059229917108;steady_hover_z_rmse_above_max:0.029393586011077145;trajectory_xyz_rmse_above_max:0.05088783673802406",
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/official_pid_spiral"
+      },
+      {
+        "profile": "official_pid",
+        "scenario": "wind",
+        "status": "executed_blocked",
+        "primary_rmse_m": 0.10274094334956349,
+        "hover_xy_rmse_m": 0.06191208313333685,
+        "hover_z_rmse_m": 0.016737365933272436,
+        "injection_status": "passed",
+        "landing_disarm": true,
+        "mission_reason": "hover_xy_rmse_above_max:0.06191208313333685;hover_xy_max_above_max:0.12745810906338045",
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/official_pid_wind"
+      },
+      {
+        "profile": "official_pid",
+        "scenario": "parameter_mismatch",
+        "status": "executed_blocked",
+        "primary_rmse_m": 0.03819686207486225,
+        "hover_xy_rmse_m": 0.03318827174950209,
+        "hover_z_rmse_m": 0.020060161206523583,
+        "injection_status": "not_applicable",
+        "landing_disarm": true,
+        "mission_reason": "hover_xy_rmse_above_max:0.03318827174950209;hover_xy_max_above_max:0.05023130264577199;hover_z_rmse_above_max:0.020060161206523583",
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/official_pid_parameter_mismatch"
+      },
+      {
+        "profile": "official_pid",
+        "scenario": "motor_efficiency_fault",
+        "status": "not_run",
+        "primary_rmse_m": 0.02766978334535029,
+        "hover_xy_rmse_m": 0.028644744690470396,
+        "hover_z_rmse_m": 0.016605432073855037,
+        "injection_status": "blocked",
+        "landing_disarm": true,
+        "mission_reason": "hover_xy_rmse_above_max:0.028644744690470396",
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/official_pid_motor_efficiency_fault"
+      },
+      {
+        "profile": "gain_scheduled_pid",
+        "scenario": "hover",
+        "status": "executed_blocked",
+        "primary_rmse_m": 0.03343078984895786,
+        "hover_xy_rmse_m": 0.0216863250978504,
+        "hover_z_rmse_m": 0.016031928667251626,
+        "injection_status": "not_applicable",
+        "landing_disarm": true,
+        "mission_reason": "hover_xy_rmse_above_max:0.0216863250978504;truth_local_delta_error_bad_z:0.40507688582847406",
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/gain_scheduled_pid_hover"
+      },
+      {
+        "profile": "gain_scheduled_pid",
+        "scenario": "step",
+        "status": "executed_blocked",
+        "primary_rmse_m": 0.08024712740277866,
+        "hover_xy_rmse_m": 0.02188283580985259,
+        "hover_z_rmse_m": 0.025111378210834055,
+        "injection_status": "not_applicable",
+        "landing_disarm": true,
+        "mission_reason": "steady_hover_xy_rmse_above_max:0.02188283580985259;steady_hover_z_rmse_above_max:0.025111378210834055",
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/gain_scheduled_pid_step"
+      },
+      {
+        "profile": "gain_scheduled_pid",
+        "scenario": "figure8",
+        "status": "executed_blocked",
+        "primary_rmse_m": 0.1577179555119819,
+        "hover_xy_rmse_m": 0.03161627171035585,
+        "hover_z_rmse_m": 0.01467055989568178,
+        "injection_status": "not_applicable",
+        "landing_disarm": true,
+        "mission_reason": "steady_hover_xy_rmse_above_max:0.03161627171035585;trajectory_xyz_rmse_above_max:0.1577179555119819;trajectory_xyz_p95_above_max:0.24127521754911463;trajectory_xyz_max_above_max:0.2698328185292799",
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/gain_scheduled_pid_figure8"
+      },
+      {
+        "profile": "gain_scheduled_pid",
+        "scenario": "spiral",
+        "status": "executed_blocked",
+        "primary_rmse_m": 0.16594111691348562,
+        "hover_xy_rmse_m": 0.0381000202364988,
+        "hover_z_rmse_m": 0.0074820828795283964,
+        "injection_status": "not_applicable",
+        "landing_disarm": true,
+        "mission_reason": "steady_hover_xy_rmse_above_max:0.0381000202364988;steady_hover_xy_max_above_max:0.05239052053789186;trajectory_xyz_rmse_above_max:0.16594111691348562;trajectory_xyz_p95_above_max:0.2222126807333915;trajectory_xyz_max_above_max:0.23446400013501542",
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/gain_scheduled_pid_spiral"
+      },
+      {
+        "profile": "gain_scheduled_pid",
+        "scenario": "wind",
+        "status": "executed_blocked",
+        "primary_rmse_m": 0.23896818618862473,
+        "hover_xy_rmse_m": 0.2222659780441552,
+        "hover_z_rmse_m": 0.02620173537652825,
+        "injection_status": "passed",
+        "landing_disarm": true,
+        "mission_reason": "hover_xy_rmse_above_max:0.2222659780441552;hover_xy_max_above_max:0.2892686947242139;hover_z_rmse_above_max:0.02620173537652825",
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/gain_scheduled_pid_wind"
+      },
+      {
+        "profile": "gain_scheduled_pid",
+        "scenario": "parameter_mismatch",
+        "status": "executed_blocked",
+        "primary_rmse_m": 0.0417040880513633,
+        "hover_xy_rmse_m": 0.029564099897827236,
+        "hover_z_rmse_m": 0.025022326198152065,
+        "injection_status": "not_applicable",
+        "landing_disarm": true,
+        "mission_reason": "hover_xy_rmse_above_max:0.029564099897827236;hover_xy_max_above_max:0.053351644149406185;hover_z_rmse_above_max:0.025022326198152065;hover_z_max_above_max:0.06616613471098054",
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/gain_scheduled_pid_parameter_mismatch"
+      },
+      {
+        "profile": "gain_scheduled_pid",
+        "scenario": "motor_efficiency_fault",
+        "status": "not_run",
+        "primary_rmse_m": 0.03775122253227725,
+        "hover_xy_rmse_m": 0.029368238998306245,
+        "hover_z_rmse_m": 0.016054467054845676,
+        "injection_status": "blocked",
+        "landing_disarm": true,
+        "mission_reason": "hover_xy_rmse_above_max:0.029368238998306245",
+        "run_dir": "/mnt/c/Users/HP/Desktop/MoSim/Results/control_platform/final_controller_ab_20260718/gain_scheduled_pid_motor_efficiency_fault"
+      }
+    ]
+  },
+  "specialized_summary": {
+    "safety_status": "passed",
+    "ftc_status": "passed",
+    "formation_status": "passed",
+    "learning_status": "closed_with_performance_blocker",
+    "learning_claim_boundary": "Both frozen learning routes complete source, fallback, MWORKS MIL, official code generation, generated-C SIL, px4ctrl runtime acknowledgement, physical wind injection, and 3x3 Gazebo/PX4/MAVROS execution. Neither route is selectable because the strict runtime acceptance matrix is blocked."
+  }
+}

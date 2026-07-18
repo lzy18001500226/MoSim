@@ -1,0 +1,266 @@
+{
+  "schema": "mosim.non_frontend_delivery_manifest.v1",
+  "date": "2026-07-18",
+  "status": "delivery_manifest_not_final_submission_acceptance",
+  "scope": {
+    "frontend_excluded": true,
+    "excluded_components": [
+      "Flight Console",
+      "Model Studio",
+      "QGC",
+      "UE",
+      "RViz embedding"
+    ],
+    "runtime_authority": "ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS / px4ctrl"
+  },
+  "authority": {
+    "requirement_matrix": "Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_REQUIREMENT_EVIDENCE_MATRIX.json",
+    "report_source": "Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_REPORT_SOURCE.json",
+    "figure_manifest": "Results/control_platform/non_frontend_evidence_index_20260718/figures/REPORT_FIGURE_MANIFEST.json",
+    "controller_matrix": "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json",
+    "final_ab": "Results/control_platform/final_controller_ab_20260718/FINAL_CONTROLLER_SEVEN_SCENARIO_AB.json",
+    "safety": "Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json",
+    "ftc": "Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_RUNTIME_CLOSEOUT.json",
+    "formation": "Results/control_platform/p8_formation_mode1_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json",
+    "learning": "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json",
+    "motor_fault_blocker": "Results/control_platform/final_controller_ab_motor_fault_r2_20260718/INFRASTRUCTURE_BLOCKER.json"
+  },
+  "controller_baseline": {
+    "counts": {
+      "accepted": 27,
+      "executed_blocked": 25,
+      "not_run": 15
+    },
+    "accepted_controller_ids": [
+      "cascade_pid",
+      "anti_windup",
+      "feedforward_profile",
+      "gain_scheduled_pid",
+      "fuzzy_pid",
+      "neural_pid",
+      "super_twisting_smc",
+      "linear_mpc",
+      "robust_mpc",
+      "adaptive_mpc",
+      "explicit_gain_scheduled_mpc",
+      "ilqr",
+      "mppi",
+      "standardized_indi",
+      "parameter_scheduling",
+      "ilc",
+      "safety_supervisor_family",
+      "fdi_ftc_family",
+      "leader_follower",
+      "virtual_structure",
+      "consensus",
+      "containment",
+      "formation_tracking",
+      "formation_reconfiguration",
+      "fault_tolerant_formation",
+      "formation_cbf",
+      "distributed_mpc_formation"
+    ],
+    "final_ab_counts": {
+      "accepted": 1,
+      "executed_blocked": 11,
+      "not_run": 2
+    },
+    "claim_boundary": "Only accepted rows are selectable Gazebo controller evidence; blocked and not-run rows remain visible."
+  },
+  "reproduction": {
+    "working_directory": "C:/Users/HP/Desktop/MoSim",
+    "commands": [
+      "python -m pytest Scripts/tests/test_non_frontend_requirement_evidence_matrix.py Scripts/tests/test_non_frontend_report_source.py Scripts/tests/test_non_frontend_report_figures.py Scripts/tests/test_non_frontend_delivery_manifest.py Scripts/tests/test_non_frontend_submission_package_manifest.py Scripts/tests/test_non_frontend_final_qa_audit.py Scripts/tests/test_final_controller_ab_matrix.py -q",
+      "python Scripts/quality/build_non_frontend_requirement_evidence_matrix.py",
+      "python Scripts/quality/build_non_frontend_report_source.py",
+      "python Scripts/quality/build_non_frontend_report_figures.py",
+      "python Scripts/quality/build_non_frontend_delivery_manifest.py",
+      "python Scripts/quality/build_non_frontend_submission_package_manifest.py",
+      "python Scripts/quality/build_non_frontend_final_qa_audit.py"
+    ],
+    "runtime_note": "The commands rebuild static indices and figures. Gazebo/MWORKS runtime gates require their declared workflows and are not silently replaced by static output."
+  },
+  "demo_storyboard": [
+    {
+      "order": 1,
+      "title": "Scope and evidence boundary",
+      "evidence": [
+        "requirement_matrix",
+        "report_source"
+      ],
+      "allowed_claim": "Show the project boundary and distinguish accepted, blocked, and not-run evidence."
+    },
+    {
+      "order": 2,
+      "title": "Accepted controller and baseline evidence",
+      "evidence": [
+        "controller_matrix",
+        "figure_manifest"
+      ],
+      "allowed_claim": "Show accepted controller rows and saved metrics/figures without general superiority claims."
+    },
+    {
+      "order": 3,
+      "title": "Safety and FTC",
+      "evidence": [
+        "safety",
+        "ftc"
+      ],
+      "allowed_claim": "Show the declared safety modes and bounded rotor-effectiveness FTC recovery."
+    },
+    {
+      "order": 4,
+      "title": "Three-UAV formation",
+      "evidence": [
+        "formation"
+      ],
+      "allowed_claim": "Show bounded formation evidence; do not claim autonomous exploration."
+    },
+    {
+      "order": 5,
+      "title": "Learning-control experiment",
+      "evidence": [
+        "learning"
+      ],
+      "allowed_claim": "Show Neural Residual and RL experimental routes as selectable=false report evidence."
+    },
+    {
+      "order": 6,
+      "title": "Known limits and closeout",
+      "evidence": [
+        "motor_fault_blocker",
+        "final_ab"
+      ],
+      "allowed_claim": "Show unresolved runtime limits and the exact claim ceiling."
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_REQUIREMENT_EVIDENCE_MATRIX.json",
+      "exists": true,
+      "size_bytes": 8217,
+      "sha256": "553a7be0228f9d4e5675be8323a414b15106450c408e548b0f55df3b41d92e94"
+    },
+    {
+      "path": "Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_REPORT_SOURCE.json",
+      "exists": true,
+      "size_bytes": 11516,
+      "sha256": "619b508b64c117195151fa266376c3ff76aba4aebce06f20161cde4e29a910ef"
+    },
+    {
+      "path": "Results/control_platform/non_frontend_evidence_index_20260718/figures/REPORT_FIGURE_MANIFEST.json",
+      "exists": true,
+      "size_bytes": 2892,
+      "sha256": "2ebd17d6ead421b6cee3f57050a888320f801bc10d5f145ba5a00416478a151a"
+    },
+    {
+      "path": "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json",
+      "exists": true,
+      "size_bytes": 70216,
+      "sha256": "8ce744f4986f678b0c9c0fac71c197bbceb49307b611dd83062e0fea0232aa97"
+    },
+    {
+      "path": "Results/control_platform/final_controller_ab_20260718/FINAL_CONTROLLER_SEVEN_SCENARIO_AB.json",
+      "exists": true,
+      "size_bytes": 16114,
+      "sha256": "18928ca4ef97832a63a55dacbf7a0495c735744a0895451a29faa27e28382ede"
+    },
+    {
+      "path": "Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json",
+      "exists": true,
+      "size_bytes": 3931,
+      "sha256": "70da8b66cbe34d38ff83e619498d6d3202a30bfb9faac6593fc48940b444d797"
+    },
+    {
+      "path": "Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_RUNTIME_CLOSEOUT.json",
+      "exists": true,
+      "size_bytes": 602,
+      "sha256": "86d5ceb2f8cc284ae13af37da7e95aea712b59679c915fb111ae2f442a91d7bb"
+    },
+    {
+      "path": "Results/control_platform/p8_formation_mode1_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json",
+      "exists": true,
+      "size_bytes": 10347,
+      "sha256": "0901b2c3f4a654995b8921227b2528bcc678169a22ae5b43455b1ce9500f01f4"
+    },
+    {
+      "path": "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json",
+      "exists": true,
+      "size_bytes": 2705,
+      "sha256": "39237e69cac37dc5c1631d28f9596e8a4f159bdcb595af937a06661bb077b4f7"
+    },
+    {
+      "path": "Results/control_platform/final_controller_ab_motor_fault_r2_20260718/INFRASTRUCTURE_BLOCKER.json",
+      "exists": true,
+      "size_bytes": 2055,
+      "sha256": "3a2550cbfe4b8e2650ad76d2a444083cf3a96c10a0602804a4b30477aad9ddc6"
+    },
+    {
+      "path": "Results/control_platform/non_frontend_evidence_index_20260718/figures/controller_status_counts.png",
+      "exists": true,
+      "size_bytes": 53360,
+      "sha256": "401de5c0d0e116fd0b4b69ddd6e9473171a49a95fad40f4ea3e7ed0b3d67c7cc"
+    },
+    {
+      "path": "Results/control_platform/non_frontend_evidence_index_20260718/figures/final_pid_ab_primary_rmse.png",
+      "exists": true,
+      "size_bytes": 162533,
+      "sha256": "de2d58a294534d492d7abe01375d6570569a8410d33dbe380873989fa2ad5556"
+    },
+    {
+      "path": "Results/control_platform/non_frontend_evidence_index_20260718/figures/learning_control_rmse_change.png",
+      "exists": true,
+      "size_bytes": 84567,
+      "sha256": "0fc4c493b546777b85e59ee6c4232920b6d5490a4b3046bf48c0ac9e55bc843c"
+    },
+    {
+      "path": "Docs/user_manual.md",
+      "exists": true,
+      "size_bytes": 39555,
+      "sha256": "f919ff05aecd43734d9f8c7d3564a1d40fc38117163a580a3bb36574311cd5f0"
+    },
+    {
+      "path": "Docs/Workflows/mainline_operations_board.md",
+      "exists": true,
+      "size_bytes": 73943,
+      "sha256": "bf207ef82212413314e7d185388381126148a64394b8d964ea31e6bb5e8cc2eb"
+    },
+    {
+      "path": "PROGRESS.md",
+      "exists": true,
+      "size_bytes": 5391,
+      "sha256": "fb73d14746a81f74132b59a3fd0b031aebce630dc8c91017185a57589d7100f4"
+    }
+  ],
+  "required_human_outputs": [
+    {
+      "path": "Results/submission/user_manual.pdf",
+      "status": "pending_human_export_and_review"
+    },
+    {
+      "path": "Results/submission/simulation_analysis_report.pdf",
+      "status": "pending_human_export_and_review"
+    },
+    {
+      "path": "Results/submission/demo_video.mp4",
+      "status": "pending_reviewed_recording"
+    },
+    {
+      "path": "Results/agent_packets/returns/PMO-FINAL-SUBMISSION-ACCEPTANCE.json",
+      "status": "pending_final_review"
+    }
+  ],
+  "forbidden_claims": [
+    "final_submission_ready",
+    "all_controller_gazebo_acceptance",
+    "gain_scheduled_pid_general_superiority",
+    "neural_or_rl_performance_accepted",
+    "complete_motor_outage_recovery",
+    "frontend_closed_loop_authority"
+  ],
+  "claim_boundary": [
+    "This manifest proves reproducibility inputs and delivery structure, not final submission acceptance.",
+    "It does not run Gazebo or MWORKS, export PDFs, record video, or write a final acceptance packet.",
+    "A blocked or not-run row cannot be presented as a successful controller result."
+  ]
+}

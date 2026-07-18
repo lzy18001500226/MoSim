@@ -1,5 +1,76 @@
 # 仿真分析报告
 
+## 0. 2026-07-18 最终非前端证据摘要
+
+本节覆盖本文后续历史阶段文字中的状态判断。后续章节仍保留用于说明控制器
+演进、旧 MWORKS 实验和设计过程，但不得覆盖本节的当前权威矩阵、运行状态
+或结论边界。
+
+当前权威入口：
+
+```text
+Results/control_platform/non_frontend_evidence_index_20260718/README.md
+Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_REQUIREMENT_EVIDENCE_MATRIX.md
+Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_REPORT_SOURCE.md
+Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_DELIVERY_MANIFEST.md
+```
+
+### 0.1 控制器与统一 A/B 状态
+
+67 行控制器权威矩阵当前冻结为：
+
+| 状态 | 数量 | 报告使用方式 |
+|---|---:|---|
+| `accepted` | 27 | 可按对应行声明的证据层级用于已验收控制器结果 |
+| `executed_blocked` | 25 | 只能作为已执行负样本或受限实验结果 |
+| `not_run` | 15 | 只能作为未运行/基础设施阻塞或后续工作 |
+
+权威文件为
+`Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json`。
+矩阵的 `accepted` 只代表该行通过声明的运行门禁，不代表所有控制器、轨迹和
+扰动场景均已通过。
+
+官方 PID 与增益调度 PID 的七场景统一 A/B 共 14 行，当前为
+`accepted=1`、`executed_blocked=11`、`not_run=2`。悬停、阶跃、8 字、
+螺旋、风扰和参数摄动目录均保留同运行 generated-C provenance 与降落/解锁
+证据；两条电机效率故障 A/B 因故障注入器未等到有效 airborne window 而
+保持 `not_run`。该结果只能表述为同运行观测比较，不能推出增益调度 PID
+普遍优于官方 PID。
+
+### 0.2 专项闭环结果
+
+| 专项 | 当前结论 | 权威证据与边界 |
+|---|---|---|
+| P6 安全层 | 通过声明的七种安全模式 | `Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json`；不外推到全部可选 CBF/Reference Governor 变体 |
+| P7 故障容错 | 完成 rotor-1 效率降至 0.65、FDI/隔离、generated-C 接管、降落/解锁 | `Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_RUNTIME_CLOSEOUT.json`；不声明完全停桨或多故障 Gazebo 恢复 |
+| P8 三机编队 | 通过限定三机编队模式与间距安全证据 | `Results/control_platform/p8_formation_mode1_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json`；不声明自主探索或全部编队算法 |
+| P9 学习控制 | Neural Residual 与 RL Gain Scheduler 完成训练产物、固定尺寸 C、MWORKS MIL/codegen/SIL、px4ctrl 和 3x3 Gazebo A/B | `Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json`；性能验收阻塞，二者保持 `selectable=false` |
+
+P9 中，Neural Residual 和 RL Gain Scheduler 在风扰 XYZ RMSE 上相对 Cascade
+分别改善约 9.81% 和 8.80%，但 nominal 与参数摄动没有形成稳定优越性。因此
+两条路线可作为有报告价值的智能控制实验，不作为默认可选控制器，也不外推
+为端到端神经网络或强化学习飞控已经完成。
+
+### 0.3 报告图表与写作边界
+
+当前报告图表位于：
+
+```text
+Results/control_platform/non_frontend_evidence_index_20260718/figures/controller_status_counts.png
+Results/control_platform/non_frontend_evidence_index_20260718/figures/final_pid_ab_primary_rmse.png
+Results/control_platform/non_frontend_evidence_index_20260718/figures/learning_control_rmse_change.png
+```
+
+图表必须与 `figures/REPORT_FIGURE_MANIFEST.json` 一起使用。斜线/阻塞状态和
+缺失的 motor-fault 数值不能被解释为有效 RMSE。最终写作必须持续区分
+`accepted`、`executed_blocked` 和 `not_run`，并明确以下禁止结论：
+
+1. 所有 67 个控制器均已通过 Gazebo 验收；
+2. 增益调度 PID 在全部场景普遍优于官方 PID；
+3. Neural Residual 或 RL Gain Scheduler 已通过最终性能验收；
+4. 已完成完全停桨、多故障 Gazebo 恢复或全部智能控制路线；
+5. 前端、UE、QGC 或 RViz 嵌入画面可以替代 MWORKS/generated-C/Gazebo 证据。
+
 > 当前 smoke 数据均只覆盖 0-1 s，用于验证 MCP 结果读取、CSV 导出和指标计算链路。完整性能结论只引用 `official_example*_*.csv` 对应的全时长真实 Sysplorer MCP 结果。
 
 ## 1. 报告范围

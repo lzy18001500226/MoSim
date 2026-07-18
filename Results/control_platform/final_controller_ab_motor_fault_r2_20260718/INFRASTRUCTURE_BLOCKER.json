@@ -1,0 +1,35 @@
+{
+  "schema": "mosim.final_controller_ab.infrastructure_blocker.v1",
+  "date": "2026-07-18",
+  "status": "closed_as_infrastructure_blocked",
+  "scope": "official_pid_and_gain_scheduled_pid_motor_efficiency_fault_rows",
+  "attempted_case": "official_pid_motor_efficiency_fault",
+  "bounded_attempt": {
+    "result_root": "Results/control_platform/final_controller_ab_motor_fault_r2_20260718",
+    "injector_airborne_timeout_s": 180,
+    "gate_total_timeout_s": 300,
+    "outer_timeout_s": 360,
+    "parallel_controller_cases": 0
+  },
+  "evidence": {
+    "ros1_preflight": "passed",
+    "ftc_plugin_build": "passed",
+    "plugin_command_connections": 1,
+    "plugin_telemetry_available": true,
+    "last_local_odom_altitude_m": 0.07507459819316864,
+    "last_sunray_truth_altitude_m": 0.03501610250582855,
+    "injection_status": "blocked",
+    "injection_reason": "plugin_or_airborne_readiness_timeout",
+    "mission_metrics_status_after_injector_timeout": "passed",
+    "cleanup_status": "passed_after_exact_owner_termination",
+    "runtime_lock_after_cleanup": "absent"
+  },
+  "root_cause_class": "startup_and_injection_orchestration_timing",
+  "decision": "Do not retry either C3 motor-fault A/B row in the current closeout. Preserve both rows as not_run and use the independently accepted P7 FTC run as the bounded fault-tolerance authority.",
+  "claim_boundary": "This attempt proves neither controller robustness under a motor fault because the physical efficiency loss was never applied during an airborne window. It does show that the plugin built, connected and exposed telemetry before the bounded injector timed out.",
+  "supporting_paths": [
+    "Results/control_platform/final_controller_ab_motor_fault_r2_20260718/ftc_plugin_build.log",
+    "Results/control_platform/final_controller_ab_motor_fault_r2_20260718/official_pid_motor_efficiency_fault/MOTOR_EFFICIENCY_INJECTION_EVIDENCE.json",
+    "Results/control_platform/final_controller_ab_motor_fault_r2_20260718/official_pid_motor_efficiency_fault/PX4CTRL_BASIC_MISSION_METRICS.json"
+  ]
+}

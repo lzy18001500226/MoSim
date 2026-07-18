@@ -1,0 +1,157 @@
+{
+  "schema": "mosim.non_frontend_requirement_evidence_matrix.v1",
+  "date": "2026-07-18",
+  "status": "in_progress",
+  "scope": "all current non-frontend engineering and submission work",
+  "authority_files": {
+    "controller_matrix": "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json",
+    "final_ab": "Results/control_platform/final_controller_ab_20260718/FINAL_CONTROLLER_SEVEN_SCENARIO_AB.json",
+    "safety": "Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json",
+    "ftc": "Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_RUNTIME_CLOSEOUT.json",
+    "formation": "Results/control_platform/p8_formation_mode1_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json",
+    "learning": "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
+  },
+  "authority_states": {
+    "controller_matrix": "closed_with_blockers",
+    "final_ab": "blocked",
+    "safety": "verified_at_declared_tier",
+    "ftc": "verified_at_declared_tier",
+    "formation": "verified_at_declared_tier",
+    "learning": "blocked"
+  },
+  "controller_matrix_counts": {
+    "accepted": 27,
+    "executed_blocked": 25,
+    "not_run": 15
+  },
+  "final_ab_counts": {
+    "accepted": 1,
+    "executed_blocked": 11,
+    "not_run": 2
+  },
+  "rows": [
+    {
+      "requirement_id": "REQ-MW-01/04/07/11",
+      "area": "MWORKS modeling, code generation, SIL and lifecycle",
+      "status": "verified_at_declared_tier",
+      "evidence": [
+        "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json"
+      ],
+      "claim_ceiling": "The matrix records implementation, MWORKS/codegen/SIL state per controller; it does not imply Gazebo acceptance for blocked rows."
+    },
+    {
+      "requirement_id": "REQ-CTRL-01..79",
+      "area": "Controller-family coverage",
+      "status": "partial",
+      "evidence": [
+        "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json"
+      ],
+      "claim_ceiling": "67 rows are visible: 27 accepted, 25 executed-blocked, 15 not-run; only accepted rows may be presented as selectable Gazebo controllers."
+    },
+    {
+      "requirement_id": "REQ-TRAJ-01..04",
+      "area": "Takeoff, hover, step, figure-eight and spiral scenarios",
+      "status": "partial",
+      "evidence": [
+        "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json",
+        "Results/control_platform/final_controller_ab_20260718/FINAL_CONTROLLER_SEVEN_SCENARIO_AB.json"
+      ],
+      "claim_ceiling": "Scenario evidence exists across accepted and blocked rows; the A/B matrix is an observed comparison, not a general superiority result."
+    },
+    {
+      "requirement_id": "REQ-ROB-01/03",
+      "area": "Wind and parameter-mismatch robustness",
+      "status": "partial",
+      "evidence": [
+        "Results/control_platform/final_controller_ab_20260718/FINAL_CONTROLLER_SEVEN_SCENARIO_AB.json",
+        "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
+      ],
+      "claim_ceiling": "Wind injection evidence passed for both A/B profiles, but performance rows remain blocked; learning routes show report-worthy wind changes without stable overall superiority."
+    },
+    {
+      "requirement_id": "REQ-FAULT-01/02/07/08/09",
+      "area": "Motor-efficiency fault, FDI, allocation, recovery and landing",
+      "status": "verified_at_declared_tier_with_scope",
+      "evidence": [
+        "Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_RUNTIME_CLOSEOUT.json",
+        "Results/control_platform/final_controller_ab_20260718/FINAL_CONTROLLER_SEVEN_SCENARIO_AB.json"
+      ],
+      "claim_ceiling": "P7 verifies rotor-1 effectiveness 0.65 with generated FDI/isolation/takeover/landing; the two C3 motor-fault A/B rows are not-run and complete outage or multi-fault recovery is not claimed."
+    },
+    {
+      "requirement_id": "REQ-SAFE-01/04/05/06/07/08/09/10",
+      "area": "Safety filter, envelopes, geofence/failsafe and lifecycle safety",
+      "status": "verified_at_declared_tier",
+      "evidence": [
+        "Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json"
+      ],
+      "claim_ceiling": "Only the seven declared P6 safety modes are covered; this is not a claim for every optional CBF or reference-governor variant."
+    },
+    {
+      "requirement_id": "REQ-SWARM-01/03/04/07/08",
+      "area": "Three-UAV formation deployment and separation safety",
+      "status": "verified_at_declared_tier",
+      "evidence": [
+        "Results/control_platform/p8_formation_mode1_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "claim_ceiling": "P8 covers bounded three-UAV formation modes; it does not claim autonomous exploration or every research formation algorithm."
+    },
+    {
+      "requirement_id": "REQ-AI-01/02/05/07/08/10/15",
+      "area": "Fuzzy and learning enhancement routes",
+      "status": "partial",
+      "evidence": [
+        "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json",
+        "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
+      ],
+      "claim_ceiling": "Fuzzy PID and selected learning routes are implemented/evidenced at their row ceilings; Neural Residual and RL Gain Scheduler remain selectable=false because strict performance acceptance is blocked."
+    },
+    {
+      "requirement_id": "REQ-EVAL-01..16",
+      "area": "Run IDs, manifests, metrics, logs, figures and failure records",
+      "status": "in_progress",
+      "evidence": [
+        "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json",
+        "Results/control_platform/final_controller_ab_20260718/FINAL_CONTROLLER_SEVEN_SCENARIO_AB.json",
+        "Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json",
+        "Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_RUNTIME_CLOSEOUT.json",
+        "Results/control_platform/p8_formation_mode1_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json",
+        "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
+      ],
+      "claim_ceiling": "Authoritative runtime evidence exists; final report figures, requirement index and submission package still require C5/C6 completion."
+    },
+    {
+      "requirement_id": "REQ-OSS-01..05",
+      "area": "Upstream version, license and modification audit",
+      "status": "pending_final_qa",
+      "evidence": [],
+      "claim_ceiling": "Must be checked against the exact final submission paths before publication."
+    },
+    {
+      "requirement_id": "REQ-EVAL-09/11/12/13/14",
+      "area": "Report, reproducibility and submission package",
+      "status": "pending",
+      "evidence": [],
+      "claim_ceiling": "C5/C6 deliverable; no final-submission-ready claim is allowed until generated and checked."
+    },
+    {
+      "requirement_id": "REQ-UI-01..16",
+      "area": "Frontend, UE/QGC/Flight Console/Model Studio and embedding",
+      "status": "excluded_by_scope",
+      "evidence": [],
+      "claim_ceiling": "Explicitly excluded from the current non-frontend closeout goal; existing display evidence may be cited only as supporting visualization."
+    }
+  ],
+  "global_claim_boundary": [
+    "This matrix is traceability evidence, not a blanket acceptance record.",
+    "accepted, executed_blocked, and not_run remain distinct terminal classes.",
+    "Static, MIL, SIL, screenshots, and metrics-only evidence cannot replace the declared Gazebo/runtime gate.",
+    "Frontend work is excluded and must not block this closeout."
+  ],
+  "next_actions": [
+    "retain the two motor-fault A/B rows as not_run under the versioned infrastructure blocker",
+    "generate report-ready figures and analysis from authority files",
+    "refresh manual, demo storyboard, reproducibility manifest and submission package",
+    "run final quality, license, secret, large-file and exact-path Git publication QA"
+  ]
+}

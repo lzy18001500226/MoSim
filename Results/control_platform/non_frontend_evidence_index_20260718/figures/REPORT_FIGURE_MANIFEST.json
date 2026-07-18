@@ -1,0 +1,74 @@
+{
+  "schema": "mosim.non_frontend_report_figure_manifest.v1",
+  "date": "2026-07-18",
+  "status": "report_figures_generated_with_claim_boundaries",
+  "sources": [
+    "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json",
+    "Results/control_platform/final_controller_ab_20260718/FINAL_CONTROLLER_SEVEN_SCENARIO_AB.json",
+    "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
+  ],
+  "figures": [
+    {
+      "figure_id": "controller_status_counts",
+      "files": [
+        "Results/control_platform/non_frontend_evidence_index_20260718/figures/controller_status_counts.png",
+        "Results/control_platform/non_frontend_evidence_index_20260718/figures/controller_status_counts.svg"
+      ],
+      "values": {
+        "accepted": 27,
+        "executed_blocked": 25,
+        "not_run": 15
+      },
+      "claim_ceiling": "Row visibility and status distribution only; not a claim that blocked/not-run controllers passed."
+    },
+    {
+      "figure_id": "final_pid_ab_primary_rmse",
+      "files": [
+        "Results/control_platform/non_frontend_evidence_index_20260718/figures/final_pid_ab_primary_rmse.png",
+        "Results/control_platform/non_frontend_evidence_index_20260718/figures/final_pid_ab_primary_rmse.svg"
+      ],
+      "values": {
+        "official_pid": [
+          0.031203254464950998,
+          0.06333609238399877,
+          0.05573648730301019,
+          0.05088783673802406,
+          0.10274094334956349,
+          0.03819686207486225,
+          null
+        ],
+        "gain_scheduled_pid": [
+          0.03343078984895786,
+          0.08024712740277866,
+          0.1577179555119819,
+          0.16594111691348562,
+          0.23896818618862473,
+          0.0417040880513633,
+          null
+        ]
+      },
+      "claim_ceiling": "Hatched bars are executed-blocked; motor-fault values are omitted because both rows are not-run. No general superiority claim."
+    },
+    {
+      "figure_id": "learning_control_rmse_change",
+      "files": [
+        "Results/control_platform/non_frontend_evidence_index_20260718/figures/learning_control_rmse_change.png",
+        "Results/control_platform/non_frontend_evidence_index_20260718/figures/learning_control_rmse_change.svg"
+      ],
+      "values_percent": {
+        "trained_neural_residual": [
+          -13.041725367551424,
+          9.809061250664866,
+          -29.534081903755794
+        ],
+        "rl_gain_scheduler": [
+          -5.381767222610385,
+          8.801092283926682,
+          -19.579555943503507
+        ]
+      },
+      "claim_ceiling": "Positive means lower RMSE than Cascade in that condition. Both routes remain selectable=false because strict matrix acceptance is blocked."
+    }
+  ],
+  "claim_boundary": "Figures preserve authority status and are report assets, not independent acceptance evidence."
+}

@@ -1,0 +1,21 @@
+{
+  "schema": "mosim.non_frontend_final_qa_audit.v1",
+  "date": "2026-07-18",
+  "status": "passed",
+  "package_manifest": "Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_SUBMISSION_PACKAGE_MANIFEST.json",
+  "selected_file_count": 3450,
+  "checks": {
+    "package_boundary_ready": true,
+    "missing_selected_files": [],
+    "over_100mb_files": [],
+    "secret_findings": [],
+    "upstream_source_count": 16,
+    "upstream_source_findings": [],
+    "frontend_excluded": true
+  },
+  "issues": [],
+  "claim_boundary": [
+    "This audit validates the selected package boundary, credential patterns, file size, and source metadata.",
+    "It does not replace runtime evidence, human PDF/video review, Git publication, or final competition acceptance."
+  ]
+}

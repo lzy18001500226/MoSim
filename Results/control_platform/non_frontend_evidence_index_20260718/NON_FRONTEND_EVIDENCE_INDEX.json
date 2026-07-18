@@ -1,0 +1,31 @@
+{
+  "schema": "mosim.non_frontend_evidence_index.v1",
+  "date": "2026-07-18",
+  "status": "in_progress",
+  "frontend_scope": "excluded",
+  "authorities": {
+    "controller_matrix": {
+      "path": "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json",
+      "accepted": 27,
+      "executed_blocked": 25,
+      "not_run": 15
+    },
+    "final_ab": {
+      "path": "Results/control_platform/final_controller_ab_20260718/FINAL_CONTROLLER_SEVEN_SCENARIO_AB.json",
+      "accepted": 1,
+      "executed_blocked": 11,
+      "not_run": 2,
+      "claim_boundary": "same_run_observed_comparison_no_general_superiority_claim"
+    },
+    "safety": "Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json",
+    "ftc": "Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_RUNTIME_CLOSEOUT.json",
+    "formation": "Results/control_platform/p8_formation_mode1_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json",
+    "learning": "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json",
+    "motor_fault_ab_infrastructure_blocker": "Results/control_platform/final_controller_ab_motor_fault_r2_20260718/INFRASTRUCTURE_BLOCKER.json"
+  },
+  "open_items": [
+    "report_figures_and_analysis",
+    "manual_demo_manifest_reproducible_submission_package",
+    "final_quality_license_secret_large_file_and_git_upstream_audit"
+  ]
+}

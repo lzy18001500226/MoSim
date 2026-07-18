@@ -142,6 +142,18 @@ REQUIRED_SCENARIO_KEYS = [
     "result",
 ]
 
+
+def alternate_scenario_schema(config: dict, path: Path, missing: list[str]) -> str | None:
+    """Return a declared non-MWORKS schema name, or None for the standard schema."""
+    if path.parent.name == "diagnostics" and missing == ["reference"]:
+        if all(key in config for key in ("model", "simulation", "result")):
+            return "diagnostics_without_reference"
+    evidence_level = str(config.get("evidence_level", ""))
+    if path.parent.name == "system" and isinstance(config.get("ros2"), dict) and isinstance(config.get("claim_boundary"), dict):
+        if evidence_level.startswith("gazebo_ros2"):
+            return "legacy_ros2_runtime_smoke"
+    return None
+
 REQUIRED_SIMULATION_KEYS = [
     "start_time_s",
     "stop_time_s",
@@ -481,6 +493,16 @@ def check_config_files(root: Path) -> bool:
         rel_path = path.relative_to(root)
         missing = [key for key in REQUIRED_SCENARIO_KEYS if key not in config]
         if missing:
+            alternate_schema = alternate_scenario_schema(config, path, missing)
+            if alternate_schema:
+                print(f"[INFO] {rel_path} uses declared alternate schema: {alternate_schema}")
+                experiment_id = str(config.get("experiment_id", ""))
+                if experiment_id in experiment_ids:
+                    print(f"[FAIL] Duplicate experiment_id: {experiment_id}")
+                    ok = False
+                else:
+                    experiment_ids.add(experiment_id)
+                continue
             print(f"[FAIL] Missing scenario keys in {rel_path}: {', '.join(missing)}")
             ok = False
             continue

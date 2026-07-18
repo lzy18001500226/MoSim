@@ -8,6 +8,40 @@
 
 ## 2026-07-18 CST - Current Active Context
 
+Latest C3 status: the official-PID versus gain-scheduled-PID seven-scenario
+A/B has 14 generated-C/provenance-complete run directories and is frozen at
+`accepted=1`, `executed_blocked=11`, `not_run=2` in
+`Results/control_platform/final_controller_ab_20260718/FINAL_CONTROLLER_SEVEN_SCENARIO_AB.json`.
+Both wind injections passed. The two motor-efficiency-fault rows remain
+`not_run` because the actuator-plugin airborne-readiness wait timed out and a
+parallel gate cleanup issue was observed; P7's independently accepted FTC run
+remains the authoritative fault-tolerance evidence. Do not call C3 complete or
+claim gain-scheduled PID superiority from this matrix.
+
+Current C4 index: `Results/control_platform/non_frontend_evidence_index_20260718/`.
+P6 safety, P7 FTC, and P8 formation authorities pass at their declared bounded
+tiers; P9 runtime is complete but performance-blocked. C5 must consume this
+index rather than older static submission dashboards.
+The generated requirement-to-evidence matrix is
+`Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_REQUIREMENT_EVIDENCE_MATRIX.md`
+with a JSON companion. Its current open domains are report narrative/analysis,
+human-reviewed submission materials, and final QA/publication. Motor-fault A/B
+triage is closed under the versioned infrastructure blocker below.
+
+The motor-fault A/B triage is now closed with a versioned infrastructure
+blocker at
+`Results/control_platform/final_controller_ab_motor_fault_r2_20260718/INFRASTRUCTURE_BLOCKER.json`.
+The plugin built and exposed command/telemetry surfaces, but the bounded
+injector expired before an airborne fault window. Both C3 rows stay `not_run`.
+The current reproducibility and demo entry point is
+`Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_DELIVERY_MANIFEST.md`;
+it binds the current authorities and lists the four human-reviewed final
+outputs still required. The exact 3450-file non-frontend package boundary and
+machine QA are now present in the same directory. Machine QA passes with zero
+missing/inaccessible/over-100-MB/credential/source-registry findings. Remaining
+active domains are the two reviewed PDF exports, demo video, final human
+acceptance packet, and exact-path Git publication.
+
 Active long goal: finish all competition engineering except frontend. P2-P8
 implementation/evidence batches are committed and pushed through
 `842b2ff793`. The Wave A LQR/LQI/SO(3)/Backstepping generated-C Gazebo
@@ -44,10 +78,10 @@ versus Cascade, while nominal/parameter-mismatch superiority was not stable.
   on the mainline board. Do not infer next work from old Goal or G9 wording in
   historical notes.
 - Current next-work principle:
-  follow the mainline board. Finish the remaining 15 `not_run` row triage,
-  preserve bounded blockers, then complete the official-PID versus recommended
-  controller seven-scenario A/B and final packaging. FUEL/RACER coverage tuning
-  and frontend work remain excluded from this goal.
+  follow the mainline board. Preserve the frozen controller/A-B blockers and
+  current package QA; do not reopen the 15 `not_run` rows or motor-fault retry
+  during this closeout. FUEL/RACER coverage tuning and frontend work remain
+  excluded from this goal.
 
 ## How To Update This File
 

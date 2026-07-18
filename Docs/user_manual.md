@@ -2,6 +2,40 @@
 
 本文档说明如何检查项目结构、复现官方案例参考轨迹、处理 MWORKS/MCP 导出的仿真结果、生成指标和报告素材。
 
+## 0. 当前非前端收尾入口（2026-07-18）
+
+当前竞赛收尾采用单线程、证据驱动流程。非前端权威入口为：
+
+```text
+Results/control_platform/non_frontend_evidence_index_20260718/README.md
+Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_REQUIREMENT_EVIDENCE_MATRIX.md
+Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_REPORT_SOURCE.md
+Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_DELIVERY_MANIFEST.md
+Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_SUBMISSION_PACKAGE_MANIFEST.md
+Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_FINAL_QA_AUDIT.md
+```
+
+重新生成当前需求矩阵和报告源表：
+
+```bash
+python3 Scripts/quality/build_non_frontend_requirement_evidence_matrix.py
+python3 Scripts/quality/build_non_frontend_report_source.py
+python3 Scripts/quality/build_non_frontend_report_figures.py
+python3 Scripts/quality/build_non_frontend_delivery_manifest.py
+python3 Scripts/quality/build_non_frontend_submission_package_manifest.py
+python3 Scripts/quality/build_non_frontend_final_qa_audit.py
+python3 -m pytest Scripts/tests/test_non_frontend_delivery_manifest.py Scripts/tests/test_non_frontend_requirement_evidence_matrix.py Scripts/tests/test_non_frontend_report_source.py Scripts/tests/test_non_frontend_report_figures.py Scripts/tests/test_non_frontend_submission_package_manifest.py Scripts/tests/test_non_frontend_final_qa_audit.py -q
+```
+
+当前 67 行控制器矩阵必须保持 `accepted=27`、`executed_blocked=25`、
+`not_run=15`。`executed_blocked` 和 `not_run` 只能作为受限实验或 blocker
+写入报告，不能升级为验收通过。P7 的单电机效率损失闭环、P6 安全、P8
+三机编队和 P9 学习控制的 claim ceiling 以当前证据索引为准。
+
+本收尾目标排除 Flight Console、Model Studio、QGC、UE、RViz 嵌入开发，
+也不继续 FUEL/RACER 覆盖率调参。前端和显示证据只能作为辅助展示，不能替代
+MWORKS/codegen、Gazebo/PX4/MAVROS、指标和 Manifest 证据。
+
 ## 1. 环境要求
 
 必需环境：

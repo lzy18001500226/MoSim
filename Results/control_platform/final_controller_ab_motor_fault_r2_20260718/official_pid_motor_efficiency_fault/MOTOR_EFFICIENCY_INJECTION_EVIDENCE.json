@@ -1,0 +1,12 @@
+{
+  "schema": "mosim.final_controller_ab.motor_efficiency_injection.v1",
+  "status": "blocked",
+  "reason": "plugin_or_airborne_readiness_timeout",
+  "last_altitude_m": 0.07507459819316864,
+  "last_altitude_by_source_m": {
+    "local_odom": 0.07507459819316864,
+    "sunray_truth": 0.03501610250582855
+  },
+  "publisher_connections": 1,
+  "telemetry_available": true
+}
