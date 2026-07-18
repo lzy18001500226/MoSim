@@ -1041,3 +1041,125 @@ Results/ui_platform/     PoC、测试、截图、延迟和验收包
 8. 所有任务自有改动完成测试、精确提交、推送和上游验证。
 9. 两个GUI遵循同一运行状态机、遥测字典、注入事务和幂等恢复合同；
 10. Model Studio能对满足同场景约束的基线与改进run生成可追溯指标对比。
+
+## 12. 2026-07-18 GUI实施基线与验收矩阵
+
+本轮按“先完成界面骨架，再逐项验证实际行为”的顺序推进。Model Studio首版固定
+以下可审计操作链：
+
+```text
+刷新注册表 -> 选择Profile/控制器/车辆数 -> Validate config
+  -> Prepare run -> Start runtime -> Stop runtime
+  -> Open model -> Open result
+```
+
+每个阶段在APP内显示状态；禁用选项保留并显示原因，非法选择由客户端和Orchestrator
+双重拒绝。`Start runtime`和`Stop runtime`只使用当前active run，不能在未准备成功时
+隐式创建新运行。MIL/SIL、codegen和Gazebo执行仍由注册的MWORKS/Orchestrator门禁完成，
+APP不伪造执行完成状态。
+
+Flight Console已实现QGC原生设置或消息浮层打开时让出UE原生子窗口，并通过
+`Scripts/tests/test_flight_console_custom_overlay.py`的11项回归。native UE子窗口的鼠标
+拖动环绕仍需真实操作验证；QML `MouseArea`不作为通过证据，必要时使用Qt主窗口事件过滤
+或native mouse capture。
+
+Display session统一要求单会话、幂等attach/detach、重复Prepare不产生孤立UE进程，
+并覆盖GUI重启后的`run_id`恢复。当前stale/attached session的`display_detach_failed`
+仍是生命周期blocker，修复前不能宣称显示会话闭环完成。
+
+| 类别 | 必测行为 | 通过证据 |
+|---|---|---|
+| Model Studio | 注册表刷新、Profile联动、禁用项拒绝 | APP截图、请求/响应、测试 |
+| Model Studio | Validate、Prepare、重复点击、无active run启动/停止 | 阶段状态、响应和失败原因 |
+| Model Studio | 打开模型、结果不存在、结果可用 | request、result packet或明确not_available |
+| Flight Console | QGC浮层与UE让位 | GUI截图和回归测试 |
+| Flight Console | UE attach/detach、重复启动、重启恢复 | 唯一session、PID、状态JSON、残留检查 |
+| Flight Console | 视角、距离、鼠标环绕、原生飞行按钮不冲突 | 实际操作记录和截图 |
+| 双GUI | 同一Profile、run_id、hash和结果目录 | manifest、事件时间线、结果包 |
+| 失败恢复 | ROS/UE/RViz一次重试；代码生成/任务失败等待人工 | 尝试记录和人工确认状态 |
+| 运行安全 | airborne时不自动重启，只允许悬停/降落/安全停止 | 状态机事件和运行日志 |
+
+源码存在、窗口能启动或模拟进度文本均不单独构成通过。
+
+## 13. 外部多机通信与联合仿真调研对GUI设计的约束
+
+本节吸收以下外部资料的可复用结论：
+
+* [ROS多机集群组网通信（一）](https://blog.csdn.net/m0_73745340/article/details/142556982)
+* [swarm_ros_bridge](https://blog.csdn.net/benchuspx/article/details/128576723)
+* [Multibotnet](https://blog.csdn.net/m0_73745340/article/details/146445055)
+* [Ubuntu Ad-Hoc组网通信](https://blog.csdn.net/m0_73745340/article/details/146459854)
+* [Ubuntu 20.04图形化Ad-Hoc组网](https://blog.csdn.net/m0_73745340/article/details/147921824)
+* [MATLAB/Simulink与WSL2下ROS2/PX4联合仿真](https://blog.csdn.net/m0_73745340/article/details/155386514)
+
+调研结论不是把所有功能塞入QGC，而是冻结以下GUI职责：
+
+| 功能 | Model Studio | Flight Console/QGC | Orchestrator/基础设施 |
+| --- | --- | --- | --- |
+| 控制器、增强层和参数Profile | 编辑、校验、发布 | 只读显示当前Profile | 校验兼容性并冻结hash |
+| 飞行连接、解锁、起飞、任务、降落 | prepare | 执行 | 裁决状态机和安全命令 |
+| 多机数量、车辆ID、命名空间 | 形成实验配置 | 显示运行实例 | 分配并校验实例 |
+| ROS多机话题/服务 | 声明需要的协同数据 | 显示桥接健康 | 维护白名单、桥接和重连 |
+| Ad-Hoc/BATMAN/OLSR | 不编辑 | 显示预检结果 | 由启动器/系统层配置 |
+| 网络延迟、丢包、心跳 | 可查看只读镜像 | 实时显示 | 采集并记录原始指标 |
+| Gazebo/PX4/MAVROS | prepare请求 | 连接和审核入口 | 启停与生命周期管理 |
+| MWORKS在线联合仿真 | 配置/prepare | 显示状态并请求安全停止 | RT门禁、超时和回退 |
+
+### 13.1 Flight Console第一版需要预留的配置与状态
+
+第一版应预留但不必全部开放的字段包括：
+
+```text
+vehicle_count: 1..9
+vehicle_ids: [uav1, ...]
+ros_namespace_by_vehicle
+mavlink_endpoint_by_vehicle
+bridge_profile_id
+bridge_topic_allowlist_version
+network_preflight_profile_id
+mission_id / mission_revision / mission_hash
+formation_profile_id
+planner_profile_id
+controller_profile_id
+frame_contract_id
+link_latency_ms / packet_loss_ratio / heartbeat_age_ms
+```
+
+界面中只有通过相应门禁的选项可操作；未通过的多机数量、规划器、编队或`mworks_live`
+保持可见但禁用，并显示具体门禁原因。QGC不能自行创建一个绕过Model Studio和
+Orchestrator的临时运行。
+
+### 13.2 外部资料明确不进入第一版QGC的功能
+
+以下功能保留为基础设施或未来适配器，不在第一版QGC内重复实现：
+
+```text
+Linux网卡和Ad-Hoc模式编辑
+BATMAN/OLSR路由配置
+任意ROS话题转发规则编辑器
+ROS2/XRCE-DDS联合仿真链路
+MWORKS实时节拍控制器
+原始点云和全量地图跨机广播
+```
+
+第一版只提供预检、状态显示、受控重连和错误定位。多机协同所需的ROS话题由
+`multi_vehicle_bridge`按版本化白名单发布，QGC只消费标准化状态和事件。
+
+### 13.3 三份待冻结接口合同
+
+在扩展QGC页面之前，必须先冻结以下合同的字段、ACK、超时和错误码：
+
+1. `NetworkPreflightContract`：网络接口、节点发现、心跳、延迟、丢包、时间同步和重连结果。
+2. `MultiVehicleTransportContract`：车辆ID、命名空间、消息白名单、源时间戳、序列号、坐标合同和桥接状态。
+3. `FlightRunContract / RunManifest`：Profile、任务、控制器后端、飞行命令、生命周期、安全状态和不可变运行hash。
+
+这三份合同由共享Orchestrator层最终裁决和生成；Model Studio维护实验/Profile字段，
+QGC维护飞行操作和审核字段，任何一侧都不能单独扩写运行事实合同。
+
+### 13.4 当前架构判断
+
+这些外部项目支持“通过统一接口快速配置和运行多机仿真”的产品方向，但不能证明
+当前MoSim已经具备真实无线组网、去中心化容错或ROS2实时联合仿真能力。当前主线仍是
+ROS1 Noetic、Gazebo Classic、PX4、MAVROS、px4ctrl；外部ROS2/Simulink资料仅作为未来
+适配器设计参考。网络桥接、编队算法和联合仿真都必须分别建立源码、构建和运行证据，
+不能因为QGC中出现了按钮就宣称对应能力已完成。
