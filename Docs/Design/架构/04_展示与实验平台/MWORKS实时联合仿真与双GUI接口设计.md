@@ -26,6 +26,12 @@ MWORKS MIL/SIL
 - 在未通过实时门禁前把`MWORKS Live`显示为可用能力；
 - 以界面出现、端口连通或模型开始计算代替闭环飞行证据。
 
+第一版 `ATTITUDE_THRUST` 的名义控制器固定为位置/平动外环
+`official_pid`，UI 显示名为“PX4CTRL 官方位置外环 PID”。PX4 内置姿态/角速度环拥有
+姿态内环，`attitude_inner_owner = px4_builtin_attitude_rate_v1`。`AWFF` 只能作为
+`augmentation_ids = [awff]` 的增强层；自研 INDI、SMC、Backstepping 等姿态内环在该
+输出边界下可见禁用，不能宣称已经在线执行。
+
 ## 2. 与generated-C主线的关系
 
 `generated-C`仍是正式部署和比赛演示的默认主线。`MWORKS Live`是显式选择的实验后端，
@@ -172,6 +178,15 @@ Model Studio配置项包括：控制器模型和参数、固定步长、目标�
 
 QGC不编辑ROS topic、UDP端口、Solver和模型内部参数。它只选择已经发布且与当前场景兼容的
 Profile，并显示版本、hash、证据状态和禁用原因。
+
+Model Studio 可直接执行离线模型检查、MIL、代码生成、打开模型和结果；在线飞行只允许
+`validate/publish/prepare` 并引导进入 QGC。QGC 执行连接、解锁、起飞、任务、悬停、
+降落和安全停止。两个 GUI 都可以显示只读运行状态并请求同一个幂等 `safe_stop`，但
+Orchestrator 是唯一命令裁决者，任何 GUI 都不得直接发布高频控制命令。
+
+ExperimentProfile 由 Model Studio 发布，MissionArtifact 由 QGC 任务侧维护，Orchestrator
+校验二者与运行环境后生成不可变 RunManifest。RunManifest 在 `ready_on_ground` 后冻结；
+运行状态、ACK、事件和遥测写入独立 RunStatus/Event，不持续改写 Manifest。
 
 ## 8. Flight Console界面
 

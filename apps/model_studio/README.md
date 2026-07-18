@@ -3,24 +3,27 @@
 MoSim Model Studio is a lightweight native MWORKS.Syslab APP. Its source of
 truth is the `TyAppDesigner` implementation in `src/app.jl`.
 
-The APP owns experiment selection, capability gating, compact parameter input,
-result summaries, and submission to the MoSim Orchestrator. It does not replace
+The APP owns experiment Profile design, capability gating, offline model
+operations, and preparation for QGC handoff. QGC owns flight operations and the
+Orchestrator remains the only runtime command arbiter. The APP does not replace
 Sysplorer graphical modeling, the native MWORKS result viewer, or runtime flight
 control.
 
 ## Current D4 proof
 
-The current MVP includes:
+The current `0.5.0` UI-review baseline includes:
 
-- native `TyAppDesigner` window and callbacks packaged as version `0.2.0`;
-- Registry/Profile Catalog driven profile, controller, and UAV-count dropdowns;
-- visible unavailable options with hard rejection by both the APP and Orchestrator;
-- numeric parameter input;
-- native plot area;
-- persistent Orchestrator request/response integration;
-- preparation of one- and three-UAV `px4ctrl` runs with a stable `run_id` and
-  profile hash;
-- bounded model-context and result-packet requests.
+- three execution modes: offline model validation, MWORKS Live, and generated-C
+  deployment;
+- layered mission, position-loop, attitude-loop, augmentation, safety, and
+  output-boundary controls;
+- a locked PX4 attitude/rate inner loop for `ATTITUDE_THRUST v1`;
+- fixed-direction wind and four independent motor-effectiveness sliders;
+- separate requested and applied injection values;
+- separate offline MWORKS actions and QGC flight handoff actions;
+- explicit RT0 candidate timing values and unavailable-state explanation;
+- no synthetic response plot, direct arm/takeoff action, or runtime command in
+  the UI-review build.
 
 Run the source inside Syslab:
 
@@ -28,8 +31,8 @@ Run the source inside Syslab:
 include(raw"C:\Users\HP\Desktop\MoSim\apps\model_studio\src\app.jl")
 ```
 
-The D4 native APP/Orchestrator gate passed on 2026-07-17. The installable
-artifact is:
+The earlier D4 native APP/Orchestrator gate passed on 2026-07-17. Its installable
+artifact remains historical evidence for the older wired baseline:
 
 ```text
 apps/model_studio/dist/MoSim Model Studio.slappinstall
@@ -41,7 +44,6 @@ Machine-readable evidence is stored at:
 Results/ui_platform/model_studio_d4_gate_20260717/GATE.json
 ```
 
-This gate proves the native APP, clean packaging, capability rejection, run
-preparation, model-context request, and correct unavailable-result boundary. It
-does not prove MWORKS simulation/codegen, Gazebo/PX4/MAVROS runtime, RViz/UE
-attachment, or flight performance; those remain D6-D7 integration gates.
+The `0.5.0` interface is a new UI-review baseline and does not inherit D4 runtime
+acceptance. It does not prove MWORKS simulation/codegen, MWORKS Live timing,
+Gazebo/PX4/MAVROS runtime, QGC handoff, fault application, or flight performance.

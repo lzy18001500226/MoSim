@@ -1,76 +1,108 @@
 {
-    "name": "MoSimModelStudioApp",
+    "name": "MoSimModelStudioReviewApp",
     "callbackFunctions": [
         {
-            "name": "ProfileChanged",
-            "code": "            selected = split(app.ProfileDropDown.Value, \" [disabled:\"; limit=2)[1]\n                            bindings = Dict(\n                \"cascade_pid_figure8_generated_c_v1\" => (\"Config/profiles/experiments/cascade_pid_figure8_generated_c_v1.json\", \"cascade_pid\", \"1\", true, \"enabled\", true),\n                \"factory_l2_three_uav_swarm_formation_v1\" => (\"Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json\", \"px4ctrl\", \"3\", true, \"enabled\", true),\n                \"fastlio_hybrid_z_figure8_v1\" => (\"Config/profiles/experiments/fastlio_hybrid_z_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_independent_eval_figure8_v1\" => (\"Config/profiles/experiments/fastlio_independent_eval_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_px4_ekf_ab_figure8_v1\" => (\"Config/profiles/experiments/fastlio_px4_ekf_ab_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"g10a_dfbc_smooth_robust_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10a_dfbc_smooth_robust_no_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_no_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_no_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_no_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_figure8_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_figure8_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_takeoff_hover_land_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_figure8_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_dfbc_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_dfbc_basic_figure8_v1.json\", \"dfbc_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_nmpc_outer_figure8_v1\" => (\"Config/profiles/experiments/g9_nmpc_outer_figure8_v1.json\", \"nmpc_outer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_official_pid_figure8_v1\" => (\"Config/profiles/experiments/g9_official_pid_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g9_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_se3_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_se3_basic_figure8_v1.json\", \"se3_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_smc_boundary_layer_figure8_v1\" => (\"Config/profiles/experiments/g9_smc_boundary_layer_figure8_v1.json\", \"smc_boundary_layer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"p7_ftc_rotor1_loss35_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/p7_ftc_rotor1_loss35_takeoff_hover_land_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_figure8_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", true),\n                \"px4ctrl_spiral_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_spiral_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_step_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_step_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/px4ctrl_takeoff_hover_land_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n            )\n                            if !haskey(bindings, selected)\n                                app.StatusLabel.Text = \"Profile not found in current catalog.\"\n                                return\n                            end\n                            profile_path, controller, vehicle, enabled, reason, runtime_ready = bindings[selected]\n                            clean(item) = String(split(item, \" [disabled:\"; limit=2)[1])\n                            controller_option = findfirst(item -> clean(item) == controller, app.ControllerDropDown.Items)\n                            vehicle_option = findfirst(item -> clean(item) == vehicle, app.VehicleDropDown.Items)\n                            controller_option !== nothing && (app.ControllerDropDown.Value = app.ControllerDropDown.Items[controller_option])\n                            vehicle_option !== nothing && (app.VehicleDropDown.Value = app.VehicleDropDown.Items[vehicle_option])\n                            app.StatusLabel.Text = enabled ? \"Profile accepted; \" * (runtime_ready ? \"runtime ready\" : \"runtime gate pending\") : \"Profile unavailable: \" * reason"
+            "name": "OfflineModePressed",
+            "code": "            app.set_mode(\"offline\")"
         },
         {
-            "name": "ControllerChanged",
-            "code": "            selected = app.ControllerDropDown.Value\n            app.StatusLabel.Text = occursin(\"[disabled:\", selected) ? \"Controller unavailable.\" : \"Controller selected: \" * selected"
+            "name": "LiveModePressed",
+            "code": "            app.set_mode(\"live\")"
         },
         {
-            "name": "VehicleChanged",
-            "code": "            selected = app.VehicleDropDown.Value\n            app.StatusLabel.Text = occursin(\"[disabled:\", selected) ? \"UAV count unavailable.\" : \"UAV count selected: \" * selected"
+            "name": "DeployModePressed",
+            "code": "            app.set_mode(\"deploy\")"
         },
         {
-            "name": "RefreshPressed",
-            "code": "            app.StatusLabel.Text = \"Capability catalog is frozen into this APP package. Rebuild the APP to refresh it.\""
+            "name": "SelectionChanged",
+            "code": "            app.refresh_summary()\n            app.StatusLabel.Text = \"配置已修改，尚未校验或发布。\""
         },
         {
-            "name": "PreviewPressed",
-            "code": "            wind = app.WindField.Value\n            t = collect(0.0:0.1:10.0)\n            response = @. exp(-0.15 * t) * sin(1.8 * t) + 0.02 * wind\n            TyAppDesigner.plot(app.UIAxes, t, response)\n            TyAppDesigner.title(app.UIAxes, \"Bounded preview\")\n            TyAppDesigner.xlabel(app.UIAxes, \"Time (s)\")\n            TyAppDesigner.ylabel(app.UIAxes, \"Normalized response\")\n            app.StatusLabel.Text = \"Preview updated. This is a UI capability plot, not controller evidence.\""
+            "name": "InjectionChanged",
+            "code": "            app.InjectionChanged(nothing)"
         },
         {
-            "name": "SubmitPressed",
-            "code": "            action = \"prepare_run\"\n                project_root = get(ENV, \"MOSIM_PROJECT_ROOT\", \"C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\")\n                client = joinpath(project_root, \"Scripts\", \"ui\", \"orchestrator_client.py\")\n                try\n                profile_value = app.ProfileDropDown.Value\n                controller_value = app.ControllerDropDown.Value\n                vehicle_value = app.VehicleDropDown.Value\n                if occursin(\"[disabled:\", profile_value) || occursin(\"[disabled:\", controller_value) || occursin(\"[disabled:\", vehicle_value)\n                    app.StatusLabel.Text = \"false\\tselection_gate_rejected\"\n                    return\n                end\n                profile = String(split(profile_value, \" [disabled:\"; limit=2)[1])\n                controller = String(split(controller_value, \" [disabled:\"; limit=2)[1])\n                vehicle = String(split(vehicle_value, \" [disabled:\"; limit=2)[1])\n                bindings = Dict(\n                \"cascade_pid_figure8_generated_c_v1\" => (\"Config/profiles/experiments/cascade_pid_figure8_generated_c_v1.json\", \"cascade_pid\", \"1\", true, \"enabled\", true),\n                \"factory_l2_three_uav_swarm_formation_v1\" => (\"Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json\", \"px4ctrl\", \"3\", true, \"enabled\", true),\n                \"fastlio_hybrid_z_figure8_v1\" => (\"Config/profiles/experiments/fastlio_hybrid_z_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_independent_eval_figure8_v1\" => (\"Config/profiles/experiments/fastlio_independent_eval_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_px4_ekf_ab_figure8_v1\" => (\"Config/profiles/experiments/fastlio_px4_ekf_ab_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"g10a_dfbc_smooth_robust_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10a_dfbc_smooth_robust_no_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_no_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_no_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_no_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_figure8_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_figure8_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_takeoff_hover_land_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_figure8_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_dfbc_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_dfbc_basic_figure8_v1.json\", \"dfbc_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_nmpc_outer_figure8_v1\" => (\"Config/profiles/experiments/g9_nmpc_outer_figure8_v1.json\", \"nmpc_outer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_official_pid_figure8_v1\" => (\"Config/profiles/experiments/g9_official_pid_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g9_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_se3_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_se3_basic_figure8_v1.json\", \"se3_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_smc_boundary_layer_figure8_v1\" => (\"Config/profiles/experiments/g9_smc_boundary_layer_figure8_v1.json\", \"smc_boundary_layer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"p7_ftc_rotor1_loss35_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/p7_ftc_rotor1_loss35_takeoff_hover_land_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_figure8_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", true),\n                \"px4ctrl_spiral_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_spiral_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_step_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_step_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/px4ctrl_takeoff_hover_land_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n            )\n                if action == \"prepare_run\"\n                    if !haskey(bindings, profile)\n                        app.StatusLabel.Text = \"false\\tprofile_not_found\"\n                        return\n                    end\n                    profile_path, expected_controller, expected_vehicle, enabled, reason, runtime_ready = bindings[profile]\n                    if !enabled || controller != expected_controller || vehicle != expected_vehicle\n                        app.StatusLabel.Text = \"false\\tprofile_selection_mismatch\"\n                        return\n                    end\n                    args = [\n                        \"python\", client, \"prepare_run\",\n                        \"--profile-path\", profile_path,\n                        \"--controller-id\", controller,\n                        \"--vehicle-count\", vehicle,\n                        \"--wind-speed-mps\", string(app.WindField.Value),\n                        \"--format\", \"tsv\",\n                    ]\n                else\n                    args = [\"python\", client, action, \"--format\", \"tsv\"]\n                end\n                app.StatusLabel.Text = String(strip(read(ignorestatus(Cmd(String.(args))), String)))\n                catch err\n                    app.StatusLabel.Text = \"false\\tcallback_exception\\t\" * sprint(showerror, err)\n                end"
+            "name": "ApplyInjectionPressed",
+            "code": "            app.StatusLabel.Text = \"界面审核模式：已触发“应用故障”界面状态，未连接 MWORKS、QGC 或 Orchestrator。\""
         },
         {
-            "name": "SysplorerPressed",
-            "code": "            action = \"open_model_context\"\n                project_root = get(ENV, \"MOSIM_PROJECT_ROOT\", \"C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\")\n                client = joinpath(project_root, \"Scripts\", \"ui\", \"orchestrator_client.py\")\n                try\n                profile_value = app.ProfileDropDown.Value\n                controller_value = app.ControllerDropDown.Value\n                vehicle_value = app.VehicleDropDown.Value\n                if occursin(\"[disabled:\", profile_value) || occursin(\"[disabled:\", controller_value) || occursin(\"[disabled:\", vehicle_value)\n                    app.StatusLabel.Text = \"false\\tselection_gate_rejected\"\n                    return\n                end\n                profile = String(split(profile_value, \" [disabled:\"; limit=2)[1])\n                controller = String(split(controller_value, \" [disabled:\"; limit=2)[1])\n                vehicle = String(split(vehicle_value, \" [disabled:\"; limit=2)[1])\n                bindings = Dict(\n                \"cascade_pid_figure8_generated_c_v1\" => (\"Config/profiles/experiments/cascade_pid_figure8_generated_c_v1.json\", \"cascade_pid\", \"1\", true, \"enabled\", true),\n                \"factory_l2_three_uav_swarm_formation_v1\" => (\"Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json\", \"px4ctrl\", \"3\", true, \"enabled\", true),\n                \"fastlio_hybrid_z_figure8_v1\" => (\"Config/profiles/experiments/fastlio_hybrid_z_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_independent_eval_figure8_v1\" => (\"Config/profiles/experiments/fastlio_independent_eval_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_px4_ekf_ab_figure8_v1\" => (\"Config/profiles/experiments/fastlio_px4_ekf_ab_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"g10a_dfbc_smooth_robust_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10a_dfbc_smooth_robust_no_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_no_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_no_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_no_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_figure8_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_figure8_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_takeoff_hover_land_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_figure8_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_dfbc_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_dfbc_basic_figure8_v1.json\", \"dfbc_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_nmpc_outer_figure8_v1\" => (\"Config/profiles/experiments/g9_nmpc_outer_figure8_v1.json\", \"nmpc_outer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_official_pid_figure8_v1\" => (\"Config/profiles/experiments/g9_official_pid_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g9_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_se3_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_se3_basic_figure8_v1.json\", \"se3_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_smc_boundary_layer_figure8_v1\" => (\"Config/profiles/experiments/g9_smc_boundary_layer_figure8_v1.json\", \"smc_boundary_layer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"p7_ftc_rotor1_loss35_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/p7_ftc_rotor1_loss35_takeoff_hover_land_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_figure8_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", true),\n                \"px4ctrl_spiral_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_spiral_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_step_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_step_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/px4ctrl_takeoff_hover_land_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n            )\n                if action == \"prepare_run\"\n                    if !haskey(bindings, profile)\n                        app.StatusLabel.Text = \"false\\tprofile_not_found\"\n                        return\n                    end\n                    profile_path, expected_controller, expected_vehicle, enabled, reason, runtime_ready = bindings[profile]\n                    if !enabled || controller != expected_controller || vehicle != expected_vehicle\n                        app.StatusLabel.Text = \"false\\tprofile_selection_mismatch\"\n                        return\n                    end\n                    args = [\n                        \"python\", client, \"prepare_run\",\n                        \"--profile-path\", profile_path,\n                        \"--controller-id\", controller,\n                        \"--vehicle-count\", vehicle,\n                        \"--wind-speed-mps\", string(app.WindField.Value),\n                        \"--format\", \"tsv\",\n                    ]\n                else\n                    args = [\"python\", client, action, \"--format\", \"tsv\"]\n                end\n                app.StatusLabel.Text = String(strip(read(ignorestatus(Cmd(String.(args))), String)))\n                catch err\n                    app.StatusLabel.Text = \"false\\tcallback_exception\\t\" * sprint(showerror, err)\n                end"
+            "name": "RestoreInjectionPressed",
+            "code": "            app.RestoreInjectionPressed(nothing)"
+        },
+        {
+            "name": "ValidatePressed",
+            "code": "            app.StatusLabel.Text = \"界面审核模式：已触发“校验配置”界面状态，未连接 MWORKS、QGC 或 Orchestrator。\""
+        },
+        {
+            "name": "PublishPressed",
+            "code": "            app.StatusLabel.Text = \"界面审核模式：已触发“发布 Profile”界面状态，未连接 MWORKS、QGC 或 Orchestrator。\""
+        },
+        {
+            "name": "PreparePressed",
+            "code": "            app.StatusLabel.Text = \"界面审核模式：已触发“准备运行”界面状态，未连接 MWORKS、QGC 或 Orchestrator。\""
+        },
+        {
+            "name": "QgcPressed",
+            "code": "            app.StatusLabel.Text = \"界面审核模式：已触发“进入 QGC”界面状态，未连接 MWORKS、QGC 或 Orchestrator。\""
+        },
+        {
+            "name": "SafeStopPressed",
+            "code": "            app.StatusLabel.Text = \"界面审核模式：已触发“请求安全停止”界面状态，未连接 MWORKS、QGC 或 Orchestrator。\""
+        },
+        {
+            "name": "OpenModelPressed",
+            "code": "            app.StatusLabel.Text = \"界面审核模式：已触发“打开模型”界面状态，未连接 MWORKS、QGC 或 Orchestrator。\""
+        },
+        {
+            "name": "MilPressed",
+            "code": "            app.StatusLabel.Text = \"界面审核模式：已触发“运行 MWORKS MIL”界面状态，未连接 MWORKS、QGC 或 Orchestrator。\""
+        },
+        {
+            "name": "CodegenPressed",
+            "code": "            app.StatusLabel.Text = \"界面审核模式：已触发“生成 C 代码”界面状态，未连接 MWORKS、QGC 或 Orchestrator。\""
         },
         {
             "name": "ResultPressed",
-            "code": "            action = \"get_result_packet\"\n                project_root = get(ENV, \"MOSIM_PROJECT_ROOT\", \"C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\")\n                client = joinpath(project_root, \"Scripts\", \"ui\", \"orchestrator_client.py\")\n                try\n                profile_value = app.ProfileDropDown.Value\n                controller_value = app.ControllerDropDown.Value\n                vehicle_value = app.VehicleDropDown.Value\n                if occursin(\"[disabled:\", profile_value) || occursin(\"[disabled:\", controller_value) || occursin(\"[disabled:\", vehicle_value)\n                    app.StatusLabel.Text = \"false\\tselection_gate_rejected\"\n                    return\n                end\n                profile = String(split(profile_value, \" [disabled:\"; limit=2)[1])\n                controller = String(split(controller_value, \" [disabled:\"; limit=2)[1])\n                vehicle = String(split(vehicle_value, \" [disabled:\"; limit=2)[1])\n                bindings = Dict(\n                \"cascade_pid_figure8_generated_c_v1\" => (\"Config/profiles/experiments/cascade_pid_figure8_generated_c_v1.json\", \"cascade_pid\", \"1\", true, \"enabled\", true),\n                \"factory_l2_three_uav_swarm_formation_v1\" => (\"Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json\", \"px4ctrl\", \"3\", true, \"enabled\", true),\n                \"fastlio_hybrid_z_figure8_v1\" => (\"Config/profiles/experiments/fastlio_hybrid_z_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_independent_eval_figure8_v1\" => (\"Config/profiles/experiments/fastlio_independent_eval_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"fastlio_px4_ekf_ab_figure8_v1\" => (\"Config/profiles/experiments/fastlio_px4_ekf_ab_figure8_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"g10a_dfbc_smooth_robust_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10a_dfbc_smooth_robust_no_dob_figure8_v1\" => (\"Config/profiles/experiments/g10a_dfbc_smooth_robust_no_dob_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_dfbc_smooth_robust_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_dfbc_smooth_robust_no_indi_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g10c_official_pid_no_indi_figure8_v1\" => (\"Config/profiles/experiments/g10c_official_pid_no_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_figure8_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_high_order_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_figure8_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_figure8_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g95_dfbc_high_order_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g95_dfbc_high_order_takeoff_hover_land_v1.json\", \"dfbc_high_order_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_figure8_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_bodyrate\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_figure8_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_figure8_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g96_dfbc_smooth_robust_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/g96_dfbc_smooth_robust_takeoff_hover_land_v1.json\", \"dfbc_smooth_robust_attitude\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_dfbc_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_dfbc_basic_figure8_v1.json\", \"dfbc_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_nmpc_outer_figure8_v1\" => (\"Config/profiles/experiments/g9_nmpc_outer_figure8_v1.json\", \"nmpc_outer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_official_pid_figure8_v1\" => (\"Config/profiles/experiments/g9_official_pid_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_pid_indi_figure8_v1\" => (\"Config/profiles/experiments/g9_pid_indi_figure8_v1.json\", \"official_pid\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_se3_basic_figure8_v1\" => (\"Config/profiles/experiments/g9_se3_basic_figure8_v1.json\", \"se3_basic\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"g9_smc_boundary_layer_figure8_v1\" => (\"Config/profiles/experiments/g9_smc_boundary_layer_figure8_v1.json\", \"smc_boundary_layer\", \"1\", false, \"controller_runtime_gate_pending\", false),\n                \"p7_ftc_rotor1_loss35_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/p7_ftc_rotor1_loss35_takeoff_hover_land_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_figure8_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", true),\n                \"px4ctrl_spiral_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_spiral_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_step_baseline_v1\" => (\"Config/profiles/experiments/px4ctrl_step_baseline_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n                \"px4ctrl_takeoff_hover_land_v1\" => (\"Config/profiles/experiments/px4ctrl_takeoff_hover_land_v1.json\", \"px4ctrl\", \"1\", true, \"enabled\", false),\n            )\n                if action == \"prepare_run\"\n                    if !haskey(bindings, profile)\n                        app.StatusLabel.Text = \"false\\tprofile_not_found\"\n                        return\n                    end\n                    profile_path, expected_controller, expected_vehicle, enabled, reason, runtime_ready = bindings[profile]\n                    if !enabled || controller != expected_controller || vehicle != expected_vehicle\n                        app.StatusLabel.Text = \"false\\tprofile_selection_mismatch\"\n                        return\n                    end\n                    args = [\n                        \"python\", client, \"prepare_run\",\n                        \"--profile-path\", profile_path,\n                        \"--controller-id\", controller,\n                        \"--vehicle-count\", vehicle,\n                        \"--wind-speed-mps\", string(app.WindField.Value),\n                        \"--format\", \"tsv\",\n                    ]\n                else\n                    args = [\"python\", client, action, \"--format\", \"tsv\"]\n                end\n                app.StatusLabel.Text = String(strip(read(ignorestatus(Cmd(String.(args))), String)))\n                catch err\n                    app.StatusLabel.Text = \"false\\tcallback_exception\\t\" * sprint(showerror, err)\n                end"
+            "code": "            app.StatusLabel.Text = \"界面审核模式：已触发“打开结果”界面状态，未连接 MWORKS、QGC 或 Orchestrator。\""
         }
     ],
     "customPrivateFunctions": [],
     "customPublicFunctions": [],
     "customPrivateProperties": [],
     "customPublicProperties": [],
-    "userLoadedModule": "    using Dates\n    using TyPlot",
+    "userLoadedModule": "",
     "figure": {
         "id": "mosim-model-studio-figure",
         "state": {},
         "callbackFcns": {},
         "type": "figure",
         "position": [
-            100,
-            100,
-            980,
-            620
+            30,
+            30,
+            1440,
+            900
         ],
-        "name": "MoSim Model Studio",
+        "name": "MoSim Model Studio 0.5 UI Review",
         "color": [
-            0.94,
-            0.94,
-            0.94
+            0.96,
+            0.97,
+            0.97
         ],
         "tag": "",
         "children": [
             {
-                "id": "title-label",
+                "id": "title",
                 "pid": "mosim-model-studio-figure",
                 "state": {
                     "position": [
-                        30,
                         24,
-                        920,
-                        36
+                        16,
+                        520,
+                        34
                     ],
-                    "fontSize": 22,
-                    "fontWeight": "bold",
-                    "text": "MoSim Model Studio"
+                    "text": "MoSim Model Studio",
+                    "fontSize": 24,
+                    "fontWeight": "bold"
                 },
                 "callbackFcns": {},
                 "type": "label",
@@ -79,10 +111,10 @@
                 "tooltip": "",
                 "contextMenu": [],
                 "position": [
-                    30,
                     24,
-                    920,
-                    36
+                    16,
+                    520,
+                    34
                 ],
                 "interruptible": false,
                 "busyAction": "queue",
@@ -94,656 +126,27 @@
                 "verticalAlignment": "center",
                 "wordWrap": false,
                 "fontName": "Helvetica",
-                "fontSize": 22,
+                "fontSize": 24,
                 "fontWeight": "bold",
                 "fontAngle": "normal",
                 "fontColor": [
-                    0,
-                    0,
-                    0
+                    0.08,
+                    0.16,
+                    0.22
                 ],
                 "backgroundColor": []
             },
             {
-                "id": "profile-dropdown",
+                "id": "subtitle",
                 "pid": "mosim-model-studio-figure",
                 "state": {
                     "position": [
-                        30,
-                        82,
-                        410,
-                        32
+                        26,
+                        50,
+                        900,
+                        22
                     ],
-                    "label": "Experiment profile",
-                    "items": [
-                        "cascade_pid_figure8_generated_c_v1",
-                        "factory_l2_three_uav_swarm_formation_v1",
-                        "fastlio_hybrid_z_figure8_v1",
-                        "fastlio_independent_eval_figure8_v1",
-                        "fastlio_px4_ekf_ab_figure8_v1",
-                        "g10a_dfbc_smooth_robust_dob_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g10a_dfbc_smooth_robust_no_dob_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g10c_dfbc_smooth_robust_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g10c_dfbc_smooth_robust_no_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g10c_official_pid_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g10c_official_pid_no_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g95_dfbc_high_order_bodyrate_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
-                        "g95_dfbc_high_order_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g95_dfbc_high_order_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
-                        "g96_dfbc_smooth_robust_bodyrate_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
-                        "g96_dfbc_smooth_robust_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g96_dfbc_smooth_robust_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
-                        "g9_dfbc_basic_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g9_nmpc_outer_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g9_official_pid_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g9_pid_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g9_se3_basic_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "g9_smc_boundary_layer_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                        "p7_ftc_rotor1_loss35_takeoff_hover_land_v1",
-                        "px4ctrl_figure8_baseline_v1",
-                        "px4ctrl_spiral_baseline_v1",
-                        "px4ctrl_step_baseline_v1",
-                        "px4ctrl_takeoff_hover_land_v1"
-                    ],
-                    "value": "px4ctrl_figure8_baseline_v1",
-                    "valueChangedFcn": "ProfileChanged"
-                },
-                "callbackFcns": {
-                    "valueChangedFcn": "ProfileChanged"
-                },
-                "type": "dropdown",
-                "visible": true,
-                "enable": true,
-                "tooltip": "",
-                "contextMenu": [],
-                "position": [
-                    30,
-                    82,
-                    410,
-                    32
-                ],
-                "interruptible": false,
-                "busyAction": "queue",
-                "tag": "",
-                "variableName": "ProfileDropDown",
-                "label": "Experiment profile",
-                "value": "px4ctrl_figure8_baseline_v1",
-                "items": [
-                    "cascade_pid_figure8_generated_c_v1",
-                    "factory_l2_three_uav_swarm_formation_v1",
-                    "fastlio_hybrid_z_figure8_v1",
-                    "fastlio_independent_eval_figure8_v1",
-                    "fastlio_px4_ekf_ab_figure8_v1",
-                    "g10a_dfbc_smooth_robust_dob_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g10a_dfbc_smooth_robust_no_dob_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g10c_dfbc_smooth_robust_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g10c_dfbc_smooth_robust_no_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g10c_official_pid_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g10c_official_pid_no_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g95_dfbc_high_order_bodyrate_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g95_dfbc_high_order_bodyrate_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
-                    "g95_dfbc_high_order_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g95_dfbc_high_order_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
-                    "g96_dfbc_smooth_robust_bodyrate_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
-                    "g96_dfbc_smooth_robust_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g96_dfbc_smooth_robust_takeoff_hover_land_v1 [disabled: controller_runtime_gate_pending]",
-                    "g9_dfbc_basic_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g9_nmpc_outer_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g9_official_pid_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g9_pid_indi_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g9_se3_basic_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "g9_smc_boundary_layer_figure8_v1 [disabled: controller_runtime_gate_pending]",
-                    "p7_ftc_rotor1_loss35_takeoff_hover_land_v1",
-                    "px4ctrl_figure8_baseline_v1",
-                    "px4ctrl_spiral_baseline_v1",
-                    "px4ctrl_step_baseline_v1",
-                    "px4ctrl_takeoff_hover_land_v1"
-                ],
-                "itemsData": [],
-                "placeholder": "",
-                "fontName": "Helvetica",
-                "fontSize": 12,
-                "fontWeight": "normal",
-                "fontAngle": "normal",
-                "fontColor": [
-                    0,
-                    0,
-                    0
-                ],
-                "backgroundColor": [
-                    1,
-                    1,
-                    1
-                ],
-                "editable": false,
-                "valueChangedFcn": "ProfileChanged"
-            },
-            {
-                "id": "controller-dropdown",
-                "pid": "mosim-model-studio-figure",
-                "state": {
-                    "position": [
-                        30,
-                        130,
-                        410,
-                        32
-                    ],
-                    "label": "Controller",
-                    "items": [
-                        "px4ctrl",
-                        "official_pid [disabled: runtime_evidence_pending]",
-                        "cascade_pid",
-                        "gain_scheduled_pid",
-                        "fuzzy_pid",
-                        "neural_pid",
-                        "lqr_baseline [disabled: runtime_evidence_pending]",
-                        "lqi_baseline [disabled: runtime_evidence_pending]",
-                        "lqg [disabled: runtime_evidence_pending]",
-                        "mu_synthesis [disabled: runtime_evidence_pending]",
-                        "feedback_linearization [disabled: runtime_evidence_pending]",
-                        "passivity_based_control [disabled: runtime_evidence_pending]",
-                        "adaptive_backstepping [disabled: runtime_evidence_pending]",
-                        "backstepping_baseline [disabled: runtime_evidence_pending]",
-                        "se3_basic [disabled: runtime_evidence_pending]",
-                        "dfbc_basic [disabled: runtime_evidence_pending]",
-                        "smc_boundary_layer [disabled: runtime_evidence_pending]",
-                        "integral_smc [disabled: runtime_evidence_pending]",
-                        "terminal_smc [disabled: runtime_evidence_pending]",
-                        "nonsingular_terminal_smc [disabled: runtime_evidence_pending]",
-                        "super_twisting_smc [disabled: runtime_evidence_pending]",
-                        "adaptive_smc [disabled: runtime_evidence_pending]",
-                        "fuzzy_smc [disabled: runtime_evidence_pending]",
-                        "neural_smc [disabled: runtime_evidence_pending]",
-                        "hinf_hover_wrench [disabled: runtime_evidence_pending]",
-                        "nmpc_outer [disabled: runtime_evidence_pending]",
-                        "dfbc_high_order_attitude [disabled: runtime_evidence_pending]",
-                        "dfbc_high_order_bodyrate [disabled: runtime_evidence_pending]",
-                        "dfbc_smooth_robust_attitude [disabled: runtime_evidence_pending]",
-                        "dfbc_smooth_robust_bodyrate [disabled: runtime_evidence_pending]"
-                    ],
-                    "value": "px4ctrl",
-                    "valueChangedFcn": "ControllerChanged"
-                },
-                "callbackFcns": {
-                    "valueChangedFcn": "ControllerChanged"
-                },
-                "type": "dropdown",
-                "visible": true,
-                "enable": true,
-                "tooltip": "",
-                "contextMenu": [],
-                "position": [
-                    30,
-                    130,
-                    410,
-                    32
-                ],
-                "interruptible": false,
-                "busyAction": "queue",
-                "tag": "",
-                "variableName": "ControllerDropDown",
-                "label": "Controller",
-                "value": "px4ctrl",
-                "items": [
-                    "px4ctrl",
-                    "official_pid [disabled: runtime_evidence_pending]",
-                    "cascade_pid",
-                    "gain_scheduled_pid",
-                    "fuzzy_pid",
-                    "neural_pid",
-                    "lqr_baseline [disabled: runtime_evidence_pending]",
-                    "lqi_baseline [disabled: runtime_evidence_pending]",
-                    "lqg [disabled: runtime_evidence_pending]",
-                    "mu_synthesis [disabled: runtime_evidence_pending]",
-                    "feedback_linearization [disabled: runtime_evidence_pending]",
-                    "passivity_based_control [disabled: runtime_evidence_pending]",
-                    "adaptive_backstepping [disabled: runtime_evidence_pending]",
-                    "backstepping_baseline [disabled: runtime_evidence_pending]",
-                    "se3_basic [disabled: runtime_evidence_pending]",
-                    "dfbc_basic [disabled: runtime_evidence_pending]",
-                    "smc_boundary_layer [disabled: runtime_evidence_pending]",
-                    "integral_smc [disabled: runtime_evidence_pending]",
-                    "terminal_smc [disabled: runtime_evidence_pending]",
-                    "nonsingular_terminal_smc [disabled: runtime_evidence_pending]",
-                    "super_twisting_smc [disabled: runtime_evidence_pending]",
-                    "adaptive_smc [disabled: runtime_evidence_pending]",
-                    "fuzzy_smc [disabled: runtime_evidence_pending]",
-                    "neural_smc [disabled: runtime_evidence_pending]",
-                    "hinf_hover_wrench [disabled: runtime_evidence_pending]",
-                    "nmpc_outer [disabled: runtime_evidence_pending]",
-                    "dfbc_high_order_attitude [disabled: runtime_evidence_pending]",
-                    "dfbc_high_order_bodyrate [disabled: runtime_evidence_pending]",
-                    "dfbc_smooth_robust_attitude [disabled: runtime_evidence_pending]",
-                    "dfbc_smooth_robust_bodyrate [disabled: runtime_evidence_pending]"
-                ],
-                "itemsData": [],
-                "placeholder": "",
-                "fontName": "Helvetica",
-                "fontSize": 12,
-                "fontWeight": "normal",
-                "fontAngle": "normal",
-                "fontColor": [
-                    0,
-                    0,
-                    0
-                ],
-                "backgroundColor": [
-                    1,
-                    1,
-                    1
-                ],
-                "editable": false,
-                "valueChangedFcn": "ControllerChanged"
-            },
-            {
-                "id": "vehicle-dropdown",
-                "pid": "mosim-model-studio-figure",
-                "state": {
-                    "position": [
-                        30,
-                        178,
-                        410,
-                        32
-                    ],
-                    "label": "UAV count",
-                    "items": [
-                        "1",
-                        "2 [disabled: scale_gate_pending]",
-                        "3",
-                        "4 [disabled: scale_gate_pending]",
-                        "5 [disabled: scale_gate_pending]",
-                        "6 [disabled: scale_gate_pending]",
-                        "7 [disabled: scale_gate_pending]",
-                        "8 [disabled: scale_gate_pending]",
-                        "9 [disabled: scale_gate_pending]"
-                    ],
-                    "value": "1",
-                    "valueChangedFcn": "VehicleChanged"
-                },
-                "callbackFcns": {
-                    "valueChangedFcn": "VehicleChanged"
-                },
-                "type": "dropdown",
-                "visible": true,
-                "enable": true,
-                "tooltip": "",
-                "contextMenu": [],
-                "position": [
-                    30,
-                    178,
-                    410,
-                    32
-                ],
-                "interruptible": false,
-                "busyAction": "queue",
-                "tag": "",
-                "variableName": "VehicleDropDown",
-                "label": "UAV count",
-                "value": "1",
-                "items": [
-                    "1",
-                    "2 [disabled: scale_gate_pending]",
-                    "3",
-                    "4 [disabled: scale_gate_pending]",
-                    "5 [disabled: scale_gate_pending]",
-                    "6 [disabled: scale_gate_pending]",
-                    "7 [disabled: scale_gate_pending]",
-                    "8 [disabled: scale_gate_pending]",
-                    "9 [disabled: scale_gate_pending]"
-                ],
-                "itemsData": [],
-                "placeholder": "",
-                "fontName": "Helvetica",
-                "fontSize": 12,
-                "fontWeight": "normal",
-                "fontAngle": "normal",
-                "fontColor": [
-                    0,
-                    0,
-                    0
-                ],
-                "backgroundColor": [
-                    1,
-                    1,
-                    1
-                ],
-                "editable": false,
-                "valueChangedFcn": "VehicleChanged"
-            },
-            {
-                "id": "wind-field",
-                "pid": "mosim-model-studio-figure",
-                "state": {
-                    "position": [
-                        30,
-                        226,
-                        410,
-                        32
-                    ],
-                    "label": "Wind speed (m/s)",
-                    "value": 0.0
-                },
-                "callbackFcns": {},
-                "type": "numericeditfield",
-                "visible": true,
-                "enable": true,
-                "tooltip": "",
-                "contextMenu": [],
-                "position": [
-                    30,
-                    226,
-                    410,
-                    32
-                ],
-                "interruptible": false,
-                "busyAction": "queue",
-                "tag": "",
-                "variableName": "WindField",
-                "label": "Wind speed (m/s)",
-                "value": 0.0,
-                "limits": [
-                    0.0,
-                    20.0
-                ],
-                "placeholder": "",
-                "horizontalAlignment": "right",
-                "fontName": "Helvetica",
-                "fontSize": 12,
-                "fontWeight": "normal",
-                "fontAngle": "normal",
-                "fontColor": [
-                    0,
-                    0,
-                    0
-                ],
-                "backgroundColor": [
-                    1,
-                    1,
-                    1
-                ],
-                "editable": true,
-                "valueChangedFcn": ""
-            },
-            {
-                "id": "refresh-button",
-                "pid": "mosim-model-studio-figure",
-                "state": {
-                    "position": [
-                        30,
-                        282,
-                        190,
-                        36
-                    ],
-                    "text": "Refresh capability",
-                    "buttonPushedFcn": "RefreshPressed"
-                },
-                "callbackFcns": {
-                    "buttonPushedFcn": "RefreshPressed"
-                },
-                "type": "button",
-                "visible": true,
-                "enable": true,
-                "tooltip": "",
-                "contextMenu": [],
-                "position": [
-                    30,
-                    282,
-                    190,
-                    36
-                ],
-                "interruptible": false,
-                "busyAction": "queue",
-                "tag": "",
-                "variableName": "RefreshButton",
-                "text": "Refresh capability",
-                "wordWrap": false,
-                "horizontalAlignment": "center",
-                "verticalAlignment": "center",
-                "icon": "",
-                "iconAlignment": "left",
-                "fontName": "Helvetica",
-                "fontSize": 12,
-                "fontWeight": "normal",
-                "fontAngle": "normal",
-                "fontColor": [
-                    0,
-                    0,
-                    0
-                ],
-                "backgroundColor": [
-                    0.94,
-                    0.94,
-                    0.94
-                ],
-                "buttonPushedFcn": "RefreshPressed"
-            },
-            {
-                "id": "preview-button",
-                "pid": "mosim-model-studio-figure",
-                "state": {
-                    "position": [
-                        250,
-                        282,
-                        190,
-                        36
-                    ],
-                    "text": "Preview",
-                    "buttonPushedFcn": "PreviewPressed"
-                },
-                "callbackFcns": {
-                    "buttonPushedFcn": "PreviewPressed"
-                },
-                "type": "button",
-                "visible": true,
-                "enable": true,
-                "tooltip": "",
-                "contextMenu": [],
-                "position": [
-                    250,
-                    282,
-                    190,
-                    36
-                ],
-                "interruptible": false,
-                "busyAction": "queue",
-                "tag": "",
-                "variableName": "PreviewButton",
-                "text": "Preview",
-                "wordWrap": false,
-                "horizontalAlignment": "center",
-                "verticalAlignment": "center",
-                "icon": "",
-                "iconAlignment": "left",
-                "fontName": "Helvetica",
-                "fontSize": 12,
-                "fontWeight": "normal",
-                "fontAngle": "normal",
-                "fontColor": [
-                    0,
-                    0,
-                    0
-                ],
-                "backgroundColor": [
-                    0.94,
-                    0.94,
-                    0.94
-                ],
-                "buttonPushedFcn": "PreviewPressed"
-            },
-            {
-                "id": "submit-button",
-                "pid": "mosim-model-studio-figure",
-                "state": {
-                    "position": [
-                        30,
-                        334,
-                        190,
-                        36
-                    ],
-                    "text": "Prepare run",
-                    "buttonPushedFcn": "SubmitPressed"
-                },
-                "callbackFcns": {
-                    "buttonPushedFcn": "SubmitPressed"
-                },
-                "type": "button",
-                "visible": true,
-                "enable": true,
-                "tooltip": "",
-                "contextMenu": [],
-                "position": [
-                    30,
-                    334,
-                    190,
-                    36
-                ],
-                "interruptible": false,
-                "busyAction": "queue",
-                "tag": "",
-                "variableName": "SubmitButton",
-                "text": "Prepare run",
-                "wordWrap": false,
-                "horizontalAlignment": "center",
-                "verticalAlignment": "center",
-                "icon": "",
-                "iconAlignment": "left",
-                "fontName": "Helvetica",
-                "fontSize": 12,
-                "fontWeight": "normal",
-                "fontAngle": "normal",
-                "fontColor": [
-                    0,
-                    0,
-                    0
-                ],
-                "backgroundColor": [
-                    0.94,
-                    0.94,
-                    0.94
-                ],
-                "buttonPushedFcn": "SubmitPressed"
-            },
-            {
-                "id": "model-button",
-                "pid": "mosim-model-studio-figure",
-                "state": {
-                    "position": [
-                        250,
-                        334,
-                        190,
-                        36
-                    ],
-                    "text": "Open model",
-                    "buttonPushedFcn": "SysplorerPressed"
-                },
-                "callbackFcns": {
-                    "buttonPushedFcn": "SysplorerPressed"
-                },
-                "type": "button",
-                "visible": true,
-                "enable": true,
-                "tooltip": "",
-                "contextMenu": [],
-                "position": [
-                    250,
-                    334,
-                    190,
-                    36
-                ],
-                "interruptible": false,
-                "busyAction": "queue",
-                "tag": "",
-                "variableName": "SysplorerButton",
-                "text": "Open model",
-                "wordWrap": false,
-                "horizontalAlignment": "center",
-                "verticalAlignment": "center",
-                "icon": "",
-                "iconAlignment": "left",
-                "fontName": "Helvetica",
-                "fontSize": 12,
-                "fontWeight": "normal",
-                "fontAngle": "normal",
-                "fontColor": [
-                    0,
-                    0,
-                    0
-                ],
-                "backgroundColor": [
-                    0.94,
-                    0.94,
-                    0.94
-                ],
-                "buttonPushedFcn": "SysplorerPressed"
-            },
-            {
-                "id": "result-button",
-                "pid": "mosim-model-studio-figure",
-                "state": {
-                    "position": [
-                        30,
-                        386,
-                        190,
-                        36
-                    ],
-                    "text": "Open result",
-                    "buttonPushedFcn": "ResultPressed"
-                },
-                "callbackFcns": {
-                    "buttonPushedFcn": "ResultPressed"
-                },
-                "type": "button",
-                "visible": true,
-                "enable": true,
-                "tooltip": "",
-                "contextMenu": [],
-                "position": [
-                    30,
-                    386,
-                    190,
-                    36
-                ],
-                "interruptible": false,
-                "busyAction": "queue",
-                "tag": "",
-                "variableName": "ResultButton",
-                "text": "Open result",
-                "wordWrap": false,
-                "horizontalAlignment": "center",
-                "verticalAlignment": "center",
-                "icon": "",
-                "iconAlignment": "left",
-                "fontName": "Helvetica",
-                "fontSize": 12,
-                "fontWeight": "normal",
-                "fontAngle": "normal",
-                "fontColor": [
-                    0,
-                    0,
-                    0
-                ],
-                "backgroundColor": [
-                    0.94,
-                    0.94,
-                    0.94
-                ],
-                "buttonPushedFcn": "ResultPressed"
-            },
-            {
-                "id": "status-label",
-                "pid": "mosim-model-studio-figure",
-                "state": {
-                    "position": [
-                        30,
-                        442,
-                        410,
-                        128
-                    ],
-                    "wordWrap": true,
-                    "text": "Ready. Disabled options remain visible and are rejected by the capability gate."
+                    "text": "控制器配置、模型验证与 QGC 运行交接"
                 },
                 "callbackFcns": {},
                 "type": "label",
@@ -752,16 +155,879 @@
                 "tooltip": "",
                 "contextMenu": [],
                 "position": [
-                    30,
-                    442,
-                    410,
-                    128
+                    26,
+                    50,
+                    900,
+                    22
                 ],
                 "interruptible": false,
                 "busyAction": "queue",
                 "tag": "",
-                "variableName": "StatusLabel",
-                "text": "Ready. Disabled options remain visible and are rejected by the capability gate.",
+                "variableName": "SubtitleLabel",
+                "text": "控制器配置、模型验证与 QGC 运行交接",
+                "interpreter": "none",
+                "horizontalAlignment": "left",
+                "verticalAlignment": "center",
+                "wordWrap": false,
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.35,
+                    0.42,
+                    0.47
+                ],
+                "backgroundColor": []
+            },
+            {
+                "id": "mode-offline",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        24,
+                        82,
+                        190,
+                        40
+                    ],
+                    "text": "离线建模验证",
+                    "buttonPushedFcn": "OfflineModePressed",
+                    "enable": true
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "OfflineModePressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    24,
+                    82,
+                    190,
+                    40
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "OfflineModeButton",
+                "text": "离线建模验证",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.2,
+                    0.25,
+                    0.28
+                ],
+                "backgroundColor": [
+                    0.88,
+                    0.91,
+                    0.92
+                ],
+                "buttonPushedFcn": "OfflineModePressed"
+            },
+            {
+                "id": "mode-live",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        218,
+                        82,
+                        190,
+                        40
+                    ],
+                    "text": "实时联合仿真",
+                    "buttonPushedFcn": "LiveModePressed",
+                    "enable": true
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "LiveModePressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    218,
+                    82,
+                    190,
+                    40
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "LiveModeButton",
+                "text": "实时联合仿真",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    1,
+                    1,
+                    1
+                ],
+                "backgroundColor": [
+                    0.08,
+                    0.36,
+                    0.43
+                ],
+                "buttonPushedFcn": "LiveModePressed"
+            },
+            {
+                "id": "mode-deploy",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        412,
+                        82,
+                        190,
+                        40
+                    ],
+                    "text": "生成代码部署",
+                    "buttonPushedFcn": "DeployModePressed",
+                    "enable": true
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "DeployModePressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    412,
+                    82,
+                    190,
+                    40
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "DeployModeButton",
+                "text": "生成代码部署",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.2,
+                    0.25,
+                    0.28
+                ],
+                "backgroundColor": [
+                    0.88,
+                    0.91,
+                    0.92
+                ],
+                "buttonPushedFcn": "DeployModePressed"
+            },
+            {
+                "id": "mode-status",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        620,
+                        82,
+                        796,
+                        40
+                    ],
+                    "text": "实时联合仿真  |  RT0 能力待验证，MWORKS Live 当前可见禁用",
+                    "wordWrap": true
+                },
+                "callbackFcns": {},
+                "type": "label",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    620,
+                    82,
+                    796,
+                    40
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ModeStatusLabel",
+                "text": "实时联合仿真  |  RT0 能力待验证，MWORKS Live 当前可见禁用",
+                "interpreter": "none",
+                "horizontalAlignment": "right",
+                "verticalAlignment": "center",
+                "wordWrap": true,
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.25,
+                    0.32,
+                    0.36
+                ],
+                "backgroundColor": []
+            },
+            {
+                "id": "config-section",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        24,
+                        144,
+                        420,
+                        34
+                    ],
+                    "text": "  控制链与实验 Profile",
+                    "fontWeight": "bold",
+                    "backgroundColor": [
+                        0.12,
+                        0.25,
+                        0.32
+                    ]
+                },
+                "callbackFcns": {},
+                "type": "label",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    24,
+                    144,
+                    420,
+                    34
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ConfigSectionLabel",
+                "text": "  控制链与实验 Profile",
+                "interpreter": "none",
+                "horizontalAlignment": "left",
+                "verticalAlignment": "center",
+                "wordWrap": false,
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "backgroundColor": [
+                    0.12,
+                    0.25,
+                    0.32
+                ]
+            },
+            {
+                "id": "chain-section",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        468,
+                        144,
+                        470,
+                        34
+                    ],
+                    "text": "  职责、接口与能力门禁",
+                    "fontWeight": "bold",
+                    "backgroundColor": [
+                        0.12,
+                        0.25,
+                        0.32
+                    ]
+                },
+                "callbackFcns": {},
+                "type": "label",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    468,
+                    144,
+                    470,
+                    34
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ChainSectionLabel",
+                "text": "  职责、接口与能力门禁",
+                "interpreter": "none",
+                "horizontalAlignment": "left",
+                "verticalAlignment": "center",
+                "wordWrap": false,
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "backgroundColor": [
+                    0.12,
+                    0.25,
+                    0.32
+                ]
+            },
+            {
+                "id": "injection-section",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        962,
+                        144,
+                        454,
+                        34
+                    ],
+                    "text": "  故障注入与运行状态",
+                    "fontWeight": "bold",
+                    "backgroundColor": [
+                        0.12,
+                        0.25,
+                        0.32
+                    ]
+                },
+                "callbackFcns": {},
+                "type": "label",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    962,
+                    144,
+                    454,
+                    34
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "InjectionSectionLabel",
+                "text": "  故障注入与运行状态",
+                "interpreter": "none",
+                "horizontalAlignment": "left",
+                "verticalAlignment": "center",
+                "wordWrap": false,
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "backgroundColor": [
+                    0.12,
+                    0.25,
+                    0.32
+                ]
+            },
+            {
+                "id": "profile",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        24,
+                        192,
+                        420,
+                        32
+                    ],
+                    "label": "实验 Profile",
+                    "items": [
+                        "official_pid_attitude_thrust_v1 [候选]",
+                        "official_pid + awff_v1 [候选]"
+                    ],
+                    "value": "official_pid_attitude_thrust_v1 [候选]",
+                    "enable": true,
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "type": "dropdown",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    24,
+                    192,
+                    420,
+                    32
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ProfileDropDown",
+                "label": "实验 Profile",
+                "value": "official_pid_attitude_thrust_v1 [候选]",
+                "items": [
+                    "official_pid_attitude_thrust_v1 [候选]",
+                    "official_pid + awff_v1 [候选]"
+                ],
+                "itemsData": [],
+                "placeholder": "",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    1,
+                    1,
+                    1
+                ],
+                "editable": false,
+                "valueChangedFcn": "SelectionChanged"
+            },
+            {
+                "id": "mission",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        24,
+                        240,
+                        420,
+                        32
+                    ],
+                    "label": "任务轨迹",
+                    "items": [
+                        "起飞-悬停-降落"
+                    ],
+                    "value": "起飞-悬停-降落",
+                    "enable": true,
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "type": "dropdown",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    24,
+                    240,
+                    420,
+                    32
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "MissionDropDown",
+                "label": "任务轨迹",
+                "value": "起飞-悬停-降落",
+                "items": [
+                    "起飞-悬停-降落"
+                ],
+                "itemsData": [],
+                "placeholder": "",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    1,
+                    1,
+                    1
+                ],
+                "editable": false,
+                "valueChangedFcn": "SelectionChanged"
+            },
+            {
+                "id": "position",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        24,
+                        288,
+                        420,
+                        32
+                    ],
+                    "label": "位置 / 平动外环",
+                    "items": [
+                        "PX4CTRL 官方位置外环 PID"
+                    ],
+                    "value": "PX4CTRL 官方位置外环 PID",
+                    "enable": true,
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "type": "dropdown",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    24,
+                    288,
+                    420,
+                    32
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "PositionDropDown",
+                "label": "位置 / 平动外环",
+                "value": "PX4CTRL 官方位置外环 PID",
+                "items": [
+                    "PX4CTRL 官方位置外环 PID"
+                ],
+                "itemsData": [],
+                "placeholder": "",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    1,
+                    1,
+                    1
+                ],
+                "editable": false,
+                "valueChangedFcn": "SelectionChanged"
+            },
+            {
+                "id": "attitude",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        24,
+                        336,
+                        420,
+                        32
+                    ],
+                    "label": "姿态 / 角速度内环",
+                    "items": [
+                        "PX4 内置姿态/角速度环 [锁定]",
+                        "INDI [当前模式不可用]",
+                        "SMC [当前模式不可用]",
+                        "Backstepping [当前模式不可用]"
+                    ],
+                    "value": "PX4 内置姿态/角速度环 [锁定]",
+                    "enable": false,
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "type": "dropdown",
+                "visible": true,
+                "enable": false,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    24,
+                    336,
+                    420,
+                    32
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "AttitudeDropDown",
+                "label": "姿态 / 角速度内环",
+                "value": "PX4 内置姿态/角速度环 [锁定]",
+                "items": [
+                    "PX4 内置姿态/角速度环 [锁定]",
+                    "INDI [当前模式不可用]",
+                    "SMC [当前模式不可用]",
+                    "Backstepping [当前模式不可用]"
+                ],
+                "itemsData": [],
+                "placeholder": "",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    1,
+                    1,
+                    1
+                ],
+                "editable": false,
+                "valueChangedFcn": "SelectionChanged"
+            },
+            {
+                "id": "augmentation",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        24,
+                        384,
+                        420,
+                        32
+                    ],
+                    "label": "增强与扰动补偿",
+                    "items": [
+                        "无",
+                        "AWFF",
+                        "L1 [门禁待通过]",
+                        "DOB/ESO [门禁待通过]",
+                        "模糊补偿 [门禁待通过]",
+                        "神经网络补偿 [门禁待通过]"
+                    ],
+                    "value": "无",
+                    "enable": true,
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "type": "dropdown",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    24,
+                    384,
+                    420,
+                    32
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "AugmentationDropDown",
+                "label": "增强与扰动补偿",
+                "value": "无",
+                "items": [
+                    "无",
+                    "AWFF",
+                    "L1 [门禁待通过]",
+                    "DOB/ESO [门禁待通过]",
+                    "模糊补偿 [门禁待通过]",
+                    "神经网络补偿 [门禁待通过]"
+                ],
+                "itemsData": [],
+                "placeholder": "",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    1,
+                    1,
+                    1
+                ],
+                "editable": false,
+                "valueChangedFcn": "SelectionChanged"
+            },
+            {
+                "id": "safety",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        24,
+                        432,
+                        420,
+                        32
+                    ],
+                    "label": "安全层",
+                    "items": [
+                        "基础限幅",
+                        "QP Safety Filter [门禁待通过]",
+                        "Return-and-Land [门禁待通过]",
+                        "CBF [门禁待通过]"
+                    ],
+                    "value": "基础限幅",
+                    "enable": true,
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "type": "dropdown",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    24,
+                    432,
+                    420,
+                    32
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "SafetyDropDown",
+                "label": "安全层",
+                "value": "基础限幅",
+                "items": [
+                    "基础限幅",
+                    "QP Safety Filter [门禁待通过]",
+                    "Return-and-Land [门禁待通过]",
+                    "CBF [门禁待通过]"
+                ],
+                "itemsData": [],
+                "placeholder": "",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    1,
+                    1,
+                    1
+                ],
+                "editable": false,
+                "valueChangedFcn": "SelectionChanged"
+            },
+            {
+                "id": "output",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        24,
+                        480,
+                        420,
+                        32
+                    ],
+                    "label": "输出边界",
+                    "items": [
+                        "ATTITUDE_THRUST [锁定]"
+                    ],
+                    "value": "ATTITUDE_THRUST [锁定]",
+                    "enable": false,
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "SelectionChanged"
+                },
+                "type": "dropdown",
+                "visible": true,
+                "enable": false,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    24,
+                    480,
+                    420,
+                    32
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "OutputDropDown",
+                "label": "输出边界",
+                "value": "ATTITUDE_THRUST [锁定]",
+                "items": [
+                    "ATTITUDE_THRUST [锁定]"
+                ],
+                "itemsData": [],
+                "placeholder": "",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    1,
+                    1,
+                    1
+                ],
+                "editable": false,
+                "valueChangedFcn": "SelectionChanged"
+            },
+            {
+                "id": "profile-summary",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        24,
+                        528,
+                        420,
+                        118
+                    ],
+                    "text": "实验 Profile\nofficial_pid_attitude_thrust_v1 [候选]\n\n任务：起飞-悬停-降落\n外环：PX4CTRL 官方位置外环 PID\n增强：无",
+                    "wordWrap": true,
+                    "backgroundColor": [
+                        0.91,
+                        0.94,
+                        0.95
+                    ]
+                },
+                "callbackFcns": {},
+                "type": "label",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    24,
+                    528,
+                    420,
+                    118
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ProfileSummaryLabel",
+                "text": "实验 Profile\nofficial_pid_attitude_thrust_v1 [候选]\n\n任务：起飞-悬停-降落\n外环：PX4CTRL 官方位置外环 PID\n增强：无",
                 "interpreter": "none",
                 "horizontalAlignment": "left",
                 "verticalAlignment": "top",
@@ -775,53 +1041,1376 @@
                     0,
                     0
                 ],
-                "backgroundColor": []
+                "backgroundColor": [
+                    0.91,
+                    0.94,
+                    0.95
+                ]
             },
             {
-                "id": "preview-axes",
+                "id": "capability",
                 "pid": "mosim-model-studio-figure",
                 "state": {
                     "position": [
-                        485,
-                        90,
-                        455,
-                        480
+                        24,
+                        654,
+                        420,
+                        76
+                    ],
+                    "text": "实时能力门禁\n候选 100 Hz / 10 ms；RT0 前不可准备飞行，不得把候选参数写成已验证能力。",
+                    "wordWrap": true,
+                    "backgroundColor": [
+                        0.98,
+                        0.93,
+                        0.8
                     ]
                 },
                 "callbackFcns": {},
-                "type": "uiaxes",
+                "type": "label",
                 "visible": true,
                 "enable": true,
                 "tooltip": "",
                 "contextMenu": [],
                 "position": [
-                    485,
-                    90,
-                    455,
-                    480
+                    24,
+                    654,
+                    420,
+                    76
                 ],
                 "interruptible": false,
                 "busyAction": "queue",
                 "tag": "",
-                "variableName": "UIAxes",
-                "title": "Preview",
-                "data": [],
-                "xLabel": "Time (s)",
-                "yLabel": "Normalized response",
-                "legend": false,
-                "grid": false,
-                "hold": false,
-                "xLim": [
+                "variableName": "CapabilityLabel",
+                "text": "实时能力门禁\n候选 100 Hz / 10 ms；RT0 前不可准备飞行，不得把候选参数写成已验证能力。",
+                "interpreter": "none",
+                "horizontalAlignment": "left",
+                "verticalAlignment": "top",
+                "wordWrap": true,
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
                     0,
-                    1
-                ],
-                "xLimMode": "auto",
-                "yLim": [
                     0,
-                    1
+                    0
                 ],
-                "yLimMode": "auto",
-                "buttonDownFcn": ""
+                "backgroundColor": [
+                    0.98,
+                    0.93,
+                    0.8
+                ]
+            },
+            {
+                "id": "chain",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        468,
+                        192,
+                        470,
+                        190
+                    ],
+                    "text": "控制链\n\n任务 / 参考 -> 位置外环 -> 期望姿态与总推力\n-> PX4 内置姿态 / 角速度环 -> 控制分配 -> 四电机\n\nATTITUDE_THRUST v1 中，自研姿态内环不可在线选择。",
+                    "wordWrap": true,
+                    "backgroundColor": [
+                        0.89,
+                        0.94,
+                        0.96
+                    ]
+                },
+                "callbackFcns": {},
+                "type": "label",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    468,
+                    192,
+                    470,
+                    190
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ChainLabel",
+                "text": "控制链\n\n任务 / 参考 -> 位置外环 -> 期望姿态与总推力\n-> PX4 内置姿态 / 角速度环 -> 控制分配 -> 四电机\n\nATTITUDE_THRUST v1 中，自研姿态内环不可在线选择。",
+                "interpreter": "none",
+                "horizontalAlignment": "left",
+                "verticalAlignment": "top",
+                "wordWrap": true,
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    0.89,
+                    0.94,
+                    0.96
+                ]
+            },
+            {
+                "id": "contract",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        468,
+                        394,
+                        470,
+                        144
+                    ],
+                    "text": "三方职责\n\nModel Studio：配置、校验、发布、MIL / codegen、prepare\nQGC：连接、解锁、起飞、任务、降落、安全停止\nOrchestrator：唯一状态机、命令裁决和 RunManifest",
+                    "wordWrap": true,
+                    "backgroundColor": [
+                        0.94,
+                        0.95,
+                        0.95
+                    ]
+                },
+                "callbackFcns": {},
+                "type": "label",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    468,
+                    394,
+                    470,
+                    144
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ContractLabel",
+                "text": "三方职责\n\nModel Studio：配置、校验、发布、MIL / codegen、prepare\nQGC：连接、解锁、起飞、任务、降落、安全停止\nOrchestrator：唯一状态机、命令裁决和 RunManifest",
+                "interpreter": "none",
+                "horizontalAlignment": "left",
+                "verticalAlignment": "top",
+                "wordWrap": true,
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.95,
+                    0.95
+                ]
+            },
+            {
+                "id": "timing",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        468,
+                        550,
+                        470,
+                        180
+                    ],
+                    "text": "候选实时合同（未验证）\n\nframe: mosim_enu_flu_quaternion_xyzw_v1\nrate: 100 Hz  |  deadline: 10 ms\ncommand age: 50 ms  |  failsafe escalation: 100 ms\n\nRT0 未通过，MWORKS Live 保持禁用。",
+                    "wordWrap": true,
+                    "backgroundColor": [
+                        0.98,
+                        0.93,
+                        0.8
+                    ]
+                },
+                "callbackFcns": {},
+                "type": "label",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    468,
+                    550,
+                    470,
+                    180
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "TimingLabel",
+                "text": "候选实时合同（未验证）\n\nframe: mosim_enu_flu_quaternion_xyzw_v1\nrate: 100 Hz  |  deadline: 10 ms\ncommand age: 50 ms  |  failsafe escalation: 100 ms\n\nRT0 未通过，MWORKS Live 保持禁用。",
+                "interpreter": "none",
+                "horizontalAlignment": "left",
+                "verticalAlignment": "top",
+                "wordWrap": true,
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    0.98,
+                    0.93,
+                    0.8
+                ]
+            },
+            {
+                "id": "wind",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        962,
+                        194,
+                        454,
+                        52
+                    ],
+                    "label": "风速待应用值（m/s，方向固定）",
+                    "value": 0.0,
+                    "limits": [
+                        0.0,
+                        20.0
+                    ],
+                    "majorTicks": [
+                        0.0,
+                        5.0,
+                        10.0,
+                        15.0,
+                        20.0
+                    ],
+                    "majorTickLabels": [
+                        "0",
+                        "5",
+                        "10",
+                        "15",
+                        "20"
+                    ],
+                    "valueChangedFcn": "InjectionChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "InjectionChanged"
+                },
+                "type": "slider",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    962,
+                    194,
+                    454,
+                    52
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "WindSlider",
+                "label": "风速待应用值（m/s，方向固定）",
+                "value": 0.0,
+                "limits": [
+                    0.0,
+                    20.0
+                ],
+                "majorTicks": [
+                    0.0,
+                    5.0,
+                    10.0,
+                    15.0,
+                    20.0
+                ],
+                "majorTickLabels": [
+                    "0",
+                    "5",
+                    "10",
+                    "15",
+                    "20"
+                ],
+                "minorTicks": [],
+                "majorTicksMode": "manual",
+                "majorTickLabelsMode": "manual",
+                "minorTicksMode": "auto",
+                "fontName": "Helvetica",
+                "fontSize": 11,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "valueChangedFcn": "InjectionChanged"
+            },
+            {
+                "id": "motor1",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        962,
+                        254,
+                        454,
+                        52
+                    ],
+                    "label": "电机 1 效率",
+                    "value": 1.0,
+                    "limits": [
+                        0.0,
+                        1.0
+                    ],
+                    "majorTicks": [
+                        0.0,
+                        0.5,
+                        1.0
+                    ],
+                    "majorTickLabels": [
+                        "0",
+                        "50%",
+                        "100%"
+                    ],
+                    "valueChangedFcn": "InjectionChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "InjectionChanged"
+                },
+                "type": "slider",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    962,
+                    254,
+                    454,
+                    52
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "Motor1Slider",
+                "label": "电机 1 效率",
+                "value": 1.0,
+                "limits": [
+                    0.0,
+                    1.0
+                ],
+                "majorTicks": [
+                    0.0,
+                    0.5,
+                    1.0
+                ],
+                "majorTickLabels": [
+                    "0",
+                    "50%",
+                    "100%"
+                ],
+                "minorTicks": [],
+                "majorTicksMode": "manual",
+                "majorTickLabelsMode": "manual",
+                "minorTicksMode": "auto",
+                "fontName": "Helvetica",
+                "fontSize": 11,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "valueChangedFcn": "InjectionChanged"
+            },
+            {
+                "id": "motor2",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        962,
+                        314,
+                        454,
+                        52
+                    ],
+                    "label": "电机 2 效率",
+                    "value": 1.0,
+                    "limits": [
+                        0.0,
+                        1.0
+                    ],
+                    "majorTicks": [
+                        0.0,
+                        0.5,
+                        1.0
+                    ],
+                    "majorTickLabels": [
+                        "0",
+                        "50%",
+                        "100%"
+                    ],
+                    "valueChangedFcn": "InjectionChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "InjectionChanged"
+                },
+                "type": "slider",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    962,
+                    314,
+                    454,
+                    52
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "Motor2Slider",
+                "label": "电机 2 效率",
+                "value": 1.0,
+                "limits": [
+                    0.0,
+                    1.0
+                ],
+                "majorTicks": [
+                    0.0,
+                    0.5,
+                    1.0
+                ],
+                "majorTickLabels": [
+                    "0",
+                    "50%",
+                    "100%"
+                ],
+                "minorTicks": [],
+                "majorTicksMode": "manual",
+                "majorTickLabelsMode": "manual",
+                "minorTicksMode": "auto",
+                "fontName": "Helvetica",
+                "fontSize": 11,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "valueChangedFcn": "InjectionChanged"
+            },
+            {
+                "id": "motor3",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        962,
+                        374,
+                        454,
+                        52
+                    ],
+                    "label": "电机 3 效率",
+                    "value": 1.0,
+                    "limits": [
+                        0.0,
+                        1.0
+                    ],
+                    "majorTicks": [
+                        0.0,
+                        0.5,
+                        1.0
+                    ],
+                    "majorTickLabels": [
+                        "0",
+                        "50%",
+                        "100%"
+                    ],
+                    "valueChangedFcn": "InjectionChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "InjectionChanged"
+                },
+                "type": "slider",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    962,
+                    374,
+                    454,
+                    52
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "Motor3Slider",
+                "label": "电机 3 效率",
+                "value": 1.0,
+                "limits": [
+                    0.0,
+                    1.0
+                ],
+                "majorTicks": [
+                    0.0,
+                    0.5,
+                    1.0
+                ],
+                "majorTickLabels": [
+                    "0",
+                    "50%",
+                    "100%"
+                ],
+                "minorTicks": [],
+                "majorTicksMode": "manual",
+                "majorTickLabelsMode": "manual",
+                "minorTicksMode": "auto",
+                "fontName": "Helvetica",
+                "fontSize": 11,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "valueChangedFcn": "InjectionChanged"
+            },
+            {
+                "id": "motor4",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        962,
+                        434,
+                        454,
+                        52
+                    ],
+                    "label": "电机 4 效率",
+                    "value": 1.0,
+                    "limits": [
+                        0.0,
+                        1.0
+                    ],
+                    "majorTicks": [
+                        0.0,
+                        0.5,
+                        1.0
+                    ],
+                    "majorTickLabels": [
+                        "0",
+                        "50%",
+                        "100%"
+                    ],
+                    "valueChangedFcn": "InjectionChanged"
+                },
+                "callbackFcns": {
+                    "valueChangedFcn": "InjectionChanged"
+                },
+                "type": "slider",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    962,
+                    434,
+                    454,
+                    52
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "Motor4Slider",
+                "label": "电机 4 效率",
+                "value": 1.0,
+                "limits": [
+                    0.0,
+                    1.0
+                ],
+                "majorTicks": [
+                    0.0,
+                    0.5,
+                    1.0
+                ],
+                "majorTickLabels": [
+                    "0",
+                    "50%",
+                    "100%"
+                ],
+                "minorTicks": [],
+                "majorTicksMode": "manual",
+                "majorTickLabelsMode": "manual",
+                "minorTicksMode": "auto",
+                "fontName": "Helvetica",
+                "fontSize": 11,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "valueChangedFcn": "InjectionChanged"
+            },
+            {
+                "id": "injection-values",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        962,
+                        498,
+                        454,
+                        94
+                    ],
+                    "text": "待应用值\n风速 0.0 m/s  |  电机效率 1.00 / 1.00 / 1.00 / 1.00\n\n实际值\n风速 0.0 m/s  |  电机效率 1.00 / 1.00 / 1.00 / 1.00",
+                    "wordWrap": true,
+                    "backgroundColor": [
+                        0.94,
+                        0.95,
+                        0.95
+                    ]
+                },
+                "callbackFcns": {},
+                "type": "label",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    962,
+                    498,
+                    454,
+                    94
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "InjectionValuesLabel",
+                "text": "待应用值\n风速 0.0 m/s  |  电机效率 1.00 / 1.00 / 1.00 / 1.00\n\n实际值\n风速 0.0 m/s  |  电机效率 1.00 / 1.00 / 1.00 / 1.00",
+                "interpreter": "none",
+                "horizontalAlignment": "left",
+                "verticalAlignment": "top",
+                "wordWrap": true,
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.95,
+                    0.95
+                ]
+            },
+            {
+                "id": "apply-injection",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        962,
+                        604,
+                        216,
+                        36
+                    ],
+                    "text": "应用",
+                    "buttonPushedFcn": "ApplyInjectionPressed",
+                    "enable": true
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "ApplyInjectionPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    962,
+                    604,
+                    216,
+                    36
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ApplyInjectionButton",
+                "text": "应用",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.2,
+                    0.25,
+                    0.28
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "ApplyInjectionPressed"
+            },
+            {
+                "id": "restore-injection",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        1200,
+                        604,
+                        216,
+                        36
+                    ],
+                    "text": "恢复正常",
+                    "buttonPushedFcn": "RestoreInjectionPressed",
+                    "enable": true
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "RestoreInjectionPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    1200,
+                    604,
+                    216,
+                    36
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "RestoreInjectionButton",
+                "text": "恢复正常",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.2,
+                    0.25,
+                    0.28
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "RestoreInjectionPressed"
+            },
+            {
+                "id": "manifest",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        962,
+                        652,
+                        454,
+                        78
+                    ],
+                    "text": "运行状态\nRunManifest：尚未生成\nProfile：未冻结  |  QGC：未交接  |  实际故障：正常",
+                    "wordWrap": true,
+                    "backgroundColor": [
+                        0.93,
+                        0.94,
+                        0.94
+                    ]
+                },
+                "callbackFcns": {},
+                "type": "label",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    962,
+                    652,
+                    454,
+                    78
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ManifestLabel",
+                "text": "运行状态\nRunManifest：尚未生成\nProfile：未冻结  |  QGC：未交接  |  实际故障：正常",
+                "interpreter": "none",
+                "horizontalAlignment": "left",
+                "verticalAlignment": "top",
+                "wordWrap": true,
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    0.93,
+                    0.94,
+                    0.94
+                ]
+            },
+            {
+                "id": "validate",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        24,
+                        754,
+                        140,
+                        38
+                    ],
+                    "text": "校验配置",
+                    "buttonPushedFcn": "ValidatePressed",
+                    "enable": true
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "ValidatePressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    24,
+                    754,
+                    140,
+                    38
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ValidateButton",
+                "text": "校验配置",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.2,
+                    0.25,
+                    0.28
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "ValidatePressed"
+            },
+            {
+                "id": "publish",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        176,
+                        754,
+                        140,
+                        38
+                    ],
+                    "text": "发布 Profile",
+                    "buttonPushedFcn": "PublishPressed",
+                    "enable": true
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "PublishPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    176,
+                    754,
+                    140,
+                    38
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "PublishButton",
+                "text": "发布 Profile",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.2,
+                    0.25,
+                    0.28
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "PublishPressed"
+            },
+            {
+                "id": "prepare",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        328,
+                        754,
+                        140,
+                        38
+                    ],
+                    "text": "准备运行",
+                    "buttonPushedFcn": "PreparePressed",
+                    "enable": false
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "PreparePressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": false,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    328,
+                    754,
+                    140,
+                    38
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "PrepareButton",
+                "text": "准备运行",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.2,
+                    0.25,
+                    0.28
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "PreparePressed"
+            },
+            {
+                "id": "qgc",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        480,
+                        754,
+                        140,
+                        38
+                    ],
+                    "text": "进入 QGC",
+                    "buttonPushedFcn": "QgcPressed",
+                    "enable": false
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "QgcPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": false,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    480,
+                    754,
+                    140,
+                    38
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "QgcButton",
+                "text": "进入 QGC",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.2,
+                    0.25,
+                    0.28
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "QgcPressed"
+            },
+            {
+                "id": "safe-stop",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        632,
+                        754,
+                        140,
+                        38
+                    ],
+                    "text": "请求安全停止",
+                    "buttonPushedFcn": "SafeStopPressed",
+                    "enable": false
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "SafeStopPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": false,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    632,
+                    754,
+                    140,
+                    38
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "SafeStopButton",
+                "text": "请求安全停止",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.2,
+                    0.25,
+                    0.28
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "SafeStopPressed"
+            },
+            {
+                "id": "open-model",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        784,
+                        754,
+                        140,
+                        38
+                    ],
+                    "text": "打开模型",
+                    "buttonPushedFcn": "OpenModelPressed",
+                    "enable": true
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "OpenModelPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    784,
+                    754,
+                    140,
+                    38
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "OpenModelButton",
+                "text": "打开模型",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.2,
+                    0.25,
+                    0.28
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "OpenModelPressed"
+            },
+            {
+                "id": "mil",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        936,
+                        754,
+                        150,
+                        38
+                    ],
+                    "text": "运行 MWORKS MIL",
+                    "buttonPushedFcn": "MilPressed",
+                    "enable": false
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "MilPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": false,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    936,
+                    754,
+                    150,
+                    38
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "MilButton",
+                "text": "运行 MWORKS MIL",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.2,
+                    0.25,
+                    0.28
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "MilPressed"
+            },
+            {
+                "id": "codegen",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        1098,
+                        754,
+                        140,
+                        38
+                    ],
+                    "text": "生成 C 代码",
+                    "buttonPushedFcn": "CodegenPressed",
+                    "enable": false
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "CodegenPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": false,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    1098,
+                    754,
+                    140,
+                    38
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "CodegenButton",
+                "text": "生成 C 代码",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.2,
+                    0.25,
+                    0.28
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "CodegenPressed"
+            },
+            {
+                "id": "result",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        1250,
+                        754,
+                        166,
+                        38
+                    ],
+                    "text": "打开结果",
+                    "buttonPushedFcn": "ResultPressed",
+                    "enable": true
+                },
+                "callbackFcns": {
+                    "buttonPushedFcn": "ResultPressed"
+                },
+                "type": "button",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    1250,
+                    754,
+                    166,
+                    38
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "ResultButton",
+                "text": "打开结果",
+                "wordWrap": false,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "icon": "",
+                "iconAlignment": "left",
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "bold",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0.2,
+                    0.25,
+                    0.28
+                ],
+                "backgroundColor": [
+                    0.94,
+                    0.94,
+                    0.94
+                ],
+                "buttonPushedFcn": "ResultPressed"
+            },
+            {
+                "id": "status",
+                "pid": "mosim-model-studio-figure",
+                "state": {
+                    "position": [
+                        24,
+                        810,
+                        1392,
+                        62
+                    ],
+                    "text": "界面审核版已就绪。所有按钮仅演示状态，不连接 MWORKS、Gazebo、QGC 或 Orchestrator。",
+                    "wordWrap": true,
+                    "backgroundColor": [
+                        0.9,
+                        0.93,
+                        0.94
+                    ]
+                },
+                "callbackFcns": {},
+                "type": "label",
+                "visible": true,
+                "enable": true,
+                "tooltip": "",
+                "contextMenu": [],
+                "position": [
+                    24,
+                    810,
+                    1392,
+                    62
+                ],
+                "interruptible": false,
+                "busyAction": "queue",
+                "tag": "",
+                "variableName": "StatusLabel",
+                "text": "界面审核版已就绪。所有按钮仅演示状态，不连接 MWORKS、Gazebo、QGC 或 Orchestrator。",
+                "interpreter": "none",
+                "horizontalAlignment": "left",
+                "verticalAlignment": "top",
+                "wordWrap": true,
+                "fontName": "Helvetica",
+                "fontSize": 12,
+                "fontWeight": "normal",
+                "fontAngle": "normal",
+                "fontColor": [
+                    0,
+                    0,
+                    0
+                ],
+                "backgroundColor": [
+                    0.9,
+                    0.93,
+                    0.94
+                ]
             }
         ],
         "visible": true,
@@ -829,12 +2418,12 @@
     },
     "info": {
         "type": "app",
-        "name": "MoSim Model Studio",
-        "version": "0.1.0",
+        "name": "MoSim Model Studio 0.5 UI Review",
+        "version": "0.5.0",
         "author": "MoSim",
-        "description": "Native experiment selection and audited orchestration request surface.",
+        "description": "三模式控制器配置、模型验证与 QGC 运行交接界面审核版。",
         "icon": "",
         "startupFcn": ""
     },
-    "code": "module MoSimModelStudio\n\nusing Dates\nusing ObjectOriented\nusing TyAppDesigner\nusing TyPlot\n\nfunction discover_project_root()\n    candidates = String[]\n    haskey(ENV, \"MOSIM_PROJECT_ROOT\") && push!(candidates, ENV[\"MOSIM_PROJECT_ROOT\"])\n    push!(candidates, normpath(joinpath(@__DIR__, \"..\", \"..\", \"..\")))\n    push!(candidates, pwd())\n    for initial in candidates\n        candidate = abspath(initial)\n        while true\n            isfile(joinpath(candidate, \"AGENTS.md\")) && return candidate\n            parent = dirname(candidate)\n            parent == candidate && break\n            candidate = parent\n        end\n    end\n    error(\"MoSim project root not found. Set MOSIM_PROJECT_ROOT before starting the APP.\")\nend\n\n@oodef mutable struct App\n    UIFigure::TyAppDesigner.Figure = TyAppDesigner.create_figure()\n    TitleLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n    ProfileDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    ControllerDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    VehicleDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    WindField::TyAppDesigner.NumericEditField = TyAppDesigner.create_numericeditfield()\n    RefreshButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    PreviewButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    SubmitButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    SysplorerButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    ResultButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    UIAxes::TyAppDesigner.UIAxes = TyAppDesigner.create_uiaxes()\n    StatusLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n\n    Appname::Module = @__MODULE__\n    Appfile::String = @__FILE__\n    ProjectRoot::String = discover_project_root()\n\n    function catalog_rows(app)\n        exporter = joinpath(app.ProjectRoot, \"Scripts\", \"ui\", \"export_model_studio_catalog.py\")\n        output = read(Cmd([\"python\", exporter, \"--format\", \"tsv\"]), String)\n        return [split(line, '\\t') for line in split(chomp(output), '\\n') if !isempty(line)]\n    end\n\n    function clean_option(app, value)\n        return String(split(value, \" [disabled:\"; limit=2)[1])\n    end\n\n    function refresh_catalog(app)\n        rows = app.catalog_rows()\n        profiles = String[]\n        controllers = String[]\n        vehicles = String[]\n        for fields in rows\n            if fields[1] == \"PROFILE\"\n                push!(profiles, fields[6] == \"true\" ? fields[2] : fields[2] * \" [disabled: \" * fields[7] * \"]\")\n            elseif fields[1] == \"CONTROLLER\"\n                push!(controllers, fields[5] == \"true\" ? fields[2] : fields[2] * \" [disabled: \" * fields[6] * \"]\")\n            elseif fields[1] == \"VEHICLE\"\n                push!(vehicles, fields[3] == \"true\" ? fields[2] : fields[2] * \" [disabled: \" * fields[4] * \"]\")\n            end\n        end\n        app.ProfileDropDown.Items = profiles\n        app.ControllerDropDown.Items = controllers\n        app.VehicleDropDown.Items = vehicles\n        enabled_profiles = filter(item -> !occursin(\"[disabled:\", item), profiles)\n        if !isempty(enabled_profiles)\n            app.ProfileDropDown.Value = enabled_profiles[1]\n            app.ProfileChanged(nothing)\n        end\n        app.StatusLabel.Text = \"Registry and Profile catalog refreshed.\"\n    end\n\n    function RefreshPressed(app, event)\n        try\n            app.refresh_catalog()\n        catch err\n            app.StatusLabel.Text = \"Catalog refresh failed: \" * sprint(showerror, err)\n        end\n    end\n\n    function ProfileChanged(app, event)\n        selected = app.clean_option(app.ProfileDropDown.Value)\n        for fields in app.catalog_rows()\n            if fields[1] == \"PROFILE\" && fields[2] == selected\n                controller_option = findfirst(item -> app.clean_option(item) == fields[4], app.ControllerDropDown.Items)\n                vehicle_option = findfirst(item -> app.clean_option(item) == fields[5], app.VehicleDropDown.Items)\n                controller_option !== nothing && (app.ControllerDropDown.Value = app.ControllerDropDown.Items[controller_option])\n                vehicle_option !== nothing && (app.VehicleDropDown.Value = app.VehicleDropDown.Items[vehicle_option])\n                runtime = fields[8] == \"true\" ? \"runtime ready\" : \"runtime gate pending\"\n                app.StatusLabel.Text = fields[6] == \"true\" ? \"Profile accepted; \" * runtime : \"Profile unavailable: \" * fields[7]\n                return\n            end\n        end\n        app.StatusLabel.Text = \"Profile not found in current catalog.\"\n    end\n\n    function ControllerChanged(app, event)\n        selected = app.ControllerDropDown.Value\n        app.StatusLabel.Text = occursin(\"[disabled:\", selected) ? \"Controller unavailable.\" : \"Controller selected: \" * selected\n    end\n\n    function VehicleChanged(app, event)\n        selected = app.VehicleDropDown.Value\n        app.StatusLabel.Text = occursin(\"[disabled:\", selected) ? \"UAV count unavailable.\" : \"UAV count selected: \" * selected\n    end\n\n    function PreviewPressed(app, event)\n        wind = app.WindField.Value\n        t = collect(0.0:0.1:10.0)\n        response = @. exp(-0.15 * t) * sin(1.8 * t) + 0.02 * wind\n        TyAppDesigner.plot(app.UIAxes, t, response)\n        TyAppDesigner.title(app.UIAxes, \"Bounded preview\")\n        TyAppDesigner.xlabel(app.UIAxes, \"Time (s)\")\n        TyAppDesigner.ylabel(app.UIAxes, \"Normalized response\")\n        app.StatusLabel.Text = \"Preview updated. This is a UI capability plot, not controller evidence.\"\n    end\n\n    function create_request(app, action)\n        profile = app.clean_option(app.ProfileDropDown.Value)\n        controller = app.clean_option(app.ControllerDropDown.Value)\n        vehicle = app.clean_option(app.VehicleDropDown.Value)\n        if occursin(\"[disabled:\", app.ProfileDropDown.Value) || occursin(\"[disabled:\", app.ControllerDropDown.Value) || occursin(\"[disabled:\", app.VehicleDropDown.Value)\n            return \"false\\tselection_gate_rejected\"\n        end\n        client = joinpath(app.ProjectRoot, \"Scripts\", \"ui\", \"orchestrator_client.py\")\n        if action == \"prepare_run\"\n            profile_path = \"\"\n            for fields in app.catalog_rows()\n                if fields[1] == \"PROFILE\" && fields[2] == profile\n                    profile_path = fields[3]\n                    if fields[4] != controller || fields[5] != vehicle\n                        return \"false\\tprofile_selection_mismatch\"\n                    end\n                end\n            end\n            isempty(profile_path) && return \"false\\tprofile_not_found\"\n            args = [\n                \"python\", client, \"prepare_run\",\n                \"--profile-path\", profile_path,\n                \"--controller-id\", controller,\n                \"--vehicle-count\", vehicle,\n                \"--wind-speed-mps\", string(app.WindField.Value),\n                \"--format\", \"tsv\",\n            ]\n            return String(strip(read(ignorestatus(Cmd(String.(args))), String)))\n        end\n        return String(strip(read(ignorestatus(Cmd([\"python\", client, action, \"--format\", \"tsv\"])), String)))\n    end\n\n    function SubmitPressed(app, event)\n        app.StatusLabel.Text = app.create_request(\"prepare_run\")\n    end\n\n    function SysplorerPressed(app, event)\n        app.StatusLabel.Text = app.create_request(\"open_model_context\")\n    end\n\n    function ResultPressed(app, event)\n        app.StatusLabel.Text = app.create_request(\"get_result_packet\")\n    end\n\n    function createComponents(app)\n        app.UIFigure = TyAppDesigner.uifigure(Visible=false)\n        app.UIFigure.Position = [100, 100, 980, 620]\n        app.UIFigure.Name = \"MoSim Model Studio\"\n\n        app.TitleLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.TitleLabel.Position = [30, 24, 920, 36]\n        app.TitleLabel.Text = \"MoSim Model Studio\"\n        app.TitleLabel.FontSize = 22\n        app.TitleLabel.FontWeight = \"bold\"\n        app.TitleLabel.HorizontalAlignment = \"left\"\n\n        app.ProfileDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.ProfileDropDown.Position = [30, 82, 410, 32]\n        app.ProfileDropDown.Label = \"Experiment profile\"\n        app.ProfileDropDown.Items = [\"Loading catalog...\"]\n        app.ProfileDropDown.Value = \"Loading catalog...\"\n        app.ProfileDropDown.ValueChangedFcn = \"ProfileChanged\"\n\n        app.ControllerDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.ControllerDropDown.Position = [30, 130, 410, 32]\n        app.ControllerDropDown.Label = \"Controller\"\n        app.ControllerDropDown.Items = [\"Loading catalog...\"]\n        app.ControllerDropDown.Value = \"Loading catalog...\"\n        app.ControllerDropDown.ValueChangedFcn = \"ControllerChanged\"\n\n        app.VehicleDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.VehicleDropDown.Position = [30, 178, 410, 32]\n        app.VehicleDropDown.Label = \"UAV count\"\n        app.VehicleDropDown.Items = [\"Loading catalog...\"]\n        app.VehicleDropDown.Value = \"Loading catalog...\"\n        app.VehicleDropDown.ValueChangedFcn = \"VehicleChanged\"\n\n        app.WindField = TyAppDesigner.uinumericeditfield(app.UIFigure)\n        app.WindField.Position = [30, 226, 410, 32]\n        app.WindField.Label = \"Wind speed (m/s)\"\n        app.WindField.Value = 0.0\n        app.WindField.Limits = [0.0, 20.0]\n\n        app.PreviewButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.RefreshButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.RefreshButton.Position = [30, 282, 190, 36]\n        app.RefreshButton.Text = \"Refresh capability\"\n        app.RefreshButton.ButtonPushedFcn = \"RefreshPressed\"\n\n        app.PreviewButton.Position = [250, 282, 190, 36]\n        app.PreviewButton.Text = \"Preview\"\n        app.PreviewButton.ButtonPushedFcn = \"PreviewPressed\"\n\n        app.SubmitButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.SubmitButton.Position = [30, 334, 190, 36]\n        app.SubmitButton.Text = \"Prepare run\"\n        app.SubmitButton.ButtonPushedFcn = \"SubmitPressed\"\n\n        app.SysplorerButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.SysplorerButton.Position = [250, 334, 190, 36]\n        app.SysplorerButton.Text = \"Open model\"\n        app.SysplorerButton.ButtonPushedFcn = \"SysplorerPressed\"\n\n        app.ResultButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.ResultButton.Position = [30, 386, 190, 36]\n        app.ResultButton.Text = \"Open result\"\n        app.ResultButton.ButtonPushedFcn = \"ResultPressed\"\n\n        app.StatusLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.StatusLabel.Position = [30, 442, 410, 128]\n        app.StatusLabel.Text = \"Ready. Disabled options remain visible and are rejected by the capability gate.\"\n        app.StatusLabel.HorizontalAlignment = \"left\"\n        app.StatusLabel.VerticalAlignment = \"top\"\n        app.StatusLabel.WordWrap = true\n\n        app.UIAxes = TyAppDesigner.uiaxes(app.UIFigure)\n        app.UIAxes.Position = [485, 90, 455, 480]\n\n        app.refresh_catalog()\n        app.UIFigure.Visible = true\n    end\n\n    function initApp(app)\n        app.createComponents()\n        TyAppDesigner.registerApp(app, app.UIFigure)\n        return app\n    end\n\n    function delete(app)\n        TyAppDesigner.delete(app, app.UIFigure)\n    end\nend\n\nInstance = App().initApp()\n\nend\n"
+    "code": "module MoSimModelStudio\n\nusing ObjectOriented\nusing TyAppDesigner\n\nconst ACTIVE_COLOR = [0.08, 0.36, 0.43]\nconst INACTIVE_COLOR = [0.88, 0.91, 0.92]\nconst SECTION_COLOR = [0.12, 0.25, 0.32]\nconst READY_COLOR = [0.86, 0.95, 0.89]\nconst WAIT_COLOR = [0.98, 0.93, 0.80]\nconst MUTED_COLOR = [0.93, 0.94, 0.94]\n\n@oodef mutable struct App\n    UIFigure::TyAppDesigner.Figure = TyAppDesigner.create_figure()\n    TitleLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n    SubtitleLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n    OfflineModeButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    LiveModeButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    DeployModeButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    ModeStatusLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n\n    ConfigSectionLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n    ChainSectionLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n    InjectionSectionLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n\n    ProfileDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    MissionDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    PositionDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    AttitudeDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    AugmentationDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    SafetyDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    OutputDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()\n    ProfileSummaryLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n    CapabilityLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n\n    ChainLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n    ContractLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n    TimingLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n\n    WindSlider::TyAppDesigner.Slider = TyAppDesigner.create_slider()\n    Motor1Slider::TyAppDesigner.Slider = TyAppDesigner.create_slider()\n    Motor2Slider::TyAppDesigner.Slider = TyAppDesigner.create_slider()\n    Motor3Slider::TyAppDesigner.Slider = TyAppDesigner.create_slider()\n    Motor4Slider::TyAppDesigner.Slider = TyAppDesigner.create_slider()\n    InjectionValuesLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n    ApplyInjectionButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    RestoreInjectionButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    ManifestLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n\n    ValidateButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    PublishButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    PrepareButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    QgcButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    SafeStopButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    OpenModelButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    MilButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    CodegenButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    ResultButton::TyAppDesigner.Button = TyAppDesigner.create_button()\n    StatusLabel::TyAppDesigner.Label = TyAppDesigner.create_label()\n\n    Appname::Module = @__MODULE__\n    Appfile::String = @__FILE__\n    CurrentMode::String = \"live\"\n\n    function set_button_state(app, button, active)\n        button.BackgroundColor = active ? ACTIVE_COLOR : INACTIVE_COLOR\n        button.FontColor = active ? [1.0, 1.0, 1.0] : [0.20, 0.25, 0.28]\n        button.FontWeight = \"bold\"\n    end\n\n    function refresh_summary(app)\n        app.ProfileSummaryLabel.Text =\n            \"实验 Profile\\n\" * app.ProfileDropDown.Value *\n            \"\\n\\n任务：\" * app.MissionDropDown.Value *\n            \"\\n外环：\" * app.PositionDropDown.Value *\n            \"\\n增强：\" * app.AugmentationDropDown.Value\n    end\n\n    function set_mode(app, mode)\n        app.CurrentMode = mode\n        app.set_button_state(app.OfflineModeButton, mode == \"offline\")\n        app.set_button_state(app.LiveModeButton, mode == \"live\")\n        app.set_button_state(app.DeployModeButton, mode == \"deploy\")\n\n        if mode == \"offline\"\n            app.ModeStatusLabel.Text = \"离线建模验证  |  Model Studio 拥有模型检查、MIL、代码生成和结果操作权\"\n            app.ProfileDropDown.Items = [\"控制器组合实验\", \"官方整机基线\", \"图形化 Sysblock 审核\"]\n            app.ProfileDropDown.Value = \"控制器组合实验\"\n            app.MissionDropDown.Items = [\"起飞-悬停-降落\", \"阶梯高度指令\", \"八字轨迹\"]\n            app.PositionDropDown.Items = [\"PX4CTRL 官方位置外环 PID\", \"改进 PID\", \"Linear MPC\", \"NMPC\"]\n            app.AttitudeDropDown.Items = [\"PID\", \"INDI\", \"SMC\", \"Backstepping\"]\n            app.AttitudeDropDown.Value = \"PID\"\n            app.AttitudeDropDown.Enable = true\n            app.OutputDropDown.Items = [\"模型内部控制量\", \"ATTITUDE_THRUST\", \"BODY_RATE_THRUST\", \"WRENCH\"]\n            app.OutputDropDown.Value = \"模型内部控制量\"\n            app.OutputDropDown.Enable = true\n            app.CapabilityLabel.Text = \"离线能力\\n可组合完整控制链；每个组合仍需分别通过图形模型、MIL、结果和代码生成门禁。\"\n            app.CapabilityLabel.BackgroundColor = READY_COLOR\n            app.ValidateButton.Enable = true\n            app.PublishButton.Enable = true\n            app.PrepareButton.Enable = false\n            app.QgcButton.Enable = false\n            app.SafeStopButton.Enable = false\n            app.OpenModelButton.Enable = true\n            app.MilButton.Enable = true\n            app.CodegenButton.Enable = true\n            app.ResultButton.Enable = true\n        elseif mode == \"live\"\n            app.ModeStatusLabel.Text = \"实时联合仿真  |  RT0 能力待验证，MWORKS Live 当前可见禁用\"\n            app.ProfileDropDown.Items = [\"official_pid_attitude_thrust_v1 [候选]\", \"official_pid + awff_v1 [候选]\"]\n            app.ProfileDropDown.Value = \"official_pid_attitude_thrust_v1 [候选]\"\n            app.MissionDropDown.Items = [\"起飞-悬停-降落\"]\n            app.MissionDropDown.Value = \"起飞-悬停-降落\"\n            app.PositionDropDown.Items = [\"PX4CTRL 官方位置外环 PID\"]\n            app.PositionDropDown.Value = \"PX4CTRL 官方位置外环 PID\"\n            app.AttitudeDropDown.Items = [\"PX4 内置姿态/角速度环 [锁定]\", \"INDI [当前模式不可用]\", \"SMC [当前模式不可用]\", \"Backstepping [当前模式不可用]\"]\n            app.AttitudeDropDown.Value = \"PX4 内置姿态/角速度环 [锁定]\"\n            app.AttitudeDropDown.Enable = false\n            app.OutputDropDown.Items = [\"ATTITUDE_THRUST [锁定]\"]\n            app.OutputDropDown.Value = \"ATTITUDE_THRUST [锁定]\"\n            app.OutputDropDown.Enable = false\n            app.CapabilityLabel.Text = \"实时能力门禁\\n候选 100 Hz / 10 ms；RT0 前不可准备飞行，不得把候选参数写成已验证能力。\"\n            app.CapabilityLabel.BackgroundColor = WAIT_COLOR\n            app.ValidateButton.Enable = true\n            app.PublishButton.Enable = true\n            app.PrepareButton.Enable = false\n            app.QgcButton.Enable = false\n            app.SafeStopButton.Enable = false\n            app.OpenModelButton.Enable = true\n            app.MilButton.Enable = false\n            app.CodegenButton.Enable = false\n            app.ResultButton.Enable = true\n        else\n            app.ModeStatusLabel.Text = \"生成代码部署  |  Model Studio 发布并准备，QGC 执行飞行\"\n            app.ProfileDropDown.Items = [\"已发布 generated-C Profile\", \"实验控制器 Profile [未通过门禁]\"]\n            app.ProfileDropDown.Value = \"已发布 generated-C Profile\"\n            app.MissionDropDown.Items = [\"起飞-悬停-降落\", \"八字轨迹\", \"自主避障\", \"多机编队\"]\n            app.PositionDropDown.Items = [\"由已发布 Profile 冻结\"]\n            app.PositionDropDown.Value = \"由已发布 Profile 冻结\"\n            app.AttitudeDropDown.Items = [\"由 output_variant 与 Profile 冻结\"]\n            app.AttitudeDropDown.Value = \"由 output_variant 与 Profile 冻结\"\n            app.AttitudeDropDown.Enable = false\n            app.OutputDropDown.Items = [\"由已发布 Profile 冻结\"]\n            app.OutputDropDown.Value = \"由已发布 Profile 冻结\"\n            app.OutputDropDown.Enable = false\n            app.CapabilityLabel.Text = \"部署边界\\n控制器参数和输出边界在起飞前冻结；QGC 只选择 Profile 和任务工件。\"\n            app.CapabilityLabel.BackgroundColor = READY_COLOR\n            app.ValidateButton.Enable = true\n            app.PublishButton.Enable = true\n            app.PrepareButton.Enable = true\n            app.QgcButton.Enable = true\n            app.SafeStopButton.Enable = false\n            app.OpenModelButton.Enable = true\n            app.MilButton.Enable = false\n            app.CodegenButton.Enable = true\n            app.ResultButton.Enable = true\n        end\n        app.refresh_summary()\n        app.StatusLabel.Text = \"界面审核模式：已切换到“\" * app.ModeStatusLabel.Text * \"”。未调用任何运行时。\"\n    end\n\n    function OfflineModePressed(app, event)\n        app.set_mode(\"offline\")\n    end\n\n    function LiveModePressed(app, event)\n        app.set_mode(\"live\")\n    end\n\n    function DeployModePressed(app, event)\n        app.set_mode(\"deploy\")\n    end\n\n    function SelectionChanged(app, event)\n        app.refresh_summary()\n        app.StatusLabel.Text = \"配置已修改，尚未校验或发布。\"\n    end\n\n    function InjectionChanged(app, event)\n        app.InjectionValuesLabel.Text =\n            \"待应用值\\n风速 \" * string(round(app.WindSlider.Value; digits=1)) * \" m/s  |  \" *\n            \"电机效率 \" * join(string.(round.([\n                app.Motor1Slider.Value,\n                app.Motor2Slider.Value,\n                app.Motor3Slider.Value,\n                app.Motor4Slider.Value,\n            ]; digits=2)), \" / \") *\n            \"\\n\\n实际值\\n风速 0.0 m/s  |  电机效率 1.00 / 1.00 / 1.00 / 1.00\"\n        app.StatusLabel.Text = \"故障参数已修改为待应用值；点击“应用”前不会发送。\"\n    end\n\n    function ApplyInjectionPressed(app, event)\n        app.StatusLabel.Text = \"界面审核模式：应用故障需要 Orchestrator accepted -> applied 事件，本版未发送。\"\n    end\n\n    function RestoreInjectionPressed(app, event)\n        app.WindSlider.Value = 0.0\n        app.Motor1Slider.Value = 1.0\n        app.Motor2Slider.Value = 1.0\n        app.Motor3Slider.Value = 1.0\n        app.Motor4Slider.Value = 1.0\n        app.InjectionChanged(nothing)\n        app.StatusLabel.Text = \"待应用值已恢复正常；审核版未发送 restore_all_injections。\"\n    end\n\n    function ReviewAction(app, action)\n        app.StatusLabel.Text = \"界面审核模式：已触发“\" * action * \"”界面状态，未连接 MWORKS、QGC 或 Orchestrator。\"\n    end\n\n    function ValidatePressed(app, event); app.ReviewAction(\"校验配置\"); end\n    function PublishPressed(app, event); app.ReviewAction(\"发布 Profile\"); end\n    function PreparePressed(app, event); app.ReviewAction(\"准备运行\"); end\n    function QgcPressed(app, event); app.ReviewAction(\"进入 QGC\"); end\n    function SafeStopPressed(app, event); app.ReviewAction(\"请求安全停止\"); end\n    function OpenModelPressed(app, event); app.ReviewAction(\"打开模型\"); end\n    function MilPressed(app, event); app.ReviewAction(\"运行 MWORKS MIL\"); end\n    function CodegenPressed(app, event); app.ReviewAction(\"生成 C 代码\"); end\n    function ResultPressed(app, event); app.ReviewAction(\"打开结果\"); end\n\n    function configure_dropdown(app, control, label, position, items, value)\n        control.Position = position\n        control.Label = label\n        control.Items = items\n        control.Value = value\n        control.ValueChangedFcn = \"SelectionChanged\"\n    end\n\n    function configure_slider(app, control, label, position, value, limits, ticks, labels)\n        control.Position = position\n        control.Label = label\n        control.Value = value\n        control.Limits = limits\n        control.MajorTicks = ticks\n        control.MajorTickLabels = labels\n        control.ValueChangedFcn = \"InjectionChanged\"\n    end\n\n    function configure_action(app, button, text, callback, position)\n        button.Position = position\n        button.Text = text\n        button.ButtonPushedFcn = callback\n        button.FontWeight = \"bold\"\n    end\n\n    function configure_section(app, label, text, position)\n        label.Position = position\n        label.Text = \"  \" * text\n        label.FontWeight = \"bold\"\n        label.FontColor = [1.0, 1.0, 1.0]\n        label.BackgroundColor = SECTION_COLOR\n    end\n\n    function createComponents(app)\n        app.UIFigure = TyAppDesigner.uifigure(Visible=false)\n        app.UIFigure.Position = [30, 30, 1440, 900]\n        app.UIFigure.Name = \"MoSim Model Studio 0.5 UI Review\"\n        app.UIFigure.Color = [0.96, 0.97, 0.97]\n\n        app.TitleLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.TitleLabel.Position = [24, 16, 520, 34]\n        app.TitleLabel.Text = \"MoSim Model Studio\"\n        app.TitleLabel.FontSize = 24\n        app.TitleLabel.FontWeight = \"bold\"\n        app.TitleLabel.FontColor = [0.08, 0.16, 0.22]\n\n        app.SubtitleLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.SubtitleLabel.Position = [26, 50, 900, 22]\n        app.SubtitleLabel.Text = \"控制器配置、模型验证与 QGC 运行交接\"\n        app.SubtitleLabel.FontColor = [0.35, 0.42, 0.47]\n\n        app.OfflineModeButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.OfflineModeButton, \"离线建模验证\", \"OfflineModePressed\", [24, 82, 190, 40])\n        app.LiveModeButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.LiveModeButton, \"实时联合仿真\", \"LiveModePressed\", [218, 82, 190, 40])\n        app.DeployModeButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.DeployModeButton, \"生成代码部署\", \"DeployModePressed\", [412, 82, 190, 40])\n\n        app.ModeStatusLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.ModeStatusLabel.Position = [620, 82, 796, 40]\n        app.ModeStatusLabel.HorizontalAlignment = \"right\"\n        app.ModeStatusLabel.WordWrap = true\n        app.ModeStatusLabel.FontColor = [0.25, 0.32, 0.36]\n\n        app.ConfigSectionLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.configure_section(app.ConfigSectionLabel, \"控制链与实验 Profile\", [24, 144, 420, 34])\n        app.ChainSectionLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.configure_section(app.ChainSectionLabel, \"职责、接口与能力门禁\", [468, 144, 470, 34])\n        app.InjectionSectionLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.configure_section(app.InjectionSectionLabel, \"故障注入与运行状态\", [962, 144, 454, 34])\n\n        app.ProfileDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.configure_dropdown(app.ProfileDropDown, \"实验 Profile\", [24, 192, 420, 32], [\"正在加载...\"], \"正在加载...\")\n        app.MissionDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.configure_dropdown(app.MissionDropDown, \"任务轨迹\", [24, 240, 420, 32], [\"起飞-悬停-降落\"], \"起飞-悬停-降落\")\n        app.PositionDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.configure_dropdown(app.PositionDropDown, \"位置 / 平动外环\", [24, 288, 420, 32], [\"PX4CTRL 官方位置外环 PID\"], \"PX4CTRL 官方位置外环 PID\")\n        app.AttitudeDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.configure_dropdown(app.AttitudeDropDown, \"姿态 / 角速度内环\", [24, 336, 420, 32], [\"PX4 内置姿态/角速度环 [锁定]\"], \"PX4 内置姿态/角速度环 [锁定]\")\n        app.AugmentationDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.configure_dropdown(app.AugmentationDropDown, \"增强与扰动补偿\", [24, 384, 420, 32], [\"无\", \"AWFF\", \"L1 [门禁待通过]\", \"DOB/ESO [门禁待通过]\", \"模糊补偿 [门禁待通过]\", \"神经网络补偿 [门禁待通过]\"], \"无\")\n        app.SafetyDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.configure_dropdown(app.SafetyDropDown, \"安全层\", [24, 432, 420, 32], [\"基础限幅\", \"QP Safety Filter [门禁待通过]\", \"Return-and-Land [门禁待通过]\", \"CBF [门禁待通过]\"], \"基础限幅\")\n        app.OutputDropDown = TyAppDesigner.uidropdown(app.UIFigure)\n        app.configure_dropdown(app.OutputDropDown, \"输出边界\", [24, 480, 420, 32], [\"ATTITUDE_THRUST [锁定]\"], \"ATTITUDE_THRUST [锁定]\")\n\n        app.ProfileSummaryLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.ProfileSummaryLabel.Position = [24, 528, 420, 118]\n        app.ProfileSummaryLabel.VerticalAlignment = \"top\"\n        app.ProfileSummaryLabel.WordWrap = true\n        app.ProfileSummaryLabel.BackgroundColor = [0.91, 0.94, 0.95]\n\n        app.CapabilityLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.CapabilityLabel.Position = [24, 654, 420, 76]\n        app.CapabilityLabel.VerticalAlignment = \"top\"\n        app.CapabilityLabel.WordWrap = true\n\n        app.ChainLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.ChainLabel.Position = [468, 192, 470, 190]\n        app.ChainLabel.Text = \"控制链\\n\\n任务 / 参考 -> 位置外环 -> 期望姿态与总推力\\n-> PX4 内置姿态 / 角速度环 -> 控制分配 -> 四电机\\n\\nATTITUDE_THRUST v1 中，自研姿态内环不可在线选择。\"\n        app.ChainLabel.VerticalAlignment = \"top\"\n        app.ChainLabel.WordWrap = true\n        app.ChainLabel.BackgroundColor = [0.89, 0.94, 0.96]\n\n        app.ContractLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.ContractLabel.Position = [468, 394, 470, 144]\n        app.ContractLabel.Text = \"三方职责\\n\\nModel Studio：配置、校验、发布、MIL / codegen、prepare\\nQGC：连接、解锁、起飞、任务、降落、安全停止\\nOrchestrator：唯一状态机、命令裁决和 RunManifest\"\n        app.ContractLabel.VerticalAlignment = \"top\"\n        app.ContractLabel.WordWrap = true\n        app.ContractLabel.BackgroundColor = [0.94, 0.95, 0.95]\n\n        app.TimingLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.TimingLabel.Position = [468, 550, 470, 180]\n        app.TimingLabel.Text = \"候选实时合同（未验证）\\n\\nframe: mosim_enu_flu_quaternion_xyzw_v1\\nrate: 100 Hz  |  deadline: 10 ms\\ncommand age: 50 ms  |  failsafe escalation: 100 ms\\n\\nRT0 未通过，MWORKS Live 保持禁用。\"\n        app.TimingLabel.VerticalAlignment = \"top\"\n        app.TimingLabel.WordWrap = true\n        app.TimingLabel.BackgroundColor = WAIT_COLOR\n\n        app.WindSlider = TyAppDesigner.uislider(app.UIFigure)\n        app.configure_slider(app.WindSlider, \"风速待应用值（m/s，方向固定）\", [962, 194, 454, 52], 0.0, [0.0, 20.0], [0.0, 5.0, 10.0, 15.0, 20.0], [\"0\", \"5\", \"10\", \"15\", \"20\"])\n        app.Motor1Slider = TyAppDesigner.uislider(app.UIFigure)\n        app.configure_slider(app.Motor1Slider, \"电机 1 效率\", [962, 254, 454, 52], 1.0, [0.0, 1.0], [0.0, 0.5, 1.0], [\"0\", \"50%\", \"100%\"])\n        app.Motor2Slider = TyAppDesigner.uislider(app.UIFigure)\n        app.configure_slider(app.Motor2Slider, \"电机 2 效率\", [962, 314, 454, 52], 1.0, [0.0, 1.0], [0.0, 0.5, 1.0], [\"0\", \"50%\", \"100%\"])\n        app.Motor3Slider = TyAppDesigner.uislider(app.UIFigure)\n        app.configure_slider(app.Motor3Slider, \"电机 3 效率\", [962, 374, 454, 52], 1.0, [0.0, 1.0], [0.0, 0.5, 1.0], [\"0\", \"50%\", \"100%\"])\n        app.Motor4Slider = TyAppDesigner.uislider(app.UIFigure)\n        app.configure_slider(app.Motor4Slider, \"电机 4 效率\", [962, 434, 454, 52], 1.0, [0.0, 1.0], [0.0, 0.5, 1.0], [\"0\", \"50%\", \"100%\"])\n\n        app.InjectionValuesLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.InjectionValuesLabel.Position = [962, 498, 454, 94]\n        app.InjectionValuesLabel.VerticalAlignment = \"top\"\n        app.InjectionValuesLabel.WordWrap = true\n        app.InjectionValuesLabel.BackgroundColor = [0.94, 0.95, 0.95]\n\n        app.ApplyInjectionButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.ApplyInjectionButton, \"应用\", \"ApplyInjectionPressed\", [962, 604, 216, 36])\n        app.RestoreInjectionButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.RestoreInjectionButton, \"恢复正常\", \"RestoreInjectionPressed\", [1200, 604, 216, 36])\n\n        app.ManifestLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.ManifestLabel.Position = [962, 652, 454, 78]\n        app.ManifestLabel.Text = \"运行状态\\nRunManifest：尚未生成\\nProfile：未冻结  |  QGC：未交接  |  实际故障：正常\"\n        app.ManifestLabel.VerticalAlignment = \"top\"\n        app.ManifestLabel.WordWrap = true\n        app.ManifestLabel.BackgroundColor = MUTED_COLOR\n\n        app.ValidateButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.ValidateButton, \"校验配置\", \"ValidatePressed\", [24, 754, 140, 38])\n        app.PublishButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.PublishButton, \"发布 Profile\", \"PublishPressed\", [176, 754, 140, 38])\n        app.PrepareButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.PrepareButton, \"准备运行\", \"PreparePressed\", [328, 754, 140, 38])\n        app.QgcButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.QgcButton, \"进入 QGC\", \"QgcPressed\", [480, 754, 140, 38])\n        app.SafeStopButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.SafeStopButton, \"请求安全停止\", \"SafeStopPressed\", [632, 754, 140, 38])\n        app.OpenModelButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.OpenModelButton, \"打开模型\", \"OpenModelPressed\", [784, 754, 140, 38])\n        app.MilButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.MilButton, \"运行 MWORKS MIL\", \"MilPressed\", [936, 754, 150, 38])\n        app.CodegenButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.CodegenButton, \"生成 C 代码\", \"CodegenPressed\", [1098, 754, 140, 38])\n        app.ResultButton = TyAppDesigner.uibutton(app.UIFigure)\n        app.configure_action(app.ResultButton, \"打开结果\", \"ResultPressed\", [1250, 754, 166, 38])\n\n        app.StatusLabel = TyAppDesigner.uilabel(app.UIFigure)\n        app.StatusLabel.Position = [24, 810, 1392, 62]\n        app.StatusLabel.VerticalAlignment = \"top\"\n        app.StatusLabel.WordWrap = true\n        app.StatusLabel.BackgroundColor = [0.90, 0.93, 0.94]\n\n        app.set_mode(\"live\")\n        app.InjectionChanged(nothing)\n        app.StatusLabel.Text = \"界面审核版已就绪。所有按钮仅演示状态，不连接 MWORKS、Gazebo、QGC 或 Orchestrator。\"\n        app.UIFigure.Visible = true\n    end\n\n    function initApp(app)\n        app.createComponents()\n        TyAppDesigner.registerApp(app, app.UIFigure)\n        return app\n    end\n\n    function delete(app)\n        TyAppDesigner.delete(app, app.UIFigure)\n    end\nend\n\nInstance = App().initApp()\n\nend\n"
 }
