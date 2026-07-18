@@ -43,6 +43,7 @@ Scripts/quality/check_offline_composition_catalog.py
 Scripts/quality/check_offline_runner_interface_contract.py
 Scripts/quality/check_offline_batch_a_adapter_backlog.py
 Scripts/mworks/generate_offline_profile_wrapper.py
+Scripts/mworks/run_offline_profile_certification.py
 Scripts/tests/test_offline_expansion_inventory.py
 Scripts/tests/test_offline_composition_catalog.py
 Scripts/tests/test_offline_profile_wrapper.py
@@ -218,6 +219,30 @@ four Runner model-quality results remain `not_evaluated`; no simulation,
 `Result.msr`, metric, or animation claim was made. Do not restart Sysplorer or
 advance to simulation without a fresh healthy probe and a successful bounded
 single-Runner check.
+
+P2 live checkpoint 1 supersedes the call-surface blocker for the narrow
+Official PID vertical slice. After loading the four project packages by their
+absolute `package.mo` paths, all four Runner models passed current
+`CheckModel`. The certification runner then completed a real 50-second MWORKS
+simulation for `offline_official_pid_climb_v1`, produced 5001 result rows and a
+current `Result.msr`, calculated strict metrics, opened the result, plot, model,
+and native animation windows, and cleaned up the task-owned session. The
+certification status is `accepted`; animation playback is not required by the
+frozen acceptance rule.
+
+The canonical checkpoint record is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P2_OFFICIAL_PID_LIVE_ACCEPTANCE.json
+```
+
+This acceptance is deliberately classified as current-worktree evidence, not
+as a frozen-source certification. `Models/QuadrotorControllerBlocks/package.mo`
+and `package.order` contain concurrent uncommitted changes owned by another
+task. Their exact SHA-256 values are recorded in the checkpoint and those files
+must not be staged by this Goal. P2 remains active until the four native output
+boundaries have same-version simulation/result evidence and the dependency
+state is reproducible from a committed revision.
 
 P2 static checkpoint 5 records an exact 16-row Batch A Adapter implementation
 queue at `Config/control_platform/offline_batch_a_adapter_backlog.json`. Every

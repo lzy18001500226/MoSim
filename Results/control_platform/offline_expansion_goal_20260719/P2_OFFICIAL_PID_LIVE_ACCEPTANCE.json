@@ -1,0 +1,58 @@
+{
+  "schema": "mosim.model_studio.offline_expansion_live_acceptance.v1",
+  "recorded_at": "2026-07-19T03:35:28+08:00",
+  "phase": "P2_official_pid_vertical_slice",
+  "status": "accepted_current_worktree_dependency",
+  "supersedes": "Results/control_platform/offline_expansion_goal_20260719/P2_LIVE_BLOCKER.json",
+  "profile_id": "offline_official_pid_climb_v1",
+  "run_id": "goal-p2-official-pid-rerun-20260719-v1",
+  "output_variant": "ROTOR_COMMAND",
+  "acceptance": {
+    "four_runner_check_model": true,
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "raw_result_valid": true,
+    "native_result_present": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "bounded_closed_loop": true,
+    "task_owned_session_cleanup": true
+  },
+  "run_summary": {
+    "duration_s": 50.0,
+    "sample_count": 5001,
+    "position_error_norm_end_m": 0.00667892282311712,
+    "position_rmse_m": 0.18267574243542728,
+    "max_position_error_m": 0.7419361708136195,
+    "settling_time_s": 0.73,
+    "max_tilt_rad": 0.20981824487362183,
+    "nan_count": 0
+  },
+  "artifacts": {
+    "certification": "Results/mworks_generated_profiles/goal-p2-official-pid-rerun-20260719-v1/CERTIFICATION.json",
+    "generated_wrapper": "Results/mworks_generated_profiles/goal-p2-official-pid-rerun-20260719-v1/GeneratedProfile.mo",
+    "raw_csv": "Results/mworks_generated_profiles/goal-p2-official-pid-rerun-20260719-v1/raw/result.csv",
+    "metrics_json": "Results/mworks_generated_profiles/goal-p2-official-pid-rerun-20260719-v1/metrics/metrics.json",
+    "native_result": "Results/mworks_generated_profiles/goal-p2-official-pid-rerun-20260719-v1/native_result/MoSimGenerated_goal_p2_official_pid_rerun_20260719_v1/Result.msr",
+    "mcp_log": "Results/mworks_generated_profiles/goal-p2-official-pid-rerun-20260719-v1/logs/mcp.jsonl",
+    "raw_csv_sha256": "5677562356395de8307a51fe3da6a6b2a5e10ede822d62fd502837a7f760ea23",
+    "native_result_sha256": "8dd723162e670ce4b71deb25e4a5b13fe8ff23bf86ac0273920810067278ef2d"
+  },
+  "dependency_snapshot": {
+    "source_state": "current_worktree_with_concurrent_uncommitted_dependency",
+    "rotor_command_runner_sha256": "f768e1722622528c8451639d6c9cfadb679dd63ad5b145456db561001ec11dc8",
+    "official_pid_rotor_adapter_sha256": "92bf8aab06e9cd138982598e603578ededec2b4baf8cd83bc295ea1670440a46",
+    "quadrotor_controller_blocks_package_sha256": "e9e18a4f08412e96de329d61ee0daf754441cce9dec845669d8b8f24bd87aa1e",
+    "quadrotor_controller_blocks_order_sha256": "78d03b8f2d41a3e3ff3f2bafa5b04c8f3e1de63ddebbbbbd24fb197d564fa7d1",
+    "concurrent_files_not_owned": [
+      "Models/QuadrotorControllerBlocks/package.mo",
+      "Models/QuadrotorControllerBlocks/package.order"
+    ]
+  },
+  "animation_acceptance_rule": "CreateAnimation succeeds and the native animation window opens; playback is not required.",
+  "claim_boundary": "Real offline MWORKS evidence for this current-worktree Official PID rotor-command vertical slice only. It is not a frozen-source certification, native ATTITUDE_THRUST certification, code-generation evidence, PX4, Gazebo, ROS1, mworks_live, or flight evidence.",
+  "next_gate": "Obtain same-version simulations for the remaining native output boundaries and rerun after concurrent package dependencies are committed or otherwise frozen."
+}
