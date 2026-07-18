@@ -36,15 +36,18 @@ Docs/Workflows/model_studio_offline_expansion_goal.md
 Config/control_platform/offline_expansion_inventory.json
 Config/control_platform/offline_composition_catalog.json
 Config/control_platform/offline_runner_interface_contract_v1.json
+Config/control_platform/offline_batch_a_adapter_backlog.json
 Scripts/quality/build_offline_expansion_inventory.py
 Scripts/quality/check_offline_expansion_inventory.py
 Scripts/quality/check_offline_composition_catalog.py
 Scripts/quality/check_offline_runner_interface_contract.py
+Scripts/quality/check_offline_batch_a_adapter_backlog.py
 Scripts/mworks/generate_offline_profile_wrapper.py
 Scripts/tests/test_offline_expansion_inventory.py
 Scripts/tests/test_offline_composition_catalog.py
 Scripts/tests/test_offline_profile_wrapper.py
 Scripts/tests/test_offline_runner_interface_contract.py
+Scripts/tests/test_offline_batch_a_adapter_backlog.py
 ```
 
 Do not overwrite concurrent work in the realtime MWORKS lane, QGC, UE,
@@ -215,3 +218,12 @@ four Runner model-quality results remain `not_evaluated`; no simulation,
 `Result.msr`, metric, or animation claim was made. Do not restart Sysplorer or
 advance to simulation without a fresh healthy probe and a successful bounded
 single-Runner check.
+
+P2 static checkpoint 5 records an exact 16-row Batch A Adapter implementation
+queue at `Config/control_platform/offline_batch_a_adapter_backlog.json`. Every
+row is derived from the frozen inventory and points to an existing source or
+historical MWORKS model anchor. The queue preserves important claim limits,
+including `neural_pid` as `zero_untrained`, `ilc` as lifecycle-dependent, and
+`px4ctrl` as an external runtime implementation that still needs a separately
+defined claim-bounded offline equivalent. Source availability is not counted
+as current shared-Runner certification.
