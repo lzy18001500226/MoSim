@@ -153,3 +153,16 @@ claim arbitrary layered composition until source/model audits and new Adapters
 close those mappings. P2 remains active: shared layer interfaces, compatibility
 matrix expansion, Adapter fixtures, and full four-boundary regression are not
 yet complete.
+
+P2 static checkpoint 2 freezes the current four-Runner source surface at
+`Config/control_platform/offline_runner_interface_contract_v1.json`. It records
+the real signal names and current offline owners while explicitly blocking
+physical-unit, coordinate-frame, lifecycle, code-generation, and online claims.
+The existing legacy-scaled thrust, wrench, and rotor values must not be relabeled
+as SI or MAVROS command units by documentation or APP code. The checker is
+`Scripts/quality/check_offline_runner_interface_contract.py`.
+
+The first current-turn Sysplorer `session_manager(probe)` did not return within
+the bounded wait and was terminated without start, reconnect, click, or model
+mutation. Therefore live four-Runner `check_model` and simulation remain blocked
+at this checkpoint; static contracts do not supersede that blocker.

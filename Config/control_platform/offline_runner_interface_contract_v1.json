@@ -1,0 +1,116 @@
+{
+  "schema": "mosim.offline_runner_interface_contract.v1",
+  "version": 1,
+  "status": "static_source_frozen_live_mworks_blocked",
+  "claim_boundary": "Static source contract for current offline MWORKS Runner surfaces. It is not a model-check, simulation, code-generation, online co-simulation, PX4, MAVROS, or physical-unit acceptance.",
+  "shared_plant": {
+    "model": "MoSimQuadrotorModel.ExperimentRunner.Plant.SingleUavPlantAnimation",
+    "source": "Models/MoSimQuadrotorModel/ExperimentRunner/Plant/SingleUavPlantAnimation.mo",
+    "animation_owner": "MWORKS native MultiBody plant",
+    "plant_input": {
+      "name": "rotor_command",
+      "dimension": 4,
+      "unit_semantics": "legacy_signed_actuator_command_unverified"
+    },
+    "state_outputs": [
+      {"name": "position", "dimension": 3, "unit_semantics": "sensor_position_expected_m_requires_frame_audit"},
+      {"name": "attitude", "dimension": 3, "unit_semantics": "roll_pitch_yaw_rad_requires_frame_audit"},
+      {"name": "rotor_speed", "dimension": 4, "unit_semantics": "rad_per_s_signed"}
+    ]
+  },
+  "shared_controller_inputs": [
+    {"name": "position_ref", "dimension": 3},
+    {"name": "position_mea", "dimension": 3},
+    {"name": "attitude_mea", "dimension": 3}
+  ],
+  "boundaries": {
+    "ATTITUDE_THRUST": {
+      "interface": "MoSimQuadrotorModel.ExperimentRunner.Interfaces.PartialAttitudeThrustController",
+      "interface_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Interfaces/PartialAttitudeThrustController.mo",
+      "runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+      "runner_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Runners/AttitudeThrustRunner.mo",
+      "outputs": [
+        {"name": "attitude_ref", "dimension": 3, "unit_semantics": "roll_pitch_yaw_rad_offline_only"},
+        {"name": "collective_thrust_delta", "dimension": 1, "unit_semantics": "legacy_scaled_delta_not_newtons"}
+      ],
+      "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1",
+      "physical_online_mapping_state": "not_verified"
+    },
+    "BODY_RATE_THRUST": {
+      "interface": "MoSimQuadrotorModel.ExperimentRunner.Interfaces.PartialBodyRateThrustController",
+      "interface_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Interfaces/PartialBodyRateThrustController.mo",
+      "runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.BodyRateThrustRunner",
+      "runner_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Runners/BodyRateThrustRunner.mo",
+      "outputs": [
+        {"name": "body_rate_ref", "dimension": 3, "unit_semantics": "legacy_scaled_body_rate_command_not_verified_rad_per_s"},
+        {"name": "collective_thrust_delta", "dimension": 1, "unit_semantics": "legacy_scaled_delta_not_newtons"}
+      ],
+      "offline_inner_owner": "mworks_offline_body_rate_inner_and_allocator_v1",
+      "physical_online_mapping_state": "not_verified"
+    },
+    "WRENCH": {
+      "interface": "MoSimQuadrotorModel.ExperimentRunner.Interfaces.PartialWrenchController",
+      "interface_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Interfaces/PartialWrenchController.mo",
+      "runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.WrenchRunner",
+      "runner_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Runners/WrenchRunner.mo",
+      "outputs": [
+        {"name": "body_force", "dimension": 3, "unit_semantics": "legacy_scaled_body_force_not_verified_newtons"},
+        {"name": "body_torque", "dimension": 3, "unit_semantics": "legacy_scaled_body_torque_not_verified_newton_meters"}
+      ],
+      "offline_inner_owner": "mworks_offline_control_allocator_v1",
+      "physical_online_mapping_state": "not_verified"
+    },
+    "ROTOR_COMMAND": {
+      "interface": "MoSimQuadrotorModel.ExperimentRunner.Interfaces.PartialRotorCommandController",
+      "interface_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Interfaces/PartialRotorCommandController.mo",
+      "runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.RotorCommandRunner",
+      "runner_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Runners/RotorCommandRunner.mo",
+      "outputs": [
+        {"name": "rotor_command", "dimension": 4, "unit_semantics": "legacy_signed_actuator_command_unverified"}
+      ],
+      "offline_inner_owner": "controller_owned_rotor_command",
+      "physical_online_mapping_state": "not_verified"
+    }
+  },
+  "runner_result_surface": [
+    {"name": "position_ref", "dimension": 3},
+    {"name": "position", "dimension": 3},
+    {"name": "attitude", "dimension": 3},
+    {"name": "rotor_command", "dimension": 4},
+    {"name": "position_error_norm", "dimension": 1}
+  ],
+  "lifecycle_contract": {
+    "required_future_fields": [
+      "dt",
+      "reset",
+      "enable",
+      "run_id",
+      "profile_hash",
+      "parameter_version",
+      "random_seed"
+    ],
+    "current_model_ports_implemented": false,
+    "promotion_rule": "Do not mark codegen_interface_ready or online_interface_ready until lifecycle fields and invalid/stale/NaN/fallback behavior are implemented and tested without regressing certified offline Profiles."
+  },
+  "known_gaps": [
+    "coordinate_frame_contract_not_bound_to_model_ports",
+    "physical_command_units_not_verified",
+    "lifecycle_context_not_bound_to_model_ports",
+    "invalid_stale_nan_inf_rejection_not_implemented_at_runner_boundary",
+    "fallback_diagnostics_not_exposed",
+    "four_boundary_live_check_model_and_simulation_blocked_by_sysplorer_probe_timeout"
+  ],
+  "online_alignment": {
+    "state": "candidate_only",
+    "required_schema_objects": [
+      "FrameHeader",
+      "StateFrame",
+      "ReferenceFrame",
+      "CommandFrame",
+      "ModuleDiagnostics",
+      "LifecycleContext",
+      "ParameterSet"
+    ],
+    "rule": "Online adapters may reuse names and composition identities only after explicit frame, unit, time, lifecycle, authority, and timeout conversion."
+  }
+}
