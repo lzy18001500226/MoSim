@@ -372,3 +372,30 @@ bypassing the declared healthy-probe gate, the long Goal transitions to
 `blocked` at this checkpoint. Resume requires an independently restored call
 surface and a fresh successful read-only probe; no accepted earlier boundary is
 revoked, and WRENCH remains `not_evaluated` rather than failed.
+
+P2 live checkpoint 5 supersedes the WRENCH blocked audit for this continuation.
+The restored Sysplorer call surface passed a fresh read-only probe and health
+check (`api_ready=true`). The four existing packages were loaded without source
+mutation, and `MoSimQuadrotorModel.ExperimentRunner.Runners.WrenchRunner`
+passed a single-model `CheckModel`.
+
+The dedicated WRENCH certification then completed a real 50-second MWORKS
+simulation with 5001 samples. It produced a current `Result.msr`, strict
+metrics, result/plot/model windows, and a native animation window; playback is
+not required by the acceptance rule. The dedicated task session shutdown was
+recorded as successful. Terminal position error was `0.00263 m`, maximum
+position error was `1.1769 m`, maximum tilt was `0.1383 rad`, and the result
+contained no NaN/Inf values. The 33 constraint samples are retained as startup
+samples below the shared 0.10 m altitude threshold; tilt violations were zero.
+
+The canonical checkpoint record is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P2_WRENCH_LIVE_ACCEPTANCE.json
+```
+
+This closes the WRENCH platform-fixture gate for the recorded current
+worktree. It does not claim competition-controller performance, code
+generation, PX4, Gazebo, ROS1, online co-simulation, or flight evidence. The
+next gate is `ROTOR_COMMAND`, followed by four-boundary regression and later
+APP/batch integration; the three model directories remain unmoved.

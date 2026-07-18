@@ -1,0 +1,71 @@
+{
+  "schema": "mosim.model_studio.offline_boundary_live_acceptance.v1",
+  "recorded_at": "2026-07-19T07:08:25+08:00",
+  "phase": "P2_wrench_boundary_fixture",
+  "status": "accepted_current_worktree",
+  "supersedes": "Results/control_platform/offline_expansion_goal_20260719/P2_WRENCH_LIVE_BLOCKER.json",
+  "profile_id": "p2_wrench_boundary_fixture_v1",
+  "run_id": "goal-p2-wrench-fixture-20260719-v1",
+  "output_variant": "WRENCH",
+  "smoke_gate": {
+    "duration_s": 5.0,
+    "result": "passed_by_same_run_50s_prefix",
+    "note": "The recorded 50 s result contains 501 samples through t=5 s and passed the bounded-loop gate."
+  },
+  "acceptance": {
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "raw_result_valid": true,
+    "native_result_present": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "bounded_closed_loop": true,
+    "task_owned_session_cleanup": true
+  },
+  "run_summary": {
+    "duration_s": 50.0,
+    "sample_count": 5001,
+    "position_error_norm_end_m": 0.0026344961005859042,
+    "position_rmse_m": 0.5175499146866261,
+    "steady_state_error_m": 0.12989662678477987,
+    "max_position_error_m": 1.176915171789842,
+    "settling_time_s": 2.85,
+    "max_tilt_rad": 0.13830505755492248,
+    "nan_count": 0,
+    "constraint_violation_count": 33,
+    "altitude_violation_count": 33,
+    "tilt_violation_count": 0
+  },
+  "metric_observation": "All 33 constraint counts are startup samples below the shared 0.10 m minimum-altitude metric; tilt violations are zero. The platform fixture is accepted by the frozen bounded-loop gate, but these counts remain visible and are not reclassified as zero.",
+  "session_cleanup": {
+    "shutdown_recorded": true,
+    "task_owned_session_status": "passed",
+    "post_certification_probe": "not_required_after_dedicated_session_shutdown"
+  },
+  "artifacts": {
+    "request": "Results/control_platform/offline_expansion_goal_20260719/requests/p2_wrench_fixture.json",
+    "certification": "Results/mworks_generated_profiles/goal-p2-wrench-fixture-20260719-v1/CERTIFICATION.json",
+    "raw_csv": "Results/mworks_generated_profiles/goal-p2-wrench-fixture-20260719-v1/raw/result.csv",
+    "metrics_json": "Results/mworks_generated_profiles/goal-p2-wrench-fixture-20260719-v1/metrics/metrics.json",
+    "mcp_log": "Results/mworks_generated_profiles/goal-p2-wrench-fixture-20260719-v1/logs/mcp.jsonl",
+    "native_result": "Results/mworks_generated_profiles/goal-p2-wrench-fixture-20260719-v1/native_result/MoSimGenerated_goal_p2_wrench_fixture_20260719_v1/Result.msr",
+    "certification_sha256": "998a184f27a8271a430a99f9f0a5aea7d0d3c199fcb567228e901e26b478bd72",
+    "raw_csv_sha256": "77aa28f8d8eb9f8fdaafa33b9bd432eb5b481c96ff941d3a92bc4867be72122c",
+    "metrics_json_sha256": "f340f99d9cc8592b147ddb333b3b6b1ce04564f9c2ae81f413531dc90785f3ae",
+    "mcp_log_sha256": "1d86f9629b0f1351508e0dade0ea2d0f024d05caacc60bb2a96603bae3c7276f",
+    "native_result_sha256": "336308126ce70c6d994af322ec024e2731476acfe22bdfc9eca8ea10a0db88eb"
+  },
+  "source_snapshot": {
+    "wrench_controller_sha256": "b62bc8d8a86a28f22c2ee35829174efcff192876948013a645243d84905277ae",
+    "wrench_allocator_sha256": "3b22cf9cd6ac844c136cfa481f5a0a16753a872bad55cf30aa6fa429b6199572",
+    "wrench_runner_sha256": "2ad8b5b47ac7111fab1f26ffd09afc15cfff2e385c6844c8b568a1e8c0dbf6bb",
+    "certification_script_sha256": "d2628e00adc6de7bed6d339eb99b66a58d0c3c33a2d785a0fe3df66c962a392f",
+    "dependency_state": "current_worktree_uncommitted_by_other_task"
+  },
+  "animation_acceptance_rule": "CreateAnimation succeeds and the native animation window opens; playback is not required.",
+  "claim_boundary": "Real offline MWORKS WRENCH platform-fixture evidence for the recorded current worktree only. It is not a competition-controller performance acceptance, frozen-source certification, code-generation evidence, PX4, Gazebo, ROS1, mworks_live, or flight evidence.",
+  "next_gate": "Proceed to ROTOR_COMMAND only after preserving this acceptance and running the applicable four-boundary regression checks."
+}
