@@ -399,3 +399,18 @@ worktree. It does not claim competition-controller performance, code
 generation, PX4, Gazebo, ROS1, online co-simulation, or flight evidence. The
 next gate is `ROTOR_COMMAND`, followed by four-boundary regression and later
 APP/batch integration; the three model directories remain unmoved.
+
+P7 static checkpoint 1 adds the allowlisted offline batch runner and connects
+the APP's offline MIL action to it. The runner executes only single-UAV
+Certified Profiles from `offline_composition_catalog.json`, stops on the first
+blocker, and writes one `BATCH_MANIFEST.json` plus per-run stdout/stderr logs.
+Disabled Profiles, direct multi-UAV models, and unknown Profile IDs fail closed.
+Generated run artifacts remain under `Results/`; no generated Wrapper is
+written into the model source tree. The APP records the resulting manifest
+path and keeps disabled Profiles from starting a run.
+
+The targeted batch tests, offline inventory/composition/Runner checkers, and
+Julia syntax parsing all pass. This is orchestration and UI integration only;
+it does not turn historical or prior certification records into new MWORKS
+evidence. A real batch run still requires a healthy MWORKS session and must
+produce current `Result.msr` and window evidence per the contract.

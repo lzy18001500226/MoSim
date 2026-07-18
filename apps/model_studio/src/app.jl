@@ -11,6 +11,8 @@ const SECTION_COLOR = [0.12, 0.25, 0.32]
 const READY_COLOR = [0.86, 0.95, 0.89]
 const WAIT_COLOR = [0.98, 0.93, 0.80]
 const MUTED_COLOR = [0.93, 0.94, 0.94]
+const PROJECT_ROOT = normpath(joinpath(@__DIR__, "..", ".."))
+const OFFLINE_BATCH_RUNNER = joinpath(PROJECT_ROOT, "Scripts", "mworks", "run_offline_profile_batch.py")
 
 const OFFLINE_PROFILE_ORDER = [
     "Official PID 爬升 [已认证]",
@@ -100,6 +102,7 @@ const OFFLINE_PROFILES = Dict(
     Appname::Module = @__MODULE__
     Appfile::String = @__FILE__
     CurrentMode::String = "live"
+    LastOfflineBatchManifest::String = ""
 
     function refresh_live_capability(app, action="status")
         response = LiveCosimBackend.request(
@@ -351,6 +354,43 @@ const OFFLINE_PROFILES = Dict(
         app.StatusLabel.Text = "界面审核模式：已触发“" * action * "”界面状态，未连接 MWORKS、QGC 或 Orchestrator。"
     end
 
+    function run_offline_batch(app, profile_id)
+        if !isfile(OFFLINE_BATCH_RUNNER)
+            app.StatusLabel.Text = "离线批量执行器不存在：" * OFFLINE_BATCH_RUNNER
+            return
+        end
+        slug = lowercase(replace(profile_id, r"[^A-Za-z0-9]+" => "-"))
+        batch_id = "app-" * slug * "-" * string(round(Int, time()))
+        command = Cmd([
+            "python",
+            OFFLINE_BATCH_RUNNER,
+            "--profile-id",
+            profile_id,
+            "--batch-id",
+            batch_id,
+        ]; dir=PROJECT_ROOT)
+        app.MilButton.Enable = false
+        app.ResultButton.Enable = false
+        app.StatusLabel.Text = "正在执行离线 MWORKS 批次：" * profile_id
+        try
+            run(command)
+            app.LastOfflineBatchManifest = joinpath(
+                PROJECT_ROOT,
+                "Results",
+                "control_platform",
+                "offline_batches",
+                batch_id,
+                "BATCH_MANIFEST.json",
+            )
+            app.StatusLabel.Text = "离线批次完成：" * app.LastOfflineBatchManifest
+            app.ResultButton.Enable = true
+        catch error
+            app.StatusLabel.Text = "离线批次阻断：" * sprint(showerror, error)
+        finally
+            app.MilButton.Enable = true
+        end
+    end
+
     function ValidatePressed(app, event)
         if app.CurrentMode == "live"
             response = app.refresh_live_capability("validate")
@@ -371,7 +411,18 @@ const OFFLINE_PROFILES = Dict(
     function QgcPressed(app, event); app.ReviewAction("进入 QGC"); end
     function SafeStopPressed(app, event); app.ReviewAction("请求安全停止"); end
     function OpenModelPressed(app, event); app.ReviewAction("打开模型"); end
-    function MilPressed(app, event); app.ReviewAction("运行 MWORKS MIL"); end
+    function MilPressed(app, event)
+        if app.CurrentMode == "offline" && haskey(OFFLINE_PROFILES, app.ProfileDropDown.Value)
+            item = OFFLINE_PROFILES[app.ProfileDropDown.Value]
+            if item.available
+                app.run_offline_batch(item.profile)
+            else
+                app.StatusLabel.Text = "当前 Profile 已禁用，未启动离线仿真。"
+            end
+        else
+            app.ReviewAction("运行 MWORKS MIL")
+        end
+    end
     function CodegenPressed(app, event); app.ReviewAction("生成 C 代码"); end
     function ResultPressed(app, event); app.ReviewAction("打开结果"); end
 
