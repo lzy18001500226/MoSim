@@ -1,0 +1,23 @@
+{
+  "schema": "mosim.model_studio.offline_boundary_live_blocker.v1",
+  "recorded_at": "2026-07-19T07:40:18+08:00",
+  "phase": "P2_attitude_thrust_boundary_fixture",
+  "status": "blocked_mcp_health_timeout_before_model_load",
+  "profile_id": "p2_attitude_thrust_boundary_fixture_v1",
+  "run_id": "goal-p2-attitude-thrust-fixture-20260719-v7",
+  "output_variant": "ATTITUDE_THRUST",
+  "command": "python Scripts/mworks/run_offline_profile_certification.py --request-json Results/control_platform/offline_expansion_goal_20260719/requests/p2_attitude_thrust_fixture.json --run-id goal-p2-attitude-thrust-fixture-20260719-v7",
+  "failure_evidence": {
+    "phase": "independent certification MCP client initialization",
+    "method": "tools/call session_manager health",
+    "timeout_seconds": 180,
+    "error": "TimeoutError: Timeout waiting for MCP method tools/call",
+    "shutdown_warning": "Timeout waiting for MCP method tools/call"
+  },
+  "partial_artifacts": [
+    "Results/mworks_generated_profiles/goal-p2-attitude-thrust-fixture-20260719-v7/PROFILE.json",
+    "Results/mworks_generated_profiles/goal-p2-attitude-thrust-fixture-20260719-v7/logs/mcp.jsonl"
+  ],
+  "claim_boundary": "No model load, CheckModel, simulation, Result.msr, result window, or animation evidence was produced by this attempt. The prior v6 acceptance remains unchanged but its cleanup blocker is not cleared.",
+  "next_gate": "Do not retry in the same batch until the independent certification MCP call surface is confirmed healthy; rerun with a new run_id and require task-owned session shutdown."
+}

@@ -414,3 +414,35 @@ Julia syntax parsing all pass. This is orchestration and UI integration only;
 it does not turn historical or prior certification records into new MWORKS
 evidence. A real batch run still requires a healthy MWORKS session and must
 produce current `Result.msr` and window evidence per the contract.
+
+P2 live checkpoint 6 records the four-boundary regression audit and the next
+ATTITUDE retry. The audit currently reports:
+
+```text
+ATTITUDE_THRUST  blocked: task_owned_session_cleanup_missing
+BODY_RATE_THRUST accepted_current_worktree
+WRENCH           accepted_current_worktree
+ROTOR_COMMAND    accepted
+```
+
+The audit file is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P2_FOUR_BOUNDARY_REGRESSION.json
+```
+
+The ATTITUDE retry used a new run ID and the original fixture request, but its
+independent certification MCP client timed out while calling
+`session_manager(health)` for 180 seconds before model load. It produced no
+new model check, simulation, `Result.msr`, result-window, or animation claim.
+The blocker is recorded at:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P2_ATTITUDE_THRUST_LIVE_BLOCKER_V7.json
+```
+
+The direct current MCP health check immediately afterward still returned
+`driver_ready=true` and `api_ready=true`; this distinguishes the failed
+independent client startup from a proven model or license failure. P2 remains
+active and the four-boundary regression remains blocked until ATTITUDE has a
+fresh accepted run with task-owned session cleanup.

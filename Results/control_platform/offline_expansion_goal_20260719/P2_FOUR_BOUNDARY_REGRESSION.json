@@ -1,0 +1,98 @@
+{
+  "schema": "mosim.offline_boundary_regression.v1",
+  "generated_at": "2026-07-19T07:39:59+08:00",
+  "status": "blocked",
+  "boundaries": [
+    {
+      "output_variant": "ATTITUDE_THRUST",
+      "record": "Results/control_platform/offline_expansion_goal_20260719/P2_ATTITUDE_THRUST_LIVE_ACCEPTANCE.json",
+      "evidence_kind": "current_platform_fixture",
+      "status": "blocked",
+      "reasons": [
+        "task_owned_session_cleanup_missing"
+      ],
+      "run_id": "goal-p2-attitude-thrust-fixture-20260719-v6",
+      "record_status": "accepted_with_session_cleanup_blocker",
+      "acceptance": {
+        "model_loaded": true,
+        "check_model": true,
+        "simulate_model": true,
+        "raw_result_valid": true,
+        "native_result_present": true,
+        "result_window_opened": true,
+        "plot_window_opened": true,
+        "model_window_opened": true,
+        "animation_window_opened": true,
+        "bounded_closed_loop": true
+      },
+      "session_cleanup": "blocked"
+    },
+    {
+      "output_variant": "BODY_RATE_THRUST",
+      "record": "Results/control_platform/offline_expansion_goal_20260719/P2_BODY_RATE_THRUST_LIVE_ACCEPTANCE.json",
+      "evidence_kind": "current_platform_fixture",
+      "status": "accepted",
+      "reasons": [],
+      "run_id": "goal-p2-body-rate-thrust-fixture-20260719-v1",
+      "record_status": "accepted_current_worktree",
+      "acceptance": {
+        "model_loaded": true,
+        "check_model": true,
+        "simulate_model": true,
+        "raw_result_valid": true,
+        "native_result_present": true,
+        "result_window_opened": true,
+        "plot_window_opened": true,
+        "model_window_opened": true,
+        "animation_window_opened": true,
+        "bounded_closed_loop": true
+      },
+      "session_cleanup": "passed"
+    },
+    {
+      "output_variant": "WRENCH",
+      "record": "Results/control_platform/offline_expansion_goal_20260719/P2_WRENCH_LIVE_ACCEPTANCE.json",
+      "evidence_kind": "current_platform_fixture",
+      "status": "accepted",
+      "reasons": [],
+      "run_id": "goal-p2-wrench-fixture-20260719-v1",
+      "record_status": "accepted_current_worktree",
+      "acceptance": {
+        "model_loaded": true,
+        "check_model": true,
+        "simulate_model": true,
+        "raw_result_valid": true,
+        "native_result_present": true,
+        "result_window_opened": true,
+        "plot_window_opened": true,
+        "model_window_opened": true,
+        "animation_window_opened": true,
+        "bounded_closed_loop": true
+      },
+      "session_cleanup": "passed"
+    },
+    {
+      "output_variant": "ROTOR_COMMAND",
+      "record": "Results/mworks_generated_profiles/cert-official-pid-20260719-v2/CERTIFICATION.json",
+      "evidence_kind": "certified_single_uav_profile",
+      "status": "accepted",
+      "reasons": [],
+      "run_id": "cert-official-pid-20260719-v2",
+      "record_status": "accepted",
+      "acceptance": {
+        "model_loaded": true,
+        "check_model": true,
+        "simulate_model": true,
+        "raw_result_valid": true,
+        "native_result_present": true,
+        "result_window_opened": true,
+        "plot_window_opened": true,
+        "model_window_opened": true,
+        "animation_window_opened": true,
+        "bounded_closed_loop": true
+      },
+      "session_cleanup": "passed"
+    }
+  ],
+  "claim_boundary": "Current offline MWORKS evidence audit only; this report does not claim competition-controller performance, code generation, PX4, Gazebo, ROS1, online co-simulation, or flight acceptance."
+}
