@@ -20,6 +20,7 @@ se3_basic
 | `控制平台接口与闭环实施规范.md` | G1-G7短权威入口：分层接口、类型化Frame、Registry、晋级门、Factory简化故障面和前端handoff边界 |
 | `开源控制器复用与淘汰矩阵.md` | G4有许可证上游、固定commit、算法家族波次、禁止复制来源和止损规则 |
 | `控制体系总览.md` | 控制链路分层、控制器族索引和实现覆盖矩阵入口 |
+| `控制器组合与整机动画闭环设计.md` | AWFF边界、控制器分层组合、整机母模型、三维动画验收和剩余工作 |
 | `统一控制接口.md` | State、Reference、ControlCommand、Adapter和频率语义 |
 | `单机控制器实现.md` | px4ctrl、PID、SE3等单机控制器实现规范 |
 | `控制器证据矩阵.md` | 控制器覆盖、Simulink/MWORKS可实现性、开源/资料证据和Gazebo接入门禁 |
