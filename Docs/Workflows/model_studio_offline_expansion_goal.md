@@ -539,3 +539,18 @@ The accepted run reports `position_rmse_m=0.16650`,
 `max_position_error_m=0.69040`, and `max_tilt_rad=0.23158`. This remains an
 offline MWORKS Profile result and does not claim AWFF online, PX4, Gazebo,
 ROS1, code-generation, or flight performance.
+
+P7 live checkpoint 5 adds the PID-INDI representative combination:
+`offline_pid_indi_climb_v1`. The batch completed in 46.404 seconds and passed
+the current MWORKS model/check/simulation/`Result.msr`/strict-metric/result-
+window/animation-window/session-shutdown gates. Its checkpoint is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P7_PID_INDI_BATCH_LIVE_ACCEPTANCE.json
+```
+
+The accepted run reports `position_rmse_m=0.13796`,
+`max_position_error_m=0.61014`, and `max_tilt_rad=0.27180`. The runtime index
+now contains four accepted single-profile batches and no blocked batch. These
+results remain offline MWORKS evidence only and do not certify online or
+flight execution.

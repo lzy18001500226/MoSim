@@ -1,0 +1,32 @@
+{
+  "schema": "mosim.offline_expansion_batch_acceptance.v1",
+  "recorded_at": "2026-07-19T08:52:15+08:00",
+  "phase": "P7_batch_live_acceptance",
+  "batch_id": "p7-pid-indi-smoke-20260719-v1",
+  "profile_id": "offline_pid_indi_climb_v1",
+  "status": "accepted",
+  "batch_manifest": "Results/control_platform/offline_batches/p7-pid-indi-smoke-20260719-v1/BATCH_MANIFEST.json",
+  "certification_record": "Results/mworks_generated_profiles/batch-p7-pid-indi-smoke-20260719-v1-01-offline-pid-indi-climb-v1/CERTIFICATION.json",
+  "acceptance": {
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "sample_count": 5001,
+    "result_msr_present": true,
+    "strict_metrics": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "task_owned_session_shutdown": true
+  },
+  "selected_metrics": {
+    "position_rmse_m": 0.13796108420151607,
+    "steady_state_error_m": 0.07375263326940072,
+    "max_position_error_m": 0.6101387604392822,
+    "settling_time_s": 0.54,
+    "max_tilt_rad": 0.2718036894533488,
+    "constraint_violation_count": 18
+  },
+  "claim_ceiling": "Current offline MWORKS model/check/simulation/result/metrics/animation evidence for the PID-INDI Profile. Not PX4, Gazebo, ROS1, mworks_live, code-generation, or flight evidence."
+}
