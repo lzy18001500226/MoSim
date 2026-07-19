@@ -290,10 +290,17 @@ const OFFLINE_PROFILES = Dict(
         )
     end
 
-    is_three_uav_mission(mission) = mission in THREE_UAV_MISSION_OPTIONS
-    mission_vehicle_count(mission) = is_three_uav_mission(mission) ? 3 : 1
-    mission_options_for_vehicle_count(vehicle_count) = vehicle_count == 3 ?
-        MODEL_MISSION_OPTIONS : SINGLE_UAV_MISSION_OPTIONS
+    function is_three_uav_mission(mission)
+        return mission in THREE_UAV_MISSION_OPTIONS
+    end
+
+    function mission_vehicle_count(mission)
+        return is_three_uav_mission(mission) ? 3 : 1
+    end
+
+    function mission_options_for_vehicle_count(vehicle_count)
+        return vehicle_count == 3 ? MODEL_MISSION_OPTIONS : SINGLE_UAV_MISSION_OPTIONS
+    end
 
     function sync_vehicle_controls(app)
         vehicle_count = parse(Int, app.VehicleCountDropDown.Value)
